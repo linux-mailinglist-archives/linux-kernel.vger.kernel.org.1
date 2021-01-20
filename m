@@ -2,140 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9777A2FDC31
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04F22FDC46
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731478AbhATWB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 17:01:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S2389832AbhATWQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:16:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbhATV5t (ORCPT
+        with ESMTP id S1731978AbhATV7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:57:49 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD7BC061575;
-        Wed, 20 Jan 2021 13:57:08 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id j3so199524ljb.9;
-        Wed, 20 Jan 2021 13:57:08 -0800 (PST)
+        Wed, 20 Jan 2021 16:59:22 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C10C0613C1;
+        Wed, 20 Jan 2021 13:58:41 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id x13so24880067oto.8;
+        Wed, 20 Jan 2021 13:58:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ceHRCJDK3HYsIEFwVaZdcOC3/1LUUaiOgnlHMxXcJKg=;
-        b=W4ZRzJICVHiuDztf0opX/vCbrya/2gxGbYiulmDAeN26an7pfDLwC4uXVeSsZjs2qP
-         cAIeGhUo4T20zGUkQwArJb/rD7L2agpHRuA4x84VPsCwWZP/JW9zAMLfMwjVXhVJRMx0
-         n8IKlOMybH2T1r8fxngsjrDBnq7dID9jfN/zRu0TjA9rPmO9p9HuQl53eeYWaPitLDsJ
-         ZqIELerQYMLrCrtSmIBa3YXesH/Rr3lL8eBp/foZBi5/yw6hJ+wUqi3Gz+orqqqa0D2t
-         bLUD7GdJGCCXvkEsXyNOuOI/9/ldHYAJfNE0L8LglMfczwKtfYEOgWJ+dhHt4kH2bmXw
-         reNg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VF5vWwpN0WTTAbK2Z2NttkJ6CJSQ2hghN1uL2Mgnxck=;
+        b=EzLEez6jtnf8JtqyqlIg8YpCBuANBTWBSoj8Ej/TC9V2tBYlFwyxmJZuqSPAlc6cbt
+         ogPDE2aMr5O+aq0yHHil4RauRfTBUTT6dbvO7YyyOOkZgTqwnOAECFNAMSvMpU98kiqW
+         mRm3ACDVn4552fT7haLovkFYrXkvGJxcu+RcdSG3c3jkc8J5awkN8Ic8HPorz4MX+nVz
+         A3yGeUy06y2ulZ1hAfHsJxWt0A+6CEmaB4zy6Ph0IrngaSC+wbqtuZzNsRQwPEupKIio
+         xo5Cdc7zpO0ZcprKPmITjwAl+qQRNAnCkzsahb1nIHVTOdfqOrTMFQt4VmwG9CtZmCmO
+         q6QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ceHRCJDK3HYsIEFwVaZdcOC3/1LUUaiOgnlHMxXcJKg=;
-        b=icVs2wgz1sxsRk2joxvFo7LHGeexY8B19C9qMxgbyqO695UMSC7TYUCZR0dEl4a35X
-         zbtyaJd3pOm8EM26Mhduuh93XH9qNEvnxGHb2Twp/qbr0MLnDLHYqryPI11yIPr7KGRn
-         K7sn/UUe0j/P8u/Oezggbxg7O7ViW9G83elxl4rO8MKXYEQveNwNggJ69OJ8klUrUWoI
-         lnq4Bm2oW2tOrZhxHZepn6LihmK8KbEsLVYU5moTVOSKElzExDQw4mAktaNaMqciAS83
-         jnlWYM76M2W63QoSuhUFi5n+xImdDDZoNsB5LW2ICuxVFMm1WZREsT/lzauJTq/ZzA9q
-         tqEQ==
-X-Gm-Message-State: AOAM533ki+jmJIx1nMeTQHqyIFWGeVggn8wCD8SUsQygW6grhvPZQX6Z
-        E7COPg1a5mdRgOVWEmCq2GrUg2psf8I=
-X-Google-Smtp-Source: ABdhPJwycW2kFZEra1VeimUqPfqf9oMM2IltvnYEEPSGXuxF3K4moS4SD52zegkvlFyE/vW2eYuhlA==
-X-Received: by 2002:a2e:2f17:: with SMTP id v23mr5515563ljv.222.1611179826782;
-        Wed, 20 Jan 2021 13:57:06 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id f3sm349528ljp.114.2021.01.20.13.57.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 13:57:05 -0800 (PST)
-Subject: Re: [PATCH v3 05/12] opp: Add dev_pm_opp_set_voltage()
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-6-digetx@gmail.com>
- <20210118095256.tr2qgnrmokkc6ngf@vireshk-i7>
- <a48dca91-4264-e153-cefa-ccbcca1b1d9d@gmail.com>
-Message-ID: <16c7e096-5efd-2d0c-a2ac-c11133c29c30@gmail.com>
-Date:   Thu, 21 Jan 2021 00:57:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VF5vWwpN0WTTAbK2Z2NttkJ6CJSQ2hghN1uL2Mgnxck=;
+        b=GSH3uhXQVnBbuznbSK6W6ACppb47J2uJ1WiA4EFyPyRus7/JIOXCN9CLBbuj4dY3gr
+         5IE4jUbS6etisdRfzdClJXi+/7+dQx5m9WjFYYM4A2Fe7e5YXmhChZh+4i8hzd+JY+yg
+         jRehIq2NqbZopyFF7PTPbXrZYKDwtArz301pkaqCdrEaG0IUUzfMKEZPXAQXYfxk9Zrt
+         UJPHfpoFZGX6y57+1ZT+8EQFUuucT1yqt5ZMYIIhUyLQOaSg+gBRc93VjhPebOi5vfh+
+         P76EHlEHLsN0Tmz2rhX9XlacWLN9c7Mp29kVXtBxwzhlMWcN8Ke6euOV2jU3pAMexUt5
+         dPTA==
+X-Gm-Message-State: AOAM531lDJHPsT5ncb9M2/xcUjx28s5WSXiuQLiScDckLrwRI732xGVn
+        7GS11zQc8tzeg+GN+W7A6v718zVDxy9ixGN0/Bg=
+X-Google-Smtp-Source: ABdhPJyfupROq9yYCDbZ/3+AmWCN8HnkiGrbhZkCpEOXQTQW6PaR5MBQJrTLWRFVQEhrTRJG6c/wfMxfAJsLqhNe4k4=
+X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr8448651otb.23.1611179920837;
+ Wed, 20 Jan 2021 13:58:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a48dca91-4264-e153-cefa-ccbcca1b1d9d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210120092624.13061-1-colin.king@canonical.com> <a06aeb18-b02d-41cd-f717-6ff30ea48bb4@amd.com>
+In-Reply-To: <a06aeb18-b02d-41cd-f717-6ff30ea48bb4@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 20 Jan 2021 16:58:29 -0500
+Message-ID: <CADnq5_Oypeyaq8YSHgPhouJcp7t8aSxT1Z0YxraWQV6aJm9uYQ@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amd/display: Fix spelling mistake of function name
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Colin King <colin.king@canonical.com>, Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.01.2021 22:14, Dmitry Osipenko пишет:
-> 18.01.2021 12:52, Viresh Kumar пишет:
->> On 18-01-21, 03:55, Dmitry Osipenko wrote:
->>> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
->>> index 99d18befc209..341484d58e6c 100644
->>> --- a/drivers/opp/core.c
->>> +++ b/drivers/opp/core.c
->>> @@ -2731,3 +2731,58 @@ int dev_pm_opp_sync_regulators(struct device *dev)
->>>  	return ret;
->>>  }
->>>  EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
->>> +
->>> +/**
->>> + * dev_pm_opp_set_voltage() - Change voltage of regulators
->>> + * @dev:	device for which we do this operation
->>> + * @opp:	opp based on which the voltages are to be configured
->>> + *
->>> + * Change voltage of the OPP table regulators.
->>> + *
->>> + * Return: 0 on success or a negative error value.
->>> + */
->>> +int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *opp)
->>
->> I think we should do better than this, will require some work from
->> your part though (or I can do it if you want).
->>
->> Basically what you wanted to do here is set the OPP for a device and
->> this means do whatever is required for setting the OPP. It is normally
->> frequency, which is not your case, but it is other things as well.
->> Like setting multiple regulators, bandwidth, required-opps, etc.
->>
->> I feel the right way of doing this would be to do this:
->>
->> Factor out dev_pm_opp_set_opp() from dev_pm_opp_set_rate() and make
->> the later call the former. And then we can just call
->> dev_pm_opp_set_opp() from your usecase. This will make sure we have a
->> single code path for all the set-opp stuff. What do you think ?
->>
-> 
-> Sounds like it could be a lot of code moving and some extra complexity
-> will be added to the code. If nobody will ever need the universal
-> dev_pm_opp_set_opp(), then it could become a wasted effort. I'd choose
-> the easiest path, i.e. to defer the dev_pm_opp_set_opp() implementation
-> until somebody will really need it.
-> 
-> But if it looks to you that it won't be a too much effort, then I'll
-> appreciate if you could type the patch.
-> 
+Applied.  Thanks!
 
-Let's start with dev_pm_opp_set_voltage() for now. It shouldn't be a
-problem at all to upgrade it to dev_pm_opp_set_opp() later on.
+Alex
 
-I'll make a v4 with the dev_pm_opp_set_voltage(), please let me know if
-you have objections or more suggestions!
+On Wed, Jan 20, 2021 at 9:46 AM Harry Wentland <harry.wentland@amd.com> wrote:
+>
+> On 2021-01-20 4:26 a.m., Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+>
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+>
+> Harry
+>
+> > There are two spelling mistakes of the function name, fix this
+> > by using __func__ instead of a hard coded name string.
+> >
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >   drivers/gpu/drm/amd/display/dc/core/dc_link.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+> > index c16af3983fdb..91d4130cd2cb 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+> > +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+> > @@ -1602,7 +1602,7 @@ static bool dc_link_construct(struct dc_link *link,
+> >
+> >       link->psr_settings.psr_version = DC_PSR_VERSION_UNSUPPORTED;
+> >
+> > -     DC_LOG_DC("BIOS object table - dc_link_contruct finished successfully.\n");
+> > +     DC_LOG_DC("BIOS object table - %s finished successfully.\n", __func__);
+> >       return true;
+> >   device_tag_fail:
+> >       link->link_enc->funcs->destroy(&link->link_enc);
+> > @@ -1619,7 +1619,7 @@ static bool dc_link_construct(struct dc_link *link,
+> >               link->hpd_gpio = NULL;
+> >       }
+> >
+> > -     DC_LOG_DC("BIOS object table - dc_link_contruct failed.\n");
+> > +     DC_LOG_DC("BIOS object table - %s failed.\n", __func__);
+> >       kfree(info);
+> >
+> >       return false;
+> >
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
