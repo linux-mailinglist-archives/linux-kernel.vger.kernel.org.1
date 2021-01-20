@@ -2,103 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B252FC6FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120972FC6F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730501AbhATBh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:37:57 -0500
-Received: from sonic303-25.consmr.mail.gq1.yahoo.com ([98.137.64.206]:39409
-        "EHLO sonic303-25.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727894AbhATBbi (ORCPT
+        id S1728654AbhATBlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:41:31 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:51582 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbhATBcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:31:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1611106231; bh=1r3dKINWGBdHXjMJC1pX7V+OOo+PzIVrin3K6Ha1Jh4=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=MjZ4X4M+hAAdSJrooEMjWiu4d2rqipY0jHYmz+yIcK8EPnsP3kADx8TRVNEU0wr2RDW/7vblTjldHHaB21n2srmH31na0Gj1X7DV8rJesUQZEBdS6Zhr7eLZXgL81XqIy004bTHXKOp7/1GkDYEm0coSLTa97MYYOJDaQTO2i1vmPUuZRwKXKDXefbFnmPqLHXo6BKtksa2/BDy28t6u2iFMWby6AxakOzzrsig8sk+N7etPQDw3prbhMbZZaEoCXu5TiiHKxFkOd9O0Cz92eDANS1UksIb5itJ/aCTMaY7vNWgjvRYfDhI5prv96lI0KrCNNo6LOJ2Es0O3zxwlug==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1611106231; bh=d5jpnRbJVDDf7Yp5j1dV7v6CuALsI1NmlKOiPGhQ6tK=; h=From:To:Subject:Date:From:Subject:Reply-To; b=t58EtamcG++CecN+E/Um9dbCCY9wKwKDCFbYUAPJkyY42QomyUExPnkcD6ZkYVygYMb0/WFA/3qv0apPFZcHY7/AgDXZWWb0i3ZjAtUtVBF9DsPUY+gPox8xd1RGf8tsagxHZGn7EsCcNpK7t9FupSGfDG10NmWdorsVv7M6GTLVDRrgH2LyOVUpCe069iVcYYRzbyixah4cEZmPf7RezgHvlLp+ssDXgQpgWdmBJkDuDiliv5ryxv6zdNaRduuODJxml5EXoXbuQMO7eYwnEbsWzjddpUFbjZW4C37bgWGCTXIgpFiJZynXYKVGv9IGjEcNoGHeWZjY4gvd7BaUmQ==
-X-YMail-OSG: sKJOEZgVM1lAyTFEzCn_PceVGDrRNe6YHKgn2xwF.do4s3dzfXOt._Xe.VboZVI
- OSqXFtq6m3xDh1clCvSyH15l0lZZFGWLgTR.PtQxW9NL8r1jThVAfTRRSf_pd1Mtz3gMzyWeRKhy
- .gJJiIlPJduuSQNJuaSGwDnoHsUc7THCaibnSHaNku6I6xy2GjItRmOO55NaXq.yrbif0v6_Ir44
- OuciNWyAEgX_tH5390.rQzNJNMcX8HgjRo.uqIIw49eGAfZS77KozGzgYsXnV3hFZaX8c24do9M.
- cB2tE9SuauQOOmOLa4ti4SmGe5mEYQLo3RXlyKVlzdrSKkDpnlJUho8DLFTEdtEm9DuQLGa7i6o0
- FGJ7F4PihU22PjJuxp6ywCM2dZjiucXZKCElDDPjw1yax593xVMrlPhh.Eelg1mD088YtViG0aca
- g.OzzH0CKPy6_Zbv08pd8vYk5Pj6QpcWIKiBS89BqmnyAz3sSryYHNVZBnWVy56m2xv5r.QBXUuZ
- UNtgPTck4waSdRAshDjyKTuoakdxPFT0bNJEm7X4Idgdmaoyq7YLNlUoxmaK5m1qU7UbOeCc9Qbp
- H3fns.yQaCjJIS4tFLfMNV8m2_Pe7bW5lxvfp8oWwPxvKJrQeVghPZxOZb_l_xt3g1eZuSDvrCrQ
- 6MqYvNOVgss4jWXRAEZPOSlCoDp341_nSiQMNv922niplCtvBRjnzPM7WYp0sYIAOJF5ooB7xgX_
- 6ymMExJMdv_fyYG82pfspNDjUoGLGsYDr02Nh9QPE3OFu0uowp98Zwx5RxKIT2nMzeN4wXJpdfWX
- FmOaGwTu5TnEkjbZZpwII7BhC.yyQkk3thMBwUQN4H4QiK9cR8wJAOrtEZqkCt.Zkrcujo_d8HXV
- 01ulWjGGQGWFq3pHA0DdEptafpUfYazmqaTbt_9rEloKekCChGPhXj0uW8YEL49Q3.baiXixYfaP
- tATfBNycu15JQSFuWhWK_wrIcmpEvRvCsaBYPTwDqnZaT4m4O5.OEgN9YhADfZx7ElQafPUi4.Hv
- VQCaeN5HzrF13z.0swDv8v7aAZZRx8JUdqZOStFDGCDLsYkf34iw5VeOXwjo60mKlItbbCA518d1
- saJ96SepWbEhUWpo09ay_XGIB1ocsv0I370QEASJp5uEVjUhXH4QqtqM_Ys3QA2EEnRhbzFBw5mQ
- Itb1WdsoDCJtLLOzxeiTF8rWqpOeTGT5RxiQCRm4HM9A9SSzzyeICi5Ws6lEvPnNJOXuxIHn5xBL
- oPKktdT01tqh7.4ms5gmv.1AVtCWQuhsTTPtATSJUCUURf7A7gsZ2AYo5kGJ1qow1Zfec.Ul6dlc
- ZrDbOXOjCxieB7W9evK2p4KB8Y0vSWM0cenNQSwVnEGGE5OMji9ySjlLg7saAzLRyhZfvKAIN2Xx
- OtAkXdQVwbaq0q2VFr_lIe6GfnekFtKGhuc9ZMtxtpNK_qJPHZfKftc.4QWMxOqDNKjSEy4fOUCt
- S1velAKolpDKgXiKvZeNcd53k0Zx0V69.ko8Jhsx0VJKVdJp8YR7xa.VDmLOLJB8kmFuehGhwjJq
- tC9AM5v6EiLz5GwWy3VTp.LPeXoJ5gP1G.Gmaygx5cZ5ML1n8rWrPI6Xh5m4Oqibn_VWzsSo2Rs.
- EEXzZjymu8wN4wBHMCt0ex5X228sWlvnpJg4TqyWbIh_3DLRsKin495ZLaf9BCVHTTDas7KFcpp3
- ntvNw26FFjMxUkumksgDZ2KEyTdeYr.YQkrYrpW0UH9Rsu3fnWMdRpI9ZsAT7gliFs6VaazT0Onk
- BRgTgFBujBVtDEfTJnRzn8v5WShM2V1uMlTgkr88la2hLv8iusbgOKI2Vj6EFfPwlS6O10UBG0lD
- 0EHi1I6O.KBGLxU_xlXMJsDRU_eCch9ydigIrbXsllajimNtZ2ATUsvFvocEORn5mbUZD0jWX4qa
- CJcndGxeU6EOPy4fhYH6EfUN9WCYsJpmYucw4PGol6v9e0qBOfb3Sk20bxct4ZEPOnNMwIaAtpDs
- LIcg0oOZSO9YiCxaFzK044J4Nu4PUDaF4LrtOhSz.qrymWyolPnUoR0Vk6tVLgUrvqbJO5NVQtct
- NV7lY7piIwDxiYkhDXe_UPofGODlFItvY5AABedUQ6sYoKQ9KeeySX.bPz7VJBB3vRNfLlG3SxBy
- .EGa8163mZpMLbugeus9cU5jEOmiv6mTRugQvEuHakXwBLqx9DY7jn0PDtAjG653sa7bgB2rOFhu
- Lq722CQTldGpa4MgnP5B6BKeFEnK14v7H1kb4m.8686ESAETGLawgQp3lDBLatae2sGsO0pnyOx_
- g6p.14IDtSTTSB4PDJM2jac3WfUWdl9CYy_Jzpf5bmMVtZ7spXdJFix.s21sjBjKavLY_Jqx29Q1
- qoOSakQDnrP7Vrj9E2KFUPaEsqqxh9rZwxQ1VkOgtuIYLhTItXh9cxeeTPG_8z9UMjrK_7I4L2Wq
- eyXHci_X6ATfYDDk4xOpocGjLx1fel94WhamuW6WMy992uyEdfsbkaeol9.h0vUe51ZEVcr9BMVh
- .A37WCmZmiPIVcyHDXLo7gMBkDlADElhc3LNoeyG1AYmVhFGW69qdmOHLSrDAyILXoYYtMefeEPm
- SlxyS8nMllEtFu.6IdVPGRNqFDUWy_tO8HzfR0Jc3VEsar9eRcHHtExOWj_RWwCKizmghnrHZ.XA
- S60NGB2dwVEhT_1wrcf31chfeGi9LpZq1QMVymHLsO5CafQHZvXR6egL0cRqIcixAcV.vK8Y324.
- LhRwULBVBxiyqdu0KVw1tEgyN3HTYOV75ap9jT5smOR4Xg0GD7YlTW8Y-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.gq1.yahoo.com with HTTP; Wed, 20 Jan 2021 01:30:31 +0000
-Received: by smtp402.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 167f1fbdd5ea7ffcc74dbd0fe3b1581e;
-          Wed, 20 Jan 2021 01:30:28 +0000 (UTC)
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     Chao Yu <yuchao0@huawei.com>, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com, Gao Xiang <hsiangkao@redhat.com>,
-        syzbot+c68f467cd7c45860e8d4@syzkaller.appspotmail.com
-Subject: [PATCH] erofs: fix shift-out-of-bounds of blkszbits
-Date:   Wed, 20 Jan 2021 09:30:16 +0800
-Message-Id: <20210120013016.14071-1-hsiangkao@aol.com>
-X-Mailer: git-send-email 2.24.0
-MIME-Version: 1.0
+        Tue, 19 Jan 2021 20:32:18 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K1T2iq121989;
+        Wed, 20 Jan 2021 01:31:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=4I8bD2X+OCNGj+GK60AB6yoKWGbZEuFoevEpPY7o/gQ=;
+ b=pEW4g1Q+tBKR+gK1pgvMlGqrrw2NGdLSvrwVNymxYkDDEpOEcf0+wYlV7Fwuj+LtSjLW
+ vA5tlNXk2qfkxtuM0CRqk4JKhKzyRbPla2loYUkWNO9E2LSOKO0KD8XTsK31GNMmLHRx
+ Ku4ryYW/L+Vfeq0rlYsp1LXtsXIRDMRWmxrgTYq9jDGu6Pq/xYme5CZAdvlookxHWuCO
+ LonfxIZpVyy8Ttt3wcdT6M+WSyzgQsXqQ48tq5d8tXZJ3x4b3990M28FagIa7g01jiKj
+ gooK/tSa5iCM+kuxBCLn6Jwh7K6PdIbNlnj91GdHrkXf/LsL8qqMng0WyZLyxZFlp6At zw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 3668qr8ad6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 01:31:09 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K1Tie1037024;
+        Wed, 20 Jan 2021 01:31:08 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by userp3030.oracle.com with ESMTP id 3668rc5qfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 01:31:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HjOqLWaZg7SASsnxxU4Q3d0IOXSqnpefWtDYUkFayBj+vNB/COqo0Ey6M1m+2TFc3EoET9fff5JrGUSfa4BYFWUT34MLD9871EfDIz0aavtX6gAuIigt7ZyMldYzm89MkYAGT35h+/GmoLHBm0H4cBInJXNw8/hiZX4skJyfmhKbNWfOGqPMF8vI6SckHO2z9TgGZXmhPye8dd8V49jjv+UwM9KKluA3MOWUY76w/b6tSC9nQFnev/WN1LElkNqCF/dmdP3JA0DULT9XsEphIsKgMfILdm1ZczjjB2FpQq1xZbg5ULXjLIYIwu8fUUgU3MDXcYLSQulXdSX3ZTFaDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4I8bD2X+OCNGj+GK60AB6yoKWGbZEuFoevEpPY7o/gQ=;
+ b=c4ZKa8GwxbyLj8JVniipClh9so2eqIwxFEZWL39XUzu66SXrWDRXOE9bCqc+JYongIGSco4xuhN8t4Ei5hDFEDA4JpCK8eXCS0EafKthlek66WsMHpFEGBgIYfHl/hvARosqInzMsXiDcdIFaNRxyPKZ0MyEvzyUPleSPl3yXgGoZkpLmxH+/MuxWkWq4nWJAjBUBW4tB0QmCA1Brb1uNcUJRLySceyWPA3YoRIaFG57q7WXMGezNUWUIQ2bMZ2RtLFTnO6+Tiq5iG2G/0zp2TbDI0xDz8lPstbucT+QDbSSj+P6e2aQhsdVs09mO/TlwZigjT5ixc+UBmp33HuYPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4I8bD2X+OCNGj+GK60AB6yoKWGbZEuFoevEpPY7o/gQ=;
+ b=SWDfM5i1YaEuCyvoSP1KA8KZH8YZ72vk0KHPCZs4KIERKKuNidcOj3JZhwSADDv63rwglmeUAuu5df8qg/z60IKG9KNl+byxBsIpfndLbdZFgx+mrFKhPbjBHaxC7kW+6Y7LhChzN77ZdX7YKosag/3AgIf9yuxU5mb+eliBVQk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
+ by MWHPR1001MB2384.namprd10.prod.outlook.com (2603:10b6:301:2d::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Wed, 20 Jan
+ 2021 01:31:06 +0000
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3763.014; Wed, 20 Jan 2021
+ 01:31:06 +0000
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH v2 0/5] create hugetlb flags to consolidate state
+Date:   Tue, 19 Jan 2021 17:30:44 -0800
+Message-Id: <20210120013049.311822-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.29.2
 Content-Transfer-Encoding: 8bit
-References: <20210120013016.14071-1-hsiangkao.ref@aol.com>
+Content-Type: text/plain
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: CO2PR04CA0178.namprd04.prod.outlook.com
+ (2603:10b6:104:4::32) To MWHPR10MB1389.namprd10.prod.outlook.com
+ (2603:10b6:300:21::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from monkey.oracle.com (50.38.35.18) by CO2PR04CA0178.namprd04.prod.outlook.com (2603:10b6:104:4::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Wed, 20 Jan 2021 01:31:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2fcf0029-25f4-49dd-4080-08d8bce30e4c
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2384:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB2384DA758D08635E09FFB393E2A20@MWHPR1001MB2384.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qgqxm6rK01zoc39sW/tSd2jQrCqTSbe0F5lzTOrj3b61+JhxHRTWdMBUnTjfcxzAodT1C3f//y7vBbLb6xBPFxAGxtEwmJhasm1wIgAi1PFIDUrdrJftYywzI6HkoJiHMXdTmVR/nFQzgnJQBsew+dYBzFqaFsASkKjRwSK7xh3f9TWh4mlYjeAoPWOODibcfj2PqsIY3rF78+ZT4kghxSCKRthS0Pmk7jdXGtNwUikOfHfTwClOokO5/e05GLxoGNnmpb5jPjtdzgyakmrJs6fGN7hLNioHXv08BPbNOu3B6YBJWLZvH7xclhVlFeWZ2AVl9v4XVrz3oxkZcYgG6/CO6L9Tzt3dQ/UnST2moMbEFyngDaNCmKLW+72WbhsOzdmsmB+ubWGF+TVhYG4m2+Qd+2hx86aSQK5+eN37NzsKEGQdTeub8PIfdn/u5HiNzXA6/FR3mytip8F0mh3SKOCNtm6+bNThfU9/V8s9mMfUubeHkCuaUhO2ZGpuiVOq7iHJT4nX4EZvINGeZsSWtNNYo3vlISyA1fkpgQFWheKKGmJuZNprVtzGR/a3tokejVEo+rFY0tKpOLjnNTkhKXD8I9xwc/sGeIXOJ09ozUg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(366004)(136003)(396003)(1076003)(8676002)(186003)(36756003)(107886003)(8936002)(966005)(478600001)(16526019)(4326008)(956004)(316002)(86362001)(5660300002)(54906003)(6486002)(2616005)(7696005)(66946007)(66476007)(66556008)(83380400001)(44832011)(2906002)(52116002)(6666004)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+bzNcLBSP1orL8DUIxAlS/hDAuk4vNggzQvzudVeBlYmBYrvWSmpWt7b6xxo?=
+ =?us-ascii?Q?uMe8aJBasbZ9rNVxfAe3Ir2TJiwB7vKrf2cK+3U2KGn+E3jwxUgCzhTz9au1?=
+ =?us-ascii?Q?RHU5VN3FcsH4K63ppH4ZqOlAByVqRK/x1eKcapr+0/VMBGpRaTTHPVjlow0F?=
+ =?us-ascii?Q?5aDO2lkbzWKoNx/UHrDXL6K8Y1wApexFNwkOm+oUbQIQUfe1rWgZf95jBH57?=
+ =?us-ascii?Q?qcL8jIxb2sZmktqnhluv3LvaAL3Ws9QwphdwRr7uC/3ONc3tumU6kd3afn6m?=
+ =?us-ascii?Q?2TK0bjRbred0LttaqcaulEyE9eBNql7nntUw6Z9xfX/ZlniO0yOUli/JH/fR?=
+ =?us-ascii?Q?I0i55XuPQmQJZQw7V6D3eZbGvhbJs67q/IFOuAkcedFQMUzX8wvM8pRUZ/nJ?=
+ =?us-ascii?Q?OyXb2Gs9TOTxIZQrFfDJeB+0A3taZGG4L1GTrb/mlBftC8GcBccTD3DckwQh?=
+ =?us-ascii?Q?AIciIwCthnEv8UkLBtBNKbsyZ18p/lpldtIOirvF3T6YJiSynidk+/QJHe5l?=
+ =?us-ascii?Q?8QM3lKNP4RVRjL1mHUQuS6gxLn2ZJ5BtRbX5vq5zy0bj4l5kQc2YQZoUI71X?=
+ =?us-ascii?Q?WEYknLqNCXqJ4rlv5cS1a+EGp2XK6abJIgdBC7K4C+qjzEdhtutn3u8KqMh1?=
+ =?us-ascii?Q?GRFMOKdmp24lFkboMRGY3moeuzd8mCyrbwey/xAag8JrudRbNjGLmMTl94iw?=
+ =?us-ascii?Q?q8aIDPsoMqPQKYcMBQyw4/M/RmVVUEQyzp7XlSsAipmbJc2QuDX3PcZkLf6Y?=
+ =?us-ascii?Q?VTVxa9ze/g5TyFURrPO/ExBkcMxjyThHSu5iVbMmVPq6DD6i0yUd2e7BOg71?=
+ =?us-ascii?Q?0303W9fFyLlJNpuMKMvHjrUMIi/MRv0OetO3tNY0TplbzhwakXYRPakVPmvc?=
+ =?us-ascii?Q?+PnBCA1xNIRENizQqbDRCfXsJZY/riNwGPF7QHt+EKcaP8U65x3vBd6osDPM?=
+ =?us-ascii?Q?CJ+ayWcJnasS8mv7PXDfX5hvPE+QoXRq01jIP+7ZXe23DEHqyoDEZsNjRsBf?=
+ =?us-ascii?Q?4KLXURuJYEFvV3U+tWyx42Yz8HDPFB4IurwDS242Bi+cEQwmCzoEAsRgE6AR?=
+ =?us-ascii?Q?PV5PUUkE?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fcf0029-25f4-49dd-4080-08d8bce30e4c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2021 01:31:05.8910
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: znGaa6ToyDiBkk/JZrctVtJ5Vmz0+9ifFw/9bFHbzfqv/TFO5vOqvCJzaBTwl1IJpWOJAQ/BAP1sQnnyKr22iQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2384
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=496 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200005
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=646 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101200005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+While discussing a series of hugetlb fixes in [1], it became evident
+that the hugetlb specific page state information is stored in a somewhat
+haphazard manner.  Code dealing with state information would be easier
+to read, understand and maintain if this information was stored in a
+consistent manner.
 
-syzbot generated a crafted bitszbits which can be shifted
-out-of-bounds[1]. So directly print unsupported blkszbits
-instead of blksize.
+This series uses page.private of the hugetlb head page for storing a
+set of hugetlb specific page flags.  Routines are priovided for test,
+set and clear of the flags.
 
-[1] https://lore.kernel.org/r/000000000000c72ddd05b9444d2f@google.com
-Reported-by: syzbot+c68f467cd7c45860e8d4@syzkaller.appspotmail.com
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
- fs/erofs/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[1] https://lore.kernel.org/r/20210106084739.63318-1-songmuchun@bytedance.com
 
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index be10b16ea66e..d5a6b9b888a5 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -158,8 +158,8 @@ static int erofs_read_superblock(struct super_block *sb)
- 	blkszbits = dsb->blkszbits;
- 	/* 9(512 bytes) + LOG_SECTORS_PER_BLOCK == LOG_BLOCK_SIZE */
- 	if (blkszbits != LOG_BLOCK_SIZE) {
--		erofs_err(sb, "blksize %u isn't supported on this platform",
--			  1 << blkszbits);
-+		erofs_err(sb, "blkszbits %u isn't supported on this platform",
-+			  blkszbits);
- 		goto out;
- 	}
- 
+Patch -> v2
+  Went back to functions similar to 'normal' page flags (Matthew/Muchun)
+  Decided to leave check in unmap_and_move_huge_page and print warning
+
+RFC -> PATCH
+  Simplified to use a single set of flag manipulation routines (Oscar)
+  Moved flags and routines to hugetlb.h (Muchun)
+  Changed format of page flag names (Muchun)
+  Changed subpool routine names (Matthew)
+  More comments in code (Oscar)
+
+Based on v5.11-rc3-mmotm-2021-01-12-01-57
+
+Mike Kravetz (5):
+  hugetlb: use page.private for hugetlb specific page flags
+  hugetlb: convert page_huge_active() HPageMigratable flag
+  hugetlb: only set HPageMigratable for migratable hstates
+  hugetlb: convert PageHugeTemporary() to HPageTemporary flag
+  hugetlb: convert PageHugeFreed to HPageFreed flag
+
+ fs/hugetlbfs/inode.c       |  14 +---
+ include/linux/hugetlb.h    |  95 +++++++++++++++++++++++
+ include/linux/page-flags.h |   6 --
+ mm/hugetlb.c               | 149 +++++++++++--------------------------
+ mm/memory_hotplug.c        |   8 +-
+ mm/migrate.c               |   9 +--
+ 6 files changed, 154 insertions(+), 127 deletions(-)
+
 -- 
-2.24.0
+2.29.2
 
