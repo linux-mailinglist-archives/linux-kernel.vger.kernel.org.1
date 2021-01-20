@@ -2,125 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD532FD5FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54A72FD610
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403771AbhATQsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:48:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732728AbhATQqv (ORCPT
+        id S2391669AbhATQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:51:56 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:64524 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391623AbhATQr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:46:51 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3469FC061575;
-        Wed, 20 Jan 2021 08:46:11 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id 19so25928910qkm.8;
-        Wed, 20 Jan 2021 08:46:11 -0800 (PST)
+        Wed, 20 Jan 2021 11:47:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xPJXpjgk3V30+lydtz3hNrB60KcZVVAu0KQldhg/ajU=;
-        b=C0nHxcnmlDXhX2R/7zo3NnICFQ7dGJiITnNv76P+QArPkjAUzjP0TM24h9DIp9G11m
-         cYcemn3WzsBNfEMDnVK5HF9pB+BI92fPXuU/LdUKbebAz7vUhJWfZdEQDMF/4ZlLH0qt
-         KaZf1QhMVWOyHrFuE6MFBXHDa8H5Ys0nfO6G/c70/Dzr0XN60tHKWtLYozVB1ZBuOnWW
-         kn0hIFVoFIaQ/cQp/H3Ju2NZxrL/K+1QuE/Rn8xdzPMYjjQBLDxfOjEzG8D+Sxm6xQ0g
-         qrOfXTsbNWJ59/rWizeW2C22jdZ2IUXlIcXQYEaKZEIioMSKNc1HdcCrADDFPM5xp9gY
-         62Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xPJXpjgk3V30+lydtz3hNrB60KcZVVAu0KQldhg/ajU=;
-        b=Br+f1iBPbYgyDFNGLSvh/i6oij0hvluxK9jziumPMI/T5I2140c38I63PSYuGCb381
-         xzeeXdxliXrzobgwqV47GcwI8jDp+FfLFEh6+ggmbf4b2c2jAPPVh8WXjqBJA6MT65Kf
-         dVDKNcx1qSs1EGptXqHR7CNrAN5upzGsMFcKxtYAYd0gIa/+41XLZ33nD4BGdK0gCpYn
-         F0y9vy7WYHhNa8uyx4woY3Kx1eRKZyLQhUsrXISmQCoxNYIRe59WKqx4+s9ziD0nLno+
-         SCDCc4RdV+n8VRysqOMO5lALzcwaQhdstUeuASvAThV7xST51nQASEoXd8Qaf6ICRl0W
-         L9HQ==
-X-Gm-Message-State: AOAM5304XynBoY1QqIglKbkgHJjBZaXGP3D0eii2umDqZf2p1zmmUj6S
-        l4gfqOXZrzhlV2qEEVUvhR8=
-X-Google-Smtp-Source: ABdhPJzReeSv8cDFaEYd1BOXiQGjbXaR1YMMv2BlKWvMDykTVzY+6VLoRX4zqGZx6c4danro1bqSNw==
-X-Received: by 2002:a37:6442:: with SMTP id y63mr10222452qkb.192.1611161170512;
-        Wed, 20 Jan 2021 08:46:10 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id b12sm1504717qtt.74.2021.01.20.08.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 08:46:09 -0800 (PST)
-Date:   Wed, 20 Jan 2021 17:46:06 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pwm: remove zte zx driver
-Message-ID: <YAheTtSLm4C2K9bD@ulmo>
-References: <20210120150944.1688327-1-arnd@kernel.org>
- <YAhRMaJhYJZat2SI@ulmo>
- <CAK8P3a2JhcRnaDXK1V4=FgRJrGjqrj5-LzhCaC+jpLa1hDL+Pw@mail.gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1611161246; x=1642697246;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=f/6B+U88WSe2xMQeGzdeR6lOL8Z3BXjNUSDfIqFQAeE=;
+  b=lJUf9Fq2G4pcqfMSwO3LKaJhwi5Oc45gFXAXM+rsm8lp5InTDWZ0GtjV
+   y+nYljyUpFPLmCA4h51zbBoxdL4pam/CCbcEe//K4Swg3vEobR4PEwkSr
+   9rtdqBphtWYSFjX4K7y84KhU28fQlgaxZ6eqijonKiGH6eG5dJ/sDprFl
+   U=;
+X-IronPort-AV: E=Sophos;i="5.79,361,1602547200"; 
+   d="scan'208";a="112233310"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Jan 2021 16:46:34 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 98CBFA18DB;
+        Wed, 20 Jan 2021 16:46:33 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 20 Jan 2021 16:46:33 +0000
+Received: from edge-m1-r3-201.e-iad16.amazon.com (10.43.162.94) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 20 Jan 2021 16:46:31 +0000
+Subject: Re: [RFC PATCH 2/7] arm64: kernel: Add a WFI hook.
+To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "Hector Martin" <marcan@marcan.st>, <linux-kernel@vger.kernel.org>,
+        Stan Skowronek <stan@corellium.com>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-3-mohamed.mediouni@caramail.com>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <b30f1d3a-3a74-b562-afb6-da88a547468b@amazon.com>
+Date:   Wed, 20 Jan 2021 17:46:28 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5/9yMM0sT+zOg2Sc"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2JhcRnaDXK1V4=FgRJrGjqrj5-LzhCaC+jpLa1hDL+Pw@mail.gmail.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+In-Reply-To: <20210120132717.395873-3-mohamed.mediouni@caramail.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.94]
+X-ClientProxiedBy: EX13D16UWB004.ant.amazon.com (10.43.161.170) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20.01.21 14:27, Mohamed Mediouni wrote:
+> From: Stan Skowronek <stan@corellium.com>
+> =
 
---5/9yMM0sT+zOg2Sc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> WFI drops register state on Apple Silicon for SMP systems.
 
-On Wed, Jan 20, 2021 at 05:04:36PM +0100, Arnd Bergmann wrote:
-> On Wed, Jan 20, 2021 at 4:50 PM Thierry Reding <thierry.reding@gmail.com>=
- wrote:
-> > On Wed, Jan 20, 2021 at 04:09:22PM +0100, Arnd Bergmann wrote:
->=20
-> > > -config PWM_VT8500
-> > > -     tristate "vt8500 PWM support"
-> > > -     depends on ARCH_VT8500 || COMPILE_TEST
-> > > -     depends on HAS_IOMEM
-> > > -     help
-> > > -       Generic PWM framework driver for vt8500.
-> > > -
-> > > -       To compile this driver as a module, choose M here: the module
-> > > -       will be called pwm-vt8500.
-> > > -
-> >
-> > I assume that you dropped the PWM_VT8500 symbol by mistake? I can fix
-> > that up while applying, so no need to resend.
->=20
-> Indeed, thanks for catching my mistake and fixing it up!
+It probably drops the register because it loses power on WFI, right?
 
-Fixed up and applied, thanks!
+Have you tried to set the ARM64_REG_CYC_OVRD_ok2pwrdn_force_up bit in =
 
-Thierry
+ARM64_REG_CYC_OVRD yet? XNU has a call for that[1]. Maybe that's enough =
 
---5/9yMM0sT+zOg2Sc
-Content-Type: application/pgp-signature; name="signature.asc"
+to convince the core to preserve its register state for now.
 
------BEGIN PGP SIGNATURE-----
+For real power savings, we will probably want much more sophisticated =
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAIXkwACgkQ3SOs138+
-s6HKixAAukfD/Du+eHGX3/DGbQONoE0kUAM83BGtaX+yrUhKsShiHFesfndVV3A6
-iA51zuRyUr6n99suKhcGcsE6Zxt2uKiLlEEuPe920cjDquLF/VvCsamJKtP3Bwfy
-QCr08+Zf+KBL3YItlShgCok19+k4D4FFxOjFL5jNo7d3pfVJBnevfUhCM+xnVvHx
-kOrKln4E1UwMvCtELTLfCoJdVef++ZkNn2D6kuuLGsuiTlPVQcMqRRrlvJxovSV1
-88ZRqIvjeT1Qp6rzkB+XsGiRipuNOvq2uMXSZ3LdRE5Ch4Z1UZ1md8wQ1ev9iVI/
-IPeVWchcO7K3HeydsEmEw1Y1i1gS6HEoHIwFT5lsXI1HQqY0T6hb6x0aoOu7j3H1
-PZzdDCCDGP8Z3N58cxdozVpFuxS91h/nKyt23HUCayGidaLHunQkX6vtLy2R8NiP
-/xGYcByX5kWD/52Jic9O9KW98tcj3zEbU+QZ7v8TuOXixse2TTUeTrOElg0KnnE4
-tUOy2fJOQlUWiNyrwB1e/OCjCYWcMZgcZBQh1m8dvBMq8z7k0AowkjK2mL5nLTkT
-yfhf+DSgW/PLd24KF+rZg26GB4+zFdEihr639UBWZ8XdhhJ0mkeSZ837jyHWKIZr
-TPN4qOMA0H4ZZI6Y7uAN6S+d2deKXVZ2A3aIo88/etb5Bdn8D7o=
-=bnN+
------END PGP SIGNATURE-----
+deep sleep capabilities later that would reach beyond just register =
 
---5/9yMM0sT+zOg2Sc--
+saving on WFI (different wakeup mechanisms, IRQ balancing, etc).
+
+
+Alex
+
+[1] =
+
+https://github.com/opensource-apple/xnu/blob/master/osfmk/arm64/machine_rou=
+tines_asm.s#L797
+
+> =
+
+> This hook will be used for a hardware workaround in the
+> Apple CPU start driver.
+> =
+
+> Signed-off-by: Stan Skowronek <stan@corellium.com>
+> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+> ---
+>   arch/arm64/include/asm/cpu_ops.h |  2 ++
+>   arch/arm64/kernel/cpu_ops.c      |  6 ++++++
+>   arch/arm64/kernel/process.c      | 11 +++++++++--
+>   3 files changed, 17 insertions(+), 2 deletions(-)
+> =
+
+> diff --git a/arch/arm64/include/asm/cpu_ops.h b/arch/arm64/include/asm/cp=
+u_ops.h
+> index e95c4df83911..4be0fc5bcaf9 100644
+> --- a/arch/arm64/include/asm/cpu_ops.h
+> +++ b/arch/arm64/include/asm/cpu_ops.h
+> @@ -23,6 +23,7 @@
+>    * @cpu_boot:	Boots a cpu into the kernel.
+>    * @cpu_postboot: Optionally, perform any post-boot cleanup or necessary
+>    *		synchronisation. Called from the cpu being booted.
+> + * @cpu_wfi:    Optionally, replace calls to WFI in default idle with th=
+is.
+>    * @cpu_can_disable: Determines whether a CPU can be disabled based on
+>    *		mechanism-specific information.
+>    * @cpu_disable: Prepares a cpu to die. May fail for some mechanism-spe=
+cific
+> @@ -43,6 +44,7 @@ struct cpu_operations {
+>   	int		(*cpu_prepare)(unsigned int);
+>   	int		(*cpu_boot)(unsigned int);
+>   	void		(*cpu_postboot)(void);
+> +	void		(*cpu_wfi)(void);
+>   #ifdef CONFIG_HOTPLUG_CPU
+>   	bool		(*cpu_can_disable)(unsigned int cpu);
+>   	int		(*cpu_disable)(unsigned int cpu);
+> diff --git a/arch/arm64/kernel/cpu_ops.c b/arch/arm64/kernel/cpu_ops.c
+> index e133011f64b5..6979fc4490b2 100644
+> --- a/arch/arm64/kernel/cpu_ops.c
+> +++ b/arch/arm64/kernel/cpu_ops.c
+> @@ -19,12 +19,18 @@ extern const struct cpu_operations smp_spin_table_ops;
+>   extern const struct cpu_operations acpi_parking_protocol_ops;
+>   #endif
+>   extern const struct cpu_operations cpu_psci_ops;
+> +#ifdef CONFIG_ARCH_APPLE
+> +extern const struct cpu_operations cpu_apple_start_ops;
+> +#endif
+> =
+
+>   static const struct cpu_operations *cpu_ops[NR_CPUS] __ro_after_init;
+> =
+
+>   static const struct cpu_operations *const dt_supported_cpu_ops[] __init=
+const =3D {
+>   	&smp_spin_table_ops,
+>   	&cpu_psci_ops,
+> +#ifdef CONFIG_ARCH_APPLE
+> +	&cpu_apple_start_ops,
+> +#endif
+>   	NULL,
+>   };
+> =
+
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 34ec400288d0..611c639e20be 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -57,6 +57,7 @@
+>   #include <asm/processor.h>
+>   #include <asm/pointer_auth.h>
+>   #include <asm/stacktrace.h>
+> +#include <asm/cpu_ops.h>
+> =
+
+>   #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PE=
+R_TASK)
+>   #include <linux/stackprotector.h>
+> @@ -74,8 +75,14 @@ void (*arm_pm_restart)(enum reboot_mode reboot_mode, c=
+onst char *cmd);
+> =
+
+>   static void noinstr __cpu_do_idle(void)
+>   {
+> -	dsb(sy);
+> -	wfi();
+> +	const struct cpu_operations *ops =3D get_cpu_ops(task_cpu(current));
+> +
+> +	if (ops->cpu_wfi) {
+> +		ops->cpu_wfi();
+> +	} else {
+> +		dsb(sy);
+> +		wfi();
+> +	}
+>   }
+> =
+
+>   static void noinstr __cpu_do_idle_irqprio(void)
+> --
+> 2.29.2
+> =
+
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
