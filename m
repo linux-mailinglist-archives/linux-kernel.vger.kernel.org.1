@@ -2,180 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203272FDC30
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9777A2FDC31
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbhATV70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:59:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53363 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388956AbhATVzB (ORCPT
+        id S1731478AbhATWB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:01:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727099AbhATV5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:55:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611179615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qkj5MTn4PqAHlxRkP6Nm9pU0Bj533hacC35Vuu/cJN4=;
-        b=BNnh+kRuLhHwo+qV+Dg08h346hWm8UeR6pHb3z6YWptboVwiZLUuYJutc7wLSUhyRUy8+6
-        4OfGc9tnV4X1E5M1KIS9rVyxjiSWmxf1ljByhBt4hBCdXFlms8H2dQ/TZxLwclJglujv4l
-        Po0N6iTmNrc0DMN9/WZ+1+mWj4Ytl8c=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-FThySIhmOPaQXBAe_-qfog-1; Wed, 20 Jan 2021 16:53:33 -0500
-X-MC-Unique: FThySIhmOPaQXBAe_-qfog-1
-Received: by mail-ed1-f70.google.com with SMTP id e25so43841edq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:53:32 -0800 (PST)
+        Wed, 20 Jan 2021 16:57:49 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD7BC061575;
+        Wed, 20 Jan 2021 13:57:08 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id j3so199524ljb.9;
+        Wed, 20 Jan 2021 13:57:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ceHRCJDK3HYsIEFwVaZdcOC3/1LUUaiOgnlHMxXcJKg=;
+        b=W4ZRzJICVHiuDztf0opX/vCbrya/2gxGbYiulmDAeN26an7pfDLwC4uXVeSsZjs2qP
+         cAIeGhUo4T20zGUkQwArJb/rD7L2agpHRuA4x84VPsCwWZP/JW9zAMLfMwjVXhVJRMx0
+         n8IKlOMybH2T1r8fxngsjrDBnq7dID9jfN/zRu0TjA9rPmO9p9HuQl53eeYWaPitLDsJ
+         ZqIELerQYMLrCrtSmIBa3YXesH/Rr3lL8eBp/foZBi5/yw6hJ+wUqi3Gz+orqqqa0D2t
+         bLUD7GdJGCCXvkEsXyNOuOI/9/ldHYAJfNE0L8LglMfczwKtfYEOgWJ+dhHt4kH2bmXw
+         reNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Qkj5MTn4PqAHlxRkP6Nm9pU0Bj533hacC35Vuu/cJN4=;
-        b=HWIPuxuOxoWjL244mF63Mc4w0hpw+8qJnDVnpz2R8HimM8bLhUaNVv0PKGDaYXkLze
-         ejqgFWqThDb5qhEihsPNzn8RBwP1lbiJYnBXhY6AQAXZHvjxDWsIgugPe2XxM5bcp3I5
-         dymvZX0iZGeHWqDi2G8zXmhP1hcAdY+aFCOpExddL2T3nrGL2FwY10vUDDQkQNJ37MP2
-         qPcnI01HqCPyOJ+wP1Vqa6nb2z0Kg0nXS8vWbtqqH6+ceuyjupglu1rKb4R7c9dcIlmR
-         WWZM5nFkhEJzjSs6vJKujX/ecvyxg1/shaEK2HaRUxzZB9WLRJf1yY7aLTM05ADk1QnA
-         qcVA==
-X-Gm-Message-State: AOAM531ttZXjyyBtPJBczkChyOvB1BKIEsPHNFnzmZ8jAKgwXXXm/KoF
-        qV/3r0s+Uv+sim3hsV3bxRl/vsm8/EJY2AlyfzI0nsDKuRBitU80oDzJ953noQnfvwv/8AtB/T0
-        z7pC7bqwTW3w5hCKYXtyzjLSOTafAbZxnt35g5pUx5VkkA8VmS9JlUS3aILoOGsTR6RCyy8rD+X
-        lD
-X-Received: by 2002:a17:907:96a2:: with SMTP id hd34mr7649441ejc.494.1611179611876;
-        Wed, 20 Jan 2021 13:53:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzI3lxgxiq/yVQUuFKTdqZdIG+IDBHyajT8lNqTn0fRfhXoFS1SjkyS+YoPp+jyqVVTfDye6w==
-X-Received: by 2002:a17:907:96a2:: with SMTP id hd34mr7649432ejc.494.1611179611693;
-        Wed, 20 Jan 2021 13:53:31 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id j18sm1410893ejv.18.2021.01.20.13.53.30
+        bh=ceHRCJDK3HYsIEFwVaZdcOC3/1LUUaiOgnlHMxXcJKg=;
+        b=icVs2wgz1sxsRk2joxvFo7LHGeexY8B19C9qMxgbyqO695UMSC7TYUCZR0dEl4a35X
+         zbtyaJd3pOm8EM26Mhduuh93XH9qNEvnxGHb2Twp/qbr0MLnDLHYqryPI11yIPr7KGRn
+         K7sn/UUe0j/P8u/Oezggbxg7O7ViW9G83elxl4rO8MKXYEQveNwNggJ69OJ8klUrUWoI
+         lnq4Bm2oW2tOrZhxHZepn6LihmK8KbEsLVYU5moTVOSKElzExDQw4mAktaNaMqciAS83
+         jnlWYM76M2W63QoSuhUFi5n+xImdDDZoNsB5LW2ICuxVFMm1WZREsT/lzauJTq/ZzA9q
+         tqEQ==
+X-Gm-Message-State: AOAM533ki+jmJIx1nMeTQHqyIFWGeVggn8wCD8SUsQygW6grhvPZQX6Z
+        E7COPg1a5mdRgOVWEmCq2GrUg2psf8I=
+X-Google-Smtp-Source: ABdhPJwycW2kFZEra1VeimUqPfqf9oMM2IltvnYEEPSGXuxF3K4moS4SD52zegkvlFyE/vW2eYuhlA==
+X-Received: by 2002:a2e:2f17:: with SMTP id v23mr5515563ljv.222.1611179826782;
+        Wed, 20 Jan 2021 13:57:06 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id f3sm349528ljp.114.2021.01.20.13.57.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 13:53:30 -0800 (PST)
-Subject: Re: [PATCH] ACPI: scan: Rearrange code related to
- acpi_get_device_data()
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <3445520.6OZ3MRzmT7@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d6dcb0cc-ff6a-3b71-55a2-d965cd8a290c@redhat.com>
-Date:   Wed, 20 Jan 2021 22:53:30 +0100
+        Wed, 20 Jan 2021 13:57:05 -0800 (PST)
+Subject: Re: [PATCH v3 05/12] opp: Add dev_pm_opp_set_voltage()
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-6-digetx@gmail.com>
+ <20210118095256.tr2qgnrmokkc6ngf@vireshk-i7>
+ <a48dca91-4264-e153-cefa-ccbcca1b1d9d@gmail.com>
+Message-ID: <16c7e096-5efd-2d0c-a2ac-c11133c29c30@gmail.com>
+Date:   Thu, 21 Jan 2021 00:57:04 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <3445520.6OZ3MRzmT7@kreacher>
+In-Reply-To: <a48dca91-4264-e153-cefa-ccbcca1b1d9d@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 1/18/21 8:25 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+18.01.2021 22:14, Dmitry Osipenko пишет:
+> 18.01.2021 12:52, Viresh Kumar пишет:
+>> On 18-01-21, 03:55, Dmitry Osipenko wrote:
+>>> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+>>> index 99d18befc209..341484d58e6c 100644
+>>> --- a/drivers/opp/core.c
+>>> +++ b/drivers/opp/core.c
+>>> @@ -2731,3 +2731,58 @@ int dev_pm_opp_sync_regulators(struct device *dev)
+>>>  	return ret;
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
+>>> +
+>>> +/**
+>>> + * dev_pm_opp_set_voltage() - Change voltage of regulators
+>>> + * @dev:	device for which we do this operation
+>>> + * @opp:	opp based on which the voltages are to be configured
+>>> + *
+>>> + * Change voltage of the OPP table regulators.
+>>> + *
+>>> + * Return: 0 on success or a negative error value.
+>>> + */
+>>> +int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *opp)
+>>
+>> I think we should do better than this, will require some work from
+>> your part though (or I can do it if you want).
+>>
+>> Basically what you wanted to do here is set the OPP for a device and
+>> this means do whatever is required for setting the OPP. It is normally
+>> frequency, which is not your case, but it is other things as well.
+>> Like setting multiple regulators, bandwidth, required-opps, etc.
+>>
+>> I feel the right way of doing this would be to do this:
+>>
+>> Factor out dev_pm_opp_set_opp() from dev_pm_opp_set_rate() and make
+>> the later call the former. And then we can just call
+>> dev_pm_opp_set_opp() from your usecase. This will make sure we have a
+>> single code path for all the set-opp stuff. What do you think ?
+>>
 > 
-> There are two callers of acpi_get_device_data(), acpi_bus_get_device()
-> and acpi_bus_get_acpi_device(), but only one of them takes the int
-> return value into account.  Moreover, the latter knows that it passes
-> a valid return pointer to acpi_get_device_data() and it properly
-> clears that pointer upfront, so it doesn't need acpi_get_device_data()
-> to do that.
+> Sounds like it could be a lot of code moving and some extra complexity
+> will be added to the code. If nobody will ever need the universal
+> dev_pm_opp_set_opp(), then it could become a wasted effort. I'd choose
+> the easiest path, i.e. to defer the dev_pm_opp_set_opp() implementation
+> until somebody will really need it.
 > 
-> For this reason, rearrange acpi_get_device_data() to return a strct
-> acpi_device pointer instead of an int and adapt its callers to that.
-> 
-> While at it, rename acpi_get_device_data() to handle_to_device(),
-> because the old name does not really reflect the functionality
-> provided by that function.
-> 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Nice cleanup, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-> ---
-> 
-> On top of https://patchwork.kernel.org/project/linux-acpi/patch/20210115215752.389656-1-hdegoede@redhat.com/
-> 
-> ---
->  drivers/acpi/scan.c |   35 +++++++++++++++++------------------
->  1 file changed, 17 insertions(+), 18 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -578,29 +578,31 @@ static void acpi_scan_drop_device(acpi_h
->  	mutex_unlock(&acpi_device_del_lock);
->  }
->  
-> -static int acpi_get_device_data(acpi_handle handle, struct acpi_device **device,
-> -				void (*callback)(void *))
-> +static struct acpi_device *handle_to_device(acpi_handle handle,
-> +					    void (*callback)(void *))
->  {
-> +	struct acpi_device *adev = NULL;
->  	acpi_status status;
->  
-> -	if (!device)
-> -		return -EINVAL;
-> -
-> -	*device = NULL;
-> -
->  	status = acpi_get_data_full(handle, acpi_scan_drop_device,
-> -				    (void **)device, callback);
-> -	if (ACPI_FAILURE(status) || !*device) {
-> -		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "No context for object [%p]\n",
-> -				  handle));
-> -		return -ENODEV;
-> +				    (void **)&adev, callback);
-> +	if (ACPI_FAILURE(status) || !adev) {
-> +		acpi_handle_debug(handle, "No context!\n");
-> +		return NULL;
->  	}
-> -	return 0;
-> +	return adev;
->  }
->  
->  int acpi_bus_get_device(acpi_handle handle, struct acpi_device **device)
->  {
-> -	return acpi_get_device_data(handle, device, NULL);
-> +	if (!device)
-> +		return -EINVAL;
-> +
-> +	*device = handle_to_device(handle, NULL);
-> +	if (!*device)
-> +		return -ENODEV;
-> +
-> +	return 0;
->  }
->  EXPORT_SYMBOL(acpi_bus_get_device);
->  
-> @@ -612,10 +614,7 @@ static void get_acpi_device(void *dev)
->  
->  struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
->  {
-> -	struct acpi_device *adev = NULL;
-> -
-> -	acpi_get_device_data(handle, &adev, get_acpi_device);
-> -	return adev;
-> +	return handle_to_device(handle, get_acpi_device);
->  }
->  
->  void acpi_bus_put_acpi_device(struct acpi_device *adev)
-> 
-> 
+> But if it looks to you that it won't be a too much effort, then I'll
+> appreciate if you could type the patch.
 > 
 
+Let's start with dev_pm_opp_set_voltage() for now. It shouldn't be a
+problem at all to upgrade it to dev_pm_opp_set_opp() later on.
+
+I'll make a v4 with the dev_pm_opp_set_voltage(), please let me know if
+you have objections or more suggestions!
