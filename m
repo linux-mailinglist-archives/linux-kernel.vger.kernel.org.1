@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47DB2FCFCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C63C2FCFCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731904AbhATLzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:55:40 -0500
-Received: from mout.gmx.net ([212.227.17.20]:42671 "EHLO mout.gmx.net"
+        id S1732072AbhATLzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:55:47 -0500
+Received: from mga12.intel.com ([192.55.52.136]:36525 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731557AbhATLi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:38:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611142623;
-        bh=yP+0ZpEyODQg4IQgrFLqLHkUEaxLQnyVarhdKMvY+Ew=;
-        h=X-UI-Sender-Class:From:Subject:Date:Cc:To;
-        b=NidgcRekJDfzb+7vs8u2A5qpqDVYwChkU6hZx25xb87lgh9e1MOepMBqBd76mZmI4
-         IipsRmJChZ5/nJwb5YNaBT+JwnATdKESpc9dH66Hx7sMgA2QUr7ArVn70U93HdgVQA
-         Vx0HJGrtEAVvXqL4VBfPcc58GjHFYdLCnLXzATa0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.42.0.78] ([83.204.192.78]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2mBQ-1m0vh43aA8-0132VU; Wed, 20
- Jan 2021 12:37:03 +0100
-From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.5\))
-Subject: [PATCH 3/3] arm64: mm: use nGnRnE instead of nGnRE on Apple 
- processors
-Message-Id: <EA9911F3-9BB5-4B07-8FA7-8148B00B0F77@caramail.com>
-Date:   Wed, 20 Jan 2021 12:37:02 +0100
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Stan Skowronek <stan@corellium.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-X-Mailer: Apple Mail (2.3654.60.0.2.5)
-X-Provags-ID: V03:K1:LqipaoXg1JiKrBNorCn8+FwCfrzoRZrJ9EZuGtcEElXHOzz6vPB
- 5h9Axeed+jmKMBiQzSOm4DnrO6Qxsy38Pn5BCZ7DjgmpKvALx6JxHjTUXXdO853F1wobyon
- LFjV1yo+vkNQn8AF2mwPL2pPH31q0Mdx8HTWx055vLJggoB2Chsi90CZlOoiWIUwo6otIMn
- 7lI08uR3Nb9w1hDK3qz0w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YWTH2k09Pjc=:ekdBfAdYjnPaVM/vkUpGmN
- 5QogswEZLhOsx3vsb30ktDLV5aVF7PDTVctRPm3XyWQrKH8kTkf6hJC1YUJTQ07F4NpvsTHRV
- nNxDLm2bw0Xn2znW/Cx6FQc/yiyd7veYwJxH2hiEpIpwlDlHlPSxhPlmllqLJFnHV8XrDD6PY
- l5d7QTU35Azliwid1IbClWUSgdXNU6+zZuG7jK+a9oYhLdO6On0OhR4KKthKx+Qdn3RjOcjgS
- A6SaC5LZtMfXADc1ali2y5+r+IJY+oqOQrNu1Qdd54NYBd7KtKjfQbSf9okjo3DtDRSauQdJM
- gc/Z52KYc4idMORGG/TZdyC0iNXVUpz+cdBfzFyY8MlUAevEsTY7Saq4nBl9l/jNasc4IFRgf
- R5cUAn8xRxdPCp65caEG9ZIeRXEUW3GZT+uLYACVX+1d4IddkE73I+xWuQCLLLchbceXfQ8Hw
- 3yqkpCATYdMekyhuHcQNR/W3jILPGq6pCNZtDw0inufklUV2vAa9Ez44avQarqDATQKjtBzM7
- vqrQZWDryCWrw3P8irtPn7CGCa5X0U1zI3L3simRNdh3hkO+o1ppkEMAKBI+//MZ4s91dnzp6
- zCfJMpGRgeeB9tCEbVXtQRqA7wk5j+0O6LYaTXR7oTDHHnyvxw94Nl9znT2N9yVdQ6CakgIq2
- a/m6UaTmIlQ7M0aDHdnjQCQZGBE9FA/wh5C8ddRK1Whb5cO73cI2lbAh+Z2amhHkrKl+svDay
- VrTiHJvx8aKyiRxOC6F3tl16KzT9JQC9+dMxE/rWFsXx2UVMUvnTLnBCP/kWbweysmsOTonZi
- BfLEKWPW5BXVcf7gqFnmt/hMDeUXEqi7XB81aRVQzDxR79PZZdTlj0BC1bVhsyLEN41TfuDHj
- k7hcpYXW1leFbkL+lbNBW6QIYl6l8p4+dHW8wQ+no=
+        id S2387527AbhATLli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:41:38 -0500
+IronPort-SDR: sDMf9y9OXPuiTi+mjotVRrSAHVF8UsS30Nakny7+Nepx3QxuXxs7hLAVlQRyRsSw+t7PZs5qj4
+ yKin2yY5B/Kw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="158268631"
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="158268631"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 03:39:48 -0800
+IronPort-SDR: QzjC7Izy49EIQuw0goGZNWXj5QBSMQf/kSC2+SKsQyQGjGGBnIFOHcUWWoIKQqv+NxZMCIpiun
+ lNrAc7LnJ2Ew==
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="402710943"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 03:39:46 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l2Bqy-0065ek-TL; Wed, 20 Jan 2021 13:40:48 +0200
+Date:   Wed, 20 Jan 2021 13:40:48 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        rdunlap@infradead.org
+Subject: Re: [PATCH v3] software_node: Add kernel-doc comments to exported
+ symbols
+Message-ID: <YAgWwC5eGojvmWCj@smile.fi.intel.com>
+References: <20210120000339.471117-1-djrscally@gmail.com>
+ <20210120103504.GH11878@paasikivi.fi.intel.com>
+ <c4578b2a-c9a3-bf9d-8c5a-1ea3b1afedb2@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4578b2a-c9a3-bf9d-8c5a-1ea3b1afedb2@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+On Wed, Jan 20, 2021 at 11:11:47AM +0000, Daniel Scally wrote:
+> On 20/01/2021 10:35, Sakari Ailus wrote:
+> > On Wed, Jan 20, 2021 at 12:03:39AM +0000, Daniel Scally wrote:
 
-Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious =
-hardware quirk.
+> >> +/**
+> >> + * fwnode_create_software_node() - Create and register a new software_node
+> >> + * @properties: NULL terminated array of properties to assign to the new node
+> >> + * @parent: Pointer to a &struct fwnode_handle to assign as parent to the new
+> >> + *	    node
+> >> + *
+> >> + * NOTE: The pointer passed as @parent **must** be to a firmware node handle
+> >> + * that was created by registering a software node, meaning is_software_node()
+> >> + * must return true when passed that pointer.
+> >> + *
+> >> + * This function creates a new instance of &struct software_node, assigns it a
+> >> + * copy of the given array of properties and registers it as a new fwnode_handle.
+> >> + * Freeing of the allocated memory when the fwnode_handle is no longer needed is
+> >> + * handled via software_node_release() and does not need to be done separately.
+> > Please wrap all lines over 80 unless there's a reason to keep them longer.
 
-On Apple processors, writes using the nGnRE device memory type get =
-dropped in flight,
-getting to nowhere.
+> Apologies; I'll cat | awk for lines over the limit from now on rather
+> than half-arsing it.
 
-Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
-Signed-off-by: Stan Skowronek <stan@corellium.com>
----
- arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+In Vim, for example, you may set the threshold and it will wrap it for you.
+Also, taking into account famous *useless use of cat*, you may use `fold` or `fmt`
 
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index 1f7ee8c8b7b8..06436916f137 100644
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -51,6 +51,25 @@
- #define TCR_KASAN_HW_FLAGS 0
- #endif
-=20
-+#ifdef CONFIG_ARCH_APPLE
-+
-+/*
-+ * Apple cores appear to black-hole writes done with nGnRE.
-+ * We settled on a work-around that uses MAIR vs changing every single =
-user of
-+ * nGnRE across the arm64 code.
-+ */
-+
-+#define MAIR_EL1_SET_APPLE						=
-\
-+	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	=
-\
-+	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |	=
-\
-+	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		=
-\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		=
-\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			=
-\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		=
-\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
-+
-+#endif
-+
- /*
-  * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal =
-memory and
-  * changed during __cpu_setup to Normal Tagged if the system supports =
-MTE.
-@@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
- 	 * Memory region attributes
- 	 */
- 	mov_q	x5, MAIR_EL1_SET
-+#ifdef CONFIG_ARCH_APPLE
-+	mrs	x0, MIDR_EL1
-+	lsr	w0, w0, #24
-+	mov_q	x1, MAIR_EL1_SET_APPLE
-+	cmp	x0, #0x61			// 0x61 =3D Implementer: =
-Apple
-+	csel	x5, x1, x5, eq
-+#endif
- #ifdef CONFIG_ARM64_MTE
- 	mte_tcr	.req	x20
-=20
---=20
-2.29.2
+> >> + *
+> >> + * Returns:
+> >> + * * fwnode_handle *	- On success
+> >> + * * -EINVAL		- When @parent is not associated with a software_node
+> >> + * * -ENOMEM		- When memory allocation fails
+> >> + * * -Other		- Propagated errors from sub-functions
+> >> + */
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
