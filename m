@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC4E2FCABD
+	by mail.lfdr.de (Postfix) with ESMTP id A79422FCABE
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbhATFbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:31:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731208AbhATF24 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:28:56 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79309C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:28:16 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id x78so13864394ybe.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:28:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=WOXazTlgJn75qx9XSNWOX4yBA/rtUatc3Pb6WtW/aGE=;
-        b=bBxz99PoNbOWtlD1FvKtFeYNjxKTC1xqi4Dd5KNmh4RfQVPao1vPPWGtbF8w3wuuBa
-         1SaIcXfp0/4erPSujsYR4aJeL96KagYl547WAmwjenKno9Glq1nhyaF/TIY5H5tvGIpx
-         kBRe0xSYRQceTj7xvjA2GI2ILJx800IuCdd02nv+hRYmN+h05YCajI8iUx26dRvlTsG2
-         Kc1BognLC7aUOAuwjW8ywn087PUTxnEezEPK9GnnPwfmndHVT86pRN4KWcXPaptDtx9V
-         KIy+RGMQfyReBd0ESYosm3nbSM+1SNFq0xmg+bUkxjPcROBlE/A5Li1Ph76OjfSmWTgE
-         8syQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=WOXazTlgJn75qx9XSNWOX4yBA/rtUatc3Pb6WtW/aGE=;
-        b=NfIOWWUEfC5O2E2R1yrBwrNVaFOi1MMos7Fini33WjS79pc1MuYLcS8mbMnL2Klv9A
-         F8NykFaoInkCeNVO4gffizHdsL/gL2CrtuOZ+SxQ9ES1IIz21gJEs/HwEND+Suxus/Cl
-         jaMkKqOZ6OocBO9QgrBEcZY+Soj1FX7Abke76EsId6azpEr/9LvEorunLpb2m+2GP0pI
-         cOTjWUA927YqBFK1hCvjtZbNOwMTMd+6KAqJzQPhatRj35SvXsuMkXhA7hXLuMpEQ6ct
-         L99/fHk95f5PJk8lru2zBpEz4aAaNQuWkKGUtfzVcf6oDIq6BPYd2tthB3xeagV2mzML
-         QrWw==
-X-Gm-Message-State: AOAM532DLM2+Rj6Q0+HhgEbcTR6rUyYs5GUfB63wXkAZjvDrNTlPFfIp
-        7YzHmQ+iqc3v9suVRXLBAq+V0blSuq8K9KDP/qQ=
-X-Google-Smtp-Source: ABdhPJwA98AvF7v3sMHotlIq7ZPCEUWfzyVZRfjK0rXAOlxMabHZF31tQA+at6TMR3LL91uGYAsW/onaFyMXqa25KLQ=
-X-Received: by 2002:a25:e7c2:: with SMTP id e185mr12011722ybh.94.1611120495684;
- Tue, 19 Jan 2021 21:28:15 -0800 (PST)
+        id S1731270AbhATFb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:31:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731242AbhATFaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 00:30:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88DEF2311C;
+        Wed, 20 Jan 2021 05:29:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611120569;
+        bh=OOFp8zk9k64cA2yzlao8KtjRGH2xmQ6qvuD9AFDkcDw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bkDsSl0gzP76Ppo+xnBjytT2VkbLwIO5td7FVnv7ZIwah8r5mDE/5E9CzOJS27uq9
+         z02mbEszuSv7biDFCJ1/VG6Law9IpGCoG4rwj6U1CCT5FyM7hNwnfnDtGIjJ76rJfL
+         nZs12+Qh2wMTj7w7VsuM4dR5VeaVmJq4dqOFAbAgXpUJTUmtg5u1Tu1yvfRxwRZWV/
+         SGvauH7p4WEz0tIJCdK8SYybd1Hj1jkiedN5BFwpH5D+HpzhdOnJ3uHGSyEmEdpirP
+         3gmn+IkSlC6P40JJg0PvBOWYTLEQwjheGu8O03Lje8I/OgmIRGHe3mw9Z3ydJuD0IY
+         uImCVRHJi0i+Q==
+Date:   Wed, 20 Jan 2021 07:29:25 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shradha Todi <shradha.t@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
+        pankaj.dubey@samsung.com, sriram.dash@samsung.com,
+        niyas.ahmed@samsung.com, p.rajanbabu@samsung.com,
+        l.mehra@samsung.com, hari.tv@samsung.com
+Subject: Re: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for
+ ->get_features()
+Message-ID: <20210120052925.GL21258@unreal>
+References: <CGME20210112140234epcas5p4f97e9cf12e68df9fb55d1270bd14280c@epcas5p4.samsung.com>
+ <1610460145-14645-1-git-send-email-shradha.t@samsung.com>
+ <20210113072104.GH4678@unreal>
+ <147801d6ee49$2ecd2d30$8c678790$@samsung.com>
 MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Wed, 20 Jan 2021 13:27:49 +0800
-Message-ID: <CAD-N9QWyfAgVRcgOoWtR87_VqYvMNZxxBpFSxYQ+ME7tEHv_Rw@mail.gmail.com>
-Subject: "possible deadlock in static_key_slow_dec" and "possible deadlock in
- __static_key_slow_dec" should share the same root cause
-To:     bristot@redhat.com, kuba@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        peterz@infradead.org, simon.horman@netronome.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <147801d6ee49$2ecd2d30$8c678790$@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear kernel developers,
+On Tue, Jan 19, 2021 at 03:25:10PM +0530, Shradha Todi wrote:
+> > -----Original Message-----
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Subject: Re: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for -
+> > >get_features()
+> >
+> > On Tue, Jan 12, 2021 at 07:32:25PM +0530, Shradha Todi wrote:
+> > > get_features ops of pci_epc_ops may return NULL, causing NULL pointer
+> > > dereference in pci_epf_test_bind function. Let us add a check for
+> > > pci_epc_feature pointer in pci_epf_test_bind before we access it to
+> > > avoid any such NULL pointer dereference and return -ENOTSUPP in case
+> > > pci_epc_feature is not found.
+> > >
+> > > When the patch is not applied and EPC features is not implemented in
+> > > the platform driver, we see the following dump due to kernel NULL
+> > > pointer dereference.
+> > >
+> > > [  105.135936] Call trace:
+> > > [  105.138363]  pci_epf_test_bind+0xf4/0x388 [  105.142354]
+> > > pci_epf_bind+0x3c/0x80 [  105.145817]  pci_epc_epf_link+0xa8/0xcc [
+> > > 105.149632]  configfs_symlink+0x1a4/0x48c [  105.153616]
+> > > vfs_symlink+0x104/0x184 [  105.157169]  do_symlinkat+0x80/0xd4 [
+> > > 105.160636]  __arm64_sys_symlinkat+0x1c/0x24 [  105.164885]
+> > > el0_svc_common.constprop.3+0xb8/0x170
+> > > [  105.169649]  el0_svc_handler+0x70/0x88 [  105.173377]
+> > > el0_svc+0x8/0x640 [  105.176411] Code: d2800581 b9403ab9 f9404ebb
+> > > 8b394f60 (f9400400) [  105.182478] ---[ end trace a438e3c5a24f9df0
+> > > ]---
+> >
+> >
+> > Description and call trace don't correlate with the proposed code change.
+> >
+> > The code in pci_epf_test_bind() doesn't dereference epc_features, at least
+> in
+> > direct manner.
+> >
+> > Thanks
+>
+> Thanks for the review. Yes, you're right. The dereference does not happen in
+> the pci_epf_test_bind() itself, but in pci_epf_test_alloc_space() being
+> called within. We will update the line "causing NULL pointer dereference in
+> pci_epf_test_bind function. " in the commit message to "causing NULL pointer
+> dereference in pci_epf_test_alloc_space function. " Would that be good
+> enough?
 
-I found that on the syzbot dashboard, =E2=80=9Cpossible deadlock in
-static_key_slow_dec=E2=80=9D [1] and "possible deadlock in
-__static_key_slow_dec" [2] should share the same root cause.
+I have no idea, just saw that the rest of the code at least partially
+prepared to deal with epc_features == NULL, maybe
+pci_epf_test_alloc_space() should be update to handle epc_features == NULL.
 
-The reasons for the above statement:
-1) the stack trace is the same, and this title difference is due to
-the inline property of "__static_key_slow_dec";
-2) their PoCs are the same as each other;
+Thanks
 
-If you can have any issues with this statement or our information is
-useful to you, please let us know. Thanks very much.
-
-[1] =E2=80=9Cpossible deadlock in static_key_slow_dec=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3D4671e8c8f5cf5d23a81facabdc4f26ed63f0=
-3fc4
-
-[2] =E2=80=9Cpossible deadlock in __static_key_slow_dec=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3Debc482d3e3ddaa62726a73e0123acef411df=
-13e3
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
+>
