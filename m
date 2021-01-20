@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6A62FC77A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9980D2FC7B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbhATBbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
+        id S1729420AbhATCVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:21:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729463AbhATB1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:27:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 707FC23138;
-        Wed, 20 Jan 2021 01:26:16 +0000 (UTC)
+        id S1730857AbhATB3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:29:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDC8623715;
+        Wed, 20 Jan 2021 01:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611105977;
-        bh=c4n/oy1eAcSxqN3hPZqTVJW5GLL/8Ek2bpHrbeKP/M0=;
+        s=k20201202; t=1611106085;
+        bh=jcd+HH/G7EYQLV0kHgGg4IVObzS7LgAWPr49vD7pUh4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BbQJUTxbYcByZVQP7z+WF4o3mlyXSRdr7yDJR3GIWqp7PgMOvmHvKW90umrlpGYJc
-         P3ZSaUsVo6VYxbqXwgvbqhy/N3AForMzKzVF9rUnyVfrX3y/RW7ZFPZjgW6lf+GCtp
-         O+VcMU0mrly1eA4wHNRkNUizSoUqJ8iWWqGhqvGaqmVTWTpecG+OhTse3fU9Gip5W/
-         euvwl8al0vl0KcNrdkYbao2+5Mh+O3/aUIHfQDsdFBgk4zCa938z4AQKn4e0wsnswv
-         6d5a+ixVXVeECx4YhACLhHRz3500kQvIlV92Pn5vAyDZkMLlTs0XiFhIm2RSaZvuIc
-         EIT+yQYSEn+hA==
+        b=aDB1viuI5Sqi4sYsm6U8lwGjqIcA0Qw2OtvVgd1d2wFT7IXghQMOHtctWAlKkePWP
+         L7Kgo8jQ4gNSUnheYp2B2ns34Po9qz2fGXTM5sIFGAyi1So2JUbnnRbqRAjTJQPm75
+         WTbAk0ghfAX5SCRsu2j09ZvDd1YeAeFq7kh3ANP2Zs39BxtqldsxELA1+PAx6BYPAx
+         pfMg2rAtyru3jAAhqWWhQv9Et3J+N4EvlTnWzm9UEVU5YqTHPuV9Krx5EojVgOO27+
+         xL9b4ZXOjot3F50c7hb6DVVNIEwcXoi41jDr0B3PMn345tDSP2elKw12wfVz3vBv/D
+         ff69MpfzZII8w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nilesh Javali <njavali@marvell.com>, Lee Duncan <lduncan@suse.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 11/45] scsi: qedi: Correct max length of CHAP secret
-Date:   Tue, 19 Jan 2021 20:25:28 -0500
-Message-Id: <20210120012602.769683-11-sashal@kernel.org>
+Cc:     Anthony Iliopoulos <ailiop@suse.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 2/9] dm integrity: select CRYPTO_SKCIPHER
+Date:   Tue, 19 Jan 2021 20:27:55 -0500
+Message-Id: <20210120012802.770525-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
-References: <20210120012602.769683-1-sashal@kernel.org>
+In-Reply-To: <20210120012802.770525-1-sashal@kernel.org>
+References: <20210120012802.770525-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,44 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nilesh Javali <njavali@marvell.com>
+From: Anthony Iliopoulos <ailiop@suse.com>
 
-[ Upstream commit d50c7986fbf0e2167279e110a2ed5bd8e811c660 ]
+[ Upstream commit f7b347acb5f6c29d9229bb64893d8b6a2c7949fb ]
 
-The CHAP secret displayed garbage characters causing iSCSI login
-authentication failure. Correct the CHAP password max length.
+The integrity target relies on skcipher for encryption/decryption, but
+certain kernel configurations may not enable CRYPTO_SKCIPHER, leading to
+compilation errors due to unresolved symbols. Explicitly select
+CRYPTO_SKCIPHER for DM_INTEGRITY, since it is unconditionally dependent
+on it.
 
-Link: https://lore.kernel.org/r/20201217105144.8055-1-njavali@marvell.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index f5fc7f518f8af..47ad64b066236 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -2245,7 +2245,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
- 			     chap_name);
- 		break;
- 	case ISCSI_BOOT_TGT_CHAP_SECRET:
--		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
-+		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
- 			     chap_secret);
- 		break;
- 	case ISCSI_BOOT_TGT_REV_CHAP_NAME:
-@@ -2253,7 +2253,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
- 			     mchap_name);
- 		break;
- 	case ISCSI_BOOT_TGT_REV_CHAP_SECRET:
--		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
-+		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
- 			     mchap_secret);
- 		break;
- 	case ISCSI_BOOT_TGT_FLAGS:
+diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+index 4a249ee86364c..231b6a18ca272 100644
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -508,6 +508,7 @@ config DM_INTEGRITY
+ 	select BLK_DEV_INTEGRITY
+ 	select DM_BUFIO
+ 	select CRYPTO
++	select CRYPTO_SKCIPHER
+ 	select ASYNC_XOR
+ 	---help---
+ 	  This device-mapper target emulates a block device that has
 -- 
 2.27.0
 
