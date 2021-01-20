@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D64F2FDBC6
+	by mail.lfdr.de (Postfix) with ESMTP id 2120B2FDBC5
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436626AbhATU71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733287AbhATNmB (ORCPT
+        id S2436614AbhATU7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:59:23 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46034 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731658AbhATNnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:42:01 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7933C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:41:17 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id p20so5770444vsq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:41:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D3rkP3sTkrcG+gjHiR+284Vvr0UULqneoyGJYqtXMhY=;
-        b=RRW2kvSzIJp4rJU/Kqn0fcqX+MmV/Rxfbu+0qeGnPqTQaCOSEFO9jzWYxtlEpylmg1
-         0RaOwqsIYS0IPUR3OqEfujosWXn0PpeJdZKSKTpcms2WLPBcbCT4Oh4jZoIxRslPJ1ef
-         dXB6mDJ2KxNjURiaak4Z9QrP26A55ZankVQ/W1XEcDgv23sqhlZtsATp65kA80f6L3NT
-         tHn4DTKyog2t34FT4mcVSAcYbEATj0jxc2UiNYTQ9DheZfUlvrz1qKilmcufjaKsUOP6
-         zl6xw3M3idN4j+LCiHNC311d+yjNd4diIr1qUFftwi+F22WXlrqSkwjs60fS1V7jlXcp
-         RYzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D3rkP3sTkrcG+gjHiR+284Vvr0UULqneoyGJYqtXMhY=;
-        b=XP7Fn2FFpiPYMxj8Q2LUmu1yLQUCxcLyFB0hdZWk84AZJ7Ew6F7ef0GZSBfvoitrqY
-         oyVhp8R2VNJrULrv/7WXQzbA6fXnVlTR5hsiQLouOVe22ecLSQ9haw0J9CPYgx8zo7hY
-         X6itFW463ICIN/kW6Iipt6QXJ+sX1lcjEKIaWPNPCbfSCt4ZFCW2iW4wTxeePM8+RWOR
-         O3eWSS0EO+3tUqfw4dM69gFP/12cPggu9tM4FfJFTz0hkwM9Lw0Jl7fmyfUsfeAY7C8y
-         W3Vjn4IIcaCKQ2KncfgT7Fbaqe0WXHfCr9FvpTs9POGRyU0GDkeLANVQTrsXgkvABwxl
-         Cmsw==
-X-Gm-Message-State: AOAM5334N24I6LHbDN0q9bvQ5Q6FpS/UxW5HGy2Z59GB3ibwVEiyWqgQ
-        gdM/mUqJWunZkKxAOUj5Ug0WMOrutDxlVIzUumGBlw==
-X-Google-Smtp-Source: ABdhPJzBqLW0bV1P+US75mAyLIbxmsCSRB1Sa7MywrWLUGSxtciKJ5Z6c6+1S9PAMrKFwB+6/zwn1h0zDkOfj8dx9TQ=
-X-Received: by 2002:a67:7f41:: with SMTP id a62mr6403069vsd.55.1611150077036;
- Wed, 20 Jan 2021 05:41:17 -0800 (PST)
+        Wed, 20 Jan 2021 08:43:31 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10KDWm22007041;
+        Wed, 20 Jan 2021 08:42:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=dqxosd4g7zKlZH1v7XCpXwwjC2AU8t7alZYxMUwmWMA=;
+ b=Oj3O7horl4OTYOpzQa9es3FugrJ1/y8YEuFWH9PP29O7frX2m4yccSDjjL7PON9RcQj8
+ NUokeW0eIrTjlQ1IG6sOB0Hc1rHrFrM79lSRPkfMOiuGLUVJR5I06ITYLQzdMpltzEqI
+ Ob1UAst2IvLYL6jyB4zEq+md4awjD6uU64CgAs0/4aYf2DSqDvuGU5gaXczKGFbkebpy
+ KbNtNZpF35rhWw4aityN9Qq9HqlYacqQlUMVLIXTtR4muXCYMb4nOPXknsDhY84G8f7v
+ C4tSmeKJ2qzd2Nyhw429ONd1/YGyQN21qiTyUwE7WDP+Ops8bXeUANsxjHv+mxSBMwvV Pg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 366n78rurt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 08:42:16 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10KDZL2C018617;
+        Wed, 20 Jan 2021 08:42:15 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 366n78rur3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 08:42:15 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10KDWjS0005681;
+        Wed, 20 Jan 2021 13:42:13 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3668ny0b7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 13:42:13 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10KDgAiI41484674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 13:42:10 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3521BA4040;
+        Wed, 20 Jan 2021 13:42:10 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AFEBEA4053;
+        Wed, 20 Jan 2021 13:42:09 +0000 (GMT)
+Received: from osiris (unknown [9.171.38.241])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 20 Jan 2021 13:42:09 +0000 (GMT)
+Date:   Wed, 20 Jan 2021 14:42:08 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        thuth@redhat.com, david@redhat.com, imbrenda@linux.ibm.com,
+        cohuck@redhat.com, linux-s390@vger.kernel.org, gor@linux.ibm.com,
+        mihajlov@linux.ibm.com
+Subject: Re: [PATCH 2/2] s390: mm: Fix secure storage access exception
+ handling
+Message-ID: <20210120134208.GC8202@osiris>
+References: <20210119100402.84734-1-frankja@linux.ibm.com>
+ <20210119100402.84734-3-frankja@linux.ibm.com>
+ <3e1978c6-4462-1de6-e1aa-e664ffa633c1@de.ibm.com>
 MIME-Version: 1.0
-References: <20210118042717.2549123-1-xiaolei.wang@windriver.com>
-In-Reply-To: <20210118042717.2549123-1-xiaolei.wang@windriver.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 20 Jan 2021 14:40:41 +0100
-Message-ID: <CAPDyKFq+qyuHGbduGp30AeLefN1ie9ZL2Bvm9PrPZUwmdfQeYg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Apply trim broken quirk to R1J57L
-To:     Xiaolei Wang <xiaolei.wang@windriver.com>
-Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e1978c6-4462-1de6-e1aa-e664ffa633c1@de.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-20_05:2021-01-20,2021-01-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=798 impostorscore=0 lowpriorityscore=0
+ clxscore=1011 malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101200079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 at 05:27, Xiaolei Wang <xiaolei.wang@windriver.com> wrote:
->
-> R1J57L mmc chip hw capibility indicates that it supports trim function,
-> but this function does not work properly, the SDIO bus does not respond,
-> and the IO has been waiting so set quirks to skip trim
+On Tue, Jan 19, 2021 at 11:25:01AM +0100, Christian Borntraeger wrote:
+> > +		if (user_mode(regs)) {
+> > +			send_sig(SIGSEGV, current, 0);
+> > +			return;
+> > +		} else
+> > +			panic("Unexpected PGM 0x3d with TEID bit 61=0");
+> 
+> use BUG instead of panic? That would kill this process, but it allows
+> people to maybe save unaffected data.
 
-Are you sure this is an eMMC problem and not a mmc host driver issue?
-
-Can you elaborate more what happens?
-
-Kind regards
-Uffe
-
->
-> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
-> ---
->  drivers/mmc/core/quirks.h | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-> index d68e6e513a4f..63e02391c133 100644
-> --- a/drivers/mmc/core/quirks.h
-> +++ b/drivers/mmc/core/quirks.h
-> @@ -89,6 +89,8 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
->                   MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
->         MMC_FIXUP("VZL00M", CID_MANFID_SAMSUNG, CID_OEMID_ANY, add_quirk_mmc,
->                   MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
-> +       MMC_FIXUP("R1J57L", CID_MANFID_MICRON, CID_OEMID_ANY, add_quirk_mmc,
-> +                 MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
->
->         /*
->          *  On Some Kingston eMMCs, performing trim can result in
-> @@ -98,6 +100,8 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
->                   MMC_QUIRK_TRIM_BROKEN),
->         MMC_FIXUP("V10016", CID_MANFID_KINGSTON, CID_OEMID_ANY, add_quirk_mmc,
->                   MMC_QUIRK_TRIM_BROKEN),
-> +       MMC_FIXUP("R1J57L", CID_MANFID_MICRON, CID_OEMID_ANY, add_quirk_mmc,
-> +                 MMC_QUIRK_TRIM_BROKEN),
->
->         END_FIXUP
->  };
-> --
-> 2.25.1
->
+It would kill the process, and most likely lead to deadlock'ed
+system. But with all the "good" debug information being lost, which
+wouldn't be the case with panic().
+I really don't think this is a good idea.
