@@ -2,266 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0D52FD303
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0202FD304
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390560AbhATOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:14:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389489AbhATNEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:04:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E67A23355;
-        Wed, 20 Jan 2021 13:01:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611147701;
-        bh=JqBthQZ14hqQ5CKa/uHfijOLUsf8liPJdwNS/vHoDSA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GKXDXpfu96jhM94NLwqp9yLMWmUJwwbbwd5aUkNb/IETYCpQa+Z2+MspZucl6Nfhn
-         rrx0+/c9f7RpHeJgJohGwa/xWuQh/THixlswEUw5v+ZzoNEZoZivsNYSQ4H5jRuqZx
-         QzXmfrZY4TpE+XIdJoKvg7yg02uZJqQAMQ6y828svxKIKea3Hi/kPcCCQkJ6/Rc3IY
-         W7xj23m8k17nuCbBiWzuuvKYdAaZK0ZgFBm/yK89W38KgD56pZVuGjJ1mAOhyXENJG
-         4zu+NvLya2Tr1WmwPmRqCj7dslXdCu+izyvGqJTB+DJ/5zY1WrU2MG65Looxp3Fv1Z
-         gVDtw2xpShXAA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5452040CE2; Wed, 20 Jan 2021 10:01:37 -0300 (-03)
-Date:   Wed, 20 Jan 2021 10:01:37 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v7 3/3] perf-stat: enable counting events for BPF programs
-Message-ID: <20210120130137.GS12699@kernel.org>
-References: <20201229214214.3413833-1-songliubraving@fb.com>
- <20201229214214.3413833-4-songliubraving@fb.com>
- <20210118193817.GG12699@kernel.org>
- <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
- <20210119143143.GJ12699@kernel.org>
- <20210119144249.GK12699@kernel.org>
- <20210119163123.GM12699@kernel.org>
- <417ABE57-E527-4944-BE16-35AB92D071E9@fb.com>
- <20210119223021.GO12699@kernel.org>
- <20210120123727.GR12699@kernel.org>
+        id S2390588AbhATOOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:14:35 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:64590 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388272AbhATNEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:04:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611147842; x=1642683842;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=rAsgC8XDcV/RPuv5CcyY5SdKzJSf7D6s9PwFs6llirU=;
+  b=tJQn0nd/pXjCsK3/KnMOCaQ/Oq6Po3bOD9LT0qOOBdX4Hyk1v2SYiWA4
+   2qN4uy7crQucWnf5umBb68dfqPEBFCDovR7M7aN7XE1lhhmTPQ/lz0LBQ
+   h1X6pXx7sn6yAZVj3Z3hRi/3sUxQEAdedDSsbNsrhlwuuk5/NdYqDYr+y
+   B4j6Ut7bAnM//gabZvL6cPUhW9WVOWrqwY200U1N/d9baNKWjCOWMh7IQ
+   2b7eL/7YjXGtgqGZZg1ss4RzVR1KiqaLzkg+WMivIWf/KwvTBNBvR94Pk
+   q6Wtcz4I+nbwPmHpimycBKz4sai1JNGa0wJY51t7r/tijymzh+tTdPrUZ
+   g==;
+IronPort-SDR: s77K5eSt5i9fBugt+9bBUsnbvRP+i5w5IJ4O1kZUzUr846zNvk8F1Fat3qdQWLMmFXsgGaNKAd
+ dmIk866jIcHR/2pmRKMgsiqL3zAf4l0b5XZO4jMlUZuvMPmrtTy/tmUDk3FL4xX3hGUBLQK4VR
+ aWyAJj5VIIRZT7JYKLF1iyVusA2e1T6Onja37+jEj1DbpDyamHThhhp2wTMu49Oiv49+4UUquZ
+ aDeTTwnIp2GImB4vNfHLVGcBKMmrKcI50FHz0Ue60WPungvz2ApnWgla49uzLMalGDrtmtjPvT
+ pdw=
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="106101154"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jan 2021 06:02:25 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 20 Jan 2021 06:02:25 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 20 Jan 2021 06:02:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hm4Z2oxUA1MSTqSXTfpvKz7UMq7e4e4RpYDEzDH0FrsM7SRC+qXpJH/weG8Ke+iD78aGCyAMLgsZyA7C2cih2EQie8/Bxq2zupjnbFI7S2FlZxKT6FdLxARSutCl2i7A8LRqh8+GrVRK2tDJXoUx6zKAo8SrnHdWu+6S5qCA1u44q6qs4M+vYeJp8jVmXxJlvvFQ73ZoZ0xoWySF955GWTXbSuUgSdwyzdamwyc9BI8iCKAcHeNnA1MHU8LSicyFsAHLp0H+Z9e+y7tNn0DfNI+2immlmcmLfjwPOiEozbT/dKdIP9m8qrdCTlPTePnOFkZYWW3aHq1PkVwbsLHSLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rAsgC8XDcV/RPuv5CcyY5SdKzJSf7D6s9PwFs6llirU=;
+ b=e9KheeJv7tsALIt7aSGplw+JurOt0s16tlU2M+yqIggRtXhEJaVwSRcxdzJ6dWK+Il6VOfGdmTRccBplC9ATKBCr6Z0kXlJpb9sVQr9CePhr8LqCxNKpHvF7QAsqRh5e8wQ+K/eIFOlsGqtglsUMm0Vqpm9N/lX71z58dUghPqH164iedS05VNOYMUroyjN6eRa8xGbmSiSotl7THyb8Vlidk9QDHUCFQyoCcrZNPHWQqGjhYskpYkllyzGEPoPXk4q3crMVSbfz/8wRvBmj7D5uZke+imspZd8flHYjtQ+8oJYHh36Phrp1g96Cu5S0d5We8K493C+2Smj7VLiOXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rAsgC8XDcV/RPuv5CcyY5SdKzJSf7D6s9PwFs6llirU=;
+ b=AOvoettrdgm4efbI0U9WGIRCD+rzfrMV2rLJ2fPgTO/2EJR8WJ3iRyRY/6wqhvsIDVbeJBpswyvioO95PCJNTK9KupxPPZrMfoz3T3IlOK6Wo8ZmuxWuLtZJ6rsPy7tYii8OCp1XGBu1dUWT2sWhzVOGp3CTxu5IITV0fliHodk=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB2941.namprd11.prod.outlook.com (2603:10b6:805:dc::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Wed, 20 Jan
+ 2021 13:02:21 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::f4e3:108c:4222:7dab]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::f4e3:108c:4222:7dab%3]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
+ 13:02:21 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <p.yadav@ti.com>
+CC:     <michael@walle.cc>, <vigneshr@ti.com>, <richard@nod.at>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <Kavyasree.Kotagiri@microchip.com>, <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: sst: Add support for Global Unlock on
+ sst26vf
+Thread-Topic: [PATCH 2/2] mtd: spi-nor: sst: Add support for Global Unlock on
+ sst26vf
+Thread-Index: AQHW7yx9bcFo09HT2UCZICu/WmasJQ==
+Date:   Wed, 20 Jan 2021 13:02:21 +0000
+Message-ID: <fb42e33b-2ad2-9607-0540-138bfd70c9ba@microchip.com>
+References: <20210120105411.254890-1-tudor.ambarus@microchip.com>
+ <20210120105411.254890-2-tudor.ambarus@microchip.com>
+ <20210120122940.2xkiwghtszzyylnm@ti.com>
+In-Reply-To: <20210120122940.2xkiwghtszzyylnm@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [5.13.1.111]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8c4fa5ed-c71d-46e6-fff6-08d8bd439fe0
+x-ms-traffictypediagnostic: SN6PR11MB2941:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB2941617AEC306029F6130F2CF0A20@SN6PR11MB2941.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: d5uHJtgH5Nq2r9qkb8DLrmrRCp5a88Njn0YzfG2J6yRyMlfrAeT1Ib7v3MTcou1fi6ZR0V1f5Pr1h/VNau2wV1TSTv87MW+BEIgnL10CZY5hEnO00Jv4XVxtonPImJ3kOtGyG18RUyhvTBsrkZZOA1ryEUFTptrtQicSBExTgwlRs1QIeY6H6QoO27f0ucENkeSCJuzubcSzDQA8781Cpg2dolAFFZmam1gmiBkx+bssnL5SEdWe+oFEaPxns8xUbvYzdYl9x7BcTASuEooTANHjLEX2p1jQde3BpyZyDKK/YZ+tH9qNQHXPod5Y48ybTt38IIH7fM3aZQ45jUW66LbALI5YDcBJ+moEj8j0iRn+NKqcn64KsPVDv4PsAeWXVb3cKVa6hcKpwoyRBetDlB9+N1fUI8fmx6MDNQlEoE/j56K11Z3Uv3vV+hmyhvwpuk/mVkD44i09YH+I3UFVF1sUu5ebQWHwHjdNpOsmYQ44QJIpEtKilhALZvX22IKsZcgOPIOEFeEjJc2mg9JJZnjxbKeJKf1YxOaQ3u9v0msEi8FxkSJJ05tou6wmQG2z
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6512007)(26005)(54906003)(8936002)(498600001)(6506007)(53546011)(31696002)(66946007)(66556008)(71200400001)(64756008)(66446008)(4326008)(66476007)(86362001)(6916009)(91956017)(6486002)(2616005)(8676002)(966005)(76116006)(83380400001)(5660300002)(36756003)(2906002)(31686004)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?NW9rckM4SmNRTUFpczN0YWc5M1BmUzBDTHRmQUN3cFFOeHY3a1ZUalVJSUVR?=
+ =?utf-8?B?M3V5WVNqTWJSNHZqaGZsdnZ4SjdqcXhmbkFGZ3dWQWFZOXFSNG52TjJ2STEw?=
+ =?utf-8?B?M0RPaHV6dVNqelpoTzlzWllDU29WWmR3QXptU1BpNEo1ZGxUeG1HcDA2aFZ3?=
+ =?utf-8?B?SXFOa0lZM0tPMy9GNkxncU44NW9welZrK1EzSjV3NUpzWDQzQ3hjT2dVU0Vp?=
+ =?utf-8?B?c0hOaEtHN0FvTXFCcHAwQXdLK09IbEFKRmRDa1JoY2x2Rlc3dUpXSlo4NzFJ?=
+ =?utf-8?B?a0RQUFc5QVhMVmU2RC9QQnl0N2VFUW0wOHZWRzlXL3VXZkUybTdNQSs2a05G?=
+ =?utf-8?B?cE54TVNyLzV6ZjQ2ZDZSOXN2YUZZQW9pV2dSYlVjTjRuSUZKSGswSkhlUnRY?=
+ =?utf-8?B?U29zZUFabGxubGFRY3orWGVRbGpyOUNIRllFc0RnM29yYkFlM1RkM0FPYWhS?=
+ =?utf-8?B?NUtmc2ZSRmVKQ0dKa2N4bHkzUVJKZUFoRncvWUl5amR3b3g0Ly92Q2FDTmFu?=
+ =?utf-8?B?TjNnRzQyY2FoT0E5WW1wVjIwYkJJcGwzREFnNm1nbGFUMC9DOUZoWGFIbFNx?=
+ =?utf-8?B?enlBYWlUY3FjeUd6VDFIOCt3aXdGakVyRUwra3RDbklNSzIvUHN5aG1LZGMw?=
+ =?utf-8?B?dHhYR050OS9PdVlzcDQ1djkrVzNmSzM3dTJjUFlNbXVJc29zTGFvY2N6WkNF?=
+ =?utf-8?B?d2tzcWhndTRLQVc0TGJsakV6bkllWjlWbzR0MEpwL216YkZEQmdsYzYvWmFY?=
+ =?utf-8?B?a2s2MDIyZFE5UWQyVVEyS0wrT0hyTmw5U1R5ZnJSMXlCdHJKNWpFcURFeFJr?=
+ =?utf-8?B?UUNrckJaT1J3dUFqYzNjR2NKWnhvUk83Q3ZiUEgrcnNod2VRcTEwS3pzRUkz?=
+ =?utf-8?B?RDlxYXgramJhS1RqZ0tWTkUrMFBQUEJiRW5iVzVvQk1PblJ6SkJhRlFnNEN4?=
+ =?utf-8?B?NkE5OTNrNVpzUHpoMEp2KzFOWEFrMGdCZTVrN0ZzcHlKZ1VoZ09UTk00UDNo?=
+ =?utf-8?B?R1g4SUsyOTcyelc4Q2hJYVdIM1Q1T2hNbUt2c2dqS3JQRTBKUnp4UytZckpG?=
+ =?utf-8?B?TWxKbGZ6TC9uZVJVdXhoa3hBTzdIOGZHN2ZyMVJDTHZIMDJWenI3ZFZnOGVu?=
+ =?utf-8?B?YUZwdFZ0ZGk2VTV6SmNDMHVIUXlpbmJnbEd6Wjk2ZEJJYmpGTjF4eFRzQ0pR?=
+ =?utf-8?B?M09wNFA3QjY0djY0V2VabmFENXRtM1dRRU5IdUQzSFZVR1hxaEtnZThQNmlZ?=
+ =?utf-8?B?V2tHT2RnR04xemZmc0h4Ri9qK1VpdGtCaVlFTjFkS3VLcHhqcHRidmg5RU1M?=
+ =?utf-8?B?VnhpazBNYVcwTU1SNHQxTnp2N2FocmYxeW03ZzR5TzZWWEcxTExaZFNVeWYr?=
+ =?utf-8?Q?t+/BvwgJBWJBEUhwLi2isHIi8btHG75c=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C32A84A273DB0B4685178DC4D95992ED@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120123727.GR12699@kernel.org>
-X-Url:  http://acmel.wordpress.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c4fa5ed-c71d-46e6-fff6-08d8bd439fe0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2021 13:02:21.4302
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sXuR9QFXVSMHFFQwQqRtLb9TAz63waynOwpL/4hkDD0nVTpqZYsJmyAzs/N8FTr4prI4vm7o6aAJ2ZkMe3LLPYeehX2Yg4Gof3Ja4DvYi8Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2941
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jan 20, 2021 at 09:37:27AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Breakpoint 3, bpf_program_profiler__read (evsel=0xce02c0) at util/bpf_counter.c:208
-> 208	{
-> (gdb) c
-> Continuing.
-> 
-> Program received signal SIGSEGV, Segmentation fault.
-> 0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-> 224		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-> (gdb) p evsel
-> $55 = (struct evsel *) 0x0
-> (gdb) bt
-> #0  0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-> #1  0x0000000000000000 in ?? ()
-> (gdb) bt
-> #0  0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-> #1  0x0000000000000000 in ?? ()
-> (gdb)
-> (gdb) info threads
->   Id   Target Id                                  Frame
-> * 1    Thread 0x7ffff647f900 (LWP 1725711) "perf" 0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-> (gdb)
-
-(gdb) run stat -e cycles -b 244 -I 1000
-Starting program: /root/bin/perf stat -e cycles -b 244 -I 1000
-[Thread debugging using libthread_db enabled]
-Using host libthread_db library "/lib64/libthread_db.so.1".
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-
-Breakpoint 1, read_bpf_map_counters () at builtin-stat.c:414
-414	{
-(gdb) c
-Continuing.
-
-Breakpoint 2, bpf_program_profiler__read (evsel=0xce02c0) at util/bpf_counter.c:224
-224		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-(gdb) bt
-#0  bpf_program_profiler__read (evsel=0xce02c0) at util/bpf_counter.c:224
-#1  0x00000000005cf648 in bpf_counter__read (evsel=0xce02c0) at util/bpf_counter.c:300
-#2  0x0000000000434e46 in read_bpf_map_counters () at builtin-stat.c:419
-#3  0x0000000000434ecb in read_counters (rs=0x7fffffff9530) at builtin-stat.c:433
-#4  0x00000000004351f3 in process_interval () at builtin-stat.c:498
-#5  0x00000000004352b9 in handle_interval (interval=1000, times=0x7fffffff9618) at builtin-stat.c:513
-#6  0x0000000000435859 in dispatch_events (forks=false, timeout=0, interval=1000, times=0x7fffffff9618) at builtin-stat.c:676
-#7  0x00000000004365f1 in __run_perf_stat (argc=0, argv=0x7fffffffdb60, run_idx=0) at builtin-stat.c:944
-#8  0x00000000004367e3 in run_perf_stat (argc=0, argv=0x7fffffffdb60, run_idx=0) at builtin-stat.c:1001
-#9  0x0000000000439e35 in cmd_stat (argc=0, argv=0x7fffffffdb60) at builtin-stat.c:2415
-#10 0x00000000004cf058 in run_builtin (p=0xaabe00 <commands+288>, argc=7, argv=0x7fffffffdb60) at perf.c:312
-#11 0x00000000004cf2c5 in handle_internal_command (argc=7, argv=0x7fffffffdb60) at perf.c:364
-#12 0x00000000004cf40c in run_argv (argcp=0x7fffffffd9ac, argv=0x7fffffffd9a0) at perf.c:408
-#13 0x00000000004cf7d8 in main (argc=7, argv=0x7fffffffdb60) at perf.c:538
-(gdb) n
-225			struct bpf_prog_profiler_bpf *skel = counter->skel;
-(gdb) n
-227			assert(skel != NULL);
-(gdb) n
-228			reading_map_fd = bpf_map__fd(skel->maps.accum_readings);
-(gdb) p skel->maps.accum_readings
-$16 = (struct bpf_map *) 0xce7400
-(gdb) p *skel->maps.accum_readings
-$17 = {name = 0xce7580 "accum_readings", fd = 7, sec_idx = 6, sec_offset = 56, map_ifindex = 0, inner_map_fd = -1, def = {type = 6, key_size = 4, value_size = 24, max_entries = 1, map_flags = 0}, numa_node = 0, btf_var_idx = 2, btf_key_type_id = 0, btf_value_type_id = 0,
-  btf_vmlinux_value_type_id = 0, priv = 0x0, clear_priv = 0x0, libbpf_type = LIBBPF_MAP_UNSPEC, mmaped = 0x0, st_ops = 0x0, inner_map = 0x0, init_slots = 0x0, init_slots_sz = 0, pin_path = 0x0, pinned = false, reused = false}
-(gdb) n
-230			err = bpf_map_lookup_elem(reading_map_fd, &key, values);
-(gdb) n
-231			if (err) {
-(gdb) p evsel
-$18 = (struct evsel *) 0x0
-(gdb)
-
-So at this point is stack corruption when doing the bpf lookup on this
-Ryzen system with 12 cores/24 threads:
-
-[root@five ~]# bpftool prog | tail -4
-244: kprobe  name hrtimer_nanosle  tag 0e77bacaf4555f83  gpl
-	loaded_at 2021-01-19T13:04:03-0300  uid 0
-	xlated 80B  jited 49B  memlock 4096B
-	btf_id 360
-[root@five ~]# perf stat -e cycles -b 244 -I 1000
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-#           time             counts unit events
-     1.246867591             37,371      cycles
-     2.247955619             33,652      cycles
-     3.249017879             38,983      cycles
-     4.250083954             49,546      cycles
-     5.251150241             57,319      cycles
-     6.252221407             44,170      cycles
-     7.253279040             34,691      cycles
-     8.254333356             48,195      cycles
-^C     9.009242074             41,320      cycles
-
-[root@five ~]#
-
-This is with this hack:
-
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index 8c977f038f497fc1..f227fd09d33794b5 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -207,7 +207,7 @@ static int bpf_program_profiler__enable(struct evsel *evsel)
- static int bpf_program_profiler__read(struct evsel *evsel)
- {
- 	int num_cpu = evsel__nr_cpus(evsel);
--	struct bpf_perf_event_value values[num_cpu];
-+	struct bpf_perf_event_value values[num_cpu * 2];
- 	struct bpf_counter *counter;
- 	int reading_map_fd;
- 	__u32 key = 0;
-
-
---------------------------
-
-Now to check the proper fix...
-
-Works with all the events, etc, we need to remove that nnoying warning
-about .eh_frame (is this solved in the bpf tree?)
-
-[root@five ~]# perf stat -b 244 -I 1000
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-#           time             counts unit events
-     3.624452622               0.12 msec cpu-clock                 #    0.000 CPUs utilized          
-     3.624452622                  0      context-switches          #    0.000 K/sec                  
-     3.624452622                  0      cpu-migrations            #    0.000 K/sec                  
-     3.624452622                  0      page-faults               #    0.000 K/sec                  
-     3.624452622            302,518      cycles                    #    2.468 GHz                      (83.41%)
-     3.624452622             26,101      stalled-cycles-frontend   #    8.63% frontend cycles idle     (81.05%)
-     3.624452622             96,327      stalled-cycles-backend    #   31.84% backend cycles idle      (80.58%)
-     3.624452622            269,500      instructions              #    0.89  insn per cycle         
-     3.624452622                                                   #    0.36  stalled cycles per insn  (81.81%)
-     3.624452622             55,003      branches                  #  448.667 M/sec                    (86.94%)
-     3.624452622                467      branch-misses             #    0.85% of all branches          (77.18%)
-     4.625690606               0.11 msec cpu-clock                 #    0.000 CPUs utilized          
-     4.625690606                  0      context-switches          #    0.000 K/sec                  
-     4.625690606                  0      cpu-migrations            #    0.000 K/sec                  
-     4.625690606                  0      page-faults               #    0.000 K/sec                  
-     4.625690606            290,093      cycles                    #    2.535 GHz                      (79.46%)
-     4.625690606             28,274      stalled-cycles-frontend   #    9.75% frontend cycles idle     (79.47%)
-     4.625690606            101,772      stalled-cycles-backend    #   35.08% backend cycles idle      (84.05%)
-     4.625690606            261,867      instructions              #    0.90  insn per cycle         
-     4.625690606                                                   #    0.39  stalled cycles per insn  (86.38%)
-     4.625690606             55,334      branches                  #  483.473 M/sec                    (82.58%)
-     4.625690606                373      branch-misses             #    0.67% of all branches          (88.59%)
-     5.626686730               0.14 msec cpu-clock                 #    0.000 CPUs utilized          
-     5.626686730                  0      context-switches          #    0.000 K/sec                  
-     5.626686730                  0      cpu-migrations            #    0.000 K/sec                  
-     5.626686730                  0      page-faults               #    0.000 K/sec                  
-     5.626686730            369,810      cycles                    #    2.574 GHz                      (79.77%)
-     5.626686730             32,212      stalled-cycles-frontend   #    8.71% frontend cycles idle     (76.00%)
-     5.626686730            122,778      stalled-cycles-backend    #   33.20% backend cycles idle      (81.49%)
-     5.626686730            275,699      instructions              #    0.75  insn per cycle         
-     5.626686730                                                   #    0.45  stalled cycles per insn  (78.39%)
-     5.626686730             58,135      branches                  #  404.716 M/sec                    (73.61%)
-     5.626686730                588      branch-misses             #    1.01% of all branches          (71.01%)
-     6.627688626               0.14 msec cpu-clock                 #    0.000 CPUs utilized          
-     6.627688626                  0      context-switches          #    0.000 K/sec                  
-     6.627688626                  0      cpu-migrations            #    0.000 K/sec                  
-     6.627688626                  0      page-faults               #    0.000 K/sec                  
-     6.627688626            358,906      cycles                    #    2.543 GHz                      (81.90%)
-     6.627688626             26,411      stalled-cycles-frontend   #    7.36% frontend cycles idle     (80.87%)
-     6.627688626            129,526      stalled-cycles-backend    #   36.09% backend cycles idle      (77.72%)
-     6.627688626            278,756      instructions              #    0.78  insn per cycle         
-     6.627688626                                                   #    0.46  stalled cycles per insn  (70.31%)
-     6.627688626             56,514      branches                  #  400.448 M/sec                    (80.53%)
-     6.627688626                687      branch-misses             #    1.22% of all branches          (75.74%)
-     7.628688818               0.15 msec cpu-clock                 #    0.000 CPUs utilized          
-     7.628688818                  0      context-switches          #    0.000 K/sec                  
-     7.628688818                  0      cpu-migrations            #    0.000 K/sec                  
-     7.628688818                  0      page-faults               #    0.000 K/sec                  
-     7.628688818            384,382      cycles                    #    2.574 GHz                      (84.08%)
-     7.628688818             27,148      stalled-cycles-frontend   #    7.06% frontend cycles idle     (81.82%)
-     7.628688818            128,434      stalled-cycles-backend    #   33.41% backend cycles idle      (82.29%)
-     7.628688818            270,693      instructions              #    0.70  insn per cycle         
-     7.628688818                                                   #    0.47  stalled cycles per insn  (83.58%)
-     7.628688818             57,277      branches                  #  383.614 M/sec                    (81.68%)
-     7.628688818                756      branch-misses             #    1.32% of all branches          (85.39%)
-^C     7.934955676               0.05 msec cpu-clock                 #    0.000 CPUs utilized          
-     7.934955676                  0      context-switches          #    0.000 K/sec                  
-     7.934955676                  0      cpu-migrations            #    0.000 K/sec                  
-     7.934955676                  0      page-faults               #    0.000 K/sec                  
-     7.934955676            126,813      cycles                    #    2.626 GHz                      (77.14%)
-     7.934955676              9,424      stalled-cycles-frontend   #    7.43% frontend cycles idle     (87.96%)
-     7.934955676             44,506      stalled-cycles-backend    #   35.10% backend cycles idle      (82.43%)
-     7.934955676             86,383      instructions              #    0.68  insn per cycle         
-     7.934955676                                                   #    0.52  stalled cycles per insn  (86.26%)
-     7.934955676             17,491      branches                  #  362.222 M/sec                    (87.10%)
-     7.934955676                247      branch-misses             #    1.41% of all branches          (76.62%)
-
-[root@five ~]#
+T24gMS8yMC8yMSAyOjI5IFBNLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToNCj4gRVhURVJOQUwgRU1B
+SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
+dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBIaSBUdWRvciwNCj4gDQo+IE9uIDIwLzAxLzIx
+IDEyOjU0UE0sIFR1ZG9yIEFtYmFydXMgd3JvdGU6DQo+PiBFdmVuIGlmIHNzdDI2dmYgc2hhcmVz
+IHRoZSBTUElOT1JfT1BfR0JVTEsgb3Bjb2RlIHdpdGgNCj4+IE1hY3Jvbml4IChleC4gTVgyNVUx
+MjgzNUYpIGFuZCBXaW5ib3VuZCAoZXguIFcyNVExMjhGViksDQo+PiBpdCBoYXMgaXRzIG93biBJ
+bmRpdmlkdWFsIEJsb2NrIFByb3RlY3Rpb24gc2NoZW1lLCB3aGljaA0KPj4gaXMgYWxzbyBjYXBh
+YmxlIHRvIHJlYWQtbG9jayBpbmRpdmlkdWFsIHBhcmFtZXRlciBibG9ja3MuDQo+PiBUaHVzIHRo
+ZSBzc3QyNnZmJ3MgSW5kaXZpZHVhbCBCbG9jayBQcm90ZWN0aW9uIHNjaGVtZSB3aWxsDQo+PiBy
+ZXNpZGUgaW4gdGhlIHNzdC5jIG1hbnVmYWN0dXJlciBkcml2ZXIuDQo+Pg0KPj4gQWRkIHN1cHBv
+cnQgdG8gdW5sb2NrIHRoZSBlbnRpcmUgZmxhc2ggbWVtb3J5LiBUaGUgZGV2aWNlDQo+PiBpcyB3
+cml0ZS1wcm90ZWN0ZWQgYnkgZGVmYXVsdCBhZnRlciBhIHBvd2VyLW9uIHJlc2V0IGN5Y2xlDQo+
+PiAodm9sYXRpbGUgc29mdHdhcmUgcHJvdGVjdGlvbiksIGluIG9yZGVyIHRvIGF2b2lkIGluYWR2
+ZXJ0ZW50DQo+PiB3cml0ZXMgZHVyaW5nIHBvd2VyLXVwLiBDb3VsZCBkbyBhbiBlcmFzZSwgd3Jp
+dGUsIHJlYWQgYmFjaywNCj4+IGFuZCBjb21wYXJlIHdoZW4gTVREX1NQSV9OT1JfU1dQX0RJU0FC
+TEVfT05fVk9MQVRJTEU9eS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBUdWRvciBBbWJhcnVzIDx0
+dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+DQo+PiAtLS0NCj4+ICBkcml2ZXJzL210ZC9zcGkt
+bm9yL3NzdC5jIHwgMzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0NCj4+
+ICAxIGZpbGUgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4+DQo+
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zc3QuYyBiL2RyaXZlcnMvbXRkL3Nw
+aS1ub3Ivc3N0LmMNCj4+IGluZGV4IDAwZTQ4ZGEwNzQ0YS4uMWNkMmEzNjBjNDFlIDEwMDY0NA0K
+Pj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zc3QuYw0KPj4gKysrIGIvZHJpdmVycy9tdGQv
+c3BpLW5vci9zc3QuYw0KPj4gQEAgLTgsNiArOCwzOSBAQA0KPj4NCj4+ICAjaW5jbHVkZSAiY29y
+ZS5oIg0KPj4NCj4+ICtzdGF0aWMgaW50IHNzdDI2dmZfbG9jayhzdHJ1Y3Qgc3BpX25vciAqbm9y
+LCBsb2ZmX3Qgb2ZzLCB1aW50NjRfdCBsZW4pDQo+PiArew0KPj4gKyAgICAgcmV0dXJuIC1FT1BO
+T1RTVVBQOw0KPj4gK30NCj4+ICsNCj4+ICtzdGF0aWMgaW50IHNzdDI2dmZfdW5sb2NrKHN0cnVj
+dCBzcGlfbm9yICpub3IsIGxvZmZfdCBvZnMsIHVpbnQ2NF90IGxlbikNCj4+ICt7DQo+PiArICAg
+ICBpZiAoIW9mcyAmJiBsZW4gPT0gbm9yLT5wYXJhbXMtPnNpemUpDQo+IA0KPiBOaXRwaWNrOiBv
+ZnMgaXMgbm90IGEgYm9vbGVhbiB2YWx1ZS4gRG9uJ3QgdHJlYXQgaXQgYXMgc3VjaC4gKG9mcyA9
+PSAwDQo+ICYmIGxlbiA9PSBub3ItPnBhcmFtcy0+c2l6ZSkgbWFrZXMgdGhlIGludGVudCBtdWNo
+IGNsZWFyZXIuDQoNCkkgYWdyZWUsIHdpbGwgY2hhbmdlLiBDaGVlcnMsDQp0YQ0KDQo+IA0KPj4g
+KyAgICAgICAgICAgICByZXR1cm4gc3BpX25vcl9nbG9iYWxfYmxvY2tfdW5sb2NrKG5vcik7DQo+
+PiArDQo+PiArICAgICByZXR1cm4gLUVPUE5PVFNVUFA7DQo+PiArfQ0KPj4gKw0KPj4gK3N0YXRp
+YyBpbnQgc3N0MjZ2Zl9pc19sb2NrZWQoc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IG9mcywg
+dWludDY0X3QgbGVuKQ0KPj4gK3sNCj4+ICsgICAgIHJldHVybiAtRU9QTk9UU1VQUDsNCj4+ICt9
+DQo+PiArDQo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBzcGlfbm9yX2xvY2tpbmdfb3BzIHNzdDI2
+dmZfbG9ja2luZ19vcHMgPSB7DQo+PiArICAgICAubG9jayA9IHNzdDI2dmZfbG9jaywNCj4+ICsg
+ICAgIC51bmxvY2sgPSBzc3QyNnZmX3VubG9jaywNCj4+ICsgICAgIC5pc19sb2NrZWQgPSBzc3Qy
+NnZmX2lzX2xvY2tlZCwNCj4+ICt9Ow0KPj4gKw0KPj4gK3N0YXRpYyB2b2lkIHNzdDI2dmZfZGVm
+YXVsdF9pbml0KHN0cnVjdCBzcGlfbm9yICpub3IpDQo+PiArew0KPj4gKyAgICAgbm9yLT5wYXJh
+bXMtPmxvY2tpbmdfb3BzID0gJnNzdDI2dmZfbG9ja2luZ19vcHM7DQo+PiArfQ0KPj4gKw0KPj4g
+K3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpX25vcl9maXh1cHMgc3N0MjZ2Zl9maXh1cHMgPSB7DQo+
+PiArICAgICAuZGVmYXVsdF9pbml0ID0gc3N0MjZ2Zl9kZWZhdWx0X2luaXQsDQo+PiArfTsNCj4+
+ICsNCj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gc3N0X3BhcnRzW10gPSB7DQo+
+PiAgICAgICAvKiBTU1QgLS0gbGFyZ2UgZXJhc2Ugc2l6ZXMgYXJlICJvdmVybGF5cyIsICJzZWN0
+b3JzIiBhcmUgNEsgKi8NCj4+ICAgICAgIHsgInNzdDI1dmYwNDBiIiwgSU5GTygweGJmMjU4ZCwg
+MCwgNjQgKiAxMDI0LCAgOCwNCj4+IEBAIC0zOSw4ICs3Miw5IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3QgZmxhc2hfaW5mbyBzc3RfcGFydHNbXSA9IHsNCj4+ICAgICAgIHsgInNzdDI2dmYwMTZiIiwg
+SU5GTygweGJmMjY0MSwgMCwgNjQgKiAxMDI0LCAzMiwNCj4+ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQpIH0sDQo+PiAgICAgICB7ICJzc3Qy
+NnZmMDY0YiIsIElORk8oMHhiZjI2NDMsIDAsIDY0ICogMTAyNCwgMTI4LA0KPj4gLSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8DQo+PiAtICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+PiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05P
+Ul9RVUFEX1JFQUQgfA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIFNQSV9OT1JfSEFT
+X0xPQ0sgfCBTUElfTk9SX1NXUF9JU19WT0xBVElMRSkNCj4+ICsgICAgICAgICAgICAgLmZpeHVw
+cyA9ICZzc3QyNnZmX2ZpeHVwcyB9LA0KPj4gIH07DQo+Pg0KPj4gIHN0YXRpYyBpbnQgc3N0X3dy
+aXRlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgdG8sIHNpemVfdCBsZW4sDQo+PiAtLQ0K
+Pj4gMi4yNS4xDQo+Pg0KPj4NCj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXw0KPj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+DQo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8NCj4gDQo+IC0tDQo+IFJlZ2FyZHMsDQo+IFByYXR5dXNoIFlhZGF2DQo+IFRleGFzIEluc3Ry
+dW1lbnRzIEluZGlhDQo+IA0KDQo=
