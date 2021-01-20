@@ -2,410 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F552FD367
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C621D2FD368
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388416AbhATOyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:54:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389082AbhATO2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:28:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B41723381;
-        Wed, 20 Jan 2021 14:28:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611152887;
-        bh=Qd02fzmFArsS9FD/AjZSBTPR5EFMCK+sb1rmbEN7xi8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bh6Gg2SWXvTPikcNJDa2/23TDkJtf7meyQu0T8BecWLe6Knqj4djOGjUjlVtPOjhV
-         ubhsH003uJ9R14q2iP+EnfCeaXM7YXdZkg3ubOIed8a7pZIXscPVrZZxEAH2Ji+0f7
-         MsYKkUXR85wHpXmFH/DkgV3pz/Vmw+dFYInvmElriGvabT/BLFtlRQjxu1i4TBa2fk
-         Hwk1f+y5fA2GA0L9RVPzAG41/FwCMpRUNK9nwvwoOSHcmV/ynchKwrPNihSfhveTME
-         iF0KqCA4fYxQJIlHDdO/H4bkoPoB5ynN+drnK/stLUu0ltVXCwVRR/PWTqELRrKdRz
-         /wuiO+GztOUtw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 1/2] mmc: remove dw_mmc-zx driver
-Date:   Wed, 20 Jan 2021 15:28:00 +0100
-Message-Id: <20210120142801.334550-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120142801.334550-1-arnd@kernel.org>
-References: <20210120142801.334550-1-arnd@kernel.org>
+        id S1732847AbhATOyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388833AbhATO3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:29:40 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF4BC061575;
+        Wed, 20 Jan 2021 06:28:57 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id k4so19639935ybp.6;
+        Wed, 20 Jan 2021 06:28:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CzqrPjifLSTHMVm2CseEp0L4soBbAOYky+LNWDRochQ=;
+        b=EKMpharTDwpUWY4pVgsSQFX8dcRcclXhTfHwwR0mXQdbxFfeNd/+prfHuZ9cI05Ev/
+         gPkVcOSyjizZe4t/7LEgV14+dqDQeDpQeXnDbwKjSO3zG8JtnpZ73UQErB8s0ct1V36G
+         IXc++10F9qsKQh/hXjo3I5ZUTuF0bUoEPFbfAd7rdzOOqqeamQCPtntIhCIfqnONVhU/
+         gly8q12RIksYTGMAF65x5yv5lUeem3QOW7nzAn3KhKPAIBblGuHJZSkJd6UC9bQmeu6K
+         11D0RZu8+VEtmKFy+zIEWakOAUL6jNktciyuh63b74V4lWxTPa/fXVv+gdjJpngO7LG0
+         /ObA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CzqrPjifLSTHMVm2CseEp0L4soBbAOYky+LNWDRochQ=;
+        b=F4AvGyv/8GpxCWusctD0dcq5fIVzl0zkAFLq7BamCpjaYbzCdRT5gmhwE2HvETOc56
+         bPpD+bd8Vc7y7lLK22q4eHTrVz163ApldO5JZ9iUE12Hx86M01sh6410TdyZqFc7m9EA
+         /vR7lMy9At/XSKmtWDaXhIgGtZ8kwpGa3uhGod+i0Hqb0NVjVXZQ7PG1AiqW2VVNA036
+         cVlbeQjjdzspLC1EeZrLmfhnmccBXh3/kRK/9MARa8x5WmZsLSAICKGSLEi7JT4HEkp9
+         bQ5viSFzJclMBUCZjH/1yHU1kkorIlPD9sOOWHWET9QqGUB4m0dahc/5QHxdEmiiITFc
+         ZL1w==
+X-Gm-Message-State: AOAM533pli+bsJypHS2dVhUvi5CgeY45AXhF+nvKVaeQSR/VIwx2LH4i
+        /5F7bHxSK/r7O5tPiR8wsHZYR83euL7I1SCvPSIHPCZHz9tDlKeH5os=
+X-Google-Smtp-Source: ABdhPJyLsoNSlH3wnezZX5xFKwG8FPYcT3DetCwzzRFLGSFEENIpzEmiVIngcPvfxdycBZI/vH4XRmqtwmNy947Uv4g=
+X-Received: by 2002:a25:9242:: with SMTP id e2mr12940443ybo.405.1611152936516;
+ Wed, 20 Jan 2021 06:28:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210119105727.95173-1-roger.pau@citrix.com>
+In-Reply-To: <20210119105727.95173-1-roger.pau@citrix.com>
+From:   Arthur Borsboom <arthurborsboom@gmail.com>
+Date:   Wed, 20 Jan 2021 15:28:40 +0100
+Message-ID: <CALUcmUnA+7bOtqg9VtaeXsrd079VKpHv+=tNX3LbhKZw7o1QTw@mail.gmail.com>
+Subject: Re: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
+To:     Roger Pau Monne <roger.pau@citrix.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Roger,
 
-The zte zx platform is getting removed, so this driver is no
-longer needed.
+I have set up a test environment based on Linux 5.11.0-rc4.
+The patch did not apply clean, so I copied/pasted the patch manually.
 
-Cc: Jun Nie <jun.nie@linaro.org>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- .../devicetree/bindings/mmc/zx-dw-mshc.txt    |  31 ---
- drivers/mmc/host/Kconfig                      |   9 -
- drivers/mmc/host/Makefile                     |   1 -
- drivers/mmc/host/dw_mmc-zx.c                  | 234 ------------------
- drivers/mmc/host/dw_mmc-zx.h                  |  32 ---
- 5 files changed, 307 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mmc/zx-dw-mshc.txt
- delete mode 100644 drivers/mmc/host/dw_mmc-zx.c
- delete mode 100644 drivers/mmc/host/dw_mmc-zx.h
+Without the patch the call trace (as reported) is visible in dmesg.
+With the patch the call trace in dmesg is gone, but ... (there is
+always a but) ...
 
-diff --git a/Documentation/devicetree/bindings/mmc/zx-dw-mshc.txt b/Documentation/devicetree/bindings/mmc/zx-dw-mshc.txt
-deleted file mode 100644
-index 0f59bd5361f5..000000000000
---- a/Documentation/devicetree/bindings/mmc/zx-dw-mshc.txt
-+++ /dev/null
-@@ -1,31 +0,0 @@
--* ZTE specific extensions to the Synopsys Designware Mobile Storage
--  Host Controller
--
--The Synopsys designware mobile storage host controller is used to interface
--a SoC with storage medium such as eMMC or SD/MMC cards. This file documents
--differences between the core Synopsys dw mshc controller properties described
--by synopsys-dw-mshc.txt and the properties used by the ZTE specific
--extensions to the Synopsys Designware Mobile Storage Host Controller.
--
--Required Properties:
--
--* compatible: should be
--	- "zte,zx296718-dw-mshc": for ZX SoCs
--
--Example:
--
--	mmc1: mmc@1110000 {
--		compatible = "zte,zx296718-dw-mshc";
--		reg = <0x01110000 0x1000>;
--		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
--		fifo-depth = <32>;
--		data-addr = <0x200>;
--		fifo-watermark-aligned;
--		bus-width = <4>;
--		clock-frequency = <50000000>;
--		clocks = <&topcrm SD0_AHB>, <&topcrm SD0_WCLK>;
--		clock-names = "biu", "ciu";
--		max-frequency = <50000000>;
--		cap-sdio-irq;
--		cap-sd-highspeed;
--	};
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 596f32637315..255d37e8bd3a 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -868,15 +868,6 @@ config MMC_DW_ROCKCHIP
- 	  Synopsys DesignWare Memory Card Interface driver. Select this option
- 	  for platforms based on RK3066, RK3188 and RK3288 SoC's.
- 
--config MMC_DW_ZX
--	tristate "ZTE specific extensions for Synopsys DW Memory Card Interface"
--	depends on MMC_DW && ARCH_ZX
--	select MMC_DW_PLTFM
--	help
--	  This selects support for ZTE SoC specific extensions to the
--	  Synopsys DesignWare Memory Card Interface driver. Select this option
--	  for platforms based on ZX296718 SoC's.
--
- config MMC_SH_MMCIF
- 	tristate "SuperH Internal MMCIF support"
- 	depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
-diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-index 451c25fc2c69..43136d382d5f 100644
---- a/drivers/mmc/host/Makefile
-+++ b/drivers/mmc/host/Makefile
-@@ -61,7 +61,6 @@ obj-$(CONFIG_MMC_DW_HI3798CV200) += dw_mmc-hi3798cv200.o
- obj-$(CONFIG_MMC_DW_K3)		+= dw_mmc-k3.o
- obj-$(CONFIG_MMC_DW_PCI)	+= dw_mmc-pci.o
- obj-$(CONFIG_MMC_DW_ROCKCHIP)	+= dw_mmc-rockchip.o
--obj-$(CONFIG_MMC_DW_ZX)		+= dw_mmc-zx.o
- obj-$(CONFIG_MMC_SH_MMCIF)	+= sh_mmcif.o
- obj-$(CONFIG_MMC_JZ4740)	+= jz4740_mmc.o
- obj-$(CONFIG_MMC_VUB300)	+= vub300.o
-diff --git a/drivers/mmc/host/dw_mmc-zx.c b/drivers/mmc/host/dw_mmc-zx.c
-deleted file mode 100644
-index 51bcc6332f3a..000000000000
---- a/drivers/mmc/host/dw_mmc-zx.c
-+++ /dev/null
-@@ -1,234 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * ZX Specific Extensions for Synopsys DW Multimedia Card Interface driver
-- *
-- * Copyright (C) 2016, Linaro Ltd.
-- * Copyright (C) 2016, ZTE Corp.
-- */
--
--#include <linux/clk.h>
--#include <linux/mfd/syscon.h>
--#include <linux/mmc/host.h>
--#include <linux/mmc/mmc.h>
--#include <linux/module.h>
--#include <linux/of.h>
--#include <linux/platform_device.h>
--#include <linux/pm_runtime.h>
--#include <linux/regmap.h>
--#include <linux/slab.h>
--
--#include "dw_mmc.h"
--#include "dw_mmc-pltfm.h"
--#include "dw_mmc-zx.h"
--
--struct dw_mci_zx_priv_data {
--	struct regmap	*sysc_base;
--};
--
--enum delay_type {
--	DELAY_TYPE_READ,	/* read dqs delay */
--	DELAY_TYPE_CLK,		/* clk sample delay */
--};
--
--static int dw_mci_zx_emmc_set_delay(struct dw_mci *host, unsigned int delay,
--				    enum delay_type dflag)
--{
--	struct dw_mci_zx_priv_data *priv = host->priv;
--	struct regmap *sysc_base = priv->sysc_base;
--	unsigned int clksel;
--	unsigned int loop = 1000;
--	int ret;
--
--	if (!sysc_base)
--		return -EINVAL;
--
--	ret = regmap_update_bits(sysc_base, LB_AON_EMMC_CFG_REG0,
--				 PARA_HALF_CLK_MODE | PARA_DLL_BYPASS_MODE |
--				 PARA_PHASE_DET_SEL_MASK |
--				 PARA_DLL_LOCK_NUM_MASK |
--				 DLL_REG_SET | PARA_DLL_START_MASK,
--				 PARA_DLL_START(4) | PARA_DLL_LOCK_NUM(4));
--	if (ret)
--		return ret;
--
--	ret = regmap_read(sysc_base, LB_AON_EMMC_CFG_REG1, &clksel);
--	if (ret)
--		return ret;
--
--	if (dflag == DELAY_TYPE_CLK) {
--		clksel &= ~CLK_SAMP_DELAY_MASK;
--		clksel |= CLK_SAMP_DELAY(delay);
--	} else {
--		clksel &= ~READ_DQS_DELAY_MASK;
--		clksel |= READ_DQS_DELAY(delay);
--	}
--
--	regmap_write(sysc_base, LB_AON_EMMC_CFG_REG1, clksel);
--	regmap_update_bits(sysc_base, LB_AON_EMMC_CFG_REG0,
--			   PARA_DLL_START_MASK | PARA_DLL_LOCK_NUM_MASK |
--			   DLL_REG_SET,
--			   PARA_DLL_START(4) | PARA_DLL_LOCK_NUM(4) |
--			   DLL_REG_SET);
--
--	do {
--		ret = regmap_read(sysc_base, LB_AON_EMMC_CFG_REG2, &clksel);
--		if (ret)
--			return ret;
--
--	} while (--loop && !(clksel & ZX_DLL_LOCKED));
--
--	if (!loop) {
--		dev_err(host->dev, "Error: %s dll lock fail\n", __func__);
--		return -EIO;
--	}
--
--	return 0;
--}
--
--static int dw_mci_zx_emmc_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
--{
--	struct dw_mci *host = slot->host;
--	struct mmc_host *mmc = slot->mmc;
--	int ret, len = 0, start = 0, end = 0, delay, best = 0;
--
--	for (delay = 1; delay < 128; delay++) {
--		ret = dw_mci_zx_emmc_set_delay(host, delay, DELAY_TYPE_CLK);
--		if (!ret && mmc_send_tuning(mmc, opcode, NULL)) {
--			if (start >= 0) {
--				end = delay - 1;
--				/* check and update longest good range */
--				if ((end - start) > len) {
--					best = (start + end) >> 1;
--					len = end - start;
--				}
--			}
--			start = -1;
--			end = 0;
--			continue;
--		}
--		if (start < 0)
--			start = delay;
--	}
--
--	if (start >= 0) {
--		end = delay - 1;
--		if ((end - start) > len) {
--			best = (start + end) >> 1;
--			len = end - start;
--		}
--	}
--	if (best < 0)
--		return -EIO;
--
--	dev_info(host->dev, "%s best range: start %d end %d\n", __func__,
--		 start, end);
--	return dw_mci_zx_emmc_set_delay(host, best, DELAY_TYPE_CLK);
--}
--
--static int dw_mci_zx_prepare_hs400_tuning(struct dw_mci *host,
--					  struct mmc_ios *ios)
--{
--	int ret;
--
--	/* config phase shift as 90 degree */
--	ret = dw_mci_zx_emmc_set_delay(host, 32, DELAY_TYPE_READ);
--	if (ret < 0)
--		return -EIO;
--
--	return 0;
--}
--
--static int dw_mci_zx_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
--{
--	struct dw_mci *host = slot->host;
--
--	if (host->verid == 0x290a) /* only for emmc */
--		return dw_mci_zx_emmc_execute_tuning(slot, opcode);
--	/* TODO: Add 0x210a dedicated tuning for sd/sdio */
--
--	return 0;
--}
--
--static int dw_mci_zx_parse_dt(struct dw_mci *host)
--{
--	struct device_node *np = host->dev->of_node;
--	struct device_node *node;
--	struct dw_mci_zx_priv_data *priv;
--	struct regmap *sysc_base;
--
--	/* syscon is needed only by emmc */
--	node = of_parse_phandle(np, "zte,aon-syscon", 0);
--	if (node) {
--		sysc_base = syscon_node_to_regmap(node);
--		of_node_put(node);
--
--		if (IS_ERR(sysc_base))
--			return dev_err_probe(host->dev, PTR_ERR(sysc_base),
--					     "Can't get syscon\n");
--	} else {
--		return 0;
--	}
--
--	priv = devm_kzalloc(host->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv)
--		return -ENOMEM;
--	priv->sysc_base = sysc_base;
--	host->priv = priv;
--
--	return 0;
--}
--
--static unsigned long zx_dwmmc_caps[3] = {
--	MMC_CAP_CMD23,
--	MMC_CAP_CMD23,
--	MMC_CAP_CMD23,
--};
--
--static const struct dw_mci_drv_data zx_drv_data = {
--	.caps			= zx_dwmmc_caps,
--	.num_caps		= ARRAY_SIZE(zx_dwmmc_caps),
--	.execute_tuning		= dw_mci_zx_execute_tuning,
--	.prepare_hs400_tuning	= dw_mci_zx_prepare_hs400_tuning,
--	.parse_dt               = dw_mci_zx_parse_dt,
--};
--
--static const struct of_device_id dw_mci_zx_match[] = {
--	{ .compatible = "zte,zx296718-dw-mshc", .data = &zx_drv_data},
--	{},
--};
--MODULE_DEVICE_TABLE(of, dw_mci_zx_match);
--
--static int dw_mci_zx_probe(struct platform_device *pdev)
--{
--	const struct dw_mci_drv_data *drv_data;
--	const struct of_device_id *match;
--
--	match = of_match_node(dw_mci_zx_match, pdev->dev.of_node);
--	drv_data = match->data;
--
--	return dw_mci_pltfm_register(pdev, drv_data);
--}
--
--static const struct dev_pm_ops dw_mci_zx_dev_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
--				pm_runtime_force_resume)
--	SET_RUNTIME_PM_OPS(dw_mci_runtime_suspend,
--			   dw_mci_runtime_resume,
--			   NULL)
--};
--
--static struct platform_driver dw_mci_zx_pltfm_driver = {
--	.probe		= dw_mci_zx_probe,
--	.remove		= dw_mci_pltfm_remove,
--	.driver		= {
--		.name		= "dwmmc_zx",
--		.probe_type	= PROBE_PREFER_ASYNCHRONOUS,
--		.of_match_table	= dw_mci_zx_match,
--		.pm		= &dw_mci_zx_dev_pm_ops,
--	},
--};
--
--module_platform_driver(dw_mci_zx_pltfm_driver);
--
--MODULE_DESCRIPTION("ZTE emmc/sd driver");
--MODULE_LICENSE("GPL v2");
-diff --git a/drivers/mmc/host/dw_mmc-zx.h b/drivers/mmc/host/dw_mmc-zx.h
-deleted file mode 100644
-index 09ac52766f14..000000000000
---- a/drivers/mmc/host/dw_mmc-zx.h
-+++ /dev/null
-@@ -1,32 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _DW_MMC_ZX_H_
--#define _DW_MMC_ZX_H_
--
--/* ZX296718 SoC specific DLL register offset. */
--#define LB_AON_EMMC_CFG_REG0  0x1B0
--#define LB_AON_EMMC_CFG_REG1  0x1B4
--#define LB_AON_EMMC_CFG_REG2  0x1B8
--
--/* LB_AON_EMMC_CFG_REG0 register defines */
--#define PARA_DLL_START(x)	((x) & 0xFF)
--#define PARA_DLL_START_MASK	0xFF
--#define DLL_REG_SET		BIT(8)
--#define PARA_DLL_LOCK_NUM(x)	(((x) & 7) << 16)
--#define PARA_DLL_LOCK_NUM_MASK  (7 << 16)
--#define PARA_PHASE_DET_SEL(x)	(((x) & 7) << 20)
--#define PARA_PHASE_DET_SEL_MASK	(7 << 20)
--#define PARA_DLL_BYPASS_MODE	BIT(23)
--#define PARA_HALF_CLK_MODE	BIT(24)
--
--/* LB_AON_EMMC_CFG_REG1 register defines */
--#define READ_DQS_DELAY(x)	((x) & 0x7F)
--#define READ_DQS_DELAY_MASK	(0x7F)
--#define READ_DQS_BYPASS_MODE	BIT(7)
--#define CLK_SAMP_DELAY(x)	(((x) & 0x7F) << 8)
--#define CLK_SAMP_DELAY_MASK	(0x7F << 8)
--#define CLK_SAMP_BYPASS_MODE	BIT(15)
--
--/* LB_AON_EMMC_CFG_REG2 register defines */
--#define ZX_DLL_LOCKED		BIT(2)
--
--#endif /* _DW_MMC_ZX_H_ */
--- 
-2.29.2
+Now the discard action returns the following.
 
+[arthur@test-arch ~]$ sudo fstrim -v /
+fstrim: /: the discard operation is not supported
+
+It might be correct, but of course I was hoping the Xen VM guest would
+pass on the discard request to the block device in the Xen VM host,
+which is a disk partition.
+Any suggestions?
+
+(Resend due to the previous email being HTML instead of plain text).
+
+
+On Tue, 19 Jan 2021 at 11:57, Roger Pau Monne <roger.pau@citrix.com> wrote:
+>
+> This is inline with the specification described in blkif.h:
+>
+>  * discard-granularity: should be set to the physical block size if
+>    node is not present.
+>  * discard-alignment, discard-secure: should be set to 0 if node not
+>    present.
+>
+> This was detected as QEMU would only create the discard-granularity
+> node but not discard-alignment, and thus the setup done in
+> blkfront_setup_discard would fail.
+>
+> Fix blkfront_setup_discard to not fail on missing nodes, and also fix
+> blkif_set_queue_limits to set the discard granularity to the physical
+> block size if none is specified in xenbus.
+>
+> Fixes: ed30bf317c5ce ('xen-blkfront: Handle discard requests.')
+> Reported-by: Arthur Borsboom <arthurborsboom@gmail.com>
+> Signed-off-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
+> ---
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: "Roger Pau Monn=C3=A9" <roger.pau@citrix.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: linux-block@vger.kernel.org
+> Cc: Arthur Borsboom <arthurborsboom@gmail.com>
+> ---
+> Changes since v2:
+>  - Allow all discard-* nodes to be optional.
+> ---
+>  drivers/block/xen-blkfront.c | 20 +++++++-------------
+>  1 file changed, 7 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+> index 5265975b3fba..e1c6798889f4 100644
+> --- a/drivers/block/xen-blkfront.c
+> +++ b/drivers/block/xen-blkfront.c
+> @@ -945,7 +945,8 @@ static void blkif_set_queue_limits(struct blkfront_in=
+fo *info)
+>         if (info->feature_discard) {
+>                 blk_queue_flag_set(QUEUE_FLAG_DISCARD, rq);
+>                 blk_queue_max_discard_sectors(rq, get_capacity(gd));
+> -               rq->limits.discard_granularity =3D info->discard_granular=
+ity;
+> +               rq->limits.discard_granularity =3D info->discard_granular=
+ity ?:
+> +                                                info->physical_sector_si=
+ze;
+>                 rq->limits.discard_alignment =3D info->discard_alignment;
+>                 if (info->feature_secdiscard)
+>                         blk_queue_flag_set(QUEUE_FLAG_SECERASE, rq);
+> @@ -2179,19 +2180,12 @@ static void blkfront_closing(struct blkfront_info=
+ *info)
+>
+>  static void blkfront_setup_discard(struct blkfront_info *info)
+>  {
+> -       int err;
+> -       unsigned int discard_granularity;
+> -       unsigned int discard_alignment;
+> -
+>         info->feature_discard =3D 1;
+> -       err =3D xenbus_gather(XBT_NIL, info->xbdev->otherend,
+> -               "discard-granularity", "%u", &discard_granularity,
+> -               "discard-alignment", "%u", &discard_alignment,
+> -               NULL);
+> -       if (!err) {
+> -               info->discard_granularity =3D discard_granularity;
+> -               info->discard_alignment =3D discard_alignment;
+> -       }
+> +       info->discard_granularity =3D xenbus_read_unsigned(info->xbdev->o=
+therend,
+> +                                                        "discard-granula=
+rity",
+> +                                                        0);
+> +       info->discard_alignment =3D xenbus_read_unsigned(info->xbdev->oth=
+erend,
+> +                                                      "discard-alignment=
+", 0);
+>         info->feature_secdiscard =3D
+>                 !!xenbus_read_unsigned(info->xbdev->otherend, "discard-se=
+cure",
+>                                        0);
+> --
+> 2.29.2
+>
+
+
+--=20
+Arthur Borsboom
