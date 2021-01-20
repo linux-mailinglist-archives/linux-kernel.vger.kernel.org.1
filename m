@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A7E2FC811
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4C42FC81B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbhATCcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46630 "EHLO mail.kernel.org"
+        id S1731751AbhATChg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:37:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729490AbhATB1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:27:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D534F23110;
-        Wed, 20 Jan 2021 01:26:14 +0000 (UTC)
+        id S1728632AbhATB2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A5222313A;
+        Wed, 20 Jan 2021 01:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611105976;
-        bh=HL1b2C8yQOXcrkbm6rJdKvoCYwKhA7Bn9EFf9ewElnQ=;
+        s=k20201202; t=1611105979;
+        bh=01AXPeuvHq4YkqZS4wMolAMnbMUyq0ZgtRslBq9z/gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lDNLr2mfI7yyHJRC+BtPr2VnkgvDUnETBcoeHbxVm/DJVUeVdOPyQ4dikZLRnAIWw
-         +eb1r90ZupUZZR2kxY+EEvHYO8CvytCx+pBLrbrn6aYhYwvnYk4GF+B9iPP4lyQguE
-         8adJTWg13/3M6RNYtUyR65zXh8q37CMD10PjLrD6S9ctiU3Kcd1K8+ou1dKgQSfAjF
-         YOV0Rr4OaWkf6pk6d1RaxCL/sIAAhJQN377L2dGy5lS4u5kCjwOj5kc+0LMhWOg2Bz
-         XWETqW1nYP0MG+ufMaaSCDT3PBDyn+a+urSvoVXCma/eJxUlu8QL0/6AynzwO/mrXq
-         ZLVfD3Mq6M8CQ==
+        b=lFVH4+QUoFzYGM7Up6m6nESpszA+SIqQqhmRcwWv5Wijd44rlV4vOnkH32dnMiWC0
+         28FzSF7CuhY+DMpjQCzK2GRNGQMdDTafVfCHnrqnN2WBhtmqtiZ63EJQA5NoksW8CS
+         9GnfnkBKOrAOIrEh9dSJWvs0tvhFgjFGI15LWik7SVmB33BAuQauC8uNXM29SjDN+o
+         xhsA9hKzYzBjTyeC15rKNuZTnEMozwjQtCO5cfV71bUazsDLQDzlX3tuMo9Zr8ghDp
+         m67g64ZYO/g9kKuCnx/pO5TINLGxZaYETVnPOkOQ7PijSu6rNGjpRRLfBq1UDhAZAk
+         iHH8vs9+X6lTQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Can Guo <cang@codeaurora.org>, Avri Altman <avri.altman@wdc.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
+Cc:     "Ewan D. Milne" <emilne@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 10/45] scsi: ufs: Correct the LUN used in eh_device_reset_handler() callback
-Date:   Tue, 19 Jan 2021 20:25:27 -0500
-Message-Id: <20210120012602.769683-10-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 13/45] scsi: sd: Suppress spurious errors when WRITE SAME is being disabled
+Date:   Tue, 19 Jan 2021 20:25:30 -0500
+Message-Id: <20210120012602.769683-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -45,63 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Can Guo <cang@codeaurora.org>
+From: "Ewan D. Milne" <emilne@redhat.com>
 
-[ Upstream commit 35fc4cd34426c242ab015ef280853b7bff101f48 ]
+[ Upstream commit e5cc9002caafacbaa8dab878d17a313192c3b03b ]
 
-Users can initiate resets to specific SCSI device/target/host through
-IOCTL. When this happens, the SCSI cmd passed to eh_device/target/host
-_reset_handler() callbacks is initialized with a request whose tag is -1.
-In this case it is not right for eh_device_reset_handler() callback to
-count on the LUN get from hba->lrb[-1]. Fix it by getting LUN from the SCSI
-device associated with the SCSI cmd.
+The block layer code will split a large zeroout request into multiple bios
+and if WRITE SAME is disabled because the storage device reports that it
+does not support it (or support the length used), we can get an error
+message from the block layer despite the setting of RQF_QUIET on the first
+request.  This is because more than one request may have already been
+submitted.
 
-Link: https://lore.kernel.org/r/1609157080-26283-1-git-send-email-cang@codeaurora.org
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Can Guo <cang@codeaurora.org>
+Fix this by setting RQF_QUIET when BLK_STS_TARGET is returned to fail the
+request early, we don't need to log a message because we did not actually
+submit the command to the device, and the block layer code will handle the
+error by submitting individual write bios.
+
+Link: https://lore.kernel.org/r/20201207221021.28243-1-emilne@redhat.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Ewan D. Milne <emilne@redhat.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/scsi/sd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index cc0aebf54b079..a90127488ed20 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6567,19 +6567,16 @@ static int ufshcd_eh_device_reset_handler(struct scsi_cmnd *cmd)
- {
- 	struct Scsi_Host *host;
- 	struct ufs_hba *hba;
--	unsigned int tag;
- 	u32 pos;
- 	int err;
--	u8 resp = 0xF;
--	struct ufshcd_lrb *lrbp;
-+	u8 resp = 0xF, lun;
- 	unsigned long flags;
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 656bcf4940d6d..fedb89d4ac3f0 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -986,8 +986,10 @@ static blk_status_t sd_setup_write_zeroes_cmnd(struct scsi_cmnd *cmd)
+ 		}
+ 	}
  
- 	host = cmd->device->host;
- 	hba = shost_priv(host);
--	tag = cmd->request->tag;
+-	if (sdp->no_write_same)
++	if (sdp->no_write_same) {
++		rq->rq_flags |= RQF_QUIET;
+ 		return BLK_STS_TARGET;
++	}
  
--	lrbp = &hba->lrb[tag];
--	err = ufshcd_issue_tm_cmd(hba, lrbp->lun, 0, UFS_LOGICAL_RESET, &resp);
-+	lun = ufshcd_scsi_to_upiu_lun(cmd->device->lun);
-+	err = ufshcd_issue_tm_cmd(hba, lun, 0, UFS_LOGICAL_RESET, &resp);
- 	if (err || resp != UPIU_TASK_MANAGEMENT_FUNC_COMPL) {
- 		if (!err)
- 			err = resp;
-@@ -6588,7 +6585,7 @@ static int ufshcd_eh_device_reset_handler(struct scsi_cmnd *cmd)
- 
- 	/* clear the commands that were pending for corresponding LUN */
- 	for_each_set_bit(pos, &hba->outstanding_reqs, hba->nutrs) {
--		if (hba->lrb[pos].lun == lrbp->lun) {
-+		if (hba->lrb[pos].lun == lun) {
- 			err = ufshcd_clear_cmd(hba, pos);
- 			if (err)
- 				break;
+ 	if (sdkp->ws16 || lba > 0xffffffff || nr_blocks > 0xffff)
+ 		return sd_setup_write_same16_cmnd(cmd, false);
 -- 
 2.27.0
 
