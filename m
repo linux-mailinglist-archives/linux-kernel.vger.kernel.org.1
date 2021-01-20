@@ -2,96 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6819A2FCB0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD35A2FCB0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbhATGV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:21:29 -0500
-Received: from conuserg-10.nifty.com ([210.131.2.77]:28149 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729013AbhATGTt (ORCPT
+        id S1728470AbhATG1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728240AbhATGUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:19:49 -0500
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 10K6IZ7o028054;
-        Wed, 20 Jan 2021 15:18:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 10K6IZ7o028054
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611123515;
-        bh=btZ7U+eLyQSL4kovQk7ohob7u4EsRf+CqAEY6fgfEyg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=m6WNqX/itgBYLDj/10juNKlrjvZ0QMdVuF6wp/7rg/9xj268AgSUIXabe6bDMu2jQ
-         CwkVHbkQ8cmu/wX8EhbCZlz2Euqm+JPFrOFeYpvGI5kfdPG0wv7oLNQb8oGk8Ybpa4
-         gtkE+8mu6t0Ysmv/Dn5Xcrfm6MfmAHBRmyGBJ29LmMqodI2F8Uf+uPb7LC500Lt698
-         fwCTb0fSMCNS1udUXA0hz+nLtXBnS49bGx1j9+EpAinYzL2VpxcKX+DNADI5YOTQa/
-         Ud6D2fMrY9nwb1lZlXMhAeb8j6tW7vBtnVIl0t6KXTttN0kYMEwlUWm9i/5KlH3RLm
-         X1fvqY+dY7zHQ==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: remove deprecated syntax EXTRA_*FLAGS, always, hostprogs-*
-Date:   Wed, 20 Jan 2021 15:18:32 +0900
-Message-Id: <20210120061832.3010926-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 20 Jan 2021 01:20:07 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12E1C061575;
+        Tue, 19 Jan 2021 22:19:26 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLFjQ0bvCz9sVy;
+        Wed, 20 Jan 2021 17:19:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611123565;
+        bh=r5xVdPO4m7P2mwJrkoTxUEM32+9FIwPonFrWByCzuA8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KAHh3o2AHr4brWlCRKaGN8txAMIMhed1/wQ0dWloOwrpwnf1XuOQIvbscJUow9coI
+         yfC1kfHxRaIcEs5W83j51aKc8TX068bKgdurtwOI9Mu2lfJELyH/Q89Ny6i2gw6jsq
+         yg2r0HATDS7q9/ZQumBnf3Iu5i36TmG1/N3sRBtHqmVvt69M/pkdID7UBvJY1WTaAx
+         Er2Qxt2FJRWNg0xPS8mUG6dY03A/fblEup9/4j59MDBRcbCkTv3h0BiikCl2bhGP1O
+         XFtzV6X751noNHQMO9MgW06eyvCN3r2aNmu1bEbyBWtKz2FuQ+2EixZbQ/Nuni3+RK
+         46kkbYNwhHj+w==
+Date:   Wed, 20 Jan 2021 17:19:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: Re: linux-next: manual merge of the notifications tree with Linus'
+ tree
+Message-ID: <20210120171921.11d9d463@canb.auug.org.au>
+In-Reply-To: <20201221120209.5c5cb5d8@canb.auug.org.au>
+References: <20201221120209.5c5cb5d8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/F_LbjlTpWuHb8oUDvSHydok";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The backward compatibility has been kept for a while. There is no user
-in upstream. Out-of-tree users must be converted to new ones.
+--Sig_/F_LbjlTpWuHb8oUDvSHydok
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Hi David,
 
- scripts/Makefile.clean |  3 ---
- scripts/Makefile.lib   | 17 -----------------
- 2 files changed, 20 deletions(-)
+On Mon, 21 Dec 2020 12:02:09 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
+>=20
+> Today's linux-next merge of the notifications tree got conflicts in:
+>=20
+>   arch/alpha/kernel/syscalls/syscall.tbl
+>   arch/arm/tools/syscall.tbl
+>   arch/arm64/include/asm/unistd.h
+>   arch/arm64/include/asm/unistd32.h
+>   arch/ia64/kernel/syscalls/syscall.tbl
+>   arch/m68k/kernel/syscalls/syscall.tbl
+>   arch/microblaze/kernel/syscalls/syscall.tbl
+>   arch/mips/kernel/syscalls/syscall_n32.tbl
+>   arch/mips/kernel/syscalls/syscall_n64.tbl
+>   arch/mips/kernel/syscalls/syscall_o32.tbl
+>   arch/parisc/kernel/syscalls/syscall.tbl
+>   arch/powerpc/kernel/syscalls/syscall.tbl
+>   arch/s390/kernel/syscalls/syscall.tbl
+>   arch/sh/kernel/syscalls/syscall.tbl
+>   arch/sparc/kernel/syscalls/syscall.tbl
+>   arch/x86/entry/syscalls/syscall_32.tbl
+>   arch/x86/entry/syscalls/syscall_64.tbl
+>   arch/xtensa/kernel/syscalls/syscall.tbl
+>   include/uapi/asm-generic/unistd.h
+>=20
+> between commits:
+>=20
+>   b0a0c2615f6f ("epoll: wire up syscall epoll_pwait2")
+>   450f68e2425e ("epoll: fix compat syscall wire up of epoll_pwait2")
+>   ecb8ac8b1f14 ("mm/madvise: introduce process_madvise() syscall: an exte=
+rnal memory hinting API")
+>=20
+> from Linus' tree and commit:
+>=20
+>   4cd92d064cb0 ("watch_queue: Implement mount topology and attribute chan=
+ge notifications")
+>=20
+> from the notifications tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> If this is not submitted to Linus during this merge window, please
+> either drop it from your linux-next included branch, or at least fix it
+> up wrt to the sate of Linus' tree.
 
-diff --git a/scripts/Makefile.clean b/scripts/Makefile.clean
-index d9e0ceace6a6..22a8172bce1f 100644
---- a/scripts/Makefile.clean
-+++ b/scripts/Makefile.clean
-@@ -34,9 +34,6 @@ __clean-files	:= \
- 	$(hostprogs-always-y) $(hostprogs-always-m) $(hostprogs-always-) \
- 	$(userprogs-always-y) $(userprogs-always-m) $(userprogs-always-)
- 
--# deprecated
--__clean-files	+= $(always) $(hostprogs-y) $(hostprogs-m) $(hostprogs-)
--
- __clean-files   := $(filter-out $(no-clean-files), $(__clean-files))
- 
- # clean-files is given relative to the current directory, unless it
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index e10b675165cd..b8e587a17dcc 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -1,21 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--# Backward compatibility
--asflags-y  += $(EXTRA_AFLAGS)
--ccflags-y  += $(EXTRA_CFLAGS)
--cppflags-y += $(EXTRA_CPPFLAGS)
--ldflags-y  += $(EXTRA_LDFLAGS)
--ifneq ($(always),)
--$(warning 'always' is deprecated. Please use 'always-y' instead)
--always-y   += $(always)
--endif
--ifneq ($(hostprogs-y),)
--$(warning 'hostprogs-y' is deprecated. Please use 'hostprogs' instead)
--hostprogs  += $(hostprogs-y)
--endif
--ifneq ($(hostprogs-m),)
--$(warning 'hostprogs-m' is deprecated. Please use 'hostprogs' instead)
--hostprogs  += $(hostprogs-m)
--endif
- 
- # flags that take effect in current and sub directories
- KBUILD_AFLAGS += $(subdir-asflags-y)
--- 
-2.27.0
+How are you going with this?
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/F_LbjlTpWuHb8oUDvSHydok
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAHy2kACgkQAVBC80lX
+0GyBeAf/SUwFQX6naVdoMVsMXmXYAieE6h7oWn5x/oKN0iT+WtSvIaTD5bbbdsiR
+B615ASysYOTXdx4QUMh12AnxnetIb6unVAv3Bqy01ykOAyCebHlnFnmiAuA5PbtZ
+M6sGPrFU8Hid0G3O+2hkDZVJPrDmb6RTXEp8nxSFv+0LMSSF7c31KM850OGc+EGE
+/KATq8CuA4rGG0d3El7DjF7W6B96VB9+Z20FuBWUSTCRJHGSH6aZn9QmqwiSYPeE
+Gd/YcE/BBTA865o6l4C53mvv5jKUgYJGqDeHG0vg5vnOQ32Bkx5gjmdKMvXTpN/W
+9MWYwMCDx1SJx/4JjSLq4gSWva5skQ==
+=KIJd
+-----END PGP SIGNATURE-----
+
+--Sig_/F_LbjlTpWuHb8oUDvSHydok--
