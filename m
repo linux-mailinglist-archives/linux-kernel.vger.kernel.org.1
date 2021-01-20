@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1272FDBF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FDD2FDBF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389211AbhATVfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
+        id S2389895AbhATVfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:35:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731690AbhATVKX (ORCPT
+        with ESMTP id S1732919AbhATVKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:10:23 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B58C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:43 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id s15so13210019plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:43 -0800 (PST)
+        Wed, 20 Jan 2021 16:10:49 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57EAC061795
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:46 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id o20so6893214pfu.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5p3XfY6TOWEdcAK7xdoxc0ak2IFt6vsK1MpKBtv9a0E=;
-        b=dIylZNXUT8UQ3UamF1ogl2nvky0NOqNfe4p5pAKibTyvbKpekUSnf9ybDFs54ibA61
-         C/ZTwYE6NnSTMniIt78BwgL8jFAh3+rjQvmEWrMrKSJKxbkS0hz96dBKkbEbw9gtFk18
-         KYuxSgNMJkmdWQ8aLW21q7KBpR80cNf8dfF8N2tIS4SgJpoyaXfqI8wcVAXoTU0krNs6
-         gdYQeDCNH6YNcse2uf33htcQmPbFox6z6dKVg1FTtNAccuiwdwNizrjmiGcGMnc+kPU+
-         uA6gayZCbJYLyJQXyg1ltt7mbeoFgUj879fNhy/VNvLDe6KbpVOg4yo1OSBtH16wV3xG
-         JLMg==
+        bh=H4+X0xWeooH24gYhSYvXX9x75t8RTwKg5FJ1Ffw/87E=;
+        b=b+9dZxp4AirxgnJJSr4dySxi/WJW1ARIEAf6hNM3BR6rRHmNRJ1MZpwJ/OBt4UYMY8
+         74ECTrUU5Uil9qGJ7UZJT3o60mz3sfiRSorXPkmty6sTDdyuLqvgUxyWgmcTJe2Tc/3Y
+         hQDyLsBwYERkBEox9qzKb0srA+DM7+gD+ck9f2hcZZ4VifojYxJWZu5+h066eQNlqQkW
+         WTNIByqh6IaEZEa2iqKZhuBmlIop5JUJslwRi0p3MgdJXLIuLzfzP0BoKR/uEb8aby56
+         kW8NUHY2+Uvckz0UPPxHeKrgMis65PYRLsvnRES7q738rjV7tRJep+hw+/Iqm6OfsekA
+         0riw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5p3XfY6TOWEdcAK7xdoxc0ak2IFt6vsK1MpKBtv9a0E=;
-        b=VveWKiQON40A4EvPBGlMEYzk9h2QZ3FyJuJMARrNahXoIMWgNvQe3ngBHYABkZ52im
-         ZrS2cKmdWjpiFX7l3EdUq8PBMKVA8c0UIHgyGhudEASfvVdt8ElvsUGkE6zgzdIYK4Vc
-         2vbyFYFmXVskDNiKsATY79vzERrssWHqoHePrxy0PjmS5qsBC7JORP6IXtrIoTX+XuXN
-         eVREVmFFXE192z1098QlW6/4ytkUxpbDPKggOCU6oNanb36XXuqAaSScnbvel9cZJB1d
-         Bar8qbjQnZDWGljxGeJkhlqbxRfq0cSmcLnsepKQDLAtw49Gdf6VmeerPYo4bv5GHRB/
-         n4TQ==
-X-Gm-Message-State: AOAM533RUgo6YqGQaGVxHNmQhVz2eKGq3IeDkIcID9EgQySUv03p00X8
-        7bPb5tgfPSG4vDpUMUZWaTTkcS7uVl+i/g==
-X-Google-Smtp-Source: ABdhPJws6ddONO6NY88RoQ3BGsVYEJuaBeog/gKtwE5U4aqwU6w4J5JtoB3QT6Z/CXX0IqrItU/FPA==
-X-Received: by 2002:a17:902:b203:b029:dc:973:3ad0 with SMTP id t3-20020a170902b203b02900dc09733ad0mr11671800plr.44.1611176982332;
-        Wed, 20 Jan 2021 13:09:42 -0800 (PST)
+        bh=H4+X0xWeooH24gYhSYvXX9x75t8RTwKg5FJ1Ffw/87E=;
+        b=ZoqUsqh9vaUMUInXtL59MjfdW6Grhb5JovCKNqC0CpwRaxQhuDKE3QYWJ3EY7YIwlt
+         gS3+vUsfp+gJ55qfgu5WcK4kKS8WBCBCv3I5UZf/w7m7lKwJ5tndakucK175EUABabKc
+         JU3E0cI+0lCVjEjad4a3qW9/smHbBk+OY5ZwyO+2MgDT5SDZG6ba9h5PO/8uPrrjHt5C
+         7u3T9ztNfvUWtqhppYLQAV/3oqvtj4VIhnDPFmXOqW9iLh3LQwrHUfczLlzWpEI0Qr2R
+         D1milcdmNTYOc9X9VhwbytLuUVAiIYpAtFx1ML01ftDyXiiumMe2ye6kmjP3bBEsMqDI
+         C0AA==
+X-Gm-Message-State: AOAM530ETZV2/4ikA/2nE/w/5cJoJPyJfLwCKHeZcXMrqRJM/yHrlapb
+        h7FA5H5WJaDwjpvapwTtOHdsdWNwlcDuhw==
+X-Google-Smtp-Source: ABdhPJyv4JjWfOCxuhxS+jF+NOmU+TvHCVz4VkCmpOfeGTszmzT23aBKlf3HPpm7AJDat28vcTMDGA==
+X-Received: by 2002:a62:8fca:0:b029:1a9:39bc:ed37 with SMTP id n193-20020a628fca0000b02901a939bced37mr10984394pfd.61.1611176985973;
+        Wed, 20 Jan 2021 13:09:45 -0800 (PST)
 Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id f15sm3265629pja.24.2021.01.20.13.09.40
+        by smtp.gmail.com with ESMTPSA id f15sm3265629pja.24.2021.01.20.13.09.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:09:41 -0800 (PST)
+        Wed, 20 Jan 2021 13:09:45 -0800 (PST)
 From:   John Stultz <john.stultz@linaro.org>
 To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
+Cc:     Bing Song <bing.song@nxp.com>, Daniel Vetter <daniel@ffwll.ch>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         Liam Mark <lmark@codeaurora.org>,
         Laura Abbott <labbott@kernel.org>,
@@ -65,12 +64,12 @@ Cc:     John Stultz <john.stultz@linaro.org>,
         Robin Murphy <robin.murphy@arm.com>,
         Ezequiel Garcia <ezequiel@collabora.com>,
         Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        Bing Song <bing.song@nxp.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 1/3] dma-buf: dma-heap: Keep track of the heap device struct
-Date:   Wed, 20 Jan 2021 21:09:35 +0000
-Message-Id: <20210120210937.15069-2-john.stultz@linaro.org>
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        John Stultz <john.stultz@linaro.org>
+Subject: [PATCH 3/3] dma-buf: cma_heap: Add a cma-uncached heap re-using the cma heap
+Date:   Wed, 20 Jan 2021 21:09:37 +0000
+Message-Id: <20210120210937.15069-4-john.stultz@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210120210937.15069-1-john.stultz@linaro.org>
 References: <20210120210937.15069-1-john.stultz@linaro.org>
@@ -81,10 +80,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keep track of the heap device struct.
+From: Bing Song <bing.song@nxp.com>
 
-This will be useful for special DMA allocations
-and actions.
+This adds a heap that allocates CMA buffers that are
+marked as writecombined, so they are not cached by the CPU.
 
 Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: Sumit Semwal <sumit.semwal@linaro.org>
@@ -101,106 +100,258 @@ Cc: Robin Murphy <robin.murphy@arm.com>
 Cc: Ezequiel Garcia <ezequiel@collabora.com>
 Cc: Simon Ser <contact@emersion.fr>
 Cc: James Jones <jajones@nvidia.com>
-Cc: Bing Song <bing.song@nxp.com>
 Cc: linux-media@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Bing Song <bing.song@nxp.com>
 Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
- drivers/dma-buf/dma-heap.c | 33 +++++++++++++++++++++++++--------
- include/linux/dma-heap.h   |  9 +++++++++
- 2 files changed, 34 insertions(+), 8 deletions(-)
+ drivers/dma-buf/heaps/cma_heap.c | 119 +++++++++++++++++++++++++++----
+ 1 file changed, 107 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
-index afd22c9dbdcf..72c746755d89 100644
---- a/drivers/dma-buf/dma-heap.c
-+++ b/drivers/dma-buf/dma-heap.c
-@@ -30,6 +30,7 @@
-  * @heap_devt		heap device node
-  * @list		list head connecting to list of heaps
-  * @heap_cdev		heap char device
-+ * @heap_dev		heap device struct
-  *
-  * Represents a heap of memory from which buffers can be made.
-  */
-@@ -40,6 +41,7 @@ struct dma_heap {
- 	dev_t heap_devt;
- 	struct list_head list;
- 	struct cdev heap_cdev;
-+	struct device *heap_dev;
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 364fc2f3e499..1b8c6eb0a8ea 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -38,6 +38,7 @@ struct cma_heap_buffer {
+ 	pgoff_t pagecount;
+ 	int vmap_cnt;
+ 	void *vaddr;
++	bool uncached;
  };
  
- static LIST_HEAD(heap_list);
-@@ -190,10 +192,21 @@ void *dma_heap_get_drvdata(struct dma_heap *heap)
- 	return heap->priv;
- }
+ struct dma_heap_attachment {
+@@ -45,6 +46,7 @@ struct dma_heap_attachment {
+ 	struct sg_table table;
+ 	struct list_head list;
+ 	bool mapped;
++	bool uncached;
+ };
  
-+/**
-+ * dma_heap_get_dev() - get device struct for the heap
-+ * @heap: DMA-Heap to retrieve device struct from
-+ *
-+ * Returns:
-+ * The device struct for the heap.
-+ */
-+struct device *dma_heap_get_dev(struct dma_heap *heap)
-+{
-+	return heap->heap_dev;
-+}
-+
- struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+ static int cma_heap_attach(struct dma_buf *dmabuf,
+@@ -70,6 +72,7 @@ static int cma_heap_attach(struct dma_buf *dmabuf,
+ 	a->dev = attachment->dev;
+ 	INIT_LIST_HEAD(&a->list);
+ 	a->mapped = false;
++	a->uncached = buffer->uncached;
+ 
+ 	attachment->priv = a;
+ 
+@@ -99,8 +102,12 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
  {
- 	struct dma_heap *heap, *h, *err_ret;
--	struct device *dev_ret;
- 	unsigned int minor;
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = &a->table;
++	int attr = 0;
  	int ret;
  
-@@ -247,16 +260,20 @@ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
- 		goto err1;
++	if (a->uncached)
++		attr = DMA_ATTR_SKIP_CPU_SYNC;
++
+ 	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
+ 	if (ret)
+ 		return ERR_PTR(-ENOMEM);
+@@ -113,7 +120,10 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				   enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attr = 0;
+ 
++	if (a->uncached)
++		attr = DMA_ATTR_SKIP_CPU_SYNC;
+ 	a->mapped = false;
+ 	dma_unmap_sgtable(attachment->dev, table, direction, 0);
+ }
+@@ -128,10 +138,12 @@ static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+ 		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
+ 
+ 	mutex_lock(&buffer->lock);
+-	list_for_each_entry(a, &buffer->attachments, list) {
+-		if (!a->mapped)
+-			continue;
+-		dma_sync_sgtable_for_cpu(a->dev, &a->table, direction);
++	if (!buffer->uncached) {
++		list_for_each_entry(a, &buffer->attachments, list) {
++			if (!a->mapped)
++				continue;
++			dma_sync_sgtable_for_cpu(a->dev, &a->table, direction);
++		}
+ 	}
+ 	mutex_unlock(&buffer->lock);
+ 
+@@ -148,10 +160,12 @@ static int cma_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
+ 		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
+ 
+ 	mutex_lock(&buffer->lock);
+-	list_for_each_entry(a, &buffer->attachments, list) {
+-		if (!a->mapped)
+-			continue;
+-		dma_sync_sgtable_for_device(a->dev, &a->table, direction);
++	if (!buffer->uncached) {
++		list_for_each_entry(a, &buffer->attachments, list) {
++			if (!a->mapped)
++				continue;
++			dma_sync_sgtable_for_device(a->dev, &a->table, direction);
++		}
+ 	}
+ 	mutex_unlock(&buffer->lock);
+ 
+@@ -183,6 +197,9 @@ static int cma_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+ 	if ((vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) == 0)
+ 		return -EINVAL;
+ 
++	if (buffer->uncached)
++		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
++
+ 	vma->vm_ops = &dma_heap_vm_ops;
+ 	vma->vm_private_data = buffer;
+ 
+@@ -191,9 +208,13 @@ static int cma_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+ 
+ static void *cma_heap_do_vmap(struct cma_heap_buffer *buffer)
+ {
++	pgprot_t pgprot = PAGE_KERNEL;
+ 	void *vaddr;
+ 
+-	vaddr = vmap(buffer->pages, buffer->pagecount, VM_MAP, PAGE_KERNEL);
++	if (buffer->uncached)
++		pgprot = pgprot_writecombine(PAGE_KERNEL);
++
++	vaddr = vmap(buffer->pages, buffer->pagecount, VM_MAP, pgprot);
+ 	if (!vaddr)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -271,10 +292,11 @@ static const struct dma_buf_ops cma_heap_buf_ops = {
+ 	.release = cma_heap_dma_buf_release,
+ };
+ 
+-static int cma_heap_allocate(struct dma_heap *heap,
++static int cma_heap_do_allocate(struct dma_heap *heap,
+ 				  unsigned long len,
+ 				  unsigned long fd_flags,
+-				  unsigned long heap_flags)
++				  unsigned long heap_flags,
++				  bool uncached)
+ {
+ 	struct cma_heap *cma_heap = dma_heap_get_drvdata(heap);
+ 	struct cma_heap_buffer *buffer;
+@@ -283,8 +305,9 @@ static int cma_heap_allocate(struct dma_heap *heap,
+ 	pgoff_t pagecount = size >> PAGE_SHIFT;
+ 	unsigned long align = get_order(size);
+ 	struct page *cma_pages;
++	struct sg_table table;
+ 	struct dma_buf *dmabuf;
+-	int ret = -ENOMEM;
++	int ret = -ENOMEM, ret_sg_table;
+ 	pgoff_t pg;
+ 
+ 	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
+@@ -294,6 +317,7 @@ static int cma_heap_allocate(struct dma_heap *heap,
+ 	INIT_LIST_HEAD(&buffer->attachments);
+ 	mutex_init(&buffer->lock);
+ 	buffer->len = size;
++	buffer->uncached = uncached;
+ 
+ 	if (align > CONFIG_CMA_ALIGNMENT)
+ 		align = CONFIG_CMA_ALIGNMENT;
+@@ -356,6 +380,18 @@ static int cma_heap_allocate(struct dma_heap *heap,
+ 		return ret;
  	}
  
--	dev_ret = device_create(dma_heap_class,
--				NULL,
--				heap->heap_devt,
--				NULL,
--				heap->name);
--	if (IS_ERR(dev_ret)) {
-+	heap->heap_dev = device_create(dma_heap_class,
-+				       NULL,
-+				       heap->heap_devt,
-+				       NULL,
-+				       heap->name);
-+	if (IS_ERR(heap->heap_dev)) {
- 		pr_err("dma_heap: Unable to create device\n");
--		err_ret = ERR_CAST(dev_ret);
-+		err_ret = ERR_CAST(heap->heap_dev);
- 		goto err2;
- 	}
++	if (buffer->uncached) {
++		ret_sg_table = sg_alloc_table(&table, 1, GFP_KERNEL);
++		if (ret_sg_table)
++			return ret_sg_table;
 +
-+	/* Make sure it doesn't disappear on us */
-+	heap->heap_dev = get_device(heap->heap_dev);
++		sg_set_page(table.sgl, cma_pages, size, 0);
 +
- 	/* Add heap to the list */
- 	mutex_lock(&heap_list_lock);
- 	list_add(&heap->list, &heap_list);
-diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
-index 454e354d1ffb..82857e096910 100644
---- a/include/linux/dma-heap.h
-+++ b/include/linux/dma-heap.h
-@@ -50,6 +50,15 @@ struct dma_heap_export_info {
-  */
- void *dma_heap_get_drvdata(struct dma_heap *heap);
++		dma_map_sgtable(dma_heap_get_dev(heap), &table, DMA_BIDIRECTIONAL, 0);
++		dma_unmap_sgtable(dma_heap_get_dev(heap), &table, DMA_BIDIRECTIONAL, 0);
++		sg_free_table(&table);
++	}
++
+ 	return ret;
  
-+/**
-+ * dma_heap_get_dev() - get device struct for the heap
-+ * @heap: DMA-Heap to retrieve device struct from
-+ *
-+ * Returns:
-+ * The device struct for the heap.
-+ */
-+struct device *dma_heap_get_dev(struct dma_heap *heap);
+ free_pages:
+@@ -368,14 +404,45 @@ static int cma_heap_allocate(struct dma_heap *heap,
+ 	return ret;
+ }
+ 
++static int cma_heap_allocate(struct dma_heap *heap,
++				  unsigned long len,
++				  unsigned long fd_flags,
++				  unsigned long heap_flags)
++{
++	return cma_heap_do_allocate(heap, len, fd_flags, heap_flags, false);
++}
 +
- /**
-  * dma_heap_add - adds a heap to dmabuf heaps
-  * @exp_info:		information needed to register this heap
++static int cma_uncached_heap_allocate(struct dma_heap *heap,
++				  unsigned long len,
++				  unsigned long fd_flags,
++				  unsigned long heap_flags)
++{
++	return cma_heap_do_allocate(heap, len, fd_flags, heap_flags, true);
++}
++
++/* Dummy function to be used until we can call coerce_mask_and_coherent */
++static int cma_uncached_heap_not_initialized(struct dma_heap *heap,
++						unsigned long len,
++						unsigned long fd_flags,
++						unsigned long heap_flags)
++{
++	return -EBUSY;
++}
++
+ static const struct dma_heap_ops cma_heap_ops = {
+ 	.allocate = cma_heap_allocate,
+ };
+ 
++static struct dma_heap_ops cma_uncached_heap_ops = {
++	.allocate = cma_uncached_heap_not_initialized,
++};
++
+ static int __add_cma_heap(struct cma *cma, void *data)
+ {
+ 	struct cma_heap *cma_heap;
+ 	struct dma_heap_export_info exp_info;
++	const char *postfixed = "-uncached";
++	char *cma_name;
+ 
+ 	cma_heap = kzalloc(sizeof(*cma_heap), GFP_KERNEL);
+ 	if (!cma_heap)
+@@ -394,6 +461,34 @@ static int __add_cma_heap(struct cma *cma, void *data)
+ 		return ret;
+ 	}
+ 
++	cma_heap = kzalloc(sizeof(*cma_heap), GFP_KERNEL);
++	if (!cma_heap)
++		return -ENOMEM;
++	cma_heap->cma = cma;
++
++	cma_name = kzalloc(strlen(cma_get_name(cma)) + strlen(postfixed) + 1, GFP_KERNEL);
++	if (!cma_name) {
++		kfree(cma_heap);
++		return -ENOMEM;
++	}
++
++	exp_info.name = strcat(strcpy(cma_name, cma_get_name(cma)), postfixed);
++	exp_info.ops = &cma_uncached_heap_ops;
++	exp_info.priv = cma_heap;
++
++	cma_heap->heap = dma_heap_add(&exp_info);
++	if (IS_ERR(cma_heap->heap)) {
++		int ret = PTR_ERR(cma_heap->heap);
++
++		kfree(cma_heap);
++		kfree(cma_name);
++		return ret;
++	}
++
++	dma_coerce_mask_and_coherent(dma_heap_get_dev(cma_heap->heap), DMA_BIT_MASK(64));
++	mb(); /* make sure we only set allocate after dma_mask is set */
++	cma_uncached_heap_ops.allocate = cma_uncached_heap_allocate;
++
+ 	return 0;
+ }
+ 
 -- 
 2.17.1
 
