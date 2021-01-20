@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584AF2FDC8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62CB2FDC91
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731079AbhATWWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 17:22:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38082 "EHLO
+        id S1726433AbhATWXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:23:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46921 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731299AbhATVwF (ORCPT
+        by vger.kernel.org with ESMTP id S1731344AbhATVwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:52:05 -0500
+        Wed, 20 Jan 2021 16:52:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611179404;
+        s=mimecast20190719; t=1611179409;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=q5Tk07cOyzSuWC8UtiKXVVn3bXHByT7HLLQP4dV6lj4=;
-        b=Rtuztq4h/0BD3Kym2vK7mDyZWj540prF5sBqr/BCkSPNixSHcoDbgOlbqe240ytYPV59XI
-        a24SG31Qyx+icy2Dpsk4gHoty2GFTfvzuvvt+8ayxBJCHi9ZrOMSIX2OQ8tFWDYV6v1qyS
-        noRN4sBwtLjP/eOm+AxBEVQUM9aiJxw=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dwWb/jzvcF0HeOiU902re41Et7/qhlMHI34fzUY/I1I=;
+        b=Brg3nKvJjCzp9VKIsxNJ6JMirvDCvHayOqJa6sEkKBbH13Ijy8e994svvQneQOVRdrjrHd
+        5BPjgX+BUxNNnjvYlQatFKQP6JiEhvwrKyQSPn2230f5vDZPSlxYKBtQyIUYK+4sB4GHWd
+        UWBLkRXqeTNyEgTsgSbzPmR5ajCm8mU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-Y9rzyxF8MWeuZg_DsNGdJw-1; Wed, 20 Jan 2021 16:50:02 -0500
-X-MC-Unique: Y9rzyxF8MWeuZg_DsNGdJw-1
+ us-mta-486-DW4KbaaFP52ECPAscXvJHw-1; Wed, 20 Jan 2021 16:50:06 -0500
+X-MC-Unique: DW4KbaaFP52ECPAscXvJHw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22A5015725;
-        Wed, 20 Jan 2021 21:50:01 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F18051BE;
+        Wed, 20 Jan 2021 21:50:04 +0000 (UTC)
 Received: from x1.localdomain (ovpn-114-1.ams2.redhat.com [10.36.114.1])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 610CE61F38;
-        Wed, 20 Jan 2021 21:49:58 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C9C6627DD;
+        Wed, 20 Jan 2021 21:50:01 +0000 (UTC)
 From:   Hans de Goede <hdegoede@redhat.com>
 To:     Lee Jones <lee.jones@linaro.org>,
         Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -45,9 +46,11 @@ Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>,
         alsa-devel@alsa-project.org
-Subject: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards with WM5102 codec
-Date:   Wed, 20 Jan 2021 22:49:52 +0100
-Message-Id: <20210120214957.140232-1-hdegoede@redhat.com>
+Subject: [PATCH v4 1/5] mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
+Date:   Wed, 20 Jan 2021 22:49:53 +0100
+Message-Id: <20210120214957.140232-2-hdegoede@redhat.com>
+In-Reply-To: <20210120214957.140232-1-hdegoede@redhat.com>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
@@ -55,60 +58,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+The (shared) probing code of the arizona-i2c and arizona-spi modules
+takes the following steps during init:
 
-Here is v4 of my series to add support for Intel Bay Trail based devices
-which use a WM5102 codec for audio output/input.
+1. Call mfd_add_devices() for a set of early child-devices, this
+includes the arizona_ldo1 device which provides one of the
+core-regulators.
 
-This was developed and tested on a Lenovo Yoga Tablet 1051L.
+2. Bulk enable the core-regulators.
 
-The MFD and ASoC parts do not have any build-time dependencies
-on each other. But the follow-up jack-detect series does have
-patches depending on each-other and on this series. So IMHO it
-would be best if this entire series would be merged through the
-MFD tree to make merging the follow-up series easier.
+3. Read the device id.
 
-Mark, if that is ok with you (and you are happy with the ASoC
-changes) can you please Ack this ?
+4. Call mfd_add_devices() for the other child-devices.
 
-Changes in v4:
-- Add a comment to the irq-flags override explaining that theoretically
-  DSDTs using IRQF_TRIGGER_FALLING could be correct on boards where the
-  IRQ controller does not support active low level interrupts
+This sequence depends on 1. leading to not only the child-device
+being created, but also the driver for the child-device binding
+to it and registering its regulator.
 
-Changes in v3:
-- Fix compilation error when CONFIG_ACPI is not set
+This requires the arizona_ldo1 driver to be loaded before the
+shared probing code runs. Add a softdep for this to both modules to
+ensure that this requirement is met.
 
-Changes in v2:
-- Split my WM5102 work into 2 series, one series adding basic support
-  for Bay Trail boards with a WM5102 codec and a second series with
-  the jack-detect work
-- Various other minor code tweaks
+Note this mirrors the existing MODULE_SOFTDEP("pre: wm8994_regulator")
+in the wm8994 code, which has a similar init sequence.
 
-Hans de Goede (4):
-  mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
-  mfd: arizona: Replace arizona_of_get_type() with
-    device_get_match_data()
-  mfd: arizona: Add support for ACPI enumeration of WM5102 connected
-    over SPI
-  ASoC: Intel: Add DMI quirk table to soc_intel_is_byt_cr()
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/mfd/arizona-i2c.c | 1 +
+ drivers/mfd/arizona-spi.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-Pierre-Louis Bossart (1):
-  ASoC: Intel: bytcr_wm5102: Add machine driver for BYT/WM5102
-
- drivers/mfd/arizona-core.c                    |  11 -
- drivers/mfd/arizona-i2c.c                     |  11 +-
- drivers/mfd/arizona-spi.c                     | 138 +++++-
- drivers/mfd/arizona.h                         |   9 -
- sound/soc/intel/boards/Kconfig                |  12 +
- sound/soc/intel/boards/Makefile               |   2 +
- sound/soc/intel/boards/bytcr_wm5102.c         | 465 ++++++++++++++++++
- .../intel/common/soc-acpi-intel-byt-match.c   |  16 +
- sound/soc/intel/common/soc-intel-quirks.h     |  25 +
- 9 files changed, 661 insertions(+), 28 deletions(-)
- create mode 100644 sound/soc/intel/boards/bytcr_wm5102.c
-
-Regards,
-
-Hans
+diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
+index 4b58e3ad6eb6..2a4a3a164d0a 100644
+--- a/drivers/mfd/arizona-i2c.c
++++ b/drivers/mfd/arizona-i2c.c
+@@ -115,6 +115,7 @@ static struct i2c_driver arizona_i2c_driver = {
+ 
+ module_i2c_driver(arizona_i2c_driver);
+ 
++MODULE_SOFTDEP("pre: arizona_ldo1");
+ MODULE_DESCRIPTION("Arizona I2C bus interface");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+index 2633e147b76c..704f214d2614 100644
+--- a/drivers/mfd/arizona-spi.c
++++ b/drivers/mfd/arizona-spi.c
+@@ -110,6 +110,7 @@ static struct spi_driver arizona_spi_driver = {
+ 
+ module_spi_driver(arizona_spi_driver);
+ 
++MODULE_SOFTDEP("pre: arizona_ldo1");
+ MODULE_DESCRIPTION("Arizona SPI bus interface");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_LICENSE("GPL");
+-- 
+2.28.0
 
