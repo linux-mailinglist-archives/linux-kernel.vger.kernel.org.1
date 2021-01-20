@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820672FD6BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681642FD6BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389887AbhATRRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:17:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404174AbhATRQ7 (ORCPT
+        id S2403957AbhATRSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:18:16 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55996 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391783AbhATRRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:16:59 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F6CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:16:19 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id x6so20178028ybr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:16:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b9wI5aOMK4QP7qEbl5k5jkAB+hpflm5UBU0G8oOa8LA=;
-        b=bHQw89wbOV7Fyq9pJVIClifJ4R4XL+mAjZePqAM5wS6hckVNC8Gj1g5zDKKt2crNAb
-         ZP0B5JPFtcowlxGooOulgculUU1EEoLo9TdPArv1F7VN9FD6sWiM4BBBc7NLN6MSUDIZ
-         dPd8BuXJlNoZ7a3hIiXrfp2YY4gLoh/RMG4QlFl7HlenzNWXLFN4kQCMbglhkepu9i8Y
-         GHZQ5He01i/kQQrbTRkI5/EBUWxeyEnsgs6r1vR6sgJlflH8Suj/FHuFnt2ZK7UTaJKo
-         TdjskkEhZH83qZUxy1sCRbqhm7U+KL/fWL6LAtZs2bpJU/ViOyhmRQrwAfCF2kS86cWV
-         /odg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b9wI5aOMK4QP7qEbl5k5jkAB+hpflm5UBU0G8oOa8LA=;
-        b=q8tLe80QetOSE04hrvW0M63y0C7PclXgdUdcPgWL4asnSD9ktvSRSrcIa8ygCGeL3e
-         7Zm9vUTVHtgPKP5QwB6aPaensYaatd/U6k0RDOqXzCf15dY1E46m3K51Q2dnbDS8wMbh
-         Mu72BEKXHXy6Jbv7baejerPwyvZPiOtQ2m4bir8WNuyTBlkwJgi5KE7bsQFsxGQINVRW
-         cI0RX2FDpMEaLFaojpturgKLkQRRpfLA8e9jX8tvG66KUNQBjGrRo5fNjkbiUIM9V+p2
-         rtZ1tTIlSzBb+IXmuLSWSNHX/TTgK26AXKyCGEp4bvZa2S98kt99NNg8qp4qV3bv93Ew
-         65Dg==
-X-Gm-Message-State: AOAM5332A7SuD/Dy51zqE7SGU6od+dEljs5lRfm0wRzDALxSxh9zYFXF
-        gVQUuS0im8CQb4iFn6j7N/VPYuN/xFHmxxsJBXq9HQ==
-X-Google-Smtp-Source: ABdhPJwi1CKgasHlPWQ/KwwGM6Bb7GEe0fwT8QqGkXr5UjjZ4xi0ClwNOMIzy1N4g0aOxnt8VzEuLM+Y07LqYB0YZRE=
-X-Received: by 2002:a25:288:: with SMTP id 130mr15326444ybc.412.1611162977999;
- Wed, 20 Jan 2021 09:16:17 -0800 (PST)
+        Wed, 20 Jan 2021 12:17:54 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10KH2nCW173241;
+        Wed, 20 Jan 2021 12:17:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=2MjYTQAKg0XcBO/QYJ9eWIey23lQUMAlaNMBygShzeQ=;
+ b=PCySfe32pH4LgMJecWe5JOM64akELCHpqhnbpn/SVRX5rrY9/Jx2wzCBUaK/xyEK4lZE
+ HfXUuxU2eYpTP/B4daMW7BnZrKJIznzdleUjATimhSXw5Bzchedq73u6GKy2b9Ux5tbq
+ gueq7qq4Rmmron/PzFKg+G52/uIHEvU9RUkK36au7yfAuvosv1Y47uc8fUkGzie7CZyB
+ 4aCvJU9M9gZg/nDETcKI4zJ7Vk2rijpRxmm+G3wUin0VVMTkTOkjeQ0C03/wlQ9Qd4Or
+ QVDBUVZwmivcb4w7kHEbC4a8cVy7kaEioUncsa8gR4Jm4VbYvc817+Y1d/0Yud4A4nfa ow== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 366rbj0vn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 12:17:00 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10KHGPD5011286;
+        Wed, 20 Jan 2021 17:17:00 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02dal.us.ibm.com with ESMTP id 3668ps7d22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 17:17:00 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10KHGx1U15860140
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 17:16:59 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70D8A112067;
+        Wed, 20 Jan 2021 17:16:59 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5C453112064;
+        Wed, 20 Jan 2021 17:16:58 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.196.188])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Jan 2021 17:16:58 +0000 (GMT)
+Subject: Re: [PATCH 1/3] tty: hvcs: Drop unnecessary if block
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+References: <20210114175718.137483-1-u.kleine-koenig@pengutronix.de>
+ <20210114175718.137483-2-u.kleine-koenig@pengutronix.de>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <ce62e2fb-d882-ab6b-1a81-2315ce9a2b64@linux.ibm.com>
+Date:   Wed, 20 Jan 2021 09:16:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201218210750.3455872-1-saravanak@google.com>
- <CAMuHMdUpZELgL4qUCs1VH0UUeckpTwqYLrMy2ETPzrpuUwkLnQ@mail.gmail.com> <CAMuHMdWEOpbh8xS9W09xudpoym8=J4UzuWTDqF3L+yDuU3k2ZQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWEOpbh8xS9W09xudpoym8=J4UzuWTDqF3L+yDuU3k2ZQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 20 Jan 2021 09:15:42 -0800
-Message-ID: <CAGETcx8ssLeiHYZcHzXC-mUd=KGxi=pZQqkt8iwcHY-EYOcCjw@mail.gmail.com>
-Subject: Re: [PATCH] of: property: Add device link support for interrupts
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210114175718.137483-2-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-20_10:2021-01-20,2021-01-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 clxscore=1011 spamscore=0
+ adultscore=0 bulkscore=0 mlxlogscore=961 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 6:28 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Wed, Jan 20, 2021 at 10:53 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Fri, Dec 18, 2020 at 10:11 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > Add support for creating device links out of interrupts property.
-> > >
-> > > Cc: Marc Zyngier <maz@kernel.org>
-> > > Cc: Kevin Hilman <khilman@baylibre.com>
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >
-> > Thanks for your patch!
-> >
-> > This does not seem to add all links.  I see links being created to the
-> > secondary interrupt controller (e61c0000 "renesas,irqc"), but not to
-> > the primary interrupt controller (GIC)
-> >
-> > Which is good, as the GIC driver is not a platform_driver, and thus
-> > creating links would break everything ;-)
->
-> of_link_to_phandle() ignores device nodes where OF_POPULATED
-> is set, and of_irq_init() sets that flag.  Hence the GIC is ignored.
+On 1/14/21 9:57 AM, Uwe Kleine-König wrote:
+> If hvcs_probe() succeeded dev_set_drvdata() is called with a non-NULL
+> value, and if hvcs_probe() failed hvcs_remove() isn't called.
+> 
+> So there is no way dev_get_drvdata() can return NULL in hvcs_remove() and
+> the check can just go away.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Geert,
+Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-Yes, I know :)  I wrote it that way for GIC and some of the early
-devices that can't use the driver core. And as Marc said in the other
-email, it looks like GIC is going to be stuck as a non-device for a
-while. But this patch and others that'll follow are all set up for
-allowing non-root interrupt controllers to be implemented as platform
-devices (or <anybus> device).
+> ---
+>  drivers/tty/hvc/hvcs.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
+> index 509d1042825a..3e0461285c34 100644
+> --- a/drivers/tty/hvc/hvcs.c
+> +++ b/drivers/tty/hvc/hvcs.c
+> @@ -825,9 +825,6 @@ static int hvcs_remove(struct vio_dev *dev)
+>  	unsigned long flags;
+>  	struct tty_struct *tty;
+> 
+> -	if (!hvcsd)
+> -		return -ENODEV;
+> -
+>  	/* By this time the vty-server won't be getting any more interrupts */
+> 
+>  	spin_lock_irqsave(&hvcsd->lock, flags);
+> 
 
--Saravana
