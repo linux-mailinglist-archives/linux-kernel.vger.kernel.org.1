@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5DF2FCA50
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EE22FCA53
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728716AbhATFK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:10:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730000AbhATFGv (ORCPT
+        id S1729072AbhATFLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:11:05 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14679 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730601AbhATFHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:06:51 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4D4C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:06:10 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id u11so7569295plg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:06:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Hzg6y4zoFYD+EUAndxjbqw0YNJbPZQFi+C0cZWASRds=;
-        b=BugPfUCLnUl2CU81CWTWpiBV2A2yz92kQdY4tGEddrQkOPkGVQcQ3gWjXKVlUw6lWT
-         eqbT3jEnKOD/8Oxd+1WZHNlWblsehnn1ISaSrPhdV/BwOZotbwaTmye1S4X3WNMoZZVK
-         z6OqUugNbK3fLsD5FAmyXU1bWa4WurbyF96lsi39TV830sUTKbnMbYMMSAYc5DpOuLEr
-         7E2+km1hzTiO73vhGGv0j/2M+m2J4kiBsTFzpzzkeeSRj/Uv/jfZVD6+OZd+Wp5EtyA5
-         poNnZUNvY8dl2WKk+FaunZf7hyzasd4uA+1UxmRf1t363ODeepjVJt5CPZQT1hZEH4wG
-         ueIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Hzg6y4zoFYD+EUAndxjbqw0YNJbPZQFi+C0cZWASRds=;
-        b=GJIP/m2rHEUuw1t/2o4sn+O6GL3ObnWV62PiHDrDvxs8bWgYecZszrD/rwoQcO+fGC
-         m4KK8pe9dm6Hdrg4k0XvfxZMIMow/CjhoCqP+bdCaXMXonujE9Wf4odW84F50/CzxlcW
-         OLrM98Ct0PObaLaYVykUMmQwMISnEDS1/QIkPmBsr6LAB42v4r+RCsIhTAYFxeNNn0lB
-         0WAVyz0vX8+uBqgm/9H45AJhx98LfO3BOXsSkyh191OiwxfrwbU9QF8x29DdL38GG5tz
-         cvJxZkRo0rQdI06QnFdvdUykgSek8/jL9YmE2vCL9OD88f2y4q9Mx3TlDSSQHFFfrBvd
-         n+fw==
-X-Gm-Message-State: AOAM532qU2wSwR5TyDILlFuSWpfu6CbGFPV6TOFQ3RkNf3WQvAeou9AI
-        3DejqBNvmF7S63SgzASqD8ZNGc/CFKn2Pg==
-X-Google-Smtp-Source: ABdhPJywCR4oiBs6YZqxbz7ud0eRJJyQ/e2dFnM4aN4PRBfDeBcYh6l9mrpWE0qtn1ThAV6Olnxo9w==
-X-Received: by 2002:a17:902:728b:b029:de:c843:1d4c with SMTP id d11-20020a170902728bb02900dec8431d4cmr5473202pll.84.1611119170246;
-        Tue, 19 Jan 2021 21:06:10 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id r20sm658333pgb.3.2021.01.19.21.06.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 21:06:09 -0800 (PST)
-Date:   Wed, 20 Jan 2021 10:36:06 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, pantelis.antoniou@konsulko.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-Message-ID: <20210120050606.b2m4jssh73wexybx@vireshk-i7>
-References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <20210119022154.2338781-1-frowand.list@gmail.com>
- <20210119080546.dzec3jatsz2662qs@vireshk-i7>
- <f7133d16-510b-f730-a43b-89edab08aabe@gmail.com>
+        Wed, 20 Jan 2021 00:07:34 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6007ba6e0000>; Tue, 19 Jan 2021 21:06:54 -0800
+Received: from [10.25.99.10] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
+ 2021 05:06:48 +0000
+Subject: Re: Re: Re: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header
+ for Tegra210
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     <broonie@kernel.org>, <robh+dt@kernel.org>, <jonathanh@nvidia.com>,
+        <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>
+References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
+ <1611048496-24650-6-git-send-email-spujar@nvidia.com> <YAcTxxyogVgfN1uw@ulmo>
+ <b83eb795-328e-acc5-4555-7befd919a136@nvidia.com> <YAcdi7ARk0imXafQ@ulmo>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <fb0d0f14-e038-cb0c-542e-011ccb4beb93@nvidia.com>
+Date:   Wed, 20 Jan 2021 10:36:44 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7133d16-510b-f730-a43b-89edab08aabe@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <YAcdi7ARk0imXafQ@ulmo>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611119214; bh=TrUW/bRVd0y6RBunmo1Nvw8U/CisQ85mSiTQB96uz4Q=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=iqJqehfrlGaLEYWRtxL8pSQcX78r9QttWiB+MThCuJIKgzBAG05ePIeO7kEtH3u/w
+         lKt3gIrqHKl2y2rosb6wvtl0mGOf4xTMhixn97FdZEXDfyp1TXk1MBmpz4dGKFTh0p
+         6yuyUPjOwC1fWbInmd2GX5IlkNh0bscT1c4rJ7bz5rkxVsv8a+y8jLOEHjV27Dw+Np
+         CXv7nlVgSuim4YEU3v93drYtjTu4UdfUo66xQPY/+Vh21xrI9i/319L0kc1ub4RLYK
+         XuVuyONSrYrmMpaopjtSGaxQSv2E0F8WFn/+psAoaISZ87LPRUOIIH62rj+IqyrO3i
+         lYpd9Yh5WOaEg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-01-21, 09:44, Frank Rowand wrote:
-> No.  overlay_base.dts is intentionally compiled into a base FDT, not
-> an overlay.  Unittest intentionally unflattens this FDT in early boot,
-> in association with unflattening the system FDT.  One key intent
-> behind this is to use the same memory allocation method that is
-> used for the system FDT.
-> 
-> Do not try to convert overlay_base.dts into an overlay.
 
-Okay, but why does it have /plugin/; specified in it then ?
 
-And shouldn't we create two separate dtb-s now, static_test.dtb and
-static_overlay_test.dtb ? As fdtoverlay will not be able to merge it with
-testcase.dtb anyway.
+On 1/19/2021 11:27 PM, Thierry Reding wrote:
+> On Tue, Jan 19, 2021 at 11:09:32PM +0530, Sameer Pujar wrote:
+>>
+>> On 1/19/2021 10:45 PM, Thierry Reding wrote:
+>>> On Tue, Jan 19, 2021 at 02:58:15PM +0530, Sameer Pujar wrote:
+>>>> Expose a header which describes DT bindings required to use audio-graph
+>>>> based sound card. All Tegra210 based platforms can include this header
+>>>> and add platform specific information. Currently, from SoC point of view,
+>>>> all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
+>>>>
+>>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>>>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>>>> ---
+>>>>    .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 +++++++++++++++++++++
+>>>>    1 file changed, 153 insertions(+)
+>>>>    create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
+>>> I prefer keeping everything in tegra210.dtsi, but I can do that merge
+>>> when I apply, after the DT bindings have been acked, so no need to
+>>> resend just because of that.
+>> I think this may be fine for Tegra210 based boards. But for Tegra186 and
+>> Tegra194, whenever we add support for it, can rely on a common audio-graph
+>> dtsi because there is no change w.r.t APE. This can help us to avoid
+>> duplication of the bindings. This most likely applies to future chips as
+>> well (where Tegra186 audio-graph bindings can be considered as base) when
+>> there is no significant change in APE.
+> Maybe. Although that argument is somewhat extreme because we already
+> have some of that same duplication throughout the other .dtsi files. By
+> the same argument we could save a bit of duplication by having something
+> like tegra-gpio.dtsi and including that in all the SoC .dtsi files and
+> only update the compatible string, because that's the only significant
+> change.
 
-Or maybe we can create another file static_overlay.dts (like testcases.dts)
-which can include both testcases.dts and overlay_base.dts, and then we can
-create static_test.dtb out of it ? That won't impact the runtime tests at all.
+> Duplication isn't a big problem for DTS files because the data is meant
+> to be stable anyway. So once it is in place and doesn't have to change,
+> it really doesn't matter if it comes from an include or it's duplicated.
 
--- 
-viresh
+OK, if there is no issue with duplication then fine with me. Thanks.
+
