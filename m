@@ -2,68 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F322FC639
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084162FC63C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbhATBBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:01:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729313AbhATBAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:00:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id A0A5822DD3;
-        Wed, 20 Jan 2021 01:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611104408;
-        bh=B0ZiTfZPWTWCq1aVfE1y9X/FaPZHIRSbNpuYGgCdVQ4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dQiZv4DPTbHM9JuXDkn1r96joY0KGYk4RbZlR/2vY/AKYvnEQWGCkQ/QcbPHb5iG8
-         PaJKdGFC+IrrJvZemhSu+y1PhvQYYVGTfWXda+6jHgbybDU32ex+P/Od9CxYDVjL7O
-         d0eh9Remcs9aySq2YRnNDhLZqDBIXQMEH+5UMttJut07HPZfahr7FpHGSwVykQnYL/
-         HqGKWVxoEqIvEqQWfXFc2C2UeMh/EbJL7aFFThPHYc0F8r4Gy9dtxQfU+ZPAkfcgV7
-         XI5cPqysr4XT1adPTlUmB6/kVnHe7auYS3WM6fwYibRfvuLAS83lASLPZ3ATw/bRem
-         1HpZgVRSOhwuQ==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 956CE6036C;
-        Wed, 20 Jan 2021 01:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1730537AbhATBDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:03:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727016AbhATBD3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:03:29 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BFFC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:02:48 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id j12so1072195pjy.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ijWFqCFik7AEqDTngTlHLoNVrHEGUc429TyhF79LIQ=;
+        b=XwWSQ6YxMKSzHmONRcdMjeTrCU3nawwN1QwjYEutC9XmpcEdEYone0ZC91cDkkDEUh
+         6mKJo0SNJOXpA2FA6tBClNjguod31Xyr5E9hSOUL4mh7WF7EUsd1KdBwQqruBXNlES5w
+         JD+jvf6GOtHscsAWlqUjtu3RBDgpGx7szPZKjwYLcf5y/i4G56Y+rsavpOJb0eBRhQBm
+         YajWuokO+ZJ8KoCuPFfdti+7cxqyiuO+lzbsN/HNsAWzw0Cuf10FGGF464ci6xg5Ubsd
+         Dv/kwEqRFCMxI2hqTyM0R/+hOsCD2mm2DHyZFjMgJmJX8zTfNiaDY+FQHhowUz2yfx83
+         w8SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ijWFqCFik7AEqDTngTlHLoNVrHEGUc429TyhF79LIQ=;
+        b=Tk+Frq1jKlFVwVk7WNl4/JvqCCmAIzsIliVvr3SkPBXyEiKSJ38AsaLAuCeqX9vhAl
+         4PJzRFEMn1rGcZOLZzUACVBMdtjfW3GI5GTGL0TZIhsh29FQGtTNDghU5TPsI5r5KXKR
+         vdW1/yZyA4VAY4K59eWLYug2NNrtT2M5XUa+FsGosm4lH7PDTTqiL1umMmwPnc6qSwzs
+         7VilHYHrYYwG2X87tJN2TAK7NIhiMifN1OXl3DhzoJVVPlKydN/YMlS/AnwaKoeMk+3F
+         O5uAmYge4TYuDS/HCOJNH6gm1BOLAASsMUHMwdAGzUSkMGg+jPcFVgqH89yeB5fv7ole
+         5Q8w==
+X-Gm-Message-State: AOAM5317sWhzU0KhVLlxh9ztD6Pbnq/+63YPGZWjXJ//EaQsT7kEG/77
+        8qYC/k9aw6ptN5hzrVj+XoRl7HwlAdi6t0NQMb8PSQ==
+X-Google-Smtp-Source: ABdhPJwUEGB+8j+EbGLZGj8TsoAObAOLaQeuUzuHU6YAuefhtq4+JTm19EV7M2ciNJFgJUR9Vj9uPACzF6vbP9HPoFE=
+X-Received: by 2002:a17:90a:6ba4:: with SMTP id w33mr2729981pjj.32.1611104568023;
+ Tue, 19 Jan 2021 17:02:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: nfc: nci: fix the wrong NCI_CORE_INIT parameters
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161110440860.4771.13780876306648585886.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Jan 2021 01:00:08 +0000
-References: <20210118205522.317087-1-bongsu.jeon@samsung.com>
-In-Reply-To: <20210118205522.317087-1-bongsu.jeon@samsung.com>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
-        bongsu.jeon@samsung.com
+References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
+In-Reply-To: <20210116094357.3620352-1-morbo@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 19 Jan 2021 17:02:36 -0800
+Message-ID: <CAKwvOd=BK3DBm0H9GiiicY2NWP9KLq7_Qtx5VY-iezW3o5zuTg@mail.gmail.com>
+Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Bill Wendling <morbo@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Sat, Jan 16, 2021 at 1:44 AM Bill Wendling <morbo@google.com> wrote:
+>
+> From: Sami Tolvanen <samitolvanen@google.com>
+>
+> Enable the use of clang's Profile-Guided Optimization[1]. To generate a
+> profile, the kernel is instrumented with PGO counters, a representative
+> workload is run, and the raw profile data is collected from
+> /sys/kernel/debug/pgo/profraw.
+>
+> The raw profile data must be processed by clang's "llvm-profdata" tool
+> before it can be used during recompilation:
+>
+>   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
+>   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+>
+> Multiple raw profiles may be merged during this step.
+>
+> The data can now be used by the compiler:
+>
+>   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
+>
+> This initial submission is restricted to x86, as that's the platform we
+> know works. This restriction can be lifted once other platforms have
+> been verified to work with PGO.
+>
+> Note that this method of profiling the kernel is clang-native, unlike
+> the clang support in kernel/gcov.
+>
+> [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
+>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Co-developed-by: Bill Wendling <morbo@google.com>
+> Signed-off-by: Bill Wendling <morbo@google.com>
+> ---
+> v2: - Added "__llvm_profile_instrument_memop" based on Nathan Chancellor's
+>       testing.
+>     - Corrected documentation, re PGO flags when using LTO, based on Fangrui
+>       Song's comments.
+> v3: - Added change log section based on Sedat Dilek's comments.
+> v4: - Remove non-x86 Makfile changes and se "hweight64" instead of using our
+>       own popcount implementation, based on Nick Desaulniers's comment.
+> v5: - Correct padding calculation, discovered by Nathan Chancellor.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Specifically for v5:
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-On Tue, 19 Jan 2021 05:55:22 +0900 you wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> Fix the code because NCI_CORE_INIT_CMD includes two parameters in NCI2.0
-> but there is no parameters in NCI1.x.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> [...]
+If anything changes drastically, please drop that and I'll retest it;
+otherwise for changes to the commit message or docs, feel free to
+carry it forward.
 
-Here is the summary with links:
-  - [net] net: nfc: nci: fix the wrong NCI_CORE_INIT parameters
-    https://git.kernel.org/netdev/net/c/4964e5a1e080
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I'll try to provide code review by EOW, assuming we can stop
+regressing LLVM so I can focus. (Ha!)
+-- 
+Thanks,
+~Nick Desaulniers
