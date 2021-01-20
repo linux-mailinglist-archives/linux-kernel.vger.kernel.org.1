@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E6E2FC888
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5829C2FC85D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389076AbhATC67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:58:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47444 "EHLO mail.kernel.org"
+        id S2389789AbhATDBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:01:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730751AbhATB3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:29:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EB902343B;
-        Wed, 20 Jan 2021 01:27:47 +0000 (UTC)
+        id S1730757AbhATB30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:29:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE6F9235F7;
+        Wed, 20 Jan 2021 01:27:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106068;
-        bh=fh3hSnC/5iIHOmyQW3B6HvCww7SFVWDNsbfQNMfehvw=;
+        s=k20201202; t=1611106072;
+        bh=cnG4EevPMQ5wdQrVdmeUaste3PQ3JI/UHM0IQqzufKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PoFq0WUnCvgT8v6y08vYB6rc7rLqMDMQ8d6AsGwOdUC6LI0eoJrPsJpBKY6omTc0W
-         2tgWLFvPfwhvRdg777AWrp7EDO/HfR/Y6sezke94W4g6lURerGAIMd4CVaGouAR1Md
-         nI7YheT6dUJjNVNjpcr5HG1NmSLq29dBT59hHD5cFjBrm+IEZyxSD5xlWX/rZO833G
-         G5BnxfbWa48LYv3cRvVx0G9wvG/UvYc/cbWw0rblR5LsQdzpS6Vq9MjrcOMOdb+4bF
-         aUkM8XiDu9A8uPX0aXbEVfZjISIBQMc8EQRf+/B4PI8U6liovi5WsRbO1+Jp5+cDhV
-         wNND5DsacRcKQ==
+        b=hfzogQOgiXPwfxbb+fVQKp0+oZbk7gau7DfanJcWrvnMQABx9qzFGZAFwQy3LQmoW
+         kSKsgp7+zBl1REwgZxcO/1wlgsu386kbxWvZAOCb1AHurANqHSlaus28fl7v11FOHd
+         hsscwtUZkFSXJWGhuSzNhGYuYP6TDwJjiwSi1Min86Y+vXG/k6+W7ZJntmzrz7xYts
+         cOCwJKfXhKyaA/YU/Dg9uOT0GKMsDG1r5ND64/f83hrnzmXIUfYCEVHoOhfIefvKjn
+         A0b/HVClWJ23dRA3nNaQcGFNI7c9+fCc8OIZsCfbD4RqZRWfh5M576X5LRcAlOemM+
+         SVQmu6WC4CrAw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 05/15] riscv: Fix kernel time_init()
-Date:   Tue, 19 Jan 2021 20:27:30 -0500
-Message-Id: <20210120012740.770354-5-sashal@kernel.org>
+Cc:     Leon Schuermann <leon@is.currently.online>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 08/15] r8152: Add Lenovo Powered USB-C Travel Hub
+Date:   Tue, 19 Jan 2021 20:27:33 -0500
+Message-Id: <20210120012740.770354-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012740.770354-1-sashal@kernel.org>
 References: <20210120012740.770354-1-sashal@kernel.org>
@@ -44,46 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Leon Schuermann <leon@is.currently.online>
 
-[ Upstream commit 11f4c2e940e2f317c9d8fb5a79702f2a4a02ff98 ]
+[ Upstream commit cb82a54904a99df9e8f9e9d282046055dae5a730 ]
 
-If of_clk_init() is not called in time_init(), clock providers defined
-in the system device tree are not initialized, resulting in failures for
-other devices to initialize due to missing clocks.
-Similarly to other architectures and to the default kernel time_init()
-implementation, call of_clk_init() before executing timer_probe() in
-time_init().
+This USB-C Hub (17ef:721e) based on the Realtek RTL8153B chip used to
+use the cdc_ether driver. However, using this driver, with the system
+suspended the device constantly sends pause-frames as soon as the
+receive buffer fills up. This causes issues with other devices, where
+some Ethernet switches stop forwarding packets altogether.
 
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Using the Realtek driver (r8152) fixes this issue. Pause frames are no
+longer sent while the host system is suspended.
+
+Signed-off-by: Leon Schuermann <leon@is.currently.online>
+Tested-by: Leon Schuermann <leon@is.currently.online>
+Link: https://lore.kernel.org/r/20210111190312.12589-2-leon@is.currently.online
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/time.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/usb/cdc_ether.c | 7 +++++++
+ drivers/net/usb/r8152.c     | 1 +
+ 2 files changed, 8 insertions(+)
 
-diff --git a/arch/riscv/kernel/time.c b/arch/riscv/kernel/time.c
-index 1911c8f6b8a69..15f4ab40e2221 100644
---- a/arch/riscv/kernel/time.c
-+++ b/arch/riscv/kernel/time.c
-@@ -12,6 +12,7 @@
-  *   GNU General Public License for more details.
-  */
+diff --git a/drivers/net/usb/cdc_ether.c b/drivers/net/usb/cdc_ether.c
+index 1de97b69ce4e2..529c8fac15314 100644
+--- a/drivers/net/usb/cdc_ether.c
++++ b/drivers/net/usb/cdc_ether.c
+@@ -800,6 +800,13 @@ static const struct usb_device_id	products[] = {
+ 	.driver_info = 0,
+ },
  
-+#include <linux/of_clk.h>
- #include <linux/clocksource.h>
- #include <linux/delay.h>
- #include <asm/sbi.h>
-@@ -29,5 +30,7 @@ void __init time_init(void)
- 	riscv_timebase = prop;
- 
- 	lpj_fine = riscv_timebase / HZ;
++/* Lenovo Powered USB-C Travel Hub (4X90S92381, based on Realtek RTL8153) */
++{
++	USB_DEVICE_AND_INTERFACE_INFO(LENOVO_VENDOR_ID, 0x721e, USB_CLASS_COMM,
++			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
++	.driver_info = 0,
++},
 +
-+	of_clk_init(NULL);
- 	timer_probe();
- }
+ /* ThinkPad USB-C Dock Gen 2 (based on Realtek RTL8153) */
+ {
+ 	USB_DEVICE_AND_INTERFACE_INFO(LENOVO_VENDOR_ID, 0xa387, USB_CLASS_COMM,
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 1b1ec41978300..7dc6055855354 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -5352,6 +5352,7 @@ static const struct usb_device_id rtl8152_table[] = {
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x7205)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x720c)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x7214)},
++	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x721e)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0xa387)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LINKSYS, 0x0041)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_NVIDIA,  0x09ff)},
 -- 
 2.27.0
 
