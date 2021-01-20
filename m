@@ -2,130 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353E02FD3D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4544E2FD3F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390061AbhATPTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390949AbhATPSk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:18:40 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA09C061575;
-        Wed, 20 Jan 2021 07:18:00 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id k4so19798424ybp.6;
-        Wed, 20 Jan 2021 07:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1QF0838Q2mOKIXn1l947NcF9CM6M/0gAJkWSquMRYw4=;
-        b=IWG6lpKFBP3I2FEVkM2MNyWDyHsJ/2pVF4SW1z3n5wM4FR3HYhc0nHfFSRq/xlshhJ
-         A010/u8tkEblV0rkboFLFL7PJ+VKKjiRAi3MPCqgrnCdKJDEVY3OSQcQjYdsTT5DUHev
-         9PzpsYGKbDOW1hGCQ1RJfkx80uDudpcjqFSeHIe/blFMkC8qX5OZuvbD65EeBTmxKeDf
-         JFCrdEidpuC7PR/Li73WasL9jUh508vS3Z6szZ1/Vs9KAHha38a/WhGIk5kD8XA+O/nq
-         hOSZzGR/yLVbS10k5ARj1VPPUau3IaCB2TBuFwNfbGHoVrgEWkvbAfrNmWP3OhzApcFN
-         iDPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1QF0838Q2mOKIXn1l947NcF9CM6M/0gAJkWSquMRYw4=;
-        b=neOT+xe+ynqdXC8TTZRGd5MKB4Ozu8czAz29gH53ScHNp6J/zPkiNsxXxohPlWuLrx
-         z+rDn1E0RIEhZvr4EpGPC9Ay1UnjV0U2yVy/tsRYeQawTaoIMPDcgwECa7DTzfAb3Ytu
-         gFd+6uzu6274mU1lmkw7wjeXErkVuqgBtQVrf9ZVlHJnpBmJ1pg8Ls8FviggMawzlo01
-         JfMyl+8xPBlV+MV+c9D9GaH8bFc85O2/Kdtz3UbpgsBF1gQyPJqyvOqziIOheYUq9mKs
-         c36fvBkQzccat6X1neeB0qmnGvjYIOM4hXnE7r4DIroTMzKcK7N62OzTb/BH6F3ArB6c
-         TP1g==
-X-Gm-Message-State: AOAM531GoNOJnfOo9MktHrqXQiK1LV4rthLqEdpuESwxfHz0KH0HvUKC
-        utVLB8pzE4wI1yIY0RBF1oNPwWshQIjFDfBJi3A=
-X-Google-Smtp-Source: ABdhPJwZm8l3po5mR9bLp+Ns2Vs4cCmdbTy+DKzrEibxLAXMNa7i1KEWMX+wOhF3QEEfY0J6nY9jXh67EbSQqKabYbk=
-X-Received: by 2002:a25:c04f:: with SMTP id c76mr13165714ybf.443.1611155879500;
- Wed, 20 Jan 2021 07:17:59 -0800 (PST)
+        id S2403968AbhATP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:26:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391005AbhATPVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:21:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82BC6233A2;
+        Wed, 20 Jan 2021 15:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611156023;
+        bh=r0M1Ka3u8aAoDgdxe4IPOf2mDljJGtGVJIj19ojD0O0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IEV6/G7g4viv0Q8HAPyCI5d7SyPurUG8zU26qpS1QoLPKM4mlgstAjiGh6srwDgc3
+         OtqNVZnQKvJv8zNcaQ+m9+pCm5pYU2HgtERGL9OZ5eU1ChhQfa88T9H0TsBThLSkI/
+         IVzaYWdEpunUf0Eb9tmvDjPYw6cvTwtdNoSaDY95d8b/ltqTkZVJzwOpNBc2uWloke
+         r9AwYynXKcmRY+q6bitd+ZJyoFdSMwOW1MggN/jY6V4cR40iylWBOAeHOd7qhlSMgp
+         58KOue6NvVd4f9HGWI+G9CjSQfVzdb3E+g7ef5RTSmwOwJ+QPyPq3BTQSjZ2LwljHP
+         T/cVX0FtxzEWw==
+Received: by mail-ej1-f44.google.com with SMTP id ox12so9743593ejb.2;
+        Wed, 20 Jan 2021 07:20:23 -0800 (PST)
+X-Gm-Message-State: AOAM532m5mUW+BH5TfQP8RboKrnzmMEstVi0BwycGigYRSN1w7CX7Dfj
+        IAx6P46+LSs1BO1uQiiNMeLaD8LCtLMCPYdk/g==
+X-Google-Smtp-Source: ABdhPJzPuIeZMu4dsdixTpdMNXFQeosEa6xL58lXpxjrnZTQGKm80JrftOygLaCUqNokYLxaaaYHwMhJYFzZjJOReOI=
+X-Received: by 2002:a17:906:ce49:: with SMTP id se9mr6530993ejb.341.1611156021968;
+ Wed, 20 Jan 2021 07:20:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119105727.95173-1-roger.pau@citrix.com> <CALUcmUkd9Eeau6tC9ZWHbLdvHTYfY34LvK6KKpOOxreYF67Myg@mail.gmail.com>
- <20210120143515.v2vgyhcxrhnnng6r@Air-de-Roger>
-In-Reply-To: <20210120143515.v2vgyhcxrhnnng6r@Air-de-Roger>
-From:   Arthur Borsboom <arthurborsboom@gmail.com>
-Date:   Wed, 20 Jan 2021 16:17:43 +0100
-Message-ID: <CALUcmU=6aAUrkg8KkJQvsQvNr1yL3E88Uy5xsD+u+XOrbUAhCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
-To:     =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org
+References: <1611011439-29881-1-git-send-email-hayashi.kunihiko@socionext.com>
+In-Reply-To: <1611011439-29881-1-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 20 Jan 2021 09:20:07 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLtcXFktBWWqpbYf3B5BR2eUyBsQQ3Q5S3Ma8hn5T5Z0Q@mail.gmail.com>
+Message-ID: <CAL_JsqLtcXFktBWWqpbYf3B5BR2eUyBsQQ3Q5S3Ma8hn5T5Z0Q@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: designware-ep: Fix the reference to
+ pci->num_{ib,ob}_windows before setting
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This time the patch applied cleanly.
-
-The trim command seems to work as well, meaning no error messages and
-a certain amount of blocks (5GB) is trimmed.
-The trimming did consume a bit of time (10-20 seconds), assuming it is
-actually discarding the blocks at the host.
-
-First run:
-
-[arthur@test-arch ~]$ sudo fstrim -v /
-/: 5.7 GiB (6074368000 bytes) trimmed
-
-Second run:
-
-[arthur@test-arch ~]$ sudo fstrim -v /
-/: 0 B (0 bytes) trimmed
-
-No errors were reported in the dmesg of the VM; no errors in Dom0 and
-no errors in dmesg of Xen (xl dmesg).
-
-Based on this single test, it seems to work.
-You can add me as Tested-By.
-
-On Wed, 20 Jan 2021 at 15:35, Roger Pau Monn=C3=A9 <roger.pau@citrix.com> w=
-rote:
+On Mon, Jan 18, 2021 at 5:10 PM Kunihiko Hayashi
+<hayashi.kunihiko@socionext.com> wrote:
 >
-> On Wed, Jan 20, 2021 at 03:23:30PM +0100, Arthur Borsboom wrote:
-> > Hi Roger,
-> >
-> > I have set up a test environment based on Linux 5.11.0-rc4.
-> > The patch did not apply clean, so I copied/pasted the patch manually.
-> >
-> > Without the patch the call trace (as reported) is visible in dmesg.
-> > With the patch the call trace in dmesg is gone, but ... (there is alway=
-s a
-> > but) ...
-> >
-> > Now the discard action returns the following.
-> >
-> > [arthur@test-arch ~]$ sudo fstrim -v /
-> > fstrim: /: the discard operation is not supported
-> >
-> > It might be correct, but of course I was hoping the Xen VM guest would =
-pass
-> > on the discard request to the block device in the Xen VM host, which is=
- a
-> > disk partition.
-> > Any suggestions?
+> The commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows") gets
+> the values of pci->num_ib_windows and pci->num_ob_windows from iATU
+> registers instead of DT properties in dw_pcie_iatu_detect_regions*() or its
+> unroll version.
 >
-> Hm, that's not what I did see on my testing, the operation worked OK,
-> and that's what I would expect to happen in your case also, since I
-> know the xenstore keys.
+> However, before the values are set, the allocations in dw_pcie_ep_init()
+> refer them to determine the sizes of window_map. As a result, null pointer
+> dereference exception will occur when linking the EP function and the
+> controller.
 >
-> I think it's possible your email client has mangled the patch, I'm
-> attaching the same patch to this email, could you try to apply it
-> again and report back? (this time it should apply cleanly)
+>   # ln -s functions/pci_epf_test/test controllers/66000000.pcie-ep/
+>   Unable to handle kernel NULL pointer dereference at virtual address
+>   0000000000000010
 >
-> Thanks, Roger.
+> The call trace is as follows:
+>
+>   Call trace:
+>    _find_next_bit.constprop.1+0xc/0x88
+>    dw_pcie_ep_set_bar+0x78/0x1f8
+>    pci_epc_set_bar+0x9c/0xe8
+>    pci_epf_test_core_init+0xe8/0x220
+>    pci_epf_test_bind+0x1e0/0x378
+>    pci_epf_bind+0x54/0xb0
+>    pci_epc_epf_link+0x58/0x80
+>    configfs_symlink+0x1c0/0x570
+>    vfs_symlink+0xdc/0x198
+>    do_symlinkat+0xa0/0x110
+>    __arm64_sys_symlinkat+0x28/0x38
+>    el0_svc_common+0x84/0x1a0
+>    do_el0_svc+0x38/0x88
+>    el0_svc+0x1c/0x28
+>    el0_sync_handler+0x88/0xb0
+>    el0_sync+0x140/0x180
+>
+> The pci->num_{ib,ob}_windows should be referenced after they are set by
+> dw_pcie_iatu_detect_regions*() called from dw_pcie_setup().
+>
+> Cc: Rob Herring <robh@kernel.org>
+> Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware-ep.c | 41 ++++++++++++-------------
+>  1 file changed, 20 insertions(+), 21 deletions(-)
 
-
-
---=20
-Arthur Borsboom
+Reviewed-by: Rob Herring <robh@kernel.org>
