@@ -2,200 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6072FDDC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0515C2FDDD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390959AbhAUAUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        id S2392146AbhAUAYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403814AbhATXTN (ORCPT
+        with ESMTP id S2404043AbhATXXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:19:13 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0ACC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:40:43 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 36so13471506otp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:40:43 -0800 (PST)
+        Wed, 20 Jan 2021 18:23:44 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60552C0617BA
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:45:25 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id n186so84272oia.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:45:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N0ikIRODAHgwzg5TM1HT6ZnRLm2FIQf9CYmGIK25T6w=;
-        b=KQ1jsn/I1essLHW70M6MBpsmFwLFQqgLosGVhpaT0uLA7nnt4bFyYsMBk1OD4xgO5b
-         SRRqFj69QI/ZFyhj67466muPotunnkZyun6hz6ZKTGDcmgq6VvpVY2men6KmNHAohxYI
-         N+BYsRt5LoEdcfOjz6uEqyRaX+QSwdpMbqXCxuzahixkY1w7J/3R+d9Qt2s53G7Wxsmx
-         w920G2Krt8tW3DyiJynyoiVVLdoilo/d1AqDM4qmm2iwel3M7tLYpV0ajN+dlgBK/LCL
-         VHRtDpCof7DIPofChpCJ76N2z9Gq3JxzXixLND72mulltdMeLgWqsiFKdPVeUWom0c59
-         FJVQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UMTJ0JHuVDvRdMql14H7mW/63Qwi+kchpGfybyMLqlE=;
+        b=L9pnkOb1g0h9Evn94z6yhdXe3BvX/dUxq9knD0iUOvRAt1duITpneYRtHD+gXRcK6S
+         Wjrf/CHEut8lVcecB5qDwtxsMJ7b8Vyn3RAA3BIkVo6iajtZ2Z8yWukVOPaEPAwG7439
+         XYmbT+iozQ7IU7YXxxU84GmbxKMgK2dT0IFMR0QTxX373UWdKGZE2zoRojbdcmoLJkbP
+         Vkz9FNtjrMVubvGmoH7N0ZjtH2Uscp9/1HFqolXy1BedRri1yOJ9uGdAB9kMdAvpGO/o
+         pGMe5gO7Pkl2DmypS+eXHI7Ec6mwjQJMUXzDNoun+11rRuF3ncq5sVUpJRr4x+j8trVx
+         j86Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N0ikIRODAHgwzg5TM1HT6ZnRLm2FIQf9CYmGIK25T6w=;
-        b=eXKCa5T4kwuJ67RrkHfdfUe+URlu8TW74BQfrULgbx7QnPaR9TN5QwhHlH6ZC4lPcv
-         +j9vsIgjr0NvlqhqYBcRh2Q0gUsBRr/A5j3wQlwEIFH4/Ulq9PTcyq8J6BzzIQpvO4F7
-         0/k5SRZB+rwU+eGpgyjYvBU4jhpbimyK0Hb3sSwmWmu5MaN4ppBWMJXtoYjD+mJfc953
-         dPMhQC6C4gjskU+de3+6n8G3eksRRTDrFvHzIMiz2uLkPJ1jPu0lmXTRc+8fI00820RK
-         lNjewbYzcqg+om/J9Hol+zpSIG5j+j5ZnThG4p/AQdyIch86UayK8YdxfldYtBwf4N8b
-         NpNA==
-X-Gm-Message-State: AOAM531abpAfrXZXuhh+JJHgsaitzsl7MNXicbWUe2+TrtRDUl7Cm32v
-        0jEg+yXblSM3zfv3Dsh96o9kRg==
-X-Google-Smtp-Source: ABdhPJwsr2cgr0QT6mIy0RJN43jymeoZ6Wl/xM4K83iEZuDe4nI45HO3piUIMase3XvmXirjIqH5Dg==
-X-Received: by 2002:a9d:7304:: with SMTP id e4mr8490305otk.228.1611182443270;
-        Wed, 20 Jan 2021 14:40:43 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n11sm681000oij.37.2021.01.20.14.40.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UMTJ0JHuVDvRdMql14H7mW/63Qwi+kchpGfybyMLqlE=;
+        b=s08d7CPhz8fFZsb3wHiD//ScpuCg4HyJN7G/tb81RlZt6NI1btMDU4riHnRJgy9GZm
+         SNDHtz0V7PHsG8HUjIrirPPk/5mwhPElckmDPaKpzdv0P1wYMAHkdbZWIrMNvBEuUGIN
+         iq8RnviqkIcaQV8dIoE26EXz8p7V6WEBBoXvek7qGA6R/JtB/O1SBgBaeiix6+1i/fpO
+         RtD5uWgheUhLnvAqM+jFQs8rbrJGVTmQk4+BPCmaQUQ0R0d/N9cpsDezL1O/UVsbTZQc
+         6tAm91mqCOQ2NcxeJBgI58/pB/p06xRQhP0BF0I0ahMT75EQcnNOYTWAduALtwlzxiux
+         p/gg==
+X-Gm-Message-State: AOAM533NDCVQqMdgRo3Q8/Dn/68c6ZOOAUgUJ4eTrKJis97tW2EaneAO
+        oyDZiBFsh5hJzJpgckGndLtrIg==
+X-Google-Smtp-Source: ABdhPJyzj88dLLbYYlRKVCaP9cu++hO6ZvH1DKP9EnzLKSXpe9DE4vXK0nUQiowjRr/XNElYNdeXDQ==
+X-Received: by 2002:aca:d98a:: with SMTP id q132mr4302008oig.33.1611182724813;
+        Wed, 20 Jan 2021 14:45:24 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m18sm692791otj.50.2021.01.20.14.45.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 14:40:42 -0800 (PST)
-Date:   Wed, 20 Jan 2021 16:40:40 -0600
+        Wed, 20 Jan 2021 14:45:24 -0800 (PST)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Taniya Das <tdas@codeaurora.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette ? <mturquette@baylibre.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1] clk: qcom: gcc-sc7180: Mark the MM XO clocks to be
- always ON
-Message-ID: <YAixaN6fta27XDnO@builder.lan>
-References: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Manu Gautam <mgautam@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 2/2] phy: qcom-qmp: Add SC8180X UFS phy
+Date:   Wed, 20 Jan 2021 14:45:31 -0800
+Message-Id: <20210120224531.1610709-2-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210120224531.1610709-1-bjorn.andersson@linaro.org>
+References: <20210120224531.1610709-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20 Jan 01:47 CST 2021, Taniya Das wrote:
+The UFS phy found in the Qualcomm SC8180X is either the same or very
+similar to the phy present in SM8150, so add a compatible and reuse the
+SM8150 configuration.
 
-> There are intermittent GDSC power-up failures observed for titan top
-> gdsc, which requires the XO clock. Thus mark all the MM XO clocks always
-> enabled from probe.
-> 
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-But if this is the reason for keeping all these {ahb,xo}_clks critical
-(or upstream just a bunch of hard coded regmap_update_bits()) why don't
-we properly describe them as dependencies for the clock controller/gdsc?
-I.e. by the use of pm_clk_add()?
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+index bdcb8bf6225d..a1ea911856fb 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+@@ -4208,6 +4208,9 @@ static const struct of_device_id qcom_qmp_phy_of_match_table[] = {
+ 	}, {
+ 		.compatible = "qcom,sc7180-qmp-usb3-dp-phy",
+ 		/* It's a combo phy */
++	}, {
++		.compatible = "qcom,sc8180x-qmp-ufs-phy",
++		.data = &sm8150_ufsphy_cfg,
+ 	}, {
+ 		.compatible = "qcom,sdm845-qhp-pcie-phy",
+ 		.data = &sdm845_qhp_pciephy_cfg,
+-- 
+2.29.2
 
-Regards,
-Bjorn
-
-> Fixes: 8d4025943e13 ("clk: qcom: camcc-sc7180: Use runtime PM ops instead of clk ones")
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
->  drivers/clk/qcom/gcc-sc7180.c | 47 ++++---------------------------------------
->  1 file changed, 4 insertions(+), 43 deletions(-)
-> 
-> diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
-> index b05901b..88e896a 100644
-> --- a/drivers/clk/qcom/gcc-sc7180.c
-> +++ b/drivers/clk/qcom/gcc-sc7180.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
->   */
-> 
->  #include <linux/clk-provider.h>
-> @@ -919,19 +919,6 @@ static struct clk_branch gcc_camera_throttle_hf_axi_clk = {
->  	},
->  };
-> 
-> -static struct clk_branch gcc_camera_xo_clk = {
-> -	.halt_reg = 0xb02c,
-> -	.halt_check = BRANCH_HALT,
-> -	.clkr = {
-> -		.enable_reg = 0xb02c,
-> -		.enable_mask = BIT(0),
-> -		.hw.init = &(struct clk_init_data){
-> -			.name = "gcc_camera_xo_clk",
-> -			.ops = &clk_branch2_ops,
-> -		},
-> -	},
-> -};
-> -
->  static struct clk_branch gcc_ce1_ahb_clk = {
->  	.halt_reg = 0x4100c,
->  	.halt_check = BRANCH_HALT_VOTED,
-> @@ -1096,19 +1083,6 @@ static struct clk_branch gcc_disp_throttle_hf_axi_clk = {
->  	},
->  };
-> 
-> -static struct clk_branch gcc_disp_xo_clk = {
-> -	.halt_reg = 0xb030,
-> -	.halt_check = BRANCH_HALT,
-> -	.clkr = {
-> -		.enable_reg = 0xb030,
-> -		.enable_mask = BIT(0),
-> -		.hw.init = &(struct clk_init_data){
-> -			.name = "gcc_disp_xo_clk",
-> -			.ops = &clk_branch2_ops,
-> -		},
-> -	},
-> -};
-> -
->  static struct clk_branch gcc_gp1_clk = {
->  	.halt_reg = 0x64000,
->  	.halt_check = BRANCH_HALT,
-> @@ -2159,19 +2133,6 @@ static struct clk_branch gcc_video_throttle_axi_clk = {
->  	},
->  };
-> 
-> -static struct clk_branch gcc_video_xo_clk = {
-> -	.halt_reg = 0xb028,
-> -	.halt_check = BRANCH_HALT,
-> -	.clkr = {
-> -		.enable_reg = 0xb028,
-> -		.enable_mask = BIT(0),
-> -		.hw.init = &(struct clk_init_data){
-> -			.name = "gcc_video_xo_clk",
-> -			.ops = &clk_branch2_ops,
-> -		},
-> -	},
-> -};
-> -
->  static struct clk_branch gcc_mss_cfg_ahb_clk = {
->  	.halt_reg = 0x8a000,
->  	.halt_check = BRANCH_HALT,
-> @@ -2304,7 +2265,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->  	[GCC_BOOT_ROM_AHB_CLK] = &gcc_boot_rom_ahb_clk.clkr,
->  	[GCC_CAMERA_HF_AXI_CLK] = &gcc_camera_hf_axi_clk.clkr,
->  	[GCC_CAMERA_THROTTLE_HF_AXI_CLK] = &gcc_camera_throttle_hf_axi_clk.clkr,
-> -	[GCC_CAMERA_XO_CLK] = &gcc_camera_xo_clk.clkr,
->  	[GCC_CE1_AHB_CLK] = &gcc_ce1_ahb_clk.clkr,
->  	[GCC_CE1_AXI_CLK] = &gcc_ce1_axi_clk.clkr,
->  	[GCC_CE1_CLK] = &gcc_ce1_clk.clkr,
-> @@ -2317,7 +2277,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->  	[GCC_DISP_GPLL0_DIV_CLK_SRC] = &gcc_disp_gpll0_div_clk_src.clkr,
->  	[GCC_DISP_HF_AXI_CLK] = &gcc_disp_hf_axi_clk.clkr,
->  	[GCC_DISP_THROTTLE_HF_AXI_CLK] = &gcc_disp_throttle_hf_axi_clk.clkr,
-> -	[GCC_DISP_XO_CLK] = &gcc_disp_xo_clk.clkr,
->  	[GCC_GP1_CLK] = &gcc_gp1_clk.clkr,
->  	[GCC_GP1_CLK_SRC] = &gcc_gp1_clk_src.clkr,
->  	[GCC_GP2_CLK] = &gcc_gp2_clk.clkr,
-> @@ -2413,7 +2372,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->  	[GCC_VIDEO_AXI_CLK] = &gcc_video_axi_clk.clkr,
->  	[GCC_VIDEO_GPLL0_DIV_CLK_SRC] = &gcc_video_gpll0_div_clk_src.clkr,
->  	[GCC_VIDEO_THROTTLE_AXI_CLK] = &gcc_video_throttle_axi_clk.clkr,
-> -	[GCC_VIDEO_XO_CLK] = &gcc_video_xo_clk.clkr,
->  	[GPLL0] = &gpll0.clkr,
->  	[GPLL0_OUT_EVEN] = &gpll0_out_even.clkr,
->  	[GPLL6] = &gpll6.clkr,
-> @@ -2510,6 +2468,9 @@ static int gcc_sc7180_probe(struct platform_device *pdev)
->  	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
->  	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
->  	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
-> +	regmap_update_bits(regmap, 0x0b02c, BIT(0), BIT(0));
-> +	regmap_update_bits(regmap, 0x0b028, BIT(0), BIT(0));
-> +	regmap_update_bits(regmap, 0x0b030, BIT(0), BIT(0));
->  	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
-> 
->  	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
-> --
-> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-> of the Code Aurora Forum, hosted by the  Linux Foundation.
-> 
