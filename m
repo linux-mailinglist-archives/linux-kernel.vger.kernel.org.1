@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345992FC837
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 554322FC82B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbhATCrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:47:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
+        id S1726897AbhATCn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:43:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730092AbhATB2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:28:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0041923341;
-        Wed, 20 Jan 2021 01:26:56 +0000 (UTC)
+        id S1730086AbhATB2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC6D2311C;
+        Wed, 20 Jan 2021 01:27:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106018;
-        bh=e7w7eZhbT5BPMTB0jHTG4KuBkCW1+q0za1EKpTYM1Wo=;
+        s=k20201202; t=1611106021;
+        bh=SyhzL3wKjvVs6HHrpK4LfBtmC+2xOrb/9aBifmqgYOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b40lTZu9JI6V3b0rilL+ihQBu0CEQk/TH1tQgDtPNnaUJ//HapnfWxWK1hr7gvygy
-         1TQgJr/Ec7+lDF5sKh5uQ1lJsJK+EuoOk26pNz/dfyadwNSf454V4Y+xe8m3lkLqPl
-         k8U+alV516vdk8ln5udGtlSNOkozjYU+Lbbt6o8zNhP+IwfWsUyNDz8Jb4gk8e3apk
-         WbKZNJTQBkKmQzz9nmwVl0rMlg0Tf9edzfZ1MZ8BVouAzUDpI0lnje8xLAfLV9dbGe
-         VQvKPPENA6NJTKB1kLWKB8s4qAfzMddpNkd7Jlfb2uB6FQw8GT2Dr+uIowXuJAWT59
-         yXpw5QMnsW25g==
+        b=gySbF9SxHMTVguUIhx8cjOqh6hfzutykQSuSb+shHhWy378vLPOjCR1BdStHKE33+
+         84N0mIIn3qE7zQUlNltwQpn/KY3VCdFF7e7EpMHVVXIEBOWUzkRl/g3JYxQTXMuKKh
+         ehx4d0VgPh+EzEh2tISRaWAuG0KqDed6dR5QchGvk1GnleJgAUtKuq5AUXGeKzFnwi
+         JGyfYBXqSzJxFGP56SWsK0Fyul8wt618iUoERPZV7IB7H3bSDL6JZxh5WWO5aPQA4O
+         xfZk35stJp7nIQLazfbJ5S4tgnH2TmMtkzHmD+ehuK0TlRTOUf/W5uaItsv5iQCMT9
+         XdxuxobOAq4FQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 42/45] libperf tests: If a test fails return non-zero
-Date:   Tue, 19 Jan 2021 20:25:59 -0500
-Message-Id: <20210120012602.769683-42-sashal@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 44/45] RISC-V: Set current memblock limit
+Date:   Tue, 19 Jan 2021 20:26:01 -0500
+Message-Id: <20210120012602.769683-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -47,74 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Atish Patra <atish.patra@wdc.com>
 
-[ Upstream commit bba2ea17ef553aea0df80cb64399fe2f70f225dd ]
+[ Upstream commit abb8e86b269604e906a6a4af7a09f04b72dbb862 ]
 
-If a test fails return -1 rather than 0. This is consistent with the
-return value in test-cpumap.c
+Currently, linux kernel can not use last 4k bytes of addressable space
+because IS_ERR_VALUE macro treats those as an error. This will be an issue
+for RV32 as any memblock allocator potentially allocate chunk of memory
+from the end of DRAM (2GB) leading bad address error even though the
+address was technically valid.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20210114180250.3853825-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fix this issue by limiting the memblock if available memory spans the
+entire address space.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/perf/tests/test-cpumap.c    | 2 +-
- tools/lib/perf/tests/test-evlist.c    | 2 +-
- tools/lib/perf/tests/test-evsel.c     | 2 +-
- tools/lib/perf/tests/test-threadmap.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ arch/riscv/mm/init.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
-index c8d45091e7c26..c70e9e03af3e9 100644
---- a/tools/lib/perf/tests/test-cpumap.c
-+++ b/tools/lib/perf/tests/test-cpumap.c
-@@ -27,5 +27,5 @@ int main(int argc, char **argv)
- 	perf_cpu_map__put(cpus);
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index e4133c20744ce..608082fb9a6c6 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -155,9 +155,10 @@ static void __init setup_initrd(void)
+ void __init setup_bootmem(void)
+ {
+ 	phys_addr_t mem_start = 0;
+-	phys_addr_t start, end = 0;
++	phys_addr_t start, dram_end, end = 0;
+ 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+ 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
++	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
+ 	u64 i;
  
- 	__T_END;
--	return 0;
-+	return tests_failed == 0 ? 0 : -1;
- }
-diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-index 6d8ebe0c25042..d913241d41356 100644
---- a/tools/lib/perf/tests/test-evlist.c
-+++ b/tools/lib/perf/tests/test-evlist.c
-@@ -409,5 +409,5 @@ int main(int argc, char **argv)
- 	test_mmap_cpus();
+ 	/* Find the memory region containing the kernel */
+@@ -179,7 +180,18 @@ void __init setup_bootmem(void)
+ 	/* Reserve from the start of the kernel to the end of the kernel */
+ 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
  
- 	__T_END;
--	return 0;
-+	return tests_failed == 0 ? 0 : -1;
- }
-diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
-index 135722ac965bf..0ad82d7a2a51b 100644
---- a/tools/lib/perf/tests/test-evsel.c
-+++ b/tools/lib/perf/tests/test-evsel.c
-@@ -131,5 +131,5 @@ int main(int argc, char **argv)
- 	test_stat_thread_enable();
+-	max_pfn = PFN_DOWN(memblock_end_of_DRAM());
++	dram_end = memblock_end_of_DRAM();
++
++	/*
++	 * memblock allocator is not aware of the fact that last 4K bytes of
++	 * the addressable memory can not be mapped because of IS_ERR_VALUE
++	 * macro. Make sure that last 4k bytes are not usable by memblock
++	 * if end of dram is equal to maximum addressable memory.
++	 */
++	if (max_mapped_addr == (dram_end - 1))
++		memblock_set_current_limit(max_mapped_addr - 4096);
++
++	max_pfn = PFN_DOWN(dram_end);
+ 	max_low_pfn = max_pfn;
+ 	set_max_mapnr(max_low_pfn);
  
- 	__T_END;
--	return 0;
-+	return tests_failed == 0 ? 0 : -1;
- }
-diff --git a/tools/lib/perf/tests/test-threadmap.c b/tools/lib/perf/tests/test-threadmap.c
-index 7dc4d6fbeddee..384471441b484 100644
---- a/tools/lib/perf/tests/test-threadmap.c
-+++ b/tools/lib/perf/tests/test-threadmap.c
-@@ -27,5 +27,5 @@ int main(int argc, char **argv)
- 	perf_thread_map__put(threads);
- 
- 	__T_END;
--	return 0;
-+	return tests_failed == 0 ? 0 : -1;
- }
 -- 
 2.27.0
 
