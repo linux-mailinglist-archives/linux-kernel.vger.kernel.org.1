@@ -2,165 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676D82FD4BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C8E2FD4E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391069AbhATP7Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 10:59:25 -0500
-Received: from aposti.net ([89.234.176.197]:58060 "EHLO aposti.net"
+        id S2403768AbhATQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:05:16 -0500
+Received: from m12-18.163.com ([220.181.12.18]:41281 "EHLO m12-18.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389798AbhATP4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:56:32 -0500
-Date:   Wed, 20 Jan 2021 15:55:33 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 2/3] drm/ingenic: Register devm action to cleanup
- encoders
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me, dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Message-Id: <LKP8NQ.Z9MLLA6J6UUF2@crapouillou.net>
-In-Reply-To: <CAKMK7uEu7vWcJFC6S_hmKB4UMwPocwiOEy1iFnftOs5zfsRNYQ@mail.gmail.com>
-References: <20210120123535.40226-1-paul@crapouillou.net>
-        <20210120123535.40226-3-paul@crapouillou.net>
-        <CAKMK7uFaP7xcw90=KqiGJd7Mt-gD-spvcxvOZr2Txhyv5vcBvw@mail.gmail.com>
-        <TFI8NQ.468S4PLHPA963@crapouillou.net>
-        <CAKMK7uEu7vWcJFC6S_hmKB4UMwPocwiOEy1iFnftOs5zfsRNYQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+        id S2391253AbhATQBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:01:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=1gsABYDfG5RbJRuW+5
+        LcmE2LNHNvGErZzNpRw38meiQ=; b=c/Zp9QqjSTB/yeLxkozcmiAbVhQhKDoTMp
+        RLn0+jUWSuLBWVO/fGCGoUEwqLYj9VdcjS/BzZZ3BbHqhCJDEZwjV1xvn88Q1Nbw
+        Uq+qDIVfYNK93qoSRz72zWvZVyGOMtFyeTVorxKJ0fpNhv0Eb2HCTwyDgPyJFWOz
+        BPog6bz+M=
+Received: from localhost.localdomain (unknown [119.3.119.20])
+        by smtp14 (Coremail) with SMTP id EsCowAAnOBgSDwhgjCFyQA--.58652S4;
+        Wed, 20 Jan 2021 19:08:06 +0800 (CST)
+From:   Pan Bian <bianpan2016@163.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "Vineetha G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
+        Rusaimi Amira Ruslan <rusaimi.amira.rusaimi@intel.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] net: stmmac: dwmac-intel-plat: remove config data on error
+Date:   Wed, 20 Jan 2021 03:07:44 -0800
+Message-Id: <20210120110745.36412-1-bianpan2016@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: EsCowAAnOBgSDwhgjCFyQA--.58652S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZrW7ZrW5GrWrAF4ktr43KFg_yoWDZFc_uF
+        1fZF9YqFW5Crs0yrW2vw43Z34F9F1qqr1SgFWkKaySvr9rWwn0qr97ZrnrXr4ku3yFyF9r
+        Gr1xt3yxA34fKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5CksPUUUUU==
+X-Originating-IP: [119.3.119.20]
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBZBYgclQHMDV47AAAsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove the config data when rate setting fails.
 
+Fixes: 9efc9b2b04c7 ("net: stmmac: Add dwmac-intel-plat for GBE driver")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Le mer. 20 janv. 2021 à 15:04, Daniel Vetter <daniel@ffwll.ch> a 
-écrit :
-> On Wed, Jan 20, 2021 at 2:21 PM Paul Cercueil <paul@crapouillou.net> 
-> wrote:
->> 
->> 
->> 
->>  Le mer. 20 janv. 2021 à 14:01, Daniel Vetter <daniel@ffwll.ch> a
->>  écrit :
->>  > On Wed, Jan 20, 2021 at 1:36 PM Paul Cercueil 
->> <paul@crapouillou.net>
->>  > wrote:
->>  >>
->>  >>  Since the encoders have been devm-allocated, they will be freed 
->> way
->>  >>  before drm_mode_config_cleanup() is called. To avoid 
->> use-after-free
->>  >>  conditions, we then must ensure that drm_encoder_cleanup() is 
->> called
->>  >>  before the encoders are freed.
->>  >>
->>  >>  v2: Use the new __drmm_simple_encoder_alloc() function
->>  >>
->>  >>  Fixes: c369cb27c267 ("drm/ingenic: Support multiple 
->> panels/bridges")
->>  >>  Cc: <stable@vger.kernel.org> # 5.8+
->>  >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  >>  ---
->>  >>
->>  >>  Notes:
->>  >>      Use the V1 of this patch to fix v5.11 and older kernels. 
->> This
->>  >> V2 only
->>  >>      applies on the current drm-misc-next branch.
->>  >>
->>  >>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 16 +++++++---------
->>  >>   1 file changed, 7 insertions(+), 9 deletions(-)
->>  >>
->>  >>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  >> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  >>  index 7bb31fbee29d..158433b4c084 100644
->>  >>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  >>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  >>  @@ -1014,20 +1014,18 @@ static int ingenic_drm_bind(struct 
->> device
->>  >> *dev, bool has_components)
->>  >>                          bridge =
->>  >> devm_drm_panel_bridge_add_typed(dev, panel,
->>  >>
->>  >> DRM_MODE_CONNECTOR_DPI);
->>  >>
->>  >>  -               encoder = devm_kzalloc(dev, sizeof(*encoder),
->>  >> GFP_KERNEL);
->>  >>  -               if (!encoder)
->>  >>  -                       return -ENOMEM;
->>  >>  +               encoder = __drmm_simple_encoder_alloc(drm,
->>  >> sizeof(*encoder), 0,
->>  >
->>  > Please don't use the __ prefixed functions, those are the internal
->>  > ones. The official one comes with type checking and all that 
->> included.
->>  > Otherwise lgtm.
->>  > -Daniel
->> 
->>  The non-prefixed one assumes that I want to allocate a struct that
->>  contains the encoder, not just the drm_encoder itself.
-> 
-> Hm, but using the internal one is also a bit too ugly. A
-> drm_plain_simple_enocder_alloc(drm, type) wrapper would be the right
-> thing here I think? Setting the offsets and struct sizes directly in
-> these in drivers really doesn't feel like a good idea. I think simple
-> encoder is the only case where we really have a need for a
-> non-embeddable struct.
-> -Daniel
-
-Alright, I will add a wrapper.
-
-Cheers,
--Paul
-
->> 
->>  >>  +
->>  >> DRM_MODE_ENCODER_DPI);
->>  >>  +               if (IS_ERR(encoder)) {
->>  >>  +                       ret = PTR_ERR(encoder);
->>  >>  +                       dev_err(dev, "Failed to init encoder:
->>  >> %d\n", ret);
->>  >>  +                       return ret;
->>  >>  +               }
->>  >>
->>  >>                  encoder->possible_crtcs = 1;
->>  >>
->>  >>                  drm_encoder_helper_add(encoder,
->>  >> &ingenic_drm_encoder_helper_funcs);
->>  >>
->>  >>  -               ret = drm_simple_encoder_init(drm, encoder,
->>  >> DRM_MODE_ENCODER_DPI);
->>  >>  -               if (ret) {
->>  >>  -                       dev_err(dev, "Failed to init encoder:
->>  >> %d\n", ret);
->>  >>  -                       return ret;
->>  >>  -               }
->>  >>  -
->>  >>                  ret = drm_bridge_attach(encoder, bridge, NULL, 
->> 0);
->>  >>                  if (ret) {
->>  >>                          dev_err(dev, "Unable to attach 
->> bridge\n");
->>  >>  --
->>  >>  2.29.2
->>  >>
->>  >
->>  >
->>  > --
->>  > Daniel Vetter
->>  > Software Engineer, Intel Corporation
->>  > http://blog.ffwll.ch
->> 
->> 
-> 
-> 
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
+index 82b1c7a5a7a9..ba0e4d2b256a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
+@@ -129,7 +129,7 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
+ 				if (ret) {
+ 					dev_err(&pdev->dev,
+ 						"Failed to set tx_clk\n");
+-					return ret;
++					goto err_remove_config_dt;
+ 				}
+ 			}
+ 		}
+@@ -143,7 +143,7 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
+ 			if (ret) {
+ 				dev_err(&pdev->dev,
+ 					"Failed to set clk_ptp_ref\n");
+-				return ret;
++				goto err_remove_config_dt;
+ 			}
+ 		}
+ 	}
+-- 
+2.17.1
 
 
