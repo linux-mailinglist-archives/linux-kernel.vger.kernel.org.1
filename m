@@ -2,214 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453332FD222
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30602FD1E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388243AbhATN5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:57:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46784 "EHLO mx2.suse.de"
+        id S1728850AbhATNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:44:23 -0500
+Received: from mout.gmx.net ([212.227.15.15]:45153 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387826AbhATN3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:29:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611149176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HDYs6VbGDnWZYsEki4BzG/PNLn2WC6ya6CsM5mbOuJY=;
-        b=Z8E3L3CkTKVx6LwrD21LsRZxX+DiLdVyjBOO8cXOozm8TgicKN/yFwUaB3tCoanHS0sRKG
-        l8BjUKb15fFCM5xsbNm17mC+a0mUq16hgNOfiCnugO7HgYYPi24/nUOxt2Z/s3t1LhDG9I
-        gqa0wDh8gwDjrh1ZYA7V8AIURkxEmFE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2566BB711;
-        Wed, 20 Jan 2021 13:26:16 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     bpetkov@suse.com, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 15/15] x86/paravirt: have only one paravirt patch function
-Date:   Wed, 20 Jan 2021 14:26:13 +0100
-Message-Id: <20210120132613.31487-16-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210120132613.31487-1-jgross@suse.com>
-References: <20210120132613.31487-1-jgross@suse.com>
+        id S2389856AbhATN3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:29:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611149252;
+        bh=ceTVrImy+Es10mPon21IC3Omv19YxsX/9oHQxEtGgFw=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=ixtkLUUeHLmQIAXp6mGO0HjHgkytEyVpJGEB/kplwJKKUvvLin0BpXyK56E3WbOuT
+         qqPd1LR6mNzCrNK61WoXqzctZYiTORqYgoASVK8D19lgphf4kdZHzqXh9miSv9dxK5
+         Uaj53BHkQUtm8pYcfMADk6vB1MySe9wi5jccNQDU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.204.192.78]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1Mkpf3-1lk1fQ3rWp-00mHdY; Wed, 20 Jan 2021 14:27:32 +0100
+From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>
+Subject: [RFC PATCH 0/7] Linux on Apple Silicon
+Date:   Wed, 20 Jan 2021 14:27:10 +0100
+Message-Id: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ys84d4BTU81Rm/QnLAC3amRyKhngCQyMKiWrDIO4eMhMsCepTGq
+ 1U2R+HirE1JDuWUUEVJ6uUHSSsktaqkcochRD41a5EX9hZTBQBOIbkQC4RUGUK9wXAl5YxL
+ 5MQ8kr2PHi5qh0ZIpQFyAG8Yl3KuvYikrnBdIeceG2YK2VtXFbWzwseHxDyMLCX8k24ZEEO
+ Jg2MSioFhBL8iAb9EwFEQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:US5sarO3DCo=:zLrEk3etvw+JNExFNcnqCC
+ 7ONWQR2mHQkbdrJ84Xsh0Yj7n83LBNMy2hKgSoyAsGq0wE89eJbVguDp4six2xJiYj0Z6MrvE
+ ZtNCZDI3/bwy9MUT8/kypQLikr9LOQyudl7ziG+ROz1GMe7lOXr3YlP1Fd510xpNP6J4D1pas
+ miMJaKI9y8dLUwGmSkUfAFYEEqLb/glvUZEVXJOCA0eiyIYGKmjwDNqsdWCIpkly9Dlg2cASv
+ IdkYZka7jwQvqIF+0Mt9GqofcuWpwuES9h7O0iCByInsVboKk/Foc+mYCoajXwLLa4MG8vvMv
+ ULWm+E5U7mA2igOvRJhg9LzOPb2lU++AxPObe6BRiW8iuCtpLIQVFhn3XbH1jqmG99r0O8d+6
+ oglCpVRDPSYCwTKbbYMCa5JiTmml4YMpZMkwKtSAp0/0Ewn+5lSmTRp1SlC8oSsVM/XLNixYb
+ M8UjWY/geMhRGAyaWJIB9S7dzyMfVES3ffXu0ilziH7uNatF7BeLl2W7glzimY2qBPuFYMZK/
+ 0bBgrEy8jPNIX787HR+/v8g8DGuzAw14OhobzmV4fy4l7JYyQIbsxS7CdD86cCxw+QxfqsyGu
+ oToPLB7DfF9n3wPmQ12hx4K0+TooEUGnF3FII/nho//h9cpoMethyfCb3Pq/OLovGUocgL14k
+ Svj43rlSsYgYtXQATkqwgwdLxvc0mbXRzMZZud55+7KR/n/dVrBwC3xjCDHPXsW2zeEu/Z6wD
+ jAUgyWkrrebYo6R06AvOZ2DbMARJ7tYO34CEU8XRyc6/IiOUaMNswoENTkZG0tj1x7C+HeNnr
+ oIYgttZoF5lGCoZpi/APVLaS/QqZoeHefuxIE+rpgkBVgFeVZlack02hH2r4MSfNMCLtey1OM
+ CUxaLPBKrn+6n/K1Kt6VPEeWxpk3s0FOBY324BsBU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need any longer to have different paravirt patch functions
-for native and Xen. Eliminate native_patch() and rename
-paravirt_patch_default() to paravirt_patch().
+This patch series contains the changes for a minimal
+Linux on Apple Silicon boot, including SMP.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
-V3:
-- remove paravirt_patch_insns() (kernel test robot)
----
- arch/x86/include/asm/paravirt_types.h | 19 +------------------
- arch/x86/kernel/Makefile              |  3 +--
- arch/x86/kernel/alternative.c         |  2 +-
- arch/x86/kernel/paravirt.c            | 20 ++------------------
- arch/x86/kernel/paravirt_patch.c      | 11 -----------
- arch/x86/xen/enlighten_pv.c           |  1 -
- 6 files changed, 5 insertions(+), 51 deletions(-)
- delete mode 100644 arch/x86/kernel/paravirt_patch.c
+(sorry for the resubmission, I didn't attach the drivers
+to the ones beforehand, and didn't submit it properly)
 
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 588ff14ce969..62efbf8bd8f0 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -68,19 +68,6 @@ struct pv_info {
- 	const char *name;
- };
- 
--struct pv_init_ops {
--	/*
--	 * Patch may replace one of the defined code sequences with
--	 * arbitrary code, subject to the same register constraints.
--	 * This generally means the code is not free to clobber any
--	 * registers other than EAX.  The patch function should return
--	 * the number of bytes of code generated, as we nop pad the
--	 * rest in generic code.
--	 */
--	unsigned (*patch)(u8 type, void *insn_buff,
--			  unsigned long addr, unsigned len);
--} __no_randomize_layout;
--
- #ifdef CONFIG_PARAVIRT_XXL
- struct pv_lazy_ops {
- 	/* Set deferred update mode, used for batching operations. */
-@@ -276,7 +263,6 @@ struct pv_lock_ops {
-  * number for each function using the offset which we use to indicate
-  * what to patch. */
- struct paravirt_patch_template {
--	struct pv_init_ops	init;
- 	struct pv_cpu_ops	cpu;
- 	struct pv_irq_ops	irq;
- 	struct pv_mmu_ops	mmu;
-@@ -317,10 +303,7 @@ extern void (*paravirt_iret)(void);
- /* Simple instruction patching code. */
- #define NATIVE_LABEL(a,x,b) "\n\t.globl " a #x "_" #b "\n" a #x "_" #b ":\n\t"
- 
--unsigned paravirt_patch_default(u8 type, void *insn_buff, unsigned long addr, unsigned len);
--unsigned paravirt_patch_insns(void *insn_buff, unsigned len, const char *start, const char *end);
--
--unsigned native_patch(u8 type, void *insn_buff, unsigned long addr, unsigned len);
-+unsigned paravirt_patch(u8 type, void *insn_buff, unsigned long addr, unsigned len);
- 
- int paravirt_disable_iospace(void);
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 5eeb808eb024..853a83503120 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -35,7 +35,6 @@ KASAN_SANITIZE_sev-es.o					:= n
- KCSAN_SANITIZE := n
- 
- OBJECT_FILES_NON_STANDARD_test_nx.o			:= y
--OBJECT_FILES_NON_STANDARD_paravirt_patch.o		:= y
- 
- ifdef CONFIG_FRAME_POINTER
- OBJECT_FILES_NON_STANDARD_ftrace_$(BITS).o		:= y
-@@ -122,7 +121,7 @@ obj-$(CONFIG_AMD_NB)		+= amd_nb.o
- obj-$(CONFIG_DEBUG_NMI_SELFTEST) += nmi_selftest.o
- 
- obj-$(CONFIG_KVM_GUEST)		+= kvm.o kvmclock.o
--obj-$(CONFIG_PARAVIRT)		+= paravirt.o paravirt_patch.o
-+obj-$(CONFIG_PARAVIRT)		+= paravirt.o
- obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= paravirt-spinlocks.o
- obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
- obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 221acb2b868a..fb0b83c85de7 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -613,7 +613,7 @@ void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
- 		BUG_ON(p->len > MAX_PATCH_LEN);
- 		/* prep the buffer with the original instructions */
- 		memcpy(insn_buff, p->instr, p->len);
--		used = pv_ops.init.patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
-+		used = paravirt_patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
- 
- 		BUG_ON(used > p->len);
- 
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 082954930809..3d7b989ed6be 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -99,8 +99,8 @@ void __init native_pv_lock_init(void)
- 		static_branch_disable(&virt_spin_lock_key);
- }
- 
--unsigned paravirt_patch_default(u8 type, void *insn_buff,
--				unsigned long addr, unsigned len)
-+unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
-+			    unsigned int len)
- {
- 	/*
- 	 * Neat trick to map patch type back to the call within the
-@@ -121,19 +121,6 @@ unsigned paravirt_patch_default(u8 type, void *insn_buff,
- 	return ret;
- }
- 
--unsigned paravirt_patch_insns(void *insn_buff, unsigned len,
--			      const char *start, const char *end)
--{
--	unsigned insn_len = end - start;
--
--	/* Alternative instruction is too large for the patch site and we cannot continue: */
--	BUG_ON(insn_len > len || start == NULL);
--
--	memcpy(insn_buff, start, insn_len);
--
--	return insn_len;
--}
--
- struct static_key paravirt_steal_enabled;
- struct static_key paravirt_steal_rq_enabled;
- 
-@@ -255,9 +242,6 @@ struct pv_info pv_info = {
- #define PTE_IDENT	__PV_IS_CALLEE_SAVE(_paravirt_ident_64)
- 
- struct paravirt_patch_template pv_ops = {
--	/* Init ops. */
--	.init.patch		= native_patch,
--
- 	/* Cpu ops. */
- 	.cpu.io_delay		= native_io_delay,
- 
-diff --git a/arch/x86/kernel/paravirt_patch.c b/arch/x86/kernel/paravirt_patch.c
-deleted file mode 100644
-index 10543dcc8211..000000000000
---- a/arch/x86/kernel/paravirt_patch.c
-+++ /dev/null
-@@ -1,11 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/stringify.h>
--
--#include <asm/paravirt.h>
--#include <asm/asm-offsets.h>
--
--unsigned int native_patch(u8 type, void *insn_buff, unsigned long addr,
--			  unsigned int len)
--{
--	return paravirt_patch_default(type, insn_buff, addr, len);
--}
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 4716383c64a9..66f83de4d9e0 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1218,7 +1218,6 @@ asmlinkage __visible void __init xen_start_kernel(void)
- 
- 	/* Install Xen paravirt ops */
- 	pv_info = xen_info;
--	pv_ops.init.patch = paravirt_patch_default;
- 	pv_ops.cpu = xen_cpu_ops;
- 	paravirt_iret = xen_iret;
- 	xen_init_irq_ops();
--- 
-2.26.2
+The changes:
+
+- Support for FIQ interrupts in-kernel
+
+This is required for the timer and IPIs on Apple SoCs.
+
+- WFI hook
+
+Apple processors do not keep register state across WFI.
+As such, put a mechanism in cpu_ops to put a custom
+sleep function instead.
+
+- use nGnRnE instead of nGnRE on Apple processors
+
+Device-nGnRE writes go to nowhere on Apple processors, as
+such use MAIR to change those to Device-nGnRE writes.
+
+- Apple AIC driver
+
+Driver for the Apple AIC interrupt controller.
+
+- Apple CPU start driver
+
+On Apple Macs, RVBAR is locked by the bootloader.
+And the hardware doesn't have EL3 to provide PSCI
+as an option either. This also implements the workaround
+for WFI on the hardware.
+
+What is not present:
+
+- Device tree, will be present in a future version of this
+patchset
+
+- More devices.
+
+Thank you,
+
+Mohamed Mediouni (1):
+  arm64: mm: use nGnRnE instead of nGnRE on Apple processors
+
+Stan Skowronek (6):
+  arm64: kernel: FIQ support
+  arm64: kernel: Add a WFI hook.
+  irqchip/apple-aic: Add support for Apple AIC
+  arm64/Kconfig: Add Apple Silicon SoC platform
+  arm64: kernel: Apple CPU start driver
+  irqchip/apple-aic: add SMP support to the Apple AIC driver.
+
+ .../devicetree/bindings/arm/cpus.yaml         |   1 +
+ .../interrupt-controller/apple,aic.yaml       |  49 +++
+ MAINTAINERS                                   |   6 +
+ arch/arm64/Kconfig.platforms                  |   7 +
+ arch/arm64/include/asm/arch_gicv3.h           |   2 +-
+ arch/arm64/include/asm/assembler.h            |   8 +-
+ arch/arm64/include/asm/cpu_ops.h              |   2 +
+ arch/arm64/include/asm/daifflags.h            |   4 +-
+ arch/arm64/include/asm/irq.h                  |   4 +
+ arch/arm64/include/asm/irqflags.h             |   6 +-
+ arch/arm64/kernel/Makefile                    |   1 +
+ arch/arm64/kernel/apple_cpustart.c            | 153 ++++++++
+ arch/arm64/kernel/cpu_ops.c                   |   6 +
+ arch/arm64/kernel/entry.S                     |  74 +++-
+ arch/arm64/kernel/irq.c                       |  14 +
+ arch/arm64/kernel/process.c                   |  13 +-
+ arch/arm64/mm/proc.S                          |  26 ++
+ drivers/irqchip/Kconfig                       |   6 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-apple-aic.c               | 364 ++++++++++++++++++
+ 20 files changed, 728 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller=
+/apple,aic.yaml
+ create mode 100644 arch/arm64/kernel/apple_cpustart.c
+ create mode 100644 drivers/irqchip/irq-apple-aic.c
+
+=2D-
+2.29.2
 
