@@ -2,161 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6C82FC5F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC8C2FC5D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbhATAhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729246AbhATAd1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:33:27 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE160C0613D3;
-        Tue, 19 Jan 2021 16:32:08 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id m25so31709805lfc.11;
-        Tue, 19 Jan 2021 16:32:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BkfpoZ2DBwSy/7t/sBd6cTgmevAql8zxb6PjlBGFGSg=;
-        b=bNI7tICpC2sSxM+jFdetoek/0rllgf412sOwXeAK52dua6iYcRfrnCuidmz/E8ImyA
-         fzN1emYj1lXszYgyRzRxm4glcj6nWI5YQxfdwO4MTti4iNG7w4VrULdM6uW+4GFmJeGy
-         PubOftElxQhjan5XtAC1GMAb0bZMBqxBd3f3O6bTKBrkThnDH0GNyCGQSXw87t/99XUU
-         1acn1BmhM6vD1I2Iv1p5NIJabRU3FyLq3pcEdAe316roNwD2cDvUFUii0EUxTQExSVqr
-         I4tbhJx3dbc0Dg46Uneew7hSGWDa6DlRDKRBW9FvxgX4EEwa4aGJv37ZpEVwFSrXPLZp
-         gStQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BkfpoZ2DBwSy/7t/sBd6cTgmevAql8zxb6PjlBGFGSg=;
-        b=QbLC3vMB8f1jIfpWnK4pKgjl6S46L8Y9+eUMxnOGv6LDtAoab+XcEPBjr58lAYbrR7
-         GwWGJ0J4BgjrABjB5jLhs8baE3SgP41z7oLHO739YAVWDenOGwXyZj8gEOPgscNFmOf4
-         MvG1rkT1Yp2muZugcX5FhacVnnR8aG4fUez5jk7r3yTjYtQ2pcMiemn8ntKHtcm6JvDI
-         3MVvjQGyQ7mYRt9l8vQx7zoIC9DMj9IFTsA5jwG0tD5gEG1B8WWt91imDK2GGvFEwyVO
-         dZOabkicrLNu6vgt0FXsvFSNEzRuZ4pDl6Hvv7jmzdMBmh5PKNKh3qhNpyFcGgFC9oVN
-         yC6A==
-X-Gm-Message-State: AOAM532tG95rtnydgSjuSlFIC30WWUgXz6pVnZ748iBLtLZd1eiQK96z
-        +isb7MKycPGhYX1P3O8jtdOoI0E29Wc=
-X-Google-Smtp-Source: ABdhPJyTAco6YeHEkpZ58zIIIX/ydrEE4NFxobStGLQQuhnnjM6HsFJjK7DUyqXmg2Av2KKLSlPQ9g==
-X-Received: by 2002:ac2:4d56:: with SMTP id 22mr2948792lfp.15.1611102727477;
-        Tue, 19 Jan 2021 16:32:07 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id s27sm17710ljd.25.2021.01.19.16.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 16:32:07 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/6] ASoC: tegra: ahub: Use clk_bulk helpers
-Date:   Wed, 20 Jan 2021 03:31:53 +0300
-Message-Id: <20210120003154.26749-6-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120003154.26749-1-digetx@gmail.com>
-References: <20210120003154.26749-1-digetx@gmail.com>
+        id S1727535AbhATAcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:32:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725842AbhATAcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 19:32:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18CC322D08;
+        Wed, 20 Jan 2021 00:31:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611102714;
+        bh=aFF9UI/rsM5GSTILTWDshvBqpGbrsLyj6qOE8+isKmA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=X9xjczYhWeEpi2AgDfIKnRsra/KPFiOl2/zC8LV8SuOv6zxKzSXqC0FttHfoNueUD
+         gdJOqjQVKAjQIM89QTtq+uwSzQCGEMubIXo4XYMa0xqoHJTaTZvRi/l7+6AYUUDuTw
+         fUHNBGYb451dBq8NEdhqf9jycu9DPooMGqgjxQMocZMiF6ecS+duXsq2mI87f81l5u
+         UvbyxrrCnmDPo5r6TiCGTVkrFQvvV0cUbN03H92Qk+uv6hFi4KtnBTfFMrjXF0/KcV
+         9TjI1VxaUeJiSRHlroMfSQgQ9Z0c4/pMl7R2ojasa1Jl2LNkAaarATqTqUZBwlHOEv
+         DJwiyQ///xusQ==
+Date:   Tue, 19 Jan 2021 16:31:53 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        kernel-team <kernel-team@cloudflare.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
+ queues
+Message-ID: <20210119163153.025d4e44@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CABWYdi21ntZzrfchif1XEjDZK-RiQKttxu8oT_yRTakNhYYciw@mail.gmail.com>
+References: <20201215012907.3062-1-ivan@cloudflare.com>
+        <20201217101441.3d5085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CABWYdi21ntZzrfchif1XEjDZK-RiQKttxu8oT_yRTakNhYYciw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use clk_bulk helpers to make code cleaner.
+On Tue, 19 Jan 2021 15:43:43 -0800 Ivan Babrou wrote:
+> On Thu, Dec 17, 2020 at 10:14 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > On Mon, 14 Dec 2020 17:29:06 -0800 Ivan Babrou wrote:  
+> > > Without this change the driver tries to allocate too many queues,
+> > > breaching the number of available msi-x interrupts on machines
+> > > with many logical cpus and default adapter settings:
+> > >
+> > > Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> > >
+> > > Which in turn triggers EINVAL on XDP processing:
+> > >
+> > > sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+> > >
+> > > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>  
+> >
+> > Looks like the discussion may have concluded, but we don't take -next
+> > patches during the merge window, so please repost when net-next reopens.
+> >
+> > Thanks!
+> > --
+> > # Form letter - net-next is closed
+> >
+> > We have already sent the networking pull request for 5.11 and therefore
+> > net-next is closed for new drivers, features, code refactoring and
+> > optimizations. We are currently accepting bug fixes only.
+> >
+> > Please repost when net-next reopens after 5.11-rc1 is cut.  
+> 
+> Should I resend my patch now that the window is open or is bumping
+> this thread enough?
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30 audio works
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30 boot-tested
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # Nexus7 T30 audio works
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # TK1 boot-tested
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra30_ahub.c | 30 +++++++-----------------------
- sound/soc/tegra/tegra30_ahub.h |  4 ++--
- 2 files changed, 9 insertions(+), 25 deletions(-)
-
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 8c32333cc08c..12ca8e3ca4f6 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -45,8 +45,7 @@ static int tegra30_ahub_runtime_suspend(struct device *dev)
- 	regcache_cache_only(ahub->regmap_apbif, true);
- 	regcache_cache_only(ahub->regmap_ahub, true);
- 
--	clk_disable_unprepare(ahub->clk_apbif);
--	clk_disable_unprepare(ahub->clk_d_audio);
-+	clk_bulk_disable_unprepare(ahub->nclocks, ahub->clocks);
- 
- 	return 0;
- }
-@@ -66,17 +65,9 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- {
- 	int ret;
- 
--	ret = clk_prepare_enable(ahub->clk_d_audio);
--	if (ret) {
--		dev_err(dev, "clk_enable d_audio failed: %d\n", ret);
-+	ret = clk_bulk_prepare_enable(ahub->nclocks, ahub->clocks);
-+	if (ret)
- 		return ret;
--	}
--	ret = clk_prepare_enable(ahub->clk_apbif);
--	if (ret) {
--		dev_err(dev, "clk_enable apbif failed: %d\n", ret);
--		clk_disable(ahub->clk_d_audio);
--		return ret;
--	}
- 
- 	regcache_cache_only(ahub->regmap_apbif, false);
- 	regcache_cache_only(ahub->regmap_ahub, false);
-@@ -559,19 +550,12 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	ahub->soc_data = soc_data;
- 	ahub->dev = &pdev->dev;
- 
--	ahub->clk_d_audio = devm_clk_get(&pdev->dev, "d_audio");
--	if (IS_ERR(ahub->clk_d_audio)) {
--		dev_err(&pdev->dev, "Can't retrieve ahub d_audio clock\n");
--		ret = PTR_ERR(ahub->clk_d_audio);
--		return ret;
--	}
-+	ahub->clocks[ahub->nclocks++].id = "apbif";
-+	ahub->clocks[ahub->nclocks++].id = "d_audio";
- 
--	ahub->clk_apbif = devm_clk_get(&pdev->dev, "apbif");
--	if (IS_ERR(ahub->clk_apbif)) {
--		dev_err(&pdev->dev, "Can't retrieve ahub apbif clock\n");
--		ret = PTR_ERR(ahub->clk_apbif);
-+	ret = devm_clk_bulk_get(&pdev->dev, ahub->nclocks, ahub->clocks);
-+	if (ret)
- 		return ret;
--	}
- 
- 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs_apbif = devm_ioremap_resource(&pdev->dev, res0);
-diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
-index 6889c5f23d02..01480d7dc940 100644
---- a/sound/soc/tegra/tegra30_ahub.h
-+++ b/sound/soc/tegra/tegra30_ahub.h
-@@ -511,8 +511,8 @@ struct tegra30_ahub_soc_data {
- struct tegra30_ahub {
- 	const struct tegra30_ahub_soc_data *soc_data;
- 	struct device *dev;
--	struct clk *clk_d_audio;
--	struct clk *clk_apbif;
-+	struct clk_bulk_data clocks[2];
-+	unsigned int nclocks;
- 	resource_size_t apbif_addr;
- 	struct regmap *regmap_apbif;
- 	struct regmap *regmap_ahub;
--- 
-2.29.2
-
+You need to resend, thanks!
