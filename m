@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C67A2FDBCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C10652FDBD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436666AbhATU7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389908AbhATUxx (ORCPT
+        id S1732374AbhATVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:10:35 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59225 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390009AbhATU6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:53:53 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45565C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:53:13 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id a1so3081877wrq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:53:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Fzlnu2gDVF5uqigGznocNtk8tICKRhrhDQur+g+6zI=;
-        b=Ap8blQxbIDeY1iMmJMm2T7KYPQi0avue3p1JK+vpgNKrG9yC08Oz5D7lBwGvPTP9o+
-         8jSoY81LwRelmRszwF2zG4x520gG/eqyTx5SRcjPWx9fQEEL8US+OLreGcAUFvbReIa3
-         5mPpM8BlbbIDjxcbZn9XBEXaS1s1aewOvZJVUCyo7FLc57nql3qDt6wJOe7VbiEq8YBQ
-         PU5jZL4IfoLhrHykg9Y0que2Dg9Hi6IDGuhfMik2k4my3sxHlrKVRrV/BXXQqc1inbXa
-         23MeK88WsAUO0Mtvxb2kHB3hYIvMCKlMrykrS2j4lEX+MME/c9gJuSdIRxBe98rw6C4T
-         aseQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Fzlnu2gDVF5uqigGznocNtk8tICKRhrhDQur+g+6zI=;
-        b=nAnxBIInciTiYhhSK6pff10kYiaA/qK7iET4tiEc/XCir10enLpxepFZLZPy2NC+sw
-         a+witEYAewGN/BPH9vkj+8R3EAVdmQqERjxbJ9hQtqRSlxdQr/v3oO2uyiE0eFwKgi3x
-         EmAjUcPgUix9CKblXuv9qN9w5ba8ccwStSMHsnMPTUKVRi3Rjrn3VPcyQkPU1ZfRJgQd
-         R4gAYkSs5MnQTnTsFH6rTbOTgg4eaGeNfpVNjNqXhAe7oIQtRuBjJOP9RS9waGI5dytU
-         zXt6afeO4m4hMOOT7E9pRSPA6K6JVqfnWcr9uZifIdCyuiw0MCROiTyJkEtacCnMygE1
-         oWCQ==
-X-Gm-Message-State: AOAM533kcMyEfm7Kz/XbkyirTTBoHNAsa69nIrcr4FJxrBtmMpFSKhIj
-        R6cGQjLXup+qgUQ/60HnzkWSyE5y2Dpc783V6w+03g==
-X-Google-Smtp-Source: ABdhPJwt7pT74j5UgBuf0hqmfBTKggX4sl1ee2GbnEY6OrFXtj1vnr4AMrVjK/Sb4RohxWtiIk9c6lfylvwXhnh6I2k=
-X-Received: by 2002:a5d:4704:: with SMTP id y4mr10992455wrq.358.1611175991891;
- Wed, 20 Jan 2021 12:53:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20210113012143.1201105-1-minchan@kernel.org> <20210113012143.1201105-5-minchan@kernel.org>
- <CALAqxLWPT8PWYue0h1863NjNxKn_FH0DtoRtArpmmxZ1Ve5xCw@mail.gmail.com>
- <CGME20210119203646epcas2p2622d11cb2cf90a7bd24050a5238e78ef@epcas2p2.samsung.com>
- <YAdC2J4x/4J9ozkq@google.com> <20210120033208.GA179511@KEI>
-In-Reply-To: <20210120033208.GA179511@KEI>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 20 Jan 2021 12:53:01 -0800
-Message-ID: <CAJuCfpFN5ntfTT9N==wxnZM2rbFXWuL_PJhpJLA=AnYgEsReFQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
-To:     Hyesoo Yu <hyesoo.yu@samsung.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, david@redhat.com,
-        Michal Hocko <mhocko@suse.com>,
-        KyongHo Cho <pullip.cho@samsung.com>,
-        John Dias <joaodias@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 20 Jan 2021 15:58:36 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9A50A5C0150;
+        Wed, 20 Jan 2021 15:57:29 -0500 (EST)
+Received: from imap36 ([10.202.2.86])
+  by compute2.internal (MEProxy); Wed, 20 Jan 2021 15:57:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=expunge.us; h=
+        mime-version:message-id:date:from:to:cc:subject:content-type; s=
+        fm2; bh=wiOxzmUwqEUdeCFgk0Dh39Mablud1PlGadAq0uz4k/k=; b=fZjzx5za
+        SgiAk6acb0JK6+H0gdojP38JIbTOTDSFDpqZyp6p4tXl1UyG4uYNJeGoS+4MUSEy
+        fHGnJ1hIhRRqW+j4OcU5Rt54CF8z/4wZzzI6FLY3/7Er3IwAmoPE0Tv8YdiUcAV9
+        obG5UbxN+ZYAdXseJM69Bnk6oW47BGI6WxO6yToJv0LA/REkfwjAo4e1e6EyB+Ar
+        TRX9nn0aOyr8DTt7GeqxyVxWImjaEmMIFnyOhDwkncijpCQVsqogJ9iYTK8PFF1c
+        ZvA5sicxGNtOsI83J2idxc4adEGruNS1R7uUa3kslrqe4WgrB+sVhSStoogMPAK5
+        CGeApVZ0Prx46g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; bh=wiOxzmUwqEUdeCFgk0Dh39Mablud1
+        PlGadAq0uz4k/k=; b=dOCnEIIcz8Tfkz7USRZsYihx4x2TjVuXHMfWtF4aMKFVU
+        13xHY/qBqKNGT3hKFHT6/wyF/zg3hNP4ptQOhlwJjzqx5FYBcwwfqH0TaHzFqBD0
+        TH11xa2MFHbABXk+g1EVuysjfFm+wWYGE869dTVfVDX0WeDebSwCyaWZhmKqE00O
+        A4Hv3Y8N0vh8DtprYX0Sn4NH7dus2IDmNnHI5QOsbE0FGGq1Uk8MGINeAdock2fu
+        SnQLnSRyWIY1wJlZUpoQvv48qL5/Pr6RrUFXQUQzDM0iQfdKKA24sSYJK/VZD1xx
+        ulmvL65HnGJt1QAQTMp8d+Vf0ifR39Hql+fPC7JrA==
+X-ME-Sender: <xms:OJkIYH9LJN1sTQKfPZBshsjWdO4uq-bdw4g8N_VNPpTaZx52HUbF2A>
+    <xme:OJkIYDtbUsfadxjSElN2N9rDN5gryDyzjlGhvwAhlTS5Xf2aMQQaslFW00As9TL2v
+    4YxA_h4A7gu5kP6ISk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvgddugeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkfffhvffutgesthdtredtreertdenucfhrhhomhepfdflrghrvggu
+    uceurghlughrihgughgvfdcuoehjrhgssegvgihpuhhnghgvrdhusheqnecuggftrfgrth
+    htvghrnheptdekudehgedvvdeiieevhfegteegieegfffgfeeujefgudefhedvfefhudek
+    leegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjh
+    hrsgesvgigphhunhhgvgdruhhs
+X-ME-Proxy: <xmx:OJkIYFAyzBe_NNjy6mA4nFRb0t9lATAKTeeQE6VDWe9JBK8KEeLT1A>
+    <xmx:OJkIYDe4yJ0tPmi2etRc6yy5RBMbBGxVGv_v5_VredVEbOTkEmmENg>
+    <xmx:OJkIYMOd70TboBH0CHwrT8LV1kmvxJldi6U35T2hXfQIen55qx9mbQ>
+    <xmx:OZkIYL1jt5Z-NB54jPtUC2UdVIEzPZxdPJTDpsytmg9dxOi-GGMZvw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 380C4188009D; Wed, 20 Jan 2021 15:57:28 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e8-fm-20210120.001-g36b56e88
+Mime-Version: 1.0
+Message-Id: <41288ccb-1012-486b-81c1-a24c31850c91@www.fastmail.com>
+Date:   Wed, 20 Jan 2021 12:56:26 -0800
+From:   "Jared Baldridge" <jrb@expunge.us>
+To:     linux-kernel@vger.kernel.org, "Hans de Goede" <hdegoede@redhat.com>
+Cc:     "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "David Airlie" <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm: Added orientation quirk for OneGX1 Pro
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 7:39 PM Hyesoo Yu <hyesoo.yu@samsung.com> wrote:
->
-> On Tue, Jan 19, 2021 at 12:36:40PM -0800, Minchan Kim wrote:
-> > On Tue, Jan 19, 2021 at 10:29:29AM -0800, John Stultz wrote:
-> > > On Tue, Jan 12, 2021 at 5:22 PM Minchan Kim <minchan@kernel.org> wrote:
-> > > >
-> > > > From: Hyesoo Yu <hyesoo.yu@samsung.com>
-> > > >
-> > > > This patch supports chunk heap that allocates the buffers that
-> > > > arranged into a list a fixed size chunks taken from CMA.
-> > > >
-> > > > The chunk heap driver is bound directly to a reserved_memory
-> > > > node by following Rob Herring's suggestion in [1].
-> > > >
-> > > > [1] https://lore.kernel.org/lkml/20191025225009.50305-2-john.stultz@linaro.org/T/#m3dc63acd33fea269a584f43bb799a876f0b2b45d
-> > > >
-> > > > Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
-> > > > Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+The OneGX1 Pro has a fairly unique combination of generic strings,
+but we additionally match on the BIOS date just to be safe.
 
-After addressing John's comments feel free to add Reviewed-by: Suren
-Baghdasaryan <surenb@google.com>
+Signed-off-by: Jared Baldridge <jrb@expunge.us>
+---
+ drivers/gpu/drm/drm_panel_orientation_quirks.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-> > > > ---
-> > > ...
-> > > > +static int register_chunk_heap(struct chunk_heap *chunk_heap_info)
-> > > > +{
-> > > > +       struct dma_heap_export_info exp_info;
-> > > > +
-> > > > +       exp_info.name = cma_get_name(chunk_heap_info->cma);
-> > >
-> > > One potential issue here, you're setting the name to the same as the
-> > > CMA name. Since the CMA heap uses the CMA name, if one chunk was
-> > > registered as a chunk heap but also was the default CMA area, it might
-> > > be registered twice. But since both would have the same name it would
-> > > be an initialization race as to which one "wins".
-> >
-> > Good point. Maybe someone might want to use default CMA area for
-> > both cma_heap and chunk_heap. I cannot come up with ideas why we
-> > should prohibit it atm.
-> >
-> > >
-> > > So maybe could you postfix the CMA name with "-chunk" or something?
-> >
-> > Hyesoo, Any opinion?
-> > Unless you have something other idea, let's fix it in next version.
-> >
->
-> I agree that. It is not good to use heap name directly as cma name.
-> Let's postfix the name with '-chunk'
->
-> Thanks,
-> Regards.
+diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+index 58f5dc2f6dd5..f6bdec7fa925 100644
+--- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
++++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+@@ -84,6 +84,13 @@ static const struct drm_dmi_panel_orientation_data itworks_tw891 = {
+        .orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
+ };
+ 
++static const struct drm_dmi_panel_orientation_data onegx1_pro = {
++       .width = 1200,
++       .height = 1920,
++       .bios_dates = (const char * const []){ "12/17/2020", NULL },
++       .orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
++};
++
+ static const struct drm_dmi_panel_orientation_data lcd720x1280_rightside_up = {
+        .width = 720,
+        .height = 1280,
+@@ -211,6 +218,13 @@ static const struct dmi_system_id orientation_data[] = {
+                  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Lenovo ideapad D330-10IGM"),
+                },
+                .driver_data = (void *)&lcd1200x1920_rightside_up,
++       }, {    /* OneGX1 Pro */
++               .matches = {
++                 DMI_EXACT_MATCH(DMI_SYS_VENDOR, "SYSTEM_MANUFACTURER"),
++                 DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "SYSTEM_PRODUCT_NAME"),
++                 DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Default string"),
++               },
++               .driver_data = (void *)&onegx1_pro,
+        }, {    /* VIOS LTH17 */
+                .matches = {
+                  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "VIOS"),
+-- 
+2.29.2
