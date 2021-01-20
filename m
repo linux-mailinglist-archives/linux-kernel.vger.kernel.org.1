@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFFC2FC731
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CDC2FC735
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731080AbhATBwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:52:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
+        id S1731259AbhATByM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:54:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731104AbhATBuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731102AbhATBuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:50:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7B2AD2251D;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 63C3422472;
         Wed, 20 Jan 2021 01:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611107410;
-        bh=GNj2MIJf8RtOcX7Wh6NXVAF3Lf0JF12Jnse9VPAkcDs=;
+        bh=fYVhz0Utn/IH6+2xkAXvc2UhddhAnB+A/q8GU/7LXZ8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Rb2mol4m5NZ+U3dN4EUK7Go5NCK9xRzM18VU/O7lvnqeyRglvo+5AMTf3dF1VYRLM
-         oqVjiotUxbyoYR6XElxxHl5hqwFTOFUWcRfvsu6VO3A/3QQpipu4ebsuZEun6RYS0A
-         yyZC9wfHWYunKxx35lx8lZXGVHCzDiRuzWz1bbXt1FlUSYGt07zAzmDJElmOHm180C
-         ChsIcTvqK23IyNdvUvaolBBipNoaYr0jvJ6SamutLzpegUXt2ZTiDzwjnH5NVDLDGs
-         o2T9qtV0wfiXDG8RRsHEdUCmXBGMl35SwQpnoWes/+EM1A6HgVDaxKurHOL5GQDngw
-         QMV7WLaHiZaBw==
+        b=o36XoS0e9yW42WCIpWPxbEeA55yu+dzjXtl7opTY0GK2l5hLBNcOjCR0iv8UqZygY
+         w6TYwDPsP+cxPhFuwCK0MyXOojwuespJs0wShCsjlh38PjmsCqeP3Jr8u+urS7Yl3N
+         ZqmDgaxpnw/hn2ZJoygYEIanHk0jn0KXwgfJSKTiR2/6/1kBZH5YVWWwtvqHsjMcBP
+         Pq2fmFtqgmsr+DGQZ8Lxy8gIXJm8Tk2NcH0rLZwE5Vs+8mL1mkcq952dQhJJ+NM+eD
+         tRwwww+xNERk/l7zkhJTfnniz++AmzAhTt+3jmacoujRgHubP5FOo9wOZ1jgLKlpGJ
+         4XWyU1JyYENAA==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 74C9760584;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 5C6AB604FC;
         Wed, 20 Jan 2021 01:50:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] selftests: forwarding: Fix spelling mistake "succeded"
- -> "succeeded"
+Subject: Re: [net-next 0/6] net: ethernet: ti: am65-cpsw-nuss: introduce support
+ for am64x cpsw3g
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161110741047.23772.11114014464496090991.git-patchwork-notify@kernel.org>
+Message-Id: <161110741037.23772.5269078969682153495.git-patchwork-notify@kernel.org>
 Date:   Wed, 20 Jan 2021 01:50:10 +0000
-References: <20210118111902.71096-1-colin.king@canonical.com>
-In-Reply-To: <20210118111902.71096-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210115192853.5469-1-grygorii.strashko@ti.com>
+In-Reply-To: <20210115192853.5469-1-grygorii.strashko@ti.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        peter.ujfalusi@gmail.com, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, nsekhar@ti.com,
+        devicetree@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 18 Jan 2021 11:19:02 +0000 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Fri, 15 Jan 2021 21:28:47 +0200 you wrote:
+> Hi
 > 
-> There are two spelling mistakes in check_fail messages. Fix them.
+> This series introduces basic support for recently introduced TI K3 AM642x SoC [1]
+> which contains 3 port (2 external ports) CPSW3g module. The CPSW3g integrated
+> in MAIN domain and can be configured in multi port or switch modes.
+> In this series only multi port mode is enabled. The initial version of switchdev
+> support was introduced by Vignesh Raghavendra [2] and work is in progress.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  tools/testing/selftests/net/forwarding/tc_chains.sh | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> [...]
 
 Here is the summary with links:
-  - [next] selftests: forwarding: Fix spelling mistake "succeded" -> "succeeded"
-    https://git.kernel.org/netdev/net-next/c/eaaf61122865
+  - [net-next,1/6] dt-binding: ti: am65x-cpts: add assigned-clock and power-domains props
+    https://git.kernel.org/netdev/net-next/c/b3228c74e0d2
+  - [net-next,2/6] dt-binding: net: ti: k3-am654-cpsw-nuss: update bindings for am64x cpsw3g
+    https://git.kernel.org/netdev/net-next/c/19d9a846d9fc
+  - [net-next,3/6] net: ethernet: ti: am65-cpsw-nuss: Use DMA device for DMA API
+    https://git.kernel.org/netdev/net-next/c/ed569ed9b30a
+  - [net-next,4/6] net: ethernet: ti: am65-cpsw-nuss: Support for transparent ASEL handling
+    https://git.kernel.org/netdev/net-next/c/39fd0547ee66
+  - [net-next,5/6] net: ti: cpsw_ale: add driver data for AM64 CPSW3g
+    https://git.kernel.org/netdev/net-next/c/1dd3841033b3
+  - [net-next,6/6] net: ethernet: ti: am65-cpsw: add support for am64x cpsw3g
+    https://git.kernel.org/netdev/net-next/c/4f7cce272403
 
 You are awesome, thank you!
 --
