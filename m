@@ -2,111 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B552FD4E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE85E2FD4EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391230AbhATQFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:05:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
+        id S2391361AbhATQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:06:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730476AbhATQCH (ORCPT
+        with ESMTP id S2391205AbhATQFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:02:07 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB3BC061575;
-        Wed, 20 Jan 2021 08:01:26 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id j3so6978679ljb.9;
-        Wed, 20 Jan 2021 08:01:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3vLouel+HcUHHsPlMzqt3dQ9xZtrUWZy628SJkSoWOA=;
-        b=So3BD8K3remfQXHH4nf3lm2QXaIQO4LrSFWPfSDvDdczajiT1zZjM+X6Pyp7oVzACX
-         DQUhSNJKGaVBpUrEqB2a/mHhoP+IRYbbfm6S1exUM7PYOdO46swf9U2vYc08fUMud/Om
-         KNU09pGDtuJ5Vrzf8SK12hTxQWfkm/uNAwh3DapnBcYJxtZFkfX9+19cfAiUdqMhHp16
-         Qh5kUbWPdBWb+x6KeA5VyA2mjFhWlxuF9ELdk4uBa2909R4NP4kq2b6Y9+Ktn17HGRJk
-         Pd0gmvlCI6tzooR9HKEBx0LTif4oRiwF3FqvYNnvRW5pmoLQjfOeSrfixFQbqTUF4UZU
-         rZxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3vLouel+HcUHHsPlMzqt3dQ9xZtrUWZy628SJkSoWOA=;
-        b=UTOeU5qYDz3R35LRrEBADg1p+452zxxkoAt4eGs1YhpPj762W8Hm+q8hTWwVwtV/ew
-         r+QjyGc2e2mLbJeVP08doYs6hCrYmRaBR+ADw7OwTHpZ6ePij++pw/25cBSX7JGe5Hpd
-         Kppmdy2Ldf3iFiaBNH+xpjqeCRbcOfJ9/SkcEbOEyNxgUVLTCtV91hgvTAN3vzh+UYrz
-         7M4PgIa8KvK0ln+RMGDZlEUP+KDehr2sx1ikBpwedrd7GJjBiKZB0ws+3kiIkGxlb6Wo
-         Ha757KxulQ8VEQRt2fE+lJPjoj1FNr9gAqtCzLrEf9a5KS4vTgqQKs8B6z1Y4D+ErAgQ
-         wu+w==
-X-Gm-Message-State: AOAM531tHcXA1f0pohs9aErPwznhhlvpz6cg8/TJtyKIerPY47QzHNQH
-        aPk7mxrZWzPapOnM+NWwRxMli8ei9yE=
-X-Google-Smtp-Source: ABdhPJxufcMcdT1icHlQjBl7jPyg+FoY9nCNToNRuMAX2IYS0ZUuPjE9ss2lk3IaPlt5ucol79aNfw==
-X-Received: by 2002:a2e:a310:: with SMTP id l16mr4849551lje.142.1611158484855;
-        Wed, 20 Jan 2021 08:01:24 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id i14sm234976lfo.189.2021.01.20.08.01.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 08:01:24 -0800 (PST)
-Subject: Re: [PATCH 00/31] Introduce devm_pm_opp_* API
-To:     Yangtao Li <tiny.windzz@gmail.com>, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, cw00.choi@samsung.com, krzk@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
-        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
-        mka@chromium.org, harigovi@codeaurora.org,
-        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
-        georgi.djakov@linaro.org, akashast@codeaurora.org,
-        parashar@codeaurora.org, dianders@chromium.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20210101165507.19486-1-tiny.windzz@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6bd6730c-6f4e-df93-65cd-93fa4785a8d8@gmail.com>
-Date:   Wed, 20 Jan 2021 19:01:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Wed, 20 Jan 2021 11:05:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12124C061793;
+        Wed, 20 Jan 2021 08:04:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=saaFHJth3qz3xI0Dro7UHa0PgnHwAKKwZMU5+56dtJE=; b=ZACVPHDnW8nMnHToaApes5g3Rw
+        YvejBi+ndU51oeSrxqqcYYLAwliMBGBXghPXPYc7XG0lsgIcf+/IvR9eJvgtCr1Y5bxBLOsNZcLBQ
+        vxSb7WDqPTplOeChJJO0bdqf2couRLArJqCqj+JJHVlMqYUasnii5Ahu8a9pr17qMCP5jWMHxkGSS
+        q6aEdJuVPlms8bTXRO0qZ2BUkaKlzq/5TxYAwU0Ad6+fh/jU8PXLs9HsRV6qDt9A/EPq+R0dOuJcM
+        Lpx6Y1tpfz20HDKCh6YfbGEj7XSx+aNMkVsZzAS1FtW9RnCqIaJmYKn7ticVopJumXn3gPadcnzNH
+        uNwqFTFw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2Fvu-00Fsqd-9M; Wed, 20 Jan 2021 16:02:37 +0000
+Date:   Wed, 20 Jan 2021 16:02:10 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>
+Subject: Re: [PATCH v14 05/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210120160210.GK2260413@casper.infradead.org>
+References: <20201203062949.5484-1-rppt@kernel.org>
+ <20201203062949.5484-6-rppt@kernel.org>
+ <20210119202213.GI2260413@casper.infradead.org>
+ <20210120150510.GO1106298@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210101165507.19486-1-tiny.windzz@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120150510.GO1106298@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.01.2021 19:54, Yangtao Li пишет:
-> Hi,
+On Wed, Jan 20, 2021 at 05:05:10PM +0200, Mike Rapoport wrote:
+> On Tue, Jan 19, 2021 at 08:22:13PM +0000, Matthew Wilcox wrote:
+> > On Thu, Dec 03, 2020 at 08:29:44AM +0200, Mike Rapoport wrote:
+> > > +static vm_fault_t secretmem_fault(struct vm_fault *vmf)
+> > > +{
+> > > +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+> > > +	struct inode *inode = file_inode(vmf->vma->vm_file);
+> > > +	pgoff_t offset = vmf->pgoff;
+> > > +	vm_fault_t ret = 0;
+> > > +	unsigned long addr;
+> > > +	struct page *page;
+> > > +	int err;
+> > > +
+> > > +	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
+> > > +		return vmf_error(-EINVAL);
+> > > +
+> > > +	page = find_get_page(mapping, offset);
+> > > +	if (!page) {
+> > > +
+> > > +		page = secretmem_alloc_page(vmf->gfp_mask);
+> > > +		if (!page)
+> > > +			return vmf_error(-ENOMEM);
+> > 
+> > Just use VM_FAULT_OOM directly.
+>  
+> Ok.
 > 
-> This patchset add devm_pm_opp_set_clkname, devm_pm_opp_put_clkname,
-> devm_pm_opp_set_regulators, devm_pm_opp_put_regulators,
-> devm_pm_opp_set_supported_hw, devm_pm_opp_of_add_table and
-> devm_pm_opp_register_notifier.
+> > > +		err = add_to_page_cache(page, mapping, offset, vmf->gfp_mask);
+> > > +		if (unlikely(err))
+> > > +			goto err_put_page;
+> > 
+> > What if the error is EEXIST because somebody else raced with you to add
+> > a new page to the page cache?
+> 
+> Right, for -EEXIST I need a retry here, thanks.
+> 
+> > > +		err = set_direct_map_invalid_noflush(page, 1);
+> > > +		if (err)
+> > > +			goto err_del_page_cache;
+> > 
+> > Does this work correctly if somebody else has a reference to the page
+> > in the meantime?
+> 
+> Yes, it does. If somebody else won the race that page was dropped from the
+> direct map and this call would be essentially a nop. And anyway, the very
+> next patch changes the way pages are removed from the direct map ;-)
 
-Hello Yangtao,
+What I'm thinking is:
 
-Thank you for your effort, looking forward to v2!
+thread A page faults
+doesn't find page
+allocates page
+adds page to page cache
+				thread B page faults
+				does find page in page cache
+set direct map invalid fails
+deletes from page cache
+				... ?
+
