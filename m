@@ -2,56 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980652FD793
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93AFC2FD795
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389794AbhATRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:54:53 -0500
-Received: from smtprelay0193.hostedemail.com ([216.40.44.193]:58524 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732084AbhATRvp (ORCPT
+        id S2390091AbhATR4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:56:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729138AbhATRwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:51:45 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 68D99181D3043;
-        Wed, 20 Jan 2021 17:50:58 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3870:3871:4250:4321:5007:6119:7576:7652:9389:10004:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: silk99_420fd922755c
-X-Filterd-Recvd-Size: 1304
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 20 Jan 2021 17:50:57 +0000 (UTC)
-Message-ID: <2399eb7ae01ff8b9134ac170e709e39b58bda441.camel@perches.com>
-Subject: Re: [PATCH 4/4] timer: remove sirf prima driver
-From:   Joe Perches <joe@perches.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
-Date:   Wed, 20 Jan 2021 09:50:56 -0800
-In-Reply-To: <20210120131559.1971359-5-arnd@kernel.org>
-References: <20210120131559.1971359-1-arnd@kernel.org>
-         <20210120131559.1971359-5-arnd@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 20 Jan 2021 12:52:39 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8EEC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:51:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=+PVp3ta0WjC0TXJF4d2xbzQfNDYRHuF/qzM1UrQhb/w=; b=FjAfLsSy+2CNVXeEZwe03ra1jt
+        B6QHrL6tVmursLRUvc76d9gLKVlK2YgI+kpun4cBfpiMG9k/Gon0ZV47qeqHCGLjhbEN+wDQT7GT9
+        YPyVqPHgQhChPn/VfXGEYZFArkb847ZTjY0UikX5H93R1uGnChmgCixSfXDoWRx4XTwODA9KwW8+d
+        m9/tdlyth1m5q9e/6qk+MUCyujVVyRO1HY5/cJ/yclrdD117cyWCkdO8LrNSTONI1kcOtpf1x0h0z
+        p2ocncmN4nviDKPr9gVriFMeUmY9MaNtTRhUQxAQ5V3abodSuDDzoBrOm/qvsOK+2dH+KTRG/1MpT
+        kmYC1tDQ==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2He8-0001SU-En; Wed, 20 Jan 2021 17:51:56 +0000
+Subject: Re: [PATCH] arch: powerpc: mm: book3s64: Fixed spelling architectue
+ -> architecture in line number 1061
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        akpm@linux-foundation.org, rppt@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210120142020.2623355-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <540548b6-a7b3-9a5b-67ee-17d18395ddb6@infradead.org>
+Date:   Wed, 20 Jan 2021 09:51:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20210120142020.2623355-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-20 at 14:15 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 1/20/21 6:20 AM, Bhaskar Chowdhury wrote:
+> s/architectue/architecture/
 > 
-> The CSR SiRF prima2/atlas platforms are getting removed, so this driver
-> is no longer needed.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Should this platform really be removed?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-While I followed the removal thread just a little,
-isn't prima still in use in various GPS handhelds?
+Thanks.
+
+Line number in $Subject is just too much.
+
+> ---
+>  arch/powerpc/mm/book3s64/radix_pgtable.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> index 98f0b243c1ab..8b8f1451e944 100644
+> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
+> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> @@ -1058,7 +1058,7 @@ void radix__ptep_set_access_flags(struct vm_area_struct *vma, pte_t *ptep,
+>  		 * Book3S does not require a TLB flush when relaxing access
+>  		 * restrictions when the address space is not attached to a
+>  		 * NMMU, because the core MMU will reload the pte after taking
+> -		 * an access fault, which is defined by the architectue.
+> +		 * an access fault, which is defined by the architecture.
+>  		 */
+>  	}
+>  	/* See ptesync comment in radix__set_pte_at */
+> --
+> 2.30.0
+> 
 
 
+-- 
+~Randy
+"He closes his eyes and drops the goggles.  You can't get hurt
+by looking at a bitmap.  Or can you?"
+(Neal Stephenson: Snow Crash)
