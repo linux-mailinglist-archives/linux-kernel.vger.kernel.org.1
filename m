@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7170B2FD378
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30022FD37B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390804AbhATO5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:57:09 -0500
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:60660 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732216AbhATOqz (ORCPT
+        id S2390286AbhATO6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:58:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390940AbhATOrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:46:55 -0500
-Received: from [90.222.153.26] (helo=[192.168.0.21])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1l2EkJ-0007l1-NJ; Wed, 20 Jan 2021 14:46:07 +0000
-Subject: Re: [linux-safety] [PATCH] docs: Change reference that was to removed
- file
-To:     Rob Herring <robh@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        sudip.mukherjee@codethink.co.uk, linux-safety@lists.elisa.tech,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>
-References: <1611051980-3834-1-git-send-email-milan.lakhani@codethink.co.uk>
- <87y2gopjcx.fsf@meer.lwn.net>
- <CAL_Jsq+YW2K8YoLes8EAUy1WrFRzpYvtzvErOYbhw3zvZBoddQ@mail.gmail.com>
-From:   Milan Lakhani <milan.lakhani@codethink.co.uk>
-Message-ID: <e8534aeb-3fbb-ef40-4c50-aa306fada4d3@codethink.co.uk>
-Date:   Wed, 20 Jan 2021 14:46:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 20 Jan 2021 09:47:21 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB8BC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:46:41 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id 22so25512699qkf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:46:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=haYCR44fZsm3Dr8asxMS8claKbS3LRjIocLXQM4kdgk=;
+        b=P1E1rBrb6Wgo9lT1dloy04vrL4NoTgfFkmlo+PoyFTMPGEaiJz5QV7b9RgRhPFkxKf
+         B9JFupJwhPiQxCYGgk9T+OCtlcHP58Ge3z4VgG3FIkP3hO6rZeKK/pL15NC3DOBHvhfg
+         v5Rd6JhdW06EEgDEvo0AbtRp6+3zR6O/lvOgWQf1v9EZGQ/o096hRUFDDFKgMXTvJ1sg
+         2IVmUxgLO0eTIh+LM98jHWlnqfsoaJD57q3nQrvqLkIaDGjIeKhMUkq4e0sdXcyBJAyJ
+         6qsva3wyD9TCOf9OfL3ATJDFvJ+afZgHLjY7kOZryCJRUvxpJo4W8Aqz4SqOWibtosfO
+         OagA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=haYCR44fZsm3Dr8asxMS8claKbS3LRjIocLXQM4kdgk=;
+        b=Hc7JHN8u9oLiPc2NNGK3fhYHuQJceZEDCzzCmTk0+fQdTsUMPRnnZ18L4K6Zqr3YrE
+         ASME5ZaC0y0g/M1/SNKpna4GCgp7Hvk/4F6kHNXnohyhvAkgufBfPwUMomuXox/ZlVYU
+         46jq1peOLmCWmQCJFPFXJlJ12Yb6RO5laL3TLKiaHOQ5oHLGOXu4tooiYvQkCf3W3OZJ
+         Mwj6rcFTGPIOTWKh8oImWdJ5t2g5m/+e8xpV1Bhc3ywMfHEHWciqHBZLNbTzrhdlfwZu
+         n7gD5ccRzDXkB2ZSb+GFD+Mp0+20SW1YWQUG8DRFfrZrWO4kzx4G+C9sc+5AUt6Fjx1Q
+         rt/g==
+X-Gm-Message-State: AOAM531ePbUML9qKhaDn56SC1Pxwh/cPwoQQDfuS2CGcOc9yqlukdaIw
+        Xovk7hBzIT6HON/zYYWF2HQ=
+X-Google-Smtp-Source: ABdhPJz4Kx24Gy1EOcBjl3VXy+WySQJt3VL1aDFU5eEPb0YHhnnwE6KWFxXa/3H5oNKvTvztQQCJ9w==
+X-Received: by 2002:a37:6f42:: with SMTP id k63mr9674866qkc.291.1611154000613;
+        Wed, 20 Jan 2021 06:46:40 -0800 (PST)
+Received: from localhost.localdomain ([156.146.54.160])
+        by smtp.gmail.com with ESMTPSA id y9sm1262588qtm.96.2021.01.20.06.46.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 06:46:39 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     gustavo@embeddedor.com, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] include: linux: Fix in two lines in the file list_lru.sh ,resposible -> responsible
+Date:   Wed, 20 Jan 2021 20:16:28 +0530
+Message-Id: <20210120144628.3864652-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+YW2K8YoLes8EAUy1WrFRzpYvtzvErOYbhw3zvZBoddQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Rob, Jon, I've submitted a new patch pointing the two broken 
-links and also usage-model.rst all to 
-https://www.devicetree.org.specifications/.
+s/resposible/responsible/
 
-Milan
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/linux/list_lru.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 20/01/2021 01:07, Rob Herring wrote:
-> On Tue, Jan 19, 2021 at 6:01 PM Jonathan Corbet <corbet@lwn.net> wrote:
->> Milan Lakhani <milan.lakhani@codethink.co.uk> writes:
->>
->> [CC += Rob]
->>
->>> There were two references to
->>> Documentation/devicetree/booting-without-of.rst for dtb format
->>> information. This file has been removed, so I have changed the links to
->>> Documentation/devicetree/usage-model.rst for this information, which
->>> itself points to https://elinux.org/Device_Tree_Usage for an overview of
->>> the device tree data format.
->>>
->>> Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
->>> ---
->>>   Documentation/arm/booting.rst                | 2 +-
->>>   Documentation/translations/zh_CN/arm/Booting | 2 +-
->>>   2 files changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/Documentation/arm/booting.rst b/Documentation/arm/booting.rst
->>> index a226345..5392d01 100644
->>> --- a/Documentation/arm/booting.rst
->>> +++ b/Documentation/arm/booting.rst
->>> @@ -128,7 +128,7 @@ it.  The recommended placement is in the first 16KiB of RAM.
->>>
->>>   The boot loader must load a device tree image (dtb) into system ram
->>>   at a 64bit aligned address and initialize it with the boot data.  The
->>> -dtb format is documented in Documentation/devicetree/booting-without-of.rst.
->>> +dtb format is documented in Documentation/devicetree/usage-model.rst.
->> Except that ... usage-model.rst doesn't actually document the DTB
->> format.  Perhaps we should instead substitute a link that does what's
->> promised here?
-> Yes, it's in the DT spec. I'd point to
-> 'https://www.devicetree.org/specifications/' so it's always going to
-> show the latest. And that's the link we have elsewhere in the kernel.
->
-> usage-model.rst is also something needing updating...
->
-> Rob
->
->
-> -=-=-=-=-=-=-=-=-=-=-=-
-> Links: You receive all messages sent to this group.
-> View/Reply Online (#235): https://lists.elisa.tech/g/linux-safety/message/235
-> Mute This Topic: https://lists.elisa.tech/mt/79948363/4617862
-> Group Owner: linux-safety+owner@lists.elisa.tech
-> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [milan.lakhani@codethink.co.uk]
-> -=-=-=-=-=-=-=-=-=-=-=-
->
->
->
+diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
+index 9dcaa3e582c9..1b5fceb565df 100644
+--- a/include/linux/list_lru.h
++++ b/include/linux/list_lru.h
+@@ -146,7 +146,7 @@ typedef enum lru_status (*list_lru_walk_cb)(struct list_head *item,
+  * @lru: the lru pointer.
+  * @nid: the node id to scan from.
+  * @memcg: the cgroup to scan from.
+- * @isolate: callback function that is resposible for deciding what to do with
++ * @isolate: callback function that is responsible for deciding what to do with
+  *  the item currently being scanned
+  * @cb_arg: opaque type that will be passed to @isolate
+  * @nr_to_walk: how many items to scan.
+@@ -172,7 +172,7 @@ unsigned long list_lru_walk_one(struct list_lru *lru,
+  * @lru: the lru pointer.
+  * @nid: the node id to scan from.
+  * @memcg: the cgroup to scan from.
+- * @isolate: callback function that is resposible for deciding what to do with
++ * @isolate: callback function that is responsible for deciding what to do with
+  *  the item currently being scanned
+  * @cb_arg: opaque type that will be passed to @isolate
+  * @nr_to_walk: how many items to scan.
+--
+2.30.0
+
