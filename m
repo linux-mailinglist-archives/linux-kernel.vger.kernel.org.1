@@ -2,147 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8572FCB23
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450872FCB24
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbhATGlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbhATGiY (ORCPT
+        id S1727793AbhATGnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:43:16 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:43997 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726739AbhATGjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:38:24 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8C7C061575;
-        Tue, 19 Jan 2021 22:37:43 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id o13so32696684lfr.3;
-        Tue, 19 Jan 2021 22:37:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=lg9KNdx/DheREqatTUggClFpgYqzUQB6QxoMiw5d4bE=;
-        b=Q54gqpBT5WdTPa0dw/VQJndPZ+pzowMMLlzsQYUdqhuEmOCf2ml+cRPifoIM5RCuq8
-         F7rxnVAGym6RMUlHKoIT+0J6TjFCYvTutaw6CXulFaotUBBPVLMwmpR70WgODKoIGz5M
-         AsgJMroNtw/oec62z7uqUVB22w68RHiVSU6rMamfEDq6a1gFLvyGvDuYkGB8gKYMnGwK
-         CDiZM1iWhae2kZjc/+hx7WjMBGowRWxTGQcSzmsXsukL39FESxah5RRdPmROkK24XTPg
-         0GSjiUYZ8xSr1nlFKW3e+sg6sIVktik2muRKdIXPv15mK5KjRE8k48a7z1rB7YfaxCZo
-         A2Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=lg9KNdx/DheREqatTUggClFpgYqzUQB6QxoMiw5d4bE=;
-        b=IUXS2LQ/z2lrwNc9FGgyy7oFXP72HWBVMwnhrMQyqPHnIK62HQt3HWq5DK2de5gmCL
-         gDiJCvE3m7KtUZfGKgq/8dAOfnZLShXbPnTaNfboMdBuIZvZOY4piua/rq0rpOaMvyMY
-         Z9IofZA0IxeIBfCq11s+DluEf+MpuP0/8gu6cV+OWP5teGuTTz6hzrYt9DAzWTzysOAV
-         yzCzxQj7QCu1y9hCsrM67FaSPgNJpfoCQStQeXdTLyEy0iKINGO9EvLPgjrj/xLgNnsj
-         oVR+ALwIna2rRYVq8sLRLgOSVvSyuxkms7WdfRU8m76Vb6RLFMqIYXNI77dY2P2jnZ4t
-         lMRA==
-X-Gm-Message-State: AOAM532HshYWnofqKsHNZbvCk56whynlsIlfnv4fgy+a0H8EnfLaIeB7
-        wp/qBnI1Pm8nQAOxV8FfArY=
-X-Google-Smtp-Source: ABdhPJz5iO2kZWyhMQZ/AwhYN2IrRxZKMZiC+Z5C06ZPcSYhw4h+h1DbYiMruVZU7Kzt9ooIIGPurw==
-X-Received: by 2002:a19:810:: with SMTP id 16mr3554731lfi.233.1611124661811;
-        Tue, 19 Jan 2021 22:37:41 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id y9sm99951ljm.94.2021.01.19.22.37.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 22:37:41 -0800 (PST)
-Message-ID: <b82285438b7332a4aba5e0e73a07b2b79b45447b.camel@gmail.com>
-Subject: Re: [PATCH v2 02/17] rtc: bd70528: Do not require parent data
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-rtc@vger.kernel.org, Simon Glass <sjg@chromium.org>
-Date:   Wed, 20 Jan 2021 08:37:40 +0200
-In-Reply-To: <20210119210920.GR3666@piout.net>
-References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
-         <e113a308ee6e9d22ca7fae066119def1793068d9.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210119210920.GR3666@piout.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 20 Jan 2021 01:39:41 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B7B2558059E;
+        Wed, 20 Jan 2021 01:38:28 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 20 Jan 2021 01:38:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=xYUL5Lpkut2ajLp2HHqqFc/SO8e3GAJ
+        6jWEOsfPOZpo=; b=p1hdjXq+NLGlOJ4czoa6dwjGUO5OGNYmlHtjm3JBlgy+JCy
+        tD6nT+jWB1/UKVhmd9CJoY8w5ryNLpuL9w7PEDlcKnjj4d81Gl3EnB++2ggXYEQr
+        7YtIaUKtbgm/shMqUS1qVh/aOChv6HGuzYWMasXRlfflS1yUY0h9jEdgHF3w7TRL
+        URgjSiPFf1M6yfHHx+2l37e1pKHiaxdzx8zSYPD/a8YHy7F+v/bYJs9SigmI+2wl
+        HWRavrLO+/6VpplWIwATICiW9A2YpoGAkZY8W5C0WyPs2LxBOlUC/4+G8baGACq5
+        FzWK1pSYLl0PHShwjCeKZzV9K4AxlIs9ZfdggYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=xYUL5L
+        pkut2ajLp2HHqqFc/SO8e3GAJ6jWEOsfPOZpo=; b=bO79YdT1bsyMWvDdKYh9ML
+        DsInCKRvaXWLHrSeQ6YhvAJ0uoQKqzydkV2GjWUbYzgkfMRRd+J1g/Yr45wRhqR2
+        kEvLLMNZvCa3BCstI+LK2n/EYbOABXb0VDkyDmQPVCOXiON13vuaQNO0mfpm9/My
+        x1lCSX015WUKMw2Sb1YLSDBMOlUk1UDjlZsCDwZvjUskLjMWEiwEhFgPXHBTNY68
+        tZwuLHC46W6MtVSo2VYdkssaqdVMuB620bX5b73/+yhei2MA6IzWETaoZAz4xlEK
+        Q6n+ao9AQT4PB9+TiV2m1C7mKVgpf/y0r8OfKKkJDuOZGtSYTnjAVuNBKwz204EA
+        ==
+X-ME-Sender: <xms:488HYJbXAAgIO0dlci19mWnBZXJ_9jETfMgs5s-dv-uIEf30xyWkxA>
+    <xme:488HYAarSkQr7hoIhxll6Y0FvIHkD_x4w_SCk3D-MNJvdogs-IP8c5RybPiPwoD37
+    fzT2TzAi2Zlq9eccA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddugdelkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:488HYL-NWv62iCUU5NisdF3zxkmPHkbkpTmwAzWgdbWfQGW8EMBKKg>
+    <xmx:488HYHpg3zoSWPWueb8BBXT7r7h43kEAwA58ln1in7bc6QjyuNn4UQ>
+    <xmx:488HYEp0hbpMShYzLDPs7yRrCDW8h-hFrYcufgiAVtniMjwWMzuZVg>
+    <xmx:5M8HYAdkVFxYV8_e-1GJT0YVGc3E7JiO_ESn6pUkuUmjKxZ35TPwuw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0481AA0005D; Wed, 20 Jan 2021 01:38:27 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e88ef-fm-20210120.001-g36b56e88
+Mime-Version: 1.0
+Message-Id: <31ea8453-bbb1-4e68-8ee4-f7e524e38b88@beta.fastmail.com>
+In-Reply-To: <HK0PR06MB338019E403823F0BF9962FE3F2A20@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20210118065059.2478078-1-troy_lee@aspeedtech.com>
+ <20210118065059.2478078-5-troy_lee@aspeedtech.com>
+ <2bf67d3a-cd5f-4f9c-b043-709b18a759d5@www.fastmail.com>
+ <HK0PR06MB338019E403823F0BF9962FE3F2A20@HK0PR06MB3380.apcprd06.prod.outlook.com>
+Date:   Wed, 20 Jan 2021 17:07:56 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Troy Lee" <troy_lee@aspeedtech.com>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>
+Cc:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Troy Lee" <leetroy@gmail.com>, "kbuild test robot" <lkp@intel.com>
+Subject: Re: [PATCH v3 4/4] hwmon: Support Aspeed AST2600 PWM/Fan tachometer
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 2021-01-19 at 22:09 +0100, Alexandre Belloni wrote:
-> On 19/01/2021 09:14:45+0200, Matti Vaittinen wrote:
-> > The ROHM BD71828 and BD71815 RTC drivers only need the regmap
-> > pointer from parent. Regmap can be obtained via dev_get_regmap()
-> > so do not require parent to populate driver data for that.
+
+On Wed, 20 Jan 2021, at 15:53, Ryan Chen wrote:
+> > -----Original Message-----
+> > From: Andrew Jeffery <andrew@aj.id.au>
+> > Sent: Wednesday, January 20, 2021 1:16 PM
+> > To: Troy Lee <troy_lee@aspeedtech.com>; openbmc@lists.ozlabs.org; Joel
+> > Stanley <joel@jms.id.au>; Philipp Zabel <p.zabel@pengutronix.de>; open list
+> > <linux-kernel@vger.kernel.org>; moderated list:ARM/ASPEED MACHINE
+> > SUPPORT <linux-arm-kernel@lists.infradead.org>; moderated
+> > list:ARM/ASPEED MACHINE SUPPORT <linux-aspeed@lists.ozlabs.org>
+> > Cc: Ryan Chen <ryan_chen@aspeedtech.com>; ChiaWei Wang
+> > <chiawei_wang@aspeedtech.com>; Troy Lee <leetroy@gmail.com>; kbuild
+> > test robot <lkp@intel.com>
+> > Subject: Re: [PATCH v3 4/4] hwmon: Support Aspeed AST2600 PWM/Fan
+> > tachometer
 > > 
-> > BD70528 on the other hand requires parent data to access the
-> > watchdog so leave the parent data for BD70528 here for now.
+> > Hi Troy,
 > > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> 
-> > ---
+> > On Mon, 18 Jan 2021, at 17:20, Troy Lee wrote:
+> > > Add Aspeed AST2600 PWM/Fan tacho driver. AST2600 has 16 PWM channel
+> > > and
+> > > 16 FAN tacho channel.
+> > >
+> > > Changes since v2:
+> > >  - declare local function as static function
+> > >
+> > > Changes since v1:
+> > >  - fixed review comments
+> > >  - fixed double-looped calculation of div_h and div_l
+> > >  - moving configuration to device tree
+> > >  - register hwmon driver with devm_hwmon_device_register_with_info()
+> > >
+> > > Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > ---
+> > >  drivers/hwmon/Kconfig                |  10 +
+> > >  drivers/hwmon/Makefile               |   1 +
+> > >  drivers/hwmon/aspeed2600-pwm-tacho.c | 756
+> > > +++++++++++++++++++++++++++
+> > >  3 files changed, 767 insertions(+)
+> > >  create mode 100644 drivers/hwmon/aspeed2600-pwm-tacho.c
 > > 
-> > Please note that this same change has been sent individually:
-> > https://lore.kernel.org/lkml/20210105152350.GA3714833@localhost.localdomain/
-> > It is present in this series only because some patches depend on
-> > it.
+> > ...
 > > 
-> 
-> Then I think it is best to have it as part of this series.
+> > > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile index
+> > > 09a86c5e1d29..1a415d493ffc 100644
+> > > --- a/drivers/hwmon/Makefile
+> > > +++ b/drivers/hwmon/Makefile
+> > > @@ -52,6 +52,7 @@ obj-$(CONFIG_SENSORS_ARM_SCPI)	+=
+> > scpi-hwmon.o
+> > >  obj-$(CONFIG_SENSORS_AS370)	+= as370-hwmon.o
+> > >  obj-$(CONFIG_SENSORS_ASC7621)	+= asc7621.o
+> > >  obj-$(CONFIG_SENSORS_ASPEED)	+= aspeed-pwm-tacho.o
+> > > +obj-$(CONFIG_SENSORS_ASPEED2600_PWM_TACHO)	+=
+> > aspeed2600-pwm-tacho.o
+> > 
+> > Why does this have to be a separate implementation from the existing ASPEED
+> > PWM/Tacho driver? Is there really nothing in common?
+> > 
+> Hello Andrew,
+> 	The register set is fully re-arrange. And it is new design at AST2600, 
+> can't be compatible with older PWM.  
+>
 
-Thanks for taking a look at this Alexandre! I'll keep the patch in the
-series and remove this comment from cover-letter and the patch. (I
-guess you have now dropped the previously sent patch).
+Ah, okay. I hadn't looked. Thanks Ryan.
 
-> 
-> > ~~~ "I don't think so," said Rene Descartes. Just then he vanished
-> > ~~~
-> 
-> I've alway wanted to comment on that, should he have to say "I don't
-> think" to vanish ? Because saying "I don't think so," means that he
-> thinks this is not so.
-
-My interpretation is he really was disagreeing and intended to say "he
-doesn't think so". It was just the saying which made him to disappear.
-This is what may happen when you have strong principles ^_^; What is
-interesting to me is that he was able to add the "so" before vanishing.
-This makes me believe it was required the information about him saying
-this must've reached someone before the action was taken. If we make
-some assumptions and a rough estimates we can compute the maximum
-distance for this "something" that must've received the information
-about the event.
-
-I now assume that saying "so" can't really take longer than 10ms. I
-also take into account the current state of physics - which means that
-maximum speed for delivering the information is the speed of light, C.
-
-I further guess that first the information about the event must've
-reached this "something" - and then this "something" must've sent some
-'make him vanish' event back. Again we take the speed-of-light as a
-restriction.
-
-So, poor Rene was no further than 0.01 * C/2 km away from the
-"something" - when C is the speed of light using km/s as unit. 
-
-I think it is safe to say that when you say "you're not thinking" you
-should ensure you're further than 150 000 km away from "something"
-which can make you to vanish.
-
-> 
-> > Simon says - in Latin please.
-> > ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-> 
-> And I guess this should be simply "non cogito" ;)
-
-I think we should definitely discuss this with Simon Glass if we ever
-happen to be in a same location :] After all, he did the Latin
-translation for me. I can't really speak Latin - but I can always lead
-the discussion to some side-tracks XD
-
-
-Best Regards
-	Matti Vaittinen
-
-
+Andrew
