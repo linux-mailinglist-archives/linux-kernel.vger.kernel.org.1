@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFB12FCFED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 754C02FCFEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389606AbhATMSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 07:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732848AbhATL6q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:58:46 -0500
-Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fac])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9720DC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:57:58 -0800 (PST)
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DLPD51qGvzMprhY;
-        Wed, 20 Jan 2021 12:57:57 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DLPD41QBczlppyj;
-        Wed, 20 Jan 2021 12:57:56 +0100 (CET)
-Subject: Re: [PATCH v3 08/10] certs: Check that builtin blacklist hashes are
- valid
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-References: <20210114151909.2344974-1-mic@digikod.net>
- <20210114151909.2344974-9-mic@digikod.net> <YAe9egzT5D7B0swR@kernel.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <11ce77c9-7b43-e2a0-55bc-c0035bf3d681@digikod.net>
-Date:   Wed, 20 Jan 2021 12:57:55 +0100
-User-Agent: 
+        id S2389667AbhATMS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 07:18:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57914 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732901AbhATL7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:59:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7B1E1AAAE;
+        Wed, 20 Jan 2021 11:58:17 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 12:58:14 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hca@linux.ibm.com,
+        catalin.marinas@arm.com, Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 1/3] mm/memory_hotplug: Prevalidate the address range
+ being added with platform
+Message-ID: <20210120115814.GA7107@localhost.localdomain>
+References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
+ <1610975582-12646-2-git-send-email-anshuman.khandual@arm.com>
+ <691872bb-b251-83e0-126e-afd54683c83e@redhat.com>
+ <3d4f3b14-0715-b2b3-b015-04b8a77abfb8@arm.com>
+ <30bbf862-06a4-bd1d-b902-61aa4183b819@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YAe9egzT5D7B0swR@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30bbf862-06a4-bd1d-b902-61aa4183b819@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 20, 2021 at 11:41:53AM +0100, David Hildenbrand wrote:
+> On 20.01.21 09:33, Anshuman Khandual wrote:
+> > 
+> > 
+> > On 1/19/21 5:51 PM, David Hildenbrand wrote:
+> >> On 18.01.21 14:12, Anshuman Khandual wrote:
+> >>> This introduces memhp_range_allowed() which can be called in various memory
+> >>> hotplug paths to prevalidate the address range which is being added, with
+> >>> the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
+> >>> which provides applicable address range depending on whether linear mapping
+> >>> is required or not. For ranges that require linear mapping, it calls a new
+> >>> arch callback arch_get_mappable_range() which the platform can override. So
+> >>> the new callback, in turn provides the platform an opportunity to configure
+> >>> acceptable memory hotplug address ranges in case there are constraints.
+> >>>
+> >>> This mechanism will help prevent platform specific errors deep down during
+> >>> hotplug calls. This drops now redundant check_hotplug_memory_addressable()
+> >>> check in __add_pages() but instead adds a VM_BUG_ON() check which would
+> >>
+> >> In this patch, you keep the __add_pages() checks. But as discussed, we
+> >> could perform it in mm/memremap.c:pagemap_range() insted and convert it
+> >> to a VM_BUG_ON().
+> > 
+> > Just to be sure, will the following change achieve what you are
+> > suggesting here. pagemap_range() after this change, will again
+> > be the same like the V1 series.
+> 
+> Yeah, as we used to have in v1. Maybe other reviewers (@Oscar?) have a
+> different opinion.
 
-On 20/01/2021 06:19, Jarkko Sakkinen wrote:
-> On Thu, Jan 14, 2021 at 04:19:07PM +0100, Mickaël Salaün wrote:
->> From: Mickaël Salaün <mic@linux.microsoft.com>
->>
->> Add and use a check-blacklist-hashes.awk script to make sure that the
->> builtin blacklist hashes will be approved by the run time blacklist
->> description checks.  This is useful to debug invalid hash formats, and
->> it make sure that previous hashes which could have been loaded in the
->> kernel (but ignored) are now noticed and deal with by the user.
->>
->> Cc: David Howells <dhowells@redhat.com>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> I get this with a self-signed cert:
-> 
-> certs/Makefile:18: *** target pattern contains no '%'.  Stop.
-> 
-> CONFIG_SYSTEM_BLACKLIST_HASH_LIST="tbs:8eed1340eef37c1dc84d996406ad05c7dbb3eade19132d688408ca2f63904869"
+No, I think that placing the check in pagemap_range() out of the if-else
+makes much more sense.
+Actually, unless my memory  fails me that is what I suggested in v2.
 
-As said in the Kconfig documentation for
-CONFIG_SYSTEM_BLACKLIST_HASH_LIST, you need to provide a file with the
-list, not to set the string directly in the configuration variable. This
-patch series didn't change this behavior. The same kind of macros are
-used for CONFIG_MODULE_SIG_KEY.
+I plan to have a look at the series later this week as I am fairly busy
+atm.
 
-> 
-> I used the script in 10/10 to test this, which is another
-> reamark: the patches are in invalid order, as you need to
-> apply 10/10 before you can test  8/10.
+Thanks
 
-I'll move patch 10/10 earlier but this kind of formatting was already
-required (but silently ignored) for this option to be really taken into
-account. Only the kernel code was available to understand how to
-effectively create such hash.
 
-> 
-> /Jarkko
-> 
+-- 
+Oscar Salvador
+SUSE L3
