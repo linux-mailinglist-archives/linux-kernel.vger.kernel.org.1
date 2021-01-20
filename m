@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EC52FC778
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993422FC788
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbhATCHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbhATCGu (ORCPT
+        id S1729342AbhATCMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:12:01 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11407 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbhATCKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:06:50 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C743DC061575;
-        Tue, 19 Jan 2021 18:06:09 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DL8596hxHz9sVy;
-        Wed, 20 Jan 2021 13:06:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611108366;
-        bh=mu2hwEjOKf1ka9Encmu2T1NzHXH5ODvQIy7jtJ3KNaw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mK18dqXnAMy2UsfBks3FTOxfbKcc5aAQzVzjpgp0GBmXAD7+IsMKDriveJC8FRPDR
-         yakSlxSOMAHnLGAyEcbfgBS9Ga8ov7xvvsi3sGyTbtE0HRZEy/cAEUpvLWNztEFw0b
-         1n8mp3xQzLFdsVT345ioyVZkXgEnvJLZfsAAixjY86KTybdUtMSv3XCgNZ/8SNJPph
-         Z1SR6sahhhPMsaRVCEIs+KfLM4q8wovt5cORrq9sr+Qu/GJ17TVnl7vQ/JN+JwpK/2
-         rvPfjLK9Dl6phWEEcCirNfT2e/Rig/1RK/c42Reqxaw1y4oE676Y5/nE/kOBmL9vhK
-         BH24MlwZu7TPg==
-Date:   Wed, 20 Jan 2021 13:06:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Subject: linux-next: manual merge of the usb tree with the usb.current tree
-Message-ID: <20210120130603.1eccd490@canb.auug.org.au>
+        Tue, 19 Jan 2021 21:10:54 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DL88c3QNYz7XfZ;
+        Wed, 20 Jan 2021 10:09:04 +0800 (CST)
+Received: from [10.174.177.2] (10.174.177.2) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
+ 10:10:09 +0800
+Subject: Re: [PATCH] hugetlbfs: remove meaningless variable avoid_reserve
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210116092644.42697-1-linmiaohe@huawei.com>
+ <2900fea0-e77c-8c6a-1529-c95ded5319e6@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <52159266-f3bf-1043-9f63-f6147355f043@huawei.com>
+Date:   Wed, 20 Jan 2021 10:10:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MXJw3KNBXkJR8x=a4+47Qh2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <2900fea0-e77c-8c6a-1529-c95ded5319e6@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.2]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MXJw3KNBXkJR8x=a4+47Qh2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi:
+On 2021/1/20 2:41, Mike Kravetz wrote:
+> Please CC Andrew on hugetlb patches as they need to go through his tree.
+> 
+> On 1/16/21 1:26 AM, Miaohe Lin wrote:
+>> The variable avoid_reserve is meaningless because we never changed its
+>> value and just passed it to alloc_huge_page(). So remove it to make code
+>> more clear that in hugetlbfs_fallocate, we never avoid reserve when alloc
+>> hugepage yet.
+> 
+> One might argue that using a named variable makes the call to alloc_huge_page
+> more clear.  I do not disagree with the change,  However, there are some
+> subtle reasons why alloc_huge_page is called with 'avoid_reserve = 0' from
+> fallocate.  Therefore, I would prefer that a comment be added above the call
+> in addition to this change.  See below.
+> 
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  fs/hugetlbfs/inode.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+>> index 88751e35e69d..23ad6ed8b75f 100644
+>> --- a/fs/hugetlbfs/inode.c
+>> +++ b/fs/hugetlbfs/inode.c
+>> @@ -680,7 +680,6 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+>>  		 */
+>>  		struct page *page;
+>>  		unsigned long addr;
+>> -		int avoid_reserve = 0;
+>>  
+>>  		cond_resched();
+>>  
+>> @@ -717,7 +716,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+>>  		}
+>>  
+>>  		/* Allocate page and add to page cache */
+> 
+> Perhaps, change comment to read:
+> 
+> 		/*
+> 		 * Allocate page without setting the avoid_reserve argument.
+> 		 * There certainly are no reserves associated with the
+> 		 * pseudo_vma.  However, there could be shared mappings with
+> 		 * reserves for the file at the inode level.  If we fallocate
+> 		 * pages in these areas, we need to consume the reserves
+> 		 * to keep reservation accounting consistent.
+> 		 */
+> 
 
-Hi all,
-
-Today's linux-next merge of the usb tree got a conflict in:
-
-  drivers/usb/gadget/udc/bdc/Kconfig
-
-between commit:
-
-  ef02684c4e67 ("usb: bdc: Make bdc pci driver depend on BROKEN")
-
-from the usb.current tree and commit:
-
-  7766cafea0ec ("usb: bdc: Remove the BDC PCI driver")
-
-from the usb tree.
-
-I fixed it up (the latter removed the text updated by the former) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/MXJw3KNBXkJR8x=a4+47Qh2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAHkAsACgkQAVBC80lX
-0Gyw5Af+PLSwN397i9gQgwW7o1hGR0VIvwnXqTaBYgq+bKpHH5V2syUoDoY/NiOm
-d6tSvs5vQtjuydWxCj6PjvKz6h8R+hVojSeREYNvvE3sdY7/gBznaA4mQM0346xt
-bMPoXloZN0GAIkXchR43PWt0hEdbE6rR5ESXj/pDO6SAKOs30R9ad/fM1A6xIbSy
-ZKYcRxZdAd2V+ZpyRrW9LyzGj0ZjkgvV0tk4SDUxC9H/98TxF96lekT1c1NcLTJa
-k8aTpeaN4qoEMVQrZyuyPzOvsnydhM1GB5Gwpj1ezCktj4JjKt/4fFz1S0Fdhrbu
-HPHuwtsfQrUJyMYrln5vgoMn/hYyMQ==
-=Lu0F
------END PGP SIGNATURE-----
-
---Sig_/MXJw3KNBXkJR8x=a4+47Qh2--
+Many thanks for detailed and excellent comment. Will do it in v2.
+Thanks again.
