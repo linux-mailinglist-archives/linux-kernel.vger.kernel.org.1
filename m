@@ -2,238 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2272FCDEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1779A2FCDF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730152AbhATKNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729522AbhATJM0 (ORCPT
+        id S1730707AbhATKNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:13:45 -0500
+Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:56613 "EHLO
+        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729712AbhATJNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:12:26 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5126EC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:11:37 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id e15so2151876wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:11:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jnHw/9ZfOUdDPDIVRz58fMDvzkElIsdRxNOVrSA30u0=;
-        b=SGoQ9256qHzwYxJkdrl57cIN/rchQtnhGfDJQqGJl6DxiHNa08K0KF4sF3C0FAf2A7
-         YLk9qmb/uL5XHhHwCi5Iajxw6DXC6CyegFsLorVcMW701MtboWCBTXBqCUNuBfIbJ9eE
-         t3oQ+hDZvWjkNetM7HNtZSBdWv6X+pzHEvJwE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=jnHw/9ZfOUdDPDIVRz58fMDvzkElIsdRxNOVrSA30u0=;
-        b=rhg8sLHMOV+9lFs/Cfu8tvDBNMzgz7+6OXC5iRB7p8kZLty/jxiJsU0AQB4w926e8P
-         9+kDnQse6qauaePxvMZnaf5RKCZ25IP2vw/Ai5Xt6vvOGwUehGQ9BGGdZt3PatoZfW0y
-         EAB3uDtSDTmQeaG582uwpFyf2Dm9gYIdqSu/RS+XrGC3/SxfUUVcLmXvNISfMsLiThCu
-         oj7s8UhXoWjusu0vV5wDlaYEEUtrBgF80Xiji47Pbx7qSUkVpUGiCdKbMrVPILxc8wtA
-         eJ3MRekpvs+cYo0Q5FyYaiDle5PgYKkuqkSQJvFDAhw/uBmGw4PwrWH1lBBEVDkoStA8
-         7MPw==
-X-Gm-Message-State: AOAM531t70dI5e9rm3FIveE+pdL8x9K13wksjDljbJkIFbhjwYt/+TMS
-        PCx/oxbHaha7BVxp+h3CwCfv1O1i9jexZg==
-X-Google-Smtp-Source: ABdhPJzE7C10TNLXpBnvYdfGRuBE9aOqbzxwogIQA7eNkIY+mSb+2vFm6RbVRZNIKOZzXPQKUScUyQ==
-X-Received: by 2002:a05:600c:258:: with SMTP id 24mr3297878wmj.161.1611133895972;
-        Wed, 20 Jan 2021 01:11:35 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b64sm2775341wmb.26.2021.01.20.01.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 01:11:34 -0800 (PST)
-Date:   Wed, 20 Jan 2021 10:11:33 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Yiwei Zhang <zzyiwei@android.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
-Message-ID: <YAfzxS95Yy86qnBi@phenom.ffwll.local>
-Mail-Followup-To: Yiwei Zhang <zzyiwei@android.com>,
-        David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
- <20210118234057.270930-1-zzyiwei@android.com>
- <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
- <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
+        Wed, 20 Jan 2021 04:13:41 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id D928FFB0E0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:12:36 +0000 (GMT)
+Received: (qmail 17350 invoked from network); 20 Jan 2021 09:12:36 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 20 Jan 2021 09:12:36 -0000
+Date:   Wed, 20 Jan 2021 09:12:35 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
+Message-ID: <20210120091235.GT3592@techsingularity.net>
+References: <20210119112211.3196-1-mgorman@techsingularity.net>
+ <20210119112211.3196-6-mgorman@techsingularity.net>
+ <20210120083018.GA14462@in.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210120083018.GA14462@in.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:08:12AM -0800, Yiwei Zhang wrote:
-> On Mon, Jan 18, 2021 at 11:03 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Tue, Jan 19, 2021 at 12:41 AM Yiwei Zhang <zzyiwei@android.com> wrote:
-> > >
-> > > On the success of virtio_gpu_object_create, add size of newly allocated
-> > > bo to the tracled total_mem. In drm_gem_object_funcs.free, after the gem
-> > > bo lost its last refcount, subtract the bo size from the tracked
-> > > total_mem if the original underlying memory allocation is successful.
-> > >
-> > > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
-> >
-> > Isn't this something that ideally we'd for everyone? Also tracepoint
-> > for showing the total feels like tracepoint abuse, usually we show
-> > totals somewhere in debugfs or similar, and tracepoint just for what's
-> > happening (i.e. which object got deleted/created).
-> >
-> > What is this for exactly?
-> > -Daniel
-> >
-> > > ---
-> > >  drivers/gpu/drm/virtio/Kconfig          |  1 +
-> > >  drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
-> > >  drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
-> > >  3 files changed, 24 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
-> > > index b925b8b1da16..e103b7e883b1 100644
-> > > --- a/drivers/gpu/drm/virtio/Kconfig
-> > > +++ b/drivers/gpu/drm/virtio/Kconfig
-> > > @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
-> > >         select DRM_KMS_HELPER
-> > >         select DRM_GEM_SHMEM_HELPER
-> > >         select VIRTIO_DMA_SHARED_BUFFER
-> > > +       select TRACE_GPU_MEM
-> > >         help
-> > >            This is the virtual GPU driver for virtio.  It can be used with
-> > >            QEMU based VMMs (like KVM or Xen).
-> > > diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > > index 6a232553c99b..7c60e7486bc4 100644
-> > > --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > > +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > > @@ -249,6 +249,10 @@ struct virtio_gpu_device {
-> > >         spinlock_t resource_export_lock;
-> > >         /* protects map state and host_visible_mm */
-> > >         spinlock_t host_visible_lock;
-> > > +
-> > > +#ifdef CONFIG_TRACE_GPU_MEM
-> > > +       atomic64_t total_mem;
-> > > +#endif
-> > >  };
-> > >
-> > >  struct virtio_gpu_fpriv {
-> > > diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
-> > > index d69a5b6da553..1e16226cebbe 100644
-> > > --- a/drivers/gpu/drm/virtio/virtgpu_object.c
-> > > +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
-> > > @@ -25,12 +25,29 @@
-> > >
-> > >  #include <linux/dma-mapping.h>
-> > >  #include <linux/moduleparam.h>
-> > > +#ifdef CONFIG_TRACE_GPU_MEM
-> > > +#include <trace/events/gpu_mem.h>
-> > > +#endif
-> > >
-> > >  #include "virtgpu_drv.h"
-> > >
-> > >  static int virtio_gpu_virglrenderer_workaround = 1;
-> > >  module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
-> > >
-> > > +#ifdef CONFIG_TRACE_GPU_MEM
-> > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
-> > > +                                             s64 delta)
-> > > +{
-> > > +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
-> > > +
-> > > +       trace_gpu_mem_total(0, 0, total_mem);
-> > > +}
-> > > +#else
-> > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *, s64)
-> > > +{
-> > > +}
-> > > +#endif
-> > > +
-> > >  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
-> > >  {
-> > >         if (virtio_gpu_virglrenderer_workaround) {
-> > > @@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
-> > >         struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
-> > >
-> > >         if (bo->created) {
-> > > +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
-> > >                 virtio_gpu_cmd_unref_resource(vgdev, bo);
-> > >                 virtio_gpu_notify(vgdev);
-> > >                 /* completion handler calls virtio_gpu_cleanup_object() */
-> > > @@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
-> > >                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
-> > >         }
-> > >
-> > > +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
-> > >         *bo_ptr = bo;
-> > >         return 0;
-> > >
-> > > --
-> > > 2.30.0.284.gd98b1dd5eaa7-goog
-> > >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+On Wed, Jan 20, 2021 at 02:00:18PM +0530, Gautham R Shenoy wrote:
+> > @@ -6157,18 +6169,31 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >  	}
+> > 
+> >  	for_each_cpu_wrap(cpu, cpus, target) {
+> > -		if (!--nr)
+> > -			return -1;
+> > -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> > -			break;
+> > +		if (smt) {
+> > +			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > +			if ((unsigned int)i < nr_cpumask_bits)
+> > +				return i;
+> > +
+> > +		} else {
+> > +			if (!--nr)
+> > +				return -1;
+> > +			i = __select_idle_cpu(cpu);
+> > +			if ((unsigned int)i < nr_cpumask_bits) {
+> > +				idle_cpu = i;
+> > +				break;
+> > +			}
+> > +		}
+> >  	}
+> > 
+> > -	if (sched_feat(SIS_PROP)) {
+> > +	if (smt)
+> > +		set_idle_cores(this, false);
 > 
-> Thanks for your reply! Android Cuttlefish virtual platform is using
-> the virtio-gpu driver, and we currently are carrying this small patch
-> at the downstream side. This is essential for us because:
-> (1) Android has deprecated debugfs on production devices already
-> (2) Android GPU drivers are not DRM based, and this won't change in a
-> short term.
+> Shouldn't we set_idle_cores(false) only if this was the last idle
+> core in the LLC ? 
 > 
-> Android relies on this tracepoint + eBPF to make the GPU memory totals
-> available at runtime on production devices, which has been enforced
-> already. Not only game developers can have a reliable kernel total GPU
-> memory to look at, but also Android leverages this to take GPU memory
-> usage out from the system lost ram.
-> 
-> I'm not sure whether the other DRM drivers would like to integrate
-> this tracepoint(maybe upstream drivers will move away from debugfs
-> later as well?), but at least we hope virtio-gpu can take this.
 
-There's already another proposal from Android people for tracking dma-buf
-(in dma-buf heaps/ion) usage. I think we need something which is overall
-integrated, otherwise we have a complete mess of partial solutions.
-
-Also there's work going on to add cgroups support to gpu drivers (pushed
-by amd and intel folks, latest rfc have been quite old), so that's another
-proposal for gpu memory usage tracking.
-
-Also for upstream we need something which works with upstream gpu drivers
-(even if you don't end up using that in shipping products). So that's
-another reason maybe why a quick hack in the virtio gpu driver isn't the
-best approach here.
-
-I guess a good approach would be if Android at least can get to something
-unified (gpu driver, virtio-gpu, dma-buf heaps), and then we need to
-figure out how to mesh that with the cgroups side somehow.
-
-Also note that at least on dma-buf we already have some other debug
-features (for android), so an overall "how does this all fit together"
-would be good.
--Daniel
-
-> 
-> Many thanks!
-> Yiwei
+That would involve rechecking the cpumask bits that have not been
+scanned to see if any of them are an idle core. As the existance of idle
+cores can change very rapidly, it's not worth the cost.
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Mel Gorman
+SUSE Labs
