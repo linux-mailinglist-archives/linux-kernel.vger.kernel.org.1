@@ -2,199 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96572FCE03
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DBC2FCE04
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731783AbhATKQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:16:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S1731800AbhATKQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731362AbhATJbZ (ORCPT
+        with ESMTP id S1731368AbhATJb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:31:25 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A0DC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:45 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id o10so2920260wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:45 -0800 (PST)
+        Wed, 20 Jan 2021 04:31:27 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AEEC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:46 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id j18so2185779wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P3Ne/irpWK0pToDck7DyYa8lVDXtVf5cRcYpLpq68u8=;
-        b=KuC0tcq83evkt48H1DTelfTBUCctLJY2k5ngkdKKj1kOb9Fr80jIBxyi709606r835
-         kOmy9ypLoUQ+GDljAe0My4xiMLrcnsIoqhIFxvTNmg2lWqFzzHttnh6OFCq4AHJ71vSz
-         YE5XiV/l9Cd7CdzZJK7n7WDaU/so3lRjzed26NjLLWTN2VR8vsy6eyxQTvcgXFLOvC5d
-         R9v8VyUtQfGRDV7uX+2cRx4LnoqMATLvVwu+7v8eLqfT8aStnftOqD0iV+oc0BcpzYiP
-         INGUySpv+sm1lu1tjvnwMM2gfi/riSeLtJ0na9guXsJDA5GDgxKrJekjAGS0DgfyVOV7
-         BX1A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bN1EA9Jtu/mSRFpfLqJ4hYJd1C2lXhS1XjJCl6CFg1g=;
+        b=zFYfx91XPKACjv/flqRWziV33Y4m/EmmyZgP+idh0JI5dCaeislX7SISmaLy2s4VR7
+         TIc1ogI7o6CjxnsWalSTE5E/3mDU/Dt9phL15/9AbLNEQW72xnXogiNhgutU8MmGoO93
+         Jv4du5hB7Px9HKxcCnEB1RVI476qeKJqLJo8S6/DiBQJ72je2SmV2umD81hzKuyPpm7k
+         LbS+mWh5mZyQUje328YOPnyARiClql6txorS+c+WVnuF4iSZJCSE7JIz3KQJRmL5wwsC
+         hmSNKVZDLydPhFLGljT+Jfv+sefoEExI+oL65ad3J1xNjCFPK4zzlSzB7xU349ywBE/U
+         7msQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P3Ne/irpWK0pToDck7DyYa8lVDXtVf5cRcYpLpq68u8=;
-        b=VyIGV2TWF4HMK3qpB3+FPWW6Gn0dFSDDz1IJr/aw5+kNMRwF6LANqPogSe8U63CBke
-         r1kicRwXGIo1J0JCfzEZ6sOU93klwUCZ9XHfVUaX3FCPTfTnXxY7HEZET0R2y0uuT+UV
-         PKBjqjX8qeLZnl+b2zNiLf9jfHxffbiRr3lOVB9+r0kqBMsVf0p07w3uW0yJ+qIECF00
-         njR00w/Qrnmxkn1R66eOALwVqn2Zp1SmpCprmBqgEIZ3NxwDRFnkkfXN5miXYL6UarJ7
-         iR0jSxsy+6uBRo+mmeRSxp4jyWtKmRZhIVb0rynlcmuvKAQaA6zlPcB4vb9GZ+QhDSBq
-         l9KQ==
-X-Gm-Message-State: AOAM5311sFU1QgtxyrrwHrJgvauJNt/o8ZFfZzQi6WK2LH6iakMdGK51
-        vDe5/PY7lT9Nta5EeSK21KRjrB5cu/ok3Y9i
-X-Google-Smtp-Source: ABdhPJwkuKGLiilCYOPl4yLZqSrXnQwbxkqU39jDuckh64x0mPe7YxmfrsGB2u5y5xzl0UGCbw8giA==
-X-Received: by 2002:a1c:81cc:: with SMTP id c195mr3396693wmd.70.1611135044213;
-        Wed, 20 Jan 2021 01:30:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bN1EA9Jtu/mSRFpfLqJ4hYJd1C2lXhS1XjJCl6CFg1g=;
+        b=sq8Dmw+VXDSb40TEu73n/NCz64UJHK7vd1+X6GMK+auM7Rp4q9BUrDcbMEcoZqK4YP
+         HFPi6cpr3Ek9tD263bFI8hibNwK13IwLrWs/uOq8/KD2lGuWpXb6B2YcJQbwj+8aNJ/y
+         OfJ8nxOyxGMFImtQe8lcxoKeBL0p0+fFpK7oKf+TchRg6eP/I8rqfz6hlDBqrU636ZlR
+         IGOjF+iB2VaYy0KjXNVDrdRyctellp6bVmvUc4b6rtg1OMTrdL7/Prfh3uB3ENIWw5hC
+         mJBM8jyOfTMidHV6rCDtLp3ZxhTw0jsNWVnhmJ/msLkR7vGsz7jSSCjxYotd+hLVheSm
+         yRsw==
+X-Gm-Message-State: AOAM531bMbXvwaYQJUIntxTlEOtsctTxLhLPUu6Ag+yT5D414Th9NQ2C
+        3p5CG6MuiSl0stquGq4gAgidGw==
+X-Google-Smtp-Source: ABdhPJy0QU7f/Vsm0leMTTjzvUhzClwhW+2h4hj2Ui406VthDvXgvODPTyr3pTl1F0dkQzpvKhwYUg==
+X-Received: by 2002:a1c:9d8b:: with SMTP id g133mr3413636wme.44.1611135045419;
+        Wed, 20 Jan 2021 01:30:45 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id z130sm2889201wmb.33.2021.01.20.01.30.42
+        by smtp.gmail.com with ESMTPSA id z130sm2889201wmb.33.2021.01.20.01.30.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 01:30:43 -0800 (PST)
+        Wed, 20 Jan 2021 01:30:44 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Chen-Yu Tsai <wens@csie.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        =?UTF-8?q?Emilio=20L=C3=B3pez?= <emilio@elopez.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Maxime Ripard <mripard@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org,
         Michael Turquette <mturquette@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Omri Itach <omrii@marvell.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Pankaj Dev <pankaj.dev@st.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Pragnesh Patel <Pragnesh.patel@sifive.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Scott Branden <sbranden@broadcom.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>,
         Stephen Boyd <sboyd@kernel.org>,
-        Stephen Gallimore <stephen.gallimore@st.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Thomas Abraham <thomas.ab@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Xing Zheng <zhengxing@rock-chips.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: [PATCH 00/20] Rid W=1 warnings from Clock
-Date:   Wed, 20 Jan 2021 09:30:20 +0000
-Message-Id: <20210120093040.1719407-1-lee.jones@linaro.org>
+        Thomas Abraham <thomas.ab@samsung.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH 01/20] clk: rockchip: clk: Demote non-conformant kernel-doc headers
+Date:   Wed, 20 Jan 2021 09:30:21 +0000
+Message-Id: <20210120093040.1719407-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210120093040.1719407-1-lee.jones@linaro.org>
+References: <20210120093040.1719407-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-We should have these nailed in ~2 patchsets.
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'name' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'parent_names' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'num_parents' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'base' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'muxdiv_offset' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'mux_shift' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'mux_width' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'mux_flags' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'div_offset' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'div_shift' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'div_width' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'div_flags' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'div_table' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'gate_offset' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'gate_shift' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'gate_flags' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'flags' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:45: warning: Function parameter or member 'lock' not described in 'rockchip_clk_register_branch'
+ drivers/clk/rockchip/clk.c:180: warning: Function parameter or member 'hw' not described in 'rockchip_fractional_approximation'
+ drivers/clk/rockchip/clk.c:180: warning: Function parameter or member 'rate' not described in 'rockchip_fractional_approximation'
+ drivers/clk/rockchip/clk.c:180: warning: Function parameter or member 'parent_rate' not described in 'rockchip_fractional_approximation'
+ drivers/clk/rockchip/clk.c:180: warning: Function parameter or member 'm' not described in 'rockchip_fractional_approximation'
+ drivers/clk/rockchip/clk.c:180: warning: Function parameter or member 'n' not described in 'rockchip_fractional_approximation'
 
-Lee Jones (20):
-  clk: rockchip: clk: Demote non-conformant kernel-doc headers
-  clk: rockchip: clk-cpu: Remove unused/undocumented struct members
-  clk: rockchip: clk-pll: Demote kernel-doc abuses to standard comment
-    blocks
-  clk: rockchip: clk-half-divider: Demote non-conformant kernel-doc
-    header
-  clk: bcm: clk-iproc-pll: Demote kernel-doc abuse
-  clk: sifive: fu540-prci: Declare static const variable
-    'prci_clk_fu540' where it's used
-  clk: socfpga: clk-pll: Remove unused variable 'rc'
-  clk: socfpga: clk-pll-a10: Remove set but unused variable 'rc'
-  clk: mvebu: ap-cpu-clk: Demote non-conformant kernel-doc header
-  clk: imx: clk-imx31: Remove unused static const table 'uart_clks'
-  clk: st: clkgen-pll: Demote unpopulated kernel-doc header
-  clk: st: clkgen-fsyn: Fix worthy struct documentation demote partially
-    filled one
-  clk: ti: clockdomain: Fix description for 'omap2_init_clk_clkdm's hw
-    param
-  clk: sunxi: clk-sunxi: Demote a bunch of non-conformant kernel-doc
-    headers
-  clk: ti: dpll: Fix misnaming of '_register_dpll()'s 'user' parameter
-  clk: ti: gate: Fix possible doc-rot in
-    'omap36xx_gate_clk_enable_with_hsdiv_restore'
-  clk: sunxi: clk-a10-ve: Demote obvious kernel-doc abuse
-  clk: sunxi: clk-mod0: Demote non-conformant kernel-doc header
-  clk: versatile: clk-icst: Fix worthy struct documentation block
-  clk: zynq: clkc: Remove various instances of an unused variable 'clk'
-
- drivers/clk/bcm/clk-iproc-pll.c         |  2 +-
- drivers/clk/imx/clk-imx31.c             | 10 ----
- drivers/clk/mvebu/ap-cpu-clk.c          |  2 +-
- drivers/clk/rockchip/clk-cpu.c          |  4 --
- drivers/clk/rockchip/clk-half-divider.c |  2 +-
- drivers/clk/rockchip/clk-pll.c          |  6 +-
- drivers/clk/rockchip/clk.c              |  4 +-
- drivers/clk/sifive/fu540-prci.h         |  5 --
- drivers/clk/sifive/sifive-prci.c        |  5 ++
- drivers/clk/socfpga/clk-pll-a10.c       |  3 +-
- drivers/clk/socfpga/clk-pll.c           |  3 +-
- drivers/clk/st/clkgen-fsyn.c            |  6 +-
- drivers/clk/st/clkgen-pll.c             |  3 +-
- drivers/clk/sunxi/clk-a10-ve.c          |  2 +-
- drivers/clk/sunxi/clk-mod0.c            |  2 +-
- drivers/clk/sunxi/clk-sunxi.c           | 32 +++++------
- drivers/clk/ti/clockdomain.c            |  2 +-
- drivers/clk/ti/dpll.c                   |  2 +-
- drivers/clk/ti/gate.c                   |  2 +-
- drivers/clk/versatile/clk-icst.c        |  7 ++-
- drivers/clk/zynq/clkc.c                 | 73 ++++++++++++-------------
- 21 files changed, 79 insertions(+), 98 deletions(-)
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: "Emilio López" <emilio@elopez.com.ar>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Gregory Clement <gregory.clement@bootlin.com>
-Cc: Heiko Stuebner <heiko@sntech.de>
-Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-Cc: Julia Lawall <Julia.Lawall@inria.fr>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-clk@vger.kernel.org
-Cc: linux-omap@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-rockchip@lists.infradead.org
-Cc: Maxime Ripard <mripard@kernel.org>
 Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: Omri Itach <omrii@marvell.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Pankaj Dev <pankaj.dev@st.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Pragnesh Patel <Pragnesh.patel@sifive.com>
-Cc: Ray Jui <rjui@broadcom.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Scott Branden <sbranden@broadcom.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: "Sören Brinkmann" <soren.brinkmann@xilinx.com>
 Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Stephen Gallimore <stephen.gallimore@st.com>
-Cc: Tero Kristo <kristo@kernel.org>
-Cc: Thomas Abraham <thomas.ab@samsung.com>
+Cc: Heiko Stuebner <heiko@sntech.de>
 Cc: Xing Zheng <zhengxing@rock-chips.com>
-Cc: Zong Li <zong.li@sifive.com>
+Cc: Thomas Abraham <thomas.ab@samsung.com>
+Cc: linux-clk@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/clk/rockchip/clk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/rockchip/clk.c b/drivers/clk/rockchip/clk.c
+index 336481bc6cc72..049e5e0b64f62 100644
+--- a/drivers/clk/rockchip/clk.c
++++ b/drivers/clk/rockchip/clk.c
+@@ -24,7 +24,7 @@
+ #include <linux/rational.h>
+ #include "clk.h"
+ 
+-/**
++/*
+  * Register a clock branch.
+  * Most clock branches have a form like
+  *
+@@ -170,7 +170,7 @@ static int rockchip_clk_frac_notifier_cb(struct notifier_block *nb,
+ 	return notifier_from_errno(ret);
+ }
+ 
+-/**
++/*
+  * fractional divider must set that denominator is 20 times larger than
+  * numerator to generate precise clock frequency.
+  */
 -- 
 2.25.1
 
