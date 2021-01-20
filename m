@@ -2,114 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5042FD4B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3C32FD4B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387983AbhATP6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390562AbhATPx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:53:29 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FE4C061575;
-        Wed, 20 Jan 2021 07:52:49 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id o17so34757590lfg.4;
-        Wed, 20 Jan 2021 07:52:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/KIgJpukkTUseLKOL+nfTNs+iHfOcLiaf/sA4jMSc7o=;
-        b=b2NLVokQPZCUuJAyv3kiWNUb/D7/YvKoWfUJcCHR1heKGaiZjLpcSwBstX7Q3YX8MD
-         0VSL3nGarP20z1Z7t1EQA7XA2H4vpXyhlGms2qwFGmlN5vFPCkNOEwhXvgcl2dX2OHl0
-         Fk8lwe7s8eUZ2wwS5RMH6/mUWuXSRNmTjNvQCAwK5Dd3NdzmkpZHt4llHrw8Ni5khkmn
-         myMjJRhAiEUeq/sHdT1yh60NnMmGAROPatvIjJ8mP6HQeV19cvk6YGXY87IpFAtncwaV
-         v00shKKr9e/yxCXAB3jbsK18rnr4dn0SL3OuJ8SyDsoqZnywmH2zxXJFRB0YEqFQqi04
-         OP8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/KIgJpukkTUseLKOL+nfTNs+iHfOcLiaf/sA4jMSc7o=;
-        b=nbGUUFMp2tvkeX6XBsXTytoIiQPoz2eDIbHMmu4obTt01NoNLbaj2f9zx3wVyrCp4j
-         XIEjmjHhN6R1F1fnjSKUn9LIH2fe1HWXJOARadqqsVIByKni7NkJOPdLj+5chmh06SoZ
-         6TH9b14hriqgE1+ThonVV1NND8L1OGT9qf8dXWsrbFRjvgVWZ0Hv2ANhdQP7Pp0rUInH
-         DdyJhS2vnOcnkWMdS4WMk+TAwt6OmI0ezULfIAVj4iUL3FbjIeIkwceqBm8ZxGEFnVmy
-         1k1exhCfw1zlHcU/HC6vF73fyQJL7udqR/YCzWTZyBsWL6xCKgckEZ+apslDjtXdNUTt
-         jDZQ==
-X-Gm-Message-State: AOAM5338hi7aA1pHPOm9dFhgTGZXp4CKCcQIfKiU3dvNwEKhL+T6Bgjo
-        K/NSxyBc5oPD2aA5LNiSlbJh8+WQmjY=
-X-Google-Smtp-Source: ABdhPJz54jp4p6N7ro9OB4UGTlGLwMbj9w9A1NhmVFwuW25RiB7kgYemoqd4C3nN1Esa+ddCNU5GUA==
-X-Received: by 2002:a19:ac45:: with SMTP id r5mr4942869lfc.305.1611157967504;
-        Wed, 20 Jan 2021 07:52:47 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id b4sm74228ljp.53.2021.01.20.07.52.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 07:52:46 -0800 (PST)
-Subject: Re: [PATCH 02/31] opp: Add devres wrapper for
- dev_pm_opp_set_regulators and dev_pm_opp_put_regulators
-To:     Yangtao Li <tiny.windzz@gmail.com>, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, cw00.choi@samsung.com, krzk@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
-        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
-        mka@chromium.org, harigovi@codeaurora.org,
-        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
-        georgi.djakov@linaro.org, akashast@codeaurora.org,
-        parashar@codeaurora.org, dianders@chromium.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20210101165507.19486-1-tiny.windzz@gmail.com>
- <20210101165507.19486-3-tiny.windzz@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <43c251a2-430a-040c-4152-94cf10c884e0@gmail.com>
-Date:   Wed, 20 Jan 2021 18:52:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S2389969AbhATP7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:59:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:41232 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732855AbhATPzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:55:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07A2431B;
+        Wed, 20 Jan 2021 07:54:53 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BD053F68F;
+        Wed, 20 Jan 2021 07:54:51 -0800 (PST)
+Subject: Re: [PATCH 1/2] perf/smmuv3: Don't reserve the register space that
+ overlaps with the SMMUv3
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
+ <20210119015951.1042-2-thunder.leizhen@huawei.com>
+ <30665cd6-b438-1d1d-7445-9e45e240f79a@arm.com>
+ <a2d7d94c-8e4e-d91d-8587-7a5b3594b4ca@huawei.com>
+ <9ad3c863-ec80-e177-4d11-24d1f706b4af@huawei.com>
+ <f6fde527-8c87-1128-52ca-77d096194eb6@arm.com>
+ <2a577c5e-25bb-5feb-d745-f25007b5a213@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <19faaf58-b209-ad76-ffa6-4877b153b664@arm.com>
+Date:   Wed, 20 Jan 2021 15:54:50 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210101165507.19486-3-tiny.windzz@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <2a577c5e-25bb-5feb-d745-f25007b5a213@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.01.2021 19:54, Yangtao Li пишет:
-> Add devres wrapper for dev_pm_opp_set_regulators()
-> dev_pm_opp_put_regulators () to simplify driver code.
+On 2021-01-20 14:14, Leizhen (ThunderTown) wrote:
 > 
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> ---
->  drivers/opp/core.c     | 50 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/pm_opp.h |  9 ++++++++
->  2 files changed, 59 insertions(+)
+> 
+> On 2021/1/20 21:27, Robin Murphy wrote:
+>> On 2021-01-20 09:26, Leizhen (ThunderTown) wrote:
+>>>
+>>>
+>>> On 2021/1/20 11:37, Leizhen (ThunderTown) wrote:
+>>>>
+>>>>
+>>>> On 2021/1/19 20:32, Robin Murphy wrote:
+>>>>> On 2021-01-19 01:59, Zhen Lei wrote:
+>>>>>> Some SMMUv3 implementation embed the Perf Monitor Group Registers (PMCG)
+>>>>>> inside the first 64kB region of the SMMU. Since SMMU and PMCG are managed
+>>>>>> by two separate drivers, and this driver depends on ARM_SMMU_V3, so the
+>>>>>> SMMU driver reserves the corresponding resource first, this driver should
+>>>>>> not reserve the corresponding resource again. Otherwise, a resource
+>>>>>> reservation conflict is reported during boot.
+>>>>>>
+>>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>>> ---
+>>>>>>     drivers/perf/arm_smmuv3_pmu.c | 42 ++++++++++++++++++++++++++++++++++++++++--
+>>>>>>     1 file changed, 40 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+>>>>>> index 74474bb322c3f26..dcce085431c6ce8 100644
+>>>>>> --- a/drivers/perf/arm_smmuv3_pmu.c
+>>>>>> +++ b/drivers/perf/arm_smmuv3_pmu.c
+>>>>>> @@ -761,6 +761,44 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
+>>>>>>         dev_notice(smmu_pmu->dev, "option mask 0x%x\n", smmu_pmu->options);
+>>>>>>     }
+>>>>>>     +static void __iomem *
+>>>>>> +smmu_pmu_get_and_ioremap_resource(struct platform_device *pdev,
+>>>>>> +                  unsigned int index,
+>>>>>> +                  struct resource **out_res)
+>>>>>> +{
+>>>>>> +    int ret;
+>>>>>> +    void __iomem *base;
+>>>>>> +    struct resource *res;
+>>>>>> +
+>>>>>> +    res = platform_get_resource(pdev, IORESOURCE_MEM, index);
+>>>>>> +    if (!res) {
+>>>>>> +        dev_err(&pdev->dev, "invalid resource\n");
+>>>>>> +        return IOMEM_ERR_PTR(-EINVAL);
+>>>>>> +    }
+>>>>>> +    if (out_res)
+>>>>>> +        *out_res = res;
+>>>>>> +
+>>>>>> +    ret = region_intersects(res->start, resource_size(res),
+>>>>>> +                IORESOURCE_MEM, IORES_DESC_NONE);
+>>>>>> +    if (ret == REGION_INTERSECTS) {
+>>>>>> +        /*
+>>>>>> +         * The resource has already been reserved by the SMMUv3 driver.
+>>>>>> +         * Don't reserve it again, just do devm_ioremap().
+>>>>>> +         */
+>>>>>> +        base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+>>>>>> +    } else {
+>>>>>> +        /*
+>>>>>> +         * The resource may have not been reserved by any driver, or
+>>>>>> +         * has been reserved but not type IORESOURCE_MEM. In the latter
+>>>>>> +         * case, devm_ioremap_resource() reports a conflict and returns
+>>>>>> +         * IOMEM_ERR_PTR(-EBUSY).
+>>>>>> +         */
+>>>>>> +        base = devm_ioremap_resource(&pdev->dev, res);
+>>>>>> +    }
+>>>>>
+>>>>> What if the PMCG driver simply happens to probe first?
+>>>>
+>>>> There are 4 cases:
+>>>> 1) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=y
+>>>>      It's not allowed. Becase: ARM_SMMU_V3_PMU depends on ARM_SMMU_V3
+>>>>      config ARM_SMMU_V3_PMU
+>>>>            tristate "ARM SMMUv3 Performance Monitors Extension"
+>>>>            depends on ARM64 && ACPI && ARM_SMMU_V3
+>>>>
+>>>> 2) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=m
+>>>>      No problem, SMMUv3 will be initialized first.
+>>>>
+>>>> 3) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=y
+>>>>      vi drivers/Makefile
+>>>>      60 obj-y                           += iommu/
+>>>>      172 obj-$(CONFIG_PERF_EVENTS)       += perf/
+>>>>
+>>>>      This link sequence ensure that SMMUv3 driver will be initialized first.
+>>>>      They are currently at the same initialization level.
+>>>>
+>>>> 4) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=m
+>>>>      Sorry, I thought module dependencies were generated based on "depends on".
+>>>>      But I tried it today，module dependencies are generated only when symbol
+>>>>      dependencies exist. I should use MODULE_SOFTDEP() to explicitly mark the
+>>>>      dependency. I will send V2 later.
+>>>>
+>>>
+>>> Hi Robin:
+>>>     I think I misunderstood your question. The probe() instead of module_init()
+>>> determines the time for reserving register space resources.  So we'd better
+>>> reserve multiple small blocks of resources in SMMUv3 but perform ioremap() for
+>>> the entire resource, if the probe() of the PMCG occurs first.
+>>>     I'll refine these patches to make both initialization sequences work well.
+>>> I'm trying to send V2 this week.
+>>
+>> There's still the possibility that a PMCG is implemented in a root complex or some other device that isn't an SMMU, so as I've said before, none of this trickery really scales.
+>>
+>> As far as I understand it, the main point of reserving resources is to catch bugs where things definitely should not be overlapping. PMCGs are by definition part of some other device, so in general they *can* be expected to overlap with whatever device that is. I still think it's most logical to simply *not* try to reserve PMCG resources at all.
+> 
+> If PMCG resources may overlap with other devices, that's really going to be a very tricky thing. OK, I'll follow your advice，just do ioremap() for the PMCG resources.
+> 
+> I know that I/O resource information can be queried by running "cat /proc/iomem". If we do not reserve PMCG resources, should we provide an additional fs query interface?
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+What would that be necessary for? The PMU devices are already named by 
+base address so they can be identified. Sysfs tells you whether the 
+driver bound to any platform devices or not (although in this case the 
+existence of PMU devices already makes that clear). /proc/iomem is for 
+showing claimed resources, and many drivers don't claim resources. I've 
+never heard any inkling of that being a practical problem :/
+
+Robin.
+
+>>>>>> +
+>>>>>> +    return base;
+>>>>>> +}
+>>>>>> +
+>>>>>>     static int smmu_pmu_probe(struct platform_device *pdev)
+>>>>>>     {
+>>>>>>         struct smmu_pmu *smmu_pmu;
+>>>>>> @@ -793,7 +831,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>>>>>>             .capabilities    = PERF_PMU_CAP_NO_EXCLUDE,
+>>>>>>         };
+>>>>>>     -    smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
+>>>>>> +    smmu_pmu->reg_base = smmu_pmu_get_and_ioremap_resource(pdev, 0, &res_0);
+>>>>>>         if (IS_ERR(smmu_pmu->reg_base))
+>>>>>>             return PTR_ERR(smmu_pmu->reg_base);
+>>>>>>     @@ -801,7 +839,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>>>>>>           /* Determine if page 1 is present */
+>>>>>>         if (cfgr & SMMU_PMCG_CFGR_RELOC_CTRS) {
+>>>>>> -        smmu_pmu->reloc_base = devm_platform_ioremap_resource(pdev, 1);
+>>>>>> +        smmu_pmu->reloc_base = smmu_pmu_get_and_ioremap_resource(pdev, 1, NULL);
+>>>>>>             if (IS_ERR(smmu_pmu->reloc_base))
+>>>>>>                 return PTR_ERR(smmu_pmu->reloc_base);
+>>>>>>         } else {
+>>>>>>
+>>>>>
+>>>>> .
+>>>>>
+>>>
+>>
+>> .
+>>
+> 
