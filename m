@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144652FD29E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045E62FD2A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725779AbhATOYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:24:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390107AbhATNke (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:40:34 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0997C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:53 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id h25so567377wmb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=4HuaHnHsq3+9UDKnhuRegf7VhNzlZpKuJ1R6ivtSlOg=;
-        b=RzwwBhI0LFDqKRi3rX8rfrpXZflyXVI8WUwGnh7kHJ3Rle/pz7qDeRwRyRnlJJPqD8
-         AbDOl6ZRZHzI3FdOtQuR5PVuvAF4YuwgUucDI82DRg70lf7PQ85hM5g3qcrL/r9Ci9LP
-         4E4wX5o5GFVFLBTVo18e+aywt/VYrsTcwYihokSuh1rpKBOiBOd6wYW8/eEJTHrIaTzG
-         p/ObA5CGL2n/xo3pYACU0NdLVle/TTdGtxEeWFUsBoQjdYdz0hBfb67exaOcXtXOE504
-         U5/MfbwJNVd2jtfthveCkpFwMRLuiDS0SN5W2OBNZTOseChuxpzulx0V/jtV8eeL+iM1
-         809g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=4HuaHnHsq3+9UDKnhuRegf7VhNzlZpKuJ1R6ivtSlOg=;
-        b=JFutIRjGZdb5zMLsEgoV5pAsPldnW0sblFn16v+Q/RnJ7iR+0ScjhKHNCoU+8i9web
-         oeVcnRtH4RZ1PXob4hWFiLUlUr7OSEjzf4E7VM8na3KUZRzKQsdeTqZObq58E/inKOKt
-         EFijOuU41hSaGT6GFBAGn1syUsBhKbzu7Q+LIQIXvVZ0aoi/XGFC1D16LDdR8+/R1dOo
-         GQoVhIJBGB4DKnWkPYPF1Th2CRvcvIr/sOVCT3piWrkCNIDw1abUFkajNcBfS8dqVy6O
-         ETDMqUccY+IPry35X11ABLQQcrSs9Cz5IVKiq6PiGu8PSk6Db9nJbtSWsAFBSxJ0LzRi
-         CRQQ==
-X-Gm-Message-State: AOAM5321CCjdNX+PzqRfD4VG8FcFZyAcwyCk3+UmaJgGqN5cxbTat1KC
-        6bkn0SCdGhrSlZoI41qvHHzcwKS9TuWj7g==
-X-Google-Smtp-Source: ABdhPJz9D0nnseUovWpFIZ6H+T0/V01e1hCruHihQvhd66s20FOaGPv8ik7N7xcP/s+yNf1ljx+YYerX46ujqA==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a7b:cb54:: with SMTP id
- v20mr4532747wmj.148.1611149992267; Wed, 20 Jan 2021 05:39:52 -0800 (PST)
-Date:   Wed, 20 Jan 2021 13:39:44 +0000
-Message-Id: <20210120133946.2107897-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next v3 0/2] BPF docs fixups
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2390534AbhATOZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:25:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732989AbhATOHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:07:37 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5051223340;
+        Wed, 20 Jan 2021 13:54:59 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l2Dwn-008xaY-2s; Wed, 20 Jan 2021 13:54:57 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 Jan 2021 13:54:57 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>, kernel-team@android.com,
+        Theodore Ts'o <tytso@mit.edu>, Mark Brown <broonie@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kvmarm@lists.cs.columbia.edu,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 0/5] ARM: arm64: Add SMCCC TRNG entropy service
+In-Reply-To: <20210120134904.GA20315@willie-the-truck>
+References: <20210106103453.152275-1-andre.przywara@arm.com>
+ <161114590396.218530.9227813162726341261.b4-ty@kernel.org>
+ <d2423ab6e44855846a8f61f327932784@kernel.org>
+ <20210120134524.0c47139a@slackpad.fritz.box>
+ <20210120134904.GA20315@willie-the-truck>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <9d451a24ed4c6348ea3fbea732644d15@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, andre.przywara@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, ardb@kernel.org, kernel-team@android.com, tytso@mit.edu, broonie@kernel.org, sudeep.holla@arm.com, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, kvmarm@lists.cs.columbia.edu, lorenzo.pieralisi@arm.com, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Difference from v2->v3 [1]:
+On 2021-01-20 13:49, Will Deacon wrote:
+> On Wed, Jan 20, 2021 at 01:45:24PM +0000, Andre Przywara wrote:
+>> On Wed, 20 Jan 2021 13:26:26 +0000
+>> Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> Hi,
+>> 
+>> > On 2021-01-20 13:01, Will Deacon wrote:
+>> > > On Wed, 6 Jan 2021 10:34:48 +0000, Andre Przywara wrote:
+>> > >> a fix to v5, now *really* fixing the wrong priority of SMCCC vs.
+>> > >> RNDR in arch_get_random_seed_long_early(). Apologies for messing
+>> > >> this up in v5 and thanks to broonie for being on the watch!
+>> > >>
+>> > >> Will, Catalin: it would be much appreciated if you could consider
+>> > >> taking
+>> > >> patch 1/5. This contains the common definitions, and is a
+>> > >> prerequisite for every other patch, although they are somewhat
+>> > >> independent and likely
+>> > >> will need to go through different subsystems.
+>> > >>
+>> > >> [...]
+>> > >
+>> > > Applied the first patch only to arm64 (for-next/rng), thanks!
+>> > >
+>> > > [1/5] firmware: smccc: Add SMCCC TRNG function call IDs
+>> > >       https://git.kernel.org/arm64/c/67c6bb56b649
+>> >
+>> > I can't see how the rest of the patches can go via any other tree
+>> > if all the definitions are in the first one.
+>> >
+>> > Andre, can you explain what your plan is?
+>> 
+>> Well, I don't really have a great solution for that, other than hoping
+>> that 1/5 makes it into Linus' master at some point.
+>> 
+>> I see that it's a stretch, but pulling 1/5 into 5.11 now would
+>> prepare the stage for the others to go via any tree, into 5.12-rc1?
+>> 
+>> Or you could maybe take both 1/5 and 5/5 into your kvm-arm tree, and
+>> would hope that a git rebase later would sort this out for you?
+>> 
+>> But I think you are much more experienced in those kind of issues, so
+>> happy to hear about any other solutions.
+> 
+> for-next/rng is a stable branch, so anybody who wants the first patch 
+> can
+> just pull it (without anything I queue on top).
 
- * Just fixed a commite message, rebased, and added Lukas' review tag - thanks
-   Lukas!
+OK. I'll pull that branch and stash the KVM stuff on top.
 
-Difference from v1->v2 [1]:
+Thanks,
 
- * Split into 2 patches
-
- * Avoided unnecessary ': ::' in .rst source
-
- * Tweaked wording of the -mcpu=v3 bit a little more
-
-[1] Previous versions:
-    v1: https://lore.kernel.org/bpf/CA+i-1C1LVKjfQLBYk6siiqhxfy0jCR7UBcAmJ4jCED0A9aWsxA@mail.gmail.com/T/#t
-    v2: https://lore.kernel.org/bpf/20210118155735.532663-1-jackmanb@google.com/T/#t
-
-Brendan Jackman (2):
-  docs: bpf: Fixup atomics markup
-  docs: bpf: Clarify -mcpu=v3 requirement for atomic ops
-
- Documentation/networking/filter.rst | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-
-base-commit: 8edc0c67d09d6bf441eeb39ae9316fe07478093f
---
-2.30.0.284.gd98b1dd5eaa7-goog
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
