@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25582FCE05
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1A32FCE0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731825AbhATKQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
+        id S1731935AbhATKQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:16:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731397AbhATJcA (ORCPT
+        with ESMTP id S1731431AbhATJcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:32:00 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBC2C06179A
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:52 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id c127so2168507wmf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:52 -0800 (PST)
+        Wed, 20 Jan 2021 04:32:17 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74615C06179B
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:53 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id a12so22347158wrv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:30:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Bl3ZcRKmZS4HxdqARjxCZVUBXdgf/EJ6RpkdvaEOCdc=;
-        b=pY0GsnMn4gmD2ge9U3lJIxZsM+l6cJl1kCMqXpiHVrfP0HvMIX9M+/aq8DbwtDyJqy
-         YcPJQ54ZlWCgYjaygeNanshMMlXgi3Hp4BCeGHn/59fmidFS7v9OHnDti0955IHSSU7r
-         WvaXVSR7+dLzNdHFU5cXx2sL/jtxQBFzomb8PUvAq0CBBfOW2wquWBbjAep23otLx68t
-         0+bI26L+HLuGPNuOAxoEOjS67pBwXaOQzISkOeRky+a41Ofz+WdLeTb9QX6L14xMXbQX
-         RAaARl19H3isMUfwCvUdQpCli4C0SzLZPO22XNw850O32LTmNp4Jfry7rqjS2gElXg7e
-         Uhyg==
+        bh=3zpDeTOsD2P7WN1NPJVgpjl7R+7fXK52sr/TrTLf7sk=;
+        b=TZckWmIVkN9la2W25N7ghd/3t5LriuUBnVMaMg75aBQ2i9AcMnOJKMgCqJ+1HMhWVW
+         DubqCpSoYLpwIzbGp/DbqA44ErDaScHCrx60lKcgaI3/lQ+djsTnXDHLTCzJhXgfhNN5
+         2ruy4joVgMK6TIjwr5DUGhfwda3+XJayRxso4n/0lf/J8+ab9/Di8+8r7PGoyhA6YH9l
+         m7+Hr9Gn4giYDEWpSAKIZ1XmXi+EetNXS9dnTJtpZFtJa5BLFR+Zxf7ToPGNfzGDhGNU
+         deDlXxIITd4AlTUYXjWjnLIOPuDZXG8Vw/rKPCCjhekXmbFoj1WXi5pJHGO4CXR4VoXQ
+         kYgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Bl3ZcRKmZS4HxdqARjxCZVUBXdgf/EJ6RpkdvaEOCdc=;
-        b=BtlugXDv/NedPuLbBBQQNCMwPIncDqe9Ov3bQ2slP4TsD1IkbfXttQJykT9Gu9Bjya
-         E36tgdzEIR0zXgUMNvttktisf23SvE1tj2OKodJAXWIL5vwLu1PkFX2/thhnHYQV8ma+
-         V1/LEZQpM5K8gYl8v4hY26sitMeAl5UVuVUYoVon05IDU6Bi5YzSLQkibVBfIXVCyjr0
-         1nVGXigwfFzji6OTpQ+UUV5ENjEA8oeSWbUY/HOP4GkipUfacp9reR0VkZzvs2grWdu8
-         bp1AybKA9hzPjqr2WX7dHv86QRdkdrqftkslYqrtIudkwMj+s8GQJG4u8LcyPk+i/VzF
-         SDJA==
-X-Gm-Message-State: AOAM531+OHoXEOPSM7ds/yNxjoeLd1jz5YihgiiBoS7bLSyL+GSnINL+
-        4xXMyrG+9NoejLyXYbwWZg9S9g==
-X-Google-Smtp-Source: ABdhPJzAKQ58Tef4aS2NktoFCutcy4kxigfx/GU4jNbB0hg2UUSg9n4CG2bkXxQuuR8Ms4acU4KrgA==
-X-Received: by 2002:a1c:98c6:: with SMTP id a189mr3388765wme.88.1611135051160;
-        Wed, 20 Jan 2021 01:30:51 -0800 (PST)
+        bh=3zpDeTOsD2P7WN1NPJVgpjl7R+7fXK52sr/TrTLf7sk=;
+        b=s8tXkqel4cWxUUxd+O8oq6pBD5n6Jm1k/lNEspJFogoxpcVCEjKE7MHnuAn8inQepL
+         WpYA7sOnvjEowZglmr6ImytaKgmA5Hl4TsnHSlyVLfJeUlSlmVt+SXqNxhWQz0kWYPKK
+         r5S7jQDk2T5Ahx9IReMy1N53fIo79vf9IvPsfjCBxdM6I2mrAVmY4d1YL+MyZtxAD+wS
+         1nmmuZJYrAwfA4a5GA5+22jWTPEf5cKdUovjRe16iotmkzcLxQflrhhvdQzXLMxIPigo
+         JmMZF/rJ/67oufcWQa9VjnWYULXSZ4Hk9PAGF1OWN/G558F15z3WAkjFd4U/3aBa65Ds
+         XPlA==
+X-Gm-Message-State: AOAM532rGSz9fKjSC4AIixVS76hBfKt4elO6wuxWKk1LWVVilbZif53y
+        TBqqQWSNc/4U1AeQx6dK3zdHpA==
+X-Google-Smtp-Source: ABdhPJyd+2c72Z2W8MYn9ewofWd/BnR52BttYOgrM7aSaNTdNRx3Nyr23GgWLZxJ67da2cldjYhcsA==
+X-Received: by 2002:a5d:6902:: with SMTP id t2mr8274810wru.214.1611135052283;
+        Wed, 20 Jan 2021 01:30:52 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id z130sm2889201wmb.33.2021.01.20.01.30.50
+        by smtp.gmail.com with ESMTPSA id z130sm2889201wmb.33.2021.01.20.01.30.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 01:30:50 -0800 (PST)
+        Wed, 20 Jan 2021 01:30:51 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Pragnesh Patel <Pragnesh.patel@sifive.com>,
-        Zong Li <zong.li@sifive.com>, linux-clk@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH 06/20] clk: sifive: fu540-prci: Declare static const variable 'prci_clk_fu540' where it's used
-Date:   Wed, 20 Jan 2021 09:30:26 +0000
-Message-Id: <20210120093040.1719407-7-lee.jones@linaro.org>
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Subject: [PATCH 07/20] clk: socfpga: clk-pll: Remove unused variable 'rc'
+Date:   Wed, 20 Jan 2021 09:30:27 +0000
+Message-Id: <20210120093040.1719407-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210120093040.1719407-1-lee.jones@linaro.org>
 References: <20210120093040.1719407-1-lee.jones@linaro.org>
@@ -73,53 +68,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/clk/sifive/fu540-prci.h:16:35: warning: ‘prci_clk_fu540’ defined but not used [-Wunused-const-variable=]
- drivers/clk/sifive/fu540-prci.h:16:35: warning: ‘prci_clk_fu540’ defined but not used [-Wunused-const-variable=]
+ drivers/clk/socfpga/clk-pll.c: In function ‘__socfpga_pll_init’:
+ drivers/clk/socfpga/clk-pll.c:83:6: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
 
+Cc: Dinh Nguyen <dinguyen@kernel.org>
 Cc: Michael Turquette <mturquette@baylibre.com>
 Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Pragnesh Patel <Pragnesh.patel@sifive.com>
-Cc: Zong Li <zong.li@sifive.com>
 Cc: linux-clk@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/clk/sifive/fu540-prci.h  | 5 -----
- drivers/clk/sifive/sifive-prci.c | 5 +++++
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/clk/socfpga/clk-pll.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/clk/sifive/fu540-prci.h b/drivers/clk/sifive/fu540-prci.h
-index c8271efa7bdc7..c220677dc0108 100644
---- a/drivers/clk/sifive/fu540-prci.h
-+++ b/drivers/clk/sifive/fu540-prci.h
-@@ -13,9 +13,4 @@
+diff --git a/drivers/clk/socfpga/clk-pll.c b/drivers/clk/socfpga/clk-pll.c
+index e5fb786843f39..3cf99df7d0056 100644
+--- a/drivers/clk/socfpga/clk-pll.c
++++ b/drivers/clk/socfpga/clk-pll.c
+@@ -80,7 +80,6 @@ static __init struct clk *__socfpga_pll_init(struct device_node *node,
+ 	const char *parent_name[SOCFPGA_MAX_PARENTS];
+ 	struct clk_init_data init;
+ 	struct device_node *clkmgr_np;
+-	int rc;
  
- extern struct __prci_clock __prci_init_clocks_fu540[NUM_CLOCK_FU540];
+ 	of_property_read_u32(node, "reg", &reg);
  
--static const struct prci_clk_desc prci_clk_fu540 = {
--	.clks = __prci_init_clocks_fu540,
--	.num_clks = ARRAY_SIZE(__prci_init_clocks_fu540),
--};
--
- #endif /* __SIFIVE_CLK_FU540_PRCI_H */
-diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
-index c78b042750e21..1490b01ce6290 100644
---- a/drivers/clk/sifive/sifive-prci.c
-+++ b/drivers/clk/sifive/sifive-prci.c
-@@ -12,6 +12,11 @@
- #include "fu540-prci.h"
- #include "fu740-prci.h"
+@@ -111,7 +110,7 @@ static __init struct clk *__socfpga_pll_init(struct device_node *node,
+ 		kfree(pll_clk);
+ 		return NULL;
+ 	}
+-	rc = of_clk_add_provider(node, of_clk_src_simple_get, clk);
++	of_clk_add_provider(node, of_clk_src_simple_get, clk);
+ 	return clk;
+ }
  
-+static const struct prci_clk_desc prci_clk_fu540 = {
-+	.clks = __prci_init_clocks_fu540,
-+	.num_clks = ARRAY_SIZE(__prci_init_clocks_fu540),
-+};
-+
- /*
-  * Private functions
-  */
 -- 
 2.25.1
 
