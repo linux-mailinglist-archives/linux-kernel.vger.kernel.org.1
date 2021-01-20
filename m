@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71382FD82B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF012FD833
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404308AbhATSUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:20:20 -0500
-Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:41048 "EHLO
+        id S2404452AbhATSWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:22:19 -0500
+Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:40998 "EHLO
         relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391913AbhATSKB (ORCPT
+        by vger.kernel.org with ESMTP id S2404241AbhATSIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:10:01 -0500
+        Wed, 20 Jan 2021 13:08:49 -0500
 Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 6F5C67DC6;
-        Wed, 20 Jan 2021 09:58:30 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 6F5C67DC6
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 788FE2E5D5;
+        Wed, 20 Jan 2021 09:58:32 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 788FE2E5D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611165510;
-        bh=2CtK/Zx9WL6Nfa8WJcD2mRMzahFMxZsOBaKEA0m7DaU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EU7PWu0kRJtWUcgQJw2WSDtCj3pkepDlkBZ1yWAZV1uUyH1HDhBMrxOND0OuVg70w
-         CUueLsUAz49jUzoQMiuksxka8dSnhlj7sIUbCfo8ZxfIx2soA6OFP2psvfQAtrBNjl
-         fznM7TgHNriNe0XouSu2sxoMaLUoBoBjrLueuL24=
+        s=dkimrelay; t=1611165512;
+        bh=N5nXy30MsxbuJJ7fcS4n0aQXS/3LCK9wAf0fgwYYaJw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=AH9RTy31GvaPJYMLTJwJ0z9IgrU7whGSIAPuKyNsZNKmJQB66YSNY4xIvjlKWL7Ft
+         eqAuwIXitP8X0MSnYN11TCZOmzohrpBeB8Nj0Zg3X246tuFEb4kluEPeuBu7hVR4Is
+         gdaVEI0z66fH+XMhVvjny/uvRoIHmXpfckHfK5nE=
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,103 +31,120 @@ Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
         Desmond Yan <desmond.yan@broadcom.com>,
         Olof Johansson <olof@lixom.net>
-Subject: [PATCH v9 00/13] Add Broadcom VK driver
-Date:   Wed, 20 Jan 2021 09:58:14 -0800
-Message-Id: <20210120175827.14820-1-scott.branden@broadcom.com>
+Subject: [PATCH v9 01/13] bcm-vk: add bcm_vk UAPI
+Date:   Wed, 20 Jan 2021 09:58:15 -0800
+Message-Id: <20210120175827.14820-2-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210120175827.14820-1-scott.branden@broadcom.com>
+References: <20210120175827.14820-1-scott.branden@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series drops previous patches in [1]
-that were incorporated by Kees Cook into patch series
-"Introduce partial kernel_read_file() support" [2].
+Add user space api for bcm-vk driver.
 
-Remaining patches are contained in this series to add Broadcom VK driver.
-(which depends on request_firmware_into_buf API addition which has
-now been accepted into the upstream kernel as of v5.10-rc1).
+Provide ioctl api to load images and issue reset command to card.
+FW status registers in PCI BAR space also defined as part
+of API so that user space is able to interpret these memory locations
+as needed via direct PCIe access.
 
-[1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
-[2] https://lore.kernel.org/lkml/20201002173828.2099543-1-keescook@chromium.org/
-
-Changes from v8:
- - add ack's by Olof Johansson
-Changes from v7:
- - add more information in Kconfig help description
-Changes from v6:
- - drop QSTATS patch as it needs to be reviewed if trace_printk makes sense
- - add wdog and IPC interface alerts
- - add boundary check to msgq and peerlog
- - clear additional registers on reset
-Changes from v5:
- - dropped sysfs patch from series for now as rework to use hwmon
- - tty patch still at end of series to drop if another solution available
- - updated cover letter commit to point to Kees' latest patch submission in [2]
- - specified --base with Kees' patches applied (kernel branches don't have these yet)
- - removed trivial comment
- - moved location of const to before the struct in two declarations
- - changed dev_info to dev_warn and only print when irq don't match expected
- - changed dev_info to dev_dbg when printing debug QSTATS
- - removed unnecessary %p print
-Changes from v4:
- - fixed memory leak in probe function on failure
- - changed -1 to -EBUSY in bcm_vk_tty return code
- - move bcm_vk_tty patch to end of patch series so it
-   can be dropped from current patch series if needed
-   and rearchitected if needed.
-Changes from v3:
- - split driver into more incremental commits for acceptance/review
- - lowered some dev_info to dev_dbg
- - remove ANSI stdint types and replace with linux u8, etc types
- - changed an EIO return to EPFNOSUPPORT
- - move vk_msg_cmd internal to driver to not expose to UAPI at this time
-Changes from v2:
- - open code BIT macro in uapi header
- - A0/B0 boot improvements
-Changes from v1:
- - declare bcm_vk_intf_ver_chk as static
-
-
-Scott Branden (13):
-  bcm-vk: add bcm_vk UAPI
-  misc: bcm-vk: add Broadcom VK driver
-  misc: bcm-vk: add autoload support
-  misc: bcm-vk: add misc device to Broadcom VK driver
-  misc: bcm-vk: add triggers when host panic or reboots to notify card
-  misc: bcm-vk: add open/release
-  misc: bcm-vk: add ioctl load_image
-  misc: bcm-vk: add get_card_info, peerlog_info, and proc_mon_info
-  misc: bcm-vk: add VK messaging support
-  misc: bcm-vk: reset_pid support
-  misc: bcm-vk: add mmap function for exposing BAR2
-  MAINTAINERS: bcm-vk: add maintainer for Broadcom VK Driver
-  misc: bcm-vk: add ttyVK support
-
- MAINTAINERS                      |    7 +
- drivers/misc/Kconfig             |    1 +
- drivers/misc/Makefile            |    1 +
- drivers/misc/bcm-vk/Kconfig      |   17 +
- drivers/misc/bcm-vk/Makefile     |   12 +
- drivers/misc/bcm-vk/bcm_vk.h     |  513 ++++++++++
- drivers/misc/bcm-vk/bcm_vk_dev.c | 1651 ++++++++++++++++++++++++++++++
- drivers/misc/bcm-vk/bcm_vk_msg.c | 1350 ++++++++++++++++++++++++
- drivers/misc/bcm-vk/bcm_vk_msg.h |  163 +++
- drivers/misc/bcm-vk/bcm_vk_sg.c  |  275 +++++
- drivers/misc/bcm-vk/bcm_vk_sg.h  |   61 ++
- drivers/misc/bcm-vk/bcm_vk_tty.c |  333 ++++++
- include/uapi/linux/misc/bcm_vk.h |   84 ++
- 13 files changed, 4468 insertions(+)
- create mode 100644 drivers/misc/bcm-vk/Kconfig
- create mode 100644 drivers/misc/bcm-vk/Makefile
- create mode 100644 drivers/misc/bcm-vk/bcm_vk.h
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_dev.c
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.c
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.h
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.c
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.h
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_tty.c
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+Acked-by: Olof Johansson <olof@lixom.net>
+---
+ include/uapi/linux/misc/bcm_vk.h | 84 ++++++++++++++++++++++++++++++++
+ 1 file changed, 84 insertions(+)
  create mode 100644 include/uapi/linux/misc/bcm_vk.h
 
+diff --git a/include/uapi/linux/misc/bcm_vk.h b/include/uapi/linux/misc/bcm_vk.h
+new file mode 100644
+index 000000000000..ec28e0bd46a9
+--- /dev/null
++++ b/include/uapi/linux/misc/bcm_vk.h
+@@ -0,0 +1,84 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright 2018-2020 Broadcom.
++ */
++
++#ifndef __UAPI_LINUX_MISC_BCM_VK_H
++#define __UAPI_LINUX_MISC_BCM_VK_H
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++#define BCM_VK_MAX_FILENAME 64
++
++struct vk_image {
++	__u32 type; /* Type of image */
++#define VK_IMAGE_TYPE_BOOT1 1 /* 1st stage (load to SRAM) */
++#define VK_IMAGE_TYPE_BOOT2 2 /* 2nd stage (load to DDR) */
++	__u8 filename[BCM_VK_MAX_FILENAME]; /* Filename of image */
++};
++
++struct vk_reset {
++	__u32 arg1;
++	__u32 arg2;
++};
++
++#define VK_MAGIC		0x5e
++
++/* Load image to Valkyrie */
++#define VK_IOCTL_LOAD_IMAGE	_IOW(VK_MAGIC, 0x2, struct vk_image)
++
++/* Send Reset to Valkyrie */
++#define VK_IOCTL_RESET		_IOW(VK_MAGIC, 0x4, struct vk_reset)
++
++/*
++ * Firmware Status accessed directly via BAR space
++ */
++#define VK_BAR_FWSTS			0x41c
++#define VK_BAR_COP_FWSTS		0x428
++/* VK_FWSTS definitions */
++#define VK_FWSTS_RELOCATION_ENTRY	(1UL << 0)
++#define VK_FWSTS_RELOCATION_EXIT	(1UL << 1)
++#define VK_FWSTS_INIT_START		(1UL << 2)
++#define VK_FWSTS_ARCH_INIT_DONE		(1UL << 3)
++#define VK_FWSTS_PRE_KNL1_INIT_DONE	(1UL << 4)
++#define VK_FWSTS_PRE_KNL2_INIT_DONE	(1UL << 5)
++#define VK_FWSTS_POST_KNL_INIT_DONE	(1UL << 6)
++#define VK_FWSTS_INIT_DONE		(1UL << 7)
++#define VK_FWSTS_APP_INIT_START		(1UL << 8)
++#define VK_FWSTS_APP_INIT_DONE		(1UL << 9)
++#define VK_FWSTS_MASK			0xffffffff
++#define VK_FWSTS_READY			(VK_FWSTS_INIT_START | \
++					 VK_FWSTS_ARCH_INIT_DONE | \
++					 VK_FWSTS_PRE_KNL1_INIT_DONE | \
++					 VK_FWSTS_PRE_KNL2_INIT_DONE | \
++					 VK_FWSTS_POST_KNL_INIT_DONE | \
++					 VK_FWSTS_INIT_DONE | \
++					 VK_FWSTS_APP_INIT_START | \
++					 VK_FWSTS_APP_INIT_DONE)
++/* Deinit */
++#define VK_FWSTS_APP_DEINIT_START	(1UL << 23)
++#define VK_FWSTS_APP_DEINIT_DONE	(1UL << 24)
++#define VK_FWSTS_DRV_DEINIT_START	(1UL << 25)
++#define VK_FWSTS_DRV_DEINIT_DONE	(1UL << 26)
++#define VK_FWSTS_RESET_DONE		(1UL << 27)
++#define VK_FWSTS_DEINIT_TRIGGERED	(VK_FWSTS_APP_DEINIT_START | \
++					 VK_FWSTS_APP_DEINIT_DONE  | \
++					 VK_FWSTS_DRV_DEINIT_START | \
++					 VK_FWSTS_DRV_DEINIT_DONE)
++/* Last nibble for reboot reason */
++#define VK_FWSTS_RESET_REASON_SHIFT	28
++#define VK_FWSTS_RESET_REASON_MASK	(0xf << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_SYS_PWRUP	(0x0 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_MBOX_DB		(0x1 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_M7_WDOG		(0x2 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_TEMP		(0x3 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_FLR		(0x4 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_HOT		(0x5 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_WARM		(0x6 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_COLD		(0x7 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_L1		(0x8 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_L0		(0x9 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_UNKNOWN		(0xf << VK_FWSTS_RESET_REASON_SHIFT)
++
++#endif /* __UAPI_LINUX_MISC_BCM_VK_H */
 -- 
 2.17.1
 
