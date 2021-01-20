@@ -2,129 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3085C2FDA03
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890132FDA25
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392774AbhATTsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:48:25 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:20333 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388299AbhATTnJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:43:09 -0500
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 10KJfoZX026396;
-        Thu, 21 Jan 2021 04:41:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 10KJfoZX026396
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611171711;
-        bh=ti5t2+h/e4Lbyj+1QRC0zgdTTPkyy4j846BUxXsIkR4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=13qZrKqmZQfNbu92u5lKRiqL5lSDM/wWFqKSnFIjDrJVoyPEsCVUbw6TOAph0nG35
-         by/htD/qjAG2s08c+Pac2wiRlhA1oIfQpJmLC6TiV4ASMQX5QVaqtDEZarTArEyHsR
-         vxEgCiitVwTyhLOZnL0SDqhs0gVFYphGWjJKm4Sdn6oTVVshGJzBu0Gi2zUSkMWHxY
-         44EAbILzkb5YgNcO9Flh6tsW58uNRP9bQEft+uxVw/SjpvGo7GhDtAHfNytDnBF/TP
-         vMN9NkNOqYXtRTgEex1WuVvxI4f3fM3ikIuVhwSqkUZ46VDIXoGSX6H358yt7p3FVS
-         qMddgv8hY+n1A==
-X-Nifty-SrcIP: [209.85.216.51]
-Received: by mail-pj1-f51.google.com with SMTP id kx7so2825409pjb.2;
-        Wed, 20 Jan 2021 11:41:50 -0800 (PST)
-X-Gm-Message-State: AOAM532TMe7zNs9jJ3jZ/UQkynk/ZFVwFUSjKFA1sNYFC5pD4xioKmo6
-        u4D++s9NQRx+JT4GyyfDfgBdWKibkHeJMGO28uw=
-X-Google-Smtp-Source: ABdhPJxoymgbyKA25iyxeoVOcrQit6QG1N56wLwDpqMYB5zV/DesKRJNJ3uIVskeTs8p+XyRUL02XSQTbs2KIsrrWwA=
-X-Received: by 2002:a17:90a:3481:: with SMTP id p1mr7454548pjb.198.1611171710150;
- Wed, 20 Jan 2021 11:41:50 -0800 (PST)
+        id S2392643AbhATTxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:53:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388291AbhATTmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 14:42:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2233923441;
+        Wed, 20 Jan 2021 19:42:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611171727;
+        bh=upIieIVmVSKrAazkCHlVjdXOGsmxIMKuz7y+gnDNlsg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Faj2q43xJDpVw+gDq3QAAHW5JQWnx5p7Pl1D8bLXpyd8HRG0OpOdw0v5dCVAM+hkz
+         NTONlW++DABbMVxndCfztVbcopwRuoodUm9su/KowUR67BM+iOJ1ppHPKNtA60LTAP
+         RCi57bGd/XGC+pBK8WB3H/RnYoeBS2oKtbnJf8eECQhXLeeVEhCmXCttbppW0EojJp
+         4HwsK93co1mf+V0OhrS9mQ0O+ngxxldFV0UQhP8nKGdxsNyezyLPfWo8mJQAh3bbct
+         MPAuu8DiLNQvepeD/SO3app2aGB0DB8e+eoV6UK1//vXxt9OwXuDSWXzQS7j0+0BhP
+         XH2tTI1sxXsyg==
+Date:   Wed, 20 Jan 2021 11:42:06 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     linux-xfs@vger.kernel.org, darrick.wong@oracle.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] fs/xfs: convert comma to semicolon
+Message-ID: <20210120194206.GP3134581@magnolia>
+References: <20201211084112.1931-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-References: <20210108003035.1930475-1-willmcvicker@google.com>
- <CAK7LNARzf6Q4-X8hf5QmXBxJUtOECqE0Y6EQVrQ7kmnzaBKk3A@mail.gmail.com>
- <CABYd82ajiVkYaLPJzaWhVwi_b0nEU=qQGXp34rgYmKQ07skrfg@mail.gmail.com> <CABYd82a=xJr7AoWFPmahOarbUZSxxOA_+VQbN2EK0unZU-bjTg@mail.gmail.com>
-In-Reply-To: <CABYd82a=xJr7AoWFPmahOarbUZSxxOA_+VQbN2EK0unZU-bjTg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 21 Jan 2021 04:41:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQhsiaumkLF21zTkpOHCpQyCzxdrGX=897Bsc8w=aMapw@mail.gmail.com>
-Message-ID: <CAK7LNAQhsiaumkLF21zTkpOHCpQyCzxdrGX=897Bsc8w=aMapw@mail.gmail.com>
-Subject: Re: [PATCH v5] modules: introduce the MODULE_SCMVERSION config
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211084112.1931-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 9:19 AM Will McVicker <willmcvicker@google.com> wrote:
->
-> Hi Masahiro,
->
-> After testing your suggestions for module_srcpath, I remembered why I
-> needed this:
->
-> +ifneq ($(realpath $(srctree)/$(KBUILD_EXTMOD) 2>/dev/null),)
-> +       module_srcpath := $(srctree)/$(KBUILD_EXTMOD)
-> +else
-> +       module_srcpath := $(KBUILD_EXTMOD)
-> +endif
->
-> Basically KBUILD_EXTMOD actually has two uses when defined as a relative path:
->
-> (1) defines the path to the external module's source relative to $(srctree)
-> (2) defines the path to the external module's build artifacts relative
-> to $(objtree)
->
-> Since setlocalversion is run from $(objtree), we need to use
-> $(srctree)/$(KBUILD_EXTMOD) when it's a relative path. Just to note,
-> if I do just use KBUILD_EXTMOD, then the script setlocalversion fails
-> to find the srctree and returns an empty string.
->
-> Please correct me if I'm wrong. I messed around with this by adding
-> many prints to Makefile.modpost and setlocalversion to make sure
-> everything was defined as expected.
+On Fri, Dec 11, 2020 at 04:41:12PM +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
+Apparently I forgot to ack this before merging it...
 
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Hmm, you are right.
+--D
 
-I did not know the current Kbuild works like that.
-
-But, I do not want to uglify the code
-just for supporting this rare use-case.
-
-
-Rather, I want to apply this
-https://lore.kernel.org/patchwork/patch/1368277/
-
-
-and, still want to see as simple code as the following:
-
-
---- a/scripts/Makefile.modpost
-+++ b/scripts/Makefile.modpost
-@@ -66,6 +66,7 @@ ifeq ($(KBUILD_EXTMOD),)
-
- input-symdump := vmlinux.symvers
- output-symdump := Module.symvers
-+module-srcpath := $(srctree)
-
- else
-
-@@ -82,9 +83,20 @@ MODPOST += -e
-
- input-symdump := Module.symvers $(KBUILD_EXTRA_SYMBOLS)
- output-symdump := $(KBUILD_EXTMOD)/Module.symvers
-+module-srcpath := $(KBUILD_EXTMOD)
-
- endif
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> ---
+>  fs/xfs/libxfs/xfs_btree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
+> index 2d25bab68764..51dbff9b0908 100644
+> --- a/fs/xfs/libxfs/xfs_btree.c
+> +++ b/fs/xfs/libxfs/xfs_btree.c
+> @@ -4070,7 +4070,7 @@ xfs_btree_delrec(
+>  	 * surviving block, and log it.
+>  	 */
+>  	xfs_btree_set_numrecs(left, lrecs + rrecs);
+> -	xfs_btree_get_sibling(cur, right, &cptr, XFS_BB_RIGHTSIB),
+> +	xfs_btree_get_sibling(cur, right, &cptr, XFS_BB_RIGHTSIB);
+>  	xfs_btree_set_sibling(cur, left, &cptr, XFS_BB_RIGHTSIB);
+>  	xfs_btree_log_block(cur, lbp, XFS_BB_NUMRECS | XFS_BB_RIGHTSIB);
+>  
+> -- 
+> 2.22.0
+> 
