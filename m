@@ -2,132 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6822FCE4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FEE2FCFEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732949AbhATKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:20:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46144 "EHLO mx2.suse.de"
+        id S2389550AbhATMS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 07:18:27 -0500
+Received: from m12-12.163.com ([220.181.12.12]:45994 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730352AbhATKMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:12:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611137473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f85nyV30dGUYyT4OSwZQuD/tNzi1TVhqdVBME5I7U34=;
-        b=Tqtkk73BVvR1GyvLqKN8ezpgmILoSEhpUbnhuP+3EYhk+CP5v9bOCWEbAYqu7lzOemwRDX
-        Y4lmzrHaj6x3fJ6JJrwa92jIVJWUqquupWpWBxfWJ4kEZcUuWCL+wHAKVU0cMlyQwdVDRJ
-        FQANm4sJYUPgLnNrgjrxdQNSlQcFIao=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1D056AC8F;
-        Wed, 20 Jan 2021 10:11:13 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 11:11:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] mm: Move pfn_to_online_page() out of line
-Message-ID: <20210120101112.GF9371@dhcp22.suse.cz>
-References: <161058499000.1840162.702316708443239771.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161058499608.1840162.10165648147615238793.stgit@dwillia2-desk3.amr.corp.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161058499608.1840162.10165648147615238793.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1732276AbhATL4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:56:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=Yp61YTYqIPSgUyAXLx
+        mxc3um8VNJsJyV0cVgGrHmGug=; b=TTMhZ6cI2mgr2FLdC4e99khPVydugSXX2/
+        Vo8VoMqjshjnmjj69OF8q9orVA9Uax+IBeDFebWriYqqey0ZS44igfkqZ76pbzp9
+        L1VnKzVn00mxNCxstePH4p+/QyHtfz++Si+YpnRMVVgREtqBLOoxmB5eJ7ny+Yrz
+        BBEkpnAo8=
+Received: from localhost.localdomain (unknown [119.3.119.20])
+        by smtp8 (Coremail) with SMTP id DMCowADHt_bd9Adg5f7IMw--.65179S4;
+        Wed, 20 Jan 2021 17:16:19 +0800 (CST)
+From:   Pan Bian <bianpan2016@163.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] drm/imx: fix memory leak when fails to init
+Date:   Wed, 20 Jan 2021 01:16:08 -0800
+Message-Id: <20210120091608.12430-1-bianpan2016@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DMCowADHt_bd9Adg5f7IMw--.65179S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr1xJr47KFW7ur4Duw48Zwb_yoW3Xrg_G3
+        WUXryxWrsa9a4qvw13ZF4Yyryayrn7ZF4Fyr1xKaykJ342v3ZrXFyjgr9rZ348Xa1xCFyk
+        WFs5XF17Zr17CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU9Xo7UUUUU==
+X-Originating-IP: [119.3.119.20]
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/1tbiDgMgclXly8C2BAAAsW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13-01-21 16:43:16, Dan Williams wrote:
-> pfn_to_online_page() is already too large to be a macro or an inline
-> function. In anticipation of further logic changes / growth, move it out
-> of line.
-> 
-> No functional change, just code movement.
-> 
-> Reported-by: Michal Hocko <mhocko@kernel.org>
+Put DRM device on initialization failure path rather than directly
+return error code.
 
-I am not sure what r-b refers to. I suspect it is the overal problem
-rather than this particular patch. Not that I care much but it might get
-confusing because I do not remember ever complaining about
-pfn_to_online_page to be too large.
+Fixes: a67d5088ceb8 ("drm/imx: drop explicit drm_mode_config_cleanup")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+---
+ drivers/gpu/drm/imx/imx-drm-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-
-I do not remember any hot path which depends on pfn walk and a function
-call would be clearly visible. If this ever turn out  to be a problem we
-can make it inline and push the heavy lifting out of line.
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-
-> ---
->  include/linux/memory_hotplug.h |   17 +----------------
->  mm/memory_hotplug.c            |   16 ++++++++++++++++
->  2 files changed, 17 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-> index 15acce5ab106..3d99de0db2dd 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -16,22 +16,7 @@ struct resource;
->  struct vmem_altmap;
->  
->  #ifdef CONFIG_MEMORY_HOTPLUG
-> -/*
-> - * Return page for the valid pfn only if the page is online. All pfn
-> - * walkers which rely on the fully initialized page->flags and others
-> - * should use this rather than pfn_valid && pfn_to_page
-> - */
-> -#define pfn_to_online_page(pfn)					   \
-> -({								   \
-> -	struct page *___page = NULL;				   \
-> -	unsigned long ___pfn = pfn;				   \
-> -	unsigned long ___nr = pfn_to_section_nr(___pfn);	   \
-> -								   \
-> -	if (___nr < NR_MEM_SECTIONS && online_section_nr(___nr) && \
-> -	    pfn_valid_within(___pfn))				   \
-> -		___page = pfn_to_page(___pfn);			   \
-> -	___page;						   \
-> -})
-> +struct page *pfn_to_online_page(unsigned long pfn);
->  
->  /*
->   * Types for free bootmem stored in page->lru.next. These have to be in
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index f9d57b9be8c7..55a69d4396e7 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -300,6 +300,22 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
->  	return 0;
->  }
->  
-> +/*
-> + * Return page for the valid pfn only if the page is online. All pfn
-> + * walkers which rely on the fully initialized page->flags and others
-> + * should use this rather than pfn_valid && pfn_to_page
-> + */
-> +struct page *pfn_to_online_page(unsigned long pfn)
-> +{
-> +	unsigned long nr = pfn_to_section_nr(pfn);
-> +
-> +	if (nr < NR_MEM_SECTIONS && online_section_nr(nr) &&
-> +	    pfn_valid_within(pfn))
-> +		return pfn_to_page(pfn);
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(pfn_to_online_page);
-> +
->  /*
->   * Reasonably generic function for adding memory.  It is
->   * expected that archs that support memory hotplug will
-
+diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/imx-drm-core.c
+index d1a9841adeed..e6a88c8cbd69 100644
+--- a/drivers/gpu/drm/imx/imx-drm-core.c
++++ b/drivers/gpu/drm/imx/imx-drm-core.c
+@@ -215,7 +215,7 @@ static int imx_drm_bind(struct device *dev)
+ 
+ 	ret = drmm_mode_config_init(drm);
+ 	if (ret)
+-		return ret;
++		goto err_kms;
+ 
+ 	ret = drm_vblank_init(drm, MAX_CRTC);
+ 	if (ret)
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
+
