@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE3D2FD27B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5E22FD277
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbhATORd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
+        id S1730008AbhATOPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727696AbhATNCS (ORCPT
+        with ESMTP id S2388457AbhATNDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:02:18 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E7EC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:01:38 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id q205so24854538oig.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:01:38 -0800 (PST)
+        Wed, 20 Jan 2021 08:03:33 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304D1C0613CF;
+        Wed, 20 Jan 2021 05:02:51 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id o10so3254997wmc.1;
+        Wed, 20 Jan 2021 05:02:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=evwLpKMs/Q04HfoyBMd6+/dktMNHRP3J0svCExuNnHQ=;
-        b=gjoMlQDXxoLKyVqfmWYc+fQsUBlfTlV9o5PJnH+Fw3wT6GK9N8OlzvgssUU0vb0fZH
-         lnyuUY13b3P8wylC1s1XZ51WGymbIFWbcPL/0lXA0Z7SliOOw3K8jFrpKcp+79daAMjG
-         3G0usdR1gu6MsBvz81d0Wq6+o038KK/qKvaQI=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aZWXyCbP+U2boEa8uNybDlOvftZDrpKrYpE90tBdO/I=;
+        b=NfTkZ7D2/tplLqXUW2cnYbIE3URW+SkN8m+yTQJ4ZGSL+AYfg3hNlocXoPfV5b2Jhu
+         +ixXi6ZV5/XnLD7pIPYP8OHP9cINcTHBgEeRwUmW/Su7gxq1g1mUYGASMWz7C9zs4t6A
+         y50i3lmSRGUcW04c3vPsr1lCP+85UXzzT9jmE360jaQg3hWMEN+NntHB5lEVWQDFmeWd
+         05PieFO6nSf8h9OqFZJE4f0oe4wwY/a/6dTYkH9T5sLoIfguuDFs+ld/C8TREnpvs4V1
+         TKfQU6JwkunadeGlB65yq9UZR02vZ/doEr6MEl4ueGO3fR1IPRWnpQM16XVaDKNZWcIA
+         edAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=evwLpKMs/Q04HfoyBMd6+/dktMNHRP3J0svCExuNnHQ=;
-        b=fHaOgAIFkYMK6QDm+dmij9mCyuPFQf4CVUSKy4qyZcaiC5T5gzJ9COiFBmrxJ+ffgS
-         MsinjhRow0t/EylMjo/f+Lr1GcaLHJb9UrlTWPmMslQ03uYEaeNeZCsbz75jmDUdky7Q
-         7t2HZuAJyo0HIN//gaVd0tAwNsiG0QZQ2ObZX934A+bkGWmioAeuppPnUGqyQjN3zncm
-         WxPw96YHu91oXjFBvIfCXTtRbSCUdn0u4G76+uy7w0JPmphyvx8URmN2GAOnThjDzJqK
-         L4gMRRmLE3Cxf3nMpdMcg16XVZIIUBk0wMoXWQDWx0+K267hCTxvVU8+kAyY/jqM0M5a
-         dkFg==
-X-Gm-Message-State: AOAM530jXBk+z0KWK/HSPso9afzyKG2dRH0CtVTQINPZLWGAN22tryV7
-        GEIh9l2D7hph5lHDklMGhMxc5ZnRXRD9x8EF0K5TPw==
-X-Google-Smtp-Source: ABdhPJysT1Qy1MoMTRm8ql1bbsTkrvfGzeuP7tdOfKNPpJBmNa21UPEZGnfc3jKm9tHnbkwY1t4S/wSfEQIfR+Gs4/k=
-X-Received: by 2002:aca:1906:: with SMTP id l6mr2714101oii.101.1611147697279;
- Wed, 20 Jan 2021 05:01:37 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aZWXyCbP+U2boEa8uNybDlOvftZDrpKrYpE90tBdO/I=;
+        b=AQFtXNl5rfBx/So9lSG+abxlYZWmulAE2xQ4eVTNp5pg/kU7DJTsI3ep/DT/4vlupu
+         ajsftfDsyvpOZi0LqpwsrjQivtf9Bu8JuRziNERu5FAR03lCfxTU46ssdkiTgQG/ifLV
+         iwg4hmxdMw3fRwfVwWWOW+hEQnghtJbzQ6/4fgaoftIPKUf/b5UMF9HCDit/oc+CtF35
+         1V4WXY/QiXLPDnHc84ZZrybPEKbR8lVmHHazMT6XgGrpd0jjWv4cWk3hKaOwE21LpJme
+         mtESOWyMlAZlBQFMD6sTa5fLtCLH+VFSAASX1EGZTyNOFAck+zSXxhswxy+mqQy4mcdr
+         jwNA==
+X-Gm-Message-State: AOAM531xvaokxc9c9PoPkgC0evKlOmh9+7B1EdllJvku6CTWWgNuLJ60
+        KrnozHQ2lWZJ7b9grwqgHcY=
+X-Google-Smtp-Source: ABdhPJzmC7mqWGYQbuS7U2cZCI98+spNpj7nNT9OHLll9rJhgKCSZuk0YbuvOhoIj1W8MStOWoiV+Q==
+X-Received: by 2002:a1c:1d09:: with SMTP id d9mr4229892wmd.125.1611147769957;
+        Wed, 20 Jan 2021 05:02:49 -0800 (PST)
+Received: from curtine-Aspire-A515-55.lan ([2001:818:e279:2100:6955:745:9baf:484e])
+        by smtp.googlemail.com with ESMTPSA id m82sm4035221wmf.29.2021.01.20.05.02.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 05:02:49 -0800 (PST)
+From:   Eric Curtin <ericcurtin17@gmail.com>
+Cc:     ericcurtin17@gmail.com, Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and
+        infrastructure))
+Subject: [PATCH] Increase limit of max_user_watches from 1/25 to 1/16
+Date:   Wed, 20 Jan 2021 13:02:31 +0000
+Message-Id: <20210120130233.15932-1-ericcurtin17@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210120123535.40226-1-paul@crapouillou.net> <20210120123535.40226-3-paul@crapouillou.net>
-In-Reply-To: <20210120123535.40226-3-paul@crapouillou.net>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 20 Jan 2021 14:01:26 +0100
-Message-ID: <CAKMK7uFaP7xcw90=KqiGJd7Mt-gD-spvcxvOZr2Txhyv5vcBvw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] drm/ingenic: Register devm action to cleanup encoders
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me, dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 1:36 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Since the encoders have been devm-allocated, they will be freed way
-> before drm_mode_config_cleanup() is called. To avoid use-after-free
-> conditions, we then must ensure that drm_encoder_cleanup() is called
-> before the encoders are freed.
->
-> v2: Use the new __drmm_simple_encoder_alloc() function
->
-> Fixes: c369cb27c267 ("drm/ingenic: Support multiple panels/bridges")
-> Cc: <stable@vger.kernel.org> # 5.8+
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->
-> Notes:
->     Use the V1 of this patch to fix v5.11 and older kernels. This V2 only
->     applies on the current drm-misc-next branch.
->
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 16 +++++++---------
->  1 file changed, 7 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 7bb31fbee29d..158433b4c084 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -1014,20 +1014,18 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->                         bridge = devm_drm_panel_bridge_add_typed(dev, panel,
->                                                                  DRM_MODE_CONNECTOR_DPI);
->
-> -               encoder = devm_kzalloc(dev, sizeof(*encoder), GFP_KERNEL);
-> -               if (!encoder)
-> -                       return -ENOMEM;
-> +               encoder = __drmm_simple_encoder_alloc(drm, sizeof(*encoder), 0,
+The current default value for  max_user_watches  is the 1/16 (6.25%) of
+the available low memory, divided for the "watch" cost in bytes.
 
-Please don't use the __ prefixed functions, those are the internal
-ones. The official one comes with type checking and all that included.
-Otherwise lgtm.
--Daniel
+Tools like inotify-tools and visual studio code, seem to hit these
+limits a little to easy.
 
-> +                                                     DRM_MODE_ENCODER_DPI);
-> +               if (IS_ERR(encoder)) {
-> +                       ret = PTR_ERR(encoder);
-> +                       dev_err(dev, "Failed to init encoder: %d\n", ret);
-> +                       return ret;
-> +               }
->
->                 encoder->possible_crtcs = 1;
->
->                 drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
->
-> -               ret = drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_DPI);
-> -               if (ret) {
-> -                       dev_err(dev, "Failed to init encoder: %d\n", ret);
-> -                       return ret;
-> -               }
-> -
->                 ret = drm_bridge_attach(encoder, bridge, NULL, 0);
->                 if (ret) {
->                         dev_err(dev, "Unable to attach bridge\n");
-> --
-> 2.29.2
->
+Also amending the documentation, it referred to an old value for this.
 
+Signed-off-by: Eric Curtin <ericcurtin17@gmail.com>
+---
+ Documentation/admin-guide/sysctl/fs.rst | 4 ++--
+ fs/eventpoll.c                          | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/Documentation/admin-guide/sysctl/fs.rst b/Documentation/admin-guide/sysctl/fs.rst
+index f48277a0a850..f7fe45e69c41 100644
+--- a/Documentation/admin-guide/sysctl/fs.rst
++++ b/Documentation/admin-guide/sysctl/fs.rst
+@@ -380,5 +380,5 @@ This configuration option sets the maximum number of "watches" that are
+ allowed for each user.
+ Each "watch" costs roughly 90 bytes on a 32bit kernel, and roughly 160 bytes
+ on a 64bit one.
+-The current default value for  max_user_watches  is the 1/32 of the available
+-low memory, divided for the "watch" cost in bytes.
++The current default value for  max_user_watches  is the 1/16 (6.25%) of the
++available low memory, divided for the "watch" cost in bytes.
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index a829af074eb5..de9ef8f6d0b2 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -2352,9 +2352,9 @@ static int __init eventpoll_init(void)
+ 
+ 	si_meminfo(&si);
+ 	/*
+-	 * Allows top 4% of lomem to be allocated for epoll watches (per user).
++	 * Allows top 6.25% of lomem to be allocated for epoll watches (per user).
+ 	 */
+-	max_user_watches = (((si.totalram - si.totalhigh) / 25) << PAGE_SHIFT) /
++	max_user_watches = (((si.totalram - si.totalhigh) / 16) << PAGE_SHIFT) /
+ 		EP_ITEM_COST;
+ 	BUG_ON(max_user_watches < 0);
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.25.1
+
