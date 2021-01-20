@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ACE2FDDCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9392FDDC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392921AbhAUAU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:20:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        id S2392894AbhAUAQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:16:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403905AbhATXV2 (ORCPT
+        with ESMTP id S2390992AbhATXQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:21:28 -0500
-Received: from mail-io1-xd45.google.com (mail-io1-xd45.google.com [IPv6:2607:f8b0:4864:20::d45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA799C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:09:24 -0800 (PST)
-Received: by mail-io1-xd45.google.com with SMTP id k26so353901ios.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:09:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=R7f0wyeTmA8SuzS7SzFRcl7d6pcYrpva5Er826cs0mk=;
-        b=HoUwRXEE4WZfA3z1Q0PWAiWqmtyvZD3iOX2d7OKj9EF/4MO0shxLhOTwm0AhwkpeTm
-         vztrlQhQ3FNdDp4JHlWAMjM7Q685lWxJUnYEAGU2/FrKvocLhPZMn8uTEkvscaj+zK8f
-         Y4q+N//bIqk43zl/i1tCkLBgnmC5f4kV5l9cU0fcVaixxZE2bN+yesT4sE0o4PraB52j
-         npvKWl5ecUcj2j9ZNW1po5RFlF2a050hlAkAqPCsAgMjjUhhB1vrYn8Gvdt7hID5rLfy
-         R2t7sRYxgWk+EOITnEkYcHiXPUcF+hqOWhx9P8i/uWtjcV+NjtpJz8JrL6vC9Nh9r1Wm
-         7llA==
-X-Gm-Message-State: AOAM530xLW55VXPcY6eGXQdVnEaNbVRyk23JfMGyRlKDkSX948NX8Ps4
-        SoQmGlQaKK3/GlpD3PBO9wuSmeZiar1hIKpkb1mcrFL7mZGF
-X-Google-Smtp-Source: ABdhPJxx2Xjf/dKON/ViEpmZc8PUt27XQ8dLVFZm99Cd4bahkiaTQz/OYrK11/5lcTf3YlyNrJDROGRVOWMdRKnpf8k2rzjcSkae
+        Wed, 20 Jan 2021 18:16:56 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6209C061349
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:14:49 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2MgR-0041Ne-2x; Wed, 20 Jan 2021 23:14:39 +0000
+Date:   Wed, 20 Jan 2021 23:14:39 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Splicing to/from a tty
+Message-ID: <20210120231439.GE740243@zeniv-ca>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+ <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+ <20210118085311.GA2735@lst.de>
+ <20210118193457.GA736435@zeniv-ca>
+ <CAHk-=wh6HLz_qMam_J=W3X4caBqAGN8P+8c_y+sGFvBaD70K8w@mail.gmail.com>
+ <20210118195400.GC736435@zeniv-ca>
+ <20210120162608.GB740243@zeniv-ca>
+ <20210120191116.GC740243@zeniv-ca>
+ <CAHk-=wjtTC_jNL+K1Ey_wY_KpTYZOR5XwhkZ+Eu7vviVi5itDQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c986:: with SMTP id y6mr10047061iln.125.1611184164069;
- Wed, 20 Jan 2021 15:09:24 -0800 (PST)
-Date:   Wed, 20 Jan 2021 15:09:24 -0800
-In-Reply-To: <000000000000c8dd4a05b828d04c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c464f805b95d0bb2@google.com>
-Subject: Re: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run7
-From:   syzbot <syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjtTC_jNL+K1Ey_wY_KpTYZOR5XwhkZ+Eu7vviVi5itDQ@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Jan 20, 2021 at 11:27:26AM -0800, Linus Torvalds wrote:
+> On Wed, Jan 20, 2021 at 11:11 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > Why do we care about O_APPEND on anything without FMODE_PWRITE (including
+> > pipes), anyway?  All writes there ignore position, after all...
+> 
+> We shouldn't care.
+> 
+> Also, I think we should try to move away from FMODE_PWRITE/PREAD
+> entirely, and use FMODE_STREAM as the primary "this thing doesn't have
+> a position at all".
+> 
+> That's what gets rid of all the f_pos locking etc after all. The
+> FMODE_PWRITE/PREAD flags are I think legacy (although we do seem to
+> have the seq_file case that normally allows position on reads, but not
+> on writes, so we may need to keep all three bits).
 
-HEAD commit:    7d68e382 bpf: Permit size-0 datasec
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1418c3c7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7843b8af99dff
-dashboard link: https://syzkaller.appspot.com/bug?extid=fad5d91c7158ce568634
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1224daa4d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13dfabd0d00000
+Umm...  Why do we clear FMODE_PWRITE there, anyway?  It came in
+commit 915a29ec1c5e34283a6231af1036114e4d612cb0
+Author: Linus Torvalds <torvalds@ppc970.osdl.org>
+Date:   Sat Aug 7 02:08:23 2004 -0700
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com
+    Add pread/pwrite support bits to match the lseek bit.
+    
+    This also removes the ESPIPE logic from pipes and seq_files,
+    since the VFS layer now supports it.
 
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run7+0x411/0x420 kernel/trace/bpf_trace.c:2130
-Read of size 8 at addr ffffc90000e5c030 by task syz-executor460/8508
-
-CPU: 1 PID: 8508 Comm: syz-executor460 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
- bpf_trace_run7+0x411/0x420 kernel/trace/bpf_trace.c:2130
- __bpf_trace_percpu_alloc_percpu+0x1dc/0x220 include/trace/events/percpu.h:10
- __traceiter_percpu_alloc_percpu+0x97/0xf0 include/trace/events/percpu.h:10
- trace_percpu_alloc_percpu include/trace/events/percpu.h:10 [inline]
- pcpu_alloc+0xba6/0x16f0 mm/percpu.c:1844
- bpf_prog_alloc+0x78/0x250 kernel/bpf/core.c:117
- bpf_prog_load+0x656/0x1f40 kernel/bpf/syscall.c:2152
- __do_sys_bpf+0x1251/0x4f00 kernel/bpf/syscall.c:4380
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441659
-Code: e8 ac e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffebad746f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441659
-RDX: 0000000000000078 RSI: 0000000020000200 RDI: 0000000000000005
-RBP: 000000000001191b R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402470
-R13: 0000000000402500 R14: 0000000000000000 R15: 0000000000000000
-
-
-Memory state around the buggy address:
- ffffc90000e5bf00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e5bf80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc90000e5c000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                     ^
- ffffc90000e5c080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e5c100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
-
+with seq_read() losing the special-cased pread prevention and
+seq_open() getting a ban on both pread and pwrite.  With
+pread() support added in 2009, and (pointless) pwrite prohibition
+left in place.
