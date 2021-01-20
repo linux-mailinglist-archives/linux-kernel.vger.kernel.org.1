@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A482FC5ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF5C2FC62A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbhATAfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:35:14 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8914 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhATAdF (ORCPT
+        id S1729360AbhATAy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:54:56 -0500
+Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21133 "EHLO
+        sender4-of-o51.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730829AbhATAyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:33:05 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60077a180006>; Tue, 19 Jan 2021 16:32:24 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
- 2021 00:32:23 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.175)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 20 Jan 2021 00:32:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hLvy9RnyXLjfLSibq0rp0u6N72PYytxFqayRy4CaunpuKcXY4FECKp6Di1g7J7KCKjueAfaQr0suDKncDJs1R1sJZ4aGWX058KnPdH9OzJYBlL2UOnLtzE6GeEJfq9zynb6s1w8IZBhIGTnYrK8MmTJ8u9lEfDUYKggbt008o2UmrbF7P7avwPEW6ni9h+6kzgL8lHmoYscoKm7PAYedFJy6A4uCRj3Z/7/YeuxMGeEnUtkmClVy9XqABOAwNz7HnE2iuEFyOQLrNOh2XiMbPoYxyntY1zLiYKFhIcFnJu0uq4JgzWc8P2m3TwhcsroFAcbCbqP9NXn8+mhNk2ph1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2FDQpZqc6k44lNzc+h2+vFJGEthCb/krNZCTKdaS2YA=;
- b=GMbUB71jhgMVVA/evo2Yjj8oa6tjNy67M82hLrmUUwjW/PjpPCx2VZ5bBwfLu+rU0K+WnMwDe2NaTebfeEMddbx6jc3a+AlJgVJab8YQ8fTcWDQnHjyWCXpXBWHcMMbsEpTPewN5dErZqfXP5efxsgFt8/IJt0iWY1EQN1JqwYKXL61yLFOHdrOXESrAMLJVL4mUzr7p7H82ilCCDlqveYK9/sGqXhqxLo6Vv7yIpzuFFjekME2PGwgnIH8x/g+VRGtBK3TTMcIw/leFtuC5tSKj/D0sKGVhz/iU3PNQdjXRhUABWH+I+iZhlTmnvrJzZdl7tOdJWfUfrkMqQl7R7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0105.namprd12.prod.outlook.com (2603:10b6:4:54::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.14; Wed, 20 Jan
- 2021 00:32:22 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
- 00:32:21 +0000
-Date:   Tue, 19 Jan 2021 20:32:19 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Joe Perches <joe@perches.com>
-CC:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        "Christian Benvenuti" <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        "Doug Ledford" <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Greg KH <greg@kroah.com>
-Subject: Re: [PATCH V2] RDMA: usnic: Fix misuse of sysfs_emit_at
-Message-ID: <20210120003219.GA968146@nvidia.com>
-References: <f4ce30f297be4678634b5be4917401767ee6ebc5.camel@perches.com>
- <6af0a6562b67a24e6233ed360189ba8071243035.camel@HansenPartnership.com>
- <5eb794b9c9bca0494d94b2b209f1627fa4e7b555.camel@perches.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <5eb794b9c9bca0494d94b2b209f1627fa4e7b555.camel@perches.com>
-X-ClientProxiedBy: BL0PR02CA0126.namprd02.prod.outlook.com
- (2603:10b6:208:35::31) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Tue, 19 Jan 2021 19:54:41 -0500
+X-Greylist: delayed 1164 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 19:54:40 EST
+ARC-Seal: i=1; a=rsa-sha256; t=1611102836; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=bvfuEVpT4XhGIRZ7H3qUEKRtb4ThDEDdXfu0fGNznNoBq6hR3zJmUh1tILm8GWsl8Ncxbw2QP3QKCJ4GG3oQY1SWipvLA6G4ubbe6sep+36uX0KcX2vOvsF3CbK+ouvcFBMTujldMqYtnx8UNPsBWJ817z2Qnxaem7kN1GLaLIU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1611102836; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=Gy6cxAGpQV06imIwuB7h3MwRSZjSFn29L4jucGrojIM=; 
+        b=XQhTC1LH6c79yVxqK8zC2C5CgP2MuAgUhz6d0ZmZ+dBHrUTvn8RfVbISO2NGH+Oe9IP0kiK4OUmFf2nrsyPWpbJyM4+ZNncEB18ELEw6q2VPLXEGEwx5YPHb2OiK/TuG5+k6upE0999/PUUMxVFwNoCTO0xJb7Jwd+WgRK/n0TU=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=apertussolutions.com;
+        spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
+        dmarc=pass header.from=<dpsmith@apertussolutions.com> header.from=<dpsmith@apertussolutions.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1611102836;
+        s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=Gy6cxAGpQV06imIwuB7h3MwRSZjSFn29L4jucGrojIM=;
+        b=M18bUZgt44glWZutDwWxXMoUKnlHR3szHDABEv1f06QiOrszMJbrC5eSxYaGjY71
+        N8wIIuJa243I9uWPqrYABy00MzADpYLPbVCBvfKdP9qfllPFibUM97Y3F9/ROsszVSX
+        getsmT810S+BbVsH7VgnSy8+vUtsHKg1nbnvB2AE=
+Received: from [10.10.1.24] (c-73-129-147-140.hsd1.md.comcast.net [73.129.147.140]) by mx.zohomail.com
+        with SMTPS id 1611102834623926.0489869436618; Tue, 19 Jan 2021 16:33:54 -0800 (PST)
+Subject: Re: [PATCH 05/13] x86: Add early TPM1.2/TPM2.0 interface support for
+ Secure Launch
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Ross Philipson <ross.philipson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, luto@amacapital.net,
+        trenchboot-devel@googlegroups.com
+References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
+ <1600959521-24158-6-git-send-email-ross.philipson@oracle.com>
+ <20200925054313.GB165011@linux.intel.com>
+From:   "Daniel P. Smith" <dpsmith@apertussolutions.com>
+Message-ID: <933d9f3e-a509-bff4-54fe-20af44dc3ed0@apertussolutions.com>
+Date:   Tue, 19 Jan 2021 19:33:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0126.namprd02.prod.outlook.com (2603:10b6:208:35::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Wed, 20 Jan 2021 00:32:20 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l21Q3-0043ry-6V; Tue, 19 Jan 2021 20:32:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611102745; bh=2FDQpZqc6k44lNzc+h2+vFJGEthCb/krNZCTKdaS2YA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=QXvV6ai49oGDuQ2iBFy/DpBgnCKV35azmmrXOPOHV2BaSeaq5rt2ZUDndaYTaFXmS
-         Bzv3wUFZoilYpQpUrUPPQeEFIiknH3Ct/IuD63XXw1oyd40uZfjt2DMzGbigzc5w/E
-         Ml5TNUNShEncr+QKisUrYrtis3wZAI+2gLLoWjS88iC8fSVKPnmV7nnYfL+wUg4yXF
-         6ff3zMZ+wue0jGsVk29uq3lvVwjUZOpSx0+UyovsDcb0K61uqN8F1uj3zsJdkpz1c1
-         sOUwiAycmhNWmC/LiNFZLTSc8cAFySh3WqA9ba0fcxxB9MhlB4YP884a8EOBjJGaXF
-         As/VBGMRZMVgg==
+In-Reply-To: <20200925054313.GB165011@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 04:36:50PM -0800, Joe Perches wrote:
-> In commit e28bf1f03b01 ("RDMA: Convert various random sprintf sysfs _show
-> uses to sysfs_emit") I mistakenly used len = sysfs_emit_at to overwrite
-> the last trailing space of potentially multiple entry output.
+On 9/25/20 1:43 AM, Jarkko Sakkinen wrote:
+> On Thu, Sep 24, 2020 at 10:58:33AM -0400, Ross Philipson wrote:
+>> From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
+>>
+>> This commit introduces an abstraction for TPM1.2 and TPM2.0 devices
+>> above the TPM hardware interface.
+>>
+>> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
+>> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
 > 
-> Instead use a more common style by removing the trailing space from the
-> output formats and adding a prefixing space to the contination formats and
-> converting the final terminating output newline from the defective
-> 	len = sysfs_emit_at(buf, len, "\n");
-> to the now appropriate and typical
-> 	len += sysfs_emit_at(buf, len, "\n");
+> This is way, way too PoC. I wonder why there is no RFC tag.
 > 
-> Fixes: e28bf1f03b01 ("RDMA: Convert various random sprintf sysfs _show uses to sysfs_emit")
+> Please also read section 2 of
 > 
-> Reported-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  drivers/infiniband/hw/usnic/usnic_ib_sysfs.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+> https://www.kernel.org/doc/html/v5.8/process/submitting-patches.html
+> 
+> You should leverage existing TPM code in a way or another. Refine it so
+> that it scales for your purpose and then compile it into your thing
+> (just include the necesary C-files with relative paths).
+> 
+> How it is now is never going to fly.
+> 
+> /Jarkko
+> 
 
-Applied to for-rc, thanks
+After attempts to engage in finding alternative approaches, it appears
+that the only welcomed approach for sending measurements from the
+compressed kernel would be a major rewrite of the mainline TPM driver to:
 
-Jason
+1. Abstract out the mainline kernel infrastructure that is used by the
+driver
+
+2. Find ways to introduce a minimal amount of the equivalent
+infrastructure into the compressed kernel, to make the driver code
+reusable within the compressed kernel.
+
+This approach would exceed the scope of changes we want to introduce to
+non-SecureLaunch code to enable direct DRTM launch for the Linux kernel.
+
+After careful consideration and discussions with colleagues from the
+trusted computing community, an alternative has been crafted. We aim to
+submit a version 2 with the following approach:
+
+1. SecureLaunch will take measurements in the compressed kernel as we do
+in version 1, but instead of immediately sending them to the TPM, they
+will be stored in the DRTM TPM event log.
+
+2. When the SecureLaunch module in the mainline kernel comes on line, it
+can send measurements to the TPM using the mainline TPM driver.
+
+While it would be ideal to record measurements at the time they are
+taken, the mainline kernel is measured alongside the compressed kernel
+as a single measurement. This means the same measured entity stays in
+control, prior to execution by any other entity within the system.
+
+At a later date, if the TPM maintainers refactor the TPM driver for
+reuse within the compressed kernel, then the sending of measurements can
+be revisited.
+
+For individuals and distributions that may prefer to record DRTM
+measurements earlier, the TrenchBoot project will do its best to
+maintain an external patch to provide that capability to a mainline LTS
+kernel.
+
+V/r,
+Daniel P. Smith
