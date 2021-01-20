@@ -2,176 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A702FCFB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B00C32FCFD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388167AbhATLn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730436AbhATLYk (ORCPT
+        id S2389383AbhATMPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 07:15:22 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:61658 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388669AbhATLpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:24:40 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF15C061786;
-        Wed, 20 Jan 2021 03:22:45 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id d81so30944696iof.3;
-        Wed, 20 Jan 2021 03:22:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SZRUBoGdt/5UJx70V+GROL5BmBjThj3wB1sYVvK/m1s=;
-        b=jjz48XnloqBQbcCVOU+UuzzdYDraFTGBJ1nuSLXezte3V6s0o45pVi6Idjv5JyyhCY
-         MWWBJEUlFR96enQFK3B0fGvRny14Plru2pvTUQ+hNQKGPyo+jiGCLOBhkIcamUUgTKn+
-         fw4oBik4i7WbHHB7tTybcL/Wvwfgs8asEauHnurMLGoZwoEnBwWjGPuWgD0s2plS1nu3
-         6ZCuCNzMxf1dtE0G7acj+l7E5/CsnolyIM+RaMlSu9Wgm3f71TaxHp/LNpVodohl7+Vl
-         6dMDwxkOWc/JvTnYhjUv6okZKtLqJyElaHs7uN+G17zSbUIOnd2RoSGLkMnuW2Zie/Gu
-         IxEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SZRUBoGdt/5UJx70V+GROL5BmBjThj3wB1sYVvK/m1s=;
-        b=U8rSfsTQyDxjI8WaAPwvZKKHl3FOHBpcTSYzH5OQAkRfrW95IJWfVmsEYo75KcTfXj
-         nQe1BKwWuzgB1vkSkH7Ag7ytzgXB2petu8bMpaEPDXoku8Yww4g24AEmu0k1YhcSz8QC
-         OQleW3ucjTUdu7eRRxk1rIRRTtM1/nOZFp987RER/oyuzWsbmjsspY7s+KJ7mBooeBqU
-         y/W0IUcSm7HqWIZ4YAYpVUPRZaeJJOoVGdgA14Ku4iSd5JV/oIuGIfpLavKTvbjL5fn2
-         rV1Q6TPlAM4pnS5VvcQPEDOnWsQGRO/0wSDPruQLp4D4zcFvGQMAZ0mef/ok0F04EDrs
-         WmCg==
-X-Gm-Message-State: AOAM530Vx+LsiJiUHJXIahFCJM9KizPxCQ1FdJip32FmM2SiVNp5+4uv
-        hlJjvDZ5ibY99NyLavyL0jy8PI8vRq3B28Cb5ZHXgQW8
-X-Google-Smtp-Source: ABdhPJz51+uC8eBr4zfCNfALFlel4kS4Mdm5v2Zui75zWFoT7W+J6bI5tqggKt4pUEVs1vMzjdHu2RUCSbswX5SYX9o=
-X-Received: by 2002:a5d:938f:: with SMTP id c15mr6316232iol.72.1611141765056;
- Wed, 20 Jan 2021 03:22:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20210105003611.194511-1-icenowy@aosc.io> <CAOQ4uxiFoQhrMbs91ZUNXqbJUXb5XRBgRrcq1rmChLKQGKg5xg@mail.gmail.com>
- <20210120102045.GD1236412@miu.piliscsaba.redhat.com>
-In-Reply-To: <20210120102045.GD1236412@miu.piliscsaba.redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 20 Jan 2021 13:22:33 +0200
-Message-ID: <CAOQ4uxiwu2L_v5n=f8LNkoLvU+horPNUvQ5U6pQ7b+Qhd4a1OQ@mail.gmail.com>
-Subject: Re: [PATCH v3] ovl: use a dedicated semaphore for dir upperfile caching
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Icenowy Zheng <icenowy@aosc.io>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 20 Jan 2021 06:45:25 -0500
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210120114441epoutp021b35cc7a680fa5b94a2fb7be7130ee4e~b7hi0tOUE0550805508epoutp02a
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:44:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210120114441epoutp021b35cc7a680fa5b94a2fb7be7130ee4e~b7hi0tOUE0550805508epoutp02a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611143081;
+        bh=8GGJA4qDpM99WxXaTKURZyu32KA4LL+v0ALBN1X/YL8=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=T4DjAwMeAzeqNFMDzybiExmvHksaYlsXD0WYnCrIJ/zGZdspTyHJ3tpbnBgQCzLwb
+         W6LtN07kCZJk2dVmGrvc33ZrFsF26o3CUCyj/JntDkB+DCY9vz7410lZgJKf/Vj/yf
+         H4fYd+gfyMODeVQYL407KizryZD8AlDyvIHRvP9I=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20210120114440epcas5p4456b0075b52ac5d590ed54b0fc610774~b7hiNew9B2343723437epcas5p48;
+        Wed, 20 Jan 2021 11:44:40 +0000 (GMT)
+X-AuditID: b6c32a49-8d5ff70000013d42-83-600817a8bc9e
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        84.EA.15682.8A718006; Wed, 20 Jan 2021 20:44:40 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH 1/1] arm64/entry.S: check for stack overflow in el1 case
+ only
+Reply-To: maninder1.s@samsung.com
+Sender: Maninder Singh <maninder1.s@samsung.com>
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "vincenzo.frascino@arm.com" <vincenzo.frascino@arm.com>,
+        "samitolvanen@google.com" <samitolvanen@google.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vaneet Narang <v.narang@samsung.com>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210120110803.GB19241@willie-the-truck>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210120112259epcms5p5cfdc3e2172fdde8da6f3d35822483b07@epcms5p5>
+Date:   Wed, 20 Jan 2021 16:52:59 +0530
+X-CMS-MailID: 20210120112259epcms5p5cfdc3e2172fdde8da6f3d35822483b07
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH+W33Xq/LxXWzPGZWioJZTkel14ywslhR0cOiJ3Oty9J8rC17
+        08NW0cheNJClJqS5pulazpa3QCYVVoKSVlbWKkdqiqmVWWqxXUf99+GcL99zvodD8kVl+BQy
+        LWsvo8lSZIQRAqymfmZUtCmQTI29PBZDN7MMPfytD9GGDx0E3XfjHKKtn17g9PPaAoIufdnM
+        o+8VNOB0qakXpx0NhYh+MDaM0bq385L8ZBVFFUhWbM2RWc1nCdmdkmOy89VmJBu0TltDbBEs
+        2MlkpO1jNDELUwW7vj5swdRDfge6e8zEcXRdoEe+JFBz4UTjGUyPBKSIYhHY3uTx9YgkhZQ/
+        jNrFbo2YWg8NLhPPzSIqFJryK5BbIqZi4Zct0l0mKAmYa+9jbg6glsHbwhYP86lcDB4bjnKj
+        hJB/xoVxHAx3y2weG18qDgaaArnyJGgr7/Xxct+ja4jjADj1rpHPsT84h9nx+lQov5M3bnkS
+        wdkSxp0EqCsI2G49wTXigbUUYVyqVfDstMcfoyKgy+Uc90yGGlMr4laeDnd7CzxH4FMzoao2
+        hpOEgOFJJY+TTIS83x08byp7kZcjQNdmwb0JB/v7x1eTwfuq74g7cieCW2Ud+EU0w/jvzsb/
+        Jhv/TS5GfDMKYtTaTBWjnaeWZjH7JVpFpjYnSyVRZmdakeeXopbbUbvzq8SBeCRyICD5YQHC
+        3FEiVSTcqTh4iNFkyzU5GYzWgYJJLCxQaI91ykWUSrGX2c0wakbj7fJI3ynHeSfKVvuzIok0
+        QRc9NxSHuJRmaqjRFbTD1W4PCUgoH3kVb5pVw1y+NBs/sFjcMzIgtXQ6iPB2+cekIJ3IJ+WC
+        USVP2xQK28Lx1Sk/D9tK0kOTnJOdJxc9k1f/6BQv3SO/p1zHnN7qsICtKJadr0z9Ej5h8ejV
+        5JGqL2p1Dzstevt2HZH09DHbMPl825+PWxNbFnS35k1qMbI+9fGvZy2ZIGmdY0hbYZwtiR68
+        1mTM3xhZ8VS1co70c2Xku+QjlvaQ9NG11bIHY4dvprN/kHXq7ToBvn5zXYK6vqvZMTD/0VCi
+        cPiGMrdymaG7M2SRsrGr2O9b17nEwCf6Qo3q+oa6MEy7SyGN4mu0ir+JlHTzugMAAA==
+X-CMS-RootMailID: 20201211091546epcas5p24511325afff612d57306d733a3307648
+References: <20210120110803.GB19241@willie-the-truck>
+        <1607678131-20347-1-git-send-email-maninder1.s@samsung.com>
+        <20210107112903.GB7523@C02TD0UTHF1T.local>
+        <CGME20201211091546epcas5p24511325afff612d57306d733a3307648@epcms5p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:20 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+Hi Mark, Will
+
+On Thu, Jan 07, 2021 at 11:29:03AM +0000, Mark Rutland wrote:
+>> On Fri, Dec 11, 2020 at 02:45:31PM +0530, Maninder Singh wrote:
+>> > current code checks for sp bit flip in all exceptions,
+>> > but only el1 exceptions requires this. el0 can not enter
+>> > into stack overflow case directly.
+>> > 
+>> > it will improve performance for el0 exceptions and interrupts.
+>> > 
+>> > Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+>> > Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+>> 
+>> I did consider doing this at the time Ard and I wrote the overflow
+>> detection, but there was no measureable impact on the workloads that I
+>> tested, and it seemed worthwhile to have this as a sanity check in case
+>> the SP was somehow corrupted (and to avoid any surprizing differences
+>> between the EL0 and EL1 entry paths).
+>> 
 >
-> On Tue, Jan 05, 2021 at 08:47:41AM +0200, Amir Goldstein wrote:
-> > On Tue, Jan 5, 2021 at 2:36 AM Icenowy Zheng <icenowy@aosc.io> wrote:
-> > >
-> > > The function ovl_dir_real_file() currently uses the semaphore of the
-> > > inode to synchronize write to the upperfile cache field.
-> >
-> > Although the inode lock is a rw_sem it is referred to as the "inode lock"
-> > and you also left semaphore in the commit subject.
-> > No need to re-post. This can be fixed on commit.
-> >
-> > >
-> > > However, this function will get called by ovl_ioctl_set_flags(), which
-> > > utilizes the inode semaphore too. In this case ovl_dir_real_file() will
-> > > try to claim a lock that is owned by a function in its call stack, which
-> > > won't get released before ovl_dir_real_file() returns.
-> > >
-> > > Define a dedicated semaphore for the upperfile cache, so that the
-> > > deadlock won't happen.
-> > >
-> > > Fixes: 61536bed2149 ("ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR ioctls for directories")
-> > > Cc: stable@vger.kernel.org # v5.10
-> > > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> > > ---
-> > > Changes in v2:
-> > > - Fixed missing replacement in error handling path.
-> > > Changes in v3:
-> > > - Use mutex instead of semaphore.
-> > >
-> > >  fs/overlayfs/readdir.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
-> > > index 01620ebae1bd..3980f9982f34 100644
-> > > --- a/fs/overlayfs/readdir.c
-> > > +++ b/fs/overlayfs/readdir.c
-> > > @@ -56,6 +56,7 @@ struct ovl_dir_file {
-> > >         struct list_head *cursor;
-> > >         struct file *realfile;
-> > >         struct file *upperfile;
-> > > +       struct mutex upperfile_mutex;
-> >
-> > That's a very specific name.
-> > This mutex protects members of struct ovl_dir_file, which could evolve
-> > into struct ovl_file one day (because no reason to cache only dir upper file),
-> > so I would go with a more generic name, but let's leave it to Miklos to decide.
-> >
-> > He could have a different idea altogether for fixing this bug.
->
-> How about this (untested) patch?
+>> When you say "it will improve performance for el0 exceptions and
+>> interrupts", do you have a workload where this has a measureable impact,
+>> or was this found by inspection? Unless this is causing a real issue,
+>> I'd prefer to leave it as-is for now.
 >
 
-Much better :)
+We have not measured performance with any tool because as you said its not measurable,
+but we think if we can remove some instructions then it will be better,
+thats why suggested this change.
+And in el0 there is no chance of overflow of sp so that 5 instructions can be avoided.
 
-> It's a cleanup as well as a fix, but maybe we should separate the cleanup from
-> the fix...
->
-> Thanks,
-> Miklos
-> ---
->
->  fs/overlayfs/readdir.c |   23 +++++++----------------
->  1 file changed, 7 insertions(+), 16 deletions(-)
->
-> --- a/fs/overlayfs/readdir.c
-> +++ b/fs/overlayfs/readdir.c
-> @@ -865,7 +865,7 @@ struct file *ovl_dir_real_file(const str
->
->         struct ovl_dir_file *od = file->private_data;
->         struct dentry *dentry = file->f_path.dentry;
-> -       struct file *realfile = od->realfile;
-> +       struct file *old, *realfile = od->realfile;
->
->         if (!OVL_TYPE_UPPER(ovl_path_type(dentry)))
->                 return want_upper ? NULL : realfile;
-> @@ -874,29 +874,20 @@ struct file *ovl_dir_real_file(const str
->          * Need to check if we started out being a lower dir, but got copied up
->          */
->         if (!od->is_upper) {
-> -               struct inode *inode = file_inode(file);
-> -
->                 realfile = READ_ONCE(od->upperfile);
->                 if (!realfile) {
->                         struct path upperpath;
->
->                         ovl_path_upper(dentry, &upperpath);
->                         realfile = ovl_dir_open_realfile(file, &upperpath);
-> +                       if (IS_ERR(realfile))
-> +                               return realfile;
->
-> -                       inode_lock(inode);
-> -                       if (!od->upperfile) {
-> -                               if (IS_ERR(realfile)) {
-> -                                       inode_unlock(inode);
-> -                                       return realfile;
-> -                               }
-> -                               smp_store_release(&od->upperfile, realfile);
-> -                       } else {
-> -                               /* somebody has beaten us to it */
-> -                               if (!IS_ERR(realfile))
-> -                                       fput(realfile);
-> -                               realfile = od->upperfile;
-> +                       old = cmpxchg_release(&od->upperfile, NULL, realfile);
-> +                       if (old) {
-> +                               fput(realfile);
-> +                               realfile = old;
->                         }
-> -                       inode_unlock(inode);
->                 }
->         }
->
+We tried this on our setup because we were changing some design for VMAP_STACK in our kernel
+for some more enhancement, so that code was little much and we avoided that part
+in our local kernel for el0.
+
+Thanks,
+Maninder Singh
+ 
