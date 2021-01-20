@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9682FC8A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D112FC8A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732378AbhATCfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:35:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
+        id S2387775AbhATClk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:41:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729913AbhATB14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:27:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35F6A2333D;
-        Wed, 20 Jan 2021 01:26:36 +0000 (UTC)
+        id S1730025AbhATB2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F7E222472;
+        Wed, 20 Jan 2021 01:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611105997;
-        bh=Y0y4RiRCOTkbxzR1OuKcUy8g7sjPnEEbdSQgPF7jO/Y=;
+        s=k20201202; t=1611106006;
+        bh=9SutWEmC6H5K10bDfM/3ZW3pS0nEj9/MpovzFvWZN8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gq1GVMovyw2turFiy7eHW+Z1ggwKF0QCdhSxCuSTnqmGRwTdZwaZsJ0NhIrPUK5/v
-         gw0fofy1nb5m6goba6GjM+D6R8ZsmxMGHQR/Dng97cPWdI2myWHFEeLiARyDGqEMcx
-         UEvzMMEFiHCI+0SNkcFuHR/m92QpmpgNOC35h0IH6nKFbfdlPVQQCg5+pgBldfcvgn
-         O0fSXmnTxg4hYYZcnZSskCaYrHMd78x/gk1QfdYcSJSW4WbIzBKOzdxEoqeXO5lpRc
-         N88XbWbY980TBw+fztV14w56S0M9nuoDvN8GDyiyeURM3zaYskBbz2+pDJcoJE5nof
-         K7HSV+scKIpLA==
+        b=sjpBpIKd5jnquEarxu/SLI84s01APmGU/UQYUj9s7aJ660wbuD8tJEjCVQ8ErnjND
+         Tguz6uMb2H9lSizaOX4GF+oUA4u/zrffP76HwQWrfnuPgHe1r4W6JE3kFi+9rw/bJp
+         3Zvw5pv5MhqtI7hDmsD1ERn9z57UdOQMT91ZK9BWH/7JVN2Dniy1ULMCmxEpHitOKX
+         03kaqBLmqvy5Pbg3onOhdfnwA73mxv4TpQ4te2rI4DtXWHHPjsJuRX0H330Nbbi1mg
+         U1HSDo+5SyYU2zOsfYfMPcp7+Fn47VJUbWf/pRVSylizU4ti/XD3Q+LK2XWMrGUz/Z
+         82mpYSH6UYEjQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Woodhouse <dwmw@amazon.co.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Sasha Levin <sashal@kernel.org>, xen-devel@lists.xenproject.org
-Subject: [PATCH AUTOSEL 5.10 26/45] x86/xen: Fix xen_hvm_smp_init() when vector callback not available
-Date:   Tue, 19 Jan 2021 20:25:43 -0500
-Message-Id: <20210120012602.769683-26-sashal@kernel.org>
+Cc:     "Li, Roman" <Roman.Li@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 33/45] drm/amd/display: disable dcn10 pipe split by default
+Date:   Tue, 19 Jan 2021 20:25:50 -0500
+Message-Id: <20210120012602.769683-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,117 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: "Li, Roman" <Roman.Li@amd.com>
 
-[ Upstream commit 3d7746bea92530e8695258a3cf3ddec7a135edd6 ]
+[ Upstream commit 9d03bb102028b4a3f4a64d6069b219e2e1c1f306 ]
 
-Only the IPI-related functions in the smp_ops should be conditional
-on the vector callback being available. The rest should still happen:
+[Why]
+The initial purpose of dcn10 pipe split is to support some high
+bandwidth mode which requires dispclk greater than max dispclk. By
+initial bring up power measurement data, it showed power consumption is
+less with pipe split for dcn block. This could be reason for enable pipe
+split by default. By battery life measurement of some Chromebooks,
+result shows battery life is longer with pipe split disabled.
 
- • xen_hvm_smp_prepare_boot_cpu()
+[How]
+Disable pipe split by default. Pipe split could be still enabled when
+required dispclk is greater than max dispclk.
 
-   This function does two things, both of which should still happen if
-   there is no vector callback support.
-
-   The call to xen_vcpu_setup() for vCPU0 should still happen as it just
-   sets up the vcpu_info for CPU0. That does happen for the secondary
-   vCPUs too, from xen_cpu_up_prepare_hvm().
-
-   The second thing it does is call xen_init_spinlocks(), which perhaps
-   counter-intuitively should *also* still be happening in the case
-   without vector callbacks, so that it can clear its local xen_pvspin
-   flag and disable the virt_spin_lock_key accordingly.
-
-   Checking xen_have_vector_callback in xen_init_spinlocks() itself
-   would affect PV guests, so set the global nopvspin flag in
-   xen_hvm_smp_init() instead, when vector callbacks aren't available.
-
- • xen_hvm_smp_prepare_cpus()
-
-   This does some IPI-related setup by calling xen_smp_intr_init() and
-   xen_init_lock_cpu(), which can be made conditional. And it sets the
-   xen_vcpu_id to XEN_VCPU_ID_INVALID for all possible CPUS, which does
-   need to happen.
-
- • xen_smp_cpus_done()
-
-   This offlines any vCPUs which doesn't fit in the global shared_info
-   page, if separate vcpu_info placement isn't available. That part also
-   needs to happen regardless of vector callback support.
-
- • xen_hvm_cpu_die()
-
-   This doesn't actually do anything other than commin_cpu_die() right
-   right now in the !vector_callback case; all three teardown functions
-   it calls should be no-ops. But to guard against future regressions
-   it's useful to call it anyway, and for it to explicitly check for
-   xen_have_vector_callback before calling those additional functions.
-
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20210106153958.584169-6-dwmw2@infradead.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
+Signed-off-by: Roman Li <Roman.Li@amd.com>
+Reviewed-by: Roman Li <Roman.Li@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/xen/smp_hvm.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/xen/smp_hvm.c b/arch/x86/xen/smp_hvm.c
-index f5e7db4f82abb..056430a1080bb 100644
---- a/arch/x86/xen/smp_hvm.c
-+++ b/arch/x86/xen/smp_hvm.c
-@@ -33,9 +33,11 @@ static void __init xen_hvm_smp_prepare_cpus(unsigned int max_cpus)
- 	int cpu;
- 
- 	native_smp_prepare_cpus(max_cpus);
--	WARN_ON(xen_smp_intr_init(0));
- 
--	xen_init_lock_cpu(0);
-+	if (xen_have_vector_callback) {
-+		WARN_ON(xen_smp_intr_init(0));
-+		xen_init_lock_cpu(0);
-+	}
- 
- 	for_each_possible_cpu(cpu) {
- 		if (cpu == 0)
-@@ -50,9 +52,11 @@ static void __init xen_hvm_smp_prepare_cpus(unsigned int max_cpus)
- static void xen_hvm_cpu_die(unsigned int cpu)
- {
- 	if (common_cpu_die(cpu) == 0) {
--		xen_smp_intr_free(cpu);
--		xen_uninit_lock_cpu(cpu);
--		xen_teardown_timer(cpu);
-+		if (xen_have_vector_callback) {
-+			xen_smp_intr_free(cpu);
-+			xen_uninit_lock_cpu(cpu);
-+			xen_teardown_timer(cpu);
-+		}
- 	}
- }
- #else
-@@ -64,14 +68,17 @@ static void xen_hvm_cpu_die(unsigned int cpu)
- 
- void __init xen_hvm_smp_init(void)
- {
--	if (!xen_have_vector_callback)
-+	smp_ops.smp_prepare_boot_cpu = xen_hvm_smp_prepare_boot_cpu;
-+	smp_ops.smp_prepare_cpus = xen_hvm_smp_prepare_cpus;
-+	smp_ops.smp_cpus_done = xen_smp_cpus_done;
-+	smp_ops.cpu_die = xen_hvm_cpu_die;
-+
-+	if (!xen_have_vector_callback) {
-+		nopvspin = true;
- 		return;
-+	}
- 
--	smp_ops.smp_prepare_cpus = xen_hvm_smp_prepare_cpus;
- 	smp_ops.smp_send_reschedule = xen_smp_send_reschedule;
--	smp_ops.cpu_die = xen_hvm_cpu_die;
- 	smp_ops.send_call_func_ipi = xen_smp_send_call_function_ipi;
- 	smp_ops.send_call_func_single_ipi = xen_smp_send_call_function_single_ipi;
--	smp_ops.smp_prepare_boot_cpu = xen_hvm_smp_prepare_boot_cpu;
--	smp_ops.smp_cpus_done = xen_smp_cpus_done;
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
+index a78712caf1244..0524d6f1adba6 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
+@@ -608,8 +608,8 @@ static const struct dc_debug_options debug_defaults_drv = {
+ 		.disable_pplib_clock_request = false,
+ 		.disable_pplib_wm_range = false,
+ 		.pplib_wm_report_mode = WM_REPORT_DEFAULT,
+-		.pipe_split_policy = MPC_SPLIT_DYNAMIC,
+-		.force_single_disp_pipe_split = true,
++		.pipe_split_policy = MPC_SPLIT_AVOID,
++		.force_single_disp_pipe_split = false,
+ 		.disable_dcc = DCC_ENABLE,
+ 		.voltage_align_fclk = true,
+ 		.disable_stereo_support = true,
 -- 
 2.27.0
 
