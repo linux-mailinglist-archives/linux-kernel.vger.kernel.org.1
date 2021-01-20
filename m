@@ -2,212 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF1C2FC64A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CFB2FC64C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729070AbhATBON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:14:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
+        id S1730512AbhATBPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:15:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728240AbhATBNn (ORCPT
+        with ESMTP id S1729161AbhATBOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:13:43 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3D2C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:13:01 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id t7so19830009qtn.19
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:13:01 -0800 (PST)
+        Tue, 19 Jan 2021 20:14:35 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AC9C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:13:55 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id m6so13471132pfk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:13:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=x9UCdD5B7kcBZN9/OwzPs4/7bTWXL0nty31C4Zn/i+A=;
-        b=ExVKjE+PPGi9fYEFDJKV4IzybjgvD2DOBEvY6dJ9DUWNNNbtUumJrujI39sEX23YWV
-         /2ma5ai/mYPA6Pj9NUVUmWyq71dwST+IfQK4CbWtKj78I1BU9BxySYmDufEtmm752l2K
-         /V/EExuNR+6XbPO3a2qV+rXp4xGrnS2FzKYYXkFJV45eVTELt0xUgcmsTi12X2YOazyF
-         G1FAMRwdtthSe1HmaO9N5jOLaRlacvoryGdJbxQMCNLLXtXj8kct5Ybx43WlTC5T9Nu8
-         ajYxtVXC7bJPE+sY7FXm4Z1h2vBZUnknQKfZDqMMoDmNzHpyDSeQqvNfa/X+jUiBdbwK
-         MvLQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LbrB+4hBFfY1b4S9nQZrJqW6y4BpWyRafcJJN86RQm0=;
+        b=ZBwz00YWmDJicFydsf3OnyNkQhb1TYHGNQwSv0LX7h1Z0uHe0PENX+xlbfUIL5C1Kr
+         8K/fMxTwhSXNVSBOx58wsj2dZI89AhRrg4VtqgoYUnCyE4ggWKxgMSTzkNkWy8JOXCve
+         dPBNvbkur0z+AW/hXNLkjbo6VGlS1N/+aG9JIg4B5+P/Z5hwYuvxI8ego1KzUyY8tVyN
+         U5nkBpCxUqp5EoJzZEf9CJbjm+moSqToMdd8z14G90nnzPiAyiLq93lixACACRpS2U/t
+         1/ertp/SYCHvOvnSiUh1oi9oM6085eRWyQra/b9jjfkU06WSjLiUDnKKHcutlw4lzNbs
+         D6Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=x9UCdD5B7kcBZN9/OwzPs4/7bTWXL0nty31C4Zn/i+A=;
-        b=SeL3onOWnmXq2RZRo5QI8isz23X0ekBg+FlDVMnloUurTJrJ2oPrgWsmUkjRxQIUeH
-         9dib5lFiSSjoKNGVBQcLKyKzZ9ucR82zXV41miWo7aMt/iJXggqS1P/jzhm2Hz98qbmy
-         cwh+eDW2FO4F4iSOU6LegZkpg5XVGzCAPcRxsZCHRwpZrMUacOMPwpYxjd+XJ8J4FGRN
-         mnLr66RRaAmro/HWTaU3zDb+pbzAnPIV3Z5mdna5RZE5251GjLbanWvQsipqHE9BMgRH
-         M/eAOIG/78PiGNS82gm/aKA5WRuWMi1enVEhbVEznBx2XOnuhNZBbvuLmiVAGRL4ZD8s
-         vCPQ==
-X-Gm-Message-State: AOAM531yhrM9DyXbeBnvOWRwzRFWxXpbQwUEJ/lMqIwRM2U4/lDCwzSW
-        oBqINCq5z/yayNBBrQK0kP0h5ScSuHLZVCY=
-X-Google-Smtp-Source: ABdhPJzv4urYPOjpjXybZ6AhHrrXpU5tQIq2UR8DaohRFqjeAH9bQqQYlkhZFZsXZ8bdiOU4GeXr8khzFF4yzLg=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a0c:c30e:: with SMTP id
- f14mr278151qvi.48.1611105180877; Tue, 19 Jan 2021 17:13:00 -0800 (PST)
-Date:   Tue, 19 Jan 2021 17:12:44 -0800
-Message-Id: <20210120011244.335025-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v3] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-From:   Saravana Kannan <saravanak@google.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        kernel-team@android.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LbrB+4hBFfY1b4S9nQZrJqW6y4BpWyRafcJJN86RQm0=;
+        b=hjSXYratA0cCcS/NJukVR4tNRR3iJbpQVxycVXKMCz4qG0ncDBNDmAY4KXk+vAFC4s
+         QmJB+Ak4kg96j89TJ4SHWXPVhF3S5miHDOq+7zUiyM0vP47PdlsnHeE9Ws0wXS6TOtTc
+         l+rUShtSrLytZIyik14c0o2PnP5AeSFSvSxZ+br8lzPvwIHTE1XA6Nz59WihyLng18a7
+         1nVQLyGwe9dD5BOB4Eokl5GhcF4uJ+m+z08qr/ewBjmXkIzAkX3m+/LnOQYvfaaKrsdt
+         4CQtaD5pNGQyZVQu1FYZK178XL/SaIUmebxpOkTDp2I6yPO3LdRglG9jnGTncE8hL44/
+         FoKQ==
+X-Gm-Message-State: AOAM530c/iWYUq1yphTO81yVrlStpUcMls2fEJJpbRe3hOkRZRpSZl60
+        dxfijEtLWwGGRf3BPj/O9dH+Nw==
+X-Google-Smtp-Source: ABdhPJzF25cY4pSdzS61sqXxO/zBeDkhnV56fO5UhbvMZOHz8G4oGxVj19n7F7u1XHWZY1uCLCvFXQ==
+X-Received: by 2002:a62:1516:0:b029:1b6:8e43:dad7 with SMTP id 22-20020a6215160000b02901b68e43dad7mr6916153pfv.64.1611105234641;
+        Tue, 19 Jan 2021 17:13:54 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id g201sm307734pfb.81.2021.01.19.17.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 17:13:53 -0800 (PST)
+Date:   Tue, 19 Jan 2021 17:13:47 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH] KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event
+ pseudo-encoding in intel_arch_events[]
+Message-ID: <YAeDy66f13uLMrwU@google.com>
+References: <20201230081916.63417-1-like.xu@linux.intel.com>
+ <1ff5381c-3057-7ca2-6f62-bbdcefd8e427@linux.intel.com>
+ <YAHRMK5SmrmMx8hg@google.com>
+ <b3623ea4-b2a1-e825-68f9-d97a6e7a07f4@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3623ea4-b2a1-e825-68f9-d97a6e7a07f4@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are multiple instances of GPIO device tree nodes of the form:
+On Mon, Jan 18, 2021, Xu, Like wrote:
+> On 2021/1/16 1:30, Sean Christopherson wrote:
+> > On Fri, Jan 15, 2021, Like Xu wrote:
+> > > > diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> > > > index a886a47daebd..013e8d253dfa 100644
+> > > > --- a/arch/x86/kvm/vmx/pmu_intel.c
+> > > > +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> > > > @@ -29,7 +29,7 @@ static struct kvm_event_hw_type_mapping intel_arch_events[] = {
+> > > >    	[4] = { 0x2e, 0x41, PERF_COUNT_HW_CACHE_MISSES },
+> > > >    	[5] = { 0xc4, 0x00, PERF_COUNT_HW_BRANCH_INSTRUCTIONS },
+> > > >    	[6] = { 0xc5, 0x00, PERF_COUNT_HW_BRANCH_MISSES },
+> > > > -	[7] = { 0x00, 0x30, PERF_COUNT_HW_REF_CPU_CYCLES },
+> > > > +	[7] = { 0x00, 0x03, PERF_COUNT_HW_REF_CPU_CYCLES },
+> > In a follow up patch, would it be sane/appropriate to define these magic numbers
+> > in asm/perf_event.h and share them between intel_perfmon_event_map and
+> > intel_arch_events?  Without this patch, it's not at all obvious that these are
+> > intended to align with the Core (arch?) event definitions.
+> 
+> The asm/perf_event.h is x86 generic and svm has a amd_perfmon_event_map.
 
-foo {
-	compatible = "acme,foo";
-	...
+Ugh, duh.
 
-	gpio0: gpio0@xxxxxxxx {
-		compatible = "acme,bar";
-		...
-		gpio-controller;
-	};
+> How about adding an interface similar to perf_get_x86_pmu_capability()
+> so that we can use magic numbers directly from the host perf ?
+> (it looks we may have a performance drop, compared to static array)
 
-	gpio1: gpio1@xxxxxxxx {
-		compatible = "acme,bar";
-		...
-		gpio-controller;
-	};
+Alternatively, you could use the existing event_map() to generate
+intel_arch_events[] during init.  That might be easier since, AFAICT, the array
+indices have different meaning for KVM than for perf.
 
-	...
-}
-
-bazz {
-	my-gpios = <&gpio0 ...>;
-}
-
-Case 1: The driver for "foo" populates struct device for these gpio*
-nodes and then probes them using a driver that binds with "acme,bar".
-This lines up with how DT nodes with the "compatible" property are
-generally converted to struct devices and then registered with driver
-core to probe them. This also allows the gpio* devices to hook into all
-the driver core capabilities like runtime PM, probe deferral,
-suspend/resume ordering, device links, etc.
-
-Case 2: The driver for "foo" doesn't populate its child device nodes
-with "compatible" property and instead just loops through its child
-nodes and directly registers the GPIOs with gpiolib without ever
-populating a struct device or binding a driver to it.
-
-Drivers that follow the case 2 cause problems with fw_devlink=on.  This
-is because fw_devlink will prevent bazz from probing until there's a
-struct device that has gpio0 as its fwnode (because bazz lists gpio0 as
-a GPIO supplier). Once the struct device is available, fw_devlink will
-create a device link between with gpio0 as the supplier and bazz as the
-consumer. After this point, the device link will prevent bazz from
-probing until its supplier (the gpio0 device) has bound to a driver.
-Once the supplier is bound to a driver, the probe of bazz is triggered
-automatically.
-
-Finding and refactoring all the instances of drivers that follow case 2
-will cause a lot of code churn and it is not something that can be done
-in one shot. Examples of such instances are [1] [2].
-
-This patch works around this problem and avoids all the code churn by
-simply creating a stub driver to bind to the gpio_device. Since the
-gpio_device already points to the GPIO device tree node, this allows all
-the consumers to continue probing when the driver follows case 2.
-
-If/when all the old drivers are refactored, we can revert this patch.
-
-[1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
-[2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc: Kever Yang <kever.yang@rock-chips.com>
-Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/gpio/gpiolib.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index b02cc2abd3b6..2cb88b7ca42b 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -574,6 +574,9 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	unsigned	i;
- 	int		base = gc->base;
- 	struct gpio_device *gdev;
-+	struct device_node *of_node;
-+	struct fwnode_handle *fwnode;
-+	struct device *fwnode_dev;
- 
- 	/*
- 	 * First: allocate and populate the internal stat container, and
-@@ -596,6 +599,22 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 		gdev->dev.of_node = gc->of_node;
- 	else
- 		gc->of_node = gdev->dev.of_node;
-+
-+	of_node = gdev->dev.of_node;
-+	fwnode = of_fwnode_handle(of_node);
-+	fwnode_dev = get_dev_from_fwnode(fwnode);
-+	/*
-+	 * If your driver hits this warning, it's because you are directly
-+	 * parsing a device tree node with "compatible" property and
-+	 * initializing it instead of using the standard DT + device driver
-+	 * model of creating a struct device and then initializing it in the
-+	 * probe function. Please refactor your driver.
-+	 */
-+	if (!fwnode_dev && of_find_property(of_node, "compatible", NULL)) {
-+		pr_warn("Create a real device for %pOF\n", of_node);
-+		gdev->dev.fwnode = fwnode;
-+	}
-+	put_device(fwnode_dev);
- #endif
- 
- 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
-@@ -4202,6 +4221,17 @@ void gpiod_put_array(struct gpio_descs *descs)
- }
- EXPORT_SYMBOL_GPL(gpiod_put_array);
- 
-+static int gpio_stub_drv_probe(struct device *dev)
-+{
-+	return 0;
-+}
-+
-+static struct device_driver gpio_stub_drv = {
-+	.name = "gpio_stub_drv",
-+	.bus = &gpio_bus_type,
-+	.probe = gpio_stub_drv_probe,
-+};
-+
- static int __init gpiolib_dev_init(void)
- {
- 	int ret;
-@@ -4213,9 +4243,16 @@ static int __init gpiolib_dev_init(void)
- 		return ret;
- 	}
- 
-+	if (driver_register(&gpio_stub_drv) < 0) {
-+		pr_err("gpiolib: could not register GPIO stub driver\n");
-+		bus_unregister(&gpio_bus_type);
-+		return ret;
-+	}
-+
- 	ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
- 	if (ret < 0) {
- 		pr_err("gpiolib: failed to allocate char dev region\n");
-+		driver_unregister(&gpio_stub_drv);
- 		bus_unregister(&gpio_bus_type);
- 		return ret;
- 	}
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+Honestly, unless there are going to be new arch events in the near-ish future,
+it may not be worth the effort at this point.  Until now, the above table hadn't
+changed in over five years.  I.e. don't put a bunch of effort into this unless
+you want to :-)
