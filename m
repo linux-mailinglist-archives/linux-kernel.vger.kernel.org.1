@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2219C2FD1A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BAB2FD1A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389685AbhATNGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:06:20 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19173 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389539AbhATMSK (ORCPT
+        id S2388931AbhATNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387592AbhATM3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:18:10 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60081f590001>; Wed, 20 Jan 2021 04:17:29 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Wed, 20 Jan 2021 12:17:27 +0000
-Date:   Wed, 20 Jan 2021 14:17:21 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Jason Wang <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>
-Subject: Re: [PATCH v1] vdpa/mlx5: Fix memory key MTT population
-Message-ID: <20210120121721.GA139465@mtl-vdi-166.wap.labs.mlnx>
-References: <20210107071845.GA224876@mtl-vdi-166.wap.labs.mlnx>
- <07d336a3-7fc2-5e4a-667a-495b5bb755da@redhat.com>
- <20210120053619.GA126435@mtl-vdi-166.wap.labs.mlnx>
- <20210120025651-mutt-send-email-mst@kernel.org>
- <20210120081154.GA132136@mtl-vdi-166.wap.labs.mlnx>
- <20210120035031-mutt-send-email-mst@kernel.org>
+        Wed, 20 Jan 2021 07:29:46 -0500
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F79AC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:29:06 -0800 (PST)
+Received: by mail-vk1-xa2e.google.com with SMTP id a6so5602742vkb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:29:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LGkiRBGNN2JdjxlFLrksuxrHeQXvis+imv6RymdpV/E=;
+        b=CKnjOzKbKJ54oU4Gzc8G4R0Tfkkd7Yy9HElluEZqPtUTZMkyG++hkiJvuoKO7enhPM
+         ihrIsgx7og7mE29YcIkUDdeIVv1HIinCyPm2cJbIH3gIfEVZo2jG/qu4WWmrHwmRx46i
+         /6F/EbzTAP6JE+4g8VgfvmNKiNGn7t0qsUzCWYi8rZ+7DBc9B/XyxrCoe7jFRmZCYvwe
+         O4uU9JevYgLUNIyBMBFiTRIgVPwpS5g0v9Up9k5gd97aYXSywfW9HQznbUzosVgxt+hk
+         NsKm59UqAkfUxMIOE8Kxc7cMi+ITgKAckkoPwEPn9JHQqz955557pysnKQqTHvwLfKWw
+         ISNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LGkiRBGNN2JdjxlFLrksuxrHeQXvis+imv6RymdpV/E=;
+        b=br448hmvY3uMdshMyp8tZhxvFTMtD3zoTE/65dEl11rBhFIDD+xZZn7GcyL0FnQopj
+         +4aswUZrpPQlkl4T6rUBLdtzx4zmgvjk6Wiy6yvp6CaTz1xrRcKs/KUFHOkYHD9PgvHe
+         lUQ+c2MQb4Zm99jSsgpEpX95jdh7k9Pi+puezbLPvuqQ7MfeU35NtJLnZRJvSVGBa+qJ
+         yw/Rayi3oxiL41p89bFWFwzyiVM3ImoRPIG7NNi1in5ymLDQsfNSy34mfp5VI9/33iPb
+         QJgQPY5EBHA1+qPF7YC1blf2QPOkCMh5MVKRq/BF1tlaAumcs95ZsRBnopYS2xDSQkmD
+         Npzw==
+X-Gm-Message-State: AOAM533bgTEJ4xLTO1cqhjofm2Wr0CyE9JF5W2fN7kDtE6N9f8BxRtXM
+        Vr4R1sRgdMlPbU363/JEkmeA44NWhlLDgoVef9DkPg==
+X-Google-Smtp-Source: ABdhPJzQQmTIm3qrv9BcNhq0Gl2fu+Jv1TT29DeboHCIh/vddpzoHgp84D1h6NrjWHdH7gSCVwzYnWpl5LMlxCMbNC0=
+X-Received: by 2002:a1f:3008:: with SMTP id w8mr6407778vkw.24.1611145744570;
+ Wed, 20 Jan 2021 04:29:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210120035031-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611145050; bh=r/7qdqKXIizY6E6ZcPBAWAJd9m1X63I9mq9Qamw9384=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=PVnBLxLt4qsuspYauoxBReRrHx7LpLsiiB+cFrxFc2Agz10BFhVTWbElnybO0zPCu
-         xt4IOCbz9ieFGNpFz2LYSY7x1AAVABwaNZjfQUYAMEpCXjMQNpaBvNcf/kGGm8dW9F
-         5dDwvRIDLI+Hp4ZFY9kaQs5nGiEFag+a/8nQahjJaqLErDN0f5MgvWxB8M11oaRXuX
-         xpe1wAGMrQFs6pO74w2TAcNWl9MqWXsUaeRD2aAt44P4s5JL6p9R2qGSF5fNo/F+NW
-         DFctw+LAB1wWKLFirhwjp6nymzuEpMZCBdHV6mGI0FmH8lK83BgB3CiqvkKWD4miBE
-         sahXONlbDkEnw==
+References: <20210113194619.RFC.1.I8f559ecdb01ffa98d5a1ee551cb802f288a81a38@changeid>
+ <20210113102536.GC16960@zn.tnic>
+In-Reply-To: <20210113102536.GC16960@zn.tnic>
+From:   "Anand K. Mistry" <amistry@google.com>
+Date:   Wed, 20 Jan 2021 23:28:52 +1100
+Message-ID: <CAATStaOf_VN4BYBccSBk2bOpgvFwzH0xW=PncnyNo+SC41GXDw@mail.gmail.com>
+Subject: Re: [RFC PATCH] x86/speculation: Add finer control for when to issue IBPB
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Anthony Steinhauser <asteinhauser@google.com>,
+        tglx@linutronix.de, Joel Fernandes <joelaf@google.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 03:52:00AM -0500, Michael S. Tsirkin wrote:
-> On Wed, Jan 20, 2021 at 10:11:54AM +0200, Eli Cohen wrote:
-> > On Wed, Jan 20, 2021 at 02:57:05AM -0500, Michael S. Tsirkin wrote:
-> > > On Wed, Jan 20, 2021 at 07:36:19AM +0200, Eli Cohen wrote:
-> > > > On Fri, Jan 08, 2021 at 04:38:55PM +0800, Jason Wang wrote:
-> > > > 
-> > > > Hi Michael,
-> > > > this patch is a fix. Are you going to merge it?
-> > > 
-> > > yes - in the next pull request.
-> > > 
-> > 
-> > Great thanks.
-> > Can you send the path to your git tree where you keep the patches you
-> > intend to merge?
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
-> 
-> Note I often rebase it (e.g. just did).
-> 
+> >
+> > Signed-off-by: Anand K Mistry <amistry@google.com>
+> > Signed-off-by: Anand K Mistry <amistry@chromium.org>
+>
+> Two SoBs by you, why?
 
-Great, thanks!
+Tooling issues probably. Not intentional.
 
-> -- 
-> MST
-> 
+>
+> > ---
+> > Background:
+> > IBPB is slow on some CPUs.
+> >
+> > More detailed background:
+> > On some CPUs, issuing an IBPB can cause the address space switch to be
+> > 10x more expensive (yes, 10x, not 10%).
+>
+> Which CPUs are those?!
+
+AMD A4-9120C. Probably the A6-9220C too, but I don't have one of those
+machines to test with,
+
+>
+> > On a system that makes heavy use of processes, this can cause a very
+> > significant performance hit.
+>
+> You're not really trying to convince reviewers for why you need to add
+> more complexity to an already too complex and confusing code. "some
+> CPUs" and "can cause" is not good enough.
+
+On a simple ping-ping test between two processes (using a pair of
+pipes), a process switch is ~7us with IBPB disabled. But with it
+enabled, it increases to around 80us (tested with the powersave CPU
+governor).
+
+On Chrome's IPC system, a perftest running 50,000 ping-pong messages:
+without IBPB    5579.49 ms
+with IBPB        21396 ms
+(~4x difference)
+
+And, doing video playback in the browser (which is already very
+optimised), the IBPB hit turns out to be ~2.5% of CPU cycles. Doing a
+webrtc video call (tested using http://appr.tc), it's ~9% of CPU
+cycles. I don't have exact numbers, but it's worse on some real VC
+apps.
+
+>
+> > I understand this is likely to be very contentious. Obviously, this
+> > isn't ready for code review, but I'm hoping to get some thoughts on the
+> > problem and this approach.
+>
+> Yes, in the absence of hard performance data, I'm not convinced at all.
+
+With this change, I can get a >80% reduction in CPU cycles consumed by
+IBPB. A  video call on my test device goes from ~9% to ~0.80% cycles
+used by IBPB. It doesn't sound like much, but it's a significant
+difference on these devices.
