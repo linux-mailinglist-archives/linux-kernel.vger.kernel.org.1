@@ -2,218 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F2A2FCB5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E755E2FCB5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbhATHOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:14:14 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56736 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726423AbhATHN6 (ORCPT
+        id S1728229AbhATHPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:15:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbhATHOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:13:58 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UMJ.w4A_1611126765;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMJ.w4A_1611126765)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Jan 2021 15:12:50 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     marcel@holtmann.org
-Cc:     johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] net/bluetooth:  Fix the follow coccicheck warnings
-Date:   Wed, 20 Jan 2021 15:12:44 +0800
-Message-Id: <1611126764-34416-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 20 Jan 2021 02:14:38 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0DAC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:13:57 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id b3so13961686pft.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:13:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TTV6nYqcO5XSWys9zWm8wnK0Pv6PThaQer4+oGm8NGU=;
+        b=HIc1eaI5kMbParlqoxUe710DEIElJcljsyDbh1ppcnKJbXKV202dwYfKtT37vYEsJd
+         Igzd1+h2pYuRhJQincqk99FJ7Oi0Wm9IdIVFJ++zyiGx10XzKtS66jPCa7AxoVZejV2c
+         hURdb8ummwjbEbDuaQonFCLiiarN8aM8f0PmyI6fka/dVXK6rZWjpLBAs6H340vKVaCM
+         k7zNarmhmjrPX/jP+fmDQnR71WNX7fB8drCbiPH45F+dbEWVt+u6DIFOwR0CzZtXFah6
+         5gHgWAQ0EhY5hXY/+S3ovR79cyKl37oyqvG6K/KYsz8LzYyDSEyhL3ZxSK3FAohzXA2j
+         mG9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TTV6nYqcO5XSWys9zWm8wnK0Pv6PThaQer4+oGm8NGU=;
+        b=jzoDHpCiqaztOzmDm9omiKZUhNsiwYNXnKfplRFHIzk6i5gFRWcWBFQE5kB5isClDk
+         DAVBTdNwNyCxVLbjuGXCNlZeRbQuF2t6YnhaTO3uS6/9HdIoA/owgDZzR3/msxuvqk2y
+         +OgNW+FY8umaowUIy4KkMfM/ZYZ1TZMosK3g/dMa8KwQM08IMZohQcbyRnt6TEiFq+TJ
+         Alvq58EwKS01gOC10/kuxUzwWchcW4dPdFb6swqJ2wtmFxN3MN0u1M2qVWO6DzOvc0eD
+         rHpHKyqWVkJOivZbL5l2M1lGce9QgZMWQzGP6TTtLI+BgL85vPpBtEUUOtRLCctqoNGF
+         oXUw==
+X-Gm-Message-State: AOAM532LjkV719K1cBy/tTWSlhdDoL9G31jiMLVemLuDWSg4POuV4pn3
+        rO4c67OM6RXyve5vCE7NPNBsiQ==
+X-Google-Smtp-Source: ABdhPJxHfFS1B6tK3MqL4kaKYCFF1Y97lLLSpKRO8uCedQfY23jSDGtFL2myXiH+FWRM43uZ4XW4wg==
+X-Received: by 2002:a65:4983:: with SMTP id r3mr8245442pgs.288.1611126836639;
+        Tue, 19 Jan 2021 23:13:56 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id bt8sm6171170pjb.0.2021.01.19.23.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 23:13:55 -0800 (PST)
+Date:   Tue, 19 Jan 2021 23:13:51 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAfYL7V6E4/P83Mg@google.com>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-2-vipinsh@google.com>
+ <YAICLR8PBXxAcOMz@mtj.duckdns.org>
+ <YAIUwGUPDmYfUm/a@google.com>
+ <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+ <YAJsUyH2zspZxF2S@google.com>
+ <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./net/bluetooth/hci_debugfs.c: WARNING: sniff_min_interval_fops
-should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+On Tue, Jan 19, 2021 at 10:51:24AM -0500, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Jan 15, 2021 at 08:32:19PM -0800, Vipin Sharma wrote:
+> > SEV-ES has stronger memory encryption gurantees compared to SEV, apart
+> > from encrypting the application memory it also encrypts register state
+> > among other things. In a single host ASIDs can be distributed between
+> > these two types by BIOS settings.
+> > 
+> > Currently, Google Cloud has Confidential VM machines offering using SEV.
+> > ASIDs are not compatible between SEV and SEV-ES, so a VM running on SEV
+> > cannot run on SEV-ES and vice versa
+> > 
+> > There are use cases for both types of VMs getting used in future.
+> 
+> Can you please elaborate? I skimmed through the amd manual and it seemed to
+> say that SEV-ES ASIDs are superset of SEV but !SEV-ES ASIDs. What's the use
+> case for mixing those two?
 
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
----
- net/bluetooth/hci_debugfs.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+For example, customers can be given options for which kind of protection they
+want to choose for their workloads based on factors like data protection
+requirement, cost, speed, etc.
 
-diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 4626e02..65cad9f 100644
---- a/net/bluetooth/hci_debugfs.c
-+++ b/net/bluetooth/hci_debugfs.c
-@@ -237,7 +237,7 @@ static int conn_info_min_age_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
- 			conn_info_min_age_set, "%llu\n");
- 
- static int conn_info_max_age_set(void *data, u64 val)
-@@ -265,7 +265,7 @@ static int conn_info_max_age_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(conn_info_max_age_fops, conn_info_max_age_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(conn_info_max_age_fops, conn_info_max_age_get,
- 			conn_info_max_age_set, "%llu\n");
- 
- static ssize_t use_debug_keys_read(struct file *file, char __user *user_buf,
-@@ -419,7 +419,7 @@ static int voice_setting_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(voice_setting_fops, voice_setting_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(voice_setting_fops, voice_setting_get,
- 			NULL, "0x%4.4llx\n");
- 
- static ssize_t ssp_debug_mode_read(struct file *file, char __user *user_buf,
-@@ -476,7 +476,7 @@ static int min_encrypt_key_size_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(min_encrypt_key_size_fops,
-+DEFINE_DEBUGFS_ATTRIBUTE(min_encrypt_key_size_fops,
- 			min_encrypt_key_size_get,
- 			min_encrypt_key_size_set, "%llu\n");
- 
-@@ -491,7 +491,7 @@ static int auto_accept_delay_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
- 			auto_accept_delay_set, "%llu\n");
- 
- static ssize_t force_bredr_smp_read(struct file *file,
-@@ -558,7 +558,7 @@ static int idle_timeout_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(idle_timeout_fops, idle_timeout_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(idle_timeout_fops, idle_timeout_get,
- 			idle_timeout_set, "%llu\n");
- 
- static int sniff_min_interval_set(void *data, u64 val)
-@@ -586,7 +586,7 @@ static int sniff_min_interval_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(sniff_min_interval_fops, sniff_min_interval_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(sniff_min_interval_fops, sniff_min_interval_get,
- 			sniff_min_interval_set, "%llu\n");
- 
- static int sniff_max_interval_set(void *data, u64 val)
-@@ -614,7 +614,7 @@ static int sniff_max_interval_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(sniff_max_interval_fops, sniff_max_interval_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(sniff_max_interval_fops, sniff_max_interval_get,
- 			sniff_max_interval_set, "%llu\n");
- 
- void hci_debugfs_create_bredr(struct hci_dev *hdev)
-@@ -706,7 +706,7 @@ static int rpa_timeout_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(rpa_timeout_fops, rpa_timeout_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(rpa_timeout_fops, rpa_timeout_get,
- 			rpa_timeout_set, "%llu\n");
- 
- static int random_address_show(struct seq_file *f, void *p)
-@@ -869,7 +869,7 @@ static int conn_min_interval_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(conn_min_interval_fops, conn_min_interval_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(conn_min_interval_fops, conn_min_interval_get,
- 			conn_min_interval_set, "%llu\n");
- 
- static int conn_max_interval_set(void *data, u64 val)
-@@ -897,7 +897,7 @@ static int conn_max_interval_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(conn_max_interval_fops, conn_max_interval_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(conn_max_interval_fops, conn_max_interval_get,
- 			conn_max_interval_set, "%llu\n");
- 
- static int conn_latency_set(void *data, u64 val)
-@@ -925,7 +925,7 @@ static int conn_latency_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(conn_latency_fops, conn_latency_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(conn_latency_fops, conn_latency_get,
- 			conn_latency_set, "%llu\n");
- 
- static int supervision_timeout_set(void *data, u64 val)
-@@ -953,7 +953,7 @@ static int supervision_timeout_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(supervision_timeout_fops, supervision_timeout_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(supervision_timeout_fops, supervision_timeout_get,
- 			supervision_timeout_set, "%llu\n");
- 
- static int adv_channel_map_set(void *data, u64 val)
-@@ -981,7 +981,7 @@ static int adv_channel_map_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
- 			adv_channel_map_set, "%llu\n");
- 
- static int adv_min_interval_set(void *data, u64 val)
-@@ -1009,7 +1009,7 @@ static int adv_min_interval_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(adv_min_interval_fops, adv_min_interval_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(adv_min_interval_fops, adv_min_interval_get,
- 			adv_min_interval_set, "%llu\n");
- 
- static int adv_max_interval_set(void *data, u64 val)
-@@ -1037,7 +1037,7 @@ static int adv_max_interval_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(adv_max_interval_fops, adv_max_interval_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(adv_max_interval_fops, adv_max_interval_get,
- 			adv_max_interval_set, "%llu\n");
- 
- static int min_key_size_set(void *data, u64 val)
-@@ -1065,7 +1065,7 @@ static int min_key_size_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(min_key_size_fops, min_key_size_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(min_key_size_fops, min_key_size_get,
- 			min_key_size_set, "%llu\n");
- 
- static int max_key_size_set(void *data, u64 val)
-@@ -1093,7 +1093,7 @@ static int max_key_size_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(max_key_size_fops, max_key_size_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(max_key_size_fops, max_key_size_get,
- 			max_key_size_set, "%llu\n");
- 
- static int auth_payload_timeout_set(void *data, u64 val)
-@@ -1121,7 +1121,7 @@ static int auth_payload_timeout_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(auth_payload_timeout_fops,
-+DEFINE_DEBUGFS_ATTRIBUTE(auth_payload_timeout_fops,
- 			auth_payload_timeout_get,
- 			auth_payload_timeout_set, "%llu\n");
- 
--- 
-1.8.3.1
+In terms of features SEV-ES is superset of SEV but that doesn't mean SEV
+ASIDs are superset of SEV ASIDs. SEV ASIDs cannot be used for SEV-ES VMs
+and similarly SEV-ES ASIDs cannot be used for SEV VMs. Once a system is
+booted, based on the BIOS settings each type will have their own
+capacity and that number cannot be changed until the next boot and BIOS
+changes.
 
+We are not mixing the two types of ASIDs, they are separate and used
+separately.
+
+> 
+> > > > > > Other ID types can be easily added in the controller in the same way.
+> > > > > 
+> > > > > I'm not sure this is necessarily a good thing.
+> > > > 
+> > > > This is to just say that when Intel and PowerPC changes are ready it
+> > > > won't be difficult for them to add their controller.
+> > > 
+> > > I'm not really enthused about having per-hardware-type control knobs. None
+> > > of other controllers behave that way. Unless it can be abstracted into
+> > > something common, I'm likely to object.
+> > 
+> > There was a discussion in Patch v1 and consensus was to have individual
+> > files because it makes kernel implementation extremely simple.
+> > 
+> > https://lore.kernel.org/lkml/alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com/#t
+> 
+> I'm very reluctant to ack vendor specific interfaces for a few reasons but
+> most importantly because they usually indicate abstraction and/or the
+> underlying feature not being sufficiently developed and they tend to become
+> baggages after a while. So, here are my suggestions:
+
+My first patch was only for SEV, but soon we got comments that this can
+be abstracted and used by TDX and SEID for their use cases.
+
+I see this patch as providing an abstraction for simple accounting of
+resources used for creating secure execution contexts. Here, secure
+execution is achieved through different means. SEID, TDX, and SEV
+provide security using different features and capabilities. I am not
+sure if we will reach a point where all three and other vendors will use
+the same approach and technology for this purpose.
+
+Instead of each one coming up with their own resource tracking for their
+features, this patch is providing a common framework and cgroup for
+tracking these resources.
+
+> 
+> * If there can be a shared abstraction which hopefully makes intuitive
+>   sense, that'd be ideal. It doesn't have to be one knob but it shouldn't be
+>   something arbitrary to specific vendors.
+
+I think we should see these as features provided on a host. Tasks can
+be executed securely on a host with the guarantees provided by the
+specific feature (SEV, SEV-ES, TDX, SEID) used by the task.
+
+I don't think each H/W vendor can agree to a common set of security
+guarantees and approach.
+
+> 
+> * If we aren't there yet and vendor-specific interface is a must, attach
+>   that part to an interface which is already vendor-aware.
+Sorry, I don't understand this approach. Can you please give more
+details about it?
+
+Thanks
+Vipin
