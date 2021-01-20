@@ -2,122 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4072FD13A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513712FD13C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731540AbhATNSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732078AbhATNOo (ORCPT
+        id S2389004AbhATNSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:18:55 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:43064 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730545AbhATNPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:14:44 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66148C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:14:03 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id 19so25208527qkm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:14:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IUNaNIuA4xbDu98svmM2jn7EHmzgSCmG0EsKgdaOjwc=;
-        b=EY2/n64rd27QwPm334cvc25FC3HqqQAa2JvZIwWeJfC6Sw8IsGSP9NF3TB4t4bvQyr
-         6/nJeY8fnh4gyFVaj8GdWbKqzQGfWlT5r3AdxO5v/kSyQXUS9c3H84IGsuGLzSgvaCsH
-         ZIH+A/x4S81MCqFVAaG6/Px7s2sfoUEirHPAp5OJ3okJ9sBjmehcCWj1NX5BmSW/bgGQ
-         VIt36bu0jJZu5XtgX5J7XECO+libQX3agGKYf1IIuWRcyUDCof+JS4XBVV+Bc8wyJjFv
-         bukPZf94vOJJrfrFpY80L0uE7N4+BPBSHfIOde8lLLEREMUiyaBAc4WcsRLwoMDt/VBY
-         uVQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IUNaNIuA4xbDu98svmM2jn7EHmzgSCmG0EsKgdaOjwc=;
-        b=Y1tqsosHsJVBgKBSZjFObrH56bou6q6luhI4ure5t0EEW1reHLT6EwboL3MXLrU+f4
-         UclMh8uwzPY7cO5kxshCxAf7jnteM58Us241UGGaBu7mZTGxoR5fFwZnOdEJybHFzXgx
-         ptvhpjO3hRzESe8dDcX2dNBnY3hU7ermAcKYi2mws027uo2tH1HEjDh3WwjkcY0zivef
-         Wx52cfb9ESMr7+9a5NRodEbIKylj/bGUq/6P3NT/woqEAXy0ddZ6jC78eoXuhaIITFgO
-         co4h7XS3SYXDZkCQhQrWLwbUVC3L6CHVRpZaCVFpfg2jJAJRCU3c5s6DRuB3Zp8btTzz
-         7emQ==
-X-Gm-Message-State: AOAM533UMGNF4FM2ZLVDT/8GJddJe241QotOe81UFRCxDgsX2TP46qVz
-        CmedpR4hPSn1+dMmkS9kLDXNcQ==
-X-Google-Smtp-Source: ABdhPJyfy2v9Ch96n2plUWMfFXXwme22yEuiQY1fW7FNJfI/zbY1rTdtYgr6cXaH+rX5HohPJbfvSQ==
-X-Received: by 2002:a05:620a:1265:: with SMTP id b5mr9335122qkl.27.1611148442493;
-        Wed, 20 Jan 2021 05:14:02 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id g189sm1274279qkf.8.2021.01.20.05.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 05:14:01 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l2DJA-004Tqb-Nu; Wed, 20 Jan 2021 09:14:00 -0400
-Date:   Wed, 20 Jan 2021 09:14:00 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
-        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
-        jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-        ira.weiny@intel.com, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 08/14] mm/gup: do not migrate zero page
-Message-ID: <20210120131400.GF4605@ziepe.ca>
-References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
- <20210120014333.222547-9-pasha.tatashin@soleen.com>
+        Wed, 20 Jan 2021 08:15:39 -0500
+X-UUID: 60b6bc89ec734d91a51602aa5828f7ed-20210120
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=rAYd+FVMlgcEIg6UoFBMR9Wnpjlgxf5lFnSG19N+XHc=;
+        b=P7MQuR1SzsJcin6KCNB0dBFf9KcIlWWKDx21pwaCyoDlkJM1MSUhshSPTgwTuVeCN+3+pHBTqsTvPCfrzGTxQ5qhJ+/86oDJBLPKCDyrhXkDLQLdA5BIxHVgppi+IAfhBLRSgF1LM20uHmh5b41g69NS4TCsJEsphUJ2P4RrE9o=;
+X-UUID: 60b6bc89ec734d91a51602aa5828f7ed-20210120
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 299025821; Wed, 20 Jan 2021 21:14:33 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Jan
+ 2021 21:14:32 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 20 Jan 2021 21:14:31 +0800
+Message-ID: <1611148472.1261.6.camel@mtkswgap22>
+Subject: Re: [PATCH v11 1/3] scsi: ufs: Protect some contexts from
+ unexpected clock scaling
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Satya Tangirala" <satyat@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 20 Jan 2021 21:14:32 +0800
+In-Reply-To: <1611137065-14266-2-git-send-email-cang@codeaurora.org>
+References: <1611137065-14266-1-git-send-email-cang@codeaurora.org>
+         <1611137065-14266-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120014333.222547-9-pasha.tatashin@soleen.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 08:43:27PM -0500, Pavel Tatashin wrote:
-> On some platforms ZERO_PAGE(0) might end-up in a movable zone. Do not
-> migrate zero page in gup during longterm pinning as migration of zero page
-> is not allowed.
-> 
-> For example, in x86 QEMU with 16G of memory and kernelcore=5G parameter, I
-> see the following:
-> 
-> Boot#1: zero_pfn  0x48a8d zero_pfn zone: ZONE_DMA32
-> Boot#2: zero_pfn 0x20168d zero_pfn zone: ZONE_MOVABLE
-> 
-> On x86, empty_zero_page is declared in .bss and depending on the loader
-> may end up in different physical locations during boots.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
->  include/linux/mmzone.h | 4 ++++
->  mm/gup.c               | 2 ++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index fc99e9241846..f67427a8f22b 100644
-> +++ b/include/linux/mmzone.h
-> @@ -427,6 +427,10 @@ enum zone_type {
->  	 *    techniques might use alloc_contig_range() to hide previously
->  	 *    exposed pages from the buddy again (e.g., to implement some sort
->  	 *    of memory unplug in virtio-mem).
-> +	 * 6. ZERO_PAGE(0), kernelcore/movablecore setups might create
-> +	 *    situations where ZERO_PAGE(0) which is allocated differently
-> +	 *    on different platforms may end up in a movable zone. ZERO_PAGE(0)
-> +	 *    cannot be migrated.
->  	 *
->  	 * In general, no unmovable allocations that degrade memory offlining
->  	 * should end up in ZONE_MOVABLE. Allocators (like alloc_contig_range())
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 857b273e32ac..fdd5cda30a07 100644
-> +++ b/mm/gup.c
-> @@ -1580,6 +1580,8 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
->  		 * of the CMA zone if possible.
->  		 */
->  		if (is_migrate_cma_page(head)) {
-> +			if (is_zero_pfn(page_to_pfn(head)))
-> +				continue;
+T24gV2VkLCAyMDIxLTAxLTIwIGF0IDAyOjA0IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBJbiBj
+b250ZXh0cyBsaWtlIHN1c3BlbmQsIHNodXRkb3duIGFuZCBlcnJvciBoYW5kbGluZywgd2UgbmVl
+ZCB0byBzdXNwZW5kDQo+IGRldmZyZXEgdG8gbWFrZSBzdXJlIHRoZXNlIGNvbnRleHRzIHdvbid0
+IGJlIGRpc3R1cmJlZCBieSBjbG9jayBzY2FsaW5nLg0KPiBIb3dldmVyLCBzdXNwZW5kaW5nIGRl
+dmZyZXEgaXMgbm90IGVub3VnaCBzaW5jZSB1c2VycyBjYW4gc3RpbGwgdHJpZ2dlciBhDQo+IGNs
+b2NrIHNjYWxpbmcgYnkgbWFuaXB1bGF0aW5nIHRoZSBkZXZmcmVxIHN5c2ZzIG5vZGVzIGxpa2Ug
+bWluL21heF9mcmVxIGFuZA0KPiBnb3Zlcm5vciBldmVuIGFmdGVyIGRldmZyZXEgaXMgc3VzcGVu
+ZGVkLiBNb3Jlb3ZlciwgbWVyZSBzdXNwZW5kaW5nIGRldmZyZXENCj4gY2Fubm90IHN5bmNocm9p
+bnplIGEgY2xvY2sgc2NhbGluZyB3aGljaCBoYXMgYWxyZWFkeSBiZWVuIGludm9rZWQgdGhyb3Vn
+aA0KPiB0aGVzZSBzeXNmcyBub2Rlcy4gQWRkIG9uZSBtb3JlIGZsYWcgaW4gc3RydWN0IGNsa19z
+Y2FsaW5nIGFuZCB3cmFwIHRoZQ0KPiBlbnRpcmUgZnVuYyB1ZnNoY2RfZGV2ZnJlcV9zY2FsZSgp
+IHdpdGggdGhlIGNsa19zY2FsaW5nX2xvY2ssIHNvIHRoYXQgd2UNCj4gY2FuIHVzZSB0aGlzIGZs
+YWcgYW5kIGNsa19zY2FsaW5nX2xvY2sgdG8gY29udHJvbCBhbmQgc3luY2hyb25pemUgY2xvY2sN
+Cj4gc2NhbGluZyBpbnZva2VkIHRocm91Z2ggZGV2ZnJlcSBzeXNmcyBub2Rlcy4NCj4gDQo+IFNp
+Z25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQoNClJldmlld2VkLWJ5
+OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQo=
 
-I think you should put this logic in is_pinnable_page()
-
-Jason
