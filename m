@@ -2,94 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993422FC788
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC642FC79C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbhATCMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:12:01 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11407 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbhATCKy (ORCPT
+        id S1726463AbhATCQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728558AbhATCP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:10:54 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DL88c3QNYz7XfZ;
-        Wed, 20 Jan 2021 10:09:04 +0800 (CST)
-Received: from [10.174.177.2] (10.174.177.2) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
- 10:10:09 +0800
-Subject: Re: [PATCH] hugetlbfs: remove meaningless variable avoid_reserve
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210116092644.42697-1-linmiaohe@huawei.com>
- <2900fea0-e77c-8c6a-1529-c95ded5319e6@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <52159266-f3bf-1043-9f63-f6147355f043@huawei.com>
-Date:   Wed, 20 Jan 2021 10:10:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 19 Jan 2021 21:15:56 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EB1C061575;
+        Tue, 19 Jan 2021 18:15:16 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id b3so13565317pft.3;
+        Tue, 19 Jan 2021 18:15:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t86zOVCwWzgu4PWQKZEkmVCHJX5AIPz+A3Um47DZWOw=;
+        b=vNVDIc+e4UbO1gRMzm9W6dfBHVfwFeyLdI3uHKdXJW9K5PfRYV7iLqetgd3CQSIykq
+         Z1jiYXZfJelriFV/cNJIbJCh53mPCKfs0R7cArAFM6wh/KDsltLkMfj2+4oC1vwLHpGL
+         ytjEEiI5QgPJLspo48SNG67rzkApTlDHZXci2PRP7U2ULWiqrr9/XEehs/iqP7q3v9ZH
+         Hx4lQgcT8dVwaJuWN802fUZjACw238p7LcP0Cy4yDYjbOiah+3s5yxmcq24mLs04ULU7
+         iWENf8pkpX8fst2v2lntVSpoEcwITi4FhzNfMkbJozhcj4XVVwXBTD9URjyDNk0XJDmU
+         VQ+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t86zOVCwWzgu4PWQKZEkmVCHJX5AIPz+A3Um47DZWOw=;
+        b=CHAkAf05rM/M98CafZiz6Ij+hLw2siVC0s6k1iBFVJZhPzIUZY1VBCjEdsHU5s1jNk
+         tUgaNeefRcTMuXIgSGOoRWMzMkYeFER9HlH7Z17wE0xrsGgNJ5JZ8+1X2w94t89GiMj8
+         hW6FEIytEArt3wJHpGO/zIxm5nChWkuJDHqvVVtPIIR5YSQbbYsaEJsFKIJToaWqTXxt
+         QrTcEm3qpcQ2nkS6WXWSd++I0KCpFrikvHc3SUwCo3u9KTlz3SAQQpQI/Ob42EbSF82Y
+         j/qQqjEr5yTmERXgAloswmozeyAqq8RtPaNkLwcEtOyd7VcZUyZvg6OVYD3lioXtdWTD
+         hgMg==
+X-Gm-Message-State: AOAM533npj9LNV0Vl+4L6MG29o/4o/ZJhAy0Ttqzu3yWBIWtFOQFtXck
+        idLwX55BIdUXA3jhAPhld48=
+X-Google-Smtp-Source: ABdhPJzp6qEbuaVQ9fNJQM6Kg+zEeajRQN8Xf3fzZtJl6H7OGa6TXgoNwqOKEGCUNEE+xmUDZoXH7Q==
+X-Received: by 2002:a63:2cc5:: with SMTP id s188mr7227921pgs.233.1611108915860;
+        Tue, 19 Jan 2021 18:15:15 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id bk18sm242844pjb.41.2021.01.19.18.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 18:15:14 -0800 (PST)
+Date:   Tue, 19 Jan 2021 18:15:11 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH 1/3] devicetree/bindings: Initial commit of
+ wacom,wacom-i2c
+Message-ID: <YAeSL1PSo0vn7E/5@google.com>
+References: <20210117042428.1497-1-alistair@alistair23.me>
 MIME-Version: 1.0
-In-Reply-To: <2900fea0-e77c-8c6a-1529-c95ded5319e6@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.2]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210117042428.1497-1-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/1/20 2:41, Mike Kravetz wrote:
-> Please CC Andrew on hugetlb patches as they need to go through his tree.
+Hi Alistair,
+
+On Sat, Jan 16, 2021 at 08:24:26PM -0800, Alistair Francis wrote:
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  .../input/touchscreen/wacom,wacom-i2c.yaml    | 55 +++++++++++++++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+>  2 files changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
 > 
-> On 1/16/21 1:26 AM, Miaohe Lin wrote:
->> The variable avoid_reserve is meaningless because we never changed its
->> value and just passed it to alloc_huge_page(). So remove it to make code
->> more clear that in hugetlbfs_fallocate, we never avoid reserve when alloc
->> hugepage yet.
-> 
-> One might argue that using a named variable makes the call to alloc_huge_page
-> more clear.  I do not disagree with the change,  However, there are some
-> subtle reasons why alloc_huge_page is called with 'avoid_reserve = 0' from
-> fallocate.  Therefore, I would prefer that a comment be added above the call
-> in addition to this change.  See below.
-> 
->>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  fs/hugetlbfs/inode.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
->> index 88751e35e69d..23ad6ed8b75f 100644
->> --- a/fs/hugetlbfs/inode.c
->> +++ b/fs/hugetlbfs/inode.c
->> @@ -680,7 +680,6 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
->>  		 */
->>  		struct page *page;
->>  		unsigned long addr;
->> -		int avoid_reserve = 0;
->>  
->>  		cond_resched();
->>  
->> @@ -717,7 +716,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
->>  		}
->>  
->>  		/* Allocate page and add to page cache */
-> 
-> Perhaps, change comment to read:
-> 
-> 		/*
-> 		 * Allocate page without setting the avoid_reserve argument.
-> 		 * There certainly are no reserves associated with the
-> 		 * pseudo_vma.  However, there could be shared mappings with
-> 		 * reserves for the file at the inode level.  If we fallocate
-> 		 * pages in these areas, we need to consume the reserves
-> 		 * to keep reservation accounting consistent.
-> 		 */
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+> new file mode 100644
+> index 000000000000..6b0e0034f836
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/wacom,wacom-i2c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Wacom I2C Controller
+> +
+> +maintainers:
+> +  - Alistair Francis <alistair@alistair23.me>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: wacom,wacom-i2c
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  flip-tilt-x:
+> +  flip-tilt-y:
+
+Does the device support tilt? The driver does not, at least at the
+moment. Also, does it make sense to flip tilt but not position?
+
+> +  flip-pos-x:
+> +  flip-pos-y:
+
+This needs to use standard touchscreen properties. See
+Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+
+> +  flip-distance:
+
+I am having trouble understanding when this one would be useful.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include "dt-bindings/interrupt-controller/irq.h"
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        digitiser@9 {
+> +                compatible = "wacom,wacom-i2c";
+> +                reg = <0x9>;
+> +                interrupt-parent = <&gpio1>;
+> +                interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
+> +                flip-tilt-x;
+> +                flip-tilt-y;
+> +                flip-pos-x;
+> +                flip-pos-y;
+> +                flip-distance;
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 041ae90b0d8f..5bca22f035a3 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -1202,6 +1202,8 @@ patternProperties:
+>      description: Vision Optical Technology Co., Ltd.
+>    "^vxt,.*":
+>      description: VXT Ltd
+> +  "^wacom,.*":
+> +    description: Wacom Co., Ltd
+>    "^wand,.*":
+>      description: Wandbord (Technexion)
+>    "^waveshare,.*":
+> -- 
+> 2.29.2
 > 
 
-Many thanks for detailed and excellent comment. Will do it in v2.
-Thanks again.
+Thanks.
+
+-- 
+Dmitry
