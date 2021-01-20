@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FE42FC84B
+	by mail.lfdr.de (Postfix) with ESMTP id 345C02FC84A
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388009AbhATCxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:53:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47420 "EHLO mail.kernel.org"
+        id S2387746AbhATCws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:52:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730677AbhATB3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730680AbhATB3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:29:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC64923405;
-        Wed, 20 Jan 2021 01:27:25 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DA3C23132;
+        Wed, 20 Jan 2021 01:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106046;
-        bh=jmecdH5m1sZMM1i2nSpyh9TsmuTOVzBLpDjaKJ7LffY=;
+        s=k20201202; t=1611106047;
+        bh=owIngL+z287/Db33e2oPnaB1cVU/Og2SEo74Yox/CZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V3PnYBbcdaMCK4tZ0i+cSJmggBqQ9710r3B0en+UXK+nN09gRNNXHyCc/b9EzdMB3
-         x9fCIhBEJWwtDFf5AKVc0qyfQANaq5KWE914bBnRen4WD2AHxZWYe3Vgz+PfhXXY5S
-         vhCbk1hp8OSxhBgrlPsv2u1OWy4hajtDslSNbJWkrwqao3UVwjnKvlHG+qGJKRkiI9
-         w0fT9jkJXOiyIx1rVldU9gpEA15ZTu4xsjWkNN37zrjtr/N+Llg8ZKOaBiTIWAPdfd
-         +d7TrySXjOAPA+4fLrUlM8fjGtFvGfRAVmOqouEZ/EzGQOI5VQ9irTz7GP+keIM1VA
-         U0HeEi2Q5YWHw==
+        b=qATTsf3CUlGFqOD3WhwiI6KEkT5LJ8+TePLhxnfA0cdwyCym3Wys2dhHo5uzjfxgr
+         E4BQLnL8R1Wa4IddPeAJT1CBqRwgTscbgNq05sVNwcAVe8xMrU4aapkMr1KLRfnvfO
+         zd7UEjQ84pmgictEkdUBbvWO2V6OoDP28JW+mVKymvANXgIa9KLyq1/MunMF6NJBb3
+         muqvapx4OAtu2YHPcooHegWi/o/objNJNR7Ta5wdAyImJkM9lLBQw2nZoozqF+nkVA
+         eiDVY21m7+IPqALwEHEEH5wzgZDI3i92c+r2I+k2mNpT6T7C0blehve9lPk9RS6Msq
+         nVtIKYCFxzhlw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Wu <david.wu@rock-chips.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 16/26] net: stmmac: Fixed mtu channged by cache aligned
-Date:   Tue, 19 Jan 2021 20:26:53 -0500
-Message-Id: <20210120012704.770095-16-sashal@kernel.org>
+Cc:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 17/26] dts: phy: fix missing mdio device and probe failure of vsc8541-01 device
+Date:   Tue, 19 Jan 2021 20:26:54 -0500
+Message-Id: <20210120012704.770095-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012704.770095-1-sashal@kernel.org>
 References: <20210120012704.770095-1-sashal@kernel.org>
@@ -44,45 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Wu <david.wu@rock-chips.com>
+From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 
-[ Upstream commit 5b55299eed78538cc4746e50ee97103a1643249c ]
+[ Upstream commit be969b7cfbcfa8a835a528f1dc467f0975c6d883 ]
 
-Since the original mtu is not used when the mtu is updated,
-the mtu is aligned with cache, this will get an incorrect.
-For example, if you want to configure the mtu to be 1500,
-but mtu 1536 is configured in fact.
+HiFive unleashed A00 board has VSC8541-01 ethernet phy, this device is
+identified as a Revision B device as described in device identification
+registers. In order to use this phy in the unmanaged mode, it requires
+a specific reset sequence of logical 0-1-0-1 transition on the NRESET pin
+as documented here [1].
 
-Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
-Signed-off-by: David Wu <david.wu@rock-chips.com>
-Link: https://lore.kernel.org/r/20210113034109.27865-1-david.wu@rock-chips.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Currently, the bootloader (fsbl or u-boot-spl) takes care of the phy reset.
+If due to some reason the phy device hasn't received the reset by the prior
+stages before the linux macb driver comes into the picture, the MACB mii
+bus gets probed but the mdio scan fails and is not even able to read the
+phy ID registers. It gives an error message:
+
+"libphy: MACB_mii_bus: probed
+mdio_bus 10090000.ethernet-ffffffff: MDIO device at address 0 is missing."
+
+Thus adding the device OUI (Organizationally Unique Identifier) to the phy
+device node helps to probe the phy device.
+
+[1]: VSC8541-01 datasheet:
+https://www.mouser.com/ds/2/523/Microsemi_VSC8541-01_Datasheet_10496_V40-1148034.pdf
+
+Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 18c5a9bb6759c..ce5d3e9e5dff4 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3739,6 +3739,7 @@ static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	int txfifosz = priv->plat->tx_fifo_size;
-+	const int mtu = new_mtu;
- 
- 	if (txfifosz == 0)
- 		txfifosz = priv->dma_cap.tx_fifo_size;
-@@ -3756,7 +3757,7 @@ static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
- 	if ((txfifosz < new_mtu) || (new_mtu > BUF_SIZE_16KiB))
- 		return -EINVAL;
- 
--	dev->mtu = new_mtu;
-+	dev->mtu = mtu;
- 
- 	netdev_update_features(dev);
- 
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+index 88cfcb96bf233..cc04e66752aac 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+@@ -83,6 +83,7 @@ &eth0 {
+ 	phy-mode = "gmii";
+ 	phy-handle = <&phy0>;
+ 	phy0: ethernet-phy@0 {
++		compatible = "ethernet-phy-id0007.0771";
+ 		reg = <0>;
+ 	};
+ };
 -- 
 2.27.0
 
