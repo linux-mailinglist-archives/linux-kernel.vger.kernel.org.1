@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A7E2FD2CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFDC2FD2DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390303AbhATOhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:37:20 -0500
-Received: from mail-dm6nam10on2067.outbound.protection.outlook.com ([40.107.93.67]:4033
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390736AbhATOgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:36:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W6X2ummt9LDfP8x83dhhvm9rIbUo1wcbD4JqR7pmLygt8hsmQtlGaom/6dnFKnL0tJpkI4JE772Bi2b8ln6wfG35P6PkrFvAdaXOF1ohykm5nB3VbsqtYjF70oU8Hldgj4PKjIv19ihKDgfeqH2eq5OOu/YY/zS02jaArLXgYScdl3+CeqJlV0z2rWO/I4HcEcGCvY0FmvQYe4TFeR64eoJwy/l43TfEtNesNRhMA9LAZ/qW0iE5Be5+D8i1/3YIsr7H4Py1tj1RyvomYLtUZW4Jt3ME3aRYorYkVyEVbOIUgwU7twW8t5JA+ZiesJgCUZASagL2sBBRCTGI3T7LUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z1F70Uc/YP0Bl31EE9NdVykITXmwatRqnLV5HtK6fI0=;
- b=IK/2LRO8jX9SjAcoa8ygauld2eeG+RQvu+aSkzyPxAEhHtfuU5OikHY8z4cK2fLg+Vx+L6fzY0nE9cC7ExifOMIqaGyQKKrLpRCjc8Dtf6atJzbgm5i5FYVh21Us0pZdaKCDii3HA6MEqYPU/eDaQNwmP4KOelOfG15W0YWWDwdjFY9Ar2yxWlVh9efyisaFz83QvsjmbGWXGGvs8QNP3vVJTmUz/fJIXmv021zijeJKR0sYaZMJMpHsdjsK+//3wuwMQk70ew5/CQSYIE0iC7uhAbxHoM7nwOTTNYeUfj29pb9n8b7Ux4zKg2MdAoU9nEpmP1lHJ1BKyoRR/dR/eA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z1F70Uc/YP0Bl31EE9NdVykITXmwatRqnLV5HtK6fI0=;
- b=l7RV/d3ZhnFaQmrGVCtwrJVhgKlJ1zHeq4yFPINbdh98gpFDDYmVLDYV9TtGCM4S7kbagag7E14REepKI2+qR/T0ChWBxtUNlsDehqNnlFHYjPwWf1JUJ4xHhFx/pMR1312iF7EGA7WTer2Scxc8Pcs5YPKjb2P6hsjDDdH9pJw=
-Authentication-Results: torlan.ru; dkim=none (message not signed)
- header.d=none;torlan.ru; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR12MB1378.namprd12.prod.outlook.com (2603:10b6:404:1e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 20 Jan
- 2021 14:35:37 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::866:baa9:f17d:d6b4]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::866:baa9:f17d:d6b4%3]) with mapi id 15.20.3763.014; Wed, 20 Jan 2021
- 14:35:37 +0000
-Date:   Wed, 20 Jan 2021 08:35:29 -0600
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     WGH <wgh@torlan.ru>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bp@alien8.de, Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH] EDAC/AMD64: Update scrub register addresses for newer
- models
-Message-ID: <20210120143529.GA1385775@yaz-nikka.amd.com>
-References: <20210116143353.7576-1-Yazen.Ghannam@amd.com>
- <f171c29f-5c89-683c-8cf2-399c9af5153e@torlan.ru>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f171c29f-5c89-683c-8cf2-399c9af5153e@torlan.ru>
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: CH2PR07CA0059.namprd07.prod.outlook.com
- (2603:10b6:610:5b::33) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+        id S2390596AbhATOi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:38:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390099AbhATOhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:37:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8FE22245C;
+        Wed, 20 Jan 2021 14:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611153397;
+        bh=gIx6Byc8LjKVM2fxtZc3MbFvHCR2ATctdI9B+bQjgWA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fkSuyQs8KSB/KtNGKxIrVGEifND+44NVHwWeNayUTerkL80A0LoOgfjJoX2lY7xWu
+         Jjb0CRRjYi0vPSmrA0VC/ZpTt8zoq0WTd+lrjb801soxlOecDQ6uQ3nt2LdqUqR2Pz
+         bQnYfuUJFtLVjBACmcPG3CyitoIgoj6VftlYiMfceXHsyoeFEe0mxJbGhBaS7OwLmp
+         ApXp3/YG2LzIogMHRT16xfteWpqpp3FsMf8MNpT+UIap3qFkiwGt++1GlmynUQ8Q7J
+         fU+LNDLUQmKQKbWsLyJAC7qBYCsxZwH1in5DlB9M8LwYwF3CpeXMoS3pMSoKF+ufCD
+         iW7tB/rQMxsyw==
+Date:   Wed, 20 Jan 2021 16:36:31 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH] x86/sgx: Fix free_cnt counting logic in epc section
+Message-ID: <YAg/705sWZFriAdK@kernel.org>
+References: <20210118133347.99158-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yaz-nikka.amd.com (165.204.78.2) by CH2PR07CA0059.namprd07.prod.outlook.com (2603:10b6:610:5b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Wed, 20 Jan 2021 14:35:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 61853c7c-eb0c-4051-dfc5-08d8bd50a6d7
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1378:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR12MB13784095FEF58B642B54A47CF8A29@BN6PR12MB1378.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G5oSMG8hSIyJrqJC/5hKvX9bJTTsaCO5d0CAGgwGURWBkcPDbHtSuzHNKQCVl72sGXZnPsGOeNJO9WIH/CM6JkyZIzSqDhgef3ToAgjYANM9TsG2BpT0NM7wepE6IrwiW13rjFQUjdkFdAjfzPnr36bacGbZm+rlBcgpNCsrh0/A5YNcoKDEPWCMu6UT3h3OZjivWrJY8XalvvkoDouyYy5lqf7hGcCua+hWe+bSPHeBL76Z5xGKBQiNOKU622vUsFINr8LRyTI1Sb1B6jz5yEfnBI25/spNVtbCjN88reJD0TScUL7zAP8EOQ8cWGsE8S5xDojCWDczR3VuoliOz5cx6GFXMHIhUXjm7GjOcah28pFKwyBttR+84IN1VanKbcPGgj980eIesuD/pXn/klEqBUACMH5s5UamDPTHhnD8JfX76gfvcmD/VVFOB5RA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(366004)(376002)(346002)(186003)(53546011)(1076003)(26005)(6916009)(8936002)(8676002)(2906002)(44832011)(956004)(316002)(16526019)(5660300002)(83380400001)(55016002)(66556008)(478600001)(4326008)(52116002)(7696005)(66476007)(66946007)(33656002)(6666004)(86362001)(170073001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?/eWT+K7MOJs/qcqcM9dFx5UZ+7tHGqScL6ek2UM1HeLzi6YMVdFmu/ASI0?=
- =?iso-8859-1?Q?Ax1geUBRywfTFcJWJo4YNYS8+gwowO6UwFRe/Q+ZKMxnSnUstQiZoU7ObR?=
- =?iso-8859-1?Q?m9gIU95TGTfQkhqRyRAe2brbAc5iA1/AfFfKr3PgujT2vfUiSQLbPWVDrs?=
- =?iso-8859-1?Q?3ZUxfX9/JdMiPlQJqUV77Y9bhjZZyoLbXphq+D6gHif2JZSo569tiSN6rW?=
- =?iso-8859-1?Q?p2067ynC3vbk6MV866VOjflLZbavMJ2gqEChZiFQtTAurkPsp/cK+4804Z?=
- =?iso-8859-1?Q?SWWnArEkmUDIE1CgVv6hDhboPwR2L00pxVVXd0PviceizMIpBYZm/Js11s?=
- =?iso-8859-1?Q?lvoZJaP/3Nmyv1h7nXajbhA+Umwz/R44jgvBm4MO4TGR8OZSi7QnF5ptF8?=
- =?iso-8859-1?Q?mvxIwsTMyQdnpJWZRv0c04IZar4C5VpaHbLGkASp9SfqIsnFatMd4fJ7zu?=
- =?iso-8859-1?Q?jo3Ax9Kr392vwZOGI2cwkq6JgJcULwyKtuBqKBdxIVGhuocaRnM8LqkKDf?=
- =?iso-8859-1?Q?PNLsRwzuEErmESJRqO28ExwOaygEhK0c8Iqn4WHKRG3dV5jVIzN3R6AyJ0?=
- =?iso-8859-1?Q?bIPvtw5dQ8nvZPMtN90XslwTc235zjjGgVMm5yd5Ickoojst5mpndennc7?=
- =?iso-8859-1?Q?ausc0voiRh7PeJ/9aLXUObUcE4CwCiU1uc7rmYhtFRFzjPYUBtEdMJ5T4w?=
- =?iso-8859-1?Q?0cGMfhtFgSCde2Rf3J5N7TPp0J81wPS8mycBr6xL/rCwFyt50an606/szB?=
- =?iso-8859-1?Q?6RyVqyFJmv6902iZ2wZJpyyHSsKQ5XyeHSwqksQCDjyPrs9QOKZ3LWkACT?=
- =?iso-8859-1?Q?3xPCg2DIAcbOL7m0vOvRj0ULLOpal8OOQBWWfdhL1eoQYdDjhMJQqqiYu7?=
- =?iso-8859-1?Q?S4Ah2PJVUAGzi8ojRmJPkbVkCmmmMPXAUJTiOZ/fTJW+NqYiAJrbg+/2ee?=
- =?iso-8859-1?Q?ZoGj6s1ZsA7G9b0vusD/Nj9stoK3nIjUzWSlNHpw8D7n9AWBfqaEplZX0K?=
- =?iso-8859-1?Q?hHwKMoNh+xN+3g6MQ=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61853c7c-eb0c-4051-dfc5-08d8bd50a6d7
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2021 14:35:36.9932
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: URTbP4HD+H4ZSVWZCYp6ykzvrlyX7iwGPVDqr21B6L/VIgiwa7sJGQtdA23v/HB+mLjqa9cYrDO0KDnPFpy8Hg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1378
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118133347.99158-1-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:30:58AM +0300, WGH wrote:
-> On 16/01/2021 17:33, Yazen Ghannam wrote:
-> > From: Yazen Ghannam <yazen.ghannam@amd.com>
-> >
-> > The Family 17h scrubber registers moved to different offset starting
-> > with Model 30h. The new register offsets are used for all currently
-> > available models since then.
-> >
-> > Use the new register addresses as the defaults.
-> >
-> > Set the proper scrub register addresses during module init for older
-> > models.
+On Mon, Jan 18, 2021 at 09:33:47PM +0800, Tianjia Zhang wrote:
+> Increase `section->free_cnt` in sgx_sanitize_section() is
+> more reasonable, which is called in ksgxd kernel thread,
+> instead of assigning it to epc section pages number at
+> initialization. Although this is unlikely to fail, these
+> pages cannot be allocated after initialization, and which
+> need to be reset by ksgxd.
 > 
-> So I tested the patch on my machine (AMD Ryzen 9 3900XT on ASRock B550 Extreme4 motherboard, Linux 5.10.7).
-> 
-> The /sys/devices/system/edac/mc/mc0/sdram_scrub_rate value seems to be stuck at 12284069 right after the boot, and does not change.
-> Writes to the file do not report any errors.
-> 
-> dmesg:
-> 
-> [    0.549451] EDAC MC: Ver: 3.0.0
-> [    0.817576] EDAC amd64: F17h_M70h detected (node 0).
-> [    0.818159] EDAC amd64: Node 0: DRAM ECC enabled.
-> [    0.818717] EDAC amd64: MCT channel count: 2
-> [    0.819324] EDAC MC0: Giving out device to module amd64_edac controller F17h_M70h: DEV 0000:00:18.3 (INTERRUPT)
-> [    0.819909] EDAC MC: UMC0 chip selects:
-> [    0.819910] EDAC amd64: MC: 0: 16384MB 1: 16384MB
-> [    0.820488] EDAC amd64: MC: 2: 16384MB 3: 16384MB
-> [    0.821067] EDAC MC: UMC1 chip selects:
-> [    0.821067] EDAC amd64: MC: 0: 16384MB 1: 16384MB
-> [    0.821630] EDAC amd64: MC: 2: 16384MB 3: 16384MB
-> [    0.822187] EDAC amd64: using x16 syndromes.
-> [    0.822739] EDAC PCI0: Giving out device to module amd64_edac controller EDAC PCI controller: DEV 0000:00:18.0 (POLLED)
-> [    0.823314] AMD64 EDAC driver v3.5.0
-> 
->
+> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-Thanks for testing. I'll try to find a similar system and check it out.
+There is nothing broken in the logic. Convince me otherwise.
 
-Thanks,
-Yazen
+I.e. what is exactly broken, and how?
+
+/Jarkko
+
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index c519fc5f6948..9e9a3cf7c00b 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -48,9 +48,10 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
+>  					struct sgx_epc_page, list);
+>  
+>  		ret = __eremove(sgx_get_epc_virt_addr(page));
+> -		if (!ret)
+> +		if (!ret) {
+>  			list_move(&page->list, &section->page_list);
+> -		else
+> +			section->free_cnt += 1;
+> +		} else
+>  			list_move_tail(&page->list, &dirty);
+>  
+>  		spin_unlock(&section->lock);
+> @@ -646,7 +647,6 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+>  		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
+>  	}
+>  
+> -	section->free_cnt = nr_pages;
+>  	return true;
+>  }
+>  
+> -- 
+> 2.19.1.3.ge56e4f7
+> 
+> 
