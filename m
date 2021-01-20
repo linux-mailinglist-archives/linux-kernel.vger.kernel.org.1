@@ -2,164 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B82D2FD37C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56442FD38C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390393AbhATO7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:59:47 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:57998 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389118AbhATOxm (ORCPT
+        id S1728974AbhATPJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:09:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732094AbhATPAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:53:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611154422; x=1642690422;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=grxZeZvpJkkVDuwinPQ/qAwNv7kmKECqpNZtJK+poYU=;
-  b=qYqte9vGwi2RY9bAK6KuJXGC2vMql/YGFtU2YbmlDLxDT0mvKdLhHGP9
-   Iryat4GbJGlopXCx3XpqEy29NHMf4OJWQdamgpQSaeVS+oNbZDNyWi70A
-   mDOUY2xSDnnPMvcWKsADC4HluqNBsfNeFWs1p2bnjUlO3BFJ0EOKKRtG+
-   /d6k8Ruek0g8fpTd0KSsPfCefu/dFqdsD6eBS9fCj9+tMJDbn4Sj0visn
-   hoVNzXlj6WkWdN56pG+q9ngsRfATsKy/6tPyUc/nnR2Kp/pvJ6+7X5qTo
-   XMR/HDL+k6m2p7TdGEMnD3T0qjEdIoLwvhMHu4ycqJzb96ipD/S/tpIQE
-   A==;
-IronPort-SDR: o64ZFKXB2Hdn0zF4U8/9Dak/+q/cXKO1fo7VquGmNMpG489kY+ogrRsv00YQU/N4CUSt3xbVQa
- A2QBcoES4bZytz+fPk2Rs8nrT2S+AqtAwfOVCWp7nZa3rWNFHfQRyaVPW48UeFpiJMYFKgO+t0
- 38vjxLPAVeAtq7BkUX1blOl7JKzPuY45L7nT/yiUIkSGhxxOhgLpMZ0gEu1uIa+EcXsHPC67IK
- lbHNWPGzkNOLiYrfmsNHFofftkt00qtbkxs75b4D4P/f01yXqO+wV0uoe33WKpBm1Q+En2+rsJ
- VUg=
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="106112521"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jan 2021 07:52:17 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 20 Jan 2021 07:52:16 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Wed, 20 Jan 2021 07:52:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bbLJxScUdkLi6XhehxBhck+IQmpzmrbvdHcZzq+YImvWb/hVOhlkP2N+0ffKwkO2TXSNgNtKR14WV2b+DPmnPl09RwSm4UYqOSZ+/eiw10/p//jJgaFAiLASd3I/iluFiDhQE2lMhquPs/Kv03J/BFyuTmB/9Uyu7b2dqeAzlkRJ68rCupdklKJ8f0ijYuLPYBAhfvbr2YLmdg6uuLYNiGoj3qtSYh+S+p7pnv/+EiGWQm5nvC6aE1vnKG/5u7oLCG3NW0oRo6Pc3STZQWMJmijP2IlEkex6+l6eD79Vx//jyP3wrMyvzV7ubkJbG2kj9I81LTc/lBTI6DSjy/oqMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grxZeZvpJkkVDuwinPQ/qAwNv7kmKECqpNZtJK+poYU=;
- b=HrT2KciYczoFuG4oYsBmPDozRNdczju9DlCOItEnxtHyWiSptQ7Y8cnl7LrkS7TjKSPWLBoTXrqZDUD/aTze5F3gHUlsUv0dsANiQgYHnHKxduPRxRiulJOHdy3Q/XVNjwgPC79vdRwafSSCiBfEjpbkr8EgjaJn9cWdErbOxdW9uUPsrt5dtroRQW1ROGX9Ix4+uxKHtxJNlYfnOs9tRn/teY4d+7MAG7GEHYExgUOuulfloH0zlfRJ3LSUsOYctU1CGAXRfMLEId3vt9gG5+S9QcAnxWTlNbvdKq3jGbeI+KNOWyhhtBPDs+9LR1H8KQJfDxRW7pzuMSP/VGO95Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Wed, 20 Jan 2021 10:00:09 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89829C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:59:28 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id c124so3099094wma.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:59:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grxZeZvpJkkVDuwinPQ/qAwNv7kmKECqpNZtJK+poYU=;
- b=pHx9IZf5qbBqypsgzamZIJ5ps//fhax9ta4BgfAcbVpbgWFelMrfVJdgnBi3bkXYTwemnPa+9gijTTxFsqBOWw8iFlOaQXM4qLT3IA/eVGujWxW1xo+vsloVHLjBN4Av6ah6nl9TaNCjLJVCfxknNFnC1xhyCHVNqNNeEb3FXQw=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SN6PR11MB2958.namprd11.prod.outlook.com (2603:10b6:805:da::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 20 Jan
- 2021 14:52:13 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::f4e3:108c:4222:7dab]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::f4e3:108c:4222:7dab%3]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
- 14:52:13 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <michael@walle.cc>
-CC:     <vigneshr@ti.com>, <p.yadav@ti.com>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Kavyasree.Kotagiri@microchip.com>
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: sst: Add support for Global Unlock
- on sst26vf
-Thread-Topic: [PATCH v2 2/2] mtd: spi-nor: sst: Add support for Global Unlock
- on sst26vf
-Thread-Index: AQHW7zvWbgOMYI+QzkWXPBRNkt6zcg==
-Date:   Wed, 20 Jan 2021 14:52:13 +0000
-Message-ID: <ad0cc416-73b7-f626-115f-d192fac17957@microchip.com>
-References: <20210120131914.277363-1-tudor.ambarus@microchip.com>
- <20210120131914.277363-2-tudor.ambarus@microchip.com>
- <b3a61abec8927c7229c27415d2c769a8@walle.cc>
-In-Reply-To: <b3a61abec8927c7229c27415d2c769a8@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [5.13.1.111]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cf9abfdd-2d48-4270-a5a6-08d8bd52f908
-x-ms-traffictypediagnostic: SN6PR11MB2958:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB2958BF79B40FFE005D36C114F0A29@SN6PR11MB2958.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dor+Y+/vdNYYew5ksvnjxwq5AODGyks1N0/sJtDh5nRLhqufx2jyjuiauMloBv6L7DElVwcspVhPxPffJdf3t2fnCYgRnuuDZ/m6QaN971A8D1YR5CSVbVkcW8cFdBgFaX/2PhhaW+6zLrdXcw5gZLVYqyRlGpkLQbxnyPwPELQNFLp4mXk+YE1byW3IMgt2MjWSx23xbzwEPl7fMyoOUSXQvrY1mitHN2mGvdjjBehz984Cy2KTrzjxstQK7sp4w1GBZZNG7sMHj4savSqAJqHWkoZkqjeQSqCgI12ANvh7YWYUp+FOsc5hcuu06dgcnYTlAC3K+2/BPTUd4y4Iq+zyq6R0pJvfuqRzIJF920/oriuhjDin2UxN9Cx8RdszHTups8i3+DLVj7hvxoDo+GWpfeXZPwzqlKw6tJpllfAGPKrazuJxEqTLJ6KuCuVjmutM2QAUcDIFfcfAI26YemsL+APj94upOzyluFqk1qo=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(376002)(136003)(366004)(6506007)(8936002)(53546011)(5660300002)(31686004)(31696002)(186003)(4744005)(6486002)(26005)(83380400001)(66556008)(36756003)(66446008)(66476007)(66946007)(2906002)(64756008)(86362001)(76116006)(6916009)(478600001)(316002)(91956017)(6512007)(107886003)(71200400001)(2616005)(8676002)(4326008)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?N1RhbmRpMEpXVVo4TW5CaVFrOU5Id2h3TDIrd1k0a01LWDNHR1JHOHJ0NkNH?=
- =?utf-8?B?c3A1UnlFM2xnWlk5UlFCN2xwb3RGb1FmcTdud2tiQU5zMXd1bXZvdU5mczZC?=
- =?utf-8?B?QU84MEVwRnAvbTVOWkczcGNWVEVsQ2pzL0MwYjlqSWtURnQrVWlIUzN6WFRw?=
- =?utf-8?B?MEc3KytnTGFPVG1wYkJtSmxFODkrQ3hhTFo2ZTlIYWg5eFNBTXk4eHQyTnp2?=
- =?utf-8?B?eDY4RXhEeDhoVkFMMk1TTmVjZ1pmeGxabm8yTjEycXlTL1laT3VJT1Jxc3du?=
- =?utf-8?B?MFVFc2ZIT0VzTVloaGx4VW5kcUROREhTTUxQYjhzQ2V2dmkydnFMRDBkck1v?=
- =?utf-8?B?U2x3V1BuYml0Y3BMYlkrSXZHVURtUXlFTXhKSVBJSXNhUkl4ZlZ4NFhUUXJC?=
- =?utf-8?B?UnUyRStXRU5CTnpSVVR2bXk3Sko1SFRKWjNsaXFBM0RzUXZuS0dXYlBSNnIy?=
- =?utf-8?B?dENUM2lSU3dqTTJDNkxsRkxZREV5am0yblh5NVJpa2tOUVM2dWlOQ3oreW5o?=
- =?utf-8?B?NWN0UVdZM3VKZVRGS085dEFTczFXZUtIQ2NxN0lNMkpWOGQ0am9TT2dMM25N?=
- =?utf-8?B?bEU1aSsvTVM0ZUtWYlVQVE52OWpTN3JYTDUxeTlZNXgxRUowb043Y25QMTBw?=
- =?utf-8?B?SS9rZUo3amMzMk9reUNGSDA1R3c4cTBCQ042YllCdDhvaE1sS1NrQWdkSWxV?=
- =?utf-8?B?OWViUGFkRThCZ0ZCMWtpeGtaSWJHYmhsUUlGdXZJbUlQeDlEMXNtbkV3L2Qv?=
- =?utf-8?B?ZWE2VkMyNnJVR3ZvK2tzM0ZZb0cxVGErdWsvMW9VMUxsOFVjMlc0b2x2UXRY?=
- =?utf-8?B?L2VwNG9qbFJ4WHovUlVlOEhLQ3daRGg1NjlmempnaHAyMDZKcDlZSnc1cG83?=
- =?utf-8?B?bmZQVmp4K0trUExVL0tjRXM4UzVBblErWmRtOEtmT0JnWVBNTExwK0JtSmxw?=
- =?utf-8?B?UzNIWFBucFp1Rm5uVUZlR0RkQ3NYYnQvd002R1YxOGM4SGEvQm1hQmM0VlhS?=
- =?utf-8?B?blFVRmp5V0JudlFsVlQvZzd2aWNSMnN2bU03dElRc3lDQ3RLKzhZaEFSSFdN?=
- =?utf-8?B?QzJlWXllRFlWbDRWbEl0a0tMUmhLUGlmRWtFUE5MUlVFcDRjYkJmalM2R2JV?=
- =?utf-8?B?dGtNNWFTK0kwK1lOWTU1YWNPQ0VySmpPZ3hMcm9MdWQ5Ym4zU0MvODhkQ1NX?=
- =?utf-8?B?aURXU1BhOUZtT2xsYmJvQ21hUURtRWVnbWZUM1RGYkRlNTFjR081bjdXdy81?=
- =?utf-8?B?RDlNSjJyYkU3L01YRVZSMTNUSEg4NS94bjZTUlZ4RWZmaGlkVU9NUGl6cEh5?=
- =?utf-8?B?aytFMHNTMVZUSFpvMDRWU211dkJaK0V2eUdzOTFHYkFUOHJVVUVtakV0Z2tG?=
- =?utf-8?Q?9LfQ7AgqDJWhVd7IDk1A6F/jl/cMy+G4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <69ECC6F5F15B194CBC3E79BAEFFEDAB5@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=to:cc:references:from:subject:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=wTTpt9baQV1IojdvX3VLbJozKtinDQLSiS4JMFBUvpw=;
+        b=D0SC+TfsUw97jXhMaauhoJ2V10Doi/pQS75sO1dyt0ORnMKtP5n9a9mcA2tBuWmIIu
+         82dQNdOJHsCGXSqJM5kJ+14cQMsKbc7xevN1toqZuvOm3WBXn7zvCguOMY/II5fmvEqm
+         fOv4OzQN5EHihHmf3SZ3fT6R2JAxpxHppk2WjMjgeZq5g7aDBgAOtIukjvIerr9N9/Dd
+         VnUq1iruBw849HnHuYXSsE9MKVmZmbJV93JGsP8mgF1h9TKktNwyrBAlDjUGmthSKIVd
+         3svGVkXMWHB5i4edZ2keWWvej1y6qo+ehqXV97iwVU28f/4ByzW6s7JnRB6v/I5U86oI
+         xp+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wTTpt9baQV1IojdvX3VLbJozKtinDQLSiS4JMFBUvpw=;
+        b=ShLhgw3w+UbIbpZrBQYSt5O8y857KwDl20cCuA7JFYEbqC4kD574ZM8/1t3DHajqbI
+         7X0shsDYRPPNF8PeJWqyu5+XB645xRO9wA0tLlnWwlO8YaGNThplaaclDsFQ98dXYpsQ
+         Z2HHJaJABVCG9AloF3R7wYeG59/3+wopO1EvZrkTOtMPqZ1GoNMUOo8++9N2O7l48Cym
+         s73Bb7f1bPxkyfajIn1X7jus+9ZyRjxVRPtv1+em4Fe+ee4UFtyY2IqihycXX9MvtEiA
+         ZsgKA3+WRRtxTmYs4TTONjVywCIOGlnFZv2iXfz1W+BFJQiY3JML/F71vyCSngoVpCjC
+         brug==
+X-Gm-Message-State: AOAM531Fv/k/EEtFe1NR9QZQqB5LSvUf9gGRl2bOPMpJ/cJeAESYg/CK
+        i+JdGmHwloLTtp02bzyXJ3Q0tA==
+X-Google-Smtp-Source: ABdhPJxtkvddop+w7wDdFZDnf5USm9uT3ZTY0AqCwLAZYaClKDgwqGgNAVkQTs/GbcaDt7LgrkHfIA==
+X-Received: by 2002:a1c:808d:: with SMTP id b135mr4610059wmd.157.1611154767181;
+        Wed, 20 Jan 2021 06:59:27 -0800 (PST)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id h13sm4467006wrm.28.2021.01.20.06.59.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 06:59:26 -0800 (PST)
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        robh+dt@kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        okukatla@codeaurora.org
+References: <20210120080627.20784-1-manivannan.sadhasivam@linaro.org>
+ <20210120080627.20784-3-manivannan.sadhasivam@linaro.org>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: [PATCH 2/2] interconnect: qcom: Add SDX55 interconnect provider
+ driver
+Message-ID: <cb0f56b6-a75c-51a8-d640-08896d459a68@linaro.org>
+Date:   Wed, 20 Jan 2021 16:59:31 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf9abfdd-2d48-4270-a5a6-08d8bd52f908
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2021 14:52:13.4761
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 70UfqxwM7zHnVr3i5dLeIz38nue/7MpMm+I8YOEV4Q7RLNagFwD0ZxeOyMzv7e2V1SA/hVNTZT6/j3FZvLjtXRlxadenHI8BnImR6kfGZ4g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2958
+In-Reply-To: <20210120080627.20784-3-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMS8yMC8yMSA0OjA1IFBNLCBNaWNoYWVsIFdhbGxlIHdyb3RlOg0KPj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3N0LmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NzdC5jDQo+
-PiBpbmRleCAwMGU0OGRhMDc0NGEuLmQ2ZTEzOTZhYmI5NiAxMDA2NDQNCj4+IC0tLSBhL2RyaXZl
-cnMvbXRkL3NwaS1ub3Ivc3N0LmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3N0LmMN
-Cj4+IEBAIC04LDYgKzgsMzkgQEANCj4+DQo+PiDCoCNpbmNsdWRlICJjb3JlLmgiDQo+Pg0KPj4g
-K3N0YXRpYyBpbnQgc3N0MjZ2Zl9sb2NrKHN0cnVjdCBzcGlfbm9yICpub3IsIGxvZmZfdCBvZnMs
-IHVpbnQ2NF90IGxlbikNCj4+ICt7DQo+PiArwqDCoMKgwqAgcmV0dXJuIC1FT1BOT1RTVVBQOw0K
-Pj4gK30NCj4+ICsNCj4+ICtzdGF0aWMgaW50IHNzdDI2dmZfdW5sb2NrKHN0cnVjdCBzcGlfbm9y
-ICpub3IsIGxvZmZfdCBvZnMsIHVpbnQ2NF90DQo+PiBsZW4pDQo+PiArew0KPj4gK8KgwqDCoMKg
-IGlmIChvZnMgPT0gMCAmJiBsZW4gPT0gbm9yLT5wYXJhbXMtPnNpemUpDQo+PiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHJldHVybiBzcGlfbm9yX2dsb2JhbF9ibG9ja191bmxvY2sobm9yKTsN
-Cj4gDQo+IA0KPiBTb21lIGJsb2NrcyBtaWdodCBub3QgYmUgdW5sb2NrZWQgYmVjYXVzZSB0aGV5
-IGFyZSBwZXJtYW5lbnRseQ0KPiBsb2NrZWQuIERvZXMgaXQgbWFrZSBzZW5zZSB0byByZWFkIEJQ
-TlYgb2YgdGhlIGNvbnRyb2wgcmVnaXN0ZXINCj4gYW5kIGFkZCBhIGRlYnVnIG1lc3NhZ2UgaGVy
-ZT8NCg0KSXQgd291bGQsIHllcy4gSWYgYW55IGJsb2NrIGlzIHBlcm1hbmVudGx5IGxvY2tlZCBp
-biB0aGUgdW5sb2NrX2FsbCBjYXNlLA0KSSdsbCBqdXN0IHByaW50IGEgZGJnIG1lc3NhZ2UgYW5k
-IHJldHVybiAtRUlOVkFMLiBTb3VuZHMgZ29vZD8NCg0KQ2hlZXJzLA0KdGENCg==
+Hi Mani,
+
+Thanks for the patch!
+
+On 1/20/21 10:06, Manivannan Sadhasivam wrote:
+> Add driver for the Qualcomm interconnect buses found in SDX55 based
+> platforms. The topology consists of several NoCs that are controlled by
+> a remote processor that collects the aggregated bandwidth for each
+> master-slave pairs.
+> 
+> Based on SM8250 driver and generated from downstream dts.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>   drivers/interconnect/qcom/Kconfig  |  10 +
+>   drivers/interconnect/qcom/Makefile |   2 +
+>   drivers/interconnect/qcom/sdx55.c  | 356 +++++++++++++++++++++++++++++
+>   drivers/interconnect/qcom/sdx55.h  |  70 ++++++
+>   4 files changed, 438 insertions(+)
+>   create mode 100644 drivers/interconnect/qcom/sdx55.c
+>   create mode 100644 drivers/interconnect/qcom/sdx55.h
+> 
+> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
+> index a8f93ba265f8..6df7e2161a0a 100644
+> --- a/drivers/interconnect/qcom/Kconfig
+> +++ b/drivers/interconnect/qcom/Kconfig
+> @@ -65,6 +65,16 @@ config INTERCONNECT_QCOM_SDM845
+>   	  This is a driver for the Qualcomm Network-on-Chip on sdm845-based
+>   	  platforms.
+>   
+> +config INTERCONNECT_QCOM_SDX55
+> +	tristate "Qualcomm SDX55 interconnect driver"
+> +	depends on INTERCONNECT_QCOM
+> +	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
+
+Why not use depends on INTERCONNECT_QCOM_RPMH_POSSIBLE?
+
+> +	select INTERCONNECT_QCOM_RPMH
+> +	select INTERCONNECT_QCOM_BCM_VOTER
+> +	help
+> +	  This is a driver for the Qualcomm Network-on-Chip on sdx55-based
+> +	  platforms.
+> +
+>   config INTERCONNECT_QCOM_SM8150
+>   	tristate "Qualcomm SM8150 interconnect driver"
+>   	depends on INTERCONNECT_QCOM
+> diff --git a/drivers/interconnect/qcom/Makefile b/drivers/interconnect/qcom/Makefile
+> index cf628f7990cd..981a5ea45af9 100644
+> --- a/drivers/interconnect/qcom/Makefile
+> +++ b/drivers/interconnect/qcom/Makefile
+> @@ -8,6 +8,7 @@ qnoc-qcs404-objs			:= qcs404.o
+>   icc-rpmh-obj				:= icc-rpmh.o
+>   qnoc-sc7180-objs			:= sc7180.o
+>   qnoc-sdm845-objs			:= sdm845.o
+> +qnoc-sdx55-objs				:= sdx55.o
+>   qnoc-sm8150-objs			:= sm8150.o
+>   qnoc-sm8250-objs			:= sm8250.o
+>   icc-smd-rpm-objs			:= smd-rpm.o
+> @@ -20,6 +21,7 @@ obj-$(CONFIG_INTERCONNECT_QCOM_QCS404) += qnoc-qcs404.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_RPMH) += icc-rpmh.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SC7180) += qnoc-sc7180.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SDM845) += qnoc-sdm845.o
+> +obj-$(CONFIG_INTERCONNECT_QCOM_SDX55) += qnoc-sdx55.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) += qnoc-sm8150.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SM8250) += qnoc-sm8250.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) += icc-smd-rpm.o
+> diff --git a/drivers/interconnect/qcom/sdx55.c b/drivers/interconnect/qcom/sdx55.c
+> new file mode 100644
+> index 000000000000..a7ac12a1b62b
+> --- /dev/null
+> +++ b/drivers/interconnect/qcom/sdx55.c
+> @@ -0,0 +1,356 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Qualcomm SDX55 interconnect driver
+> + * Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> + *
+> + * Copyright (c) 2020, Linaro Ltd.
+
+Now is 2021, but probably you wrote it in 2020.
+
+> + *
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/interconnect.h>
+> +#include <linux/interconnect-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/of_platform.h>
+> +#include <dt-bindings/interconnect/qcom,sdx55.h>
+> +
+> +#include "bcm-voter.h"
+> +#include "icc-rpmh.h"
+> +#include "sdx55.h"
+> +
+> +DEFINE_QNODE(ipa_core_master, SDX55_MASTER_IPA_CORE, 1, 8, SDX55_SLAVE_IPA_CORE);
+> +DEFINE_QNODE(llcc_mc, SDX55_MASTER_LLCC, 4, 4, SDX55_SLAVE_EBI_CH0);
+> +DEFINE_QNODE(acm_tcu, SDX55_MASTER_TCU_0, 1, 8, SDX55_SLAVE_LLCC, SDX55_SLAVE_MEM_NOC_SNOC, SDX55_SLAVE_MEM_NOC_PCIE_SNOC);
+> +DEFINE_QNODE(qnm_snoc_gc, SDX55_MASTER_SNOC_GC_MEM_NOC, 1, 8, SDX55_SLAVE_LLCC);
+> +DEFINE_QNODE(xm_apps_rdwr, SDX55_MASTER_AMPSS_M0, 1, 16, SDX55_SLAVE_LLCC, SDX55_SLAVE_MEM_NOC_SNOC, SDX55_SLAVE_MEM_NOC_PCIE_SNOC);
+> +DEFINE_QNODE(qhm_audio, SDX55_MASTER_AUDIO, 1, 4, SDX55_SLAVE_ANOC_SNOC);
+> +DEFINE_QNODE(qhm_blsp1, SDX55_MASTER_BLSP_1, 1, 4, SDX55_SLAVE_ANOC_SNOC);
+> +DEFINE_QNODE(qhm_qdss_bam, SDX55_MASTER_QDSS_BAM, 1, 4, SDX55_SLAVE_SNOC_CFG, SDX55_SLAVE_EMAC_CFG, SDX55_SLAVE_USB3, SDX55_SLAVE_TLMM, SDX55_SLAVE_SPMI_FETCHER, SDX55_SLAVE_QDSS_CFG, SDX55_SLAVE_PDM, SDX55_SLAVE_SNOC_MEM_NOC_GC, SDX55_SLAVE_TCSR, SDX55_SLAVE_CNOC_DDRSS, SDX55_SLAVE_SPMI_VGI_COEX, SDX55_SLAVE_QPIC, SDX55_SLAVE_OCIMEM, SDX55_SLAVE_IPA_CFG, SDX55_SLAVE_USB3_PHY_CFG, SDX55_SLAVE_AOP, SDX55_SLAVE_BLSP_1, SDX55_SLAVE_SDCC_1, SDX55_SLAVE_CNOC_MSS, SDX55_SLAVE_PCIE_PARF, SDX55_SLAVE_ECC_CFG, SDX55_SLAVE_AUDIO, SDX55_SLAVE_AOSS, SDX55_SLAVE_PRNG, SDX55_SLAVE_CRYPTO_0_CFG, SDX55_SLAVE_TCU, SDX55_SLAVE_CLK_CTL, SDX55_SLAVE_IMEM_CFG);
+> +DEFINE_QNODE(qhm_qpic, SDX55_MASTER_QPIC, 1, 4, SDX55_SLAVE_AOSS, SDX55_SLAVE_IPA_CFG, SDX55_SLAVE_ANOC_SNOC, SDX55_SLAVE_AOP, SDX55_SLAVE_AUDIO);
+> +DEFINE_QNODE(qhm_snoc_cfg, SDX55_MASTER_SNOC_CFG, 1, 4, SDX55_SLAVE_SERVICE_SNOC);
+> +DEFINE_QNODE(qhm_spmi_fetcher1, SDX55_MASTER_SPMI_FETCHER, 1, 4, SDX55_SLAVE_AOSS, SDX55_SLAVE_ANOC_SNOC, SDX55_SLAVE_AOP);
+> +DEFINE_QNODE(qnm_aggre_noc, SDX55_MASTER_ANOC_SNOC, 1, 8, SDX55_SLAVE_PCIE_0, SDX55_SLAVE_SNOC_CFG, SDX55_SLAVE_SDCC_1, SDX55_SLAVE_TLMM, SDX55_SLAVE_SPMI_FETCHER, SDX55_SLAVE_QDSS_CFG, SDX55_SLAVE_PDM, SDX55_SLAVE_SNOC_MEM_NOC_GC, SDX55_SLAVE_TCSR, SDX55_SLAVE_CNOC_DDRSS, SDX55_SLAVE_SPMI_VGI_COEX, SDX55_SLAVE_QDSS_STM, SDX55_SLAVE_QPIC, SDX55_SLAVE_OCIMEM, SDX55_SLAVE_IPA_CFG, SDX55_SLAVE_USB3_PHY_CFG, SDX55_SLAVE_AOP, SDX55_SLAVE_BLSP_1, SDX55_SLAVE_USB3, SDX55_SLAVE_CNOC_MSS, SDX55_SLAVE_PCIE_PARF, SDX55_SLAVE_ECC_CFG, SDX55_SLAVE_APPSS, SDX55_SLAVE_AUDIO, SDX55_SLAVE_AOSS, SDX55_SLAVE_PRNG, SDX55_SLAVE_CRYPTO_0_CFG, SDX55_SLAVE_TCU, SDX55_SLAVE_CLK_CTL, SDX55_SLAVE_IMEM_CFG);
+> +DEFINE_QNODE(qnm_ipa, SDX55_MASTER_IPA, 1, 8, SDX55_SLAVE_SNOC_CFG, SDX55_SLAVE_EMAC_CFG, SDX55_SLAVE_USB3, SDX55_SLAVE_AOSS, SDX55_SLAVE_SPMI_FETCHER, SDX55_SLAVE_QDSS_CFG, SDX55_SLAVE_PDM, SDX55_SLAVE_SNOC_MEM_NOC_GC, SDX55_SLAVE_TCSR, SDX55_SLAVE_CNOC_DDRSS, SDX55_SLAVE_QDSS_STM, SDX55_SLAVE_QPIC, SDX55_SLAVE_OCIMEM, SDX55_SLAVE_IPA_CFG, SDX55_SLAVE_USB3_PHY_CFG, SDX55_SLAVE_AOP, SDX55_SLAVE_BLSP_1, SDX55_SLAVE_SDCC_1, SDX55_SLAVE_CNOC_MSS, SDX55_SLAVE_PCIE_PARF, SDX55_SLAVE_ECC_CFG, SDX55_SLAVE_AUDIO, SDX55_SLAVE_TLMM, SDX55_SLAVE_PRNG, SDX55_SLAVE_CRYPTO_0_CFG, SDX55_SLAVE_CLK_CTL, SDX55_SLAVE_IMEM_CFG);
+> +DEFINE_QNODE(qnm_memnoc, SDX55_MASTER_MEM_NOC_SNOC, 1, 8, SDX55_SLAVE_SNOC_CFG, SDX55_SLAVE_EMAC_CFG, SDX55_SLAVE_USB3, SDX55_SLAVE_TLMM, SDX55_SLAVE_SPMI_FETCHER, SDX55_SLAVE_QDSS_CFG, SDX55_SLAVE_PDM, SDX55_SLAVE_TCSR, SDX55_SLAVE_CNOC_DDRSS, SDX55_SLAVE_SPMI_VGI_COEX, SDX55_SLAVE_QDSS_STM, SDX55_SLAVE_QPIC, SDX55_SLAVE_OCIMEM, SDX55_SLAVE_IPA_CFG, SDX55_SLAVE_USB3_PHY_CFG, SDX55_SLAVE_AOP, SDX55_SLAVE_BLSP_1, SDX55_SLAVE_SDCC_1, SDX55_SLAVE_CNOC_MSS, SDX55_SLAVE_PCIE_PARF, SDX55_SLAVE_ECC_CFG, SDX55_SLAVE_APPSS,  SDX55_SLAVE_AUDIO, SDX55_SLAVE_AOSS, SDX55_SLAVE_PRNG, SDX55_SLAVE_CRYPTO_0_CFG, SDX55_SLAVE_TCU, SDX55_SLAVE_CLK_CTL, SDX55_SLAVE_IMEM_CFG);
+> +DEFINE_QNODE(qnm_memnoc_pcie, SDX55_MASTER_MEM_NOC_PCIE_SNOC, 1, 8, SDX55_SLAVE_PCIE_0);
+> +DEFINE_QNODE(qxm_crypto, SDX55_MASTER_CRYPTO_CORE_0, 1, 8, SDX55_SLAVE_AOSS, SDX55_SLAVE_ANOC_SNOC, SDX55_SLAVE_AOP);
+> +DEFINE_QNODE(xm_emac, SDX55_MASTER_EMAC, 1, 8, SDX55_SLAVE_ANOC_SNOC);
+> +DEFINE_QNODE(xm_ipa2pcie_slv, SDX55_MASTER_IPA_PCIE, 1, 8, SDX55_SLAVE_PCIE_0);
+> +DEFINE_QNODE(xm_pcie, SDX55_MASTER_PCIE, 1, 8, SDX55_SLAVE_ANOC_SNOC);
+> +DEFINE_QNODE(xm_qdss_etr, SDX55_MASTER_QDSS_ETR, 1, 8, SDX55_SLAVE_SNOC_CFG, SDX55_SLAVE_EMAC_CFG, SDX55_SLAVE_USB3, SDX55_SLAVE_AOSS, SDX55_SLAVE_SPMI_FETCHER, SDX55_SLAVE_QDSS_CFG, SDX55_SLAVE_PDM, SDX55_SLAVE_SNOC_MEM_NOC_GC, SDX55_SLAVE_TCSR, SDX55_SLAVE_CNOC_DDRSS, SDX55_SLAVE_SPMI_VGI_COEX, SDX55_SLAVE_QPIC, SDX55_SLAVE_OCIMEM, SDX55_SLAVE_IPA_CFG, SDX55_SLAVE_USB3_PHY_CFG, SDX55_SLAVE_AOP, SDX55_SLAVE_BLSP_1, SDX55_SLAVE_SDCC_1, SDX55_SLAVE_CNOC_MSS, SDX55_SLAVE_PCIE_PARF, SDX55_SLAVE_ECC_CFG, SDX55_SLAVE_AUDIO, SDX55_SLAVE_AOSS, SDX55_SLAVE_PRNG, SDX55_SLAVE_CRYPTO_0_CFG, SDX55_SLAVE_TCU, SDX55_SLAVE_CLK_CTL, SDX55_SLAVE_IMEM_CFG);
+> +DEFINE_QNODE(xm_sdc1, SDX55_MASTER_SDCC_1, 1, 8, SDX55_SLAVE_AOSS, SDX55_SLAVE_IPA_CFG, SDX55_SLAVE_ANOC_SNOC, SDX55_SLAVE_AOP, SDX55_SLAVE_AUDIO);
+> +DEFINE_QNODE(xm_usb3, SDX55_MASTER_USB3, 1, 8, SDX55_SLAVE_ANOC_SNOC);
+> +DEFINE_QNODE(ipa_core_slave, SDX55_SLAVE_IPA_CORE, 1, 8);
+> +DEFINE_QNODE(ebi, SDX55_SLAVE_EBI_CH0, 1, 4);
+> +DEFINE_QNODE(qns_llcc, SDX55_SLAVE_LLCC, 1, 16, SDX55_SLAVE_EBI_CH0);
+> +DEFINE_QNODE(qns_memnoc_snoc, SDX55_SLAVE_MEM_NOC_SNOC, 1, 8, SDX55_MASTER_MEM_NOC_SNOC);
+> +DEFINE_QNODE(qns_sys_pcie, SDX55_SLAVE_MEM_NOC_PCIE_SNOC, 1, 8, SDX55_MASTER_MEM_NOC_PCIE_SNOC);
+> +DEFINE_QNODE(qhs_aop, SDX55_SLAVE_AOP, 1, 4);
+> +DEFINE_QNODE(qhs_aoss, SDX55_SLAVE_AOSS, 1, 4);
+> +DEFINE_QNODE(qhs_apss, SDX55_SLAVE_APPSS, 1, 4);
+> +DEFINE_QNODE(qhs_audio, SDX55_SLAVE_AUDIO, 1, 4);
+> +DEFINE_QNODE(qhs_blsp1, SDX55_SLAVE_BLSP_1, 1, 4);
+> +DEFINE_QNODE(qhs_clk_ctl, SDX55_SLAVE_CLK_CTL, 1, 4);
+> +DEFINE_QNODE(qhs_crypto0_cfg, SDX55_SLAVE_CRYPTO_0_CFG, 1, 4);
+> +DEFINE_QNODE(qhs_ddrss_cfg, SDX55_SLAVE_CNOC_DDRSS, 1, 4);
+> +DEFINE_QNODE(qhs_ecc_cfg, SDX55_SLAVE_ECC_CFG, 1, 4);
+> +DEFINE_QNODE(qhs_emac_cfg, SDX55_SLAVE_EMAC_CFG, 1, 4);
+> +DEFINE_QNODE(qhs_imem_cfg, SDX55_SLAVE_IMEM_CFG, 1, 4);
+> +DEFINE_QNODE(qhs_ipa, SDX55_SLAVE_IPA_CFG, 1, 4);
+> +DEFINE_QNODE(qhs_mss_cfg, SDX55_SLAVE_CNOC_MSS, 1, 4);
+> +DEFINE_QNODE(qhs_pcie_parf, SDX55_SLAVE_PCIE_PARF, 1, 4);
+> +DEFINE_QNODE(qhs_pdm, SDX55_SLAVE_PDM, 1, 4);
+> +DEFINE_QNODE(qhs_prng, SDX55_SLAVE_PRNG, 1, 4);
+> +DEFINE_QNODE(qhs_qdss_cfg, SDX55_SLAVE_QDSS_CFG, 1, 4);
+> +DEFINE_QNODE(qhs_qpic, SDX55_SLAVE_QPIC, 1, 4);
+> +DEFINE_QNODE(qhs_sdc1, SDX55_SLAVE_SDCC_1, 1, 4);
+> +DEFINE_QNODE(qhs_snoc_cfg, SDX55_SLAVE_SNOC_CFG, 1, 4, SDX55_MASTER_SNOC_CFG);
+> +DEFINE_QNODE(qhs_spmi_fetcher, SDX55_SLAVE_SPMI_FETCHER, 1, 4);
+> +DEFINE_QNODE(qhs_spmi_vgi_coex, SDX55_SLAVE_SPMI_VGI_COEX, 1, 4);
+> +DEFINE_QNODE(qhs_tcsr, SDX55_SLAVE_TCSR, 1, 4);
+> +DEFINE_QNODE(qhs_tlmm, SDX55_SLAVE_TLMM, 1, 4);
+> +DEFINE_QNODE(qhs_usb3, SDX55_SLAVE_USB3, 1, 4);
+> +DEFINE_QNODE(qhs_usb3_phy, SDX55_SLAVE_USB3_PHY_CFG, 1, 4);
+> +DEFINE_QNODE(qns_aggre_noc, SDX55_SLAVE_ANOC_SNOC, 1, 8, SDX55_MASTER_ANOC_SNOC);
+> +DEFINE_QNODE(qns_snoc_memnoc, SDX55_SLAVE_SNOC_MEM_NOC_GC, 1, 8, SDX55_MASTER_SNOC_GC_MEM_NOC);
+> +DEFINE_QNODE(qxs_imem, SDX55_SLAVE_OCIMEM, 1, 8);
+> +DEFINE_QNODE(srvc_snoc, SDX55_SLAVE_SERVICE_SNOC, 1, 4);
+> +DEFINE_QNODE(xs_pcie, SDX55_SLAVE_PCIE_0, 1, 8);
+> +DEFINE_QNODE(xs_qdss_stm, SDX55_SLAVE_QDSS_STM, 1, 4);
+> +DEFINE_QNODE(xs_sys_tcu_cfg, SDX55_SLAVE_TCU, 1, 8);
+> +
+> +DEFINE_QBCM(bcm_mc0, "MC0", true, &ebi);
+> +DEFINE_QBCM(bcm_sh0, "SH0", true, &qns_llcc);
+> +DEFINE_QBCM(bcm_ce0, "CE0", false, &qxm_crypto);
+> +DEFINE_QBCM(bcm_ip0, "IP0", false, &ipa_core_slave);
+> +DEFINE_QBCM(bcm_pn0, "PN0", false, &qhm_snoc_cfg);
+> +DEFINE_QBCM(bcm_sh3, "SH3", false, &xm_apps_rdwr);
+> +DEFINE_QBCM(bcm_sh4, "SH4", false, &qns_memnoc_snoc, &qns_sys_pcie);
+> +DEFINE_QBCM(bcm_sn0, "SN0", true, &qns_snoc_memnoc);
+> +DEFINE_QBCM(bcm_sn1, "SN1", false, &qxs_imem);
+> +DEFINE_QBCM(bcm_pn1, "PN1", false, &xm_sdc1);
+> +DEFINE_QBCM(bcm_pn2, "PN2", false, &qhm_audio, &qhm_spmi_fetcher1);
+> +DEFINE_QBCM(bcm_sn3, "SN3", false, &xs_qdss_stm);
+> +DEFINE_QBCM(bcm_pn3, "PN3", false, &qhm_blsp1, &qhm_qpic);
+> +DEFINE_QBCM(bcm_sn4, "SN4", false, &xs_sys_tcu_cfg);
+> +DEFINE_QBCM(bcm_pn5, "PN5", false, &qxm_crypto);
+> +DEFINE_QBCM(bcm_sn6, "SN6", false, &xs_pcie);
+> +DEFINE_QBCM(bcm_sn7, "SN7", false, &qnm_aggre_noc, &xm_emac, &xm_emac, &xm_usb3,
+> +	    &qns_aggre_noc);
+> +DEFINE_QBCM(bcm_sn8, "SN8", false, &qhm_qdss_bam, &xm_qdss_etr);
+> +DEFINE_QBCM(bcm_sn9, "SN9", false, &qnm_memnoc);
+> +DEFINE_QBCM(bcm_sn10, "SN10", false, &qnm_memnoc_pcie);
+> +DEFINE_QBCM(bcm_sn11, "SN11", false, &qnm_ipa, &xm_ipa2pcie_slv);
+> +
+> +static struct qcom_icc_bcm *mc_virt_bcms[] = {
+> +	&bcm_mc0,
+> +};
+> +
+> +static struct qcom_icc_node *mc_virt_nodes[] = {
+> +	[MASTER_LLCC] = &llcc_mc,
+> +	[SLAVE_EBI_CH0] = &ebi,
+> +};
+> +
+> +static struct qcom_icc_desc sdx55_mc_virt = {
+
+Can this be const?
+
+> +	.nodes = mc_virt_nodes,
+> +	.num_nodes = ARRAY_SIZE(mc_virt_nodes),
+> +	.bcms = mc_virt_bcms,
+> +	.num_bcms = ARRAY_SIZE(mc_virt_bcms),
+> +};
+> +
+> +static struct qcom_icc_bcm *mem_noc_bcms[] = {
+> +	&bcm_sh0,
+> +	&bcm_sh3,
+> +	&bcm_sh4,
+> +};
+> +
+> +static struct qcom_icc_node *mem_noc_nodes[] = {
+> +	[MASTER_TCU_0] = &acm_tcu,
+> +	[MASTER_SNOC_GC_MEM_NOC] = &qnm_snoc_gc,
+> +	[MASTER_AMPSS_M0] = &xm_apps_rdwr,
+> +	[SLAVE_LLCC] = &qns_llcc,
+> +	[SLAVE_MEM_NOC_SNOC] = &qns_memnoc_snoc,
+> +	[SLAVE_MEM_NOC_PCIE_SNOC] = &qns_sys_pcie,
+> +};
+> +
+> +static struct qcom_icc_desc sdx55_mem_noc = {
+
+const?
+
+> +	.nodes = mem_noc_nodes,
+> +	.num_nodes = ARRAY_SIZE(mem_noc_nodes),
+> +	.bcms = mem_noc_bcms,
+> +	.num_bcms = ARRAY_SIZE(mem_noc_bcms),
+> +};
+> +
+> +static struct qcom_icc_bcm *system_noc_bcms[] = {
+> +	&bcm_ce0,
+> +	&bcm_pn0,
+> +	&bcm_pn1,
+> +	&bcm_pn2,
+> +	&bcm_pn3,
+> +	&bcm_pn5,
+> +	&bcm_sn0,
+> +	&bcm_sn1,
+> +	&bcm_sn3,
+> +	&bcm_sn4,
+> +	&bcm_sn6,
+> +	&bcm_sn7,
+> +	&bcm_sn8,
+> +	&bcm_sn9,
+> +	&bcm_sn10,
+> +	&bcm_sn11,
+> +};
+> +
+> +static struct qcom_icc_node *system_noc_nodes[] = {
+> +	[MASTER_AUDIO] = &qhm_audio,
+> +	[MASTER_BLSP_1] = &qhm_blsp1,
+> +	[MASTER_QDSS_BAM] = &qhm_qdss_bam,
+> +	[MASTER_QPIC] = &qhm_qpic,
+> +	[MASTER_SNOC_CFG] = &qhm_snoc_cfg,
+> +	[MASTER_SPMI_FETCHER] = &qhm_spmi_fetcher1,
+> +	[MASTER_ANOC_SNOC] = &qnm_aggre_noc,
+> +	[MASTER_IPA] = &qnm_ipa,
+> +	[MASTER_MEM_NOC_SNOC] = &qnm_memnoc,
+> +	[MASTER_MEM_NOC_PCIE_SNOC] = &qnm_memnoc_pcie,
+> +	[MASTER_CRYPTO_CORE_0] = &qxm_crypto,
+> +	[MASTER_EMAC] = &xm_emac,
+> +	[MASTER_IPA_PCIE] = &xm_ipa2pcie_slv,
+> +	[MASTER_PCIE] = &xm_pcie,
+> +	[MASTER_QDSS_ETR] = &xm_qdss_etr,
+> +	[MASTER_SDCC_1] = &xm_sdc1,
+> +	[MASTER_USB3] = &xm_usb3,
+> +	[SLAVE_AOP] = &qhs_aop,
+> +	[SLAVE_AOSS] = &qhs_aoss,
+> +	[SLAVE_APPSS] = &qhs_apss,
+> +	[SLAVE_AUDIO] = &qhs_audio,
+> +	[SLAVE_BLSP_1] = &qhs_blsp1,
+> +	[SLAVE_CLK_CTL] = &qhs_clk_ctl,
+> +	[SLAVE_CRYPTO_0_CFG] = &qhs_crypto0_cfg,
+> +	[SLAVE_CNOC_DDRSS] = &qhs_ddrss_cfg,
+> +	[SLAVE_ECC_CFG] = &qhs_ecc_cfg,
+> +	[SLAVE_EMAC_CFG] = &qhs_emac_cfg,
+> +	[SLAVE_IMEM_CFG] = &qhs_imem_cfg,
+> +	[SLAVE_IPA_CFG] = &qhs_ipa,
+> +	[SLAVE_CNOC_MSS] = &qhs_mss_cfg,
+> +	[SLAVE_PCIE_PARF] = &qhs_pcie_parf,
+> +	[SLAVE_PDM] = &qhs_pdm,
+> +	[SLAVE_PRNG] = &qhs_prng,
+> +	[SLAVE_QDSS_CFG] = &qhs_qdss_cfg,
+> +	[SLAVE_QPIC] = &qhs_qpic,
+> +	[SLAVE_SDCC_1] = &qhs_sdc1,
+> +	[SLAVE_SNOC_CFG] = &qhs_snoc_cfg,
+> +	[SLAVE_SPMI_FETCHER] = &qhs_spmi_fetcher,
+> +	[SLAVE_SPMI_VGI_COEX] = &qhs_spmi_vgi_coex,
+> +	[SLAVE_TCSR] = &qhs_tcsr,
+> +	[SLAVE_TLMM] = &qhs_tlmm,
+> +	[SLAVE_USB3] = &qhs_usb3,
+> +	[SLAVE_USB3_PHY_CFG] = &qhs_usb3_phy,
+> +	[SLAVE_ANOC_SNOC] = &qns_aggre_noc,
+> +	[SLAVE_SNOC_MEM_NOC_GC] = &qns_snoc_memnoc,
+> +	[SLAVE_OCIMEM] = &qxs_imem,
+> +	[SLAVE_SERVICE_SNOC] = &srvc_snoc,
+> +	[SLAVE_PCIE_0] = &xs_pcie,
+> +	[SLAVE_QDSS_STM] = &xs_qdss_stm,
+> +	[SLAVE_TCU] = &xs_sys_tcu_cfg,
+> +};
+> +
+> +static struct qcom_icc_desc sdx55_system_noc = {
+
+const?
+
+> +	.nodes = system_noc_nodes,
+> +	.num_nodes = ARRAY_SIZE(system_noc_nodes),
+> +	.bcms = system_noc_bcms,
+> +	.num_bcms = ARRAY_SIZE(system_noc_bcms),
+> +};
+> +
+> +static struct qcom_icc_bcm *ipa_virt_bcms[] = {
+> +	&bcm_ip0,
+> +};
+> +
+> +static struct qcom_icc_node *ipa_virt_nodes[] = {
+> +	[MASTER_IPA_CORE] = &ipa_core_master,
+> +	[SLAVE_IPA_CORE] = &ipa_core_slave,
+> +};
+> +
+> +static struct qcom_icc_desc sdx55_ipa_virt = {
+
+const?
+
+The rest looks good!
+
+Thanks,
+Georgi
