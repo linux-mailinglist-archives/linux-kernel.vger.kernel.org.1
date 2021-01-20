@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162A72FDDE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597E32FDDE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393142AbhAUA3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404197AbhATXeZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:34:25 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8754C061575;
-        Wed, 20 Jan 2021 15:33:44 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id d11so80229qvo.11;
-        Wed, 20 Jan 2021 15:33:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Kuz1Z8yFOKqntoZqWEZMArKOxWgkIyDqBbny1W4ic1M=;
-        b=HJlmkRDv2hPtYnuU5c270k+st/MAdNAqkEg/D9vHyvSK9kKH73Zjbctd7WVUKy6247
-         HkQxh4CdcW2DT9yAgApoSW5PpLB4pjrOWlxx/EKsDvpOSfDC7qReqn950tJtAfAKWOzy
-         KA/8CQvR6JfJrhPQtE9guNZttGprU+hbN4YyyaoiGtAJndqmJysGXPVyXyruoUDqLtL3
-         omGUe1oEcvwiIpLmBTJek7bTA7w2yT27u25onP7lsCxZK46SQNs+JCLRKlf+mq2gGetG
-         vydZ2LO27zn5lX+JaxD0f4njHfv2cQboM6Ync9BZTAbzNbGoWTk3d4aqmwS8isJMaTDe
-         Hmnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Kuz1Z8yFOKqntoZqWEZMArKOxWgkIyDqBbny1W4ic1M=;
-        b=bW3taC2pZOpX1UlIfofqQZA2fABBXsII1HMlTO+PI6rmY8q80yZtB79zKNAQqv0RYb
-         5TWW8tHCl70GwXNQhl9HTMwmD6qV4tWTO7n58/kIpQZ5MCWFinhFx6b48EIoY5vUu3Rx
-         VgjfsqiT5OSoNjgHKVIYFjRlz8rd/W+XBiuCHDTNDbeKpwCALGz2ZC8m/uZbBYMtEHwt
-         N4prMtj+CUBG6dgxcgYCFmZGWMtLLKVeffyjmQjchzO6U8aI9gn8WYEm4BWSMmtfhGrl
-         gI5FnyuCiuB4Hy3ZKOr4PdXfozRQO8dRG4gsjbtfJ8l2Avsmqwf3Fep4R9xmw4no/8Nc
-         Up8Q==
-X-Gm-Message-State: AOAM530VSaqFNuVxZyJtlMcq8yx3rib6b9ahn5xSTHSj1tM/CCPpU1+B
-        kMBtrPpAlCPPeOSl3+vv2Cs=
-X-Google-Smtp-Source: ABdhPJy49pPbB59I9hYoepgHaQtdj/cmB7zsOt91Isoc34MzQW6yNtlLg5ytYAKLjA9+ZzrlWIBbIg==
-X-Received: by 2002:a0c:e651:: with SMTP id c17mr11632401qvn.34.1611185623591;
-        Wed, 20 Jan 2021 15:33:43 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:1b8f])
-        by smtp.gmail.com with ESMTPSA id 8sm2473388qkr.28.2021.01.20.15.33.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 15:33:42 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 20 Jan 2021 18:32:56 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-Message-ID: <YAi9qNqiBjGvXMoI@mtj.duckdns.org>
-References: <20210108012846.4134815-1-vipinsh@google.com>
- <20210108012846.4134815-2-vipinsh@google.com>
- <YAICLR8PBXxAcOMz@mtj.duckdns.org>
- <YAIUwGUPDmYfUm/a@google.com>
- <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
- <YAJsUyH2zspZxF2S@google.com>
- <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
- <YAfYL7V6E4/P83Mg@google.com>
- <YAhc8khTUc2AFDcd@mtj.duckdns.org>
- <YAi6RcbxTSMmNssw@google.com>
+        id S2393153AbhAUA3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:29:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726189AbhATXle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 18:41:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 319492360D;
+        Wed, 20 Jan 2021 23:40:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611186053;
+        bh=5ltyCuNfiUE9KRiJ8HW3CLWIbAjZ0q9Wk+JTvdTQgWs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X9I4sy6Of1lMfYxINnVZu1UeYGGQAXahf1FcBiuaQta/L2fwHejCjspkH6Ub8Q6a0
+         ScqliR8ACPQRKFE8AfThrQZXS5kaKfo60+OVYA8Rlhv2bpyoG7gR1JAsLPluWbyQnZ
+         +Fynx8LyUfsDmzdpwmGqRCdVQkyEKt69fyCHO9HBoNiMWewZdg9kHeIPjbdtnHiKPv
+         +BXUHg7OeQdyPP0rSXe6A84K/lYQzuopI9Amwg7sNjnePwaxiE1/PS7WMimjjwe17c
+         QXkUXwBO4mXsxB78DTcf+Ab1CrDRU/PWiCVAqNaAV227Vh/eUZtULtt5jmre1Lz5fH
+         89Eb+elO6cN3g==
+Date:   Thu, 21 Jan 2021 01:40:48 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ben Boeckel <me@benboeckel.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH 1/4] X.509: Add CodeSigning extended key usage parsing
+Message-ID: <YAi/gERomykYZqKZ@kernel.org>
+References: <20210120090517.23851-1-jlee@suse.com>
+ <20210120090517.23851-2-jlee@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YAi6RcbxTSMmNssw@google.com>
+In-Reply-To: <20210120090517.23851-2-jlee@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Wed, Jan 20, 2021 at 03:18:29PM -0800, Vipin Sharma wrote:
-> RDMA cgroup expose hardware details to users. In rdma.{max, current}
-> interface files we can see actual hardware names. Only difference
-
-No, what's shown is the device name followed by resources which are commonly
-defined for all rdma devices. The format is the same as io controller
-interface files.
-
-> compared to Encryption ID cgroup is that latter is exposing that detail
-> via file names.
+On Wed, Jan 20, 2021 at 05:05:14PM +0800, Lee, Chun-Yi wrote:
+> This patch adds the logic for parsing the CodeSign extended key usage
+> extension in X.509. The parsing result will be set to the eku flag
+> which is carried by public key. It can be used in the PKCS#7
+> verification.
 > 
-> Will you prefer that encryption ID cgroup do things similar to RDMA
-> cgroup? It can have 3 files
-
-I don't know how many times I have to repeat the same point to get it
-across. For any question about actual abstraction, you haven't provided any
-kind of actual research or analysis and just keep pushing the same thing
-over and over again. Maybe the situation is such that it makes sense to
-change the rule but that needs substantial justifications. I've been asking
-to see whether there are such justifications but all I've been getting are
-empty answers. Until such discussions take place, please consider the series
-nacked and please excuse if I don't respond promptly in this thread.
-
-> > Attaching the interface to kvm side, most likely, instead of exposing the
-> > feature through cgroup.
-> I am little confused, do you mean moving files from the kernel/cgroup/
-> to kvm related directories or you are recommending not to use cgroup at
-> all?  I hope it is the former :)
+> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> ---
+>  crypto/asymmetric_keys/x509_cert_parser.c | 24 ++++++++++++++++++++++++
+>  include/crypto/public_key.h               |  1 +
+>  include/linux/oid_registry.h              |  5 +++++
+>  3 files changed, 30 insertions(+)
 > 
-> Only issue with this is that TDX is not limited to KVM, they have
-> potential use cases for MKTME without KVM.
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> index 52c9b455fc7d..65721313b265 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -497,6 +497,8 @@ int x509_process_extension(void *context, size_t hdrlen,
+>  	struct x509_parse_context *ctx = context;
+>  	struct asymmetric_key_id *kid;
+>  	const unsigned char *v = value;
+> +	int i = 0;
+> +	enum OID oid;
+>  
+>  	pr_debug("Extension: %u\n", ctx->last_oid);
+>  
+> @@ -526,6 +528,28 @@ int x509_process_extension(void *context, size_t hdrlen,
+>  		return 0;
+>  	}
+>  
+> +	if (ctx->last_oid == OID_extKeyUsage) {
+> +		if (v[0] != ((ASN1_UNIV << 6) | ASN1_CONS_BIT | ASN1_SEQ) ||
+> +		    v[1] != vlen - 2)
+> +			return -EBADMSG;
+> +		i += 2;
+> +
+> +		while (i < vlen) {
+> +			/* A 10 bytes EKU OID Octet blob =
+> +			 * ASN1_OID + size byte + 8 bytes OID */
+> +			if (v[i] != ASN1_OID || v[i + 1] != 8 || (i + 10) > vlen)
+> +				return -EBADMSG;
+> +
+> +			oid = look_up_OID(v + i + 2, v[i + 1]);
+> +			if (oid == OID_codeSigning) {
+> +				ctx->cert->pub->eku |= EKU_codeSigning;
+> +			}
+> +			i += 10;
+> +		}
+> +		pr_debug("extKeyUsage: %d\n", ctx->cert->pub->eku);
 
-There are ways to integrate with cgroup through other interfaces - e.g. take
-a look at how bpf works with cgroups. Here, it isn't ideal but may work out
-if things actually require a lot of hardware dependent bits. There's also
-RDT which exists outside of cgroup for similar reasons.
+With eBPF around, does this make any sense?
 
-Thanks.
+/Jarkko
 
--- 
-tejun
+> +		return 0;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+> index 948c5203ca9c..07a1b28460a2 100644
+> --- a/include/crypto/public_key.h
+> +++ b/include/crypto/public_key.h
+> @@ -29,6 +29,7 @@ struct public_key {
+>  	bool key_is_private;
+>  	const char *id_type;
+>  	const char *pkey_algo;
+> +	unsigned int eku : 9;      /* Extended Key Usage (9-bit) */
+>  };
+>  
+>  extern void public_key_free(struct public_key *key);
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index 4462ed2c18cd..e20e8eb53b21 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -113,9 +113,14 @@ enum OID {
+>  	OID_SM2_with_SM3,		/* 1.2.156.10197.1.501 */
+>  	OID_sm3WithRSAEncryption,	/* 1.2.156.10197.1.504 */
+>  
+> +	/* Extended key purpose OIDs [RFC 5280] */
+> +	OID_codeSigning,		/* 1.3.6.1.5.5.7.3.3 */
+> +
+>  	OID__NR
+>  };
+>  
+> +#define EKU_codeSigning	(1 << 2)
+> +
+>  extern enum OID look_up_OID(const void *data, size_t datasize);
+>  extern int sprint_oid(const void *, size_t, char *, size_t);
+>  extern int sprint_OID(enum OID, char *, size_t);
+> -- 
+> 2.16.4
+> 
+> 
