@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725862FDD84
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3862C2FDD8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbhATX5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 18:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730704AbhATVkU (ORCPT
+        id S1731194AbhATX6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 18:58:03 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:40319 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731107AbhATVl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:40:20 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F95AC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:39:39 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id g24so51415edw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nSf0ToA2jort2u5AL1d6u4W1M1rj7Hzrgs+Or59IlL8=;
-        b=Wx00Bh5rJYoL4qGksYW4rVJ/kBgxBKt2mOLjC9TC7EeE3ZEq7q4OnnIIHafptQ73dK
-         hJs8dnWkRE7Ft9iev9hpbP0dhrGvSrUgOIwvpPVUn0DEnkQntiVbhynN9+6Nrl/QMlr0
-         QIzkdvK0iA7LxlsR8LWoQAktVCmDEl5Q9AD+oo/NJTKRYT25BZZ036v+RyeLrx0pf+1A
-         Xf0xCxYM3WUJWkMajd8WBdhD6zvIWSVrAOoV2wNOxiuDri1pt2mSAFQ1KGXr+7q3FlH2
-         I5QqfpEz/N4nnkmWNI856YGLiBkPtO9C0OZtW4O/N28KHzANFfcQlUcqFMitar8vKbRz
-         PPwA==
+        Wed, 20 Jan 2021 16:41:26 -0500
+Received: by mail-ot1-f49.google.com with SMTP id i20so17041550otl.7;
+        Wed, 20 Jan 2021 13:41:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nSf0ToA2jort2u5AL1d6u4W1M1rj7Hzrgs+Or59IlL8=;
-        b=A/YQlatcK8xnRRqfqVsrdfqfWaFK/45s9P5zU6yo1K8zJpfk1xOL/DY+RkB258Lk8M
-         IeVEf8IdGlPW8VuwQIyySQaYmB9vZZfUIgZWmr3lxKCDKGOmOmKze321/vZvkUt38KL5
-         hHrLsAIKasrIqN5tu7wonQcI2Lpaf/GDGt1yfcrTvtb2Gu8gWz2F8Cs75nN8z9oCVPPd
-         f6CSduhK8SfnuliGkTnuS2IZUx7k9v9TlU8Y50pkGFO++lRAM28XXbbtK2LMT5j2ebOI
-         802aiSvQ/qjTUv4YQ+oKR52drnWr5oYwEYSe7QwG7e3DsT4WmAFVTpO8MpRwwZgmqkKR
-         I3Xg==
-X-Gm-Message-State: AOAM5337eycVuu4s36cFuQNv4r8NMiWz5eS3YSKLOtWU1/AacZm63Jv4
-        zLlItp6kYbjFfrLiiJkJ1F19+jvvZiKxyUYp9Amarw==
-X-Google-Smtp-Source: ABdhPJxcE/BaYJOETLqDHllMKGvULEympsLIRRmfqU1RvhqTEPz1/TeaeZVph7DeRnSY0l0uDtErKNbemEGpEsLi3tI=
-X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr6643099edd.52.1611178778234;
- Wed, 20 Jan 2021 13:39:38 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J0YHlRvjXhbtWV7cijXv2s0PvO46nO52LNnMMyM6xCU=;
+        b=SiDbyOrbM+SbwzpP+GFDDoUZc4I9ivahXpUERtpjDmswRQrllL8+B0nU2RDZV/t9YQ
+         6p+lKldL0/XHE7h0rPcsCZWL5N9iDqu3wAyuR95kkWaEvtRDSUbTwE5jJXYJZ843A5k+
+         J5Y2JR88sdxlcdolnJ2bECU/9BUx7TnyMjqssyRL5o+jxP2R+FP6dtn25wNn0c0cvMxV
+         marz1N5FbFmaEbiM5v38++4DnbFLuqm+V9S/LZhelAmGD7SxlH+Oe8KPM095Kgv3Kilp
+         oXxPu26LwAewhcC3zCq1UD5/xalzs5W7H+J49l1Jclrxz1XW/InxTVUAfaavZq6Xg3F4
+         gIRg==
+X-Gm-Message-State: AOAM531g+iWIBJlpC4Z5s79DVcL5PaSs48zCai4GwA+FFOw4bvEonRXl
+        jrJ59w+029OiszoRipp0KQ==
+X-Google-Smtp-Source: ABdhPJz8yQvdalhscvD/UWFVBlpc3iBJUiLJiA+LxvqqUzL5npHPn8oRMocYKWAWpTCbsHywe/bCkQ==
+X-Received: by 2002:a9d:65d4:: with SMTP id z20mr8490633oth.349.1611178845104;
+        Wed, 20 Jan 2021 13:40:45 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p132sm618863oia.41.2021.01.20.13.40.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 13:40:42 -0800 (PST)
+Received: (nullmailer pid 883229 invoked by uid 1000);
+        Wed, 20 Jan 2021 21:40:40 -0000
+Date:   Wed, 20 Jan 2021 15:40:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: dt-bindings: media: i2c: Fix $id of renamed
+ ov5647.yaml
+Message-ID: <20210120214040.GA882505@robh.at.kernel.org>
+References: <20210120180403.1580423-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-References: <161117153248.2853729.2452425259045172318.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161117153776.2853729.6944617921517514510.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210120194609.GA3843758@infradead.org> <CAPcyv4jvGfZ1W8KLPO22oYVDBiUYius+Nf8kRNP=xmPvjg+deA@mail.gmail.com>
-In-Reply-To: <CAPcyv4jvGfZ1W8KLPO22oYVDBiUYius+Nf8kRNP=xmPvjg+deA@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 20 Jan 2021 13:39:31 -0800
-Message-ID: <CAPcyv4g+Pd+A6Aa9uXK1GwMo726niSF9jZ=fQvEuyNocso1zcA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] cdev: Finish the cdev api with queued mode support
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120180403.1580423-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:20 PM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> On Wed, Jan 20, 2021 at 11:46 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > The subject doesn't make any sense to me.
-> >
-> > But thn again queued sound really weird.  You just have a managed
-> > API with a refcount and synchronization, right?
->
-> Correct.
->
-> "queue" was in reference to the way q_usage_count behaves, but yes,
-> just refcount + synchronization is all this is.
->
-> >
-> > procfs and debugfs already support these kind of managed ops, kinda sad
-> > to duplicate this concept yet another time.
->
-> Oh, I didn't realize there were managed ops there, I'll go take a look
-> and see if cdev can adopt that scheme.
+On Wed, Jan 20, 2021 at 10:04:03AM -0800, Bjorn Andersson wrote:
+> The recent rename of ov5647.yaml missed to update the $id, resulting in
+> a binding check error. Fix this.
+> 
+> Fixes: 1b5071af8240 ("media: dt-bindings: media: i2c: Rename ov5647.yaml")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/media/i2c/ovti,ov5647.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-So in both cases they are leveraging the fact that they are the
-filesystems that allocated the inode and will stash the private
-reference counting somewhere relative to the container_of the
-vfs_inode. I don't immediately see how that scheme can be implied to
-special device files that can come from an inode on any filesystem.
+There's already a patch for this one.
 
-I do see how debugfs and procfs could be unified, but I don't think
-this percpu_ref for cdev is compatible.
-
-Other ideas?
+Rob
