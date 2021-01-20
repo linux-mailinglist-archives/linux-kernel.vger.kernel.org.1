@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0AD2FC7D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6A62FC77A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730051AbhATB2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:28:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46118 "EHLO mail.kernel.org"
+        id S1726121AbhATBbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:31:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726322AbhATB0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:26:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B291B2311C;
-        Wed, 20 Jan 2021 01:26:04 +0000 (UTC)
+        id S1729463AbhATB1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:27:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 707FC23138;
+        Wed, 20 Jan 2021 01:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611105965;
-        bh=Zgo+Eu0ONQsyiqmfFfZYOd5kp7Y4SaoXFo9SIbMhikc=;
+        s=k20201202; t=1611105977;
+        bh=c4n/oy1eAcSxqN3hPZqTVJW5GLL/8Ek2bpHrbeKP/M0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iQTgPSkDXD2XGBV51bqnnGia53i4mqGktyvR39ch7S47YP1Xf8C8d7NeI7Mh2xtPJ
-         60ruQHF4tf3Mvh/55lNWFPfw/ri2YfafA6iO6OQPrrmEnRDJtFy6Pjq9yfc+Wo/Hqp
-         HcQfokKbtM2nJHJj4O/Qv2v5uflchYgLwRnjYS9O+u84o+c9itVIWq9fdowwQof8jF
-         Ig6S6Q2IXaDoyPHbpzepgjxnZOTXazIzJBZZncHCrTtECadYFR2jcShHQinldk5f8x
-         M6+KFKapuGJyoasCH3rHqRVPZPoPS/iS5FC8P5F+QctS4sTxTB96NvDxKh7cNCB2iP
-         7n7/M9UCXR3Og==
+        b=BbQJUTxbYcByZVQP7z+WF4o3mlyXSRdr7yDJR3GIWqp7PgMOvmHvKW90umrlpGYJc
+         P3ZSaUsVo6VYxbqXwgvbqhy/N3AForMzKzVF9rUnyVfrX3y/RW7ZFPZjgW6lf+GCtp
+         O+VcMU0mrly1eA4wHNRkNUizSoUqJ8iWWqGhqvGaqmVTWTpecG+OhTse3fU9Gip5W/
+         euvwl8al0vl0KcNrdkYbao2+5Mh+O3/aUIHfQDsdFBgk4zCa938z4AQKn4e0wsnswv
+         6d5a+ixVXVeECx4YhACLhHRz3500kQvIlV92Pn5vAyDZkMLlTs0XiFhIm2RSaZvuIc
+         EIT+yQYSEn+hA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuming Fan <shumingf@realtek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 02/45] ASoC: rt711: mutex between calibration and power state changes
-Date:   Tue, 19 Jan 2021 20:25:19 -0500
-Message-Id: <20210120012602.769683-2-sashal@kernel.org>
+Cc:     Nilesh Javali <njavali@marvell.com>, Lee Duncan <lduncan@suse.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 11/45] scsi: qedi: Correct max length of CHAP secret
+Date:   Tue, 19 Jan 2021 20:25:28 -0500
+Message-Id: <20210120012602.769683-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -42,54 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Nilesh Javali <njavali@marvell.com>
 
-[ Upstream commit 6108f990c0887d3e8f1db2d13c7012e40a061f28 ]
+[ Upstream commit d50c7986fbf0e2167279e110a2ed5bd8e811c660 ]
 
-To avoid calibration time-out, this patch adds the mutex between calibration and power state changes
+The CHAP secret displayed garbage characters causing iSCSI login
+authentication failure. Correct the CHAP password max length.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20201217085651.24580-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20201217105144.8055-1-njavali@marvell.com
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt711.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/scsi/qedi/qedi_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 65b59dbfb43c8..a9b1b4180c471 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -462,6 +462,8 @@ static int rt711_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 	unsigned int read_ll, read_rl;
- 	int i;
- 
-+	mutex_lock(&rt711->calibrate_mutex);
-+
- 	/* Can't use update bit function, so read the original value first */
- 	addr_h = mc->reg;
- 	addr_l = mc->rreg;
-@@ -547,6 +549,8 @@ static int rt711_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 	if (dapm->bias_level <= SND_SOC_BIAS_STANDBY)
- 		regmap_write(rt711->regmap,
- 				RT711_SET_AUDIO_POWER_STATE, AC_PWRST_D3);
-+
-+	mutex_unlock(&rt711->calibrate_mutex);
- 	return 0;
- }
- 
-@@ -859,9 +863,11 @@ static int rt711_set_bias_level(struct snd_soc_component *component,
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index f5fc7f518f8af..47ad64b066236 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -2245,7 +2245,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
+ 			     chap_name);
  		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-+		mutex_lock(&rt711->calibrate_mutex);
- 		regmap_write(rt711->regmap,
- 			RT711_SET_AUDIO_POWER_STATE,
- 			AC_PWRST_D3);
-+		mutex_unlock(&rt711->calibrate_mutex);
+ 	case ISCSI_BOOT_TGT_CHAP_SECRET:
+-		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
++		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
+ 			     chap_secret);
  		break;
- 
- 	default:
+ 	case ISCSI_BOOT_TGT_REV_CHAP_NAME:
+@@ -2253,7 +2253,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
+ 			     mchap_name);
+ 		break;
+ 	case ISCSI_BOOT_TGT_REV_CHAP_SECRET:
+-		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
++		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
+ 			     mchap_secret);
+ 		break;
+ 	case ISCSI_BOOT_TGT_FLAGS:
 -- 
 2.27.0
 
