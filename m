@@ -2,153 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2B62FDA62
+	by mail.lfdr.de (Postfix) with ESMTP id 8746B2FDA63
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392768AbhATUHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:07:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387823AbhATT6c (ORCPT
+        id S2392819AbhATUHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:07:45 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:42276 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728032AbhATT66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:58:32 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40A7C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:57:46 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id i141so13133715yba.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:57:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ya1LpK8/RXmf6DXoqwnu4lj4b1TvWkLPwrDTMUqdfN4=;
-        b=YHVP0fFZTcVomhP8RD9OiXpFhB+5PLESu8BFdFDW0Q7a6onwnLIICmTSzADYmL0cOZ
-         xxy+XkQVQMoB3XPv6PYKYsLgbWPjq/w3URgj/RK4sklLbZ44pdmz8WZTxFhE58GVCmH5
-         +be9JC1nCx9pc0IyA8pQfCzPPJo+FtFitcd9RaRhO0NztcFpRaihJA3K2I/FCT0fM7yW
-         hrZ1vtGyV4+xI/+n2HhjE+Hf/MmYxBuWpi/K0bTnjWyrl4kr30atZLkF05ISiey5hfId
-         O0biVxUnq2vzb+9ouatgNK8m9zsZBf9rH+25f469cWinWHEYJiq4v3LoZAP7/ab70Zsr
-         Akpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ya1LpK8/RXmf6DXoqwnu4lj4b1TvWkLPwrDTMUqdfN4=;
-        b=t+3J+t982fnm8XWa2nuusWrz8GrIvoYLB8sW+3XGizDjUzLsHgO1w0yT06fKZbAfxt
-         vGqDN0XtWBd3yyf2Uu0Ti3FNawyvAb02mC4K3sY6dfPukC7l1ySojgT8GEsqC2yWUBSn
-         G4oXutkUCcgatzzthx0mDitf16XSfflia6YNq1o2oKQBBR9IAwmC8zxhNGVYUuXddVnW
-         f2lXAC1nMjCTnPIbmGoEm5enEuF+0FpTuGmWnZBvwAYHfZnDmtnltAA08Yge9J6tChvV
-         mohFB+/qP+6k/goDE3yBGVXG2+sungNUVVekELCqHyHJHApX4K8h8FDrALZlHedcgPVU
-         pLYg==
-X-Gm-Message-State: AOAM530nOJeBmmoHMhzVDnGWczQdjM0J3h+RcZzMukxpHcdFv6KCJPxT
-        9dUjpVbDUOv7RDCA2suAXmBbIgTUKs42q8VUL2M=
-X-Google-Smtp-Source: ABdhPJxGQQnZL9zTpV6vNovU0E1SMjAfecQoZtovzYm5OeBSJVHvNlGoGtLCZJZjlL93a0aqpvdjkBnvmSfDpgAywPY=
-X-Received: by 2002:a25:3bd2:: with SMTP id i201mr15745831yba.302.1611172666185;
- Wed, 20 Jan 2021 11:57:46 -0800 (PST)
+        Wed, 20 Jan 2021 14:58:58 -0500
+Date:   Wed, 20 Jan 2021 20:57:57 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611172677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ArQgUZu3uJpF8dcmWtPBA9d/I3lB0qIBjOwmrqwR5Vo=;
+        b=No/hfMoMHm4M3ghg4zS1rFFixxxnD4I/bc8r41okD/e+pj/yVbYmA4FgOGERqWnpxvxFLO
+        AifHxdA1M9fd5mIK98lrjlfeIEyq3Z4ACbZXD9rH3dKymCu9lhdvFlHItXiLwzQg9rp+A/
+        2+ybjEIdN6eJlQ4A4nW0hzDuq5aiButQs3hAzt8H2kHe5/66Rk9WAez064ilkxeUF8K1SH
+        ddCQZAvDw6R6+R5HanfihWidioz//kQIWQXOZcwt4hcihsVEE9v0MFGyOQYoanthlioHUl
+        4l2rhbqudcij+a4ViXrXC4TuN1362IB/ByZ/qz6r8uld0sqQec7nvHMKEIAnDQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611172677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ArQgUZu3uJpF8dcmWtPBA9d/I3lB0qIBjOwmrqwR5Vo=;
+        b=qgx7JoDP8ZdaT8CCIupbzqABOd9h0l0MWsQkpxPKp51haq/jOiU3PIed5SeKGMHSUUyAeU
+        033wzGxg9ti2twDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
+References: <20210120162148.1973-1-urezki@gmail.com>
 MIME-Version: 1.0
-References: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
- <e8c8ef27-1f09-40b5-e5e4-facfcc9956dd@oracle.com> <CAFcO6XMhrhJXWjRymKUWgFUov6OV7fTk-Nu9Tq=kOyPTMRnTug@mail.gmail.com>
- <298485e2-01de-048d-5515-44ac254167e4@oracle.com> <CAFcO6XOvx2W1EvN7PORomgYj4U7kcyzjBC=OiQp9bfRZ33gBMg@mail.gmail.com>
- <225bea89-73ed-5227-3ca1-d74fc86e986f@oracle.com>
-In-Reply-To: <225bea89-73ed-5227-3ca1-d74fc86e986f@oracle.com>
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Thu, 21 Jan 2021 03:57:35 +0800
-Message-ID: <CAFcO6XPunmpMRk03eVzbG3HwPj6oFrRSu1CCW_vMGihU33GKOw@mail.gmail.com>
-Subject: Re: UBSAN: array-index-out-of-bounds in dbAdjTree
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210120162148.1973-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was assigned CVE-2020-27815 via redhat.
+On 2021-01-20 17:21:46 [+0100], Uladzislau Rezki (Sony) wrote:
+> For a single argument we can directly request a page from a caller
+> context when a "carry page block" is run out of free spots. Instead
+> of hitting a slow path we can request an extra page by demand and
+> proceed with a fast path.
+> 
+> A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> and that its fallback is the relatively high latency synchronize_rcu().
+> Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> to allow limited sleeping within the memory allocator.
+> 
+> [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
+>  1 file changed, 26 insertions(+), 16 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index e04e336bee42..2014fb22644d 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+>  	}
+>  }
+>  
+> +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+> +// state specified by flags.  If can_alloc is true, the caller must
+> +// be schedulable and not be holding any locks or mutexes that might be
+> +// acquired by the memory allocator or anything that it might invoke.
+> +// Returns true if ptr was successfully recorded, else the caller must
+> +// use a fallback.
 
-Regards.
-butt3rflyh4ck.
+The whole RCU department is getting swamped by the // comments. Can't we
+have proper kernel doc and /* */ style comments like the remaining part
+of the kernel?
 
+>  static inline bool
+> -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> +	unsigned long *flags, void *ptr, bool can_alloc)
+>  {
+>  	struct kvfree_rcu_bulk_data *bnode;
+>  	int idx;
+>  
+> -	if (unlikely(!krcp->initialized))
+> +	*krcp = krc_this_cpu_lock(flags);
+> +	if (unlikely(!(*krcp)->initialized))
+>  		return false;
+>  
+> -	lockdep_assert_held(&krcp->lock);
+>  	idx = !!is_vmalloc_addr(ptr);
+>  
+>  	/* Check if a new block is required. */
+> -	if (!krcp->bkvhead[idx] ||
+> -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> -		bnode = get_cached_bnode(krcp);
+> -		/* Switch to emergency path. */
+> +	if (!(*krcp)->bkvhead[idx] ||
+> +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> +		bnode = get_cached_bnode(*krcp);
+> +		if (!bnode && can_alloc) {
+> +			krc_this_cpu_unlock(*krcp, *flags);
+> +			bnode = (struct kvfree_rcu_bulk_data *)
 
-On Fri, Nov 20, 2020 at 11:01 PM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
->
-> On 11/20/20 3:52 AM, butt3rflyh4ck wrote:
-> > You are welcome and have you submitted the patch to linux upstream ?
-> > If you have no time do that and I can do it.
->
-> Yes, it's in linux-next now. I'll push it to upstream in the v5.11 window.
->
-> Shaggy
->
-> >
-> > Regard,
-> >  butt3rflyh4ck.
-> >
-> > On Sun, Nov 15, 2020 at 12:17 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
-> >>
-> >> Thanks for reporting and testing this!
-> >>
-> >> Shaggy
-> >>
-> >> On 11/14/20 7:55 AM, butt3rflyh4ck wrote:
-> >>> Yes, I have tested the patch, it seem to fix the problem.
-> >>>
-> >>> Regard,
-> >>>  butt3rflyh4ck.
-> >>>
-> >>> On Sat, Nov 14, 2020 at 5:16 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
-> >>>>
-> >>>> On 10/8/20 12:00 PM, butt3rflyh4ck wrote:
-> >>>>> I report a array-index-out-of-bounds bug (in linux-5.9.0-rc6) found by
-> >>>>> kernel fuzz.
-> >>>>>
-> >>>>> kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.9.0-rc6-config
-> >>>>>
-> >>>>> and can reproduce.
-> >>>>>
-> >>>>> the dmtree_t is that
-> >>>>> typedef union dmtree {
-> >>>>> struct dmaptree t1;
-> >>>>> struct dmapctl t2;
-> >>>>> } dmtree_t;
-> >>>>>
-> >>>>> the dmaptree is that
-> >>>>> struct dmaptree {
-> >>>>> __le32 nleafs; /* 4: number of tree leafs */
-> >>>>> __le32 l2nleafs; /* 4: l2 number of tree leafs */
-> >>>>> __le32 leafidx; /* 4: index of first tree leaf */
-> >>>>> __le32 height; /* 4: height of the tree */
-> >>>>> s8 budmin; /* 1: min l2 tree leaf value to combine */
-> >>>>> s8 stree[TREESIZE]; /* TREESIZE: tree */
-> >>>>> u8 pad[2]; /* 2: pad to word boundary */
-> >>>>> };
-> >>>>> the TREESIZE is totally 341, but the leafidx type is __le32.
-> >>>>
-> >>>> Does this patch fix the problem?
-> >>>>
-> >>>> jfs: Fix array index bounds check in dbAdjTree
-> >>>>
-> >>>> Bounds checking tools can flag a bug in dbAdjTree() for an array index
-> >>>> out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
-> >>>> both structures dmaptree and dmapctl, use the larger array to eliminate
-> >>>> the false positive.
-> >>>>
-> >>>> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-> >>>> ---
-> >>>>  fs/jfs/jfs_dmap.h | 2 +-
-> >>>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/fs/jfs/jfs_dmap.h b/fs/jfs/jfs_dmap.h
-> >>>> index 29891fad3f09..aa03a904d5ab 100644
-> >>>> --- a/fs/jfs/jfs_dmap.h
-> >>>> +++ b/fs/jfs/jfs_dmap.h
-> >>>> @@ -183,7 +183,7 @@ typedef union dmtree {
-> >>>>  #define        dmt_leafidx     t1.leafidx
-> >>>>  #define        dmt_height      t1.height
-> >>>>  #define        dmt_budmin      t1.budmin
-> >>>> -#define        dmt_stree       t1.stree
-> >>>> +#define        dmt_stree       t2.stree
-> >>>>
-> >>>>  /*
-> >>>>   *     on-disk aggregate disk allocation map descriptor.
-> >>>> --
-> >>>> 2.29.2
-> >>>>
+There is no need for this cast.
+
+> +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
+> +			*krcp = krc_this_cpu_lock(flags);
+
+so if bnode is NULL you could retry get_cached_bnode() since it might
+have been filled (given preemption or CPU migration changed something).
+Judging from patch #3 you think that a CPU migration is a bad thing. But
+why?
+
+Sebastian
