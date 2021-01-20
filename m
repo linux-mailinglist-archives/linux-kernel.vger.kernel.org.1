@@ -2,80 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51562FCC33
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F36B2FCC38
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbhATH5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730329AbhATH5E (ORCPT
+        id S1730292AbhATIA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:00:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25731 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730144AbhATH7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:57:04 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59F6C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:56:23 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id m5so1683472pjv.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:56:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=uD3doS0EVCu1WoiDmQKvRQ7GKx+7H2pBnCgA8Mq4TGY=;
-        b=Ik2EQFIOdWoF83W0IFY4s5vJcg5khkzq8iuElxJp2W/hCn54d74jRJlfYqzAFYeaE/
-         SCwZ7o4QaSmoCOaLOdCXLvHwC0SwazOJG7I5ZpRXrz/CniD9lcjd8IImxM59SSJEnpNp
-         +Un7zsbGbIec4DskaXWM6tUOldf3p/66yeNL4=
+        Wed, 20 Jan 2021 02:59:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611129434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=er7iaXjTuPXAuVg2JyI2Go7WG0KWUxlUDhb5X07oLSI=;
+        b=a1loG1gKcFABt83u67yW2nqY8CxDq5F7sQiB3mV1VC2UfBQdrUOOX5/0I8u4uBHWqTlItt
+        3cZILKWtV6xjJjiyWYCG5ZE2Dud0VZcdOsJwY5u5DVRVmpBTJ78zPaET/K28E+6i5mPX+G
+        okiaUsFYaeJNYYph7B3+c3VhaCa4xHQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-HuG9-IN0N2Kip3oJDDNvyQ-1; Wed, 20 Jan 2021 02:57:10 -0500
+X-MC-Unique: HuG9-IN0N2Kip3oJDDNvyQ-1
+Received: by mail-wm1-f71.google.com with SMTP id j133so570676wma.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:57:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=uD3doS0EVCu1WoiDmQKvRQ7GKx+7H2pBnCgA8Mq4TGY=;
-        b=Vo3tFCd54FxhQf+e38Ye4dwRef2khydH+WRpH6gZVgOpQjyfnhGd5J5tixWUQcERJJ
-         2NjRAli8iQrzPqffT6QDpLeCsveZJpvEES4LpqRUvTM7CHG2PQek78D4761vGMoRtjYx
-         a/syqsBZAMJbwDSjU7htXzxZkciBR2GxhiL5peOKc9wRed1f7w81Kx9NE4gzdkPb0gmB
-         DdVntw9iv3sY3anQXACXt/tBlq05pb/B5wbV3KBuX6b6ftZlZg1ejOAuADLuL0DxDZdL
-         OJeVH8M7R6xxeH5LZ4kLFS3EAZ3VWBP9EOHGI52IrBpaa6drJYqBNfP9l0QIhRuscx3s
-         Db5A==
-X-Gm-Message-State: AOAM530CVKTlxZW9Y56MEjA3lCfp2TaKYv0OuO8clV/iaeGrNcF0TfID
-        se7FLf+0msVbf4rrzxtKkwId+sR9y3NB0Q==
-X-Google-Smtp-Source: ABdhPJy0JUQmrhyJ+jBmDeADXQqctK0klVJV0/Qjm9JoxIHblf4rrb/sYMmsksqvU2HE6wOKugM29g==
-X-Received: by 2002:a17:90a:eacf:: with SMTP id ev15mr4364491pjb.209.1611129383013;
-        Tue, 19 Jan 2021 23:56:23 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id a188sm1362494pfb.108.2021.01.19.23.56.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=er7iaXjTuPXAuVg2JyI2Go7WG0KWUxlUDhb5X07oLSI=;
+        b=sKY6mA64lgc4aCWSElGDW2GgRvnEYadNNR+gYC2khJjMScOTHBtlPSS7LUy3LRehtF
+         gULxcqIrP9/+GEMFHZlXHuZ7xOCI7KXNnELHbMOjpRvMHUnt6FLmoZrQRhcyirs2y8iN
+         xCgIuugtQs823k0BRug0bpH/Q/XUARTDg67q3HDBSzp5gACTtMaC1KOm8sscpHx/ZZ21
+         UHFrS/FkVnjM6BqgxvxbKoT3QS5y1EztudkErSgQaOcWC5FCd4/gTsEjHWMo2L8lea+z
+         p+MvFkOFGhfIcYKA2hyt85gpLkkVsl9sUsJp2TjVZrcmkexUmOKGVpX1Q3w1MsCbHkRJ
+         gTHQ==
+X-Gm-Message-State: AOAM532DjrlpSSpXDJJmyH2UZYXQzfumfmzUYGOhARCvX7Y7p5ePA252
+        rXBB3l+V5HyPhlciTH72OqtjrfDC1u9Ecv35DMOELJzw2mWd0U9+sJm/2cB3Ddd5IkXyDoIBlr1
+        +65YguSFLLo7K45f/Ex8rMxPO
+X-Received: by 2002:a05:6000:23c:: with SMTP id l28mr7999291wrz.193.1611129429003;
+        Tue, 19 Jan 2021 23:57:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzUiC5Y9Vg5pC0MU0ECnGIqKfkGRRvWpS4NGc3EA1VxrPUjICeThsn7tnPF+wylrJ5i3NLdeQ==
+X-Received: by 2002:a05:6000:23c:: with SMTP id l28mr7999283wrz.193.1611129428857;
+        Tue, 19 Jan 2021 23:57:08 -0800 (PST)
+Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
+        by smtp.gmail.com with ESMTPSA id s24sm2328921wmh.22.2021.01.19.23.57.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 23:56:22 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 19 Jan 2021 23:57:08 -0800 (PST)
+Date:   Wed, 20 Jan 2021 02:57:05 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lulu@redhat.com
+Subject: Re: [PATCH v1] vdpa/mlx5: Fix memory key MTT population
+Message-ID: <20210120025651-mutt-send-email-mst@kernel.org>
+References: <20210107071845.GA224876@mtl-vdi-166.wap.labs.mlnx>
+ <07d336a3-7fc2-5e4a-667a-495b5bb755da@redhat.com>
+ <20210120053619.GA126435@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1608055716-14796-1-git-send-email-dikshita@codeaurora.org>
-References: <1608055716-14796-1-git-send-email-dikshita@codeaurora.org>
-Subject: Re: [PATCH v5] venus: core: add support to dump FW region
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Date:   Tue, 19 Jan 2021 23:56:20 -0800
-Message-ID: <161112938062.3661239.3637358377915949789@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210120053619.GA126435@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dikshita Agarwal (2020-12-15 10:08:36)
-> Add support to dump video FW region during FW crash
-> using devcoredump helpers.
->=20
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Reviewed-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->=20
-> Major changes since v1:
-> - update the name of function (Stephen)
-> - store start address and size in resource structure during
->   probe and reuse while dumping (Stephen, Stanimir)
-> ---
+On Wed, Jan 20, 2021 at 07:36:19AM +0200, Eli Cohen wrote:
+> On Fri, Jan 08, 2021 at 04:38:55PM +0800, Jason Wang wrote:
+> 
+> Hi Michael,
+> this patch is a fix. Are you going to merge it?
 
-Can this be picked up for the next merge window?
+yes - in the next pull request.
+
+> > 
+> > On 2021/1/7 下午3:18, Eli Cohen wrote:
+> > > map_direct_mr() assumed that the number of scatter/gather entries
+> > > returned by dma_map_sg_attrs() was equal to the number of segments in
+> > > the sgl list. This led to wrong population of the mkey object. Fix this
+> > > by properly referring to the returned value.
+> > > 
+> > > The hardware expects each MTT entry to contain the DMA address of a
+> > > contiguous block of memory of size (1 << mr->log_size) bytes.
+> > > dma_map_sg_attrs() can coalesce several sg entries into a single
+> > > scatter/gather entry of contiguous DMA range so we need to scan the list
+> > > and refer to the size of each s/g entry.
+> > > 
+> > > In addition, get rid of fill_sg() which effect is overwritten by
+> > > populate_mtts().
+> > > 
+> > > Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
+> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > ---
+> > > V0->V1:
+> > > 1. Fix typos
+> > > 2. Improve changelog
+> > 
+> > 
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> > 
+> > 
+> > > 
+> > >   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+> > >   drivers/vdpa/mlx5/core/mr.c        | 28 ++++++++++++----------------
+> > >   2 files changed, 13 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > index 5c92a576edae..08f742fd2409 100644
+> > > --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > @@ -15,6 +15,7 @@ struct mlx5_vdpa_direct_mr {
+> > >   	struct sg_table sg_head;
+> > >   	int log_size;
+> > >   	int nsg;
+> > > +	int nent;
+> > >   	struct list_head list;
+> > >   	u64 offset;
+> > >   };
+> > > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> > > index 4b6195666c58..d300f799efcd 100644
+> > > --- a/drivers/vdpa/mlx5/core/mr.c
+> > > +++ b/drivers/vdpa/mlx5/core/mr.c
+> > > @@ -25,17 +25,6 @@ static int get_octo_len(u64 len, int page_shift)
+> > >   	return (npages + 1) / 2;
+> > >   }
+> > > -static void fill_sg(struct mlx5_vdpa_direct_mr *mr, void *in)
+> > > -{
+> > > -	struct scatterlist *sg;
+> > > -	__be64 *pas;
+> > > -	int i;
+> > > -
+> > > -	pas = MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
+> > > -	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
+> > > -		(*pas) = cpu_to_be64(sg_dma_address(sg));
+> > > -}
+> > > -
+> > >   static void mlx5_set_access_mode(void *mkc, int mode)
+> > >   {
+> > >   	MLX5_SET(mkc, mkc, access_mode_1_0, mode & 0x3);
+> > > @@ -45,10 +34,18 @@ static void mlx5_set_access_mode(void *mkc, int mode)
+> > >   static void populate_mtts(struct mlx5_vdpa_direct_mr *mr, __be64 *mtt)
+> > >   {
+> > >   	struct scatterlist *sg;
+> > > +	int nsg = mr->nsg;
+> > > +	u64 dma_addr;
+> > > +	u64 dma_len;
+> > > +	int j = 0;
+> > >   	int i;
+> > > -	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
+> > > -		mtt[i] = cpu_to_be64(sg_dma_address(sg));
+> > > +	for_each_sg(mr->sg_head.sgl, sg, mr->nent, i) {
+> > > +		for (dma_addr = sg_dma_address(sg), dma_len = sg_dma_len(sg);
+> > > +		     nsg && dma_len;
+> > > +		     nsg--, dma_addr += BIT(mr->log_size), dma_len -= BIT(mr->log_size))
+> > > +			mtt[j++] = cpu_to_be64(dma_addr);
+> > > +	}
+> > >   }
+> > >   static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
+> > > @@ -64,7 +61,6 @@ static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct
+> > >   		return -ENOMEM;
+> > >   	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
+> > > -	fill_sg(mr, in);
+> > >   	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+> > >   	MLX5_SET(mkc, mkc, lw, !!(mr->perm & VHOST_MAP_WO));
+> > >   	MLX5_SET(mkc, mkc, lr, !!(mr->perm & VHOST_MAP_RO));
+> > > @@ -276,8 +272,8 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
+> > >   done:
+> > >   	mr->log_size = log_entity_size;
+> > >   	mr->nsg = nsg;
+> > > -	err = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
+> > > -	if (!err)
+> > > +	mr->nent = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
+> > > +	if (!mr->nent)
+> > >   		goto err_map;
+> > >   	err = create_direct_mr(mvdev, mr);
+> > 
+
