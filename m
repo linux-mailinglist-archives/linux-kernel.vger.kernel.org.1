@@ -2,94 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37F92FE31F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B068E2FE31A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbhAUGoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:44:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbhATXla (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:41:30 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40E5C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:40:49 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id i17so481660ljn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:40:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B0EKRpra5vnzlsqH1m61RjZinafDpDBSUNcZj2tUSZQ=;
-        b=F9fdoDC9z6i3C7NWkauOjoq/M4vmZThwArdnXgPvBySNEv8Jst9vRqTbwdOQOEnAjc
-         eZBSBZ4ouTsYIWAIdUidT+baAn/6s62LyePwXZmdBFmPKANnX1bMJ7sDUQMs0B6q0S4w
-         LYEZVKl1qiT/ODWqFXNDHv7I5oaz/1MGUUAhI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B0EKRpra5vnzlsqH1m61RjZinafDpDBSUNcZj2tUSZQ=;
-        b=UlUV2UguhyX4xWxTmaHADKscaczHhbKhq8OmTQtJSfGJJoHBemvbFthAbIfwHh1x1p
-         UimIO+32JeZ95/JBgUtaLAHH7wSj12PEQOhyh2O/WRZKOcEvg99gbAEgcvt4cz/xcgzG
-         rsxGW+0Or4SFI8OHcO6qya7i8DZN7Sg9+vRPeIXBO75thZNTfIhfd3hzblubCuMESKhQ
-         R3u7likDZh5t35nU/hn6vS5acsGYUO5zuh3Kcw024LTDXVxGE1NRHdQwDer66x2gSxCa
-         Ys0JWdGp29G49FEiDpcVr5fLy/g/r1x+R6uFNzbLbWyD8WX+ObRdoHQv2sRSmKtJ+ZdY
-         0p/Q==
-X-Gm-Message-State: AOAM530XgAuZyCEyfy6Eg9JGrO1lQGi3Ku0mSgfKePxqpl0xxsEOXJZi
-        RGMBfJuhPlQe/9hBS8/hcBiPMAQHb1vtJg==
-X-Google-Smtp-Source: ABdhPJyqt0fE3VMufA7MX/8AnipNgp5FNnI9Q/Xy3IIxE20GPguLbOjfFw00imVnDeACq7YcxAWY8Q==
-X-Received: by 2002:a2e:8714:: with SMTP id m20mr5193292lji.320.1611186048005;
-        Wed, 20 Jan 2021 15:40:48 -0800 (PST)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id d24sm326527lfc.225.2021.01.20.15.40.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 15:40:47 -0800 (PST)
-Received: by mail-lj1-f170.google.com with SMTP id p13so475378ljg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:40:46 -0800 (PST)
-X-Received: by 2002:a2e:9d89:: with SMTP id c9mr5862326ljj.220.1611186046375;
- Wed, 20 Jan 2021 15:40:46 -0800 (PST)
+        id S1726666AbhAUGlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:41:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732101AbhATXo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 18:44:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A31AE23603
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611186204;
+        bh=GbRF3i3x8D+is4aONiKOpafSZKWah8Gz4GGTPRXLbYw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ToPvmAjFKWIg8fBrTufi5tcLdsYaJaJQAEgis6nWuyHVNg+BQxyxaN5VvSdLq0ehS
+         bwWnPDLxTAXKAcaG9jYXCJKof8PYkx4T+BOSGr/74BESA1WDTVar6UpnnpmQxsK3TK
+         W0g46IXB9Qqw755cfGmq/Wh4WhMAt0TmvMpZmhG1oaXQGvcSagMg/du8E+saBib1tv
+         o5O62x4lA/sJePJBgbX+p6JUBzDiVQsSHqkdN7bRUeeWkgKwF0wq3vqnxK9q6Jd6pR
+         yDTtKMffXHsBcejvncQoW3Ni3ihI0NmvRWYEw0vr3ODuE7XRVRKc9Q06AkCF9wCSix
+         4irK4HsTMysgA==
+Received: by mail-wr1-f54.google.com with SMTP id d26so16221wrb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:43:24 -0800 (PST)
+X-Gm-Message-State: AOAM532fQx5+ercqh9Lqph51jeh47ZA9EkuWEEM/aWKCalo2brZWjYV7
+        qEYlWGtCk2WcSV3nD7BtG/+CfgC+tzT5eJYVHw==
+X-Google-Smtp-Source: ABdhPJyLCbRd+WlYCtBDR0NwMoVCFhlQCm4Nu9FhzK8aR30JvgSkjnN2OLHoxHVVOwZsBj9K+JWiqW1czVnoCqcN0aA=
+X-Received: by 2002:adf:e84c:: with SMTP id d12mr11979282wrn.382.1611186203245;
+ Wed, 20 Jan 2021 15:43:23 -0800 (PST)
 MIME-Version: 1.0
-References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
- <20210118085311.GA2735@lst.de> <20210118193457.GA736435@zeniv-ca>
- <CAHk-=wh6HLz_qMam_J=W3X4caBqAGN8P+8c_y+sGFvBaD70K8w@mail.gmail.com>
- <20210118195400.GC736435@zeniv-ca> <20210120162608.GB740243@zeniv-ca>
- <20210120191116.GC740243@zeniv-ca> <CAHk-=wjtTC_jNL+K1Ey_wY_KpTYZOR5XwhkZ+Eu7vviVi5itDQ@mail.gmail.com>
- <20210120231439.GE740243@zeniv-ca>
-In-Reply-To: <20210120231439.GE740243@zeniv-ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Jan 2021 15:40:29 -0800
-X-Gmail-Original-Message-ID: <CAHk-=widQ+oLHbm=wSrewpLgXJg_FWCZV3BERmaEAx+ZCMfmZg@mail.gmail.com>
-Message-ID: <CAHk-=widQ+oLHbm=wSrewpLgXJg_FWCZV3BERmaEAx+ZCMfmZg@mail.gmail.com>
-Subject: Re: Splicing to/from a tty
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Oliver Giles <ohw.giles@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210106231729.17173-1-chunkuang.hu@kernel.org>
+ <20210106231729.17173-6-chunkuang.hu@kernel.org> <YAh3WrRDwtGJIHok@ziggy.stardust>
+In-Reply-To: <YAh3WrRDwtGJIHok@ziggy.stardust>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 21 Jan 2021 07:43:09 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9N2khR4Qdw8=sb4XnEpbq=HddLPkmfUJ03g=CQWVqNTg@mail.gmail.com>
+Message-ID: <CAAOTY_9N2khR4Qdw8=sb4XnEpbq=HddLPkmfUJ03g=CQWVqNTg@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] soc / drm: mediatek: Move mtk mutex driver to soc folder
+To:     Matthias Brugger <matthias.bgg@kernel.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, CK Hu <ck.hu@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 3:14 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+Hi, Matthias:
+
+Matthias Brugger <matthias.bgg@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=
+=8821=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=882:33=E5=AF=AB=E9=81=93=
+=EF=BC=9A
 >
-> Umm...  Why do we clear FMODE_PWRITE there [seq_open - ed], anyway?
+> On Thu, Jan 07, 2021 at 07:17:29AM +0800, Chun-Kuang Hu wrote:
+> > From: CK Hu <ck.hu@mediatek.com>
+> >
+> > mtk mutex is used by DRM and MDP driver, and its function is SoC-specif=
+ic,
+> > so move it to soc folder.
+> >
+> > Signed-off-by: CK Hu <ck.hu@mediatek.com>
+> > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+>
+> Acked-by: Matthias Brugger <matthias.bgg@gmail.com>
+>
+> Please take the patch through your tree. Thanks!
 
-I think it's pointless and historical, and comes from "several /proc
-files supported the simple single-write model, nothing ever supported
-moving around and writing".
+Applied, thanks.
 
-The seq_file stuff was always about reading, and then the writing part
-was generally random special-case hacks on the side.
+Regards,
+Chun-Kuang.
 
-So I think that "clear PWRITE" thing is to make sure we get sane error
-cases if somebody tries something funny, knowing that none of the
-hacky stuff support it.
-
-And then the very special kernfs thing adds it back in, because it
-does in fact allow seeking writes.
-
-             Linus
+>
+> > ---
+> >  drivers/gpu/drm/mediatek/Makefile                 |  3 +--
+> >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c           |  2 +-
+> >  drivers/gpu/drm/mediatek/mtk_drm_drv.c            |  1 -
+> >  drivers/gpu/drm/mediatek/mtk_drm_drv.h            |  1 -
+> >  drivers/soc/mediatek/Makefile                     |  1 +
+> >  .../mtk_mutex.c =3D> soc/mediatek/mtk-mutex.c}      | 15 +++++++++++++=
+--
+> >  .../linux/soc/mediatek/mtk-mutex.h                |  0
+> >  7 files changed, 16 insertions(+), 7 deletions(-)
+> >  rename drivers/{gpu/drm/mediatek/mtk_mutex.c =3D> soc/mediatek/mtk-mut=
+ex.c} (96%)
+> >  rename drivers/gpu/drm/mediatek/mtk_mutex.h =3D> include/linux/soc/med=
+iatek/mtk-mutex.h (100%)
+> >
+> > diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediat=
+ek/Makefile
+> > index 09979c4c340a..01d06332f767 100644
+> > --- a/drivers/gpu/drm/mediatek/Makefile
+> > +++ b/drivers/gpu/drm/mediatek/Makefile
+> > @@ -9,8 +9,7 @@ mediatek-drm-y :=3D mtk_disp_color.o \
+> >                 mtk_drm_gem.o \
+> >                 mtk_drm_plane.o \
+> >                 mtk_dsi.o \
+> > -               mtk_dpi.o \
+> > -               mtk_mutex.o
+> > +               mtk_dpi.o
+> >
+> >  obj-$(CONFIG_DRM_MEDIATEK) +=3D mediatek-drm.o
+> >
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/=
+mediatek/mtk_drm_crtc.c
+> > index 1e3a9450680b..e9b6788d52cd 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > @@ -7,6 +7,7 @@
+> >  #include <linux/pm_runtime.h>
+> >  #include <linux/soc/mediatek/mtk-cmdq.h>
+> >  #include <linux/soc/mediatek/mtk-mmsys.h>
+> > +#include <linux/soc/mediatek/mtk-mutex.h>
+> >
+> >  #include <asm/barrier.h>
+> >  #include <soc/mediatek/smi.h>
+> > @@ -22,7 +23,6 @@
+> >  #include "mtk_drm_ddp_comp.h"
+> >  #include "mtk_drm_gem.h"
+> >  #include "mtk_drm_plane.h"
+> > -#include "mtk_mutex.h"
+> >
+> >  /*
+> >   * struct mtk_drm_crtc - MediaTek specific crtc structure.
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/m=
+ediatek/mtk_drm_drv.c
+> > index b99a06e6834e..5d39dd54255d 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> > @@ -588,7 +588,6 @@ static struct platform_driver mtk_drm_platform_driv=
+er =3D {
+> >  };
+> >
+> >  static struct platform_driver * const mtk_drm_drivers[] =3D {
+> > -     &mtk_mutex_driver,
+> >       &mtk_disp_color_driver,
+> >       &mtk_disp_ovl_driver,
+> >       &mtk_disp_rdma_driver,
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/m=
+ediatek/mtk_drm_drv.h
+> > index ae366868d01a..e8238fa4aa2a 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> > @@ -46,7 +46,6 @@ struct mtk_drm_private {
+> >       struct drm_atomic_state *suspend_state;
+> >  };
+> >
+> > -extern struct platform_driver mtk_mutex_driver;
+> >  extern struct platform_driver mtk_disp_color_driver;
+> >  extern struct platform_driver mtk_disp_ovl_driver;
+> >  extern struct platform_driver mtk_disp_rdma_driver;
+> > diff --git a/drivers/soc/mediatek/Makefile b/drivers/soc/mediatek/Makef=
+ile
+> > index b6908db534c2..90270f8114ed 100644
+> > --- a/drivers/soc/mediatek/Makefile
+> > +++ b/drivers/soc/mediatek/Makefile
+> > @@ -6,3 +6,4 @@ obj-$(CONFIG_MTK_PMIC_WRAP) +=3D mtk-pmic-wrap.o
+> >  obj-$(CONFIG_MTK_SCPSYS) +=3D mtk-scpsys.o
+> >  obj-$(CONFIG_MTK_SCPSYS_PM_DOMAINS) +=3D mtk-pm-domains.o
+> >  obj-$(CONFIG_MTK_MMSYS) +=3D mtk-mmsys.o
+> > +obj-$(CONFIG_MTK_MMSYS) +=3D mtk-mutex.o
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_mutex.c b/drivers/soc/mediate=
+k/mtk-mutex.c
+> > similarity index 96%
+> > rename from drivers/gpu/drm/mediatek/mtk_mutex.c
+> > rename to drivers/soc/mediatek/mtk-mutex.c
+> > index 66344759e622..f531b119da7a 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_mutex.c
+> > +++ b/drivers/soc/mediatek/mtk-mutex.c
+> > @@ -10,8 +10,7 @@
+> >  #include <linux/platform_device.h>
+> >  #include <linux/regmap.h>
+> >  #include <linux/soc/mediatek/mtk-mmsys.h>
+> > -
+> > -#include "mtk_mutex.h"
+> > +#include <linux/soc/mediatek/mtk-mutex.h>
+> >
+> >  #define MT2701_MUTEX0_MOD0                   0x2c
+> >  #define MT2701_MUTEX0_SOF0                   0x30
+> > @@ -241,6 +240,7 @@ struct mtk_mutex *mtk_mutex_get(struct device *dev)
+> >
+> >       return ERR_PTR(-EBUSY);
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_get);
+> >
+> >  void mtk_mutex_put(struct mtk_mutex *mutex)
+> >  {
+> > @@ -251,6 +251,7 @@ void mtk_mutex_put(struct mtk_mutex *mutex)
+> >
+> >       mutex->claimed =3D false;
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_put);
+> >
+> >  int mtk_mutex_prepare(struct mtk_mutex *mutex)
+> >  {
+> > @@ -258,6 +259,7 @@ int mtk_mutex_prepare(struct mtk_mutex *mutex)
+> >                                                mutex[mutex->id]);
+> >       return clk_prepare_enable(mtx->clk);
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_prepare);
+> >
+> >  void mtk_mutex_unprepare(struct mtk_mutex *mutex)
+> >  {
+> > @@ -265,6 +267,7 @@ void mtk_mutex_unprepare(struct mtk_mutex *mutex)
+> >                                                mutex[mutex->id]);
+> >       clk_disable_unprepare(mtx->clk);
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_unprepare);
+> >
+> >  void mtk_mutex_add_comp(struct mtk_mutex *mutex,
+> >                       enum mtk_ddp_comp_id id)
+> > @@ -316,6 +319,7 @@ void mtk_mutex_add_comp(struct mtk_mutex *mutex,
+> >                      mtx->regs +
+> >                      DISP_REG_MUTEX_SOF(mtx->data->mutex_sof_reg, mutex=
+->id));
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_add_comp);
+> >
+> >  void mtk_mutex_remove_comp(struct mtk_mutex *mutex,
+> >                          enum mtk_ddp_comp_id id)
+> > @@ -355,6 +359,7 @@ void mtk_mutex_remove_comp(struct mtk_mutex *mutex,
+> >               break;
+> >       }
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_remove_comp);
+> >
+> >  void mtk_mutex_enable(struct mtk_mutex *mutex)
+> >  {
+> > @@ -365,6 +370,7 @@ void mtk_mutex_enable(struct mtk_mutex *mutex)
+> >
+> >       writel(1, mtx->regs + DISP_REG_MUTEX_EN(mutex->id));
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_enable);
+> >
+> >  void mtk_mutex_disable(struct mtk_mutex *mutex)
+> >  {
+> > @@ -375,6 +381,7 @@ void mtk_mutex_disable(struct mtk_mutex *mutex)
+> >
+> >       writel(0, mtx->regs + DISP_REG_MUTEX_EN(mutex->id));
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_disable);
+> >
+> >  void mtk_mutex_acquire(struct mtk_mutex *mutex)
+> >  {
+> > @@ -388,6 +395,7 @@ void mtk_mutex_acquire(struct mtk_mutex *mutex)
+> >                                     tmp, tmp & INT_MUTEX, 1, 10000))
+> >               pr_err("could not acquire mutex %d\n", mutex->id);
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_acquire);
+> >
+> >  void mtk_mutex_release(struct mtk_mutex *mutex)
+> >  {
+> > @@ -396,6 +404,7 @@ void mtk_mutex_release(struct mtk_mutex *mutex)
+> >
+> >       writel(0, mtx->regs + DISP_REG_MUTEX(mutex->id));
+> >  }
+> > +EXPORT_SYMBOL_GPL(mtk_mutex_release);
+> >
+> >  static int mtk_mutex_probe(struct platform_device *pdev)
+> >  {
+> > @@ -461,3 +470,5 @@ struct platform_driver mtk_mutex_driver =3D {
+> >               .of_match_table =3D mutex_driver_dt_match,
+> >       },
+> >  };
+> > +
+> > +builtin_platform_driver(mtk_mutex_driver);
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_mutex.h b/include/linux/soc/m=
+ediatek/mtk-mutex.h
+> > similarity index 100%
+> > rename from drivers/gpu/drm/mediatek/mtk_mutex.h
+> > rename to include/linux/soc/mediatek/mtk-mutex.h
+> > --
+> > 2.17.1
+> >
+> >
+> > _______________________________________________
+> > Linux-mediatek mailing list
+> > Linux-mediatek@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
