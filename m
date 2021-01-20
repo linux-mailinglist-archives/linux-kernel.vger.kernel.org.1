@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E992FC89F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 183A62FC8CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbhATDTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 22:19:25 -0500
-Received: from mga06.intel.com ([134.134.136.31]:46778 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726590AbhATDTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 22:19:00 -0500
-IronPort-SDR: WLGwM5rTRnJmQAuxWTsR5FYkCjJu5GBqFSmi14pzQ0JIlOnpT/n3k2qJ7h5O+UMljmOGMgVTlX
- eq+nXQTCV0wA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="240576459"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="240576459"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 19:18:19 -0800
-IronPort-SDR: wueZI4YOmOBr9YteD8PRuaouD0JLHSvruJsbYv5YIHpwzM9G07p7vrmzAjNJw7wDmmhKsZ36Pa
- 7yY89cfrjunA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="355879853"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Jan 2021 19:18:16 -0800
-Date:   Wed, 20 Jan 2021 11:13:52 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v7 2/2] Documentation: fpga: dfl: Add description for DFL
-  UIO support
-Message-ID: <20210120031352.GA10151@yilunxu-OptiPlex-7050>
-References: <1611110606-10380-1-git-send-email-yilun.xu@intel.com>
- <1611110606-10380-3-git-send-email-yilun.xu@intel.com>
- <4230b792-71e9-842d-ebdf-ad8bac8e11ef@infradead.org>
+        id S1730770AbhATDXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:23:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728131AbhATDXR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 22:23:17 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C29C061757;
+        Tue, 19 Jan 2021 19:22:37 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id e67so9536517ybc.12;
+        Tue, 19 Jan 2021 19:22:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=f9pMfHMJFLWFvKkxl3fDIxRex/hLf2XjpUacI+mZUlo=;
+        b=Y74qXsQE7DVaV2IaNQj6xHpHJyEOF2ivRh39VoknvHawJjTV3KMMtw2Zu26MXjH9V4
+         IQl0fm9vXz29qN4pKZVPWCbn8RY79Udnhfp4q3bmpixPzX0pRYkfzjj/KdyZv8GYMwf6
+         leD5Y+AS9fxDidVQ+wtTo06S5TWlTVlD/By0C4VKlj36a6aVD/6mW/j+CNyhbV3/7FZe
+         uEyYsEUIqiQx/7Fr9rFoOzPlwzCl98vpGt4wMbpCbEsJOeN/vMU0BhmwqYj307cNqWEX
+         vEWfkgDy2Osr3dv3yWSl2yKclvnYYY9cEovrPVbHaspDcq3EuwjfU7jS7Y69RXwI5vcK
+         gsnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=f9pMfHMJFLWFvKkxl3fDIxRex/hLf2XjpUacI+mZUlo=;
+        b=HEoDerz19yMzg5PVBLZhtOntX0HTAU6oArrkAdpOocLQvHKrYOYeBtm++Qbli58D7a
+         z4fwnUUj1KIdzcEABDMJyT10Dnqt+9qk8y7w+ozxBhsGH8K4kwAlL4Luy/s+81QdI4Yf
+         CNOz/Ajh5IYNElj3MRA3jcFhPxB9Neis3E6Ru1BEDthfoJAEvlTwwy0+ph5cCqRXjd35
+         EQpvWP4kEE/MVTJbdlV3JXQDk4YLhJmtL/Nd4VU/lGsMSP3G6GflckIt1kgeWHl7aiJB
+         jHOf0ThZft4cdUs7V0vGdTLV9XJQWRCB2lw2r+UOw8sIEZMsnLB542VbsXcVus7yIEMD
+         RgvQ==
+X-Gm-Message-State: AOAM5319kkuiz2OAuXaqzHMr9C+bCCjHFQof10CI51NFu+A4YcgXxk9I
+        1ThVBGLJXyPefgp8xilGYymZtq0xH/4fjVMi+m0=
+X-Google-Smtp-Source: ABdhPJzpBTZBCK5+V+Eko13BUTOyrdrdSVMlL6YqRHttJSTJr1LKYUuJjJUHuiZ75zl5fegkOpEfdFtTtwwqJ2/R9Pg=
+X-Received: by 2002:a25:688c:: with SMTP id d134mr10841417ybc.477.1611112956721;
+ Tue, 19 Jan 2021 19:22:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4230b792-71e9-842d-ebdf-ad8bac8e11ef@infradead.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Wed, 20 Jan 2021 11:22:11 +0800
+Message-ID: <CAD-N9QUVDpHjSwZa+w3Zxx_Pn5ZrBKuhGhbg9PoyR=xbrMb88g@mail.gmail.com>
+Subject: =?UTF-8?Q?=E2=80=9CKASAN=3A_null=2Dptr=2Dderef_Write_in_event=5Fhandler=E2=80=9D_a?=
+        =?UTF-8?Q?nd_=22KASAN=3A_null=2Dptr=2Dderef_Write_in_vhci=5Fshutdown=5Fconnection=22?=
+        =?UTF-8?Q?_should_share_the_same_root_cause=2E?=
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, shuah@kernel.org,
+        valentina.manea.m@gmail.com, hdanton@sina.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:12:24PM -0800, Randy Dunlap wrote:
-> Doc suggestions:
-> 
-> On 1/19/21 6:43 PM, Xu Yilun wrote:
-> > This patch adds description for UIO support for dfl devices on DFL
-> > bus.
-> > 
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > ---
-> > v2: no doc in v1, add it for v2.
-> > v3: some documentation fixes.
-> > v4: documentation change since the driver matching is changed.
-> > v5: no change.
-> > v6: improve the title of the userspace driver support section.
-> >     some word improvement.
-> > v7: rebased to next-20210119
-> > ---
-> >  Documentation/fpga/dfl.rst | 25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> > 
-> > diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> > index c41ac76..f96a6fb 100644
-> > --- a/Documentation/fpga/dfl.rst
-> > +++ b/Documentation/fpga/dfl.rst
-> > @@ -7,6 +7,7 @@ Authors:
-> >  - Enno Luebbers <enno.luebbers@intel.com>
-> >  - Xiao Guangrong <guangrong.xiao@linux.intel.com>
-> >  - Wu Hao <hao.wu@intel.com>
-> > +- Xu Yilun <yilun.xu@intel.com>
-> >  
-> >  The Device Feature List (DFL) FPGA framework (and drivers according to
-> >  this framework) hides the very details of low layer hardwares and provides
-> > @@ -530,6 +531,30 @@ Being able to specify more than one DFL per BAR has been considered, but it
-> >  was determined the use case did not provide value.  Specifying a single DFL
-> >  per BAR simplifies the implementation and allows for extra error checking.
-> >  
-> > +
-> > +Userspace driver support for DFL devices
-> > +========================================
-> > +The purpose of an FPGA is to be reprogrammed with newly developed hardware
-> > +components. New hardware can instantiate a new private feature in the DFL, and
-> > +then get a DFL device in their system. In some cases users may need a userspace
-> 
->    then present a DFL device in the system.
-> 
-> > +driver for the DFL device:
-> > +
-> > +* Users may need to run some diagnostic test for their hardwares.
-> 
->                                                           hardware.
-> 
-> > +* Users may prototype the kernel driver in user space.
-> > +* Some hardware is designed for specific purposes and does not fit into one of
-> > +  the standard kernel subsystems.
-> > +
-> > +This requires direct access to MMIO space and interrupt handling from
-> > +userspace. The dfl-uio-pdev module exposes the UIO device interfaces for this
-> > +purpose. It adds the uio_pdrv_genirq platform device with the resources of
-> > +the DFL feature, and lets the generic UIO platform device driver provide UIO
-> > +support to userspace.
-> > +
-> > +FPGA_DFL_UIO_PDEV should be selected to enable the dfl-uio-pdev module driver.
-> > +To support a new DFL feature been directly accessed via UIO, its feature id
-> 
->    To support a new DFL feature via UIO direct access, its feature id
+Dear kernel developers,
 
-Thanks for the fixes. Will fix them all.
+I found that on the syzbot dashboard, =E2=80=9CKASAN: null-ptr-deref Write =
+in
+event_handler=E2=80=9D[1] and
+"KASAN: null-ptr-deref Write in vhci_shutdown_connection" () should
+share the same root cause.
 
-Yilun
+
+The reasons for the above statement:
+1) the stack trace is the same, and this title difference is due to
+the inline property of "vhci_shutdown_connection";
+2) their PoCs are the same as each other.
+
+If you can have any issues with this statement or our information is
+useful to you, please let us know. Thanks very much.
+
+[1] KASAN: null-ptr-deref Write in event_handler -
+https://syzkaller.appspot.com/bug?id=3D28cccdd18b4bb8670d077937fb8d4849dca9=
+6230
+[2] KASAN: null-ptr-deref Write in vhci_shutdown_connection -
+https://syzkaller.appspot.com/bug?id=3Dc21c07f3d51769405e8efc027bdb927515dc=
+c7d6
+
+--
+My best regards to you.
+
+     No System Is Safe!
+     Dongliang Mu
