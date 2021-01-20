@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96472FC734
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8322FC73E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731310AbhATBxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:53:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53152 "EHLO mail.kernel.org"
+        id S1731479AbhATBwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:52:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731138AbhATBuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731080AbhATBuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:50:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8C7ED22CE3;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 73714224B1;
         Wed, 20 Jan 2021 01:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611107410;
-        bh=BiEgtoQNxGyW3CRuCJ3i4VnSIzaDJg13qEScSNmD3Ww=;
+        bh=QvXDt3LEXKwztqUdMgdHJQOZvbdsHauUw1+45qXWZ1c=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EJKDBB70wQrMFGGBp8NDO2PKuBvPoKLXkD+uxlxkTGV/xuFPmFWQ8pQIoWBKewKtH
-         UF5ZrhVVB6UQXgEzA9SloCqmA/IbudRmyiG4C5oxG7eMpuCA7wqQ4Vfy665Prez+Cm
-         EruI6xgHA7ICdomyC3BSRWj6g6rFwQMt9j8KJLHiYCYyvTdxI+YIhmNeOb7rtIjfUu
-         6eH6K+85IoDyAH4RC+MJb0VRAqg6jt4XDgvQ1QHbHTS5i5ccAIWC6DA26Kg+1j6MZ9
-         XyrwtEPtxH0ov5xCAw+zrKBfMGfdcXlHdgE5vcQiF5K+CCEXEg+xwxR1HToCMOb6bm
-         ytnYtY7L6Frog==
+        b=tg2RriRlmwazptzesO8jNlH4TO7qxJdiyNnlPkkwk9hx79S3iOnnGZAgTCbTCiDxR
+         Z9u3D1O0MV5IIDT2ATQN1Aa4EsF9c/YRjuYzM5C7kCUgQeo7Y5s6j87IynJgQUICvE
+         wH/tCldNGH3k3ix9uLzhJ6SsPHC7Olvt7D3LRGF0UUSCjB0WgHOCCeRN18ATVMgAC3
+         9TeQ1GJaDTQV/m98TIG7HPCm3XvIjNhWR7xGF+LKNWKqnYyC4jvUG0gLqXzd+T6dSn
+         TXMxxC3LD7Ss2Y8Pka0FQycTKQRCQf6PHaLcALKDLlPJZSiwb2UuN/NnL56PGCCgsR
+         wF/hOl0/w5wRA==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 8D420605D2;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 68FEF60591;
         Wed, 20 Jan 2021 01:50:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: tun: fix misspellings using codespell tool
+Subject: Re: [PATCH] taprio: boolean values to a bool variable
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161110741057.23772.6253878194715945679.git-patchwork-notify@kernel.org>
+Message-Id: <161110741042.23772.15208009210857088847.git-patchwork-notify@kernel.org>
 Date:   Wed, 20 Jan 2021 01:50:10 +0000
-References: <20210118111539.35886-1-dong.menglong@zte.com.cn>
-In-Reply-To: <20210118111539.35886-1-dong.menglong@zte.com.cn>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dong.menglong@zte.com.cn
+References: <1610958662-71166-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1610958662-71166-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,19 +47,20 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 18 Jan 2021 03:15:39 -0800 you wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+On Mon, 18 Jan 2021 16:31:02 +0800 you wrote:
+> Fix the following coccicheck warnings:
 > 
-> Some typos are found out by codespell tool:
+> ./net/sched/sch_taprio.c:393:3-16: WARNING: Assignment of 0/1 to bool
+> variable.
 > 
-> $ codespell -w -i 3 ./drivers/net/tun.c
-> aovid  ==> avoid
+> ./net/sched/sch_taprio.c:375:2-15: WARNING: Assignment of 0/1 to bool
+> variable.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next] net: tun: fix misspellings using codespell tool
-    https://git.kernel.org/netdev/net-next/c/c2e315b8c399
+  - taprio: boolean values to a bool variable
+    https://git.kernel.org/netdev/net-next/c/0deee7aa23a5
 
 You are awesome, thank you!
 --
