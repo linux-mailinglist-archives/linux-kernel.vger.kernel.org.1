@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE03E2FC8A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F34F2FC863
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731562AbhATDUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 22:20:54 -0500
-Received: from mga07.intel.com ([134.134.136.100]:40628 "EHLO mga07.intel.com"
+        id S2388730AbhATDDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:03:19 -0500
+Received: from mga06.intel.com ([134.134.136.31]:3913 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727630AbhATCj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:39:59 -0500
-IronPort-SDR: pSyP5hQogrtR9ID8gFqnzg7+Z8l5gxTV7JUlX7DmxOnApLxSzdvfvYk+Fo/7sz1E73KgvfS06g
- /eZfPM8bi+4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="243103793"
+        id S2387494AbhATCjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 21:39:17 -0500
+IronPort-SDR: mxgiDw+tuMDeHbQB/72JgGLpHagRZOB5POz7dtVacr+C7Txl6hbpBy5CkTnFsF4APipp4u1g/a
+ NCrvlJiigNPA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="240572463"
 X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="243103793"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 18:39:17 -0800
-IronPort-SDR: AMFOgMYLSnu5sRn0bxdFzxQd+0lpYP1MsQCtQ0UDYubIzxEB9ikZrLAZlolf2v0KMi38MubRhz
- ZQCmdvEwsQXg==
+   d="scan'208";a="240572463"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 18:37:28 -0800
+IronPort-SDR: Zf119pcf4SzdD8zILodBx/X8amBPPZOTguiV0ZLpdjZZQ36bGoKJg+iArkIY9cx15zg5SnzjF1
+ vEapR4FdF4Wg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="355869079"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Jan 2021 18:39:14 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, yilun.xu@intel.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: [PATCH 2/2] mfd: intel-m10-bmc: add access table configuration to the regmap
-Date:   Wed, 20 Jan 2021 10:34:41 +0800
-Message-Id: <1611110081-10056-2-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611110081-10056-1-git-send-email-yilun.xu@intel.com>
-References: <1611110081-10056-1-git-send-email-yilun.xu@intel.com>
+   d="scan'208";a="466923220"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 18:37:28 -0800
+Received: from [10.214.172.191] (unknown [10.214.172.191])
+        by linux.intel.com (Postfix) with ESMTP id 25C1F5807EA;
+        Tue, 19 Jan 2021 18:37:24 -0800 (PST)
+Subject: Re: [PATCH v11 0/2] Add Intel LGM SoC DMA support
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        malliamireddy009@gmail.com, rtanwar@maxlinear.com,
+        lchuanhua@maxlinear.com
+References: <cover.1610703653.git.mallikarjunax.reddy@linux.intel.com>
+ <20210117055714.GJ2771@vkoul-mobl>
+From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
+Message-ID: <f624ed42-f1e8-6309-2439-09f1e496015d@linux.intel.com>
+Date:   Wed, 20 Jan 2021 10:37:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210117055714.GJ2771@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Ok Vinod.
 
-This patch adds access tables to the MAX 10 BMC regmap. This prevents
-the host from accessing the unwanted I/O space. It also filters out the
-invalid outputs when reading the regmap debugfs interface.
+Thanks,
+Mallikarjuna reddy A
 
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
----
- drivers/mfd/intel-m10-bmc.c       | 14 ++++++++++++++
- include/linux/mfd/intel-m10-bmc.h |  5 ++++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
-index b84579b..0ae3053 100644
---- a/drivers/mfd/intel-m10-bmc.c
-+++ b/drivers/mfd/intel-m10-bmc.c
-@@ -23,10 +23,24 @@ static struct mfd_cell m10bmc_pacn3000_subdevs[] = {
- 	{ .name = "n3000bmc-secure" },
- };
- 
-+static const struct regmap_range m10bmc_regmap_range[] = {
-+	regmap_reg_range(M10BMC_LEGACY_SYS_BASE + M10BMC_BUILD_VER,
-+			 M10BMC_LEGACY_SYS_BASE + M10BMC_BUILD_VER),
-+	regmap_reg_range(M10BMC_SYS_BASE, M10BMC_SYS_END),
-+	regmap_reg_range(M10BMC_FLASH_BASE, M10BMC_FLASH_END),
-+};
-+
-+static const struct regmap_access_table m10bmc_access_table = {
-+	.yes_ranges	= m10bmc_regmap_range,
-+	.n_yes_ranges	= ARRAY_SIZE(m10bmc_regmap_range),
-+};
-+
- static struct regmap_config intel_m10bmc_regmap_config = {
- 	.reg_bits = 32,
- 	.val_bits = 32,
- 	.reg_stride = 4,
-+	.wr_table = &m10bmc_access_table,
-+	.rd_table = &m10bmc_access_table,
- 	.max_register = M10BMC_MEM_END,
- };
- 
-diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-index 06da62c..4ba88ed 100644
---- a/include/linux/mfd/intel-m10-bmc.h
-+++ b/include/linux/mfd/intel-m10-bmc.h
-@@ -11,7 +11,10 @@
- 
- #define M10BMC_LEGACY_SYS_BASE		0x300400
- #define M10BMC_SYS_BASE			0x300800
--#define M10BMC_MEM_END			0x1fffffff
-+#define M10BMC_SYS_END			0x300fff
-+#define M10BMC_FLASH_BASE		0x10000000
-+#define M10BMC_FLASH_END		0x1fffffff
-+#define M10BMC_MEM_END			M10BMC_FLASH_END
- 
- /* Register offset of system registers */
- #define NIOS2_FW_VERSION		0x0
--- 
-2.7.4
-
+On 1/17/2021 1:57 PM, Vinod Koul wrote:
+> On 15-01-21, 17:56, Amireddy Mallikarjuna reddy wrote:
+>> Add DMA controller driver for Lightning Mountain (LGM) family of SoCs.
+>>
+>> The main function of the DMA controller is the transfer of data from/to any
+>> peripheral to/from the memory. A memory to memory copy capability can also
+>> be configured. This ldma driver is used for configure the device and channnels
+>> for data and control paths.
+>>
+>> These controllers provide DMA capabilities for a variety of on-chip
+>> devices such as SSC, HSNAND and GSWIP (Gigabit Switch IP).
+>>
+>> -------------
+>> Future Plans:
+>> -------------
+>> LGM SOC also supports Hardware Memory Copy engine.
+>> The role of the HW Memory copy engine is to offload memory copy operations
+>> from the CPU.
+> ??
+>
+> Please send updates against already applied patches and not an updated
+> series!
+>
