@@ -2,169 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04442FDA28
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595932FDA29
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392718AbhATTyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:54:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391993AbhATTwA (ORCPT
+        id S2392740AbhATTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:54:33 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42296 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388145AbhATTxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:52:00 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128BFC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:51:19 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id y205so9340170pfc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:51:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ho40uXNVeEzmbuymns660lMAYcUzjvGL6hQs63ImnEI=;
-        b=kCmlY27d4rW33C6mcWFBeausYRkKyZGU3CHchQcm1H6U1ntknRYOuhJsBghcqfKvh3
-         L+tsHzNL+iQmLo7+I2aIxIsJRLlzm4IppSNxkr1F3RpGDQKGjpMwBq8TAGRv6DcDrwuU
-         HVIg0DuJU4c4TAKX6F52IU6BPUL1g7exxgv4Hwrg8cAjoOir9RozsbYQbfY4dQcw3jD6
-         WkXDCeSbGWeiguVGjCYxN5baR7uO1WuZz2gWHNPTXJMEQDawqH2yqWargsjUYL37ymw2
-         KJMqnjyIHM90KR9b+agXjs4ZfaEhf5IW8sfGjAi0ks/nlQacFUFRzVkBItfFi4k/Ocot
-         9dqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ho40uXNVeEzmbuymns660lMAYcUzjvGL6hQs63ImnEI=;
-        b=OlYNEVonTD8aS5PA+wb/mjb9YFRhQSBjNaSZFMqM9ixsSbb9nMoHk/x1He1KkfoGOy
-         lfBqWmimfNNJlSBn5bQ5ML934Qr3964RYBJFEkf7CjlYEsb4nu66pJAMoQwBOuUaxXzu
-         BVZOAIFOpXuC/X0t8zeKHi29d/5SAadw2PrBRfe45yXnbdN+4x5AV7uBVUK84JWurioN
-         ubAwB0SE4tSVtUmc8SYQwkerlEgQCLURs7q3VKes2evz0MFReRbNkJCD4dJ8nGimeTQe
-         RgS+7KPYcAMQ+C1Pawj+5l28uLKykpuw5l5dHqOvAt2rCsavOddSNODM+6/xNuApSu9U
-         nxSQ==
-X-Gm-Message-State: AOAM530tJscVtq/JIjmqu+wNI4a7scy8KtjNER80JpqtxsV9uyVJb+ao
-        QhMmUAnpQGxnxRKQNSzmufkGuX/UBznaag==
-X-Google-Smtp-Source: ABdhPJxBf4twl1WvPoyqDlnDRa2E13SugBSYrd52xyTfyuvoGA8UV5cbwPcp9SpMtZWePuSn+bj/MA==
-X-Received: by 2002:a63:3088:: with SMTP id w130mr10990537pgw.210.1611172278304;
-        Wed, 20 Jan 2021 11:51:18 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id k32sm1472368pjc.36.2021.01.20.11.51.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 11:51:17 -0800 (PST)
-Date:   Wed, 20 Jan 2021 11:51:10 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 06/24] kvm: x86/mmu: Skip no-op changes in TDP MMU
- functions
-Message-ID: <YAiJrsyC1KSTKycg@google.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-7-bgardon@google.com>
+        Wed, 20 Jan 2021 14:53:04 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10KJpmYF027733;
+        Wed, 20 Jan 2021 13:51:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611172309;
+        bh=zraMxWl53AJvGoFoRAMNuY64tWhjj2qsiF8PytLxV5Q=;
+        h=From:To:CC:Subject:Date;
+        b=lcAUF+UQf0Wp0qLHdeMWkxTOOMs5itACevOxf9aPPnLEsjpLavdzR1Ru7PKADy1ax
+         iNqVZ8My9/TD3nxvczTRbQCckJhbHYaDKYBXxXy9oiczZccprAZ8rqRxg+GGR6fGtm
+         luSvuTRNVJS1+QksfnadqD8Z5CJupGymKQ+4oPZU=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10KJpmws030331
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 Jan 2021 13:51:48 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
+ Jan 2021 13:51:48 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 20 Jan 2021 13:51:48 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10KJpm3S015445;
+        Wed, 20 Jan 2021 13:51:48 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>, Suman Anna <s-anna@ti.com>,
+        Dave Gerlach <d-gerlach@ti.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3*: Fixup PMU compatibility to be CPU specific
+Date:   Wed, 20 Jan 2021 13:51:45 -0600
+Message-ID: <20210120195145.32259-1-nm@ti.com>
+X-Mailer: git-send-email 2.25.1.377.g2d2118b814c1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112181041.356734-7-bgardon@google.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Ben Gardon wrote:
-> Skip setting SPTEs if no change is expected.
-> 
-> Reviewed-by: Peter Feiner <pfeiner@google.com>
->
-Nit on all of these, can you remove the extra newline between the Reviewed-by
-and SOB?
+We can use CPU specific pmu configuration to expose the appropriate
+CPU specific events rather than just the basic generic pmuv3 perf
+events.
 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 1987da0da66e..2650fa9fe066 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -882,6 +882,9 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->  		    !is_last_spte(iter.old_spte, iter.level))
->  			continue;
->  
-> +		if (!(iter.old_spte & PT_WRITABLE_MASK))
+Reported-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
 
-Include the new check with the existing if statement?  I think it makes sense to
-group all the checks on old_spte.
+AM65: https://pastebin.ubuntu.com/p/TF2cCMySkt/
+J721E: https://pastebin.ubuntu.com/p/jgGPNmNgG3/
+J7200: https://pastebin.ubuntu.com/p/Kfc3VHHXNB/
 
-> +			continue;
-> +
->  		new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
->  
->  		tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
-> @@ -1079,6 +1082,9 @@ static bool set_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->  		if (!is_shadow_present_pte(iter.old_spte))
->  			continue;
->  
-> +		if (iter.old_spte & shadow_dirty_mask)
+Original report: https://lore.kernel.org/linux-arm-kernel/20210119172412.smsjdo2sjzqi5vcn@bogus/
 
-Same comment here.
+I have'nt split this patch up for fixes tag primarily because the
+basic functionality works and this is an improvement than a critical
+fixup to backport for older kernels.
 
-> +			continue;
-> +
+ arch/arm64/boot/dts/ti/k3-am65.dtsi  | 2 +-
+ arch/arm64/boot/dts/ti/k3-j7200.dtsi | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721e.dtsi | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Unrelated to this patch, but it got me looking at the code: shouldn't
-clear_dirty_pt_masked() clear the bit in @mask before checking whether or not
-the spte needs to be modified?  That way the early break kicks in after sptes
-are checked, not necessarily written.  E.g.
+diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+index d84c0bc05023..a9fc1af03f27 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+@@ -56,7 +56,7 @@ a53_timer0: timer-cl0-cpu0 {
+ 	};
+ 
+ 	pmu: pmu {
+-		compatible = "arm,armv8-pmuv3";
++		compatible = "arm,cortex-a53-pmu";
+ 		/* Recommendation from GIC500 TRM Table A.3 */
+ 		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+ 	};
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200.dtsi b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
+index 66169bcf7c9a..b7005b803149 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
+@@ -114,7 +114,7 @@ a72_timer0: timer-cl0-cpu0 {
+ 	};
+ 
+ 	pmu: pmu {
+-		compatible = "arm,armv8-pmuv3";
++		compatible = "arm,cortex-a72-pmu";
+ 		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+ 	};
+ 
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
+index cc483f7344af..f0587fde147e 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
+@@ -115,7 +115,7 @@ a72_timer0: timer-cl0-cpu0 {
+ 	};
+ 
+ 	pmu: pmu {
+-		compatible = "arm,armv8-pmuv3";
++		compatible = "arm,cortex-a72-pmu";
+ 		/* Recommendation from GIC500 TRM Table A.3 */
+ 		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+ 	};
+-- 
+2.25.1.377.g2d2118b814c1
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 2650fa9fe066..d8eeae910cbf 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1010,21 +1010,21 @@ static void clear_dirty_pt_masked(struct kvm *kvm, struct kvm_mmu_page *root,
-                    !(mask & (1UL << (iter.gfn - gfn))))
-                        continue;
-
--               if (wrprot || spte_ad_need_write_protect(iter.old_spte)) {
--                       if (is_writable_pte(iter.old_spte))
--                               new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
--                       else
--                               continue;
--               } else {
--                       if (iter.old_spte & shadow_dirty_mask)
--                               new_spte = iter.old_spte & ~shadow_dirty_mask;
--                       else
--                               continue;
--               }
--
--               tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
--
-                mask &= ~(1UL << (iter.gfn - gfn));
-+
-+               if (wrprot || spte_ad_need_write_protect(iter.old_spte)) {
-+                       if (is_writable_pte(iter.old_spte))
-+                               new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
-+                       else
-+                               continue;
-+               } else {
-+                       if (iter.old_spte & shadow_dirty_mask)
-+                               new_spte = iter.old_spte & ~shadow_dirty_mask;
-+                       else
-+                               continue;
-+               }
-+
-+               tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
-        }
- }
-
-
->  		new_spte = iter.old_spte | shadow_dirty_mask;
->  
->  		tdp_mmu_set_spte(kvm, &iter, new_spte);
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
