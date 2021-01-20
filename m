@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F277B2FC893
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317352FC874
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387889AbhATDO1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Jan 2021 22:14:27 -0500
-Received: from mga07.intel.com ([134.134.136.100]:41730 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389369AbhATC50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:57:26 -0500
-IronPort-SDR: +tqYSUAvJq2j8vQm2vJgum2crtz0M/pklOwucfGKg7ih7nrOs9QRC9/7D7j5h94/cUacFnrgrn
- hT7FDvFvbzXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="243105324"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="243105324"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 18:56:44 -0800
-IronPort-SDR: 054cMV2fPfs4AHEfqJpd/TJx0x16OrndzTfihhHekhg2rmlre7gU7G+iSitMyDSqR97RmMfkVl
- S2Tu2yhsswNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="402589859"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Jan 2021 18:56:44 -0800
-Received: from shsmsx602.ccr.corp.intel.com (10.109.6.142) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 19 Jan 2021 18:56:43 -0800
-Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
- SHSMSX602.ccr.corp.intel.com (10.109.6.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 20 Jan 2021 10:56:41 +0800
-Received: from shsmsx603.ccr.corp.intel.com ([10.109.6.143]) by
- SHSMSX603.ccr.corp.intel.com ([10.109.6.143]) with mapi id 15.01.1713.004;
- Wed, 20 Jan 2021 10:56:41 +0800
-From:   "Zhang, Rui" <rui.zhang@intel.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Coelho, Luciano" <luciano.coelho@intel.com>
-CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "amitk@kernel.org" <amitk@kernel.org>,
-        "Errera, Nathan" <nathan.errera@intel.com>
-Subject: RE: [PATCH 0/2] thermal: Replace thermal_notify_framework with
- thermal_zone_device_update
-Thread-Topic: [PATCH 0/2] thermal: Replace thermal_notify_framework with
- thermal_zone_device_update
-Thread-Index: AQHW7myNyN+HFidWAkieGDM5y8leBqov0QOw
-Date:   Wed, 20 Jan 2021 02:56:41 +0000
-Message-ID: <fb5571b452f7495eb76396795eeec096@intel.com>
-References: <20210119140541.2453490-1-thara.gopinath@linaro.org>
-In-Reply-To: <20210119140541.2453490-1-thara.gopinath@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2389696AbhATDG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:06:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730075AbhATDFv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 22:05:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B519C061575;
+        Tue, 19 Jan 2021 19:05:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=cW9dntD9nGh8jVvLhLWe1YqLbc1l7R2XancWLaWAZn0=; b=dgyGnH/9OA6cRq6lOqC17NWXBn
+        gsp7Y/bP2Mx6Mn6cLhVLZKkA3Ag4+5tx3c8Xj5IvsYuBrpU3H6G+VpTi/+KjbDjF2lYqYRjlbDPVF
+        1lD8TU9+2869FaBaX5vemMdnDMY+YQ5lBKSEV7OJgkuN/XtXLeQuoHFBoAM+gtEaCXgwnAE9wQFa8
+        hUUi5BWLiS4bzljjOGy0dcFYLwBj2sHdQfuND27PUEUfsMd/yCjjYmvDdcjRn43bQMSNccI23+XRQ
+        keHOdcCVx4Y5eiO/QqVj4UMPt9eFHQZxRHyF78k31EThdlA31a8lgXgw60M6KIQnKIXApSSZD4R2r
+        suBkbohA==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l23nm-0004q5-Ox; Wed, 20 Jan 2021 03:04:59 +0000
+Subject: [PATCH -mmotm] mm/memory_hotplug: fix for CONFIG_ZONE_DEVICE not
+ enabled
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20210119213727.pkiuSGW9i%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5f8e2ede-5836-45e1-d8d7-ae949775e76e@infradead.org>
+Date:   Tue, 19 Jan 2021 19:04:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20210119213727.pkiuSGW9i%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thara,
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks for the cleanup. I've proposed similar patches previously.
-https://patchwork.kernel.org/project/linux-pm/patch/20200430063229.6182-2-rui.zhang@intel.com/
-https://patchwork.kernel.org/project/linux-pm/patch/20200430063229.6182-3-rui.zhang@intel.com/
-can you please also address the comments in the previous discussion, like doc cleanup?
+Fix memory_hotplug.c when CONFIG_ZONE_DEVICE is not enabled.
 
-Thanks,
-rui
+Fixes this build error:
 
-> -----Original Message-----
-> From: Thara Gopinath <thara.gopinath@linaro.org>
-> Sent: Tuesday, January 19, 2021 10:06 PM
-> To: Zhang, Rui <rui.zhang@intel.com>; daniel.lezcano@linaro.org;
-> kvalo@codeaurora.org; davem@davemloft.net; kuba@kernel.org; Coelho,
-> Luciano <luciano.coelho@intel.com>
-> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
-> netdev@vger.kernel.org; linux-pm@vger.kernel.org; amitk@kernel.org;
-> Errera, Nathan <nathan.errera@intel.com>
-> Subject: [PATCH 0/2] thermal: Replace thermal_notify_framework with
-> thermal_zone_device_update
-> Importance: High
-> 
-> thermal_notify_framework just updates for a single trip point where as
-> thermal_zone_device_update does other bookkeeping like updating the
-> temperature of the thermal zone, running through the list of trip points and
-> setting the next trip point etc. Since  the later is a more thorough version of
-> former, replace thermal_notify_framework with
-> thermal_zone_device_update.
-> 
-> Thara Gopinath (2):
->   net: wireless: intel: iwlwifi: mvm: tt: Replace
->     thermal_notify_framework
->   drivers: thermal: Remove thermal_notify_framework
-> 
->  drivers/net/wireless/intel/iwlwifi/mvm/tt.c |  4 ++--
->  drivers/thermal/thermal_core.c              | 18 ------------------
->  include/linux/thermal.h                     |  4 ----
->  3 files changed, 2 insertions(+), 24 deletions(-)
-> 
-> --
-> 2.25.1
+../mm/memory_hotplug.c: In function ‘move_pfn_range_to_zone’:
+../mm/memory_hotplug.c:772:24: error: ‘ZONE_DEVICE’ undeclared (first use in this function); did you mean ‘ZONE_MOVABLE’?
+  if (zone_idx(zone) == ZONE_DEVICE) {
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+---
+ mm/memory_hotplug.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- mmotm-2021-0119-1336.orig/mm/memory_hotplug.c
++++ mmotm-2021-0119-1336/mm/memory_hotplug.c
+@@ -769,12 +769,14 @@ void __ref move_pfn_range_to_zone(struct
+ 	 * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
+ 	 * section.
+ 	 */
++#ifdef CONFIG_ZONE_DEVICE
+ 	if (zone_idx(zone) == ZONE_DEVICE) {
+ 		if (!IS_ALIGNED(start_pfn, PAGES_PER_SECTION))
+ 			section_taint_zone_device(start_pfn);
+ 		if (!IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION))
+ 			section_taint_zone_device(start_pfn + nr_pages);
+ 	}
++#endif
+ 
+ 	/*
+ 	 * TODO now we have a visible range of pages which are not associated
 
