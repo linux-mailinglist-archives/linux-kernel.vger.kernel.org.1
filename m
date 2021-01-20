@@ -2,302 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190532FDBAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A835C2FDB95
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387646AbhATU5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:57:25 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40027 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389526AbhATNv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:51:28 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4AE60580614;
-        Wed, 20 Jan 2021 08:50:30 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 20 Jan 2021 08:50:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=sDxhL51Vhfp7bMJtc05jY3INv15
-        IU8xKUsLjHr0xiOU=; b=e6RAvVNPXxx7n+xiZF1cUAYNfJs5LTR6PfLc0CImUdL
-        LlXQ2amT0WEqGAlHTdvKd/rcGDF9tSdtsirQSEbuQ3kwVZPiCkw1rM45GLgnvgPm
-        Z4AsvGXKTlP7JsOul0AAUpaxlPAIY0gsrLwL9MiYoYuMQ6L6TO3yzgXJyxnZRvp+
-        jtbY428Tzk+iEi5DuF8gexjpBHwznO/my3ickth/O3fCvFWfKEcF6MqEAd4+26aI
-        ltp/+9yq6CB5vfxYtjqmtlBszlAGV3LvzyYzkBIp/5m62bEJ7/gvtET2/W1vfPsg
-        vY4oRDFmYVdvqYxQCwBv7aNKZ4xfO67HgJeBjDQpS+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sDxhL5
-        1Vhfp7bMJtc05jY3INv15IU8xKUsLjHr0xiOU=; b=EfesV/hyieiND3YvIa/6XB
-        Ybt6zQhLteUCpGeaKh3HJ3r8SPD5icS8VMHvz6edMF/d+NH2mK3+OxnvxfLBsWqV
-        wXAMG7OAE3iMb8Jj0zKpAuRT6rB2AmmPxwaSas/r5vQ17Ork2L0vvST7Yeo2hptr
-        F9gINk9hxuhpdcZ2JGY+OBhDuNww1XOgMwXBZ+XlaGSmxSidkgRe96ytQ5cFQ36z
-        F4/Gafqosel9wOY2VtXYBKWeq1o3cc19d++D7K5l3EhNb0X8J4DKZ3qqgOONCwN6
-        9jCka/dzFyN+ouChiOWz+bG2KoQKejSligox5c8EC46vLc98c5GQGNldiZTqNdiw
-        ==
-X-ME-Sender: <xms:IzUIYBLicoqnn4cKs8x0Pp9Pew1bMiKdgpUEwDUUwIwJW4nkat-lcQ>
-    <xme:IzUIYNKJlHYiYTnryfJ7FgRQ96NTmu-3-k4EVWZnhfiY6WbONJtTbHl6CtkzcZ4tZ
-    wpnVt7KjvQfrHHugmg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvgdehkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeejuddvhfekkefhtdegiefhledutdevtdfhkedtleefjefgleduhfetudevjeeh
-    hfenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghenucfkphepledtrdekle
-    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:IzUIYJuyCRLplkytmnPfqvsFYFiO-40_7Pq8uRvt9gFI1Ft8Pxp0_Q>
-    <xmx:IzUIYCa6X7oKHbxl049BLO5Dj-VJrpEnl21BABFJDjWnG5XMMVosTw>
-    <xmx:IzUIYIYqTCc8YBMhLSqyUurjSUdIMjhXmyOu9Kh0nDWJvkodsHOfUA>
-    <xmx:JjUIYErtHO_yb8fagBsjjNu7TpdEVr7RYSOTFP0KQHcqCwPHx6802A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4410A24005A;
-        Wed, 20 Jan 2021 08:50:27 -0500 (EST)
-Date:   Wed, 20 Jan 2021 14:50:26 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Dave Airlie <airlied@redhat.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Alison Wang <alison.wang@nxp.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marek Vasut <marex@denx.de>, Tomi Valkeinen <tomba@kernel.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Melissa Wen <melissa.srw@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 10/10] drm: Use state helper instead of the plane state
- pointer
-Message-ID: <20210120135026.np2ivojt5vnvyota@gilmour>
-References: <20210115125703.1315064-1-maxime@cerno.tech>
- <20210115125703.1315064-10-maxime@cerno.tech>
- <YAIHFTYiry6ebUsY@pendragon.ideasonboard.com>
+        id S1732974AbhATU4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:56:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:35356 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732704AbhATNyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:54:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4BCED6E;
+        Wed, 20 Jan 2021 05:52:46 -0800 (PST)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B3793F66E;
+        Wed, 20 Jan 2021 05:52:46 -0800 (PST)
+Date:   Wed, 20 Jan 2021 13:52:43 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: hrtimer_interrupt::pr_warn_once() causes BUG: Invalid wait
+ context
+Message-ID: <20210120135243.cztbdfbdy6qzlevw@e107158-lin>
+References: <20210114124512.mg3vexudfmoadef5@e107158-lin>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j7svqftvzagigb3f"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YAIHFTYiry6ebUsY@pendragon.ideasonboard.com>
+In-Reply-To: <20210114124512.mg3vexudfmoadef5@e107158-lin>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/14/21 12:45, Qais Yousef wrote:
+> Hi
+> 
+> I hit this splat today
+> 
+> 	# [67628.388606] hrtimer: interrupt took 304720 ns
+> 	[67628.393546]
+> 	[67628.393550] =============================
+> 	[67628.393554] [ BUG: Invalid wait context ]
+> 	[67628.393557] 5.11.0-rc3-00019-g86be331946f7 #37 Not tainted
+> 	[67628.393560] -----------------------------
+> 	[67628.393563] sugov:0/192 is trying to lock:
+> 	[67628.393566] ffff000800b1d898 (&port_lock_key){-.-.}-{3:3}, at: pl011_console_write+0x138/0x218
+> 	[67628.393581] other info that might help us debug this:
+> 	[67628.393584] context-{2:2}
+> 	[67628.393586] 4 locks held by sugov:0/192:
+> 	[67628.393589]  #0: ffff0008059cb720 (&sg_policy->work_lock){+.+.}-{4:4}, at: sugov_work+0x58/0x88
+> 	[67628.393603]  #1: ffff800015446f20 (prepare_lock){+.+.}-{4:4}, at: clk_prepare_lock+0x34/0xb0
+> 	[67628.393618]  #2: ffff8000152aaa60 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x12c/0x310
+> 	[67628.393632]  #3: ffff8000152aab88 (console_owner){-.-.}-{0:0}, at: console_unlock+0x190/0x6d8
+> 	[67628.393646] stack backtrace:
+> 	[67628.393649] CPU: 0 PID: 192 Comm: sugov:0 Not tainted 5.11.0-rc3-00019-g86be331946f7 #37
+> 	[67628.393653] Hardware name: ARM Juno development board (r2) (DT)
+> 	[67628.393656] Call trace:
+> 	[67628.393659]  dump_backtrace+0x0/0x1b0
+> 	[67628.393661]  show_stack+0x20/0x70
+> 	[67628.393664]  dump_stack+0xf8/0x168
+> 	[67628.393666]  __lock_acquire+0x964/0x1c88
+> 	[67628.393669]  lock_acquire+0x26c/0x500
+> 	[67628.393671]  _raw_spin_lock+0x64/0x88
+> 	[67628.393674]  pl011_console_write+0x138/0x218
+> 	[67628.393677]  console_unlock+0x2c4/0x6d8
+> 	[67628.393680]  vprintk_emit+0x134/0x310
+> 	[67628.393682]  vprintk_default+0x40/0x50
+> 	[67628.393685]  vprintk_func+0xfc/0x2b0
+> 	[67628.393687]  printk+0x68/0x90
+> 	[67628.393690]  hrtimer_interrupt+0x24c/0x250
+> 	[67628.393693]  arch_timer_handler_phys+0x3c/0x50
+> 	[67628.393695]  handle_percpu_devid_irq+0xd8/0x460
+> 	[67628.393698]  generic_handle_irq+0x38/0x50
+> 	[67628.393701]  __handle_domain_irq+0x6c/0xc8
+> 	[67628.393704]  gic_handle_irq+0xb0/0xf0
+> 	[67628.393706]  el1_irq+0xb4/0x180
+> 	[67628.393709]  _raw_spin_unlock_irqrestore+0x58/0xa8
+> 	[67628.393712]  hrtimer_start_range_ns+0x1b0/0x420
+> 	[67628.393715]  msg_submit+0x100/0x108
+> 	[67628.393717]  mbox_send_message+0x84/0x128
+> 	[67628.393720]  scpi_send_message+0x11c/0x2a8
+> 	[67628.393723]  scpi_dvfs_set_idx+0x48/0x70
+> 	[67628.393726]  scpi_dvfs_set_rate+0x60/0x78
+> 	[67628.393728]  clk_change_rate+0x184/0x8a8
+> 	[67628.393731]  clk_core_set_rate_nolock+0x1c0/0x280
+> 	[67628.393734]  clk_set_rate+0x40/0x98
+> 	[67628.393736]  scpi_cpufreq_set_target+0x40/0x68
+> 	[67628.393739]  __cpufreq_driver_target+0x1a0/0x5d0
+> 
+> AFAICT the call to pr_warn_once() is how we end up here. Not sure if there's an
+> appropriate or easy fix for that.
 
---j7svqftvzagigb3f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Oh I just accidentally came across printk_deferred_once() which looks like the
+right thing to do. I can't reproduce but I'll send a patch over the weekend to
+see if anyone will complain why it shouldn't work.
 
-Hi Laurent,
+Thanks
 
-On Fri, Jan 15, 2021 at 11:20:21PM +0200, Laurent Pinchart wrote:
-> Hi Maxime,
->=20
-> Thank you for the patch.
->=20
-> On Fri, Jan 15, 2021 at 01:57:02PM +0100, Maxime Ripard wrote:
-> > Many drivers reference the plane->state pointer in order to get the
-> > current plane state in their atomic_update or atomic_disable hooks,
->=20
-> Please don't use the word "current", it's ambiguous. Do you mean old
-> state or new state ?
-
-It's kind of the point I was trying to make: plane->state is the current
-state of the plane, but it's definitely ambiguous and it's fairly easy
-to be confused when working over several hooks.
-
-> > which would be the new plane state in the global atomic state since
-> > _swap_state happened when those hooks are run.
->=20
-> Is this relevant ? drm_atomic_helper_swap_state() doesn't change the
-> old_state and new_state pointers in drm_atomic_state as far as I can
-> tell.
-
-No, but it does change the plane->state pointer: before swap_state it's
-the old state, after swap_state it's the new state
-
-> > Use the drm_atomic_get_new_plane_state helper to get that state to make=
- it
-> > more obvious.
-> >=20
-> > This was made using the coccinelle script below:
-> >=20
-> > @ plane_atomic_func @
-> > identifier helpers;
-> > identifier func;
-> > @@
-> >=20
-> > (
-> >  static const struct drm_plane_helper_funcs helpers =3D {
-> >  	...,
-> >  	.atomic_disable =3D func,
-> > 	...,
-> >  };
-> > |
-> >  static const struct drm_plane_helper_funcs helpers =3D {
-> >  	...,
-> >  	.atomic_update =3D func,
-> > 	...,
-> >  };
-> > )
-> >=20
-> > @ adds_new_state @
-> > identifier plane_atomic_func.func;
-> > identifier plane, state;
-> > identifier new_state;
-> > @@
-> >=20
-> >  func(struct drm_plane *plane, struct drm_atomic_state *state)
-> >  {
-> >  	...
-> > -	struct drm_plane_state *new_state =3D plane->state;
-> > +	struct drm_plane_state *new_state =3D drm_atomic_get_new_plane_state(=
-state, plane);
-> > 	...
-> >  }
-> >=20
-> > @ include depends on adds_new_state @
-> > @@
-> >=20
-> >  #include <drm/drm_atomic.h>
-> >=20
-> > @ no_include depends on !include && adds_new_state @
-> > @@
-> >=20
-> > + #include <drm/drm_atomic.h>
-> >   #include <drm/...>
-> >=20
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
->=20
-> [snip]
->=20
-> >  drivers/gpu/drm/omapdrm/omap_plane.c            | 6 ++++--
-> >  drivers/gpu/drm/rcar-du/rcar_du_plane.c         | 3 ++-
-> >  drivers/gpu/drm/rcar-du/rcar_du_vsp.c           | 3 ++-
-> >  drivers/gpu/drm/xlnx/zynqmp_disp.c              | 3 ++-
->=20
-> [snip]
->=20
-> > diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/oma=
-pdrm/omap_plane.c
-> > index cd8cf7c786b5..021a94de84a1 100644
-> > --- a/drivers/gpu/drm/omapdrm/omap_plane.c
-> > +++ b/drivers/gpu/drm/omapdrm/omap_plane.c
-> > @@ -44,7 +44,8 @@ static void omap_plane_atomic_update(struct drm_plane=
- *plane,
-> >  {
-> >  	struct omap_drm_private *priv =3D plane->dev->dev_private;
-> >  	struct omap_plane *omap_plane =3D to_omap_plane(plane);
-> > -	struct drm_plane_state *new_state =3D plane->state;
->=20
-> This seems to imply that you're interested in the new state.
-
-Well, to be fair, the variable is only called "state" before this series
-and it's one of the previous patch that renames it to new_state and
-makes it a more obvious.
-
-Otherwise, state =3D plane->state is fairly confusing and error-prone.
-With that change you would make it really obvious
-
-> > +	struct drm_plane_state *new_state =3D drm_atomic_get_new_plane_state(=
-state,
-> > +									   plane);
->=20
-> Does this really make things more obvious ?
-
-I guess you're better at remembering this than I am then :)
-
-The discussion on whether it's more obvious or not aside, accessing the
-->state pointer directly has some culprits, see:
-
-https://dri.freedesktop.org/docs/drm/gpu/todo.html#plumb-drm-atomic-state-a=
-ll-over
-
-Maxime
-
---j7svqftvzagigb3f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAg1IgAKCRDj7w1vZxhR
-xW+rAQCaKXuyQvbRubp33hPCkdAY/LXaD+3TQwLv2j7AhTFUtAD/aLv/q1HqwcEO
-ZfMJ4deD5+JElSu70qt5AOEI/9JMPAg=
-=q+gU
------END PGP SIGNATURE-----
-
---j7svqftvzagigb3f--
+--
+Qais Yousef
