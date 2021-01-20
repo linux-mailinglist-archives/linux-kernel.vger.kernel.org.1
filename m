@@ -2,365 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDB02FC60B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8DE2FC5FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbhATAqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:46:23 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:61396 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbhATAqF (ORCPT
+        id S1730768AbhATAlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:41:42 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9426 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729850AbhATAle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:46:05 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 1F82BA13C9;
-        Wed, 20 Jan 2021 01:37:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=UMN9to6pAnT+
-        kXPPZYJfkC29hxPBXNediHgxXL349us=; b=n3T9Dtc19sfJzQ80NQU21S5e+1+o
-        DEB5Hpum78B98DFe3b09scZiTbovRkN3D7xBD6kxmQVOi0EGwfbxT1MgfpVO1Bmw
-        s8eXd5aBXVizBVk5qCGF8fEToBpXOlN8/fL9Rlr2txfzCDEuvYK4LtBQsypuCtOI
-        ykSW43trymeDIWbfXJ38eYg5h/OgrSAc9zxMvZA3ebiotB9PQLGXl6WtBkrfsGeT
-        2ee49IXZ4ti6nB3HvBFS1dATy2vuIQizmTvfkbmylodxaLBEUqMygC6E5FCfWry0
-        8E82sU88jgfN/XqbKVNfzsUWLqekkAcCwsaCK0NzScCuFG98a4aZu5tlGA==
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
-CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 7/7] ALSA: virtio: introduce device suspend/resume support
-Date:   Wed, 20 Jan 2021 01:36:35 +0100
-Message-ID: <20210120003638.3339987-8-anton.yakovlev@opensynergy.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
-References: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
+        Tue, 19 Jan 2021 19:41:34 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60077c150001>; Tue, 19 Jan 2021 16:40:53 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
+ 2021 00:40:51 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 20 Jan 2021 00:40:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VkD98D2g4B5Fh0juZxGAktnjnbZQS5pliyVbntxYCOVhXraYgNLZIZSDLINxNbGYo2pwYVIrI+o6j1qDiiVSaagGkbJ0fqd/1Uqu/oI6i2Y7EvPQJLJ8ASlrIYp8DyOtOFwOziAt7/S7lPNEaiwCXfBhVT+s9oBW95KZKTgyqFdcbA3bJWSz//GRzdejc1dK2cjnwhx0biZG7rh4DtFwvb81vswbW1LJKmHrpjnGsekdDUkr1a3BZlYCM0SXrm28kFYkrOJ6d/L3jRp0XmGpueBFkFqEcovhRFP/KFJxmSNldUCpm4EeSb68yPjmSWAQSs+pr4HYa42IZ4mEd6TVBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
+ b=dC+Lnu1huRjY6//go2O9cKt4VPrT7jBxqECqHTTstMeh45ZXBCU9g2/nTCAr3ekdHcf3mGZoJMFEgPU0lmgVydjD9eQ+L1SVGLdQc11NRGYnaY46H6gv7J8ZEWZHqAmWzPcwZHWLYr9WUEdEuZ3DbnrbcmaLxsx2kCtUhgiFOlHrbNR8UXGnk+QWQn9XrP1GaP1bNNxRKPzgcfiqQQluCcL8FroBc48fgBGOXAGK/LjEfzeTpxYz8mbrpVQt/6c/2pop4crSWIGp0ku2dAH5Bm+NT1bc9BfejnDp+eWRRDgM11LewwwZTHsWkgFQ7/mxVJFYRrikVZwfnfqXK/B4EQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3932.namprd12.prod.outlook.com (2603:10b6:5:1c1::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Wed, 20 Jan
+ 2021 00:40:48 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
+ 00:40:48 +0000
+Date:   Tue, 19 Jan 2021 20:40:46 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Taehee Yoo <ap420073@gmail.com>
+Subject: Re: [PATCH 00/20] Rid W=1 warnings from Infinibad
+Message-ID: <20210120004046.GA1022538@nvidia.com>
+References: <20210118223929.512175-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
+X-ClientProxiedBy: BL1PR13CA0169.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::24) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0169.namprd13.prod.outlook.com (2603:10b6:208:2bd::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Wed, 20 Jan 2021 00:40:47 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l21YE-004I1W-Kx; Tue, 19 Jan 2021 20:40:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611103253; bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=M2OCEUEUw1hDUtrIj/knE9JLDPTghT/n37iZCYJoFLm6oHa4ihwvWCXqrqTF+PNri
+         Zc4R7R5jF/q6QKkMa/NLArDNavXzy9ltdh01dinC3SDrFe6E60nMwvPQa4crcGzcZO
+         asV8AW5tbZKl76V6ON07UuTm6sIpvGEkL5Gq2cvPwqK6RuiagJ5/q4x7o0Bb92hVSC
+         87BhAjxwpUV0R2qzIMWhijWYllGVMxD3pIdgxJRBhHVptxUgGZbx7HbblwEJ61FAkA
+         ay8UVMjeTcK3ixWqtE+5pfmyM3HxGSbBDR6PZUN+KovJk6vTIOJMgPSBrXFVZNcixS
+         Z8CofXWquVQSQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All running PCM substreams are stopped on device suspend and restarted
-on device resume.
+On Mon, Jan 18, 2021 at 10:39:09PM +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> This is set 1 of either 2 or 3 sets required to fully clean-up.
+> 
+> Lee Jones (20):
+>   RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
+>   RDMA/core: device: Fix formatting in worthy kernel-doc header and
+>     demote another
+>   RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
+>     issues
+>   RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
+>   RDMA/core/cache: Fix some misspellings, missing and superfluous param
+>     descriptions
+>   RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
+>     'user_pri' and fix 'iwcq'
+>   RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
+>   RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
+>     param 'ib_dev'
+>   RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
+>     formatting issues
+>   RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
+>     descriptions
+>   RDMA/core/multicast: Provide description for
+>     'ib_init_ah_from_mcmember()'s 'rec' param
+>   RDMA/core/sa_query: Demote non-conformant kernel-doc header
+>   RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
+>   RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
+>   RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
+>     descriptions
+>   RDMA/core/restrack: Fix kernel-doc formatting issue
+>   RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
+>     others
+>   RDMA/core/counters: Demote non-conformant kernel-doc headers
+>   RDMA/core/iwpm_util: Fix some param description misspellings
+>   RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
 
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
----
- sound/virtio/virtio_card.c    | 54 ++++++++++++++++++++
- sound/virtio/virtio_pcm.c     | 40 +++++++++++++++
- sound/virtio/virtio_pcm.h     |  6 +++
- sound/virtio/virtio_pcm_ops.c | 93 ++++++++++++++++++++---------------
- 4 files changed, 154 insertions(+), 39 deletions(-)
+Looks Ok, applied to for-next, thanks
 
-diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-index 02814c3932ab..2bde324f9b95 100644
---- a/sound/virtio/virtio_card.c
-+++ b/sound/virtio/virtio_card.c
-@@ -507,6 +507,56 @@ static void virtsnd_config_changed(struct virtio_device *vdev)
- 			 "sound device configuration was changed\n");
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+/**
-+ * virtsnd_freeze() - Suspend device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context that permits to sleep.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_freeze(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+
-+	virtsnd_disable_vqs(snd);
-+
-+	vdev->config->reset(vdev);
-+	vdev->config->del_vqs(vdev);
-+
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_restore() - Resume device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context that permits to sleep.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_restore(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+	int rc;
-+
-+	rc = virtsnd_find_vqs(snd);
-+	if (rc)
-+		return rc;
-+
-+	virtio_device_ready(vdev);
-+
-+	virtsnd_enable_vqs(snd);
-+
-+	if (snd->nsubstreams) {
-+		rc = virtsnd_pcm_restore(snd);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
- static const struct virtio_device_id id_table[] = {
- 	{ VIRTIO_ID_SOUND, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -520,6 +570,10 @@ static struct virtio_driver virtsnd_driver = {
- 	.probe = virtsnd_probe,
- 	.remove = virtsnd_remove,
- 	.config_changed = virtsnd_config_changed,
-+#ifdef CONFIG_PM_SLEEP
-+	.freeze = virtsnd_freeze,
-+	.restore = virtsnd_restore,
-+#endif
- };
- 
- static int __init init(void)
-diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-index 6a1ca6b2c3ca..68d9c6dee13a 100644
---- a/sound/virtio/virtio_pcm.c
-+++ b/sound/virtio/virtio_pcm.c
-@@ -122,6 +122,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *substream,
- 		SNDRV_PCM_INFO_BATCH |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_RESUME |
- 		SNDRV_PCM_INFO_PAUSE;
- 
- 	if (!info->channels_min || info->channels_min > info->channels_max) {
-@@ -511,6 +512,45 @@ int virtsnd_pcm_build_devs(struct virtio_snd *snd)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+/**
-+ * virtsnd_pcm_restore() - Resume PCM substreams.
-+ * @snd: VirtIO sound device.
-+ *
-+ * Context: Any context that permits to sleep.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+int virtsnd_pcm_restore(struct virtio_snd *snd)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < snd->nsubstreams; ++i) {
-+		struct virtio_pcm_substream *substream = &snd->substreams[i];
-+		struct snd_pcm_substream *ksubstream = substream->substream;
-+		int rc;
-+
-+		if (!substream->suspended)
-+			continue;
-+
-+		/*
-+		 * We restart the substream by executing the standard command
-+		 * sequence. The START command will be sent from a subsequent
-+		 * call to the trigger() callback function after the device has
-+		 * been resumed.
-+		 */
-+		rc = ksubstream->ops->hw_params(ksubstream, NULL);
-+		if (rc)
-+			return rc;
-+
-+		rc = ksubstream->ops->prepare(ksubstream);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
- /**
-  * virtsnd_pcm_event() - Handle the PCM device event notification.
-  * @snd: VirtIO sound device.
-diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
-index a326b921b947..23d0fdd57225 100644
---- a/sound/virtio/virtio_pcm.h
-+++ b/sound/virtio/virtio_pcm.h
-@@ -41,6 +41,7 @@ struct virtio_pcm_msg;
-  * @hw_ptr: Substream hardware pointer value in frames [0 ... buffer_size).
-  * @xfer_enabled: Data transfer state (0 - off, 1 - on).
-  * @xfer_xrun: Data underflow/overflow state (0 - no xrun, 1 - xrun).
-+ * @suspended: Kernel ALSA substream is suspended.
-  * @msgs: I/O messages.
-  * @msg_last_enqueued: Index of the last I/O message added to the virtqueue.
-  * @msg_count: Number of pending I/O messages in the virtqueue.
-@@ -60,6 +61,7 @@ struct virtio_pcm_substream {
- 	atomic_t hw_ptr;
- 	atomic_t xfer_enabled;
- 	atomic_t xfer_xrun;
-+	bool suspended;
- 	struct virtio_pcm_msg *msgs;
- 	int msg_last_enqueued;
- 	atomic_t msg_count;
-@@ -102,6 +104,10 @@ int virtsnd_pcm_parse_cfg(struct virtio_snd *snd);
- 
- int virtsnd_pcm_build_devs(struct virtio_snd *snd);
- 
-+#ifdef CONFIG_PM_SLEEP
-+int virtsnd_pcm_restore(struct virtio_snd *snd);
-+#endif /* CONFIG_PM_SLEEP */
-+
- void virtsnd_pcm_event(struct virtio_snd *snd, struct virtio_snd_event *event);
- 
- void virtsnd_pcm_tx_notify_cb(struct virtqueue *vqueue);
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-index 8d26c1144ad6..1723eda4b052 100644
---- a/sound/virtio/virtio_pcm_ops.c
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -183,6 +183,8 @@ static int virtsnd_pcm_open(struct snd_pcm_substream *substream)
- 	if (!ss)
- 		return -EBADFD;
- 
-+	ss->suspended = false;
-+
- 	substream->runtime->hw = ss->hw;
- 	substream->private_data = ss;
- 
-@@ -237,18 +239,20 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	int vrate = -1;
- 	int rc;
- 
--	/*
--	 * If we got here after ops->trigger() was called, the queue may
--	 * still contain messages. In this case, we need to release the
--	 * substream first.
--	 */
--	if (atomic_read(&ss->msg_count)) {
--		rc = virtsnd_pcm_release(ss);
--		if (rc) {
--			dev_err(&vdev->dev,
--				"SID %u: invalid I/O queue state\n",
--				ss->sid);
--			return rc;
-+	if (!ss->suspended) {
-+		/*
-+		 * If we got here after ops->trigger() was called, the queue may
-+		 * still contain messages. In this case, we need to release the
-+		 * substream first.
-+		 */
-+		if (atomic_read(&ss->msg_count)) {
-+			rc = virtsnd_pcm_release(ss);
-+			if (rc) {
-+				dev_err(&vdev->dev,
-+					"SID %u: invalid I/O queue state\n",
-+					ss->sid);
-+				return rc;
-+			}
- 		}
- 	}
- 
-@@ -379,37 +383,41 @@ static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
- static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
- {
- 	struct virtio_pcm_substream *ss = snd_pcm_substream_chip(substream);
--	struct virtio_snd_queue *queue = virtsnd_pcm_queue(ss);
- 	struct virtio_snd_msg *msg;
- 	unsigned long flags;
- 	int rc;
- 
--	/*
--	 * If we got here after ops->trigger() was called, the queue may
--	 * still contain messages. In this case, we need to reset the
--	 * substream first.
--	 */
--	if (atomic_read(&ss->msg_count)) {
--		rc = virtsnd_pcm_hw_params(substream, NULL);
--		if (rc)
--			return rc;
--	}
--
--	spin_lock_irqsave(&queue->lock, flags);
--	ss->msg_last_enqueued = -1;
--	spin_unlock_irqrestore(&queue->lock, flags);
-+	if (!ss->suspended) {
-+		struct virtio_snd_queue *queue = virtsnd_pcm_queue(ss);
-+
-+		/*
-+		 * If we got here after ops->trigger() was called, the queue may
-+		 * still contain messages. In this case, we need to reset the
-+		 * substream first.
-+		 */
-+		if (atomic_read(&ss->msg_count)) {
-+			rc = virtsnd_pcm_hw_params(substream, NULL);
-+			if (rc)
-+				return rc;
-+		}
- 
--	/*
--	 * Since I/O messages are asynchronous, they can be completed
--	 * when the runtime structure no longer exists. Since each
--	 * completion implies incrementing the hw_ptr, we cache all the
--	 * current values needed to compute the new hw_ptr value.
--	 */
--	ss->frame_bytes = substream->runtime->frame_bits >> 3;
--	ss->period_size = substream->runtime->period_size;
--	ss->buffer_size = substream->runtime->buffer_size;
-+		spin_lock_irqsave(&queue->lock, flags);
-+		ss->msg_last_enqueued = -1;
-+		spin_unlock_irqrestore(&queue->lock, flags);
-+
-+		/*
-+		 * Since I/O messages are asynchronous, they can be completed
-+		 * when the runtime structure no longer exists. Since each
-+		 * completion implies incrementing the hw_ptr, we cache all the
-+		 * current values needed to compute the new hw_ptr value.
-+		 */
-+		ss->frame_bytes = substream->runtime->frame_bits >> 3;
-+		ss->period_size = substream->runtime->period_size;
-+		ss->buffer_size = substream->runtime->buffer_size;
-+
-+		atomic_set(&ss->hw_ptr, 0);
-+	}
- 
--	atomic_set(&ss->hw_ptr, 0);
- 	atomic_set(&ss->xfer_xrun, 0);
- 	atomic_set(&ss->msg_count, 0);
- 
-@@ -442,9 +450,12 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 
- 	switch (command) {
- 	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: {
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME: {
- 		int rc;
- 
-+		ss->suspended = false;
-+
- 		spin_lock(&queue->lock);
- 		rc = virtsnd_pcm_msg_send(ss);
- 		spin_unlock(&queue->lock);
-@@ -461,9 +472,13 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 		return virtsnd_ctl_msg_send(snd, msg);
- 	}
- 	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: {
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND: {
- 		atomic_set(&ss->xfer_enabled, 0);
- 
-+		if (command == SNDRV_PCM_TRIGGER_SUSPEND)
-+			ss->suspended = true;
-+
- 		msg = virtsnd_pcm_ctl_msg_alloc(ss, VIRTIO_SND_R_PCM_STOP,
- 						GFP_ATOMIC);
- 		if (IS_ERR(msg))
--- 
-2.30.0
-
-
+Jason
