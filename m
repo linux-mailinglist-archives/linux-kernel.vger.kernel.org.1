@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087202FCA55
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A1B2FCA5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729442AbhATFLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730641AbhATFHy (ORCPT
+        id S1730609AbhATFN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:13:29 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:58435 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730654AbhATFMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:07:54 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1947EC061575;
-        Tue, 19 Jan 2021 21:07:14 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id m6so13769161pfm.6;
-        Tue, 19 Jan 2021 21:07:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ercs8Knsu+kUChYUSoxzGtpfGm98Ng2NObAizp65bH4=;
-        b=jmgI0S6iY1CZoTGly8i7UIAvakqzAKUy5+AgIOozwqmMi4cZEwy3rLayb8N4oeYKop
-         DqWkmYVirsThB2yzEbLzIGnCTNjmTC4gVJLeNL4B+Ltfb5ky/ognQ+v8sp3fxnRBpYQE
-         WVG11g4yBlnvrVI7k37sgCdGqj0wFnBOhp10g9hx5TZHO3mBvUOtzHr1AufJ7DbcczIa
-         eDZRAgOQpJWBtnt6ZBqdJhj31pM9HVkqedz9ZH5K4QMgaU1OrQ5L42mAOPjyZ1KeifE6
-         NAj4owx6pJ++jmM74vDLS5A0JAO2RBbjioCHw1DAQlMihAw7lpHrheNtpTtbuhjwGuN/
-         Rv0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ercs8Knsu+kUChYUSoxzGtpfGm98Ng2NObAizp65bH4=;
-        b=IImjikMT1EYzeY68liq7QedrybXXx6UzMiYGQdfFhbjkFm6z5ldVtQk8B7/aRhNGAQ
-         0BNknIQR05rPRSytoXs+h8QFxN+voCpEToqZAAO9A+9tldDkGfkSuOR9bc/ovJHschNX
-         /Qub8ahJ0R5RAXSRw9zNeJMwBMWGNXKxEME59A98ZFW0hJt2UGt7NxFSW20Wt8Ynv6nf
-         GPBZ6RaL0LzBC+CtbCxiZcDbbFXvRdeuJRMA7y19K41GKFmgxQ7zLwOFNvU+v4j5NkDn
-         3bcnCuCPip4GBnuLXRuuAXRfz8H20yHUv9lUgVFA7YvCHFKXsHlOBpZI8WMJ3NUaU7EF
-         8rSg==
-X-Gm-Message-State: AOAM531h4tXNklbGXtuFWkHLH17DhhKvw4g78KbxzEN2ykv+g7fynLiU
-        5ckT3r1yCb5zkLx0Ifa1Rr0cS70brYM=
-X-Google-Smtp-Source: ABdhPJzIVor/dkzn0g4nVs9XzPe+AbBpeyzaEui1EjY+MZzE8/Eh0p+HHivGHOeYd2hQGMLXkMrD4Q==
-X-Received: by 2002:a65:628a:: with SMTP id f10mr7583505pgv.380.1611119233231;
-        Tue, 19 Jan 2021 21:07:13 -0800 (PST)
-Received: from [10.230.29.29] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z12sm715549pfn.186.2021.01.19.21.07.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 21:07:12 -0800 (PST)
-Subject: Re: [PATCH] net: systemport: free dev before on error path
-To:     Pan Bian <bianpan2016@163.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210120044423.1704-1-bianpan2016@163.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c291aebe-4cb4-9fe7-0635-5b518d92c311@gmail.com>
-Date:   Tue, 19 Jan 2021 21:07:10 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+        Wed, 20 Jan 2021 00:12:23 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 94268580655;
+        Wed, 20 Jan 2021 00:11:17 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 20 Jan 2021 00:11:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=ZZ+Isl3JErTgV
+        YzHxSVJeJQJkE/efLPrQzoT7Tl5B4g=; b=Wv0+9VATtvODiO3qBH20SgMuFIRd+
+        SnkoQopJ4jVTvH7dMgCCJNK7QNFkU/7R6tYsQ8OO9lpFM1VwNTATe7JXFS+cADbQ
+        F9lk9hielYRT6zZFsZNGizoH99rc/PYkyVUwfoN0RlUAQL/Rn7BAFxY45zvbZM/u
+        ZjCciRMBm4z5irbaIxCaMXs8Rw194GA9ru4GEf+eK3dkMyuBO4sbGLMRD7rNen7m
+        lmQNlcpvg8GelSdtfPMOqPcIS1t8ns/DhEXXB/7H/8ptEOjcCSPi/7xDIZ88j3+X
+        Pj/yz26dkURlJJ7L9by6dZEqtHZInjh5l7b557c9xulqLYbvMOFZYPBlg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=ZZ+Isl3JErTgVYzHxSVJeJQJkE/efLPrQzoT7Tl5B4g=; b=WPZH20IU
+        Qoj04uldMWmsW8AyTxqhEICyVTxbyHmxvI41XwOg27ZSu61j9WVQkzUPsmVTbCmg
+        LWHd7TR1YqHV/vlb1GpO3WOTbzUFMcT/STFflkdIVxekjC4a09P4jxi+xKHcZYvs
+        ve6Rh6u2EZsxx8TvbHsrEep1Qao4MRAQJlC+xoG89cGl2gmpoUpckgEmWyC6irzR
+        GvG40jWKdNQOtP4AAR8e53lci42fy70lK4UjLB9DTuG+bFOUEb+m3Rpct3mQdVj0
+        snEqrewmLENA9FgrLl/awPIcNe8Hf9WtgmEgttVd54i2VysF5GggK9y6792Hr4Rr
+        xOQX6mfl6B/21A==
+X-ME-Sender: <xms:dLsHYKYjiezCTpPIKiQvgqlvY66QZuDabMpEnZqbI_aWM9Ole_10FA>
+    <xme:dLsHYNZtaQXADo_Yxq3X2lk1w4-oK7aCQiDWJ0i_XbevULFjeki8z3jmQsr-y9VW6
+    CdNBQt5n28IHsv9qQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddugdekudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghj
+    rdhiugdrrghuqeenucggtffrrghtthgvrhhnpeejgfdvveehteekveeggeellefgleette
+    ejffelffdvudduveeiffegteelvefhteenucfkphepudegrddvrddutdejrdeggeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfi
+    esrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:dLsHYE9gOtMm22JjnNNl3XXotQkd6ZiY_V17HidNlgGRwmUwQvJg3Q>
+    <xmx:dLsHYMpnGfLeInrQHf23Y6JF_TC9GhaSR18ryDOZ20l1rZaB_Ux3YA>
+    <xmx:dLsHYFpxjP7zTb2DdetPbiIsnCZjUcl_T8ED-p2jSSVGpxotWPg3JQ>
+    <xmx:dbsHYG6IiDOIFLQ_6Be9kCEJ23p4l7STJR7If9dG0qx3pZj-SvDGAA>
+Received: from localhost.localdomain (ppp14-2-107-44.adl-apt-pir-bras32.tpg.internode.on.net [14.2.107.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 04FBF1080063;
+        Wed, 20 Jan 2021 00:11:10 -0500 (EST)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     chiawei_wang@aspeedtech.com
+Cc:     BMC-SW@aspeedtech.com, andrew@aj.id.au, cyrilbur@gmail.com,
+        devicetree@vger.kernel.org, haiyue.wang@linux.intel.com,
+        joel@jms.id.au, lee.jones@linaro.org, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        minyard@acm.org, openbmc@lists.ozlabs.org, rlippert@google.com,
+        robh+dt@kernel.org
+Subject: [PATCH v5 5/5] soc: aspeed: Adapt to new LPC device tree layout
+Date:   Wed, 20 Jan 2021 15:40:56 +1030
+Message-Id: <20210120051056.712222-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210114131622.8951-6-chiawei_wang@aspeedtech.com>
+References: <20210114131622.8951-6-chiawei_wang@aspeedtech.com>
 MIME-Version: 1.0
-In-Reply-To: <20210120044423.1704-1-bianpan2016@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/19/2021 8:44 PM, Pan Bian wrote:
-> On the error path, it should goto the error handling label to free
-> allocated memory rather than directly return.
+> Add check against LPC device v2 compatible string to
+> ensure that the fixed device tree layout is adopted.
+> The LPC register offsets are also fixed accordingly.
 > 
-> Fixes: 6328a126896e ("net: systemport: Manage Wake-on-LAN clock")
-> Signed-off-by: Pan Bian <bianpan2016@163.com>
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> ---
+>  drivers/soc/aspeed/aspeed-lpc-ctrl.c  | 20 ++++++++++++++------
+>  drivers/soc/aspeed/aspeed-lpc-snoop.c | 23 +++++++++++++++--------
 
-The change is correct, but not the Fixes tag, it should be:
+In the future please do separate patches for separate drivers, but for now:
 
-Fixes: 31bc72d97656 ("net: systemport: fetch and use clock resources")
-
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
