@@ -2,231 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625CF2FD36D
+	by mail.lfdr.de (Postfix) with ESMTP id D00512FD36E
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390235AbhATOzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:55:53 -0500
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:36836 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388245AbhATO1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:27:51 -0500
-Received: by mail-ot1-f42.google.com with SMTP id v21so5744186otj.3;
-        Wed, 20 Jan 2021 06:27:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1CizkAqxvrzGVEb+o2LUdk+BtxmR/1x/VSd4w+BeqFU=;
-        b=tZJ6YsoaeMSTYePixsSsNO1H47gwE61ilDw/+9mkB9CCBiahSzIzPeggWha1aDLLVw
-         KTYEvIuamjJ7swOaGV8CZt8kZQ2cwIwv9kZjC+FhGyeJ8RyS7YS4TFhgpd36k9nXeD2u
-         nJ4knXODzPWW7DM5E8pWnK9HcFhvx0SNrUi1OwGPe4hIG75CYTbqcRDI51xZ9ruRv/mg
-         BcebVcxV83tuVnFuOXeECzTi6Kh7yVTVMKumJ0kLdP6Du78uXcWCJTTzU+75SEgtVA5U
-         2bks0gJuFjyRJT533LrkxrZPBpXYZ9AkCOsx11Lfl8Qvz3HneLn4p0MJKBCraHBW91ww
-         R+lg==
-X-Gm-Message-State: AOAM533Vf4tdzUzooGZkLUaY51KKYBdLA/l3qb2v1sfd2ejav9FOvuX3
-        E8or5vvD6Dw5jGE0KonrqqxpLew04aDp2GlSqR8=
-X-Google-Smtp-Source: ABdhPJwc/GglqoV+vdMd+FheWjTSwxDhT14c4WFRCbV9PeqBFeVkjFp3uyAuMp+TKOFjhjUq3wM+q0ikjUiBE/1d9P0=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr7210973otc.145.1611152828967;
- Wed, 20 Jan 2021 06:27:08 -0800 (PST)
+        id S2390302AbhATO4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:56:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726278AbhATO1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:27:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 826062336D;
+        Wed, 20 Jan 2021 14:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611152820;
+        bh=DSvaDm4XhrGo3TRVwU920cVaThyOHtM52UGaxj6lzG8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=asZRWy2LQeD3p9pnCwJMVoE2tk+lUdWhaMha6sb6wpIaR0+yUhRRLp9cvMHR6Ibx4
+         0E+mFHl4rcQc1NnlgHMVIIRy68M0zJtFD4GXM31M3xvX5FabIWzw2GGI+/lHf9+SYY
+         M0/bhQFr4fdx9l/ww8K0dbr5DpIcV4kWDcAsIWbjLBKDxbmwp1kiJQfZIKVZVgOuNX
+         I4vACTktGjyioDWRdsXxu2S6g0X8a+629+4WKr7V9ifq87Bjx/r0xKcnR6g595na+0
+         a7d38+Vt6fYZkjZlfKidL6KUWXyiS4ZMZ2Od2eRbihtcW3BA8h7BJVm/ZCic9dYQ2C
+         0nwn87Xszi6BA==
+Date:   Wed, 20 Jan 2021 09:26:59 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Wu <david.wu@rock-chips.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.10 28/45] net: stmmac: Fixed mtu channged by
+ cache aligned
+Message-ID: <20210120142659.GC4035784@sasha-vm>
+References: <20210120012602.769683-1-sashal@kernel.org>
+ <20210120012602.769683-28-sashal@kernel.org>
+ <20210119220815.039ac330@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <20201218031703.3053753-6-saravanak@google.com> <CAMuHMdWDAg6+utMDLunPXmVtnP+13G2s0E-Fcnkc9bkNBs-cEg@mail.gmail.com>
- <86db7747ea6d48eebbf40a5855240d14@kernel.org> <CAMuHMdUUX22D7gV-LtDJ4jcxD=TD6soWzP=gUy4EqdFFAntoGA@mail.gmail.com>
- <CAGETcx_aroLLf_U50=KgfOBL-DW+VrgvgrSNEyHAyeSxWKZTgQ@mail.gmail.com>
- <CAMuHMdVTKEy3rbdYYUKS+L1pY0y0ctMWRXNf7o+hJWyGR7L-Dg@mail.gmail.com>
- <CAGETcx-ax00kGq=u_XCaQ0phgc_iCqtqD7k2aiQ1qSLFmrQG=g@mail.gmail.com>
- <CAGETcx_dVCsLObf_APFur6jNiS_7+ymXEjDx4Sy-tBoMCSx71w@mail.gmail.com> <CAMuHMdUnxSW+a8Z2dRg4T61VPwJXFBeJ+myFY=xb+mQZmmF0Eg@mail.gmail.com>
-In-Reply-To: <CAMuHMdUnxSW+a8Z2dRg4T61VPwJXFBeJ+myFY=xb+mQZmmF0Eg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 20 Jan 2021 15:26:57 +0100
-Message-ID: <CAMuHMdVhwdq32krAxgo3UKdVkciwnhN3sRgHrbZ6xPkTvJgh2w@mail.gmail.com>
-Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210119220815.039ac330@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Wed, Jan 20, 2021 at 10:40 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Tue, Jan 19, 2021 at 10:51 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Tue, Jan 19, 2021 at 10:08 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Tue, Jan 19, 2021 at 1:05 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Mon, Jan 18, 2021 at 10:19 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > On Mon, Jan 18, 2021 at 11:16 AM Geert Uytterhoeven
-> > > > > <geert@linux-m68k.org> wrote:
-> > > > > > On Mon, Jan 18, 2021 at 6:59 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > > > On 2021-01-18 17:39, Geert Uytterhoeven wrote:
-> > > > > > > > On Fri, Dec 18, 2020 at 4:34 AM Saravana Kannan <saravanak@google.com>
-> > > > > > > > wrote:
-> > > > > > > >> Cyclic dependencies in some firmware was one of the last remaining
-> > > > > > > >> reasons fw_devlink=on couldn't be set by default. Now that cyclic
-> > > > > > > >> dependencies don't block probing, set fw_devlink=on by default.
-> > > > > > > >>
-> > > > > > > >> Setting fw_devlink=on by default brings a bunch of benefits
-> > > > > > > >> (currently,
-> > > > > > > >> only for systems with device tree firmware):
-> > > > > > > >> * Significantly cuts down deferred probes.
-> > > > > > > >> * Device probe is effectively attempted in graph order.
-> > > > > > > >> * Makes it much easier to load drivers as modules without having to
-> > > > > > > >>   worry about functional dependencies between modules (depmod is still
-> > > > > > > >>   needed for symbol dependencies).
-> > > > > > > >>
-> > > > > > > >> If this patch prevents some devices from probing, it's very likely due
-> > > > > > > >> to the system having one or more device drivers that "probe"/set up a
-> > > > > > > >> device (DT node with compatible property) without creating a struct
-> > > > > > > >> device for it.  If we hit such cases, the device drivers need to be
-> > > > > > > >> fixed so that they populate struct devices and probe them like normal
-> > > > > > > >> device drivers so that the driver core is aware of the devices and
-> > > > > > > >> their
-> > > > > > > >> status. See [1] for an example of such a case.
-> > > > > > > >>
-> > > > > > > >> [1] -
-> > > > > > > >> https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
-> > > > > > > >> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > > >
-> > > > > > > > Shimoda-san reported that next-20210111 and later fail to boot
-> > > > > > > > on Renesas R-Car Gen3 platforms. No output is seen, unless earlycon
-> > > > > > > > is enabled.
-> > > > > > > >
-> > > > > > > > I have bisected this to commit e590474768f1cc04 ("driver core: Set
-> > > > > > > > fw_devlink=on by default").
-> > > > > > >
-> > > > > > > There is a tentative patch from Saravana here[1], which works around
-> > > > > > > some issues on my RK3399 platform, and it'd be interesting to find
-> > > > > > > out whether that helps on your system.
-> > > > > > >
-> > > > > > > Thanks,
-> > > > > > >
-> > > > > > >          M.
-> > > > > > >
-> > > > > > > [1]
-> > > > > > > https://lore.kernel.org/r/20210116011412.3211292-1-saravanak@google.com
-> > > > > >
-> > > > > > Thanks for the suggestion, but given no devices probe (incl. GPIO
-> > > > > > providers), I'm afraid it won't help. [testing] Indeed.
-> > > > > >
-> > > > > > With the debug prints in device_links_check_suppliers enabled, and
-> > > > > > some postprocessing, I get:
-> > > > > >
-> > > > > >     255 supplier e6180000.system-controller not ready
-> > > > > >       9 supplier fe990000.iommu not ready
-> > > > > >       9 supplier fe980000.iommu not ready
-> > > > > >       6 supplier febd0000.iommu not ready
-> > > > > >       6 supplier ec670000.iommu not ready
-> > > > > >       3 supplier febe0000.iommu not ready
-> > > > > >       3 supplier e7740000.iommu not ready
-> > > > > >       3 supplier e6740000.iommu not ready
-> > > > > >       3 supplier e65ee000.usb-phy not ready
-> > > > > >       3 supplier e6570000.iommu not ready
-> > > > > >       3 supplier e6054000.gpio not ready
-> > > > > >       3 supplier e6053000.gpio not ready
-> > > > > >
-> > > > > > As everything is part of a PM Domain, the (lack of the) system controller
-> > > > > > must be the culprit. What's wrong with it? It is registered very early in
-> > > > > > the boot:
-> > > > > >
-> > > > > > [    0.142096] rcar_sysc_pd_init:442: of_genpd_add_provider_onecell() returned 0
-> > > >
-> > > > > Looks like you found the important logs. Can you please enable all
-> > > > > these logs and send the early con logs as an attachment (so I don't
-> > > > > need to deal with lines getting wrapped)?
-> > > > > 1. The ones in device_links_check_suppliers()
-> > > > > 2. The ones in device_link_add()
-> > > > > 3. initcall_debug=1
-> > > >
-> > > > I have attached[*] the requested log.
-> > > >
-> > > > > That should help us figure out what's going on. Also, what's the DT
-> > > > > that corresponds to one of the boards that see this issue?
-> > > >
-> > > > arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dts
-> > > >
-> > > > > Lastly, can you please pick up these 3 patches (some need clean up
-> > > > > before they merge) to make sure it's not an issue being worked on from
-> > > > > other bug reports?
-> > > > > https://lore.kernel.org/lkml/20210116011412.3211292-1-saravanak@google.com/
-> > > > > https://lore.kernel.org/lkml/20210115210159.3090203-1-saravanak@google.com/
-> > > > > https://lore.kernel.org/lkml/20201218210750.3455872-1-saravanak@google.com/
-> > > > >
-> > > > > I have a strong hunch the 2nd one will fix your issues. fw_devlink can
-> > > > > handle cyclic dependencies now (it basically reverts to
-> > > > > fw_devlink=permissive mode for devices in the cycle), but it needs to
-> > > > > "see" all the dependencies to know there's a cycle. So want to make
-> > > > > sure it "sees" the "gpios" binding used all over some of the Renesas
-> > > > > DT files.
-> > > >
-> > > > These patches don't help.
-> > > > The 2nd one actually introduces a new failure:
-> > > >
-> > > >      OF: /soc/i2c@e66d8000/gpio@20/pcie-sata-switch-hog: could not get
-> > > > #gpio-cells for /cpus/cpu@102
-> > > >
-> > > > Note that my issues don't seem to be GPIO-related at all.
+On Tue, Jan 19, 2021 at 10:08:15PM -0800, Jakub Kicinski wrote:
+>On Tue, 19 Jan 2021 20:25:45 -0500 Sasha Levin wrote:
+>> From: David Wu <david.wu@rock-chips.com>
+>>
+>> [ Upstream commit 5b55299eed78538cc4746e50ee97103a1643249c ]
+>>
+>> Since the original mtu is not used when the mtu is updated,
+>> the mtu is aligned with cache, this will get an incorrect.
+>> For example, if you want to configure the mtu to be 1500,
+>> but mtu 1536 is configured in fact.
+>>
+>> Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
+>> Signed-off-by: David Wu <david.wu@rock-chips.com>
+>> Link: https://lore.kernel.org/r/20210113034109.27865-1-david.wu@rock-chips.com
+>> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
 >
-> > I took a look at your logs. It looks like your guess is right. It's at
-> > least one of the issues.
-> >
-> > You'll need to convert drivers/soc/renesas/rcar-sysc.c into a platform
-> > driver. You already have a platform device created for it. So just go
-> > ahead and probe it with a platform driver. See what Marek did here
-> > [1].
-> >
-> > You probably had to implement it as an "initcall based driver"
-> > because you had to play initcall chicken to make sure the PD hardware
-> > was initialized before the consumers. With fw_devlink=on you won't
-> > have to worry about that. As an added benefit of implementing a proper
-> > platform driver, you can  actually implement runtime PM now, your
-> > suspend/resume would be more robust, etc.
->
-> On R-Car H1, the system controller driver needs to be active before
-> secondary CPU setup, hence the early_initcall().
-> platform_bus_init() is called after that, so this is gonna need a split
-> initialization.  Or a dummy platform driver to make devlinks think
-> everything is fine ;-)
+>This was applied 6 days ago, I thought you said you wait two weeks.
+>What am I missing?
 
-Note that adding a dummy platform driver does work.
+The "AUTOSEL" review cycle is an additional hurdle automatically
+selected patches need to clear before being queued up. There are 7 days
+between the day I sent the review for these and the first day I might
+queue them up.
 
-> So basically all producer DT drivers not using a platform (or e.g. i2c)
-> driver are now broken?
-> Including all clock drivers using CLK_OF_DECLARE()?
+This mail isn't an indication that the patch has been added to the
+queue, it's just an extra step to give folks time to object.
 
-Oh, of_link_to_phandle() ignores device nodes where OF_POPULATED
-is set, and of_clk_init() sets that flag.  So rcar-sysc should do so, too.
-Patch sent.
-
->     $ git grep -L "\<[a-z0-9]*_driver\>" -- $(git grep -l
-> "\.compatible\>") | wc -l
->     249
->
-> (includes false positives)
->
-> I doubt they'll all get fixed for v5.12, as we're already at rc4...
-
-Still more than 100 drivers to fix?
-
-Gr{oetje,eeting}s,
-
-                        Geert
+If you add up all the days you'll get >14 :)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Sasha
