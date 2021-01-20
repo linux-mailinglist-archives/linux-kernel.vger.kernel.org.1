@@ -2,218 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805142FC6F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685032FC6F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbhATBmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:42:19 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:36010 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728956AbhATBgs (ORCPT
+        id S1729823AbhATBma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:42:30 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:53276 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729841AbhATBh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:36:48 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l22Pf-000s1Q-M7; Tue, 19 Jan 2021 18:35:59 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l22Pe-00Aw4B-Ln; Tue, 19 Jan 2021 18:35:59 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Serge E . Hallyn" <serge@hallyn.com>
-References: <20210119162204.2081137-1-mszeredi@redhat.com>
-        <20210119162204.2081137-3-mszeredi@redhat.com>
-Date:   Tue, 19 Jan 2021 19:34:49 -0600
-In-Reply-To: <20210119162204.2081137-3-mszeredi@redhat.com> (Miklos Szeredi's
-        message of "Tue, 19 Jan 2021 17:22:04 +0100")
-Message-ID: <8735yw8k7a.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 19 Jan 2021 20:37:58 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K1YEQb119873;
+        Wed, 20 Jan 2021 01:37:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=58xQqYbiA3gFY1mH16yxiFLJL72Q8WqtkNLAmrNRloo=;
+ b=S5S5fqhvky1snrhXXyNlG4m1TiTyJYzvCvOrvSVgLEBALEgk4MFM2yhczOhR9rwA+JLY
+ qsJRS25O6F3czCOOdL4GrRfXY4qCddPEcy+7XAOCdvAzE8TV3bv8drpTVI9iZEr2B948
+ TqU9d04APPPbeCtSizlFVK3XbogTctpqpAGhvkiuEcIygTtmZd85rP94Kr+vM7Az6672
+ 5GKfiEOSGCfGAIDTnVSIeOpT5fR50wB+81wFeNHvDwN/YPg263RYTPNnDkpUhjCRUttn
+ qCCzeHc3QBa9cJauPvx7wZJJMUV/VFcCOdKjrXhqc7nFdSEVrIKoA5Z/MwkiMIbs0ivb UQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 3668qmrare-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 01:37:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K1UcVI006819;
+        Wed, 20 Jan 2021 01:35:10 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
+        by aserp3030.oracle.com with ESMTP id 3668qudaf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 01:35:10 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AZm9MPXEb3PJxIBH3WcGHTb8U+sqasLexU7KmYbUlBKwnvaxdU9saefMVTUfTD2gXit9Y2shkhp10w0d4WadfL5DLShgpYl1UpmaTTCC8azH0GUGHtEsWLbYJbK9RmalkF4zz0h6MTmwiAx5kKIAb8LoOf5X+lfNzu7AAtzF7iPrsqrFNjMSmsoyqgGFLUgafnfG9IwMurJScPRUxB0vy1XRzzTkmv5mBlLwUU+M1rk2Bu8M+GUjXnHp/K5vU/d3woM/DsAvsabFzKIbGARpNH2ozpnqStEiaJwMHAx900zKKS2e9oD4SYeLXbmfJxqFgGmI8+4o2NrwU6Ib/FBcuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=58xQqYbiA3gFY1mH16yxiFLJL72Q8WqtkNLAmrNRloo=;
+ b=DG2y7Mti6o22rLJNRkml2EgkprLqEaUf2Duh+ndN+cdoBOS+hK3gLfzsR5c5pqxFpl0b1IVQF50zm/OcmzXxTZpZglCoUo4DRfkTFMncUAZQ7Wf9Afr1GIcYEjq/QT2HKWkEhkQ40uwIXBKpkoMTGpeeVGtV/xMsb5+O6FkkWeZOi5DX1xd1rLtAvHOFIQkT+xnynb1nX8nEUyIJcjeUsMIbnYryuNN3cxIvKz2tpUvHzSF+F8Hr2BmcvCzqqT3NZC9I1JOA5/Tjk7+M6HW2MXJ4+lKnO4+p+m3cfKg0jPzUExUmOpOQ925agVuPZvxteBf7U9MbHPr89JMBBDzqwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=58xQqYbiA3gFY1mH16yxiFLJL72Q8WqtkNLAmrNRloo=;
+ b=LuM/XaQQgyhrjsi7tMoPHmVKwUovWXtlpSU0B6gC+LW8Ps1OgKpyVqOjYLRW3jOe6qjIPotUoOGKWRD8lsNW6wQq8UlmbCeuvaY0EVvic+SxK0ifoD94GUNWolEGivFHfqGllPxTV7oVyv0C+gQAblwyQUAbhtwKDIs6eJgAQeM=
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from SA2PR10MB4572.namprd10.prod.outlook.com (2603:10b6:806:f9::18)
+ by SN6PR10MB2637.namprd10.prod.outlook.com (2603:10b6:805:44::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Wed, 20 Jan
+ 2021 01:35:07 +0000
+Received: from SA2PR10MB4572.namprd10.prod.outlook.com
+ ([fe80::4c5b:9cf:616d:b140]) by SA2PR10MB4572.namprd10.prod.outlook.com
+ ([fe80::4c5b:9cf:616d:b140%6]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
+ 01:35:07 +0000
+Subject: Re: [PATCH AUTOSEL 5.10 26/45] x86/xen: Fix xen_hvm_smp_init() when
+ vector callback not available
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org
+References: <20210120012602.769683-1-sashal@kernel.org>
+ <20210120012602.769683-26-sashal@kernel.org>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <86c0baa1-f8c5-2580-6ee9-efc7043c2bf5@oracle.com>
+Date:   Tue, 19 Jan 2021 20:35:04 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
+In-Reply-To: <20210120012602.769683-26-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [138.3.200.43]
+X-ClientProxiedBy: SN4PR0201CA0068.namprd02.prod.outlook.com
+ (2603:10b6:803:20::30) To SA2PR10MB4572.namprd10.prod.outlook.com
+ (2603:10b6:806:f9::18)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1l22Pe-00Aw4B-Ln;;;mid=<8735yw8k7a.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19ENBj119UF+ufFlQellSdzGmdBO3hQ/RE=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Miklos Szeredi <mszeredi@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 487 ms - load_scoreonly_sql: 0.09 (0.0%),
-        signal_user_changed: 13 (2.6%), b_tie_ro: 11 (2.2%), parse: 1.54
-        (0.3%), extract_message_metadata: 15 (3.2%), get_uri_detail_list: 3.0
-        (0.6%), tests_pri_-1000: 14 (2.8%), tests_pri_-950: 1.36 (0.3%),
-        tests_pri_-900: 1.04 (0.2%), tests_pri_-90: 78 (16.1%), check_bayes:
-        77 (15.8%), b_tokenize: 10 (2.0%), b_tok_get_all: 8 (1.7%),
-        b_comp_prob: 2.6 (0.5%), b_tok_touch_all: 52 (10.8%), b_finish: 0.90
-        (0.2%), tests_pri_0: 342 (70.3%), check_dkim_signature: 0.66 (0.1%),
-        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 0.61 (0.1%), tests_pri_10:
-        3.2 (0.7%), tests_pri_500: 14 (2.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/2] security.capability: fix conversions on getxattr
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.103.107] (138.3.200.43) by SN4PR0201CA0068.namprd02.prod.outlook.com (2603:10b6:803:20::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Wed, 20 Jan 2021 01:35:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3b28f780-0e22-4742-3e00-08d8bce39e90
+X-MS-TrafficTypeDiagnostic: SN6PR10MB2637:
+X-Microsoft-Antispam-PRVS: <SN6PR10MB2637ADA77B9A4C4D36C8D9EB8AA20@SN6PR10MB2637.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:172;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tsX4QwPYkGgJ6nlbBbMVgDuKXMd8l56H8aGPis4e5/Cp5RYWQ6nvlB/FeKm4DbEaXqh0Lnam656mdm4HQr7B3qoPFiJIHB6Xl9AR1Uk0qL25mKjtupsVm0pUZR+K1nEWBcT0epJ5tK0kIYsyiSLuE23aKaqHGw5twVNGI/Tiz2l5f2tY7qNlbdt2LtSwSE1OaEv8kU8kU2TtPYy/dkOVzDWrS2HdX8SDycGLLiMCF5PGiSTq5gchgXwBhPKOb1XpEYAJ23573DvHTD1E6FJE3vF09pShuKSMCjuB6O6MAalx6jFh7jlp8ImPm3vaQBuguq4gdHh4EcFxtFxAUfSYhh1MQH7inGqUd4hLpxSiTMJ1C4WahhKYn/Qom2KN+wLraA4FDqPri8ZxvVHtLNttaRDb3CB7yCU0LaH3oKBcQ4lPW6Wo5sIUqaSHYvRmX0MqJnsIo6v2ION5bqB/sOM5IGgNQgwM5QoG3NuHyQJ2DnHXkvWIivnroLvozNP+hQMHJKknsxgoGa8DRqClC1Jt8vhQ5swOYAHY+5XxYiMKH6uSe3kn00kx032+QUvRZ1m8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4572.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(346002)(396003)(136003)(366004)(558084003)(478600001)(5660300002)(4326008)(44832011)(8936002)(6486002)(316002)(966005)(16576012)(31696002)(186003)(54906003)(2906002)(31686004)(36756003)(2616005)(16526019)(8676002)(66556008)(956004)(86362001)(66476007)(26005)(53546011)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZXdaMzM0MUZsbk9UeTRTclFteGFiN3B6bEl3RW9sR3hXaWdCL3dxaWFybE1D?=
+ =?utf-8?B?OHB5NTA3V3RDZ20xUzZweTZnbnRhQTE4djZCRnptWGQ2ckpRQTV1MGVXcW1r?=
+ =?utf-8?B?MTVYaDlyb29kWW50NjdhQ0VVMC9lYkJ1WFJKYmRha2hLOEhRbS9aRUY5UnlI?=
+ =?utf-8?B?anM4Q2pjTUtDNzQxYXJVd1poZjdrTGkwVnAvdUMyN3ZtdnlLQ1c5SnpWL2xq?=
+ =?utf-8?B?WU9PejZ1c2REakwxcVU5U2dYU0RSUjJyeFU3VFJWNzRraVRXZU5iNnNZbFdk?=
+ =?utf-8?B?cFNNYjJ2MGt5aFo1WU1oS2tEdS9yU1Nlb0JzazI2YWRTYm4rRzJla1dMS3dY?=
+ =?utf-8?B?aTdtY0NSamM5dm1PVURUSW9abW9ZejJPU0hyallhN3hrdnR1T0NpZGVhQlJi?=
+ =?utf-8?B?dytSdHlzaU5WcDV3YU9SOWJGU3dZWlVXZGhxWm5HTHhreU9nMHV1R1dCdEc5?=
+ =?utf-8?B?ZDB2eDBBMk9rdExLZGJyaGpNSU0xZkdveTF5cWltaTJSdVc1QUpSbnhrTjU0?=
+ =?utf-8?B?dUlNSUtNY1EyTHRJRVRtMjU4SzlXS1dKdUc1SFRLZ05GalFGN2IvcGZKcjM4?=
+ =?utf-8?B?RDhBeXBrbThRTWNNeGgyaTBzbTFjTFpuYlN5R3NqaXlIeEUvUll1RlRWc3pz?=
+ =?utf-8?B?ZjRkcmhoNjFMcGNhSnRoelVPVStCZi9XNzVtQ2RtN2VpOEpHTnNheEthOWtk?=
+ =?utf-8?B?WjBsd2did1BTQnRkNWNHK1NtaVYyRnJwMVMvZWJramEzZndqdkxMVEVQZ1Nv?=
+ =?utf-8?B?OElZZ3FDenpQRlRMMll0ZEgzb2IydGJvMjBnYktON2Rkdnh6YXJzbElMY3pu?=
+ =?utf-8?B?NFhaSjBjR3MwN1FDemJ0WVlwWG4xbHd4Ymp6ZU84bU9mNjB2TFVjUmI4ODZ1?=
+ =?utf-8?B?dDNWMzNLbGhZSlFSR29tcExyTEpVV3Y1YWRadnFMOEZhd3lpWThKTnppM1Nn?=
+ =?utf-8?B?YzlieXUxMkRWSzdhNGFic3VLWkJrckhlb1FKeEZnMDlTYi9QNFRBNHpRUDRw?=
+ =?utf-8?B?aDZkVG5vSjh6b2d1a3I0K3VLVXg5cDRKTVlNOWc0amxQQ1E0aGxOOVFqSmo4?=
+ =?utf-8?B?dzhCTWFyem00RHZkYVI3L3ZtWmdMRHFibFRtR0lLUitUU3NtSzNsajVRRVlj?=
+ =?utf-8?B?eEZmWHRwSXppN0Ntc0x4RTlSKytPWURFTFBpMFNTQS9mQ0s0Z2FzSDBuRFdW?=
+ =?utf-8?B?N0lNTklLMDkxRnBNT1Eza3JCOXFremhFNG8zMXkvNStoWm1Kc3oxZlIzOEdk?=
+ =?utf-8?B?TzdKa0daZE4rbFBwd3hBVW1uM0pqZmxWMGtVRVNPMWUxUXd0MHluekNGM3lZ?=
+ =?utf-8?B?bUVVQnRxWC9OWUlpME44NTdiQmtvRWRxL243dDdjYVEzMHdZZWJZTDZZSVJD?=
+ =?utf-8?B?dDE2U1dpN25lNHZ1WHF2STFxVi8vOVZ6Nnc0M1d4SFJweFBnYUNNNG5pbmQ0?=
+ =?utf-8?Q?JmyU1d2G?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b28f780-0e22-4742-3e00-08d8bce39e90
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4572.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2021 01:35:07.8628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bqMPrp6Q1qGbTYrg8ZcKTYkwQn708LXTFeYaB2Tu1sQSSsZYEVeZLP3hDJuA/0+nD+tafzTwCvESZZiiCjJbxhxVuC9aTAp32gTvt1dWWeU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR10MB2637
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200005
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
+ adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1031 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200006
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos Szeredi <mszeredi@redhat.com> writes:
 
-> If a capability is stored on disk in v2 format cap_inode_getsecurity() will
-> currently return in v2 format unconditionally.
+On 1/19/21 8:25 PM, Sasha Levin wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 >
-> This is wrong: v2 cap should be equivalent to a v3 cap with zero rootid,
-> and so the same conversions performed on it.
->
-> If the rootid cannot be mapped v3 is returned unconverted.  Fix this so
-> that both v2 and v3 return -EOVERFLOW if the rootid (or the owner of the fs
-> user namespace in case of v2) cannot be mapped in the current user
-> namespace.
+> [ Upstream commit 3d7746bea92530e8695258a3cf3ddec7a135edd6 ]
 
-This looks like a good cleanup.
 
-I do wonder how well this works with stacking.  In particular
-ovl_xattr_set appears to call vfs_getxattr without overriding the creds.
-What the purpose of that is I haven't quite figured out.  It looks like
-it is just a probe to see if an xattr is present so maybe it is ok.
+Sasha, you will also want https://lore.kernel.org/lkml/20210115191123.27572-1-rdunlap@infradead.org/, it is sitting in Xen staging tree.
 
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
->
-> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> ---
->  security/commoncap.c | 67 ++++++++++++++++++++++++++++----------------
->  1 file changed, 43 insertions(+), 24 deletions(-)
->
-> diff --git a/security/commoncap.c b/security/commoncap.c
-> index bacc1111d871..c9d99f8f4c82 100644
-> --- a/security/commoncap.c
-> +++ b/security/commoncap.c
-> @@ -371,10 +371,11 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
->  {
->  	int size, ret;
->  	kuid_t kroot;
-> +	__le32 nsmagic, magic;
->  	uid_t root, mappedroot;
->  	char *tmpbuf = NULL;
->  	struct vfs_cap_data *cap;
-> -	struct vfs_ns_cap_data *nscap;
-> +	struct vfs_ns_cap_data *nscap = NULL;
->  	struct dentry *dentry;
->  	struct user_namespace *fs_ns;
->  
-> @@ -396,46 +397,61 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
->  	fs_ns = inode->i_sb->s_user_ns;
->  	cap = (struct vfs_cap_data *) tmpbuf;
->  	if (is_v2header((size_t) ret, cap)) {
-> -		/* If this is sizeof(vfs_cap_data) then we're ok with the
-> -		 * on-disk value, so return that.  */
-> -		if (alloc)
-> -			*buffer = tmpbuf;
-> -		else
-> -			kfree(tmpbuf);
-> -		return ret;
-> -	} else if (!is_v3header((size_t) ret, cap)) {
-> -		kfree(tmpbuf);
-> -		return -EINVAL;
-> +		root = 0;
-> +	} else if (is_v3header((size_t) ret, cap)) {
-> +		nscap = (struct vfs_ns_cap_data *) tmpbuf;
-> +		root = le32_to_cpu(nscap->rootid);
-> +	} else {
-> +		size = -EINVAL;
-> +		goto out_free;
->  	}
->  
-> -	nscap = (struct vfs_ns_cap_data *) tmpbuf;
-> -	root = le32_to_cpu(nscap->rootid);
->  	kroot = make_kuid(fs_ns, root);
->  
->  	/* If the root kuid maps to a valid uid in current ns, then return
->  	 * this as a nscap. */
->  	mappedroot = from_kuid(current_user_ns(), kroot);
->  	if (mappedroot != (uid_t)-1 && mappedroot != (uid_t)0) {
-> +		size = sizeof(struct vfs_ns_cap_data);
->  		if (alloc) {
-> -			*buffer = tmpbuf;
-> +			if (!nscap) {
-> +				/* v2 -> v3 conversion */
-> +				nscap = kzalloc(size, GFP_ATOMIC);
-> +				if (!nscap) {
-> +					size = -ENOMEM;
-> +					goto out_free;
-> +				}
-> +				nsmagic = VFS_CAP_REVISION_3;
-> +				magic = le32_to_cpu(cap->magic_etc);
-> +				if (magic & VFS_CAP_FLAGS_EFFECTIVE)
-> +					nsmagic |= VFS_CAP_FLAGS_EFFECTIVE;
-> +				memcpy(&nscap->data, &cap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
-> +				nscap->magic_etc = cpu_to_le32(nsmagic);
-> +			} else {
-> +				/* use allocated v3 buffer */
-> +				tmpbuf = NULL;
-> +			}
->  			nscap->rootid = cpu_to_le32(mappedroot);
-> -		} else
-> -			kfree(tmpbuf);
-> -		return size;
-> +			*buffer = nscap;
-> +		}
-> +		goto out_free;
->  	}
->  
->  	if (!rootid_owns_currentns(kroot)) {
-> -		kfree(tmpbuf);
-> -		return -EOPNOTSUPP;
-> +		size = -EOVERFLOW;
-> +		goto out_free;
->  	}
->  
->  	/* This comes from a parent namespace.  Return as a v2 capability */
->  	size = sizeof(struct vfs_cap_data);
->  	if (alloc) {
-> -		*buffer = kmalloc(size, GFP_ATOMIC);
-> -		if (*buffer) {
-> -			struct vfs_cap_data *cap = *buffer;
-> -			__le32 nsmagic, magic;
-> +		if (nscap) {
-> +			/* v3 -> v2 conversion */
-> +			cap = kzalloc(size, GFP_ATOMIC);
-> +			if (!cap) {
-> +				size = -ENOMEM;
-> +				goto out_free;
-> +			}
->  			magic = VFS_CAP_REVISION_2;
->  			nsmagic = le32_to_cpu(nscap->magic_etc);
->  			if (nsmagic & VFS_CAP_FLAGS_EFFECTIVE)
-> @@ -443,9 +459,12 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
->  			memcpy(&cap->data, &nscap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
->  			cap->magic_etc = cpu_to_le32(magic);
->  		} else {
-> -			size = -ENOMEM;
-> +			/* use unconverted v2 */
-> +			tmpbuf = NULL;
->  		}
-> +		*buffer = cap;
->  	}
-> +out_free:
->  	kfree(tmpbuf);
->  	return size;
->  }
+-boris
+
+
+
