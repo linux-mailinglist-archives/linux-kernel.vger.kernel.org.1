@@ -2,289 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBCC2FDF97
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E4D2FDF6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388602AbhATXs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 18:48:58 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:49396 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730524AbhATV3R (ORCPT
+        id S2404736AbhATXz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 18:55:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388386AbhATVdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:29:17 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l2L1M-0033EK-MM; Wed, 20 Jan 2021 14:28:08 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l2L1L-00GTsr-HM; Wed, 20 Jan 2021 14:28:08 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     linux-security-module@vger.kernel.org
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Kees Cook <keescook@chromium.org>,
-        James Morris <james.l.morris@oracle.com>,
-        John Johansen <john.johansen@canonical.com>,
-        apparmor@lists.ubuntu.com, <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Jan 2021 15:26:56 -0600
-Message-ID: <87lfcn5mfz.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 20 Jan 2021 16:33:22 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4ED6C061385
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:28:02 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id t29so10221635pfg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:28:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GxBZCxQsCUdkzL0jmb2W+BSX0fHFGApzy9UYWSaFsfA=;
+        b=OhlY4GugbFiYhJiu50/CtP/Z4AhcGkhphYKSdJZ2/86gZKj5DgbP0xh8gPW72Hu1A6
+         DdtuijJY97h56PMwDPtGJzrnccfMPqlK/eP0gdY6cZdZZMn4B9DGYTUZorFHmJ1+G8Xr
+         NL/TlrWm7blrSkHJaT1S9y0qoscP5XVa4ICtQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GxBZCxQsCUdkzL0jmb2W+BSX0fHFGApzy9UYWSaFsfA=;
+        b=igSpGdCf+/z/sRZmcElypO43cjJBIFC3kPvduyB4KvJQ+XR9CG2+i/9eAyQzDSjRTJ
+         W1Qoup8wHPCJY2yTcgd/6G0dtHhTxU4duQWKQwmlKCYipuUn/ge4Lpds+j2YUIHR0Ged
+         AWAxiAzpJpMT+lt4JfKZrncP74rejZGBMXS8TuxmbilviCNq49KzrtGmLJ65pXzlqtHJ
+         HpeHauYpRLDsq6pRoyOrqtJlJe0AZWFRC+YYJDOPFMq+fwtrdV1R9Q3crl6KdMRun49j
+         QhKWdNyO8nvYe3uTKRfrWQCnHxkRCT5FV0Zt57r7azNNWsj5Gwjiik3kO1OxwnR/q4Tz
+         ErBw==
+X-Gm-Message-State: AOAM531CWDiHy8AwKMvJ3j4WplqlxcUCaTQzcfikLlgNdLnN/H9C9cHt
+        lwlYdtwLkMJ8QFc2gVc8V1oZdg==
+X-Google-Smtp-Source: ABdhPJxb7pqkpkXuCPIl0IM+TI3xg276y5qgR0X0JvSQHkz1P/VfETOx1bM+4MTqcRozXgRQX2iOiA==
+X-Received: by 2002:a63:f255:: with SMTP id d21mr4170608pgk.149.1611178082371;
+        Wed, 20 Jan 2021 13:28:02 -0800 (PST)
+Received: from localhost ([2604:5500:c29c:d401:f404:1a29:5dd:89c3])
+        by smtp.gmail.com with ESMTPSA id 14sm2974952pfi.131.2021.01.20.13.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 13:28:01 -0800 (PST)
+From:   Ivan Babrou <ivan@cloudflare.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com, Ivan Babrou <ivan@cloudflare.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH net-next] sfc: reduce the number of requested xdp ev queues
+Date:   Wed, 20 Jan 2021 13:27:59 -0800
+Message-Id: <20210120212759.81548-1-ivan@cloudflare.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1l2L1L-00GTsr-HM;;;mid=<87lfcn5mfz.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19zAIKo2/H39lizTedLFYbGqIxscrEV5Lo=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;linux-security-module@vger.kernel.org
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 609 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.6 (0.6%), b_tie_ro: 2.4 (0.4%), parse: 1.26
-        (0.2%), extract_message_metadata: 16 (2.6%), get_uri_detail_list: 6
-        (0.9%), tests_pri_-1000: 15 (2.4%), tests_pri_-950: 1.47 (0.2%),
-        tests_pri_-900: 1.13 (0.2%), tests_pri_-90: 63 (10.3%), check_bayes:
-        61 (10.1%), b_tokenize: 12 (1.9%), b_tok_get_all: 13 (2.1%),
-        b_comp_prob: 4.0 (0.7%), b_tok_touch_all: 30 (5.0%), b_finish: 0.62
-        (0.1%), tests_pri_0: 497 (81.6%), check_dkim_signature: 0.44 (0.1%),
-        check_dkim_adsp: 2.2 (0.4%), poll_dns_idle: 0.80 (0.1%), tests_pri_10:
-        1.71 (0.3%), tests_pri_500: 5 (0.9%), rewrite_mail: 0.00 (0.0%)
-Subject: [RFC][PATCH] apparmor: Enforce progressively tighter permissions for no_new_privs
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Without this change the driver tries to allocate too many queues,
+breaching the number of available msi-x interrupts on machines
+with many logical cpus and default adapter settings:
 
-The current understanding of apparmor with respect to no_new_privs is at
-odds with how no_new_privs is implemented and understood by the rest of
-the kernel.
+Insufficient resources for 12 XDP event queues (24 other channels, max 32)
 
-The documentation of no_new_privs states:
-> With ``no_new_privs`` set, ``execve()`` promises not to grant the
-> privilege to do anything that could not have been done without the
-> execve call.
+Which in turn triggers EINVAL on XDP processing:
 
-And reading through the kernel except for apparmor that description
-matches what is implemented.
+sfc 0000:86:00.0 ext0: XDP TX failed (-22)
 
-There are two major divergences of apparmor from this definition:
-- proc_setattr enforces limitations when no_new_privs are set.
-- the limitation is enforced from the apparent time when no_new_privs is
-  set instead of guaranteeing that each execve has progressively more
-  narrow permissions.
-
-The code in apparmor that attempts to discover the apparmor label at the
-point where no_new_privs is set is not robust.  The capture happens a
-long time after no_new_privs is set.
-
-Capturing the label at the point where no_new_privs is set is
-practically impossible to implement robustly.  Today the rule is struct
-cred can only be changed by it's current task.  Today
-SECCOMP_FILTER_FLAG_TSYNC sets no_new_privs from another thread.  A
-robust implementation would require changing something fundamental in
-how creds are managed for SECCOMP_FILTER_FLAG_TSYNC to be able to
-capture the cred at the point it is set.
-
-Futhermore given the consistent documentation and how everything else
-implements no_new_privs, not having the permissions get progressively
-tighter is a footgun aimed at userspace.  I fully expect it to break any
-security sensitive software that uses no_new_privs and was not
-deliberately designed and tested against apparmor.
-
-Avoid the questionable and hard to fix implementation and the
-potential to confuse userspace by having no_new_privs enforce
-progressinvely tighter permissions.
-
-Fixes: 9fcf78cca198 ("apparmor: update domain transitions that are subsets of confinement at nnp")
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
 ---
+ drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-I came accross this while examining the places cred_guard_mutex is
-used and trying to find a way to make those code paths less insane.
-
-If it would be more pallatable I would not mind removing the
-task_no_new_privs test entirely from aa_change_hat and aa_change_profile
-as those are not part of exec, so arguably no_new_privs should not care
-about them at all.
-
-Can we please get rid of the huge semantic wart and pain in the implementation?
-
- security/apparmor/domain.c       | 39 ++++----------------------------
- security/apparmor/include/task.h |  4 ----
- security/apparmor/task.c         |  7 ------
- 3 files changed, 4 insertions(+), 46 deletions(-)
-
-diff --git a/security/apparmor/domain.c b/security/apparmor/domain.c
-index f919ebd042fd..8f77059bf890 100644
---- a/security/apparmor/domain.c
-+++ b/security/apparmor/domain.c
-@@ -869,17 +869,6 @@ int apparmor_bprm_creds_for_exec(struct linux_binprm *bprm)
+diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+index a4a626e9cd9a..1bfeee283ea9 100644
+--- a/drivers/net/ethernet/sfc/efx_channels.c
++++ b/drivers/net/ethernet/sfc/efx_channels.c
+@@ -17,6 +17,7 @@
+ #include "rx_common.h"
+ #include "nic.h"
+ #include "sriov.h"
++#include "workarounds.h"
  
- 	label = aa_get_newest_label(cred_label(bprm->cred));
+ /* This is the first interrupt mode to try out of:
+  * 0 => MSI-X
+@@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+ {
+ 	unsigned int n_channels = parallelism;
+ 	int vec_count;
++	int tx_per_ev;
+ 	int n_xdp_tx;
+ 	int n_xdp_ev;
  
--	/*
--	 * Detect no new privs being set, and store the label it
--	 * occurred under. Ideally this would happen when nnp
--	 * is set but there isn't a good way to do that yet.
--	 *
--	 * Testing for unconfined must be done before the subset test
--	 */
--	if ((bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS) && !unconfined(label) &&
--	    !ctx->nnp)
--		ctx->nnp = aa_get_label(label);
--
- 	/* buffer freed below, name is pointer into buffer */
- 	buffer = aa_get_buffer(false);
- 	if (!buffer) {
-@@ -915,7 +904,7 @@ int apparmor_bprm_creds_for_exec(struct linux_binprm *bprm)
+@@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+ 	 * multiple tx queues, assuming tx and ev queues are both
+ 	 * maximum size.
  	 */
- 	if ((bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS) &&
- 	    !unconfined(label) &&
--	    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
-+	    !aa_label_is_unconfined_subset(new, label)) {
- 		error = -EPERM;
- 		info = "no new privs";
- 		goto audit;
-@@ -1158,16 +1147,6 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
- 	label = aa_get_newest_cred_label(cred);
- 	previous = aa_get_newest_label(ctx->previous);
- 
--	/*
--	 * Detect no new privs being set, and store the label it
--	 * occurred under. Ideally this would happen when nnp
--	 * is set but there isn't a good way to do that yet.
--	 *
--	 * Testing for unconfined must be done before the subset test
--	 */
--	if (task_no_new_privs(current) && !unconfined(label) && !ctx->nnp)
--		ctx->nnp = aa_get_label(label);
 -
- 	if (unconfined(label)) {
- 		info = "unconfined can not change_hat";
- 		error = -EPERM;
-@@ -1193,7 +1172,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(new, label)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-@@ -1214,7 +1193,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_unconfined_subset(previous, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(previous, label)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-@@ -1303,16 +1282,6 @@ int aa_change_profile(const char *fqname, int flags)
++	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
+ 	n_xdp_tx = num_possible_cpus();
+-	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
++	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
  
- 	label = aa_get_current_label();
- 
--	/*
--	 * Detect no new privs being set, and store the label it
--	 * occurred under. Ideally this would happen when nnp
--	 * is set but there isn't a good way to do that yet.
--	 *
--	 * Testing for unconfined must be done before the subset test
--	 */
--	if (task_no_new_privs(current) && !unconfined(label) && !ctx->nnp)
--		ctx->nnp = aa_get_label(label);
--
- 	if (!fqname || !*fqname) {
- 		aa_put_label(label);
- 		AA_DEBUG("no profile name");
-@@ -1409,7 +1378,7 @@ int aa_change_profile(const char *fqname, int flags)
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(new, label)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-diff --git a/security/apparmor/include/task.h b/security/apparmor/include/task.h
-index f13d12373b25..8a9c258e2018 100644
---- a/security/apparmor/include/task.h
-+++ b/security/apparmor/include/task.h
-@@ -17,13 +17,11 @@ static inline struct aa_task_ctx *task_ctx(struct task_struct *task)
- 
- /*
-  * struct aa_task_ctx - information for current task label change
-- * @nnp: snapshot of label at time of no_new_privs
-  * @onexec: profile to transition to on next exec  (MAY BE NULL)
-  * @previous: profile the task may return to     (MAY BE NULL)
-  * @token: magic value the task must know for returning to @previous_profile
-  */
- struct aa_task_ctx {
--	struct aa_label *nnp;
- 	struct aa_label *onexec;
- 	struct aa_label *previous;
- 	u64 token;
-@@ -42,7 +40,6 @@ struct aa_label *aa_get_task_label(struct task_struct *task);
- static inline void aa_free_task_ctx(struct aa_task_ctx *ctx)
- {
- 	if (ctx) {
--		aa_put_label(ctx->nnp);
- 		aa_put_label(ctx->previous);
- 		aa_put_label(ctx->onexec);
- 	}
-@@ -57,7 +54,6 @@ static inline void aa_dup_task_ctx(struct aa_task_ctx *new,
- 				   const struct aa_task_ctx *old)
- {
- 	*new = *old;
--	aa_get_label(new->nnp);
- 	aa_get_label(new->previous);
- 	aa_get_label(new->onexec);
- }
-diff --git a/security/apparmor/task.c b/security/apparmor/task.c
-index d17130ee6795..4b9ec370a171 100644
---- a/security/apparmor/task.c
-+++ b/security/apparmor/task.c
-@@ -41,7 +41,6 @@ struct aa_label *aa_get_task_label(struct task_struct *task)
- int aa_replace_current_label(struct aa_label *label)
- {
- 	struct aa_label *old = aa_current_raw_label();
--	struct aa_task_ctx *ctx = task_ctx(current);
- 	struct cred *new;
- 
- 	AA_BUG(!label);
-@@ -56,12 +55,6 @@ int aa_replace_current_label(struct aa_label *label)
- 	if (!new)
- 		return -ENOMEM;
- 
--	if (ctx->nnp && label_is_stale(ctx->nnp)) {
--		struct aa_label *tmp = ctx->nnp;
--
--		ctx->nnp = aa_get_newest_label(tmp);
--		aa_put_label(tmp);
--	}
- 	if (unconfined(label) || (labels_ns(old) != labels_ns(label)))
- 		/*
- 		 * if switching to unconfined or a different label namespace
+ 	vec_count = pci_msix_vec_count(efx->pci_dev);
+ 	if (vec_count < 0)
 -- 
-2.20.1
+2.29.2
 
-Eric
