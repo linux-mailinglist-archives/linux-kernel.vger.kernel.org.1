@@ -2,301 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B262FD41F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388CD2FD432
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390410AbhATO4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:56:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390616AbhATO0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:26:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1AB62336E;
-        Wed, 20 Jan 2021 14:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611152755;
-        bh=ON2rflmebL8aZAsHriEzwuZslMkKyIGQ7jCe85HPNdA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ccwH8Q7S8+n1vAvp08l80sx69KzIa/Gi0p4Bh6dWrZb5YvOwa+CVbARCWBix6oo3z
-         +0xMO6ipL601dcFv/rcVQgnEFZz/XN6SfGPbEOiLphKi/Dd3+S7LZcI2arxHCNUqvd
-         164oSEow3vpx0xKlGwjOJvBDCciidWRH+OXZzTWlFHcz91IdFa7QzdDTIdJtO9NGgX
-         0UXiIazmylvx6Q0DpuqoBXF1ZIfrk/RKFVKAZV0Y9S3VS1VVhVGHZQU1dTC2mZq2wv
-         PQiw9fYimq/tapU1tDyqjnz+pF3RMumF+fjK/UBO4F27fVHAV5LDgzN+ntCB1WWGmc
-         uAhpnO7ScMZRA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, Sean Young <sean@mess.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 2/2] media: rc: remove zte zx ir driver
-Date:   Wed, 20 Jan 2021 15:25:42 +0100
-Message-Id: <20210120142542.4100741-3-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120142542.4100741-1-arnd@kernel.org>
-References: <20210120142542.4100741-1-arnd@kernel.org>
+        id S1732049AbhATPhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732738AbhATOu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:50:59 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FC3C0613D3;
+        Wed, 20 Jan 2021 06:50:18 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id m25so34409844lfc.11;
+        Wed, 20 Jan 2021 06:50:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cBqXSju5MQpyXZT7TRd3tw9tf9n3a0iWTPTNsPXD1Do=;
+        b=mjPWV84XqqOL7UDzZTCBWj4XvmxGnVHg1vSkkcIocudNsh0h6E7J743b6+1Q7StUvY
+         SYl6Gcm46jGYIptGGD+xtw3AsOV/wAPpvkmig6YSAR7S0NJWltAeql/PbERHOFL8W0WS
+         XqCExWACZ19gXFREyJQV5bti7oS/Ejm2vs6DEBi7yrZX5CSAtrx/7mOtxKyulEKqcgQl
+         pYXoGj3cYjcwKimsVsKpkxOCZraO2t2UplgKVtkDELCQE/y1dCOK7n/VYK4Iy148Dk9S
+         4krn9K3cYOCZjDobfNTwUrr/B2iCPzgXAkQffvksH/o3d0lD6aD8pswhdqmdZy1v8W2F
+         LwuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cBqXSju5MQpyXZT7TRd3tw9tf9n3a0iWTPTNsPXD1Do=;
+        b=cesaxOVzefGQNUPKWzHrBkiKyfmnNvjBsVEf+BSmyLZStqmbE7es//b7W65zw4RcRL
+         b+hIa8pPctm0MM2JRKUwzHKEa0aSMRyScypnCC0e9iiiBbvDeLbHeHFryk4Nizc/aBlK
+         TtZwqhkn+nu2Ho/P3CrZH+v5U4vL6sqx3x+mfcAI11NjgJnlo/kvzHVKqRBFXQfi+qIX
+         zLQ0d3ovdvsq6Tzrg7W9kX77Qq+nAivtyw3h8l+G7A1L0mt1whbFyFC+tsm7o70tosW2
+         qeL0+XAYDcXZtQuXB1m8LrgFIr33A6VE1+YtyTcWbFGn0JDiuJMtuTM4466jtNuWrmJw
+         tiIg==
+X-Gm-Message-State: AOAM532ny18sj9ITmPH6td9sQC8c+v/AljTZu5VxCne1SxbdEW7e+hW8
+        bu+OdwUIjyGds+xIud6S1s7k8VehXwc=
+X-Google-Smtp-Source: ABdhPJxXQNNER/8wy81LcEoHia0Eh2zmInWKNqS8pVkcJO1Qh6LSeaK2/QF00BiICo1UR1ufmOoz/A==
+X-Received: by 2002:ac2:44da:: with SMTP id d26mr4002998lfm.221.1611154217048;
+        Wed, 20 Jan 2021 06:50:17 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id m24sm218892lfj.126.2021.01.20.06.50.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 06:50:16 -0800 (PST)
+Subject: Re: [PATCH] opp: Prepare for ->set_opp() helper to work without
+ regulators
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org
+References: <fb69353c-a35b-9b7c-46bc-d464c6dab6f5@gmail.com>
+ <302c014726dbd9fcde852985528c139d2214a1f2.1611038066.git.viresh.kumar@linaro.org>
+ <c657b5b0-b841-1b26-8008-2fb4b490d63d@gmail.com>
+ <20210120073912.yl4rgkthdyyznbfh@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <94f4ed8d-ab54-4180-87f7-4ddafb52074f@gmail.com>
+Date:   Wed, 20 Jan 2021 17:50:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <20210120073912.yl4rgkthdyyznbfh@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+20.01.2021 10:39, Viresh Kumar пишет:
+> On 19-01-21, 20:16, Dmitry Osipenko wrote:
+>> 19.01.2021 09:35, Viresh Kumar пишет:
+>>> +	mutex_lock(&opp_table->lock);
+>>> +	opp_table->set_opp_data = data;
+>>> +	if (opp_table->sod_supplies) {
+>>> +		data->old_opp.supplies = opp_table->sod_supplies;
+>>> +		data->new_opp.supplies = opp_table->sod_supplies +
+>>> +					 opp_table->regulator_count;
+>>> +	}
+>>> +	mutex_unlock(&opp_table->lock);
+>>
+>> Why do we need all these locks in this patch?
+> 
+> In case dev_pm_opp_set_regulators() and
+> dev_pm_opp_register_set_opp_helper() get called at the same time.
+> Which can actually happen, though is a corner case.
+> 
+>> The OPP API isn't thread-safe, these locks won't make the API
+>> thread-safe.
+> 
+> I am not sure what you mean by that, can you please explain ?
+> 
+>> At least both sod_supplies and set_opp() pointers should be
+>> set and unset under the lock.
+> 
+> The ->set_opp pointer isn't getting used for a comparison and so
+> putting that inside a lock won't get us anything. We are only using
+> set_opp_data and sod_supplies for comparison at both the places and so
+> they need to be updated within the lock.
+> 
+If OPP API was meant to be thread-safe, then the
+dev_pm_opp_unregister_set_opp_helper() should unset the
+opp_table->set_opp_data under the lock since it races with
+dev_pm_opp_set_regulators().
 
-The zte zx platform is getting removed, so this driver is no
-longer needed.
+Secondly, functions like dev_pm_opp_set_rate() don't have any locks at all.
 
-Cc: Jun Nie <jun.nie@linaro.org>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- .../devicetree/bindings/media/zx-irdec.txt    |  14 --
- drivers/media/rc/Kconfig                      |  11 --
- drivers/media/rc/Makefile                     |   1 -
- drivers/media/rc/zx-irdec.c                   | 181 ------------------
- 4 files changed, 207 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/media/zx-irdec.txt
- delete mode 100644 drivers/media/rc/zx-irdec.c
+It should be better not to add "random" locks into the code because it
+only creates an illusion for an oblivious API user that OPP API cares
+about thread safety, IMO.
 
-diff --git a/Documentation/devicetree/bindings/media/zx-irdec.txt b/Documentation/devicetree/bindings/media/zx-irdec.txt
-deleted file mode 100644
-index 295b9fab593e..000000000000
---- a/Documentation/devicetree/bindings/media/zx-irdec.txt
-+++ /dev/null
-@@ -1,14 +0,0 @@
--IR Decoder (IRDEC) on ZTE ZX family SoCs
--
--Required properties:
-- - compatible: Should be "zte,zx296718-irdec".
-- - reg: Physical base address and length of IRDEC registers.
-- - interrupts: Interrupt number of IRDEC.
--
--Exmaples:
--
--	irdec: ir-decoder@111000 {
--		compatible = "zte,zx296718-irdec";
--		reg = <0x111000 0x1000>;
--		interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
--	};
-diff --git a/drivers/media/rc/Kconfig b/drivers/media/rc/Kconfig
-index 39bc75cc1848..afeef7d99a5a 100644
---- a/drivers/media/rc/Kconfig
-+++ b/drivers/media/rc/Kconfig
-@@ -509,17 +509,6 @@ config RC_XBOX_DVD
- 	   To compile this driver as a module, choose M here: the module will be
- 	   called xbox_remote.
- 
--config IR_ZX
--	tristate "ZTE ZX IR remote control"
--	depends on RC_CORE
--	depends on ARCH_ZX || COMPILE_TEST
--	help
--	   Say Y if you want to use the IR remote control available
--	   on ZTE ZX family SoCs.
--
--	   To compile this driver as a module, choose M here: the
--	   module will be called zx-irdec.
--
- config IR_TOY
- 	tristate "Infrared Toy and IR Droid"
- 	depends on RC_CORE
-diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
-index f46a72071a7b..23eb7d43d2ff 100644
---- a/drivers/media/rc/Makefile
-+++ b/drivers/media/rc/Makefile
-@@ -47,6 +47,5 @@ obj-$(CONFIG_IR_IMG) += img-ir/
- obj-$(CONFIG_IR_SERIAL) += serial_ir.o
- obj-$(CONFIG_IR_SIR) += sir_ir.o
- obj-$(CONFIG_IR_MTK) += mtk-cir.o
--obj-$(CONFIG_IR_ZX) += zx-irdec.o
- obj-$(CONFIG_RC_XBOX_DVD) += xbox_remote.o
- obj-$(CONFIG_IR_TOY) += ir_toy.o
-diff --git a/drivers/media/rc/zx-irdec.c b/drivers/media/rc/zx-irdec.c
-deleted file mode 100644
-index 948ad90ae5d8..000000000000
---- a/drivers/media/rc/zx-irdec.c
-+++ /dev/null
-@@ -1,181 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
-- * Copyright 2017 Linaro Ltd.
-- */
--
--#include <linux/device.h>
--#include <linux/err.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/module.h>
--#include <linux/of_platform.h>
--#include <linux/platform_device.h>
--
--#include <media/rc-core.h>
--
--#define DRIVER_NAME		"zx-irdec"
--
--#define ZX_IR_ENABLE		0x04
--#define ZX_IREN			BIT(0)
--#define ZX_IR_CTRL		0x08
--#define ZX_DEGL_MASK		GENMASK(21, 20)
--#define ZX_DEGL_VALUE(x)	(((x) << 20) & ZX_DEGL_MASK)
--#define ZX_WDBEGIN_MASK		GENMASK(18, 8)
--#define ZX_WDBEGIN_VALUE(x)	(((x) << 8) & ZX_WDBEGIN_MASK)
--#define ZX_IR_INTEN		0x10
--#define ZX_IR_INTSTCLR		0x14
--#define ZX_IR_CODE		0x30
--#define ZX_IR_CNUM		0x34
--#define ZX_NECRPT		BIT(16)
--
--struct zx_irdec {
--	void __iomem *base;
--	struct rc_dev *rcd;
--};
--
--static void zx_irdec_set_mask(struct zx_irdec *irdec, unsigned int reg,
--			      u32 mask, u32 value)
--{
--	u32 data;
--
--	data = readl(irdec->base + reg);
--	data &= ~mask;
--	data |= value & mask;
--	writel(data, irdec->base + reg);
--}
--
--static irqreturn_t zx_irdec_irq(int irq, void *dev_id)
--{
--	struct zx_irdec *irdec = dev_id;
--	u8 address, not_address;
--	u8 command, not_command;
--	u32 rawcode, scancode;
--	enum rc_proto rc_proto;
--
--	/* Clear interrupt */
--	writel(1, irdec->base + ZX_IR_INTSTCLR);
--
--	/* Check repeat frame */
--	if (readl(irdec->base + ZX_IR_CNUM) & ZX_NECRPT) {
--		rc_repeat(irdec->rcd);
--		goto done;
--	}
--
--	rawcode = readl(irdec->base + ZX_IR_CODE);
--	not_command = (rawcode >> 24) & 0xff;
--	command = (rawcode >> 16) & 0xff;
--	not_address = (rawcode >> 8) & 0xff;
--	address = rawcode & 0xff;
--
--	scancode = ir_nec_bytes_to_scancode(address, not_address,
--					    command, not_command,
--					    &rc_proto);
--	rc_keydown(irdec->rcd, rc_proto, scancode, 0);
--
--done:
--	return IRQ_HANDLED;
--}
--
--static int zx_irdec_probe(struct platform_device *pdev)
--{
--	struct device *dev = &pdev->dev;
--	struct zx_irdec *irdec;
--	struct resource *res;
--	struct rc_dev *rcd;
--	int irq;
--	int ret;
--
--	irdec = devm_kzalloc(dev, sizeof(*irdec), GFP_KERNEL);
--	if (!irdec)
--		return -ENOMEM;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	irdec->base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(irdec->base))
--		return PTR_ERR(irdec->base);
--
--	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
--
--	rcd = devm_rc_allocate_device(dev, RC_DRIVER_SCANCODE);
--	if (!rcd) {
--		dev_err(dev, "failed to allocate rc device\n");
--		return -ENOMEM;
--	}
--
--	irdec->rcd = rcd;
--
--	rcd->priv = irdec;
--	rcd->input_phys = DRIVER_NAME "/input0";
--	rcd->input_id.bustype = BUS_HOST;
--	rcd->map_name = RC_MAP_ZX_IRDEC;
--	rcd->allowed_protocols = RC_PROTO_BIT_NEC | RC_PROTO_BIT_NECX |
--							RC_PROTO_BIT_NEC32;
--	rcd->driver_name = DRIVER_NAME;
--	rcd->device_name = DRIVER_NAME;
--
--	platform_set_drvdata(pdev, irdec);
--
--	ret = devm_rc_register_device(dev, rcd);
--	if (ret) {
--		dev_err(dev, "failed to register rc device\n");
--		return ret;
--	}
--
--	ret = devm_request_irq(dev, irq, zx_irdec_irq, 0, NULL, irdec);
--	if (ret) {
--		dev_err(dev, "failed to request irq\n");
--		return ret;
--	}
--
--	/*
--	 * Initialize deglitch level and watchdog counter beginner as
--	 * recommended by vendor BSP code.
--	 */
--	zx_irdec_set_mask(irdec, ZX_IR_CTRL, ZX_DEGL_MASK, ZX_DEGL_VALUE(0));
--	zx_irdec_set_mask(irdec, ZX_IR_CTRL, ZX_WDBEGIN_MASK,
--			  ZX_WDBEGIN_VALUE(0x21c));
--
--	/* Enable interrupt */
--	writel(1, irdec->base + ZX_IR_INTEN);
--
--	/* Enable the decoder */
--	zx_irdec_set_mask(irdec, ZX_IR_ENABLE, ZX_IREN, ZX_IREN);
--
--	return 0;
--}
--
--static int zx_irdec_remove(struct platform_device *pdev)
--{
--	struct zx_irdec *irdec = platform_get_drvdata(pdev);
--
--	/* Disable the decoder */
--	zx_irdec_set_mask(irdec, ZX_IR_ENABLE, ZX_IREN, 0);
--
--	/* Disable interrupt */
--	writel(0, irdec->base + ZX_IR_INTEN);
--
--	return 0;
--}
--
--static const struct of_device_id zx_irdec_match[] = {
--	{ .compatible = "zte,zx296718-irdec" },
--	{ },
--};
--MODULE_DEVICE_TABLE(of, zx_irdec_match);
--
--static struct platform_driver zx_irdec_driver = {
--	.probe = zx_irdec_probe,
--	.remove = zx_irdec_remove,
--	.driver = {
--		.name = DRIVER_NAME,
--		.of_match_table	= zx_irdec_match,
--	},
--};
--module_platform_driver(zx_irdec_driver);
--
--MODULE_DESCRIPTION("ZTE ZX IR remote control driver");
--MODULE_AUTHOR("Shawn Guo <shawn.guo@linaro.org>");
--MODULE_LICENSE("GPL v2");
--- 
-2.29.2
-
+Making OPP API thread-safe will take some effort and a careful review of
+every lock will be needed.
