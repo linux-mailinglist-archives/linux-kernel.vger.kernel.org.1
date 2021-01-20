@@ -2,221 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B208E2FDA9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F0B2FDAB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388141AbhATUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:16:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59778 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732667AbhATOA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:00:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611150964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HDYs6VbGDnWZYsEki4BzG/PNLn2WC6ya6CsM5mbOuJY=;
-        b=FKvo5dHePvf/Iy5vDesynUxnhGCwWKjMBjeow2jwcPN14AC7GRped6hdBgQWc4F+06wzcd
-        ImhFcR0RfQGPtMcu2YwunhvvkqLJVX+PGIWJgev3HjN+OE1dihKM1P51c7qzkt+fe5YOzL
-        nXtgTXxyFEhmDS1KBx6rEo6idBcr/ws=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E4E98AC4F;
-        Wed, 20 Jan 2021 13:56:03 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: [PATCH v4 15/15] x86/paravirt: have only one paravirt patch function
-Date:   Wed, 20 Jan 2021 14:55:55 +0100
-Message-Id: <20210120135555.32594-16-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210120135555.32594-1-jgross@suse.com>
-References: <20210120135555.32594-1-jgross@suse.com>
+        id S2389274AbhATUXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:23:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388495AbhATN63 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:58:29 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE81C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:57:32 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id t15so7865506ual.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:57:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NQRUNaC5+h0p4y2UVASnStt5pCZ++1OHwy904QFlDOU=;
+        b=YmKwnOpeJW4eDGtKIslo97cWH9y3TeYb8DX/Vbu89eB8jz3hfa0yhw37AKWLEUhNWd
+         mt3IwgaDym8aJRq9Uz7lV6K8iNHAMwk2fJ+r+8K0olNYvHJzDEyDG4vkPw9y7mkBaGnk
+         lH8ym/UWGq5LphZM0VqjKC49dRyr42PaAz8+VR/Uxysqyr68nVD1SSnriakNF2W/xEmk
+         8GOjJLQeOgHpw+jxwsd3OmuYxjZrCzbWBa1L/gKkrUlOj7tCITYhgfzlrYTc05H5W2Xp
+         LkliuoROmVlBiW6V4n9iDOJEzqerJVNCnmfz/3uGpfFKAgHPHvVD6E2LlwAlmAIWpjN+
+         HITg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NQRUNaC5+h0p4y2UVASnStt5pCZ++1OHwy904QFlDOU=;
+        b=Uc1mcgb0dGgk1ZToVXLH+3Azvyl4clxfoOYYAYErmTmh0kc1KXnT3XMJxWbon7DhuR
+         RBYd9Fw2qGJpjgIR4oSAtzJU1xPA1AysgMd+SOBueTTlc27Th/5jq98Wwxrp/Lhk+4dE
+         5KMEId2jpEMr2shsI0gFTIJ3AqF+TtorCqkhaKJx6siizUo+IuHQgf/KbdiWoCMzxATk
+         wy5SPjY6PeoSU9M0y5lTRXR5KxVmFQ9caQ8Ht59jw9t310evFL3Sgekr6S/I6QZTUKx6
+         RP0cPm9WNJQ2CxRdAaILelHfud12ZdwuhMJnkRJN0I8f4aLHez06ZJryGdvMB8XI6jBk
+         3m/Q==
+X-Gm-Message-State: AOAM533Q+z+fJWidBmZzZ9krq/JIviXKE4uFEg/aLkDbDsiInpDopgai
+        6w1gAku6w2Ft8DwpwQSlTuJnHSDVF3QOwb96f0FJqg==
+X-Google-Smtp-Source: ABdhPJwMO/0D8TqJK6Fkbz71C7eV0brQdczzonmnmAX0at6juF1yaKbw/I3Yc90cQE95Mkb1cMyQpmukFxP54jUO160=
+X-Received: by 2002:a9f:204e:: with SMTP id 72mr5752752uam.19.1611151051471;
+ Wed, 20 Jan 2021 05:57:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210114031433.2388532-1-andrew@aj.id.au>
+In-Reply-To: <20210114031433.2388532-1-andrew@aj.id.au>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 20 Jan 2021 14:56:55 +0100
+Message-ID: <CAPDyKFqBOWLBbAxZNhN5r=qjXTG9+3tX4nT8+Gz+Xbppsxh5_g@mail.gmail.com>
+Subject: Re: [PATCH v7 0/6] mmc: sdhci-of-aspeed: Expose phase delay tuning
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        ryan_chen@aspeedtech.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need any longer to have different paravirt patch functions
-for native and Xen. Eliminate native_patch() and rename
-paravirt_patch_default() to paravirt_patch().
+On Thu, 14 Jan 2021 at 04:14, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> Hello,
+>
+> This series implements support for the MMC core clk-phase-* devicetree bindings
+> in the Aspeed SD/eMMC driver. The relevant register was exposed on the AST2600
+> and is present for both the SD/MMC controller and the dedicated eMMC
+> controller.
+>
+> v7 is just a small change to the the kunit testing in response to Adrian's
+> feedback.
+>
+> I've just done a quick build test of v7 given the small change and more
+> extensive testing done with v5.
+>
+> v6 can be found here:
+>
+> https://lore.kernel.org/linux-mmc/20201218035338.1130849-1-andrew@aj.id.au/
+>
+> Please review!
+>
+> Cheers,
+>
+> Andrew
+>
+> Andrew Jeffery (6):
+>   mmc: core: Add helper for parsing clock phase properties
+>   mmc: sdhci-of-aspeed: Expose clock phase controls
+>   mmc: sdhci-of-aspeed: Add AST2600 bus clock support
+>   mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
+>   MAINTAINERS: Add entry for the ASPEED SD/MMC driver
+>   ARM: dts: rainier: Add eMMC clock phase compensation
+>
+>  MAINTAINERS                                  |   9 +
+>  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts |   1 +
+>  drivers/mmc/core/host.c                      |  44 ++++
+>  drivers/mmc/host/Kconfig                     |  14 +
+>  drivers/mmc/host/sdhci-of-aspeed-test.c      |  98 +++++++
+>  drivers/mmc/host/sdhci-of-aspeed.c           | 255 ++++++++++++++++++-
+>  include/linux/mmc/host.h                     |  13 +
+>  7 files changed, 423 insertions(+), 11 deletions(-)
+>  create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
+>
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
-V3:
-- remove paravirt_patch_insns() (kernel test robot)
----
- arch/x86/include/asm/paravirt_types.h | 19 +------------------
- arch/x86/kernel/Makefile              |  3 +--
- arch/x86/kernel/alternative.c         |  2 +-
- arch/x86/kernel/paravirt.c            | 20 ++------------------
- arch/x86/kernel/paravirt_patch.c      | 11 -----------
- arch/x86/xen/enlighten_pv.c           |  1 -
- 6 files changed, 5 insertions(+), 51 deletions(-)
- delete mode 100644 arch/x86/kernel/paravirt_patch.c
+Applied patch 1 to patch 5 applied for next (patch 6 should go via arm
+soc), thanks!
 
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 588ff14ce969..62efbf8bd8f0 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -68,19 +68,6 @@ struct pv_info {
- 	const char *name;
- };
- 
--struct pv_init_ops {
--	/*
--	 * Patch may replace one of the defined code sequences with
--	 * arbitrary code, subject to the same register constraints.
--	 * This generally means the code is not free to clobber any
--	 * registers other than EAX.  The patch function should return
--	 * the number of bytes of code generated, as we nop pad the
--	 * rest in generic code.
--	 */
--	unsigned (*patch)(u8 type, void *insn_buff,
--			  unsigned long addr, unsigned len);
--} __no_randomize_layout;
--
- #ifdef CONFIG_PARAVIRT_XXL
- struct pv_lazy_ops {
- 	/* Set deferred update mode, used for batching operations. */
-@@ -276,7 +263,6 @@ struct pv_lock_ops {
-  * number for each function using the offset which we use to indicate
-  * what to patch. */
- struct paravirt_patch_template {
--	struct pv_init_ops	init;
- 	struct pv_cpu_ops	cpu;
- 	struct pv_irq_ops	irq;
- 	struct pv_mmu_ops	mmu;
-@@ -317,10 +303,7 @@ extern void (*paravirt_iret)(void);
- /* Simple instruction patching code. */
- #define NATIVE_LABEL(a,x,b) "\n\t.globl " a #x "_" #b "\n" a #x "_" #b ":\n\t"
- 
--unsigned paravirt_patch_default(u8 type, void *insn_buff, unsigned long addr, unsigned len);
--unsigned paravirt_patch_insns(void *insn_buff, unsigned len, const char *start, const char *end);
--
--unsigned native_patch(u8 type, void *insn_buff, unsigned long addr, unsigned len);
-+unsigned paravirt_patch(u8 type, void *insn_buff, unsigned long addr, unsigned len);
- 
- int paravirt_disable_iospace(void);
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 5eeb808eb024..853a83503120 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -35,7 +35,6 @@ KASAN_SANITIZE_sev-es.o					:= n
- KCSAN_SANITIZE := n
- 
- OBJECT_FILES_NON_STANDARD_test_nx.o			:= y
--OBJECT_FILES_NON_STANDARD_paravirt_patch.o		:= y
- 
- ifdef CONFIG_FRAME_POINTER
- OBJECT_FILES_NON_STANDARD_ftrace_$(BITS).o		:= y
-@@ -122,7 +121,7 @@ obj-$(CONFIG_AMD_NB)		+= amd_nb.o
- obj-$(CONFIG_DEBUG_NMI_SELFTEST) += nmi_selftest.o
- 
- obj-$(CONFIG_KVM_GUEST)		+= kvm.o kvmclock.o
--obj-$(CONFIG_PARAVIRT)		+= paravirt.o paravirt_patch.o
-+obj-$(CONFIG_PARAVIRT)		+= paravirt.o
- obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= paravirt-spinlocks.o
- obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
- obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 221acb2b868a..fb0b83c85de7 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -613,7 +613,7 @@ void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
- 		BUG_ON(p->len > MAX_PATCH_LEN);
- 		/* prep the buffer with the original instructions */
- 		memcpy(insn_buff, p->instr, p->len);
--		used = pv_ops.init.patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
-+		used = paravirt_patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
- 
- 		BUG_ON(used > p->len);
- 
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 082954930809..3d7b989ed6be 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -99,8 +99,8 @@ void __init native_pv_lock_init(void)
- 		static_branch_disable(&virt_spin_lock_key);
- }
- 
--unsigned paravirt_patch_default(u8 type, void *insn_buff,
--				unsigned long addr, unsigned len)
-+unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
-+			    unsigned int len)
- {
- 	/*
- 	 * Neat trick to map patch type back to the call within the
-@@ -121,19 +121,6 @@ unsigned paravirt_patch_default(u8 type, void *insn_buff,
- 	return ret;
- }
- 
--unsigned paravirt_patch_insns(void *insn_buff, unsigned len,
--			      const char *start, const char *end)
--{
--	unsigned insn_len = end - start;
--
--	/* Alternative instruction is too large for the patch site and we cannot continue: */
--	BUG_ON(insn_len > len || start == NULL);
--
--	memcpy(insn_buff, start, insn_len);
--
--	return insn_len;
--}
--
- struct static_key paravirt_steal_enabled;
- struct static_key paravirt_steal_rq_enabled;
- 
-@@ -255,9 +242,6 @@ struct pv_info pv_info = {
- #define PTE_IDENT	__PV_IS_CALLEE_SAVE(_paravirt_ident_64)
- 
- struct paravirt_patch_template pv_ops = {
--	/* Init ops. */
--	.init.patch		= native_patch,
--
- 	/* Cpu ops. */
- 	.cpu.io_delay		= native_io_delay,
- 
-diff --git a/arch/x86/kernel/paravirt_patch.c b/arch/x86/kernel/paravirt_patch.c
-deleted file mode 100644
-index 10543dcc8211..000000000000
---- a/arch/x86/kernel/paravirt_patch.c
-+++ /dev/null
-@@ -1,11 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/stringify.h>
--
--#include <asm/paravirt.h>
--#include <asm/asm-offsets.h>
--
--unsigned int native_patch(u8 type, void *insn_buff, unsigned long addr,
--			  unsigned int len)
--{
--	return paravirt_patch_default(type, insn_buff, addr, len);
--}
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 4716383c64a9..66f83de4d9e0 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1218,7 +1218,6 @@ asmlinkage __visible void __init xen_start_kernel(void)
- 
- 	/* Install Xen paravirt ops */
- 	pv_info = xen_info;
--	pv_ops.init.patch = paravirt_patch_default;
- 	pv_ops.cpu = xen_cpu_ops;
- 	paravirt_iret = xen_iret;
- 	xen_init_irq_ops();
--- 
-2.26.2
+Thanks for stepping and helping with maintenance as well!
 
+Kind regards
+Uffe
