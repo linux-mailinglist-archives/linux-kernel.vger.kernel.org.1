@@ -2,181 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844C12FDE26
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E8B2FDDE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732972AbhAUAZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
+        id S2393108AbhAUA3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:29:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404075AbhATXYM (ORCPT
+        with ESMTP id S2404176AbhATXZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:24:12 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DF7C061345
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:10:04 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id m6so192618pfk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:10:04 -0800 (PST)
+        Wed, 20 Jan 2021 18:25:55 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3B0C06134E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:18:34 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id be12so74818plb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:18:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zhYUIY/pxxk2hZgz6LMzQ8D+neAYmmcm1aEWExzAYmQ=;
-        b=D35sbY5IM0l3nNJgTq2Mtt9TnUMLXk7pZLD8wejcrmNzPKBoXjjA6qJep8jGe+pbBv
-         A8dXbesIoDRV3Fyi3J5haKssIm6x7MlVuJeglxbaMegCO2Ge0Mw9gZlFNk4W1gd8AOwJ
-         dbnI/52USn8/1EivK6GDDoNlLgSVB1vpsmDfk1puY3nWmCuvGNUAlK6ZvABTKfam7VTm
-         XahN0A8JdrDdi9vzGtuVIoI9/Xr6z8G+Zdyzot3YMcLUTsNpf1iYTi4OctF6CQf5Hr4z
-         g/tAzqM8CnyzcoJYtfefYiu+ebJGfpY257m1WhFUHhbTVj/OzefOIK7R6Pdo5zv/fKBY
-         x5FA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NCtWCoTo8mGZeKZotnt4ALec3dQ9/RkUFyVQNK1hMoE=;
+        b=NxCvtTTZAcHUjY80B8T/mRXR+ecVc3j49+/cThAhgIMNldAXEiEac1XjdCqjwr8KNN
+         EFQbyPbiLvLiFr1Vq5M65rOiTLar4w562qyOg8n7/djIcn6Sxvtl8sYS7yBydLTCmJwj
+         yxEKsR57CQ+eeJ51w9m+qmBkxNhu7Y09Wb+SLUBApFhMZLl4DnWR65Ef/2e8jEJ9sL/n
+         DKjbb0/eQQFSQ2OCj8ocfOhIQc6JKhcEmeGF0ld5PoaVuz+X1Zsyi2f5z+JyLv7b9gnL
+         z7Lho8Yw+GVs7q6rC4siRdgOeOgUYyaDl/s+stRG1t72bs4JORMfYs6Z+x5fNBRiWJdM
+         9vrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zhYUIY/pxxk2hZgz6LMzQ8D+neAYmmcm1aEWExzAYmQ=;
-        b=QyIEp4GzKJVuf0cnxPE7pX6f63NKLFzF46mKL9WworoTbcOq4u/B/HGkGpBbeWyLEQ
-         075gJ2xP0zWU+JVcbyXwf5ZXzvN8Nvt5/Q76WpwdVi/EBCfLCacMzBSpIGkWqY3KQoyx
-         oGvo2bi+iK0qMwKk41JmL/3JorP2sFF44XC9I7a0Q3SIrBZ/dpgRHs0gM06ZSQ/iK9ca
-         7DKnHWtkUE5pUat+JcBbPXIKa4/2qneQvRPsa2WtERR2KlnSBAUG5Hf9QC/R8KA0QWBy
-         rCzmlzglV9M0HQM7GENyYG2U0Nmra6uwIz6ZrJBxoAfnRyIrIEn9BjzBiOhU6qnpYuRS
-         b8ng==
-X-Gm-Message-State: AOAM530erP3cahxFJGwEiyGinmFSRxJ0VhbThBSk9/QSB7dQMkT5bO59
-        ZgIRPJi91iL5LARsFGIm4Vh/t+YssCC7eqxtUmZXnw==
-X-Google-Smtp-Source: ABdhPJzoTxwT1LcGVojArd3Ht6jp/TQI1VNqgqsQgJka5cM6J4ZuTRLZJAoeXNVoFzJg22TSN3YTDOBTBWbRpbXwAjE=
-X-Received: by 2002:a63:1142:: with SMTP id 2mr11653031pgr.263.1611184203611;
- Wed, 20 Jan 2021 15:10:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NCtWCoTo8mGZeKZotnt4ALec3dQ9/RkUFyVQNK1hMoE=;
+        b=GBuWfNUnaiDOgMPwptcDyFthL7LvIe13KKYCEKmIbkEYfsIFgbkA77LfvE269CWl0t
+         uvmCkcrYUNIv0baPH6zJwFeGQgJ7zR9zbk9RkD9wG1NCSYh8IvDtwkNazq//p1+B8TJm
+         VeuugyBBbrbCsoF+AkOpgpEeUHAtgXPJm4kMix3Llbq2xgIoAPEQOPwoUP37Vh83Nj+E
+         aaFOiu+0AN+VV5mIQqME4tGgawPYr70agFV4BmR/55wtifCrvOGh5i+f8nC9Mo/ZsiOh
+         LNgjzw7T2N8MwWcP3Ioofm6cY/BPXVpsiiYP7QuvNx/osMis4RBR/M7vl+Q1OkvmqkSJ
+         Te4g==
+X-Gm-Message-State: AOAM530y9xTekGbgf3FUFbaO+7Gw7nziI91GUY8L5rAsSIXYZKklHT8y
+        YQeygdGUByf0QoWpILbkUa8XTA==
+X-Google-Smtp-Source: ABdhPJzRDE4htyk7QPEMj8bZl6yWXO0FHI8XTpLWG/UTk5Qh/OejVMbcJ8DFH0WSdBb2VwaCDk8sQg==
+X-Received: by 2002:a17:902:f703:b029:de:9a3a:6902 with SMTP id h3-20020a170902f703b02900de9a3a6902mr11818514plo.68.1611184714108;
+        Wed, 20 Jan 2021 15:18:34 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id k141sm1067449pfd.9.2021.01.20.15.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 15:18:33 -0800 (PST)
+Date:   Wed, 20 Jan 2021 15:18:29 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
+        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAi6RcbxTSMmNssw@google.com>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-2-vipinsh@google.com>
+ <YAICLR8PBXxAcOMz@mtj.duckdns.org>
+ <YAIUwGUPDmYfUm/a@google.com>
+ <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+ <YAJsUyH2zspZxF2S@google.com>
+ <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+ <YAfYL7V6E4/P83Mg@google.com>
+ <YAhc8khTUc2AFDcd@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <20210119131724.308884-1-adrian.ratiu@collabora.com>
- <20210119131724.308884-2-adrian.ratiu@collabora.com> <CAKwvOdkNZ09kkzi+A8diaxViqSufxrHizuBu-7quG6an3Z8iDA@mail.gmail.com>
- <CAK8P3a0XWVu-oG3YaGppZDedRL=SA37Gr8YM4cojVap5Bwk2TA@mail.gmail.com>
-In-Reply-To: <CAK8P3a0XWVu-oG3YaGppZDedRL=SA37Gr8YM4cojVap5Bwk2TA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 20 Jan 2021 15:09:53 -0800
-Message-ID: <CAKwvOdnVwkxQTQ-LkdZi4pFWTMg6d0Lddddp=j4pCEh-JT-34Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6 warning
-To:     Arnd Bergmann <arnd@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
-Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAhc8khTUc2AFDcd@mtj.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 1:35 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Tue, Jan 19, 2021 at 10:18 PM 'Nick Desaulniers' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > On Tue, Jan 19, 2021 at 5:17 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
-> > > diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-> > > index b99dd8e1c93f..f9f3601cc2d1 100644
-> > > --- a/arch/arm/lib/xor-neon.c
-> > > +++ b/arch/arm/lib/xor-neon.c
-> > > @@ -14,20 +14,22 @@ MODULE_LICENSE("GPL");
-> > >  #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
-> > >  #endif
-> > >
-> > > +/*
-> > > + * TODO: Even though -ftree-vectorize is enabled by default in Clang, the
-> > > + * compiler does not produce vectorized code due to its cost model.
-> > > + * See: https://github.com/ClangBuiltLinux/linux/issues/503
-> > > + */
-> > > +#ifdef CONFIG_CC_IS_CLANG
-> > > +#warning Clang does not vectorize code in this file.
-> > > +#endif
-> >
-> > Arnd, remind me again why it's a bug that the compiler's cost model
-> > says it's faster to not produce a vectorized version of these loops?
-> > I stand by my previous comment: https://bugs.llvm.org/show_bug.cgi?id=40976#c8
->
-> The point is that without vectorizing the code, there is no point in building
-> both the default xor code and a "neon" version that has to save/restore
-> the neon registers but doesn't actually use them.
+On Wed, Jan 20, 2021 at 11:40:18AM -0500, Tejun Heo wrote:
+> Hello,
+> 
+> On Tue, Jan 19, 2021 at 11:13:51PM -0800, Vipin Sharma wrote:
+> > > Can you please elaborate? I skimmed through the amd manual and it seemed to
+> > > say that SEV-ES ASIDs are superset of SEV but !SEV-ES ASIDs. What's the use
+> > > case for mixing those two?
+> > 
+> > For example, customers can be given options for which kind of protection they
+> > want to choose for their workloads based on factors like data protection
+> > requirement, cost, speed, etc.
+> 
+> So, I'm looking for is a bit more in-depth analysis than that. ie. What's
+> the downside of SEV && !SEV-ES and is the disticntion something inherently
+> useful?
 
-Doesn't that already happen today with GCC when the pointer arguments
-are overlapping?  The loop is "versioned" and may not actually use the
-NEON registers at all at runtime for such arguments.
-https://godbolt.org/z/q48q8v  See also:
-https://bugs.llvm.org/show_bug.cgi?id=40976#c11.  Or am I missing
-something?
+I will leave this for AMD folks to respond, as they can give much better
+answer than me.
 
-So I'm thinking if we extend out this pattern to the rest of the
-functions, we can actually avoid calls to
-kernel_neon_begin()/kernel_neon_end() for cases in which pointers
-would be too close to use the vectorized loop version; meaning for GCC
-this would be an optimization (don't save neon registers when you're
-not going to use them).  I would probably consider moving
-include/asm-generic/xor.h somewhere under arch/arm/
-perhaps...err...something for the other users of <asm-generic/xor.h>.
+> > > I'm very reluctant to ack vendor specific interfaces for a few reasons but
+> > > most importantly because they usually indicate abstraction and/or the
+> > > underlying feature not being sufficiently developed and they tend to become
+> > > baggages after a while. So, here are my suggestions:
+> > 
+> > My first patch was only for SEV, but soon we got comments that this can
+> > be abstracted and used by TDX and SEID for their use cases.
+> > 
+> > I see this patch as providing an abstraction for simple accounting of
+> > resources used for creating secure execution contexts. Here, secure
+> > execution is achieved through different means. SEID, TDX, and SEV
+> > provide security using different features and capabilities. I am not
+> > sure if we will reach a point where all three and other vendors will use
+> > the same approach and technology for this purpose.
+> > 
+> > Instead of each one coming up with their own resource tracking for their
+> > features, this patch is providing a common framework and cgroup for
+> > tracking these resources.
+> 
+> What's implemented is a shared place where similar things can be thrown in
+> bu from user's perspective the underlying hardware feature isn't really
+> abstracted. It's just exposing whatever hardware knobs there are. If you
+> look at any other cgroup controllers, nothing is exposing this level of
+> hardware dependent details and I'd really like to keep it that way.
 
-diff --git a/arch/arm/include/asm/xor.h b/arch/arm/include/asm/xor.h
-index aefddec79286..abd748d317e8 100644
---- a/arch/arm/include/asm/xor.h
-+++ b/arch/arm/include/asm/xor.h
-@@ -148,12 +148,12 @@ extern struct xor_block_template const
-xor_block_neon_inner;
- static void
- xor_neon_2(unsigned long bytes, unsigned long *p1, unsigned long *p2)
- {
--       if (in_interrupt()) {
--               xor_arm4regs_2(bytes, p1, p2);
--       } else {
-+       if (!in_interrupt() && abs((uintptr_t)p1, (uintptr_t)p2) >= 8) {
-                kernel_neon_begin();
-                xor_block_neon_inner.do_2(bytes, p1, p2);
-                kernel_neon_end();
-+       } else {
-+               xor_arm4regs_2(bytes, p1, p2);
-        }
- }
-diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-index b99dd8e1c93f..0e8e474c0523 100644
---- a/arch/arm/lib/xor-neon.c
-+++ b/arch/arm/lib/xor-neon.c
-@@ -14,22 +14,6 @@ MODULE_LICENSE("GPL");
- #error You should compile this file with '-march=armv7-a
--mfloat-abi=softfp -mfpu=neon'
- #endif
+RDMA cgroup expose hardware details to users. In rdma.{max, current}
+interface files we can see actual hardware names. Only difference
+compared to Encryption ID cgroup is that latter is exposing that detail
+via file names.
 
--/*
-- * Pull in the reference implementations while instructing GCC (through
-- * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
-- * NEON instructions.
-- */
--#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
--#pragma GCC optimize "tree-vectorize"
--#else
--/*
-- * While older versions of GCC do not generate incorrect code, they fail to
-- * recognize the parallel nature of these functions, and emit plain ARM code,
-- * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
-- */
--#warning This code requires at least version 4.6 of GCC
--#endif
--
- #pragma GCC diagnostic ignored "-Wunused-variable"
- #include <asm-generic/xor.h>
-diff --git a/include/asm-generic/xor.h b/include/asm-generic/xor.h
-index b62a2a56a4d4..69df62095c33 100644
---- a/include/asm-generic/xor.h
-+++ b/include/asm-generic/xor.h
-@@ -8,7 +8,7 @@
- #include <linux/prefetch.h>
+Will you prefer that encryption ID cgroup do things similar to RDMA
+cgroup? It can have 3 files
+1. encids.capacity (only on root)
+   Shows features (SEV, SEV-ES, TDX, SEID) available along with capacity
+   on the host.
+   $ cat encids.capacity
+   sev 400
+   sev-es 100
 
- static void
--xor_8regs_2(unsigned long bytes, unsigned long *p1, unsigned long *p2)
-+xor_8regs_2(unsigned long bytes, unsigned long * __restrict p1,
-unsigned long * __restrict p2)
- {
-        long lines = bytes / (sizeof (long)) / 8;
+2. encids.max (only on non-root)
+   Allows setting of the max value of a feature in the cgroup.
+   It will only show max for features shown in the capacity file.
+   $ cat encids.max
+   sev max
+   sev-es 100
 
+3. encids.current (all levels)
+   Shows total getting used in the cgroup and its descendants.
+   $ cat encids.current
+   sev 3
+   sev-es 0
 
--- 
-Thanks,
-~Nick Desaulniers
+> 
+> So, what I'm asking for is more in-depth analysis of the landscape and
+> inherent differences among different vendor implementations to see whether
+> there can be better approaches or we should just wait and see.
+> 
+> > > * If there can be a shared abstraction which hopefully makes intuitive
+> > >   sense, that'd be ideal. It doesn't have to be one knob but it shouldn't be
+> > >   something arbitrary to specific vendors.
+> > 
+> > I think we should see these as features provided on a host. Tasks can
+> > be executed securely on a host with the guarantees provided by the
+> > specific feature (SEV, SEV-ES, TDX, SEID) used by the task.
+> > 
+> > I don't think each H/W vendor can agree to a common set of security
+> > guarantees and approach.
+> 
+> Do TDX and SEID have multiple key types tho?
+To my limited knowledge I don't think so. I don't know their future
+plans.
+
+> 
+> > > * If we aren't there yet and vendor-specific interface is a must, attach
+> > >   that part to an interface which is already vendor-aware.
+> > Sorry, I don't understand this approach. Can you please give more
+> > details about it?
+> 
+> Attaching the interface to kvm side, most likely, instead of exposing the
+> feature through cgroup.
+I am little confused, do you mean moving files from the kernel/cgroup/
+to kvm related directories or you are recommending not to use cgroup at
+all?  I hope it is the former :)
+
+Only issue with this is that TDX is not limited to KVM, they have
+potential use cases for MKTME without KVM.
+
+Thanks
+Vipin
