@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7804E2FD594
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CC52FD5A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403941AbhATQZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:25:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44842 "EHLO mail.kernel.org"
+        id S2391468AbhATQ1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:27:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732218AbhATQY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:24:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFF6233EF;
-        Wed, 20 Jan 2021 16:24:11 +0000 (UTC)
+        id S2403960AbhATQ0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:26:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CC4D233F6;
+        Wed, 20 Jan 2021 16:26:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611159853;
-        bh=xEs2bOSXbMSUhxxuSZjX48yiNs5+INFp7l/yAgKizkg=;
+        s=k20201202; t=1611159963;
+        bh=/LU/MZQDxCZu1dnnoiir4XzqrlgPRJdFp54s4d84jV0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hoo60njeXd5jRcJzNCp3XIC7I2nZjgvtsMYZklV+m97puU1Ou5XxamkkmlJspbgDk
-         ORMREdn0BNjzuU9eZWY/VFN97Mvv8vIsVPgjSl7Zz7fvdU5CB+/mZycdVS5Lk1rXr9
-         PdXK4D46/n5du67iQTNs9QoX/1NxW2qYCr/2f2HL8OKX8X/1RHHk9wxxBIa7tfMRmF
-         H/k6/1+AeawgtgNdtZgDA4+DeA1DreGc1Be2FViNuEHcgkgp4nTNYEy1A2zUyKG90B
-         14JmNtMvFphvd+22Qwkq15vUifwMEqbEqPCw1wZc/T+F8BgK1ljLpcN1fMrwhUJ146
-         78HysrdKvfoWw==
+        b=NOCwKHeaKmWjqRWJXth37r5FJqMvx8MB1BZ/rND5SY34R0jHYwDCPQtVilH35eWH7
+         +tXR5ZnJzOtxHQqwltJiWoHdGsYxvZ/pvW6upKoDRlu7ZWFrMiu70VydqHACPzu5bt
+         SAiLfoiiUZdxoOpSSDtwYuOzPZTxxTezECs2224BIGufHgDzAfmIV1Cjl3rt+t6YsC
+         +vAcZpQ25aHgJCc8sMo73aA4FdL9V4T3oWjeZIKVdiXRLa4Tmgmve8QlrsdruZ0MmJ
+         hYVsAxHGc5OFZsbOXY6uzvv95gm9GEDapPA0pdJuLNeAIqClZ4Ieeod2utDDtQ7cUU
+         Uddf5HuEVze6A==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
         Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 2/2] thermal: remove zx driver
-Date:   Wed, 20 Jan 2021 17:24:00 +0100
-Message-Id: <20210120162400.4115366-3-arnd@kernel.org>
+Subject: [PATCH 2/2] ASoC: remove zte zx drivers
+Date:   Wed, 20 Jan 2021 17:25:53 +0100
+Message-Id: <20210120162553.21666-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120162400.4115366-1-arnd@kernel.org>
-References: <20210120162400.4115366-1-arnd@kernel.org>
+In-Reply-To: <20210120162553.21666-1-arnd@kernel.org>
+References: <20210120162553.21666-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -51,428 +51,1961 @@ Cc: Jun Nie <jun.nie@linaro.org>
 Cc: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../bindings/thermal/zx2967-thermal.txt       | 116 --------
- drivers/thermal/Kconfig                       |   8 -
- drivers/thermal/Makefile                      |   1 -
- drivers/thermal/zx2967_thermal.c              | 256 ------------------
- 4 files changed, 381 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/thermal/zx2967-thermal.txt
- delete mode 100644 drivers/thermal/zx2967_thermal.c
+ .../devicetree/bindings/sound/zte,tdm.txt     |  30 --
+ .../bindings/sound/zte,zx-aud96p22.txt        |  24 -
+ .../devicetree/bindings/sound/zte,zx-i2s.txt  |  45 --
+ .../bindings/sound/zte,zx-spdif.txt           |  27 --
+ sound/soc/Kconfig                             |   1 -
+ sound/soc/Makefile                            |   1 -
+ sound/soc/codecs/Makefile                     |   2 -
+ sound/soc/codecs/zx_aud96p22.c                | 401 ---------------
+ sound/soc/zte/Kconfig                         |  26 -
+ sound/soc/zte/Makefile                        |   4 -
+ sound/soc/zte/zx-i2s.c                        | 452 -----------------
+ sound/soc/zte/zx-spdif.c                      | 363 --------------
+ sound/soc/zte/zx-tdm.c                        | 458 ------------------
+ 13 files changed, 1834 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/zte,tdm.txt
+ delete mode 100644 Documentation/devicetree/bindings/sound/zte,zx-aud96p22.txt
+ delete mode 100644 Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+ delete mode 100644 Documentation/devicetree/bindings/sound/zte,zx-spdif.txt
+ delete mode 100644 sound/soc/codecs/zx_aud96p22.c
+ delete mode 100644 sound/soc/zte/Kconfig
+ delete mode 100644 sound/soc/zte/Makefile
+ delete mode 100644 sound/soc/zte/zx-i2s.c
+ delete mode 100644 sound/soc/zte/zx-spdif.c
+ delete mode 100644 sound/soc/zte/zx-tdm.c
 
-diff --git a/Documentation/devicetree/bindings/thermal/zx2967-thermal.txt b/Documentation/devicetree/bindings/thermal/zx2967-thermal.txt
+diff --git a/Documentation/devicetree/bindings/sound/zte,tdm.txt b/Documentation/devicetree/bindings/sound/zte,tdm.txt
 deleted file mode 100644
-index 3dc1c6bf0478..000000000000
---- a/Documentation/devicetree/bindings/thermal/zx2967-thermal.txt
+index 2a07ca655264..000000000000
+--- a/Documentation/devicetree/bindings/sound/zte,tdm.txt
 +++ /dev/null
-@@ -1,116 +0,0 @@
--* ZTE zx2967 family Thermal
+@@ -1,30 +0,0 @@
+-ZTE TDM DAI driver
 -
--Required Properties:
--- compatible: should be one of the following.
--    * zte,zx296718-thermal
--- reg: physical base address of the controller and length of memory mapped
+-Required properties:
+-
+-- compatible : should be one of the following.
+-       * zte,zx296718-tdm
+-- reg : physical base address of the controller and length of memory mapped
 -    region.
 -- clocks : Pairs of phandle and specifier referencing the controller's clocks.
--- clock-names: "topcrm" for the topcrm clock.
--	       "apb" for the apb clock.
--- #thermal-sensor-cells: must be 0.
+-- clock-names: "wclk" for the wclk.
+-               "pclk" for the pclk.
+--#clock-cells: should be 1.
+-- zte,tdm-dma-sysctrl : Reference to the sysctrl controller controlling
+-    the dma. includes:
+-	phandle of sysctrl.
+-	register offset in sysctrl for control dma.
+-	mask of the register that be written to sysctrl.
 -
--Please note: slope coefficient defined in thermal-zones section need to be
--multiplied by 1000.
+-Example:
 -
--Example for tempsensor:
--
--	tempsensor: tempsensor@148a000 {
--		compatible = "zte,zx296718-thermal";
--		reg = <0x0148a000 0x20>;
--		clocks = <&topcrm TEMPSENSOR_GATE>, <&audiocrm AUDIO_TS_PCLK>;
--		clock-names = "topcrm", "apb";
--		#thermal-sensor-cells = <0>;
+-	tdm: tdm@1487000 {
+-		compatible = "zte,zx296718-tdm";
+-		reg = <0x01487000 0x1000>;
+-		clocks = <&audiocrm AUDIO_TDM_WCLK>, <&audiocrm AUDIO_TDM_PCLK>;
+-		clock-names = "wclk", "pclk";
+-		#clock-cells = <1>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&tdm_global_pin>;
+-		zte,tdm-dma-sysctrl = <&sysctrl 0x10c 4>;
 -	};
--
--Example for cooling device:
--
--	cooling_dev: cooling_dev {
--		cluster0_cooling_dev: cluster0-cooling-dev {
--			#cooling-cells = <2>;
--			cpumask = <0xf>;
--			capacitance = <1500>;
--		};
--
--	cluster1_cooling_dev: cluster1-cooling-dev {
--			#cooling-cells = <2>;
--			cpumask = <0x30>;
--			capacitance = <2000>;
--		};
--	};
--
--Example for thermal zones:
--
--	thermal-zones {
--		zx296718_thermal: zx296718_thermal {
--			polling-delay-passive = <500>;
--			polling-delay = <1000>;
--			sustainable-power = <6500>;
--
--			thermal-sensors = <&tempsensor 0>;
--			/*
--			 * slope need to be multiplied by 1000.
--			 */
--			coefficients = <1951 (-922)>;
--
--			trips {
--				trip0: switch_on_temperature {
--					temperature = <90000>;
--					hysteresis = <2000>;
--					type = "passive";
--				};
--
--				trip1: desired_temperature {
--					temperature = <100000>;
--					hysteresis = <2000>;
--					type = "passive";
--				};
--
--				crit: critical_temperature {
--					temperature = <110000>;
--					hysteresis = <2000>;
--					type = "critical";
--				};
--			};
--
--			cooling-maps {
--				map0 {
--					trip = <&trip0>;
--					cooling-device = <&gpu 2 5>;
--				};
--
--				map1 {
--					trip = <&trip0>;
--					cooling-device = <&cluster0_cooling_dev 1 2>;
--				};
--
--				map2 {
--					trip = <&trip1>;
--					cooling-device = <&cluster0_cooling_dev 1 2>;
--				};
--
--				map3 {
--					trip = <&crit>;
--					cooling-device = <&cluster0_cooling_dev 1 2>;
--				};
--
--				map4 {
--					trip = <&trip0>;
--					cooling-device = <&cluster1_cooling_dev 1 2>;
--					contribution = <9000>;
--				};
--
--				map5 {
--					trip = <&trip1>;
--					cooling-device = <&cluster1_cooling_dev 1 2>;
--					contribution = <4096>;
--				};
--
--				map6 {
--					trip = <&crit>;
--					cooling-device = <&cluster1_cooling_dev 1 2>;
--					contribution = <4096>;
--				};
--			};
--		};
--	};
-diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-index cf199574c096..d7f44deab5b1 100644
---- a/drivers/thermal/Kconfig
-+++ b/drivers/thermal/Kconfig
-@@ -467,14 +467,6 @@ depends on (ARCH_QCOM && OF) || COMPILE_TEST
- source "drivers/thermal/qcom/Kconfig"
- endmenu
- 
--config ZX2967_THERMAL
--	tristate "Thermal sensors on zx2967 SoC"
--	depends on ARCH_ZX || COMPILE_TEST
--	help
--	  Enable the zx2967 thermal sensors driver, which supports
--	  the primitive temperature sensor embedded in zx2967 SoCs.
--	  This sensor generates the real time die temperature.
--
- config UNIPHIER_THERMAL
- 	tristate "Socionext UniPhier thermal driver"
- 	depends on ARCH_UNIPHIER || COMPILE_TEST
-diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-index a44dda2d03bc..82fc3e616e54 100644
---- a/drivers/thermal/Makefile
-+++ b/drivers/thermal/Makefile
-@@ -56,7 +56,6 @@ obj-y				+= tegra/
- obj-$(CONFIG_HISI_THERMAL)     += hisi_thermal.o
- obj-$(CONFIG_MTK_THERMAL)	+= mtk_thermal.o
- obj-$(CONFIG_GENERIC_ADC_THERMAL)	+= thermal-generic-adc.o
--obj-$(CONFIG_ZX2967_THERMAL)	+= zx2967_thermal.o
- obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
- obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
- obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
-diff --git a/drivers/thermal/zx2967_thermal.c b/drivers/thermal/zx2967_thermal.c
+diff --git a/Documentation/devicetree/bindings/sound/zte,zx-aud96p22.txt b/Documentation/devicetree/bindings/sound/zte,zx-aud96p22.txt
 deleted file mode 100644
-index 8e3a2d3c2f9a..000000000000
---- a/drivers/thermal/zx2967_thermal.c
+index 41bb1040eb71..000000000000
+--- a/Documentation/devicetree/bindings/sound/zte,zx-aud96p22.txt
 +++ /dev/null
-@@ -1,256 +0,0 @@
+@@ -1,24 +0,0 @@
+-ZTE ZX AUD96P22 Audio Codec
+-
+-Required properties:
+- - compatible: Must be "zte,zx-aud96p22"
+- - #sound-dai-cells: Should be 0
+- - reg: I2C bus slave address of AUD96P22
+-
+-Example:
+-
+-	i2c0: i2c@1486000 {
+-		compatible = "zte,zx296718-i2c";
+-		reg = <0x01486000 0x1000>;
+-		interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		clocks = <&audiocrm AUDIO_I2C0_WCLK>;
+-		clock-frequency = <1600000>;
+-
+-		aud96p22: codec@22 {
+-			compatible = "zte,zx-aud96p22";
+-			#sound-dai-cells = <0>;
+-			reg = <0x22>;
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+deleted file mode 100644
+index 3927251464f0..000000000000
+--- a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
++++ /dev/null
+@@ -1,45 +0,0 @@
+-ZTE ZX296702 I2S controller
+-
+-Required properties:
+- - compatible : Must be one of:
+-	"zte,zx296718-i2s", "zte,zx296702-i2s"
+-	"zte,zx296702-i2s"
+- - reg : Must contain I2S core's registers location and length
+- - clocks : Pairs of phandle and specifier referencing the controller's clocks.
+- - clock-names: "wclk" for the wclk, "pclk" for the pclk to the I2S interface.
+- - dmas: Pairs of phandle and specifier for the DMA channel that is used by
+-   the core. The core expects two dma channels for transmit.
+- - dma-names : Must be "tx" and "rx"
+-
+-For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
+-please check:
+-	* resource-names.txt
+-	* clock/clock-bindings.txt
+-	* dma/dma.txt
+-
+-Example:
+-	i2s0: i2s@b005000 {
+-		#sound-dai-cells = <0>;
+-		compatible = "zte,zx296718-i2s", "zte,zx296702-i2s";
+-		reg = <0x0b005000 0x1000>;
+-		clocks = <&audiocrm AUDIO_I2S0_WCLK>, <&audiocrm AUDIO_I2S0_PCLK>;
+-		clock-names = "wclk", "pclk";
+-		interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
+-		dmas = <&dma 5>, <&dma 6>;
+-		dma-names = "tx", "rx";
+-	};
+-
+-	sound {
+-		compatible = "simple-audio-card";
+-		simple-audio-card,name = "zx296702_snd";
+-		simple-audio-card,format = "left_j";
+-		simple-audio-card,bitclock-master = <&sndcodec>;
+-		simple-audio-card,frame-master = <&sndcodec>;
+-		sndcpu: simple-audio-card,cpu {
+-			sound-dai = <&i2s0>;
+-		};
+-
+-		sndcodec: simple-audio-card,codec {
+-			sound-dai = <&acodec>;
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/sound/zte,zx-spdif.txt b/Documentation/devicetree/bindings/sound/zte,zx-spdif.txt
+deleted file mode 100644
+index 09231d7586b2..000000000000
+--- a/Documentation/devicetree/bindings/sound/zte,zx-spdif.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-ZTE ZX296702 SPDIF controller
+-
+-Required properties:
+- - compatible : Must be "zte,zx296702-spdif"
+- - reg : Must contain SPDIF core's registers location and length
+- - clocks : Pairs of phandle and specifier referencing the controller's clocks.
+- - clock-names: "tx" for the clock to the SPDIF interface.
+- - dmas: Pairs of phandle and specifier for the DMA channel that is used by
+-   the core. The core expects one dma channel for transmit.
+- - dma-names : Must be "tx"
+-
+-For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
+-please check:
+-	* resource-names.txt
+-	* clock/clock-bindings.txt
+-	* dma/dma.txt
+-
+-Example:
+-	spdif0: spdif0@b004000 {
+-		compatible = "zte,zx296702-spdif";
+-		reg = <0x0b004000 0x1000>;
+-		clocks = <&lsp0clk ZX296702_SPDIF0_DIV>;
+-		clock-names = "tx";
+-		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+-		dmas = <&dma 4>;
+-		dma-names = "tx";
+-	};
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 1fb61e689031..23319e053354 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -75,7 +75,6 @@ source "sound/soc/uniphier/Kconfig"
+ source "sound/soc/ux500/Kconfig"
+ source "sound/soc/xilinx/Kconfig"
+ source "sound/soc/xtensa/Kconfig"
+-source "sound/soc/zte/Kconfig"
+ 
+ # Supported codecs
+ source "sound/soc/codecs/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index d2b7a23f0e7b..2689fe6d1f67 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -58,4 +58,3 @@ obj-$(CONFIG_SND_SOC)	+= uniphier/
+ obj-$(CONFIG_SND_SOC)	+= ux500/
+ obj-$(CONFIG_SND_SOC)	+= xilinx/
+ obj-$(CONFIG_SND_SOC)	+= xtensa/
+-obj-$(CONFIG_SND_SOC)	+= zte/
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index c30762fc9b87..628b0c9b3e2a 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -301,7 +301,6 @@ snd-soc-wm9713-objs := wm9713.o
+ snd-soc-wm-hubs-objs := wm_hubs.o
+ snd-soc-wsa881x-objs := wsa881x.o
+ snd-soc-zl38060-objs := zl38060.o
+-snd-soc-zx-aud96p22-objs := zx_aud96p22.o
+ # Amp
+ snd-soc-max9877-objs := max9877.o
+ snd-soc-max98504-objs := max98504.o
+@@ -616,7 +615,6 @@ obj-$(CONFIG_SND_SOC_WM_ADSP)	+= snd-soc-wm-adsp.o
+ obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
+ obj-$(CONFIG_SND_SOC_WSA881X)	+= snd-soc-wsa881x.o
+ obj-$(CONFIG_SND_SOC_ZL38060)	+= snd-soc-zl38060.o
+-obj-$(CONFIG_SND_SOC_ZX_AUD96P22) += snd-soc-zx-aud96p22.o
+ 
+ # Amp
+ obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
+diff --git a/sound/soc/codecs/zx_aud96p22.c b/sound/soc/codecs/zx_aud96p22.c
+deleted file mode 100644
+index 16d44efb132d..000000000000
+--- a/sound/soc/codecs/zx_aud96p22.c
++++ /dev/null
+@@ -1,401 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0-only
 -/*
-- * ZTE's zx2967 family thermal sensor driver
+- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
+- * Copyright 2017 Linaro Ltd.
 - *
-- * Copyright (C) 2017 ZTE Ltd.
+- * Author: Baoyou Xie <baoyou.xie@linaro.org>
+- */
+-
+-#include <linux/gpio/consumer.h>
+-#include <linux/i2c.h>
+-#include <linux/module.h>
+-#include <linux/regmap.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-#include <sound/soc-dai.h>
+-#include <sound/tlv.h>
+-
+-#define AUD96P22_RESET			0x00
+-#define RST_DAC_DPZ			BIT(0)
+-#define RST_ADC_DPZ			BIT(1)
+-#define AUD96P22_I2S1_CONFIG_0		0x03
+-#define I2S1_MS_MODE			BIT(3)
+-#define I2S1_MODE_MASK			0x7
+-#define I2S1_MODE_RIGHT_J		0x0
+-#define I2S1_MODE_I2S			0x1
+-#define I2S1_MODE_LEFT_J		0x2
+-#define AUD96P22_PD_0			0x15
+-#define AUD96P22_PD_1			0x16
+-#define AUD96P22_PD_3			0x18
+-#define AUD96P22_PD_4			0x19
+-#define AUD96P22_MUTE_0			0x1d
+-#define AUD96P22_MUTE_2			0x1f
+-#define AUD96P22_MUTE_4			0x21
+-#define AUD96P22_RECVOL_0		0x24
+-#define AUD96P22_RECVOL_1		0x25
+-#define AUD96P22_PGA1VOL_0		0x26
+-#define AUD96P22_PGA1VOL_1		0x27
+-#define AUD96P22_LMVOL_0		0x34
+-#define AUD96P22_LMVOL_1		0x35
+-#define AUD96P22_HS1VOL_0		0x38
+-#define AUD96P22_HS1VOL_1		0x39
+-#define AUD96P22_PGA1SEL_0		0x47
+-#define AUD96P22_PGA1SEL_1		0x48
+-#define AUD96P22_LDR1SEL_0		0x59
+-#define AUD96P22_LDR1SEL_1		0x60
+-#define AUD96P22_LDR2SEL_0		0x5d
+-#define AUD96P22_REG_MAX		0xfb
+-
+-struct aud96p22_priv {
+-	struct regmap *regmap;
+-};
+-
+-static int aud96p22_adc_event(struct snd_soc_dapm_widget *w,
+-			      struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+-	struct aud96p22_priv *priv = snd_soc_component_get_drvdata(component);
+-	struct regmap *regmap = priv->regmap;
+-
+-	if (event != SND_SOC_DAPM_POST_PMU)
+-		return -EINVAL;
+-
+-	/* Assert/de-assert the bit to reset ADC data path  */
+-	regmap_update_bits(regmap, AUD96P22_RESET, RST_ADC_DPZ, 0);
+-	regmap_update_bits(regmap, AUD96P22_RESET, RST_ADC_DPZ, RST_ADC_DPZ);
+-
+-	return 0;
+-}
+-
+-static int aud96p22_dac_event(struct snd_soc_dapm_widget *w,
+-			      struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+-	struct aud96p22_priv *priv = snd_soc_component_get_drvdata(component);
+-	struct regmap *regmap = priv->regmap;
+-
+-	if (event != SND_SOC_DAPM_POST_PMU)
+-		return -EINVAL;
+-
+-	/* Assert/de-assert the bit to reset DAC data path  */
+-	regmap_update_bits(regmap, AUD96P22_RESET, RST_DAC_DPZ, 0);
+-	regmap_update_bits(regmap, AUD96P22_RESET, RST_DAC_DPZ, RST_DAC_DPZ);
+-
+-	return 0;
+-}
+-
+-static const DECLARE_TLV_DB_SCALE(lm_tlv, -11550, 50, 0);
+-static const DECLARE_TLV_DB_SCALE(hs_tlv, -3900, 300, 0);
+-static const DECLARE_TLV_DB_SCALE(rec_tlv, -9550, 50, 0);
+-static const DECLARE_TLV_DB_SCALE(pga_tlv, -1800, 100, 0);
+-
+-static const struct snd_kcontrol_new aud96p22_snd_controls[] = {
+-	/* Volume control */
+-	SOC_DOUBLE_R_TLV("Master Playback Volume", AUD96P22_LMVOL_0,
+-			 AUD96P22_LMVOL_1, 0, 0xff, 0, lm_tlv),
+-	SOC_DOUBLE_R_TLV("Headphone Volume", AUD96P22_HS1VOL_0,
+-			 AUD96P22_HS1VOL_1, 0, 0xf, 0, hs_tlv),
+-	SOC_DOUBLE_R_TLV("Master Capture Volume", AUD96P22_RECVOL_0,
+-			 AUD96P22_RECVOL_1, 0, 0xff, 0, rec_tlv),
+-	SOC_DOUBLE_R_TLV("Analogue Capture Volume", AUD96P22_PGA1VOL_0,
+-			 AUD96P22_PGA1VOL_1, 0, 0x37, 0, pga_tlv),
+-
+-	/* Mute control */
+-	SOC_DOUBLE("Master Playback Switch", AUD96P22_MUTE_2, 0, 1, 1, 1),
+-	SOC_DOUBLE("Headphone Switch", AUD96P22_MUTE_2, 4, 5, 1, 1),
+-	SOC_DOUBLE("Line Out Switch", AUD96P22_MUTE_4, 0, 1, 1, 1),
+-	SOC_DOUBLE("Speaker Switch", AUD96P22_MUTE_4, 2, 3, 1, 1),
+-	SOC_DOUBLE("Master Capture Switch", AUD96P22_MUTE_0, 0, 1, 1, 1),
+-	SOC_DOUBLE("Analogue Capture Switch", AUD96P22_MUTE_0, 2, 3, 1, 1),
+-};
+-
+-/* Input mux kcontrols */
+-static const unsigned int ain_mux_values[] = {
+-	0, 1, 3, 4, 5,
+-};
+-
+-static const char * const ainl_mux_texts[] = {
+-	"AINL1 differential",
+-	"AINL1 single-ended",
+-	"AINL3 single-ended",
+-	"AINL2 differential",
+-	"AINL2 single-ended",
+-};
+-
+-static const char * const ainr_mux_texts[] = {
+-	"AINR1 differential",
+-	"AINR1 single-ended",
+-	"AINR3 single-ended",
+-	"AINR2 differential",
+-	"AINR2 single-ended",
+-};
+-
+-static SOC_VALUE_ENUM_SINGLE_DECL(ainl_mux_enum, AUD96P22_PGA1SEL_0,
+-				  0, 0x7, ainl_mux_texts, ain_mux_values);
+-static SOC_VALUE_ENUM_SINGLE_DECL(ainr_mux_enum, AUD96P22_PGA1SEL_1,
+-				  0, 0x7, ainr_mux_texts, ain_mux_values);
+-
+-static const struct snd_kcontrol_new ainl_mux_kcontrol =
+-			SOC_DAPM_ENUM("AINL Mux", ainl_mux_enum);
+-static const struct snd_kcontrol_new ainr_mux_kcontrol =
+-			SOC_DAPM_ENUM("AINR Mux", ainr_mux_enum);
+-
+-/* Output mixer kcontrols */
+-static const struct snd_kcontrol_new ld1_left_kcontrols[] = {
+-	SOC_DAPM_SINGLE("DACL LD1L Switch", AUD96P22_LDR1SEL_0, 0, 1, 0),
+-	SOC_DAPM_SINGLE("AINL LD1L Switch", AUD96P22_LDR1SEL_0, 1, 1, 0),
+-	SOC_DAPM_SINGLE("AINR LD1L Switch", AUD96P22_LDR1SEL_0, 2, 1, 0),
+-};
+-
+-static const struct snd_kcontrol_new ld1_right_kcontrols[] = {
+-	SOC_DAPM_SINGLE("DACR LD1R Switch", AUD96P22_LDR1SEL_1, 8, 1, 0),
+-	SOC_DAPM_SINGLE("AINR LD1R Switch", AUD96P22_LDR1SEL_1, 9, 1, 0),
+-	SOC_DAPM_SINGLE("AINL LD1R Switch", AUD96P22_LDR1SEL_1, 10, 1, 0),
+-};
+-
+-static const struct snd_kcontrol_new ld2_kcontrols[] = {
+-	SOC_DAPM_SINGLE("DACL LD2 Switch", AUD96P22_LDR2SEL_0, 0, 1, 0),
+-	SOC_DAPM_SINGLE("AINL LD2 Switch", AUD96P22_LDR2SEL_0, 1, 1, 0),
+-	SOC_DAPM_SINGLE("DACR LD2 Switch", AUD96P22_LDR2SEL_0, 2, 1, 0),
+-};
+-
+-static const struct snd_soc_dapm_widget aud96p22_dapm_widgets[] = {
+-	/* Overall power bit */
+-	SND_SOC_DAPM_SUPPLY("POWER", AUD96P22_PD_0, 0, 0, NULL, 0),
+-
+-	/* Input pins */
+-	SND_SOC_DAPM_INPUT("AINL1P"),
+-	SND_SOC_DAPM_INPUT("AINL2P"),
+-	SND_SOC_DAPM_INPUT("AINL3"),
+-	SND_SOC_DAPM_INPUT("AINL1N"),
+-	SND_SOC_DAPM_INPUT("AINL2N"),
+-	SND_SOC_DAPM_INPUT("AINR2N"),
+-	SND_SOC_DAPM_INPUT("AINR1N"),
+-	SND_SOC_DAPM_INPUT("AINR3"),
+-	SND_SOC_DAPM_INPUT("AINR2P"),
+-	SND_SOC_DAPM_INPUT("AINR1P"),
+-
+-	/* Input muxes */
+-	SND_SOC_DAPM_MUX("AINLMUX", AUD96P22_PD_1, 2, 0, &ainl_mux_kcontrol),
+-	SND_SOC_DAPM_MUX("AINRMUX", AUD96P22_PD_1, 3, 0, &ainr_mux_kcontrol),
+-
+-	/* ADCs */
+-	SND_SOC_DAPM_ADC_E("ADCL", "Capture Left", AUD96P22_PD_1, 0, 0,
+-			   aud96p22_adc_event, SND_SOC_DAPM_POST_PMU),
+-	SND_SOC_DAPM_ADC_E("ADCR", "Capture Right", AUD96P22_PD_1, 1, 0,
+-			   aud96p22_adc_event, SND_SOC_DAPM_POST_PMU),
+-
+-	/* DACs */
+-	SND_SOC_DAPM_DAC_E("DACL", "Playback Left", AUD96P22_PD_3, 0, 0,
+-			   aud96p22_dac_event, SND_SOC_DAPM_POST_PMU),
+-	SND_SOC_DAPM_DAC_E("DACR", "Playback Right", AUD96P22_PD_3, 1, 0,
+-			   aud96p22_dac_event, SND_SOC_DAPM_POST_PMU),
+-
+-	/* Output mixers */
+-	SND_SOC_DAPM_MIXER("LD1L", AUD96P22_PD_3, 6, 0, ld1_left_kcontrols,
+-			   ARRAY_SIZE(ld1_left_kcontrols)),
+-	SND_SOC_DAPM_MIXER("LD1R", AUD96P22_PD_3, 7, 0, ld1_right_kcontrols,
+-			   ARRAY_SIZE(ld1_right_kcontrols)),
+-	SND_SOC_DAPM_MIXER("LD2", AUD96P22_PD_4, 2, 0, ld2_kcontrols,
+-			   ARRAY_SIZE(ld2_kcontrols)),
+-
+-	/* Headset power switch */
+-	SND_SOC_DAPM_SUPPLY("HS1L", AUD96P22_PD_3, 4, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("HS1R", AUD96P22_PD_3, 5, 0, NULL, 0),
+-
+-	/* Output pins */
+-	SND_SOC_DAPM_OUTPUT("HSOUTL"),
+-	SND_SOC_DAPM_OUTPUT("LINEOUTL"),
+-	SND_SOC_DAPM_OUTPUT("LINEOUTMP"),
+-	SND_SOC_DAPM_OUTPUT("LINEOUTMN"),
+-	SND_SOC_DAPM_OUTPUT("LINEOUTR"),
+-	SND_SOC_DAPM_OUTPUT("HSOUTR"),
+-};
+-
+-static const struct snd_soc_dapm_route aud96p22_dapm_routes[] = {
+-	{ "AINLMUX", "AINL1 differential", "AINL1N" },
+-	{ "AINLMUX", "AINL1 single-ended", "AINL1P" },
+-	{ "AINLMUX", "AINL3 single-ended", "AINL3" },
+-	{ "AINLMUX", "AINL2 differential", "AINL2N" },
+-	{ "AINLMUX", "AINL2 single-ended", "AINL2P" },
+-
+-	{ "AINRMUX", "AINR1 differential", "AINR1N" },
+-	{ "AINRMUX", "AINR1 single-ended", "AINR1P" },
+-	{ "AINRMUX", "AINR3 single-ended", "AINR3" },
+-	{ "AINRMUX", "AINR2 differential", "AINR2N" },
+-	{ "AINRMUX", "AINR2 single-ended", "AINR2P" },
+-
+-	{ "ADCL", NULL, "AINLMUX" },
+-	{ "ADCR", NULL, "AINRMUX" },
+-
+-	{ "ADCL", NULL, "POWER" },
+-	{ "ADCR", NULL, "POWER" },
+-	{ "DACL", NULL, "POWER" },
+-	{ "DACR", NULL, "POWER" },
+-
+-	{ "LD1L", "DACL LD1L Switch", "DACL" },
+-	{ "LD1L", "AINL LD1L Switch", "AINLMUX" },
+-	{ "LD1L", "AINR LD1L Switch", "AINRMUX" },
+-
+-	{ "LD1R", "DACR LD1R Switch", "DACR" },
+-	{ "LD1R", "AINR LD1R Switch", "AINRMUX" },
+-	{ "LD1R", "AINL LD1R Switch", "AINLMUX" },
+-
+-	{ "LD2", "DACL LD2 Switch", "DACL" },
+-	{ "LD2", "AINL LD2 Switch", "AINLMUX" },
+-	{ "LD2", "DACR LD2 Switch", "DACR" },
+-
+-	{ "HSOUTL", NULL, "LD1L" },
+-	{ "HSOUTR", NULL, "LD1R" },
+-	{ "HSOUTL", NULL, "HS1L" },
+-	{ "HSOUTR", NULL, "HS1R" },
+-
+-	{ "LINEOUTL", NULL, "LD1L" },
+-	{ "LINEOUTR", NULL, "LD1R" },
+-
+-	{ "LINEOUTMP", NULL, "LD2" },
+-	{ "LINEOUTMN", NULL, "LD2" },
+-};
+-
+-static const struct snd_soc_component_driver aud96p22_driver = {
+-	.controls		= aud96p22_snd_controls,
+-	.num_controls		= ARRAY_SIZE(aud96p22_snd_controls),
+-	.dapm_widgets		= aud96p22_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(aud96p22_dapm_widgets),
+-	.dapm_routes		= aud96p22_dapm_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(aud96p22_dapm_routes),
+-	.idle_bias_on		= 1,
+-	.use_pmdown_time	= 1,
+-	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+-};
+-
+-static int aud96p22_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+-{
+-	struct aud96p22_priv *priv = snd_soc_component_get_drvdata(dai->component);
+-	struct regmap *regmap = priv->regmap;
+-	unsigned int val;
+-
+-	/* Master/slave mode */
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-		val = 0;
+-		break;
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		val = I2S1_MS_MODE;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	regmap_update_bits(regmap, AUD96P22_I2S1_CONFIG_0, I2S1_MS_MODE, val);
+-
+-	/* Audio format */
+-	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+-	case SND_SOC_DAIFMT_RIGHT_J:
+-		val = I2S1_MODE_RIGHT_J;
+-		break;
+-	case SND_SOC_DAIFMT_I2S:
+-		val = I2S1_MODE_I2S;
+-		break;
+-	case SND_SOC_DAIFMT_LEFT_J:
+-		val = I2S1_MODE_LEFT_J;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	regmap_update_bits(regmap, AUD96P22_I2S1_CONFIG_0, I2S1_MODE_MASK, val);
+-
+-	return 0;
+-}
+-
+-static const struct snd_soc_dai_ops aud96p22_dai_ops = {
+-	.set_fmt = aud96p22_set_fmt,
+-};
+-
+-#define AUD96P22_RATES	SNDRV_PCM_RATE_8000_192000
+-#define AUD96P22_FORMATS (\
+-		SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE | \
+-		SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE)
+-
+-static struct snd_soc_dai_driver aud96p22_dai = {
+-	.name = "aud96p22-dai",
+-	.playback = {
+-		.stream_name = "Playback",
+-		.channels_min = 1,
+-		.channels_max = 2,
+-		.rates = AUD96P22_RATES,
+-		.formats = AUD96P22_FORMATS,
+-	},
+-	.capture = {
+-		.stream_name = "Capture",
+-		.channels_min = 1,
+-		.channels_max = 2,
+-		.rates = AUD96P22_RATES,
+-		.formats = AUD96P22_FORMATS,
+-	},
+-	.ops = &aud96p22_dai_ops,
+-};
+-
+-static const struct regmap_config aud96p22_regmap = {
+-	.reg_bits = 8,
+-	.val_bits = 8,
+-	.max_register = AUD96P22_REG_MAX,
+-	.cache_type = REGCACHE_RBTREE,
+-};
+-
+-static int aud96p22_i2c_probe(struct i2c_client *i2c,
+-			      const struct i2c_device_id *id)
+-{
+-	struct device *dev = &i2c->dev;
+-	struct aud96p22_priv *priv;
+-	int ret;
+-
+-	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+-	if (priv == NULL)
+-		return -ENOMEM;
+-
+-	priv->regmap = devm_regmap_init_i2c(i2c, &aud96p22_regmap);
+-	if (IS_ERR(priv->regmap)) {
+-		ret = PTR_ERR(priv->regmap);
+-		dev_err(dev, "failed to init i2c regmap: %d\n", ret);
+-		return ret;
+-	}
+-
+-	i2c_set_clientdata(i2c, priv);
+-
+-	ret = devm_snd_soc_register_component(dev, &aud96p22_driver, &aud96p22_dai, 1);
+-	if (ret) {
+-		dev_err(dev, "failed to register component: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int aud96p22_i2c_remove(struct i2c_client *i2c)
+-{
+-	return 0;
+-}
+-
+-static const struct of_device_id aud96p22_dt_ids[] = {
+-	{ .compatible = "zte,zx-aud96p22", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, aud96p22_dt_ids);
+-
+-static struct i2c_driver aud96p22_i2c_driver = {
+-	.driver = {
+-		.name = "zx_aud96p22",
+-		.of_match_table = aud96p22_dt_ids,
+-	},
+-	.probe = aud96p22_i2c_probe,
+-	.remove = aud96p22_i2c_remove,
+-};
+-module_i2c_driver(aud96p22_i2c_driver);
+-
+-MODULE_DESCRIPTION("ZTE ASoC AUD96P22 CODEC driver");
+-MODULE_AUTHOR("Baoyou Xie <baoyou.xie@linaro.org>");
+-MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/zte/Kconfig b/sound/soc/zte/Kconfig
+deleted file mode 100644
+index a23d4f13ca19..000000000000
+--- a/sound/soc/zte/Kconfig
++++ /dev/null
+@@ -1,26 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-config ZX_SPDIF
+-	tristate "ZTE ZX SPDIF Driver Support"
+-	depends on ARCH_ZX || COMPILE_TEST
+-	depends on COMMON_CLK
+-	select SND_SOC_GENERIC_DMAENGINE_PCM
+-	help
+-	  Say Y or M if you want to add support for codecs attached to the
+-	  ZTE ZX SPDIF interface
+-
+-config ZX_I2S
+-	tristate "ZTE ZX I2S Driver Support"
+-	depends on ARCH_ZX || COMPILE_TEST
+-	depends on COMMON_CLK
+-	select SND_SOC_GENERIC_DMAENGINE_PCM
+-	help
+-	  Say Y or M if you want to add support for codecs attached to the
+-	  ZTE ZX I2S interface
+-
+-config ZX_TDM
+-	tristate "ZTE ZX TDM Driver Support"
+-	depends on COMMON_CLK
+-	select SND_SOC_GENERIC_DMAENGINE_PCM
+-	help
+-	  Say Y or M if you want to add support for codecs attached to the
+-	  ZTE ZX TDM interface
+diff --git a/sound/soc/zte/Makefile b/sound/soc/zte/Makefile
+deleted file mode 100644
+index 2f7cdefa42df..000000000000
+--- a/sound/soc/zte/Makefile
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_ZX_SPDIF)	+= zx-spdif.o
+-obj-$(CONFIG_ZX_I2S)	+= zx-i2s.o
+-obj-$(CONFIG_ZX_TDM)	+= zx-tdm.o
+diff --git a/sound/soc/zte/zx-i2s.c b/sound/soc/zte/zx-i2s.c
+deleted file mode 100644
+index 1c1a44e08a67..000000000000
+--- a/sound/soc/zte/zx-i2s.c
++++ /dev/null
+@@ -1,452 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (C) 2015 Linaro
+- *
+- * Author: Jun Nie <jun.nie@linaro.org>
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/device.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-#include <sound/soc-dai.h>
+-
+-#include <sound/core.h>
+-#include <sound/dmaengine_pcm.h>
+-#include <sound/initval.h>
+-
+-#define ZX_I2S_PROCESS_CTRL	0x04
+-#define ZX_I2S_TIMING_CTRL	0x08
+-#define	ZX_I2S_FIFO_CTRL	0x0C
+-#define	ZX_I2S_FIFO_STATUS	0x10
+-#define ZX_I2S_INT_EN		0x14
+-#define ZX_I2S_INT_STATUS	0x18
+-#define ZX_I2S_DATA		0x1C
+-#define ZX_I2S_FRAME_CNTR	0x20
+-
+-#define I2S_DEAGULT_FIFO_THRES	(0x10)
+-#define I2S_MAX_FIFO_THRES	(0x20)
+-
+-#define ZX_I2S_PROCESS_TX_EN	(1 << 0)
+-#define ZX_I2S_PROCESS_TX_DIS	(0 << 0)
+-#define ZX_I2S_PROCESS_RX_EN	(1 << 1)
+-#define ZX_I2S_PROCESS_RX_DIS	(0 << 1)
+-#define ZX_I2S_PROCESS_I2S_EN	(1 << 2)
+-#define ZX_I2S_PROCESS_I2S_DIS	(0 << 2)
+-
+-#define ZX_I2S_TIMING_MAST		(1 << 0)
+-#define ZX_I2S_TIMING_SLAVE		(0 << 0)
+-#define ZX_I2S_TIMING_MS_MASK		(1 << 0)
+-#define ZX_I2S_TIMING_LOOP		(1 << 1)
+-#define ZX_I2S_TIMING_NOR		(0 << 1)
+-#define ZX_I2S_TIMING_LOOP_MASK		(1 << 1)
+-#define ZX_I2S_TIMING_PTNR		(1 << 2)
+-#define ZX_I2S_TIMING_NTPR		(0 << 2)
+-#define ZX_I2S_TIMING_PHASE_MASK	(1 << 2)
+-#define ZX_I2S_TIMING_TDM		(1 << 3)
+-#define ZX_I2S_TIMING_I2S		(0 << 3)
+-#define ZX_I2S_TIMING_TIMING_MASK	(1 << 3)
+-#define ZX_I2S_TIMING_LONG_SYNC		(1 << 4)
+-#define ZX_I2S_TIMING_SHORT_SYNC	(0 << 4)
+-#define ZX_I2S_TIMING_SYNC_MASK		(1 << 4)
+-#define ZX_I2S_TIMING_TEAK_EN		(1 << 5)
+-#define ZX_I2S_TIMING_TEAK_DIS		(0 << 5)
+-#define ZX_I2S_TIMING_TEAK_MASK		(1 << 5)
+-#define ZX_I2S_TIMING_STD_I2S		(0 << 6)
+-#define ZX_I2S_TIMING_MSB_JUSTIF	(1 << 6)
+-#define ZX_I2S_TIMING_LSB_JUSTIF	(2 << 6)
+-#define ZX_I2S_TIMING_ALIGN_MASK	(3 << 6)
+-#define ZX_I2S_TIMING_CHN_MASK		(7 << 8)
+-#define ZX_I2S_TIMING_CHN(x)		((x - 1) << 8)
+-#define ZX_I2S_TIMING_LANE_MASK		(3 << 11)
+-#define ZX_I2S_TIMING_LANE(x)		((x - 1) << 11)
+-#define ZX_I2S_TIMING_TSCFG_MASK	(7 << 13)
+-#define ZX_I2S_TIMING_TSCFG(x)		(x << 13)
+-#define ZX_I2S_TIMING_TS_WIDTH_MASK	(0x1f << 16)
+-#define ZX_I2S_TIMING_TS_WIDTH(x)	((x - 1) << 16)
+-#define ZX_I2S_TIMING_DATA_SIZE_MASK	(0x1f << 21)
+-#define ZX_I2S_TIMING_DATA_SIZE(x)	((x - 1) << 21)
+-#define ZX_I2S_TIMING_CFG_ERR_MASK	(1 << 31)
+-
+-#define ZX_I2S_FIFO_CTRL_TX_RST		(1 << 0)
+-#define ZX_I2S_FIFO_CTRL_TX_RST_MASK	(1 << 0)
+-#define ZX_I2S_FIFO_CTRL_RX_RST		(1 << 1)
+-#define ZX_I2S_FIFO_CTRL_RX_RST_MASK	(1 << 1)
+-#define ZX_I2S_FIFO_CTRL_TX_DMA_EN	(1 << 4)
+-#define ZX_I2S_FIFO_CTRL_TX_DMA_DIS	(0 << 4)
+-#define ZX_I2S_FIFO_CTRL_TX_DMA_MASK	(1 << 4)
+-#define ZX_I2S_FIFO_CTRL_RX_DMA_EN	(1 << 5)
+-#define ZX_I2S_FIFO_CTRL_RX_DMA_DIS	(0 << 5)
+-#define ZX_I2S_FIFO_CTRL_RX_DMA_MASK	(1 << 5)
+-#define ZX_I2S_FIFO_CTRL_TX_THRES_MASK	(0x1F << 8)
+-#define ZX_I2S_FIFO_CTRL_RX_THRES_MASK	(0x1F << 16)
+-
+-#define CLK_RAT (32 * 4)
+-
+-struct zx_i2s_info {
+-	struct snd_dmaengine_dai_dma_data	dma_playback;
+-	struct snd_dmaengine_dai_dma_data	dma_capture;
+-	struct clk				*dai_wclk;
+-	struct clk				*dai_pclk;
+-	void __iomem				*reg_base;
+-	int					master;
+-	resource_size_t				mapbase;
+-};
+-
+-static void zx_i2s_tx_en(void __iomem *base, bool on)
+-{
+-	unsigned long val;
+-
+-	val = readl_relaxed(base + ZX_I2S_PROCESS_CTRL);
+-	if (on)
+-		val |= ZX_I2S_PROCESS_TX_EN | ZX_I2S_PROCESS_I2S_EN;
+-	else
+-		val &= ~(ZX_I2S_PROCESS_TX_EN | ZX_I2S_PROCESS_I2S_EN);
+-	writel_relaxed(val, base + ZX_I2S_PROCESS_CTRL);
+-}
+-
+-static void zx_i2s_rx_en(void __iomem *base, bool on)
+-{
+-	unsigned long val;
+-
+-	val = readl_relaxed(base + ZX_I2S_PROCESS_CTRL);
+-	if (on)
+-		val |= ZX_I2S_PROCESS_RX_EN | ZX_I2S_PROCESS_I2S_EN;
+-	else
+-		val &= ~(ZX_I2S_PROCESS_RX_EN | ZX_I2S_PROCESS_I2S_EN);
+-	writel_relaxed(val, base + ZX_I2S_PROCESS_CTRL);
+-}
+-
+-static void zx_i2s_tx_dma_en(void __iomem *base, bool on)
+-{
+-	unsigned long val;
+-
+-	val = readl_relaxed(base + ZX_I2S_FIFO_CTRL);
+-	val |= ZX_I2S_FIFO_CTRL_TX_RST | (I2S_DEAGULT_FIFO_THRES << 8);
+-	if (on)
+-		val |= ZX_I2S_FIFO_CTRL_TX_DMA_EN;
+-	else
+-		val &= ~ZX_I2S_FIFO_CTRL_TX_DMA_EN;
+-	writel_relaxed(val, base + ZX_I2S_FIFO_CTRL);
+-}
+-
+-static void zx_i2s_rx_dma_en(void __iomem *base, bool on)
+-{
+-	unsigned long val;
+-
+-	val = readl_relaxed(base + ZX_I2S_FIFO_CTRL);
+-	val |= ZX_I2S_FIFO_CTRL_RX_RST | (I2S_DEAGULT_FIFO_THRES << 16);
+-	if (on)
+-		val |= ZX_I2S_FIFO_CTRL_RX_DMA_EN;
+-	else
+-		val &= ~ZX_I2S_FIFO_CTRL_RX_DMA_EN;
+-	writel_relaxed(val, base + ZX_I2S_FIFO_CTRL);
+-}
+-
+-#define ZX_I2S_RATES \
+-	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
+-	 SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+-	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000| \
+-	 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
+-
+-#define ZX_I2S_FMTBIT \
+-	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+-	SNDRV_PCM_FMTBIT_S32_LE)
+-
+-static int zx_i2s_dai_probe(struct snd_soc_dai *dai)
+-{
+-	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
+-
+-	snd_soc_dai_set_drvdata(dai, zx_i2s);
+-	zx_i2s->dma_playback.addr = zx_i2s->mapbase + ZX_I2S_DATA;
+-	zx_i2s->dma_playback.maxburst = 16;
+-	zx_i2s->dma_capture.addr = zx_i2s->mapbase + ZX_I2S_DATA;
+-	zx_i2s->dma_capture.maxburst = 16;
+-	snd_soc_dai_init_dma_data(dai, &zx_i2s->dma_playback,
+-				  &zx_i2s->dma_capture);
+-	return 0;
+-}
+-
+-static int zx_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+-{
+-	struct zx_i2s_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+-	unsigned long val;
+-
+-	val = readl_relaxed(i2s->reg_base + ZX_I2S_TIMING_CTRL);
+-	val &= ~(ZX_I2S_TIMING_TIMING_MASK | ZX_I2S_TIMING_ALIGN_MASK |
+-			ZX_I2S_TIMING_TEAK_MASK | ZX_I2S_TIMING_SYNC_MASK |
+-			ZX_I2S_TIMING_MS_MASK);
+-
+-	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+-	case SND_SOC_DAIFMT_I2S:
+-		val |= (ZX_I2S_TIMING_I2S | ZX_I2S_TIMING_STD_I2S);
+-		break;
+-	case SND_SOC_DAIFMT_LEFT_J:
+-		val |= (ZX_I2S_TIMING_I2S | ZX_I2S_TIMING_MSB_JUSTIF);
+-		break;
+-	case SND_SOC_DAIFMT_RIGHT_J:
+-		val |= (ZX_I2S_TIMING_I2S | ZX_I2S_TIMING_LSB_JUSTIF);
+-		break;
+-	default:
+-		dev_err(cpu_dai->dev, "Unknown i2s timing\n");
+-		return -EINVAL;
+-	}
+-
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		/* Codec is master, and I2S is slave. */
+-		i2s->master = 0;
+-		val |= ZX_I2S_TIMING_SLAVE;
+-		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-		/* Codec is slave, and I2S is master. */
+-		i2s->master = 1;
+-		val |= ZX_I2S_TIMING_MAST;
+-		break;
+-	default:
+-		dev_err(cpu_dai->dev, "Unknown master/slave format\n");
+-		return -EINVAL;
+-	}
+-
+-	writel_relaxed(val, i2s->reg_base + ZX_I2S_TIMING_CTRL);
+-	return 0;
+-}
+-
+-static int zx_i2s_hw_params(struct snd_pcm_substream *substream,
+-			    struct snd_pcm_hw_params *params,
+-			    struct snd_soc_dai *socdai)
+-{
+-	struct zx_i2s_info *i2s = snd_soc_dai_get_drvdata(socdai);
+-	struct snd_dmaengine_dai_dma_data *dma_data;
+-	unsigned int lane, ch_num, len, ret = 0;
+-	unsigned int ts_width = 32;
+-	unsigned long val;
+-	unsigned long chn_cfg;
+-
+-	dma_data = snd_soc_dai_get_dma_data(socdai, substream);
+-	dma_data->addr_width = ts_width >> 3;
+-
+-	val = readl_relaxed(i2s->reg_base + ZX_I2S_TIMING_CTRL);
+-	val &= ~(ZX_I2S_TIMING_TS_WIDTH_MASK | ZX_I2S_TIMING_DATA_SIZE_MASK |
+-		ZX_I2S_TIMING_LANE_MASK | ZX_I2S_TIMING_CHN_MASK |
+-		ZX_I2S_TIMING_TSCFG_MASK);
+-
+-	switch (params_format(params)) {
+-	case SNDRV_PCM_FORMAT_S16_LE:
+-		len = 16;
+-		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
+-		len = 24;
+-		break;
+-	case SNDRV_PCM_FORMAT_S32_LE:
+-		len = 32;
+-		break;
+-	default:
+-		dev_err(socdai->dev, "Unknown data format\n");
+-		return -EINVAL;
+-	}
+-	val |= ZX_I2S_TIMING_TS_WIDTH(ts_width) | ZX_I2S_TIMING_DATA_SIZE(len);
+-
+-	ch_num = params_channels(params);
+-	switch (ch_num) {
+-	case 1:
+-		lane = 1;
+-		chn_cfg = 2;
+-		break;
+-	case 2:
+-	case 4:
+-	case 6:
+-	case 8:
+-		lane = ch_num / 2;
+-		chn_cfg = 3;
+-		break;
+-	default:
+-		dev_err(socdai->dev, "Not support channel num %d\n", ch_num);
+-		return -EINVAL;
+-	}
+-	val |= ZX_I2S_TIMING_LANE(lane);
+-	val |= ZX_I2S_TIMING_TSCFG(chn_cfg);
+-	val |= ZX_I2S_TIMING_CHN(ch_num);
+-	writel_relaxed(val, i2s->reg_base + ZX_I2S_TIMING_CTRL);
+-
+-	if (i2s->master)
+-		ret = clk_set_rate(i2s->dai_wclk,
+-				params_rate(params) * ch_num * CLK_RAT);
+-
+-	return ret;
+-}
+-
+-static int zx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+-			  struct snd_soc_dai *dai)
+-{
+-	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
+-	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
+-	int ret = 0;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		if (capture)
+-			zx_i2s_rx_dma_en(zx_i2s->reg_base, true);
+-		else
+-			zx_i2s_tx_dma_en(zx_i2s->reg_base, true);
+-		fallthrough;
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (capture)
+-			zx_i2s_rx_en(zx_i2s->reg_base, true);
+-		else
+-			zx_i2s_tx_en(zx_i2s->reg_base, true);
+-		break;
+-
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		if (capture)
+-			zx_i2s_rx_dma_en(zx_i2s->reg_base, false);
+-		else
+-			zx_i2s_tx_dma_en(zx_i2s->reg_base, false);
+-		fallthrough;
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (capture)
+-			zx_i2s_rx_en(zx_i2s->reg_base, false);
+-		else
+-			zx_i2s_tx_en(zx_i2s->reg_base, false);
+-		break;
+-
+-	default:
+-		ret = -EINVAL;
+-		break;
+-	}
+-
+-	return ret;
+-}
+-
+-static int zx_i2s_startup(struct snd_pcm_substream *substream,
+-			  struct snd_soc_dai *dai)
+-{
+-	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
+-	int ret;
+-
+-	ret = clk_prepare_enable(zx_i2s->dai_wclk);
+-	if (ret)
+-		return ret;
+-
+-	ret = clk_prepare_enable(zx_i2s->dai_pclk);
+-	if (ret) {
+-		clk_disable_unprepare(zx_i2s->dai_wclk);
+-		return ret;
+-	}
+-
+-	return ret;
+-}
+-
+-static void zx_i2s_shutdown(struct snd_pcm_substream *substream,
+-			    struct snd_soc_dai *dai)
+-{
+-	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
+-
+-	clk_disable_unprepare(zx_i2s->dai_wclk);
+-	clk_disable_unprepare(zx_i2s->dai_pclk);
+-}
+-
+-static const struct snd_soc_dai_ops zx_i2s_dai_ops = {
+-	.trigger	= zx_i2s_trigger,
+-	.hw_params	= zx_i2s_hw_params,
+-	.set_fmt	= zx_i2s_set_fmt,
+-	.startup	= zx_i2s_startup,
+-	.shutdown	= zx_i2s_shutdown,
+-};
+-
+-static const struct snd_soc_component_driver zx_i2s_component = {
+-	.name			= "zx-i2s",
+-};
+-
+-static struct snd_soc_dai_driver zx_i2s_dai = {
+-	.name	= "zx-i2s-dai",
+-	.id	= 0,
+-	.probe	= zx_i2s_dai_probe,
+-	.playback   = {
+-		.channels_min	= 1,
+-		.channels_max	= 8,
+-		.rates		= ZX_I2S_RATES,
+-		.formats	= ZX_I2S_FMTBIT,
+-	},
+-	.capture = {
+-		.channels_min	= 1,
+-		.channels_max	= 2,
+-		.rates		= ZX_I2S_RATES,
+-		.formats	= ZX_I2S_FMTBIT,
+-	},
+-	.ops	= &zx_i2s_dai_ops,
+-};
+-
+-static int zx_i2s_probe(struct platform_device *pdev)
+-{
+-	struct resource *res;
+-	struct zx_i2s_info *zx_i2s;
+-	int ret;
+-
+-	zx_i2s = devm_kzalloc(&pdev->dev, sizeof(*zx_i2s), GFP_KERNEL);
+-	if (!zx_i2s)
+-		return -ENOMEM;
+-
+-	zx_i2s->dai_wclk = devm_clk_get(&pdev->dev, "wclk");
+-	if (IS_ERR(zx_i2s->dai_wclk)) {
+-		dev_err(&pdev->dev, "Fail to get wclk\n");
+-		return PTR_ERR(zx_i2s->dai_wclk);
+-	}
+-
+-	zx_i2s->dai_pclk = devm_clk_get(&pdev->dev, "pclk");
+-	if (IS_ERR(zx_i2s->dai_pclk)) {
+-		dev_err(&pdev->dev, "Fail to get pclk\n");
+-		return PTR_ERR(zx_i2s->dai_pclk);
+-	}
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	zx_i2s->mapbase = res->start;
+-	zx_i2s->reg_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(zx_i2s->reg_base)) {
+-		dev_err(&pdev->dev, "ioremap failed!\n");
+-		return PTR_ERR(zx_i2s->reg_base);
+-	}
+-
+-	writel_relaxed(0, zx_i2s->reg_base + ZX_I2S_FIFO_CTRL);
+-	platform_set_drvdata(pdev, zx_i2s);
+-
+-	ret = devm_snd_soc_register_component(&pdev->dev, &zx_i2s_component,
+-					      &zx_i2s_dai, 1);
+-	if (ret) {
+-		dev_err(&pdev->dev, "Register DAI failed: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+-	if (ret)
+-		dev_err(&pdev->dev, "Register platform PCM failed: %d\n", ret);
+-
+-	return ret;
+-}
+-
+-static const struct of_device_id zx_i2s_dt_ids[] = {
+-	{ .compatible = "zte,zx296702-i2s", },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, zx_i2s_dt_ids);
+-
+-static struct platform_driver i2s_driver = {
+-	.probe = zx_i2s_probe,
+-	.driver = {
+-		.name = "zx-i2s",
+-		.of_match_table = zx_i2s_dt_ids,
+-	},
+-};
+-
+-module_platform_driver(i2s_driver);
+-
+-MODULE_AUTHOR("Jun Nie <jun.nie@linaro.org>");
+-MODULE_DESCRIPTION("ZTE I2S SoC DAI");
+-MODULE_LICENSE("GPL");
+diff --git a/sound/soc/zte/zx-spdif.c b/sound/soc/zte/zx-spdif.c
+deleted file mode 100644
+index b4168bd532b7..000000000000
+--- a/sound/soc/zte/zx-spdif.c
++++ /dev/null
+@@ -1,363 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (C) 2015 Linaro
+- *
+- * Author: Jun Nie <jun.nie@linaro.org>
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/device.h>
+-#include <linux/dmaengine.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/of_address.h>
+-#include <sound/asoundef.h>
+-#include <sound/core.h>
+-#include <sound/dmaengine_pcm.h>
+-#include <sound/initval.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-#include <sound/soc-dai.h>
+-
+-#define ZX_CTRL				0x04
+-#define ZX_FIFOCTRL			0x08
+-#define ZX_INT_STATUS			0x10
+-#define ZX_INT_MASK			0x14
+-#define ZX_DATA				0x18
+-#define ZX_VALID_BIT			0x1c
+-#define ZX_CH_STA_1			0x20
+-#define ZX_CH_STA_2			0x24
+-#define ZX_CH_STA_3			0x28
+-#define ZX_CH_STA_4			0x2c
+-#define ZX_CH_STA_5			0x30
+-#define ZX_CH_STA_6			0x34
+-
+-#define ZX_CTRL_MODA_16			(0 << 6)
+-#define ZX_CTRL_MODA_18			BIT(6)
+-#define ZX_CTRL_MODA_20			(2 << 6)
+-#define ZX_CTRL_MODA_24			(3 << 6)
+-#define ZX_CTRL_MODA_MASK		(3 << 6)
+-
+-#define ZX_CTRL_ENB			BIT(4)
+-#define ZX_CTRL_DNB			(0 << 4)
+-#define ZX_CTRL_ENB_MASK		BIT(4)
+-
+-#define ZX_CTRL_TX_OPEN			BIT(0)
+-#define ZX_CTRL_TX_CLOSE		(0 << 0)
+-#define ZX_CTRL_TX_MASK			BIT(0)
+-
+-#define ZX_CTRL_OPEN			(ZX_CTRL_TX_OPEN | ZX_CTRL_ENB)
+-#define ZX_CTRL_CLOSE			(ZX_CTRL_TX_CLOSE | ZX_CTRL_DNB)
+-
+-#define ZX_CTRL_DOUBLE_TRACK		(0 << 8)
+-#define ZX_CTRL_LEFT_TRACK		BIT(8)
+-#define ZX_CTRL_RIGHT_TRACK		(2 << 8)
+-#define ZX_CTRL_TRACK_MASK		(3 << 8)
+-
+-#define ZX_FIFOCTRL_TXTH_MASK		(0x1f << 8)
+-#define ZX_FIFOCTRL_TXTH(x)		(x << 8)
+-#define ZX_FIFOCTRL_TX_DMA_EN		BIT(2)
+-#define ZX_FIFOCTRL_TX_DMA_DIS		(0 << 2)
+-#define ZX_FIFOCTRL_TX_DMA_EN_MASK	BIT(2)
+-#define ZX_FIFOCTRL_TX_FIFO_RST		BIT(0)
+-#define ZX_FIFOCTRL_TX_FIFO_RST_MASK	BIT(0)
+-
+-#define ZX_VALID_DOUBLE_TRACK		(0 << 0)
+-#define ZX_VALID_LEFT_TRACK		BIT(1)
+-#define ZX_VALID_RIGHT_TRACK		(2 << 0)
+-#define ZX_VALID_TRACK_MASK		(3 << 0)
+-
+-#define ZX_SPDIF_CLK_RAT		(2 * 32)
+-
+-struct zx_spdif_info {
+-	struct snd_dmaengine_dai_dma_data	dma_data;
+-	struct clk				*dai_clk;
+-	void __iomem				*reg_base;
+-	resource_size_t				mapbase;
+-};
+-
+-static int zx_spdif_dai_probe(struct snd_soc_dai *dai)
+-{
+-	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
+-
+-	snd_soc_dai_set_drvdata(dai, zx_spdif);
+-	zx_spdif->dma_data.addr = zx_spdif->mapbase + ZX_DATA;
+-	zx_spdif->dma_data.maxburst = 8;
+-	snd_soc_dai_init_dma_data(dai, &zx_spdif->dma_data, NULL);
+-	return 0;
+-}
+-
+-static int zx_spdif_chanstats(void __iomem *base, unsigned int rate)
+-{
+-	u32 cstas1;
+-
+-	switch (rate) {
+-	case 22050:
+-		cstas1 = IEC958_AES3_CON_FS_22050;
+-		break;
+-	case 24000:
+-		cstas1 = IEC958_AES3_CON_FS_24000;
+-		break;
+-	case 32000:
+-		cstas1 = IEC958_AES3_CON_FS_32000;
+-		break;
+-	case 44100:
+-		cstas1 = IEC958_AES3_CON_FS_44100;
+-		break;
+-	case 48000:
+-		cstas1 = IEC958_AES3_CON_FS_48000;
+-		break;
+-	case 88200:
+-		cstas1 = IEC958_AES3_CON_FS_88200;
+-		break;
+-	case 96000:
+-		cstas1 = IEC958_AES3_CON_FS_96000;
+-		break;
+-	case 176400:
+-		cstas1 = IEC958_AES3_CON_FS_176400;
+-		break;
+-	case 192000:
+-		cstas1 = IEC958_AES3_CON_FS_192000;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-	cstas1 = cstas1 << 24;
+-	cstas1 |= IEC958_AES0_CON_NOT_COPYRIGHT;
+-
+-	writel_relaxed(cstas1, base + ZX_CH_STA_1);
+-	return 0;
+-}
+-
+-static int zx_spdif_hw_params(struct snd_pcm_substream *substream,
+-			      struct snd_pcm_hw_params *params,
+-			      struct snd_soc_dai *socdai)
+-{
+-	struct zx_spdif_info *zx_spdif = dev_get_drvdata(socdai->dev);
+-	struct zx_spdif_info *spdif = snd_soc_dai_get_drvdata(socdai);
+-	struct snd_dmaengine_dai_dma_data *dma_data =
+-		snd_soc_dai_get_dma_data(socdai, substream);
+-	u32 val, ch_num, rate;
+-	int ret;
+-
+-	dma_data->addr_width = params_width(params) >> 3;
+-
+-	val = readl_relaxed(zx_spdif->reg_base + ZX_CTRL);
+-	val &= ~ZX_CTRL_MODA_MASK;
+-	switch (params_format(params)) {
+-	case SNDRV_PCM_FORMAT_S16_LE:
+-		val |= ZX_CTRL_MODA_16;
+-		break;
+-
+-	case SNDRV_PCM_FORMAT_S18_3LE:
+-		val |= ZX_CTRL_MODA_18;
+-		break;
+-
+-	case SNDRV_PCM_FORMAT_S20_3LE:
+-		val |= ZX_CTRL_MODA_20;
+-		break;
+-
+-	case SNDRV_PCM_FORMAT_S24_LE:
+-		val |= ZX_CTRL_MODA_24;
+-		break;
+-	default:
+-		dev_err(socdai->dev, "Format not support!\n");
+-		return -EINVAL;
+-	}
+-
+-	ch_num = params_channels(params);
+-	if (ch_num == 2)
+-		val |= ZX_CTRL_DOUBLE_TRACK;
+-	else
+-		val |= ZX_CTRL_LEFT_TRACK;
+-	writel_relaxed(val, zx_spdif->reg_base + ZX_CTRL);
+-
+-	val = readl_relaxed(zx_spdif->reg_base + ZX_VALID_BIT);
+-	val &= ~ZX_VALID_TRACK_MASK;
+-	if (ch_num == 2)
+-		val |= ZX_VALID_DOUBLE_TRACK;
+-	else
+-		val |= ZX_VALID_RIGHT_TRACK;
+-	writel_relaxed(val, zx_spdif->reg_base + ZX_VALID_BIT);
+-
+-	rate = params_rate(params);
+-	ret = zx_spdif_chanstats(zx_spdif->reg_base, rate);
+-	if (ret)
+-		return ret;
+-	return clk_set_rate(spdif->dai_clk, rate * ch_num * ZX_SPDIF_CLK_RAT);
+-}
+-
+-static void zx_spdif_cfg_tx(void __iomem *base, int on)
+-{
+-	u32 val;
+-
+-	val = readl_relaxed(base + ZX_CTRL);
+-	val &= ~(ZX_CTRL_ENB_MASK | ZX_CTRL_TX_MASK);
+-	val |= on ? ZX_CTRL_OPEN : ZX_CTRL_CLOSE;
+-	writel_relaxed(val, base + ZX_CTRL);
+-
+-	val = readl_relaxed(base + ZX_FIFOCTRL);
+-	val &= ~ZX_FIFOCTRL_TX_DMA_EN_MASK;
+-	if (on)
+-		val |= ZX_FIFOCTRL_TX_DMA_EN;
+-	writel_relaxed(val, base + ZX_FIFOCTRL);
+-}
+-
+-static int zx_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
+-			    struct snd_soc_dai *dai)
+-{
+-	u32 val;
+-	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
+-	int  ret = 0;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		val = readl_relaxed(zx_spdif->reg_base + ZX_FIFOCTRL);
+-		val |= ZX_FIFOCTRL_TX_FIFO_RST;
+-		writel_relaxed(val, zx_spdif->reg_base + ZX_FIFOCTRL);
+-		fallthrough;
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		zx_spdif_cfg_tx(zx_spdif->reg_base, true);
+-		break;
+-
+-	case SNDRV_PCM_TRIGGER_STOP:
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		zx_spdif_cfg_tx(zx_spdif->reg_base, false);
+-		break;
+-
+-	default:
+-		ret = -EINVAL;
+-		break;
+-	}
+-
+-	return ret;
+-}
+-
+-static int zx_spdif_startup(struct snd_pcm_substream *substream,
+-			    struct snd_soc_dai *dai)
+-{
+-	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
+-
+-	return clk_prepare_enable(zx_spdif->dai_clk);
+-}
+-
+-static void zx_spdif_shutdown(struct snd_pcm_substream *substream,
+-			      struct snd_soc_dai *dai)
+-{
+-	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
+-
+-	clk_disable_unprepare(zx_spdif->dai_clk);
+-}
+-
+-#define ZX_RATES \
+-	(SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+-	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |\
+-	SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
+-
+-#define ZX_FORMAT \
+-	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE \
+-	| SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE)
+-
+-static const struct snd_soc_dai_ops zx_spdif_dai_ops = {
+-	.trigger	= zx_spdif_trigger,
+-	.startup	= zx_spdif_startup,
+-	.shutdown	= zx_spdif_shutdown,
+-	.hw_params	= zx_spdif_hw_params,
+-};
+-
+-static struct snd_soc_dai_driver zx_spdif_dai = {
+-	.name = "spdif",
+-	.id = 0,
+-	.probe = zx_spdif_dai_probe,
+-	.playback = {
+-		.channels_min = 1,
+-		.channels_max = 2,
+-		.rates = ZX_RATES,
+-		.formats = ZX_FORMAT,
+-	},
+-	.ops = &zx_spdif_dai_ops,
+-};
+-
+-static const struct snd_soc_component_driver zx_spdif_component = {
+-	.name	= "spdif",
+-};
+-
+-static void zx_spdif_dev_init(void __iomem *base)
+-{
+-	u32 val;
+-
+-	writel_relaxed(0, base + ZX_CTRL);
+-	writel_relaxed(0, base + ZX_INT_MASK);
+-	writel_relaxed(0xf, base + ZX_INT_STATUS);
+-	writel_relaxed(0x1, base + ZX_FIFOCTRL);
+-
+-	val = readl_relaxed(base + ZX_FIFOCTRL);
+-	val &= ~(ZX_FIFOCTRL_TXTH_MASK | ZX_FIFOCTRL_TX_FIFO_RST_MASK);
+-	val |= ZX_FIFOCTRL_TXTH(8);
+-	writel_relaxed(val, base + ZX_FIFOCTRL);
+-}
+-
+-static int zx_spdif_probe(struct platform_device *pdev)
+-{
+-	struct resource *res;
+-	struct zx_spdif_info *zx_spdif;
+-	int ret;
+-
+-	zx_spdif = devm_kzalloc(&pdev->dev, sizeof(*zx_spdif), GFP_KERNEL);
+-	if (!zx_spdif)
+-		return -ENOMEM;
+-
+-	zx_spdif->dai_clk = devm_clk_get(&pdev->dev, "tx");
+-	if (IS_ERR(zx_spdif->dai_clk)) {
+-		dev_err(&pdev->dev, "Fail to get clk\n");
+-		return PTR_ERR(zx_spdif->dai_clk);
+-	}
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	zx_spdif->mapbase = res->start;
+-	zx_spdif->reg_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(zx_spdif->reg_base)) {
+-		return PTR_ERR(zx_spdif->reg_base);
+-	}
+-
+-	zx_spdif_dev_init(zx_spdif->reg_base);
+-	platform_set_drvdata(pdev, zx_spdif);
+-
+-	ret = devm_snd_soc_register_component(&pdev->dev, &zx_spdif_component,
+-					 &zx_spdif_dai, 1);
+-	if (ret) {
+-		dev_err(&pdev->dev, "Register DAI failed: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+-	if (ret)
+-		dev_err(&pdev->dev, "Register platform PCM failed: %d\n", ret);
+-
+-	return ret;
+-}
+-
+-static const struct of_device_id zx_spdif_dt_ids[] = {
+-	{ .compatible = "zte,zx296702-spdif", },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, zx_spdif_dt_ids);
+-
+-static struct platform_driver spdif_driver = {
+-	.probe = zx_spdif_probe,
+-	.driver = {
+-		.name = "zx-spdif",
+-		.of_match_table = zx_spdif_dt_ids,
+-	},
+-};
+-
+-module_platform_driver(spdif_driver);
+-
+-MODULE_AUTHOR("Jun Nie <jun.nie@linaro.org>");
+-MODULE_DESCRIPTION("ZTE SPDIF SoC DAI");
+-MODULE_LICENSE("GPL");
+diff --git a/sound/soc/zte/zx-tdm.c b/sound/soc/zte/zx-tdm.c
+deleted file mode 100644
+index 4f787185d630..000000000000
+--- a/sound/soc/zte/zx-tdm.c
++++ /dev/null
+@@ -1,458 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * ZTE's TDM driver
+- *
+- * Copyright (C) 2017 ZTE Ltd
 - *
 - * Author: Baoyou Xie <baoyou.xie@linaro.org>
 - */
 -
 -#include <linux/clk.h>
--#include <linux/device.h>
--#include <linux/err.h>
--#include <linux/iopoll.h>
+-#include <linux/io.h>
+-#include <linux/mfd/syscon.h>
 -#include <linux/module.h>
--#include <linux/platform_device.h>
--#include <linux/thermal.h>
+-#include <sound/dmaengine_pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-#include <sound/soc-dai.h>
 -
--/* Power Mode: 0->low 1->high */
--#define ZX2967_THERMAL_POWER_MODE	0
--#define ZX2967_POWER_MODE_LOW		0
--#define ZX2967_POWER_MODE_HIGH		1
+-#define	REG_TIMING_CTRL		0x04
+-#define	REG_TX_FIFO_CTRL	0x0C
+-#define	REG_RX_FIFO_CTRL	0x10
+-#define REG_INT_EN		0x1C
+-#define REG_INT_STATUS		0x20
+-#define REG_DATABUF		0x24
+-#define REG_TS_MASK0		0x44
+-#define REG_PROCESS_CTRL	0x54
 -
--/* DCF Control Register */
--#define ZX2967_THERMAL_DCF		0x4
--#define ZX2967_DCF_EN			BIT(1)
--#define ZX2967_DCF_FREEZE		BIT(0)
+-#define FIFO_CTRL_TX_RST	BIT(0)
+-#define FIFO_CTRL_RX_RST	BIT(0)
+-#define DEAGULT_FIFO_THRES	GENMASK(4, 2)
 -
--/* Selection Register */
--#define ZX2967_THERMAL_SEL		0x8
+-#define FIFO_CTRL_TX_DMA_EN	BIT(1)
+-#define FIFO_CTRL_RX_DMA_EN	BIT(1)
 -
--/* Control Register */
--#define ZX2967_THERMAL_CTRL		0x10
+-#define TX_FIFO_RST_MASK	BIT(0)
+-#define RX_FIFO_RST_MASK	BIT(0)
 -
--#define ZX2967_THERMAL_READY		BIT(12)
--#define ZX2967_THERMAL_TEMP_MASK	GENMASK(11, 0)
--#define ZX2967_THERMAL_ID_MASK		0x18
--#define ZX2967_THERMAL_ID		0x10
+-#define FIFOCTRL_TX_FIFO_RST	BIT(0)
+-#define FIFOCTRL_RX_FIFO_RST	BIT(0)
 -
--#define ZX2967_GET_TEMP_TIMEOUT_US	(100 * 1024)
+-#define TXTH_MASK		GENMASK(5, 2)
+-#define RXTH_MASK		GENMASK(5, 2)
 -
--/**
-- * struct zx2967_thermal_priv - zx2967 thermal sensor private structure
-- * @tzd: struct thermal_zone_device where the sensor is registered
-- * @lock: prevents read sensor in parallel
-- * @clk_topcrm: topcrm clk structure
-- * @clk_apb: apb clk structure
-- * @regs: pointer to base address of the thermal sensor
-- * @dev: struct device pointer
+-#define FIFOCTRL_THRESHOLD(x)	((x) << 2)
+-
+-#define TIMING_MS_MASK		BIT(1)
+-/*
+- * 00: 8 clk cycles every timeslot
+- * 01: 16 clk cycles every timeslot
+- * 10: 32 clk cycles every timeslot
 - */
+-#define TIMING_SYNC_WIDTH_MASK	GENMASK(6, 5)
+-#define TIMING_WIDTH_SHIFT      5
+-#define TIMING_DEFAULT_WIDTH    0
+-#define TIMING_TS_WIDTH(x)	((x) << TIMING_WIDTH_SHIFT)
+-#define TIMING_WIDTH_FACTOR     8
 -
--struct zx2967_thermal_priv {
--	struct thermal_zone_device	*tzd;
--	struct mutex			lock;
--	struct clk			*clk_topcrm;
--	struct clk			*clk_apb;
--	void __iomem			*regs;
--	struct device			*dev;
+-#define TIMING_MASTER_MODE	BIT(21)
+-#define TIMING_LSB_FIRST	BIT(20)
+-#define TIMING_TS_NUM(x)	(((x) - 1) << 7)
+-#define TIMING_CLK_SEL_MASK	GENMASK(2, 0)
+-#define TIMING_CLK_SEL_DEF	BIT(2)
+-
+-#define PROCESS_TX_EN		BIT(0)
+-#define PROCESS_RX_EN		BIT(1)
+-#define PROCESS_TDM_EN		BIT(2)
+-#define PROCESS_DISABLE_ALL	0
+-
+-#define INT_DISABLE_ALL		0
+-#define INT_STATUS_MASK		GENMASK(6, 0)
+-
+-struct zx_tdm_info {
+-	struct snd_dmaengine_dai_dma_data	dma_playback;
+-	struct snd_dmaengine_dai_dma_data	dma_capture;
+-	resource_size_t				phy_addr;
+-	void __iomem				*regbase;
+-	struct clk				*dai_wclk;
+-	struct clk				*dai_pclk;
+-	int					master;
+-	struct device				*dev;
 -};
 -
--static int zx2967_thermal_get_temp(void *data, int *temp)
+-static inline u32 zx_tdm_readl(struct zx_tdm_info *tdm, u16 reg)
 -{
--	void __iomem *regs;
--	struct zx2967_thermal_priv *priv = data;
--	u32 val;
--	int ret;
+-	return readl_relaxed(tdm->regbase + reg);
+-}
 -
--	if (!priv->tzd)
--		return -EAGAIN;
+-static inline void zx_tdm_writel(struct zx_tdm_info *tdm, u16 reg, u32 val)
+-{
+-	writel_relaxed(val, tdm->regbase + reg);
+-}
 -
--	regs = priv->regs;
--	mutex_lock(&priv->lock);
--	writel_relaxed(ZX2967_POWER_MODE_LOW,
--		       regs + ZX2967_THERMAL_POWER_MODE);
--	writel_relaxed(ZX2967_DCF_EN, regs + ZX2967_THERMAL_DCF);
+-static void zx_tdm_tx_en(struct zx_tdm_info *tdm, bool on)
+-{
+-	unsigned long val;
 -
--	val = readl_relaxed(regs + ZX2967_THERMAL_SEL);
--	val &= ~ZX2967_THERMAL_ID_MASK;
--	val |= ZX2967_THERMAL_ID;
--	writel_relaxed(val, regs + ZX2967_THERMAL_SEL);
+-	val = zx_tdm_readl(tdm, REG_PROCESS_CTRL);
+-	if (on)
+-		val |= PROCESS_TX_EN | PROCESS_TDM_EN;
+-	else
+-		val &= ~(PROCESS_TX_EN | PROCESS_TDM_EN);
+-	zx_tdm_writel(tdm, REG_PROCESS_CTRL, val);
+-}
 -
--	/*
--	 * Must wait for a while, surely it's a bit odd.
--	 * otherwise temperature value we got has a few deviation, even if
--	 * the THERMAL_READY bit is set.
--	 */
--	usleep_range(100, 300);
--	ret = readx_poll_timeout(readl, regs + ZX2967_THERMAL_CTRL,
--				 val, val & ZX2967_THERMAL_READY, 300,
--				 ZX2967_GET_TEMP_TIMEOUT_US);
--	if (ret) {
--		dev_err(priv->dev, "Thermal sensor data timeout\n");
--		goto unlock;
+-static void zx_tdm_rx_en(struct zx_tdm_info *tdm, bool on)
+-{
+-	unsigned long val;
+-
+-	val = zx_tdm_readl(tdm, REG_PROCESS_CTRL);
+-	if (on)
+-		val |= PROCESS_RX_EN | PROCESS_TDM_EN;
+-	else
+-		val &= ~(PROCESS_RX_EN | PROCESS_TDM_EN);
+-	zx_tdm_writel(tdm, REG_PROCESS_CTRL, val);
+-}
+-
+-static void zx_tdm_tx_dma_en(struct zx_tdm_info *tdm, bool on)
+-{
+-	unsigned long val;
+-
+-	val = zx_tdm_readl(tdm, REG_TX_FIFO_CTRL);
+-	val |= FIFO_CTRL_TX_RST | DEAGULT_FIFO_THRES;
+-	if (on)
+-		val |= FIFO_CTRL_TX_DMA_EN;
+-	else
+-		val &= ~FIFO_CTRL_TX_DMA_EN;
+-	zx_tdm_writel(tdm, REG_TX_FIFO_CTRL, val);
+-}
+-
+-static void zx_tdm_rx_dma_en(struct zx_tdm_info *tdm, bool on)
+-{
+-	unsigned long val;
+-
+-	val = zx_tdm_readl(tdm, REG_RX_FIFO_CTRL);
+-	val |= FIFO_CTRL_RX_RST | DEAGULT_FIFO_THRES;
+-	if (on)
+-		val |= FIFO_CTRL_RX_DMA_EN;
+-	else
+-		val &= ~FIFO_CTRL_RX_DMA_EN;
+-	zx_tdm_writel(tdm, REG_RX_FIFO_CTRL, val);
+-}
+-
+-#define ZX_TDM_RATES	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000)
+-
+-#define ZX_TDM_FMTBIT \
+-	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_MU_LAW | \
+-	SNDRV_PCM_FMTBIT_A_LAW)
+-
+-static int zx_tdm_dai_probe(struct snd_soc_dai *dai)
+-{
+-	struct zx_tdm_info *zx_tdm = dev_get_drvdata(dai->dev);
+-
+-	snd_soc_dai_set_drvdata(dai, zx_tdm);
+-	zx_tdm->dma_playback.addr = zx_tdm->phy_addr + REG_DATABUF;
+-	zx_tdm->dma_playback.maxburst = 16;
+-	zx_tdm->dma_capture.addr = zx_tdm->phy_addr + REG_DATABUF;
+-	zx_tdm->dma_capture.maxburst = 16;
+-	snd_soc_dai_init_dma_data(dai, &zx_tdm->dma_playback,
+-				  &zx_tdm->dma_capture);
+-	return 0;
+-}
+-
+-static int zx_tdm_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+-{
+-	struct zx_tdm_info *tdm = snd_soc_dai_get_drvdata(cpu_dai);
+-	unsigned long val;
+-
+-	val = zx_tdm_readl(tdm, REG_TIMING_CTRL);
+-	val &= ~(TIMING_SYNC_WIDTH_MASK | TIMING_MS_MASK);
+-	val |= TIMING_DEFAULT_WIDTH << TIMING_WIDTH_SHIFT;
+-
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		tdm->master = 1;
+-		val |= TIMING_MASTER_MODE;
+-		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-		tdm->master = 0;
+-		val &= ~TIMING_MASTER_MODE;
+-		break;
+-	default:
+-		dev_err(cpu_dai->dev, "Unknown master/slave format\n");
+-		return -EINVAL;
 -	}
 -
--	writel_relaxed(ZX2967_DCF_FREEZE | ZX2967_DCF_EN,
--		       regs + ZX2967_THERMAL_DCF);
--	val = readl_relaxed(regs + ZX2967_THERMAL_CTRL)
--			 & ZX2967_THERMAL_TEMP_MASK;
--	writel_relaxed(ZX2967_POWER_MODE_HIGH,
--		       regs + ZX2967_THERMAL_POWER_MODE);
 -
--	/*
--	 * Calculate temperature
--	 * In dts, slope is multiplied by 1000.
--	 */
--	*temp = DIV_ROUND_CLOSEST(((s32)val + priv->tzd->tzp->offset) * 1000,
--				  priv->tzd->tzp->slope);
+-	zx_tdm_writel(tdm, REG_TIMING_CTRL, val);
 -
--unlock:
--	mutex_unlock(&priv->lock);
+-	return 0;
+-}
+-
+-static int zx_tdm_hw_params(struct snd_pcm_substream *substream,
+-			    struct snd_pcm_hw_params *params,
+-			    struct snd_soc_dai *socdai)
+-{
+-	struct zx_tdm_info *tdm = snd_soc_dai_get_drvdata(socdai);
+-	struct snd_dmaengine_dai_dma_data *dma_data;
+-	unsigned int ts_width = TIMING_DEFAULT_WIDTH;
+-	unsigned int ch_num = 32;
+-	unsigned int mask = 0;
+-	unsigned int ret = 0;
+-	unsigned long val;
+-
+-	dma_data = snd_soc_dai_get_dma_data(socdai, substream);
+-	dma_data->addr_width = ch_num >> 3;
+-
+-	switch (params_format(params)) {
+-	case SNDRV_PCM_FORMAT_MU_LAW:
+-	case SNDRV_PCM_FORMAT_A_LAW:
+-	case SNDRV_PCM_FORMAT_S16_LE:
+-		ts_width = 1;
+-		break;
+-	default:
+-		dev_err(socdai->dev, "Unknown data format\n");
+-		return -EINVAL;
+-	}
+-
+-	val = zx_tdm_readl(tdm, REG_TIMING_CTRL);
+-	val |= TIMING_TS_WIDTH(ts_width) | TIMING_TS_NUM(1);
+-	zx_tdm_writel(tdm, REG_TIMING_CTRL, val);
+-	zx_tdm_writel(tdm, REG_TS_MASK0, mask);
+-
+-	if (tdm->master)
+-		ret = clk_set_rate(tdm->dai_wclk,
+-			params_rate(params) * TIMING_WIDTH_FACTOR * ch_num);
+-
 -	return ret;
 -}
 -
--static const struct thermal_zone_of_device_ops zx2967_of_thermal_ops = {
--	.get_temp = zx2967_thermal_get_temp,
--};
--
--static int zx2967_thermal_probe(struct platform_device *pdev)
+-static int zx_tdm_trigger(struct snd_pcm_substream *substream, int cmd,
+-			  struct snd_soc_dai *dai)
 -{
--	struct zx2967_thermal_priv *priv;
--	struct resource *res;
+-	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
+-	struct zx_tdm_info *zx_tdm = dev_get_drvdata(dai->dev);
+-	unsigned int val;
+-	int ret = 0;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		if (capture) {
+-			val = zx_tdm_readl(zx_tdm, REG_RX_FIFO_CTRL);
+-			val |= FIFOCTRL_RX_FIFO_RST;
+-			zx_tdm_writel(zx_tdm, REG_RX_FIFO_CTRL, val);
+-
+-			zx_tdm_rx_dma_en(zx_tdm, true);
+-		} else {
+-			val = zx_tdm_readl(zx_tdm, REG_TX_FIFO_CTRL);
+-			val |= FIFOCTRL_TX_FIFO_RST;
+-			zx_tdm_writel(zx_tdm, REG_TX_FIFO_CTRL, val);
+-
+-			zx_tdm_tx_dma_en(zx_tdm, true);
+-		}
+-		break;
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (capture)
+-			zx_tdm_rx_en(zx_tdm, true);
+-		else
+-			zx_tdm_tx_en(zx_tdm, true);
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		if (capture)
+-			zx_tdm_rx_dma_en(zx_tdm, false);
+-		else
+-			zx_tdm_tx_dma_en(zx_tdm, false);
+-		break;
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (capture)
+-			zx_tdm_rx_en(zx_tdm, false);
+-		else
+-			zx_tdm_tx_en(zx_tdm, false);
+-		break;
+-	default:
+-		ret = -EINVAL;
+-		break;
+-	}
+-
+-	return ret;
+-}
+-
+-static int zx_tdm_startup(struct snd_pcm_substream *substream,
+-			  struct snd_soc_dai *dai)
+-{
+-	struct zx_tdm_info *zx_tdm = dev_get_drvdata(dai->dev);
 -	int ret;
 -
--	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv)
+-	ret = clk_prepare_enable(zx_tdm->dai_wclk);
+-	if (ret)
+-		return ret;
+-
+-	ret = clk_prepare_enable(zx_tdm->dai_pclk);
+-	if (ret) {
+-		clk_disable_unprepare(zx_tdm->dai_wclk);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static void zx_tdm_shutdown(struct snd_pcm_substream *substream,
+-			    struct snd_soc_dai *dai)
+-{
+-	struct zx_tdm_info *zx_tdm = dev_get_drvdata(dai->dev);
+-
+-	clk_disable_unprepare(zx_tdm->dai_pclk);
+-	clk_disable_unprepare(zx_tdm->dai_wclk);
+-}
+-
+-static const struct snd_soc_dai_ops zx_tdm_dai_ops = {
+-	.trigger	= zx_tdm_trigger,
+-	.hw_params	= zx_tdm_hw_params,
+-	.set_fmt	= zx_tdm_set_fmt,
+-	.startup	= zx_tdm_startup,
+-	.shutdown	= zx_tdm_shutdown,
+-};
+-
+-static const struct snd_soc_component_driver zx_tdm_component = {
+-	.name			= "zx-tdm",
+-};
+-
+-static void zx_tdm_init_state(struct zx_tdm_info *tdm)
+-{
+-	unsigned int val;
+-
+-	zx_tdm_writel(tdm, REG_PROCESS_CTRL, PROCESS_DISABLE_ALL);
+-
+-	val = zx_tdm_readl(tdm, REG_TIMING_CTRL);
+-	val |= TIMING_LSB_FIRST;
+-	val &= ~TIMING_CLK_SEL_MASK;
+-	val |= TIMING_CLK_SEL_DEF;
+-	zx_tdm_writel(tdm, REG_TIMING_CTRL, val);
+-
+-	zx_tdm_writel(tdm, REG_INT_EN, INT_DISABLE_ALL);
+-	/*
+-	 * write INT_STATUS register to clear it.
+-	 */
+-	zx_tdm_writel(tdm, REG_INT_STATUS, INT_STATUS_MASK);
+-	zx_tdm_writel(tdm, REG_RX_FIFO_CTRL, FIFOCTRL_RX_FIFO_RST);
+-	zx_tdm_writel(tdm, REG_TX_FIFO_CTRL, FIFOCTRL_TX_FIFO_RST);
+-
+-	val = zx_tdm_readl(tdm, REG_RX_FIFO_CTRL);
+-	val &= ~(RXTH_MASK | RX_FIFO_RST_MASK);
+-	val |= FIFOCTRL_THRESHOLD(8);
+-	zx_tdm_writel(tdm, REG_RX_FIFO_CTRL, val);
+-
+-	val = zx_tdm_readl(tdm, REG_TX_FIFO_CTRL);
+-	val &= ~(TXTH_MASK | TX_FIFO_RST_MASK);
+-	val |= FIFOCTRL_THRESHOLD(8);
+-	zx_tdm_writel(tdm, REG_TX_FIFO_CTRL, val);
+-}
+-
+-static struct snd_soc_dai_driver zx_tdm_dai = {
+-	.name	= "zx-tdm-dai",
+-	.id	= 0,
+-	.probe	= zx_tdm_dai_probe,
+-	.playback   = {
+-		.channels_min	= 1,
+-		.channels_max	= 4,
+-		.rates		= ZX_TDM_RATES,
+-		.formats	= ZX_TDM_FMTBIT,
+-	},
+-	.capture = {
+-		.channels_min	= 1,
+-		.channels_max	= 4,
+-		.rates		= ZX_TDM_RATES,
+-		.formats	= ZX_TDM_FMTBIT,
+-	},
+-	.ops	= &zx_tdm_dai_ops,
+-};
+-
+-static int zx_tdm_probe(struct platform_device *pdev)
+-{
+-	struct of_phandle_args out_args;
+-	unsigned int dma_reg_offset;
+-	struct zx_tdm_info *zx_tdm;
+-	unsigned int dma_mask;
+-	struct resource *res;
+-	struct regmap *regmap_sysctrl;
+-	int ret;
+-
+-	zx_tdm = devm_kzalloc(&pdev->dev, sizeof(*zx_tdm), GFP_KERNEL);
+-	if (!zx_tdm)
 -		return -ENOMEM;
 -
+-	zx_tdm->dev = &pdev->dev;
+-
+-	zx_tdm->dai_wclk = devm_clk_get(&pdev->dev, "wclk");
+-	if (IS_ERR(zx_tdm->dai_wclk)) {
+-		dev_err(&pdev->dev, "Fail to get wclk\n");
+-		return PTR_ERR(zx_tdm->dai_wclk);
+-	}
+-
+-	zx_tdm->dai_pclk = devm_clk_get(&pdev->dev, "pclk");
+-	if (IS_ERR(zx_tdm->dai_pclk)) {
+-		dev_err(&pdev->dev, "Fail to get pclk\n");
+-		return PTR_ERR(zx_tdm->dai_pclk);
+-	}
+-
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	priv->regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(priv->regs))
--		return PTR_ERR(priv->regs);
+-	zx_tdm->phy_addr = res->start;
+-	zx_tdm->regbase = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(zx_tdm->regbase))
+-		return PTR_ERR(zx_tdm->regbase);
 -
--	priv->clk_topcrm = devm_clk_get(&pdev->dev, "topcrm");
--	if (IS_ERR(priv->clk_topcrm)) {
--		ret = PTR_ERR(priv->clk_topcrm);
--		dev_err(&pdev->dev, "failed to get topcrm clock: %d\n", ret);
+-	ret = of_parse_phandle_with_fixed_args(pdev->dev.of_node,
+-				"zte,tdm-dma-sysctrl", 2, 0, &out_args);
+-	if (ret) {
+-		dev_err(&pdev->dev, "Fail to get zte,tdm-dma-sysctrl\n");
 -		return ret;
 -	}
 -
--	ret = clk_prepare_enable(priv->clk_topcrm);
+-	dma_reg_offset = out_args.args[0];
+-	dma_mask = out_args.args[1];
+-	regmap_sysctrl = syscon_node_to_regmap(out_args.np);
+-	if (IS_ERR(regmap_sysctrl)) {
+-		of_node_put(out_args.np);
+-		return PTR_ERR(regmap_sysctrl);
+-	}
+-
+-	regmap_update_bits(regmap_sysctrl, dma_reg_offset, dma_mask, dma_mask);
+-	of_node_put(out_args.np);
+-
+-	zx_tdm_init_state(zx_tdm);
+-	platform_set_drvdata(pdev, zx_tdm);
+-
+-	ret = devm_snd_soc_register_component(&pdev->dev, &zx_tdm_component,
+-						&zx_tdm_dai, 1);
 -	if (ret) {
--		dev_err(&pdev->dev, "failed to enable topcrm clock: %d\n",
--			ret);
+-		dev_err(&pdev->dev, "Register DAI failed: %d\n", ret);
 -		return ret;
 -	}
 -
--	priv->clk_apb = devm_clk_get(&pdev->dev, "apb");
--	if (IS_ERR(priv->clk_apb)) {
--		ret = PTR_ERR(priv->clk_apb);
--		dev_err(&pdev->dev, "failed to get apb clock: %d\n", ret);
--		goto disable_clk_topcrm;
--	}
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+-	if (ret)
+-		dev_err(&pdev->dev, "Register platform PCM failed: %d\n", ret);
 -
--	ret = clk_prepare_enable(priv->clk_apb);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to enable apb clock: %d\n",
--			ret);
--		goto disable_clk_topcrm;
--	}
--
--	mutex_init(&priv->lock);
--	priv->tzd = thermal_zone_of_sensor_register(&pdev->dev,
--					0, priv, &zx2967_of_thermal_ops);
--
--	if (IS_ERR(priv->tzd)) {
--		ret = PTR_ERR(priv->tzd);
--		dev_err(&pdev->dev, "failed to register sensor: %d\n", ret);
--		goto disable_clk_all;
--	}
--
--	if (priv->tzd->tzp->slope == 0) {
--		thermal_zone_of_sensor_unregister(&pdev->dev, priv->tzd);
--		dev_err(&pdev->dev, "coefficients of sensor is invalid\n");
--		ret = -EINVAL;
--		goto disable_clk_all;
--	}
--
--	priv->dev = &pdev->dev;
--	platform_set_drvdata(pdev, priv);
--
--	return 0;
--
--disable_clk_all:
--	clk_disable_unprepare(priv->clk_apb);
--disable_clk_topcrm:
--	clk_disable_unprepare(priv->clk_topcrm);
 -	return ret;
 -}
 -
--static int zx2967_thermal_exit(struct platform_device *pdev)
--{
--	struct zx2967_thermal_priv *priv = platform_get_drvdata(pdev);
--
--	thermal_zone_of_sensor_unregister(&pdev->dev, priv->tzd);
--	clk_disable_unprepare(priv->clk_topcrm);
--	clk_disable_unprepare(priv->clk_apb);
--
--	return 0;
--}
--
--static const struct of_device_id zx2967_thermal_id_table[] = {
--	{ .compatible = "zte,zx296718-thermal" },
+-static const struct of_device_id zx_tdm_dt_ids[] = {
+-	{ .compatible = "zte,zx296718-tdm", },
 -	{}
 -};
--MODULE_DEVICE_TABLE(of, zx2967_thermal_id_table);
+-MODULE_DEVICE_TABLE(of, zx_tdm_dt_ids);
 -
--#ifdef CONFIG_PM_SLEEP
--static int zx2967_thermal_suspend(struct device *dev)
--{
--	struct zx2967_thermal_priv *priv = dev_get_drvdata(dev);
--
--	if (priv && priv->clk_topcrm)
--		clk_disable_unprepare(priv->clk_topcrm);
--
--	if (priv && priv->clk_apb)
--		clk_disable_unprepare(priv->clk_apb);
--
--	return 0;
--}
--
--static int zx2967_thermal_resume(struct device *dev)
--{
--	struct zx2967_thermal_priv *priv = dev_get_drvdata(dev);
--	int error;
--
--	error = clk_prepare_enable(priv->clk_topcrm);
--	if (error)
--		return error;
--
--	error = clk_prepare_enable(priv->clk_apb);
--	if (error) {
--		clk_disable_unprepare(priv->clk_topcrm);
--		return error;
--	}
--
--	return 0;
--}
--#endif
--
--static SIMPLE_DEV_PM_OPS(zx2967_thermal_pm_ops,
--			 zx2967_thermal_suspend, zx2967_thermal_resume);
--
--static struct platform_driver zx2967_thermal_driver = {
--	.probe = zx2967_thermal_probe,
--	.remove = zx2967_thermal_exit,
+-static struct platform_driver tdm_driver = {
+-	.probe = zx_tdm_probe,
 -	.driver = {
--		.name = "zx2967_thermal",
--		.of_match_table = zx2967_thermal_id_table,
--		.pm = &zx2967_thermal_pm_ops,
+-		.name = "zx-tdm",
+-		.of_match_table = zx_tdm_dt_ids,
 -	},
 -};
--module_platform_driver(zx2967_thermal_driver);
+-module_platform_driver(tdm_driver);
 -
 -MODULE_AUTHOR("Baoyou Xie <baoyou.xie@linaro.org>");
--MODULE_DESCRIPTION("ZTE zx2967 thermal driver");
+-MODULE_DESCRIPTION("ZTE TDM DAI driver");
 -MODULE_LICENSE("GPL v2");
 -- 
 2.29.2
