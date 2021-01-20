@@ -2,161 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8582FD2C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DCE2FD2C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388456AbhATOdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:33:25 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49210 "EHLO 1wt.eu"
+        id S2388863AbhATOeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:34:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388373AbhATOZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:25:59 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 10KEP0LH015983;
-        Wed, 20 Jan 2021 15:25:00 +0100
-Date:   Wed, 20 Jan 2021 15:25:00 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
-Subject: Re: rcutorture initrd/nolibc build on ARMv8?
-Message-ID: <20210120142500.GB15935@1wt.eu>
-References: <20210119153147.GA5083@paulmck-ThinkPad-P72>
- <20210119161901.GA14667@1wt.eu>
- <20210119170238.GA5603@C02TD0UTHF1T.local>
- <20210119171637.GA14704@1wt.eu>
- <20210119174358.GB14704@1wt.eu>
- <20210120120725.GB73692@C02TD0UTHF1T.local>
- <20210120124340.GA15935@1wt.eu>
- <20210120134511.GA77728@C02TD0UTHF1T.local>
+        id S2390615AbhATO0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:26:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF5E723356;
+        Wed, 20 Jan 2021 14:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611152753;
+        bh=sO38z1Shp3k5WOS/9clK1Hp8i/KIhKld1wlsCdJDYdE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ky4FBAf3kefU5xWirwjLfPGtsxUllqUeZJVwtf+QQSsPRC8vwH9f6PEkoV41X5OwI
+         eTU42O7f/dxQnUo4NwQ3Aoal8FFxSq+xPoKcy3bhIiY+NdDyqLzkRMgsB9gnC9/KrB
+         Z/jtm3pM1HAJd23PRH0hvOLoAURVemQZ+AvHiNKlJ2MJTszwQfQSecr62wOuAI6X5i
+         QIg+LSsPy9rzISom5HbiyTUgOMedGzb9MvCPj0Sq27SC/e+bXB9ZKJwyVSQS5Qgrpz
+         wg76Id4vAjXKSc4lzphu5DVXpCgmymCpMDNYjTBNutQSlhOpcwx2aMe0UDELfRQSNt
+         gMduUihmXQUcg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Sean Young <sean@mess.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Mans Rullgard <mans@mansr.com>
+Subject: [PATCH 1/2] media: rc: remove tango ir driver
+Date:   Wed, 20 Jan 2021 15:25:41 +0100
+Message-Id: <20210120142542.4100741-2-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210120142542.4100741-1-arnd@kernel.org>
+References: <20210120142542.4100741-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120134511.GA77728@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 01:45:11PM +0000, Mark Rutland wrote:
-> > Ah that's very interesting indeed because actually these ones should
-> > only be used when __NR_dup3 or __NR_clone are not defined. Thus I wanted
-> > to check the definitions that were reported in your error output but
-> > actually what was needed was to figure whether the correct ones were
-> > present, and they are, here on my machine (and yes I agree that in this
-> > case the dup2/fork above are bofus):
-> 
-> The issue is that even if a function is unused, the compiler still has
-> to parse and compile the code, so where __NR_dup2 is not defined, we'll
-> get a build error for:
-> 
-> static __attribute__((unused))
-> int sys_dup2(int old, int new)
-> {
->        return my_syscall2(__NR_dup2, old, new);
-> }
+From: Arnd Bergmann <arnd@arndb.de>
 
-For sure but this is supposed to be used only when __NR_dup3 is not
-defined. Ah now I understand where my mistake is: after it built
-successfully for me I inspected the most recent tree which has these
-in place. Sorry for being stupid!
+The tango platform is getting removed, so the driver is no
+longer needed.
 
-In my local tree it's defined like this:
+Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Cc: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/media/rc/Kconfig    |  10 --
+ drivers/media/rc/Makefile   |   1 -
+ drivers/media/rc/tango-ir.c | 267 ------------------------------------
+ 3 files changed, 278 deletions(-)
+ delete mode 100644 drivers/media/rc/tango-ir.c
 
- static __attribute__((unused))
- int sys_dup2(int old, int new)
- {
-#ifdef __NR_dup3
-       return my_syscall3(__NR_dup3, old, new, 0);
-#else
-       return my_syscall2(__NR_dup2, old, new);
-#endif
- }
+diff --git a/drivers/media/rc/Kconfig b/drivers/media/rc/Kconfig
+index 2c0ee2e5b446..39bc75cc1848 100644
+--- a/drivers/media/rc/Kconfig
++++ b/drivers/media/rc/Kconfig
+@@ -497,16 +497,6 @@ config IR_SIR
+ 	   To compile this driver as a module, choose M here: the module will
+ 	   be called sir-ir.
+ 
+-config IR_TANGO
+-	tristate "Sigma Designs SMP86xx IR decoder"
+-	depends on RC_CORE
+-	depends on ARCH_TANGO || COMPILE_TEST
+-	help
+-	   Adds support for the HW IR decoder embedded on Sigma Designs
+-	   Tango-based systems (SMP86xx, SMP87xx).
+-	   The HW decoder supports NEC, RC-5, RC-6 IR protocols.
+-	   When compiled as a module, look for tango-ir.
+-
+ config RC_XBOX_DVD
+ 	tristate "Xbox DVD Movie Playback Kit"
+ 	depends on RC_CORE
+diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
+index 5bb2932ab119..f46a72071a7b 100644
+--- a/drivers/media/rc/Makefile
++++ b/drivers/media/rc/Makefile
+@@ -48,6 +48,5 @@ obj-$(CONFIG_IR_SERIAL) += serial_ir.o
+ obj-$(CONFIG_IR_SIR) += sir_ir.o
+ obj-$(CONFIG_IR_MTK) += mtk-cir.o
+ obj-$(CONFIG_IR_ZX) += zx-irdec.o
+-obj-$(CONFIG_IR_TANGO) += tango-ir.o
+ obj-$(CONFIG_RC_XBOX_DVD) += xbox_remote.o
+ obj-$(CONFIG_IR_TOY) += ir_toy.o
+diff --git a/drivers/media/rc/tango-ir.c b/drivers/media/rc/tango-ir.c
+deleted file mode 100644
+index b8eb5bc4d9be..000000000000
+--- a/drivers/media/rc/tango-ir.c
++++ /dev/null
+@@ -1,267 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Copyright (C) 2015 Mans Rullgard <mans@mansr.com>
+- */
+-
+-#include <linux/input.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/interrupt.h>
+-#include <linux/io.h>
+-#include <linux/clk.h>
+-#include <linux/of.h>
+-#include <media/rc-core.h>
+-
+-#define DRIVER_NAME "tango-ir"
+-
+-#define IR_NEC_CTRL	0x00
+-#define IR_NEC_DATA	0x04
+-#define IR_CTRL		0x08
+-#define IR_RC5_CLK_DIV	0x0c
+-#define IR_RC5_DATA	0x10
+-#define IR_INT		0x14
+-
+-#define NEC_TIME_BASE	560
+-#define RC5_TIME_BASE	1778
+-
+-#define RC6_CTRL	0x00
+-#define RC6_CLKDIV	0x04
+-#define RC6_DATA0	0x08
+-#define RC6_DATA1	0x0c
+-#define RC6_DATA2	0x10
+-#define RC6_DATA3	0x14
+-#define RC6_DATA4	0x18
+-
+-#define RC6_CARRIER	36000
+-#define RC6_TIME_BASE	16
+-
+-#define NEC_CAP(n)	((n) << 24)
+-#define GPIO_SEL(n)	((n) << 16)
+-#define DISABLE_NEC	(BIT(4) | BIT(8))
+-#define ENABLE_RC5	(BIT(0) | BIT(9))
+-#define ENABLE_RC6	(BIT(0) | BIT(7))
+-#define ACK_IR_INT	(BIT(0) | BIT(1))
+-#define ACK_RC6_INT	(BIT(31))
+-
+-#define NEC_ANY (RC_PROTO_BIT_NEC | RC_PROTO_BIT_NECX | RC_PROTO_BIT_NEC32)
+-
+-struct tango_ir {
+-	void __iomem *rc5_base;
+-	void __iomem *rc6_base;
+-	struct rc_dev *rc;
+-	struct clk *clk;
+-};
+-
+-static void tango_ir_handle_nec(struct tango_ir *ir)
+-{
+-	u32 v, code;
+-	enum rc_proto proto;
+-
+-	v = readl_relaxed(ir->rc5_base + IR_NEC_DATA);
+-	if (!v) {
+-		rc_repeat(ir->rc);
+-		return;
+-	}
+-
+-	code = ir_nec_bytes_to_scancode(v, v >> 8, v >> 16, v >> 24, &proto);
+-	rc_keydown(ir->rc, proto, code, 0);
+-}
+-
+-static void tango_ir_handle_rc5(struct tango_ir *ir)
+-{
+-	u32 data, field, toggle, addr, cmd, code;
+-
+-	data = readl_relaxed(ir->rc5_base + IR_RC5_DATA);
+-	if (data & BIT(31))
+-		return;
+-
+-	field = data >> 12 & 1;
+-	toggle = data >> 11 & 1;
+-	addr = data >> 6 & 0x1f;
+-	cmd = (data & 0x3f) | (field ^ 1) << 6;
+-
+-	code = RC_SCANCODE_RC5(addr, cmd);
+-	rc_keydown(ir->rc, RC_PROTO_RC5, code, toggle);
+-}
+-
+-static void tango_ir_handle_rc6(struct tango_ir *ir)
+-{
+-	u32 data0, data1, toggle, mode, addr, cmd, code;
+-
+-	data0 = readl_relaxed(ir->rc6_base + RC6_DATA0);
+-	data1 = readl_relaxed(ir->rc6_base + RC6_DATA1);
+-
+-	mode = data0 >> 1 & 7;
+-	if (mode != 0)
+-		return;
+-
+-	toggle = data0 & 1;
+-	addr = data0 >> 16;
+-	cmd = data1;
+-
+-	code = RC_SCANCODE_RC6_0(addr, cmd);
+-	rc_keydown(ir->rc, RC_PROTO_RC6_0, code, toggle);
+-}
+-
+-static irqreturn_t tango_ir_irq(int irq, void *dev_id)
+-{
+-	struct tango_ir *ir = dev_id;
+-	unsigned int rc5_stat;
+-	unsigned int rc6_stat;
+-
+-	rc5_stat = readl_relaxed(ir->rc5_base + IR_INT);
+-	writel_relaxed(rc5_stat, ir->rc5_base + IR_INT);
+-
+-	rc6_stat = readl_relaxed(ir->rc6_base + RC6_CTRL);
+-	writel_relaxed(rc6_stat, ir->rc6_base + RC6_CTRL);
+-
+-	if (!(rc5_stat & 3) && !(rc6_stat & BIT(31)))
+-		return IRQ_NONE;
+-
+-	if (rc5_stat & BIT(0))
+-		tango_ir_handle_rc5(ir);
+-
+-	if (rc5_stat & BIT(1))
+-		tango_ir_handle_nec(ir);
+-
+-	if (rc6_stat & BIT(31))
+-		tango_ir_handle_rc6(ir);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static int tango_change_protocol(struct rc_dev *dev, u64 *rc_type)
+-{
+-	struct tango_ir *ir = dev->priv;
+-	u32 rc5_ctrl = DISABLE_NEC;
+-	u32 rc6_ctrl = 0;
+-
+-	if (*rc_type & NEC_ANY)
+-		rc5_ctrl = 0;
+-
+-	if (*rc_type & RC_PROTO_BIT_RC5)
+-		rc5_ctrl |= ENABLE_RC5;
+-
+-	if (*rc_type & RC_PROTO_BIT_RC6_0)
+-		rc6_ctrl = ENABLE_RC6;
+-
+-	writel_relaxed(rc5_ctrl, ir->rc5_base + IR_CTRL);
+-	writel_relaxed(rc6_ctrl, ir->rc6_base + RC6_CTRL);
+-
+-	return 0;
+-}
+-
+-static int tango_ir_probe(struct platform_device *pdev)
+-{
+-	const char *map_name = RC_MAP_TANGO;
+-	struct device *dev = &pdev->dev;
+-	struct rc_dev *rc;
+-	struct tango_ir *ir;
+-	u64 clkrate, clkdiv;
+-	int irq, err;
+-	u32 val;
+-
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
+-		return -EINVAL;
+-
+-	ir = devm_kzalloc(dev, sizeof(*ir), GFP_KERNEL);
+-	if (!ir)
+-		return -ENOMEM;
+-
+-	ir->rc5_base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(ir->rc5_base))
+-		return PTR_ERR(ir->rc5_base);
+-
+-	ir->rc6_base = devm_platform_ioremap_resource(pdev, 1);
+-	if (IS_ERR(ir->rc6_base))
+-		return PTR_ERR(ir->rc6_base);
+-
+-	ir->clk = devm_clk_get(dev, NULL);
+-	if (IS_ERR(ir->clk))
+-		return PTR_ERR(ir->clk);
+-
+-	rc = devm_rc_allocate_device(dev, RC_DRIVER_SCANCODE);
+-	if (!rc)
+-		return -ENOMEM;
+-
+-	of_property_read_string(dev->of_node, "linux,rc-map-name", &map_name);
+-
+-	rc->device_name = DRIVER_NAME;
+-	rc->driver_name = DRIVER_NAME;
+-	rc->input_phys = DRIVER_NAME "/input0";
+-	rc->map_name = map_name;
+-	rc->allowed_protocols = NEC_ANY | RC_PROTO_BIT_RC5 | RC_PROTO_BIT_RC6_0;
+-	rc->change_protocol = tango_change_protocol;
+-	rc->priv = ir;
+-	ir->rc = rc;
+-
+-	err = clk_prepare_enable(ir->clk);
+-	if (err)
+-		return err;
+-
+-	clkrate = clk_get_rate(ir->clk);
+-
+-	clkdiv = clkrate * NEC_TIME_BASE;
+-	do_div(clkdiv, 1000000);
+-
+-	val = NEC_CAP(31) | GPIO_SEL(12) | clkdiv;
+-	writel_relaxed(val, ir->rc5_base + IR_NEC_CTRL);
+-
+-	clkdiv = clkrate * RC5_TIME_BASE;
+-	do_div(clkdiv, 1000000);
+-
+-	writel_relaxed(DISABLE_NEC, ir->rc5_base + IR_CTRL);
+-	writel_relaxed(clkdiv, ir->rc5_base + IR_RC5_CLK_DIV);
+-	writel_relaxed(ACK_IR_INT, ir->rc5_base + IR_INT);
+-
+-	clkdiv = clkrate * RC6_TIME_BASE;
+-	do_div(clkdiv, RC6_CARRIER);
+-
+-	writel_relaxed(ACK_RC6_INT, ir->rc6_base + RC6_CTRL);
+-	writel_relaxed((clkdiv >> 2) << 18 | clkdiv, ir->rc6_base + RC6_CLKDIV);
+-
+-	err = devm_request_irq(dev, irq, tango_ir_irq, IRQF_SHARED,
+-			       dev_name(dev), ir);
+-	if (err)
+-		goto err_clk;
+-
+-	err = devm_rc_register_device(dev, rc);
+-	if (err)
+-		goto err_clk;
+-
+-	platform_set_drvdata(pdev, ir);
+-	return 0;
+-
+-err_clk:
+-	clk_disable_unprepare(ir->clk);
+-	return err;
+-}
+-
+-static int tango_ir_remove(struct platform_device *pdev)
+-{
+-	struct tango_ir *ir = platform_get_drvdata(pdev);
+-
+-	clk_disable_unprepare(ir->clk);
+-	return 0;
+-}
+-
+-static const struct of_device_id tango_ir_dt_ids[] = {
+-	{ .compatible = "sigma,smp8642-ir" },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, tango_ir_dt_ids);
+-
+-static struct platform_driver tango_ir_driver = {
+-	.probe	= tango_ir_probe,
+-	.remove	= tango_ir_remove,
+-	.driver	= {
+-		.name		= DRIVER_NAME,
+-		.of_match_table	= tango_ir_dt_ids,
+-	},
+-};
+-module_platform_driver(tango_ir_driver);
+-
+-MODULE_DESCRIPTION("SMP86xx IR decoder driver");
+-MODULE_AUTHOR("Mans Rullgard <mans@mansr.com>");
+-MODULE_LICENSE("GPL");
+-- 
+2.29.2
 
-I guess I fixed it in a hurry and forgot to upstream it. I hate doing
-that :-(
-
-I'm going to push an update then. On a quick glance I'm seeing that I
-addressed dup2() using dup3(), fork() using clone(), getpgrp() using
-getpgid(), and poll() using ppoll().
-
-> ... we can deal with that by always returning -ENOSYS for unimplemented
-> syscalls, e.g.
-> 
-> static __attribute__((unused))
-> int sys_dup2(int old, int new)
-> {
-> #ifdef __NR_dup2
->        return my_syscall2(__NR_dup2, old, new);
-> #else
->        return -ENOSYS;
-> #endif
-> }
-
-I didn't want to do that because that would break userland which needs
-dup2(), hence the mapping to dup3 instead:
-
-  static __attribute__((unused))
-  int sys_dup2(int old, int new)
-  {
-  #ifdef __NR_dup3
-          return my_syscall3(__NR_dup3, old, new, 0);
-  #else
-          return my_syscall2(__NR_dup2, old, new);
-  #endif
-  }
-
-> I can spin a patch fixing up all the relevant syscalls, if you'd like?
-
-I shouldn't need since these are already fixed in my tree. At first glance
-the equivalent of the following commits is missing from the kernel version:
-
-   https://github.com/wtarreau/nolibc/commit/2379f25073f906d0bad22c48566fcffee8fc9cde
-   https://github.com/wtarreau/nolibc/commit/fd5272ec2c66e6f5b195d41c9c8978f58eb74668
-   https://github.com/wtarreau/nolibc/commit/47cc42a79c92305f4f8bc02fb28628a4fdd63eaa
-   https://github.com/wtarreau/nolibc/commit/d2dc42fd614991c741dfdc8b984864fa3cf64c8e
-   https://github.com/wtarreau/nolibc/commit/800f75c13ede49097325f82a4cca3515c44a7939
-
-However I'm interested in knowing if the latest version fixes everything
-for you or not :
-
-  https://raw.githubusercontent.com/wtarreau/nolibc/master/nolibc.h
-
-> [...]
-> 
-> >   ubuntu@ubuntu:~$ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
-> >   #define __NR_clone 220
-> >   #define __NR_dup3 24
-> > 
-> > Do you have these ones with your more recent includes ? Or are these wrong
-> > again ?
-> 
-> Those are correct (and all the syscall numbers in unistd.h should be
-> correct so long as you don't erroneously set the __ARCH_WANT_* flags):
-> 
-> [mark@gravadlaks:~/src/linux]% gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include tools/include/nolibc/nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
-> #define __NR_clone 220
-> #define __NR_dup3 24
-
-OK thanks! I will retry here without setting those. I'm pretty sure I
-needed these ones to find the __NR_* values but it's possible that it
-was before I had the alternate ones and that these are finally not
-nedeed at all (which I would prefer as these are ugly).
-
-> There's still some latent issue when using nolibc (compared to using
-> glibc) where the init process never seems to exit, but that looks to be
-> orthogonal to the syscall numbering issue -- I'm currently digging into
-> that.
-
-OK! Usually for me it does as in my preinit (which uses nolibc), if I
-exit I instantly get a kernel panic. In addition if I launch it after
-boot, it immediately exits and shows no issue. But maybe you're observing
-an artefact related to something else (process session, opened FD or
-anything else maybe).
-
-I'll send an update ASAP, likely this evening.
-
-Many thanks for digging into this, and sorry for this mess, as I was
-absolutely certain it was up to date :-(
-
-Willy
