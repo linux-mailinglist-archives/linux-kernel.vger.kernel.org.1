@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125ED2FCA25
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEC42FCA42
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbhATEyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:54:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36803 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727123AbhATEyC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:54:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611118356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=V4MAmW9o9TEkOOmhJwAHh/aM9Qgr24vL7t9KpVWFRYk=;
-        b=CPGFFj5swBTf4CsKcd69nH04Y2P8Z8RlJTRidqfFRnCVL4Z6d8XMuRx2Bg/lr9sH14CgHZ
-        kq6HxyI7f32X9cGGl2mknQ0R09z2Omo/bqAOeAAdWNHCkFiG6rjvAPUfrPy1PN2HnyylBj
-        GT7x5Lv7FuS8ZLWe5ki1mtTgo0E/8YI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-XXBuItvKPXCIvTiEkUVjrA-1; Tue, 19 Jan 2021 23:52:34 -0500
-X-MC-Unique: XXBuItvKPXCIvTiEkUVjrA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3302801817;
-        Wed, 20 Jan 2021 04:52:32 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-59.pek2.redhat.com [10.72.12.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CEBE660D11;
-        Wed, 20 Jan 2021 04:52:30 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
-        david@redhat.com, bhe@redhat.com
-Subject: [PATCH v4 4/4] mm: remove unneeded local variable in free_area_init_core
-Date:   Wed, 20 Jan 2021 12:52:13 +0800
-Message-Id: <20210120045213.6571-5-bhe@redhat.com>
-In-Reply-To: <20210120045213.6571-1-bhe@redhat.com>
-References: <20210120045213.6571-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1730009AbhATFGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:06:54 -0500
+Received: from m12-16.163.com ([220.181.12.16]:51737 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729396AbhATFDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 00:03:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=r+ZDksZRf1MnJf0++J
+        5ggqDLC2RfPDG8F/RK8F0p+qU=; b=N98wc9KUA0zgJHiMd2HJYjoA2ZIY+MQc35
+        QZw/BQBGZmZkn5IZAPNuWhLpoIi5maYBzB/KY+MB4XxJxWHrP2lGWfF7vYZl8Fza
+        6a5RIqm85B5fkwkVyzBe4PC/Ts/6Jys/1jfuf/qRfmfzHdRo7fpo266zdVeBZHst
+        YxZirmlhs=
+Received: from localhost.localdomain (unknown [119.3.119.20])
+        by smtp12 (Coremail) with SMTP id EMCowAAXXI0stQdg9B3iXw--.40190S4;
+        Wed, 20 Jan 2021 12:44:31 +0800 (CST)
+From:   Pan Bian <bianpan2016@163.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] net: systemport: free dev before on error path
+Date:   Tue, 19 Jan 2021 20:44:23 -0800
+Message-Id: <20210120044423.1704-1-bianpan2016@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: EMCowAAXXI0stQdg9B3iXw--.40190S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw1UXFy8Wr4fCr4xXrWUurg_yoWDZFcE9a
+        17ZrW5Xr4ruF90van8Ar43uFyIkF4q9r1ruF9xKrW3tasrJr10y3ykZryfur47WrWxuFyx
+        GFnIvFWxC3yfKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbdWrtUUUUU==
+X-Originating-IP: [119.3.119.20]
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBzw0fclaD9yCOBgABsk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Local variable 'zone_start_pfn' is not needed since there's only
-one call site in free_area_init_core(). Let's remove it and pass
-zone->zone_start_pfn directly to init_currently_empty_zone().
+On the error path, it should goto the error handling label to free
+allocated memory rather than directly return.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Fixes: 6328a126896e ("net: systemport: Manage Wake-on-LAN clock")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
 ---
- mm/page_alloc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/broadcom/bcmsysport.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 69cf19baac12..e0df67948ace 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6923,7 +6923,6 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 	for (j = 0; j < MAX_NR_ZONES; j++) {
- 		struct zone *zone = pgdat->node_zones + j;
- 		unsigned long size, freesize, memmap_pages;
--		unsigned long zone_start_pfn = zone->zone_start_pfn;
+diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
+index b1ae9eb8f247..0404aafd5ce5 100644
+--- a/drivers/net/ethernet/broadcom/bcmsysport.c
++++ b/drivers/net/ethernet/broadcom/bcmsysport.c
+@@ -2503,8 +2503,10 @@ static int bcm_sysport_probe(struct platform_device *pdev)
+ 	priv = netdev_priv(dev);
  
- 		size = zone->spanned_pages;
- 		freesize = zone->present_pages;
-@@ -6972,7 +6971,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
+ 	priv->clk = devm_clk_get_optional(&pdev->dev, "sw_sysport");
+-	if (IS_ERR(priv->clk))
+-		return PTR_ERR(priv->clk);
++	if (IS_ERR(priv->clk)) {
++		ret = PTR_ERR(priv->clk);
++		goto err_free_netdev;
++	}
  
- 		set_pageblock_order();
- 		setup_usemap(zone);
--		init_currently_empty_zone(zone, zone_start_pfn, size);
-+		init_currently_empty_zone(zone, zone->zone_start_pfn, size);
- 		memmap_init_zone(zone);
- 	}
- }
+ 	/* Allocate number of TX rings */
+ 	priv->tx_rings = devm_kcalloc(&pdev->dev, txq,
 -- 
-2.17.2
+2.17.1
+
 
