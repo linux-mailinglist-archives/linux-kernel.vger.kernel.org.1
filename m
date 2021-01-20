@@ -2,148 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EBE2FD8C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C258C2FD8D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390320AbhATSsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731366AbhATSkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:40:35 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66749C061575;
-        Wed, 20 Jan 2021 10:39:55 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id dj23so24403701edb.13;
-        Wed, 20 Jan 2021 10:39:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DbjCwstmUaHfU0p6M3ixslMg4pkSwHqVC4Cq5uKXI7Q=;
-        b=NTIzj6S5KVkB1RWWZJup/A7oB/bzRIPDxOb3bA1giOos4rsgzam9AoBMnee3z0VDgJ
-         bWb+UMfXyYMsan8UqylWp4FjW/HAKA/xSE1RWfQayFLhoSIrPlAQ/2MBlw/CTAOYpQKf
-         vRV/PHq0zBbVwAe551yjmdykkovpUVMfokeypkQlPYEFiwPzdrZw5YZZZKoqanFfuiKZ
-         iGyIc9LKgnc+ih/4WGlfx7tMdFcdjDdvRxd4ogOk2Jz4qnL2cmoCIqEhppTLatc4Gby0
-         TmyE8n6BsPdyGKGsWSArT0hb1NhmEr+Si3u5bgyj6qf4ykp3R8w9m/TZh326odbnQBjT
-         2FPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DbjCwstmUaHfU0p6M3ixslMg4pkSwHqVC4Cq5uKXI7Q=;
-        b=NkHOczF3LXlxqy2TRCJPn+6o+C/3LL1Ecgha+8jA3Cq/g+K0DRlB1Sd/FNKODogt5i
-         GbevRIXKyf0yZOXUxXPJnLvQqRvy63JLj1gc2UndWABMk9Sjk6CITGqpE54O4aa1WyIf
-         tNdnlwLgElnNkj0fvxkCseOZLttwcEv5h/L4BhiJnhGZkG9ySn7gmawUngTCYfWB0G1h
-         0azU0adN1L+Zx+f+erB1mGktQ8MdwAo+BPNQ9UEkI3UJ2DIMqfP1WmkQtIkDLUT9uOzv
-         tghJDoCfViqMCe2EktC3Dr4h2ZTtNdbs8e6qglCP1ZqWevmxoMeWHhwifR6ONY5bgSH8
-         wFAg==
-X-Gm-Message-State: AOAM530u2Y4dfnPQdYmQo0plW5dtgDgJUKTZcdoxI71fDYHinbYtEsa8
-        i70PimUCjNlMODW9IIhAU9k=
-X-Google-Smtp-Source: ABdhPJzlUYWv2sBk1/0YdutiTnWJQFLZg8VOE7RFtYkYU8w6PhVO38kxTOanSQzfVpX5iOtF1h1m0A==
-X-Received: by 2002:aa7:cdcb:: with SMTP id h11mr8371260edw.237.1611167993530;
-        Wed, 20 Jan 2021 10:39:53 -0800 (PST)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id g25sm1488542edw.92.2021.01.20.10.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 10:39:52 -0800 (PST)
-Date:   Wed, 20 Jan 2021 20:39:50 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v5 3/7] mfd: Add MFD driver for ATC260x PMICs
-Message-ID: <20210120183950.GA867982@BV030612LT>
-References: <cover.1610534765.git.cristian.ciocaltea@gmail.com>
- <81546cf3265f51374a1b38b9e801003fd6c3e298.1610534765.git.cristian.ciocaltea@gmail.com>
- <20210120083348.GM4903@dell>
+        id S2392131AbhATSu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:50:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388578AbhATSl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:41:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C70233FA;
+        Wed, 20 Jan 2021 18:40:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611168046;
+        bh=So2hXsCPM/a1uUQ14gqh3XEUn2Ub67sRlYHmUx5ZBnU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PPGYkJ0O494qAN1VVylHGRuFEgw78KxA6AEpV+jVdxD1iP7SRb8OW3FUwWYE2+kxp
+         +P+M98lH66kU0nErafFjuARB+RXT5jS0St/UILGmC0TZ59t6CarVkJeoBoPTw5sWhr
+         bglU+5//FcGJm3ZGi3yve2Mo8M+VdEvgk8jP0DLwElsph9xmgUK9O0FECNDpuWc3Xp
+         /XWHL2fVMj8y8zqRmHerPhcFqAb1u6onlJYWpRIgrJkTO3Hj6iazIww7T01SNWmgQw
+         00/pQpVo0KXxl97SAImC+mtFWMd7Tswp1tlBLFhxU3maLoiiNocuoh0KuszqfaeHZA
+         9bDg3jXWwTEzA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 267883522B82; Wed, 20 Jan 2021 10:40:46 -0800 (PST)
+Date:   Wed, 20 Jan 2021 10:40:46 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210120184046.GE2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210120162148.1973-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210120083348.GM4903@dell>
+In-Reply-To: <20210120162148.1973-1-urezki@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 08:33:48AM +0000, Lee Jones wrote:
-> On Wed, 13 Jan 2021, Cristian Ciocaltea wrote:
+On Wed, Jan 20, 2021 at 05:21:46PM +0100, Uladzislau Rezki (Sony) wrote:
+> For a single argument we can directly request a page from a caller
+> context when a "carry page block" is run out of free spots. Instead
+> of hitting a slow path we can request an extra page by demand and
+> proceed with a fast path.
 > 
-> > Add initial support for the Actions Semi ATC260x PMICs which integrates
-> > Audio Codec, Power management, Clock generation and GPIO controller
-> > blocks.
-> > 
-
-[...]
-
-> > +	/* Initialize the hardware */
-> > +	atc260x->dev_init(atc260x);
-> > +
-> > +	ret = regmap_read(atc260x->regmap, atc260x->rev_reg, &chip_rev);
-> > +	if (ret) {
-> > +		dev_err(dev, "Failed to get chip revision\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (chip_rev > 31) {
+> A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> and that its fallback is the relatively high latency synchronize_rcu().
+> Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> to allow limited sleeping within the memory allocator.
 > 
-> Nit: If you have to respin this, please define this magic number.
+> [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+Queued all three for review and testing, thank you!
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
+>  1 file changed, 26 insertions(+), 16 deletions(-)
 > 
-
-[...]
-
-> > +static struct i2c_driver atc260x_i2c_driver = {
-> > +	.driver = {
-> > +		.name	= "atc260x",
-> > +		.of_match_table	= of_match_ptr(atc260x_i2c_of_match),
-> > +	},
-> > +	.probe		= atc260x_i2c_probe,
-> > +};
-> 
-> Nit: These spacings/line-ups just look odd.
-> 
-> Please stick to one ' ' after the '='.
-
-[...]
-
-> > +	const char *type_name;
-> > +	unsigned int rev_reg;
-> > +
-> > +	int (*dev_init)(struct atc260x *atc260x);
-> 
-> Ah, I didn't see this before.
-> 
-> Call-backs of this nature are the devil.  Please populate a struct
-> with the differentiating register addresses/values instead and always
-> call a generic deivce_init().
-
-I have implemented this, including the other 2 suggestions above, in
-the already submitted revision v6.
-
-Thanks,
-Cristi
-
-> > +};
-> > +
-> > +struct regmap_config;
-> > +
-> > +int atc260x_match_device(struct atc260x *atc260x, struct regmap_config *regmap_cfg);
-> > +int atc260x_device_probe(struct atc260x *atc260x);
-> > +
-> > +#endif /* __LINUX_MFD_ATC260X_CORE_H */
-> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index e04e336bee42..2014fb22644d 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+>  	}
+>  }
+>  
+> +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+> +// state specified by flags.  If can_alloc is true, the caller must
+> +// be schedulable and not be holding any locks or mutexes that might be
+> +// acquired by the memory allocator or anything that it might invoke.
+> +// Returns true if ptr was successfully recorded, else the caller must
+> +// use a fallback.
+>  static inline bool
+> -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> +	unsigned long *flags, void *ptr, bool can_alloc)
+>  {
+>  	struct kvfree_rcu_bulk_data *bnode;
+>  	int idx;
+>  
+> -	if (unlikely(!krcp->initialized))
+> +	*krcp = krc_this_cpu_lock(flags);
+> +	if (unlikely(!(*krcp)->initialized))
+>  		return false;
+>  
+> -	lockdep_assert_held(&krcp->lock);
+>  	idx = !!is_vmalloc_addr(ptr);
+>  
+>  	/* Check if a new block is required. */
+> -	if (!krcp->bkvhead[idx] ||
+> -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> -		bnode = get_cached_bnode(krcp);
+> -		/* Switch to emergency path. */
+> +	if (!(*krcp)->bkvhead[idx] ||
+> +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> +		bnode = get_cached_bnode(*krcp);
+> +		if (!bnode && can_alloc) {
+> +			krc_this_cpu_unlock(*krcp, *flags);
+> +			bnode = (struct kvfree_rcu_bulk_data *)
+> +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
+> +			*krcp = krc_this_cpu_lock(flags);
+> +		}
+> +
+>  		if (!bnode)
+>  			return false;
+>  
+>  		/* Initialize the new block. */
+>  		bnode->nr_records = 0;
+> -		bnode->next = krcp->bkvhead[idx];
+> +		bnode->next = (*krcp)->bkvhead[idx];
+>  
+>  		/* Attach it to the head. */
+> -		krcp->bkvhead[idx] = bnode;
+> +		(*krcp)->bkvhead[idx] = bnode;
+>  	}
+>  
+>  	/* Finally insert. */
+> -	krcp->bkvhead[idx]->records
+> -		[krcp->bkvhead[idx]->nr_records++] = ptr;
+> +	(*krcp)->bkvhead[idx]->records
+> +		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
+>  
+>  	return true;
+>  }
+> @@ -3533,8 +3546,6 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  		ptr = (unsigned long *) func;
+>  	}
+>  
+> -	krcp = krc_this_cpu_lock(&flags);
+> -
+>  	// Queue the object but don't yet schedule the batch.
+>  	if (debug_rcu_head_queue(ptr)) {
+>  		// Probable double kfree_rcu(), just leak.
+> @@ -3542,12 +3553,11 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  			  __func__, head);
+>  
+>  		// Mark as success and leave.
+> -		success = true;
+> -		goto unlock_return;
+> +		return;
+>  	}
+>  
+>  	kasan_record_aux_stack(ptr);
+> -	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+> +	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+>  	if (!success) {
+>  		run_page_cache_worker(krcp);
+>  
 > -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+> 2.20.1
+> 
