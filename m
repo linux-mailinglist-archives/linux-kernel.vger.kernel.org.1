@@ -2,113 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED222FD6B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE242FD653
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404162AbhATRQn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 12:16:43 -0500
-Received: from aposti.net ([89.234.176.197]:43934 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403932AbhATRNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:13:53 -0500
-Date:   Wed, 20 Jan 2021 16:25:16 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 1/3] drm: bridge/panel: Cleanup connector on bridge
- detach
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me, dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Message-Id: <4YQ8NQ.HNQ7IMBKVEBV2@crapouillou.net>
-In-Reply-To: <CAKMK7uGGDe8bZpeTnyCkF7g_2gC1nixOzWe4FWYXPRWi-q5y7A@mail.gmail.com>
-References: <20210120123535.40226-1-paul@crapouillou.net>
-        <20210120123535.40226-2-paul@crapouillou.net>
-        <CAKMK7uGGDe8bZpeTnyCkF7g_2gC1nixOzWe4FWYXPRWi-q5y7A@mail.gmail.com>
+        id S2404104AbhATRAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:00:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391701AbhATQ6l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:58:41 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5FC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:58:01 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id v184so3466455wma.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:58:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rpcAZMiidkdn8kgbweSucunSZNfQr7y4sBDVK9pNMyU=;
+        b=aSKdOyEfUZ7+nbgQG4Oz34S0QFBBEpe0NkmOUgkIRQmr7puRYU8XMppmMlQK5DGLFM
+         0GuKLRPRBMQvkzaw9QCBPnYJ8+Doyqjuf4weUAIPh7K2nTvy5Y9ipXkegUZc0/jbwYMN
+         Z/+ys6EhiyqdFl1caKGMEH7NMXeQT4GVAjgw0ggJJUigQcSJWPWhBUTwagRzTm3SFNUF
+         Vh7dMIiU/ZWLwWHovBCP7+kQOgS1da5mvzAOu1AlNAUshTtLvBSqJVGxkhVPe4yo++Nw
+         +gq/kzv307e98VThRr81N9MAIin6nMYoBnx1wOuKtT9u50vzlv3s0hf29boUw909vpQv
+         283Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rpcAZMiidkdn8kgbweSucunSZNfQr7y4sBDVK9pNMyU=;
+        b=Zz+fBhSTxyltjcvEtOkCeamRKm76V9VZ4XhPTdVWAjWSKuW8Je4Qj+sh3zhgMhj6gy
+         aaVedlYE/FPd0uSWlcoIIfiQmDwiLi174O4S93EKugJgVBiLYLW4vf7NRgt5MFgG7E/Y
+         wt2JMnfsG5fA9CDnOoTTAbMMwP9rxrpOCY/RY00N4rC4XypKNoAnpT3MjWLNrC9hsUaL
+         wmW9+v1Dc7E9+6n5oOR6c22Y25QtlWVgwHIXDoc/jHILKTvWygf7Y3AMIBOcsgZv+5CM
+         7IhKAZYlu77K5alx7q5fz7nW8SkxwHXa0Su+KpU4ZsK7SjyFuwEWrZnJqGUnZ2doX+ER
+         BQsg==
+X-Gm-Message-State: AOAM531XAE/WckP9xhivJ9Znw4KUsmj87Pt7whDB+PKksJuypT055T0G
+        pG6sfqBtZTvkuvxr1EdPO2sw2EYvYhhfJYZL7Gmvvg==
+X-Google-Smtp-Source: ABdhPJzk/tqIUvkT/+lRnqF2/87jws3xp9TGgijlSnku7fw8B2GOkgwDvPruEYich6TykilQINnAL5XxzzoViuhPoV4=
+X-Received: by 2002:a1c:98c6:: with SMTP id a189mr5184234wme.88.1611161879809;
+ Wed, 20 Jan 2021 08:57:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
+ <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
+ <20210113142202.GC22493@dhcp22.suse.cz> <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
+In-Reply-To: <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 20 Jan 2021 08:57:48 -0800
+Message-ID: <CAJuCfpHb6PjTJBf67BZrBwSgbavKTeDz1S5bn9msEL4k8NtbVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
+To:     Jann Horn <jannh@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
+        Tim Murray <timmurray@google.com>,
+        linux-mm <linux-mm@kvack.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 20, 2021 at 5:18 AM Jann Horn <jannh@google.com> wrote:
+>
+> On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
+> > On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
+> > > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > > >
+> > > > On 01/12, Michal Hocko wrote:
+> > > > >
+> > > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
+> > > > >
+> > > > > > What we want is the ability for one process to influence another process
+> > > > > > in order to optimize performance across the entire system while leaving
+> > > > > > the security boundary intact.
+> > > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
+> > > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
+> > > > > > and CAP_SYS_NICE for influencing process performance.
+> > > > >
+> > > > > I have to say that ptrace modes are rather obscure to me. So I cannot
+> > > > > really judge whether MODE_READ is sufficient. My understanding has
+> > > > > always been that this is requred to RO access to the address space. But
+> > > > > this operation clearly has a visible side effect. Do we have any actual
+> > > > > documentation for the existing modes?
+> > > > >
+> > > > > I would be really curious to hear from Jann and Oleg (now Cced).
+> > > >
+> > > > Can't comment, sorry. I never understood these security checks and never tried.
+> > > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
+> > > > is the difference.
+>
+> Yama in particular only does its checks on ATTACH and ignores READ,
+> that's the difference you're probably most likely to encounter on a
+> normal desktop system, since some distros turn Yama on by default.
+> Basically the idea there is that running "gdb -p $pid" or "strace -p
+> $pid" as a normal user will usually fail, but reading /proc/$pid/maps
+> still works; so you can see things like detailed memory usage
+> information and such, but you're not supposed to be able to directly
+> peek into a running SSH client and inject data into the existing SSH
+> connection, or steal the cryptographic keys for the current
+> connection, or something like that.
+>
+> > > I haven't seen a written explanation on ptrace modes but when I
+> > > consulted Jann his explanation was:
+> > >
+> > > PTRACE_MODE_READ means you can inspect metadata about processes with
+> > > the specified domain, across UID boundaries.
+> > > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
+> > > specified domain, across UID boundaries.
+> >
+> > Maybe this would be a good start to document expectations. Some more
+> > practical examples where the difference is visible would be great as
+> > well.
+>
+> Before documenting the behavior, it would be a good idea to figure out
+> what to do with perf_event_open(). That one's weird in that it only
+> requires PTRACE_MODE_READ, but actually allows you to sample stuff
+> like userspace stack and register contents (if perf_event_paranoid is
+> 1 or 2). Maybe for SELinux things (and maybe also for Yama), there
+> should be a level in between that allows fully inspecting the process
+> (for purposes like profiling) but without the ability to corrupt its
+> memory or registers or things like that. Or maybe perf_event_open()
+> should just use the ATTACH mode.
 
-
-Le mer. 20 janv. 2021 à 17:03, Daniel Vetter <daniel@ffwll.ch> a 
-écrit :
-> On Wed, Jan 20, 2021 at 1:35 PM Paul Cercueil <paul@crapouillou.net> 
-> wrote:
->> 
->>  If we don't call drm_connector_cleanup() manually in
->>  panel_bridge_detach(), the connector will be cleaned up with the 
->> other
->>  DRM objects in the call to drm_mode_config_cleanup(). However, 
->> since our
->>  drm_connector is devm-allocated, by the time 
->> drm_mode_config_cleanup()
->>  will be called, our connector will be long gone. Therefore, the
->>  connector must be cleaned up when the bridge is detached to avoid
->>  use-after-free conditions.
-> 
-> For -fixes this sounds ok, but for -next I think switching to drmm_
-> would be much better.
-
-The API would need to change to have access to the drm_device struct, 
-though. That would be quite a big patch, there are a few dozens source 
-files that use this API already.
-
-Cheers,
--Paul
-
-> 
->>  v2: Cleanup connector only if it was created
->> 
->>  Fixes: 13dfc0540a57 ("drm/bridge: Refactor out the panel wrapper 
->> from the lvds-encoder bridge.")
->>  Cc: <stable@vger.kernel.org> # 4.12+
->>  Cc: Andrzej Hajda <a.hajda@samsung.com>
->>  Cc: Neil Armstrong <narmstrong@baylibre.com>
->>  Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
->>  Cc: Jonas Karlman <jonas@kwiboo.se>
->>  Cc: Jernej Skrabec <jernej.skrabec@siol.net>
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/gpu/drm/bridge/panel.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->> 
->>  diff --git a/drivers/gpu/drm/bridge/panel.c 
->> b/drivers/gpu/drm/bridge/panel.c
->>  index 0ddc37551194..df86b0ee0549 100644
->>  --- a/drivers/gpu/drm/bridge/panel.c
->>  +++ b/drivers/gpu/drm/bridge/panel.c
->>  @@ -87,6 +87,12 @@ static int panel_bridge_attach(struct drm_bridge 
->> *bridge,
->> 
->>   static void panel_bridge_detach(struct drm_bridge *bridge)
->>   {
->>  +       struct panel_bridge *panel_bridge = 
->> drm_bridge_to_panel_bridge(bridge);
->>  +       struct drm_connector *connector = &panel_bridge->connector;
->>  +
->>  +       /* Cleanup the connector if we know it was initialized */
->>  +       if (!!panel_bridge->connector.dev)
->>  +               drm_connector_cleanup(connector);
->>   }
->> 
->>   static void panel_bridge_pre_enable(struct drm_bridge *bridge)
->>  --
->>  2.29.2
->> 
-> 
-> 
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-
-
+Thanks for additional clarifications, Jann!
+Just to clarify, the documentation I'm preparing is a man page for
+process_madvise(2) which will list the required capabilities but won't
+dive into all the security details.
+I believe the above suggestions are for documenting different PTRACE
+modes and will not be included in that man page. Maybe a separate
+document could do that but I'm definitely not qualified to write it.
