@@ -2,71 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A405E2FDBF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FC92FDC21
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725827AbhATVg1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 16:36:27 -0500
-Received: from mail-ej1-f53.google.com ([209.85.218.53]:43948 "EHLO
-        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387716AbhATVLz (ORCPT
+        id S2389322AbhATVwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729585AbhATVYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:11:55 -0500
-Received: by mail-ej1-f53.google.com with SMTP id a10so18881903ejg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:11:39 -0800 (PST)
+        Wed, 20 Jan 2021 16:24:51 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEC4C061575;
+        Wed, 20 Jan 2021 13:13:51 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id h205so36039386lfd.5;
+        Wed, 20 Jan 2021 13:13:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HM+kPSLxbcGuQtpmn+lHuIBs3kdjxoFtz28EJXxS7zg=;
+        b=Rsgpal3kAkbYt71GPypPxgpyohAY5taJJXOGXEjvFATzhq46V+v4nnelJQdHN/dTgu
+         J+wV/xKYGCbgmocmBF057xhuQXaXpzWijWXDEnG/szu6WH02JItR1kHpxmq3gmGsDdso
+         k/b97i87l3qrTyB3WAa51fnxUj8nAdDNUlBvhbYxiSUjbiIVmUOazQw65xJhKtdtlMjV
+         YyUcvEXbDTjacpSG+PI6iFL7HKdWVQu1AextIJZIGAEriMBpg4yUce3WtqHN2OZWSbqh
+         uXpRkYl7i9o3BOBUiqO4z8OhDw3tvvQOgiXwVYItUx4I/bMYLSGzP//diRg6h2eGy19z
+         mnng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6wG7hqV6sPVHeeUPWbaTayxJ/qcqM2JFqZV0LzCv3KQ=;
-        b=LVrtZCyKCW2uJ9+YO6QEO66E+beFOkIN+NeyX+TAJiHnTrbfQxCWyQfNfIqBsj3yTB
-         aVkf7D7EaYuova4R1le0XD0Y0KJsYAULIe6NXOJoAEBedfxaBMSq00KPEh9liFDS3/ld
-         V5ucXyAdk5JHcfS38rFUteYLsd2LZzDW5mq/bmuNFFqU29W/6L41fk6utDhxJOjnfrdA
-         vb8KQl/rxkaNs1lEsUFvQ1JhamdfLEDGpEgJzpo2S/vc6L0VIUn9O8Gp2RKjFPnhjZFp
-         MzuinSFumyVkVcR+uA5vX+K0tgHiQfapsHpj2oF1C5r0o9XMKNcWg1OwiAcOoE9ULBXi
-         E87Q==
-X-Gm-Message-State: AOAM530qrlYa75HvfE1DGPNOdwCsdGhdE4YIzB5fbetgxkvNHzLyk6ev
-        tx/8k7q/NheDzWcVtV/TfS9NJJRk22mfT7jLMQU=
-X-Google-Smtp-Source: ABdhPJxlsYNAg+bJnsFRhvJQAQ6oW6mwRq7g/Lf33Vqw205XfVD/jA+YftdcPOtTGP9SWichyamIAUP3SicfZvb+k7s=
-X-Received: by 2002:a17:906:3a0d:: with SMTP id z13mr7062659eje.2.1611177073961;
- Wed, 20 Jan 2021 13:11:13 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HM+kPSLxbcGuQtpmn+lHuIBs3kdjxoFtz28EJXxS7zg=;
+        b=hu1G8/cyFlZEodtF29Ho0+mQDp14/ZCsmQ/2do4sSmfP2fxfuSDe1b+Ncgc0JJLMv2
+         x3ZJocXmEnBEY8YcnCghqSq7TUhPqQio0L7ICwQd0uJiK7lw94dkDQhFVaXgA1hM3e1I
+         a7ZnEzrLjDg+nfumQWVHRJBzu/U4N3wB1mqqKAMXODBPQv2N2VeQJE6RwUwn+zDq0c/E
+         okYZU2cZYJrni6Ew8FHIDlNHZtjAHnB5KpWQrCjIcmN5HcP6oopRWP1xL7DhM5TLLWDt
+         HJy19c20ILiTEHqntYq2Xzl9m/rgAl0mnYIgOgbRudpWqhbrouHw/UBO0wejQ0Nep9UO
+         RjRQ==
+X-Gm-Message-State: AOAM532QWaEeyZOhe2OoS4sW05vKQDBgsp8WyikWwNj7FDbBM9HKjhyt
+        FcnOFnG7dj60IMTqXP9wbUvvBcLcxME=
+X-Google-Smtp-Source: ABdhPJwppQdoc95LhQkyhFMdU8KkEKCLWzXUoEZZ7CBVaMSh53NI2hFNeLQ2hmtxHzN+Vojv+KrKYw==
+X-Received: by 2002:ac2:58f2:: with SMTP id v18mr4915989lfo.623.1611177230404;
+        Wed, 20 Jan 2021 13:13:50 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id 196sm298131lfj.219.2021.01.20.13.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 13:13:49 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v5 0/3] GENPD API improvements
+Date:   Thu, 21 Jan 2021 00:12:29 +0300
+Message-Id: <20210120211232.17299-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210120131559.1971359-1-arnd@kernel.org> <20210120131559.1971359-5-arnd@kernel.org>
-In-Reply-To: <20210120131559.1971359-5-arnd@kernel.org>
-From:   Barry Song <baohua@kernel.org>
-Date:   Thu, 21 Jan 2021 10:11:02 +1300
-Message-ID: <CAGsJ_4wHw2np0AcxX0eRLzYjv=LsmhW=BwpBVW03JmSRXHyJaQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] timer: remove sirf prima driver
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午2:16写道：
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The CSR SiRF prima2/atlas platforms are getting removed, so this driver
-> is no longer needed.
->
-> Cc: Barry Song <baohua@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi,
 
-Acked-by: Barry Song <baohua@kernel.org>
+This series is a prerequisite for the power domain driver of NVIDIA Tegra
+SoCs [1]. It extends the GENPD core with a better support of performance
+states and eases linking of child/parent PDs for the PD drivers.
 
-> ---
->  drivers/clocksource/Kconfig        |   6 -
->  drivers/clocksource/Makefile       |   1 -
->  drivers/clocksource/timer-prima2.c | 242 -----------------------------
->  3 files changed, 249 deletions(-)
->  delete mode 100644 drivers/clocksource/timer-prima2.c
->
-Thanks
-Barry
+[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
+
+Changelog:
+
+v5: - Renamed genpd_xlate_performance_state() and its arguments like it
+      was requested by Ulf Hansson and Viresh Kumar in a v4 review.
+
+    - Added r-b from Ulf Hansson to "Make set_performance_state() callback
+      optional" patch.
+
+v4: - Updated the "Make set_performance_state() callback optional" patch.
+      Now the case where one of intermediate domains doesn't implement
+      the set_performance_state() callback is handled properly, thanks
+      to Viresh and Ulf for catching this drawback and suggesting the fix.
+
+    - Added more r-bs from Ulf Hansson and Viresh Kumar.
+
+v3: - Added r-b from Ulf Hansson.
+
+    - Added new patch "Make of_genpd_add_subdomain() to return -EPROBE_DEFER",
+      which was suggested by Ulf Hansson.
+
+    - Improved "Add "performance" column to debug summary" patch by
+      correcting the formatting of debug output, which had a superfluous
+      whitespace.
+
+
+Dmitry Osipenko (3):
+  PM: domains: Make set_performance_state() callback optional
+  PM: domains: Make of_genpd_add_subdomain() to return -EPROBE_DEFER
+  PM: domains: Add "performance" column to debug summary
+
+ drivers/base/power/domain.c | 54 +++++++++++++++++++++++--------------
+ 1 file changed, 34 insertions(+), 20 deletions(-)
+
+-- 
+2.29.2
+
