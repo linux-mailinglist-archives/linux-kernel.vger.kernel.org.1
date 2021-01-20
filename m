@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D58C2FCAF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F99B2FCAF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbhATGOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:14:02 -0500
-Received: from conuserg-11.nifty.com ([210.131.2.78]:25185 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728181AbhATGLb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:11:31 -0500
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 10K68VnI013544;
-        Wed, 20 Jan 2021 15:08:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 10K68VnI013544
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611122912;
-        bh=s4gVpJxfJJe/A/dUoK7kHuR6SveUAfHv8pd40gw1mj0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tANFV1JGEfWCuui6jNDgVLjrw1JX5asYrL40cDHMdmH7BNAbYIaL+zsgwLbJJwmHd
-         qkvVYRiJSrrbzY4OCy2hNznqW91FKQSNd0lO/UyWtoPLcF+J/Gu2Gc1RRVstM7ClL+
-         1dKInSrfYwuoLuvEq/sDPcBK/PuS8eTqma6mrycW2veRbJw8pIHO/edz/gAMgwr5fM
-         QIc7QjzZqK5UvMoijwyb7Y8ewJYSuRfgMTUZYhldOQ0gsdpPUJ9CyEU72XN5MavsZX
-         kIjf6ZtfGb7a/nIox1q5A+QPjNU1+Ja5IsPu/qcAjrSKT2OlLORPVtzZfNCStUPIOh
-         zizR95NJ1RJzQ==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     patches@arm.linux.org.uk
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Popov <alex.popov@linux.com>,
-        Bill Wendling <morbo@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: vdso: remove unneded extra-y addition
-Date:   Wed, 20 Jan 2021 15:08:25 +0900
-Message-Id: <20210120060825.3009321-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1727860AbhATGNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:13:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727681AbhATGKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 01:10:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E051A23158;
+        Wed, 20 Jan 2021 06:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611123008;
+        bh=oG/jzzzUs/lJ9JubbJ0uBHuqCgWajZxCe2w3uNMkur4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JEetTJljQogx5rITdbdJ6tE/b5ici8w25Y6esXwhakIQBz4l9psB0XTDspHbCTSrp
+         4GYD8mHqa25NvT0MLbTtUGKoY1ko9VmId8wShGYXnkAD615ZAWZwTyPlvE406i0xa5
+         aXxnQugndRuiKd4Y/6UzLmRosQtJRRVpjDe17/y8Ijv/EFiJE/iYpFI74ro+Q+1ive
+         ug94019ypwxG7G0mas0/BOFVZc/oqRwJlm5Z5Hy2gy4yFLhhhgb/CUPDHA4TMEmoUv
+         FVy+eg1LgExxUcGLq24EWeXfNGqKaZ7hRSULOyf6mLrHwoudoLx7CgelubElLc9aOg
+         UvPKc38msbGRw==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id D907260591;
+        Wed, 20 Jan 2021 06:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v4] bonding: add a vlan+srcmac tx hashing option
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161112300888.30718.6036824083040046684.git-patchwork-notify@kernel.org>
+Date:   Wed, 20 Jan 2021 06:10:08 +0000
+References: <20210119010927.1191922-1-jarod@redhat.com>
+In-Reply-To: <20210119010927.1191922-1-jarod@redhat.com>
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, j.vosburgh@gmail.com,
+        vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+        kuba@kernel.org, tadavis@lbl.gov, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vdso linker script is prepocessed on demand. Adding it to 'targets'
-is enough, and line 13 of this Makefile does that. This extra-y addition
-is unneeded.
+Hello:
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-KernelVersion: v5.11-rc1
+On Mon, 18 Jan 2021 20:09:27 -0500 you wrote:
+> This comes from an end-user request, where they're running multiple VMs on
+> hosts with bonded interfaces connected to some interest switch topologies,
+> where 802.3ad isn't an option. They're currently running a proprietary
+> solution that effectively achieves load-balancing of VMs and bandwidth
+> utilization improvements with a similar form of transmission algorithm.
+> 
+> Basically, each VM has it's own vlan, so it always sends its traffic out
+> the same interface, unless that interface fails. Traffic gets split
+> between the interfaces, maintaining a consistent path, with failover still
+> available if an interface goes down.
+> 
+> [...]
 
- arch/arm/vdso/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+Here is the summary with links:
+  - [net-next,v4] bonding: add a vlan+srcmac tx hashing option
+    https://git.kernel.org/netdev/net-next/c/7b8fc0103bb5
 
-diff --git a/arch/arm/vdso/Makefile b/arch/arm/vdso/Makefile
-index b558bee0e1f6..7c9e395b77f7 100644
---- a/arch/arm/vdso/Makefile
-+++ b/arch/arm/vdso/Makefile
-@@ -23,7 +23,6 @@ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
- 	    -T
- 
- obj-$(CONFIG_VDSO) += vdso.o
--extra-$(CONFIG_VDSO) += vdso.lds
- CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
- 
- CFLAGS_REMOVE_vdso.o = -pg
--- 
-2.27.0
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
