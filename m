@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED49E2FD973
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8DD2FD901
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392086AbhATTUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        id S1728068AbhATTCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:02:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392089AbhATSut (ORCPT
+        with ESMTP id S2392045AbhATSt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:50:49 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173ACC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:48:48 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id h19so16981394qtq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:48:48 -0800 (PST)
+        Wed, 20 Jan 2021 13:49:27 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99475C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:48:42 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id w18so3772242pfu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:48:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FzoTTNnCPyrLt8K8sPUqSR8uOcEXNVFa8VbUu/a/sAw=;
-        b=W91aASl733ZLAOz8W+VMfENwcB2YPmp1GP6Wgb63CXAmhQmR6LaS/yhs84yWRvx4Bu
-         tEdoA7BJSo9Nwrrs2m6QS31O5EjD9GmwUXaBTCrERFRKu1r5nI38LH0fVaB5qanAQuDV
-         UIAhK4d6cgWnm1ymFmaBl39JuRbGYpA9zkryhYv87Q+0uWrVVoefmulSoXPIp+8pm/AC
-         KQMr9nja785KJWnwJzrIRP3FyEg9k+KQWgdSRzwUs48cKKrFmgPNmj+f+2kgP1AVnlRS
-         fX3nSufc/rPl7aK0NFNjsbxGZ31QZdzr3GKRZNS9hNde/lttH0oLCjxZKiQ6T7pvtTu/
-         wVmA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/5Cv4pHDEwpFya1ca/ZpRFyUHE65qa5G41oFQpNl5GM=;
+        b=jdVSJVKMHHUgt8ZELkdJI4HkFNZQ6l+Q0tIo6UhH7DGbLLRcbPKjW/hUUhWO0vL2oe
+         kUj4kbV0jJXfbI0ebRY83BT5r1o7FthIIkRHB0vj44nEKpGdQmZIU3Ee1bQRl+AAH7vI
+         5O1++uzkiWCST2JS0lLeFaRNNC21lxtdCKRP2mzI/m7Smugcka75qzj1s46llPrj3J87
+         SyoMVfxFz96KMbtiWCCJ1HHTJ5Dln8KOckWKDoyD1tUd1kJ6uy3iJit3n7+6WpbWSGpJ
+         QHk2CIBqqW1zSGTBUvbb5UNpsd6CrMp83lr70O//4e2AOXUJNw8F1qmiEnnwZ7aYjmOg
+         CQWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FzoTTNnCPyrLt8K8sPUqSR8uOcEXNVFa8VbUu/a/sAw=;
-        b=WuQ27ZyN4sI4J32I3DHdxs0iwWiv6nWmpSJlZZs/gJbAtI60DCJdKfkkjPolOgSn9a
-         hLE7ihnXaTD6Ncno7iSKKW91Rgvxqh90/W1L76utiPTvBS4tz0F2ELlJxrNAGTrY35FR
-         hDqnA3kZrM/X1zyBTdAp/4CEr+O+GZfLKpFLwvWzwxH5pSOlfpP1ETK3aqcT3PsU+IOK
-         oGrSjkwQ7txvSdrcI3IYIU9GAQnurOjjupbBtnCINnFmaqffZhBmuO8PtZE3dLXbklbx
-         MedX72pw51xggxF8RhKQLr9AVAPTxKbGQvcyYEG5A0eOD+GP0JcyMvr+mvYqn7P80MUu
-         tHDQ==
-X-Gm-Message-State: AOAM5322FErmUZDTtL42M1vh17uLUF62PJBxPfOCayFq8lCgkgPCnMK+
-        foA2horc1RjjqLUEQ82EadaQCg==
-X-Google-Smtp-Source: ABdhPJy5rOmfCLRTDFH2MY83BTNTodYg5uXwoV/VoN2KvO056MM5tgt/3PHObHhoV/E4xd14tpP3cA==
-X-Received: by 2002:aed:3629:: with SMTP id e38mr10150279qtb.354.1611168527314;
-        Wed, 20 Jan 2021 10:48:47 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id w8sm1769903qts.50.2021.01.20.10.48.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/5Cv4pHDEwpFya1ca/ZpRFyUHE65qa5G41oFQpNl5GM=;
+        b=lTe8f3ngStwqLgdeZxVzdtAi6P1smy3mRSRerueM5uBBrTfNaySXa34l9YSmEhaef0
+         /+katXgddsz3YnKHHFSnSQg8vqfiYqTVoXxA09BZle6ve2u0y8B0q4wcY1jUHg2zIkLB
+         K1RLSdnm2Z3BLWHwxp14FVHxxLnNjJyb/BVfFWZLhFofug7+vo3ZrsStIJnVTgu+b4l5
+         g8dH+gp9N0uEQ7fjOVs1gvd/Z/5hXUL9F8ikwBwJTxWRjWOlXY6IvqbzMJb1+2G/DLTZ
+         qWr5prQR1Ddo/1VlO1JDJwZqyCUcc2YYCB6xx3jFTXJxFYjHfhNUSoHTHPZPXJIsFu/M
+         r6cA==
+X-Gm-Message-State: AOAM533kxt0Iq9/I6zA4bEyI110raEH0uqSP+9QipWLZtKTPoD4WZHWk
+        T9ZdtJbYQ/ytc02lFvRsp21CTA==
+X-Google-Smtp-Source: ABdhPJyEQ2ymKJwR0ANDgbelj0tESM662YjzuAKu99FKpAtwQK1t8zooyZ5dMArZCGIWt8TxlBoR4g==
+X-Received: by 2002:a05:6a00:1393:b029:1b4:7938:ff1d with SMTP id t19-20020a056a001393b02901b47938ff1dmr10494530pfg.31.1611168522092;
+        Wed, 20 Jan 2021 10:48:42 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id x23sm3195933pgk.14.2021.01.20.10.48.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 10:48:46 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org
-Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/6] drivers: crypto: qce: sha: Hold back a block of data to be transferred as part of final
-Date:   Wed, 20 Jan 2021 13:48:39 -0500
-Message-Id: <20210120184843.3217775-3-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210120184843.3217775-1-thara.gopinath@linaro.org>
-References: <20210120184843.3217775-1-thara.gopinath@linaro.org>
+        Wed, 20 Jan 2021 10:48:41 -0800 (PST)
+Date:   Wed, 20 Jan 2021 11:48:39 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Al Grant <Al.Grant@arm.com>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Suzuki Poulose <Suzuki.Poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "mnissler@google.com" <mnissler@google.com>
+Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
+ tracing
+Message-ID: <20210120184839.GB708905@xps15>
+References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
+ <20201015160257.GA1450102@xps15>
+ <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
+ <20210118202354.GC464579@xps15>
+ <32216e9fa5c9ffb9df1123792d40eafb@codeaurora.org>
+ <DB7PR08MB3355E85C72492D4766F0BEFC86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DB7PR08MB3355E85C72492D4766F0BEFC86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the available data to transfer is exactly a multiple of block size, save
-the last block to be transferred in qce_ahash_final (with the last block
-bit set) if this is indeed the end of data stream. If not this saved block
-will be transferred as part of next update. If this block is not held back
-and if this is indeed the end of data stream, the digest obtained will be
-wrong since qce_ahash_final will see that rctx->buflen is 0 and return
-doing nothing which in turn means that a digest will not be copied to the
-destination result buffer.  qce_ahash_final cannot be made to alter this
-behavior and allowed to proceed if rctx->buflen is 0 because the crypto
-engine BAM does not allow for zero length transfers.
+On Tue, Jan 19, 2021 at 08:36:22AM +0000, Al Grant wrote:
+> Hi Sai,
+> 
+> > From: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+> > Hi Mathieu,
+> > 
+> > On 2021-01-19 01:53, Mathieu Poirier wrote:
+> > > On Fri, Jan 15, 2021 at 11:16:24AM +0530, Sai Prakash Ranjan wrote:
+> > >> Hello Mathieu, Suzuki
+> > >>
+> > >> On 2020-10-15 21:32, Mathieu Poirier wrote:
+> > >> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
+> > >> > > On production systems with ETMs enabled, it is preferred to
+> > >> > > exclude kernel mode(NS EL1) tracing for security concerns and
+> > >> > > support only userspace(NS EL0) tracing. So provide an option via
+> > >> > > kconfig to exclude kernel mode tracing if it is required.
+> > >> > > This config is disabled by default and would not affect the
+> > >> > > current configuration which has both kernel and userspace tracing
+> > >> > > enabled by default.
+> > >> > >
+> > >> >
+> > >> > One requires root access (or be part of a special trace group) to
+> > >> > be able to use the cs_etm PMU.  With this kind of elevated access
+> > >> > restricting tracing at EL1 provides little in terms of security.
+> > >> >
+> > >>
+> > >> Apart from the VM usecase discussed, I am told there are other
+> > >> security concerns here regarding need to exclude kernel mode tracing
+> > >> even for the privileged users/root. One such case being the ability
+> > >> to analyze cryptographic code execution since ETMs can record all
+> > >> branch instructions including timestamps in the kernel and there may
+> > >> be other cases as well which I may not be aware of and hence have
+> > >> added Denis and Mattias. Please let us know if you have any questions
+> > >> further regarding this not being a security concern.
+> > >
+> > > Even if we were to apply this patch there are many ways to compromise
+> > > a system or get the kernel to reveal important information using the
+> > > perf subsystem.  I would perfer to tackle the problem at that level
+> > > rather than concentrating on coresight.
+> > >
+> > 
+> > Sorry but I did not understand your point. We are talking about the capabilities
+> > of coresight etm tracing which has the instruction level tracing and a lot more.
+> > Perf subsystem is just the framework used for it.
+> > In other words, its not the perf subsystem which does instruction level tracing,
+> > its the coresight etm. Why the perf subsystem should be modified to lockdown
+> > kernel mode? If we were to let perf handle all the trace filtering for different
+> > exception levels, then why do we need the register settings in coresight etm
+> > driver to filter out NS EL* tracing? And more importantly, how do you suppose
+> > we handle sysfs mode of coresight tracing with perf subsystem?
+> 
+> You both have good points. Mathieu is right that this is not a CoreSight
+> issue specifically, it is a matter of kernel security policy, and other hardware
+> tracing mechanisms ought to be within its scope. There should be a general
+> "anti kernel exfiltration" config that applies to all mechanisms within
+> its scope, and we'd definitely expect that to include Intel PT as well as ETM.
+> 
+> A kernel config that forced exclude_kernel on all perf events would deal with
+> ETM and PT in one place, but miss the sysfs interface to ETM.
+> 
+> On the other hand, doing it in the ETM drivers would cover the perf and sysfs
+> interfaces to ETM, but would miss Intel PT.
+> 
+> So I think what is needed is a general config option that is both implemented
+> in perf (excluding all kernel tracing events) and by any drivers that provide
+> an alternative interface to hardware tracing events.
+>
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- drivers/crypto/qce/sha.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+I also think this is the right solution.
 
-diff --git a/drivers/crypto/qce/sha.c b/drivers/crypto/qce/sha.c
-index 08aed03e2b59..dd263c5e4dd8 100644
---- a/drivers/crypto/qce/sha.c
-+++ b/drivers/crypto/qce/sha.c
-@@ -216,6 +216,25 @@ static int qce_ahash_update(struct ahash_request *req)
+Thanks,
+Mathieu
  
- 	/* calculate how many bytes will be hashed later */
- 	hash_later = total % blocksize;
-+
-+	/*
-+	 * At this point, there is more than one block size of data.  If
-+	 * the available data to transfer is exactly a multiple of block
-+	 * size, save the last block to be transferred in qce_ahash_final
-+	 * (with the last block bit set) if this is indeed the end of data
-+	 * stream. If not this saved block will be transferred as part of
-+	 * next update. If this block is not held back and if this is
-+	 * indeed the end of data stream, the digest obtained will be wrong
-+	 * since qce_ahash_final will see that rctx->buflen is 0 and return
-+	 * doing nothing which in turn means that a digest will not be
-+	 * copied to the destination result buffer.  qce_ahash_final cannot
-+	 * be made to alter this behavior and allowed to proceed if
-+	 * rctx->buflen is 0 because the crypto engine BAM does not allow
-+	 * for zero length transfers.
-+	 */
-+	if (!hash_later)
-+		hash_later = blocksize;
-+
- 	if (hash_later) {
- 		unsigned int src_offset = req->nbytes - hash_later;
- 		scatterwalk_map_and_copy(rctx->buf, req->src, src_offset,
--- 
-2.25.1
-
+> Al
+> 
+> 
+> > 
+> > Thanks,
+> > Sai
+> > 
+> > --
+> > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> > of Code Aurora Forum, hosted by The Linux Foundation
