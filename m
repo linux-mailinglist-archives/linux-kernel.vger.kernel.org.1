@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451E02FC82D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 835C22FC82A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387407AbhATCoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:44:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
+        id S1731245AbhATCnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:43:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730085AbhATB2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730075AbhATB2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB27421D79;
-        Wed, 20 Jan 2021 01:26:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 070222250E;
+        Wed, 20 Jan 2021 01:26:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106011;
-        bh=tkRm8I8OG2GTvTEPQ7/nYssvYEKXkyiQeKqAZLNClwg=;
+        s=k20201202; t=1611106013;
+        bh=46LKZqi4rI03Ulvwlf0N0EAJL+Igftaxc2HOIZHrbhc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/vDl/e+dj9CT8G6VnO+cxst7YTFPuekdcidSb0JDW4c7KqQBp6wm07UjDDmNWlUJ
-         ESlOy7CBJwI2+aUiXFiXWXxOojUQpvI7dwWzqT/BlYZ2knK96VCrz+vqjz7YNno3yI
-         M8udPYlbjNC4SNXeYP5NFLTCqVGYZU8cEz/ZjGcuzgJI0beBD51PBNWA8NsL8+zt/x
-         THjB0tfur3VVEo7W46bvKIKQTrBbggRYgPRdC4+V+ne1X1aYDgoOchmPyKt6V5UqYE
-         yAjjTxdUY3hYz0hZTpmBDOnzatuWVg/AizQgJN2X0wNW1yNd0ymVQjSJed3tGAjDyG
-         2csso3Ra8Kfmg==
+        b=tKEjT3jz/l5tGicmISgUmFUWSDiO4T9l+ck8oLvILUVVikEcHEv2gvHLGHcxu/vOs
+         BFQs5GGSqED11o1H9pIt+K22eBXykEQ/CBFE9WSwKNFipi+YpJ2dmOjSM8sUpfTUS9
+         lbHfR2sKY/mfGY53pX2LCDYDOusrXSOifMv1F+dmRZba7vYlnD8xUNIHr6rEIwQI20
+         FO9Lp8sfuc6ge2zoTCUV6HXoqTb8IRjjRge392pRGtb69elCi/AVWaWlIXLGpwNhTn
+         r6yWEnrCfpgF1+6a3Y2D3D6M6/N3GWxdvzFYLK0YSWI6dB54f+agn/d3Wikx3KMWHu
+         WINLxlfdd6l7g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ben Skeggs <bskeggs@redhat.com>, Sasha Levin <sashal@kernel.org>,
         dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 37/45] drm/nouveau/privring: ack interrupts the same way as RM
-Date:   Tue, 19 Jan 2021 20:25:54 -0500
-Message-Id: <20210120012602.769683-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 39/45] drm/nouveau/mmu: fix vram heap sizing
+Date:   Tue, 19 Jan 2021 20:25:56 -0500
+Message-Id: <20210120012602.769683-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -43,115 +43,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit e05e06cd34f5311f677294a08b609acfbc315236 ]
-
-Whatever it is that we were doing before doesn't work on Ampere.
+[ Upstream commit add42781ad76c5ae65127bf13852a4c6b2f08849 ]
 
 Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c | 10 +++++++---
- drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c | 10 +++++++---
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c
-index 2340040942c93..1115376bc85f5 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c
-@@ -22,6 +22,7 @@
-  * Authors: Ben Skeggs
-  */
- #include "priv.h"
-+#include <subdev/timer.h>
- 
- static void
- gf100_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
-@@ -31,7 +32,6 @@ gf100_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x122124 + (i * 0x0400));
- 	u32 stat = nvkm_rd32(device, 0x122128 + (i * 0x0400));
- 	nvkm_debug(ibus, "HUB%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x122128 + (i * 0x0400), 0x00000200, 0x00000000);
- }
- 
- static void
-@@ -42,7 +42,6 @@ gf100_ibus_intr_rop(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x124124 + (i * 0x0400));
- 	u32 stat = nvkm_rd32(device, 0x124128 + (i * 0x0400));
- 	nvkm_debug(ibus, "ROP%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x124128 + (i * 0x0400), 0x00000200, 0x00000000);
- }
- 
- static void
-@@ -53,7 +52,6 @@ gf100_ibus_intr_gpc(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x128124 + (i * 0x0400));
- 	u32 stat = nvkm_rd32(device, 0x128128 + (i * 0x0400));
- 	nvkm_debug(ibus, "GPC%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x128128 + (i * 0x0400), 0x00000200, 0x00000000);
- }
- 
- void
-@@ -90,6 +88,12 @@ gf100_ibus_intr(struct nvkm_subdev *ibus)
- 			intr1 &= ~stat;
- 		}
- 	}
-+
-+	nvkm_mask(device, 0x121c4c, 0x0000003f, 0x00000002);
-+	nvkm_msec(device, 2000,
-+		if (!(nvkm_rd32(device, 0x121c4c) & 0x0000003f))
-+			break;
-+	);
- }
- 
- static int
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c
-index f3915f85838ed..22e487b493ad1 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c
-@@ -22,6 +22,7 @@
-  * Authors: Ben Skeggs
-  */
- #include "priv.h"
-+#include <subdev/timer.h>
- 
- static void
- gk104_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
-@@ -31,7 +32,6 @@ gk104_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x122124 + (i * 0x0800));
- 	u32 stat = nvkm_rd32(device, 0x122128 + (i * 0x0800));
- 	nvkm_debug(ibus, "HUB%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x122128 + (i * 0x0800), 0x00000200, 0x00000000);
- }
- 
- static void
-@@ -42,7 +42,6 @@ gk104_ibus_intr_rop(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x124124 + (i * 0x0800));
- 	u32 stat = nvkm_rd32(device, 0x124128 + (i * 0x0800));
- 	nvkm_debug(ibus, "ROP%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x124128 + (i * 0x0800), 0x00000200, 0x00000000);
- }
- 
- static void
-@@ -53,7 +52,6 @@ gk104_ibus_intr_gpc(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x128124 + (i * 0x0800));
- 	u32 stat = nvkm_rd32(device, 0x128128 + (i * 0x0800));
- 	nvkm_debug(ibus, "GPC%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x128128 + (i * 0x0800), 0x00000200, 0x00000000);
- }
- 
- void
-@@ -90,6 +88,12 @@ gk104_ibus_intr(struct nvkm_subdev *ibus)
- 			intr1 &= ~stat;
- 		}
- 	}
-+
-+	nvkm_mask(device, 0x12004c, 0x0000003f, 0x00000002);
-+	nvkm_msec(device, 2000,
-+		if (!(nvkm_rd32(device, 0x12004c) & 0x0000003f))
-+			break;
-+	);
- }
- 
- static int
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c
+index de91e9a261725..6d5212ae2fd57 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c
+@@ -316,9 +316,9 @@ nvkm_mmu_vram(struct nvkm_mmu *mmu)
+ {
+ 	struct nvkm_device *device = mmu->subdev.device;
+ 	struct nvkm_mm *mm = &device->fb->ram->vram;
+-	const u32 sizeN = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NORMAL);
+-	const u32 sizeU = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NOMAP);
+-	const u32 sizeM = nvkm_mm_heap_size(mm, NVKM_RAM_MM_MIXED);
++	const u64 sizeN = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NORMAL);
++	const u64 sizeU = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NOMAP);
++	const u64 sizeM = nvkm_mm_heap_size(mm, NVKM_RAM_MM_MIXED);
+ 	u8 type = NVKM_MEM_KIND * !!mmu->func->kind;
+ 	u8 heap = NVKM_MEM_VRAM;
+ 	int heapM, heapN, heapU;
 -- 
 2.27.0
 
