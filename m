@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D8E2FDC12
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E752FDC13
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387597AbhATVsa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 16:48:30 -0500
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:38686 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728093AbhATVUK (ORCPT
+        id S2387797AbhATVso convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 16:48:44 -0500
+Received: from mail-ej1-f53.google.com ([209.85.218.53]:44882 "EHLO
+        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728298AbhATVUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:20:10 -0500
-Received: by mail-ed1-f45.google.com with SMTP id s11so19630edd.5;
-        Wed, 20 Jan 2021 13:19:50 -0800 (PST)
+        Wed, 20 Jan 2021 16:20:55 -0500
+Received: by mail-ej1-f53.google.com with SMTP id w1so35493658ejf.11;
+        Wed, 20 Jan 2021 13:20:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gQLoR63MxdFl/sN+QHRKmiDqtc/4I/iS+OjzYeUG4T4=;
-        b=iAzdQEHoSIjxgH79AM37KA/wQ3lBa7itjkPvsg9YSlIv9+lhxC3dt6g827kR7niw0j
-         MwEDA/m+anVBJaZxn1s7s61T14KW7lJYEKdktuozpwVMBPCkbRiit7oLJp85eg+zpKJP
-         xiKQQIEFBxV1iSKps6NFoZRbsmatftziTjuzV/SHPDvTjeEqIC8pAtwalR/W2qA64FQh
-         vv0i2J4jSj/d0U1SCo4UP9bK9lgfvLfNk+jKAbzOVAqHD8wCV6FIqrSWfEn3DGYXLaoG
-         kvsyv+HFA3MG3T4AYCmFCpmAjhywIGSGfQuxuTFVMRR8oDzMyibdc20x1enzP7C7UF0k
-         ivUA==
-X-Gm-Message-State: AOAM531rAMdPygRUALRWYJkjuSO0zAoeHuSqxfRgs7DN2ytsvsmx/hLe
-        wLoiriudDf45AqglrbC4K54l4SIp/leF+ge+Axg=
-X-Google-Smtp-Source: ABdhPJxAWRlR7bC2f1x75xcnBaqDSB44DMDl4JHtW6plqOGSAYPHeU/lX32/l8sU54JXbxYPtBzaraTMYDdosheGj48=
-X-Received: by 2002:aa7:c981:: with SMTP id c1mr1681637edt.90.1611177564490;
- Wed, 20 Jan 2021 13:19:24 -0800 (PST)
+        bh=dnu2p3mZHWXCGNRh76zM3Siqs3hhwg+Fa2Cwzks/Mao=;
+        b=iw119R1mzNXkekKYQDUfFJxsIRN2AI2NPqsJrzWCa42OORw3tzsnBH44LIo8Ws5QIo
+         Erz1dJK1kwumimX6gaT7FQqYqjfOe/mwZQ32xUH9/JgZdUQm4lkgj+kchelMv+GVp7ES
+         /dfNQ1cGkRWBr3+CR8j23m8wryPzXPELu9VvW2Y5O5IWp9aBABpL2P4pGQ8CzQt6axw3
+         xcGP766sLo/GeBzpZvps97ewEKM1tBXhQ8oxQh0mkejd5QzIa+MDwwqIubw0Lc/+oOYq
+         Bh9XjpSDkXGhzwNoB6d2AjZrLoZ6sds+UtN4bBSpMmJjLhy/CwkRrm8jhYdXXOJndi1z
+         AlKA==
+X-Gm-Message-State: AOAM530Q1no/bIVjvSXnzOL/EeRFiKQI67tGJGyWHTa7pHDXQ3ZItbJv
+        GRJTVfPotiOGZciwNgtGeeVw4XOORsAKeKxH6hE=
+X-Google-Smtp-Source: ABdhPJza8NREUSeYaA94uOm2lYyX/Lpvtda3fbB00xiBVOT387SH9TqZcp1n0zXKaneRTNkXkBRQ2ovInIIpEqGsdU8=
+X-Received: by 2002:a17:906:b2d5:: with SMTP id cf21mr7356493ejb.387.1611177611367;
+ Wed, 20 Jan 2021 13:20:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210120161658.3820610-1-arnd@kernel.org>
-In-Reply-To: <20210120161658.3820610-1-arnd@kernel.org>
+References: <20210120154158.1860736-1-arnd@kernel.org> <20210120154158.1860736-2-arnd@kernel.org>
+In-Reply-To: <20210120154158.1860736-2-arnd@kernel.org>
 From:   Barry Song <baohua@kernel.org>
-Date:   Thu, 21 Jan 2021 10:19:13 +1300
-Message-ID: <CAGsJ_4wYCWmf4rad7eiE1hhJB2Jq+f8syph5Eu=kawSKFZFAow@mail.gmail.com>
-Subject: Re: [PATCH] spi: remove sirf prima/atlas driver
+Date:   Thu, 21 Jan 2021 10:20:00 +1300
+Message-ID: <CAGsJ_4yva8XOJ4MFdhRz=qYsAotrJkopJUU1EQL03b3-R0KPUw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] rtc: remove sirfsoc driver
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-rtc@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午5:17写道：
+Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午4:42写道：
 >
 > From: Arnd Bergmann <arnd@arndb.de>
 >
@@ -60,1334 +62,544 @@ Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午5:17写道：
 Acked-by: Barry Song <baohua@kernel.org>
 
 > ---
->  .../devicetree/bindings/spi/spi-sirf.txt      |   42 -
->  drivers/spi/Kconfig                           |    7 -
->  drivers/spi/Makefile                          |    1 -
->  drivers/spi/spi-sirf.c                        | 1236 -----------------
->  4 files changed, 1286 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-sirf.txt
->  delete mode 100644 drivers/spi/spi-sirf.c
+>  .../bindings/rtc/sirf,prima2-sysrtc.txt       |  13 -
+>  drivers/rtc/Kconfig                           |   7 -
+>  drivers/rtc/Makefile                          |   1 -
+>  drivers/rtc/rtc-sirfsoc.c                     | 446 ------------------
+>  include/linux/rtc/sirfsoc_rtciobrg.h          |  21 -
+>  5 files changed, 488 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt
+>  delete mode 100644 drivers/rtc/rtc-sirfsoc.c
+>  delete mode 100644 include/linux/rtc/sirfsoc_rtciobrg.h
 >
-> diff --git a/Documentation/devicetree/bindings/spi/spi-sirf.txt b/Documentation/devicetree/bindings/spi/spi-sirf.txt
+> diff --git a/Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt b/Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt
 > deleted file mode 100644
-> index ddd78ff68fae..000000000000
-> --- a/Documentation/devicetree/bindings/spi/spi-sirf.txt
+> index 58885b55da21..000000000000
+> --- a/Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt
 > +++ /dev/null
-> @@ -1,42 +0,0 @@
-> -* CSR SiRFprimaII Serial Peripheral Interface
+> @@ -1,13 +0,0 @@
+> -SiRFSoC Real Time Clock
 > -
 > -Required properties:
-> -- compatible : Should be "sirf,prima2-spi", "sirf,prima2-usp"
-> -               or "sirf,atlas7-usp"
-> -- reg : Offset and length of the register set for the device
-> -- interrupts : Should contain SPI interrupt
-> -- resets: phandle to the reset controller asserting this device in
-> -          reset
-> -  See ../reset/reset.txt for details.
-> -- dmas : Must contain an entry for each entry in clock-names.
-> -  See ../dma/dma.txt for details.
-> -- dma-names : Must include the following entries:
-> -  - rx
-> -  - tx
-> -- clocks : Must contain an entry for each entry in clock-names.
-> -  See ../clocks/clock-bindings.txt for details.
-> -
-> -- #address-cells: Number of cells required to define a chip select
-> -                  address on the SPI bus. Should be set to 1.
-> -- #size-cells:    Should be zero.
-> -
-> -Optional properties:
-> -- spi-max-frequency: Specifies maximum SPI clock frequency,
-> -                     Units - Hz. Definition as per
-> -                     Documentation/devicetree/bindings/spi/spi-bus.txt
-> -- cs-gpios:     should specify GPIOs used for chipselects.
+> -- compatible: must be "sirf,prima2-sysrtc"
+> -- reg: address range of rtc register set.
+> -- interrupts: rtc alarm interrupts.
 > -
 > -Example:
-> -
-> -spi0: spi@b00d0000 {
-> -       compatible = "sirf,prima2-spi";
-> -       reg = <0xb00d0000 0x10000>;
-> -       interrupts = <15>;
-> -       dmas = <&dmac1 9>,
-> -               <&dmac1 4>;
-> -       dma-names = "rx", "tx";
-> -       #address-cells = <1>;
-> -       #size-cells = <0>;
-> -       clocks = <&clks 19>;
-> -       resets = <&rstc 26>;
-> -};
-> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-> index 74ea73a05981..855a1ee1c04c 100644
-> --- a/drivers/spi/Kconfig
-> +++ b/drivers/spi/Kconfig
-> @@ -750,13 +750,6 @@ config SPI_SIFIVE
->         help
->           This exposes the SPI controller IP from SiFive.
+> -       rtc@2000 {
+> -               compatible = "sirf,prima2-sysrtc";
+> -               reg = <0x2000 0x1000>;
+> -               interrupts = <52 53 54>;
+> -       };
+> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> index 6123f9f4fbc9..8fb9aa55ace1 100644
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -1799,13 +1799,6 @@ config RTC_DRV_IMX_SC
+>            If you say yes here you get support for the NXP i.MX System
+>            Controller RTC module.
 >
-> -config SPI_SIRF
-> -       tristate "CSR SiRFprimaII SPI controller"
-> -       depends on SIRF_DMA
-> -       select SPI_BITBANG
+> -config RTC_DRV_SIRFSOC
+> -       tristate "SiRFSOC RTC"
+> -       depends on ARCH_SIRF
 > -       help
-> -         SPI driver for CSR SiRFprimaII SoCs
+> -         Say "yes" here to support the real time clock on SiRF SOC chips.
+> -         This driver can also be built as a module called rtc-sirfsoc.
 > -
->  config SPI_SLAVE_MT27XX
->         tristate "MediaTek SPI slave device"
->         depends on ARCH_MEDIATEK || COMPILE_TEST
-> diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-> index 6fea5821662e..6c79b83d5f4a 100644
-> --- a/drivers/spi/Makefile
-> +++ b/drivers/spi/Makefile
-> @@ -105,7 +105,6 @@ obj-$(CONFIG_SPI_SH_HSPI)           += spi-sh-hspi.o
->  obj-$(CONFIG_SPI_SH_MSIOF)             += spi-sh-msiof.o
->  obj-$(CONFIG_SPI_SH_SCI)               += spi-sh-sci.o
->  obj-$(CONFIG_SPI_SIFIVE)               += spi-sifive.o
-> -obj-$(CONFIG_SPI_SIRF)         += spi-sirf.o
->  obj-$(CONFIG_SPI_SLAVE_MT27XX)          += spi-slave-mt27xx.o
->  obj-$(CONFIG_SPI_SPRD)                 += spi-sprd.o
->  obj-$(CONFIG_SPI_SPRD_ADI)             += spi-sprd-adi.o
-> diff --git a/drivers/spi/spi-sirf.c b/drivers/spi/spi-sirf.c
+>  config RTC_DRV_ST_LPC
+>         tristate "STMicroelectronics LPC RTC"
+>         depends on ARCH_STI
+> diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
+> index bb8f319b09fb..1f00896db507 100644
+> --- a/drivers/rtc/Makefile
+> +++ b/drivers/rtc/Makefile
+> @@ -154,7 +154,6 @@ obj-$(CONFIG_RTC_DRV_SA1100)        += rtc-sa1100.o
+>  obj-$(CONFIG_RTC_DRV_SC27XX)   += rtc-sc27xx.o
+>  obj-$(CONFIG_RTC_DRV_SD3078)   += rtc-sd3078.o
+>  obj-$(CONFIG_RTC_DRV_SH)       += rtc-sh.o
+> -obj-$(CONFIG_RTC_DRV_SIRFSOC)  += rtc-sirfsoc.o
+>  obj-$(CONFIG_RTC_DRV_SNVS)     += rtc-snvs.o
+>  obj-$(CONFIG_RTC_DRV_SPEAR)    += rtc-spear.o
+>  obj-$(CONFIG_RTC_DRV_STARFIRE) += rtc-starfire.o
+> diff --git a/drivers/rtc/rtc-sirfsoc.c b/drivers/rtc/rtc-sirfsoc.c
 > deleted file mode 100644
-> index 8419e6722e17..000000000000
-> --- a/drivers/spi/spi-sirf.c
+> index 03a6cca23201..000000000000
+> --- a/drivers/rtc/rtc-sirfsoc.c
 > +++ /dev/null
-> @@ -1,1236 +0,0 @@
+> @@ -1,446 +0,0 @@
 > -// SPDX-License-Identifier: GPL-2.0-or-later
 > -/*
-> - * SPI bus driver for CSR SiRFprimaII
+> - * SiRFSoC Real Time Clock interface for Linux
 > - *
-> - * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
+> - * Copyright (c) 2013 Cambridge Silicon Radio Limited, a CSR plc group company.
 > - */
 > -
 > -#include <linux/module.h>
-> -#include <linux/kernel.h>
+> -#include <linux/err.h>
+> -#include <linux/rtc.h>
+> -#include <linux/platform_device.h>
 > -#include <linux/slab.h>
-> -#include <linux/clk.h>
-> -#include <linux/completion.h>
-> -#include <linux/interrupt.h>
 > -#include <linux/io.h>
 > -#include <linux/of.h>
-> -#include <linux/bitops.h>
-> -#include <linux/err.h>
-> -#include <linux/platform_device.h>
-> -#include <linux/of_gpio.h>
-> -#include <linux/spi/spi.h>
-> -#include <linux/spi/spi_bitbang.h>
-> -#include <linux/dmaengine.h>
-> -#include <linux/dma-direction.h>
-> -#include <linux/dma-mapping.h>
-> -#include <linux/reset.h>
+> -#include <linux/regmap.h>
+> -#include <linux/rtc/sirfsoc_rtciobrg.h>
 > -
-> -#define DRIVER_NAME "sirfsoc_spi"
-> -/* SPI CTRL register defines */
-> -#define SIRFSOC_SPI_SLV_MODE           BIT(16)
-> -#define SIRFSOC_SPI_CMD_MODE           BIT(17)
-> -#define SIRFSOC_SPI_CS_IO_OUT          BIT(18)
-> -#define SIRFSOC_SPI_CS_IO_MODE         BIT(19)
-> -#define SIRFSOC_SPI_CLK_IDLE_STAT      BIT(20)
-> -#define SIRFSOC_SPI_CS_IDLE_STAT       BIT(21)
-> -#define SIRFSOC_SPI_TRAN_MSB           BIT(22)
-> -#define SIRFSOC_SPI_DRV_POS_EDGE       BIT(23)
-> -#define SIRFSOC_SPI_CS_HOLD_TIME       BIT(24)
-> -#define SIRFSOC_SPI_CLK_SAMPLE_MODE    BIT(25)
-> -#define SIRFSOC_SPI_TRAN_DAT_FORMAT_8  (0 << 26)
-> -#define SIRFSOC_SPI_TRAN_DAT_FORMAT_12 (1 << 26)
-> -#define SIRFSOC_SPI_TRAN_DAT_FORMAT_16 (2 << 26)
-> -#define SIRFSOC_SPI_TRAN_DAT_FORMAT_32 (3 << 26)
-> -#define SIRFSOC_SPI_CMD_BYTE_NUM(x)    ((x & 3) << 28)
-> -#define SIRFSOC_SPI_ENA_AUTO_CLR       BIT(30)
-> -#define SIRFSOC_SPI_MUL_DAT_MODE       BIT(31)
 > -
-> -/* Interrupt Enable */
-> -#define SIRFSOC_SPI_RX_DONE_INT_EN     BIT(0)
-> -#define SIRFSOC_SPI_TX_DONE_INT_EN     BIT(1)
-> -#define SIRFSOC_SPI_RX_OFLOW_INT_EN    BIT(2)
-> -#define SIRFSOC_SPI_TX_UFLOW_INT_EN    BIT(3)
-> -#define SIRFSOC_SPI_RX_IO_DMA_INT_EN   BIT(4)
-> -#define SIRFSOC_SPI_TX_IO_DMA_INT_EN   BIT(5)
-> -#define SIRFSOC_SPI_RXFIFO_FULL_INT_EN BIT(6)
-> -#define SIRFSOC_SPI_TXFIFO_EMPTY_INT_EN        BIT(7)
-> -#define SIRFSOC_SPI_RXFIFO_THD_INT_EN  BIT(8)
-> -#define SIRFSOC_SPI_TXFIFO_THD_INT_EN  BIT(9)
-> -#define SIRFSOC_SPI_FRM_END_INT_EN     BIT(10)
+> -#define RTC_CN                 0x00
+> -#define RTC_ALARM0             0x04
+> -#define RTC_ALARM1             0x18
+> -#define RTC_STATUS             0x08
+> -#define RTC_SW_VALUE            0x40
+> -#define SIRFSOC_RTC_AL1E       (1<<6)
+> -#define SIRFSOC_RTC_AL1                (1<<4)
+> -#define SIRFSOC_RTC_HZE                (1<<3)
+> -#define SIRFSOC_RTC_AL0E       (1<<2)
+> -#define SIRFSOC_RTC_HZ         (1<<1)
+> -#define SIRFSOC_RTC_AL0                (1<<0)
+> -#define RTC_DIV                        0x0c
+> -#define RTC_DEEP_CTRL          0x14
+> -#define RTC_CLOCK_SWITCH       0x1c
+> -#define SIRFSOC_RTC_CLK                0x03    /* others are reserved */
 > -
-> -/* Interrupt status */
-> -#define SIRFSOC_SPI_RX_DONE            BIT(0)
-> -#define SIRFSOC_SPI_TX_DONE            BIT(1)
-> -#define SIRFSOC_SPI_RX_OFLOW           BIT(2)
-> -#define SIRFSOC_SPI_TX_UFLOW           BIT(3)
-> -#define SIRFSOC_SPI_RX_IO_DMA          BIT(4)
-> -#define SIRFSOC_SPI_RX_FIFO_FULL       BIT(6)
-> -#define SIRFSOC_SPI_TXFIFO_EMPTY       BIT(7)
-> -#define SIRFSOC_SPI_RXFIFO_THD_REACH   BIT(8)
-> -#define SIRFSOC_SPI_TXFIFO_THD_REACH   BIT(9)
-> -#define SIRFSOC_SPI_FRM_END            BIT(10)
+> -/* Refer to RTC DIV switch */
+> -#define RTC_HZ                 16
 > -
-> -/* TX RX enable */
-> -#define SIRFSOC_SPI_RX_EN              BIT(0)
-> -#define SIRFSOC_SPI_TX_EN              BIT(1)
-> -#define SIRFSOC_SPI_CMD_TX_EN          BIT(2)
+> -/* This macro is also defined in arch/arm/plat-sirfsoc/cpu.c */
+> -#define RTC_SHIFT              4
 > -
-> -#define SIRFSOC_SPI_IO_MODE_SEL                BIT(0)
-> -#define SIRFSOC_SPI_RX_DMA_FLUSH       BIT(2)
+> -#define INTR_SYSRTC_CN         0x48
 > -
-> -/* FIFO OPs */
-> -#define SIRFSOC_SPI_FIFO_RESET         BIT(0)
-> -#define SIRFSOC_SPI_FIFO_START         BIT(1)
-> -
-> -/* FIFO CTRL */
-> -#define SIRFSOC_SPI_FIFO_WIDTH_BYTE    (0 << 0)
-> -#define SIRFSOC_SPI_FIFO_WIDTH_WORD    (1 << 0)
-> -#define SIRFSOC_SPI_FIFO_WIDTH_DWORD   (2 << 0)
-> -/* USP related */
-> -#define SIRFSOC_USP_SYNC_MODE          BIT(0)
-> -#define SIRFSOC_USP_SLV_MODE           BIT(1)
-> -#define SIRFSOC_USP_LSB                        BIT(4)
-> -#define SIRFSOC_USP_EN                 BIT(5)
-> -#define SIRFSOC_USP_RXD_FALLING_EDGE   BIT(6)
-> -#define SIRFSOC_USP_TXD_FALLING_EDGE   BIT(7)
-> -#define SIRFSOC_USP_CS_HIGH_VALID      BIT(9)
-> -#define SIRFSOC_USP_SCLK_IDLE_STAT     BIT(11)
-> -#define SIRFSOC_USP_TFS_IO_MODE                BIT(14)
-> -#define SIRFSOC_USP_TFS_IO_INPUT       BIT(19)
-> -
-> -#define SIRFSOC_USP_RXD_DELAY_LEN_MASK 0xFF
-> -#define SIRFSOC_USP_TXD_DELAY_LEN_MASK 0xFF
-> -#define SIRFSOC_USP_RXD_DELAY_OFFSET   0
-> -#define SIRFSOC_USP_TXD_DELAY_OFFSET   8
-> -#define SIRFSOC_USP_RXD_DELAY_LEN      1
-> -#define SIRFSOC_USP_TXD_DELAY_LEN      1
-> -#define SIRFSOC_USP_CLK_DIVISOR_OFFSET 21
-> -#define SIRFSOC_USP_CLK_DIVISOR_MASK   0x3FF
-> -#define SIRFSOC_USP_CLK_10_11_MASK     0x3
-> -#define SIRFSOC_USP_CLK_10_11_OFFSET   30
-> -#define SIRFSOC_USP_CLK_12_15_MASK     0xF
-> -#define SIRFSOC_USP_CLK_12_15_OFFSET   24
-> -
-> -#define SIRFSOC_USP_TX_DATA_OFFSET     0
-> -#define SIRFSOC_USP_TX_SYNC_OFFSET     8
-> -#define SIRFSOC_USP_TX_FRAME_OFFSET    16
-> -#define SIRFSOC_USP_TX_SHIFTER_OFFSET  24
-> -
-> -#define SIRFSOC_USP_TX_DATA_MASK       0xFF
-> -#define SIRFSOC_USP_TX_SYNC_MASK       0xFF
-> -#define SIRFSOC_USP_TX_FRAME_MASK      0xFF
-> -#define SIRFSOC_USP_TX_SHIFTER_MASK    0x1F
-> -
-> -#define SIRFSOC_USP_RX_DATA_OFFSET     0
-> -#define SIRFSOC_USP_RX_FRAME_OFFSET    8
-> -#define SIRFSOC_USP_RX_SHIFTER_OFFSET  16
-> -
-> -#define SIRFSOC_USP_RX_DATA_MASK       0xFF
-> -#define SIRFSOC_USP_RX_FRAME_MASK      0xFF
-> -#define SIRFSOC_USP_RX_SHIFTER_MASK    0x1F
-> -#define SIRFSOC_USP_CS_HIGH_VALUE      BIT(1)
-> -
-> -#define SIRFSOC_SPI_FIFO_SC_OFFSET     0
-> -#define SIRFSOC_SPI_FIFO_LC_OFFSET     10
-> -#define SIRFSOC_SPI_FIFO_HC_OFFSET     20
-> -
-> -#define SIRFSOC_SPI_FIFO_FULL_MASK(s)  (1 << ((s)->fifo_full_offset))
-> -#define SIRFSOC_SPI_FIFO_EMPTY_MASK(s) (1 << ((s)->fifo_full_offset + 1))
-> -#define SIRFSOC_SPI_FIFO_THD_MASK(s)   ((s)->fifo_size - 1)
-> -#define SIRFSOC_SPI_FIFO_THD_OFFSET    2
-> -#define SIRFSOC_SPI_FIFO_LEVEL_CHK_MASK(s, val)        \
-> -       ((val) & (s)->fifo_level_chk_mask)
-> -
-> -enum sirf_spi_type {
-> -       SIRF_REAL_SPI,
-> -       SIRF_USP_SPI_P2,
-> -       SIRF_USP_SPI_A7,
+> -struct sirfsoc_rtc_drv {
+> -       struct rtc_device       *rtc;
+> -       u32                     rtc_base;
+> -       u32                     irq;
+> -       unsigned                irq_wake;
+> -       /* Overflow for every 8 years extra time */
+> -       u32                     overflow_rtc;
+> -       spinlock_t              lock;
+> -       struct regmap *regmap;
+> -#ifdef CONFIG_PM
+> -       u32             saved_counter;
+> -       u32             saved_overflow_rtc;
+> -#endif
 > -};
 > -
-> -/*
-> - * only if the rx/tx buffer and transfer size are 4-bytes aligned, we use dma
-> - * due to the limitation of dma controller
-> - */
+> -static u32 sirfsoc_rtc_readl(struct sirfsoc_rtc_drv *rtcdrv, u32 offset)
+> -{
+> -       u32 val;
 > -
-> -#define ALIGNED(x) (!((u32)x & 0x3))
-> -#define IS_DMA_VALID(x) (x && ALIGNED(x->tx_buf) && ALIGNED(x->rx_buf) && \
-> -       ALIGNED(x->len) && (x->len < 2 * PAGE_SIZE))
+> -       regmap_read(rtcdrv->regmap, rtcdrv->rtc_base + offset, &val);
+> -       return val;
+> -}
 > -
-> -#define SIRFSOC_MAX_CMD_BYTES  4
-> -#define SIRFSOC_SPI_DEFAULT_FRQ 1000000
+> -static void sirfsoc_rtc_writel(struct sirfsoc_rtc_drv *rtcdrv,
+> -                              u32 offset, u32 val)
+> -{
+> -       regmap_write(rtcdrv->regmap, rtcdrv->rtc_base + offset, val);
+> -}
 > -
-> -struct sirf_spi_register {
-> -       /*SPI and USP-SPI common*/
-> -       u32 tx_rx_en;
-> -       u32 int_en;
-> -       u32 int_st;
-> -       u32 tx_dma_io_ctrl;
-> -       u32 tx_dma_io_len;
-> -       u32 txfifo_ctrl;
-> -       u32 txfifo_level_chk;
-> -       u32 txfifo_op;
-> -       u32 txfifo_st;
-> -       u32 txfifo_data;
-> -       u32 rx_dma_io_ctrl;
-> -       u32 rx_dma_io_len;
-> -       u32 rxfifo_ctrl;
-> -       u32 rxfifo_level_chk;
-> -       u32 rxfifo_op;
-> -       u32 rxfifo_st;
-> -       u32 rxfifo_data;
-> -       /*SPI self*/
-> -       u32 spi_ctrl;
-> -       u32 spi_cmd;
-> -       u32 spi_dummy_delay_ctrl;
-> -       /*USP-SPI self*/
-> -       u32 usp_mode1;
-> -       u32 usp_mode2;
-> -       u32 usp_tx_frame_ctrl;
-> -       u32 usp_rx_frame_ctrl;
-> -       u32 usp_pin_io_data;
-> -       u32 usp_risc_dsp_mode;
-> -       u32 usp_async_param_reg;
-> -       u32 usp_irda_x_mode_div;
-> -       u32 usp_sm_cfg;
-> -       u32 usp_int_en_clr;
-> -};
+> -static int sirfsoc_rtc_read_alarm(struct device *dev,
+> -               struct rtc_wkalrm *alrm)
+> -{
+> -       unsigned long rtc_alarm, rtc_count;
+> -       struct sirfsoc_rtc_drv *rtcdrv;
 > -
-> -static const struct sirf_spi_register real_spi_register = {
-> -       .tx_rx_en               = 0x8,
-> -       .int_en         = 0xc,
-> -       .int_st         = 0x10,
-> -       .tx_dma_io_ctrl = 0x100,
-> -       .tx_dma_io_len  = 0x104,
-> -       .txfifo_ctrl    = 0x108,
-> -       .txfifo_level_chk       = 0x10c,
-> -       .txfifo_op              = 0x110,
-> -       .txfifo_st              = 0x114,
-> -       .txfifo_data    = 0x118,
-> -       .rx_dma_io_ctrl = 0x120,
-> -       .rx_dma_io_len  = 0x124,
-> -       .rxfifo_ctrl    = 0x128,
-> -       .rxfifo_level_chk       = 0x12c,
-> -       .rxfifo_op              = 0x130,
-> -       .rxfifo_st              = 0x134,
-> -       .rxfifo_data    = 0x138,
-> -       .spi_ctrl               = 0x0,
-> -       .spi_cmd                = 0x4,
-> -       .spi_dummy_delay_ctrl   = 0x144,
-> -};
+> -       rtcdrv = dev_get_drvdata(dev);
 > -
-> -static const struct sirf_spi_register usp_spi_register = {
-> -       .tx_rx_en               = 0x10,
-> -       .int_en         = 0x14,
-> -       .int_st         = 0x18,
-> -       .tx_dma_io_ctrl = 0x100,
-> -       .tx_dma_io_len  = 0x104,
-> -       .txfifo_ctrl    = 0x108,
-> -       .txfifo_level_chk       = 0x10c,
-> -       .txfifo_op              = 0x110,
-> -       .txfifo_st              = 0x114,
-> -       .txfifo_data    = 0x118,
-> -       .rx_dma_io_ctrl = 0x120,
-> -       .rx_dma_io_len  = 0x124,
-> -       .rxfifo_ctrl    = 0x128,
-> -       .rxfifo_level_chk       = 0x12c,
-> -       .rxfifo_op              = 0x130,
-> -       .rxfifo_st              = 0x134,
-> -       .rxfifo_data    = 0x138,
-> -       .usp_mode1              = 0x0,
-> -       .usp_mode2              = 0x4,
-> -       .usp_tx_frame_ctrl      = 0x8,
-> -       .usp_rx_frame_ctrl      = 0xc,
-> -       .usp_pin_io_data        = 0x1c,
-> -       .usp_risc_dsp_mode      = 0x20,
-> -       .usp_async_param_reg    = 0x24,
-> -       .usp_irda_x_mode_div    = 0x28,
-> -       .usp_sm_cfg             = 0x2c,
-> -       .usp_int_en_clr         = 0x140,
-> -};
+> -       spin_lock_irq(&rtcdrv->lock);
 > -
-> -struct sirfsoc_spi {
-> -       struct spi_bitbang bitbang;
-> -       struct completion rx_done;
-> -       struct completion tx_done;
+> -       rtc_count = sirfsoc_rtc_readl(rtcdrv, RTC_CN);
 > -
-> -       void __iomem *base;
-> -       u32 ctrl_freq;  /* SPI controller clock speed */
-> -       struct clk *clk;
-> -
-> -       /* rx & tx bufs from the spi_transfer */
-> -       const void *tx;
-> -       void *rx;
-> -
-> -       /* place received word into rx buffer */
-> -       void (*rx_word) (struct sirfsoc_spi *);
-> -       /* get word from tx buffer for sending */
-> -       void (*tx_word) (struct sirfsoc_spi *);
-> -
-> -       /* number of words left to be tranmitted/received */
-> -       unsigned int left_tx_word;
-> -       unsigned int left_rx_word;
-> -
-> -       /* rx & tx DMA channels */
-> -       struct dma_chan *rx_chan;
-> -       struct dma_chan *tx_chan;
-> -       dma_addr_t src_start;
-> -       dma_addr_t dst_start;
-> -       int word_width; /* in bytes */
+> -       rtc_alarm = sirfsoc_rtc_readl(rtcdrv, RTC_ALARM0);
+> -       memset(alrm, 0, sizeof(struct rtc_wkalrm));
 > -
 > -       /*
-> -        * if tx size is not more than 4 and rx size is NULL, use
-> -        * command model
+> -        * assume alarm interval not beyond one round counter overflow_rtc:
+> -        * 0->0xffffffff
 > -        */
-> -       bool    tx_by_cmd;
-> -       bool    hw_cs;
-> -       enum sirf_spi_type type;
-> -       const struct sirf_spi_register *regs;
-> -       unsigned int fifo_size;
-> -       /* fifo empty offset is (fifo full offset + 1)*/
-> -       unsigned int fifo_full_offset;
-> -       /* fifo_level_chk_mask is (fifo_size/4 - 1) */
-> -       unsigned int fifo_level_chk_mask;
-> -       unsigned int dat_max_frm_len;
-> -};
+> -       /* if alarm is in next overflow cycle */
+> -       if (rtc_count > rtc_alarm)
+> -               rtc_time64_to_tm((rtcdrv->overflow_rtc + 1)
+> -                                << (BITS_PER_LONG - RTC_SHIFT)
+> -                                | rtc_alarm >> RTC_SHIFT, &alrm->time);
+> -       else
+> -               rtc_time64_to_tm(rtcdrv->overflow_rtc
+> -                                << (BITS_PER_LONG - RTC_SHIFT)
+> -                                | rtc_alarm >> RTC_SHIFT, &alrm->time);
+> -       if (sirfsoc_rtc_readl(rtcdrv, RTC_STATUS) & SIRFSOC_RTC_AL0E)
+> -               alrm->enabled = 1;
 > -
-> -struct sirf_spi_comp_data {
-> -       const struct sirf_spi_register *regs;
-> -       enum sirf_spi_type type;
-> -       unsigned int dat_max_frm_len;
-> -       unsigned int fifo_size;
-> -       void (*hwinit)(struct sirfsoc_spi *sspi);
-> -};
+> -       spin_unlock_irq(&rtcdrv->lock);
 > -
-> -static void sirfsoc_usp_hwinit(struct sirfsoc_spi *sspi)
-> -{
-> -       /* reset USP and let USP can operate */
-> -       writel(readl(sspi->base + sspi->regs->usp_mode1) &
-> -               ~SIRFSOC_USP_EN, sspi->base + sspi->regs->usp_mode1);
-> -       writel(readl(sspi->base + sspi->regs->usp_mode1) |
-> -               SIRFSOC_USP_EN, sspi->base + sspi->regs->usp_mode1);
+> -       return 0;
 > -}
 > -
-> -static void spi_sirfsoc_rx_word_u8(struct sirfsoc_spi *sspi)
+> -static int sirfsoc_rtc_set_alarm(struct device *dev,
+> -               struct rtc_wkalrm *alrm)
 > -{
-> -       u32 data;
-> -       u8 *rx = sspi->rx;
+> -       unsigned long rtc_status_reg, rtc_alarm;
+> -       struct sirfsoc_rtc_drv *rtcdrv;
+> -       rtcdrv = dev_get_drvdata(dev);
 > -
-> -       data = readl(sspi->base + sspi->regs->rxfifo_data);
+> -       if (alrm->enabled) {
+> -               rtc_alarm = rtc_tm_to_time64(&alrm->time);
 > -
-> -       if (rx) {
-> -               *rx++ = (u8) data;
-> -               sspi->rx = rx;
-> -       }
+> -               spin_lock_irq(&rtcdrv->lock);
 > -
-> -       sspi->left_rx_word--;
-> -}
-> -
-> -static void spi_sirfsoc_tx_word_u8(struct sirfsoc_spi *sspi)
-> -{
-> -       u32 data = 0;
-> -       const u8 *tx = sspi->tx;
-> -
-> -       if (tx) {
-> -               data = *tx++;
-> -               sspi->tx = tx;
-> -       }
-> -       writel(data, sspi->base + sspi->regs->txfifo_data);
-> -       sspi->left_tx_word--;
-> -}
-> -
-> -static void spi_sirfsoc_rx_word_u16(struct sirfsoc_spi *sspi)
-> -{
-> -       u32 data;
-> -       u16 *rx = sspi->rx;
-> -
-> -       data = readl(sspi->base + sspi->regs->rxfifo_data);
-> -
-> -       if (rx) {
-> -               *rx++ = (u16) data;
-> -               sspi->rx = rx;
-> -       }
-> -
-> -       sspi->left_rx_word--;
-> -}
-> -
-> -static void spi_sirfsoc_tx_word_u16(struct sirfsoc_spi *sspi)
-> -{
-> -       u32 data = 0;
-> -       const u16 *tx = sspi->tx;
-> -
-> -       if (tx) {
-> -               data = *tx++;
-> -               sspi->tx = tx;
-> -       }
-> -
-> -       writel(data, sspi->base + sspi->regs->txfifo_data);
-> -       sspi->left_tx_word--;
-> -}
-> -
-> -static void spi_sirfsoc_rx_word_u32(struct sirfsoc_spi *sspi)
-> -{
-> -       u32 data;
-> -       u32 *rx = sspi->rx;
-> -
-> -       data = readl(sspi->base + sspi->regs->rxfifo_data);
-> -
-> -       if (rx) {
-> -               *rx++ = (u32) data;
-> -               sspi->rx = rx;
-> -       }
-> -
-> -       sspi->left_rx_word--;
-> -
-> -}
-> -
-> -static void spi_sirfsoc_tx_word_u32(struct sirfsoc_spi *sspi)
-> -{
-> -       u32 data = 0;
-> -       const u32 *tx = sspi->tx;
-> -
-> -       if (tx) {
-> -               data = *tx++;
-> -               sspi->tx = tx;
-> -       }
-> -
-> -       writel(data, sspi->base + sspi->regs->txfifo_data);
-> -       sspi->left_tx_word--;
-> -}
-> -
-> -static irqreturn_t spi_sirfsoc_irq(int irq, void *dev_id)
-> -{
-> -       struct sirfsoc_spi *sspi = dev_id;
-> -       u32 spi_stat;
-> -
-> -       spi_stat = readl(sspi->base + sspi->regs->int_st);
-> -       if (sspi->tx_by_cmd && sspi->type == SIRF_REAL_SPI
-> -               && (spi_stat & SIRFSOC_SPI_FRM_END)) {
-> -               complete(&sspi->tx_done);
-> -               writel(0x0, sspi->base + sspi->regs->int_en);
-> -               writel(readl(sspi->base + sspi->regs->int_st),
-> -                               sspi->base + sspi->regs->int_st);
-> -               return IRQ_HANDLED;
-> -       }
-> -       /* Error Conditions */
-> -       if (spi_stat & SIRFSOC_SPI_RX_OFLOW ||
-> -                       spi_stat & SIRFSOC_SPI_TX_UFLOW) {
-> -               complete(&sspi->tx_done);
-> -               complete(&sspi->rx_done);
-> -               switch (sspi->type) {
-> -               case SIRF_REAL_SPI:
-> -               case SIRF_USP_SPI_P2:
-> -                       writel(0x0, sspi->base + sspi->regs->int_en);
-> -                       break;
-> -               case SIRF_USP_SPI_A7:
-> -                       writel(~0UL, sspi->base + sspi->regs->usp_int_en_clr);
-> -                       break;
+> -               rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
+> -               if (rtc_status_reg & SIRFSOC_RTC_AL0E) {
+> -                       /*
+> -                        * An ongoing alarm in progress - ingore it and not
+> -                        * to return EBUSY
+> -                        */
+> -                       dev_info(dev, "An old alarm was set, will be replaced by a new one\n");
 > -               }
-> -               writel(readl(sspi->base + sspi->regs->int_st),
-> -                               sspi->base + sspi->regs->int_st);
-> -               return IRQ_HANDLED;
+> -
+> -               sirfsoc_rtc_writel(rtcdrv, RTC_ALARM0, rtc_alarm << RTC_SHIFT);
+> -               rtc_status_reg &= ~0x07; /* mask out the lower status bits */
+> -               /*
+> -                * This bit RTC_AL sets it as a wake-up source for Sleep Mode
+> -                * Writing 1 into this bit will clear it
+> -                */
+> -               rtc_status_reg |= SIRFSOC_RTC_AL0;
+> -               /* enable the RTC alarm interrupt */
+> -               rtc_status_reg |= SIRFSOC_RTC_AL0E;
+> -               sirfsoc_rtc_writel(rtcdrv, RTC_STATUS, rtc_status_reg);
+> -
+> -               spin_unlock_irq(&rtcdrv->lock);
+> -       } else {
+> -               /*
+> -                * if this function was called with enabled=0
+> -                * then it could mean that the application is
+> -                * trying to cancel an ongoing alarm
+> -                */
+> -               spin_lock_irq(&rtcdrv->lock);
+> -
+> -               rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
+> -               if (rtc_status_reg & SIRFSOC_RTC_AL0E) {
+> -                       /* clear the RTC status register's alarm bit */
+> -                       rtc_status_reg &= ~0x07;
+> -                       /* write 1 into SIRFSOC_RTC_AL0 to force a clear */
+> -                       rtc_status_reg |= (SIRFSOC_RTC_AL0);
+> -                       /* Clear the Alarm enable bit */
+> -                       rtc_status_reg &= ~(SIRFSOC_RTC_AL0E);
+> -
+> -                       sirfsoc_rtc_writel(rtcdrv, RTC_STATUS,
+> -                                          rtc_status_reg);
+> -               }
+> -
+> -               spin_unlock_irq(&rtcdrv->lock);
 > -       }
-> -       if (spi_stat & SIRFSOC_SPI_TXFIFO_EMPTY)
-> -               complete(&sspi->tx_done);
-> -       while (!(readl(sspi->base + sspi->regs->int_st) &
-> -               SIRFSOC_SPI_RX_IO_DMA))
+> -
+> -       return 0;
+> -}
+> -
+> -static int sirfsoc_rtc_read_time(struct device *dev,
+> -               struct rtc_time *tm)
+> -{
+> -       unsigned long tmp_rtc = 0;
+> -       struct sirfsoc_rtc_drv *rtcdrv;
+> -       rtcdrv = dev_get_drvdata(dev);
+> -       /*
+> -        * This patch is taken from WinCE - Need to validate this for
+> -        * correctness. To work around sirfsoc RTC counter double sync logic
+> -        * fail, read several times to make sure get stable value.
+> -        */
+> -       do {
+> -               tmp_rtc = sirfsoc_rtc_readl(rtcdrv, RTC_CN);
 > -               cpu_relax();
-> -       complete(&sspi->rx_done);
-> -       switch (sspi->type) {
-> -       case SIRF_REAL_SPI:
-> -       case SIRF_USP_SPI_P2:
-> -               writel(0x0, sspi->base + sspi->regs->int_en);
-> -               break;
-> -       case SIRF_USP_SPI_A7:
-> -               writel(~0UL, sspi->base + sspi->regs->usp_int_en_clr);
-> -               break;
+> -       } while (tmp_rtc != sirfsoc_rtc_readl(rtcdrv, RTC_CN));
+> -
+> -       rtc_time64_to_tm(rtcdrv->overflow_rtc << (BITS_PER_LONG - RTC_SHIFT)
+> -                        | tmp_rtc >> RTC_SHIFT, tm);
+> -       return 0;
+> -}
+> -
+> -static int sirfsoc_rtc_set_time(struct device *dev,
+> -               struct rtc_time *tm)
+> -{
+> -       unsigned long rtc_time;
+> -       struct sirfsoc_rtc_drv *rtcdrv;
+> -       rtcdrv = dev_get_drvdata(dev);
+> -
+> -       rtc_time = rtc_tm_to_time64(tm);
+> -
+> -       rtcdrv->overflow_rtc = rtc_time >> (BITS_PER_LONG - RTC_SHIFT);
+> -
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_SW_VALUE, rtcdrv->overflow_rtc);
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_CN, rtc_time << RTC_SHIFT);
+> -
+> -       return 0;
+> -}
+> -
+> -static int sirfsoc_rtc_alarm_irq_enable(struct device *dev,
+> -               unsigned int enabled)
+> -{
+> -       unsigned long rtc_status_reg = 0x0;
+> -       struct sirfsoc_rtc_drv *rtcdrv;
+> -
+> -       rtcdrv = dev_get_drvdata(dev);
+> -
+> -       spin_lock_irq(&rtcdrv->lock);
+> -
+> -       rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
+> -       if (enabled)
+> -               rtc_status_reg |= SIRFSOC_RTC_AL0E;
+> -       else
+> -               rtc_status_reg &= ~SIRFSOC_RTC_AL0E;
+> -
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_STATUS, rtc_status_reg);
+> -
+> -       spin_unlock_irq(&rtcdrv->lock);
+> -
+> -       return 0;
+> -
+> -}
+> -
+> -static const struct rtc_class_ops sirfsoc_rtc_ops = {
+> -       .read_time = sirfsoc_rtc_read_time,
+> -       .set_time = sirfsoc_rtc_set_time,
+> -       .read_alarm = sirfsoc_rtc_read_alarm,
+> -       .set_alarm = sirfsoc_rtc_set_alarm,
+> -       .alarm_irq_enable = sirfsoc_rtc_alarm_irq_enable
+> -};
+> -
+> -static irqreturn_t sirfsoc_rtc_irq_handler(int irq, void *pdata)
+> -{
+> -       struct sirfsoc_rtc_drv *rtcdrv = pdata;
+> -       unsigned long rtc_status_reg = 0x0;
+> -       unsigned long events = 0x0;
+> -
+> -       spin_lock(&rtcdrv->lock);
+> -
+> -       rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
+> -       /* this bit will be set ONLY if an alarm was active
+> -        * and it expired NOW
+> -        * So this is being used as an ASSERT
+> -        */
+> -       if (rtc_status_reg & SIRFSOC_RTC_AL0) {
+> -               /*
+> -                * clear the RTC status register's alarm bit
+> -                * mask out the lower status bits
+> -                */
+> -               rtc_status_reg &= ~0x07;
+> -               /* write 1 into SIRFSOC_RTC_AL0 to ACK the alarm interrupt */
+> -               rtc_status_reg |= (SIRFSOC_RTC_AL0);
+> -               /* Clear the Alarm enable bit */
+> -               rtc_status_reg &= ~(SIRFSOC_RTC_AL0E);
 > -       }
-> -       writel(readl(sspi->base + sspi->regs->int_st),
-> -                       sspi->base + sspi->regs->int_st);
+> -
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_STATUS, rtc_status_reg);
+> -
+> -       spin_unlock(&rtcdrv->lock);
+> -
+> -       /* this should wake up any apps polling/waiting on the read
+> -        * after setting the alarm
+> -        */
+> -       events |= RTC_IRQF | RTC_AF;
+> -       rtc_update_irq(rtcdrv->rtc, 1, events);
 > -
 > -       return IRQ_HANDLED;
 > -}
 > -
-> -static void spi_sirfsoc_dma_fini_callback(void *data)
-> -{
-> -       struct completion *dma_complete = data;
-> -
-> -       complete(dma_complete);
-> -}
-> -
-> -static void spi_sirfsoc_cmd_transfer(struct spi_device *spi,
-> -       struct spi_transfer *t)
-> -{
-> -       struct sirfsoc_spi *sspi;
-> -       int timeout = t->len * 10;
-> -       u32 cmd;
-> -
-> -       sspi = spi_master_get_devdata(spi->master);
-> -       writel(SIRFSOC_SPI_FIFO_RESET, sspi->base + sspi->regs->txfifo_op);
-> -       writel(SIRFSOC_SPI_FIFO_START, sspi->base + sspi->regs->txfifo_op);
-> -       memcpy(&cmd, sspi->tx, t->len);
-> -       if (sspi->word_width == 1 && !(spi->mode & SPI_LSB_FIRST))
-> -               cmd = cpu_to_be32(cmd) >>
-> -                       ((SIRFSOC_MAX_CMD_BYTES - t->len) * 8);
-> -       if (sspi->word_width == 2 && t->len == 4 &&
-> -                       (!(spi->mode & SPI_LSB_FIRST)))
-> -               cmd = ((cmd & 0xffff) << 16) | (cmd >> 16);
-> -       writel(cmd, sspi->base + sspi->regs->spi_cmd);
-> -       writel(SIRFSOC_SPI_FRM_END_INT_EN,
-> -               sspi->base + sspi->regs->int_en);
-> -       writel(SIRFSOC_SPI_CMD_TX_EN,
-> -               sspi->base + sspi->regs->tx_rx_en);
-> -       if (wait_for_completion_timeout(&sspi->tx_done, timeout) == 0) {
-> -               dev_err(&spi->dev, "cmd transfer timeout\n");
-> -               return;
-> -       }
-> -       sspi->left_rx_word -= t->len;
-> -}
-> -
-> -static void spi_sirfsoc_dma_transfer(struct spi_device *spi,
-> -       struct spi_transfer *t)
-> -{
-> -       struct sirfsoc_spi *sspi;
-> -       struct dma_async_tx_descriptor *rx_desc, *tx_desc;
-> -       int timeout = t->len * 10;
-> -
-> -       sspi = spi_master_get_devdata(spi->master);
-> -       writel(SIRFSOC_SPI_FIFO_RESET, sspi->base + sspi->regs->rxfifo_op);
-> -       writel(SIRFSOC_SPI_FIFO_RESET, sspi->base + sspi->regs->txfifo_op);
-> -       switch (sspi->type) {
-> -       case SIRF_REAL_SPI:
-> -               writel(SIRFSOC_SPI_FIFO_START,
-> -                       sspi->base + sspi->regs->rxfifo_op);
-> -               writel(SIRFSOC_SPI_FIFO_START,
-> -                       sspi->base + sspi->regs->txfifo_op);
-> -               writel(0, sspi->base + sspi->regs->int_en);
-> -               break;
-> -       case SIRF_USP_SPI_P2:
-> -               writel(0x0, sspi->base + sspi->regs->rxfifo_op);
-> -               writel(0x0, sspi->base + sspi->regs->txfifo_op);
-> -               writel(0, sspi->base + sspi->regs->int_en);
-> -               break;
-> -       case SIRF_USP_SPI_A7:
-> -               writel(0x0, sspi->base + sspi->regs->rxfifo_op);
-> -               writel(0x0, sspi->base + sspi->regs->txfifo_op);
-> -               writel(~0UL, sspi->base + sspi->regs->usp_int_en_clr);
-> -               break;
-> -       }
-> -       writel(readl(sspi->base + sspi->regs->int_st),
-> -               sspi->base + sspi->regs->int_st);
-> -       if (sspi->left_tx_word < sspi->dat_max_frm_len) {
-> -               switch (sspi->type) {
-> -               case SIRF_REAL_SPI:
-> -                       writel(readl(sspi->base + sspi->regs->spi_ctrl) |
-> -                               SIRFSOC_SPI_ENA_AUTO_CLR |
-> -                               SIRFSOC_SPI_MUL_DAT_MODE,
-> -                               sspi->base + sspi->regs->spi_ctrl);
-> -                       writel(sspi->left_tx_word - 1,
-> -                               sspi->base + sspi->regs->tx_dma_io_len);
-> -                       writel(sspi->left_tx_word - 1,
-> -                               sspi->base + sspi->regs->rx_dma_io_len);
-> -                       break;
-> -               case SIRF_USP_SPI_P2:
-> -               case SIRF_USP_SPI_A7:
-> -                       /*USP simulate SPI, tx/rx_dma_io_len indicates bytes*/
-> -                       writel(sspi->left_tx_word * sspi->word_width,
-> -                               sspi->base + sspi->regs->tx_dma_io_len);
-> -                       writel(sspi->left_tx_word * sspi->word_width,
-> -                               sspi->base + sspi->regs->rx_dma_io_len);
-> -                       break;
-> -               }
-> -       } else {
-> -               if (sspi->type == SIRF_REAL_SPI)
-> -                       writel(readl(sspi->base + sspi->regs->spi_ctrl),
-> -                               sspi->base + sspi->regs->spi_ctrl);
-> -               writel(0, sspi->base + sspi->regs->tx_dma_io_len);
-> -               writel(0, sspi->base + sspi->regs->rx_dma_io_len);
-> -       }
-> -       sspi->dst_start = dma_map_single(&spi->dev, sspi->rx, t->len,
-> -                                       (t->tx_buf != t->rx_buf) ?
-> -                                       DMA_FROM_DEVICE : DMA_BIDIRECTIONAL);
-> -       rx_desc = dmaengine_prep_slave_single(sspi->rx_chan,
-> -               sspi->dst_start, t->len, DMA_DEV_TO_MEM,
-> -               DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-> -       rx_desc->callback = spi_sirfsoc_dma_fini_callback;
-> -       rx_desc->callback_param = &sspi->rx_done;
-> -
-> -       sspi->src_start = dma_map_single(&spi->dev, (void *)sspi->tx, t->len,
-> -                                       (t->tx_buf != t->rx_buf) ?
-> -                                       DMA_TO_DEVICE : DMA_BIDIRECTIONAL);
-> -       tx_desc = dmaengine_prep_slave_single(sspi->tx_chan,
-> -               sspi->src_start, t->len, DMA_MEM_TO_DEV,
-> -               DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-> -       tx_desc->callback = spi_sirfsoc_dma_fini_callback;
-> -       tx_desc->callback_param = &sspi->tx_done;
-> -
-> -       dmaengine_submit(tx_desc);
-> -       dmaengine_submit(rx_desc);
-> -       dma_async_issue_pending(sspi->tx_chan);
-> -       dma_async_issue_pending(sspi->rx_chan);
-> -       writel(SIRFSOC_SPI_RX_EN | SIRFSOC_SPI_TX_EN,
-> -                       sspi->base + sspi->regs->tx_rx_en);
-> -       if (sspi->type == SIRF_USP_SPI_P2 ||
-> -               sspi->type == SIRF_USP_SPI_A7) {
-> -               writel(SIRFSOC_SPI_FIFO_START,
-> -                       sspi->base + sspi->regs->rxfifo_op);
-> -               writel(SIRFSOC_SPI_FIFO_START,
-> -                       sspi->base + sspi->regs->txfifo_op);
-> -       }
-> -       if (wait_for_completion_timeout(&sspi->rx_done, timeout) == 0) {
-> -               dev_err(&spi->dev, "transfer timeout\n");
-> -               dmaengine_terminate_all(sspi->rx_chan);
-> -       } else
-> -               sspi->left_rx_word = 0;
-> -       /*
-> -        * we only wait tx-done event if transferring by DMA. for PIO,
-> -        * we get rx data by writing tx data, so if rx is done, tx has
-> -        * done earlier
-> -        */
-> -       if (wait_for_completion_timeout(&sspi->tx_done, timeout) == 0) {
-> -               dev_err(&spi->dev, "transfer timeout\n");
-> -               if (sspi->type == SIRF_USP_SPI_P2 ||
-> -                       sspi->type == SIRF_USP_SPI_A7)
-> -                       writel(0, sspi->base + sspi->regs->tx_rx_en);
-> -               dmaengine_terminate_all(sspi->tx_chan);
-> -       }
-> -       dma_unmap_single(&spi->dev, sspi->src_start, t->len, DMA_TO_DEVICE);
-> -       dma_unmap_single(&spi->dev, sspi->dst_start, t->len, DMA_FROM_DEVICE);
-> -       /* TX, RX FIFO stop */
-> -       writel(0, sspi->base + sspi->regs->rxfifo_op);
-> -       writel(0, sspi->base + sspi->regs->txfifo_op);
-> -       if (sspi->left_tx_word >= sspi->dat_max_frm_len)
-> -               writel(0, sspi->base + sspi->regs->tx_rx_en);
-> -       if (sspi->type == SIRF_USP_SPI_P2 ||
-> -               sspi->type == SIRF_USP_SPI_A7)
-> -               writel(0, sspi->base + sspi->regs->tx_rx_en);
-> -}
-> -
-> -static void spi_sirfsoc_pio_transfer(struct spi_device *spi,
-> -               struct spi_transfer *t)
-> -{
-> -       struct sirfsoc_spi *sspi;
-> -       int timeout = t->len * 10;
-> -       unsigned int data_units;
-> -
-> -       sspi = spi_master_get_devdata(spi->master);
-> -       do {
-> -               writel(SIRFSOC_SPI_FIFO_RESET,
-> -                       sspi->base + sspi->regs->rxfifo_op);
-> -               writel(SIRFSOC_SPI_FIFO_RESET,
-> -                       sspi->base + sspi->regs->txfifo_op);
-> -               switch (sspi->type) {
-> -               case SIRF_USP_SPI_P2:
-> -                       writel(0x0, sspi->base + sspi->regs->rxfifo_op);
-> -                       writel(0x0, sspi->base + sspi->regs->txfifo_op);
-> -                       writel(0, sspi->base + sspi->regs->int_en);
-> -                       writel(readl(sspi->base + sspi->regs->int_st),
-> -                               sspi->base + sspi->regs->int_st);
-> -                       writel(min((sspi->left_tx_word * sspi->word_width),
-> -                               sspi->fifo_size),
-> -                               sspi->base + sspi->regs->tx_dma_io_len);
-> -                       writel(min((sspi->left_rx_word * sspi->word_width),
-> -                               sspi->fifo_size),
-> -                               sspi->base + sspi->regs->rx_dma_io_len);
-> -                       break;
-> -               case SIRF_USP_SPI_A7:
-> -                       writel(0x0, sspi->base + sspi->regs->rxfifo_op);
-> -                       writel(0x0, sspi->base + sspi->regs->txfifo_op);
-> -                       writel(~0UL, sspi->base + sspi->regs->usp_int_en_clr);
-> -                       writel(readl(sspi->base + sspi->regs->int_st),
-> -                               sspi->base + sspi->regs->int_st);
-> -                       writel(min((sspi->left_tx_word * sspi->word_width),
-> -                               sspi->fifo_size),
-> -                               sspi->base + sspi->regs->tx_dma_io_len);
-> -                       writel(min((sspi->left_rx_word * sspi->word_width),
-> -                               sspi->fifo_size),
-> -                               sspi->base + sspi->regs->rx_dma_io_len);
-> -                       break;
-> -               case SIRF_REAL_SPI:
-> -                       writel(SIRFSOC_SPI_FIFO_START,
-> -                               sspi->base + sspi->regs->rxfifo_op);
-> -                       writel(SIRFSOC_SPI_FIFO_START,
-> -                               sspi->base + sspi->regs->txfifo_op);
-> -                       writel(0, sspi->base + sspi->regs->int_en);
-> -                       writel(readl(sspi->base + sspi->regs->int_st),
-> -                               sspi->base + sspi->regs->int_st);
-> -                       writel(readl(sspi->base + sspi->regs->spi_ctrl) |
-> -                               SIRFSOC_SPI_MUL_DAT_MODE |
-> -                               SIRFSOC_SPI_ENA_AUTO_CLR,
-> -                               sspi->base + sspi->regs->spi_ctrl);
-> -                       data_units = sspi->fifo_size / sspi->word_width;
-> -                       writel(min(sspi->left_tx_word, data_units) - 1,
-> -                               sspi->base + sspi->regs->tx_dma_io_len);
-> -                       writel(min(sspi->left_rx_word, data_units) - 1,
-> -                               sspi->base + sspi->regs->rx_dma_io_len);
-> -                       break;
-> -               }
-> -               while (!((readl(sspi->base + sspi->regs->txfifo_st)
-> -                       & SIRFSOC_SPI_FIFO_FULL_MASK(sspi))) &&
-> -                       sspi->left_tx_word)
-> -                       sspi->tx_word(sspi);
-> -               writel(SIRFSOC_SPI_TXFIFO_EMPTY_INT_EN |
-> -                       SIRFSOC_SPI_TX_UFLOW_INT_EN |
-> -                       SIRFSOC_SPI_RX_OFLOW_INT_EN |
-> -                       SIRFSOC_SPI_RX_IO_DMA_INT_EN,
-> -                       sspi->base + sspi->regs->int_en);
-> -               writel(SIRFSOC_SPI_RX_EN | SIRFSOC_SPI_TX_EN,
-> -                       sspi->base + sspi->regs->tx_rx_en);
-> -               if (sspi->type == SIRF_USP_SPI_P2 ||
-> -                       sspi->type == SIRF_USP_SPI_A7) {
-> -                       writel(SIRFSOC_SPI_FIFO_START,
-> -                               sspi->base + sspi->regs->rxfifo_op);
-> -                       writel(SIRFSOC_SPI_FIFO_START,
-> -                               sspi->base + sspi->regs->txfifo_op);
-> -               }
-> -               if (!wait_for_completion_timeout(&sspi->tx_done, timeout) ||
-> -                       !wait_for_completion_timeout(&sspi->rx_done, timeout)) {
-> -                       dev_err(&spi->dev, "transfer timeout\n");
-> -                       if (sspi->type == SIRF_USP_SPI_P2 ||
-> -                               sspi->type == SIRF_USP_SPI_A7)
-> -                               writel(0, sspi->base + sspi->regs->tx_rx_en);
-> -                       break;
-> -               }
-> -               while (!((readl(sspi->base + sspi->regs->rxfifo_st)
-> -                       & SIRFSOC_SPI_FIFO_EMPTY_MASK(sspi))) &&
-> -                       sspi->left_rx_word)
-> -                       sspi->rx_word(sspi);
-> -               if (sspi->type == SIRF_USP_SPI_P2 ||
-> -                       sspi->type == SIRF_USP_SPI_A7)
-> -                       writel(0, sspi->base + sspi->regs->tx_rx_en);
-> -               writel(0, sspi->base + sspi->regs->rxfifo_op);
-> -               writel(0, sspi->base + sspi->regs->txfifo_op);
-> -       } while (sspi->left_tx_word != 0 || sspi->left_rx_word != 0);
-> -}
-> -
-> -static int spi_sirfsoc_transfer(struct spi_device *spi, struct spi_transfer *t)
-> -{
-> -       struct sirfsoc_spi *sspi;
-> -
-> -       sspi = spi_master_get_devdata(spi->master);
-> -       sspi->tx = t->tx_buf;
-> -       sspi->rx = t->rx_buf;
-> -       sspi->left_tx_word = sspi->left_rx_word = t->len / sspi->word_width;
-> -       reinit_completion(&sspi->rx_done);
-> -       reinit_completion(&sspi->tx_done);
-> -       /*
-> -        * in the transfer, if transfer data using command register with rx_buf
-> -        * null, just fill command data into command register and wait for its
-> -        * completion.
-> -        */
-> -       if (sspi->type == SIRF_REAL_SPI && sspi->tx_by_cmd)
-> -               spi_sirfsoc_cmd_transfer(spi, t);
-> -       else if (IS_DMA_VALID(t))
-> -               spi_sirfsoc_dma_transfer(spi, t);
-> -       else
-> -               spi_sirfsoc_pio_transfer(spi, t);
-> -
-> -       return t->len - sspi->left_rx_word * sspi->word_width;
-> -}
-> -
-> -static void spi_sirfsoc_chipselect(struct spi_device *spi, int value)
-> -{
-> -       struct sirfsoc_spi *sspi = spi_master_get_devdata(spi->master);
-> -
-> -       if (sspi->hw_cs) {
-> -               u32 regval;
-> -
-> -               switch (sspi->type) {
-> -               case SIRF_REAL_SPI:
-> -                       regval = readl(sspi->base + sspi->regs->spi_ctrl);
-> -                       switch (value) {
-> -                       case BITBANG_CS_ACTIVE:
-> -                               if (spi->mode & SPI_CS_HIGH)
-> -                                       regval |= SIRFSOC_SPI_CS_IO_OUT;
-> -                               else
-> -                                       regval &= ~SIRFSOC_SPI_CS_IO_OUT;
-> -                               break;
-> -                       case BITBANG_CS_INACTIVE:
-> -                               if (spi->mode & SPI_CS_HIGH)
-> -                                       regval &= ~SIRFSOC_SPI_CS_IO_OUT;
-> -                               else
-> -                                       regval |= SIRFSOC_SPI_CS_IO_OUT;
-> -                               break;
-> -                       }
-> -                       writel(regval, sspi->base + sspi->regs->spi_ctrl);
-> -                       break;
-> -               case SIRF_USP_SPI_P2:
-> -               case SIRF_USP_SPI_A7:
-> -                       regval = readl(sspi->base +
-> -                                       sspi->regs->usp_pin_io_data);
-> -                       switch (value) {
-> -                       case BITBANG_CS_ACTIVE:
-> -                               if (spi->mode & SPI_CS_HIGH)
-> -                                       regval |= SIRFSOC_USP_CS_HIGH_VALUE;
-> -                               else
-> -                                       regval &= ~(SIRFSOC_USP_CS_HIGH_VALUE);
-> -                               break;
-> -                       case BITBANG_CS_INACTIVE:
-> -                               if (spi->mode & SPI_CS_HIGH)
-> -                                       regval &= ~(SIRFSOC_USP_CS_HIGH_VALUE);
-> -                               else
-> -                                       regval |= SIRFSOC_USP_CS_HIGH_VALUE;
-> -                               break;
-> -                       }
-> -                       writel(regval,
-> -                               sspi->base + sspi->regs->usp_pin_io_data);
-> -                       break;
-> -               }
-> -       } else {
-> -               switch (value) {
-> -               case BITBANG_CS_ACTIVE:
-> -                       gpio_direction_output(spi->cs_gpio,
-> -                                       spi->mode & SPI_CS_HIGH ? 1 : 0);
-> -                       break;
-> -               case BITBANG_CS_INACTIVE:
-> -                       gpio_direction_output(spi->cs_gpio,
-> -                                       spi->mode & SPI_CS_HIGH ? 0 : 1);
-> -                       break;
-> -               }
-> -       }
-> -}
-> -
-> -static int spi_sirfsoc_config_mode(struct spi_device *spi)
-> -{
-> -       struct sirfsoc_spi *sspi;
-> -       u32 regval, usp_mode1;
-> -
-> -       sspi = spi_master_get_devdata(spi->master);
-> -       regval = readl(sspi->base + sspi->regs->spi_ctrl);
-> -       usp_mode1 = readl(sspi->base + sspi->regs->usp_mode1);
-> -       if (!(spi->mode & SPI_CS_HIGH)) {
-> -               regval |= SIRFSOC_SPI_CS_IDLE_STAT;
-> -               usp_mode1 &= ~SIRFSOC_USP_CS_HIGH_VALID;
-> -       } else {
-> -               regval &= ~SIRFSOC_SPI_CS_IDLE_STAT;
-> -               usp_mode1 |= SIRFSOC_USP_CS_HIGH_VALID;
-> -       }
-> -       if (!(spi->mode & SPI_LSB_FIRST)) {
-> -               regval |= SIRFSOC_SPI_TRAN_MSB;
-> -               usp_mode1 &= ~SIRFSOC_USP_LSB;
-> -       } else {
-> -               regval &= ~SIRFSOC_SPI_TRAN_MSB;
-> -               usp_mode1 |= SIRFSOC_USP_LSB;
-> -       }
-> -       if (spi->mode & SPI_CPOL) {
-> -               regval |= SIRFSOC_SPI_CLK_IDLE_STAT;
-> -               usp_mode1 |= SIRFSOC_USP_SCLK_IDLE_STAT;
-> -       } else {
-> -               regval &= ~SIRFSOC_SPI_CLK_IDLE_STAT;
-> -               usp_mode1 &= ~SIRFSOC_USP_SCLK_IDLE_STAT;
-> -       }
-> -       /*
-> -        * Data should be driven at least 1/2 cycle before the fetch edge
-> -        * to make sure that data gets stable at the fetch edge.
-> -        */
-> -       if (((spi->mode & SPI_CPOL) && (spi->mode & SPI_CPHA)) ||
-> -           (!(spi->mode & SPI_CPOL) && !(spi->mode & SPI_CPHA))) {
-> -               regval &= ~SIRFSOC_SPI_DRV_POS_EDGE;
-> -               usp_mode1 |= (SIRFSOC_USP_TXD_FALLING_EDGE |
-> -                               SIRFSOC_USP_RXD_FALLING_EDGE);
-> -       } else {
-> -               regval |= SIRFSOC_SPI_DRV_POS_EDGE;
-> -               usp_mode1 &= ~(SIRFSOC_USP_RXD_FALLING_EDGE |
-> -                               SIRFSOC_USP_TXD_FALLING_EDGE);
-> -       }
-> -       writel((SIRFSOC_SPI_FIFO_LEVEL_CHK_MASK(sspi, sspi->fifo_size - 2) <<
-> -               SIRFSOC_SPI_FIFO_SC_OFFSET) |
-> -               (SIRFSOC_SPI_FIFO_LEVEL_CHK_MASK(sspi, sspi->fifo_size / 2) <<
-> -               SIRFSOC_SPI_FIFO_LC_OFFSET) |
-> -               (SIRFSOC_SPI_FIFO_LEVEL_CHK_MASK(sspi, 2) <<
-> -               SIRFSOC_SPI_FIFO_HC_OFFSET),
-> -               sspi->base + sspi->regs->txfifo_level_chk);
-> -       writel((SIRFSOC_SPI_FIFO_LEVEL_CHK_MASK(sspi, 2) <<
-> -               SIRFSOC_SPI_FIFO_SC_OFFSET) |
-> -               (SIRFSOC_SPI_FIFO_LEVEL_CHK_MASK(sspi, sspi->fifo_size / 2) <<
-> -               SIRFSOC_SPI_FIFO_LC_OFFSET) |
-> -               (SIRFSOC_SPI_FIFO_LEVEL_CHK_MASK(sspi, sspi->fifo_size - 2) <<
-> -               SIRFSOC_SPI_FIFO_HC_OFFSET),
-> -               sspi->base + sspi->regs->rxfifo_level_chk);
-> -       /*
-> -        * it should never set to hardware cs mode because in hardware cs mode,
-> -        * cs signal can't controlled by driver.
-> -        */
-> -       switch (sspi->type) {
-> -       case SIRF_REAL_SPI:
-> -               regval |= SIRFSOC_SPI_CS_IO_MODE;
-> -               writel(regval, sspi->base + sspi->regs->spi_ctrl);
-> -               break;
-> -       case SIRF_USP_SPI_P2:
-> -       case SIRF_USP_SPI_A7:
-> -               usp_mode1 |= SIRFSOC_USP_SYNC_MODE;
-> -               usp_mode1 |= SIRFSOC_USP_TFS_IO_MODE;
-> -               usp_mode1 &= ~SIRFSOC_USP_TFS_IO_INPUT;
-> -               writel(usp_mode1, sspi->base + sspi->regs->usp_mode1);
-> -               break;
-> -       }
-> -
-> -       return 0;
-> -}
-> -
-> -static int
-> -spi_sirfsoc_setup_transfer(struct spi_device *spi, struct spi_transfer *t)
-> -{
-> -       struct sirfsoc_spi *sspi;
-> -       u8 bits_per_word = 0;
-> -       int hz = 0;
-> -       u32 regval, txfifo_ctrl, rxfifo_ctrl, tx_frm_ctl, rx_frm_ctl, usp_mode2;
-> -
-> -       sspi = spi_master_get_devdata(spi->master);
-> -
-> -       bits_per_word = (t) ? t->bits_per_word : spi->bits_per_word;
-> -       hz = t && t->speed_hz ? t->speed_hz : spi->max_speed_hz;
-> -
-> -       usp_mode2 = regval = (sspi->ctrl_freq / (2 * hz)) - 1;
-> -       if (regval > 0xFFFF || regval < 0) {
-> -               dev_err(&spi->dev, "Speed %d not supported\n", hz);
-> -               return -EINVAL;
-> -       }
-> -       switch (bits_per_word) {
-> -       case 8:
-> -               regval |= SIRFSOC_SPI_TRAN_DAT_FORMAT_8;
-> -               sspi->rx_word = spi_sirfsoc_rx_word_u8;
-> -               sspi->tx_word = spi_sirfsoc_tx_word_u8;
-> -               break;
-> -       case 12:
-> -       case 16:
-> -               regval |= (bits_per_word ==  12) ?
-> -                       SIRFSOC_SPI_TRAN_DAT_FORMAT_12 :
-> -                       SIRFSOC_SPI_TRAN_DAT_FORMAT_16;
-> -               sspi->rx_word = spi_sirfsoc_rx_word_u16;
-> -               sspi->tx_word = spi_sirfsoc_tx_word_u16;
-> -               break;
-> -       case 32:
-> -               regval |= SIRFSOC_SPI_TRAN_DAT_FORMAT_32;
-> -               sspi->rx_word = spi_sirfsoc_rx_word_u32;
-> -               sspi->tx_word = spi_sirfsoc_tx_word_u32;
-> -               break;
-> -       default:
-> -               dev_err(&spi->dev, "bpw %d not supported\n", bits_per_word);
-> -               return -EINVAL;
-> -       }
-> -       sspi->word_width = DIV_ROUND_UP(bits_per_word, 8);
-> -       txfifo_ctrl = (((sspi->fifo_size / 2) &
-> -                       SIRFSOC_SPI_FIFO_THD_MASK(sspi))
-> -                       << SIRFSOC_SPI_FIFO_THD_OFFSET) |
-> -                       (sspi->word_width >> 1);
-> -       rxfifo_ctrl = (((sspi->fifo_size / 2) &
-> -                       SIRFSOC_SPI_FIFO_THD_MASK(sspi))
-> -                       << SIRFSOC_SPI_FIFO_THD_OFFSET) |
-> -                       (sspi->word_width >> 1);
-> -       writel(txfifo_ctrl, sspi->base + sspi->regs->txfifo_ctrl);
-> -       writel(rxfifo_ctrl, sspi->base + sspi->regs->rxfifo_ctrl);
-> -       if (sspi->type == SIRF_USP_SPI_P2 ||
-> -               sspi->type == SIRF_USP_SPI_A7) {
-> -               tx_frm_ctl = 0;
-> -               tx_frm_ctl |= ((bits_per_word - 1) & SIRFSOC_USP_TX_DATA_MASK)
-> -                               << SIRFSOC_USP_TX_DATA_OFFSET;
-> -               tx_frm_ctl |= ((bits_per_word + 1 + SIRFSOC_USP_TXD_DELAY_LEN
-> -                               - 1) & SIRFSOC_USP_TX_SYNC_MASK) <<
-> -                               SIRFSOC_USP_TX_SYNC_OFFSET;
-> -               tx_frm_ctl |= ((bits_per_word + 1 + SIRFSOC_USP_TXD_DELAY_LEN
-> -                               + 2 - 1) & SIRFSOC_USP_TX_FRAME_MASK) <<
-> -                               SIRFSOC_USP_TX_FRAME_OFFSET;
-> -               tx_frm_ctl |= ((bits_per_word - 1) &
-> -                               SIRFSOC_USP_TX_SHIFTER_MASK) <<
-> -                               SIRFSOC_USP_TX_SHIFTER_OFFSET;
-> -               rx_frm_ctl = 0;
-> -               rx_frm_ctl |= ((bits_per_word - 1) & SIRFSOC_USP_RX_DATA_MASK)
-> -                               << SIRFSOC_USP_RX_DATA_OFFSET;
-> -               rx_frm_ctl |= ((bits_per_word + 1 + SIRFSOC_USP_RXD_DELAY_LEN
-> -                               + 2 - 1) & SIRFSOC_USP_RX_FRAME_MASK) <<
-> -                               SIRFSOC_USP_RX_FRAME_OFFSET;
-> -               rx_frm_ctl |= ((bits_per_word - 1)
-> -                               & SIRFSOC_USP_RX_SHIFTER_MASK) <<
-> -                               SIRFSOC_USP_RX_SHIFTER_OFFSET;
-> -               writel(tx_frm_ctl | (((usp_mode2 >> 10) &
-> -                       SIRFSOC_USP_CLK_10_11_MASK) <<
-> -                       SIRFSOC_USP_CLK_10_11_OFFSET),
-> -                       sspi->base + sspi->regs->usp_tx_frame_ctrl);
-> -               writel(rx_frm_ctl | (((usp_mode2 >> 12) &
-> -                       SIRFSOC_USP_CLK_12_15_MASK) <<
-> -                       SIRFSOC_USP_CLK_12_15_OFFSET),
-> -                       sspi->base + sspi->regs->usp_rx_frame_ctrl);
-> -               writel(readl(sspi->base + sspi->regs->usp_mode2) |
-> -                       ((usp_mode2 & SIRFSOC_USP_CLK_DIVISOR_MASK) <<
-> -                       SIRFSOC_USP_CLK_DIVISOR_OFFSET) |
-> -                       (SIRFSOC_USP_RXD_DELAY_LEN <<
-> -                        SIRFSOC_USP_RXD_DELAY_OFFSET) |
-> -                       (SIRFSOC_USP_TXD_DELAY_LEN <<
-> -                        SIRFSOC_USP_TXD_DELAY_OFFSET),
-> -                       sspi->base + sspi->regs->usp_mode2);
-> -       }
-> -       if (sspi->type == SIRF_REAL_SPI)
-> -               writel(regval, sspi->base + sspi->regs->spi_ctrl);
-> -       spi_sirfsoc_config_mode(spi);
-> -       if (sspi->type == SIRF_REAL_SPI) {
-> -               if (t && t->tx_buf && !t->rx_buf &&
-> -                       (t->len <= SIRFSOC_MAX_CMD_BYTES)) {
-> -                       sspi->tx_by_cmd = true;
-> -                       writel(readl(sspi->base + sspi->regs->spi_ctrl) |
-> -                               (SIRFSOC_SPI_CMD_BYTE_NUM((t->len - 1)) |
-> -                               SIRFSOC_SPI_CMD_MODE),
-> -                               sspi->base + sspi->regs->spi_ctrl);
-> -               } else {
-> -                       sspi->tx_by_cmd = false;
-> -                       writel(readl(sspi->base + sspi->regs->spi_ctrl) &
-> -                               ~SIRFSOC_SPI_CMD_MODE,
-> -                               sspi->base + sspi->regs->spi_ctrl);
-> -               }
-> -       }
-> -       if (IS_DMA_VALID(t)) {
-> -               /* Enable DMA mode for RX, TX */
-> -               writel(0, sspi->base + sspi->regs->tx_dma_io_ctrl);
-> -               writel(SIRFSOC_SPI_RX_DMA_FLUSH,
-> -                       sspi->base + sspi->regs->rx_dma_io_ctrl);
-> -       } else {
-> -               /* Enable IO mode for RX, TX */
-> -               writel(SIRFSOC_SPI_IO_MODE_SEL,
-> -                       sspi->base + sspi->regs->tx_dma_io_ctrl);
-> -               writel(SIRFSOC_SPI_IO_MODE_SEL,
-> -                       sspi->base + sspi->regs->rx_dma_io_ctrl);
-> -       }
-> -       return 0;
-> -}
-> -
-> -static int spi_sirfsoc_setup(struct spi_device *spi)
-> -{
-> -       struct sirfsoc_spi *sspi;
-> -       int ret = 0;
-> -
-> -       sspi = spi_master_get_devdata(spi->master);
-> -       if (spi->cs_gpio == -ENOENT)
-> -               sspi->hw_cs = true;
-> -       else {
-> -               sspi->hw_cs = false;
-> -               if (!spi_get_ctldata(spi)) {
-> -                       void *cs = kmalloc(sizeof(int), GFP_KERNEL);
-> -                       if (!cs) {
-> -                               ret = -ENOMEM;
-> -                               goto exit;
-> -                       }
-> -                       ret = gpio_is_valid(spi->cs_gpio);
-> -                       if (!ret) {
-> -                               dev_err(&spi->dev, "no valid gpio\n");
-> -                               ret = -ENOENT;
-> -                               goto exit;
-> -                       }
-> -                       ret = gpio_request(spi->cs_gpio, DRIVER_NAME);
-> -                       if (ret) {
-> -                               dev_err(&spi->dev, "failed to request gpio\n");
-> -                               goto exit;
-> -                       }
-> -                       spi_set_ctldata(spi, cs);
-> -               }
-> -       }
-> -       spi_sirfsoc_config_mode(spi);
-> -       spi_sirfsoc_chipselect(spi, BITBANG_CS_INACTIVE);
-> -exit:
-> -       return ret;
-> -}
-> -
-> -static void spi_sirfsoc_cleanup(struct spi_device *spi)
-> -{
-> -       if (spi_get_ctldata(spi)) {
-> -               gpio_free(spi->cs_gpio);
-> -               kfree(spi_get_ctldata(spi));
-> -       }
-> -}
-> -
-> -static const struct sirf_spi_comp_data sirf_real_spi = {
-> -       .regs = &real_spi_register,
-> -       .type = SIRF_REAL_SPI,
-> -       .dat_max_frm_len = 64 * 1024,
-> -       .fifo_size = 256,
+> -static const struct of_device_id sirfsoc_rtc_of_match[] = {
+> -       { .compatible = "sirf,prima2-sysrtc"},
+> -       {},
 > -};
 > -
-> -static const struct sirf_spi_comp_data sirf_usp_spi_p2 = {
-> -       .regs = &usp_spi_register,
-> -       .type = SIRF_USP_SPI_P2,
-> -       .dat_max_frm_len = 1024 * 1024,
-> -       .fifo_size = 128,
-> -       .hwinit = sirfsoc_usp_hwinit,
+> -static const struct regmap_config sysrtc_regmap_config = {
+> -       .reg_bits = 32,
+> -       .val_bits = 32,
+> -       .fast_io = true,
 > -};
 > -
-> -static const struct sirf_spi_comp_data sirf_usp_spi_a7 = {
-> -       .regs = &usp_spi_register,
-> -       .type = SIRF_USP_SPI_A7,
-> -       .dat_max_frm_len = 1024 * 1024,
-> -       .fifo_size = 512,
-> -       .hwinit = sirfsoc_usp_hwinit,
-> -};
+> -MODULE_DEVICE_TABLE(of, sirfsoc_rtc_of_match);
 > -
-> -static const struct of_device_id spi_sirfsoc_of_match[] = {
-> -       { .compatible = "sirf,prima2-spi", .data = &sirf_real_spi},
-> -       { .compatible = "sirf,prima2-usp-spi", .data = &sirf_usp_spi_p2},
-> -       { .compatible = "sirf,atlas7-usp-spi", .data = &sirf_usp_spi_a7},
-> -       {}
-> -};
-> -MODULE_DEVICE_TABLE(of, spi_sirfsoc_of_match);
-> -
-> -static int spi_sirfsoc_probe(struct platform_device *pdev)
+> -static int sirfsoc_rtc_probe(struct platform_device *pdev)
 > -{
-> -       struct sirfsoc_spi *sspi;
-> -       struct spi_master *master;
-> -       const struct sirf_spi_comp_data *spi_comp_data;
-> -       int irq;
-> -       int ret;
-> -       const struct of_device_id *match;
+> -       int err;
+> -       unsigned long rtc_div;
+> -       struct sirfsoc_rtc_drv *rtcdrv;
+> -       struct device_node *np = pdev->dev.of_node;
 > -
-> -       ret = device_reset(&pdev->dev);
-> -       if (ret) {
-> -               dev_err(&pdev->dev, "SPI reset failed!\n");
-> -               return ret;
-> -       }
-> -
-> -       master = spi_alloc_master(&pdev->dev, sizeof(*sspi));
-> -       if (!master) {
-> -               dev_err(&pdev->dev, "Unable to allocate SPI master\n");
+> -       rtcdrv = devm_kzalloc(&pdev->dev,
+> -               sizeof(struct sirfsoc_rtc_drv), GFP_KERNEL);
+> -       if (rtcdrv == NULL)
 > -               return -ENOMEM;
-> -       }
-> -       match = of_match_node(spi_sirfsoc_of_match, pdev->dev.of_node);
-> -       platform_set_drvdata(pdev, master);
-> -       sspi = spi_master_get_devdata(master);
-> -       sspi->fifo_full_offset = ilog2(sspi->fifo_size);
-> -       spi_comp_data = match->data;
-> -       sspi->regs = spi_comp_data->regs;
-> -       sspi->type = spi_comp_data->type;
-> -       sspi->fifo_level_chk_mask = (sspi->fifo_size / 4) - 1;
-> -       sspi->dat_max_frm_len = spi_comp_data->dat_max_frm_len;
-> -       sspi->fifo_size = spi_comp_data->fifo_size;
-> -       sspi->base = devm_platform_ioremap_resource(pdev, 0);
-> -       if (IS_ERR(sspi->base)) {
-> -               ret = PTR_ERR(sspi->base);
-> -               goto free_master;
-> -       }
-> -       irq = platform_get_irq(pdev, 0);
-> -       if (irq < 0) {
-> -               ret = -ENXIO;
-> -               goto free_master;
-> -       }
-> -       ret = devm_request_irq(&pdev->dev, irq, spi_sirfsoc_irq, 0,
-> -                               DRIVER_NAME, sspi);
-> -       if (ret)
-> -               goto free_master;
 > -
-> -       sspi->bitbang.master = master;
-> -       sspi->bitbang.chipselect = spi_sirfsoc_chipselect;
-> -       sspi->bitbang.setup_transfer = spi_sirfsoc_setup_transfer;
-> -       sspi->bitbang.txrx_bufs = spi_sirfsoc_transfer;
-> -       sspi->bitbang.master->setup = spi_sirfsoc_setup;
-> -       sspi->bitbang.master->cleanup = spi_sirfsoc_cleanup;
-> -       master->bus_num = pdev->id;
-> -       master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LSB_FIRST | SPI_CS_HIGH;
-> -       master->bits_per_word_mask = SPI_BPW_MASK(8) | SPI_BPW_MASK(12) |
-> -                                       SPI_BPW_MASK(16) | SPI_BPW_MASK(32);
-> -       master->max_speed_hz = SIRFSOC_SPI_DEFAULT_FRQ;
-> -       master->flags = SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX;
-> -       sspi->bitbang.master->dev.of_node = pdev->dev.of_node;
+> -       spin_lock_init(&rtcdrv->lock);
 > -
-> -       /* request DMA channels */
-> -       sspi->rx_chan = dma_request_chan(&pdev->dev, "rx");
-> -       if (IS_ERR(sspi->rx_chan)) {
-> -               dev_err(&pdev->dev, "can not allocate rx dma channel\n");
-> -               ret = PTR_ERR(sspi->rx_chan);
-> -               goto free_master;
-> -       }
-> -       sspi->tx_chan = dma_request_chan(&pdev->dev, "tx");
-> -       if (IS_ERR(sspi->tx_chan)) {
-> -               dev_err(&pdev->dev, "can not allocate tx dma channel\n");
-> -               ret = PTR_ERR(sspi->tx_chan);
-> -               goto free_rx_dma;
+> -       err = of_property_read_u32(np, "reg", &rtcdrv->rtc_base);
+> -       if (err) {
+> -               dev_err(&pdev->dev, "unable to find base address of rtc node in dtb\n");
+> -               return err;
 > -       }
 > -
-> -       sspi->clk = clk_get(&pdev->dev, NULL);
-> -       if (IS_ERR(sspi->clk)) {
-> -               ret = PTR_ERR(sspi->clk);
-> -               goto free_tx_dma;
+> -       platform_set_drvdata(pdev, rtcdrv);
+> -
+> -       /* Register rtc alarm as a wakeup source */
+> -       device_init_wakeup(&pdev->dev, 1);
+> -
+> -       rtcdrv->regmap = devm_regmap_init_iobg(&pdev->dev,
+> -                       &sysrtc_regmap_config);
+> -       if (IS_ERR(rtcdrv->regmap)) {
+> -               err = PTR_ERR(rtcdrv->regmap);
+> -               dev_err(&pdev->dev, "Failed to allocate register map: %d\n",
+> -                       err);
+> -               return err;
 > -       }
-> -       clk_prepare_enable(sspi->clk);
-> -       if (spi_comp_data->hwinit)
-> -               spi_comp_data->hwinit(sspi);
-> -       sspi->ctrl_freq = clk_get_rate(sspi->clk);
 > -
-> -       init_completion(&sspi->rx_done);
-> -       init_completion(&sspi->tx_done);
+> -       /*
+> -        * Set SYS_RTC counter in RTC_HZ HZ Units
+> -        * We are using 32K RTC crystal (32768 / RTC_HZ / 2) -1
+> -        * If 16HZ, therefore RTC_DIV = 1023;
+> -        */
+> -       rtc_div = ((32768 / RTC_HZ) / 2) - 1;
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_DIV, rtc_div);
 > -
-> -       ret = spi_bitbang_start(&sspi->bitbang);
-> -       if (ret)
-> -               goto free_clk;
-> -       dev_info(&pdev->dev, "registered, bus number = %d\n", master->bus_num);
+> -       /* 0x3 -> RTC_CLK */
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_CLOCK_SWITCH, SIRFSOC_RTC_CLK);
 > -
-> -       return 0;
-> -free_clk:
-> -       clk_disable_unprepare(sspi->clk);
-> -       clk_put(sspi->clk);
-> -free_tx_dma:
-> -       dma_release_channel(sspi->tx_chan);
-> -free_rx_dma:
-> -       dma_release_channel(sspi->rx_chan);
-> -free_master:
-> -       spi_master_put(master);
+> -       /* reset SYS RTC ALARM0 */
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_ALARM0, 0x0);
 > -
-> -       return ret;
-> -}
+> -       /* reset SYS RTC ALARM1 */
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_ALARM1, 0x0);
 > -
-> -static int  spi_sirfsoc_remove(struct platform_device *pdev)
-> -{
-> -       struct spi_master *master;
-> -       struct sirfsoc_spi *sspi;
+> -       /* Restore RTC Overflow From Register After Command Reboot */
+> -       rtcdrv->overflow_rtc =
+> -               sirfsoc_rtc_readl(rtcdrv, RTC_SW_VALUE);
 > -
-> -       master = platform_get_drvdata(pdev);
-> -       sspi = spi_master_get_devdata(master);
-> -       spi_bitbang_stop(&sspi->bitbang);
-> -       clk_disable_unprepare(sspi->clk);
-> -       clk_put(sspi->clk);
-> -       dma_release_channel(sspi->rx_chan);
-> -       dma_release_channel(sspi->tx_chan);
-> -       spi_master_put(master);
-> -       return 0;
+> -       rtcdrv->rtc = devm_rtc_allocate_device(&pdev->dev);
+> -       if (IS_ERR(rtcdrv->rtc))
+> -               return PTR_ERR(rtcdrv->rtc);
+> -
+> -       rtcdrv->rtc->ops = &sirfsoc_rtc_ops;
+> -       rtcdrv->rtc->range_max = (1ULL << 60) - 1;
+> -
+> -       rtcdrv->irq = platform_get_irq(pdev, 0);
+> -       err = devm_request_irq(&pdev->dev, rtcdrv->irq, sirfsoc_rtc_irq_handler,
+> -                              IRQF_SHARED, pdev->name, rtcdrv);
+> -       if (err) {
+> -               dev_err(&pdev->dev, "Unable to register for the SiRF SOC RTC IRQ\n");
+> -               return err;
+> -       }
+> -
+> -       return devm_rtc_register_device(rtcdrv->rtc);
 > -}
 > -
 > -#ifdef CONFIG_PM_SLEEP
-> -static int spi_sirfsoc_suspend(struct device *dev)
+> -static int sirfsoc_rtc_suspend(struct device *dev)
 > -{
-> -       struct spi_master *master = dev_get_drvdata(dev);
-> -       struct sirfsoc_spi *sspi = spi_master_get_devdata(master);
-> -       int ret;
+> -       struct sirfsoc_rtc_drv *rtcdrv = dev_get_drvdata(dev);
+> -       rtcdrv->overflow_rtc =
+> -               sirfsoc_rtc_readl(rtcdrv, RTC_SW_VALUE);
 > -
-> -       ret = spi_master_suspend(master);
-> -       if (ret)
-> -               return ret;
+> -       rtcdrv->saved_counter =
+> -               sirfsoc_rtc_readl(rtcdrv, RTC_CN);
+> -       rtcdrv->saved_overflow_rtc = rtcdrv->overflow_rtc;
+> -       if (device_may_wakeup(dev) && !enable_irq_wake(rtcdrv->irq))
+> -               rtcdrv->irq_wake = 1;
 > -
-> -       clk_disable(sspi->clk);
 > -       return 0;
 > -}
 > -
-> -static int spi_sirfsoc_resume(struct device *dev)
+> -static int sirfsoc_rtc_resume(struct device *dev)
 > -{
-> -       struct spi_master *master = dev_get_drvdata(dev);
-> -       struct sirfsoc_spi *sspi = spi_master_get_devdata(master);
+> -       u32 tmp;
+> -       struct sirfsoc_rtc_drv *rtcdrv = dev_get_drvdata(dev);
 > -
-> -       clk_enable(sspi->clk);
-> -       writel(SIRFSOC_SPI_FIFO_RESET, sspi->base + sspi->regs->txfifo_op);
-> -       writel(SIRFSOC_SPI_FIFO_RESET, sspi->base + sspi->regs->rxfifo_op);
-> -       writel(SIRFSOC_SPI_FIFO_START, sspi->base + sspi->regs->txfifo_op);
-> -       writel(SIRFSOC_SPI_FIFO_START, sspi->base + sspi->regs->rxfifo_op);
+> -       /*
+> -        * if resume from snapshot and the rtc power is lost,
+> -        * restroe the rtc settings
+> -        */
+> -       if (SIRFSOC_RTC_CLK != sirfsoc_rtc_readl(rtcdrv, RTC_CLOCK_SWITCH)) {
+> -               u32 rtc_div;
+> -               /* 0x3 -> RTC_CLK */
+> -               sirfsoc_rtc_writel(rtcdrv, RTC_CLOCK_SWITCH, SIRFSOC_RTC_CLK);
+> -               /*
+> -                * Set SYS_RTC counter in RTC_HZ HZ Units
+> -                * We are using 32K RTC crystal (32768 / RTC_HZ / 2) -1
+> -                * If 16HZ, therefore RTC_DIV = 1023;
+> -                */
+> -               rtc_div = ((32768 / RTC_HZ) / 2) - 1;
+> -
+> -               sirfsoc_rtc_writel(rtcdrv, RTC_DIV, rtc_div);
+> -
+> -               /* reset SYS RTC ALARM0 */
+> -               sirfsoc_rtc_writel(rtcdrv, RTC_ALARM0, 0x0);
+> -
+> -               /* reset SYS RTC ALARM1 */
+> -               sirfsoc_rtc_writel(rtcdrv, RTC_ALARM1, 0x0);
+> -       }
+> -       rtcdrv->overflow_rtc = rtcdrv->saved_overflow_rtc;
+> -
+> -       /*
+> -        * if current counter is small than previous,
+> -        * it means overflow in sleep
+> -        */
+> -       tmp = sirfsoc_rtc_readl(rtcdrv, RTC_CN);
+> -       if (tmp <= rtcdrv->saved_counter)
+> -               rtcdrv->overflow_rtc++;
+> -       /*
+> -        *PWRC Value Be Changed When Suspend, Restore Overflow
+> -        * In Memory To Register
+> -        */
+> -       sirfsoc_rtc_writel(rtcdrv, RTC_SW_VALUE, rtcdrv->overflow_rtc);
+> -
+> -       if (device_may_wakeup(dev) && rtcdrv->irq_wake) {
+> -               disable_irq_wake(rtcdrv->irq);
+> -               rtcdrv->irq_wake = 0;
+> -       }
+> -
 > -       return 0;
 > -}
 > -#endif
 > -
-> -static SIMPLE_DEV_PM_OPS(spi_sirfsoc_pm_ops, spi_sirfsoc_suspend,
-> -                        spi_sirfsoc_resume);
+> -static SIMPLE_DEV_PM_OPS(sirfsoc_rtc_pm_ops,
+> -               sirfsoc_rtc_suspend, sirfsoc_rtc_resume);
 > -
-> -static struct platform_driver spi_sirfsoc_driver = {
+> -static struct platform_driver sirfsoc_rtc_driver = {
 > -       .driver = {
-> -               .name = DRIVER_NAME,
-> -               .pm     = &spi_sirfsoc_pm_ops,
-> -               .of_match_table = spi_sirfsoc_of_match,
+> -               .name = "sirfsoc-rtc",
+> -               .pm = &sirfsoc_rtc_pm_ops,
+> -               .of_match_table = sirfsoc_rtc_of_match,
 > -       },
-> -       .probe = spi_sirfsoc_probe,
-> -       .remove = spi_sirfsoc_remove,
+> -       .probe = sirfsoc_rtc_probe,
 > -};
-> -module_platform_driver(spi_sirfsoc_driver);
-> -MODULE_DESCRIPTION("SiRF SoC SPI master driver");
-> -MODULE_AUTHOR("Zhiwu Song <Zhiwu.Song@csr.com>");
-> -MODULE_AUTHOR("Barry Song <Baohua.Song@csr.com>");
-> -MODULE_AUTHOR("Qipan Li <Qipan.Li@csr.com>");
+> -module_platform_driver(sirfsoc_rtc_driver);
+> -
+> -MODULE_DESCRIPTION("SiRF SoC rtc driver");
+> -MODULE_AUTHOR("Xianglong Du <Xianglong.Du@csr.com>");
 > -MODULE_LICENSE("GPL v2");
+> -MODULE_ALIAS("platform:sirfsoc-rtc");
+> diff --git a/include/linux/rtc/sirfsoc_rtciobrg.h b/include/linux/rtc/sirfsoc_rtciobrg.h
+> deleted file mode 100644
+> index b31f2856733d..000000000000
+> --- a/include/linux/rtc/sirfsoc_rtciobrg.h
+> +++ /dev/null
+> @@ -1,21 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0-or-later */
+> -/*
+> - * RTC I/O Bridge interfaces for CSR SiRFprimaII
+> - * ARM access the registers of SYSRTC, GPSRTC and PWRC through this module
+> - *
+> - * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
+> - */
+> -#ifndef _SIRFSOC_RTC_IOBRG_H_
+> -#define _SIRFSOC_RTC_IOBRG_H_
+> -
+> -struct regmap_config;
+> -
+> -extern void sirfsoc_rtc_iobrg_besyncing(void);
+> -
+> -extern u32 sirfsoc_rtc_iobrg_readl(u32 addr);
+> -
+> -extern void sirfsoc_rtc_iobrg_writel(u32 val, u32 addr);
+> -struct regmap *devm_regmap_init_iobg(struct device *dev,
+> -                                   const struct regmap_config *config);
+> -
+> -#endif
 > --
 > 2.29.2
 >
