@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2ED2FD29D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144652FD29E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388055AbhATOY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:24:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S1725779AbhATOYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:24:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390099AbhATNk2 (ORCPT
+        with ESMTP id S2390107AbhATNke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:40:28 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692D6C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:48 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id d13so43627495ioy.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:48 -0800 (PST)
+        Wed, 20 Jan 2021 08:40:34 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0997C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:53 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id h25so567377wmb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=FM37ipdlLykh82wOaMeonjfMEHwci4vUHpTC97P767A=;
-        b=rOWwKG0ZAiK1X30AudSIn50Xfyklr+HXuFqGhgcR7QyAU2YMos1q33iV3Gmobqti7f
-         t6JF6Z6yxq38b3JJUyQCpA/5DFtJ8OLar05WxCI/v229aZO+pwBPksLWH/rwyqhPskPx
-         pZxkmXcSWZFlL/Zb3VPJxMTNNGhhbdfmiP6WCJbg59bpp1FjgSNnem6X/ZpQxBH/0/7m
-         WetdLltV8lKJ6sdhuyaiv0EP0ZQ2zuvmQ8Cros/i9O+efQrCTE15lO5Ttm6xD8PvNsOx
-         HVTq31Yur71rzgSIA7Fihj/oDjkKmCbLOk9MuePvSpMnOsAfrNvE3tt5NXdx3cUVRl6f
-         DfSg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=4HuaHnHsq3+9UDKnhuRegf7VhNzlZpKuJ1R6ivtSlOg=;
+        b=RzwwBhI0LFDqKRi3rX8rfrpXZflyXVI8WUwGnh7kHJ3Rle/pz7qDeRwRyRnlJJPqD8
+         AbDOl6ZRZHzI3FdOtQuR5PVuvAF4YuwgUucDI82DRg70lf7PQ85hM5g3qcrL/r9Ci9LP
+         4E4wX5o5GFVFLBTVo18e+aywt/VYrsTcwYihokSuh1rpKBOiBOd6wYW8/eEJTHrIaTzG
+         p/ObA5CGL2n/xo3pYACU0NdLVle/TTdGtxEeWFUsBoQjdYdz0hBfb67exaOcXtXOE504
+         U5/MfbwJNVd2jtfthveCkpFwMRLuiDS0SN5W2OBNZTOseChuxpzulx0V/jtV8eeL+iM1
+         809g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=FM37ipdlLykh82wOaMeonjfMEHwci4vUHpTC97P767A=;
-        b=UHjvvoJAX/UUNOREEEf1284u3w5YLwXl9l0Tm0jjbi3UrGGI0aX/DTVw2Mi+lpZofk
-         Hi5qreZfLnfnV3nbX2Jepl9cPxJ+T0tLHlZOoZvjVj0wZM8VFKd8D49Hqb0R2RCMBX4d
-         2FwXjHTtDtkBziZRk4mShmO+EsaJN1mrDMNnxGwyxzJgRfW0RcdhDkDGnSuJtdHwUtuD
-         GDi/Hu/qGoNKHEwEiuay4sLpYWkze0TcL7xRnFObI0zGvB1lncL5GQpLlAZJA73d8Lh8
-         90XDbNTW/5h6SjseliUac4D+RWKbaCKkFa3V9a4P+khBui2aypR+pbq/EqF/QqEmcLUh
-         Angw==
-X-Gm-Message-State: AOAM530n09hqjXeIX1rY4Gaehdq8CdCSh7LTnUiw3UZntI9c65llcQ+g
-        En/y1HadLRTn7L5UlnpoolRz9J2Jd69sFxRq2Rc=
-X-Received: by 2002:a92:cccd:: with SMTP id u13mt8060864ilq.273.1611149987592;
- Wed, 20 Jan 2021 05:39:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20210120130233.15932-1-ericcurtin17@gmail.com>
-In-Reply-To: <20210120130233.15932-1-ericcurtin17@gmail.com>
-From:   Eric Curtin <ericcurtin17@gmail.com>
-Date:   Wed, 20 Jan 2021 13:39:36 +0000
-Message-ID: <CANpvso7mbc9C=xjxLDivb6Qm8_FDu2fLjA-StMw4Z-209PHLqw@mail.gmail.com>
-Subject: Re: [PATCH] Increase limit of max_user_watches from 1/25 to 1/16
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=4HuaHnHsq3+9UDKnhuRegf7VhNzlZpKuJ1R6ivtSlOg=;
+        b=JFutIRjGZdb5zMLsEgoV5pAsPldnW0sblFn16v+Q/RnJ7iR+0ScjhKHNCoU+8i9web
+         oeVcnRtH4RZ1PXob4hWFiLUlUr7OSEjzf4E7VM8na3KUZRzKQsdeTqZObq58E/inKOKt
+         EFijOuU41hSaGT6GFBAGn1syUsBhKbzu7Q+LIQIXvVZ0aoi/XGFC1D16LDdR8+/R1dOo
+         GQoVhIJBGB4DKnWkPYPF1Th2CRvcvIr/sOVCT3piWrkCNIDw1abUFkajNcBfS8dqVy6O
+         ETDMqUccY+IPry35X11ABLQQcrSs9Cz5IVKiq6PiGu8PSk6Db9nJbtSWsAFBSxJ0LzRi
+         CRQQ==
+X-Gm-Message-State: AOAM5321CCjdNX+PzqRfD4VG8FcFZyAcwyCk3+UmaJgGqN5cxbTat1KC
+        6bkn0SCdGhrSlZoI41qvHHzcwKS9TuWj7g==
+X-Google-Smtp-Source: ABdhPJz9D0nnseUovWpFIZ6H+T0/V01e1hCruHihQvhd66s20FOaGPv8ik7N7xcP/s+yNf1ljx+YYerX46ujqA==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a7b:cb54:: with SMTP id
+ v20mr4532747wmj.148.1611149992267; Wed, 20 Jan 2021 05:39:52 -0800 (PST)
+Date:   Wed, 20 Jan 2021 13:39:44 +0000
+Message-Id: <20210120133946.2107897-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH bpf-next v3 0/2] BPF docs fixups
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 at 13:02, Eric Curtin <ericcurtin17@gmail.com> wrote:
->
-> The current default value for  max_user_watches  is the 1/16 (6.25%) of
-> the available low memory, divided for the "watch" cost in bytes.
->
-> Tools like inotify-tools and visual studio code, seem to hit these
-> limits a little to easy.
->
-> Also amending the documentation, it referred to an old value for this.
->
-> Signed-off-by: Eric Curtin <ericcurtin17@gmail.com>
-> ---
->  Documentation/admin-guide/sysctl/fs.rst | 4 ++--
->  fs/eventpoll.c                          | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/admin-guide/sysctl/fs.rst b/Documentation/admin-guide/sysctl/fs.rst
-> index f48277a0a850..f7fe45e69c41 100644
-> --- a/Documentation/admin-guide/sysctl/fs.rst
-> +++ b/Documentation/admin-guide/sysctl/fs.rst
-> @@ -380,5 +380,5 @@ This configuration option sets the maximum number of "watches" that are
->  allowed for each user.
->  Each "watch" costs roughly 90 bytes on a 32bit kernel, and roughly 160 bytes
->  on a 64bit one.
-> -The current default value for  max_user_watches  is the 1/32 of the available
-> -low memory, divided for the "watch" cost in bytes.
-> +The current default value for  max_user_watches  is the 1/16 (6.25%) of the
-> +available low memory, divided for the "watch" cost in bytes.
-> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> index a829af074eb5..de9ef8f6d0b2 100644
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -2352,9 +2352,9 @@ static int __init eventpoll_init(void)
->
->         si_meminfo(&si);
->         /*
-> -        * Allows top 4% of lomem to be allocated for epoll watches (per user).
-> +        * Allows top 6.25% of lomem to be allocated for epoll watches (per user).
->          */
-> -       max_user_watches = (((si.totalram - si.totalhigh) / 25) << PAGE_SHIFT) /
-> +       max_user_watches = (((si.totalram - si.totalhigh) / 16) << PAGE_SHIFT) /
->                 EP_ITEM_COST;
->         BUG_ON(max_user_watches < 0);
->
-> --
-> 2.25.1
->
+Difference from v2->v3 [1]:
 
-Please ignore this, this is the wrong limit (an epoll one), I sent
-another patch just
-to update the documentation to be correct. Weiman Long already kindly solved the
-issue in 92890123749bafc317bbfacbe0a62ce08d78efb7
+ * Just fixed a commite message, rebased, and added Lukas' review tag - thanks
+   Lukas!
 
-Separate patch is titled "[PATCH] Update
-Documentation/admin-guide/sysctl/fs.rst"
+Difference from v1->v2 [1]:
+
+ * Split into 2 patches
+
+ * Avoided unnecessary ': ::' in .rst source
+
+ * Tweaked wording of the -mcpu=v3 bit a little more
+
+[1] Previous versions:
+    v1: https://lore.kernel.org/bpf/CA+i-1C1LVKjfQLBYk6siiqhxfy0jCR7UBcAmJ4jCED0A9aWsxA@mail.gmail.com/T/#t
+    v2: https://lore.kernel.org/bpf/20210118155735.532663-1-jackmanb@google.com/T/#t
+
+Brendan Jackman (2):
+  docs: bpf: Fixup atomics markup
+  docs: bpf: Clarify -mcpu=v3 requirement for atomic ops
+
+ Documentation/networking/filter.rst | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+
+base-commit: 8edc0c67d09d6bf441eeb39ae9316fe07478093f
+--
+2.30.0.284.gd98b1dd5eaa7-goog
+
