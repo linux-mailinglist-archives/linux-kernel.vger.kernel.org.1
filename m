@@ -2,472 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E231E2FCCAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D335D2FCCAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730502AbhATIZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:25:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36458 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730488AbhATIV0 (ORCPT
+        id S1730889AbhATI0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:26:17 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:40930 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730923AbhATIVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:21:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611130799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iB9CZ7e+nNRLOdaYJPit2SgCEWU/AVOuwEo9CHK9FyM=;
-        b=Y/n2wqB2xKFoN8YlLBGQLxbdH1/JnvxQSzosCvHu/XNMHDE+7Q3mby4mqMWR53CHmckT5c
-        TIf7QawJ83EgEIfmx/5YFjJYyrBjhWCXWoyJEMiiCjYgjlstDnrV3Cq7BK7Emi0QGKiZu5
-        uFGwRwWmJkHLxNVGuDpvuF7HBYhaMAI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-mbKcnINAP120sxNDfdvKHA-1; Wed, 20 Jan 2021 03:19:56 -0500
-X-MC-Unique: mbKcnINAP120sxNDfdvKHA-1
-Received: by mail-wr1-f69.google.com with SMTP id u3so10974400wri.19
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:19:56 -0800 (PST)
+        Wed, 20 Jan 2021 03:21:32 -0500
+Received: by mail-ot1-f44.google.com with SMTP id i20so14816537otl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:21:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iB9CZ7e+nNRLOdaYJPit2SgCEWU/AVOuwEo9CHK9FyM=;
-        b=kum/kBsOfuVZnA3fqAz9lr8MegxHf0FAYKwfDldwOqajuTWEvOF+ApArzRLr//ZwGK
-         tnPq7con/z557FP5oEdEfSHn4H+t/Dkat7muNyTghJ8Whf6f1eqnyIc8CMN8Ovzoczhe
-         bJDYSVWvt4Y9fziZ8YoVvPoEiY5WQNgwHDg0SHxDkHsOj2lt8t5Km5kSczamaLGkc+mk
-         12C5lKFS3EfX+RAVxvCyWpvGvdxjcKthsMUYgxiOchVr+ATKVdC/balzqpiNR7sjq4s7
-         MhLtvqKXNUZG6HyRGrBMvrRJom8zv7q9pys3LeALv+vQp44uiiG0fRfDRD+Iz3bPaHUc
-         N1wQ==
-X-Gm-Message-State: AOAM532/t9sBAG+ZA9w7XxM7oILbWB8AYscxRRDVOQkY92x0mNnEPKuR
-        yF54FAV8XOwso1gDsNvGLleHb5ZYersRfPpTa8oyZKmE92KYk/ediVWVlj4KCqWxIR1e56uS28O
-        X1N5FpJW4TSIyz6y30/XzQpbl
-X-Received: by 2002:a1c:2155:: with SMTP id h82mr1326560wmh.132.1611130795458;
-        Wed, 20 Jan 2021 00:19:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxw8F1y8tM2i50NZrvxAqb0fmPBioG07/YhVEr0Xuhuk3j2tC/h//XZcSVvqkhFwCTS/qQ+qg==
-X-Received: by 2002:a1c:2155:: with SMTP id h82mr1326543wmh.132.1611130795188;
-        Wed, 20 Jan 2021 00:19:55 -0800 (PST)
-Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
-        by smtp.gmail.com with ESMTPSA id w1sm2360284wrr.84.2021.01.20.00.19.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 00:19:54 -0800 (PST)
-Date:   Wed, 20 Jan 2021 03:19:51 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] uapi: virtio_snd: add the sound device header file
-Message-ID: <20210120031818-mutt-send-email-mst@kernel.org>
-References: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
- <20210120003638.3339987-3-anton.yakovlev@opensynergy.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=54NUOyClmna+6jwSaRTzrk1a0mWX77xAMqQqC9zDA3k=;
+        b=nqlP9g9AtEOjyEEdxib0Z4gpQxlJySRFC+/0WgGja+m4b8dnUHV+X07cSb84qqQw9Z
+         kYsYJ2a7K0XX4creQiaX33QSadaNYKygTxs5kR2LS5ckp8qgzMwNxgkv1EqrbIFzKMmb
+         YXAQ+0SMNPtXejl0j2SPsK8ZHvgbS69NPvs5daImZrLk5k6iSefydqIXos0g5O6MV5eG
+         fzcmuPKLhm6s8xj2vcwHZGZDZEwSoGjbsn1SFNMEp0j4MLIyGox/GIVbYFb44mTRsMMS
+         zJ5n72ahFaJx8Eebgg/T1+DF11pgzNulBEHL2LpNezizjRe43u0riocN0yt+edziOEl9
+         qw3g==
+X-Gm-Message-State: AOAM532TWMRwaZletkxHcgAlvpWLOCBKMdfA6vo4++Wxck4e7CY0k1UH
+        gztcRqHog+8rQBQb0sh2f4QJWSE9msCbXeqI1kg=
+X-Google-Smtp-Source: ABdhPJzfxMTsAvZ+SILTVY24yY9okpaVeh49Zuxh+4hAVdm2JWBVT+vMz8fsNOfjP6a3VqlGpJ4mOqfERVCUhhoahvE=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr6286950oth.250.1611130850929;
+ Wed, 20 Jan 2021 00:20:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120003638.3339987-3-anton.yakovlev@opensynergy.com>
+References: <20210119080938.1832733-1-geert@linux-m68k.org>
+ <20210119213444.GL2002709@lianli.shorne-pla.net> <20210119221110.GM2002709@lianli.shorne-pla.net>
+In-Reply-To: <20210119221110.GM2002709@lianli.shorne-pla.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 Jan 2021 09:20:39 +0100
+Message-ID: <CAMuHMdVpogc=oEgCCq8N__RJkujJX47OaZZcyaRgjSJV2+SZ-Q@mail.gmail.com>
+Subject: Re: [PATCH v4] drivers/soc/litex: Add restart handler
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joel Stanley <joel@jms.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 01:36:30AM +0100, Anton Yakovlev wrote:
-> The file contains the definitions for the sound device from the OASIS
-> virtio spec.
-> 
-> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> ---
->  MAINTAINERS                     |   6 +
->  include/uapi/linux/virtio_snd.h | 361 ++++++++++++++++++++++++++++++++
->  2 files changed, 367 insertions(+)
->  create mode 100644 include/uapi/linux/virtio_snd.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 00836f6452f0..6dfd59eafe82 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18936,6 +18936,12 @@ W:	https://virtio-mem.gitlab.io/
->  F:	drivers/virtio/virtio_mem.c
->  F:	include/uapi/linux/virtio_mem.h
->  
-> +VIRTIO SOUND DRIVER
-> +M:	Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> +L:	virtualization@lists.linux-foundation.org
-> +S:	Maintained
-> +F:	include/uapi/linux/virtio_snd.h
-> +
->  VIRTUAL BOX GUEST DEVICE DRIVER
->  M:	Hans de Goede <hdegoede@redhat.com>
->  M:	Arnd Bergmann <arnd@arndb.de>
+Hi Stafford,
 
-You want sound/virtio here too, right?
-I'd just squash this with the next patch in series.
+On Tue, Jan 19, 2021 at 11:11 PM Stafford Horne <shorne@gmail.com> wrote:
+> On Wed, Jan 20, 2021 at 06:34:44AM +0900, Stafford Horne wrote:
+> > On Tue, Jan 19, 2021 at 09:09:38AM +0100, Geert Uytterhoeven wrote:
+> > > Let the LiteX SoC Controller register a restart handler, which resets
+> > > the LiteX SoC by writing 1 to CSR_CTRL_RESET_ADDR.
+> > >
+> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >
+> > Thanks, this looks good to me, queued to my linux-next branch.
+> >
+> > -Stafford
+> >
+> > > @@ -66,8 +71,19 @@ static int litex_check_csr_access(void __iomem *reg_addr)
+> > >
+> > >  struct litex_soc_ctrl_device {
+> > >     void __iomem *base;
+> > > +   struct notifier_block reset_nb;
+> > >  };
+> > >
+> > > +static int litex_reset_handler(struct notifier_block *this, unsigned long mode,
+> > > +                          void *cmd)
+> > > +{
+> > > +   struct litex_soc_ctrl_device *soc_ctrl_dev =
+> > > +           container_of(this, struct litex_soc_ctrl_device, reset_nb);
+> >
+> > Nice.
+> >
+> > > +   litex_write32(soc_ctrl_dev->base + RESET_REG_OFF, RESET_REG_VALUE);
+> > > +   return NOTIFY_DONE;
+> > > +}
+> > > +
+>
+> Actually, I tested this out on the latest (2-weeks ago) Litex and
+> openrisc/for-next and it didn't seem to work correctly.
+>
+> I will look into it a bit closer, but if you see or can think of anything let
+> me know.  Note There are a few failures below related to network services as my
+> for-next kernel doesnt have a network driver (yet).
 
-> diff --git a/include/uapi/linux/virtio_snd.h b/include/uapi/linux/virtio_snd.h
-> new file mode 100644
-> index 000000000000..1ff6310e54d6
-> --- /dev/null
-> +++ b/include/uapi/linux/virtio_snd.h
-> @@ -0,0 +1,361 @@
-> +/* SPDX-License-Identifier: BSD-3-Clause */
-> +/*
-> + * Copyright (C) 2020  OpenSynergy GmbH
-> + *
-> + * This header is BSD licensed so anyone can use the definitions to
-> + * implement compatible drivers/servers.
-> + *
-> + * Redistribution and use in source and binary forms, with or without
-> + * modification, are permitted provided that the following conditions
-> + * are met:
-> + * 1. Redistributions of source code must retain the above copyright
-> + *    notice, this list of conditions and the following disclaimer.
-> + * 2. Redistributions in binary form must reproduce the above copyright
-> + *    notice, this list of conditions and the following disclaimer in the
-> + *    documentation and/or other materials provided with the distribution.
-> + * 3. Neither the name of OpenSynergy GmbH nor the names of its contributors
-> + *    may be used to endorse or promote products derived from this software
-> + *    without specific prior written permission.
-> + * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-> + * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-> + * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-> + * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL IBM OR
-> + * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-> + * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-> + * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-> + * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-> + * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-> + * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-> + * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-> + * SUCH DAMAGE.
-> + */
-> +#ifndef VIRTIO_SND_IF_H
-> +#define VIRTIO_SND_IF_H
-> +
-> +#include <linux/virtio_types.h>
-> +
-> +/*******************************************************************************
-> + * CONFIGURATION SPACE
-> + */
-> +struct virtio_snd_config {
-> +	/* # of available physical jacks */
-> +	__le32 jacks;
-> +	/* # of available PCM streams */
-> +	__le32 streams;
-> +	/* # of available channel maps */
-> +	__le32 chmaps;
-> +};
-> +
-> +enum {
-> +	/* device virtqueue indexes */
-> +	VIRTIO_SND_VQ_CONTROL = 0,
-> +	VIRTIO_SND_VQ_EVENT,
-> +	VIRTIO_SND_VQ_TX,
-> +	VIRTIO_SND_VQ_RX,
-> +	/* # of device virtqueues */
-> +	VIRTIO_SND_VQ_MAX
-> +};
-> +
-> +/*******************************************************************************
-> + * COMMON DEFINITIONS
-> + */
-> +
-> +/* supported dataflow directions */
-> +enum {
-> +	VIRTIO_SND_D_OUTPUT = 0,
-> +	VIRTIO_SND_D_INPUT
-> +};
-> +
-> +enum {
-> +	/* jack control request types */
-> +	VIRTIO_SND_R_JACK_INFO = 1,
-> +	VIRTIO_SND_R_JACK_REMAP,
-> +
-> +	/* PCM control request types */
-> +	VIRTIO_SND_R_PCM_INFO = 0x0100,
-> +	VIRTIO_SND_R_PCM_SET_PARAMS,
-> +	VIRTIO_SND_R_PCM_PREPARE,
-> +	VIRTIO_SND_R_PCM_RELEASE,
-> +	VIRTIO_SND_R_PCM_START,
-> +	VIRTIO_SND_R_PCM_STOP,
-> +
-> +	/* channel map control request types */
-> +	VIRTIO_SND_R_CHMAP_INFO = 0x0200,
-> +
-> +	/* jack event types */
-> +	VIRTIO_SND_EVT_JACK_CONNECTED = 0x1000,
-> +	VIRTIO_SND_EVT_JACK_DISCONNECTED,
-> +
-> +	/* PCM event types */
-> +	VIRTIO_SND_EVT_PCM_PERIOD_ELAPSED = 0x1100,
-> +	VIRTIO_SND_EVT_PCM_XRUN,
-> +
-> +	/* common status codes */
-> +	VIRTIO_SND_S_OK = 0x8000,
-> +	VIRTIO_SND_S_BAD_MSG,
-> +	VIRTIO_SND_S_NOT_SUPP,
-> +	VIRTIO_SND_S_IO_ERR
-> +};
-> +
-> +/* common header */
-> +struct virtio_snd_hdr {
-> +	__le32 code;
-> +};
-> +
-> +/* event notification */
-> +struct virtio_snd_event {
-> +	/* VIRTIO_SND_EVT_XXX */
-> +	struct virtio_snd_hdr hdr;
-> +	/* optional event data */
-> +	__le32 data;
-> +};
-> +
-> +/* common control request to query an item information */
-> +struct virtio_snd_query_info {
-> +	/* VIRTIO_SND_R_XXX_INFO */
-> +	struct virtio_snd_hdr hdr;
-> +	/* item start identifier */
-> +	__le32 start_id;
-> +	/* item count to query */
-> +	__le32 count;
-> +	/* item information size in bytes */
-> +	__le32 size;
-> +};
-> +
-> +/* common item information header */
-> +struct virtio_snd_info {
-> +	/* function group node id (High Definition Audio Specification 7.1.2) */
-> +	__le32 hda_fn_nid;
-> +};
-> +
-> +/*******************************************************************************
-> + * JACK CONTROL MESSAGES
-> + */
-> +struct virtio_snd_jack_hdr {
-> +	/* VIRTIO_SND_R_JACK_XXX */
-> +	struct virtio_snd_hdr hdr;
-> +	/* 0 ... virtio_snd_config::jacks - 1 */
-> +	__le32 jack_id;
-> +};
-> +
-> +/* supported jack features */
-> +enum {
-> +	VIRTIO_SND_JACK_F_REMAP = 0
-> +};
-> +
-> +struct virtio_snd_jack_info {
-> +	/* common header */
-> +	struct virtio_snd_info hdr;
-> +	/* supported feature bit map (1 << VIRTIO_SND_JACK_F_XXX) */
-> +	__le32 features;
-> +	/* pin configuration (High Definition Audio Specification 7.3.3.31) */
-> +	__le32 hda_reg_defconf;
-> +	/* pin capabilities (High Definition Audio Specification 7.3.4.9) */
-> +	__le32 hda_reg_caps;
-> +	/* current jack connection status (0: disconnected, 1: connected) */
-> +	__u8 connected;
-> +
-> +	__u8 padding[7];
-> +};
-> +
-> +/* jack remapping control request */
-> +struct virtio_snd_jack_remap {
-> +	/* .code = VIRTIO_SND_R_JACK_REMAP */
-> +	struct virtio_snd_jack_hdr hdr;
-> +	/* selected association number */
-> +	__le32 association;
-> +	/* selected sequence number */
-> +	__le32 sequence;
-> +};
-> +
-> +/*******************************************************************************
-> + * PCM CONTROL MESSAGES
-> + */
-> +struct virtio_snd_pcm_hdr {
-> +	/* VIRTIO_SND_R_PCM_XXX */
-> +	struct virtio_snd_hdr hdr;
-> +	/* 0 ... virtio_snd_config::streams - 1 */
-> +	__le32 stream_id;
-> +};
-> +
-> +/* supported PCM stream features */
-> +enum {
-> +	VIRTIO_SND_PCM_F_SHMEM_HOST = 0,
-> +	VIRTIO_SND_PCM_F_SHMEM_GUEST,
-> +	VIRTIO_SND_PCM_F_MSG_POLLING,
-> +	VIRTIO_SND_PCM_F_EVT_SHMEM_PERIODS,
-> +	VIRTIO_SND_PCM_F_EVT_XRUNS
-> +};
-> +
-> +/* supported PCM sample formats */
-> +enum {
-> +	/* analog formats (width / physical width) */
-> +	VIRTIO_SND_PCM_FMT_IMA_ADPCM = 0,	/*  4 /  4 bits */
-> +	VIRTIO_SND_PCM_FMT_MU_LAW,		/*  8 /  8 bits */
-> +	VIRTIO_SND_PCM_FMT_A_LAW,		/*  8 /  8 bits */
-> +	VIRTIO_SND_PCM_FMT_S8,			/*  8 /  8 bits */
-> +	VIRTIO_SND_PCM_FMT_U8,			/*  8 /  8 bits */
-> +	VIRTIO_SND_PCM_FMT_S16,			/* 16 / 16 bits */
-> +	VIRTIO_SND_PCM_FMT_U16,			/* 16 / 16 bits */
-> +	VIRTIO_SND_PCM_FMT_S18_3,		/* 18 / 24 bits */
-> +	VIRTIO_SND_PCM_FMT_U18_3,		/* 18 / 24 bits */
-> +	VIRTIO_SND_PCM_FMT_S20_3,		/* 20 / 24 bits */
-> +	VIRTIO_SND_PCM_FMT_U20_3,		/* 20 / 24 bits */
-> +	VIRTIO_SND_PCM_FMT_S24_3,		/* 24 / 24 bits */
-> +	VIRTIO_SND_PCM_FMT_U24_3,		/* 24 / 24 bits */
-> +	VIRTIO_SND_PCM_FMT_S20,			/* 20 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_U20,			/* 20 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_S24,			/* 24 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_U24,			/* 24 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_S32,			/* 32 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_U32,			/* 32 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_FLOAT,		/* 32 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_FLOAT64,		/* 64 / 64 bits */
-> +	/* digital formats (width / physical width) */
-> +	VIRTIO_SND_PCM_FMT_DSD_U8,		/*  8 /  8 bits */
-> +	VIRTIO_SND_PCM_FMT_DSD_U16,		/* 16 / 16 bits */
-> +	VIRTIO_SND_PCM_FMT_DSD_U32,		/* 32 / 32 bits */
-> +	VIRTIO_SND_PCM_FMT_IEC958_SUBFRAME	/* 32 / 32 bits */
-> +};
-> +
-> +/* supported PCM frame rates */
-> +enum {
-> +	VIRTIO_SND_PCM_RATE_5512 = 0,
-> +	VIRTIO_SND_PCM_RATE_8000,
-> +	VIRTIO_SND_PCM_RATE_11025,
-> +	VIRTIO_SND_PCM_RATE_16000,
-> +	VIRTIO_SND_PCM_RATE_22050,
-> +	VIRTIO_SND_PCM_RATE_32000,
-> +	VIRTIO_SND_PCM_RATE_44100,
-> +	VIRTIO_SND_PCM_RATE_48000,
-> +	VIRTIO_SND_PCM_RATE_64000,
-> +	VIRTIO_SND_PCM_RATE_88200,
-> +	VIRTIO_SND_PCM_RATE_96000,
-> +	VIRTIO_SND_PCM_RATE_176400,
-> +	VIRTIO_SND_PCM_RATE_192000,
-> +	VIRTIO_SND_PCM_RATE_384000
-> +};
-> +
-> +struct virtio_snd_pcm_info {
-> +	/* common header */
-> +	struct virtio_snd_info hdr;
-> +	/* supported feature bit map (1 << VIRTIO_SND_PCM_F_XXX) */
-> +	__le32 features;
-> +	/* supported sample format bit map (1 << VIRTIO_SND_PCM_FMT_XXX) */
-> +	__le64 formats;
-> +	/* supported frame rate bit map (1 << VIRTIO_SND_PCM_RATE_XXX) */
-> +	__le64 rates;
-> +	/* dataflow direction (VIRTIO_SND_D_XXX) */
-> +	__u8 direction;
-> +	/* minimum # of supported channels */
-> +	__u8 channels_min;
-> +	/* maximum # of supported channels */
-> +	__u8 channels_max;
-> +
-> +	__u8 padding[5];
-> +};
-> +
-> +/* set PCM stream format */
-> +struct virtio_snd_pcm_set_params {
-> +	/* .code = VIRTIO_SND_R_PCM_SET_PARAMS */
-> +	struct virtio_snd_pcm_hdr hdr;
-> +	/* size of the hardware buffer */
-> +	__le32 buffer_bytes;
-> +	/* size of the hardware period */
-> +	__le32 period_bytes;
-> +	/* selected feature bit map (1 << VIRTIO_SND_PCM_F_XXX) */
-> +	__le32 features;
-> +	/* selected # of channels */
-> +	__u8 channels;
-> +	/* selected sample format (VIRTIO_SND_PCM_FMT_XXX) */
-> +	__u8 format;
-> +	/* selected frame rate (VIRTIO_SND_PCM_RATE_XXX) */
-> +	__u8 rate;
-> +
-> +	__u8 padding;
-> +};
-> +
-> +/*******************************************************************************
-> + * PCM I/O MESSAGES
-> + */
-> +
-> +/* I/O request header */
-> +struct virtio_snd_pcm_xfer {
-> +	/* 0 ... virtio_snd_config::streams - 1 */
-> +	__le32 stream_id;
-> +};
-> +
-> +/* I/O request status */
-> +struct virtio_snd_pcm_status {
-> +	/* VIRTIO_SND_S_XXX */
-> +	__le32 status;
-> +	/* current device latency */
-> +	__le32 latency_bytes;
-> +};
-> +
-> +/*******************************************************************************
-> + * CHANNEL MAP CONTROL MESSAGES
-> + */
-> +struct virtio_snd_chmap_hdr {
-> +	/* VIRTIO_SND_R_CHMAP_XXX */
-> +	struct virtio_snd_hdr hdr;
-> +	/* 0 ... virtio_snd_config::chmaps - 1 */
-> +	__le32 chmap_id;
-> +};
-> +
-> +/* standard channel position definition */
-> +enum {
-> +	VIRTIO_SND_CHMAP_NONE = 0,	/* undefined */
-> +	VIRTIO_SND_CHMAP_NA,		/* silent */
-> +	VIRTIO_SND_CHMAP_MONO,		/* mono stream */
-> +	VIRTIO_SND_CHMAP_FL,		/* front left */
-> +	VIRTIO_SND_CHMAP_FR,		/* front right */
-> +	VIRTIO_SND_CHMAP_RL,		/* rear left */
-> +	VIRTIO_SND_CHMAP_RR,		/* rear right */
-> +	VIRTIO_SND_CHMAP_FC,		/* front center */
-> +	VIRTIO_SND_CHMAP_LFE,		/* low frequency (LFE) */
-> +	VIRTIO_SND_CHMAP_SL,		/* side left */
-> +	VIRTIO_SND_CHMAP_SR,		/* side right */
-> +	VIRTIO_SND_CHMAP_RC,		/* rear center */
-> +	VIRTIO_SND_CHMAP_FLC,		/* front left center */
-> +	VIRTIO_SND_CHMAP_FRC,		/* front right center */
-> +	VIRTIO_SND_CHMAP_RLC,		/* rear left center */
-> +	VIRTIO_SND_CHMAP_RRC,		/* rear right center */
-> +	VIRTIO_SND_CHMAP_FLW,		/* front left wide */
-> +	VIRTIO_SND_CHMAP_FRW,		/* front right wide */
-> +	VIRTIO_SND_CHMAP_FLH,		/* front left high */
-> +	VIRTIO_SND_CHMAP_FCH,		/* front center high */
-> +	VIRTIO_SND_CHMAP_FRH,		/* front right high */
-> +	VIRTIO_SND_CHMAP_TC,		/* top center */
-> +	VIRTIO_SND_CHMAP_TFL,		/* top front left */
-> +	VIRTIO_SND_CHMAP_TFR,		/* top front right */
-> +	VIRTIO_SND_CHMAP_TFC,		/* top front center */
-> +	VIRTIO_SND_CHMAP_TRL,		/* top rear left */
-> +	VIRTIO_SND_CHMAP_TRR,		/* top rear right */
-> +	VIRTIO_SND_CHMAP_TRC,		/* top rear center */
-> +	VIRTIO_SND_CHMAP_TFLC,		/* top front left center */
-> +	VIRTIO_SND_CHMAP_TFRC,		/* top front right center */
-> +	VIRTIO_SND_CHMAP_TSL,		/* top side left */
-> +	VIRTIO_SND_CHMAP_TSR,		/* top side right */
-> +	VIRTIO_SND_CHMAP_LLFE,		/* left LFE */
-> +	VIRTIO_SND_CHMAP_RLFE,		/* right LFE */
-> +	VIRTIO_SND_CHMAP_BC,		/* bottom center */
-> +	VIRTIO_SND_CHMAP_BLC,		/* bottom left center */
-> +	VIRTIO_SND_CHMAP_BRC		/* bottom right center */
-> +};
-> +
-> +/* maximum possible number of channels */
-> +#define VIRTIO_SND_CHMAP_MAX_SIZE	18
-> +
-> +struct virtio_snd_chmap_info {
-> +	/* common header */
-> +	struct virtio_snd_info hdr;
-> +	/* dataflow direction (VIRTIO_SND_D_XXX) */
-> +	__u8 direction;
-> +	/* # of valid channel position values */
-> +	__u8 channels;
-> +	/* channel position values (VIRTIO_SND_CHMAP_XXX) */
-> +	__u8 positions[VIRTIO_SND_CHMAP_MAX_SIZE];
-> +};
-> +
-> +#endif /* VIRTIO_SND_IF_H */
-> -- 
-> 2.30.0
-> 
+Hmmm, openrisc/for-next does have commit 131172a4a8ce3fcc ("openrisc:
+restart: Call common handlers before hanging").
 
+It's been a few years I used an OpenRISC setup.
+Do you have a link to Linux on mor1kx/LiteX setup instructions?
+
+>
+> Using my buildroot rootfs: http://shorne.noip.me/downloads/or1k-glibc-rootfs.cpio.gz
+>
+>     # shutdown -r now
+>
+>     Broadcast message from root@buildroot (console) (Thu Jan  1 00:00:48 1970):
+>     The system is going down for reboot NOW!
+>     INIT: Switching to runlevel: 6
+>     # mounting home work nfs ...
+>     mount: mounting 10.0.0.27:/home/shorne/work on /home/shorne/work failed: No such device
+>     enabling login for shorne ...
+>     setting coredumps ...
+>     Stopping dropbear sshd: FAIL
+>     Stopping ntpd: FAIL
+>     Nothing to do, sntp is not a daemon.
+>     Stopping network: ifdown: interface lo not configured
+>     ifdown: interface eth0 not configured
+>     OK
+>     Saving random seed: [   52.020000] random: dd: uninitialized urandom read (512 bytes read)
+>     OK
+>     Stopping klogd: OK
+>     Stopping syslogd: start-stop-daemon: warning: killing process 51: No such process
+>     FAIL
+>     umount: devtmpfs busy - remounted read-only
+>     umount: can't unmount /: Invalid argument
+>     [   53.710000] reboot: Restarting system
+>     [   54.710000] Reboot failed -- System halted
+>     [   76.040000] watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [reboot:131]
+>     [   76.040000] CPU: 0 PID: 131 Comm: reboot Not tainted 5.11.0-rc1-00009-gff28dae0bc90 #418
+>     [   76.040000] CPU #: 0
+>     [   76.040000]    PC: c00050b8    SR: 0000827f    SP: c180fdb0
+>     [   76.040000] GPR00: 00000000 GPR01: c180fdb0 GPR02: c180fdc0 GPR03: 0000827f
+>     [   76.040000] GPR04: c0348944 GPR05: 00000000 GPR06: c180fc70 GPR07: 00000000
+>     [   76.040000] GPR08: c180fdb0 GPR09: c00050b8 GPR10: c180e000 GPR11: 0000001e
+>     [   76.040000] GPR12: 00000000 GPR13: 00000020 GPR14: 00000001 GPR15: 00000000
+>     [   76.040000] GPR16: 00000000 GPR17: c02e48d4 GPR18: 00418958 GPR19: c02e48d4
+>     [   76.040000] GPR20: 00000000 GPR21: 00000000 GPR22: c02e4018 GPR23: fffffffe
+>     [   76.040000] GPR24: ffffffff GPR25: 00000000 GPR26: 00000000 GPR27: 00000000
+>     [   76.040000] GPR28: 00000000 GPR29: ffffffff GPR30: 00000000 GPR31: ffffffff
+>     [   76.040000]   RES: 0000001e oGPR11: ffffffff
+>     [   76.040000] Process reboot (pid: 131, stackpage=c180a000)
+>     [   76.040000]
+>     [   76.040000] Stack:
+>     [   76.040000] Call trace:
+>     [   76.040000] [<(ptrval)>] machine_restart+0x44/0x5c
+>     [   76.040000] [<(ptrval)>] kernel_restart+0x78/0xa4
+>     [   76.040000] [<(ptrval)>] ? mutex_lock+0x24/0x50
+>     [   76.040000] [<(ptrval)>] __do_sys_reboot+0x1a8/0x21c
+>     [   76.040000] [<(ptrval)>] ? do_filp_open+0x40/0xa0
+>     [   76.040000] [<(ptrval)>] ? slab_free_freelist_hook+0x6c/0x14c
+>     [   76.040000] [<(ptrval)>] ? arch_local_irq_save+0x24/0x3c
+>     [   76.040000] [<(ptrval)>] ? kmem_cache_free+0x130/0x194
+>     [   76.040000] [<(ptrval)>] ? call_rcu+0x50/0x8c
+>     [   76.040000] [<(ptrval)>] ? __fput+0x2d0/0x2f4
+>     [   76.040000] [<(ptrval)>] ? do_sys_openat2+0xd8/0x134
+>     [   76.040000] [<(ptrval)>] ? task_work_run+0xbc/0xf4
+>     [   76.040000] [<(ptrval)>] ? do_work_pending+0x60/0x12c
+>     [   76.040000] [<(ptrval)>] sys_reboot+0x14/0x24
+>     [   76.040000] [<(ptrval)>] ? _syscall_return+0x0/0x4
+>
+>
+> -Stafford
+
+
+
+-- 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
