@@ -2,156 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405E82FDC45
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519542FDCA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388949AbhATWPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 17:15:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S1732663AbhATW0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732568AbhATWFw (ORCPT
+        with ESMTP id S1732209AbhATWEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 17:05:52 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE943C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:04:09 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id d13so99822ioy.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:04:09 -0800 (PST)
+        Wed, 20 Jan 2021 17:04:46 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DF2C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:04:05 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id d81so108039iof.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:04:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OTJ73KV2wfSd3Og0yq4LeI7FHZJzlHvLFa16f+6zrPU=;
-        b=qMmPeSXkukYNoqJkku67SA1G23I8JZCr4XuQKGicdZPP3Bpw03KreZYU7v+kEaYC1Q
-         FOXTVdY80Er7i2a0NxrT2CC18D9zpSl/oCSlIZsyxtCFJ2ife/K864V4sYpvoRSafRno
-         uY21kxj86WBbnum3bRih7g3pwQ2udxm3LApvt4ZzzL5GNnauK2BB3ZJN5cTdjaV9Ts1q
-         Kwgfk8RIN+2ulgzBv7nHavFjq/EgRjbVi45JuUImaxNYGC7aEUtxiTm24r2RMGrLysZI
-         hv6uKDCHDQTbgV2P50USutj0PdJY9j8nIp5dCptX9cEafdOgarzQCWgO8nqvCbZahZDO
-         27dw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V3TcYAR0KycrKsgY4roTY2MFZq0U/ncsPStDv/MM68g=;
+        b=eXW1xreQZ3gRIkREKhHF+sAztlPHMdxhtwI3mWQj0eOAZ27j2/gTrK3KQjLsuzu/dF
+         0p6DFIVWwoj+X/bjAUX9Cw/0Bx5SBUNp8fuPh6uhCcImw6kojoPhOev0R7IGBBgHGgTv
+         Behmzkz2LYgR0UcWBZofnK07+1DNm3quWH1lKaOXgSvWFZtZeVBum/XB5wa+llHrbRqZ
+         Zv691RCn3z9wiS01J+vUmOlAWmcXSQByDSiR+s9pKiW2yTmtUrPo/7pjXhdil+yNRsNr
+         JH4d+uUu5eItQ/Y5j89KR9vSR03bNPdQRq0gyhdKy5VokWY4DSqSMZnV+MaKnO0HhMcm
+         H0TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OTJ73KV2wfSd3Og0yq4LeI7FHZJzlHvLFa16f+6zrPU=;
-        b=f/qCPS4AenI8Q7010ALoeyAcUdn7gSxgm3tDMLA9yyiLshjYn+9f4bCC7lDkhPRBF6
-         DF+XGY4NkC0N1q2bEHdtVdwXQnpV/WDefkH1hcR2Nv3i4y9h3VJXNAHv2h6H83lF8mmV
-         L0R+RNx2HAGJCFITa3pM3Rn+GhovnuVhrV+FjWz46Zls6IUia7mXSoL5xN3Mt0xKgI7w
-         1ZlQ8ziqyCpNkpfV9IwacvXpZ1gVPRIbdwsOvpwzvxY0TxQKIdwQhRBZSrjA4HiSCfzE
-         hXFsDI7AoaJUQnvSQhJhSeDqRWBoA6eCHC19dtDf9oD2s81dQB7190fMFtxBdm2jWEIT
-         wEQg==
-X-Gm-Message-State: AOAM531tgSFRFpUHLYNq9e61hFyT9Sm6r5ONyF7sOJPniuPxnUu0Fhft
-        aVh9Q8/oYoBKHK2LeadCqWbRUQ==
-X-Google-Smtp-Source: ABdhPJxWMM6+rUMvjETF/zPh3JymEZXVPNDBR3JbeaWGQzDyxIWQf3lh4hUsnJDsn+BxgA//ewGXvQ==
-X-Received: by 2002:a92:1e08:: with SMTP id e8mr9258420ile.16.1611180249244;
-        Wed, 20 Jan 2021 14:04:09 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V3TcYAR0KycrKsgY4roTY2MFZq0U/ncsPStDv/MM68g=;
+        b=WUJENG91JyANb4rsKqU18Qlp49O+S+6ItXw6ZDQaccUhhGySgxH0J9rx/UOYsj+Zkf
+         xVWsaLepBkUP/fhCMVAL/Ukg0hQKGLw9HxfPqACSYqZfU2LuTGtL7pVT+gvjDALgP1El
+         77wxSMcAbKaDUNaLlb+Dy6YJKTJ3+kYT/K0Np1kG8LQuV1QCxtuNvgX2iy+XA0eEyYiq
+         Q0IihkbLOQspy/BUH/ktDp2/NCHoWfZZt4PYMe5TWdE9F+O1FhUIaWKXNkVo3Ii0C7Gi
+         28jCuX70uQi57/38RGTkbIwqxtLOVChOf/H1s0p2IiApvJc4iPkXajr/nkkPYgdy7vAG
+         xy4w==
+X-Gm-Message-State: AOAM530uYXeFJ1y+6jGG6uc5wOiwDWR7qYG2Kfn3fXC6hfGRe4FvnjVa
+        sxslQIy/ExOIT16+hfRkc6pqgA==
+X-Google-Smtp-Source: ABdhPJy3FIBbDw1zvduVWfsv6dGPkGtZSJ8PBXTh3kTkclilDwG+2lNNe7410hE5jAVEnezQ0fnf5A==
+X-Received: by 2002:a02:a584:: with SMTP id b4mr8883276jam.135.1611180244502;
+        Wed, 20 Jan 2021 14:04:04 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id e5sm1651712ilu.27.2021.01.20.14.04.08
+        by smtp.gmail.com with ESMTPSA id e5sm1651712ilu.27.2021.01.20.14.04.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 14:04:08 -0800 (PST)
+        Wed, 20 Jan 2021 14:04:03 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/5] net: ipa: repurpose gsi_irq_ieob_disable()
-Date:   Wed, 20 Jan 2021 16:04:00 -0600
-Message-Id: <20210120220401.10713-5-elder@linaro.org>
+Subject: [PATCH net-next 0/5] net: ipa: NAPI poll updates
+Date:   Wed, 20 Jan 2021 16:03:56 -0600
+Message-Id: <20210120220401.10713-1-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210120220401.10713-1-elder@linaro.org>
-References: <20210120220401.10713-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename gsi_irq_ieob_disable() to be gsi_irq_ieob_disable_one().
+While reviewing the IPA NAPI polling code in detail I found two
+problems.  This series fixes those, and implements a few other
+improvements to this part of the code.
 
-Introduce a new function gsi_irq_ieob_disable() that takes a mask of
-events to disable rather than a single event id.  This will be used
-in the next patch.
+The first two patches are minor bug fixes that avoid extra passes
+through the poll function.  The third simplifies code inside the
+polling loop a bit.
 
-Rename gsi_irq_ieob_enable() to be gsi_irq_ieob_enable_one() to be
-consistent.
+The last two update how interrupts are disabled; previously it was
+possible for another I/O completion condition to be recorded before
+NAPI got scheduled.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+					-Alex
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 5b98003263710..59fc22347a257 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -272,7 +272,7 @@ static void gsi_irq_ch_ctrl_disable(struct gsi *gsi)
- 	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
- }
- 
--static void gsi_irq_ieob_enable(struct gsi *gsi, u32 evt_ring_id)
-+static void gsi_irq_ieob_enable_one(struct gsi *gsi, u32 evt_ring_id)
- {
- 	bool enable_ieob = !gsi->ieob_enabled_bitmap;
- 	u32 val;
-@@ -286,11 +286,11 @@ static void gsi_irq_ieob_enable(struct gsi *gsi, u32 evt_ring_id)
- 		gsi_irq_type_enable(gsi, GSI_IEOB);
- }
- 
--static void gsi_irq_ieob_disable(struct gsi *gsi, u32 evt_ring_id)
-+static void gsi_irq_ieob_disable(struct gsi *gsi, u32 event_mask)
- {
- 	u32 val;
- 
--	gsi->ieob_enabled_bitmap &= ~BIT(evt_ring_id);
-+	gsi->ieob_enabled_bitmap &= ~event_mask;
- 
- 	/* Disable the interrupt type if this was the last enabled channel */
- 	if (!gsi->ieob_enabled_bitmap)
-@@ -300,6 +300,11 @@ static void gsi_irq_ieob_disable(struct gsi *gsi, u32 evt_ring_id)
- 	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
- }
- 
-+static void gsi_irq_ieob_disable_one(struct gsi *gsi, u32 evt_ring_id)
-+{
-+	gsi_irq_ieob_disable(gsi, BIT(evt_ring_id));
-+}
-+
- /* Enable all GSI_interrupt types */
- static void gsi_irq_enable(struct gsi *gsi)
- {
-@@ -766,13 +771,13 @@ static void gsi_channel_freeze(struct gsi_channel *channel)
- 
- 	napi_disable(&channel->napi);
- 
--	gsi_irq_ieob_disable(channel->gsi, channel->evt_ring_id);
-+	gsi_irq_ieob_disable_one(channel->gsi, channel->evt_ring_id);
- }
- 
- /* Allow transactions to be used on the channel again. */
- static void gsi_channel_thaw(struct gsi_channel *channel)
- {
--	gsi_irq_ieob_enable(channel->gsi, channel->evt_ring_id);
-+	gsi_irq_ieob_enable_one(channel->gsi, channel->evt_ring_id);
- 
- 	napi_enable(&channel->napi);
- }
-@@ -1207,7 +1212,7 @@ static void gsi_isr_ieob(struct gsi *gsi)
- 
- 		event_mask ^= BIT(evt_ring_id);
- 
--		gsi_irq_ieob_disable(gsi, evt_ring_id);
-+		gsi_irq_ieob_disable_one(gsi, evt_ring_id);
- 		napi_schedule(&gsi->evt_ring[evt_ring_id].channel->napi);
- 	}
- }
-@@ -1555,7 +1560,7 @@ static int gsi_channel_poll(struct napi_struct *napi, int budget)
- 	}
- 
- 	if (count < budget && napi_complete(napi))
--		gsi_irq_ieob_enable(channel->gsi, channel->evt_ring_id);
-+		gsi_irq_ieob_enable_one(channel->gsi, channel->evt_ring_id);
- 
- 	return count;
- }
+Alex Elder (5):
+  net: ipa: count actual work done in gsi_channel_poll()
+  net: ipa: heed napi_complete() return value
+  net: ipa: have gsi_channel_update() return a value
+  net: ipa: repurpose gsi_irq_ieob_disable()
+  net: ipa: disable IEOB interrupts before clearing
+
+ drivers/net/ipa/gsi.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
+
 -- 
 2.20.1
 
