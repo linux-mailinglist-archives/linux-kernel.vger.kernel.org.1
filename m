@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65842FDBBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 673072FDBBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436502AbhATU6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:58:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32617 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732502AbhATNqg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:46:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611150307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/a6CMcIutcxErUCcxPrh94A+MqdbANj7G9XZs65vz9Q=;
-        b=I2O6LMOZ4yRYOjRa9J+XKJreLgtMBkY0yYVMMRvDsXTaWuWddMQySh2onoeV6Vp9hh/j3A
-        o6EPsnM56B9yYfiLgSnMxjoO6i5nsBBfqxlKNuHVgfc5GcZwPnZmKhQPLfxkfqK+pl+zTK
-        Il8cOgTqyRAlA0pQAPa4oWx8JuZHcNE=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-tUQNQEJ1MuapvxXiJxChNg-1; Wed, 20 Jan 2021 08:45:05 -0500
-X-MC-Unique: tUQNQEJ1MuapvxXiJxChNg-1
-Received: by mail-ed1-f69.google.com with SMTP id j12so6905656edq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:45:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/a6CMcIutcxErUCcxPrh94A+MqdbANj7G9XZs65vz9Q=;
-        b=pTl8nRk4XSXGBvR9ahw3Xf+CMIEV5Y+Bpd+XFrBwWnfTVDoiidyK8NlJb78K45H2sa
-         jVVzCn8uNz9eHx+uq+yza6h4DUFFYUs/4hthDwb9sIK6qJCYgcQhjo3q885TykRH+KHY
-         UYm+mdwyRcMwIuikhh9m1W/LWHt8l8y1P7nS/84Pw3noQ6K3HZ/BYVz9t/aYKC/1CfFf
-         5HVsAZWSLoqAf9GVT/ocUFJI8atmmJCdGmG6qhfqSM/+cCMkuqqsCAENiUyR6anaB5b6
-         Dv2OR4eRmvUzRu9CZi+JQE7QfZll9HP9S0UT1RVEiC2EqCsZCQREBYuo7GaEsooO4pws
-         B/jw==
-X-Gm-Message-State: AOAM530G8tNAVTuTJvS7L8GpNiMbGG6MwRqSwT0bGnvI/cyhNNlUtlDr
-        5hhEicyENVIhwvwRZVtastkxh0Dq5T08oM/Dd2PhPIJqG+WNaB/PT4VtwDaXHjSXLIPw0KFm8xx
-        1GYD1MEnfjVPlaQsoHaePhjTmF3IBI8vTccK9dEOvgVlLcbWX+R7pnIqKhJl3ccm8Ubxue3yJI0
-        4u
-X-Received: by 2002:a17:906:70d4:: with SMTP id g20mr6413194ejk.361.1611150304020;
-        Wed, 20 Jan 2021 05:45:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzQJh4Egq/glOcE6MZI5rNwkQL84wDaqZyhxpS5NT0fhW5MprNFEufOH89StjuNZVodtBi72Q==
-X-Received: by 2002:a17:906:70d4:: with SMTP id g20mr6413175ejk.361.1611150303762;
-        Wed, 20 Jan 2021 05:45:03 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id u23sm1121993edt.78.2021.01.20.05.45.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 05:45:03 -0800 (PST)
-Subject: Re: [PATCH v6 0/3] AMS, Collision Avoidance, and Protocol Error
-To:     Kyle Tso <kyletso@google.com>, linux@roeck-us.net,
-        heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210114145053.1952756-1-kyletso@google.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2211ad43-b76c-fbe9-2cc8-bb40c4ee4e89@redhat.com>
-Date:   Wed, 20 Jan 2021 14:45:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2436531AbhATU6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:58:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:34900 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731248AbhATNqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:46:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 091B1D6E;
+        Wed, 20 Jan 2021 05:45:20 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.36.233])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F29E03F66E;
+        Wed, 20 Jan 2021 05:45:18 -0800 (PST)
+Date:   Wed, 20 Jan 2021 13:45:11 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
+Subject: Re: rcutorture initrd/nolibc build on ARMv8?
+Message-ID: <20210120134511.GA77728@C02TD0UTHF1T.local>
+References: <20210119153147.GA5083@paulmck-ThinkPad-P72>
+ <20210119161901.GA14667@1wt.eu>
+ <20210119170238.GA5603@C02TD0UTHF1T.local>
+ <20210119171637.GA14704@1wt.eu>
+ <20210119174358.GB14704@1wt.eu>
+ <20210120120725.GB73692@C02TD0UTHF1T.local>
+ <20210120124340.GA15935@1wt.eu>
 MIME-Version: 1.0
-In-Reply-To: <20210114145053.1952756-1-kyletso@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120124340.GA15935@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jan 20, 2021 at 01:43:40PM +0100, Willy Tarreau wrote:
+> On Wed, Jan 20, 2021 at 12:07:25PM +0000, Mark Rutland wrote:
+> > On Tue, Jan 19, 2021 at 06:43:58PM +0100, Willy Tarreau wrote:
+> > > On Tue, Jan 19, 2021 at 06:16:37PM +0100, Willy Tarreau wrote:
 
-On 1/14/21 3:50 PM, Kyle Tso wrote:
-> v5 https://lore.kernel.org/r/20210105163927.1376770-1-kyletso@google.com
+> Did you figure the correct way to get __NR_* defined on your machine or
+> should I search ?
+
+Please see below. There is no way to get a number for some syscalls, as
+these do not have a legitimate number on arm64, but this doesn't matter
+as we can avoid using the number entirely when it does not exist.
+
+[...]
+
+> > >   $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(fork|dup2)'
+> > >   #define __NR_dup2 1041
+> > >   #define __NR_syscalls (__NR_fork+1)
+> > >   #define __NR_fork 1079
+> > 
+> > As above, these are bogus for arm64. There is no syscall number for dup2
+> > or fork, and __NR_syscalls is currently only 442.
 > 
-> "usb: typec: tcpm: AMS and Collision Avoidance"
->  - removed the signed-off
->  - modified the coding style suggested from Heikki
->  - added FR_SWAP AMS handling
+> Ah that's very interesting indeed because actually these ones should
+> only be used when __NR_dup3 or __NR_clone are not defined. Thus I wanted
+> to check the definitions that were reported in your error output but
+> actually what was needed was to figure whether the correct ones were
+> present, and they are, here on my machine (and yes I agree that in this
+> case the dup2/fork above are bofus):
+
+The issue is that even if a function is unused, the compiler still has
+to parse and compile the code, so where __NR_dup2 is not defined, we'll
+get a build error for:
+
+static __attribute__((unused))
+int sys_dup2(int old, int new)
+{
+       return my_syscall2(__NR_dup2, old, new);
+}
+
+... we can deal with that by always returning -ENOSYS for unimplemented
+syscalls, e.g.
+
+static __attribute__((unused))
+int sys_dup2(int old, int new)
+{
+#ifdef __NR_dup2
+       return my_syscall2(__NR_dup2, old, new);
+#else
+       return -ENOSYS;
+#endif
+}
+
+I can spin a patch fixing up all the relevant syscalls, if you'd like?
+
+[...]
+
+>   ubuntu@ubuntu:~$ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
+>   #define __NR_clone 220
+>   #define __NR_dup3 24
 > 
-> "usb: typec: tcpm: Protocol Error handling"
->  - removed the signed-off
->  - modified the coding style suggested from Heikki
->  - modified more coding style problems (line wrapping limit)
+> Do you have these ones with your more recent includes ? Or are these wrong
+> again ?
+
+Those are correct (and all the syscall numbers in unistd.h should be
+correct so long as you don't erroneously set the __ARCH_WANT_* flags):
+
+[mark@gravadlaks:~/src/linux]% gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include tools/include/nolibc/nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
+#define __NR_clone 220
+#define __NR_dup3 24
+
+> > I think the right thing to do is to have nolibc.h detect which syscalls
+> > are implemented, and to not define __ARCH_WANT_*.
 > 
-> "usb: typec: tcpm: Respond Wait if VDM state machine is running"
->  - no change
+> Actually that's what was attempted by already focusing on ifdefs but
+> without *any* __NR_* we can't even hope to call a syscall and check for
+> ENOSYS for example. So the code really tries to figure which is the right
+> __NR_ value for a given syscall, and a quick check at my userland code
+> shows that I'm already using dup2() and fork() as defined from dup3()
+> and clone().
 
-I've finally gotten around to testing this. I'm happy to
-report that the power-role swapping regression seen in one
-of the older versions of this patch-set is gone.
+Please see above for how to get the -ENOSYS behaviour without relying on bogus
+syscall numbers.
 
-So the entire series is:
-Tested-by: Hans de Goede <hdegoede@redhat.com>
+I have a local patch for this, which I can send if you'd like?
 
-Regards,
+There's still some latent issue when using nolibc (compared to using
+glibc) where the init process never seems to exit, but that looks to be
+orthogonal to the syscall numbering issue -- I'm currently digging into
+that.
 
-Hans
-
-
-
-
-
-> 
-> -------------------------------------------------------------------
-> 
-> Kyle Tso (3):
->   usb: typec: tcpm: AMS and Collision Avoidance
->   usb: typec: tcpm: Protocol Error handling
->   usb: typec: tcpm: Respond Wait if VDM state machine is running
-> 
->  drivers/usb/typec/tcpm/tcpm.c | 1001 +++++++++++++++++++++++++++------
->  include/linux/usb/pd.h        |    2 +
->  include/linux/usb/tcpm.h      |    4 +
->  3 files changed, 829 insertions(+), 178 deletions(-)
-> 
-
+Thanks,
+Mark.
