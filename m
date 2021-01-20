@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738702FD8E8
+	by mail.lfdr.de (Postfix) with ESMTP id 063982FD8E7
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392417AbhATS4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:56:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50594 "EHLO
+        id S2392396AbhATS4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:56:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21400 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387637AbhATRjo (ORCPT
+        by vger.kernel.org with ESMTP id S2387699AbhATRjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:39:44 -0500
+        Wed, 20 Jan 2021 12:39:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611164297;
+        s=mimecast20190719; t=1611164301;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5kZxUm2npMwQG1TG1qATstMBS9/a58lwU+qMaeV/pLI=;
-        b=ADEJXoOhqVNUGVjqh+0Axs0I+X4AnFUEl1klJY70TozcHDeFuPrPpRuA7T9OEGwr4NR1F9
-        SeiEv8Qj8qg9iK6C72DL2968KgmW9QZJxinKEnf8kKzj4+Sjwi4S9A8DSxkxvFstyLFCbD
-        Tr/3Ga3hNw+ewG9Fe/TdJ1GLO1ZGviw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-jLhO-efjPNuIX6B_dOEcuQ-1; Wed, 20 Jan 2021 12:38:16 -0500
-X-MC-Unique: jLhO-efjPNuIX6B_dOEcuQ-1
-Received: by mail-wr1-f72.google.com with SMTP id z8so11985339wrh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:38:15 -0800 (PST)
+        bh=ybADuVVj33zXJpBTN6zXgGLfnzshZUI1ojUuRxuiGxo=;
+        b=IRoiuwMiNY+QQxnVSMo7/6CPPzufqAPivop7ams7efCwxaQDMr8fYjEaskDWgRJmOe8Gvg
+        0I4R75lsO2csRkzMLfdFN2i9mm4ALYTTCWRjC8RNWuZqKtX3mgafOmnjoQwR15emi4M5p5
+        ths8w+XJ3f1FEp35NYBzq6O3eWNKqtg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-wVmZokurMpWF-tX7VxFNrg-1; Wed, 20 Jan 2021 12:38:20 -0500
+X-MC-Unique: wVmZokurMpWF-tX7VxFNrg-1
+Received: by mail-wr1-f70.google.com with SMTP id r8so11923075wro.22
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:38:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5kZxUm2npMwQG1TG1qATstMBS9/a58lwU+qMaeV/pLI=;
-        b=AIaoR2c6dWGqm7hooxW5w2/Ogs23ZkqHsxMrb7B3j9qj23MWdYFK2VMjO3j3rjprk1
-         6EV5Eq0Nob6AUrlhr01y3XcTSTPqIw87wF6Vdtxss3DDqM5ylTLXkZdVZTOqiAN8dQ6V
-         C3RWZ3RlotjO7XzuVlYSEqHFRc4+9H0ijxD4mJsCkBduWrTuSQflt5b9pOcchuQKqcAV
-         vhkiKPDzlJVR/q158JpFFPzqbjaOvzjPj4LNpTvuFOMqAqvWdNzzEJaGs2MuaFpskfvo
-         fUv8rtkDz6velzac8q7so4bfjjXUfWlzbqIamdM+7oK5eFWVm7pAhVyFS1Jx/OZuC46a
-         AEPg==
-X-Gm-Message-State: AOAM530sVjLmkDZL8Htqd8tzBwHuafqS9paGbCZsFatmy8hTt7MiVSaO
-        7MeWIJpyc3o4RhsY1ySXoJkjOWariPVyuE2i+q4wAzdwWuK4SapshELtlwFzWydoPRX0pHf7v+V
-        hiF9b2YtJSUp2aZDF8EpTuGbkHNBI0+fanjdvXh78+WpbGwpadxTKsT6r7IYG83q/60GTDM5hIG
-        sq
-X-Received: by 2002:adf:8145:: with SMTP id 63mr10098338wrm.8.1611164294480;
-        Wed, 20 Jan 2021 09:38:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzQzDN3HBtD5u6jA4hqcs01Fugkowpn2vULtp1RxBDFANC375MC0WgDFgHupnT7fa0d1iia8Q==
-X-Received: by 2002:adf:8145:: with SMTP id 63mr10098306wrm.8.1611164294279;
-        Wed, 20 Jan 2021 09:38:14 -0800 (PST)
+        bh=ybADuVVj33zXJpBTN6zXgGLfnzshZUI1ojUuRxuiGxo=;
+        b=KphlFN/PI+oCTTlaiOposiWJxhiZ50+x9msSlMFX06C5swcZsJxkFcx916NCYMSFzt
+         Jgh1HbUvtFsOqaP0o1iO3DlY54zJNjMRHm5O1MKGB9Tmf624pQMBtXqcxuaQgFk07IAT
+         2pexiC+u+HiFDU9TW63XbWzIhlMM+duVm5Vi/noJMsEX6T67YIbR2KEiTaGYVNYNzYpW
+         oJJN93YMfGndtFRGvLGki7rX6KeRv0JgUUtFBTZdM4/DHCZTRm9v872EGhcnsZo6sMh0
+         NkQE0r/9cOVpdVrthqsjlOZFtUEdoW3R7G0NLIGDWv8Gke5aou3oFET5AnO5dr7WfFD4
+         wRbA==
+X-Gm-Message-State: AOAM530z23bU/GProutrIeSyguHVyaxOa66j4TKzQOumemQK6TlglYEb
+        ckPZNgJBoIWBE7nPNNKUw+JS+YENEWossSQ2JViXjLWucuqDTLijvHRqfR78Wo34szqGVzsddsM
+        HfmV+RgYXGwwyq/HR3FPTTc7SYkIlGzN0tnA9/EEe3QnpVNygtiTAR0tnsPzVE66VHPoRRs188H
+        W0
+X-Received: by 2002:a5d:5917:: with SMTP id v23mr10790338wrd.308.1611164298857;
+        Wed, 20 Jan 2021 09:38:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwCWhKh32IYPGwQ7eOyS6NFprZttJ5fMUAm09DXGKOoX6f0LQRibhfxka+az9xnCWXYUtnyTw==
+X-Received: by 2002:a5d:5917:: with SMTP id v23mr10790318wrd.308.1611164298719;
+        Wed, 20 Jan 2021 09:38:18 -0800 (PST)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id x11sm4948325wmi.4.2021.01.20.09.38.13
+        by smtp.gmail.com with ESMTPSA id x11sm4948325wmi.4.2021.01.20.09.38.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 09:38:13 -0800 (PST)
+        Wed, 20 Jan 2021 09:38:18 -0800 (PST)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
@@ -60,9 +60,9 @@ Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
         mark.rutland@arm.com, broonie@kernel.org,
         linux-efi@vger.kernel.org, linux-hardening@vger.kernel.org,
         Julien Thierry <jthierry@redhat.com>
-Subject: [RFC PATCH 05/17] objtool: arm64: Decode add/sub instructions
-Date:   Wed, 20 Jan 2021 18:37:48 +0100
-Message-Id: <20210120173800.1660730-6-jthierry@redhat.com>
+Subject: [RFC PATCH 06/17] objtool: arm64: Decode jump and call related instructions
+Date:   Wed, 20 Jan 2021 18:37:49 +0100
+Message-Id: <20210120173800.1660730-7-jthierry@redhat.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20210120173800.1660730-1-jthierry@redhat.com>
 References: <20210120173800.1660730-1-jthierry@redhat.com>
@@ -72,119 +72,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Decode aarch64 additions and substractions and create stack_ops for
-instructions interacting with SP or FP.
+Decode branch, branch and link (aarch64's call) and return instructions.
 
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/arch/arm64/decode.c | 84 +++++++++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
+ tools/objtool/arch/arm64/decode.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/tools/objtool/arch/arm64/decode.c b/tools/objtool/arch/arm64/decode.c
-index 8ae822f553ca..0f312dd1b146 100644
+index 0f312dd1b146..924121b4b466 100644
 --- a/tools/objtool/arch/arm64/decode.c
 +++ b/tools/objtool/arch/arm64/decode.c
-@@ -23,6 +23,13 @@
- 
- #include "../../../arch/arm64/lib/aarch64-insn.c"
- 
-+static unsigned long sign_extend(unsigned long x, int nbits)
-+{
-+	unsigned long sign_bit = (x >> (nbits - 1)) & 1;
-+
-+	return ((~0UL + (sign_bit ^ 1)) << nbits) | x;
-+}
-+
- bool arch_callee_saved_reg(unsigned char reg)
- {
- 	switch (reg) {
-@@ -98,6 +105,53 @@ int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg)
- 	return -1;
- }
- 
-+static struct stack_op *arm_make_add_op(enum aarch64_insn_register dest,
-+					enum aarch64_insn_register src,
-+					int val)
-+{
-+	struct stack_op *op;
-+
-+	op = calloc(1, sizeof(*op));
-+	op->dest.type = OP_DEST_REG;
-+	op->dest.reg = dest;
-+	op->src.reg = src;
-+	op->src.type = val != 0 ? OP_SRC_ADD : OP_SRC_REG;
-+	op->src.offset = val;
-+
-+	return op;
-+}
-+
-+static void arm_decode_add_sub_imm(u32 instr, bool set_flags,
-+				   enum insn_type *type,
-+				   unsigned long *immediate,
-+				   struct list_head *ops_list)
-+{
-+	u32 rd = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RD, instr);
-+	u32 rn = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RN, instr);
-+
-+	*type = INSN_OTHER;
-+	*immediate = aarch64_insn_decode_immediate(AARCH64_INSN_IMM_12, instr);
-+
-+	if (instr & AARCH64_INSN_LSL_12)
-+		*immediate <<= 12;
-+
-+	if ((!set_flags && rd == AARCH64_INSN_REG_SP) ||
-+	    rd == AARCH64_INSN_REG_FP ||
-+	    rn == AARCH64_INSN_REG_FP ||
-+	    rn == AARCH64_INSN_REG_SP) {
-+		struct stack_op *op;
-+		int value;
-+
-+		if (aarch64_insn_is_subs_imm(instr) || aarch64_insn_is_sub_imm(instr))
-+			value = -*immediate;
-+		else
-+			value = *immediate;
-+
-+		op = arm_make_add_op(rd, rn, value);
-+		list_add_tail(&op->list, ops_list);
-+	}
-+}
-+
- int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 			    unsigned long offset, unsigned int maxlen,
- 			    unsigned int *len, enum insn_type *type,
-@@ -121,6 +175,36 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 	case AARCH64_INSN_CLS_UNKNOWN:
- 		WARN("can't decode instruction at %s:0x%lx", sec->name, offset);
- 		return -1;
-+	case AARCH64_INSN_CLS_DP_IMM:
-+		/* Mov register to and from SP are aliases of add_imm */
-+		if (aarch64_insn_is_add_imm(insn) ||
-+		    aarch64_insn_is_sub_imm(insn))
-+			arm_decode_add_sub_imm(insn, false, type, immediate,
-+					       ops_list);
-+		else if (aarch64_insn_is_adds_imm(insn) ||
-+			 aarch64_insn_is_subs_imm(insn))
-+			arm_decode_add_sub_imm(insn, true, type, immediate,
-+					       ops_list);
-+		else
+@@ -205,6 +205,28 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		}
+ 		*type = INSN_OTHER;
+ 		break;
++	case AARCH64_INSN_CLS_BR_SYS:
++		if (aarch64_insn_is_ret(insn) &&
++		    aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RN, insn) == AARCH64_INSN_REG_LR) {
++			*type = INSN_RETURN;
++		} else if (aarch64_insn_is_bl(insn)) {
++			*type = INSN_CALL;
++			*immediate = aarch64_get_branch_offset(insn);
++		} else if (aarch64_insn_is_blr(insn)) {
++			*type = INSN_CALL_DYNAMIC;
++		} else if (aarch64_insn_is_b(insn)) {
++			*type = INSN_JUMP_UNCONDITIONAL;
++			*immediate = aarch64_get_branch_offset(insn);
++		} else if (aarch64_insn_is_br(insn)) {
++			*type = INSN_JUMP_DYNAMIC;
++		} else if (aarch64_insn_is_branch_imm(insn)) {
++			/* Remaining branch opcodes are conditional */
++			*type = INSN_JUMP_CONDITIONAL;
++			*immediate = aarch64_get_branch_offset(insn);
++		} else {
 +			*type = INSN_OTHER;
-+		break;
-+	case AARCH64_INSN_CLS_DP_REG:
-+		if (aarch64_insn_is_mov_reg(insn)) {
-+			enum aarch64_insn_register rd;
-+			enum aarch64_insn_register rm;
-+
-+			rd = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RD, insn);
-+			rm = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RM, insn);
-+			if (rd == AARCH64_INSN_REG_FP || rm == AARCH64_INSN_REG_FP) {
-+				struct stack_op *op;
-+
-+				op = arm_make_add_op(rd, rm, 0);
-+				list_add_tail(&op->list, ops_list);
-+				break;
-+			}
 +		}
-+		*type = INSN_OTHER;
 +		break;
  	default:
  		*type = INSN_OTHER;
