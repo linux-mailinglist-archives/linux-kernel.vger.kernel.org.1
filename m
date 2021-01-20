@@ -2,343 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C182FD92A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5528B2FD916
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392298AbhATTJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
+        id S2387930AbhATTFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:05:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392520AbhATTE2 (ORCPT
+        with ESMTP id S2390158AbhATTEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:04:28 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C02C0613D6;
-        Wed, 20 Jan 2021 11:03:48 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 63so1937642oty.0;
-        Wed, 20 Jan 2021 11:03:48 -0800 (PST)
+        Wed, 20 Jan 2021 14:04:44 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479A3C061757;
+        Wed, 20 Jan 2021 11:04:04 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id q8so3982657lfm.10;
+        Wed, 20 Jan 2021 11:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EL19vrBZEfjkKDNzr30gd4SAfdcULRu5rKALXpQ+hvQ=;
-        b=TXe63yNKsDS+1PWQiybqHj/8n1U7jTwAO6DGQ3KHdACF71IfnwKMJ8BUzq2TAMKqJM
-         FoqwtHxHOs6QlviYuW1aoyTXZeHvWer9Hy5CiQTPk4Zd/kiJFJc/bqRCVQKZS8S01bgx
-         J1zwcymuTu6/iwr9vhO+CVh7FWhQozmEMGfS91M9xAa7ReCIfqmryp9jLVDum9Vnm2Mh
-         5tpMayHsfsPA7s7ILzqWMTUZ0LODN7SzzBXQuZUjDE4zN1dTQbY04hvukNuTX3GcO0ux
-         35rLALPpQa7PpMbPFZKgOaPI9A3rjZn1SRuakY982U1gbEKLiGAkd6Tnf5AfwFR4pukl
-         PlmA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fm0Hune4dNh4DOhGPxu2dYoVCrCb/uIZAh+4vIDWr2I=;
+        b=kVr0nUi6g0Bm5Cg8a06zoKCBxjsWFjviGBrGKpnbU/P+zXo0vucIbqa26agJ7qIWAG
+         gB7VG8ZXr8MzYOPHzFIMSnYEtXR6e8/PTE3IYRcUwHpCmQ8qlr3/mBUoW6SvKMev3hnC
+         R9AeVTXIhEFLFjwjh3Ldon+H3OTITvGBUZjnB3PmLsj6PNz1XzYYMoUrp93qN8tS3fzj
+         dd8Q6+pEIjZEhXk4AoeZEVVgp1fmLbL5yb6HMGX4RHYmLEA5ouCe3e0utz7yf8URouxh
+         NF1qQtzfLSHWCg9Rx3viBvLmnoBgXg76h3TcyQ6xvDiOFac+vkB3/uhrpByNb2LJQoBW
+         JgWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EL19vrBZEfjkKDNzr30gd4SAfdcULRu5rKALXpQ+hvQ=;
-        b=cq2AzeNKDCc+DhIdWCgqxxMBY7HwEJG4Ib29zrnzq5xO0jb+rebuJ5bMujebh3CH46
-         7ansNJfC1BJ0DPNJzQR/uHtReoA43iJJFESFq3WWTaxsdTOcwQVONzVXRbeeC/6H8URS
-         WjFyAhc/q7DU7de9YZ4AweqHzxhis8thGRIWl35zhtbX3/XDqYpRMA+vM8DZEg94be6a
-         9MgVQtcGCoNDo1xjGvApSHMpwpYvtK2OTlskkvHxc2Bc2Eli3OTWkDeji3qD9N/gfE8V
-         LWRbDOG8zdhMfFdbeh8VeeAXrTWbUs1rsYhpq2ppTbS6eQv2vCLtAkEJDYkDC3MJk2CP
-         Ddmw==
-X-Gm-Message-State: AOAM533bLUVXPk6O1i5U6Mp9sOYRsKneVKj9Idrtl12GLWtHv+XpSNAV
-        haXg+/hHkZCZ1SNrkB8w/JE=
-X-Google-Smtp-Source: ABdhPJy1LQwul9rzb3qgkwsqXrRi7DOqe2GfijpewV75SCcjC5cvkYMeTGM4licow9l6WSpcoLwwLQ==
-X-Received: by 2002:a9d:7a48:: with SMTP id z8mr8056207otm.146.1611169427653;
-        Wed, 20 Jan 2021 11:03:47 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t16sm169453otc.30.2021.01.20.11.03.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Jan 2021 11:03:46 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 20 Jan 2021 11:03:45 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>
-Subject: Re: [PATCH 4/5] watchdog: remove tango driver
-Message-ID: <20210120190345.GD162747@roeck-us.net>
-References: <20210120162745.61268-1-arnd@kernel.org>
- <20210120162745.61268-5-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fm0Hune4dNh4DOhGPxu2dYoVCrCb/uIZAh+4vIDWr2I=;
+        b=EAzy2HoRrDNlnGPGL/i8xsDwcNaF6xdMwTP8uDnsClOtUxSzd6OsCecq04REZfE7yE
+         iVBLhcjj2IjFwjVlSg5ph0E9xeCtXj0KS8IcD0cBSfMl/Lia28ULyxgbFBMHHN68d0UL
+         QRYKVteQYjbNOwDOjDeQXYFh7dc3rCfkFYJIVaz7Qq0QHI27e8wncMYKZ9h9J4J6ey22
+         MRDzTfkuEvj+ugy0Z3bb4LsyV8bKo4+q3qssjpy3lZsF1ZFvZCbrGhCBFyZapYU32d2M
+         Ld1UuEvdyPdoK5k5nqomdKeASxeNAbwsGIHWFvRCbFhvQs9UYe3IgBqq4/yuwAzdFc7+
+         7oeg==
+X-Gm-Message-State: AOAM533FFFvads0WmpDVUdgScHFmYAq4GD+OqPChKGlsHFe69qH9ss3Z
+        5TCY4vNrmjuiVrhx7zGFO9reSKmQXQ+uVCRjf3c=
+X-Google-Smtp-Source: ABdhPJwauJhTvStLKvK4f+JIHYvgdtTIGz+ocEjGBQlFWFov/l9TwvzW2/CEFoTWCyjsWKSr2bi5buNmKOhMa4aPjms=
+X-Received: by 2002:ac2:5b1e:: with SMTP id v30mr5218306lfn.540.1611169442795;
+ Wed, 20 Jan 2021 11:04:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120162745.61268-5-arnd@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-4-revest@chromium.org>
+ <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
+In-Reply-To: <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 20 Jan 2021 11:03:51 -0800
+Message-ID: <CAADnVQJqVEvwF3GJyuiazxUUknBUaZ_k7gtt-m18hbBdoVeTGg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add a selftest for the
+ tracing bpf_get_socket_cookie
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 05:27:44PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The tango platform is getting removed, so the driver is no
-> longer needed.
-> 
-> Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-> Cc: Mans Rullgard <mans@mansr.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, Jan 20, 2021 at 9:08 AM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Tue, Jan 19, 2021 at 5:00 PM Florent Revest <revest@chromium.org> wrote:
+> >
+> > This builds up on the existing socket cookie test which checks whether
+> > the bpf_get_socket_cookie helpers provide the same value in
+> > cgroup/connect6 and sockops programs for a socket created by the
+> > userspace part of the test.
+> >
+> > Adding a tracing program to the existing objects requires a different
+> > attachment strategy and different headers.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+>
+> Acked-by: KP Singh <kpsingh@kernel.org>
+>
+> (one minor note, doesn't really need fixing as a part of this though)
+>
+> > ---
+> >  .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
+> >  .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
+> >  2 files changed, 52 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
+> > index 53d0c44e7907..e5c5e2ea1deb 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
+> > @@ -15,8 +15,8 @@ struct socket_cookie {
+> >
+> >  void test_socket_cookie(void)
+> >  {
+> > +       struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
+> >         socklen_t addr_len = sizeof(struct sockaddr_in6);
+> > -       struct bpf_link *set_link, *update_link;
+> >         int server_fd, client_fd, cgroup_fd;
+> >         struct socket_cookie_prog *skel;
+> >         __u32 cookie_expected_value;
+> > @@ -39,15 +39,21 @@ void test_socket_cookie(void)
+> >                   PTR_ERR(set_link)))
+> >                 goto close_cgroup_fd;
+> >
+> > -       update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
+> > -                                                cgroup_fd);
+> > -       if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
+> > -                 PTR_ERR(update_link)))
+> > +       update_sockops_link = bpf_program__attach_cgroup(
+> > +               skel->progs.update_cookie_sockops, cgroup_fd);
+> > +       if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
+> > +                 "err %ld\n", PTR_ERR(update_sockops_link)))
+> >                 goto free_set_link;
+> >
+> > +       update_tracing_link = bpf_program__attach(
+> > +               skel->progs.update_cookie_tracing);
+> > +       if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
+> > +                 "err %ld\n", PTR_ERR(update_tracing_link)))
+> > +               goto free_update_sockops_link;
+> > +
+> >         server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
+> >         if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
+> > -               goto free_update_link;
+> > +               goto free_update_tracing_link;
+> >
+> >         client_fd = connect_to_fd(server_fd, 0);
+> >         if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
+> > @@ -71,8 +77,10 @@ void test_socket_cookie(void)
+> >         close(client_fd);
+> >  close_server_fd:
+> >         close(server_fd);
+> > -free_update_link:
+> > -       bpf_link__destroy(update_link);
+> > +free_update_tracing_link:
+> > +       bpf_link__destroy(update_tracing_link);
+>
+> I don't think this need to block submission unless there are other
+> issues but the
+> bpf_link__destroy can just be called in a single cleanup label because
+> it handles null or
+> erroneous inputs:
+>
+> int bpf_link__destroy(struct bpf_link *link)
+> {
+>     int err = 0;
+>
+>     if (IS_ERR_OR_NULL(link))
+>          return 0;
+> [...]
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
++1 to KP's point.
 
-> ---
->  drivers/watchdog/Kconfig      |  11 --
->  drivers/watchdog/Makefile     |   1 -
->  drivers/watchdog/tangox_wdt.c | 209 ----------------------------------
->  3 files changed, 221 deletions(-)
->  delete mode 100644 drivers/watchdog/tangox_wdt.c
-> 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index c36f8233f60b..10efbb351f14 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -254,17 +254,6 @@ config MENZ069_WATCHDOG
->  	  This driver can also be built as a module. If so the module
->  	  will be called menz069_wdt.
->  
-> -config TANGOX_WATCHDOG
-> -	tristate "Sigma Designs SMP86xx/SMP87xx watchdog"
-> -	select WATCHDOG_CORE
-> -	depends on ARCH_TANGO || COMPILE_TEST
-> -	depends on HAS_IOMEM
-> -	help
-> -	  Support for the watchdog in Sigma Designs SMP86xx (tango3)
-> -	  and SMP87xx (tango4) family chips.
-> -
-> -	  This driver can be built as a module. The module name is tangox_wdt.
-> -
->  config WDAT_WDT
->  	tristate "ACPI Watchdog Action Table (WDAT)"
->  	depends on ACPI
-> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-> index 7a95b280cd9f..1ff40d6a027f 100644
-> --- a/drivers/watchdog/Makefile
-> +++ b/drivers/watchdog/Makefile
-> @@ -210,7 +210,6 @@ obj-$(CONFIG_DA9055_WATCHDOG) += da9055_wdt.o
->  obj-$(CONFIG_DA9062_WATCHDOG) += da9062_wdt.o
->  obj-$(CONFIG_DA9063_WATCHDOG) += da9063_wdt.o
->  obj-$(CONFIG_GPIO_WATCHDOG)	+= gpio_wdt.o
-> -obj-$(CONFIG_TANGOX_WATCHDOG) += tangox_wdt.o
->  obj-$(CONFIG_WDAT_WDT) += wdat_wdt.o
->  obj-$(CONFIG_WM831X_WATCHDOG) += wm831x_wdt.o
->  obj-$(CONFIG_WM8350_WATCHDOG) += wm8350_wdt.o
-> diff --git a/drivers/watchdog/tangox_wdt.c b/drivers/watchdog/tangox_wdt.c
-> deleted file mode 100644
-> index 1afb0e9d808c..000000000000
-> --- a/drivers/watchdog/tangox_wdt.c
-> +++ /dev/null
-> @@ -1,209 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0+
-> -/*
-> - *  Copyright (C) 2015 Mans Rullgard <mans@mansr.com>
-> - *  SMP86xx/SMP87xx Watchdog driver
-> - */
-> -
-> -#include <linux/bitops.h>
-> -#include <linux/clk.h>
-> -#include <linux/delay.h>
-> -#include <linux/io.h>
-> -#include <linux/kernel.h>
-> -#include <linux/module.h>
-> -#include <linux/moduleparam.h>
-> -#include <linux/mod_devicetable.h>
-> -#include <linux/platform_device.h>
-> -#include <linux/watchdog.h>
-> -
-> -#define DEFAULT_TIMEOUT 30
-> -
-> -static bool nowayout = WATCHDOG_NOWAYOUT;
-> -module_param(nowayout, bool, 0);
-> -MODULE_PARM_DESC(nowayout,
-> -		 "Watchdog cannot be stopped once started (default="
-> -		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
-> -
-> -static unsigned int timeout;
-> -module_param(timeout, int, 0);
-> -MODULE_PARM_DESC(timeout, "Watchdog timeout");
-> -
-> -/*
-> - * Counter counts down from programmed value.  Reset asserts when
-> - * the counter reaches 1.
-> - */
-> -#define WD_COUNTER		0
-> -
-> -#define WD_CONFIG		4
-> -#define WD_CONFIG_XTAL_IN	BIT(0)
-> -#define WD_CONFIG_DISABLE	BIT(31)
-> -
-> -struct tangox_wdt_device {
-> -	struct watchdog_device wdt;
-> -	void __iomem *base;
-> -	unsigned long clk_rate;
-> -	struct clk *clk;
-> -};
-> -
-> -static int tangox_wdt_set_timeout(struct watchdog_device *wdt,
-> -				  unsigned int new_timeout)
-> -{
-> -	wdt->timeout = new_timeout;
-> -
-> -	return 0;
-> -}
-> -
-> -static int tangox_wdt_start(struct watchdog_device *wdt)
-> -{
-> -	struct tangox_wdt_device *dev = watchdog_get_drvdata(wdt);
-> -	u32 ticks;
-> -
-> -	ticks = 1 + wdt->timeout * dev->clk_rate;
-> -	writel(ticks, dev->base + WD_COUNTER);
-> -
-> -	return 0;
-> -}
-> -
-> -static int tangox_wdt_stop(struct watchdog_device *wdt)
-> -{
-> -	struct tangox_wdt_device *dev = watchdog_get_drvdata(wdt);
-> -
-> -	writel(0, dev->base + WD_COUNTER);
-> -
-> -	return 0;
-> -}
-> -
-> -static unsigned int tangox_wdt_get_timeleft(struct watchdog_device *wdt)
-> -{
-> -	struct tangox_wdt_device *dev = watchdog_get_drvdata(wdt);
-> -	u32 count;
-> -
-> -	count = readl(dev->base + WD_COUNTER);
-> -
-> -	if (!count)
-> -		return 0;
-> -
-> -	return (count - 1) / dev->clk_rate;
-> -}
-> -
-> -static const struct watchdog_info tangox_wdt_info = {
-> -	.options  = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
-> -	.identity = "tangox watchdog",
-> -};
-> -
-> -static int tangox_wdt_restart(struct watchdog_device *wdt,
-> -			      unsigned long action, void *data)
-> -{
-> -	struct tangox_wdt_device *dev = watchdog_get_drvdata(wdt);
-> -
-> -	writel(1, dev->base + WD_COUNTER);
-> -
-> -	return 0;
-> -}
-> -
-> -static const struct watchdog_ops tangox_wdt_ops = {
-> -	.start		= tangox_wdt_start,
-> -	.stop		= tangox_wdt_stop,
-> -	.set_timeout	= tangox_wdt_set_timeout,
-> -	.get_timeleft	= tangox_wdt_get_timeleft,
-> -	.restart	= tangox_wdt_restart,
-> -};
-> -
-> -static void tangox_clk_disable_unprepare(void *data)
-> -{
-> -	clk_disable_unprepare(data);
-> -}
-> -
-> -static int tangox_wdt_probe(struct platform_device *pdev)
-> -{
-> -	struct tangox_wdt_device *dev;
-> -	u32 config;
-> -	int err;
-> -
-> -	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-> -	if (!dev)
-> -		return -ENOMEM;
-> -
-> -	dev->base = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(dev->base))
-> -		return PTR_ERR(dev->base);
-> -
-> -	dev->clk = devm_clk_get(&pdev->dev, NULL);
-> -	if (IS_ERR(dev->clk))
-> -		return PTR_ERR(dev->clk);
-> -
-> -	err = clk_prepare_enable(dev->clk);
-> -	if (err)
-> -		return err;
-> -	err = devm_add_action_or_reset(&pdev->dev,
-> -				       tangox_clk_disable_unprepare, dev->clk);
-> -	if (err)
-> -		return err;
-> -
-> -	dev->clk_rate = clk_get_rate(dev->clk);
-> -	if (!dev->clk_rate)
-> -		return -EINVAL;
-> -
-> -	dev->wdt.parent = &pdev->dev;
-> -	dev->wdt.info = &tangox_wdt_info;
-> -	dev->wdt.ops = &tangox_wdt_ops;
-> -	dev->wdt.timeout = DEFAULT_TIMEOUT;
-> -	dev->wdt.min_timeout = 1;
-> -	dev->wdt.max_hw_heartbeat_ms = (U32_MAX - 1) / dev->clk_rate;
-> -
-> -	watchdog_init_timeout(&dev->wdt, timeout, &pdev->dev);
-> -	watchdog_set_nowayout(&dev->wdt, nowayout);
-> -	watchdog_set_drvdata(&dev->wdt, dev);
-> -
-> -	/*
-> -	 * Deactivate counter if disable bit is set to avoid
-> -	 * accidental reset.
-> -	 */
-> -	config = readl(dev->base + WD_CONFIG);
-> -	if (config & WD_CONFIG_DISABLE)
-> -		writel(0, dev->base + WD_COUNTER);
-> -
-> -	writel(WD_CONFIG_XTAL_IN, dev->base + WD_CONFIG);
-> -
-> -	/*
-> -	 * Mark as active and restart with configured timeout if
-> -	 * already running.
-> -	 */
-> -	if (readl(dev->base + WD_COUNTER)) {
-> -		set_bit(WDOG_HW_RUNNING, &dev->wdt.status);
-> -		tangox_wdt_start(&dev->wdt);
-> -	}
-> -
-> -	watchdog_set_restart_priority(&dev->wdt, 128);
-> -
-> -	watchdog_stop_on_unregister(&dev->wdt);
-> -	err = devm_watchdog_register_device(&pdev->dev, &dev->wdt);
-> -	if (err)
-> -		return err;
-> -
-> -	platform_set_drvdata(pdev, dev);
-> -
-> -	dev_info(&pdev->dev, "SMP86xx/SMP87xx watchdog registered\n");
-> -
-> -	return 0;
-> -}
-> -
-> -static const struct of_device_id tangox_wdt_dt_ids[] = {
-> -	{ .compatible = "sigma,smp8642-wdt" },
-> -	{ .compatible = "sigma,smp8759-wdt" },
-> -	{ }
-> -};
-> -MODULE_DEVICE_TABLE(of, tangox_wdt_dt_ids);
-> -
-> -static struct platform_driver tangox_wdt_driver = {
-> -	.probe	= tangox_wdt_probe,
-> -	.driver	= {
-> -		.name		= "tangox-wdt",
-> -		.of_match_table	= tangox_wdt_dt_ids,
-> -	},
-> -};
-> -
-> -module_platform_driver(tangox_wdt_driver);
-> -
-> -MODULE_AUTHOR("Mans Rullgard <mans@mansr.com>");
-> -MODULE_DESCRIPTION("SMP86xx/SMP87xx Watchdog driver");
-> -MODULE_LICENSE("GPL");
-> -- 
-> 2.29.2
-> 
+Also Florent, how did you test it?
+This test fails in CI and in my manual run:
+./test_progs -t cook
+libbpf: load bpf program failed: Permission denied
+libbpf: -- BEGIN DUMP LOG ---
+libbpf:
+; int update_cookie_sockops(struct bpf_sock_ops *ctx)
+0: (bf) r6 = r1
+; if (ctx->family != AF_INET6)
+1: (61) r1 = *(u32 *)(r6 +20)
+; if (ctx->family != AF_INET6)
+2: (56) if w1 != 0xa goto pc+21
+ R1_w=inv10 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
+; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
+3: (61) r1 = *(u32 *)(r6 +0)
+; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
+4: (56) if w1 != 0x3 goto pc+19
+ R1_w=inv3 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
+; if (!ctx->sk)
+5: (79) r1 = *(u64 *)(r6 +184)
+; if (!ctx->sk)
+6: (15) if r1 == 0x0 goto pc+17
+ R1_w=sock(id=0,ref_obj_id=0,off=0,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0
+; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+7: (79) r2 = *(u64 *)(r6 +184)
+; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+8: (18) r1 = 0xffff888106e41400
+10: (b7) r3 = 0
+11: (b7) r4 = 0
+12: (85) call bpf_sk_storage_get#107
+R2 type=sock_or_null expected=sock_common, sock, tcp_sock, xdp_sock, ptr_
+processed 12 insns (limit 1000000) max_states_per_insn 0 total_states
+0 peak_states 0 mark_read 0
+
+libbpf: -- END LOG --
+libbpf: failed to load program 'update_cookie_sockops'
+libbpf: failed to load object 'socket_cookie_prog'
+libbpf: failed to load BPF skeleton 'socket_cookie_prog': -4007
+test_socket_cookie:FAIL:socket_cookie_prog__open_and_load skeleton
+open_and_load failed
+#95 socket_cookie:FAIL
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
