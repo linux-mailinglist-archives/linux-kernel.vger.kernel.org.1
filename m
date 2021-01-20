@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9831B2FD605
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB522FD62E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403914AbhATQta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:49:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36195 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403868AbhATQsj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:48:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611161233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=JGvoBwEfX1BREcrRFIIgRtmv/WvcOyuJTfydWwKV9NE=;
-        b=aJJdkB+5F9ePDN/x0ApKSIXwKeHGYfYgk2e+H80XngHit5yF8Df98/pMaVqV+6ymmI1UXZ
-        y8VDHMStxOYWkxcJV5rc685DeRsyVRphbY1hgxI+2MoN98mFaIY2Uv8D9JlrVN6CdiFQen
-        tBo0wXJctqxqgMo3zrgTwXwqowcfVsM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-WLlR4PkLMCWSLt66FQ2M8A-1; Wed, 20 Jan 2021 11:47:11 -0500
-X-MC-Unique: WLlR4PkLMCWSLt66FQ2M8A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1A2C107ACE3;
-        Wed, 20 Jan 2021 16:47:09 +0000 (UTC)
-Received: from x1.localdomain (ovpn-114-1.ams2.redhat.com [10.36.114.1])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE57B2CFF4;
-        Wed, 20 Jan 2021 16:47:08 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] virt: vbox: Do not use wait_event_interruptible when called from kernel context
-Date:   Wed, 20 Jan 2021 17:47:07 +0100
-Message-Id: <20210120164707.79114-1-hdegoede@redhat.com>
+        id S2403793AbhATQya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:54:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731111AbhATQxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:53:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB12A23358;
+        Wed, 20 Jan 2021 16:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611161550;
+        bh=e+9f8iPYPhOz9ImfJPx0otLQhcIdYO8xuge7heB6EHU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DS7ZTQJ9Qjn1JtMEH7Cj8DnwI2CyUjp1UHW+vTj4TH9GWSdwYHtUI/QzmdjlWxda/
+         EjGBFuRuMU2RD6Hg24xYB+DXoFuBZN6tenIXTb4pE+V7C9kACca1dLZKNqY9KlXFA1
+         evqZcBJafU7rJCNe+YvK5jJZ22vMRe85FlZC5+uD42F7PDhFsCr1V6nMTQYX7blTet
+         Bq6L7AfX6V/EbpVpzXnq8CbLh1nii1EziGgAilkilZjCeJsql2u/5d0T4iKquvDJGy
+         H5qJaQxsmtFla2lKw+lmI6rcvEffCHRe+6sKRf63ft1trNAS9OgUd/AqPEiYGNyOMg
+         q6UjdGShWk3lA==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-doc@vger.kernel.org, live-patching@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH v6 0/2] Documentation: livepatch: Document reliable stacktrace and minor cleanup
+Date:   Wed, 20 Jan 2021 16:47:12 +0000
+Message-Id: <20210120164714.16581-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not use wait_event_interruptible when vbg_hgcm_call() gets called from
-kernel-context, such as it being called by the vboxsf filesystem code.
+This series adds a document, mainly written by Mark Rutland, which makes
+explicit the requirements for implementing reliable stacktrace in order
+to aid architectures adding this feature.  It also updates the other
+livepatching documents to use automatically generated tables of contents
+following review comments on Mark's document.
 
-This fixes some filesystem related system calls on shared folders
-unexpectedly failing with -EINTR.
+v6:
+ - Remove a duplicated "points".
+v5:
+ - Tweaks to the commit message for the new document.
+ - Convert new and existing documents to autogenerated tables of
+   contents.
+v4:
+ - Renumber table of contents
+v3:
+ - Incorporated objtool section from Mark.
+ - Deleted confusing notes about using annotations.
 
-Fixes: 0532a1b0d045 ("virt: vbox: Implement passing requestor info to the host for VirtualBox 6.0.x")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/virt/vboxguest/vboxguest_utils.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+Mark Brown (1):
+  Documentation: livepatch: Convert to automatically generated contents
 
-diff --git a/drivers/virt/vboxguest/vboxguest_utils.c b/drivers/virt/vboxguest/vboxguest_utils.c
-index ea05af41ec69..8d195e3f8301 100644
---- a/drivers/virt/vboxguest/vboxguest_utils.c
-+++ b/drivers/virt/vboxguest/vboxguest_utils.c
-@@ -468,7 +468,7 @@ static int hgcm_cancel_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call)
-  *               Cancellation fun.
-  */
- static int vbg_hgcm_do_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call,
--			    u32 timeout_ms, bool *leak_it)
-+			    u32 timeout_ms, bool interruptible, bool *leak_it)
- {
- 	int rc, cancel_rc, ret;
- 	long timeout;
-@@ -495,10 +495,15 @@ static int vbg_hgcm_do_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call,
- 	else
- 		timeout = msecs_to_jiffies(timeout_ms);
- 
--	timeout = wait_event_interruptible_timeout(
--					gdev->hgcm_wq,
--					hgcm_req_done(gdev, &call->header),
--					timeout);
-+	if (interruptible) {
-+		timeout = wait_event_interruptible_timeout(gdev->hgcm_wq,
-+							   hgcm_req_done(gdev, &call->header),
-+							   timeout);
-+	} else {
-+		timeout = wait_event_timeout(gdev->hgcm_wq,
-+					     hgcm_req_done(gdev, &call->header),
-+					     timeout);
-+	}
- 
- 	/* timeout > 0 means hgcm_req_done has returned true, so success */
- 	if (timeout > 0)
-@@ -631,7 +636,8 @@ int vbg_hgcm_call(struct vbg_dev *gdev, u32 requestor, u32 client_id,
- 	hgcm_call_init_call(call, client_id, function, parms, parm_count,
- 			    bounce_bufs);
- 
--	ret = vbg_hgcm_do_call(gdev, call, timeout_ms, &leak_it);
-+	ret = vbg_hgcm_do_call(gdev, call, timeout_ms,
-+			       requestor & VMMDEV_REQUESTOR_USERMODE, &leak_it);
- 	if (ret == 0) {
- 		*vbox_status = call->header.result;
- 		ret = hgcm_call_copy_back_result(call, parms, parm_count,
+Mark Rutland (1):
+  Documentation: livepatch: document reliable stacktrace
+
+ Documentation/livepatch/index.rst             |   1 +
+ Documentation/livepatch/livepatch.rst         |  15 +-
+ Documentation/livepatch/module-elf-format.rst |  10 +-
+ .../livepatch/reliable-stacktrace.rst         | 309 ++++++++++++++++++
+ 4 files changed, 313 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/livepatch/reliable-stacktrace.rst
+
+
+base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
 -- 
-2.28.0
+2.20.1
 
