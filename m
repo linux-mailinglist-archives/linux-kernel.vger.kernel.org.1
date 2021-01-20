@@ -2,133 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B29D2FCFB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E332FCFB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387991AbhATLmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388984AbhATLOe (ORCPT
+        id S2388019AbhATLmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:42:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44120 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389028AbhATLPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:14:34 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1236CC0613D6;
-        Wed, 20 Jan 2021 03:13:54 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id i141so11618185yba.0;
-        Wed, 20 Jan 2021 03:13:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n8w0wrgIwK99I/XLO+qT38i1rhaM0hDIWfrrjrmpxSs=;
-        b=GXni0TITHijZ716FXff3R1IztZ1OMAIBdCEy032oVBOVCA9SH86KOh4thFAc8jCPwf
-         lG06FYLYbrU1WcJqfNjUszxi+qAQwVl8vVkC2mcetS9X8Jrc6MQy2SFKZlRi24sWr2UT
-         HGJpAchnTBiTBKbs3eC22aurTuhGv8eGvo9aHWuXbJopG8s0yVjHzhbKWF/wvD/ggHaH
-         B/CCZ5D8xHC9SayI/EOkRbzFJGFsaedVPJG5nrxw8Sik2/80kDNQ5e/EmwyXz23VDis2
-         YqjcmH3aJn5sSKJgwI1mxeZOP95M+Re+TehgarhznQhcBZFokgQqKURcvIlLz+d1hmYM
-         1EWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n8w0wrgIwK99I/XLO+qT38i1rhaM0hDIWfrrjrmpxSs=;
-        b=S4VsFzp17xaFx1W6PkH2E0CslL6JvCVOQ3CjHwb93u0Z2xIdCpPpiQcMlhdhqOZWRA
-         Oqi323xqMqXZNfPuyzTHvQz9pww4vrHtQ/n3HcpQzDx8zxwVePZi5AOfjO5tLU9rvM0a
-         CSdvEtuCfC/n72W0jUoQBX1tRfASMMHDkwVSmpeMLjAEvA3JGhnONgqJT9eF9cy3jUmE
-         4ZMvmPwzS8On8JCCiUh9l0/47ESYgj4lzW9YbTP4DFqR54AfYTYoM4/HJsx0z0bg5WpS
-         iaGxBCLv7+l5pqw/vwzpbdo13Z12kJeA/W8oIRfkXY2qAlcj/uQnlGc75ShEmDIWKGNM
-         OVqg==
-X-Gm-Message-State: AOAM533/sneAQRwmxXv6pdRUAdatfxt/7IXs4wgQsev9vXC4DhTNY5yV
-        aH1Qa/VulO9I59VOJMmfxA5+Y5WMHQQv8VgAXVw=
-X-Google-Smtp-Source: ABdhPJyYcXGJ7UBt8GoLLEiX2wuisF0lCj3RDfHKYpJuROaJ4hobYM9JG5KV1nkwI4hEZyy4YqRoes955e2EyvyM5Eo=
-X-Received: by 2002:a25:94b:: with SMTP id u11mr13351112ybm.518.1611141233400;
- Wed, 20 Jan 2021 03:13:53 -0800 (PST)
+        Wed, 20 Jan 2021 06:15:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611141263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r/EVI+1MCqEvTLfz42IzqWVQkkuhCL254qM17MstwaY=;
+        b=V6BNRVa6de70OXBlYqVn3X86Uz1yRnmx8Yeiqi8pbEzugSn/DoSCStn9AY4X3Bc0XcTMmB
+        5NU1RD7zivgAcmE1zSR6QON2EYFF25EowkfOipOaD6L+Vyq+xXj7UxG2pBvUfb3A/9JbQR
+        ebspVUc8TT2rpXilokB6s36Ds4LLusw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-G7gZTGtOOB2URGV0p1tCAg-1; Wed, 20 Jan 2021 06:14:21 -0500
+X-MC-Unique: G7gZTGtOOB2URGV0p1tCAg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B17F01800D41;
+        Wed, 20 Jan 2021 11:14:20 +0000 (UTC)
+Received: from [10.36.115.161] (ovpn-115-161.ams2.redhat.com [10.36.115.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9967A10023B2;
+        Wed, 20 Jan 2021 11:14:15 +0000 (UTC)
+Subject: Re: [PATCH] virtio-mem: Assign boolean values to a bool variable
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
+        jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>
+References: <1611129031-82818-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+ <81a1817d-a1f5-dfca-550c-3e3f62cf3a9d@redhat.com>
+ <20210120045736-mutt-send-email-mst@kernel.org>
+ <da2cb3fb-0ea5-5afd-afb5-a9e7f474e148@redhat.com>
+ <20210120060301-mutt-send-email-mst@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a61b016e-7896-134c-a1be-8ff8e8e6fbe2@redhat.com>
+Date:   Wed, 20 Jan 2021 12:14:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210120090148.30598-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <a1c42817-e2e4-b96a-c494-742808443f6b@ideasonboard.com> <20210120103648.GI11878@paasikivi.fi.intel.com>
- <8bdf95af-5df7-df7b-4ded-4d291522f77c@ideasonboard.com>
-In-Reply-To: <8bdf95af-5df7-df7b-4ded-4d291522f77c@ideasonboard.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 20 Jan 2021 11:13:27 +0000
-Message-ID: <CA+V-a8v1W5jdUyD-S_qt4Lu7vksdmLiQrV7ZwJiDGOa6WBiMfA@mail.gmail.com>
-Subject: Re: [PATCH] media: i2c/Kconfig: Select FWNODE for OV772x sensor
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210120060301-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:09 AM Kieran Bingham
-<kieran.bingham+renesas@ideasonboard.com> wrote:
->
-> On 20/01/2021 10:36, Sakari Ailus wrote:
-> > On Wed, Jan 20, 2021 at 10:17:14AM +0000, Kieran Bingham wrote:
-> >> Hi Lad,
-> >>
-> >> On 20/01/2021 09:01, Lad Prabhakar wrote:
-> >>> Fix OV772x build breakage by selecting V4L2_FWNODE config:
-> >>>
-> >>> ia64-linux-ld: drivers/media/i2c/ov772x.o: in function `ov772x_probe':
-> >>> ov772x.c:(.text+0x1ee2): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
-> >>> ia64-linux-ld: ov772x.c:(.text+0x1f12): undefined reference to `v4l2_fwnode_endpoint_free'
-> >>> ia64-linux-ld: ov772x.c:(.text+0x2212): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
-> >>>
-> >>> Fixes: 8a10b4e3601e ("media: i2c: ov772x: Parse endpoint properties")
-> >>> Reported-by: kernel test robot <lkp@intel.com>
-> >>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >>
-> >> I see this driver uses subdev API too.
-> >>
-> >> Should the driver also select VIDEO_V4L2_SUBDEV_API?
-> >
-> > Yes, it should. Another patch? This one fixes a compilation problem.
->
-> Yes, it's probably another patch, because indeed this is a specific fix.
->
-> I wonder if that means the builders haven't been able to construct a
-> combination without VIDEO_V4L2_SUBDEV_API...
->
-Thats because v4l2-subdev.o is built irrespective of
-VIDEO_V4L2_SUBDEV_API enabled/disabled and there are empty fillers in
-v4l2-subdev.c when VIDEO_V4L2_SUBDEV_API is disabled.
+On 20.01.21 12:03, Michael S. Tsirkin wrote:
+> On Wed, Jan 20, 2021 at 11:04:18AM +0100, David Hildenbrand wrote:
+>> On 20.01.21 10:57, Michael S. Tsirkin wrote:
+>>> On Wed, Jan 20, 2021 at 10:40:37AM +0100, David Hildenbrand wrote:
+>>>> On 20.01.21 08:50, Jiapeng Zhong wrote:
+>>>>> Fix the following coccicheck warnings:
+>>>>>
+>>>>> ./drivers/virtio/virtio_mem.c:2580:2-25: WARNING: Assignment
+>>>>> of 0/1 to bool variable.
+>>>>>
+>>>>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>>>>> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+>>>>> ---
+>>>>>  drivers/virtio/virtio_mem.c | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>>>>> index 9fc9ec4..85a272c 100644
+>>>>> --- a/drivers/virtio/virtio_mem.c
+>>>>> +++ b/drivers/virtio/virtio_mem.c
+>>>>> @@ -2577,7 +2577,7 @@ static int virtio_mem_probe(struct virtio_device *vdev)
+>>>>>  	 * actually in use (e.g., trying to reload the driver).
+>>>>>  	 */
+>>>>>  	if (vm->plugged_size) {
+>>>>> -		vm->unplug_all_required = 1;
+>>>>> +		vm->unplug_all_required = true;
+>>>>>  		dev_info(&vm->vdev->dev, "unplugging all memory is required\n");
+>>>>>  	}
+>>>>>  
+>>>>>
+>>>>
+>>>> Hi,
+>>>>
+>>>> we already had a fix on the list for quite a while:
+>>>>
+>>>> https://lkml.kernel.org/r/1609233239-60313-1-git-send-email-tiantao6@hisilicon.com
+>>>
+>>> Can't find that one.
+>>
+>> Looks like it was only on virtualization@ and a couple of people on cc.
+>>
+>> https://lists.linuxfoundation.org/pipermail/virtualization/2020-December/051662.html
+>>
+>> Interestingly, I cannot find the follow-up ("[PATCH] virtio-mem: use
+>> boolean value when setting vm->unplug_all_required") in the mailing list
+>> archives, even though it has virtualization@ on cc.
+> 
+> 
+> Unsurprising that I didn't merge it then ;)
 
-Cheers,
-Prabhakar
-> --
-> Kieran
->
->
-> >> Or is that covered sufficiently already on any platforms that would use
-> >> the driver?
-> >>
-> >> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> >>
-> >>> ---
-> >>>  drivers/media/i2c/Kconfig | 1 +
-> >>>  1 file changed, 1 insertion(+)
-> >>>
-> >>> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> >>> index eddb10220953..bb1b5a340431 100644
-> >>> --- a/drivers/media/i2c/Kconfig
-> >>> +++ b/drivers/media/i2c/Kconfig
-> >>> @@ -1013,6 +1013,7 @@ config VIDEO_OV772X
-> >>>     tristate "OmniVision OV772x sensor support"
-> >>>     depends on I2C && VIDEO_V4L2
-> >>>     select REGMAP_SCCB
-> >>> +   select V4L2_FWNODE
-> >>>     help
-> >>>       This is a Video4Linux2 sensor driver for the OmniVision
-> >>>       OV772x camera.
-> >>>
-> >>
-> >
->
+Well, you were on cc ;)
+
+> Want to send your ack on this one?
+
+Sure
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
