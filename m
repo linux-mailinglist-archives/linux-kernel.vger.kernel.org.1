@@ -2,98 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEE52FC92B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B81842FC935
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731567AbhATDht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 22:37:49 -0500
-Received: from conuserg-09.nifty.com ([210.131.2.76]:29127 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731242AbhATDhc (ORCPT
+        id S1730756AbhATDjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:39:07 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11408 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731732AbhATDiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 22:37:32 -0500
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 10K3Z2cj005354;
-        Wed, 20 Jan 2021 12:35:02 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 10K3Z2cj005354
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611113703;
-        bh=TVy/bi2QE4oN2L/eUtJRIzqXEnYfLr1n5cPiKLOkSqM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HuTs1HHtGSk8zx9u6x+7/DNLQA5dEb9UIJv7z/3DLsiUE7VrGq2C+IB2GNJV+TgeQ
-         C4apLWSYJDe5G6z0iWosMrBFt3QrBTm+XBjn6QZY6NhKonNQQQ79ooN7I4cAZtalLq
-         F1UfW2jrfFSsgXMwwXCqzkJHx7BQPNo2m9UUpZSRin1qn3PWx6f0IMOvLeiNNEAIM4
-         6g85ck2DaeE0yzh9/UruEEoxX+sqzZ5vwSIb7cFEvEuQFxZLQcv/kuvIg5JlMP0GPA
-         8fLLGHhnlVJJ11yySw27HIQ+UmEYOmfMuWlkWKUybWrorA7CvaTDdVeSViGIkoCbPN
-         NRlm1lYpY+Obw==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Guilak <guilak@linux.vnet.ibm.com>,
-        Lee Revell <rlrevell@joe-job.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] init/version.c: remove Version_<LINUX_VERSION_CODE> symbol
-Date:   Wed, 20 Jan 2021 12:34:52 +0900
-Message-Id: <20210120033452.2895170-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 19 Jan 2021 22:38:01 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DLB574d9Pz7XgW;
+        Wed, 20 Jan 2021 11:36:11 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
+ 11:37:07 +0800
+Subject: Re: [PATCH 1/2] perf/smmuv3: Don't reserve the register space that
+ overlaps with the SMMUv3
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Neil Leeder <nleeder@codeaurora.org>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
+ <20210119015951.1042-2-thunder.leizhen@huawei.com>
+ <30665cd6-b438-1d1d-7445-9e45e240f79a@arm.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <a2d7d94c-8e4e-d91d-8587-7a5b3594b4ca@huawei.com>
+Date:   Wed, 20 Jan 2021 11:37:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <30665cd6-b438-1d1d-7445-9e45e240f79a@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code hunk creates a Version_<LINUX_VERSION_CODE> symbol if
-CONFIG_KALLSYMS is disabled. For example, building the kernel v5.10
-for allnoconfig creates the following symbol:
 
-  $ nm vmlinux | grep Version_
-  c116b028 B Version_330240
 
-There is no in-tree user of this symbol.
+On 2021/1/19 20:32, Robin Murphy wrote:
+> On 2021-01-19 01:59, Zhen Lei wrote:
+>> Some SMMUv3 implementation embed the Perf Monitor Group Registers (PMCG)
+>> inside the first 64kB region of the SMMU. Since SMMU and PMCG are managed
+>> by two separate drivers, and this driver depends on ARM_SMMU_V3, so the
+>> SMMU driver reserves the corresponding resource first, this driver should
+>> not reserve the corresponding resource again. Otherwise, a resource
+>> reservation conflict is reported during boot.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>   drivers/perf/arm_smmuv3_pmu.c | 42 ++++++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 40 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+>> index 74474bb322c3f26..dcce085431c6ce8 100644
+>> --- a/drivers/perf/arm_smmuv3_pmu.c
+>> +++ b/drivers/perf/arm_smmuv3_pmu.c
+>> @@ -761,6 +761,44 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
+>>       dev_notice(smmu_pmu->dev, "option mask 0x%x\n", smmu_pmu->options);
+>>   }
+>>   +static void __iomem *
+>> +smmu_pmu_get_and_ioremap_resource(struct platform_device *pdev,
+>> +                  unsigned int index,
+>> +                  struct resource **out_res)
+>> +{
+>> +    int ret;
+>> +    void __iomem *base;
+>> +    struct resource *res;
+>> +
+>> +    res = platform_get_resource(pdev, IORESOURCE_MEM, index);
+>> +    if (!res) {
+>> +        dev_err(&pdev->dev, "invalid resource\n");
+>> +        return IOMEM_ERR_PTR(-EINVAL);
+>> +    }
+>> +    if (out_res)
+>> +        *out_res = res;
+>> +
+>> +    ret = region_intersects(res->start, resource_size(res),
+>> +                IORESOURCE_MEM, IORES_DESC_NONE);
+>> +    if (ret == REGION_INTERSECTS) {
+>> +        /*
+>> +         * The resource has already been reserved by the SMMUv3 driver.
+>> +         * Don't reserve it again, just do devm_ioremap().
+>> +         */
+>> +        base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+>> +    } else {
+>> +        /*
+>> +         * The resource may have not been reserved by any driver, or
+>> +         * has been reserved but not type IORESOURCE_MEM. In the latter
+>> +         * case, devm_ioremap_resource() reports a conflict and returns
+>> +         * IOMEM_ERR_PTR(-EBUSY).
+>> +         */
+>> +        base = devm_ioremap_resource(&pdev->dev, res);
+>> +    }
+> 
+> What if the PMCG driver simply happens to probe first?
 
-Commit 197dcffc8ba0 ("init/version.c: define version_string only if
-CONFIG_KALLSYMS is not defined") mentions that Version_* is only used
-with ksymoops.
+There are 4 cases:
+1) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=y
+   It's not allowed. Becase: ARM_SMMU_V3_PMU depends on ARM_SMMU_V3
+   config ARM_SMMU_V3_PMU
+         tristate "ARM SMMUv3 Performance Monitors Extension"
+         depends on ARM64 && ACPI && ARM_SMMU_V3
 
-However, a commit in the pre-git era [1] had added the statement,
-"ksymoops is useless on 2.6.  Please use the Oops in its original format".
+2) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=m
+   No problem, SMMUv3 will be initialized first.
 
-That statement existed until commit 4eb9241127a0 ("Documentation:
-admin-guide: update bug-hunting.rst") finally removed the stale
-ksymoops information.
+3) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=y
+   vi drivers/Makefile
+   60 obj-y                           += iommu/
+   172 obj-$(CONFIG_PERF_EVENTS)       += perf/
 
-This symbol is no longer needed.
+   This link sequence ensure that SMMUv3 driver will be initialized first.
+   They are currently at the same initialization level.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?id=ad68b2f085f5c79e4759ca2d13947b3c885ee831
+4) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=m
+   Sorry, I thought module dependencies were generated based on "depends on".
+   But I tried it today，module dependencies are generated only when symbol
+   dependencies exist. I should use MODULE_SOFTDEP() to explicitly mark the
+   dependency. I will send V2 later.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
 
- init/version.c | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/init/version.c b/init/version.c
-index 80d2b7566b39..92afc782b043 100644
---- a/init/version.c
-+++ b/init/version.c
-@@ -16,14 +16,6 @@
- #include <linux/version.h>
- #include <linux/proc_ns.h>
- 
--#ifndef CONFIG_KALLSYMS
--#define version(a) Version_ ## a
--#define version_string(a) version(a)
--
--extern int version_string(LINUX_VERSION_CODE);
--int version_string(LINUX_VERSION_CODE);
--#endif
--
- struct uts_namespace init_uts_ns = {
- 	.ns.count = REFCOUNT_INIT(2),
- 	.name = {
--- 
-2.27.0
+> 
+> Robin.
+> 
+>> +
+>> +    return base;
+>> +}
+>> +
+>>   static int smmu_pmu_probe(struct platform_device *pdev)
+>>   {
+>>       struct smmu_pmu *smmu_pmu;
+>> @@ -793,7 +831,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>>           .capabilities    = PERF_PMU_CAP_NO_EXCLUDE,
+>>       };
+>>   -    smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
+>> +    smmu_pmu->reg_base = smmu_pmu_get_and_ioremap_resource(pdev, 0, &res_0);
+>>       if (IS_ERR(smmu_pmu->reg_base))
+>>           return PTR_ERR(smmu_pmu->reg_base);
+>>   @@ -801,7 +839,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>>         /* Determine if page 1 is present */
+>>       if (cfgr & SMMU_PMCG_CFGR_RELOC_CTRS) {
+>> -        smmu_pmu->reloc_base = devm_platform_ioremap_resource(pdev, 1);
+>> +        smmu_pmu->reloc_base = smmu_pmu_get_and_ioremap_resource(pdev, 1, NULL);
+>>           if (IS_ERR(smmu_pmu->reloc_base))
+>>               return PTR_ERR(smmu_pmu->reloc_base);
+>>       } else {
+>>
+> 
+> .
+> 
 
