@@ -2,99 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD6A2FCB11
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568092FCB12
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbhATG2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:28:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728982AbhATGVK (ORCPT
+        id S1729792AbhATG2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:28:12 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:41847 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729523AbhATGYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:21:10 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B140C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 22:20:23 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id m6so13863339pfm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 22:20:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s6C+mbhedQCP+zudi5mxquluGRK7D+VGS5SgYthRSds=;
-        b=WgYhoD8yxocJ85iXXmVyCBnc24BrEivMRF1Tb8iCP7Uda5K63BkrHdCjTqppP/WbCA
-         zI2onxF6t3pfa2MTQMPIVzMcCtPfE3zhIoEdsNh5CWE8uECvpKXRewnhVQnjT7B/+mwk
-         rIU0TpWE/YqQyWwzP/xTAmTQRTndEF+vK/v0ymWR/DQtzwqz9XzYQICA11Y70fBgYS+l
-         8g8JeQeEjmtg0veHXZRqAuTosQUaByNm8iLNxxIn4YXf5Ps8YsIvk+TJNdwOqyW5so8p
-         LyYZrYiF4x0MdQx0tl35ZBr1N4mKau2k/l4ae+N57NAJzrysiCr1uENk7QPQI+WgPqLd
-         O5RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s6C+mbhedQCP+zudi5mxquluGRK7D+VGS5SgYthRSds=;
-        b=k96Ql19odd+v9viiMAGvPcTU1eWBhzaQNWQAF/AzrFONyyPvcnpOjXH1qCpQ2pGYns
-         QwgQMmjNwb4GVgNroT44s2cnBlFXgFEaOphylrC11T1AlrZ9VgtFI4VV5NvVMIdvXALs
-         CdXHHzWnmz+5wPOmGunDKdF/mQdtO1rntpfKZYYy8T71TmJu2I3dcFURPFPDMaCfHLBG
-         2+VHQuF0d6+tMRMbKbgW+HeoCZ3Qr1UHTSLkOWp5bATZfz4vCdHmLLOzg+lXEHwqFm/F
-         Z7cvvyw8l5Delcp27kuJiHhRKQJl3AjZPejDH+45WCXBGhmwWzSDince8nCenph2PlO3
-         JIvg==
-X-Gm-Message-State: AOAM530I7gs9qH5OPjp0sOVcgYZEROUfciTQWZHzgvHqC/deiSlvlLha
-        6Z/QZ2X8tb1Y5KbEEyw0IqHuPQ==
-X-Google-Smtp-Source: ABdhPJxLMUyE+2pwrS0UVGPFMaBcYi/uM33r5JfTx1Pgy3Xp8LXpTj6aZrSgZfqJw/i9I+XYAOqi5g==
-X-Received: by 2002:a65:458e:: with SMTP id o14mr7834909pgq.444.1611123622455;
-        Tue, 19 Jan 2021 22:20:22 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id n8sm1015976pjo.18.2021.01.19.22.20.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 22:20:21 -0800 (PST)
-Date:   Wed, 20 Jan 2021 11:50:19 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, pantelis.antoniou@konsulko.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-Message-ID: <20210120062019.itpakykj2ah5oxp3@vireshk-i7>
-References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <20210119022154.2338781-1-frowand.list@gmail.com>
- <20210119080546.dzec3jatsz2662qs@vireshk-i7>
- <f7133d16-510b-f730-a43b-89edab08aabe@gmail.com>
- <20210120050606.b2m4jssh73wexybx@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120050606.b2m4jssh73wexybx@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+        Wed, 20 Jan 2021 01:24:00 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UMIdawV_1611123780;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMIdawV_1611123780)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 14:23:10 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     jesse.brandeburg@intel.com
+Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] igc: Assign boolean values to a bool variable
+Date:   Wed, 20 Jan 2021 14:22:58 +0800
+Message-Id: <1611123778-104125-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-01-21, 10:36, Viresh Kumar wrote:
-> On 19-01-21, 09:44, Frank Rowand wrote:
-> > No.  overlay_base.dts is intentionally compiled into a base FDT, not
-> > an overlay.  Unittest intentionally unflattens this FDT in early boot,
-> > in association with unflattening the system FDT.  One key intent
-> > behind this is to use the same memory allocation method that is
-> > used for the system FDT.
-> > 
-> > Do not try to convert overlay_base.dts into an overlay.
-> 
-> Okay, but why does it have /plugin/; specified in it then ?
-> 
-> And shouldn't we create two separate dtb-s now, static_test.dtb and
-> static_overlay_test.dtb ? As fdtoverlay will not be able to merge it with
-> testcase.dtb anyway.
-> 
-> Or maybe we can create another file static_overlay.dts (like testcases.dts)
-> which can include both testcases.dts and overlay_base.dts, and then we can
-> create static_test.dtb out of it ? That won't impact the runtime tests at all.
+Fix the following coccicheck warnings:
 
-Hmm, I noticed just now that you have kept overlay.dtb out of the build,
-probably we should then drop overlay_base.dtb as well ?
+./drivers/net/ethernet/intel/igc/igc_main.c:4961:2-14: WARNING:
+Assignment of 0/1 to bool variable.
 
+./drivers/net/ethernet/intel/igc/igc_main.c:4955:2-14: WARNING:
+Assignment of 0/1 to bool variable.
+
+./drivers/net/ethernet/intel/igc/igc_main.c:4933:1-13: WARNING:
+Assignment of 0/1 to bool variable.
+
+./drivers/net/ethernet/intel/igc/igc_main.c:4592:1-24: WARNING:
+Assignment of 0/1 to bool variable.
+
+./drivers/net/ethernet/intel/igc/igc_main.c:4438:2-25: WARNING:
+Assignment of 0/1 to bool variable.
+
+./drivers/net/ethernet/intel/igc/igc_main.c:4396:2-25: WARNING:
+Assignment of 0/1 to bool variable.
+
+./drivers/net/ethernet/intel/igc/igc_main.c:4018:2-25: WARNING:
+Assignment of 0/1 to bool variable.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index afd6a62..6abb331 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -3597,7 +3597,7 @@ void igc_up(struct igc_adapter *adapter)
+ 	netif_tx_start_all_queues(adapter->netdev);
+ 
+ 	/* start the watchdog. */
+-	hw->mac.get_link_status = 1;
++	hw->mac.get_link_status = true;
+ 	schedule_work(&adapter->watchdog_task);
+ }
+ 
+@@ -4016,7 +4016,7 @@ static irqreturn_t igc_msix_other(int irq, void *data)
+ 	}
+ 
+ 	if (icr & IGC_ICR_LSC) {
+-		hw->mac.get_link_status = 1;
++		hw->mac.get_link_status = true;
+ 		/* guard against interrupt when we're going down */
+ 		if (!test_bit(__IGC_DOWN, &adapter->state))
+ 			mod_timer(&adapter->watchdog_timer, jiffies + 1);
+@@ -4394,7 +4394,7 @@ static irqreturn_t igc_intr_msi(int irq, void *data)
+ 	}
+ 
+ 	if (icr & (IGC_ICR_RXSEQ | IGC_ICR_LSC)) {
+-		hw->mac.get_link_status = 1;
++		hw->mac.get_link_status = true;
+ 		if (!test_bit(__IGC_DOWN, &adapter->state))
+ 			mod_timer(&adapter->watchdog_timer, jiffies + 1);
+ 	}
+@@ -4436,7 +4436,7 @@ static irqreturn_t igc_intr(int irq, void *data)
+ 	}
+ 
+ 	if (icr & (IGC_ICR_RXSEQ | IGC_ICR_LSC)) {
+-		hw->mac.get_link_status = 1;
++		hw->mac.get_link_status = true;
+ 		/* guard against interrupt when we're going down */
+ 		if (!test_bit(__IGC_DOWN, &adapter->state))
+ 			mod_timer(&adapter->watchdog_timer, jiffies + 1);
+@@ -4590,7 +4590,7 @@ static int __igc_open(struct net_device *netdev, bool resuming)
+ 	netif_tx_start_all_queues(netdev);
+ 
+ 	/* start the watchdog. */
+-	hw->mac.get_link_status = 1;
++	hw->mac.get_link_status = true;
+ 	schedule_work(&adapter->watchdog_task);
+ 
+ 	return IGC_SUCCESS;
+@@ -4931,7 +4931,7 @@ int igc_set_spd_dplx(struct igc_adapter *adapter, u32 spd, u8 dplx)
+ {
+ 	struct igc_mac_info *mac = &adapter->hw.mac;
+ 
+-	mac->autoneg = 0;
++	mac->autoneg = false;
+ 
+ 	/* Make sure dplx is at most 1 bit and lsb of speed is not set
+ 	 * for the switch() below to work
+@@ -4953,13 +4953,13 @@ int igc_set_spd_dplx(struct igc_adapter *adapter, u32 spd, u8 dplx)
+ 		mac->forced_speed_duplex = ADVERTISE_100_FULL;
+ 		break;
+ 	case SPEED_1000 + DUPLEX_FULL:
+-		mac->autoneg = 1;
++		mac->autoneg = true;
+ 		adapter->hw.phy.autoneg_advertised = ADVERTISE_1000_FULL;
+ 		break;
+ 	case SPEED_1000 + DUPLEX_HALF: /* not supported */
+ 		goto err_inval;
+ 	case SPEED_2500 + DUPLEX_FULL:
+-		mac->autoneg = 1;
++		mac->autoneg = true;
+ 		adapter->hw.phy.autoneg_advertised = ADVERTISE_2500_FULL;
+ 		break;
+ 	case SPEED_2500 + DUPLEX_HALF: /* not supported */
 -- 
-viresh
+1.8.3.1
+
