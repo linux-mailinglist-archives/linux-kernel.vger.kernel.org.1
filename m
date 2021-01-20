@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE672FCE2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB4B2FCE2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732425AbhATKSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730330AbhATJ4Z (ORCPT
+        id S1732471AbhATKSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:18:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59510 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730430AbhATJ7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:56:25 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B67AC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:55:45 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id p18so14825386pgm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:55:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VIYjzidVjOUfXvZVNPBo0ITX6aT8Xxm7GMPqLF7Yq6o=;
-        b=DYk2cDbWItxBTsbelOBfJ/jCUmStslMqiaIMpID1yGRAsUB/Z5EceuBAYcVIZLvPBX
-         iB8G5aNcZvpcXjEUY0qAVCUOaDl1/FjpT4JTvKby0r49RnCJJThtY9+qX/KxzDAuQSZQ
-         SdWUuciIDJ3JUnLwc38eINldPpUa5msfc1VHPQ37ksrrQbXG94xow10ltpN9FIWMjc1e
-         1kHgoAQoINlAfVVE9klhv4QYh6bwboRnfiFD72EHJr4X12bj2dSYw7e8BShAF8ysmKsq
-         79n6bwhPbXDLHmXro0PPIqI/f64Xnna2Hb2gJHtQPH09yais3/1/EFCfHbFXYl7nBOmn
-         Q3+Q==
+        Wed, 20 Jan 2021 04:59:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611136673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rI/aNUF4iX6rJBo6zJ7zLcisnPIn2Cuehxm+ovurTIg=;
+        b=EP0BwrKbVjhEkaKI3E+NFXg3YV3ouJ9Ofs2m0UYaNCwBxHe0KesLg/ujvkSotIvqq6dFCY
+        bQQrS/bCnz5Q9zBIJmn25xIWm+HdSCgAIvEiUDWiVd6r6i6mQ76BrOzsYryZYcfRzaxoIk
+        IEs7b5DL5mzRDzPXXuQEeepmCRlWCUw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-551-nkNpEo95MwunsUlXB_5DgQ-1; Wed, 20 Jan 2021 04:57:51 -0500
+X-MC-Unique: nkNpEo95MwunsUlXB_5DgQ-1
+Received: by mail-wr1-f69.google.com with SMTP id j5so11180170wro.12
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:57:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VIYjzidVjOUfXvZVNPBo0ITX6aT8Xxm7GMPqLF7Yq6o=;
-        b=kODG0yo5Xeb3snv7Ef4HU7K2KM7YltAIMtVx/r+/9DrfuOugmeQBmtz83skcluF4f1
-         ngwwLOyUYOeVmecnqk80N8ofWz7/heBtoa3yTftWHZWxihsVM/n/AYIuDmOVIpts89is
-         dvARdoesB5CPcH6ioQ2eV9Ded1Dmla/IXcvuxdxZeeb3kwi6rSQfS5YESQzE3IDMrS4h
-         ovuqjY7mLCKmk9C7kbdpAZv7eNTsm6OqDOlWuP5Bw9qNJN2AoU7omXmr8PkeySR/+A12
-         7eR9KJXfMr5nhuvZeeUOuzHcjwZ/quL5ZRrHL1TwnoCZp5vZr2YN1WXPUAS5AyS893DB
-         xz4Q==
-X-Gm-Message-State: AOAM532dBeEKEJG79QzscFRofwYCmS+xm7ShtKlR6VVjySqI/dN0DkRC
-        IocPc85GwIOnUVvTpKMo05Db3A==
-X-Google-Smtp-Source: ABdhPJwoQnHz+OxtbiPdDqydFF5GFBJ0JnL2s70tksWYeMC91Pw4+Bno1qkkE3VD/vMLO7ANn7FIEg==
-X-Received: by 2002:a63:e:: with SMTP id 14mr8434233pga.426.1611136544456;
-        Wed, 20 Jan 2021 01:55:44 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id k8sm1780809pfp.114.2021.01.20.01.55.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Jan 2021 01:55:43 -0800 (PST)
-Date:   Wed, 20 Jan 2021 15:25:41 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH V5 4/5] kbuild: Add support to build overlays (%.dtbo)
-Message-ID: <20210120095541.f354ml4h36rfc4gx@vireshk-i7>
-References: <cover.1611124778.git.viresh.kumar@linaro.org>
- <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
- <CAK7LNATPSBrmSC_if+6sK0pwi1ksBZ7RXK1mndj1AGCX3gkj+g@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=rI/aNUF4iX6rJBo6zJ7zLcisnPIn2Cuehxm+ovurTIg=;
+        b=lGoyjdlo2goMoSjkh9ZLxrtSYZWaJyZhoqPFLwt5Z3pzkad5CoiVISnM0wAyb763/r
+         ddrYMnG1mk6hCo6uoQRo8HPbzOvkJAHg0/jUcggxWjg+M85fE42bj5rjcsReVoj76dA2
+         1lXgMssTlkLCQZxy/s192oVf4/J86Bp/uY7OyuZq0Yp7MghejkS3ZXxncJsvkKnlgNu9
+         Q9YnIErlcJVuPaMEhu+80eH7yq/mk0+SDw854V6BOSYNsR3u+JuKits2SKnPBplU9MOb
+         98QDInCgg1mmDIqcoOt8jChcCbyLDLslGG+WOwgRRSwWuJJl9F77BXlI/jIvm/7ITKBO
+         Ryqg==
+X-Gm-Message-State: AOAM532olLZgDzXvCWrpR2ow3Anj3MV9aR7gQ/pDkFX0FKbSGvzTScKE
+        biIr+jSvTBQrZDsVtoaCg5veGAifuREpFFKBNtoqlyZI1kSc3sqTkdfYJ9moPeiaVA3uTgypMN9
+        C43VXpJRlyDQJZcvFeDYbdNdy
+X-Received: by 2002:a1c:7c06:: with SMTP id x6mr3522127wmc.67.1611136670202;
+        Wed, 20 Jan 2021 01:57:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJysojSYIU7BmwnZJ8v236DSByDjL3pHaRMW50WuxQGh9a57i9zHGHQkBa+2n+gsCeWAmYp1Fg==
+X-Received: by 2002:a1c:7c06:: with SMTP id x6mr3522104wmc.67.1611136670014;
+        Wed, 20 Jan 2021 01:57:50 -0800 (PST)
+Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
+        by smtp.gmail.com with ESMTPSA id q15sm2875475wrw.75.2021.01.20.01.57.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 01:57:49 -0800 (PST)
+Date:   Wed, 20 Jan 2021 04:57:46 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
+        jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>
+Subject: Re: [PATCH] virtio-mem: Assign boolean values to a bool variable
+Message-ID: <20210120045736-mutt-send-email-mst@kernel.org>
+References: <1611129031-82818-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+ <81a1817d-a1f5-dfca-550c-3e3f62cf3a9d@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNATPSBrmSC_if+6sK0pwi1ksBZ7RXK1mndj1AGCX3gkj+g@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <81a1817d-a1f5-dfca-550c-3e3f62cf3a9d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-01-21, 17:58, Masahiro Yamada wrote:
-> > +%.dtb %.dtbo: include/config/kernel.release scripts_dtc
-> >         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+On Wed, Jan 20, 2021 at 10:40:37AM +0100, David Hildenbrand wrote:
+> On 20.01.21 08:50, Jiapeng Zhong wrote:
+> > Fix the following coccicheck warnings:
+> > 
+> > ./drivers/virtio/virtio_mem.c:2580:2-25: WARNING: Assignment
+> > of 0/1 to bool variable.
+> > 
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+> > ---
+> >  drivers/virtio/virtio_mem.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> > index 9fc9ec4..85a272c 100644
+> > --- a/drivers/virtio/virtio_mem.c
+> > +++ b/drivers/virtio/virtio_mem.c
+> > @@ -2577,7 +2577,7 @@ static int virtio_mem_probe(struct virtio_device *vdev)
+> >  	 * actually in use (e.g., trying to reload the driver).
+> >  	 */
+> >  	if (vm->plugged_size) {
+> > -		vm->unplug_all_required = 1;
+> > +		vm->unplug_all_required = true;
+> >  		dev_info(&vm->vdev->dev, "unplugging all memory is required\n");
+> >  	}
+> >  
+> > 
 > 
+> Hi,
 > 
-> No, this is wrong because it does not work
-> as grouped targets.
+> we already had a fix on the list for quite a while:
 > 
-> You need to separate them.
-> 
-> 
-> 
-> %.dtb: include/config/kernel.release scripts_dtc
->          $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-> 
-> %.dtbo: include/config/kernel.release scripts_dtc
->          $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-> 
-> 
-> 
-> 
-> See GNU make manual.
-> 
-> 
-> "Pattern rules may have more than one target; however, every target
-> must contain a % character.
-> Pattern rules are always treated as grouped targets"
-> 
-> https://www.gnu.org/software/make/manual/html_node/Pattern-Intro.html
+> https://lkml.kernel.org/r/1609233239-60313-1-git-send-email-tiantao6@hisilicon.com
 
-Hmm, okay I will do that.
+Can't find that one.
 
-I did it this way because I saw similar stuff at some other places. I
-am not a regular Makefile hacker, there is every chance I am reading
-it wrong.
+> However, looks like Michael queued your patch on the vhost tree instead.
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
 
-$ git grep "%.*%.*:" | grep Makefile
-Makefile:%/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONFIG_CONFIG)
-scripts/Makefile.build:$(obj)/%.asn1.c $(obj)/%.asn1.h: $(src)/%.asn1 $(objtree)/scripts/asn1_compiler
-scripts/Makefile.host:$(obj)/%.tab.c $(obj)/%.tab.h: $(src)/%.y FORCE
-scripts/genksyms/Makefile:$(obj)/pars%.tab.c $(obj)/pars%.tab.h: $(src)/pars%.y FORCE
-tools/perf/Documentation/Makefile:$(OUTPUT)%.1 $(OUTPUT)%.5 $(OUTPUT)%.7 : %.txt
-tools/perf/Documentation/Makefile:$(OUTPUT)%.1 $(OUTPUT)%.5 $(OUTPUT)%.7 : $(OUTPUT)%.xml
-
--- 
-viresh
