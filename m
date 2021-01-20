@@ -2,126 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C081D2FCFA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C352FCFA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733223AbhATLkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:40:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28705 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732934AbhATLFB (ORCPT
+        id S1733253AbhATLkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:40:51 -0500
+Received: from relay01.th.seeweb.it ([5.144.164.162]:47413 "EHLO
+        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388802AbhATLFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:05:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611140614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IgKWadVO4IhTvmcLY56retKTp5qCTT4hdx8ojgzPM6c=;
-        b=FBCaGJ+9HeMb/6QsrEJB4/VYFXoFfaBVKGfqVsCBDuGzHKmMI3ysMitKkAq3czc+T4uiEO
-        aun7ikf2gexJKafbY4ofsSutl1pn0XspQy2ol+jnnWpxCIkKpVV/EvaFeBsNSAiKlxGKBF
-        HwJXI+TMNoidb+S/4mFjip6Z9Nkf6Hg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-W_e0sA-lOMKjfGGkUTpSOQ-1; Wed, 20 Jan 2021 06:03:31 -0500
-X-MC-Unique: W_e0sA-lOMKjfGGkUTpSOQ-1
-Received: by mail-wr1-f70.google.com with SMTP id q18so11262861wrc.20
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:03:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IgKWadVO4IhTvmcLY56retKTp5qCTT4hdx8ojgzPM6c=;
-        b=Naw8yPllXzbOMqOzwHwmf5b6nFfk8x3jFq0xR16MmjDMpaL66OfnxLGshGEXNVsZmT
-         qI2M3hDAADesVzA4FrKie8e/dsESNYh3sqBcA2C4hIh8oJPPtEVFDXJEw7HC6r+IzdXt
-         7Iho+tgb+3SX7muaJEebtenHY4PAs9KmaqFyvWuFYJgbuVuvwSsr5UEXy88JxELS5Xsh
-         /qeZacdVjLYuTsaDgv6fgQOxwW3GP4rolgK/e+Vkrhql2vpvBmeb6m7FyEDdVnC9y7YF
-         3kR72Myc/r+w70nFAlpEsSq+bTAhrxCNtabbxepC2wkmBU2I/kUu3iDS7c6yRMAkRsvk
-         hZaQ==
-X-Gm-Message-State: AOAM533bfxfQYetssqCnBmcsqeT5r7zWTl7Wy31jNq5lEI5cag3xyNEy
-        GPr9xtETdiYNP89VjfPzxqPlq6En5PssWl5wfg9iSD++Ixi3GDaH+oBOxLZ+3tRyrRG6tMZ4SEK
-        eKcTKvYFv6XfduG1PNMTNJoeB
-X-Received: by 2002:a5d:4902:: with SMTP id x2mr8611993wrq.272.1611140610817;
-        Wed, 20 Jan 2021 03:03:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwywLoNdtS4lCyWc3ZmurPe1dJfsEyxg1TTUlkT27LGHLKaXnUgjJOjYxEkBqAW7+WZS9nbEg==
-X-Received: by 2002:a5d:4902:: with SMTP id x2mr8611973wrq.272.1611140610655;
-        Wed, 20 Jan 2021 03:03:30 -0800 (PST)
-Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
-        by smtp.gmail.com with ESMTPSA id g12sm3393102wmh.14.2021.01.20.03.03.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 03:03:29 -0800 (PST)
-Date:   Wed, 20 Jan 2021 06:03:26 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>
-Subject: Re: [PATCH] virtio-mem: Assign boolean values to a bool variable
-Message-ID: <20210120060301-mutt-send-email-mst@kernel.org>
-References: <1611129031-82818-1-git-send-email-abaci-bugfix@linux.alibaba.com>
- <81a1817d-a1f5-dfca-550c-3e3f62cf3a9d@redhat.com>
- <20210120045736-mutt-send-email-mst@kernel.org>
- <da2cb3fb-0ea5-5afd-afb5-a9e7f474e148@redhat.com>
+        Wed, 20 Jan 2021 06:05:16 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B0A541F648;
+        Wed, 20 Jan 2021 12:04:17 +0100 (CET)
+Subject: Re: [PATCH 2/2] drm/msm/a6xx: Create an A6XX GPU specific address
+ space
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-kernel@vger.kernel.org,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <cover.1610366113.git.saiprakash.ranjan@codeaurora.org>
+ <c5848b1c15765c8d6db7de2305baac856e818f12.1610366113.git.saiprakash.ranjan@codeaurora.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <1120efd2-151b-4643-9a57-c15c46ab6e16@somainline.org>
+Date:   Wed, 20 Jan 2021 12:04:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da2cb3fb-0ea5-5afd-afb5-a9e7f474e148@redhat.com>
+In-Reply-To: <c5848b1c15765c8d6db7de2305baac856e818f12.1610366113.git.saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:04:18AM +0100, David Hildenbrand wrote:
-> On 20.01.21 10:57, Michael S. Tsirkin wrote:
-> > On Wed, Jan 20, 2021 at 10:40:37AM +0100, David Hildenbrand wrote:
-> >> On 20.01.21 08:50, Jiapeng Zhong wrote:
-> >>> Fix the following coccicheck warnings:
-> >>>
-> >>> ./drivers/virtio/virtio_mem.c:2580:2-25: WARNING: Assignment
-> >>> of 0/1 to bool variable.
-> >>>
-> >>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> >>> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-> >>> ---
-> >>>  drivers/virtio/virtio_mem.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> >>> index 9fc9ec4..85a272c 100644
-> >>> --- a/drivers/virtio/virtio_mem.c
-> >>> +++ b/drivers/virtio/virtio_mem.c
-> >>> @@ -2577,7 +2577,7 @@ static int virtio_mem_probe(struct virtio_device *vdev)
-> >>>  	 * actually in use (e.g., trying to reload the driver).
-> >>>  	 */
-> >>>  	if (vm->plugged_size) {
-> >>> -		vm->unplug_all_required = 1;
-> >>> +		vm->unplug_all_required = true;
-> >>>  		dev_info(&vm->vdev->dev, "unplugging all memory is required\n");
-> >>>  	}
-> >>>  
-> >>>
-> >>
-> >> Hi,
-> >>
-> >> we already had a fix on the list for quite a while:
-> >>
-> >> https://lkml.kernel.org/r/1609233239-60313-1-git-send-email-tiantao6@hisilicon.com
-> > 
-> > Can't find that one.
+Il 11/01/21 13:04, Sai Prakash Ranjan ha scritto:
+> A6XX GPUs have support for last level cache(LLC) also known
+> as system cache and need to set the bus attributes to
+> use it. Currently we use a generic adreno iommu address space
+> implementation which are also used by older GPU generations
+> which do not have LLC and might introduce issues accidentally
+> and is not clean in a way that anymore additions of GPUs
+> supporting LLC would have to be guarded under ifdefs. So keep
+> the generic code separate and make the address space creation
+> A6XX specific. We also have a helper to set the llc attributes
+> so that if the newer GPU generations do support them, we can
+> use it instead of open coding domain attribute setting for each
+> GPU.
 > 
-> Looks like it was only on virtualization@ and a couple of people on cc.
+
+Hello!
+
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 46 ++++++++++++++++++++++++-
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 +++++--------
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.h |  7 ++--
+>   3 files changed, 55 insertions(+), 21 deletions(-)
 > 
-> https://lists.linuxfoundation.org/pipermail/virtualization/2020-December/051662.html
-> 
-> Interestingly, I cannot find the follow-up ("[PATCH] virtio-mem: use
-> boolean value when setting vm->unplug_all_required") in the mailing list
-> archives, even though it has virtualization@ on cc.
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 3b798e883f82..3c7ad51732bb 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1239,6 +1239,50 @@ static unsigned long a6xx_gpu_busy(struct msm_gpu *gpu)
+>   	return (unsigned long)busy_time;
+>   }
+>   
+> +static struct msm_gem_address_space *
+> +a6xx_create_address_space(struct msm_gpu *gpu, struct platform_device *pdev)
+> +{
+> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> +	struct iommu_domain *iommu;
+> +	struct msm_mmu *mmu;
+> +	struct msm_gem_address_space *aspace;
+> +	u64 start, size;
+> +
+> +	iommu = iommu_domain_alloc(&platform_bus_type);
+> +	if (!iommu)
+> +		return NULL;
+> +
+> +	/*
+> +	 * This allows GPU to set the bus attributes required to use system
+> +	 * cache on behalf of the iommu page table walker.
+> +	 */
+> +	if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice))
+> +		adreno_set_llc_attributes(iommu);
+> +
+> +	mmu = msm_iommu_new(&pdev->dev, iommu);
+> +	if (IS_ERR(mmu)) {
+> +		iommu_domain_free(iommu);
+> +		return ERR_CAST(mmu);
+> +	}
+> +
+> +	/*
+> +	 * Use the aperture start or SZ_16M, whichever is greater. This will
+> +	 * ensure that we align with the allocated pagetable range while still
+> +	 * allowing room in the lower 32 bits for GMEM and whatnot
+> +	 */
+> +	start = max_t(u64, SZ_16M, iommu->geometry.aperture_start);
+> +	size = iommu->geometry.aperture_end - start + 1;
+> +
+> +	aspace = msm_gem_address_space_create(mmu, "gpu",
+> +		start & GENMASK_ULL(48, 0), size);
+> +
+> +	if (IS_ERR(aspace) && !IS_ERR(mmu))
+> +		mmu->funcs->destroy(mmu);
+> +
+> +	return aspace;
+> +}
+> +
+
+I get what you're trying to do - yes the intentions are good, however...
+you are effectively duplicating code 1:1, as this *is* the same as
+function adreno_iommu_create_address_space.
+
+I don't see adding two lines to a function as a valid justification to
+duplicate all the rest: perhaps, you may want to find another way to do
+this;
+
+Here's one of the many ideas, perhaps you could:
+1. Introduce a "generic feature" to signal LLCC support (perhaps in
+    struct adreno_info ?)
+2. If LLCC is supported, and LLCC slices are initialized, set the LLCC
+    attributes on the IOMMU. Of course this would mean passing the init
+    state of the slices (maybe just a bool would be fine) back to the
+    generic adreno_gpu.c
+
+This, unless you tell me that the entire function is going to be a6xx
+specific, but that doesn't seem to be the case at all.
+
+Concerns are that when an hypotetical Adreno A7XX comes and perhaps also
+uses the LLCC slices, this function will be duplicated yet another time.
+
+>   static struct msm_gem_address_space *
+>   a6xx_create_private_address_space(struct msm_gpu *gpu)
+>   {
+> @@ -1285,7 +1329,7 @@ static const struct adreno_gpu_funcs funcs = {
+>   		.gpu_state_get = a6xx_gpu_state_get,
+>   		.gpu_state_put = a6xx_gpu_state_put,
+>   #endif
+> -		.create_address_space = adreno_iommu_create_address_space,
+> +		.create_address_space = a6xx_create_address_space,
+>   		.create_private_address_space = a6xx_create_private_address_space,
+>   		.get_rptr = a6xx_get_rptr,
+>   	},
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index b35914de1b27..0f184c3dd9d9 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -186,11 +186,18 @@ int adreno_zap_shader_load(struct msm_gpu *gpu, u32 pasid)
+>   	return zap_shader_load_mdt(gpu, adreno_gpu->info->zapfw, pasid);
+>   }
+>   
+> +void adreno_set_llc_attributes(struct iommu_domain *iommu)
+
+Since this function is relative to the iommu part of this driver, I
+think that it would be appropriate to give it the same prefix as all
+the other functions that are "working in this context".
+Hint: adreno_iommu_set_llc_attributes
+Alternatively, this two lines function may just be a static inline in
+the header....
 
 
-Unsurprising that I didn't merge it then ;)
-Want to send your ack on this one?
+But then, what are we talking about, here?
+Since you should stop code duplication and bring everything back in
+here (in a generic way!!!), then this helper would be of no use, at all,
+because then you would be just "throwing" these two lines back in the
+function adreno_iommu_create_address_space....
 
-> -- 
-> Thanks,
+
+> +{
+> +	struct io_pgtable_domain_attr pgtbl_cfg;
+> +
+> +	pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
+> +	iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
+> +}
+> +
+>   struct msm_gem_address_space *
+>   adreno_iommu_create_address_space(struct msm_gpu *gpu,
+>   		struct platform_device *pdev)
+>   {
+> -	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>   	struct iommu_domain *iommu;
+>   	struct msm_mmu *mmu;
+>   	struct msm_gem_address_space *aspace;
+> @@ -200,20 +207,6 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
+>   	if (!iommu)
+>   		return NULL;
+>   
+> -	if (adreno_is_a6xx(adreno_gpu)) {
+> -		struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> -		struct io_pgtable_domain_attr pgtbl_cfg;
+> -
+> -		/*
+> -		 * This allows GPU to set the bus attributes required to use system
+> -		 * cache on behalf of the iommu page table walker.
+> -		 */
+> -		if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice)) {
+> -			pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
+> -			iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
+> -		}
+> -	}
+> -
+>   	mmu = msm_iommu_new(&pdev->dev, iommu);
+>   	if (IS_ERR(mmu)) {
+>   		iommu_domain_free(iommu);
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> index b3d9a333591b..2a3d049b46b5 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -212,11 +212,6 @@ static inline int adreno_is_a540(struct adreno_gpu *gpu)
+>   	return gpu->revn == 540;
+>   }
+>   
+> -static inline bool adreno_is_a6xx(struct adreno_gpu *gpu)
+> -{
+> -	return ((gpu->revn < 700 && gpu->revn > 599));
+> -}
+> -
+>   static inline int adreno_is_a618(struct adreno_gpu *gpu)
+>   {
+>          return gpu->revn == 618;
+> @@ -278,6 +273,8 @@ struct msm_gem_address_space *
+>   adreno_iommu_create_address_space(struct msm_gpu *gpu,
+>   		struct platform_device *pdev);
+>   
+> +void adreno_set_llc_attributes(struct iommu_domain *iommu);
+> +
+>   /*
+>    * For a5xx and a6xx targets load the zap shader that is used to pull the GPU
+>    * out of secure mode
 > 
-> David / dhildenb
 
+Regards,
+- Angelo
