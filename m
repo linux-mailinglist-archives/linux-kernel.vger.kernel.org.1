@@ -2,105 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA162FD5F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796B12FD5FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732354AbhATQn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:43:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391718AbhATQmV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:42:21 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E56C061757;
-        Wed, 20 Jan 2021 08:41:41 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id q1so48078177ion.8;
-        Wed, 20 Jan 2021 08:41:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d1ptfx9MBkjEmmJ18l5zZfZj5ndiNTQD02M7SBmrC80=;
-        b=b54lhfe/lR/z5qUzeKX6jAB8CXmKK7J8XsyATY7LYJLUJ+hbnsi4nskN4GOMGvddz9
-         3LFPqe18YuJ4jo8UTLv5uogW3Gog6mWhN7eysHGi/jEvyoB+5XdzM0Gbv5ngZiHsZjpo
-         3UlUxXOBP2XiQF50Vnz4ssffWGnLhCHikV8F3ml1zMQNy33SsRXtcJRDyPjdYUm0C4E+
-         ep7zxspAMQik7ADES/LMwbCmI1i4ZsKX4f0JKKfIcyarYFxgok7KjZKQA8KFIxgH+MEc
-         yXiydONZo2juDScLcvkI6Tc5LDc7MQqhngRXdLVjBQH/msQsMeAl94j20CDksec6MHkG
-         BuxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d1ptfx9MBkjEmmJ18l5zZfZj5ndiNTQD02M7SBmrC80=;
-        b=EqElRwIAM6fbM7QONyvSR3l416AzA1n+9zEAJLQReMrYc4SRD9aC5HVveOUxeZkyxw
-         SfEyJBcschFDel0EuQKasAPYjHOgRNa2gNl7zWdQuDWkoN9R/tR0IwLRZf4HxYbIaxHH
-         4/7hQteKwP30QuAaSPoRHq2PLR+R46at0aNdFCkvtPxAzTMW6g5pGkaP2JuQ5WZfFKka
-         bylZ4ncDSMxpYG+lY+0riXOZ89SvDE6zf0gewtr0hvIkoOAALkrBnOOwPvi30J2QxUr7
-         POpR/ZmCc8Hz+56ZpyU/EzSsLdCAaAGR8RCTObl4QQjP2vD+y1zfw85/j19VMrCPdyR/
-         TwmA==
-X-Gm-Message-State: AOAM531BcjG0NukWAfcarielkf8gUJ0nKYYFw9LlwXNuXXHrAkPQDePY
-        cebTbrxcJD8dDgVSqnmkynz+evxlx4HOPiTav3uUO0Zl46o=
-X-Google-Smtp-Source: ABdhPJwjkfC7vxSYl+elSTXavI2EkbX9fRHxRQYsNVMDnePcYgrd7W8c2kUHMf5xk7qsxsjJKAGToNoQ9/fW0Kdwwqo=
-X-Received: by 2002:a02:7fd5:: with SMTP id r204mr8622208jac.74.1611160900259;
- Wed, 20 Jan 2021 08:41:40 -0800 (PST)
+        id S1730102AbhATQrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:47:51 -0500
+Received: from mga07.intel.com ([134.134.136.100]:45486 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728477AbhATQqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:46:46 -0500
+IronPort-SDR: ydsu3FJ0b2ESaWHM3Wo4p+XVCeZnscNelpdPoojXF3hOxfguxsHNBImQ9xhNxFwmiA85ivKr4G
+ jqgv6AFtYUeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="243208040"
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="243208040"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 08:45:42 -0800
+IronPort-SDR: jOQpdhF77cakpHtUSgc9r40S1D8+/msWUO7+eagZo6MLNNrkJO1lYHyeeq0tJq2TWBOUDqlzE+
+ M3XmMiIUTMWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="402798582"
+Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
+  by fmsmga002.fm.intel.com with ESMTP; 20 Jan 2021 08:45:39 -0800
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 20 Jan 2021 16:45:38 +0000
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Wed, 20 Jan 2021 16:45:38 +0000
+From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        =?utf-8?B?xYF1a2FzeiBNYWpjemFr?= <lma@semihalf.com>
+CC:     Marcin Wojtas <mw@semihalf.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        "Alex Levin" <levinale@google.com>,
+        Guenter Roeck <groeck@google.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        =?utf-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Subject: RE: [PATCH v2] ASoC: Intel: Skylake: Check the kcontrol against NULL
+Thread-Topic: [PATCH v2] ASoC: Intel: Skylake: Check the kcontrol against NULL
+Thread-Index: AQHW1HWlBDRR5udg2US7JjUHUSX5h6okBMqAgAzZ2oCAAAxcgIAAAbqwgAABYaA=
+Date:   Wed, 20 Jan 2021 16:45:38 +0000
+Message-ID: <4774f65a7f2f464781a45790c8934a62@intel.com>
+References: <20201210121438.7718-1-lma@semihalf.com>
+ <20201217130439.141943-1-lma@semihalf.com>
+ <CAFJ_xbprw7UKREWgRAq3dDAA9oC_3cWoozn5pCY8w9By4dASag@mail.gmail.com>
+ <CAFJ_xbrvr7jcCB57MPwzXf=oC5OYT5KUBkcqHYyOYH=a5njfSA@mail.gmail.com>
+ <8c22c415-1807-b673-20e3-bc8d7f4c05b7@linux.intel.com>
+ <371e612ac59c458cad1bafb82ca09c9f@intel.com>
+In-Reply-To: <371e612ac59c458cad1bafb82ca09c9f@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210119212109.1064786-1-aford173@gmail.com> <9dab169a-e551-7ba1-7fe2-d00e80978388@lucaceresoli.net>
-In-Reply-To: <9dab169a-e551-7ba1-7fe2-d00e80978388@lucaceresoli.net>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 20 Jan 2021 10:41:29 -0600
-Message-ID: <CAHCN7xKERYbGvhdX38bzb5Qa75wTUMSkDoLQy4E1BZQYz9wNkA@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: clk: versaclock5: Add optional load
- capacitance property
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:35 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
->
-> Hi Adam,
->
-> On 19/01/21 22:21, Adam Ford wrote:
-> > There are two registers which can set the load capacitance for
-> > XTAL1 and XTAL2. These are optional registers when using an
-> > external crystal.  Since XTAL1 and XTAL2 will set to the same value,
-> > update the binding to support a single property called
-> > xtal-load-femtofarads.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > ---
-> > V2:  No Change
-> >
-> > diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> > index 2ac1131fd922..c268debe5b8d 100644
-> > --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> > +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> > @@ -59,6 +59,12 @@ properties:
-> >      minItems: 1
-> >      maxItems: 2
-> >
-> > +  idt,xtal-load-femtofarads:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
->
-> "Vendor specific properties having a standard unit suffix don't need a
-> type." -- Documentation/devicetree/bindings/example-schema.yaml
->
-
-I tried to remove the "$ref: /schemas/types.yaml#/definitions/uint32"
-but when I ran the test to make the yaml files, it threw an error, so
-I put it back.
-
-adam
-> Overall looks good.
->
-> --
-> Luca
+T24gMjAyMS0wMS0yMCA1OjQxIFBNLCBSb2pld3NraSwgQ2V6YXJ5IHdyb3RlOg0KPiANCj4gSnVz
+dCBjaGVja2VkIHRoZSBoaXN0b3J5IGJlaGluZCB0aGlzLiBBbmQgbXVzdCBzYXksIEkgbGlrZWQg
+UmljYXJkbydzDQo+IHZlcnNpb24gYmV0dGVyLiBFeGNlcHQgZm9yIHRoZSAiPSB7fTsiIGJpdCB3
+aGljaCBNYXJrIGFscmVhZHkgcG9pbnRlZA0KPiBvdXQgLSBpdCBzaG91bGQgYmUgYSBzZXBhcmF0
+ZSBmaXggLSBpdCdzIHNpbXBseSBtb3JlIG9wdGlvbmFsDQoNCk1lYW50IHRvIHNheTogb3B0aW1h
+bC4NCg0K
