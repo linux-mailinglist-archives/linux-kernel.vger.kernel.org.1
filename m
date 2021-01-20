@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1D22FDBF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1272FDBF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388916AbhATVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:34:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
+        id S2389211AbhATVfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:35:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731545AbhATVKX (ORCPT
+        with ESMTP id S1731690AbhATVKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 16:10:23 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987FFC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:41 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id m6so15320049pfk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:41 -0800 (PST)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B58C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:43 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id s15so13210019plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O4d6auqSX1j/vMOr3TsD18PFRnP6mGB4INh2IgrTTG4=;
-        b=GdhLdiHi2LyrCQQMhzh0pvLH3gzKbpQzt27Y+CanmyiE5UaGiBQNAUzsr9Zaj0Zhr4
-         KvJdY3Fzc3gckZGSp5QU8M5TxalhTsGKPF+fViwh/lBrax/yFrCK2Xm92/BNDmnnjPeU
-         RZJryXRD7bznQNqVbnISwkIGndj8vzzsDJqNtcRJVPE2eUPb+buDtT72alBwOE5CVd1b
-         5Zfg0FvQURoty3ptICEh9eSaAUog4x2tJQcdnvQcurrjdvmybFM9BWre3F69jbtW0JpG
-         vKVbrvhCnyOPCsn02flcKhrtprB++yiII+28o7PgAqZ8wjCfT+pX98YN993EZcpX9kF6
-         FN9g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5p3XfY6TOWEdcAK7xdoxc0ak2IFt6vsK1MpKBtv9a0E=;
+        b=dIylZNXUT8UQ3UamF1ogl2nvky0NOqNfe4p5pAKibTyvbKpekUSnf9ybDFs54ibA61
+         C/ZTwYE6NnSTMniIt78BwgL8jFAh3+rjQvmEWrMrKSJKxbkS0hz96dBKkbEbw9gtFk18
+         KYuxSgNMJkmdWQ8aLW21q7KBpR80cNf8dfF8N2tIS4SgJpoyaXfqI8wcVAXoTU0krNs6
+         gdYQeDCNH6YNcse2uf33htcQmPbFox6z6dKVg1FTtNAccuiwdwNizrjmiGcGMnc+kPU+
+         uA6gayZCbJYLyJQXyg1ltt7mbeoFgUj879fNhy/VNvLDe6KbpVOg4yo1OSBtH16wV3xG
+         JLMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O4d6auqSX1j/vMOr3TsD18PFRnP6mGB4INh2IgrTTG4=;
-        b=a8GvTf78Gvh8turcZJLawSy+YyaSv4aMLtl1esnRB5QkKGFPdUiKonoDchBlVfgBEs
-         Er881g5jEFr81AP9oYXhRWJ0xN6X8ENoMnq5IGxSsWSKafYksOpTHKyNHj2pl4dNNqTC
-         Gfkp8spgpS3KjCsZo6kYP19QjTZJ50Ih8gT+0bCJ5MqF0C9lhjN8O5CO3H/beaoxCyOV
-         4qmj+EJU5RqKdiFtlXGate8hbNZFN+zyUfpsFaG412f01k+veeXqEtp4SBngaCV5Mzmv
-         +YvgG+N+S3gLe1uRG3XajIbwZlqA6mZcJsr7GVgq4242THSaC306Z7HjlvYdA4Cd7GQz
-         5keQ==
-X-Gm-Message-State: AOAM531Bva7VX3Gfk7+Q6y8HkkZxN7DWxM806GzRrpYPOPCIAK56zVzX
-        I9VhOqjU5SmBbHUKFRazuSo3wP0snfmF5g==
-X-Google-Smtp-Source: ABdhPJwVPrD98BzRwSDLgSwObG8PYNxIaFpiX8zRhpHlai6xWuIyDqUItiSV/D8Cpv4EqgdSPtOpcg==
-X-Received: by 2002:a63:4d59:: with SMTP id n25mr10926215pgl.122.1611176980657;
-        Wed, 20 Jan 2021 13:09:40 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5p3XfY6TOWEdcAK7xdoxc0ak2IFt6vsK1MpKBtv9a0E=;
+        b=VveWKiQON40A4EvPBGlMEYzk9h2QZ3FyJuJMARrNahXoIMWgNvQe3ngBHYABkZ52im
+         ZrS2cKmdWjpiFX7l3EdUq8PBMKVA8c0UIHgyGhudEASfvVdt8ElvsUGkE6zgzdIYK4Vc
+         2vbyFYFmXVskDNiKsATY79vzERrssWHqoHePrxy0PjmS5qsBC7JORP6IXtrIoTX+XuXN
+         eVREVmFFXE192z1098QlW6/4ytkUxpbDPKggOCU6oNanb36XXuqAaSScnbvel9cZJB1d
+         Bar8qbjQnZDWGljxGeJkhlqbxRfq0cSmcLnsepKQDLAtw49Gdf6VmeerPYo4bv5GHRB/
+         n4TQ==
+X-Gm-Message-State: AOAM533RUgo6YqGQaGVxHNmQhVz2eKGq3IeDkIcID9EgQySUv03p00X8
+        7bPb5tgfPSG4vDpUMUZWaTTkcS7uVl+i/g==
+X-Google-Smtp-Source: ABdhPJws6ddONO6NY88RoQ3BGsVYEJuaBeog/gKtwE5U4aqwU6w4J5JtoB3QT6Z/CXX0IqrItU/FPA==
+X-Received: by 2002:a17:902:b203:b029:dc:973:3ad0 with SMTP id t3-20020a170902b203b02900dc09733ad0mr11671800plr.44.1611176982332;
+        Wed, 20 Jan 2021 13:09:42 -0800 (PST)
 Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id f15sm3265629pja.24.2021.01.20.13.09.38
+        by smtp.gmail.com with ESMTPSA id f15sm3265629pja.24.2021.01.20.13.09.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:09:39 -0800 (PST)
+        Wed, 20 Jan 2021 13:09:41 -0800 (PST)
 From:   John Stultz <john.stultz@linaro.org>
 To:     lkml <linux-kernel@vger.kernel.org>
 Cc:     John Stultz <john.stultz@linaro.org>,
@@ -68,10 +68,12 @@ Cc:     John Stultz <john.stultz@linaro.org>,
         James Jones <jajones@nvidia.com>,
         Bing Song <bing.song@nxp.com>, linux-media@vger.kernel.org,
         dri-devel@lists.freedesktop.org
-Subject: [RFC][PATCH 0/3] dmabuf heaps: system uncached and cma uncached heaps
-Date:   Wed, 20 Jan 2021 21:09:34 +0000
-Message-Id: <20210120210937.15069-1-john.stultz@linaro.org>
+Subject: [PATCH 1/3] dma-buf: dma-heap: Keep track of the heap device struct
+Date:   Wed, 20 Jan 2021 21:09:35 +0000
+Message-Id: <20210120210937.15069-2-john.stultz@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210120210937.15069-1-john.stultz@linaro.org>
+References: <20210120210937.15069-1-john.stultz@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -79,36 +81,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the last round submitting the system-uncached heap, I got
-some feedback that Daniel would like to see it demonstrated with
-a mesa based system. I'm still working on such a gralloc
-implementation (using the db845c), but along with other work, so
-I don't yet have something to share there. 
+Keep track of the heap device struct.
 
-However, Bing Song reached out and was interested in having a
-uncached variant for the CMA heap as well, and he shared this
-patch providing an initial implementation.
-
-This gave me some hesitation with regards to the earlier
-discussion around what sort of attributes would be useful for
-the flags field of the allocation IOCTL.
-
-In earlier discussions, folks seemed happy to provide the
-uncached system heap functionality as its own heap chardev, as
-it seemed uncertain that the uncached attribute would truely be
-generic across all heaps. 
-
-But with Bing's patch, it seems like it may be generically useful,
-and utilizing a flag might be a bit cleaner then adding lots of
-duplicative heap names postfixed with "-uncached".
-
-So I wanted to re-submit both of these together to reopen that
-discussion on the question of if a BUF_FLAG_UNCACHED flag would
-make sense, or if folks still think separate heap chardevs is
-the way to go.
-
-thanks
--john
+This will be useful for special DMA allocations
+and actions.
 
 Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: Sumit Semwal <sumit.semwal@linaro.org>
@@ -128,21 +104,103 @@ Cc: James Jones <jajones@nvidia.com>
 Cc: Bing Song <bing.song@nxp.com>
 Cc: linux-media@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/dma-buf/dma-heap.c | 33 +++++++++++++++++++++++++--------
+ include/linux/dma-heap.h   |  9 +++++++++
+ 2 files changed, 34 insertions(+), 8 deletions(-)
 
-Bing Song (1):
-  dma-buf: cma_heap: Add a cma-uncached heap re-using the cma heap
-
-John Stultz (2):
-  dma-buf: dma-heap: Keep track of the heap device struct
-  dma-buf: system_heap: Add a system-uncached heap re-using the system
-    heap
-
- drivers/dma-buf/dma-heap.c          |  33 ++++++--
- drivers/dma-buf/heaps/cma_heap.c    | 119 +++++++++++++++++++++++++---
- drivers/dma-buf/heaps/system_heap.c | 111 ++++++++++++++++++++++----
- include/linux/dma-heap.h            |   9 +++
- 4 files changed, 236 insertions(+), 36 deletions(-)
-
+diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+index afd22c9dbdcf..72c746755d89 100644
+--- a/drivers/dma-buf/dma-heap.c
++++ b/drivers/dma-buf/dma-heap.c
+@@ -30,6 +30,7 @@
+  * @heap_devt		heap device node
+  * @list		list head connecting to list of heaps
+  * @heap_cdev		heap char device
++ * @heap_dev		heap device struct
+  *
+  * Represents a heap of memory from which buffers can be made.
+  */
+@@ -40,6 +41,7 @@ struct dma_heap {
+ 	dev_t heap_devt;
+ 	struct list_head list;
+ 	struct cdev heap_cdev;
++	struct device *heap_dev;
+ };
+ 
+ static LIST_HEAD(heap_list);
+@@ -190,10 +192,21 @@ void *dma_heap_get_drvdata(struct dma_heap *heap)
+ 	return heap->priv;
+ }
+ 
++/**
++ * dma_heap_get_dev() - get device struct for the heap
++ * @heap: DMA-Heap to retrieve device struct from
++ *
++ * Returns:
++ * The device struct for the heap.
++ */
++struct device *dma_heap_get_dev(struct dma_heap *heap)
++{
++	return heap->heap_dev;
++}
++
+ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+ {
+ 	struct dma_heap *heap, *h, *err_ret;
+-	struct device *dev_ret;
+ 	unsigned int minor;
+ 	int ret;
+ 
+@@ -247,16 +260,20 @@ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+ 		goto err1;
+ 	}
+ 
+-	dev_ret = device_create(dma_heap_class,
+-				NULL,
+-				heap->heap_devt,
+-				NULL,
+-				heap->name);
+-	if (IS_ERR(dev_ret)) {
++	heap->heap_dev = device_create(dma_heap_class,
++				       NULL,
++				       heap->heap_devt,
++				       NULL,
++				       heap->name);
++	if (IS_ERR(heap->heap_dev)) {
+ 		pr_err("dma_heap: Unable to create device\n");
+-		err_ret = ERR_CAST(dev_ret);
++		err_ret = ERR_CAST(heap->heap_dev);
+ 		goto err2;
+ 	}
++
++	/* Make sure it doesn't disappear on us */
++	heap->heap_dev = get_device(heap->heap_dev);
++
+ 	/* Add heap to the list */
+ 	mutex_lock(&heap_list_lock);
+ 	list_add(&heap->list, &heap_list);
+diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
+index 454e354d1ffb..82857e096910 100644
+--- a/include/linux/dma-heap.h
++++ b/include/linux/dma-heap.h
+@@ -50,6 +50,15 @@ struct dma_heap_export_info {
+  */
+ void *dma_heap_get_drvdata(struct dma_heap *heap);
+ 
++/**
++ * dma_heap_get_dev() - get device struct for the heap
++ * @heap: DMA-Heap to retrieve device struct from
++ *
++ * Returns:
++ * The device struct for the heap.
++ */
++struct device *dma_heap_get_dev(struct dma_heap *heap);
++
+ /**
+  * dma_heap_add - adds a heap to dmabuf heaps
+  * @exp_info:		information needed to register this heap
 -- 
 2.17.1
 
