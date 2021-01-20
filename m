@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCFB2FC6E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5891A2FC6E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730250AbhATBfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:35:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46620 "EHLO mail.kernel.org"
+        id S1730852AbhATBgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:36:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730684AbhATB3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:29:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5935233FA;
-        Wed, 20 Jan 2021 01:27:30 +0000 (UTC)
+        id S1730769AbhATB30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:29:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB04123433;
+        Wed, 20 Jan 2021 01:27:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106051;
-        bh=0hrJF+NWXKamCqth1nMxroNM+7XBuor2rAVPNP+TJTY=;
+        s=k20201202; t=1611106075;
+        bh=0oC4UvFQ7gr34BsUtHy/rcWoiAez/qEhFP6ph1HMd3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TQFXUgQs3WTRHFtzsAqPdUOx6V3HGyssyLNN3yKuKh0urQnG4eazsctp2n+BCJVyt
-         Y69lcjP9P4eKyg1Qlgl78GoHicC03U+LsperyjFKS1uFZvaGHPfIYTgUfQowujjeI/
-         g+EXBcRc/gO+b8wSJb3HwgKf+SJPm7xXwJFYBJ4P0YBH2vpmeQUI8l0dOl8H7g8o63
-         HN1gP/mbOTMZqg57o/1GZjoAwaQrgGATO/w4MA844xBJl2dfbORf25uGvAURwizT0s
-         Y5OLU9VbKtzi5YOLnJ0SrPXIgMbPKWxSofxea4cSaK78Zslc0VEGqeQ2XARdSIDEEW
-         p4sF2/vkZIjGA==
+        b=pHXFPN4Rcr0c8iwY69HudjE/QLNwsQW1h+CWYxjYEMYQiKJDyGTO/p/m0kiyFViDJ
+         r5evtFDroWwjFU8vEcUVaVd1UC841fgWi9ICWyt2cZg/AIQ6vHjBO9FdLJ/vvFZO1T
+         tE1Ad0wGrft1Iy7nowt7dbMhvTuS0sr7cgT1XOFYKK9T+W6tEsHz8KOa6XjP0n83NH
+         oDH7zzQ7iaAl0lZO5gzdGhe57jpapEfj/aEQBBZl4cIPYXyE6CXTuYn6MRln8ePw3U
+         iTvyN91tkdO33JqFwnswa4pRB0IYhEJYmJtuNXV6V75GpEdfOSMo99lbwYWDsJHQe0
+         PeOxV2uK5uf7w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Victor Zhao <Victor.Zhao@amd.com>,
-        "Emily . Deng" <Emily.Deng@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 20/26] drm/amdgpu/psp: fix psp gfx ctrl cmds
-Date:   Tue, 19 Jan 2021 20:26:57 -0500
-Message-Id: <20210120012704.770095-20-sashal@kernel.org>
+Cc:     David Wu <david.wu@rock-chips.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 10/15] net: stmmac: Fixed mtu channged by cache aligned
+Date:   Tue, 19 Jan 2021 20:27:35 -0500
+Message-Id: <20210120012740.770354-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210120012704.770095-1-sashal@kernel.org>
-References: <20210120012704.770095-1-sashal@kernel.org>
+In-Reply-To: <20210120012740.770354-1-sashal@kernel.org>
+References: <20210120012740.770354-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,36 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Victor Zhao <Victor.Zhao@amd.com>
+From: David Wu <david.wu@rock-chips.com>
 
-[ Upstream commit f14a5c34d143f6627f0be70c0de1d962f3a6ff1c ]
+[ Upstream commit 5b55299eed78538cc4746e50ee97103a1643249c ]
 
-psp GFX_CTRL_CMD_ID_CONSUME_CMD different for windows and linux,
-according to psp, linux cmds are not correct.
+Since the original mtu is not used when the mtu is updated,
+the mtu is aligned with cache, this will get an incorrect.
+For example, if you want to configure the mtu to be 1500,
+but mtu 1536 is configured in fact.
 
-v2: only correct GFX_CTRL_CMD_ID_CONSUME_CMD.
-
-Signed-off-by: Victor Zhao <Victor.Zhao@amd.com>
-Reviewed-by: Emily.Deng <Emily.Deng@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
+Signed-off-by: David Wu <david.wu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210113034109.27865-1-david.wu@rock-chips.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h b/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h
-index 74a9fe8e0cfb9..8c54f0be51bab 100644
---- a/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h
-+++ b/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h
-@@ -44,7 +44,7 @@ enum psp_gfx_crtl_cmd_id
-     GFX_CTRL_CMD_ID_DISABLE_INT     = 0x00060000,   /* disable PSP-to-Gfx interrupt */
-     GFX_CTRL_CMD_ID_MODE1_RST       = 0x00070000,   /* trigger the Mode 1 reset */
-     GFX_CTRL_CMD_ID_GBR_IH_SET      = 0x00080000,   /* set Gbr IH_RB_CNTL registers */
--    GFX_CTRL_CMD_ID_CONSUME_CMD     = 0x000A0000,   /* send interrupt to psp for updating write pointer of vf */
-+    GFX_CTRL_CMD_ID_CONSUME_CMD     = 0x00090000,   /* send interrupt to psp for updating write pointer of vf */
-     GFX_CTRL_CMD_ID_DESTROY_GPCOM_RING = 0x000C0000, /* destroy GPCOM ring */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 4ac507b4d1019..76d4b8e6ac3e8 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3596,6 +3596,7 @@ static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	int txfifosz = priv->plat->tx_fifo_size;
++	const int mtu = new_mtu;
  
-     GFX_CTRL_CMD_ID_MAX             = 0x000F0000,   /* max command ID */
+ 	if (txfifosz == 0)
+ 		txfifosz = priv->dma_cap.tx_fifo_size;
+@@ -3613,7 +3614,7 @@ static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
+ 	if ((txfifosz < new_mtu) || (new_mtu > BUF_SIZE_16KiB))
+ 		return -EINVAL;
+ 
+-	dev->mtu = new_mtu;
++	dev->mtu = mtu;
+ 
+ 	netdev_update_features(dev);
+ 
 -- 
 2.27.0
 
