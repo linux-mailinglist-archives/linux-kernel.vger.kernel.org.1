@@ -2,122 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084162FC63C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CB52FC63D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730537AbhATBDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbhATBD3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:03:29 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BFFC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:02:48 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id j12so1072195pjy.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2ijWFqCFik7AEqDTngTlHLoNVrHEGUc429TyhF79LIQ=;
-        b=XwWSQ6YxMKSzHmONRcdMjeTrCU3nawwN1QwjYEutC9XmpcEdEYone0ZC91cDkkDEUh
-         6mKJo0SNJOXpA2FA6tBClNjguod31Xyr5E9hSOUL4mh7WF7EUsd1KdBwQqruBXNlES5w
-         JD+jvf6GOtHscsAWlqUjtu3RBDgpGx7szPZKjwYLcf5y/i4G56Y+rsavpOJb0eBRhQBm
-         YajWuokO+ZJ8KoCuPFfdti+7cxqyiuO+lzbsN/HNsAWzw0Cuf10FGGF464ci6xg5Ubsd
-         Dv/kwEqRFCMxI2hqTyM0R/+hOsCD2mm2DHyZFjMgJmJX8zTfNiaDY+FQHhowUz2yfx83
-         w8SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2ijWFqCFik7AEqDTngTlHLoNVrHEGUc429TyhF79LIQ=;
-        b=Tk+Frq1jKlFVwVk7WNl4/JvqCCmAIzsIliVvr3SkPBXyEiKSJ38AsaLAuCeqX9vhAl
-         4PJzRFEMn1rGcZOLZzUACVBMdtjfW3GI5GTGL0TZIhsh29FQGtTNDghU5TPsI5r5KXKR
-         vdW1/yZyA4VAY4K59eWLYug2NNrtT2M5XUa+FsGosm4lH7PDTTqiL1umMmwPnc6qSwzs
-         7VilHYHrYYwG2X87tJN2TAK7NIhiMifN1OXl3DhzoJVVPlKydN/YMlS/AnwaKoeMk+3F
-         O5uAmYge4TYuDS/HCOJNH6gm1BOLAASsMUHMwdAGzUSkMGg+jPcFVgqH89yeB5fv7ole
-         5Q8w==
-X-Gm-Message-State: AOAM5317sWhzU0KhVLlxh9ztD6Pbnq/+63YPGZWjXJ//EaQsT7kEG/77
-        8qYC/k9aw6ptN5hzrVj+XoRl7HwlAdi6t0NQMb8PSQ==
-X-Google-Smtp-Source: ABdhPJwUEGB+8j+EbGLZGj8TsoAObAOLaQeuUzuHU6YAuefhtq4+JTm19EV7M2ciNJFgJUR9Vj9uPACzF6vbP9HPoFE=
-X-Received: by 2002:a17:90a:6ba4:: with SMTP id w33mr2729981pjj.32.1611104568023;
- Tue, 19 Jan 2021 17:02:48 -0800 (PST)
+        id S1728254AbhATBGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:06:10 -0500
+Received: from mga17.intel.com ([192.55.52.151]:10574 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730094AbhATBF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:05:59 -0500
+IronPort-SDR: OmZ2S+uf5vksU/xb2mKMZKOpUqAg/IdpxkyT+awZtUwZJpNwuQ07uTGUuCiyO7HeNLHjjkMcaw
+ XbSSMeuRqp8w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="158798433"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="158798433"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 17:05:16 -0800
+IronPort-SDR: QRE6rijDARh2k1plvr8FaDEht5WMTFSQshigNDzA0AAnAxgYM93txdKp1M3N8pjDlJPrNX3P8l
+ VIvesA8thmqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="355848257"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Jan 2021 17:05:14 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l21vu-0005Rn-91; Wed, 20 Jan 2021 01:05:14 +0000
+Date:   Wed, 20 Jan 2021 09:05:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/entry] BUILD SUCCESS
+ 0bab9cb2d980d7c075cffb9216155f7835237f98
+Message-ID: <600781c0.5sypKmj/i5y+OTgt%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
-In-Reply-To: <20210116094357.3620352-1-morbo@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 19 Jan 2021 17:02:36 -0800
-Message-ID: <CAKwvOd=BK3DBm0H9GiiicY2NWP9KLq7_Qtx5VY-iezW3o5zuTg@mail.gmail.com>
-Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 1:44 AM Bill Wendling <morbo@google.com> wrote:
->
-> From: Sami Tolvanen <samitolvanen@google.com>
->
-> Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> profile, the kernel is instrumented with PGO counters, a representative
-> workload is run, and the raw profile data is collected from
-> /sys/kernel/debug/pgo/profraw.
->
-> The raw profile data must be processed by clang's "llvm-profdata" tool
-> before it can be used during recompilation:
->
->   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
->   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
->
-> Multiple raw profiles may be merged during this step.
->
-> The data can now be used by the compiler:
->
->   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
->
-> This initial submission is restricted to x86, as that's the platform we
-> know works. This restriction can be lifted once other platforms have
-> been verified to work with PGO.
->
-> Note that this method of profiling the kernel is clang-native, unlike
-> the clang support in kernel/gcov.
->
-> [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
->
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Co-developed-by: Bill Wendling <morbo@google.com>
-> Signed-off-by: Bill Wendling <morbo@google.com>
-> ---
-> v2: - Added "__llvm_profile_instrument_memop" based on Nathan Chancellor's
->       testing.
->     - Corrected documentation, re PGO flags when using LTO, based on Fangrui
->       Song's comments.
-> v3: - Added change log section based on Sedat Dilek's comments.
-> v4: - Remove non-x86 Makfile changes and se "hweight64" instead of using our
->       own popcount implementation, based on Nick Desaulniers's comment.
-> v5: - Correct padding calculation, discovered by Nathan Chancellor.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
+branch HEAD: 0bab9cb2d980d7c075cffb9216155f7835237f98  x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
 
-Specifically for v5:
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+elapsed time: 721m
 
-If anything changes drastically, please drop that and I'll retest it;
-otherwise for changes to the commit message or docs, feel free to
-carry it forward.
+configs tested: 131
+configs skipped: 2
 
-I'll try to provide code review by EOW, assuming we can stop
-regressing LLVM so I can focus. (Ha!)
--- 
-Thanks,
-~Nick Desaulniers
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                        mvme16x_defconfig
+arc                         haps_hs_defconfig
+mips                         mpc30x_defconfig
+alpha                               defconfig
+arm                           viper_defconfig
+arm                      jornada720_defconfig
+arm                             pxa_defconfig
+powerpc64                           defconfig
+xtensa                  audio_kc705_defconfig
+powerpc                        cell_defconfig
+arc                          axs103_defconfig
+arm                            zeus_defconfig
+powerpc                       maple_defconfig
+powerpc                      ep88xc_defconfig
+arm                           h3600_defconfig
+arm                             ezx_defconfig
+mips                      maltasmvp_defconfig
+mips                     loongson1b_defconfig
+mips                           jazz_defconfig
+mips                        omega2p_defconfig
+powerpc                 canyonlands_defconfig
+m68k                          atari_defconfig
+arm                          tango4_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                     kmeter1_defconfig
+mips                   sb1250_swarm_defconfig
+parisc                generic-32bit_defconfig
+arm                          pxa168_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                        spear6xx_defconfig
+openrisc                            defconfig
+powerpc                     skiroot_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210119
+x86_64               randconfig-a006-20210119
+x86_64               randconfig-a001-20210119
+x86_64               randconfig-a003-20210119
+x86_64               randconfig-a005-20210119
+x86_64               randconfig-a002-20210119
+i386                 randconfig-a002-20210119
+i386                 randconfig-a005-20210119
+i386                 randconfig-a006-20210119
+i386                 randconfig-a001-20210119
+i386                 randconfig-a003-20210119
+i386                 randconfig-a004-20210119
+i386                 randconfig-a001-20210120
+i386                 randconfig-a002-20210120
+i386                 randconfig-a004-20210120
+i386                 randconfig-a006-20210120
+i386                 randconfig-a005-20210120
+i386                 randconfig-a003-20210120
+x86_64               randconfig-a012-20210120
+x86_64               randconfig-a015-20210120
+x86_64               randconfig-a016-20210120
+x86_64               randconfig-a011-20210120
+x86_64               randconfig-a013-20210120
+x86_64               randconfig-a014-20210120
+i386                 randconfig-a013-20210120
+i386                 randconfig-a011-20210120
+i386                 randconfig-a012-20210120
+i386                 randconfig-a014-20210120
+i386                 randconfig-a015-20210120
+i386                 randconfig-a016-20210120
+i386                 randconfig-a011-20210119
+i386                 randconfig-a012-20210119
+i386                 randconfig-a016-20210119
+i386                 randconfig-a015-20210119
+i386                 randconfig-a013-20210119
+i386                 randconfig-a014-20210119
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a002-20210120
+x86_64               randconfig-a003-20210120
+x86_64               randconfig-a001-20210120
+x86_64               randconfig-a005-20210120
+x86_64               randconfig-a006-20210120
+x86_64               randconfig-a004-20210120
+x86_64               randconfig-a015-20210119
+x86_64               randconfig-a013-20210119
+x86_64               randconfig-a012-20210119
+x86_64               randconfig-a016-20210119
+x86_64               randconfig-a011-20210119
+x86_64               randconfig-a014-20210119
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
