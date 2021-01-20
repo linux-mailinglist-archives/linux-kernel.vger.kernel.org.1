@@ -2,119 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1236B2FE2FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D952FE301
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731983AbhATXqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 18:46:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729042AbhATV1g (ORCPT
+        id S1726566AbhAUGiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:38:01 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:51050 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387674AbhATXqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:27:36 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA91C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:26:11 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id q2so48219573iow.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:26:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YXXV9c9WKgadxq6Z4uVJs3qrKStMf5F06B0reLAMGUg=;
-        b=obICub08u3TKWOIQP8jWfqoQ65pQAelEhsWLTsxpQ9mflzxooSx1BtRS3lyh9PJuYD
-         1VyMyg8xLR1wMSUVXSBXj1N3Wd19xOOciQMCfo9U574wFO6zRWC0EvUe4+UzgpzwgX19
-         e2JABF15y2eiQ7jmqu+PGuWjon+e1CvSa3p+Ld0dezU5lO3WYI6XcLAv4Z1w2Nqa95/9
-         52w94SX2lv9xF1M8Qa+Uvykw+sCgJSd7RoL7IT6swChFD2u8x5jJgPfT5XwBxvx7ABTB
-         ZCDEINHZlv8Oe79UyxKSqJJgztthWZVMZwONgDhuV2dQbfbaEZMhwWJzc+CTVe9t/g8u
-         i4ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YXXV9c9WKgadxq6Z4uVJs3qrKStMf5F06B0reLAMGUg=;
-        b=Faddxe3cSuIeYJ5AAeq8Qgx7uU8knc9bfe0rnA1KhJrgaec1x2NY74HSsK+T7S5hGY
-         8aa/ooRtR8cM4OH878j7Vunz7UGQ7pZjSdG8/Y76UZ2QtgspaoKkLzB7werE/iN7ZYnC
-         VMGy2ufpLByJxX1KlL1Wbf/ij0g3cGuMoIBwxvfZhmzb+Paw+OV6sPimtbEa6vYuZKf5
-         Pu7ckKXAhG+c3PcqFgDF5jcLkB4v9eBH2WEY5BXLk9RGbFXWan4x7lqepgRJ52wD8BJ1
-         3oB/VmlOuQsDiZ3pDIM61ezeDr7P8OmYwpiZ71Q+o3PwGxdHD/cUQumwHbykvr2tT/9s
-         3KOw==
-X-Gm-Message-State: AOAM533OHQ8dB7MffVSwHW3yprKd6wZ4OBChXMNquACSkPel4Mb8NKw9
-        kK/UG+muDXxda9QOLwgKGD7piQ==
-X-Google-Smtp-Source: ABdhPJydebF8rvITp21O4iWGarRssmn+Okq1r/VxSdQjhCSwnLHM6s5tJW9QDIJIE4KeuSZZvp8q4w==
-X-Received: by 2002:a92:a010:: with SMTP id e16mr9038816ili.38.1611177970421;
-        Wed, 20 Jan 2021 13:26:10 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id q196sm1335687iod.27.2021.01.20.13.26.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:26:09 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, robh+dt@kernel.org, rdunlap@infradead.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v3 net-next 0/4] net: ipa: remove a build dependency
-Date:   Wed, 20 Jan 2021 15:26:02 -0600
-Message-Id: <20210120212606.12556-1-elder@linaro.org>
+        Wed, 20 Jan 2021 18:46:12 -0500
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id EA3F63B41D3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:44:07 +0000 (UTC)
+X-Originating-IP: 86.201.233.230
+Received: from localhost.localdomain (lfbn-tou-1-151-230.w86-201.abo.wanadoo.fr [86.201.233.230])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id C0B57FF805;
+        Wed, 20 Jan 2021 22:43:46 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Mans Rullgard <mans@mansr.com>, Arnd Bergmann <arnd@arndb.de>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] nand: raw: remove tango driver
+Date:   Wed, 20 Jan 2021 23:43:45 +0100
+Message-Id: <20210120224345.30077-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210120150555.1610132-1-arnd@kernel.org>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: d986effd14097bbaf8953db18b58e20988ef3e84
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(David/Jakub, please take these all through net-next if they are
-acceptable to you, once Rob has acked the binding.  Rob, please ack
-if the binding looks OK to you.)
+On Wed, 2021-01-20 at 15:05:26 UTC, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The tango platform is getting removed, so the driver is no
+> longer needed.
+> 
+> Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+> Cc: Mans Rullgard <mans@mansr.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Version 3 removes the "Fixes" tag from the first patch, and updates
-the addressee list to include some people I apparently missed.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-Version 2 includes <.../arm-gic.h> rather than <.../irq.h> in the
-example section of the DT binding, to ensure GIC_SPI is defined.
-I verified this passes "make dt_bindings_check".
-
-The rest of the series is unchanged.  Below is the original cover
-letter.
-
----
-
-Unlike the original (temporary) IPA notification mechanism, the
-generic remoteproc SSR notification code does not require the IPA
-driver to maintain a pointer to the modem subsystem remoteproc
-structure.
-
-The IPA driver was converted to use the newer SSR notifiers, but the
-specification and use of a phandle for the modem subsystem was never
-removed.
-
-This series removes the lookup of the remoteproc pointer, and that
-removes the need for the modem DT property.  It also removes the
-reference to the "modem-remoteproc" property from the DT binding,
-and from the DT files that specified them.
-
-David/Jakub, please take these all through net-next if they are
-acceptable to you, once Rob has acked the binding and DT patches.
-
-Thanks.
-
-					-Alex
-
-Alex Elder (4):
-  net: ipa: remove a remoteproc dependency
-  dt-bindings: net: remove modem-remoteproc property
-  arm64: dts: qcom: sc7180: kill IPA modem-remoteproc property
-  arm64: dts: qcom: sdm845: kill IPA modem-remoteproc property
-
- .../devicetree/bindings/net/qcom,ipa.yaml     | 15 ++------
- arch/arm64/boot/dts/qcom/sc7180.dtsi          |  2 -
- arch/arm64/boot/dts/qcom/sdm845.dtsi          |  2 -
- drivers/net/ipa/ipa.h                         |  2 -
- drivers/net/ipa/ipa_main.c                    | 38 +------------------
- 5 files changed, 5 insertions(+), 54 deletions(-)
-
--- 
-2.20.1
-
+Miquel
