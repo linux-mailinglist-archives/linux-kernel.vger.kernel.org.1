@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A844D2FCE27
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215FE2FCE28
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732343AbhATKSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729818AbhATJzK (ORCPT
+        id S1732360AbhATKSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:18:21 -0500
+Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:43017 "EHLO
+        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729901AbhATJzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:55:10 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCAFC061575;
-        Wed, 20 Jan 2021 01:54:30 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id i17so189767ljn.1;
-        Wed, 20 Jan 2021 01:54:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Dzgt9eOErv7DRncKnAq6YJRbBsHovoN+K2WQNL3Z+8=;
-        b=i4L+8exRf8lZaHTBzZPCPFSzSc+e00vaZuS4BnMHCc5zLodWr1iZ3wAYs11U8kBWDx
-         Ql6TFIOJbwSFm2uj9IBHnVmfV+wN94OZ2XezIkgDorrGD43fsxSJUUMQFhwHtM6zM670
-         RBcCKg8s964NGEL+12NSQamZqWozbLnwsJmNTUrpm4HTrvgt29zioadEOhGUgScFoxI6
-         XI8YR1CgfbPAxLAmq43FmO/1nkYF/Ycm3m+EkiKvV8mjlveoDtrBZqzoF5kSEdMYbooG
-         xoypAOB2q3SaksfogjIGkMoLn0Ym0MkofVA2IqCZB6MEfHfKi8ynpRDAZNt6oK1fbLeQ
-         J+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Dzgt9eOErv7DRncKnAq6YJRbBsHovoN+K2WQNL3Z+8=;
-        b=SC1Kqe9fBk1AXgIUNNJEqWhuYs6aTV+wPeRvtZgNvEYKfv/FLO1UhkBWii3q+xm741
-         0tcFgEaI7kGRy7OD5REs3toMN6bzCxjkVtXN1i27+q+Ivt+YImcUDNGDoD00efAmeQn2
-         wWFOGjSCLHSzIJI5jYY0xX1shIaFc52Fo+jtN5k0bVkQHMKDyniHoHKrd6eOe7XMi/Sp
-         FsRtj71zRFPv1Rh9SGC+tJgVqEtoVXuMCyJCf1vCoflXeOCitBzJFLedQr5ypAMXyOS+
-         +ATFoc9g5+X9CLfVrOGdsJTe51YYS+3EQdaaCl86ZIT2HHqan9UaF/G8dtN7/xvIb4zQ
-         Evig==
-X-Gm-Message-State: AOAM532iRM3xLJW+Wphb/i8DSJXikPMdHSTwRZfaSMjXStdqaM16H14I
-        eLNBT0MgA879+EFS8iFKvB6Z6A4oJxh/BYl00sw=
-X-Google-Smtp-Source: ABdhPJwvMiO84gkALjBZYV/Z8117B5Fi5UzzquECd8v/xmJfuxLrV4PrxacoLeKawiqrEkSVrrKWWYw6Pxw4PasRCAU=
-X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr4263478ljf.18.1611136468818;
- Wed, 20 Jan 2021 01:54:28 -0800 (PST)
+        Wed, 20 Jan 2021 04:55:14 -0500
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id 64190FB168
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:54:22 +0000 (GMT)
+Received: (qmail 4203 invoked from network); 20 Jan 2021 09:54:22 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 20 Jan 2021 09:54:22 -0000
+Date:   Wed, 20 Jan 2021 09:54:20 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
+Message-ID: <20210120095420.GU3592@techsingularity.net>
+References: <20210119112211.3196-1-mgorman@techsingularity.net>
+ <20210119112211.3196-6-mgorman@techsingularity.net>
+ <20210120083018.GA14462@in.ibm.com>
+ <20210120091235.GT3592@techsingularity.net>
+ <CAKfTPtBYuxKywCPeEd=vYCu31Ni0=uXoJa4v3ZV_T9J0TsVyhg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210118205522.317087-1-bongsu.jeon@samsung.com> <161110440860.4771.13780876306648585886.git-patchwork-notify@kernel.org>
-In-Reply-To: <161110440860.4771.13780876306648585886.git-patchwork-notify@kernel.org>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Wed, 20 Jan 2021 18:54:17 +0900
-Message-ID: <CACwDmQBZ-LVursCYmtngyv3yFCQ9_Jkip03VZ8cd1auNu86V8A@mail.gmail.com>
-Subject: Re: [PATCH net] net: nfc: nci: fix the wrong NCI_CORE_INIT parameters
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfc@lists.01.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBYuxKywCPeEd=vYCu31Ni0=uXoJa4v3ZV_T9J0TsVyhg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:00 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
->
-> Hello:
->
-> This patch was applied to netdev/net.git (refs/heads/master):
->
-> On Tue, 19 Jan 2021 05:55:22 +0900 you wrote:
-> > From: Bongsu Jeon <bongsu.jeon@samsung.com>
+On Wed, Jan 20, 2021 at 10:21:47AM +0100, Vincent Guittot wrote:
+> On Wed, 20 Jan 2021 at 10:12, Mel Gorman <mgorman@techsingularity.net> wrote:
 > >
-> > Fix the code because NCI_CORE_INIT_CMD includes two parameters in NCI2.0
-> > but there is no parameters in NCI1.x.
+> > On Wed, Jan 20, 2021 at 02:00:18PM +0530, Gautham R Shenoy wrote:
+> > > > @@ -6157,18 +6169,31 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> > > >     }
+> > > >
+> > > >     for_each_cpu_wrap(cpu, cpus, target) {
+> > > > -           if (!--nr)
+> > > > -                   return -1;
+> > > > -           if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> > > > -                   break;
+> > > > +           if (smt) {
+> > > > +                   i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > > > +                   if ((unsigned int)i < nr_cpumask_bits)
+> > > > +                           return i;
+> > > > +
+> > > > +           } else {
+> > > > +                   if (!--nr)
+> > > > +                           return -1;
+> > > > +                   i = __select_idle_cpu(cpu);
+> > > > +                   if ((unsigned int)i < nr_cpumask_bits) {
+> > > > +                           idle_cpu = i;
+> > > > +                           break;
+> > > > +                   }
+> > > > +           }
+> > > >     }
+> > > >
+> > > > -   if (sched_feat(SIS_PROP)) {
+> > > > +   if (smt)
+> > > > +           set_idle_cores(this, false);
+> > >
+> > > Shouldn't we set_idle_cores(false) only if this was the last idle
+> > > core in the LLC ?
+> > >
 > >
-> > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> >
-> > [...]
->
-> Here is the summary with links:
->   - [net] net: nfc: nci: fix the wrong NCI_CORE_INIT parameters
->     https://git.kernel.org/netdev/net/c/4964e5a1e080
->
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
->
->
+> > That would involve rechecking the cpumask bits that have not been
+> > scanned to see if any of them are an idle core. As the existance of idle
+> > cores can change very rapidly, it's not worth the cost.
+> 
+> But don't we reach this point only if we scanned all CPUs and didn't
+> find an idle core ?
 
-Could you merge this patch to net-next repo??
-NCI selftest that i will send will fail if this patch isn't merged.
+Yes, but my understanding of Gauthams suggestion was to check if an
+idle core found was the last idle core available and set has_idle_cores
+to false in that case. I think this would be relatively expensive and
+possibly futile as returning the last idle core for this wakeup does not
+mean there will be no idle core on the next wakeup as other cores may go
+idle between wakeups.
+
+-- 
+Mel Gorman
+SUSE Labs
