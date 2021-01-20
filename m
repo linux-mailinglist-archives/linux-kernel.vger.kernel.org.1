@@ -2,157 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39BE2FCDF2
+	by mail.lfdr.de (Postfix) with ESMTP id 857672FCDF1
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730972AbhATKOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:14:05 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2382 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730542AbhATJRx (ORCPT
+        id S1730938AbhATKOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:14:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731053AbhATJRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:17:53 -0500
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DLKZx4DQgz67f5r;
-        Wed, 20 Jan 2021 17:14:01 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 20 Jan 2021 10:17:10 +0100
-Received: from [10.47.7.185] (10.47.7.185) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 20 Jan
- 2021 09:17:09 +0000
-Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "irogers@google.com" <irogers@google.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
- <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <b25f0861-1cec-3ac8-a0ef-8e9e94c4e662@huawei.com>
- <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
- <DB8PR04MB67951BF5DBE4524CB13BAAE4E6A20@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <c3d8d635-33ab-8d7e-6efc-6a589aebeb52@huawei.com>
-Date:   Wed, 20 Jan 2021 09:15:54 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 20 Jan 2021 04:17:18 -0500
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95DAC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:16:22 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 919761F63C;
+        Wed, 20 Jan 2021 10:16:17 +0100 (CET)
+Subject: Re: [PATCH V1] clk: qcom: gcc-sc7180: Mark the MM XO clocks to be
+ always ON
+To:     Taniya Das <tdas@codeaurora.org>, Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <e6843147-514b-8901-a04c-b1d6e3ebf1c2@somainline.org>
+Date:   Wed, 20 Jan 2021 10:16:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67951BF5DBE4524CB13BAAE4E6A20@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.7.185]
-X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/2021 05:15, Joakim Zhang wrote:
-> 
->> -----Original Message-----
->> From: John Garry <john.garry@huawei.com>
->> Sent: 2021年1月20日 1:33
->> To: Joakim Zhang <qiangqing.zhang@nxp.com>; peterz@infradead.org;
->> mingo@redhat.com; acme@kernel.org; mark.rutland@arm.com;
->> alexander.shishkin@linux.intel.com; jolsa@redhat.com;
->> namhyung@kernel.org; irogers@google.com; kjain@linux.ibm.com
->> Cc: linux-kernel@vger.kernel.org; linuxarm@openeuler.org
->> Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
->>
->> On 19/01/2021 15:47, John Garry wrote:
->>> On 19/01/2021 10:56, Joakim Zhang wrote:
->>>> It seems have other issue compared to 5.10 kernel after switching to
->>>> this framework, below metric can't work.
->>>> "MetricExpr": "(( imx8_ddr0@read\\-cycles@ +
->>>> imx8_ddr0@write\\-cycles@
->>>> ) * 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)"
->>>> After change to:
->>>> "MetricExpr": "(( imx8mm_ddr.read_cycles + imx8mm_ddr.write_cycles )
->>>> *
->>>> 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)",
->>>
->>> It seems that any metric which includes "duration_time" is broken,
->>> even on x86:
->>>
->>> john@localhost:~/acme/tools/perf> sudo ./perf stat -v -M
->>> L1D_Cache_Fill_BW sleep 1 Using CPUID GenuineIntel-6-3D-4 metric expr
->>> 64 * l1d.replacement / 1000000000 / duration_time for
->>> L1D_Cache_Fill_BW found event duration_time found event
->>> l1d.replacement adding {l1d.replacement}:W,duration_time
->>> l1d.replacement -> cpu/umask=0x1,(null)=0x1e8483,event=0x51/
->>> Segmentation fault
->>>
->>>
->>> Seems to be from my commit c2337d67199 ("perf metricgroup: Fix metrics
->>> using aliases covering multiple PMUs")
->>>
->>> I'll look to fix it now.
->>>
->>
->> Please try this:
->>
->>   From 2380f1ef0250e6818b3dbc7bff4a868810875e2a Mon Sep 17 00:00:00
->> 2001
->> From: John Garry <john.garry@huawei.com>
->> Date: Tue, 19 Jan 2021 17:29:54 +0000
->> Subject: [PATCH] perf metricgroup: Fix metric support for duration_time
->>
->> For a metric using duration_time, the strcmp() check when finding identical
->> events in metric_events[] is broken, as it does not consider that the
->> event pmu_name is NULL - it would be for duration_time.
->>
->> As such, add a NULL check here for event pmu_name.
->>
->> Signed-off-by: John Garry <john.garry@huawei.com>
->>
->> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
->> index ee94d3e8dd65..277adff8017f 100644
->> --- a/tools/perf/util/metricgroup.c
->> +++ b/tools/perf/util/metricgroup.c
->> @@ -280,6 +280,8 @@ static struct evsel *find_evsel_group(struct evlist
->> *perf_evlist,
->>    			 */
->>    			if (!has_constraint &&
->>    			    ev->leader != metric_events[i]->leader &&
->> +			    ev->leader->pmu_name &&
->> +			    metric_events[i]->leader->pmu_name &&
->>    			    !strcmp(ev->leader->pmu_name,
->>    				    metric_events[i]->leader->pmu_name))
->>    				break;
->> --
->> 2.26.2
->>
->>
-> 
-> For this patch: Tested-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> 
-> Hi John, Jolsa,
-> 
-> Is there any way to avoid breaking exist metric expressions? If not, it will always happened after metricgroup changes.
+Il 20/01/21 08:47, Taniya Das ha scritto:
+> There are intermittent GDSC power-up failures observed for titan top
+> gdsc, which requires the XO clock. Thus mark all the MM XO clocks always
+> enabled from probe.
 > 
 
-They are not normally broken like that. Normally we test beforehand, but 
-these cases were missed here by me. However if you were testing them 
-previously, then it would be expected that you had tested them again for 
-the final patchset which was merged.
+Hello Tanya,
 
-Anyway, we can look to add metric tests for these.
+> Fixes: 8d4025943e13 ("clk: qcom: camcc-sc7180: Use runtime PM ops instead of clk ones")
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
+>   drivers/clk/qcom/gcc-sc7180.c | 47 ++++---------------------------------------
+>   1 file changed, 4 insertions(+), 43 deletions(-)
+> 
+> --
+> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+> of the Code Aurora Forum, hosted by the  Linux Foundation.
+> 
+> diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
+> index b05901b..88e896a 100644
+> --- a/drivers/clk/qcom/gcc-sc7180.c
+> +++ b/drivers/clk/qcom/gcc-sc7180.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0-only
+>   /*
+> - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
+>    */
+> 
+>   #include <linux/clk-provider.h>
+> @@ -919,19 +919,6 @@ static struct clk_branch gcc_camera_throttle_hf_axi_clk = {
+>   	},
+>   };
+> 
+> -static struct clk_branch gcc_camera_xo_clk = {
+> -	.halt_reg = 0xb02c,
+> -	.halt_check = BRANCH_HALT,
+> -	.clkr = {
+> -		.enable_reg = 0xb02c,
+> -		.enable_mask = BIT(0),
+> -		.hw.init = &(struct clk_init_data){
+> -			.name = "gcc_camera_xo_clk",
+> -			.ops = &clk_branch2_ops,
+> -		},
+> -	},
+> -};
+> -
 
-@Arnaldo, I will send separate formal patch for this today.
+Why are you avoiding to register these clocks entirely?
+If this is needed by the Titan GDSC, this clock "does indeed exist".
 
-Thanks,
-John
+If these clocks shall never be turned off, then you should add the
+CLK_IS_CRITICAL flag and perhaps add a comment explaining why.
+
+>   static struct clk_branch gcc_ce1_ahb_clk = {
+>   	.halt_reg = 0x4100c,
+>   	.halt_check = BRANCH_HALT_VOTED,
+> @@ -1096,19 +1083,6 @@ static struct clk_branch gcc_disp_throttle_hf_axi_clk = {
+>   	},
+>   };
+> 
+> -static struct clk_branch gcc_disp_xo_clk = {
+> -	.halt_reg = 0xb030,
+> -	.halt_check = BRANCH_HALT,
+> -	.clkr = {
+> -		.enable_reg = 0xb030,
+> -		.enable_mask = BIT(0),
+> -		.hw.init = &(struct clk_init_data){
+> -			.name = "gcc_disp_xo_clk",
+> -			.ops = &clk_branch2_ops,
+> -		},
+> -	},
+> -};
+> -
+
+Same here.
+
+>   static struct clk_branch gcc_gp1_clk = {
+>   	.halt_reg = 0x64000,
+>   	.halt_check = BRANCH_HALT,
+> @@ -2159,19 +2133,6 @@ static struct clk_branch gcc_video_throttle_axi_clk = {
+>   	},
+>   };
+> 
+> -static struct clk_branch gcc_video_xo_clk = {
+> -	.halt_reg = 0xb028,
+> -	.halt_check = BRANCH_HALT,
+> -	.clkr = {
+> -		.enable_reg = 0xb028,
+> -		.enable_mask = BIT(0),
+> -		.hw.init = &(struct clk_init_data){
+> -			.name = "gcc_video_xo_clk",
+> -			.ops = &clk_branch2_ops,
+> -		},
+> -	},
+> -};
+> -
+
+...and here.
+
+>   static struct clk_branch gcc_mss_cfg_ahb_clk = {
+>   	.halt_reg = 0x8a000,
+>   	.halt_check = BRANCH_HALT,
+> @@ -2304,7 +2265,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
+>   	[GCC_BOOT_ROM_AHB_CLK] = &gcc_boot_rom_ahb_clk.clkr,
+>   	[GCC_CAMERA_HF_AXI_CLK] = &gcc_camera_hf_axi_clk.clkr,
+>   	[GCC_CAMERA_THROTTLE_HF_AXI_CLK] = &gcc_camera_throttle_hf_axi_clk.clkr,
+> -	[GCC_CAMERA_XO_CLK] = &gcc_camera_xo_clk.clkr,
+>   	[GCC_CE1_AHB_CLK] = &gcc_ce1_ahb_clk.clkr,
+>   	[GCC_CE1_AXI_CLK] = &gcc_ce1_axi_clk.clkr,
+>   	[GCC_CE1_CLK] = &gcc_ce1_clk.clkr,
+> @@ -2317,7 +2277,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
+>   	[GCC_DISP_GPLL0_DIV_CLK_SRC] = &gcc_disp_gpll0_div_clk_src.clkr,
+>   	[GCC_DISP_HF_AXI_CLK] = &gcc_disp_hf_axi_clk.clkr,
+>   	[GCC_DISP_THROTTLE_HF_AXI_CLK] = &gcc_disp_throttle_hf_axi_clk.clkr,
+> -	[GCC_DISP_XO_CLK] = &gcc_disp_xo_clk.clkr,
+>   	[GCC_GP1_CLK] = &gcc_gp1_clk.clkr,
+>   	[GCC_GP1_CLK_SRC] = &gcc_gp1_clk_src.clkr,
+>   	[GCC_GP2_CLK] = &gcc_gp2_clk.clkr,
+> @@ -2413,7 +2372,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
+>   	[GCC_VIDEO_AXI_CLK] = &gcc_video_axi_clk.clkr,
+>   	[GCC_VIDEO_GPLL0_DIV_CLK_SRC] = &gcc_video_gpll0_div_clk_src.clkr,
+>   	[GCC_VIDEO_THROTTLE_AXI_CLK] = &gcc_video_throttle_axi_clk.clkr,
+> -	[GCC_VIDEO_XO_CLK] = &gcc_video_xo_clk.clkr,
+>   	[GPLL0] = &gpll0.clkr,
+>   	[GPLL0_OUT_EVEN] = &gpll0_out_even.clkr,
+>   	[GPLL6] = &gpll6.clkr,
+> @@ -2510,6 +2468,9 @@ static int gcc_sc7180_probe(struct platform_device *pdev)
+>   	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
+>   	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
+>   	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
+> +	regmap_update_bits(regmap, 0x0b02c, BIT(0), BIT(0));
+> +	regmap_update_bits(regmap, 0x0b028, BIT(0), BIT(0));
+> +	regmap_update_bits(regmap, 0x0b030, BIT(0), BIT(0));
+
+IMO, "Magic" regmap writes like these ones, even if documented, should
+be avoided in this specific case, since the clocks framework accounts
+for clocks that should be always-on, if provided with the right flags.
+
+>   	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
+> 
+>   	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
+> 
 
