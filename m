@@ -2,147 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555722FCE47
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1962FCE49
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732843AbhATKUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:20:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45724 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730242AbhATKL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:11:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C2F8AF9A;
-        Wed, 20 Jan 2021 10:10:46 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 11:10:43 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 5/5] hugetlb: convert PageHugeFreed to HPageFreed flag
-Message-ID: <20210120101043.GD4752@localhost.localdomain>
-References: <20210120013049.311822-1-mike.kravetz@oracle.com>
- <20210120013049.311822-6-mike.kravetz@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120013049.311822-6-mike.kravetz@oracle.com>
+        id S1732880AbhATKUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:20:20 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60762 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730285AbhATKLf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 05:11:35 -0500
+Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10KAAm2J097005;
+        Wed, 20 Jan 2021 19:10:48 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
+ Wed, 20 Jan 2021 19:10:48 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
+Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10KAAgl5096975
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 20 Jan 2021 19:10:47 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH v4 (resend)] lockdep: Allow tuning tracing capacity constants.
+Date:   Wed, 20 Jan 2021 19:10:44 +0900
+Message-Id: <20210120101044.9106-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 05:30:49PM -0800, Mike Kravetz wrote:
-> Use new hugetlb specific HPageFreed flag to replace the
-> PageHugeFreed interfaces.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Since syzkaller continues various test cases until the kernel crashes,
+syzkaller tends to examine more locking dependencies than normal systems.
+As a result, syzbot is reporting that the fuzz testing was terminated
+due to hitting upper limits lockdep can track [1] [2] [3].
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Peter Zijlstra does not want to allow tuning these limits via kernel
+config options, for such change discourages thinking. But analysis via
+/proc/lockdep* did not show any obvious culprit [4] [5]. It is possible
+that many hundreds of kn->active lock instances are to some degree
+contributing to these problems, but there is no means to verify whether
+these instances are created for protecting same callback functions.
+Unless Peter provides a way to make these instances per "which callback
+functions the lock instance will call (identified by something like MD5
+of string representations of callback functions which each lock instance
+will protect)" than plain "serial number", I don't think that we can
+verify the culprit.
 
-> ---
->  include/linux/hugetlb.h |  3 +++
->  mm/hugetlb.c            | 23 ++++-------------------
->  2 files changed, 7 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index ec329b9cc0fc..8fd0970cefdb 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -487,11 +487,13 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
->   *	allocator.  Typically used for migration target pages when no pages
->   *	are available in the pool.  The hugetlb free page path will
->   *	immediately free pages with this flag set to the buddy allocator.
-> + * HPG_freed - Set when page is on the free lists.
->   */
->  enum hugetlb_page_flags {
->  	HPG_restore_reserve = 0,
->  	HPG_migratable,
->  	HPG_temporary,
-> +	HPG_freed,
->  	__NR_HPAGEFLAGS,
->  };
->  
-> @@ -540,6 +542,7 @@ static inline void ClearHPage##uname(struct page *page)		\
->  HPAGEFLAG(RestoreReserve, restore_reserve)
->  HPAGEFLAG(Migratable, migratable)
->  HPAGEFLAG(Temporary, temporary)
-> +HPAGEFLAG(Freed, freed)
->  
->  #ifdef CONFIG_HUGETLB_PAGE
->  
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 0d2bfc2b6adc..d5a78aedbfda 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -79,21 +79,6 @@ DEFINE_SPINLOCK(hugetlb_lock);
->  static int num_fault_mutexes;
->  struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
->  
-> -static inline bool PageHugeFreed(struct page *head)
-> -{
-> -	return page_private(head + 4) == -1UL;
-> -}
-> -
-> -static inline void SetPageHugeFreed(struct page *head)
-> -{
-> -	set_page_private(head + 4, -1UL);
-> -}
-> -
-> -static inline void ClearPageHugeFreed(struct page *head)
-> -{
-> -	set_page_private(head + 4, 0);
-> -}
-> -
->  /* Forward declaration */
->  static int hugetlb_acct_memory(struct hstate *h, long delta);
->  
-> @@ -1043,7 +1028,7 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
->  	list_move(&page->lru, &h->hugepage_freelists[nid]);
->  	h->free_huge_pages++;
->  	h->free_huge_pages_node[nid]++;
-> -	SetPageHugeFreed(page);
-> +	SetHPageFreed(page);
->  }
->  
->  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
-> @@ -1060,7 +1045,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
->  
->  		list_move(&page->lru, &h->hugepage_activelist);
->  		set_page_refcounted(page);
-> -		ClearPageHugeFreed(page);
-> +		ClearHPageFreed(page);
->  		h->free_huge_pages--;
->  		h->free_huge_pages_node[nid]--;
->  		return page;
-> @@ -1474,7 +1459,7 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
->  	spin_lock(&hugetlb_lock);
->  	h->nr_huge_pages++;
->  	h->nr_huge_pages_node[nid]++;
-> -	ClearPageHugeFreed(page);
-> +	ClearHPageFreed(page);
->  	spin_unlock(&hugetlb_lock);
->  }
->  
-> @@ -1747,7 +1732,7 @@ int dissolve_free_huge_page(struct page *page)
->  		 * We should make sure that the page is already on the free list
->  		 * when it is dissolved.
->  		 */
-> -		if (unlikely(!PageHugeFreed(head))) {
-> +		if (unlikely(!HPageFreed(head))) {
->  			rc = -EAGAIN;
->  			goto out;
->  		}
-> -- 
-> 2.29.2
-> 
-> 
+[1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
+[2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
+[3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
+[4] https://lkml.kernel.org/r/4b8f7a57-fa20-47bd-48a0-ae35d860f233@i-love.sakura.ne.jp
+[5] https://lkml.kernel.org/r/1c351187-253b-2d49-acaf-4563c63ae7d2@i-love.sakura.ne.jp
 
+Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Acked-by: Dmitry Vyukov <dvyukov@google.com>
+---
+ kernel/locking/lockdep.c           |  2 +-
+ kernel/locking/lockdep_internals.h |  8 +++---
+ lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c1418b47f625..c0553872668a 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -1391,7 +1391,7 @@ static int add_lock_to_list(struct lock_class *this,
+ /*
+  * For good efficiency of modular, we use power of 2
+  */
+-#define MAX_CIRCULAR_QUEUE_SIZE		4096UL
++#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
+ #define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+ 
+ /*
+diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
+index de49f9e1c11b..ecb8662e7a4e 100644
+--- a/kernel/locking/lockdep_internals.h
++++ b/kernel/locking/lockdep_internals.h
+@@ -99,16 +99,16 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
+ #define MAX_STACK_TRACE_ENTRIES	262144UL
+ #define STACK_TRACE_HASH_SIZE	8192
+ #else
+-#define MAX_LOCKDEP_ENTRIES	32768UL
++#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
+ 
+-#define MAX_LOCKDEP_CHAINS_BITS	16
++#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
+ 
+ /*
+  * Stack-trace: tightly packed array of stack backtrace
+  * addresses. Protected by the hash_lock.
+  */
+-#define MAX_STACK_TRACE_ENTRIES	524288UL
+-#define STACK_TRACE_HASH_SIZE	16384
++#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
++#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
+ #endif
+ 
+ /*
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 7937265ef879..4cb84b499636 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1332,6 +1332,46 @@ config LOCKDEP
+ config LOCKDEP_SMALL
+ 	bool
+ 
++config LOCKDEP_BITS
++	int "Bitsize for MAX_LOCKDEP_ENTRIES"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 15
++	help
++	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_ENTRIES too low!" message.
++
++config LOCKDEP_CHAINS_BITS
++	int "Bitsize for MAX_LOCKDEP_CHAINS"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 16
++	help
++	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
++
++config LOCKDEP_STACK_TRACE_BITS
++	int "Bitsize for MAX_STACK_TRACE_ENTRIES"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 19
++	help
++	  Try increasing this value if you hit "BUG: MAX_STACK_TRACE_ENTRIES too low!" message.
++
++config LOCKDEP_STACK_TRACE_HASH_BITS
++	int "Bitsize for STACK_TRACE_HASH_SIZE"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 14
++	help
++	  Try increasing this value if you need large MAX_STACK_TRACE_ENTRIES.
++
++config LOCKDEP_CIRCULAR_QUEUE_BITS
++	int "Bitsize for elements in circular_queue struct"
++	depends on LOCKDEP
++	range 10 30
++	default 12
++	help
++	  Try increasing this value if you hit "lockdep bfs error:-1" warning due to __cq_enqueue() failure.
++
+ config DEBUG_LOCKDEP
+ 	bool "Lock dependency engine debugging"
+ 	depends on DEBUG_KERNEL && LOCKDEP
 -- 
-Oscar Salvador
-SUSE L3
+2.18.4
+
