@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E942FC85A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F232FC856
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389249AbhATC7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:59:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47348 "EHLO mail.kernel.org"
+        id S1732614AbhATC4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:56:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730750AbhATB3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730738AbhATB3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:29:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFA5A23121;
-        Wed, 20 Jan 2021 01:27:48 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05556235FF;
+        Wed, 20 Jan 2021 01:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106069;
-        bh=KGpDxYJ+g6L/VPqmi7zokT5Xz6lfTzBbY1R8MRG1KoQ=;
+        s=k20201202; t=1611106071;
+        bh=d7ogqVVpOdGNkRMRKs7I5o4viurZ7VIllf8oL4WB7Gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIXouIELlaXcStWiqLhSl0ROTDjQxtT29SPbzRMf3GV34aMig0PUKU9J1GnJs3C27
-         isPOCBzsZX241W3WapS4Mttz2SQxrN94xLAh2dU8bwRvKFpeKKjldyG83AYgUj14+b
-         IvHOYXeDW4TwmzVuq745dGb3sAOikm3OBS6CdnrEh3W8xtO03GnqDPxqab06giBUXQ
-         T1UL+FYRY2VIj4IrkmpO+u/pc0cx0ec7R+/+hE3yoda1II34h7N6/O/2bEknjCAV7v
-         31eK3wj0r8ctyzFsi9WaJVWX2Lu/vr0qYaGyjyok9ATEK71aIQZaxDhwxykkMrWTWT
-         EIsKHzXaXiFNQ==
+        b=dT8lqOhntDh1o0JLMVl0KBVflVE5iFiZf8/XzjPk5Duhzw1c8WqiYF/tHB7EtyThh
+         zHz1RSmN+u1bToa60P+0gGV4AuzP1uJr+QmMU4F432vWLNVvXVBbjDL6P/gvtjf1Gu
+         dIzyct/Sjbd+chIxy4NIqTAEtABg6F934VhQmU0IwvGq8CO6Qj74XE3dxkhV1kpmRi
+         VgdOHluUO1fbWBw9z7ECrYICv494O5pRk+FHf6+Mkn87I6IbCbMicI4ktFe/UQSPeU
+         pZsSbaWMSLSnPgLoipPKC1v04GnPpsn+ypGJ22X2g8dkWFwzXRKVBZTU0R1DDFwvKp
+         aujhuLzi0ncag==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Seth Miller <miller.seth@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 06/15] HID: Ignore battery for Elan touchscreen on ASUS UX550
-Date:   Tue, 19 Jan 2021 20:27:31 -0500
-Message-Id: <20210120012740.770354-6-sashal@kernel.org>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Ion Agorria <ion@agorria.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        linux-clk@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 07/15] clk: tegra30: Add hda clock default rates to clock driver
+Date:   Tue, 19 Jan 2021 20:27:32 -0500
+Message-Id: <20210120012740.770354-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012740.770354-1-sashal@kernel.org>
 References: <20210120012740.770354-1-sashal@kernel.org>
@@ -41,47 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seth Miller <miller.seth@gmail.com>
+From: Peter Geis <pgwipeout@gmail.com>
 
-[ Upstream commit 7c38e769d5c508939ce5dc26df72602f3c902342 ]
+[ Upstream commit f4eccc7fea203cfb35205891eced1ab51836f362 ]
 
-Battery status is being reported for the Elan touchscreen on ASUS
-UX550 laptops despite not having a batter. It always shows either 0 or
-1%.
+Current implementation defaults the hda clocks to clk_m. This causes hda
+to run too slow to operate correctly. Fix this by defaulting to pll_p and
+setting the frequency to the correct rate.
 
-Signed-off-by: Seth Miller <miller.seth@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+This matches upstream t124 and downstream t30.
+
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Ion Agorria <ion@agorria.com>
+Acked-by: Sameer Pujar <spujar@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+Link: https://lore.kernel.org/r/20210108135913.2421585-2-pgwipeout@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h   | 1 +
- drivers/hid/hid-input.c | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/clk/tegra/clk-tegra30.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 6d118da1615d4..ab2be7a115d8f 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -386,6 +386,7 @@
- #define USB_DEVICE_ID_TOSHIBA_CLICK_L9W	0x0401
- #define USB_DEVICE_ID_HP_X2		0x074d
- #define USB_DEVICE_ID_HP_X2_10_COVER	0x0755
-+#define USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN	0x2706
- 
- #define USB_VENDOR_ID_ELECOM		0x056e
- #define USB_DEVICE_ID_ELECOM_BM084	0x0061
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 13deb9a676855..4dd151b2924e2 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -334,6 +334,8 @@ static const struct hid_device_id hid_battery_quirks[] = {
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH,
- 		USB_DEVICE_ID_LOGITECH_DINOVO_EDGE_KBD),
- 	  HID_BATTERY_QUIRK_IGNORE },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_ELAN, USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN),
-+	  HID_BATTERY_QUIRK_IGNORE },
- 	{}
+diff --git a/drivers/clk/tegra/clk-tegra30.c b/drivers/clk/tegra/clk-tegra30.c
+index e0aaecd98fbff..678019f86bc7a 100644
+--- a/drivers/clk/tegra/clk-tegra30.c
++++ b/drivers/clk/tegra/clk-tegra30.c
+@@ -1274,6 +1274,8 @@ static struct tegra_clk_init_table init_table[] __initdata = {
+ 	{ TEGRA30_CLK_I2S3_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
+ 	{ TEGRA30_CLK_I2S4_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
+ 	{ TEGRA30_CLK_VIMCLK_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
++	{ TEGRA30_CLK_HDA, TEGRA30_CLK_PLL_P, 102000000, 0 },
++	{ TEGRA30_CLK_HDA2CODEC_2X, TEGRA30_CLK_PLL_P, 48000000, 0 },
+ 	/* must be the last entry */
+ 	{ TEGRA30_CLK_CLK_MAX, TEGRA30_CLK_CLK_MAX, 0, 0 },
  };
- 
 -- 
 2.27.0
 
