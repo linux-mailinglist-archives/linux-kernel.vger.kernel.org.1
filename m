@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8F02FCAB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC4E2FCABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731130AbhATF2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        id S1731180AbhATFbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:31:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730904AbhATF0D (ORCPT
+        with ESMTP id S1731208AbhATF24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:26:03 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F10C061575;
-        Tue, 19 Jan 2021 21:25:23 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLDW35dW5z9sVS;
-        Wed, 20 Jan 2021 16:25:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611120320;
-        bh=3fmoWrCiODnUVIqEnSfXQss7FvL1AU0Y2ucwsVjjDvA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Mv21QEJ0nr5v0bRfHEOFLaRfkx+hQmkFyNGAdCV6yrpOLfexoxBNYgwoXpR4K0HzJ
-         4Q0FTJRyw8fVlZc8PEQX7CvW3fjSPklh0XKYcSLgjJokhtnFhurhmzw9j9thuFqRjF
-         R6BbcNuxfU7h7xcLd36UtDemze2QhEV0k31xMYYkVDMM9v7RwNHnJ0WJ3U4r9UsHTK
-         BxCx5w17XEvySCpzH28HIHmyC1fpMeAKzCI4rjXb3SJipw0S249xFng1D+avqK3l/Z
-         eHoIdG2v8NkJ7yseks+wwy5wO71E1wsAuNZq/XKazZtghxHuRh2WmnMwg1GKHptXoK
-         J3isXx1wKvLtg==
-Date:   Wed, 20 Jan 2021 16:25:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20210120162518.4fdc8f00@canb.auug.org.au>
+        Wed, 20 Jan 2021 00:28:56 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79309C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:28:16 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id x78so13864394ybe.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=WOXazTlgJn75qx9XSNWOX4yBA/rtUatc3Pb6WtW/aGE=;
+        b=bBxz99PoNbOWtlD1FvKtFeYNjxKTC1xqi4Dd5KNmh4RfQVPao1vPPWGtbF8w3wuuBa
+         1SaIcXfp0/4erPSujsYR4aJeL96KagYl547WAmwjenKno9Glq1nhyaF/TIY5H5tvGIpx
+         kBRe0xSYRQceTj7xvjA2GI2ILJx800IuCdd02nv+hRYmN+h05YCajI8iUx26dRvlTsG2
+         Kc1BognLC7aUOAuwjW8ywn087PUTxnEezEPK9GnnPwfmndHVT86pRN4KWcXPaptDtx9V
+         KIy+RGMQfyReBd0ESYosm3nbSM+1SNFq0xmg+bUkxjPcROBlE/A5Li1Ph76OjfSmWTgE
+         8syQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=WOXazTlgJn75qx9XSNWOX4yBA/rtUatc3Pb6WtW/aGE=;
+        b=NfIOWWUEfC5O2E2R1yrBwrNVaFOi1MMos7Fini33WjS79pc1MuYLcS8mbMnL2Klv9A
+         F8NykFaoInkCeNVO4gffizHdsL/gL2CrtuOZ+SxQ9ES1IIz21gJEs/HwEND+Suxus/Cl
+         jaMkKqOZ6OocBO9QgrBEcZY+Soj1FX7Abke76EsId6azpEr/9LvEorunLpb2m+2GP0pI
+         cOTjWUA927YqBFK1hCvjtZbNOwMTMd+6KAqJzQPhatRj35SvXsuMkXhA7hXLuMpEQ6ct
+         L99/fHk95f5PJk8lru2zBpEz4aAaNQuWkKGUtfzVcf6oDIq6BPYd2tthB3xeagV2mzML
+         QrWw==
+X-Gm-Message-State: AOAM532DLM2+Rj6Q0+HhgEbcTR6rUyYs5GUfB63wXkAZjvDrNTlPFfIp
+        7YzHmQ+iqc3v9suVRXLBAq+V0blSuq8K9KDP/qQ=
+X-Google-Smtp-Source: ABdhPJwA98AvF7v3sMHotlIq7ZPCEUWfzyVZRfjK0rXAOlxMabHZF31tQA+at6TMR3LL91uGYAsW/onaFyMXqa25KLQ=
+X-Received: by 2002:a25:e7c2:: with SMTP id e185mr12011722ybh.94.1611120495684;
+ Tue, 19 Jan 2021 21:28:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sOXn9Uh9a4kO=yO2c8gosL0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Wed, 20 Jan 2021 13:27:49 +0800
+Message-ID: <CAD-N9QWyfAgVRcgOoWtR87_VqYvMNZxxBpFSxYQ+ME7tEHv_Rw@mail.gmail.com>
+Subject: "possible deadlock in static_key_slow_dec" and "possible deadlock in
+ __static_key_slow_dec" should share the same root cause
+To:     bristot@redhat.com, kuba@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        peterz@infradead.org, simon.horman@netronome.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sOXn9Uh9a4kO=yO2c8gosL0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Dear kernel developers,
 
-Hi all,
+I found that on the syzbot dashboard, =E2=80=9Cpossible deadlock in
+static_key_slow_dec=E2=80=9D [1] and "possible deadlock in
+__static_key_slow_dec" [2] should share the same root cause.
 
-After merging the akpm-current tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+The reasons for the above statement:
+1) the stack trace is the same, and this title difference is due to
+the inline property of "__static_key_slow_dec";
+2) their PoCs are the same as each other;
 
-mm/memory_hotplug.c: In function 'move_pfn_range_to_zone':
-mm/memory_hotplug.c:772:24: error: 'ZONE_DEVICE' undeclared (first use in t=
-his function)
-  772 |  if (zone_idx(zone) =3D=3D ZONE_DEVICE) {
-      |                        ^~~~~~~~~~~
+If you can have any issues with this statement or our information is
+useful to you, please let us know. Thanks very much.
 
-Caused by commit
+[1] =E2=80=9Cpossible deadlock in static_key_slow_dec=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3D4671e8c8f5cf5d23a81facabdc4f26ed63f0=
+3fc4
 
-  e821cf25cfee ("mm: teach pfn_to_online_page() about ZONE_DEVICE section c=
-ollisions")
+[2] =E2=80=9Cpossible deadlock in __static_key_slow_dec=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3Debc482d3e3ddaa62726a73e0123acef411df=
+13e3
 
-I applied the patch from Randy Dunlap for today.
+--
+My best regards to you.
 
-That, however, lead to this warning:
-
-mm/memory_hotplug.c:730:13: warning: 'section_taint_zone_device' defined bu=
-t not used [-Wunused-function]
-  730 | static void section_taint_zone_device(unsigned long pfn)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sOXn9Uh9a4kO=yO2c8gosL0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAHvr4ACgkQAVBC80lX
-0Gz+7gf+LEVA2NqXPy58USpds4NduO8tBSr/mxUHTue4D9Za8Yu9GzRbiWZ7pMbD
-a+CX4Vz8EB64gvYs+WII9wnEkezhapY8wqoxvFQalkAL+K1fYf5WPSb+GScMDbiV
-KdLXcSr8Yz7S5GOJEEqR0Ko9HexponjJp100hNfmlwZRwlRGWiDvj/VDnOzIga4f
-n+OUlhfie8PxQNgcbQSJtYtVH83dJ68i3GdMicKymJry1ptWQglHWXLrfBRo0oW5
-+T9nzGup+F9qd0RN60DF4dbpKDO8Q5pPImHqyQH9WxCyCyJM5YYzJeSnnqE/GpUD
-c8ZiETKMGVtR1EJSke+ZuvodVJNc3Q==
-=x9jb
------END PGP SIGNATURE-----
-
---Sig_/sOXn9Uh9a4kO=yO2c8gosL0--
+     No System Is Safe!
+     Dongliang Mu
