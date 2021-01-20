@@ -2,534 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571872FD5C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9632FD5E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403849AbhATQcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:32:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404047AbhATQ3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:29:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D682233F7;
-        Wed, 20 Jan 2021 16:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611160080;
-        bh=LnUV+hFL+Xwa15dWXaTs7it/pxp2PINo57tMZTpMIoo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZZ+B0jYI96pSgfPuQskSiVzZhDEfw7qz4qwws+KtYcKT+tO6iakXjKQtPX3Pihsfk
-         u9xr0bpySexycyFMY49qVz7e+wSABSVBIfpdzunQ7J2NURPhAAR3j1ydsRRMZgGMc2
-         YfeZTK0Ly5BvQPt8FFhv2OhLliXbAJf3zRUEkl+AHCrb+ui9vguiAGzB4XMHSVHG+w
-         RuX93qGLntbn2LrFKevf4sHK1QMcQ99a8D8PawHRsgLW2XSrRjbsYGWvtjvdk9pD9m
-         KH1mvFGRlWrBZw++jUDVCxX67O7UR8a8IMC8nUgsrjr0QqCs3zq22+0gO4YUopyQZM
-         IjzyNl7a3fI1g==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5/5] watchdog: remove coh901 driver
-Date:   Wed, 20 Jan 2021 17:27:45 +0100
-Message-Id: <20210120162745.61268-6-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120162745.61268-1-arnd@kernel.org>
-References: <20210120162745.61268-1-arnd@kernel.org>
+        id S2391569AbhATQlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbhATQ0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:26:16 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BF4C061575;
+        Wed, 20 Jan 2021 08:25:34 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id d26so23666732wrb.12;
+        Wed, 20 Jan 2021 08:25:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VmXJoFPWI+nCHNQVvQy5enpCPwkoasKdaNpv7FpReEE=;
+        b=gbdDcwr9MaO655fZV8zDxW2US1eB/jIoOrvDvPMuYukOhpC07vfiJHfCsFgxOUjLVG
+         LiuS/oDOobIfjOliuWaY4wsgM/Z/haexUS9Nec4sh0ofr7Gcp3E6andMt2xUrpARJeBs
+         /PwBc4rTVwgax5Ms2fHwokiXfeGzHz5bfAU2Yqk6flk07j/fKb2j2IUFuOVFvtiI8WqH
+         gikl2Be5idSiRZoSUUwgsYlihKiyFo9N8sPA5v7ndift6b+yqdFG/THHEbyXbXD/0MZF
+         phy1lDgMS/NLZR2+vTnKM1U26KnDE+iHvzeKkVEIlnTE27alr04QF/V4bP5x+jLH79Dl
+         cavw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VmXJoFPWI+nCHNQVvQy5enpCPwkoasKdaNpv7FpReEE=;
+        b=FqREp/FqjXjUG4+DGPkz4C/jXR+iP+q7B6IVmV1rPvHwgOoVZCfz5ArEqmM1GOnhiO
+         j81/ga2XTmwDdv08CiYiN3LZEM2MCBdsa1mQBrNjGlMA0YOcxc36VAOtrMNYdOTIYC3N
+         x2ugs/TEGSRfY4W5FO4YLPWCvQfF45oF4C5CJAizbSWeeCBwDAuY9pluYSBEZWcs8DQ9
+         JbC/ro7J2kp4AOqHQ16SC3AHwqMXSpo+/z9gMBOL0D5aj0L0PlIFMtKY1msbSWY0ZhVI
+         TzJqPNb5TZqD0wiszAt6f+9sXsC+Q2wl+ZQJkv6fh6Im9vHZSOKWzjYmia7cQbtFyGJd
+         fiMg==
+X-Gm-Message-State: AOAM531fw/cU+M7MfQJtAoaNxlre/UF4iBDZ79HoFEW5a4cfWQ+5sGyj
+        LM+O4LWwkVUEi4XES322Pl/8juRqkOPIZHLqVkE=
+X-Google-Smtp-Source: ABdhPJxoBB1Q2esqxKIL9GToqwG7o04UAnfs2StN8gvl+kvad1N7bRt+vpKwZXEbmb8vvPvjkejaY4/5dVFSCByZS8Y=
+X-Received: by 2002:a5d:54cc:: with SMTP id x12mr10214939wrv.132.1611159933614;
+ Wed, 20 Jan 2021 08:25:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1610366113.git.saiprakash.ranjan@codeaurora.org>
+ <c5848b1c15765c8d6db7de2305baac856e818f12.1610366113.git.saiprakash.ranjan@codeaurora.org>
+ <1120efd2-151b-4643-9a57-c15c46ab6e16@somainline.org>
+In-Reply-To: <1120efd2-151b-4643-9a57-c15c46ab6e16@somainline.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 20 Jan 2021 08:27:58 -0800
+Message-ID: <CAF6AEGvKreWA0bjwHfnp6oKksqW70hBWMn857xzbs9bUeti-Eg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/msm/a6xx: Create an A6XX GPU specific address space
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Jan 20, 2021 at 3:04 AM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
+>
+> Il 11/01/21 13:04, Sai Prakash Ranjan ha scritto:
+> > A6XX GPUs have support for last level cache(LLC) also known
+> > as system cache and need to set the bus attributes to
+> > use it. Currently we use a generic adreno iommu address space
+> > implementation which are also used by older GPU generations
+> > which do not have LLC and might introduce issues accidentally
+> > and is not clean in a way that anymore additions of GPUs
+> > supporting LLC would have to be guarded under ifdefs. So keep
+> > the generic code separate and make the address space creation
+> > A6XX specific. We also have a helper to set the llc attributes
+> > so that if the newer GPU generations do support them, we can
+> > use it instead of open coding domain attribute setting for each
+> > GPU.
+> >
+>
+> Hello!
+>
+> > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> > ---
+> >   drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 46 ++++++++++++++++++++++++-
+> >   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 +++++--------
+> >   drivers/gpu/drm/msm/adreno/adreno_gpu.h |  7 ++--
+> >   3 files changed, 55 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > index 3b798e883f82..3c7ad51732bb 100644
+> > --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > @@ -1239,6 +1239,50 @@ static unsigned long a6xx_gpu_busy(struct msm_gpu *gpu)
+> >       return (unsigned long)busy_time;
+> >   }
+> >
+> > +static struct msm_gem_address_space *
+> > +a6xx_create_address_space(struct msm_gpu *gpu, struct platform_device *pdev)
+> > +{
+> > +     struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> > +     struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> > +     struct iommu_domain *iommu;
+> > +     struct msm_mmu *mmu;
+> > +     struct msm_gem_address_space *aspace;
+> > +     u64 start, size;
+> > +
+> > +     iommu = iommu_domain_alloc(&platform_bus_type);
+> > +     if (!iommu)
+> > +             return NULL;
+> > +
+> > +     /*
+> > +      * This allows GPU to set the bus attributes required to use system
+> > +      * cache on behalf of the iommu page table walker.
+> > +      */
+> > +     if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice))
+> > +             adreno_set_llc_attributes(iommu);
+> > +
+> > +     mmu = msm_iommu_new(&pdev->dev, iommu);
+> > +     if (IS_ERR(mmu)) {
+> > +             iommu_domain_free(iommu);
+> > +             return ERR_CAST(mmu);
+> > +     }
+> > +
+> > +     /*
+> > +      * Use the aperture start or SZ_16M, whichever is greater. This will
+> > +      * ensure that we align with the allocated pagetable range while still
+> > +      * allowing room in the lower 32 bits for GMEM and whatnot
+> > +      */
+> > +     start = max_t(u64, SZ_16M, iommu->geometry.aperture_start);
+> > +     size = iommu->geometry.aperture_end - start + 1;
+> > +
+> > +     aspace = msm_gem_address_space_create(mmu, "gpu",
+> > +             start & GENMASK_ULL(48, 0), size);
+> > +
+> > +     if (IS_ERR(aspace) && !IS_ERR(mmu))
+> > +             mmu->funcs->destroy(mmu);
+> > +
+> > +     return aspace;
+> > +}
+> > +
+>
+> I get what you're trying to do - yes the intentions are good, however...
+> you are effectively duplicating code 1:1, as this *is* the same as
+> function adreno_iommu_create_address_space.
 
-The ST-Ericsson U300 platform is getting removed, so this driver is no
-longer needed.
+I had suggested moving this to a6xx, to avoid breaking earlier gens so
+much..  (Note a2xx by necessity already has it's own version of
+create_address_space().) I would in general tend to favor a small bit
+of code duplication to lower the risk of breaking older gens which not
+everybody has hw to test.
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- .../watchdog/stericsson-coh901327.txt         |  19 -
- drivers/watchdog/Kconfig                      |  11 -
- drivers/watchdog/Makefile                     |   1 -
- drivers/watchdog/coh901327_wdt.c              | 408 ------------------
- 4 files changed, 439 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/watchdog/stericsson-coh901327.txt
- delete mode 100644 drivers/watchdog/coh901327_wdt.c
+But I suppose we could add a has_llcc() and move the htw_llc_slice up
+to the 'struct adreno_gpu' level.  Casting to a6xx_gpu in common code
+isn't a great idea.  Older gens which don't have LLCC (or don't have
+LLCC support yet) could leave the slice ptr NULL.
 
-diff --git a/Documentation/devicetree/bindings/watchdog/stericsson-coh901327.txt b/Documentation/devicetree/bindings/watchdog/stericsson-coh901327.txt
-deleted file mode 100644
-index 8ffb88e39e76..000000000000
---- a/Documentation/devicetree/bindings/watchdog/stericsson-coh901327.txt
-+++ /dev/null
-@@ -1,19 +0,0 @@
--ST-Ericsson COH 901 327 Watchdog timer
--
--Required properties:
--- compatible: must be "stericsson,coh901327".
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- interrupts: the interrupt used for the watchdog timeout warning.
--
--Optional properties:
--- timeout-sec: contains the watchdog timeout in seconds.
--
--Example:
--
--watchdog: watchdog@c0012000 {
--	compatible = "stericsson,coh901327";
--	reg = <0xc0012000 0x1000>;
--	interrupts = <3>;
--	timeout-sec = <60>;
--};
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 10efbb351f14..3b73735b0c8b 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -619,17 +619,6 @@ config SUNXI_WATCHDOG
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called sunxi_wdt.
- 
--config COH901327_WATCHDOG
--	bool "ST-Ericsson COH 901 327 watchdog"
--	depends on ARCH_U300 || (ARM && COMMON_CLK && COMPILE_TEST)
--	default y if MACH_U300
--	select WATCHDOG_CORE
--	help
--	  Say Y here to include Watchdog timer support for the
--	  watchdog embedded into the ST-Ericsson U300 series platforms.
--	  This watchdog is used to reset the system and thus cannot be
--	  compiled as a module.
--
- config NPCM7XX_WATCHDOG
- 	tristate "Nuvoton NPCM750 watchdog"
- 	depends on ARCH_NPCM || COMPILE_TEST
-diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 1ff40d6a027f..1685dbc70a15 100644
---- a/drivers/watchdog/Makefile
-+++ b/drivers/watchdog/Makefile
-@@ -61,7 +61,6 @@ obj-$(CONFIG_K3_RTI_WATCHDOG) += rti_wdt.o
- obj-$(CONFIG_ORION_WATCHDOG) += orion_wdt.o
- obj-$(CONFIG_SUNXI_WATCHDOG) += sunxi_wdt.o
- obj-$(CONFIG_RN5T618_WATCHDOG) += rn5t618_wdt.o
--obj-$(CONFIG_COH901327_WATCHDOG) += coh901327_wdt.o
- obj-$(CONFIG_NPCM7XX_WATCHDOG) += npcm_wdt.o
- obj-$(CONFIG_STMP3XXX_RTC_WATCHDOG) += stmp3xxx_rtc_wdt.o
- obj-$(CONFIG_TS4800_WATCHDOG) += ts4800_wdt.o
-diff --git a/drivers/watchdog/coh901327_wdt.c b/drivers/watchdog/coh901327_wdt.c
-deleted file mode 100644
-index 260c50b08483..000000000000
---- a/drivers/watchdog/coh901327_wdt.c
-+++ /dev/null
-@@ -1,408 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * coh901327_wdt.c
-- *
-- * Copyright (C) 2008-2009 ST-Ericsson AB
-- * Watchdog driver for the ST-Ericsson AB COH 901 327 IP core
-- * Author: Linus Walleij <linus.walleij@stericsson.com>
-- */
--#include <linux/moduleparam.h>
--#include <linux/mod_devicetable.h>
--#include <linux/types.h>
--#include <linux/watchdog.h>
--#include <linux/interrupt.h>
--#include <linux/pm.h>
--#include <linux/platform_device.h>
--#include <linux/io.h>
--#include <linux/bitops.h>
--#include <linux/clk.h>
--#include <linux/delay.h>
--#include <linux/err.h>
--
--#define DRV_NAME "WDOG COH 901 327"
--
--/*
-- * COH 901 327 register definitions
-- */
--
--/* WDOG_FEED Register 32bit (-/W) */
--#define U300_WDOG_FR							0x00
--#define U300_WDOG_FR_FEED_RESTART_TIMER					0xFEEDU
--/* WDOG_TIMEOUT Register 32bit (R/W) */
--#define U300_WDOG_TR							0x04
--#define U300_WDOG_TR_TIMEOUT_MASK					0x7FFFU
--/* WDOG_DISABLE1 Register 32bit (-/W) */
--#define U300_WDOG_D1R							0x08
--#define U300_WDOG_D1R_DISABLE1_DISABLE_TIMER				0x2BADU
--/* WDOG_DISABLE2 Register 32bit (R/W) */
--#define U300_WDOG_D2R							0x0C
--#define U300_WDOG_D2R_DISABLE2_DISABLE_TIMER				0xCAFEU
--#define U300_WDOG_D2R_DISABLE_STATUS_DISABLED				0xDABEU
--#define U300_WDOG_D2R_DISABLE_STATUS_ENABLED				0x0000U
--/* WDOG_STATUS Register 32bit (R/W) */
--#define U300_WDOG_SR							0x10
--#define U300_WDOG_SR_STATUS_TIMED_OUT					0xCFE8U
--#define U300_WDOG_SR_STATUS_NORMAL					0x0000U
--#define U300_WDOG_SR_RESET_STATUS_RESET					0xE8B4U
--/* WDOG_COUNT Register 32bit (R/-) */
--#define U300_WDOG_CR							0x14
--#define U300_WDOG_CR_VALID_IND						0x8000U
--#define U300_WDOG_CR_VALID_STABLE					0x0000U
--#define U300_WDOG_CR_COUNT_VALUE_MASK					0x7FFFU
--/* WDOG_JTAGOVR Register 32bit (R/W) */
--#define U300_WDOG_JOR							0x18
--#define U300_WDOG_JOR_JTAG_MODE_IND					0x0002U
--#define U300_WDOG_JOR_JTAG_WATCHDOG_ENABLE				0x0001U
--/* WDOG_RESTART Register 32bit (-/W) */
--#define U300_WDOG_RR							0x1C
--#define U300_WDOG_RR_RESTART_VALUE_RESUME				0xACEDU
--/* WDOG_IRQ_EVENT Register 32bit (R/W) */
--#define U300_WDOG_IER							0x20
--#define U300_WDOG_IER_WILL_BARK_IRQ_EVENT_IND				0x0001U
--#define U300_WDOG_IER_WILL_BARK_IRQ_ACK_ENABLE				0x0001U
--/* WDOG_IRQ_MASK Register 32bit (R/W) */
--#define U300_WDOG_IMR							0x24
--#define U300_WDOG_IMR_WILL_BARK_IRQ_ENABLE				0x0001U
--/* WDOG_IRQ_FORCE Register 32bit (R/W) */
--#define U300_WDOG_IFR							0x28
--#define U300_WDOG_IFR_WILL_BARK_IRQ_FORCE_ENABLE			0x0001U
--
--/* Default timeout in seconds = 1 minute */
--#define U300_WDOG_DEFAULT_TIMEOUT					60
--
--static unsigned int margin;
--static int irq;
--static void __iomem *virtbase;
--static struct device *parent;
--
--static struct clk *clk;
--
--/*
-- * Enabling and disabling functions.
-- */
--static void coh901327_enable(u16 timeout)
--{
--	u16 val;
--	unsigned long freq;
--	unsigned long delay_ns;
--
--	/* Restart timer if it is disabled */
--	val = readw(virtbase + U300_WDOG_D2R);
--	if (val == U300_WDOG_D2R_DISABLE_STATUS_DISABLED)
--		writew(U300_WDOG_RR_RESTART_VALUE_RESUME,
--		       virtbase + U300_WDOG_RR);
--	/* Acknowledge any pending interrupt so it doesn't just fire off */
--	writew(U300_WDOG_IER_WILL_BARK_IRQ_ACK_ENABLE,
--	       virtbase + U300_WDOG_IER);
--	/*
--	 * The interrupt is cleared in the 32 kHz clock domain.
--	 * Wait 3 32 kHz cycles for it to take effect
--	 */
--	freq = clk_get_rate(clk);
--	delay_ns = DIV_ROUND_UP(1000000000, freq); /* Freq to ns and round up */
--	delay_ns = 3 * delay_ns; /* Wait 3 cycles */
--	ndelay(delay_ns);
--	/* Enable the watchdog interrupt */
--	writew(U300_WDOG_IMR_WILL_BARK_IRQ_ENABLE, virtbase + U300_WDOG_IMR);
--	/* Activate the watchdog timer */
--	writew(timeout, virtbase + U300_WDOG_TR);
--	/* Start the watchdog timer */
--	writew(U300_WDOG_FR_FEED_RESTART_TIMER, virtbase + U300_WDOG_FR);
--	/*
--	 * Extra read so that this change propagate in the watchdog.
--	 */
--	(void) readw(virtbase + U300_WDOG_CR);
--	val = readw(virtbase + U300_WDOG_D2R);
--	if (val != U300_WDOG_D2R_DISABLE_STATUS_ENABLED)
--		dev_err(parent,
--			"%s(): watchdog not enabled! D2R value %04x\n",
--			__func__, val);
--}
--
--static void coh901327_disable(void)
--{
--	u16 val;
--
--	/* Disable the watchdog interrupt if it is active */
--	writew(0x0000U, virtbase + U300_WDOG_IMR);
--	/* If the watchdog is currently enabled, attempt to disable it */
--	val = readw(virtbase + U300_WDOG_D2R);
--	if (val != U300_WDOG_D2R_DISABLE_STATUS_DISABLED) {
--		writew(U300_WDOG_D1R_DISABLE1_DISABLE_TIMER,
--		       virtbase + U300_WDOG_D1R);
--		writew(U300_WDOG_D2R_DISABLE2_DISABLE_TIMER,
--		       virtbase + U300_WDOG_D2R);
--		/* Write this twice (else problems occur) */
--		writew(U300_WDOG_D2R_DISABLE2_DISABLE_TIMER,
--		       virtbase + U300_WDOG_D2R);
--	}
--	val = readw(virtbase + U300_WDOG_D2R);
--	if (val != U300_WDOG_D2R_DISABLE_STATUS_DISABLED)
--		dev_err(parent,
--			"%s(): watchdog not disabled! D2R value %04x\n",
--			__func__, val);
--}
--
--static int coh901327_start(struct watchdog_device *wdt_dev)
--{
--	coh901327_enable(wdt_dev->timeout * 100);
--	return 0;
--}
--
--static int coh901327_stop(struct watchdog_device *wdt_dev)
--{
--	coh901327_disable();
--	return 0;
--}
--
--static int coh901327_ping(struct watchdog_device *wdd)
--{
--	/* Feed the watchdog */
--	writew(U300_WDOG_FR_FEED_RESTART_TIMER,
--	       virtbase + U300_WDOG_FR);
--	return 0;
--}
--
--static int coh901327_settimeout(struct watchdog_device *wdt_dev,
--				unsigned int time)
--{
--	wdt_dev->timeout = time;
--	/* Set new timeout value */
--	writew(time * 100, virtbase + U300_WDOG_TR);
--	/* Feed the dog */
--	writew(U300_WDOG_FR_FEED_RESTART_TIMER,
--	       virtbase + U300_WDOG_FR);
--	return 0;
--}
--
--static unsigned int coh901327_gettimeleft(struct watchdog_device *wdt_dev)
--{
--	u16 val;
--
--	/* Read repeatedly until the value is stable! */
--	val = readw(virtbase + U300_WDOG_CR);
--	while (val & U300_WDOG_CR_VALID_IND)
--		val = readw(virtbase + U300_WDOG_CR);
--	val &= U300_WDOG_CR_COUNT_VALUE_MASK;
--	if (val != 0)
--		val /= 100;
--
--	return val;
--}
--
--/*
-- * This interrupt occurs 10 ms before the watchdog WILL bark.
-- */
--static irqreturn_t coh901327_interrupt(int irq, void *data)
--{
--	u16 val;
--
--	/*
--	 * Ack IRQ? If this occurs we're FUBAR anyway, so
--	 * just acknowledge, disable the interrupt and await the imminent end.
--	 * If you at some point need a host of callbacks to be called
--	 * when the system is about to watchdog-reset, add them here!
--	 *
--	 * NOTE: on future versions of this IP-block, it will be possible
--	 * to prevent a watchdog reset by feeding the watchdog at this
--	 * point.
--	 */
--	val = readw(virtbase + U300_WDOG_IER);
--	if (val == U300_WDOG_IER_WILL_BARK_IRQ_EVENT_IND)
--		writew(U300_WDOG_IER_WILL_BARK_IRQ_ACK_ENABLE,
--		       virtbase + U300_WDOG_IER);
--	writew(0x0000U, virtbase + U300_WDOG_IMR);
--	dev_crit(parent, "watchdog is barking!\n");
--	return IRQ_HANDLED;
--}
--
--static const struct watchdog_info coh901327_ident = {
--	.options = WDIOF_CARDRESET | WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING,
--	.identity = DRV_NAME,
--};
--
--static const struct watchdog_ops coh901327_ops = {
--	.owner = THIS_MODULE,
--	.start = coh901327_start,
--	.stop = coh901327_stop,
--	.ping = coh901327_ping,
--	.set_timeout = coh901327_settimeout,
--	.get_timeleft = coh901327_gettimeleft,
--};
--
--static struct watchdog_device coh901327_wdt = {
--	.info = &coh901327_ident,
--	.ops = &coh901327_ops,
--	/*
--	 * Max timeout is 327 since the 10ms
--	 * timeout register is max
--	 * 0x7FFF = 327670ms ~= 327s.
--	 */
--	.min_timeout = 1,
--	.max_timeout = 327,
--	.timeout = U300_WDOG_DEFAULT_TIMEOUT,
--};
--
--static int __init coh901327_probe(struct platform_device *pdev)
--{
--	struct device *dev = &pdev->dev;
--	int ret;
--	u16 val;
--
--	parent = dev;
--
--	virtbase = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(virtbase))
--		return PTR_ERR(virtbase);
--
--	clk = clk_get(dev, NULL);
--	if (IS_ERR(clk)) {
--		ret = PTR_ERR(clk);
--		dev_err(dev, "could not get clock\n");
--		return ret;
--	}
--	ret = clk_prepare_enable(clk);
--	if (ret) {
--		dev_err(dev, "could not prepare and enable clock\n");
--		goto out_no_clk_enable;
--	}
--
--	val = readw(virtbase + U300_WDOG_SR);
--	switch (val) {
--	case U300_WDOG_SR_STATUS_TIMED_OUT:
--		dev_info(dev, "watchdog timed out since last chip reset!\n");
--		coh901327_wdt.bootstatus |= WDIOF_CARDRESET;
--		/* Status will be cleared below */
--		break;
--	case U300_WDOG_SR_STATUS_NORMAL:
--		dev_info(dev, "in normal status, no timeouts have occurred.\n");
--		break;
--	default:
--		dev_info(dev, "contains an illegal status code (%08x)\n", val);
--		break;
--	}
--
--	val = readw(virtbase + U300_WDOG_D2R);
--	switch (val) {
--	case U300_WDOG_D2R_DISABLE_STATUS_DISABLED:
--		dev_info(dev, "currently disabled.\n");
--		break;
--	case U300_WDOG_D2R_DISABLE_STATUS_ENABLED:
--		dev_info(dev, "currently enabled! (disabling it now)\n");
--		coh901327_disable();
--		break;
--	default:
--		dev_err(dev, "contains an illegal enable/disable code (%08x)\n",
--			val);
--		break;
--	}
--
--	/* Reset the watchdog */
--	writew(U300_WDOG_SR_RESET_STATUS_RESET, virtbase + U300_WDOG_SR);
--
--	irq = platform_get_irq(pdev, 0);
--	if (request_irq(irq, coh901327_interrupt, 0,
--			DRV_NAME " Bark", pdev)) {
--		ret = -EIO;
--		goto out_no_irq;
--	}
--
--	watchdog_init_timeout(&coh901327_wdt, margin, dev);
--
--	coh901327_wdt.parent = dev;
--	ret = watchdog_register_device(&coh901327_wdt);
--	if (ret)
--		goto out_no_wdog;
--
--	dev_info(dev, "initialized. (timeout=%d sec)\n",
--			coh901327_wdt.timeout);
--	return 0;
--
--out_no_wdog:
--	free_irq(irq, pdev);
--out_no_irq:
--	clk_disable_unprepare(clk);
--out_no_clk_enable:
--	clk_put(clk);
--	return ret;
--}
--
--#ifdef CONFIG_PM
--
--static u16 wdogenablestore;
--static u16 irqmaskstore;
--
--static int coh901327_suspend(struct platform_device *pdev, pm_message_t state)
--{
--	irqmaskstore = readw(virtbase + U300_WDOG_IMR) & 0x0001U;
--	wdogenablestore = readw(virtbase + U300_WDOG_D2R);
--	/* If watchdog is on, disable it here and now */
--	if (wdogenablestore == U300_WDOG_D2R_DISABLE_STATUS_ENABLED)
--		coh901327_disable();
--	return 0;
--}
--
--static int coh901327_resume(struct platform_device *pdev)
--{
--	/* Restore the watchdog interrupt */
--	writew(irqmaskstore, virtbase + U300_WDOG_IMR);
--	if (wdogenablestore == U300_WDOG_D2R_DISABLE_STATUS_ENABLED) {
--		/* Restart the watchdog timer */
--		writew(U300_WDOG_RR_RESTART_VALUE_RESUME,
--		       virtbase + U300_WDOG_RR);
--		writew(U300_WDOG_FR_FEED_RESTART_TIMER,
--		       virtbase + U300_WDOG_FR);
--	}
--	return 0;
--}
--#else
--#define coh901327_suspend NULL
--#define coh901327_resume  NULL
--#endif
--
--/*
-- * Mistreating the watchdog is the only way to perform a software reset of the
-- * system on EMP platforms. So we implement this and export a symbol for it.
-- */
--void coh901327_watchdog_reset(void)
--{
--	/* Enable even if on JTAG too */
--	writew(U300_WDOG_JOR_JTAG_WATCHDOG_ENABLE,
--	       virtbase + U300_WDOG_JOR);
--	/*
--	 * Timeout = 5s, we have to wait for the watchdog reset to
--	 * actually take place: the watchdog will be reloaded with the
--	 * default value immediately, so we HAVE to reboot and get back
--	 * into the kernel in 30s, or the device will reboot again!
--	 * The boot loader will typically deactivate the watchdog, so we
--	 * need time enough for the boot loader to get to the point of
--	 * deactivating the watchdog before it is shut down by it.
--	 *
--	 * NOTE: on future versions of the watchdog, this restriction is
--	 * gone: the watchdog will be reloaded with a default value (1 min)
--	 * instead of last value, and you can conveniently set the watchdog
--	 * timeout to 10ms (value = 1) without any problems.
--	 */
--	coh901327_enable(500);
--	/* Return and await doom */
--}
--
--static const struct of_device_id coh901327_dt_match[] = {
--	{ .compatible = "stericsson,coh901327" },
--	{},
--};
--
--static struct platform_driver coh901327_driver = {
--	.driver = {
--		.name	= "coh901327_wdog",
--		.of_match_table = coh901327_dt_match,
--		.suppress_bind_attrs = true,
--	},
--	.suspend	= coh901327_suspend,
--	.resume		= coh901327_resume,
--};
--builtin_platform_driver_probe(coh901327_driver, coh901327_probe);
--
--/* not really modular, but ... */
--module_param(margin, uint, 0);
--MODULE_PARM_DESC(margin, "Watchdog margin in seconds (default 60s)");
--- 
-2.29.2
+BR,
+-R
 
+> I don't see adding two lines to a function as a valid justification to
+> duplicate all the rest: perhaps, you may want to find another way to do
+> this;
+>
+> Here's one of the many ideas, perhaps you could:
+> 1. Introduce a "generic feature" to signal LLCC support (perhaps in
+>     struct adreno_info ?)
+> 2. If LLCC is supported, and LLCC slices are initialized, set the LLCC
+>     attributes on the IOMMU. Of course this would mean passing the init
+>     state of the slices (maybe just a bool would be fine) back to the
+>     generic adreno_gpu.c
+>
+> This, unless you tell me that the entire function is going to be a6xx
+> specific, but that doesn't seem to be the case at all.
+>
+> Concerns are that when an hypotetical Adreno A7XX comes and perhaps also
+> uses the LLCC slices, this function will be duplicated yet another time.
+>
+> >   static struct msm_gem_address_space *
+> >   a6xx_create_private_address_space(struct msm_gpu *gpu)
+> >   {
+> > @@ -1285,7 +1329,7 @@ static const struct adreno_gpu_funcs funcs = {
+> >               .gpu_state_get = a6xx_gpu_state_get,
+> >               .gpu_state_put = a6xx_gpu_state_put,
+> >   #endif
+> > -             .create_address_space = adreno_iommu_create_address_space,
+> > +             .create_address_space = a6xx_create_address_space,
+> >               .create_private_address_space = a6xx_create_private_address_space,
+> >               .get_rptr = a6xx_get_rptr,
+> >       },
+> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> > index b35914de1b27..0f184c3dd9d9 100644
+> > --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> > +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> > @@ -186,11 +186,18 @@ int adreno_zap_shader_load(struct msm_gpu *gpu, u32 pasid)
+> >       return zap_shader_load_mdt(gpu, adreno_gpu->info->zapfw, pasid);
+> >   }
+> >
+> > +void adreno_set_llc_attributes(struct iommu_domain *iommu)
+>
+> Since this function is relative to the iommu part of this driver, I
+> think that it would be appropriate to give it the same prefix as all
+> the other functions that are "working in this context".
+> Hint: adreno_iommu_set_llc_attributes
+> Alternatively, this two lines function may just be a static inline in
+> the header....
+>
+>
+> But then, what are we talking about, here?
+> Since you should stop code duplication and bring everything back in
+> here (in a generic way!!!), then this helper would be of no use, at all,
+> because then you would be just "throwing" these two lines back in the
+> function adreno_iommu_create_address_space....
+>
+>
+> > +{
+> > +     struct io_pgtable_domain_attr pgtbl_cfg;
+> > +
+> > +     pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
+> > +     iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
+> > +}
+> > +
+> >   struct msm_gem_address_space *
+> >   adreno_iommu_create_address_space(struct msm_gpu *gpu,
+> >               struct platform_device *pdev)
+> >   {
+> > -     struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> >       struct iommu_domain *iommu;
+> >       struct msm_mmu *mmu;
+> >       struct msm_gem_address_space *aspace;
+> > @@ -200,20 +207,6 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
+> >       if (!iommu)
+> >               return NULL;
+> >
+> > -     if (adreno_is_a6xx(adreno_gpu)) {
+> > -             struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> > -             struct io_pgtable_domain_attr pgtbl_cfg;
+> > -
+> > -             /*
+> > -              * This allows GPU to set the bus attributes required to use system
+> > -              * cache on behalf of the iommu page table walker.
+> > -              */
+> > -             if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice)) {
+> > -                     pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
+> > -                     iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
+> > -             }
+> > -     }
+> > -
+> >       mmu = msm_iommu_new(&pdev->dev, iommu);
+> >       if (IS_ERR(mmu)) {
+> >               iommu_domain_free(iommu);
+> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> > index b3d9a333591b..2a3d049b46b5 100644
+> > --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> > +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> > @@ -212,11 +212,6 @@ static inline int adreno_is_a540(struct adreno_gpu *gpu)
+> >       return gpu->revn == 540;
+> >   }
+> >
+> > -static inline bool adreno_is_a6xx(struct adreno_gpu *gpu)
+> > -{
+> > -     return ((gpu->revn < 700 && gpu->revn > 599));
+> > -}
+> > -
+> >   static inline int adreno_is_a618(struct adreno_gpu *gpu)
+> >   {
+> >          return gpu->revn == 618;
+> > @@ -278,6 +273,8 @@ struct msm_gem_address_space *
+> >   adreno_iommu_create_address_space(struct msm_gpu *gpu,
+> >               struct platform_device *pdev);
+> >
+> > +void adreno_set_llc_attributes(struct iommu_domain *iommu);
+> > +
+> >   /*
+> >    * For a5xx and a6xx targets load the zap shader that is used to pull the GPU
+> >    * out of secure mode
+> >
+>
+> Regards,
+> - Angelo
