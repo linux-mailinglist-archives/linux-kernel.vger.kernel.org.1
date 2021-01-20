@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C682FCFC1
+	by mail.lfdr.de (Postfix) with ESMTP id BC2262FCFC3
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388436AbhATLoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:44:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389462AbhATL2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:28:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2E4123159;
-        Wed, 20 Jan 2021 11:27:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611142074;
-        bh=gRVlJuKGNVGwryzz6e+/lprrfLI0JufanSSAdcMTT4g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FLz4/7g6+jsmGNgL41UVzMA8rygmoQKfxlKDzgG2pDqIpOensyygPRymiY0Z5pAdp
-         HHiWfFa6pAwogPLandlu+LwYfphVCDxWl+NRU2pJ4jx5aqZjjM2ppNyOgOcWPnpHY0
-         DVlCJ+TCzhTCkFShmg6Uumv35mV0miLUdccos4o66qJquKITwNICB6rxHeBk9chbxI
-         k7ncz+bjhqAhzTZwAHYZHAsBmCCRDDn83ECiB/QEmxGDOXI3PXwDBji9ensAfOiKaS
-         cIBhPhPmDZHiTCJqucbjqBhu1wKhMFDUuEBQAfqKST23eZ6M7b3WgWDNoHHl4IYRIe
-         Cq0gjbWdOPccg==
-Subject: Re: [PATCH 15/20] clk: ti: dpll: Fix misnaming of '_register_dpll()'s
- 'user' parameter
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-omap@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210120093040.1719407-1-lee.jones@linaro.org>
- <20210120093040.1719407-16-lee.jones@linaro.org>
-From:   Tero Kristo <kristo@kernel.org>
-Message-ID: <0cdddb5c-dcbd-3d69-a3d0-3e9a843e667f@kernel.org>
-Date:   Wed, 20 Jan 2021 13:27:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388475AbhATLoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389473AbhATL2l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:28:41 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89205C061798
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:28:01 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 11so14306801pfu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:28:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5C36+KK+ZwCozfA+Xk85YVuDANWbjdMSTMpiHoCogIk=;
+        b=j0DePEWGVCVzKBL4UrRlIOqRfAi3e9/BYBY2rp+YfO71dbsU++ZV8kzv92wNdxhy8N
+         LGHCDsCdCgiJ78KW3uHIY0sRNaawouN/5w9LPooZzR47PIVvmDpi2/raI+DSgko1hkn9
+         vSLU4OoDkrWGqew17OUS3C+H/0Sj5dt6jnatPrdBf5KsZ3yz9oDWEW0g+pEJ0qNUHQx+
+         0QEdEtLQVz6ObugsK1wyivKf0rorW1erdFg+O1ihtwhF+JQ0BlijErVfjghuhSa94k8v
+         4+4pWtgLXaFwdtZld6HG/1/bHM4JB6/8EYgMUyryTBC3sI1UoROZDpbnF4s8EG39CkT8
+         pmmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5C36+KK+ZwCozfA+Xk85YVuDANWbjdMSTMpiHoCogIk=;
+        b=a+s5uDgZII4woInHaj6s5U49/wWDbqMb7uW2L+kokdTrruSxtOBXEFI/uaaIvc46ex
+         imK6nsT+4rshrIcN72eaqsgCuS3V9Fe4I417DzMQ6DBPTD2Ih5DwEbXfF/XPHmotR5te
+         6j4AfQXBgoH/qEO6yz9sBs9nKRQdAfyRDGKeQH0VzV6CuyAWBXneZ5niluM3X8+72V0P
+         EoSju8Y/5Sfw4VG2hOzJsaLVp/EErYvvJGZ4Dngd4EyCp8rISGzhwXIqgiXdoB2OSTLw
+         j/SW7I0HSfdmMe0uixErHBeJcdXBvnnK/fF3hTjOmrr02TApfyf0BIBUA7coxswdxszP
+         K2vw==
+X-Gm-Message-State: AOAM531i+DpQsBhLApK08s0c0K176qiNyQR+lsnCTBGFVnAIdHpVvSoq
+        newReHco+riQShvJ+ewB3QbRCQ==
+X-Google-Smtp-Source: ABdhPJxGtnsepugPmla4bIMZB+HVrt5zcDr9LletZEnWsvOok/MuMx9loQRr79dWZoW3iBHUsmyghQ==
+X-Received: by 2002:a62:61c2:0:b029:1b9:19f5:dcfc with SMTP id v185-20020a6261c20000b02901b919f5dcfcmr8637320pfb.27.1611142081056;
+        Wed, 20 Jan 2021 03:28:01 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id b185sm1995541pfa.112.2021.01.20.03.27.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Jan 2021 03:28:00 -0800 (PST)
+Date:   Wed, 20 Jan 2021 16:57:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Bill Mills <bill.mills@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH V5 4/5] kbuild: Add support to build overlays (%.dtbo)
+Message-ID: <20210120112758.xpcgqsuo5j2d3bbo@vireshk-i7>
+References: <cover.1611124778.git.viresh.kumar@linaro.org>
+ <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
+ <CAK7LNATPSBrmSC_if+6sK0pwi1ksBZ7RXK1mndj1AGCX3gkj+g@mail.gmail.com>
+ <20210120095541.f354ml4h36rfc4gx@vireshk-i7>
+ <CAK7LNATL=O4p_LAhzJguUK=jo9BaU+Jisaw7ey4wNgKw08zH1A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210120093040.1719407-16-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNATL=O4p_LAhzJguUK=jo9BaU+Jisaw7ey4wNgKw08zH1A@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/2021 11:30, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On 20-01-21, 20:04, Masahiro Yamada wrote:
+> The DTC rule takes one source input, and one output file.
 > 
->   drivers/clk/ti/dpll.c:163: warning: Function parameter or member 'user' not described in '_register_dpll'
->   drivers/clk/ti/dpll.c:163: warning: Excess function parameter 'hw' description in '_register_dpll'
+> It cannot generate .dtb and .dtbo at the same time.
 > 
-> Cc: Tero Kristo <kristo@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: linux-omap@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> That is why a grouped target does not fit here.
 
-Reviewed-by: Tero Kristo <kristo@kernel.org>
+Okay, thanks for taking time to explain this. Will fix this in the
+next version.
 
-> ---
->   drivers/clk/ti/dpll.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/ti/dpll.c b/drivers/clk/ti/dpll.c
-> index 247510e306e2a..d6f1ac5b53e14 100644
-> --- a/drivers/clk/ti/dpll.c
-> +++ b/drivers/clk/ti/dpll.c
-> @@ -151,7 +151,7 @@ static const struct clk_ops dpll_x2_ck_ops = {
->   
->   /**
->    * _register_dpll - low level registration of a DPLL clock
-> - * @hw: hardware clock definition for the clock
-> + * @user: pointer to the hardware clock definition for the clock
->    * @node: device node for the clock
->    *
->    * Finalizes DPLL registration process. In case a failure (clk-ref or
-> 
-
+-- 
+viresh
