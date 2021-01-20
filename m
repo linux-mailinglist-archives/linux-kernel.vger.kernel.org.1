@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2732FCFBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F5B2FCFC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388331AbhATLoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
+        id S2388396AbhATLoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:44:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732958AbhATL1Y (ORCPT
+        with ESMTP id S2389171AbhATL2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:27:24 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E8CC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:26:42 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id i17so499076ljn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:26:42 -0800 (PST)
+        Wed, 20 Jan 2021 06:28:06 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05A9C061575;
+        Wed, 20 Jan 2021 03:27:25 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 30so14996373pgr.6;
+        Wed, 20 Jan 2021 03:27:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rA6bdLKAlmIoLWUk8dCMAvfvN7Iy5mLs9O7w+8do8z8=;
-        b=hUIiRPlnMeeaTktx9TiA8UFdRaSKm6zh4+y0j9kDeNHP8TdZPrstvxTNIJydx3b3rk
-         laCm9uscm9uZlNF+jgD9LxV234ABWDAqEJwDD3sYViomVYIACHg5ywtJBI2OOLJvja5V
-         5ZQj1utqaWnS+NOXIbmT0DGsJ7HgKMLkiZlTG9xVwLg6a8dUgChg6WGgTR/sGcPf3cwf
-         Clv4SaBcGsAmSQ9zVOKQY0v5ZMbPeMnTvpzmVAXJAwuEJwGmL+kmqqK7n0ySEuuvvmK6
-         k7W1CfEpdhfGc8BNtERIX75nlK0Yu/vY54bSxpx7JrQntZIiDyMbNBbsve/ZKNsRxDeh
-         Sx0g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LNgmPmxDTYXqVVuxNtDhauIa5+ndfKYL0tyZwSQ0sU8=;
+        b=PAnGRy7z8ipQXt+ToOR3gWdY0oN+BDZ3whhqD00D/9ajZKFgZd9Lq2LldXy+wAiZH+
+         0dgGv/BRB63P6gDLn/BQMKH1mURKLnF2U/ku6XrLiDQP25dF9+5JwEcx3GdxYSCYabP+
+         FF6AWrTQYR39LIoEMdUF2XSx0DsVcKp3jtAGQ1DIn4EyuQRGkqjGw9TcvzkS/3V5XW/Z
+         hinzc/xEzLfEDaXMy4V5vmUkJgAW814QOdYfVOR7zQ8U033gZ9sm+gdmBA4zIn8+1B8d
+         qfaqGouDoGj4bRatEbPAOiYh4P3s/pAdza/MtBsXlFPtj2xesQHP1s6Zs7evVWlhWXph
+         feVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rA6bdLKAlmIoLWUk8dCMAvfvN7Iy5mLs9O7w+8do8z8=;
-        b=hdkOAmTYIxicjMR7o6HvbUryvLtYHShEc5LVDxLCCdChlg2bkD86f7upF0gFPybuUr
-         Z7OBmZAGy5SCYHzqIuekSk+pXtcD3R9KjIiIdyBs77p3j9748VN16wOckZTLj9Bnro5t
-         bw0KlOoWU3vWdltELlRQGJ6BwNZDWekm528aovFRyptKjzb3+hjus5KmFZMBX9tS2ufI
-         G+x2RgdwmBdxaaoZiSux8Zq4lJBVbS8uwXU9gAcm9P2gyH6SsZH/iYl7Lk1V46yfAdHe
-         G9m+rSDEFIhb0mTcib/ulj3K5GUB/BaLHPPZEWLJFJzT/XoQEUV2nxhKHT++25ynOD6n
-         nQeQ==
-X-Gm-Message-State: AOAM532gCLS7Cx1s2iipy/kHqNjUJnc1ep6+VQVrxe5dfCVYavGPxAEg
-        1cvntiRNJwNwCQuUZkApRJm4eQ==
-X-Google-Smtp-Source: ABdhPJxhSDtqieNXSqt+r98ESGwXZDp29cFZUijUj0JQjcXu+YxvmLdbP1QZ+D1O4a2eK82VnJ/DbA==
-X-Received: by 2002:a2e:b1d2:: with SMTP id e18mr4163694lja.101.1611142001496;
-        Wed, 20 Jan 2021 03:26:41 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id 189sm172195lfj.192.2021.01.20.03.26.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 03:26:40 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 4462C101448; Wed, 20 Jan 2021 14:26:43 +0300 (+03)
-Date:   Wed, 20 Jan 2021 14:26:43 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Borislav Petkov <bp@alien8.de>, Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <20210120112643.ozlsru67yuur323i@box>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan>
- <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic>
- <YAYAvBARSRSg8z8G@rani.riverdale.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LNgmPmxDTYXqVVuxNtDhauIa5+ndfKYL0tyZwSQ0sU8=;
+        b=ZpwHV+0ujZ/FPslw9LpN2C6zwI2PZTD25QhmnkBjoikTpwVMAPmu8X140JFje+69MG
+         KNSrDamcLVI/duqn1QnF4J1wh4whfaPfsibNKLv8NotXS+9Ms5XjQmdvJsWv0pJJjkZL
+         gFkft7srgmIrlLP9lhDMZtH8/mbl7YetnNhmnSqK0xuNjhCqCYyE6rSZd/4xJfkx7v3P
+         0DO1RCMYDqoF7uCCZ/u9uRNFaj32nI7NbOGe/rwoe2W8JcySuyIFziprzMFlmsTVStS1
+         kSdRKN26MGJ/RGec0x+Ef+woIfCms1DY7WNwq7tE3DcobJ3hcXQKxTAzOxsYasLtcYhH
+         524A==
+X-Gm-Message-State: AOAM533eiTVGZ1ca2NoOEJTnwVc6+67jLedlL5JK/pIvRcxcHCVrN7+4
+        Pen+VO5SKiJmxbrDMAfTAi/4Je2y7xHFyHJUgR6m1J8sdWg=
+X-Google-Smtp-Source: ABdhPJxtyrvr+FSPvPskMhyeStnqtlV0/0LHxyp5owEGdDIRG9+TKMUo0oVNxGPYZ0jTrG3AV+0h9s+iiYjmJNlQiAE=
+X-Received: by 2002:a65:4783:: with SMTP id e3mr8951650pgs.368.1611142045198;
+ Wed, 20 Jan 2021 03:27:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAYAvBARSRSg8z8G@rani.riverdale.lan>
+References: <20210120102837.23663-1-xie.he.0141@gmail.com> <c638797f2e2ed284b39abb165bf73251@dev.tdt.de>
+In-Reply-To: <c638797f2e2ed284b39abb165bf73251@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Wed, 20 Jan 2021 03:27:14 -0800
+Message-ID: <CAJht_ENQyZq3wAkNWcoPje5dEjONYHTc-YDD0ebv0c3nf2fLFg@mail.gmail.com>
+Subject: Re: [PATCH net v4] net: lapb: Add locking to the lapb module
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:42:20PM -0500, Arvind Sankar wrote:
-> AFAICT, MODULES_END is only relevant as being something that happens to
-> be in the top 512GiB, and -1ul would be clearer.
+On Wed, Jan 20, 2021 at 2:58 AM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> Can you please add a Changelog. What was changed in v4?
 
-I think you are right. But -1UL is not very self-descriptive. :/
+Sorry, I forgot this. Here is the change log:
 
--- 
- Kirill A. Shutemov
+--- Changes from v3 to v4 ---
+
+Only lapb_unregister has been changed.
+
+v3 has a problem. When "del_timer_sync(&lapb->t1timer)" is called, if
+the t1timer is running, it may restart itself by calling
+lapb_start_t1timer. This way, del_timer_sync would not be able to
+guarantee the t1timer has been completely stopped.
+
+v4 fixed this problem by first calling lapb_stop_t1timer, making use
+of its (new) ability of aborting running timers, and then calling
+del_timer_sync to guarantee the t1timer has been stopped.
+
+--- Changes from v2 to v3 ---
+
+Created a new __lapb_disconnect_request function and made it be called
+from both lapb_disconnect_request and lapb_device_event. This reduced
+redundant code.
+
+--- Changes from v1 to v2 ---
+
+Broke long lines to keep the line lengths within 80 characters.
