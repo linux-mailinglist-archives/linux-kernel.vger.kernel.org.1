@@ -2,152 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617B92FDC1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2056E2FDBFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731711AbhATVwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        id S1728104AbhATVih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:38:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbhATVYv (ORCPT
+        with ESMTP id S2388330AbhATVPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:24:51 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07248C0613CF;
-        Wed, 20 Jan 2021 13:13:55 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id v67so36099853lfa.0;
-        Wed, 20 Jan 2021 13:13:54 -0800 (PST)
+        Wed, 20 Jan 2021 16:15:12 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2B0C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:14:30 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id i20so16974051otl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:14:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KjwS82fYqqkv4xPlnla6S9j26In+4jWKlglRsnCKUho=;
-        b=EmysAZqHCtHWslXxtghv190tfnK9KVVE01KhsXjEV21KwwZ8fvmvnbV9bozew3fksr
-         BRNtH8BL0tIuVGNWzvn18YPp6GhXZQPjKPDIBlR9z4lFbOGIVRPBpHLsPmi4iH2Lmcx8
-         Vrsu8jLBHyBFjRb/RVLnHv4BuCkAUoWzh/e7OvgK0PLxIzDkk/M5i+1dhViQhgiIIO0X
-         StMTRS0PRA8BhHq7tpBdUeol5Mh7vwy1B9ZIwqeEus/O8Utjck6P5zXwCortKdkgfw63
-         f8GiDBK6z8HREsMGmVCgjjSZSnVZZtNcWjRa+89kNE73kqa1+659eJ4hqYBQh2oMOmJy
-         saHQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yEkUpjuUk+6RvwFY/bU3gV3b0FLwS6IRTzESJ9aPwIY=;
+        b=KnjZZzxfVrWLF4nHoY1hwoo0B/5QYXtUetFrZwE0BUGMi+HeT39vkey3wNNpQmUSOi
+         MC4Mlg1aWdGEkQSC421ZkcNLSyf4m1zSCvyrhEO3nUGNNgCRJGQXCheg5UdArPyAwTlD
+         6sjn6VHJOQAkIGbZxCgKXCZop6CZLRctv21O+uNpf/MIHDKwZrtnoM4GTzj63h5WPVok
+         VVwB/rs9XhZqnAS3IDexnIF2LuqNgVY60BXlDUHjwREHyRz+Hxc1kNewjfX5s0b52OdA
+         sz2I0gS1iLtibhrTbOzPsqEV6s1hjY4sDRKbigkICAB83YFzSvCae+lBbrQ4cWRXQhYS
+         1Z7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KjwS82fYqqkv4xPlnla6S9j26In+4jWKlglRsnCKUho=;
-        b=Y+MoB9Rm7SizMki9XnJqMz6rA4riQJOyYOePine0CI4SbWTp7CmMHHzdGoBAWarubt
-         r0f7G2LN783jrTXgnQp8dZkI7Vx5e3VwgwzrTAaaIUqoxFQO5waKw3jKKThCYD15oWKD
-         3gjBAfWmNC3S0IycUOe9SoEZuuwD3zWz6kVlfOKUrO2pmu6vLb/e9hX/GVdedczYAHgE
-         swTj6CpIUly9LJDn2NDG19zKkDaK0ExrAxuakB/Udq/cttrpjKGkxwkRdp90rtVzIXeV
-         mt7yOU/KMnsFNxlRUCGvmEL9t+jQGgAG036u8QlJCNufxRec6s3OJ8xmU9DbktR3sLSQ
-         PoJA==
-X-Gm-Message-State: AOAM532+pOePXRh/XaQBd8HquVMu8RHxYbZDZ5ktqS13XSciFk0QWNHL
-        A8cSSDRIK+Yx6HFoE7b/xMo=
-X-Google-Smtp-Source: ABdhPJzFbfdCzVoQJkISeG4Rz4RWsAmu98GhPnEYYfDeTQBLSEyPyyrlRWvyypuYoFYyWVC4Ekyfjw==
-X-Received: by 2002:a05:6512:131b:: with SMTP id x27mr4615717lfu.593.1611177233593;
-        Wed, 20 Jan 2021 13:13:53 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id 196sm298131lfj.219.2021.01.20.13.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:13:53 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v5 3/3] PM: domains: Add "performance" column to debug summary
-Date:   Thu, 21 Jan 2021 00:12:32 +0300
-Message-Id: <20210120211232.17299-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120211232.17299-1-digetx@gmail.com>
-References: <20210120211232.17299-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yEkUpjuUk+6RvwFY/bU3gV3b0FLwS6IRTzESJ9aPwIY=;
+        b=TRqmrVAATDkgD1+oSlpyN5bcC7UIF8uBdDlz38oj/OP1g/1jsSR3UQ8oJmhO6MnUB7
+         KfdwYAYuoJtDbHc+N9U0O9KTHJN6kUg3Bl96CWChasga9Kjpdndhtv5M+qeeo9Eovyn6
+         lfPLhGNwxYXYog5oSD9fehHx3MXiTZ48mpsY88qQwGmw6QIDvkQEdzNft57+YeG+AflT
+         90bPMrug4un9JTLEHcirYOLiFS/3fc1hgqcByBpE91YQyNgkjtnADAu9XA8Pj1MgZk9F
+         tRYgBRg9PFI1C8vizg3HnNy5Og/iCTV8+f9Xvoi2Gg716/wbVFF6TmJhXMSzvWB/oCls
+         2rzg==
+X-Gm-Message-State: AOAM530WEpzMtAAd+hMZWvVLcfepfEtoW9fSlcN4Q3XOS9wi20xx2qnM
+        /SaM1DrI6Jz+T1KVbujbFqR+/dWGsTi3u58dsSMEZA==
+X-Google-Smtp-Source: ABdhPJwZJIQYQQlTR+gr34xTpqov/GqHEuPA4quEUqWdYPej8xqqkJIm1sVeKmiOJ/CC1lQu4CDiLBU1aVBFLeh6FYY=
+X-Received: by 2002:a05:6830:1da4:: with SMTP id z4mr8172697oti.295.1611177268815;
+ Wed, 20 Jan 2021 13:14:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
+ <83a96ca9-0810-6c07-2e45-5aa2da9b1ab0@redhat.com> <5df9b517-448f-d631-2222-6e78d6395ed9@amd.com>
+ <CALMp9eRDSW66+XvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com> <bb2315e3-1c24-c5ae-3947-27c5169a9d47@amd.com>
+In-Reply-To: <bb2315e3-1c24-c5ae-3947-27c5169a9d47@amd.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 20 Jan 2021 13:14:17 -0800
+Message-ID: <CALMp9eQBY50kZT6WdM-D2gmUgDZmCYTn+kxcxk8EQTg=SygLKA@mail.gmail.com>
+Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "performance" column to debug summary which shows performance state
-of all power domains and theirs devices.
+On Tue, Jan 19, 2021 at 3:45 PM Babu Moger <babu.moger@amd.com> wrote:
+>
+>
+>
+> On 1/19/21 5:01 PM, Jim Mattson wrote:
+> > On Mon, Sep 14, 2020 at 11:33 AM Babu Moger <babu.moger@amd.com> wrote:
+> >
+> >> Thanks Paolo. Tested Guest/nested guest/kvm units tests. Everything works
+> >> as expected.
+> >
+> > Debian 9 does not like this patch set. As a kvm guest, it panics on a
+> > Milan CPU unless booted with 'nopcid'. Gmail mangles long lines, so
+> > please see the attached kernel log snippet. Debian 10 is fine, so I
+> > assume this is a guest bug.
+> >
+>
+> We had an issue with PCID feature earlier. This was showing only with SEV
+> guests. It is resolved recently. Do you think it is not related that?
+> Here are the patch set.
+> https://lore.kernel.org/kvm/160521930597.32054.4906933314022910996.stgit@bmoger-ubuntu/
 
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-[tested on NVIDIA Tegra20/30/124 SoCs]
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/base/power/domain.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 25b346bb2d97..40b72b1d8e8f 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2955,7 +2955,15 @@ static void rtpm_status_str(struct seq_file *s, struct device *dev)
- 	else
- 		WARN_ON(1);
- 
--	seq_puts(s, p);
-+	seq_printf(s, "%-25s  ", p);
-+}
-+
-+static void perf_status_str(struct seq_file *s, struct device *dev)
-+{
-+	struct generic_pm_domain_data *gpd_data;
-+
-+	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
-+	seq_put_decimal_ull(s, "", gpd_data->performance_state);
- }
- 
- static int genpd_summary_one(struct seq_file *s,
-@@ -2983,7 +2991,7 @@ static int genpd_summary_one(struct seq_file *s,
- 	else
- 		snprintf(state, sizeof(state), "%s",
- 			 status_lookup[genpd->status]);
--	seq_printf(s, "%-30s  %-15s ", genpd->name, state);
-+	seq_printf(s, "%-30s  %-50s %u", genpd->name, state, genpd->performance_state);
- 
- 	/*
- 	 * Modifications on the list require holding locks on both
-@@ -2991,6 +2999,8 @@ static int genpd_summary_one(struct seq_file *s,
- 	 * Also genpd->name is immutable.
- 	 */
- 	list_for_each_entry(link, &genpd->parent_links, parent_node) {
-+		if (list_is_first(&link->parent_node, &genpd->parent_links))
-+			seq_printf(s, "\n%48s", " ");
- 		seq_printf(s, "%s", link->child->name);
- 		if (!list_is_last(&link->parent_node, &genpd->parent_links))
- 			seq_puts(s, ", ");
-@@ -3005,6 +3015,7 @@ static int genpd_summary_one(struct seq_file *s,
- 
- 		seq_printf(s, "\n    %-50s  ", kobj_path);
- 		rtpm_status_str(s, pm_data->dev);
-+		perf_status_str(s, pm_data->dev);
- 		kfree(kobj_path);
- 	}
- 
-@@ -3020,9 +3031,9 @@ static int summary_show(struct seq_file *s, void *data)
- 	struct generic_pm_domain *genpd;
- 	int ret = 0;
- 
--	seq_puts(s, "domain                          status          children\n");
-+	seq_puts(s, "domain                          status          children                           performance\n");
- 	seq_puts(s, "    /device                                             runtime status\n");
--	seq_puts(s, "----------------------------------------------------------------------\n");
-+	seq_puts(s, "----------------------------------------------------------------------------------------------\n");
- 
- 	ret = mutex_lock_interruptible(&gpd_list_lock);
- 	if (ret)
--- 
-2.29.2
-
+The Debian 9 release we tested is not an SEV guest.
