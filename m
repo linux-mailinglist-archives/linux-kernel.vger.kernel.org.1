@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9CD2FC854
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B9E2FC858
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389514AbhATCzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:55:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48234 "EHLO mail.kernel.org"
+        id S1731357AbhATC5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:57:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728242AbhATB3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:29:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12C1423437;
-        Wed, 20 Jan 2021 01:27:41 +0000 (UTC)
+        id S1730755AbhATB3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:29:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F7F523440;
+        Wed, 20 Jan 2021 01:27:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106062;
-        bh=4a17WWqCWMg+33SgzqVc9aR8rOqnpBy9FNYj0IklNsA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uPSOA72gW7aM+LbjHGTMCLR5WwP5h8DBd2K8ac5+W2QXDyulqvQMhkl9RkgFWkxDS
-         Ou3by9fb2bfuMXKDB9AOZJVOIx5X7PuUVszXStSPU0iafr0cBckDAYMa81UYdH9Nhj
-         5uZ5j4/GqlLTxlrvj/BGlME2eslv5acEx3/Coel3KMCju331xTEAwYeXYJDsK3ALsH
-         zIYloqcmYZljxv9+TRpzvJ2PnfdytTvi/v838Jp3RfxRi7hN/miIvfy5FZUJPaeMPK
-         p6nD5MHYv+a3ksdv3diGqyj3cHIOqPVl+Gs1qfn3PnkQZz93DccvLjW349f7OlJKol
-         ySrxH+Q1l1ICA==
+        s=k20201202; t=1611106067;
+        bh=G0hwRYnbXc6l/tV8pex+dZGLS2ecO09b9ad3GWlMxkU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BYFTrseT4K4OeSvv3iwaDaML/QAvQwehdzz31yME8lKFuYaqlb2oDCPF9t4XgdVU2
+         VBWo70XaKr6lfD/Dn1JL+4YqS3YbOQyvWt72k98A2cKV6Ai3djF4LzkwIShoSs/nma
+         C0FPNumL+pEA7tgqndXZgl4sV3qYK0F7pF66NO8nVGMu7qyZAxs+KR83MxQrG8ML9v
+         q7x2qgSsLdCh6sAzoZfihNEIYvfFlW+c+BHuDfLJC4536teDzeAT7sHcmW7MYoaFIi
+         rpiRpI3l3uwyr64MjQSotwIm0DcouX5ICCRtOUKE4kuJwtDTBCaxogwr4JCX0suV1b
+         Zv9SBLZybEkOw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 01/15] ASoC: Intel: haswell: Add missing pm_ops
-Date:   Tue, 19 Jan 2021 20:27:26 -0500
-Message-Id: <20210120012740.770354-1-sashal@kernel.org>
+Cc:     Nilesh Javali <njavali@marvell.com>, Lee Duncan <lduncan@suse.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 04/15] scsi: qedi: Correct max length of CHAP secret
+Date:   Tue, 19 Jan 2021 20:27:29 -0500
+Message-Id: <20210120012740.770354-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210120012740.770354-1-sashal@kernel.org>
+References: <20210120012740.770354-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -40,34 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Nilesh Javali <njavali@marvell.com>
 
-[ Upstream commit bb224c3e3e41d940612d4cc9573289cdbd5cb8f5 ]
+[ Upstream commit d50c7986fbf0e2167279e110a2ed5bd8e811c660 ]
 
-haswell machine board is missing pm_ops what prevents it from undergoing
-suspend-resume procedure successfully. Assign default snd_soc_pm_ops so
-this is no longer the case.
+The CHAP secret displayed garbage characters causing iSCSI login
+authentication failure. Correct the CHAP password max length.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20201217105401.27865-1-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20201217105144.8055-1-njavali@marvell.com
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/haswell.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/qedi/qedi_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index a4022983a7ce0..67eb4a446c3cb 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -198,6 +198,7 @@ static struct platform_driver haswell_audio = {
- 	.probe = haswell_audio_probe,
- 	.driver = {
- 		.name = "haswell-audio",
-+		.pm = &snd_soc_pm_ops,
- 	},
- };
- 
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index eaa50328de90c..e201c163ea1c8 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -2129,7 +2129,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
+ 			     chap_name);
+ 		break;
+ 	case ISCSI_BOOT_TGT_CHAP_SECRET:
+-		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
++		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
+ 			     chap_secret);
+ 		break;
+ 	case ISCSI_BOOT_TGT_REV_CHAP_NAME:
+@@ -2137,7 +2137,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
+ 			     mchap_name);
+ 		break;
+ 	case ISCSI_BOOT_TGT_REV_CHAP_SECRET:
+-		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
++		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
+ 			     mchap_secret);
+ 		break;
+ 	case ISCSI_BOOT_TGT_FLAGS:
 -- 
 2.27.0
 
