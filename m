@@ -2,468 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ED32FD7CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9692FD7B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404220AbhATSFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:05:46 -0500
-Received: from msg-2.mailo.com ([213.182.54.12]:42564 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391209AbhATSDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:03:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1611165741; bh=bgfVz/KVxf2nqIlh+YWXRKHNP+N6/uraCuq6wMhAQik=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding;
-        b=A/hXVMri+koZ9CkVHwfLL+DtMmBQycvrEElC+sfbRat0R+3uWLRPDZpro7KK3kMg2
-         rmFAmJpqo2k2+7h7bNYQz4mfPnnEkN03cBqZkZDF6NizVwG4oubTCw2e+A/YIRgpGp
-         auBNJa1CSxStjK9q8M1GP7gDAvrMxk74jtkbwJO4=
-Received: by b-2.in.mailobj.net [192.168.90.12] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Wed, 20 Jan 2021 19:02:21 +0100 (CET)
-X-EA-Auth: LdzsvILUImkWVurxeEKvs1mN95uAIYy8icoEbS+Ldu/meV2oJQnof/QQ2uDOA0JrgL1AXP7nbzY6QNfpAPepTBhk7qiWL2Yn00vm+No4i6Q=
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Michael Srba <Michael.Srba@seznam.cz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht
-Subject: [PATCH 2/2] Input: add MStar msg26xx touchscreen driver
-Date:   Wed, 20 Jan 2021 19:01:08 +0100
-Message-Id: <20210120180119.849588-2-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120180119.849588-1-vincent.knecht@mailoo.org>
-References: <20210120180119.849588-1-vincent.knecht@mailoo.org>
+        id S2391623AbhATSEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389565AbhATSCW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:02:22 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5B9C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:01:41 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id y187so3631308wmd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:01:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zQoVeBFspR4mt3piNvLaPW/lHzLoxodJhfaRGQgUT1o=;
+        b=n1TBEkVVeRe65EecswdyymfUn7w4pRZ39sPs3d6I+/YsPGlFlkRSPmtoPTLcm/pCL8
+         7R62yN0J13Y6ttRM5kWB7NlUsyJ22RODR8K+Cfaqg1PrpGMCBbhDZxgS6aL6Giqjy+Jd
+         jEm1XNoT9GsFI5fax/PaWYYmj1hWmwYKJutleqn36DvIBsUiaGCHswZs7aIKL6uE/Bx5
+         FLQ/3YKBhdM+0H876HH29jAQUmYlbA7Z8JXw17csFA39INZAEN9BLftUMA42iEc9ufDV
+         9ps7E8K69ade4CPGYEimPznqY0ZjGXVZROQxlHOj78+PD08f7uEL+Bo3Z5+eC+CWKri4
+         P5ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zQoVeBFspR4mt3piNvLaPW/lHzLoxodJhfaRGQgUT1o=;
+        b=P8CliuqtfOFXlAFasaH6wYGGdFV/RtRII1XZmmdXRIwCrdo71VqC/ynVfcGbkMLA07
+         ysRkV4B/OGZiR79D+Nmr4JU0Clb552y2xofNxxJ8x2wrgE737SOyMqpEBPOYRhI3o41a
+         NaWEt9/UaSEOG7o74jCCwSAiT1EbR/PD2VAljHoHQ42h4ClZ7t1vbjeofWoUXT1ZXjx0
+         27aTCbjPm3iP6HMRGqDzcweHF+8Jl7pRvuDaStyf0osJGl8ElAu42N7IzvFKOYO3u6VD
+         VL1OBLSHAUNklazVV5J4auiLHMJS5Bn8LMzxGuaaVETDUmUq1mXhHBxvZD0PX0nQgdKY
+         qHaw==
+X-Gm-Message-State: AOAM532hUBClH5Pp5P6IOHbbDoAcZWUnek7Z+ATgM0ZzDu14YKqFwhTR
+        WfsGsKBmq4tmChiU75fyzGI9Gg==
+X-Google-Smtp-Source: ABdhPJy+vZ5Ndk2chQmEIUc7iK9pg24cCvNdSKut3bwHquW7xDOJ8GeEpBtiILkL2aWLPoPKAjyxiw==
+X-Received: by 2002:a05:600c:299:: with SMTP id 25mr5414365wmk.183.1611165700508;
+        Wed, 20 Jan 2021 10:01:40 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id g194sm5267422wme.39.2021.01.20.10.01.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 10:01:39 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+Cc:     pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 1/2] soundwire: add support for static port mapping
+Date:   Wed, 20 Jan 2021 18:01:09 +0000
+Message-Id: <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
+References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the msg26xx touchscreen IC from MStar.
-This driver reuses zinitix.c structure, while the checksum and irq handler
-functions are based on out-of-tree driver for Alcatel Idol 3 (4.7").
+Some of the soundwire controllers can have static functions assigned
+to each port, like some ports can only do PCM or PDM. This is the situation
+with some of the Qualcomm Controllers.
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+In such cases its not correct to assign/map any free port on master
+during streaming.
+
+So, this patch provides a way to pass mapped port number along
+with the port config, so that master can assign correct ports based
+on the provided static mapping.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/input/touchscreen/Kconfig   |  12 +
- drivers/input/touchscreen/Makefile  |   1 +
- drivers/input/touchscreen/msg26xx.c | 370 ++++++++++++++++++++++++++++
- 3 files changed, 383 insertions(+)
- create mode 100644 drivers/input/touchscreen/msg26xx.c
+ drivers/soundwire/bus.h       | 4 ++++
+ drivers/soundwire/stream.c    | 4 ++++
+ include/linux/soundwire/sdw.h | 4 ++++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index f012fe746df0..bc4f604b4841 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -1334,4 +1334,16 @@ config TOUCHSCREEN_ZINITIX
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called zinitix.
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 2e049d39c6e5..e812557c3293 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -85,6 +85,8 @@ int sdw_find_col_index(int col);
+  * @num: Port number. For audio streams, valid port number ranges from
+  * [1,14]
+  * @ch_mask: Channel mask
++ * @mapped_port_num: Port number to map on Master or Slave in Static Configuration
++ * @is_static_map: true for static port mapping
+  * @transport_params: Transport parameters
+  * @port_params: Port parameters
+  * @port_node: List node for Master or Slave port_list
+@@ -95,6 +97,8 @@ int sdw_find_col_index(int col);
+ struct sdw_port_runtime {
+ 	int num;
+ 	int ch_mask;
++	unsigned int mapped_port_num;
++	bool is_static_map;
+ 	struct sdw_transport_params transport_params;
+ 	struct sdw_port_params port_params;
+ 	struct list_head port_node;
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 1099b5d1262b..eab3bc0c95ed 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1202,6 +1202,10 @@ static struct sdw_port_runtime
  
-+config TOUCHSCREEN_MSG26XX
-+	tristate "MStar msg26xx touchscreen support"
-+	depends on I2C
-+	depends on GPIOLIB || COMPILE_TEST
-+	help
-+	  Say Y here if you have an I2C touchscreen using MStar msg26xx.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called msg26xx.
-+
- endif
-diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 6233541e9173..830ebf4973cb 100644
---- a/drivers/input/touchscreen/Makefile
-+++ b/drivers/input/touchscreen/Makefile
-@@ -112,3 +112,4 @@ obj-$(CONFIG_TOUCHSCREEN_ROHM_BU21023)	+= rohm_bu21023.o
- obj-$(CONFIG_TOUCHSCREEN_RASPBERRYPI_FW)	+= raspberrypi-ts.o
- obj-$(CONFIG_TOUCHSCREEN_IQS5XX)	+= iqs5xx.o
- obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
-+obj-$(CONFIG_TOUCHSCREEN_MSG26XX)	+= msg26xx.o
-diff --git a/drivers/input/touchscreen/msg26xx.c b/drivers/input/touchscreen/msg26xx.c
-new file mode 100644
-index 000000000000..2e646cdca724
---- /dev/null
-+++ b/drivers/input/touchscreen/msg26xx.c
-@@ -0,0 +1,370 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Driver for MStar msg26xx touchscreens
-+ *
-+ * Copyright (c) 2021 Vincent Knecht <vincent.knecht@mailoo.org>
-+ *
-+ * Checksum and IRQ handler based on mstar_drv_common.c and mstar_drv_mutual_fw_control.c
-+ * Copyright (c) 2006-2012 MStar Semiconductor, Inc.
-+ *
-+ * Driver structure based on zinitix.c by Michael Srba <Michael.Srba@seznam.cz>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio.h>
-+#include <linux/i2c.h>
-+#include <linux/input.h>
-+#include <linux/input/mt.h>
-+#include <linux/input/touchscreen.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/slab.h>
-+
-+#define MODE_DATA_RAW			0x5A
-+
-+#define TPD_WIDTH			2048
-+#define TPD_HEIGHT			2048
-+
-+#define MAX_SUPPORTED_FINGER_NUM	5
-+
-+#define CHIP_ON_DELAY			15 // ms
-+#define FIRMWARE_ON_DELAY		50 // ms
-+
-+struct point_coord {
-+	u16	x;
-+	u16	y;
-+};
-+
-+struct packet {
-+	u8	y_high : 4;
-+	u8	x_high : 4;
-+	u8	x_low;
-+	u8	y_low;
-+	u8	pressure;
-+};
-+
-+struct touch_event {
-+	u8	mode;
-+	struct	packet pkt[MAX_SUPPORTED_FINGER_NUM];
-+	u8	proximity;
-+	u8	checksum;
-+};
-+
-+struct msg26xx_ts_data {
-+	struct i2c_client *client;
-+	struct input_dev *input_dev;
-+	struct touchscreen_properties prop;
-+	struct regulator_bulk_data supplies[2];
-+	struct gpio_desc *reset_gpiod;
-+};
-+
-+static int mstar_init_regulators(struct msg26xx_ts_data *msg26xx)
-+{
-+	struct i2c_client *client = msg26xx->client;
-+	int error;
-+
-+	msg26xx->supplies[0].supply = "vdd";
-+	msg26xx->supplies[1].supply = "vddio";
-+	error = devm_regulator_bulk_get(&client->dev,
-+					ARRAY_SIZE(msg26xx->supplies),
-+					msg26xx->supplies);
-+	if (error < 0) {
-+		dev_err(&client->dev, "Failed to get regulators: %d\n", error);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static void mstar_power_on(struct msg26xx_ts_data *msg26xx)
-+{
-+	gpiod_set_value(msg26xx->reset_gpiod, 0);
-+	mdelay(10);
-+	gpiod_set_value(msg26xx->reset_gpiod, 1);
-+	mdelay(FIRMWARE_ON_DELAY);
-+
-+	enable_irq(msg26xx->client->irq);
-+}
-+
-+static void mstar_report_finger(struct msg26xx_ts_data *msg26xx, int slot,
-+				const struct point_coord *pc)
-+{
-+	input_mt_slot(msg26xx->input_dev, slot);
-+	input_mt_report_slot_state(msg26xx->input_dev, MT_TOOL_FINGER, true);
-+	touchscreen_report_pos(msg26xx->input_dev, &msg26xx->prop, pc->x, pc->y, true);
-+	input_report_abs(msg26xx->input_dev, ABS_MT_TOUCH_MAJOR, 1);
-+}
-+
-+static u8 mstar_checksum(u8 *data, u32 length)
-+{
-+	s32 sum = 0;
-+	u32 i;
-+
-+	for (i = 0; i < length; i++)
-+		sum += data[i];
-+
-+	return (u8)((-sum) & 0xFF);
-+}
-+
-+static irqreturn_t mstar_ts_irq_handler(int irq, void *msg26xx_handler)
-+{
-+	struct msg26xx_ts_data *msg26xx = msg26xx_handler;
-+	struct i2c_client *client = msg26xx->client;
-+	struct touch_event touch_event;
-+	struct point_coord coord;
-+	struct i2c_msg msg[1];
-+	struct packet *p;
-+	u32 len;
-+	int ret;
-+	int i;
-+
-+	len = sizeof(struct touch_event);
-+	memset(&touch_event, 0, len);
-+
-+	msg[0].addr = client->addr;
-+	msg[0].flags = I2C_M_RD;
-+	msg[0].len = len;
-+	msg[0].buf = (u8 *)&touch_event;
-+
-+	ret = i2c_transfer(client->adapter, msg, 1);
-+	if (ret != 1) {
-+		dev_err(&client->dev, "Failed I2C transfer in irq handler!\n");
-+		goto out;
-+	}
-+
-+	if (touch_event.mode != MODE_DATA_RAW)
-+		goto out;
-+
-+	if (mstar_checksum((u8 *)&touch_event, len - 1) != touch_event.checksum) {
-+		dev_err(&client->dev, "Failed checksum!\n");
-+		goto out;
-+	}
-+
-+	for (i = 0; i < MAX_SUPPORTED_FINGER_NUM; i++) {
-+		p = &touch_event.pkt[i];
-+		/* Ignore non-pressed finger data */
-+		if (p->x_high == 0xF && p->y_high == 0xF && p->x_low == 0xFF && p->y_low == 0xFF)
-+			continue;
-+
-+		coord.x = ((p->x_high << 8) | p->x_low) * msg26xx->prop.max_x / TPD_WIDTH;
-+		coord.y = ((p->y_high << 8) | p->y_low) * msg26xx->prop.max_y / TPD_HEIGHT;
-+		mstar_report_finger(msg26xx, i, &coord);
-+	}
-+
-+	input_mt_sync_frame(msg26xx->input_dev);
-+	input_sync(msg26xx->input_dev);
-+
-+out:
-+	return IRQ_HANDLED;
-+}
-+
-+static int mstar_start(struct msg26xx_ts_data *msg26xx)
-+{
-+	int error;
-+
-+	error = regulator_bulk_enable(ARRAY_SIZE(msg26xx->supplies),
-+				      msg26xx->supplies);
-+	if (error) {
-+		dev_err(&msg26xx->client->dev,
-+			"Failed to enable regulators: %d\n", error);
-+		return error;
-+	}
-+
-+	msleep(CHIP_ON_DELAY);
-+
-+	mstar_power_on(msg26xx);
-+
-+	return 0;
-+}
-+
-+static int mstar_stop(struct msg26xx_ts_data *msg26xx)
-+{
-+	int error;
-+
-+	disable_irq(msg26xx->client->irq);
-+
-+	error = regulator_bulk_disable(ARRAY_SIZE(msg26xx->supplies),
-+				       msg26xx->supplies);
-+	if (error) {
-+		dev_err(&msg26xx->client->dev,
-+			"Failed to disable regulators: %d\n", error);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mstar_input_open(struct input_dev *dev)
-+{
-+	struct msg26xx_ts_data *msg26xx = input_get_drvdata(dev);
-+
-+	return mstar_start(msg26xx);
-+}
-+
-+static void mstar_input_close(struct input_dev *dev)
-+{
-+	struct msg26xx_ts_data *msg26xx = input_get_drvdata(dev);
-+
-+	mstar_stop(msg26xx);
-+}
-+
-+static int mstar_init_input_dev(struct msg26xx_ts_data *msg26xx)
-+{
-+	struct input_dev *input_dev;
-+	int error;
-+
-+	input_dev = devm_input_allocate_device(&msg26xx->client->dev);
-+	if (!input_dev) {
-+		dev_err(&msg26xx->client->dev,
-+			"Failed to allocate input device.");
-+		return -ENOMEM;
-+	}
-+
-+	input_set_drvdata(input_dev, msg26xx);
-+	msg26xx->input_dev = input_dev;
-+
-+	input_dev->name = "MStar TouchScreen";
-+	input_dev->phys = "input/ts";
-+	input_dev->id.bustype = BUS_I2C;
-+	input_dev->open = mstar_input_open;
-+	input_dev->close = mstar_input_close;
-+
-+	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_X);
-+	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_Y);
-+	input_set_abs_params(input_dev, ABS_MT_WIDTH_MAJOR, 0, 15, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
-+
-+	touchscreen_parse_properties(input_dev, true, &msg26xx->prop);
-+	if (!msg26xx->prop.max_x || !msg26xx->prop.max_y) {
-+		dev_err(&msg26xx->client->dev,
-+			"touchscreen-size-x and/or touchscreen-size-y not set in dts\n");
-+		return -EINVAL;
-+	}
-+
-+	error = input_mt_init_slots(input_dev, MAX_SUPPORTED_FINGER_NUM,
-+				    INPUT_MT_DIRECT | INPUT_MT_DROP_UNUSED);
-+	if (error) {
-+		dev_err(&msg26xx->client->dev,
-+			"Failed to initialize MT slots: %d", error);
-+		return error;
-+	}
-+
-+	error = input_register_device(input_dev);
-+	if (error) {
-+		dev_err(&msg26xx->client->dev,
-+			"Failed to register input device: %d", error);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mstar_ts_probe(struct i2c_client *client)
-+{
-+	struct msg26xx_ts_data *msg26xx;
-+	int error;
-+
-+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-+		dev_err(&client->dev,
-+			"Failed to assert adapter's support for plain I2C.\n");
-+		return -ENXIO;
-+	}
-+
-+	msg26xx = devm_kzalloc(&client->dev, sizeof(*msg26xx), GFP_KERNEL);
-+	if (!msg26xx)
-+		return -ENOMEM;
-+
-+	msg26xx->client = client;
-+	i2c_set_clientdata(client, msg26xx);
-+
-+	error = mstar_init_regulators(msg26xx);
-+	if (error) {
-+		dev_err(&client->dev,
-+			"Failed to initialize regulators: %d\n", error);
-+		return error;
-+	}
-+
-+	msg26xx->reset_gpiod = devm_gpiod_get(&client->dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(msg26xx->reset_gpiod)) {
-+		error = PTR_ERR(msg26xx->reset_gpiod);
-+		dev_err(&client->dev, "Failed to request reset GPIO: %d\n", error);
-+		return error;
-+	}
-+
-+	error = mstar_init_input_dev(msg26xx);
-+	if (error) {
-+		dev_err(&client->dev,
-+			"Failed to initialize input device: %d\n", error);
-+		return error;
-+	}
-+
-+	irq_set_status_flags(client->irq, IRQ_NOAUTOEN);
-+	error = devm_request_threaded_irq(&client->dev, client->irq,
-+					  NULL, mstar_ts_irq_handler,
-+					  IRQF_ONESHOT, client->name, msg26xx);
-+	if (error) {
-+		dev_err(&client->dev, "Failed to request IRQ: %d\n", error);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused mstar_suspend(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct msg26xx_ts_data *msg26xx = i2c_get_clientdata(client);
-+
-+	mutex_lock(&msg26xx->input_dev->mutex);
-+
-+	if (input_device_enabled(msg26xx->input_dev))
-+		mstar_stop(msg26xx);
-+
-+	mutex_unlock(&msg26xx->input_dev->mutex);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused mstar_resume(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct msg26xx_ts_data *msg26xx = i2c_get_clientdata(client);
-+	int ret = 0;
-+
-+	mutex_lock(&msg26xx->input_dev->mutex);
-+
-+	if (input_device_enabled(msg26xx->input_dev))
-+		ret = mstar_start(msg26xx);
-+
-+	mutex_unlock(&msg26xx->input_dev->mutex);
-+
-+	return ret;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(mstar_pm_ops, mstar_suspend, mstar_resume);
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id mstar_of_match[] = {
-+	{ .compatible = "mstar,msg26xx" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, mstar_of_match);
-+#endif
-+
-+static struct i2c_driver mstar_ts_driver = {
-+	.probe_new = mstar_ts_probe,
-+	.driver = {
-+		.name = "MStar-TS",
-+		.pm = &mstar_pm_ops,
-+		.of_match_table = of_match_ptr(mstar_of_match),
-+	},
-+};
-+module_i2c_driver(mstar_ts_driver);
-+
-+MODULE_AUTHOR("Vincent Knecht <vincent.knecht@mailoo.org>");
-+MODULE_DESCRIPTION("MStar touchscreen driver");
-+MODULE_LICENSE("GPL v2");
+ 	p_rt->ch_mask = port_config[port_index].ch_mask;
+ 	p_rt->num = port_config[port_index].num;
++	p_rt->is_static_map = port_config[port_index].is_static_map;
++
++	if (p_rt->is_static_map)
++	       p_rt->mapped_port_num = port_config[port_index].mapped_port_num;
+ 
+ 	return p_rt;
+ }
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index f0b01b728640..a523f062993d 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -894,10 +894,14 @@ void sdw_bus_master_delete(struct sdw_bus *bus);
+  *
+  * @num: Port number
+  * @ch_mask: channels mask for port
++ * @mapped_port_num: Port number to map on Master or Slave in Static Configuration
++ * @is_static_map: true for static port mapping
+  */
+ struct sdw_port_config {
+ 	unsigned int num;
+ 	unsigned int ch_mask;
++	unsigned int mapped_port_num;
++	bool is_static_map;
+ };
+ 
+ /**
 -- 
-2.29.2
-
-
+2.21.0
 
