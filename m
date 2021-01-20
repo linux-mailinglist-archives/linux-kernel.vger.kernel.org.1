@@ -2,114 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5482FD4AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F792FD4AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbhATP5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:57:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
+        id S1732837AbhATP5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:57:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391069AbhATPuw (ORCPT
+        with ESMTP id S2391071AbhATPuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:50:52 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A238BC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 07:50:12 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1l2FkA-0004PH-K3; Wed, 20 Jan 2021 16:50:02 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1l2Fk9-0005Fx-LJ; Wed, 20 Jan 2021 16:50:01 +0100
-Date:   Wed, 20 Jan 2021 16:50:01 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Adam Ford <aford173@gmail.com>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3] clk: imx: Fix reparenting of UARTs not associated
- with sdout
-Message-ID: <20210120155001.GD19063@pengutronix.de>
-References: <20210115182909.314756-1-aford173@gmail.com>
- <20210118125204.hxsanoohwvdtdvym@fsr-ub1664-175>
- <CAHCN7x+CXUuPN7upiv3D+REOU4d_=i30no+SkRzUjWY58o=uUQ@mail.gmail.com>
- <20210120144454.f6b72lnasw4q3bde@fsr-ub1664-175>
- <20210120151305.GC19063@pengutronix.de>
- <20210120152813.x2pbs5vprevkly23@fsr-ub1664-175>
+        Wed, 20 Jan 2021 10:50:54 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C503C0613D3;
+        Wed, 20 Jan 2021 07:50:14 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id s24so3527022wmj.0;
+        Wed, 20 Jan 2021 07:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EqlppPt+zKK98ux6mxMoGiAS/zm/3st9EqGh9uM7puw=;
+        b=Z6Rt1bJygQMu48zj8lDlSwMXm4t2WK+HXlNwxuOS0/MJ+6fj98JDDyioQGomRgRWfm
+         ZomKNprLEF6u3MvogHjtYDliFQHokuUP8Z5N/KFJmTkxeJd2JnHGG7FR6X3dFt3HwLcT
+         jg6bbuhptCdiUQl5bKNr1fDqrpWe/l10UKWDOSDps2y2puIROlkX2mr2895TJ/DC1Ooh
+         oG/I9aGGaNeDSLG1ZuKTDeyvp6N6qE6LC5E0Ps6oz33ay0+wd3ZUM0/y8I/BwfRPnZLM
+         h09N7uZF6l3XLZbxYE715tPmgQNNaJZUDrf4R9eiBCMshEqbKdeJCW/I/kfHyHshM0La
+         Kujg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EqlppPt+zKK98ux6mxMoGiAS/zm/3st9EqGh9uM7puw=;
+        b=tHh5pW0e/iD0M9gaY6OHmLMDfLX/6bJhWKySB/dSDjsmPXP9qHjb/nPDBWowxaTj0G
+         LQi798lfcbdobIGG/HOxWk2p7E6hAzm9JnEm25CazZ7pqBDGI7wW0DgUd9rZq6VtKk1l
+         WQYb5ZG2EwCd80FWHYQq8EFjFXuGguRJj+UFXVb9op7TQzW+BPGnimzNzdFBCzczgDpT
+         IKUW0HkfPhP6yk74Owke0Hvxc9MW4eiR0oWyTXyVNFUmZzR4/tpLBygy9+kVJePu8Xec
+         tp/5VjckJj8fB5MblcWi/smW3CbtCx8vk1PGckbk3EmObkdok91OMWMWFfSy7MDh3ZQ4
+         Iykg==
+X-Gm-Message-State: AOAM530wukAgrjxoIs1D0OyNIRpdnDM+iaIJBwMmm+1vpN5VNQmzTDnj
+        oQDixER1/mpM3bNiA3tUd/oDhE9pFu8=
+X-Google-Smtp-Source: ABdhPJz4sNocbfXVxnuMlfFi/+2wbcEfM9+A/RkiQaIGktR5doESPt3ITTPeGs8JWtxCKyLvKVpTHA==
+X-Received: by 2002:a05:600c:2253:: with SMTP id a19mr959087wmm.75.1611157813078;
+        Wed, 20 Jan 2021 07:50:13 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id p9sm3272451wrj.11.2021.01.20.07.50.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 07:50:11 -0800 (PST)
+Date:   Wed, 20 Jan 2021 16:50:09 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>, linux-pwm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pwm: remove zte zx driver
+Message-ID: <YAhRMaJhYJZat2SI@ulmo>
+References: <20210120150944.1688327-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="h/58VpChfMcyTptO"
 Content-Disposition: inline
-In-Reply-To: <20210120152813.x2pbs5vprevkly23@fsr-ub1664-175>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 16:48:32 up 49 days,  4:15, 92 users,  load average: 0.30, 0.38,
- 0.23
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210120150944.1688327-1-arnd@kernel.org>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 05:28:13PM +0200, Abel Vesa wrote:
-> On 21-01-20 16:13:05, Sascha Hauer wrote:
-> > Hi Abel,
-> > 
-> > On Wed, Jan 20, 2021 at 04:44:54PM +0200, Abel Vesa wrote:
-> > > On 21-01-18 08:00:43, Adam Ford wrote:
-> > > > On Mon, Jan 18, 2021 at 6:52 AM Abel Vesa <abel.vesa@nxp.com> wrote:
-> 
-> ...
-> 
-> > > > 
-> > > > >
-> > > > > TBH, I'm against the idea of having to call consumer API from a clock provider driver.
-> > > > > I'm still investigating a way of moving the uart clock control calls in drivers/serial/imx,
-> > > > > where they belong.
-> > > > 
-> > > > That makes sense.
-> > > > 
-> > > 
-> > > Just a thought. The uart clock used for console remains on from u-boot,
-> > > so maybe it's enough to just add the CLK_IGNORE_UNUSED flag to all the
-> > > uart root clocks and remove the prepare/enable calls for uart clocks 
-> > > for good. I don't really have a way to test it right now, but maybe
-> > > you could give it a try.
-> > 
-> > That would mean that UART clocks will never be disabled, regardless of
-> > whether they are used for console or not. That doesn't sound very
-> > appealing.
-> 
-> AFAIK, the only uart clock that is enabled by u-boot is the one used for
-> the console. Later on, when the serial driver probes, it will enable it itself.
-> 
-> Unless I'm missing something, this is exactly what we need.
 
-It might enable it, but with CLK_IGNORE_UNUSED the clock won't be
-disabled again when a port is closed after usage
+--h/58VpChfMcyTptO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sascha
+On Wed, Jan 20, 2021 at 04:09:22PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> The zte zx platform is getting removed, so this driver is no
+> longer needed.
+>=20
+> Cc: Jun Nie <jun.nie@linaro.org>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  .../devicetree/bindings/pwm/pwm-zx.txt        |  22 --
+>  drivers/pwm/Kconfig                           |  20 --
+>  drivers/pwm/Makefile                          |   2 -
+>  drivers/pwm/pwm-zx.c                          | 278 ------------------
+>  4 files changed, 322 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-zx.txt
+>  delete mode 100644 drivers/pwm/pwm-zx.c
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-zx.txt b/Documenta=
+tion/devicetree/bindings/pwm/pwm-zx.txt
+> deleted file mode 100644
+> index 3c8fe7aa8269..000000000000
+> --- a/Documentation/devicetree/bindings/pwm/pwm-zx.txt
+> +++ /dev/null
+> @@ -1,22 +0,0 @@
+> -ZTE ZX PWM controller
+> -
+> -Required properties:
+> - - compatible: Should be "zte,zx296718-pwm".
+> - - reg: Physical base address and length of the controller's registers.
+> - - clocks : The phandle and specifier referencing the controller's clock=
+s.
+> - - clock-names: "pclk" for PCLK, "wclk" for WCLK to the PWM controller. =
+ The
+> -   PCLK is for register access, while WCLK is the reference clock for
+> -   calculating period and duty cycles.
+> - - #pwm-cells: Should be 3. See pwm.yaml in this directory for a descrip=
+tion of
+> -   the cells format.
+> -
+> -Example:
+> -
+> -	pwm: pwm@1439000 {
+> -		compatible =3D "zte,zx296718-pwm";
+> -		reg =3D <0x1439000 0x1000>;
+> -		clocks =3D <&lsp1crm LSP1_PWM_PCLK>,
+> -			 <&lsp1crm LSP1_PWM_WCLK>;
+> -		clock-names =3D "pclk", "wclk";
+> -		#pwm-cells =3D <3>;
+> -	};
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 0937e1c047ac..4c28d0634ce9 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -601,24 +601,4 @@ config PWM_TWL_LED
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-twl-led.
+> =20
+> -config PWM_VT8500
+> -	tristate "vt8500 PWM support"
+> -	depends on ARCH_VT8500 || COMPILE_TEST
+> -	depends on HAS_IOMEM
+> -	help
+> -	  Generic PWM framework driver for vt8500.
+> -
+> -	  To compile this driver as a module, choose M here: the module
+> -	  will be called pwm-vt8500.
+> -
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+I assume that you dropped the PWM_VT8500 symbol by mistake? I can fix
+that up while applying, so no need to resend.
+
+Thierry
+
+--h/58VpChfMcyTptO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAIUS4ACgkQ3SOs138+
+s6GorQ/9H03QpIsEKocl4Q/E21QjGC1fWkImdJDDJ/WlagJJp7JQJygAkUzsrzyp
+6KdVa/1fzVdpi8JWLwwaFI5gWWP0fBejR5W/2idob48AU12LDp3BgPdH+xz8CDLe
+IM92d+oNIwGcfbbbSIB46TMAJ4Z2QvWFTt0L1CYpxcJLikGzPazeLyh6VnbtNQMc
+DDO7fUkxwD8ILeI8C+TCGpls3jiXDoCR/M0C0+aNkw4ZhsUydsQlY0TBZWUABWB2
+9mOwpRx/Nm6ASuvwiSGWKsFgpths9d+6QowAq6L3vjnHFVvRSQVnQklIbqWzEhzH
+QVk/Q4dkFILnGlW3ciIgoj8/Lj79ecXkiCLmhBpsw8ABk9MUe8JLowOGFsYzJXNO
+I4MtpkTk8T5wrnendacB7XTbneutQSTgxnIaTs1ZVix3eBWx3TxsI4wIfkymzV5a
+t++fvjQtrY5qRAuiqhynjnRL2KOyA55hryuu26c57+dl3hvQKPVeuAZ1EgLPic5C
+uf/CuzQGlPibwZNI8NqzV5dtBaHZm+FcZnYJwSQhzfJaKd9qbspDP08umI6x8ica
+jUemm/5LtYNbw2UiXiVNl2pHliwSW4429woEwsMmSTCgEHoiQCQG5mR+0PF3mYQ8
+r7ZVO5+J9C2YA7ncaEn1/9kwBYhZLU16J6/LHjfNa8QxJ/tt3K0=
+=EytG
+-----END PGP SIGNATURE-----
+
+--h/58VpChfMcyTptO--
