@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE922FD0D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 347C72FD0D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387523AbhATMyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 07:54:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:58826 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388891AbhATMIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:08:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40E3FD6E;
-        Wed, 20 Jan 2021 04:07:29 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.36.233])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DC4C3F66E;
-        Wed, 20 Jan 2021 04:07:27 -0800 (PST)
-Date:   Wed, 20 Jan 2021 12:07:25 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
-Subject: Re: rcutorture initrd/nolibc build on ARMv8?
-Message-ID: <20210120120725.GB73692@C02TD0UTHF1T.local>
-References: <20210119153147.GA5083@paulmck-ThinkPad-P72>
- <20210119161901.GA14667@1wt.eu>
- <20210119170238.GA5603@C02TD0UTHF1T.local>
- <20210119171637.GA14704@1wt.eu>
- <20210119174358.GB14704@1wt.eu>
+        id S2388384AbhATM4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 07:56:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389020AbhATMJo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 07:09:44 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8379C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:09:03 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id g10so4491405wrx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:09:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wzEvD+kaeH728kQHhGOibyDD+euNAkFvVRcvtcgrs18=;
+        b=qdvK8t9eT2BjR0GGUGhAMJ1J6m8rb7xgiQNQ6ZAlQxOR0aeLwd/XUfwr1fVokh3mKw
+         4obnOkNJBowb2b1Mn7FyxEc1JXYG6C34OxUqRxDl8Z9NpIydWAgZc8CGDV9xrB+AIpmD
+         T/+9GhXU1SKHP3nvZ2sCopc6oAuZ4Z8r0DoFO8ChqXtQUjZA6/Ul43LlWQSjCP6fq/RI
+         bg0LQbLwg7pOQ8dABxRh4fM+wkRde8aBmUWBkDqlWJdT6tQV7Vn43b50XLojjIphcBwB
+         3W8ZfWsFIDjGLNrkv8DlVYcmbxYYDMBnqv9PSUHDvhrQsepNhD1Q6SyUd5hUNymIRi/7
+         b3kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wzEvD+kaeH728kQHhGOibyDD+euNAkFvVRcvtcgrs18=;
+        b=VRHfWtqz6CruT7EUpt3wnn8ySs1ISDEMjyJGMCD8bnbrP8tDxl6G8f/p+g6WcYo5PW
+         Dq028uX6i9dgHaDFDAxYYDBmWyHRGk+8ow24wLGKvxWB/xiBw9XQE4kc+VLE/ZUPbBfK
+         eWNzpVDaofQLnawk4q/i7CO46g5OHPkrNll7uqkRuMOJWKB1QzJwQ2y8IiWjwIPCxz1L
+         XUY+aJUcvpq9khdriSxEXLI9r/JoqPdfaI8hP2leDRxpvPQzNN83oPiOX6eaiiFgHPh5
+         OqIdUIo58EdBSPUdyOOkAEmNUO5/qKfpXQ/JJBgJGdZf3CzQkRycgUDtmOUWX9Pg0g2B
+         LXGA==
+X-Gm-Message-State: AOAM530zRBn4U9gGUHBH5kg9n25UTTi4Pyi4YSBAsGCtr0BJVshe5YeZ
+        pMSBwkWjCt+QPUUKfdiqISa5B6n654uDqw==
+X-Google-Smtp-Source: ABdhPJzUoAyUnN8xEH54Pnn59hcdXRJw6tEEG6Xn/WyKNcnG2ObslKaVNA8T/dqQFCIl7cJHvjZV+g==
+X-Received: by 2002:adf:a11d:: with SMTP id o29mr2755493wro.45.1611144542670;
+        Wed, 20 Jan 2021 04:09:02 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:93b3:1f80:ae7b:a5c6])
+        by smtp.gmail.com with ESMTPSA id a62sm3867391wmh.40.2021.01.20.04.09.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 04:09:01 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     dongchun.zhu@mediatek.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dongchun Zhu <Dongchun.Zhu@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@linux.intel.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Tomasz Figa <tfiga@google.com>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH v5] media: ov8856: Configure sensor for GRBG Bayer for all modes
+Date:   Wed, 20 Jan 2021 13:08:47 +0100
+Message-Id: <20210120120847.1505143-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119174358.GB14704@1wt.eu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 06:43:58PM +0100, Willy Tarreau wrote:
-> On Tue, Jan 19, 2021 at 06:16:37PM +0100, Willy Tarreau wrote:
-> Given that you used a native compiler we can't suspect an issue with a
-> bare-metal compiler possibly affecting how kernel headers are passed
-> there. But nevertheless, I'd still not disregard the possibility that
-> the headers found under "linux/" are picked from the libc which for
-> whatever reason would be missing a lot of them.
+The previously added modes 3264x2448 & 1632x1224 are actually
+configuring the sensor for BGGR mode, this is an issue since
+the mode that is exposed through V4L incorrectly is set as GRBG.
 
-I think the actual issue here is a misapprehension in nolibc.h, which
-started blowing up due to a refactoring in asm/unistd.h.
+This patch fixes the issue by moving the output crop window of
+internal sensor ISP uses by one row, which means that the Bayer
+pattern of the output is changed.
 
-In nolibc.h, we do:
+From:
+row 1: B G B G B G ...
+row 2: G R G R G R ...
+row 3: B G B G B G ...
+...
 
-| /* Some archs (at least aarch64) don't expose the regular syscalls anymore by
-|  * default, either because they have an "_at" replacement, or because there are
-|  * more modern alternatives. For now we'd rather still use them.
-|  */
-| #define __ARCH_WANT_SYSCALL_NO_AT
-| #define __ARCH_WANT_SYSCALL_NO_FLAGS
-| #define __ARCH_WANT_SYSCALL_DEPRECATED
+To:
+row 2: G R G R G R ...
+row 3: B G B G B G ...
+...
 
-... but this isn't quite right -- it's not that the syscalls aren't
-exposed by default, but rather that these syscall numbers are not valid
-for architectures which do not define the corresponding __ARCH_WANT_*
-flags. Architectures without those have never implemented the syscalls,
-and would have returned -ENOSYS for the unrecognized syscall numbers,
-but the numbers could be allocated to (distinct) syscalls in future.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Suggested-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+---
 
-Since commit:
+Changes since v1:
+ - Sakari: Added mode information to ov8856_mode struct
+ - Sakari: enum_mbus_code updated
 
-  a0673fdbcd421052 ("asm-generic: clean up asm/unistd.h")
+Changes since v2:
+ - Andrey: Switched approach to changing the sensor configuration
+   to yield identical Bayer modes for all modes
 
-... those definitions got pulled out of <asm-generic/unistd.h>, and
-hence it's no longer possible to accidentally get those where a
-userspace header defines __ARCH_WANT_* in an architecture where they
-don't exist (e.g. arm64).
+Changes since v3:
+ - Andrey: Improve commit msg to explain Bayer shift better
 
-It seems that the headers on my Debian 10.7 system were generated after
-that commit, whereas yours were generated before that.
+Changes since v4:
+ - Andrey: Fix typ-o
+ - Andrey: Add r-b
 
-> We've seen that __NR_fork or __NR_dup2 for example were missing in your
-> output, on my native machine I can see them, so that could give us a clue
-> about the root cause of the issue:
-> 
->   $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(fork|dup2)'
->   #define __NR_dup2 1041
->   #define __NR_syscalls (__NR_fork+1)
->   #define __NR_fork 1079
 
-As above, these are bogus for arm64. There is no syscall number for dup2
-or fork, and __NR_syscalls is currently only 442.
+ drivers/media/i2c/ov8856.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I think the right thing to do is to have nolibc.h detect which syscalls
-are implemented, and to not define __ARCH_WANT_*.
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index 2f4ceaa80593..8a355135c7db 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -428,7 +428,7 @@ static const struct ov8856_reg mode_3264x2448_regs[] = {
+ 	{0x3810, 0x00},
+ 	{0x3811, 0x04},
+ 	{0x3812, 0x00},
+-	{0x3813, 0x02},
++	{0x3813, 0x01},
+ 	{0x3814, 0x01},
+ 	{0x3815, 0x01},
+ 	{0x3816, 0x00},
+@@ -821,7 +821,7 @@ static const struct ov8856_reg mode_1632x1224_regs[] = {
+ 	{0x3810, 0x00},
+ 	{0x3811, 0x02},
+ 	{0x3812, 0x00},
+-	{0x3813, 0x02},
++	{0x3813, 0x01},
+ 	{0x3814, 0x03},
+ 	{0x3815, 0x01},
+ 	{0x3816, 0x00},
+-- 
+2.27.0
 
-Thanks,
-Mark.
