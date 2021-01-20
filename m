@@ -2,132 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BAB2FD1A7
+	by mail.lfdr.de (Postfix) with ESMTP id DD5B82FD1A9
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388931AbhATNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387592AbhATM3q (ORCPT
+        id S2389298AbhATNMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:12:16 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34040 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387731AbhATMat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:29:46 -0500
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F79AC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:29:06 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id a6so5602742vkb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:29:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LGkiRBGNN2JdjxlFLrksuxrHeQXvis+imv6RymdpV/E=;
-        b=CKnjOzKbKJ54oU4Gzc8G4R0Tfkkd7Yy9HElluEZqPtUTZMkyG++hkiJvuoKO7enhPM
-         ihrIsgx7og7mE29YcIkUDdeIVv1HIinCyPm2cJbIH3gIfEVZo2jG/qu4WWmrHwmRx46i
-         /6F/EbzTAP6JE+4g8VgfvmNKiNGn7t0qsUzCWYi8rZ+7DBc9B/XyxrCoe7jFRmZCYvwe
-         O4uU9JevYgLUNIyBMBFiTRIgVPwpS5g0v9Up9k5gd97aYXSywfW9HQznbUzosVgxt+hk
-         NsKm59UqAkfUxMIOE8Kxc7cMi+ITgKAckkoPwEPn9JHQqz955557pysnKQqTHvwLfKWw
-         ISNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LGkiRBGNN2JdjxlFLrksuxrHeQXvis+imv6RymdpV/E=;
-        b=br448hmvY3uMdshMyp8tZhxvFTMtD3zoTE/65dEl11rBhFIDD+xZZn7GcyL0FnQopj
-         +4aswUZrpPQlkl4T6rUBLdtzx4zmgvjk6Wiy6yvp6CaTz1xrRcKs/KUFHOkYHD9PgvHe
-         lUQ+c2MQb4Zm99jSsgpEpX95jdh7k9Pi+puezbLPvuqQ7MfeU35NtJLnZRJvSVGBa+qJ
-         yw/Rayi3oxiL41p89bFWFwzyiVM3ImoRPIG7NNi1in5ymLDQsfNSy34mfp5VI9/33iPb
-         QJgQPY5EBHA1+qPF7YC1blf2QPOkCMh5MVKRq/BF1tlaAumcs95ZsRBnopYS2xDSQkmD
-         Npzw==
-X-Gm-Message-State: AOAM533bgTEJ4xLTO1cqhjofm2Wr0CyE9JF5W2fN7kDtE6N9f8BxRtXM
-        Vr4R1sRgdMlPbU363/JEkmeA44NWhlLDgoVef9DkPg==
-X-Google-Smtp-Source: ABdhPJzQQmTIm3qrv9BcNhq0Gl2fu+Jv1TT29DeboHCIh/vddpzoHgp84D1h6NrjWHdH7gSCVwzYnWpl5LMlxCMbNC0=
-X-Received: by 2002:a1f:3008:: with SMTP id w8mr6407778vkw.24.1611145744570;
- Wed, 20 Jan 2021 04:29:04 -0800 (PST)
+        Wed, 20 Jan 2021 07:30:49 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10KCTgfK001804;
+        Wed, 20 Jan 2021 06:29:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611145782;
+        bh=mkonnS399k2ET+gZIAzhzr9qheut3j+L6l9jvq4tMOE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=RohWxg8V/CpAtkgIldbR4jhijfWEqZNGf8ceyJW2ePIY0uYCUaCFLZC7MgkLWybmB
+         r3Sp54du9pDJr/RVLoRosS/vHcfyvsBVEebcuywSvSKpcKzoEffQVaQqEwmNAoL7ZB
+         4er9TvbRh/aZsmzz1YOxaInWlE0SvhG6Gi0AAz/0=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10KCTg8Q090719
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 Jan 2021 06:29:42 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
+ Jan 2021 06:29:41 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 20 Jan 2021 06:29:41 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10KCTfFa115893;
+        Wed, 20 Jan 2021 06:29:41 -0600
+Date:   Wed, 20 Jan 2021 17:59:40 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+CC:     <michael@walle.cc>, <vigneshr@ti.com>, <richard@nod.at>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <Kavyasree.Kotagiri@microchip.com>, <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: sst: Add support for Global Unlock on
+ sst26vf
+Message-ID: <20210120122940.2xkiwghtszzyylnm@ti.com>
+References: <20210120105411.254890-1-tudor.ambarus@microchip.com>
+ <20210120105411.254890-2-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-References: <20210113194619.RFC.1.I8f559ecdb01ffa98d5a1ee551cb802f288a81a38@changeid>
- <20210113102536.GC16960@zn.tnic>
-In-Reply-To: <20210113102536.GC16960@zn.tnic>
-From:   "Anand K. Mistry" <amistry@google.com>
-Date:   Wed, 20 Jan 2021 23:28:52 +1100
-Message-ID: <CAATStaOf_VN4BYBccSBk2bOpgvFwzH0xW=PncnyNo+SC41GXDw@mail.gmail.com>
-Subject: Re: [RFC PATCH] x86/speculation: Add finer control for when to issue IBPB
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Anthony Steinhauser <asteinhauser@google.com>,
-        tglx@linutronix.de, Joel Fernandes <joelaf@google.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210120105411.254890-2-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >
-> > Signed-off-by: Anand K Mistry <amistry@google.com>
-> > Signed-off-by: Anand K Mistry <amistry@chromium.org>
->
-> Two SoBs by you, why?
+Hi Tudor,
 
-Tooling issues probably. Not intentional.
+On 20/01/21 12:54PM, Tudor Ambarus wrote:
+> Even if sst26vf shares the SPINOR_OP_GBULK opcode with
+> Macronix (ex. MX25U12835F) and Winbound (ex. W25Q128FV),
+> it has its own Individual Block Protection scheme, which
+> is also capable to read-lock individual parameter blocks.
+> Thus the sst26vf's Individual Block Protection scheme will
+> reside in the sst.c manufacturer driver.
+> 
+> Add support to unlock the entire flash memory. The device
+> is write-protected by default after a power-on reset cycle
+> (volatile software protection), in order to avoid inadvertent
+> writes during power-up. Could do an erase, write, read back,
+> and compare when MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE=y.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/sst.c | 38 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 36 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+> index 00e48da0744a..1cd2a360c41e 100644
+> --- a/drivers/mtd/spi-nor/sst.c
+> +++ b/drivers/mtd/spi-nor/sst.c
+> @@ -8,6 +8,39 @@
+>  
+>  #include "core.h"
+>  
+> +static int sst26vf_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> +{
+> +	if (!ofs && len == nor->params->size)
 
->
-> > ---
-> > Background:
-> > IBPB is slow on some CPUs.
-> >
-> > More detailed background:
-> > On some CPUs, issuing an IBPB can cause the address space switch to be
-> > 10x more expensive (yes, 10x, not 10%).
->
-> Which CPUs are those?!
+Nitpick: ofs is not a boolean value. Don't treat it as such. (ofs == 0 
+&& len == nor->params->size) makes the intent much clearer.
 
-AMD A4-9120C. Probably the A6-9220C too, but I don't have one of those
-machines to test with,
+> +		return spi_nor_global_block_unlock(nor);
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int sst26vf_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static const struct spi_nor_locking_ops sst26vf_locking_ops = {
+> +	.lock = sst26vf_lock,
+> +	.unlock = sst26vf_unlock,
+> +	.is_locked = sst26vf_is_locked,
+> +};
+> +
+> +static void sst26vf_default_init(struct spi_nor *nor)
+> +{
+> +	nor->params->locking_ops = &sst26vf_locking_ops;
+> +}
+> +
+> +static const struct spi_nor_fixups sst26vf_fixups = {
+> +	.default_init = sst26vf_default_init,
+> +};
+> +
+>  static const struct flash_info sst_parts[] = {
+>  	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+>  	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
+> @@ -39,8 +72,9 @@ static const struct flash_info sst_parts[] = {
+>  	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32,
+>  			      SECT_4K | SPI_NOR_DUAL_READ) },
+>  	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128,
+> -			      SECT_4K | SPI_NOR_DUAL_READ |
+> -			      SPI_NOR_QUAD_READ) },
+> +			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +			      SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+> +		.fixups = &sst26vf_fixups },
+>  };
+>  
+>  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+> -- 
+> 2.25.1
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
->
-> > On a system that makes heavy use of processes, this can cause a very
-> > significant performance hit.
->
-> You're not really trying to convince reviewers for why you need to add
-> more complexity to an already too complex and confusing code. "some
-> CPUs" and "can cause" is not good enough.
-
-On a simple ping-ping test between two processes (using a pair of
-pipes), a process switch is ~7us with IBPB disabled. But with it
-enabled, it increases to around 80us (tested with the powersave CPU
-governor).
-
-On Chrome's IPC system, a perftest running 50,000 ping-pong messages:
-without IBPB    5579.49 ms
-with IBPB        21396 ms
-(~4x difference)
-
-And, doing video playback in the browser (which is already very
-optimised), the IBPB hit turns out to be ~2.5% of CPU cycles. Doing a
-webrtc video call (tested using http://appr.tc), it's ~9% of CPU
-cycles. I don't have exact numbers, but it's worse on some real VC
-apps.
-
->
-> > I understand this is likely to be very contentious. Obviously, this
-> > isn't ready for code review, but I'm hoping to get some thoughts on the
-> > problem and this approach.
->
-> Yes, in the absence of hard performance data, I'm not convinced at all.
-
-With this change, I can get a >80% reduction in CPU cycles consumed by
-IBPB. A  video call on my test device goes from ~9% to ~0.80% cycles
-used by IBPB. It doesn't sound like much, but it's a significant
-difference on these devices.
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
