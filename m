@@ -2,196 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A13C2FC8E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7242FC861
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730043AbhATD1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 22:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732154AbhATCa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:30:29 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF4DC0613CF;
-        Tue, 19 Jan 2021 18:29:48 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id a9so18151408wrt.5;
-        Tue, 19 Jan 2021 18:29:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0cGIhhFp+Y5wqhKMECSQp9mWWwANlw8iORzC/rpgsbY=;
-        b=a7ZmaMRgBnzDAbiXd3otx0z51ThOop0Zlx5bV59eQZjB2OAVezyO+6o+ShBRd+ohnF
-         VG6XpV35t6nDePgtjjbZeUT4N1RMjly71K/I4DERDV3k+xaL1xks+jgVWrBDOLFkCVb4
-         rbJKKqNBxxLZLb5i6AqxYX4FpT4ZqsigfO8YdHPwBXvb13GPe8633SiPTVRIWJQ+4NEo
-         sIyQcgq377Nik/oeQkU5aM66Fdc3MkaChklCyO1Kk/EpC9tIwSbjJOXwx3CzcIi92miG
-         PKWdaf7yI028/XpXYObYDDPQD83/0gyWuTr7vI09KpFtEGkQZ6TByjpyxTsFSB5bN3cp
-         v01g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0cGIhhFp+Y5wqhKMECSQp9mWWwANlw8iORzC/rpgsbY=;
-        b=V+g9E/BHoYfPMYH7PYJtC8TvDBipusWaYig2XdYTqb+LEX3IkWOLfu62XRQP++2G9i
-         UNbZXSzkdxjPgMwKVbPnToP/Zx3RKU88yn79VGrvejjqpvwbfDHcTMKEWow6wJ/5PyQ+
-         kGQzu9d4e31Mbm8pVWDWbsIVbRB+XUgIug6o5BR+RiQ+f+ngrRje7+ia/sUM3syDPLMF
-         jPzozxY6yRnUA8nqvIOI1OvIdr3sSjsz+mguIl3Ro0tlh44CA0+lvNHknqbQ4Z2E6Kbh
-         hS2Dv0yP/MmeSEx/q0xrYwlweQpexpEnQhYIboBdt3ZxKeybY0nO8r4doIGa8IYYDlww
-         B8ig==
-X-Gm-Message-State: AOAM533jKE3rK2OPSHMTjJ8Zodo6DA54JGZdSv2FMUjPD7gGCzB7/iTT
-        hd2ntrxIZNpf4owJe9vn6vnFOwlzMe6mNQ==
-X-Google-Smtp-Source: ABdhPJw46QfDw82/hD+J/PYzaMTShx0EMSYaAs5KR9aU4JtKp4wk+QnL092emEPh2og8zNnVxHNQYQ==
-X-Received: by 2002:a05:6000:1088:: with SMTP id y8mr7079023wrw.380.1611109787406;
-        Tue, 19 Jan 2021 18:29:47 -0800 (PST)
-Received: from [192.168.8.137] ([85.255.234.152])
-        by smtp.gmail.com with ESMTPSA id z15sm977549wrv.67.2021.01.19.18.29.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 18:29:46 -0800 (PST)
-Subject: Re: [PATCH] io_uring: simplify io_remove_personalities()
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Yejune Deng <yejune.deng@gmail.com>, viro@zeniv.linux.org.uk,
-        axboe@kernel.dk
-Cc:     linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1608778940-16049-1-git-send-email-yejune.deng@gmail.com>
- <2c9df437-b5e9-51a8-1ccb-a16f5ed4fae6@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <34904908-cfcf-a7f7-0039-83c6d16c8d6b@gmail.com>
-Date:   Wed, 20 Jan 2021 02:26:10 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1730751AbhATDCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:02:50 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:55628 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730297AbhATCdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 21:33:12 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L0ulgdgxeQHAA--.12601S3;
+        Wed, 20 Jan 2021 10:32:15 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2] samples/bpf: Update README.rst and Makefile
+ for manually compiling LLVM and clang
+To:     Fangrui Song <maskray@google.com>
+References: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
+ <20210119215815.efyerbwwq5x2o26q@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <b526e0eb-f05f-1c3a-de8f-3d7e9bef73ee@loongson.cn>
+Date:   Wed, 20 Jan 2021 10:32:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <2c9df437-b5e9-51a8-1ccb-a16f5ed4fae6@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210119215815.efyerbwwq5x2o26q@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dx6L0ulgdgxeQHAA--.12601S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxKrWfuFyUtr4rKFW5Zr1DJrb_yoW7Gw4Upr
+        W7ta1SkrZ2qryfZFyxGw4UXw4rZ395Ja4UCa4xGryrZ3WDZrn7GF4ayrWfWFWUXr92yF47
+        Ar1rGa4DGF18Xa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXo7tUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/01/2021 19:25, Pavel Begunkov wrote:
-> On 24/12/2020 03:02, Yejune Deng wrote:
->> The function io_remove_personalities() is very similar to
->> io_unregister_personality(),so implement io_remove_personalities()
->> calling io_unregister_personality().
-> 
-> Please, don't forget to specify a version in the subject, e.g.
-> [PATCH v2], add a changelog after "---" and add tags from previous
-> threads if any.
-> 
-> Looks good
-> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-
-up
-
-> 
+On 01/20/2021 05:58 AM, Fangrui Song wrote:
+> On 2021-01-19, Tiezhu Yang wrote:
+>> The current llvm/clang build procedure in samples/bpf/README.rst is
+>> out of date. See below that the links are not accessible any more.
 >>
->> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+>> $ git clone http://llvm.org/git/llvm.git
+>> Cloning into 'llvm'...
+>> fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) 
+>> redirects followed
+>> $ git clone --depth 1 http://llvm.org/git/clang.git
+>> Cloning into 'clang'...
+>> fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum 
+>> (20) redirects followed
+>>
+>> The llvm community has adopted new ways to build the compiler. There are
+>> different ways to build llvm/clang, the Clang Getting Started page 
+>> [1] has
+>> one way. As Yonghong said, it is better to just copy the build procedure
+>> in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
+>>
+>> I verified the procedure and it is proved to be feasible, so we should
+>> update README.rst to reflect the reality. At the same time, update the
+>> related comment in Makefile.
+>>
+>> [1] https://clang.llvm.org/get_started.html
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> Acked-by: Yonghong Song <yhs@fb.com>
 >> ---
->>  fs/io_uring.c | 28 +++++++++++-----------------
->>  1 file changed, 11 insertions(+), 17 deletions(-)
 >>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index b749578..dc913fa 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -8608,9 +8608,8 @@ static int io_uring_fasync(int fd, struct file *file, int on)
->>  	return fasync_helper(fd, file, on, &ctx->cq_fasync);
->>  }
->>  
->> -static int io_remove_personalities(int id, void *p, void *data)
->> +static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
->>  {
->> -	struct io_ring_ctx *ctx = data;
->>  	struct io_identity *iod;
->>  
->>  	iod = idr_remove(&ctx->personality_idr, id);
->> @@ -8618,7 +8617,17 @@ static int io_remove_personalities(int id, void *p, void *data)
->>  		put_cred(iod->creds);
->>  		if (refcount_dec_and_test(&iod->count))
->>  			kfree(iod);
->> +		return 0;
->>  	}
->> +
->> +	return -EINVAL;
->> +}
->> +
->> +static int io_remove_personalities(int id, void *p, void *data)
->> +{
->> +	struct io_ring_ctx *ctx = data;
->> +
->> +	io_unregister_personality(ctx, id);
->>  	return 0;
->>  }
->>  
->> @@ -9679,21 +9688,6 @@ static int io_register_personality(struct io_ring_ctx *ctx)
->>  	return ret;
->>  }
->>  
->> -static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
->> -{
->> -	struct io_identity *iod;
->> -
->> -	iod = idr_remove(&ctx->personality_idr, id);
->> -	if (iod) {
->> -		put_cred(iod->creds);
->> -		if (refcount_dec_and_test(&iod->count))
->> -			kfree(iod);
->> -		return 0;
->> -	}
->> -
->> -	return -EINVAL;
->> -}
->> -
->>  static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
->>  				    unsigned int nr_args)
->>  {
+>> v2: Update the commit message suggested by Yonghong,
+>>    thank you very much.
 >>
-> 
+>> samples/bpf/Makefile   |  2 +-
+>> samples/bpf/README.rst | 17 ++++++++++-------
+>> 2 files changed, 11 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+>> index 26fc96c..d061446 100644
+>> --- a/samples/bpf/Makefile
+>> +++ b/samples/bpf/Makefile
+>> @@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock        += -pthread -lcap
+>> TPROGLDLIBS_xsk_fwd        += -pthread
+>>
+>> # Allows pointing LLC/CLANG to a LLVM backend with bpf support, 
+>> redefine on cmdline:
+>> -#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc 
+>> CLANG=~/git/llvm/build/bin/clang
+>> +# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc 
+>> CLANG=~/git/llvm-project/llvm/build/bin/clang
+>> LLC ?= llc
+>> CLANG ?= clang
+>> OPT ?= opt
+>> diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+>> index dd34b2d..d1be438 100644
+>> --- a/samples/bpf/README.rst
+>> +++ b/samples/bpf/README.rst
+>> @@ -65,17 +65,20 @@ To generate a smaller llc binary one can use::
+>> Quick sniplet for manually compiling LLVM and clang
+>> (build dependencies are cmake and gcc-c++)::
+>>
+>> - $ git clone http://llvm.org/git/llvm.git
+>> - $ cd llvm/tools
+>> - $ git clone --depth 1 http://llvm.org/git/clang.git
+>> - $ cd ..; mkdir build; cd build
+>> - $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
+>> - $ make -j $(getconf _NPROCESSORS_ONLN)
+>> + $ git clone https://github.com/llvm/llvm-project.git
+>> + $ mkdir -p llvm-project/llvm/build/install
+>
+> llvm-project/llvm/build/install is not used.
 
--- 
-Pavel Begunkov
+Yes, just mkdir -p llvm-project/llvm/build is OK.
+
+>
+>> + $ cd llvm-project/llvm/build
+>> + $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+>> +            -DLLVM_ENABLE_PROJECTS="clang"    \
+>> +            -DBUILD_SHARED_LIBS=OFF           \
+>
+> -DBUILD_SHARED_LIBS=OFF is the default. It can be omitted.
+
+I search the related doc [1] [2], remove this option is OK for me.
+
+BUILD_SHARED_LIBS:BOOL
+
+     Flag indicating if each LLVM component (e.g. Support) is built as a 
+shared library (ON) or as a static library (OFF). Its default value is OFF.
+
+[1] https://www.llvm.org/docs/CMake.html
+[2] https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html
+
+>
+>> + -DCMAKE_BUILD_TYPE=Release        \
+>> +            -DLLVM_BUILD_RUNTIME=OFF
+>
+> -DLLVM_BUILD_RUNTIME=OFF can be omitted if none of
+> compiler-rt/libc++/libc++abi is built.
+
+I am not very sure about it because the default value of
+LLVM_BUILD_RUNTIME is ON? [3]
+
+option(LLVM_BUILD_RUNTIME
+"Build the LLVM runtime libraries." ON)
+
+[3] https://github.com/llvm/llvm-project/blob/main/llvm/CMakeLists.txt
+
+If anyone has any more suggestions, please let me know.
+I will send v3 after waiting for other feedback.
+
+By the way, Documentation/bpf/bpf_devel_QA.rst maybe need a separate
+patch to remove some cmake options?
+
+Thanks,
+Tiezhu
+
+>
+>> + $ ninja
+>>
+>> It is also possible to point make to the newly compiled 'llc' or
+>> 'clang' command via redefining LLC or CLANG on the make command line::
+>>
+>> - make M=samples/bpf LLC=~/git/llvm/build/bin/llc 
+>> CLANG=~/git/llvm/build/bin/clang
+>> + make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc 
+>> CLANG=~/git/llvm-project/llvm/build/bin/clang
+>>
+>> Cross compiling samples
+>> -----------------------
+>> -- 
+>> 2.1.0
+>>
+>> -- 
+>> You received this message because you are subscribed to the Google 
+>> Groups "Clang Built Linux" group.
+>> To unsubscribe from this group and stop receiving emails from it, 
+>> send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit 
+>> https://groups.google.com/d/msgid/clang-built-linux/1611042978-21473-1-git-send-email-yangtiezhu%40loongson.cn.
+
