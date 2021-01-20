@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0D02FCCF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CEB2FCCFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731093AbhATIpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:45:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730812AbhATIob (ORCPT
+        id S1728701AbhATIyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:54:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35051 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725320AbhATIxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:44:31 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540A7C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:43:50 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id v184so2061246wma.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:43:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=SXf4GvdEKbv7dKJxZGyB67zQvG4oiz6mZ9/eN327ukk=;
-        b=Lbq6FX1RigB7xQMoRcTXU/4C2bBP8iEZ9TFRrYyw5aS6zOJojXXv3929ylVvKJ7vxH
-         S4cUN2wCi6xGC4lmAVKNkOzkNXK7VEw12xk90tVajk/zhgtA++hnDlyz2vrIrsa6cHgr
-         1Ux/vRyiDxtSmXZmEx98nUnvXxsjUqcXmSRCGdjsRdRUigN4lyiCdLK/xhqWvfUSu/3A
-         30KSUgGkgf4FN+EioocREUn520DYVKSkLdP/LFGXI+icpei+57zyEr2rXZoZ9IfeUexZ
-         Dmw6gQ6FSt5I90cN/Bz8xWNL0kYo/Wp/I1jsfEn4/CdnyXAHWk/c1kArkCcmRmIVEDoO
-         XLkg==
+        Wed, 20 Jan 2021 03:53:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611132729;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d4UnMNibyh8PbpucVHsdwUM+5SKhACPpSJYaybcE7KM=;
+        b=T6JKHaLbyD2oh1YX+hrZviFx1PRA74Bt3ZWStHfuTttBMkAOF+1IRFH1vMoz6s3jShDWGE
+        3aqE1ZHd+w3NHC8PrugH0a6n6c2gwibQVN96QsMu53p+TtQpHwWcy1GRuU62cHkspPCeMr
+        +3q8HoB4gPPRD5IUkaZ01Lq8S88aLQo=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-KPFHsB6EMGCBVxLiR_e4lQ-1; Wed, 20 Jan 2021 03:52:04 -0500
+X-MC-Unique: KPFHsB6EMGCBVxLiR_e4lQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5so365410wmq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:52:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SXf4GvdEKbv7dKJxZGyB67zQvG4oiz6mZ9/eN327ukk=;
-        b=WIRlPJvjQ/SmHFYo0NfvbhszRvujPPGCeb9cGaXkHsW86cr1w27F8O1SZj3uP9lPWd
-         dqE8WTwHz+qwk3OidqfmRMPcTWsLj37A9CGhpjkB6ioozXe8+QY2uwPAtsixuRzfJzDm
-         yZc6q3kX3uNjq898frLbTiyQp8eJ8maPq5unO6xivreKnE/wipCAlhmxPoBV19tcY3oz
-         fUPspBsYaSADcHlrASj5dmq0kv9CErjVZY6gPA2ydz1yxLjmRNcUkHbkGGu8qs95MIJ2
-         XFuaCQbdYmx068BYtbevUEYGkp7e1ykxyqTlBNmC9AilVYUuI5sKj9l8AQ09AUtWruO9
-         8kLQ==
-X-Gm-Message-State: AOAM533EdNeWIyUaaJINTiVskHzllNJWSHtu7GFGIbnACNcpQTvBCPAZ
-        GtOO/K2kn/n0LS4Q9GL0EUoZqg==
-X-Google-Smtp-Source: ABdhPJwGWDVJl+qri10pH7mQhMo/Th4PqViwU4MKanmT7Zk+uIe/4nSGiVlNPq7noDbwpwMYt4Ku7A==
-X-Received: by 2002:a1c:6486:: with SMTP id y128mr3357034wmb.12.1611132229059;
-        Wed, 20 Jan 2021 00:43:49 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id q6sm2463132wmj.32.2021.01.20.00.43.47
+         :mime-version:content-disposition:in-reply-to;
+        bh=d4UnMNibyh8PbpucVHsdwUM+5SKhACPpSJYaybcE7KM=;
+        b=c1n8+Kq/6oQbPDVt7FFAFq41PXsG3MfapEkLOi3vI/4mb7kCDfuTVScj29OeeNvw31
+         6VuvqmCEmOLFj2GHRsx5S4hti+V3jVeYNjDToFGIH8RGXM4w110u4sDsxI6/vYfTSWwB
+         U6BvEMMwnz+1FOVcrgxNO96+95b+CnNEz7Ka6clEkgmGBnfRaRSLlAKkfTM306sJSqjG
+         nRI8CWEX8VZeXBtrfDPqG1sHS9tbnXIdUEU/tLvQmrJziPwEjrfKCe3wyy3JDOZmV7ay
+         CYzukYqdrBjhm0IOW8f0n5ZwXPkK6eiB8nlMsDntMknrCtz5fcYr6d7pbXQwCjAeLtJn
+         2q4g==
+X-Gm-Message-State: AOAM530u03uUXif0WDNqCHxk30Vb7vu16hY8jpDxPT2TglUVG9tTY/Gn
+        LcyQaeJWR433YNpVO8hJcTpy2njp2kn8DaTM0hq87nHDhlmecrKSKfkKGr5bcQi7pSgVmvt3//4
+        zpuhlsjxx/BTab4Qam6QIaXgM
+X-Received: by 2002:a1c:7f8c:: with SMTP id a134mr3287574wmd.184.1611132723753;
+        Wed, 20 Jan 2021 00:52:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy9HHKjWFC7iPFhp5YFU8NaoWOBXnOXFOBmJKdJIiIKgWhVdaqgHhBEeVM6yYHYdkW+3705MQ==
+X-Received: by 2002:a1c:7f8c:: with SMTP id a134mr3287561wmd.184.1611132723632;
+        Wed, 20 Jan 2021 00:52:03 -0800 (PST)
+Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
+        by smtp.gmail.com with ESMTPSA id w23sm2532766wmi.13.2021.01.20.00.52.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 00:43:48 -0800 (PST)
-Date:   Wed, 20 Jan 2021 08:43:46 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] mfd: iqs62x: Do not poll during ATI
-Message-ID: <20210120084346.GR4903@dell>
-References: <1610942228-7275-1-git-send-email-jeff@labundy.com>
- <1610942228-7275-6-git-send-email-jeff@labundy.com>
+        Wed, 20 Jan 2021 00:52:03 -0800 (PST)
+Date:   Wed, 20 Jan 2021 03:52:00 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lulu@redhat.com
+Subject: Re: [PATCH v1] vdpa/mlx5: Fix memory key MTT population
+Message-ID: <20210120035031-mutt-send-email-mst@kernel.org>
+References: <20210107071845.GA224876@mtl-vdi-166.wap.labs.mlnx>
+ <07d336a3-7fc2-5e4a-667a-495b5bb755da@redhat.com>
+ <20210120053619.GA126435@mtl-vdi-166.wap.labs.mlnx>
+ <20210120025651-mutt-send-email-mst@kernel.org>
+ <20210120081154.GA132136@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1610942228-7275-6-git-send-email-jeff@labundy.com>
+In-Reply-To: <20210120081154.GA132136@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021, Jeff LaBundy wrote:
+On Wed, Jan 20, 2021 at 10:11:54AM +0200, Eli Cohen wrote:
+> On Wed, Jan 20, 2021 at 02:57:05AM -0500, Michael S. Tsirkin wrote:
+> > On Wed, Jan 20, 2021 at 07:36:19AM +0200, Eli Cohen wrote:
+> > > On Fri, Jan 08, 2021 at 04:38:55PM +0800, Jason Wang wrote:
+> > > 
+> > > Hi Michael,
+> > > this patch is a fix. Are you going to merge it?
+> > 
+> > yes - in the next pull request.
+> > 
+> 
+> Great thanks.
+> Can you send the path to your git tree where you keep the patches you
+> intend to merge?
 
-> After loading firmware, the driver triggers ATI (calibration) with
-> the newly loaded register configuration in place. Next, the driver
-> polls a register field to ensure ATI completed in a timely fashion
-> and that the device is ready to sense.
-> 
-> However, communicating with the device over I2C while ATI is under-
-> way may induce noise in the device and cause ATI to fail. As such,
-> the vendor recommends not to poll the device during ATI.
-> 
-> To solve this problem, let the device naturally signal to the host
-> that ATI is complete by way of an interrupt. A completion prevents
-> the sub-devices from being registered until this happens.
-> 
-> The former logic that scaled ATI timeout and filter settling delay
-> is not carried forward with the new implementation, as it produces
-> overly conservative delays at lower clock rates. Instead, a single
-> pair of delays that covers all cases is used.
-> 
-> Signed-off-by: Jeff LaBundy <jeff@labundy.com>
-> ---
-> Changes in v2:
->   - Removed superfluous newlines throughout all iqs62x_dev_desc structs
-> 
->  drivers/mfd/iqs62x.c       | 125 +++++++++++++++++++++++++--------------------
->  include/linux/mfd/iqs62x.h |  11 ++--
->  2 files changed, 73 insertions(+), 63 deletions(-)
+https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
 
-Applied, thanks.
+Note I often rebase it (e.g. just did).
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+MST
+
