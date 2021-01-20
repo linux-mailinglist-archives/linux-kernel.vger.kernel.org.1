@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37422FD028
+	by mail.lfdr.de (Postfix) with ESMTP id 47B302FD027
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389461AbhATMPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 07:15:50 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:45150 "EHLO mail.skyhub.de"
+        id S2388585AbhATMRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 07:17:25 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:46514 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388715AbhATLp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:45:29 -0500
+        id S1730205AbhATLyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:54:12 -0500
 Received: from zn.tnic (p200300ec2f0bb0007fac97ee58c503f0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b000:7fac:97ee:58c5:3f0])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 570471EC046E;
-        Wed, 20 Jan 2021 12:44:44 +0100 (CET)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E6ECA1EC0323;
+        Wed, 20 Jan 2021 12:53:24 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611143084;
+        t=1611143605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=20LzYZPoh99oMXgfw4CHHwaH/q6GrOZfZD3z4Nnb0wg=;
-        b=E2E7ATLf7PM0xDk7VFGsC6LxaCDqpTk3/0jmeLtCJRUuWShS5yavgB3rAPVCug/oo+ImsB
-        L6SHAbHQ5zcrqFw5h2IhN5QsZ+AojeGeadBBHW92tAQYfgt2hPULXuYXsJzlpI5Ep/5qia
-        nQ1kpdrk2Y5BIsKRUOm39J/CHZZpmO4=
-Date:   Wed, 20 Jan 2021 12:44:38 +0100
+        bh=qYTF8kHZLrkwLTvfnKGIX2MHz34xKdPwTmuPEsWL2GM=;
+        b=OMMdTp3rxN5nUFcPP0IlZ7IGg8t2ERmkLyb01nliuhHScbt/rK9alGwwRIiU2maCgBjilB
+        XJjvgd8qQSl+xSTf2fXW/8s2h4WBRXnSTn90dN1RZQBuJ7ZTJfv2j89qfzOCbT0Pwlhcp1
+        /icDQjEnDTA6uIxnZmYAKMtKNVTjal8=
+Date:   Wed, 20 Jan 2021 12:53:24 +0100
 From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <20210120114438.GD825@zn.tnic>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan>
- <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic>
- <YAYAvBARSRSg8z8G@rani.riverdale.lan>
- <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>,
+        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 1/4] x86/fpu: Add kernel_fpu_begin_mask() to
+ selectively initialize state
+Message-ID: <20210120115324.GE825@zn.tnic>
+References: <cover.1611077835.git.luto@kernel.org>
+ <d3197b2d887dab3bf3d9984e2b74b0146d3568fb.1611077835.git.luto@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
+In-Reply-To: <d3197b2d887dab3bf3d9984e2b74b0146d3568fb.1611077835.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:33:43AM +0100, Ard Biesheuvel wrote:
-> The churn doesn't seem to be worth it, tbh.
+On Tue, Jan 19, 2021 at 09:38:59AM -0800, Andy Lutomirski wrote:
+> Currently, requesting kernel FPU access doesn't distinguish which parts of
+> the extended ("FPU") state are needed.  This is nice for simplicity, but
+> there are a few cases in which it's suboptimal:
 > 
-> So could we get rid of the complexity here, and only build_bug() on
-> the start address of the EFI region being outside the topmost p4d?
-> That should make the PGD test redundant as well.
+>  - The vast majority of in-kernel FPU users want XMM/YMM/ZMM state but do
+>    not use legacy 387 state.  These users want MXCSR initialized but don't
+>    care about the FPU control word.  Skipping FNINIT would save time.
+>    (Empirically, FNINIT is several times slower than LDMXCSR.)
+> 
+>  - Code that wants MMX doesn't want or need MXCSR initialized.
+>    _mmx_memcpy(), for example, can run before CR4.OSFXSR gets set, and
+>    initializing MXCSR will fail.
+> 
+>  - Any future in-kernel users of XFD (eXtended Feature Disable)-capable
+>    dynamic states will need special handling.
+> 
+> This patch adds a more specific API that allows callers specify exactly
+> what they want.
 
-Yah, makes sense to me.
+Same nitpicks:
 
-Thx.
+https://lkml.kernel.org/r/20210119110834.GH27433@zn.tnic
 
 -- 
 Regards/Gruss,
