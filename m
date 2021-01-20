@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CE52FC846
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1962FC847
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388655AbhATCvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:51:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
+        id S2389309AbhATCvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:51:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730671AbhATB3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730664AbhATB3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:29:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF302233FC;
-        Wed, 20 Jan 2021 01:27:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF47E23383;
+        Wed, 20 Jan 2021 01:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106042;
-        bh=8bj+lnRpNczUZo35PzLngMNOFbjrf+wRcmr3i5pK/UU=;
+        s=k20201202; t=1611106043;
+        bh=agTNM9rvcnuopW4ImTad5Lj786zO/UCc6mvDQtFFCos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U3aVfbhOrH+ycyS65ij8DmuLHZbrBO2CWyKDZMGZ6zqqbdve4mTaHTp/VlCGoD7rd
-         L7WZ44/sAua9eNi4Ik2I71j8PWHbklOO+hZiwZoNEQCXqeUlZUSvf6ZXHdcUQETfw7
-         jrndKz3t+NQNdogmP1kd7B2PvLvceHnTS+tEuTjRnwvEUvfSQS4vR8TeFIWJqDszDb
-         gPvBWHlRlMwZhYFEcuSDR1OGlGfEQ2/8flelr0nCbB5BuqvpNc01H8L9CLiweC3Pc2
-         zIYLpxgfyDk0LJndc/Kys0yXqJkPlZYKktY84gEXKFENBO61F4dTzUr0aK9mfUU/nK
-         MjNq5iYW0r1LA==
+        b=HYCG18LejFjXMJKeOWWtFsvPXaA5AAEU+X1YH5/oylOX9RyDHRdYMz5Hwfg9wyJvU
+         BYD6402G62aUoigqEsUhap/tXYGtwTcq3nRWmMfNWLQMtV0aT9U08MjIw9Vpa+yp57
+         B1jwx7yxw7VJ6UCJ6GRXQFR3Isr2PvAFpKt3P0tXwNVBIygljLk2t3aV92MotgNJyE
+         SpYaGMrDrcPbnVbqFV//0ORoZWDJTTqT+aOtA3fmCR/wL7pkFP+CHPU+rDoB+j3JFb
+         Rz7Ltpoi09ShV/THV9+r4JH9xZcuY3tX3psu3ygLy5ZJYkheXDj/GQPmzU4iZ73zdO
+         /wJDeZ6TkkQmA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
         Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.4 13/26] arm64: make atomic helpers __always_inline
-Date:   Tue, 19 Jan 2021 20:26:50 -0500
-Message-Id: <20210120012704.770095-13-sashal@kernel.org>
+        xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 14/26] xen: Fix event channel callback via INTX/GSI
+Date:   Tue, 19 Jan 2021 20:26:51 -0500
+Message-Id: <20210120012704.770095-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012704.770095-1-sashal@kernel.org>
 References: <20210120012704.770095-1-sashal@kernel.org>
@@ -44,109 +45,251 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-[ Upstream commit c35a824c31834d947fb99b0c608c1b9f922b4ba0 ]
+[ Upstream commit 3499ba8198cad47b731792e5e56b9ec2a78a83a2 ]
 
-With UBSAN enabled and building with clang, there are occasionally
-warnings like
+For a while, event channel notification via the PCI platform device
+has been broken, because we attempt to communicate with xenstore before
+we even have notifications working, with the xs_reset_watches() call
+in xs_init().
 
-WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
-The function arch_atomic64_or() references
-the variable __initdata numa_nodes_parsed.
-This is often because arch_atomic64_or lacks a __initdata
-annotation or the annotation of numa_nodes_parsed is wrong.
+We tend to get away with this on Xen versions below 4.0 because we avoid
+calling xs_reset_watches() anyway, because xenstore might not cope with
+reading a non-existent key. And newer Xen *does* have the vector
+callback support, so we rarely fall back to INTX/GSI delivery.
 
-for functions that end up not being inlined as intended but operating
-on __initdata variables. Mark these as __always_inline, along with
-the corresponding asm-generic wrappers.
+To fix it, clean up a bit of the mess of xs_init() and xenbus_probe()
+startup. Call xs_init() directly from xenbus_init() only in the !XS_HVM
+case, deferring it to be called from xenbus_probe() in the XS_HVM case
+instead.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20210108092024.4034860-1-arnd@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Then fix up the invocation of xenbus_probe() to happen either from its
+device_initcall if the callback is available early enough, or when the
+callback is finally set up. This means that the hack of calling
+xenbus_probe() from a workqueue after the first interrupt, or directly
+from the PCI platform device setup, is no longer needed.
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/20210113132606.422794-2-dwmw2@infradead.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/atomic.h     | 10 +++++-----
- include/asm-generic/bitops/atomic.h |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ arch/arm/xen/enlighten.c          |  2 +-
+ drivers/xen/events/events_base.c  | 10 ----
+ drivers/xen/platform-pci.c        |  1 -
+ drivers/xen/xenbus/xenbus.h       |  1 +
+ drivers/xen/xenbus/xenbus_comms.c |  8 ---
+ drivers/xen/xenbus/xenbus_probe.c | 81 +++++++++++++++++++++++++------
+ include/xen/xenbus.h              |  2 +-
+ 7 files changed, 70 insertions(+), 35 deletions(-)
 
-diff --git a/arch/arm64/include/asm/atomic.h b/arch/arm64/include/asm/atomic.h
-index 9543b5e0534d2..6e0f48ddfc656 100644
---- a/arch/arm64/include/asm/atomic.h
-+++ b/arch/arm64/include/asm/atomic.h
-@@ -17,7 +17,7 @@
- #include <asm/lse.h>
+diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+index dd6804a64f1a0..f45bff158fc20 100644
+--- a/arch/arm/xen/enlighten.c
++++ b/arch/arm/xen/enlighten.c
+@@ -371,7 +371,7 @@ static int __init xen_guest_init(void)
+ 	}
+ 	gnttab_init();
+ 	if (!xen_initial_domain())
+-		xenbus_probe(NULL);
++		xenbus_probe();
  
- #define ATOMIC_OP(op)							\
--static inline void arch_##op(int i, atomic_t *v)			\
-+static __always_inline void arch_##op(int i, atomic_t *v)		\
- {									\
- 	__lse_ll_sc_body(op, i, v);					\
- }
-@@ -32,7 +32,7 @@ ATOMIC_OP(atomic_sub)
- #undef ATOMIC_OP
+ 	/*
+ 	 * Making sure board specific code will not set up ops for
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index 26df84c45db4e..7b94a6c316643 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -1988,16 +1988,6 @@ static struct irq_chip xen_percpu_chip __read_mostly = {
+ 	.irq_ack		= ack_dynirq,
+ };
  
- #define ATOMIC_FETCH_OP(name, op)					\
--static inline int arch_##op##name(int i, atomic_t *v)			\
-+static __always_inline int arch_##op##name(int i, atomic_t *v)		\
- {									\
- 	return __lse_ll_sc_body(op##name, i, v);			\
- }
-@@ -56,7 +56,7 @@ ATOMIC_FETCH_OPS(atomic_sub_return)
- #undef ATOMIC_FETCH_OPS
+-int xen_set_callback_via(uint64_t via)
+-{
+-	struct xen_hvm_param a;
+-	a.domid = DOMID_SELF;
+-	a.index = HVM_PARAM_CALLBACK_IRQ;
+-	a.value = via;
+-	return HYPERVISOR_hvm_op(HVMOP_set_param, &a);
+-}
+-EXPORT_SYMBOL_GPL(xen_set_callback_via);
+-
+ #ifdef CONFIG_XEN_PVHVM
+ /* Vector callbacks are better than PCI interrupts to receive event
+  * channel notifications because we can receive vector callbacks on any
+diff --git a/drivers/xen/platform-pci.c b/drivers/xen/platform-pci.c
+index 5e30602fdbad8..c45646450135f 100644
+--- a/drivers/xen/platform-pci.c
++++ b/drivers/xen/platform-pci.c
+@@ -149,7 +149,6 @@ static int platform_pci_probe(struct pci_dev *pdev,
+ 	ret = gnttab_init();
+ 	if (ret)
+ 		goto grant_out;
+-	xenbus_probe(NULL);
+ 	return 0;
+ grant_out:
+ 	gnttab_free_auto_xlat_frames();
+diff --git a/drivers/xen/xenbus/xenbus.h b/drivers/xen/xenbus/xenbus.h
+index 88516a8a9f932..a9bb5f91082d3 100644
+--- a/drivers/xen/xenbus/xenbus.h
++++ b/drivers/xen/xenbus/xenbus.h
+@@ -115,6 +115,7 @@ int xenbus_probe_node(struct xen_bus_type *bus,
+ 		      const char *type,
+ 		      const char *nodename);
+ int xenbus_probe_devices(struct xen_bus_type *bus);
++void xenbus_probe(void);
  
- #define ATOMIC64_OP(op)							\
--static inline void arch_##op(long i, atomic64_t *v)			\
-+static __always_inline void arch_##op(long i, atomic64_t *v)		\
- {									\
- 	__lse_ll_sc_body(op, i, v);					\
- }
-@@ -71,7 +71,7 @@ ATOMIC64_OP(atomic64_sub)
- #undef ATOMIC64_OP
+ void xenbus_dev_changed(const char *node, struct xen_bus_type *bus);
  
- #define ATOMIC64_FETCH_OP(name, op)					\
--static inline long arch_##op##name(long i, atomic64_t *v)		\
-+static __always_inline long arch_##op##name(long i, atomic64_t *v)	\
- {									\
- 	return __lse_ll_sc_body(op##name, i, v);			\
- }
-@@ -94,7 +94,7 @@ ATOMIC64_FETCH_OPS(atomic64_sub_return)
- #undef ATOMIC64_FETCH_OP
- #undef ATOMIC64_FETCH_OPS
+diff --git a/drivers/xen/xenbus/xenbus_comms.c b/drivers/xen/xenbus/xenbus_comms.c
+index eb5151fc8efab..e5fda0256feb3 100644
+--- a/drivers/xen/xenbus/xenbus_comms.c
++++ b/drivers/xen/xenbus/xenbus_comms.c
+@@ -57,16 +57,8 @@ DEFINE_MUTEX(xs_response_mutex);
+ static int xenbus_irq;
+ static struct task_struct *xenbus_task;
  
--static inline long arch_atomic64_dec_if_positive(atomic64_t *v)
-+static __always_inline long arch_atomic64_dec_if_positive(atomic64_t *v)
+-static DECLARE_WORK(probe_work, xenbus_probe);
+-
+-
+ static irqreturn_t wake_waiting(int irq, void *unused)
  {
- 	return __lse_ll_sc_body(atomic64_dec_if_positive, v);
+-	if (unlikely(xenstored_ready == 0)) {
+-		xenstored_ready = 1;
+-		schedule_work(&probe_work);
+-	}
+-
+ 	wake_up(&xb_waitq);
+ 	return IRQ_HANDLED;
  }
-diff --git a/include/asm-generic/bitops/atomic.h b/include/asm-generic/bitops/atomic.h
-index dd90c9792909d..0e7316a86240b 100644
---- a/include/asm-generic/bitops/atomic.h
-+++ b/include/asm-generic/bitops/atomic.h
-@@ -11,19 +11,19 @@
-  * See Documentation/atomic_bitops.txt for details.
+diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
+index e6d0903459e11..14ccf13ab8fa1 100644
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -683,29 +683,76 @@ void unregister_xenstore_notifier(struct notifier_block *nb)
+ }
+ EXPORT_SYMBOL_GPL(unregister_xenstore_notifier);
+ 
+-void xenbus_probe(struct work_struct *unused)
++void xenbus_probe(void)
+ {
+ 	xenstored_ready = 1;
+ 
++	/*
++	 * In the HVM case, xenbus_init() deferred its call to
++	 * xs_init() in case callbacks were not operational yet.
++	 * So do it now.
++	 */
++	if (xen_store_domain_type == XS_HVM)
++		xs_init();
++
+ 	/* Notify others that xenstore is up */
+ 	blocking_notifier_call_chain(&xenstore_chain, 0, NULL);
+ }
+-EXPORT_SYMBOL_GPL(xenbus_probe);
+ 
+-static int __init xenbus_probe_initcall(void)
++/*
++ * Returns true when XenStore init must be deferred in order to
++ * allow the PCI platform device to be initialised, before we
++ * can actually have event channel interrupts working.
++ */
++static bool xs_hvm_defer_init_for_callback(void)
+ {
+-	if (!xen_domain())
+-		return -ENODEV;
++#ifdef CONFIG_XEN_PVHVM
++	return xen_store_domain_type == XS_HVM &&
++		!xen_have_vector_callback;
++#else
++	return false;
++#endif
++}
+ 
+-	if (xen_initial_domain() || xen_hvm_domain())
+-		return 0;
++static int __init xenbus_probe_initcall(void)
++{
++	/*
++	 * Probe XenBus here in the XS_PV case, and also XS_HVM unless we
++	 * need to wait for the platform PCI device to come up.
++	 */
++	if (xen_store_domain_type == XS_PV ||
++	    (xen_store_domain_type == XS_HVM &&
++	     !xs_hvm_defer_init_for_callback()))
++		xenbus_probe();
+ 
+-	xenbus_probe(NULL);
+ 	return 0;
+ }
+-
+ device_initcall(xenbus_probe_initcall);
+ 
++int xen_set_callback_via(uint64_t via)
++{
++	struct xen_hvm_param a;
++	int ret;
++
++	a.domid = DOMID_SELF;
++	a.index = HVM_PARAM_CALLBACK_IRQ;
++	a.value = via;
++
++	ret = HYPERVISOR_hvm_op(HVMOP_set_param, &a);
++	if (ret)
++		return ret;
++
++	/*
++	 * If xenbus_probe_initcall() deferred the xenbus_probe()
++	 * due to the callback not functioning yet, we can do it now.
++	 */
++	if (!xenstored_ready && xs_hvm_defer_init_for_callback())
++		xenbus_probe();
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(xen_set_callback_via);
++
+ /* Set up event channel for xenstored which is run as a local process
+  * (this is normally used only in dom0)
   */
+@@ -818,11 +865,17 @@ static int __init xenbus_init(void)
+ 		break;
+ 	}
  
--static inline void set_bit(unsigned int nr, volatile unsigned long *p)
-+static __always_inline void set_bit(unsigned int nr, volatile unsigned long *p)
- {
- 	p += BIT_WORD(nr);
- 	atomic_long_or(BIT_MASK(nr), (atomic_long_t *)p);
- }
+-	/* Initialize the interface to xenstore. */
+-	err = xs_init();
+-	if (err) {
+-		pr_warn("Error initializing xenstore comms: %i\n", err);
+-		goto out_error;
++	/*
++	 * HVM domains may not have a functional callback yet. In that
++	 * case let xs_init() be called from xenbus_probe(), which will
++	 * get invoked at an appropriate time.
++	 */
++	if (xen_store_domain_type != XS_HVM) {
++		err = xs_init();
++		if (err) {
++			pr_warn("Error initializing xenstore comms: %i\n", err);
++			goto out_error;
++		}
+ 	}
  
--static inline void clear_bit(unsigned int nr, volatile unsigned long *p)
-+static __always_inline void clear_bit(unsigned int nr, volatile unsigned long *p)
- {
- 	p += BIT_WORD(nr);
- 	atomic_long_andnot(BIT_MASK(nr), (atomic_long_t *)p);
- }
+ 	if ((xen_store_domain_type != XS_LOCAL) &&
+diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
+index eba01ab5a55e0..fe9a9fa2ebc45 100644
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -187,7 +187,7 @@ void xs_suspend_cancel(void);
  
--static inline void change_bit(unsigned int nr, volatile unsigned long *p)
-+static __always_inline void change_bit(unsigned int nr, volatile unsigned long *p)
- {
- 	p += BIT_WORD(nr);
- 	atomic_long_xor(BIT_MASK(nr), (atomic_long_t *)p);
+ struct work_struct;
+ 
+-void xenbus_probe(struct work_struct *);
++void xenbus_probe(void);
+ 
+ #define XENBUS_IS_ERR_READ(str) ({			\
+ 	if (!IS_ERR(str) && strlen(str) == 0) {		\
 -- 
 2.27.0
 
