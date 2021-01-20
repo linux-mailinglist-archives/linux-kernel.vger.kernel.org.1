@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636922FDB1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CDA2FDB21
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389699AbhATUol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:44:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
+        id S2387951AbhATUqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:46:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731842AbhATUnJ (ORCPT
+        with ESMTP id S1731842AbhATUpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:43:09 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF13C061757;
-        Wed, 20 Jan 2021 12:42:29 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id my11so3674935pjb.1;
-        Wed, 20 Jan 2021 12:42:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=l4bZ7k3MLtL4D33E1D9YrozkMl3wQeHdeBeC/C0ogfE=;
-        b=EMmI/yHTTV1Mpux7tKIPYfLFSTGkfH72QLHU1dgIqX1Y4igOtMYt0XoxjV37/m82QB
-         BWmN+pKbES/bkyzb6tgjhZtElcy1O2JUH/FXnURIcZnrbc+u0sO3jN89LikTF0dg54ro
-         IXp8PYLEGDRd1mZHqP109ZYQU7qAltNfcx11QCF5MqLt8Wt9h47lqxB9V/yGzS+WSNFv
-         rMAMUGQ8UmnpaZLdwYW7YfsWwZxNSgZ3J0hUcoI9wKvdAOXngrq7kds/abp8Xnud15sZ
-         FtjSm1uI/Yp5CIEEifMZLc3dxnHJGZlv8fjXGEe8632+cDpo6bcFSTlAhAURM29vrgu4
-         L1rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=l4bZ7k3MLtL4D33E1D9YrozkMl3wQeHdeBeC/C0ogfE=;
-        b=Xk/g9PsTEZYBA1xBx7p0hBPVPM8bsbFMhwOseub0Ijj6aWCigkkVzvlf1wp3gb/xA8
-         Erx7qppX/1+OAL4m+7OXPI9NgrdG1TCMl6s1sc0KwyqmfZCHdLbWx81XDOB83UPFDGv/
-         B72paKzRVNIPciDZGMBnbIGep+gprlPStNBBHC2vxiLzFCh4bw5LuWhMMbF+JduNKQLH
-         x9M+YyMZtDWrRhR4jMYK5tHM0fwzFjZiInE7ksK25vxcvqReY02Q5w+N6Wv1WzzrVFQc
-         lKRMBmP7G5q9KdctliS90nfATQmzYPfdgKezqjGHDjCl7dDXAD+kBkSAVFdLkDsgCIdw
-         +iEg==
-X-Gm-Message-State: AOAM533oFha7aB4zLRfvuXjm47nmAoeyy0MAXXgrcZmLX/XUSeoGumIc
-        jNTUYiSTL/LQF3AVCaSaeVor6NUwF4Drl/AGju4=
-X-Google-Smtp-Source: ABdhPJzaqLEL+yFKxUornhh6qyddcR3bLRrY+ZgaujIQH1JiMZiV74ZO0uBj1hEqq12lAkMy9dKvFnwcece33ostbI8=
-X-Received: by 2002:a17:902:9894:b029:da:5698:7f7b with SMTP id
- s20-20020a1709029894b02900da56987f7bmr11554332plp.78.1611175348636; Wed, 20
- Jan 2021 12:42:28 -0800 (PST)
+        Wed, 20 Jan 2021 15:45:30 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF33C061575;
+        Wed, 20 Jan 2021 12:44:47 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLcvs1wjsz9sVF;
+        Thu, 21 Jan 2021 07:44:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611175483;
+        bh=ju3rZsVNCTgrT7CBLz+kAXKmHwHT8KYchY86eAjbLbQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M18N5clZggL+3TJwjKiLDdHWQcdrY1QA10NYGgokWuHgsQmFMVY9rDscfn5QnNcF2
+         OFIEdUPNT/8upH7/LiXJnrc2POSKygVkV5HILuGHiaUhGY20ReLlhdWFXKTbNIvMds
+         EKx5+Bk48vfwPehRbazr2V+C8UONoh+dB5H9Ei1NFh8ZWVg8xFpMEaLOxuuwNbT4hq
+         k2fDJb1z6tGY6Y+TMN/Za3cHfPvfbLaEt9Er/cZoU8251Ta1vrWN2goQRRSbKx+CD1
+         2OtAtBFDTrVpEPcNwCWx5pHv8+km9JhjTY1V8PsCCSIeEfpY+DjjrE/YOr1c7TN6tI
+         lDsR9Ly9dfFPQ==
+Date:   Thu, 21 Jan 2021 07:44:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm tree
+Message-ID: <20210121074439.13665ff5@canb.auug.org.au>
+In-Reply-To: <CAKMK7uEtpi+20rEp4zg5P+d=qS7XcPi0VCp2OdHirX_Fm9TX7A@mail.gmail.com>
+References: <20210108115518.2b3fdf58@canb.auug.org.au>
+        <20210108122540.657501b2@canb.auug.org.au>
+        <20210111105654.17e3aa76@canb.auug.org.au>
+        <20210118115924.6ee14fd3@canb.auug.org.au>
+        <CAPM=9tz7bEZewNwg_96Jj+oyBk3=c7hZ4aFbSKdMAsewJpfXHw@mail.gmail.com>
+        <CAKMK7uEtpi+20rEp4zg5P+d=qS7XcPi0VCp2OdHirX_Fm9TX7A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210120102837.23663-1-xie.he.0141@gmail.com>
-In-Reply-To: <20210120102837.23663-1-xie.he.0141@gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Wed, 20 Jan 2021 12:42:17 -0800
-Message-ID: <CAJht_EOdpq5wQfcFROpx587kCZ9dGRz6kesyPVhgZyKdoqS8Cg@mail.gmail.com>
-Subject: Re: [PATCH net v4] net: lapb: Add locking to the lapb module
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/lr.x9ni75lgA0hRiVgbSip_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With this patch, there is still a problem that lapb_unregister may run
-concurrently with other LAPB API functions (such as
-lapb_data_received). This other LAPB API function can get the
-lapb->lock after lapb->lock is released by lapb_unregister, and
-continue to do its work. This is not correct.
+--Sig_/lr.x9ni75lgA0hRiVgbSip_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-We can fix this problem by adding a new field "bool stop" to "struct
-lapb_cb" (just like "bool t1timer_stop, t2timer_stop"), and make every
-API function abort whenever it sees lapb->stop == true after getting
-the lock.
+Hi Daniel,
 
-Alternatively we can also require the callers (the LAPB drivers) to
-never call lapb_unregister concurrently with other LAPB APIs. They
-should make sure all LAPB API functions are only called after
-lapb_register ends and before lapb_unregister starts. This is a
-reasonable requirement, because if they don't follow this requirement,
-even if we do the fix in the LAPB module (as said above), the LAPB
-driver will still get the "LAPB_BADTOKEN" error from the LAPB module.
-This is not desirable and I think LAPB drivers should avoid this from
-happening.
+On Wed, 20 Jan 2021 13:12:21 +0100 Daniel Vetter <daniel.vetter@ffwll.ch> w=
+rote:
+>
+> I've pulled drm-misc-next into drm-next now, so as long as all other
+> drm trees are merged after drm, this should be solved now.
+> drm-intel-next also has their msm build breakage fixed (I acked the
+> patch already), so hopefully we should be all clean again.
 
-So I think this problem may not need to be fixed here in the LAPB
-module because the LAPB drivers should deal with this problem anyway.
+Thanks.
 
-Please feel free to share your comment. Thanks!
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lr.x9ni75lgA0hRiVgbSip_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAIljcACgkQAVBC80lX
+0Gy3XAf/e3MkYTmvxoBOWXWpMg6Xe9fR3z52Ci+cawkcsAkaDq9oHTUEVJKThGXR
+veU3SMNdPubFR2WZbto51kBlUu0WFl5odMTMvU2oTct4iRkwn7HRWGdV0xaUVCm/
+t/t72Pr9K66bKqF4QkWeQQjACOHA3iDEcKMT9ldpjdrBZEWmtosD17kBTrD5V/yb
+w+NsLFvV0AC4iiiOLRutHbeFI0wiasFdS/OAOGhMeRQON8K3dXLElS6muRrGyacP
+rHMJ0RVQ5welr5wDaMeZVQv7eDHlj2dKmMTrfGlzGhWJxnswtPPf5sKPGkmD0Lpk
+iNTSwzCfRkvOkmW/z1vllJKDXg30Dg==
+=Fy0m
+-----END PGP SIGNATURE-----
+
+--Sig_/lr.x9ni75lgA0hRiVgbSip_--
