@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127182FCE48
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6822FCE4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732863AbhATKUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:20:17 -0500
-Received: from mga09.intel.com ([134.134.136.24]:62984 "EHLO mga09.intel.com"
+        id S1732949AbhATKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:20:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46144 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730312AbhATKLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:11:35 -0500
-IronPort-SDR: Yl75W1c2bDz5RG7CWTuxihD4u6xBG72hM+6vu+6iEWg9JAJXZkECI/MGSmb64aKJ9XN3BagUpn
- lQRfSZMZbVHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="179228308"
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="179228308"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 02:10:50 -0800
-IronPort-SDR: Y3q4iHQ39GKdIRFZJuHQUZndvahXpGhqws8lMBncjHvIY87iG83soE++lcwWFCbYh4Sg5tKHWb
- mAaau6gwipwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="355996544"
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Jan 2021 02:10:48 -0800
-Received: from irsmsx602.ger.corp.intel.com (163.33.146.8) by
- irsmsx601.ger.corp.intel.com (163.33.146.7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 20 Jan 2021 10:10:47 +0000
-Received: from irsmsx602.ger.corp.intel.com ([163.33.146.8]) by
- irsmsx602.ger.corp.intel.com ([163.33.146.8]) with mapi id 15.01.1713.004;
- Wed, 20 Jan 2021 10:10:47 +0000
-From:   "Girdwood, Liam R" <liam.r.girdwood@intel.com>
-To:     "anton.yakovlev@opensynergy.com" <anton.yakovlev@opensynergy.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     "jasowang@redhat.com" <jasowang@redhat.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tiwai@suse.com" <tiwai@suse.com>
-Subject: Re: [PATCH 0/7] ALSA: add virtio sound driver
-Thread-Topic: [PATCH 0/7] ALSA: add virtio sound driver
-Thread-Index: AQHW7xSF5+25jD6v60GKV9bYQ1UsAw==
-Date:   Wed, 20 Jan 2021 10:10:47 +0000
-Message-ID: <3ac230040630c3b6695f8a091e000f5b4f90b3ce.camel@intel.com>
-References: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
-In-Reply-To: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A8799E9B4388B3499FBC9D607BD6246A@intel.com>
+        id S1730352AbhATKMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 05:12:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611137473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f85nyV30dGUYyT4OSwZQuD/tNzi1TVhqdVBME5I7U34=;
+        b=Tqtkk73BVvR1GyvLqKN8ezpgmILoSEhpUbnhuP+3EYhk+CP5v9bOCWEbAYqu7lzOemwRDX
+        Y4lmzrHaj6x3fJ6JJrwa92jIVJWUqquupWpWBxfWJ4kEZcUuWCL+wHAKVU0cMlyQwdVDRJ
+        FQANm4sJYUPgLnNrgjrxdQNSlQcFIao=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1D056AC8F;
+        Wed, 20 Jan 2021 10:11:13 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 11:11:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/5] mm: Move pfn_to_online_page() out of line
+Message-ID: <20210120101112.GF9371@dhcp22.suse.cz>
+References: <161058499000.1840162.702316708443239771.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161058499608.1840162.10165648147615238793.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161058499608.1840162.10165648147615238793.stgit@dwillia2-desk3.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW50b24sDQoNCk9uIFdlZCwgMjAyMS0wMS0yMCBhdCAwMTozNiArMDEwMCwgQW50b24gWWFr
-b3ZsZXYgd3JvdGU6DQo+IFRoaXMgc2VyaWVzIGltcGxlbWVudHMgYSBkcml2ZXIgcGFydCBvZiB0
-aGUgdmlydGlvIHNvdW5kIGRldmljZQ0KPiBzcGVjaWZpY2F0aW9uIHY4IFsxXS4NCj4gDQo+IFRo
-ZSBkcml2ZXIgc3VwcG9ydHMgUENNIHBsYXliYWNrIGFuZCBjYXB0dXJlIHN1YnN0cmVhbXMsIGph
-Y2sgYW5kDQo+IGNoYW5uZWwgbWFwIGNvbnRyb2xzLiBBIG1lc3NhZ2UtYmFzZWQgdHJhbnNwb3J0
-IGlzIHVzZWQgdG8gd3JpdGUvcmVhZA0KPiBQQ00gZnJhbWVzIHRvL2Zyb20gYSBkZXZpY2UuDQo+
-IA0KPiBUaGUgc2VyaWVzIGlzIGJhc2VkIChhbmQgd2FzIGFjdHVhbGx5IHRlc3RlZCkgb24gTGlu
-dXMncyBtYXN0ZXINCj4gYnJhbmNoIFsyXSwgb24gdG9wIG9mDQo+IA0KPiBjb21taXQgMWUyYTE5
-OWY2Y2NkICgiTWVyZ2UgdGFnICdzcGktZml4LXY1LjExLXJjNCcgb2YgLi4uIikNCj4gDQo+IEFz
-IGEgZGV2aWNlIHBhcnQgd2FzIHVzZWQgT3BlblN5bmVyZ3kgcHJvcHJpZXRhcnkgaW1wbGVtZW50
-YXRpb24uDQo+IA0KPiBBbnkgY29tbWVudHMgYXJlIHZlcnkgd2VsY29tZS4NCj4gDQoNClRoaXMg
-anVzdCBsb29rcyBsaWtlIHRoZSBndWVzdCBmcm9udCBlbmQgaGVyZSwgZG8geW91IGhhdmUgYSBm
-b2xsb3cgdXANCnNlcmllcyBmb3IgdGhlIGhvc3QgYmFja2VuZCA/DQoNClRoYW5rcw0KDQpMaWFt
-ICANCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBDb3Jwb3JhdGlvbiAoVUspIExpbWl0ZWQKUmVnaXN0ZXJl
-ZCBOby4gMTEzNDk0NSAoRW5nbGFuZCkKUmVnaXN0ZXJlZCBPZmZpY2U6IFBpcGVycyBXYXksIFN3
-aW5kb24gU04zIDFSSgpWQVQgTm86IDg2MCAyMTczIDQ3CgpUaGlzIGUtbWFpbCBhbmQgYW55IGF0
-dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IKdGhlIHNvbGUg
-dXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykuIEFueSByZXZpZXcgb3IgZGlzdHJpYnV0
-aW9uCmJ5IG90aGVycyBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUg
-aW50ZW5kZWQKcmVjaXBpZW50LCBwbGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGFuZCBkZWxldGUg
-YWxsIGNvcGllcy4K
+On Wed 13-01-21 16:43:16, Dan Williams wrote:
+> pfn_to_online_page() is already too large to be a macro or an inline
+> function. In anticipation of further logic changes / growth, move it out
+> of line.
+> 
+> No functional change, just code movement.
+> 
+> Reported-by: Michal Hocko <mhocko@kernel.org>
 
+I am not sure what r-b refers to. I suspect it is the overal problem
+rather than this particular patch. Not that I care much but it might get
+confusing because I do not remember ever complaining about
+pfn_to_online_page to be too large.
+
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+
+I do not remember any hot path which depends on pfn walk and a function
+call would be clearly visible. If this ever turn out  to be a problem we
+can make it inline and push the heavy lifting out of line.
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+
+> ---
+>  include/linux/memory_hotplug.h |   17 +----------------
+>  mm/memory_hotplug.c            |   16 ++++++++++++++++
+>  2 files changed, 17 insertions(+), 16 deletions(-)
+> 
+> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+> index 15acce5ab106..3d99de0db2dd 100644
+> --- a/include/linux/memory_hotplug.h
+> +++ b/include/linux/memory_hotplug.h
+> @@ -16,22 +16,7 @@ struct resource;
+>  struct vmem_altmap;
+>  
+>  #ifdef CONFIG_MEMORY_HOTPLUG
+> -/*
+> - * Return page for the valid pfn only if the page is online. All pfn
+> - * walkers which rely on the fully initialized page->flags and others
+> - * should use this rather than pfn_valid && pfn_to_page
+> - */
+> -#define pfn_to_online_page(pfn)					   \
+> -({								   \
+> -	struct page *___page = NULL;				   \
+> -	unsigned long ___pfn = pfn;				   \
+> -	unsigned long ___nr = pfn_to_section_nr(___pfn);	   \
+> -								   \
+> -	if (___nr < NR_MEM_SECTIONS && online_section_nr(___nr) && \
+> -	    pfn_valid_within(___pfn))				   \
+> -		___page = pfn_to_page(___pfn);			   \
+> -	___page;						   \
+> -})
+> +struct page *pfn_to_online_page(unsigned long pfn);
+>  
+>  /*
+>   * Types for free bootmem stored in page->lru.next. These have to be in
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index f9d57b9be8c7..55a69d4396e7 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -300,6 +300,22 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Return page for the valid pfn only if the page is online. All pfn
+> + * walkers which rely on the fully initialized page->flags and others
+> + * should use this rather than pfn_valid && pfn_to_page
+> + */
+> +struct page *pfn_to_online_page(unsigned long pfn)
+> +{
+> +	unsigned long nr = pfn_to_section_nr(pfn);
+> +
+> +	if (nr < NR_MEM_SECTIONS && online_section_nr(nr) &&
+> +	    pfn_valid_within(pfn))
+> +		return pfn_to_page(pfn);
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(pfn_to_online_page);
+> +
+>  /*
+>   * Reasonably generic function for adding memory.  It is
+>   * expected that archs that support memory hotplug will
+
+-- 
+Michal Hocko
+SUSE Labs
