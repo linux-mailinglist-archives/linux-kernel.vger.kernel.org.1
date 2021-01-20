@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F032FD99D
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAEC2FD99E
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392506AbhATT1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:27:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        id S2392384AbhATT1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436467AbhATTZw (ORCPT
+        with ESMTP id S2392433AbhATT0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:25:52 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D83CC061757;
-        Wed, 20 Jan 2021 11:25:09 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id j3so7705900ljb.9;
-        Wed, 20 Jan 2021 11:25:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=puPe6u5eGjzcnpW6TMCNyyzNjrLc2snw2qd9AmS3wOs=;
-        b=SzZzHfAXPXi9k0Xc82ayuWcOl+5o9MCFSQ4b6b2hLQ0M3w6RGfSWN/dwCKd+2weeWj
-         tP1eAb3Fsn6/0N7TQNyl7CKMZ8NJAsQrJeLBXVkXj41XO4w+NV4PRGb2htkNOP3QH98o
-         9OnvbGjgu/QkW9hZrrizR8LuC4F6199aHwSJeglg4LSjJlnbNoybBIv5XWM4ynnqC4Y+
-         F2lND5oHtYmU0qpu5cdaZdr9eaG6RZYSsSERG2pPcSRFFRTSbYzvY8XB7aihrUduGuid
-         1zTkKpuyL8sRCxObqwqXcbQGGqCkc9Q9NcKRhg+Fkk5BKq2lkzOSgb3hwvknM6V22r7J
-         RIZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=puPe6u5eGjzcnpW6TMCNyyzNjrLc2snw2qd9AmS3wOs=;
-        b=V61W8023ZR554XfvuVid4er9soCagjnsNDrwevbTBPLKDsebxuYI5Ymuk3noX+l5XX
-         us5tzzsYDGPMBt7raMuxQvCabopg8SW5YlVt/htXYsnkeljbUlGNVtxS0D8b610X5Hgi
-         iFsv5dj+whVQN1RaCZPE/1qWhe74qC85VrSAh8J7n4M+F1BdP4GZ6W9LlF8fMhiWJtKs
-         7by3Wx939KL5wNCFSar3sqDw1Ay7ZK/ItcLZWvg4QFPhwORWw1QKmOecqqQtRk9Kuidm
-         rpy1Mq/XCb1tD03hXoMmsexAXBMfqWJEgMmd/0pMTYDF3ghdZlF0dc9zGpEvnBQSa/8/
-         oB6A==
-X-Gm-Message-State: AOAM530b85ICuSn+yUmd7D3hLrIPNXGisZjYosx9TAtaoK9/xewX6nvt
-        nVLdmT93u3v6Hce+NKIaLCuBDA11wwwy8UgQP3WzjgWR
-X-Google-Smtp-Source: ABdhPJzT1oUxuE5392bHQf83WMKzKnsEbmAiuaOs1PYZRsjtysNd0GsvPlvmPhJchyQ4EiR8Lu0VIBhKjsysdaptuI8=
-X-Received: by 2002:a2e:9dc1:: with SMTP id x1mr4838130ljj.32.1611170707741;
- Wed, 20 Jan 2021 11:25:07 -0800 (PST)
+        Wed, 20 Jan 2021 14:26:30 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12AAC0613C1;
+        Wed, 20 Jan 2021 11:25:49 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 27EE622727;
+        Wed, 20 Jan 2021 20:25:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611170746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Ob7KUwKuR0nwFPm6ISDKf74WkwKvOKiqWXqn3cjXq4=;
+        b=miTTwPJ3DtMSDIJ557R+SQ07RWGLYMYbiHcOHy/FBwqEOPhREbpehfwHDCrQ1LUSLmRfIQ
+        Gv/SFl3qrWmnvAEQl1eh+Mtx3U9pOR+3PjPlrugHpuLdvZxxeAhu0ZZNdKS317cRghifnO
+        rcfP8XLVRxq17yPcSoiTiTE4L/tdBpY=
 MIME-Version: 1.0
-References: <20210120140350.883-1-angkery@163.com>
-In-Reply-To: <20210120140350.883-1-angkery@163.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 20 Jan 2021 11:24:56 -0800
-Message-ID: <CAADnVQK0RiGYRnzdLRvSQRwTdyCOr1nBqZaNz7YR9gvyXu82fg@mail.gmail.com>
-Subject: Re: [PATCH] selftest/bpf: fix typo
-To:     angkery <angkery@163.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Junlin Yang <yangjunlin@yulong.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 Jan 2021 20:25:45 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     undisclosed-recipients:;
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
+ builtin_platform_driver()
+In-Reply-To: <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+References: <20210120105246.23218-1-michael@walle.cc>
+ <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <66e4bf55b2809893ad9c87458c170f99@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 6:22 AM angkery <angkery@163.com> wrote:
->
-> From: Junlin Yang <yangjunlin@yulong.com>
->
-> Change 'exeeds' to 'exceeds'.
->
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+>> 
+>> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc> 
+>> wrote:
+>> >
+>> > fw_devlink will defer the probe until all suppliers are ready. We can't
+>> > use builtin_platform_driver_probe() because it doesn't retry after probe
+>> > deferral. Convert it to builtin_platform_driver().
+>> 
+>> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+>> shouldn't it be fixed or removed?
+> 
+> I was actually thinking about this too. The problem with fixing
+> builtin_platform_driver_probe() to behave like
+> builtin_platform_driver() is that these probe functions could be
+> marked with __init. But there are also only 20 instances of
+> builtin_platform_driver_probe() in the kernel:
+> $ git grep ^builtin_platform_driver_probe | wc -l
+> 20
+> 
+> So it might be easier to just fix them to not use
+> builtin_platform_driver_probe().
+> 
+> Michael,
+> 
+> Any chance you'd be willing to help me by converting all these to
+> builtin_platform_driver() and delete builtin_platform_driver_probe()?
 
-The patch didn't reach patchwork.
-Please reduce cc list and resubmit to bpf@vger only.
-Also pls mention [PATCH bpf-next] in the subject.
+If it just moving the probe function to the _driver struct and
+remove the __init annotations. I could look into that.
 
-> ---
->  tools/testing/selftests/bpf/prog_tests/btf.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-> index 8ae97e2..ea008d0 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-> @@ -914,7 +914,7 @@ struct btf_raw_test {
->         .err_str = "Member exceeds struct_size",
->  },
->
-> -/* Test member exeeds the size of struct
-> +/* Test member exceeds the size of struct
->   *
->   * struct A {
->   *     int m;
-> @@ -948,7 +948,7 @@ struct btf_raw_test {
->         .err_str = "Member exceeds struct_size",
->  },
->
-> -/* Test member exeeds the size of struct
-> +/* Test member exceeds the size of struct
->   *
->   * struct A {
->   *     int m;
-> --
-> 1.9.1
->
->
+-michael
