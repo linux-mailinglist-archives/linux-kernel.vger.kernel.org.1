@@ -2,119 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AAA2FCFD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D3C2FCFE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729426AbhATMML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 07:12:11 -0500
-Received: from mga14.intel.com ([192.55.52.115]:58467 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388623AbhATLpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:45:14 -0500
-IronPort-SDR: aL2ktEegC5LV5U1VNOp58U5GcU3KJ4pX04CfZ/3vwwDlJtCBfXrm6VeVBg8MY1TS+hRkn/4uxN
- ei6VpNhRfV1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="178312335"
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="178312335"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 03:43:25 -0800
-IronPort-SDR: 6d9Rl0rqHJqHoSH83fmczd67tFi0FPoX0meYdc4bz4p8ozkNLjsRJu/Sag1Y1gN4GNf12X7g9N
- RIBIzwexvgpg==
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="501578998"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 03:43:20 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2BuQ-0065s8-4t; Wed, 20 Jan 2021 13:44:22 +0200
-Date:   Wed, 20 Jan 2021 13:44:22 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        andy@kernel.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
-        mgross@linux.intel.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <YAgXlgLauIGEe05w@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
- <1053125f-7cb2-8aa0-3204-24df62986184@gmail.com>
- <20210119093358.GO4077@smile.fi.intel.com>
- <YAcKj9fyNZY8QETd@pendragon.ideasonboard.com>
- <YAcaM9Tcif1rS3V/@smile.fi.intel.com>
- <YAevLTVlUSXMylWL@pendragon.ideasonboard.com>
+        id S2388677AbhATMR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 07:17:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59975 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726439AbhATLvK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:51:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611143361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OD2lUZozrmHh/TMRDJwTqK7EFoWr5oPmhv7mmtz2rSE=;
+        b=LFnwp5f9eyRKFts4ff02M6+66GVIp3QVYNvUtGPhBUf+9j9E17WYyItX0BPD2eeaY6IzA9
+        kF8CwnjLGjTjnc2wv1gGa7b0ZXXMrJwpYdfwJXtE3wtZygsn/o1U2FBzwMdt/9HAA/2V9R
+        I8GAY/HgzVy8g9HphwG9nZZ+Pll6J1A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-Yl6EbHDlPIW_9qmAUMggdA-1; Wed, 20 Jan 2021 06:49:17 -0500
+X-MC-Unique: Yl6EbHDlPIW_9qmAUMggdA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47A1CB8122;
+        Wed, 20 Jan 2021 11:49:16 +0000 (UTC)
+Received: from [10.36.115.161] (ovpn-115-161.ams2.redhat.com [10.36.115.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0015227C3D;
+        Wed, 20 Jan 2021 11:49:14 +0000 (UTC)
+Subject: Re: [PATCH] mm: Fix ZONE_DEVICE usage in move_pfn_range_to_zone()
+To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <161111619868.2787408.1710192276369197040.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <d5cb9e3d-db5f-cccc-0e26-a010410c5da8@redhat.com>
+Date:   Wed, 20 Jan 2021 12:49:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAevLTVlUSXMylWL@pendragon.ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <161111619868.2787408.1710192276369197040.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 06:18:53AM +0200, Laurent Pinchart wrote:
-> On Tue, Jan 19, 2021 at 07:43:15PM +0200, Andy Shevchenko wrote:
-> > On Tue, Jan 19, 2021 at 06:36:31PM +0200, Laurent Pinchart wrote:
-> > > On Tue, Jan 19, 2021 at 11:33:58AM +0200, Andy Shevchenko wrote:
-> > > > On Tue, Jan 19, 2021 at 12:11:40AM +0000, Daniel Scally wrote:
-> > > > > On 18/01/2021 21:19, Daniel Scally wrote:
-
-...
-
-> > > > See my previous reply. TL;DR: you have to modify clk-gpio.c to export couple of
-> > > > methods to be able to use it as a library.
-> > > 
-> > > That seems really overkill given the very simple implementation of the
-> > > clock provided here.
-> > 
-> > Less code in the end is called an overkill? Hmm...
-> > I think since we in Linux it's better to utilize what it provides. Do you want
-> > me to prepare a patch to show that there is no overkill at all?
+On 20.01.21 05:16, Dan Williams wrote:
+> Randy reports the build breaks with recent additions of
+> section_taint_zone_device() in move_pfn_range_to_zone(). Fix that by
+> including a conditionally stubbed out zone_is_zone_device() helper.
 > 
-> The amount of code we would save it very small. It's not necessarily a
-> bad idea, but I think such an improvement could be made on top, it
-> shouldn't block this series.
-
-Okay, let's wait what Dan will say on this.
-I can probably help to achieve this improvement sooner than later.
-
-...
-
-> > > > > (also, Laurent, if we did it this way we wouldn't be able to also handle
-> > > > > the led-indicator GPIO here without some fairly major rework)
-> > > > 
-> > > > LED indicators are done as LED class devices (see plenty of examples in PDx86
-> > > > drivers: drivers/platform/x86/)
-> > > 
-> > > How do you expose the link between the sensor and its indicator LED to
-> > > userspace ? Isn't it better to handle it in the kernel to avoid rogue
-> > > userspace turning the camera on without notifying the user ?
-> > 
-> > I didn't get this. It's completely a LED handling driver business. We may
-> > expose it to user space or not, but it's orthogonal to the usage of LED class
-> > IIUC. Am I mistaken here?
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> Andrew, apologies for the thrash. Please fold this into:
 > 
-> If it stays internal to the kernel and is solely controlled from the
-> int3472 driver, there's no need to involve the LED class. If we want to
-> expose the privacy LED to userspace then the LED framework is the way to
-> go, but we will also need to find a way to expose the link between the
-> camera sensor and the LED to userspace. If there are two privacy LEDs,
-> one for the front sensor and one for the back sensor, userspace will
-> need to know which is which.
+> mm-teach-pfn_to_online_page-about-zone_device-section-collisions.patch
+> 
+>  include/linux/mmzone.h |   12 ++++++++++++
+>  mm/memory_hotplug.c    |    2 +-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 0b5c44f730b4..66ba38dae9ba 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -885,6 +885,18 @@ static inline int local_memory_node(int node_id) { return node_id; };
+>   */
+>  #define zone_idx(zone)		((zone) - (zone)->zone_pgdat->node_zones)
+>  
+> +#ifdef CONFIG_ZONE_DEVICE
+> +static inline bool zone_is_zone_device(struct zone *zone)
+> +{
+> +	return zone_idx(zone) == ZONE_DEVICE;
+> +}
+> +#else
+> +static inline bool zone_is_zone_device(struct zone *zone)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  /*
+>   * Returns true if a zone has pages managed by the buddy allocator.
+>   * All the reclaim decisions have to use this function rather than
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index c78a1bef561b..710e469fb3a1 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -769,7 +769,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+>  	 * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
+>  	 * section.
+>  	 */
+> -	if (zone_idx(zone) == ZONE_DEVICE) {
+> +	if (zone_is_zone_device(zone)) {
+>  		if (!IS_ALIGNED(start_pfn, PAGES_PER_SECTION))
+>  			section_taint_zone_device(start_pfn);
+>  		if (!IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION))
+> 
+> 
 
-I see. For now we probably can keep GPIO LED implementation internally.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
 
+David / dhildenb
 
