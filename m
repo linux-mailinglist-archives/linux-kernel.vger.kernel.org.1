@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4972FCC10
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFED2FCC14
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbhATHwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:52:15 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45826 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729214AbhATHuB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:50:01 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UMJCsM0_1611128950;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UMJCsM0_1611128950)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Jan 2021 15:49:10 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 2/3] virtio-net: support IFF_TX_SKB_NO_LINEAR
-Date:   Wed, 20 Jan 2021 15:49:10 +0800
-Message-Id: <d54438cec1fc86a1cb0166098493b1aa6a15885a.1611128806.git.xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <20210119142726.4970-1-alobakin@pm.me>
-References: <20210119142726.4970-1-alobakin@pm.me>
-In-Reply-To: <cover.1611128806.git.xuanzhuo@linux.alibaba.com>
-References: <cover.1611128806.git.xuanzhuo@linux.alibaba.com>
+        id S1726635AbhATHxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:53:32 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:14459 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729256AbhATHuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:50:00 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DLHj44JFZz9tyjr;
+        Wed, 20 Jan 2021 08:49:12 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id HskhNw924peb; Wed, 20 Jan 2021 08:49:12 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLHj43RsBz9tyjn;
+        Wed, 20 Jan 2021 08:49:12 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 74BFA8B7E0;
+        Wed, 20 Jan 2021 08:49:13 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id rNNAibHpzKpz; Wed, 20 Jan 2021 08:49:13 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 45D4B8B7DF;
+        Wed, 20 Jan 2021 08:49:13 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 3329766A54; Wed, 20 Jan 2021 07:49:13 +0000 (UTC)
+Message-Id: <2fed79b1154c872194f98bac4422c23918325e61.1611128938.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/2] powerpc/47x: Disable 256k page size
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 20 Jan 2021 07:49:13 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Virtio net supports the case where the skb linear space is empty, so add
-priv_flags.
+PPC47x_TLBE_SIZE isn't defined for 256k pages, so
+this size of page shall not be selected for 47x.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: e7f75ad01d59 ("powerpc/47x: Base ppc476 support")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/net/virtio_net.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba8e637..f2ff6c3 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2972,7 +2972,8 @@ static int virtnet_probe(struct virtio_device *vdev)
- 		return -ENOMEM;
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 107bb4319e0e..a685e42d3993 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -772,7 +772,7 @@ config PPC_64K_PAGES
  
- 	/* Set up network device as normal. */
--	dev->priv_flags |= IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
-+	dev->priv_flags |= IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
-+			   IFF_TX_SKB_NO_LINEAR;
- 	dev->netdev_ops = &virtnet_netdev;
- 	dev->features = NETIF_F_HIGHDMA;
+ config PPC_256K_PAGES
+ 	bool "256k page size"
+-	depends on 44x && !STDBINUTILS
++	depends on 44x && !STDBINUTILS && !PPC_47x
+ 	help
+ 	  Make the page size 256k.
  
 -- 
-1.8.3.1
+2.25.0
 
