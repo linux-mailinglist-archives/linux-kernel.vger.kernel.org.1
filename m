@@ -2,205 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7558B2FD0FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE6B2FD117
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389050AbhATNBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:01:23 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:19420 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389296AbhATMLx (ORCPT
+        id S2389488AbhATNEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:04:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731544AbhATMNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:11:53 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10KCBAJh029335;
-        Wed, 20 Jan 2021 04:11:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=3TXqj1IKWDJvWf7QNtGMDFnQ22mG8KVQZxTTv7BIfm4=;
- b=J7yeyhgorShzjUofXAQGeFaOrPafSjqoSbT2HxVvwFYKOmLB2xhnSR2MgIfuOdtH5+I7
- 8PZEqydpteBrmckHnRHNr1ucT3Kv+MP85i6XsVwgKsVtTOObjpXTlLbAqsXinS0N+9Kb
- hji7yXLN3o1jKlhFXo8yjPQl7eLZzOoWfjQ1akfVmK8o8yThy6E8LzBEnIasbg6gf/b4
- uFBSxApWdPzL71wDTHOCOB2FTqGGNQ2/FHdO8AJLBjsNoMohL7KSAcfJ6KDNbKluPjwj
- 9mKDWtmTM/WioenBf66sUUq/JY9CR5nylOTgSVDv6R6vuhNfMGfze52vDhrHBvJWY9YK Wg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3668p2t35r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 04:11:10 -0800
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Jan
- 2021 04:11:08 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Jan
- 2021 04:11:07 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 Jan 2021 04:11:07 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 1234E3F7040;
-        Wed, 20 Jan 2021 04:11:04 -0800 (PST)
-From:   Bhaskara Budiredla <bbudiredla@marvell.com>
-To:     <ulf.hansson@linaro.org>, <keescook@chromium.org>,
-        <ccross@android.com>, <tony.luck@intel.com>, <sgoutham@marvell.com>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Bhaskara Budiredla" <bbudiredla@marvell.com>
-Subject: [PATCH v5 2/2] mmc: cavium: Add MMC polling method to support kmsg panic/oops write
-Date:   Wed, 20 Jan 2021 17:40:47 +0530
-Message-ID: <20210120121047.2601-3-bbudiredla@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210120121047.2601-1-bbudiredla@marvell.com>
-References: <20210120121047.2601-1-bbudiredla@marvell.com>
+        Wed, 20 Jan 2021 07:13:13 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3381AC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:12:33 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id e70so7715247ote.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:12:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hD1HawmEClOJ27r0GX30v0QKKxXQVQE5i1tHxMOMmNc=;
+        b=hKkZSQzL5sjvaAXJLUHwokzSagQnpFCjgMj5vVlXrvdtqgTy9PlGR/9lqEgREZXmAI
+         0VsETZV3ZG8TGD/aaAtcLyi8XSLYXIClLVbbDqMR4X23BKiHV/Ml9je7VHLhNUD7kNla
+         Npw/zjpoBQOErQ0l0I7tZUPNpCssE85vRzn0U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hD1HawmEClOJ27r0GX30v0QKKxXQVQE5i1tHxMOMmNc=;
+        b=Cp68dg4ufMWjA+GgHu4YnPUMVFIzPWSesfvUBA1L679nm0pd7lZIaXe8LOQKvfQ2Nf
+         I7OEV22eOtDBeDjFeCo2B34FdG4Kwrv54/hDwXrSIXhRwyEqVhJSrcaa/4OGZWC+Z4jU
+         AyLIrgiw2u0xsUVL2gZHGx0W0xxpj10zw2Qym9BFEfLE90Tgy9aJU3BV+4CX4m66ts2Z
+         9va31ljecHX85IjXq5kFIYSqhQ8zwwkudRfku4k/PrPpF3/5w+oAsq0qjhHY49UPJ5kh
+         rorPo0AxYQ7rETAN/gxXkp9DcEqeOqt555FhaB018z3QQS+OhEc9WJrJ52NDTJI9UHUQ
+         undQ==
+X-Gm-Message-State: AOAM533GtkNlxOMcy/aRYzALaKQnmyjPPAWIUWagx2hIMZfE8st9aZGt
+        lB6QPQtdz7HeZGb3UlTE9cggYqdXCfPsvOmyG9gM3g==
+X-Google-Smtp-Source: ABdhPJxN4e7pxvgB00qQH6R3k3PZ5lVut4BMuNJQ+CqfUb/Pnb/8RPiMXbS8EeohqA1lQD/s2x0tfMsCwbDWW1uWq1I=
+X-Received: by 2002:a9d:ea6:: with SMTP id 35mr6742495otj.188.1611144752644;
+ Wed, 20 Jan 2021 04:12:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-20_05:2021-01-20,2021-01-20 signatures=0
+References: <20210108115518.2b3fdf58@canb.auug.org.au> <20210108122540.657501b2@canb.auug.org.au>
+ <20210111105654.17e3aa76@canb.auug.org.au> <20210118115924.6ee14fd3@canb.auug.org.au>
+ <CAPM=9tz7bEZewNwg_96Jj+oyBk3=c7hZ4aFbSKdMAsewJpfXHw@mail.gmail.com>
+In-Reply-To: <CAPM=9tz7bEZewNwg_96Jj+oyBk3=c7hZ4aFbSKdMAsewJpfXHw@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 20 Jan 2021 13:12:21 +0100
+Message-ID: <CAKMK7uEtpi+20rEp4zg5P+d=qS7XcPi0VCp2OdHirX_Fm9TX7A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the drm tree
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable the writing of panic and oops logs, a cavium specific MMC
-polling method is defined and thereby ensure the functioning of mmcpstore.
+On Mon, Jan 18, 2021 at 2:06 AM Dave Airlie <airlied@gmail.com> wrote:
+>
+> On Mon, 18 Jan 2021 at 10:59, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > On Mon, 11 Jan 2021 10:56:54 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > On Fri, 8 Jan 2021 12:25:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+> > > > On Fri, 8 Jan 2021 11:55:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > > >
+> > > > > After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+> > > > > failed like this:
+> > > > >
+> > > > > error: the following would cause module name conflict:
+> > > > >   drivers/video/fbdev/omap2/omapfb/displays/panel-dsi-cm.ko
+> > > > >   drivers/gpu/drm/panel/panel-dsi-cm.ko
+> > > > >
+> > > > > Maybe caused by commit
+> > > > >
+> > > > >   cf64148abcfd ("drm/panel: Move OMAP's DSI command mode panel driver")
+> > > > >
+> > > > > I have used the drm tree from next-20210107 for today.
+> > > >
+> > > > This has affected the drm-misc tree as well (since it merged in the drm
+> > > > tree).
+> > > >
+> > > > I have used the drm-misc tree from next-20210107 for today.
+> > >
+> > > And now the drm-intel tree.
+> > >
+> > > I have used the drm-intel tree from next-20210108 for today.
+> >
+> > This is still affecting the drm and drm-intel trees.
+>
+> I think the fix for this is in drm-misc-next, Maarten can you send me
+> a -next PR to fix this?
 
-Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
----
- drivers/mmc/host/cavium-thunderx.c | 10 +++++
- drivers/mmc/host/cavium.c          | 67 ++++++++++++++++++++++++++++++
- drivers/mmc/host/cavium.h          |  3 ++
- 3 files changed, 80 insertions(+)
-
-diff --git a/drivers/mmc/host/cavium-thunderx.c b/drivers/mmc/host/cavium-thunderx.c
-index 76013bbbcff3..83f25dd6820a 100644
---- a/drivers/mmc/host/cavium-thunderx.c
-+++ b/drivers/mmc/host/cavium-thunderx.c
-@@ -19,12 +19,22 @@
- 
- static void thunder_mmc_acquire_bus(struct cvm_mmc_host *host)
- {
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	if (!host->pstore)
-+		down(&host->mmc_serializer);
-+#else
- 	down(&host->mmc_serializer);
-+#endif
- }
- 
- static void thunder_mmc_release_bus(struct cvm_mmc_host *host)
- {
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	if (!host->pstore)
-+		up(&host->mmc_serializer);
-+#else
- 	up(&host->mmc_serializer);
-+#endif
- }
- 
- static void thunder_mmc_int_enable(struct cvm_mmc_host *host, u64 val)
-diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
-index c5da3aaee334..708bec9d0345 100644
---- a/drivers/mmc/host/cavium.c
-+++ b/drivers/mmc/host/cavium.c
-@@ -510,6 +510,66 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
- 	return IRQ_RETVAL(emm_int != 0);
- }
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+static int cvm_req_completion_poll(struct mmc_host *host, unsigned long msecs)
-+{
-+	struct cvm_mmc_slot *slot = mmc_priv(host);
-+	struct cvm_mmc_host *cvm_host = slot->host;
-+	u64 emm_int;
-+
-+	while (msecs) {
-+		emm_int = readq(cvm_host->base + MIO_EMM_INT(cvm_host));
-+
-+		if (emm_int & MIO_EMM_INT_DMA_DONE)
-+			return 0;
-+		else if (emm_int & MIO_EMM_INT_DMA_ERR)
-+			return -EIO;
-+		mdelay(1);
-+		msecs--;
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static void cvm_req_cleanup_pending(struct mmc_host *host)
-+{
-+	struct cvm_mmc_slot *slot = mmc_priv(host);
-+	struct cvm_mmc_host *cvm_host = slot->host;
-+	u64 fifo_cfg;
-+	u64 dma_cfg;
-+	u64 emm_int;
-+
-+	cvm_host->pstore = 1;
-+
-+	/* Clear pending DMA FIFO queue */
-+	fifo_cfg = readq(cvm_host->dma_base + MIO_EMM_DMA_FIFO_CFG(cvm_host));
-+	if (FIELD_GET(MIO_EMM_DMA_FIFO_CFG_COUNT, fifo_cfg))
-+		writeq(MIO_EMM_DMA_FIFO_CFG_CLR,
-+			cvm_host->dma_base + MIO_EMM_DMA_FIFO_CFG(cvm_host));
-+
-+	/* Clear ongoing DMA, if there is any */
-+	dma_cfg = readq(cvm_host->dma_base + MIO_EMM_DMA_CFG(cvm_host));
-+	if (dma_cfg & MIO_EMM_DMA_CFG_EN) {
-+		dma_cfg |= MIO_EMM_DMA_CFG_CLR;
-+		writeq(dma_cfg, cvm_host->dma_base +
-+				MIO_EMM_DMA_CFG(cvm_host));
-+		do {
-+			dma_cfg = readq(cvm_host->dma_base +
-+					MIO_EMM_DMA_CFG(cvm_host));
-+		} while (dma_cfg & MIO_EMM_DMA_CFG_EN);
-+	}
-+
-+	/* Clear pending DMA interrupts */
-+	emm_int = readq(cvm_host->base + MIO_EMM_INT(cvm_host));
-+	if (emm_int)
-+		writeq(emm_int, cvm_host->base + MIO_EMM_INT(cvm_host));
-+
-+	/* Clear prepared and yet to be fired DMA requests */
-+	cvm_host->current_req = NULL;
-+	cvm_host->dma_active = false;
-+}
-+#endif
-+
- /*
-  * Program DMA_CFG and if needed DMA_ADR.
-  * Returns 0 on error, DMA address otherwise.
-@@ -901,6 +961,10 @@ static const struct mmc_host_ops cvm_mmc_ops = {
- 	.set_ios        = cvm_mmc_set_ios,
- 	.get_ro		= mmc_gpio_get_ro,
- 	.get_cd		= mmc_gpio_get_cd,
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	.req_cleanup_pending = cvm_req_cleanup_pending,
-+	.req_completion_poll = cvm_req_completion_poll,
-+#endif
- };
- 
- static void cvm_mmc_set_clock(struct cvm_mmc_slot *slot, unsigned int clock)
-@@ -1058,6 +1122,9 @@ int cvm_mmc_of_slot_probe(struct device *dev, struct cvm_mmc_host *host)
- 	slot->bus_id = id;
- 	slot->cached_rca = 1;
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	host->pstore = 0;
-+#endif
- 	host->acquire_bus(host);
- 	host->slot[id] = slot;
- 	cvm_mmc_switch_to(slot);
-diff --git a/drivers/mmc/host/cavium.h b/drivers/mmc/host/cavium.h
-index f3eea5eaa678..248a5a6e3522 100644
---- a/drivers/mmc/host/cavium.h
-+++ b/drivers/mmc/host/cavium.h
-@@ -75,6 +75,9 @@ struct cvm_mmc_host {
- 	spinlock_t irq_handler_lock;
- 	struct semaphore mmc_serializer;
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	bool pstore;
-+#endif
- 	struct gpio_desc *global_pwr_gpiod;
- 	atomic_t shared_power_users;
- 
+I've pulled drm-misc-next into drm-next now, so as long as all other
+drm trees are merged after drm, this should be solved now.
+drm-intel-next also has their msm build breakage fixed (I acked the
+patch already), so hopefully we should be all clean again.
+-Daniel
 -- 
-2.17.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
