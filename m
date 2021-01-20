@@ -2,161 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9621A2FC550
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EB32FC54C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729777AbhATAEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S1730683AbhATACz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:02:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730895AbhATACj (ORCPT
+        with ESMTP id S1730958AbhATABa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:02:39 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB00BC0613ED;
-        Tue, 19 Jan 2021 16:01:38 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id 3so3792316ljc.4;
-        Tue, 19 Jan 2021 16:01:38 -0800 (PST)
+        Tue, 19 Jan 2021 19:01:30 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6D3C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 16:00:50 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id k132so10610213ybf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 16:00:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8kNlZyDN8FkUwnB1QEShyik2KU3qyIjO6W1bR+tssYg=;
-        b=rjWc8oegYMhka4Rw6HjDIRSsGmGrKfxSwCkYlkHKvRuHCrEb6uAyUyXKKhSsvG2eWz
-         vyFi1rvU92P319z+jxslXihW0STX7XrDumNrXMaDUiT1a+Z7dff9ikz7HWCb+VHLz+Yy
-         SeipI4YW5bSsN+slUKOFRqKy0wyHc8LfXF/k7WefG6c7oGpHAU68NWxcn9Mhgo4ZI5i8
-         z7569Jl9TQ9PWLfDF1fqKrw/7+BSbYIJ3515zJeqP0zXOn0tlI25ZhYQ5UTfKGhf9DIG
-         PEe7E889ufTM4hGYS4/5HpGQSV+QKWX25cX3b2a8J/iru+XGdtmeFf4QpLutwsp+GQDy
-         2G9A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sXowcYDvZcXKMzrFe9FqqTDON419/OKr3sdTZYFlcNc=;
+        b=j0I/oY65AvJ7CU54ULhJ1qeloJ+tUy7Suv13S/8UGRdct5S1U8jqJtgzxSw4bqgHo0
+         yrK3A/QwKI/9olI6wVBRt2hybEi1JNg5UciXh8FDI9oyJqGr4kiAc6bZq48259pH9cpX
+         gd1k93jSKgdDgnpcNnX/C73ZSypJxkVZUOHBO48boKgjMvSsPr1EDj6vsQdL9axQLRrc
+         /T9nB0wQRj1MlR7RxqmLvOKSgoyko5pIvX7rcpazCz4FXZxcCfzIn5VY9zfwABcTcn07
+         g/eariP4frZx7HX41ZYN8COsV2lZk0Yg3ygglu2ORdvSh6nAzSQrZCHIGkIzxBcFmSlY
+         uO+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8kNlZyDN8FkUwnB1QEShyik2KU3qyIjO6W1bR+tssYg=;
-        b=V6/35V1liQJ1dq1EB4QpJuwY8c5wkH+m0RDi5kMb6uhU7kcC5xn80rubCAzLFgSDMN
-         oG+UXI6Y+ALQUaku44SRPDdm47qWzB4kcsRinwMXqrMwONWfiL/qwSKwS88jmTem7M7H
-         LJym4RkxQ01Ar7gjND6sbmolxixA7mDzM8zkhSjByGwXUthByMS9l4uIxCspLTiUsJUf
-         iUCBnYo4pr3Cu/EV7dx06KH1IKF3s28Ymw7y5WvdfTWf23SznRhuqCTO83c93wAzcJK4
-         J2NIaAXwbtSXII8Udc4Zi48i+I+CZM502tlNeag7tA9DEoamZ6zvMfS+sAspyq+otOdv
-         tb6Q==
-X-Gm-Message-State: AOAM5307kGXl1DFuYbxui/qcr9fRLABPHtlruvIV5KHGZ23DWW60j0/m
-        4jpeFeTRu7jl0UpUXsMVL58=
-X-Google-Smtp-Source: ABdhPJw5DNuMCQ8WnFZXjVNALCu+enXRMXr8RmGpWUeW5NSK0DISsJbdwOrk114+Ks0SqxYpnbR11g==
-X-Received: by 2002:a2e:819a:: with SMTP id e26mr2954524ljg.429.1611100897457;
-        Tue, 19 Jan 2021 16:01:37 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id t30sm33128lft.266.2021.01.19.16.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 16:01:37 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-rtc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] ARM: tegra: Specify tps65911 as wakeup source
-Date:   Wed, 20 Jan 2021 02:59:49 +0300
-Message-Id: <20210119235949.15601-2-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210119235949.15601-1-digetx@gmail.com>
-References: <20210119235949.15601-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sXowcYDvZcXKMzrFe9FqqTDON419/OKr3sdTZYFlcNc=;
+        b=UUlY0duU9nFR1eKKQvhaytZKacZ4wkW6kBzAUWypOE7QjDqhMtnbfzsC6OP+3Q4iCJ
+         zzaIxEGBzSjbcrGHdJ9o5JemavXucyre4h5cgirnRqgvQEjLXTntQ/BXtBJ61usFHqiO
+         o5xc2x78TqaEYIfOPU09lz7jFgYTLyrclYbHThr1z0T2vCaPeNB8K6pvohJdvrowRqzR
+         ryifFFLJ5RE5O6kqzOW2SDT3w0yhHQqlc9EiiuRiapZ6XXEnyGhn8Nb7QaaLK6SX6g+o
+         V8u+6L0wcf7qrGghfwP4bmPEwIaHF4cjCi3lk+LntMnMKamU8t4Hs6viPMxZ/uExkLrA
+         tnrQ==
+X-Gm-Message-State: AOAM530dBmueFLOLqYsW9xrqukE0MNR7SIL5B46Nr4QTxKd3tQjI2NaV
+        d8krwL9YqJB68aZM6Q9BwTm9w3aDDGWkvRS9nblraQ==
+X-Google-Smtp-Source: ABdhPJw5WAIHI4c3zIOTDPo9BjXenLy0BPhFyl4vUZqVjWpXCCRqzn59hUQZuomKdzC+jWBZv9W9ZAJt+QV+jZKyzb8=
+X-Received: by 2002:a25:77d4:: with SMTP id s203mr10670708ybc.32.1611100849671;
+ Tue, 19 Jan 2021 16:00:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201218031703.3053753-6-saravanak@google.com>
+ <20210117230134.32042-1-michael@walle.cc> <CAGETcx9=6fPAHLuMyfxfXTGxeSUO8FwHVU_F4bfqLTfK6c+eXw@mail.gmail.com>
+ <4b9ae679b6f76d2f7e340e2ec229dd53@walle.cc>
+In-Reply-To: <4b9ae679b6f76d2f7e340e2ec229dd53@walle.cc>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 19 Jan 2021 16:00:13 -0800
+Message-ID: <CAGETcx-s1Hc8iiForpoeqP6Tf-syOYvxHMui+3vRJFmqArL+-A@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
+To:     Michael Walle <michael@walle.cc>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, minghuan.Lian@nxp.com,
+        mingkai.hu@nxp.com, roy.zang@nxp.com,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify TPS65911 as wakeup source on Tegra devices in order to allow
-its RTC to wake up system from suspend by default instead of requiring
-wakeup to be enabled manually via sysfs.
+On Tue, Jan 19, 2021 at 2:41 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2021-01-18 22:01, schrieb Saravana Kannan:
+> > On Sun, Jan 17, 2021 at 3:01 PM Michael Walle <michael@walle.cc> wrote:
+> >> > Cyclic dependencies in some firmware was one of the last remaining
+> >> > reasons fw_devlink=on couldn't be set by default. Now that cyclic
+> >> > dependencies don't block probing, set fw_devlink=on by default.
+> >> >
+> >> > Setting fw_devlink=on by default brings a bunch of benefits (currently,
+> >> > only for systems with device tree firmware):
+> >> > * Significantly cuts down deferred probes.
+> >> > * Device probe is effectively attempted in graph order.
+> >> > * Makes it much easier to load drivers as modules without having to
+> >> >   worry about functional dependencies between modules (depmod is still
+> >> >   needed for symbol dependencies).
+> >> >
+> >> > If this patch prevents some devices from probing, it's very likely due
+> >> > to the system having one or more device drivers that "probe"/set up a
+> >> > device (DT node with compatible property) without creating a struct
+> >> > device for it.  If we hit such cases, the device drivers need to be
+> >> > fixed so that they populate struct devices and probe them like normal
+> >> > device drivers so that the driver core is aware of the devices and their
+> >> > status. See [1] for an example of such a case.
+> >> >
+> >> > [1] - https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
+> >> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >>
+> >> This breaks (at least) probing of the PCIe controllers of my board.
+> >> The
+> >> driver in question is
+> >>   drivers/pci/controller/dwc/pci-layerscape.c
+> >> I've also put the maintainers of this driver on CC. Looks like it uses
+> >> a
+> >> proper struct device. But it uses builtin_platform_driver_probe() and
+> >> apparently it waits for the iommu which uses module_platform_driver().
+> >> Dunno if that will work together.
+> >
+> > Yeah, the builtin vs module doesn't matter. I've had fw_devlink work
+> > multiple times with the consumer driver being built in and the
+> > supplier actually loaded as a module. Making that work is one of the
+> > goals of fw_devlink.
+>
+> Ok.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra30-apalis.dtsi                      | 1 +
- arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi | 1 +
- arch/arm/boot/dts/tegra30-beaver.dts                       | 1 +
- arch/arm/boot/dts/tegra30-cardhu.dtsi                      | 1 +
- arch/arm/boot/dts/tegra30-colibri.dtsi                     | 1 +
- arch/arm/boot/dts/tegra30-ouya.dts                         | 1 +
- 6 files changed, 6 insertions(+)
+Hi Michael,
 
-diff --git a/arch/arm/boot/dts/tegra30-apalis.dtsi b/arch/arm/boot/dts/tegra30-apalis.dtsi
-index 6544ce70b46f..b2ac51fb15b1 100644
---- a/arch/arm/boot/dts/tegra30-apalis.dtsi
-+++ b/arch/arm/boot/dts/tegra30-apalis.dtsi
-@@ -860,6 +860,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-index bfc06b988781..b97da45ebdb4 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-@@ -12,6 +12,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,en-gpio-sleep = <0 0 1 0 0 0 0 0 0>;
- 			ti,system-power-controller;
-diff --git a/arch/arm/boot/dts/tegra30-beaver.dts b/arch/arm/boot/dts/tegra30-beaver.dts
-index e0624b74fb50..e159feeedef7 100644
---- a/arch/arm/boot/dts/tegra30-beaver.dts
-+++ b/arch/arm/boot/dts/tegra30-beaver.dts
-@@ -1776,6 +1776,7 @@ pmic: tps65911@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-index dab9989fa760..788f16d2a0fa 100644
---- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
-+++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-@@ -240,6 +240,7 @@ pmic: tps65911@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-colibri.dtsi b/arch/arm/boot/dts/tegra30-colibri.dtsi
-index e36aa3ce6c3d..413e35215804 100644
---- a/arch/arm/boot/dts/tegra30-colibri.dtsi
-+++ b/arch/arm/boot/dts/tegra30-colibri.dtsi
-@@ -737,6 +737,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
-index 74da1360d297..8f66b16a786f 100644
---- a/arch/arm/boot/dts/tegra30-ouya.dts
-+++ b/arch/arm/boot/dts/tegra30-ouya.dts
-@@ -139,6 +139,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,en-gpio-sleep = <0 1 1 1 1 1 0 0 1>;
- 			ti,system-power-controller;
--- 
-2.29.2
+My bad, I spoke too soon. I thought you were talking about builtin_ vs
+module_. My response is correct in that context. But the problem here
+is related to builtin_platform_driver_probe(). That macro expects the
+device (PCI) to be added and ready to probe by the time it's called.
+If not, it just gives up and frees the code. That's why it's not
+getting called after the first attempt. Can you please convert it into
+builtin_platform_driver()? It should be a pretty trivial change.
 
+-Saravana
+
+>
+> >> The board device tree can be found here:
+> >>   arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts
+> >>
+> >> Attached is the log with enabled "probe deferral" messages enabled.
+> >
+> > I took a look at the logs. As you said, pci seems to be waiting on
+> > iommu, but it's not clear why the iommu didn't probe by then. Can you
+> > add initcall_debug=1 and enable the logs in device_link_add()? Btw, I
+> > realize one compromise on the logs is to send them as an attachment
+> > instead of inline. That way, it's still archived in the list, but I
+> > don't have to deal with log lines getting wrapped, etc.
+> >
+> > Thanks for reporting the issues. Also, could you try picking up all of
+> > these changes and giving it a shot. It's unlikely to help, but I want
+> > to rule out issues related to fixes in progress.
+> >
+> > https://lore.kernel.org/lkml/20210116011412.3211292-1-saravanak@google.com/
+> > https://lore.kernel.org/lkml/20210115210159.3090203-1-saravanak@google.com/
+> > https://lore.kernel.org/lkml/20201218210750.3455872-1-saravanak@google.com/
+>
+> Did pick them up, the last one had a conflict due some superfluous
+> lines.
+> Maybe they got reordered in that arrray.
+>
+> Issue still persist. I've enabled the debug in device_link_add(), in
+> device_links_check_suppliers() and booted with initcall_debug. Please
+> see attached log. Lets see how that goes ;)
+>
+> [    0.132687] calling  ls_pcie_driver_init+0x0/0x38 @ 1
+> [    0.132762] platform 3400000.pcie: probe deferral - supplier
+> 5000000.iommu not ready
+> [    0.132777] platform 3500000.pcie: probe deferral - supplier
+> 5000000.iommu not ready
+> [    0.132818] initcall ls_pcie_driver_init+0x0/0x38 returned -19 after
+> 119 usecs
+>
+> After that, ls_pcie_driver_init() is never called again.
+>
+> -michael
