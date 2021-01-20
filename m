@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D112FC8A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A082FC897
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387775AbhATClk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:41:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46630 "EHLO mail.kernel.org"
+        id S2389055AbhATCu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:50:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730025AbhATB2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:28:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F7E222472;
-        Wed, 20 Jan 2021 01:26:45 +0000 (UTC)
+        id S1730611AbhATB26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA8D722509;
+        Wed, 20 Jan 2021 01:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106006;
-        bh=9SutWEmC6H5K10bDfM/3ZW3pS0nEj9/MpovzFvWZN8Q=;
+        s=k20201202; t=1611106007;
+        bh=JvIH/5lkdHXQCODBz/Zth687PtRqCjPoQeuwe5CdNoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjpBpIKd5jnquEarxu/SLI84s01APmGU/UQYUj9s7aJ660wbuD8tJEjCVQ8ErnjND
-         Tguz6uMb2H9lSizaOX4GF+oUA4u/zrffP76HwQWrfnuPgHe1r4W6JE3kFi+9rw/bJp
-         3Zvw5pv5MhqtI7hDmsD1ERn9z57UdOQMT91ZK9BWH/7JVN2Dniy1ULMCmxEpHitOKX
-         03kaqBLmqvy5Pbg3onOhdfnwA73mxv4TpQ4te2rI4DtXWHHPjsJuRX0H330Nbbi1mg
-         U1HSDo+5SyYU2zOsfYfMPcp7+Fn47VJUbWf/pRVSylizU4ti/XD3Q+LK2XWMrGUz/Z
-         82mpYSH6UYEjQ==
+        b=WCct37YYl3VyC/5ato9AQXfstq2DHwKdqmswa6Q7EM9QPTYK4tmnnpa/4Bg1DzH9F
+         Ozq88ZZ0ulZLXA6l8Ne45puot8P9/MNUYZ5HL4hW5nF+AFRrJ8Q9tfB3KgRWGoB8E+
+         2ExT0kfhz2TPf0Lyps9xk9iFcUuFSTkVN8j78XmZ9P9VtR/f1uFVwRdMGrZSV+kLNE
+         B2ntqt8cawuekInR58u80xqKbj4JTq6krsqdfzDsr6xDQJBdvoir+pdxBd2Iauetec
+         +8ymws+NSbi6SSshF9ml7r2rrUwiScRp9gz8sO6thMU6Dao6xsCzYSP6FBwlCmAUMf
+         Wk35HMhRTH0hg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Li, Roman" <Roman.Li@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 33/45] drm/amd/display: disable dcn10 pipe split by default
-Date:   Tue, 19 Jan 2021 20:25:50 -0500
-Message-Id: <20210120012602.769683-33-sashal@kernel.org>
+Cc:     Nicholas Miell <nmiell@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 34/45] HID: logitech-hidpp: Add product ID for MX Ergo in Bluetooth mode
+Date:   Tue, 19 Jan 2021 20:25:51 -0500
+Message-Id: <20210120012602.769683-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -45,47 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Li, Roman" <Roman.Li@amd.com>
+From: Nicholas Miell <nmiell@gmail.com>
 
-[ Upstream commit 9d03bb102028b4a3f4a64d6069b219e2e1c1f306 ]
+[ Upstream commit 7de843dbaaa68aa514090e6226ed7c6374fd7e49 ]
 
-[Why]
-The initial purpose of dcn10 pipe split is to support some high
-bandwidth mode which requires dispclk greater than max dispclk. By
-initial bring up power measurement data, it showed power consumption is
-less with pipe split for dcn block. This could be reason for enable pipe
-split by default. By battery life measurement of some Chromebooks,
-result shows battery life is longer with pipe split disabled.
+The Logitech MX Ergo trackball supports HID++ 4.5 over Bluetooth. Add its
+product ID to the table so we can get battery monitoring support.
+(The hid-logitech-hidpp driver already recognizes it when connected via
+a Unifying Receiver.)
 
-[How]
-Disable pipe split by default. Pipe split could be still enabled when
-required dispclk is greater than max dispclk.
-
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Roman Li <Roman.Li@amd.com>
-Reviewed-by: Roman Li <Roman.Li@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+[jkosina@suse.cz: fix whitespace damage]
+Signed-off-by: Nicholas Miell <nmiell@gmail.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hid/hid-logitech-hidpp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-index a78712caf1244..0524d6f1adba6 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-@@ -608,8 +608,8 @@ static const struct dc_debug_options debug_defaults_drv = {
- 		.disable_pplib_clock_request = false,
- 		.disable_pplib_wm_range = false,
- 		.pplib_wm_report_mode = WM_REPORT_DEFAULT,
--		.pipe_split_policy = MPC_SPLIT_DYNAMIC,
--		.force_single_disp_pipe_split = true,
-+		.pipe_split_policy = MPC_SPLIT_AVOID,
-+		.force_single_disp_pipe_split = false,
- 		.disable_dcc = DCC_ENABLE,
- 		.voltage_align_fclk = true,
- 		.disable_stereo_support = true,
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 0ca7231195473..74ebfb12c360e 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -4051,6 +4051,8 @@ static const struct hid_device_id hidpp_devices[] = {
+ 	{ /* MX Master mouse over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb012),
+ 	  .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
++	{ /* MX Ergo trackball over Bluetooth */
++	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb01d) },
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb01e),
+ 	  .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
+ 	{ /* MX Master 3 mouse over Bluetooth */
 -- 
 2.27.0
 
