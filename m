@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D447D2FC9E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB332FC9E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730153AbhATEU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:20:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48862 "EHLO mail.kernel.org"
+        id S1730680AbhATEVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:21:16 -0500
+Received: from mga12.intel.com ([192.55.52.136]:44841 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728134AbhATERL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:17:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C8E623131;
-        Wed, 20 Jan 2021 04:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611116190;
-        bh=xyjnizKJKYbTRv0UN0+Gwt4VTaFiAxMHtX+9p9eYe1s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ah7CzMikRzj9W9tCn1AXbZZE8R1ZZweT7ziyrwOtDpZNF2g4cVOr6PlWh5KRAFxsC
-         AsbyuxEJ7GBuwoXPbRq9GiQePaNVne4UT+gu7x4YV6Ov8TvIZ0Z/FAHEm6WoCE8U/o
-         x3tNJU7WNAdOBS6eYKCR3szPJBlq0AI3sjlazIcwBrqsJWGeK4ORLPxH3rMihm1ykE
-         Lr0r4acf4K5C7MoADs+SRSfn/OeKJ4tTs7cNgaqo330SvD6nYRKcsjP8u3Vf0m2zqy
-         Rs0SpKX5xSvb/Rg6JYz14DF23Yy5LF9BUa8F30nt64fgx+JITef2DSwaq5iXNc6OAk
-         XDQUGoZNZjTsA==
-Date:   Wed, 20 Jan 2021 06:16:23 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v3 06/10] certs: Make blacklist_vet_description() more
- strict
-Message-ID: <YAeul+B2x6QK0NVq@kernel.org>
-References: <20210114151909.2344974-1-mic@digikod.net>
- <20210114151909.2344974-7-mic@digikod.net>
+        id S1728538AbhATERi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 23:17:38 -0500
+IronPort-SDR: VsBgo9L+9VXslz1N6ZGpRk8qdMw1FC7Nc25gOBX+wDcbovc5FrL3rU1Yt6AEmUJ8cApggoaMqm
+ GOy7jVRsJTzg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="158222171"
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="158222171"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 20:16:56 -0800
+IronPort-SDR: T5kBBZeAKOzBG5bGQ8LN5hG+ho85Icc5hIerVXBdMbIHkAUnfAZaUedfT9sCxvlrWxPfcJqX6g
+ Ab9hCEk2CDYA==
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="384275314"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 20:16:56 -0800
+Subject: [PATCH] mm: Fix ZONE_DEVICE usage in move_pfn_range_to_zone()
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     akpm@linux-foundation.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 19 Jan 2021 20:16:56 -0800
+Message-ID: <161111619868.2787408.1710192276369197040.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210114151909.2344974-7-mic@digikod.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 04:19:05PM +0100, Mickaël Salaün wrote:
-> From: Mickaël Salaün <mic@linux.microsoft.com>
-> 
-> Before exposing this new key type to user space, make sure that only
-> meaningful blacklisted hashes are accepted.  This is also checked for
-> builtin blacklisted hashes, but a following commit make sure that the
-> user will notice (at built time) and will fix the configuration if it
-> already included errors.
-> 
-> Check that a blacklist key description starts with a valid prefix and
-> then a valid hexadecimal string.
-> 
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Randy reports the build breaks with recent additions of
+section_taint_zone_device() in move_pfn_range_to_zone(). Fix that by
+including a conditionally stubbed out zone_is_zone_device() helper.
 
-In this I'm not as worried about ABI, i.e. you don't have any reason
-supply any other data, which doesn't follow these ruels, whereas there
-could very well be a script that does format hex "incorrectly".
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+Andrew, apologies for the thrash. Please fold this into:
 
-/Jarkko
+mm-teach-pfn_to_online_page-about-zone_device-section-collisions.patch
+
+ include/linux/mmzone.h |   12 ++++++++++++
+ mm/memory_hotplug.c    |    2 +-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 0b5c44f730b4..66ba38dae9ba 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -885,6 +885,18 @@ static inline int local_memory_node(int node_id) { return node_id; };
+  */
+ #define zone_idx(zone)		((zone) - (zone)->zone_pgdat->node_zones)
+ 
++#ifdef CONFIG_ZONE_DEVICE
++static inline bool zone_is_zone_device(struct zone *zone)
++{
++	return zone_idx(zone) == ZONE_DEVICE;
++}
++#else
++static inline bool zone_is_zone_device(struct zone *zone)
++{
++	return false;
++}
++#endif
++
+ /*
+  * Returns true if a zone has pages managed by the buddy allocator.
+  * All the reclaim decisions have to use this function rather than
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index c78a1bef561b..710e469fb3a1 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -769,7 +769,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+ 	 * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
+ 	 * section.
+ 	 */
+-	if (zone_idx(zone) == ZONE_DEVICE) {
++	if (zone_is_zone_device(zone)) {
+ 		if (!IS_ALIGNED(start_pfn, PAGES_PER_SECTION))
+ 			section_taint_zone_device(start_pfn);
+ 		if (!IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION))
+
