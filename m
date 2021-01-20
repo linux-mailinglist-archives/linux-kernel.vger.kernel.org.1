@@ -2,117 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1222FCAB2
+	by mail.lfdr.de (Postfix) with ESMTP id 898C12FCAB3
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730114AbhATFVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:21:46 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:39785 "EHLO m42-8.mailgun.net"
+        id S1728872AbhATF1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:27:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbhATFTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:19:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611119961; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=elqg9TnQqVo3z+rjCzoXTDJ/nWUGnhtMTJRsONyCrT4=;
- b=awHetKhwpcZ0LJiBuu2CaN9PbuDl4Z/pqd0ngAcI9x0bWQ36qOcOnWzANQ6nZjBpEoamNxDG
- D5DCC8CAl7aQykJN3V8Ku9rHHyE+710+kaDqBUfP6mcqejOiSBS1/W5gYjfFPeFC0yQ/NCEs
- qvMaj5dpTJdrAE4kOmZUbYKTDEE=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6007bd3b75e5c01cba52c749 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Jan 2021 05:18:51
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 25F3EC43470; Wed, 20 Jan 2021 05:18:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52F8BC43464;
-        Wed, 20 Jan 2021 05:18:50 +0000 (UTC)
+        id S1728307AbhATFUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 00:20:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C65012311C;
+        Wed, 20 Jan 2021 05:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611120000;
+        bh=MwrYgBA8FbFaypjtHU5QfT972J023QiIOLjTwZnRH+E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oVbS8bVtuLjj4mm5CMYKndqzU5xTOF9cnmQhWdJqY1a7Ht0cLPzWH0z6KmIVAnK6Q
+         gEPqclIqa50Qn36dT4/l8JDeqLNkMGNP6lzSJpVUaSc91H4qtdyg7Q683lJpCtcWcT
+         msqDrEgDNlhwS3XwB+fj0IkVVynS8jA0wI1q4iOPwyst3ycLme521TSx6oUhC2Yt0B
+         a7KwaqXMdsbZUpWpyr112JQrjuPu23BIpVeYIdWm39o5YiEMR3HyZoIOvdwzFscUMZ
+         427nfb6PbgVhu3pz/dLnfg9Ie3od3VQs9R0s3vG/SRvuUpTCb5SPzwOor+KvUGxYeU
+         kocr/nXetJOtA==
+Date:   Wed, 20 Jan 2021 07:19:54 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v3 08/10] certs: Check that builtin blacklist hashes are
+ valid
+Message-ID: <YAe9egzT5D7B0swR@kernel.org>
+References: <20210114151909.2344974-1-mic@digikod.net>
+ <20210114151909.2344974-9-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 20 Jan 2021 10:48:50 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        isaacm@codeaurora.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters to use
- system cache
-In-Reply-To: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
-Message-ID: <3e6ec220c07bcf91fae0985e1798f7a1@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114151909.2344974-9-mic@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11 19:45, Sai Prakash Ranjan wrote:
-> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
-> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
-> the memory type setting required for the non-coherent masters to use
-> system cache. Now that system cache support for GPU is added, we will
-> need to set the right PTE attribute for GPU buffers to be sys cached.
-> Without this, the system cache lines are not allocated for GPU.
+On Thu, Jan 14, 2021 at 04:19:07PM +0100, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
 > 
-> So the patches in this series introduces a new prot flag IOMMU_LLC,
-> renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
-> and makes GPU the user of this protection flag.
+> Add and use a check-blacklist-hashes.awk script to make sure that the
+> builtin blacklist hashes will be approved by the run time blacklist
+> description checks.  This is useful to debug invalid hash formats, and
+> it make sure that previous hashes which could have been loaded in the
+> kernel (but ignored) are now noticed and deal with by the user.
 > 
-> The series slightly depends on following 2 patches posted earlier and
-> is based on msm-next branch:
->  * https://lore.kernel.org/patchwork/patch/1363008/
->  * https://lore.kernel.org/patchwork/patch/1363010/
-> 
-> Sai Prakash Ranjan (3):
->   iommu/io-pgtable: Rename last-level cache quirk to
->     IO_PGTABLE_QUIRK_PTW_LLC
->   iommu/io-pgtable-arm: Add IOMMU_LLC page protection flag
->   drm/msm: Use IOMMU_LLC page protection flag to map gpu buffers
-> 
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 3 +++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 2 +-
->  drivers/gpu/drm/msm/msm_iommu.c         | 3 +++
->  drivers/gpu/drm/msm/msm_mmu.h           | 4 ++++
->  drivers/iommu/io-pgtable-arm.c          | 9 ++++++---
->  include/linux/io-pgtable.h              | 6 +++---
->  include/linux/iommu.h                   | 6 ++++++
->  7 files changed, 26 insertions(+), 7 deletions(-)
-> 
-> 
-> base-commit: 00fd44a1a4700718d5d962432b55c09820f7e709
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
+I get this with a self-signed cert:
 
-Gentle Ping!
+certs/Makefile:18: *** target pattern contains no '%'.  Stop.
 
-Thanks,
-Sai
+CONFIG_SYSTEM_BLACKLIST_HASH_LIST="tbs:8eed1340eef37c1dc84d996406ad05c7dbb3eade19132d688408ca2f63904869"
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+I used the script in 10/10 to test this, which is another
+reamark: the patches are in invalid order, as you need to
+apply 10/10 before you can test  8/10.
+
+/Jarkko
