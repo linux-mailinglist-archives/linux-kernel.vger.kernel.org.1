@@ -2,213 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A2F2FD836
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37ACC2FD8D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404506AbhATSXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:23:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404206AbhATSIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:08:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEC23233F6;
-        Wed, 20 Jan 2021 18:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611166062;
-        bh=N2c2dlXxzRHPCRtWcevrFXjQzxHy4SQCbf7Ja0dBpXI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YEW3dxuk+YxfbTgRWUi/C4dBST4s9JJM5KN1DmBpCKDoZAcBJ6nQDYwwxHSJM6lp4
-         iFvi8pHWzOaFU1IrUn5zHC4PWUifVD2XNeb8c6sPpKl9R8NC5kvtZV/85iY2yI6aYz
-         kSrE8z3lgUxpXO9GP2eSsYcSBbYkmNswC/KSd7XOA26exk/UHOaK9RmpoF129IrkLN
-         NqF5tB6JqFZ4WWl4A4xAgnWl9oaf+jAzb+6ehfsbacrHu8j9UBpGdtCqUXuRaZNzZQ
-         l/TukCQeDGzQ+SXocUYJXoTcIIQNcyc0iGb/5wc8p5yqVwhlCNMe9yOOB3jd8CHqxa
-         gz1MNKLx8LKIQ==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        id S2392200AbhATSvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:51:08 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:55430 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390729AbhATSMF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:12:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1611166326; x=1642702326;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=0FqY4Y9ekqo9Njl4eE4yftVIgAdbgRXuwSrgrFbU1KY=;
+  b=n2oArYMsNAxf9OPtAtzAl8Tp/o3kGHhlSgRm4dtYt1xEKhBpGNFxbqPQ
+   +ALRxgjUqIY1L2kMRuQWfnlDarH5DzU5khCRacimSM7qsAwatZcKyyICg
+   Yz1MHYQVhpD9p3yCdb5IPClfCb/MqmtiXxBInCcWsp8FvDI9DrNJyEwzg
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.79,361,1602547200"; 
+   d="scan'208";a="112258151"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Jan 2021 18:11:17 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id CC0E3A21D6;
+        Wed, 20 Jan 2021 18:11:15 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 20 Jan 2021 18:11:15 +0000
+Received: from edge-m1-r3-201.e-iad16.amazon.com (10.43.161.179) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 20 Jan 2021 18:10:35 +0000
+Subject: Re: [RFC PATCH 3/7] arm64: mm: use nGnRnE instead of nGnRE on Apple
+ processors
+To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
+        Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH v15 08/11] secretmem: add memcg accounting
-Date:   Wed, 20 Jan 2021 20:06:09 +0200
-Message-Id: <20210120180612.1058-9-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210120180612.1058-1-rppt@kernel.org>
-References: <20210120180612.1058-1-rppt@kernel.org>
+        Marc Zyngier <maz@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        <linux-kernel@vger.kernel.org>, Stan Skowronek <stan@corellium.com>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-4-mohamed.mediouni@caramail.com>
+ <ce5692a9-e716-514a-f196-b0645bb03eb8@amazon.com>
+ <17579DC5-13AF-48E1-9B72-91B14AB485FA@caramail.com>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <6047872c-8a40-4159-aeb6-ea439bfafd82@amazon.com>
+Date:   Wed, 20 Jan 2021 19:10:33 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <17579DC5-13AF-48E1-9B72-91B14AB485FA@caramail.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.179]
+X-ClientProxiedBy: EX13D49UWC002.ant.amazon.com (10.43.162.215) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
 
-Account memory consumed by secretmem to memcg. The accounting is updated
-when the memory is actually allocated and freed.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Elena Reshetova <elena.reshetova@intel.com>
-Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James Bottomley <jejb@linux.ibm.com>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tycho Andersen <tycho@tycho.ws>
-Cc: Will Deacon <will@kernel.org>
----
- mm/filemap.c   |  3 ++-
- mm/secretmem.c | 36 +++++++++++++++++++++++++++++++++++-
- 2 files changed, 37 insertions(+), 2 deletions(-)
+On 20.01.21 19:06, Mohamed Mediouni wrote:
+> =
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 2d0c6721879d..bb28dd6d9e22 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -42,6 +42,7 @@
- #include <linux/psi.h>
- #include <linux/ramfs.h>
- #include <linux/page_idle.h>
-+#include <linux/secretmem.h>
- #include "internal.h"
- 
- #define CREATE_TRACE_POINTS
-@@ -839,7 +840,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
- 	page->mapping = mapping;
- 	page->index = offset;
- 
--	if (!huge) {
-+	if (!huge && !page_is_secretmem(page)) {
- 		error = mem_cgroup_charge(page, current->mm, gfp);
- 		if (error)
- 			goto error;
-diff --git a/mm/secretmem.c b/mm/secretmem.c
-index fe193bdedd76..3c6c037b3381 100644
---- a/mm/secretmem.c
-+++ b/mm/secretmem.c
-@@ -18,6 +18,7 @@
- #include <linux/memblock.h>
- #include <linux/pseudo_fs.h>
- #include <linux/secretmem.h>
-+#include <linux/memcontrol.h>
- #include <linux/set_memory.h>
- #include <linux/sched/signal.h>
- 
-@@ -44,6 +45,32 @@ struct secretmem_ctx {
- 
- static struct cma *secretmem_cma;
- 
-+static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
-+{
-+	int err;
-+
-+	err = memcg_kmem_charge_page(page, gfp, order);
-+	if (err)
-+		return err;
-+
-+	/*
-+	 * seceremem caches are unreclaimable kernel allocations, so treat
-+	 * them as unreclaimable slab memory for VM statistics purposes
-+	 */
-+	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+			      PAGE_SIZE << order);
-+
-+	return 0;
-+}
-+
-+static void secretmem_unaccount_pages(struct page *page, int order)
-+{
-+
-+	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+			      -PAGE_SIZE << order);
-+	memcg_kmem_uncharge_page(page, order);
-+}
-+
- static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
- {
- 	unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
-@@ -56,10 +83,14 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
- 	if (!page)
- 		return -ENOMEM;
- 
--	err = set_direct_map_invalid_noflush(page, nr_pages);
-+	err = secretmem_account_pages(page, gfp, PMD_PAGE_ORDER);
- 	if (err)
- 		goto err_cma_release;
- 
-+	err = set_direct_map_invalid_noflush(page, nr_pages);
-+	if (err)
-+		goto err_memcg_uncharge;
-+
- 	addr = (unsigned long)page_address(page);
- 	err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
- 	if (err)
-@@ -76,6 +107,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
- 	 * won't fail
- 	 */
- 	set_direct_map_default_noflush(page, nr_pages);
-+err_memcg_uncharge:
-+	secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
- err_cma_release:
- 	cma_release(secretmem_cma, page, nr_pages);
- 	return err;
-@@ -307,6 +340,7 @@ static void secretmem_cleanup_chunk(struct gen_pool *pool,
- 	int i;
- 
- 	set_direct_map_default_noflush(page, nr_pages);
-+	secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
- 
- 	for (i = 0; i < nr_pages; i++)
- 		clear_highpage(page + i);
--- 
-2.28.0
+>> On 20 Jan 2021, at 17:47, Alexander Graf <graf@amazon.com> wrote:
+>>
+>> On 20.01.21 14:27, Mohamed Mediouni wrote:
+>>> Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious hardw=
+are quirk.
+>>> On Apple processors, writes using the nGnRE device memory type get drop=
+ped in flight,
+>>> getting to nowhere.
+>>> Signed-off-by: Stan Skowronek <stan@corellium.com>
+>>> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+>>> ---
+>>>   arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
+>>>   1 file changed, 26 insertions(+)
+>>> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+>>> index 1f7ee8c8b7b8..06436916f137 100644
+>>> --- a/arch/arm64/mm/proc.S
+>>> +++ b/arch/arm64/mm/proc.S
+>>> @@ -51,6 +51,25 @@
+>>>   #define TCR_KASAN_HW_FLAGS 0
+>>>   #endif
+>>> +#ifdef CONFIG_ARCH_APPLE
+>>
+>> Is there any particular reason for this #ifdef?
+>>
+>>
+>> Alex
+>>
+> Not a particular reason, as we explicitly check for the implementer ID. H=
+owever,
+> without CONFIG_ARCH_APPLE, other parts of the support for Apple CPUs
+> will not be available anyway.
+
+The ifdef below for code looks ok to me, I'm explicitly wondering why =
+
+you're guarding the #define :)
+
+Alex
+
+>>> +
+>>> +/*
+>>> + * Apple cores appear to black-hole writes done with nGnRE.
+>>> + * We settled on a work-around that uses MAIR vs changing every single=
+ user of
+>>> + * nGnRE across the arm64 code.
+>>> + */
+>>> +
+>>> +#define MAIR_EL1_SET_APPLE                                          \
+>>> +    (MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |      \
+>>> +     MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |       \
+>>> +     MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |            \
+>>> +     MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |              \
+>>> +     MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |                    \
+>>> +     MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |              \
+>>> +     MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+>>> +
+>>> +#endif
+>>> +
+>>>   /*
+>>>    * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal m=
+emory and
+>>>    * changed during __cpu_setup to Normal Tagged if the system supports=
+ MTE.
+>>> @@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
+>>>        * Memory region attributes
+>>>        */
+>>>       mov_q   x5, MAIR_EL1_SET
+>>> +#ifdef CONFIG_ARCH_APPLE
+>>> +    mrs     x0, MIDR_EL1
+>>> +    lsr     w0, w0, #24
+>>> +    mov_q   x1, MAIR_EL1_SET_APPLE
+>>> +    cmp     x0, #0x61                       // 0x61 =3D Implementer: A=
+pple
+>>> +    csel    x5, x1, x5, eq
+>>> +#endif
+>>>   #ifdef CONFIG_ARM64_MTE
+>>>       mte_tcr .req    x20
+>>> --
+>>> 2.29.2
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
