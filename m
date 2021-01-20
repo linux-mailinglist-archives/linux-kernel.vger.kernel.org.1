@@ -2,204 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2C32FD268
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1B92FD266
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390225AbhATOMM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 09:12:12 -0500
-Received: from aposti.net ([89.234.176.197]:49608 "EHLO aposti.net"
+        id S2389701AbhATOLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:11:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387536AbhATNZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:25:20 -0500
-Date:   Wed, 20 Jan 2021 13:24:24 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] pinctrl: ingenic: Improve JZ4760 support
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>, od@zcrc.me,
-        linux-gpio@vger.kernel.org,
-        linux-mips <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        Lubomir Rintel <lkundrak@v3.sk>
-Message-Id: <OKI8NQ.JSUCTWEE24HU2@crapouillou.net>
-In-Reply-To: <5CD80D68-0E53-4DB8-8FA6-1A9DEF270B11@goldelico.com>
-References: <20210120110722.20133-1-paul@crapouillou.net>
-        <5CD80D68-0E53-4DB8-8FA6-1A9DEF270B11@goldelico.com>
+        id S1730131AbhATN0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:26:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D728F23357;
+        Wed, 20 Jan 2021 13:25:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611149157;
+        bh=MTwp3yZFTXYKExZ+xtafwqzMan0PWaN1CqvmS2w1BAw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y6t4DpQToAjr0LvtfsAqK/VjXr0hPuUUWyDA9m1furti62nTO8Zm9zHw3AUWTCH6a
+         pYyrwyYOfYaweN2BurzuilFWQJS9PznLiPg6bEU0pAC/E9drFhlxUWm73ZQmUIBb3P
+         BABLVAx4jfahXw338RfIviWe3ANM7WY9ZaexCHGAjacdTQ3mGvB0tlfG4uDW9FjgfS
+         vSaoksjJdkJJ/zpCZrVnZS7fnKqrge6SdlRM3lpzAv17yl7I28c7epNYe3+XjvWrFw
+         IMBw3X3Fq4hrf3G1HR/odHLlc0rJrS5S478tRReEIyqs3m5dPYSHTavgbGcnEsPvT6
+         VegAS2CCE5wAA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
+Subject: [PATCH] hwspinlock: remove sirf driver
+Date:   Wed, 20 Jan 2021 14:25:37 +0100
+Message-Id: <20210120132537.2285157-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+The CSR SiRF prima2/atlas platforms are getting removed, so this driver
+is no longer needed.
 
-Le mer. 20 janv. 2021 à 14:13, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> 
->>  Am 20.01.2021 um 12:07 schrieb Paul Cercueil <paul@crapouillou.net>:
->> 
->>  - Add otg function and otg-vbus group.
->> 
->>  - Add lcd-8bit, lcd-16bit, lcd-18bit, lcd-generic and lcd-special
->>   groups. Change the lcd-24bit group so that it only selects the pins
->>   that aren't in the lcd-18bit and lcd-generic groups (which breaks
->>   Device Tree in theory, but there is none out there for any JZ4760
->>   based board, yet). Remove the lcd-no-pins group which is just 
->> useless.
-> 
-> Does this mean it is also usless for the other Ingenic SoC?
-> Background: we are working on jz4730 support and have simply copied 
-> it.
+Cc: Barry Song <baohua@kernel.org>
+Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+(resending because I missed the maintainers on the first submission)
 
-Yes, you can remove it.
+ .../bindings/hwlock/sirf,hwspinlock.txt       |  28 -----
+ drivers/hwspinlock/Kconfig                    |  11 --
+ drivers/hwspinlock/Makefile                   |   1 -
+ drivers/hwspinlock/sirf_hwspinlock.c          | 105 ------------------
+ 4 files changed, 145 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt
+ delete mode 100644 drivers/hwspinlock/sirf_hwspinlock.c
 
--Paul
-
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>  drivers/pinctrl/pinctrl-ingenic.c | 38 
->> +++++++++++++++++++++++--------
->>  1 file changed, 28 insertions(+), 10 deletions(-)
->> 
->>  diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
->> b/drivers/pinctrl/pinctrl-ingenic.c
->>  index 76fec77c5b67..f2746125b077 100644
->>  --- a/drivers/pinctrl/pinctrl-ingenic.c
->>  +++ b/drivers/pinctrl/pinctrl-ingenic.c
->>  @@ -376,12 +376,21 @@ static int jz4760_cim_pins[] = {
->>  	0x26, 0x27, 0x28, 0x29,
->>  	0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31,
->>  };
->>  +static int jz4760_lcd_8bit_pins[] = {
->>  +	0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x4c,
->>  +	0x4d, 0x52, 0x53,
->>  +};
->>  +static int jz4760_lcd_16bit_pins[] = {
->>  +	0x4e, 0x4f, 0x50, 0x51, 0x56, 0x57, 0x58, 0x59,
->>  +};
->>  +static int jz4760_lcd_18bit_pins[] = {
->>  +	0x5a, 0x5b,
->>  +};
->>  static int jz4760_lcd_24bit_pins[] = {
->>  -	0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,
->>  -	0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
->>  -	0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,
->>  -	0x58, 0x59, 0x5a, 0x5b,
->>  +	0x40, 0x41, 0x4a, 0x4b, 0x54, 0x55,
->>  };
->>  +static int jz4760_lcd_special_pins[] = { 0x40, 0x41, 0x4a, 0x54 };
->>  +static int jz4760_lcd_generic_pins[] = { 0x49, };
->>  static int jz4760_pwm_pwm0_pins[] = { 0x80, };
->>  static int jz4760_pwm_pwm1_pins[] = { 0x81, };
->>  static int jz4760_pwm_pwm2_pins[] = { 0x82, };
->>  @@ -390,6 +399,7 @@ static int jz4760_pwm_pwm4_pins[] = { 0x84, };
->>  static int jz4760_pwm_pwm5_pins[] = { 0x85, };
->>  static int jz4760_pwm_pwm6_pins[] = { 0x6a, };
->>  static int jz4760_pwm_pwm7_pins[] = { 0x6b, };
->>  +static int jz4760_otg_pins[] = { 0x8a, };
->> 
->>  static u8 jz4760_uart3_data_funcs[] = { 0, 1, };
->>  static u8 jz4760_mmc0_1bit_a_funcs[] = { 1, 1, 0, };
->>  @@ -436,8 +446,12 @@ static const struct group_desc jz4760_groups[] 
->> = {
->>  	INGENIC_PIN_GROUP("i2c0-data", jz4760_i2c0, 0),
->>  	INGENIC_PIN_GROUP("i2c1-data", jz4760_i2c1, 0),
->>  	INGENIC_PIN_GROUP("cim-data", jz4760_cim, 0),
->>  +	INGENIC_PIN_GROUP("lcd-8bit", jz4760_lcd_8bit, 0),
->>  +	INGENIC_PIN_GROUP("lcd-16bit", jz4760_lcd_16bit, 0),
->>  +	INGENIC_PIN_GROUP("lcd-18bit", jz4760_lcd_18bit, 0),
->>  	INGENIC_PIN_GROUP("lcd-24bit", jz4760_lcd_24bit, 0),
->>  -	{ "lcd-no-pins", },
->>  +	INGENIC_PIN_GROUP("lcd-generic", jz4760_lcd_generic, 0),
->>  +	INGENIC_PIN_GROUP("lcd-special", jz4760_lcd_special, 1),
->>  	INGENIC_PIN_GROUP("pwm0", jz4760_pwm_pwm0, 0),
->>  	INGENIC_PIN_GROUP("pwm1", jz4760_pwm_pwm1, 0),
->>  	INGENIC_PIN_GROUP("pwm2", jz4760_pwm_pwm2, 0),
->>  @@ -446,6 +460,7 @@ static const struct group_desc jz4760_groups[] 
->> = {
->>  	INGENIC_PIN_GROUP("pwm5", jz4760_pwm_pwm5, 0),
->>  	INGENIC_PIN_GROUP("pwm6", jz4760_pwm_pwm6, 0),
->>  	INGENIC_PIN_GROUP("pwm7", jz4760_pwm_pwm7, 0),
->>  +	INGENIC_PIN_GROUP("otg-vbus", jz4760_otg, 0),
->>  };
->> 
->>  static const char *jz4760_uart0_groups[] = { "uart0-data", 
->> "uart0-hwflow", };
->>  @@ -477,7 +492,10 @@ static const char *jz4760_cs6_groups[] = { 
->> "nemc-cs6", };
->>  static const char *jz4760_i2c0_groups[] = { "i2c0-data", };
->>  static const char *jz4760_i2c1_groups[] = { "i2c1-data", };
->>  static const char *jz4760_cim_groups[] = { "cim-data", };
->>  -static const char *jz4760_lcd_groups[] = { "lcd-24bit", 
->> "lcd-no-pins", };
->>  +static const char *jz4760_lcd_groups[] = {
->>  +	"lcd-8bit", "lcd-16bit", "lcd-18bit", "lcd-24bit",
->>  +	"lcd-special", "lcd-generic",
->>  +};
->>  static const char *jz4760_pwm0_groups[] = { "pwm0", };
->>  static const char *jz4760_pwm1_groups[] = { "pwm1", };
->>  static const char *jz4760_pwm2_groups[] = { "pwm2", };
->>  @@ -486,6 +504,7 @@ static const char *jz4760_pwm4_groups[] = { 
->> "pwm4", };
->>  static const char *jz4760_pwm5_groups[] = { "pwm5", };
->>  static const char *jz4760_pwm6_groups[] = { "pwm6", };
->>  static const char *jz4760_pwm7_groups[] = { "pwm7", };
->>  +static const char *jz4760_otg_groups[] = { "otg-vbus", };
->> 
->>  static const struct function_desc jz4760_functions[] = {
->>  	{ "uart0", jz4760_uart0_groups, ARRAY_SIZE(jz4760_uart0_groups), },
->>  @@ -514,6 +533,7 @@ static const struct function_desc 
->> jz4760_functions[] = {
->>  	{ "pwm5", jz4760_pwm5_groups, ARRAY_SIZE(jz4760_pwm5_groups), },
->>  	{ "pwm6", jz4760_pwm6_groups, ARRAY_SIZE(jz4760_pwm6_groups), },
->>  	{ "pwm7", jz4760_pwm7_groups, ARRAY_SIZE(jz4760_pwm7_groups), },
->>  +	{ "otg", jz4760_otg_groups, ARRAY_SIZE(jz4760_otg_groups), },
->>  };
->> 
->>  static const struct ingenic_chip_info jz4760_chip_info = {
->>  @@ -648,7 +668,6 @@ static int jz4770_mac_rmii_pins[] = {
->>  	0xa9, 0xab, 0xaa, 0xac, 0xa5, 0xa4, 0xad, 0xae, 0xa6, 0xa8,
->>  };
->>  static int jz4770_mac_mii_pins[] = { 0xa7, 0xaf, };
->>  -static int jz4770_otg_pins[] = { 0x8a, };
->> 
->>  static const struct group_desc jz4770_groups[] = {
->>  	INGENIC_PIN_GROUP("uart0-data", jz4770_uart0_data, 0),
->>  @@ -747,7 +766,7 @@ static const struct group_desc jz4770_groups[] 
->> = {
->>  	INGENIC_PIN_GROUP("pwm7", jz4770_pwm_pwm7, 0),
->>  	INGENIC_PIN_GROUP("mac-rmii", jz4770_mac_rmii, 0),
->>  	INGENIC_PIN_GROUP("mac-mii", jz4770_mac_mii, 0),
->>  -	INGENIC_PIN_GROUP("otg-vbus", jz4770_otg, 0),
->>  +	INGENIC_PIN_GROUP("otg-vbus", jz4760_otg, 0),
->>  };
->> 
->>  static const char *jz4770_uart0_groups[] = { "uart0-data", 
->> "uart0-hwflow", };
->>  @@ -808,7 +827,6 @@ static const char *jz4770_pwm5_groups[] = { 
->> "pwm5", };
->>  static const char *jz4770_pwm6_groups[] = { "pwm6", };
->>  static const char *jz4770_pwm7_groups[] = { "pwm7", };
->>  static const char *jz4770_mac_groups[] = { "mac-rmii", "mac-mii", };
->>  -static const char *jz4770_otg_groups[] = { "otg-vbus", };
->> 
->>  static const struct function_desc jz4770_functions[] = {
->>  	{ "uart0", jz4770_uart0_groups, ARRAY_SIZE(jz4770_uart0_groups), },
->>  @@ -841,7 +859,7 @@ static const struct function_desc 
->> jz4770_functions[] = {
->>  	{ "pwm6", jz4770_pwm6_groups, ARRAY_SIZE(jz4770_pwm6_groups), },
->>  	{ "pwm7", jz4770_pwm7_groups, ARRAY_SIZE(jz4770_pwm7_groups), },
->>  	{ "mac", jz4770_mac_groups, ARRAY_SIZE(jz4770_mac_groups), },
->>  -	{ "otg", jz4770_otg_groups, ARRAY_SIZE(jz4770_otg_groups), },
->>  +	{ "otg", jz4760_otg_groups, ARRAY_SIZE(jz4760_otg_groups), },
->>  };
->> 
->>  static const struct ingenic_chip_info jz4770_chip_info = {
->>  --
->>  2.29.2
->> 
-> 
-
+diff --git a/Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt b/Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt
+deleted file mode 100644
+index 9bb1240a68e0..000000000000
+--- a/Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt
++++ /dev/null
+@@ -1,28 +0,0 @@
+-SIRF Hardware spinlock device Binding
+------------------------------------------------
+-
+-Required properties :
+-- compatible : shall contain only one of the following:
+-	"sirf,hwspinlock"
+-
+-- reg : the register address of hwspinlock
+-
+-- #hwlock-cells : hwlock users only use the hwlock id to represent a specific
+-	hwlock, so the number of cells should be <1> here.
+-
+-Please look at the generic hwlock binding for usage information for consumers,
+-"Documentation/devicetree/bindings/hwlock/hwlock.txt"
+-
+-Example of hwlock provider:
+-	hwlock {
+-		compatible = "sirf,hwspinlock";
+-		reg = <0x13240000 0x00010000>;
+-		#hwlock-cells = <1>;
+-	};
+-
+-Example of hwlock users:
+-	node {
+-		...
+-		hwlocks = <&hwlock 2>;
+-		...
+-	};
+diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
+index 32cd26352f38..53e13476e831 100644
+--- a/drivers/hwspinlock/Kconfig
++++ b/drivers/hwspinlock/Kconfig
+@@ -28,17 +28,6 @@ config HWSPINLOCK_QCOM
+ 
+ 	  If unsure, say N.
+ 
+-config HWSPINLOCK_SIRF
+-	tristate "SIRF Hardware Spinlock device"
+-	depends on ARCH_SIRF || COMPILE_TEST
+-	help
+-	  Say y here to support the SIRF Hardware Spinlock device, which
+-	  provides a synchronisation mechanism for the various processors
+-	  on the SoC.
+-
+-	  It's safe to say n here if you're not interested in SIRF hardware
+-	  spinlock or just want a bare minimum kernel.
+-
+ config HWSPINLOCK_SPRD
+ 	tristate "SPRD Hardware Spinlock device"
+ 	depends on ARCH_SPRD || COMPILE_TEST
+diff --git a/drivers/hwspinlock/Makefile b/drivers/hwspinlock/Makefile
+index ed053e3f02be..1f8dd6f5814f 100644
+--- a/drivers/hwspinlock/Makefile
++++ b/drivers/hwspinlock/Makefile
+@@ -6,7 +6,6 @@
+ obj-$(CONFIG_HWSPINLOCK)		+= hwspinlock_core.o
+ obj-$(CONFIG_HWSPINLOCK_OMAP)		+= omap_hwspinlock.o
+ obj-$(CONFIG_HWSPINLOCK_QCOM)		+= qcom_hwspinlock.o
+-obj-$(CONFIG_HWSPINLOCK_SIRF)		+= sirf_hwspinlock.o
+ obj-$(CONFIG_HWSPINLOCK_SPRD)		+= sprd_hwspinlock.o
+ obj-$(CONFIG_HWSPINLOCK_STM32)		+= stm32_hwspinlock.o
+ obj-$(CONFIG_HSEM_U8500)		+= u8500_hsem.o
+diff --git a/drivers/hwspinlock/sirf_hwspinlock.c b/drivers/hwspinlock/sirf_hwspinlock.c
+deleted file mode 100644
+index a3f77120bad7..000000000000
+--- a/drivers/hwspinlock/sirf_hwspinlock.c
++++ /dev/null
+@@ -1,105 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * SIRF hardware spinlock driver
+- *
+- * Copyright (c) 2015 Cambridge Silicon Radio Limited, a CSR plc group company.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/device.h>
+-#include <linux/io.h>
+-#include <linux/slab.h>
+-#include <linux/spinlock.h>
+-#include <linux/hwspinlock.h>
+-#include <linux/platform_device.h>
+-#include <linux/of.h>
+-#include <linux/of_address.h>
+-
+-#include "hwspinlock_internal.h"
+-
+-struct sirf_hwspinlock {
+-	void __iomem *io_base;
+-	struct hwspinlock_device bank;
+-};
+-
+-/* Number of Hardware Spinlocks*/
+-#define	HW_SPINLOCK_NUMBER	30
+-
+-/* Hardware spinlock register offsets */
+-#define HW_SPINLOCK_BASE	0x404
+-#define HW_SPINLOCK_OFFSET(x)	(HW_SPINLOCK_BASE + 0x4 * (x))
+-
+-static int sirf_hwspinlock_trylock(struct hwspinlock *lock)
+-{
+-	void __iomem *lock_addr = lock->priv;
+-
+-	/* attempt to acquire the lock by reading value == 1 from it */
+-	return !!readl(lock_addr);
+-}
+-
+-static void sirf_hwspinlock_unlock(struct hwspinlock *lock)
+-{
+-	void __iomem *lock_addr = lock->priv;
+-
+-	/* release the lock by writing 0 to it */
+-	writel(0, lock_addr);
+-}
+-
+-static const struct hwspinlock_ops sirf_hwspinlock_ops = {
+-	.trylock = sirf_hwspinlock_trylock,
+-	.unlock = sirf_hwspinlock_unlock,
+-};
+-
+-static int sirf_hwspinlock_probe(struct platform_device *pdev)
+-{
+-	struct sirf_hwspinlock *hwspin;
+-	struct hwspinlock *hwlock;
+-	int idx;
+-
+-	if (!pdev->dev.of_node)
+-		return -ENODEV;
+-
+-	hwspin = devm_kzalloc(&pdev->dev,
+-			      struct_size(hwspin, bank.lock,
+-					  HW_SPINLOCK_NUMBER),
+-			      GFP_KERNEL);
+-	if (!hwspin)
+-		return -ENOMEM;
+-
+-	/* retrieve io base */
+-	hwspin->io_base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(hwspin->io_base))
+-		return PTR_ERR(hwspin->io_base);
+-
+-	for (idx = 0; idx < HW_SPINLOCK_NUMBER; idx++) {
+-		hwlock = &hwspin->bank.lock[idx];
+-		hwlock->priv = hwspin->io_base + HW_SPINLOCK_OFFSET(idx);
+-	}
+-
+-	platform_set_drvdata(pdev, hwspin);
+-
+-	return devm_hwspin_lock_register(&pdev->dev, &hwspin->bank,
+-					 &sirf_hwspinlock_ops, 0,
+-					 HW_SPINLOCK_NUMBER);
+-}
+-
+-static const struct of_device_id sirf_hwpinlock_ids[] = {
+-	{ .compatible = "sirf,hwspinlock", },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, sirf_hwpinlock_ids);
+-
+-static struct platform_driver sirf_hwspinlock_driver = {
+-	.probe = sirf_hwspinlock_probe,
+-	.driver = {
+-		.name = "atlas7_hwspinlock",
+-		.of_match_table = sirf_hwpinlock_ids,
+-	},
+-};
+-
+-module_platform_driver(sirf_hwspinlock_driver);
+-
+-MODULE_LICENSE("GPL v2");
+-MODULE_DESCRIPTION("SIRF Hardware spinlock driver");
+-MODULE_AUTHOR("Wei Chen <wei.chen@csr.com>");
+-- 
+2.29.2
 
