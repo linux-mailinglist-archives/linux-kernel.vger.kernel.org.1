@@ -2,335 +2,402 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9075D2FD1C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF432FD1BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389348AbhATNZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:25:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53944 "EHLO mail.kernel.org"
+        id S2388819AbhATNZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:25:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730924AbhATNRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:17:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB54E23383;
-        Wed, 20 Jan 2021 13:16:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611148577;
-        bh=Z5roE3TIPC9Gmt8f8p1FJ/HKbpIwPxWDuiXZbbfyvW0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XrkjCNwH9W/x4DT2EpxittA4oLspU5g9Ssgi3N6XntSPd7v7Ans6BSgWurGS58ahv
-         QydBHP5689rSHKrodEBEL+TjHehJ89NsaxHUio9wp8CTwvS8cCD3SKzFEXag6YSExC
-         EIIx+jeamcrnFvrqZ3Ji/CjBOfToYacyDJkM1M65SOGtKhUIGoRmpX7wtVmszsdhpE
-         X6RV5sehWlCIReoJUARO10xWx4vW8YVR2Tl3eCFRdYskwHd4D/MDY4FurIBAA4bqR6
-         qzkkhUynBbSiZ2VB5KDPGyeXkZeuUDqkhcfdbvCAGPP2JUwuuzO/N5xjPcwJoCEk7+
-         IG3AAuJ85VUCQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
-Subject: [PATCH 4/4] timer: remove sirf prima driver
-Date:   Wed, 20 Jan 2021 14:15:59 +0100
-Message-Id: <20210120131559.1971359-5-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120131559.1971359-1-arnd@kernel.org>
-References: <20210120131559.1971359-1-arnd@kernel.org>
+        id S1731202AbhATNRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:17:19 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9041D23359;
+        Wed, 20 Jan 2021 13:16:30 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l2DLY-008wya-N7; Wed, 20 Jan 2021 13:16:28 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 Jan 2021 13:16:28 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Stan Skowronek <stan@corellium.com>
+Subject: Re: [PATCH 1/3] arm64/kernel: FIQ support
+In-Reply-To: <9C00B3A8-FDE3-4F5F-B23B-6296A7993C9F@caramail.com>
+References: <9C00B3A8-FDE3-4F5F-B23B-6296A7993C9F@caramail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <1818f98d257c2431c600240ccda628e4@misterjones.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: mohamed.mediouni@caramail.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, stan@corellium.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Mohamed,
 
-The CSR SiRF prima2/atlas platforms are getting removed, so this driver
-is no longer needed.
+On 2021-01-20 11:36, Mohamed Mediouni wrote:
+> From: Stan Skowronek <stan@corellium.com>
+> 
+> On Apple processors, the timer is wired through FIQ.
 
-Cc: Barry Song <baohua@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/clocksource/Kconfig        |   6 -
- drivers/clocksource/Makefile       |   1 -
- drivers/clocksource/timer-prima2.c | 242 -----------------------------
- 3 files changed, 249 deletions(-)
- delete mode 100644 drivers/clocksource/timer-prima2.c
+Which timer? There are at least 3, potentially 4 timers per CPU
+that can fire.
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index ac6de462591a..a2d932825975 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -204,12 +204,6 @@ config MXS_TIMER
- 	help
- 	  Enables support for the MXS timer.
- 
--config PRIMA2_TIMER
--	bool "Prima2 timer driver" if COMPILE_TEST
--	select CLKSRC_MMIO
--	help
--	  Enables support for the Prima2 timer.
--
- config NSPIRE_TIMER
- 	bool "NSpire timer driver" if COMPILE_TEST
- 	select CLKSRC_MMIO
-diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index 49496637700f..d6ffe3d77d7e 100644
---- a/drivers/clocksource/Makefile
-+++ b/drivers/clocksource/Makefile
-@@ -32,7 +32,6 @@ obj-$(CONFIG_BCM2835_TIMER)	+= bcm2835_timer.o
- obj-$(CONFIG_CLPS711X_TIMER)	+= clps711x-timer.o
- obj-$(CONFIG_MXS_TIMER)		+= mxs_timer.o
- obj-$(CONFIG_CLKSRC_PXA)	+= timer-pxa.o
--obj-$(CONFIG_PRIMA2_TIMER)	+= timer-prima2.o
- obj-$(CONFIG_SUN4I_TIMER)	+= timer-sun4i.o
- obj-$(CONFIG_SUN5I_HSTIMER)	+= timer-sun5i.o
- obj-$(CONFIG_MESON6_TIMER)	+= timer-meson6.o
-diff --git a/drivers/clocksource/timer-prima2.c b/drivers/clocksource/timer-prima2.c
-deleted file mode 100644
-index c5d469342a9d..000000000000
---- a/drivers/clocksource/timer-prima2.c
-+++ /dev/null
-@@ -1,242 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * System timer for CSR SiRFprimaII
-- *
-- * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
-- */
--
--#include <linux/kernel.h>
--#include <linux/interrupt.h>
--#include <linux/clockchips.h>
--#include <linux/clocksource.h>
--#include <linux/bitops.h>
--#include <linux/irq.h>
--#include <linux/clk.h>
--#include <linux/err.h>
--#include <linux/slab.h>
--#include <linux/of.h>
--#include <linux/of_irq.h>
--#include <linux/of_address.h>
--#include <linux/sched_clock.h>
--
--#define PRIMA2_CLOCK_FREQ 1000000
--
--#define SIRFSOC_TIMER_COUNTER_LO	0x0000
--#define SIRFSOC_TIMER_COUNTER_HI	0x0004
--#define SIRFSOC_TIMER_MATCH_0		0x0008
--#define SIRFSOC_TIMER_MATCH_1		0x000C
--#define SIRFSOC_TIMER_MATCH_2		0x0010
--#define SIRFSOC_TIMER_MATCH_3		0x0014
--#define SIRFSOC_TIMER_MATCH_4		0x0018
--#define SIRFSOC_TIMER_MATCH_5		0x001C
--#define SIRFSOC_TIMER_STATUS		0x0020
--#define SIRFSOC_TIMER_INT_EN		0x0024
--#define SIRFSOC_TIMER_WATCHDOG_EN	0x0028
--#define SIRFSOC_TIMER_DIV		0x002C
--#define SIRFSOC_TIMER_LATCH		0x0030
--#define SIRFSOC_TIMER_LATCHED_LO	0x0034
--#define SIRFSOC_TIMER_LATCHED_HI	0x0038
--
--#define SIRFSOC_TIMER_WDT_INDEX		5
--
--#define SIRFSOC_TIMER_LATCH_BIT	 BIT(0)
--
--#define SIRFSOC_TIMER_REG_CNT 11
--
--static const u32 sirfsoc_timer_reg_list[SIRFSOC_TIMER_REG_CNT] = {
--	SIRFSOC_TIMER_MATCH_0, SIRFSOC_TIMER_MATCH_1, SIRFSOC_TIMER_MATCH_2,
--	SIRFSOC_TIMER_MATCH_3, SIRFSOC_TIMER_MATCH_4, SIRFSOC_TIMER_MATCH_5,
--	SIRFSOC_TIMER_INT_EN, SIRFSOC_TIMER_WATCHDOG_EN, SIRFSOC_TIMER_DIV,
--	SIRFSOC_TIMER_LATCHED_LO, SIRFSOC_TIMER_LATCHED_HI,
--};
--
--static u32 sirfsoc_timer_reg_val[SIRFSOC_TIMER_REG_CNT];
--
--static void __iomem *sirfsoc_timer_base;
--
--/* timer0 interrupt handler */
--static irqreturn_t sirfsoc_timer_interrupt(int irq, void *dev_id)
--{
--	struct clock_event_device *ce = dev_id;
--
--	WARN_ON(!(readl_relaxed(sirfsoc_timer_base + SIRFSOC_TIMER_STATUS) &
--		BIT(0)));
--
--	/* clear timer0 interrupt */
--	writel_relaxed(BIT(0), sirfsoc_timer_base + SIRFSOC_TIMER_STATUS);
--
--	ce->event_handler(ce);
--
--	return IRQ_HANDLED;
--}
--
--/* read 64-bit timer counter */
--static u64 notrace sirfsoc_timer_read(struct clocksource *cs)
--{
--	u64 cycles;
--
--	/* latch the 64-bit timer counter */
--	writel_relaxed(SIRFSOC_TIMER_LATCH_BIT,
--		sirfsoc_timer_base + SIRFSOC_TIMER_LATCH);
--	cycles = readl_relaxed(sirfsoc_timer_base + SIRFSOC_TIMER_LATCHED_HI);
--	cycles = (cycles << 32) |
--		readl_relaxed(sirfsoc_timer_base + SIRFSOC_TIMER_LATCHED_LO);
--
--	return cycles;
--}
--
--static int sirfsoc_timer_set_next_event(unsigned long delta,
--	struct clock_event_device *ce)
--{
--	unsigned long now, next;
--
--	writel_relaxed(SIRFSOC_TIMER_LATCH_BIT,
--		sirfsoc_timer_base + SIRFSOC_TIMER_LATCH);
--	now = readl_relaxed(sirfsoc_timer_base + SIRFSOC_TIMER_LATCHED_LO);
--	next = now + delta;
--	writel_relaxed(next, sirfsoc_timer_base + SIRFSOC_TIMER_MATCH_0);
--	writel_relaxed(SIRFSOC_TIMER_LATCH_BIT,
--		sirfsoc_timer_base + SIRFSOC_TIMER_LATCH);
--	now = readl_relaxed(sirfsoc_timer_base + SIRFSOC_TIMER_LATCHED_LO);
--
--	return next - now > delta ? -ETIME : 0;
--}
--
--static int sirfsoc_timer_shutdown(struct clock_event_device *evt)
--{
--	u32 val = readl_relaxed(sirfsoc_timer_base + SIRFSOC_TIMER_INT_EN);
--
--	writel_relaxed(val & ~BIT(0),
--		       sirfsoc_timer_base + SIRFSOC_TIMER_INT_EN);
--	return 0;
--}
--
--static int sirfsoc_timer_set_oneshot(struct clock_event_device *evt)
--{
--	u32 val = readl_relaxed(sirfsoc_timer_base + SIRFSOC_TIMER_INT_EN);
--
--	writel_relaxed(val | BIT(0), sirfsoc_timer_base + SIRFSOC_TIMER_INT_EN);
--	return 0;
--}
--
--static void sirfsoc_clocksource_suspend(struct clocksource *cs)
--{
--	int i;
--
--	writel_relaxed(SIRFSOC_TIMER_LATCH_BIT,
--		sirfsoc_timer_base + SIRFSOC_TIMER_LATCH);
--
--	for (i = 0; i < SIRFSOC_TIMER_REG_CNT; i++)
--		sirfsoc_timer_reg_val[i] =
--			readl_relaxed(sirfsoc_timer_base +
--				sirfsoc_timer_reg_list[i]);
--}
--
--static void sirfsoc_clocksource_resume(struct clocksource *cs)
--{
--	int i;
--
--	for (i = 0; i < SIRFSOC_TIMER_REG_CNT - 2; i++)
--		writel_relaxed(sirfsoc_timer_reg_val[i],
--			sirfsoc_timer_base + sirfsoc_timer_reg_list[i]);
--
--	writel_relaxed(sirfsoc_timer_reg_val[SIRFSOC_TIMER_REG_CNT - 2],
--		sirfsoc_timer_base + SIRFSOC_TIMER_COUNTER_LO);
--	writel_relaxed(sirfsoc_timer_reg_val[SIRFSOC_TIMER_REG_CNT - 1],
--		sirfsoc_timer_base + SIRFSOC_TIMER_COUNTER_HI);
--}
--
--static struct clock_event_device sirfsoc_clockevent = {
--	.name = "sirfsoc_clockevent",
--	.rating = 200,
--	.features = CLOCK_EVT_FEAT_ONESHOT,
--	.set_state_shutdown = sirfsoc_timer_shutdown,
--	.set_state_oneshot = sirfsoc_timer_set_oneshot,
--	.set_next_event = sirfsoc_timer_set_next_event,
--};
--
--static struct clocksource sirfsoc_clocksource = {
--	.name = "sirfsoc_clocksource",
--	.rating = 200,
--	.mask = CLOCKSOURCE_MASK(64),
--	.flags = CLOCK_SOURCE_IS_CONTINUOUS,
--	.read = sirfsoc_timer_read,
--	.suspend = sirfsoc_clocksource_suspend,
--	.resume = sirfsoc_clocksource_resume,
--};
--
--/* Overwrite weak default sched_clock with more precise one */
--static u64 notrace sirfsoc_read_sched_clock(void)
--{
--	return sirfsoc_timer_read(NULL);
--}
--
--static void __init sirfsoc_clockevent_init(void)
--{
--	sirfsoc_clockevent.cpumask = cpumask_of(0);
--	clockevents_config_and_register(&sirfsoc_clockevent, PRIMA2_CLOCK_FREQ,
--					2, -2);
--}
--
--/* initialize the kernel jiffy timer source */
--static int __init sirfsoc_prima2_timer_init(struct device_node *np)
--{
--	unsigned long rate;
--	unsigned int irq;
--	struct clk *clk;
--	int ret;
--
--	clk = of_clk_get(np, 0);
--	if (IS_ERR(clk)) {
--		pr_err("Failed to get clock\n");
--		return PTR_ERR(clk);
--	}
--
--	ret = clk_prepare_enable(clk);
--	if (ret) {
--		pr_err("Failed to enable clock\n");
--		return ret;
--	}
--
--	rate = clk_get_rate(clk);
--
--	if (rate < PRIMA2_CLOCK_FREQ || rate % PRIMA2_CLOCK_FREQ) {
--		pr_err("Invalid clock rate\n");
--		return -EINVAL;
--	}
--
--	sirfsoc_timer_base = of_iomap(np, 0);
--	if (!sirfsoc_timer_base) {
--		pr_err("unable to map timer cpu registers\n");
--		return -ENXIO;
--	}
--
--	irq = irq_of_parse_and_map(np, 0);
--
--	writel_relaxed(rate / PRIMA2_CLOCK_FREQ / 2 - 1,
--		sirfsoc_timer_base + SIRFSOC_TIMER_DIV);
--	writel_relaxed(0, sirfsoc_timer_base + SIRFSOC_TIMER_COUNTER_LO);
--	writel_relaxed(0, sirfsoc_timer_base + SIRFSOC_TIMER_COUNTER_HI);
--	writel_relaxed(BIT(0), sirfsoc_timer_base + SIRFSOC_TIMER_STATUS);
--
--	ret = clocksource_register_hz(&sirfsoc_clocksource, PRIMA2_CLOCK_FREQ);
--	if (ret) {
--		pr_err("Failed to register clocksource\n");
--		return ret;
--	}
--
--	sched_clock_register(sirfsoc_read_sched_clock, 64, PRIMA2_CLOCK_FREQ);
--
--	ret = request_irq(irq, sirfsoc_timer_interrupt, IRQF_TIMER,
--			  "sirfsoc_timer0", &sirfsoc_clockevent);
--	if (ret) {
--		pr_err("Failed to setup irq\n");
--		return ret;
--	}
--
--	sirfsoc_clockevent_init();
--
--	return 0;
--}
--TIMER_OF_DECLARE(sirfsoc_prima2_timer,
--	"sirf,prima2-tick", sirfsoc_prima2_timer_init);
+> As such, add FIQ support to the kernel.
+> 
+> Signed-off-by: Stan Skowronek <stan@corellium.com>
+
+Missing SoB from the sender.
+
+> ---
+>  arch/arm64/include/asm/arch_gicv3.h |  2 +-
+>  arch/arm64/include/asm/assembler.h  |  8 ++--
+>  arch/arm64/include/asm/daifflags.h  |  4 +-
+>  arch/arm64/include/asm/irq.h        |  4 ++
+>  arch/arm64/include/asm/irqflags.h   |  6 +--
+>  arch/arm64/kernel/entry.S           | 74 ++++++++++++++++++++++++++---
+>  arch/arm64/kernel/irq.c             | 14 ++++++
+>  arch/arm64/kernel/process.c         |  2 +-
+>  8 files changed, 97 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/arch_gicv3.h
+> b/arch/arm64/include/asm/arch_gicv3.h
+> index 880b9054d75c..934b9be582d2 100644
+> --- a/arch/arm64/include/asm/arch_gicv3.h
+> +++ b/arch/arm64/include/asm/arch_gicv3.h
+> @@ -173,7 +173,7 @@ static inline void gic_pmr_mask_irqs(void)
+> 
+>  static inline void gic_arch_enable_irqs(void)
+>  {
+> -	asm volatile ("msr daifclr, #2" : : : "memory");
+> +	asm volatile ("msr daifclr, #3" : : : "memory");
+
+If I trust the persistent rumour, this system doesn't have a GIC.
+Why this change?
+
+>  }
+> 
+>  #endif /* __ASSEMBLY__ */
+> diff --git a/arch/arm64/include/asm/assembler.h
+> b/arch/arm64/include/asm/assembler.h
+> index bf125c591116..6fe55713dfe0 100644
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -40,9 +40,9 @@
+>  	msr	daif, \flags
+>  	.endm
+> 
+> -	/* IRQ is the lowest priority flag, unconditionally unmask the rest. 
+> */
+> -	.macro enable_da_f
+> -	msr	daifclr, #(8 | 4 | 1)
+> +	/* IRQ/FIQ is the lowest priority flag, unconditionally unmask the 
+> rest. */
+> +	.macro enable_da
+> +	msr	daifclr, #(8 | 4)
+
+This cannot be unconditional. This potentially changes existing 
+behaviours,
+and I'd feel a lot safer if FIQ was only messed with on that specific 
+HW.
+
+I have the feeling that this should be detected on the boot CPU and 
+patched
+before any interrupt can fire.
+
+>  	.endm
+> 
+>  /*
+> @@ -50,7 +50,7 @@
+>   */
+>  	.macro	save_and_disable_irq, flags
+>  	mrs	\flags, daif
+> -	msr	daifset, #2
+> +	msr	daifset, #3
+>  	.endm
+> 
+>  	.macro	restore_irq, flags
+> diff --git a/arch/arm64/include/asm/daifflags.h
+> b/arch/arm64/include/asm/daifflags.h
+> index 1c26d7baa67f..44de96c7fb1a 100644
+> --- a/arch/arm64/include/asm/daifflags.h
+> +++ b/arch/arm64/include/asm/daifflags.h
+> @@ -13,8 +13,8 @@
+>  #include <asm/ptrace.h>
+> 
+>  #define DAIF_PROCCTX		0
+> -#define DAIF_PROCCTX_NOIRQ	PSR_I_BIT
+> -#define DAIF_ERRCTX		(PSR_I_BIT | PSR_A_BIT)
+> +#define DAIF_PROCCTX_NOIRQ	(PSR_I_BIT | PSR_F_BIT)
+> +#define DAIF_ERRCTX		(PSR_I_BIT | PSR_F_BIT | PSR_A_BIT)
+>  #define DAIF_MASK		(PSR_D_BIT | PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
+> 
+> 
+> diff --git a/arch/arm64/include/asm/irq.h 
+> b/arch/arm64/include/asm/irq.h
+> index b2b0c6405eb0..2d1537d3a245 100644
+> --- a/arch/arm64/include/asm/irq.h
+> +++ b/arch/arm64/include/asm/irq.h
+> @@ -13,5 +13,9 @@ static inline int nr_legacy_irqs(void)
+>  	return 0;
+>  }
+> 
+> +int set_handle_fiq(void (*handle_fiq)(struct pt_regs *));
+> +
+> +extern void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init;
+
+I guess this is set from the root interrupt controller, which also
+will set handle_arch_irq? Why do we need two entry points? We have
+ISR_EL1 to find out what is pending. Isn't that enough?
+
+> +
+>  #endif /* !__ASSEMBLER__ */
+>  #endif
+> diff --git a/arch/arm64/include/asm/irqflags.h
+> b/arch/arm64/include/asm/irqflags.h
+> index ff328e5bbb75..26d7f378113e 100644
+> --- a/arch/arm64/include/asm/irqflags.h
+> +++ b/arch/arm64/include/asm/irqflags.h
+> @@ -35,7 +35,7 @@ static inline void arch_local_irq_enable(void)
+>  	}
+> 
+>  	asm volatile(ALTERNATIVE(
+> -		"msr	daifclr, #2		// arch_local_irq_enable",
+> +		"msr	daifclr, #3		// arch_local_irq_enable",
+>  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
+>  		ARM64_HAS_IRQ_PRIO_MASKING)
+>  		:
+> @@ -54,7 +54,7 @@ static inline void arch_local_irq_disable(void)
+>  	}
+> 
+>  	asm volatile(ALTERNATIVE(
+> -		"msr	daifset, #2		// arch_local_irq_disable",
+> +		"msr	daifset, #3		// arch_local_irq_disable",
+>  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
+>  		ARM64_HAS_IRQ_PRIO_MASKING)
+>  		:
+> @@ -85,7 +85,7 @@ static inline int arch_irqs_disabled_flags(unsigned
+> long flags)
+>  	int res;
+> 
+>  	asm volatile(ALTERNATIVE(
+> -		"and	%w0, %w1, #" __stringify(PSR_I_BIT),
+> +		"and	%w0, %w1, #" __stringify(PSR_I_BIT | PSR_F_BIT),
+>  		"eor	%w0, %w1, #" __stringify(GIC_PRIO_IRQON),
+>  		ARM64_HAS_IRQ_PRIO_MASKING)
+>  		: "=&r" (res)
+> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> index c9bae73f2621..abcca0db0736 100644
+> --- a/arch/arm64/kernel/entry.S
+> +++ b/arch/arm64/kernel/entry.S
+> @@ -499,6 +499,14 @@ tsk	.req	x28		// current thread_info
+>  	irq_stack_exit
+>  	.endm
+> 
+> +	.macro	fiq_handler
+> +	ldr_l	x1, handle_arch_fiq
+> +	mov	x0, sp
+> +	irq_stack_entry
+> +	blr	x1
+> +	irq_stack_exit
+> +	.endm
+> +
+>  #ifdef CONFIG_ARM64_PSEUDO_NMI
+>  	/*
+>  	 * Set res to 0 if irqs were unmasked in interrupted context.
+> @@ -547,18 +555,18 @@ SYM_CODE_START(vectors)
+> 
+>  	kernel_ventry	1, sync				// Synchronous EL1h
+>  	kernel_ventry	1, irq				// IRQ EL1h
+> -	kernel_ventry	1, fiq_invalid			// FIQ EL1h
+> +	kernel_ventry	1, fiq				// FIQ EL1h
+>  	kernel_ventry	1, error			// Error EL1h
+> 
+>  	kernel_ventry	0, sync				// Synchronous 64-bit EL0
+>  	kernel_ventry	0, irq				// IRQ 64-bit EL0
+> -	kernel_ventry	0, fiq_invalid			// FIQ 64-bit EL0
+> +	kernel_ventry	0, fiq				// FIQ 64-bit EL0
+>  	kernel_ventry	0, error			// Error 64-bit EL0
+> 
+>  #ifdef CONFIG_COMPAT
+>  	kernel_ventry	0, sync_compat, 32		// Synchronous 32-bit EL0
+>  	kernel_ventry	0, irq_compat, 32		// IRQ 32-bit EL0
+> -	kernel_ventry	0, fiq_invalid_compat, 32	// FIQ 32-bit EL0
+> +	kernel_ventry	0, fiq_compat, 32		// FIQ 32-bit EL0
+>  	kernel_ventry	0, error_compat, 32		// Error 32-bit EL0
+>  #else
+>  	kernel_ventry	0, sync_invalid, 32		// Synchronous 32-bit EL0
+> @@ -661,7 +669,7 @@ SYM_CODE_END(el1_sync)
+>  SYM_CODE_START_LOCAL_NOALIGN(el1_irq)
+>  	kernel_entry 1
+>  	gic_prio_irq_setup pmr=x20, tmp=x1
+> -	enable_da_f
+> +	enable_da
+> 
+>  	mov	x0, sp
+>  	bl	enter_el1_irq_or_nmi
+> @@ -689,6 +697,38 @@ alternative_else_nop_endif
+>  	kernel_exit 1
+>  SYM_CODE_END(el1_irq)
+> 
+> +	.align	6
+> +SYM_CODE_START_LOCAL_NOALIGN(el1_fiq)
+> +	kernel_entry 1
+> +	gic_prio_irq_setup pmr=x20, tmp=x1
+
+This doesn't make much sense. The HW doesn't have a GIC, and Linux
+doesn't use Group-0 interrupts, even in a guest.
+
+> +	enable_da
+> +
+> +	mov	x0, sp
+> +	bl	enter_el1_irq_or_nmi
+> +
+> +	fiq_handler
+> +
+> +#ifdef CONFIG_PREEMPTION
+> +	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
+> +alternative_if ARM64_HAS_IRQ_PRIO_MASKING
+> +	/*
+> +	 * DA_F were cleared at start of handling. If anything is set in 
+> DAIF,
+> +	 * we come back from an NMI, so skip preemption
+> +	 */
+> +	mrs	x0, daif
+> +	orr	x24, x24, x0
+> +alternative_else_nop_endif
+> +	cbnz	x24, 1f				// preempt count != 0 || NMI return path
+> +	bl	arm64_preempt_schedule_irq	// irq en/disable is done inside
+> +1:
+> +#endif
+> +
+> +	mov	x0, sp
+> +	bl	exit_el1_irq_or_nmi
+> +
+> +	kernel_exit 1
+> +SYM_CODE_END(el1_fiq)
+
+Given that this is essentially a copy paste of el1_irq, and that
+a separate FIQ entry point seems superfluous, I don't think we
+need any of this, and it could be implemented just as the IRQ
+vector.
+
+> +
+>  /*
+>   * EL0 mode handlers.
+>   */
+> @@ -715,6 +755,12 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_irq_compat)
+>  	b	el0_irq_naked
+>  SYM_CODE_END(el0_irq_compat)
+> 
+> +	.align	6
+> +SYM_CODE_START_LOCAL_NOALIGN(el0_fiq_compat)
+> +	kernel_entry 0, 32
+> +	b	el0_fiq_naked
+> +SYM_CODE_END(el0_fiq_compat)
+> +
+>  SYM_CODE_START_LOCAL_NOALIGN(el0_error_compat)
+>  	kernel_entry 0, 32
+>  	b	el0_error_naked
+> @@ -727,7 +773,7 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_irq)
+>  el0_irq_naked:
+>  	gic_prio_irq_setup pmr=x20, tmp=x0
+>  	user_exit_irqoff
+> -	enable_da_f
+> +	enable_da
+> 
+>  	tbz	x22, #55, 1f
+>  	bl	do_el0_irq_bp_hardening
+> @@ -737,6 +783,22 @@ el0_irq_naked:
+>  	b	ret_to_user
+>  SYM_CODE_END(el0_irq)
+> 
+> +	.align	6
+> +SYM_CODE_START_LOCAL_NOALIGN(el0_fiq)
+> +	kernel_entry 0
+> +el0_fiq_naked:
+> +	gic_prio_irq_setup pmr=x20, tmp=x0
+> +	user_exit_irqoff
+> +	enable_da
+> +
+> +	tbz	x22, #55, 1f
+> +	bl	do_el0_irq_bp_hardening
+> +1:
+> +	fiq_handler
+> +
+> +	b	ret_to_user
+> +SYM_CODE_END(el0_fiq)
+
+Same thing.
+
+> +
+>  SYM_CODE_START_LOCAL(el1_error)
+>  	kernel_entry 1
+>  	mrs	x1, esr_el1
+> @@ -757,7 +819,7 @@ el0_error_naked:
+>  	mov	x0, sp
+>  	mov	x1, x25
+>  	bl	do_serror
+> -	enable_da_f
+> +	enable_da
+>  	b	ret_to_user
+>  SYM_CODE_END(el0_error)
+> 
+> diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
+> index dfb1feab867d..4d7a9fb41d93 100644
+> --- a/arch/arm64/kernel/irq.c
+> +++ b/arch/arm64/kernel/irq.c
+> @@ -88,3 +88,17 @@ void __init init_IRQ(void)
+>  		local_daif_restore(DAIF_PROCCTX_NOIRQ);
+>  	}
+>  }
+> +
+> +/*
+> + * Analogous to the generic handle_arch_irq / set_handle_irq
+> + */
+> +void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init;
+> +
+> +int __init set_handle_fiq(void (*handle_fiq)(struct pt_regs *))
+> +{
+> +	if (handle_arch_fiq)
+> +		return -EBUSY;
+> +
+> +	handle_arch_fiq = handle_fiq;
+> +	return 0;
+> +}
+
+Also, this has no caller, so it is pretty hard to judge how useful
+this is.
+
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 6616486a58fe..34ec400288d0 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -84,7 +84,7 @@ static void noinstr __cpu_do_idle_irqprio(void)
+>  	unsigned long daif_bits;
+> 
+>  	daif_bits = read_sysreg(daif);
+> -	write_sysreg(daif_bits | PSR_I_BIT, daif);
+> +	write_sysreg(daif_bits | PSR_I_BIT | PSR_F_BIT, daif);
+> 
+>  	/*
+>  	 * Unmask PMR before going idle to make sure interrupts can
+
+Thanks,
+
+         M.
 -- 
-2.29.2
-
+Jazz is not dead. It just smells funny...
