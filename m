@@ -2,169 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1962FCE49
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127182FCE48
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732880AbhATKUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:20:20 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:60762 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730285AbhATKLf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732863AbhATKUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:20:17 -0500
+Received: from mga09.intel.com ([134.134.136.24]:62984 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730312AbhATKLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 05:11:35 -0500
-Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10KAAm2J097005;
-        Wed, 20 Jan 2021 19:10:48 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
- Wed, 20 Jan 2021 19:10:48 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
-Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10KAAgl5096975
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 20 Jan 2021 19:10:47 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH v4 (resend)] lockdep: Allow tuning tracing capacity constants.
-Date:   Wed, 20 Jan 2021 19:10:44 +0900
-Message-Id: <20210120101044.9106-1-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.4
+IronPort-SDR: Yl75W1c2bDz5RG7CWTuxihD4u6xBG72hM+6vu+6iEWg9JAJXZkECI/MGSmb64aKJ9XN3BagUpn
+ lQRfSZMZbVHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="179228308"
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="179228308"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 02:10:50 -0800
+IronPort-SDR: Y3q4iHQ39GKdIRFZJuHQUZndvahXpGhqws8lMBncjHvIY87iG83soE++lcwWFCbYh4Sg5tKHWb
+ mAaau6gwipwA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="355996544"
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7])
+  by fmsmga008.fm.intel.com with ESMTP; 20 Jan 2021 02:10:48 -0800
+Received: from irsmsx602.ger.corp.intel.com (163.33.146.8) by
+ irsmsx601.ger.corp.intel.com (163.33.146.7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 20 Jan 2021 10:10:47 +0000
+Received: from irsmsx602.ger.corp.intel.com ([163.33.146.8]) by
+ irsmsx602.ger.corp.intel.com ([163.33.146.8]) with mapi id 15.01.1713.004;
+ Wed, 20 Jan 2021 10:10:47 +0000
+From:   "Girdwood, Liam R" <liam.r.girdwood@intel.com>
+To:     "anton.yakovlev@opensynergy.com" <anton.yakovlev@opensynergy.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "jasowang@redhat.com" <jasowang@redhat.com>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>
+Subject: Re: [PATCH 0/7] ALSA: add virtio sound driver
+Thread-Topic: [PATCH 0/7] ALSA: add virtio sound driver
+Thread-Index: AQHW7xSF5+25jD6v60GKV9bYQ1UsAw==
+Date:   Wed, 20 Jan 2021 10:10:47 +0000
+Message-ID: <3ac230040630c3b6695f8a091e000f5b4f90b3ce.camel@intel.com>
+References: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
+In-Reply-To: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A8799E9B4388B3499FBC9D607BD6246A@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since syzkaller continues various test cases until the kernel crashes,
-syzkaller tends to examine more locking dependencies than normal systems.
-As a result, syzbot is reporting that the fuzz testing was terminated
-due to hitting upper limits lockdep can track [1] [2] [3].
-
-Peter Zijlstra does not want to allow tuning these limits via kernel
-config options, for such change discourages thinking. But analysis via
-/proc/lockdep* did not show any obvious culprit [4] [5]. It is possible
-that many hundreds of kn->active lock instances are to some degree
-contributing to these problems, but there is no means to verify whether
-these instances are created for protecting same callback functions.
-Unless Peter provides a way to make these instances per "which callback
-functions the lock instance will call (identified by something like MD5
-of string representations of callback functions which each lock instance
-will protect)" than plain "serial number", I don't think that we can
-verify the culprit.
-
-[1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
-[2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
-[3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
-[4] https://lkml.kernel.org/r/4b8f7a57-fa20-47bd-48a0-ae35d860f233@i-love.sakura.ne.jp
-[5] https://lkml.kernel.org/r/1c351187-253b-2d49-acaf-4563c63ae7d2@i-love.sakura.ne.jp
-
-Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
----
- kernel/locking/lockdep.c           |  2 +-
- kernel/locking/lockdep_internals.h |  8 +++---
- lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index c1418b47f625..c0553872668a 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1391,7 +1391,7 @@ static int add_lock_to_list(struct lock_class *this,
- /*
-  * For good efficiency of modular, we use power of 2
-  */
--#define MAX_CIRCULAR_QUEUE_SIZE		4096UL
-+#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
- #define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
- 
- /*
-diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
-index de49f9e1c11b..ecb8662e7a4e 100644
---- a/kernel/locking/lockdep_internals.h
-+++ b/kernel/locking/lockdep_internals.h
-@@ -99,16 +99,16 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
- #define MAX_STACK_TRACE_ENTRIES	262144UL
- #define STACK_TRACE_HASH_SIZE	8192
- #else
--#define MAX_LOCKDEP_ENTRIES	32768UL
-+#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
- 
--#define MAX_LOCKDEP_CHAINS_BITS	16
-+#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
- 
- /*
-  * Stack-trace: tightly packed array of stack backtrace
-  * addresses. Protected by the hash_lock.
-  */
--#define MAX_STACK_TRACE_ENTRIES	524288UL
--#define STACK_TRACE_HASH_SIZE	16384
-+#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
-+#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
- #endif
- 
- /*
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 7937265ef879..4cb84b499636 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1332,6 +1332,46 @@ config LOCKDEP
- config LOCKDEP_SMALL
- 	bool
- 
-+config LOCKDEP_BITS
-+	int "Bitsize for MAX_LOCKDEP_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 15
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_ENTRIES too low!" message.
-+
-+config LOCKDEP_CHAINS_BITS
-+	int "Bitsize for MAX_LOCKDEP_CHAINS"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 16
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
-+
-+config LOCKDEP_STACK_TRACE_BITS
-+	int "Bitsize for MAX_STACK_TRACE_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 19
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_STACK_TRACE_ENTRIES too low!" message.
-+
-+config LOCKDEP_STACK_TRACE_HASH_BITS
-+	int "Bitsize for STACK_TRACE_HASH_SIZE"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 14
-+	help
-+	  Try increasing this value if you need large MAX_STACK_TRACE_ENTRIES.
-+
-+config LOCKDEP_CIRCULAR_QUEUE_BITS
-+	int "Bitsize for elements in circular_queue struct"
-+	depends on LOCKDEP
-+	range 10 30
-+	default 12
-+	help
-+	  Try increasing this value if you hit "lockdep bfs error:-1" warning due to __cq_enqueue() failure.
-+
- config DEBUG_LOCKDEP
- 	bool "Lock dependency engine debugging"
- 	depends on DEBUG_KERNEL && LOCKDEP
--- 
-2.18.4
+SGkgQW50b24sDQoNCk9uIFdlZCwgMjAyMS0wMS0yMCBhdCAwMTozNiArMDEwMCwgQW50b24gWWFr
+b3ZsZXYgd3JvdGU6DQo+IFRoaXMgc2VyaWVzIGltcGxlbWVudHMgYSBkcml2ZXIgcGFydCBvZiB0
+aGUgdmlydGlvIHNvdW5kIGRldmljZQ0KPiBzcGVjaWZpY2F0aW9uIHY4IFsxXS4NCj4gDQo+IFRo
+ZSBkcml2ZXIgc3VwcG9ydHMgUENNIHBsYXliYWNrIGFuZCBjYXB0dXJlIHN1YnN0cmVhbXMsIGph
+Y2sgYW5kDQo+IGNoYW5uZWwgbWFwIGNvbnRyb2xzLiBBIG1lc3NhZ2UtYmFzZWQgdHJhbnNwb3J0
+IGlzIHVzZWQgdG8gd3JpdGUvcmVhZA0KPiBQQ00gZnJhbWVzIHRvL2Zyb20gYSBkZXZpY2UuDQo+
+IA0KPiBUaGUgc2VyaWVzIGlzIGJhc2VkIChhbmQgd2FzIGFjdHVhbGx5IHRlc3RlZCkgb24gTGlu
+dXMncyBtYXN0ZXINCj4gYnJhbmNoIFsyXSwgb24gdG9wIG9mDQo+IA0KPiBjb21taXQgMWUyYTE5
+OWY2Y2NkICgiTWVyZ2UgdGFnICdzcGktZml4LXY1LjExLXJjNCcgb2YgLi4uIikNCj4gDQo+IEFz
+IGEgZGV2aWNlIHBhcnQgd2FzIHVzZWQgT3BlblN5bmVyZ3kgcHJvcHJpZXRhcnkgaW1wbGVtZW50
+YXRpb24uDQo+IA0KPiBBbnkgY29tbWVudHMgYXJlIHZlcnkgd2VsY29tZS4NCj4gDQoNClRoaXMg
+anVzdCBsb29rcyBsaWtlIHRoZSBndWVzdCBmcm9udCBlbmQgaGVyZSwgZG8geW91IGhhdmUgYSBm
+b2xsb3cgdXANCnNlcmllcyBmb3IgdGhlIGhvc3QgYmFja2VuZCA/DQoNClRoYW5rcw0KDQpMaWFt
+ICANCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBDb3Jwb3JhdGlvbiAoVUspIExpbWl0ZWQKUmVnaXN0ZXJl
+ZCBOby4gMTEzNDk0NSAoRW5nbGFuZCkKUmVnaXN0ZXJlZCBPZmZpY2U6IFBpcGVycyBXYXksIFN3
+aW5kb24gU04zIDFSSgpWQVQgTm86IDg2MCAyMTczIDQ3CgpUaGlzIGUtbWFpbCBhbmQgYW55IGF0
+dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IKdGhlIHNvbGUg
+dXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykuIEFueSByZXZpZXcgb3IgZGlzdHJpYnV0
+aW9uCmJ5IG90aGVycyBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUg
+aW50ZW5kZWQKcmVjaXBpZW50LCBwbGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGFuZCBkZWxldGUg
+YWxsIGNvcGllcy4K
 
