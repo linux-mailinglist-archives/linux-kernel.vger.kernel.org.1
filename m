@@ -2,196 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02572FD757
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1DB2FD75A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390789AbhATRky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:40:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
+        id S2391843AbhATRlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:41:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387425AbhATRh3 (ORCPT
+        with ESMTP id S1730545AbhATRiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:37:29 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC85C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:36:44 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id b26so35240516lff.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:36:44 -0800 (PST)
+        Wed, 20 Jan 2021 12:38:08 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B54FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:37:19 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id v15so20247537wrx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:37:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YaiePnQY+bs5Y3022o4Z3Zarrb82Su2xJPiMkpIuFPA=;
-        b=D+0mwpd/VUnW/R6OcVdoKZrl4YIa6nc2g+bxfzzahCNSOIVQ2h0ooR4ZB+P0Cif547
-         mzrKPNcBqCdKr4B/1cfG11U/Gkz5Li5ARkwCdfV86NRnecNyFgvRACGsU+lj8/Hn1h+e
-         IICkU2S7Fq3ZNccQCDDwpVpQW5EbRfYvDvzu41HQIm4ooWny2UQdEKMuoZh1WTuB0AZ4
-         hKl58ipVUpX55hEkcLFzBCFr1KVAteln5suPCcB/A8k2nmqQJ56SAYOqj45o2qpiDlYV
-         xc84B4Cem4RznEY5APAJ07U+ffh57jXg8q2gr2I+jF3T2RhceAWVknqR53dPoFHWcr8h
-         lhTQ==
+        h=to:cc:references:from:subject:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=h4o1dqV1saA7hYOJlBVLQsq7Q1SofZIleeHLa1n/egM=;
+        b=r4LRj2ZHTeb9ADlUTM5kszCh7XMbCx74c2Av/bphqgjiLl3oZYyI19iTJuSK9Epvo6
+         cgo1dopcJS6lomWcqFMHUtcyK3rXHcYsQTZGV8BQRvwSueJZniYjBa0bSaxFCOErmJdi
+         4nMYnCp4SNT46fC+1HKiK+JgZBjicGdta8LOkPR8jRUNI2fj0i2EW/4qVqOUynfHq57d
+         cjQkCvTo9GpmFNfqY0ZrZPQMRCKDN7MFVWXwx2R0MBC1KzmvvstzduuXOS6EMOKMCvf3
+         edh/KDjDNebV6vfG0BQfaiKaqjKOQ7TTu6+A3TRKjbHcFAFNWxKOkKy2lJp8X2Ajt7lT
+         567Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YaiePnQY+bs5Y3022o4Z3Zarrb82Su2xJPiMkpIuFPA=;
-        b=nztWzSFDYTW7srOu3Ney91kNcDg6l9JpIu+DWoPv9oDFESth8e3ZaHU19XWzIy4JYx
-         +WaZjriiUFOehWbxGlhJeHQ4FQBde/tImriG1ExHoSdhdoLwQ5usi3P882PebO0loPNI
-         9k8tWa2x9WHOFmlS/I+xQ0EKf2JLEYOJ8GgBMyTLpUH8PrFmgV2uO18OpAyqDgwZZZmL
-         juJsgLAXctXU7wMCBdvH1CMPbF89ws/mQ8appSmvuVNDRpCb7Bq0hilidexfv//Dai8p
-         t3sYxoc7BwcEyBvN/xRbujw3+ZVTxqyssxuKfww2GujCNFoBudQzhLyjjhsWakVJmNxK
-         NiSw==
-X-Gm-Message-State: AOAM532tES+aBNytPyYNI5f/Hz6yQf7ybEKFDq99VNm/mJXLLm0ef2mP
-        gHyj14LOyGIfIkC3NYQcIOXxGE8WVwt1bWEvxZEAfQ==
-X-Google-Smtp-Source: ABdhPJxCVR/wWmgKAdo1oGCHDZboYVXHR5SqsujaYHMOMGujZL2oWtndtbkbia4ansbYjHZPtCedx8PnG2ZNaRCrado=
-X-Received: by 2002:ac2:5442:: with SMTP id d2mr4701758lfn.154.1611164202587;
- Wed, 20 Jan 2021 09:36:42 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h4o1dqV1saA7hYOJlBVLQsq7Q1SofZIleeHLa1n/egM=;
+        b=U43Rvi0Yf7Une+1OKZc1O9xHFv/cZm0AXee1al3BHgBNuJF5CMtxnbV3YqWj/jjgj0
+         Dz2P2wDt+4X2b3P0uGrj97j6OOC+SEhlfHlUhPvd33KKRMgvQ363tjNea/Prr125ELMI
+         F3VbZsAKQp+lZv2DEhuL+iweM9XNFKqYtgxvhykc2qm3htPaaG8cg7nK3joJiE1caowm
+         2MehjBd3Yn3SRljb7qw0B/2ctue37lQeLKuE9cOXsxvqNjlKcZrqY/ELB9euXjbX+xA5
+         KrBufB+RENwBIQ3nn4srAq8gaj2e/LXM7oJzlrhS1JUlwSIJaRRUrTdqnDaft6p4ZN9S
+         /1NQ==
+X-Gm-Message-State: AOAM533SX58MHGh/CNjJfA076jXw/LdK2UujtgErGN0ZoUW0yNAegCeS
+        rsSE2sx1xD3ngoOL4JUb1tlkdw==
+X-Google-Smtp-Source: ABdhPJzkezaLXgq5uH78Cp6GjxLgHk7vFHYkmiYrokCm4/BtfZHexDrRbjL04HUFOyb8tTclJDb35w==
+X-Received: by 2002:a05:6000:254:: with SMTP id m20mr2062106wrz.300.1611164237903;
+        Wed, 20 Jan 2021 09:37:17 -0800 (PST)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id w8sm5480791wrl.91.2021.01.20.09.37.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 09:37:16 -0800 (PST)
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        okukatla@codeaurora.org
+References: <20210120080627.20784-1-manivannan.sadhasivam@linaro.org>
+ <20210120080627.20784-3-manivannan.sadhasivam@linaro.org>
+ <cb0f56b6-a75c-51a8-d640-08896d459a68@linaro.org>
+ <20210120163735.GC54606@thinkpad>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: [PATCH 2/2] interconnect: qcom: Add SDX55 interconnect provider
+ driver
+Message-ID: <2a5d4de5-1e92-3b58-0ad1-9dd472ed7a0b@linaro.org>
+Date:   Wed, 20 Jan 2021 19:37:20 +0200
 MIME-Version: 1.0
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
-In-Reply-To: <20201118082759.1413056-1-bharata@linux.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 20 Jan 2021 18:36:31 +0100
-Message-ID: <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-To:     Bharata B Rao <bharata@linux.ibm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        vbabka@suse.cz, shakeelb@google.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210120163735.GC54606@thinkpad>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Mani,
 
-On Wed, 18 Nov 2020 at 09:28, Bharata B Rao <bharata@linux.ibm.com> wrote:
->
-> The page order of the slab that gets chosen for a given slab
-> cache depends on the number of objects that can be fit in the
-> slab while meeting other requirements. We start with a value
-> of minimum objects based on nr_cpu_ids that is driven by
-> possible number of CPUs and hence could be higher than the
-> actual number of CPUs present in the system. This leads to
-> calculate_order() chosing a page order that is on the higher
-> side leading to increased slab memory consumption on systems
-> that have bigger page sizes.
->
-> Hence rely on the number of online CPUs when determining the
-> mininum objects, thereby increasing the chances of chosing
-> a lower conservative page order for the slab.
->
-> Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
-> ---
-> This is a generic change and I am unsure how it would affect
-> other archs, but as a start, here are some numbers from
-> PowerPC pseries KVM guest with and without this patch:
->
-> This table shows how this change has affected some of the slab
-> caches.
-> ===================================================================
->                 Current                         Patched
-> Cache   <objperslab> <pagesperslab>     <objperslab> <pagesperslab>
-> ===================================================================
-> TCPv6           53    2                 26    1
-> net_namespace   53    4                 26    2
-> dtl             32    2                 16    1
-> names_cache     32    2                 16    1
-> task_struct     53    8                 13    2
-> thread_stack    32    8                 8     2
-> pgtable-2^11    16    8                 8     4
-> pgtable-2^8     32    2                 16    1
-> kmalloc-32k     16    8                 8     4
-> kmalloc-16k     32    8                 8     2
-> kmalloc-8k      32    4                 8     1
-> kmalloc-4k      32    2                 16    1
-> ===================================================================
->
-> Slab memory (kB) consumption comparision
-> ==================================================================
->                         Current         Patched
-> ==================================================================
-> After-boot              205760          156096
-> During-hackbench        629145          506752 (Avg of 5 runs)
-> After-hackbench         474176          331840 (after drop_caches)
-> ==================================================================
->
-> Hackbench Time (Avg of 5 runs)
-> (hackbench -s 1024 -l 200 -g 200 -f 25 -P)
-> ==========================================
-> Current         Patched
-> ==========================================
-> 10.990          11.010
-> ==========================================
->
-> Measuring the effect due to CPU hotplug
-> ----------------------------------------
-> Since the patch doesn't consider all the possible CPUs for page
-> order calcluation, let's see how affects the case when CPUs are
-> hotplugged. Here I compare a system that is booted with 64CPUs
-> with a system that is booted with 16CPUs but hotplugged with
-> 48CPUs after boot. These numbers are with the patch applied.
->
-> Slab memory (kB) consumption comparision
-> ===================================================================
->                         64bootCPUs      16bootCPUs+48HotPluggedCPUs
-> ===================================================================
-> After-boot              390272          159744
-> After-hotplug           -               251328
-> During-hackbench        1001267         941926 (Avg of 5 runs)
-> After-hackbench         913600          827200 (after drop_caches)
-> ===================================================================
->
-> Hackbench Time (Avg of 5 runs)
-> (hackbench -s 1024 -l 200 -g 200 -f 25 -P)
-> ===========================================
-> 64bootCPUs      16bootCPUs+48HotPluggedCPUs
-> ===========================================
-> 12.554          12.589
-> ===========================================
->  mm/slub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
+On 1/20/21 18:37, Manivannan Sadhasivam wrote:
+> Hi Georgi,
+> 
+> On Wed, Jan 20, 2021 at 04:59:31PM +0200, Georgi Djakov wrote:
+>> Hi Mani,
+>>
+>> Thanks for the patch!
+>>
+>> On 1/20/21 10:06, Manivannan Sadhasivam wrote:
+>>> Add driver for the Qualcomm interconnect buses found in SDX55 based
+>>> platforms. The topology consists of several NoCs that are controlled by
+>>> a remote processor that collects the aggregated bandwidth for each
+>>> master-slave pairs.
+>>>
+>>> Based on SM8250 driver and generated from downstream dts.
+>>>
+>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>> ---
+>>>    drivers/interconnect/qcom/Kconfig  |  10 +
+>>>    drivers/interconnect/qcom/Makefile |   2 +
+>>>    drivers/interconnect/qcom/sdx55.c  | 356 +++++++++++++++++++++++++++++
+>>>    drivers/interconnect/qcom/sdx55.h  |  70 ++++++
+>>>    4 files changed, 438 insertions(+)
+>>>    create mode 100644 drivers/interconnect/qcom/sdx55.c
+>>>    create mode 100644 drivers/interconnect/qcom/sdx55.h
+>>>
+>>> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
+>>> index a8f93ba265f8..6df7e2161a0a 100644
+>>> --- a/drivers/interconnect/qcom/Kconfig
+>>> +++ b/drivers/interconnect/qcom/Kconfig
+>>> @@ -65,6 +65,16 @@ config INTERCONNECT_QCOM_SDM845
+>>>    	  This is a driver for the Qualcomm Network-on-Chip on sdm845-based
+>>>    	  platforms.
+>>> +config INTERCONNECT_QCOM_SDX55
+>>> +	tristate "Qualcomm SDX55 interconnect driver"
+>>> +	depends on INTERCONNECT_QCOM
+>>> +	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
+>>
+>> Why not use depends on INTERCONNECT_QCOM_RPMH_POSSIBLE?
+>>
+> 
+> I just followed the same pattern as other RPMh based drivers. And I don't get
+> what you are suggesting here! Can you please explain?
 
-I'm facing significant performances regression on a large arm64 server
-system (224 CPUs). Regressions is also present on small arm64 system
-(8 CPUs) but in a far smaller order of magnitude
+There are some recent changes here. Please check linux-next or v5.11-rc3+.
 
-On 224 CPUs system : 9 iterations of hackbench -l 16000 -g 16
-v5.11-rc4 : 9.135sec (+/- 0.45%)
-v5.11-rc4 + revert this patch: 3.173sec (+/- 0.48%)
-v5.10: 3.136sec (+/- 0.40%)
-
-This is a 191% regression compared to v5.10.
-
-The problem is that calculate_order() is called a number of times
-before secondaries CPUs are booted and it returns 1 instead of 224.
-This makes the use of num_online_cpus() irrelevant for those cases
-
-After adding in my command line "slub_min_objects=36" which equals to
-4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
-, the regression diseapears:
-
-9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
-
-
-
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 34dcc09e2ec9..8342c0a167b2 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3433,7 +3433,7 @@ static inline int calculate_order(unsigned int size)
->          */
->         min_objects = slub_min_objects;
->         if (!min_objects)
-> -               min_objects = 4 * (fls(nr_cpu_ids) + 1);
-> +               min_objects = 4 * (fls(num_online_cpus()) + 1);
->         max_objects = order_objects(slub_max_order, size);
->         min_objects = min(min_objects, max_objects);
->
-> --
-> 2.26.2
->
+Thanks,
+Georgi
