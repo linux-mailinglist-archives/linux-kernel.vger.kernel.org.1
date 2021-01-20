@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A912FDC47
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584AF2FDC8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390158AbhATWQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 17:16:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52814 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732759AbhATVw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:52:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611179504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=yb5iSGNOaTd/8KoTGFupnP8FcYrMmZ4F4N+E8HNT0pc=;
-        b=nHFM7lokTH4GDEN35nIYTxRBahisnMk5BJOUeWOAYNLPAykUMH9pyVM5ZIFoQsQP1P8Uv4
-        fAqogNkgbzgvPAecOzefWWLMRRsEkTnFi8ECGqzDRxLO/BpzdG4nU71hdcsxuf1nAYd4wm
-        YAm3aLkhYVr33B+lGNluk6a5LM6If/4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DDE9BAB9F;
-        Wed, 20 Jan 2021 21:51:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A5F36DA6E3; Wed, 20 Jan 2021 22:49:47 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.11-rc5
-Date:   Wed, 20 Jan 2021 22:49:46 +0100
-Message-Id: <cover.1611178630.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S1731079AbhATWWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:22:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38082 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731299AbhATVwF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 16:52:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611179404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q5Tk07cOyzSuWC8UtiKXVVn3bXHByT7HLLQP4dV6lj4=;
+        b=Rtuztq4h/0BD3Kym2vK7mDyZWj540prF5sBqr/BCkSPNixSHcoDbgOlbqe240ytYPV59XI
+        a24SG31Qyx+icy2Dpsk4gHoty2GFTfvzuvvt+8ayxBJCHi9ZrOMSIX2OQ8tFWDYV6v1qyS
+        noRN4sBwtLjP/eOm+AxBEVQUM9aiJxw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-Y9rzyxF8MWeuZg_DsNGdJw-1; Wed, 20 Jan 2021 16:50:02 -0500
+X-MC-Unique: Y9rzyxF8MWeuZg_DsNGdJw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22A5015725;
+        Wed, 20 Jan 2021 21:50:01 +0000 (UTC)
+Received: from x1.localdomain (ovpn-114-1.ams2.redhat.com [10.36.114.1])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 610CE61F38;
+        Wed, 20 Jan 2021 21:49:58 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards with WM5102 codec
+Date:   Wed, 20 Jan 2021 22:49:52 +0100
+Message-Id: <20210120214957.140232-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi All,
 
-a few more one line fixes for various bugs, stable material.
+Here is v4 of my series to add support for Intel Bay Trail based devices
+which use a WM5102 codec for audio output/input.
 
-- fix send when emitting clone operation from the same file and root
+This was developed and tested on a Lenovo Yoga Tablet 1051L.
 
-- fix double free on error when cleaning backrefs
+The MFD and ASoC parts do not have any build-time dependencies
+on each other. But the follow-up jack-detect series does have
+patches depending on each-other and on this series. So IMHO it
+would be best if this entire series would be merged through the
+MFD tree to make merging the follow-up series easier.
 
-- lockdep fix during relocation
+Mark, if that is ok with you (and you are happy with the ASoC
+changes) can you please Ack this ?
 
-- handle potential error during reloc when starting transaction
+Changes in v4:
+- Add a comment to the irq-flags override explaining that theoretically
+  DSDTs using IRQF_TRIGGER_FALLING could be correct on boards where the
+  IRQ controller does not support active low level interrupts
 
-- skip running delayed refs during commit (leftover from code removal in
-  this dev cycle)
+Changes in v3:
+- Fix compilation error when CONFIG_ACPI is not set
 
-Please pull thanks.
+Changes in v2:
+- Split my WM5102 work into 2 series, one series adding basic support
+  for Bay Trail boards with a WM5102 codec and a second series with
+  the jack-detect work
+- Various other minor code tweaks
 
-----------------------------------------------------------------
-The following changes since commit e076ab2a2ca70a0270232067cd49f76cd92efe64:
+Hans de Goede (4):
+  mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
+  mfd: arizona: Replace arizona_of_get_type() with
+    device_get_match_data()
+  mfd: arizona: Add support for ACPI enumeration of WM5102 connected
+    over SPI
+  ASoC: Intel: Add DMI quirk table to soc_intel_is_byt_cr()
 
-  btrfs: shrink delalloc pages instead of full inodes (2021-01-08 16:36:44 +0100)
+Pierre-Louis Bossart (1):
+  ASoC: Intel: bytcr_wm5102: Add machine driver for BYT/WM5102
 
-are available in the Git repository at:
+ drivers/mfd/arizona-core.c                    |  11 -
+ drivers/mfd/arizona-i2c.c                     |  11 +-
+ drivers/mfd/arizona-spi.c                     | 138 +++++-
+ drivers/mfd/arizona.h                         |   9 -
+ sound/soc/intel/boards/Kconfig                |  12 +
+ sound/soc/intel/boards/Makefile               |   2 +
+ sound/soc/intel/boards/bytcr_wm5102.c         | 465 ++++++++++++++++++
+ .../intel/common/soc-acpi-intel-byt-match.c   |  16 +
+ sound/soc/intel/common/soc-intel-quirks.h     |  25 +
+ 9 files changed, 661 insertions(+), 28 deletions(-)
+ create mode 100644 sound/soc/intel/boards/bytcr_wm5102.c
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc4-tag
+Regards,
 
-for you to fetch changes up to 34d1eb0e599875064955a74712f08ff14c8e3d5f:
+Hans
 
-  btrfs: don't clear ret in btrfs_start_dirty_block_groups (2021-01-18 16:00:11 +0100)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: no need to run delayed refs after commit_fs_roots during commit
-
-Filipe Manana (1):
-      btrfs: send: fix invalid clone operations when cloning from the same file and root
-
-Josef Bacik (4):
-      btrfs: don't get an EINTR during drop_snapshot for reloc
-      btrfs: do not double free backref nodes on error
-      btrfs: fix lockdep splat in btrfs_recover_relocation
-      btrfs: don't clear ret in btrfs_start_dirty_block_groups
-
- fs/btrfs/backref.c     |  2 +-
- fs/btrfs/block-group.c |  3 ++-
- fs/btrfs/extent-tree.c | 10 +++++++++-
- fs/btrfs/send.c        | 15 +++++++++++++++
- fs/btrfs/transaction.c |  8 --------
- fs/btrfs/volumes.c     |  2 ++
- 6 files changed, 29 insertions(+), 11 deletions(-)
