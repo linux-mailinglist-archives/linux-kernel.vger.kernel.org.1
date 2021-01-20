@@ -2,57 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264872FCB40
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16CB2FCB45
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbhATHCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:02:52 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48301 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725320AbhATHCu (ORCPT
+        id S1727153AbhATHI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:08:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbhATHIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:02:50 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UMIoGpQ_1611126113;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMIoGpQ_1611126113)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Jan 2021 15:01:58 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     rajur@chelsio.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] cxgb4: Assign boolean values to a bool variable
-Date:   Wed, 20 Jan 2021 15:01:51 +0800
-Message-Id: <1611126111-22079-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 20 Jan 2021 02:08:21 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D36DC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:40 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id c22so14555549pgg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9smo0xuaPm7gfHG1uvtUQgG4c1Mt5zbBVDBw98pRJd0=;
+        b=XzW+00TuT50HE4l265/PY4mooymj9tShL6kJ4Y59thj3dfuUohyGcUAs3VTwDS+cmW
+         45h64uIwLytvu890QRFBxqB9u73d1fO51lXdodCWzm45ATnQEcT1wvfo0XT1oChLQRhU
+         E4QvgIATATDVQk9fF9J/uBxCVgdpLJSyYbMiwL3xpNzGncOORVR+4NWFO44BMv7/A+LR
+         qhlB7RIvUyy6ZWmt+xDA6zlYXOh0yhg46EP/puldooroBUpy+PnceCTtPw5G+QG+cb1y
+         xH76S6OKFQgc12glvV+95vm7h8pwNMuyfMoqsjydjrrmhWfW8Fz0QOULJ16wVkSOiC9E
+         nEYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9smo0xuaPm7gfHG1uvtUQgG4c1Mt5zbBVDBw98pRJd0=;
+        b=o2hCkaO7T65qjmx7gu0cYqKi26g5svlYiPwc9iUJ8KqPC8jgHMqy1cthtLkE/Hqn+O
+         1kOPEOko5U9X6e4nNfot+SyHPhhigPTEMOI0n2S/X/Z4fVW1u2gLkHb6lFyDwhS/troU
+         u8qSaZ27oSDtfnBKT4wKU8TnhUIz7UfP6gwjpm2HUZYx3VY1M0Rx40kDVCh8O/Nhkz+x
+         Tl4FhL9/iS1as/NGxGtQJWgMDiWkyH091FLolaWSc3Nr5WtPENCFuwaPTyUN1qj7x/do
+         LW9Zt9BKqfFrmpP8gDb8bvA3xBe1lIFzgIl/K0tiK54Tc6ibr4OciQsmTeTf4Kts7j6D
+         H7XQ==
+X-Gm-Message-State: AOAM530NQ18GHvftrNGXTgqyBgRWV3q8VOufnklyfj5iStyuBujBDNuq
+        1hTmb2aOTYmYwnTU+oPnOYbxiw==
+X-Google-Smtp-Source: ABdhPJwGqpBdM988Q6vHDKu/RDWzUrXvL064DnDiT4hBd0PAr/oHn86c94kzcZVOTl57yz1p4pVbtw==
+X-Received: by 2002:a63:5d3:: with SMTP id 202mr8010895pgf.286.1611126459450;
+        Tue, 19 Jan 2021 23:07:39 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id h11sm1122242pjg.46.2021.01.19.23.07.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Jan 2021 23:07:38 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH V5 0/5] dt: build overlays
+Date:   Wed, 20 Jan 2021 12:36:42 +0530
+Message-Id: <cover.1611124778.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+Hi Frank/Rob,
 
-./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c:5142:2-33:
-WARNING: Assignment of 0/1 to bool variable.
+I have picked all the related patches together into a single patchset,
+so they can be properly reviewed/tested.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patchset makes necessary changes to the kernel to add support for
+building overlays (%.dtbo) and the required fdtoverlay tool. This also
+builds static_test.dtb using some of the existing overlay tests present
+in drivers/of/unittest-data/ for better test coverage.
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-index 7fd264a..b95c008 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-@@ -5139,7 +5139,7 @@ static int adap_init0(struct adapter *adap, int vpd_skip)
- 
- 	/* See if FW supports FW_FILTER2 work request */
- 	if (is_t4(adap->params.chip)) {
--		adap->params.filter2_wr_support = 0;
-+		adap->params.filter2_wr_support = false;
- 	} else {
- 		params[0] = FW_PARAM_DEV(FILTER2_WR);
- 		ret = t4_query_params(adap, adap->mbox, adap->pf, 0,
+Note that in order for anyone to test this stuff, you need to manually
+run the ./update-dtc-source.sh script once to fetch the necessary
+changes from the external DTC project (i.e. fdtoverlay.c and this[1]
+patch).
+
+Also note that Frank has already shared his concerns towards the error
+reporting done by fdtoverlay tool [2], I have still included the patch
+in this series for completeness, will see how to get that sorted out.
+
+V5:
+
+- Don't reuse DTC_SOURCE for fdtoverlay.c in patch 1/5 (Frank).
+
+- Update .gitignore and scripts/Makefile.dtbinst, drop dtbo-y syntax and
+  DTC_FLAGS += -@ in patch 4/5 (Masahiro).
+
+- Remove the intermediate dtb, rename output to static_test.dtb, don't
+  use overlay.dtb and overlay_base.dtb for static builds, improved
+  layout/comments in Makefile for patch 5/5 (Frank).
+
+--
+Viresh
+
+[1] https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
+[2] https://lore.kernel.org/lkml/74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com/
+
+Viresh Kumar (5):
+  scripts: dtc: Fetch fdtoverlay.c from external DTC project
+  scripts: dtc: Build fdtoverlay tool
+  scripts: dtc: Remove the unused fdtdump.c file
+  kbuild: Add support to build overlays (%.dtbo)
+  of: unittest: Statically apply overlays using fdtoverlay
+
+ .gitignore                        |   3 +-
+ Makefile                          |   4 +-
+ drivers/of/unittest-data/Makefile |  50 +++++++++
+ scripts/Makefile.dtbinst          |   3 +
+ scripts/Makefile.lib              |   4 +-
+ scripts/dtc/Makefile              |   6 +-
+ scripts/dtc/fdtdump.c             | 163 ------------------------------
+ scripts/dtc/update-dtc-source.sh  |   3 +-
+ 8 files changed, 66 insertions(+), 170 deletions(-)
+ delete mode 100644 scripts/dtc/fdtdump.c
+
 -- 
-1.8.3.1
+2.25.0.rc1.19.g042ed3e048af
 
