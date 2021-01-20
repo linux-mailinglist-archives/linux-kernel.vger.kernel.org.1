@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4B22FC896
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C09C2FC895
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388834AbhATCut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:50:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48236 "EHLO mail.kernel.org"
+        id S2388465AbhATCqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:46:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730605AbhATB26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:28:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F1A02242A;
-        Wed, 20 Jan 2021 01:26:48 +0000 (UTC)
+        id S1726549AbhATB2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBF662251D;
+        Wed, 20 Jan 2021 01:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106009;
-        bh=nI/ZJyNTZ4RU/UM2F6qtQ3iwMQ3AMhYHWtXt9MvH7Zw=;
+        s=k20201202; t=1611106012;
+        bh=MJksqXmuYaGUzjr4jC6xeLEyWJivFShEUeqd9qu+zGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZjFNv3bnPHCAimeHdgRSS6EP+8u37gQo0Rxu6dfyyjveH/VuSfKjYiAKQS4cCVMK
-         vBsJaT+S3ekCFaSMvl9+pJ+5iVpXAUdNtnNesp45bCFZKhk9muZkxeyRE36wWQbcEE
-         zX5jhz5d/v24hgyWcLjlPCopBed1TkZwRrt4z3ZRwXPjxVYACpxQM2X4ypIA/eGWk6
-         kFlNUPbmWkTEGHjOImUAr3fBVR9eGf2UY1a/lqZxdHDoNynCzABa+c4RPU/BlkVR3D
-         EfB4gWtvArOB/k1nNURRRuJhsew9Ny0VPQ24q+tLh/o3JXgcQyW06HrieCTLvNZoT+
-         KtkGPqeqnt4Bw==
+        b=XaU1knTGMGLiAXIzBgJ0vPyvK2m/zE6zVUkapzNeQYEJoAg1iqWSumwM+46g/tf5B
+         O7Hfsn3ZEuW5Nwk1s3ILVlOQml10k2lj2UaFCeUvQDYyi7THvOjf2JhF4DHc9kfVq4
+         0pIiDUrVdwNa8dC89ZE+kFMZtwkxr7wM/skVd3qzIs8y780EL1lWDjzHGpnf2+yxcd
+         q7MnCfZGmp6Lg+zWJ2uKyjyu+h00Ci4SBYhlhG/XRpj8alovrfRi+9R5DM69WvOYYQ
+         +0Y+XCVA364cvuamGsrG2RCZgerzuQjA2OiiRaL4JljTgJ/f/oHKoD1P/anj4MQIU1
+         nPtKnjK4sgWcw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wayne Lin <Wayne.Lin@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 35/45] drm/amd/display: Fix to be able to stop crc calculation
-Date:   Tue, 19 Jan 2021 20:25:52 -0500
-Message-Id: <20210120012602.769683-35-sashal@kernel.org>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 38/45] drm/nouveau/i2c/gm200: increase width of aux semaphore owner fields
+Date:   Tue, 19 Jan 2021 20:25:55 -0500
+Message-Id: <20210120012602.769683-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -45,44 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wayne Lin <Wayne.Lin@amd.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit 02ce73b01e09e388614b22b7ebc71debf4a588f0 ]
+[ Upstream commit ba6e9ab0fcf3d76e3952deb12b5f993991621d9c ]
 
-[Why]
-Find out when we try to disable CRC calculation,
-crc generation is still enabled. Main reason is
-that dc_stream_configure_crc() will never get
-called when the source is AMDGPU_DM_PIPE_CRC_SOURCE_NONE.
+Noticed while debugging GA102.
 
-[How]
-Add checking condition that when source is
-AMDGPU_DM_PIPE_CRC_SOURCE_NONE, we should also call
-dc_stream_configure_crc() to disable crc calculation.
-Also, clean up crc window when disable crc calculation.
-
-Signed-off-by: Wayne Lin <Wayne.Lin@amd.com>
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c
-index d0699e98db929..e00a30e7d2529 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c
-@@ -113,7 +113,7 @@ int amdgpu_dm_crtc_configure_crc_source(struct drm_crtc *crtc,
- 	mutex_lock(&adev->dm.dc_lock);
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
+index edb6148cbca04..d0e80ad526845 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
+@@ -33,7 +33,7 @@ static void
+ gm200_i2c_aux_fini(struct gm200_i2c_aux *aux)
+ {
+ 	struct nvkm_device *device = aux->base.pad->i2c->subdev.device;
+-	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00310000, 0x00000000);
++	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00710000, 0x00000000);
+ }
  
- 	/* Enable CRTC CRC generation if necessary. */
--	if (dm_is_crc_source_crtc(source)) {
-+	if (dm_is_crc_source_crtc(source) || source == AMDGPU_DM_PIPE_CRC_SOURCE_NONE) {
- 		if (!dc_stream_configure_crc(stream_state->ctx->dc,
- 					     stream_state, enable, enable)) {
- 			ret = -EINVAL;
+ static int
+@@ -54,10 +54,10 @@ gm200_i2c_aux_init(struct gm200_i2c_aux *aux)
+ 			AUX_ERR(&aux->base, "begin idle timeout %08x", ctrl);
+ 			return -EBUSY;
+ 		}
+-	} while (ctrl & 0x03010000);
++	} while (ctrl & 0x07010000);
+ 
+ 	/* set some magic, and wait up to 1ms for it to appear */
+-	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00300000, ureq);
++	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00700000, ureq);
+ 	timeout = 1000;
+ 	do {
+ 		ctrl = nvkm_rd32(device, 0x00d954 + (aux->ch * 0x50));
+@@ -67,7 +67,7 @@ gm200_i2c_aux_init(struct gm200_i2c_aux *aux)
+ 			gm200_i2c_aux_fini(aux);
+ 			return -EBUSY;
+ 		}
+-	} while ((ctrl & 0x03000000) != urep);
++	} while ((ctrl & 0x07000000) != urep);
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
