@@ -2,171 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1962FDA83
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342522FDA6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389901AbhATUKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
+        id S2389942AbhATUJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:09:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389856AbhATOFv (ORCPT
+        with ESMTP id S2389893AbhATOGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:05:51 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32227C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:05:11 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id 15so25106693oix.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:05:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=v0qGg49xcemOBrVvnnaWkXpY/JV5c3kQ4FhI1tZLljI=;
-        b=Up4bCwslyUO1C38MQBy3fIDSbjU/4lFAxHitiUGJ4IJDcoR9rYcZX2pZirlZ8iEv9b
-         rBVGzCViqGvaXL7pjzuRsEjf/vXQW/nIK3Bm4oMHl9AuLWfzlYbzyya/rXbcqJeQiyl8
-         ngNpKZinV5kIxB4sVGTAaHUiBZ7y0FdoMXFr8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=v0qGg49xcemOBrVvnnaWkXpY/JV5c3kQ4FhI1tZLljI=;
-        b=tLRAOFSvCYQ27Yvk6jRvO4e8NF46SHPCCyrG/ITbtpuqBgefQxR+TtbDVr3czL/Ayu
-         5hf1PK1hYTaO5Qx3ZZhrc6M55dVzBGhyKwTVd0r5QyraYqHPLgtA07gPizFFWbtTLJ7j
-         dhlYoH12xLBCfVEWUTUm40Q9Q7oFG1txv9qPLsCeLjHWQDzdFFrnsErnwVQguoYqwmt2
-         gQIRqlNaLsRH/rOMnJbAp4a5U4Psswn1BG8O71dsNeuIxW3suCAwPJTzOayQymjorCEK
-         DEuVODGVxjXbPJNhfyYUy07fjZpqB4d1kzVvN1ZVlMAc63IT9KOeFA6ECeN2t4VydsF+
-         7ZeQ==
-X-Gm-Message-State: AOAM5334qmxCyoKgCsbSMjUhaPEEUF3VEM00R/LZGZQ3ergdAojIYTH2
-        0sMCXHiO/IoQ0/k5xK1sisSVMEonjsUtAfNv6kL78w==
-X-Google-Smtp-Source: ABdhPJy4wUehRTbpqEsfH4wUxDt6KdLiUIwx1fWbLM2A8Sh6vZbctMrLBY6UAx1C6E1Ip+PRi85OoS8WMyWH2YlYCA8=
-X-Received: by 2002:aca:1906:: with SMTP id l6mr2902295oii.101.1611151510577;
- Wed, 20 Jan 2021 06:05:10 -0800 (PST)
+        Wed, 20 Jan 2021 09:06:06 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B9BC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:05:24 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 4BC0522727;
+        Wed, 20 Jan 2021 15:05:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611151522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jJzg+aAIebuXZDa7Uv1sg8IU5aWpIXkz9XqNxQ92KH8=;
+        b=oP7V6Vupj72Em3tLWu3ImkXDWlbnPRiZyV5Hawk8Qh0CjaXOjG52zeF8GGEPFY1s3vQ53e
+        Xv1phw41hSMy0XxgTeikuPio+EUPRXO8y0uvkrMhJweN9vCS45DpCD+sCsCHt0zy373vAt
+        3+f19Gl1Wh559tbKhTCrwN8EIiEXJjs=
 MIME-Version: 1.0
-References: <20210120123535.40226-1-paul@crapouillou.net> <20210120123535.40226-3-paul@crapouillou.net>
- <CAKMK7uFaP7xcw90=KqiGJd7Mt-gD-spvcxvOZr2Txhyv5vcBvw@mail.gmail.com> <TFI8NQ.468S4PLHPA963@crapouillou.net>
-In-Reply-To: <TFI8NQ.468S4PLHPA963@crapouillou.net>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 20 Jan 2021 15:04:59 +0100
-Message-ID: <CAKMK7uEu7vWcJFC6S_hmKB4UMwPocwiOEy1iFnftOs5zfsRNYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] drm/ingenic: Register devm action to cleanup encoders
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me, dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 Jan 2021 15:05:22 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     vigneshr@ti.com, p.yadav@ti.com, miquel.raynal@bootlin.com,
+        richard@nod.at, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Kavyasree.Kotagiri@microchip.com
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: sst: Add support for Global Unlock
+ on sst26vf
+In-Reply-To: <20210120131914.277363-2-tudor.ambarus@microchip.com>
+References: <20210120131914.277363-1-tudor.ambarus@microchip.com>
+ <20210120131914.277363-2-tudor.ambarus@microchip.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <b3a61abec8927c7229c27415d2c769a8@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 2:21 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
->
->
-> Le mer. 20 janv. 2021 =C3=A0 14:01, Daniel Vetter <daniel@ffwll.ch> a
-> =C3=A9crit :
-> > On Wed, Jan 20, 2021 at 1:36 PM Paul Cercueil <paul@crapouillou.net>
-> > wrote:
-> >>
-> >>  Since the encoders have been devm-allocated, they will be freed way
-> >>  before drm_mode_config_cleanup() is called. To avoid use-after-free
-> >>  conditions, we then must ensure that drm_encoder_cleanup() is called
-> >>  before the encoders are freed.
-> >>
-> >>  v2: Use the new __drmm_simple_encoder_alloc() function
-> >>
-> >>  Fixes: c369cb27c267 ("drm/ingenic: Support multiple panels/bridges")
-> >>  Cc: <stable@vger.kernel.org> # 5.8+
-> >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> >>  ---
-> >>
-> >>  Notes:
-> >>      Use the V1 of this patch to fix v5.11 and older kernels. This
-> >> V2 only
-> >>      applies on the current drm-misc-next branch.
-> >>
-> >>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 16 +++++++---------
-> >>   1 file changed, 7 insertions(+), 9 deletions(-)
-> >>
-> >>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> >> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> >>  index 7bb31fbee29d..158433b4c084 100644
-> >>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> >>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> >>  @@ -1014,20 +1014,18 @@ static int ingenic_drm_bind(struct device
-> >> *dev, bool has_components)
-> >>                          bridge =3D
-> >> devm_drm_panel_bridge_add_typed(dev, panel,
-> >>
-> >> DRM_MODE_CONNECTOR_DPI);
-> >>
-> >>  -               encoder =3D devm_kzalloc(dev, sizeof(*encoder),
-> >> GFP_KERNEL);
-> >>  -               if (!encoder)
-> >>  -                       return -ENOMEM;
-> >>  +               encoder =3D __drmm_simple_encoder_alloc(drm,
-> >> sizeof(*encoder), 0,
-> >
-> > Please don't use the __ prefixed functions, those are the internal
-> > ones. The official one comes with type checking and all that included.
-> > Otherwise lgtm.
-> > -Daniel
->
-> The non-prefixed one assumes that I want to allocate a struct that
-> contains the encoder, not just the drm_encoder itself.
+Am 2021-01-20 14:19, schrieb Tudor Ambarus:
+> Even if sst26vf shares the SPINOR_OP_GBULK opcode with
+> Macronix (ex. MX25U12835F) and Winbound (ex. W25Q128FV),
+> it has its own Individual Block Protection scheme, which
+> is also capable to read-lock individual parameter blocks.
+> Thus the sst26vf's Individual Block Protection scheme will
+> reside in the sst.c manufacturer driver.
+> 
+> Add support to unlock the entire flash memory. The device
+> is write-protected by default after a power-on reset cycle
+> (volatile software protection), in order to avoid inadvertent
+> writes during power-up. Could do an erase, write, read back,
+> and compare when MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE=y.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
 
-Hm, but using the internal one is also a bit too ugly. A
-drm_plain_simple_enocder_alloc(drm, type) wrapper would be the right
-thing here I think? Setting the offsets and struct sizes directly in
-these in drivers really doesn't feel like a good idea. I think simple
-encoder is the only case where we really have a need for a
-non-embeddable struct.
--Daniel
+Damn, who on earth assigned the "block protection" bits to the
+8/32/64kb sectors on the flash (SST26VF064B DS, Table 5-6). That is
+nuts.
 
->
-> -Paul
->
-> >>  +
-> >> DRM_MODE_ENCODER_DPI);
-> >>  +               if (IS_ERR(encoder)) {
-> >>  +                       ret =3D PTR_ERR(encoder);
-> >>  +                       dev_err(dev, "Failed to init encoder:
-> >> %d\n", ret);
-> >>  +                       return ret;
-> >>  +               }
-> >>
-> >>                  encoder->possible_crtcs =3D 1;
-> >>
-> >>                  drm_encoder_helper_add(encoder,
-> >> &ingenic_drm_encoder_helper_funcs);
-> >>
-> >>  -               ret =3D drm_simple_encoder_init(drm, encoder,
-> >> DRM_MODE_ENCODER_DPI);
-> >>  -               if (ret) {
-> >>  -                       dev_err(dev, "Failed to init encoder:
-> >> %d\n", ret);
-> >>  -                       return ret;
-> >>  -               }
-> >>  -
-> >>                  ret =3D drm_bridge_attach(encoder, bridge, NULL, 0);
-> >>                  if (ret) {
-> >>                          dev_err(dev, "Unable to attach bridge\n");
-> >>  --
-> >>  2.29.2
-> >>
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
->
->
+Except one comment below:
+
+Reviewed-by: Michael Walle <michael@walle.cc>
+
+> v2: s/!ofs/ofs == 0/
+> 
+>  drivers/mtd/spi-nor/sst.c | 38 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 36 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+> index 00e48da0744a..d6e1396abb96 100644
+> --- a/drivers/mtd/spi-nor/sst.c
+> +++ b/drivers/mtd/spi-nor/sst.c
+> @@ -8,6 +8,39 @@
+> 
+>  #include "core.h"
+> 
+> +static int sst26vf_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs, uint64_t 
+> len)
+> +{
+> +	if (ofs == 0 && len == nor->params->size)
+> +		return spi_nor_global_block_unlock(nor);
 
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Some blocks might not be unlocked because they are permanently
+locked. Does it make sense to read BPNV of the control register
+and add a debug message here?
+
+-michael
+
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int sst26vf_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t 
+> len)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static const struct spi_nor_locking_ops sst26vf_locking_ops = {
+> +	.lock = sst26vf_lock,
+> +	.unlock = sst26vf_unlock,
+> +	.is_locked = sst26vf_is_locked,
+> +};
+> +
+> +static void sst26vf_default_init(struct spi_nor *nor)
+> +{
+> +	nor->params->locking_ops = &sst26vf_locking_ops;
+> +}
+> +
+> +static const struct spi_nor_fixups sst26vf_fixups = {
+> +	.default_init = sst26vf_default_init,
+> +};
+> +
+>  static const struct flash_info sst_parts[] = {
+>  	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+>  	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
+> @@ -39,8 +72,9 @@ static const struct flash_info sst_parts[] = {
+>  	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32,
+>  			      SECT_4K | SPI_NOR_DUAL_READ) },
+>  	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128,
+> -			      SECT_4K | SPI_NOR_DUAL_READ |
+> -			      SPI_NOR_QUAD_READ) },
+> +			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +			      SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+> +		.fixups = &sst26vf_fixups },
+>  };
+> 
+>  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
