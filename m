@@ -2,135 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ECE2FD69E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 194642FD6A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391721AbhATRNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:13:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390983AbhATRIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:08:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B373123358
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 17:08:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611162486;
-        bh=6Am6P3ap6VUQy1vl3nzntFQfX3lYi9qaI7SwEtBxFD0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cnTIneAyfJ09wKIolqvaVE6JK5UQ6gwHqz+zHqnLjp72E+ayq6lBBwx47xgMkTUDw
-         JWryQDkWP+DKhjBZtLjbijXb3Cz+5oFdWM0A3a15tb8dq59MG+vS7tHMJUyWSG36g9
-         ucK3DLa+nUyk9bUJM+yC9vgsty8yhZkmlqj6moVkfIG/m9umX0ufRHSyxGjxf1kPZL
-         X70okYsrxamrQING36d9co5KRW7iLClpLtlXtU0xnFYRdV1T/Squrj4m4arvL71l2U
-         qpEk0rLDAgIRJWgpMEoMes2BCAuhhVORHRz8z0Qjx/yPaqztaKy/gUKal6dfXurMh3
-         h8o5YT4Ce+bBw==
-Received: by mail-ej1-f48.google.com with SMTP id l9so28842756ejx.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:08:05 -0800 (PST)
-X-Gm-Message-State: AOAM532txo/k7JFCqZHK6OpHEU7H2SKz5Cca6JHwOz6oCQYP67TQMXWG
-        nZgPv7fcmQiQjaObOd8YIjVoLSZldQsADTy/1qd+iw==
-X-Google-Smtp-Source: ABdhPJyLYTTjQmBgXSRzAlaWqoG5zvh2eUjL0fMqRA6Fi0YUQxXH1mQi21xAk/KgG5faNdlS2r9wRurffjvaiPpTs1k=
-X-Received: by 2002:a17:906:4302:: with SMTP id j2mr6747215ejm.217.1611162484245;
- Wed, 20 Jan 2021 09:08:04 -0800 (PST)
+        id S2404080AbhATROn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:14:43 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2385 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388514AbhATRKh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 12:10:37 -0500
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DLX1f6Gdbz67dkw;
+        Thu, 21 Jan 2021 01:04:22 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 20 Jan 2021 18:09:53 +0100
+Received: from [10.47.7.185] (10.47.7.185) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 20 Jan
+ 2021 17:09:52 +0000
+Subject: Re: [PATCH] perf metricgroup: Fix for metrics containing
+ duration_time
+To:     Ian Rogers <irogers@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        kajoljain <kjain@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+References: <1611159518-226883-1-git-send-email-john.garry@huawei.com>
+ <CAP-5=fVr0pFpqpev0DW6MMYB1VouH4rL0_wY3_OsbQLS=deJag@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <26a9e447-b2ef-c459-ebf1-9992ee5c5cd0@huawei.com>
+Date:   Wed, 20 Jan 2021 17:08:36 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-4-revest@chromium.org>
-In-Reply-To: <20210119155953.803818-4-revest@chromium.org>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 20 Jan 2021 18:07:52 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
-Message-ID: <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add a selftest for the
- tracing bpf_get_socket_cookie
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAP-5=fVr0pFpqpev0DW6MMYB1VouH4rL0_wY3_OsbQLS=deJag@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.7.185]
+X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 5:00 PM Florent Revest <revest@chromium.org> wrote:
->
-> This builds up on the existing socket cookie test which checks whether
-> the bpf_get_socket_cookie helpers provide the same value in
-> cgroup/connect6 and sockops programs for a socket created by the
-> userspace part of the test.
->
-> Adding a tracing program to the existing objects requires a different
-> attachment strategy and different headers.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
+On 20/01/2021 16:40, Ian Rogers wrote:
+> On Wed, Jan 20, 2021 at 8:23 AM John Garry <john.garry@huawei.com 
+> <mailto:john.garry@huawei.com>> wrote:
+> 
+>     Metrics containing duration_time cause a segfault:
+> 
+>     $./perf stat -v -M L1D_Cache_Fill_BW sleep 1
+>     Using CPUID GenuineIntel-6-3D-4
+>     metric expr 64 * l1d.replacement / 1000000000 / duration_time for
+>     L1D_Cache_Fill_BW
+>     found event duration_time
+>     found event l1d.replacement
+>     adding {l1d.replacement}:W,duration_time
+>     l1d.replacement -> cpu/umask=0x1,(null)=0x1e8483,event=0x51/
+>     Segmentation fault
+> 
+>     In commit c2337d67199a ("perf metricgroup: Fix metrics using aliases
+>     covering multiple PMUs"), the logic in find_evsel_group() when iter'ing
+>     events was changed to not only select events in same group, but also for
+>     aliased PMUs.
+> 
+>     Checking whether events were for aliased PMUs was done by comparing the
+>     event PMU name. This was not safe for duration_time event, which has no
+>     associated PMU (and no PMU name), so fix by checking if the event
+>     PMU name
+>     is set also.
+> 
+> 
+> Thanks for this, it should be fairly easy to add a test. Could we do this?
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+I don't mind following up with that.
 
-(one minor note, doesn't really need fixing as a part of this though)
+> 
+>     Fixes: c2337d67199a ("perf metricgroup: Fix metrics using aliases
+>     covering multiple PMUs")
+>     Reported-by: Joakim Zhang <qiangqing.zhang@nxp.com
+>     <mailto:qiangqing.zhang@nxp.com>>
+>     Signed-off-by: John Garry <john.garry@huawei.com
+>     <mailto:john.garry@huawei.com>>
+> 
+>     diff --git a/tools/perf/util/metricgroup.c
+>     b/tools/perf/util/metricgroup.c
+>     index 2e60ee170abc..e6d3452031e5 100644
+>     --- a/tools/perf/util/metricgroup.c
+>     +++ b/tools/perf/util/metricgroup.c
+>     @@ -162,6 +162,14 @@ static bool contains_event(struct evsel
+>     **metric_events, int num_events,
+>              return false;
+>       }
+> 
+>     +static bool evsel_same_pmu(struct evsel *ev1, struct evsel *ev2)
+>     +{
+>     +       if (!ev1->pmu_name || !ev2->pmu_name)
+>     +               return false;
+> 
+> 
+> What about the case of "!ev1->pmu_name && !ev2->pmu_name" ?
 
-> ---
->  .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
->  .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
->  2 files changed, 52 insertions(+), 13 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> index 53d0c44e7907..e5c5e2ea1deb 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> @@ -15,8 +15,8 @@ struct socket_cookie {
->
->  void test_socket_cookie(void)
->  {
-> +       struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
->         socklen_t addr_len = sizeof(struct sockaddr_in6);
-> -       struct bpf_link *set_link, *update_link;
->         int server_fd, client_fd, cgroup_fd;
->         struct socket_cookie_prog *skel;
->         __u32 cookie_expected_value;
-> @@ -39,15 +39,21 @@ void test_socket_cookie(void)
->                   PTR_ERR(set_link)))
->                 goto close_cgroup_fd;
->
-> -       update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
-> -                                                cgroup_fd);
-> -       if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
-> -                 PTR_ERR(update_link)))
-> +       update_sockops_link = bpf_program__attach_cgroup(
-> +               skel->progs.update_cookie_sockops, cgroup_fd);
-> +       if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-> +                 "err %ld\n", PTR_ERR(update_sockops_link)))
->                 goto free_set_link;
->
-> +       update_tracing_link = bpf_program__attach(
-> +               skel->progs.update_cookie_tracing);
-> +       if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-> +                 "err %ld\n", PTR_ERR(update_tracing_link)))
-> +               goto free_update_sockops_link;
-> +
->         server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
->         if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
-> -               goto free_update_link;
-> +               goto free_update_tracing_link;
->
->         client_fd = connect_to_fd(server_fd, 0);
->         if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-> @@ -71,8 +77,10 @@ void test_socket_cookie(void)
->         close(client_fd);
->  close_server_fd:
->         close(server_fd);
-> -free_update_link:
-> -       bpf_link__destroy(update_link);
-> +free_update_tracing_link:
-> +       bpf_link__destroy(update_tracing_link);
+As far as I know, it should not happen, since duration_time is a special 
+event. More below.
 
-I don't think this need to block submission unless there are other
-issues but the
-bpf_link__destroy can just be called in a single cleanup label because
-it handles null or
-erroneous inputs:
+> 
+> Thanks,
+> Ian
+> 
+>     +
+>     +       return !strcmp(ev1->pmu_name, ev2->pmu_name);
+>     +}
+>     +
+>       /**
+>        * Find a group of events in perf_evlist that correspond to those
+>     from a parsed
+>        * metric expression. Note, as find_evsel_group is called in the
+>     same order as
+>     @@ -280,8 +288,7 @@ static struct evsel *find_evsel_group(struct
+>     evlist *perf_evlist,
+>                               */
+>                              if (!has_constraint &&
+>                                  ev->leader != metric_events[i]->leader &&
+>     -                           !strcmp(ev->leader->pmu_name,
+>     -                                   metric_events[i]->leader->pmu_name))
+>     +                           evsel_same_pmu(ev->leader,
+>     metric_events[i]->leader))
 
-int bpf_link__destroy(struct bpf_link *link)
-{
-    int err = 0;
+ev->leader->pmu_name == NULL for only duration_time event. And we don't 
+get here for ev == metric_events[i] == duration_time event (as we use 
+evlist__for_each_entry_continue() and duration_time is always last in 
+metric_events[]), so both event arguments should not have pmu_name == 
+NULL. Indeed, I could just check metric_events[i]->leader->pmu_name != 
+NULL, but thought it better to check both for safety.
 
-    if (IS_ERR_OR_NULL(link))
-         return 0;
-[...]
+Cheers,
+John
+
+>                                      break;
+>                              if (!strcmp(metric_events[i]->name,
+>     ev->name)) {
+>                                      set_bit(ev->idx, evlist_used);
+>     -- 
+>     2.26.2
+> 
+
