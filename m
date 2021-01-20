@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5C52FCB53
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4652FCB52
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbhATHKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
+        id S1726561AbhATHJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:09:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhATHJK (ORCPT
+        with ESMTP id S1727621AbhATHJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 02:09:10 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEAAC061799
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:52 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id s15so12008251plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:52 -0800 (PST)
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91BCC06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:55 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id i7so14596157pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iL/6d9CA7Mlv7x2jkzmEch3eouj1dsWSO4tRpX3owdI=;
-        b=u1UT6UUP4J+geMR4J7VLUSlL515tanP+PW1crkyEINjzX5/U3FJzPMKlUMsTMjThHO
-         yWZk+i6yCayN7NPcNHMu4P0+cwmsyZFtLwDowjkd5ithO7yx+Eu6CbG2p2piMVrS5nzm
-         3JCzF9hhmZjRGnO06w0MtjKB4YIu2+P6Am73hcYmfAOsNkLgOPPFOMv47v09X2w+HH0X
-         An2R6fdSe05RuPnYI1xYwUjhpKqdBfkm0zFWONQU3bnmcdKOqmPgRgHkCnaZm2p1ewoy
-         ADIm3Io4b5TI+2Mx7eqjZlFU8AZ1PZcr1eJd6NOIGn7xMgBY+3zV4O6zSN9OV0xcIGLV
-         NpvA==
+        bh=k/Mp9fOS78Y/0IRdvug0VEaslDq+2Dzu5+PGexsJRwk=;
+        b=t4z/jvbja90P87o9pl6tpF1ugjD+IDqHYndMLfkVDGqCv2rZ5AShl24QrtsPayujL3
+         gdrUufyj7xYAIVXOms+rIoPuJotKin8Pok1fyA79RMtI0QgJn1mHnPMTQeQymzylTjfJ
+         ITWmWeM/jAY+T2Uq+wwybk/WTS5cIjqnq4b25KAEiu5TyTIuhX3Rf/gz1ZpPEiPGMuD6
+         mrghefXPS/SnkD56s+1FIu1Gq1mTRo6QvQqguCOjn0EZIW+VkwDyvZNlYNophSX6hVHL
+         LPgl7QVnBViGsEYvGgh7jU4S8QkxlkKbQ6ygkAxsap92LQtoDHqngiSxzEPRf5ftPPeJ
+         lf+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iL/6d9CA7Mlv7x2jkzmEch3eouj1dsWSO4tRpX3owdI=;
-        b=sj++GQneLlxg8ZvgPiZ1S6TgLpc5JTbrvxqxQvlNCHAs+8mBpYmCDLrO1RhMSHgzN8
-         rIZweQclSYFYzN8cTkiiqG/qrTVmXGUyL0aSGChvOTPEf64zxsaqe6CUTi6yNeM/ep77
-         p68+EFSxcX1NS544oQQ0oB9yyNRmP/RiieSu2oBiivs4q4oJYH6+7e057td+OC9mGCh9
-         Lidml0gHj4injv7XuEGo88WAey7+98Mih4Y7Hx5tFpyFuIqY+bK/OoLbi2e1byl77J1E
-         eQSdrJ/P7jfF0PWy9jIBRHK1k8HxqEBWo6Za/Xo9m5iYuWBh9ILKalpgI1sca0YMae2r
-         jxqA==
-X-Gm-Message-State: AOAM532b8bJ64JKlKxQEgVLGj5sQ+tk2k1C+vJebAMIEzUVKuvSuadPJ
-        DJfu8QPffJ0lqrnSzvFew0N6Jw==
-X-Google-Smtp-Source: ABdhPJy+3lpLxbrRKz1M9N2KZ4cKeva786QVSry+7IVAZRrw6ArVYYp/WuinIyQvIgc2cZholgIb7A==
-X-Received: by 2002:a17:90a:9918:: with SMTP id b24mr4135202pjp.108.1611126472151;
-        Tue, 19 Jan 2021 23:07:52 -0800 (PST)
+        bh=k/Mp9fOS78Y/0IRdvug0VEaslDq+2Dzu5+PGexsJRwk=;
+        b=YcSsJNsSD6290zirESv/jDD0BpihmODNZU0I4JmVDst5A0/cg3EZpFtNcCBoowAR/m
+         Q44lXs4iHWXLJGuZWqNj/MyTBffoiegZU4HSe1KvCifTCk7tY6FTQtnktf7yg07MP1hl
+         capP4iCC7qCjNyyJEY3yaPZKSW8G3D4HV2hpXkKAVVAGXr+sNTmGzZp1gl8fIIfu4NHW
+         oiZyAIzYVd4zPjicWXqMj5cqfwJNXGibWolSTN2ELMi2bh4QkPHk0Qk+uMyNZDH1gLno
+         /rAEkBZovjPsqlCI4bNFXQA2g7Q0roRwJeNGopqQB6hLOBvjyB0qA5zCKenonmoc93zX
+         TKvg==
+X-Gm-Message-State: AOAM531pwVJoYuwOs7nTTwJGrSMNWv5e9YIlkCX3BjrrM67GCkuKzI9N
+        5lxC9XoC6jdgT+ZUzDauj9WH0g==
+X-Google-Smtp-Source: ABdhPJyNluEFcdQwMzI6wmLSDEsTG2nP/T+MiU0oKYkCQdXTfP553Eo4hp3H0LPfiJa+VDWiUaSSHA==
+X-Received: by 2002:a63:d42:: with SMTP id 2mr2129450pgn.236.1611126475217;
+        Tue, 19 Jan 2021 23:07:55 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id u12sm1098882pgi.91.2021.01.19.23.07.51
+        by smtp.gmail.com with ESMTPSA id i62sm1154296pfc.150.2021.01.19.23.07.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 23:07:51 -0800 (PST)
+        Tue, 19 Jan 2021 23:07:54 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Frank Rowand <frowand.list@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         David Gibson <david@gibson.dropbear.id.au>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH V5 4/5] kbuild: Add support to build overlays (%.dtbo)
-Date:   Wed, 20 Jan 2021 12:36:46 +0530
-Message-Id: <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+Subject: [PATCH V5 5/5] of: unittest: Statically apply overlays using fdtoverlay
+Date:   Wed, 20 Jan 2021 12:36:47 +0530
+Message-Id: <696c137461be8ec4395c733c559c269bb4ad586e.1611124778.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1611124778.git.viresh.kumar@linaro.org>
 References: <cover.1611124778.git.viresh.kumar@linaro.org>
@@ -72,91 +70,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for building DT overlays (%.dtbo). The overlay's source file
-will have the usual extension, i.e. .dts, though the blob will have
-.dtbo extension to distinguish it from normal blobs.
+Now that fdtoverlay is part of the kernel build, start using it to test
+the unitest overlays we have by applying them statically.
+
+Some unittest overlays deliberately contain errors that unittest checks
+for. These overlays will cause fdtoverlay to fail, and are thus not
+included in the static_test.dtb.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- .gitignore               | 3 +--
- Makefile                 | 4 ++--
- scripts/Makefile.dtbinst | 3 +++
- scripts/Makefile.lib     | 4 +++-
- 4 files changed, 9 insertions(+), 5 deletions(-)
+ drivers/of/unittest-data/Makefile | 50 +++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/.gitignore b/.gitignore
-index d01cda8e1177..0458c36f3cb2 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -17,8 +17,7 @@
- *.bz2
- *.c.[012]*.*
- *.dt.yaml
--*.dtb
--*.dtb.S
-+*.dtb*
- *.dwo
- *.elf
- *.gcno
-diff --git a/Makefile b/Makefile
-index 9e73f82e0d86..b84f5e0b46ab 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1334,7 +1334,7 @@ endif
+diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+index 009f4045c8e4..ece7dfd5cafa 100644
+--- a/drivers/of/unittest-data/Makefile
++++ b/drivers/of/unittest-data/Makefile
+@@ -38,3 +38,53 @@ DTC_FLAGS_testcases += -@
  
- ifneq ($(dtstree),)
- 
--%.dtb: include/config/kernel.release scripts_dtc
-+%.dtb %.dtbo: include/config/kernel.release scripts_dtc
- 	$(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
- 
- PHONY += dtbs dtbs_install dtbs_check
-@@ -1816,7 +1816,7 @@ clean: $(clean-dirs)
- 	@find $(if $(KBUILD_EXTMOD), $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
- 		\( -name '*.[aios]' -o -name '*.ko' -o -name '.*.cmd' \
- 		-o -name '*.ko.*' \
--		-o -name '*.dtb' -o -name '*.dtb.S' -o -name '*.dt.yaml' \
-+		-o -name '*.dtb' -o -name '*.dtbo' -o -name '*.dtb.S' -o -name '*.dt.yaml' \
- 		-o -name '*.dwo' -o -name '*.lst' \
- 		-o -name '*.su' -o -name '*.mod' \
- 		-o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \
-diff --git a/scripts/Makefile.dtbinst b/scripts/Makefile.dtbinst
-index 50d580d77ae9..ba01f5ba2517 100644
---- a/scripts/Makefile.dtbinst
-+++ b/scripts/Makefile.dtbinst
-@@ -29,6 +29,9 @@ quiet_cmd_dtb_install = INSTALL $@
- $(dst)/%.dtb: $(obj)/%.dtb
- 	$(call cmd,dtb_install)
- 
-+$(dst)/%.dtbo: $(obj)/%.dtbo
-+	$(call cmd,dtb_install)
+ # suppress warnings about intentional errors
+ DTC_FLAGS_testcases += -Wno-interrupts_property
 +
- PHONY += $(subdirs)
- $(subdirs):
- 	$(Q)$(MAKE) $(dtbinst)=$@ dst=$(patsubst $(obj)/%,$(dst)/%,$@)
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 213677a5ed33..30bc0a8e0087 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -86,7 +86,9 @@ extra-$(CONFIG_OF_ALL_DTBS)	+= $(dtb-)
- 
- ifneq ($(CHECK_DTBS),)
- extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
-+extra-y += $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
- extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
-+extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
- endif
- 
- # Add subdir path
-@@ -324,7 +326,7 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
- 		-d $(depfile).dtc.tmp $(dtc-tmp) ; \
- 	cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
- 
--$(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
-+$(obj)/%.dtb $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
- 	$(call if_changed_dep,dtc)
- 
- DT_CHECKER ?= dt-validate
++# Apply overlays statically with fdtoverlay.  This is a build time test that
++# the overlays can be applied successfully by fdtoverlay.  This does not
++# guarantee that the overlays can be applied successfully at run time by
++# unittest, but it provides a bit of build time test coverage for those
++# who do not execute unittest.
++#
++# The overlays are applied on top of testcases.dtb to create static_test.dtb
++# If fdtoverlay detects an error than the kernel build will fail.
++# static_test.dtb is not consumed by unittest.
++#
++# Some unittest overlays deliberately contain errors that unittest checks for.
++# These overlays will cause fdtoverlay to fail, and are thus not included
++# in the static test:
++#			overlay.dtb \
++#			overlay_bad_add_dup_node.dtb \
++#			overlay_bad_add_dup_prop.dtb \
++#			overlay_bad_phandle.dtb \
++#			overlay_bad_symbol.dtb \
++#			overlay_base.dtb \
++
++apply_static_overlay := overlay_0.dtb \
++			overlay_1.dtb \
++			overlay_2.dtb \
++			overlay_3.dtb \
++			overlay_4.dtb \
++			overlay_5.dtb \
++			overlay_6.dtb \
++			overlay_7.dtb \
++			overlay_8.dtb \
++			overlay_9.dtb \
++			overlay_10.dtb \
++			overlay_11.dtb \
++			overlay_12.dtb \
++			overlay_13.dtb \
++			overlay_15.dtb \
++			overlay_gpio_01.dtb \
++			overlay_gpio_02a.dtb \
++			overlay_gpio_02b.dtb \
++			overlay_gpio_03.dtb \
++			overlay_gpio_04a.dtb \
++			overlay_gpio_04b.dtb
++
++quiet_cmd_fdtoverlay = FDTOVERLAY $@
++      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
++
++$(obj)/static_test.dtb: $(obj)/testcases.dtb $(addprefix $(obj)/,$(apply_static_overlay))
++	$(call if_changed,fdtoverlay)
++
++always-$(CONFIG_OF_OVERLAY) += static_test.dtb
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
