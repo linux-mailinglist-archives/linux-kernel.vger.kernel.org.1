@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2120B2FDBC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C13782FDBC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436614AbhATU7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:59:23 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731658AbhATNnb (ORCPT
+        id S2436585AbhATU7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726913AbhATNpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:43:31 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10KDWm22007041;
-        Wed, 20 Jan 2021 08:42:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=dqxosd4g7zKlZH1v7XCpXwwjC2AU8t7alZYxMUwmWMA=;
- b=Oj3O7horl4OTYOpzQa9es3FugrJ1/y8YEuFWH9PP29O7frX2m4yccSDjjL7PON9RcQj8
- NUokeW0eIrTjlQ1IG6sOB0Hc1rHrFrM79lSRPkfMOiuGLUVJR5I06ITYLQzdMpltzEqI
- Ob1UAst2IvLYL6jyB4zEq+md4awjD6uU64CgAs0/4aYf2DSqDvuGU5gaXczKGFbkebpy
- KbNtNZpF35rhWw4aityN9Qq9HqlYacqQlUMVLIXTtR4muXCYMb4nOPXknsDhY84G8f7v
- C4tSmeKJ2qzd2Nyhw429ONd1/YGyQN21qiTyUwE7WDP+Ops8bXeUANsxjHv+mxSBMwvV Pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 366n78rurt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 08:42:16 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10KDZL2C018617;
-        Wed, 20 Jan 2021 08:42:15 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 366n78rur3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 08:42:15 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10KDWjS0005681;
-        Wed, 20 Jan 2021 13:42:13 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3668ny0b7f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 13:42:13 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10KDgAiI41484674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 13:42:10 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3521BA4040;
-        Wed, 20 Jan 2021 13:42:10 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AFEBEA4053;
-        Wed, 20 Jan 2021 13:42:09 +0000 (GMT)
-Received: from osiris (unknown [9.171.38.241])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 20 Jan 2021 13:42:09 +0000 (GMT)
-Date:   Wed, 20 Jan 2021 14:42:08 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        thuth@redhat.com, david@redhat.com, imbrenda@linux.ibm.com,
-        cohuck@redhat.com, linux-s390@vger.kernel.org, gor@linux.ibm.com,
-        mihajlov@linux.ibm.com
-Subject: Re: [PATCH 2/2] s390: mm: Fix secure storage access exception
- handling
-Message-ID: <20210120134208.GC8202@osiris>
-References: <20210119100402.84734-1-frankja@linux.ibm.com>
- <20210119100402.84734-3-frankja@linux.ibm.com>
- <3e1978c6-4462-1de6-e1aa-e664ffa633c1@de.ibm.com>
+        Wed, 20 Jan 2021 08:45:19 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B08BC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:44:21 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id a12so23127987wrv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:44:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m6jdKU1G+/Gba6Pdo2VNljOQ104HqrrC2plW0O0vdBw=;
+        b=TCpEfHql2KeLXkQuBo0IWLnpSxbjD9f9d8gS1jZQ4h5LLgt03BPvJBlALGalia2+1G
+         He0074nSmOAlNQhuQWvo7y5M0MTuUMOvlwMNrqpAzPHnTLMoOCoVA7hW1+reNZ8TZFuZ
+         d5pn5RdFa7gIl0hKLfnRjd0Z9LT7xIP9cVIc7UuTmziPFQJBZ/xXE26AGKINukE3q21e
+         X495mKKQkex8qXgtDB35w1UnePv9HfONB3Y11ZKDaFJ/uNbHYZUT33P5hpN/WoQqkod5
+         TQllwgC+a4eY85QsuwcU838kvXl9pnC72QBJScUxEWN77uNtFyPqc18P60gPJuVPeqN0
+         ceJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m6jdKU1G+/Gba6Pdo2VNljOQ104HqrrC2plW0O0vdBw=;
+        b=JyTlGgBPLmglHX9exiUzrRrlJ6m+eqE/VJjRFaWsfRXkrJYoc3QgBmPoqLAObqzHA7
+         0oMZHnyx4a2+3I6j+RHu8FLS6ZjM+EEBhFcZqBtE2qkb29hM57S5WMnQ6aB2DlBD8F26
+         VwQg+1/T3+tDALFLWfkHajJ7djh2R0yMm7bY3UT1aA4zDMJ0fNmJs4rSxjHlJe97Efxc
+         ap6+oPPOuGXLPh1mQtf1izCWoD1nZqplgnvB2TFPxMeETy5xifioiorJigeaJ8OfdSDg
+         +kfVW55VfMAcUwWhtRXt49kepmEHXkObf5KhsuMwp6VekYNU2bi8RoWqrD1vTFfOfoVP
+         javA==
+X-Gm-Message-State: AOAM532iew0qNwHE5lda6V/zXr31z0hezgZNp3btuBNp2R1h3eoKYbNA
+        6ce/HVUn6pV/scg8JziAbdfiSebZl4dgNQ==
+X-Google-Smtp-Source: ABdhPJxfOKWY9zFHgiY6UK5UbH0iV3KBaSmVOgwF878taDYibAZNbPU9+9A/S3c0512iBZx0mPp0GA==
+X-Received: by 2002:a5d:6289:: with SMTP id k9mr9896508wru.200.1611150260134;
+        Wed, 20 Jan 2021 05:44:20 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:93b3:1f80:ae7b:a5c6])
+        by smtp.gmail.com with ESMTPSA id t67sm4224075wmt.28.2021.01.20.05.44.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 05:44:19 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
+        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
+        vkoul@kernel.org, Anson.Huang@nxp.com, michael@walle.cc,
+        agx@sigxcpu.org, max.oss.09@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: [PATCH v2 01/22] media: camss: Fix vfe_isr_comp_done() documentation
+Date:   Wed, 20 Jan 2021 14:43:36 +0100
+Message-Id: <20210120134357.1522254-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e1978c6-4462-1de6-e1aa-e664ffa633c1@de.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-20_05:2021-01-20,2021-01-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- mlxscore=0 mlxlogscore=798 impostorscore=0 lowpriorityscore=0
- clxscore=1011 malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101200079
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:25:01AM +0100, Christian Borntraeger wrote:
-> > +		if (user_mode(regs)) {
-> > +			send_sig(SIGSEGV, current, 0);
-> > +			return;
-> > +		} else
-> > +			panic("Unexpected PGM 0x3d with TEID bit 61=0");
-> 
-> use BUG instead of panic? That would kill this process, but it allows
-> people to maybe save unaffected data.
+Function name is comment is wrong, and was changed to be
+the same as the actual function name.
 
-It would kill the process, and most likely lead to deadlock'ed
-system. But with all the "good" debug information being lost, which
-wouldn't be the case with panic().
-I really don't think this is a good idea.
+The comment was changed to kerneldoc format.
+
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
+
+Changes since v1
+ - Bjorn: Fix function doc name & use kerneldoc format
+
+ drivers/media/platform/qcom/camss/camss-vfe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+index fae2b513b2f9..94c9ca7d5cbb 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -1076,8 +1076,8 @@ static void vfe_isr_wm_done(struct vfe_device *vfe, u8 wm)
+ 	spin_unlock_irqrestore(&vfe->output_lock, flags);
+ }
+ 
+-/*
+- * vfe_isr_wm_done - Process composite image done interrupt
++/**
++ * vfe_isr_comp_done() - Process composite image done interrupt
+  * @vfe: VFE Device
+  * @comp: Composite image id
+  */
+-- 
+2.27.0
+
