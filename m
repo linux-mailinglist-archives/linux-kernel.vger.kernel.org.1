@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1458D2FD595
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201E32FD531
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403987AbhATQ0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:26:00 -0500
-Received: from m12-11.163.com ([220.181.12.11]:56939 "EHLO m12-11.163.com"
+        id S2391368AbhATQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:14:27 -0500
+Received: from m12-16.163.com ([220.181.12.16]:50664 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403868AbhATQZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:25:35 -0500
+        id S2391344AbhATQN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:13:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=JQUvh71mQF0XUlkDwq
-        p83cwHhpG6GfqY8HneHsIKOxA=; b=L/6DcHAIqaGJaWneU91GJikb+EqPwSlVg/
-        j5/Gqj9a+K5CKEgYjFN7LdK8dBHAOIHqQLhElztOm2etHv/e/qEqXKICJZfyhv7m
-        GiJw4A3VaTmQsXOKntSUOmK63C3/qF5ViTIr6J18+Vk8nI8LdkX4yF9REZzEdfO7
-        Atu4aR5Do=
-Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp7 (Coremail) with SMTP id C8CowAC3Um0YIAhg08DwJg--.35034S4;
-        Wed, 20 Jan 2021 20:20:43 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] net: fec: put child node on error path
-Date:   Wed, 20 Jan 2021 04:20:37 -0800
-Message-Id: <20210120122037.83897-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: C8CowAC3Um0YIAhg08DwJg--.35034S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jw45XFyrWw4DJF1ftr4rGrg_yoWDuFbE9r
-        1xWF4fAr48KF1xKw4rGr43Z3s0kryqqw18GF4IgayYg342vwnrZr48Arn3XryS9r42yF9r
-        KFnxJF4ay34UKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYrGYJUUUUU==
-X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBURsgclaD9tCUgQAAs+
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=D4mdl
+        yQB1pXTj9GqLmepuC+vdfy4ZaH+ugJ/Ulh//J4=; b=TMPeezjfmQrHY3pQEhJOP
+        1n72vr2n57TIa5TLyfdJNWaATjQepDy+rGanRsi3Icn2x74geH3hZDTJzOPpcLBI
+        FbXfOR6MJr4KZ8043bBy7FwJomODGaSupSvN1pTeSZfBbDzD30O9Ldg7Nd+fV25r
+        JK48GMbjN+Dk/bjFuJvs1g=
+Received: from COOL-20200911ZP.ccdomain.com (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowADXykRJMQhgPnUmYA--.25667S2;
+        Wed, 20 Jan 2021 21:34:09 +0800 (CST)
+From:   ChunyouTang <tangchunyou@163.com>
+To:     ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        akpm@linux-foundation.org, rppt@kernel.org
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangwen@yulong.com, tangchunyou@yulong.com
+Subject: [PATCH] arch/alpha: fix typo in a comment in arch/alpha/boot/bootpz.c
+Date:   Wed, 20 Jan 2021 21:34:10 +0800
+Message-Id: <20210120133410.2182-1-tangchunyou@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowADXykRJMQhgPnUmYA--.25667S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw13Ar4fuFWxCFy5XF1fZwb_yoW3JFbEvF
+        1aqw42g3yfXFZIvr1kA3yfur9Yyan5Cr1rtrn7Xry7ZFnxZrn8JFZrJr4avr47WrWvqana
+        grs2qrn7uw18KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU06VbDUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiHhEgUVSIsZKXIgAAs0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also decrement the reference count of child device on error path.
+From: tangchunyou <tangchunyou@yulong.com>
 
-Fixes: 3e782985cb3c ("net: ethernet: fec: Allow configuration of MDIO bus speed")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
+"kerne" -> "kernel"
+
+Signed-off-by: tangchunyou <tangchunyou@yulong.com>
 ---
- drivers/net/ethernet/freescale/fec_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/alpha/boot/bootpz.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index 04f24c66cf36..55c28fbc5f9e 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -2165,9 +2165,9 @@ static int fec_enet_mii_init(struct platform_device *pdev)
- 	fep->mii_bus->parent = &pdev->dev;
+diff --git a/arch/alpha/boot/bootpz.c b/arch/alpha/boot/bootpz.c
+index 43af718..61b61be 100644
+--- a/arch/alpha/boot/bootpz.c
++++ b/arch/alpha/boot/bootpz.c
+@@ -200,7 +200,7 @@ extern int decompress_kernel(void* destination, void *source,
+ 	START_ADDR	KSEG address of the entry point of kernel code.
  
- 	err = of_mdiobus_register(fep->mii_bus, node);
--	of_node_put(node);
- 	if (err)
- 		goto err_out_free_mdiobus;
-+	of_node_put(node);
- 
- 	mii_cnt++;
- 
-@@ -2180,6 +2180,7 @@ static int fec_enet_mii_init(struct platform_device *pdev)
- err_out_free_mdiobus:
- 	mdiobus_free(fep->mii_bus);
- err_out:
-+	of_node_put(node);
- 	return err;
- }
+ 	ZERO_PGE	KSEG address of page full of zeroes, but 
+-			upon entry to kerne cvan be expected
++			upon entry to kernel cvan be expected
+ 			to hold the parameter list and possible
+ 			INTRD information.
  
 -- 
-2.17.1
+1.9.1
+
 
