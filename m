@@ -2,44 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0C82FDAED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A618C2FDAE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388336AbhATUeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:34:31 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50948 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388310AbhATU3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:29:43 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l2K68-001hi4-H4; Wed, 20 Jan 2021 21:29:00 +0100
-Date:   Wed, 20 Jan 2021 21:29:00 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] net: macb: ignore tx_clk if MII is used
-Message-ID: <YAiSjIi0T+nO++WF@lunn.ch>
-References: <20210120194303.28268-1-michael@walle.cc>
+        id S2388018AbhATUd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:33:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388669AbhATUay (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 15:30:54 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B40C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:30:14 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id y205so9409668pfc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:30:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gr515p7whZ5sUsBYIJNDK/8ZzsxitGG6Eq0FfYKpj40=;
+        b=Y7pAD06fRL9InUV2wYLEj9LoZOZnJjNiwmSwUP/FAy5/BCMpNNXtM3wXv0lXu1RlMh
+         KpXF9FIMZ2uqmRIAOdVzYeeEApLXdGpiygfXYxYEkvAMxKYOmAyhtao55lkyrE29n0Cf
+         rCzUln/y6IcPjaB9/B7oY+nJkPBXFzYheTK+lBErLAGhG2CwAJC+DQ4FixuiyVxE9CtR
+         YVwsSnfv8LsvHu0xLT5P3Vt7gun4McqtYsrk0iKoAEyQIgwq5DUbKwovtpkB5fG+qtJr
+         RaNBJh5RFYld9oj6M4c7elUGcCFfQgSZ5BzcuzWGsBOAEdEgwiMwcXJfkr/XOsx8LYCk
+         9x7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gr515p7whZ5sUsBYIJNDK/8ZzsxitGG6Eq0FfYKpj40=;
+        b=pnbr5aYbJAukBHcO+85sKfU8oMmSjC+WcHBx8lGBLGCYUMhEFPaVn4xCdffp27i+R8
+         mzxr8Oz9V3nl+f0uvPSfavtDL8A8JOM6S1pHpOE/hnZIL4StCn0VaEZWrRHMXAwipOeL
+         qgvevnJeqTZSWHD4xogLhfEEpW+fQpClp21V9SCgIJXcZiEb82tpnqasJlF47jwBrChh
+         jsLhy7+mo/55erYNHxeG5B9Gxvo5HHeLITonUv1f1biR+0p1XZQYqGYAROF9yD1mkvh3
+         O/fJzkykk4hnr2zyX6wio4VMXM6r1267cm629iju+cuUNODS5Hy02hmCpTg4IW+KY7lR
+         jEvQ==
+X-Gm-Message-State: AOAM530QNhztkW6N58MbTlJzZVWHgP4CesLwpobKDC53b9RzpnMe0hsR
+        VINEDArT4+WZ3easwJN858mpFA==
+X-Google-Smtp-Source: ABdhPJybjJhsxcagQOFPo/CRHj4yzT0w9X8ebHU0g5PuQ+CDZ52Ug5E3v+VmklqZJM2/+FGn9SHCAA==
+X-Received: by 2002:a63:1152:: with SMTP id 18mr11168017pgr.268.1611174613803;
+        Wed, 20 Jan 2021 12:30:13 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id r30sm3275012pfq.12.2021.01.20.12.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 12:30:13 -0800 (PST)
+Date:   Wed, 20 Jan 2021 12:30:06 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 10/24] kvm: x86/mmu: Factor out handle disconnected pt
+Message-ID: <YAiSzoLRybcaeZWa@google.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-11-bgardon@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120194303.28268-1-michael@walle.cc>
+In-Reply-To: <20210112181041.356734-11-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 08:43:03PM +0100, Michael Walle wrote:
-> If the MII interface is used, the PHY is the clock master, thus don't
-> set the clock rate. On Zynq-7000, this will prevent the following
-> warning:
->   macb e000b000.ethernet eth0: unable to generate target frequency: 25000000 Hz
+Spell out "page tables"?  Not short on chars.  The grammar is also a bit funky.
+
+  KVM: x86/mmu: Factor out handling of disconnected page tables
+
+On Tue, Jan 12, 2021, Ben Gardon wrote:
+> Factor out the code to handle a disconnected subtree of the TDP paging
+> structure from the code to handle the change to an individual SPTE.
+> Future commits will build on this to allow asynchronous page freeing.
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> No functional change intended.
+> 
+> Reviewed-by: Peter Feiner <pfeiner@google.com>
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 75 +++++++++++++++++++++++---------------
+>  1 file changed, 46 insertions(+), 29 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 55df596696c7..e8f35cd46b4c 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -234,6 +234,49 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+>  	}
+>  }
+>  
+> +/**
+> + * handle_disconnected_tdp_mmu_page - handle a pt removed from the TDP structure
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Maybe s/disconnected/removed?
 
-    Andrew
+I completely understand why you used "disconnected", and to a large extent I
+agree it's a good descriptor, but all of the surrounding comments talk about the
+page tables being "removed".  And for me, "disconnected" implies that that it
+could be reconnected in the future, whereas "removed" is a more firm "this page,
+in its current form, is gone for good".
+
+> + *
+> + * @kvm: kvm instance
+> + * @pt: the page removed from the paging structure
+> + *
+> + * Given a page table that has been removed from the TDP paging structure,
+> + * iterates through the page table to clear SPTEs and free child page tables.
+> + */
+> +static void handle_disconnected_tdp_mmu_page(struct kvm *kvm, u64 *pt)
+> +{
+> +	struct kvm_mmu_page *sp;
+> +	gfn_t gfn;
+> +	int level;
+> +	u64 old_child_spte;
+> +	int i;
+
+Nit: use reverse fir tree?  I don't think KVM needs to be as strict as tip for
+that rule/guideline, but I do think it's usually a net positive for readability.
+
+> +	sp = sptep_to_sp(pt);
+> +	gfn = sp->gfn;
+> +	level = sp->role.level;
+
+Initialize these from the get-go?  That would held the reader understand these
+are local snapshots to shorten lines, as opposed to scratch variables.
+
+	struct kvm_mmu_page *sp = sptep_to_sp(pt);
+	int level = sp->role.level;
+	gfn_t gfn = sp->gfn;
+	u64 old_child_spte;
+	int i;
+
+> +
+> +	trace_kvm_mmu_prepare_zap_page(sp);
+> +
+> +	list_del(&sp->link);
+> +
+> +	if (sp->lpage_disallowed)
+> +		unaccount_huge_nx_page(kvm, sp);
+> +
+> +	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
+> +		old_child_spte = READ_ONCE(*(pt + i));
+> +		WRITE_ONCE(*(pt + i), 0);
+> +		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp),
+> +			gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
+> +			old_child_spte, 0, level - 1);
+> +	}
+> +
+> +	kvm_flush_remote_tlbs_with_address(kvm, gfn,
+> +					   KVM_PAGES_PER_HPAGE(level));
+> +
+> +	free_page((unsigned long)pt);
+> +	kmem_cache_free(mmu_page_header_cache, sp);
+> +}
