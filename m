@@ -2,104 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1F42FCF87
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FF32FCF88
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731141AbhATLhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:37:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40536 "EHLO mx2.suse.de"
+        id S1731267AbhATLhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:37:37 -0500
+Received: from mga02.intel.com ([134.134.136.20]:4415 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729126AbhATKbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:31:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611138608; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TEgO1GiA+c7h1rID5iKJ8FX+fU7rvgRZ7C7qLuJdxAY=;
-        b=QHseIHGBZwT1U8a1+qwSPIYif1TxRiJNTDz4zgFPq4rwwayfaNyrfwPpFDe16HQdRc9+jW
-        MpH3YLBsd7TVu3DpRayjJDsxjweSGfbv78TwjpYzzj8hwuMzB7MXTBMJlteMHCunWLFfab
-        iX5YSThVs8TyNElXQMBoRNSbEQxcRxw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 522FCAC97;
-        Wed, 20 Jan 2021 10:30:08 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 11:30:07 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] mm: Teach pfn_to_online_page() about ZONE_DEVICE
- section collisions
-Message-ID: <20210120103007.GH9371@dhcp22.suse.cz>
-References: <161058499000.1840162.702316708443239771.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161058500675.1840162.7887862152161279354.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1733147AbhATKhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 05:37:14 -0500
+IronPort-SDR: 3IDOPV8olUSDF0jRD9TYFnx+0TNaBs84x0X44ikKBdGD926knsWgAXspor1Le3VV8qhg1BFY3O
+ cFT5a74vtwcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="166174424"
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="166174424"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 02:35:08 -0800
+IronPort-SDR: EMqAeSkP4cjpPhGjGiHEbQHQU23wbArSooWLinKNTAh5xEQkYn7wkEIBkmgYqhcF7DcIIfYKqn
+ tWetqbXaFEWg==
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="501552439"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 02:35:06 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 8895120503; Wed, 20 Jan 2021 12:35:04 +0200 (EET)
+Date:   Wed, 20 Jan 2021 12:35:04 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org
+Subject: Re: [PATCH v3] software_node: Add kernel-doc comments to exported
+ symbols
+Message-ID: <20210120103504.GH11878@paasikivi.fi.intel.com>
+References: <20210120000339.471117-1-djrscally@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161058500675.1840162.7887862152161279354.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <20210120000339.471117-1-djrscally@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13-01-21 16:43:26, Dan Williams wrote:
-> While pfn_to_online_page() is able to determine pfn_valid() at
-> subsection granularity it is not able to reliably determine if a given
-> pfn is also online if the section is mixes ZONE_{NORMAL,MOVABLE} with
-> ZONE_DEVICE. This means that pfn_to_online_page() may return invalid
-> @page objects. For example with a memory map like:
-> 
-> 100000000-1fbffffff : System RAM
->   142000000-143002e16 : Kernel code
->   143200000-143713fff : Kernel rodata
->   143800000-143b15b7f : Kernel data
->   144227000-144ffffff : Kernel bss
-> 1fc000000-2fbffffff : Persistent Memory (legacy)
->   1fc000000-2fbffffff : namespace0.0
-> 
-> This command:
-> 
-> echo 0x1fc000000 > /sys/devices/system/memory/soft_offline_page
-> 
-> ...succeeds when it should fail. When it succeeds it touches
-> an uninitialized page and may crash or cause other damage (see
-> dissolve_free_huge_page()).
-> 
-> While the memory map above is contrived via the memmap=ss!nn kernel
-> command line option, the collision happens in practice on shipping
-> platforms. The memory controller resources that decode spans of
-> physical address space are a limited resource. One technique
-> platform-firmware uses to conserve those resources is to share a decoder
-> across 2 devices to keep the address range contiguous. Unfortunately the
-> unit of operation of a decoder is 64MiB while the Linux section size is
-> 128MiB. This results in situations where, without subsection hotplug
-> memory mappings with different lifetimes collide into one object that
-> can only express one lifetime.
+Hi Dan,
 
-Thank you this is a very useful insight to have in the changelog.
-
-> Update move_pfn_range_to_zone() to flag (SECTION_TAINT_ZONE_DEVICE) a
-> section that mixes ZONE_DEVICE pfns with other online pfns. With
-> SECTION_TAINT_ZONE_DEVICE to delineate, pfn_to_online_page() can fall
-> back to a slow-path check for ZONE_DEVICE pfns in an online section. In
-> the fast path online_section() for a full ZONE_DEVICE section returns
-> false.
+On Wed, Jan 20, 2021 at 12:03:39AM +0000, Daniel Scally wrote:
+> A number of functions which are exported via EXPORT_SYMBOL_GPL() lack any
+> kernel-doc comments; add those in so all exported symbols are documented.
 > 
-> Because the collision case is rare, and for simplicity, the
-> SECTION_TAINT_ZONE_DEVICE flag is never cleared once set.
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changelog for v3:
 > 
-> Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Reported-by: Michal Hocko <mhocko@suse.com>
-> Reported-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> 	- s/passed to @parent/passed as @parent
+> 	- Wrapped a long summary line - TIL that you can do that, thanks
+> 	  Sakari
+> 
+>  drivers/base/swnode.c | 54 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 4a4b2008fbc2..39fbb653c58a 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -33,6 +33,13 @@ static struct kset *swnode_kset;
+>  
+>  static const struct fwnode_operations software_node_ops;
+>  
+> +/**
+> + * is_software_node() - check if given fwnode was created from a software_node
+> + * @fwnode: The &struct fwnode_handle to check
+> + *
+> + * This function is used to check whether a given firmware node handle was
+> + * created by registering a &struct software_node or not.
+> + */
+>  bool is_software_node(const struct fwnode_handle *fwnode)
+>  {
+>  	return !IS_ERR_OR_NULL(fwnode) && fwnode->ops == &software_node_ops;
+> @@ -71,6 +78,15 @@ software_node_to_swnode(const struct software_node *node)
+>  	return swnode;
+>  }
+>  
+> +/**
+> + * to_software_node() - Fetch the software node used to create a firmware
+> + *			node handle
+> + * @fwnode: The pointer to a &struct fwnode_handle to parse
+> + *
+> + * This function attempts to fetch a pointer to the &struct software_node which
+> + * was used to create the given @fwnode. Note that this will only work if the
+> + * software node has **not** been released.
+> + */
+>  const struct software_node *to_software_node(const struct fwnode_handle *fwnode)
+>  {
+>  	const struct swnode *swnode = to_swnode(fwnode);
+> @@ -79,6 +95,14 @@ const struct software_node *to_software_node(const struct fwnode_handle *fwnode)
+>  }
+>  EXPORT_SYMBOL_GPL(to_software_node);
+>  
+> +/**
+> + * software_node_fwnode() - Fetch firmware node associated with a given software node
+> + * @node: The pointer to a &struct software_node to parse
+> + *
+> + * This function attempts to fetch a pointer to the &struct fwnode_handle which
+> + * was created from the given @node. Note that this will only work after the
+> + * software node has been registered.
+> + */
+>  struct fwnode_handle *software_node_fwnode(const struct software_node *node)
+>  {
+>  	struct swnode *swnode = software_node_to_swnode(node);
+> @@ -800,6 +824,27 @@ void software_node_unregister(const struct software_node *node)
+>  }
+>  EXPORT_SYMBOL_GPL(software_node_unregister);
+>  
+> +/**
+> + * fwnode_create_software_node() - Create and register a new software_node
+> + * @properties: NULL terminated array of properties to assign to the new node
+> + * @parent: Pointer to a &struct fwnode_handle to assign as parent to the new
+> + *	    node
+> + *
+> + * NOTE: The pointer passed as @parent **must** be to a firmware node handle
+> + * that was created by registering a software node, meaning is_software_node()
+> + * must return true when passed that pointer.
+> + *
+> + * This function creates a new instance of &struct software_node, assigns it a
+> + * copy of the given array of properties and registers it as a new fwnode_handle.
+> + * Freeing of the allocated memory when the fwnode_handle is no longer needed is
+> + * handled via software_node_release() and does not need to be done separately.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Please wrap all lines over 80 unless there's a reason to keep them longer.
 
-I do not want to bikeshed but online_device_section is quite confusing.
-device_mixed_section would sound like a better name to me.
+> + *
+> + * Returns:
+> + * * fwnode_handle *	- On success
+> + * * -EINVAL		- When @parent is not associated with a software_node
+> + * * -ENOMEM		- When memory allocation fails
+> + * * -Other		- Propagated errors from sub-functions
+> + */
+>  struct fwnode_handle *
+>  fwnode_create_software_node(const struct property_entry *properties,
+>  			    const struct fwnode_handle *parent)
+> @@ -832,6 +877,15 @@ fwnode_create_software_node(const struct property_entry *properties,
+>  }
+>  EXPORT_SYMBOL_GPL(fwnode_create_software_node);
+>  
+> +/**
+> + * fwnode_remove_software_node() - Put a reference to a registered software_node
+> + * @fwnode: The pointer to the &struct fwnode_handle you want to release
+> + *
+> + * Release a reference to a registered &struct software_node. This function
+> + * differs from software_node_put() in that it takes no action if the
+> + * firmware node handle passed to @fwnode turns out not to have been created by
+> + * registering a software_node.
+> + */
+>  void fwnode_remove_software_node(struct fwnode_handle *fwnode)
+>  {
+>  	struct swnode *swnode = to_swnode(fwnode);
+> -- 
+> 2.25.1
+> 
+
 -- 
-Michal Hocko
-SUSE Labs
+Sakari Ailus
