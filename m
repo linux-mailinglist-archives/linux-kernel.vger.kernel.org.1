@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD092FD1D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116D62FD1D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389934AbhATNam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:30:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54896 "EHLO mail.kernel.org"
+        id S2389944AbhATNat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:30:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389699AbhATNVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:21:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6355423381;
-        Wed, 20 Jan 2021 13:20:53 +0000 (UTC)
+        id S1732262AbhATNWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:22:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F62E23371;
+        Wed, 20 Jan 2021 13:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611148855;
-        bh=c39pJ9oEqIA1LyXuDzAxeiD37J990W3+94nRoS1tMSA=;
+        s=k20201202; t=1611148861;
+        bh=3PeQBbVXVcmdWRAOPMUo1F5u8772LM7GsKThCSqqVSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g91NwTRwINIkIpJfWI0wbFkTMPgUkZPwBgEWrZm2kf2TRVOmdbLvuW/W+TNbhV0oT
-         PeAdoGl82d13Eby9MFSKigV3P/h+Ae9L0tQpIWCS9ntEUBembqZXaL2aA8r/1xk80d
-         DBGaIgY0TMi+T4LghCrt7pjvx+16dSCLz+zk9ZiILBXb0rfO9aap1z9SVsd8cBfnwP
-         KG0YhDCX1PLsm+aV7LajQfDFY9CMPxVBU2lKmK6LERDgk7J5388lX1Uwpxf0PdD9sR
-         b+Nth013pzxC4p+bnXsKPTtrfzMP7ZuAQnGm62skaEo0lpWNzyvAxMX3FUFNnxxqVY
-         08gy8NKhC1G7A==
+        b=jtV6Phcc0hk0ZN5gNx25ksrrfb0zx0QEXwa2oH8RLrEuKFbIFRBZJRKqmh80tMpBz
+         a4EYlrFWMlj/7xd4zafODhilbwilTXqn5Iu8UW+wVwby6ym1wjvSv48wpjg9jcw3EZ
+         w+dO8cWKp7+hmhVBIW7uVqkvuV1hc5B90Z+zNNS7h8VRKpOPeYVnjkfXI0IdEvLcPI
+         nfu48i1u7qXO9+LmvOj4BOR0RqFm62HH7qH0sw+wNmD3dx/k0XJ1uQF5Wp6JNVWbCh
+         8riMU+F33pP80hTpMwTYTksmzw63UeBC8sIQf1sR4HAniycoc3R3ReQq4Pp2p792DG
+         hOtMN3+g5Iw/w==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-gpio@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>
 Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 2/5] pinctrl: remove zte zx driver
-Date:   Wed, 20 Jan 2021 14:20:42 +0100
-Message-Id: <20210120132045.2127659-3-arnd@kernel.org>
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 5/5] pinctrl: remove ste u300 driver
+Date:   Wed, 20 Jan 2021 14:20:45 +0100
+Message-Id: <20210120132045.2127659-6-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210120132045.2127659-1-arnd@kernel.org>
 References: <20210120132045.2127659-1-arnd@kernel.org>
@@ -44,1760 +43,1164 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The zte zx platform is getting removed, so this driver is no
+The ST-Ericsson U300 platform is getting removed, so this driver is no
 longer needed.
 
-Cc: Jun Nie <jun.nie@linaro.org>
-Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../bindings/pinctrl/pinctrl-zx.txt           |   84 --
- drivers/pinctrl/Kconfig                       |    1 -
- drivers/pinctrl/Makefile                      |    1 -
- drivers/pinctrl/zte/Kconfig                   |   14 -
- drivers/pinctrl/zte/Makefile                  |    3 -
- drivers/pinctrl/zte/pinctrl-zx.c              |  445 -------
- drivers/pinctrl/zte/pinctrl-zx.h              |  102 --
- drivers/pinctrl/zte/pinctrl-zx296718.c        | 1024 -----------------
- 8 files changed, 1674 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-zx.txt
- delete mode 100644 drivers/pinctrl/zte/Kconfig
- delete mode 100644 drivers/pinctrl/zte/Makefile
- delete mode 100644 drivers/pinctrl/zte/pinctrl-zx.c
- delete mode 100644 drivers/pinctrl/zte/pinctrl-zx.h
- delete mode 100644 drivers/pinctrl/zte/pinctrl-zx296718.c
+ drivers/pinctrl/Kconfig        |    6 -
+ drivers/pinctrl/Makefile       |    1 -
+ drivers/pinctrl/pinctrl-u300.c | 1111 --------------------------------
+ 3 files changed, 1118 deletions(-)
+ delete mode 100644 drivers/pinctrl/pinctrl-u300.c
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-zx.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-zx.txt
-deleted file mode 100644
-index 39170f372599..000000000000
---- a/Documentation/devicetree/bindings/pinctrl/pinctrl-zx.txt
-+++ /dev/null
-@@ -1,84 +0,0 @@
--* ZTE ZX Pin Controller
--
--The pin controller on ZTE ZX platforms is kinda of hybrid.  It consists of
--a main controller and an auxiliary one.  For example, on ZX296718 SoC, the
--main controller is TOP_PMM and the auxiliary one is AON_IOCFG.  Both
--controllers work together to control pin multiplexing and configuration in
--the way illustrated as below.
--
--
--           GMII_RXD3 ---+
--                        |
--             DVI1_HS ---+----------------------------- GMII_RXD3 (TOP pin)
--                        |
--             BGPIO16 ---+                               ^
--                                                        | pinconf
--                        ^                               |
--                        | pinmux                        |
--                        |                               |
--
--                   TOP_PMM (main)           AON_IOCFG (aux)
--
--                        |                       |       |
--                        |                pinmux |       |
--                        | pinmux                v       |
--                        v                               | pinconf
--                                    KEY_ROW2 ---+       v
--        PORT1_LCD_TE ---+                       |
--                        |            AGPIO10 ---+------ KEY_ROW2 (AON pin)
--          I2S0_DOUT3 ---+                       |
--                        |-----------------------+
--            PWM_OUT3 ---+
--                        |
--             VGA_VS1 ---+
--
--
--For most of pins like GMII_RXD3 in the figure, the pinmux function is
--controlled by TOP_PMM block only, and this type of pins are meant by term
--'TOP pins'.  For pins like KEY_ROW2, the pinmux is controlled by both
--TOP_PMM and AON_IOCFG blocks, as the available multiplexing functions for
--the pin spread in both controllers.  This type of pins are called 'AON pins'.
--Though pinmux implementation is quite different, pinconf is same for both
--types of pins.  Both are controlled by auxiliary controller, i.e. AON_IOCFG
--on ZX296718.
--
--Required properties:
--- compatible: should be "zte,zx296718-pmm".
--- reg: the register physical address and length.
--- zte,auxiliary-controller: phandle to the auxiliary pin controller which
--  implements pinmux for AON pins and pinconf for all pins.
--
--The following pin configuration are supported. Please refer to
--pinctrl-bindings.txt in this directory for more details of the common
--pinctrl bindings used by client devices.
--
--- bias-pull-up
--- bias-pull-down
--- drive-strength
--- input-enable
--- slew-rate
--
--Examples:
--
--iocfg: pin-controller@119000 {
--	compatible = "zte,zx296718-iocfg";
--	reg = <0x119000 0x1000>;
--};
--
--pmm: pin-controller@1462000 {
--	compatible = "zte,zx296718-pmm";
--	reg = <0x1462000 0x1000>;
--	zte,auxiliary-controller = <&iocfg>;
--};
--
--&pmm {
--	vga_pins: vga {
--		pins = "KEY_COL1", "KEY_COL2", "KEY_ROW1", "KEY_ROW2";
--		function = "VGA";
--	};
--};
--
--&vga {
--	pinctrl-names = "default";
--	pinctrl-0 = <&vga_pins>;
--};
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index d4b2f2e2ed75..1c1fa681b96d 100644
+index 9ddbf14d9536..03c62e1cb395 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
-@@ -417,7 +417,6 @@ source "drivers/pinctrl/ti/Kconfig"
- source "drivers/pinctrl/uniphier/Kconfig"
- source "drivers/pinctrl/vt8500/Kconfig"
- source "drivers/pinctrl/mediatek/Kconfig"
--source "drivers/pinctrl/zte/Kconfig"
- source "drivers/pinctrl/meson/Kconfig"
- source "drivers/pinctrl/cirrus/Kconfig"
- source "drivers/pinctrl/visconti/Kconfig"
-diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index 5bb9bb6cc3ce..fef92794900d 100644
---- a/drivers/pinctrl/Makefile
-+++ b/drivers/pinctrl/Makefile
-@@ -71,6 +71,5 @@ obj-y				+= ti/
- obj-$(CONFIG_PINCTRL_UNIPHIER)	+= uniphier/
- obj-$(CONFIG_ARCH_VT8500)	+= vt8500/
- obj-y				+= mediatek/
--obj-$(CONFIG_PINCTRL_ZX)	+= zte/
- obj-y				+= cirrus/
- obj-$(CONFIG_PINCTRL_VISCONTI)	+= visconti/
-diff --git a/drivers/pinctrl/zte/Kconfig b/drivers/pinctrl/zte/Kconfig
-deleted file mode 100644
-index 4fdc70511034..000000000000
---- a/drivers/pinctrl/zte/Kconfig
-+++ /dev/null
-@@ -1,14 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--config PINCTRL_ZX
--	bool
+@@ -271,12 +271,6 @@ config PINCTRL_STMFX
+ 	  and configuring push-pull, open-drain, and can also be used as
+ 	  interrupt-controller.
+ 
+-config PINCTRL_U300
+-	bool "U300 pin controller driver"
+-	depends on ARCH_U300
 -	select PINMUX
 -	select GENERIC_PINCONF
--	select GENERIC_PINCTRL_GROUPS
--	select GENERIC_PINMUX_FUNCTIONS
 -
--config PINCTRL_ZX296718
--	bool "ZTE ZX296718 pinctrl driver"
--	depends on OF && ARCH_ZX
--	select PINCTRL_ZX
--	help
--	  Say Y here to enable the ZX296718 pinctrl driver
-diff --git a/drivers/pinctrl/zte/Makefile b/drivers/pinctrl/zte/Makefile
+ config PINCTRL_MAX77620
+ 	tristate "MAX77620/MAX20024 Pincontrol support"
+ 	depends on MFD_MAX77620 && OF
+diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
+index 10643440b467..efc96f25c8db 100644
+--- a/drivers/pinctrl/Makefile
++++ b/drivers/pinctrl/Makefile
+@@ -33,7 +33,6 @@ obj-$(CONFIG_PINCTRL_ROCKCHIP)	+= pinctrl-rockchip.o
+ obj-$(CONFIG_PINCTRL_SINGLE)	+= pinctrl-single.o
+ obj-$(CONFIG_PINCTRL_SX150X)	+= pinctrl-sx150x.o
+ obj-$(CONFIG_ARCH_TEGRA)	+= tegra/
+-obj-$(CONFIG_PINCTRL_U300)	+= pinctrl-u300.o
+ obj-$(CONFIG_PINCTRL_XWAY)	+= pinctrl-xway.o
+ obj-$(CONFIG_PINCTRL_LANTIQ)	+= pinctrl-lantiq.o
+ obj-$(CONFIG_PINCTRL_LPC18XX)	+= pinctrl-lpc18xx.o
+diff --git a/drivers/pinctrl/pinctrl-u300.c b/drivers/pinctrl/pinctrl-u300.c
 deleted file mode 100644
-index 2084c7810f96..000000000000
---- a/drivers/pinctrl/zte/Makefile
+index cc306448259e..000000000000
+--- a/drivers/pinctrl/pinctrl-u300.c
 +++ /dev/null
-@@ -1,3 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_PINCTRL_ZX)	+= pinctrl-zx.o
--obj-$(CONFIG_PINCTRL_ZX296718)	+= pinctrl-zx296718.o
-diff --git a/drivers/pinctrl/zte/pinctrl-zx.c b/drivers/pinctrl/zte/pinctrl-zx.c
-deleted file mode 100644
-index 80d00ab8c110..000000000000
---- a/drivers/pinctrl/zte/pinctrl-zx.c
-+++ /dev/null
-@@ -1,445 +0,0 @@
+@@ -1,1111 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0-only
 -/*
-- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
-- * Copyright 2017 Linaro Ltd.
-- */
--
--#include <linux/io.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/pinctrl/pinctrl.h>
--#include <linux/pinctrl/pinconf-generic.h>
--#include <linux/pinctrl/pinmux.h>
--#include <linux/platform_device.h>
--#include <linux/slab.h>
--
--#include "../core.h"
--#include "../pinctrl-utils.h"
--#include "../pinmux.h"
--#include "pinctrl-zx.h"
--
--#define ZX_PULL_DOWN		BIT(0)
--#define ZX_PULL_UP		BIT(1)
--#define ZX_INPUT_ENABLE		BIT(3)
--#define ZX_DS_SHIFT		4
--#define ZX_DS_MASK		(0x7 << ZX_DS_SHIFT)
--#define ZX_DS_VALUE(x)		(((x) << ZX_DS_SHIFT) & ZX_DS_MASK)
--#define ZX_SLEW			BIT(8)
--
--struct zx_pinctrl {
--	struct pinctrl_dev *pctldev;
--	struct device *dev;
--	void __iomem *base;
--	void __iomem *aux_base;
--	spinlock_t lock;
--	struct zx_pinctrl_soc_info *info;
--};
--
--static int zx_dt_node_to_map(struct pinctrl_dev *pctldev,
--			     struct device_node *np_config,
--			     struct pinctrl_map **map, u32 *num_maps)
--{
--	return pinconf_generic_dt_node_to_map(pctldev, np_config, map,
--					      num_maps, PIN_MAP_TYPE_INVALID);
--}
--
--static const struct pinctrl_ops zx_pinctrl_ops = {
--	.dt_node_to_map = zx_dt_node_to_map,
--	.dt_free_map = pinctrl_utils_free_map,
--	.get_groups_count = pinctrl_generic_get_group_count,
--	.get_group_name = pinctrl_generic_get_group_name,
--	.get_group_pins = pinctrl_generic_get_group_pins,
--};
--
--#define NONAON_MVAL 2
--
--static int zx_set_mux(struct pinctrl_dev *pctldev, unsigned int func_selector,
--		      unsigned int group_selector)
--{
--	struct zx_pinctrl *zpctl = pinctrl_dev_get_drvdata(pctldev);
--	struct zx_pinctrl_soc_info *info = zpctl->info;
--	const struct pinctrl_pin_desc *pindesc = info->pins + group_selector;
--	struct zx_pin_data *data = pindesc->drv_data;
--	struct zx_mux_desc *mux;
--	u32 mask, offset, bitpos;
--	struct function_desc *func;
--	unsigned long flags;
--	u32 val, mval;
--
--	/* Skip reserved pin */
--	if (!data)
--		return -EINVAL;
--
--	mux = data->muxes;
--	mask = (1 << data->width) - 1;
--	offset = data->offset;
--	bitpos = data->bitpos;
--
--	func = pinmux_generic_get_function(pctldev, func_selector);
--	if (!func)
--		return -EINVAL;
--
--	while (mux->name) {
--		if (strcmp(mux->name, func->name) == 0)
--			break;
--		mux++;
--	}
--
--	/* Found mux value to be written */
--	mval = mux->muxval;
--
--	spin_lock_irqsave(&zpctl->lock, flags);
--
--	if (data->aon_pin) {
--		/*
--		 * It's an AON pin, whose mux register offset and bit position
--		 * can be calculated from pin number.  Each register covers 16
--		 * pins, and each pin occupies 2 bits.
--		 */
--		u16 aoffset = pindesc->number / 16 * 4;
--		u16 abitpos = (pindesc->number % 16) * 2;
--
--		if (mval & AON_MUX_FLAG) {
--			/*
--			 * This is a mux value that needs to be written into
--			 * AON pinmux register.  Write it and then we're done.
--			 */
--			val = readl(zpctl->aux_base + aoffset);
--			val &= ~(0x3 << abitpos);
--			val |= (mval & 0x3) << abitpos;
--			writel(val, zpctl->aux_base + aoffset);
--		} else {
--			/*
--			 * It's a mux value that needs to be written into TOP
--			 * pinmux register.
--			 */
--			val = readl(zpctl->base + offset);
--			val &= ~(mask << bitpos);
--			val |= (mval & mask) << bitpos;
--			writel(val, zpctl->base + offset);
--
--			/*
--			 * In this case, the AON pinmux register needs to be
--			 * set up to select non-AON function.
--			 */
--			val = readl(zpctl->aux_base + aoffset);
--			val &= ~(0x3 << abitpos);
--			val |= NONAON_MVAL << abitpos;
--			writel(val, zpctl->aux_base + aoffset);
--		}
--
--	} else {
--		/*
--		 * This is a TOP pin, and we only need to set up TOP pinmux
--		 * register and then we're done with it.
--		 */
--		val = readl(zpctl->base + offset);
--		val &= ~(mask << bitpos);
--		val |= (mval & mask) << bitpos;
--		writel(val, zpctl->base + offset);
--	}
--
--	spin_unlock_irqrestore(&zpctl->lock, flags);
--
--	return 0;
--}
--
--static const struct pinmux_ops zx_pinmux_ops = {
--	.get_functions_count = pinmux_generic_get_function_count,
--	.get_function_name = pinmux_generic_get_function_name,
--	.get_function_groups = pinmux_generic_get_function_groups,
--	.set_mux = zx_set_mux,
--};
--
--static int zx_pin_config_get(struct pinctrl_dev *pctldev, unsigned int pin,
--			     unsigned long *config)
--{
--	struct zx_pinctrl *zpctl = pinctrl_dev_get_drvdata(pctldev);
--	struct zx_pinctrl_soc_info *info = zpctl->info;
--	const struct pinctrl_pin_desc *pindesc = info->pins + pin;
--	struct zx_pin_data *data = pindesc->drv_data;
--	enum pin_config_param param = pinconf_to_config_param(*config);
--	u32 val;
--
--	/* Skip reserved pin */
--	if (!data)
--		return -EINVAL;
--
--	val = readl(zpctl->aux_base + data->coffset);
--	val = val >> data->cbitpos;
--
--	switch (param) {
--	case PIN_CONFIG_BIAS_PULL_DOWN:
--		val &= ZX_PULL_DOWN;
--		val = !!val;
--		if (val == 0)
--			return -EINVAL;
--		break;
--	case PIN_CONFIG_BIAS_PULL_UP:
--		val &= ZX_PULL_UP;
--		val = !!val;
--		if (val == 0)
--			return -EINVAL;
--		break;
--	case PIN_CONFIG_INPUT_ENABLE:
--		val &= ZX_INPUT_ENABLE;
--		val = !!val;
--		if (val == 0)
--			return -EINVAL;
--		break;
--	case PIN_CONFIG_DRIVE_STRENGTH:
--		val &= ZX_DS_MASK;
--		val = val >> ZX_DS_SHIFT;
--		break;
--	case PIN_CONFIG_SLEW_RATE:
--		val &= ZX_SLEW;
--		val = !!val;
--		break;
--	default:
--		return -ENOTSUPP;
--	}
--
--	*config = pinconf_to_config_packed(param, val);
--
--	return 0;
--}
--
--static int zx_pin_config_set(struct pinctrl_dev *pctldev, unsigned int pin,
--			     unsigned long *configs, unsigned int num_configs)
--{
--	struct zx_pinctrl *zpctl = pinctrl_dev_get_drvdata(pctldev);
--	struct zx_pinctrl_soc_info *info = zpctl->info;
--	const struct pinctrl_pin_desc *pindesc = info->pins + pin;
--	struct zx_pin_data *data = pindesc->drv_data;
--	enum pin_config_param param;
--	u32 val, arg;
--	int i;
--
--	/* Skip reserved pin */
--	if (!data)
--		return -EINVAL;
--
--	val = readl(zpctl->aux_base + data->coffset);
--
--	for (i = 0; i < num_configs; i++) {
--		param = pinconf_to_config_param(configs[i]);
--		arg = pinconf_to_config_argument(configs[i]);
--
--		switch (param) {
--		case PIN_CONFIG_BIAS_PULL_DOWN:
--			val |= ZX_PULL_DOWN << data->cbitpos;
--			break;
--		case PIN_CONFIG_BIAS_PULL_UP:
--			val |= ZX_PULL_UP << data->cbitpos;
--			break;
--		case PIN_CONFIG_INPUT_ENABLE:
--			val |= ZX_INPUT_ENABLE << data->cbitpos;
--			break;
--		case PIN_CONFIG_DRIVE_STRENGTH:
--			val &= ~(ZX_DS_MASK << data->cbitpos);
--			val |= ZX_DS_VALUE(arg) << data->cbitpos;
--			break;
--		case PIN_CONFIG_SLEW_RATE:
--			if (arg)
--				val |= ZX_SLEW << data->cbitpos;
--			else
--				val &= ~ZX_SLEW << data->cbitpos;
--			break;
--		default:
--			return -ENOTSUPP;
--		}
--	}
--
--	writel(val, zpctl->aux_base + data->coffset);
--	return 0;
--}
--
--static const struct pinconf_ops zx_pinconf_ops = {
--	.pin_config_set = zx_pin_config_set,
--	.pin_config_get = zx_pin_config_get,
--	.is_generic = true,
--};
--
--static int zx_pinctrl_build_state(struct platform_device *pdev)
--{
--	struct zx_pinctrl *zpctl = platform_get_drvdata(pdev);
--	struct zx_pinctrl_soc_info *info = zpctl->info;
--	struct pinctrl_dev *pctldev = zpctl->pctldev;
--	struct function_desc *functions;
--	int nfunctions;
--	struct group_desc *groups;
--	int ngroups;
--	int i;
--
--	/* Every single pin composes a group */
--	ngroups = info->npins;
--	groups = devm_kcalloc(&pdev->dev, ngroups, sizeof(*groups),
--			      GFP_KERNEL);
--	if (!groups)
--		return -ENOMEM;
--
--	for (i = 0; i < ngroups; i++) {
--		const struct pinctrl_pin_desc *pindesc = info->pins + i;
--		struct group_desc *group = groups + i;
--
--		group->name = pindesc->name;
--		group->pins = (int *) &pindesc->number;
--		group->num_pins = 1;
--		radix_tree_insert(&pctldev->pin_group_tree, i, group);
--	}
--
--	pctldev->num_groups = ngroups;
--
--	/* Build function list from pin mux functions */
--	functions = kcalloc(info->npins, sizeof(*functions), GFP_KERNEL);
--	if (!functions)
--		return -ENOMEM;
--
--	nfunctions = 0;
--	for (i = 0; i < info->npins; i++) {
--		const struct pinctrl_pin_desc *pindesc = info->pins + i;
--		struct zx_pin_data *data = pindesc->drv_data;
--		struct zx_mux_desc *mux;
--
--		/* Reserved pins do not have a drv_data at all */
--		if (!data)
--			continue;
--
--		/* Loop over all muxes for the pin */
--		mux = data->muxes;
--		while (mux->name) {
--			struct function_desc *func = functions;
--
--			/* Search function list for given mux */
--			while (func->name) {
--				if (strcmp(mux->name, func->name) == 0) {
--					/* Function exists */
--					func->num_group_names++;
--					break;
--				}
--				func++;
--			}
--
--			if (!func->name) {
--				/* New function */
--				func->name = mux->name;
--				func->num_group_names = 1;
--				radix_tree_insert(&pctldev->pin_function_tree,
--						  nfunctions++, func);
--			}
--
--			mux++;
--		}
--	}
--
--	pctldev->num_functions = nfunctions;
--	functions = krealloc(functions, nfunctions * sizeof(*functions),
--			     GFP_KERNEL);
--
--	/* Find pin groups for every single function */
--	for (i = 0; i < info->npins; i++) {
--		const struct pinctrl_pin_desc *pindesc = info->pins + i;
--		struct zx_pin_data *data = pindesc->drv_data;
--		struct zx_mux_desc *mux;
--
--		if (!data)
--			continue;
--
--		mux = data->muxes;
--		while (mux->name) {
--			struct function_desc *func;
--			const char **group;
--			int j;
--
--			/* Find function for given mux */
--			for (j = 0; j < nfunctions; j++)
--				if (strcmp(functions[j].name, mux->name) == 0)
--					break;
--
--			func = functions + j;
--			if (!func->group_names) {
--				func->group_names = devm_kcalloc(&pdev->dev,
--						func->num_group_names,
--						sizeof(*func->group_names),
--						GFP_KERNEL);
--				if (!func->group_names) {
--					kfree(functions);
--					return -ENOMEM;
--				}
--			}
--
--			group = func->group_names;
--			while (*group)
--				group++;
--			*group = pindesc->name;
--
--			mux++;
--		}
--	}
--
--	return 0;
--}
--
--int zx_pinctrl_init(struct platform_device *pdev,
--		    struct zx_pinctrl_soc_info *info)
--{
--	struct pinctrl_desc *pctldesc;
--	struct zx_pinctrl *zpctl;
--	struct device_node *np;
--	int ret;
--
--	zpctl = devm_kzalloc(&pdev->dev, sizeof(*zpctl), GFP_KERNEL);
--	if (!zpctl)
--		return -ENOMEM;
--
--	spin_lock_init(&zpctl->lock);
--
--	zpctl->base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(zpctl->base))
--		return PTR_ERR(zpctl->base);
--
--	np = of_parse_phandle(pdev->dev.of_node, "zte,auxiliary-controller", 0);
--	if (!np) {
--		dev_err(&pdev->dev, "failed to find auxiliary controller\n");
--		return -ENODEV;
--	}
--
--	zpctl->aux_base = of_iomap(np, 0);
--	of_node_put(np);
--	if (!zpctl->aux_base)
--		return -ENOMEM;
--
--	zpctl->dev = &pdev->dev;
--	zpctl->info = info;
--
--	pctldesc = devm_kzalloc(&pdev->dev, sizeof(*pctldesc), GFP_KERNEL);
--	if (!pctldesc)
--		return -ENOMEM;
--
--	pctldesc->name = dev_name(&pdev->dev);
--	pctldesc->owner = THIS_MODULE;
--	pctldesc->pins = info->pins;
--	pctldesc->npins = info->npins;
--	pctldesc->pctlops = &zx_pinctrl_ops;
--	pctldesc->pmxops = &zx_pinmux_ops;
--	pctldesc->confops = &zx_pinconf_ops;
--
--	zpctl->pctldev = devm_pinctrl_register(&pdev->dev, pctldesc, zpctl);
--	if (IS_ERR(zpctl->pctldev)) {
--		ret = PTR_ERR(zpctl->pctldev);
--		dev_err(&pdev->dev, "failed to register pinctrl: %d\n", ret);
--		return ret;
--	}
--
--	platform_set_drvdata(pdev, zpctl);
--
--	ret = zx_pinctrl_build_state(pdev);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to build state: %d\n", ret);
--		return ret;
--	}
--
--	dev_info(&pdev->dev, "initialized pinctrl driver\n");
--	return 0;
--}
-diff --git a/drivers/pinctrl/zte/pinctrl-zx.h b/drivers/pinctrl/zte/pinctrl-zx.h
-deleted file mode 100644
-index a0692e2e9012..000000000000
---- a/drivers/pinctrl/zte/pinctrl-zx.h
-+++ /dev/null
-@@ -1,102 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
-- * Copyright 2017 Linaro Ltd.
-- */
--
--#ifndef __PINCTRL_ZX_H
--#define __PINCTRL_ZX_H
--
--/**
-- * struct zx_mux_desc - hardware mux descriptor
-- * @name: mux function name
-- * @muxval: mux register bit value
-- */
--struct zx_mux_desc {
--	const char *name;
--	u8 muxval;
--};
--
--/**
-- * struct zx_pin_data - hardware per-pin data
-- * @aon_pin: whether it's an AON pin
-- * @offset: register offset within TOP pinmux controller
-- * @bitpos: bit position within TOP pinmux register
-- * @width: bit width within TOP pinmux register
-- * @coffset: pinconf register offset within AON controller
-- * @cbitpos: pinconf bit position within AON register
-- * @muxes: available mux function names and corresponding register values
+- * Driver for the U300 pin controller
 - *
-- * Unlike TOP pinmux and AON pinconf registers which are arranged pretty
-- * arbitrarily, AON pinmux register bits are well organized per pin id, and
-- * each pin occupies two bits, so that we can calculate the AON register offset
-- * and bit position from pin id.  Thus, we only need to define TOP pinmux and
-- * AON pinconf register data for the pin.
+- * Based on the original U300 padmux functions
+- * Copyright (C) 2009-2011 ST-Ericsson AB
+- * Author: Martin Persson <martin.persson@stericsson.com>
+- * Author: Linus Walleij <linus.walleij@linaro.org>
+- *
+- * The DB3350 design and control registers are oriented around pads rather than
+- * pins, so we enumerate the pads we can mux rather than actual pins. The pads
+- * are connected to different pins in different packaging types, so it would
+- * be confusing.
 - */
--struct zx_pin_data {
--	bool aon_pin;
--	u16 offset;
--	u16 bitpos;
--	u16 width;
--	u16 coffset;
--	u16 cbitpos;
--	struct zx_mux_desc *muxes;
--};
--
--struct zx_pinctrl_soc_info {
--	const struct pinctrl_pin_desc *pins;
--	unsigned int npins;
--};
--
--#define TOP_PIN(pin, off, bp, wd, coff, cbp, ...) {		\
--	.number = pin,						\
--	.name = #pin,						\
--	.drv_data = &(struct zx_pin_data) {			\
--		.aon_pin = false,				\
--		.offset = off,					\
--		.bitpos = bp,					\
--		.width = wd,					\
--		.coffset = coff,				\
--		.cbitpos = cbp,					\
--		.muxes = (struct zx_mux_desc[]) {		\
--			 __VA_ARGS__, { } },			\
--	},							\
--}
--
--#define AON_PIN(pin, off, bp, wd, coff, cbp, ...) {		\
--	.number = pin,						\
--	.name = #pin,						\
--	.drv_data = &(struct zx_pin_data) {			\
--		.aon_pin = true,				\
--		.offset = off,					\
--		.bitpos = bp,					\
--		.width = wd,					\
--		.coffset = coff,				\
--		.cbitpos = cbp,					\
--		.muxes = (struct zx_mux_desc[]) {		\
--			 __VA_ARGS__, { } },			\
--	},							\
--}
--
--#define ZX_RESERVED(pin) PINCTRL_PIN(pin, #pin)
--
--#define TOP_MUX(_val, _name) {					\
--	.name = _name,						\
--	.muxval = _val,						\
--}
--
--/*
-- * When the flag is set, it's a mux configuration for an AON pin that sits in
-- * AON register.  Otherwise, it's one for AON pin but sitting in TOP register.
-- */
--#define AON_MUX_FLAG BIT(7)
--
--#define AON_MUX(_val, _name) {					\
--	.name = _name,						\
--	.muxval = _val | AON_MUX_FLAG,				\
--}
--
--int zx_pinctrl_init(struct platform_device *pdev,
--		    struct zx_pinctrl_soc_info *info);
--
--#endif /* __PINCTRL_ZX_H */
-diff --git a/drivers/pinctrl/zte/pinctrl-zx296718.c b/drivers/pinctrl/zte/pinctrl-zx296718.c
-deleted file mode 100644
-index c980aecb6f2f..000000000000
---- a/drivers/pinctrl/zte/pinctrl-zx296718.c
-+++ /dev/null
-@@ -1,1024 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
-- * Copyright 2017 Linaro Ltd.
-- */
--
+-#include <linux/init.h>
 -#include <linux/module.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/pinctrl/pinctrl.h>
+-#include <linux/mod_devicetable.h>
 -#include <linux/platform_device.h>
--
--#include "pinctrl-zx.h"
--
--#define TOP_REG0	0x00
--#define TOP_REG1	0x04
--#define TOP_REG2	0x08
--#define TOP_REG3	0x0c
--#define TOP_REG4	0x10
--#define TOP_REG5	0x14
--#define TOP_REG6	0x18
--#define TOP_REG7	0x1c
--#define TOP_REG8	0x20
+-#include <linux/io.h>
+-#include <linux/slab.h>
+-#include <linux/err.h>
+-#include <linux/pinctrl/pinctrl.h>
+-#include <linux/pinctrl/pinmux.h>
+-#include <linux/pinctrl/pinconf.h>
+-#include <linux/pinctrl/pinconf-generic.h>
+-#include "pinctrl-coh901.h"
 -
 -/*
-- * The pin numbering starts from AON pins with reserved ones included,
-- * so that register data like offset and bit position for AON pins can
-- * be calculated from pin number.
+- * Register definitions for the U300 Padmux control registers in the
+- * system controller
 - */
--enum zx296718_pin {
--	/* aon_pmm_reg_0 */
--	I2C3_SCL = 0,
--	I2C3_SDA = 1,
--	AON_RESERVED0 = 2,
--	AON_RESERVED1 = 3,
--	SEC_EN = 4,
--	UART0_RXD = 5,
--	UART0_TXD = 6,
--	IR_IN = 7,
--	SPI0_CLK = 8,
--	SPI0_CS = 9,
--	SPI0_TXD = 10,
--	SPI0_RXD = 11,
--	KEY_COL0 = 12,
--	KEY_COL1 = 13,
--	KEY_COL2 = 14,
--	KEY_ROW0 = 15,
 -
--	/* aon_pmm_reg_1 */
--	KEY_ROW1 = 16,
--	KEY_ROW2 = 17,
--	HDMI_SCL = 18,
--	HDMI_SDA = 19,
--	JTAG_TCK = 20,
--	JTAG_TRSTN = 21,
--	JTAG_TMS = 22,
--	JTAG_TDI = 23,
--	JTAG_TDO = 24,
--	I2C0_SCL = 25,
--	I2C0_SDA = 26,
--	I2C1_SCL = 27,
--	I2C1_SDA = 28,
--	AON_RESERVED2 = 29,
--	AON_RESERVED3 = 30,
--	AON_RESERVED4 = 31,
+-/* PAD MUX Control register 1 (LOW) 16bit (R/W) */
+-#define U300_SYSCON_PMC1LR					0x007C
+-#define U300_SYSCON_PMC1LR_MASK					0xFFFF
+-#define U300_SYSCON_PMC1LR_CDI_MASK				0xC000
+-#define U300_SYSCON_PMC1LR_CDI_CDI				0x0000
+-#define U300_SYSCON_PMC1LR_CDI_EMIF				0x4000
+-/* For BS335 */
+-#define U300_SYSCON_PMC1LR_CDI_CDI2				0x8000
+-#define U300_SYSCON_PMC1LR_CDI_WCDMA_APP_GPIO			0xC000
+-/* For BS365 */
+-#define U300_SYSCON_PMC1LR_CDI_GPIO				0x8000
+-#define U300_SYSCON_PMC1LR_CDI_WCDMA				0xC000
+-/* Common defs */
+-#define U300_SYSCON_PMC1LR_PDI_MASK				0x3000
+-#define U300_SYSCON_PMC1LR_PDI_PDI				0x0000
+-#define U300_SYSCON_PMC1LR_PDI_EGG				0x1000
+-#define U300_SYSCON_PMC1LR_PDI_WCDMA				0x3000
+-#define U300_SYSCON_PMC1LR_MMCSD_MASK				0x0C00
+-#define U300_SYSCON_PMC1LR_MMCSD_MMCSD				0x0000
+-#define U300_SYSCON_PMC1LR_MMCSD_MSPRO				0x0400
+-#define U300_SYSCON_PMC1LR_MMCSD_DSP				0x0800
+-#define U300_SYSCON_PMC1LR_MMCSD_WCDMA				0x0C00
+-#define U300_SYSCON_PMC1LR_ETM_MASK				0x0300
+-#define U300_SYSCON_PMC1LR_ETM_ACC				0x0000
+-#define U300_SYSCON_PMC1LR_ETM_APP				0x0100
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS2_MASK			0x00C0
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS2_STATIC			0x0000
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS2_NFIF			0x0040
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS2_SDRAM			0x0080
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS2_STATIC_2GB		0x00C0
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS1_MASK			0x0030
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS1_STATIC			0x0000
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS1_NFIF			0x0010
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS1_SDRAM			0x0020
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS1_SEMI			0x0030
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS0_MASK			0x000C
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS0_STATIC			0x0000
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS0_NFIF			0x0004
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS0_SDRAM			0x0008
+-#define U300_SYSCON_PMC1LR_EMIF_1_CS0_SEMI			0x000C
+-#define U300_SYSCON_PMC1LR_EMIF_1_MASK				0x0003
+-#define U300_SYSCON_PMC1LR_EMIF_1_STATIC			0x0000
+-#define U300_SYSCON_PMC1LR_EMIF_1_SDRAM0			0x0001
+-#define U300_SYSCON_PMC1LR_EMIF_1_SDRAM1			0x0002
+-#define U300_SYSCON_PMC1LR_EMIF_1				0x0003
+-/* PAD MUX Control register 2 (HIGH) 16bit (R/W) */
+-#define U300_SYSCON_PMC1HR					0x007E
+-#define U300_SYSCON_PMC1HR_MASK					0xFFFF
+-#define U300_SYSCON_PMC1HR_MISC_2_MASK				0xC000
+-#define U300_SYSCON_PMC1HR_MISC_2_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC1HR_MISC_2_MSPRO				0x4000
+-#define U300_SYSCON_PMC1HR_MISC_2_DSP				0x8000
+-#define U300_SYSCON_PMC1HR_MISC_2_AAIF				0xC000
+-#define U300_SYSCON_PMC1HR_APP_GPIO_2_MASK			0x3000
+-#define U300_SYSCON_PMC1HR_APP_GPIO_2_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC1HR_APP_GPIO_2_NFIF			0x1000
+-#define U300_SYSCON_PMC1HR_APP_GPIO_2_DSP			0x2000
+-#define U300_SYSCON_PMC1HR_APP_GPIO_2_AAIF			0x3000
+-#define U300_SYSCON_PMC1HR_APP_GPIO_1_MASK			0x0C00
+-#define U300_SYSCON_PMC1HR_APP_GPIO_1_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC1HR_APP_GPIO_1_MMC			0x0400
+-#define U300_SYSCON_PMC1HR_APP_GPIO_1_DSP			0x0800
+-#define U300_SYSCON_PMC1HR_APP_GPIO_1_AAIF			0x0C00
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_2_MASK			0x0300
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_2_APP_GPIO		0x0000
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_2_SPI			0x0100
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_2_AAIF			0x0300
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_1_MASK			0x00C0
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_1_APP_GPIO		0x0000
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_1_SPI			0x0040
+-#define U300_SYSCON_PMC1HR_APP_SPI_CS_1_AAIF			0x00C0
+-#define U300_SYSCON_PMC1HR_APP_SPI_2_MASK			0x0030
+-#define U300_SYSCON_PMC1HR_APP_SPI_2_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC1HR_APP_SPI_2_SPI			0x0010
+-#define U300_SYSCON_PMC1HR_APP_SPI_2_DSP			0x0020
+-#define U300_SYSCON_PMC1HR_APP_SPI_2_AAIF			0x0030
+-#define U300_SYSCON_PMC1HR_APP_UART0_2_MASK			0x000C
+-#define U300_SYSCON_PMC1HR_APP_UART0_2_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC1HR_APP_UART0_2_UART0			0x0004
+-#define U300_SYSCON_PMC1HR_APP_UART0_2_NFIF_CS			0x0008
+-#define U300_SYSCON_PMC1HR_APP_UART0_2_AAIF			0x000C
+-#define U300_SYSCON_PMC1HR_APP_UART0_1_MASK			0x0003
+-#define U300_SYSCON_PMC1HR_APP_UART0_1_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC1HR_APP_UART0_1_UART0			0x0001
+-#define U300_SYSCON_PMC1HR_APP_UART0_1_AAIF			0x0003
+-/* Padmux 2 control */
+-#define U300_SYSCON_PMC2R					0x100
+-#define U300_SYSCON_PMC2R_APP_MISC_0_MASK			0x00C0
+-#define U300_SYSCON_PMC2R_APP_MISC_0_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC2R_APP_MISC_0_EMIF_SDRAM			0x0040
+-#define U300_SYSCON_PMC2R_APP_MISC_0_MMC			0x0080
+-#define U300_SYSCON_PMC2R_APP_MISC_0_CDI2			0x00C0
+-#define U300_SYSCON_PMC2R_APP_MISC_1_MASK			0x0300
+-#define U300_SYSCON_PMC2R_APP_MISC_1_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC2R_APP_MISC_1_EMIF_SDRAM			0x0100
+-#define U300_SYSCON_PMC2R_APP_MISC_1_MMC			0x0200
+-#define U300_SYSCON_PMC2R_APP_MISC_1_CDI2			0x0300
+-#define U300_SYSCON_PMC2R_APP_MISC_2_MASK			0x0C00
+-#define U300_SYSCON_PMC2R_APP_MISC_2_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC2R_APP_MISC_2_EMIF_SDRAM			0x0400
+-#define U300_SYSCON_PMC2R_APP_MISC_2_MMC			0x0800
+-#define U300_SYSCON_PMC2R_APP_MISC_2_CDI2			0x0C00
+-#define U300_SYSCON_PMC2R_APP_MISC_3_MASK			0x3000
+-#define U300_SYSCON_PMC2R_APP_MISC_3_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC2R_APP_MISC_3_EMIF_SDRAM			0x1000
+-#define U300_SYSCON_PMC2R_APP_MISC_3_MMC			0x2000
+-#define U300_SYSCON_PMC2R_APP_MISC_3_CDI2			0x3000
+-#define U300_SYSCON_PMC2R_APP_MISC_4_MASK			0xC000
+-#define U300_SYSCON_PMC2R_APP_MISC_4_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC2R_APP_MISC_4_EMIF_SDRAM			0x4000
+-#define U300_SYSCON_PMC2R_APP_MISC_4_MMC			0x8000
+-#define U300_SYSCON_PMC2R_APP_MISC_4_ACC_GPIO			0xC000
+-/* TODO: More SYSCON registers missing */
+-#define U300_SYSCON_PMC3R					0x10C
+-#define U300_SYSCON_PMC3R_APP_MISC_11_MASK			0xC000
+-#define U300_SYSCON_PMC3R_APP_MISC_11_SPI			0x4000
+-#define U300_SYSCON_PMC3R_APP_MISC_10_MASK			0x3000
+-#define U300_SYSCON_PMC3R_APP_MISC_10_SPI			0x1000
+-/* TODO: Missing other configs */
+-#define U300_SYSCON_PMC4R					0x168
+-#define U300_SYSCON_PMC4R_APP_MISC_12_MASK			0x0003
+-#define U300_SYSCON_PMC4R_APP_MISC_12_APP_GPIO			0x0000
+-#define U300_SYSCON_PMC4R_APP_MISC_13_MASK			0x000C
+-#define U300_SYSCON_PMC4R_APP_MISC_13_CDI			0x0000
+-#define U300_SYSCON_PMC4R_APP_MISC_13_SMIA			0x0004
+-#define U300_SYSCON_PMC4R_APP_MISC_13_SMIA2			0x0008
+-#define U300_SYSCON_PMC4R_APP_MISC_13_APP_GPIO			0x000C
+-#define U300_SYSCON_PMC4R_APP_MISC_14_MASK			0x0030
+-#define U300_SYSCON_PMC4R_APP_MISC_14_CDI			0x0000
+-#define U300_SYSCON_PMC4R_APP_MISC_14_SMIA			0x0010
+-#define U300_SYSCON_PMC4R_APP_MISC_14_CDI2			0x0020
+-#define U300_SYSCON_PMC4R_APP_MISC_14_APP_GPIO			0x0030
+-#define U300_SYSCON_PMC4R_APP_MISC_16_MASK			0x0300
+-#define U300_SYSCON_PMC4R_APP_MISC_16_APP_GPIO_13		0x0000
+-#define U300_SYSCON_PMC4R_APP_MISC_16_APP_UART1_CTS		0x0100
+-#define U300_SYSCON_PMC4R_APP_MISC_16_EMIF_1_STATIC_CS5_N	0x0200
 -
--	/* aon_pmm_reg_2 */
--	SPI1_CLK = 32,
--	SPI1_CS = 33,
--	SPI1_TXD = 34,
--	SPI1_RXD = 35,
--	AON_RESERVED5 = 36,
--	AON_RESERVED6 = 37,
--	AUDIO_DET = 38,
--	SPDIF_OUT = 39,
--	HDMI_CEC = 40,
--	HDMI_HPD = 41,
--	GMAC_25M_OUT = 42,
--	BOOT_SEL0 = 43,
--	BOOT_SEL1 = 44,
--	BOOT_SEL2 = 45,
--	DEEP_SLEEP_OUT_N = 46,
--	AON_RESERVED7 = 47,
+-#define DRIVER_NAME "pinctrl-u300"
 -
--	/* top_pmm_reg_0 */
--	GMII_GTX_CLK = 48,
--	GMII_TX_CLK = 49,
--	GMII_TXD0 = 50,
--	GMII_TXD1 = 51,
--	GMII_TXD2 = 52,
--	GMII_TXD3 = 53,
--	GMII_TXD4 = 54,
--	GMII_TXD5 = 55,
--	GMII_TXD6 = 56,
--	GMII_TXD7 = 57,
--	GMII_TX_ER = 58,
--	GMII_TX_EN = 59,
--	GMII_RX_CLK = 60,
--	GMII_RXD0 = 61,
--	GMII_RXD1 = 62,
--	GMII_RXD2 = 63,
+-/*
+- * The DB3350 has 467 pads, I have enumerated the pads clockwise around the
+- * edges of the silicon, finger by finger. LTCORNER upper left is pad 0.
+- * Data taken from the PadRing chart, arranged like this:
+- *
+- *   0 ..... 104
+- * 466        105
+- *   .        .
+- *   .        .
+- * 358        224
+- *  357 .... 225
+- */
+-#define U300_NUM_PADS 467
 -
--	/* top_pmm_reg_1 */
--	GMII_RXD3 = 64,
--	GMII_RXD4 = 65,
--	GMII_RXD5 = 66,
--	GMII_RXD6 = 67,
--	GMII_RXD7 = 68,
--	GMII_RX_ER = 69,
--	GMII_RX_DV = 70,
--	GMII_COL = 71,
--	GMII_CRS = 72,
--	GMII_MDC = 73,
--	GMII_MDIO = 74,
--	SDIO1_CLK = 75,
--	SDIO1_CMD = 76,
--	SDIO1_DATA0 = 77,
--	SDIO1_DATA1 = 78,
--	SDIO1_DATA2 = 79,
--
--	/* top_pmm_reg_2 */
--	SDIO1_DATA3 = 80,
--	SDIO1_CD = 81,
--	SDIO1_WP = 82,
--	USIM1_CD = 83,
--	USIM1_CLK = 84,
--	USIM1_RST = 85,
--
--	/* top_pmm_reg_3 */
--	USIM1_DATA = 86,
--	SDIO0_CLK = 87,
--	SDIO0_CMD = 88,
--	SDIO0_DATA0 = 89,
--	SDIO0_DATA1 = 90,
--	SDIO0_DATA2 = 91,
--	SDIO0_DATA3 = 92,
--	SDIO0_CD = 93,
--	SDIO0_WP = 94,
--
--	/* top_pmm_reg_4 */
--	TSI0_DATA0 = 95,
--	SPINOR_CLK = 96,
--	TSI2_DATA = 97,
--	TSI2_CLK = 98,
--	TSI2_SYNC = 99,
--	TSI2_VALID = 100,
--	SPINOR_CS = 101,
--	SPINOR_DQ0 = 102,
--	SPINOR_DQ1 = 103,
--	SPINOR_DQ2 = 104,
--	SPINOR_DQ3 = 105,
--	VGA_HS = 106,
--	VGA_VS = 107,
--	TSI3_DATA = 108,
--
--	/* top_pmm_reg_5 */
--	TSI3_CLK = 109,
--	TSI3_SYNC = 110,
--	TSI3_VALID = 111,
--	I2S1_WS = 112,
--	I2S1_BCLK = 113,
--	I2S1_MCLK = 114,
--	I2S1_DIN0 = 115,
--	I2S1_DOUT0 = 116,
--	SPI3_CLK = 117,
--	SPI3_CS = 118,
--	SPI3_TXD = 119,
--	NAND_LDO_MS18_SEL = 120,
--
--	/* top_pmm_reg_6 */
--	SPI3_RXD = 121,
--	I2S0_MCLK = 122,
--	I2S0_BCLK = 123,
--	I2S0_WS = 124,
--	I2S0_DIN0 = 125,
--	I2S0_DOUT0 = 126,
--	I2C5_SCL = 127,
--	I2C5_SDA = 128,
--	SPI2_CLK = 129,
--	SPI2_CS = 130,
--	SPI2_TXD = 131,
--
--	/* top_pmm_reg_7 */
--	SPI2_RXD = 132,
--	NAND_WP_N = 133,
--	NAND_PAGE_SIZE0 = 134,
--	NAND_PAGE_SIZE1 = 135,
--	NAND_ADDR_CYCLE = 136,
--	NAND_RB0 = 137,
--	NAND_RB1 = 138,
--	NAND_RB2 = 139,
--	NAND_RB3 = 140,
--
--	/* top_pmm_reg_8 */
--	GMAC_125M_IN = 141,
--	GMAC_50M_OUT = 142,
--	SPINOR_SSCLK_LOOPBACK = 143,
--	SPINOR_SDIO1CLK_LOOPBACK = 144,
+-/* Pad names for the pinmux subsystem */
+-static const struct pinctrl_pin_desc u300_pads[] = {
+-	/* Pads along the top edge of the chip */
+-	PINCTRL_PIN(0, "P PAD VDD 28"),
+-	PINCTRL_PIN(1, "P PAD GND 28"),
+-	PINCTRL_PIN(2, "PO SIM RST N"),
+-	PINCTRL_PIN(3, "VSSIO 25"),
+-	PINCTRL_PIN(4, "VSSA ADDA ESDSUB"),
+-	PINCTRL_PIN(5, "PWR VSSCOMMON"),
+-	PINCTRL_PIN(6, "PI ADC I1 POS"),
+-	PINCTRL_PIN(7, "PI ADC I1 NEG"),
+-	PINCTRL_PIN(8, "PWR VSSAD0"),
+-	PINCTRL_PIN(9, "PWR VCCAD0"),
+-	PINCTRL_PIN(10, "PI ADC Q1 NEG"),
+-	PINCTRL_PIN(11, "PI ADC Q1 POS"),
+-	PINCTRL_PIN(12, "PWR VDDAD"),
+-	PINCTRL_PIN(13, "PWR GNDAD"),
+-	PINCTRL_PIN(14, "PI ADC I2 POS"),
+-	PINCTRL_PIN(15, "PI ADC I2 NEG"),
+-	PINCTRL_PIN(16, "PWR VSSAD1"),
+-	PINCTRL_PIN(17, "PWR VCCAD1"),
+-	PINCTRL_PIN(18, "PI ADC Q2 NEG"),
+-	PINCTRL_PIN(19, "PI ADC Q2 POS"),
+-	PINCTRL_PIN(20, "VSSA ADDA ESDSUB"),
+-	PINCTRL_PIN(21, "PWR VCCGPAD"),
+-	PINCTRL_PIN(22, "PI TX POW"),
+-	PINCTRL_PIN(23, "PWR VSSGPAD"),
+-	PINCTRL_PIN(24, "PO DAC I POS"),
+-	PINCTRL_PIN(25, "PO DAC I NEG"),
+-	PINCTRL_PIN(26, "PO DAC Q POS"),
+-	PINCTRL_PIN(27, "PO DAC Q NEG"),
+-	PINCTRL_PIN(28, "PWR VSSDA"),
+-	PINCTRL_PIN(29, "PWR VCCDA"),
+-	PINCTRL_PIN(30, "VSSA ADDA ESDSUB"),
+-	PINCTRL_PIN(31, "P PAD VDDIO 11"),
+-	PINCTRL_PIN(32, "PI PLL 26 FILTVDD"),
+-	PINCTRL_PIN(33, "PI PLL 26 VCONT"),
+-	PINCTRL_PIN(34, "PWR AGNDPLL2V5 32 13"),
+-	PINCTRL_PIN(35, "PWR AVDDPLL2V5 32 13"),
+-	PINCTRL_PIN(36, "VDDA PLL ESD"),
+-	PINCTRL_PIN(37, "VSSA PLL ESD"),
+-	PINCTRL_PIN(38, "VSS PLL"),
+-	PINCTRL_PIN(39, "VDDC PLL"),
+-	PINCTRL_PIN(40, "PWR AGNDPLL2V5 26 60"),
+-	PINCTRL_PIN(41, "PWR AVDDPLL2V5 26 60"),
+-	PINCTRL_PIN(42, "PWR AVDDPLL2V5 26 208"),
+-	PINCTRL_PIN(43, "PWR AGNDPLL2V5 26 208"),
+-	PINCTRL_PIN(44, "PWR AVDDPLL2V5 13 208"),
+-	PINCTRL_PIN(45, "PWR AGNDPLL2V5 13 208"),
+-	PINCTRL_PIN(46, "P PAD VSSIO 11"),
+-	PINCTRL_PIN(47, "P PAD VSSIO 12"),
+-	PINCTRL_PIN(48, "PI POW RST N"),
+-	PINCTRL_PIN(49, "VDDC IO"),
+-	PINCTRL_PIN(50, "P PAD VDDIO 16"),
+-	PINCTRL_PIN(51, "PO RF WCDMA EN 4"),
+-	PINCTRL_PIN(52, "PO RF WCDMA EN 3"),
+-	PINCTRL_PIN(53, "PO RF WCDMA EN 2"),
+-	PINCTRL_PIN(54, "PO RF WCDMA EN 1"),
+-	PINCTRL_PIN(55, "PO RF WCDMA EN 0"),
+-	PINCTRL_PIN(56, "PO GSM PA ENABLE"),
+-	PINCTRL_PIN(57, "PO RF DATA STRB"),
+-	PINCTRL_PIN(58, "PO RF DATA2"),
+-	PINCTRL_PIN(59, "PIO RF DATA1"),
+-	PINCTRL_PIN(60, "PIO RF DATA0"),
+-	PINCTRL_PIN(61, "P PAD VDD 11"),
+-	PINCTRL_PIN(62, "P PAD GND 11"),
+-	PINCTRL_PIN(63, "P PAD VSSIO 16"),
+-	PINCTRL_PIN(64, "P PAD VDDIO 18"),
+-	PINCTRL_PIN(65, "PO RF CTRL STRB2"),
+-	PINCTRL_PIN(66, "PO RF CTRL STRB1"),
+-	PINCTRL_PIN(67, "PO RF CTRL STRB0"),
+-	PINCTRL_PIN(68, "PIO RF CTRL DATA"),
+-	PINCTRL_PIN(69, "PO RF CTRL CLK"),
+-	PINCTRL_PIN(70, "PO TX ADC STRB"),
+-	PINCTRL_PIN(71, "PO ANT SW 2"),
+-	PINCTRL_PIN(72, "PO ANT SW 3"),
+-	PINCTRL_PIN(73, "PO ANT SW 0"),
+-	PINCTRL_PIN(74, "PO ANT SW 1"),
+-	PINCTRL_PIN(75, "PO M CLKRQ"),
+-	PINCTRL_PIN(76, "PI M CLK"),
+-	PINCTRL_PIN(77, "PI RTC CLK"),
+-	PINCTRL_PIN(78, "P PAD VDD 8"),
+-	PINCTRL_PIN(79, "P PAD GND 8"),
+-	PINCTRL_PIN(80, "P PAD VSSIO 13"),
+-	PINCTRL_PIN(81, "P PAD VDDIO 13"),
+-	PINCTRL_PIN(82, "PO SYS 1 CLK"),
+-	PINCTRL_PIN(83, "PO SYS 2 CLK"),
+-	PINCTRL_PIN(84, "PO SYS 0 CLK"),
+-	PINCTRL_PIN(85, "PI SYS 0 CLKRQ"),
+-	PINCTRL_PIN(86, "PO PWR MNGT CTRL 1"),
+-	PINCTRL_PIN(87, "PO PWR MNGT CTRL 0"),
+-	PINCTRL_PIN(88, "PO RESOUT2 RST N"),
+-	PINCTRL_PIN(89, "PO RESOUT1 RST N"),
+-	PINCTRL_PIN(90, "PO RESOUT0 RST N"),
+-	PINCTRL_PIN(91, "PI SERVICE N"),
+-	PINCTRL_PIN(92, "P PAD VDD 29"),
+-	PINCTRL_PIN(93, "P PAD GND 29"),
+-	PINCTRL_PIN(94, "P PAD VSSIO 8"),
+-	PINCTRL_PIN(95, "P PAD VDDIO 8"),
+-	PINCTRL_PIN(96, "PI EXT IRQ1 N"),
+-	PINCTRL_PIN(97, "PI EXT IRQ0 N"),
+-	PINCTRL_PIN(98, "PIO DC ON"),
+-	PINCTRL_PIN(99, "PIO ACC APP I2C DATA"),
+-	PINCTRL_PIN(100, "PIO ACC APP I2C CLK"),
+-	PINCTRL_PIN(101, "P PAD VDD 12"),
+-	PINCTRL_PIN(102, "P PAD GND 12"),
+-	PINCTRL_PIN(103, "P PAD VSSIO 14"),
+-	PINCTRL_PIN(104, "P PAD VDDIO 14"),
+-	/* Pads along the right edge of the chip */
+-	PINCTRL_PIN(105, "PIO APP I2C1 DATA"),
+-	PINCTRL_PIN(106, "PIO APP I2C1 CLK"),
+-	PINCTRL_PIN(107, "PO KEY OUT0"),
+-	PINCTRL_PIN(108, "PO KEY OUT1"),
+-	PINCTRL_PIN(109, "PO KEY OUT2"),
+-	PINCTRL_PIN(110, "PO KEY OUT3"),
+-	PINCTRL_PIN(111, "PO KEY OUT4"),
+-	PINCTRL_PIN(112, "PI KEY IN0"),
+-	PINCTRL_PIN(113, "PI KEY IN1"),
+-	PINCTRL_PIN(114, "PI KEY IN2"),
+-	PINCTRL_PIN(115, "P PAD VDDIO 15"),
+-	PINCTRL_PIN(116, "P PAD VSSIO 15"),
+-	PINCTRL_PIN(117, "P PAD GND 13"),
+-	PINCTRL_PIN(118, "P PAD VDD 13"),
+-	PINCTRL_PIN(119, "PI KEY IN3"),
+-	PINCTRL_PIN(120, "PI KEY IN4"),
+-	PINCTRL_PIN(121, "PI KEY IN5"),
+-	PINCTRL_PIN(122, "PIO APP PCM I2S1 DATA B"),
+-	PINCTRL_PIN(123, "PIO APP PCM I2S1 DATA A"),
+-	PINCTRL_PIN(124, "PIO APP PCM I2S1 WS"),
+-	PINCTRL_PIN(125, "PIO APP PCM I2S1 CLK"),
+-	PINCTRL_PIN(126, "PIO APP PCM I2S0 DATA B"),
+-	PINCTRL_PIN(127, "PIO APP PCM I2S0 DATA A"),
+-	PINCTRL_PIN(128, "PIO APP PCM I2S0 WS"),
+-	PINCTRL_PIN(129, "PIO APP PCM I2S0 CLK"),
+-	PINCTRL_PIN(130, "P PAD VDD 17"),
+-	PINCTRL_PIN(131, "P PAD GND 17"),
+-	PINCTRL_PIN(132, "P PAD VSSIO 19"),
+-	PINCTRL_PIN(133, "P PAD VDDIO 19"),
+-	PINCTRL_PIN(134, "UART0 RTS"),
+-	PINCTRL_PIN(135, "UART0 CTS"),
+-	PINCTRL_PIN(136, "UART0 TX"),
+-	PINCTRL_PIN(137, "UART0 RX"),
+-	PINCTRL_PIN(138, "PIO ACC SPI DO"),
+-	PINCTRL_PIN(139, "PIO ACC SPI DI"),
+-	PINCTRL_PIN(140, "PIO ACC SPI CS0 N"),
+-	PINCTRL_PIN(141, "PIO ACC SPI CS1 N"),
+-	PINCTRL_PIN(142, "PIO ACC SPI CS2 N"),
+-	PINCTRL_PIN(143, "PIO ACC SPI CLK"),
+-	PINCTRL_PIN(144, "PO PDI EXT RST N"),
+-	PINCTRL_PIN(145, "P PAD VDDIO 22"),
+-	PINCTRL_PIN(146, "P PAD VSSIO 22"),
+-	PINCTRL_PIN(147, "P PAD GND 18"),
+-	PINCTRL_PIN(148, "P PAD VDD 18"),
+-	PINCTRL_PIN(149, "PIO PDI C0"),
+-	PINCTRL_PIN(150, "PIO PDI C1"),
+-	PINCTRL_PIN(151, "PIO PDI C2"),
+-	PINCTRL_PIN(152, "PIO PDI C3"),
+-	PINCTRL_PIN(153, "PIO PDI C4"),
+-	PINCTRL_PIN(154, "PIO PDI C5"),
+-	PINCTRL_PIN(155, "PIO PDI D0"),
+-	PINCTRL_PIN(156, "PIO PDI D1"),
+-	PINCTRL_PIN(157, "PIO PDI D2"),
+-	PINCTRL_PIN(158, "PIO PDI D3"),
+-	PINCTRL_PIN(159, "P PAD VDDIO 21"),
+-	PINCTRL_PIN(160, "P PAD VSSIO 21"),
+-	PINCTRL_PIN(161, "PIO PDI D4"),
+-	PINCTRL_PIN(162, "PIO PDI D5"),
+-	PINCTRL_PIN(163, "PIO PDI D6"),
+-	PINCTRL_PIN(164, "PIO PDI D7"),
+-	PINCTRL_PIN(165, "PIO MS INS"),
+-	PINCTRL_PIN(166, "MMC DATA DIR LS"),
+-	PINCTRL_PIN(167, "MMC DATA 3"),
+-	PINCTRL_PIN(168, "MMC DATA 2"),
+-	PINCTRL_PIN(169, "MMC DATA 1"),
+-	PINCTRL_PIN(170, "MMC DATA 0"),
+-	PINCTRL_PIN(171, "MMC CMD DIR LS"),
+-	PINCTRL_PIN(172, "P PAD VDD 27"),
+-	PINCTRL_PIN(173, "P PAD GND 27"),
+-	PINCTRL_PIN(174, "P PAD VSSIO 20"),
+-	PINCTRL_PIN(175, "P PAD VDDIO 20"),
+-	PINCTRL_PIN(176, "MMC CMD"),
+-	PINCTRL_PIN(177, "MMC CLK"),
+-	PINCTRL_PIN(178, "PIO APP GPIO 14"),
+-	PINCTRL_PIN(179, "PIO APP GPIO 13"),
+-	PINCTRL_PIN(180, "PIO APP GPIO 11"),
+-	PINCTRL_PIN(181, "PIO APP GPIO 25"),
+-	PINCTRL_PIN(182, "PIO APP GPIO 24"),
+-	PINCTRL_PIN(183, "PIO APP GPIO 23"),
+-	PINCTRL_PIN(184, "PIO APP GPIO 22"),
+-	PINCTRL_PIN(185, "PIO APP GPIO 21"),
+-	PINCTRL_PIN(186, "PIO APP GPIO 20"),
+-	PINCTRL_PIN(187, "P PAD VDD 19"),
+-	PINCTRL_PIN(188, "P PAD GND 19"),
+-	PINCTRL_PIN(189, "P PAD VSSIO 23"),
+-	PINCTRL_PIN(190, "P PAD VDDIO 23"),
+-	PINCTRL_PIN(191, "PIO APP GPIO 19"),
+-	PINCTRL_PIN(192, "PIO APP GPIO 18"),
+-	PINCTRL_PIN(193, "PIO APP GPIO 17"),
+-	PINCTRL_PIN(194, "PIO APP GPIO 16"),
+-	PINCTRL_PIN(195, "PI CI D1"),
+-	PINCTRL_PIN(196, "PI CI D0"),
+-	PINCTRL_PIN(197, "PI CI HSYNC"),
+-	PINCTRL_PIN(198, "PI CI VSYNC"),
+-	PINCTRL_PIN(199, "PI CI EXT CLK"),
+-	PINCTRL_PIN(200, "PO CI EXT RST N"),
+-	PINCTRL_PIN(201, "P PAD VSSIO 43"),
+-	PINCTRL_PIN(202, "P PAD VDDIO 43"),
+-	PINCTRL_PIN(203, "PI CI D6"),
+-	PINCTRL_PIN(204, "PI CI D7"),
+-	PINCTRL_PIN(205, "PI CI D2"),
+-	PINCTRL_PIN(206, "PI CI D3"),
+-	PINCTRL_PIN(207, "PI CI D4"),
+-	PINCTRL_PIN(208, "PI CI D5"),
+-	PINCTRL_PIN(209, "PI CI D8"),
+-	PINCTRL_PIN(210, "PI CI D9"),
+-	PINCTRL_PIN(211, "P PAD VDD 20"),
+-	PINCTRL_PIN(212, "P PAD GND 20"),
+-	PINCTRL_PIN(213, "P PAD VSSIO 24"),
+-	PINCTRL_PIN(214, "P PAD VDDIO 24"),
+-	PINCTRL_PIN(215, "P PAD VDDIO 26"),
+-	PINCTRL_PIN(216, "PO EMIF 1 A26"),
+-	PINCTRL_PIN(217, "PO EMIF 1 A25"),
+-	PINCTRL_PIN(218, "P PAD VSSIO 26"),
+-	PINCTRL_PIN(219, "PO EMIF 1 A24"),
+-	PINCTRL_PIN(220, "PO EMIF 1 A23"),
+-	/* Pads along the bottom edge of the chip */
+-	PINCTRL_PIN(221, "PO EMIF 1 A22"),
+-	PINCTRL_PIN(222, "PO EMIF 1 A21"),
+-	PINCTRL_PIN(223, "P PAD VDD 21"),
+-	PINCTRL_PIN(224, "P PAD GND 21"),
+-	PINCTRL_PIN(225, "P PAD VSSIO 27"),
+-	PINCTRL_PIN(226, "P PAD VDDIO 27"),
+-	PINCTRL_PIN(227, "PO EMIF 1 A20"),
+-	PINCTRL_PIN(228, "PO EMIF 1 A19"),
+-	PINCTRL_PIN(229, "PO EMIF 1 A18"),
+-	PINCTRL_PIN(230, "PO EMIF 1 A17"),
+-	PINCTRL_PIN(231, "P PAD VDDIO 28"),
+-	PINCTRL_PIN(232, "P PAD VSSIO 28"),
+-	PINCTRL_PIN(233, "PO EMIF 1 A16"),
+-	PINCTRL_PIN(234, "PIO EMIF 1 D15"),
+-	PINCTRL_PIN(235, "PO EMIF 1 A15"),
+-	PINCTRL_PIN(236, "PIO EMIF 1 D14"),
+-	PINCTRL_PIN(237, "P PAD VDD 22"),
+-	PINCTRL_PIN(238, "P PAD GND 22"),
+-	PINCTRL_PIN(239, "P PAD VSSIO 29"),
+-	PINCTRL_PIN(240, "P PAD VDDIO 29"),
+-	PINCTRL_PIN(241, "PO EMIF 1 A14"),
+-	PINCTRL_PIN(242, "PIO EMIF 1 D13"),
+-	PINCTRL_PIN(243, "PO EMIF 1 A13"),
+-	PINCTRL_PIN(244, "PIO EMIF 1 D12"),
+-	PINCTRL_PIN(245, "P PAD VSSIO 30"),
+-	PINCTRL_PIN(246, "P PAD VDDIO 30"),
+-	PINCTRL_PIN(247, "PO EMIF 1 A12"),
+-	PINCTRL_PIN(248, "PIO EMIF 1 D11"),
+-	PINCTRL_PIN(249, "PO EMIF 1 A11"),
+-	PINCTRL_PIN(250, "PIO EMIF 1 D10"),
+-	PINCTRL_PIN(251, "P PAD VSSIO 31"),
+-	PINCTRL_PIN(252, "P PAD VDDIO 31"),
+-	PINCTRL_PIN(253, "PO EMIF 1 A10"),
+-	PINCTRL_PIN(254, "PIO EMIF 1 D09"),
+-	PINCTRL_PIN(255, "PO EMIF 1 A09"),
+-	PINCTRL_PIN(256, "P PAD VDDIO 32"),
+-	PINCTRL_PIN(257, "P PAD VSSIO 32"),
+-	PINCTRL_PIN(258, "P PAD GND 24"),
+-	PINCTRL_PIN(259, "P PAD VDD 24"),
+-	PINCTRL_PIN(260, "PIO EMIF 1 D08"),
+-	PINCTRL_PIN(261, "PO EMIF 1 A08"),
+-	PINCTRL_PIN(262, "PIO EMIF 1 D07"),
+-	PINCTRL_PIN(263, "PO EMIF 1 A07"),
+-	PINCTRL_PIN(264, "P PAD VDDIO 33"),
+-	PINCTRL_PIN(265, "P PAD VSSIO 33"),
+-	PINCTRL_PIN(266, "PIO EMIF 1 D06"),
+-	PINCTRL_PIN(267, "PO EMIF 1 A06"),
+-	PINCTRL_PIN(268, "PIO EMIF 1 D05"),
+-	PINCTRL_PIN(269, "PO EMIF 1 A05"),
+-	PINCTRL_PIN(270, "P PAD VDDIO 34"),
+-	PINCTRL_PIN(271, "P PAD VSSIO 34"),
+-	PINCTRL_PIN(272, "PIO EMIF 1 D04"),
+-	PINCTRL_PIN(273, "PO EMIF 1 A04"),
+-	PINCTRL_PIN(274, "PIO EMIF 1 D03"),
+-	PINCTRL_PIN(275, "PO EMIF 1 A03"),
+-	PINCTRL_PIN(276, "P PAD VDDIO 35"),
+-	PINCTRL_PIN(277, "P PAD VSSIO 35"),
+-	PINCTRL_PIN(278, "P PAD GND 23"),
+-	PINCTRL_PIN(279, "P PAD VDD 23"),
+-	PINCTRL_PIN(280, "PIO EMIF 1 D02"),
+-	PINCTRL_PIN(281, "PO EMIF 1 A02"),
+-	PINCTRL_PIN(282, "PIO EMIF 1 D01"),
+-	PINCTRL_PIN(283, "PO EMIF 1 A01"),
+-	PINCTRL_PIN(284, "P PAD VDDIO 36"),
+-	PINCTRL_PIN(285, "P PAD VSSIO 36"),
+-	PINCTRL_PIN(286, "PIO EMIF 1 D00"),
+-	PINCTRL_PIN(287, "PO EMIF 1 BE1 N"),
+-	PINCTRL_PIN(288, "PO EMIF 1 BE0 N"),
+-	PINCTRL_PIN(289, "PO EMIF 1 ADV N"),
+-	PINCTRL_PIN(290, "P PAD VDDIO 37"),
+-	PINCTRL_PIN(291, "P PAD VSSIO 37"),
+-	PINCTRL_PIN(292, "PO EMIF 1 SD CKE0"),
+-	PINCTRL_PIN(293, "PO EMIF 1 OE N"),
+-	PINCTRL_PIN(294, "PO EMIF 1 WE N"),
+-	PINCTRL_PIN(295, "P PAD VDDIO 38"),
+-	PINCTRL_PIN(296, "P PAD VSSIO 38"),
+-	PINCTRL_PIN(297, "PO EMIF 1 CLK"),
+-	PINCTRL_PIN(298, "PIO EMIF 1 SD CLK"),
+-	PINCTRL_PIN(299, "P PAD VSSIO 45 (not bonded)"),
+-	PINCTRL_PIN(300, "P PAD VDDIO 42"),
+-	PINCTRL_PIN(301, "P PAD VSSIO 42"),
+-	PINCTRL_PIN(302, "P PAD GND 31"),
+-	PINCTRL_PIN(303, "P PAD VDD 31"),
+-	PINCTRL_PIN(304, "PI EMIF 1 RET CLK"),
+-	PINCTRL_PIN(305, "PI EMIF 1 WAIT N"),
+-	PINCTRL_PIN(306, "PI EMIF 1 NFIF READY"),
+-	PINCTRL_PIN(307, "PO EMIF 1 SD CKE1"),
+-	PINCTRL_PIN(308, "PO EMIF 1 CS3 N"),
+-	PINCTRL_PIN(309, "P PAD VDD 25"),
+-	PINCTRL_PIN(310, "P PAD GND 25"),
+-	PINCTRL_PIN(311, "P PAD VSSIO 39"),
+-	PINCTRL_PIN(312, "P PAD VDDIO 39"),
+-	PINCTRL_PIN(313, "PO EMIF 1 CS2 N"),
+-	PINCTRL_PIN(314, "PO EMIF 1 CS1 N"),
+-	PINCTRL_PIN(315, "PO EMIF 1 CS0 N"),
+-	PINCTRL_PIN(316, "PO ETM TRACE PKT0"),
+-	PINCTRL_PIN(317, "PO ETM TRACE PKT1"),
+-	PINCTRL_PIN(318, "PO ETM TRACE PKT2"),
+-	PINCTRL_PIN(319, "P PAD VDD 30"),
+-	PINCTRL_PIN(320, "P PAD GND 30"),
+-	PINCTRL_PIN(321, "P PAD VSSIO 44"),
+-	PINCTRL_PIN(322, "P PAD VDDIO 44"),
+-	PINCTRL_PIN(323, "PO ETM TRACE PKT3"),
+-	PINCTRL_PIN(324, "PO ETM TRACE PKT4"),
+-	PINCTRL_PIN(325, "PO ETM TRACE PKT5"),
+-	PINCTRL_PIN(326, "PO ETM TRACE PKT6"),
+-	PINCTRL_PIN(327, "PO ETM TRACE PKT7"),
+-	PINCTRL_PIN(328, "PO ETM PIPE STAT0"),
+-	PINCTRL_PIN(329, "P PAD VDD 26"),
+-	PINCTRL_PIN(330, "P PAD GND 26"),
+-	PINCTRL_PIN(331, "P PAD VSSIO 40"),
+-	PINCTRL_PIN(332, "P PAD VDDIO 40"),
+-	PINCTRL_PIN(333, "PO ETM PIPE STAT1"),
+-	PINCTRL_PIN(334, "PO ETM PIPE STAT2"),
+-	PINCTRL_PIN(335, "PO ETM TRACE CLK"),
+-	PINCTRL_PIN(336, "PO ETM TRACE SYNC"),
+-	PINCTRL_PIN(337, "PIO ACC GPIO 33"),
+-	PINCTRL_PIN(338, "PIO ACC GPIO 32"),
+-	PINCTRL_PIN(339, "PIO ACC GPIO 30"),
+-	PINCTRL_PIN(340, "PIO ACC GPIO 29"),
+-	PINCTRL_PIN(341, "P PAD VDDIO 17"),
+-	PINCTRL_PIN(342, "P PAD VSSIO 17"),
+-	PINCTRL_PIN(343, "P PAD GND 15"),
+-	PINCTRL_PIN(344, "P PAD VDD 15"),
+-	PINCTRL_PIN(345, "PIO ACC GPIO 28"),
+-	PINCTRL_PIN(346, "PIO ACC GPIO 27"),
+-	PINCTRL_PIN(347, "PIO ACC GPIO 16"),
+-	PINCTRL_PIN(348, "PI TAP TMS"),
+-	PINCTRL_PIN(349, "PI TAP TDI"),
+-	PINCTRL_PIN(350, "PO TAP TDO"),
+-	PINCTRL_PIN(351, "PI TAP RST N"),
+-	/* Pads along the left edge of the chip */
+-	PINCTRL_PIN(352, "PI EMU MODE 0"),
+-	PINCTRL_PIN(353, "PO TAP RET CLK"),
+-	PINCTRL_PIN(354, "PI TAP CLK"),
+-	PINCTRL_PIN(355, "PO EMIF 0 SD CS N"),
+-	PINCTRL_PIN(356, "PO EMIF 0 SD CAS N"),
+-	PINCTRL_PIN(357, "PO EMIF 0 SD WE N"),
+-	PINCTRL_PIN(358, "P PAD VDDIO 1"),
+-	PINCTRL_PIN(359, "P PAD VSSIO 1"),
+-	PINCTRL_PIN(360, "P PAD GND 1"),
+-	PINCTRL_PIN(361, "P PAD VDD 1"),
+-	PINCTRL_PIN(362, "PO EMIF 0 SD CKE"),
+-	PINCTRL_PIN(363, "PO EMIF 0 SD DQML"),
+-	PINCTRL_PIN(364, "PO EMIF 0 SD DQMU"),
+-	PINCTRL_PIN(365, "PO EMIF 0 SD RAS N"),
+-	PINCTRL_PIN(366, "PIO EMIF 0 D15"),
+-	PINCTRL_PIN(367, "PO EMIF 0 A15"),
+-	PINCTRL_PIN(368, "PIO EMIF 0 D14"),
+-	PINCTRL_PIN(369, "PO EMIF 0 A14"),
+-	PINCTRL_PIN(370, "PIO EMIF 0 D13"),
+-	PINCTRL_PIN(371, "PO EMIF 0 A13"),
+-	PINCTRL_PIN(372, "P PAD VDDIO 2"),
+-	PINCTRL_PIN(373, "P PAD VSSIO 2"),
+-	PINCTRL_PIN(374, "P PAD GND 2"),
+-	PINCTRL_PIN(375, "P PAD VDD 2"),
+-	PINCTRL_PIN(376, "PIO EMIF 0 D12"),
+-	PINCTRL_PIN(377, "PO EMIF 0 A12"),
+-	PINCTRL_PIN(378, "PIO EMIF 0 D11"),
+-	PINCTRL_PIN(379, "PO EMIF 0 A11"),
+-	PINCTRL_PIN(380, "PIO EMIF 0 D10"),
+-	PINCTRL_PIN(381, "PO EMIF 0 A10"),
+-	PINCTRL_PIN(382, "PIO EMIF 0 D09"),
+-	PINCTRL_PIN(383, "PO EMIF 0 A09"),
+-	PINCTRL_PIN(384, "PIO EMIF 0 D08"),
+-	PINCTRL_PIN(385, "PO EMIF 0 A08"),
+-	PINCTRL_PIN(386, "PIO EMIF 0 D07"),
+-	PINCTRL_PIN(387, "PO EMIF 0 A07"),
+-	PINCTRL_PIN(388, "P PAD VDDIO 3"),
+-	PINCTRL_PIN(389, "P PAD VSSIO 3"),
+-	PINCTRL_PIN(390, "P PAD GND 3"),
+-	PINCTRL_PIN(391, "P PAD VDD 3"),
+-	PINCTRL_PIN(392, "PO EFUSE RDOUT1"),
+-	PINCTRL_PIN(393, "PIO EMIF 0 D06"),
+-	PINCTRL_PIN(394, "PO EMIF 0 A06"),
+-	PINCTRL_PIN(395, "PIO EMIF 0 D05"),
+-	PINCTRL_PIN(396, "PO EMIF 0 A05"),
+-	PINCTRL_PIN(397, "PIO EMIF 0 D04"),
+-	PINCTRL_PIN(398, "PO EMIF 0 A04"),
+-	PINCTRL_PIN(399, "A PADS/A VDDCO1v82v5 GND 80U SF LIN VDDCO AF"),
+-	PINCTRL_PIN(400, "PWR VDDCO AF"),
+-	PINCTRL_PIN(401, "PWR EFUSE HV1"),
+-	PINCTRL_PIN(402, "P PAD VSSIO 4"),
+-	PINCTRL_PIN(403, "P PAD VDDIO 4"),
+-	PINCTRL_PIN(404, "P PAD GND 4"),
+-	PINCTRL_PIN(405, "P PAD VDD 4"),
+-	PINCTRL_PIN(406, "PIO EMIF 0 D03"),
+-	PINCTRL_PIN(407, "PO EMIF 0 A03"),
+-	PINCTRL_PIN(408, "PWR EFUSE HV2"),
+-	PINCTRL_PIN(409, "PWR EFUSE HV3"),
+-	PINCTRL_PIN(410, "PIO EMIF 0 D02"),
+-	PINCTRL_PIN(411, "PO EMIF 0 A02"),
+-	PINCTRL_PIN(412, "PIO EMIF 0 D01"),
+-	PINCTRL_PIN(413, "P PAD VDDIO 5"),
+-	PINCTRL_PIN(414, "P PAD VSSIO 5"),
+-	PINCTRL_PIN(415, "P PAD GND 5"),
+-	PINCTRL_PIN(416, "P PAD VDD 5"),
+-	PINCTRL_PIN(417, "PO EMIF 0 A01"),
+-	PINCTRL_PIN(418, "PIO EMIF 0 D00"),
+-	PINCTRL_PIN(419, "IF 0 SD CLK"),
+-	PINCTRL_PIN(420, "APP SPI CLK"),
+-	PINCTRL_PIN(421, "APP SPI DO"),
+-	PINCTRL_PIN(422, "APP SPI DI"),
+-	PINCTRL_PIN(423, "APP SPI CS0"),
+-	PINCTRL_PIN(424, "APP SPI CS1"),
+-	PINCTRL_PIN(425, "APP SPI CS2"),
+-	PINCTRL_PIN(426, "PIO APP GPIO 10"),
+-	PINCTRL_PIN(427, "P PAD VDDIO 41"),
+-	PINCTRL_PIN(428, "P PAD VSSIO 41"),
+-	PINCTRL_PIN(429, "P PAD GND 6"),
+-	PINCTRL_PIN(430, "P PAD VDD 6"),
+-	PINCTRL_PIN(431, "PIO ACC SDIO0 CMD"),
+-	PINCTRL_PIN(432, "PIO ACC SDIO0 CK"),
+-	PINCTRL_PIN(433, "PIO ACC SDIO0 D3"),
+-	PINCTRL_PIN(434, "PIO ACC SDIO0 D2"),
+-	PINCTRL_PIN(435, "PIO ACC SDIO0 D1"),
+-	PINCTRL_PIN(436, "PIO ACC SDIO0 D0"),
+-	PINCTRL_PIN(437, "PIO USB PU"),
+-	PINCTRL_PIN(438, "PIO USB SP"),
+-	PINCTRL_PIN(439, "PIO USB DAT VP"),
+-	PINCTRL_PIN(440, "PIO USB SE0 VM"),
+-	PINCTRL_PIN(441, "PIO USB OE"),
+-	PINCTRL_PIN(442, "PIO USB SUSP"),
+-	PINCTRL_PIN(443, "P PAD VSSIO 6"),
+-	PINCTRL_PIN(444, "P PAD VDDIO 6"),
+-	PINCTRL_PIN(445, "PIO USB PUEN"),
+-	PINCTRL_PIN(446, "PIO ACC UART0 RX"),
+-	PINCTRL_PIN(447, "PIO ACC UART0 TX"),
+-	PINCTRL_PIN(448, "PIO ACC UART0 CTS"),
+-	PINCTRL_PIN(449, "PIO ACC UART0 RTS"),
+-	PINCTRL_PIN(450, "PIO ACC UART3 RX"),
+-	PINCTRL_PIN(451, "PIO ACC UART3 TX"),
+-	PINCTRL_PIN(452, "PIO ACC UART3 CTS"),
+-	PINCTRL_PIN(453, "PIO ACC UART3 RTS"),
+-	PINCTRL_PIN(454, "PIO ACC IRDA TX"),
+-	PINCTRL_PIN(455, "P PAD VDDIO 7"),
+-	PINCTRL_PIN(456, "P PAD VSSIO 7"),
+-	PINCTRL_PIN(457, "P PAD GND 7"),
+-	PINCTRL_PIN(458, "P PAD VDD 7"),
+-	PINCTRL_PIN(459, "PIO ACC IRDA RX"),
+-	PINCTRL_PIN(460, "PIO ACC PCM I2S CLK"),
+-	PINCTRL_PIN(461, "PIO ACC PCM I2S WS"),
+-	PINCTRL_PIN(462, "PIO ACC PCM I2S DATA A"),
+-	PINCTRL_PIN(463, "PIO ACC PCM I2S DATA B"),
+-	PINCTRL_PIN(464, "PO SIM CLK"),
+-	PINCTRL_PIN(465, "PIO ACC IRDA SD"),
+-	PINCTRL_PIN(466, "PIO SIM DATA"),
 -};
 -
--static const struct pinctrl_pin_desc zx296718_pins[] = {
--	/* aon_pmm_reg_0 */
--	AON_PIN(I2C3_SCL, TOP_REG2, 18, 2, 0x48, 0,
--		AON_MUX(0x0, "ANMI"),		/* anmi */
--		AON_MUX(0x1, "AGPIO"),		/* agpio29 */
--		AON_MUX(0x2, "nonAON"),		/* pin0 */
--		AON_MUX(0x3, "EXT_INT"),	/* int4 */
--		TOP_MUX(0x0, "I2C3"),		/* scl */
--		TOP_MUX(0x1, "SPI2"),		/* txd */
--		TOP_MUX(0x2, "I2S1")),		/* din0 */
--	AON_PIN(I2C3_SDA, TOP_REG2, 20, 2, 0x48, 9,
--		AON_MUX(0x0, "WD"),		/* rst_b */
--		AON_MUX(0x1, "AGPIO"),		/* agpio30 */
--		AON_MUX(0x2, "nonAON"),		/* pin1 */
--		AON_MUX(0x3, "EXT_INT"),	/* int5 */
--		TOP_MUX(0x0, "I2C3"),		/* sda */
--		TOP_MUX(0x1, "SPI2"),		/* rxd */
--		TOP_MUX(0x2, "I2S0")),		/* mclk */
--	ZX_RESERVED(AON_RESERVED0),
--	ZX_RESERVED(AON_RESERVED1),
--	AON_PIN(SEC_EN, TOP_REG3, 5, 1, 0x50, 0,
--		AON_MUX(0x0, "SEC"),		/* en */
--		AON_MUX(0x1, "AGPIO"),		/* agpio28 */
--		AON_MUX(0x2, "nonAON"),		/* pin3 */
--		AON_MUX(0x3, "EXT_INT"),	/* int7 */
--		TOP_MUX(0x0, "I2C2"),		/* sda */
--		TOP_MUX(0x1, "SPI2")),		/* cs */
--	AON_PIN(UART0_RXD, 0, 0, 0, 0x50, 9,
--		AON_MUX(0x0, "UART0"),		/* rxd */
--		AON_MUX(0x1, "AGPIO"),		/* agpio20 */
--		AON_MUX(0x2, "nonAON")),	/* pin34 */
--	AON_PIN(UART0_TXD, 0, 0, 0, 0x50, 18,
--		AON_MUX(0x0, "UART0"),		/* txd */
--		AON_MUX(0x1, "AGPIO"),		/* agpio21 */
--		AON_MUX(0x2, "nonAON")),	/* pin32 */
--	AON_PIN(IR_IN, 0, 0, 0, 0x64, 0,
--		AON_MUX(0x0, "IR"),		/* in */
--		AON_MUX(0x1, "AGPIO"),		/* agpio0 */
--		AON_MUX(0x2, "nonAON")),	/* pin27 */
--	AON_PIN(SPI0_CLK, TOP_REG3, 16, 1, 0x64, 9,
--		AON_MUX(0x0, "EXT_INT"),	/* int0 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio23 */
--		AON_MUX(0x2, "nonAON"),		/* pin5 */
--		AON_MUX(0x3, "PCU"),		/* test6 */
--		TOP_MUX(0x0, "SPI0"),		/* clk */
--		TOP_MUX(0x1, "ISP")),		/* flash_trig */
--	AON_PIN(SPI0_CS, TOP_REG3, 17, 1, 0x64, 18,
--		AON_MUX(0x0, "EXT_INT"),	/* int1 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio24 */
--		AON_MUX(0x2, "nonAON"),		/* pin6 */
--		AON_MUX(0x3, "PCU"),		/* test0 */
--		TOP_MUX(0x0, "SPI0"),		/* cs */
--		TOP_MUX(0x1, "ISP")),		/* prelight_trig */
--	AON_PIN(SPI0_TXD, TOP_REG3, 18, 1, 0x68, 0,
--		AON_MUX(0x0, "EXT_INT"),	/* int2 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio25 */
--		AON_MUX(0x2, "nonAON"),		/* pin7 */
--		AON_MUX(0x3, "PCU"),		/* test1 */
--		TOP_MUX(0x0, "SPI0"),		/* txd */
--		TOP_MUX(0x1, "ISP")),		/* shutter_trig */
--	AON_PIN(SPI0_RXD, TOP_REG3, 19, 1, 0x68, 9,
--		AON_MUX(0x0, "EXT_INT"),	/* int3 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio26 */
--		AON_MUX(0x2, "nonAON"),		/* pin8 */
--		AON_MUX(0x3, "PCU"),		/* test2 */
--		TOP_MUX(0x0, "SPI0"),		/* rxd */
--		TOP_MUX(0x1, "ISP")),		/* shutter_open */
--	AON_PIN(KEY_COL0, TOP_REG3, 20, 1, 0x68, 18,
--		AON_MUX(0x0, "KEY"),		/* col0 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio5 */
--		AON_MUX(0x2, "nonAON"),		/* pin9 */
--		AON_MUX(0x3, "PCU"),		/* test3 */
--		TOP_MUX(0x0, "UART3"),		/* rxd */
--		TOP_MUX(0x1, "I2S0")),		/* din1 */
--	AON_PIN(KEY_COL1, TOP_REG3, 21, 2, 0x6c, 0,
--		AON_MUX(0x0, "KEY"),		/* col1 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio6 */
--		AON_MUX(0x2, "nonAON"),		/* pin10 */
--		TOP_MUX(0x0, "UART3"),		/* txd */
--		TOP_MUX(0x1, "I2S0"),		/* din2 */
--		TOP_MUX(0x2, "VGA")),		/* scl */
--	AON_PIN(KEY_COL2, TOP_REG3, 23, 2, 0x6c, 9,
--		AON_MUX(0x0, "KEY"),		/* col2 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio7 */
--		AON_MUX(0x2, "nonAON"),		/* pin11 */
--		TOP_MUX(0x0, "PWM"),		/* out1 */
--		TOP_MUX(0x1, "I2S0"),		/* din3 */
--		TOP_MUX(0x2, "VGA")),		/* sda */
--	AON_PIN(KEY_ROW0, 0, 0, 0, 0x6c, 18,
--		AON_MUX(0x0, "KEY"),		/* row0 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio8 */
--		AON_MUX(0x2, "nonAON"),		/* pin33 */
--		AON_MUX(0x3, "WD")),		/* rst_b */
--
--	/* aon_pmm_reg_1 */
--	AON_PIN(KEY_ROW1, TOP_REG3, 25, 2, 0x70, 0,
--		AON_MUX(0x0, "KEY"),		/* row1 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio9 */
--		AON_MUX(0x2, "nonAON"),		/* pin12 */
--		TOP_MUX(0x0, "LCD"),		/* port0 lcd_te */
--		TOP_MUX(0x1, "I2S0"),		/* dout2 */
--		TOP_MUX(0x2, "PWM"),		/* out2 */
--		TOP_MUX(0x3, "VGA")),		/* hs1 */
--	AON_PIN(KEY_ROW2, TOP_REG3, 27, 2, 0x70, 9,
--		AON_MUX(0x0, "KEY"),		/* row2 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio10 */
--		AON_MUX(0x2, "nonAON"),		/* pin13 */
--		TOP_MUX(0x0, "LCD"),		/* port1 lcd_te */
--		TOP_MUX(0x1, "I2S0"),		/* dout3 */
--		TOP_MUX(0x2, "PWM"),		/* out3 */
--		TOP_MUX(0x3, "VGA")),		/* vs1 */
--	AON_PIN(HDMI_SCL, TOP_REG3, 29, 1, 0x70, 18,
--		AON_MUX(0x0, "PCU"),		/* test7 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio3 */
--		AON_MUX(0x2, "nonAON"),		/* pin14 */
--		TOP_MUX(0x0, "HDMI"),		/* scl */
--		TOP_MUX(0x1, "UART3")),		/* rxd */
--	AON_PIN(HDMI_SDA, TOP_REG3, 30, 1, 0x74, 0,
--		AON_MUX(0x0, "PCU"),		/* test8 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio4 */
--		AON_MUX(0x2, "nonAON"),		/* pin15 */
--		TOP_MUX(0x0, "HDMI"),		/* sda */
--		TOP_MUX(0x1, "UART3")),		/* txd */
--	AON_PIN(JTAG_TCK, TOP_REG7, 3, 1, 0x78, 18,
--		AON_MUX(0x0, "JTAG"),		/* tck */
--		AON_MUX(0x1, "AGPIO"),		/* agpio11 */
--		AON_MUX(0x2, "nonAON"),		/* pin22 */
--		AON_MUX(0x3, "EXT_INT"),	/* int4 */
--		TOP_MUX(0x0, "SPI4"),		/* clk */
--		TOP_MUX(0x1, "UART1")),		/* rxd */
--	AON_PIN(JTAG_TRSTN, TOP_REG7, 4, 1, 0xac, 0,
--		AON_MUX(0x0, "JTAG"),		/* trstn */
--		AON_MUX(0x1, "AGPIO"),		/* agpio12 */
--		AON_MUX(0x2, "nonAON"),		/* pin23 */
--		AON_MUX(0x3, "EXT_INT"),	/* int5 */
--		TOP_MUX(0x0, "SPI4"),		/* cs */
--		TOP_MUX(0x1, "UART1")),		/* txd */
--	AON_PIN(JTAG_TMS, TOP_REG7, 5, 1, 0xac, 9,
--		AON_MUX(0x0, "JTAG"),		/* tms */
--		AON_MUX(0x1, "AGPIO"),		/* agpio13 */
--		AON_MUX(0x2, "nonAON"),		/* pin24 */
--		AON_MUX(0x3, "EXT_INT"),	/* int6 */
--		TOP_MUX(0x0, "SPI4"),		/* txd */
--		TOP_MUX(0x1, "UART2")),		/* rxd */
--	AON_PIN(JTAG_TDI, TOP_REG7, 6, 1, 0xac, 18,
--		AON_MUX(0x0, "JTAG"),		/* tdi */
--		AON_MUX(0x1, "AGPIO"),		/* agpio14 */
--		AON_MUX(0x2, "nonAON"),		/* pin25 */
--		AON_MUX(0x3, "EXT_INT"),	/* int7 */
--		TOP_MUX(0x0, "SPI4"),		/* rxd */
--		TOP_MUX(0x1, "UART2")),		/* txd */
--	AON_PIN(JTAG_TDO, 0, 0, 0, 0xb0, 0,
--		AON_MUX(0x0, "JTAG"),		/* tdo */
--		AON_MUX(0x1, "AGPIO"),		/* agpio15 */
--		AON_MUX(0x2, "nonAON")),	/* pin26 */
--	AON_PIN(I2C0_SCL, 0, 0, 0, 0xb0, 9,
--		AON_MUX(0x0, "I2C0"),		/* scl */
--		AON_MUX(0x1, "AGPIO"),		/* agpio16 */
--		AON_MUX(0x2, "nonAON")),	/* pin28 */
--	AON_PIN(I2C0_SDA, 0, 0, 0, 0xb0, 18,
--		AON_MUX(0x0, "I2C0"),		/* sda */
--		AON_MUX(0x1, "AGPIO"),		/* agpio17 */
--		AON_MUX(0x2, "nonAON")),	/* pin29 */
--	AON_PIN(I2C1_SCL, TOP_REG8, 4, 1, 0xb4, 0,
--		AON_MUX(0x0, "I2C1"),		/* scl */
--		AON_MUX(0x1, "AGPIO"),		/* agpio18 */
--		AON_MUX(0x2, "nonAON"),		/* pin30 */
--		TOP_MUX(0x0, "LCD")),		/* port0 lcd_te */
--	AON_PIN(I2C1_SDA, TOP_REG8, 5, 1, 0xb4, 9,
--		AON_MUX(0x0, "I2C1"),		/* sda */
--		AON_MUX(0x1, "AGPIO"),		/* agpio19 */
--		AON_MUX(0x2, "nonAON"),		/* pin31 */
--		TOP_MUX(0x0, "LCD")),		/* port1 lcd_te */
--	ZX_RESERVED(AON_RESERVED2),
--	ZX_RESERVED(AON_RESERVED3),
--	ZX_RESERVED(AON_RESERVED4),
--
--	/* aon_pmm_reg_2 */
--	AON_PIN(SPI1_CLK, TOP_REG2, 6, 3, 0x40, 9,
--		AON_MUX(0x0, "EXT_INT"),	/* int0 */
--		AON_MUX(0x1, "PCU"),		/* test12 */
--		AON_MUX(0x2, "nonAON"),		/* pin39 */
--		TOP_MUX(0x0, "SPI1"),		/* clk */
--		TOP_MUX(0x1, "PCM"),		/* clk */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio35 */
--		TOP_MUX(0x3, "I2C4"),		/* scl */
--		TOP_MUX(0x4, "I2S1"),		/* mclk */
--		TOP_MUX(0x5, "ISP")),		/* flash_trig */
--	AON_PIN(SPI1_CS, TOP_REG2, 9, 3, 0x40, 18,
--		AON_MUX(0x0, "EXT_INT"),	/* int1 */
--		AON_MUX(0x1, "PCU"),		/* test13 */
--		AON_MUX(0x2, "nonAON"),		/* pin40 */
--		TOP_MUX(0x0, "SPI1"),		/* cs */
--		TOP_MUX(0x1, "PCM"),		/* fs */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio36 */
--		TOP_MUX(0x3, "I2C4"),		/* sda */
--		TOP_MUX(0x4, "I2S1"),		/* bclk */
--		TOP_MUX(0x5, "ISP")),		/* prelight_trig */
--	AON_PIN(SPI1_TXD, TOP_REG2, 12, 3, 0x44, 0,
--		AON_MUX(0x0, "EXT_INT"),	/* int2 */
--		AON_MUX(0x1, "PCU"),		/* test14 */
--		AON_MUX(0x2, "nonAON"),		/* pin41 */
--		TOP_MUX(0x0, "SPI1"),		/* txd */
--		TOP_MUX(0x1, "PCM"),		/* txd */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio37 */
--		TOP_MUX(0x3, "UART5"),		/* rxd */
--		TOP_MUX(0x4, "I2S1"),		/* ws */
--		TOP_MUX(0x5, "ISP")),		/* shutter_trig */
--	AON_PIN(SPI1_RXD, TOP_REG2, 15, 3, 0x44, 9,
--		AON_MUX(0x0, "EXT_INT"),	/* int3 */
--		AON_MUX(0x1, "PCU"),		/* test15 */
--		AON_MUX(0x2, "nonAON"),		/* pin42 */
--		TOP_MUX(0x0, "SPI1"),		/* rxd */
--		TOP_MUX(0x1, "PCM"),		/* rxd */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio38 */
--		TOP_MUX(0x3, "UART5"),		/* txd */
--		TOP_MUX(0x4, "I2S1"),		/* dout0 */
--		TOP_MUX(0x5, "ISP")),		/* shutter_open */
--	ZX_RESERVED(AON_RESERVED5),
--	ZX_RESERVED(AON_RESERVED6),
--	AON_PIN(AUDIO_DET, TOP_REG3, 3, 2, 0x48, 18,
--		AON_MUX(0x0, "PCU"),		/* test4 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio27 */
--		AON_MUX(0x2, "nonAON"),		/* pin2 */
--		AON_MUX(0x3, "EXT_INT"),	/* int16 */
--		TOP_MUX(0x0, "AUDIO"),		/* detect */
--		TOP_MUX(0x1, "I2C2"),		/* scl */
--		TOP_MUX(0x2, "SPI2")),		/* clk */
--	AON_PIN(SPDIF_OUT, TOP_REG3, 14, 2, 0x78, 9,
--		AON_MUX(0x0, "PCU"),		/* test5 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio22 */
--		AON_MUX(0x2, "nonAON"),		/* pin4 */
--		TOP_MUX(0x0, "SPDIF"),		/* out */
--		TOP_MUX(0x1, "PWM"),		/* out0 */
--		TOP_MUX(0x2, "ISP")),		/* fl_trig */
--	AON_PIN(HDMI_CEC, 0, 0, 0, 0x74, 9,
--		AON_MUX(0x0, "PCU"),		/* test9 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio1 */
--		AON_MUX(0x2, "nonAON")),	/* pin16 */
--	AON_PIN(HDMI_HPD, 0, 0, 0, 0x74, 18,
--		AON_MUX(0x0, "PCU"),		/* test10 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio2 */
--		AON_MUX(0x2, "nonAON")),	/* pin17 */
--	AON_PIN(GMAC_25M_OUT, 0, 0, 0, 0x78, 0,
--		AON_MUX(0x0, "PCU"),		/* test11 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio31 */
--		AON_MUX(0x2, "nonAON")),	/* pin43 */
--	AON_PIN(BOOT_SEL0, 0, 0, 0, 0xc0, 9,
--		AON_MUX(0x0, "BOOT"),		/* sel0 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio18 */
--		AON_MUX(0x2, "nonAON")),	/* pin18 */
--	AON_PIN(BOOT_SEL1, 0, 0, 0, 0xc0, 18,
--		AON_MUX(0x0, "BOOT"),		/* sel1 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio19 */
--		AON_MUX(0x2, "nonAON")),	/* pin19 */
--	AON_PIN(BOOT_SEL2, 0, 0, 0, 0xc4, 0,
--		AON_MUX(0x0, "BOOT"),		/* sel2 */
--		AON_MUX(0x1, "AGPIO"),		/* agpio20 */
--		AON_MUX(0x2, "nonAON")),	/* pin20 */
--	AON_PIN(DEEP_SLEEP_OUT_N, 0, 0, 0, 0xc4, 9,
--		AON_MUX(0x0, "DEEPSLP"),	/* deep sleep out_n */
--		AON_MUX(0x1, "AGPIO"),		/* agpio21 */
--		AON_MUX(0x2, "nonAON")),	/* pin21 */
--	ZX_RESERVED(AON_RESERVED7),
--
--	/* top_pmm_reg_0 */
--	TOP_PIN(GMII_GTX_CLK, TOP_REG0, 0, 2, 0x10, 0,
--		TOP_MUX(0x0, "GMII"),		/* gtx_clk */
--		TOP_MUX(0x1, "DVI0"),		/* clk */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio0 */
--	TOP_PIN(GMII_TX_CLK, TOP_REG0, 2, 2, 0x10, 9,
--		TOP_MUX(0x0, "GMII"),		/* tx_clk */
--		TOP_MUX(0x1, "DVI0"),		/* vs */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio1 */
--	TOP_PIN(GMII_TXD0, TOP_REG0, 4, 2, 0x10, 18,
--		TOP_MUX(0x0, "GMII"),		/* txd0 */
--		TOP_MUX(0x1, "DVI0"),		/* hs */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio2 */
--	TOP_PIN(GMII_TXD1, TOP_REG0, 6, 2, 0x14, 0,
--		TOP_MUX(0x0, "GMII"),		/* txd1 */
--		TOP_MUX(0x1, "DVI0"),		/* d0 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio3 */
--	TOP_PIN(GMII_TXD2, TOP_REG0, 8, 2, 0x14, 9,
--		TOP_MUX(0x0, "GMII"),		/* txd2 */
--		TOP_MUX(0x1, "DVI0"),		/* d1 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio4 */
--	TOP_PIN(GMII_TXD3, TOP_REG0, 10, 2, 0x14, 18,
--		TOP_MUX(0x0, "GMII"),		/* txd3 */
--		TOP_MUX(0x1, "DVI0"),		/* d2 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio5 */
--	TOP_PIN(GMII_TXD4, TOP_REG0, 12, 2, 0x18, 0,
--		TOP_MUX(0x0, "GMII"),		/* txd4 */
--		TOP_MUX(0x1, "DVI0"),		/* d3 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio6 */
--	TOP_PIN(GMII_TXD5, TOP_REG0, 14, 2, 0x18, 9,
--		TOP_MUX(0x0, "GMII"),		/* txd5 */
--		TOP_MUX(0x1, "DVI0"),		/* d4 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio7 */
--	TOP_PIN(GMII_TXD6, TOP_REG0, 16, 2, 0x18, 18,
--		TOP_MUX(0x0, "GMII"),		/* txd6 */
--		TOP_MUX(0x1, "DVI0"),		/* d5 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio8 */
--	TOP_PIN(GMII_TXD7, TOP_REG0, 18, 2, 0x1c, 0,
--		TOP_MUX(0x0, "GMII"),		/* txd7 */
--		TOP_MUX(0x1, "DVI0"),		/* d6 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio9 */
--	TOP_PIN(GMII_TX_ER, TOP_REG0, 20, 2, 0x1c, 9,
--		TOP_MUX(0x0, "GMII"),		/* tx_er */
--		TOP_MUX(0x1, "DVI0"),		/* d7 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio10 */
--	TOP_PIN(GMII_TX_EN, TOP_REG0, 22, 2, 0x1c, 18,
--		TOP_MUX(0x0, "GMII"),		/* tx_en */
--		TOP_MUX(0x1, "DVI0"),		/* d8 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio11 */
--	TOP_PIN(GMII_RX_CLK, TOP_REG0, 24, 2, 0x20, 0,
--		TOP_MUX(0x0, "GMII"),		/* rx_clk */
--		TOP_MUX(0x1, "DVI0"),		/* d9 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio12 */
--	TOP_PIN(GMII_RXD0, TOP_REG0, 26, 2, 0x20, 9,
--		TOP_MUX(0x0, "GMII"),		/* rxd0 */
--		TOP_MUX(0x1, "DVI0"),		/* d10 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio13 */
--	TOP_PIN(GMII_RXD1, TOP_REG0, 28, 2, 0x20, 18,
--		TOP_MUX(0x0, "GMII"),		/* rxd1 */
--		TOP_MUX(0x1, "DVI0"),		/* d11 */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio14 */
--	TOP_PIN(GMII_RXD2, TOP_REG0, 30, 2, 0x24, 0,
--		TOP_MUX(0x0, "GMII"),		/* rxd2 */
--		TOP_MUX(0x1, "DVI1"),		/* clk */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio15 */
--
--	/* top_pmm_reg_1 */
--	TOP_PIN(GMII_RXD3, TOP_REG1, 0, 2, 0x24, 9,
--		TOP_MUX(0x0, "GMII"),		/* rxd3 */
--		TOP_MUX(0x1, "DVI1"),		/* hs */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio16 */
--	TOP_PIN(GMII_RXD4, TOP_REG1, 2, 2, 0x24, 18,
--		TOP_MUX(0x0, "GMII"),		/* rxd4 */
--		TOP_MUX(0x1, "DVI1"),		/* vs */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio17 */
--	TOP_PIN(GMII_RXD5, TOP_REG1, 4, 2, 0x28, 0,
--		TOP_MUX(0x0, "GMII"),		/* rxd5 */
--		TOP_MUX(0x1, "DVI1"),		/* d0 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio18 */
--		TOP_MUX(0x3, "TSI0")),		/* dat0 */
--	TOP_PIN(GMII_RXD6, TOP_REG1, 6, 2, 0x28, 9,
--		TOP_MUX(0x0, "GMII"),		/* rxd6 */
--		TOP_MUX(0x1, "DVI1"),		/* d1 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio19 */
--		TOP_MUX(0x3, "TSI0")),		/* clk */
--	TOP_PIN(GMII_RXD7, TOP_REG1, 8, 2, 0x28, 18,
--		TOP_MUX(0x0, "GMII"),		/* rxd7 */
--		TOP_MUX(0x1, "DVI1"),		/* d2 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio20 */
--		TOP_MUX(0x3, "TSI0")),		/* sync */
--	TOP_PIN(GMII_RX_ER, TOP_REG1, 10, 2, 0x2c, 0,
--		TOP_MUX(0x0, "GMII"),		/* rx_er */
--		TOP_MUX(0x1, "DVI1"),		/* d3 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio21 */
--		TOP_MUX(0x3, "TSI0")),		/* valid */
--	TOP_PIN(GMII_RX_DV, TOP_REG1, 12, 2, 0x2c, 9,
--		TOP_MUX(0x0, "GMII"),		/* rx_dv */
--		TOP_MUX(0x1, "DVI1"),		/* d4 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio22 */
--		TOP_MUX(0x3, "TSI1")),		/* dat0 */
--	TOP_PIN(GMII_COL, TOP_REG1, 14, 2, 0x2c, 18,
--		TOP_MUX(0x0, "GMII"),		/* col */
--		TOP_MUX(0x1, "DVI1"),		/* d5 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio23 */
--		TOP_MUX(0x3, "TSI1")),		/* clk */
--	TOP_PIN(GMII_CRS, TOP_REG1, 16, 2, 0x30, 0,
--		TOP_MUX(0x0, "GMII"),		/* crs */
--		TOP_MUX(0x1, "DVI1"),		/* d6 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio24 */
--		TOP_MUX(0x3, "TSI1")),		/* sync */
--	TOP_PIN(GMII_MDC, TOP_REG1, 18, 2, 0x30, 9,
--		TOP_MUX(0x0, "GMII"),		/* mdc */
--		TOP_MUX(0x1, "DVI1"),		/* d7 */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio25 */
--		TOP_MUX(0x3, "TSI1")),		/* valid */
--	TOP_PIN(GMII_MDIO, TOP_REG1, 20, 1, 0x30, 18,
--		TOP_MUX(0x0, "GMII"),		/* mdio */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio26 */
--	TOP_PIN(SDIO1_CLK, TOP_REG1, 21, 2, 0x34, 18,
--		TOP_MUX(0x0, "SDIO1"),		/* clk */
--		TOP_MUX(0x1, "USIM0"),		/* clk */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio27 */
--		TOP_MUX(0x3, "SPINOR")),	/* clk */
--	TOP_PIN(SDIO1_CMD, TOP_REG1, 23, 2, 0x38, 0,
--		TOP_MUX(0x0, "SDIO1"),		/* cmd */
--		TOP_MUX(0x1, "USIM0"),		/* cd */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio28 */
--		TOP_MUX(0x3, "SPINOR")),	/* cs */
--	TOP_PIN(SDIO1_DATA0, TOP_REG1, 25, 2, 0x38, 9,
--		TOP_MUX(0x0, "SDIO1"),		/* dat0 */
--		TOP_MUX(0x1, "USIM0"),		/* rst */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio29 */
--		TOP_MUX(0x3, "SPINOR")),	/* dq0 */
--	TOP_PIN(SDIO1_DATA1, TOP_REG1, 27, 2, 0x38, 18,
--		TOP_MUX(0x0, "SDIO1"),		/* dat1 */
--		TOP_MUX(0x1, "USIM0"),		/* data */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio30 */
--		TOP_MUX(0x3, "SPINOR")),	/* dq1 */
--	TOP_PIN(SDIO1_DATA2, TOP_REG1, 29, 2, 0x3c, 0,
--		TOP_MUX(0x0, "SDIO1"),		/* dat2 */
--		TOP_MUX(0x1, "BGPIO"),		/* gpio31 */
--		TOP_MUX(0x2, "SPINOR")),	/* dq2 */
--
--	/* top_pmm_reg_2 */
--	TOP_PIN(SDIO1_DATA3, TOP_REG2, 0, 2, 0x3c, 9,
--		TOP_MUX(0x0, "SDIO1"),		/* dat3 */
--		TOP_MUX(0x1, "BGPIO"),		/* gpio32 */
--		TOP_MUX(0x2, "SPINOR")),	/* dq3 */
--	TOP_PIN(SDIO1_CD, TOP_REG2, 2, 2, 0x3c, 18,
--		TOP_MUX(0x0, "SDIO1"),		/* cd */
--		TOP_MUX(0x1, "BGPIO"),		/* gpio33 */
--		TOP_MUX(0x2, "ISP")),		/* fl_trig */
--	TOP_PIN(SDIO1_WP, TOP_REG2, 4, 2, 0x40, 0,
--		TOP_MUX(0x0, "SDIO1"),		/* wp */
--		TOP_MUX(0x1, "BGPIO"),		/* gpio34 */
--		TOP_MUX(0x2, "ISP")),		/* ref_clk */
--	TOP_PIN(USIM1_CD, TOP_REG2, 22, 3, 0x44, 18,
--		TOP_MUX(0x0, "USIM1"),		/* cd */
--		TOP_MUX(0x1, "UART4"),		/* rxd */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio39 */
--		TOP_MUX(0x3, "SPI3"),		/* clk */
--		TOP_MUX(0x4, "I2S0"),		/* bclk */
--		TOP_MUX(0x5, "B_DVI0")),	/* d8 */
--	TOP_PIN(USIM1_CLK, TOP_REG2, 25, 3, 0x4c, 18,
--		TOP_MUX(0x0, "USIM1"),		/* clk */
--		TOP_MUX(0x1, "UART4"),		/* txd */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio40 */
--		TOP_MUX(0x3, "SPI3"),		/* cs */
--		TOP_MUX(0x4, "I2S0"),		/* ws */
--		TOP_MUX(0x5, "B_DVI0")),	/* d9 */
--	TOP_PIN(USIM1_RST, TOP_REG2, 28, 3, 0x4c, 0,
--		TOP_MUX(0x0, "USIM1"),		/* rst */
--		TOP_MUX(0x1, "UART4"),		/* cts */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio41 */
--		TOP_MUX(0x3, "SPI3"),		/* txd */
--		TOP_MUX(0x4, "I2S0"),		/* dout0 */
--		TOP_MUX(0x5, "B_DVI0")),	/* d10 */
--
--	/* top_pmm_reg_3 */
--	TOP_PIN(USIM1_DATA, TOP_REG3, 0, 3, 0x4c, 9,
--		TOP_MUX(0x0, "USIM1"),		/* dat */
--		TOP_MUX(0x1, "UART4"),		/* rst */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio42 */
--		TOP_MUX(0x3, "SPI3"),		/* rxd */
--		TOP_MUX(0x4, "I2S0"),		/* din0 */
--		TOP_MUX(0x5, "B_DVI0")),	/* d11 */
--	TOP_PIN(SDIO0_CLK, TOP_REG3, 6, 1, 0x58, 0,
--		TOP_MUX(0x0, "SDIO0"),		/* clk */
--		TOP_MUX(0x1, "GPIO")),		/* gpio43 */
--	TOP_PIN(SDIO0_CMD, TOP_REG3, 7, 1, 0x58, 9,
--		TOP_MUX(0x0, "SDIO0"),		/* cmd */
--		TOP_MUX(0x1, "GPIO")),		/* gpio44 */
--	TOP_PIN(SDIO0_DATA0, TOP_REG3, 8, 1, 0x58, 18,
--		TOP_MUX(0x0, "SDIO0"),		/* dat0 */
--		TOP_MUX(0x1, "GPIO")),		/* gpio45 */
--	TOP_PIN(SDIO0_DATA1, TOP_REG3, 9, 1, 0x5c, 0,
--		TOP_MUX(0x0, "SDIO0"),		/* dat1 */
--		TOP_MUX(0x1, "GPIO")),		/* gpio46 */
--	TOP_PIN(SDIO0_DATA2, TOP_REG3, 10, 1, 0x5c, 9,
--		TOP_MUX(0x0, "SDIO0"),		/* dat2 */
--		TOP_MUX(0x1, "GPIO")),		/* gpio47 */
--	TOP_PIN(SDIO0_DATA3, TOP_REG3, 11, 1, 0x5c, 18,
--		TOP_MUX(0x0, "SDIO0"),		/* dat3 */
--		TOP_MUX(0x1, "GPIO")),		/* gpio48 */
--	TOP_PIN(SDIO0_CD, TOP_REG3, 12, 1, 0x60, 0,
--		TOP_MUX(0x0, "SDIO0"),		/* cd */
--		TOP_MUX(0x1, "GPIO")),		/* gpio49 */
--	TOP_PIN(SDIO0_WP, TOP_REG3, 13, 1, 0x60, 9,
--		TOP_MUX(0x0, "SDIO0"),		/* wp */
--		TOP_MUX(0x1, "GPIO")),		/* gpio50 */
--
--	/* top_pmm_reg_4 */
--	TOP_PIN(TSI0_DATA0, TOP_REG4, 0, 2, 0x60, 18,
--		TOP_MUX(0x0, "TSI0"),		/* dat0 */
--		TOP_MUX(0x1, "LCD"),		/* clk */
--		TOP_MUX(0x2, "BGPIO")),		/* gpio51 */
--	TOP_PIN(SPINOR_CLK, TOP_REG4, 2, 2, 0xa8, 18,
--		TOP_MUX(0x0, "SPINOR"),		/* clk */
--		TOP_MUX(0x1, "TSI0"),		/* dat1 */
--		TOP_MUX(0x2, "LCD"),		/* dat0 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio52 */
--	TOP_PIN(TSI2_DATA, TOP_REG4, 4, 2, 0x7c, 0,
--		TOP_MUX(0x0, "TSI2"),		/* dat */
--		TOP_MUX(0x1, "TSI0"),		/* dat2 */
--		TOP_MUX(0x2, "LCD"),		/* dat1 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio53 */
--	TOP_PIN(TSI2_CLK, TOP_REG4, 6, 2, 0x7c, 9,
--		TOP_MUX(0x0, "TSI2"),		/* clk */
--		TOP_MUX(0x1, "TSI0"),		/* dat3 */
--		TOP_MUX(0x2, "LCD"),		/* dat2 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio54 */
--	TOP_PIN(TSI2_SYNC, TOP_REG4, 8, 2, 0x7c, 18,
--		TOP_MUX(0x0, "TSI2"),		/* sync */
--		TOP_MUX(0x1, "TSI0"),		/* dat4 */
--		TOP_MUX(0x2, "LCD"),		/* dat3 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio55 */
--	TOP_PIN(TSI2_VALID, TOP_REG4, 10, 2, 0x80, 0,
--		TOP_MUX(0x0, "TSI2"),		/* valid */
--		TOP_MUX(0x1, "TSI0"),		/* dat5 */
--		TOP_MUX(0x2, "LCD"),		/* dat4 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio56 */
--	TOP_PIN(SPINOR_CS, TOP_REG4, 12, 2, 0x80, 9,
--		TOP_MUX(0x0, "SPINOR"),		/* cs */
--		TOP_MUX(0x1, "TSI0"),		/* dat6 */
--		TOP_MUX(0x2, "LCD"),		/* dat5 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio57 */
--	TOP_PIN(SPINOR_DQ0, TOP_REG4, 14, 2, 0x80, 18,
--		TOP_MUX(0x0, "SPINOR"),		/* dq0 */
--		TOP_MUX(0x1, "TSI0"),		/* dat7 */
--		TOP_MUX(0x2, "LCD"),		/* dat6 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio58 */
--	TOP_PIN(SPINOR_DQ1, TOP_REG4, 16, 2, 0x84, 0,
--		TOP_MUX(0x0, "SPINOR"),		/* dq1 */
--		TOP_MUX(0x1, "TSI0"),		/* clk */
--		TOP_MUX(0x2, "LCD"),		/* dat7 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio59 */
--	TOP_PIN(SPINOR_DQ2, TOP_REG4, 18, 2, 0x84, 9,
--		TOP_MUX(0x0, "SPINOR"),		/* dq2 */
--		TOP_MUX(0x1, "TSI0"),		/* sync */
--		TOP_MUX(0x2, "LCD"),		/* dat8 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio60 */
--	TOP_PIN(SPINOR_DQ3, TOP_REG4, 20, 2, 0x84, 18,
--		TOP_MUX(0x0, "SPINOR"),		/* dq3 */
--		TOP_MUX(0x1, "TSI0"),		/* valid */
--		TOP_MUX(0x2, "LCD"),		/* dat9 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio61 */
--	TOP_PIN(VGA_HS, TOP_REG4, 22, 3, 0x88, 0,
--		TOP_MUX(0x0, "VGA"),		/* hs */
--		TOP_MUX(0x1, "TSI1"),		/* dat0 */
--		TOP_MUX(0x2, "LCD"),		/* dat10 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio62 */
--		TOP_MUX(0x4, "I2S1"),		/* din1 */
--		TOP_MUX(0x5, "B_DVI0")),	/* clk */
--	TOP_PIN(VGA_VS, TOP_REG4, 25, 3, 0x88, 9,
--		TOP_MUX(0x0, "VGA"),		/* vs0 */
--		TOP_MUX(0x1, "TSI1"),		/* dat1 */
--		TOP_MUX(0x2, "LCD"),		/* dat11 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio63 */
--		TOP_MUX(0x4, "I2S1"),		/* din2 */
--		TOP_MUX(0x5, "B_DVI0")),	/* vs */
--	TOP_PIN(TSI3_DATA, TOP_REG4, 28, 3, 0x88, 18,
--		TOP_MUX(0x0, "TSI3"),		/* dat */
--		TOP_MUX(0x1, "TSI1"),		/* dat2 */
--		TOP_MUX(0x2, "LCD"),		/* dat12 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio64 */
--		TOP_MUX(0x4, "I2S1"),		/* din3 */
--		TOP_MUX(0x5, "B_DVI0")),	/* hs */
--
--	/* top_pmm_reg_5 */
--	TOP_PIN(TSI3_CLK, TOP_REG5, 0, 3, 0x8c, 0,
--		TOP_MUX(0x0, "TSI3"),		/* clk */
--		TOP_MUX(0x1, "TSI1"),		/* dat3 */
--		TOP_MUX(0x2, "LCD"),		/* dat13 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio65 */
--		TOP_MUX(0x4, "I2S1"),		/* dout1 */
--		TOP_MUX(0x5, "B_DVI0")),	/* d0 */
--	TOP_PIN(TSI3_SYNC, TOP_REG5, 3, 3, 0x8c, 9,
--		TOP_MUX(0x0, "TSI3"),		/* sync */
--		TOP_MUX(0x1, "TSI1"),		/* dat4 */
--		TOP_MUX(0x2, "LCD"),		/* dat14 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio66 */
--		TOP_MUX(0x4, "I2S1"),		/* dout2 */
--		TOP_MUX(0x5, "B_DVI0")),	/* d1 */
--	TOP_PIN(TSI3_VALID, TOP_REG5, 6, 3, 0x8c, 18,
--		TOP_MUX(0x0, "TSI3"),		/* valid */
--		TOP_MUX(0x1, "TSI1"),		/* dat5 */
--		TOP_MUX(0x2, "LCD"),		/* dat15 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio67 */
--		TOP_MUX(0x4, "I2S1"),		/* dout3 */
--		TOP_MUX(0x5, "B_DVI0")),	/* d2 */
--	TOP_PIN(I2S1_WS, TOP_REG5, 9, 3, 0x90, 0,
--		TOP_MUX(0x0, "I2S1"),		/* ws */
--		TOP_MUX(0x1, "TSI1"),		/* dat6 */
--		TOP_MUX(0x2, "LCD"),		/* dat16 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio68 */
--		TOP_MUX(0x4, "VGA"),		/* scl */
--		TOP_MUX(0x5, "B_DVI0")),	/* d3 */
--	TOP_PIN(I2S1_BCLK, TOP_REG5, 12, 3, 0x90, 9,
--		TOP_MUX(0x0, "I2S1"),		/* bclk */
--		TOP_MUX(0x1, "TSI1"),		/* dat7 */
--		TOP_MUX(0x2, "LCD"),		/* dat17 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio69 */
--		TOP_MUX(0x4, "VGA"),		/* sda */
--		TOP_MUX(0x5, "B_DVI0")),	/* d4 */
--	TOP_PIN(I2S1_MCLK, TOP_REG5, 15, 2, 0x90, 18,
--		TOP_MUX(0x0, "I2S1"),		/* mclk */
--		TOP_MUX(0x1, "TSI1"),		/* clk */
--		TOP_MUX(0x2, "LCD"),		/* dat18 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio70 */
--	TOP_PIN(I2S1_DIN0, TOP_REG5, 17, 2, 0x94, 0,
--		TOP_MUX(0x0, "I2S1"),		/* din0 */
--		TOP_MUX(0x1, "TSI1"),		/* sync */
--		TOP_MUX(0x2, "LCD"),		/* dat19 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio71 */
--	TOP_PIN(I2S1_DOUT0, TOP_REG5, 19, 2, 0x94, 9,
--		TOP_MUX(0x0, "I2S1"),		/* dout0 */
--		TOP_MUX(0x1, "TSI1"),		/* valid */
--		TOP_MUX(0x2, "LCD"),		/* dat20 */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio72 */
--	TOP_PIN(SPI3_CLK, TOP_REG5, 21, 3, 0x94, 18,
--		TOP_MUX(0x0, "SPI3"),		/* clk */
--		TOP_MUX(0x1, "TSO1"),		/* clk */
--		TOP_MUX(0x2, "LCD"),		/* dat21 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio73 */
--		TOP_MUX(0x4, "UART5"),		/* rxd */
--		TOP_MUX(0x5, "PCM"),		/* fs */
--		TOP_MUX(0x6, "I2S0"),		/* din1 */
--		TOP_MUX(0x7, "B_DVI0")),	/* d5 */
--	TOP_PIN(SPI3_CS, TOP_REG5, 24, 3, 0x98, 0,
--		TOP_MUX(0x0, "SPI3"),		/* cs */
--		TOP_MUX(0x1, "TSO1"),		/* dat0 */
--		TOP_MUX(0x2, "LCD"),		/* dat22 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio74 */
--		TOP_MUX(0x4, "UART5"),		/* txd */
--		TOP_MUX(0x5, "PCM"),		/* clk */
--		TOP_MUX(0x6, "I2S0"),		/* din2 */
--		TOP_MUX(0x7, "B_DVI0")),	/* d6 */
--	TOP_PIN(SPI3_TXD, TOP_REG5, 27, 3, 0x98, 9,
--		TOP_MUX(0x0, "SPI3"),		/* txd */
--		TOP_MUX(0x1, "TSO1"),		/* dat1 */
--		TOP_MUX(0x2, "LCD"),		/* dat23 */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio75 */
--		TOP_MUX(0x4, "UART5"),		/* cts */
--		TOP_MUX(0x5, "PCM"),		/* txd */
--		TOP_MUX(0x6, "I2S0"),		/* din3 */
--		TOP_MUX(0x7, "B_DVI0")),	/* d7 */
--	TOP_PIN(NAND_LDO_MS18_SEL, TOP_REG5, 30, 1, 0xe4, 0,
--		TOP_MUX(0x0, "NAND"),		/* ldo_ms18_sel */
--		TOP_MUX(0x1, "BGPIO")),		/* gpio99 */
--
--	/* top_pmm_reg_6 */
--	TOP_PIN(SPI3_RXD, TOP_REG6, 0, 3, 0x98, 18,
--		TOP_MUX(0x0, "SPI3"),		/* rxd */
--		TOP_MUX(0x1, "TSO1"),		/* dat2 */
--		TOP_MUX(0x2, "LCD"),		/* stvu_vsync */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio76 */
--		TOP_MUX(0x4, "UART5"),		/* rts */
--		TOP_MUX(0x5, "PCM"),		/* rxd */
--		TOP_MUX(0x6, "I2S0"),		/* dout1 */
--		TOP_MUX(0x7, "B_DVI1")),	/* clk */
--	TOP_PIN(I2S0_MCLK, TOP_REG6, 3, 3, 0x9c, 0,
--		TOP_MUX(0x0, "I2S0"),		/* mclk */
--		TOP_MUX(0x1, "TSO1"),		/* dat3 */
--		TOP_MUX(0x2, "LCD"),		/* stvd */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio77 */
--		TOP_MUX(0x4, "USIM0"),		/* cd */
--		TOP_MUX(0x5, "B_DVI1")),	/* vs */
--	TOP_PIN(I2S0_BCLK, TOP_REG6, 6, 3, 0x9c, 9,
--		TOP_MUX(0x0, "I2S0"),		/* bclk */
--		TOP_MUX(0x1, "TSO1"),		/* dat4 */
--		TOP_MUX(0x2, "LCD"),		/* sthl_hsync */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio78 */
--		TOP_MUX(0x4, "USIM0"),		/* clk */
--		TOP_MUX(0x5, "B_DVI1")),	/* hs */
--	TOP_PIN(I2S0_WS, TOP_REG6, 9, 3, 0x9c, 18,
--		TOP_MUX(0x0, "I2S0"),		/* ws */
--		TOP_MUX(0x1, "TSO1"),		/* dat5 */
--		TOP_MUX(0x2, "LCD"),		/* sthr */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio79 */
--		TOP_MUX(0x4, "USIM0"),		/* rst */
--		TOP_MUX(0x5, "B_DVI1")),	/* d0 */
--	TOP_PIN(I2S0_DIN0, TOP_REG6, 12, 3, 0xa0, 0,
--		TOP_MUX(0x0, "I2S0"),		/* din0 */
--		TOP_MUX(0x1, "TSO1"),		/* dat6 */
--		TOP_MUX(0x2, "LCD"),		/* oev_dataen */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio80 */
--		TOP_MUX(0x4, "USIM0"),		/* dat */
--		TOP_MUX(0x5, "B_DVI1")),	/* d1 */
--	TOP_PIN(I2S0_DOUT0, TOP_REG6, 15, 2, 0xa0, 9,
--		TOP_MUX(0x0, "I2S0"),		/* dout0 */
--		TOP_MUX(0x1, "TSO1"),		/* dat7 */
--		TOP_MUX(0x2, "LCD"),		/* ckv */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio81 */
--	TOP_PIN(I2C5_SCL, TOP_REG6, 17, 3, 0xa0, 18,
--		TOP_MUX(0x0, "I2C5"),		/* scl */
--		TOP_MUX(0x1, "TSO1"),		/* sync */
--		TOP_MUX(0x2, "LCD"),		/* ld */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio82 */
--		TOP_MUX(0x4, "PWM"),		/* out2 */
--		TOP_MUX(0x5, "I2S0"),		/* dout2 */
--		TOP_MUX(0x6, "B_DVI1")),	/* d2 */
--	TOP_PIN(I2C5_SDA, TOP_REG6, 20, 3, 0xa4, 0,
--		TOP_MUX(0x0, "I2C5"),		/* sda */
--		TOP_MUX(0x1, "TSO1"),		/* vld */
--		TOP_MUX(0x2, "LCD"),		/* pol */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio83 */
--		TOP_MUX(0x4, "PWM"),		/* out3 */
--		TOP_MUX(0x5, "I2S0"),		/* dout3 */
--		TOP_MUX(0x6, "B_DVI1")),	/* d3 */
--	TOP_PIN(SPI2_CLK, TOP_REG6, 23, 3, 0xa4, 9,
--		TOP_MUX(0x0, "SPI2"),		/* clk */
--		TOP_MUX(0x1, "TSO0"),		/* clk */
--		TOP_MUX(0x2, "LCD"),		/* degsl */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio84 */
--		TOP_MUX(0x4, "I2C4"),		/* scl */
--		TOP_MUX(0x5, "B_DVI1")),	/* d4 */
--	TOP_PIN(SPI2_CS, TOP_REG6, 26, 3, 0xa4, 18,
--		TOP_MUX(0x0, "SPI2"),		/* cs */
--		TOP_MUX(0x1, "TSO0"),		/* data */
--		TOP_MUX(0x2, "LCD"),		/* rev */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio85 */
--		TOP_MUX(0x4, "I2C4"),		/* sda */
--		TOP_MUX(0x5, "B_DVI1")),	/* d5 */
--	TOP_PIN(SPI2_TXD, TOP_REG6, 29, 3, 0xa8, 0,
--		TOP_MUX(0x0, "SPI2"),		/* txd */
--		TOP_MUX(0x1, "TSO0"),		/* sync */
--		TOP_MUX(0x2, "LCD"),		/* u_d */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio86 */
--		TOP_MUX(0x4, "I2C4"),		/* scl */
--		TOP_MUX(0x5, "B_DVI1")),	/* d6 */
--
--	/* top_pmm_reg_7 */
--	TOP_PIN(SPI2_RXD, TOP_REG7, 0, 3, 0xa8, 9,
--		TOP_MUX(0x0, "SPI2"),		/* rxd */
--		TOP_MUX(0x1, "TSO0"),		/* vld */
--		TOP_MUX(0x2, "LCD"),		/* r_l */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio87 */
--		TOP_MUX(0x4, "I2C3"),		/* sda */
--		TOP_MUX(0x5, "B_DVI1")),	/* d7 */
--	TOP_PIN(NAND_WP_N, TOP_REG7, 7, 3, 0x54, 9,
--		TOP_MUX(0x0, "NAND"),		/* wp */
--		TOP_MUX(0x1, "PWM"),		/* out2 */
--		TOP_MUX(0x2, "SPI2"),		/* clk */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio88 */
--		TOP_MUX(0x4, "TSI0"),		/* dat0 */
--		TOP_MUX(0x5, "I2S1")),		/* din1 */
--	TOP_PIN(NAND_PAGE_SIZE0, TOP_REG7, 10, 3, 0xb8, 0,
--		TOP_MUX(0x0, "NAND"),		/* boot_pagesize0 */
--		TOP_MUX(0x1, "PWM"),		/* out3 */
--		TOP_MUX(0x2, "SPI2"),		/* cs */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio89 */
--		TOP_MUX(0x4, "TSI0"),		/* clk */
--		TOP_MUX(0x5, "I2S1")),		/* din2 */
--	TOP_PIN(NAND_PAGE_SIZE1, TOP_REG7, 13, 3, 0xb8, 9,
--		TOP_MUX(0x0, "NAND"),		/* boot_pagesize1 */
--		TOP_MUX(0x1, "I2C4"),		/* scl */
--		TOP_MUX(0x2, "SPI2"),		/* txd */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio90 */
--		TOP_MUX(0x4, "TSI0"),		/* sync */
--		TOP_MUX(0x5, "I2S1")),		/* din3 */
--	TOP_PIN(NAND_ADDR_CYCLE, TOP_REG7, 16, 3, 0xb8, 18,
--		TOP_MUX(0x0, "NAND"),		/* boot_addr_cycles */
--		TOP_MUX(0x1, "I2C4"),		/* sda */
--		TOP_MUX(0x2, "SPI2"),		/* rxd */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio91 */
--		TOP_MUX(0x4, "TSI0"),		/* valid */
--		TOP_MUX(0x5, "I2S1")),		/* dout1 */
--	TOP_PIN(NAND_RB0, TOP_REG7, 19, 3, 0xbc, 0,
--		TOP_MUX(0x0, "NAND"),		/* rdy_busy0 */
--		TOP_MUX(0x1, "I2C2"),		/* scl */
--		TOP_MUX(0x2, "USIM0"),		/* cd */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio92 */
--		TOP_MUX(0x4, "TSI1")),		/* data0 */
--	TOP_PIN(NAND_RB1, TOP_REG7, 22, 3, 0xbc, 9,
--		TOP_MUX(0x0, "NAND"),		/* rdy_busy1 */
--		TOP_MUX(0x1, "I2C2"),		/* sda */
--		TOP_MUX(0x2, "USIM0"),		/* clk */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio93 */
--		TOP_MUX(0x4, "TSI1")),		/* clk */
--	TOP_PIN(NAND_RB2, TOP_REG7, 25, 3, 0xbc, 18,
--		TOP_MUX(0x0, "NAND"),		/* rdy_busy2 */
--		TOP_MUX(0x1, "UART5"),		/* rxd */
--		TOP_MUX(0x2, "USIM0"),		/* rst */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio94 */
--		TOP_MUX(0x4, "TSI1"),		/* sync */
--		TOP_MUX(0x4, "I2S1")),		/* dout2 */
--	TOP_PIN(NAND_RB3, TOP_REG7, 28, 3, 0x54, 18,
--		TOP_MUX(0x0, "NAND"),		/* rdy_busy3 */
--		TOP_MUX(0x1, "UART5"),		/* txd */
--		TOP_MUX(0x2, "USIM0"),		/* dat */
--		TOP_MUX(0x3, "BGPIO"),		/* gpio95 */
--		TOP_MUX(0x4, "TSI1"),		/* valid */
--		TOP_MUX(0x4, "I2S1")),		/* dout3 */
--
--	/* top_pmm_reg_8 */
--	TOP_PIN(GMAC_125M_IN, TOP_REG8, 0, 2, 0x34, 0,
--		TOP_MUX(0x0, "GMII"),		/* 125m_in */
--		TOP_MUX(0x1, "USB2"),		/* 0_drvvbus */
--		TOP_MUX(0x2, "ISP"),		/* ref_clk */
--		TOP_MUX(0x3, "BGPIO")),		/* gpio96 */
--	TOP_PIN(GMAC_50M_OUT, TOP_REG8, 2, 2, 0x34, 9,
--		TOP_MUX(0x0, "GMII"),		/* 50m_out */
--		TOP_MUX(0x1, "USB2"),		/* 1_drvvbus */
--		TOP_MUX(0x2, "BGPIO"),		/* gpio97 */
--		TOP_MUX(0x3, "USB2")),		/* 0_drvvbus */
--	TOP_PIN(SPINOR_SSCLK_LOOPBACK, TOP_REG8, 6, 1, 0xc8, 9,
--		TOP_MUX(0x0, "SPINOR")),	/* sdio1_clk_i */
--	TOP_PIN(SPINOR_SDIO1CLK_LOOPBACK, TOP_REG8, 7, 1, 0xc8, 18,
--		TOP_MUX(0x0, "SPINOR")),	/* ssclk_i */
+-/**
+- * @dev: a pointer back to containing device
+- * @virtbase: the offset to the controller in virtual memory
+- */
+-struct u300_pmx {
+-	struct device *dev;
+-	struct pinctrl_dev *pctl;
+-	void __iomem *virtbase;
 -};
 -
--static struct zx_pinctrl_soc_info zx296718_pinctrl_info = {
--	.pins = zx296718_pins,
--	.npins = ARRAY_SIZE(zx296718_pins),
+-/**
+- * u300_pmx_registers - the array of registers read/written for each pinmux
+- * shunt setting
+- */
+-static const u32 u300_pmx_registers[] = {
+-	U300_SYSCON_PMC1LR,
+-	U300_SYSCON_PMC1HR,
+-	U300_SYSCON_PMC2R,
+-	U300_SYSCON_PMC3R,
+-	U300_SYSCON_PMC4R,
 -};
 -
--static int zx296718_pinctrl_probe(struct platform_device *pdev)
--{
--	return zx_pinctrl_init(pdev, &zx296718_pinctrl_info);
--}
--
--static const struct of_device_id zx296718_pinctrl_match[] = {
--	{ .compatible = "zte,zx296718-pmm", },
--	{}
+-/**
+- * struct u300_pin_group - describes a U300 pin group
+- * @name: the name of this specific pin group
+- * @pins: an array of discrete physical pins used in this group, taken
+- *	from the driver-local pin enumeration space
+- * @num_pins: the number of pins in this group array, i.e. the number of
+- *	elements in .pins so we can iterate over that array
+- */
+-struct u300_pin_group {
+-	const char *name;
+-	const unsigned int *pins;
+-	const unsigned num_pins;
 -};
--MODULE_DEVICE_TABLE(of, zx296718_pinctrl_match);
 -
--static struct platform_driver zx296718_pinctrl_driver = {
--	.probe  = zx296718_pinctrl_probe,
--	.driver = {
--		.name = "zx296718-pinctrl",
--		.of_match_table = zx296718_pinctrl_match,
+-/**
+- * struct pmx_onmask - mask bits to enable/disable padmux
+- * @mask: mask bits to disable
+- * @val: mask bits to enable
+- *
+- * onmask lazy dog:
+- * onmask = {
+- *   {"PMC1LR" mask, "PMC1LR" value},
+- *   {"PMC1HR" mask, "PMC1HR" value},
+- *   {"PMC2R"  mask, "PMC2R"  value},
+- *   {"PMC3R"  mask, "PMC3R"  value},
+- *   {"PMC4R"  mask, "PMC4R"  value}
+- * }
+- */
+-struct u300_pmx_mask {
+-	u16 mask;
+-	u16 bits;
+-};
+-
+-/* The chip power pins are VDD, GND, VDDIO and VSSIO */
+-static const unsigned power_pins[] = { 0, 1, 3, 31, 46, 47, 49, 50, 61, 62, 63,
+-	64, 78, 79, 80, 81, 92, 93, 94, 95, 101, 102, 103, 104, 115, 116, 117,
+-	118, 130, 131, 132, 133, 145, 146, 147, 148, 159, 160, 172, 173, 174,
+-	175, 187, 188, 189, 190, 201, 202, 211, 212, 213, 214, 215, 218, 223,
+-	224, 225, 226, 231, 232, 237, 238, 239, 240, 245, 246, 251, 252, 256,
+-	257, 258, 259, 264, 265, 270, 271, 276, 277, 278, 279, 284, 285, 290,
+-	291, 295, 296, 299, 300, 301, 302, 303, 309, 310, 311, 312, 319, 320,
+-	321, 322, 329, 330, 331, 332, 341, 342, 343, 344, 358, 359, 360, 361,
+-	372, 373, 374, 375, 388, 389, 390, 391, 402, 403, 404, 405, 413, 414,
+-	415, 416, 427, 428, 429, 430, 443, 444, 455, 456, 457, 458 };
+-static const unsigned emif0_pins[] = { 355, 356, 357, 362, 363, 364, 365, 366,
+-	367, 368, 369, 370, 371, 376, 377, 378, 379, 380, 381, 382, 383, 384,
+-	385, 386, 387, 393, 394, 395, 396, 397, 398, 406, 407, 410, 411, 412,
+-	417, 418 };
+-static const unsigned emif1_pins[] = { 216, 217, 219, 220, 221, 222, 227, 228,
+-	229, 230, 233, 234, 235, 236, 241, 242, 243, 244, 247, 248, 249, 250,
+-	253, 254, 255, 260, 261, 262, 263, 266, 267, 268, 269, 272, 273, 274,
+-	275, 280, 281, 282, 283, 286, 287, 288, 289, 292, 293, 294, 297, 298,
+-	304, 305, 306, 307, 308, 313, 314, 315 };
+-static const unsigned uart0_pins[] = { 134, 135, 136, 137 };
+-static const unsigned mmc0_pins[] = { 166, 167, 168, 169, 170, 171, 176, 177 };
+-static const unsigned spi0_pins[] = { 420, 421, 422, 423, 424, 425 };
+-
+-static const struct u300_pmx_mask emif0_mask[] = {
+-	{0, 0},
+-	{0, 0},
+-	{0, 0},
+-	{0, 0},
+-	{0, 0},
+-};
+-
+-static const struct u300_pmx_mask emif1_mask[] = {
+-	/*
+-	 * This connects the SDRAM to CS2 and a NAND flash to
+-	 * CS0 on the EMIF.
+-	 */
+-	{
+-		U300_SYSCON_PMC1LR_EMIF_1_CS2_MASK |
+-		U300_SYSCON_PMC1LR_EMIF_1_CS1_MASK |
+-		U300_SYSCON_PMC1LR_EMIF_1_CS0_MASK |
+-		U300_SYSCON_PMC1LR_EMIF_1_MASK,
+-		U300_SYSCON_PMC1LR_EMIF_1_CS2_SDRAM |
+-		U300_SYSCON_PMC1LR_EMIF_1_CS1_STATIC |
+-		U300_SYSCON_PMC1LR_EMIF_1_CS0_NFIF |
+-		U300_SYSCON_PMC1LR_EMIF_1_SDRAM0
+-	},
+-	{0, 0},
+-	{0, 0},
+-	{0, 0},
+-	{0, 0},
+-};
+-
+-static const struct u300_pmx_mask uart0_mask[] = {
+-	{0, 0},
+-	{
+-		U300_SYSCON_PMC1HR_APP_UART0_1_MASK |
+-		U300_SYSCON_PMC1HR_APP_UART0_2_MASK,
+-		U300_SYSCON_PMC1HR_APP_UART0_1_UART0 |
+-		U300_SYSCON_PMC1HR_APP_UART0_2_UART0
+-	},
+-	{0, 0},
+-	{0, 0},
+-	{0, 0},
+-};
+-
+-static const struct u300_pmx_mask mmc0_mask[] = {
+-	{ U300_SYSCON_PMC1LR_MMCSD_MASK, U300_SYSCON_PMC1LR_MMCSD_MMCSD},
+-	{0, 0},
+-	{0, 0},
+-	{0, 0},
+-	{ U300_SYSCON_PMC4R_APP_MISC_12_MASK,
+-	  U300_SYSCON_PMC4R_APP_MISC_12_APP_GPIO }
+-};
+-
+-static const struct u300_pmx_mask spi0_mask[] = {
+-	{0, 0},
+-	{
+-		U300_SYSCON_PMC1HR_APP_SPI_2_MASK |
+-		U300_SYSCON_PMC1HR_APP_SPI_CS_1_MASK |
+-		U300_SYSCON_PMC1HR_APP_SPI_CS_2_MASK,
+-		U300_SYSCON_PMC1HR_APP_SPI_2_SPI |
+-		U300_SYSCON_PMC1HR_APP_SPI_CS_1_SPI |
+-		U300_SYSCON_PMC1HR_APP_SPI_CS_2_SPI
+-	},
+-	{0, 0},
+-	{0, 0},
+-	{0, 0}
+-};
+-
+-static const struct u300_pin_group u300_pin_groups[] = {
+-	{
+-		.name = "powergrp",
+-		.pins = power_pins,
+-		.num_pins = ARRAY_SIZE(power_pins),
+-	},
+-	{
+-		.name = "emif0grp",
+-		.pins = emif0_pins,
+-		.num_pins = ARRAY_SIZE(emif0_pins),
+-	},
+-	{
+-		.name = "emif1grp",
+-		.pins = emif1_pins,
+-		.num_pins = ARRAY_SIZE(emif1_pins),
+-	},
+-	{
+-		.name = "uart0grp",
+-		.pins = uart0_pins,
+-		.num_pins = ARRAY_SIZE(uart0_pins),
+-	},
+-	{
+-		.name = "mmc0grp",
+-		.pins = mmc0_pins,
+-		.num_pins = ARRAY_SIZE(mmc0_pins),
+-	},
+-	{
+-		.name = "spi0grp",
+-		.pins = spi0_pins,
+-		.num_pins = ARRAY_SIZE(spi0_pins),
 -	},
 -};
--builtin_platform_driver(zx296718_pinctrl_driver);
 -
--MODULE_DESCRIPTION("ZTE ZX296718 pinctrl driver");
--MODULE_LICENSE("GPL");
+-static int u300_get_groups_count(struct pinctrl_dev *pctldev)
+-{
+-	return ARRAY_SIZE(u300_pin_groups);
+-}
+-
+-static const char *u300_get_group_name(struct pinctrl_dev *pctldev,
+-				       unsigned selector)
+-{
+-	return u300_pin_groups[selector].name;
+-}
+-
+-static int u300_get_group_pins(struct pinctrl_dev *pctldev, unsigned selector,
+-			       const unsigned **pins,
+-			       unsigned *num_pins)
+-{
+-	*pins = u300_pin_groups[selector].pins;
+-	*num_pins = u300_pin_groups[selector].num_pins;
+-	return 0;
+-}
+-
+-static void u300_pin_dbg_show(struct pinctrl_dev *pctldev, struct seq_file *s,
+-		   unsigned offset)
+-{
+-	seq_printf(s, " " DRIVER_NAME);
+-}
+-
+-static const struct pinctrl_ops u300_pctrl_ops = {
+-	.get_groups_count = u300_get_groups_count,
+-	.get_group_name = u300_get_group_name,
+-	.get_group_pins = u300_get_group_pins,
+-	.pin_dbg_show = u300_pin_dbg_show,
+-};
+-
+-/*
+- * Here we define the available functions and their corresponding pin groups
+- */
+-
+-/**
+- * struct u300_pmx_func - describes U300 pinmux functions
+- * @name: the name of this specific function
+- * @groups: corresponding pin groups
+- * @onmask: bits to set to enable this when doing pin muxing
+- */
+-struct u300_pmx_func {
+-	const char *name;
+-	const char * const *groups;
+-	const unsigned num_groups;
+-	const struct u300_pmx_mask *mask;
+-};
+-
+-static const char * const powergrps[] = { "powergrp" };
+-static const char * const emif0grps[] = { "emif0grp" };
+-static const char * const emif1grps[] = { "emif1grp" };
+-static const char * const uart0grps[] = { "uart0grp" };
+-static const char * const mmc0grps[] = { "mmc0grp" };
+-static const char * const spi0grps[] = { "spi0grp" };
+-
+-static const struct u300_pmx_func u300_pmx_functions[] = {
+-	{
+-		.name = "power",
+-		.groups = powergrps,
+-		.num_groups = ARRAY_SIZE(powergrps),
+-		/* Mask is N/A */
+-	},
+-	{
+-		.name = "emif0",
+-		.groups = emif0grps,
+-		.num_groups = ARRAY_SIZE(emif0grps),
+-		.mask = emif0_mask,
+-	},
+-	{
+-		.name = "emif1",
+-		.groups = emif1grps,
+-		.num_groups = ARRAY_SIZE(emif1grps),
+-		.mask = emif1_mask,
+-	},
+-	{
+-		.name = "uart0",
+-		.groups = uart0grps,
+-		.num_groups = ARRAY_SIZE(uart0grps),
+-		.mask = uart0_mask,
+-	},
+-	{
+-		.name = "mmc0",
+-		.groups = mmc0grps,
+-		.num_groups = ARRAY_SIZE(mmc0grps),
+-		.mask = mmc0_mask,
+-	},
+-	{
+-		.name = "spi0",
+-		.groups = spi0grps,
+-		.num_groups = ARRAY_SIZE(spi0grps),
+-		.mask = spi0_mask,
+-	},
+-};
+-
+-static void u300_pmx_endisable(struct u300_pmx *upmx, unsigned selector,
+-			       bool enable)
+-{
+-	u16 regval, val, mask;
+-	int i;
+-	const struct u300_pmx_mask *upmx_mask;
+-
+-	upmx_mask = u300_pmx_functions[selector].mask;
+-	for (i = 0; i < ARRAY_SIZE(u300_pmx_registers); i++) {
+-		if (enable)
+-			val = upmx_mask->bits;
+-		else
+-			val = 0;
+-
+-		mask = upmx_mask->mask;
+-		if (mask != 0) {
+-			regval = readw(upmx->virtbase + u300_pmx_registers[i]);
+-			regval &= ~mask;
+-			regval |= val;
+-			writew(regval, upmx->virtbase + u300_pmx_registers[i]);
+-		}
+-		upmx_mask++;
+-	}
+-}
+-
+-static int u300_pmx_set_mux(struct pinctrl_dev *pctldev, unsigned selector,
+-			    unsigned group)
+-{
+-	struct u300_pmx *upmx;
+-
+-	/* There is nothing to do with the power pins */
+-	if (selector == 0)
+-		return 0;
+-
+-	upmx = pinctrl_dev_get_drvdata(pctldev);
+-	u300_pmx_endisable(upmx, selector, true);
+-
+-	return 0;
+-}
+-
+-static int u300_pmx_get_funcs_count(struct pinctrl_dev *pctldev)
+-{
+-	return ARRAY_SIZE(u300_pmx_functions);
+-}
+-
+-static const char *u300_pmx_get_func_name(struct pinctrl_dev *pctldev,
+-					  unsigned selector)
+-{
+-	return u300_pmx_functions[selector].name;
+-}
+-
+-static int u300_pmx_get_groups(struct pinctrl_dev *pctldev, unsigned selector,
+-			       const char * const **groups,
+-			       unsigned * const num_groups)
+-{
+-	*groups = u300_pmx_functions[selector].groups;
+-	*num_groups = u300_pmx_functions[selector].num_groups;
+-	return 0;
+-}
+-
+-static const struct pinmux_ops u300_pmx_ops = {
+-	.get_functions_count = u300_pmx_get_funcs_count,
+-	.get_function_name = u300_pmx_get_func_name,
+-	.get_function_groups = u300_pmx_get_groups,
+-	.set_mux = u300_pmx_set_mux,
+-};
+-
+-static int u300_pin_config_get(struct pinctrl_dev *pctldev, unsigned pin,
+-			       unsigned long *config)
+-{
+-	struct pinctrl_gpio_range *range =
+-		pinctrl_find_gpio_range_from_pin(pctldev, pin);
+-
+-	/* We get config for those pins we CAN get it for and that's it */
+-	if (!range)
+-		return -ENOTSUPP;
+-
+-	return u300_gpio_config_get(range->gc,
+-				    (pin - range->pin_base + range->base),
+-				    config);
+-}
+-
+-static int u300_pin_config_set(struct pinctrl_dev *pctldev, unsigned pin,
+-			       unsigned long *configs, unsigned num_configs)
+-{
+-	struct pinctrl_gpio_range *range =
+-		pinctrl_find_gpio_range_from_pin(pctldev, pin);
+-	int ret, i;
+-
+-	if (!range)
+-		return -EINVAL;
+-
+-	for (i = 0; i < num_configs; i++) {
+-		/* Note: none of these configurations take any argument */
+-		ret = u300_gpio_config_set(range->gc,
+-			(pin - range->pin_base + range->base),
+-			pinconf_to_config_param(configs[i]));
+-		if (ret)
+-			return ret;
+-	} /* for each config */
+-
+-	return 0;
+-}
+-
+-static const struct pinconf_ops u300_pconf_ops = {
+-	.is_generic = true,
+-	.pin_config_get = u300_pin_config_get,
+-	.pin_config_set = u300_pin_config_set,
+-};
+-
+-static struct pinctrl_desc u300_pmx_desc = {
+-	.name = DRIVER_NAME,
+-	.pins = u300_pads,
+-	.npins = ARRAY_SIZE(u300_pads),
+-	.pctlops = &u300_pctrl_ops,
+-	.pmxops = &u300_pmx_ops,
+-	.confops = &u300_pconf_ops,
+-	.owner = THIS_MODULE,
+-};
+-
+-static int u300_pmx_probe(struct platform_device *pdev)
+-{
+-	struct u300_pmx *upmx;
+-
+-	/* Create state holders etc for this driver */
+-	upmx = devm_kzalloc(&pdev->dev, sizeof(*upmx), GFP_KERNEL);
+-	if (!upmx)
+-		return -ENOMEM;
+-
+-	upmx->dev = &pdev->dev;
+-
+-	upmx->virtbase = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(upmx->virtbase))
+-		return PTR_ERR(upmx->virtbase);
+-
+-	upmx->pctl = devm_pinctrl_register(&pdev->dev, &u300_pmx_desc, upmx);
+-	if (IS_ERR(upmx->pctl)) {
+-		dev_err(&pdev->dev, "could not register U300 pinmux driver\n");
+-		return PTR_ERR(upmx->pctl);
+-	}
+-
+-	platform_set_drvdata(pdev, upmx);
+-
+-	dev_info(&pdev->dev, "initialized U300 pin control driver\n");
+-
+-	return 0;
+-}
+-
+-static const struct of_device_id u300_pinctrl_match[] = {
+-	{ .compatible = "stericsson,pinctrl-u300" },
+-	{},
+-};
+-
+-
+-static struct platform_driver u300_pmx_driver = {
+-	.driver = {
+-		.name = DRIVER_NAME,
+-		.of_match_table = u300_pinctrl_match,
+-	},
+-	.probe = u300_pmx_probe,
+-};
+-
+-static int __init u300_pmx_init(void)
+-{
+-	return platform_driver_register(&u300_pmx_driver);
+-}
+-arch_initcall(u300_pmx_init);
+-
+-static void __exit u300_pmx_exit(void)
+-{
+-	platform_driver_unregister(&u300_pmx_driver);
+-}
+-module_exit(u300_pmx_exit);
+-
+-MODULE_AUTHOR("Linus Walleij <linus.walleij@linaro.org>");
+-MODULE_DESCRIPTION("U300 pin control driver");
+-MODULE_LICENSE("GPL v2");
 -- 
 2.29.2
 
