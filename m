@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD762FD87E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015952FD839
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404585AbhATSXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:23:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46538 "EHLO mail.kernel.org"
+        id S2404607AbhATSXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:23:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391831AbhATSN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2391876AbhATSN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 13:13:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C5B233F6;
-        Wed, 20 Jan 2021 18:13:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAEAE233FC;
+        Wed, 20 Jan 2021 18:13:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611166392;
-        bh=3nR8FJx6B6+I6ezGDsjWc8JAjA9ul6cJOWEofQvBUIs=;
+        s=k20201202; t=1611166395;
+        bh=GkIGC0eYFqTOa1KlwKlvqCvxCPd0d/Y25LhcGHqFRYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tRkpDRJ06YXmKL62hqmTwtZdbHPzy4Kbe3mHMhU+BTUSu6SgTlud0Q1vDwKw/GAEz
-         0pBNtOV+gfAEWpqLHGx/OVrxUUh5+IYjqeQT7cHFUHLjHPM4pNsRz/bxqtQGeFpYTD
-         fdqlsg0IAElQP2yQOo/uTmRjaMhj5lrKOn34gDFiiLD62n4ANuAyCCHfXaiVasGocI
-         /vEqdKdLGdhchYOGhN7bD4vW+pYRMdKs7oTjqLr8ZgX5UAKnaJn5psoLkRKVYzQdBu
-         aB3cQHnsKsHEuhwZF57qbuax21JnaEhJpBxQe/LKmOK1JiIcojDp0Ap7H9KfqB/Wo8
-         epyFNngVXSUvA==
+        b=FK2+cIg3U0xtOVrEC+v2eqL9wZVARGbQVXLBmmxjDqRbVl5W11yUAJNRwyKNZEbY0
+         jlYqS4NKaZNYeKIbQ6xjsTbGJHVDHkRK/1DKkJGWXNnmcDiNvK0R+2jmDCaqzjNogG
+         uOeKItO+ZG+dMNwwdlNcAIhCS/OwlOah4lNB2oGH4Ath9LOuNN8lOA27nQ0dEUURSo
+         PxxE4viUdYakpsuUQsCGqJHjR6fgnrK5/jZoR6CosnJ+878VOXPzjDFcFzTs/3OT/i
+         ATn7gNHrjGaQ6y1x8rYk5N9yZg2fbm+wgq3vO2uFiGLsKwTq/aZieVyp3lCzS/7Nef
+         Ed9P8juEmbt8g==
 From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Wei Li <liwei391@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        guohanjun@huawei.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] drivers/perf: Add support for ARMv8.3-SPE
-Date:   Wed, 20 Jan 2021 18:13:00 +0000
-Message-Id: <161116486445.2646464.6398654899152259166.b4-ty@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Shawn Guo <shawnguo@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Frank Li <Frank.li@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 0/4] drivers/perf: Constify static struct attribute_group
+Date:   Wed, 20 Jan 2021 18:13:01 +0000
+Message-Id: <161116508323.2646977.9881871665706289493.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201203141609.14148-1-liwei391@huawei.com>
-References: <20201203141609.14148-1-liwei391@huawei.com>
+In-Reply-To: <20210117212847.21319-1-rikard.falkeborn@gmail.com>
+References: <20210117212847.21319-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -50,24 +51,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 22:16:09 +0800, Wei Li wrote:
-> Armv8.3 extends the SPE by adding:
-> - Alignment field in the Events packet, and filtering on this event
->   using PMSEVFR_EL1.
-> - Support for the Scalable Vector Extension (SVE).
+On Sun, 17 Jan 2021 22:28:43 +0100, Rikard Falkeborn wrote:
+> Thie series makes a number of static struct attribute_group const. The
+> only usage of the structs is to put their address in an array of pointers
+> to const struct * attribute_group. With this series applied, all but two
+> static struct attribute_group in drivers/perf are const (and the two
+> remaining are modified at runtime and can't be const).
 > 
-> The main additions for SVE are:
-> - Recording the vector length for SVE operations in the Operation Type
->   packet. It is not possible to filter on vector length.
-> - Incomplete predicate and empty predicate fields in the Events packet,
->   and filtering on these events using PMSEVFR_EL1.
+> Patches are independent and split based on output from get_maintainers.pl.
+> I can of course split differently if that's desired.
 > 
 > [...]
 
 Applied to will (for-next/perf), thanks!
 
-[1/1] drivers/perf: Add support for ARMv8.3-SPE
-      https://git.kernel.org/will/c/4a669e2432fc
+[1/4] perf: qcom: Constify static struct attribute_group
+      https://git.kernel.org/will/c/30b34c4833ea
+[2/4] perf/imx_ddr: Constify static struct attribute_group
+      https://git.kernel.org/will/c/3cb7d2da183f
+[3/4] perf: hisi: Constify static struct attribute_group
+      https://git.kernel.org/will/c/c2c4d5c051b2
+[4/4] perf: Constify static struct attribute_group
+      https://git.kernel.org/will/c/f0c140481d1b
 
 Cheers,
 -- 
