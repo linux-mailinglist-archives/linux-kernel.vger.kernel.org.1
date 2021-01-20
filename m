@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF512FCC2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200692FCC59
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbhATH4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:56:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46548 "EHLO mail.kernel.org"
+        id S1728909AbhATIHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:07:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59832 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729699AbhATHzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:55:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1C623131;
-        Wed, 20 Jan 2021 07:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611129271;
-        bh=IZ3xNUJOM7Y7pZR3MSGeJWjfTJwPs06jpM1oKNdi11s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xn8Lkt8oDvmmS1PqwSGGuEBwe6cVCngU/cM2JI5xiTWP4qByIpyi/JtEquo3Jyaye
-         Uapp/x6+B4eoKjNKOlG6ASb82GsMT2ABwyk2mwJo4O3zu7KitHasFdcZc323d6FrYf
-         y/h8TCiXEm+8SEmN3cH48VE2+GfibWbwzpubAd+U=
-Date:   Wed, 20 Jan 2021 08:54:27 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-usb@vger.kernel.org, shuah@kernel.org,
-        valentina.manea.m@gmail.com, hdanton@sina.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: =?utf-8?B?4oCcS0FTQU46IG51bGwtcHRyLWRl?=
- =?utf-8?Q?ref_Write_in_event=5Fhandler=E2=80=9D_and_=22KASAN=3A_null-ptr-?=
- =?utf-8?Q?deref_Write_i?= =?utf-8?Q?n?= vhci_shutdown_connection" should
- share the same root cause.
-Message-ID: <YAfhs++HLaTsejb2@kroah.com>
-References: <CAD-N9QUVDpHjSwZa+w3Zxx_Pn5ZrBKuhGhbg9PoyR=xbrMb88g@mail.gmail.com>
+        id S1730071AbhATIEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 03:04:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611128997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QeFIPCKf1lzYZ5NNZ/UyihM0FPQ4ig48O6bHj3KSVc0=;
+        b=pjKh/cmX3L7lWbEKaS4FMhCZzGKLMOMKo9InQl9tWIyGjOGZkXfH3nRZUV7+XPf5Fka8W1
+        7ADICESjNintsIualGfn3VWpnmRIbn34rk7Jd14bymn6XA42bxGdXyDDCwgjLrm0qKf4pG
+        8jKoVVesER20mZI+dx71Qxm8MDXlZ4U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 49F69AAAE;
+        Wed, 20 Jan 2021 07:49:57 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 08:49:56 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: skip propagate percpu vmstat values to
+ current memcg
+Message-ID: <20210120074956.GB9371@dhcp22.suse.cz>
+References: <20210119052744.96765-1-songmuchun@bytedance.com>
+ <YAcPwhl//jF/WpHu@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QUVDpHjSwZa+w3Zxx_Pn5ZrBKuhGhbg9PoyR=xbrMb88g@mail.gmail.com>
+In-Reply-To: <YAcPwhl//jF/WpHu@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:22:11AM +0800, 慕冬亮 wrote:
-> Dear kernel developers,
+On Tue 19-01-21 11:58:42, Johannes Weiner wrote:
+> On Tue, Jan 19, 2021 at 01:27:44PM +0800, Muchun Song wrote:
+> > The current memcg will be freed soon, so updating it's vmstat and
+> > vmevent values is pointless. Just skip updating it.
+> > 
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > 
-> I found that on the syzbot dashboard, “KASAN: null-ptr-deref Write in
-> event_handler”[1] and
-> "KASAN: null-ptr-deref Write in vhci_shutdown_connection" () should
-> share the same root cause.
-> 
-> 
-> The reasons for the above statement:
-> 1) the stack trace is the same, and this title difference is due to
-> the inline property of "vhci_shutdown_connection";
-> 2) their PoCs are the same as each other.
-> 
-> If you can have any issues with this statement or our information is
-> useful to you, please let us know. Thanks very much.
-> 
-> [1] KASAN: null-ptr-deref Write in event_handler -
-> https://syzkaller.appspot.com/bug?id=28cccdd18b4bb8670d077937fb8d4849dca96230
-> [2] KASAN: null-ptr-deref Write in vhci_shutdown_connection -
-> https://syzkaller.appspot.com/bug?id=c21c07f3d51769405e8efc027bdb927515dcc7d6
+> Oof, that's pretty subtle! Somebody trying to refactor that code for
+> other purposes may not immediately notice that optimization and add
+> potentially tedious bugs.
 
-Great, care to create a patch for this problem?  That's the best way to
-solve these things.
+Absolutely agreed!
 
-thanks,
+> How much does this save? Cgroup creation and deletion isn't really
+> considered a hot path. It takes global locks and such...
 
-greg k-h
+This is not the first time when an (micro)optimization is posted without
+any data showing benefit or otherwise appealing justification. Sigh.
+
+-- 
+Michal Hocko
+SUSE Labs
