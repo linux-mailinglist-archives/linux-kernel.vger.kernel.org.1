@@ -2,130 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7542FCF9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55BD2FCF9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733101AbhATLkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:40:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388574AbhATK7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:59:04 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4921C21744;
-        Wed, 20 Jan 2021 10:58:24 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l2BBu-008vIz-4y; Wed, 20 Jan 2021 10:58:22 +0000
+        id S1733151AbhATLkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:40:33 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:41614 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388699AbhATLAP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:00:15 -0500
+Received: by mail-oi1-f172.google.com with SMTP id 15so24575767oix.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 02:59:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DK+FZYOgme3Ym7xK/6JU3jj5omlMd5NXSakDyCnkIA0=;
+        b=G4T4aj0/HehZXc8VzLaxdwZ/CJbS1gcmbTJS0Ak5dT6OMAtdWYXMvfmAELf5o9lsLq
+         kzPUj3O9wxWvmMtYZ8MA30zQ5SP3OeCP3MOXnjP2EoATUv13hrNUBmnJ4ZXlsIFffLmH
+         hiIFQceMc1iTYa6KaorlHEb2Q7FDn/JFX5hXtqL25Nx9ibCMsLlNB5oJdrllZLVbUroQ
+         /clIL+D1ZG0LqALlKmCUceUi98QmMzj/IcHLtZQ/+XlvrFbO+8FJDZSyQDMkvkLh6MWF
+         HmkYSkeWKPVQBfCy/SsLWXVpJ1rlyo2zZZJ0+mlOm7l/NdnTVCLQnP58oL3iSQ2EIeOS
+         i3nQ==
+X-Gm-Message-State: AOAM533dTQgD+tI/SuctQx6o+fQvVhOZ6ACqUw2ceJ1HkVUQ41r3qJWs
+        KPtgAUACPZQCUUEDxDS2oaz6Wg88cbq1PH7M8GU=
+X-Google-Smtp-Source: ABdhPJzNOkj0RJCg5MWPsB2nJeuOLyBgBm/U9bYvMf7/sxQ4TwReP40jMWCWWK5UEYqKMB4u26wZ+I6DChBs1N3JiDs=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr2455753oia.148.1611140371974;
+ Wed, 20 Jan 2021 02:59:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 20 Jan 2021 10:58:22 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anshuman Khandual <Anshuman.Khandual@arm.com>,
-        Suzuki Poulose <Suzuki.Poulose@arm.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Dave P Martin <Dave.Martin@arm.com>,
-        Steven Price <Steven.Price@arm.com>,
+References: <CAMuHMdXQr-qNQ2aNVmgQFfs_dJ8=A-xzrhxRf9VUmzFXx+2o_w@mail.gmail.com>
+ <mhng-c5ceb653-6391-407e-acd9-bd5c43ca434a@penguin> <CAMuHMdXoJ9-jM4sazFbHXEsaDFFMK1ybM53SDqy_2QqPMZEQ=g@mail.gmail.com>
+In-Reply-To: <CAMuHMdXoJ9-jM4sazFbHXEsaDFFMK1ybM53SDqy_2QqPMZEQ=g@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 Jan 2021 11:59:20 +0100
+Message-ID: <CAMuHMdU9JTYKGxLpmDaYGMGOeaeDb_mCWbCNP2VM7LKwSE+YAg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Atish Patra <atishp@atishpatra.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
         Ard Biesheuvel <ardb@kernel.org>,
-        Gavin Shan <gshan@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Cristian Marussi <Cristian.Marussi@arm.com>
-Subject: Re: [RFC PATCH 0/2] Avoid booting stall caused by
- idmap_kpti_install_ng_mappings
-In-Reply-To: <AM6PR08MB43763910418580E3A470BF27F7A20@AM6PR08MB4376.eurprd08.prod.outlook.com>
-References: <AM6PR08MB43763910418580E3A470BF27F7A20@AM6PR08MB4376.eurprd08.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <e8a45079ae30232eaa889f026439da9e@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: Justin.He@arm.com, Catalin.Marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com, Suzuki.Poulose@arm.com, Mark.Rutland@arm.com, gustavoars@kernel.org, richard.henderson@linaro.org, Dave.Martin@arm.com, Steven.Price@arm.com, akpm@linux-foundation.org, rppt@kernel.org, ardb@kernel.org, gshan@redhat.com, wangkefeng.wang@huawei.com, broonie@kernel.org, Cristian.Marussi@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
+On Sun, Jan 17, 2021 at 8:03 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Fri, Jan 15, 2021 at 11:44 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > On Thu, 14 Jan 2021 23:59:04 PST (-0800), geert@linux-m68k.org wrote:
+> > > On Thu, Jan 14, 2021 at 10:11 PM Atish Patra <atishp@atishpatra.org> wrote:
+> > >> On Thu, Jan 14, 2021 at 11:46 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > >> > On Thu, 14 Jan 2021 10:33:01 PST (-0800), atishp@atishpatra.org wrote:
+> > >> > > On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > >> > >>
+> > >> > >> On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
+> > >> > >> > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> > >> > >> > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> > >> > >> > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
+> > >> > >> >
+> > >> > >> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > >> > >> > ---
+> > >> > >> >  arch/riscv/include/asm/cache.h | 4 ++++
+> > >> > >> >  1 file changed, 4 insertions(+)
+> > >> > >> >
+> > >> > >> > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+> > >> > >> > index 9b58b104559e..c9c669ea2fe6 100644
+> > >> > >> > --- a/arch/riscv/include/asm/cache.h
+> > >> > >> > +++ b/arch/riscv/include/asm/cache.h
+> > >> > >> > @@ -7,7 +7,11 @@
+> > >> > >> >  #ifndef _ASM_RISCV_CACHE_H
+> > >> > >> >  #define _ASM_RISCV_CACHE_H
+> > >> > >> >
+> > >> > >> > +#ifdef CONFIG_64BIT
+> > >> > >> >  #define L1_CACHE_SHIFT               6
+> > >> > >> > +#else
+> > >> > >> > +#define L1_CACHE_SHIFT               5
+> > >> > >> > +#endif
+> > >> > >> >
+> > >> > >> >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
+> > >> > >>
+> > >> > >> Should we not instead just
+> > >> > >>
+> > >> > >> #define SMP_CACHE_BYTES L1_CACHE_BYTES
+> > >> > >>
+> > >> > >> like a handful of architectures do?
+> > >> > >>
+> > >> > >
+> > >> > > The generic code already defines it that way in include/linux/cache.h
+> > >> > >
+> > >> > >> The cache size is sort of fake here, as we don't have any non-coherent
+> > >> > >> mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
+> > >> > >> cache lines in RISC-V implementations as software may assume that for
+> > >> > >> performance reasons.  Not really a strong reason, but I'd prefer to just make
+> > >> > >> these match.
+> > >> > >>
+> > >> > >
+> > >> > > If it is documented somewhere in the kernel, we should update that. I
+> > >> > > think SMP_CACHE_BYTES being 64
+> > >> > > actually degrades the performance as there will be a fragmented memory
+> > >> > > blocks with 32 bit bytes gap wherever
+> > >> > > SMP_CACHE_BYTES is used as an alignment requirement.
+> > >> >
+> > >> > I don't buy that: if you're trying to align to the cache size then the gaps are
+> > >> > the whole point.  IIUC the 64-byte cache lines come from DDR, not XLEN, so
+> > >> > there's really no reason for these to be different between the base ISAs.
+> > >> >
+> > >>
+> > >> Got your point. I noticed this when fixing the resource tree issue
+> > >> where the SMP_CACHE_BYTES
+> > >> alignment was not intentional but causing the issue. The real issue
+> > >> was solved via another patch in this series though.
+> > >>
+> > >> Just to clarify, if the allocation function intends to allocate
+> > >> consecutive memory, it should use 32 instead of SMP_CACHE_BYTES.
+> > >> This will lead to a #ifdef macro in the code.
+> > >>
+> > >> > > In addition to that, Geert Uytterhoeven mentioned some panic on vex32
+> > >> > > without this patch.
+> > >> > > I didn't see anything in Qemu though.
+> > >> >
+> > >> > Something like that is probably only going to show up on real hardware, QEMU
+> > >> > doesn't really do anything with the cache line size.  That said, as there's
+> > >> > nothing in our kernel now related to non-coherent memory there really should
+> > >> > only be performance issue (at least until we have non-coherent systems).
+> > >> >
+> > >> > I'd bet that the change is just masking some other bug, either in the software
+> > >> > or the hardware.  I'd prefer to root cause this rather than just working around
+> > >> > it, as it'll probably come back later and in a more difficult way to find.
+> > >> >
+> > >>
+> > >> Agreed. @Geert Uytterhoeven Can you do a further analysis of the panic
+> > >> you were saying ?
+> > >> We may need to change an alignment requirement to 32 for RV32 manually
+> > >> at some place in code.
+> > >
+> > > My findings were in
+> > > https://lore.kernel.org/linux-riscv/CAMuHMdWf6K-5y02+WJ6Khu1cD6P0n5x1wYQikrECkuNtAA1pgg@mail.gmail.com/
+> > >
+> > > Note that when the memblock.reserved list kept increasing, it kept on
+> > > adding the same entry to the list.  But that was fixed by "[PATCH 1/4]
+> > > RISC-V: Do not allocate memblock while iterating reserved memblocks".
+> > >
+> > > After that, only the (reproducible) "Unable to handle kernel paging
+> > > request at virtual address 61636473" was left, always at the same place.
+> > > No idea where the actual corruption happened.
+> >
+> > Thanks.  Presumably I need an FPGA to run this?  That will make it tricky to
+> > find anything here on my end.
+>
+> In theory, it should work with the LiteX simulation, too.
+> I.e. follow the instructions at
+> https://github.com/litex-hub/linux-on-litex-vexriscv
+> You can find prebuilt binaries at
+> https://github.com/litex-hub/linux-on-litex-vexriscv/issues/164
+> Take images/opensbi.bin from opensbi_2020_12_15.zip, and
+> images/rootfs.cpio from linux_2021_01_11.zip.
+> Take images/Image from your own kernel build.
+>
+> Unfortunately it seems the simulator is currently broken, and kernels
+> (both prebuilt and my own config) hang after
+> "sched_clock: 64 bits at 1000kHz, resolution 1000ns, wraps every
+> 2199023255500ns"
 
-On 2021-01-20 04:51, Justin He wrote:
-> Hi,
-> Kindly ping 😊
-> 
->> -----Original Message-----
->> From: Jia He <justin.he@arm.com>
->> Sent: Wednesday, January 13, 2021 9:41 AM
->> To: Catalin Marinas <Catalin.Marinas@arm.com>; Will Deacon
->> <will@kernel.org>; linux-arm-kernel@lists.infradead.org; linux-
->> kernel@vger.kernel.org
->> Cc: Anshuman Khandual <Anshuman.Khandual@arm.com>; Suzuki Poulose
->> <Suzuki.Poulose@arm.com>; Justin He <Justin.He@arm.com>; Mark Rutland
->> <Mark.Rutland@arm.com>; Gustavo A. R. Silva <gustavoars@kernel.org>;
->> Richard Henderson <richard.henderson@linaro.org>; Dave P Martin
->> <Dave.Martin@arm.com>; Steven Price <Steven.Price@arm.com>; Andrew 
->> Morton
->> <akpm@linux-foundation.org>; Mike Rapoport <rppt@kernel.org>; Ard
->> Biesheuvel <ardb@kernel.org>; Gavin Shan <gshan@redhat.com>; Kefeng 
->> Wang
->> <wangkefeng.wang@huawei.com>; Mark Brown <broonie@kernel.org>; Marc 
->> Zyngier
->> <maz@kernel.org>; Cristian Marussi <Cristian.Marussi@arm.com>
->> Subject: [RFC PATCH 0/2] Avoid booting stall caused by
->> 
->> There is a 10s stall in idmap_kpti_install_ng_mappings when kernel 
->> boots
->> on a Ampere EMAG server.
->> 
->> Commit f992b4dfd58b ("arm64: kpti: Add ->enable callback to remap
->> swapper using nG mappings") updates the nG bit runtime if kpti is
->> required.
->> 
->> But things get worse if rodata=full in map_mem(). NO_BLOCK_MAPPINGS |
->> NO_CONT_MAPPINGS is required when creating pagetable mapping. Hence 
->> all
->> ptes are fully mapped in this case. On a Ampere EMAG server with 256G
->> memory(pagesize=4k), it causes the 10s stall.
->> 
->> After moving init_cpu_features() ahead of early_fixmap_init(), we can 
->> use
->> cpu_have_const_cap earlier than before. Hence we can avoid this stall
->> by updating arm64_use_ng_mappings.
->> 
->> After this patch series, it reduces the kernel boot time from 14.7s to
->> 4.1s:
->> Before:
->> [   14.757569] Freeing initrd memory: 60752K
->> After:
->> [    4.138819] Freeing initrd memory: 60752K
->> 
->> Set it as RFC because I want to resolve any other points which I have
->> misconerned.
+In the mean time, the simulator got fixed.
+Unfortunately the crash does not happen on the simulator.
 
-But you don't really explain *why* having the CPU Feature discovery
-early helps at all. Is that so that you can bypass the idmap mapping?
-I'd expect something that explain the problem instead of paraphrasing
-the patches.
+Gr{oetje,eeting}s,
 
-Another thing is whether you have tested this on some ThunderX HW
-(the first version, not TX2), as this is the whole reason for this
-code...
+                        Geert
 
-Thanks,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
