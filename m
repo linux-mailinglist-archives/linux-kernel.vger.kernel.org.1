@@ -2,196 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F872FCC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50ED2FCC2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbhATH5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:57:05 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:65513 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728613AbhATHzQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:55:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611129315; x=1642665315;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=CkJlVqbpTdtd3JsrnDe3dxd7i0LW5V/8b1MPHc1MloE=;
-  b=cP71WjV/uopzGBBxgFPdjZOXQifHDIB4rdawjhdMjAqspMm0zzlD4Qqh
-   8ipTNm4mIBYAi2BwPeMpxBBQ52kwkL3pJ1FLd4czEjKfq+Czuyuqly5Sv
-   BvefHaXt9lTYua/8XjPc5LbGTBThC8FVlX+Kg5F/zevTUwCqsE4dURD/R
-   bwqHs7ip89M3r6obYc3DZsebCDBHpT9RpW/Zp5o9BqY1uZWVxlkoH6WUs
-   /v4pNGwB/a0waCkPWS6VABatP9gc0tXDx99Mt8sugmkatxGr5LElkMg3q
-   apm6w485KfR0/0F63+2UQXxIjSdWywXHBaDUXoFghsG/YUveKDVAA+8F8
-   g==;
-IronPort-SDR: 5L4e+3f5IHLLmjeVKrCD6oJh2Qe9uwwzg3q2GVCSdU0Lw6yjuNNsO804KsXyMQ0Wl2K9yQnv9p
- pu7x+rFaIeJ921Ti+MMy0nUCrCV2gy5qgCcaxfwR2PzLK5qKnIG1IopVkGfT4O5SIAEriQ3YGH
- EoymU9wBqjerAJnMoVUqKebs/u0GZ19pXjz4gOFwSSqTHi4F9yQOVTqXgtcKzMPmK2SccS14QB
- eJTxy+lyvzQBik3XvNpLdrbXNxBilqVsSAPzbDh3SAVEeKy3XHW1ZoRQDe0+xRHorvjaDJ9E2M
- A/E=
+        id S1726082AbhATH4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:56:38 -0500
+Received: from mga06.intel.com ([134.134.136.31]:35846 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726739AbhATHys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:54:48 -0500
+IronPort-SDR: TV6Lj900pyLmdo/66O7/cWCmG6nA3Z4aiySvaE9+xWczp5mSGhey50aUkhBo1HrVa2m+V6XJne
+ EWFkOzoMj+jQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="240600750"
 X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="106599413"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jan 2021 00:53:56 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 20 Jan 2021 00:53:56 -0700
-Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 20 Jan 2021 00:53:54 -0700
-Message-ID: <a3f079e05e5175929298dcfc3dc0ef1172bcf08c.camel@microchip.com>
-Subject: Re: [PATCH v3 2/3] reset: mchp: sparx5: add switch reset driver
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "Gregory Clement" <gregory.clement@bootlin.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 20 Jan 2021 08:53:53 +0100
-In-Reply-To: <20210119203710.GP3666@piout.net>
-References: <20210114162432.3039657-1-steen.hegelund@microchip.com>
-         <20210114162432.3039657-3-steen.hegelund@microchip.com>
-         <20210119203710.GP3666@piout.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 
+   d="scan'208";a="240600750"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 23:54:07 -0800
+IronPort-SDR: TToS1xbmD5KXL6u7aIH++681gRiINd4wSqoCGaIChWKbqYfrMcC0DuWnfRuxuBZ+2wJ5mQc7Hp
+ d0OCr7xmDUuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="466995394"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.145])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 23:54:04 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] swap: Check nrexceptional of swap cache before being freed
+References: <20210120072711.209099-1-ying.huang@intel.com>
+        <20210120074652.GA9371@dhcp22.suse.cz>
+Date:   Wed, 20 Jan 2021 15:54:04 +0800
+In-Reply-To: <20210120074652.GA9371@dhcp22.suse.cz> (Michal Hocko's message of
+        "Wed, 20 Jan 2021 08:46:52 +0100")
+Message-ID: <87v9bst55v.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Michal Hocko <mhocko@suse.com> writes:
 
-On Tue, 2021-01-19 at 21:37 +0100, Alexandre Belloni wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-> Hi,
-> 
-> This commit is also missing a commit message and you could probably
-> get
-> some info from your cover letter here.
+> On Wed 20-01-21 15:27:11, Huang Ying wrote:
+>> To catch the error in updating the swap cache shadow entries or their count.
+>
+> What is the error?
 
-I will do that.
+There's no error in the current code.  But we will change the related
+code in the future.  So this checking will help us to prevent error in
+the future.  I will change the patch description to make it more clear.
 
-> 
-> On 14/01/2021 17:24:31+0100, Steen Hegelund wrote:
-> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> > ---
-> >  drivers/reset/Kconfig                  |   8 ++
-> >  drivers/reset/Makefile                 |   1 +
-> >  drivers/reset/reset-microchip-sparx5.c | 120
-> > +++++++++++++++++++++++++
-> >  3 files changed, 129 insertions(+)
-> >  create mode 100644 drivers/reset/reset-microchip-sparx5.c
-> > 
-> > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> > index 71ab75a46491..05c240c47a8a 100644
-> > --- a/drivers/reset/Kconfig
-> > +++ b/drivers/reset/Kconfig
-> > @@ -101,6 +101,14 @@ config RESET_LPC18XX
-> >       help
-> >         This enables the reset controller driver for NXP
-> > LPC18xx/43xx SoCs.
-> > 
-> > +config RESET_MCHP_SPARX5
-> > +     bool "Microchip Sparx5 reset driver"
-> > +     depends on HAS_IOMEM || COMPILE_TEST
-> > +     default y if SPARX5_SWITCH
-> > +     select MFD_SYSCON
-> > +     help
-> > +       This driver supports switch core reset for the Microchip
-> > Sparx5 SoC.
-> > +
-> >  config RESET_MESON
-> >       tristate "Meson Reset Driver"
-> >       depends on ARCH_MESON || COMPILE_TEST
-> > diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> > index 1054123fd187..341fd9ab4bf6 100644
-> > --- a/drivers/reset/Makefile
-> > +++ b/drivers/reset/Makefile
-> > @@ -15,6 +15,7 @@ obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
-> >  obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
-> >  obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
-> >  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
-> > +obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
-> >  obj-$(CONFIG_RESET_MESON) += reset-meson.o
-> >  obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
-> >  obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
-> > diff --git a/drivers/reset/reset-microchip-sparx5.c
-> > b/drivers/reset/reset-microchip-sparx5.c
-> > new file mode 100644
-> > index 000000000000..0dbd2b6161ef
-> > --- /dev/null
-> > +++ b/drivers/reset/reset-microchip-sparx5.c
-> > @@ -0,0 +1,120 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/* Microchip Sparx5 Switch Reset driver
-> > + *
-> > + * Copyright (c) 2020 Microchip Technology Inc. and its
-> > subsidiaries.
-> > + *
-> > + * The Sparx5 Chip Register Model can be browsed at this location:
-> > + * https://github.com/microchip-ung/sparx-5_reginfo
-> > + */
-> > +#include <linux/mfd/syscon.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/reset-controller.h>
-> > +
-> > +#define PROTECT_REG    0x84
-> > +#define PROTECT_BIT    BIT(10)
-> > +#define SOFT_RESET_REG 0x08
-> > +#define SOFT_RESET_BIT BIT(1)
-> > +
-> > +struct mchp_reset_context {
-> > +     struct regmap *cpu_ctrl;
-> > +     struct regmap *gcb_ctrl;
-> > +     struct reset_controller_dev rcdev;
-> > +};
-> > +
-> > +static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
-> > +                            unsigned long id)
-> > +{
-> > +     struct mchp_reset_context *ctx =
-> > +             container_of(rcdev, struct mchp_reset_context,
-> > rcdev);
-> > +     u32 val;
-> > +
-> 
-> I would ensure the reset only happens once here else I'm not sure how
-> you could do it from the individual drivers.
+> Can it happens in the real life? Why do we need this
+> patch? Is crashing the kernel the right way to handle the situation?
 
-The framework handles that automatically.
+Emm... The mistake to update swap shadow entries will hurt performance,
+but will not trigger functionality bug.  So it may be better to use
+VM_WARN_ON_ONCE().
 
-> 
-> > +     /* Make sure the core is PROTECTED from reset */
-> > +     regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT,
-> > PROTECT_BIT);
-> > +
-> > +     /* Start soft reset */
-> > +     regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
-> > +
-> > +     /* Wait for soft reset done */
-> > +     return regmap_read_poll_timeout(ctx->gcb_ctrl,
-> > SOFT_RESET_REG, val,
-> > +                                     (val & SOFT_RESET_BIT) == 0,
-> > +                                     1, 100);
-> > +}
-> > +
-> 
-> --
-> Alexandre Belloni, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+Best Regards,
+Huang, Ying
 
-Thanks for your comments
-BR
-Steen
 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Cc: Minchan Kim <minchan@kernel.org>
+>> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+>> Cc: Johannes Weiner <hannes@cmpxchg.org>,
+>> Cc: Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
+>> Cc: Mel Gorman <mgorman@techsingularity.net>,
+>> Cc: Michal Hocko <mhocko@kernel.org>,
+>> Cc: Dan Williams <dan.j.williams@intel.com>,
+>> Cc: Christoph Hellwig <hch@lst.de>, Ilya Dryomov <idryomov@gmail.com>,
+>> ---
+>>  mm/swap_state.c | 7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/mm/swap_state.c b/mm/swap_state.c
+>> index d0d417efeecc..240a4f97594a 100644
+>> --- a/mm/swap_state.c
+>> +++ b/mm/swap_state.c
+>> @@ -703,7 +703,12 @@ int init_swap_address_space(unsigned int type, unsigned long nr_pages)
+>>  
+>>  void exit_swap_address_space(unsigned int type)
+>>  {
+>> -	kvfree(swapper_spaces[type]);
+>> +	int i;
+>> +	struct address_space *spaces = swapper_spaces[type];
+>> +
+>> +	for (i = 0; i < nr_swapper_spaces[type]; i++)
+>> +		VM_BUG_ON(spaces[i].nrexceptional);
+>> +	kvfree(spaces);
+>>  	nr_swapper_spaces[type] = 0;
+>>  	swapper_spaces[type] = NULL;
+>>  }
+>> -- 
+>> 2.29.2
