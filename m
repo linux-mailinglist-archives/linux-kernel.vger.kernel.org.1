@@ -2,246 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D602FDAF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464282FDAEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388353AbhATUf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:35:26 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:41862 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388177AbhATU3D (ORCPT
+        id S2388337AbhATUe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388353AbhATU3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:29:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611174523; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=DUldyVZxMpgIEQjSwc3NKK614yX0lFh0/8+DOhlGEf8=; b=DlqlTmKkFKND/TALMzQcvJIs+X6t7Ysk/51H1dvbJh6wJfI0bgBNhmYqUSPq+1i28QO/DCio
- D1XO1gl3CjJIcxIpdPXEVsS9alXnpHU+ylPylI57l5QITYbH0nul4unm0tWV3RQkLQ69OPwe
- kBufFJyqgxsgZ1hCCicEy8Z1T2M=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60089254beacd1a2525b5af2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Jan 2021 20:28:04
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8536BC433ED; Wed, 20 Jan 2021 20:28:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB868C43463;
-        Wed, 20 Jan 2021 20:28:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB868C43463
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
- sendfile
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
-References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
- <20210120091033.GA3683647@infradead.org>
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-Message-ID: <c6205eac-582d-6f0b-4ea0-7aa560af2527@codeaurora.org>
-Date:   Wed, 20 Jan 2021 12:28:00 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 20 Jan 2021 15:29:33 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4672EC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:28:53 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id e9so8993099plh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:28:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fioXcQ/rcCDFe0T/YIUHW/M/p9VSUety2UTjxNg3ziA=;
+        b=bCfQkCywAIsP3lLuxqsl0MQ4KwOBlshIphqvfRTMiI1aefaiNetuMamFqp9X7i1+o9
+         1TtsFuxQFB8lsmHffvaLidYS/t+vAjbvQmbvthtopcqayQWW7aTWeSErW68yzO+/e7/s
+         mm8mHyRbr9K5B2a05j+T1hkcJt2yxcWFNMmzY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fioXcQ/rcCDFe0T/YIUHW/M/p9VSUety2UTjxNg3ziA=;
+        b=b9H+PfJa7KvXk49QVbM9lQept6vKIBSnO5EvnLwp0CD8/7I5rAAzVvV5EbiJYlvRxW
+         bX4yWzI4LXLpzriC6xxw0GlXIcRGoh6tYDDwKN8zz2Ma/DWy40tEl9YsACYyaFIgol3D
+         sJCu3hVXhcr4Xd8er8cYVFrLzxwQ+/Z1eT7EYRn9jgctEpVvx5EkRqmVpAIJeevcl7Q+
+         LBYMgZ7T+U5muF71G9JmZYuGrKXtzG1RZD5p/TBWhAmpLQw49tY9XoXDbd64S/f5oyj7
+         nVSwnGIpDiC0XxWSXPMpDFcYUCjSVrqct9unmWdzy+K735VSA/j2ksIebBdBP4U1lSAR
+         /uvQ==
+X-Gm-Message-State: AOAM532M+yG0q8HOVhtg3Ad7rPVmYS79neiXp8hDDHTH6be/7chhxVhu
+        9RhBVcrdho2hpkn3r3ZblFIKQA==
+X-Google-Smtp-Source: ABdhPJz3vqbaKQGcB2+3zZJBFP9PcA+uju+6kutWdGzJQdggXuGIMQNlyI67aU9SoP9c4TvAk4Zhwg==
+X-Received: by 2002:a17:90a:d3c7:: with SMTP id d7mr7441076pjw.169.1611174532698;
+        Wed, 20 Jan 2021 12:28:52 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 145sm3073897pfu.8.2021.01.20.12.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 12:28:51 -0800 (PST)
+Date:   Wed, 20 Jan 2021 12:28:50 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Timur Tabi <timur@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
+Message-ID: <202101201226.A03F16DF24@keescook>
+References: <20210116220950.47078-1-timur@kernel.org>
+ <20210118182635.GD2260413@casper.infradead.org>
+ <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
+ <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
+ <20210119014725.GH2260413@casper.infradead.org>
+ <202101191135.A78A570@keescook>
+ <82e1f2f3-77c3-ffb4-34b2-0e6f23e6195d@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210120091033.GA3683647@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <82e1f2f3-77c3-ffb4-34b2-0e6f23e6195d@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 19, 2021 at 12:18:17PM -0800, Randy Dunlap wrote:
+> On 1/19/21 11:45 AM, Kees Cook wrote:
+> > 
+> > How about this so the base address is hashed once, with the offset added
+> > to it for each line instead of each line having a "new" hash that makes
+> > no sense:
+> 
+> Yes, good patch. Should have been like this to begin with IMO.
+> 
+> > diff --git a/lib/hexdump.c b/lib/hexdump.c
+> > index 9301578f98e8..20264828752d 100644
+> > --- a/lib/hexdump.c
+> > +++ b/lib/hexdump.c
+> > @@ -242,12 +242,17 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
+> >  		    const void *buf, size_t len, bool ascii)
+> >  {
+> >  	const u8 *ptr = buf;
+> > +	const u8 *addr;
+> >  	int i, linelen, remaining = len;
+> >  	unsigned char linebuf[32 * 3 + 2 + 32 + 1];
+> >  
+> >  	if (rowsize != 16 && rowsize != 32)
+> >  		rowsize = 16;
+> >  
+> > +	if (prefix_type == DUMP_PREFIX_ADDRESS &&
+> > +	    ptr_to_hashval(ptr, &addr))
+> > +		addr = 0;
+> > +
+> >  	for (i = 0; i < len; i += rowsize) {
+> >  		linelen = min(remaining, rowsize);
+> >  		remaining -= rowsize;
+> > @@ -258,7 +263,7 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
+> >  		switch (prefix_type) {
+> >  		case DUMP_PREFIX_ADDRESS:
+> >  			printk("%s%s%p: %s\n",
+> > -			       level, prefix_str, ptr + i, linebuf);
+> > +			       level, prefix_str, addr + i, linebuf);
+> 
+> Is 'addr' always set here?
+> It is only conditionally set above.
 
-On 1/20/2021 1:10 AM, Christoph Hellwig wrote:
-> Can you give this patch a spin?
-Thanks! This patch fixed the fallback mechanism for me. Attaching logs:
-
-[   84.410162][  T244] qcom_q6v5_pas xxxxxxxx.remoteproc-cdsp: Direct 
-firmware load for cdsp.bX failed with error -2
-[   84.418276][  T244] qcom_q6v5_pas xxxxxxxx.remoteproc-cdsp: Falling 
-back to sysfs fallback for: cdsp.bX
-[   84.471558][  T393] ueventd: firmware: loading 'cdsp.bX' for 
-'/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/firmware/cdsp.bX'
-[   84.491936][  T393] ueventd: loading 
-/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/firmware/cdsp.bX took 22ms
-[  103.331486][  T244] remoteproc remoteproc1: remote processor 
-xxxxxxxx.remoteproc-cdsp is now up
+It should be, yes. Though I agree, it's not obvious. ptr_to_hashval()
+will write to it when returning 0. So if that fails, addr will have 0
+written. Both only happen under DUMP_PREFIX_ADDRESS.
 
 
-- Sid
->
->
-> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-> index f277d023ebcd14..4b5833b3059f9c 100644
-> --- a/fs/kernfs/file.c
-> +++ b/fs/kernfs/file.c
-> @@ -14,6 +14,7 @@
->   #include <linux/pagemap.h>
->   #include <linux/sched/mm.h>
->   #include <linux/fsnotify.h>
-> +#include <linux/uio.h>
->   
->   #include "kernfs-internal.h"
->   
-> @@ -180,11 +181,10 @@ static const struct seq_operations kernfs_seq_ops = {
->    * it difficult to use seq_file.  Implement simplistic custom buffering for
->    * bin files.
->    */
-> -static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
-> -				       char __user *user_buf, size_t count,
-> -				       loff_t *ppos)
-> +static ssize_t kernfs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
->   {
-> -	ssize_t len = min_t(size_t, count, PAGE_SIZE);
-> +	struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
-> +	ssize_t len = min_t(size_t, iov_iter_count(iter), PAGE_SIZE);
->   	const struct kernfs_ops *ops;
->   	char *buf;
->   
-> @@ -210,7 +210,7 @@ static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
->   	of->event = atomic_read(&of->kn->attr.open->event);
->   	ops = kernfs_ops(of->kn);
->   	if (ops->read)
-> -		len = ops->read(of, buf, len, *ppos);
-> +		len = ops->read(of, buf, len, iocb->ki_pos);
->   	else
->   		len = -EINVAL;
->   
-> @@ -220,12 +220,12 @@ static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
->   	if (len < 0)
->   		goto out_free;
->   
-> -	if (copy_to_user(user_buf, buf, len)) {
-> +	if (copy_to_iter(buf, len, iter) != len) {
->   		len = -EFAULT;
->   		goto out_free;
->   	}
->   
-> -	*ppos += len;
-> +	iocb->ki_pos += len;
->   
->    out_free:
->   	if (buf == of->prealloc_buf)
-> @@ -235,31 +235,14 @@ static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
->   	return len;
->   }
->   
-> -/**
-> - * kernfs_fop_read - kernfs vfs read callback
-> - * @file: file pointer
-> - * @user_buf: data to write
-> - * @count: number of bytes
-> - * @ppos: starting offset
-> - */
-> -static ssize_t kernfs_fop_read(struct file *file, char __user *user_buf,
-> -			       size_t count, loff_t *ppos)
-> +static ssize_t kernfs_fop_read_iter(struct kiocb *iocb, struct iov_iter *iter)
->   {
-> -	struct kernfs_open_file *of = kernfs_of(file);
-> -
-> -	if (of->kn->flags & KERNFS_HAS_SEQ_SHOW)
-> -		return seq_read(file, user_buf, count, ppos);
-> -	else
-> -		return kernfs_file_direct_read(of, user_buf, count, ppos);
-> +	if (kernfs_of(iocb->ki_filp)->kn->flags & KERNFS_HAS_SEQ_SHOW)
-> +		return seq_read_iter(iocb, iter);
-> +	return kernfs_file_read_iter(iocb, iter);
->   }
->   
-> -/**
-> - * kernfs_fop_write - kernfs vfs write callback
-> - * @file: file pointer
-> - * @user_buf: data to write
-> - * @count: number of bytes
-> - * @ppos: starting offset
-> - *
-> +/*
->    * Copy data in from userland and pass it to the matching kernfs write
->    * operation.
->    *
-> @@ -269,20 +252,18 @@ static ssize_t kernfs_fop_read(struct file *file, char __user *user_buf,
->    * modify only the the value you're changing, then write entire buffer
->    * back.
->    */
-> -static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
-> -				size_t count, loff_t *ppos)
-> +static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
->   {
-> -	struct kernfs_open_file *of = kernfs_of(file);
-> +	struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
-> +	ssize_t len = iov_iter_count(iter);
->   	const struct kernfs_ops *ops;
-> -	ssize_t len;
->   	char *buf;
->   
->   	if (of->atomic_write_len) {
-> -		len = count;
->   		if (len > of->atomic_write_len)
->   			return -E2BIG;
->   	} else {
-> -		len = min_t(size_t, count, PAGE_SIZE);
-> +		len = min_t(size_t, len, PAGE_SIZE);
->   	}
->   
->   	buf = of->prealloc_buf;
-> @@ -293,7 +274,7 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
->   	if (!buf)
->   		return -ENOMEM;
->   
-> -	if (copy_from_user(buf, user_buf, len)) {
-> +	if (copy_from_iter(buf, len, iter) != len) {
->   		len = -EFAULT;
->   		goto out_free;
->   	}
-> @@ -312,7 +293,7 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
->   
->   	ops = kernfs_ops(of->kn);
->   	if (ops->write)
-> -		len = ops->write(of, buf, len, *ppos);
-> +		len = ops->write(of, buf, len, iocb->ki_pos);
->   	else
->   		len = -EINVAL;
->   
-> @@ -320,7 +301,7 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
->   	mutex_unlock(&of->mutex);
->   
->   	if (len > 0)
-> -		*ppos += len;
-> +		iocb->ki_pos += len;
->   
->   out_free:
->   	if (buf == of->prealloc_buf)
-> @@ -960,14 +941,16 @@ void kernfs_notify(struct kernfs_node *kn)
->   EXPORT_SYMBOL_GPL(kernfs_notify);
->   
->   const struct file_operations kernfs_file_fops = {
-> -	.read		= kernfs_fop_read,
-> -	.write		= kernfs_fop_write,
-> +	.read_iter	= kernfs_fop_read_iter,
-> +	.write_iter	= kernfs_fop_write_iter,
->   	.llseek		= generic_file_llseek,
->   	.mmap		= kernfs_fop_mmap,
->   	.open		= kernfs_fop_open,
->   	.release	= kernfs_fop_release,
->   	.poll		= kernfs_fop_poll,
->   	.fsync		= noop_fsync,
-> +	.splice_read	= generic_file_splice_read,
-> +	.splice_write	= iter_file_splice_write,
->   };
->   
->   /**
+-- 
+Kees Cook
