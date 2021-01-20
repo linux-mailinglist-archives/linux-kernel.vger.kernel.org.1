@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EE22FCA53
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087202FCA55
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbhATFLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:11:05 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14679 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730601AbhATFHe (ORCPT
+        id S1729442AbhATFLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:11:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730641AbhATFHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:07:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6007ba6e0000>; Tue, 19 Jan 2021 21:06:54 -0800
-Received: from [10.25.99.10] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
- 2021 05:06:48 +0000
-Subject: Re: Re: Re: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header
- for Tegra210
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <broonie@kernel.org>, <robh+dt@kernel.org>, <jonathanh@nvidia.com>,
-        <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>
-References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
- <1611048496-24650-6-git-send-email-spujar@nvidia.com> <YAcTxxyogVgfN1uw@ulmo>
- <b83eb795-328e-acc5-4555-7befd919a136@nvidia.com> <YAcdi7ARk0imXafQ@ulmo>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <fb0d0f14-e038-cb0c-542e-011ccb4beb93@nvidia.com>
-Date:   Wed, 20 Jan 2021 10:36:44 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 20 Jan 2021 00:07:54 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1947EC061575;
+        Tue, 19 Jan 2021 21:07:14 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id m6so13769161pfm.6;
+        Tue, 19 Jan 2021 21:07:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ercs8Knsu+kUChYUSoxzGtpfGm98Ng2NObAizp65bH4=;
+        b=jmgI0S6iY1CZoTGly8i7UIAvakqzAKUy5+AgIOozwqmMi4cZEwy3rLayb8N4oeYKop
+         DqWkmYVirsThB2yzEbLzIGnCTNjmTC4gVJLeNL4B+Ltfb5ky/ognQ+v8sp3fxnRBpYQE
+         WVG11g4yBlnvrVI7k37sgCdGqj0wFnBOhp10g9hx5TZHO3mBvUOtzHr1AufJ7DbcczIa
+         eDZRAgOQpJWBtnt6ZBqdJhj31pM9HVkqedz9ZH5K4QMgaU1OrQ5L42mAOPjyZ1KeifE6
+         NAj4owx6pJ++jmM74vDLS5A0JAO2RBbjioCHw1DAQlMihAw7lpHrheNtpTtbuhjwGuN/
+         Rv0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ercs8Knsu+kUChYUSoxzGtpfGm98Ng2NObAizp65bH4=;
+        b=IImjikMT1EYzeY68liq7QedrybXXx6UzMiYGQdfFhbjkFm6z5ldVtQk8B7/aRhNGAQ
+         0BNknIQR05rPRSytoXs+h8QFxN+voCpEToqZAAO9A+9tldDkGfkSuOR9bc/ovJHschNX
+         /Qub8ahJ0R5RAXSRw9zNeJMwBMWGNXKxEME59A98ZFW0hJt2UGt7NxFSW20Wt8Ynv6nf
+         GPBZ6RaL0LzBC+CtbCxiZcDbbFXvRdeuJRMA7y19K41GKFmgxQ7zLwOFNvU+v4j5NkDn
+         3bcnCuCPip4GBnuLXRuuAXRfz8H20yHUv9lUgVFA7YvCHFKXsHlOBpZI8WMJ3NUaU7EF
+         8rSg==
+X-Gm-Message-State: AOAM531h4tXNklbGXtuFWkHLH17DhhKvw4g78KbxzEN2ykv+g7fynLiU
+        5ckT3r1yCb5zkLx0Ifa1Rr0cS70brYM=
+X-Google-Smtp-Source: ABdhPJzIVor/dkzn0g4nVs9XzPe+AbBpeyzaEui1EjY+MZzE8/Eh0p+HHivGHOeYd2hQGMLXkMrD4Q==
+X-Received: by 2002:a65:628a:: with SMTP id f10mr7583505pgv.380.1611119233231;
+        Tue, 19 Jan 2021 21:07:13 -0800 (PST)
+Received: from [10.230.29.29] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id z12sm715549pfn.186.2021.01.19.21.07.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 21:07:12 -0800 (PST)
+Subject: Re: [PATCH] net: systemport: free dev before on error path
+To:     Pan Bian <bianpan2016@163.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210120044423.1704-1-bianpan2016@163.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c291aebe-4cb4-9fe7-0635-5b518d92c311@gmail.com>
+Date:   Tue, 19 Jan 2021 21:07:10 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <YAcdi7ARk0imXafQ@ulmo>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20210120044423.1704-1-bianpan2016@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611119214; bh=TrUW/bRVd0y6RBunmo1Nvw8U/CisQ85mSiTQB96uz4Q=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=iqJqehfrlGaLEYWRtxL8pSQcX78r9QttWiB+MThCuJIKgzBAG05ePIeO7kEtH3u/w
-         lKt3gIrqHKl2y2rosb6wvtl0mGOf4xTMhixn97FdZEXDfyp1TXk1MBmpz4dGKFTh0p
-         6yuyUPjOwC1fWbInmd2GX5IlkNh0bscT1c4rJ7bz5rkxVsv8a+y8jLOEHjV27Dw+Np
-         CXv7nlVgSuim4YEU3v93drYtjTu4UdfUo66xQPY/+Vh21xrI9i/319L0kc1ub4RLYK
-         XuVuyONSrYrmMpaopjtSGaxQSv2E0F8WFn/+psAoaISZ87LPRUOIIH62rj+IqyrO3i
-         lYpd9Yh5WOaEg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 1/19/2021 11:27 PM, Thierry Reding wrote:
-> On Tue, Jan 19, 2021 at 11:09:32PM +0530, Sameer Pujar wrote:
->>
->> On 1/19/2021 10:45 PM, Thierry Reding wrote:
->>> On Tue, Jan 19, 2021 at 02:58:15PM +0530, Sameer Pujar wrote:
->>>> Expose a header which describes DT bindings required to use audio-graph
->>>> based sound card. All Tegra210 based platforms can include this header
->>>> and add platform specific information. Currently, from SoC point of view,
->>>> all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
->>>>
->>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->>>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
->>>> ---
->>>>    .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 +++++++++++++++++++++
->>>>    1 file changed, 153 insertions(+)
->>>>    create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
->>> I prefer keeping everything in tegra210.dtsi, but I can do that merge
->>> when I apply, after the DT bindings have been acked, so no need to
->>> resend just because of that.
->> I think this may be fine for Tegra210 based boards. But for Tegra186 and
->> Tegra194, whenever we add support for it, can rely on a common audio-graph
->> dtsi because there is no change w.r.t APE. This can help us to avoid
->> duplication of the bindings. This most likely applies to future chips as
->> well (where Tegra186 audio-graph bindings can be considered as base) when
->> there is no significant change in APE.
-> Maybe. Although that argument is somewhat extreme because we already
-> have some of that same duplication throughout the other .dtsi files. By
-> the same argument we could save a bit of duplication by having something
-> like tegra-gpio.dtsi and including that in all the SoC .dtsi files and
-> only update the compatible string, because that's the only significant
-> change.
+On 1/19/2021 8:44 PM, Pan Bian wrote:
+> On the error path, it should goto the error handling label to free
+> allocated memory rather than directly return.
+> 
+> Fixes: 6328a126896e ("net: systemport: Manage Wake-on-LAN clock")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
 
-> Duplication isn't a big problem for DTS files because the data is meant
-> to be stable anyway. So once it is in place and doesn't have to change,
-> it really doesn't matter if it comes from an include or it's duplicated.
+The change is correct, but not the Fixes tag, it should be:
 
-OK, if there is no issue with duplication then fine with me. Thanks.
+Fixes: 31bc72d97656 ("net: systemport: fetch and use clock resources")
 
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
