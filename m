@@ -2,144 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE242FD653
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D584E2FD650
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404104AbhATRAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:00:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391701AbhATQ6l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:58:41 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5FC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:58:01 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id v184so3466455wma.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rpcAZMiidkdn8kgbweSucunSZNfQr7y4sBDVK9pNMyU=;
-        b=aSKdOyEfUZ7+nbgQG4Oz34S0QFBBEpe0NkmOUgkIRQmr7puRYU8XMppmMlQK5DGLFM
-         0GuKLRPRBMQvkzaw9QCBPnYJ8+Doyqjuf4weUAIPh7K2nTvy5Y9ipXkegUZc0/jbwYMN
-         Z/+ys6EhiyqdFl1caKGMEH7NMXeQT4GVAjgw0ggJJUigQcSJWPWhBUTwagRzTm3SFNUF
-         Vh7dMIiU/ZWLwWHovBCP7+kQOgS1da5mvzAOu1AlNAUshTtLvBSqJVGxkhVPe4yo++Nw
-         +gq/kzv307e98VThRr81N9MAIin6nMYoBnx1wOuKtT9u50vzlv3s0hf29boUw909vpQv
-         283Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rpcAZMiidkdn8kgbweSucunSZNfQr7y4sBDVK9pNMyU=;
-        b=Zz+fBhSTxyltjcvEtOkCeamRKm76V9VZ4XhPTdVWAjWSKuW8Je4Qj+sh3zhgMhj6gy
-         aaVedlYE/FPd0uSWlcoIIfiQmDwiLi174O4S93EKugJgVBiLYLW4vf7NRgt5MFgG7E/Y
-         wt2JMnfsG5fA9CDnOoTTAbMMwP9rxrpOCY/RY00N4rC4XypKNoAnpT3MjWLNrC9hsUaL
-         wmW9+v1Dc7E9+6n5oOR6c22Y25QtlWVgwHIXDoc/jHILKTvWygf7Y3AMIBOcsgZv+5CM
-         7IhKAZYlu77K5alx7q5fz7nW8SkxwHXa0Su+KpU4ZsK7SjyFuwEWrZnJqGUnZ2doX+ER
-         BQsg==
-X-Gm-Message-State: AOAM531XAE/WckP9xhivJ9Znw4KUsmj87Pt7whDB+PKksJuypT055T0G
-        pG6sfqBtZTvkuvxr1EdPO2sw2EYvYhhfJYZL7Gmvvg==
-X-Google-Smtp-Source: ABdhPJzk/tqIUvkT/+lRnqF2/87jws3xp9TGgijlSnku7fw8B2GOkgwDvPruEYich6TykilQINnAL5XxzzoViuhPoV4=
-X-Received: by 2002:a1c:98c6:: with SMTP id a189mr5184234wme.88.1611161879809;
- Wed, 20 Jan 2021 08:57:59 -0800 (PST)
+        id S2404077AbhATRAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:00:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391591AbhATQ71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:59:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9399123358;
+        Wed, 20 Jan 2021 16:58:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611161926;
+        bh=4tPb7oiOpgfhTD/vQJqPmDd/sTB+82Wa1AHcoottGyY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KfNFDIPAC8s8Fq/a3t9aRYfnQ/1rDk0g0PAx8gLUKIydbRyOjOiAgGXOyi2DZqZYt
+         keogDWt0stVw1jzFKOSwuHQ5utGSK0QZQRrSvirhqFaeM/BbS6yEOpW82LExzwdX3i
+         LUcA9PiqRv4F0ILPPwK1/GSiAsGIxvXh52pvzLsLiB8Qf7XPfu6zD7NBjT+9phMTg0
+         VvTL8OhWbMUx/tO96tF/x4Ggvlx21M/XCYTY++KYhNRD77KIchemfTLl6O+crkPD7/
+         tbB0BMSWdNX0Di8iTY+tviGBryKwCasoRO24TqIBkAGFcw+bg/LcT66D24HRVt17Cb
+         sZkwU95FNLKtw==
+Date:   Wed, 20 Jan 2021 08:58:45 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     patchwork-bot+netdevbpf@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfc@lists.01.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH net] net: nfc: nci: fix the wrong NCI_CORE_INIT
+ parameters
+Message-ID: <20210120085845.11d43647@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CACwDmQBZ-LVursCYmtngyv3yFCQ9_Jkip03VZ8cd1auNu86V8A@mail.gmail.com>
+References: <20210118205522.317087-1-bongsu.jeon@samsung.com>
+        <161110440860.4771.13780876306648585886.git-patchwork-notify@kernel.org>
+        <CACwDmQBZ-LVursCYmtngyv3yFCQ9_Jkip03VZ8cd1auNu86V8A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
- <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
- <20210113142202.GC22493@dhcp22.suse.cz> <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
-In-Reply-To: <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 20 Jan 2021 08:57:48 -0800
-Message-ID: <CAJuCfpHb6PjTJBf67BZrBwSgbavKTeDz1S5bn9msEL4k8NtbVQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     Jann Horn <jannh@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 5:18 AM Jann Horn <jannh@google.com> wrote:
->
-> On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
-> > On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
-> > > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> > > >
-> > > > On 01/12, Michal Hocko wrote:
-> > > > >
-> > > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
-> > > > >
-> > > > > > What we want is the ability for one process to influence another process
-> > > > > > in order to optimize performance across the entire system while leaving
-> > > > > > the security boundary intact.
-> > > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> > > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> > > > > > and CAP_SYS_NICE for influencing process performance.
-> > > > >
-> > > > > I have to say that ptrace modes are rather obscure to me. So I cannot
-> > > > > really judge whether MODE_READ is sufficient. My understanding has
-> > > > > always been that this is requred to RO access to the address space. But
-> > > > > this operation clearly has a visible side effect. Do we have any actual
-> > > > > documentation for the existing modes?
-> > > > >
-> > > > > I would be really curious to hear from Jann and Oleg (now Cced).
-> > > >
-> > > > Can't comment, sorry. I never understood these security checks and never tried.
-> > > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
-> > > > is the difference.
->
-> Yama in particular only does its checks on ATTACH and ignores READ,
-> that's the difference you're probably most likely to encounter on a
-> normal desktop system, since some distros turn Yama on by default.
-> Basically the idea there is that running "gdb -p $pid" or "strace -p
-> $pid" as a normal user will usually fail, but reading /proc/$pid/maps
-> still works; so you can see things like detailed memory usage
-> information and such, but you're not supposed to be able to directly
-> peek into a running SSH client and inject data into the existing SSH
-> connection, or steal the cryptographic keys for the current
-> connection, or something like that.
->
-> > > I haven't seen a written explanation on ptrace modes but when I
-> > > consulted Jann his explanation was:
-> > >
-> > > PTRACE_MODE_READ means you can inspect metadata about processes with
-> > > the specified domain, across UID boundaries.
-> > > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
-> > > specified domain, across UID boundaries.
+On Wed, 20 Jan 2021 18:54:17 +0900 Bongsu Jeon wrote:
+> On Wed, Jan 20, 2021 at 10:00 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
+> > This patch was applied to netdev/net.git (refs/heads/master):
 > >
-> > Maybe this would be a good start to document expectations. Some more
-> > practical examples where the difference is visible would be great as
-> > well.
->
-> Before documenting the behavior, it would be a good idea to figure out
-> what to do with perf_event_open(). That one's weird in that it only
-> requires PTRACE_MODE_READ, but actually allows you to sample stuff
-> like userspace stack and register contents (if perf_event_paranoid is
-> 1 or 2). Maybe for SELinux things (and maybe also for Yama), there
-> should be a level in between that allows fully inspecting the process
-> (for purposes like profiling) but without the ability to corrupt its
-> memory or registers or things like that. Or maybe perf_event_open()
-> should just use the ATTACH mode.
+> > On Tue, 19 Jan 2021 05:55:22 +0900 you wrote:  
+> > > From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> > >
+> > > Fix the code because NCI_CORE_INIT_CMD includes two parameters in NCI2.0
+> > > but there is no parameters in NCI1.x.
+> > >
+> > > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> 
+> Could you merge this patch to net-next repo??
+> NCI selftest that i will send will fail if this patch isn't merged.
 
-Thanks for additional clarifications, Jann!
-Just to clarify, the documentation I'm preparing is a man page for
-process_madvise(2) which will list the required capabilities but won't
-dive into all the security details.
-I believe the above suggestions are for documenting different PTRACE
-modes and will not be included in that man page. Maybe a separate
-document could do that but I'm definitely not qualified to write it.
+It happens periodically, should happen today or tomorrow.
