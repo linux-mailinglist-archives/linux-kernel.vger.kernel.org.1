@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6C82FD120
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3B52FD123
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389603AbhATNF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:05:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732532AbhATMRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:17:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF773206FA;
-        Wed, 20 Jan 2021 12:16:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611144984;
-        bh=FNb87Sq1yBJ8QdD3c0Vz+RCJmfo1KDxkPSW8JqoMCPI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nsx1v+5WSI9ZKBfeSazsU7DDun7VzeXG35C+MneiOskuBMWSPzyS9hRRhfnZJ6Owe
-         qU4MzNjTLkOFQkLt38H1U6G7UTD+uVFZxPHA050ebNFSXb43jxGtueCKVqYnQUotJL
-         Gq1sLT7xxw2sSSUQTjz74b2F6rrVZqugwdgy0HExfA1PdwYEc+Okg+8K6eNDX2fLz9
-         vD4gC5HE5+v+HkRaiYCCiMjRdJiC5GaoTGkuStGJxS1hz144E7n4NFqTauKM/iLhVc
-         hMQu8sOIr+SL8K88AiqyAI3MU7lF26hIWZ51qodq580VIdwvT1xWM9GRWYyTGWmNZZ
-         w0jssMrK4T9Lw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 72B2D40CE2; Wed, 20 Jan 2021 09:16:21 -0300 (-03)
-Date:   Wed, 20 Jan 2021 09:16:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        id S1727213AbhATNHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729861AbhATMUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 07:20:07 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032FEC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:19:27 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id j12so2059604pjy.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:19:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=COIdadyAc0KasazuxdtV82/SR7CU94i37uQ5r5jLtHA=;
+        b=xhTgHel9PKJYcH21ircOSeC0ASkjim5drLjjjpbtlk07lnDVRQZ6nLhp4X8HxYtyFv
+         TxNWZEpOLe2vQ2H18aVyRxvCksY9qspzkSxPa7SYlONw39VPbqIaR391Kcc9I4ZdGbbU
+         SUwCw5wNAdHADAnhhpP0nb3QpggfmgEquHHcKKz/ysevH8ani0ojvASA6z17gQueQ+6M
+         UGF8iSV5SK7x60hER6eZL5Pw5OMgj6trP0L8taKNQ/FPwYz8S/Z9WP5j/iDpJnBd7Wii
+         9N7hPKgL5CI7iBcMt9lGUSOic96ZGAAQJ2ew5Xqsf6TgPposrIKCUYAZRS0fOHi49iBM
+         5JyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=COIdadyAc0KasazuxdtV82/SR7CU94i37uQ5r5jLtHA=;
+        b=GhtU6B494PBey7Adhjz+c9UZ2LCn7r16Cin8a4tp5GABQTqWLz1AqkSmxRIjlTqQCS
+         V9iCqj4op8sJ0FYwqU9+3r+DlbJ7sWsD6B4QWzrXl4c7xsNBTFn3vI+hM5jQlR7x/fTb
+         Pwm8rHPtVEACvrL1qf4VTBPUFCO27kxn+X3brkGApMb/1m8Vbx2z/r9Dlegpi04o/Y8e
+         UuXTIgDMjfGsfDwykP9g/k2nok41bSRpSmsgfFQqUMs6HhqS6T6FjnNjftcx2Z/6VB6f
+         5xCZtzBCrwM7wjBEOfa+DvICxsVA6M9GMm5qj/3BkYhKFs5/Z1nSC1Rle8mfqVQD03Rf
+         sgpA==
+X-Gm-Message-State: AOAM533tRO8NZBNqcB0NrZOSM7zIANmEsC+qnJJkPai88u3Mn5+W+w+p
+        i6Y7ZwoyxFoFDHAtNv3nBlTofxzcLao8eg==
+X-Google-Smtp-Source: ABdhPJwCX6wli26Hr26dGn9SnSDEneX+VkZGrenF7B62bnECpehuH+Tf86YGzM4Fu+LNKHgkPG/gGg==
+X-Received: by 2002:a17:90b:1489:: with SMTP id js9mr5549773pjb.13.1611145166520;
+        Wed, 20 Jan 2021 04:19:26 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:69ca:537f:1d38:5dfe? ([2601:646:c200:1ef2:69ca:537f:1d38:5dfe])
+        by smtp.gmail.com with ESMTPSA id e21sm2168906pgv.74.2021.01.20.04.19.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 04:19:25 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 1/4] x86/fpu: Add kernel_fpu_begin_mask() to selectively initialize state
+Date:   Wed, 20 Jan 2021 04:19:24 -0800
+Message-Id: <F60CEFE2-22A4-405A-9BBC-7D84AFDA07C5@amacapital.net>
+References: <20210120115324.GE825@zn.tnic>
+Cc:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexey Alexandrov <aalexand@google.com>
-Subject: Re: [PATCH] perf/core: Emit PERF_RECORD_LOST for pinned events
-Message-ID: <20210120121621.GQ12699@kernel.org>
-References: <20210118034323.427029-1-namhyung@kernel.org>
- <YAVezkTtAkIAImzx@hirez.programming.kicks-ass.net>
- <CAM9d7cgr+Vxq_SnEkSO5zU0QN-X6-LLJDKUfE4C72Nomnrr=+Q@mail.gmail.com>
- <YAWFkU+roDyMCgla@hirez.programming.kicks-ass.net>
- <CAM9d7cg_Agin3C0iuigDzQjZEZNtVXPe9z9eaDZsdyNoVa_wxA@mail.gmail.com>
- <20210119024657.GA3526@tassilo.jf.intel.com>
- <CAM9d7chk5qC7er5EVmmrHZtP2PB6Y9EikfGYxYibE4HZpCOmbQ@mail.gmail.com>
- <CAM9d7cgE+Q-AfL2Fdi4rnv8rpTgi_qW0+iZVjG-0hL0sq+OouA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cgE+Q-AfL2Fdi4rnv8rpTgi_qW0+iZVjG-0hL0sq+OouA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+        Krzysztof Mazur <krzysiek@podlesie.net>,
+        =?utf-8?Q?Krzysztof_Ol=C4=99dzki?= <ole@ans.pl>,
+        Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <20210120115324.GE825@zn.tnic>
+To:     Borislav Petkov <bp@alien8.de>
+X-Mailer: iPhone Mail (18C66)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jan 20, 2021 at 08:53:48PM +0900, Namhyung Kim escreveu:
-> On Tue, Jan 19, 2021 at 12:11 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hi Andi,
-> >
-> > On Tue, Jan 19, 2021 at 11:47 AM Andi Kleen <ak@linux.intel.com> wrote:
-> > >
-> > > > > I don't think I object to having an even in the stream, but your LOST
-> > > > > event is unfortunate in that it itself can get lost when there's no
-> > > > > space in the buffer (which arguably is unlikely, but still).
-> > > > >
-> > > > > So from that point of view, I think overloading LOST is not so very nice
-> > > > > for this.
-> > > >
-> > > > But anything can get lost in case of no space.
-> > > > Do you want to use something other than the LOST event?
-> > >
-> > > Could always reserve the last entry in the ring buffer for a LOST event,
-> > > that would guarantee you can always get one out.
-> >
-> > A problem is that we can have more than one event that failed.
-> >
-> > In my understanding, we keep the lost count and add a LOST event
-> > when there's a space later.  So probably we can keep a list of the
-> > failed events and do similar for each event.  Or just use a single
-> > event to notify some number of events were failed.
-> 
-> Stephane suggested emitting an event for poll() like EPOLLERR or
-> EPOLLHUP.  I'll take a look at that.
 
-Looks sane, that way the poll returns immediately when we start seeing
-lost events, so tools can warn the user and then, if/when space becomes
-available, tell how many events were lost.
+> On Jan 20, 2021, at 3:53 AM, Borislav Petkov <bp@alien8.de> wrote:
+>=20
+> =EF=BB=BFOn Tue, Jan 19, 2021 at 09:38:59AM -0800, Andy Lutomirski wrote:
+>> Currently, requesting kernel FPU access doesn't distinguish which parts o=
+f
+>> the extended ("FPU") state are needed.  This is nice for simplicity, but
+>> there are a few cases in which it's suboptimal:
+>>=20
+>> - The vast majority of in-kernel FPU users want XMM/YMM/ZMM state but do
+>>   not use legacy 387 state.  These users want MXCSR initialized but don't=
 
-- Arnaldo
+>>   care about the FPU control word.  Skipping FNINIT would save time.
+>>   (Empirically, FNINIT is several times slower than LDMXCSR.)
+>>=20
+>> - Code that wants MMX doesn't want or need MXCSR initialized.
+>>   _mmx_memcpy(), for example, can run before CR4.OSFXSR gets set, and
+>>   initializing MXCSR will fail.
+>>=20
+>> - Any future in-kernel users of XFD (eXtended Feature Disable)-capable
+>>   dynamic states will need special handling.
+>>=20
+>> This patch adds a more specific API that allows callers specify exactly
+>> what they want.
+>=20
+> Same nitpicks:
+>=20
+> https://lkml.kernel.org/r/20210119110834.GH27433@zn.tnic
+
+I would have sworn I fixed those.  Sorry!
+
+>=20
+> --=20
+> Regards/Gruss,
+>    Boris.
+>=20
+> https://people.kernel.org/tglx/notes-about-netiquette
