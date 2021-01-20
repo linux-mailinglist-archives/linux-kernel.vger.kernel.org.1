@@ -2,111 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47E12FD58B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB2A2FD591
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403813AbhATQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404006AbhATQWn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:22:43 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FB0C0613C1;
-        Wed, 20 Jan 2021 08:22:03 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id f17so26727553ljg.12;
-        Wed, 20 Jan 2021 08:22:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=K5vWudR2N+b1xOBCfk15/krN2AJ4ZrQd3lA45yCJz88=;
-        b=kui1rl3utwd4GX02zoBXw2RmW4+uR9AsetKj7qZaNeOmydU/b+6DVk+D/YSDInfBmG
-         Bmz9MyypEcOHU5Q1jx8GsUzI3sddCUE4pgfWPzSJSxRLka4EyuPy8pIVwv7ixl/rV5ca
-         61ou3CggFqmTnGvBFYxE3bXZs5JtRLuJGStt9aGsAuKogEBkyd10cuZscA7ZZc4yJocN
-         kO0gSyfhzwOwb1A1eGESwqLcn9UO/fB6sEVfHYRpm15RwRnI0jyv04nPd4f5VOcI0Uot
-         HMtwtwiuGex6Y9GJSwEA5Pqcn3bSpmZ6f4AabCtGY4oGMKSYaH7brofVEIHss5XyLpst
-         oIPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=K5vWudR2N+b1xOBCfk15/krN2AJ4ZrQd3lA45yCJz88=;
-        b=AvlFfKfs1yu+tesmr45tUk+HcH4fP0uq/N2QfrTRckpuZ/F01X8Aek0IuLw3GEAJNb
-         vOGFGZ4N88aITS7dJWryZsKrOR629ueBcLgKldm3aa63XO1K9uU9f7Mlq+olamZNLrj2
-         ouMoxyp7/IbTXGgC5fI2L4HL5jirs1WV77l8howWmZAR3xsFMT8c53J5RqlNR4aUCJWu
-         sqjLIDhbK2i/QCJlDF4dQbM7yhKKWaJzu7FiBoB9y/SNIIQkZYMANafvY00yygkDSqY9
-         2D6kbx5cxsgmIxPSx+OSBO4gMackx1ABLkPq/05MLj2FR/oDX0W+QthNZjwZwwsXVCYV
-         Rzuw==
-X-Gm-Message-State: AOAM531ocCjBgqMBVfW0F3jF4T2t0OoAZmCEqr9dLIMq+SoUJEH5UE4C
-        M+QTohM3KmcL/toASV5z6qnelsOAu0dnqQ==
-X-Google-Smtp-Source: ABdhPJzUZLFRHEsnoP2uJ10tpxxYdlvHeLc7OLoR4yvQkeeR+O0I+aFd93KbecY3IoL+BVOkplwXaQ==
-X-Received: by 2002:a2e:a593:: with SMTP id m19mr4905528ljp.1.1611159721775;
-        Wed, 20 Jan 2021 08:22:01 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id l8sm237631lfd.276.2021.01.20.08.22.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 08:22:01 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
-Date:   Wed, 20 Jan 2021 17:21:48 +0100
-Message-Id: <20210120162148.1973-3-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210120162148.1973-1-urezki@gmail.com>
-References: <20210120162148.1973-1-urezki@gmail.com>
+        id S1732102AbhATQZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:25:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403892AbhATQYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:24:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8665233E2;
+        Wed, 20 Jan 2021 16:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611159849;
+        bh=6COFAQYnu6SJXLKE0L2k76zBofhuzJj5oz2aJcEQ2KA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ASABBDnAXoiC5F4SQ8CLdy1Yp22+ti76lenTsyj7a0bubNufBVmpUYOAFAk6kCEMD
+         UWPzNBNQfIkaKmVsS4HMENOgjwNFmsJbTuVOQfaQuZg912Xs1gMuUuqU0E/7l36o3b
+         hr6XiCJ5jtrSB0cnFxJV86qu2a6PlarEmh1KCler6V8bWZpqAh7Z/zOs9r3sHD8OOP
+         HKvuDtB9xbEYJCeGABRgXbmEH9j12V2OgmC8T3LzLHDhnT871rtl7zVkQ24TCimVmw
+         vxciQIeSWZ2dLmWiNqf5lzHDSYs9wBG49h1FuFW03r0OzulkzLZuSMiNDIE1pWmvJw
+         PUacNOMrHiNSg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/2] thermal: remove obsolete drivers
+Date:   Wed, 20 Jan 2021 17:23:58 +0100
+Message-Id: <20210120162400.4115366-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the page is obtained in a fully preemptible context, dropping
-the lock can lead to migration onto another CPU. As a result a prev.
-bnode of that CPU may be underutilised, because a decision has been
-made for a CPU that was run out of free slots to store a pointer.
+From: Arnd Bergmann <arnd@arndb.de>
 
-migrate_disable/enable() are now independent of RT, use it in order
-to prevent any migration during a page request for a specific CPU it
-is requested for.
+A few Arm platforms are getting removed in v5.12, this removes
+the corresponding thermal drivers.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 2 ++
- 1 file changed, 2 insertions(+)
+Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 454809514c91..cad36074366d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3489,10 +3489,12 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
- 		bnode = get_cached_bnode(*krcp);
- 		if (!bnode && can_alloc) {
-+			migrate_disable();
- 			krc_this_cpu_unlock(*krcp, *flags);
- 			bnode = (struct kvfree_rcu_bulk_data *)
- 				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 			*krcp = krc_this_cpu_lock(flags);
-+			migrate_enable();
- 		}
- 
- 		if (!bnode)
+
+Arnd Bergmann (2):
+  thermal: remove tango driver
+  thermal: remove zx driver
+
+ .../bindings/thermal/tango-thermal.txt        |  17 --
+ .../bindings/thermal/zx2967-thermal.txt       | 116 --------
+ drivers/thermal/Kconfig                       |  17 --
+ drivers/thermal/Makefile                      |   2 -
+ drivers/thermal/tango_thermal.c               | 126 ---------
+ drivers/thermal/zx2967_thermal.c              | 256 ------------------
+ 6 files changed, 534 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/thermal/tango-thermal.txt
+ delete mode 100644 Documentation/devicetree/bindings/thermal/zx2967-thermal.txt
+ delete mode 100644 drivers/thermal/tango_thermal.c
+ delete mode 100644 drivers/thermal/zx2967_thermal.c
+
 -- 
-2.20.1
+2.29.2
 
