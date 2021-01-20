@@ -2,226 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906082FD410
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C33A2FD400
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731219AbhATPXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:23:24 -0500
-Received: from mail-co1nam11on2086.outbound.protection.outlook.com ([40.107.220.86]:36800
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731558AbhATPGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:06:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JRgU3C6zSo9EdOjDblT8YcpgCza+witqO9yQUEHGgHccKVMZDgeVFTfirDzZppUH4zZVRIAaAGOxNne+4BEpflD14n1LDfm7ye87C12UJGe4DJMH7jjZMotHmghyAI1ntYTKorYwf7EBY4ozvx/VzKG0p7puV/O4Vx1VYX79Hr3JiTmDRYM0Y5Nx8BoF/MpfIgSwJa4xqZysJdUERHtkiHnhuFWIJ6t8dgjSQ57Qem+WtSjYubbVT8g82sBaExWcFiznCsNdWUfGEMQD0zzW+MuzaRvAh/ldb0kaNff/2BEa9Ps1nTDdmQAnn9IQJ+EoCBSv46D9RMeH7OUFBHyFiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kbknr0iM5W3FZOmTCFSaF0x2qobr6MutnlCqwjQgTIk=;
- b=myzgwOdMnDvs10cG7Z3zaMKKOlcGl1nQ/uLyqrNGDDXUL2EFp2a7FiPwhJXx82ezgCNFh8k+ckgiHg8X4V/vi+FN1pQ6ZzbQIBRCYlnHjw2ZYiYLpeir4pysNA8uG8hSnc3ksKBvKw4fER6BinxJ9eexcswGOpITKrfOuG769ml+yNunrzdfw/2pJMT28xo7qaynuyJOk3DMghJXzP5u7Sc9I2BN2KnirDDTyKNXiWcOBzNg+31w7nB0XzZrl//pt22pevIkiWI8YFnwWtlnFQ6Y7hiMMFol85SrXXGCRk5M6KiR7qCZZ6BzSu+lEYZ/bAKs0T9k7DozTOCAneBn0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kbknr0iM5W3FZOmTCFSaF0x2qobr6MutnlCqwjQgTIk=;
- b=SAVrgyUZU4u6f4Yby6XqzF+tJ8LtMvvpIssx73pZEV02pb4L3CCVsLlla3TZbETb/agzYCJLUZmXvalXdB/M9wsxo9Uqdw9SbOmls8sLudQfXlXUK/E+yzfqAfxGbU4hYAuMF0i5fWb3gV62ns7rF1yrY85gVKqAoFnTabjSgcI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11)
- by MW3PR12MB4569.namprd12.prod.outlook.com (2603:10b6:303:57::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Wed, 20 Jan
- 2021 15:05:44 +0000
-Received: from MW3PR12MB4379.namprd12.prod.outlook.com
- ([fe80::172:235e:14a4:bdc6]) by MW3PR12MB4379.namprd12.prod.outlook.com
- ([fe80::172:235e:14a4:bdc6%7]) with mapi id 15.20.3763.014; Wed, 20 Jan 2021
- 15:05:44 +0000
-Subject: Re: [PATCH] drm/amdgpu: Assign boolean values to a bool variable
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        luben.tuikov@amd.com, Eric.Bernstein@amd.com,
-        Bhawanpreet.Lakha@amd.com, Rodrigo.Siqueira@amd.com,
-        Dmytro.Laktyushkin@amd.com, yebin10@huawei.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <1611127007-39308-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Harry Wentland <harry.wentland@amd.com>
-Message-ID: <3e2d3292-8611-68de-e1ed-7266fd41ce76@amd.com>
-Date:   Wed, 20 Jan 2021 10:05:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <1611127007-39308-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.84.11]
-X-ClientProxiedBy: MN2PR10CA0012.namprd10.prod.outlook.com
- (2603:10b6:208:120::25) To MW3PR12MB4379.namprd12.prod.outlook.com
- (2603:10b6:303:5e::11)
+        id S2390763AbhATP3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:29:02 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58184 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390905AbhATPZp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:25:45 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10KF24mj003411;
+        Wed, 20 Jan 2021 10:24:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=vFTmDdXq/JD+hlhwTE1nBPz1eBn8OTg3UYAZbWUGQ8Q=;
+ b=J3Vdif1kXqk8PUPYc9Ld9hP1F7cBTMoqLRhH8bzENdMSEIveoVOOO+S26HhrDZJVgrCu
+ XOAtry+nHIXZpTiKwln8+yPR/Xz/4alrr13xDvUi3i0jag8L2oDz3iabxPkyyNDQbKXL
+ xyjfdZS8mQP5y6mEsA8LbD+kwBBxseJhT6Gp8sOM4kSVcwyXuE61DP0Fx/EGrfqtwYqB
+ nxUjckYV9z8nDrJBRsljVovWR0Mzoz+/K9eyHYpSLT2Haj+YvJ+gFvk5E1yD2LH1sgS8
+ K5pukjxHeQ35KPvNRLYkMKkqHGmzz+nOxFm1toxS+rxFIG00BcE1Y6f4SazieRWxqbpc 6g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 366nc43v9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 10:24:54 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10KF2CV4004446;
+        Wed, 20 Jan 2021 10:24:54 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 366nc43v8c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 10:24:54 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10KFLnTF018213;
+        Wed, 20 Jan 2021 15:24:52 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3668parsax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 15:24:51 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10KFOmhI22282674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 15:24:48 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7C572A4068;
+        Wed, 20 Jan 2021 15:24:48 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 051D3A4066;
+        Wed, 20 Jan 2021 15:24:48 +0000 (GMT)
+Received: from osiris (unknown [9.171.38.241])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 20 Jan 2021 15:24:47 +0000 (GMT)
+Date:   Wed, 20 Jan 2021 16:24:46 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        thuth@redhat.com, david@redhat.com, imbrenda@linux.ibm.com,
+        cohuck@redhat.com, linux-s390@vger.kernel.org, gor@linux.ibm.com,
+        mihajlov@linux.ibm.com
+Subject: Re: [PATCH 2/2] s390: mm: Fix secure storage access exception
+ handling
+Message-ID: <20210120152446.GD8202@osiris>
+References: <20210119100402.84734-1-frankja@linux.ibm.com>
+ <20210119100402.84734-3-frankja@linux.ibm.com>
+ <3e1978c6-4462-1de6-e1aa-e664ffa633c1@de.ibm.com>
+ <20210120134208.GC8202@osiris>
+ <221ce6ab-4630-473d-a49f-150ac8c573d6@de.ibm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.7.88] (165.204.84.11) by MN2PR10CA0012.namprd10.prod.outlook.com (2603:10b6:208:120::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Wed, 20 Jan 2021 15:05:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 19b72e77-b6b7-4c42-d91b-08d8bd54dc55
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4569:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR12MB456997BD27ED04D4E96B38988CA20@MW3PR12MB4569.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zq7+ji74h4V5iwCZ+lsMkahwHMUB3NRLbE4UEpoPbcwKyh63c6igY19ia56+AARG9s17ZRJaKeHAIm+vnX/58s/IQ2jn7B8dKFUyZUdj10EeWIwwEAgZwnQLa2xH0LkUIGZWhyXy/2Rw5VoYWk6iLxDeFN1bR8d5NxmTkEgcuIl7/Uou8pz/g8S2xhl8ZheweK1KZdHZB3lHBYUPsFMclIEKde/vgzYUJYlyKbfwTosrtVOUA68zPiNJZ4A3QzCXBbvXQkdfSBcNQnkCx2vyLfQur6yUGYD2mEfO4C4VgqGB4Re37nsW8xsx46EfIxTLttLU5uNnE3TB+0voqZl0bcT5ufs6xWnK9Msj3Yfupvy3v0bJuWgXZA6VceM2gFPAjt6GANg9pownSCnhJDyamRO9yT9CZdvyyVNw39zNggPm0uOLRoUg5b7TlOr35ZdY3rXad5CmVXXKHViEXcMDVETMZGufH1puoTI3HgUWKBvPGZyTinS6mzHJdw9EeK/4QIytNclQwuM/Yahn7P4n1aZdH0AI7NGvIdCqmVpshRaYyVMFxVYrveeH5xhsfeCT0rrtszgCoe/NZXd9OO5N3CZVmux5DzLClYnCJ/htiuI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(39860400002)(136003)(376002)(66476007)(4326008)(8936002)(6916009)(31686004)(36756003)(8676002)(316002)(66556008)(956004)(186003)(44832011)(16576012)(83380400001)(2906002)(66946007)(16526019)(86362001)(5660300002)(52116002)(6486002)(31696002)(2616005)(26005)(53546011)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?K0tlNXdkendkYWZSSlFBRmUyZEV2U3dmY2w2UGRRbzlUVFBKL04zSnRtVE5Y?=
- =?utf-8?B?TTR2V0xRVHlwVFZUbFFsS2d1UVVMMS91RFRKZFNPZEVkTUdrckp2UnMreWNj?=
- =?utf-8?B?SllMTDhWU3UyOVN1TUNMazBPODl4YzBBdDdpU09lSlZTOEVaV2d3WW42M2lx?=
- =?utf-8?B?cGxndnUrQjBFeWNqMkZrUUNPOElMc3gwS0ZXaXNSSGRZdHZrUnJKTWh5cG5V?=
- =?utf-8?B?cWZ4UHZ6YUVheWVoS29scTJkMkJRUG8raCtOQlBWZEgrOURnL1J6aENzc3l4?=
- =?utf-8?B?NEdvOG9OK25ockNxK0ZpcEhKME13MGtoZjZoYmJGclJiR3lYdi9SYzNtbVRZ?=
- =?utf-8?B?N2pWMUM0TEd4cFZvR0RCbEx2Q0hySFVPUXRaTzRGOFVmUGpOQXduNFphaGF6?=
- =?utf-8?B?dzdScHJ2V3hHNTNCbk9jR2k5RGhESHlvTEN0andlR3VvZnE3bWNWOFpTSnpL?=
- =?utf-8?B?MGphQW1POWpTeUN6WXZqTHpqb1BsbEordDAwSmxMMkJGNC90OGJiamhVZVN5?=
- =?utf-8?B?eDNFZS9VbWhFZHhWZnI4Kzl0ZW13OTJYVm5PbnJTRlNPVHR1N0JzRW9BVDdI?=
- =?utf-8?B?ZDdXYXRwbDNYSVNtM29PRFJGdjNQUEErT0ZkQjBHb2NHYm5jWkVFRWlETDB2?=
- =?utf-8?B?LzJkSFkvUEpOaHVjK0VUN3ZNK0NwdTZaVGF2VU9IdHdaWXI2NWl3NDExeW1J?=
- =?utf-8?B?Mzc1OG90cUhMQTBNU05OaTJjRjY2MnIyNnN6SDA0T00zeXFoTTVEdS95OE83?=
- =?utf-8?B?Q2pTU2U5TGtJSTFONkVYcVdWMXBlRTFBTzZGVDlnVHhGNmNrMWthKzE5RU9j?=
- =?utf-8?B?YlVYL0NGbkM5TU13MjhERlI3RkNIVk1CTTRlRWdYWEFIbFpvUG1ibk9wYjdV?=
- =?utf-8?B?Skd2eUMwQzVGQWNKd1BGTjgwSWxNZUpCamJ3YjFreUhJa2RRSHpieW5oeUIv?=
- =?utf-8?B?V1NXL0pUbXNrQzM5cXJjUnN6RmQyQkZndVplV0p5VFQ1VzNlUDJiWHRTeW5D?=
- =?utf-8?B?QUJNNklnRnM5RGUzOEV0MmFoL0ZkMEZlL1ZYN1YrQ01zKzgwdkVqTjVxR3ZX?=
- =?utf-8?B?dm5DMnBLa0taNUVFZ1RINkZIT2crRThzUGxndit0TWV3R0tyUTVaVmI1endI?=
- =?utf-8?B?TlROdHRZZjYxYXE4a3d0bTczU1R0OGNYMWlZQnJpVGw5V28xZFlkRk5oL0tT?=
- =?utf-8?B?OWNjRWcyVXl2Z213aDROZzFvVkVQT3pQaEJVc1F4cTAzdUswc1FlODdNWlZG?=
- =?utf-8?B?aC9JRng1Z3JmOUpEV3lBWml0UTRPVzdyaDhwRk5RZCtCU0tqa0FiRG9rT2dF?=
- =?utf-8?Q?Rd37vXqmUKJVVe+P7I6JuYabH4GUpvzD0n?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19b72e77-b6b7-4c42-d91b-08d8bd54dc55
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4379.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2021 15:05:44.6293
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Tj56jqmNAW+m6vE4LxbX4RgcuNkr1ui/C1phqpNFLbbV2bnpdbt04y9BY2Nzv/Q32de8P+gskhvvVtZKmMUJHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4569
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <221ce6ab-4630-473d-a49f-150ac8c573d6@de.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-20_06:2021-01-20,2021-01-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=953 impostorscore=0
+ priorityscore=1501 mlxscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101200086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-20 2:16 a.m., Jiapeng Zhong wrote:
-> Fix the following coccicheck warnings:
+On Wed, Jan 20, 2021 at 03:39:14PM +0100, Christian Borntraeger wrote:
+> On 20.01.21 14:42, Heiko Carstens wrote:
+> > On Tue, Jan 19, 2021 at 11:25:01AM +0100, Christian Borntraeger wrote:
+> >>> +		if (user_mode(regs)) {
+> >>> +			send_sig(SIGSEGV, current, 0);
+> >>> +			return;
+> >>> +		} else
+> >>> +			panic("Unexpected PGM 0x3d with TEID bit 61=0");
+> >>
+> >> use BUG instead of panic? That would kill this process, but it allows
+> >> people to maybe save unaffected data.
+> > 
+> > It would kill the process, and most likely lead to deadlock'ed
+> > system. But with all the "good" debug information being lost, which
+> > wouldn't be the case with panic().
+> > I really don't think this is a good idea.
+> > 
 > 
-> ./drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c:
-> 1009:6-16: WARNING: Assignment of 0/1 to bool variable.
-> 
-> ./drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c:
-> 200:2-10: WARNING: Assignment of 0/1 to bool variable.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+> My understanding is that Linus hates panic for anything that might be able
+> to continue to run. With BUG the admin can decide via panic_on_oops if
+> debugging data or runtime data is more important. But mm is more on your
+> side, so if you insist on panic we can keep it.
 
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+I prefer to have good debug data - and when we are reaching this
+panic, then we _most_ likely have data corruption anywhere (wrong
+pointer?). So it seems to be best to me to shutdown the machine
+immediately in order to avoid any further corruption instead of hoping
+that the system stays somehow alive.
 
-Harry
-
-> ---
->   .../display/dc/dml/dcn30/display_rq_dlg_calc_30.c  | 32 +++++++++++-----------
->   1 file changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
-> index 5b5916b..0f14f20 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
-> @@ -165,8 +165,8 @@ static void handle_det_buf_split(struct display_mode_lib *mode_lib,
->   	unsigned int swath_bytes_c = 0;
->   	unsigned int full_swath_bytes_packed_l = 0;
->   	unsigned int full_swath_bytes_packed_c = 0;
-> -	bool req128_l = 0;
-> -	bool req128_c = 0;
-> +	bool req128_l = false;
-> +	bool req128_c = false;
->   	bool surf_linear = (pipe_src_param.sw_mode == dm_sw_linear);
->   	bool surf_vert = (pipe_src_param.source_scan == dm_vert);
->   	unsigned int log2_swath_height_l = 0;
-> @@ -191,37 +191,37 @@ static void handle_det_buf_split(struct display_mode_lib *mode_lib,
->   		total_swath_bytes = 2 * full_swath_bytes_packed_l;
->   
->   	if (total_swath_bytes <= detile_buf_size_in_bytes) { //full 256b request
-> -		req128_l = 0;
-> -		req128_c = 0;
-> +		req128_l = false;
-> +		req128_c = false;
->   		swath_bytes_l = full_swath_bytes_packed_l;
->   		swath_bytes_c = full_swath_bytes_packed_c;
->   	} else if (!rq_param->yuv420) {
-> -		req128_l = 1;
-> -		req128_c = 0;
-> +		req128_l = true;
-> +		req128_c = false;
->   		swath_bytes_c = full_swath_bytes_packed_c;
->   		swath_bytes_l = full_swath_bytes_packed_l / 2;
->   	} else if ((double)full_swath_bytes_packed_l / (double)full_swath_bytes_packed_c < 1.5) {
-> -		req128_l = 0;
-> -		req128_c = 1;
-> +		req128_l = false;
-> +		req128_c = true;
->   		swath_bytes_l = full_swath_bytes_packed_l;
->   		swath_bytes_c = full_swath_bytes_packed_c / 2;
->   
->   		total_swath_bytes = 2 * swath_bytes_l + 2 * swath_bytes_c;
->   
->   		if (total_swath_bytes > detile_buf_size_in_bytes) {
-> -			req128_l = 1;
-> +			req128_l = true;
->   			swath_bytes_l = full_swath_bytes_packed_l / 2;
->   		}
->   	} else {
-> -		req128_l = 1;
-> -		req128_c = 0;
-> +		req128_l = true;
-> +		req128_c = false;
->   		swath_bytes_l = full_swath_bytes_packed_l/2;
->   		swath_bytes_c = full_swath_bytes_packed_c;
->   
->   		total_swath_bytes = 2 * swath_bytes_l + 2 * swath_bytes_c;
->   
->   		if (total_swath_bytes > detile_buf_size_in_bytes) {
-> -			req128_c = 1;
-> +			req128_c = true;
->   			swath_bytes_c = full_swath_bytes_packed_c/2;
->   		}
->   	}
-> @@ -1006,8 +1006,8 @@ static void dml_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
->   
->   	double min_dst_y_ttu_vblank = 0;
->   	unsigned int dlg_vblank_start = 0;
-> -	bool dual_plane = 0;
-> -	bool mode_422 = 0;
-> +	bool dual_plane = false;
-> +	bool mode_422 = false;
->   	unsigned int access_dir = 0;
->   	unsigned int vp_height_l = 0;
->   	unsigned int vp_width_l = 0;
-> @@ -1021,7 +1021,7 @@ static void dml_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
->   	double hratio_c = 0;
->   	double vratio_l = 0;
->   	double vratio_c = 0;
-> -	bool scl_enable = 0;
-> +	bool scl_enable = false;
->   
->   	double line_time_in_us = 0;
->   	//	double vinit_l;
-> @@ -1156,7 +1156,7 @@ static void dml_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
->   	// Source
->   	//			 dcc_en			  = src.dcc;
->   	dual_plane = is_dual_plane((enum source_format_class)(src->source_format));
-> -	mode_422 = 0; // TODO
-> +	mode_422 = false; // TODO
->   	access_dir = (src->source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
->   	vp_height_l = src->viewport_height;
->   	vp_width_l = src->viewport_width;
-> 
+Furthermore a panic is easily detectable by a watchdog, while a BUG
+may put the system into a limbo state where the real workload doesn't
+work anymore, but the keepalive process does. I don't think this is
+desirable.
