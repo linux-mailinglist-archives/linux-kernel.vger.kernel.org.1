@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4C42FC81B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB552FC81A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731751AbhATChg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:37:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
+        id S2387572AbhATChD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:37:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728632AbhATB2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:28:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A5222313A;
-        Wed, 20 Jan 2021 01:26:18 +0000 (UTC)
+        id S1729919AbhATB2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4607C2313C;
+        Wed, 20 Jan 2021 01:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611105979;
-        bh=01AXPeuvHq4YkqZS4wMolAMnbMUyq0ZgtRslBq9z/gw=;
+        s=k20201202; t=1611105981;
+        bh=rF/943KhXezfdgbCMm4/HFxCfE2Bb3ZbRhYMEJrffP4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lFVH4+QUoFzYGM7Up6m6nESpszA+SIqQqhmRcwWv5Wijd44rlV4vOnkH32dnMiWC0
-         28FzSF7CuhY+DMpjQCzK2GRNGQMdDTafVfCHnrqnN2WBhtmqtiZ63EJQA5NoksW8CS
-         9GnfnkBKOrAOIrEh9dSJWvs0tvhFgjFGI15LWik7SVmB33BAuQauC8uNXM29SjDN+o
-         xhsA9hKzYzBjTyeC15rKNuZTnEMozwjQtCO5cfV71bUazsDLQDzlX3tuMo9Zr8ghDp
-         m67g64ZYO/g9kKuCnx/pO5TINLGxZaYETVnPOkOQ7PijSu6rNGjpRRLfBq1UDhAZAk
-         iHH8vs9+X6lTQ==
+        b=tePpvyy25iYttGPl+WJ989/ZrUmDukBEXZEcqiXAoKDQuR+p7fF5hyIQqm9iCHEuG
+         v7+XifcDyogYrXmY7TiH+XA2CzUmlOi/5IzolebVIjNXt+XQENvDK7rnDcDoA5byVl
+         Vdi60cARudHC2bk/fFV5z1FhIcahZH280j3BVnVj4T/+vJ39Ow+jUNuibJDlx2PKkl
+         /HNEurwluJqOcL57ATpHgyP1IAiF2fZaQhGzkUmi4NigMOxM4fwvh02svCbg+n7s+q
+         2ByNr/pWMb7Fs3+Hg8FEkdcHhn3o2Ag9EbB/WCG+7pBZJNlNQtiOgrhaNG2fbfr9Zd
+         kzlYDOooQG74g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Ewan D. Milne" <emilne@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 13/45] scsi: sd: Suppress spurious errors when WRITE SAME is being disabled
-Date:   Tue, 19 Jan 2021 20:25:30 -0500
-Message-Id: <20210120012602.769683-13-sashal@kernel.org>
+Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 14/45] riscv: Fix kernel time_init()
+Date:   Tue, 19 Jan 2021 20:25:31 -0500
+Message-Id: <20210120012602.769683-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -43,47 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Ewan D. Milne" <emilne@redhat.com>
+From: Damien Le Moal <damien.lemoal@wdc.com>
 
-[ Upstream commit e5cc9002caafacbaa8dab878d17a313192c3b03b ]
+[ Upstream commit 11f4c2e940e2f317c9d8fb5a79702f2a4a02ff98 ]
 
-The block layer code will split a large zeroout request into multiple bios
-and if WRITE SAME is disabled because the storage device reports that it
-does not support it (or support the length used), we can get an error
-message from the block layer despite the setting of RQF_QUIET on the first
-request.  This is because more than one request may have already been
-submitted.
+If of_clk_init() is not called in time_init(), clock providers defined
+in the system device tree are not initialized, resulting in failures for
+other devices to initialize due to missing clocks.
+Similarly to other architectures and to the default kernel time_init()
+implementation, call of_clk_init() before executing timer_probe() in
+time_init().
 
-Fix this by setting RQF_QUIET when BLK_STS_TARGET is returned to fail the
-request early, we don't need to log a message because we did not actually
-submit the command to the device, and the block layer code will handle the
-error by submitting individual write bios.
-
-Link: https://lore.kernel.org/r/20201207221021.28243-1-emilne@redhat.com
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Acked-by: Stephen Boyd <sboyd@kernel.org>
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/sd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/riscv/kernel/time.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 656bcf4940d6d..fedb89d4ac3f0 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -986,8 +986,10 @@ static blk_status_t sd_setup_write_zeroes_cmnd(struct scsi_cmnd *cmd)
- 		}
- 	}
+diff --git a/arch/riscv/kernel/time.c b/arch/riscv/kernel/time.c
+index 4d3a1048ad8b1..8a5cf99c07762 100644
+--- a/arch/riscv/kernel/time.c
++++ b/arch/riscv/kernel/time.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2017 SiFive
+  */
  
--	if (sdp->no_write_same)
-+	if (sdp->no_write_same) {
-+		rq->rq_flags |= RQF_QUIET;
- 		return BLK_STS_TARGET;
-+	}
++#include <linux/of_clk.h>
+ #include <linux/clocksource.h>
+ #include <linux/delay.h>
+ #include <asm/sbi.h>
+@@ -24,6 +25,8 @@ void __init time_init(void)
+ 	riscv_timebase = prop;
  
- 	if (sdkp->ws16 || lba > 0xffffffff || nr_blocks > 0xffff)
- 		return sd_setup_write_same16_cmnd(cmd, false);
+ 	lpj_fine = riscv_timebase / HZ;
++
++	of_clk_init(NULL);
+ 	timer_probe();
+ }
+ 
 -- 
 2.27.0
 
