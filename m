@@ -2,203 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6960D2FDA16
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42C22FDA12
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388551AbhATTvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:51:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37354 "EHLO
+        id S2392808AbhATTuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:50:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392795AbhATTty (ORCPT
+        with ESMTP id S2392616AbhATTtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:49:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC23C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:49:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=EH5y2QowKAn8v5SlvfhqbBK94HYpC+WRNspA6XjRhPs=; b=SxKAW++8hK9nzflKXhB3aCZS+C
-        TGWrgYBQrXbjWfyq+2r/dA7zOwvLCUeMc+GOho2Q6Lbr5w+UPnNpFT8G+fltPi7mb1A6A1enUZiZy
-        gBBKlQsVwARbjjncT7nKHx1cT4DEMCutG7S7gPPX302+rGpnVnSTTQBgM8GkU1epx2+RUzeNOlmne
-        Nu6CftM+4oynQgAZbJYMncY4jNmKxYiGCdbkq9c7lNFkN5lUz2LNNbQFHfAcdbUPWzXb7172Yo/0F
-        hXve12T8i+OLPvHypkjUz5sumJpxJykyy89+PvgyevGNJDQ/+Jbt8MpXlVkHx5KHoQ8m7K3FmOCRW
-        kr8onTmg==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l2JTG-0000ec-6l; Wed, 20 Jan 2021 19:48:50 +0000
-Subject: Re: [PATCH 4/4] sched/fair: Add document for burstable CFS bandwidth
- control
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
-        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
-        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
-References: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
- <20210120122715.29493-1-changhuaixin@linux.alibaba.com>
- <20210120122715.29493-5-changhuaixin@linux.alibaba.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <508f96e6-f1b8-0ac8-d9d5-ad83ddfc4be0@infradead.org>
-Date:   Wed, 20 Jan 2021 11:48:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 20 Jan 2021 14:49:35 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3719C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:48:53 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 15so15916607pgx.7
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:48:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9lRzUAv3or2r1BbPajS2z+ykRpWXBnGJf5rpZ5p6tBU=;
+        b=b7XgurA3tAmpc0/KrE+SrYu+wzF575qE3w5hAl0FoEebHa52Yts9CiUoEPqUD2CUGj
+         g1CDS83gzRO7wECoszUiNN+l4Vc5iFcQkeDVsKYtjaKtZ2T6gj8wH6WUmRt9KZwBktxu
+         TVKv1RG3ibphKebujjufhqlgq1MB1yGeH9PJH6DnI56Rs9F+sm5+9biMMlCWIJT932L7
+         aQU5EV+XYmM4Yt2GNgxKT7wzrh7p+dw/PciwyebeJNLqC+BEUY4JCMCwpnhKLgSiCOHS
+         E2y2l0U50Ex4hQxkwIXReKocVQ8L7dMObdTPeVcmBnhvTrrXpmMreQA9gxjqkrK3tFkd
+         NZJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9lRzUAv3or2r1BbPajS2z+ykRpWXBnGJf5rpZ5p6tBU=;
+        b=lSyLr+b8CmrKzpKgNSLGcuFDSQXcs6wfg7GzPOcDgDCSKQeoBMC4/ns7+jLzgKF2QS
+         eTScAvnhrJHYbWTsR7ti/4RW+MBYAIMv3G/YkumuJHUmnCWA3z+kvk4/TbOedgfS1XE6
+         8LEX18RmibcxNDkQv2oItYtTYUMldjW/kDVWyLNj+igAYCQv7YGVREpTo/uQwApDt8Vi
+         f+d6Q18x5ultyo7qCZYqPDJDX4Nws2StPhmgZVXCK8degR+M7Riu+lMvr+dj8Nlq325Y
+         l9XNg6AHg30S1jfkMqIewUwpfppjRoTK0sz7UQPAS7grvivYpJfAAF5fHH8+LoeRXmUu
+         kjZw==
+X-Gm-Message-State: AOAM531RuHFvqpjxsAwXuIbrnqClfCqOTb1gW+nGCQrHROZUDYZ++NLp
+        JQlKgTBlQP1/DYKe1L9hr3Q=
+X-Google-Smtp-Source: ABdhPJyUu2UkRkMJ+bnE1P2Fk1vfzHOfdMVVbLOxf9bjZ06450ndMipRmjBzuMQwNzha3T3HBEln0A==
+X-Received: by 2002:a63:6f0d:: with SMTP id k13mr10948851pgc.256.1611172133494;
+        Wed, 20 Jan 2021 11:48:53 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id z6sm3183298pfj.22.2021.01.20.11.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 11:48:52 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        =?iso-8859-2?q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?iso-8859-2?q?Rafa=B3_Mi=B3ecki?= <rafal@milecki.pl>
+Subject: Re: [PATCH Broadcom/stblinux] soc: brcmstb: add stubs for getting platform IDs
+Date:   Wed, 20 Jan 2021 11:48:51 -0800
+Message-Id: <20210120194851.2775816-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210114105318.14970-1-zajec5@gmail.com>
+References: <20210114105318.14970-1-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210120122715.29493-5-changhuaixin@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-Some comments below:
-
-On 1/20/21 4:27 AM, Huaixin Chang wrote:
-> Basic description of usage and effect for CFS Bandwidth Control Burst.
+On Thu, 14 Jan 2021 11:53:18 +0100, Rafał Miłecki <zajec5@gmail.com> wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
-> Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
+> Some brcmstb drivers may be shared with other SoC families. E.g. the
+> same USB PHY block is shared by brcmstb and BCM4908.
+> 
+> To avoid building brcmstb common code on non-brcmstb platforms we need
+> stubs for:
+> 1. brcmstb_get_family_id()
+> 2. brcmstb_get_product_id()
+> (to avoid "undefined reference to" errors).
+> 
+> With this change PHY_BRCM_USB will not have to unconditionally select
+> SOC_BRCMSTB anymore.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 > ---
->  Documentation/scheduler/sched-bwc.rst | 70 +++++++++++++++++++++++++++++++++--
->  1 file changed, 66 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
-> index 9801d6b284b1..2214ecaad393 100644
-> --- a/Documentation/scheduler/sched-bwc.rst
-> +++ b/Documentation/scheduler/sched-bwc.rst
-> @@ -21,18 +21,46 @@ cfs_quota units at each period boundary. As threads consume this bandwidth it
->  is transferred to cpu-local "silos" on a demand basis. The amount transferred
->  within each of these updates is tunable and described as the "slice".
->  
-> +By default, CPU bandwidth consumption is strictly limited to quota within each
-> +given period. For the sequence of CPU usage u_i served under CFS bandwidth
-> +control, if for any j <= k N(j,k) is the number of periods from u_j to u_k:
-> +
-> +        u_j+...+u_k <= quota * N(j,k)
-> +
-> +For a bursty sequence among which interval u_j...u_k are at the peak, CPU
-> +requests might have to wait for more periods to replenish enough quota.
-> +Otherwise, larger quota is required.
-> +
-> +With "burst" buffer, CPU requests might be served as long as:
-> +
-> +        u_j+...+u_k <= B_j + quota * N(j,k)
-> +
-> +if for any j <= k N(j,k) is the number of periods from u_j to u_k and B_j is
-> +the accumulated quota from previous periods in burst buffer serving u_j.
-> +Burst buffer helps in that serving whole bursty CPU requests without throttling
-> +them can be done with moderate quota setting and accumulated quota in burst
-> +buffer, if:
-> +
-> +        u_0+...+u_n <= B_0 + quota * N(0,n)
-> +
-> +where B_0 is the initial state of burst buffer. The maximum accumulated quota in
-> +the burst buffer is capped by burst. With proper burst setting, the available
-> +bandwidth is still determined by quota and period on the long run.
-> +
->  Management
->  ----------
-> -Quota and period are managed within the cpu subsystem via cgroupfs.
-> +Quota, period and burst are managed within the cpu subsystem via cgroupfs.
->  
-> -cpu.cfs_quota_us: the total available run-time within a period (in microseconds)
-> +cpu.cfs_quota_us: run-time replenished within a period (in microseconds)
->  cpu.cfs_period_us: the length of a period (in microseconds)
-> +cpu.cfs_burst_us: the maximum accumulated run-time (in microseconds)
->  cpu.stat: exports throttling statistics [explained further below]
->  
->  The default values are::
->  
->  	cpu.cfs_period_us=100ms
-> -	cpu.cfs_quota=-1
-> +	cpu.cfs_quota_us=-1
-> +	cpu.cfs_burst_us=0
->  
->  A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
->  bandwidth restriction in place, such a group is described as an unconstrained
-> @@ -48,6 +76,11 @@ more detail below.
->  Writing any negative value to cpu.cfs_quota_us will remove the bandwidth limit
->  and return the group to an unconstrained state once more.
->  
-> +A value of 0 for cpu.cfs_burst_us indicates that the group can not accumulate
-> +any unused bandwidth. It makes the traditional bandwidth control behavior for
-> +CFS unchanged. Writing any (valid) positive value(s) into cpu.cfs_burst_us
-> +will enact the cap on unused bandwidth accumulation.
-> +
->  Any updates to a group's bandwidth specification will result in it becoming
->  unthrottled if it is in a constrained state.
->  
-> @@ -65,9 +98,21 @@ This is tunable via procfs::
->  Larger slice values will reduce transfer overheads, while smaller values allow
->  for more fine-grained consumption.
->  
-> +There is also a global switch to turn off burst for all groups::
-> +       /proc/sys/kernel/sched_cfs_bw_burst_enabled (default=1)
-> +
-> +By default it is enabled. Write 0 values means no accumulated CPU time can be
 
-                             Writing a 0 value means
-
-> +used for any group, even if cpu.cfs_burst_us is configured.
-> +
-> +Sometimes users might want a group to burst without accumulation. This is
-> +tunable via::
-> +       /proc/sys/kernel/sched_cfs_bw_burst_onset_percent (default=0)
-> +
-> +Up to 100% runtime of cpu.cfs_burst_us might be given on setting bandwidth.
-> +
->  Statistics
->  ----------
-> -A group's bandwidth statistics are exported via 3 fields in cpu.stat.
-> +A group's bandwidth statistics are exported via 6 fields in cpu.stat.
->  
->  cpu.stat:
->  
-> @@ -75,6 +120,11 @@ cpu.stat:
->  - nr_throttled: Number of times the group has been throttled/limited.
->  - throttled_time: The total time duration (in nanoseconds) for which entities
->    of the group have been throttled.
-> +- current_bw: Current runtime in global pool.
-> +- nr_burst: Number of periods burst occurs.
-> +- burst_time: Cumulative wall-time that any cpus has used above quota in
-
-                                               CPUs have used
-
-> +  respective periods
-> +
->  
->  This interface is read-only.
->  
-> @@ -172,3 +222,15 @@ Examples
->  
->     By using a small period here we are ensuring a consistent latency
->     response at the expense of burst capacity.
-> +
-> +4. Limit a group to 20% of 1 CPU, and allow accumulate up to 60% of 1 CPU
-> +   addtionally, in case accumulation has been done.
-
-      additionally,
-
-> +
-> +   With 50ms period, 10ms quota will be equivalent to 20% of 1 CPU.
-> +   And 30ms burst will be equivalent to 60% of 1 CPU.
-> +
-> +	# echo 10000 > cpu.cfs_quota_us /* quota = 10ms */
-> +	# echo 50000 > cpu.cfs_period_us /* period = 50ms */
-> +	# echo 30000 > cpu.cfs_burst_us /* burst = 30ms */
-> +
-> +   Larger buffer setting allows greater burst capacity.
-> 
-
-
-HTH.
--- 
-~Randy
-"He closes his eyes and drops the goggles.  You can't get hurt
-by looking at a bitmap.  Or can you?"
-(Neal Stephenson: Snow Crash)
+Applied to drivers/next, thanks!
+--
+Florian
