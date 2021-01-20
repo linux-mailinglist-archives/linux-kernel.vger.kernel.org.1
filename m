@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EC22FCFBC
+	by mail.lfdr.de (Postfix) with ESMTP id BD2732FCFBD
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388277AbhATLoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:44:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732761AbhATL1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:27:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6221622AAA;
-        Wed, 20 Jan 2021 11:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611142001;
-        bh=vBYgu7+Vk//vFZiH3/SNchvwbekN9GzeUV312H49ldU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jmiSRx+Q/FgCNwuKmR/yJ1G3rjIZWTTRRA8gIcWPAHkttsQ1dvcNBJVI/eSbsw1Xm
-         t5mW+CZp/bSQoO5s9MJxX/1gQE0XTGAqfTzq42L1+1lnIzeMr9J7vQw+8GHjcZa21n
-         gx2lpKSjFu//AgqJdLs2ycHMkffk+mcd+qLwQF+I2kLU1ftKWGhGuAnOYc3GATqBgT
-         OLx+vU9jgOb9KsAiLdxZ9wyiTR8DWw9i8OAQ0TrVWXC0U/69umpqnn4bNdgstPl2lA
-         N9adz3cK3a12wd5dxgzRdklHmInOVZd02dP+5X8k+t3c0+70QttyDwSrco/7v9dAUd
-         2IdZqCRa3ttNg==
-Date:   Wed, 20 Jan 2021 13:26:35 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        David Howells <dhowells@redhat.com>, dwmw2@infradead.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jmorris@namei.org, serge@hallyn.com, nayna@linux.ibm.com,
-        Mimi Zohar <zohar@linux.ibm.com>, erichte@linux.ibm.com,
-        mpe@ellerman.id.au, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@hansenpartnership.com
-Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
-Message-ID: <YAgTawk3EENF/P6j@kernel.org>
-References: <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com>
- <20200916004927.64276-1-eric.snowberg@oracle.com>
- <1360578.1607593748@warthog.procyon.org.uk>
- <2442460.1610463459@warthog.procyon.org.uk>
- <X/9a8naM8p4tT5sO@linux.intel.com>
- <A05E3573-B1AF-474B-94A5-779E69E5880A@oracle.com>
- <YAFdNiYZSWpB9vOw@kernel.org>
- <CFBF6AEC-2832-44F7-9D7F-F20489498C33@oracle.com>
+        id S2388331AbhATLoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:44:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732958AbhATL1Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 06:27:24 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E8CC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:26:42 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id i17so499076ljn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:26:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rA6bdLKAlmIoLWUk8dCMAvfvN7Iy5mLs9O7w+8do8z8=;
+        b=hUIiRPlnMeeaTktx9TiA8UFdRaSKm6zh4+y0j9kDeNHP8TdZPrstvxTNIJydx3b3rk
+         laCm9uscm9uZlNF+jgD9LxV234ABWDAqEJwDD3sYViomVYIACHg5ywtJBI2OOLJvja5V
+         5ZQj1utqaWnS+NOXIbmT0DGsJ7HgKMLkiZlTG9xVwLg6a8dUgChg6WGgTR/sGcPf3cwf
+         Clv4SaBcGsAmSQ9zVOKQY0v5ZMbPeMnTvpzmVAXJAwuEJwGmL+kmqqK7n0ySEuuvvmK6
+         k7W1CfEpdhfGc8BNtERIX75nlK0Yu/vY54bSxpx7JrQntZIiDyMbNBbsve/ZKNsRxDeh
+         Sx0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rA6bdLKAlmIoLWUk8dCMAvfvN7Iy5mLs9O7w+8do8z8=;
+        b=hdkOAmTYIxicjMR7o6HvbUryvLtYHShEc5LVDxLCCdChlg2bkD86f7upF0gFPybuUr
+         Z7OBmZAGy5SCYHzqIuekSk+pXtcD3R9KjIiIdyBs77p3j9748VN16wOckZTLj9Bnro5t
+         bw0KlOoWU3vWdltELlRQGJ6BwNZDWekm528aovFRyptKjzb3+hjus5KmFZMBX9tS2ufI
+         G+x2RgdwmBdxaaoZiSux8Zq4lJBVbS8uwXU9gAcm9P2gyH6SsZH/iYl7Lk1V46yfAdHe
+         G9m+rSDEFIhb0mTcib/ulj3K5GUB/BaLHPPZEWLJFJzT/XoQEUV2nxhKHT++25ynOD6n
+         nQeQ==
+X-Gm-Message-State: AOAM532gCLS7Cx1s2iipy/kHqNjUJnc1ep6+VQVrxe5dfCVYavGPxAEg
+        1cvntiRNJwNwCQuUZkApRJm4eQ==
+X-Google-Smtp-Source: ABdhPJxhSDtqieNXSqt+r98ESGwXZDp29cFZUijUj0JQjcXu+YxvmLdbP1QZ+D1O4a2eK82VnJ/DbA==
+X-Received: by 2002:a2e:b1d2:: with SMTP id e18mr4163694lja.101.1611142001496;
+        Wed, 20 Jan 2021 03:26:41 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id 189sm172195lfj.192.2021.01.20.03.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 03:26:40 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 4462C101448; Wed, 20 Jan 2021 14:26:43 +0300 (+03)
+Date:   Wed, 20 Jan 2021 14:26:43 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Borislav Petkov <bp@alien8.de>, Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+Message-ID: <20210120112643.ozlsru67yuur323i@box>
+References: <20210107223424.4135538-1-arnd@kernel.org>
+ <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
+ <YAH6r3lak/F2wndp@rani.riverdale.lan>
+ <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
+ <20210118202409.GG30090@zn.tnic>
+ <YAYAvBARSRSg8z8G@rani.riverdale.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CFBF6AEC-2832-44F7-9D7F-F20489498C33@oracle.com>
+In-Reply-To: <YAYAvBARSRSg8z8G@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 09:49:02AM -0700, Eric Snowberg wrote:
-> 
-> > On Jan 15, 2021, at 2:15 AM, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > 
-> > On Wed, Jan 13, 2021 at 05:11:10PM -0700, Eric Snowberg wrote:
-> >> 
-> >>> On Jan 13, 2021, at 1:41 PM, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> >>> 
-> >>> On Tue, Jan 12, 2021 at 02:57:39PM +0000, David Howells wrote:
-> >>>> Eric Snowberg <eric.snowberg@oracle.com> wrote:
-> >>>> 
-> >>>>>> On Dec 10, 2020, at 2:49 AM, David Howells <dhowells@redhat.com> wrote:
-> >>>>>> 
-> >>>>>> Eric Snowberg <eric.snowberg@oracle.com> wrote:
-> >>>>>> 
-> >>>>>>> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_GUID
-> >>>>>>> is found, it is added as an asymmetrical key to the .blacklist keyring.
-> >>>>>>> Anytime the .platform keyring is used, the keys in the .blacklist keyring
-> >>>>>>> are referenced, if a matching key is found, the key will be rejected.
-> >>>>>> 
-> >>>>>> Ummm...  Why this way and not as a blacklist key which takes up less space?
-> >>>>>> I'm guessing that you're using the key chain matching logic.  We really only
-> >>>>>> need to blacklist the key IDs.
-> >>>>> 
-> >>>>> I implemented it this way so that certs in the dbx would only impact 
-> >>>>> the .platform keyring. I was under the impression we didn’t want to have 
-> >>>>> Secure Boot UEFI db/dbx certs dictate keyring functionality within the kernel
-> >>>>> itself. Meaning if we have a matching dbx cert in any other keyring (builtin,
-> >>>>> secondary, ima, etc.), it would be allowed. If that is not how you’d like to 
-> >>>>> see it done, let me know and I’ll make the change.
-> >>>> 
-> >>>> I wonder if that is that the right thing to do.  I guess this is a policy
-> >>>> decision and may depend on the particular user.
-> >>> 
-> >>> Why would you want to allow dbx entry in any keyring?
-> >> 
-> >> Today, DB and MOK certs go into the platform keyring.  These certs are only
-> >> referenced during kexec.  They can’t be used for other things like validating
-> >> kernel module signatures.  If we follow the same pattern, the DBX and MOKX entries
-> >> in the blacklist keyring should only impact kexec. 
-> >> 
-> >> Currently, Mickaël Salaün has another outstanding series to allow root to update 
-> >> the blacklist keyring.  I assume the use case for this is around certificates used 
-> >> within the kernel, for example revoking kernel module signatures.  The question I have
-> >> is, should another keyring be introduced?  One that carries DBX and MOKX, which just
-> >> correspond to certs/hashes in the platform keyring; this keyring would only be
-> >> referenced for kexec, just like the platform keyring is today. Then, the current
-> >> blacklist keyring would be used for everything internal to the kernel.
-> > 
-> > Right, I'm following actively that series.
-> > 
-> > Why couldn't user space drive this process and use that feature to do it?
-> 
-> I could see where the user would want to use both. With Mickaël Salaün’s
-> series, the blacklist keyring is updated immediately.  However it does
-> not survive a reboot.  With my patch, the blacklist keyring is updated
-> during boot, based on what is in the dbx. Neither approach needs a new 
-> kernel build.
+On Mon, Jan 18, 2021 at 04:42:20PM -0500, Arvind Sankar wrote:
+> AFAICT, MODULES_END is only relevant as being something that happens to
+> be in the top 512GiB, and -1ul would be clearer.
 
-I don't want to purposely challenge this, but why does it matter
-that it doesn't survive the boot? I'm referring here to the golden
-principle of kernel defining a mechanism, not policy. User space
-can do the population however it wants to for every boot.
+I think you are right. But -1UL is not very self-descriptive. :/
 
-E.g. systemd service could do this.
-
-What am I missing here?
-
-/Jarkko
+-- 
+ Kirill A. Shutemov
