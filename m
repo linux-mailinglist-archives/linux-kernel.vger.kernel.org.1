@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0282FC823
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519B52FC825
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731594AbhATClF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:41:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
+        id S1728370AbhATCly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:41:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730013AbhATB2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730033AbhATB2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:28:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C1AD22241;
-        Wed, 20 Jan 2021 01:26:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A062A221E3;
+        Wed, 20 Jan 2021 01:26:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106001;
-        bh=3G3E7KWC6d4c7VoJN3B4ZwtGBHWj7WRyCTjKW4mNPCs=;
+        s=k20201202; t=1611106002;
+        bh=n/YQAIYwiELBpI4MLk7xVoyV9zbAg1IonRd9oORZrvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hu5v67N1ncDAIBT7W+wknGyzXsQY3x6CUKXJ4EgI4cvMv08rmkqUPjOpub7oXMS6z
-         LefJZT0JVLbVposI1Jcw8K76BRwwWdxdxWSw2y8L7HTtDg217/dOJffYTmWhPvdKOY
-         r9+24L8XN4gmI1FMU/o/nTW/bMsEFv1AAaQd2L6wOZBl+FMyKSE7fTeWBrIIRYfUJR
-         uCAIcKmijQAJO8gIBOTYdtCA1JJh8QMfpsM6SdFX5OTSRPDsal90Gxax03j7XqTORS
-         SeZYBWmrA+uQyWdxJGEj06R/3sq4ZU89hQAVOObdQvKXPMOnMeR1eL2WkTN2DSALB/
-         Ra1yb6LHOyqPQ==
+        b=Qc0IfQqs3HT++mnVGnJ6PCqhc771tQzJJ2+3VsMzQ+TogomwxaXP2RpMCO/Ghhow+
+         FVWYthi3oyqzQSP4aBxW99PEiqiVASMPX4w1UBYGIpA/38g9EGf/kIE/4Bjvb9RyDp
+         UeGoLhs/UPOJAQSUPbQLa7rqcN+C+nkm9ilClLvhAQJFDVx4qpzjbVc/BrPLD0BISJ
+         BLDqW7ekkmU1EYDWTqOt9qh2CYiXG18HrKVaPI8mvEv/fcNJ4W8shzXVUazGeZD5M9
+         R9hwJbZq1lojk1LXknAUw2htgdA3ANsBmM7caDejgx3VJlpDTLMAdXscvvYinFMrki
+         pcH5geZfm9MBw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 29/45] dts: phy: fix missing mdio device and probe failure of vsc8541-01 device
-Date:   Tue, 19 Jan 2021 20:25:46 -0500
-Message-Id: <20210120012602.769683-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 30/45] dts: phy: add GPIO number and active state used for phy reset
+Date:   Tue, 19 Jan 2021 20:25:47 -0500
+Message-Id: <20210120012602.769683-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -45,28 +45,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 
-[ Upstream commit be969b7cfbcfa8a835a528f1dc467f0975c6d883 ]
+[ Upstream commit a0fa9d727043da2238432471e85de0bdb8a8df65 ]
 
-HiFive unleashed A00 board has VSC8541-01 ethernet phy, this device is
-identified as a Revision B device as described in device identification
-registers. In order to use this phy in the unmanaged mode, it requires
-a specific reset sequence of logical 0-1-0-1 transition on the NRESET pin
-as documented here [1].
-
-Currently, the bootloader (fsbl or u-boot-spl) takes care of the phy reset.
-If due to some reason the phy device hasn't received the reset by the prior
-stages before the linux macb driver comes into the picture, the MACB mii
-bus gets probed but the mdio scan fails and is not even able to read the
-phy ID registers. It gives an error message:
-
-"libphy: MACB_mii_bus: probed
-mdio_bus 10090000.ethernet-ffffffff: MDIO device at address 0 is missing."
-
-Thus adding the device OUI (Organizationally Unique Identifier) to the phy
-device node helps to probe the phy device.
-
-[1]: VSC8541-01 datasheet:
-https://www.mouser.com/ds/2/523/Microsemi_VSC8541-01_Datasheet_10496_V40-1148034.pdf
+The GEMGXL_RST line on HiFive Unleashed is pulled low and is
+using GPIO number 12. Add these reset-gpio details to dt-node
+using which the linux phylib can reset the phy.
 
 Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
@@ -76,17 +59,17 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-index 4a2729f5ca3f0..60846e88ae4b1 100644
+index 60846e88ae4b1..24d75a146e02d 100644
 --- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
 +++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-@@ -88,6 +88,7 @@ &eth0 {
- 	phy-mode = "gmii";
- 	phy-handle = <&phy0>;
+@@ -90,6 +90,7 @@ &eth0 {
  	phy0: ethernet-phy@0 {
-+		compatible = "ethernet-phy-id0007.0771";
+ 		compatible = "ethernet-phy-id0007.0771";
  		reg = <0>;
++		reset-gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
  	};
  };
+ 
 -- 
 2.27.0
 
