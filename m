@@ -2,147 +2,478 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3862FD273
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6702FD288
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390528AbhATOON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:14:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39435 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388367AbhATNfT (ORCPT
+        id S2388767AbhATOV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390061AbhATNhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:35:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611149632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TuZhxXX0vx11B3Qj3wPxkPeJCMw+rTZdku7noaOiFM4=;
-        b=GKMmyI+p9ThyF7X9EgqSMqXqBQ/v+PHtnDbtyNeWDWBmohRdCTzQf2hK7yggOmvk8mUNVI
-        jvpkWABH5qVU/y1M5fIV5SSmN3HTiTIrsDC9Xg6cArd0mc7RvHzHGfTGF7hB9Xpvr15yBc
-        6cVsLLm5Q+HrUgiqIaPx5Vb2wvzFXZU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-Cf47LavbMFGCejYLZROe5w-1; Wed, 20 Jan 2021 08:33:48 -0500
-X-MC-Unique: Cf47LavbMFGCejYLZROe5w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AF84107ACE3;
-        Wed, 20 Jan 2021 13:33:47 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-182.ams2.redhat.com [10.36.112.182])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 857A610023B6;
-        Wed, 20 Jan 2021 13:33:46 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id E6BAF18000B3; Wed, 20 Jan 2021 14:33:44 +0100 (CET)
-Date:   Wed, 20 Jan 2021 14:33:44 +0100
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     Yiwei Zhang <zzyiwei@android.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
-Message-ID: <20210120133344.7kln44nbwb5rjjgu@sirius.home.kraxel.org>
-References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
- <20210118234057.270930-1-zzyiwei@android.com>
- <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
- <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
- <YAfzxS95Yy86qnBi@phenom.ffwll.local>
- <CAKB3++ZYacAN2ZVSGGm0uEDQtowcS9LDPPYCqt6Pj+-WEFxMSQ@mail.gmail.com>
+        Wed, 20 Jan 2021 08:37:02 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F11EC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:36:22 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1l2Dek-00048J-VN; Wed, 20 Jan 2021 14:36:19 +0100
+Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
+To:     Sumit Garg <sumit.garg@linaro.org>,
+        jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
+        jejb@linux.ibm.com
+Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
+        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
+        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
+        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
+        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+ <1604419306-26105-3-git-send-email-sumit.garg@linaro.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <cf82c754-646d-529e-3a88-f724a90aa93d@pengutronix.de>
+Date:   Wed, 20 Jan 2021 14:36:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKB3++ZYacAN2ZVSGGm0uEDQtowcS9LDPPYCqt6Pj+-WEFxMSQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <1604419306-26105-3-git-send-email-sumit.garg@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Hi,
+Hello Sumit,
 
-> > > > > +       select TRACE_GPU_MEM
+On 03.11.20 17:01, Sumit Garg wrote:
+> Add support for TEE based trusted keys where TEE provides the functionality
+> to seal and unseal trusted keys using hardware unique key.
+> 
+> Refer to Documentation/tee.txt for detailed information about TEE.
+> 
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  include/keys/trusted_tee.h                |  55 ++++++
+>  security/keys/trusted-keys/Makefile       |   1 +
+>  security/keys/trusted-keys/trusted_core.c |   4 +
+>  security/keys/trusted-keys/trusted_tee.c  | 278 ++++++++++++++++++++++++++++++
+>  4 files changed, 338 insertions(+)
+>  create mode 100644 include/keys/trusted_tee.h
+>  create mode 100644 security/keys/trusted-keys/trusted_tee.c
+> 
+> diff --git a/include/keys/trusted_tee.h b/include/keys/trusted_tee.h
+> new file mode 100644
+> index 0000000..2e2bb15
+> --- /dev/null
+> +++ b/include/keys/trusted_tee.h
+> @@ -0,0 +1,55 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2019-2020 Linaro Ltd.
+> + *
+> + * Author:
+> + * Sumit Garg <sumit.garg@linaro.org>
+> + */
+> +
+> +#ifndef __TEE_TRUSTED_KEY_H
+> +#define __TEE_TRUSTED_KEY_H
+> +
+> +#include <linux/tee_drv.h>
+> +
+> +#define DRIVER_NAME "tee-trusted-key"
 
-> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
+Looks unusual to define this in a header, especially when
+it's included in trusted_core.c as well. Could you move it?
 
-That doesn't make sense btw.
+> +
+> +/*
+> + * Get random data for symmetric key
+> + *
+> + * [out]     memref[0]        Random data
+> + */
+> +#define TA_CMD_GET_RANDOM	0x0
+> +
+> +/*
+> + * Seal trusted key using hardware unique key
+> + *
+> + * [in]      memref[0]        Plain key
+> + * [out]     memref[1]        Sealed key datablob
+> + */
+> +#define TA_CMD_SEAL		0x1
+> +
+> +/*
+> + * Unseal trusted key using hardware unique key
+> + *
+> + * [in]      memref[0]        Sealed key datablob
+> + * [out]     memref[1]        Plain key
+> + */
+> +#define TA_CMD_UNSEAL		0x2
 
-> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
-> > > > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
-> > > > > +                                             s64 delta)
-> > > > > +{
-> > > > > +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
-> > > > > +
-> > > > > +       trace_gpu_mem_total(0, 0, total_mem);
+These also look like implementation-specific stuff
+that should go into trusted_tee.c?
 
-Hmm, so no per process tracking (pid arg hard-coded to zero)?
-Any plans for that?
-The cgroups patches mentioned by Daniel should address that btw.
+> +
+> +/**
+> + * struct trusted_key_private - TEE Trusted key private data
+> + * @dev:		TEE based Trusted key device.
+> + * @ctx:		TEE context handler.
+> + * @session_id:		Trusted key TA session identifier.
+> + * @shm_pool:		Memory pool shared with TEE device.
+> + */
+> +struct trusted_key_private {
 
-The gpu_id is hardcoded to zero too.  Shouldn't that be something like
-the minor number of the drm device?  Or maybe something else in case you
-need drm and non-drm gpu devices work side-by-side?
+This is name is a bit too generic. Either move it to trusted_tee
+or put a caam_ prefix in front?
 
-> > > Thanks for your reply! Android Cuttlefish virtual platform is using
-> > > the virtio-gpu driver, and we currently are carrying this small patch
-> > > at the downstream side. This is essential for us because:
-> > > (1) Android has deprecated debugfs on production devices already
+> +	struct device *dev;
+> +	struct tee_context *ctx;
+> +	u32 session_id;
+> +	struct tee_shm *shm_pool;
+> +};
+> +
+> +extern struct trusted_key_ops tee_trusted_key_ops;
 
-IIRC there have been discussions about a statfs, so you can export stats
-with a sane interface without also enabling all the power provided by
-debugfs, exactly because of the concerns to do that on production
-systems.
+This looks like the only thing that must be in this header.
 
-Not sure what the state is, seems to not be upstream yet.  That would be
-(beside cgroups) another thing to look at.
+> +
+> +#endif
+> diff --git a/security/keys/trusted-keys/Makefile b/security/keys/trusted-keys/Makefile
+> index 49e3bcf..012dd78 100644
+> --- a/security/keys/trusted-keys/Makefile
+> +++ b/security/keys/trusted-keys/Makefile
+> @@ -7,3 +7,4 @@ obj-$(CONFIG_TRUSTED_KEYS) += trusted.o
+>  trusted-y += trusted_core.o
+>  trusted-y += trusted_tpm1.o
+>  trusted-y += trusted_tpm2.o
+> +trusted-y += trusted_tee.o
 
-> > > Android relies on this tracepoint + eBPF to make the GPU memory totals
-> > > available at runtime on production devices, which has been enforced
-> > > already. Not only game developers can have a reliable kernel total GPU
-> > > memory to look at, but also Android leverages this to take GPU memory
-> > > usage out from the system lost ram.
+Shouldn't this depend on CONFIG_TEE or similar? Otherwise without LTO, you'd
+run into linker errors.
 
-Sounds like you define "gpu memory" as "system memory used to store gpu
-data".  Is that correct?  What about device memory?
+[Apologies if these points were raised in previous review cycles, I just
+ recently subscribed]
 
-> > > I'm not sure whether the other DRM drivers would like to integrate
-> > > this tracepoint(maybe upstream drivers will move away from debugfs
-> > > later as well?), but at least we hope virtio-gpu can take this.
+Cheers,
+Ahmad
 
-Well, it is basically the same for all drivers using the gem shmem
-helpers.  So I see little reason why we should do that at virtio-gpu
-level.
+> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+> index aa4f2a0..15b1b0f3 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -8,6 +8,7 @@
+>  
+>  #include <keys/user-type.h>
+>  #include <keys/trusted-type.h>
+> +#include <keys/trusted_tee.h>
+>  #include <keys/trusted_tpm.h>
+>  #include <linux/capability.h>
+>  #include <linux/err.h>
+> @@ -29,6 +30,9 @@ static const struct trusted_key_source trusted_key_sources[] = {
+>  #if defined(CONFIG_TCG_TPM)
+>  	{ "tpm", &tpm_trusted_key_ops },
+>  #endif
+> +#if defined(CONFIG_TEE)
+> +	{ "tee", &tee_trusted_key_ops },
+> +#endif
+>  };
+>  
+>  DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->init);
+> diff --git a/security/keys/trusted-keys/trusted_tee.c b/security/keys/trusted-keys/trusted_tee.c
+> new file mode 100644
+> index 0000000..da8785a
+> --- /dev/null
+> +++ b/security/keys/trusted-keys/trusted_tee.c
+> @@ -0,0 +1,278 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019-2020 Linaro Ltd.
+> + *
+> + * Author:
+> + * Sumit Garg <sumit.garg@linaro.org>
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/key-type.h>
+> +#include <linux/slab.h>
+> +#include <linux/string.h>
+> +#include <linux/uuid.h>
+> +
+> +#include <keys/trusted-type.h>
+> +#include <keys/trusted_tee.h>
+> +
+> +static struct trusted_key_private pvt_data;
+> +
+> +/*
+> + * Have the TEE seal(encrypt) the symmetric key
+> + */
+> +static int trusted_tee_seal(struct trusted_key_payload *p, char *datablob)
+> +{
+> +	int ret;
+> +	struct tee_ioctl_invoke_arg inv_arg;
+> +	struct tee_param param[4];
+> +	struct tee_shm *reg_shm_in = NULL, *reg_shm_out = NULL;
+> +
+> +	memset(&inv_arg, 0, sizeof(inv_arg));
+> +	memset(&param, 0, sizeof(param));
+> +
+> +	reg_shm_in = tee_shm_register(pvt_data.ctx, (unsigned long)p->key,
+> +				      p->key_len, TEE_SHM_DMA_BUF |
+> +				      TEE_SHM_KERNEL_MAPPED);
+> +	if (IS_ERR(reg_shm_in)) {
+> +		dev_err(pvt_data.dev, "key shm register failed\n");
+> +		return PTR_ERR(reg_shm_in);
+> +	}
+> +
+> +	reg_shm_out = tee_shm_register(pvt_data.ctx, (unsigned long)p->blob,
+> +				       sizeof(p->blob), TEE_SHM_DMA_BUF |
+> +				       TEE_SHM_KERNEL_MAPPED);
+> +	if (IS_ERR(reg_shm_out)) {
+> +		dev_err(pvt_data.dev, "blob shm register failed\n");
+> +		ret = PTR_ERR(reg_shm_out);
+> +		goto out;
+> +	}
+> +
+> +	inv_arg.func = TA_CMD_SEAL;
+> +	inv_arg.session = pvt_data.session_id;
+> +	inv_arg.num_params = 4;
+> +
+> +	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> +	param[0].u.memref.shm = reg_shm_in;
+> +	param[0].u.memref.size = p->key_len;
+> +	param[0].u.memref.shm_offs = 0;
+> +	param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> +	param[1].u.memref.shm = reg_shm_out;
+> +	param[1].u.memref.size = sizeof(p->blob);
+> +	param[1].u.memref.shm_offs = 0;
+> +
+> +	ret = tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
+> +	if ((ret < 0) || (inv_arg.ret != 0)) {
+> +		dev_err(pvt_data.dev, "TA_CMD_SEAL invoke err: %x\n",
+> +			inv_arg.ret);
+> +		ret = -EFAULT;
+> +	} else {
+> +		p->blob_len = param[1].u.memref.size;
+> +	}
+> +
+> +out:
+> +	if (reg_shm_out)
+> +		tee_shm_free(reg_shm_out);
+> +	if (reg_shm_in)
+> +		tee_shm_free(reg_shm_in);
+> +
+> +	return ret;
+> +}
+> +
+> +/*
+> + * Have the TEE unseal(decrypt) the symmetric key
+> + */
+> +static int trusted_tee_unseal(struct trusted_key_payload *p, char *datablob)
+> +{
+> +	int ret;
+> +	struct tee_ioctl_invoke_arg inv_arg;
+> +	struct tee_param param[4];
+> +	struct tee_shm *reg_shm_in = NULL, *reg_shm_out = NULL;
+> +
+> +	memset(&inv_arg, 0, sizeof(inv_arg));
+> +	memset(&param, 0, sizeof(param));
+> +
+> +	reg_shm_in = tee_shm_register(pvt_data.ctx, (unsigned long)p->blob,
+> +				      p->blob_len, TEE_SHM_DMA_BUF |
+> +				      TEE_SHM_KERNEL_MAPPED);
+> +	if (IS_ERR(reg_shm_in)) {
+> +		dev_err(pvt_data.dev, "blob shm register failed\n");
+> +		return PTR_ERR(reg_shm_in);
+> +	}
+> +
+> +	reg_shm_out = tee_shm_register(pvt_data.ctx, (unsigned long)p->key,
+> +				       sizeof(p->key), TEE_SHM_DMA_BUF |
+> +				       TEE_SHM_KERNEL_MAPPED);
+> +	if (IS_ERR(reg_shm_out)) {
+> +		dev_err(pvt_data.dev, "key shm register failed\n");
+> +		ret = PTR_ERR(reg_shm_out);
+> +		goto out;
+> +	}
+> +
+> +	inv_arg.func = TA_CMD_UNSEAL;
+> +	inv_arg.session = pvt_data.session_id;
+> +	inv_arg.num_params = 4;
+> +
+> +	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> +	param[0].u.memref.shm = reg_shm_in;
+> +	param[0].u.memref.size = p->blob_len;
+> +	param[0].u.memref.shm_offs = 0;
+> +	param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> +	param[1].u.memref.shm = reg_shm_out;
+> +	param[1].u.memref.size = sizeof(p->key);
+> +	param[1].u.memref.shm_offs = 0;
+> +
+> +	ret = tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
+> +	if ((ret < 0) || (inv_arg.ret != 0)) {
+> +		dev_err(pvt_data.dev, "TA_CMD_UNSEAL invoke err: %x\n",
+> +			inv_arg.ret);
+> +		ret = -EFAULT;
+> +	} else {
+> +		p->key_len = param[1].u.memref.size;
+> +	}
+> +
+> +out:
+> +	if (reg_shm_out)
+> +		tee_shm_free(reg_shm_out);
+> +	if (reg_shm_in)
+> +		tee_shm_free(reg_shm_in);
+> +
+> +	return ret;
+> +}
+> +
+> +/*
+> + * Have the TEE generate random symmetric key
+> + */
+> +static int trusted_tee_get_random(unsigned char *key, size_t key_len)
+> +{
+> +	int ret;
+> +	struct tee_ioctl_invoke_arg inv_arg;
+> +	struct tee_param param[4];
+> +	struct tee_shm *reg_shm = NULL;
+> +
+> +	memset(&inv_arg, 0, sizeof(inv_arg));
+> +	memset(&param, 0, sizeof(param));
+> +
+> +	reg_shm = tee_shm_register(pvt_data.ctx, (unsigned long)key, key_len,
+> +				   TEE_SHM_DMA_BUF | TEE_SHM_KERNEL_MAPPED);
+> +	if (IS_ERR(reg_shm)) {
+> +		dev_err(pvt_data.dev, "key shm register failed\n");
+> +		return PTR_ERR(reg_shm);
+> +	}
+> +
+> +	inv_arg.func = TA_CMD_GET_RANDOM;
+> +	inv_arg.session = pvt_data.session_id;
+> +	inv_arg.num_params = 4;
+> +
+> +	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> +	param[0].u.memref.shm = reg_shm;
+> +	param[0].u.memref.size = key_len;
+> +	param[0].u.memref.shm_offs = 0;
+> +
+> +	ret = tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
+> +	if ((ret < 0) || (inv_arg.ret != 0)) {
+> +		dev_err(pvt_data.dev, "TA_CMD_GET_RANDOM invoke err: %x\n",
+> +			inv_arg.ret);
+> +		ret = -EFAULT;
+> +	} else {
+> +		ret = param[0].u.memref.size;
+> +	}
+> +
+> +	tee_shm_free(reg_shm);
+> +
+> +	return ret;
+> +}
+> +
+> +static int optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
+> +{
+> +	if (ver->impl_id == TEE_IMPL_ID_OPTEE)
+> +		return 1;
+> +	else
+> +		return 0;
+> +}
+> +
+> +static int trusted_key_probe(struct device *dev)
+> +{
+> +	struct tee_client_device *rng_device = to_tee_client_device(dev);
+> +	int ret;
+> +	struct tee_ioctl_open_session_arg sess_arg;
+> +
+> +	memset(&sess_arg, 0, sizeof(sess_arg));
+> +
+> +	pvt_data.ctx = tee_client_open_context(NULL, optee_ctx_match, NULL,
+> +					       NULL);
+> +	if (IS_ERR(pvt_data.ctx))
+> +		return -ENODEV;
+> +
+> +	memcpy(sess_arg.uuid, rng_device->id.uuid.b, TEE_IOCTL_UUID_LEN);
+> +	sess_arg.clnt_login = TEE_IOCTL_LOGIN_REE_KERNEL;
+> +	sess_arg.num_params = 0;
+> +
+> +	ret = tee_client_open_session(pvt_data.ctx, &sess_arg, NULL);
+> +	if ((ret < 0) || (sess_arg.ret != 0)) {
+> +		dev_err(dev, "tee_client_open_session failed, err: %x\n",
+> +			sess_arg.ret);
+> +		ret = -EINVAL;
+> +		goto out_ctx;
+> +	}
+> +	pvt_data.session_id = sess_arg.session;
+> +
+> +	ret = register_key_type(&key_type_trusted);
+> +	if (ret < 0)
+> +		goto out_sess;
+> +
+> +	pvt_data.dev = dev;
+> +
+> +	return 0;
+> +
+> +out_sess:
+> +	tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
+> +out_ctx:
+> +	tee_client_close_context(pvt_data.ctx);
+> +
+> +	return ret;
+> +}
+> +
+> +static int trusted_key_remove(struct device *dev)
+> +{
+> +	unregister_key_type(&key_type_trusted);
+> +	tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
+> +	tee_client_close_context(pvt_data.ctx);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct tee_client_device_id trusted_key_id_table[] = {
+> +	{UUID_INIT(0xf04a0fe7, 0x1f5d, 0x4b9b,
+> +		   0xab, 0xf7, 0x61, 0x9b, 0x85, 0xb4, 0xce, 0x8c)},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(tee, trusted_key_id_table);
+> +
+> +static struct tee_client_driver trusted_key_driver = {
+> +	.id_table	= trusted_key_id_table,
+> +	.driver		= {
+> +		.name		= DRIVER_NAME,
+> +		.bus		= &tee_bus_type,
+> +		.probe		= trusted_key_probe,
+> +		.remove		= trusted_key_remove,
+> +	},
+> +};
+> +
+> +static int trusted_tee_init(void)
+> +{
+> +	return driver_register(&trusted_key_driver.driver);
+> +}
+> +
+> +static void trusted_tee_exit(void)
+> +{
+> +	driver_unregister(&trusted_key_driver.driver);
+> +}
+> +
+> +struct trusted_key_ops tee_trusted_key_ops = {
+> +	.migratable = 0, /* non-migratable */
+> +	.init = trusted_tee_init,
+> +	.seal = trusted_tee_seal,
+> +	.unseal = trusted_tee_unseal,
+> +	.get_random = trusted_tee_get_random,
+> +	.exit = trusted_tee_exit,
+> +};
+> 
 
-> Android GPU vendors have integrated this tracepoint to track gpu
-> memory usage total(mapped into the gpu address space), which consists
-> of below:
-> (1) directly allocated via physical page allocator
-> (2) imported external memory backed by dma-bufs
-> (3) allocated exportable memory backed by dma-bufs
-
-Hmm, the tracepoint doesn't track which of the three groups the memory
-belongs to.  Which I think is important, specifically group (2) because
-that might already be accounted for by the exporting driver ...
-
-> Our Android kernel team is leading the other side of effort to help
-> remove the dma-bufs overlap(those mapped into a gpu device) as a joint
-> effort, so that we can accurately explain the memory usage of the
-> entire Android system.
-
-I suspect once you figured that you'll notice that this little hack is
-rather incomplete.
-
-> For virtio-gpu, since that's used by our reference platform
-> Cuttlefish(Cloud Android), we have to integrate the same tracepoint as
-> well to enforce the use of this tracepoint and the eBPF stuff built on
-> top to support runtime query of gpu memory on production devices. For
-> virtio-gpu at this moment, we only want to track GEM allocations since
-> PRIME import is currently not supported/used in Cuttlefish. That's all
-> we are doing in this small patch.
-
-take care,
-  Gerd
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
