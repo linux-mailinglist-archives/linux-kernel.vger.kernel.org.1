@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50ED2FCC2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF512FCC2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbhATH4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:56:38 -0500
-Received: from mga06.intel.com ([134.134.136.31]:35846 "EHLO mga06.intel.com"
+        id S1730291AbhATH4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:56:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726739AbhATHys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:54:48 -0500
-IronPort-SDR: TV6Lj900pyLmdo/66O7/cWCmG6nA3Z4aiySvaE9+xWczp5mSGhey50aUkhBo1HrVa2m+V6XJne
- EWFkOzoMj+jQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="240600750"
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="240600750"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 23:54:07 -0800
-IronPort-SDR: TToS1xbmD5KXL6u7aIH++681gRiINd4wSqoCGaIChWKbqYfrMcC0DuWnfRuxuBZ+2wJ5mQc7Hp
- d0OCr7xmDUuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="466995394"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.145])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 23:54:04 -0800
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] swap: Check nrexceptional of swap cache before being freed
-References: <20210120072711.209099-1-ying.huang@intel.com>
-        <20210120074652.GA9371@dhcp22.suse.cz>
-Date:   Wed, 20 Jan 2021 15:54:04 +0800
-In-Reply-To: <20210120074652.GA9371@dhcp22.suse.cz> (Michal Hocko's message of
-        "Wed, 20 Jan 2021 08:46:52 +0100")
-Message-ID: <87v9bst55v.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1729699AbhATHzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:55:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1C623131;
+        Wed, 20 Jan 2021 07:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611129271;
+        bh=IZ3xNUJOM7Y7pZR3MSGeJWjfTJwPs06jpM1oKNdi11s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xn8Lkt8oDvmmS1PqwSGGuEBwe6cVCngU/cM2JI5xiTWP4qByIpyi/JtEquo3Jyaye
+         Uapp/x6+B4eoKjNKOlG6ASb82GsMT2ABwyk2mwJo4O3zu7KitHasFdcZc323d6FrYf
+         y/h8TCiXEm+8SEmN3cH48VE2+GfibWbwzpubAd+U=
+Date:   Wed, 20 Jan 2021 08:54:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, shuah@kernel.org,
+        valentina.manea.m@gmail.com, hdanton@sina.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: =?utf-8?B?4oCcS0FTQU46IG51bGwtcHRyLWRl?=
+ =?utf-8?Q?ref_Write_in_event=5Fhandler=E2=80=9D_and_=22KASAN=3A_null-ptr-?=
+ =?utf-8?Q?deref_Write_i?= =?utf-8?Q?n?= vhci_shutdown_connection" should
+ share the same root cause.
+Message-ID: <YAfhs++HLaTsejb2@kroah.com>
+References: <CAD-N9QUVDpHjSwZa+w3Zxx_Pn5ZrBKuhGhbg9PoyR=xbrMb88g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD-N9QUVDpHjSwZa+w3Zxx_Pn5ZrBKuhGhbg9PoyR=xbrMb88g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> writes:
+On Wed, Jan 20, 2021 at 11:22:11AM +0800, 慕冬亮 wrote:
+> Dear kernel developers,
+> 
+> I found that on the syzbot dashboard, “KASAN: null-ptr-deref Write in
+> event_handler”[1] and
+> "KASAN: null-ptr-deref Write in vhci_shutdown_connection" () should
+> share the same root cause.
+> 
+> 
+> The reasons for the above statement:
+> 1) the stack trace is the same, and this title difference is due to
+> the inline property of "vhci_shutdown_connection";
+> 2) their PoCs are the same as each other.
+> 
+> If you can have any issues with this statement or our information is
+> useful to you, please let us know. Thanks very much.
+> 
+> [1] KASAN: null-ptr-deref Write in event_handler -
+> https://syzkaller.appspot.com/bug?id=28cccdd18b4bb8670d077937fb8d4849dca96230
+> [2] KASAN: null-ptr-deref Write in vhci_shutdown_connection -
+> https://syzkaller.appspot.com/bug?id=c21c07f3d51769405e8efc027bdb927515dcc7d6
 
-> On Wed 20-01-21 15:27:11, Huang Ying wrote:
->> To catch the error in updating the swap cache shadow entries or their count.
->
-> What is the error?
+Great, care to create a patch for this problem?  That's the best way to
+solve these things.
 
-There's no error in the current code.  But we will change the related
-code in the future.  So this checking will help us to prevent error in
-the future.  I will change the patch description to make it more clear.
+thanks,
 
-> Can it happens in the real life? Why do we need this
-> patch? Is crashing the kernel the right way to handle the situation?
-
-Emm... The mistake to update swap shadow entries will hurt performance,
-but will not trigger functionality bug.  So it may be better to use
-VM_WARN_ON_ONCE().
-
-Best Regards,
-Huang, Ying
-
-
->> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->> Cc: Minchan Kim <minchan@kernel.org>
->> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>,
->> Cc: Johannes Weiner <hannes@cmpxchg.org>,
->> Cc: Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
->> Cc: Mel Gorman <mgorman@techsingularity.net>,
->> Cc: Michal Hocko <mhocko@kernel.org>,
->> Cc: Dan Williams <dan.j.williams@intel.com>,
->> Cc: Christoph Hellwig <hch@lst.de>, Ilya Dryomov <idryomov@gmail.com>,
->> ---
->>  mm/swap_state.c | 7 ++++++-
->>  1 file changed, 6 insertions(+), 1 deletion(-)
->> 
->> diff --git a/mm/swap_state.c b/mm/swap_state.c
->> index d0d417efeecc..240a4f97594a 100644
->> --- a/mm/swap_state.c
->> +++ b/mm/swap_state.c
->> @@ -703,7 +703,12 @@ int init_swap_address_space(unsigned int type, unsigned long nr_pages)
->>  
->>  void exit_swap_address_space(unsigned int type)
->>  {
->> -	kvfree(swapper_spaces[type]);
->> +	int i;
->> +	struct address_space *spaces = swapper_spaces[type];
->> +
->> +	for (i = 0; i < nr_swapper_spaces[type]; i++)
->> +		VM_BUG_ON(spaces[i].nrexceptional);
->> +	kvfree(spaces);
->>  	nr_swapper_spaces[type] = 0;
->>  	swapper_spaces[type] = NULL;
->>  }
->> -- 
->> 2.29.2
+greg k-h
