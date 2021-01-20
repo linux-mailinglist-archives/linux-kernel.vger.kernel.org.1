@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4544E2FD3F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544322FD42A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403968AbhATP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:26:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51504 "EHLO mail.kernel.org"
+        id S2390479AbhATPfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:35:00 -0500
+Received: from m12-14.163.com ([220.181.12.14]:52050 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391005AbhATPVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82BC6233A2;
-        Wed, 20 Jan 2021 15:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611156023;
-        bh=r0M1Ka3u8aAoDgdxe4IPOf2mDljJGtGVJIj19ojD0O0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IEV6/G7g4viv0Q8HAPyCI5d7SyPurUG8zU26qpS1QoLPKM4mlgstAjiGh6srwDgc3
-         OtqNVZnQKvJv8zNcaQ+m9+pCm5pYU2HgtERGL9OZ5eU1ChhQfa88T9H0TsBThLSkI/
-         IVzaYWdEpunUf0Eb9tmvDjPYw6cvTwtdNoSaDY95d8b/ltqTkZVJzwOpNBc2uWloke
-         r9AwYynXKcmRY+q6bitd+ZJyoFdSMwOW1MggN/jY6V4cR40iylWBOAeHOd7qhlSMgp
-         58KOue6NvVd4f9HGWI+G9CjSQfVzdb3E+g7ef5RTSmwOwJ+QPyPq3BTQSjZ2LwljHP
-         T/cVX0FtxzEWw==
-Received: by mail-ej1-f44.google.com with SMTP id ox12so9743593ejb.2;
-        Wed, 20 Jan 2021 07:20:23 -0800 (PST)
-X-Gm-Message-State: AOAM532m5mUW+BH5TfQP8RboKrnzmMEstVi0BwycGigYRSN1w7CX7Dfj
-        IAx6P46+LSs1BO1uQiiNMeLaD8LCtLMCPYdk/g==
-X-Google-Smtp-Source: ABdhPJzPuIeZMu4dsdixTpdMNXFQeosEa6xL58lXpxjrnZTQGKm80JrftOygLaCUqNokYLxaaaYHwMhJYFzZjJOReOI=
-X-Received: by 2002:a17:906:ce49:: with SMTP id se9mr6530993ejb.341.1611156021968;
- Wed, 20 Jan 2021 07:20:21 -0800 (PST)
+        id S2390270AbhATPeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:34:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=91X/C
+        uC+inNqElz0yh7ejsq+wKcYyR14IVBS4gV/fmM=; b=MN2st6R3L3ncWTXCieKVG
+        QFAWed3pv34DSDPLQ99MiefWGibk/wR4i93gJakZy0lzb+U5P/4YTk2lbRfLjQ2Q
+        rUPh1Qoi3X4Am/5OUvrWQjNx0UzrLYTG20ZBtUke+XMcKZcq36joTwvZtW9FI0br
+        /aF9bsBlZU5UszonAmhIpQ=
+Received: from yangjunlin.ccdomain.com (unknown [119.137.55.77])
+        by smtp10 (Coremail) with SMTP id DsCowABnaRWhKAhgCXQAhA--.28868S2;
+        Wed, 20 Jan 2021 20:57:06 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xinjian@yulong.com, Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] power: supply: charger-manager: fix typo
+Date:   Wed, 20 Jan 2021 20:45:53 +0800
+Message-Id: <20210120124553.751-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-References: <1611011439-29881-1-git-send-email-hayashi.kunihiko@socionext.com>
-In-Reply-To: <1611011439-29881-1-git-send-email-hayashi.kunihiko@socionext.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 20 Jan 2021 09:20:07 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLtcXFktBWWqpbYf3B5BR2eUyBsQQ3Q5S3Ma8hn5T5Z0Q@mail.gmail.com>
-Message-ID: <CAL_JsqLtcXFktBWWqpbYf3B5BR2eUyBsQQ3Q5S3Ma8hn5T5Z0Q@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: designware-ep: Fix the reference to
- pci->num_{ib,ob}_windows before setting
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowABnaRWhKAhgCXQAhA--.28868S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrZF1DJw45CFy3trWfGF1DGFg_yoW8Jr1kpa
+        n2vFnrWw4jyFWUXa4DA3ya9Fy5uanakrWj9w4xG3W5XF43Xwn3Wr45tF47Xr1Iyr4xJF4S
+        va4ayw4xtF1jkw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bjF4iUUUUU=
+X-Originating-IP: [119.137.55.77]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiUAIgI1WBqSMq9QAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 5:10 PM Kunihiko Hayashi
-<hayashi.kunihiko@socionext.com> wrote:
->
-> The commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows") gets
-> the values of pci->num_ib_windows and pci->num_ob_windows from iATU
-> registers instead of DT properties in dw_pcie_iatu_detect_regions*() or its
-> unroll version.
->
-> However, before the values are set, the allocations in dw_pcie_ep_init()
-> refer them to determine the sizes of window_map. As a result, null pointer
-> dereference exception will occur when linking the EP function and the
-> controller.
->
->   # ln -s functions/pci_epf_test/test controllers/66000000.pcie-ep/
->   Unable to handle kernel NULL pointer dereference at virtual address
->   0000000000000010
->
-> The call trace is as follows:
->
->   Call trace:
->    _find_next_bit.constprop.1+0xc/0x88
->    dw_pcie_ep_set_bar+0x78/0x1f8
->    pci_epc_set_bar+0x9c/0xe8
->    pci_epf_test_core_init+0xe8/0x220
->    pci_epf_test_bind+0x1e0/0x378
->    pci_epf_bind+0x54/0xb0
->    pci_epc_epf_link+0x58/0x80
->    configfs_symlink+0x1c0/0x570
->    vfs_symlink+0xdc/0x198
->    do_symlinkat+0xa0/0x110
->    __arm64_sys_symlinkat+0x28/0x38
->    el0_svc_common+0x84/0x1a0
->    do_el0_svc+0x38/0x88
->    el0_svc+0x1c/0x28
->    el0_sync_handler+0x88/0xb0
->    el0_sync+0x140/0x180
->
-> The pci->num_{ib,ob}_windows should be referenced after they are set by
-> dw_pcie_iatu_detect_regions*() called from dw_pcie_setup().
->
-> Cc: Rob Herring <robh@kernel.org>
-> Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 41 ++++++++++++-------------
->  1 file changed, 20 insertions(+), 21 deletions(-)
+From: Junlin Yang <yangjunlin@yulong.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Change 'exeeds' to 'exceeds'.
+
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+---
+ drivers/power/supply/charger-manager.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
+index 6fcebe4..731351d8 100644
+--- a/drivers/power/supply/charger-manager.c
++++ b/drivers/power/supply/charger-manager.c
+@@ -570,7 +570,7 @@ static int cm_get_target_status(struct charger_manager *cm)
+ 		return POWER_SUPPLY_STATUS_DISCHARGING;
+ 
+ 	if (cm_check_thermal_status(cm)) {
+-		/* Check if discharging duration exeeds limit. */
++		/* Check if discharging duration exceeds limit. */
+ 		if (check_charging_duration(cm))
+ 			goto charging_ok;
+ 		return POWER_SUPPLY_STATUS_NOT_CHARGING;
+@@ -578,7 +578,7 @@ static int cm_get_target_status(struct charger_manager *cm)
+ 
+ 	switch (cm->battery_status) {
+ 	case POWER_SUPPLY_STATUS_CHARGING:
+-		/* Check if charging duration exeeds limit. */
++		/* Check if charging duration exceeds limit. */
+ 		if (check_charging_duration(cm))
+ 			return POWER_SUPPLY_STATUS_FULL;
+ 		fallthrough;
+-- 
+1.9.1
+
+
