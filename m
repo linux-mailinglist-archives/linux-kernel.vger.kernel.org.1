@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CC92FD7A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC33C2FD7A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391124AbhATR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
+        id S1731332AbhATR6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:58:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728756AbhATRzl (ORCPT
+        with ESMTP id S2390747AbhATR4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:55:41 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D6DC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:54:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j8X2B6e/nyEs+NJNeqzCnZuwySVRnniHinpf7QdycqQ=; b=fC3BZkihHPF+tMwceR6naiiutb
-        qfz3Rgpz8x00bj6HuZY4vYB+2Ky1eg90RSTKTqC5EN5BYOjGcKbS/pduZQaG3Dm6LRvopmu+rsW7Y
-        Elvz0OqATEMrsGzfgPpDisuuWQ5N84JbRO4Ah4TDK+rwFS29SGF1ycchknpeClgNvhcdQG//3yMOZ
-        fDyAd3eoOXRswOHJH3AxZO3Y8kk6YjX5x5elSMD5NbHf3L81fYh88QmtS8pEXgjXEUph5Xq7REuL/
-        0zbGTjZwbp6Z6NPRKpfa5751LNBxdR1G7ERvMmThR2bl4U5kiT4sUWwTyFCMQhMicuyYdwarRX8Qi
-        67DXD6Ng==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l2Hgr-0002It-1h; Wed, 20 Jan 2021 17:54:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6414303271;
-        Wed, 20 Jan 2021 18:54:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CB0D120BCCFD7; Wed, 20 Jan 2021 18:54:43 +0100 (CET)
-Date:   Wed, 20 Jan 2021 18:54:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     vincent.donnefort@arm.com
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com
-Subject: Re: [PATCH 3/4] cpu/hotplug: Add cpuhp_invoke_callback_range()
-Message-ID: <YAhuY6PyqnNDyY44@hirez.programming.kicks-ass.net>
-References: <1610385047-92151-1-git-send-email-vincent.donnefort@arm.com>
- <1610385047-92151-4-git-send-email-vincent.donnefort@arm.com>
- <YAgr8RQg6Cn66bvf@hirez.programming.kicks-ass.net>
+        Wed, 20 Jan 2021 12:56:31 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CEDC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:55:50 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id z9so6952855qtv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:55:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H362xI0GtWa0hOIoSQ+pekpVy6ezMEffCM7UWNAOymc=;
+        b=veCH8tNEKxgqYEzpRP8IcBFLfAMCml/hf44I9sYxqhnjOr10ZOvNISY7A4IJZsawvV
+         HCiGOVH7W4/slNrK9mSPMBLcbjWs0yms/XICtsTlYdco9/qMS/xjAeTirOzLycM98iI9
+         TBFSqPw2DOSeal6gVNnc01qD1b3MsVPVPrt8NwsU6qV3qr0NT2QQMFTsnO9aeU61kfhn
+         Bb77vE/Z9/wQcZzI6/eMit/LVrAx72FIydTRTqcUfkM7Fz+2TAhm2sB/MqsY7OKvVKjp
+         WcLwj2cRGgh7/bWbDH6P/Sa7qeY1EOordXmuJcxCTbR09DQKgFG47JO7JyMerl8Hj24v
+         Ksxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H362xI0GtWa0hOIoSQ+pekpVy6ezMEffCM7UWNAOymc=;
+        b=bwfAEMZOwZEJ3Yi+Bb+1SqsRWMKlzp1oiKyjKGEd/GHO9MmsBTdfJsbMv/e6xBv71z
+         HNMW+U9mR1qTShmpII1RI+dtQ/ECGO++tHYjnbJ6xq4I4DAX0mwQye3KdSOGcLxBkKVg
+         Qtd3tRSmdnh+82SIwOo/91I3+QrxFQv63WjD5QaZ6QKveYKkK87DdZbjrMZhta/9lAwZ
+         F5sVTVWjuP6jeft0uTGcJl9mbPetRAGW5rNdzQcjN7oxs6yJpLm4B3/0r+UKvsTY1z9D
+         xeMIy0mzAKYeZvGCja7oKn61jRZ10K6qXAZGgUDhgVvRVtjOP4Zd+JUe5mw0OsYz8Y7r
+         7RFg==
+X-Gm-Message-State: AOAM532m/3aZCBMtgLxYjnoBKcUACWLeHOxIeM+bY5hNJLaVakm6hcAO
+        c6r3KaqSiZFbSOwlwdFLFAKCm2yvG+JDwjoxSQOrCA==
+X-Google-Smtp-Source: ABdhPJyom6O/x/vLdy+hF+kS63EhbC6UqvXwgbwn32Nmb+M6GlijwFxjc32b1qOPGGxqZxd8k9NXhzZfiTIKcBYsx5A=
+X-Received: by 2002:a05:622a:14e:: with SMTP id v14mr10088141qtw.298.1611165349302;
+ Wed, 20 Jan 2021 09:55:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAgr8RQg6Cn66bvf@hirez.programming.kicks-ass.net>
+References: <20210118113651.71955-1-colin.king@canonical.com> <YAf+o85Z9lgkq3Nw@mwanda>
+In-Reply-To: <YAf+o85Z9lgkq3Nw@mwanda>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 20 Jan 2021 20:55:38 +0300
+Message-ID: <CAA8EJprP4xm=15Ss540uf0VW1-oXA0Sjr6pmTv_deXvjOqL4tg@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: socinfo: Fix an off by one in qcom_show_pmic_model()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 02:11:14PM +0100, Peter Zijlstra wrote:
-> On Mon, Jan 11, 2021 at 05:10:46PM +0000, vincent.donnefort@arm.com wrote:
-> > @@ -157,26 +162,24 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
-> >  
-> >  	if (st->fail == state) {
-> >  		st->fail = CPUHP_INVALID;
-> > -
-> > -		if (!(bringup ? step->startup.single : step->teardown.single))
-> > -			return 0;
-> > -
-> >  		return -EAGAIN;
-> >  	}
-> >  
-> > +	if (cpuhp_step_empty(bringup, step)) {
-> > +		WARN_ON_ONCE(1);
-> > +		return 0;
-> > +	}
-> 
-> This changes the behaviour of fail.. might be best to refactor without
-> changing behaviour.
-> 
+On Wed, 20 Jan 2021 at 12:58, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> These need to be < ARRAY_SIZE() instead of <= ARRAY_SIZE() to prevent
+> accessing one element beyond the end of the array.
+>
+> Fixes: e9247e2ce577 ("soc: qcom: socinfo: fix printing of pmic_model")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Aah, the trick is in cpuhp_next_state() skipping empty states, so we'll
-never get there.
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+
+-- 
+With best wishes
+Dmitry
