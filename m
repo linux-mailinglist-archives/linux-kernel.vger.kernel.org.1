@@ -2,254 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A2C2FDA38
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828642FDA32
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732744AbhATSnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:43:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404615AbhATSdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:33:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 748E1233ED;
-        Wed, 20 Jan 2021 18:33:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611167583;
-        bh=gS5YCcmo42SQE5E2c/zKvc5ZsGlT6rIPmyPqhGBK0GE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZiQj3doEVDhjfKTGbmTOw+RLHT109BtBRb762soUVj2EoVQmEn0B/YTdnkEoyDim4
-         j2jWI2JFuTsgBvXDKswlL8p+9YfsQvKhIgLHhf1nZnELh7x4WVgXzDtnCkG4Eq8kjV
-         zAdc0jiLeJRnDoPFRX7DSF3gpKF31Zhm3IZ1YmBvreOhIZHBV/lMqECcN8PNh/+Q1w
-         p+KYJxgD7aLod0exFQWFQSmQgDhEc8NcQnO39uawNK55dxp0+Nd+g8kAGNxLBSTqTK
-         z79lKNdo8ggz8ymWVCwG9YX0dGNDE4wfmNMptV3CJaQP+WZg+1hlkgdiVah2sxLWDE
-         a9gtoWPx2Z+Ig==
-Date:   Wed, 20 Jan 2021 19:32:58 +0100
-From:   Matthias Brugger <matthias.bgg@kernel.org>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, CK Hu <ck.hu@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 5/5] soc / drm: mediatek: Move mtk mutex driver to soc
- folder
-Message-ID: <YAh3WrRDwtGJIHok@ziggy.stardust>
-References: <20210106231729.17173-1-chunkuang.hu@kernel.org>
- <20210106231729.17173-6-chunkuang.hu@kernel.org>
+        id S2392642AbhATTzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:55:47 -0500
+Received: from smtprelay0125.hostedemail.com ([216.40.44.125]:52892 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387509AbhATSoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:44:09 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id CB1C1365F;
+        Wed, 20 Jan 2021 18:43:24 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2693:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:7652:7875:10004:10400:10450:10455:10848:11026:11232:11473:11658:11914:12043:12295:12297:12438:12663:12740:12760:12895:13255:13439:14096:14097:14659:14721:19904:19999:21080:21324:21433:21451:21627:21660:21740:21741:30012:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: lunch37_0515e5b2755c
+X-Filterd-Recvd-Size: 4179
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 20 Jan 2021 18:43:23 +0000 (UTC)
+Message-ID: <fb1b511d71761c99a9bece803f508b674fce9962.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: add warning for avoiding .L prefix symbols
+ in assembly files
+From:   Joe Perches <joe@perches.com>
+To:     Aditya <yashsri421@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
+        broonie@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
+        clang-built-linux@googlegroups.com
+Date:   Wed, 20 Jan 2021 10:43:22 -0800
+In-Reply-To: <14707ab9-1872-4f8c-3ed8-e77b663c3adb@gmail.com>
+References: <20210120072547.10221-1-yashsri421@gmail.com>
+         <e5c5f8495fbdd063f4272f02a259bbf28b199bdd.camel@perches.com>
+         <14707ab9-1872-4f8c-3ed8-e77b663c3adb@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210106231729.17173-6-chunkuang.hu@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 07:17:29AM +0800, Chun-Kuang Hu wrote:
-> From: CK Hu <ck.hu@mediatek.com>
+On Wed, 2021-01-20 at 18:23 +0530, Aditya wrote:
+> On 20/1/21 2:51 pm, Joe Perches wrote:
+> > On Wed, 2021-01-20 at 12:55 +0530, Aditya Srivastava wrote:
+> > > Local symbols prefixed with '.L' do not emit symbol table entries, as
+> > > they have special meaning for the assembler.
+> > > 
+> > > '.L' prefixed symbols can be used within a code region, but should be
+> > > avoided for denoting a range of code via 'SYM_*_START/END' annotations.
+> > > 
+> > > Add a new check to emit a warning on finding the usage of '.L' symbols
+> > > in '.S' files, if it lies within SYM_*_START/END annotation pair.
+> > 
+> > I believe this needs a test for $file as it won't work well on
+> > patches as the SYM_*_START/END may not be in the patch context.
+> > 
+> Okay.
 > 
-> mtk mutex is used by DRM and MDP driver, and its function is SoC-specific,
-> so move it to soc folder.
+> > Also, is this supposed to work for local labels like '.L<foo>:'?
+> > I don't think a warning should be generated for those.
+> > 
+> Yes, currently it will generate warning for all symbols which start
+> with .L and have non- white character symbol following it, if it is
+> lying within SYM_*_START/END annotation pair.
 > 
-> Signed-off-by: CK Hu <ck.hu@mediatek.com>
-> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Should I reduce the check to \.L_\S+ instead? (please note "_"
+> following ".L")
 
-Acked-by: Matthias Brugger <matthias.bgg@gmail.com>
+Use grep first.  That would still match several existing labels.
 
-Please take the patch through your tree. Thanks!
+> Pardon me, I'm not good with assembly :/
 
-> ---
->  drivers/gpu/drm/mediatek/Makefile                 |  3 +--
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c           |  2 +-
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c            |  1 -
->  drivers/gpu/drm/mediatek/mtk_drm_drv.h            |  1 -
->  drivers/soc/mediatek/Makefile                     |  1 +
->  .../mtk_mutex.c => soc/mediatek/mtk-mutex.c}      | 15 +++++++++++++--
->  .../linux/soc/mediatek/mtk-mutex.h                |  0
->  7 files changed, 16 insertions(+), 7 deletions(-)
->  rename drivers/{gpu/drm/mediatek/mtk_mutex.c => soc/mediatek/mtk-mutex.c} (96%)
->  rename drivers/gpu/drm/mediatek/mtk_mutex.h => include/linux/soc/mediatek/mtk-mutex.h (100%)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek/Makefile
-> index 09979c4c340a..01d06332f767 100644
-> --- a/drivers/gpu/drm/mediatek/Makefile
-> +++ b/drivers/gpu/drm/mediatek/Makefile
-> @@ -9,8 +9,7 @@ mediatek-drm-y := mtk_disp_color.o \
->  		  mtk_drm_gem.o \
->  		  mtk_drm_plane.o \
->  		  mtk_dsi.o \
-> -		  mtk_dpi.o \
-> -		  mtk_mutex.o
-> +		  mtk_dpi.o
->  
->  obj-$(CONFIG_DRM_MEDIATEK) += mediatek-drm.o
->  
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> index 1e3a9450680b..e9b6788d52cd 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -7,6 +7,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/soc/mediatek/mtk-cmdq.h>
->  #include <linux/soc/mediatek/mtk-mmsys.h>
-> +#include <linux/soc/mediatek/mtk-mutex.h>
->  
->  #include <asm/barrier.h>
->  #include <soc/mediatek/smi.h>
-> @@ -22,7 +23,6 @@
->  #include "mtk_drm_ddp_comp.h"
->  #include "mtk_drm_gem.h"
->  #include "mtk_drm_plane.h"
-> -#include "mtk_mutex.h"
->  
->  /*
->   * struct mtk_drm_crtc - MediaTek specific crtc structure.
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> index b99a06e6834e..5d39dd54255d 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> @@ -588,7 +588,6 @@ static struct platform_driver mtk_drm_platform_driver = {
->  };
->  
->  static struct platform_driver * const mtk_drm_drivers[] = {
-> -	&mtk_mutex_driver,
->  	&mtk_disp_color_driver,
->  	&mtk_disp_ovl_driver,
->  	&mtk_disp_rdma_driver,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-> index ae366868d01a..e8238fa4aa2a 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-> @@ -46,7 +46,6 @@ struct mtk_drm_private {
->  	struct drm_atomic_state *suspend_state;
->  };
->  
-> -extern struct platform_driver mtk_mutex_driver;
->  extern struct platform_driver mtk_disp_color_driver;
->  extern struct platform_driver mtk_disp_ovl_driver;
->  extern struct platform_driver mtk_disp_rdma_driver;
-> diff --git a/drivers/soc/mediatek/Makefile b/drivers/soc/mediatek/Makefile
-> index b6908db534c2..90270f8114ed 100644
-> --- a/drivers/soc/mediatek/Makefile
-> +++ b/drivers/soc/mediatek/Makefile
-> @@ -6,3 +6,4 @@ obj-$(CONFIG_MTK_PMIC_WRAP) += mtk-pmic-wrap.o
->  obj-$(CONFIG_MTK_SCPSYS) += mtk-scpsys.o
->  obj-$(CONFIG_MTK_SCPSYS_PM_DOMAINS) += mtk-pm-domains.o
->  obj-$(CONFIG_MTK_MMSYS) += mtk-mmsys.o
-> +obj-$(CONFIG_MTK_MMSYS) += mtk-mutex.o
-> diff --git a/drivers/gpu/drm/mediatek/mtk_mutex.c b/drivers/soc/mediatek/mtk-mutex.c
-> similarity index 96%
-> rename from drivers/gpu/drm/mediatek/mtk_mutex.c
-> rename to drivers/soc/mediatek/mtk-mutex.c
-> index 66344759e622..f531b119da7a 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_mutex.c
-> +++ b/drivers/soc/mediatek/mtk-mutex.c
-> @@ -10,8 +10,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/soc/mediatek/mtk-mmsys.h>
-> -
-> -#include "mtk_mutex.h"
-> +#include <linux/soc/mediatek/mtk-mutex.h>
->  
->  #define MT2701_MUTEX0_MOD0			0x2c
->  #define MT2701_MUTEX0_SOF0			0x30
-> @@ -241,6 +240,7 @@ struct mtk_mutex *mtk_mutex_get(struct device *dev)
->  
->  	return ERR_PTR(-EBUSY);
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_get);
->  
->  void mtk_mutex_put(struct mtk_mutex *mutex)
->  {
-> @@ -251,6 +251,7 @@ void mtk_mutex_put(struct mtk_mutex *mutex)
->  
->  	mutex->claimed = false;
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_put);
->  
->  int mtk_mutex_prepare(struct mtk_mutex *mutex)
->  {
-> @@ -258,6 +259,7 @@ int mtk_mutex_prepare(struct mtk_mutex *mutex)
->  						 mutex[mutex->id]);
->  	return clk_prepare_enable(mtx->clk);
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_prepare);
->  
->  void mtk_mutex_unprepare(struct mtk_mutex *mutex)
->  {
-> @@ -265,6 +267,7 @@ void mtk_mutex_unprepare(struct mtk_mutex *mutex)
->  						 mutex[mutex->id]);
->  	clk_disable_unprepare(mtx->clk);
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_unprepare);
->  
->  void mtk_mutex_add_comp(struct mtk_mutex *mutex,
->  			enum mtk_ddp_comp_id id)
-> @@ -316,6 +319,7 @@ void mtk_mutex_add_comp(struct mtk_mutex *mutex,
->  		       mtx->regs +
->  		       DISP_REG_MUTEX_SOF(mtx->data->mutex_sof_reg, mutex->id));
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_add_comp);
->  
->  void mtk_mutex_remove_comp(struct mtk_mutex *mutex,
->  			   enum mtk_ddp_comp_id id)
-> @@ -355,6 +359,7 @@ void mtk_mutex_remove_comp(struct mtk_mutex *mutex,
->  		break;
->  	}
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_remove_comp);
->  
->  void mtk_mutex_enable(struct mtk_mutex *mutex)
->  {
-> @@ -365,6 +370,7 @@ void mtk_mutex_enable(struct mtk_mutex *mutex)
->  
->  	writel(1, mtx->regs + DISP_REG_MUTEX_EN(mutex->id));
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_enable);
->  
->  void mtk_mutex_disable(struct mtk_mutex *mutex)
->  {
-> @@ -375,6 +381,7 @@ void mtk_mutex_disable(struct mtk_mutex *mutex)
->  
->  	writel(0, mtx->regs + DISP_REG_MUTEX_EN(mutex->id));
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_disable);
->  
->  void mtk_mutex_acquire(struct mtk_mutex *mutex)
->  {
-> @@ -388,6 +395,7 @@ void mtk_mutex_acquire(struct mtk_mutex *mutex)
->  				      tmp, tmp & INT_MUTEX, 1, 10000))
->  		pr_err("could not acquire mutex %d\n", mutex->id);
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_acquire);
->  
->  void mtk_mutex_release(struct mtk_mutex *mutex)
->  {
-> @@ -396,6 +404,7 @@ void mtk_mutex_release(struct mtk_mutex *mutex)
->  
->  	writel(0, mtx->regs + DISP_REG_MUTEX(mutex->id));
->  }
-> +EXPORT_SYMBOL_GPL(mtk_mutex_release);
->  
->  static int mtk_mutex_probe(struct platform_device *pdev)
->  {
-> @@ -461,3 +470,5 @@ struct platform_driver mtk_mutex_driver = {
->  		.of_match_table = mutex_driver_dt_match,
->  	},
->  };
-> +
-> +builtin_platform_driver(mtk_mutex_driver);
-> diff --git a/drivers/gpu/drm/mediatek/mtk_mutex.h b/include/linux/soc/mediatek/mtk-mutex.h
-> similarity index 100%
-> rename from drivers/gpu/drm/mediatek/mtk_mutex.h
-> rename to include/linux/soc/mediatek/mtk-mutex.h
-> -- 
-> 2.17.1
-> 
-> 
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Spending time reading docs can help with that.
+
+Mark?  Can you please comment about the below?
+
+I believe the test should be:
+
+	if ($realfile =~ /\.S$/ &&
+	    $line =~ /^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
+		WARN(...);
+	}
+
+so that only this code currently matches:
+
+$ git grep -P '^\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L' -- '*.S'
+arch/x86/boot/compressed/head_32.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+arch/x86/boot/compressed/head_32.S:SYM_FUNC_END(.Lrelocated)
+arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lrelocated)
+arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lpaging_enabled)
+arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lpaging_enabled)
+arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lno_longmode)
+arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lno_longmode)
+arch/x86/boot/pmjump.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lin_pm32)
+arch/x86/boot/pmjump.S:SYM_FUNC_END(.Lin_pm32)
+arch/x86/entry/entry_64.S:SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
+arch/x86/entry/entry_64.S:SYM_CODE_END(.Lbad_gs)
+arch/x86/lib/copy_user_64.S:SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
+arch/x86/lib/copy_user_64.S:SYM_CODE_END(.Lcopy_user_handle_tail)
+arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_clac)
+arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_clac)
+arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_8_clac)
+arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_8_clac)
+arch/x86/lib/putuser.S:SYM_CODE_START_LOCAL(.Lbad_put_user_clac)
+arch/x86/lib/putuser.S:SYM_CODE_END(.Lbad_put_user_clac)
+arch/x86/realmode/rm/wakeup_asm.S:SYM_DATA_START_LOCAL(.Lwakeup_idt)
+arch/x86/realmode/rm/wakeup_asm.S:SYM_DATA_END(.Lwakeup_idt)
+
+
