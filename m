@@ -2,116 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EAA2FD136
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7362FD137
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732866AbhATNRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732605AbhATNI2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:08:28 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A63C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:07:48 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id h11so6793456ioh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TxVlKu1fTmmCpX79Lm0VHrpC5j04Mcyz1Kh6xWJDeqo=;
-        b=J1YZxyHV2scGRU7022bnASDjf5zU28bwzCuezhWalOeXKl4ayTLsUok6SRLnNDJSg5
-         Y1B6qIzL6cdTZPUcadl6OGtiA+BpTnpFfwMtw/iTjtI8BDpAiDHX5/NhFRHEHKBMQDfz
-         G04raxx8XqxUzrrORUO6/mLzUW8adETQCbCfOviT4/z8slA6Jp6KyZ5XhEWCIL3RhPyi
-         v+NE/OOvRzzgBNBu75VKWvbiyKNO8HGLIqQRDFC5va+0di2TtJUEpuahSuWcWsuQxyTM
-         FyEiuhYG7w1bGRTCKNA9Nvr30BH5dNq89obTwc8BI/EU1iXC+6OcQkOhWRbgEKWx5p1p
-         Wunw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TxVlKu1fTmmCpX79Lm0VHrpC5j04Mcyz1Kh6xWJDeqo=;
-        b=MxLMgDXwhDaMHhRQlEfIyw+uE+HSx7QDHpfedENrhr3kgpOq6okiCANR4mijE/K/gj
-         i9jeyM0fslWcfTjS6PEMYfpOeO+021GcbVac+feNA40+7NqMQDrOhvG/PKdI6+LYoo1J
-         T9RA0IMyH2QqtrxYJZQy4sfLnPADIBe59oBmYV5FoB6eT56AsMnHUX57LUdda4rH3NVH
-         fjSu8qEDQi+qgi4yElt/F4AY7k54VsnhG9/9fZ2g63Y1BuHSlDlH6eL/besVoeikLfQY
-         +ER+2TMWx/kqgjhU8CK4Jl/nMmZuMkJ2t7P9ADIKmQSN2cWs27IZLTquIn4rnIqpHe44
-         iAFA==
-X-Gm-Message-State: AOAM530d8PtHaQO70b1Lfz5PPbBQdBWiJBeIyN+//0rmJsJyMneP5C8u
-        PjFbK0vMvdc3FjlylX2HXBhmTFfNmRlNVRvu6YMEeg==
-X-Google-Smtp-Source: ABdhPJxHPhZ9TlTjpGTKFjBUKrRX241UEm6YS/DL50CgsqyeWkdAjprwTxKAUeZKGELEOmwi28nllQz+iClJLL8dCTU=
-X-Received: by 2002:a5d:8a02:: with SMTP id w2mr6955472iod.157.1611148067266;
- Wed, 20 Jan 2021 05:07:47 -0800 (PST)
+        id S1733282AbhATNRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:17:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732539AbhATNI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:08:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A14522210;
+        Wed, 20 Jan 2021 13:07:44 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 13:07:41 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Chen Zhou <chenzhou10@huawei.com>, ardb@kernel.org,
+        akpm@linux-foundation.org, rppt@kernel.org, nsaenzjulienne@suse.de,
+        song.bao.hua@hisilicon.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, huawei.libin@huawei.com,
+        xiexiuqi@huawei.com
+Subject: Re: [PATCH 0/2] arm64: mm: fix kdump broken with ZONE_DMA
+ reintroduced
+Message-ID: <20210120130741.GB2642@gaia>
+References: <20201226033557.116251-1-chenzhou10@huawei.com>
+ <20210120124054.GA19504@willie-the-truck>
 MIME-Version: 1.0
-References: <20210118055920.82516-1-kuniyu@amazon.co.jp> <20210119171745.6840e3a5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210119171745.6840e3a5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 20 Jan 2021 14:07:35 +0100
-Message-ID: <CANn89iLF4SA_En=sLzEdXByA=m93+EoWKngSZtb4SfeE=8uO9A@mail.gmail.com>
-Subject: Re: [PATCH net] tcp: Fix potential use-after-free due to double kfree().
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Ricardo Dias <rdias@singlestore.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120124054.GA19504@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 2:17 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Mon, 18 Jan 2021 14:59:20 +0900 Kuniyuki Iwashima wrote:
-> > Receiving ACK with a valid SYN cookie, cookie_v4_check() allocates struct
-> > request_sock and then can allocate inet_rsk(req)->ireq_opt. After that,
-> > tcp_v4_syn_recv_sock() allocates struct sock and copies ireq_opt to
-> > inet_sk(sk)->inet_opt. Normally, tcp_v4_syn_recv_sock() inserts the full
-> > socket into ehash and sets NULL to ireq_opt. Otherwise,
-> > tcp_v4_syn_recv_sock() has to reset inet_opt by NULL and free the full
-> > socket.
-> >
-> > The commit 01770a1661657 ("tcp: fix race condition when creating child
-> > sockets from syncookies") added a new path, in which more than one cores
-> > create full sockets for the same SYN cookie. Currently, the core which
-> > loses the race frees the full socket without resetting inet_opt, resulting
-> > in that both sock_put() and reqsk_put() call kfree() for the same memory:
-> >
-> >   sock_put
-> >     sk_free
-> >       __sk_free
-> >         sk_destruct
-> >           __sk_destruct
-> >             sk->sk_destruct/inet_sock_destruct
-> >               kfree(rcu_dereference_protected(inet->inet_opt, 1));
-> >
-> >   reqsk_put
-> >     reqsk_free
-> >       __reqsk_free
-> >         req->rsk_ops->destructor/tcp_v4_reqsk_destructor
-> >           kfree(rcu_dereference_protected(inet_rsk(req)->ireq_opt, 1));
-> >
-> > Calling kmalloc() between the double kfree() can lead to use-after-free, so
-> > this patch fixes it by setting NULL to inet_opt before sock_put().
-> >
-> > As a side note, this kind of issue does not happen for IPv6. This is
-> > because tcp_v6_syn_recv_sock() clones both ipv6_opt and pktopts which
-> > correspond to ireq_opt in IPv4.
-> >
-> > Fixes: 01770a166165 ("tcp: fix race condition when creating child sockets from syncookies")
-> > CC: Ricardo Dias <rdias@singlestore.com>
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
->
-> Ricardo, Eric, any reason this was written this way?
+On Wed, Jan 20, 2021 at 12:40:55PM +0000, Will Deacon wrote:
+> On Sat, Dec 26, 2020 at 11:35:55AM +0800, Chen Zhou wrote:
+> > If the memory reserved for crash dump kernel falled in ZONE_DMA32,
+> > the devices in crash dump kernel need to use ZONE_DMA will alloc fail.
+> >            
+> > Fix this by reserving low memory in ZONE_DMA if CONFIG_ZONE_DMA is
+> > enabled, otherwise, reserving in ZONE_DMA32.
+> > 
+> > Patch 1 updates the comments about the ZONE_DMA.
+> > Patch 2 fix kdump broken.
+> > 
+> > Chen Zhou (2):
+> >   arm64: mm: update the comments about ZONE_DMA
+> >   arm64: mm: fix kdump broken with ZONE_DMA reintroduced
+> 
+> Please can you repost this if it is still needed after the changes that
+> landed in -rc4?
 
-Well, I guess that was a plain bug.
+I don't think this series is needed anymore but I'll let Chen confirm.
 
-IPv4 options are not used often I think.
-
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+-- 
+Catalin
