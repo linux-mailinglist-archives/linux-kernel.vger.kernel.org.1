@@ -2,122 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C3F2FD373
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7170B2FD378
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390706AbhATO4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:56:52 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:37674 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390910AbhATOpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:45:43 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5675F1A14BC;
-        Wed, 20 Jan 2021 15:44:55 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3DCF51A14B4;
-        Wed, 20 Jan 2021 15:44:55 +0100 (CET)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 296092039A;
-        Wed, 20 Jan 2021 15:44:55 +0100 (CET)
-Date:   Wed, 20 Jan 2021 16:44:54 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3] clk: imx: Fix reparenting of UARTs not associated
- with sdout
-Message-ID: <20210120144454.f6b72lnasw4q3bde@fsr-ub1664-175>
-References: <20210115182909.314756-1-aford173@gmail.com>
- <20210118125204.hxsanoohwvdtdvym@fsr-ub1664-175>
- <CAHCN7x+CXUuPN7upiv3D+REOU4d_=i30no+SkRzUjWY58o=uUQ@mail.gmail.com>
+        id S2390804AbhATO5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:57:09 -0500
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:60660 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732216AbhATOqz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:46:55 -0500
+Received: from [90.222.153.26] (helo=[192.168.0.21])
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1l2EkJ-0007l1-NJ; Wed, 20 Jan 2021 14:46:07 +0000
+Subject: Re: [linux-safety] [PATCH] docs: Change reference that was to removed
+ file
+To:     Rob Herring <robh@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        sudip.mukherjee@codethink.co.uk, linux-safety@lists.elisa.tech,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+References: <1611051980-3834-1-git-send-email-milan.lakhani@codethink.co.uk>
+ <87y2gopjcx.fsf@meer.lwn.net>
+ <CAL_Jsq+YW2K8YoLes8EAUy1WrFRzpYvtzvErOYbhw3zvZBoddQ@mail.gmail.com>
+From:   Milan Lakhani <milan.lakhani@codethink.co.uk>
+Message-ID: <e8534aeb-3fbb-ef40-4c50-aa306fada4d3@codethink.co.uk>
+Date:   Wed, 20 Jan 2021 14:46:07 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHCN7x+CXUuPN7upiv3D+REOU4d_=i30no+SkRzUjWY58o=uUQ@mail.gmail.com>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <CAL_Jsq+YW2K8YoLes8EAUy1WrFRzpYvtzvErOYbhw3zvZBoddQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-18 08:00:43, Adam Ford wrote:
-> On Mon, Jan 18, 2021 at 6:52 AM Abel Vesa <abel.vesa@nxp.com> wrote:
-> >
-> > On 21-01-15 12:29:08, Adam Ford wrote:
-> >
-> > ...
-> >
-> > > diff --git a/drivers/clk/imx/clk-imx25.c b/drivers/clk/imx/clk-imx25.c
-> > > index a66cabfbf94f..66192fe0a898 100644
-> > > --- a/drivers/clk/imx/clk-imx25.c
-> > > +++ b/drivers/clk/imx/clk-imx25.c
-> > > @@ -73,16 +73,6 @@ enum mx25_clks {
-> > >
-> > >  static struct clk *clk[clk_max];
-> > >
-> > > -static struct clk ** const uart_clks[] __initconst = {
-> > > -     &clk[uart_ipg_per],
-> > > -     &clk[uart1_ipg],
-> > > -     &clk[uart2_ipg],
-> > > -     &clk[uart3_ipg],
-> > > -     &clk[uart4_ipg],
-> > > -     &clk[uart5_ipg],
-> > > -     NULL
-> > > -};
-> > > -
-> >
-> > I'm assuming there is another patch that updates the dts files. Right ?
-> 
-> I have only been able to test this on an i.MX8M Mini.  I need to set
-> the parent clock of the i.MX8M Mini to an 80 MHz clock in order to run
-> the UART at 4Mbps.   With this patch, I can stop enabling the all the
-> UART clocks early and allow the clock parent configuration to occur.
-> From what I can tell, the remaining clocks should get activated as
-> they are needed, because I was able to use Bluetooth connected to
-> UART1 running at 4MBps using a 80MHz clock source with this patch, and
-> the clk_summary shows the clock is running at the proper speed.
-> Without this patch, the UART fails to re-parent, so I'm stuck at lower
-> speeds and that means choppy Bluetooth audio.
-> 
-> The Kernel that NXP hosts on Code Aurora that they use for Yocto
-> attempts scan through stdout to only enable those clocks [1].  I
-> attempted to push it upstream, but it was rejected [2].  Sascha
-> suggested creating an array which could be filled when the clocks are
-> enabled and that array would be used to deactivate the clocks at
-> shutdown.  That's what I attempted to do here.
-> 
-> I don't have older imx boards to know if their device trees are
-> configured in such a way without modifications to the device tree or
-> not, but since it appears to work for NXP in [2], I assumed it would
-> work here.
-> 
-> [1] - https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsource.codeaurora.org%2Fexternal%2Fimx%2Flinux-imx%2Fcommit%2Fdrivers%2Fclk%2Fimx%2Fclk.c%3Fh%3Dimx_5.4.47_2.2.0%26id%3D754ae82cc55b7445545fc2f092a70e0f490e9c1b&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7Cf8922e76fa85485b86c508d8bbb97c47%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637465752633257569%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=bVmPaM1nN7Sm%2BISVvlIBoWYozfJE96fHpw431IEuggk%3D&amp;reserved=0
-> [2] - https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.kernel.org%2Fproject%2Flinux-arm-kernel%2Fpatch%2F20201229145130.2680442-1-aford173%40gmail.com%2F&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7Cf8922e76fa85485b86c508d8bbb97c47%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637465752633257569%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=226HwbeVhZUW%2FJ3hsCSaVIxghOsPBH9EWeF8vFxaTWE%3D&amp;reserved=0
-> 
-> >
-> > TBH, I'm against the idea of having to call consumer API from a clock provider driver.
-> > I'm still investigating a way of moving the uart clock control calls in drivers/serial/imx,
-> > where they belong.
-> 
-> That makes sense.
-> 
+Thanks Rob, Jon, I've submitted a new patch pointing the two broken 
+links and also usage-model.rst all to 
+https://www.devicetree.org.specifications/.
 
-Just a thought. The uart clock used for console remains on from u-boot,
-so maybe it's enough to just add the CLK_IGNORE_UNUSED flag to all the
-uart root clocks and remove the prepare/enable calls for uart clocks 
-for good. I don't really have a way to test it right now, but maybe
-you could give it a try.
+Milan
 
+On 20/01/2021 01:07, Rob Herring wrote:
+> On Tue, Jan 19, 2021 at 6:01 PM Jonathan Corbet <corbet@lwn.net> wrote:
+>> Milan Lakhani <milan.lakhani@codethink.co.uk> writes:
+>>
+>> [CC += Rob]
+>>
+>>> There were two references to
+>>> Documentation/devicetree/booting-without-of.rst for dtb format
+>>> information. This file has been removed, so I have changed the links to
+>>> Documentation/devicetree/usage-model.rst for this information, which
+>>> itself points to https://elinux.org/Device_Tree_Usage for an overview of
+>>> the device tree data format.
+>>>
+>>> Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
+>>> ---
+>>>   Documentation/arm/booting.rst                | 2 +-
+>>>   Documentation/translations/zh_CN/arm/Booting | 2 +-
+>>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/Documentation/arm/booting.rst b/Documentation/arm/booting.rst
+>>> index a226345..5392d01 100644
+>>> --- a/Documentation/arm/booting.rst
+>>> +++ b/Documentation/arm/booting.rst
+>>> @@ -128,7 +128,7 @@ it.  The recommended placement is in the first 16KiB of RAM.
+>>>
+>>>   The boot loader must load a device tree image (dtb) into system ram
+>>>   at a 64bit aligned address and initialize it with the boot data.  The
+>>> -dtb format is documented in Documentation/devicetree/booting-without-of.rst.
+>>> +dtb format is documented in Documentation/devicetree/usage-model.rst.
+>> Except that ... usage-model.rst doesn't actually document the DTB
+>> format.  Perhaps we should instead substitute a link that does what's
+>> promised here?
+> Yes, it's in the DT spec. I'd point to
+> 'https://www.devicetree.org/specifications/' so it's always going to
+> show the latest. And that's the link we have elsewhere in the kernel.
+>
+> usage-model.rst is also something needing updating...
+>
+> Rob
+>
+>
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Links: You receive all messages sent to this group.
+> View/Reply Online (#235): https://lists.elisa.tech/g/linux-safety/message/235
+> Mute This Topic: https://lists.elisa.tech/mt/79948363/4617862
+> Group Owner: linux-safety+owner@lists.elisa.tech
+> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [milan.lakhani@codethink.co.uk]
+> -=-=-=-=-=-=-=-=-=-=-=-
+>
+>
+>
