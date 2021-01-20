@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489612FCE31
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15122FCE33
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732488AbhATKS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:18:56 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:46864 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730444AbhATJ7k (ORCPT
+        id S1732519AbhATKS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:18:59 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:34843 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730568AbhATKAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:59:40 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K9nh2h045286;
-        Wed, 20 Jan 2021 09:58:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=j2q4MR47A+lG8zd/8Q9jHiGrrh7fmVDYk0GZhb/m2qA=;
- b=KuSMHlWMsvRyRvWFoTp7yvh3f7CQMAsyqd3fYuYdE80Uw+ttEWkL9RiYBKabLHC36oRf
- dyjmO99N7+vgesVp0EOokBg05QOCDD98jms/H/UKhsGM+0yP5rbcahNYkNITsewE7avo
- K615KooDgRcIb8lbd0yPe1qcY4J74z5jpGGWY1qv+UTJ3+PwE9AtTmjFJWuEnouth4cd
- LqykvvLOFXEXf124pSb0WCUBwwHAVOp6VfP0BToIxW/VB2VXJC1ReoYiEa6Y8wkANhBp
- ZZvQjm1s+tVDWI6jlRyLO7IQPwsLs8C6tyvveIHZSnirKoyJsXkZZ/62Z2ZffDKjic8e 5g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 3668qa9qjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 09:58:50 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K9sejP146687;
-        Wed, 20 Jan 2021 09:58:48 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 3668qvvg2d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 09:58:48 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10K9wl2Q019645;
-        Wed, 20 Jan 2021 09:58:47 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 20 Jan 2021 01:58:46 -0800
-Date:   Wed, 20 Jan 2021 12:58:38 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: socinfo: Fix off-by-one array index bounds
- check
-Message-ID: <20210120095837.GP2696@kadam>
-References: <20210118113651.71955-1-colin.king@canonical.com>
+        Wed, 20 Jan 2021 05:00:15 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id CF4705C019E;
+        Wed, 20 Jan 2021 04:59:06 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 20 Jan 2021 04:59:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=KD++98fmxbqoHnG4tp/j4XYmChQ
+        7QOlWamvweXUDQ3Y=; b=WpPgrtKWICMsBBArlorjowKo2Byk6W+IVoFqktPctv0
+        eaelRqEQ3rweZpoqzl841gXisG+FygUcn9DlxGSvJ39jxMEMEv0mZqlWod3dbCjg
+        svOYOarKYQ9EHnOAgOJLNtOE63fEZxlcWX510d29B5htw05r2cnPqyqrUXzCf6+l
+        6GJhSJqwZAt3ScfPxVnEP5bcZ/szD8zfRr+so+c3AkvC/wP2ss9a+gMWCEB75Uef
+        NpfJpJ9hCQyNwD+TxuJEl78NaRNPnTaqCsFbMNkzAUfnUuR2tRbdtId9EIT83+qj
+        yglqyQV/dOYLZss8gnpdgsZpKSRtRJeZ2lgqIskDHXA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KD++98
+        fmxbqoHnG4tp/j4XYmChQ7QOlWamvweXUDQ3Y=; b=kz6jQ9MAjXHG/qFfAQwH3d
+        cx2/BkEtzIHznRTPcVkvCM/KOvctt3E1MCctQbWfI/f3ZY5oPmUb7BMEZP48I1HP
+        UIW2vBd6IidoCotdU4fgsL00Oob+fWJpz9Fz8m9NckLdKsDFnLMZLUdjCzs5O/Ml
+        yzqMrxIuADX0eJzdw2cf+GNxuWHYiZDvu4OuQQURjppZKdjaJkXpEc8INhMDSY2j
+        yJuFC7Ht6YL9su6dLyXMOCvH7unMd2qYmZu1dz4k4Ud0/IpexLgL/TR0P8+aY0Q0
+        +mK7HFojdI6tnZo7a9e2CnQa6U1yapGOHuhkGuEZMAZXIVk3nb9rhGcVd7qQRF8g
+        ==
+X-ME-Sender: <xms:5v4HYHm4GBZF2tUKk6MciFuk0c5gRbhTnxllg0DBrWc_zLZLfmyOTg>
+    <xme:5v4HYK1dxePo9b1tm8D2uzFwlkKFg8rPaxrT0X0WE71lL7OdPkQfp-OUZm3hx9Bc7
+    L0MBv7MujtRaK28iJA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvgdduudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:5v4HYNqoDqbJzRJmcGPmT0OQZ8MpEXHqFyRsPIoYjqKf-RH--vRDDw>
+    <xmx:5v4HYPkszdnO3nHT_EVUIXXIkTGl5MkpNwyxcwzqH8hP2Ffje5imbw>
+    <xmx:5v4HYF2gk7LIlFjg0IxTx1XauOB3KT0qlAd7TokSO6DPmHJevAl2Dw>
+    <xmx:6v4HYPot-W8GxBfSkPArjR0HZUGQ0XKbMR0K52XeQSgIliwbwgTzPg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0765A24005B;
+        Wed, 20 Jan 2021 04:59:01 -0500 (EST)
+Date:   Wed, 20 Jan 2021 10:58:59 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Emilio =?utf-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 18/20] clk: sunxi: clk-mod0: Demote non-conformant
+ kernel-doc header
+Message-ID: <20210120095859.otg7npva5uzsleks@gilmour>
+References: <20210120093040.1719407-1-lee.jones@linaro.org>
+ <20210120093040.1719407-19-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qufllwearrsrgr2d"
 Content-Disposition: inline
-In-Reply-To: <20210118113651.71955-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 adultscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101200056
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101200055
+In-Reply-To: <20210120093040.1719407-19-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was a second one introduced recently as well.  I've sent a patch
-for it.
 
-regards,
-dan carpenter
+--qufllwearrsrgr2d
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 20, 2021 at 09:30:38AM +0000, Lee Jones wrote:
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/clk/sunxi/clk-mod0.c:24: warning: Function parameter or member '=
+req' not described in 'sun4i_a10_get_mod0_factors'
+>=20
+> Cc: "Emilio L=F3pez" <emilio@elopez.com.ar>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Applied all three sunxi patches
+
+Maxime
+
+--qufllwearrsrgr2d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAf+4wAKCRDj7w1vZxhR
+xXwVAQCTjlsSXUfuGpihRn+a4m0GtibT9giWyg0LX1gqqV8/QwD7BaKMxWHuXNOZ
+nfhOS1R4EI0Vz40z2MJu9D2iNM4ikgk=
+=m46P
+-----END PGP SIGNATURE-----
+
+--qufllwearrsrgr2d--
