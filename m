@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D122FD2B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD622FD2B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390358AbhATObD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:31:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
+        id S2389668AbhATOab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:30:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388785AbhATOYe (ORCPT
+        with ESMTP id S2389815AbhATOX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:24:34 -0500
+        Wed, 20 Jan 2021 09:23:58 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5FCC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:23:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4235DC061793
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:22:37 -0800 (PST)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1l2ENH-0001dD-CW; Wed, 20 Jan 2021 15:22:19 +0100
+        id 1l2ENH-0001dF-CT; Wed, 20 Jan 2021 15:22:19 +0100
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1l2ENG-0007jj-6n; Wed, 20 Jan 2021 15:22:18 +0100
+        id 1l2ENG-0007k2-93; Wed, 20 Jan 2021 15:22:18 +0100
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         David Jander <david@protonic.nl>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v1 3/7] ARM: dts: imx6dl-prtvt7: Add display and panel nodes
-Date:   Wed, 20 Jan 2021 15:22:13 +0100
-Message-Id: <20210120142217.29652-4-o.rempel@pengutronix.de>
+Subject: [PATCH v1 5/7] ARM: dts: imx6dl-prtvt7: Remove backlight enable gpio
+Date:   Wed, 20 Jan 2021 15:22:15 +0100
+Message-Id: <20210120142217.29652-6-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210120142217.29652-1-o.rempel@pengutronix.de>
 References: <20210120142217.29652-1-o.rempel@pengutronix.de>
@@ -56,93 +56,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Innolux G070Y2-T02 panel to the Protonic VT7 board.
+The backlight power is controlled through the reg_bl_12v0 regulator.
 
+Co-Developed-by: Robin van der Gracht <robin@protonic.nl>
 Signed-off-by: Robin van der Gracht <robin@protonic.nl>
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- arch/arm/boot/dts/imx6dl-prtvt7.dts | 47 +++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ arch/arm/boot/dts/imx6dl-prtvt7.dts | 9 ---------
+ 1 file changed, 9 deletions(-)
 
 diff --git a/arch/arm/boot/dts/imx6dl-prtvt7.dts b/arch/arm/boot/dts/imx6dl-prtvt7.dts
-index ae6da241f13e..d9cb1e41cc10 100644
+index 63ae2065834c..fe8df03c8bfb 100644
 --- a/arch/arm/boot/dts/imx6dl-prtvt7.dts
 +++ b/arch/arm/boot/dts/imx6dl-prtvt7.dts
-@@ -31,6 +31,30 @@ backlight_lcd: backlight-lcd {
- 		enable-gpios = <&gpio4 28 GPIO_ACTIVE_HIGH>;
+@@ -21,14 +21,11 @@ memory@10000000 {
+ 
+ 	backlight_lcd: backlight-lcd {
+ 		compatible = "pwm-backlight";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_backlight>;
+ 		pwms = <&pwm1 0 500000>;
+ 		brightness-levels = <0 20 81 248 1000>;
+ 		default-brightness-level = <20>;
+ 		num-interpolated-steps = <21>;
+ 		power-supply = <&reg_bl_12v0>;
+-		enable-gpios = <&gpio4 28 GPIO_ACTIVE_HIGH>;
  	};
  
-+	display {
-+		compatible = "fsl,imx-parallel-display";
-+		pinctrl-0 = <&pinctrl_ipu1_disp>;
-+		pinctrl-names = "default";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+
-+			display_in: endpoint {
-+				remote-endpoint = <&ipu1_di0_disp0>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+
-+			display_out: endpoint {
-+				remote-endpoint = <&panel_in>;
-+			};
-+		};
-+	};
-+
- 	keys {
- 		compatible = "gpio-keys";
- 		autorepeat;
-@@ -138,6 +162,18 @@ led-debug0 {
- 		};
+ 	display {
+@@ -367,12 +364,6 @@ MX6QDL_PAD_CSI0_DAT6__AUD3_TXFS		0x130b0
+ 		>;
  	};
  
-+	panel {
-+		compatible = "innolux,g070y2-t02";
-+		backlight = <&backlight_lcd>;
-+		power-supply = <&reg_3v3>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&display_out>;
-+			};
-+		};
-+	};
-+
- 	reg_bl_12v0: regulator-bl-12v0 {
- 		compatible = "regulator-fixed";
- 		pinctrl-names = "default";
-@@ -149,6 +185,13 @@ reg_bl_12v0: regulator-bl-12v0 {
- 		enable-active-high;
- 	};
- 
-+	reg_3v3: regulator-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
- 	reg_1v8: regulator-1v8 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "1v8";
-@@ -260,6 +303,10 @@ &ipu1 {
- 	status = "okay";
- };
- 
-+&ipu1_di0_disp0 {
-+	remote-endpoint = <&display_in>;
-+};
-+
- &pwm1 {
- 	#pwm-cells = <2>;
- 	pinctrl-names = "default";
+-	pinctrl_backlight: backlightgrp {
+-		fsl,pins = <
+-			MX6QDL_PAD_DISP0_DAT7__GPIO4_IO28	0x1b0b0
+-		>;
+-	};
+-
+ 	pinctrl_can1phy: can1phy {
+ 		fsl,pins = <
+ 			/* CAN1_SR */
 -- 
 2.30.0
 
