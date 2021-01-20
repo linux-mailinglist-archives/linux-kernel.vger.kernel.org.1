@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EDC2FCE3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA7F2FCE34
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732684AbhATKTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:19:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60428 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729305AbhATKBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:01:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD9F2AF44;
-        Wed, 20 Jan 2021 10:00:26 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 11:00:23 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 2/5] hugetlb: convert page_huge_active()
- HPageMigratable flag
-Message-ID: <20210120100023.GB4752@localhost.localdomain>
-References: <20210120013049.311822-1-mike.kravetz@oracle.com>
- <20210120013049.311822-3-mike.kravetz@oracle.com>
- <20210120095905.GA4752@localhost.localdomain>
+        id S1732534AbhATKTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:19:01 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:28380 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730929AbhATKDq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 05:03:46 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10K9voSf022653;
+        Wed, 20 Jan 2021 04:02:53 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=3cMPXgGKn9KcSz1orpznqtODBy5qNer/ihVn8Z7C4bU=;
+ b=eP2mmFyMdNKz+7w5BAOD6hIfBQ/4n08GaWSnkNEN5zoDKLurzm2xqv5+ZnJPAYaK1/3v
+ 8G8U+OdfOYTpI2lD7abf1aRFYyzjL/9s3YGRAYs3eBqf7To7RcEPjhpXxToe0f+YbWR1
+ JC/qUUR71k3OdtnRczL5eIz4qb5kJqcm2LX9+WLO57HeR7/Vk1o3Pxw9vb2IOgzFznG9
+ hEVq/O8qtrw8TXiRkda2hT2GR1NmKs1Eqd+fudWAz1+9IoXqfebAHCx5ao0d8Y3kIiOQ
+ GpFruTEd3rKMapFPImUWZwQYA9Bb1KuSTB6MN44TUkqIo0uErOIEQ+6miATtlbgLQAnc rA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 36692r8gfp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 20 Jan 2021 04:02:53 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 20 Jan
+ 2021 10:02:51 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Wed, 20 Jan 2021 10:02:51 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 907C045;
+        Wed, 20 Jan 2021 10:02:51 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 10:02:51 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v3 2/5] mfd: arizona: Replace arizona_of_get_type() with
+ device_get_match_data()
+Message-ID: <20210120100251.GC106851@ediswmail.ad.cirrus.com>
+References: <20210117212252.206115-1-hdegoede@redhat.com>
+ <20210117212252.206115-3-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210120095905.GA4752@localhost.localdomain>
+In-Reply-To: <20210117212252.206115-3-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 mlxlogscore=743 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:59:05AM +0100, Oscar Salvador wrote:
-> On Tue, Jan 19, 2021 at 05:30:46PM -0800, Mike Kravetz wrote:
-> > Use the new hugetlb page specific flag HPageMigratable to replace the
-> > page_huge_active interfaces.  By it's name, page_huge_active implied
-> > that a huge page was on the active list.  However, that is not really
-> > what code checking the flag wanted to know.  It really wanted to determine
-> > if the huge page could be migrated.  This happens when the page is actually
-> > added the page cache and/or task page table.  This is the reasoning behind
-> > the name change.
-> > 
-> > The VM_BUG_ON_PAGE() calls in the *_huge_active() interfaces are not
-> > really necessary as we KNOW the page is a hugetlb page.  Therefore, they
-> > are removed.
-> > 
-> > The routine page_huge_active checked for PageHeadHuge before testing the
-> > active bit.  This is unnecessary in the case where we hold a reference or
-> > lock and know it is a hugetlb head page.  page_huge_active is also called
-> > without holding a reference or lock (scan_movable_pages), and can race with
-> > code freeing the page.  The extra check in page_huge_active shortened the
-> > race window, but did not prevent the race.  Offline code calling
-> > scan_movable_pages already deals with these races, so removing the check
-> > is acceptable.  Add comment to racy code.
-> > 
-> > Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Sun, Jan 17, 2021 at 10:22:49PM +0100, Hans de Goede wrote:
+> Replace the custom arizona_of_get_type() function with the generic
+> device_get_match_data() helper. Besides being a nice cleanup this
+> also makes it easier to add support for binding to ACPI enumerated
+> devices.
 > 
-> Hi Mike,
+> While at it also fix a possible NULL pointer deref of the id
+> argument to the probe functions (this could happen on e.g. manual
+> driver binding through sysfs).
 > 
-> This comment addresses both this patch and the next one.
-> 
-> Instead of putting the SetHPageMigratable flag spread over the
-> allocation paths, would it make more sense to place it in
-> alloc_huge_page before returning the page?
-> Then we could opencode SetHPageMigratableIfSupported right there.
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
 
-and in putback_active_hugepage.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
--- 
-Oscar Salvador
-SUSE L3
+Thanks,
+Charles
