@@ -2,115 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781B12FD58A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AD22FD5A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403839AbhATQXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
+        id S2391475AbhATQ10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391279AbhATQV6 (ORCPT
+        with ESMTP id S1732122AbhATQWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:21:58 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81503C061786;
-        Wed, 20 Jan 2021 08:20:52 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1l2GDw-009CUq-H0; Wed, 20 Jan 2021 17:20:48 +0100
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-um@lists.infradead.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH v2] init/gcov: allow CONFIG_CONSTRUCTORS on UML to fix module gcov
-Date:   Wed, 20 Jan 2021 17:20:41 +0100
-Message-Id: <20210120172041.c246a2cac2fb.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>
-References: <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>
+        Wed, 20 Jan 2021 11:22:16 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2112EC061575;
+        Wed, 20 Jan 2021 08:22:01 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id o19so34881273lfo.1;
+        Wed, 20 Jan 2021 08:22:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VriEGqHJd7ubfWb3Z6Vz74ftrCFRLMr6jr+eNOE2nDc=;
+        b=XZeJlXxbBvwiuH1+DLfBzdw0Z9UQhvUK6/yfgiEYhs3N2rx2/4g5Mx2XUNa0pLx2o2
+         FxjDXEVgpEj1tZyZA8Pm/drgLsIuLJG1VLHBJpXkaeTLYZLmSxDO3lQhC45vumLE8WlW
+         5PReriT5Vjx4ITwyv/13uV85ZqOlmCSCrOQRINj8EfELoeUKSDjtEnjuFjYs6VIVrgfs
+         6Zz7iP6jWq+B6dAow9eZ+QZz/tcUZiQsDiRTIwbDohPEsKC9B5Q6cNGXJuNAEFSCEJ/X
+         62lEBJt9rQrmKU+aBFe0Aql7YQFjn6pf6S1/yle4hw8WrKGANX3zY1flNygDPS8ko90j
+         6zYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VriEGqHJd7ubfWb3Z6Vz74ftrCFRLMr6jr+eNOE2nDc=;
+        b=Ps4Hvr4hK8Yno3sLflE7XIVGgInUdzcvSsA18oVmqWWpwrPW9eKjZTntYwTr2sMYZA
+         6RNerKzGJCwivN7sl30tmCammjtJO6X0P5T++SXc4RFrfTchWj2zf6NwQ2YsUNDu2IPh
+         mdsPuY7sWbci1DVKJ/3dXi0lp5oezRUvMtvjppkTQ7VYbQioxumh6SYCagGy2wyO6V2Q
+         q85ocHHGjJYbveUqvchAJcAkYzgjOaLoC7GMZTldR7qogY88XIf0w96EbDNe42saH3IY
+         8Q3xFlcMnSVLMYXpkUZQh3/Fvn0oxxbLe1TVzPFCm9BTw+RBMiRA+sZ/J1bEfY9xuVBj
+         m1GQ==
+X-Gm-Message-State: AOAM5330hrwLxqtyHTvHOEfE6pe8g1puxZgdg9V10ZVJspmA1/eNGwtK
+        8iPuSNnBF5BAaagLxsz/1Di+Ol6+P4g=
+X-Google-Smtp-Source: ABdhPJwZRwBNnLP34wQVSIx33j2/6mh/2omlXo3EYuynACOcIXmtwKR2H9LgsrWGFF/VBNJpluZq5w==
+X-Received: by 2002:a19:c20a:: with SMTP id l10mr4662296lfc.155.1611159719511;
+        Wed, 20 Jan 2021 08:21:59 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id l8sm237631lfd.276.2021.01.20.08.21.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 08:21:58 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Date:   Wed, 20 Jan 2021 17:21:46 +0100
+Message-Id: <20210120162148.1973-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+For a single argument we can directly request a page from a caller
+context when a "carry page block" is run out of free spots. Instead
+of hitting a slow path we can request an extra page by demand and
+proceed with a fast path.
 
-On ARCH=um, loading a module doesn't result in its constructors
-getting called, which breaks module gcov since the debugfs files
-are never registered. On the other hand, in-kernel constructors
-have already been called by the dynamic linker, so we can't call
-them again.
+A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+and that its fallback is the relatively high latency synchronize_rcu().
+Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+to allow limited sleeping within the memory allocator.
 
-Get out of this conundrum by allowing CONFIG_CONSTRUCTORS to be
-selected, but avoiding the in-kernel constructor calls.
-
-Also remove the "if !UML" from GCOV selecting CONSTRUCTORS now,
-since we really do want CONSTRUCTORS, just not kernel binary
-ones.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+[ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
-Tested with a kernel configured with CONFIG_GCOV_KERNEL, without
-the patch nothing ever appears in /sys/kernel/debug/gcov/ (apart
-from the reset file), and with it we get the files and they work.
+ kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 16 deletions(-)
 
-v2:
- * special-case UML instead of splitting the CONSTRUCTORS config
----
- init/Kconfig        | 1 -
- init/main.c         | 8 +++++++-
- kernel/gcov/Kconfig | 2 +-
- 3 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index b77c60f8b963..29ad68325028 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -76,7 +76,6 @@ config CC_HAS_ASM_INLINE
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e04e336bee42..2014fb22644d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+ 	}
+ }
  
- config CONSTRUCTORS
- 	bool
--	depends on !UML
- 
- config IRQ_WORK
- 	bool
-diff --git a/init/main.c b/init/main.c
-index c68d784376ca..a626e78dbf06 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1066,7 +1066,13 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
- /* Call all constructor functions linked into the kernel. */
- static void __init do_ctors(void)
++// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
++// state specified by flags.  If can_alloc is true, the caller must
++// be schedulable and not be holding any locks or mutexes that might be
++// acquired by the memory allocator or anything that it might invoke.
++// Returns true if ptr was successfully recorded, else the caller must
++// use a fallback.
+ static inline bool
+-kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
++add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
++	unsigned long *flags, void *ptr, bool can_alloc)
  {
--#ifdef CONFIG_CONSTRUCTORS
-+/*
-+ * For UML, the constructors have already been called by the
-+ * normal setup code as it's just a normal ELF binary, so we
-+ * cannot do it again - but we do need CONFIG_CONSTRUCTORS
-+ * even on UML for modules.
-+ */
-+#if defined(CONFIG_CONSTRUCTORS) && !defined(CONFIG_UML)
- 	ctor_fn_t *fn = (ctor_fn_t *) __ctors_start;
+ 	struct kvfree_rcu_bulk_data *bnode;
+ 	int idx;
  
- 	for (; fn < (ctor_fn_t *) __ctors_end; fn++)
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 3110c77230c7..f62de2dea8a3 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -4,7 +4,7 @@ menu "GCOV-based kernel profiling"
- config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
--	select CONSTRUCTORS if !UML
-+	select CONSTRUCTORS
- 	default n
- 	help
- 	This option enables gcov-based code profiling (e.g. for code coverage
+-	if (unlikely(!krcp->initialized))
++	*krcp = krc_this_cpu_lock(flags);
++	if (unlikely(!(*krcp)->initialized))
+ 		return false;
+ 
+-	lockdep_assert_held(&krcp->lock);
+ 	idx = !!is_vmalloc_addr(ptr);
+ 
+ 	/* Check if a new block is required. */
+-	if (!krcp->bkvhead[idx] ||
+-			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+-		bnode = get_cached_bnode(krcp);
+-		/* Switch to emergency path. */
++	if (!(*krcp)->bkvhead[idx] ||
++			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
++		bnode = get_cached_bnode(*krcp);
++		if (!bnode && can_alloc) {
++			krc_this_cpu_unlock(*krcp, *flags);
++			bnode = (struct kvfree_rcu_bulk_data *)
++				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
++			*krcp = krc_this_cpu_lock(flags);
++		}
++
+ 		if (!bnode)
+ 			return false;
+ 
+ 		/* Initialize the new block. */
+ 		bnode->nr_records = 0;
+-		bnode->next = krcp->bkvhead[idx];
++		bnode->next = (*krcp)->bkvhead[idx];
+ 
+ 		/* Attach it to the head. */
+-		krcp->bkvhead[idx] = bnode;
++		(*krcp)->bkvhead[idx] = bnode;
+ 	}
+ 
+ 	/* Finally insert. */
+-	krcp->bkvhead[idx]->records
+-		[krcp->bkvhead[idx]->nr_records++] = ptr;
++	(*krcp)->bkvhead[idx]->records
++		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
+ 
+ 	return true;
+ }
+@@ -3533,8 +3546,6 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		ptr = (unsigned long *) func;
+ 	}
+ 
+-	krcp = krc_this_cpu_lock(&flags);
+-
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+@@ -3542,12 +3553,11 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 			  __func__, head);
+ 
+ 		// Mark as success and leave.
+-		success = true;
+-		goto unlock_return;
++		return;
+ 	}
+ 
+ 	kasan_record_aux_stack(ptr);
+-	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
++	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+ 	if (!success) {
+ 		run_page_cache_worker(krcp);
+ 
 -- 
-2.26.2
+2.20.1
 
