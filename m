@@ -2,65 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200692FCC59
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456DA2FCC36
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbhATIHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:07:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59832 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730071AbhATIEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:04:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611128997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QeFIPCKf1lzYZ5NNZ/UyihM0FPQ4ig48O6bHj3KSVc0=;
-        b=pjKh/cmX3L7lWbEKaS4FMhCZzGKLMOMKo9InQl9tWIyGjOGZkXfH3nRZUV7+XPf5Fka8W1
-        7ADICESjNintsIualGfn3VWpnmRIbn34rk7Jd14bymn6XA42bxGdXyDDCwgjLrm0qKf4pG
-        8jKoVVesER20mZI+dx71Qxm8MDXlZ4U=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 49F69AAAE;
-        Wed, 20 Jan 2021 07:49:57 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 08:49:56 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: skip propagate percpu vmstat values to
- current memcg
-Message-ID: <20210120074956.GB9371@dhcp22.suse.cz>
-References: <20210119052744.96765-1-songmuchun@bytedance.com>
- <YAcPwhl//jF/WpHu@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAcPwhl//jF/WpHu@cmpxchg.org>
+        id S1729860AbhATH7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:59:43 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:55528 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730033AbhATH6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:58:52 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UMJDEeW_1611129033;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMJDEeW_1611129033)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 15:50:36 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     david@redhat.com
+Cc:     mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] virtio-mem: Assign boolean values to a bool variable
+Date:   Wed, 20 Jan 2021 15:50:31 +0800
+Message-Id: <1611129031-82818-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19-01-21 11:58:42, Johannes Weiner wrote:
-> On Tue, Jan 19, 2021 at 01:27:44PM +0800, Muchun Song wrote:
-> > The current memcg will be freed soon, so updating it's vmstat and
-> > vmevent values is pointless. Just skip updating it.
-> > 
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> 
-> Oof, that's pretty subtle! Somebody trying to refactor that code for
-> other purposes may not immediately notice that optimization and add
-> potentially tedious bugs.
+Fix the following coccicheck warnings:
 
-Absolutely agreed!
+./drivers/virtio/virtio_mem.c:2580:2-25: WARNING: Assignment
+of 0/1 to bool variable.
 
-> How much does this save? Cgroup creation and deletion isn't really
-> considered a hot path. It takes global locks and such...
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/virtio/virtio_mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is not the first time when an (micro)optimization is posted without
-any data showing benefit or otherwise appealing justification. Sigh.
-
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 9fc9ec4..85a272c 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -2577,7 +2577,7 @@ static int virtio_mem_probe(struct virtio_device *vdev)
+ 	 * actually in use (e.g., trying to reload the driver).
+ 	 */
+ 	if (vm->plugged_size) {
+-		vm->unplug_all_required = 1;
++		vm->unplug_all_required = true;
+ 		dev_info(&vm->vdev->dev, "unplugging all memory is required\n");
+ 	}
+ 
 -- 
-Michal Hocko
-SUSE Labs
+1.8.3.1
+
