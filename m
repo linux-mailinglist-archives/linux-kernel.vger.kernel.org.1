@@ -2,159 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C5A2FCFB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0330F2FCFC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388104AbhATLnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:43:01 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20240 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389317AbhATLUO (ORCPT
+        id S2388534AbhATLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbhATL3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:20:14 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10KB2uQp158536;
-        Wed, 20 Jan 2021 06:18:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=CyW5Qbxq9N1t1UZrJNM8DsMRdqMrHyEtG3AdPXB4sss=;
- b=i74W1JXjl1dCDAs3j5BlMMStrybUk7J32cgTEaK6DlgYCYNjcsxO5F8jLLX4Zq5LKAV2
- YMegeVwjqDHZazPFBmq1ryqq9OPonveGJ/kH4EvGcEGgNVFexYcMQJNJ0D0Q9z6XS9sD
- ++BN/IfcyRwIk1LaoJ4v3NW4TAOSEoPWS0M0leVmqYEZMwXLp6HA8S9e1DPjLKY2rqQ4
- 81fNRV+3wVCoy0XjVpHRQjFVDDMz6UJ0qwADgc3xYag8t36BF7vbnP6YSrZnuyIJUozZ
- fDthUMKC5WIR5eZYq5ucpkwyB3FXvYwRCEbjfJN4GdkX+ZMiCLOJFdyRo612Pbnhxkd/ pA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 366j4bthpy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 06:18:30 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10KB3TOg163732;
-        Wed, 20 Jan 2021 06:18:30 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 366j4bthnd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 06:18:30 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10KBGhAN031500;
-        Wed, 20 Jan 2021 11:18:28 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3668nwrgr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 11:18:27 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10KBIOSj38732134
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 11:18:24 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 978E652054;
-        Wed, 20 Jan 2021 11:18:24 +0000 (GMT)
-Received: from [9.199.40.105] (unknown [9.199.40.105])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5DCD65204E;
-        Wed, 20 Jan 2021 11:18:22 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Subject: Re: [PATCH] powerpc/uprobes: Don't allow probe on suffix of prefixed
- instruction
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     mpe@ellerman.id.au, rostedt@goodmis.org, paulus@samba.org,
-        jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20210119091234.76317-1-ravi.bangoria@linux.ibm.com>
- <20210119172603.GA16696@redhat.com>
-Message-ID: <a760db1e-e953-75be-3ad5-2efc7642db6b@linux.ibm.com>
-Date:   Wed, 20 Jan 2021 16:48:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 20 Jan 2021 06:29:51 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E876C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:22:18 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id t29so9191741pfg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/G1XKKzyK0yZAshK+VzVtT1gmvcbma2qBK0WNAjoFJ0=;
+        b=f9QxSmeFNcQFQsw7hS5QGeGaJxyqhXGEzo3QbjXqM2wj4ArTB1aEOtGsbeRw0Cfry7
+         Z/DoOVbz6XFlRGziXkPIHVr5CDG77H52tQekRcbd3EoBJSieaNdq4sOUvO8lrRzd6C3A
+         D3KVS+yS1pwtyYt8XtxYOSAZdhSj7wr23Llrw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/G1XKKzyK0yZAshK+VzVtT1gmvcbma2qBK0WNAjoFJ0=;
+        b=U3VESfYMp0LebxrgCGZ9qX0pJxUQ2v1LAXN4zV4DR+CS4LUtnCuXkxwKCE3qD7D00t
+         wJrhgj8F3DEwZKo3DNIsF/ejef4guTMg7qP+0OxxA92gKZLNThqVpjCR77K4pysw7ZS/
+         tpnPqHBa/XP5CG53BKYreRPTvU90jhsip9hx/OoVH7gySSuSQHiI/AbPvJjEaTL6Z0n2
+         +oH3YuYn+tcm6HmwVnGII6UwOrQB/hcZMnxJyeCnWz9ie/ReN5Ar4MurhYlQF3cjVx4O
+         gWClwyiuDnAgp/12AYv6FlPaUrsJUIqg6El5p2cH5W6gMpTV1mWWX7mpG7koAED7D0A4
+         56NA==
+X-Gm-Message-State: AOAM53229gw8oThSn4qxXFPQ9hLfZ3/bXKnsXjegTEHSguJRiF6sd6lB
+        Uy+rzjqiE8bGfDvkIURGV3hGNg==
+X-Google-Smtp-Source: ABdhPJwEhxynnzNsfdOIosnWD6hJRmKWPIAg2bWTvI3yFlUc2LWW0ORKLS7qvfBc2J2WLYigePeAKg==
+X-Received: by 2002:a65:4083:: with SMTP id t3mr8967439pgp.150.1611141737943;
+        Wed, 20 Jan 2021 03:22:17 -0800 (PST)
+Received: from ub-XPS-13-9350.domain.name ([103.105.103.154])
+        by smtp.gmail.com with ESMTPSA id gk2sm2248341pjb.6.2021.01.20.03.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 03:22:17 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH 1/2] dt-bindings: display: bridge: Add documentation for SN65DSI84
+Date:   Wed, 20 Jan 2021 16:51:57 +0530
+Message-Id: <20210120112158.62109-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210119172603.GA16696@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-20_02:2021-01-18,2021-01-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- mlxscore=0 impostorscore=0 malwarescore=0 adultscore=0 clxscore=1015
- lowpriorityscore=0 phishscore=0 priorityscore=1501 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101200060
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SN65DSI84 is a Single Channel DSI to Dual-link LVDS bridge from
+Texas Instruments.
 
+SN65DSI83, SN65DSI85 are variants of the same family of bridge
+controllers.
 
-On 1/19/21 10:56 PM, Oleg Nesterov wrote:
-> On 01/19, Ravi Bangoria wrote:
->>
->> Probe on 2nd word of a prefixed instruction is invalid scenario and
->> should be restricted.
-> 
-> I don't understand this ppc-specific problem, but...
+Right now the bridge driver is supporting a single link, dual-link
+support requires to initiate I2C Channel B registers, so dt-bindings
+documented with single link LVDS.
 
-So far (upto Power9), instruction size was fixed - 4 bytes. But Power10
-introduced a prefixed instruction which consist of 8 bytes, where first
-4 bytes is prefix and remaining is suffix.
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+ .../bindings/display/bridge/ti,sn65dsi84.yaml | 127 ++++++++++++++++++
+ 1 file changed, 127 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml
 
-This patch checks whether the Uprobe is on the 2nd word (suffix) of a
-prefixed instruction. If so, consider it as invalid Uprobe.
+diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml
+new file mode 100644
+index 000000000000..891382a76c1a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml
+@@ -0,0 +1,127 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/ti,sn65dsi84.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: TI SN65DSI84 MIPI DSI to LVDS bridge bindings
++
++maintainers:
++  - Jagan Teki <jagan@amarulasolutions.com>
++
++description: |
++  The SN65DSI84 DSI to FlatLink bridge features a single channel MIPI D-PHY receiver
++  front-end configuration with 4 lanes per channel operating at 1 Gbps per lanes.
++  The bridge decodes MIPI DSI 18bpp RGB666 and 240bpp RG888 packets and converts
++  the formatted video data stream to a FlatLink compatible LVDS output operating
++  at pixel clocks operating from 25 MHx to 154 MHz, offering a Dual-Link LVDS,
++  Single-Link LVDS interface with four data lanes per link.
++
++  https://www.ti.com/product/SN65DSI84
++
++properties:
++  compatible:
++    const: ti,sn65dsi84
++
++  reg:
++    maxItems: 1
++    description: i2c address of the bridge, 0x2c
++
++  enable-gpios:
++    maxItems: 1
++    description: GPIO specifier for bridge enable pin (active high).
++
++  ports:
++    type: object
++    description:
++      A node containing input and output port nodes with endpoint definitions
++      as documented in
++      Documentation/devicetree/bindings/media/video-interfaces.txt
++    properties:
++      "#address-cells":
++        const: 1
++
++      "#size-cells":
++        const: 0
++
++      port@0:
++        type: object
++        description: |
++          DSI Input. The remote endpoint phandle should be a
++          reference to a valid mipi_dsi_host device node.
++
++      port@1:
++        type: object
++        description: |
++          Video port for LVDS output (panel or connector).
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - enable-gpios
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++       #address-cells = <1>;
++       #size-cells = <0>;
++
++       ports {
++           #address-cells = <1>;
++           #size-cells = <0>;
++
++           port@0 {
++               reg = <0>;
++               dsi_in: endpoint {
++                   remote-endpoint = <&ltdc_ep0_out>;
++               };
++           };
++
++           port@1 {
++               reg = <1>;
++               dsi_out: endpoint {
++                   remote-endpoint = <&bridge_in>;
++                   data-lanes = <0 1>;
++               };
++           };
++       };
++    };
++
++    i2c6 {
++       #address-cells = <1>;
++       #size-cells = <0>;
++
++       bridge@2c {
++           compatible = "ti,sn65dsi84";
++           reg = <0x2c>;
++           enable-gpios = <&gpiof 15 GPIO_ACTIVE_HIGH>;
++
++           ports {
++               #address-cells = <1>;
++               #size-cells = <0>;
++
++               port@0 {
++                   reg = <0>;
++                   bridge_in: endpoint {
++                        remote-endpoint = <&dsi_out>;
++                   };
++               };
++
++               port@1 {
++                   reg = <1>;
++                   bridge_out: endpoint {
++                        remote-endpoint = <&panel_in_lvds>;
++                   };
++               };
++           };
++       };
++    };
+-- 
+2.25.1
 
-> 
->> +#ifdef CONFIG_PPC64
->> +int arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
->> +			      uprobe_opcode_t opcode)
->> +{
->> +	uprobe_opcode_t prefix;
->> +	void *kaddr;
->> +	struct ppc_inst inst;
->> +
->> +	/* Don't check if vaddr is pointing to the beginning of page */
->> +	if (!(vaddr & ~PAGE_MASK))
->> +		return 0;
-> 
-> So the fix is incomplete? Or insn at the start of page can't be prefixed?
-
-Prefixed instruction can not cross 64 byte boundary. If it does, kernel
-generates SIGBUS. Considering all powerpc supported page sizes to be
-multiple of 64 bytes, there will never be a scenario where prefix and
-suffix will be on different pages. i.e. a beginning of the page should
-never be a suffix.
-
-> 
->> +int __weak arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
->> +				     uprobe_opcode_t opcode)
->> +{
->> +	return 0;
->> +}
->> +
->>   static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode)
->>   {
->>   	uprobe_opcode_t old_opcode;
->> @@ -275,6 +281,8 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
->>   	if (is_swbp_insn(new_opcode)) {
->>   		if (is_swbp)		/* register: already installed? */
->>   			return 0;
->> +		if (arch_uprobe_verify_opcode(page, vaddr, old_opcode))
->> +			return -EINVAL;
-> 
-> Well, this doesn't look good...
-> 
-> To me it would be better to change the prepare_uprobe() path to copy
-> the potential prefix into uprobe->arch and check ppc_inst_prefixed()
-> in arch_uprobe_analyze_insn(). What do you think?
-
-Agreed. The only reason I was checking via verify_opcode() is to make the
-code more simpler. If I need to check via prepare_uprobe(), I'll need to
-abuse uprobe->offset by setting it to uprobe->offset - 4 to read previous
-4 bytes of current instruction. Which, IMHO, is not that straightforward
-with current implementation of prepare_uprobe().
-
-But while replying here, I'm thinking... I should be able to grab a page
-using mm and vaddr, which are already available in arch_uprobe_analyze_insn().
-With that, I should be able to do all this inside arch_uprobe_analyze_insn()
-only. I'll try this and send v2 if that works.
-
-Thanks for the review.
-Ravi
