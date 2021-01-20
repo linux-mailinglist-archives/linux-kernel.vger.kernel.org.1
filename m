@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8322FC73E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFFC2FC731
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731479AbhATBwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:52:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53138 "EHLO mail.kernel.org"
+        id S1731080AbhATBwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:52:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731080AbhATBuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731104AbhATBuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:50:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 73714224B1;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7B2AD2251D;
         Wed, 20 Jan 2021 01:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611107410;
-        bh=QvXDt3LEXKwztqUdMgdHJQOZvbdsHauUw1+45qXWZ1c=;
+        bh=GNj2MIJf8RtOcX7Wh6NXVAF3Lf0JF12Jnse9VPAkcDs=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tg2RriRlmwazptzesO8jNlH4TO7qxJdiyNnlPkkwk9hx79S3iOnnGZAgTCbTCiDxR
-         Z9u3D1O0MV5IIDT2ATQN1Aa4EsF9c/YRjuYzM5C7kCUgQeo7Y5s6j87IynJgQUICvE
-         wH/tCldNGH3k3ix9uLzhJ6SsPHC7Olvt7D3LRGF0UUSCjB0WgHOCCeRN18ATVMgAC3
-         9TeQ1GJaDTQV/m98TIG7HPCm3XvIjNhWR7xGF+LKNWKqnYyC4jvUG0gLqXzd+T6dSn
-         TXMxxC3LD7Ss2Y8Pka0FQycTKQRCQf6PHaLcALKDLlPJZSiwb2UuN/NnL56PGCCgsR
-         wF/hOl0/w5wRA==
+        b=Rb2mol4m5NZ+U3dN4EUK7Go5NCK9xRzM18VU/O7lvnqeyRglvo+5AMTf3dF1VYRLM
+         oqVjiotUxbyoYR6XElxxHl5hqwFTOFUWcRfvsu6VO3A/3QQpipu4ebsuZEun6RYS0A
+         yyZC9wfHWYunKxx35lx8lZXGVHCzDiRuzWz1bbXt1FlUSYGt07zAzmDJElmOHm180C
+         ChsIcTvqK23IyNdvUvaolBBipNoaYr0jvJ6SamutLzpegUXt2ZTiDzwjnH5NVDLDGs
+         o2T9qtV0wfiXDG8RRsHEdUCmXBGMl35SwQpnoWes/+EM1A6HgVDaxKurHOL5GQDngw
+         QMV7WLaHiZaBw==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 68FEF60591;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 74C9760584;
         Wed, 20 Jan 2021 01:50:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] taprio: boolean values to a bool variable
+Subject: Re: [PATCH][next] selftests: forwarding: Fix spelling mistake "succeded"
+ -> "succeeded"
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161110741042.23772.15208009210857088847.git-patchwork-notify@kernel.org>
+Message-Id: <161110741047.23772.11114014464496090991.git-patchwork-notify@kernel.org>
 Date:   Wed, 20 Jan 2021 01:50:10 +0000
-References: <1610958662-71166-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1610958662-71166-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210118111902.71096-1-colin.king@canonical.com>
+In-Reply-To: <20210118111902.71096-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,20 +48,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 18 Jan 2021 16:31:02 +0800 you wrote:
-> Fix the following coccicheck warnings:
+On Mon, 18 Jan 2021 11:19:02 +0000 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> ./net/sched/sch_taprio.c:393:3-16: WARNING: Assignment of 0/1 to bool
-> variable.
+> There are two spelling mistakes in check_fail messages. Fix them.
 > 
-> ./net/sched/sch_taprio.c:375:2-15: WARNING: Assignment of 0/1 to bool
-> variable.
-> 
-> [...]
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  tools/testing/selftests/net/forwarding/tc_chains.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 Here is the summary with links:
-  - taprio: boolean values to a bool variable
-    https://git.kernel.org/netdev/net-next/c/0deee7aa23a5
+  - [next] selftests: forwarding: Fix spelling mistake "succeded" -> "succeeded"
+    https://git.kernel.org/netdev/net-next/c/eaaf61122865
 
 You are awesome, thank you!
 --
