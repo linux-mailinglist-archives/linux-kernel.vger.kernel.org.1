@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ADC2FC829
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345992FC837
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbhATCnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:43:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47348 "EHLO mail.kernel.org"
+        id S1730049AbhATCrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:47:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730082AbhATB2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7379323357;
-        Wed, 20 Jan 2021 01:26:55 +0000 (UTC)
+        id S1730092AbhATB2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0041923341;
+        Wed, 20 Jan 2021 01:26:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106016;
-        bh=xdzNkLEH3zCwrxG009T3Crurf4ry+SI4WtpFGzT8TkQ=;
+        s=k20201202; t=1611106018;
+        bh=e7w7eZhbT5BPMTB0jHTG4KuBkCW1+q0za1EKpTYM1Wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0Hwy9l0/mxT1mMl0hIURsg2ZuSGcki6Snidhowl5MsRgFS5AOlcgDYwVQOqusVYm
-         CDIuK9Az7prJA5M/K7FJeHzmKDdUoQ7WJrS/+Ougy6assO26/0c1i4aIx1/gNb4i6L
-         Kkv2EVApctFO2tLr3aiwyAdmix1wFTHOFjzGuxS/5aVCrLAb4fK6+hO3n0HMMgaYGb
-         p9vcy/pzPwwui5QgATcV7w+NBTx8dDqKGo+Xy+3RrZ3ULm8j/hwiHfbcRhIzycqSsd
-         bPmUw2NbHSZUkZxBtAMAyxR7ZU9DOnN7kYpWgeUkOMWlZUzzaKQ1iIHreakmMmOicq
-         UfKv1+YlWmWCw==
+        b=b40lTZu9JI6V3b0rilL+ihQBu0CEQk/TH1tQgDtPNnaUJ//HapnfWxWK1hr7gvygy
+         1TQgJr/Ec7+lDF5sKh5uQ1lJsJK+EuoOk26pNz/dfyadwNSf454V4Y+xe8m3lkLqPl
+         k8U+alV516vdk8ln5udGtlSNOkozjYU+Lbbt6o8zNhP+IwfWsUyNDz8Jb4gk8e3apk
+         WbKZNJTQBkKmQzz9nmwVl0rMlg0Tf9edzfZ1MZ8BVouAzUDpI0lnje8xLAfLV9dbGe
+         VQvKPPENA6NJTKB1kLWKB8s4qAfzMddpNkd7Jlfb2uB6FQw8GT2Dr+uIowXuJAWT59
+         yXpw5QMnsW25g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marcelo Diop-Gonzalez <marcelo827@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 41/45] io_uring: flush timeouts that should already have expired
-Date:   Tue, 19 Jan 2021 20:25:58 -0500
-Message-Id: <20210120012602.769683-41-sashal@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 42/45] libperf tests: If a test fails return non-zero
+Date:   Tue, 19 Jan 2021 20:25:59 -0500
+Message-Id: <20210120012602.769683-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -43,94 +47,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Diop-Gonzalez <marcelo827@gmail.com>
+From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit f010505b78a4fa8d5b6480752566e7313fb5ca6e ]
+[ Upstream commit bba2ea17ef553aea0df80cb64399fe2f70f225dd ]
 
-Right now io_flush_timeouts() checks if the current number of events
-is equal to ->timeout.target_seq, but this will miss some timeouts if
-there have been more than 1 event added since the last time they were
-flushed (possible in io_submit_flush_completions(), for example). Fix
-it by recording the last sequence at which timeouts were flushed so
-that the number of events seen can be compared to the number of events
-needed without overflow.
+If a test fails return -1 rather than 0. This is consistent with the
+return value in test-cpumap.c
 
-Signed-off-by: Marcelo Diop-Gonzalez <marcelo827@gmail.com>
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Link: http://lore.kernel.org/lkml/20210114180250.3853825-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 34 ++++++++++++++++++++++++++++++----
- 1 file changed, 30 insertions(+), 4 deletions(-)
+ tools/lib/perf/tests/test-cpumap.c    | 2 +-
+ tools/lib/perf/tests/test-evlist.c    | 2 +-
+ tools/lib/perf/tests/test-evsel.c     | 2 +-
+ tools/lib/perf/tests/test-threadmap.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 4833b68f1a1cc..7e7103c57ec26 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -353,6 +353,7 @@ struct io_ring_ctx {
- 		unsigned		cq_entries;
- 		unsigned		cq_mask;
- 		atomic_t		cq_timeouts;
-+		unsigned		cq_last_tm_flush;
- 		unsigned long		cq_check_overflow;
- 		struct wait_queue_head	cq_wait;
- 		struct fasync_struct	*cq_fasync;
-@@ -1519,19 +1520,38 @@ static void __io_queue_deferred(struct io_ring_ctx *ctx)
+diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
+index c8d45091e7c26..c70e9e03af3e9 100644
+--- a/tools/lib/perf/tests/test-cpumap.c
++++ b/tools/lib/perf/tests/test-cpumap.c
+@@ -27,5 +27,5 @@ int main(int argc, char **argv)
+ 	perf_cpu_map__put(cpus);
  
- static void io_flush_timeouts(struct io_ring_ctx *ctx)
- {
--	while (!list_empty(&ctx->timeout_list)) {
-+	u32 seq;
-+
-+	if (list_empty(&ctx->timeout_list))
-+		return;
-+
-+	seq = ctx->cached_cq_tail - atomic_read(&ctx->cq_timeouts);
-+
-+	do {
-+		u32 events_needed, events_got;
- 		struct io_kiocb *req = list_first_entry(&ctx->timeout_list,
- 						struct io_kiocb, timeout.list);
- 
- 		if (io_is_timeout_noseq(req))
- 			break;
--		if (req->timeout.target_seq != ctx->cached_cq_tail
--					- atomic_read(&ctx->cq_timeouts))
-+
-+		/*
-+		 * Since seq can easily wrap around over time, subtract
-+		 * the last seq at which timeouts were flushed before comparing.
-+		 * Assuming not more than 2^31-1 events have happened since,
-+		 * these subtractions won't have wrapped, so we can check if
-+		 * target is in [last_seq, current_seq] by comparing the two.
-+		 */
-+		events_needed = req->timeout.target_seq - ctx->cq_last_tm_flush;
-+		events_got = seq - ctx->cq_last_tm_flush;
-+		if (events_got < events_needed)
- 			break;
- 
- 		list_del_init(&req->timeout.list);
- 		io_kill_timeout(req);
--	}
-+	} while (!list_empty(&ctx->timeout_list));
-+
-+	ctx->cq_last_tm_flush = seq;
+ 	__T_END;
+-	return 0;
++	return tests_failed == 0 ? 0 : -1;
  }
+diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+index 6d8ebe0c25042..d913241d41356 100644
+--- a/tools/lib/perf/tests/test-evlist.c
++++ b/tools/lib/perf/tests/test-evlist.c
+@@ -409,5 +409,5 @@ int main(int argc, char **argv)
+ 	test_mmap_cpus();
  
- static void io_commit_cqring(struct io_ring_ctx *ctx)
-@@ -5580,6 +5600,12 @@ static int io_timeout(struct io_kiocb *req)
- 	tail = ctx->cached_cq_tail - atomic_read(&ctx->cq_timeouts);
- 	req->timeout.target_seq = tail + off;
+ 	__T_END;
+-	return 0;
++	return tests_failed == 0 ? 0 : -1;
+ }
+diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+index 135722ac965bf..0ad82d7a2a51b 100644
+--- a/tools/lib/perf/tests/test-evsel.c
++++ b/tools/lib/perf/tests/test-evsel.c
+@@ -131,5 +131,5 @@ int main(int argc, char **argv)
+ 	test_stat_thread_enable();
  
-+	/* Update the last seq here in case io_flush_timeouts() hasn't.
-+	 * This is safe because ->completion_lock is held, and submissions
-+	 * and completions are never mixed in the same ->completion_lock section.
-+	 */
-+	ctx->cq_last_tm_flush = tail;
-+
- 	/*
- 	 * Insertion sort, ensuring the first entry in the list is always
- 	 * the one we need first.
+ 	__T_END;
+-	return 0;
++	return tests_failed == 0 ? 0 : -1;
+ }
+diff --git a/tools/lib/perf/tests/test-threadmap.c b/tools/lib/perf/tests/test-threadmap.c
+index 7dc4d6fbeddee..384471441b484 100644
+--- a/tools/lib/perf/tests/test-threadmap.c
++++ b/tools/lib/perf/tests/test-threadmap.c
+@@ -27,5 +27,5 @@ int main(int argc, char **argv)
+ 	perf_thread_map__put(threads);
+ 
+ 	__T_END;
+-	return 0;
++	return tests_failed == 0 ? 0 : -1;
+ }
 -- 
 2.27.0
 
