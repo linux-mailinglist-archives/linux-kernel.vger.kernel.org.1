@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024592FCCDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3B82FCCE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730947AbhATIjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:39:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:50288 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729747AbhATIht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:37:49 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1131711B3;
-        Wed, 20 Jan 2021 00:37:01 -0800 (PST)
-Received: from [10.163.90.172] (unknown [10.163.90.172])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84E963F68F;
-        Wed, 20 Jan 2021 00:36:56 -0800 (PST)
-Subject: Re: [PATCH V3 0/3] mm/memory_hotplug: Pre-validate the address range
- with platform
-To:     Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
- <d57036a1-de12-2d32-be65-daaa3dc5b772@redhat.com>
- <20210119134016.GA23408@linux>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <8df4e1e1-1ddd-398e-c9a6-17a67d8a95bc@arm.com>
-Date:   Wed, 20 Jan 2021 14:07:18 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731144AbhATIlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:41:35 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11111 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730951AbhATIlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 03:41:23 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DLJpp60pGz15v9W;
+        Wed, 20 Jan 2021 16:39:14 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
+ 16:40:13 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] z3fold: Remove unused attribute for release_z3fold_page
+Date:   Wed, 20 Jan 2021 03:40:08 -0500
+Message-ID: <20210120084008.58432-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20210119134016.GA23408@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since commit dcf5aedb24f8 ("z3fold: stricter locking and more careful
+reclaim"), release_z3fold_page() is used again. So we can drop the unused
+attribute safely.
 
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ mm/z3fold.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On 1/19/21 7:10 PM, Oscar Salvador wrote:
-> On Tue, Jan 19, 2021 at 02:33:03PM +0100, David Hildenbrand wrote:
->> Minor thing, we should make up our mind if we want to call stuff
->> internally "memhp_" or "mhp". I prefer the latter, because it is shorter.
-> 
-> I would rather use the latter as well. I used that in [1].
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index dacb0d70fa61..8e53cdf4d190 100644
+--- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -541,8 +541,7 @@ static void __release_z3fold_page(struct z3fold_header *zhdr, bool locked)
+ 	spin_unlock(&pool->stale_lock);
+ }
+ 
+-static void __attribute__((__unused__))
+-			release_z3fold_page(struct kref *ref)
++static void release_z3fold_page(struct kref *ref)
+ {
+ 	struct z3fold_header *zhdr = container_of(ref, struct z3fold_header,
+ 						refcount);
+-- 
+2.19.1
 
-Okay, will change all that is 'memhp' as 'mhp' instead.
-
-> MEMHP_MERGE_RESOURCE should be renamed if we agree on that.
-> 
-> [1] https://patchwork.kernel.org/project/linux-mm/cover/20201217130758.11565-1-osalvador@suse.de/
-> 
-> 
