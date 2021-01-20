@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1109D2FD2AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 657092FD2AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388667AbhATO1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:27:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55878 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388178AbhATOTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:19:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2825AB7F;
-        Wed, 20 Jan 2021 14:18:35 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 642A01E0802; Wed, 20 Jan 2021 15:18:34 +0100 (CET)
-Date:   Wed, 20 Jan 2021 15:18:34 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Zhongwei Cai <sunrise_l@sjtu.edu.cn>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Mingkai Dong <mingkaidong@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        Rajesh Tadakamadla <rajesh.tadakamadla@hpe.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: Expense of read_iter
-Message-ID: <20210120141834.GA24063@quack2.suse.cz>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
- <20210107151125.GB5270@casper.infradead.org>
- <17045315-CC1F-4165-B8E3-BA55DD16D46B@gmail.com>
- <2041983017.5681521.1610459100858.JavaMail.zimbra@sjtu.edu.cn>
- <alpine.LRH.2.02.2101131008530.27448@file01.intranet.prod.int.rdu2.redhat.com>
- <1224425872.715547.1610703643424.JavaMail.zimbra@sjtu.edu.cn>
- <20210120044700.GA4626@dread.disaster.area>
+        id S2388894AbhATO3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:29:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390354AbhATOWs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:22:48 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477B8C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:22:08 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id 19so25426343qkm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:22:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z4W9rabaHYlfp3dZefhZ5eDc2vFVS8lzPwoif6mGzIk=;
+        b=lSs9ai1zpvEddnzbn0rPsX1lMsDhdwTM2sGuacKqBuxvFOp54XeD5QVbqhtCJ3jvdE
+         7jeoGRp5VQH3Yuoxr7uVpSAknAQQ6kfPLR0Nb4s2MXshtYqE9Qasr3BHDUswnNpbVKot
+         h8vTMB6s2y/krzb9joV4VLeAAg4rOKCJ0r29LeLWbN5LxNWvsF7ljOlhFUAToZb30CXT
+         tpCqnpGmSVqGc1jpsd+orsN+cDWxWhAf89+XBMouzdpubCPgNd2bSeEpJEhI/8MJjTvp
+         n4sye4N1CGVVJaLvSEC4dr2MrL7wNp27sIqy3NorhXvT3FbNUYbq7zrZ10x2qZEmjsED
+         HjZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z4W9rabaHYlfp3dZefhZ5eDc2vFVS8lzPwoif6mGzIk=;
+        b=h1YJC/Pl3d3Tjwg7KKXlgqtPQSqAN03vzrQFVWPf9GMFcxNOEWfMyZDXzOOFsNQiqo
+         RqxcAhdYuIYWI0mHBW3Sil+m7mq+sYsy+eE2vXxdZtCNs3XZ2ZSjOJt6XkhuPdYhVjVH
+         px7w0Ee5LoadlsgCK7XV59QFCns6SSnMBG94g9HQaqcLGCvpaqcwOyqnAu/goWlkJyK3
+         fruEQKnd+R8CnpfSQvKRg/VrIDbEY2PA7AvCP5lEEiwi7MIhjdB9cfVGKqlyzzaBGTDv
+         qPdKQ+GxEKdHxfFB77k7dQCxMr5eodF5tUj4Zpncbc5RIae0CyuhBaJVRIfA68cDg77f
+         ilcQ==
+X-Gm-Message-State: AOAM531lZ1Lwd37BpvjC+kR4rXGLcVhxGMt0k4JRLvyyrUR1PYoazOy8
+        ddH1+cgKSWIvunCjCCQ0MBniPQ+u+APS9g==
+X-Google-Smtp-Source: ABdhPJxkYYw2XbGfGKURyhRpH6boaYYKpat53CLT9cYotcvRIL2s4CHl/gop67NAmIcos1xmP/Y+CQ==
+X-Received: by 2002:a05:620a:788:: with SMTP id 8mr9564286qka.224.1611152527536;
+        Wed, 20 Jan 2021 06:22:07 -0800 (PST)
+Received: from localhost.localdomain ([156.146.54.160])
+        by smtp.gmail.com with ESMTPSA id n7sm1402912qkg.19.2021.01.20.06.22.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 06:22:05 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        akpm@linux-foundation.org, rppt@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] arch: powerpc: mm: book3s64: Fixed spelling architectue -> architecture in line number 1061
+Date:   Wed, 20 Jan 2021 19:50:21 +0530
+Message-Id: <20210120142020.2623355-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120044700.GA4626@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-01-21 15:47:00, Dave Chinner wrote:
-> On Fri, Jan 15, 2021 at 05:40:43PM +0800, Zhongwei Cai wrote:
-> > On Thu, 14 Jan 2021, Mikulas wrote:
-> > For Ext4-dax, the overhead of dax_iomap_rw is significant
-> > compared to the overhead of struct iov_iter. Although methods
-> > proposed by Mikulas can eliminate the overhead of iov_iter
-> > well, they can not be applied in Ext4-dax unless we implement an
-> > internal "read" method in Ext4-dax.
-> > 
-> > For Ext4-dax, there could be two approaches to optimizing:
-> > 1) implementing the internal "read" method without the complexity
-> > of iterators and dax_iomap_rw;
-> 
-> Please do not go an re-invent the wheel just for ext4. If there's a
-> problem in a shared path - ext2, FUSE and XFS all use dax_iomap_rw()
-> as well, so any improvements to that path benefit all DAX users, not
-> just ext4.
-> 
-> > 2) optimizing how dax_iomap_rw works.
-> > Since dax_iomap_rw requires ext4_iomap_begin, which further involves
-> > the iomap structure and others (e.g., journaling status locks in Ext4),
-> > we think implementing the internal "read" method would be easier.
-> 
-> Maybe it is, but it's also very selfish. The DAX iomap path was
-> written to be correct for all users, not inecessarily provide
-> optimal performance. There will be lots of things that could be done
-> to optimise it, so rather than creating a special snowflake in ext4
-> that makes DAX in ext4 much harder to maintain for non-ext4 DAX
-> developers, please work to improve the common DAX IO path and so
-> provide the same benefit to all the filesystems that use it.
+s/architectue/architecture/
 
-Yeah, I agree. I'm against ext4 private solution for this read problem. And
-I'm also against duplicating ->read_iter functionatily in ->read handler.
-The maintenance burden of this code duplication is IMHO just too big. We
-rather need to improve the generic code so that the fast path is faster.
-And every filesystem will benefit because this is not ext4 specific
-problem.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/powerpc/mm/book3s64/radix_pgtable.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
+index 98f0b243c1ab..8b8f1451e944 100644
+--- a/arch/powerpc/mm/book3s64/radix_pgtable.c
++++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
+@@ -1058,7 +1058,7 @@ void radix__ptep_set_access_flags(struct vm_area_struct *vma, pte_t *ptep,
+ 		 * Book3S does not require a TLB flush when relaxing access
+ 		 * restrictions when the address space is not attached to a
+ 		 * NMMU, because the core MMU will reload the pte after taking
+-		 * an access fault, which is defined by the architectue.
++		 * an access fault, which is defined by the architecture.
+ 		 */
+ 	}
+ 	/* See ptesync comment in radix__set_pte_at */
+--
+2.30.0
+
