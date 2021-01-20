@@ -2,193 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A9A2FD2A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8182FD2AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390575AbhATO0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:26:12 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11035 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726455AbhATOPw (ORCPT
+        id S2388846AbhATO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:28:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388171AbhATOTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:15:52 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DLSDq6CRjzj9vB;
-        Wed, 20 Jan 2021 22:13:47 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
- 22:14:44 +0800
-Subject: Re: [PATCH 1/2] perf/smmuv3: Don't reserve the register space that
- overlaps with the SMMUv3
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
- <20210119015951.1042-2-thunder.leizhen@huawei.com>
- <30665cd6-b438-1d1d-7445-9e45e240f79a@arm.com>
- <a2d7d94c-8e4e-d91d-8587-7a5b3594b4ca@huawei.com>
- <9ad3c863-ec80-e177-4d11-24d1f706b4af@huawei.com>
- <f6fde527-8c87-1128-52ca-77d096194eb6@arm.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <2a577c5e-25bb-5feb-d745-f25007b5a213@huawei.com>
-Date:   Wed, 20 Jan 2021 22:14:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 20 Jan 2021 09:19:19 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0102C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:18:34 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a10so17116636ejg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:18:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aZwlx8a2SEsD8Y2Brb387uwcRDdsHOUIO/KUuY9o6cI=;
+        b=j9kZRkJt6XM/YJtw6elaTf7SDrT4bVch1ktg1bCbaQETKnigjTRqkxDSUO2X50DqU8
+         ZoTtIuAsOg6j03jyo52Xos9i9XzC3Zi8qsrRe5G9x/mLzkpVC71uZvNFvYX27dYEXEXt
+         PyeJ7Jvs9Pvp05A8DazANGflniIvTrQqg9LOODF2lIEP5WaOw6MJBQ1KOlPMdOItIK+C
+         h07/NqETO30rEZKt9BYyCOgKWReY/ggoKT9OnNoGrGh6ADk74b7O9PXR6pkOuxsrEcwx
+         nE09bh6yRT6LsIByxuM7ieVlWbTg67ovO8IDJHHcEJNx9XPyAueWj6jJGf5R5Lp+iaLZ
+         dndw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aZwlx8a2SEsD8Y2Brb387uwcRDdsHOUIO/KUuY9o6cI=;
+        b=XfTVGiqrsVLF32miK5GSPFvHMP9p9RaKuU75wUtkh9OBKAg4EiLEjq7QuxwKSm8erp
+         4tI6RR9+oAmhcZK0g/OZT5IRvRFYftSg0mjVXdXnY31cz/AV4o3mG1WsmsHkNslQ5OB6
+         OHpHQUbOdRrDUXkS4M/TElb6aOd/wnRuq3Jmt+tPweA1U2B2ACSP8TbvMUiEkJr68cbJ
+         84MwQZe/zTm+HNai4aQlTHRLs7Sc9qMXIMFAtvAF3S6CIDnXETBBDPWeVG0Lw1RmDRVW
+         M1cWH1pfFTZ/UVNfvZc8NNTBEcDxAqH0yJMT+XDc+tImD75w0M+3isLv6W/thRpDo4Dh
+         1t8A==
+X-Gm-Message-State: AOAM532/TqXtGJqoq0jpqp32JVetvPk8RwCyOHis6AOsRxXvneg9Jpd3
+        TJJJogQLT18sAzaC+0gjO1p3zzz3lpnCvY/Zp9uYnw==
+X-Google-Smtp-Source: ABdhPJyLaWYZ6FSbAJyquHkBR6XAVgE8S/PCjTzGk5y8JvrkcOU4V+zWzNQnaWNiH3frmKDvChsPxoWvTHd/LnRpupI=
+X-Received: by 2002:a17:907:20aa:: with SMTP id pw10mr6125853ejb.314.1611152313325;
+ Wed, 20 Jan 2021 06:18:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <f6fde527-8c87-1128-52ca-77d096194eb6@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
+ <20210120014333.222547-13-pasha.tatashin@soleen.com> <20210120131937.GG4605@ziepe.ca>
+In-Reply-To: <20210120131937.GG4605@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 20 Jan 2021 09:17:57 -0500
+Message-ID: <CA+CK2bCb6A19X+fHL=ZB8EuA25rh3iNL4qkL5EDZBT1XTs-dpg@mail.gmail.com>
+Subject: Re: [PATCH v6 12/14] mm/gup: longterm pin migration cleaup
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 20, 2021 at 8:19 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jan 19, 2021 at 08:43:31PM -0500, Pavel Tatashin wrote:
+> > When pages are longterm pinned, we must migrated them out of movable zone.
+> > The function that migrates them has a hidden loop with goto. The loop is
+> > to retry on isolation failures, and after successful migration.
+> >
+> > Make this code better by moving this loop to the caller.
+> >
+> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> >  mm/gup.c | 88 +++++++++++++++++++++++---------------------------------
+> >  1 file changed, 36 insertions(+), 52 deletions(-)
+>
+> This looks OK, it is better
+>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>
+> I really dislike we always have to go over the page list twice in pin
+> mode
 
+I agree, I also dislike that we have to loop twice.
 
-On 2021/1/20 21:27, Robin Murphy wrote:
-> On 2021-01-20 09:26, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2021/1/20 11:37, Leizhen (ThunderTown) wrote:
->>>
->>>
->>> On 2021/1/19 20:32, Robin Murphy wrote:
->>>> On 2021-01-19 01:59, Zhen Lei wrote:
->>>>> Some SMMUv3 implementation embed the Perf Monitor Group Registers (PMCG)
->>>>> inside the first 64kB region of the SMMU. Since SMMU and PMCG are managed
->>>>> by two separate drivers, and this driver depends on ARM_SMMU_V3, so the
->>>>> SMMU driver reserves the corresponding resource first, this driver should
->>>>> not reserve the corresponding resource again. Otherwise, a resource
->>>>> reservation conflict is reported during boot.
->>>>>
->>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>>> ---
->>>>>    drivers/perf/arm_smmuv3_pmu.c | 42 ++++++++++++++++++++++++++++++++++++++++--
->>>>>    1 file changed, 40 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
->>>>> index 74474bb322c3f26..dcce085431c6ce8 100644
->>>>> --- a/drivers/perf/arm_smmuv3_pmu.c
->>>>> +++ b/drivers/perf/arm_smmuv3_pmu.c
->>>>> @@ -761,6 +761,44 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
->>>>>        dev_notice(smmu_pmu->dev, "option mask 0x%x\n", smmu_pmu->options);
->>>>>    }
->>>>>    +static void __iomem *
->>>>> +smmu_pmu_get_and_ioremap_resource(struct platform_device *pdev,
->>>>> +                  unsigned int index,
->>>>> +                  struct resource **out_res)
->>>>> +{
->>>>> +    int ret;
->>>>> +    void __iomem *base;
->>>>> +    struct resource *res;
->>>>> +
->>>>> +    res = platform_get_resource(pdev, IORESOURCE_MEM, index);
->>>>> +    if (!res) {
->>>>> +        dev_err(&pdev->dev, "invalid resource\n");
->>>>> +        return IOMEM_ERR_PTR(-EINVAL);
->>>>> +    }
->>>>> +    if (out_res)
->>>>> +        *out_res = res;
->>>>> +
->>>>> +    ret = region_intersects(res->start, resource_size(res),
->>>>> +                IORESOURCE_MEM, IORES_DESC_NONE);
->>>>> +    if (ret == REGION_INTERSECTS) {
->>>>> +        /*
->>>>> +         * The resource has already been reserved by the SMMUv3 driver.
->>>>> +         * Don't reserve it again, just do devm_ioremap().
->>>>> +         */
->>>>> +        base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
->>>>> +    } else {
->>>>> +        /*
->>>>> +         * The resource may have not been reserved by any driver, or
->>>>> +         * has been reserved but not type IORESOURCE_MEM. In the latter
->>>>> +         * case, devm_ioremap_resource() reports a conflict and returns
->>>>> +         * IOMEM_ERR_PTR(-EBUSY).
->>>>> +         */
->>>>> +        base = devm_ioremap_resource(&pdev->dev, res);
->>>>> +    }
->>>>
->>>> What if the PMCG driver simply happens to probe first?
->>>
->>> There are 4 cases:
->>> 1) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=y
->>>     It's not allowed. Becase: ARM_SMMU_V3_PMU depends on ARM_SMMU_V3
->>>     config ARM_SMMU_V3_PMU
->>>           tristate "ARM SMMUv3 Performance Monitors Extension"
->>>           depends on ARM64 && ACPI && ARM_SMMU_V3
->>>
->>> 2) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=m
->>>     No problem, SMMUv3 will be initialized first.
->>>
->>> 3) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=y
->>>     vi drivers/Makefile
->>>     60 obj-y                           += iommu/
->>>     172 obj-$(CONFIG_PERF_EVENTS)       += perf/
->>>
->>>     This link sequence ensure that SMMUv3 driver will be initialized first.
->>>     They are currently at the same initialization level.
->>>
->>> 4) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=m
->>>     Sorry, I thought module dependencies were generated based on "depends on".
->>>     But I tried it today，module dependencies are generated only when symbol
->>>     dependencies exist. I should use MODULE_SOFTDEP() to explicitly mark the
->>>     dependency. I will send V2 later.
->>>
->>
->> Hi Robin:
->>    I think I misunderstood your question. The probe() instead of module_init()
->> determines the time for reserving register space resources.  So we'd better
->> reserve multiple small blocks of resources in SMMUv3 but perform ioremap() for
->> the entire resource, if the probe() of the PMCG occurs first.
->>    I'll refine these patches to make both initialization sequences work well.
->> I'm trying to send V2 this week.
-> 
-> There's still the possibility that a PMCG is implemented in a root complex or some other device that isn't an SMMU, so as I've said before, none of this trickery really scales.
-> 
-> As far as I understand it, the main point of reserving resources is to catch bugs where things definitely should not be overlapping. PMCGs are by definition part of some other device, so in general they *can* be expected to overlap with whatever device that is. I still think it's most logical to simply *not* try to reserve PMCG resources at all.
+>
+> The is_pinnable_page() and LRU isolation should really be done inside
+> __get_user_pages_locked() as each page is added to the output list
+>
+> But that is more of a larger issue than this series
 
-If PMCG resources may overlap with other devices, that's really going to be a very tricky thing. OK, I'll follow your advice，just do ioremap() for the PMCG resources.
+We could also think about adding some optimization flags, i.e. clients
+could tell gup that the pinned memory content can be discarded
+FOLL_DISCARD. That way we could always allocate new pages in the right
+zones as we do with this series and free existing translations. No
+migration check would be necessary with such a flag.
 
-I know that I/O resource information can be queried by running "cat /proc/iomem". If we do not reserve PMCG resources, should we provide an additional fs query interface?
-
-> 
-> Robin.
-> 
->>>>> +
->>>>> +    return base;
->>>>> +}
->>>>> +
->>>>>    static int smmu_pmu_probe(struct platform_device *pdev)
->>>>>    {
->>>>>        struct smmu_pmu *smmu_pmu;
->>>>> @@ -793,7 +831,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
->>>>>            .capabilities    = PERF_PMU_CAP_NO_EXCLUDE,
->>>>>        };
->>>>>    -    smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
->>>>> +    smmu_pmu->reg_base = smmu_pmu_get_and_ioremap_resource(pdev, 0, &res_0);
->>>>>        if (IS_ERR(smmu_pmu->reg_base))
->>>>>            return PTR_ERR(smmu_pmu->reg_base);
->>>>>    @@ -801,7 +839,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
->>>>>          /* Determine if page 1 is present */
->>>>>        if (cfgr & SMMU_PMCG_CFGR_RELOC_CTRS) {
->>>>> -        smmu_pmu->reloc_base = devm_platform_ioremap_resource(pdev, 1);
->>>>> +        smmu_pmu->reloc_base = smmu_pmu_get_and_ioremap_resource(pdev, 1, NULL);
->>>>>            if (IS_ERR(smmu_pmu->reloc_base))
->>>>>                return PTR_ERR(smmu_pmu->reloc_base);
->>>>>        } else {
->>>>>
->>>>
->>>> .
->>>>
->>
-> 
-> .
-> 
-
+>
+> Jason
