@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E9B2FD2B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8582FD2C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390593AbhATOc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:32:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39318 "EHLO mail.kernel.org"
+        id S2388456AbhATOdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:33:25 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49210 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728897AbhATOYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:24:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E34523380;
-        Wed, 20 Jan 2021 14:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611152653;
-        bh=0Xtz3tkNSwsoY9gbgqE2qTK7eRaJcR+iJ9o+tD1IB+c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qkReOQiov9zXiYg96avLVaWfdyxpxanbJ1uYevLhphyxJQkpBe8s27GEbJCpbLClv
-         Pmp53G/9+dTzLyTCKYMrBzb8Oeb0ty1Fn8tuBSP3TAltZjQLhY7enM0IaALUq7ljAb
-         OvFYsUMQWyyYb3CafYK1WdyJvB69e9p2x6zbI07cLivlmcqDQ2fUutAbQjXxKJFdpM
-         BdRDy0IV1M/fByAQVJdkREme6VBxXklgB99icNJAtj/fVEvRxXLZIeJdNZJoTBS1N9
-         ylED35lcHlOWjzm8XRXYvWs39gy8h15E+45MTK0vsKgE0SRUa2IS+L1nwwvAYSM7vY
-         kyuWhg6uFbW6A==
-Received: by mail-ed1-f42.google.com with SMTP id b21so17132868edy.6;
-        Wed, 20 Jan 2021 06:24:13 -0800 (PST)
-X-Gm-Message-State: AOAM532xn2y+PkWUJSOlzhj9N3RKFfofxVFsjBT/MjQIK7GvMHyUCIq7
-        8PDv83EOjBahZZkmOhlr9FUMs1jpJO0uVzoL4Q==
-X-Google-Smtp-Source: ABdhPJxsjPL+nYG7BlFb3gzD3BUJUMJLtrEcPRLAGMIcR3Rwa6WblBDjUksihZpxjJd/Vr6d3NHetWaFA5kQ/EYByFs=
-X-Received: by 2002:a50:fc04:: with SMTP id i4mr7590319edr.137.1611152651919;
- Wed, 20 Jan 2021 06:24:11 -0800 (PST)
+        id S2388373AbhATOZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:25:59 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 10KEP0LH015983;
+        Wed, 20 Jan 2021 15:25:00 +0100
+Date:   Wed, 20 Jan 2021 15:25:00 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
+Subject: Re: rcutorture initrd/nolibc build on ARMv8?
+Message-ID: <20210120142500.GB15935@1wt.eu>
+References: <20210119153147.GA5083@paulmck-ThinkPad-P72>
+ <20210119161901.GA14667@1wt.eu>
+ <20210119170238.GA5603@C02TD0UTHF1T.local>
+ <20210119171637.GA14704@1wt.eu>
+ <20210119174358.GB14704@1wt.eu>
+ <20210120120725.GB73692@C02TD0UTHF1T.local>
+ <20210120124340.GA15935@1wt.eu>
+ <20210120134511.GA77728@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc>
-In-Reply-To: <20210120105246.23218-1-michael@walle.cc>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 20 Jan 2021 08:23:59 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
-Message-ID: <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Michael Walle <michael@walle.cc>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120134511.GA77728@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc> wrote:
->
-> fw_devlink will defer the probe until all suppliers are ready. We can't
-> use builtin_platform_driver_probe() because it doesn't retry after probe
-> deferral. Convert it to builtin_platform_driver().
+On Wed, Jan 20, 2021 at 01:45:11PM +0000, Mark Rutland wrote:
+> > Ah that's very interesting indeed because actually these ones should
+> > only be used when __NR_dup3 or __NR_clone are not defined. Thus I wanted
+> > to check the definitions that were reported in your error output but
+> > actually what was needed was to figure whether the correct ones were
+> > present, and they are, here on my machine (and yes I agree that in this
+> > case the dup2/fork above are bofus):
+> 
+> The issue is that even if a function is unused, the compiler still has
+> to parse and compile the code, so where __NR_dup2 is not defined, we'll
+> get a build error for:
+> 
+> static __attribute__((unused))
+> int sys_dup2(int old, int new)
+> {
+>        return my_syscall2(__NR_dup2, old, new);
+> }
 
-If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-shouldn't it be fixed or removed? Then we're not fixing drivers later
-when folks start caring about deferred probe and devlink.
+For sure but this is supposed to be used only when __NR_dup3 is not
+defined. Ah now I understand where my mistake is: after it built
+successfully for me I inspected the most recent tree which has these
+in place. Sorry for being stupid!
 
-I'd really prefer if we convert this to a module instead. (And all the
-other PCI host drivers.)
+In my local tree it's defined like this:
 
-> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+ static __attribute__((unused))
+ int sys_dup2(int old, int new)
+ {
+#ifdef __NR_dup3
+       return my_syscall3(__NR_dup3, old, new, 0);
+#else
+       return my_syscall2(__NR_dup2, old, new);
+#endif
+ }
 
-This happened!?
+I guess I fixed it in a hurry and forgot to upstream it. I hate doing
+that :-(
 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/pci/controller/dwc/pci-layerscape.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index 44ad34cdc3bc..5b9c625df7b8 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -232,7 +232,7 @@ static const struct of_device_id ls_pcie_of_match[] = {
->         { },
->  };
->
-> -static int __init ls_pcie_probe(struct platform_device *pdev)
-> +static int ls_pcie_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
->         struct dw_pcie *pci;
-> @@ -271,10 +271,11 @@ static int __init ls_pcie_probe(struct platform_device *pdev)
->  }
->
->  static struct platform_driver ls_pcie_driver = {
-> +       .probe = ls_pcie_probe,
->         .driver = {
->                 .name = "layerscape-pcie",
->                 .of_match_table = ls_pcie_of_match,
->                 .suppress_bind_attrs = true,
->         },
->  };
-> -builtin_platform_driver_probe(ls_pcie_driver, ls_pcie_probe);
-> +builtin_platform_driver(ls_pcie_driver);
-> --
-> 2.20.1
->
+I'm going to push an update then. On a quick glance I'm seeing that I
+addressed dup2() using dup3(), fork() using clone(), getpgrp() using
+getpgid(), and poll() using ppoll().
+
+> ... we can deal with that by always returning -ENOSYS for unimplemented
+> syscalls, e.g.
+> 
+> static __attribute__((unused))
+> int sys_dup2(int old, int new)
+> {
+> #ifdef __NR_dup2
+>        return my_syscall2(__NR_dup2, old, new);
+> #else
+>        return -ENOSYS;
+> #endif
+> }
+
+I didn't want to do that because that would break userland which needs
+dup2(), hence the mapping to dup3 instead:
+
+  static __attribute__((unused))
+  int sys_dup2(int old, int new)
+  {
+  #ifdef __NR_dup3
+          return my_syscall3(__NR_dup3, old, new, 0);
+  #else
+          return my_syscall2(__NR_dup2, old, new);
+  #endif
+  }
+
+> I can spin a patch fixing up all the relevant syscalls, if you'd like?
+
+I shouldn't need since these are already fixed in my tree. At first glance
+the equivalent of the following commits is missing from the kernel version:
+
+   https://github.com/wtarreau/nolibc/commit/2379f25073f906d0bad22c48566fcffee8fc9cde
+   https://github.com/wtarreau/nolibc/commit/fd5272ec2c66e6f5b195d41c9c8978f58eb74668
+   https://github.com/wtarreau/nolibc/commit/47cc42a79c92305f4f8bc02fb28628a4fdd63eaa
+   https://github.com/wtarreau/nolibc/commit/d2dc42fd614991c741dfdc8b984864fa3cf64c8e
+   https://github.com/wtarreau/nolibc/commit/800f75c13ede49097325f82a4cca3515c44a7939
+
+However I'm interested in knowing if the latest version fixes everything
+for you or not :
+
+  https://raw.githubusercontent.com/wtarreau/nolibc/master/nolibc.h
+
+> [...]
+> 
+> >   ubuntu@ubuntu:~$ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
+> >   #define __NR_clone 220
+> >   #define __NR_dup3 24
+> > 
+> > Do you have these ones with your more recent includes ? Or are these wrong
+> > again ?
+> 
+> Those are correct (and all the syscall numbers in unistd.h should be
+> correct so long as you don't erroneously set the __ARCH_WANT_* flags):
+> 
+> [mark@gravadlaks:~/src/linux]% gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include tools/include/nolibc/nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
+> #define __NR_clone 220
+> #define __NR_dup3 24
+
+OK thanks! I will retry here without setting those. I'm pretty sure I
+needed these ones to find the __NR_* values but it's possible that it
+was before I had the alternate ones and that these are finally not
+nedeed at all (which I would prefer as these are ugly).
+
+> There's still some latent issue when using nolibc (compared to using
+> glibc) where the init process never seems to exit, but that looks to be
+> orthogonal to the syscall numbering issue -- I'm currently digging into
+> that.
+
+OK! Usually for me it does as in my preinit (which uses nolibc), if I
+exit I instantly get a kernel panic. In addition if I launch it after
+boot, it immediately exits and shows no issue. But maybe you're observing
+an artefact related to something else (process session, opened FD or
+anything else maybe).
+
+I'll send an update ASAP, likely this evening.
+
+Many thanks for digging into this, and sorry for this mess, as I was
+absolutely certain it was up to date :-(
+
+Willy
