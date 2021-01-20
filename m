@@ -2,88 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590782FDD0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 224512FDD15
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732380AbhATWeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 17:34:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729905AbhATWWU (ORCPT
+        id S1731886AbhATWgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:36:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54533 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731168AbhATWXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 17:22:20 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C46C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:21:07 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id w124so11583oia.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:21:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iuuB/jOlzPElZfMvk5p2UDvJi85zELwSvE3glw8OPIw=;
-        b=e2o98l27C2vaXITzOO4ZXqZ4QA16q+H8vup/3a0lHVCDl1dlwZmg+AwCy/mdauli/1
-         tXjQ3FLWcMf+lEq6r7IPBOZvlP9a4E8IwTwsa/dw6uWlTNk/2shXK+4TDAejDTO46O/N
-         APFPzMl4dfG06AxgPuyBnpMIPZfmnjcEbnSdtSxIy6zj3egxRf1bQvw3+DJ2nMwRa2Tt
-         WKixlcmo1MfHtx5NwsfK5CMZujrUhC0DTwAOUQ5CRTwLvQKdS04LajteEys2UH1Cvgwu
-         1q3pNSTXhFEqanuq8hrhkQ9imy2VvBtou79eF/53c9C0SsfLrDjMTW7ri3vAklH/HL3X
-         aJ8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iuuB/jOlzPElZfMvk5p2UDvJi85zELwSvE3glw8OPIw=;
-        b=LLsXvkqn3WSt0OwQIfwYam6fwctAfEkPa7ybcR01hLdJgytezLjUhxM8VrGts7PmZW
-         w7U0tHHwcnY1ApwRDvrjJQbGYMK4Nykx3rO1ihjalKcD1mI6vhssCBiAwuDunJ/vdZBM
-         VqrUkXfBk6HZkuyelqnZYlNgF+TxR5Myg31ZiM0cqxGE8C+2Lj0s6oDlCPk3RIFU5wUn
-         2eq1dkw2uotE6sIQsgcVnknKOJPMoVpv+Ba5rApWvPOlET8wlBDW0C6tQbPfIcO+Pgh0
-         CDWWwyh3E8VJw9lth+g4dn9jIClUjFnWOWVL6hfUlngK6cLFrVaIEFw0OYmQQtmaxCg7
-         LsAg==
-X-Gm-Message-State: AOAM530KeXQZfK6V4UcTq9Tkt9L2KYUfnqg+eIlTKP9CR3XvK4mHk//3
-        wtt5Usp7qGtnmnPokuIXey6bRg==
-X-Google-Smtp-Source: ABdhPJytfmfxPYq2+G1uFOWDMntzi0gw0jgFPSvVK1kERm0z+jCb/zumi/rIT1FeyHa6hU0hHsiMDg==
-X-Received: by 2002:a05:6808:9a:: with SMTP id s26mr4254499oic.124.1611181266962;
-        Wed, 20 Jan 2021 14:21:06 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h127sm660819oia.28.2021.01.20.14.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 14:21:06 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] pinctrl: qcom: TLMM driver for SC8180x
-Date:   Wed, 20 Jan 2021 14:21:11 -0800
-Message-Id: <20210120222114.1609779-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Wed, 20 Jan 2021 17:23:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611181296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZkCTUh6YIpz/AUkWavZvz8nrC1gxZflHJ+My0TUlYq8=;
+        b=IWTlpI18BdGNb8bCQlxL3IJuhfPpWpOhdBZ4nzBJXW0h2O/JRnmiHZJ89kDlSZBgpbABSz
+        fyo2o1kMWhVvbdgAeaQ2bTSbpFQHM4HDZm63wlce968NR2QuUO0pnPIAaTZE6doajpO6hC
+        JQzP6EKgRL48tfenENZRF9BQQJqyF/Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-4jyfIjAkMxSc_5pS-0UlJg-1; Wed, 20 Jan 2021 17:21:34 -0500
+X-MC-Unique: 4jyfIjAkMxSc_5pS-0UlJg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA4DD800D55;
+        Wed, 20 Jan 2021 22:21:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 61F231992D;
+        Wed, 20 Jan 2021 22:21:25 +0000 (UTC)
+Subject: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Takashi Iwai <tiwai@suse.de>, Matthew Wilcox <willy@infradead.org>,
+        linux-afs@lists.infradead.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 20 Jan 2021 22:21:24 +0000
+Message-ID: <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches introduces a binding documenting the shared properties of all
-TLMM blocks, then defines the binding for the SC8180x specifically, followed by
-the actual driver.
 
-Bjorn Andersson (3):
-  dt-bindings: pinctrl: qcom: Define common TLMM binding
-  dt-bindings: pinctrl: qcom: Add sc8180x binding
-  pinctrl: qcom: Add sc8180x TLMM driver
+Here's a set of patches to do two things:
 
- .../pinctrl/qcom,sc8180x-pinctrl.yaml         |  153 ++
- .../bindings/pinctrl/qcom,tlmm-common.yaml    |   85 +
- drivers/pinctrl/qcom/Kconfig                  |    9 +
- drivers/pinctrl/qcom/Makefile                 |    1 +
- drivers/pinctrl/qcom/pinctrl-sc8180x.c        | 1624 +++++++++++++++++
- 5 files changed, 1872 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sc8180x-pinctrl.yaml
- create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,tlmm-common.yaml
- create mode 100644 drivers/pinctrl/qcom/pinctrl-sc8180x.c
+ (1) Add a helper library to handle the new VM readahead interface.  This
+     is intended to be used unconditionally by the filesystem (whether or
+     not caching is enabled) and provides a common framework for doing
+     caching, transparent huge pages and, in the future, possibly fscrypt
+     and read bandwidth maximisation.  It also allows the netfs and the
+     cache to align, expand and slice up a read request from the VM in
+     various ways; the netfs need only provide a function to read a stretch
+     of data to the pagecache and the helper takes care of the rest.
 
--- 
-2.29.2
+ (2) Add an alternative fscache/cachfiles I/O API that uses the kiocb
+     facility to do async DIO to transfer data to/from the netfs's pages,
+     rather than using readpage with wait queue snooping on one side and
+     vfs_write() on the other.  It also uses less memory, since it doesn't
+     do buffered I/O on the backing file.
+
+     Note that this uses SEEK_HOLE/SEEK_DATA to locate the data available
+     to be read from the cache.  Whilst this is an improvement from the
+     bmap interface, it still has a problem with regard to a modern
+     extent-based filesystem inserting or removing bridging blocks of
+     zeros.  Fixing that requires a much greater overhaul.
+
+This is a step towards overhauling the fscache API.  The change is opt-in
+on the part of the network filesystem.  A netfs should not try to mix the
+old and the new API because of conflicting ways of handling pages and the
+PG_fscache page flag and because it would be mixing DIO with buffered I/O.
+Further, the helper library can't be used with the old API.
+
+This does not change any of the fscache cookie handling APIs or the way
+invalidation is done.
+
+In the near term, I intend to deprecate and remove the old I/O API
+(fscache_allocate_page{,s}(), fscache_read_or_alloc_page{,s}(),
+fscache_write_page() and fscache_uncache_page()) and eventually replace
+most of fscache/cachefiles with something simpler and easier to follow.
+
+The patchset contains four parts:
+
+ (1) Some helper patches, including provision of an ITER_XARRAY iov
+     iterator and a function to do readahead expansion.
+
+ (2) Patches to add the netfs helper library.
+
+ (3) A patch to add the fscache/cachefiles kiocb API
+
+ (4) Patches to add support in AFS for this.
+
+With this, AFS without a cache passes all expected xfstests; with a cache,
+there's an extra failure, but that's also there before these patches.
+Fixing that probably requires a greater overhaul.
+
+These patches can be found also on:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-netfs-lib
+
+David
+---
+David Howells (24):
+      iov_iter: Add ITER_XARRAY
+      vm: Add wait/unlock functions for PG_fscache
+      mm: Implement readahead_control pageset expansion
+      vfs: Export rw_verify_area() for use by cachefiles
+      netfs: Make a netfs helper module
+      netfs: Provide readahead and readpage netfs helpers
+      netfs: Add tracepoints
+      netfs: Gather stats
+      netfs: Add write_begin helper
+      netfs: Define an interface to talk to a cache
+      fscache, cachefiles: Add alternate API to use kiocb for read/write to cache
+      afs: Disable use of the fscache I/O routines
+      afs: Pass page into dirty region helpers to provide THP size
+      afs: Print the operation debug_id when logging an unexpected data version
+      afs: Move key to afs_read struct
+      afs: Don't truncate iter during data fetch
+      afs: Log remote unmarshalling errors
+      afs: Set up the iov_iter before calling afs_extract_data()
+      afs: Use ITER_XARRAY for writing
+      afs: Wait on PG_fscache before modifying/releasing a page
+      afs: Extract writeback extension into its own function
+      afs: Prepare for use of THPs
+      afs: Use the fs operation ops to handle FetchData completion
+      afs: Use new fscache read helper API
+
+Takashi Iwai (1):
+      cachefiles: Drop superfluous readpages aops NULL check
+
+
+ fs/Kconfig                    |    1 +
+ fs/Makefile                   |    1 +
+ fs/afs/Kconfig                |    1 +
+ fs/afs/dir.c                  |  225 ++++---
+ fs/afs/file.c                 |  472 ++++----------
+ fs/afs/fs_operation.c         |    4 +-
+ fs/afs/fsclient.c             |  108 ++--
+ fs/afs/inode.c                |    7 +-
+ fs/afs/internal.h             |   57 +-
+ fs/afs/rxrpc.c                |  150 ++---
+ fs/afs/write.c                |  610 ++++++++++--------
+ fs/afs/yfsclient.c            |   82 +--
+ fs/cachefiles/Makefile        |    1 +
+ fs/cachefiles/interface.c     |    5 +-
+ fs/cachefiles/internal.h      |    9 +
+ fs/cachefiles/rdwr.c          |    2 -
+ fs/cachefiles/rdwr2.c         |  406 ++++++++++++
+ fs/fscache/Makefile           |    3 +-
+ fs/fscache/internal.h         |    3 +
+ fs/fscache/page.c             |    2 +-
+ fs/fscache/page2.c            |  116 ++++
+ fs/fscache/stats.c            |    1 +
+ fs/internal.h                 |    5 -
+ fs/netfs/Kconfig              |   23 +
+ fs/netfs/Makefile             |    5 +
+ fs/netfs/internal.h           |   97 +++
+ fs/netfs/read_helper.c        | 1142 +++++++++++++++++++++++++++++++++
+ fs/netfs/stats.c              |   57 ++
+ fs/read_write.c               |    1 +
+ include/linux/fs.h            |    1 +
+ include/linux/fscache-cache.h |    4 +
+ include/linux/fscache.h       |   28 +-
+ include/linux/netfs.h         |  167 +++++
+ include/linux/pagemap.h       |   16 +
+ include/net/af_rxrpc.h        |    2 +-
+ include/trace/events/afs.h    |   74 +--
+ include/trace/events/netfs.h  |  201 ++++++
+ mm/filemap.c                  |   18 +
+ mm/readahead.c                |   70 ++
+ net/rxrpc/recvmsg.c           |    9 +-
+ 40 files changed, 3171 insertions(+), 1015 deletions(-)
+ create mode 100644 fs/cachefiles/rdwr2.c
+ create mode 100644 fs/fscache/page2.c
+ create mode 100644 fs/netfs/Kconfig
+ create mode 100644 fs/netfs/Makefile
+ create mode 100644 fs/netfs/internal.h
+ create mode 100644 fs/netfs/read_helper.c
+ create mode 100644 fs/netfs/stats.c
+ create mode 100644 include/linux/netfs.h
+ create mode 100644 include/trace/events/netfs.h
+
 
