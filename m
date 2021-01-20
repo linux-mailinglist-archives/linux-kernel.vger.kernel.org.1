@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896172FC767
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABF02FC75B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731324AbhATCDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        id S1731033AbhATCCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730997AbhATBpA (ORCPT
+        with ESMTP id S1731031AbhATBpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:45:00 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA47AC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:41 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id w79so23972788qkb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:41 -0800 (PST)
+        Tue, 19 Jan 2021 20:45:10 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4508C0617A2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:46 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id c1so15280778qtc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=gHgQfTRvar1lIU9rNG4Q491ak9Bif38ih9mdt5Czeeg=;
-        b=EEahLgI2IDWObWfsAD0JI1JVF8Cn8kbvHzl/a3zQRzwTOxk1mXISMzEKGL00rZFp3W
-         WIKAI2WioD+6gmcTpgPZdsy/xncMBzalKS1d5RhqvKc+Db395BRV13meAT3Rk4ZULIWJ
-         nYnOxew1UD+I6RR+vZ/6MvDShJLfaGHcrF4phFYQBCEQs0R9oiEZOnV8h4e78DmIqi3o
-         6WuGDzGYmUjwhxzYxhO3/gNQHqqAbtLCRssN0q8ivlxPpO04RYY8dS9UvKapVgAu7LGB
-         uEWOP3OxDFwDD0czAXsJoCl47IS4NrzSUzz/hcNrkL9XYLlbPdqwreNZQshuC0KSnOxX
-         lpfg==
+        bh=9lkuj952gZlf+x4X5uCEePkXus+rlNAKcNGEDA8YLvg=;
+        b=Q0t8MucHzq07VAgjOeBxpDDYsIE7Lmts5Ml510aZJoJ9FO9ueC3634JdHUzWUpTg2H
+         SBn+aXqjlgiZK/8Cka3C65kmtm8+IgTgGF/w86ZboFD4soI4I1ony+ohgZRyvn3NQPyb
+         fFOo/5o7kL21OqGDNNBWoYnQqUSQ1JtcIHfNVxmiuK341+aI7pJaSeWYlJUZhghZ4XQR
+         6274sBYSUco4VGWEx8T71ToUSAzmngBf8l9EAn9nSdU0fnUH25IW4MQvMc7JD+9l7vNt
+         j9LvNCPuAOc0gFsRn3sCKNevjWnO6cSTY9wu37CzEzRJ5yGXcmSooQ+xqCQKohs2rAHF
+         svNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gHgQfTRvar1lIU9rNG4Q491ak9Bif38ih9mdt5Czeeg=;
-        b=RyRFEDjuzSNLoz1JrU+PBj6MbkMa/3i1hvwKbMtU/Oc9idaAM9PpOgfOc0rLVaNRhn
-         WmJccOPPWH6Y6um+Et1mcJtcCup5pj7jr2I6fbWkcaU3q9bLUBrV/vGznk/VWY1KrEgC
-         j41VeIwhpviqHvzfBk0j36ckXnahdG+8yNvfAkSxhdDHgrwGr7lxCruC4m/q7jfnmz5G
-         ehWjyqnhE2VofkLwMjIuUgToN0nhpF6Hs5Qf4dxd6NEmeC45e8GbHJND2i+IfsrSg/fv
-         S84zpCqA86Db0TUlezF2JGFip91636nY9OvL/QbXQ08tifsKGWGaueqbLa1sz1bXPMiu
-         YRsg==
-X-Gm-Message-State: AOAM533hlskJX/32b/oKkHGGSgnUOylYbL/KIe7hXkisRd+/owc3isK7
-        TBOEWbeBBiMe/rrW4wtioQ1GWA==
-X-Google-Smtp-Source: ABdhPJzHj6LQ0cBsDfz1RNSBv0bk1KWxpZzS84FijMdIS8OK4Ed3mNROA1OjtyVVSBCQUoJgercOMA==
-X-Received: by 2002:a37:a64c:: with SMTP id p73mr2740731qke.439.1611107021036;
-        Tue, 19 Jan 2021 17:43:41 -0800 (PST)
+        bh=9lkuj952gZlf+x4X5uCEePkXus+rlNAKcNGEDA8YLvg=;
+        b=MzkJidamwhR/TYKiWejyPG1zwTrdticcO9jkNim3GFFa2Mvhk+/LjVzjbzYvteuaKR
+         dac4Shq74xsU5thgK45zABmCMgUEthWm+IRTsi9IT85rSd+mTtvc+r/46MZWU0HqVAkb
+         KSbRBXzxhYNrhAj/LKk3oYQbWkHZPCzbzHzs6g8TwMd02KusVtyrbERp+w88s0uGEbf7
+         Y2dPmKjtNWigxF9jMsAWIoi8Wr0wOkCMdfrMIg7j5VE74htmA6PA4vKxT4o/+4vmsWdU
+         4IO/kL5Fai6Z0hN1rIO8jTZ2i8GyDxaRVKHDdeePk2jcKl0DBcS5tAdHlmEtKU7bO63V
+         iItQ==
+X-Gm-Message-State: AOAM530xbXk2QjxFMaIoEHZUVryz2fv5U7spuU/0YdDe1H6gjubjXOwi
+        okgj0BTRpQUs6wxTP1Sms36/NLQQdIaOlA==
+X-Google-Smtp-Source: ABdhPJxd4TBlTzGSVJy47qSy922MRq4TG3PdZv3O1/O9T6C2P7ICFr5jCeJguegPDpQDKG0RiMFxsA==
+X-Received: by 2002:a05:622a:42:: with SMTP id y2mr6695551qtw.186.1611107025776;
+        Tue, 19 Jan 2021 17:43:45 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id a9sm391871qkk.39.2021.01.19.17.43.39
+        by smtp.gmail.com with ESMTPSA id a9sm391871qkk.39.2021.01.19.17.43.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 17:43:40 -0800 (PST)
+        Tue, 19 Jan 2021 17:43:45 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
@@ -59,9 +59,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
         linux-doc@vger.kernel.org, ira.weiny@intel.com,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH v6 03/14] mm/gup: return an error on migration failure
-Date:   Tue, 19 Jan 2021 20:43:22 -0500
-Message-Id: <20210120014333.222547-4-pasha.tatashin@soleen.com>
+Subject: [PATCH v6 06/14] mm: apply per-task gfp constraints in fast path
+Date:   Tue, 19 Jan 2021 20:43:25 -0500
+Message-Id: <20210120014333.222547-7-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210120014333.222547-1-pasha.tatashin@soleen.com>
 References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
@@ -71,66 +71,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When migration failure occurs, we still pin pages, which means
-that we may pin CMA movable pages which should never be the case.
+Function current_gfp_context() is called after fast path. However, soon we
+will add more constraints which will also limit zones based on context.
+Move this call into fast path, and apply the correct constraints for all
+allocations.
 
-Instead return an error without pinning pages when migration failure
-happens.
+Also update .reclaim_idx based on value returned by current_gfp_context()
+because it soon will modify the allowed zones.
 
-No need to retry migrating, because migrate_pages() already retries
-10 times.
+Note:
+With this patch we will do one extra current->flags load during fast path,
+but we already load current->flags in fast-path:
 
+__alloc_pages_nodemask()
+ prepare_alloc_pages()
+  current_alloc_flags(gfp_mask, *alloc_flags);
+
+Later, when we add the zone constrain logic to current_gfp_context() we
+will be able to remove current->flags load from current_alloc_flags, and
+therefore return fast-path to the current performance level.
+
+Suggested-by: Michal Hocko <mhocko@kernel.org>
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- mm/gup.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ mm/page_alloc.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 16f10d5a9eb6..88ce41f41543 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1557,7 +1557,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- {
- 	unsigned long i;
- 	bool drain_allow = true;
--	bool migrate_allow = true;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
- 	struct page *prev_head, *head;
-@@ -1608,17 +1607,15 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- 			for (i = 0; i < nr_pages; i++)
- 				put_page(pages[i]);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0114cdfe4aae..de9bcd08d002 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4979,6 +4979,13 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
+ 	}
  
--		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
--			/*
--			 * some of the pages failed migration. Do get_user_pages
--			 * without migration.
--			 */
--			migrate_allow = false;
--
-+		ret = migrate_pages(&cma_page_list, alloc_migration_target,
-+				    NULL, (unsigned long)&mtc, MIGRATE_SYNC,
-+				    MR_CONTIG_RANGE);
-+		if (ret) {
- 			if (!list_empty(&cma_page_list))
- 				putback_movable_pages(&cma_page_list);
-+			return ret > 0 ? -ENOMEM : ret;
- 		}
-+
- 		/*
- 		 * We did migrate all the pages, Try to get the page references
- 		 * again migrating any new CMA pages which we failed to isolate
-@@ -1628,7 +1625,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- 						   pages, vmas, NULL,
- 						   gup_flags);
+ 	gfp_mask &= gfp_allowed_mask;
++	/*
++	 * Apply scoped allocation constraints. This is mainly about GFP_NOFS
++	 * resp. GFP_NOIO which has to be inherited for all allocation requests
++	 * from a particular context which has been marked by
++	 * memalloc_no{fs,io}_{save,restore}.
++	 */
++	gfp_mask = current_gfp_context(gfp_mask);
+ 	alloc_mask = gfp_mask;
+ 	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
+ 		return NULL;
+@@ -4994,13 +5001,7 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
+ 	if (likely(page))
+ 		goto out;
  
--		if ((ret > 0) && migrate_allow) {
-+		if (ret > 0) {
- 			nr_pages = ret;
- 			drain_allow = true;
- 			goto check_again;
+-	/*
+-	 * Apply scoped allocation constraints. This is mainly about GFP_NOFS
+-	 * resp. GFP_NOIO which has to be inherited for all allocation requests
+-	 * from a particular context which has been marked by
+-	 * memalloc_no{fs,io}_{save,restore}.
+-	 */
+-	alloc_mask = current_gfp_context(gfp_mask);
++	alloc_mask = gfp_mask;
+ 	ac.spread_dirty_pages = false;
+ 
+ 	/*
 -- 
 2.25.1
 
