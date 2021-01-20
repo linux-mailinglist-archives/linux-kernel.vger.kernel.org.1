@@ -2,167 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EEF2FCB91
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74172FCBA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725891AbhATHe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:34:57 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:17286 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbhATHeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:34:50 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DLHMX29Qvz9tyTV;
-        Wed, 20 Jan 2021 08:34:00 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 1Vy_h0fi_kaO; Wed, 20 Jan 2021 08:34:00 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLHMX18zJz9tyMd;
-        Wed, 20 Jan 2021 08:34:00 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 163FD8B7DF;
-        Wed, 20 Jan 2021 08:34:01 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id hK2Wjc8GUsgg; Wed, 20 Jan 2021 08:34:00 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E2F578B7E0;
-        Wed, 20 Jan 2021 08:34:00 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id DD0AB66A64; Wed, 20 Jan 2021 07:34:00 +0000 (UTC)
-Message-Id: <67ab24d26837fcc85a59eca9c68db9bf27a878dd.1611128021.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <00e462bd8b271bed0fec62dc9b25ffd4e0ec19cf.1611128021.git.christophe.leroy@csgroup.eu>
-References: <00e462bd8b271bed0fec62dc9b25ffd4e0ec19cf.1611128021.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] powerpc/32s: Unroll kuep_lock and kuep_unlock macros
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 20 Jan 2021 07:34:00 +0000 (UTC)
+        id S1729045AbhATHfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:35:52 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11171 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbhATHfG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:35:06 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6007dd020000>; Tue, 19 Jan 2021 23:34:26 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
+ 2021 07:34:24 +0000
+Received: from jckuo-lt.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 20 Jan 2021 07:34:20 +0000
+From:   JC Kuo <jckuo@nvidia.com>
+To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
+        <robh@kernel.org>, <jonathanh@nvidia.com>, <kishon@ti.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>
+CC:     <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nkristam@nvidia.com>, <linux-clk@vger.kernel.org>,
+        JC Kuo <jckuo@nvidia.com>, Thierry Reding <treding@nvidia.com>
+Subject: [PATCH v7 01/14] clk: tegra: Add PLLE HW power sequencer control
+Date:   Wed, 20 Jan 2021 15:34:01 +0800
+Message-ID: <20210120073414.69208-2-jckuo@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210120073414.69208-1-jckuo@nvidia.com>
+References: <20210120073414.69208-1-jckuo@nvidia.com>
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611128066; bh=IanWnaEx5OqRKgwILKHYhSJRlNTCTZXeCWicG73uJRc=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:MIME-Version:X-NVConfidentiality:
+         Content-Transfer-Encoding:Content-Type;
+        b=BqxAkSuyqdrwEBkShIXsul4YKeqzgLNkKmgGwv7JGTTQY8leFbvM8OF8dQbUJNd5v
+         NmBdEhWPzCb5tge0+kvLLnprLUdC3Pg0a0/fVUeqhuMfYhpvqnQHkvDvVD302MosT9
+         zl0HKs4R1iA1T5J0yk9SJqz8PrajExQP0aFjlsM41stTf9fmN+ukIrVgal97xVPbC4
+         FVNhf0+ZZhmmnfd3LCVNg3g+5Ox5riPFbSRHh+PiQAUsr2fmkoFrTGmVKhNqRH3xKc
+         loDDgrY/wCX9r9f9txJQTpBxgoKisfcBKu6BP5oQyVQ6eY7SNO7SlhNXPogTs+sQ5W
+         rJh7j9bGyQm5A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unroll the loops in kuep_lock and kuep_unlock.
+PLLE has a hardware power sequencer logic which is a state machine
+that can power on/off PLLE without any software intervention. The
+sequencer has two inputs, one from XUSB UPHY PLL and the other from
+SATA UPHY PLL. PLLE provides reference clock to XUSB and SATA UPHY
+PLLs. When both of the downstream PLLs are powered-off, PLLE hardware
+power sequencer will automatically power off PLLE for power saving.
 
-Benchmarked on an mpc 8321 with a standard kernel having a
-3M/1M user/kernel memory split, i.e. 12 segments for user.
+XUSB and SATA UPHY PLLs also have their own hardware power sequencer
+logic. XUSB UPHY PLL is shared between XUSB SuperSpeed ports and PCIE
+controllers. The XUSB UPHY PLL hardware power sequencer has inputs
+from XUSB and PCIE. When all of the XUSB SuperSpeed ports and PCIE
+controllers are in low power state, XUSB UPHY PLL hardware power
+sequencer automatically power off PLL and flags idle to PLLE hardware
+power sequencer. Similar applies to SATA UPHY PLL.
 
-Without KUEP, null_syscall benchmark is 220 cycles.
-With KUEP, null_syscall benchmark is 439 cycles.
+PLLE hardware power sequencer has to be enabled after both downstream
+sequencers are enabled.
 
-Once loops are unrolled, null_syscall benchmark is 366 cycles.
-This is almost 17% reduction.
+This commit adds two helper functions:
+1. tegra210_plle_hw_sequence_start() for XUSB PADCTL driver to enable
+   PLLE hardware sequencer at proper time.
 
-It is assumed that userspace covers at least 4 segments and
-at most 14 segments.
+2. tegra210_plle_hw_sequence_is_enabled() for XUSB PADCTL driver to
+   check whether PLLE hardware sequencer has been enabled or not.
 
-The isync is removed, it saves 8 cycles. For kuep_unlock, the rfi
-will do the synchronisation. For kuep_lock, we get a small window
-during which exec is still possible, but is won't last more than a
-few instructions.
-
-Both macros are called two times so the size increase is in
-the noise (approx 120 instructions).
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: JC Kuo <jckuo@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
 ---
- arch/powerpc/include/asm/book3s/32/kup.h | 67 ++++++++++++++++++------
- 1 file changed, 52 insertions(+), 15 deletions(-)
+v7:
+   no change
+v6:
+   no change
+v5:
+   no change
+v4:
+   update copyright strings
+v3:
+   rename 'val' with 'value
 
-diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
-index a0117a9d5b06..e800b515ac02 100644
---- a/arch/powerpc/include/asm/book3s/32/kup.h
-+++ b/arch/powerpc/include/asm/book3s/32/kup.h
-@@ -7,21 +7,61 @@
- 
- #ifdef __ASSEMBLY__
- 
--.macro kuep_update_sr	gpr1, gpr2		/* NEVER use r0 as gpr2 due to addis */
--101:	mtsrin	\gpr1, \gpr2
--	addi	\gpr1, \gpr1, 0x111		/* next VSID */
--	rlwinm	\gpr1, \gpr1, 0, 0xf0ffffff	/* clear VSID overflow */
--	addis	\gpr2, \gpr2, 0x1000		/* address of next segment */
--	bdnz	101b
--	isync
-+.macro kuep_increment gpr1, gpr2
-+	addi	\gpr1, \gpr1, 0x222		/* Next second VSID */
-+	addi	\gpr2, \gpr2, 0x222		/* Next second VSID */
-+	rlwinm	\gpr1, \gpr1, 0, 0xf0ffffff	/* Clear VSID overflow */
-+	rlwinm	\gpr2, \gpr2, 0, 0xf0ffffff	/* Clear VSID overflow */
-+.endm
+ drivers/clk/tegra/clk-tegra210.c | 53 +++++++++++++++++++++++++++++++-
+ include/linux/clk/tegra.h        |  4 ++-
+ 2 files changed, 55 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/tegra/clk-tegra210.c b/drivers/clk/tegra/clk-tegra=
+210.c
+index 68cbb98af567..b9099012dc7b 100644
+--- a/drivers/clk/tegra/clk-tegra210.c
++++ b/drivers/clk/tegra/clk-tegra210.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Copyright (c) 2012-2014 NVIDIA CORPORATION.  All rights reserved.
++ * Copyright (c) 2012-2020 NVIDIA CORPORATION.  All rights reserved.
+  */
+=20
+ #include <linux/io.h>
+@@ -403,6 +403,14 @@ static unsigned long tegra210_input_freq[] =3D {
+ #define PLLRE_BASE_DEFAULT_MASK		0x1c000000
+ #define PLLRE_MISC0_WRITE_MASK		0x67ffffff
+=20
++/* PLLE */
++#define PLLE_MISC_IDDQ_SW_CTRL		(1 << 14)
++#define PLLE_AUX_USE_LOCKDET		(1 << 3)
++#define PLLE_AUX_SS_SEQ_INCLUDE		(1 << 31)
++#define PLLE_AUX_ENABLE_SWCTL		(1 << 4)
++#define PLLE_AUX_SS_SWCTL		(1 << 6)
++#define PLLE_AUX_SEQ_ENABLE		(1 << 24)
 +
-+.macro kuep_update_sr gpr1, gpr2		/* NEVER use r0 as gpr1 or gpr2 due to addi */
-+	addi	\gpr2, \gpr1, 0x111		/* Next VSID */
-+	rlwinm	\gpr2, \gpr2, 0, 0xf0ffffff	/* Clear VSID overflow */
-+	mtsr	0, \gpr1
-+	mtsr	1, \gpr2
-+	kuep_increment \gpr1, \gpr2
-+	mtsr	2, \gpr1
-+	mtsr	3, \gpr2
-+#if NUM_USER_SEGMENTS > 4
-+	kuep_increment \gpr1, \gpr2
-+	mtsr	4, \gpr1
-+#if NUM_USER_SEGMENTS > 5
-+	mtsr	5, \gpr2
-+#if NUM_USER_SEGMENTS > 6
-+	kuep_increment \gpr1, \gpr2
-+	mtsr	6, \gpr1
-+#if NUM_USER_SEGMENTS > 7
-+	mtsr	7, \gpr2
-+#if NUM_USER_SEGMENTS > 8
-+	kuep_increment \gpr1, \gpr2
-+	mtsr	8, \gpr1
-+#if NUM_USER_SEGMENTS > 9
-+	mtsr	9, \gpr2
-+#if NUM_USER_SEGMENTS > 10
-+	kuep_increment \gpr1, \gpr2
-+	mtsr	10, \gpr1
-+#if NUM_USER_SEGMENTS > 11
-+	mtsr	11, \gpr2
-+#if NUM_USER_SEGMENTS > 12
-+	kuep_increment \gpr1, \gpr2
-+	mtsr	12, \gpr1
-+#if NUM_USER_SEGMENTS > 13
-+	mtsr	13, \gpr2
-+#endif
-+#endif
-+#endif
-+#endif
-+#endif
-+#endif
-+#endif
-+#endif
-+#endif
-+#endif
- .endm
- 
- .macro kuep_lock	gpr1, gpr2
- #ifdef CONFIG_PPC_KUEP
--	li	\gpr1, NUM_USER_SEGMENTS
--	li	\gpr2, 0
--	mtctr	\gpr1
--	mfsrin	\gpr1, \gpr2
-+	mfsr	\gpr1, 0
- 	oris	\gpr1, \gpr1, SR_NX@h		/* set Nx */
- 	kuep_update_sr \gpr1, \gpr2
+ /* PLLX */
+ #define PLLX_USE_DYN_RAMP		1
+ #define PLLX_BASE_LOCK			(1 << 27)
+@@ -489,6 +497,49 @@ static unsigned long tegra210_input_freq[] =3D {
+ #define PLLU_MISC0_WRITE_MASK		0xbfffffff
+ #define PLLU_MISC1_WRITE_MASK		0x00000007
+=20
++bool tegra210_plle_hw_sequence_is_enabled(void)
++{
++	u32 value;
++
++	value =3D readl_relaxed(clk_base + PLLE_AUX);
++	if (value & PLLE_AUX_SEQ_ENABLE)
++		return true;
++
++	return false;
++}
++EXPORT_SYMBOL_GPL(tegra210_plle_hw_sequence_is_enabled);
++
++int tegra210_plle_hw_sequence_start(void)
++{
++	u32 value;
++
++	if (tegra210_plle_hw_sequence_is_enabled())
++		return 0;
++
++	/* skip if PLLE is not enabled yet */
++	value =3D readl_relaxed(clk_base + PLLE_MISC0);
++	if (!(value & PLLE_MISC_LOCK))
++		return -EIO;
++
++	value &=3D ~PLLE_MISC_IDDQ_SW_CTRL;
++	writel_relaxed(value, clk_base + PLLE_MISC0);
++
++	value =3D readl_relaxed(clk_base + PLLE_AUX);
++	value |=3D (PLLE_AUX_USE_LOCKDET | PLLE_AUX_SS_SEQ_INCLUDE);
++	value &=3D ~(PLLE_AUX_ENABLE_SWCTL | PLLE_AUX_SS_SWCTL);
++	writel_relaxed(value, clk_base + PLLE_AUX);
++
++	fence_udelay(1, clk_base);
++
++	value |=3D PLLE_AUX_SEQ_ENABLE;
++	writel_relaxed(value, clk_base + PLLE_AUX);
++
++	fence_udelay(1, clk_base);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(tegra210_plle_hw_sequence_start);
++
+ void tegra210_xusb_pll_hw_control_enable(void)
+ {
+ 	u32 val;
+diff --git a/include/linux/clk/tegra.h b/include/linux/clk/tegra.h
+index eb016fc9cc0b..f7ff722a03dd 100644
+--- a/include/linux/clk/tegra.h
++++ b/include/linux/clk/tegra.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2012, NVIDIA CORPORATION.  All rights reserved.
++ * Copyright (c) 2012-2020, NVIDIA CORPORATION.  All rights reserved.
+  */
+=20
+ #ifndef __LINUX_CLK_TEGRA_H_
+@@ -123,6 +123,8 @@ static inline void tegra_cpu_clock_resume(void)
+ }
  #endif
-@@ -29,10 +69,7 @@
- 
- .macro kuep_unlock	gpr1, gpr2
- #ifdef CONFIG_PPC_KUEP
--	li	\gpr1, NUM_USER_SEGMENTS
--	li	\gpr2, 0
--	mtctr	\gpr1
--	mfsrin	\gpr1, \gpr2
-+	mfsr	\gpr1, 0
- 	rlwinm	\gpr1, \gpr1, 0, ~SR_NX		/* Clear Nx */
- 	kuep_update_sr \gpr1, \gpr2
- #endif
--- 
-2.25.0
+=20
++extern int tegra210_plle_hw_sequence_start(void);
++extern bool tegra210_plle_hw_sequence_is_enabled(void);
+ extern void tegra210_xusb_pll_hw_control_enable(void);
+ extern void tegra210_xusb_pll_hw_sequence_start(void);
+ extern void tegra210_sata_pll_hw_control_enable(void);
+--=20
+2.25.1
 
