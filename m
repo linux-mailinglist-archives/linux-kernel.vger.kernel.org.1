@@ -2,223 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39D62FCB4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F2A2FCB5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728175AbhATHJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:09:07 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:14647 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725988AbhATHIs (ORCPT
+        id S1728152AbhATHOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:14:14 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56736 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726423AbhATHN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:08:48 -0500
-X-UUID: d215402292c340fd9231e5b15a45cd15-20210120
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7RvTVT3ZhF2//9ut8zBRcTtMoMnQZ6PraRA/7xI7g5A=;
-        b=EEYCvxW9aqWrq22wJ7JO+PtRe/lyQikyI1fboieN/YPKRChX3dQrGzma2TKVjn9eapJFV6/zXeYGV+lKPJ+iAgEbEkwEohRcGWVpg4J59JoHtrgzBiK+2GWuCNayX0Wk5wNO2L2vQ34xp+LEtIh4BuoTSTahVmIq735d9IowrrM=;
-X-UUID: d215402292c340fd9231e5b15a45cd15-20210120
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1664373271; Wed, 20 Jan 2021 15:07:30 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
- (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Jan
- 2021 15:07:27 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 Jan 2021 15:07:25 +0800
-Message-ID: <1611126445.19055.34.camel@mhfsdcap03>
-Subject: Re: [PATCH v5 06/27] dt-bindings: mediatek: Add binding for mt8192
- IOMMU
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-CC:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, <youlin.pei@mediatek.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        <chao.hao@mediatek.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>, <anan.sun@mediatek.com>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg 
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 20 Jan 2021 15:07:25 +0800
-In-Reply-To: <CAAFQd5A26tZo3gpsmqbRSa3x7a1KThzt9Jw74jWsqQGrBsabhw@mail.gmail.com>
-References: <20201209080102.26626-1-yong.wu@mediatek.com>
-         <20201209080102.26626-7-yong.wu@mediatek.com>
-         <X+L9XpkoII7tw/tX@chromium.org> <1608809713.26323.262.camel@mhfsdcap03>
-         <CAAFQd5CCJv=0q=V45Z7mtq7FSq1c5TcH6vyqfp3MWxaA=ZexJQ@mail.gmail.com>
-         <1610520301.31716.27.camel@mhfsdcap03>
-         <CAAFQd5A26tZo3gpsmqbRSa3x7a1KThzt9Jw74jWsqQGrBsabhw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 357884101786B8D869E28A6933E2F1ED2DF27EB10D840F46773425924AE913FE2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 20 Jan 2021 02:13:58 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UMJ.w4A_1611126765;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMJ.w4A_1611126765)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 15:12:50 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     marcel@holtmann.org
+Cc:     johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] net/bluetooth:  Fix the follow coccicheck warnings
+Date:   Wed, 20 Jan 2021 15:12:44 +0800
+Message-Id: <1611126764-34416-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAxLTIwIGF0IDEzOjE1ICswOTAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
-T24gV2VkLCBKYW4gMTMsIDIwMjEgYXQgMzo0NSBQTSBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVr
-LmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBPbiBXZWQsIDIwMjEtMDEtMTMgYXQgMTQ6MzAgKzA5MDAs
-IFRvbWFzeiBGaWdhIHdyb3RlOg0KPiA+ID4gT24gVGh1LCBEZWMgMjQsIDIwMjAgYXQgODozNSBQ
-TSBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+
-IE9uIFdlZCwgMjAyMC0xMi0yMyBhdCAxNzoxOCArMDkwMCwgVG9tYXN6IEZpZ2Egd3JvdGU6DQo+
-ID4gPiA+ID4gT24gV2VkLCBEZWMgMDksIDIwMjAgYXQgMDQ6MDA6NDFQTSArMDgwMCwgWW9uZyBX
-dSB3cm90ZToNCj4gPiA+ID4gPiA+IFRoaXMgcGF0Y2ggYWRkcyBkZWNyaXB0aW9ucyBmb3IgbXQ4
-MTkyIElPTU1VIGFuZCBTTUkuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gbXQ4MTkyIGFsc28g
-aXMgTVRLIElPTU1VIGdlbjIgd2hpY2ggdXNlcyBBUk0gU2hvcnQtRGVzY3JpcHRvciB0cmFuc2xh
-dGlvbg0KPiA+ID4gPiA+ID4gdGFibGUgZm9ybWF0LiBUaGUgTTRVLVNNSSBIVyBkaWFncmFtIGlz
-IGFzIGJlbG93Og0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgRU1JDQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQo+ID4g
-PiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgIE00VQ0KPiA+ID4gPiA+ID4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfA0KPiA+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAg
-IC0tLS0tLS0tLS0tLQ0KPiA+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICBTTUkgQ29t
-bW9uDQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tDQo+ID4g
-PiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQo+ID4gPiA+ID4gPiAgICstLS0t
-LS0tKy0tLS0tLSstLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tKw0KPiA+ID4g
-PiA+ID4gICB8ICAgICAgIHwgICAgICB8ICAgICAgfCAgICAgICAuLi4uLi4gICAgICAgICB8ICAg
-ICAgIHwNCj4gPiA+ID4gPiA+ICAgfCAgICAgICB8ICAgICAgfCAgICAgIHwgICAgICAgICAgICAg
-ICAgICAgICAgfCAgICAgICB8DQo+ID4gPiA+ID4gPiBsYXJiMCAgIGxhcmIxICBsYXJiMiAgbGFy
-YjQgICAgIC4uLi4uLiAgICAgIGxhcmIxOSAgIGxhcmIyMA0KPiA+ID4gPiA+ID4gZGlzcDAgICBk
-aXNwMSAgIG1kcCAgICB2ZGVjICAgICAgICAgICAgICAgICAgIElQRSAgICAgIElQRQ0KPiA+ID4g
-PiA+ID4NCj4gPiA+ID4gPiA+IEFsbCB0aGUgY29ubmVjdGlvbnMgYXJlIEhXIGZpeGVkLCBTVyBj
-YW4gTk9UIGFkanVzdCBpdC4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBtdDgxOTIgTTRVIHN1
-cHBvcnQgMH4xNkdCIGlvdmEgcmFuZ2UuIHdlIHByZWFzc2lnbiBkaWZmZXJlbnQgZW5naW5lcw0K
-PiA+ID4gPiA+ID4gaW50byBkaWZmZXJlbnQgaW92YSByYW5nZXM6DQo+ID4gPiA+ID4gPg0KPiA+
-ID4gPiA+ID4gZG9tYWluLWlkICBtb2R1bGUgICAgIGlvdmEtcmFuZ2UgICAgICAgICAgICAgICAg
-ICBsYXJicw0KPiA+ID4gPiA+ID4gICAgMCAgICAgICBkaXNwICAgICAgICAwIH4gNEcgICAgICAg
-ICAgICAgICAgICAgICAgbGFyYjAvMQ0KPiA+ID4gPiA+ID4gICAgMSAgICAgICB2Y29kZWMgICAg
-ICA0RyB+IDhHICAgICAgICAgICAgICAgICAgICAgbGFyYjQvNS83DQo+ID4gPiA+ID4gPiAgICAy
-ICAgICAgIGNhbS9tZHAgICAgIDhHIH4gMTJHICAgICAgICAgICAgIGxhcmIyLzkvMTEvMTMvMTQv
-MTYvMTcvMTgvMTkvMjANCj4gPiA+ID4gPg0KPiA+ID4gPiA+IFdoeSBkbyB3ZSBwcmVhc3NpZ24g
-dGhlc2UgYWRkcmVzc2VzIGluIERUPyBTaG91bGRuJ3QgaXQgYmUgYSB1c2VyJ3Mgb3INCj4gPiA+
-ID4gPiBpbnRlZ3JhdG9yJ3MgZGVjaXNpb24gdG8gc3BsaXQgdGhlIDE2IEdCIGFkZHJlc3MgcmFu
-Z2UgaW50byBzdWItcmFuZ2VzDQo+ID4gPiA+ID4gYW5kIGRlZmluZSB3aGljaCBsYXJicyB0aG9z
-ZSBzdWItcmFuZ2VzIGFyZSBzaGFyZWQgd2l0aD8NCj4gPiA+ID4NCj4gPiA+ID4gVGhlIHByb2Js
-ZW0gaXMgdGhhdCB3ZSBjYW4ndCBzcGxpdCB0aGUgMTZHQiByYW5nZSB3aXRoIHRoZSBsYXJiIGFz
-IHVuaXQuDQo+ID4gPiA+IFRoZSBleGFtcGxlIGlzIHRoZSBiZWxvdyBjY3UwKGxhcmIxMyBwb3J0
-OS8xMCkgaXMgYSBpbmRlcGVuZGVudA0KPiA+ID4gPiByYW5nZShkb21haW4pLCB0aGUgb3RoZXJz
-IHBvcnRzIGluIGxhcmIxMyBpcyBpbiBhbm90aGVyIGRvbWFpbi4NCj4gPiA+ID4NCj4gPiA+ID4g
-ZGlzcC92Y29kZWMvY2FtL21kcCBkb24ndCBoYXZlIHNwZWNpYWwgaW92YSByZXF1aXJlbWVudCwg
-dGhleSBjb3VsZA0KPiA+ID4gPiBhY2Nlc3MgYW55IHJhbmdlLiB2Y29kZWMgYWxzbyBjYW4gbG9j
-YXRlIDhHfjEyRy4gaXQgZG9uJ3QgY2FyZSBhYm91dA0KPiA+ID4gPiB3aGVyZSBpdHMgaW92YSBs
-b2NhdGUuIGhlcmUgSSBwcmVhc3NpZ24gbGlrZSB0aGlzIGZvbGxvd2luZyB3aXRoIG91cg0KPiA+
-ID4gPiBpbnRlcm5hbCBwcm9qZWN0IHNldHRpbmcuDQo+ID4gPg0KPiA+ID4gTGV0IG1lIHRyeSB0
-byB1bmRlcnN0YW5kIHRoaXMgYSBiaXQgbW9yZS4gR2l2ZW4gdGhlIHNwbGl0IHlvdSdyZQ0KPiA+
-ID4gcHJvcG9zaW5nLCBpcyB0aGVyZSBhY3R1YWxseSBhbnkgaXNvbGF0aW9uIGVuZm9yY2VkIGJl
-dHdlZW4gcGFydGljdWxhcg0KPiA+ID4gZG9tYWlucz8gRm9yIGV4YW1wbGUsIGlmIEkgcHJvZ3Jh
-bSB2Y29kZWMgdG8gd2l0aCBhIERNQSBhZGRyZXNzIGZyb20NCj4gPiA+IHRoZSAwLTRHIHJhbmdl
-LCB3b3VsZCB0aGUgSU9NTVUgYWN0dWFsbHkgZ2VuZXJhdGUgYSBmYXVsdCwgZXZlbiBpZg0KPiA+
-ID4gZGlzcCBoYWQgc29tZSBtZW1vcnkgbWFwcGVkIGF0IHRoYXQgYWRkcmVzcz8NCj4gPg0KPiA+
-IEluIHRoaXMgY2FzZS4gd2Ugd2lsbCBnZXQgZmF1bHQgaW4gY3VycmVudCBTVyBzZXR0aW5nLg0K
-PiA+DQo+IA0KPiBPa2F5LCB0aGFua3MuDQo+IA0KPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gV2h5
-IHNldCB0aGlzIGluIERUPywgdGhpcyBpcyBvbmx5IGZvciBzaW1wbGlmeWluZyB0aGUgY29kZS4g
-QXNzdW1lIHdlDQo+ID4gPiA+IHB1dCBpdCBpbiB0aGUgcGxhdGZvcm0gZGF0YS4gV2UgaGF2ZSB1
-cCB0byAzMiBsYXJicywgZWFjaCBsYXJiIGhhcyB1cCB0bw0KPiA+ID4gPiAzMiBwb3J0cywgZWFj
-aCBwb3J0IG1heSBiZSBpbiBkaWZmZXJlbnQgaW9tbXUgZG9tYWlucy4gd2Ugc2hvdWxkIGhhdmUg
-YQ0KPiA+ID4gPiBiaWcgYXJyYXkgZm9yIHRoaXMuLmhvd2V2ZXIgd2Ugb25seSB1c2UgYSBtYWNy
-byB0byBnZXQgdGhlIGRvbWFpbiBpbiB0aGUNCj4gPiA+ID4gRFQgbWV0aG9kLg0KPiA+ID4gPg0K
-PiA+ID4gPiBXaGVuIHJlcGx5aW5nIHRoaXMgbWFpbCwgSSBoYXBwZW4gdG8gc2VlIHRoZXJlIGlz
-IGEgImRldi0+ZGV2X3JhbmdlX21hcCINCj4gPiA+ID4gd2hpY2ggaGFzICJkbWEtcmFuZ2UiIGlu
-Zm9ybWF0aW9uLCBJIHRoaW5rIEkgY291bGQgdXNlIHRoaXMgdmFsdWUgdG8gZ2V0DQo+ID4gPiA+
-IHdoaWNoIGRvbWFpbiB0aGUgZGV2aWNlIGJlbG9uZyB0by4gdGhlbiBubyBuZWVkIHB1dCBkb21p
-ZCBpbiBEVC4gSSB3aWxsDQo+ID4gPiA+IHRlc3QgdGhpcy4NCj4gPiA+DQo+ID4gPiBNeSBmZWVs
-aW5nIGlzIHRoYXQgdGhlIG9ubHkgcGFydCB0aGF0IG5lZWRzIHRvIGJlIGVuZm9yY2VkIHN0YXRp
-Y2FsbHkNCj4gPiA+IGlzIHRoZSByZXNlcnZlZCBJT1ZBIHJhbmdlIGZvciBDQ1VzLiBUaGUgb3Ro
-ZXIgcmFuZ2VzIHNob3VsZCBiZQ0KPiA+ID4gZGV0ZXJtaW5lZCBkeW5hbWljYWxseSwgYWx0aG91
-Z2ggSSB0aGluayBJIG5lZWQgdG8gdW5kZXJzdGFuZCBiZXR0ZXINCj4gPiA+IGhvdyB0aGUgaGFy
-ZHdhcmUgYW5kIHlvdXIgcHJvcG9zZWQgZGVzaWduIHdvcmsgdG8gdGVsbCB3aGF0IHdvdWxkIGJl
-DQo+ID4gPiBsaWtlbHkgdGhlIGJlc3QgY2hvaWNlIGhlcmUuDQo+ID4NCj4gPiBJIGhhdmUgcmVt
-b3ZlZCB0aGUgZG9taWQgcGF0Y2ggaW4gdjYuIGFuZCBnZXQgdGhlIGRvbWFpbiBpZCBpbiBbMjcv
-MzNdDQo+ID4gaW4gdjYuLg0KPiA+DQo+ID4gQWJvdXQgdGhlIG90aGVyIHJhbmdlcyBzaG91bGQg
-YmUgZHluYW1pY2FsLCB0aGUgY29tbWl0IG1lc3NhZ2UgWzMwLzMzXQ0KPiA+IG9mIHY2IHNob3Vs
-ZCBiZSBoZWxwZnVsLiB0aGUgcHJvYmxlbSBpcyB0aGF0IHdlIGhhdmUgYSBiYW5rX3NlbCBzZXR0
-aW5nDQo+ID4gZm9yIHRoZSBpb3ZhWzMyOjMzXS4gY3VycmVudGx5IHdlIHByZWFzc2lnbiB0aGlz
-IHZhbHVlLiB0aHVzLCBhbGwgdGhlDQo+ID4gcmFuZ2VzIGFyZSBmaXhlZC4gSWYgeW91IGFkanVz
-dCB0aGlzIHNldHRpbmcsIHlvdSBjYW4gbGV0IHZjb2RlYyBhY2Nlc3MNCj4gPiAwfjRHLg0KPiAN
-Cj4gT2theSwgc28gaXQgc291bmRzIGxpa2Ugd2UgZWZmZWN0aXZlbHkgaGF2ZSBmb3VyIDRHIGFk
-ZHJlc3Mgc3BhY2VzIGFuZA0KPiB3ZSBjYW4gYXNzaWduIHRoZSBtYXN0ZXIgZGV2aWNlcyB0byB0
-aGVtLiBJIGd1ZXNzIGVhY2ggb2YgdGhlc2UNCj4gYWRkcmVzcyBzcGFjZXMgbWFrZXMgZm9yIGFu
-IElPTU1VIGdyb3VwLg0KDQpZZXMuIEVhY2ggYSBhZGRyZXNzIHNwYWNlcyBpcyBhbiBJT01NVSBn
-cm91cC4NCg0KPiANCj4gSXQncyBmaW5lIHRvIHByZS1hc3NpZ24gdGhlIGRldmljZXMgdG8gdGhv
-c2UgZ3JvdXBzIGZvciBub3csIGJ1dCBpdA0KPiBkZWZpbml0ZWx5IHNob3VsZG4ndCBiZSBoYXJk
-Y29kZWQgaW4gRFQsIGJlY2F1c2UgaXQgZGVwZW5kcyBvbiB0aGUgdXNlDQo+IGNhc2Ugb2YgdGhl
-IGRldmljZS4gSSdsbCB0YWtlIGEgbG9vayBhdCB2NiwgYnV0IGl0IHNvdW5kcyBsaWtlIGl0DQo+
-IHNob3VsZCBiZSBmaW5lIGlmIGl0IGRvZXNuJ3QgdGFrZSB0aGUgYWRkcmVzcyBzcGFjZSBhc3Np
-Z25tZW50IGZyb20gRFQNCj4gYW55bW9yZS4NCg0KVGhhbmtzIHZlcnkgbXVjaCBmb3IgeW91ciBy
-ZXZpZXcuDQoNCj4gDQo+ID4NCj4gPiBDdXJyZW50bHkgd2UgaGF2ZSBubyBpbnRlcmZhY2UgdG8g
-YWRqdXN0IHRoaXMgc2V0dGluZy4gU3VwcG9zZSB3ZSBhZGQgYQ0KPiA+IG5ldyBpbnRlcmZhY2Ug
-Zm9yIHRoaXMuIEl0IHdvdWxkIGJlIHNvbWV0aGluZyBsaWtlOg0KPiA+DQo+ID4gICAgaW50IG10
-a19zbWlfbGFyYl9jb25maWdfYmFua3NlbChzdHJ1Y3QgZGV2aWNlICpsYXJiLCBpbnQgYmFua3Nl
-bCkNCj4gPg0KPiA+ICAgIFRoZW4sIGFsbCB0aGUgTU0gZHJpdmVycyBzaG91bGQgY2FsbCBpdCBi
-ZWZvcmUgdGhlIEhXIHdvcmtzIGV2ZXJ5DQo+ID4gdGltZSwgYW5kIGl0cyBpbXBsZW1lbnQgd2ls
-bCBiZSBhIGJpdCBjb21wbGV4IHNpbmNlIHdlIGFyZW4ndCBzdXJlIGlmDQo+ID4gdGhlIGxhcmIg
-aGFzIHBvd2VyIGF0IHRoYXQgdGltZS4gdGhlIGltcG9ydGFudCB0aGluZyBpcyB0aGF0IHRoZSBN
-TQ0KPiA+IGRldmljZXMgaGF2ZSBhbHJlYWR5IG5vdCBrbm93biB3aGljaCBsYXJiIGl0IGNvbm5l
-Y3RzIHdpdGggYXMgd2UgcGxhbiB0bw0KPiA+IGRlbGV0ZSAibWVkaWF0ZWssbGFyYiIgaW4gdGhl
-aXIgZHRzaSBub2Rlcy4NCj4gDQo+IEZyb20gdGhlIHByYWN0aWNhbCBwb2ludCBvZiB2aWV3LCBp
-dCBkb2Vzbid0IGxvb2sgbGlrZSBzZXR0aW5nIHRoaXMgb24NCj4gYSBwZXItbGFyYiBiYXNpcyB3
-b3VsZCBtYWtlIG11Y2ggc2Vuc2UuIFRoZSByZWFzb24gdG8gc3dpdGNoIHRoZQ0KPiBiYW5rX3Nl
-bCB3b3VsZCBiZSB0byBkZWNpZGUgd2hpY2ggTU0gZGV2aWNlcyBjYW4gc2hhcmUgdGhlIHNhbWUN
-Cj4gYWRkcmVzcyBzcGFjZS4gVGhpcyBpcyBhIHNlY3VyaXR5IGFzcGVjdCwgYmVjYXVzZSBpdCBl
-ZmZlY3RpdmVseQ0KPiBkZXRlcm1pbmVzIHdoaWNoIGRldmljZXMgYXJlIGlzb2xhdGVkIGZyb20g
-ZWFjaCBvdGhlci4NCj4gDQo+IFRoYXQgc2FpZCwgSSBhZ3JlZSB0aGF0IGZvciBub3cgd2UgY2Fu
-IGp1c3Qgc3RhcnQgd2l0aCBhIGZpeGVkDQo+IGFzc2lnbm1lbnQuIFdlIGNhbiB0aGluayBvZiB0
-aGUgQVBJIGlmIHRoZXJlIGlzIGEgbmVlZCB0byBhZGp1c3QgdGhlDQo+IGFzc2lnbm1lbnQuDQoN
-ClNvcnJ5IGZvciBoZXJlLiBJIGZvcmdvdCBhIHRoaW5nIGhlcmUuIHRoYXQgaW50ZXJmYWNlIGFi
-b3ZlIHN0aWxsIHdpbGwNCm5vdCBiZSBoZWxwZnVsLiBJZiB3ZSBkb24ndCBkaXZpZGUgdGhlIHdo
-b2xlIDE2R0IgcmFuZ2VzIGludG8gNA0KcmVnaW9ucyhsZXQgYWxsIHRoZSBvdGhlciByYW5nZXMg
-YmUgZHluYW1pY2FsKSwgSXQgd29uJ3Qgd29yayBzaW5jZSB3ZQ0KY2FuIG9ubHkgYWRqdXN0IGJh
-bmtfc2VsIHdpdGggdGhlIGxhcmIgYXMgdW5pdC4gVGhpcyBpcyBhIHByb2JsZW0uIHRoZXJlDQph
-cmUgbWFueSBwb3J0cyBpbiBhIGxhcmIuIFRha2UgYSBleGFtcGxlLCB0aGUgYWRkcmVzcyBmb3Ig
-dmNvZGVjIHJlYWQNCnBvcnQgaXMgMzJiaXRzIHdoaWxlIHRoZSBhZGRyZXNzIGZvciB2Y29kZWMg
-d3JpdGUgcG9ydCBpcyAzM2JpdCwgdGhlbiBpdA0Kd2lsbCBmYWlsIHNpbmNlIHdlIG9ubHkgaGF2
-ZSBvbmUgYmFua19zZWwgc2V0dGluZyBmb3Igb25lIGxhcmIuIFRodXMgd2UNCmhhdmUgdG8gdXNl
-IGN1cnJlbnQgZGVzaWduLg0KDQo+IA0KPiA+DQo+ID4gICAgSW4gY3VycmVudCBkZXNpZ24sIHRo
-ZSBNTSBkZXZpY2UgZG9uJ3QgbmVlZCBjYXJlIGFib3V0IGl0IGFuZCA0R0INCj4gPiByYW5nZSBp
-cyBlbm91Z2ggZm9yIHRoZW0uDQo+ID4NCj4gDQo+IEFjdHVhbGx5LCBpcyB0aGUgY3VycmVudCBh
-c3NpZ25tZW50IGNvcnJlY3Q/DQoNCk9oLiBJbiB0aGUgY29kZSAocGF0Y2ggWzMyLzMzXSBvZiB2
-NiksIEkgcHV0IENDVTAvMSBpbiB0aGUgY2FtL21kcA0KcmVnaW9uIHdoaWNoIHN0YXJ0IGF0IDhH
-IHNpbmNlIENDVTAvMSBpcyBhIG1vZHVsZSBvZiBjYW1lcmEuDQoNCj4gDQo+IGRvbWFpbi1pZCAg
-bW9kdWxlICAgICBpb3ZhLXJhbmdlICAgICAgICAgICAgICAgICAgbGFyYnMNCj4gICAgMCAgICAg
-ICBkaXNwICAgICAgICAwIH4gNEcgICAgICAgICAgICAgICAgICAgICAgbGFyYjAvMQ0KPiAgICAx
-ICAgICAgIHZjb2RlYyAgICAgIDRHIH4gOEcgICAgICAgICAgICAgICAgICAgICBsYXJiNC81LzcN
-Cj4gICAgMiAgICAgICBjYW0vbWRwICAgICA4RyB+IDEyRyAgICAgICAgICAgICBsYXJiMi85LzEx
-LzEzLzE0LzE2LzE3LzE4LzE5LzIwDQo+ICAgIDMgICAgICAgQ0NVMCAgICAweDQwMDBfMDAwMCB+
-IDB4NDNmZl9mZmZmICAgICBsYXJiMTM6IHBvcnQgOS8xMA0KPiAgICA0ICAgICAgIENDVTEgICAg
-MHg0NDAwXzAwMDAgfiAweDQ3ZmZfZmZmZiAgICAgbGFyYjE0OiBwb3J0IDQvNQ0KPiANCj4gV291
-bGRuJ3QgQ0NVMCBhbmQgQ0NVMSBjb25mbGljdCB3aXRoIGRpc3A/IA0KDQpBYm91dCB0aGUgY29u
-ZmxpY3QsIEkgdXNlIHBhdGNoIFsyOS8zM10gb2YgdjYgZm9yIHRoaXMuIEkgd2lsbCByZXNlcnZl
-DQp0aGlzIHNwZWNpYWwgaW92YSByZWdpb24gd2hlbiB0aGUgZnVsbCBkb21haW4oMC00RyBpbiB0
-aGlzIGV4YW1wbGUpDQppbml0aWFsaXplLg0KDQo+IFNob3VsZCBwZXJoYXBzIGRpc3AgYmUgYXNz
-aWduZWQgMTJHIH4gMTZHIGluc3RlYWQ/DQoNCkkgdGhpbmsgbm8gbmVlZCBwdXQgaXQgdG8gMTJH
-LTE2RywgSW4gcHJldmlvdXMgU29DLCB3ZSBoYXZlIG9ubHkgNEdCDQpyYW5nZXMgZm9yIHdob2xl
-IE1NIGVuZ2luZXMuIGN1cnJlbnRseSBvbmx5IGNhbS9tZHAgZG9tYWluIGV4Y2x1ZGUgMTI4TQ0K
-Zm9yIENDVS4gaXQgc2hvdWxkIGJlIHNvbWV0aGluZyB3cm9uZyBpZiB0aGlzIGlzIG5vdCBlbm91
-Z2guDQoNCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gVG9tYXN6DQo+IA0KPiA+ID4NCj4gPiA+IEJl
-c3QgcmVnYXJkcywNCj4gPiA+IFRvbWFzeg0KPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gVGhhbmtz
-Lg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gQmVzdCByZWdhcmRzLA0KPiA+ID4gPiA+IFRvbWFzeg0K
-PiA+ID4gPiA+DQo+ID4gPiA+ID4gPiAgICAzICAgICAgIENDVTAgICAgMHg0MDAwXzAwMDAgfiAw
-eDQzZmZfZmZmZiAgICAgbGFyYjEzOiBwb3J0IDkvMTANCj4gPiA+ID4gPiA+ICAgIDQgICAgICAg
-Q0NVMSAgICAweDQ0MDBfMDAwMCB+IDB4NDdmZl9mZmZmICAgICBsYXJiMTQ6IHBvcnQgNC81DQo+
-ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gVGhlIGlvdmEgcmFuZ2UgZm9yIENDVTAvMShjYW1lcmEg
-Y29udHJvbCB1bml0KSBpcyBIVyByZXF1aXJlbWVudC4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4g
-PiBTaWduZWQtb2ZmLWJ5OiBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4g
-PiA+IFJldmlld2VkLWJ5OiBSb2IgSGVycmluZyA8cm9iaEBrZXJuZWwub3JnPg0KPiA+ID4gPiA+
-ID4gLS0tDQo+ID4gPiA+ID4gPiAgLi4uL2JpbmRpbmdzL2lvbW11L21lZGlhdGVrLGlvbW11Lnlh
-bWwgICAgICAgIHwgIDE4ICstDQo+ID4gPiA+ID4gPiAgaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1v
-cnkvbXQ4MTkyLWxhcmItcG9ydC5oIHwgMjQwICsrKysrKysrKysrKysrKysrKw0KPiA+ID4gPiA+
-ID4gIDIgZmlsZXMgY2hhbmdlZCwgMjU3IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4g
-PiA+ID4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1vcnkv
-bXQ4MTkyLWxhcmItcG9ydC5oDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiBbc25pcF0NCj4gPg0KDQo=
+./net/bluetooth/hci_debugfs.c: WARNING: sniff_min_interval_fops
+should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+---
+ net/bluetooth/hci_debugfs.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
+index 4626e02..65cad9f 100644
+--- a/net/bluetooth/hci_debugfs.c
++++ b/net/bluetooth/hci_debugfs.c
+@@ -237,7 +237,7 @@ static int conn_info_min_age_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
++DEFINE_DEBUGFS_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
+ 			conn_info_min_age_set, "%llu\n");
+ 
+ static int conn_info_max_age_set(void *data, u64 val)
+@@ -265,7 +265,7 @@ static int conn_info_max_age_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_info_max_age_fops, conn_info_max_age_get,
++DEFINE_DEBUGFS_ATTRIBUTE(conn_info_max_age_fops, conn_info_max_age_get,
+ 			conn_info_max_age_set, "%llu\n");
+ 
+ static ssize_t use_debug_keys_read(struct file *file, char __user *user_buf,
+@@ -419,7 +419,7 @@ static int voice_setting_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(voice_setting_fops, voice_setting_get,
++DEFINE_DEBUGFS_ATTRIBUTE(voice_setting_fops, voice_setting_get,
+ 			NULL, "0x%4.4llx\n");
+ 
+ static ssize_t ssp_debug_mode_read(struct file *file, char __user *user_buf,
+@@ -476,7 +476,7 @@ static int min_encrypt_key_size_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(min_encrypt_key_size_fops,
++DEFINE_DEBUGFS_ATTRIBUTE(min_encrypt_key_size_fops,
+ 			min_encrypt_key_size_get,
+ 			min_encrypt_key_size_set, "%llu\n");
+ 
+@@ -491,7 +491,7 @@ static int auto_accept_delay_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
++DEFINE_DEBUGFS_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
+ 			auto_accept_delay_set, "%llu\n");
+ 
+ static ssize_t force_bredr_smp_read(struct file *file,
+@@ -558,7 +558,7 @@ static int idle_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(idle_timeout_fops, idle_timeout_get,
++DEFINE_DEBUGFS_ATTRIBUTE(idle_timeout_fops, idle_timeout_get,
+ 			idle_timeout_set, "%llu\n");
+ 
+ static int sniff_min_interval_set(void *data, u64 val)
+@@ -586,7 +586,7 @@ static int sniff_min_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(sniff_min_interval_fops, sniff_min_interval_get,
++DEFINE_DEBUGFS_ATTRIBUTE(sniff_min_interval_fops, sniff_min_interval_get,
+ 			sniff_min_interval_set, "%llu\n");
+ 
+ static int sniff_max_interval_set(void *data, u64 val)
+@@ -614,7 +614,7 @@ static int sniff_max_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(sniff_max_interval_fops, sniff_max_interval_get,
++DEFINE_DEBUGFS_ATTRIBUTE(sniff_max_interval_fops, sniff_max_interval_get,
+ 			sniff_max_interval_set, "%llu\n");
+ 
+ void hci_debugfs_create_bredr(struct hci_dev *hdev)
+@@ -706,7 +706,7 @@ static int rpa_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(rpa_timeout_fops, rpa_timeout_get,
++DEFINE_DEBUGFS_ATTRIBUTE(rpa_timeout_fops, rpa_timeout_get,
+ 			rpa_timeout_set, "%llu\n");
+ 
+ static int random_address_show(struct seq_file *f, void *p)
+@@ -869,7 +869,7 @@ static int conn_min_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_min_interval_fops, conn_min_interval_get,
++DEFINE_DEBUGFS_ATTRIBUTE(conn_min_interval_fops, conn_min_interval_get,
+ 			conn_min_interval_set, "%llu\n");
+ 
+ static int conn_max_interval_set(void *data, u64 val)
+@@ -897,7 +897,7 @@ static int conn_max_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_max_interval_fops, conn_max_interval_get,
++DEFINE_DEBUGFS_ATTRIBUTE(conn_max_interval_fops, conn_max_interval_get,
+ 			conn_max_interval_set, "%llu\n");
+ 
+ static int conn_latency_set(void *data, u64 val)
+@@ -925,7 +925,7 @@ static int conn_latency_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_latency_fops, conn_latency_get,
++DEFINE_DEBUGFS_ATTRIBUTE(conn_latency_fops, conn_latency_get,
+ 			conn_latency_set, "%llu\n");
+ 
+ static int supervision_timeout_set(void *data, u64 val)
+@@ -953,7 +953,7 @@ static int supervision_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(supervision_timeout_fops, supervision_timeout_get,
++DEFINE_DEBUGFS_ATTRIBUTE(supervision_timeout_fops, supervision_timeout_get,
+ 			supervision_timeout_set, "%llu\n");
+ 
+ static int adv_channel_map_set(void *data, u64 val)
+@@ -981,7 +981,7 @@ static int adv_channel_map_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
++DEFINE_DEBUGFS_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
+ 			adv_channel_map_set, "%llu\n");
+ 
+ static int adv_min_interval_set(void *data, u64 val)
+@@ -1009,7 +1009,7 @@ static int adv_min_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(adv_min_interval_fops, adv_min_interval_get,
++DEFINE_DEBUGFS_ATTRIBUTE(adv_min_interval_fops, adv_min_interval_get,
+ 			adv_min_interval_set, "%llu\n");
+ 
+ static int adv_max_interval_set(void *data, u64 val)
+@@ -1037,7 +1037,7 @@ static int adv_max_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(adv_max_interval_fops, adv_max_interval_get,
++DEFINE_DEBUGFS_ATTRIBUTE(adv_max_interval_fops, adv_max_interval_get,
+ 			adv_max_interval_set, "%llu\n");
+ 
+ static int min_key_size_set(void *data, u64 val)
+@@ -1065,7 +1065,7 @@ static int min_key_size_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(min_key_size_fops, min_key_size_get,
++DEFINE_DEBUGFS_ATTRIBUTE(min_key_size_fops, min_key_size_get,
+ 			min_key_size_set, "%llu\n");
+ 
+ static int max_key_size_set(void *data, u64 val)
+@@ -1093,7 +1093,7 @@ static int max_key_size_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(max_key_size_fops, max_key_size_get,
++DEFINE_DEBUGFS_ATTRIBUTE(max_key_size_fops, max_key_size_get,
+ 			max_key_size_set, "%llu\n");
+ 
+ static int auth_payload_timeout_set(void *data, u64 val)
+@@ -1121,7 +1121,7 @@ static int auth_payload_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(auth_payload_timeout_fops,
++DEFINE_DEBUGFS_ATTRIBUTE(auth_payload_timeout_fops,
+ 			auth_payload_timeout_get,
+ 			auth_payload_timeout_set, "%llu\n");
+ 
+-- 
+1.8.3.1
 
