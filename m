@@ -2,126 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0904D2FDAB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A71B2FDAD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388792AbhATN6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:58:47 -0500
-Received: from mout.gmx.net ([212.227.15.15]:37119 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389844AbhATN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:29:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611149254;
-        bh=s+ysOp4OcvfRllPUaGW+Vz2xQAyomqy7xIT6QOV4oaQ=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=OW+6blaI6lZsvDiIrRkXFfuhKpbCF1mPXlZZnWfPVeKtDA8PgS6JoUgi3XNRp25Xo
-         KaB+oo1ozexSmGo8SRpjlv+tmoNDf3CUmbkB4MlSuwUDL4Vrwubj2jwUDztd0WHAwv
-         fciCabDX/718a98oXRZ48K6t3sZRpRr+7KjnE3BM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.204.192.78]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MZTmO-1lYi5A0kBK-00WWzx; Wed, 20 Jan 2021 14:27:34 +0100
-From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>
-Subject: [RFC PATCH 3/7] arm64: mm: use nGnRnE instead of nGnRE on Apple processors
-Date:   Wed, 20 Jan 2021 14:27:13 +0100
-Message-Id: <20210120132717.395873-4-mohamed.mediouni@caramail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+        id S2387506AbhATU2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:28:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731753AbhATN4x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:56:53 -0500
+X-Greylist: delayed 591 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Jan 2021 05:50:11 PST
+Received: from ellomb.netlib.re (unknown [IPv6:2001:912:1480:10::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412AFC061793
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:50:11 -0800 (PST)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by ellomb.netlib.re (Postfix) with ESMTPA id 878EA4A7F78D
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr; s=dkim;
+        t=1611150016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=afw9qI/QopdCYcXS2MJqQmVd3vUyRHZ3IkSpWWWdk+g=;
+        b=Br8b4903BhtCi3HNobFrKAL9qRGMmZE10UKIpL7m+wlH16oz/jDqkmEhzLocxsZ4+eas6L
+        y0xxfLoQdUzqzRACZIQNOfZHaCZy9k5amigCWQnymam9V/347b6cR0UxiVa5CcoN1CrRgt
+        ygbudAGIACBNOux5srbc87QkoLBkji0=
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Shanti_Lombard_n=c3=a9e_Bouchez-Mongard=c3=a9?= 
+        <shanti20210120@mildred.fr>
+Subject: More flexible BPF socket inet_lookup hooking after listening sockets
+ are dispatched
+Message-ID: <afb4e544-d081-eee8-e792-a480364a6572@mildred.fr>
+Date:   Wed, 20 Jan 2021 14:40:12 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tgRN9ZZSe4I0G1AnOStUrLzlx9ePZFoTVM7kvlMbPu/L2SyFwd2
- wVJoN+bOlH6NLGXNiegaSDh5m7jd1xuzbp3eGpZ2y9bfJVLBs/1kd6gq64kAGriYnH1zxgg
- 3n0lRknK/OWJeYjRcO2YOtv55SssMWh7o26n74OqFUiYwMSD4hjhSwZsx64N8PkVaMnJDge
- UpFJEdaabuc5buav1mjuA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cvzZywDWErY=:y87grJtHm0+LLMwsB+ZsLA
- FQaQM0GBgeYTo2zySC2+7rX+N7JR8Z2G4x2vnkC2DGABO5aN44monBSOY5Tz3f0CYbv+KSAHC
- wgpKeKWhUUlhwce/w3dkuyQ+h2DMTugsn5tg9O8t/wwaoZDQt4S1YL19LON3R8FaGaEebcFA1
- T8kD4LQjBvYh45z7HxMh3/N6BQLigNimFrhF/61U6swlP163sHAowwsN+fTOZOLr2zkefb8RZ
- ZX7ljnLxnniP3RfV9jQLVj2vl4GCcDs89CvWzXAj3iNxCkpinIyio0IZbhh5G3H3VqQ3I5juJ
- L77usap/mtCJS+Wlss2aBsOEoki9BCxIVpHm5p+0iUfrDAGcnlZyq2UsjgOHFQ+nkCozhBhnG
- mZztXr1na/R7I/mWIe6tNLbwe5KLb9Cn5cdS103mn+qZsvpTnfURS9YoOAUclJhJ2LvrpBU/+
- HK+JgWusLCdqTZorPVgITAjtNSdAL7MsbNLtFYMDnY9DYUsqbN8ug44AuYxqPGRpmJPjowYJ9
- lhiwm5Xihcg+xqil4Jk2nmZ8deBhGGzkP6OL2VVvilGS9txan80AVlHjroi0h/4EJ/r6htm29
- kWHL/Nhc875N+O59EFm1+lUOhWGaV5iDUfLJzL7iobEH7FCKhNLWZH6qUp2t7IgtfpP3fOauz
- aZ3XmxivUFASM8urLjVfbgIBOyUihnkFbvlkPLlu9jSYcnp1Bm7/DQe0YLJnhLY1S14SN0wdS
- 1lFRMqLq3il1sBq4z0aHvoPx0EAHnXspuZqBJe393uCPggl5zKCjOkyQFsW0VmV7x10hAXYm9
- esdzlvE7O5P/ZJwV6EM0THsYz5q0qix4VFUfDuTXwVZmT4cFAR+yS2GXYdi0dLWip3gpjd9QX
- yYIsUxiArBl26aqG5p42QDt/DImVR9J5Amb1E+HOA=
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr;
+        s=dkim; t=1611150016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=afw9qI/QopdCYcXS2MJqQmVd3vUyRHZ3IkSpWWWdk+g=;
+        b=czujUuD3buHv2yDstA+rCgneBK+UxHcpUk1xGDV55pvtkrjfWDCvF4C/0pf1+aVxGMmhDg
+        KgByF9yPsDZz69ec9kvNLO299rFM4jhBg5SS7CqYUKzhigE0GebFdO6tFQdiYImFRDKmee
+        Mya4xTxDTTHmmlUjOzSE0SA9TCZERoI=
+ARC-Seal: i=1; s=dkim; d=mildred.fr; t=1611150016; a=rsa-sha256; cv=none;
+        b=i04/G7xC9xGBUIlb4l6a4PTixrRRfL4i5vdfNfTR0fSqEBa0+zXUjw8KrClQ5NIcfYSHvG
+        TJo2xHMd0p7rf1B4q6j0P4un1TmN94M2fY9uRvo5kTTi2h2ZvTlf1rbAMtN4yHgubXgZuU
+        UPNEdC5oNRAp0XDep1eaMKqpCLKfI0A=
+ARC-Authentication-Results: i=1;
+        ellomb.netlib.re;
+        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti20210120@mildred.fr
+Authentication-Results: ellomb.netlib.re;
+        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti20210120@mildred.fr
+X-Spamd-Bar: /
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious hardware=
- quirk.
+Hello,
 
-On Apple processors, writes using the nGnRE device memory type get dropped=
- in flight,
-getting to nowhere.
+I believe this is my first time here, so please excuse me for mistakes. 
+Also, please Cc me on answers.
 
-Signed-off-by: Stan Skowronek <stan@corellium.com>
-Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
-=2D--
- arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Background : I am currently investigating putting network services on a 
+machine without using network namespace but still keep them isolated. To 
+do that, I allocated a separate IP address (127.0.0.0/8 for IPv4 and ULA 
+prefix below fd00::/8 for IPv6) and those services are forced to listen 
+to this IP address only. For some, I use seccomp with a small utility I 
+wrote at <https://github.com/mildred/force-bind-seccomp>. Now, I still 
+want a few selected services (reverse proxies) to listed for public 
+address but they can't necessarily listen with INADDR_ANY because some 
+other services might listen on the same port on their private IP. It 
+seems SO_REUSEADDR can be used to circumvent this on BSD but not on 
+Linux. After much research, I found Cloudflare recent contribution 
+(explained here <https://blog.cloudflare.com/its-crowded-in-here/>) 
+about inet_lookup BPF programs that could replace INADDR_ANY listening.
 
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index 1f7ee8c8b7b8..06436916f137 100644
-=2D-- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -51,6 +51,25 @@
- #define TCR_KASAN_HW_FLAGS 0
- #endif
+The inet_lookup BPF programs are hooking up in socket selection code for 
+incoming packets after connected packets are dispatched to their 
+respective sockets but before any new connection is dispatched to a 
+listening socket. This is well explained in the blog post.
 
-+#ifdef CONFIG_ARCH_APPLE
-+
-+/*
-+ * Apple cores appear to black-hole writes done with nGnRE.
-+ * We settled on a work-around that uses MAIR vs changing every single us=
-er of
-+ * nGnRE across the arm64 code.
-+ */
-+
-+#define MAIR_EL1_SET_APPLE						\
-+	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
-+	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |	\
-+	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
-+	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
-+
-+#endif
-+
- /*
-  * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memor=
-y and
-  * changed during __cpu_setup to Normal Tagged if the system supports MTE=
-.
-@@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
- 	 * Memory region attributes
- 	 */
- 	mov_q	x5, MAIR_EL1_SET
-+#ifdef CONFIG_ARCH_APPLE
-+	mrs	x0, MIDR_EL1
-+	lsr	w0, w0, #24
-+	mov_q	x1, MAIR_EL1_SET_APPLE
-+	cmp	x0, #0x61			// 0x61 =3D Implementer: Apple
-+	csel	x5, x1, x5, eq
-+#endif
- #ifdef CONFIG_ARM64_MTE
- 	mte_tcr	.req	x20
+However, I believe that being able to hook up later in the process could 
+have great use cases. With its current position, the BPF program can 
+override any listening socket too easily. It can also be surprising for 
+administrators used to the socket API not understanding why their 
+listening socket does not receives any packet.
 
-=2D-
-2.29.2
+Socket selection process (in net/ipv4/inet_hashtables.c function 
+__inet_lookup_listener):
+
+- A: look for already connected sockets (before __inet_lookup_listener)
+- B: look for inet_lookup BPF programs
+- C: look for listening sockets specifying address and port
+- D: here, provide another inet_lookup BPF hook
+- E: look for sockets listening using INADDR_ANY
+- F: here, provide another inet_lookup BPF hook
+
+In position D, a BPF program could implement socket listening like 
+INADDR_ANY listening would do but without the limitation that the port 
+must not be listened on by another IP address
+
+In position F, a BPF program could redirect new connection attempts to a 
+socket of its choice, allowing any connection attempt to be intercepted 
+if not catched before by an already listening socket.
+
+The suggestion above would work for my use case, but there is another 
+possibility to make the same use cases possible : implement in BPF (or 
+allow BPF to call) the C and E steps above so the BPF program can 
+supplant the kernel behavior. I find this solution less elegant and it 
+might not work well in case there are multiple inet_lookup BPF programs 
+installed.
+
+With this e-mail I wanted to spawn a discussion around that and possibly 
+take on the implementation. I never did any kernel development before 
+but you must start by something, and I believe this is a rather simple 
+improvement (duplicate already existing hooking, just a little bit lower 
+in the function). I might not be able to deliver this very quickly 
+either because I have limited time for this and I need to learn kernel 
+development but I'm ready to take on this task.
+
+Thank you for your time
+
+Shanti
+
 
