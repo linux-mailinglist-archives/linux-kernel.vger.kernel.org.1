@@ -2,59 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25B82FC9D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96DE2FC9E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbhATESm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:18:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728955AbhATEL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:11:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AAA82312D;
-        Wed, 20 Jan 2021 04:11:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611115876;
-        bh=U9Bt6Y1Dx4zEFVfCGSu8/p74QrHbV6nn5xm0mPuectA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GEr2KSzZykqwP7QHvisu0VFFoDLfIAJWqIQd76XXmsbJYiCLjZ5tJzUUU+8ZF41dZ
-         sZ8FyBYsiUKknSsI2zNUroR6nJAuU0XGLBA1pRDl/Rdr+Wv4NNc71l+RrUp73TxuoJ
-         WkVE9v+qTZe4TL31Uo8yRw4/N6mm0UJ6ZkENt9VkJ994S8JONNOBdicAbXfPVCwWWi
-         LZeRPZ8i0AwT329dJrVdMAflI9t8GYm7ECndBOt3uSZxECNqmYKLQOiwvL6vBi+Bsh
-         /HJGeHHyrMX9PuuI8IUuDcte3HCIKO0XXVc6m7Kv4IYX1gM8xxBkgTlYEWnA4hZT8X
-         qpvcxtgEwfW6A==
-Date:   Wed, 20 Jan 2021 09:41:10 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jack Pham <jackp@codeaurora.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>
-Subject: Re: [PATCH v3] dt-bindings: usb: qcom,dwc3: Add bindings for SM8150,
- SM8250, SM8350
-Message-ID: <20210120041110.GF2771@vkoul-mobl>
-References: <20210119173748.6729-1-jackp@codeaurora.org>
+        id S1728639AbhATETT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730692AbhATEMw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 23:12:52 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DABC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 20:12:10 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id h16so24129776edt.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 20:12:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l9avflWFeErte6PCdfopkFmndIBocFK+Q/nYZfMSQqE=;
+        b=C8X9zRKkt17O637vlA0w7Ei2ZWLSxfOvwrDoOnZpbpLWanHhida3po4heO9YLgkL3h
+         g2rrWM4q75sYgbOcuT7R8Ysq6PNPhyXKwYCrjVwhODO9wH7K/Gp58yjltLJy8hTUDhcW
+         mhLTWMHNIL7Yw9j/eKbhiPuLvflwpUv1jEhGT8drp9zHGpHcuTWMTzmgCQdBAjeu4ehj
+         JlUn/H9Jv4OVBsFlsxG5It9Y90VjsRyGEnCvK8hN94PMvlxdcocSL8tIcgPUxTKL+uPo
+         8Cvia917hnJtJNAsi9qYcfBvhbbNHwORUEA86Z5/h++2U2xB5oXsd4p+RLPy9O13E7J3
+         CPVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l9avflWFeErte6PCdfopkFmndIBocFK+Q/nYZfMSQqE=;
+        b=EpHx6Jl4LDEpY1Ayt1CP/CKmwbeGrKrPLSUD4L1NRCklK5IitPpPat6aClETfB7b8c
+         SfIwqm9HU6mLByCFstQ54x/b7WB/FEYDBnpy91MgUyJjLVbWz2m0LkfoUkxSpiCltirF
+         EGQFQJgpkVD17IKGIg3Rw2Au/eP9ENExTFhAon4Q/znLw+/suUGE3IwU2xAJ5S6EUUaG
+         ncY3qNlL9fG/5WStKDOtXw5xtErOTPFZsvrsRybtZI445UMS5LtVZpTkUg10xjzU2d2P
+         aw6uK/gF017YYAkgS/57I6YfK7Ak3CNE3bFhc6gBtXbY3d4kEo9K71WD8rH4sNtp0UJB
+         16pQ==
+X-Gm-Message-State: AOAM5325FbcrxOscdFc1iWzBYpF2F2kVH6UBDAJnVhjnVfSRumfuaJkA
+        9UF813z15LpgjKqyGlofLDRvRhjST9KI4d0Z4/Pv2g==
+X-Google-Smtp-Source: ABdhPJxaTZmcMRWRWf1kOl8EoB4XcBiaPjcSic8IErTq56RdAQHmLAtfGaZyRwaI/gCzOTN5YYo0k2RdctfiDacqV4Y=
+X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr3750536edd.52.1611115929077;
+ Tue, 19 Jan 2021 20:12:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119173748.6729-1-jackp@codeaurora.org>
+References: <20210119213727.pkiuSGW9i%akpm@linux-foundation.org> <5f8e2ede-5836-45e1-d8d7-ae949775e76e@infradead.org>
+In-Reply-To: <5f8e2ede-5836-45e1-d8d7-ae949775e76e@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 19 Jan 2021 20:12:01 -0800
+Message-ID: <CAPcyv4iX+7LAgAeSqx7Zw-Zd=ZV9gBv8Bo7oTbwCOOqJoZ3+Yg@mail.gmail.com>
+Subject: Re: [PATCH -mmotm] mm/memory_hotplug: fix for CONFIG_ZONE_DEVICE not enabled
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.cz>, mm-commits@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-01-21, 09:37, Jack Pham wrote:
-> Add compatible strings for the USB DWC3 controller on QCOM SM8150,
-> SM8250 and SM8350 SoCs.
-> 
-> Note the SM8150 & SM8250 compatibles are already being used in the
-> dts but was missing from the documentation.
+On Tue, Jan 19, 2021 at 7:05 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fix memory_hotplug.c when CONFIG_ZONE_DEVICE is not enabled.
+>
+> Fixes this build error:
+>
+> ../mm/memory_hotplug.c: In function =E2=80=98move_pfn_range_to_zone=E2=80=
+=99:
+> ../mm/memory_hotplug.c:772:24: error: =E2=80=98ZONE_DEVICE=E2=80=99 undec=
+lared (first use in this function); did you mean =E2=80=98ZONE_MOVABLE=E2=
+=80=99?
+>   if (zone_idx(zone) =3D=3D ZONE_DEVICE) {
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Thanks Randy. Apologies for the thrash, obviously the kbuild-robot
+does not include a CONFIG_ZONE_DEVICE=3Dn.
 
--- 
-~Vinod
+I'd prefer to fix this without adding ifdefery in a .c file with
+something like this:
+
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 0b5c44f730b4..66ba38dae9ba 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -885,6 +885,18 @@ static inline int local_memory_node(int node_id)
+{ return node_id; };
+  */
+ #define zone_idx(zone)         ((zone) - (zone)->zone_pgdat->node_zones)
+
++#ifdef CONFIG_ZONE_DEVICE
++static inline bool zone_is_zone_device(struct zone *zone)
++{
++       return zone_idx(zone) =3D=3D ZONE_DEVICE;
++}
++#else
++static inline bool zone_is_zone_device(struct zone *zone)
++{
++       return false;
++}
++#endif
++
+ /*
+  * Returns true if a zone has pages managed by the buddy allocator.
+  * All the reclaim decisions have to use this function rather than
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index c78a1bef561b..710e469fb3a1 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -769,7 +769,7 @@ void __ref move_pfn_range_to_zone(struct zone
+*zone, unsigned long start_pfn,
+         * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
+         * section.
+         */
+-       if (zone_idx(zone) =3D=3D ZONE_DEVICE) {
++       if (zone_is_zone_device(zone)) {
+                if (!IS_ALIGNED(start_pfn, PAGES_PER_SECTION))
+                        section_taint_zone_device(start_pfn);
+                if (!IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION))
