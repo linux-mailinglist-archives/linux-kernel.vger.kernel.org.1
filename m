@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C1B2FCA47
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD0D2FCA46
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730424AbhATFHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        id S1730393AbhATFHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:07:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729533AbhATFF2 (ORCPT
+        with ESMTP id S1729463AbhATFE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:05:28 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D1FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:04:48 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 15so14421248pgx.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:04:48 -0800 (PST)
+        Wed, 20 Jan 2021 00:04:59 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304C8C061757;
+        Tue, 19 Jan 2021 21:04:19 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id p185so7126926ybg.8;
+        Tue, 19 Jan 2021 21:04:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=oVErpyitxxhLPGfDajEW4fVOhIOQLKcz6X3NWGJEV+g=;
-        b=uae8KpuguS3BNlU2aKIemgBTkOQCef+In7mqQlFkr3oDW8LNMjmfF9rKFmc0WEj3DO
-         B7Phigy/LW/xRix8UhBC0QTTX+kYe1I6uytBsM/FGqTebvGjyN9/PFv+cDIWwujm7MNY
-         h2VsFSPX967OoJBmHoQXeyDkobrnYkuSLEiyfhT3moCrqyH+d6UTsw/LjGmB69daoigg
-         jUQGJ5P+Zg/LNs5iS94M5FRwr6nV4p780NzgEAMsqi/FKR+h5ebVPyxMKMnDC3ozO4Pv
-         O9HNoiES0tmVk4ozHIZwbMMUbZKl4abi7cWt/2Kp9BkbytuyYBcLfIz+kVDah0xII+/x
-         oicQ==
+        bh=2QNIuDgC5vixuFYsnYmkXpiIls3XVH0dL8gRb6T6ZM8=;
+        b=e82rsUdK/Y6ddR2zdT0kKv+G5OkLEYU8hrRAuzTOyZtpI7dYQYG5a3NrceAxX+cN47
+         0fyB2JO34Al//LuvpGWC4iN0rKS0fg4e49AjsLEr5+owB0+HNZDVdP66piFAb4Oo8hVW
+         6dZ8/oarGX8fJBTCxsNILesPJzVJDxu2QSo8l7jrQdDHvF8mqb05HsqD0Y3HCXcy3TEU
+         +aFBnqU40O86yhLvpfWEmwjzSHSHKmMyaXwxcb2tnCeAHfQ6Ijxl54lXrAUDd5fIFJBe
+         JAQGgyD+MHAi5GsA05Cuv5Vk1+WMNvKZuetseoYwjUDrCoDQvKuTbaQzxLXggdr+0BTo
+         CoZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=oVErpyitxxhLPGfDajEW4fVOhIOQLKcz6X3NWGJEV+g=;
-        b=jFKhadbaP5xlMGelAl6oUAprpEYREchOVOyWbITa4XGF/ls0qDSeoRzJVoRlZ0WsKo
-         qyIp4KtzGnQwNm2vW5c364JFBwcScr8o/bZwSP0zdH4xCjrvzRn3XBR6eaUtJs77oEaX
-         +0IZ+BiYTcguQWTIpcDlCuYPhzgIo4+A5Ha27evqPP9BGfli2z4+LdU3SdF2K6qz3WiV
-         DHWgc2sMwZIDmpEcvnqDUDVH+Pkn5nmGd0lexPmJfowTKOHaroYV037N21iKKlAG9Inm
-         5FXZPCUof4hRE7n4nqeCg9SF3f8PgAnzVnh1Y6V9wBp9G/vC1AaSykKUYympz7uGenYX
-         FtuQ==
-X-Gm-Message-State: AOAM531urE0REKVrON2O1jqqEyx7ocd4gvC4bjXDW5UBIJwsehf6x+US
-        82vEWnig+LvxeAeXVPgRf0GWXw==
-X-Google-Smtp-Source: ABdhPJwxwrfL9EnkZQLOwI9kO2+ssEC1CnWALWlmwpz/giDP4Fdgt36PXxQaDpZ7MHxmz1v18Ks31g==
-X-Received: by 2002:aa7:90cf:0:b029:1a3:a176:f4d0 with SMTP id k15-20020aa790cf0000b02901a3a176f4d0mr7366085pfk.8.1611119087844;
-        Tue, 19 Jan 2021 21:04:47 -0800 (PST)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:900a:5243:9086:584])
-        by smtp.gmail.com with ESMTPSA id z15sm708410pfr.89.2021.01.19.21.04.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 21:04:46 -0800 (PST)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Emmanuel Vadot <manu@bidouilliste.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH] pinctrl: clarify #pinctrl-cells for pinctrl-single,pins
-Date:   Tue, 19 Jan 2021 21:03:44 -0800
-Message-Id: <20210120050342.320704-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
+        bh=2QNIuDgC5vixuFYsnYmkXpiIls3XVH0dL8gRb6T6ZM8=;
+        b=tJ3/+q2z+D9ukuclBG1dWTs4kafKv2Dli8fJ6AOK4ytemlJULGPXkvJE+kOhv+zeVQ
+         +6hfYOTfcwoByz87tz+3pwgfnh0kjya1OTwkRNTZylX/5Wj2v85J1pg/HR10YyJlq0vT
+         vuDKRFZbM9+9PwtWLCo+4CX9pchh3LXomSygOxroTW1x1ARvAs8749MQzKCpYCCdzJ9Y
+         hPq/djostG8WGwBci7hhiU6uUuWN9P7UjsY+IRjmcFWc+6ljWPrEY8EERS4JAsEMQS+n
+         wYj93WktKrsmUVHddEHFHoktMIpB2Z+IshZWl1K2rUDJG/mvxrebw2e2iFDWPdN7TrFn
+         Qb2w==
+X-Gm-Message-State: AOAM530TuVjAbQqvR8zJI6Iz+fejnZc7QXqEDQJTiPssEHvTBrZY/D+w
+        xNKtCJZeFARl5Cd28XXg7hgIy2nawxTAAsOrr9u0beBRQGbFHvJ7
+X-Google-Smtp-Source: ABdhPJw9L4jaPxHZP4K8kMNUE01qQydu5uD2hO4uP6LuilAByXP0GeO/QqZRx0Vjpg4sRBkNv16ghzPTXhJK2IiebTo=
+X-Received: by 2002:a25:cf12:: with SMTP id f18mr11243168ybg.18.1611119058511;
+ Tue, 19 Jan 2021 21:04:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Wed, 20 Jan 2021 13:03:52 +0800
+Message-ID: <CAD-N9QVWNK=SPgT0mc81_UqbSV57aQ+x-s=iz9PnjQWNc5bG6A@mail.gmail.com>
+Subject: "WARNING: locking bug in finish_task_switch" and "WARNING: locking
+ bug in finish_lock_switch" should share the same root cause
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>, marcel@holtmann.org,
+        netdev@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document that #pinctrl-cells can be 1 or 2 for pinctrl-single,pins
+Dear kernel developers,
 
-Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
-Reported-by: Emmanuel Vadot <manu@bidouilliste.com>
-Link: https://lore.kernel.org/linux-gpio/20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com/
-Cc: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I found that on the syzbot dashboard, =E2=80=9CWARNING: locking bug in
+finish_task_switch=E2=80=9D[1] and
+"WARNING: locking bug in finish_lock_switch"[2] should share the same
+root cause.
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-index f903eb4471f8..bb9999119314 100644
---- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-+++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-@@ -8,7 +8,7 @@ Required properties:
- - reg : offset and length of the register set for the mux registers
- 
- - #pinctrl-cells : number of cells in addition to the index, set to 1
--  for pinctrl-single,pins and 2 for pinctrl-single,bits
-+  or 2 for pinctrl-single,pins and set to 2 for pinctrl-single,bits
- 
- - pinctrl-single,register-width : pinmux register access width in bits
- 
--- 
-2.25.1
+The reasons for the above statement:
+1) the stack trace is the same, and this title difference is due to
+the inline property of "finish_lock_switch";
+2) their PoCs are the same as each other;
 
+If you can have any issues with this statement or our information is
+useful to you, please let us know. Thanks very much.
+
+[1] WARNING: locking bug in finish_task_switch -
+https://syzkaller.appspot.com/bug?id=3Dfff3de4144dc949f632cb91af9b12f9c2f30=
+9894
+[2] WARNING: locking bug in finish_lock_switch -
+https://syzkaller.appspot.com/bug?id=3Dc7f3ee17ec2ac6f27e0c72f2a90eabc3c4e1=
+d998
+
+--
+My best regards to you.
+
+     No System Is Safe!
+     Dongliang Mu
