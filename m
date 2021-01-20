@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB45B2FD280
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFA32FD27F
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387641AbhATOUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:20:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51084 "EHLO mail.kernel.org"
+        id S2388241AbhATOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:19:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389307AbhATNB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:01:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C480323380;
-        Wed, 20 Jan 2021 13:01:17 +0000 (UTC)
+        id S2389352AbhATNCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:02:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B78223383;
+        Wed, 20 Jan 2021 13:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611147679;
-        bh=xekDUOsdP1mRM5AZqMuYSS92fneYc+x6Ce2gxjs/9dE=;
+        s=k20201202; t=1611147683;
+        bh=vEVVkVFtV70lv9L+719xvU8gbnItebFr2gkLNdO/LHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDuNUbUyPdgYo8s/Vl3muJ2N2wV10wLRISgTn5Di4JxbVwxQBrZavp1w/A1gELfSp
-         uLbaIiZawHFYHMbY3O3/CpbBIFMgfuTtYoWMVb88UoE5sZbz+Ro+nSm6HjWPn/CIkZ
-         pGISCX1xNOVS0Ntvb1P+ZbLNuhrbXk7ouwlL4pbkLKpg6hyH04+9bRE2QX5gafO8U2
-         XJTFIU01zu9X2TwgoR+acADdwh1YmqfrXdT4KUKmAInQvCtNsy2RgVcE7nMPB044fL
-         twKuhOpaCZV5ExvJZiwAdOjiHQENrqZ8VkAbYtQUgZ+uhfvK1aq6JBMsanVZ512w3y
-         2nnuyHx3roLeg==
+        b=Sm6ljrNftvxwjYy58xSQRWKhZN3CFP/PX13EaNZZez/DBgv9dC/UEnLMD2PZNou0V
+         7VFJy3+oiH5ojWmPd4LllH0VvAagQVeCT/vwJ/saai4taodS18XbRzTSub0vwI7cK3
+         kj3drfPSH9SlOZl7CiCty3pPF9xxuAZ9Byk1OzJ5GXTb2d7ngKoqKnnZR5DXcoB+hq
+         s9Lg3tg2fIhlOigmDw5lNMGA5GxLaQDxkXblG4VD8JNcKsHAjkZ3vr54JkVXi5HSay
+         zFA7agDXteOwntNbCWXy8Igexc35VEqPAz5zQKG3C8ESHIr/UdrQQXefirc0JNti9R
+         X422jmbQBNbjg==
 From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Add warning for outside range requests in vmemmap_populate()
-Date:   Wed, 20 Jan 2021 13:01:03 +0000
-Message-Id: <161114567725.217634.54341340334446178.b4-ty@kernel.org>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: do not descend to vdso directories twice
+Date:   Wed, 20 Jan 2021 13:01:06 +0000
+Message-Id: <161114512647.215684.4495482205207888409.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1609845851-25064-1-git-send-email-anshuman.khandual@arm.com>
-References: <1609845851-25064-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20201218024540.1102650-1-masahiroy@kernel.org>
+References: <20201218024540.1102650-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,21 +43,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 16:54:11 +0530, Anshuman Khandual wrote:
-> vmemmap_populate() does not validate the requested vmemmap address range to
-> be inside the platform assigned space i.e [VMEMMAP_START..VMEMMAP_END] for
-> vmemmap. Instead it would just go ahead and create the mapping which might
-> then overlap with other sections in the kernel virtual address space.
+On Fri, 18 Dec 2020 11:45:40 +0900, Masahiro Yamada wrote:
+> arm64 descends into each vdso directory twice; first in vdso_prepare,
+> second during the ordinary build process.
 > 
-> Just adding an warning here for range overrun which would help detect the
-> problem earlier on, before a potential struct page corruption. This also
-> makes vmemmap_populate() symmetrical with vmemmap_free() which already has
-> a similar warning.
+> PPC mimicked it and uncovered a problem [1]. In the first descend,
+> Kbuild directly visits the vdso directories, therefore it does not
+> inherit subdir-ccflags-y from upper directories.
+> 
+> [...]
 
-Applied to arm64 (for-next/misc), thanks!
+Applied to arm64 (for-next/vdso), thanks!
 
-[1/1] arm64/mm: Add warning for outside range requests in vmemmap_populate()
-      https://git.kernel.org/arm64/c/edb739eed8f3
+[1/1] arm64: do not descend to vdso directories twice
+      https://git.kernel.org/arm64/c/a5b8ca97fbf8
 
 Cheers,
 -- 
