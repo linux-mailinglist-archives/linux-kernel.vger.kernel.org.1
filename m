@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E072FD792
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D83E2FD775
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388771AbhATRxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:53:34 -0500
-Received: from sendmail.purelymail.com ([34.202.193.197]:51444 "EHLO
-        sendmail.purelymail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727821AbhATRvl (ORCPT
+        id S1732203AbhATRrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:47:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390118AbhATRo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:51:41 -0500
-X-Greylist: delayed 395 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 Jan 2021 12:51:40 EST
-Authentication-Results: purelymail.com; auth=pass
-DKIM-Signature: a=rsa-sha256; b=0vKvmSFzWcheTLjBCdQh7yELER6goDXutqd83TwBMMVY82Z6u6C7lc/KAXvZOr9Y5DroqMbZO5g8JoAnXDnVK2c9usVnIZ4DySlh89kT7Qgjn1lY4Q9vudKemXtuoB20o/tvG5tp9kGk0OnPELvC0bWP9gKpQoKQOCQKT/PFwr0+5GfbN7n6KQIU5aURUtNf3MOesHkx3ksHxfZkm60usmr/Gpj3XDvgNx1A4pnNXgBZQ4DZ4FlFzg+oJRSVmuj+wzktTZXsQZLIX8aeKTnvMGmhRxra5TIi7+Ks8SCLyLmpY8si4cERL6/sClozFMjUQZKLAWgj6+U/qKS9XrsN5Q==; s=purelymail2; d=thezest.dev; v=1; bh=V9VC00tjxDxMC3NfaBpUD4u6Y+zJ6Kv9pzEYq6NvENg=; h=Received:From:To;
-DKIM-Signature: a=rsa-sha256; b=iQuChVOf8ja5PrB7bMBY70Zwp7e+tPjlq7PaQvjgEW/GKtnNuzUXi5Pnqr5tbA2qXCA3JGeGK2X/LPkGe0ehyZ62Mg3uefdPWt5BMw/zGVFCXE1T4dDKgFjgn976hRByQaFE7M/9jco82PSlsa5kxir2XTZFiB+7JIfIo7dn0Zi/QRAXMbJ71Ij6soeCGagzBlSBMYe819XEBhwZVIxeKay05Pf8MmX5PCjQz0/Mv4qJzLSem8euedx2VepiYM3sIPtB4XhWxjZjt2MTGAop1xvk2yggqCYX3iDuEFr5ZkvCuB3wadUYh2qftJc+QAplDAK/5gmNdDXl4kef32N93g==; s=purelymail2; d=purelymail.com; v=1; bh=V9VC00tjxDxMC3NfaBpUD4u6Y+zJ6Kv9pzEYq6NvENg=; h=Feedback-ID:Received:From:To;
-Feedback-ID: 1188:367:null:purelymail
-X-Pm-Original-To: linux-kernel@vger.kernel.org
-Received: by ip-172-30-0-124.ec2.internal (JAMES SMTP Server ) with ESMTPA ID -1145992316;
-          Wed, 20 Jan 2021 17:42:20 +0000 (UTC)
-From:   Diab Neiroukh <lazerl0rd@thezest.dev>
-To:     clang-built-linux@googlegroups.com
-Cc:     Diab Neiroukh <lazerl0rd@thezest.dev>,
-        Danny Lin <danny@kdrag0n.dev>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Quentin Perret <qperret@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: Add support for Clang's polyhedral loop optimizer.
-Date:   Wed, 20 Jan 2021 17:41:45 +0000
-Message-Id: <20210120174146.12287-1-lazerl0rd@thezest.dev>
-X-Mailer: git-send-email 2.30.0
+        Wed, 20 Jan 2021 12:44:27 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A50C0613D6;
+        Wed, 20 Jan 2021 09:43:28 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id 6so34712292ejz.5;
+        Wed, 20 Jan 2021 09:43:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8u2YlGjdBiXNxHWMGsZ9iS3g5Vphiu4Bzp3sgjIxUwE=;
+        b=U0P9dEXEM4NoH+BqodC4cEeN4r/GmfP53g5aE4yK0deN5k07b4YOy9j5o1Jb0roGFw
+         CIf+Dn5X/VW5cLy477UM+m1OhWII0ZvKn/6qnINuaa1zsDb4GHTrfuVb7L4FQoiAzPGs
+         nv7WdkMCpzquzQOqRPn2Cg4h4AIZO4uHsW4ocdwsV3EhsTiUAnzB4n83w6nPUXmZXhqW
+         Fy/21p4PQoPkFMk4gwiPuyzRvBnsCTWofgjaObT4puFWPqF286FqBjXC6+o/KzjXM7f5
+         qndEFOA8fllMatsvsZQC8rLmTWPEDjtzWmmhKVQvmg397g/aPE/e3IsTcKfpmUCCyM/7
+         R+eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8u2YlGjdBiXNxHWMGsZ9iS3g5Vphiu4Bzp3sgjIxUwE=;
+        b=LHm59uuIWXtVd/RLr15hTF0oPr2f/uZzskLo4AmRz5pVjA82hAkQ5weoUhLeHGwN28
+         CgTKu4TK+uhuresTOvo4achXvWDR5oBCso+f2xHDK4kbCC4AU3j+ZdtOAPoRhqxQ1Uki
+         Tw5OgoaphEzmQUso1a+PjmzCMpgc4WkQ9Pr70FT9g1b5ZffYFsV3WR8dNVBtXpJ2P/as
+         5BAuCFDciBBC+eVfgZ3IBL/0BqS4T8qF226O5U9tUREPX1uhWUpazYYkljVJUgj/UMXP
+         2acY0Z0WwGUheIqjvCWjfvPAH1Amli53ISJZQDh35+kOxRl8mXipk2oxDnVnGntg+yqJ
+         Fv0Q==
+X-Gm-Message-State: AOAM531Wg+iOn6kpWi4pJp0VmqXpLToXum7tvRpkFhubTCzAqLzahKIc
+        9AZy3qS/Fjvj74eYE+OhbQnU7jkATEkwqJVsepA=
+X-Google-Smtp-Source: ABdhPJzqMIq5g8wOuUcoOmqgtdw52RzWdslz8i5l1px8OWut790tQiG6dDoxTbxrnxh1dtCEnouRnXStBxSV9RAo1gU=
+X-Received: by 2002:a17:906:9619:: with SMTP id s25mr6945195ejx.345.1611164607310;
+ Wed, 20 Jan 2021 09:43:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
-Content-Type: text/plain; charset=ANSI_X3.4-1968
+References: <20210119110121.36656-1-bianpan2016@163.com>
+In-Reply-To: <20210119110121.36656-1-bianpan2016@163.com>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Wed, 20 Jan 2021 09:43:16 -0800
+Message-ID: <CAD+ocbz+DKHKGN=G8Vn0pjuAfVRX3UP85ZaeZEEwcNemS1kJ8A@mail.gmail.com>
+Subject: Re: [PATCH] ext4: stop update inode before return
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Polly is able to optimize various loops throughout the kernel for cache
-locality. A mathematical representation of the program, based on
-polyhedra, is analysed to find opportunistic optimisations in memory
-access patterns which then leads to loop transformations.
+Thanks Pan for the fix. Looks good to me.
 
-Polly is not built with LLVM by default, and requires LLVM to be compiled
-with the Polly "project". This can be done by adding Polly to
--DLLVM_ENABLE_PROJECTS, for example:
+Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
--DLLVM_ENABLE_PROJECTS=3D"clang;libcxx;libcxxabi;polly"
-
-Preliminary benchmarking seems to show an improvement of around two
-percent across perf benchmarks:
-
-Benchmark                         | Control    | Polly
---------------------------------------------------------
-bonnie++ -x 2 -s 4096 -r 0        | 12.610s    | 12.547s
-perf bench futex requeue          | 33.553s    | 33.094s
-perf bench futex wake             |  1.032s    |  1.021s
-perf bench futex wake-parallel    |  1.049s    |  1.025s
-perf bench futex requeue          |  1.037s    |  1.020s
-
-Furthermore, Polly does not produce a much larger image size netting it
-to be a "free" optimisation. A comparison of a bzImage for a kernel with
-and without Polly is shown below:
-
-bzImage        | stat --printf=3D"%s\n"
--------------------------------------
-Control        | 9333728
-Polly          | 9345792
-
-Compile times were one percent different at best, which is well within
-the range of noise. Therefore, I can say with certainty that Polly has
-a minimal effect on compile times, if none.
-
-Suggested-by: Danny Lin <danny@kdrag0n.dev>
-Signed-off-by: Diab Neiroukh <lazerl0rd@thezest.dev>
----
- Makefile     | 16 ++++++++++++++++
- init/Kconfig | 13 +++++++++++++
- 2 files changed, 29 insertions(+)
-
-diff --git a/Makefile b/Makefile
-index b9d3a47c57cf..00f15bde5f8b 100644
---- a/Makefile
-+++ b/Makefile
-@@ -740,6 +740,22 @@ else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
- KBUILD_CFLAGS +=3D -Os
- endif
-=20
-+ifdef CONFIG_POLLY_CLANG
-+KBUILD_CFLAGS=09+=3D -mllvm -polly \
-+=09=09   -mllvm -polly-ast-use-context \
-+=09=09   -mllvm -polly-invariant-load-hoisting \
-+=09=09   -mllvm -polly-opt-fusion=3Dmax \
-+=09=09   -mllvm -polly-run-inliner \
-+=09=09   -mllvm -polly-vectorizer=3Dstripmine
-+# Polly may optimise loops with dead paths beyound what the linker
-+# can understand. This may negate the effect of the linker's DCE
-+# so we tell Polly to perfom proven DCE on the loops it optimises
-+# in order to preserve the overall effect of the linker's DCE.
-+ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-+KBUILD_CFLAGS=09+=3D -mllvm -polly-run-dce
-+endif
-+endif
-+
- # Tell gcc to never replace conditional load with a non-conditional one
- KBUILD_CFLAGS=09+=3D $(call cc-option,--param=3Dallow-store-data-races=3D0=
-)
- KBUILD_CFLAGS=09+=3D $(call cc-option,-fno-allow-store-data-races)
-diff --git a/init/Kconfig b/init/Kconfig
-index 05131b3ad0f2..266d7d03ccd1 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -177,6 +177,19 @@ config BUILD_SALT
- =09  This is mostly useful for distributions which want to ensure the
- =09  build is unique between builds. It's safe to leave the default.
-=20
-+config POLLY_CLANG
-+=09bool "Use Clang Polly optimizations"
-+=09depends on CC_IS_CLANG && $(cc-option,-mllvm -polly)
-+=09depends on !COMPILE_TEST
-+=09help
-+=09  This option enables Clang's polyhedral loop optimizer known as
-+=09  Polly. Polly is able to optimize various loops throughout the
-+=09  kernel for cache locality. This requires a Clang toolchain
-+=09  compiled with support for Polly. More information can be found
-+=09  from Polly's website:
-+
-+=09    https://polly.llvm.org
-+
- config HAVE_KERNEL_GZIP
- =09bool
-=20
---=20
-2.30.0
-
+On Tue, Jan 19, 2021 at 3:04 AM Pan Bian <bianpan2016@163.com> wrote:
+>
+> Stop inode updating before returning the error code.
+>
+> Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
+> ---
+>  fs/ext4/inode.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index c173c8405856..64039bbb656d 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5389,8 +5389,10 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
+>                         inode->i_gid = attr->ia_gid;
+>                 error = ext4_mark_inode_dirty(handle, inode);
+>                 ext4_journal_stop(handle);
+> -               if (unlikely(error))
+> +               if (unlikely(error)) {
+> +                       ext4_fc_stop_update(inode);
+>                         return error;
+> +               }
+>         }
+>
+>         if (attr->ia_valid & ATTR_SIZE) {
+> --
+> 2.17.1
+>
