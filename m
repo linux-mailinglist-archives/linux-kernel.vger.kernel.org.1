@@ -2,57 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC492FCE29
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A844D2FCE27
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732372AbhATKSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
+        id S1732343AbhATKSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:18:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730183AbhATJzP (ORCPT
+        with ESMTP id S1729818AbhATJzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:55:15 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC03AC061757;
-        Wed, 20 Jan 2021 01:54:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NM/T+gSEcHGJpyRWPk/ZLeUv/hfwQU3QIG0KEzI2opU=; b=RTnnxcaldzONpEsV+dG55bFsHJ
-        A4qarvDeRE8is4M5aTCdYF/JkDyLtAyzxawwrxpthUjUVoT8oZ7jUQ3+SRRpv9jxZVje5LVQaJJLh
-        ucaGsATi/ICX1j47E5l3kmhEA9D8qDrF7A8tcqK1+v2TpFQutz8vOqtUtnhxsoza3QDSNWCi1eftU
-        /m27SbcTI6JQd1dtkThNQR2uj98zSFB0AZNSr8TlfwooGFP5WuLXnhkio1CyTIR6c378byR3PjRnT
-        MG/QJMyJblL5UGXq8swpbWtW8ZNzxgNuj1nEDfrLH6PVojm85OPE+OD28sPHmh1d8wbMW57Csw49Q
-        /nQAsxpg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2ABl-00FVBq-VS; Wed, 20 Jan 2021 09:54:20 +0000
-Date:   Wed, 20 Jan 2021 09:54:09 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Liu Xiang <liu.xiang@zlingsmart.com>
-Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-mq: introduce REQ_COMPLETE_WQ and add a workqueue to
- complete the request
-Message-ID: <20210120095409.GB3694085@infradead.org>
-References: <20210120021522.28584-1-liu.xiang@zlingsmart.com>
+        Wed, 20 Jan 2021 04:55:10 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCAFC061575;
+        Wed, 20 Jan 2021 01:54:30 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id i17so189767ljn.1;
+        Wed, 20 Jan 2021 01:54:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Dzgt9eOErv7DRncKnAq6YJRbBsHovoN+K2WQNL3Z+8=;
+        b=i4L+8exRf8lZaHTBzZPCPFSzSc+e00vaZuS4BnMHCc5zLodWr1iZ3wAYs11U8kBWDx
+         Ql6TFIOJbwSFm2uj9IBHnVmfV+wN94OZ2XezIkgDorrGD43fsxSJUUMQFhwHtM6zM670
+         RBcCKg8s964NGEL+12NSQamZqWozbLnwsJmNTUrpm4HTrvgt29zioadEOhGUgScFoxI6
+         XI8YR1CgfbPAxLAmq43FmO/1nkYF/Ycm3m+EkiKvV8mjlveoDtrBZqzoF5kSEdMYbooG
+         xoypAOB2q3SaksfogjIGkMoLn0Ym0MkofVA2IqCZB6MEfHfKi8ynpRDAZNt6oK1fbLeQ
+         J+dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Dzgt9eOErv7DRncKnAq6YJRbBsHovoN+K2WQNL3Z+8=;
+        b=SC1Kqe9fBk1AXgIUNNJEqWhuYs6aTV+wPeRvtZgNvEYKfv/FLO1UhkBWii3q+xm741
+         0tcFgEaI7kGRy7OD5REs3toMN6bzCxjkVtXN1i27+q+Ivt+YImcUDNGDoD00efAmeQn2
+         wWFOGjSCLHSzIJI5jYY0xX1shIaFc52Fo+jtN5k0bVkQHMKDyniHoHKrd6eOe7XMi/Sp
+         FsRtj71zRFPv1Rh9SGC+tJgVqEtoVXuMCyJCf1vCoflXeOCitBzJFLedQr5ypAMXyOS+
+         +ATFoc9g5+X9CLfVrOGdsJTe51YYS+3EQdaaCl86ZIT2HHqan9UaF/G8dtN7/xvIb4zQ
+         Evig==
+X-Gm-Message-State: AOAM532iRM3xLJW+Wphb/i8DSJXikPMdHSTwRZfaSMjXStdqaM16H14I
+        eLNBT0MgA879+EFS8iFKvB6Z6A4oJxh/BYl00sw=
+X-Google-Smtp-Source: ABdhPJwvMiO84gkALjBZYV/Z8117B5Fi5UzzquECd8v/xmJfuxLrV4PrxacoLeKawiqrEkSVrrKWWYw6Pxw4PasRCAU=
+X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr4263478ljf.18.1611136468818;
+ Wed, 20 Jan 2021 01:54:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120021522.28584-1-liu.xiang@zlingsmart.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210118205522.317087-1-bongsu.jeon@samsung.com> <161110440860.4771.13780876306648585886.git-patchwork-notify@kernel.org>
+In-Reply-To: <161110440860.4771.13780876306648585886.git-patchwork-notify@kernel.org>
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+Date:   Wed, 20 Jan 2021 18:54:17 +0900
+Message-ID: <CACwDmQBZ-LVursCYmtngyv3yFCQ9_Jkip03VZ8cd1auNu86V8A@mail.gmail.com>
+Subject: Re: [PATCH net] net: nfc: nci: fix the wrong NCI_CORE_INIT parameters
+To:     patchwork-bot+netdevbpf@kernel.org
+Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfc@lists.01.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:15:22AM +0800, Liu Xiang wrote:
-> The commit "40d09b53bfc557af7481b9d80f060a7ac9c7d314" has solved the
-> irqsoff problem by completing the request in softirq. But it may cause
-> the system to suffer bad preemptoff time.
-> Introduce the REQ_COMPLETE_WQ flag and blk_complete workqueue.
-> This flag makes the request to be completed in the blk_complete workqueue.
-> It can be used for requests that want to cut down both irqsoff and
-> preemptoff time.
+On Wed, Jan 20, 2021 at 10:00 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
+>
+> Hello:
+>
+> This patch was applied to netdev/net.git (refs/heads/master):
+>
+> On Tue, 19 Jan 2021 05:55:22 +0900 you wrote:
+> > From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> >
+> > Fix the code because NCI_CORE_INIT_CMD includes two parameters in NCI2.0
+> > but there is no parameters in NCI1.x.
+> >
+> > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> >
+> > [...]
+>
+> Here is the summary with links:
+>   - [net] net: nfc: nci: fix the wrong NCI_CORE_INIT parameters
+>     https://git.kernel.org/netdev/net/c/4964e5a1e080
+>
+> You are awesome, thank you!
+> --
+> Deet-doot-dot, I am a bot.
+> https://korg.docs.kernel.org/patchwork/pwbot.html
+>
+>
 
-In addition to bloating the request_queue and introducing the completion
-fast path this seems to lack an actual user.
+Could you merge this patch to net-next repo??
+NCI selftest that i will send will fail if this patch isn't merged.
