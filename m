@@ -2,122 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569062FCC99
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4592FCC98
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730487AbhATITL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
+        id S1730408AbhATISs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:18:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730266AbhATIHF (ORCPT
+        with ESMTP id S1730490AbhATIHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 03:07:05 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1960C061793
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:05:30 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id u17so22891528qku.17
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:05:30 -0800 (PST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A83C061795
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:05:31 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id m187so1987594wme.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:05:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=DHTbZHOkLsKuxtNFUubtLM+gqL6YY3qNMXB7NuoXXTA=;
-        b=Il85GfxJuukw/3SvMs3zLOlirjw0U0IRX28xLvqLD/ty4nOJ9Xp2b6K/KilcjTtmQM
-         l537tY9lg5rnaulxbobhsAQ4ifT7eB3rf7cPRgXY2+779zC29zzRqjwxCm/qPxoZFv/T
-         YLNOmli8uuHOFGw2BPlx47YqPWcXY9rNa3RaHpibks4PcGEamflHasRmla1Xc09F3K3H
-         q/XHi9O0n4NiedG60FpJA022VrFu72+DH+a6+I8VVIwjqABMUaVUYwhaJgA5/MCSpuah
-         95TGfv7ff6pRPcUfPbgtt/nVwnmLY6DkE0HEZitHNxnfVAqkWg4tMJoqPW9JRwpn00BR
-         AEcA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=i0E7CMnkJOpieDzn6Vg+wQQjdFWzO1+rNLsWhsRoe3o=;
+        b=OCmzqzCx+kJKozrzBCDTsmV41sa//C8Xz6MgavuR25f4oaXCkpVJHvPWsgS/XltA9g
+         6MsYyWYfHRBgBYFYevh1ruUsDAO1aCK96HPyTCAT4mYW4BjSb2RygzqlQUBXGQMZyYo4
+         oHcyS26K06EL/6eFa3SOYkGyH0h5522KhkZ9z9CcF1618Y3lDTM061Yj/gpJalQ9pSlf
+         BjL36AZ1kECVP7B92jDo2L9BZRpQrJ4zvGVsDQuphXYnvNXXnR52kOfzjo8BiS+LtI+6
+         3bRjXALY6WVXvu3dC9Djf0Bx8av9XnTcqBqUhhYBD/3Ln/T0JDGmzMzfxu+yKs/9xxE3
+         nf/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=DHTbZHOkLsKuxtNFUubtLM+gqL6YY3qNMXB7NuoXXTA=;
-        b=E/mbN9JtTt7YzCPs7qhYJMPOo5u394ZGvUio71Ff0p8drtCHGUcoeMUkdExTKSQofV
-         DP2qJD8j4enc6V8r/L8TTJz2OiNzQ6LFEG1YzTB6wQ0OhB6QFse3ZI9YW0a+NsRfrNsv
-         t2Dx6BIQqO6vJr/sMO1gzYDbbR7mp25zKX/BXu21XVpnzk3JES/IGMBKaCC0mpsh9Ee/
-         SoN+DJOwDXIpWz1lQY22kfWSvHRWY1V0Byc959A2qQbANjmosLgq2nfvgTmpq3vRr2k3
-         loS2V1bGQmpfX1SjD0aK4VZQuuEp2pBMkx4CmloRlcloc7x/XUYIVKYW1r58eoBTll2a
-         mPmg==
-X-Gm-Message-State: AOAM533s2MQnTfPadyTd9wZeFh/oLCt1ogwVq0XCISKxK6FC00hdAwkY
-        QLLIbJ4zAHNA+I5WFJGaKbD2/81EdAWV3EU=
-X-Google-Smtp-Source: ABdhPJyakDkqGvLIh+tdPGMZ1JrSamWDar9qMU1B4qiTmPWOBDxyLEdM7ux0cpDZXMRzWb92SLidW5+XN5u+0vQ=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:ad4:58c2:: with SMTP id
- dh2mr8314576qvb.4.1611129929818; Wed, 20 Jan 2021 00:05:29 -0800 (PST)
-Date:   Wed, 20 Jan 2021 00:05:21 -0800
-In-Reply-To: <20210120080522.471120-1-saravanak@google.com>
-Message-Id: <20210120080522.471120-3-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210120080522.471120-1-saravanak@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v1 2/2] of: property: Add fw_devlink support for interrupts
-From:   Saravana Kannan <saravanak@google.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=i0E7CMnkJOpieDzn6Vg+wQQjdFWzO1+rNLsWhsRoe3o=;
+        b=CtqJw4lfD3aRmiNZweCLeDhYuqi+MVSbbsSrMaihQJ+bS6RiHqA7bA1U5fn2JyqRu6
+         s2gxYliIb+SSwL0uhi7L5gNtPwdxtq7xZBs2ZY4w2fe+rG5rmQknt1734wmVQFteAkda
+         I3KCxJxMcyh5Faxzm8ZpmqPU+pCaePP9yI+Yzuz/VOSMKsEoXnRrAVFTwbHFG8Yytm3a
+         ktJwiDckPqlfHffcopKGMe4RR9gn9MI/ki0f2gbe6E3OywDrt+7qYDpF+gj5o1lFhvpa
+         oA5OGwMgHJf+i5AIxEd6z+O4i9hmS44koavE1G2ZLztduqK7wiB8bFLDwvgChUJKLmX1
+         DNUg==
+X-Gm-Message-State: AOAM532/wa5nsfEYLufOyZAUf18svugpYgJg+yDRvgwxnqCWWrnE6plC
+        Sp46E9+/wrQAEqU+I+bqIFcZvIidTEzdh3/U
+X-Google-Smtp-Source: ABdhPJw03a3Mt+JIRRJlN+qL5Wvmb168qR1zfbc+zME3aDudXf2zqFFDvbGkZ01CEqJS8MlUBAm8PA==
+X-Received: by 2002:a7b:cb46:: with SMTP id v6mr3049511wmj.19.1611129930271;
+        Wed, 20 Jan 2021 00:05:30 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id s13sm2538012wra.53.2021.01.20.00.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 00:05:29 -0800 (PST)
+Date:   Wed, 20 Jan 2021 08:05:26 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Zack Rusin <zackr@vmware.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Eddie Dong <eddie.dong@intel.com>,
+        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        Jackie Li <yaodong.li@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jan Safrata <jan.nikitenko@gmail.com>,
+        Jesse Barnes <jesse.barnes@intel.com>,
+        jim liu <jim.liu@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Keith Packard <keithp@keithp.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
+        Niu Bing <bing.niu@intel.com>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Pei Zhang <pei.zhang@intel.com>,
+        Ping Gao <ping.a.gao@intel.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tina Zhang <tina.zhang@intel.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhiyuan Lv <zhiyuan.lv@intel.com>
+Subject: Re: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
+Message-ID: <20210120080526.GL4903@dell>
+References: <20210115181601.3432599-1-lee.jones@linaro.org>
+ <F914D9B9-6DD4-4383-9F7C-8D09FBFE96CE@vmware.com>
+ <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
+ <20210118150945.GE4903@dell>
+ <YAXDgmWMR9s4OgxN@phenom.ffwll.local>
+ <20210119082927.GJ4903@dell>
+ <8DE96253-47A3-4A16-9331-62F547A2CC44@vmware.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8DE96253-47A3-4A16-9331-62F547A2CC44@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows fw_devlink to create device links between consumers of an
-interrupt and the supplier of the interrupt.
+On Tue, 19 Jan 2021, Zack Rusin wrote:
 
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/of/property.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> 
+> 
+> > On Jan 19, 2021, at 03:29, Lee Jones <lee.jones@linaro.org> wrote:
+> > 
+> > On Mon, 18 Jan 2021, Daniel Vetter wrote:
+> > 
+> >> On Mon, Jan 18, 2021 at 03:09:45PM +0000, Lee Jones wrote:
+> >>> On Mon, 18 Jan 2021, Daniel Vetter wrote:
+> >>> 
+> >>>> On Fri, Jan 15, 2021 at 06:27:15PM +0000, Zack Rusin wrote:
+> >>>>> 
+> >>>>>> On Jan 15, 2021, at 13:15, Lee Jones <lee.jones@linaro.org> wrote:
+> >>>>>> 
+> >>>>>> This set is part of a larger effort attempting to clean-up W=1
+> >>>>>> kernel builds, which are currently overwhelmingly riddled with
+> >>>>>> niggly little warnings.
+> >>>>>> 
+> >>>>>> Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
+> >>>>> 
+> >>>>> Thanks! For all the vmwgfx bits:
+> >>>>> Reviewed-by: Zack Rusin <zackr@vmware.com>
+> >>>> 
+> >>>> Ok I merged everything except vmwgfx (that's for Zack) and i915/nouveau
+> >>>> (those generally go through other trees, pls holler if they're stuck).
+> >>> 
+> >>> Thanks Daniel, you're a superstar!
+> >>> 
+> >>> So Zack will take the vmwgfx parts?  Despite providing a R-b?
+> >> 
+> >> I only merge stuff that's defacto abandoned already. Everything else I try
+> >> to offload to whomever actually cares :-)
+> > 
+> > Understood.  Thanks for the explanation.
+> > 
+> > Hopefully Zack actually cares. :D
+> 
+> hah, I do. I just pushed all of the changes to drm-misc-next. Let me
+> know if I missed anything. Thanks!
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 0b256ce9d7d5..9dd9cc50e65a 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -24,6 +24,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/of_graph.h>
-+#include <linux/of_irq.h>
- #include <linux/string.h>
- #include <linux/moduleparam.h>
- 
-@@ -1289,6 +1290,15 @@ static struct device_node *parse_gpio_compat(struct device_node *np,
- 	return sup_args.np;
- }
- 
-+static struct device_node *parse_interrupts(struct device_node *np,
-+					    const char *prop_name, int index)
-+{
-+	if (strcmp(prop_name, "interrupts") || index)
-+		return NULL;
-+
-+	return of_irq_find_parent(np);
-+}
-+
- static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_clocks, },
- 	{ .parse_prop = parse_interconnects, },
-@@ -1315,6 +1325,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_pinctrl7, },
- 	{ .parse_prop = parse_pinctrl8, },
- 	{ .parse_prop = parse_gpio_compat, },
-+	{ .parse_prop = parse_interrupts, },
- 	{ .parse_prop = parse_regulators, },
- 	{ .parse_prop = parse_gpio, },
- 	{ .parse_prop = parse_gpios, },
+Perfect.  Thank you Zack.
+
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
