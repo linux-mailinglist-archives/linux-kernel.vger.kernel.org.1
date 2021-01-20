@@ -2,293 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB802FD2D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A7E2FD2CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390325AbhATOhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:37:52 -0500
-Received: from esa5.hc3370-68.iphmx.com ([216.71.155.168]:54341 "EHLO
-        esa5.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390742AbhATOgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390303AbhATOhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:37:20 -0500
+Received: from mail-dm6nam10on2067.outbound.protection.outlook.com ([40.107.93.67]:4033
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390736AbhATOgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 09:36:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1611153408;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=dIZNR1nR7XK3pQFyWHyTmItYVE31BjPPTpNiwFvIPvc=;
-  b=hnLgFIs1dAw3rA6Hak4oIZyHVCFuFJ6AUfh8qBBggtFot/2zZOH5Jdsd
-   zBuMykZ1Ymkduod0CvqD4HbYMrjt9FUfr9qhlAZG1ya3YtB1y3axz1a09
-   DTPe7GjPJLIkv7UVuKIxxTsR0OAfRU3mzqzmak+GDHnlTA2JOECztlIXA
-   0=;
-Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: zJG8FlYCzwhLOj8dzfvjhcRGXcFbufTeujyFcCsuWU5YAUdxaPtzV2sqItIUtfp4g7Y6zslV1R
- JVpMZrA6MLk8hvLDuuZRUlP3ji0eY+qq89CShv+ocKQ1MPL1NA8deSgiEvvDxb1Jzwqn338m8X
- YoIOyN7QxmyjWdqgTNaT5Rr43zd6uvqg0UB4xCpSJxJvRONmTZWNiPQItFhAPwA2oTfiChgchh
- n0KwE2L3m3kfeY/QoCaKuay1fQAbZo2GWe9L1br7Chbfcyucrsd0bj1ZuJqB5PSQ66eRQUKnU1
- M8g=
-X-SBRS: 5.2
-X-MesageID: 35454456
-X-Ironport-Server: esa5.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-IronPort-HdrOrdr: A9a23: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
-X-IronPort-AV: E=Sophos;i="5.79,361,1602561600"; 
-   d="scan'208,223";a="35454456"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SWfMhVOSSlC94xfH4FdDG9se/uvHtykqRIb1Bw3TYc2gxlLz1e6oLRaLe2+ORSP6MumfsEbWT0NTtfCtMU5Ds7mn7mp6zvrCe1w+ObmgH1zJDMYJYJFy2TLDkYm4g94BscrX43wO0ez/pcJq4jl4e0rvcCdEpsOxGVqmwQ7AQRzBn4wJYmEPXw3aN6tyJD9Ht6UGmfXAl3GHzpKTfrKsemT1QjwzIgS3JtxpbUEN0+ELw3pj3eGSgv2MoWbyQwAjr6awBrysVGsBtO3kb3IcSK9uxn6IbPsCSgX+KE3U8vJ3HADVve6WSNnnCRhzN8Ng0O6jeAzQxitK2sjSQUFQvw==
+ b=W6X2ummt9LDfP8x83dhhvm9rIbUo1wcbD4JqR7pmLygt8hsmQtlGaom/6dnFKnL0tJpkI4JE772Bi2b8ln6wfG35P6PkrFvAdaXOF1ohykm5nB3VbsqtYjF70oU8Hldgj4PKjIv19ihKDgfeqH2eq5OOu/YY/zS02jaArLXgYScdl3+CeqJlV0z2rWO/I4HcEcGCvY0FmvQYe4TFeR64eoJwy/l43TfEtNesNRhMA9LAZ/qW0iE5Be5+D8i1/3YIsr7H4Py1tj1RyvomYLtUZW4Jt3ME3aRYorYkVyEVbOIUgwU7twW8t5JA+ZiesJgCUZASagL2sBBRCTGI3T7LUw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OyOR7ooZfZSJYzcB6XtiZ+6cs/eR8SAObO2ckkyoKho=;
- b=RYwRchN0WCQgBEpK2nWvkliyfQL2fu8rWS1RksmHBrOH0tYuIc1X6sWz3k5ZyiaZY0Ukp4Lns04x5wn6OLaC7QXfpcQnUPFu0c6hUHZE8yz26cENdvFG9zvqyEa81g/7HWklhvgVWkG64yLaKGIMaxWlarSC8CjbdFORXYVSiYPOC7JTHv4/F1Drs0KaZG8SqNS63tfrPqOCIs8ruGnDVaZrBmBj2sqn17uW47xeo5TBo9BE7zXNx1Rp06NfkI8cMfP6defAO+LzKPi4XTYgxnvpra6+YT98DL9Uq0/O6nTMAcHPCbI6iRUlQx2Wg2gEyyWbwyx79n/C4yG14Vz2qg==
+ bh=Z1F70Uc/YP0Bl31EE9NdVykITXmwatRqnLV5HtK6fI0=;
+ b=IK/2LRO8jX9SjAcoa8ygauld2eeG+RQvu+aSkzyPxAEhHtfuU5OikHY8z4cK2fLg+Vx+L6fzY0nE9cC7ExifOMIqaGyQKKrLpRCjc8Dtf6atJzbgm5i5FYVh21Us0pZdaKCDii3HA6MEqYPU/eDaQNwmP4KOelOfG15W0YWWDwdjFY9Ar2yxWlVh9efyisaFz83QvsjmbGWXGGvs8QNP3vVJTmUz/fJIXmv021zijeJKR0sYaZMJMpHsdjsK+//3wuwMQk70ew5/CQSYIE0iC7uhAbxHoM7nwOTTNYeUfj29pb9n8b7Ux4zKg2MdAoU9nEpmP1lHJ1BKyoRR/dR/eA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OyOR7ooZfZSJYzcB6XtiZ+6cs/eR8SAObO2ckkyoKho=;
- b=rl8zdYgARNULKWJtCHeTgGhdsu7FBeXLCKNpj8zlL8pW/AIxMqWRefP9Hk4j6hD8Z8r7jc8UASyfHNfnze5A3WsMlQJoku/pRVPOULBhVY3Uuxa4qQP8QDhtpMuEtJ2JqhzhT0hzXcvLIzLvhUJMsNYAr7XJbsbipE5x0xhvalg=
-Date:   Wed, 20 Jan 2021 15:35:15 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Arthur Borsboom <arthurborsboom@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, <xen-devel@lists.xenproject.org>,
-        <linux-block@vger.kernel.org>
-Subject: Re: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
-Message-ID: <20210120143515.v2vgyhcxrhnnng6r@Air-de-Roger>
-References: <20210119105727.95173-1-roger.pau@citrix.com>
- <CALUcmUkd9Eeau6tC9ZWHbLdvHTYfY34LvK6KKpOOxreYF67Myg@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="4gc2aiveabc3g7bi"
+ bh=Z1F70Uc/YP0Bl31EE9NdVykITXmwatRqnLV5HtK6fI0=;
+ b=l7RV/d3ZhnFaQmrGVCtwrJVhgKlJ1zHeq4yFPINbdh98gpFDDYmVLDYV9TtGCM4S7kbagag7E14REepKI2+qR/T0ChWBxtUNlsDehqNnlFHYjPwWf1JUJ4xHhFx/pMR1312iF7EGA7WTer2Scxc8Pcs5YPKjb2P6hsjDDdH9pJw=
+Authentication-Results: torlan.ru; dkim=none (message not signed)
+ header.d=none;torlan.ru; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR12MB1378.namprd12.prod.outlook.com (2603:10b6:404:1e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 20 Jan
+ 2021 14:35:37 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::866:baa9:f17d:d6b4]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::866:baa9:f17d:d6b4%3]) with mapi id 15.20.3763.014; Wed, 20 Jan 2021
+ 14:35:37 +0000
+Date:   Wed, 20 Jan 2021 08:35:29 -0600
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     WGH <wgh@torlan.ru>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bp@alien8.de, Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH] EDAC/AMD64: Update scrub register addresses for newer
+ models
+Message-ID: <20210120143529.GA1385775@yaz-nikka.amd.com>
+References: <20210116143353.7576-1-Yazen.Ghannam@amd.com>
+ <f171c29f-5c89-683c-8cf2-399c9af5153e@torlan.ru>
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALUcmUkd9Eeau6tC9ZWHbLdvHTYfY34LvK6KKpOOxreYF67Myg@mail.gmail.com>
-X-ClientProxiedBy: PR2P264CA0043.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:101:1::31) To DS7PR03MB5608.namprd03.prod.outlook.com
- (2603:10b6:5:2c9::18)
+In-Reply-To: <f171c29f-5c89-683c-8cf2-399c9af5153e@torlan.ru>
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: CH2PR07CA0059.namprd07.prod.outlook.com
+ (2603:10b6:610:5b::33) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-nikka.amd.com (165.204.78.2) by CH2PR07CA0059.namprd07.prod.outlook.com (2603:10b6:610:5b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Wed, 20 Jan 2021 14:35:36 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a137173-cb26-4044-6585-08d8bd509ed1
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4537:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB453771D163D22E37B8B6B2B28FA29@DM6PR03MB4537.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 61853c7c-eb0c-4051-dfc5-08d8bd50a6d7
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1378:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR12MB13784095FEF58B642B54A47CF8A29@BN6PR12MB1378.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yv3drpaOt90dp6RnJjhqJoB3aEVPsVdo2tZPOoQevYcpz4B4u2OXh5gzx8bGU01BaslRT35a+EfwhorArlfZB/Qjy7k4kv4pZNWa86aRkCmYefLHqzQG7uNGg3m4RrLAaT+crmJRGdMP6CmOE5NGWhbCBi5iBQsf2KifypydB1afvWojr8/TSu7wOjYPxUuhHdVortw6HjMiZeG2I3f0w6NOEcBxBOBfgYwty6/WjfUhZFIfwQenO5VS8bLOQeAqQrPTviOmaNS6/olxjX+G/ieikiw2Jyq6SGHawu6hKPQclQJBsuC0a8pTvlMHHTp0UVNxRvAZ7NA2+Npx9s4cuqmKnyh6mcbjciMdXDnhCwc9jQwwGeOvV2c9y5preDsSqaBlp864kFO8yRMWPN2yNAknvmu610aJPGvvNdEuKllvoF68BVtnV3el84HVrIMm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(39860400002)(346002)(376002)(396003)(366004)(136003)(235185007)(2906002)(44144004)(33964004)(6666004)(85182001)(316002)(9686003)(6916009)(5660300002)(16526019)(186003)(33716001)(478600001)(6496006)(83380400001)(8936002)(66946007)(66556008)(6486002)(956004)(54906003)(66476007)(66616009)(1076003)(86362001)(8676002)(4326008)(26005)(2700100001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TWRBM2NmWDZpZ3lreGZEVkVkaHVTdytUVThaWk5zTmlXNk9vckYrSEYyLzN5?=
- =?utf-8?B?Z09KYjBDVHY1S1dYTWZiM3ZzQ2ZKeDNtTUhLVGh0ZDFVZDZpTFM0N0c0QmpB?=
- =?utf-8?B?K09rN1lHNlFYVkNBd1FKMmtVc1ZaamducXo0U2d4aTF3eVdMZVRQc1FZZHhv?=
- =?utf-8?B?VUFhL09EbGU2d01EY3ZHNmRWcWNITHFwY1Y2YzNNR3VqZ3lvd28rd3IxcUs1?=
- =?utf-8?B?Y3pRNnFKbkhYZ1pkV3ZQOERwMzR5S1dhYTFvWUt0d0N5eDFBTUM0WHFySGRa?=
- =?utf-8?B?QU5CV1BxTFh1M2hKaHpTMzZBWGZFdG9IeWU5MGZ3RjJGS3RvbTZrZ1FnSktE?=
- =?utf-8?B?cURINXQwZzBLMWk4NWgvTHNMSFhxQm9nUDk5aHdtbjRwcVVKSVg0ZGhVUG1H?=
- =?utf-8?B?M1lEbi8yTGFuMWYzVzRqZnFqMmtCR1JOL2hnaWJOY05kWHJwR0ZJL3hlTUxW?=
- =?utf-8?B?R3NaNDlQeUpkeWNidzZtc29UQUhGMnhvbXQ3MDF3dkFkejd4R3BFWEYyRElz?=
- =?utf-8?B?aitQZHQzRjk4VlRIOHd2QzAwLzRFNTJXUTJjczZ1dnRQREtyQ0grRDZYbkRO?=
- =?utf-8?B?RzhTS2MwKzAweDFBRVZCdXU3bmNSSXBMWC81eG8zOWtsdEsvam5iQ3FMZHhI?=
- =?utf-8?B?SGIvZDV1TWdNQzhwOUZiMC92amk1YjNMbytqNEgyMG5uT3U1Rkt5dTVnWW5p?=
- =?utf-8?B?UWVzYXhrbmlmTzJ5eVBVRjRRREVkR3dqc25WWk55aVhqS0RFN3J0elhTcDNO?=
- =?utf-8?B?aDVvcTNsRjV5Mzg2M3Q4MmVOSitCbEtPUjY0T0dzK3M5djNmQUNtUWNCanpz?=
- =?utf-8?B?VitzVGVKTWNQUW9NMTNvOVU5T0lncy9nV0dCMGhDSkd2dVRiK2VuWkxuTERZ?=
- =?utf-8?B?UFJ3UUNFeWIrWnUvRzlxaGkxUHg1QVJXODJ0NTFaUmIxNDF6OHJwa210VU5M?=
- =?utf-8?B?ck5Eb3FMOFhDckFEdFRvdWROeDB4K2kyK2hieTI5Ukw0MlJUQnFOTHNGYWwx?=
- =?utf-8?B?Vm5kZGN5STl3NDdDRGRGRWExd1VWaiswUlFxT2Y4dkZWRlF6RWN6VkFjSE0r?=
- =?utf-8?B?T2pkVGVzOGdSNTdoUmpYeUpIUGozUW5ya2c5R1FUYmhCZ0xESmFhd1hySUYy?=
- =?utf-8?B?UkkzcUhDYXlOVERkbjRaTlZLRmI2cUlsSUkyTjQrTW9EUGRPR0lBWGFINXE2?=
- =?utf-8?B?K0p4WnA0MU4zNzNOb3krNDV5bVZObHlWQmNORTM0Sklqb0ZmaGl1UEEyZ3ZM?=
- =?utf-8?B?dEd3SWVDTDJxODQrWUh2RC9PWDk0eFo5c0wrT21UK3BNOTBTLzdYMGlGc1R5?=
- =?utf-8?Q?/1d/kOXBm8sQ7MsCRxdtq4+dUXmRwVUPVZ?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a137173-cb26-4044-6585-08d8bd509ed1
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: G5oSMG8hSIyJrqJC/5hKvX9bJTTsaCO5d0CAGgwGURWBkcPDbHtSuzHNKQCVl72sGXZnPsGOeNJO9WIH/CM6JkyZIzSqDhgef3ToAgjYANM9TsG2BpT0NM7wepE6IrwiW13rjFQUjdkFdAjfzPnr36bacGbZm+rlBcgpNCsrh0/A5YNcoKDEPWCMu6UT3h3OZjivWrJY8XalvvkoDouyYy5lqf7hGcCua+hWe+bSPHeBL76Z5xGKBQiNOKU622vUsFINr8LRyTI1Sb1B6jz5yEfnBI25/spNVtbCjN88reJD0TScUL7zAP8EOQ8cWGsE8S5xDojCWDczR3VuoliOz5cx6GFXMHIhUXjm7GjOcah28pFKwyBttR+84IN1VanKbcPGgj980eIesuD/pXn/klEqBUACMH5s5UamDPTHhnD8JfX76gfvcmD/VVFOB5RA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(366004)(376002)(346002)(186003)(53546011)(1076003)(26005)(6916009)(8936002)(8676002)(2906002)(44832011)(956004)(316002)(16526019)(5660300002)(83380400001)(55016002)(66556008)(478600001)(4326008)(52116002)(7696005)(66476007)(66946007)(33656002)(6666004)(86362001)(170073001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?/eWT+K7MOJs/qcqcM9dFx5UZ+7tHGqScL6ek2UM1HeLzi6YMVdFmu/ASI0?=
+ =?iso-8859-1?Q?Ax1geUBRywfTFcJWJo4YNYS8+gwowO6UwFRe/Q+ZKMxnSnUstQiZoU7ObR?=
+ =?iso-8859-1?Q?m9gIU95TGTfQkhqRyRAe2brbAc5iA1/AfFfKr3PgujT2vfUiSQLbPWVDrs?=
+ =?iso-8859-1?Q?3ZUxfX9/JdMiPlQJqUV77Y9bhjZZyoLbXphq+D6gHif2JZSo569tiSN6rW?=
+ =?iso-8859-1?Q?p2067ynC3vbk6MV866VOjflLZbavMJ2gqEChZiFQtTAurkPsp/cK+4804Z?=
+ =?iso-8859-1?Q?SWWnArEkmUDIE1CgVv6hDhboPwR2L00pxVVXd0PviceizMIpBYZm/Js11s?=
+ =?iso-8859-1?Q?lvoZJaP/3Nmyv1h7nXajbhA+Umwz/R44jgvBm4MO4TGR8OZSi7QnF5ptF8?=
+ =?iso-8859-1?Q?mvxIwsTMyQdnpJWZRv0c04IZar4C5VpaHbLGkASp9SfqIsnFatMd4fJ7zu?=
+ =?iso-8859-1?Q?jo3Ax9Kr392vwZOGI2cwkq6JgJcULwyKtuBqKBdxIVGhuocaRnM8LqkKDf?=
+ =?iso-8859-1?Q?PNLsRwzuEErmESJRqO28ExwOaygEhK0c8Iqn4WHKRG3dV5jVIzN3R6AyJ0?=
+ =?iso-8859-1?Q?bIPvtw5dQ8nvZPMtN90XslwTc235zjjGgVMm5yd5Ickoojst5mpndennc7?=
+ =?iso-8859-1?Q?ausc0voiRh7PeJ/9aLXUObUcE4CwCiU1uc7rmYhtFRFzjPYUBtEdMJ5T4w?=
+ =?iso-8859-1?Q?0cGMfhtFgSCde2Rf3J5N7TPp0J81wPS8mycBr6xL/rCwFyt50an606/szB?=
+ =?iso-8859-1?Q?6RyVqyFJmv6902iZ2wZJpyyHSsKQ5XyeHSwqksQCDjyPrs9QOKZ3LWkACT?=
+ =?iso-8859-1?Q?3xPCg2DIAcbOL7m0vOvRj0ULLOpal8OOQBWWfdhL1eoQYdDjhMJQqqiYu7?=
+ =?iso-8859-1?Q?S4Ah2PJVUAGzi8ojRmJPkbVkCmmmMPXAUJTiOZ/fTJW+NqYiAJrbg+/2ee?=
+ =?iso-8859-1?Q?ZoGj6s1ZsA7G9b0vusD/Nj9stoK3nIjUzWSlNHpw8D7n9AWBfqaEplZX0K?=
+ =?iso-8859-1?Q?hHwKMoNh+xN+3g6MQ=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61853c7c-eb0c-4051-dfc5-08d8bd50a6d7
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2021 14:35:23.3825
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2021 14:35:36.9932
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iA4N9gODw6C7NN6cVLh9djfFWkscv0h91mBUpeqk7zemuOpjq4gni8P3+8FjQ17kibQzmbZNwhrRuOHc5bbUIA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4537
-X-OriginatorOrg: citrix.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: URTbP4HD+H4ZSVWZCYp6ykzvrlyX7iwGPVDqr21B6L/VIgiwa7sJGQtdA23v/HB+mLjqa9cYrDO0KDnPFpy8Hg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1378
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---4gc2aiveabc3g7bi
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-On Wed, Jan 20, 2021 at 03:23:30PM +0100, Arthur Borsboom wrote:
-> Hi Roger,
+On Mon, Jan 18, 2021 at 04:30:58AM +0300, WGH wrote:
+> On 16/01/2021 17:33, Yazen Ghannam wrote:
+> > From: Yazen Ghannam <yazen.ghannam@amd.com>
+> >
+> > The Family 17h scrubber registers moved to different offset starting
+> > with Model 30h. The new register offsets are used for all currently
+> > available models since then.
+> >
+> > Use the new register addresses as the defaults.
+> >
+> > Set the proper scrub register addresses during module init for older
+> > models.
 > 
-> I have set up a test environment based on Linux 5.11.0-rc4.
-> The patch did not apply clean, so I copied/pasted the patch manually.
+> So I tested the patch on my machine (AMD Ryzen 9 3900XT on ASRock B550 Extreme4 motherboard, Linux 5.10.7).
 > 
-> Without the patch the call trace (as reported) is visible in dmesg.
-> With the patch the call trace in dmesg is gone, but ... (there is always a
-> but) ...
+> The /sys/devices/system/edac/mc/mc0/sdram_scrub_rate value seems to be stuck at 12284069 right after the boot, and does not change.
+> Writes to the file do not report any errors.
 > 
-> Now the discard action returns the following.
+> dmesg:
 > 
-> [arthur@test-arch ~]$ sudo fstrim -v /
-> fstrim: /: the discard operation is not supported
+> [††† 0.549451] EDAC MC: Ver: 3.0.0
+> [††† 0.817576] EDAC amd64: F17h_M70h detected (node 0).
+> [††† 0.818159] EDAC amd64: Node 0: DRAM ECC enabled.
+> [††† 0.818717] EDAC amd64: MCT channel count: 2
+> [††† 0.819324] EDAC MC0: Giving out device to module amd64_edac controller F17h_M70h: DEV 0000:00:18.3 (INTERRUPT)
+> [††† 0.819909] EDAC MC: UMC0 chip selects:
+> [††† 0.819910] EDAC amd64: MC: 0: 16384MB 1: 16384MB
+> [††† 0.820488] EDAC amd64: MC: 2: 16384MB 3: 16384MB
+> [††† 0.821067] EDAC MC: UMC1 chip selects:
+> [††† 0.821067] EDAC amd64: MC: 0: 16384MB 1: 16384MB
+> [††† 0.821630] EDAC amd64: MC: 2: 16384MB 3: 16384MB
+> [††† 0.822187] EDAC amd64: using x16 syndromes.
+> [††† 0.822739] EDAC PCI0: Giving out device to module amd64_edac controller EDAC PCI controller: DEV 0000:00:18.0 (POLLED)
+> [††† 0.823314] AMD64 EDAC driver v3.5.0
 > 
-> It might be correct, but of course I was hoping the Xen VM guest would pass
-> on the discard request to the block device in the Xen VM host, which is a
-> disk partition.
-> Any suggestions?
+>
 
-Hm, that's not what I did see on my testing, the operation worked OK,
-and that's what I would expect to happen in your case also, since I
-know the xenstore keys.
+Thanks for testing. I'll try to find a similar system and check it out.
 
-I think it's possible your email client has mangled the patch, I'm
-attaching the same patch to this email, could you try to apply it
-again and report back? (this time it should apply cleanly)
-
-Thanks, Roger.
-
---4gc2aiveabc3g7bi
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment;
-	filename="v2-0001-xen-blkfront-allow-discard-nodes-to-be-optional.patch"
-Content-Transfer-Encoding: 8bit
-
-From f09acedb2e40fa84f31cfe4c960dea2037d06e3f Mon Sep 17 00:00:00 2001
-From: Roger Pau Monne <roger.pau@citrix.com>
-Date: Mon, 18 Jan 2021 11:47:05 +0100
-Subject: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-This is inline with the specification described in blkif.h:
-
- * discard-granularity: should be set to the physical block size if
-   node is not present.
- * discard-alignment, discard-secure: should be set to 0 if node not
-   present.
-
-This was detected as QEMU would only create the discard-granularity
-node but not discard-alignment, and thus the setup done in
-blkfront_setup_discard would fail.
-
-Fix blkfront_setup_discard to not fail on missing nodes, and also fix
-blkif_set_queue_limits to set the discard granularity to the physical
-block size if none is specified in xenbus.
-
-Fixes: ed30bf317c5ce ('xen-blkfront: Handle discard requests.')
-Reported-by: Arthur Borsboom <arthurborsboom@gmail.com>
-Signed-off-by: Roger Pau Monn√© <roger.pau@citrix.com>
----
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: "Roger Pau Monn√©" <roger.pau@citrix.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: xen-devel@lists.xenproject.org
-Cc: linux-block@vger.kernel.org
-Cc: Arthur Borsboom <arthurborsboom@gmail.com>
----
-Changes since v2:
- - Allow all discard-* nodes to be optional.
----
- drivers/block/xen-blkfront.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-index 5265975b3fba..e1c6798889f4 100644
---- a/drivers/block/xen-blkfront.c
-+++ b/drivers/block/xen-blkfront.c
-@@ -945,7 +945,8 @@ static void blkif_set_queue_limits(struct blkfront_info *info)
- 	if (info->feature_discard) {
- 		blk_queue_flag_set(QUEUE_FLAG_DISCARD, rq);
- 		blk_queue_max_discard_sectors(rq, get_capacity(gd));
--		rq->limits.discard_granularity = info->discard_granularity;
-+		rq->limits.discard_granularity = info->discard_granularity ?:
-+						 info->physical_sector_size;
- 		rq->limits.discard_alignment = info->discard_alignment;
- 		if (info->feature_secdiscard)
- 			blk_queue_flag_set(QUEUE_FLAG_SECERASE, rq);
-@@ -2179,19 +2180,12 @@ static void blkfront_closing(struct blkfront_info *info)
- 
- static void blkfront_setup_discard(struct blkfront_info *info)
- {
--	int err;
--	unsigned int discard_granularity;
--	unsigned int discard_alignment;
--
- 	info->feature_discard = 1;
--	err = xenbus_gather(XBT_NIL, info->xbdev->otherend,
--		"discard-granularity", "%u", &discard_granularity,
--		"discard-alignment", "%u", &discard_alignment,
--		NULL);
--	if (!err) {
--		info->discard_granularity = discard_granularity;
--		info->discard_alignment = discard_alignment;
--	}
-+	info->discard_granularity = xenbus_read_unsigned(info->xbdev->otherend,
-+							 "discard-granularity",
-+							 0);
-+	info->discard_alignment = xenbus_read_unsigned(info->xbdev->otherend,
-+						       "discard-alignment", 0);
- 	info->feature_secdiscard =
- 		!!xenbus_read_unsigned(info->xbdev->otherend, "discard-secure",
- 				       0);
--- 
-2.29.2
-
-
---4gc2aiveabc3g7bi--
+Thanks,
+Yazen
