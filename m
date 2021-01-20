@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3CB2FCC53
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BC72FCC90
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730644AbhATIGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:06:21 -0500
-Received: from mx.blih.net ([212.83.155.74]:21225 "EHLO mx.blih.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729643AbhATICY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:02:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bidouilliste.com;
-        s=mx; t=1611129668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZsuP9EUESZltLXaS8dgiXaaE9jo809x4YaPbT21PXX0=;
-        b=H7JaUfFmYjDL9GqizsW5Z81btdTOdGyLWR7NoJXuI2Mf0ZC2A7VVQJ8nVadFxPz5Ns7NEh
-        cHlxGitgyOwAdSJ8SVKX199i7PGBz8U75pttMkV2/fnqa6TB1JPFnmJWgpXbUXVAh4UC8z
-        eReXnS+9nC83aog2msOHc1cunSX/oBI=
-Received: from amy.home (lfbn-idf2-1-745-114.w86-247.abo.wanadoo.fr [86.247.192.114])
-        by mx.blih.net (OpenSMTPD) with ESMTPSA id 3bf0e6a4 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 20 Jan 2021 08:01:08 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 09:01:08 +0100
-From:   Emmanuel Vadot <manu@bidouilliste.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] pinctrl: clarify #pinctrl-cells for pinctrl-single,pins
-Message-Id: <20210120090108.bbdee781a237cb931a572323@bidouilliste.com>
-In-Reply-To: <20210120050342.320704-1-drew@beagleboard.org>
-References: <20210120050342.320704-1-drew@beagleboard.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; amd64-portbld-freebsd13.0)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730126AbhATIRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:17:41 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:47841 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729334AbhATIDd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 03:03:33 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 618B85C00DB;
+        Wed, 20 Jan 2021 03:02:26 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 20 Jan 2021 03:02:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=00bEHf4nDE8luMA3E9YoN9NPdJX
+        lfz5FcFiQrb7BVlg=; b=jJ+B40uv4zTBPxSsrpxIZlnURmXyNm666B+YSHKWPbh
+        BC4l39bSj6TxopZoDzSREpnR2oBKnTwl8EP6sYwKLb2Kz5hQB8aYHnmEEW9WiyB+
+        ExBt/XeV3IM26H+Vkp00vh6Hvo0KdqLVafpiACbdG0XFPMLojRY2dVVCJrdTZYQ3
+        7elPkATgqsGxg0JbfeVesL+jjBzTXJRDVlqB4C2VA2ME1h/VDkIQNkU3y/xM7wcg
+        Eeztz9Z5aQW6GfdTgJcp6aofSJuIuZxlbVnfVvM47k475cw/BWxewUqd7pfaFuoG
+        iNsAwtQwBKW44gnyM3XTAH3+Tm+kTpoaHIgozm1gmvQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=00bEHf
+        4nDE8luMA3E9YoN9NPdJXlfz5FcFiQrb7BVlg=; b=euPDvMTvb5c+d9Xsrzs5PL
+        Tj3/YDF0SQjPF+2m/UNlQI9gL1j/UWDoX4MyaQvnDL64a2fwhxGnkuat+gieinQQ
+        4iITH4kZnBuPumj9zf3bb65e3jkK5Vt4lbq6MzMkIxSkOi/gA5Y6CRg6NDAy1epK
+        vCXk4YEpLvYWKPWseYZNTjapaGxOOwKTWjpZBgknJhrFj/pAOUGvcVR4iMc+uP0B
+        UItndtqSu6OP6WvtNwUHFCIEn2V5eQctxfuZuhp2kIXshtzD0XEOPeumpVxR5CeM
+        SYI5PGIRJM2LHodvRnrsxlxiLkAhrgZF0iVxGtGO4DJd7BCkjj+4DqiV7QdpfjOg
+        ==
+X-ME-Sender: <xms:keMHYLZyZ7OMLQ3ISd5iMd6wZo7aaTcTUh1f8XMroH4oZFv-1kykAg>
+    <xme:keMHYKZ32S_N8s5NTcCj8z_CvuSJWY8BhtaJ1GSN_LLU8ZQXBOprs5CcpO9RG3e4c
+    DirX66ZHaRi9g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddugdduudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:keMHYN9tf_mQlG8op7SjYtCCtj0psTlEO0OqEAWjzxkl1K_Tpk_6YA>
+    <xmx:keMHYBqOb6iFXLIvTx9abCOq_7lECImFIS6v_bwKF2SUN5zjcF5sQA>
+    <xmx:keMHYGqhZrnPfOty4RF03tcZh8XkUTXIlTaY0ox1NrYuNqk4CDOa9w>
+    <xmx:kuMHYN2xmIuH3DXWrPmni68_Rvq2lDusAEoDKdJcDULanWMoHEOlBA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AA7E5240065;
+        Wed, 20 Jan 2021 03:02:25 -0500 (EST)
+Date:   Wed, 20 Jan 2021 09:02:24 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Subject: Re: linux-next: manual merge of the usb tree with the usb.current
+ tree
+Message-ID: <YAfjkLGh9Q+sBPGA@kroah.com>
+References: <20210120130603.1eccd490@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120130603.1eccd490@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 21:03:44 -0800
-Drew Fustini <drew@beagleboard.org> wrote:
-
-> Document that #pinctrl-cells can be 1 or 2 for pinctrl-single,pins
+On Wed, Jan 20, 2021 at 01:06:03PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
-> Reported-by: Emmanuel Vadot <manu@bidouilliste.com>
-> Link: https://lore.kernel.org/linux-gpio/20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com/
-> Cc: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
->  Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Today's linux-next merge of the usb tree got a conflict in:
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-> index f903eb4471f8..bb9999119314 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-> @@ -8,7 +8,7 @@ Required properties:
->  - reg : offset and length of the register set for the mux registers
->  
->  - #pinctrl-cells : number of cells in addition to the index, set to 1
-> -  for pinctrl-single,pins and 2 for pinctrl-single,bits
-> +  or 2 for pinctrl-single,pins and set to 2 for pinctrl-single,bits
->  
->  - pinctrl-single,register-width : pinmux register access width in bits
->  
-> -- 
-> 2.25.1
+>   drivers/usb/gadget/udc/bdc/Kconfig
 > 
+> between commit:
+> 
+>   ef02684c4e67 ("usb: bdc: Make bdc pci driver depend on BROKEN")
+> 
+> from the usb.current tree and commit:
+> 
+>   7766cafea0ec ("usb: bdc: Remove the BDC PCI driver")
+> 
+> from the usb tree.
+> 
+> I fixed it up (the latter removed the text updated by the former) and
+> can carry the fix as necessary. This is now fixed as far as linux-next
+> is concerned, but any non trivial conflicts should be mentioned to your
+> upstream maintainer when your tree is submitted for merging.  You may
+> also want to consider cooperating with the maintainer of the conflicting
+> tree to minimise any particularly complex conflicts.
 
- Reviewed-by: Emmanuel Vadot <manu@FreeBSD.org>
+Thanks, I knew this would happen and will resolve it when the
+usb.current patch is merged in Linus's tree.
 
- Thanks, now the docs make more sense :)
-
--- 
-Emmanuel Vadot <manu@bidouilliste.com> <manu@FreeBSD.org>
+greg k-h
