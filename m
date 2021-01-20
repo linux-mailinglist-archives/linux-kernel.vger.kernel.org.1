@@ -2,117 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD132FD6E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116062FD713
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390132AbhATOHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:07:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44014 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387715AbhATN1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:27:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611149174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sHlV/W1YFbgt7ZvBN6riN3ibxVfg2lJ3Lv2QWPteOwQ=;
-        b=jnM0xGFAJtiUIKpcT17BOufAN5sIeNFMSGSjYdgwS7exh4MNKXWENBZ2thB8+1W9ZkX2w/
-        eUravV18/Lz4I8bxBs5/035orMDTHz0iiVWawecNa9GSB2wKmUHHhofbz2OwjW5yraScS9
-        n6AnmWFAQV3vkTsqAXmOxQWwtLm3kSg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5E5E3AE14;
-        Wed, 20 Jan 2021 13:26:14 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     bpetkov@suse.com, x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 03/15] x86/xen: use specific Xen pv interrupt entry for DF
-Date:   Wed, 20 Jan 2021 14:26:01 +0100
-Message-Id: <20210120132613.31487-4-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210120132613.31487-1-jgross@suse.com>
-References: <20210120132613.31487-1-jgross@suse.com>
+        id S1730893AbhATRcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390163AbhATOJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:09:03 -0500
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58A1C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:08:22 -0800 (PST)
+Received: by mail-vk1-xa32.google.com with SMTP id d6so5664783vkb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:08:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7yuYd0oPowGkxYlpvWp25gunp0Rm2AZcot0EW1oLqcA=;
+        b=QeF5IRoVM/96DbzFmBtOzGI6ulIok9zjigjtK8VxGGgoPDH8H2hZmMljVyXmV16d4e
+         4Yw9niP3Bp3SumCYp/oXmRBF4y73ZAFaiPFd8mczeWnJJRW97lkvtk5W176tdmk/zF5e
+         y4lB2tM7w27Yr0I1rhzioyg3OqsRT7Kf/KU5HdM7X950uyilAIyV9sqjDB7s1/94+my6
+         Wr7ommEraRK8O8SE8b5w6cB3CJwH4/qkhff7gKNJXPfCMR8+7GTZtpXXL3XLFkxN1Hq7
+         ThCaD2fcrZ5GvacUXvKvOpro4wW2om/8o8Gf9OSpxzgzAB+8J/pq22lUHXqsd8ywCq5F
+         JV+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7yuYd0oPowGkxYlpvWp25gunp0Rm2AZcot0EW1oLqcA=;
+        b=fIe3IIZVMpRnHHJUYTphosAi4Rw5sVWkSBaqEh1RCdJcmUiV4kOK0wXJOgsX9OO80G
+         04b/H+apNk9thZ2LJp0MyvksLAkBV6ovmpZyIaIxhvPD3TdLlBU34midbGiCG/x5m9NN
+         nmk+QRsA7Bj88WoQRQTruk0pmDCdWFGIXNd+VRzQpFWs8504vVMNPmvhhQy45ZN8Vcgl
+         45jVPxlwEFEA/1eNrjld7Kcy8Jh2hwLmfqOILrxBAHVpHypRvePIOJdOv7wYpJ9a+sH0
+         dPAV3NX2XFzha/VqrDNX4Tbh/8DtFsIjg1AlrfVe6rnxCV8/6HF6R8wCtvPSce0Riiro
+         Vm3A==
+X-Gm-Message-State: AOAM533SCZakBqewGpEwv83YByv8ikuhqfq1GoHUUBxw9JsBzVKnAfLL
+        BCff6l8NsXLeOgYo1XEvqy9YvT+EqOGm8S47S+yXSQ==
+X-Google-Smtp-Source: ABdhPJz6M+BPmVNSztofB1Zs6zVNJhx0ylJZX8DRD5+bAXaXzsmmpFnRhJVy59llitExc/bQP68Mp6bnlSXbhvaOpKI=
+X-Received: by 2002:a1f:4582:: with SMTP id s124mr6975512vka.7.1611151701878;
+ Wed, 20 Jan 2021 06:08:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210118084520.241-1-zbestahu@gmail.com>
+In-Reply-To: <20210118084520.241-1-zbestahu@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 20 Jan 2021 15:07:44 +0100
+Message-ID: <CAPDyKFp4h=hLeeoCHKqGRx3V0TabiT1dDO4FTCPnkukm=Wh-ew@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: core: remove unused host parameter of mmc_sd_get_csd()
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Yue Hu <huyue2@yulong.com>, zhangwen@yulong.com,
+        zbestahu@163.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xen PV guests don't use IST. For double fault interrupts switch to
-the same model as NMI.
+On Mon, 18 Jan 2021 at 09:45, Yue Hu <zbestahu@gmail.com> wrote:
+>
+> From: Yue Hu <huyue2@yulong.com>
+>
+> The host parameter is not used in the body of mmc_sd_get_csd(),
+> so let's remove it. Update related code at the same time.
+>
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
 
-Correct a typo in a comment while copying it.
+Applied for next, thanks!
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
----
-V2:
-- fix typo (Andy Lutomirski)
----
- arch/x86/include/asm/idtentry.h |  3 +++
- arch/x86/xen/enlighten_pv.c     | 10 ++++++++--
- arch/x86/xen/xen-asm.S          |  2 +-
- 3 files changed, 12 insertions(+), 3 deletions(-)
+Kind regards
+Uffe
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 5dd64404715a..3ac84cb702fc 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -608,6 +608,9 @@ DECLARE_IDTENTRY_RAW(X86_TRAP_DB,	xenpv_exc_debug);
- 
- /* #DF */
- DECLARE_IDTENTRY_DF(X86_TRAP_DF,	exc_double_fault);
-+#ifdef CONFIG_XEN_PV
-+DECLARE_IDTENTRY_RAW_ERRORCODE(X86_TRAP_DF,	xenpv_exc_double_fault);
-+#endif
- 
- /* #VC */
- #ifdef CONFIG_AMD_MEM_ENCRYPT
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 9f5e44c1f70a..76616024129e 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -567,10 +567,16 @@ void noist_exc_debug(struct pt_regs *regs);
- 
- DEFINE_IDTENTRY_RAW(xenpv_exc_nmi)
- {
--	/* On Xen PV, NMI doesn't use IST.  The C part is the sane as native. */
-+	/* On Xen PV, NMI doesn't use IST.  The C part is the same as native. */
- 	exc_nmi(regs);
- }
- 
-+DEFINE_IDTENTRY_RAW_ERRORCODE(xenpv_exc_double_fault)
-+{
-+	/* On Xen PV, DF doesn't use IST.  The C part is the same as native. */
-+	exc_double_fault(regs, error_code);
-+}
-+
- DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
- {
- 	/*
-@@ -615,7 +621,7 @@ struct trap_array_entry {
- 
- static struct trap_array_entry trap_array[] = {
- 	TRAP_ENTRY_REDIR(exc_debug,			true  ),
--	TRAP_ENTRY(exc_double_fault,			true  ),
-+	TRAP_ENTRY_REDIR(exc_double_fault,		true  ),
- #ifdef CONFIG_X86_MCE
- 	TRAP_ENTRY_REDIR(exc_machine_check,		true  ),
- #endif
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index bc2586730a5b..1d054c915046 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -161,7 +161,7 @@ xen_pv_trap asm_exc_overflow
- xen_pv_trap asm_exc_bounds
- xen_pv_trap asm_exc_invalid_op
- xen_pv_trap asm_exc_device_not_available
--xen_pv_trap asm_exc_double_fault
-+xen_pv_trap asm_xenpv_exc_double_fault
- xen_pv_trap asm_exc_coproc_segment_overrun
- xen_pv_trap asm_exc_invalid_tss
- xen_pv_trap asm_exc_segment_not_present
--- 
-2.26.2
 
+> ---
+> v2: fix minor commit message.
+>
+>  drivers/mmc/core/sd.c   | 4 ++--
+>  drivers/mmc/core/sd.h   | 2 +-
+>  drivers/mmc/core/sdio.c | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 6f054c4..6fa51a6 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -860,7 +860,7 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
+>         return err;
+>  }
+>
+> -int mmc_sd_get_csd(struct mmc_host *host, struct mmc_card *card)
+> +int mmc_sd_get_csd(struct mmc_card *card)
+>  {
+>         int err;
+>
+> @@ -1046,7 +1046,7 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+>         }
+>
+>         if (!oldcard) {
+> -               err = mmc_sd_get_csd(host, card);
+> +               err = mmc_sd_get_csd(card);
+>                 if (err)
+>                         goto free_card;
+>
+> diff --git a/drivers/mmc/core/sd.h b/drivers/mmc/core/sd.h
+> index 497c026..1af5a03 100644
+> --- a/drivers/mmc/core/sd.h
+> +++ b/drivers/mmc/core/sd.h
+> @@ -10,7 +10,7 @@
+>  struct mmc_card;
+>
+>  int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr);
+> -int mmc_sd_get_csd(struct mmc_host *host, struct mmc_card *card);
+> +int mmc_sd_get_csd(struct mmc_card *card);
+>  void mmc_decode_cid(struct mmc_card *card);
+>  int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
+>         bool reinit);
+> diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
+> index 694a212..0fda778 100644
+> --- a/drivers/mmc/core/sdio.c
+> +++ b/drivers/mmc/core/sdio.c
+> @@ -751,7 +751,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
+>          * Read CSD, before selecting the card
+>          */
+>         if (!oldcard && card->type == MMC_TYPE_SD_COMBO) {
+> -               err = mmc_sd_get_csd(host, card);
+> +               err = mmc_sd_get_csd(card);
+>                 if (err)
+>                         goto remove;
+>
+> --
+> 1.9.1
+>
