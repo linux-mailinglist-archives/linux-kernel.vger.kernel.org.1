@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8DE2FC5FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF8E2FC617
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730768AbhATAlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:41:42 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9426 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729850AbhATAle (ORCPT
+        id S1730831AbhATAtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729070AbhATArM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:41:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60077c150001>; Tue, 19 Jan 2021 16:40:53 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
- 2021 00:40:51 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 20 Jan 2021 00:40:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VkD98D2g4B5Fh0juZxGAktnjnbZQS5pliyVbntxYCOVhXraYgNLZIZSDLINxNbGYo2pwYVIrI+o6j1qDiiVSaagGkbJ0fqd/1Uqu/oI6i2Y7EvPQJLJ8ASlrIYp8DyOtOFwOziAt7/S7lPNEaiwCXfBhVT+s9oBW95KZKTgyqFdcbA3bJWSz//GRzdejc1dK2cjnwhx0biZG7rh4DtFwvb81vswbW1LJKmHrpjnGsekdDUkr1a3BZlYCM0SXrm28kFYkrOJ6d/L3jRp0XmGpueBFkFqEcovhRFP/KFJxmSNldUCpm4EeSb68yPjmSWAQSs+pr4HYa42IZ4mEd6TVBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
- b=dC+Lnu1huRjY6//go2O9cKt4VPrT7jBxqECqHTTstMeh45ZXBCU9g2/nTCAr3ekdHcf3mGZoJMFEgPU0lmgVydjD9eQ+L1SVGLdQc11NRGYnaY46H6gv7J8ZEWZHqAmWzPcwZHWLYr9WUEdEuZ3DbnrbcmaLxsx2kCtUhgiFOlHrbNR8UXGnk+QWQn9XrP1GaP1bNNxRKPzgcfiqQQluCcL8FroBc48fgBGOXAGK/LjEfzeTpxYz8mbrpVQt/6c/2pop4crSWIGp0ku2dAH5Bm+NT1bc9BfejnDp+eWRRDgM11LewwwZTHsWkgFQ7/mxVJFYRrikVZwfnfqXK/B4EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3932.namprd12.prod.outlook.com (2603:10b6:5:1c1::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Wed, 20 Jan
- 2021 00:40:48 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
- 00:40:48 +0000
-Date:   Tue, 19 Jan 2021 20:40:46 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Taehee Yoo <ap420073@gmail.com>
-Subject: Re: [PATCH 00/20] Rid W=1 warnings from Infinibad
-Message-ID: <20210120004046.GA1022538@nvidia.com>
-References: <20210118223929.512175-1-lee.jones@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
-X-ClientProxiedBy: BL1PR13CA0169.namprd13.prod.outlook.com
- (2603:10b6:208:2bd::24) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Tue, 19 Jan 2021 19:47:12 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCC7C061757;
+        Tue, 19 Jan 2021 16:46:14 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id q8so178647lfm.10;
+        Tue, 19 Jan 2021 16:46:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+yTAnXtjPrGxO02YmxJ6XSfUB2dhdEl68apWpq9Pbuk=;
+        b=aWR9uj6s3zndMEFoZ0kLGAmhuCaTsnAHptSyzcafSG7fqIryWI9a5yiM/dJtg7cQ31
+         xBuT1njrtSKCDJUwwVbAM2PunBKhKs/LSzcG2bV3C5PKxh5sZ2pMdNKFXtT11CXBXTQc
+         95xFXZCtrb0KGKUpfj2P3YJXOyHL9aSDk7y715K94Mkv/aCxnUwZR+pkgLrvbP63yZ4a
+         tvYyVQr4BuxHVXuPEO+soQnt9V+9ZXse1vcmQ9YKTou5lId/bjyqGWdoAvog9pRNWIWf
+         P7nGzwbSjXFPbF9maU7JyKVY5oMqYdEo7YspHvXT/4qdjqEeUmnkxEVgIdaVWZjfr9Bs
+         bNYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+yTAnXtjPrGxO02YmxJ6XSfUB2dhdEl68apWpq9Pbuk=;
+        b=mKglqnXoEdfVnkP8iWm5KxLzPmWRmmRQBzFZy1lF75hlCKQgy+oKRdkqEl3zOpDvfo
+         mFIPGYZ8MLoODaxoDw8SUmXKlEzQiLs5mg17wEVuvTskYmqfLjuYM/jU+7Zx8Q+EcAAX
+         vU8yLAGB+71kwT0DLGXxpV7cE+wLQKm35fOVxuH/15eMr379gEJLhSTROMoW6j34AKMf
+         HnqZCbUT0kUV3S2GJLVasnoow9W9yvIC9Q97hSSMIslFYyP3lpXdJTskSTvzLw5wHy7c
+         C9kkqnX+Mrs7J3n/lAHbxBFT1ovKQwPZXj5Pja5FY6AzmhdWKvT0i0ZMQo8FHphvKKNY
+         LUVw==
+X-Gm-Message-State: AOAM532ajCvapBTfGnrskUkXUztnXUbudQyiWzae5CwIliETVELsbaVT
+        Ibr4LNVTZqXFLf2fZ7IrklE=
+X-Google-Smtp-Source: ABdhPJy8eIsMtMERKkZrAhe3XZuLfuFDeOMsJR2MapSRDZs82HYp5fV158YEgPkRzK0K5NOueIL+tA==
+X-Received: by 2002:a19:ee09:: with SMTP id g9mr995874lfb.272.1611103572917;
+        Tue, 19 Jan 2021 16:46:12 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id v23sm21046ljg.97.2021.01.19.16.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 16:46:12 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] gpio: tegra: Fix irq_set_affinity
+Date:   Wed, 20 Jan 2021 03:45:48 +0300
+Message-Id: <20210120004548.31692-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0169.namprd13.prod.outlook.com (2603:10b6:208:2bd::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Wed, 20 Jan 2021 00:40:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l21YE-004I1W-Kx; Tue, 19 Jan 2021 20:40:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611103253; bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=M2OCEUEUw1hDUtrIj/knE9JLDPTghT/n37iZCYJoFLm6oHa4ihwvWCXqrqTF+PNri
-         Zc4R7R5jF/q6QKkMa/NLArDNavXzy9ltdh01dinC3SDrFe6E60nMwvPQa4crcGzcZO
-         asV8AW5tbZKl76V6ON07UuTm6sIpvGEkL5Gq2cvPwqK6RuiagJ5/q4x7o0Bb92hVSC
-         87BhAjxwpUV0R2qzIMWhijWYllGVMxD3pIdgxJRBhHVptxUgGZbx7HbblwEJ61FAkA
-         ay8UVMjeTcK3ixWqtE+5pfmyM3HxGSbBDR6PZUN+KovJk6vTIOJMgPSBrXFVZNcixS
-         Z8CofXWquVQSQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:39:09PM +0000, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
-> 
-> This is set 1 of either 2 or 3 sets required to fully clean-up.
-> 
-> Lee Jones (20):
->   RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
->   RDMA/core: device: Fix formatting in worthy kernel-doc header and
->     demote another
->   RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
->     issues
->   RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
->   RDMA/core/cache: Fix some misspellings, missing and superfluous param
->     descriptions
->   RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
->     'user_pri' and fix 'iwcq'
->   RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
->   RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
->     param 'ib_dev'
->   RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
->     formatting issues
->   RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
->     descriptions
->   RDMA/core/multicast: Provide description for
->     'ib_init_ah_from_mcmember()'s 'rec' param
->   RDMA/core/sa_query: Demote non-conformant kernel-doc header
->   RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
->   RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
->   RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
->     descriptions
->   RDMA/core/restrack: Fix kernel-doc formatting issue
->   RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
->     others
->   RDMA/core/counters: Demote non-conformant kernel-doc headers
->   RDMA/core/iwpm_util: Fix some param description misspellings
->   RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
+The irq_set_affinity callback should not be set if parent IRQ domain
+doesn't present because gpio-tegra driver callback fails in this case,
+causing a noisy error messages on system suspend:
 
-Looks Ok, applied to for-next, thanks
+ Disabling non-boot CPUs ...
+ IRQ 26: no longer affine to CPU1
+ IRQ128: set affinity failed(-22).
+ IRQ130: set affinity failed(-22).
+ IRQ131: set affinity failed(-22).
+ IRQ 27: no longer affine to CPU2
+ IRQ128: set affinity failed(-22).
+ IRQ130: set affinity failed(-22).
+ IRQ131: set affinity failed(-22).
+ IRQ 28: no longer affine to CPU3
+ IRQ128: set affinity failed(-22).
+ IRQ130: set affinity failed(-22).
+ IRQ131: set affinity failed(-22).
+ Entering suspend state LP1
 
-Jason
+Hence just don't specify the irq_set_affinity callback if parent PMC
+IRQ domain is missing. Tegra isn't capable of setting affinity per GPIO,
+affinity could be set only per GPIO bank, thus there is nothing to do
+for gpio-tegra in regards to CPU affinity without the parent IRQ domain.
+
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
+Fixes: efcdca286eef ("gpio: tegra: Convert to gpio_irq_chip")
+Reported-by: Matt Merhar <mattmerhar@protonmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/gpio/gpio-tegra.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
+index 6c79e9d2f932..9a43129313fa 100644
+--- a/drivers/gpio/gpio-tegra.c
++++ b/drivers/gpio/gpio-tegra.c
+@@ -701,7 +701,6 @@ static int tegra_gpio_probe(struct platform_device *pdev)
+ #ifdef CONFIG_PM_SLEEP
+ 	tgi->ic.irq_set_wake		= tegra_gpio_irq_set_wake;
+ #endif
+-	tgi->ic.irq_set_affinity	= tegra_gpio_irq_set_affinity;
+ 	tgi->ic.irq_request_resources	= tegra_gpio_irq_request_resources;
+ 	tgi->ic.irq_release_resources	= tegra_gpio_irq_release_resources;
+ 
+@@ -754,6 +753,8 @@ static int tegra_gpio_probe(struct platform_device *pdev)
+ 
+ 		if (!irq->parent_domain)
+ 			return -EPROBE_DEFER;
++
++		tgi->ic.irq_set_affinity = tegra_gpio_irq_set_affinity;
+ 	}
+ 
+ 	tgi->regs = devm_platform_ioremap_resource(pdev, 0);
+-- 
+2.29.2
+
