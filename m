@@ -2,82 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1779A2FCDF0
+	by mail.lfdr.de (Postfix) with ESMTP id F39BE2FCDF2
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730707AbhATKNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:13:45 -0500
-Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:56613 "EHLO
-        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729712AbhATJNl (ORCPT
+        id S1730972AbhATKOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:14:05 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2382 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730542AbhATJRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:13:41 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id D928FFB0E0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:12:36 +0000 (GMT)
-Received: (qmail 17350 invoked from network); 20 Jan 2021 09:12:36 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 20 Jan 2021 09:12:36 -0000
-Date:   Wed, 20 Jan 2021 09:12:35 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
-Message-ID: <20210120091235.GT3592@techsingularity.net>
-References: <20210119112211.3196-1-mgorman@techsingularity.net>
- <20210119112211.3196-6-mgorman@techsingularity.net>
- <20210120083018.GA14462@in.ibm.com>
+        Wed, 20 Jan 2021 04:17:53 -0500
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DLKZx4DQgz67f5r;
+        Wed, 20 Jan 2021 17:14:01 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 20 Jan 2021 10:17:10 +0100
+Received: from [10.47.7.185] (10.47.7.185) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 20 Jan
+ 2021 09:17:09 +0000
+Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
+ <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <b25f0861-1cec-3ac8-a0ef-8e9e94c4e662@huawei.com>
+ <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
+ <DB8PR04MB67951BF5DBE4524CB13BAAE4E6A20@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <c3d8d635-33ab-8d7e-6efc-6a589aebeb52@huawei.com>
+Date:   Wed, 20 Jan 2021 09:15:54 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210120083018.GA14462@in.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <DB8PR04MB67951BF5DBE4524CB13BAAE4E6A20@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.7.185]
+X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 02:00:18PM +0530, Gautham R Shenoy wrote:
-> > @@ -6157,18 +6169,31 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
-> >  	}
-> > 
-> >  	for_each_cpu_wrap(cpu, cpus, target) {
-> > -		if (!--nr)
-> > -			return -1;
-> > -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-> > -			break;
-> > +		if (smt) {
-> > +			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> > +			if ((unsigned int)i < nr_cpumask_bits)
-> > +				return i;
-> > +
-> > +		} else {
-> > +			if (!--nr)
-> > +				return -1;
-> > +			i = __select_idle_cpu(cpu);
-> > +			if ((unsigned int)i < nr_cpumask_bits) {
-> > +				idle_cpu = i;
-> > +				break;
-> > +			}
-> > +		}
-> >  	}
-> > 
-> > -	if (sched_feat(SIS_PROP)) {
-> > +	if (smt)
-> > +		set_idle_cores(this, false);
+On 20/01/2021 05:15, Joakim Zhang wrote:
 > 
-> Shouldn't we set_idle_cores(false) only if this was the last idle
-> core in the LLC ? 
+>> -----Original Message-----
+>> From: John Garry <john.garry@huawei.com>
+>> Sent: 2021年1月20日 1:33
+>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; peterz@infradead.org;
+>> mingo@redhat.com; acme@kernel.org; mark.rutland@arm.com;
+>> alexander.shishkin@linux.intel.com; jolsa@redhat.com;
+>> namhyung@kernel.org; irogers@google.com; kjain@linux.ibm.com
+>> Cc: linux-kernel@vger.kernel.org; linuxarm@openeuler.org
+>> Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
+>>
+>> On 19/01/2021 15:47, John Garry wrote:
+>>> On 19/01/2021 10:56, Joakim Zhang wrote:
+>>>> It seems have other issue compared to 5.10 kernel after switching to
+>>>> this framework, below metric can't work.
+>>>> "MetricExpr": "(( imx8_ddr0@read\\-cycles@ +
+>>>> imx8_ddr0@write\\-cycles@
+>>>> ) * 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)"
+>>>> After change to:
+>>>> "MetricExpr": "(( imx8mm_ddr.read_cycles + imx8mm_ddr.write_cycles )
+>>>> *
+>>>> 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)",
+>>>
+>>> It seems that any metric which includes "duration_time" is broken,
+>>> even on x86:
+>>>
+>>> john@localhost:~/acme/tools/perf> sudo ./perf stat -v -M
+>>> L1D_Cache_Fill_BW sleep 1 Using CPUID GenuineIntel-6-3D-4 metric expr
+>>> 64 * l1d.replacement / 1000000000 / duration_time for
+>>> L1D_Cache_Fill_BW found event duration_time found event
+>>> l1d.replacement adding {l1d.replacement}:W,duration_time
+>>> l1d.replacement -> cpu/umask=0x1,(null)=0x1e8483,event=0x51/
+>>> Segmentation fault
+>>>
+>>>
+>>> Seems to be from my commit c2337d67199 ("perf metricgroup: Fix metrics
+>>> using aliases covering multiple PMUs")
+>>>
+>>> I'll look to fix it now.
+>>>
+>>
+>> Please try this:
+>>
+>>   From 2380f1ef0250e6818b3dbc7bff4a868810875e2a Mon Sep 17 00:00:00
+>> 2001
+>> From: John Garry <john.garry@huawei.com>
+>> Date: Tue, 19 Jan 2021 17:29:54 +0000
+>> Subject: [PATCH] perf metricgroup: Fix metric support for duration_time
+>>
+>> For a metric using duration_time, the strcmp() check when finding identical
+>> events in metric_events[] is broken, as it does not consider that the
+>> event pmu_name is NULL - it would be for duration_time.
+>>
+>> As such, add a NULL check here for event pmu_name.
+>>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>>
+>> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+>> index ee94d3e8dd65..277adff8017f 100644
+>> --- a/tools/perf/util/metricgroup.c
+>> +++ b/tools/perf/util/metricgroup.c
+>> @@ -280,6 +280,8 @@ static struct evsel *find_evsel_group(struct evlist
+>> *perf_evlist,
+>>    			 */
+>>    			if (!has_constraint &&
+>>    			    ev->leader != metric_events[i]->leader &&
+>> +			    ev->leader->pmu_name &&
+>> +			    metric_events[i]->leader->pmu_name &&
+>>    			    !strcmp(ev->leader->pmu_name,
+>>    				    metric_events[i]->leader->pmu_name))
+>>    				break;
+>> --
+>> 2.26.2
+>>
+>>
+> 
+> For this patch: Tested-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> 
+> Hi John, Jolsa,
+> 
+> Is there any way to avoid breaking exist metric expressions? If not, it will always happened after metricgroup changes.
 > 
 
-That would involve rechecking the cpumask bits that have not been
-scanned to see if any of them are an idle core. As the existance of idle
-cores can change very rapidly, it's not worth the cost.
+They are not normally broken like that. Normally we test beforehand, but 
+these cases were missed here by me. However if you were testing them 
+previously, then it would be expected that you had tested them again for 
+the final patchset which was merged.
 
--- 
-Mel Gorman
-SUSE Labs
+Anyway, we can look to add metric tests for these.
+
+@Arnaldo, I will send separate formal patch for this today.
+
+Thanks,
+John
+
