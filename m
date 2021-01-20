@@ -2,37 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170F22FD3D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BF82FD3B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbhATPRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:17:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732705AbhATPP1 (ORCPT
+        id S1732940AbhATPQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:16:24 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49730 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390953AbhATPPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:15:27 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2522EC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 07:14:47 -0800 (PST)
+        Wed, 20 Jan 2021 10:15:32 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id 76BE31F45829
+        with ESMTPSA id 335641F4582B
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>
-Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec: Add host command to keep AP off after EC reset.
-Date:   Wed, 20 Jan 2021 16:14:37 +0100
-Message-Id: <161115565913.676119.24181779049303168.b4-ty@collabora.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] platform/chrome: Constify static attribute_group structs
+Date:   Wed, 20 Jan 2021 16:14:38 +0100
+Message-Id: <161115565913.676119.6220305847430124366.b4-ty@collabora.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201221041231.14516-1-pihsun@chromium.org>
-References: <20201221041231.14516-1-pihsun@chromium.org>
+In-Reply-To: <20210109001748.58036-1-rikard.falkeborn@gmail.com>
+References: <20210109001748.58036-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,15 +33,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020 12:12:23 +0800, Pi-Hsun Shih wrote:
-> Add command to EC_CMD_REBOOT_EC to reset EC but don't boot AP.
+On Sat, 9 Jan 2021 01:17:48 +0100, Rikard Falkeborn wrote:
+> The only usage of these is to print their name in a dev_err-message, and
+> to pass their address to sysfs_create_group() and sysfs_remove_group(),
+> both which takes pointers to const. Make them const to allow the compiler
+> to put them in read-only memory.
 
 Applied, thanks!
 
-[1/2] platform/chrome: cros_ec: Add host command to keep AP off after EC reset.
-      commit: 8e7a76ad8f51fd9aaabf8feeea54b22f4e4873d8
-[2/2] platform/chrome: cros_ec_sysfs: Add cold-ap-off to sysfs reboot.
-      commit: 91b9694542179f2f2325a5c4f86c4e7f9be277d3
+[1/1] platform/chrome: Constify static attribute_group structs
+      commit: ed07d774c4b2793be4d2bfc62cf69c3e55667f5a
 
 Best regards,
 -- 
