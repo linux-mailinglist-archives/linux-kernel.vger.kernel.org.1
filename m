@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4BA2FC9BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54312FC9BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731607AbhATEGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:06:08 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53985 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731536AbhATEFK (ORCPT
+        id S1731656AbhATEGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:06:24 -0500
+Received: from conuserg-11.nifty.com ([210.131.2.78]:55317 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729221AbhATEF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:05:10 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UMIdHZ._1611115429;
-Received: from 30.25.183.227(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UMIdHZ._1611115429)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Jan 2021 12:03:50 +0800
-Subject: Re: [PATCH] tpm/tpm_tis: Fix variable reset during IRQ probing
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210113120021.59045-1-tianjia.zhang@linux.alibaba.com>
- <X/+xr/L+m2k5fObZ@kernel.org>
- <44c35c27-0cd4-e451-1b9c-d6fe48e58e51@linux.alibaba.com>
- <YAFfIqaohjneVCO6@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <60b7bb82-c762-cf67-6b73-7ecb2a0f1085@linux.alibaba.com>
-Date:   Wed, 20 Jan 2021 12:03:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Tue, 19 Jan 2021 23:05:28 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 10K446Aa007457;
+        Wed, 20 Jan 2021 13:04:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 10K446Aa007457
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611115446;
+        bh=BRgrkKTsVG1UZgRw/qwmxVo1U8KoOfHkPwz2tqhTwc8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ji+9Fc88MZBtcCgjAPB9rGZJxbxrgJDyi8T9GJo4S1sBSlTQshonUv7Q2PV/gVeWf
+         srh23/QT0ZJF0ddzm+Z4CrkdHPlwHAciVRsPniT58diZ4Ca+khZELjbEjBl3gYLsyb
+         3d1wxL+UnVjDQyIqUxg5Oo8+HH+tCfO0B801iW7cUtGLbrZblKxzZ+8jUGYVLNMhCO
+         As4mt9lwC+tVi6INGhJaxS7DtZb90x/dshhLgfRosn+tc1eMdAXessUroFAPhwJwz7
+         VjeTs62WQFE7zIoxrE3pbQsDRkOm5RBBJDRlfaAadP6DnmJgfBxhaOt6WK+7d4WETB
+         MrgsG1c02T0eA==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: stop removing stale <linux/version.h> file
+Date:   Wed, 20 Jan 2021 13:04:03 +0900
+Message-Id: <20210120040403.2897639-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YAFfIqaohjneVCO6@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Revert commit 223c24a7dba9 ("kbuild: Automatically remove stale
+<linux/version.h> file").
 
+It was more than 6 years ago. I do not expect anybody to start
+git-bisect for such a big window.
 
-On 1/15/21 5:23 PM, Jarkko Sakkinen wrote:
-> On Thu, Jan 14, 2021 at 12:12:16PM +0800, Tianjia Zhang wrote:
->>
->>
->> On 1/14/21 10:51 AM, Jarkko Sakkinen wrote:
->>> On Wed, Jan 13, 2021 at 08:00:21PM +0800, Tianjia Zhang wrote:
->>>> In tpm_tis_core_init(), tpm2_probe() will be called first, this
->>>> function will eventually call tpm_tis_send(), and then
->>>> tpm_tis_probe_irq_single() will detect whether the interrupt is
->>>> normal, mainly the installation interrupted, set `priv->irq_tested`
->>>> to false. The logic will eventually be executed to tpm_tis_send()
->>>> to trigger an interrupt.
->>>>
->>>> There is currently such a scenario, which will cause the IRQ probe
->>>> code to never be executed, so that the TPM device is in polling
->>>> mode: after setting irq_tested to false, an interrupt occurs
->>>> between entering the ttpm_tis_send() function, and the interrupt
->>>> will be first set irq_tested to true will cause the IRQ probe code
->>>> to never be executed.
->>>
->>> Can you describe the scenario more detail?
->>>
->>
->> The problematic scenario we encountered is like this. The following figure
->> shows the execution flow of tpm_tis_core_init(). An interrupt occurred
->> before the IRQ probe. This interrupt was caused by tpm2_probe(), but it was
->> triggered before the IRQ probe was executed, and the interrupt handler would
->> set irq_tested to true, so the IRQ probe code can never execute, that is,
->> the code marked 2 in the figure will never happen.
-> 
-> TPM_INT_ENABLE is cleared on reset [*].
-> 
-> [*] Section 5.9.1
->      https://trustedcomputinggroup.org/resource/pc-client-work-group-pc-client-specific-tpm-interface-specification-tis/
-> 
-> /Jarkko
-> 
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Hi,
+ Makefile | 2 --
+ 1 file changed, 2 deletions(-)
 
-I got it, this seems to be a firmware issue. Thanks for your reply.
+diff --git a/Makefile b/Makefile
+index 23d0494e48bc..ebbf7158dfa0 100644
+--- a/Makefile
++++ b/Makefile
+@@ -257,7 +257,6 @@ export building_out_of_srctree srctree objtree VPATH
+ # of make so .config is not included in this case either (for *config).
+ 
+ version_h := include/generated/uapi/linux/version.h
+-old_version_h := include/linux/version.h
+ 
+ clean-targets := %clean mrproper cleandocs
+ no-dot-config-targets := $(clean-targets) \
+@@ -1261,7 +1260,6 @@ endef
+ 
+ $(version_h): FORCE
+ 	$(call filechk,version.h)
+-	$(Q)rm -f $(old_version_h)
+ 
+ include/generated/utsrelease.h: include/config/kernel.release FORCE
+ 	$(call filechk,utsrelease.h)
+-- 
+2.27.0
 
-Best regards,
-Tianjia
