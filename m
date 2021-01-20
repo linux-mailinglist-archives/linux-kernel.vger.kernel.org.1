@@ -2,148 +2,528 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AB92FD568
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82882FD559
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403819AbhATQUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:20:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:42004 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390027AbhATQNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:13:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2614C31B;
-        Wed, 20 Jan 2021 08:12:14 -0800 (PST)
-Received: from [10.37.8.30] (unknown [10.37.8.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EE953F68F;
-        Wed, 20 Jan 2021 08:12:12 -0800 (PST)
-Subject: Re: [PATCH] kasan: Add explicit preconditions to kasan_report()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210119172607.18400-1-vincenzo.frascino@arm.com>
- <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
- <20210119185206.GA26948@gaia> <418db49b-1412-85ca-909e-9cdcd9fdb089@arm.com>
- <20210120160416.GF2642@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <6525b31a-9258-a5d1-9188-5bce68af573c@arm.com>
-Date:   Wed, 20 Jan 2021 16:16:02 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2391442AbhATQTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729113AbhATQSh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:18:37 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76C7C0613CF;
+        Wed, 20 Jan 2021 08:17:56 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id d3so5543401uap.4;
+        Wed, 20 Jan 2021 08:17:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yXY6XJ/yr1uxDqOl3Hug5UlUQ2GVsN80G0JuIFhZphM=;
+        b=gokr3nT0If+J2hz6ncJ06IUn2uIuHbefyU4rbuNrePHVwUn6vXYixvPNN9BE43LwDg
+         tKoKg5WvZQtIzVUVHjzUJJ3MCjGLI6MRzXGK5NhhS7J3ZPeOVsHiiaIih1LSLQlx5Lu8
+         MSvhR/b7zVt7eh55Z4RH/Wn7OwTlaRgBs2qwBQ+ot5aHKqPxU7SjK93v44jl72h7pmz2
+         ntD4SGgJwlhtib6Le9y0ZEn0MwTia1gFrctPWJmkI4qZM+Lfi/JN9adTqm4JVOp79zzX
+         E2OMzr/c0VRdPor6qt74MzRzzX/zNuJljAzjnsNViQtyKSuYst+enHmdVUJOkYmSQS24
+         sZJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yXY6XJ/yr1uxDqOl3Hug5UlUQ2GVsN80G0JuIFhZphM=;
+        b=GjQ/czv+LElixLhm0w2yIH2OgbGzw7gfGU5CEZOp/mEu7twOPyN5fc3H7x1R4R4jz5
+         UAYW9mLFpFHcTjxjvOXOEGCbYkfy1vc/XMco4U+GGe1QKTb+hjtk5xz3BtOiEJW9J9J1
+         JAbvWSlkqNzhta8DZtWPKK0+/XdE94X9HqsU89IDb8AbFWlePvhYiQuLyYGb851w5b9q
+         hZF8sWnXhsenMWJFzlG9PqV3bIgwep68FmzM5tSfFIFbPN52zcSVJXbl9+rD6d8nqizo
+         l7RZNSNeSJZHI6CebE8mN7kNPhHraR3gOlcuPVsaZdsw+crx+lI4cpigip4TZCTsnAAW
+         LNbQ==
+X-Gm-Message-State: AOAM532hKgYfFMw8Hn89WvJtfr2y9f4ABpE8Z/MekLpygZgQkINSxby6
+        Xc0UidhMCziUzpEXIQgnrtLHWx7nKeQcP9CQcos=
+X-Google-Smtp-Source: ABdhPJyFm2RraKYys3JlScwYGB9YGgzVY0AVFztXpMhMAM9fA9j/GVs1OtnDzgxs8LW1vv+b/WEJn4X1rL3dCBkGsAg=
+X-Received: by 2002:ab0:6f97:: with SMTP id f23mr6380433uav.5.1611159475845;
+ Wed, 20 Jan 2021 08:17:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210120160416.GF2642@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210120134357.1522254-1-robert.foss@linaro.org> <20210120134357.1522254-15-robert.foss@linaro.org>
+In-Reply-To: <20210120134357.1522254-15-robert.foss@linaro.org>
+From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
+Date:   Wed, 20 Jan 2021 17:17:44 +0100
+Message-ID: <CAK7fi1ZZhpJqs9oEA=h+7msZ7VzkvOwF4y6p9E2ykrYxb8=0CA@mail.gmail.com>
+Subject: Re: [PATCH v2 15/22] dt-bindings: media: camss: Add qcom,sdm660-camss binding
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, will@kernel.org,
+        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
+        vkoul@kernel.org, Anson.Huang@nxp.com, michael@walle.cc,
+        agx@sigxcpu.org, max.oss.09@gmail.com,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il giorno mer 20 gen 2021 alle ore 14:44 Robert Foss
+<robert.foss@linaro.org> ha scritto:
+>
+> Add bindings for qcom,sdm660-camss in order to support the camera
+> subsystem on SDM630/660 and SDA variants.
+>
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
 
+Hey Robert!
 
-On 1/20/21 4:04 PM, Catalin Marinas wrote:
-> On Tue, Jan 19, 2021 at 08:35:49PM +0000, Vincenzo Frascino wrote:
->> On 1/19/21 6:52 PM, Catalin Marinas wrote:
->>> On Tue, Jan 19, 2021 at 07:27:43PM +0100, Andrey Konovalov wrote:
->>>> On Tue, Jan 19, 2021 at 6:26 PM Vincenzo Frascino
->>>> <vincenzo.frascino@arm.com> wrote:
->>>>>
->>>>> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
->>>>> the address passed as a parameter.
->>>>>
->>>>> Add a comment to make sure that the preconditions to the function are
->>>>> explicitly clarified.
->>>>>
->>>>> Note: An invalid address (e.g. NULL pointer address) passed to the
->>>>> function when, KASAN_HW_TAGS is enabled, leads to a kernel panic.
->>>>>
->>>>> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
->>>>> Cc: Alexander Potapenko <glider@google.com>
->>>>> Cc: Dmitry Vyukov <dvyukov@google.com>
->>>>> Cc: Leon Romanovsky <leonro@mellanox.com>
->>>>> Cc: Andrey Konovalov <andreyknvl@google.com>
->>>>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
->>>>> ---
->>>>>  mm/kasan/report.c | 11 +++++++++++
->>>>>  1 file changed, 11 insertions(+)
->>>>>
->>>>> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
->>>>> index c0fb21797550..2485b585004d 100644
->>>>> --- a/mm/kasan/report.c
->>>>> +++ b/mm/kasan/report.c
->>>>> @@ -403,6 +403,17 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
->>>>>         end_report(&flags);
->>>>>  }
->>>>>
->>>>> +/**
->>>>> + * kasan_report - report kasan fault details
->>>>> + * @addr: valid address of the allocation where the tag fault was detected
->>>>> + * @size: size of the allocation where the tag fault was detected
->>>>> + * @is_write: the instruction that caused the fault was a read or write?
->>>>> + * @ip: pointer to the instruction that cause the fault
->>>>> + *
->>>>> + * Note: When CONFIG_KASAN_HW_TAGS is enabled kasan_report() dereferences
->>>>> + * the address to access the tags, hence it must be valid at this point in
->>>>> + * order to not cause a kernel panic.
->>>>> + */
->>>>
->>>> It doesn't dereference the address, it just checks the tags, right?
->>>>
->>>> Ideally, kasan_report() should survive that with HW_TAGS like with the
->>>> other modes. The reason it doesn't is probably because of a blank
->>>> addr_has_metadata() definition for HW_TAGS in mm/kasan/kasan.h. I
->>>> guess we should somehow check that the memory comes from page_alloc or
->>>> kmalloc. Or otherwise make sure that it has tags. Maybe there's an arm
->>>> instruction to check whether the memory has tags?
->>>
->>> There isn't an architected way to probe whether a memory location has a
->>> VA->PA mapping. The tags are addressed by PA but you can't reach them if
->>> you get a page fault on the VA. So we either document the kasan_report()
->>> preconditions or, as you suggest, update addr_has_metadata() for the
->>> HW_TAGS case. Something like:
->>>
->>>         return is_vmalloc_addr(virt) || virt_addr_valid(virt));
->>>
->>
->> This seems not working on arm64 because according to virt_addr_valid 0 is a
->> valid virtual address, in fact:
->>
->> __is_lm_address(0) == true && pfn_valid(virt_to_pfn(0)) == true.
-> 
-> Ah, so __is_lm_address(0) is true. Maybe we should improve this since
-> virt_to_pfn(0) doesn't make much sense.
-> 
+> ---
+>
+> Changes since v1:
+>  - Laurent: Reworked driver to use dtschema
+>
+>
+>  .../bindings/media/qcom,sdm660-camss.yaml     | 416 ++++++++++++++++++
+>  1 file changed, 416 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
+> new file mode 100644
+> index 000000000000..105ce84f9b71
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
+> @@ -0,0 +1,416 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/media/qcom,sdm660-camss.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm CAMSS ISP
+> +
+> +maintainers:
 
-How do you propose to improve it?
+If you want, feel free to add me to the maintainers list for SDM660 CAMSS
+- AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
->> An option could be to make an exception for virtual address 0 in
->> addr_has_metadata() something like:
->>
->> static inline bool addr_has_metadata(const void *addr)
->> {
->> 	if ((u64)addr == 0)
->> 		return false;
->>
->> 	return (is_vmalloc_addr(addr) || virt_addr_valid(addr));
->> }
-> 
-> As Andrey replied, passing a non-zero small value would still be
-> incorrectly detected as valid.
-> 
-
-I would like to remove the check completely and have virt_addr_valid(addr) to
-return the right thing if possible.
-
-I admit, yesterday evening I did not thing it through completely before posting
-this code that had the sole purpose to open the discussion. I agree in principle
-on what Andrey said as well (addr < PAGE_SIZE).
-
--- 
-Regards,
-Vincenzo
+> +  - Robert Foss <robert.foss@linaro.org>
+> +  - Todor Tomov <todor.too@gmail.com>
+> +
+> +description: |
+> +  The CAMSS IP is a CSI decoder and ISP present on Qualcomm platforms
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sdm660-camss
+> +
+> +  clocks:
+> +    description:
+> +      Input clocks for the hardware block.
+> +    minItems: 42
+> +    maxItems: 42
+> +
+> +  clock-names:
+> +    description:
+> +      Names of input clocks for the hardware block.
+> +    items:
+> +      - const: ahb
+> +      - const: cphy_csid0
+> +      - const: cphy_csid1
+> +      - const: cphy_csid2
+> +      - const: cphy_csid3
+> +      - const: csi0_ahb
+> +      - const: csi0
+> +      - const: csi0_phy
+> +      - const: csi0_pix
+> +      - const: csi0_rdi
+> +      - const: csi1_ahb
+> +      - const: csi1
+> +      - const: csi1_phy
+> +      - const: csi1_pix
+> +      - const: csi1_rdi
+> +      - const: csi2_ahb
+> +      - const: csi2
+> +      - const: csi2_phy
+> +      - const: csi2_pix
+> +      - const: csi2_rdi
+> +      - const: csi3_ahb
+> +      - const: csi3
+> +      - const: csi3_phy
+> +      - const: csi3_pix
+> +      - const: csi3_rdi
+> +      - const: csiphy0_timer
+> +      - const: csiphy1_timer
+> +      - const: csiphy2_timer
+> +      - const: csiphy_ahb2crif
+> +      - const: csi_vfe0
+> +      - const: csi_vfe1
+> +      - const: ispif_ahb
+> +      - const: throttle_axi
+> +      - const: top_ahb
+> +      - const: vfe0_ahb
+> +      - const: vfe0
+> +      - const: vfe0_stream
+> +      - const: vfe1_ahb
+> +      - const: vfe1
+> +      - const: vfe1_stream
+> +      - const: vfe_ahb
+> +      - const: vfe_axi
+> +
+> +  interrupts:
+> +    description:
+> +      IRQs for the hardware block.
+> +    minItems: 10
+> +    maxItems: 10
+> +
+> +  interrupt-names:
+> +    description:
+> +      Names of IRQs for the hardware block.
+> +    items:
+> +      - const: csid0
+> +      - const: csid1
+> +      - const: csid2
+> +      - const: csid3
+> +      - const: csiphy0
+> +      - const: csiphy1
+> +      - const: csiphy2
+> +      - const: ispif
+> +      - const: vfe0
+> +      - const: vfe1
+> +
+> +  iommus:
+> +    maxItems: 4
+> +
+> +  power-domains:
+> +    maxItems: 2
+> +
+> +  ports:
+> +    description:
+> +      The CSI data input ports.
+> +
+> +    type: object
+> +
+> +    properties:
+> +      port@0:
+> +        type: object
+> +        description: Input node for receiving CSI data.
+> +        properties:
+> +          endpoint:
+> +            type: object
+> +
+> +            properties:
+> +              clock-lanes:
+> +                description: |-
+> +                  The physical clock lane index.
+> +
+> +              data-lanes:
+> +                description: |-
+> +                  An array of physical data lanes indexes.
+> +                  Position of an entry determines the logical
+> +                  lane number, while the value of an entry
+> +                  indicates physical lane index.
+> +
+> +            required:
+> +              - clock-lanes
+> +              - data-lanes
+> +
+> +        required:
+> +          - endpoint
+> +          - reg
+> +
+> +      port@1:
+> +        type: object
+> +        description: Input node for receiving CSI data.
+> +        properties:
+> +          endpoint:
+> +            type: object
+> +
+> +            properties:
+> +              clock-lanes:
+> +                description: |-
+> +                  The physical clock lane index.
+> +
+> +              data-lanes:
+> +                description: |-
+> +                  An array of physical data lanes indexes.
+> +                  Position of an entry determines the logical
+> +                  lane number, while the value of an entry
+> +                  indicates physical lane index.
+> +
+> +            required:
+> +              - clock-lanes
+> +              - data-lanes
+> +
+> +        required:
+> +          - endpoint
+> +          - reg
+> +
+> +      port@2:
+> +        type: object
+> +        description: Input node for receiving CSI data.
+> +        properties:
+> +          endpoint:
+> +            type: object
+> +
+> +            properties:
+> +              clock-lanes:
+> +                description: |-
+> +                  The physical clock lane index.
+> +
+> +              data-lanes:
+> +                description: |-
+> +                  An array of physical data lanes indexes.
+> +                  Position of an entry determines the logical
+> +                  lane number, while the value of an entry
+> +                  indicates physical lane index.
+> +
+> +            required:
+> +              - clock-lanes
+> +              - data-lanes
+> +
+> +        required:
+> +          - endpoint
+> +          - reg
+> +
+> +      port@3:
+> +        type: object
+> +        description: Input node for receiving CSI data.
+> +        properties:
+> +          endpoint:
+> +            type: object
+> +
+> +            properties:
+> +              clock-lanes:
+> +                description: |-
+> +                  The physical clock lane index.
+> +
+> +              data-lanes:
+> +                description: |-
+> +                  An array of physical data lanes indexes.
+> +                  Position of an entry determines the logical
+> +                  lane number, while the value of an entry
+> +                  indicates physical lane index.
+> +
+> +            required:
+> +              - clock-lanes
+> +              - data-lanes
+> +
+> +        required:
+> +          - endpoint
+> +          - reg
+> +
+> +  reg:
+> +    minItems: 14
+> +    maxItems: 14
+> +
+> +  reg-names:
+> +    items:
+> +      - const: csi_clk_mux
+> +      - const: csid0
+> +      - const: csid1
+> +      - const: csid2
+> +      - const: csid3
+> +      - const: csiphy0
+> +      - const: csiphy0_clk_mux
+> +      - const: csiphy1
+> +      - const: csiphy1_clk_mux
+> +      - const: csiphy2
+> +      - const: csiphy2_clk_mux
+> +      - const: ispif
+> +      - const: vfe0
+> +      - const: vfe1
+> +
+> +  vdda-supply:
+> +    description:
+> +      Definition of the regulator used as analog power supply.
+> +
+> +required:
+> +  - clock-names
+> +  - clocks
+> +  - compatible
+> +  - interrupt-names
+> +  - interrupts
+> +  - iommus
+> +  - power-domains
+> +  - reg
+> +  - reg-names
+> +  - vdda-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/qcom,gcc-sdm660.h>
+> +    #include <dt-bindings/clock/qcom,mmcc-sdm660.h>
+> +
+> +    camss: camss@ca00000 {
+> +      compatible = "qcom,sdm660-camss";
+> +
+> +      clocks = <&mmcc CAMSS_AHB_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID0_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID1_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID2_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID3_CLK>,
+> +        <&mmcc CAMSS_CSI0_AHB_CLK>,
+> +        <&mmcc CAMSS_CSI0_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID0_CLK>,
+> +        <&mmcc CAMSS_CSI0PIX_CLK>,
+> +        <&mmcc CAMSS_CSI0RDI_CLK>,
+> +        <&mmcc CAMSS_CSI1_AHB_CLK>,
+> +        <&mmcc CAMSS_CSI1_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID1_CLK>,
+> +        <&mmcc CAMSS_CSI1PIX_CLK>,
+> +        <&mmcc CAMSS_CSI1RDI_CLK>,
+> +        <&mmcc CAMSS_CSI2_AHB_CLK>,
+> +        <&mmcc CAMSS_CSI2_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID2_CLK>,
+> +        <&mmcc CAMSS_CSI2PIX_CLK>,
+> +        <&mmcc CAMSS_CSI2RDI_CLK>,
+> +        <&mmcc CAMSS_CSI3_AHB_CLK>,
+> +        <&mmcc CAMSS_CSI3_CLK>,
+> +        <&mmcc CAMSS_CPHY_CSID3_CLK>,
+> +        <&mmcc CAMSS_CSI3PIX_CLK>,
+> +        <&mmcc CAMSS_CSI3RDI_CLK>,
+> +        <&mmcc CAMSS_CSI0PHYTIMER_CLK>,
+> +        <&mmcc CAMSS_CSI1PHYTIMER_CLK>,
+> +        <&mmcc CAMSS_CSI2PHYTIMER_CLK>,
+> +        <&mmcc CSIPHY_AHB2CRIF_CLK>,
+> +        <&mmcc CAMSS_CSI_VFE0_CLK>,
+> +        <&mmcc CAMSS_CSI_VFE1_CLK>,
+> +        <&mmcc CAMSS_ISPIF_AHB_CLK>,
+> +        <&mmcc THROTTLE_CAMSS_AXI_CLK>,
+> +        <&mmcc CAMSS_TOP_AHB_CLK>,
+> +        <&mmcc CAMSS_VFE0_AHB_CLK>,
+> +        <&mmcc CAMSS_VFE0_CLK>,
+> +        <&mmcc CAMSS_VFE0_STREAM_CLK>,
+> +        <&mmcc CAMSS_VFE1_AHB_CLK>,
+> +        <&mmcc CAMSS_VFE1_CLK>,
+> +        <&mmcc CAMSS_VFE1_STREAM_CLK>,
+> +        <&mmcc CAMSS_VFE_VBIF_AHB_CLK>,
+> +        <&mmcc CAMSS_VFE_VBIF_AXI_CLK>;
+> +
+> +      clock-names = "ahb",
+> +        "cphy_csid0",
+> +        "cphy_csid1",
+> +        "cphy_csid2",
+> +        "cphy_csid3",
+> +        "csi0_ahb",
+> +        "csi0",
+> +        "csi0_phy",
+> +        "csi0_pix",
+> +        "csi0_rdi",
+> +        "csi1_ahb",
+> +        "csi1",
+> +        "csi1_phy",
+> +        "csi1_pix",
+> +        "csi1_rdi",
+> +        "csi2_ahb",
+> +        "csi2",
+> +        "csi2_phy",
+> +        "csi2_pix",
+> +        "csi2_rdi",
+> +        "csi3_ahb",
+> +        "csi3",
+> +        "csi3_phy",
+> +        "csi3_pix",
+> +        "csi3_rdi",
+> +        "csiphy0_timer",
+> +        "csiphy1_timer",
+> +        "csiphy2_timer",
+> +        "csiphy_ahb2crif",
+> +        "csi_vfe0",
+> +        "csi_vfe1",
+> +        "ispif_ahb",
+> +        "throttle_axi",
+> +        "top_ahb",
+> +        "vfe0_ahb",
+> +        "vfe0",
+> +        "vfe0_stream",
+> +        "vfe1_ahb",
+> +        "vfe1",
+> +        "vfe1_stream",
+> +        "vfe_ahb",
+> +        "vfe_axi";
+> +
+> +      interrupts = <GIC_SPI 296 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 297 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 298 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 299 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 78 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 79 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 80 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 309 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 314 IRQ_TYPE_EDGE_RISING>,
+> +        <GIC_SPI 315 IRQ_TYPE_EDGE_RISING>;
+> +
+> +      interrupt-names = "csid0",
+> +        "csid1",
+> +        "csid2",
+> +        "csid3",
+> +        "csiphy0",
+> +        "csiphy1",
+> +        "csiphy2",
+> +        "ispif",
+> +        "vfe0",
+> +        "vfe1";
+> +
+> +      iommus = <&mmss_smmu 0xc00>,
+> +        <&mmss_smmu 0xc01>,
+> +        <&mmss_smmu 0xc02>,
+> +        <&mmss_smmu 0xc03>;
+> +
+> +      power-domains = <&mmcc CAMSS_VFE0_GDSC>,
+> +        <&mmcc CAMSS_VFE1_GDSC>;
+> +
+> +      reg = <0x0ca00020 0x10>,
+> +        <0x0ca30000 0x100>,
+> +        <0x0ca30400 0x100>,
+> +        <0x0ca30800 0x100>,
+> +        <0x0ca30c00 0x100>,
+> +        <0x0c824000 0x1000>,
+> +        <0x0ca00120 0x4>,
+> +        <0x0c825000 0x1000>,
+> +        <0x0ca00124 0x4>,
+> +        <0x0c826000 0x1000>,
+> +        <0x0ca00128 0x4>,
+> +        <0x0ca31000 0x500>,
+> +        <0x0ca10000 0x1000>,
+> +        <0x0ca14000 0x1000>;
+> +
+> +      reg-names = "csi_clk_mux",
+> +        "csid0",
+> +        "csid1",
+> +        "csid2",
+> +        "csid3",
+> +        "csiphy0",
+> +        "csiphy0_clk_mux",
+> +        "csiphy1",
+> +        "csiphy1_clk_mux",
+> +        "csiphy2",
+> +        "csiphy2_clk_mux",
+> +        "ispif",
+> +        "vfe0",
+> +        "vfe1";
+> +
+> +      vdda-supply = <&reg_2v8>;
+> +
+> +      ports {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +      };
+> +    };
+> --
+> 2.27.0
+>
