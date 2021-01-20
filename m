@@ -2,106 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F292FDDCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6072FDDC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392935AbhAUAUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:20:32 -0500
-Received: from mga02.intel.com ([134.134.136.20]:63848 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403911AbhATXV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:21:29 -0500
-IronPort-SDR: rKkLTyjplmBFVaHt6do2dNFAezJins6Pmd0cIfgve6P0/BV2R9o2rCwShhSJ20IL3I1DrqUNmo
- StFIQWplSecQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="166283778"
-X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
-   d="scan'208";a="166283778"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 14:38:46 -0800
-IronPort-SDR: zolBOEUHtbelebkdFAiHWg8eHG7cz9/esoy2XeQanwIXe7LH/OUMUIcrkBNsp6QNgdRqw6V8pk
- JwEsAQ41Iz5Q==
-X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
-   d="scan'208";a="366538808"
-Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.255.228.129]) ([10.255.228.129])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 14:38:44 -0800
-Subject: Re: [RFC V1 1/7] x86: Probe assembler capabilities for VAES and
- VPLCMULQDQ support
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
-        andi.kleen@intel.com, Dave Hansen <dave.hansen@intel.com>,
-        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
-        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
-        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
-        ilya.albrekht@intel.com, kyung.min.park@intel.com,
-        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com,
-        X86 ML <x86@kernel.org>
-References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
- <1608325864-4033-2-git-send-email-megha.dey@intel.com>
- <CAMj1kXGJD1FdixURybqZEOJV+h1-QESp=WCJVPo-Bvd7Zh9j1Q@mail.gmail.com>
-From:   "Dey, Megha" <megha.dey@intel.com>
-Message-ID: <ea72956e-aa3c-4ce6-436d-34e5e701c242@intel.com>
-Date:   Wed, 20 Jan 2021 14:38:44 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2390959AbhAUAUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403814AbhATXTN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 18:19:13 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0ACC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:40:43 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id 36so13471506otp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:40:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N0ikIRODAHgwzg5TM1HT6ZnRLm2FIQf9CYmGIK25T6w=;
+        b=KQ1jsn/I1essLHW70M6MBpsmFwLFQqgLosGVhpaT0uLA7nnt4bFyYsMBk1OD4xgO5b
+         SRRqFj69QI/ZFyhj67466muPotunnkZyun6hz6ZKTGDcmgq6VvpVY2men6KmNHAohxYI
+         N+BYsRt5LoEdcfOjz6uEqyRaX+QSwdpMbqXCxuzahixkY1w7J/3R+d9Qt2s53G7Wxsmx
+         w920G2Krt8tW3DyiJynyoiVVLdoilo/d1AqDM4qmm2iwel3M7tLYpV0ajN+dlgBK/LCL
+         VHRtDpCof7DIPofChpCJ76N2z9Gq3JxzXixLND72mulltdMeLgWqsiFKdPVeUWom0c59
+         FJVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N0ikIRODAHgwzg5TM1HT6ZnRLm2FIQf9CYmGIK25T6w=;
+        b=eXKCa5T4kwuJ67RrkHfdfUe+URlu8TW74BQfrULgbx7QnPaR9TN5QwhHlH6ZC4lPcv
+         +j9vsIgjr0NvlqhqYBcRh2Q0gUsBRr/A5j3wQlwEIFH4/Ulq9PTcyq8J6BzzIQpvO4F7
+         0/k5SRZB+rwU+eGpgyjYvBU4jhpbimyK0Hb3sSwmWmu5MaN4ppBWMJXtoYjD+mJfc953
+         dPMhQC6C4gjskU+de3+6n8G3eksRRTDrFvHzIMiz2uLkPJ1jPu0lmXTRc+8fI00820RK
+         lNjewbYzcqg+om/J9Hol+zpSIG5j+j5ZnThG4p/AQdyIch86UayK8YdxfldYtBwf4N8b
+         NpNA==
+X-Gm-Message-State: AOAM531abpAfrXZXuhh+JJHgsaitzsl7MNXicbWUe2+TrtRDUl7Cm32v
+        0jEg+yXblSM3zfv3Dsh96o9kRg==
+X-Google-Smtp-Source: ABdhPJwsr2cgr0QT6mIy0RJN43jymeoZ6Wl/xM4K83iEZuDe4nI45HO3piUIMase3XvmXirjIqH5Dg==
+X-Received: by 2002:a9d:7304:: with SMTP id e4mr8490305otk.228.1611182443270;
+        Wed, 20 Jan 2021 14:40:43 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n11sm681000oij.37.2021.01.20.14.40.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 14:40:42 -0800 (PST)
+Date:   Wed, 20 Jan 2021 16:40:40 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Taniya Das <tdas@codeaurora.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette ? <mturquette@baylibre.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V1] clk: qcom: gcc-sc7180: Mark the MM XO clocks to be
+ always ON
+Message-ID: <YAixaN6fta27XDnO@builder.lan>
+References: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXGJD1FdixURybqZEOJV+h1-QESp=WCJVPo-Bvd7Zh9j1Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard,
+On Wed 20 Jan 01:47 CST 2021, Taniya Das wrote:
 
-On 1/16/2021 8:54 AM, Ard Biesheuvel wrote:
-> On Fri, 18 Dec 2020 at 22:07, Megha Dey <megha.dey@intel.com> wrote:
->> This is a preparatory patch to introduce the optimized crypto algorithms
->> using AVX512 instructions which would require VAES and VPLCMULQDQ support.
->>
->> Check for VAES and VPCLMULQDQ assembler support using AVX512 registers.
->>
->> Cc: x86@kernel.org
->> Signed-off-by: Megha Dey <megha.dey@intel.com>
->> ---
->>   arch/x86/Kconfig.assembler | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
->> index 26b8c08..9ea0bc8 100644
->> --- a/arch/x86/Kconfig.assembler
->> +++ b/arch/x86/Kconfig.assembler
->> @@ -1,6 +1,16 @@
->>   # SPDX-License-Identifier: GPL-2.0
->>   # Copyright (C) 2020 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
->>
->> +config AS_VAES_AVX512
->> +       def_bool $(as-instr,vaesenc %zmm0$(comma)%zmm1$(comma)%zmm1) && 64BIT
-> Is the '&& 64BIT' necessary here, but not below?
->
-> In any case, better to use a separate 'depends on' line, for legibility
+> There are intermittent GDSC power-up failures observed for titan top
+> gdsc, which requires the XO clock. Thus mark all the MM XO clocks always
+> enabled from probe.
+> 
 
-yeah , I think the '&& 64 BIT' is not required. I will remove it in the 
-next version.
+But if this is the reason for keeping all these {ahb,xo}_clks critical
+(or upstream just a bunch of hard coded regmap_update_bits()) why don't
+we properly describe them as dependencies for the clock controller/gdsc?
+I.e. by the use of pm_clk_add()?
 
--Megha
+Regards,
+Bjorn
 
->
->> +       help
->> +         Supported by binutils >= 2.30 and LLVM integrated assembler
->> +
->> +config AS_VPCLMULQDQ
->> +       def_bool $(as-instr,vpclmulqdq \$0$(comma)%zmm2$(comma)%zmm6$(comma)%zmm4)
->> +       help
->> +         Supported by binutils >= 2.30 and LLVM integrated assembler
->> +
->>   config AS_AVX512
->>          def_bool $(as-instr,vpmovm2b %k1$(comma)%zmm5)
->>          help
->> --
->> 2.7.4
->>
+> Fixes: 8d4025943e13 ("clk: qcom: camcc-sc7180: Use runtime PM ops instead of clk ones")
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
+>  drivers/clk/qcom/gcc-sc7180.c | 47 ++++---------------------------------------
+>  1 file changed, 4 insertions(+), 43 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
+> index b05901b..88e896a 100644
+> --- a/drivers/clk/qcom/gcc-sc7180.c
+> +++ b/drivers/clk/qcom/gcc-sc7180.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /*
+> - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
+>   */
+> 
+>  #include <linux/clk-provider.h>
+> @@ -919,19 +919,6 @@ static struct clk_branch gcc_camera_throttle_hf_axi_clk = {
+>  	},
+>  };
+> 
+> -static struct clk_branch gcc_camera_xo_clk = {
+> -	.halt_reg = 0xb02c,
+> -	.halt_check = BRANCH_HALT,
+> -	.clkr = {
+> -		.enable_reg = 0xb02c,
+> -		.enable_mask = BIT(0),
+> -		.hw.init = &(struct clk_init_data){
+> -			.name = "gcc_camera_xo_clk",
+> -			.ops = &clk_branch2_ops,
+> -		},
+> -	},
+> -};
+> -
+>  static struct clk_branch gcc_ce1_ahb_clk = {
+>  	.halt_reg = 0x4100c,
+>  	.halt_check = BRANCH_HALT_VOTED,
+> @@ -1096,19 +1083,6 @@ static struct clk_branch gcc_disp_throttle_hf_axi_clk = {
+>  	},
+>  };
+> 
+> -static struct clk_branch gcc_disp_xo_clk = {
+> -	.halt_reg = 0xb030,
+> -	.halt_check = BRANCH_HALT,
+> -	.clkr = {
+> -		.enable_reg = 0xb030,
+> -		.enable_mask = BIT(0),
+> -		.hw.init = &(struct clk_init_data){
+> -			.name = "gcc_disp_xo_clk",
+> -			.ops = &clk_branch2_ops,
+> -		},
+> -	},
+> -};
+> -
+>  static struct clk_branch gcc_gp1_clk = {
+>  	.halt_reg = 0x64000,
+>  	.halt_check = BRANCH_HALT,
+> @@ -2159,19 +2133,6 @@ static struct clk_branch gcc_video_throttle_axi_clk = {
+>  	},
+>  };
+> 
+> -static struct clk_branch gcc_video_xo_clk = {
+> -	.halt_reg = 0xb028,
+> -	.halt_check = BRANCH_HALT,
+> -	.clkr = {
+> -		.enable_reg = 0xb028,
+> -		.enable_mask = BIT(0),
+> -		.hw.init = &(struct clk_init_data){
+> -			.name = "gcc_video_xo_clk",
+> -			.ops = &clk_branch2_ops,
+> -		},
+> -	},
+> -};
+> -
+>  static struct clk_branch gcc_mss_cfg_ahb_clk = {
+>  	.halt_reg = 0x8a000,
+>  	.halt_check = BRANCH_HALT,
+> @@ -2304,7 +2265,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
+>  	[GCC_BOOT_ROM_AHB_CLK] = &gcc_boot_rom_ahb_clk.clkr,
+>  	[GCC_CAMERA_HF_AXI_CLK] = &gcc_camera_hf_axi_clk.clkr,
+>  	[GCC_CAMERA_THROTTLE_HF_AXI_CLK] = &gcc_camera_throttle_hf_axi_clk.clkr,
+> -	[GCC_CAMERA_XO_CLK] = &gcc_camera_xo_clk.clkr,
+>  	[GCC_CE1_AHB_CLK] = &gcc_ce1_ahb_clk.clkr,
+>  	[GCC_CE1_AXI_CLK] = &gcc_ce1_axi_clk.clkr,
+>  	[GCC_CE1_CLK] = &gcc_ce1_clk.clkr,
+> @@ -2317,7 +2277,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
+>  	[GCC_DISP_GPLL0_DIV_CLK_SRC] = &gcc_disp_gpll0_div_clk_src.clkr,
+>  	[GCC_DISP_HF_AXI_CLK] = &gcc_disp_hf_axi_clk.clkr,
+>  	[GCC_DISP_THROTTLE_HF_AXI_CLK] = &gcc_disp_throttle_hf_axi_clk.clkr,
+> -	[GCC_DISP_XO_CLK] = &gcc_disp_xo_clk.clkr,
+>  	[GCC_GP1_CLK] = &gcc_gp1_clk.clkr,
+>  	[GCC_GP1_CLK_SRC] = &gcc_gp1_clk_src.clkr,
+>  	[GCC_GP2_CLK] = &gcc_gp2_clk.clkr,
+> @@ -2413,7 +2372,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
+>  	[GCC_VIDEO_AXI_CLK] = &gcc_video_axi_clk.clkr,
+>  	[GCC_VIDEO_GPLL0_DIV_CLK_SRC] = &gcc_video_gpll0_div_clk_src.clkr,
+>  	[GCC_VIDEO_THROTTLE_AXI_CLK] = &gcc_video_throttle_axi_clk.clkr,
+> -	[GCC_VIDEO_XO_CLK] = &gcc_video_xo_clk.clkr,
+>  	[GPLL0] = &gpll0.clkr,
+>  	[GPLL0_OUT_EVEN] = &gpll0_out_even.clkr,
+>  	[GPLL6] = &gpll6.clkr,
+> @@ -2510,6 +2468,9 @@ static int gcc_sc7180_probe(struct platform_device *pdev)
+>  	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
+>  	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
+>  	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
+> +	regmap_update_bits(regmap, 0x0b02c, BIT(0), BIT(0));
+> +	regmap_update_bits(regmap, 0x0b028, BIT(0), BIT(0));
+> +	regmap_update_bits(regmap, 0x0b030, BIT(0), BIT(0));
+>  	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
+> 
+>  	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
+> --
+> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+> of the Code Aurora Forum, hosted by the  Linux Foundation.
+> 
