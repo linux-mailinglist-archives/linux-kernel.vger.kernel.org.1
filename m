@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F1B2FD48B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C192FD491
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391037AbhATPtQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 10:49:16 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:53175 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389008AbhATPoH (ORCPT
+        id S2391129AbhATPvi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 10:51:38 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:45324 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391006AbhATPqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:44:07 -0500
-X-Originating-IP: 86.201.233.230
-Received: from xps13 (lfbn-tou-1-151-230.w86-201.abo.wanadoo.fr [86.201.233.230])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 835311BF204;
-        Wed, 20 Jan 2021 15:43:23 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 16:43:22 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] nand: raw: remove tango driver
-Message-ID: <20210120164322.644720d3@xps13>
-In-Reply-To: <CAK8P3a3imz7hiir0iJbAN4v-SVbjQPPiieoV0PJ5UKgj4DaTuA@mail.gmail.com>
-References: <20210120150555.1610132-1-arnd@kernel.org>
-        <20210120162904.1a1588bf@xps13>
-        <CAK8P3a3imz7hiir0iJbAN4v-SVbjQPPiieoV0PJ5UKgj4DaTuA@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 20 Jan 2021 10:46:20 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-29-eILD036iMCOERidD8eAmqg-1; Wed, 20 Jan 2021 15:44:40 +0000
+X-MC-Unique: eILD036iMCOERidD8eAmqg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 20 Jan 2021 15:44:38 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 20 Jan 2021 15:44:38 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mikulas Patocka' <mpatocka@redhat.com>, Jan Kara <jack@suse.cz>
+CC:     Dave Chinner <david@fromorbit.com>,
+        Zhongwei Cai <sunrise_l@sjtu.edu.cn>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Mingkai Dong" <mingkaidong@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Wang Jianchao <jianchao.wan9@gmail.com>,
+        Rajesh Tadakamadla <rajesh.tadakamadla@hpe.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: RE: Expense of read_iter
+Thread-Topic: Expense of read_iter
+Thread-Index: AQHW7z6gIbHKRyPAmU2nz0K77h3r46owpQfA
+Date:   Wed, 20 Jan 2021 15:44:38 +0000
+Message-ID: <08ea15c321bb42c2b2c941c8c741b268@AcuMS.aculab.com>
+References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
+ <20210107151125.GB5270@casper.infradead.org>
+ <17045315-CC1F-4165-B8E3-BA55DD16D46B@gmail.com>
+ <2041983017.5681521.1610459100858.JavaMail.zimbra@sjtu.edu.cn>
+ <alpine.LRH.2.02.2101131008530.27448@file01.intranet.prod.int.rdu2.redhat.com>
+ <1224425872.715547.1610703643424.JavaMail.zimbra@sjtu.edu.cn>
+ <20210120044700.GA4626@dread.disaster.area>
+ <20210120141834.GA24063@quack2.suse.cz>
+ <alpine.LRH.2.02.2101200951070.24430@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <alpine.LRH.2.02.2101200951070.24430@file01.intranet.prod.int.rdu2.redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Arnd Bergmann <arnd@kernel.org> wrote on Wed, 20 Jan 2021 16:41:16
-+0100:
-
-> On Wed, Jan 20, 2021 at 4:29 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >
-> > Hi Arnd,
-> >
-> > Arnd Bergmann <arnd@kernel.org> wrote on Wed, 20 Jan 2021 16:05:26
-> > +0100:
-> >  
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > The tango platform is getting removed, so the driver is no
-> > > longer needed.
-> > >
-> > > Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-> > > Cc: Mans Rullgard <mans@mansr.com>
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
-> >
-> > I didn't know. I'll just fix the title when applying to something like
-> >
-> >         mtd: rawnand: tango: Remove the driver
-> >
-> > If you don't mind.  
+From: Mikulas Patocka
+> Sent: 20 January 2021 15:12
 > 
-> Sure, please do.
+> On Wed, 20 Jan 2021, Jan Kara wrote:
 > 
-> If you like, you can also add a pointer to the platform removal
+> > Yeah, I agree. I'm against ext4 private solution for this read problem. And
+> > I'm also against duplicating ->read_iter functionatily in ->read handler.
+> > The maintenance burden of this code duplication is IMHO just too big. We
+> > rather need to improve the generic code so that the fast path is faster.
+> > And every filesystem will benefit because this is not ext4 specific
+> > problem.
+> >
+> > 								Honza
 > 
-> Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
+> Do you have some idea how to optimize the generic code that calls
+> ->read_iter?
 > 
-> which I had added to some of the other submissions, but forgot here.
+> vfs_read calls ->read if it is present. If not, it calls new_sync_read.
+> new_sync_read's frame size is 128 bytes - it holds the structures iovec,
+> kiocb and iov_iter. new_sync_read calls ->read_iter.
+> 
+> I have found out that the cost of calling new_sync_read is 3.3%, Zhongwei
+> found out 3.9%. (the benchmark repeatedy reads the same 4k page)
+> 
+> I don't see any way how to optimize new_sync_read or how to reduce its
+> frame size. Do you?
 
-Sure, I'll do it.
+Why is the 'read_iter' path not just the same as the 'read' one
+but calling copy_to_iter() instead of copy_to_user().
 
-Miquèl
+For a single fragment iov[] the difference might just be
+measurable for a single byte read.
+But by the time you are transferring 4k it ought to be miniscule.
+
+It isn't as though you have the cost of reading the iov[] from userspace.
+(That hits sendmsg() v send().)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
