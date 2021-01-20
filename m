@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AB12FDB84
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FD72FDBC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732235AbhATU4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:56:06 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53860 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388549AbhATUvE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:51:04 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10KKo4q6047968;
-        Wed, 20 Jan 2021 14:50:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611175804;
-        bh=7/hhNavleejKSmTt64PV/hnP/QVVJqHVJl/lX11+bMY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=n9tyN7X5uUFEqANHyM0DlA/JrqvWdEnK3bnAHveaPbtPy/IO/OE22J2Sv32jnlzgl
-         HNhCxRGgJ2O/+lSh8uFziBdo5nJehj2ZEBtaS5SrUZ/fCbNn9oYCUowoqJpJeSO02A
-         VGadrNVdUT77ZfC4WnMlHSTN0moHmc1u1wavLrlc=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10KKo4J0030938
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Jan 2021 14:50:04 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
- Jan 2021 14:50:03 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 20 Jan 2021 14:50:03 -0600
-Received: from [10.250.35.71] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10KKo3dS089721;
-        Wed, 20 Jan 2021 14:50:03 -0600
-Subject: Re: [PATCH] arm64: dts: ti: k3*: Fixup PMU compatibility to be CPU
- specific
-To:     Nishanth Menon <nm@ti.com>, Sudeep Holla <sudeep.holla@arm.com>,
-        Dave Gerlach <d-gerlach@ti.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210120195145.32259-1-nm@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <dbd31e85-fc72-1a94-f143-6ed0777ffa9a@ti.com>
-Date:   Wed, 20 Jan 2021 14:49:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2436603AbhATU7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:59:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389788AbhATUxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 15:53:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10B9A233FC;
+        Wed, 20 Jan 2021 20:52:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611175938;
+        bh=8jBF67VISxuT/xu2rcoO5YE2FU88OFticdYf54+neO8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N5+QPs/+DlLJt3MClwur9O+wbKTIHuhCZO1VVEg8KCi0KUGwZU0XaVmJBd/K8SOdz
+         cEzlwRbPCzeRUL92LOaLG3+3089C3zNhwSfg9YkO9sJ70ZNsc3OXJjUzdq6Cv+skzI
+         uQ+DIRkP//QC6bZTLNu6zeypikx0R1XyPDBuKUmj7JfObyOYNU2C5ebQ5Aoa7GYsPg
+         07E5RfDaVTnJIS3588nJV65f3gpv3VlcZ+3ItM3EcpYFKZReSNI8z9r19FnQwTFCJp
+         p8VUIwhGYO2M00l1IuVVUkLQXOCs80dksUXtNmGbDSIgYqCI5cgFQNfisGIh2UQfND
+         5oJ72HvNobAzg==
+Date:   Wed, 20 Jan 2021 12:52:17 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?UTF-8?B?QmFydMWCb21pZWogxbtvbG5pZXJr?= =?UTF-8?B?aWV3aWN6?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v10 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet
+ Adapter Driver
+Message-ID: <20210120125217.6394e6a4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <dleftj8s8nwgmx.fsf%l.stelmach@samsung.com>
+References: <20210115172722.516468bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CGME20210120193032eucas1p26566e957da7a75bc0818fe08e055bec8@eucas1p2.samsung.com>
+        <dleftj8s8nwgmx.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20210120195145.32259-1-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/20/21 1:51 PM, Nishanth Menon wrote:
-> We can use CPU specific pmu configuration to expose the appropriate
-> CPU specific events rather than just the basic generic pmuv3 perf
-> events.
+On Wed, 20 Jan 2021 20:30:14 +0100 Lukasz Stelmach wrote:
+> > You need to use 64 bit stats, like struct rtnl_link_stats64.
+> > On a 32bit system at 100Mbps ulong can wrap in minutes.
+> >  
 > 
-> Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+> Let me see. At first glance
+> 
+> git grep -l ndo_get_stats\\\> drivers/net/ethernet/  | xargs grep -li SPEED_100\\\>
+> 
+> quite a number of Fast Ethernet drivers use net_device_stats. Let me
+> calculate.
+> 
+> - bytes
+>   100Mbps is ~10MiB/s
+>   sending 4GiB at 10MiB/s takes 27 minutes
+> 
+> - packets
+>   minimum frame size is 84 bytes (840 bits on the wire) on 100Mbps means
+>   119048 pps at this speed it takse 10 hours to transmit 2^32 packets
+> 
+> Anyway, I switched to rtnl_link_stats64. Tell me, is it OK to just
+> memcpy() in .ndo_get_stats64?
 
-Tested-by: Suman Anna <s-anna@ti.com>
+Yup, you can just memcpy() your local copy over the one you get as an
+argument of ndo_get_stats64
 
-regards
-Suman
+> >> +	struct work_struct	ax_work;  
+> >
+> > I don't see you ever canceling / flushing this work.
+> > You should do that at least on driver remove if not close.  
+> 
+> Done.
+> 
+> Does it mean most drivers do it wrong?
+> 
+>     git grep INIT_WORK drivers/net/ethernet/ | \
+>     sed -e 's/\(^[^:]*\):[^>]*->\([^,]*\),.*/\1        \2/' | \
+>     while read file var; do \
+>         grep -H $var $file;
+>     done | grep INIT_WORK\\\|cancel_work
 
-> ---
-> 
-> AM65: https://pastebin.ubuntu.com/p/TF2cCMySkt/
-> J721E: https://pastebin.ubuntu.com/p/jgGPNmNgG3/
-> J7200: https://pastebin.ubuntu.com/p/Kfc3VHHXNB/
-> 
-> Original report: https://lore.kernel.org/linux-arm-kernel/20210119172412.smsjdo2sjzqi5vcn@bogus/
-> 
-> I have'nt split this patch up for fixes tag primarily because the
-> basic functionality works and this is an improvement than a critical
-> fixup to backport for older kernels.
-> 
->  arch/arm64/boot/dts/ti/k3-am65.dtsi  | 2 +-
->  arch/arm64/boot/dts/ti/k3-j7200.dtsi | 2 +-
->  arch/arm64/boot/dts/ti/k3-j721e.dtsi | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> index d84c0bc05023..a9fc1af03f27 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> @@ -56,7 +56,7 @@ a53_timer0: timer-cl0-cpu0 {
->  	};
->  
->  	pmu: pmu {
-> -		compatible = "arm,armv8-pmuv3";
-> +		compatible = "arm,cortex-a53-pmu";
->  		/* Recommendation from GIC500 TRM Table A.3 */
->  		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
->  	};
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200.dtsi b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> index 66169bcf7c9a..b7005b803149 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> @@ -114,7 +114,7 @@ a72_timer0: timer-cl0-cpu0 {
->  	};
->  
->  	pmu: pmu {
-> -		compatible = "arm,armv8-pmuv3";
-> +		compatible = "arm,cortex-a72-pmu";
->  		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
->  	};
->  
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> index cc483f7344af..f0587fde147e 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> @@ -115,7 +115,7 @@ a72_timer0: timer-cl0-cpu0 {
->  	};
->  
->  	pmu: pmu {
-> -		compatible = "arm,armv8-pmuv3";
-> +		compatible = "arm,cortex-a72-pmu";
->  		/* Recommendation from GIC500 TRM Table A.3 */
->  		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
->  	};
-> 
-
+Some may use flush, but I wouldn't be surprised if there were bugs like
+this out there.
