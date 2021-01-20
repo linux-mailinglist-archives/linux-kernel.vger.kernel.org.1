@@ -2,114 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408682FCDF6
+	by mail.lfdr.de (Postfix) with ESMTP id B4C702FCDF7
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731158AbhATKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731202AbhATJWm (ORCPT
+        id S1731174AbhATKOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:14:46 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11409 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730403AbhATJYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:22:42 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47991C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:22:00 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id q8so1574164lfm.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:22:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MVkwJSjkrFocqXuACAgn/hKL0HXwiGKRnmumdPEpTus=;
-        b=L5V++/jmonpcsTuSDXM6ABiAc5UM/YB7NcblTg1yFzV0Ua+vm1rc8gcxqW4KEUCfK7
-         ardDFvDAAdhV14KzULEiPWWFL1fOq+sxXTjFvK3GRgg9NytEGEDpfqL3HKDJIQpuY2hc
-         TlJUDG9ntHbwVlsntLdk21Ka+0bh+AMlIwtX9WNMcgLw645mLMVObNexqehuSMqD29+D
-         guNgSpiTCERKLe1rBxkvQklK+1583iJ74yn2IMN9Hvz812hQl/VMuVj1U5gXUmvzMXdJ
-         tpsykosB9z7MIP+Fy5R1HhXL5fRNXjEXnjRYdeM8VXzCWGEY1JGYb61WjYvyEms44d7A
-         TmQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MVkwJSjkrFocqXuACAgn/hKL0HXwiGKRnmumdPEpTus=;
-        b=DsP50gGRuQkbnv7RB13ZZtThh8vaCGO2wge7W0VdBHn+NmHznM+0RqsFxdyXtLclKc
-         wdLqXTDK9xwsqD0M8SLAU/WYT/UrmDdZ2T+MSWE9co0QisMxvtVil1LLehLCNpbfFhie
-         f7ezbGFpjIKWfkBXmDuFsoZdRjQneCW9WC9VuR76OWZnZNn/xSf3osLCtCS5afJgYADu
-         Jt6p6rJ0HC6rir+y2wG6YFfg7cw1XmIpWPrr+4ewsNHC6Vrp5iZYgquKJ/+YxA7h+iAM
-         0Ly29eAVompwslYlBUz3v8DBAdQyB8kJQ1fekKY4i+F2bnviYqRd7EZx7pBviTM32Sqk
-         VAjg==
-X-Gm-Message-State: AOAM530OJzElPqkaDDglLbgR4SY1KdIpBv3PkS1G2mjzFgtTK1GFpV3d
-        m1sv/guH3jp/yuxiBsVDVr0LHiVuq8++sj3HiVW3aWW+9JQ=
-X-Google-Smtp-Source: ABdhPJw+O8QER5myZQ7UAlrh/wR7FiJLbl+fsXBvsbh6F4psm79TeDyipxKMQ1NHw82YQLP/Q+R2j4KN6s3X2jaKPWM=
-X-Received: by 2002:a19:2d0a:: with SMTP id k10mr4035232lfj.286.1611134518589;
- Wed, 20 Jan 2021 01:21:58 -0800 (PST)
+        Wed, 20 Jan 2021 04:24:43 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DLKn94Fxgz7Wmv;
+        Wed, 20 Jan 2021 17:22:53 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
+ 17:23:52 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] hugetlbfs: make hugepage size conversion more readable
+Date:   Wed, 20 Jan 2021 04:23:48 -0500
+Message-ID: <20210120092348.13811-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-References: <20210119112211.3196-1-mgorman@techsingularity.net>
- <20210119112211.3196-6-mgorman@techsingularity.net> <20210120083018.GA14462@in.ibm.com>
- <20210120091235.GT3592@techsingularity.net>
-In-Reply-To: <20210120091235.GT3592@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 20 Jan 2021 10:21:47 +0100
-Message-ID: <CAKfTPtBYuxKywCPeEd=vYCu31Ni0=uXoJa4v3ZV_T9J0TsVyhg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 at 10:12, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Wed, Jan 20, 2021 at 02:00:18PM +0530, Gautham R Shenoy wrote:
-> > > @@ -6157,18 +6169,31 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
-> > >     }
-> > >
-> > >     for_each_cpu_wrap(cpu, cpus, target) {
-> > > -           if (!--nr)
-> > > -                   return -1;
-> > > -           if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-> > > -                   break;
-> > > +           if (smt) {
-> > > +                   i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> > > +                   if ((unsigned int)i < nr_cpumask_bits)
-> > > +                           return i;
-> > > +
-> > > +           } else {
-> > > +                   if (!--nr)
-> > > +                           return -1;
-> > > +                   i = __select_idle_cpu(cpu);
-> > > +                   if ((unsigned int)i < nr_cpumask_bits) {
-> > > +                           idle_cpu = i;
-> > > +                           break;
-> > > +                   }
-> > > +           }
-> > >     }
-> > >
-> > > -   if (sched_feat(SIS_PROP)) {
-> > > +   if (smt)
-> > > +           set_idle_cores(this, false);
-> >
-> > Shouldn't we set_idle_cores(false) only if this was the last idle
-> > core in the LLC ?
-> >
->
-> That would involve rechecking the cpumask bits that have not been
-> scanned to see if any of them are an idle core. As the existance of idle
-> cores can change very rapidly, it's not worth the cost.
+The calculation 1U << (h->order + PAGE_SHIFT - 10) is actually equal to
+(PAGE_SHIFT << (h->order)) >> 10. So we can make it more readable by
+replace it with huge_page_size(h) / SZ_1K.
 
-But don't we reach this point only if we scanned all CPUs and didn't
-find an idle core ?
-If there is an idle core, it returns early
-And in case of smt == true, nr is set to INt_MAX and we loop on all CPUs/cores
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ fs/hugetlbfs/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
-> --
-> Mel Gorman
-> SUSE Labs
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 25c1857ff45d..f94b8f6553fa 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -1519,8 +1519,8 @@ static struct vfsmount *__init mount_one_hugetlbfs(struct hstate *h)
+ 		put_fs_context(fc);
+ 	}
+ 	if (IS_ERR(mnt))
+-		pr_err("Cannot mount internal hugetlbfs for page size %uK",
+-		       1U << (h->order + PAGE_SHIFT - 10));
++		pr_err("Cannot mount internal hugetlbfs for page size %luK",
++		       huge_page_size(h) / SZ_1K);
+ 	return mnt;
+ }
+ 
+-- 
+2.19.1
+
