@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE682FD97A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB572FD900
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388052AbhATTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:23:21 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:61785 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732407AbhATSsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:48:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611168490; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=3yGkJ8CECe99IYKCJvAG5sDtoQE2c9Ju5uVXlzxmMEQ=;
- b=plV5WydLOgfFAJAYugwW7cTswVvChrCcNP3iDWNwDUUxDlD+bekd+NX5PXj7YE3FAfU6oqDi
- PgI/K0119geZD10DA/x9pNPGDFirciDuApEImqzy24wX7aMKlTc+heZixfHKxvRiHoq1fuTL
- FR9CXNfdmOxYp1rXVN9RP98XHaU=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60087acb2c36b2106d6d7cdd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Jan 2021 18:47:39
- GMT
-Sender: sudaraja=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3077C43465; Wed, 20 Jan 2021 18:47:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sudaraja)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0E30FC433C6;
-        Wed, 20 Jan 2021 18:47:37 +0000 (UTC)
+        id S2390160AbhATTCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbhATSt2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:49:28 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12D0C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:48:45 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id d11so11383888qvo.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:48:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVVhNU0jVxaFNlsItS1vMiG5qpQne1QXE2l8B2YUFJ4=;
+        b=RBUMa/VVhCosudUS1Xhd3LCBqXpG0EbMVduHzbsWUTxuWnU881IQ4/EpiIqfunOnXt
+         n7bU6qG6cqLN1pZPuNeCutdgGcp/d4co9OosvROdtYtpwpc/P03cTeQ8oi8xzi2Ucy93
+         iRpIahG55q8YAePMvIAJvXzdPE4cQT7p0Ie309oWVXiSW2uYNaNeXZ0tTSidbw3Ku8gu
+         2bYUGO1Pa6bfdGogQ6aqd4XSYF+xSpUBRUZTwLqG45rXIThQfkgZZnhjkBb5PxeIwpEi
+         ElUJ5UOqXwh39jXt0OgWPGoB0G7+8/9leHDoSnwu9MCkrGljYEZ+Yn79ScEbQpMzNipD
+         wNtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVVhNU0jVxaFNlsItS1vMiG5qpQne1QXE2l8B2YUFJ4=;
+        b=eGppqA0qDjE+Z8lZNAMTH0ixgmyq6QtcQgD+rqH+dsnxZjqI6wTTK1jJVItHFgwQNg
+         lRg3RlPrdYB8a3lbeQT+vaDcgTW6h/52BHGxgjVNBOGxJkpnXchtU/4JDTF1NJQ1o28f
+         58MfUrl1+G4iz3dJlb8qaWrK/wMF5gzX85t2tnioVINf1pVgQtTlnR30fNGWGkpwGxQN
+         uIvOJqtscNRAx6o61mSuyoR3RiH+wZyW8NcaJXDqvjiQb168fCNdX1O69jm9AkE8yjPO
+         AOk7GkXdfxtO30BglRTfIv132MXD/IsU3MOmf8ROhiyqw7xs9l/1Bo3ztVKFgjkFg8e/
+         HN8g==
+X-Gm-Message-State: AOAM532GFR2ilZJicTVT1s0B3fJZLg4MNvCghUD1j0dIzxIA935EqRc9
+        5DjNNBzgmSCjh0/2HLUXIaNdNA==
+X-Google-Smtp-Source: ABdhPJwbGoPW2RScm/iTHnU362NqZqDFlvBtFyJotT7r8v6wwXX4OrJ+aC5+2yN5+D8FoVS9EQjPhA==
+X-Received: by 2002:a05:6214:714:: with SMTP id b20mr10736065qvz.36.1611168525073;
+        Wed, 20 Jan 2021 10:48:45 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id w8sm1769903qts.50.2021.01.20.10.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 10:48:44 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        bjorn.andersson@linaro.org
+Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] Regression fixes/clean ups in the Qualcomm crypto engine driver
+Date:   Wed, 20 Jan 2021 13:48:37 -0500
+Message-Id: <20210120184843.3217775-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 20 Jan 2021 10:47:37 -0800
-From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        anshuman.khandual@arm.com, david@redhat.com,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 1/1] arm64: reduce section size for sparsemem
-In-Reply-To: <20210120174933.GA20981@willie-the-truck>
-References: <cover.1610146597.git.sudaraja@codeaurora.org>
- <15cf9a2359197fee0168f820c5c904650d07939e.1610146597.git.sudaraja@codeaurora.org>
- <20210120174933.GA20981@willie-the-truck>
-Message-ID: <9e23428b537611b3fd24eed75b9a81f0@codeaurora.org>
-X-Sender: sudaraja@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-20 09:49, Will Deacon wrote:
-> On Fri, Jan 08, 2021 at 03:16:00PM -0800, Sudarshan Rajagopalan wrote:
->> Reducing the section size helps reduce wastage of reserved memory
->> for huge memory holes in sparsemem model. But having a much smaller
->> section size bits could break PMD mappings for vmemmap and wouldn't
->> accomodate the highest order page for certain page size granule 
->> configs.
->> It is determined that SECTION_SIZE_BITS of 27 (128MB) could be ideal
->> default value for 4K_PAGES that gives least section size without 
->> breaking
->> PMD based vmemmap mappings. For simplicity, 16K_PAGES could follow the
->> same as 4K_PAGES. And the least SECTION_SIZE_BITS for 64K_PAGES is 29
->> that could accomodate MAX_ORDER.
->> 
->> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Mike Rapoport <rppt@linux.ibm.com>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Suren Baghdasaryan <surenb@google.com>
->> ---
->>  arch/arm64/include/asm/sparsemem.h | 10 ++++++++--
->>  1 file changed, 8 insertions(+), 2 deletions(-)
->> 
->> diff --git a/arch/arm64/include/asm/sparsemem.h 
->> b/arch/arm64/include/asm/sparsemem.h
->> index 1f43fcc79738..ff08ff6b677c 100644
->> --- a/arch/arm64/include/asm/sparsemem.h
->> +++ b/arch/arm64/include/asm/sparsemem.h
->> @@ -7,7 +7,13 @@
->> 
->>  #ifdef CONFIG_SPARSEMEM
->>  #define MAX_PHYSMEM_BITS	CONFIG_ARM64_PA_BITS
->> -#define SECTION_SIZE_BITS	30
->> -#endif
->> +
->> +#if defined(CONFIG_ARM64_4K_PAGES) || defined(CONFIG_ARM64_16K_PAGES)
->> +#define SECTION_SIZE_BITS 27
->> +#else
->> +#define SECTION_SIZE_BITS 29
->> +#endif /* CONFIG_ARM64_4K_PAGES || CONFIG_ARM64_16K_PAGES */
->> +
->> +#endif /* CONFIG_SPARSEMEM*/
-> 
-> Please can you repost this in light of the comments from Anshuman?
-> 
-> Thanks,
-> 
-> Will
+This patch series is a result of running kernel crypto fuzz tests (by
+enabling CONFIG_CRYPTO_MANAGER_EXTRA_TESTS) on the transformations
+currently supported via the Qualcomm crypto engine on sdm845.  The first
+four patches are fixes for various regressions found during testing. The
+last two patches are minor clean ups of unused variable and parameters.
 
-Sure Will. We were held up with some other critical tasks.. will repost 
-the patch by EOD after addressing Anshuman's comments.
+v2->v3:
+	- Made the comparison between keys to check if any two keys are
+	  same for triple des algorithms constant-time as per
+	  Nym Seddon's suggestion.
+	- Rebased to 5.11-rc4.
+v1->v2:
+	- Introduced custom struct qce_sha_saved_state to store and restore
+	  partial sha transformation.
+	- Rebased to 5.11-rc3.
+
+Thara Gopinath (6):
+  drivers: crypto: qce: sha: Restore/save ahash state with custom struct
+    in export/import
+  drivers: crypto: qce: sha: Hold back a block of data to be transferred
+    as part of final
+  drivers: crypto: qce: skcipher: Fix regressions found during fuzz
+    testing
+  drivers: crypto: qce: common: Set data unit size to message length for
+    AES XTS transformation
+  drivers: crypto: qce: Remover src_tbl from qce_cipher_reqctx
+  drivers: crypto: qce: Remove totallen and offset in qce_start
+
+ drivers/crypto/qce/cipher.h   |   1 -
+ drivers/crypto/qce/common.c   |  25 +++---
+ drivers/crypto/qce/common.h   |   3 +-
+ drivers/crypto/qce/sha.c      | 143 +++++++++++++---------------------
+ drivers/crypto/qce/skcipher.c |  70 ++++++++++++++---
+ 5 files changed, 127 insertions(+), 115 deletions(-)
 
 -- 
-Sudarshan
+2.25.1
 
---
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
-Linux Foundation Collaborative Project
