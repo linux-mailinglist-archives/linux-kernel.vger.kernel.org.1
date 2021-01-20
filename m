@@ -2,126 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF22E2FD301
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2ED2FD29D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390292AbhATOMj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 09:12:39 -0500
-Received: from aposti.net ([89.234.176.197]:49048 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731970AbhATNW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:22:26 -0500
-Date:   Wed, 20 Jan 2021 13:21:29 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 2/3] drm/ingenic: Register devm action to cleanup
- encoders
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me, dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Message-Id: <TFI8NQ.468S4PLHPA963@crapouillou.net>
-In-Reply-To: <CAKMK7uFaP7xcw90=KqiGJd7Mt-gD-spvcxvOZr2Txhyv5vcBvw@mail.gmail.com>
-References: <20210120123535.40226-1-paul@crapouillou.net>
-        <20210120123535.40226-3-paul@crapouillou.net>
-        <CAKMK7uFaP7xcw90=KqiGJd7Mt-gD-spvcxvOZr2Txhyv5vcBvw@mail.gmail.com>
+        id S2388055AbhATOY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390099AbhATNk2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:40:28 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692D6C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:48 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id d13so43627495ioy.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=FM37ipdlLykh82wOaMeonjfMEHwci4vUHpTC97P767A=;
+        b=rOWwKG0ZAiK1X30AudSIn50Xfyklr+HXuFqGhgcR7QyAU2YMos1q33iV3Gmobqti7f
+         t6JF6Z6yxq38b3JJUyQCpA/5DFtJ8OLar05WxCI/v229aZO+pwBPksLWH/rwyqhPskPx
+         pZxkmXcSWZFlL/Zb3VPJxMTNNGhhbdfmiP6WCJbg59bpp1FjgSNnem6X/ZpQxBH/0/7m
+         WetdLltV8lKJ6sdhuyaiv0EP0ZQ2zuvmQ8Cros/i9O+efQrCTE15lO5Ttm6xD8PvNsOx
+         HVTq31Yur71rzgSIA7Fihj/oDjkKmCbLOk9MuePvSpMnOsAfrNvE3tt5NXdx3cUVRl6f
+         DfSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc;
+        bh=FM37ipdlLykh82wOaMeonjfMEHwci4vUHpTC97P767A=;
+        b=UHjvvoJAX/UUNOREEEf1284u3w5YLwXl9l0Tm0jjbi3UrGGI0aX/DTVw2Mi+lpZofk
+         Hi5qreZfLnfnV3nbX2Jepl9cPxJ+T0tLHlZOoZvjVj0wZM8VFKd8D49Hqb0R2RCMBX4d
+         2FwXjHTtDtkBziZRk4mShmO+EsaJN1mrDMNnxGwyxzJgRfW0RcdhDkDGnSuJtdHwUtuD
+         GDi/Hu/qGoNKHEwEiuay4sLpYWkze0TcL7xRnFObI0zGvB1lncL5GQpLlAZJA73d8Lh8
+         90XDbNTW/5h6SjseliUac4D+RWKbaCKkFa3V9a4P+khBui2aypR+pbq/EqF/QqEmcLUh
+         Angw==
+X-Gm-Message-State: AOAM530n09hqjXeIX1rY4Gaehdq8CdCSh7LTnUiw3UZntI9c65llcQ+g
+        En/y1HadLRTn7L5UlnpoolRz9J2Jd69sFxRq2Rc=
+X-Received: by 2002:a92:cccd:: with SMTP id u13mt8060864ilq.273.1611149987592;
+ Wed, 20 Jan 2021 05:39:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210120130233.15932-1-ericcurtin17@gmail.com>
+In-Reply-To: <20210120130233.15932-1-ericcurtin17@gmail.com>
+From:   Eric Curtin <ericcurtin17@gmail.com>
+Date:   Wed, 20 Jan 2021 13:39:36 +0000
+Message-ID: <CANpvso7mbc9C=xjxLDivb6Qm8_FDu2fLjA-StMw4Z-209PHLqw@mail.gmail.com>
+Subject: Re: [PATCH] Increase limit of max_user_watches from 1/25 to 1/16
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le mer. 20 janv. 2021 à 14:01, Daniel Vetter <daniel@ffwll.ch> a 
-écrit :
-> On Wed, Jan 20, 2021 at 1:36 PM Paul Cercueil <paul@crapouillou.net> 
-> wrote:
->> 
->>  Since the encoders have been devm-allocated, they will be freed way
->>  before drm_mode_config_cleanup() is called. To avoid use-after-free
->>  conditions, we then must ensure that drm_encoder_cleanup() is called
->>  before the encoders are freed.
->> 
->>  v2: Use the new __drmm_simple_encoder_alloc() function
->> 
->>  Fixes: c369cb27c267 ("drm/ingenic: Support multiple panels/bridges")
->>  Cc: <stable@vger.kernel.org> # 5.8+
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->> 
->>  Notes:
->>      Use the V1 of this patch to fix v5.11 and older kernels. This 
->> V2 only
->>      applies on the current drm-misc-next branch.
->> 
->>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 16 +++++++---------
->>   1 file changed, 7 insertions(+), 9 deletions(-)
->> 
->>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
->> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  index 7bb31fbee29d..158433b4c084 100644
->>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  @@ -1014,20 +1014,18 @@ static int ingenic_drm_bind(struct device 
->> *dev, bool has_components)
->>                          bridge = 
->> devm_drm_panel_bridge_add_typed(dev, panel,
->>                                                                   
->> DRM_MODE_CONNECTOR_DPI);
->> 
->>  -               encoder = devm_kzalloc(dev, sizeof(*encoder), 
->> GFP_KERNEL);
->>  -               if (!encoder)
->>  -                       return -ENOMEM;
->>  +               encoder = __drmm_simple_encoder_alloc(drm, 
->> sizeof(*encoder), 0,
-> 
-> Please don't use the __ prefixed functions, those are the internal
-> ones. The official one comes with type checking and all that included.
-> Otherwise lgtm.
-> -Daniel
-
-The non-prefixed one assumes that I want to allocate a struct that 
-contains the encoder, not just the drm_encoder itself.
-
--Paul
-
->>  +                                                     
->> DRM_MODE_ENCODER_DPI);
->>  +               if (IS_ERR(encoder)) {
->>  +                       ret = PTR_ERR(encoder);
->>  +                       dev_err(dev, "Failed to init encoder: 
->> %d\n", ret);
->>  +                       return ret;
->>  +               }
->> 
->>                  encoder->possible_crtcs = 1;
->> 
->>                  drm_encoder_helper_add(encoder, 
->> &ingenic_drm_encoder_helper_funcs);
->> 
->>  -               ret = drm_simple_encoder_init(drm, encoder, 
->> DRM_MODE_ENCODER_DPI);
->>  -               if (ret) {
->>  -                       dev_err(dev, "Failed to init encoder: 
->> %d\n", ret);
->>  -                       return ret;
->>  -               }
->>  -
->>                  ret = drm_bridge_attach(encoder, bridge, NULL, 0);
->>                  if (ret) {
->>                          dev_err(dev, "Unable to attach bridge\n");
->>  --
->>  2.29.2
->> 
-> 
-> 
+On Wed, 20 Jan 2021 at 13:02, Eric Curtin <ericcurtin17@gmail.com> wrote:
+>
+> The current default value for  max_user_watches  is the 1/16 (6.25%) of
+> the available low memory, divided for the "watch" cost in bytes.
+>
+> Tools like inotify-tools and visual studio code, seem to hit these
+> limits a little to easy.
+>
+> Also amending the documentation, it referred to an old value for this.
+>
+> Signed-off-by: Eric Curtin <ericcurtin17@gmail.com>
+> ---
+>  Documentation/admin-guide/sysctl/fs.rst | 4 ++--
+>  fs/eventpoll.c                          | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/sysctl/fs.rst b/Documentation/admin-guide/sysctl/fs.rst
+> index f48277a0a850..f7fe45e69c41 100644
+> --- a/Documentation/admin-guide/sysctl/fs.rst
+> +++ b/Documentation/admin-guide/sysctl/fs.rst
+> @@ -380,5 +380,5 @@ This configuration option sets the maximum number of "watches" that are
+>  allowed for each user.
+>  Each "watch" costs roughly 90 bytes on a 32bit kernel, and roughly 160 bytes
+>  on a 64bit one.
+> -The current default value for  max_user_watches  is the 1/32 of the available
+> -low memory, divided for the "watch" cost in bytes.
+> +The current default value for  max_user_watches  is the 1/16 (6.25%) of the
+> +available low memory, divided for the "watch" cost in bytes.
+> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+> index a829af074eb5..de9ef8f6d0b2 100644
+> --- a/fs/eventpoll.c
+> +++ b/fs/eventpoll.c
+> @@ -2352,9 +2352,9 @@ static int __init eventpoll_init(void)
+>
+>         si_meminfo(&si);
+>         /*
+> -        * Allows top 4% of lomem to be allocated for epoll watches (per user).
+> +        * Allows top 6.25% of lomem to be allocated for epoll watches (per user).
+>          */
+> -       max_user_watches = (((si.totalram - si.totalhigh) / 25) << PAGE_SHIFT) /
+> +       max_user_watches = (((si.totalram - si.totalhigh) / 16) << PAGE_SHIFT) /
+>                 EP_ITEM_COST;
+>         BUG_ON(max_user_watches < 0);
+>
 > --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> 2.25.1
+>
 
+Please ignore this, this is the wrong limit (an epoll one), I sent
+another patch just
+to update the documentation to be correct. Weiman Long already kindly solved the
+issue in 92890123749bafc317bbfacbe0a62ce08d78efb7
 
+Separate patch is titled "[PATCH] Update
+Documentation/admin-guide/sysctl/fs.rst"
