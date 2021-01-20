@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57122FD60C
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6A62FD60B
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404059AbhATQuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
+        id S1728503AbhATQub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:50:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403985AbhATQuA (ORCPT
+        with ESMTP id S2404029AbhATQuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:50:00 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF71C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:49:19 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id c127so3419612wmf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:49:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DUDg6TphmanEAstHgN26xAlXogE8/4FgyIPvwhmL7gs=;
-        b=pghiOVPTDppHJ45SSMy2+CHFk9YLriSho7mdmM71ABsaxcBoFv3ja6EEAbJkf5fut1
-         moGYip9Q1qdPy8y4PyQmDoI8F3NhweKRHJyYT6RVMgzcirgaWmSM2g7Hs1eCsPvVeqAQ
-         Q9Tap+PfCVJTLJbmIpzQsMDcH4Pgt/9Wg0ut+dezxUd9sU7NI39nu5yftOWPfdjqtC5o
-         f8/TLGh5A3BMY9NwmgGHwE0aiRnk3zEm2KI4zvQhwSbTeZrQvRDJIpVhtw+/fplBTQCo
-         lSpsQygOwAoS1thaJoWKph0ap8WwR3uWeNh6HyM4d1PFoC0cpEZpkxM70rPlvlgCBYPK
-         oAUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DUDg6TphmanEAstHgN26xAlXogE8/4FgyIPvwhmL7gs=;
-        b=ozLqfDN3UYAlRobc2nHFCpz71y4Mu3foIkzC9WQcf3/h2vyaU6qEiyR7jvQKgPPB9k
-         BUIgsDsk4lWpBfTLLreWB6X3LfKwhOhguFYRlL37gOwNVmcWyCYUBbciQKitC5/fIOmt
-         cTWhJJWBx98mYwbgebse/foTELTRaBpG7ejUJCw4MkGkfiYkRFNmdfFvD8rVcdZx9BRH
-         DB52QZyHGEptpSacgfca1VctB7SNfC/3LwX+NM+dPkY8DWEm5HMhGdqYosRaMDAuHZzD
-         aNuUqrNzY0PBYf+2k7pNJDdcG6eWHDhya7UVAWAn03tcZvAkfPXgE0RHV8fbJ5bfQGBZ
-         Tu0w==
-X-Gm-Message-State: AOAM530aujVf76MqH1XdH7UmgB4RhVgYMSWICibesKQpQ8804AE4sFdZ
-        72Th5s7QOR8b9d747fctSZ7NAuspizWqmPww8ZBFVg==
-X-Google-Smtp-Source: ABdhPJz0wZLMLD+76EyvUtDPstR+U0u7fb1/8zCKqlM+va0UuR2w0QT0/wXXhaj0lNefqt31Z564snWdZ0DTedYcOUo=
-X-Received: by 2002:a05:600c:4e92:: with SMTP id f18mr5148677wmq.126.1611161358342;
- Wed, 20 Jan 2021 08:49:18 -0800 (PST)
+        Wed, 20 Jan 2021 11:50:03 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A15C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:49:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=6IKRRpDmWrGXsWeUjOwmWUHp9M/DtWs3IFQqC64UYeA=; b=PQskdU2m1NvteqWZSDkWe2A4ti
+        XBEqGuQ4Aw3E0+iInGPtPEeH96q4F/8OqjkhzNncIXoVggiBQLd35N0QWUxtKyybfmxdZGgE2NGs+
+        5TGuY2bsrB0o0woToh7UHogF8FGmQGEjDcCXVxKa6KR7KlurTgEoAsABAzkTwtNWBSM56GpjizIGX
+        NnUycYErMRc1uq/Icqdg+urbary8pBZfL8LQDyM99NfqAia8jlR6bwHkCYEM4yUfrL1g/8wHODZRO
+        3Uys85xEqJf70g8SeCTRhgIb+sUHjYbUFepqhkuvQUiLL56PBNDM8vW+WTNgOEeAxFeRFm5IeDfQc
+        oViXPOCw==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2GfX-0005mG-NP; Wed, 20 Jan 2021 16:49:20 +0000
+Subject: Re: [PATCH] include: linux: Fix in two lines in the file list_lru.sh
+ ,resposible -> responsible
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, gustavo@embeddedor.com,
+        linux-kernel@vger.kernel.org
+References: <20210120144628.3864652-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <937748e5-db00-eca4-2778-6acdeb73647b@infradead.org>
+Date:   Wed, 20 Jan 2021 08:49:14 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210111170622.2613577-1-surenb@google.com> <c586aa93-52d7-bd6c-3d5-77be4ed4afae@namei.org>
-In-Reply-To: <c586aa93-52d7-bd6c-3d5-77be4ed4afae@namei.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 20 Jan 2021 08:49:07 -0800
-Message-ID: <CAJuCfpG0+_4x=F7dpKabgmGwDf2KGcCcEfXixLBef6+zg8uNjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     James Morris <jmorris@namei.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>, selinux@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210120144628.3864652-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 9:02 PM James Morris <jmorris@namei.org> wrote:
->
-> On Mon, 11 Jan 2021, Suren Baghdasaryan wrote:
->
-> > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> > and CAP_SYS_NICE for influencing process performance.
->
->
-> Almost missed these -- please cc the LSM mailing list when modifying
-> capabilities or other LSM-related things.
+On 1/20/21 6:46 AM, Bhaskar Chowdhury wrote:
+> s/resposible/responsible/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Thanks for the note. Will definitely include it when sending the next version.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
->
+Thanks.
+
+> ---
+>  include/linux/list_lru.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
+> index 9dcaa3e582c9..1b5fceb565df 100644
+> --- a/include/linux/list_lru.h
+> +++ b/include/linux/list_lru.h
+> @@ -146,7 +146,7 @@ typedef enum lru_status (*list_lru_walk_cb)(struct list_head *item,
+>   * @lru: the lru pointer.
+>   * @nid: the node id to scan from.
+>   * @memcg: the cgroup to scan from.
+> - * @isolate: callback function that is resposible for deciding what to do with
+> + * @isolate: callback function that is responsible for deciding what to do with
+>   *  the item currently being scanned
+>   * @cb_arg: opaque type that will be passed to @isolate
+>   * @nr_to_walk: how many items to scan.
+> @@ -172,7 +172,7 @@ unsigned long list_lru_walk_one(struct list_lru *lru,
+>   * @lru: the lru pointer.
+>   * @nid: the node id to scan from.
+>   * @memcg: the cgroup to scan from.
+> - * @isolate: callback function that is resposible for deciding what to do with
+> + * @isolate: callback function that is responsible for deciding what to do with
+>   *  the item currently being scanned
+>   * @cb_arg: opaque type that will be passed to @isolate
+>   * @nr_to_walk: how many items to scan.
 > --
-> James Morris
-> <jmorris@namei.org>
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+> 2.30.0
+> 
+
+
+-- 
+~Randy
+"He closes his eyes and drops the goggles.  You can't get hurt
+by looking at a bitmap.  Or can you?"
+(Neal Stephenson: Snow Crash)
