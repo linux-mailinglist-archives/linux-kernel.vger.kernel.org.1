@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71562FCB1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8572FCB23
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729703AbhATGhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:37:50 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:41937 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730312AbhATGc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:32:29 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DLFzh1gjnz9v0KG;
-        Wed, 20 Jan 2021 07:31:44 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id qL9e-0ptTvus; Wed, 20 Jan 2021 07:31:44 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLFzh0Jf6z9v0KF;
-        Wed, 20 Jan 2021 07:31:44 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E93E88B7DF;
-        Wed, 20 Jan 2021 07:31:44 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id bh3Vqo3ktCbr; Wed, 20 Jan 2021 07:31:44 +0100 (CET)
-Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C92398B75F;
-        Wed, 20 Jan 2021 07:31:44 +0100 (CET)
-Subject: Re: [PATCH] powerpc/47x: Disable 256k page size
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <2fed79b1154c872194f98bac4422c23918325e61.1611039590.git.christophe.leroy@csgroup.eu>
- <87h7ncqhz1.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <19acabee-3a6d-d2d0-db7a-b637bd162069@csgroup.eu>
-Date:   Wed, 20 Jan 2021 07:31:35 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726998AbhATGlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:41:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726700AbhATGiY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 01:38:24 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8C7C061575;
+        Tue, 19 Jan 2021 22:37:43 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id o13so32696684lfr.3;
+        Tue, 19 Jan 2021 22:37:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=lg9KNdx/DheREqatTUggClFpgYqzUQB6QxoMiw5d4bE=;
+        b=Q54gqpBT5WdTPa0dw/VQJndPZ+pzowMMLlzsQYUdqhuEmOCf2ml+cRPifoIM5RCuq8
+         F7rxnVAGym6RMUlHKoIT+0J6TjFCYvTutaw6CXulFaotUBBPVLMwmpR70WgODKoIGz5M
+         AsgJMroNtw/oec62z7uqUVB22w68RHiVSU6rMamfEDq6a1gFLvyGvDuYkGB8gKYMnGwK
+         CDiZM1iWhae2kZjc/+hx7WjMBGowRWxTGQcSzmsXsukL39FESxah5RRdPmROkK24XTPg
+         0GSjiUYZ8xSr1nlFKW3e+sg6sIVktik2muRKdIXPv15mK5KjRE8k48a7z1rB7YfaxCZo
+         A2Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=lg9KNdx/DheREqatTUggClFpgYqzUQB6QxoMiw5d4bE=;
+        b=IUXS2LQ/z2lrwNc9FGgyy7oFXP72HWBVMwnhrMQyqPHnIK62HQt3HWq5DK2de5gmCL
+         gDiJCvE3m7KtUZfGKgq/8dAOfnZLShXbPnTaNfboMdBuIZvZOY4piua/rq0rpOaMvyMY
+         Z9IofZA0IxeIBfCq11s+DluEf+MpuP0/8gu6cV+OWP5teGuTTz6hzrYt9DAzWTzysOAV
+         yzCzxQj7QCu1y9hCsrM67FaSPgNJpfoCQStQeXdTLyEy0iKINGO9EvLPgjrj/xLgNnsj
+         oVR+ALwIna2rRYVq8sLRLgOSVvSyuxkms7WdfRU8m76Vb6RLFMqIYXNI77dY2P2jnZ4t
+         lMRA==
+X-Gm-Message-State: AOAM532HshYWnofqKsHNZbvCk56whynlsIlfnv4fgy+a0H8EnfLaIeB7
+        wp/qBnI1Pm8nQAOxV8FfArY=
+X-Google-Smtp-Source: ABdhPJz5iO2kZWyhMQZ/AwhYN2IrRxZKMZiC+Z5C06ZPcSYhw4h+h1DbYiMruVZU7Kzt9ooIIGPurw==
+X-Received: by 2002:a19:810:: with SMTP id 16mr3554731lfi.233.1611124661811;
+        Tue, 19 Jan 2021 22:37:41 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id y9sm99951ljm.94.2021.01.19.22.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 22:37:41 -0800 (PST)
+Message-ID: <b82285438b7332a4aba5e0e73a07b2b79b45447b.camel@gmail.com>
+Subject: Re: [PATCH v2 02/17] rtc: bd70528: Do not require parent data
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-rtc@vger.kernel.org, Simon Glass <sjg@chromium.org>
+Date:   Wed, 20 Jan 2021 08:37:40 +0200
+In-Reply-To: <20210119210920.GR3666@piout.net>
+References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+         <e113a308ee6e9d22ca7fae066119def1793068d9.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+         <20210119210920.GR3666@piout.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <87h7ncqhz1.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-Le 20/01/2021 à 06:45, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> PPC47x_TLBE_SIZE isn't defined for 256k pages, so
->> this size of page shall not be selected for 47x.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Fixes: e7f75ad01d59 ("powerpc/47x: Base ppc476 support")
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/powerpc/Kconfig | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
->> index 107bb4319e0e..a685e42d3993 100644
->> --- a/arch/powerpc/Kconfig
->> +++ b/arch/powerpc/Kconfig
->> @@ -772,7 +772,7 @@ config PPC_64K_PAGES
->>   
->>   config PPC_256K_PAGES
->>   	bool "256k page size"
->> -	depends on 44x && !STDBINUTILS
->> +	depends on 44x && !STDBINUTILS && !PPC_47x
+On Tue, 2021-01-19 at 22:09 +0100, Alexandre Belloni wrote:
+> On 19/01/2021 09:14:45+0200, Matti Vaittinen wrote:
+> > The ROHM BD71828 and BD71815 RTC drivers only need the regmap
+> > pointer from parent. Regmap can be obtained via dev_get_regmap()
+> > so do not require parent to populate driver data for that.
+> > 
+> > BD70528 on the other hand requires parent data to access the
+> > watchdog so leave the parent data for BD70528 here for now.
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 > 
-> Do we still need this STDBINUTILS thing?
+> > ---
+> > 
+> > Please note that this same change has been sent individually:
+> > https://lore.kernel.org/lkml/20210105152350.GA3714833@localhost.localdomain/
+> > It is present in this series only because some patches depend on
+> > it.
+> > 
 > 
-> It's pretty gross, and I notice we have zero defconfigs which disable
-> it, meaning it's only randconfig builds that will ever test 256K pages.
-> 
-> Can we just drop it and say if you enable 256K pages you need to know
-> what you're doing?
+> Then I think it is best to have it as part of this series.
 
-I guess we can, yes. I'll send a patch for that.
-
-Christophe
+Thanks for taking a look at this Alexandre! I'll keep the patch in the
+series and remove this comment from cover-letter and the patch. (I
+guess you have now dropped the previously sent patch).
 
 > 
+> > ~~~ "I don't think so," said Rene Descartes. Just then he vanished
+> > ~~~
+> 
+> I've alway wanted to comment on that, should he have to say "I don't
+> think" to vanish ? Because saying "I don't think so," means that he
+> thinks this is not so.
+
+My interpretation is he really was disagreeing and intended to say "he
+doesn't think so". It was just the saying which made him to disappear.
+This is what may happen when you have strong principles ^_^; What is
+interesting to me is that he was able to add the "so" before vanishing.
+This makes me believe it was required the information about him saying
+this must've reached someone before the action was taken. If we make
+some assumptions and a rough estimates we can compute the maximum
+distance for this "something" that must've received the information
+about the event.
+
+I now assume that saying "so" can't really take longer than 10ms. I
+also take into account the current state of physics - which means that
+maximum speed for delivering the information is the speed of light, C.
+
+I further guess that first the information about the event must've
+reached this "something" - and then this "something" must've sent some
+'make him vanish' event back. Again we take the speed-of-light as a
+restriction.
+
+So, poor Rene was no further than 0.01 * C/2 km away from the
+"something" - when C is the speed of light using km/s as unit. 
+
+I think it is safe to say that when you say "you're not thinking" you
+should ensure you're further than 150 000 km away from "something"
+which can make you to vanish.
+
+> 
+> > Simon says - in Latin please.
+> > ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+> 
+> And I guess this should be simply "non cogito" ;)
+
+I think we should definitely discuss this with Simon Glass if we ever
+happen to be in a same location :] After all, he did the Latin
+translation for me. I can't really speak Latin - but I can always lead
+the discussion to some side-tracks XD
+
+
+Best Regards
+	Matti Vaittinen
+
+
