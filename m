@@ -2,152 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5B82FD1A9
+	by mail.lfdr.de (Postfix) with ESMTP id 716E02FD1A8
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389298AbhATNMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:12:16 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34040 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387731AbhATMat (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:30:49 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10KCTgfK001804;
-        Wed, 20 Jan 2021 06:29:42 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611145782;
-        bh=mkonnS399k2ET+gZIAzhzr9qheut3j+L6l9jvq4tMOE=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=RohWxg8V/CpAtkgIldbR4jhijfWEqZNGf8ceyJW2ePIY0uYCUaCFLZC7MgkLWybmB
-         r3Sp54du9pDJr/RVLoRosS/vHcfyvsBVEebcuywSvSKpcKzoEffQVaQqEwmNAoL7ZB
-         4er9TvbRh/aZsmzz1YOxaInWlE0SvhG6Gi0AAz/0=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10KCTg8Q090719
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Jan 2021 06:29:42 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
- Jan 2021 06:29:41 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 20 Jan 2021 06:29:41 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10KCTfFa115893;
-        Wed, 20 Jan 2021 06:29:41 -0600
-Date:   Wed, 20 Jan 2021 17:59:40 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     <michael@walle.cc>, <vigneshr@ti.com>, <richard@nod.at>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <Kavyasree.Kotagiri@microchip.com>, <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: sst: Add support for Global Unlock on
- sst26vf
-Message-ID: <20210120122940.2xkiwghtszzyylnm@ti.com>
-References: <20210120105411.254890-1-tudor.ambarus@microchip.com>
- <20210120105411.254890-2-tudor.ambarus@microchip.com>
+        id S2389180AbhATNMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:12:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:59796 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387715AbhATMad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 07:30:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9747D6E;
+        Wed, 20 Jan 2021 04:29:47 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3030F3F66E;
+        Wed, 20 Jan 2021 04:29:46 -0800 (PST)
+Subject: Re: [RFC PATCH V2 2/2] iommu: add Unisoc iommu basic driver
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Sheng Xu <sheng.xu@unisoc.com>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        Kevin Tang <kevin.tang@unisoc.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>
+References: <20210108113851.354947-1-zhang.lyra@gmail.com>
+ <20210108113851.354947-3-zhang.lyra@gmail.com>
+ <47f73502-15fe-5d65-6fc9-22eb078d7797@arm.com>
+ <CAAfSe-vd5eRopOBZMuTi8vq1FqY1qAVSdMHscVuA+uHtL2H=gw@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3a2561fc-65a6-4c68-fdb7-a5b670706f43@arm.com>
+Date:   Wed, 20 Jan 2021 12:29:44 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210120105411.254890-2-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAAfSe-vd5eRopOBZMuTi8vq1FqY1qAVSdMHscVuA+uHtL2H=gw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
+On 2021-01-20 11:40, Chunyan Zhang wrote:
+[...]
+>>> +     pgt_base_iova = dom->pgt_va +
+>>> +             ((iova - mdata->iova_start) >> SPRD_IOMMU_PAGE_SHIFT);
+>>> +
+>>> +     spin_lock_irqsave(&dom->pgtlock, flags);
+>>> +     for (i = 0; i < page_num; i++) {
+>>> +             pgt_base_iova[i] = pabase >> SPRD_IOMMU_PAGE_SHIFT;
+>>
+>> Out of curiosity, is the pagetable walker cache-coherent, or is this
+>> currently managing to work by pure chance and natural cache churn?
+> 
+> ->iotlb_sync_map() was implemented in this driver, I guess that has
+> done what you say here?
 
-On 20/01/21 12:54PM, Tudor Ambarus wrote:
-> Even if sst26vf shares the SPINOR_OP_GBULK opcode with
-> Macronix (ex. MX25U12835F) and Winbound (ex. W25Q128FV),
-> it has its own Individual Block Protection scheme, which
-> is also capable to read-lock individual parameter blocks.
-> Thus the sst26vf's Individual Block Protection scheme will
-> reside in the sst.c manufacturer driver.
-> 
-> Add support to unlock the entire flash memory. The device
-> is write-protected by default after a power-on reset cycle
-> (volatile software protection), in order to avoid inadvertent
-> writes during power-up. Could do an erase, write, read back,
-> and compare when MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE=y.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/sst.c | 38 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 36 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-> index 00e48da0744a..1cd2a360c41e 100644
-> --- a/drivers/mtd/spi-nor/sst.c
-> +++ b/drivers/mtd/spi-nor/sst.c
-> @@ -8,6 +8,39 @@
->  
->  #include "core.h"
->  
-> +static int sst26vf_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-> +{
-> +	if (!ofs && len == nor->params->size)
+No, sync_map only ensures that the previous (invalid) PTE isn't held in 
+the IOMMU's TLB. If pgt_va is a regular page allocation then you're 
+writing the new PTE to normal kernel memory, with nothing to guarantee 
+that write goes any further than the CPU's L1 cache. Thus either the 
+IOMMU has capable of snooping the CPU caches in order to see the updated 
+PTE value (rather than refetching the stale value from DRAM), or you're 
+just incredibly lucky that by the time the IOMMU *does* go to fetch the 
+PTE for that address, that updated cache line has already been evicted 
+out to DRAM naturally.
 
-Nitpick: ofs is not a boolean value. Don't treat it as such. (ofs == 0 
-&& len == nor->params->size) makes the intent much clearer.
+This is not an issue if you use the proper DMA allocator, since that 
+will ensure you get a non-cacheable buffer if you need one.
 
-> +		return spi_nor_global_block_unlock(nor);
-> +
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int sst26vf_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static const struct spi_nor_locking_ops sst26vf_locking_ops = {
-> +	.lock = sst26vf_lock,
-> +	.unlock = sst26vf_unlock,
-> +	.is_locked = sst26vf_is_locked,
-> +};
-> +
-> +static void sst26vf_default_init(struct spi_nor *nor)
-> +{
-> +	nor->params->locking_ops = &sst26vf_locking_ops;
-> +}
-> +
-> +static const struct spi_nor_fixups sst26vf_fixups = {
-> +	.default_init = sst26vf_default_init,
-> +};
-> +
->  static const struct flash_info sst_parts[] = {
->  	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
->  	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
-> @@ -39,8 +72,9 @@ static const struct flash_info sst_parts[] = {
->  	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32,
->  			      SECT_4K | SPI_NOR_DUAL_READ) },
->  	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128,
-> -			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ) },
-> +			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
-> +		.fixups = &sst26vf_fixups },
->  };
->  
->  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
-> -- 
-> 2.25.1
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+Robin.
