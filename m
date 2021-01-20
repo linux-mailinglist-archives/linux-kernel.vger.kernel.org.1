@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032852FCD0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 10:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20772FCD1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 10:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbhATJAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 04:00:10 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11112 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbhATI7r (ORCPT
+        id S1727064AbhATJDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 04:03:41 -0500
+Received: from relmlor2.renesas.com ([210.160.252.172]:47617 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726928AbhATJCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:59:47 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DLKDP24Flz15wQP;
-        Wed, 20 Jan 2021 16:57:57 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
- 16:58:56 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] z3fold: Simplify the zhdr initialization code in init_z3fold_page()
-Date:   Wed, 20 Jan 2021 03:58:51 -0500
-Message-ID: <20210120085851.16159-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        Wed, 20 Jan 2021 04:02:54 -0500
+X-IronPort-AV: E=Sophos;i="5.79,360,1602514800"; 
+   d="scan'208";a="69371153"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2021 18:01:51 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2A13741F8151;
+        Wed, 20 Jan 2021 18:01:49 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH] media: i2c/Kconfig: Select FWNODE for OV772x sensor
+Date:   Wed, 20 Jan 2021 09:01:48 +0000
+Message-Id: <20210120090148.30598-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can simplify the zhdr initialization by memset() the zhdr first instead
-of set struct member to zero one by one. This would also make code more
-compact and clear.
+Fix OV772x build breakage by selecting V4L2_FWNODE config:
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+ia64-linux-ld: drivers/media/i2c/ov772x.o: in function `ov772x_probe':
+ov772x.c:(.text+0x1ee2): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
+ia64-linux-ld: ov772x.c:(.text+0x1f12): undefined reference to `v4l2_fwnode_endpoint_free'
+ia64-linux-ld: ov772x.c:(.text+0x2212): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
+
+Fixes: 8a10b4e3601e ("media: i2c: ov772x: Parse endpoint properties")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- mm/z3fold.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/media/i2c/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 8e53cdf4d190..c1ccf6bb0ffb 100644
---- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -413,16 +413,10 @@ static struct z3fold_header *init_z3fold_page(struct page *page, bool headless,
- 	if (!slots)
- 		return NULL;
- 
-+	memset(zhdr, 0, sizeof(*zhdr));
- 	spin_lock_init(&zhdr->page_lock);
- 	kref_init(&zhdr->refcount);
--	zhdr->first_chunks = 0;
--	zhdr->middle_chunks = 0;
--	zhdr->last_chunks = 0;
--	zhdr->first_num = 0;
--	zhdr->start_middle = 0;
- 	zhdr->cpu = -1;
--	zhdr->foreign_handles = 0;
--	zhdr->mapped_count = 0;
- 	zhdr->slots = slots;
- 	zhdr->pool = pool;
- 	INIT_LIST_HEAD(&zhdr->buddy);
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index eddb10220953..bb1b5a340431 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -1013,6 +1013,7 @@ config VIDEO_OV772X
+ 	tristate "OmniVision OV772x sensor support"
+ 	depends on I2C && VIDEO_V4L2
+ 	select REGMAP_SCCB
++	select V4L2_FWNODE
+ 	help
+ 	  This is a Video4Linux2 sensor driver for the OmniVision
+ 	  OV772x camera.
 -- 
-2.19.1
+2.17.1
 
