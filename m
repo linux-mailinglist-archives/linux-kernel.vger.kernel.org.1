@@ -2,123 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868B32FCD2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 10:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1063C2FCD30
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 10:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbhATJFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 04:05:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15456 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727427AbhATJDo (ORCPT
+        id S1730033AbhATJKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 04:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbhATJGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:03:44 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10K91kRv070532;
-        Wed, 20 Jan 2021 04:03:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=WTDZ9aYsWOWABpjc4bX1QkrE9uWJbUYyZ6lhbsp3NbM=;
- b=UXwmT+kNQHqdA2kllHP7p1VOhnhXBbQ9/qOSm8xpjG0hplwAlbArPGLAJFdfax4wHf05
- Vj06ithKjHqeVbIf+KTmswjupgvfLY6hAUm72nTec36+5GEl3ooYTJTZlymFImgv2J1c
- GO5CrR8gpjUooqreEfaF5GoEj7JYGFLlYRme873NyGnnPZ1oqIAq0iaVwYjcwZOkENGf
- fdVEMv2W587TPerlR4Zj39va90sDVdCTUaI1S1ul5EGaWbRRhm6UVbIzSLrahgg4F2fq
- lV3qRrABXP4LMe+hRDUuBlMxtAEMENRotw4t/TiGsNuVtnPI/DSOujHDa9XG3MOxZjAn YA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 366ff73bgb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 04:03:02 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10K92jkh073694;
-        Wed, 20 Jan 2021 04:02:45 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 366ff73awh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 04:02:44 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10K8qfr7009557;
-        Wed, 20 Jan 2021 09:02:12 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3668nwrctt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 09:02:12 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10K929Xe40567204
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 09:02:09 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 314914C05A;
-        Wed, 20 Jan 2021 09:02:09 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A49314C046;
-        Wed, 20 Jan 2021 09:02:08 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.39.155])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 20 Jan 2021 09:02:08 +0000 (GMT)
-Subject: Re: [PATCH 0/4] vfio-pci/zdev: Fixing s390 vfio-pci ISM support
-To:     Matthew Rosato <mjrosato@linux.ibm.com>,
-        alex.williamson@redhat.com, cohuck@redhat.com,
-        schnelle@linux.ibm.com
-Cc:     borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <d44a5da8-1cb9-8b1c-ef48-caea4bda2fa8@linux.ibm.com>
-Date:   Wed, 20 Jan 2021 10:02:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-20_02:2021-01-18,2021-01-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999
- clxscore=1011 mlxscore=0 suspectscore=0 phishscore=0 spamscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101200049
+        Wed, 20 Jan 2021 04:06:37 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB0EC061757;
+        Wed, 20 Jan 2021 01:05:55 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id q20so14102334pfu.8;
+        Wed, 20 Jan 2021 01:05:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=Fk1XjhsIVpehEyUHjISdm6QYmnqvAVbB3cg/2P5Gk18=;
+        b=izM2+iRUl2skyG50FPHidJyx0thFwCOakDW/tHdUbcuQKuNlixfk3rh/s5i7zXvNQi
+         tR+8LIpzYMENOAKjg3IzdoO34tNeq2qIA1EI3uN0BZdzFwYFZNJlyqJeR3hBdS4sxPwi
+         P9mjeteI/DXwe3yWFCoVJooeZxg8+aLgf2tZlfK0moaG6z9x7Y1QaDk4vraXXVcDn6ay
+         TUmUlVfIVpTZGTRbcapvpCqCOiDYaENtpoWj2ssVAlaWzEmMsquhWfbcctGssixhi80J
+         h5nZQiuq3Waemp9aolNU44zLjkuBUk3zO+sc3IdgF0Nu6Sa5AuFc/KHHK4fDHudvWC7/
+         kHOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=Fk1XjhsIVpehEyUHjISdm6QYmnqvAVbB3cg/2P5Gk18=;
+        b=BzNXM7YE1AWdxfN9DMQcjr9U4dISpftMTdT3xqBD0IvGWSf1Zxv1BANsUspdq2YIDs
+         dYt22UL2Ug4ue5c3MWwunV8Vx6g4z/1JsgxtwNtLtTuGAsvFnkEK67PUKmLtYAGulSFf
+         CX05jSrzKOBGig3nHpqZnK9YjWrsrk4dPACj2PMNvz+te/j8OtRTxb/bzMTKYSdoVJIK
+         3R/sXf5kqTA06vZkDcAWwDS/mdi0TlxUO4PMKtqZRGn9Ibjiw9kJY3cOy/2gtfzTAumL
+         oL0fmn4oOB19VHYKM6x5rARbAWOwGgH7dx3Vz7MW57HQCtfPTS7cytqbY9rBOoO/vwFv
+         hkmA==
+X-Gm-Message-State: AOAM530XdzxPUV8WzdHsac7uu9jpMP8qux1KlR5a1Y9Lb0zhwFdTgm90
+        eV/HrF/ozqwMEeDjKJGOZI6IY0FmjMw=
+X-Google-Smtp-Source: ABdhPJzymenlXLQUh4txhzCtmPWXasuMZ3bSstpHmgMnTKuEn39YiKspDCKNQ5jQiyTlyNspd17IQQ==
+X-Received: by 2002:a65:5bc8:: with SMTP id o8mr8374442pgr.100.1611133555321;
+        Wed, 20 Jan 2021 01:05:55 -0800 (PST)
+Received: from linux-l9pv.suse ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id z2sm1585226pgl.49.2021.01.20.01.05.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Jan 2021 01:05:54 -0800 (PST)
+From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ben Boeckel <me@benboeckel.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: [PATCH 1/4] X.509: Add CodeSigning extended key usage parsing
+Date:   Wed, 20 Jan 2021 17:05:14 +0800
+Message-Id: <20210120090517.23851-2-jlee@suse.com>
+X-Mailer: git-send-email 2.12.3
+In-Reply-To: <20210120090517.23851-1-jlee@suse.com>
+References: <20210120090517.23851-1-jlee@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds the logic for parsing the CodeSign extended key usage
+extension in X.509. The parsing result will be set to the eku flag
+which is carried by public key. It can be used in the PKCS#7
+verification.
 
+Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+---
+ crypto/asymmetric_keys/x509_cert_parser.c | 24 ++++++++++++++++++++++++
+ include/crypto/public_key.h               |  1 +
+ include/linux/oid_registry.h              |  5 +++++
+ 3 files changed, 30 insertions(+)
 
-On 1/19/21 9:02 PM, Matthew Rosato wrote:
-> Today, ISM devices are completely disallowed for vfio-pci passthrough as
-> QEMU will reject the device due to an (inappropriate) MSI-X check.
-> However, in an effort to enable ISM device passthrough, I realized that the
-> manner in which ISM performs block write operations is highly incompatible
-> with the way that QEMU s390 PCI instruction interception and
-> vfio_pci_bar_rw break up I/O operations into 8B and 4B operations -- ISM
-> devices have particular requirements in regards to the alignment, size and
-> order of writes performed.  Furthermore, they require that legacy/non-MIO
-> s390 PCI instructions are used, which is also not guaranteed when the I/O
-> is passed through the typical userspace channels.
-> 
-> As a result, this patchset proposes a new VFIO region to allow a guest to
-> pass certain PCI instruction intercepts directly to the s390 host kernel
-> PCI layer for execution, pinning the guest buffer in memory briefly in
-> order to execute the requested PCI instruction.
-> 
-> Changes from RFC -> v1:
-> - No functional changes, just minor commentary changes -- Re-posting along
-> with updated QEMU set.
-> 
-
-Hi,
-
-there are is a concerns about this patch series:
-As the title says it is strongly related to ISM hardware.
-
-Why being so specific?
-
-Regards,
-Pierre
-
+diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+index 52c9b455fc7d..65721313b265 100644
+--- a/crypto/asymmetric_keys/x509_cert_parser.c
++++ b/crypto/asymmetric_keys/x509_cert_parser.c
+@@ -497,6 +497,8 @@ int x509_process_extension(void *context, size_t hdrlen,
+ 	struct x509_parse_context *ctx = context;
+ 	struct asymmetric_key_id *kid;
+ 	const unsigned char *v = value;
++	int i = 0;
++	enum OID oid;
+ 
+ 	pr_debug("Extension: %u\n", ctx->last_oid);
+ 
+@@ -526,6 +528,28 @@ int x509_process_extension(void *context, size_t hdrlen,
+ 		return 0;
+ 	}
+ 
++	if (ctx->last_oid == OID_extKeyUsage) {
++		if (v[0] != ((ASN1_UNIV << 6) | ASN1_CONS_BIT | ASN1_SEQ) ||
++		    v[1] != vlen - 2)
++			return -EBADMSG;
++		i += 2;
++
++		while (i < vlen) {
++			/* A 10 bytes EKU OID Octet blob =
++			 * ASN1_OID + size byte + 8 bytes OID */
++			if (v[i] != ASN1_OID || v[i + 1] != 8 || (i + 10) > vlen)
++				return -EBADMSG;
++
++			oid = look_up_OID(v + i + 2, v[i + 1]);
++			if (oid == OID_codeSigning) {
++				ctx->cert->pub->eku |= EKU_codeSigning;
++			}
++			i += 10;
++		}
++		pr_debug("extKeyUsage: %d\n", ctx->cert->pub->eku);
++		return 0;
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 948c5203ca9c..07a1b28460a2 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -29,6 +29,7 @@ struct public_key {
+ 	bool key_is_private;
+ 	const char *id_type;
+ 	const char *pkey_algo;
++	unsigned int eku : 9;      /* Extended Key Usage (9-bit) */
+ };
+ 
+ extern void public_key_free(struct public_key *key);
+diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+index 4462ed2c18cd..e20e8eb53b21 100644
+--- a/include/linux/oid_registry.h
++++ b/include/linux/oid_registry.h
+@@ -113,9 +113,14 @@ enum OID {
+ 	OID_SM2_with_SM3,		/* 1.2.156.10197.1.501 */
+ 	OID_sm3WithRSAEncryption,	/* 1.2.156.10197.1.504 */
+ 
++	/* Extended key purpose OIDs [RFC 5280] */
++	OID_codeSigning,		/* 1.3.6.1.5.5.7.3.3 */
++
+ 	OID__NR
+ };
+ 
++#define EKU_codeSigning	(1 << 2)
++
+ extern enum OID look_up_OID(const void *data, size_t datasize);
+ extern int sprint_oid(const void *, size_t, char *, size_t);
+ extern int sprint_OID(enum OID, char *, size_t);
 -- 
-Pierre Morel
-IBM Lab Boeblingen
+2.16.4
+
