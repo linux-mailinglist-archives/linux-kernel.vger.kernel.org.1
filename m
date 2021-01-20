@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE142FC6BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0122FC6CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729495AbhATB1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:27:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        id S1730714AbhATB3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:29:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726580AbhATB0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:26:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9664223109;
-        Wed, 20 Jan 2021 01:26:03 +0000 (UTC)
+        id S1727333AbhATB0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:26:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB96D2312B;
+        Wed, 20 Jan 2021 01:26:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611105964;
-        bh=HmkN0mm9wbN/TCVJTimhHdMI1XEsCsdxLiIIZk5t0hQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gGhhP42zJgjqLRPVs79DVu3aXg0iu5vMzBO+51S1vhqWpfX2cUHxb0vKO5u696JRX
-         mfHcrYAU+nEzAgp1+udbwg14OJP8XfXtvDpnM22HEn8pG2xHZEmhKPGTa4OVVtugbo
-         ToxAxu8ebqPadsA1HgEUPS6MF3uRy1W/RWBWM+lmMqUlPjqC5xRVcmRWyBGUG32kXM
-         Chtx+ec4rc/nQ2PJYXCB7XZ3D+IKT06hnxjmR4dTh5bJw0PFwd3aDjNB0dCBTmZnq3
-         vEU6ybA1s2HK+nxRtuDSSmlyJw2O5sgUOr8UWGEnLDi8G+ksuuDKyG2tdXunaZw8N0
-         ReQBwrnXc2K9g==
+        s=k20201202; t=1611105966;
+        bh=fkcstxxU/HilblDrOzN3mkgJzNpErfSb4xMpwRpTRCI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XUEBTxZ/VAVQeNTBS/9qobw42MwBL+hSCI+xgR+8Nc9rmTLqryE+hZIcpf4Oa7zWo
+         OpuDGjkdtjaxf16U5/kjeeB8YyzsJyvMNmR2NRTAyUrCI1Mmjody1UnUbrpkqrKcRv
+         0pFTr72WDRRq0RggIzcctpegy0ULuTwPxrofswrEYw+saTTigwfET1BktUOyvOus1m
+         JytNimsK1jBIEkSkoEEjZbStm8C2+0flQyhwWwFRvIPtBaJPM4s00EUxTwkCRBCQmq
+         XsXeHAACHwTxT/4cZXtDCKAYiNzb1vMh5RK/OY0o5YDZWcrLrgI6LKi7YAgnWMOAEv
+         SH49Q3djwckVA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 01/45] ASoC: Intel: haswell: Add missing pm_ops
-Date:   Tue, 19 Jan 2021 20:25:18 -0500
-Message-Id: <20210120012602.769683-1-sashal@kernel.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>, Daire Byrne <daire@dneg.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 03/45] SUNRPC: Handle TCP socket sends with kernel_sendpage() again
+Date:   Tue, 19 Jan 2021 20:25:20 -0500
+Message-Id: <20210120012602.769683-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
+References: <20210120012602.769683-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -40,34 +42,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit bb224c3e3e41d940612d4cc9573289cdbd5cb8f5 ]
+[ Upstream commit 4a85a6a3320b4a622315d2e0ea91a1d2b013bce4 ]
 
-haswell machine board is missing pm_ops what prevents it from undergoing
-suspend-resume procedure successfully. Assign default snd_soc_pm_ops so
-this is no longer the case.
+Daire Byrne reports a ~50% aggregrate throughput regression on his
+Linux NFS server after commit da1661b93bf4 ("SUNRPC: Teach server to
+use xprt_sock_sendmsg for socket sends"), which replaced
+kernel_send_page() calls in NFSD's socket send path with calls to
+sock_sendmsg() using iov_iter.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20201217105401.27865-1-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Investigation showed that tcp_sendmsg() was not using zero-copy to
+send the xdr_buf's bvec pages, but instead was relying on memcpy.
+This means copying every byte of a large NFS READ payload.
+
+It looks like TLS sockets do indeed support a ->sendpage method,
+so it's really not necessary to use xprt_sock_sendmsg() to support
+TLS fully on the server. A mechanical reversion of da1661b93bf4 is
+not possible at this point, but we can re-implement the server's
+TCP socket sendmsg path using kernel_sendpage().
+
+Reported-by: Daire Byrne <daire@dneg.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209439
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/haswell.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/sunrpc/svcsock.c | 86 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 85 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index c55d1239e705b..c763bfeb1f38f 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -189,6 +189,7 @@ static struct platform_driver haswell_audio = {
- 	.probe = haswell_audio_probe,
- 	.driver = {
- 		.name = "haswell-audio",
-+		.pm = &snd_soc_pm_ops,
- 	},
- };
+diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+index c2752e2b9ce34..4404c491eb388 100644
+--- a/net/sunrpc/svcsock.c
++++ b/net/sunrpc/svcsock.c
+@@ -1062,6 +1062,90 @@ static int svc_tcp_recvfrom(struct svc_rqst *rqstp)
+ 	return 0;	/* record not complete */
+ }
  
++static int svc_tcp_send_kvec(struct socket *sock, const struct kvec *vec,
++			      int flags)
++{
++	return kernel_sendpage(sock, virt_to_page(vec->iov_base),
++			       offset_in_page(vec->iov_base),
++			       vec->iov_len, flags);
++}
++
++/*
++ * kernel_sendpage() is used exclusively to reduce the number of
++ * copy operations in this path. Therefore the caller must ensure
++ * that the pages backing @xdr are unchanging.
++ *
++ * In addition, the logic assumes that * .bv_len is never larger
++ * than PAGE_SIZE.
++ */
++static int svc_tcp_sendmsg(struct socket *sock, struct msghdr *msg,
++			   struct xdr_buf *xdr, rpc_fraghdr marker,
++			   unsigned int *sentp)
++{
++	const struct kvec *head = xdr->head;
++	const struct kvec *tail = xdr->tail;
++	struct kvec rm = {
++		.iov_base	= &marker,
++		.iov_len	= sizeof(marker),
++	};
++	int flags, ret;
++
++	*sentp = 0;
++	xdr_alloc_bvec(xdr, GFP_KERNEL);
++
++	msg->msg_flags = MSG_MORE;
++	ret = kernel_sendmsg(sock, msg, &rm, 1, rm.iov_len);
++	if (ret < 0)
++		return ret;
++	*sentp += ret;
++	if (ret != rm.iov_len)
++		return -EAGAIN;
++
++	flags = head->iov_len < xdr->len ? MSG_MORE | MSG_SENDPAGE_NOTLAST : 0;
++	ret = svc_tcp_send_kvec(sock, head, flags);
++	if (ret < 0)
++		return ret;
++	*sentp += ret;
++	if (ret != head->iov_len)
++		goto out;
++
++	if (xdr->page_len) {
++		unsigned int offset, len, remaining;
++		struct bio_vec *bvec;
++
++		bvec = xdr->bvec;
++		offset = xdr->page_base;
++		remaining = xdr->page_len;
++		flags = MSG_MORE | MSG_SENDPAGE_NOTLAST;
++		while (remaining > 0) {
++			if (remaining <= PAGE_SIZE && tail->iov_len == 0)
++				flags = 0;
++			len = min(remaining, bvec->bv_len);
++			ret = kernel_sendpage(sock, bvec->bv_page,
++					      bvec->bv_offset + offset,
++					      len, flags);
++			if (ret < 0)
++				return ret;
++			*sentp += ret;
++			if (ret != len)
++				goto out;
++			remaining -= len;
++			offset = 0;
++			bvec++;
++		}
++	}
++
++	if (tail->iov_len) {
++		ret = svc_tcp_send_kvec(sock, tail, 0);
++		if (ret < 0)
++			return ret;
++		*sentp += ret;
++	}
++
++out:
++	return 0;
++}
++
+ /**
+  * svc_tcp_sendto - Send out a reply on a TCP socket
+  * @rqstp: completed svc_rqst
+@@ -1089,7 +1173,7 @@ static int svc_tcp_sendto(struct svc_rqst *rqstp)
+ 	mutex_lock(&xprt->xpt_mutex);
+ 	if (svc_xprt_is_dead(xprt))
+ 		goto out_notconn;
+-	err = xprt_sock_sendmsg(svsk->sk_sock, &msg, xdr, 0, marker, &sent);
++	err = svc_tcp_sendmsg(svsk->sk_sock, &msg, xdr, marker, &sent);
+ 	xdr_free_bvec(xdr);
+ 	trace_svcsock_tcp_send(xprt, err < 0 ? err : sent);
+ 	if (err < 0 || sent != (xdr->len + sizeof(marker)))
 -- 
 2.27.0
 
