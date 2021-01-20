@@ -2,135 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA11E2FD1C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D512FD1C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389784AbhATN0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388268AbhATNSs (ORCPT
+        id S2389839AbhATN0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:26:12 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48526 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389027AbhATNTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:18:48 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7EFC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:18:07 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id h7so4809886lfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:18:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KEq8tBsSJotuDC8emCL/6gnLfDlNS7DjovwJhhjL6ms=;
-        b=ULlMSelK9Ah0BMaovUHmsACU3A8+D692YYxmt2OYno3eGXN24zqnixuDonvFpZ2434
-         yGSCIJLnb9rvtjhVV8XPX2nCR1tR5/W56AKUtGD1OkiGVo7IeB4jiaFQf7E/SPuBZCPk
-         d4Lus8TY9Pvv6JwfYfacYCpF4wqkl22vCHCQTbwiluzAHo44vfyw87aw1bj7GxrJh8cR
-         nZV9kGNYb8OxcaZ9Ql7C/WeH9v4zws6ASGW2+LqT3AtKKoJHzqc0nxsas+X7WZpY7KVr
-         OAUDEHg2PDM3TgJfR2sQZHreqITp3VHs1U9nSDMrPkcdRevPf/w7OuV8CjENhYu9SBn6
-         VcWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KEq8tBsSJotuDC8emCL/6gnLfDlNS7DjovwJhhjL6ms=;
-        b=DYWVI6xofib2LHj0akcKQnPTSz9T7bGb/lKtN6f3c8Soendi2fuukf7sfIUqUki25w
-         FgrEgS+ZJzZWUTy1ALnHeuH3RL2kf+BzBrTJy5Nt1BG0u8c4xN11Lj/5xLr7SCQbyI5I
-         pQq3FVfeWWgJqMqJSQmHlgqq5EN8X2xrfR9QcM9fIH2Vmljh9tKUJrBEqeit+viWkJB9
-         ocjm+SNWleSLveBjiLp2UR1HIWXpGiKVTNA3z74qv3MFY/PXIz3UDanJWoOjQOFUwm0z
-         jQ/3buMAc0R6V9j7Ru5mCcb0CZ/+d2r7DOw+gO8RTCJsVJY1VOxk2V+0JChVjV/j71Dw
-         GdDQ==
-X-Gm-Message-State: AOAM531PaB1NCQUswb2fQbdWRZmYDBRR3WfqaDJXOVn+iQnSrSCpjV8X
-        ZSIf/G05k29dZ3KluSOEbzleDhSekXHA/36Xlog2Qg==
-X-Google-Smtp-Source: ABdhPJzqDqJvZXUcfXv4xFpgmlCE0aHWXWLar3aIIwchg7i4ldiK53CzSQfu3T1ZKIGVaiUK6Qge3/wJtkCQkY/hjps=
-X-Received: by 2002:a19:8cb:: with SMTP id 194mr4180105lfi.463.1611148685415;
- Wed, 20 Jan 2021 05:18:05 -0800 (PST)
+        Wed, 20 Jan 2021 08:19:03 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 0296C1F455A1
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kernel@collabora.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6
+ warning
+In-Reply-To: <20210119215435.GA1727211@ubuntu-m3-large-x86>
+References: <20210119131724.308884-1-adrian.ratiu@collabora.com>
+ <20210119131724.308884-2-adrian.ratiu@collabora.com>
+ <20210119215435.GA1727211@ubuntu-m3-large-x86>
+Date:   Wed, 20 Jan 2021 15:18:17 +0200
+Message-ID: <87lfcng31i.fsf@collabora.com>
 MIME-Version: 1.0
-References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
- <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
- <20210113142202.GC22493@dhcp22.suse.cz>
-In-Reply-To: <20210113142202.GC22493@dhcp22.suse.cz>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 20 Jan 2021 14:17:39 +0100
-Message-ID: <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
-> On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
-> > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> > >
-> > > On 01/12, Michal Hocko wrote:
-> > > >
-> > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
-> > > >
-> > > > > What we want is the ability for one process to influence another process
-> > > > > in order to optimize performance across the entire system while leaving
-> > > > > the security boundary intact.
-> > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> > > > > and CAP_SYS_NICE for influencing process performance.
-> > > >
-> > > > I have to say that ptrace modes are rather obscure to me. So I cannot
-> > > > really judge whether MODE_READ is sufficient. My understanding has
-> > > > always been that this is requred to RO access to the address space. But
-> > > > this operation clearly has a visible side effect. Do we have any actual
-> > > > documentation for the existing modes?
-> > > >
-> > > > I would be really curious to hear from Jann and Oleg (now Cced).
-> > >
-> > > Can't comment, sorry. I never understood these security checks and never tried.
-> > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
-> > > is the difference.
+On Tue, 19 Jan 2021, Nathan Chancellor <natechancellor@gmail.com> 
+wrote:
+> On Tue, Jan 19, 2021 at 03:17:23PM +0200, Adrian Ratiu wrote: 
+>> From: Nathan Chancellor <natechancellor@gmail.com>  Drop 
+>> warning because kernel now requires GCC >= v4.9 after commit 
+>> 6ec4476ac825 ("Raise gcc version requirement to 4.9") and 
+>> clarify that -ftree-vectorize now always needs enabling for GCC 
+>> by directly testing the presence of CONFIG_CC_IS_GCC.   Another 
+>> reason to remove the warning is that Clang exposes itself as 
+>> GCC < 4.6 so it triggers the warning about GCC which doesn't 
+>> make much sense and misleads Clang users by telling them to 
+>> update GCC.   Because Clang is now supported by the kernel 
+>> print a clear Clang-specific warning.   Link: 
+>> https://github.com/ClangBuiltLinux/linux/issues/496 Link: 
+>> https://github.com/ClangBuiltLinux/linux/issues/503 
+>> Reported-by: Nick Desaulniers <ndesaulniers@google.com> 
+>> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com> 
+>> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com> 
+>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com> 
+> 
+> The commit message looks like it is written by me but I never 
+> added a Clang specific warning. I appreciate wanting to give me 
+> credit but when you change things about my original commit 
+> message, please make it clear that you did the edits, something 
+> like: 
+> 
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com> 
+> [adrian: Add clang specific warning] Signed-off-by: Adrian Ratiu 
+> <adrian.ratiu@collabora.com> 
+> 
 
-Yama in particular only does its checks on ATTACH and ignores READ,
-that's the difference you're probably most likely to encounter on a
-normal desktop system, since some distros turn Yama on by default.
-Basically the idea there is that running "gdb -p $pid" or "strace -p
-$pid" as a normal user will usually fail, but reading /proc/$pid/maps
-still works; so you can see things like detailed memory usage
-information and such, but you're not supposed to be able to directly
-peek into a running SSH client and inject data into the existing SSH
-connection, or steal the cryptographic keys for the current
-connection, or something like that.
+Thanks for the suggestion. Makes sense. I contemplated adding 
+another patch by me on top but thought it was too much 
+churn. Sorry if my edits were unclear.
 
-> > I haven't seen a written explanation on ptrace modes but when I
-> > consulted Jann his explanation was:
-> >
-> > PTRACE_MODE_READ means you can inspect metadata about processes with
-> > the specified domain, across UID boundaries.
-> > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
-> > specified domain, across UID boundaries.
->
-> Maybe this would be a good start to document expectations. Some more
-> practical examples where the difference is visible would be great as
-> well.
+>> --- 
+>>  arch/arm/lib/xor-neon.c | 18 ++++++++++-------- 1 file 
+>>  changed, 10 insertions(+), 8 deletions(-) 
+>>  diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c 
+>> index b99dd8e1c93f..f9f3601cc2d1 100644 --- 
+>> a/arch/arm/lib/xor-neon.c +++ b/arch/arm/lib/xor-neon.c @@ 
+>> -14,20 +14,22 @@ MODULE_LICENSE("GPL"); 
+>>  #error You should compile this file with '-march=armv7-a 
+>>  -mfloat-abi=softfp -mfpu=neon' #endif  
+>> +/* + * TODO: Even though -ftree-vectorize is enabled by 
+>> default in Clang, the + * compiler does not produce vectorized 
+>> code due to its cost model.  + * See: 
+>> https://github.com/ClangBuiltLinux/linux/issues/503 + */ 
+>> +#ifdef CONFIG_CC_IS_CLANG +#warning Clang does not vectorize 
+>> code in this file.  +#endif 
+> 
+> I really do not like this. With the GCC specific warning, the 
+> user could just upgrade their GCC. With this warning, it is 
+> basically telling them don't use clang, in which case, it would 
+> just be better to disable this code altogether. I would rather 
+> see: 
+> 
+> 1. Just don't build this file with clang altogether, which I 
+> believe was 
+>    v1's 2/2 patch. 
+> 
+> OR 
+> 
+> 2. Use the pragma: 
+> 
+> #pragma clang loop vectorize(enable) 
+> 
+> as Nick suggests in v1's 2/2 patch. 
+> 
+> Alternatively, __restrict__ sounds like it might be beneficial 
+> for both GCC and clang: 
+> 
+> https://lore.kernel.org/lkml/20201112215033.GA438824@rani.riverdale.lan/ 
+> 
 
-Before documenting the behavior, it would be a good idea to figure out
-what to do with perf_event_open(). That one's weird in that it only
-requires PTRACE_MODE_READ, but actually allows you to sample stuff
-like userspace stack and register contents (if perf_event_paranoid is
-1 or 2). Maybe for SELinux things (and maybe also for Yama), there
-should be a level in between that allows fully inspecting the process
-(for purposes like profiling) but without the ability to corrupt its
-memory or registers or things like that. Or maybe perf_event_open()
-should just use the ATTACH mode.
+Option 1 from v1 got clearly NACKed by Nick a while back so the 
+only option gonig forward is to also fix clang vectorization 
+together with these changes so the warning becomes unnecessary.
+
+>>  /*
+>>   * Pull in the reference implementations while instructing GCC (through
+>>   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
+>>   * NEON instructions.
+>>   */
+>> -#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+>> +#ifdef CONFIG_CC_IS_GCC
+>>  #pragma GCC optimize "tree-vectorize"
+>> -#else
+>> -/*
+>> - * While older versions of GCC do not generate incorrect code, they fail to
+>> - * recognize the parallel nature of these functions, and emit plain ARM code,
+>> - * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
+>> - */
+>> -#warning This code requires at least version 4.6 of GCC
+>>  #endif
+>>  
+>>  #pragma GCC diagnostic ignored "-Wunused-variable"
+>> -- 
+>> 2.30.0
+>> 
