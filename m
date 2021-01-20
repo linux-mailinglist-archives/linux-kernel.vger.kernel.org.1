@@ -2,185 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063352FD67C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026C32FD6D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388432AbhATPrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:47:18 -0500
-Received: from mga04.intel.com ([192.55.52.120]:47281 "EHLO mga04.intel.com"
+        id S2390846AbhATRXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:23:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:40710 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732906AbhATPnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:43:33 -0500
-IronPort-SDR: PRtgN3QjHjp9LtKG2ok21zxToTY6Nth0uVR2hR7Y/LV1cl5oRAu4nihTKZgnMNdrUqdk2M50r2
- VBPKxbkrjY3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="176553810"
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="176553810"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 07:42:42 -0800
-IronPort-SDR: TXDQUlSzkvCgA4d4w+Xj6UdtNbPRCKbOsBjAOMYCZ5/oEFBR80SL+11okvMykUoyQo0suegKO8
- uCGN30Gnktlg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="402776904"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga002.fm.intel.com with ESMTP; 20 Jan 2021 07:42:42 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 20 Jan 2021 07:42:42 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 20 Jan 2021 07:42:41 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 20 Jan 2021 07:42:40 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 20 Jan 2021 07:42:35 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AFwu//dt4MuZjU29drHB+tTSrkY7C/Es3Ys0q7y6RISGXP4v0uCBWH+LibanNuRRHtLAJ21BOJfcn2AX1DMG6jhTtl39fqOgfsX6V5N29RZqCw4uKGMXZgzxeVyA+K0A8qJglPTiLlBBa1I/4jr1hgxzHc0t8qS/gfvVVDjq3wk/o8DDUkd5lYQ7LZKCGHj+KpyIBBBe+c9UV6Eu0IpcEkthhNowGQO4GAAXkwHfWd49mDG8vBEhmDwwABnQVw7wtDbgtEL17wF6PZP8tgBfxURjyTFIem8Gat1ibQ8Zt8YHgiTI8ftz5mPqHXKGviTl+rlQlOatw4olB1YF3gNnfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f7PBC7YrTZRQd2yc9rm2+ddj14q2RBGO3BnFQkVy/g0=;
- b=HKJ4zkJeAq/1UMKCoFPe5ASJTQPO6VWCXY7RSPgfrxcERDc4f2GeWot0hqGc9zZuVquJt95A7d2umUg+f4w1Nt8Xc1+Otj+wm9GTXdqUsHkgDajeUQ2JXqisKhQj3ht9foy8kI2cziDu1fJF2YU2lYHmlQHba5dRkd3R32zJh2kE7IfD+gQHDSf1ezJplvPTpd6VRTM+SgsdAZGJGgXhRyGqg5ChOn3x9dAxyvyvX5UpJm8LnKo3bqqHiQ6BpYOvaRgICy8frXOwFQzbgcZbXkYIiDo9ADA3cBFPG6INpi0XsT/yxqgv2/PkTApoLHpgCasl+bfzV9Ud7IVY4FyfhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f7PBC7YrTZRQd2yc9rm2+ddj14q2RBGO3BnFQkVy/g0=;
- b=vRDqCG9kEwKd0eL6sq71AsQij8W4lm3FdShO4T9lMiygRFQA/6/D7PMvu3RA7sfgCk0VhhLiXXvRXcPmGwMgfpyRrX4UiAhv31lmdDdBtAcy/0SUnWoo4wSR7MQuCf3zw0pTElUGKOic7in+uj4aLbMnO+cjfmyRzfQ0zpGRbFs=
-Received: from DM5PR11MB1690.namprd11.prod.outlook.com (2603:10b6:3:15::11) by
- DM6PR11MB3915.namprd11.prod.outlook.com (2603:10b6:5:19c::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.10; Wed, 20 Jan 2021 15:42:34 +0000
-Received: from DM5PR11MB1690.namprd11.prod.outlook.com
- ([fe80::8929:bef9:ffe:569e]) by DM5PR11MB1690.namprd11.prod.outlook.com
- ([fe80::8929:bef9:ffe:569e%6]) with mapi id 15.20.3763.014; Wed, 20 Jan 2021
- 15:42:34 +0000
-From:   "Metzger, Markus T" <markus.t.metzger@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-CC:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "tdevries@suse.com" <tdevries@suse.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: RE: gdbserver + fsgsbase kaputt
-Thread-Topic: gdbserver + fsgsbase kaputt
-Thread-Index: AQHW6EXGGSDS0D32IEu+vSvpt9UFe6oizxgAgAAJLICAABKQAIAAmVKAgABFJ3CAAG0rgIAAAXewgAAD8oCADHOucA==
-Date:   Wed, 20 Jan 2021 15:42:34 +0000
-Message-ID: <DM5PR11MB1690E8B8831D6758F03EE646DEA20@DM5PR11MB1690.namprd11.prod.outlook.com>
-References: <20210111200027.GH25645@zn.tnic>
- <E74AC970-CFCF-4CFD-A71F-F719F5BCE2DC@amacapital.net>
- <5B5C1F0A-9780-4E42-BC65-742BAEE920BF@intel.com>
- <DM5PR11MB1690CB5004CADCE5E9D5A221DEAA0@DM5PR11MB1690.namprd11.prod.outlook.com>
- <CALCETrUzsx2gpJGwz4fwLTLTKG4i=izaGRYL-3dLrn389JV17w@mail.gmail.com>
- <DM5PR11MB16906085295875E670FC163CDEAA0@DM5PR11MB1690.namprd11.prod.outlook.com>
- <CALCETrU5aHtJdJ29xSNCrXdycYMW=gsT7WzBT3-+GJqCEMM-dA@mail.gmail.com>
-In-Reply-To: <CALCETrU5aHtJdJ29xSNCrXdycYMW=gsT7WzBT3-+GJqCEMM-dA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [91.89.55.195]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 02149659-de73-498d-9842-08d8bd5a01e1
-x-ms-traffictypediagnostic: DM6PR11MB3915:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB39153F88B6FED335C375436CDEA20@DM6PR11MB3915.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: a5n8uz7Zt/knc7A9eyCtPa8tKUMXtePsRvEK0wah/9eWyIJU/+KVOzXegInwCHkXlOfLuBL1nB7eKRnwOBR961Qr4RadSZk3Gme7bIOU79wXF+bkY/CV7ug29xUTXF8nxSulz9132cJ0XMIdbsTqBgancGuD3fZlyvZaPgcovAbf4mLzgMSp7xlVJHLX8lxLwan2lCm71nxtU/hl9KS//aEpl4tMBSnprqIOi9qTNkAHjKfRg8iKPJxA48j/ZLr1Xz9/uuD1zHJjqjjn4lCkz8gnHPDUKeOur1jbHKe+azO7bJWu1mfRcHHeJ1ahjdobf484QhjSx5DXLjrzTzBmacowOS0xNXmYxv0+JP/XPbokP3X8CMk0BNqNlAwAGHKmXX9ZDWvH3oeClw09x3APzQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1690.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(366004)(39860400002)(52536014)(33656002)(4326008)(316002)(9686003)(55016002)(6916009)(186003)(2906002)(8936002)(26005)(53546011)(71200400001)(7696005)(478600001)(6506007)(83380400001)(8676002)(54906003)(76116006)(66946007)(86362001)(66476007)(64756008)(66556008)(66446008)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?ZXluQnRUTWZ6cHJSekx3cDVHeHRMRC80N3dveTFHSjdya2Q3TU1ERnBJSEYr?=
- =?utf-8?B?WlByTm5QREhpMktSdEMwYnhuK3krOGhkUDdBQ2xwYy9ra1JvL3NKUzdpblo4?=
- =?utf-8?B?Wk94ZGp6b1A2QTcrSm9pbm10eFZ3bkhGbXFlQ3c0VTltc0hLNHIxRjMvQ0Zs?=
- =?utf-8?B?V3BJTW5YcWMwOFNINXdNVlhHcEhYdXFodzZOUUs0a2lmODlpcWsxR0J6cmhq?=
- =?utf-8?B?bFcwTTFBeDBGNnZ1bmRUSGVEcjR2OHhRUnhxSHN4WllaNnQ5cWl3VDNWYkpz?=
- =?utf-8?B?ejNhSTIyRWVHTjVEOFhNdlRzSGNiVEtHdE91UWs5MUtlYTRiNVNBVHZZYUFq?=
- =?utf-8?B?OUk3RGRuQUlQa1dQbTRGM2czd1F4dWNlWDk1ZG1jeGIwVmdhRFJtemlxVlZX?=
- =?utf-8?B?M1pMeWRMUEo4TzUxcWRzbGFtSTNJTVBDSXYrcXdQNnp3MmdhNkNTTGRwVDI3?=
- =?utf-8?B?R1d6Q2J6YVUzbEEwMXVZanZvTkI4WWllS3pzb0tON3crZDNwYTlFTXlFb1R1?=
- =?utf-8?B?dEl4L3hjNGRuc0dWejVFNk9IUnJqdmxjOGRIK3FHdExNOUZhc0YxZC9YQk51?=
- =?utf-8?B?ZS9ZUHVwNjYyd3ZWRUQycXRONng3SEY4Q1R1WXpuV0J6eXk0c2FvWkpia1Y5?=
- =?utf-8?B?QnQrMEh4bldGRmwrK1A0MVRmODFNMDNhU24zN3piNjgyL0NieCtISENMYzBh?=
- =?utf-8?B?d0ovNFo2SkZaWUpTQlVZYTdWTHdqRDdXYytqY1hEbGowek1SMlBtSTNMWkRz?=
- =?utf-8?B?MERSckNEcGp0R29nbGVNbU1wd2tnWmNVaVZScjdGcWU0NThvTytFZ004TTJY?=
- =?utf-8?B?akNWWEo5VlNWaHdMN0EvUlJqZUtIQ1dpT1dzR1VEVzNDeU1RQVFyR3FldHBN?=
- =?utf-8?B?QTlNRTBpWm1BTEtudFpkV1BDYXV3cVJLbXNYMWFkRGx5VlZMNXFtYmtiRzJk?=
- =?utf-8?B?UkQ1enV3UyszYUdZQU9sRVZmU2cvL0UvTmg0b2FxcEJNSGFuS3I0NlpyYytY?=
- =?utf-8?B?NzhXLzVNaGhjMzBZM0RhYzBkZWZpdWF0SFJzT014RzZxYzdKbWl3OWtZOTR2?=
- =?utf-8?B?ZitlY0NCY3N2cHBwUEpFcm4vNTVTQmlVallYdjBSYmtJeHMxbEoraTFFZnJw?=
- =?utf-8?B?NkN6ZHNPMUtPSEcxWHd0QVpsbmVVbkFlSE0wNmI4ZHkzalJ6Vk5rTlR1c1o3?=
- =?utf-8?B?dU94eUNOdysvQU13cjBmK05wamVtSkYyd1ZMMUlzUTZOaXluR3pIOW9tdzY4?=
- =?utf-8?B?YWNaLzE4SG9nMTZKN1EyYUIzbXhHd0hVWU9GQ0E3UGorWjdXZzkvVW1rQ1I0?=
- =?utf-8?B?RitURGEvczVwc1NVdmRGMzVuckpzbWJDdituRi9qcW1SWTh6VEdaZmpkcm5I?=
- =?utf-8?B?WkRpcE5MUThzOHViaEZwZFVXRHR3YXo5cXJidFhIbi92eGd2SmYwZ2lxcENW?=
- =?utf-8?Q?affQKEja?=
-Content-Type: text/plain; charset="utf-8"
+        id S2387613AbhATPpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:45:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2976631B;
+        Wed, 20 Jan 2021 07:44:41 -0800 (PST)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7882E3F68F;
+        Wed, 20 Jan 2021 07:44:39 -0800 (PST)
+Date:   Wed, 20 Jan 2021 15:44:23 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC PATCH 4/5] arm64: fpsimd: run kernel mode NEON with
+ softirqs disabled
+Message-ID: <20210120154422.GB1684@arm.com>
+References: <20201218170106.23280-1-ardb@kernel.org>
+ <20201218170106.23280-5-ardb@kernel.org>
+ <20210119160045.GA1684@arm.com>
+ <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1690.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02149659-de73-498d-9842-08d8bd5a01e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2021 15:42:34.6654
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cJaBN5KjvzxpmDLQdSS8OrsGoV1CeK+57/t868uTaHgev2IN+tcQy0HZ93jRBlTj5R40es68e/IsogkplLMa1bqpSc1XjmuQAo2hvm/Sa0A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3915
-X-OriginatorOrg: intel.com
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBBbmR5IEx1dG9taXJza2kgPGx1dG9Aa2VybmVsLm9yZz4NCj4gDQo+IE9uIFR1ZSwg
-SmFuIDEyLCAyMDIxIGF0IDk6MDIgQU0gTWV0emdlciwgTWFya3VzIFQNCj4gPG1hcmt1cy50Lm1l
-dHpnZXJAaW50ZWwuY29tPiB3cm90ZToNCj4gPg0KPiA+ID4gWyAgIDI2Ljk5MDY0NF0gZ2V0cmVn
-OiBnc19iYXNlID0gMHhmN2Y4ZTAwMA0KPiA+ID4gWyAgIDI2Ljk5MTY5NF0gZ2V0cmVnOiBHUz0w
-eDYzLCBHU0JBU0U9MHhmN2Y4ZTAwMA0KPiA+ID4gWyAgIDI2Ljk5MzExN10gUFRSQUNFX1NFVFJF
-R1MNCj4gPiA+IFsgICAyNi45OTM4MTNdIHB1dHJlZzogY2hhbmdlIGdzYmFzZSBmcm9tIDB4Zjdm
-OGUwMDAgdG8gMHgwDQo+ID4gPiBbICAgMjYuOTk1MTM0XSBwdXRyZWc6IHdyaXRlIEdTPTB4NjM7
-IG9sZCBHU0JBU0U9MHgwDQo+ID4gPiBbICAgMjYuOTk2MjM1XSBQVFJBQ0VfU0VUUkVHUyBkb25l
-DQo+ID4gPg0KPiA+ID4gVGhhdCdzIGdkYnNlcnZlciByZWFkaW5nIEdTIGFuZCBHU0JBU0UgYW5k
-IHRoZW4gdGVsbGluZyB0aGUga2VybmVsIHRvDQo+ID4gPiBzZXQgR1MgdG8gdGhlIHNhbWUgdmFs
-dWUgYW5kIEdTQkFTRSB0byAwLg0KPiA+ID4NCj4gPiA+IEkgY2FuIGNvbWUgdXAgd2l0aCBob3Jy
-aWJsZSBrZXJuZWwgaGFja3MgdG8gdHJ5IHRvIHdvcmsgYXJvdW5kIHRoaXMsDQo+ID4gPiBidXQg
-Z2Ric2VydmVyIGlzIHJlYWxseSBnaXZpbmcgdGhlIGtlcm5lbCBiYWQgaW5zdHJ1Y3Rpb25zIGhl
-cmUuDQo+ID4NCj4gPiBJIGFncmVlIHRoYXQgdGhpcyBsb29rcyBsaWtlIGEgR0RCIGJ1ZyByYXRo
-ZXIgdGhhbiBhIGtlcm5lbCBidWcuICBHREINCj4gPiBzaG91bGQgcHJlc2VydmUgdGhlIEdTX0JB
-U0UgdmFsdWUgaWYgaXQgZG9lc24ndCBpbnRlbmQgdG8gY2hhbmdlIGl0Lg0KPiANCj4gSW5kZWVk
-LiAgQnV0IHdlIGhhdmUgdGhpcyBwZXNreSBuby11c2Vyc3BhY2UtcmVncmVzc2lvbnMgcG9saWN5
-IGluIHRoZSBrZXJuZWwuDQo+IA0KPiBTbyB0aGUgcXVlc3Rpb24gSSBoYXZlIGlzOiBpcyB0aGlz
-IGVub3VnaCBvZiBhIHJlZ3Jlc3Npb24gdGhhdCB3ZSBuZWVkDQo+IHRvIGhhY2sgYXJvdW5kIGl0
-IGluIHRoZSBrZXJuZWw/ICBUaGUgc3BlY2lmaWMgYnJva2VuIHVzZSBjYXNlIHNlZW1zDQo+IHF1
-aXRlIG5pY2hlOiA2NC1iaXQgZ2Ric2VydmVyIHRhcmdldGluZyAzMi1iaXQgdXNlcnNwYWNlLiAg
-SXQncyB0YWtlbg0KPiB0d28tYW5kLWEtaGFsZiBrZXJuZWwgcmVsZWFzZXMgZm9yIGFueW9uZSB0
-byBub3RpY2UsIGJlY2F1c2Ugc2Vuc2libGUNCj4gcGVvcGxlIHVzZSBwbGFpbiBnZGIgZm9yIGxv
-Y2FsIGRlYnVnZ2luZyBhbmQgZ2Ric2VydmVyIGZvciBkZWJ1Z2dpbmcNCj4gVk1zLCBlbWJlZGRl
-ZCB0YXJnZXRzLCBhbmQgc3VjaC4NCg0KSU1ITyBJJ2QganVzdCBmaXggR0RCIGFuZCBsZWF2ZSBp
-dCBhdCB0aGF0LiAgVGhlIGtlcm5lbCBjaGFuZ2VzIGV4cG9zZWQgYSBidWcNCiBpbiBnZGJzZXJ2
-ZXIuICBUb20gYWxyZWFkeSBzdWJtaXR0ZWQgYSBmaXguDQoNCkknbSB3b25kZXJpbmcgd2h5IHdl
-J3JlIGNvbnNpZGVyaW5nIHNvbWUgdWdseSBoYWNrcyBpbiB0aGUga2VybmVsIGZvciB3aGF0J3MN
-Cm9idmlvdXNseSBhIGJ1ZyBpbiB1c2VyLXNwYWNlLCB5ZXQgaWdub3JlIGNoYW5nZXMgdG8gR0RC
-IGZ1bmN0aW9uYWxpdHkgKGZvciBjaGFuZ2luZw0KRlMvR1MgZnJvbSB3aXRoaW4gR0RCKSB3ZSBo
-YWQgYmVlbiBkaXNjdXNzaW5nIGEgeWVhciBhZ28uDQoNClJlZ2FyZHMsDQpNYXJrdXMuDQpJbnRl
-bCBEZXV0c2NobGFuZCBHbWJIClJlZ2lzdGVyZWQgQWRkcmVzczogQW0gQ2FtcGVvbiAxMC0xMiwg
-ODU1NzkgTmV1YmliZXJnLCBHZXJtYW55ClRlbDogKzQ5IDg5IDk5IDg4NTMtMCwgd3d3LmludGVs
-LmRlCk1hbmFnaW5nIERpcmVjdG9yczogQ2hyaXN0aW4gRWlzZW5zY2htaWQsIEdhcnkgS2Vyc2hh
-dwpDaGFpcnBlcnNvbiBvZiB0aGUgU3VwZXJ2aXNvcnkgQm9hcmQ6IE5pY29sZSBMYXUKUmVnaXN0
-ZXJlZCBPZmZpY2U6IE11bmljaApDb21tZXJjaWFsIFJlZ2lzdGVyOiBBbXRzZ2VyaWNodCBNdWVu
-Y2hlbiBIUkIgMTg2OTI4Cg==
+On Tue, Jan 19, 2021 at 05:29:05PM +0100, Ard Biesheuvel wrote:
+> On Tue, 19 Jan 2021 at 17:01, Dave Martin <Dave.Martin@arm.com> wrote:
+> >
+> > On Fri, Dec 18, 2020 at 06:01:05PM +0100, Ard Biesheuvel wrote:
+> > > Kernel mode NEON can be used in task or softirq context, but only in
+> > > a non-nesting manner, i.e., softirq context is only permitted if the
+> > > interrupt was not taken at a point where the kernel was using the NEON
+> > > in task context.
+> > >
+> > > This means all users of kernel mode NEON have to be aware of this
+> > > limitation, and either need to provide scalar fallbacks that may be much
+> > > slower (up to 20x for AES instructions) and potentially less safe, or
+> > > use an asynchronous interface that defers processing to a later time
+> > > when the NEON is guaranteed to be available.
+> > >
+> > > Given that grabbing and releasing the NEON is cheap, we can relax this
+> > > restriction, by increasing the granularity of kernel mode NEON code, and
+> > > always disabling softirq processing while the NEON is being used in task
+> > > context.
+> > >
+> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > Sorry for the slow reply on this...  it looks reasonable, but I have a
+> > few comments below.
+> >
+> 
+> No worries - thanks for taking a look.
+> 
+> > > ---
+> > >  arch/arm64/include/asm/assembler.h | 19 +++++++++++++------
+> > >  arch/arm64/kernel/asm-offsets.c    |  2 ++
+> > >  arch/arm64/kernel/fpsimd.c         |  4 ++--
+> > >  3 files changed, 17 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> > > index ddbe6bf00e33..74ce46ed55ac 100644
+> > > --- a/arch/arm64/include/asm/assembler.h
+> > > +++ b/arch/arm64/include/asm/assembler.h
+> > > @@ -15,6 +15,7 @@
+> > >  #include <asm-generic/export.h>
+> > >
+> > >  #include <asm/asm-offsets.h>
+> > > +#include <asm/alternative.h>
+> > >  #include <asm/cpufeature.h>
+> > >  #include <asm/cputype.h>
+> > >  #include <asm/debug-monitors.h>
+> > > @@ -717,17 +718,23 @@ USER(\label, ic ivau, \tmp2)                    // invalidate I line PoU
+> > >       .endm
+> > >
+> > >       .macro          if_will_cond_yield_neon
+> > > -#ifdef CONFIG_PREEMPTION
+> > >       get_current_task        x0
+> > >       ldr             x0, [x0, #TSK_TI_PREEMPT]
+> > > -     sub             x0, x0, #PREEMPT_DISABLE_OFFSET
+> > > -     cbz             x0, .Lyield_\@
+> > > +#ifdef CONFIG_PREEMPTION
+> > > +     cmp             x0, #PREEMPT_DISABLE_OFFSET
+> > > +     beq             .Lyield_\@      // yield on need_resched in task context
+> > > +#endif
+> > > +     /* never yield while serving a softirq */
+> > > +     tbnz            x0, #SOFTIRQ_SHIFT, .Lnoyield_\@
+> >
+> > Can you explain the rationale here?
+> >
+> > Using if_will_cond_yield_neon suggests the algo thinks it may run for
+> > too long the stall preemption until completion, but we happily stall
+> > preemption _and_ softirqs here.
+> >
+> > Is it actually a bug to use the NEON conditional yield helpers in
+> > softirq context?
+> >
+> 
+> No, it is not. But calling kernel_neon_end() from softirq context will
+> not cause it to finish any faster, so there is really no point in
+> doing so.
+> 
+> > Ideally, if processing in softirq context takes an unreasonable about of
+> > time, the work would be handed off to an asynchronous worker, but that
+> > does seem to conflict rather with the purpose of this series...
+> >
+> 
+> Agreed, but this is not something we can police at this level. If the
+> caller does an unreasonable amount of work from a softirq, no amount
+> of yielding is going to make a difference.
 
+Ack, just wanted to make sure I wasn't missing something.
+
+Anyone writing softirq code can starve preemption, so I agree that we
+should trust people to know what they're doing.
+
+
+> > > +
+> > > +     adr_l           x0, irq_stat + IRQ_CPUSTAT_SOFTIRQ_PENDING
+> > > +     this_cpu_offset x1
+> > > +     ldr             w0, [x0, x1]
+> > > +     cbnz            w0, .Lyield_\@  // yield on pending softirq in task context
+> > > +.Lnoyield_\@:
+> > >       /* fall through to endif_yield_neon */
+> > >       .subsection     1
+> > >  .Lyield_\@ :
+> > > -#else
+> > > -     .section        ".discard.cond_yield_neon", "ax"
+> > > -#endif
+> > >       .endm
+> > >
+> > >       .macro          do_cond_yield_neon
+> > > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> > > index 7d32fc959b1a..34ef70877de4 100644
+> > > --- a/arch/arm64/kernel/asm-offsets.c
+> > > +++ b/arch/arm64/kernel/asm-offsets.c
+> > > @@ -93,6 +93,8 @@ int main(void)
+> > >    DEFINE(DMA_FROM_DEVICE,    DMA_FROM_DEVICE);
+> > >    BLANK();
+> > >    DEFINE(PREEMPT_DISABLE_OFFSET, PREEMPT_DISABLE_OFFSET);
+> > > +  DEFINE(SOFTIRQ_SHIFT, SOFTIRQ_SHIFT);
+> > > +  DEFINE(IRQ_CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t, __softirq_pending));
+> > >    BLANK();
+> > >    DEFINE(CPU_BOOT_STACK,     offsetof(struct secondary_data, stack));
+> > >    DEFINE(CPU_BOOT_TASK,              offsetof(struct secondary_data, task));
+> > > diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+> > > index 062b21f30f94..823e3a8a8871 100644
+> > > --- a/arch/arm64/kernel/fpsimd.c
+> > > +++ b/arch/arm64/kernel/fpsimd.c
+> > > @@ -180,7 +180,7 @@ static void __get_cpu_fpsimd_context(void)
+> > >   */
+> > >  static void get_cpu_fpsimd_context(void)
+> > >  {
+> > > -     preempt_disable();
+> > > +     local_bh_disable();
+> > >       __get_cpu_fpsimd_context();
+> > >  }
+> > >
+> > > @@ -201,7 +201,7 @@ static void __put_cpu_fpsimd_context(void)
+> > >  static void put_cpu_fpsimd_context(void)
+> > >  {
+> > >       __put_cpu_fpsimd_context();
+> > > -     preempt_enable();
+> > > +     local_bh_enable();
+> > >  }
+> > >
+> > >  static bool have_cpu_fpsimd_context(void)
+> >
+> > I was concerned about catching all the relevant preempt_disable()s, but
+> > it had slipped my memory that Julien had factored these into one place.
+> >
+> > I can't see off the top of my head any reason why this shouldn't work.
+> >
+> 
+> Thanks.
+> 
+> >
+> > In threory, switching to local_bh_enable() here will add a check for
+> > pending softirqs onto context handling fast paths.  I haven't dug into
+> > how that works, so perhaps this is trivial on top of the preemption
+> > check in preempt_enable().  Do you see any difference in hackbench or
+> > similar benchmarks?
+> >
+> 
+> I haven't tried, tbh. But by context handling fast paths, you mean
+> managing the FP/SIMD state at context switch time, right? Checking for
+> pending softirqs amounts to a single per-CPU load plus compare, so
+> that should be negligible AFAICT. Obviously, actually handling the
+
+Yes.  I've tended to assume, rather than prove, that this kind of thing
+is negligible -- so I confess I had not attempted to measure these
+effects when writing the original code.
+
+> softirq may take additional time, but that penalty has to be taken
+> somewhere - I don't see how that would create extra work that we
+> wouldn't have to do otherwise.
+> 
+> I'll do some experiments with hackbench once I get back to this series.
+
+That sounds fine.
+
+Probably you won't find a significant difference anyway.
+
+Cheers
+---Dave
