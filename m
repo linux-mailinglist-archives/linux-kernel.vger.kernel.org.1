@@ -2,125 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E332FCFB3
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF632FCFB4
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388019AbhATLmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:42:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44120 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389028AbhATLPu (ORCPT
+        id S2388050AbhATLmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:42:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389168AbhATLQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:15:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611141263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r/EVI+1MCqEvTLfz42IzqWVQkkuhCL254qM17MstwaY=;
-        b=V6BNRVa6de70OXBlYqVn3X86Uz1yRnmx8Yeiqi8pbEzugSn/DoSCStn9AY4X3Bc0XcTMmB
-        5NU1RD7zivgAcmE1zSR6QON2EYFF25EowkfOipOaD6L+Vyq+xXj7UxG2pBvUfb3A/9JbQR
-        ebspVUc8TT2rpXilokB6s36Ds4LLusw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-G7gZTGtOOB2URGV0p1tCAg-1; Wed, 20 Jan 2021 06:14:21 -0500
-X-MC-Unique: G7gZTGtOOB2URGV0p1tCAg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B17F01800D41;
-        Wed, 20 Jan 2021 11:14:20 +0000 (UTC)
-Received: from [10.36.115.161] (ovpn-115-161.ams2.redhat.com [10.36.115.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9967A10023B2;
-        Wed, 20 Jan 2021 11:14:15 +0000 (UTC)
-Subject: Re: [PATCH] virtio-mem: Assign boolean values to a bool variable
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>
-References: <1611129031-82818-1-git-send-email-abaci-bugfix@linux.alibaba.com>
- <81a1817d-a1f5-dfca-550c-3e3f62cf3a9d@redhat.com>
- <20210120045736-mutt-send-email-mst@kernel.org>
- <da2cb3fb-0ea5-5afd-afb5-a9e7f474e148@redhat.com>
- <20210120060301-mutt-send-email-mst@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a61b016e-7896-134c-a1be-8ff8e8e6fbe2@redhat.com>
-Date:   Wed, 20 Jan 2021 12:14:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 20 Jan 2021 06:16:48 -0500
+Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fac])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C290C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 03:16:02 -0800 (PST)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DLNGm2v28zMqQD9;
+        Wed, 20 Jan 2021 12:15:12 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DLNGl3psPzlh8TX;
+        Wed, 20 Jan 2021 12:15:11 +0100 (CET)
+Subject: Re: [PATCH v3 04/10] certs: Fix blacklist flag type confusion
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>
+References: <20210114151909.2344974-1-mic@digikod.net>
+ <20210114151909.2344974-5-mic@digikod.net> <YAepvxOBcEU0paqA@kernel.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <fc4d5812-238c-baf7-d7f6-cc123bdb855d@digikod.net>
+Date:   Wed, 20 Jan 2021 12:15:10 +0100
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <20210120060301-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YAepvxOBcEU0paqA@kernel.org>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.01.21 12:03, Michael S. Tsirkin wrote:
-> On Wed, Jan 20, 2021 at 11:04:18AM +0100, David Hildenbrand wrote:
->> On 20.01.21 10:57, Michael S. Tsirkin wrote:
->>> On Wed, Jan 20, 2021 at 10:40:37AM +0100, David Hildenbrand wrote:
->>>> On 20.01.21 08:50, Jiapeng Zhong wrote:
->>>>> Fix the following coccicheck warnings:
->>>>>
->>>>> ./drivers/virtio/virtio_mem.c:2580:2-25: WARNING: Assignment
->>>>> of 0/1 to bool variable.
->>>>>
->>>>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->>>>> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
->>>>> ---
->>>>>  drivers/virtio/virtio_mem.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->>>>> index 9fc9ec4..85a272c 100644
->>>>> --- a/drivers/virtio/virtio_mem.c
->>>>> +++ b/drivers/virtio/virtio_mem.c
->>>>> @@ -2577,7 +2577,7 @@ static int virtio_mem_probe(struct virtio_device *vdev)
->>>>>  	 * actually in use (e.g., trying to reload the driver).
->>>>>  	 */
->>>>>  	if (vm->plugged_size) {
->>>>> -		vm->unplug_all_required = 1;
->>>>> +		vm->unplug_all_required = true;
->>>>>  		dev_info(&vm->vdev->dev, "unplugging all memory is required\n");
->>>>>  	}
->>>>>  
->>>>>
->>>>
->>>> Hi,
->>>>
->>>> we already had a fix on the list for quite a while:
->>>>
->>>> https://lkml.kernel.org/r/1609233239-60313-1-git-send-email-tiantao6@hisilicon.com
->>>
->>> Can't find that one.
+
+On 20/01/2021 04:55, Jarkko Sakkinen wrote:
+> On Thu, Jan 14, 2021 at 04:19:03PM +0100, Mickaël Salaün wrote:
+>> From: David Howells <dhowells@redhat.com>
 >>
->> Looks like it was only on virtualization@ and a couple of people on cc.
+>> KEY_FLAG_KEEP is not meant to be passed to keyring_alloc() or key_alloc(),
+>> as these only take KEY_ALLOC_* flags.  KEY_FLAG_KEEP has the same value as
+>> KEY_ALLOC_BYPASS_RESTRICTION, but fortunately only key_create_or_update()
+>> uses it.  LSMs using the key_alloc hook don't check that flag.
 >>
->> https://lists.linuxfoundation.org/pipermail/virtualization/2020-December/051662.html
+>> KEY_FLAG_KEEP is then ignored but fortunately (again) the root user cannot
+>> write to the blacklist keyring, so it is not possible to remove a key/hash
+>> from it.
 >>
->> Interestingly, I cannot find the follow-up ("[PATCH] virtio-mem: use
->> boolean value when setting vm->unplug_all_required") in the mailing list
->> archives, even though it has virtualization@ on cc.
+>> Fix this by adding a KEY_ALLOC_SET_KEEP flag that tells key_alloc() to set
+>> KEY_FLAG_KEEP on the new key.  blacklist_init() can then, correctly, pass
+>> this to keyring_alloc().
 > 
+> OK, so thing work by luck now, but given the new patches which allow
+> to append new keys they would break, right?
+
+Without this fix, patch 9/10 would allow to remove and modify keys from
+the blacklist keyring.
+
 > 
-> Unsurprising that I didn't merge it then ;)
+>> We can also use this in ima_mok_init() rather than setting the flag
+>> manually.
+> 
+> What does ima_mok_init() do?
 
-Well, you were on cc ;)
+This was initially an addition from David Howells, I only fixed the
+argument bit-ORing. ima_mok_init() allocates a blacklist keyring (with
+different properties) dedicated to IMA.
 
-> Want to send your ack on this one?
+>> Note that this doesn't fix an observable bug with the current
+>> implementation but it is required to allow addition of new hashes to the
+>> blacklist in the future without making it possible for them to be removed.
+>>
+>> Fixes: 734114f8782f ("KEYS: Add a system blacklist keyring")
+>> cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
+> 
+> Nit: Cc
 
-Sure
+OK
 
-Acked-by: David Hildenbrand <david@redhat.com>
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+> 
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Reported-by: Mickaël Salaün <mic@linux.microsoft.com>
+>> Signed-off-by: David Howells <dhowells@redhat.com>
+>> [mic@linux.microsoft.com: fix ima_mok_init()]
+>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+>> ---
+>>
+>> Changes since v2:
+>> * Cherry-pick rewritten v1 patch from
+>>   https://lore.kernel.org/lkml/2659836.1607940186@warthog.procyon.org.uk/
+>>   to rebase on v5.11-rc3 and fix ima_mok_init().
+>> ---
+>>  certs/blacklist.c                | 2 +-
+>>  include/linux/key.h              | 1 +
+>>  security/integrity/ima/ima_mok.c | 4 +---
+>>  security/keys/key.c              | 2 ++
+>>  4 files changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/certs/blacklist.c b/certs/blacklist.c
+>> index a888b934a1cd..029471947838 100644
+>> --- a/certs/blacklist.c
+>> +++ b/certs/blacklist.c
+>> @@ -162,7 +162,7 @@ static int __init blacklist_init(void)
+>>  			      KEY_USR_VIEW | KEY_USR_READ |
+>>  			      KEY_USR_SEARCH,
+>>  			      KEY_ALLOC_NOT_IN_QUOTA |
+>> -			      KEY_FLAG_KEEP,
+>> +			      KEY_ALLOC_SET_KEEP,
+>>  			      NULL, NULL);
+>>  	if (IS_ERR(blacklist_keyring))
+>>  		panic("Can't allocate system blacklist keyring\n");
+>> diff --git a/include/linux/key.h b/include/linux/key.h
+>> index 0f2e24f13c2b..eed3ce139a32 100644
+>> --- a/include/linux/key.h
+>> +++ b/include/linux/key.h
+>> @@ -289,6 +289,7 @@ extern struct key *key_alloc(struct key_type *type,
+>>  #define KEY_ALLOC_BUILT_IN		0x0004	/* Key is built into kernel */
+>>  #define KEY_ALLOC_BYPASS_RESTRICTION	0x0008	/* Override the check on restricted keyrings */
+>>  #define KEY_ALLOC_UID_KEYRING		0x0010	/* allocating a user or user session keyring */
+>> +#define KEY_ALLOC_SET_KEEP		0x0020	/* Set the KEEP flag on the key/keyring */
+>>  
+>>  extern void key_revoke(struct key *key);
+>>  extern void key_invalidate(struct key *key);
+>> diff --git a/security/integrity/ima/ima_mok.c b/security/integrity/ima/ima_mok.c
+>> index 36cadadbfba4..5594dd38ab04 100644
+>> --- a/security/integrity/ima/ima_mok.c
+>> +++ b/security/integrity/ima/ima_mok.c
+>> @@ -38,13 +38,11 @@ __init int ima_mok_init(void)
+>>  				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
+>>  				KEY_USR_VIEW | KEY_USR_READ |
+>>  				KEY_USR_WRITE | KEY_USR_SEARCH,
+>> -				KEY_ALLOC_NOT_IN_QUOTA,
+>> +				KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_SET_KEEP,
+>>  				restriction, NULL);
+>>  
+>>  	if (IS_ERR(ima_blacklist_keyring))
+>>  		panic("Can't allocate IMA blacklist keyring.");
+>> -
+>> -	set_bit(KEY_FLAG_KEEP, &ima_blacklist_keyring->flags);
+>>  	return 0;
+>>  }
+>>  device_initcall(ima_mok_init);
+>> diff --git a/security/keys/key.c b/security/keys/key.c
+>> index ebe752b137aa..c45afdd1dfbb 100644
+>> --- a/security/keys/key.c
+>> +++ b/security/keys/key.c
+>> @@ -303,6 +303,8 @@ struct key *key_alloc(struct key_type *type, const char *desc,
+>>  		key->flags |= 1 << KEY_FLAG_BUILTIN;
+>>  	if (flags & KEY_ALLOC_UID_KEYRING)
+>>  		key->flags |= 1 << KEY_FLAG_UID_KEYRING;
+>> +	if (flags & KEY_ALLOC_SET_KEEP)
+>> +		key->flags |= 1 << KEY_FLAG_KEEP;
+>>  
+>>  #ifdef KEY_DEBUGGING
+>>  	key->magic = KEY_DEBUG_MAGIC;
+>> -- 
+>> 2.30.0
+>>
+> 
+> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> 
+> /Jarkko
+> 
