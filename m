@@ -2,312 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610952FD23F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F302FD246
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388970AbhATOCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:02:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46782 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731521AbhATN3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:29:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611149174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PWa8LXJtPmdrGF/SU7ngKGgWKwsy52HIQIMfyyd743k=;
-        b=rqKFyQ7gBacDcwNA+Tgclig9Gk8SfgTlm8KFnpVPMoa/oqDTMxjAd89LlL6SVDY/B1/fg4
-        /i9xo/oRWDnPEH2a9eFTohmb579u1jOJMxG0eQ4RZ7WzuCNvhY6dhiyTEIylr5S+o9daD3
-        w69zEnlpvBxdqOhgL8wbKnsci93vwgQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C9F9FAE6D;
-        Wed, 20 Jan 2021 13:26:14 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     bpetkov@suse.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v4 06/15] x86: rework arch_local_irq_restore() to not use popf
-Date:   Wed, 20 Jan 2021 14:26:04 +0100
-Message-Id: <20210120132613.31487-7-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210120132613.31487-1-jgross@suse.com>
-References: <20210120132613.31487-1-jgross@suse.com>
+        id S2389766AbhATODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:03:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732168AbhATN1l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:27:41 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E085C061757;
+        Wed, 20 Jan 2021 05:26:58 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id j18so2850930wmi.3;
+        Wed, 20 Jan 2021 05:26:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OHRRPO4wN/P2q0ZLR4beYWp9qHKpPaj73nkxOvC3Ers=;
+        b=hXowP4uHpXXcPcKaGfaFquwDcKjxidGKe+vFD4paTTcRmYyL05vpBiH8LYfiavVZlg
+         mkT2XU02Q1xjXQsAX9ocJea7gEP6RUv6+WMfxqbR1ItPX08wlJIxvA/P5Lp+NOE6Iw8Y
+         FCOPCusYR60KRK0SYgIPtIaAcBjMIdhrnFI1nNVzdYN9T0irhaN+ytcbCULfYzdx6wWv
+         f+dbTAfmn8K2L1JgMI3+p3YqFfKy7HgyLSjJrCalIlidH5OAlEihOEQJDdFNAJZvq13h
+         4/zJ8PVu1oZLAZP6bp6hlwiXl39CP33kgzbd+jfii6YT297ouGlhW4nuhaE6RqOdRj2f
+         j++g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OHRRPO4wN/P2q0ZLR4beYWp9qHKpPaj73nkxOvC3Ers=;
+        b=o1SXJXg2Dk98BOu3vUhHXLXVbODIlMtLHuHihvxzJGq9HkiwwFfwQZn3RBOc5/K1YH
+         a946BzgR6jyvKpW4FhD/18XfRf8AJwERQZzUvCFMqcpbsht5jpHVmby9KLc9YaCA8F2Z
+         sR72jXqdfs0IR5FEiBNxf9Z1aEODrXlg/HCkJFypiR9urtM7adUaToe0KJL0g+4XtPNq
+         VuzpfZ+Oec/qqKgzsqIeH7GA3rr2m27nDKvYLNo7/bUGtzsH/qMtMwuPSs9+WR1uKG8o
+         yGtGzrjDyyn7VpI31/NMGE4TM01mWJt2JMYMadchHClRYaPjY8vP9uumOuTX5+9WAvku
+         QfJQ==
+X-Gm-Message-State: AOAM5311bE0LrvopUL1GB7o4nnCmVqkQsKjw8ev6wf7s9qgISlcMDSbO
+        pejKB0WSu2AuWl4ba7Z2o2I=
+X-Google-Smtp-Source: ABdhPJxx3yjb/mA8dgiHvOr4zSfQ6yicEnTRahPNc764k7lsk8TMu/AQCVMJ37YDKGFYVMLGHDN1Cw==
+X-Received: by 2002:a1c:6089:: with SMTP id u131mr4328541wmb.99.1611149217330;
+        Wed, 20 Jan 2021 05:26:57 -0800 (PST)
+Received: from curtine-Aspire-A515-55.lan ([2001:818:e279:2100:6955:745:9baf:484e])
+        by smtp.googlemail.com with ESMTPSA id a12sm4572619wrh.71.2021.01.20.05.26.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 05:26:56 -0800 (PST)
+From:   Eric Curtin <ericcurtin17@gmail.com>
+Cc:     ericcurtin17@gmail.com, Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] Update Documentation/admin-guide/sysctl/fs.rst
+Date:   Wed, 20 Jan 2021 13:26:47 +0000
+Message-Id: <20210120132648.19046-1-ericcurtin17@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"popf" is a rather expensive operation, so don't use it for restoring
-irq flags. Instead test whether interrupts are enabled in the flags
-parameter and enable interrupts via "sti" in that case.
+max_user_watches for epoll should say 1/25, rather than 1/32
 
-This results in the restore_fl paravirt op to be no longer needed.
-
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Eric Curtin <ericcurtin17@gmail.com>
 ---
- arch/x86/include/asm/irqflags.h       | 20 ++++++-------------
- arch/x86/include/asm/paravirt.h       |  5 -----
- arch/x86/include/asm/paravirt_types.h |  7 ++-----
- arch/x86/kernel/irqflags.S            | 11 -----------
- arch/x86/kernel/paravirt.c            |  1 -
- arch/x86/kernel/paravirt_patch.c      |  3 ---
- arch/x86/xen/enlighten_pv.c           |  2 --
- arch/x86/xen/irq.c                    | 23 ----------------------
- arch/x86/xen/xen-asm.S                | 28 ---------------------------
- arch/x86/xen/xen-ops.h                |  1 -
- 10 files changed, 8 insertions(+), 93 deletions(-)
+ Documentation/admin-guide/sysctl/fs.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
-index e585a4705b8d..144d70ea4393 100644
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -35,15 +35,6 @@ extern __always_inline unsigned long native_save_fl(void)
- 	return flags;
- }
- 
--extern inline void native_restore_fl(unsigned long flags);
--extern inline void native_restore_fl(unsigned long flags)
--{
--	asm volatile("push %0 ; popf"
--		     : /* no output */
--		     :"g" (flags)
--		     :"memory", "cc");
--}
--
- static __always_inline void native_irq_disable(void)
- {
- 	asm volatile("cli": : :"memory");
-@@ -79,11 +70,6 @@ static __always_inline unsigned long arch_local_save_flags(void)
- 	return native_save_fl();
- }
- 
--static __always_inline void arch_local_irq_restore(unsigned long flags)
--{
--	native_restore_fl(flags);
--}
--
- static __always_inline void arch_local_irq_disable(void)
- {
- 	native_irq_disable();
-@@ -152,6 +138,12 @@ static __always_inline int arch_irqs_disabled(void)
- 
- 	return arch_irqs_disabled_flags(flags);
- }
-+
-+static __always_inline void arch_local_irq_restore(unsigned long flags)
-+{
-+	if (!arch_irqs_disabled_flags(flags))
-+		arch_local_irq_enable();
-+}
- #else
- #ifdef CONFIG_X86_64
- #ifdef CONFIG_XEN_PV
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index dd43b1100a87..4abf110e2243 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -648,11 +648,6 @@ static inline notrace unsigned long arch_local_save_flags(void)
- 	return PVOP_CALLEE0(unsigned long, irq.save_fl);
- }
- 
--static inline notrace void arch_local_irq_restore(unsigned long f)
--{
--	PVOP_VCALLEE1(irq.restore_fl, f);
--}
--
- static inline notrace void arch_local_irq_disable(void)
- {
- 	PVOP_VCALLEE0(irq.irq_disable);
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 0169365f1403..de87087d3bde 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -168,16 +168,13 @@ struct pv_cpu_ops {
- struct pv_irq_ops {
- #ifdef CONFIG_PARAVIRT_XXL
- 	/*
--	 * Get/set interrupt state.  save_fl and restore_fl are only
--	 * expected to use X86_EFLAGS_IF; all other bits
--	 * returned from save_fl are undefined, and may be ignored by
--	 * restore_fl.
-+	 * Get/set interrupt state.  save_fl is expected to use X86_EFLAGS_IF;
-+	 * all other bits returned from save_fl are undefined.
- 	 *
- 	 * NOTE: These functions callers expect the callee to preserve
- 	 * more registers than the standard C calling convention.
- 	 */
- 	struct paravirt_callee_save save_fl;
--	struct paravirt_callee_save restore_fl;
- 	struct paravirt_callee_save irq_disable;
- 	struct paravirt_callee_save irq_enable;
- 
-diff --git a/arch/x86/kernel/irqflags.S b/arch/x86/kernel/irqflags.S
-index 0db0375235b4..8ef35063964b 100644
---- a/arch/x86/kernel/irqflags.S
-+++ b/arch/x86/kernel/irqflags.S
-@@ -13,14 +13,3 @@ SYM_FUNC_START(native_save_fl)
- 	ret
- SYM_FUNC_END(native_save_fl)
- EXPORT_SYMBOL(native_save_fl)
--
--/*
-- * void native_restore_fl(unsigned long flags)
-- * %eax/%rdi: flags
-- */
--SYM_FUNC_START(native_restore_fl)
--	push %_ASM_ARG1
--	popf
--	ret
--SYM_FUNC_END(native_restore_fl)
--EXPORT_SYMBOL(native_restore_fl)
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 18560b71e717..c60222ab8ab9 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -320,7 +320,6 @@ struct paravirt_patch_template pv_ops = {
- 
- 	/* Irq ops. */
- 	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
--	.irq.restore_fl		= __PV_IS_CALLEE_SAVE(native_restore_fl),
- 	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(native_irq_disable),
- 	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(native_irq_enable),
- 	.irq.safe_halt		= native_safe_halt,
-diff --git a/arch/x86/kernel/paravirt_patch.c b/arch/x86/kernel/paravirt_patch.c
-index 2fada2c347c9..abd27ec67397 100644
---- a/arch/x86/kernel/paravirt_patch.c
-+++ b/arch/x86/kernel/paravirt_patch.c
-@@ -25,7 +25,6 @@ struct patch_xxl {
- 	const unsigned char	mmu_read_cr2[3];
- 	const unsigned char	mmu_read_cr3[3];
- 	const unsigned char	mmu_write_cr3[3];
--	const unsigned char	irq_restore_fl[2];
- 	const unsigned char	cpu_wbinvd[2];
- 	const unsigned char	mov64[3];
- };
-@@ -37,7 +36,6 @@ static const struct patch_xxl patch_data_xxl = {
- 	.mmu_read_cr2		= { 0x0f, 0x20, 0xd0 },	// mov %cr2, %[re]ax
- 	.mmu_read_cr3		= { 0x0f, 0x20, 0xd8 },	// mov %cr3, %[re]ax
- 	.mmu_write_cr3		= { 0x0f, 0x22, 0xdf },	// mov %rdi, %cr3
--	.irq_restore_fl		= { 0x57, 0x9d },	// push %rdi; popfq
- 	.cpu_wbinvd		= { 0x0f, 0x09 },	// wbinvd
- 	.mov64			= { 0x48, 0x89, 0xf8 },	// mov %rdi, %rax
- };
-@@ -71,7 +69,6 @@ unsigned int native_patch(u8 type, void *insn_buff, unsigned long addr,
- 	switch (type) {
- 
- #ifdef CONFIG_PARAVIRT_XXL
--	PATCH_CASE(irq, restore_fl, xxl, insn_buff, len);
- 	PATCH_CASE(irq, save_fl, xxl, insn_buff, len);
- 	PATCH_CASE(irq, irq_enable, xxl, insn_buff, len);
- 	PATCH_CASE(irq, irq_disable, xxl, insn_buff, len);
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 5476423fc6d0..32b295cc2716 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1022,8 +1022,6 @@ void __init xen_setup_vcpu_info_placement(void)
- 	 */
- 	if (xen_have_vcpu_info_placement) {
- 		pv_ops.irq.save_fl = __PV_IS_CALLEE_SAVE(xen_save_fl_direct);
--		pv_ops.irq.restore_fl =
--			__PV_IS_CALLEE_SAVE(xen_restore_fl_direct);
- 		pv_ops.irq.irq_disable =
- 			__PV_IS_CALLEE_SAVE(xen_irq_disable_direct);
- 		pv_ops.irq.irq_enable =
-diff --git a/arch/x86/xen/irq.c b/arch/x86/xen/irq.c
-index 850c93f346c7..dfa091d79c2e 100644
---- a/arch/x86/xen/irq.c
-+++ b/arch/x86/xen/irq.c
-@@ -42,28 +42,6 @@ asmlinkage __visible unsigned long xen_save_fl(void)
- }
- PV_CALLEE_SAVE_REGS_THUNK(xen_save_fl);
- 
--__visible void xen_restore_fl(unsigned long flags)
--{
--	struct vcpu_info *vcpu;
--
--	/* convert from IF type flag */
--	flags = !(flags & X86_EFLAGS_IF);
--
--	/* See xen_irq_enable() for why preemption must be disabled. */
--	preempt_disable();
--	vcpu = this_cpu_read(xen_vcpu);
--	vcpu->evtchn_upcall_mask = flags;
--
--	if (flags == 0) {
--		barrier(); /* unmask then check (avoid races) */
--		if (unlikely(vcpu->evtchn_upcall_pending))
--			xen_force_evtchn_callback();
--		preempt_enable();
--	} else
--		preempt_enable_no_resched();
--}
--PV_CALLEE_SAVE_REGS_THUNK(xen_restore_fl);
--
- asmlinkage __visible void xen_irq_disable(void)
- {
- 	/* There's a one instruction preempt window here.  We need to
-@@ -118,7 +96,6 @@ static void xen_halt(void)
- 
- static const struct pv_irq_ops xen_irq_ops __initconst = {
- 	.save_fl = PV_CALLEE_SAVE(xen_save_fl),
--	.restore_fl = PV_CALLEE_SAVE(xen_restore_fl),
- 	.irq_disable = PV_CALLEE_SAVE(xen_irq_disable),
- 	.irq_enable = PV_CALLEE_SAVE(xen_irq_enable),
- 
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index c0630fd9f44e..1ea7e41044b5 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -72,34 +72,6 @@ SYM_FUNC_START(xen_save_fl_direct)
- 	ret
- SYM_FUNC_END(xen_save_fl_direct)
- 
--
--/*
-- * In principle the caller should be passing us a value return from
-- * xen_save_fl_direct, but for robustness sake we test only the
-- * X86_EFLAGS_IF flag rather than the whole byte. After setting the
-- * interrupt mask state, it checks for unmasked pending events and
-- * enters the hypervisor to get them delivered if so.
-- */
--SYM_FUNC_START(xen_restore_fl_direct)
--	FRAME_BEGIN
--	testw $X86_EFLAGS_IF, %di
--	setz PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
--	/*
--	 * Preempt here doesn't matter because that will deal with any
--	 * pending interrupts.  The pending check may end up being run
--	 * on the wrong CPU, but that doesn't hurt.
--	 */
--
--	/* check for unmasked and pending */
--	cmpw $0x0001, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_pending
--	jnz 1f
--	call check_events
--1:
--	FRAME_END
--	ret
--SYM_FUNC_END(xen_restore_fl_direct)
--
--
- /*
-  * Force an event check by making a hypercall, but preserve regs
-  * before making the call.
-diff --git a/arch/x86/xen/xen-ops.h b/arch/x86/xen/xen-ops.h
-index b2fd80a01a36..8d7ec49a35fb 100644
---- a/arch/x86/xen/xen-ops.h
-+++ b/arch/x86/xen/xen-ops.h
-@@ -131,7 +131,6 @@ static inline void __init xen_efi_init(struct boot_params *boot_params)
- __visible void xen_irq_enable_direct(void);
- __visible void xen_irq_disable_direct(void);
- __visible unsigned long xen_save_fl_direct(void);
--__visible void xen_restore_fl_direct(unsigned long);
- 
- __visible unsigned long xen_read_cr2(void);
- __visible unsigned long xen_read_cr2_direct(void);
+diff --git a/Documentation/admin-guide/sysctl/fs.rst b/Documentation/admin-guide/sysctl/fs.rst
+index f48277a0a850..2a501c9ddc55 100644
+--- a/Documentation/admin-guide/sysctl/fs.rst
++++ b/Documentation/admin-guide/sysctl/fs.rst
+@@ -380,5 +380,5 @@ This configuration option sets the maximum number of "watches" that are
+ allowed for each user.
+ Each "watch" costs roughly 90 bytes on a 32bit kernel, and roughly 160 bytes
+ on a 64bit one.
+-The current default value for  max_user_watches  is the 1/32 of the available
+-low memory, divided for the "watch" cost in bytes.
++The current default value for  max_user_watches  is the 1/25 (4%) of the
++available low memory, divided for the "watch" cost in bytes.
 -- 
-2.26.2
+2.25.1
 
