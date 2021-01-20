@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD0D2FCA46
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C7A2FCA4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730393AbhATFHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729463AbhATFE7 (ORCPT
+        id S1726667AbhATFKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:10:19 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54718 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726550AbhATFGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:04:59 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304C8C061757;
-        Tue, 19 Jan 2021 21:04:19 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id p185so7126926ybg.8;
-        Tue, 19 Jan 2021 21:04:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=2QNIuDgC5vixuFYsnYmkXpiIls3XVH0dL8gRb6T6ZM8=;
-        b=e82rsUdK/Y6ddR2zdT0kKv+G5OkLEYU8hrRAuzTOyZtpI7dYQYG5a3NrceAxX+cN47
-         0fyB2JO34Al//LuvpGWC4iN0rKS0fg4e49AjsLEr5+owB0+HNZDVdP66piFAb4Oo8hVW
-         6dZ8/oarGX8fJBTCxsNILesPJzVJDxu2QSo8l7jrQdDHvF8mqb05HsqD0Y3HCXcy3TEU
-         +aFBnqU40O86yhLvpfWEmwjzSHSHKmMyaXwxcb2tnCeAHfQ6Ijxl54lXrAUDd5fIFJBe
-         JAQGgyD+MHAi5GsA05Cuv5Vk1+WMNvKZuetseoYwjUDrCoDQvKuTbaQzxLXggdr+0BTo
-         CoZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=2QNIuDgC5vixuFYsnYmkXpiIls3XVH0dL8gRb6T6ZM8=;
-        b=tJ3/+q2z+D9ukuclBG1dWTs4kafKv2Dli8fJ6AOK4ytemlJULGPXkvJE+kOhv+zeVQ
-         +6hfYOTfcwoByz87tz+3pwgfnh0kjya1OTwkRNTZylX/5Wj2v85J1pg/HR10YyJlq0vT
-         vuDKRFZbM9+9PwtWLCo+4CX9pchh3LXomSygOxroTW1x1ARvAs8749MQzKCpYCCdzJ9Y
-         hPq/djostG8WGwBci7hhiU6uUuWN9P7UjsY+IRjmcFWc+6ljWPrEY8EERS4JAsEMQS+n
-         wYj93WktKrsmUVHddEHFHoktMIpB2Z+IshZWl1K2rUDJG/mvxrebw2e2iFDWPdN7TrFn
-         Qb2w==
-X-Gm-Message-State: AOAM530TuVjAbQqvR8zJI6Iz+fejnZc7QXqEDQJTiPssEHvTBrZY/D+w
-        xNKtCJZeFARl5Cd28XXg7hgIy2nawxTAAsOrr9u0beBRQGbFHvJ7
-X-Google-Smtp-Source: ABdhPJw9L4jaPxHZP4K8kMNUE01qQydu5uD2hO4uP6LuilAByXP0GeO/QqZRx0Vjpg4sRBkNv16ghzPTXhJK2IiebTo=
-X-Received: by 2002:a25:cf12:: with SMTP id f18mr11243168ybg.18.1611119058511;
- Tue, 19 Jan 2021 21:04:18 -0800 (PST)
-MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Wed, 20 Jan 2021 13:03:52 +0800
-Message-ID: <CAD-N9QVWNK=SPgT0mc81_UqbSV57aQ+x-s=iz9PnjQWNc5bG6A@mail.gmail.com>
-Subject: "WARNING: locking bug in finish_task_switch" and "WARNING: locking
- bug in finish_lock_switch" should share the same root cause
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>, marcel@holtmann.org,
-        netdev@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
+        Wed, 20 Jan 2021 00:06:12 -0500
+X-UUID: ae8c506c935b41ecb212d9fba57f7932-20210120
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=n24ZuMOFK1TgRFTdXpEtNt2gYwalLdEuHvd3JI+ijyY=;
+        b=XvsdIhJiHkLarAKnZ+UgvzQe65reRX2XqILhil0ElkOBByNiGgLr5q8lXf4CfSopfM+r5ef2Dv9TZ+OGhp+DqIiO8ciC8jAzt3houyTrHhasBphCCyQpoe/IVaJGjcqMWDzfCSRooR2q/owS8JPfZ/Ina8OPCzgq1pDwDArGuUU=;
+X-UUID: ae8c506c935b41ecb212d9fba57f7932-20210120
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1853810859; Wed, 20 Jan 2021 13:05:29 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 20 Jan 2021 13:05:15 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 20 Jan 2021 13:05:15 +0800
+Message-ID: <1611119115.1261.5.camel@mtkswgap22>
+Subject: Re: [PATCH v10 2/3] scsi: ufs: Refactor
+ ufshcd_init/exit_clk_scaling/gating()
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <ziqichen@codeaurora.org>,
+        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "Avri Altman" <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Satya Tangirala" <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 20 Jan 2021 13:05:15 +0800
+In-Reply-To: <1611057183-6925-3-git-send-email-cang@codeaurora.org>
+References: <1611057183-6925-1-git-send-email-cang@codeaurora.org>
+         <1611057183-6925-3-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear kernel developers,
+SGkgQ2FuLA0KDQpPbiBUdWUsIDIwMjEtMDEtMTkgYXQgMDM6NTMgLTA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IHVmc2hjZF9oYmFfZXhpdCgpIGlzIGFsd2F5cyBjYWxsZWQgYWZ0ZXIgdWZzaGNkX2V4
+aXRfY2xrX3NjYWxpbmcoKSBhbmQNCj4gdWZzaGNkX2V4aXRfY2xrX2dhdGluZygpLCBzbyBtb3Zl
+IHVmc2hjZF9leGl0X2Nsa19zY2FsaW5nL2dhdGluZygpIHRvDQo+IHVmc2hjZF9oYmFfZXhpdCgp
+LiBNZWFud2hpbGUsIGFkZCBkZWRpY2F0ZWQgZnVuY3MgdG8gaW5pdCBhbmQgcmVtb3ZlDQo+IHN5
+c2ZzIG5vZGVzIG9mIGNsb2NrIHNjYWxpbmcvZ2F0aW5nIHRvIG1ha2UgdGhlIGNvZGUgbW9yZSBy
+ZWFkYWJsZS4NCj4gT3ZlcmFsbCBmdW5jdGlvbmFsaXR5IHJlbWFpbnMgc2FtZS4NCj4gDQo+IFNp
+Z25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQoNCkxvb2tzIGdvb2Qg
+dG8gbWUuDQoNCkJUVywgRllJLiB0aGlzIHNlcmllcyBoYXMgY29uZmxpY3RzIGR1cmluZyB0aGUg
+bWVyZ2UgdG8gdGhlIGxhdGVzdA0KZm9yLW5leHQgYnJhbmNoIGluIE1hcnRpbidzIHRyZWUuDQoN
+ClJldmlld2VkLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQoN
+Cg0K
 
-I found that on the syzbot dashboard, =E2=80=9CWARNING: locking bug in
-finish_task_switch=E2=80=9D[1] and
-"WARNING: locking bug in finish_lock_switch"[2] should share the same
-root cause.
-
-The reasons for the above statement:
-1) the stack trace is the same, and this title difference is due to
-the inline property of "finish_lock_switch";
-2) their PoCs are the same as each other;
-
-If you can have any issues with this statement or our information is
-useful to you, please let us know. Thanks very much.
-
-[1] WARNING: locking bug in finish_task_switch -
-https://syzkaller.appspot.com/bug?id=3Dfff3de4144dc949f632cb91af9b12f9c2f30=
-9894
-[2] WARNING: locking bug in finish_lock_switch -
-https://syzkaller.appspot.com/bug?id=3Dc7f3ee17ec2ac6f27e0c72f2a90eabc3c4e1=
-d998
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
