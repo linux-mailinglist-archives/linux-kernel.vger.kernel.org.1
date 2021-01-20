@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191452FCB90
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA842FCB96
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbhATHex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:34:53 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:28937 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbhATHeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:34:50 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DLHMW4d1hz9ty4P;
-        Wed, 20 Jan 2021 08:33:59 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id UAJ6r1GAnIXX; Wed, 20 Jan 2021 08:33:59 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLHMW386rz9txxS;
-        Wed, 20 Jan 2021 08:33:59 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3C5BA8B7E1;
-        Wed, 20 Jan 2021 08:34:00 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id GQhUCla9uc3E; Wed, 20 Jan 2021 08:34:00 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F01198B7DF;
-        Wed, 20 Jan 2021 08:33:59 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id DCECB66A64; Wed, 20 Jan 2021 07:33:59 +0000 (UTC)
-Message-Id: <00e462bd8b271bed0fec62dc9b25ffd4e0ec19cf.1611128021.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 1/2] powerpc/32s: Add missing call to kuep_lock on syscall
- entry
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 20 Jan 2021 07:33:59 +0000 (UTC)
+        id S1728813AbhATHfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:35:15 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11131 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbhATHfF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:35:05 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6007dcfd0001>; Tue, 19 Jan 2021 23:34:21 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
+ 2021 07:34:20 +0000
+Received: from jckuo-lt.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 20 Jan 2021 07:34:17 +0000
+From:   JC Kuo <jckuo@nvidia.com>
+To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
+        <robh@kernel.org>, <jonathanh@nvidia.com>, <kishon@ti.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>
+CC:     <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nkristam@nvidia.com>, <linux-clk@vger.kernel.org>,
+        JC Kuo <jckuo@nvidia.com>
+Subject: [PATCH v7 00/14] Tegra XHCI controller ELPG support
+Date:   Wed, 20 Jan 2021 15:34:00 +0800
+Message-ID: <20210120073414.69208-1-jckuo@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611128061; bh=uOdbNQDHFphc5P3H7s1GI8rw4bk0BmhJ4MSxSm3v0Ak=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=aLYOMek18a7ucfsQGiFUUqGVgAgTr22y3t4wlyhKYWiWALM+5o107qtAfC0HwA8tQ
+         efjqgm5qxKfKu3mSLPt24gUZ/k+Fz3CmcRs2Y8vl/56MV4kJNrVP+P4PyztwX1rXPW
+         ecUN//Gg5xTVTavAHd1i4nhFwSx3JF/skgqVtZTNc5wdSBQoSQlim6Bq8FhqKnsmLY
+         uR+kvcKtBciZB0Q6rUrLZGizng3ZhR9XMURWNfjI/GKuEf7Xbdpkq+28RECdDGGpI4
+         zile11sDw6g0pdXTtcxggBD7OFOx008373k/zFM6fYsuTZe7N35ckTLWH3wdsRuKIB
+         70tpsKjG84GCg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userspace Execution protection and fast syscall entry were implemented
-independently from each other and were both merged in kernel 5.2,
-leading to syscall entry missing userspace execution protection.
+Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
+state for power saving when all of the connected USB devices are in
+suspended state. This patch series includes clk, phy and pmc changes
+that are required for properly place controller in ELPG and bring
+controller out of ELPG.
 
-On syscall entry, execution of user space memory must be
-locked in the same way as on exception entry.
+JC Kuo (14):
+  clk: tegra: Add PLLE HW power sequencer control
+  clk: tegra: Don't enable PLLE HW sequencer at init
+  phy: tegra: xusb: Move usb3 port init for Tegra210
+  phy: tegra: xusb: Rearrange UPHY init on Tegra210
+  phy: tegra: xusb: Add Tegra210 lane_iddq operation
+  phy: tegra: xusb: Add sleepwalk and suspend/resume
+  soc/tegra: pmc: Provide USB sleepwalk register map
+  arm64: tegra210: XUSB PADCTL add "nvidia,pmc" prop
+  dt-bindings: phy: tegra-xusb: Add nvidia,pmc prop
+  phy: tegra: xusb: Add wake/sleepwalk for Tegra210
+  phy: tegra: xusb: Tegra210 host mode VBUS control
+  phy: tegra: xusb: Add wake/sleepwalk for Tegra186
+  usb: host: xhci-tegra: Unlink power domain devices
+  xhci: tegra: Enable ELPG for runtime/system PM
 
-Fixes: b86fb88855ea ("powerpc/32: implement fast entry for syscalls on non BOOKE")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/entry_32.S | 3 +++
- 1 file changed, 3 insertions(+)
+ .../phy/nvidia,tegra124-xusb-padctl.txt       |    1 +
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi      |    1 +
+ drivers/clk/tegra/clk-pll.c                   |   12 -
+ drivers/clk/tegra/clk-tegra210.c              |   53 +-
+ drivers/phy/tegra/xusb-tegra186.c             |  558 ++++-
+ drivers/phy/tegra/xusb-tegra210.c             | 1889 +++++++++++++----
+ drivers/phy/tegra/xusb.c                      |   92 +-
+ drivers/phy/tegra/xusb.h                      |   22 +-
+ drivers/soc/tegra/pmc.c                       |   94 +
+ drivers/usb/host/xhci-tegra.c                 |  613 ++++--
+ include/linux/clk/tegra.h                     |    4 +-
+ include/linux/phy/tegra/xusb.h                |   10 +-
+ 12 files changed, 2784 insertions(+), 565 deletions(-)
 
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 1c9b0ccc2172..9bc4e7dd0bee 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -356,6 +356,9 @@ trace_syscall_entry_irq_off:
- 
- 	.globl	transfer_to_syscall
- transfer_to_syscall:
-+#ifdef CONFIG_PPC_BOOK3S_32
-+	kuep_lock r11, r12
-+#endif
- #ifdef CONFIG_TRACE_IRQFLAGS
- 	andi.	r12,r9,MSR_EE
- 	beq-	trace_syscall_entry_irq_off
--- 
-2.25.0
+v5 "phy: tegra: xusb: tegra210: Do not reset UPHY PLL" is moved
+into v6 "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
+--=20
+2.25.1
 
