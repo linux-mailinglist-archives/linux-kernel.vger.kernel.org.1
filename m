@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F192FD30E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCB92FD30B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390119AbhATOWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:22:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733139AbhATMyc (ORCPT
+        id S2389712AbhATOWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:22:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46783 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733032AbhATM57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:54:32 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177BDC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:53:24 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id w14so5401299pfi.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:53:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hB+1o0DrnShLgQiO0WE1Gdsq3IMq61KourkCYu6qcaY=;
-        b=Seq9VaSKx/HQCC1k4Uz7Pk3ROqFrZ6fucBgqAuYXmtaLwbmKESKzwhLRK8Oi2p+612
-         /34CKTXFTGzASV79GPoEG++AHzsWgeqWRZM5QBYCZgX3CgdgwPxRVrQxbexWbiPXKh2t
-         NXZcZQBN/E/EPD0V8qzxmeJgEnmaA5YelJIkV6wANe38GBkU6vrh+V1sxNXPwGZh4Taa
-         SPA8vttyYnWVeA1bDMnAE8TcJUUrT1C4rtP7HFeYUBBlKGcJ0STTqpOzeK9zFWJmAspR
-         mh7smVY2msulNe2rFtBv2b+GjyZUfsNzZ/FJVvah9Jhriz87GZ4i1+Ky495MU2NN4W/5
-         qFmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hB+1o0DrnShLgQiO0WE1Gdsq3IMq61KourkCYu6qcaY=;
-        b=UDt5Zv1bXIT2ey/qptKGyPYdRLiPJfI9XnFaiC3OOVgc2OMsY3HXwNrjOdVILueAOy
-         GmfwdJhIavFClVQmyn1YeDZXWnQy+IGSnZFHlk9e5LW7f3f6PDQZvZRxRnmix7llmXxf
-         Jy4Y0wurFnuhl4hqelXcRQPR7iIHuMW51X/GI0zP4/mX7NCrW0G2dUkH8vu6Br/9Uw/D
-         Gv9WduX25ExjgMh1eyIqzUbKjRZB5EB5LXnpNHMeMNCZvQrXFQfoEMohRKFSJyqeeKkT
-         fivnJclEcIiD4dGB2uGIvtkFoWYGHT6WSzKuKp78MB+7AILjXkUgdYmkSVVbnDdWajWD
-         Ty2g==
-X-Gm-Message-State: AOAM532rvbP2TyUM1reoOwcdOx50ehspkrxW9pmrSGl6WoS2ivNAMl6r
-        MMXn+yv42azfDtwQHnq82ioc7TNXV0fHiQ==
-X-Google-Smtp-Source: ABdhPJwa3aot/XiE+R+h1fEeREklj3vFnePmy4/tZlr4My0oqbnc+lzORozd6rTMDgtGrC545XsD8g==
-X-Received: by 2002:a63:4504:: with SMTP id s4mr9089641pga.284.1611147203498;
-        Wed, 20 Jan 2021 04:53:23 -0800 (PST)
-Received: from ?IPv6:2405:201:600d:a089:7054:d78f:3538:6af3? ([2405:201:600d:a089:7054:d78f:3538:6af3])
-        by smtp.gmail.com with ESMTPSA id j17sm2242003pfh.183.2021.01.20.04.53.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 04:53:22 -0800 (PST)
-Subject: Re: [PATCH] checkpatch: add warning for avoiding .L prefix symbols in
- assembly files
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
-        broonie@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        clang-built-linux@googlegroups.com
-References: <20210120072547.10221-1-yashsri421@gmail.com>
- <e5c5f8495fbdd063f4272f02a259bbf28b199bdd.camel@perches.com>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <14707ab9-1872-4f8c-3ed8-e77b663c3adb@gmail.com>
-Date:   Wed, 20 Jan 2021 18:23:16 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 20 Jan 2021 07:57:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611147393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A6+8Tuy0shZJE4X0cyaUDSZDq1oqmw9x/zn4yiM/SAc=;
+        b=fnH5kUzUgfVke5KL65qflmbF+vCB8d9YMvvSpA8lqzobCkJ18ARTix2ejfggNX7S9IBnHk
+        z4aHVxGnp9UAQWpQ2GV7DztfS3GpUIY9ZYtzceTc1BNEp1Di8YQ4nwWIAb1+fhv4eVxqox
+        Zvms7LCjvRHpq1xlwKNcKFTOUWU+klY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-vSNXAU4BOtWTd9Z0a0rfIg-1; Wed, 20 Jan 2021 07:56:29 -0500
+X-MC-Unique: vSNXAU4BOtWTd9Z0a0rfIg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C2BC192D785;
+        Wed, 20 Jan 2021 12:56:27 +0000 (UTC)
+Received: from krava (unknown [10.40.194.35])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3FA135D9C2;
+        Wed, 20 Jan 2021 12:56:23 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 13:56:22 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
+Message-ID: <20210120125622.GE1760208@krava>
+References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
+ <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <b25f0861-1cec-3ac8-a0ef-8e9e94c4e662@huawei.com>
+ <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <e5c5f8495fbdd063f4272f02a259bbf28b199bdd.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/1/21 2:51 pm, Joe Perches wrote:
-> On Wed, 2021-01-20 at 12:55 +0530, Aditya Srivastava wrote:
->> Local symbols prefixed with '.L' do not emit symbol table entries, as
->> they have special meaning for the assembler.
->>
->> '.L' prefixed symbols can be used within a code region, but should be
->> avoided for denoting a range of code via 'SYM_*_START/END' annotations.
->>
->> Add a new check to emit a warning on finding the usage of '.L' symbols
->> in '.S' files, if it lies within SYM_*_START/END annotation pair.
-> 
-> I believe this needs a test for $file as it won't work well on
-> patches as the SYM_*_START/END may not be in the patch context.
-> 
-Okay.
+On Tue, Jan 19, 2021 at 05:33:13PM +0000, John Garry wrote:
 
-> Also, is this supposed to work for local labels like '.L<foo>:'?
-> I don't think a warning should be generated for those.
+SNIP
+
+> Please try this:
 > 
-Yes, currently it will generate warning for all symbols which start
-with .L and have non- white character symbol following it, if it is
-lying within SYM_*_START/END annotation pair.
+> From 2380f1ef0250e6818b3dbc7bff4a868810875e2a Mon Sep 17 00:00:00 2001
+> From: John Garry <john.garry@huawei.com>
+> Date: Tue, 19 Jan 2021 17:29:54 +0000
+> Subject: [PATCH] perf metricgroup: Fix metric support for duration_time
+> 
+> For a metric using duration_time, the strcmp() check when finding identical
+> events in metric_events[] is broken, as it does not consider that the
+> event pmu_name is NULL - it would be for duration_time.
+> 
+> As such, add a NULL check here for event pmu_name.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index ee94d3e8dd65..277adff8017f 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -280,6 +280,8 @@ static struct evsel *find_evsel_group(struct evlist
+> *perf_evlist,
+>  			 */
+>  			if (!has_constraint &&
+>  			    ev->leader != metric_events[i]->leader &&
+> +			    ev->leader->pmu_name &&
+> +			    metric_events[i]->leader->pmu_name &&
+>  			    !strcmp(ev->leader->pmu_name,
+>  				    metric_events[i]->leader->pmu_name))
+>  				break;
+> -- 
+> 2.26.2
+> 
+> 
+> 
 
-Should I reduce the check to \.L_\S+ instead? (please note "_"
-following ".L")
-Pardon me, I'm not good with assembly :/
+that's fixing the issue for me, this was crashing:
+  # perf stat -a -I 1000 -M L1D_Cache_Fill_BW,L2_Cache_Fill_BW
 
-Thanks
-Aditya
+could you please send it formaly, so it can be merged?
+
+I can't reproduce the original patch issue and I need
+to check the code in more depth
+
+thanks,
+jirka
+
