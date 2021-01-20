@@ -2,91 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCD82FCB00
+	by mail.lfdr.de (Postfix) with ESMTP id AA2E62FCB01
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbhATGSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:18:20 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48613 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728411AbhATGPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:15:45 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLFcQ5Blnz9sVy;
-        Wed, 20 Jan 2021 17:15:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611123302;
-        bh=fZzZa6Ejo+/Pl7W1xYcUoSns0+O+AX52JKnE/iQuOpQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SPDmJs/bCMMzhPpZJFjK7dc9/jfniWDP7oGwil16z+Hz6S8HFVvKMCcgh+3riDP5t
-         vDFQ3RCdeoiTzfBxeUhyZ0s8mWQFyHpmt3FGzl+XkwRmFWZ3+P8yWAkiodQVYUHvkM
-         K5Mvq+lR2U6rJILWqpnBxbLTjM5VGwuuVp31HhZU8x88HqNW6hmWaYoMQS/AzdaezU
-         Ja3FH/Qzx3lJiMkaOlVokCxT+ZWTjdaKnkQZ0IyOG/BJBBQe3uzLYPvsjlm7dqDj2M
-         eoDNCMBGa7+U0vfls1ElMbXv0EOJQz2MD1AFi/mOr8rKYx2B7PndtHWls19ZuqhGfb
-         mgOser8PgFzLw==
-Date:   Wed, 20 Jan 2021 17:15:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210120171501.61aa0786@canb.auug.org.au>
-In-Reply-To: <20210115120014.4211dec6@canb.auug.org.au>
-References: <20210115120014.4211dec6@canb.auug.org.au>
+        id S1729128AbhATGSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728934AbhATGRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 01:17:00 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A677C061575;
+        Tue, 19 Jan 2021 22:16:20 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id e22so44738574iom.5;
+        Tue, 19 Jan 2021 22:16:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rMaHKvzt4gI4vZWbUD57VHvPjiMKfLAdC+SHpPHGSGc=;
+        b=VeOIAKyd91TBSjSAATeK2jHqNqvfdNibnrh8EpcGHmTP/Okp9ArD5NbGrB4xDUXukL
+         5qp8hpujrNPI2vRfyQYQfhBxulUQ81nxOFlIBN3NxvELJRl6cq+MLU2+UopYELxQGm6y
+         13aPp02TlhOxRBgjakhA7yOnu97tJFrqQqrZD8+drhie/kbSYERElnphl3/uHHe9ixYy
+         FzFAQQjo2t4NHvFyb/xqCHHAoLjEs6DVhkB3oBfg9rXUxA7xOwi2W89ego99nx01+M4E
+         cf8gHaOfW1yTJaIPKHiteGzxGFEIjffA8HWgI02zLpq4YoFVbMxLnSxb2nzne/MwtpnV
+         fUYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rMaHKvzt4gI4vZWbUD57VHvPjiMKfLAdC+SHpPHGSGc=;
+        b=sQMWA+9xIzIR4yNElFYJJKvqqjBoWW1MdQgkltI5rNPMpHjXMFUEbR0kEuElFVehg7
+         TwvgR6KcdGs0/IERzNwwQ3ntGaquI9H3b4ZJ4D/a9QsDUIYjd/XBliLElWujGGBylWAw
+         77VTTgdiY3PWBNQzqfa4bKlADStSH4SFtlnXDZ+kq0+w6UxESZb63sLPBjIHsEN2ykKJ
+         3fgKKl1eQ8UA1UEBmpR3yPXSSgJBhOzQzIJw0dJXQcxbvTc3+BpL3x0HLctuhtv1NXEX
+         WPaM/rIR/Z2r0fgOGtgNrNN/NBxvBdG1u37yN+OmNYWmnoa03jbXd4t7z83REfS+rbeq
+         Kwvw==
+X-Gm-Message-State: AOAM533LLrIURUCh7Kf8F6iZg6HO7sUTLGR45hUXrvtZXE47B+XyBfBo
+        /8oM3WPY9V7jANRqUEZv8as8LEkPWJ2jeVocBFwtIrZES1U=
+X-Google-Smtp-Source: ABdhPJweAGhyRwjSGO9zW9ha79X6kmVPg5wscpTHkCPaq/GvUbOPWCmTC6BNuCWC4AW8bnaHPQdQR9eO4ik1OyCueKg=
+X-Received: by 2002:a92:cda1:: with SMTP id g1mr6613008ild.267.1611123379666;
+ Tue, 19 Jan 2021 22:16:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t88OOVC7pcSBAvlrNtrM6bs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210117042428.1497-1-alistair@alistair23.me> <YAeSL1PSo0vn7E/5@google.com>
+In-Reply-To: <YAeSL1PSo0vn7E/5@google.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Tue, 19 Jan 2021 22:15:53 -0800
+Message-ID: <CAKmqyKPMXxLOGj4BH_fYx4hjZ+pHO3LNQVtN1buFrSAom38j1g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] devicetree/bindings: Initial commit of wacom,wacom-i2c
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        linux-input@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/t88OOVC7pcSBAvlrNtrM6bs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jan 19, 2021 at 6:15 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> Hi Alistair,
+>
+> On Sat, Jan 16, 2021 at 08:24:26PM -0800, Alistair Francis wrote:
+> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > ---
+> >  .../input/touchscreen/wacom,wacom-i2c.yaml    | 55 +++++++++++++++++++
+> >  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+> >  2 files changed, 57 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+> > new file mode 100644
+> > index 000000000000..6b0e0034f836
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+> > @@ -0,0 +1,55 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/input/touchscreen/wacom,wacom-i2c.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Wacom I2C Controller
+> > +
+> > +maintainers:
+> > +  - Alistair Francis <alistair@alistair23.me>
+> > +
+> > +allOf:
+> > +  - $ref: touchscreen.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: wacom,wacom-i2c
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  flip-tilt-x:
+> > +  flip-tilt-y:
+>
+> Does the device support tilt? The driver does not, at least at the
+> moment. Also, does it make sense to flip tilt but not position?
+>
+> > +  flip-pos-x:
+> > +  flip-pos-y:
+>
+> This needs to use standard touchscreen properties. See
+> Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+>
+> > +  flip-distance:
+>
+> I am having trouble understanding when this one would be useful.
 
-Hi all,
+Thanks for the review. These came from the original out of tree DT. I
+have removed them, I'm planning on using the standard touchscreen ones
+you pointed out if they are required.
 
-On Fri, 15 Jan 2021 12:00:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> After merging the amdgpu tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function =
-'dm_set_vblank':
-> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5380:33: warn=
-ing: unused variable 'dm' [-Wunused-variable]
->  5380 |  struct amdgpu_display_manager *dm =3D &adev->dm;
->       |                                 ^~
->=20
-> Caused by commit
->=20
->   98ab5f3513f9 ("drm/amd/display: Fix deadlock during gpu reset v3")
+Alistair
 
-I am still getting this warning.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/t88OOVC7pcSBAvlrNtrM6bs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAHymUACgkQAVBC80lX
-0GxkTwgApj7kDx9tIJuzN8TSNAryaVW466ScnO5gWAxb5GtNPtpFAx2OgdEdGKUG
-Oo9jS1titDFN6cevOW6laH9a1wsX2XupEIqPGC1BzLwAgtueFrX5h630VGjvKuFN
-5l25RvvrCzJmPLOGeirIehqLPgIR5Z0+88RfV9rFRI3wEUxNx5K3310B1M3T2tUe
-qsdIhDOxLDPwgAC3C5zcipwBXxmU8g6zDTYw07w+OKBX/ZRvxqm/Dghrg8tRX1Y0
-QMfo7LOrIzN8vhOYbYKBz7zYDAG90XNpbvYGf1FSLpkjHSZrrHhj2CEgQKz4vMCW
-yHfYDxpvt2/dcTnzeIo+cADVeg/qOw==
-=ynEO
------END PGP SIGNATURE-----
-
---Sig_/t88OOVC7pcSBAvlrNtrM6bs--
+>
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include "dt-bindings/interrupt-controller/irq.h"
+> > +    i2c {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +        digitiser@9 {
+> > +                compatible = "wacom,wacom-i2c";
+> > +                reg = <0x9>;
+> > +                interrupt-parent = <&gpio1>;
+> > +                interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
+> > +                flip-tilt-x;
+> > +                flip-tilt-y;
+> > +                flip-pos-x;
+> > +                flip-pos-y;
+> > +                flip-distance;
+> > +        };
+> > +    };
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index 041ae90b0d8f..5bca22f035a3 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -1202,6 +1202,8 @@ patternProperties:
+> >      description: Vision Optical Technology Co., Ltd.
+> >    "^vxt,.*":
+> >      description: VXT Ltd
+> > +  "^wacom,.*":
+> > +    description: Wacom Co., Ltd
+> >    "^wand,.*":
+> >      description: Wandbord (Technexion)
+> >    "^waveshare,.*":
+> > --
+> > 2.29.2
+> >
+>
+> Thanks.
+>
+> --
+> Dmitry
