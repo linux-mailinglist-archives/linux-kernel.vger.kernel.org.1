@@ -2,400 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8BA2FDCF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2476D2FDCF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390085AbhATVgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732997AbhATVKt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:10:49 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B329C061793
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:45 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id c22so16020221pgg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=70VHM4qOcLMs7abWCHQ8/cB/OWCqfqACUfmBJLnT76E=;
-        b=jI4fSVLQvKGQwgXsM931OypebHN0gXP+30HiABCi/YAmKN2A/X/jpIuDzgMishcIrg
-         TOLzFWyrZMSMXvtHBziBBL1b/Hqa6qfJU5so9K3j1L30wPOuXhn70FHpVhq5Wo0e76E0
-         LQDfErM3vHRVtQj0PVspAb0lrCDIYFU3kjSf0ZFTCGhOr7kTOFOsLbKFX4oJuRhIltFq
-         Eiz5VMO8TyyeoHgMrRhBGXqvnfmBnK7Fcnptm/S0oHRW4vSsOw/MTkzZ+G+XC2Lf4AzW
-         MBHKkRp/PiomeKihLmLr3apkv2m6VkzTokGRz3njt42Al+RUNRGQUpsPdL8JUXuH8dEp
-         DLVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=70VHM4qOcLMs7abWCHQ8/cB/OWCqfqACUfmBJLnT76E=;
-        b=SvHfJrJ5IEZXpWRdDaxi3vOV1pUuBcyGCVC+3QDZWV2drTQItrHtu3rwPZcpI7FPTG
-         dlV7TqAYafnaFJoTc2r5jBB3ngCJPSwH2e5upfa1AaRJpJrt32aZpE6F7bhtQCGyUlnH
-         ZArqZMRkKX1RV4iW/DxTzreyuT6h6uOkRu5weFMCHDYo2bzzEN0iO/7Ch+VZW4iCJ7Hw
-         Dk7VCNXrv6+EiRLPi3owmtvKltWRz7uyRgI+F2rLqaPslHGC8gNPTpl1y3AQz37ce59c
-         KZz6XBOI/kERkRDtl27n8K8XAbGbSL1/L727HDQcX8gLfZCRJ05OrtsPzEc24uGTK3E9
-         Xtwg==
-X-Gm-Message-State: AOAM532rMWG2kzm1XA5g3PTShRokXZqML0SBqaOXkg7YO60y8yaQtUBb
-        IFdiqyboqlr5+BgCwcpdny/iFBpAgZ5bGg==
-X-Google-Smtp-Source: ABdhPJwLg0H5Ihwkfb9pFIwPEFrOx7Mr1rq28WBlhMkbxwiGEReRjpIzEN/k9w5o8dBXSgJHlSpcRA==
-X-Received: by 2002:a63:4746:: with SMTP id w6mr10957460pgk.377.1611176984206;
-        Wed, 20 Jan 2021 13:09:44 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id f15sm3265629pja.24.2021.01.20.13.09.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:09:43 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        Bing Song <bing.song@nxp.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 2/3] dma-buf: system_heap: Add a system-uncached heap re-using the system heap
-Date:   Wed, 20 Jan 2021 21:09:36 +0000
-Message-Id: <20210120210937.15069-3-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210120210937.15069-1-john.stultz@linaro.org>
-References: <20210120210937.15069-1-john.stultz@linaro.org>
+        id S1728975AbhATViH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:38:07 -0500
+Received: from mga11.intel.com ([192.55.52.93]:41619 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387754AbhATVNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 16:13:13 -0500
+IronPort-SDR: 71c/rb501LxtwXa6axP30g/LR6Sf1/HAqqrHWkpqYptGVlS/eWWSdERdj8O2ybIuH7psw+IILM
+ WMDCFweTdvhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="175671820"
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="175671820"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 13:12:23 -0800
+IronPort-SDR: bYw+U+z9wqT8EDOV5HAtttz64i0vtzOSfrj0eQDzTTpikP4tbGMTkacn36v7WLNcDYzaVkbfkC
+ JF9X/GBCfcFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="407021913"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by FMSMGA003.fm.intel.com with ESMTP; 20 Jan 2021 13:12:23 -0800
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 20 Jan 2021 13:12:23 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 20 Jan 2021 13:12:23 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 20 Jan 2021 13:12:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mQg7vu34eiK3VGaNNxaPz2ilwghTo7A4Rupi2i4pZm9lI5NrakoxMakkd+rp0b/xzPYeCekgGaiPOrNpiVJliSWVhkGuhQJG53SNKL0YGvMaN7Z8svaBUyK0EetRoOyMQbw9jVXgozRw8BdoBJrCevdhjfDtCEGcwm6UEw8I26rpQAQurdT77CWa/ZCmkCERIiQXTHpa1l19JSm3CJr2DyevYfB3bpAetpzIGR7ehfgrDSGYxjbEKSnq2/5rZjy8Dq8m4CFJVih2/TIv/B9UgsdFSh0006h4oyjq1/2oShLrJmDxDhB2LxeX5pDLkFtS8fEh8zQjvvUSD+p4czti/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BFPuXjzCOojBiGc5SdlsPVj1lPD1oMOQAdX+SSf4ECM=;
+ b=jVULoDHP+vTF/vePHZ24TylNQcNCY+vMr4LXKEC2RlO/xasplaPUXRRrHZeSwO3RAgRiHXf34t2V5Etx1DYzTJtEY4lVGm6PCqjHDGCSrMjLdV2l3Dk6ehs7kNe97JNo8L26iTMOSwu3IX9B897kgrnTu5UKbCMIue6JUQihmuU1fp5P/Y8sOmwg7Dt+E099mmTYzibDGhJav+iCJ2rR9lfkFnVVHduHeZQG9w7R9fghGJmvHf8FKo6hHXdik1SoTcscCiogHVk5Xkk4F6GoLEk8gOV2wkbsQfGrY5HloCsXVYwaxha7mCjKXYqU/EFBsZ6HufGxQogDataw8RflVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BFPuXjzCOojBiGc5SdlsPVj1lPD1oMOQAdX+SSf4ECM=;
+ b=FZQxoTsV24cNPcuLu4e4Ba1nk40xV5ijiyuHvQvDNHyQI5u0CJTG6UWeJEtWWYJh0bBsk97VzvuAbl/YS0c0F7RabhsYKJbj0cRCBqHyDxQJzWRBO27bHi1kCHx033UM7Oqn1Ulxy2YdstdMPNIKNyzauUj6MmhTaYhXDh5h9LQ=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB5158.namprd11.prod.outlook.com (2603:10b6:510:3b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 20 Jan
+ 2021 21:12:20 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0%6]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
+ 21:12:20 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     Borislav Petkov <bp@suse.de>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 02/21] x86/fpu/xstate: Modify state copy helpers to
+ handle both static and dynamic buffers
+Thread-Topic: [PATCH v3 02/21] x86/fpu/xstate: Modify state copy helpers to
+ handle both static and dynamic buffers
+Thread-Index: AQHW2UTpqPiXR+Ajm0+sop34hrXbfaoox44AgAat7ICAAbS2AIAABSWA
+Date:   Wed, 20 Jan 2021 21:12:20 +0000
+Message-ID: <4CE7A300-8DD6-4037-AECE-AB94F75A7D59@intel.com>
+References: <20201223155717.19556-1-chang.seok.bae@intel.com>
+ <20201223155717.19556-3-chang.seok.bae@intel.com>
+ <20210115125048.GB11337@zn.tnic>
+ <F06B741E-25C8-4777-9576-3684FF649F1E@intel.com>
+ <20210120205354.GE3467@zn.tnic>
+In-Reply-To: <20210120205354.GE3467@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.189.248.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b300726a-49be-4c0f-8639-08d8bd88132f
+x-ms-traffictypediagnostic: PH0PR11MB5158:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB51580D12AF45A5ED0470C191D8A29@PH0PR11MB5158.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W+KhoJ4ExLx/KcX5HdpxbYGsz8CBIbDbgbzuUuBqZ+vcaQEqqLESDKs21hyWpbXSOkr8HcDiDLPUCt5qSJiWjm0RHxqN/JNs0oZHsCVQm+VmyFpBDYcx0lwwCrOVcZjzhNHwdPCtBqq2I0ukC1+4EaF3CekCve6K/gzqRMj45FamNlxfg5maPfyhlIgdc4YyvAOqSyhac0Q57x/AtWL4h4Skq9k17bXabEQY5uol/IcgsUt7+U1z0nrzPEpbxCt/Bvb6QGHH7KxW/W0EIMofO5NbChuLbohBWhzpr2Ezm39nnhNXiDmvoxjo8QroAyKAyA2Se5BvEEKvKcVnQHkGDA94R+rcmF8Pq0Vb7KKLOGiJOtCYj/i/fdpU4pLlWMbCMYtecDj3B0TL3E3lNGxNbkZAVCnC+EwqtOWFwQ5HlVRzI8VkmKD2l1MTyavuqwGo
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(366004)(8676002)(6486002)(54906003)(6506007)(8936002)(4326008)(76116006)(66476007)(86362001)(66946007)(71200400001)(478600001)(2906002)(33656002)(66556008)(64756008)(66446008)(6916009)(316002)(6512007)(36756003)(26005)(53546011)(186003)(4744005)(5660300002)(2616005)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?c0JNRzNoalRmOU40R3VNVk9jdTlTZncxL0g3SnZWU0l5aGtvTFBpSWpqU28w?=
+ =?utf-8?B?UTh6Umx5QUNvN3h1QUREQU1YZFJ5ZS9mV0F4bVFoYlJsTWFiMFZhdUo3VlRa?=
+ =?utf-8?B?VjJyWXFYMzdMM00xTHZSMGR5OVBnekwrbWswS09MTGpoaGUxblRjZHRHRVRt?=
+ =?utf-8?B?WHFpSkl4UzkyU1NweVY3ekdyN3ZSMkVBRXZwcjBuRVM2M3VFd2hRZkx1ZUJW?=
+ =?utf-8?B?elN0TUUzaDdTQnRmQnBPYzd0TWdYK3ZFUitNOGlndEEzbDVwQTlMdTh4d2E5?=
+ =?utf-8?B?T1dIMWVWd2lkWTlLSmR3UjZSRFhqM09iUC9jQTd3bFYvUzhXRXhPSnJqdnVj?=
+ =?utf-8?B?UzhpYjVaY1d1WW10ZmtMOU1qTEowdldVMVFYQUdZMk5xemNPRjZBSWsvZ3h3?=
+ =?utf-8?B?a1hqS3QxSUc0UnZHbXM5QTU4UytnYU56QTY5Q3dFVkZWQnBYb3UxQTliWnFX?=
+ =?utf-8?B?Mm5XRVEvbWMxMjdYR21sSzNSWkoxelVZT3dFV09uclVDcWhFQnl6WS9pdnEr?=
+ =?utf-8?B?ckd1c2N3bnd6U3dBb3c5MHgwQkRPUTQvUnBMUnZzRGJKTTEzYzhJRXdZeC9o?=
+ =?utf-8?B?WkFVYXNmMldjYmNsWjgrVFNDd3Q5elpwS1JtR2ZFclVTdnlZLzE5blBvVVBC?=
+ =?utf-8?B?RVN5WTAxdnhZTXF6RUxmRFJ6S1hxaTlWNlV3VU5MNExZSHh5RXRnek5PcnNW?=
+ =?utf-8?B?WWFZMU1ZbUpSWDg5N01ORmFZUDNPdlBkS1dxdUcvNzRoV1lQSFBTRnZLd2Rn?=
+ =?utf-8?B?UVlyekEzZmxrS29BaFZSZGtUYU9TN0pxWHpTNUJGYS9XWFpQSTZkMWhmNnZC?=
+ =?utf-8?B?YktQMkt5cEw1VlNUOG5TZ2JDazNadlhQaEJKOGtPcURwUXZtM1A1T3pGY21V?=
+ =?utf-8?B?TGF6Wm9hTDFocGV3ZHpZNTlPaldXUnl4TWhaN1RYV2lOQ1hJbit6Szhpem01?=
+ =?utf-8?B?YW5VVzZ6elhiL2ozUFNGeFJJb1BseWh0bkFxQlViRW9CQ2htb2JPUXRacEVt?=
+ =?utf-8?B?eE9HOC9VeVhQRVR4OUhrUCtZTTdHbXNJY3Y4bThkNnp6SUg2MkkzQkdoK2Q4?=
+ =?utf-8?B?YURHQ0ViczYwWVlDaVd3R1I3d1krWDBsWUF3U0NoSEpUNGJRQ1VHTFI3bjdH?=
+ =?utf-8?B?NThrRmJGVERmVTg3Q3U0OWhzdnR2VWN0a0I3UkRWV2FPSXhibDlMVjQ1UitK?=
+ =?utf-8?B?NHR0alNMWmJVaFFFWXZzT2hFNW5qZm9RaW96UVJodUpWWWNFRnRXUU1LRUFs?=
+ =?utf-8?B?TnVEajFQbTdEMEhpZUpHdnpQMmhuR3poelpIMFc5VjBaTjlHNmVzWEZXeWRX?=
+ =?utf-8?Q?Z8HJYmqH6pbUb9tptOm1tJnC6lbzYtwKhR?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8C3EDC983B5C6E4287476757D4141716@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b300726a-49be-4c0f-8639-08d8bd88132f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2021 21:12:20.6296
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6deCwmeiHUV8tucQRYB+ez6+FDVUtdFA1ehAVLsu83qG1NAXPOS9oTkOZ7OfgSirVuD2f9SDztk4i+oisF9+AOOG0irPWgrWEuiEI1bslJA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5158
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a heap that allocates non-contiguous buffers that are
-marked as writecombined, so they are not cached by the CPU.
-
-This is useful, as most graphics buffers are usually not touched
-by the CPU or only written into once by the CPU. So when mapping
-the buffer over and over between devices, we can skip the CPU
-syncing, which saves a lot of cache management overhead, greatly
-improving performance.
-
-For folk using ION, there was a ION_FLAG_CACHED flag, which
-signaled if the returned buffer should be CPU cacheable or not.
-With DMA-BUF heaps, we do not yet have such a flag, and by default
-the current heaps (system and cma) produce CPU cachable buffers.
-So for folks transitioning from ION to DMA-BUF Heaps, this fills
-in some of that missing functionality.
-
-There has been a suggestion to make this functionality a flag
-(DMAHEAP_FLAG_UNCACHED?) on the system heap, similar to how
-ION used the ION_FLAG_CACHED. But I want to make sure an
-_UNCACHED flag would truely be a generic attribute across all
-heaps. So far that has been unclear, so having it as a separate
-heap seemes better for now. (But I'm open to discussion on this
-point!)
-
-This is a rework of earlier efforts to add a uncached system heap,
-done utilizing the exisitng system heap, adding just a bit of
-logic to handle the uncached case.
-
-Feedback would be very welcome!
-
-Many thanks to Liam Mark for his help to get this working.
-
-Pending opensource users of this code include:
-* AOSP HiKey960 gralloc:
-  - https://android-review.googlesource.com/c/device/linaro/hikey/+/1399519
-  - Visibly improves performance over the system heap
-* AOSP Codec2:
-  - https://android-review.googlesource.com/c/platform/frameworks/av/+/1543685
-
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: Bing Song <bing.song@nxp.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v4:
-* Make sys_uncached_heap static, as
-    Reported-by: kernel test robot <lkp@intel.com>
-* Fix wrong return value, caught by smatch
-    Reported-by: kernel test robot <lkp@intel.com>
-    Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-* Ensure we call flush/invalidate_kernel_vmap_range() in the
-  uncached cases to try to address feedback about VIVT caches
-  from Christoph
-* Reorder a few lines as suggested by BrianS
-* Avoid holding the initial mapping for the lifetime of the buffer
-  as suggested by BrianS
-* Fix a unlikely race between allocate and updating the dma_mask
-  that BrianS noticed.
----
- drivers/dma-buf/heaps/system_heap.c | 111 ++++++++++++++++++++++++----
- 1 file changed, 95 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 17e0e9a68baf..3548b20cb98c 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -22,6 +22,7 @@
- #include <linux/vmalloc.h>
- 
- static struct dma_heap *sys_heap;
-+static struct dma_heap *sys_uncached_heap;
- 
- struct system_heap_buffer {
- 	struct dma_heap *heap;
-@@ -31,6 +32,8 @@ struct system_heap_buffer {
- 	struct sg_table sg_table;
- 	int vmap_cnt;
- 	void *vaddr;
-+
-+	bool uncached;
- };
- 
- struct dma_heap_attachment {
-@@ -38,6 +41,8 @@ struct dma_heap_attachment {
- 	struct sg_table *table;
- 	struct list_head list;
- 	bool mapped;
-+
-+	bool uncached;
- };
- 
- #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-@@ -100,7 +105,7 @@ static int system_heap_attach(struct dma_buf *dmabuf,
- 	a->dev = attachment->dev;
- 	INIT_LIST_HEAD(&a->list);
- 	a->mapped = false;
--
-+	a->uncached = buffer->uncached;
- 	attachment->priv = a;
- 
- 	mutex_lock(&buffer->lock);
-@@ -130,9 +135,13 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
- {
- 	struct dma_heap_attachment *a = attachment->priv;
- 	struct sg_table *table = a->table;
-+	int attr = 0;
- 	int ret;
- 
--	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-+	if (a->uncached)
-+		attr = DMA_ATTR_SKIP_CPU_SYNC;
-+
-+	ret = dma_map_sgtable(attachment->dev, table, direction, attr);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-@@ -145,9 +154,12 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				      enum dma_data_direction direction)
- {
- 	struct dma_heap_attachment *a = attachment->priv;
-+	int attr = 0;
- 
-+	if (a->uncached)
-+		attr = DMA_ATTR_SKIP_CPU_SYNC;
- 	a->mapped = false;
--	dma_unmap_sgtable(attachment->dev, table, direction, 0);
-+	dma_unmap_sgtable(attachment->dev, table, direction, attr);
- }
- 
- static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
-@@ -161,10 +173,12 @@ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
- 	if (buffer->vmap_cnt)
- 		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
- 
--	list_for_each_entry(a, &buffer->attachments, list) {
--		if (!a->mapped)
--			continue;
--		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
-+	if (!buffer->uncached) {
-+		list_for_each_entry(a, &buffer->attachments, list) {
-+			if (!a->mapped)
-+				continue;
-+			dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
-+		}
- 	}
- 	mutex_unlock(&buffer->lock);
- 
-@@ -182,10 +196,12 @@ static int system_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
- 	if (buffer->vmap_cnt)
- 		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
- 
--	list_for_each_entry(a, &buffer->attachments, list) {
--		if (!a->mapped)
--			continue;
--		dma_sync_sgtable_for_device(a->dev, a->table, direction);
-+	if (!buffer->uncached) {
-+		list_for_each_entry(a, &buffer->attachments, list) {
-+			if (!a->mapped)
-+				continue;
-+			dma_sync_sgtable_for_device(a->dev, a->table, direction);
-+		}
- 	}
- 	mutex_unlock(&buffer->lock);
- 
-@@ -200,6 +216,9 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
- 	struct sg_page_iter piter;
- 	int ret;
- 
-+	if (buffer->uncached)
-+		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-+
- 	for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
- 		struct page *page = sg_page_iter_page(&piter);
- 
-@@ -221,17 +240,21 @@ static void *system_heap_do_vmap(struct system_heap_buffer *buffer)
- 	struct page **pages = vmalloc(sizeof(struct page *) * npages);
- 	struct page **tmp = pages;
- 	struct sg_page_iter piter;
-+	pgprot_t pgprot = PAGE_KERNEL;
- 	void *vaddr;
- 
- 	if (!pages)
- 		return ERR_PTR(-ENOMEM);
- 
-+	if (buffer->uncached)
-+		pgprot = pgprot_writecombine(PAGE_KERNEL);
-+
- 	for_each_sgtable_page(table, &piter, 0) {
- 		WARN_ON(tmp - pages >= npages);
- 		*tmp++ = sg_page_iter_page(&piter);
- 	}
- 
--	vaddr = vmap(pages, npages, VM_MAP, PAGE_KERNEL);
-+	vaddr = vmap(pages, npages, VM_MAP, pgprot);
- 	vfree(pages);
- 
- 	if (!vaddr)
-@@ -331,10 +354,11 @@ static struct page *alloc_largest_available(unsigned long size,
- 	return NULL;
- }
- 
--static int system_heap_allocate(struct dma_heap *heap,
--				unsigned long len,
--				unsigned long fd_flags,
--				unsigned long heap_flags)
-+static int system_heap_do_allocate(struct dma_heap *heap,
-+				   unsigned long len,
-+				   unsigned long fd_flags,
-+				   unsigned long heap_flags,
-+				   bool uncached)
- {
- 	struct system_heap_buffer *buffer;
- 	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-@@ -355,6 +379,7 @@ static int system_heap_allocate(struct dma_heap *heap,
- 	mutex_init(&buffer->lock);
- 	buffer->heap = heap;
- 	buffer->len = len;
-+	buffer->uncached = uncached;
- 
- 	INIT_LIST_HEAD(&pages);
- 	i = 0;
-@@ -404,6 +429,18 @@ static int system_heap_allocate(struct dma_heap *heap,
- 		/* just return, as put will call release and that will free */
- 		return ret;
- 	}
-+
-+	/*
-+	 * For uncached buffers, we need to initially flush cpu cache, since
-+	 * the __GFP_ZERO on the allocation means the zeroing was done by the
-+	 * cpu and thus it is likely cached. Map (and implicitly flush) and
-+	 * unmap it now so we don't get corruption later on.
-+	 */
-+	if (buffer->uncached) {
-+		dma_map_sgtable(dma_heap_get_dev(heap), table, DMA_BIDIRECTIONAL, 0);
-+		dma_unmap_sgtable(dma_heap_get_dev(heap), table, DMA_BIDIRECTIONAL, 0);
-+	}
-+
- 	return ret;
- 
- free_pages:
-@@ -421,10 +458,40 @@ static int system_heap_allocate(struct dma_heap *heap,
- 	return ret;
- }
- 
-+static int system_heap_allocate(struct dma_heap *heap,
-+				unsigned long len,
-+				unsigned long fd_flags,
-+				unsigned long heap_flags)
-+{
-+	return system_heap_do_allocate(heap, len, fd_flags, heap_flags, false);
-+}
-+
- static const struct dma_heap_ops system_heap_ops = {
- 	.allocate = system_heap_allocate,
- };
- 
-+static int system_uncached_heap_allocate(struct dma_heap *heap,
-+					 unsigned long len,
-+					 unsigned long fd_flags,
-+					 unsigned long heap_flags)
-+{
-+	return system_heap_do_allocate(heap, len, fd_flags, heap_flags, true);
-+}
-+
-+/* Dummy function to be used until we can call coerce_mask_and_coherent */
-+static int system_uncached_heap_not_initialized(struct dma_heap *heap,
-+						unsigned long len,
-+						unsigned long fd_flags,
-+						unsigned long heap_flags)
-+{
-+	return -EBUSY;
-+}
-+
-+static struct dma_heap_ops system_uncached_heap_ops = {
-+	/* After system_heap_create is complete, we will swap this */
-+	.allocate = system_uncached_heap_not_initialized,
-+};
-+
- static int system_heap_create(void)
- {
- 	struct dma_heap_export_info exp_info;
-@@ -437,6 +504,18 @@ static int system_heap_create(void)
- 	if (IS_ERR(sys_heap))
- 		return PTR_ERR(sys_heap);
- 
-+	exp_info.name = "system-uncached";
-+	exp_info.ops = &system_uncached_heap_ops;
-+	exp_info.priv = NULL;
-+
-+	sys_uncached_heap = dma_heap_add(&exp_info);
-+	if (IS_ERR(sys_uncached_heap))
-+		return PTR_ERR(sys_uncached_heap);
-+
-+	dma_coerce_mask_and_coherent(dma_heap_get_dev(sys_uncached_heap), DMA_BIT_MASK(64));
-+	mb(); /* make sure we only set allocate after dma_mask is set */
-+	system_uncached_heap_ops.allocate = system_uncached_heap_allocate;
-+
- 	return 0;
- }
- module_init(system_heap_create);
--- 
-2.17.1
-
+T24gSmFuIDIwLCAyMDIxLCBhdCAxMjo1MywgQm9yaXNsYXYgUGV0a292IDxicEBzdXNlLmRlPiB3
+cm90ZToNCj4gT24gVHVlLCBKYW4gMTksIDIwMjEgYXQgMDY6NTA6NTJQTSArMDAwMCwgQmFlLCBD
+aGFuZyBTZW9rIHdyb3RlOg0KPj4gSSB3aWxsIGFkZCBhIHNlbnRlbmNlIGxpa2UgdGhpcyBpZiBs
+b29rcyBmaW5lOg0KPj4gDQo+PiAiVGhlIGNvcHkgZnVuY3Rpb25zIHVzZWQgdG8gaGF2ZSDigJh4
+c3RhdGUnIGluIHRoZSBuYW1lIGFzIHRoZXkgdG9vayBhIHN0cnVjdA0KPj4geHJlZ3Nfc3RhdGUg
+KiBwb2ludGVyLiINCj4gDQo+IFdoYXQgZm9yPw0KPiANCj4gSSB3YXMganVzdCBwb2ludGluZyBv
+dXQgd2hhdCB0aGUgbmFtaW5nIGxvZ2ljIHdhcyBhbmQgdGhhdCB5b3UncmUNCj4gY2hhbmdpbmcg
+dGhhdOKApg0KDQpPaCwgSSB0aG91Z2h0IHlvdSBtZWFudCBpbiB0aGVyZS4gT2theSwgSSB3aWxs
+IG5vdCBhZGQgaXQuIA0KDQpUaGFuayB5b3UgZm9yIGNsYXJpZnlpbmcgdGhpcy4NCkNoYW5nDQoN
+Cg==
