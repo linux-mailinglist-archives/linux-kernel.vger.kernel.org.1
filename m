@@ -2,91 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC332FD1D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D84A2FD1DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389975AbhATNbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:31:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731723AbhATNXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:23:06 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FD9C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:22:25 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id 22so25234028qkf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:22:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TxOJ2i1obQZTYWUjOO4AH/QKsmg0DUJ9EGaechEIo20=;
-        b=IvzX1RMAtfsiwGFzzn5FfORQgcXPhllACg7D+ANj7TlWPd5qMsoyPmKGn1XhVA8NwM
-         tafb4+W9ckHIwIC2JBfwYCAPgXVbUIzt+6pL2UDYN50uqUst7fkRN9pWNY9xSsstQzUA
-         bb1vo+9Prb3OaiUP7mgZO7sGWE3g0yX548ApY/8loBpncFwLJA4OaUHs+Xei5i/ul45A
-         Poyg8uDGFCtY7vtgdHVF74Rvl9Rq59pDg4A1B9F/2weKRBdIUNb8ORuYNQnaTBdjr5Y+
-         abTearQ0KBLILW07vILaeT4ncQ5ARwtQ3rEQoueKnAru9qTf91hl1CGFQlLXQ2yJXPYo
-         ZxbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TxOJ2i1obQZTYWUjOO4AH/QKsmg0DUJ9EGaechEIo20=;
-        b=udU9nnzhUoR2Lz0Cmy4SnZJvpUigFMp/iYNb+qKKYBnP7fLDU8qor5Z042ld0qdU42
-         iRFR3z2wvL0u7BqczM6PcgcJraoa8RJNNLoxU79/ioj7kfF4UeW+B24ysg0K7iwGRn9N
-         2Dd5gN47vygov5XFZdD/E8HqQ6evixnMKcYMdAdPySAldPOV8nCK/oEt1gVptHUa4EHc
-         jsFOh7gQejhfGMpo3ZsLu/cddIou24ZQODm8uBtZammbF4ljUDdcg3fiQmwE6m8wSuNU
-         XNmZWhVZ1d8Sebdn/wQHey9ypyXuhV6+CFhMwWcRtmegRxZSlFICgGIQBBz93lnxFCEw
-         Jv2Q==
-X-Gm-Message-State: AOAM530JiumUL6vI7ak3MWQHNQpGOjL6d7maoHGmRQ+bqwX0+sMUk2/4
-        XASfXKjy2Cy6xQ1lHJjth0I6IQ==
-X-Google-Smtp-Source: ABdhPJxVh5jUl4y5I89LvXDP0n+KjibmY3MDSvd+QOMJtVbYZtAlkbEyk4UcJVKl2qWGnRtxmq5muA==
-X-Received: by 2002:a05:620a:125c:: with SMTP id a28mr9451371qkl.112.1611148945095;
-        Wed, 20 Jan 2021 05:22:25 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id r190sm1313094qka.54.2021.01.20.05.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 05:22:24 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l2DRH-004Tyo-Ee; Wed, 20 Jan 2021 09:22:23 -0400
-Date:   Wed, 20 Jan 2021 09:22:23 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
-        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
-        jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-        ira.weiny@intel.com, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 10/14] memory-hotplug.rst: add a note about
- ZONE_MOVABLE and page pinning
-Message-ID: <20210120132223.GH4605@ziepe.ca>
-References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
- <20210120014333.222547-11-pasha.tatashin@soleen.com>
+        id S2390013AbhATNbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:31:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46780 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732446AbhATN3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:29:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611149174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s9jYYrCp5NMm5yGKLL/4edua8SOODyzTExPxz/HtQyc=;
+        b=QP2FULy55KmWDvGgt8sDw3JmOCnmwJCNdxTNb0HWDP2CjacJAG5sYeekXCk431qTn7p5La
+        u5rucDxKNrWxZCEiqwoSPgIxgmPSuRXK88eWJsLPnFTRrDIJNSclJoMVCIGWrrhCI7aYCM
+        JOMHwOWEzMOcwotUjCxvX1I+oWAhvVQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A65D4AE65;
+        Wed, 20 Jan 2021 13:26:14 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     bpetkov@suse.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v4 05/15] x86/xen: drop USERGS_SYSRET64 paravirt call
+Date:   Wed, 20 Jan 2021 14:26:03 +0100
+Message-Id: <20210120132613.31487-6-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210120132613.31487-1-jgross@suse.com>
+References: <20210120132613.31487-1-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120014333.222547-11-pasha.tatashin@soleen.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 08:43:29PM -0500, Pavel Tatashin wrote:
-> +.. note::
-> +   Techniques that rely on long-term pinnings of memory (especially, RDMA and
-> +   vfio) are fundamentally problematic with ZONE_MOVABLE and, therefore, memory
-> +   hot remove. Pinned pages cannot reside on ZONE_MOVABLE, to guarantee that
-> +   memory can still get hot removed - be aware that pinning can fail even if
-> +   there is plenty of free memory in ZONE_MOVABLE. In addition, using
-> +   ZONE_MOVABLE might make page pinning more expensive, because pages have to be
-> +   migrated off that zone first.
+USERGS_SYSRET64 is used to return from a syscall via sysret, but
+a Xen PV guest will nevertheless use the iret hypercall, as there
+is no sysret PV hypercall defined.
 
-Just to point out, if anyone is using RDMA/etc with hotplug memory,
-this series is likekly going to be a major regression for those users.
+So instead of testing all the prerequisites for doing a sysret and
+then mangling the stack for Xen PV again for doing an iret just use
+the iret exit from the beginning.
 
-Jason
+This can easily be done via an ALTERNATIVE like it is done for the
+sysenter compat case already.
+
+It should be noted that this drops the optimization in Xen for not
+restoring a few registers when returning to user mode, but it seems
+as if the saved instructions in the kernel more than compensate for
+this drop (a kernel build in a Xen PV guest was slightly faster with
+this patch applied).
+
+While at it remove the stale sysret32 remnants.
+
+Signed-off-by: Juergen Gross <jgross@suse.com>
+---
+V3:
+- simplify ALTERNATIVE (Boris Petkov)
+---
+ arch/x86/entry/entry_64.S             | 16 +++++++---------
+ arch/x86/include/asm/irqflags.h       |  6 ------
+ arch/x86/include/asm/paravirt.h       |  5 -----
+ arch/x86/include/asm/paravirt_types.h |  8 --------
+ arch/x86/kernel/asm-offsets_64.c      |  2 --
+ arch/x86/kernel/paravirt.c            |  5 +----
+ arch/x86/kernel/paravirt_patch.c      |  4 ----
+ arch/x86/xen/enlighten_pv.c           |  1 -
+ arch/x86/xen/xen-asm.S                | 20 --------------------
+ arch/x86/xen/xen-ops.h                |  2 --
+ 10 files changed, 8 insertions(+), 61 deletions(-)
+
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index a876204a73e0..ce0464d630a2 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -46,14 +46,6 @@
+ .code64
+ .section .entry.text, "ax"
+ 
+-#ifdef CONFIG_PARAVIRT_XXL
+-SYM_CODE_START(native_usergs_sysret64)
+-	UNWIND_HINT_EMPTY
+-	swapgs
+-	sysretq
+-SYM_CODE_END(native_usergs_sysret64)
+-#endif /* CONFIG_PARAVIRT_XXL */
+-
+ /*
+  * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
+  *
+@@ -123,7 +115,12 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
+ 	 * Try to use SYSRET instead of IRET if we're returning to
+ 	 * a completely clean 64-bit userspace context.  If we're not,
+ 	 * go to the slow exit path.
++	 * In the Xen PV case we must use iret anyway.
+ 	 */
++
++	ALTERNATIVE "", "jmp	swapgs_restore_regs_and_return_to_usermode", \
++		X86_FEATURE_XENPV
++
+ 	movq	RCX(%rsp), %rcx
+ 	movq	RIP(%rsp), %r11
+ 
+@@ -215,7 +212,8 @@ syscall_return_via_sysret:
+ 
+ 	popq	%rdi
+ 	popq	%rsp
+-	USERGS_SYSRET64
++	swapgs
++	sysretq
+ SYM_CODE_END(entry_SYSCALL_64)
+ 
+ /*
+diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
+index 8c86edefa115..e585a4705b8d 100644
+--- a/arch/x86/include/asm/irqflags.h
++++ b/arch/x86/include/asm/irqflags.h
+@@ -132,12 +132,6 @@ static __always_inline unsigned long arch_local_irq_save(void)
+ #endif
+ 
+ #define INTERRUPT_RETURN	jmp native_iret
+-#define USERGS_SYSRET64				\
+-	swapgs;					\
+-	sysretq;
+-#define USERGS_SYSRET32				\
+-	swapgs;					\
+-	sysretl
+ 
+ #else
+ #define INTERRUPT_RETURN		iret
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index f2ebe109a37e..dd43b1100a87 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -776,11 +776,6 @@ extern void default_banner(void);
+ 
+ #ifdef CONFIG_X86_64
+ #ifdef CONFIG_PARAVIRT_XXL
+-#define USERGS_SYSRET64							\
+-	PARA_SITE(PARA_PATCH(PV_CPU_usergs_sysret64),			\
+-		  ANNOTATE_RETPOLINE_SAFE;				\
+-		  jmp PARA_INDIRECT(pv_ops+PV_CPU_usergs_sysret64);)
+-
+ #ifdef CONFIG_DEBUG_ENTRY
+ #define SAVE_FLAGS(clobbers)                                        \
+ 	PARA_SITE(PARA_PATCH(PV_IRQ_save_fl),			    \
+diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+index 130f428b0cc8..0169365f1403 100644
+--- a/arch/x86/include/asm/paravirt_types.h
++++ b/arch/x86/include/asm/paravirt_types.h
+@@ -156,14 +156,6 @@ struct pv_cpu_ops {
+ 
+ 	u64 (*read_pmc)(int counter);
+ 
+-	/*
+-	 * Switch to usermode gs and return to 64-bit usermode using
+-	 * sysret.  Only used in 64-bit kernels to return to 64-bit
+-	 * processes.  Usermode register state, including %rsp, must
+-	 * already be restored.
+-	 */
+-	void (*usergs_sysret64)(void);
+-
+ 	/* Normal iret.  Jump to this with the standard iret stack
+ 	   frame set up. */
+ 	void (*iret)(void);
+diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offsets_64.c
+index 1354bc30614d..b14533af7676 100644
+--- a/arch/x86/kernel/asm-offsets_64.c
++++ b/arch/x86/kernel/asm-offsets_64.c
+@@ -13,8 +13,6 @@ int main(void)
+ {
+ #ifdef CONFIG_PARAVIRT
+ #ifdef CONFIG_PARAVIRT_XXL
+-	OFFSET(PV_CPU_usergs_sysret64, paravirt_patch_template,
+-	       cpu.usergs_sysret64);
+ #ifdef CONFIG_DEBUG_ENTRY
+ 	OFFSET(PV_IRQ_save_fl, paravirt_patch_template, irq.save_fl);
+ #endif
+diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+index 5e5fcf5c376d..18560b71e717 100644
+--- a/arch/x86/kernel/paravirt.c
++++ b/arch/x86/kernel/paravirt.c
+@@ -135,8 +135,7 @@ unsigned paravirt_patch_default(u8 type, void *insn_buff,
+ 	else if (opfunc == _paravirt_ident_64)
+ 		ret = paravirt_patch_ident_64(insn_buff, len);
+ 
+-	else if (type == PARAVIRT_PATCH(cpu.iret) ||
+-		 type == PARAVIRT_PATCH(cpu.usergs_sysret64))
++	else if (type == PARAVIRT_PATCH(cpu.iret))
+ 		/* If operation requires a jmp, then jmp */
+ 		ret = paravirt_patch_jmp(insn_buff, opfunc, addr, len);
+ #endif
+@@ -170,7 +169,6 @@ static u64 native_steal_clock(int cpu)
+ 
+ /* These are in entry.S */
+ extern void native_iret(void);
+-extern void native_usergs_sysret64(void);
+ 
+ static struct resource reserve_ioports = {
+ 	.start = 0,
+@@ -310,7 +308,6 @@ struct paravirt_patch_template pv_ops = {
+ 
+ 	.cpu.load_sp0		= native_load_sp0,
+ 
+-	.cpu.usergs_sysret64	= native_usergs_sysret64,
+ 	.cpu.iret		= native_iret,
+ 
+ #ifdef CONFIG_X86_IOPL_IOPERM
+diff --git a/arch/x86/kernel/paravirt_patch.c b/arch/x86/kernel/paravirt_patch.c
+index 7c518b08aa3c..2fada2c347c9 100644
+--- a/arch/x86/kernel/paravirt_patch.c
++++ b/arch/x86/kernel/paravirt_patch.c
+@@ -27,7 +27,6 @@ struct patch_xxl {
+ 	const unsigned char	mmu_write_cr3[3];
+ 	const unsigned char	irq_restore_fl[2];
+ 	const unsigned char	cpu_wbinvd[2];
+-	const unsigned char	cpu_usergs_sysret64[6];
+ 	const unsigned char	mov64[3];
+ };
+ 
+@@ -40,8 +39,6 @@ static const struct patch_xxl patch_data_xxl = {
+ 	.mmu_write_cr3		= { 0x0f, 0x22, 0xdf },	// mov %rdi, %cr3
+ 	.irq_restore_fl		= { 0x57, 0x9d },	// push %rdi; popfq
+ 	.cpu_wbinvd		= { 0x0f, 0x09 },	// wbinvd
+-	.cpu_usergs_sysret64	= { 0x0f, 0x01, 0xf8,
+-				    0x48, 0x0f, 0x07 },	// swapgs; sysretq
+ 	.mov64			= { 0x48, 0x89, 0xf8 },	// mov %rdi, %rax
+ };
+ 
+@@ -83,7 +80,6 @@ unsigned int native_patch(u8 type, void *insn_buff, unsigned long addr,
+ 	PATCH_CASE(mmu, read_cr3, xxl, insn_buff, len);
+ 	PATCH_CASE(mmu, write_cr3, xxl, insn_buff, len);
+ 
+-	PATCH_CASE(cpu, usergs_sysret64, xxl, insn_buff, len);
+ 	PATCH_CASE(cpu, wbinvd, xxl, insn_buff, len);
+ #endif
+ 
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index 44bb18adfb51..5476423fc6d0 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -1060,7 +1060,6 @@ static const struct pv_cpu_ops xen_cpu_ops __initconst = {
+ 	.read_pmc = xen_read_pmc,
+ 
+ 	.iret = xen_iret,
+-	.usergs_sysret64 = xen_sysret64,
+ 
+ 	.load_tr_desc = paravirt_nop,
+ 	.set_ldt = xen_set_ldt,
+diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
+index 1d054c915046..c0630fd9f44e 100644
+--- a/arch/x86/xen/xen-asm.S
++++ b/arch/x86/xen/xen-asm.S
+@@ -214,26 +214,6 @@ SYM_CODE_START(xen_iret)
+ 	jmp hypercall_iret
+ SYM_CODE_END(xen_iret)
+ 
+-SYM_CODE_START(xen_sysret64)
+-	/*
+-	 * We're already on the usermode stack at this point, but
+-	 * still with the kernel gs, so we can easily switch back.
+-	 *
+-	 * tss.sp2 is scratch space.
+-	 */
+-	movq %rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
+-	movq PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+-
+-	pushq $__USER_DS
+-	pushq PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
+-	pushq %r11
+-	pushq $__USER_CS
+-	pushq %rcx
+-
+-	pushq $VGCF_in_syscall
+-	jmp hypercall_iret
+-SYM_CODE_END(xen_sysret64)
+-
+ /*
+  * Xen handles syscall callbacks much like ordinary exceptions, which
+  * means we have:
+diff --git a/arch/x86/xen/xen-ops.h b/arch/x86/xen/xen-ops.h
+index 9546c3384c75..b2fd80a01a36 100644
+--- a/arch/x86/xen/xen-ops.h
++++ b/arch/x86/xen/xen-ops.h
+@@ -138,8 +138,6 @@ __visible unsigned long xen_read_cr2_direct(void);
+ 
+ /* These are not functions, and cannot be called normally */
+ __visible void xen_iret(void);
+-__visible void xen_sysret32(void);
+-__visible void xen_sysret64(void);
+ 
+ extern int xen_panic_handler_init(void);
+ 
+-- 
+2.26.2
+
