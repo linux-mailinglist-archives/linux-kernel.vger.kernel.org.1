@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8392FD398
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EB12FD39C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390865AbhATPLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:11:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:38872 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390908AbhATPDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:03:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C67B231B;
-        Wed, 20 Jan 2021 07:02:33 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 215003F68F;
-        Wed, 20 Jan 2021 07:02:31 -0800 (PST)
-Subject: Re: [PATCH 2/2] Revert "iommu/arm-smmu-v3: Don't reserve
- implementation defined register space"
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Neil Leeder <nleeder@codeaurora.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
- <20210119015951.1042-3-thunder.leizhen@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <888312dc-85b7-4d5e-f264-bbdd9e3638f6@arm.com>
-Date:   Wed, 20 Jan 2021 15:02:30 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2390870AbhATPME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:12:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35950 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390952AbhATPFN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:05:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611155027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DLkTnoEhhqT5XnK+V0Ri+zXEP8mtFMltsuZRc1io4Mo=;
+        b=C9Msq6DDbsdV64K16bJvg511xxqMo6cHXVeRzmGGBspEKlpi9eUbh8VjwUVS+0iz9kbFXU
+        AIXZIZeIkfsYOD29bNYAHwl1+/bk4DV8c5uu7RpJphWIAl+KLexE+qX2gQcwcNkYO8N6LO
+        BMYSiPh2NvAGTjoLiPEaPeST7Ad2p/8=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-Weohq2IHOnuC9yT6b7e1AA-1; Wed, 20 Jan 2021 10:03:45 -0500
+X-MC-Unique: Weohq2IHOnuC9yT6b7e1AA-1
+Received: by mail-qt1-f200.google.com with SMTP id e9so12758953qtq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 07:03:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=DLkTnoEhhqT5XnK+V0Ri+zXEP8mtFMltsuZRc1io4Mo=;
+        b=GItZRVsshQqMUeLNu03e3NC8hD3oUswCLdEH8SFxVIHHjpsU1uuJV1A9LyclChhsAf
+         qa2ZF9ipw9/YRq//CRfmhwz077d4rfXmtGmLFbCBRYAjLZSY+ENeZvQoZZgCRXI4Z6nY
+         SB3CkLUw8tLM7pC/2WytJBOE0VX2ulfIO64oGdPHYtOiUtXZtsy6UjcRlZy9LRaIZJ5G
+         J/+aOWMYvNDN0aVcmKe83ZC6XN1wi3byUmCr37Aa7o1U8yElM/wbjszXyc7C5wXJ276V
+         C9ZpG82K2+JVAe34aRczbQD0WIlU3TzdAToFzklhZfzdSOFapyfpv1EIh+1kmSTQKalg
+         wjIA==
+X-Gm-Message-State: AOAM533N3YxM22jpwPGEWHZ0ZoSvkWjYcp7DLKnFgxfuGFkPveF+ina2
+        4P4om+RvFNPsrkg+Ytwviz4A+t/V1yGHV+S1o6buWvpHNbb0xs0fKQfRAgs/mlExq8jSpyfDmtR
+        GnnRW4ydrpGMhu8Yx4xDKQSBODn8Q1xpJM7txdsj4EUpMN9a9o4p+GPLhxdM4MKDzztEVMbk=
+X-Received: by 2002:a37:9f14:: with SMTP id i20mr9933244qke.321.1611155024881;
+        Wed, 20 Jan 2021 07:03:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy1NgZWfa0FoCcv72Jr91hrje7OB2eR1AjLOB6y9Mz3IUwCYNr1bPZ94I/AV1xVad9LFx/jWA==
+X-Received: by 2002:a37:9f14:: with SMTP id i20mr9933207qke.321.1611155024575;
+        Wed, 20 Jan 2021 07:03:44 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b78sm1477745qkg.29.2021.01.20.07.03.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 07:03:43 -0800 (PST)
+Subject: Re: [PATCH] spi: altera: Fix memory leak on error path
+To:     Pan Bian <bianpan2016@163.com>, Mark Brown <broonie@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Wu Hao <hao.wu@intel.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210120082635.49304-1-bianpan2016@163.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <29bc2be2-911e-e892-4d1c-cc5c8ce10571@redhat.com>
+Date:   Wed, 20 Jan 2021 07:03:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210119015951.1042-3-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210120082635.49304-1-bianpan2016@163.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-19 01:59, Zhen Lei wrote:
-> This reverts commit 52f3fab0067d6fa9e99c1b7f63265dd48ca76046.
-> 
-> This problem has been fixed by another patch. The original method had side
-> effects, it was not mapped to the user-specified resource size. The code
-> will become more complex when ECMDQ is supported later.
 
-FWIW I don't think that's a significant issue either way - there could 
-be any number of imp-def pages between SMMU page 0 and the ECMDQ control 
-pages, so it will still be logical to map them as another separate thing 
-anyway.
-
-Robin.
-
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+On 1/20/21 12:26 AM, Pan Bian wrote:
+> Release master that have been previously allocated if the number of
+> chipselect is invalid.
+>
+> Fixes: 8e04187c1bc7 ("spi: altera: add SPI core parameters support via platform data.")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
 > ---
->   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 32 ++++-------------------------
->   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 ---
->   2 files changed, 4 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 8ca7415d785d9bf..477f473842e5272 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -91,8 +91,9 @@ struct arm_smmu_option_prop {
->   static inline void __iomem *arm_smmu_page1_fixup(unsigned long offset,
->   						 struct arm_smmu_device *smmu)
->   {
-> -	if (offset > SZ_64K)
-> -		return smmu->page1 + offset - SZ_64K;
-> +	if ((offset > SZ_64K) &&
-> +	    (smmu->options & ARM_SMMU_OPT_PAGE0_REGS_ONLY))
-> +		offset -= SZ_64K;
->   
->   	return smmu->base + offset;
->   }
-> @@ -3486,18 +3487,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
->   	return err;
->   }
->   
-> -static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
-> -				      resource_size_t size)
-> -{
-> -	struct resource res = {
-> -		.flags = IORESOURCE_MEM,
-> -		.start = start,
-> -		.end = start + size - 1,
-> -	};
-> -
-> -	return devm_ioremap_resource(dev, &res);
-> -}
-> -
->   static int arm_smmu_device_probe(struct platform_device *pdev)
->   {
->   	int irq, ret;
-> @@ -3533,23 +3522,10 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->   	}
->   	ioaddr = res->start;
->   
-> -	/*
-> -	 * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
-> -	 * the PMCG registers which are reserved by the PMU driver.
-> -	 */
-> -	smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
-> +	smmu->base = devm_ioremap_resource(dev, res);
->   	if (IS_ERR(smmu->base))
->   		return PTR_ERR(smmu->base);
->   
-> -	if (arm_smmu_resource_size(smmu) > SZ_64K) {
-> -		smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
-> -					       ARM_SMMU_REG_SZ);
-> -		if (IS_ERR(smmu->page1))
-> -			return PTR_ERR(smmu->page1);
-> -	} else {
-> -		smmu->page1 = smmu->base;
-> -	}
-> -
->   	/* Interrupt lines */
->   
->   	irq = platform_get_irq_byname_optional(pdev, "combined");
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> index 96c2e9565e00282..0c3090c60840c22 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> @@ -152,8 +152,6 @@
->   #define ARM_SMMU_PRIQ_IRQ_CFG1		0xd8
->   #define ARM_SMMU_PRIQ_IRQ_CFG2		0xdc
->   
-> -#define ARM_SMMU_REG_SZ			0xe00
-> -
->   /* Common MSI config fields */
->   #define MSI_CFG0_ADDR_MASK		GENMASK_ULL(51, 2)
->   #define MSI_CFG2_SH			GENMASK(5, 4)
-> @@ -584,7 +582,6 @@ struct arm_smmu_strtab_cfg {
->   struct arm_smmu_device {
->   	struct device			*dev;
->   	void __iomem			*base;
-> -	void __iomem			*page1;
->   
->   #define ARM_SMMU_FEAT_2_LVL_STRTAB	(1 << 0)
->   #define ARM_SMMU_FEAT_2_LVL_CDTAB	(1 << 1)
-> 
+>  drivers/spi/spi-altera.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/spi/spi-altera.c b/drivers/spi/spi-altera.c
+> index cbc4c28c1541..62ea0c9e321b 100644
+> --- a/drivers/spi/spi-altera.c
+> +++ b/drivers/spi/spi-altera.c
+> @@ -254,7 +254,8 @@ static int altera_spi_probe(struct platform_device *pdev)
+>  			dev_err(&pdev->dev,
+>  				"Invalid number of chipselect: %hu\n",
+>  				pdata->num_chipselect);
+> -			return -EINVAL;
+> +			err = -EINVAL;
+> +			goto exit;
+>  		}
+>  
+>  		master->num_chipselect = pdata->num_chipselect;
+Reviewed-by: Tom Rix <trix@redhat.com>
+
