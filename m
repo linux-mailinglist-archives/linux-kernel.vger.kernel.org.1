@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067512FCA06
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C4E2FCA0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728886AbhATEd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:33:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
+        id S1729490AbhATEeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:34:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727787AbhATEdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728538AbhATEdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 23:33:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56D3223158;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A21C32332B;
         Wed, 20 Jan 2021 04:32:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611117158;
-        bh=qjT7jsABtEkFjwh3R7KdQ5ewWLKm1ZZKq9tH2fwcEL4=;
+        s=k20201202; t=1611117159;
+        bh=C2eCzqPlT6BpIIK6gpaGBighn/FNw3gd4qUeJ00kb6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mhYwQJZUlisZ8GZRFmGaljm/I7LLoVlDuJ53datkQIX+N9Jy5+Y/a8XcUehcjGqDD
-         Y2gXfl21l+h83l32LMESw1KsQZML1/OUWixJiUaij5MnWuPLMGOS4wrlrC3htU6ytn
-         ze4w15gkv76jjcmkL+rPf8pCeKYQgwqyEdB6xwoJp+yq0AM4oIhAmdLjxQE8sokz7f
-         iMLATE34G1E9KUGH6O5Y1lPDandz/tsxx33P0ysIXqQawTCEXHrv+fn7GltqDTz7bz
-         axwUKoP0dAASOE/+MK8GdX9R7AJzwMpiPPQS1bU7yrGw6bNI4e8I/i9OTnIze99QS5
-         WbAX0AgyGckJQ==
+        b=sqbv/AxDOn1jEDC5ESSTjZLSC+xh4Fl7Fi8ZP3ADBgzOxW3K2pjUNsmBRMiII9qSU
+         k+dkDB9Na6Bl97V79Wgxk0AKT9eaJgeAtxo/d7ivDTtIFH4VTuwPZ9bWmAbvYVB7Po
+         1bv9r1Fu7x0Lw9ZF8PgEhpV5Wh6EN8yvshw4vo9OWSaS9fgaleRqmsiPysBsFaB8nC
+         OWKyrC5ojnnSi//LWBkg+cNJnCbaefhKvyhwvsfGAmrXRbXP3eKOh3rlp5c6orv0t7
+         88F8kx7DCbA1CzMTqIIgO9Hm2sGO+Z5WxzaDopT+nwg+gUxnlaiOHwbuZvtVWDatWK
+         0ayuo1UznURuA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/4] rcutorture: Make TREE03 use real-time tree.use_softirq setting
-Date:   Tue, 19 Jan 2021 20:32:34 -0800
-Message-Id: <20210120043236.7254-2-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Scott Wood <swood@redhat.com>
+Subject: [PATCH tip/core/rcu 3/4] rcu: Run rcuo kthreads at elevated priority in CONFIG_RCU_BOOST kernels
+Date:   Tue, 19 Jan 2021 20:32:35 -0800
+Message-Id: <20210120043236.7254-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210120043144.GA7045@paulmck-ThinkPad-P72>
 References: <20210120043144.GA7045@paulmck-ThinkPad-P72>
@@ -44,25 +46,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-TREE03 tests RCU priority boosting, which is a real-time feature.
-It would also be good if it tested something closer to what is
-actually used by the real-time folks.  This commit therefore adds
-tree.use_softirq=0 to the TREE03 kernel boot parameters in TREE03.boot.
+The priority level of the rcuo kthreads is the system administrator's
+responsibility, but kernels that priority-boost RCU readers probably need
+the rcuo kthreads running at the rcutree.kthread_prio level.  This commit
+therefore sets these kthreads to that priority level at creation time,
+providing a sensible default.  The system administrator is free to adjust
+as needed at any time.
 
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Scott Wood <swood@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/tree_plugin.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
-index 1c21894..64f864f1 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
-@@ -4,3 +4,4 @@ rcutree.gp_init_delay=3
- rcutree.gp_cleanup_delay=3
- rcutree.kthread_prio=2
- threadirqs
-+tree.use_softirq=0
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index fca31c6..7e33dae0 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2197,6 +2197,7 @@ static int rcu_nocb_gp_kthread(void *arg)
+ {
+ 	struct rcu_data *rdp = arg;
+ 
++	rcu_cpu_kthread_setup(-1);
+ 	for (;;) {
+ 		WRITE_ONCE(rdp->nocb_gp_loops, rdp->nocb_gp_loops + 1);
+ 		nocb_gp_wait(rdp);
+@@ -2298,6 +2299,7 @@ static int rcu_nocb_cb_kthread(void *arg)
+ 
+ 	// Each pass through this loop does one callback batch, and,
+ 	// if there are no more ready callbacks, waits for them.
++	rcu_cpu_kthread_setup(-1);
+ 	for (;;) {
+ 		nocb_cb_wait(rdp);
+ 		cond_resched_tasks_rcu_qs();
 -- 
 2.9.5
 
