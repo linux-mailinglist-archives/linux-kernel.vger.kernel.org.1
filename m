@@ -2,73 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4110E2FC6E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B652FC6DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbhATBhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:37:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728312AbhATBa4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:30:56 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894FDC0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:29:34 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id o20so5070325pfu.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
-         :message-id:in-reply-to;
-        bh=41qPdxl0K0syAjBeibZGeyLNe7r3NMDV7tPcr9ieA/8=;
-        b=bGUQT7oWpcvWIAUwxyxSpzsmg0cBS74+6pW1e7396OBji8kykFhR82a3l8XvYEmFtp
-         sG/rx2HEEXqOwkNqpTBbgcPFfuc+1NVTr6X8hErIiTDYNMVOIz2becYdIyIYCt/cUIi7
-         JB5CEYQeXlzR/R669cASV/W7pz4Wjqp+7tlcT8+QheC3/u0Li9I0Ux7v+PMqM+/qaaV/
-         wzj0IacEYVHdKE23PtNp5ugkxPd5TtYOvLMYVC1N9ZS0qPzFqaG++udHnmHI3YTlEU1P
-         1xVtRqL+dPHo+VYSES2ytNF/T4WKBTDwCqJyC9cMEnys325+SCgibAIcWWVli8xzYT10
-         owbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
-         :subject:from:to:date:message-id:in-reply-to;
-        bh=41qPdxl0K0syAjBeibZGeyLNe7r3NMDV7tPcr9ieA/8=;
-        b=WgAVy+KqtGPkcrgcG8aEanBDWzp7k5r8MbBMEaG6oOawL/biDhjHQ2dFRhLNYQ+6BN
-         FFd8E8CcR1QU/iv4KQlctx0/w6s1VSCAmQuszsAw1FaGfeW2XgrySbp1LgxONPeBWCu/
-         8lCm2jxOU4Nq9KSLifYTUbNfcihzm3OmEyLSgn7yyLcowlkBKytfIL6b5h8+Cpk7rrIu
-         i78R+UXnCeNebR2eix08jX9Atbv6p6Oqs5GXDK0LkusJQt/h570cNCGeORtsAhubVtHX
-         PkG8WvjNu/x/iCdy8NWcWJMd2CHdC6Ls+APEQ1dWISq4FBhML7r/+uYfwvs0MDukACYC
-         Rxfg==
-X-Gm-Message-State: AOAM532ZjJLGu/PRU9Dkw/JUvCTnGkmge7T1Lglt4lG5TEwMeLD6uaTO
-        RiXklPU3y66XJ6k6rVrd8Bo=
-X-Google-Smtp-Source: ABdhPJyRdzZC3usx9t8xBAEtTNuZfTWyhGnxmiWjp9DXjmA/IgVvSM/BgwNPwXu9aXwWBtMTWamV8g==
-X-Received: by 2002:a62:17c3:0:b029:19d:ce3b:d582 with SMTP id 186-20020a6217c30000b029019dce3bd582mr6856073pfx.18.1611106174194;
-        Tue, 19 Jan 2021 17:29:34 -0800 (PST)
-Received: from localhost ([116.12.58.169])
-        by smtp.gmail.com with ESMTPSA id v15sm292473pfn.217.2021.01.19.17.29.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 17:29:33 -0800 (PST)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     "Christoph Hellwig" <hch@lst.de>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Jiri Slaby" <jirislaby@kernel.org>
-Subject: Re: Splicing to/from a tty
-From:   "Oliver Giles" <ohw.giles@gmail.com>
-To:     "Linus Torvalds" <torvalds@linux-foundation.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Date:   Wed, 20 Jan 2021 14:25:34 +1300
-Message-Id: <C8NLE0OB4QWG.31VIPNC9SIDPG@oguc>
-In-Reply-To: <CAHk-=wiDX9K0aj6mQsQM54yyJTg2fkzME82aSswB2woFGmW81Q@mail.gmail.com>
+        id S1729407AbhATBcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:32:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729978AbhATB2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:28:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D069A23330;
+        Wed, 20 Jan 2021 01:26:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611105988;
+        bh=wYXBU36vIOmvDdKuwLMo2YmG9nlb8T9LIa/JdrEhOfw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ENhBnytOJQz8q4c/t4fyNNyYZAtCI96Cv2beV+Lwyfk+m6vSiocVTglemNAMUWQQ6
+         J1eOF9pZ3dOadO+Yj/+RPUFGy/nU7zO6veyWNyCAuIiACQhKwTIZ27UqK+W09fhDtb
+         dOOS/lzBbvvj3/dy5uxd8K6COXOupr3CgbCW2E8O1XWQwjzQVmcxZldQ5csyIaPM54
+         Bmd9TANPJP2RBJphEQ6w514BgUKfuhD360RpffgFw4PedddrBvnp50FDYHlm9sClPG
+         7zKr9LY1eu2YaeZY9F9d4y3QLeEMEriyIqEik7854QuDQ1F2zF0o0AWK9rn0l9MAww
+         AoLsI3tc3eWJA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Ion Agorria <ion@agorria.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 20/45] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
+Date:   Tue, 19 Jan 2021 20:25:37 -0500
+Message-Id: <20210120012602.769683-20-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
+References: <20210120012602.769683-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Jan 20, 2021 at 9:24 AM NZDT, Linus Torvalds wrote:
-> Anyway, anybody willing to test these tty/pipe patches on the loads
-> that failed? Oliver?
+From: Peter Geis <pgwipeout@gmail.com>
 
-Writing this from a kernel with those patches in; happily splice()ing
-to and from a pty.
+[ Upstream commit 615d435400435876ac68c1de37e9526a9164eaec ]
+
+Currently hda on tegra30 fails to open a stream with an input/output error.
+
+For example:
+speaker-test -Dhw:0,3 -c 2
+
+speaker-test 1.2.2
+
+Playback device is hw:0,3
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 64 to 16384
+Period size range from 32 to 8192
+Using max buffer size 16384
+Periods = 4
+was set period_size = 4096
+was set buffer_size = 16384
+ 0 - Front Left
+Write error: -5,Input/output error
+xrun_recovery failed: -5,Input/output error
+Transfer failed: Input/output error
+
+The tegra-hda device was introduced in tegra30 but only utilized in
+tegra124 until recent chips. Tegra210/186 work only due to a hardware
+change. For this reason it is unknown when this issue first manifested.
+Discussions with the hardware team show this applies to all current tegra
+chips. It has been resolved in the tegra234, which does not have hda
+support at this time.
+
+The explanation from the hardware team is this:
+Below is the striping formula referenced from HD audio spec.
+   { ((num_channels * bits_per_sample) / number of SDOs) >= 8 }
+
+The current issue is seen because Tegra HW has a problem with boundary
+condition (= 8) for striping. The reason why it is not seen on
+Tegra210/Tegra186 is because it uses max 2SDO lines. Max SDO lines is
+read from GCAP register.
+
+For the given stream (channels = 2, bps = 16);
+ratio = (channels * bps) / NSDO = 32 / NSDO;
+
+On Tegra30,      ratio = 32/4 = 8  (FAIL)
+On Tegra210/186, ratio = 32/2 = 16 (PASS)
+On Tegra194,     ratio = 32/4 = 8  (FAIL) ==> Earlier workaround was
+applied for it
+
+If Tegra210/186 is forced to use 4SDO, it fails there as well. So the
+behavior is consistent across all these chips.
+
+Applying the fix in [1] universally resolves this issue on tegra30-hda.
+Tested on the Ouya game console and the tf201 tablet.
+
+[1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on
+Tegra194")
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Ion Agorria <ion@agorria.com>
+Reviewed-by: Sameer Pujar <spujar@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+Link: https://lore.kernel.org/r/20210108135913.2421585-3-pgwipeout@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/pci/hda/hda_tegra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 70164d1428d40..361cf2041911a 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -388,7 +388,7 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
+ 	 * in powers of 2, next available ratio is 16 which can be
+ 	 * used as a limiting factor here.
+ 	 */
+-	if (of_device_is_compatible(np, "nvidia,tegra194-hda"))
++	if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
+ 		chip->bus.core.sdo_limit = 16;
+ 
+ 	/* codec detection */
+-- 
+2.27.0
+
