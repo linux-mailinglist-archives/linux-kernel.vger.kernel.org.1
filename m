@@ -2,152 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450872FCB24
+	by mail.lfdr.de (Postfix) with ESMTP id B1A142FCB25
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbhATGnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:43:16 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:43997 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726739AbhATGjl (ORCPT
+        id S1726961AbhATGnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:43:45 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41726 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727654AbhATGmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:39:41 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B7B2558059E;
-        Wed, 20 Jan 2021 01:38:28 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 20 Jan 2021 01:38:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=xYUL5Lpkut2ajLp2HHqqFc/SO8e3GAJ
-        6jWEOsfPOZpo=; b=p1hdjXq+NLGlOJ4czoa6dwjGUO5OGNYmlHtjm3JBlgy+JCy
-        tD6nT+jWB1/UKVhmd9CJoY8w5ryNLpuL9w7PEDlcKnjj4d81Gl3EnB++2ggXYEQr
-        7YtIaUKtbgm/shMqUS1qVh/aOChv6HGuzYWMasXRlfflS1yUY0h9jEdgHF3w7TRL
-        URgjSiPFf1M6yfHHx+2l37e1pKHiaxdzx8zSYPD/a8YHy7F+v/bYJs9SigmI+2wl
-        HWRavrLO+/6VpplWIwATICiW9A2YpoGAkZY8W5C0WyPs2LxBOlUC/4+G8baGACq5
-        FzWK1pSYLl0PHShwjCeKZzV9K4AxlIs9ZfdggYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=xYUL5L
-        pkut2ajLp2HHqqFc/SO8e3GAJ6jWEOsfPOZpo=; b=bO79YdT1bsyMWvDdKYh9ML
-        DsInCKRvaXWLHrSeQ6YhvAJ0uoQKqzydkV2GjWUbYzgkfMRRd+J1g/Yr45wRhqR2
-        kEvLLMNZvCa3BCstI+LK2n/EYbOABXb0VDkyDmQPVCOXiON13vuaQNO0mfpm9/My
-        x1lCSX015WUKMw2Sb1YLSDBMOlUk1UDjlZsCDwZvjUskLjMWEiwEhFgPXHBTNY68
-        tZwuLHC46W6MtVSo2VYdkssaqdVMuB620bX5b73/+yhei2MA6IzWETaoZAz4xlEK
-        Q6n+ao9AQT4PB9+TiV2m1C7mKVgpf/y0r8OfKKkJDuOZGtSYTnjAVuNBKwz204EA
-        ==
-X-ME-Sender: <xms:488HYJbXAAgIO0dlci19mWnBZXJ_9jETfMgs5s-dv-uIEf30xyWkxA>
-    <xme:488HYAarSkQr7hoIhxll6Y0FvIHkD_x4w_SCk3D-MNJvdogs-IP8c5RybPiPwoD37
-    fzT2TzAi2Zlq9eccA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddugdelkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:488HYL-NWv62iCUU5NisdF3zxkmPHkbkpTmwAzWgdbWfQGW8EMBKKg>
-    <xmx:488HYHpg3zoSWPWueb8BBXT7r7h43kEAwA58ln1in7bc6QjyuNn4UQ>
-    <xmx:488HYEp0hbpMShYzLDPs7yRrCDW8h-hFrYcufgiAVtniMjwWMzuZVg>
-    <xmx:5M8HYAdkVFxYV8_e-1GJT0YVGc3E7JiO_ESn6pUkuUmjKxZ35TPwuw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0481AA0005D; Wed, 20 Jan 2021 01:38:27 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e88ef-fm-20210120.001-g36b56e88
-Mime-Version: 1.0
-Message-Id: <31ea8453-bbb1-4e68-8ee4-f7e524e38b88@beta.fastmail.com>
-In-Reply-To: <HK0PR06MB338019E403823F0BF9962FE3F2A20@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20210118065059.2478078-1-troy_lee@aspeedtech.com>
- <20210118065059.2478078-5-troy_lee@aspeedtech.com>
- <2bf67d3a-cd5f-4f9c-b043-709b18a759d5@www.fastmail.com>
- <HK0PR06MB338019E403823F0BF9962FE3F2A20@HK0PR06MB3380.apcprd06.prod.outlook.com>
-Date:   Wed, 20 Jan 2021 17:07:56 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Troy Lee" <troy_lee@aspeedtech.com>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>
-Cc:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "Troy Lee" <leetroy@gmail.com>, "kbuild test robot" <lkp@intel.com>
-Subject: Re: [PATCH v3 4/4] hwmon: Support Aspeed AST2600 PWM/Fan tachometer
-Content-Type: text/plain
+        Wed, 20 Jan 2021 01:42:03 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UMJ.riZ_1611124873;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMJ.riZ_1611124873)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 14:41:18 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     rydberg@bitmath.org
+Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] hwmon: (applesmc) Assign boolean values to a bool variable
+Date:   Wed, 20 Jan 2021 14:41:10 +0800
+Message-Id: <1611124870-125658-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following coccicheck warnings:
 
+./drivers/hwmon/applesmc.c:568:6-23: WARNING: Assignment of
+0/1 to bool variable.
 
-On Wed, 20 Jan 2021, at 15:53, Ryan Chen wrote:
-> > -----Original Message-----
-> > From: Andrew Jeffery <andrew@aj.id.au>
-> > Sent: Wednesday, January 20, 2021 1:16 PM
-> > To: Troy Lee <troy_lee@aspeedtech.com>; openbmc@lists.ozlabs.org; Joel
-> > Stanley <joel@jms.id.au>; Philipp Zabel <p.zabel@pengutronix.de>; open list
-> > <linux-kernel@vger.kernel.org>; moderated list:ARM/ASPEED MACHINE
-> > SUPPORT <linux-arm-kernel@lists.infradead.org>; moderated
-> > list:ARM/ASPEED MACHINE SUPPORT <linux-aspeed@lists.ozlabs.org>
-> > Cc: Ryan Chen <ryan_chen@aspeedtech.com>; ChiaWei Wang
-> > <chiawei_wang@aspeedtech.com>; Troy Lee <leetroy@gmail.com>; kbuild
-> > test robot <lkp@intel.com>
-> > Subject: Re: [PATCH v3 4/4] hwmon: Support Aspeed AST2600 PWM/Fan
-> > tachometer
-> > 
-> > Hi Troy,
-> > 
-> > On Mon, 18 Jan 2021, at 17:20, Troy Lee wrote:
-> > > Add Aspeed AST2600 PWM/Fan tacho driver. AST2600 has 16 PWM channel
-> > > and
-> > > 16 FAN tacho channel.
-> > >
-> > > Changes since v2:
-> > >  - declare local function as static function
-> > >
-> > > Changes since v1:
-> > >  - fixed review comments
-> > >  - fixed double-looped calculation of div_h and div_l
-> > >  - moving configuration to device tree
-> > >  - register hwmon driver with devm_hwmon_device_register_with_info()
-> > >
-> > > Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > ---
-> > >  drivers/hwmon/Kconfig                |  10 +
-> > >  drivers/hwmon/Makefile               |   1 +
-> > >  drivers/hwmon/aspeed2600-pwm-tacho.c | 756
-> > > +++++++++++++++++++++++++++
-> > >  3 files changed, 767 insertions(+)
-> > >  create mode 100644 drivers/hwmon/aspeed2600-pwm-tacho.c
-> > 
-> > ...
-> > 
-> > > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile index
-> > > 09a86c5e1d29..1a415d493ffc 100644
-> > > --- a/drivers/hwmon/Makefile
-> > > +++ b/drivers/hwmon/Makefile
-> > > @@ -52,6 +52,7 @@ obj-$(CONFIG_SENSORS_ARM_SCPI)	+=
-> > scpi-hwmon.o
-> > >  obj-$(CONFIG_SENSORS_AS370)	+= as370-hwmon.o
-> > >  obj-$(CONFIG_SENSORS_ASC7621)	+= asc7621.o
-> > >  obj-$(CONFIG_SENSORS_ASPEED)	+= aspeed-pwm-tacho.o
-> > > +obj-$(CONFIG_SENSORS_ASPEED2600_PWM_TACHO)	+=
-> > aspeed2600-pwm-tacho.o
-> > 
-> > Why does this have to be a separate implementation from the existing ASPEED
-> > PWM/Tacho driver? Is there really nothing in common?
-> > 
-> Hello Andrew,
-> 	The register set is fully re-arrange. And it is new design at AST2600, 
-> can't be compatible with older PWM.  
->
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/hwmon/applesmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ah, okay. I hadn't looked. Thanks Ryan.
+diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
+index 89207af..28b137e 100644
+--- a/drivers/hwmon/applesmc.c
++++ b/drivers/hwmon/applesmc.c
+@@ -565,7 +565,7 @@ static int applesmc_init_index(struct applesmc_registers *s)
+ static int applesmc_init_smcreg_try(void)
+ {
+ 	struct applesmc_registers *s = &smcreg;
+-	bool left_light_sensor = 0, right_light_sensor = 0;
++	bool left_light_sensor = false, right_light_sensor = false;
+ 	unsigned int count;
+ 	u8 tmp[1];
+ 	int ret;
+-- 
+1.8.3.1
 
-Andrew
