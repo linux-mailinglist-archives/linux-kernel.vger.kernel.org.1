@@ -2,152 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BD52FD840
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 034482FD8CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391972AbhATS3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        id S2392081AbhATSuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404454AbhATSWY (ORCPT
+        with ESMTP id S2404206AbhATSYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:22:24 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30603C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:21:44 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id g3so12971484plp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:21:44 -0800 (PST)
+        Wed, 20 Jan 2021 13:24:19 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF1CC061575;
+        Wed, 20 Jan 2021 10:23:37 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id b5so18443163ejv.4;
+        Wed, 20 Jan 2021 10:23:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FztgeQYvJKPvTHinIajZixrVm6a1I7cVr2Glq2/9i0w=;
-        b=W3T8XEhaf9K+imFAPKhIEnKr0YrjazEIOLw+UPe4a7fGB1/Do+hKikZcAFwT1jHsWx
-         GaHsIeYD7mgWRT7wjIWkcdqwZv3UyveFeaH2M5smlNykayHg2L5iVlOi6/J+7gdKdQ+u
-         WtYwBCeNxJDg5JF5Z8QSItox+v1lsKsD2iMg0GTsG/x2xt4S2+aL9EBrRMZeqDKA/WgB
-         9mO8s6XRzYlf79ZxAKf/tT1oqVXb5Ar0J7a+MJO8QaUh4XAJAZ5zWEXvS7D7mt+EeNw2
-         96X3RPYRwqzeDsTk1sKaja00yNT5CVkBxn0ZGzCUOhnDD/ICskkC5Yxl9+Jlq0ERnOZO
-         zNdQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wLdEtdixhcuzDsqn7NPt1vlh25weIc+8J54AbD9rTIk=;
+        b=rWJWucwSMRpikb7+18K+dKLrzLNbDRtiwhCjaaGWSlTzDpHtqh8FQ/ekGOHdFnVo+B
+         an7q3xTl+tG7lrXNGkBM4Z5k3NZIa6lbu065HRup4+W75KI9D2gRx8jcxVtBA4qBiyn/
+         ayvaV0YLQISOUrTgZdcZUFYUCfSMgb1TeKTlqmW08lDEby5wxtB/suAfIiU1UyOcXcit
+         LTx/5PYjLMh5Dk9G1T6Cv0Sqgap+QBzssPrDyxhvejHNCN/wol0KbkrwYSd2T8cltfDF
+         MAojW/BRvjLvlclcqTNM0zh53/VVfu8VTte/JuXzMY5Y6zQnllat8LGvoUpD9FThlNnK
+         f/7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FztgeQYvJKPvTHinIajZixrVm6a1I7cVr2Glq2/9i0w=;
-        b=BHZX18V65RDrZfuXoJuzjhdqMslEHDWKTTKZM+/UdV8dTD0wyjxLqfI89zOVPEA34t
-         3yPSvKuHJMRPfY1/dih2R7pelusw+PV1tZ4C78DkAI95F0iHurmMdnu/QyMNx+ONI+bM
-         9BlrY3P8kPL9RlJv1Rl+SdCrOmMDSoBgnECbLj/omOaixQzK4ufuO/j/BEu+Vex6Kl7h
-         TeVUBlB8yNGNHP6/q/nSQAFRNyblPboImLnWXVjp8+XrdONss45u834a7xkxs6quhO+k
-         Ml+YZy+KYNZQ8oNo6Qaskh57ZP8mk2HUhbMrNg6zNcp265xAa7RK4N36O/p4/RWcd9Uq
-         /2dQ==
-X-Gm-Message-State: AOAM530o+1Ap5Kkz09B0dzzsYwGlo5AlYWsy3hp7Pr9ApShwugr0d8Yj
-        L4NQN6Q3/ryMVbaqu5fFhA0QSxJDht//1kS7mHNlMyePIJ3IQA==
-X-Google-Smtp-Source: ABdhPJzNCwyPxlTxOcha/B3O+SRaZ+4OHivPiUcH3zrLFlzmALW91MKtuNsic/ILMnymXIm+/TCiRtc5HzfuxMQcIqg=
-X-Received: by 2002:a17:902:9f87:b029:de:9e09:ee94 with SMTP id
- g7-20020a1709029f87b02900de9e09ee94mr11102200plq.29.1611166903481; Wed, 20
- Jan 2021 10:21:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wLdEtdixhcuzDsqn7NPt1vlh25weIc+8J54AbD9rTIk=;
+        b=ZeDMmS2Zjkexv6TtcVeUHueUajXlSjmo3NmQ8k8vzMP1MeFDVo/+8vQXTZhPIZb63Y
+         XuBpdXMI99pnNNfE8eDGItr/x/0sAkorHLqAzVB6qKGDVYqFXWskGaYkAG6omzrnarlZ
+         SXvo9XpNUicK38trg/McHo+NW0uqbodWVIvI+mioRLwDfIXa+Yq1I3PoqOtG1c9Bk+1k
+         8VnnDDTSdVs5GhyIg/Ob0kavcj+HPjw+8zC+cCnyY+dpn53eNJP+hJcP2OS7/rA48Jsj
+         DxTwJm7kBprtWUN7IWfo26VuC1ye+L0+qdXsxIFDCo2kQ/bk6rs2K26UoGIa9JVJ52AX
+         +AIQ==
+X-Gm-Message-State: AOAM533MM6hStkNn5PESdA9CkxKhKLjKxPjfUoI1fqYukMsoUIhsk9wM
+        juRucyWRNtZQPbUnoHjPMJw=
+X-Google-Smtp-Source: ABdhPJyGUKWxVY5c9GdiWWlDtluq1Ay0X2pOpX1vhrKRJ8CQTQ9b8VWRc2uGJYwdSbDsaQnzI0blKg==
+X-Received: by 2002:a17:907:104c:: with SMTP id oy12mr6862380ejb.503.1611167016173;
+        Wed, 20 Jan 2021 10:23:36 -0800 (PST)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id hr31sm1158332ejc.125.2021.01.20.10.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 10:23:34 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v6 0/7] Add initial support for ATC260x PMICs
+Date:   Wed, 20 Jan 2021 20:23:25 +0200
+Message-Id: <cover.1611165200.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210120173612.20913-1-will@kernel.org> <20210120173612.20913-8-will@kernel.org>
-In-Reply-To: <20210120173612.20913-8-will@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 20 Jan 2021 10:21:33 -0800
-Message-ID: <CAKwvOdkqGy9O8yAnyeJO-P3WssRa1=OS=Q-T2ZV1vGwdwi=6+A@mail.gmail.com>
-Subject: Re: [PATCH v4 7/8] mm: Use static initialisers for immutable fields
- of 'struct vm_fault'
-To:     Will Deacon <will@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 9:36 AM Will Deacon <will@kernel.org> wrote:
->
-> In preparation for const-ifying the anonymous struct field of
-> 'struct vm_fault', ensure that it is initialised using static
-> initialisers.
+The ATC260x family of PMICs integrates Audio Codec, Power management,
+Clock generation and GPIO controller blocks. There are currently 3
+variants: ATC2603A, ATC2603C and ATC2609A.
 
-FWIW these are known as "designated initializers", ie.
+This is re-spin of the v1 patch series submitted some time ago by
+Mani, who provided the MFD and regulator drivers for ATC2609A:
+https://lore.kernel.org/lkml/20190617155011.15376-1-manivannan.sadhasivam@linaro.org/
 
-struct foo my_foo = {
-  .bar = 42,
-};
+Since v2, I added support for ATC2603C, together with some new
+functionalities for both chips: power controller and onkey input.
+The ATC2603A chip type remains unsupported for the moment.
 
-https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
+This has been tested on RoseapplePi, a SBC based on the Actions Semi S500
+SoC, which integrates the ATC2603C variant of the PMIC.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Note that enabling the ATC260x PMICs on compatible Actions Semi Owl SoC
+based boards depends on:
 
->
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  mm/shmem.c    |  6 +++---
->  mm/swapfile.c | 11 ++++++-----
->  2 files changed, 9 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 7c6b6d8f6c39..1b254fbfdf52 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1520,11 +1520,11 @@ static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
->  {
->         struct vm_area_struct pvma;
->         struct page *page;
-> -       struct vm_fault vmf;
-> +       struct vm_fault vmf = {
-> +               .vma = &pvma,
-> +       };
->
->         shmem_pseudo_vma_init(&pvma, info, index);
-> -       vmf.vma = &pvma;
-> -       vmf.address = 0;
->         page = swap_cluster_readahead(swap, gfp, &vmf);
->         shmem_pseudo_vma_destroy(&pvma);
->
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 9fffc5af29d1..2b570a566276 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1951,8 +1951,6 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->         si = swap_info[type];
->         pte = pte_offset_map(pmd, addr);
->         do {
-> -               struct vm_fault vmf;
-> -
->                 if (!is_swap_pte(*pte))
->                         continue;
->
-> @@ -1968,9 +1966,12 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->                 swap_map = &si->swap_map[offset];
->                 page = lookup_swap_cache(entry, vma, addr);
->                 if (!page) {
-> -                       vmf.vma = vma;
-> -                       vmf.address = addr;
-> -                       vmf.pmd = pmd;
-> +                       struct vm_fault vmf = {
-> +                               .vma = vma,
-> +                               .address = addr,
-> +                               .pmd = pmd,
-> +                       };
-> +
->                         page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
->                                                 &vmf);
->                 }
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+* the Actions Semi SIRQ driver (for PMIC DTS setup), merged in v5.10:
+  https://lore.kernel.org/lkml/cover.1600114378.git.cristian.ciocaltea@gmail.com/
 
+* the atomic transfers in Owl I2C driver (for power controller), merged in v5.11:
+  https://lore.kernel.org/lkml/cover.1602190168.git.cristian.ciocaltea@gmail.com/
 
---
+Additionally, please note that I have taken the authorship for the MFD
+and regulator drivers patches, considering the original code has been
+modified to a large extent.
+
 Thanks,
-~Nick Desaulniers
+Cristi
+
+Changes in v6 - MFD driver updates as indicated by Lee:
+- Defined a magic number for max chip revision
+- Adjusted code formatting around i2c_driver struct initialization
+- Dropped the device initialization callback in struct atc260x and instead 
+  provided a generic function making use of a new member structure to hold
+  the hardware specific register information
+
+Changes in v5:
+- Removed an unnecessary '#include' line in the power-off driver,
+  as noticed by Sebastian
+- Rebased patchset on v5.11-rc3
+
+Changes in v4:
+- Updated MFD driver according to Lee's review
+- Handled ATC2603C's LDO12 fixed regulator per Mark's suggestion
+- Rebased patchset on v5.11-rc1
+
+Changes in v3:
+- Integrated feedback from Mani, Rob, Mark, Sebastian, Dmitry
+- Fixed issues reported by Lee's kernel test robot
+- Added new patch for 'reset-time-sec' DT binding property
+- Rebased patchset on v5.10-rc6
+
+Changes in v2:
+- Reworked MFD core & I2C driver
+  * Integrated Lee's feedback
+  * Added support for using the regmap within atomic contexts
+  * Added support for ATC2603C chip variant
+  * Reorganized KConfig entries
+- Improved regulator driver
+  * Added support for ATC2603C variant
+  * Used helper macros for more compact specification of regulator_desc items
+  * Added more regulator capabilities
+- Added power controller driver
+  * Provides system poweroff/reboot functionalities
+  * Depends on atomic transfers in the Owl I2C driver
+- Added onkey driver: exposes the power button as an input device
+- Added yaml binding doc
+- Rebased patchset on kernel v5.9-rc1
+
+Cristian Ciocaltea (6):
+  dt-bindings: input: Add reset-time-sec common property
+  dt-bindings: mfd: Add Actions Semi ATC260x PMIC binding
+  mfd: Add MFD driver for ATC260x PMICs
+  regulator: Add regulator driver for ATC260x PMICs
+  power: reset: Add poweroff driver for ATC260x PMICs
+  input: atc260x: Add onkey driver for ATC260x PMICs
+
+Manivannan Sadhasivam (1):
+  MAINTAINERS: Add entry for ATC260x PMIC
+
+ .../devicetree/bindings/input/input.yaml      |   7 +
+ .../bindings/mfd/actions,atc260x.yaml         | 183 ++++++
+ MAINTAINERS                                   |  12 +
+ drivers/input/misc/Kconfig                    |  11 +
+ drivers/input/misc/Makefile                   |   2 +-
+ drivers/input/misc/atc260x-onkey.c            | 305 ++++++++++
+ drivers/mfd/Kconfig                           |  18 +
+ drivers/mfd/Makefile                          |   3 +
+ drivers/mfd/atc260x-core.c                    | 310 ++++++++++
+ drivers/mfd/atc260x-i2c.c                     |  64 +++
+ drivers/power/reset/Kconfig                   |   8 +-
+ drivers/power/reset/Makefile                  |   1 +
+ drivers/power/reset/atc260x-poweroff.c        | 262 +++++++++
+ drivers/regulator/Kconfig                     |   8 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/atc260x-regulator.c         | 539 ++++++++++++++++++
+ include/linux/mfd/atc260x/atc2603c.h          | 281 +++++++++
+ include/linux/mfd/atc260x/atc2609a.h          | 308 ++++++++++
+ include/linux/mfd/atc260x/core.h              |  58 ++
+ 19 files changed, 2379 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+ create mode 100644 drivers/input/misc/atc260x-onkey.c
+ create mode 100644 drivers/mfd/atc260x-core.c
+ create mode 100644 drivers/mfd/atc260x-i2c.c
+ create mode 100644 drivers/power/reset/atc260x-poweroff.c
+ create mode 100644 drivers/regulator/atc260x-regulator.c
+ create mode 100644 include/linux/mfd/atc260x/atc2603c.h
+ create mode 100644 include/linux/mfd/atc260x/atc2609a.h
+ create mode 100644 include/linux/mfd/atc260x/core.h
+
+-- 
+2.30.0
+
