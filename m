@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10652FDBD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5302FDBEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732374AbhATVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:10:35 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59225 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390009AbhATU6g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:58:36 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9A50A5C0150;
-        Wed, 20 Jan 2021 15:57:29 -0500 (EST)
-Received: from imap36 ([10.202.2.86])
-  by compute2.internal (MEProxy); Wed, 20 Jan 2021 15:57:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=expunge.us; h=
-        mime-version:message-id:date:from:to:cc:subject:content-type; s=
-        fm2; bh=wiOxzmUwqEUdeCFgk0Dh39Mablud1PlGadAq0uz4k/k=; b=fZjzx5za
-        SgiAk6acb0JK6+H0gdojP38JIbTOTDSFDpqZyp6p4tXl1UyG4uYNJeGoS+4MUSEy
-        fHGnJ1hIhRRqW+j4OcU5Rt54CF8z/4wZzzI6FLY3/7Er3IwAmoPE0Tv8YdiUcAV9
-        obG5UbxN+ZYAdXseJM69Bnk6oW47BGI6WxO6yToJv0LA/REkfwjAo4e1e6EyB+Ar
-        TRX9nn0aOyr8DTt7GeqxyVxWImjaEmMIFnyOhDwkncijpCQVsqogJ9iYTK8PFF1c
-        ZvA5sicxGNtOsI83J2idxc4adEGruNS1R7uUa3kslrqe4WgrB+sVhSStoogMPAK5
-        CGeApVZ0Prx46g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=wiOxzmUwqEUdeCFgk0Dh39Mablud1
-        PlGadAq0uz4k/k=; b=dOCnEIIcz8Tfkz7USRZsYihx4x2TjVuXHMfWtF4aMKFVU
-        13xHY/qBqKNGT3hKFHT6/wyF/zg3hNP4ptQOhlwJjzqx5FYBcwwfqH0TaHzFqBD0
-        TH11xa2MFHbABXk+g1EVuysjfFm+wWYGE869dTVfVDX0WeDebSwCyaWZhmKqE00O
-        A4Hv3Y8N0vh8DtprYX0Sn4NH7dus2IDmNnHI5QOsbE0FGGq1Uk8MGINeAdock2fu
-        SnQLnSRyWIY1wJlZUpoQvv48qL5/Pr6RrUFXQUQzDM0iQfdKKA24sSYJK/VZD1xx
-        ulmvL65HnGJt1QAQTMp8d+Vf0ifR39Hql+fPC7JrA==
-X-ME-Sender: <xms:OJkIYH9LJN1sTQKfPZBshsjWdO4uq-bdw4g8N_VNPpTaZx52HUbF2A>
-    <xme:OJkIYDtbUsfadxjSElN2N9rDN5gryDyzjlGhvwAhlTS5Xf2aMQQaslFW00As9TL2v
-    4YxA_h4A7gu5kP6ISk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvgddugeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkfffhvffutgesthdtredtreertdenucfhrhhomhepfdflrghrvggu
-    uceurghlughrihgughgvfdcuoehjrhgssegvgihpuhhnghgvrdhusheqnecuggftrfgrth
-    htvghrnheptdekudehgedvvdeiieevhfegteegieegfffgfeeujefgudefhedvfefhudek
-    leegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjh
-    hrsgesvgigphhunhhgvgdruhhs
-X-ME-Proxy: <xmx:OJkIYFAyzBe_NNjy6mA4nFRb0t9lATAKTeeQE6VDWe9JBK8KEeLT1A>
-    <xmx:OJkIYDe4yJ0tPmi2etRc6yy5RBMbBGxVGv_v5_VredVEbOTkEmmENg>
-    <xmx:OJkIYMOd70TboBH0CHwrT8LV1kmvxJldi6U35T2hXfQIen55qx9mbQ>
-    <xmx:OZkIYL1jt5Z-NB54jPtUC2UdVIEzPZxdPJTDpsytmg9dxOi-GGMZvw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 380C4188009D; Wed, 20 Jan 2021 15:57:28 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e8-fm-20210120.001-g36b56e88
-Mime-Version: 1.0
-Message-Id: <41288ccb-1012-486b-81c1-a24c31850c91@www.fastmail.com>
-Date:   Wed, 20 Jan 2021 12:56:26 -0800
-From:   "Jared Baldridge" <jrb@expunge.us>
-To:     linux-kernel@vger.kernel.org, "Hans de Goede" <hdegoede@redhat.com>
-Cc:     "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
-        "Maxime Ripard" <mripard@kernel.org>,
-        "Thomas Zimmermann" <tzimmermann@suse.de>,
-        "David Airlie" <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm: Added orientation quirk for OneGX1 Pro
-Content-Type: text/plain
+        id S1727517AbhATVZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:25:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726956AbhATUy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 15:54:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4BF5235F9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611176020;
+        bh=i2d5Zc9HUAVyYlrskonowpJniHVwj2kCBz32yTZACtM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SYsag/CpQhxB5sg0C32OG88lVxZeOyzbAIT1oXugQuwa0XsK5H8E8T3U+/DDQ0d8A
+         P6bjIaI7LcScpB64T9gx3rwwapnk5ko9fC1cPN4qjlqfjUlD6NW6jtI8BTJ0OCwt1H
+         s+lKMjMnCIut5ClALdmhsRRMvqxZn818Y9yTNviMrihBH3anT+L7YVkWZ3at4WUzSA
+         I+imxJ6W7IGGJhph2QYO57WRic/fzvdzKR0XIV+2/2zaXLJElHOWQWJGHeDLHu6UHh
+         j2DZ0o8zDsI/UsV0RIVS6QlMRjQAdT2tJlN59rmLLskxsiNpWGRNFCyXSxKfhb8yHW
+         0j1Vg4Fygsq2g==
+Received: by mail-oo1-f54.google.com with SMTP id x203so6106013ooa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:53:40 -0800 (PST)
+X-Gm-Message-State: AOAM532Pa0iyO7PmMqXYgpIf4WctZ53fZJt/Ra3Xc3NhR3Js/J7EXjpE
+        zESdEThpKMHwvZ0iQr2K8huiPkvJJjZj/TDJ+Xc=
+X-Google-Smtp-Source: ABdhPJyKlJpGC1IH5urvh6Ztvg3w36z7l3VC5L82KSiRllAABL9k1hPOPoT7H1hJSlMUGfFyJnvKU/JcOcM748O9RPM=
+X-Received: by 2002:a4a:9c01:: with SMTP id y1mr7283583ooj.15.1611176019971;
+ Wed, 20 Jan 2021 12:53:39 -0800 (PST)
+MIME-Version: 1.0
+References: <20210120131559.1971359-1-arnd@kernel.org> <20210120131559.1971359-5-arnd@kernel.org>
+ <2399eb7ae01ff8b9134ac170e709e39b58bda441.camel@perches.com>
+In-Reply-To: <2399eb7ae01ff8b9134ac170e709e39b58bda441.camel@perches.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 20 Jan 2021 21:53:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0syaRTroAZB4PnNBCECreDuYwzfAo9AXwrs8rmUoQukw@mail.gmail.com>
+Message-ID: <CAK8P3a0syaRTroAZB4PnNBCECreDuYwzfAo9AXwrs8rmUoQukw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] timer: remove sirf prima driver
+To:     Joe Perches <joe@perches.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OneGX1 Pro has a fairly unique combination of generic strings,
-but we additionally match on the BIOS date just to be safe.
+On Wed, Jan 20, 2021 at 6:50 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2021-01-20 at 14:15 +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The CSR SiRF prima2/atlas platforms are getting removed, so this driver
+> > is no longer needed.
+>
+> Should this platform really be removed?
+>
+> While I followed the removal thread just a little,
+> isn't prima still in use in various GPS handhelds?
 
-Signed-off-by: Jared Baldridge <jrb@expunge.us>
----
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+I'm not aware of anyone running mainline Linux on those, as I said
+in the platform removal patch[1] description, there have not been any
+contributions to third-party machine support, the only boards that
+ever booted a mainline kernel were the evaluation boards.
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index 58f5dc2f6dd5..f6bdec7fa925 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -84,6 +84,13 @@ static const struct drm_dmi_panel_orientation_data itworks_tw891 = {
-        .orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
- };
- 
-+static const struct drm_dmi_panel_orientation_data onegx1_pro = {
-+       .width = 1200,
-+       .height = 1920,
-+       .bios_dates = (const char * const []){ "12/17/2020", NULL },
-+       .orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-+};
-+
- static const struct drm_dmi_panel_orientation_data lcd720x1280_rightside_up = {
-        .width = 720,
-        .height = 1280,
-@@ -211,6 +218,13 @@ static const struct dmi_system_id orientation_data[] = {
-                  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Lenovo ideapad D330-10IGM"),
-                },
-                .driver_data = (void *)&lcd1200x1920_rightside_up,
-+       }, {    /* OneGX1 Pro */
-+               .matches = {
-+                 DMI_EXACT_MATCH(DMI_SYS_VENDOR, "SYSTEM_MANUFACTURER"),
-+                 DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "SYSTEM_PRODUCT_NAME"),
-+                 DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Default string"),
-+               },
-+               .driver_data = (void *)&onegx1_pro,
-        }, {    /* VIOS LTH17 */
-                .matches = {
-                  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "VIOS"),
--- 
-2.29.2
+If you have any information on hobbyist users of this platform, let
+me know.
+
+       Arnd
+
+[1] https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-3-arnd@kernel.org/T/#u
