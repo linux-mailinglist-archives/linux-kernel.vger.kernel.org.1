@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9692FD7B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FC62FD7C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391623AbhATSEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S1733281AbhATSFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389565AbhATSCW (ORCPT
+        with ESMTP id S2390152AbhATSCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:02:22 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5B9C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:01:41 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y187so3631308wmd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:01:41 -0800 (PST)
+        Wed, 20 Jan 2021 13:02:25 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E547FC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:01:42 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id m187so3610175wme.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:01:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zQoVeBFspR4mt3piNvLaPW/lHzLoxodJhfaRGQgUT1o=;
-        b=n1TBEkVVeRe65EecswdyymfUn7w4pRZ39sPs3d6I+/YsPGlFlkRSPmtoPTLcm/pCL8
-         7R62yN0J13Y6ttRM5kWB7NlUsyJ22RODR8K+Cfaqg1PrpGMCBbhDZxgS6aL6Giqjy+Jd
-         jEm1XNoT9GsFI5fax/PaWYYmj1hWmwYKJutleqn36DvIBsUiaGCHswZs7aIKL6uE/Bx5
-         FLQ/3YKBhdM+0H876HH29jAQUmYlbA7Z8JXw17csFA39INZAEN9BLftUMA42iEc9ufDV
-         9ps7E8K69ade4CPGYEimPznqY0ZjGXVZROQxlHOj78+PD08f7uEL+Bo3Z5+eC+CWKri4
-         P5ow==
+        bh=5yZ5BO3u6lFnZ9F8UDgKbhKjLGtUQNrjUBzAHGBNeJ0=;
+        b=VSxvdICIp48jXqyEITKyru2UcJ9m9c+PJwLnlRlyDflVj1bev2cSqhhoHJWZN/J08F
+         PujNT6SeDWCVeWpOph5AePRWcP5Vjv8zMngbkSFGTS35TSU0MVx5/mUipPJ1RouLQNeG
+         L50hugDZsMA/Befv5tTE2waM3SmRpqQJoWxAM95TfGGtj/pLQ9NIdCKHkkmIzA+1H7Oh
+         TrsydV6uZhIsa5+PGQxDB4yRgT+zx6a5XTINaC50UqwBGIP9N7y5m3L5xssf2TRhxl6H
+         bXA1svKxh0o5+Y7Dqhu7A2h4Mw3tX/BoCsI/MnsNEjdfhJt0olw9BOf4WKxfqm6TflJL
+         ZcEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zQoVeBFspR4mt3piNvLaPW/lHzLoxodJhfaRGQgUT1o=;
-        b=P8CliuqtfOFXlAFasaH6wYGGdFV/RtRII1XZmmdXRIwCrdo71VqC/ynVfcGbkMLA07
-         ysRkV4B/OGZiR79D+Nmr4JU0Clb552y2xofNxxJ8x2wrgE737SOyMqpEBPOYRhI3o41a
-         NaWEt9/UaSEOG7o74jCCwSAiT1EbR/PD2VAljHoHQ42h4ClZ7t1vbjeofWoUXT1ZXjx0
-         27aTCbjPm3iP6HMRGqDzcweHF+8Jl7pRvuDaStyf0osJGl8ElAu42N7IzvFKOYO3u6VD
-         VL1OBLSHAUNklazVV5J4auiLHMJS5Bn8LMzxGuaaVETDUmUq1mXhHBxvZD0PX0nQgdKY
-         qHaw==
-X-Gm-Message-State: AOAM532hUBClH5Pp5P6IOHbbDoAcZWUnek7Z+ATgM0ZzDu14YKqFwhTR
-        WfsGsKBmq4tmChiU75fyzGI9Gg==
-X-Google-Smtp-Source: ABdhPJy+vZ5Ndk2chQmEIUc7iK9pg24cCvNdSKut3bwHquW7xDOJ8GeEpBtiILkL2aWLPoPKAjyxiw==
-X-Received: by 2002:a05:600c:299:: with SMTP id 25mr5414365wmk.183.1611165700508;
-        Wed, 20 Jan 2021 10:01:40 -0800 (PST)
+        bh=5yZ5BO3u6lFnZ9F8UDgKbhKjLGtUQNrjUBzAHGBNeJ0=;
+        b=YGgv/iOheUPr8tUJkCgzI9TGyB4/ckZDryoL4yNyQj9xCB2LY2YbkeCEXFaQRVx44a
+         c2gyNmtbAaI/SnwqTAY7G/uN9fb+HxKp+N2KSsVSkFZFMU5FqpNroAC6jYC5I02zMI+Z
+         5uZX4xWzMFL8BNvrVJz4XC3ls6W6E5rKJkydkluRQQmR4cWxl3SbbN+xEoPuiApIx1aH
+         BGurPgwNXIg5qVxER7Y4slg63wKH8PcoCJmzmOo1bjH75XCyvShQKK+APP2jlmJG9Y/O
+         2X7dPJxFbljWUDlwJZAsn12wPNgnuma89GK/6chWTIzf3h3m6AP3DpQ5kJOFuUhNpS7V
+         6o8g==
+X-Gm-Message-State: AOAM532YtTLkfP0Zx+cUUC/tx1vYUWzVqaM9uFXHVYWZr3LuUuGESu0w
+        d++ifOaYEiotjzLq14bQZgoB1w==
+X-Google-Smtp-Source: ABdhPJz5Y0JvcnhmCsjZZ+kKBCgVdEfttMWHMp7t3aOwOPusy1CsvGlJAMfLnaCstLDe4cxl7J7uDg==
+X-Received: by 2002:a1c:7402:: with SMTP id p2mr5364888wmc.43.1611165701757;
+        Wed, 20 Jan 2021 10:01:41 -0800 (PST)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id g194sm5267422wme.39.2021.01.20.10.01.39
+        by smtp.gmail.com with ESMTPSA id g194sm5267422wme.39.2021.01.20.10.01.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 10:01:39 -0800 (PST)
+        Wed, 20 Jan 2021 10:01:41 -0800 (PST)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     vkoul@kernel.org, yung-chuan.liao@linux.intel.com
 Cc:     pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 1/2] soundwire: add support for static port mapping
-Date:   Wed, 20 Jan 2021 18:01:09 +0000
-Message-Id: <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 2/2] soundwire: qcom: add support for static port mapping
+Date:   Wed, 20 Jan 2021 18:01:10 +0000
+Message-Id: <20210120180110.8357-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
 References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
@@ -66,80 +66,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the soundwire controllers can have static functions assigned
-to each port, like some ports can only do PCM or PDM. This is the situation
-with some of the Qualcomm Controllers.
-
-In such cases its not correct to assign/map any free port on master
-during streaming.
-
-So, this patch provides a way to pass mapped port number along
-with the port config, so that master can assign correct ports based
-on the provided static mapping.
+On some of Qualcomm SoundWire controller instances ports are statically
+mapped based on the functionalities. So add support for such mapping.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/bus.h       | 4 ++++
- drivers/soundwire/stream.c    | 4 ++++
- include/linux/soundwire/sdw.h | 4 ++++
- 3 files changed, 12 insertions(+)
+ drivers/soundwire/qcom.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 2e049d39c6e5..e812557c3293 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -85,6 +85,8 @@ int sdw_find_col_index(int col);
-  * @num: Port number. For audio streams, valid port number ranges from
-  * [1,14]
-  * @ch_mask: Channel mask
-+ * @mapped_port_num: Port number to map on Master or Slave in Static Configuration
-+ * @is_static_map: true for static port mapping
-  * @transport_params: Transport parameters
-  * @port_params: Port parameters
-  * @port_node: List node for Master or Slave port_list
-@@ -95,6 +97,8 @@ int sdw_find_col_index(int col);
- struct sdw_port_runtime {
- 	int num;
- 	int ch_mask;
-+	unsigned int mapped_port_num;
-+	bool is_static_map;
- 	struct sdw_transport_params transport_params;
- 	struct sdw_port_params port_params;
- 	struct list_head port_node;
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 1099b5d1262b..eab3bc0c95ed 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1202,6 +1202,10 @@ static struct sdw_port_runtime
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 6d22df01f354..0641b591037e 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -474,7 +474,10 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
  
- 	p_rt->ch_mask = port_config[port_index].ch_mask;
- 	p_rt->num = port_config[port_index].num;
-+	p_rt->is_static_map = port_config[port_index].is_static_map;
+ 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
+ 			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+-				pcfg = &ctrl->pconfig[i];
++				if (p_rt->is_static_map)
++					pcfg = &ctrl->pconfig[p_rt->mapped_port_num - 1];
++				else
++					pcfg = &ctrl->pconfig[i];
+ 				p_rt->transport_params.port_num = p_rt->num;
+ 				p_rt->transport_params.sample_interval =
+ 					pcfg->si + 1;
+@@ -551,7 +554,11 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+ 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
+ 			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+ 				/* Port numbers start from 1 - 14*/
+-				pn = find_first_zero_bit(port_mask, maxport);
++				if (p_rt->is_static_map)
++					pn = p_rt->mapped_port_num;
++				else
++					pn = find_first_zero_bit(port_mask, maxport);
 +
-+	if (p_rt->is_static_map)
-+	       p_rt->mapped_port_num = port_config[port_index].mapped_port_num;
- 
- 	return p_rt;
- }
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index f0b01b728640..a523f062993d 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -894,10 +894,14 @@ void sdw_bus_master_delete(struct sdw_bus *bus);
-  *
-  * @num: Port number
-  * @ch_mask: channels mask for port
-+ * @mapped_port_num: Port number to map on Master or Slave in Static Configuration
-+ * @is_static_map: true for static port mapping
-  */
- struct sdw_port_config {
- 	unsigned int num;
- 	unsigned int ch_mask;
-+	unsigned int mapped_port_num;
-+	bool is_static_map;
- };
- 
- /**
+ 				if (pn > (maxport - 1)) {
+ 					dev_err(ctrl->dev, "All ports busy\n");
+ 					ret = -EBUSY;
 -- 
 2.21.0
 
