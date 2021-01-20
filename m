@@ -2,227 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026C32FD6D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704652FD683
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390846AbhATRXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:23:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:40710 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387613AbhATPpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:45:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2976631B;
-        Wed, 20 Jan 2021 07:44:41 -0800 (PST)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7882E3F68F;
-        Wed, 20 Jan 2021 07:44:39 -0800 (PST)
-Date:   Wed, 20 Jan 2021 15:44:23 +0000
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 4/5] arm64: fpsimd: run kernel mode NEON with
- softirqs disabled
-Message-ID: <20210120154422.GB1684@arm.com>
-References: <20201218170106.23280-1-ardb@kernel.org>
- <20201218170106.23280-5-ardb@kernel.org>
- <20210119160045.GA1684@arm.com>
- <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
+        id S2391013AbhATRHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391054AbhATPuD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:50:03 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D0EC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 07:49:23 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2A3D022727;
+        Wed, 20 Jan 2021 16:49:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611157761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mUzrNzLNRcIreZmsLWq69k96pnmltY8SD1QI1C8Xvtc=;
+        b=L5pQvWqhEA+gLO4h7w/qbBgpTvDHeGlyG6fzjNFNthQiS4SuUVhd987+sn7ePNgqYGZM4y
+        jI7Cco9UbSUoHU1Jg7ygI/FOs3VSTIpAj2WiVGZbAgerBBFYTFLcJnPU25j1m9UweQYQ5K
+        Nchsvs9cGuSTWwUZJwoFXYl2wSaiclo=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 20 Jan 2021 16:49:21 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     vigneshr@ti.com, p.yadav@ti.com, miquel.raynal@bootlin.com,
+        richard@nod.at, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Kavyasree.Kotagiri@microchip.com
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: sst: Add support for Global Unlock
+ on sst26vf
+In-Reply-To: <8a0e7885-4b9e-be62-eb46-1af74c65afa8@microchip.com>
+References: <20210120131914.277363-1-tudor.ambarus@microchip.com>
+ <20210120131914.277363-2-tudor.ambarus@microchip.com>
+ <b3a61abec8927c7229c27415d2c769a8@walle.cc>
+ <ad0cc416-73b7-f626-115f-d192fac17957@microchip.com>
+ <447aca9c61a45b05f7869b9747e2c301@walle.cc>
+ <8a0e7885-4b9e-be62-eb46-1af74c65afa8@microchip.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <e1e5f647fd9e91538fd730c626beff52@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 05:29:05PM +0100, Ard Biesheuvel wrote:
-> On Tue, 19 Jan 2021 at 17:01, Dave Martin <Dave.Martin@arm.com> wrote:
-> >
-> > On Fri, Dec 18, 2020 at 06:01:05PM +0100, Ard Biesheuvel wrote:
-> > > Kernel mode NEON can be used in task or softirq context, but only in
-> > > a non-nesting manner, i.e., softirq context is only permitted if the
-> > > interrupt was not taken at a point where the kernel was using the NEON
-> > > in task context.
-> > >
-> > > This means all users of kernel mode NEON have to be aware of this
-> > > limitation, and either need to provide scalar fallbacks that may be much
-> > > slower (up to 20x for AES instructions) and potentially less safe, or
-> > > use an asynchronous interface that defers processing to a later time
-> > > when the NEON is guaranteed to be available.
-> > >
-> > > Given that grabbing and releasing the NEON is cheap, we can relax this
-> > > restriction, by increasing the granularity of kernel mode NEON code, and
-> > > always disabling softirq processing while the NEON is being used in task
-> > > context.
-> > >
-> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> >
-> > Sorry for the slow reply on this...  it looks reasonable, but I have a
-> > few comments below.
-> >
+Am 2021-01-20 16:39, schrieb Tudor.Ambarus@microchip.com:
+> On 1/20/21 5:02 PM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> Am 2021-01-20 15:52, schrieb Tudor.Ambarus@microchip.com:
+>>> On 1/20/21 4:05 PM, Michael Walle wrote:
+>>>>> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+>>>>> index 00e48da0744a..d6e1396abb96 100644
+>>>>> --- a/drivers/mtd/spi-nor/sst.c
+>>>>> +++ b/drivers/mtd/spi-nor/sst.c
+>>>>> @@ -8,6 +8,39 @@
+>>>>> 
+>>>>>  #include "core.h"
+>>>>> 
+>>>>> +static int sst26vf_lock(struct spi_nor *nor, loff_t ofs, uint64_t
+>>>>> len)
+>>>>> +{
+>>>>> +     return -EOPNOTSUPP;
+>>>>> +}
+>>>>> +
+>>>>> +static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs, 
+>>>>> uint64_t
+>>>>> len)
+>>>>> +{
+>>>>> +     if (ofs == 0 && len == nor->params->size)
+>>>>> +             return spi_nor_global_block_unlock(nor);
+>>>> 
+>>>> 
+>>>> Some blocks might not be unlocked because they are permanently
+>>>> locked. Does it make sense to read BPNV of the control register
+>>>> and add a debug message here?
+>>> 
+>>> It would, yes. If any block is permanently locked in the unlock_all
+>>> case,
+>>> I'll just print a dbg message and return -EINVAL. Sounds good?
+>> 
+>> spi_nor_sr_unlock(), atmel_at25fs_unlock() and 
+>> atmel_global_unprotect()
+>> will return -EIO in case the SR wasn't writable.
 > 
-> No worries - thanks for taking a look.
+> You mean in the spi_nor_write_sr_and_check() calls. -EIO is fine
+> there if what we wrote is different than what we read back, it would
+> indicate an IO error.
 > 
-> > > ---
-> > >  arch/arm64/include/asm/assembler.h | 19 +++++++++++++------
-> > >  arch/arm64/kernel/asm-offsets.c    |  2 ++
-> > >  arch/arm64/kernel/fpsimd.c         |  4 ++--
-> > >  3 files changed, 17 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-> > > index ddbe6bf00e33..74ce46ed55ac 100644
-> > > --- a/arch/arm64/include/asm/assembler.h
-> > > +++ b/arch/arm64/include/asm/assembler.h
-> > > @@ -15,6 +15,7 @@
-> > >  #include <asm-generic/export.h>
-> > >
-> > >  #include <asm/asm-offsets.h>
-> > > +#include <asm/alternative.h>
-> > >  #include <asm/cpufeature.h>
-> > >  #include <asm/cputype.h>
-> > >  #include <asm/debug-monitors.h>
-> > > @@ -717,17 +718,23 @@ USER(\label, ic ivau, \tmp2)                    // invalidate I line PoU
-> > >       .endm
-> > >
-> > >       .macro          if_will_cond_yield_neon
-> > > -#ifdef CONFIG_PREEMPTION
-> > >       get_current_task        x0
-> > >       ldr             x0, [x0, #TSK_TI_PREEMPT]
-> > > -     sub             x0, x0, #PREEMPT_DISABLE_OFFSET
-> > > -     cbz             x0, .Lyield_\@
-> > > +#ifdef CONFIG_PREEMPTION
-> > > +     cmp             x0, #PREEMPT_DISABLE_OFFSET
-> > > +     beq             .Lyield_\@      // yield on need_resched in task context
-> > > +#endif
-> > > +     /* never yield while serving a softirq */
-> > > +     tbnz            x0, #SOFTIRQ_SHIFT, .Lnoyield_\@
-> >
-> > Can you explain the rationale here?
-> >
-> > Using if_will_cond_yield_neon suggests the algo thinks it may run for
-> > too long the stall preemption until completion, but we happily stall
-> > preemption _and_ softirqs here.
-> >
-> > Is it actually a bug to use the NEON conditional yield helpers in
-> > softirq context?
-> >
-> 
-> No, it is not. But calling kernel_neon_end() from softirq context will
-> not cause it to finish any faster, so there is really no point in
-> doing so.
-> 
-> > Ideally, if processing in softirq context takes an unreasonable about of
-> > time, the work would be handed off to an asynchronous worker, but that
-> > does seem to conflict rather with the purpose of this series...
-> >
-> 
-> Agreed, but this is not something we can police at this level. If the
-> caller does an unreasonable amount of work from a softirq, no amount
-> of yielding is going to make a difference.
+> GBULK command clears all the write-protection bits in the Block
+> Protection register, except for those bits that have been permanently
+> locked down. So even if we have few blocks permanently locked, i.e.
+> CR.BPNV == 1, the GBULK can clear the protection for the remaining
+> blocks. So not really an IO error, but rather an -EINVAL, because
+> the user asks to unlock more than we can.
 
-Ack, just wanted to make sure I wasn't missing something.
+Doesn't EINVAL indicate wrong parameters, but does nothing? In this
+case, unlock would be partially successful.
 
-Anyone writing softirq code can starve preemption, so I agree that we
-should trust people to know what they're doing.
+In any case, my point was that depending on the underlying locking
+ops, either -EIO or -EINVAL is returned if spi_nor_unlock() fails
+for the same reason, that is unlock() wasn't possible because of
+some sort of hardware write protection. And IMHO it should return
+the same errno (whatever the correct errno is in this case).
 
-
-> > > +
-> > > +     adr_l           x0, irq_stat + IRQ_CPUSTAT_SOFTIRQ_PENDING
-> > > +     this_cpu_offset x1
-> > > +     ldr             w0, [x0, x1]
-> > > +     cbnz            w0, .Lyield_\@  // yield on pending softirq in task context
-> > > +.Lnoyield_\@:
-> > >       /* fall through to endif_yield_neon */
-> > >       .subsection     1
-> > >  .Lyield_\@ :
-> > > -#else
-> > > -     .section        ".discard.cond_yield_neon", "ax"
-> > > -#endif
-> > >       .endm
-> > >
-> > >       .macro          do_cond_yield_neon
-> > > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-> > > index 7d32fc959b1a..34ef70877de4 100644
-> > > --- a/arch/arm64/kernel/asm-offsets.c
-> > > +++ b/arch/arm64/kernel/asm-offsets.c
-> > > @@ -93,6 +93,8 @@ int main(void)
-> > >    DEFINE(DMA_FROM_DEVICE,    DMA_FROM_DEVICE);
-> > >    BLANK();
-> > >    DEFINE(PREEMPT_DISABLE_OFFSET, PREEMPT_DISABLE_OFFSET);
-> > > +  DEFINE(SOFTIRQ_SHIFT, SOFTIRQ_SHIFT);
-> > > +  DEFINE(IRQ_CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t, __softirq_pending));
-> > >    BLANK();
-> > >    DEFINE(CPU_BOOT_STACK,     offsetof(struct secondary_data, stack));
-> > >    DEFINE(CPU_BOOT_TASK,              offsetof(struct secondary_data, task));
-> > > diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-> > > index 062b21f30f94..823e3a8a8871 100644
-> > > --- a/arch/arm64/kernel/fpsimd.c
-> > > +++ b/arch/arm64/kernel/fpsimd.c
-> > > @@ -180,7 +180,7 @@ static void __get_cpu_fpsimd_context(void)
-> > >   */
-> > >  static void get_cpu_fpsimd_context(void)
-> > >  {
-> > > -     preempt_disable();
-> > > +     local_bh_disable();
-> > >       __get_cpu_fpsimd_context();
-> > >  }
-> > >
-> > > @@ -201,7 +201,7 @@ static void __put_cpu_fpsimd_context(void)
-> > >  static void put_cpu_fpsimd_context(void)
-> > >  {
-> > >       __put_cpu_fpsimd_context();
-> > > -     preempt_enable();
-> > > +     local_bh_enable();
-> > >  }
-> > >
-> > >  static bool have_cpu_fpsimd_context(void)
-> >
-> > I was concerned about catching all the relevant preempt_disable()s, but
-> > it had slipped my memory that Julien had factored these into one place.
-> >
-> > I can't see off the top of my head any reason why this shouldn't work.
-> >
-> 
-> Thanks.
-> 
-> >
-> > In threory, switching to local_bh_enable() here will add a check for
-> > pending softirqs onto context handling fast paths.  I haven't dug into
-> > how that works, so perhaps this is trivial on top of the preemption
-> > check in preempt_enable().  Do you see any difference in hackbench or
-> > similar benchmarks?
-> >
-> 
-> I haven't tried, tbh. But by context handling fast paths, you mean
-> managing the FP/SIMD state at context switch time, right? Checking for
-> pending softirqs amounts to a single per-CPU load plus compare, so
-> that should be negligible AFAICT. Obviously, actually handling the
-
-Yes.  I've tended to assume, rather than prove, that this kind of thing
-is negligible -- so I confess I had not attempted to measure these
-effects when writing the original code.
-
-> softirq may take additional time, but that penalty has to be taken
-> somewhere - I don't see how that would create extra work that we
-> wouldn't have to do otherwise.
-> 
-> I'll do some experiments with hackbench once I get back to this series.
-
-That sounds fine.
-
-Probably you won't find a significant difference anyway.
-
-Cheers
----Dave
+-michael
