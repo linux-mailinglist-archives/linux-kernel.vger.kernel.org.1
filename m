@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE002FCAD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541342FCAD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbhATFru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbhATFq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:46:26 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C1AC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:45:45 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLDyZ6qHMz9rx6;
-        Wed, 20 Jan 2021 16:45:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1611121543;
-        bh=ISBNVX3LDUBTyhkPqMavSnFG3QO/ASLTAlab4isvt/Y=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=l8BIBTeW9QzGb/pmvDh762sGhBJD5+xKpauVBQzHEuLYeW1a57zcSmRA3c5HkUsF8
-         cGIVRTRmQc302mYniglMXvmn5jRe5I2ysuX431rvSI2y+RHaW+IxX83ibAzgU1hYPG
-         7EnecDGKQyy6fJpmuOvkrd4Ew4Vx4Uh71UxXJxEdxDB2tRNH/0yorv66R4LDo6zzTT
-         UhrPs4efphD0mLUCwl/4mXQ2p4rOr5GE5ZCJ9MZ/YND0N8p1PHdj5U+P1XcjnrQE52
-         2BWJPpD+zyfVF23MzGCp0ZJzvN5+Bh0erX1IcGKC4yNfRVph0A5KIMV3oT/SXUogSc
-         kNxWlRd9IWP1A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/47x: Disable 256k page size
-In-Reply-To: <2fed79b1154c872194f98bac4422c23918325e61.1611039590.git.christophe.leroy@csgroup.eu>
-References: <2fed79b1154c872194f98bac4422c23918325e61.1611039590.git.christophe.leroy@csgroup.eu>
-Date:   Wed, 20 Jan 2021 16:45:38 +1100
-Message-ID: <87h7ncqhz1.fsf@mpe.ellerman.id.au>
+        id S1727444AbhATFsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:48:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725816AbhATFsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 00:48:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 501AA2313A;
+        Wed, 20 Jan 2021 05:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611121653;
+        bh=IobmIF4V2nxEfrXkalV9cWslFV/qB8V7oNP+bsltypA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kbqntAQAC21/htIwAxqeJv2wJZuzJT+EJ01v/HQYykeEDBiwMzOF8Wa+QlL9xykl+
+         5TAdz198u/ZcgTfrh1pn+vAO+M5tBD+PSSkoOg3mgMktGj44d7XFZKamL28yur496S
+         o+IQMTZhNpv+iIwWCZRR+wgRiwW4X6gajZz2BGJklw3pp87xk5/YyqDRXua4YzPkyi
+         wN8VtsCj7Zz/Oj+GlQ0eWnZdFTmrhbaiz4yqPLPZsl0yAjvo4hMn7OdDpPE+rQhsfp
+         TYj2kSf2AzCFe4gThMzdbNC2kxs0mveX/AnTZU5c/potei6ImRfdNIlFeTWgV3wTbs
+         poveg7JgB7t+A==
+Date:   Tue, 19 Jan 2021 21:47:31 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Anthony Iliopoulos <ailiop@suse.com>, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, Mike Snitzer <snitzer@redhat.com>
+Subject: Re: [dm-devel] [PATCH AUTOSEL 5.4 03/26] dm integrity: select
+ CRYPTO_SKCIPHER
+Message-ID: <YAfD81Jw/0NU0eWN@sol.localdomain>
+References: <20210120012704.770095-1-sashal@kernel.org>
+ <20210120012704.770095-3-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120012704.770095-3-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> PPC47x_TLBE_SIZE isn't defined for 256k pages, so
-> this size of page shall not be selected for 47x.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: e7f75ad01d59 ("powerpc/47x: Base ppc476 support")
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Tue, Jan 19, 2021 at 08:26:40PM -0500, Sasha Levin wrote:
+> From: Anthony Iliopoulos <ailiop@suse.com>
+> 
+> [ Upstream commit f7b347acb5f6c29d9229bb64893d8b6a2c7949fb ]
+> 
+> The integrity target relies on skcipher for encryption/decryption, but
+> certain kernel configurations may not enable CRYPTO_SKCIPHER, leading to
+> compilation errors due to unresolved symbols. Explicitly select
+> CRYPTO_SKCIPHER for DM_INTEGRITY, since it is unconditionally dependent
+> on it.
+> 
+> Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+> Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  arch/powerpc/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 107bb4319e0e..a685e42d3993 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -772,7 +772,7 @@ config PPC_64K_PAGES
->  
->  config PPC_256K_PAGES
->  	bool "256k page size"
-> -	depends on 44x && !STDBINUTILS
-> +	depends on 44x && !STDBINUTILS && !PPC_47x
+>  drivers/md/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> index aa98953f4462e..7dd6e98257c72 100644
+> --- a/drivers/md/Kconfig
+> +++ b/drivers/md/Kconfig
+> @@ -565,6 +565,7 @@ config DM_INTEGRITY
+>  	select BLK_DEV_INTEGRITY
+>  	select DM_BUFIO
+>  	select CRYPTO
+> +	select CRYPTO_SKCIPHER
+>  	select ASYNC_XOR
+>  	---help---
+>  	  This device-mapper target emulates a block device that has
 
-Do we still need this STDBINUTILS thing?
+CRYPTO_SKCIPHER doesn't exist in 5.4 and earlier because it was renamed from
+CRYPTO_BLKCIPHER in 5.5.  If this patch is really important enough to backport,
+CRYPTO_SKCIPHER will need to be changed to CRYPTO_BLKCIPHER.
 
-It's pretty gross, and I notice we have zero defconfigs which disable
-it, meaning it's only randconfig builds that will ever test 256K pages.
-
-Can we just drop it and say if you enable 256K pages you need to know
-what you're doing?
-
-cheers
+- Eric
