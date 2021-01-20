@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E54B2FCB61
+	by mail.lfdr.de (Postfix) with ESMTP id AAD8C2FCB62
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbhATHQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:16:36 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11034 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728889AbhATHQU (ORCPT
+        id S1728165AbhATHSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:18:10 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:37109 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726627AbhATHSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:16:20 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DLGx268hwzj9mH;
-        Wed, 20 Jan 2021 15:14:30 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
- 15:15:26 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v2] hugetlbfs: remove meaningless variable avoid_reserve
-Date:   Wed, 20 Jan 2021 02:15:08 -0500
-Message-ID: <20210120071508.9078-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        Wed, 20 Jan 2021 02:18:06 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UMJjpYD_1611127009;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMJjpYD_1611127009)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 15:16:53 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     harry.wentland@amd.com
+Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        luben.tuikov@amd.com, Eric.Bernstein@amd.com,
+        Bhawanpreet.Lakha@amd.com, Rodrigo.Siqueira@amd.com,
+        Dmytro.Laktyushkin@amd.com, yebin10@huawei.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu: Assign boolean values to a bool variable
+Date:   Wed, 20 Jan 2021 15:16:47 +0800
+Message-Id: <1611127007-39308-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable avoid_reserve is meaningless because we never changed its
-value and just passed it to alloc_huge_page(). So remove it to make code
-more clear that in hugetlbfs_fallocate, we never avoid reserve when alloc
-hugepage yet. Also add a comment offered by Mike Kravetz to explain this.
+Fix the following coccicheck warnings:
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+./drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c:
+1009:6-16: WARNING: Assignment of 0/1 to bool variable.
+
+./drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c:
+200:2-10: WARNING: Assignment of 0/1 to bool variable.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 ---
- fs/hugetlbfs/inode.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ .../display/dc/dml/dcn30/display_rq_dlg_calc_30.c  | 32 +++++++++++-----------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 4bbfd78a7ccb..14df2f73b8ef 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -680,7 +680,6 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
- 		 */
- 		struct page *page;
- 		unsigned long addr;
--		int avoid_reserve = 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
+index 5b5916b..0f14f20 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
+@@ -165,8 +165,8 @@ static void handle_det_buf_split(struct display_mode_lib *mode_lib,
+ 	unsigned int swath_bytes_c = 0;
+ 	unsigned int full_swath_bytes_packed_l = 0;
+ 	unsigned int full_swath_bytes_packed_c = 0;
+-	bool req128_l = 0;
+-	bool req128_c = 0;
++	bool req128_l = false;
++	bool req128_c = false;
+ 	bool surf_linear = (pipe_src_param.sw_mode == dm_sw_linear);
+ 	bool surf_vert = (pipe_src_param.source_scan == dm_vert);
+ 	unsigned int log2_swath_height_l = 0;
+@@ -191,37 +191,37 @@ static void handle_det_buf_split(struct display_mode_lib *mode_lib,
+ 		total_swath_bytes = 2 * full_swath_bytes_packed_l;
  
- 		cond_resched();
+ 	if (total_swath_bytes <= detile_buf_size_in_bytes) { //full 256b request
+-		req128_l = 0;
+-		req128_c = 0;
++		req128_l = false;
++		req128_c = false;
+ 		swath_bytes_l = full_swath_bytes_packed_l;
+ 		swath_bytes_c = full_swath_bytes_packed_c;
+ 	} else if (!rq_param->yuv420) {
+-		req128_l = 1;
+-		req128_c = 0;
++		req128_l = true;
++		req128_c = false;
+ 		swath_bytes_c = full_swath_bytes_packed_c;
+ 		swath_bytes_l = full_swath_bytes_packed_l / 2;
+ 	} else if ((double)full_swath_bytes_packed_l / (double)full_swath_bytes_packed_c < 1.5) {
+-		req128_l = 0;
+-		req128_c = 1;
++		req128_l = false;
++		req128_c = true;
+ 		swath_bytes_l = full_swath_bytes_packed_l;
+ 		swath_bytes_c = full_swath_bytes_packed_c / 2;
  
-@@ -716,8 +715,15 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
- 			continue;
+ 		total_swath_bytes = 2 * swath_bytes_l + 2 * swath_bytes_c;
+ 
+ 		if (total_swath_bytes > detile_buf_size_in_bytes) {
+-			req128_l = 1;
++			req128_l = true;
+ 			swath_bytes_l = full_swath_bytes_packed_l / 2;
  		}
+ 	} else {
+-		req128_l = 1;
+-		req128_c = 0;
++		req128_l = true;
++		req128_c = false;
+ 		swath_bytes_l = full_swath_bytes_packed_l/2;
+ 		swath_bytes_c = full_swath_bytes_packed_c;
  
--		/* Allocate page and add to page cache */
--		page = alloc_huge_page(&pseudo_vma, addr, avoid_reserve);
-+		/*
-+		 * Allocate page without setting the avoid_reserve argument.
-+		 * There certainly are no reserves associated with the
-+		 * pseudo_vma.  However, there could be shared mappings with
-+		 * reserves for the file at the inode level.  If we fallocate
-+		 * pages in these areas, we need to consume the reserves
-+		 * to keep reservation accounting consistent.
-+		 */
-+		page = alloc_huge_page(&pseudo_vma, addr, 0);
- 		hugetlb_drop_vma_policy(&pseudo_vma);
- 		if (IS_ERR(page)) {
- 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+ 		total_swath_bytes = 2 * swath_bytes_l + 2 * swath_bytes_c;
+ 
+ 		if (total_swath_bytes > detile_buf_size_in_bytes) {
+-			req128_c = 1;
++			req128_c = true;
+ 			swath_bytes_c = full_swath_bytes_packed_c/2;
+ 		}
+ 	}
+@@ -1006,8 +1006,8 @@ static void dml_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
+ 
+ 	double min_dst_y_ttu_vblank = 0;
+ 	unsigned int dlg_vblank_start = 0;
+-	bool dual_plane = 0;
+-	bool mode_422 = 0;
++	bool dual_plane = false;
++	bool mode_422 = false;
+ 	unsigned int access_dir = 0;
+ 	unsigned int vp_height_l = 0;
+ 	unsigned int vp_width_l = 0;
+@@ -1021,7 +1021,7 @@ static void dml_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
+ 	double hratio_c = 0;
+ 	double vratio_l = 0;
+ 	double vratio_c = 0;
+-	bool scl_enable = 0;
++	bool scl_enable = false;
+ 
+ 	double line_time_in_us = 0;
+ 	//	double vinit_l;
+@@ -1156,7 +1156,7 @@ static void dml_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
+ 	// Source
+ 	//			 dcc_en			  = src.dcc;
+ 	dual_plane = is_dual_plane((enum source_format_class)(src->source_format));
+-	mode_422 = 0; // TODO
++	mode_422 = false; // TODO
+ 	access_dir = (src->source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
+ 	vp_height_l = src->viewport_height;
+ 	vp_width_l = src->viewport_width;
 -- 
-2.19.1
+1.8.3.1
 
