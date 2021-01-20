@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC3F2FD687
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1BF2FD684
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391034AbhATRJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:09:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58714 "EHLO mail.kernel.org"
+        id S2391035AbhATRIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:08:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391685AbhATRFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:05:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0CF0233E2;
-        Wed, 20 Jan 2021 17:04:43 +0000 (UTC)
+        id S2390983AbhATRF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 12:05:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A8CB233EB;
+        Wed, 20 Jan 2021 17:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611162296;
-        bh=va+8yzZazWv2hNG2ZtWuIyB2nJKfDd4jMqhGqRAZb7o=;
+        s=k20201202; t=1611162287;
+        bh=6y7mesr3Q1NXes3nk84DOPz+L1lKUPIBsmOdS8+7HZM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vmed0anBzGag0Z8bSuEA0Tx/cC2Rraek86TT4ZNBf5NWU9KhkSVm47/e5qYB2EgMG
-         Hh793Ebmr7UiucCD7spwxNAAotjKclldyTVEYvY9+Om97WYeu5OqlrmkqqKdKRpINM
-         GV6HUfz4n8Lekq7b7M91CggobdUqgDEJR05GIrgy0oOyeyO3ODydj2WcNDpe3XSGHF
-         QplrvZQrYQPXpoJ2Cyr26Z2rsG2RRiX+lrymQWzImJfV+oWjs+Ld2e7BrF1+MXHfM+
-         dqmV2WkQoEQfDON1aBRr8qJafeH3vkc+RZswoi3YHDceC2JJuhHPHvpbcu02/r+uVD
-         Qbg9LOZsR6tsA==
-Date:   Wed, 20 Jan 2021 19:04:39 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        b=Bh0uO5RaH5djYarANw5fAV8SJVtm64fF5PpmYwSwxs5FLxSGc1/Dhqam2K+5soFSU
+         cg9jGB1h1LY2Ce6Dihdz4sA0uPBgU8J8iI4pAS1LUg/48B5f+2aAd7IAAC36MI5zls
+         X57vmgO9ISc0g+a3aIhSjqAV6mxE9BPN05oUogxzpn8roZni+Udx8ScXQG/aW81qnj
+         XrTdaU9ywhOsMyGuCXVovsCwVuuEr5reBywtZQAV7gjR1LnAE61XTKejn0M0VWBloA
+         pAPq3ZLwr2nJOIYHJvEw3D8zJna7YSPr5fBQ/bm1GZy106kGcfn9CKTFl4UXCkqmQi
+         3Cf5NShsncKww==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E7D6840513; Wed, 20 Jan 2021 14:04:44 -0300 (-03)
+Date:   Wed, 20 Jan 2021 14:04:44 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>
-Subject: Re: [PATCH v14 05/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210120170439.GP1106298@kernel.org>
-References: <20201203062949.5484-1-rppt@kernel.org>
- <20201203062949.5484-6-rppt@kernel.org>
- <20210119202213.GI2260413@casper.infradead.org>
- <20210120150510.GO1106298@kernel.org>
- <20210120160210.GK2260413@casper.infradead.org>
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: FIX Re: [PATCH v7 3/3] perf-stat: enable counting events for BPF
+ programs
+Message-ID: <20210120170444.GA106434@kernel.org>
+References: <20210119143143.GJ12699@kernel.org>
+ <20210119144249.GK12699@kernel.org>
+ <20210119163123.GM12699@kernel.org>
+ <417ABE57-E527-4944-BE16-35AB92D071E9@fb.com>
+ <20210119223021.GO12699@kernel.org>
+ <20210120123727.GR12699@kernel.org>
+ <20210120130137.GS12699@kernel.org>
+ <20210120135013.GT12699@kernel.org>
+ <20210120163031.GU12699@kernel.org>
+ <498F663D-B3D5-4339-B076-B8D24FFD8B9A@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120160210.GK2260413@casper.infradead.org>
+In-Reply-To: <498F663D-B3D5-4339-B076-B8D24FFD8B9A@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 04:02:10PM +0000, Matthew Wilcox wrote:
-> On Wed, Jan 20, 2021 at 05:05:10PM +0200, Mike Rapoport wrote:
-> > On Tue, Jan 19, 2021 at 08:22:13PM +0000, Matthew Wilcox wrote:
-> > > On Thu, Dec 03, 2020 at 08:29:44AM +0200, Mike Rapoport wrote:
-> > > > +static vm_fault_t secretmem_fault(struct vm_fault *vmf)
-> > > > +{
-> > > > +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-> > > > +	struct inode *inode = file_inode(vmf->vma->vm_file);
-> > > > +	pgoff_t offset = vmf->pgoff;
-> > > > +	vm_fault_t ret = 0;
-> > > > +	unsigned long addr;
-> > > > +	struct page *page;
-> > > > +	int err;
-> > > > +
-> > > > +	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
-> > > > +		return vmf_error(-EINVAL);
-> > > > +
-> > > > +	page = find_get_page(mapping, offset);
-> > > > +	if (!page) {
-> > > > +
-> > > > +		page = secretmem_alloc_page(vmf->gfp_mask);
-> > > > +		if (!page)
-> > > > +			return vmf_error(-ENOMEM);
-> > > 
-> > > Just use VM_FAULT_OOM directly.
-> >  
-> > Ok.
-> > 
-> > > > +		err = add_to_page_cache(page, mapping, offset, vmf->gfp_mask);
-> > > > +		if (unlikely(err))
-> > > > +			goto err_put_page;
-> > > 
-> > > What if the error is EEXIST because somebody else raced with you to add
-> > > a new page to the page cache?
-> > 
-> > Right, for -EEXIST I need a retry here, thanks.
-> > 
-> > > > +		err = set_direct_map_invalid_noflush(page, 1);
-> > > > +		if (err)
-> > > > +			goto err_del_page_cache;
-> > > 
-> > > Does this work correctly if somebody else has a reference to the page
-> > > in the meantime?
-> > 
-> > Yes, it does. If somebody else won the race that page was dropped from the
-> > direct map and this call would be essentially a nop. And anyway, the very
-> > next patch changes the way pages are removed from the direct map ;-)
+Em Wed, Jan 20, 2021 at 04:40:46PM +0000, Song Liu escreveu:
 > 
-> What I'm thinking is:
 > 
-> thread A page faults
-> doesn't find page
-> allocates page
-> adds page to page cache
-> 				thread B page faults
-> 				does find page in page cache
-> set direct map invalid fails
-> deletes from page cache
-> 				... ?
+> > On Jan 20, 2021, at 8:30 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > 
+> > Em Wed, Jan 20, 2021 at 10:50:13AM -0300, Arnaldo Carvalho de Melo escreveu:
+> >> So sizeof(struct bpf_perf_event_value) == 24 and it is a per-cpu array, the
+> >> machine has 24 cpus, why is the kernel thinking it has more and end up zeroing
+> >> entries after the 24 cores? Some percpu map subtlety (or obvious thing ;-\) I'm
+> >> missing?
+> >> 
+> >> Checking lookups into per cpu maps in sample code now...
+> > 
+> > (gdb) run stat -b 244 -I 1000 -e cycles
+> > Starting program: /root/bin/perf stat -b 244 -I 1000 -e cycles
+> > [Thread debugging using libthread_db enabled]
+> > Using host libthread_db library "/lib64/libthread_db.so.1".
+> > libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> > libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
+> > 
+> > Breakpoint 1, bpf_program_profiler__read (evsel=0xce02c0) at util/bpf_counter.c:217
+> > 217		if (list_empty(&evsel->bpf_counter_list))
+> > (gdb) p num_
+> > num_cpu              num_groups           num_leaps            num_print_iv         num_stmts            num_transitions      num_warnings_issued
+> > num_cpu_bpf          num_ifs              num_print_interval   num_srcfiles         num_to_str           num_types
+> > (gdb) p num_cpu
+> > $1 = 24
+> > (gdb) p num_cpu_bpf
+> > $2 = 32
+> > (gdb)
+> > 
+> > Humm, why?
+> > 
+> > But then libbpf and the sample/bpf/ code use it this way:
+> > 
+> > 
+> > diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> > index 8c977f038f497fc1..7dd3d57aba4f620c 100644
+> > --- a/tools/perf/util/bpf_counter.c
+> > +++ b/tools/perf/util/bpf_counter.c
+> > @@ -207,7 +207,8 @@ static int bpf_program_profiler__enable(struct evsel *evsel)
+> > static int bpf_program_profiler__read(struct evsel *evsel)
+> > {
+> > 	int num_cpu = evsel__nr_cpus(evsel);
+> > -	struct bpf_perf_event_value values[num_cpu];
+> > +	int num_cpu_bpf = libbpf_num_possible_cpus();
+> > +	struct bpf_perf_event_value values[num_cpu > num_cpu_bpf ? num_cpu : num_cpu_bpf];
+> > 	struct bpf_counter *counter;
+> > 	int reading_map_fd;
+> > 	__u32 key = 0;
+> > 
+> > -------------------------------------------------------------
+> > 
+> > [root@five ~]# cat /sys/devices/system/cpu/possible
+> > 0-31
+> > [root@five ~]#
+> > 
+> > I bet that in your test systems evsel__nr_cpus(evsel) matches
+> > /sys/devices/system/cpu/possible and thus you don't see the problem.
+> 
+> Thanks Arnaldo!
+> 
+> Yes, my system have same online and possible CPUs. 
+> 
+> Since possible_cpu >= online_cpu, maybe we can use num_cpu_bpf in 
+> bpf_program_profiler__read() without he extra check? 
 
-Hmm, this is not nice indeed...
+That is what I'll do, no need to resubmit, I'll audit the other bits to
+see if something else needs changing.
 
--- 
-Sincerely yours,
-Mike.
+- Arnaldo
