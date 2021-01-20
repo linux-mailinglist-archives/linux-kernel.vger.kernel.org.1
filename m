@@ -2,58 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FF42FCC4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 358022FCC9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbhATIEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:04:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730358AbhATIBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:01:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3934023158;
-        Wed, 20 Jan 2021 08:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611129643;
-        bh=xbIP+WPsJ6E98Erl+eKehzZs7uNKeW7OigVWbF+7uFM=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=X+m8B59A7d3TnUA2HfoqkW+rQ5yzm5wAZNbkuQrZYMYQhZ1PsSBaL0hzLRu0cJeGl
-         7dUNIkExXfvKsuefwGqoIhPynhhhDl/ipJGQ39Z2dU5Qd+sOs/Kznkf5N4O0XVaOM1
-         OQ6HHKJDVSQhTF/Qflg7GQQ9jd0tHoD5X5kQICzU=
-Date:   Wed, 20 Jan 2021 09:00:39 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-renesas-soc@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] dt-bindings: serial: renesas,hscif: Add r8a779a0
- support
-Message-ID: <YAfjJwije0H56wp7@kroah.com>
-References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
- <20201228112715.14947-4-wsa+renesas@sang-engineering.com>
- <20210119221624.GA3651@kunai>
+        id S1730651AbhATIUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:20:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729019AbhATIBr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 03:01:47 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08163C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:01:02 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id y17so22122165wrr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:01:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XIKOfdQ39sGdLT3c6gVEbQNxQnjkeYmR/4PVU+oFEnc=;
+        b=sCYGfWzoNVu8KtENM5iDui+OEStVFvELcOSAZgVmUnzeok+qZ8fnFzMZ3sAt/P5Oba
+         e4RhGsXhfWMKRiq0hjgZ/LDIYxuNrJieoznYirdI7l6SHEdfpQ06J/Tzq/wisXzJbiwN
+         bVJRKmM37foNRY/4GHERf8gvgxN8O2UImScxlwakHZeSlOsrfyss9ZkGXwGtZLHASy+C
+         lROJedl6r4hYLInXTsgZ7g1st+iB400AE9Ffn9DGkbhSUBDxJOXhJAWEchY1FkVs360I
+         l2qBGizxkFQxEBxdE5EH5QvXByeCHd+S+iBRUZF1XD8VMqMO2+HJbPGV+oMKzakWA2TR
+         gnQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XIKOfdQ39sGdLT3c6gVEbQNxQnjkeYmR/4PVU+oFEnc=;
+        b=m1Qd0HxaDV3K3PWmQw3mkOdbuhlZU81hwM65cG8wG0B9kl/mqYVfsWmHIRseTF0ePs
+         AL89YLUTwn6P7C4WkxOohJnA5X+1eC+VgiePtLFTG9iiKN4UexoYkgd1awr8J/yIu1wX
+         GrucDYW0vfZo4uAkLQ8eRX95erDyjD2Ns3fvvuKp+9QRXCVhJ31wPypfliVySdbnCzFo
+         LR0WKuq0a8/UEmebPnoMKrgzG1fT50OOM+AEsRxVp+nWerWJGTytkr9cTgFEFbJkUjG+
+         2hXi58BAZtboR0QYECytY6PM9zHsxxUg3bk5plHF186Ks/r32P7+/49x3Tk8UkWeLuxc
+         E/1A==
+X-Gm-Message-State: AOAM533qhZFxor2qw/i/uR0cHEMeqkRMySf8kmcPdPjznwoQMkLXEMT/
+        0E0FFo4OcV/SFQgDNM74X/fxrA==
+X-Google-Smtp-Source: ABdhPJyDym/bNUT6yBQUvaB9v6KUo2LO5JOEREhjvHPqEJz0wGuXCnI7RAtQTBczYi9YiPZEurxeIg==
+X-Received: by 2002:a5d:40d2:: with SMTP id b18mr7677245wrq.369.1611129660723;
+        Wed, 20 Jan 2021 00:01:00 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id i18sm2469692wrp.74.2021.01.20.00.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 00:00:59 -0800 (PST)
+Date:   Wed, 20 Jan 2021 08:00:58 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Taehee Yoo <ap420073@gmail.com>
+Subject: Re: [PATCH 00/20] Rid W=1 warnings from Infinibad
+Message-ID: <20210120080058.GK4903@dell>
+References: <20210118223929.512175-1-lee.jones@linaro.org>
+ <20210120004046.GA1022538@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210119221624.GA3651@kunai>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210120004046.GA1022538@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:16:24PM +0100, Wolfram Sang wrote:
-> On Mon, Dec 28, 2020 at 12:27:10PM +0100, Wolfram Sang wrote:
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > ---
+On Tue, 19 Jan 2021, Jason Gunthorpe wrote:
+
+> On Mon, Jan 18, 2021 at 10:39:09PM +0000, Lee Jones wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > This is set 1 of either 2 or 3 sets required to fully clean-up.
+> > 
+> > Lee Jones (20):
+> >   RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
+> >   RDMA/core: device: Fix formatting in worthy kernel-doc header and
+> >     demote another
+> >   RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
+> >     issues
+> >   RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
+> >   RDMA/core/cache: Fix some misspellings, missing and superfluous param
+> >     descriptions
+> >   RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
+> >     'user_pri' and fix 'iwcq'
+> >   RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
+> >   RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
+> >     param 'ib_dev'
+> >   RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
+> >     formatting issues
+> >   RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
+> >     descriptions
+> >   RDMA/core/multicast: Provide description for
+> >     'ib_init_ah_from_mcmember()'s 'rec' param
+> >   RDMA/core/sa_query: Demote non-conformant kernel-doc header
+> >   RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
+> >   RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
+> >   RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
+> >     descriptions
+> >   RDMA/core/restrack: Fix kernel-doc formatting issue
+> >   RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
+> >     others
+> >   RDMA/core/counters: Demote non-conformant kernel-doc headers
+> >   RDMA/core/iwpm_util: Fix some param description misspellings
+> >   RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
 > 
-> Can we apply this via the serial tree? Or shall we take it via
-> renesas-soc? Thanks!
+> Looks Ok, applied to for-next, thanks
 
-I can take it, but normally I try to wait for a DT maintainer ack.
+Thanks Jason, much obliged.
 
-If you want to take it, feel free to as well.
+I'll get the other set out in the next few days.
 
-thanks,
+Hopefully we can have Infiniband cleaned-up by the end of this cycle.
 
-greg k-h
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
