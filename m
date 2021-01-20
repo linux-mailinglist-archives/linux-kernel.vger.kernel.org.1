@@ -2,206 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578992FDDA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 961AC2FDDB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392016AbhAUAHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:07:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41222 "EHLO mail.kernel.org"
+        id S2392056AbhAUAJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:09:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731815AbhATWYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 17:24:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7AA42368A;
-        Wed, 20 Jan 2021 22:24:01 +0000 (UTC)
+        id S1732384AbhATWdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 17:33:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D05122473;
+        Wed, 20 Jan 2021 22:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611181441;
-        bh=1VvtVQTaDItje67ZPJMqpNuHYllKHOc4mP1hp8eY9Hk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ccyDBRkpNo/Nza5F4xVedTfJYNLUi+zL4MmkXjaGv9iCgPQWKD5Gr+D2SMSa9Ofvu
-         t98SSv0tvKZCqlSqpIKObg4OcdZON+rVftXw18Pil7nNPYBek+KJKdxV0GcKDc4P8I
-         s3zaQOfsX60IeV9g0nyVgOA+oMKDej9cddwOPDUiXKrL0lN+nR+ARLvzniK3N/VP2V
-         /wCTLK5+AjgsyJnTWsk800dxQ86Ni55FTLW2k5YJp2UiIiBIt7OI24WycAQA6YDOle
-         tqSTH7fDTAL+fU32Atv6lw+ajpDW43j2TTP5fFTR3irp2oMxJDRxdfn5Fg5rPPyaeU
-         m/PNC+DCThyyQ==
-Received: by mail-oi1-f173.google.com with SMTP id p5so14310oif.7;
-        Wed, 20 Jan 2021 14:24:01 -0800 (PST)
-X-Gm-Message-State: AOAM531JID88FR0Aj7JBNDXa+1sDSKsj/090F6wNLH37IMZeH8eNPrIR
-        x+5uJn1Vileu/BJz0d7xvEVvHWIj3uN5N+MTc+E=
-X-Google-Smtp-Source: ABdhPJzOM8ODvnNmPGwAC41UTe7I3U8vD07x2N6RSlHx1auVSv75z4R8dM0Rw4QATfv+jEGtcNOtslJjFVGJT3Ofyo4=
-X-Received: by 2002:aca:d98a:: with SMTP id q132mr4258848oig.33.1611181440883;
- Wed, 20 Jan 2021 14:24:00 -0800 (PST)
+        s=k20201202; t=1611181917;
+        bh=IZpZup+7UVJmyznAHqT5zPuIOVNplTanitrN87XcENQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KwC0JeacdrJ9LXB4DLrYNvG1UWPLOKtQNEEHroZ40vf2MbOcwg7s6hpJbLR8Gy3WX
+         XZFEYY4qiVIU4t+VPH9r0cDDDV6As1d8Wvt0aj4rBoixMdHeVUTvKsHLuIRGPNSQAk
+         ArIZKhC3fvn4kEjz7zGv7kjliP8Ha8wjmrqwlw2cujiDjPvqEDuwjxIZdHB4JIkxpR
+         hNxcwCwPhM/xfLC5L+JhXPj3zqYOU0qhTr/T34gD7tshp9okYz9F7uWqgd2FtO9x8m
+         Y8llKWlB3aoo0LNjX8RQJsGHhGEAx74KdgSbBMDJKKH3caZZB+lY2ER3UYFXIWFjy2
+         kMk9itOxx3uug==
+Date:   Thu, 21 Jan 2021 00:31:52 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH v2] x86/sgx: Fix free_cnt counting logic in epc section
+Message-ID: <YAivWK/b/Mcz39JO@kernel.org>
+References: <20210120035320.19709-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-References: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 20 Jan 2021 23:23:49 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXE7B05eAnR7KoDCym09Cw5qnzrV8KfNT2zJrko+mFic+w@mail.gmail.com>
-Message-ID: <CAMj1kXE7B05eAnR7KoDCym09Cw5qnzrV8KfNT2zJrko+mFic+w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] crypto: talitos - Work around SEC6 ERRATA (AES-CTR
- mode data size error)
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120035320.19709-1-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 at 19:59, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> Talitos Security Engine AESU considers any input
-> data size that is not a multiple of 16 bytes to be an error.
-> This is not a problem in general, except for Counter mode
-> that is a stream cipher and can have an input of any size.
->
-> Test Manager for ctr(aes) fails on 4th test vector which has
-> a length of 499 while all previous vectors which have a 16 bytes
-> multiple length succeed.
->
-> As suggested by Freescale, round up the input data length to the
-> nearest 16 bytes.
->
-> Fixes: 5e75ae1b3cef ("crypto: talitos - add new crypto modes")
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Wed, Jan 20, 2021 at 11:53:20AM +0800, Tianjia Zhang wrote:
+> Increase `section->free_cnt` in sgx_sanitize_section() is more
+> reasonable, which is called in ksgxd kernel thread, instead of
 
-Doesn't this cause the hardware to write outside the given buffer?
+This is lacking reasoning of why.
 
+/Jarkko
+
+> assigning it to epc section pages number at initialization.
+> Although this is unlikely to fail, these pages cannot be
+> allocated after initialization, and which need to be reset
+> by ksgxd.
+> 
+> At the same time, taking section->lock could be moved inside
+> the !ret flow so that EREMOVE is done without holding the lock.
+> it's theoretically possible that ksgxd hasn't finished
+> sanitizing the EPC when userspace starts creating enclaves.
+> 
+> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > ---
->  drivers/crypto/talitos.c | 28 ++++++++++++++++------------
->  drivers/crypto/talitos.h |  1 +
->  2 files changed, 17 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-> index 4fd85f31630a..b656983c1ef4 100644
-> --- a/drivers/crypto/talitos.c
-> +++ b/drivers/crypto/talitos.c
-> @@ -1093,11 +1093,12 @@ static void ipsec_esp_decrypt_hwauth_done(struct device *dev,
->   */
->  static int sg_to_link_tbl_offset(struct scatterlist *sg, int sg_count,
->                                  unsigned int offset, int datalen, int elen,
-> -                                struct talitos_ptr *link_tbl_ptr)
-> +                                struct talitos_ptr *link_tbl_ptr, int align)
->  {
->         int n_sg = elen ? sg_count + 1 : sg_count;
->         int count = 0;
->         int cryptlen = datalen + elen;
-> +       int padding = ALIGN(cryptlen, align) - cryptlen;
->
->         while (cryptlen && sg && n_sg--) {
->                 unsigned int len = sg_dma_len(sg);
-> @@ -1121,7 +1122,7 @@ static int sg_to_link_tbl_offset(struct scatterlist *sg, int sg_count,
->                         offset += datalen;
->                 }
->                 to_talitos_ptr(link_tbl_ptr + count,
-> -                              sg_dma_address(sg) + offset, len, 0);
-> +                              sg_dma_address(sg) + offset, sg_next(sg) ? len : len + padding, 0);
->                 to_talitos_ptr_ext_set(link_tbl_ptr + count, 0, 0);
->                 count++;
->                 cryptlen -= len;
-> @@ -1144,10 +1145,11 @@ static int talitos_sg_map_ext(struct device *dev, struct scatterlist *src,
->                               unsigned int len, struct talitos_edesc *edesc,
->                               struct talitos_ptr *ptr, int sg_count,
->                               unsigned int offset, int tbl_off, int elen,
-> -                             bool force)
-> +                             bool force, int align)
->  {
->         struct talitos_private *priv = dev_get_drvdata(dev);
->         bool is_sec1 = has_ftr_sec1(priv);
-> +       int aligned_len = ALIGN(len, align);
->
->         if (!src) {
->                 to_talitos_ptr(ptr, 0, 0, is_sec1);
-> @@ -1155,22 +1157,22 @@ static int talitos_sg_map_ext(struct device *dev, struct scatterlist *src,
->         }
->         to_talitos_ptr_ext_set(ptr, elen, is_sec1);
->         if (sg_count == 1 && !force) {
-> -               to_talitos_ptr(ptr, sg_dma_address(src) + offset, len, is_sec1);
-> +               to_talitos_ptr(ptr, sg_dma_address(src) + offset, aligned_len, is_sec1);
->                 return sg_count;
->         }
->         if (is_sec1) {
-> -               to_talitos_ptr(ptr, edesc->dma_link_tbl + offset, len, is_sec1);
-> +               to_talitos_ptr(ptr, edesc->dma_link_tbl + offset, aligned_len, is_sec1);
->                 return sg_count;
->         }
->         sg_count = sg_to_link_tbl_offset(src, sg_count, offset, len, elen,
-> -                                        &edesc->link_tbl[tbl_off]);
-> +                                        &edesc->link_tbl[tbl_off], align);
->         if (sg_count == 1 && !force) {
->                 /* Only one segment now, so no link tbl needed*/
->                 copy_talitos_ptr(ptr, &edesc->link_tbl[tbl_off], is_sec1);
->                 return sg_count;
->         }
->         to_talitos_ptr(ptr, edesc->dma_link_tbl +
-> -                           tbl_off * sizeof(struct talitos_ptr), len, is_sec1);
-> +                           tbl_off * sizeof(struct talitos_ptr), aligned_len, is_sec1);
->         to_talitos_ptr_ext_or(ptr, DESC_PTR_LNKTBL_JUMP, is_sec1);
->
->         return sg_count;
-> @@ -1182,7 +1184,7 @@ static int talitos_sg_map(struct device *dev, struct scatterlist *src,
->                           unsigned int offset, int tbl_off)
->  {
->         return talitos_sg_map_ext(dev, src, len, edesc, ptr, sg_count, offset,
-> -                                 tbl_off, 0, false);
-> +                                 tbl_off, 0, false, 1);
+>  arch/x86/kernel/cpu/sgx/main.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index c519fc5f6948..34a72a147983 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -41,16 +41,18 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
+>  		if (kthread_should_stop())
+>  			return;
+>  
+> -		/* needed for access to ->page_list: */
+> -		spin_lock(&section->lock);
+> -
+>  		page = list_first_entry(&section->init_laundry_list,
+>  					struct sgx_epc_page, list);
+>  
+>  		ret = __eremove(sgx_get_epc_virt_addr(page));
+> -		if (!ret)
+> +
+> +		/* needed for access to ->page_list: */
+> +		spin_lock(&section->lock);
+> +
+> +		if (!ret) {
+>  			list_move(&page->list, &section->page_list);
+> -		else
+> +			section->free_cnt += 1;
+> +		} else
+>  			list_move_tail(&page->list, &dirty);
+>  
+>  		spin_unlock(&section->lock);
+> @@ -646,7 +648,6 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+>  		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
+>  	}
+>  
+> -	section->free_cnt = nr_pages;
+>  	return true;
 >  }
->
->  /*
-> @@ -1251,7 +1253,7 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
->
->         ret = talitos_sg_map_ext(dev, areq->src, cryptlen, edesc, &desc->ptr[4],
->                                  sg_count, areq->assoclen, tbl_off, elen,
-> -                                false);
-> +                                false, 1);
->
->         if (ret > 1) {
->                 tbl_off += ret;
-> @@ -1271,7 +1273,7 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
->                 elen = 0;
->         ret = talitos_sg_map_ext(dev, areq->dst, cryptlen, edesc, &desc->ptr[5],
->                                  sg_count, areq->assoclen, tbl_off, elen,
-> -                                is_ipsec_esp && !encrypt);
-> +                                is_ipsec_esp && !encrypt, 1);
->         tbl_off += ret;
->
->         if (!encrypt && is_ipsec_esp) {
-> @@ -1577,6 +1579,8 @@ static int common_nonsnoop(struct talitos_edesc *edesc,
->         bool sync_needed = false;
->         struct talitos_private *priv = dev_get_drvdata(dev);
->         bool is_sec1 = has_ftr_sec1(priv);
-> +       bool is_ctr = (desc->hdr & DESC_HDR_SEL0_MASK) == DESC_HDR_SEL0_AESU &&
-> +                     (desc->hdr & DESC_HDR_MODE0_AESU_MASK) == DESC_HDR_MODE0_AESU_CTR;
->
->         /* first DWORD empty */
->
-> @@ -1597,8 +1601,8 @@ static int common_nonsnoop(struct talitos_edesc *edesc,
->         /*
->          * cipher in
->          */
-> -       sg_count = talitos_sg_map(dev, areq->src, cryptlen, edesc,
-> -                                 &desc->ptr[3], sg_count, 0, 0);
-> +       sg_count = talitos_sg_map_ext(dev, areq->src, cryptlen, edesc, &desc->ptr[3],
-> +                                     sg_count, 0, 0, 0, false, is_ctr ? 16 : 1);
->         if (sg_count > 1)
->                 sync_needed = true;
->
-> diff --git a/drivers/crypto/talitos.h b/drivers/crypto/talitos.h
-> index 1469b956948a..32825119e880 100644
-> --- a/drivers/crypto/talitos.h
-> +++ b/drivers/crypto/talitos.h
-> @@ -344,6 +344,7 @@ static inline bool has_ftr_sec1(struct talitos_private *priv)
->
->  /* primary execution unit mode (MODE0) and derivatives */
->  #define        DESC_HDR_MODE0_ENCRYPT          cpu_to_be32(0x00100000)
-> +#define        DESC_HDR_MODE0_AESU_MASK        cpu_to_be32(0x00600000)
->  #define        DESC_HDR_MODE0_AESU_CBC         cpu_to_be32(0x00200000)
->  #define        DESC_HDR_MODE0_AESU_CTR         cpu_to_be32(0x00600000)
->  #define        DESC_HDR_MODE0_DEU_CBC          cpu_to_be32(0x00400000)
-> --
-> 2.25.0
->
+>  
+> -- 
+> 2.19.1.3.ge56e4f7
+> 
+> 
