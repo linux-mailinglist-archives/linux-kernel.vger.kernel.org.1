@@ -2,132 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4752FDCFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E172FDD55
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732517AbhATVqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:46:53 -0500
-Received: from mail-dm6nam10on2071.outbound.protection.outlook.com ([40.107.93.71]:54753
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725271AbhATVTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:19:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cLhyq0/rMFOttSV4+Axq+NSb6ev32I5G2zo6LA8FRzIw1tsy6T+OZG+PW3C221+eGwKIoxPC6g2+WBBSGEWYLQ3Hz6ypOIWCZ2BqwDDfJ3ecL8ub4l5yeJaSCR2eT4tqO7jvb+TPGpZzNHuK6cGuect3S8Qgnh/uCwkwONB00tmILZeED8xYzVtje8soCYaTwbmSbiZJr/gkkReas2idviQp32usVE5hPHgoDIbpxqtaDiwsxiQ8KfdnuUXtbCVTidXDPQoE1ennMR97MfjgliRgsEqBz2GSjTEbp4aSHJwncWJXhJvsDTVm2WzkEUWWD46EQHguAMUah7pW38j4hQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VbczUGf6gkoa5i0TTGQfKKGWpQbG6BncOnl7lC7jrhE=;
- b=N5PqwMBo6ehbxCMHzNTMT1fC5SRfERVnZdwipontynavA2JcEhzcxAt3AAIBcJmRlFqwdpVfSl7SfX8doD6mFgrcvoMdRwUVY76QrbQmmrXqgbHuKnk11yxf4/C9VPAvOUYfALV+hoj+vRqxZ/EwvmFBe3/vQMG/oFS14b+m20YxhFmTcoBhhQK4VQYGsgafQvLkUcaoeZGLxODFkfCVkiLo4IE+aKnAgz2uUjICi0S5gI+/O1frKi8sJg0259OrxtcfZbXHelY0WnQ5qGJ84/wBjduNCAUvIFU+R4/y3NtD7bhTX9bR08Yb8ZpIGvE6WQVSZqx14QxB6/Rewz6jgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corellium.com; dmarc=pass action=none
- header.from=corellium.com; dkim=pass header.d=corellium.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NETORGFT1575309.onmicrosoft.com;
- s=selector2-NETORGFT1575309-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VbczUGf6gkoa5i0TTGQfKKGWpQbG6BncOnl7lC7jrhE=;
- b=rkVyyvNwQlecvd0Bf7zgMxGAnft9AbqPqgYm8thSAIL97dRgRE2C2IOH/QImxIhOv81NDDYpuub/sqkCJLWSWg0z6DM24kcOzkVGurypjVvOTWJr59hMo+FmuZv1ilXMRPmg7vyGNDxFCzqQ9D6zHl557bgqtOVvzQC+vp05GHw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=corellium.com;
-Received: from DM5PR15MB1595.namprd15.prod.outlook.com (2603:10b6:3:cd::22) by
- DM6PR15MB3816.namprd15.prod.outlook.com (2603:10b6:5:2bf::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.11; Wed, 20 Jan 2021 21:18:10 +0000
-Received: from DM5PR15MB1595.namprd15.prod.outlook.com
- ([fe80::3d11:6159:1c47:2a5e]) by DM5PR15MB1595.namprd15.prod.outlook.com
- ([fe80::3d11:6159:1c47:2a5e%8]) with mapi id 15.20.3763.014; Wed, 20 Jan 2021
- 21:18:10 +0000
-Subject: Re: [RFC PATCH 4/7] irqchip/apple-aic: Add support for Apple AIC
-To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-5-mohamed.mediouni@caramail.com>
-From:   Stan Skowronek <stan@corellium.com>
-Message-ID: <ce74bb29-1237-b0e7-b397-99b44c8b653b@corellium.com>
-Date:   Wed, 20 Jan 2021 16:18:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
-In-Reply-To: <20210120132717.395873-5-mohamed.mediouni@caramail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [68.160.250.214]
-X-ClientProxiedBy: BL1PR13CA0181.namprd13.prod.outlook.com
- (2603:10b6:208:2be::6) To DM5PR15MB1595.namprd15.prod.outlook.com
- (2603:10b6:3:cd::22)
+        id S1730907AbhATXn4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 18:43:56 -0500
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:36281 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726486AbhATVZ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 16:25:58 -0500
+Received: by mail-ej1-f48.google.com with SMTP id l9so29848874ejx.3;
+        Wed, 20 Jan 2021 13:25:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6Ssw+zjtZMLxcvdLjzPmT7CToAEOi56wCkeJfmxJW4I=;
+        b=reK9Vs6ZJveOsiZ+AYNR45xB7RSF9kpcCT1K3LgONl/DPj8AK22Ycd2gpEnBuHuvmH
+         7zXxYd8gepl38ROw72fWfe9LpqUpwDsVfU5GbRZ5OtlyigQOY0ChpeTkWAtjH6r5SbLA
+         9yjbRJNYRDcZZ/xHoPgdMVuFPFJbqSpFyOE+6pF5I8zhY3lctxlj/Scq3e9MS/rjdmFX
+         lkgdm5FHCK7jaej9Lqp8Y99SrtDKVAxvck4G4CZgI4OAuaIXUYcy0kXmj3vIGYc8Pz3W
+         lwnuQljDj5bGhH8xphqwLZ/rBgHkEKWw/aHc7WVWhF36TsMfFWYD6wvUsviNXWoWjKxo
+         23Aw==
+X-Gm-Message-State: AOAM533UNnO17eAWyIOgTNh/c3ymkgiGGr6+kO6xUdRCuWxbwBeyITtg
+        LIaDpLOHJxUKm5PWS0JSpGqnPe0Zj+2pPes/Klg=
+X-Google-Smtp-Source: ABdhPJwA8jaJH1cue93hQcI8gC8bjDq5+XuGYA9A+xpAXXoZxgH1Db2zivwKW9byseEEx4hNwqVGZrpyrZvQD05sPkM=
+X-Received: by 2002:a17:906:32d6:: with SMTP id k22mr7314707ejk.457.1611177914999;
+ Wed, 20 Jan 2021 13:25:14 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.2] (68.160.250.214) by BL1PR13CA0181.namprd13.prod.outlook.com (2603:10b6:208:2be::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.9 via Frontend Transport; Wed, 20 Jan 2021 21:18:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e04f98d9-0544-457c-b421-08d8bd88e3a7
-X-MS-TrafficTypeDiagnostic: DM6PR15MB3816:
-X-Microsoft-Antispam-PRVS: <DM6PR15MB38162061A25819DCD6C2BB49D7A20@DM6PR15MB3816.namprd15.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:341;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /C6lTU5dPjum9A+/kmNNg8PbjD/th6HULcrHky5jBchZ+JO1DoAmNbM5q6APRVEhnJu+5WUFmCx9tgKYqki1j6iJyj4UrkBcZRPtgqtPqicdEC5oc+Fl1HL2wrNyF3iylNe2saxAjNIk4P/o0SOWoWF3Eb2EuWitb83ozfTsGJEWbAYXwTo60lwK9lpr+VnqRDE1fFa2250sHSiSpAsz9koxTG3JS/hPVNnFhdxz0ZWsdd06zjqmZce6oP9z1xH+rojq5s7YhaHtEJlXD3ARgz9bUHaBRSR7I7eVCuFEYbA9MrDvKWA6Z04flF+qTQrW/+mgc84fnZ+7+HNvAe4Ys6e+GqwfzOBJkbn6XqGBn+kO6tBrsTgHvzdFSTnTmr5cxpOD/Ug4AsKhUBRMMBPw9PmC9CgeYjOl+wSIGC2sJJU7nfEDFvV1bcIsbM1xfOq2g0rGDRIFdQ6NqtCLDldQ5/xfcHBHUcLuQQUr033sa/eLvhNQxczs7f3+We3S0WdB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR15MB1595.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39830400003)(366004)(396003)(346002)(376002)(47660400002)(8936002)(478600001)(66476007)(16576012)(36756003)(5660300002)(8676002)(956004)(2616005)(2906002)(66946007)(53546011)(66556008)(4744005)(186003)(316002)(6486002)(16526019)(54906003)(26005)(31686004)(4326008)(31696002)(52116002)(86362001)(46800400006)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cDFEbTNRRWZ5Y0M4Rk5XQys4M0F4dU1HL0ExTHRxQWE3Y1pmY201QmxORjVW?=
- =?utf-8?B?OVU4L2JheS9hSHptTEtLajF5VXZveHVkYWZOYWhqZjJpV1k3S3VSTVZ4dDhM?=
- =?utf-8?B?KzJPdGtNK0NXbzA0d1Jub1o1ZGdzRXFvS3dUaWUxaVI2K2Rjd3JyWThZa2ww?=
- =?utf-8?B?bnQvSktWM0JIMTZPWUJ1eEFDTUFSUjNtVElJQ0ZuSHlVK3c5YVh0QkNPMENy?=
- =?utf-8?B?YlNZOFhNRE9MeURFWFNWZC92NHZjSFJNVjFuOWNRSEdGb1pEMWZZYzhFZUJz?=
- =?utf-8?B?OG1QNDFpblpNSER2TFVGZzVTQjFscDRXK1o3TVEvdHhnT1ZCVnJBdGF3WnA4?=
- =?utf-8?B?R3lpdnRsb0dYaXU2UVdTcnplOTV4QWxFSzdNS3NSbmUrNWJxM1p6eWU4YytM?=
- =?utf-8?B?dmJYUXR2TTU3UFl5OU9sdExieUh0SnBhRkdZR0trK1hJZzIvYnQwWkZiZTRB?=
- =?utf-8?B?Q1ZQUlZsa2xKSzVSRm1mcGxVU2JONkNIWTFHcC9GT1lYQ3IzZnQzWDNVYUMx?=
- =?utf-8?B?cUZ1N3RRSy8zaVU1YVc0c2ZzZUYwUVdFMVUxRmJGWGwvY3p2aW5ZS1hoWFhu?=
- =?utf-8?B?SGpHUHl1ZjJCMzJWSFhTNWNtMWhXbWNFeHZvd3YxSVBWc1dmU2xOYklSUTJP?=
- =?utf-8?B?WWNkbjBCbFZ4TmdmV3RrajAwK1JJUnVLSUhqSVUyOUJnK2J2MVFERklUL0FW?=
- =?utf-8?B?RGdwa2l4alZvQW1IMjdhaXQwUlozTjV2SkEvRTNWTmorWFJHVktBWWM2dlRi?=
- =?utf-8?B?bXlQQ3VOUXF6M1dxM2U4ME4vSkU4cUl6MFg5cVVqakJ6c01wc3VnQ3hkUTc3?=
- =?utf-8?B?QjBPT08ySngyMEt1SmdFejBwbVFpU0lkZWtSUndqZUgxQXdiaEtVcHpiMmMw?=
- =?utf-8?B?UzBEbjV5aGVaRys3aFM0WmwycWVIdUtPaU1yQ3d2b1ExMXhzV0dzZnVPR1Q5?=
- =?utf-8?B?WE9XanJnSWZiOHpKbmxwdEhaWU5wMWdNZE9LWGl0bFMwRWtQZkFySVcwc2hj?=
- =?utf-8?B?L0tJT2M2RzUyemZYVmNHa2FiMURqVVBYbldPdDM2VU5yYVBuWGFpUlRORlIv?=
- =?utf-8?B?dDZCUGFocnl1cjhmT3p4UUtpakdMNmZVYm5QcmZrY1BHRTBpVlpSN3ZpWlB0?=
- =?utf-8?B?Z2tRTDRyZXJyaFd5S0tvT0lCWGkwa0J1Q0hFTlpDaGhUdVlDdFhncUsrN2RW?=
- =?utf-8?B?Vi9GdGxaRzZBVUJDK3MzTGhETXdLbFdSR3NnUFdtM2tsMkdYSUJENFRRSTcr?=
- =?utf-8?B?WTBPZFJuc2lBaktiejJNa28yam1NVndDTUFDZTdJQnl5eE5yRzU1Y1ZJUDhZ?=
- =?utf-8?Q?+OMkrE11mAZ1U6MzohAGt9DGpjMdEHYMZC?=
-X-OriginatorOrg: corellium.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e04f98d9-0544-457c-b421-08d8bd88e3a7
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR15MB1595.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2021 21:18:10.7105
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: cb8b7e88-0f9e-40ec-b342-a8686aa25f69
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Bt/g/eIp0ydNG4R5l2JBLlzgO5DwsnR3I4CDXdnl2LSNp3fWkqvOphOgrRCMhEqQVHbPfQFM5yW9ZHMTcolOhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3816
+References: <20210120142801.334550-1-arnd@kernel.org> <20210120142801.334550-3-arnd@kernel.org>
+In-Reply-To: <20210120142801.334550-3-arnd@kernel.org>
+From:   Barry Song <baohua@kernel.org>
+Date:   Thu, 21 Jan 2021 10:25:03 +1300
+Message-ID: <CAGsJ_4zSKAkGBMzGX7C1BfJU8ZLEsNwnhLq4EY+vxH2ZmODLoQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: remove sirf prima/atlas driver
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-mmc@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Stan Skowronek <stan@corellium.com>
+Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午3:28写道：
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The CSR SiRF prima2/atlas platforms are getting removed, so this driver
+> is no longer needed.
+>
+> Cc: Barry Song <baohua@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On 1/20/21 8:27 AM, Mohamed Mediouni wrote:
-> From: Stan Skowronek <stan@corellium.com>
->
-> Apple SoCs use the Apple AIC interrupt controller.
-> The Arm architectural timers is wired over FIQ on that hardware.
->
-> Signed-off-by: Stan Skowronek <stan@corellium.com>
-> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+Acked-by: Barry Song <baohua@kernel.org>
+
 > ---
->   .../interrupt-controller/apple,aic.yaml       |  49 ++++
->   MAINTAINERS                                   |   6 +
->   drivers/irqchip/Kconfig                       |   6 +
->   drivers/irqchip/Makefile                      |   1 +
->   drivers/irqchip/irq-apple-aic.c               | 211 ++++++++++++++++++
->   5 files changed, 273 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
->   create mode 100644 drivers/irqchip/irq-apple-aic.c
+>  .../devicetree/bindings/mmc/sdhci-sirf.txt    |  18 --
+>  drivers/mmc/host/Kconfig                      |  12 -
+>  drivers/mmc/host/Makefile                     |   1 -
+>  drivers/mmc/host/sdhci-sirf.c                 | 235 ------------------
+>  4 files changed, 266 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mmc/sdhci-sirf.txt
+>  delete mode 100644 drivers/mmc/host/sdhci-sirf.c
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-sirf.txt b/Documentation/devicetree/bindings/mmc/sdhci-sirf.txt
+> deleted file mode 100644
+> index dd6ed464bcb8..000000000000
+> --- a/Documentation/devicetree/bindings/mmc/sdhci-sirf.txt
+> +++ /dev/null
+> @@ -1,18 +0,0 @@
+> -* SiRFprimII/marco/atlas6 SDHCI Controller
+> -
+> -This file documents differences between the core properties in mmc.txt
+> -and the properties used by the sdhci-sirf driver.
+> -
+> -Required properties:
+> -- compatible: sirf,prima2-sdhc
+> -
+> -Optional properties:
+> -- cd-gpios: card detect gpio, with zero flags.
+> -
+> -Example:
+> -
+> -       sd0: sdhci@56000000 {
+> -               compatible = "sirf,prima2-sdhc";
+> -               reg = <0xcd000000 0x100000>;
+> -               cd-gpios = <&gpio 6 0>;
+> -       };
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 255d37e8bd3a..b67f6028b6f3 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -312,18 +312,6 @@ config MMC_SDHCI_S3C
+>
+>           If unsure, say N.
+>
+> -config MMC_SDHCI_SIRF
+> -       tristate "SDHCI support on CSR SiRFprimaII and SiRFmarco SoCs"
+> -       depends on ARCH_SIRF || COMPILE_TEST
+> -       depends on MMC_SDHCI_PLTFM
+> -       select MMC_SDHCI_IO_ACCESSORS
+> -       help
+> -         This selects the SDHCI support for SiRF System-on-Chip devices.
+> -
+> -         If you have a controller with this interface, say Y or M here.
+> -
+> -         If unsure, say N.
+> -
+>  config MMC_SDHCI_PXAV3
+>         tristate "Marvell MMP2 SD Host Controller support (PXAV3)"
+>         depends on CLKDEV_LOOKUP
+> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+> index 43136d382d5f..d2ec428cc808 100644
+> --- a/drivers/mmc/host/Makefile
+> +++ b/drivers/mmc/host/Makefile
+> @@ -19,7 +19,6 @@ obj-$(CONFIG_MMC_SDHCI_ACPI)  += sdhci-acpi.o
+>  obj-$(CONFIG_MMC_SDHCI_PXAV3)  += sdhci-pxav3.o
+>  obj-$(CONFIG_MMC_SDHCI_PXAV2)  += sdhci-pxav2.o
+>  obj-$(CONFIG_MMC_SDHCI_S3C)    += sdhci-s3c.o
+> -obj-$(CONFIG_MMC_SDHCI_SIRF)           += sdhci-sirf.o
+>  obj-$(CONFIG_MMC_SDHCI_F_SDH30)        += sdhci_f_sdh30.o
+>  obj-$(CONFIG_MMC_SDHCI_MILBEAUT)       += sdhci-milbeaut.o
+>  obj-$(CONFIG_MMC_SDHCI_SPEAR)  += sdhci-spear.o
+> diff --git a/drivers/mmc/host/sdhci-sirf.c b/drivers/mmc/host/sdhci-sirf.c
+> deleted file mode 100644
+> index e9b347b3af7e..000000000000
+> --- a/drivers/mmc/host/sdhci-sirf.c
+> +++ /dev/null
+> @@ -1,235 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-or-later
+> -/*
+> - * SDHCI support for SiRF primaII and marco SoCs
+> - *
+> - * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
+> - */
+> -
+> -#include <linux/delay.h>
+> -#include <linux/device.h>
+> -#include <linux/mmc/host.h>
+> -#include <linux/module.h>
+> -#include <linux/of.h>
+> -#include <linux/mmc/slot-gpio.h>
+> -#include "sdhci-pltfm.h"
+> -
+> -#define SDHCI_CLK_DELAY_SETTING 0x4C
+> -#define SDHCI_SIRF_8BITBUS BIT(3)
+> -#define SIRF_TUNING_COUNT 16384
+> -
+> -static void sdhci_sirf_set_bus_width(struct sdhci_host *host, int width)
+> -{
+> -       u8 ctrl;
+> -
+> -       ctrl = sdhci_readb(host, SDHCI_HOST_CONTROL);
+> -       ctrl &= ~(SDHCI_CTRL_4BITBUS | SDHCI_SIRF_8BITBUS);
+> -
+> -       /*
+> -        * CSR atlas7 and prima2 SD host version is not 3.0
+> -        * 8bit-width enable bit of CSR SD hosts is 3,
+> -        * while stardard hosts use bit 5
+> -        */
+> -       if (width == MMC_BUS_WIDTH_8)
+> -               ctrl |= SDHCI_SIRF_8BITBUS;
+> -       else if (width == MMC_BUS_WIDTH_4)
+> -               ctrl |= SDHCI_CTRL_4BITBUS;
+> -
+> -       sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+> -}
+> -
+> -static u32 sdhci_sirf_readl_le(struct sdhci_host *host, int reg)
+> -{
+> -       u32 val = readl(host->ioaddr + reg);
+> -
+> -       if (unlikely((reg == SDHCI_CAPABILITIES_1) &&
+> -                       (host->mmc->caps & MMC_CAP_UHS_SDR50))) {
+> -               /* fake CAP_1 register */
+> -               val = SDHCI_SUPPORT_DDR50 |
+> -                       SDHCI_SUPPORT_SDR50 | SDHCI_USE_SDR50_TUNING;
+> -       }
+> -
+> -       if (unlikely(reg == SDHCI_SLOT_INT_STATUS)) {
+> -               u32 prss = val;
+> -               /* fake chips as V3.0 host conreoller */
+> -               prss &= ~(0xFF << 16);
+> -               val = prss | (SDHCI_SPEC_300 << 16);
+> -       }
+> -       return val;
+> -}
+> -
+> -static u16 sdhci_sirf_readw_le(struct sdhci_host *host, int reg)
+> -{
+> -       u16 ret = 0;
+> -
+> -       ret = readw(host->ioaddr + reg);
+> -
+> -       if (unlikely(reg == SDHCI_HOST_VERSION)) {
+> -               ret = readw(host->ioaddr + SDHCI_HOST_VERSION);
+> -               ret |= SDHCI_SPEC_300;
+> -       }
+> -
+> -       return ret;
+> -}
+> -
+> -static int sdhci_sirf_execute_tuning(struct sdhci_host *host, u32 opcode)
+> -{
+> -       int tuning_seq_cnt = 3;
+> -       int phase;
+> -       u8 tuned_phase_cnt = 0;
+> -       int rc = 0, longest_range = 0;
+> -       int start = -1, end = 0, tuning_value = -1, range = 0;
+> -       u16 clock_setting;
+> -       struct mmc_host *mmc = host->mmc;
+> -
+> -       clock_setting = sdhci_readw(host, SDHCI_CLK_DELAY_SETTING);
+> -       clock_setting &= ~0x3fff;
+> -
+> -retry:
+> -       phase = 0;
+> -       tuned_phase_cnt = 0;
+> -       do {
+> -               sdhci_writel(host,
+> -                       clock_setting | phase,
+> -                       SDHCI_CLK_DELAY_SETTING);
+> -
+> -               if (!mmc_send_tuning(mmc, opcode, NULL)) {
+> -                       /* Tuning is successful at this tuning point */
+> -                       tuned_phase_cnt++;
+> -                       dev_dbg(mmc_dev(mmc), "%s: Found good phase = %d\n",
+> -                                mmc_hostname(mmc), phase);
+> -                       if (start == -1)
+> -                               start = phase;
+> -                       end = phase;
+> -                       range++;
+> -                       if (phase == (SIRF_TUNING_COUNT - 1)
+> -                               && range > longest_range)
+> -                               tuning_value = (start + end) / 2;
+> -               } else {
+> -                       dev_dbg(mmc_dev(mmc), "%s: Found bad phase = %d\n",
+> -                                mmc_hostname(mmc), phase);
+> -                       if (range > longest_range) {
+> -                               tuning_value = (start + end) / 2;
+> -                               longest_range = range;
+> -                       }
+> -                       start = -1;
+> -                       end = range = 0;
+> -               }
+> -       } while (++phase < SIRF_TUNING_COUNT);
+> -
+> -       if (tuned_phase_cnt && tuning_value > 0) {
+> -               /*
+> -                * Finally set the selected phase in delay
+> -                * line hw block.
+> -                */
+> -               phase = tuning_value;
+> -               sdhci_writel(host,
+> -                       clock_setting | phase,
+> -                       SDHCI_CLK_DELAY_SETTING);
+> -
+> -               dev_dbg(mmc_dev(mmc), "%s: Setting the tuning phase to %d\n",
+> -                        mmc_hostname(mmc), phase);
+> -       } else {
+> -               if (--tuning_seq_cnt)
+> -                       goto retry;
+> -               /* Tuning failed */
+> -               dev_dbg(mmc_dev(mmc), "%s: No tuning point found\n",
+> -                      mmc_hostname(mmc));
+> -               rc = -EIO;
+> -       }
+> -
+> -       return rc;
+> -}
+> -
+> -static const struct sdhci_ops sdhci_sirf_ops = {
+> -       .read_l = sdhci_sirf_readl_le,
+> -       .read_w = sdhci_sirf_readw_le,
+> -       .platform_execute_tuning = sdhci_sirf_execute_tuning,
+> -       .set_clock = sdhci_set_clock,
+> -       .get_max_clock  = sdhci_pltfm_clk_get_max_clock,
+> -       .set_bus_width = sdhci_sirf_set_bus_width,
+> -       .reset = sdhci_reset,
+> -       .set_uhs_signaling = sdhci_set_uhs_signaling,
+> -};
+> -
+> -static const struct sdhci_pltfm_data sdhci_sirf_pdata = {
+> -       .ops = &sdhci_sirf_ops,
+> -       .quirks = SDHCI_QUIRK_BROKEN_TIMEOUT_VAL |
+> -               SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
+> -               SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
+> -               SDHCI_QUIRK_RESET_CMD_DATA_ON_IOS,
+> -       .quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+> -};
+> -
+> -static int sdhci_sirf_probe(struct platform_device *pdev)
+> -{
+> -       struct sdhci_host *host;
+> -       struct sdhci_pltfm_host *pltfm_host;
+> -       struct clk *clk;
+> -       int ret;
+> -
+> -       clk = devm_clk_get(&pdev->dev, NULL);
+> -       if (IS_ERR(clk)) {
+> -               dev_err(&pdev->dev, "unable to get clock");
+> -               return PTR_ERR(clk);
+> -       }
+> -
+> -       host = sdhci_pltfm_init(pdev, &sdhci_sirf_pdata, 0);
+> -       if (IS_ERR(host))
+> -               return PTR_ERR(host);
+> -
+> -       pltfm_host = sdhci_priv(host);
+> -       pltfm_host->clk = clk;
+> -
+> -       sdhci_get_of_property(pdev);
+> -
+> -       ret = clk_prepare_enable(pltfm_host->clk);
+> -       if (ret)
+> -               goto err_clk_prepare;
+> -
+> -       ret = sdhci_add_host(host);
+> -       if (ret)
+> -               goto err_sdhci_add;
+> -
+> -       /*
+> -        * We must request the IRQ after sdhci_add_host(), as the tasklet only
+> -        * gets setup in sdhci_add_host() and we oops.
+> -        */
+> -       ret = mmc_gpiod_request_cd(host->mmc, "cd", 0, false, 0);
+> -       if (ret == -EPROBE_DEFER)
+> -               goto err_request_cd;
+> -       if (!ret)
+> -               mmc_gpiod_request_cd_irq(host->mmc);
+> -
+> -       return 0;
+> -
+> -err_request_cd:
+> -       sdhci_remove_host(host, 0);
+> -err_sdhci_add:
+> -       clk_disable_unprepare(pltfm_host->clk);
+> -err_clk_prepare:
+> -       sdhci_pltfm_free(pdev);
+> -       return ret;
+> -}
+> -
+> -static const struct of_device_id sdhci_sirf_of_match[] = {
+> -       { .compatible = "sirf,prima2-sdhc" },
+> -       { }
+> -};
+> -MODULE_DEVICE_TABLE(of, sdhci_sirf_of_match);
+> -
+> -static struct platform_driver sdhci_sirf_driver = {
+> -       .driver         = {
+> -               .name   = "sdhci-sirf",
+> -               .probe_type = PROBE_PREFER_ASYNCHRONOUS,
+> -               .of_match_table = sdhci_sirf_of_match,
+> -               .pm     = &sdhci_pltfm_pmops,
+> -       },
+> -       .probe          = sdhci_sirf_probe,
+> -       .remove         = sdhci_pltfm_unregister,
+> -};
+> -
+> -module_platform_driver(sdhci_sirf_driver);
+> -
+> -MODULE_DESCRIPTION("SDHCI driver for SiRFprimaII/SiRFmarco");
+> -MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
+> -MODULE_LICENSE("GPL v2");
+> --
+> 2.29.2
+>
