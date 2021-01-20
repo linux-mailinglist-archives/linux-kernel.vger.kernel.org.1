@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F1E2FD525
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE592FD52F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391307AbhATQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:11:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732325AbhATQKE (ORCPT
+        id S2391291AbhATQNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:13:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27694 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731403AbhATQMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:10:04 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C038C061757;
-        Wed, 20 Jan 2021 08:09:24 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1l2G2o-009CDI-D1; Wed, 20 Jan 2021 17:09:18 +0100
-Message-ID: <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>
-Subject: Re: [PATCH] init/module: split CONFIG_CONSTRUCTORS to fix module
- gcov on UML
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-um@lists.infradead.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Wed, 20 Jan 2021 17:09:01 +0100
-In-Reply-To: <8191aa4a-3bd7-5de7-1ad2-73b851128ff3@linux.ibm.com>
-References: <20210119121853.4e22b2506c9a.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
-         <8191aa4a-3bd7-5de7-1ad2-73b851128ff3@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 20 Jan 2021 11:12:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611159085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YedMCP9lMu2Cnddwp+/wzr1wQ5ddOE8Fl4udQS58Uic=;
+        b=FoJ+OEd6kN+LcIkK7VuDnys9j2v/ALKIH75TFxUVHA8VT9YTq/uWyBYxq1cLC/MYwXJcXT
+        4S90skFX2DqkVMmdANf2qxx2Eym8RkHRFPuHIxR84uDW2QwvzKl+hffwnhBaHafvFRMTma
+        QCgHkd8coYtUn904CkplbKZIbs1jB24=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-68-9ev1oVDtNdyMJtwocIRIyg-1; Wed, 20 Jan 2021 11:11:16 -0500
+X-MC-Unique: 9ev1oVDtNdyMJtwocIRIyg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3BC710054FF;
+        Wed, 20 Jan 2021 16:11:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1CA4A60D06;
+        Wed, 20 Jan 2021 16:11:12 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] cachefiles: Drop superfluous readpages aops NULL check
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 20 Jan 2021 16:11:12 +0000
+Message-ID: <161115907229.1175773.15191598530409204569.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-20 at 17:07 +0100, Peter Oberparleiter wrote:
+From: Takashi Iwai <tiwai@suse.de>
 
-> Do you expect other users for these new config symbols? 
+After the recent actions to convert readpages aops to readahead, the
+NULL checks of readpages aops in cachefiles_read_or_alloc_page() may
+hit falsely.  More badly, it's an ASSERT() call, and this panics.
 
-Probably not.
+Drop the superfluous NULL checks for fixing this regression.
 
-> If not it seems
-> to me that the goal of enabling module constructors for UML could also
-> be achieved without introducing new config symbols.
+[DH: Note that cachefiles never actually used readpages, so this check was
+ never actually necessary]
 
-Yeah, true.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208883
+BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1175245
+Fixes: 9ae326a69004 ("CacheFiles: A cache that backs onto a mounted filesystem")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Acked-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
 
-> For example you could suppress calling any built-in kernel constructors
-> in case of UML by extending the ifdef in do_ctors() to depend on both
-> CONFIG_CONSTRUCTORS and !CONFIG_UML (maybe with an explanatory comment).
-> 
-> Of course you'd still need to remove the !UML dependency in
-> CONFIG_GCOV_KERNEL.
+ fs/cachefiles/rdwr.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-Right.
-
-I can post a separate patch and we can see which one looks nicer?
-
-johannes
+diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
+index 8bda092e60c5..e027c718ca01 100644
+--- a/fs/cachefiles/rdwr.c
++++ b/fs/cachefiles/rdwr.c
+@@ -413,7 +413,6 @@ int cachefiles_read_or_alloc_page(struct fscache_retrieval *op,
+ 
+ 	inode = d_backing_inode(object->backer);
+ 	ASSERT(S_ISREG(inode->i_mode));
+-	ASSERT(inode->i_mapping->a_ops->readpages);
+ 
+ 	/* calculate the shift required to use bmap */
+ 	shift = PAGE_SHIFT - inode->i_sb->s_blocksize_bits;
+@@ -713,7 +712,6 @@ int cachefiles_read_or_alloc_pages(struct fscache_retrieval *op,
+ 
+ 	inode = d_backing_inode(object->backer);
+ 	ASSERT(S_ISREG(inode->i_mode));
+-	ASSERT(inode->i_mapping->a_ops->readpages);
+ 
+ 	/* calculate the shift required to use bmap */
+ 	shift = PAGE_SHIFT - inode->i_sb->s_blocksize_bits;
 
 
