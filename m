@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE362FC556
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6896F2FC55B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbhATAGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:06:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:58266 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730796AbhATAEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:04:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33DFA11D4;
-        Tue, 19 Jan 2021 16:04:08 -0800 (PST)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2BBBE3F68F;
-        Tue, 19 Jan 2021 16:04:08 -0800 (PST)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-mmc@vger.kernel.org
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        f.fainelli@gmail.com, stefan.wahren@i2se.com,
-        nsaenzjulienne@suse.de, ardb@kernel.org,
-        Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH v2] mmc: sdhci-iproc: Add ACPI bindings for the rpi
-Date:   Tue, 19 Jan 2021 18:04:06 -0600
-Message-Id: <20210120000406.1843400-2-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210120000406.1843400-1-jeremy.linton@arm.com>
-References: <20210120000406.1843400-1-jeremy.linton@arm.com>
+        id S1730497AbhATAIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:08:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728441AbhATAHO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 19:07:14 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD337C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 16:06:32 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id w24so15516105ybi.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 16:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JPds4149Ii9ZN0uT6CUuEhZc+NUZK0Fbq1Fvt2T7erE=;
+        b=FyG+VhVd8j8mIriGM+ZjsD2t4gLyQSPBycqtpE2rEEGNF2DnG9J5V34zlFD83PWtbl
+         aibtFeThs5VI22jiR+Btbkyu8OFdSkW2Q7sKcfEqx7giim20GPvzZE92NS+1J+4Qrc5A
+         Q13JT1r5wrwkMtzfPlunHkr5F449q3WqYbmp1ZLCuGbznkVi6YSGqLk1WAspOtnnNZJh
+         tYRvnbVfaxEzrHx25xoFYXOFxb0pU7qQ1PbGIz4+lo8HGBMSK5arX3EL9is4tRin50/3
+         8KRXdQoEAllNn8Geyu4Ff54sd/DWUndxQaEr8R4Q3+JLdeEH7fRa3yuevOA+oO1+4Zpy
+         HR3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JPds4149Ii9ZN0uT6CUuEhZc+NUZK0Fbq1Fvt2T7erE=;
+        b=XDBBMflNuemWNZp1v9PsWMC5lKU9DH4a7dReY2Amb5bWPDr1/5vyiitHed/WQjfTVO
+         w3rlEklNLg3lzh4Zd6X1CeVoR/17Si0D0aqo0LvwJIgJuoJAM0Swce3eW1LvTsiA3v39
+         WH0JLmarUsZWQMJ1xnjvdO8gRB2H8UwGjNP3CKoNenB9G2XFwiuuQkWZ0shzluOkktlK
+         HrfUFeZL5Sunm6AJOACI/T+iVSrZ9U5GR1xVH6f1nkLQLYCvrLNZFlZjZzKjaFZCVDS4
+         iOkEj+QbBLcK0WP0zbszSzh/JKNbGuneZfGdzzeuJiD1QUWPPq+20gJ4E50FS3StZEl+
+         pFFw==
+X-Gm-Message-State: AOAM531FP5K41DXH3YqVE2BIEQWlaZybCP+BdCsw4VOc0lmT4uBUd4L3
+        RP6u6t3UjPJDvnIQUaq7fLwEgEqs7IvaNEIKK+V4kQ==
+X-Google-Smtp-Source: ABdhPJwXrFPX2kf1mS4F5MWV0Diby2MtGPN9/zapoN4VRfuwOy8R7cKXeIestXLk3lbQFIizBfUWrNUhbynB9sbc4JU=
+X-Received: by 2002:a25:b703:: with SMTP id t3mr10549313ybj.96.1611101191670;
+ Tue, 19 Jan 2021 16:06:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190717222340.137578-1-saravanak@google.com> <20190717222340.137578-4-saravanak@google.com>
+ <20191125112812.26jk5hsdwqfnofc2@vireshk-i7> <20200127061118.5bxei6nghowlmf53@vireshk-i7>
+ <b0be1275-c5cb-8171-58fa-64d65f60eaf8@codeaurora.org> <20200130042126.ahkik6ffb5vnzdim@vireshk-i7>
+ <CAJMQK-gmO-tLZkRRxRdgU9eyfo95omw_RnffFVdhv2A6_9T-nQ@mail.gmail.com>
+ <20210118073430.a6lr3ynkd2duv34l@vireshk-i7> <CAJMQK-j6EYjU1z_SUY4MFEJO6qTtOH7mQ_QWj2iUMewBKAghng@mail.gmail.com>
+In-Reply-To: <CAJMQK-j6EYjU1z_SUY4MFEJO6qTtOH7mQ_QWj2iUMewBKAghng@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 19 Jan 2021 16:05:55 -0800
+Message-ID: <CAGETcx80vQroV+HX0ppRN+apYVzOoKaxyrqMjCPfuQ5z16q0wg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] OPP: Improve require-opps linking
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RPi4 has an Arasan controller it carries over
-from the RPi3 and a newer eMMC2 controller.
-Because of a couple of quirks, it seems wiser to bind
-these controllers to the same driver that DT is using
-on this platform rather than the generic sdhci_acpi
-driver with PNP0D40.
+On Sun, Jan 17, 2021 at 11:40 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> On Mon, Jan 18, 2021 at 3:34 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 18-01-21, 15:21, Hsin-Yi Wang wrote:
+> > > Do you still have plans to push this? I've tested on mt8183 cci with:
+> >
+> > I was never able to get Saravana to test this, if you are interested
+> > in this stuff then I can rebase this and resend and we can see if it
+> > works.
+> >
 
-So, BCM2847 describes the older Arasan and
-BRCME88C describes the newer eMMC2. The older
-Arasan is reusing an existing ACPI _HID used
-by other OSs booting these tables on the RPi.
+Yeah, got caught up with some other work. Sorry Viresh.
 
-With this change, Linux is capable of utilizing the
-SD card slot, and the wifi when booted with
-UEFI+ACPI on the rpi4.
+>
+> Thanks. I can test this with the mt8183-cci series.
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- drivers/mmc/host/sdhci-iproc.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Thanks Hsin-Yi for offering to test this.
 
-diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
-index c9434b461aab..ddeaf8e1f72f 100644
---- a/drivers/mmc/host/sdhci-iproc.c
-+++ b/drivers/mmc/host/sdhci-iproc.c
-@@ -296,9 +296,27 @@ static const struct of_device_id sdhci_iproc_of_match[] = {
- MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
- 
- #ifdef CONFIG_ACPI
-+/*
-+ * This is a duplicate of bcm2835_(pltfrm_)data without caps quirks
-+ * which are provided by the ACPI table.
-+ */
-+static const struct sdhci_pltfm_data sdhci_bcm_arasan_data = {
-+	.quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
-+		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
-+		  SDHCI_QUIRK_NO_HISPD_BIT,
-+	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-+	.ops = &sdhci_iproc_32only_ops,
-+};
-+
-+static const struct sdhci_iproc_data bcm_arasan_data = {
-+	.pdata = &sdhci_bcm_arasan_data,
-+};
-+
- static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
- 	{ .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
- 	{ .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
-+	{ .id = "BCM2847",  .driver_data = (kernel_ulong_t)&bcm_arasan_data },
-+	{ .id = "BRCME88C", .driver_data = (kernel_ulong_t)&bcm2711_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(acpi, sdhci_iproc_acpi_ids);
--- 
-2.26.2
-
+-Saravana
