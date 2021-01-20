@@ -2,176 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C3E2FCA08
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE572FCA0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729379AbhATEeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:34:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728500AbhATEdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:33:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40F6B23330;
-        Wed, 20 Jan 2021 04:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611117159;
-        bh=Ja9jpSEMWVE5yNp+pIWbf7b46ICRtIrvQScqhMlb/F0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ow/IbNxBJTM3raHnRdSla6iaCQxV8enTlavRM/nvmA5yZO1XCx6qmK+o9yCPXCdjF
-         N0UleZHJS1sVg8Y+8BY9XWerI6JDwt8002AgIo9EbBD1GyWgqyXvw757cWO+2x5bC5
-         bBGESu6CGm0o/ICZ1TiDHf8sfUrleN5a4E3Z+0NMK2lNInEMHCl9fQnmDyWghLL53k
-         21Pp6DWl1TLgAqYU3c9kJz8vT0Xib/IfD4Quy6zgZ17H+EvJ3rMFZL1mr+RcGXlug9
-         /vxicVhmSQwvLeM17AzZjxb3z5jpnif8PTa4ZedRf42KW8boP1bjDqToyNMbUcMLGU
-         mG9UxdKoN9pCA==
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Scott Wood <swood@redhat.com>
-Subject: [PATCH tip/core/rcu 4/4] rcutorture: Fix testing of RCU priority boosting
-Date:   Tue, 19 Jan 2021 20:32:36 -0800
-Message-Id: <20210120043236.7254-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210120043144.GA7045@paulmck-ThinkPad-P72>
-References: <20210120043144.GA7045@paulmck-ThinkPad-P72>
+        id S1729878AbhATElg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727122AbhATEkT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 23:40:19 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BDAC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 20:39:39 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id b5so1378411pjl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 20:39:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3Mw9kpTWYLs3GYeFCfv2XLbWScki4E8QbYrJLATCMOM=;
+        b=NSOrtz9JoqUpYLUCCHjbFEdlVTD56bqaffClcuXWTCrFL897Lom+Qbl/QZRG8jUavo
+         3BVHucGwNpSvG0TN0uzfs/15kOixsoGwr8cAkkZLHw1iKT1Fd/re6YcN3qoWaR4RSryj
+         X5cI35dcMrlx6A+1XOsn10yQZuQ+JvIwix4AF9qhS4cpacFOSXlaol/YjhXX32T+kMLd
+         WcknRbRNUX85FbG4GwK36nACqMC3Jc0LCvtv7cFCZCKK1+jL4ieziZFp8Vfi20lCTTbN
+         Dt8QtG7YTyV/mN0q68LmIAzplQu6gYW0MGfJmEzp+44ebL/CksaqbgtbMJ1+DX9F8TlH
+         8lLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3Mw9kpTWYLs3GYeFCfv2XLbWScki4E8QbYrJLATCMOM=;
+        b=Jvn52C41cU+uXfsQw4Cjb9/Y7s9UCB+9JgD8Uy5ZrJL2Mt0OvkFdLYx02lRxYEiU7h
+         amGxtwNeC6GOtgOvQPiQ/mGdBV9SXja9K3TOBoELGjjyZFCSMeXYwZUJS9i/D/1DxnkS
+         N1PmH4xOZBZLAaGZTgs4sf3eq9ls5Bws2bsMLFmgv6UWl32STbkwh86/WWTS11sVyKy5
+         E/CcvrFMERbtF3QagnGf/XXsBHR3JpjhdwW67r8tg4gw4TaLC3sqq55dkyOGlA2SeiFO
+         6cxPhyACfwDlFdbPGrWR+CWGttR7BMRukn75/8zZEInKbcJPx6lguSTMPQLeeef0Et+s
+         DIhA==
+X-Gm-Message-State: AOAM531RvI1hfe3VCkiR2UFzIg3gnh4T58fm7NggRpwM4ImqLm3tJzJo
+        czArJ/WyxVzM+H+Beqjd9F7EKOeEwiUSYw==
+X-Google-Smtp-Source: ABdhPJxWrwGkrMAt216utAgHlcqTJR4nbRCrGF/RIvEBvOStwKqO/SPw4ZkPZWTjLIEYXgSFndBaEA==
+X-Received: by 2002:a17:902:b692:b029:de:43aa:6537 with SMTP id c18-20020a170902b692b02900de43aa6537mr8177507pls.65.1611117578969;
+        Tue, 19 Jan 2021 20:39:38 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id u68sm620672pfb.70.2021.01.19.20.39.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Jan 2021 20:39:38 -0800 (PST)
+Date:   Wed, 20 Jan 2021 10:09:33 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] PM: domains: Make set_performance_state()
+ callback optional
+Message-ID: <20210120043933.6ilryvgkhvnsrei7@vireshk-i7>
+References: <20210120015010.14191-1-digetx@gmail.com>
+ <20210120015010.14191-2-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120015010.14191-2-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On 20-01-21, 04:50, Dmitry Osipenko wrote:
+> Make set_performance_state() callback optional in order to remove the
+> need from power domain drivers to implement a dummy callback. If callback
+> isn't implemented by a GENPD driver, then the performance state is passed
+> to the parent domain.
+> 
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> [tested on NVIDIA Tegra20/30/124 SoCs]
+> Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/base/power/domain.c | 33 ++++++++++++++++++---------------
+>  1 file changed, 18 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index 9a14eedacb92..0bd0cdc30393 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -297,6 +297,18 @@ static int _genpd_reeval_performance_state(struct generic_pm_domain *genpd,
+>  	return state;
+>  }
+>  
+> +static int _genpd_xlate_performance_state(struct generic_pm_domain *src_genpd,
+> +					  struct generic_pm_domain *dst_genpd,
+> +					  unsigned int pstate)
 
-Currently, rcutorture refuses to test RCU priority boosting in
-CONFIG_HOTPLUG_CPU=y kernels, which are the only kind normally built on
-x86 these days.  This commit therefore updates rcutorture's tests of RCU
-priority boosting to make them safe for CPU hotplug.  However, these tests
-will fail unless TIMER_SOFTIRQ runs at realtime priority, which does not
-happen in current mainline.  This commit therefore also refuses to test
-RCU priority boosting except in kernels built with CONFIG_PREEMPT_RT=y.
+I would name them as genpd and parent, that makes it more readable for it.
 
-While in the area, this commt adds some debug output at boost-fail time
-that helps diagnose the cause of the failure, for example, failing to
-run TIMER_SOFTIRQ at realtime priority.
-
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Scott Wood <swood@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcutorture.c | 36 ++++++++++++++++++++++--------------
- 1 file changed, 22 insertions(+), 14 deletions(-)
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 8e93f2e..2440f89 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -245,11 +245,11 @@ static const char *rcu_torture_writer_state_getname(void)
- 	return rcu_torture_writer_state_names[i];
- }
- 
--#if defined(CONFIG_RCU_BOOST) && !defined(CONFIG_HOTPLUG_CPU)
--#define rcu_can_boost() 1
--#else /* #if defined(CONFIG_RCU_BOOST) && !defined(CONFIG_HOTPLUG_CPU) */
--#define rcu_can_boost() 0
--#endif /* #else #if defined(CONFIG_RCU_BOOST) && !defined(CONFIG_HOTPLUG_CPU) */
-+#if defined(CONFIG_RCU_BOOST) && defined(CONFIG_PREEMPT_RT)
-+# define rcu_can_boost() 1
-+#else
-+# define rcu_can_boost() 0
-+#endif
- 
- #ifdef CONFIG_RCU_TRACE
- static u64 notrace rcu_trace_clock_local(void)
-@@ -923,9 +923,13 @@ static void rcu_torture_enable_rt_throttle(void)
- 
- static bool rcu_torture_boost_failed(unsigned long start, unsigned long end)
- {
-+	static int dbg_done;
-+
- 	if (end - start > test_boost_duration * HZ - HZ / 2) {
- 		VERBOSE_TOROUT_STRING("rcu_torture_boost boosting failed");
- 		n_rcu_torture_boost_failure++;
-+		if (!xchg(&dbg_done, 1) && cur_ops->gp_kthread_dbg)
-+			cur_ops->gp_kthread_dbg();
- 
- 		return true; /* failed */
- 	}
-@@ -948,8 +952,8 @@ static int rcu_torture_boost(void *arg)
- 	init_rcu_head_on_stack(&rbi.rcu);
- 	/* Each pass through the following loop does one boost-test cycle. */
- 	do {
--		/* Track if the test failed already in this test interval? */
--		bool failed = false;
-+		bool failed = false; // Test failed already in this test interval
-+		bool firsttime = true;
- 
- 		/* Increment n_rcu_torture_boosts once per boost-test */
- 		while (!kthread_should_stop()) {
-@@ -975,18 +979,17 @@ static int rcu_torture_boost(void *arg)
- 
- 		/* Do one boost-test interval. */
- 		endtime = oldstarttime + test_boost_duration * HZ;
--		call_rcu_time = jiffies;
- 		while (time_before(jiffies, endtime)) {
- 			/* If we don't have a callback in flight, post one. */
- 			if (!smp_load_acquire(&rbi.inflight)) {
- 				/* RCU core before ->inflight = 1. */
- 				smp_store_release(&rbi.inflight, 1);
--				call_rcu(&rbi.rcu, rcu_torture_boost_cb);
-+				cur_ops->call(&rbi.rcu, rcu_torture_boost_cb);
- 				/* Check if the boost test failed */
--				failed = failed ||
--					 rcu_torture_boost_failed(call_rcu_time,
--								 jiffies);
-+				if (!firsttime && !failed)
-+					failed = rcu_torture_boost_failed(call_rcu_time, jiffies);
- 				call_rcu_time = jiffies;
-+				firsttime = false;
- 			}
- 			if (stutter_wait("rcu_torture_boost"))
- 				sched_set_fifo_low(current);
-@@ -999,7 +1002,7 @@ static int rcu_torture_boost(void *arg)
- 		 * this case the boost check would never happen in the above
- 		 * loop so do another one here.
- 		 */
--		if (!failed && smp_load_acquire(&rbi.inflight))
-+		if (!firsttime && !failed && smp_load_acquire(&rbi.inflight))
- 			rcu_torture_boost_failed(call_rcu_time, jiffies);
- 
- 		/*
-@@ -1025,6 +1028,9 @@ checkwait:	if (stutter_wait("rcu_torture_boost"))
- 			sched_set_fifo_low(current);
- 	} while (!torture_must_stop());
- 
-+	while (smp_load_acquire(&rbi.inflight))
-+		schedule_timeout_uninterruptible(1); // rcu_barrier() deadlocks.
-+
- 	/* Clean up and exit. */
- 	while (!kthread_should_stop() || smp_load_acquire(&rbi.inflight)) {
- 		torture_shutdown_absorb("rcu_torture_boost");
-@@ -1797,7 +1803,7 @@ rcu_torture_stats_print(void)
- 		WARN_ON_ONCE(n_rcu_torture_barrier_error);  // rcu_barrier()
- 		WARN_ON_ONCE(n_rcu_torture_boost_ktrerror); // no boost kthread
- 		WARN_ON_ONCE(n_rcu_torture_boost_rterror); // can't set RT prio
--		WARN_ON_ONCE(n_rcu_torture_boost_failure); // RCU boost failed
-+		WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost failed (TIMER_SOFTIRQ RT prio?)
- 		WARN_ON_ONCE(i > 1); // Too-short grace period
- 	}
- 	pr_cont("Reader Pipe: ");
-@@ -2634,6 +2640,8 @@ static bool rcu_torture_can_boost(void)
- 
- 	if (!(test_boost == 1 && cur_ops->can_boost) && test_boost != 2)
- 		return false;
-+	if (!cur_ops->call)
-+		return false;
- 
- 	prio = rcu_get_gp_kthreads_prio();
- 	if (!prio)
 -- 
-2.9.5
-
+viresh
