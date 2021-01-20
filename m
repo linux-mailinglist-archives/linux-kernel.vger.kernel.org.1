@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344B12FD1E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59D22FD1EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387642AbhATNs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:48:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
+        id S2388628AbhATNuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:50:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389954AbhATNbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:31:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4ED52339D;
-        Wed, 20 Jan 2021 13:30:16 +0000 (UTC)
+        id S2390034AbhATNbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:31:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B73C423359;
+        Wed, 20 Jan 2021 13:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611149417;
-        bh=IWIhV7+3ze25aZBEwRA7jw5PWpaQASETcHDgvAEHG6s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iF0Znv7SSwFUJbJPBh9VPgsEvubErhedIQsGPjPrZsONQ/WbPPnh+Rgz+UoxToPeI
-         nbYcosgxKTIJGyw2LyEFR4+Cyf1eOjgpqs7KrV1MFfslzvlCKnTVqAuGL0fMmYmsBY
-         1Un1hFq2DnsPXCPKhgj/0SCT9jnDzRN7aophIe3zJPoSPE50t3Ik7RjqmgaPO7y1qp
-         YGaqlVtfff+2spTZLBvsBd2TkdY7RGNYZu5SnvSAIyjF5mgYDK7CwmBbKu3cUDSgtl
-         TruzSTarfdgLNXbYMkFgDyZQ5P21XVeSsen4l8soZMBWMhmMnfILHyBUDkvny60QQS
-         ZJRs4OtK1KO4g==
+        s=k20201202; t=1611149462;
+        bh=dXCyW/WJvJElPbs5MwVYcl+ftX5wohGLeESQlhoYh6Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ceijY/glixkWZ5BiMB7zmuWnZZuVdA1jhJ6EYDyGTqeoKJ5rL6HIM0MYctloviZUj
+         ddLrIqTgEiP1gIzmqhyRPn2UfGqWhRFhX2hRXJlopiAerJx5P1YU6Vil0i1wP70fi1
+         KP6hKf5cUZNg22pq4iBj7VMRtW+s3Vnvud/7QMw5HKHotlnEKNDnynasWyn6B2E48I
+         d3a5EPeBVSKvqH43szv9Jj9Gn2P8WFOwMn36MXUzdXoULXXxSef+OMyFW8tT/PIj+z
+         dkGTs+er2awZmyZMSnLDNdpY87OsMJC54S4kWrS06gRG42pN37lqhy/Dw0LKVvXGVX
+         r6ZGXkb6VZGLw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
-Subject: [PATCH 2/2] irqchip: remove sirfsoc driver
-Date:   Wed, 20 Jan 2021 14:30:08 +0100
-Message-Id: <20210120133008.2421897-3-arnd@kernel.org>
+Subject: [PATCH] Input: remove sirfsoc power button driver
+Date:   Wed, 20 Jan 2021 14:30:57 +0100
+Message-Id: <20210120133057.2470873-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120133008.2421897-1-arnd@kernel.org>
-References: <20210120133008.2421897-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,163 +44,258 @@ is no longer needed.
 Cc: Barry Song <baohua@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/irqchip/Makefile      |   1 -
- drivers/irqchip/irq-sirfsoc.c | 134 ----------------------------------
- 2 files changed, 135 deletions(-)
- delete mode 100644 drivers/irqchip/irq-sirfsoc.c
+ drivers/input/misc/Kconfig         |  10 --
+ drivers/input/misc/Makefile        |   1 -
+ drivers/input/misc/sirfsoc-onkey.c | 207 -----------------------------
+ 3 files changed, 218 deletions(-)
+ delete mode 100644 drivers/input/misc/sirfsoc-onkey.c
 
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 084e11774071..37e3556df127 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -45,7 +45,6 @@ obj-$(CONFIG_I8259)			+= irq-i8259.o
- obj-$(CONFIG_IMGPDC_IRQ)		+= irq-imgpdc.o
- obj-$(CONFIG_IRQ_MIPS_CPU)		+= irq-mips-cpu.o
- obj-$(CONFIG_IXP4XX_IRQ)		+= irq-ixp4xx.o
--obj-$(CONFIG_SIRF_IRQ)			+= irq-sirfsoc.o
- obj-$(CONFIG_JCORE_AIC)			+= irq-jcore-aic.o
- obj-$(CONFIG_RDA_INTC)			+= irq-rda-intc.o
- obj-$(CONFIG_RENESAS_INTC_IRQPIN)	+= irq-renesas-intc-irqpin.o
-diff --git a/drivers/irqchip/irq-sirfsoc.c b/drivers/irqchip/irq-sirfsoc.c
+diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+index ad1b6c90bc4d..f824e3435a8e 100644
+--- a/drivers/input/misc/Kconfig
++++ b/drivers/input/misc/Kconfig
+@@ -789,16 +789,6 @@ config INPUT_XEN_KBDDEV_FRONTEND
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called xen-kbdfront.
+ 
+-config INPUT_SIRFSOC_ONKEY
+-	tristate "CSR SiRFSoC power on/off/suspend key support"
+-	depends on ARCH_SIRF && OF
+-	default y
+-	help
+-	  Say Y here if you want to support for the SiRFSoC power on/off/suspend key
+-	  in Linux, after you press the onkey, system will suspend.
+-
+-	  If unsure, say N.
+-
+ config INPUT_IDEAPAD_SLIDEBAR
+ 	tristate "IdeaPad Laptop Slidebar"
+ 	depends on INPUT
+diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+index 7f202ba8f775..0b5871e1bb76 100644
+--- a/drivers/input/misc/Makefile
++++ b/drivers/input/misc/Makefile
+@@ -72,7 +72,6 @@ obj-$(CONFIG_INPUT_GPIO_ROTARY_ENCODER)	+= rotary_encoder.o
+ obj-$(CONFIG_INPUT_RK805_PWRKEY)	+= rk805-pwrkey.o
+ obj-$(CONFIG_INPUT_SC27XX_VIBRA)	+= sc27xx-vibra.o
+ obj-$(CONFIG_INPUT_SGI_BTNS)		+= sgi_btns.o
+-obj-$(CONFIG_INPUT_SIRFSOC_ONKEY)	+= sirfsoc-onkey.o
+ obj-$(CONFIG_INPUT_SOC_BUTTON_ARRAY)	+= soc_button_array.o
+ obj-$(CONFIG_INPUT_SPARCSPKR)		+= sparcspkr.o
+ obj-$(CONFIG_INPUT_STPMIC1_ONKEY)  	+= stpmic1_onkey.o
+diff --git a/drivers/input/misc/sirfsoc-onkey.c b/drivers/input/misc/sirfsoc-onkey.c
 deleted file mode 100644
-index c86faaa35ca4..000000000000
---- a/drivers/irqchip/irq-sirfsoc.c
+index 7982bf8fb839..000000000000
+--- a/drivers/input/misc/sirfsoc-onkey.c
 +++ /dev/null
-@@ -1,134 +0,0 @@
+@@ -1,207 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0-or-later
 -/*
-- * interrupt controller support for CSR SiRFprimaII
+- * Power key driver for SiRF PrimaII
 - *
-- * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
+- * Copyright (c) 2013 - 2014 Cambridge Silicon Radio Limited, a CSR plc group
+- * company.
 - */
 -
--#include <linux/init.h>
--#include <linux/io.h>
--#include <linux/irq.h>
+-#include <linux/module.h>
+-#include <linux/interrupt.h>
+-#include <linux/delay.h>
+-#include <linux/platform_device.h>
+-#include <linux/input.h>
+-#include <linux/rtc/sirfsoc_rtciobrg.h>
 -#include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/irqchip.h>
--#include <linux/irqdomain.h>
--#include <linux/syscore_ops.h>
--#include <asm/mach/irq.h>
--#include <asm/exception.h>
+-#include <linux/workqueue.h>
 -
--#define SIRFSOC_INT_RISC_MASK0		0x0018
--#define SIRFSOC_INT_RISC_MASK1		0x001C
--#define SIRFSOC_INT_RISC_LEVEL0		0x0020
--#define SIRFSOC_INT_RISC_LEVEL1		0x0024
--#define SIRFSOC_INIT_IRQ_ID		0x0038
--#define SIRFSOC_INT_BASE_OFFSET		0x0004
+-struct sirfsoc_pwrc_drvdata {
+-	u32			pwrc_base;
+-	struct input_dev	*input;
+-	struct delayed_work	work;
+-};
 -
--#define SIRFSOC_NUM_IRQS		64
--#define SIRFSOC_NUM_BANKS		(SIRFSOC_NUM_IRQS / 32)
+-#define PWRC_ON_KEY_BIT			(1 << 0)
 -
--static struct irq_domain *sirfsoc_irqdomain;
+-#define PWRC_INT_STATUS			0xc
+-#define PWRC_INT_MASK			0x10
+-#define PWRC_PIN_STATUS			0x14
+-#define PWRC_KEY_DETECT_UP_TIME		20	/* ms*/
 -
--static void __iomem *sirfsoc_irq_get_regbase(void)
+-static int sirfsoc_pwrc_is_on_key_down(struct sirfsoc_pwrc_drvdata *pwrcdrv)
 -{
--	return (void __iomem __force *)sirfsoc_irqdomain->host_data;
+-	u32 state = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
+-							PWRC_PIN_STATUS);
+-	return !(state & PWRC_ON_KEY_BIT); /* ON_KEY is active low */
 -}
 -
--static __init void sirfsoc_alloc_gc(void __iomem *base)
+-static void sirfsoc_pwrc_report_event(struct work_struct *work)
 -{
--	unsigned int clr = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
--	unsigned int set = IRQ_LEVEL;
--	struct irq_chip_generic *gc;
--	struct irq_chip_type *ct;
--	int i;
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv =
+-		container_of(work, struct sirfsoc_pwrc_drvdata, work.work);
 -
--	irq_alloc_domain_generic_chips(sirfsoc_irqdomain, 32, 1, "irq_sirfsoc",
--				       handle_level_irq, clr, set,
--				       IRQ_GC_INIT_MASK_CACHE);
--
--	for (i = 0; i < SIRFSOC_NUM_BANKS; i++) {
--		gc = irq_get_domain_generic_chip(sirfsoc_irqdomain, i * 32);
--		gc->reg_base = base + i * SIRFSOC_INT_BASE_OFFSET;
--		ct = gc->chip_types;
--		ct->chip.irq_mask = irq_gc_mask_clr_bit;
--		ct->chip.irq_unmask = irq_gc_mask_set_bit;
--		ct->regs.mask = SIRFSOC_INT_RISC_MASK0;
+-	if (sirfsoc_pwrc_is_on_key_down(pwrcdrv)) {
+-		schedule_delayed_work(&pwrcdrv->work,
+-			msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
+-	} else {
+-		input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 0);
+-		input_sync(pwrcdrv->input);
 -	}
 -}
 -
--static void __exception_irq_entry sirfsoc_handle_irq(struct pt_regs *regs)
+-static irqreturn_t sirfsoc_pwrc_isr(int irq, void *dev_id)
 -{
--	void __iomem *base = sirfsoc_irq_get_regbase();
--	u32 irqstat;
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_id;
+-	u32 int_status;
 -
--	irqstat = readl_relaxed(base + SIRFSOC_INIT_IRQ_ID);
--	handle_domain_irq(sirfsoc_irqdomain, irqstat & 0xff, regs);
+-	int_status = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
+-							PWRC_INT_STATUS);
+-	sirfsoc_rtc_iobrg_writel(int_status & ~PWRC_ON_KEY_BIT,
+-				 pwrcdrv->pwrc_base + PWRC_INT_STATUS);
+-
+-	input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 1);
+-	input_sync(pwrcdrv->input);
+-	schedule_delayed_work(&pwrcdrv->work,
+-			      msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
+-
+-	return IRQ_HANDLED;
 -}
 -
--static int __init sirfsoc_irq_init(struct device_node *np,
--	struct device_node *parent)
+-static void sirfsoc_pwrc_toggle_interrupts(struct sirfsoc_pwrc_drvdata *pwrcdrv,
+-					   bool enable)
 -{
--	void __iomem *base = of_iomap(np, 0);
--	if (!base)
--		panic("unable to map intc cpu registers\n");
+-	u32 int_mask;
 -
--	sirfsoc_irqdomain = irq_domain_add_linear(np, SIRFSOC_NUM_IRQS,
--						  &irq_generic_chip_ops, base);
--	sirfsoc_alloc_gc(base);
+-	int_mask = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base + PWRC_INT_MASK);
+-	if (enable)
+-		int_mask |= PWRC_ON_KEY_BIT;
+-	else
+-		int_mask &= ~PWRC_ON_KEY_BIT;
+-	sirfsoc_rtc_iobrg_writel(int_mask, pwrcdrv->pwrc_base + PWRC_INT_MASK);
+-}
 -
--	writel_relaxed(0, base + SIRFSOC_INT_RISC_LEVEL0);
--	writel_relaxed(0, base + SIRFSOC_INT_RISC_LEVEL1);
+-static int sirfsoc_pwrc_open(struct input_dev *input)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
 -
--	writel_relaxed(0, base + SIRFSOC_INT_RISC_MASK0);
--	writel_relaxed(0, base + SIRFSOC_INT_RISC_MASK1);
--
--	set_handle_irq(sirfsoc_handle_irq);
+-	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
 -
 -	return 0;
 -}
--IRQCHIP_DECLARE(sirfsoc_intc, "sirf,prima2-intc", sirfsoc_irq_init);
 -
--struct sirfsoc_irq_status {
--	u32 mask0;
--	u32 mask1;
--	u32 level0;
--	u32 level1;
+-static void sirfsoc_pwrc_close(struct input_dev *input)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
+-
+-	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
+-	cancel_delayed_work_sync(&pwrcdrv->work);
+-}
+-
+-static const struct of_device_id sirfsoc_pwrc_of_match[] = {
+-	{ .compatible = "sirf,prima2-pwrc" },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, sirfsoc_pwrc_of_match);
+-
+-static int sirfsoc_pwrc_probe(struct platform_device *pdev)
+-{
+-	struct device_node *np = pdev->dev.of_node;
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv;
+-	int irq;
+-	int error;
+-
+-	pwrcdrv = devm_kzalloc(&pdev->dev, sizeof(struct sirfsoc_pwrc_drvdata),
+-			       GFP_KERNEL);
+-	if (!pwrcdrv) {
+-		dev_info(&pdev->dev, "Not enough memory for the device data\n");
+-		return -ENOMEM;
+-	}
+-
+-	/*
+-	 * We can't use of_iomap because pwrc is not mapped in memory,
+-	 * the so-called base address is only offset in rtciobrg
+-	 */
+-	error = of_property_read_u32(np, "reg", &pwrcdrv->pwrc_base);
+-	if (error) {
+-		dev_err(&pdev->dev,
+-			"unable to find base address of pwrc node in dtb\n");
+-		return error;
+-	}
+-
+-	pwrcdrv->input = devm_input_allocate_device(&pdev->dev);
+-	if (!pwrcdrv->input)
+-		return -ENOMEM;
+-
+-	pwrcdrv->input->name = "sirfsoc pwrckey";
+-	pwrcdrv->input->phys = "pwrc/input0";
+-	pwrcdrv->input->evbit[0] = BIT_MASK(EV_KEY);
+-	input_set_capability(pwrcdrv->input, EV_KEY, KEY_POWER);
+-
+-	INIT_DELAYED_WORK(&pwrcdrv->work, sirfsoc_pwrc_report_event);
+-
+-	pwrcdrv->input->open = sirfsoc_pwrc_open;
+-	pwrcdrv->input->close = sirfsoc_pwrc_close;
+-
+-	input_set_drvdata(pwrcdrv->input, pwrcdrv);
+-
+-	/* Make sure the device is quiesced */
+-	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
+-
+-	irq = platform_get_irq(pdev, 0);
+-	error = devm_request_irq(&pdev->dev, irq,
+-				 sirfsoc_pwrc_isr, 0,
+-				 "sirfsoc_pwrc_int", pwrcdrv);
+-	if (error) {
+-		dev_err(&pdev->dev, "unable to claim irq %d, error: %d\n",
+-			irq, error);
+-		return error;
+-	}
+-
+-	error = input_register_device(pwrcdrv->input);
+-	if (error) {
+-		dev_err(&pdev->dev,
+-			"unable to register input device, error: %d\n",
+-			error);
+-		return error;
+-	}
+-
+-	dev_set_drvdata(&pdev->dev, pwrcdrv);
+-	device_init_wakeup(&pdev->dev, 1);
+-
+-	return 0;
+-}
+-
+-static int __maybe_unused sirfsoc_pwrc_resume(struct device *dev)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_get_drvdata(dev);
+-	struct input_dev *input = pwrcdrv->input;
+-
+-	/*
+-	 * Do not mask pwrc interrupt as we want pwrc work as a wakeup source
+-	 * if users touch X_ONKEY_B, see arch/arm/mach-prima2/pm.c
+-	 */
+-	mutex_lock(&input->mutex);
+-	if (input_device_enabled(input))
+-		sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
+-	mutex_unlock(&input->mutex);
+-
+-	return 0;
+-}
+-
+-static SIMPLE_DEV_PM_OPS(sirfsoc_pwrc_pm_ops, NULL, sirfsoc_pwrc_resume);
+-
+-static struct platform_driver sirfsoc_pwrc_driver = {
+-	.probe		= sirfsoc_pwrc_probe,
+-	.driver		= {
+-		.name	= "sirfsoc-pwrc",
+-		.pm	= &sirfsoc_pwrc_pm_ops,
+-		.of_match_table = sirfsoc_pwrc_of_match,
+-	}
 -};
 -
--static struct sirfsoc_irq_status sirfsoc_irq_st;
+-module_platform_driver(sirfsoc_pwrc_driver);
 -
--static int sirfsoc_irq_suspend(void)
--{
--	void __iomem *base = sirfsoc_irq_get_regbase();
--
--	sirfsoc_irq_st.mask0 = readl_relaxed(base + SIRFSOC_INT_RISC_MASK0);
--	sirfsoc_irq_st.mask1 = readl_relaxed(base + SIRFSOC_INT_RISC_MASK1);
--	sirfsoc_irq_st.level0 = readl_relaxed(base + SIRFSOC_INT_RISC_LEVEL0);
--	sirfsoc_irq_st.level1 = readl_relaxed(base + SIRFSOC_INT_RISC_LEVEL1);
--
--	return 0;
--}
--
--static void sirfsoc_irq_resume(void)
--{
--	void __iomem *base = sirfsoc_irq_get_regbase();
--
--	writel_relaxed(sirfsoc_irq_st.mask0, base + SIRFSOC_INT_RISC_MASK0);
--	writel_relaxed(sirfsoc_irq_st.mask1, base + SIRFSOC_INT_RISC_MASK1);
--	writel_relaxed(sirfsoc_irq_st.level0, base + SIRFSOC_INT_RISC_LEVEL0);
--	writel_relaxed(sirfsoc_irq_st.level1, base + SIRFSOC_INT_RISC_LEVEL1);
--}
--
--static struct syscore_ops sirfsoc_irq_syscore_ops = {
--	.suspend	= sirfsoc_irq_suspend,
--	.resume		= sirfsoc_irq_resume,
--};
--
--static int __init sirfsoc_irq_pm_init(void)
--{
--	if (!sirfsoc_irqdomain)
--		return 0;
--
--	register_syscore_ops(&sirfsoc_irq_syscore_ops);
--	return 0;
--}
--device_initcall(sirfsoc_irq_pm_init);
+-MODULE_LICENSE("GPL v2");
+-MODULE_AUTHOR("Binghua Duan <Binghua.Duan@csr.com>, Xianglong Du <Xianglong.Du@csr.com>");
+-MODULE_DESCRIPTION("CSR Prima2 PWRC Driver");
+-MODULE_ALIAS("platform:sirfsoc-pwrc");
 -- 
 2.29.2
 
