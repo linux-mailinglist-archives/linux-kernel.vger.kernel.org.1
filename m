@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194F52FC84C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F230F2FC84E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388920AbhATCxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:53:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46600 "EHLO mail.kernel.org"
+        id S2389095AbhATCxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:53:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730384AbhATB3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:29:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B1BF23407;
-        Wed, 20 Jan 2021 01:27:28 +0000 (UTC)
+        id S1730573AbhATB3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:29:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C5723426;
+        Wed, 20 Jan 2021 01:27:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106049;
-        bh=1rfwSpVJ+UEYl/EIDIKbdLpUVSO+QYuuMjMAelssO6g=;
+        s=k20201202; t=1611106050;
+        bh=vQtWiPkKsULz+3Pgk2ydlIu7asw7caLs9bmvdVS17LI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kWPthReLQzMzIsihOhaLz5wqAHkmhGRtfz175sBHeNZFMNA4OoLm02Mi3UjsYea52
-         UEN049sSnfokfsnnzzJBlGj1Eb0T6pgzrcYrhvKsY5tiEXi5cEidizOlt2olikwRK5
-         pYTf7GNnXxJyaPBB262mZYxaY3S06FNHqjNZUyMXu6frTEW7xMrKfRW7TBzuDy9M12
-         +hg69LhksLCY26Exw07tbfkpmMJp6NztRtvBIlhDpBbyqZMtzlubarQTmAb5RB6hsZ
-         lCgxyl0V/YgbqTseLMowARFe/Q0mPkhJK/vrbYp1AnToNqBI3e43U35pp9cmf3QoqX
-         rmsbPFuehBktA==
+        b=JHKheC7VKD9soLAbVFfGyYjz6BwWC4cbD7jzZVSkN6nyVrD9oyUsxzJ32eIg/z08R
+         E4A3Pg4ECsZgK923DQ6t8CpaHF+h7PyEgdVNbBCr3kz4cmub9bs0vStVCYwxA5dMTf
+         8hKfyqe7JKHnZuZmjx3+6EOJZjm2Gq/ijyqWGt+o2O8ABFMfGHgI7x+AOIvKywh/kY
+         E0cgq78e0it/ndMXFStCohuF3MiDKJzHKO0bQqm1CRTdpoX1Mj/C1xMopoQBS+X/jC
+         4u1I9ziOhR+wjlY1EzvrUc0llknarLBwx42mBVtnNh3B6ErFxMVq/i8p+aLGkc9516
+         qdJ9ATICjDgGQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>,
         linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 18/26] dts: phy: add GPIO number and active state used for phy reset
-Date:   Tue, 19 Jan 2021 20:26:55 -0500
-Message-Id: <20210120012704.770095-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 19/26] riscv: defconfig: enable gpio support for HiFive Unleashed
+Date:   Tue, 19 Jan 2021 20:26:56 -0500
+Message-Id: <20210120012704.770095-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012704.770095-1-sashal@kernel.org>
 References: <20210120012704.770095-1-sashal@kernel.org>
@@ -45,31 +45,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 
-[ Upstream commit a0fa9d727043da2238432471e85de0bdb8a8df65 ]
+[ Upstream commit 0983834a83931606a647c275e5d4165ce4e7b49f ]
 
-The GEMGXL_RST line on HiFive Unleashed is pulled low and is
-using GPIO number 12. Add these reset-gpio details to dt-node
-using which the linux phylib can reset the phy.
+Ethernet phy VSC8541-01 on HiFive Unleashed has its reset line
+connected to a gpio, so enable GPIO driver's required to reset
+the phy.
 
 Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/configs/defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-index cc04e66752aac..1ad3dc2fb6343 100644
---- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-+++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-@@ -85,6 +85,7 @@ &eth0 {
- 	phy0: ethernet-phy@0 {
- 		compatible = "ethernet-phy-id0007.0771";
- 		reg = <0>;
-+		reset-gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index 420a0dbef3866..3c656fe97e583 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -62,6 +62,8 @@ CONFIG_HW_RANDOM=y
+ CONFIG_HW_RANDOM_VIRTIO=y
+ CONFIG_SPI=y
+ CONFIG_SPI_SIFIVE=y
++CONFIG_GPIOLIB=y
++CONFIG_GPIO_SIFIVE=y
+ # CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_DRM=y
+ CONFIG_DRM_RADEON=y
 -- 
 2.27.0
 
