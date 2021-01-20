@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AA62FD59D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47E12FD58B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403981AbhATQ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:26:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
+        id S2403813AbhATQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732183AbhATQWR (ORCPT
+        with ESMTP id S2404006AbhATQWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:22:17 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E048C061757;
-        Wed, 20 Jan 2021 08:22:02 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id v67so34887312lfa.0;
-        Wed, 20 Jan 2021 08:22:02 -0800 (PST)
+        Wed, 20 Jan 2021 11:22:43 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FB0C0613C1;
+        Wed, 20 Jan 2021 08:22:03 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id f17so26727553ljg.12;
+        Wed, 20 Jan 2021 08:22:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kQPDCZoatrcIZYaKHvxiD9OMe09wtCmeCa1ffFLE0pQ=;
-        b=oK1o0mvTLkqZuqgxDhACnwVUq1iCCF1/JPxOd4WM1XLisbxT1mC86LD+GO5XNlBMZO
-         D1pxfsPVh2TzBhQEHB6WP91rbiCv6eOQVn9NhQNTFxY3PqAfrtpl8nuEfNfVK50dUtSx
-         zSoF5az39Kii13ofyGrx7JoT+3tXb9+i1E51HYMDZug1vzP9Vx4RMfcYieU3vooZB9Oj
-         4u0xomTqFIlUK4tUQu2tuaBnYQiWBl0ifdwcsb5X1sVVJo5Xvb9lZnCHCeWax52aW4ua
-         WkZuh6JjkPssKwmPwujRb+cZ7LvpkTG9GDQoAvNH7YQl43z+9cj6J3Wuqz4CcomlV5Z3
-         Uamw==
+        bh=K5vWudR2N+b1xOBCfk15/krN2AJ4ZrQd3lA45yCJz88=;
+        b=kui1rl3utwd4GX02zoBXw2RmW4+uR9AsetKj7qZaNeOmydU/b+6DVk+D/YSDInfBmG
+         Bmz9MyypEcOHU5Q1jx8GsUzI3sddCUE4pgfWPzSJSxRLka4EyuPy8pIVwv7ixl/rV5ca
+         61ou3CggFqmTnGvBFYxE3bXZs5JtRLuJGStt9aGsAuKogEBkyd10cuZscA7ZZc4yJocN
+         kO0gSyfhzwOwb1A1eGESwqLcn9UO/fB6sEVfHYRpm15RwRnI0jyv04nPd4f5VOcI0Uot
+         HMtwtwiuGex6Y9GJSwEA5Pqcn3bSpmZ6f4AabCtGY4oGMKSYaH7brofVEIHss5XyLpst
+         oIPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kQPDCZoatrcIZYaKHvxiD9OMe09wtCmeCa1ffFLE0pQ=;
-        b=BBizLsZDuZEsyCOnF1WAN3Ez5M/kSz4lxLZ0a6hziJg55BcTm8Gqvrhy8p8lW36ftQ
-         doyVNRZV6c5K5cW5xCtpIn7VzWwxluO1F74MIRflN0MeWRlwAeRi9LAx9++ATsSLUJfv
-         ZUmF2AzkWoTEb17Vzt7vlR7t8hT+EKaXUl8dzH4e4cOx0q4zQZ11d76yWWkWfOpgmkgC
-         rjG7xurD/Bzyzgrm9/gKRGb+rC4SeOyLCTzeEiJfbu35Z+HTFGbr4nzGtvE0mYbSTpDU
-         pptAyi/v1xJosAGMMUav6CEJRKKbjyDZWHwCFbVLIXXmCy3nSvO/7yLHzkz9lJ5BUw/w
-         zkHw==
-X-Gm-Message-State: AOAM532X8xMeJEPJvwRsbXylQLCZ4oRYlmfV/f68I5LNtdB5/oNDndew
-        1fVrN9lnWvkCeUE8eGrp18Viu5kdSChEoA==
-X-Google-Smtp-Source: ABdhPJxqOiiMIEzodSilxrtWZfzvUpDQmOJ69M+cNSNDws+NaDv2elPjTSOVAm9UgZ/YZ4JtfmuVDw==
-X-Received: by 2002:a19:3f01:: with SMTP id m1mr4371961lfa.203.1611159720673;
-        Wed, 20 Jan 2021 08:22:00 -0800 (PST)
+        bh=K5vWudR2N+b1xOBCfk15/krN2AJ4ZrQd3lA45yCJz88=;
+        b=AvlFfKfs1yu+tesmr45tUk+HcH4fP0uq/N2QfrTRckpuZ/F01X8Aek0IuLw3GEAJNb
+         vOGFGZ4N88aITS7dJWryZsKrOR629ueBcLgKldm3aa63XO1K9uU9f7Mlq+olamZNLrj2
+         ouMoxyp7/IbTXGgC5fI2L4HL5jirs1WV77l8howWmZAR3xsFMT8c53J5RqlNR4aUCJWu
+         sqjLIDhbK2i/QCJlDF4dQbM7yhKKWaJzu7FiBoB9y/SNIIQkZYMANafvY00yygkDSqY9
+         2D6kbx5cxsgmIxPSx+OSBO4gMackx1ABLkPq/05MLj2FR/oDX0W+QthNZjwZwwsXVCYV
+         Rzuw==
+X-Gm-Message-State: AOAM531ocCjBgqMBVfW0F3jF4T2t0OoAZmCEqr9dLIMq+SoUJEH5UE4C
+        M+QTohM3KmcL/toASV5z6qnelsOAu0dnqQ==
+X-Google-Smtp-Source: ABdhPJzUZLFRHEsnoP2uJ10tpxxYdlvHeLc7OLoR4yvQkeeR+O0I+aFd93KbecY3IoL+BVOkplwXaQ==
+X-Received: by 2002:a2e:a593:: with SMTP id m19mr4905528ljp.1.1611159721775;
+        Wed, 20 Jan 2021 08:22:01 -0800 (PST)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id l8sm237631lfd.276.2021.01.20.08.21.59
+        by smtp.gmail.com with ESMTPSA id l8sm237631lfd.276.2021.01.20.08.22.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 08:22:00 -0800 (PST)
+        Wed, 20 Jan 2021 08:22:01 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 2/3] kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
-Date:   Wed, 20 Jan 2021 17:21:47 +0100
-Message-Id: <20210120162148.1973-2-urezki@gmail.com>
+Subject: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
+Date:   Wed, 20 Jan 2021 17:21:48 +0100
+Message-Id: <20210120162148.1973-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210120162148.1973-1-urezki@gmail.com>
 References: <20210120162148.1973-1-urezki@gmail.com>
@@ -76,33 +76,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Since the page is obtained in a fully preemptible context, dropping
+the lock can lead to migration onto another CPU. As a result a prev.
+bnode of that CPU may be underutilised, because a decision has been
+made for a CPU that was run out of free slots to store a pointer.
 
-This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
-carried out by the single-argument variant of kvfree_rcu(), thus avoiding
-this can-sleep code path from dipping into the emergency reserves.
+migrate_disable/enable() are now independent of RT, use it in order
+to prevent any migration during a page request for a specific CPU it
+is requested for.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2014fb22644d..454809514c91 100644
+index 454809514c91..cad36074366d 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3491,7 +3491,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+@@ -3489,10 +3489,12 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+ 		bnode = get_cached_bnode(*krcp);
  		if (!bnode && can_alloc) {
++			migrate_disable();
  			krc_this_cpu_unlock(*krcp, *flags);
  			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-+				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
  			*krcp = krc_this_cpu_lock(flags);
++			migrate_enable();
  		}
  
+ 		if (!bnode)
 -- 
 2.20.1
 
