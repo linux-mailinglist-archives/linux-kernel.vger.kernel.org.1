@@ -2,160 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E962FC6EE
+	by mail.lfdr.de (Postfix) with ESMTP id DC1512FC6EF
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730926AbhATBie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:38:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728286AbhATBby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:31:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09B40206F9;
-        Wed, 20 Jan 2021 01:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106273;
-        bh=1HkPn5jT7T+qZpeISImoewLL4KyY3IkZxz+hihW1ZXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VjiUrvI6DCa3D9FgTg2N8RBQma5pmCVL54EtIdiGTGdMOlGUz27B5xOiGEui6cpM9
-         tUNIi5tTPpZYlzeXBMYsHIWJwUaOuAcOmOj0BFkzqTUR2XcqkzuoJyEdvSPN1RTtDM
-         enXztVS/o/zRCTmKHscCJQdup/3yraUt/xKRDzwbvxImhrLl6h+/oZigkAzfCW6wEi
-         7VhaPGU8TtwaThswmyak6o54B7juq+kRggr4iHv34iCEax0wdtf5rbXRust7fhJ/fk
-         Rs4sg/J4Zbs6W1HAACn6ctKIsbOqyFoIJBaffPaJ7X2oRJ8vuv5OYgYPmeXXUB1ap1
-         PkGaVJ2q0rmPw==
-Date:   Wed, 20 Jan 2021 03:31:06 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
-Message-ID: <YAeH2pb8szQyjusL@kernel.org>
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <1604419306-26105-3-git-send-email-sumit.garg@linaro.org>
- <X/x+N0fgrzIZTeNi@kernel.org>
- <CAFA6WYOUvWAZtYfR4q8beZFkX-CtdxqwJaRQM+GHNMDfQiEWOA@mail.gmail.com>
- <X/+m6+m2/snYj9Vc@kernel.org>
- <CAFA6WYNyirit_AFhoE+XR9PHw=OjRgEdXDqz1uanj_SN2NXeMw@mail.gmail.com>
- <YAa0ys4YJcZtKdfF@kernel.org>
+        id S1728576AbhATBjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:39:14 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:34919 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728541AbhATBcC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:32:02 -0500
+Received: by mail-oi1-f181.google.com with SMTP id w8so1615655oie.2;
+        Tue, 19 Jan 2021 17:31:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=70aGOwWqvSNnuRZRBgvIddOExT7M4WJHCpkHOLv549U=;
+        b=JIceF53FUorEn13lbB0lCxvM63P0X5eZMCq9vYodn4V6WHeo1hjJaQQ97YDgMjIlQE
+         d/bw3HaoEI2AFIo3yj3xi4g4722+aHhDzmfNlpXrlQjB3bm/3yVkVcByMGGeuXn0jQI+
+         hb2zhVcTEE6jpqizR5wNOtOO4iIHmPvwU91c5GfVjfvuoRQWQlVdMICa8nLxGhQe2tLh
+         zW7ZIJ3ZcpJSF7G54grmD/ea07bU9UV3Nw3yTQ/5lfMO7T4+E9o1d3RbrfgTgLqy8qnt
+         bOEOoPjxLEmMm+dCNS/wRaaoWkZC+n9wHFZhGPO7cU1XDLuz5vqDFoww3SsQt1fVNLpu
+         ad6w==
+X-Gm-Message-State: AOAM530DJIQb4AXzZtCC2taSQzFZYUHS0GQQt4K42ypegE6Klyac3v8Q
+        0Q4pJivfHhuYzc6tG+0kIG4j6XQ0TQ==
+X-Google-Smtp-Source: ABdhPJydF0BAx1ZnbHLhfNn1zr8cKXRT8sZgYcv8vLFh//tc2P2ggSEcgqco5mLp+bpeuijFP9ph4Q==
+X-Received: by 2002:aca:4d4:: with SMTP id 203mr1626279oie.18.1611106281114;
+        Tue, 19 Jan 2021 17:31:21 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t16sm100212otq.17.2021.01.19.17.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 17:31:19 -0800 (PST)
+Received: (nullmailer pid 2992413 invoked by uid 1000);
+        Wed, 20 Jan 2021 01:31:18 -0000
+Date:   Tue, 19 Jan 2021 19:31:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer
+ bindings
+Message-ID: <20210120013118.GA2990828@robh.at.kernel.org>
+References: <20210119124622.9490-1-mike.looijmans@topic.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YAa0ys4YJcZtKdfF@kernel.org>
+In-Reply-To: <20210119124622.9490-1-mike.looijmans@topic.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 12:30:42PM +0200, Jarkko Sakkinen wrote:
-> On Fri, Jan 15, 2021 at 11:32:31AM +0530, Sumit Garg wrote:
-> > On Thu, 14 Jan 2021 at 07:35, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > >
-> > > On Wed, Jan 13, 2021 at 04:47:00PM +0530, Sumit Garg wrote:
-> > > > Hi Jarkko,
-> > > >
-> > > > On Mon, 11 Jan 2021 at 22:05, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, Nov 03, 2020 at 09:31:44PM +0530, Sumit Garg wrote:
-> > > > > > Add support for TEE based trusted keys where TEE provides the functionality
-> > > > > > to seal and unseal trusted keys using hardware unique key.
-> > > > > >
-> > > > > > Refer to Documentation/tee.txt for detailed information about TEE.
-> > > > > >
-> > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > >
-> > > > > I haven't yet got QEMU environment working with aarch64, this produces
-> > > > > just a blank screen:
-> > > > >
-> > > > > ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -kernel output/images/Image -initrd output/images/rootfs.cpio -serial stdio
-> > > > >
-> > > > > My BuildRoot fork for TPM and keyring testing is located over here:
-> > > > >
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/buildroot-tpmdd.git/
-> > > > >
-> > > > > The "ARM version" is at this point in aarch64 branch. Over time I will
-> > > > > define tpmdd-x86_64 and tpmdd-aarch64 boards and everything will be then
-> > > > > in the master branch.
-> > > > >
-> > > > > To create identical images you just need to
-> > > > >
-> > > > > $ make tpmdd_defconfig && make
-> > > > >
-> > > > > Can you check if you see anything obviously wrong? I'm eager to test this
-> > > > > patch set, and in bigger picture I really need to have ready to run
-> > > > > aarch64 environment available.
-> > > >
-> > > > I would rather suggest you to follow steps listed here [1] as to test
-> > > > this feature on Qemu aarch64 we need to build firmwares such as TF-A,
-> > > > OP-TEE, UEFI etc. which are all integrated into OP-TEE Qemu build
-> > > > system [2]. And then it would be easier to migrate them to your
-> > > > buildroot environment as well.
-> > > >
-> > > > [1] https://lists.trustedfirmware.org/pipermail/op-tee/2020-May/000027.html
-> > > > [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
-> > > >
-> > > > -Sumit
-> > >
-> > > Can you provide 'keyctl_change'? Otherwise, the steps are easy to follow.
-> > >
-> > 
-> > $ cat keyctl_change
-> > diff --git a/common.mk b/common.mk
-> > index aeb7b41..663e528 100644
-> > --- a/common.mk
-> > +++ b/common.mk
-> > @@ -229,6 +229,7 @@ BR2_PACKAGE_OPTEE_TEST_SDK ?= $(OPTEE_OS_TA_DEV_KIT_DIR)
-> >  BR2_PACKAGE_OPTEE_TEST_SITE ?= $(OPTEE_TEST_PATH)
-> >  BR2_PACKAGE_STRACE ?= y
-> >  BR2_TARGET_GENERIC_GETTY_PORT ?= $(if
-> > $(CFG_NW_CONSOLE_UART),ttyAMA$(CFG_NW_CONSOLE_UART),ttyAMA0)
-> > +BR2_PACKAGE_KEYUTILS := y
-> > 
-> >  # All BR2_* variables from the makefile or the environment are appended to
-> >  # ../out-br/extra.conf. All values are quoted "..." except y and n.
-> > diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
-> > index 368c18a..832ab74 100644
-> > --- a/kconfigs/qemu.conf
-> > +++ b/kconfigs/qemu.conf
-> > @@ -20,3 +20,5 @@ CONFIG_9P_FS=y
-> >  CONFIG_9P_FS_POSIX_ACL=y
-> >  CONFIG_HW_RANDOM=y
-> >  CONFIG_HW_RANDOM_VIRTIO=y
-> > +CONFIG_TRUSTED_KEYS=y
-> > +CONFIG_ENCRYPTED_KEYS=y
-> > 
-> > > After I've successfully tested 2/4, I'd suggest that you roll out one more
-> > > version and CC the documentation patch to Elaine and Mini, and clearly
-> > > remark in the commit message that TEE is a standard, with a link to the
-> > > specification.
-> > >
-> > 
-> > Sure, I will roll out the next version after your testing.
+On Tue, Jan 19, 2021 at 01:46:21PM +0100, Mike Looijmans wrote:
+> This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
+> the accelerometer part.
 > 
-> Thanks, I'll try this at instant, and give my feedback.
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> 
+> ---
+> 
+> Changes in v6:
+> I't been almost a year since the last commit, sorry...
+> Fixed the yaml errors
+> Add interrupt, vdd and vddio properties
+> 
+> Changes in v5:
+> submit together with driver code as patch series
+> 
+> Changes in v2:
+> convert to yaml format
+> 
+>  .../bindings/iio/accel/bosch,bmi088.yaml      | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+> new file mode 100644
+> index 000000000000..459b9969fd12
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/accel/bosch,bmi088.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bosch BMI088 IMU accelerometer part
+> +
+> +maintainers:
+> +  - Mike Looijmans <mike.looijmans@topic.nl>
+> +
+> +description: |
+> +  Acceleration part of the IMU sensor with an SPI interface
+> +  Specifications about the sensor can be found at:
+> +    https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi088-ds001.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - bosch,bmi088_accel
 
-I bump into this:
+bosch,bmi088-accel
 
-$ make run-only
-ln -sf /home/jarkko/devel/tpm/optee/build/../out-br/images/rootfs.cpio.gz /home/jarkko/devel/tpm/optee/build/../out/bin/
-ln: failed to create symbolic link '/home/jarkko/devel/tpm/optee/build/../out/bin/': No such file or directory
-make: *** [Makefile:194: run-only] Error 1
-
-/Jarkko
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vdd-supply: true
+> +
+> +  vddio-supply: true
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+> +      Type should be either IRQ_TYPE_LEVEL_HIGH or IRQ_TYPE_LEVEL_LOW.
+> +      The first interrupt listed must be the one connected to the INT1 pin, the
+> +      second must be the one connected to the INT2 pin.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      bmi088_accel@1 {
+> +        compatible = "bosch,bmi088_accel";
+> +        reg = <1>;
+> +        spi-max-frequency = <10000000>;
+> +        interrupt-parent = <&gpio6>;
+> +        interrupts = <19 IRQ_TYPE_LEVEL_LOW>;
+> +      };
+> +    };
+> +...
+> -- 
+> 2.17.1
+> 
