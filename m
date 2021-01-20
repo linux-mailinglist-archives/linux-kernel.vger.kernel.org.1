@@ -2,90 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8732FCC09
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9D22FCC29
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbhATHu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:50:58 -0500
-Received: from mga06.intel.com ([134.134.136.31]:35549 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728911AbhATHtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:49:17 -0500
-IronPort-SDR: jlC9l65W0gAMoq1RiTzbaujQtE+zshnUHmbOeI3Aed5C/V69tKEaETioMbBBpspwWMJkoqb69/
- n9sv+Toedw1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="240600210"
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="240600210"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 23:48:32 -0800
-IronPort-SDR: N3eeg1rePNFLLAsJnzVHKgnfVbVszaQDBbzpl6XmLKR+Ow0jkLkbNSb6kDO6MUDtUTGbBP0gyb
- FtdDwtPyiA+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="426810673"
-Received: from host.sh.intel.com ([10.239.154.115])
-  by orsmga001.jf.intel.com with ESMTP; 19 Jan 2021 23:48:29 -0800
-From:   Ye Xiang <xiang.ye@intel.com>
-To:     jikos@kernel.org, jic23@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
-Subject: [PATCH] iio: hid-sensor-prox: Fix scale not correct issue
-Date:   Wed, 20 Jan 2021 15:49:35 +0800
-Message-Id: <20210120074935.26637-1-xiang.ye@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729912AbhATH4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:56:15 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37311 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729450AbhATHyg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:54:36 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UMJ0.F2_1611129001;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UMJ0.F2_1611129001)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 15:50:01 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 3/3] xsk: build skb by page
+Date:   Wed, 20 Jan 2021 15:50:01 +0800
+Message-Id: <6787e9a100eba47efbff81939e21e97fef492d07.1611128806.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <20210119144253.5321-1-alobakin@pm.me>
+References: <20210119144253.5321-1-alobakin@pm.me>
+In-Reply-To: <cover.1611128806.git.xuanzhuo@linux.alibaba.com>
+References: <cover.1611128806.git.xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the proxy sensor scale is zero because it just return the
-exponent directly. To fix this issue, this patch use
-hid_sensor_format_scale to process the scale first then return the
-output.
+This patch is used to construct skb based on page to save memory copy
+overhead.
 
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
+network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
+directly construct skb. If this feature is not supported, it is still
+necessary to copy data to construct skb.
+
+---------------- Performance Testing ------------
+
+The test environment is Aliyun ECS server.
+Test cmd:
+```
+xdpsock -i eth0 -t  -S -s <msg size>
+```
+
+Test result data:
+
+size    64      512     1024    1500
+copy    1916747 1775988 1600203 1440054
+page    1974058 1953655 1945463 1904478
+percent 3.0%    10.0%   21.58%  32.3%
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 ---
- drivers/iio/light/hid-sensor-prox.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 86 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/iio/light/hid-sensor-prox.c b/drivers/iio/light/hid-sensor-prox.c
-index 4ab285a418d5..4abcfe48f1d4 100644
---- a/drivers/iio/light/hid-sensor-prox.c
-+++ b/drivers/iio/light/hid-sensor-prox.c
-@@ -23,6 +23,9 @@ struct prox_state {
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info prox_attr;
- 	u32 human_presence;
-+	int scale_pre_decml;
-+	int scale_post_decml;
-+	int scale_precision;
- };
- 
- static const u32 prox_sensitivity_addresses[] = {
-@@ -98,8 +101,9 @@ static int prox_read_raw(struct iio_dev *indio_dev,
- 		ret_type = IIO_VAL_INT;
- 		break;
- 	case IIO_CHAN_INFO_SCALE:
--		*val = prox_state->prox_attr.units;
--		ret_type = IIO_VAL_INT;
-+		*val = prox_state->scale_pre_decml;
-+		*val2 = prox_state->scale_post_decml;
-+		ret_type = prox_state->scale_precision;
- 		break;
- 	case IIO_CHAN_INFO_OFFSET:
- 		*val = hid_sensor_convert_exponent(
-@@ -221,6 +225,11 @@ static int prox_parse_report(struct platform_device *pdev,
- 	dev_dbg(&pdev->dev, "prox %x:%x\n", st->prox_attr.index,
- 			st->prox_attr.report_id);
- 
-+	st->scale_precision = hid_sensor_format_scale(
-+				hsdev->usage,
-+				&st->prox_attr,
-+				&st->scale_pre_decml, &st->scale_post_decml);
-+
- 	return ret;
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 8037b04..817a3a5 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ 	sock_wfree(skb);
  }
  
++static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
++					      struct xdp_desc *desc)
++{
++	u32 len, offset, copy, copied;
++	struct sk_buff *skb;
++	struct page *page;
++	char *buffer;
++	int err, i;
++	u64 addr;
++
++	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
++	if (unlikely(!skb))
++		return ERR_PTR(err);
++
++	addr = desc->addr;
++	len = desc->len;
++
++	buffer = xsk_buff_raw_get_data(xs->pool, addr);
++	offset = offset_in_page(buffer);
++	addr = buffer - (char *)xs->pool->addrs;
++
++	for (copied = 0, i = 0; copied < len; i++) {
++		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
++
++		get_page(page);
++
++		copy = min_t(u32, PAGE_SIZE - offset, len - copied);
++
++		skb_fill_page_desc(skb, i, page, offset, copy);
++
++		copied += copy;
++		addr += copy;
++		offset = 0;
++	}
++
++	skb->len += len;
++	skb->data_len += len;
++	skb->truesize += len;
++
++	refcount_add(len, &xs->sk.sk_wmem_alloc);
++
++	return skb;
++}
++
++static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
++				     struct xdp_desc *desc)
++{
++	struct sk_buff *skb = NULL;
++
++	if (xs->dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
++		skb = xsk_build_skb_zerocopy(xs, desc);
++		if (IS_ERR(skb))
++			return skb;
++	} else {
++		char *buffer;
++		u32 len;
++		int err;
++
++		len = desc->len;
++		skb = sock_alloc_send_skb(&xs->sk, len, 1, &err);
++		if (unlikely(!skb))
++			return ERR_PTR(err);
++
++		skb_put(skb, len);
++		buffer = xsk_buff_raw_get_data(xs->pool, desc->addr);
++		err = skb_store_bits(skb, 0, buffer, len);
++		if (unlikely(err)) {
++			kfree_skb(skb);
++			return ERR_PTR(err);
++		}
++	}
++
++	skb->dev = xs->dev;
++	skb->priority = xs->sk.sk_priority;
++	skb->mark = xs->sk.sk_mark;
++	skb_shinfo(skb)->destructor_arg = (void *)(long)desc->addr;
++	skb->destructor = xsk_destruct_skb;
++
++	return skb;
++}
++
+ static int xsk_generic_xmit(struct sock *sk)
+ {
+ 	struct xdp_sock *xs = xdp_sk(sk);
+@@ -446,43 +527,30 @@ static int xsk_generic_xmit(struct sock *sk)
+ 		goto out;
+ 
+ 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+-		char *buffer;
+-		u64 addr;
+-		u32 len;
+-
+ 		if (max_batch-- == 0) {
+ 			err = -EAGAIN;
+ 			goto out;
+ 		}
+ 
+-		len = desc.len;
+-		skb = sock_alloc_send_skb(sk, len, 1, &err);
+-		if (unlikely(!skb))
++		skb = xsk_build_skb(xs, &desc);
++		if (IS_ERR(skb)) {
++			err = PTR_ERR(skb);
+ 			goto out;
++		}
+ 
+-		skb_put(skb, len);
+-		addr = desc.addr;
+-		buffer = xsk_buff_raw_get_data(xs->pool, addr);
+-		err = skb_store_bits(skb, 0, buffer, len);
+ 		/* This is the backpressure mechanism for the Tx path.
+ 		 * Reserve space in the completion queue and only proceed
+ 		 * if there is space in it. This avoids having to implement
+ 		 * any buffering in the Tx path.
+ 		 */
+ 		spin_lock_irqsave(&xs->pool->cq_lock, flags);
+-		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
++		if (xskq_prod_reserve(xs->pool->cq)) {
+ 			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+ 			kfree_skb(skb);
+ 			goto out;
+ 		}
+ 		spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+ 
+-		skb->dev = xs->dev;
+-		skb->priority = sk->sk_priority;
+-		skb->mark = sk->sk_mark;
+-		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+-		skb->destructor = xsk_destruct_skb;
+-
+ 		err = __dev_direct_xmit(skb, xs->queue_id);
+ 		if  (err == NETDEV_TX_BUSY) {
+ 			/* Tell user-space to retry the send */
 -- 
-2.17.1
+1.8.3.1
 
