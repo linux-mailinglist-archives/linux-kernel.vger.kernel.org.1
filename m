@@ -2,136 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE85E2FD4EE
+	by mail.lfdr.de (Postfix) with ESMTP id 51F7E2FD4ED
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391361AbhATQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
+        id S2391275AbhATQGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:06:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391205AbhATQFL (ORCPT
+        with ESMTP id S1726460AbhATQEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:05:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12124C061793;
-        Wed, 20 Jan 2021 08:04:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=saaFHJth3qz3xI0Dro7UHa0PgnHwAKKwZMU5+56dtJE=; b=ZACVPHDnW8nMnHToaApes5g3Rw
-        YvejBi+ndU51oeSrxqqcYYLAwliMBGBXghPXPYc7XG0lsgIcf+/IvR9eJvgtCr1Y5bxBLOsNZcLBQ
-        vxSb7WDqPTplOeChJJO0bdqf2couRLArJqCqj+JJHVlMqYUasnii5Ahu8a9pr17qMCP5jWMHxkGSS
-        q6aEdJuVPlms8bTXRO0qZ2BUkaKlzq/5TxYAwU0Ad6+fh/jU8PXLs9HsRV6qDt9A/EPq+R0dOuJcM
-        Lpx6Y1tpfz20HDKCh6YfbGEj7XSx+aNMkVsZzAS1FtW9RnCqIaJmYKn7ticVopJumXn3gPadcnzNH
-        uNwqFTFw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2Fvu-00Fsqd-9M; Wed, 20 Jan 2021 16:02:37 +0000
-Date:   Wed, 20 Jan 2021 16:02:10 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>
-Subject: Re: [PATCH v14 05/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210120160210.GK2260413@casper.infradead.org>
-References: <20201203062949.5484-1-rppt@kernel.org>
- <20201203062949.5484-6-rppt@kernel.org>
- <20210119202213.GI2260413@casper.infradead.org>
- <20210120150510.GO1106298@kernel.org>
+        Wed, 20 Jan 2021 11:04:35 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43982C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:03:55 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id g3so14871191ejb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:03:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qaBbcFFWtwH73KKkHPV2dAAEp83v3RAFbPyaNgV/jIA=;
+        b=on1TzcIQfB0S+jMkItagEJtX8hz1tNnjBcnUtaJWlF9V6USnFvBrmlsf+hgKeuoHzg
+         fHXarQilEi/Z1srXltN0diMlHMbSDa0P1lRdEw2fafXT9lYdDcUCNJCdWXc9aXmvvjie
+         BRVYlaez6uS7Xpon2IXP3iVJMV1PHrWsQXZ6PAA0SdZLYh31u/j2HbzbttRSevVbCqn+
+         nV8DpomSlRxtSnh4hLOliPHOECsNLhUPi2JYLCTO8X+jnNqakzuTardr31/bn0B45K6K
+         jm0UELIHadLwshBArvF3Layo+XQsGrbgjxf7OiPKuwCJKVR/XQjK2YcWIJM1l5VjgATz
+         ksiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qaBbcFFWtwH73KKkHPV2dAAEp83v3RAFbPyaNgV/jIA=;
+        b=HGZj7VFuXNMHxCbT5RdLrx/vfh20TwE4RnrDwKc/hcuSDAxx+/KNZVc8FaPV20zZX7
+         wpAMoPP71NjKZU0twed9l0ws9ARUFzaOTC10BaOFqXiB7qbtVVZ8piaao0RfoXqEVgRg
+         kRhgOwmReBmpIokXpF6Vl6WwKH5PKdG5/7VryDwLZyPKwhRzpw6vNSr0IJrpitGaHNZm
+         tkrb5pz3DuixF+uNxm0ncPQ7iS92/3mhteNRj6EDkWcYOPC+q9zxVPD55hoVt3EUlNsA
+         jKkQLKcOx3s6DHq1e5GtrxMQkiVIX13NwJmr2U7JTJhL/A+3TQPNu79zoljQJq5DE8gE
+         pKNQ==
+X-Gm-Message-State: AOAM533oS6eu1b5+vfPulIxwMzBIVsqXNfBtpktr6svxIRATGU7xcrE+
+        1WyjdyFyc+eNp/9nyaqXWO6F2tg3ybVYUCWAvKSaQA==
+X-Google-Smtp-Source: ABdhPJz49BI1HhzhHVlsG76ZtgvDppRgVafvcapbZeJzfe0AK+OqaaTzGsJ0BE7BJebcMbhE517Q3MPcEI8WBx1tDMA=
+X-Received: by 2002:a17:906:eb95:: with SMTP id mh21mr6793469ejb.175.1611158633954;
+ Wed, 20 Jan 2021 08:03:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120150510.GO1106298@kernel.org>
+References: <20210120120058.29138-1-wei.liu@kernel.org> <20210120120058.29138-3-wei.liu@kernel.org>
+In-Reply-To: <20210120120058.29138-3-wei.liu@kernel.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 20 Jan 2021 11:03:18 -0500
+Message-ID: <CA+CK2bDHYxTr_ttbC88u1OvT-=cm5do5RmyoxC+joz=GjK1WtA@mail.gmail.com>
+Subject: Re: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root partition
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 05:05:10PM +0200, Mike Rapoport wrote:
-> On Tue, Jan 19, 2021 at 08:22:13PM +0000, Matthew Wilcox wrote:
-> > On Thu, Dec 03, 2020 at 08:29:44AM +0200, Mike Rapoport wrote:
-> > > +static vm_fault_t secretmem_fault(struct vm_fault *vmf)
-> > > +{
-> > > +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-> > > +	struct inode *inode = file_inode(vmf->vma->vm_file);
-> > > +	pgoff_t offset = vmf->pgoff;
-> > > +	vm_fault_t ret = 0;
-> > > +	unsigned long addr;
-> > > +	struct page *page;
-> > > +	int err;
-> > > +
-> > > +	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
-> > > +		return vmf_error(-EINVAL);
-> > > +
-> > > +	page = find_get_page(mapping, offset);
-> > > +	if (!page) {
-> > > +
-> > > +		page = secretmem_alloc_page(vmf->gfp_mask);
-> > > +		if (!page)
-> > > +			return vmf_error(-ENOMEM);
-> > 
-> > Just use VM_FAULT_OOM directly.
->  
-> Ok.
-> 
-> > > +		err = add_to_page_cache(page, mapping, offset, vmf->gfp_mask);
-> > > +		if (unlikely(err))
-> > > +			goto err_put_page;
-> > 
-> > What if the error is EEXIST because somebody else raced with you to add
-> > a new page to the page cache?
-> 
-> Right, for -EEXIST I need a retry here, thanks.
-> 
-> > > +		err = set_direct_map_invalid_noflush(page, 1);
-> > > +		if (err)
-> > > +			goto err_del_page_cache;
-> > 
-> > Does this work correctly if somebody else has a reference to the page
-> > in the meantime?
-> 
-> Yes, it does. If somebody else won the race that page was dropped from the
-> direct map and this call would be essentially a nop. And anyway, the very
-> next patch changes the way pages are removed from the direct map ;-)
+On Wed, Jan 20, 2021 at 7:01 AM Wei Liu <wei.liu@kernel.org> wrote:
+>
+> For now we can use the privilege flag to check. Stash the value to be
+> used later.
+>
+> Put in a bunch of defines for future use when we want to have more
+> fine-grained detection.
+>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+> v3: move hv_root_partition to mshyperv.c
+> ---
+>  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
+>  arch/x86/include/asm/mshyperv.h    |  2 ++
+>  arch/x86/kernel/cpu/mshyperv.c     | 20 ++++++++++++++++++++
+>  3 files changed, 32 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> index 6bf42aed387e..204010350604 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -21,6 +21,7 @@
+>  #define HYPERV_CPUID_FEATURES                  0x40000003
+>  #define HYPERV_CPUID_ENLIGHTMENT_INFO          0x40000004
+>  #define HYPERV_CPUID_IMPLEMENT_LIMITS          0x40000005
+> +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES   0x40000007
+>  #define HYPERV_CPUID_NESTED_FEATURES           0x4000000A
+>
+>  #define HYPERV_CPUID_VIRT_STACK_INTERFACE      0x40000081
+> @@ -110,6 +111,15 @@
+>  /* Recommend using enlightened VMCS */
+>  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED            BIT(14)
+>
+> +/*
+> + * CPU management features identification.
+> + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
+> + */
+> +#define HV_X64_START_LOGICAL_PROCESSOR                 BIT(0)
+> +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR           BIT(1)
+> +#define HV_X64_PERFORMANCE_COUNTER_SYNC                        BIT(2)
+> +#define HV_X64_RESERVED_IDENTITY_BIT                   BIT(31)
+> +
+>  /*
+>   * Virtual processor will never share a physical core with another virtual
+>   * processor, except for virtual processors that are reported as sibling SMT
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index ffc289992d1b..ac2b0d110f03 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
+>                 struct hv_guest_mapping_flush_list *flush,
+>                 u64 start_gfn, u64 end_gfn);
+>
+> +extern bool hv_root_partition;
+> +
+>  #ifdef CONFIG_X86_64
+>  void hv_apic_init(void);
+>  void __init hv_init_spinlocks(void);
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index f628e3dc150f..c376d191a260 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -32,6 +32,10 @@
+>  #include <asm/nmi.h>
+>  #include <clocksource/hyperv_timer.h>
+>
+> +/* Is Linux running as the root partition? */
+> +bool hv_root_partition;
+> +EXPORT_SYMBOL_GPL(hv_root_partition);
+> +
+>  struct ms_hyperv_info ms_hyperv;
+>  EXPORT_SYMBOL_GPL(ms_hyperv);
+>
+> @@ -237,6 +241,22 @@ static void __init ms_hyperv_init_platform(void)
+>         pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
+>                  ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
+>
+> +       /*
+> +        * Check CPU management privilege.
+> +        *
+> +        * To mirror what Windows does we should extract CPU management
+> +        * features and use the ReservedIdentityBit to detect if Linux is the
+> +        * root partition. But that requires negotiating CPU management
+> +        * interface (a process to be finalized).
 
-What I'm thinking is:
+Is this comment relevant? Do we have to mirror what Windows does?
 
-thread A page faults
-doesn't find page
-allocates page
-adds page to page cache
-				thread B page faults
-				does find page in page cache
-set direct map invalid fails
-deletes from page cache
-				... ?
+> +        *
+> +        * For now, use the privilege flag as the indicator for running as
+> +        * root.
+> +        */
+> +       if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
+> +               hv_root_partition = true;
+> +               pr_info("Hyper-V: running as root partition\n");
+> +       }
+> +
 
+Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+
+>         /*
+>          * Extract host information.
+>          */
+> --
+> 2.20.1
+>
