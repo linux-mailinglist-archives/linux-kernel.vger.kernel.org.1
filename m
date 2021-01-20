@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568092FCB12
+	by mail.lfdr.de (Postfix) with ESMTP id C2EC42FCB13
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729792AbhATG2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:28:12 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:41847 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729523AbhATGYA (ORCPT
+        id S1729834AbhATG2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:28:18 -0500
+Received: from conuserg-10.nifty.com ([210.131.2.77]:39180 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729641AbhATGZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:24:00 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UMIdawV_1611123780;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMIdawV_1611123780)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Jan 2021 14:23:10 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     jesse.brandeburg@intel.com
-Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] igc: Assign boolean values to a bool variable
-Date:   Wed, 20 Jan 2021 14:22:58 +0800
-Message-Id: <1611123778-104125-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 20 Jan 2021 01:25:59 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 10K6Nskv000951;
+        Wed, 20 Jan 2021 15:23:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 10K6Nskv000951
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611123835;
+        bh=1JrYU8+EbJufEwrJi23/GxY2VE/PHExCTFg+NH0kfF8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pQthdvoM7RX8d6r5+I7dpdk0z0OAI33IVQgRjIYNHskv+uiNyGJRuaYkNrLCL61/v
+         PKjMVOWdBkefCKjHqL7eLPuKNRBeigvyLUu9m/iE0YmLU1v0Cq64ziBBveazsCo328
+         d5kqkp/shU4dAN3/kw3/68GjX+fxG8mYhy5rf2b1LPHT0vDXvCa1nxIht6eG3wqMjI
+         keAY8LNL/CHObN8jK1Wyl5zTYc/oSQmAtBeHmIOlfvBQAsV3LNb5vs0cBztCYMCycL
+         yBW4wbhvi2dDrjje4cLwUJP0ISPzWtXalHFW+OdG5kqvZ6YWf57o6VSDwFyLwRk/LV
+         Bkv9fkAxAa7Pg==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: use always-y instead of extra-y
+Date:   Wed, 20 Jan 2021 15:23:51 +0900
+Message-Id: <20210120062351.3011786-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+As commit d0e628cd817f ("kbuild: doc: clarify the difference between
+extra-y and always-y") explained, extra-y should be used for listing
+the prerequsites of vmlinux. always-y is a better fix here.
 
-./drivers/net/ethernet/intel/igc/igc_main.c:4961:2-14: WARNING:
-Assignment of 0/1 to bool variable.
-
-./drivers/net/ethernet/intel/igc/igc_main.c:4955:2-14: WARNING:
-Assignment of 0/1 to bool variable.
-
-./drivers/net/ethernet/intel/igc/igc_main.c:4933:1-13: WARNING:
-Assignment of 0/1 to bool variable.
-
-./drivers/net/ethernet/intel/igc/igc_main.c:4592:1-24: WARNING:
-Assignment of 0/1 to bool variable.
-
-./drivers/net/ethernet/intel/igc/igc_main.c:4438:2-25: WARNING:
-Assignment of 0/1 to bool variable.
-
-./drivers/net/ethernet/intel/igc/igc_main.c:4396:2-25: WARNING:
-Assignment of 0/1 to bool variable.
-
-./drivers/net/ethernet/intel/igc/igc_main.c:4018:2-25: WARNING:
-Assignment of 0/1 to bool variable.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index afd6a62..6abb331 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -3597,7 +3597,7 @@ void igc_up(struct igc_adapter *adapter)
- 	netif_tx_start_all_queues(adapter->netdev);
+ Documentation/devicetree/bindings/Makefile |  8 ++++----
+ drivers/gpu/drm/i915/Makefile              |  2 +-
+ scripts/Makefile.lib                       | 10 +++++-----
+ scripts/gdb/linux/Makefile                 |  2 +-
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
+index 8f2b054bec5a..90fcad98984d 100644
+--- a/Documentation/devicetree/bindings/Makefile
++++ b/Documentation/devicetree/bindings/Makefile
+@@ -78,10 +78,10 @@ $(obj)/processed-schema.json: $(DT_SCHEMA_FILES) check_dtschema_version FORCE
  
- 	/* start the watchdog. */
--	hw->mac.get_link_status = 1;
-+	hw->mac.get_link_status = true;
- 	schedule_work(&adapter->watchdog_task);
- }
+ endif
  
-@@ -4016,7 +4016,7 @@ static irqreturn_t igc_msix_other(int irq, void *data)
- 	}
+-extra-$(CHECK_DT_BINDING) += processed-schema-examples.json
+-extra-$(CHECK_DTBS) += processed-schema.json
+-extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dts, $(DT_SCHEMA_FILES))
+-extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dt.yaml, $(DT_SCHEMA_FILES))
++always-$(CHECK_DT_BINDING) += processed-schema-examples.json
++always-$(CHECK_DTBS)       += processed-schema.json
++always-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dts, $(DT_SCHEMA_FILES))
++always-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dt.yaml, $(DT_SCHEMA_FILES))
  
- 	if (icr & IGC_ICR_LSC) {
--		hw->mac.get_link_status = 1;
-+		hw->mac.get_link_status = true;
- 		/* guard against interrupt when we're going down */
- 		if (!test_bit(__IGC_DOWN, &adapter->state))
- 			mod_timer(&adapter->watchdog_timer, jiffies + 1);
-@@ -4394,7 +4394,7 @@ static irqreturn_t igc_intr_msi(int irq, void *data)
- 	}
+ # Hack: avoid 'Argument list too long' error for 'make clean'. Remove most of
+ # build artifacts here before they are processed by scripts/Makefile.clean
+diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+index 6d9e81ea67f4..938221894d0c 100644
+--- a/drivers/gpu/drm/i915/Makefile
++++ b/drivers/gpu/drm/i915/Makefile
+@@ -294,7 +294,7 @@ no-header-test := \
+ 	gvt/mpt.h \
+ 	gvt/scheduler.h
  
- 	if (icr & (IGC_ICR_RXSEQ | IGC_ICR_LSC)) {
--		hw->mac.get_link_status = 1;
-+		hw->mac.get_link_status = true;
- 		if (!test_bit(__IGC_DOWN, &adapter->state))
- 			mod_timer(&adapter->watchdog_timer, jiffies + 1);
- 	}
-@@ -4436,7 +4436,7 @@ static irqreturn_t igc_intr(int irq, void *data)
- 	}
+-extra-$(CONFIG_DRM_I915_WERROR) += \
++always-$(CONFIG_DRM_I915_WERROR) += \
+ 	$(patsubst %.h,%.hdrtest, $(filter-out $(no-header-test), \
+ 		$(shell cd $(srctree)/$(src) && find * -name '*.h')))
  
- 	if (icr & (IGC_ICR_RXSEQ | IGC_ICR_LSC)) {
--		hw->mac.get_link_status = 1;
-+		hw->mac.get_link_status = true;
- 		/* guard against interrupt when we're going down */
- 		if (!test_bit(__IGC_DOWN, &adapter->state))
- 			mod_timer(&adapter->watchdog_timer, jiffies + 1);
-@@ -4590,7 +4590,7 @@ static int __igc_open(struct net_device *netdev, bool resuming)
- 	netif_tx_start_all_queues(netdev);
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 4612a887f28e..b8e587a17dcc 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -64,12 +64,12 @@ always-y += $(userprogs-always-y) $(userprogs-always-m)
  
- 	/* start the watchdog. */
--	hw->mac.get_link_status = 1;
-+	hw->mac.get_link_status = true;
- 	schedule_work(&adapter->watchdog_task);
+ # DTB
+ # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
+-extra-y				+= $(dtb-y)
+-extra-$(CONFIG_OF_ALL_DTBS)	+= $(dtb-)
++always-y			+= $(dtb-y)
++always-$(CONFIG_OF_ALL_DTBS)	+= $(dtb-)
  
- 	return IGC_SUCCESS;
-@@ -4931,7 +4931,7 @@ int igc_set_spd_dplx(struct igc_adapter *adapter, u32 spd, u8 dplx)
- {
- 	struct igc_mac_info *mac = &adapter->hw.mac;
+ ifneq ($(CHECK_DTBS),)
+-extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+-extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
++always-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
++always-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+ endif
  
--	mac->autoneg = 0;
-+	mac->autoneg = false;
+ # Add subdir path
+@@ -230,7 +230,7 @@ $(obj)/%: $(src)/%_shipped
+ #	target: source(s) FORCE
+ #		$(if_changed,ld/objcopy/gzip)
+ #
+-#	and add target to extra-y so that we know we have to
++#	and add target to 'targets' so that we know we have to
+ #	read in the saved command line
  
- 	/* Make sure dplx is at most 1 bit and lsb of speed is not set
- 	 * for the switch() below to work
-@@ -4953,13 +4953,13 @@ int igc_set_spd_dplx(struct igc_adapter *adapter, u32 spd, u8 dplx)
- 		mac->forced_speed_duplex = ADVERTISE_100_FULL;
- 		break;
- 	case SPEED_1000 + DUPLEX_FULL:
--		mac->autoneg = 1;
-+		mac->autoneg = true;
- 		adapter->hw.phy.autoneg_advertised = ADVERTISE_1000_FULL;
- 		break;
- 	case SPEED_1000 + DUPLEX_HALF: /* not supported */
- 		goto err_inval;
- 	case SPEED_2500 + DUPLEX_FULL:
--		mac->autoneg = 1;
-+		mac->autoneg = true;
- 		adapter->hw.phy.autoneg_advertised = ADVERTISE_2500_FULL;
- 		break;
- 	case SPEED_2500 + DUPLEX_HALF: /* not supported */
+ # Linking
+diff --git a/scripts/gdb/linux/Makefile b/scripts/gdb/linux/Makefile
+index 124755087510..13903073cbff 100644
+--- a/scripts/gdb/linux/Makefile
++++ b/scripts/gdb/linux/Makefile
+@@ -18,7 +18,7 @@ quiet_cmd_gen_constants_py = GEN     $@
+ 	$(CPP) -E -x c -P $(c_flags) $< > $@ ;\
+ 	sed -i '1,/<!-- end-c-headers -->/d;' $@
+ 
+-extra-y += constants.py
++always-y += constants.py
+ $(obj)/constants.py: $(src)/constants.py.in FORCE
+ 	$(call if_changed_dep,gen_constants_py)
+ 
 -- 
-1.8.3.1
+2.27.0
 
