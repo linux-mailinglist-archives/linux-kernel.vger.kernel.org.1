@@ -2,60 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D584E2FD650
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D6D2FD658
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404077AbhATRAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:00:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
+        id S2391750AbhATRCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:02:04 -0500
+Received: from verein.lst.de ([213.95.11.211]:56756 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391591AbhATQ71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:59:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9399123358;
-        Wed, 20 Jan 2021 16:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611161926;
-        bh=4tPb7oiOpgfhTD/vQJqPmDd/sTB+82Wa1AHcoottGyY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KfNFDIPAC8s8Fq/a3t9aRYfnQ/1rDk0g0PAx8gLUKIydbRyOjOiAgGXOyi2DZqZYt
-         keogDWt0stVw1jzFKOSwuHQ5utGSK0QZQRrSvirhqFaeM/BbS6yEOpW82LExzwdX3i
-         LUcA9PiqRv4F0ILPPwK1/GSiAsGIxvXh52pvzLsLiB8Qf7XPfu6zD7NBjT+9phMTg0
-         VvTL8OhWbMUx/tO96tF/x4Ggvlx21M/XCYTY++KYhNRD77KIchemfTLl6O+crkPD7/
-         tbB0BMSWdNX0Di8iTY+tviGBryKwCasoRO24TqIBkAGFcw+bg/LcT66D24HRVt17Cb
-         sZkwU95FNLKtw==
-Date:   Wed, 20 Jan 2021 08:58:45 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     patchwork-bot+netdevbpf@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfc@lists.01.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH net] net: nfc: nci: fix the wrong NCI_CORE_INIT
- parameters
-Message-ID: <20210120085845.11d43647@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CACwDmQBZ-LVursCYmtngyv3yFCQ9_Jkip03VZ8cd1auNu86V8A@mail.gmail.com>
-References: <20210118205522.317087-1-bongsu.jeon@samsung.com>
-        <161110440860.4771.13780876306648585886.git-patchwork-notify@kernel.org>
-        <CACwDmQBZ-LVursCYmtngyv3yFCQ9_Jkip03VZ8cd1auNu86V8A@mail.gmail.com>
+        id S1732743AbhATRBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 12:01:17 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 06C7468B02; Wed, 20 Jan 2021 18:00:33 +0100 (CET)
+Date:   Wed, 20 Jan 2021 18:00:32 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org, Kent Gibson <warthog618@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 0/4] configfs: implement committable items and add
+ sample code
+Message-ID: <20210120170032.GA22929@lst.de>
+References: <20210115111311.31601-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115111311.31601-1-brgl@bgdev.pl>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 18:54:17 +0900 Bongsu Jeon wrote:
-> On Wed, Jan 20, 2021 at 10:00 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
-> > This patch was applied to netdev/net.git (refs/heads/master):
-> >
-> > On Tue, 19 Jan 2021 05:55:22 +0900 you wrote:  
-> > > From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> > >
-> > > Fix the code because NCI_CORE_INIT_CMD includes two parameters in NCI2.0
-> > > but there is no parameters in NCI1.x.
-> > >
-> > > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> Could you merge this patch to net-next repo??
-> NCI selftest that i will send will fail if this patch isn't merged.
+Joel,
 
-It happens periodically, should happen today or tomorrow.
+if you are fine with this version I think we should let Bartosz pick
+this up through whatever tree he needs it for.  I'd be more comfortable
+if you ACKed this as you know the original design better than I do.
