@@ -2,402 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF432FD1BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0712FD1C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388819AbhATNZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:25:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53946 "EHLO mail.kernel.org"
+        id S2389735AbhATN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:26:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731202AbhATNRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:17:19 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9041D23359;
-        Wed, 20 Jan 2021 13:16:30 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l2DLY-008wya-N7; Wed, 20 Jan 2021 13:16:28 +0000
+        id S1729591AbhATNR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:17:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 711AF2245C;
+        Wed, 20 Jan 2021 13:17:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611148637;
+        bh=seFF8AEbY7EFiGT41bEhA6Q4dwI7EdirV4FStnKMPAI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=euNDx1AfrSK3cxkoVZdvr3ri3eVidaV67iWi97T8WJppoKT81vEpWhGGL/7D8izQl
+         E5n+WuyAKViUPjnV1XdZZq7IqxFDjbToHx1LJExzt4y6maiG5mx07fj3p+l3kVwOAc
+         si5xwWiMv3WvhgHyozCFDfLGQnu7aJC+o6mzsYrp+TxereHdapR+ZW4ElcURK48tKO
+         GUGGG2/k9zxD1qhiAfs60slO9nVk7mdND4eCsx+aXT/VvOYtsG8Va49mGCaFlkZiPq
+         QMFaPd1BXEOUZrD0B7yqSA76RkEGIXr7U8BpA+8aR+aVZkq6zAQOMQy4NeA3a+/KdC
+         Avc8OWbS/e8gw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Mans Rullgard <mans@mansr.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] cpufreq: remove tango driver
+Date:   Wed, 20 Jan 2021 14:16:44 +0100
+Message-Id: <20210120131709.1996711-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 20 Jan 2021 13:16:28 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Stan Skowronek <stan@corellium.com>
-Subject: Re: [PATCH 1/3] arm64/kernel: FIQ support
-In-Reply-To: <9C00B3A8-FDE3-4F5F-B23B-6296A7993C9F@caramail.com>
-References: <9C00B3A8-FDE3-4F5F-B23B-6296A7993C9F@caramail.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <1818f98d257c2431c600240ccda628e4@misterjones.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: mohamed.mediouni@caramail.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, stan@corellium.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mohamed,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 2021-01-20 11:36, Mohamed Mediouni wrote:
-> From: Stan Skowronek <stan@corellium.com>
-> 
-> On Apple processors, the timer is wired through FIQ.
+The tango platform is getting removed, so the driver is no
+longer needed.
 
-Which timer? There are at least 3, potentially 4 timers per CPU
-that can fire.
+Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Cc: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/cpufreq/Kconfig.arm     |  5 -----
+ drivers/cpufreq/Makefile        |  1 -
+ drivers/cpufreq/tango-cpufreq.c | 38 ---------------------------------
+ 3 files changed, 44 deletions(-)
+ delete mode 100644 drivers/cpufreq/tango-cpufreq.c
 
-> As such, add FIQ support to the kernel.
-> 
-> Signed-off-by: Stan Skowronek <stan@corellium.com>
-
-Missing SoB from the sender.
-
-> ---
->  arch/arm64/include/asm/arch_gicv3.h |  2 +-
->  arch/arm64/include/asm/assembler.h  |  8 ++--
->  arch/arm64/include/asm/daifflags.h  |  4 +-
->  arch/arm64/include/asm/irq.h        |  4 ++
->  arch/arm64/include/asm/irqflags.h   |  6 +--
->  arch/arm64/kernel/entry.S           | 74 ++++++++++++++++++++++++++---
->  arch/arm64/kernel/irq.c             | 14 ++++++
->  arch/arm64/kernel/process.c         |  2 +-
->  8 files changed, 97 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/arch_gicv3.h
-> b/arch/arm64/include/asm/arch_gicv3.h
-> index 880b9054d75c..934b9be582d2 100644
-> --- a/arch/arm64/include/asm/arch_gicv3.h
-> +++ b/arch/arm64/include/asm/arch_gicv3.h
-> @@ -173,7 +173,7 @@ static inline void gic_pmr_mask_irqs(void)
-> 
->  static inline void gic_arch_enable_irqs(void)
->  {
-> -	asm volatile ("msr daifclr, #2" : : : "memory");
-> +	asm volatile ("msr daifclr, #3" : : : "memory");
-
-If I trust the persistent rumour, this system doesn't have a GIC.
-Why this change?
-
->  }
-> 
->  #endif /* __ASSEMBLY__ */
-> diff --git a/arch/arm64/include/asm/assembler.h
-> b/arch/arm64/include/asm/assembler.h
-> index bf125c591116..6fe55713dfe0 100644
-> --- a/arch/arm64/include/asm/assembler.h
-> +++ b/arch/arm64/include/asm/assembler.h
-> @@ -40,9 +40,9 @@
->  	msr	daif, \flags
->  	.endm
-> 
-> -	/* IRQ is the lowest priority flag, unconditionally unmask the rest. 
-> */
-> -	.macro enable_da_f
-> -	msr	daifclr, #(8 | 4 | 1)
-> +	/* IRQ/FIQ is the lowest priority flag, unconditionally unmask the 
-> rest. */
-> +	.macro enable_da
-> +	msr	daifclr, #(8 | 4)
-
-This cannot be unconditional. This potentially changes existing 
-behaviours,
-and I'd feel a lot safer if FIQ was only messed with on that specific 
-HW.
-
-I have the feeling that this should be detected on the boot CPU and 
-patched
-before any interrupt can fire.
-
->  	.endm
-> 
->  /*
-> @@ -50,7 +50,7 @@
->   */
->  	.macro	save_and_disable_irq, flags
->  	mrs	\flags, daif
-> -	msr	daifset, #2
-> +	msr	daifset, #3
->  	.endm
-> 
->  	.macro	restore_irq, flags
-> diff --git a/arch/arm64/include/asm/daifflags.h
-> b/arch/arm64/include/asm/daifflags.h
-> index 1c26d7baa67f..44de96c7fb1a 100644
-> --- a/arch/arm64/include/asm/daifflags.h
-> +++ b/arch/arm64/include/asm/daifflags.h
-> @@ -13,8 +13,8 @@
->  #include <asm/ptrace.h>
-> 
->  #define DAIF_PROCCTX		0
-> -#define DAIF_PROCCTX_NOIRQ	PSR_I_BIT
-> -#define DAIF_ERRCTX		(PSR_I_BIT | PSR_A_BIT)
-> +#define DAIF_PROCCTX_NOIRQ	(PSR_I_BIT | PSR_F_BIT)
-> +#define DAIF_ERRCTX		(PSR_I_BIT | PSR_F_BIT | PSR_A_BIT)
->  #define DAIF_MASK		(PSR_D_BIT | PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
-> 
-> 
-> diff --git a/arch/arm64/include/asm/irq.h 
-> b/arch/arm64/include/asm/irq.h
-> index b2b0c6405eb0..2d1537d3a245 100644
-> --- a/arch/arm64/include/asm/irq.h
-> +++ b/arch/arm64/include/asm/irq.h
-> @@ -13,5 +13,9 @@ static inline int nr_legacy_irqs(void)
->  	return 0;
->  }
-> 
-> +int set_handle_fiq(void (*handle_fiq)(struct pt_regs *));
-> +
-> +extern void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init;
-
-I guess this is set from the root interrupt controller, which also
-will set handle_arch_irq? Why do we need two entry points? We have
-ISR_EL1 to find out what is pending. Isn't that enough?
-
-> +
->  #endif /* !__ASSEMBLER__ */
->  #endif
-> diff --git a/arch/arm64/include/asm/irqflags.h
-> b/arch/arm64/include/asm/irqflags.h
-> index ff328e5bbb75..26d7f378113e 100644
-> --- a/arch/arm64/include/asm/irqflags.h
-> +++ b/arch/arm64/include/asm/irqflags.h
-> @@ -35,7 +35,7 @@ static inline void arch_local_irq_enable(void)
->  	}
-> 
->  	asm volatile(ALTERNATIVE(
-> -		"msr	daifclr, #2		// arch_local_irq_enable",
-> +		"msr	daifclr, #3		// arch_local_irq_enable",
->  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
->  		ARM64_HAS_IRQ_PRIO_MASKING)
->  		:
-> @@ -54,7 +54,7 @@ static inline void arch_local_irq_disable(void)
->  	}
-> 
->  	asm volatile(ALTERNATIVE(
-> -		"msr	daifset, #2		// arch_local_irq_disable",
-> +		"msr	daifset, #3		// arch_local_irq_disable",
->  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
->  		ARM64_HAS_IRQ_PRIO_MASKING)
->  		:
-> @@ -85,7 +85,7 @@ static inline int arch_irqs_disabled_flags(unsigned
-> long flags)
->  	int res;
-> 
->  	asm volatile(ALTERNATIVE(
-> -		"and	%w0, %w1, #" __stringify(PSR_I_BIT),
-> +		"and	%w0, %w1, #" __stringify(PSR_I_BIT | PSR_F_BIT),
->  		"eor	%w0, %w1, #" __stringify(GIC_PRIO_IRQON),
->  		ARM64_HAS_IRQ_PRIO_MASKING)
->  		: "=&r" (res)
-> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-> index c9bae73f2621..abcca0db0736 100644
-> --- a/arch/arm64/kernel/entry.S
-> +++ b/arch/arm64/kernel/entry.S
-> @@ -499,6 +499,14 @@ tsk	.req	x28		// current thread_info
->  	irq_stack_exit
->  	.endm
-> 
-> +	.macro	fiq_handler
-> +	ldr_l	x1, handle_arch_fiq
-> +	mov	x0, sp
-> +	irq_stack_entry
-> +	blr	x1
-> +	irq_stack_exit
-> +	.endm
-> +
->  #ifdef CONFIG_ARM64_PSEUDO_NMI
->  	/*
->  	 * Set res to 0 if irqs were unmasked in interrupted context.
-> @@ -547,18 +555,18 @@ SYM_CODE_START(vectors)
-> 
->  	kernel_ventry	1, sync				// Synchronous EL1h
->  	kernel_ventry	1, irq				// IRQ EL1h
-> -	kernel_ventry	1, fiq_invalid			// FIQ EL1h
-> +	kernel_ventry	1, fiq				// FIQ EL1h
->  	kernel_ventry	1, error			// Error EL1h
-> 
->  	kernel_ventry	0, sync				// Synchronous 64-bit EL0
->  	kernel_ventry	0, irq				// IRQ 64-bit EL0
-> -	kernel_ventry	0, fiq_invalid			// FIQ 64-bit EL0
-> +	kernel_ventry	0, fiq				// FIQ 64-bit EL0
->  	kernel_ventry	0, error			// Error 64-bit EL0
-> 
->  #ifdef CONFIG_COMPAT
->  	kernel_ventry	0, sync_compat, 32		// Synchronous 32-bit EL0
->  	kernel_ventry	0, irq_compat, 32		// IRQ 32-bit EL0
-> -	kernel_ventry	0, fiq_invalid_compat, 32	// FIQ 32-bit EL0
-> +	kernel_ventry	0, fiq_compat, 32		// FIQ 32-bit EL0
->  	kernel_ventry	0, error_compat, 32		// Error 32-bit EL0
->  #else
->  	kernel_ventry	0, sync_invalid, 32		// Synchronous 32-bit EL0
-> @@ -661,7 +669,7 @@ SYM_CODE_END(el1_sync)
->  SYM_CODE_START_LOCAL_NOALIGN(el1_irq)
->  	kernel_entry 1
->  	gic_prio_irq_setup pmr=x20, tmp=x1
-> -	enable_da_f
-> +	enable_da
-> 
->  	mov	x0, sp
->  	bl	enter_el1_irq_or_nmi
-> @@ -689,6 +697,38 @@ alternative_else_nop_endif
->  	kernel_exit 1
->  SYM_CODE_END(el1_irq)
-> 
-> +	.align	6
-> +SYM_CODE_START_LOCAL_NOALIGN(el1_fiq)
-> +	kernel_entry 1
-> +	gic_prio_irq_setup pmr=x20, tmp=x1
-
-This doesn't make much sense. The HW doesn't have a GIC, and Linux
-doesn't use Group-0 interrupts, even in a guest.
-
-> +	enable_da
-> +
-> +	mov	x0, sp
-> +	bl	enter_el1_irq_or_nmi
-> +
-> +	fiq_handler
-> +
-> +#ifdef CONFIG_PREEMPTION
-> +	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
-> +alternative_if ARM64_HAS_IRQ_PRIO_MASKING
-> +	/*
-> +	 * DA_F were cleared at start of handling. If anything is set in 
-> DAIF,
-> +	 * we come back from an NMI, so skip preemption
-> +	 */
-> +	mrs	x0, daif
-> +	orr	x24, x24, x0
-> +alternative_else_nop_endif
-> +	cbnz	x24, 1f				// preempt count != 0 || NMI return path
-> +	bl	arm64_preempt_schedule_irq	// irq en/disable is done inside
-> +1:
-> +#endif
-> +
-> +	mov	x0, sp
-> +	bl	exit_el1_irq_or_nmi
-> +
-> +	kernel_exit 1
-> +SYM_CODE_END(el1_fiq)
-
-Given that this is essentially a copy paste of el1_irq, and that
-a separate FIQ entry point seems superfluous, I don't think we
-need any of this, and it could be implemented just as the IRQ
-vector.
-
-> +
->  /*
->   * EL0 mode handlers.
->   */
-> @@ -715,6 +755,12 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_irq_compat)
->  	b	el0_irq_naked
->  SYM_CODE_END(el0_irq_compat)
-> 
-> +	.align	6
-> +SYM_CODE_START_LOCAL_NOALIGN(el0_fiq_compat)
-> +	kernel_entry 0, 32
-> +	b	el0_fiq_naked
-> +SYM_CODE_END(el0_fiq_compat)
-> +
->  SYM_CODE_START_LOCAL_NOALIGN(el0_error_compat)
->  	kernel_entry 0, 32
->  	b	el0_error_naked
-> @@ -727,7 +773,7 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_irq)
->  el0_irq_naked:
->  	gic_prio_irq_setup pmr=x20, tmp=x0
->  	user_exit_irqoff
-> -	enable_da_f
-> +	enable_da
-> 
->  	tbz	x22, #55, 1f
->  	bl	do_el0_irq_bp_hardening
-> @@ -737,6 +783,22 @@ el0_irq_naked:
->  	b	ret_to_user
->  SYM_CODE_END(el0_irq)
-> 
-> +	.align	6
-> +SYM_CODE_START_LOCAL_NOALIGN(el0_fiq)
-> +	kernel_entry 0
-> +el0_fiq_naked:
-> +	gic_prio_irq_setup pmr=x20, tmp=x0
-> +	user_exit_irqoff
-> +	enable_da
-> +
-> +	tbz	x22, #55, 1f
-> +	bl	do_el0_irq_bp_hardening
-> +1:
-> +	fiq_handler
-> +
-> +	b	ret_to_user
-> +SYM_CODE_END(el0_fiq)
-
-Same thing.
-
-> +
->  SYM_CODE_START_LOCAL(el1_error)
->  	kernel_entry 1
->  	mrs	x1, esr_el1
-> @@ -757,7 +819,7 @@ el0_error_naked:
->  	mov	x0, sp
->  	mov	x1, x25
->  	bl	do_serror
-> -	enable_da_f
-> +	enable_da
->  	b	ret_to_user
->  SYM_CODE_END(el0_error)
-> 
-> diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-> index dfb1feab867d..4d7a9fb41d93 100644
-> --- a/arch/arm64/kernel/irq.c
-> +++ b/arch/arm64/kernel/irq.c
-> @@ -88,3 +88,17 @@ void __init init_IRQ(void)
->  		local_daif_restore(DAIF_PROCCTX_NOIRQ);
->  	}
->  }
-> +
-> +/*
-> + * Analogous to the generic handle_arch_irq / set_handle_irq
-> + */
-> +void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init;
-> +
-> +int __init set_handle_fiq(void (*handle_fiq)(struct pt_regs *))
-> +{
-> +	if (handle_arch_fiq)
-> +		return -EBUSY;
-> +
-> +	handle_arch_fiq = handle_fiq;
-> +	return 0;
-> +}
-
-Also, this has no caller, so it is pretty hard to judge how useful
-this is.
-
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 6616486a58fe..34ec400288d0 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -84,7 +84,7 @@ static void noinstr __cpu_do_idle_irqprio(void)
->  	unsigned long daif_bits;
-> 
->  	daif_bits = read_sysreg(daif);
-> -	write_sysreg(daif_bits | PSR_I_BIT, daif);
-> +	write_sysreg(daif_bits | PSR_I_BIT | PSR_F_BIT, daif);
-> 
->  	/*
->  	 * Unmask PMR before going idle to make sure interrupts can
-
-Thanks,
-
-         M.
+diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+index 1f73fa75b1a0..e65e0a43be64 100644
+--- a/drivers/cpufreq/Kconfig.arm
++++ b/drivers/cpufreq/Kconfig.arm
+@@ -289,11 +289,6 @@ config ARM_STI_CPUFREQ
+ 	  this config option if you wish to add CPUFreq support for STi based
+ 	  SoCs.
+ 
+-config ARM_TANGO_CPUFREQ
+-	bool
+-	depends on CPUFREQ_DT && ARCH_TANGO
+-	default y
+-
+ config ARM_TEGRA20_CPUFREQ
+ 	tristate "Tegra20/30 CPUFreq support"
+ 	depends on ARCH_TEGRA && CPUFREQ_DT
+diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
+index f1b7e3dd6e5d..1ab9b1536304 100644
+--- a/drivers/cpufreq/Makefile
++++ b/drivers/cpufreq/Makefile
+@@ -79,7 +79,6 @@ obj-$(CONFIG_ARM_SCPI_CPUFREQ)		+= scpi-cpufreq.o
+ obj-$(CONFIG_ARM_SPEAR_CPUFREQ)		+= spear-cpufreq.o
+ obj-$(CONFIG_ARM_STI_CPUFREQ)		+= sti-cpufreq.o
+ obj-$(CONFIG_ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM) += sun50i-cpufreq-nvmem.o
+-obj-$(CONFIG_ARM_TANGO_CPUFREQ)		+= tango-cpufreq.o
+ obj-$(CONFIG_ARM_TEGRA20_CPUFREQ)	+= tegra20-cpufreq.o
+ obj-$(CONFIG_ARM_TEGRA124_CPUFREQ)	+= tegra124-cpufreq.o
+ obj-$(CONFIG_ARM_TEGRA186_CPUFREQ)	+= tegra186-cpufreq.o
+diff --git a/drivers/cpufreq/tango-cpufreq.c b/drivers/cpufreq/tango-cpufreq.c
+deleted file mode 100644
+index 89a7f860bfe8..000000000000
+--- a/drivers/cpufreq/tango-cpufreq.c
++++ /dev/null
+@@ -1,38 +0,0 @@
+-#include <linux/of.h>
+-#include <linux/cpu.h>
+-#include <linux/clk.h>
+-#include <linux/pm_opp.h>
+-#include <linux/platform_device.h>
+-
+-static const struct of_device_id machines[] __initconst = {
+-	{ .compatible = "sigma,tango4" },
+-	{ /* sentinel */ }
+-};
+-
+-static int __init tango_cpufreq_init(void)
+-{
+-	struct device *cpu_dev = get_cpu_device(0);
+-	unsigned long max_freq;
+-	struct clk *cpu_clk;
+-	void *res;
+-
+-	if (!of_match_node(machines, of_root))
+-		return -ENODEV;
+-
+-	cpu_clk = clk_get(cpu_dev, NULL);
+-	if (IS_ERR(cpu_clk))
+-		return -ENODEV;
+-
+-	max_freq = clk_get_rate(cpu_clk);
+-
+-	dev_pm_opp_add(cpu_dev, max_freq / 1, 0);
+-	dev_pm_opp_add(cpu_dev, max_freq / 2, 0);
+-	dev_pm_opp_add(cpu_dev, max_freq / 3, 0);
+-	dev_pm_opp_add(cpu_dev, max_freq / 5, 0);
+-	dev_pm_opp_add(cpu_dev, max_freq / 9, 0);
+-
+-	res = platform_device_register_data(NULL, "cpufreq-dt", -1, NULL, 0);
+-
+-	return PTR_ERR_OR_ZERO(res);
+-}
+-device_initcall(tango_cpufreq_init);
 -- 
-Jazz is not dead. It just smells funny...
+2.29.2
+
