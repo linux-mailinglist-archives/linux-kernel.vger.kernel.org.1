@@ -2,188 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01E02FC722
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D312FC73A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729445AbhATBuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:50:19 -0500
-Received: from m12-11.163.com ([220.181.12.11]:34688 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731080AbhATBtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:49:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=mWE8B
-        GrSCST/Lvs23PP13hDMEeF1wBOp2zAgXhM4x9s=; b=j1WUgc6NTHAJaYLR4zoGd
-        Upck7U2vD5TJWt2w9zPOr/iYTxdXIuF0KDQHnvx53bLhSOPWr3S281E4kVECS9fG
-        Qv+O80gd2DhmrsgKHsgQ9LCOzj/k73LLpTERmBRuzs4PgkAHgp7gy6o9ixq3r0Aq
-        OiDDbhTX2xFdzw6A/dY7Bc=
-Received: from localhost (unknown [218.94.48.178])
-        by smtp7 (Coremail) with SMTP id C8CowACXkJDHiwdg8ASkJg--.29556S2;
-        Wed, 20 Jan 2021 09:47:52 +0800 (CST)
-Date:   Wed, 20 Jan 2021 09:48:02 +0800
-From:   Guoqing Chi <chi962464zy@163.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     martin.blumenstingl@googlemail.com, linux-kernel@vger.kernel.org,
-        chiguoqing@yulong.com, huyue2@yulong.com, zhangwen@yulong.com,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2] iio: imu: bmi160: add mutex_lock for avoiding race
-Message-ID: <20210120094802.00001fee@163.com>
-In-Reply-To: <c93224b5-008c-fc80-f466-88c387d5b08f@redhat.com>
-References: <20210119112211.26404-1-chi962464zy@163.com>
-        <c93224b5-008c-fc80-f466-88c387d5b08f@redhat.com>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
+        id S1728491AbhATBzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:55:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731402AbhATBvi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:51:38 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C26C0613C1;
+        Tue, 19 Jan 2021 17:50:57 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id p13so24252474ljg.2;
+        Tue, 19 Jan 2021 17:50:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=t+el3VIqkWAp25RXB+JlKxWDLf4kOHIGgrJ38WDh5Pk=;
+        b=pLgHq7yrL+0pGIV9dPMxFcgDX2EklYdhCYTNM+yMvqAaVxCE2Aq6gYUrtPUtngwzBG
+         Ty2zr/SfpHWGv7E//bQIRXMONLcWukGxfIdIaQxOyd8fL2yYb9hcF6BcnYrc0KCEqlBg
+         tulBkuqcGPbgQlTxqLOy56AKMpLWGfif9PF5RX8F7LBASugSSqvPLqYp4E8g2wG0SteL
+         cj4J9JwIubSkavGCUoBVxLuCnO7A8xUUod5Wy2H7hBtLMWfrPAPmYo+HOrnqvlCCFrSF
+         w4SOp5VjDVgr71echP+1dg9g8hkdM65DL4Oef9jwXETRHGqU5PIzuKkvzsvm6gyuH2it
+         aK+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=t+el3VIqkWAp25RXB+JlKxWDLf4kOHIGgrJ38WDh5Pk=;
+        b=L+Kx4Z26Uu1thDu+Y52iiwjhNL9gr2Fea/FqMNeYrFKQU57k8d4peHKRoK1xj3k3Sn
+         qLzKJO1iw+hQ1fHYPOvTYMUQ+Ek1tjXs5puLXMClBIxGq/UnN1iVFvPhssvOWd5eRrlq
+         7ldRDmIv35KI6u6uGsXCDbpxeAeTxsY/XFaOseZNd/yTwpCxCSkA6nD27K+MIZClWxYn
+         7dejV90YxUrP+40gmqUopT1SW5oL87RcX5XMSlP5KZtzCzzqPaoOplj1V04ACBwxpVCn
+         OH1m0JT2GSdC5sChgljFhvOl+T442Yt1zKH1/tdQQKb7LiCdUnOsBIRnCqvTX71lPNlM
+         vHXw==
+X-Gm-Message-State: AOAM533i9Zqx0Dv6rZho/TnG+oBDIeqXtnCGRlm4jYTQclPxt0UEcthH
+        xRLjnrNN1cCpMcsTZYvJJe6O521RdaE=
+X-Google-Smtp-Source: ABdhPJxmbbwMRyb8F+D6bg+A9gWr/i0fgshQtT0jfMJOnDfELKumrgu1Z1LjSZcShiuYL/twLEopHQ==
+X-Received: by 2002:a2e:a58f:: with SMTP id m15mr3191366ljp.214.1611107454918;
+        Tue, 19 Jan 2021 17:50:54 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id o14sm56163lfi.92.2021.01.19.17.50.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 17:50:54 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v4 1/3] PM: domains: Make set_performance_state() callback optional
+Date:   Wed, 20 Jan 2021 04:50:08 +0300
+Message-Id: <20210120015010.14191-2-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210120015010.14191-1-digetx@gmail.com>
+References: <20210120015010.14191-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: C8CowACXkJDHiwdg8ASkJg--.29556S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGw17Aw43GF18CrWrJFy3XFb_yoWrWry5pa
-        4UCF45ArWrXF1xCrnFqr95CFyYv3ySgF1DW34xKa45ZayYyFnakrn8J34Fvr9YyryDAr1I
-        qrW8ZrZ8uF1kZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UkkusUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/1tbiRAkgRFSIiKDXlwAAsd
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 06:54:45 -0800
-Tom Rix <trix@redhat.com> wrote:
+Make set_performance_state() callback optional in order to remove the
+need from power domain drivers to implement a dummy callback. If callback
+isn't implemented by a GENPD driver, then the performance state is passed
+to the parent domain.
 
-> On 1/19/21 3:22 AM, Guoqing Chi wrote:
-> > From: chiguoqing <chi962464zy@163.com>
-> >
-> > Adding mutex_lock, when read and write reg need to use this lock to
-> > avoid race.
-> >
-> > Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
-> > ---
-> > v2:Follow write function to fix read function.
-> > Adding mutex init in core probe function.
-> > Adding break in switch case at read and write function.
-> >
-> >  drivers/iio/imu/bmi160/bmi160.h      |  2 ++
-> >  drivers/iio/imu/bmi160/bmi160_core.c | 34
-> > +++++++++++++++++++--------- 2 files changed, 25 insertions(+), 11
-> > deletions(-)
-> >
-> > diff --git a/drivers/iio/imu/bmi160/bmi160.h
-> > b/drivers/iio/imu/bmi160/bmi160.h index 32c2ea2d7112..0c189a8b5b53
-> > 100644 --- a/drivers/iio/imu/bmi160/bmi160.h
-> > +++ b/drivers/iio/imu/bmi160/bmi160.h
-> > @@ -3,9 +3,11 @@
-> >  #define BMI160_H_
-> >  
-> >  #include <linux/iio/iio.h>
-> > +#include <linux/mutex.h>
-> >  #include <linux/regulator/consumer.h>
-> >  
-> >  struct bmi160_data {
-> > +	struct mutex lock;
-> >  	struct regmap *regmap;
-> >  	struct iio_trigger *trig;
-> >  	struct regulator_bulk_data supplies[2];
-> > diff --git a/drivers/iio/imu/bmi160/bmi160_core.c
-> > b/drivers/iio/imu/bmi160/bmi160_core.c index
-> > 290b5ef83f77..e303378f4841 100644 ---
-> > a/drivers/iio/imu/bmi160/bmi160_core.c +++
-> > b/drivers/iio/imu/bmi160/bmi160_core.c @@ -452,26 +452,32 @@ static
-> > int bmi160_read_raw(struct iio_dev *indio_dev, int ret;
-> >  	struct bmi160_data *data = iio_priv(indio_dev);
-> >  
-> > +	mutex_lock(&data->lock);
-> >  	switch (mask) {
-> >  	case IIO_CHAN_INFO_RAW:
-> >  		ret = bmi160_get_data(data, chan->type,
-> > chan->channel2, val);
-> > -		if (ret)
-> > -			return ret;
-> > -		return IIO_VAL_INT;
-> > +		if (!ret)
-> > +			ret = IIO_VAL_INT;
-> > +		break;
-> >  	case IIO_CHAN_INFO_SCALE:
-> >  		*val = 0;
-> >  		ret = bmi160_get_scale(data,
-> >  				       bmi160_to_sensor(chan->type),
-> > val2);
-> > -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-> > +		if (!ret)
-> > +			ret = IIO_VAL_INT_PLUS_MICRO;  
-> 
-> Looking better, another question..
-> 
-> Why does the write() function return the results directly while the
-> read() function
-> 
-> translates them to other values ?
-> 
-> Tom
+Tested-by: Peter Geis <pgwipeout@gmail.com>
+Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+[tested on NVIDIA Tegra20/30/124 SoCs]
+Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/base/power/domain.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-It is original design in this driver. In order to
-differentiate raw to scale and SAMP_FREQ, while the scale and SAMP_FREQ
-are needless. I think log information can be added for this purpose,
-and return results directly.
-It is not change the return values for my modify.It's best to keep the
-original design.Is that all right?
-
-Guoqing Chi
-> 
-> > +		break;
-> >  	case IIO_CHAN_INFO_SAMP_FREQ:
-> >  		ret = bmi160_get_odr(data,
-> > bmi160_to_sensor(chan->type), val, val2);
-> > -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-> > +		if (!ret)
-> > +			ret = IIO_VAL_INT_PLUS_MICRO;
-> > +		break;
-> >  	default:
-> > -		return -EINVAL;
-> > +		ret = -EINVAL;
-> >  	}
-> > +	mutex_unlock(&data->lock);
-> >  
-> > -	return 0;
-> > +	return ret;
-> >  }
-> >  
-> >  static int bmi160_write_raw(struct iio_dev *indio_dev,
-> > @@ -479,19 +485,24 @@ static int bmi160_write_raw(struct iio_dev
-> > *indio_dev, int val, int val2, long mask)
-> >  {
-> >  	struct bmi160_data *data = iio_priv(indio_dev);
-> > +	int result;
-> >  
-> > +	mutex_lock(&data->lock);
-> >  	switch (mask) {
-> >  	case IIO_CHAN_INFO_SCALE:
-> > -		return bmi160_set_scale(data,
-> > +		result = bmi160_set_scale(data,
-> >  					bmi160_to_sensor(chan->type),
-> > val2);
-> > +		break;
-> >  	case IIO_CHAN_INFO_SAMP_FREQ:
-> > -		return bmi160_set_odr(data,
-> > bmi160_to_sensor(chan->type),
-> > +		result = bmi160_set_odr(data,
-> > bmi160_to_sensor(chan->type), val, val2);
-> > +		break;
-> >  	default:
-> > -		return -EINVAL;
-> > +		result = -EINVAL;
-> >  	}
-> > +	mutex_unlock(&data->lock);
-> >  
-> > -	return 0;
-> > +	return result;
-> >  }
-> >  
-> >  static
-> > @@ -838,6 +849,7 @@ int bmi160_core_probe(struct device *dev,
-> > struct regmap *regmap, return -ENOMEM;
-> >  
-> >  	data = iio_priv(indio_dev);
-> > +	mutex_init(&data->lock);
-> >  	dev_set_drvdata(dev, indio_dev);
-> >  	data->regmap = regmap;
-> >    
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 9a14eedacb92..0bd0cdc30393 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -297,6 +297,18 @@ static int _genpd_reeval_performance_state(struct generic_pm_domain *genpd,
+ 	return state;
+ }
+ 
++static int _genpd_xlate_performance_state(struct generic_pm_domain *src_genpd,
++					  struct generic_pm_domain *dst_genpd,
++					  unsigned int pstate)
++{
++	if (!dst_genpd->set_performance_state)
++		return pstate;
++
++	return dev_pm_opp_xlate_performance_state(src_genpd->opp_table,
++						  dst_genpd->opp_table,
++						  pstate);
++}
++
+ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 					unsigned int state, int depth)
+ {
+@@ -311,13 +323,8 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 	list_for_each_entry(link, &genpd->child_links, child_node) {
+ 		parent = link->parent;
+ 
+-		if (!parent->set_performance_state)
+-			continue;
+-
+ 		/* Find parent's performance state */
+-		ret = dev_pm_opp_xlate_performance_state(genpd->opp_table,
+-							 parent->opp_table,
+-							 state);
++		ret = _genpd_xlate_performance_state(genpd, parent, state);
+ 		if (unlikely(ret < 0))
+ 			goto err;
+ 
+@@ -339,9 +346,11 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 			goto err;
+ 	}
+ 
+-	ret = genpd->set_performance_state(genpd, state);
+-	if (ret)
+-		goto err;
++	if (genpd->set_performance_state) {
++		ret = genpd->set_performance_state(genpd, state);
++		if (ret)
++			goto err;
++	}
+ 
+ 	genpd->performance_state = state;
+ 	return 0;
+@@ -352,9 +361,6 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 					     child_node) {
+ 		parent = link->parent;
+ 
+-		if (!parent->set_performance_state)
+-			continue;
+-
+ 		genpd_lock_nested(parent, depth + 1);
+ 
+ 		parent_state = link->prev_performance_state;
+@@ -399,9 +405,6 @@ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
+ 	if (!genpd)
+ 		return -ENODEV;
+ 
+-	if (unlikely(!genpd->set_performance_state))
+-		return -EINVAL;
+-
+ 	if (WARN_ON(!dev->power.subsys_data ||
+ 		     !dev->power.subsys_data->domain_data))
+ 		return -EINVAL;
+-- 
+2.29.2
 
