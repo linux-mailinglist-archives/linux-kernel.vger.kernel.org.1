@@ -2,70 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54452FC9A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA322FC9AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbhATD5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 22:57:01 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:50748 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729930AbhATDyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 22:54:23 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UMI0fKq_1611114808;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UMI0fKq_1611114808)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Jan 2021 11:53:28 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v2] x86/sgx: Remove redundant if conditions in sgx_encl_create
-Date:   Wed, 20 Jan 2021 11:53:28 +0800
-Message-Id: <20210120035328.19868-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        id S1729296AbhATD6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:58:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730618AbhATD4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 22:56:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D171C23119;
+        Wed, 20 Jan 2021 03:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611114959;
+        bh=3AvgxTJdp+RU3BzY1wWjRvowXxpOC3V1C2LWh/GqTfs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fA0XvHh+B0gb+qlrucTaI6CrS7ZT736WBQwMMzofoxz5pctCvhaQe7uRYU7a+wO7i
+         wxZNE1HrRL7w0crWXOUd499BHHSfH3hmS95wJ0Ild3EwY3aYd/KgUttbXjzWmRzjMY
+         J9sQDWXRFI76a0s66oLpcRaHEo0fM4HD1AdZBPdHAGN8AWJAcvJRWVEdmK5kUKpE9j
+         iKrme+VuTJcLPVa71popsRrqDQkTdvNXt/q6pBEBifziJ1WzdBp7l3Eez7tSHceOPN
+         O4Epkeb3Fa2g5IoJ/6f3kIzzZKHycXS/4GJKnGRf+KnnT32EhHE/W2AsZhwo6Me9Al
+         iDNfq+exXeiYg==
+Date:   Wed, 20 Jan 2021 05:55:53 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3 04/10] certs: Fix blacklist flag type confusion
+Message-ID: <YAepvxOBcEU0paqA@kernel.org>
+References: <20210114151909.2344974-1-mic@digikod.net>
+ <20210114151909.2344974-5-mic@digikod.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114151909.2344974-5-mic@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In this scenario, there is no case where va_page is NULL, and
-the error has been checked. The if condition statement here is
-redundant, so remove the condition detection.
+On Thu, Jan 14, 2021 at 04:19:03PM +0100, Mickaël Salaün wrote:
+> From: David Howells <dhowells@redhat.com>
+> 
+> KEY_FLAG_KEEP is not meant to be passed to keyring_alloc() or key_alloc(),
+> as these only take KEY_ALLOC_* flags.  KEY_FLAG_KEEP has the same value as
+> KEY_ALLOC_BYPASS_RESTRICTION, but fortunately only key_create_or_update()
+> uses it.  LSMs using the key_alloc hook don't check that flag.
+> 
+> KEY_FLAG_KEEP is then ignored but fortunately (again) the root user cannot
+> write to the blacklist keyring, so it is not possible to remove a key/hash
+> from it.
+> 
+> Fix this by adding a KEY_ALLOC_SET_KEEP flag that tells key_alloc() to set
+> KEY_FLAG_KEEP on the new key.  blacklist_init() can then, correctly, pass
+> this to keyring_alloc().
 
-Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+OK, so thing work by luck now, but given the new patches which allow
+to append new keys they would break, right?
 
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 1c6ecf9fbeff..efad2fb61c76 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -66,9 +66,12 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	va_page = sgx_encl_grow(encl);
- 	if (IS_ERR(va_page))
- 		return PTR_ERR(va_page);
--	else if (va_page)
--		list_add(&va_page->list, &encl->va_pages);
--	/* else the tail page of the VA page list had free slots. */
-+
-+	if (WARN_ONCE(!va_page,
-+		      "the tail page of the VA page list had free slots\n"))
-+		return -EIO;
-+
-+	list_add(&va_page->list, &encl->va_pages);
- 
- 	/* The extra page goes to SECS. */
- 	encl_size = secs->size + PAGE_SIZE;
--- 
-2.19.1.3.ge56e4f7
+> We can also use this in ima_mok_init() rather than setting the flag
+> manually.
 
+What does ima_mok_init() do?
+> Note that this doesn't fix an observable bug with the current
+> implementation but it is required to allow addition of new hashes to the
+> blacklist in the future without making it possible for them to be removed.
+> 
+> Fixes: 734114f8782f ("KEYS: Add a system blacklist keyring")
+> cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
+
+Nit: Cc
+
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Reported-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> [mic@linux.microsoft.com: fix ima_mok_init()]
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> ---
+> 
+> Changes since v2:
+> * Cherry-pick rewritten v1 patch from
+>   https://lore.kernel.org/lkml/2659836.1607940186@warthog.procyon.org.uk/
+>   to rebase on v5.11-rc3 and fix ima_mok_init().
+> ---
+>  certs/blacklist.c                | 2 +-
+>  include/linux/key.h              | 1 +
+>  security/integrity/ima/ima_mok.c | 4 +---
+>  security/keys/key.c              | 2 ++
+>  4 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/certs/blacklist.c b/certs/blacklist.c
+> index a888b934a1cd..029471947838 100644
+> --- a/certs/blacklist.c
+> +++ b/certs/blacklist.c
+> @@ -162,7 +162,7 @@ static int __init blacklist_init(void)
+>  			      KEY_USR_VIEW | KEY_USR_READ |
+>  			      KEY_USR_SEARCH,
+>  			      KEY_ALLOC_NOT_IN_QUOTA |
+> -			      KEY_FLAG_KEEP,
+> +			      KEY_ALLOC_SET_KEEP,
+>  			      NULL, NULL);
+>  	if (IS_ERR(blacklist_keyring))
+>  		panic("Can't allocate system blacklist keyring\n");
+> diff --git a/include/linux/key.h b/include/linux/key.h
+> index 0f2e24f13c2b..eed3ce139a32 100644
+> --- a/include/linux/key.h
+> +++ b/include/linux/key.h
+> @@ -289,6 +289,7 @@ extern struct key *key_alloc(struct key_type *type,
+>  #define KEY_ALLOC_BUILT_IN		0x0004	/* Key is built into kernel */
+>  #define KEY_ALLOC_BYPASS_RESTRICTION	0x0008	/* Override the check on restricted keyrings */
+>  #define KEY_ALLOC_UID_KEYRING		0x0010	/* allocating a user or user session keyring */
+> +#define KEY_ALLOC_SET_KEEP		0x0020	/* Set the KEEP flag on the key/keyring */
+>  
+>  extern void key_revoke(struct key *key);
+>  extern void key_invalidate(struct key *key);
+> diff --git a/security/integrity/ima/ima_mok.c b/security/integrity/ima/ima_mok.c
+> index 36cadadbfba4..5594dd38ab04 100644
+> --- a/security/integrity/ima/ima_mok.c
+> +++ b/security/integrity/ima/ima_mok.c
+> @@ -38,13 +38,11 @@ __init int ima_mok_init(void)
+>  				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
+>  				KEY_USR_VIEW | KEY_USR_READ |
+>  				KEY_USR_WRITE | KEY_USR_SEARCH,
+> -				KEY_ALLOC_NOT_IN_QUOTA,
+> +				KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_SET_KEEP,
+>  				restriction, NULL);
+>  
+>  	if (IS_ERR(ima_blacklist_keyring))
+>  		panic("Can't allocate IMA blacklist keyring.");
+> -
+> -	set_bit(KEY_FLAG_KEEP, &ima_blacklist_keyring->flags);
+>  	return 0;
+>  }
+>  device_initcall(ima_mok_init);
+> diff --git a/security/keys/key.c b/security/keys/key.c
+> index ebe752b137aa..c45afdd1dfbb 100644
+> --- a/security/keys/key.c
+> +++ b/security/keys/key.c
+> @@ -303,6 +303,8 @@ struct key *key_alloc(struct key_type *type, const char *desc,
+>  		key->flags |= 1 << KEY_FLAG_BUILTIN;
+>  	if (flags & KEY_ALLOC_UID_KEYRING)
+>  		key->flags |= 1 << KEY_FLAG_UID_KEYRING;
+> +	if (flags & KEY_ALLOC_SET_KEEP)
+> +		key->flags |= 1 << KEY_FLAG_KEEP;
+>  
+>  #ifdef KEY_DEBUGGING
+>  	key->magic = KEY_DEBUG_MAGIC;
+> -- 
+> 2.30.0
+> 
+
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+/Jarkko
