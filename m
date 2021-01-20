@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7519D2FCB7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A917A2FCB84
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbhATH2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:28:43 -0500
-Received: from mga01.intel.com ([192.55.52.88]:35972 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728275AbhATH2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:28:15 -0500
-IronPort-SDR: dIrCFGQdSFZt5AlLS6Tz5CsLwIF/bZ1G8pEpfxewL0TNJDtDdJVYE2h03KFHTMCDC+VDystf5/
- ivm4qMK8vZlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="197783196"
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="197783196"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 23:27:32 -0800
-IronPort-SDR: jehrqGgljQOaCPdMz3iBg9FeTtt/OjUDpnGO95N50pRIPyArG6CYEe0MUdfNpxV6smC/2dsfdM
- 9kY9OfW0exXw==
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="355947381"
-Received: from yhuang6-mobl1.sh.intel.com ([10.238.6.89])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 23:27:22 -0800
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] swap: Check nrexceptional of swap cache before being freed
-Date:   Wed, 20 Jan 2021 15:27:11 +0800
-Message-Id: <20210120072711.209099-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728796AbhATHa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:30:27 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:53821 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726509AbhATHaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:30:09 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UMJjrIa_1611127758;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMJjrIa_1611127758)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 15:29:23 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     agross@kernel.org
+Cc:     bjorn.andersson@linaro.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] pinctrl: qcom: spmi-gpio: Assign boolean values to a bool variable
+Date:   Wed, 20 Jan 2021 15:29:17 +0800
+Message-Id: <1611127757-52999-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To catch the error in updating the swap cache shadow entries or their count.
+Fix the following coccicheck warnings:
 
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-Cc: Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
-Cc: Mel Gorman <mgorman@techsingularity.net>,
-Cc: Michal Hocko <mhocko@kernel.org>,
-Cc: Dan Williams <dan.j.williams@intel.com>,
-Cc: Christoph Hellwig <hch@lst.de>, Ilya Dryomov <idryomov@gmail.com>,
+./drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c:340:3-15: WARNING:
+Assignment of 0/1 to bool variable.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 ---
- mm/swap_state.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index d0d417efeecc..240a4f97594a 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -703,7 +703,12 @@ int init_swap_address_space(unsigned int type, unsigned long nr_pages)
- 
- void exit_swap_address_space(unsigned int type)
- {
--	kvfree(swapper_spaces[type]);
-+	int i;
-+	struct address_space *spaces = swapper_spaces[type];
-+
-+	for (i = 0; i < nr_swapper_spaces[type]; i++)
-+		VM_BUG_ON(spaces[i].nrexceptional);
-+	kvfree(spaces);
- 	nr_swapper_spaces[type] = 0;
- 	swapper_spaces[type] = NULL;
- }
+diff --git a/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c b/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c
+index b5949f7..eb0b60c 100644
+--- a/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c
++++ b/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c
+@@ -331,13 +331,13 @@ static int pm8xxx_pin_config_set(struct pinctrl_dev *pctldev,
+ 		case PIN_CONFIG_BIAS_DISABLE:
+ 			pin->bias = PM8XXX_GPIO_BIAS_NP;
+ 			banks |= BIT(2);
+-			pin->disable = 0;
++			pin->disable = false;
+ 			banks |= BIT(3);
+ 			break;
+ 		case PIN_CONFIG_BIAS_PULL_DOWN:
+ 			pin->bias = PM8XXX_GPIO_BIAS_PD;
+ 			banks |= BIT(2);
+-			pin->disable = 0;
++			pin->disable = false;
+ 			banks |= BIT(3);
+ 			break;
+ 		case PM8XXX_QCOM_PULL_UP_STRENGTH:
+@@ -350,11 +350,11 @@ static int pm8xxx_pin_config_set(struct pinctrl_dev *pctldev,
+ 		case PIN_CONFIG_BIAS_PULL_UP:
+ 			pin->bias = pin->pull_up_strength;
+ 			banks |= BIT(2);
+-			pin->disable = 0;
++			pin->disable = false;
+ 			banks |= BIT(3);
+ 			break;
+ 		case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
+-			pin->disable = 1;
++			pin->disable = true;
+ 			banks |= BIT(3);
+ 			break;
+ 		case PIN_CONFIG_INPUT_ENABLE:
 -- 
-2.29.2
+1.8.3.1
 
