@@ -2,175 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2E62FCB01
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6819A2FCB0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbhATGSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728934AbhATGRA (ORCPT
+        id S1729140AbhATGV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:21:29 -0500
+Received: from conuserg-10.nifty.com ([210.131.2.77]:28149 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729013AbhATGTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:17:00 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A677C061575;
-        Tue, 19 Jan 2021 22:16:20 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id e22so44738574iom.5;
-        Tue, 19 Jan 2021 22:16:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rMaHKvzt4gI4vZWbUD57VHvPjiMKfLAdC+SHpPHGSGc=;
-        b=VeOIAKyd91TBSjSAATeK2jHqNqvfdNibnrh8EpcGHmTP/Okp9ArD5NbGrB4xDUXukL
-         5qp8hpujrNPI2vRfyQYQfhBxulUQ81nxOFlIBN3NxvELJRl6cq+MLU2+UopYELxQGm6y
-         13aPp02TlhOxRBgjakhA7yOnu97tJFrqQqrZD8+drhie/kbSYERElnphl3/uHHe9ixYy
-         FzFAQQjo2t4NHvFyb/xqCHHAoLjEs6DVhkB3oBfg9rXUxA7xOwi2W89ego99nx01+M4E
-         cf8gHaOfW1yTJaIPKHiteGzxGFEIjffA8HWgI02zLpq4YoFVbMxLnSxb2nzne/MwtpnV
-         fUYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rMaHKvzt4gI4vZWbUD57VHvPjiMKfLAdC+SHpPHGSGc=;
-        b=sQMWA+9xIzIR4yNElFYJJKvqqjBoWW1MdQgkltI5rNPMpHjXMFUEbR0kEuElFVehg7
-         TwvgR6KcdGs0/IERzNwwQ3ntGaquI9H3b4ZJ4D/a9QsDUIYjd/XBliLElWujGGBylWAw
-         77VTTgdiY3PWBNQzqfa4bKlADStSH4SFtlnXDZ+kq0+w6UxESZb63sLPBjIHsEN2ykKJ
-         3fgKKl1eQ8UA1UEBmpR3yPXSSgJBhOzQzIJw0dJXQcxbvTc3+BpL3x0HLctuhtv1NXEX
-         WPaM/rIR/Z2r0fgOGtgNrNN/NBxvBdG1u37yN+OmNYWmnoa03jbXd4t7z83REfS+rbeq
-         Kwvw==
-X-Gm-Message-State: AOAM533LLrIURUCh7Kf8F6iZg6HO7sUTLGR45hUXrvtZXE47B+XyBfBo
-        /8oM3WPY9V7jANRqUEZv8as8LEkPWJ2jeVocBFwtIrZES1U=
-X-Google-Smtp-Source: ABdhPJweAGhyRwjSGO9zW9ha79X6kmVPg5wscpTHkCPaq/GvUbOPWCmTC6BNuCWC4AW8bnaHPQdQR9eO4ik1OyCueKg=
-X-Received: by 2002:a92:cda1:: with SMTP id g1mr6613008ild.267.1611123379666;
- Tue, 19 Jan 2021 22:16:19 -0800 (PST)
+        Wed, 20 Jan 2021 01:19:49 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 10K6IZ7o028054;
+        Wed, 20 Jan 2021 15:18:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 10K6IZ7o028054
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611123515;
+        bh=btZ7U+eLyQSL4kovQk7ohob7u4EsRf+CqAEY6fgfEyg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=m6WNqX/itgBYLDj/10juNKlrjvZ0QMdVuF6wp/7rg/9xj268AgSUIXabe6bDMu2jQ
+         CwkVHbkQ8cmu/wX8EhbCZlz2Euqm+JPFrOFeYpvGI5kfdPG0wv7oLNQb8oGk8Ybpa4
+         gtkE+8mu6t0Ysmv/Dn5Xcrfm6MfmAHBRmyGBJ29LmMqodI2F8Uf+uPb7LC500Lt698
+         fwCTb0fSMCNS1udUXA0hz+nLtXBnS49bGx1j9+EpAinYzL2VpxcKX+DNADI5YOTQa/
+         Ud6D2fMrY9nwb1lZlXMhAeb8j6tW7vBtnVIl0t6KXTttN0kYMEwlUWm9i/5KlH3RLm
+         X1fvqY+dY7zHQ==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: remove deprecated syntax EXTRA_*FLAGS, always, hostprogs-*
+Date:   Wed, 20 Jan 2021 15:18:32 +0900
+Message-Id: <20210120061832.3010926-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210117042428.1497-1-alistair@alistair23.me> <YAeSL1PSo0vn7E/5@google.com>
-In-Reply-To: <YAeSL1PSo0vn7E/5@google.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Tue, 19 Jan 2021 22:15:53 -0800
-Message-ID: <CAKmqyKPMXxLOGj4BH_fYx4hjZ+pHO3LNQVtN1buFrSAom38j1g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] devicetree/bindings: Initial commit of wacom,wacom-i2c
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        linux-input@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 6:15 PM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Alistair,
->
-> On Sat, Jan 16, 2021 at 08:24:26PM -0800, Alistair Francis wrote:
-> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > ---
-> >  .../input/touchscreen/wacom,wacom-i2c.yaml    | 55 +++++++++++++++++++
-> >  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
-> >  2 files changed, 57 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
-> > new file mode 100644
-> > index 000000000000..6b0e0034f836
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
-> > @@ -0,0 +1,55 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/input/touchscreen/wacom,wacom-i2c.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Wacom I2C Controller
-> > +
-> > +maintainers:
-> > +  - Alistair Francis <alistair@alistair23.me>
-> > +
-> > +allOf:
-> > +  - $ref: touchscreen.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: wacom,wacom-i2c
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  flip-tilt-x:
-> > +  flip-tilt-y:
->
-> Does the device support tilt? The driver does not, at least at the
-> moment. Also, does it make sense to flip tilt but not position?
->
-> > +  flip-pos-x:
-> > +  flip-pos-y:
->
-> This needs to use standard touchscreen properties. See
-> Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
->
-> > +  flip-distance:
->
-> I am having trouble understanding when this one would be useful.
+The backward compatibility has been kept for a while. There is no user
+in upstream. Out-of-tree users must be converted to new ones.
 
-Thanks for the review. These came from the original out of tree DT. I
-have removed them, I'm planning on using the standard touchscreen ones
-you pointed out if they are required.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Alistair
+ scripts/Makefile.clean |  3 ---
+ scripts/Makefile.lib   | 17 -----------------
+ 2 files changed, 20 deletions(-)
 
->
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include "dt-bindings/interrupt-controller/irq.h"
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +        digitiser@9 {
-> > +                compatible = "wacom,wacom-i2c";
-> > +                reg = <0x9>;
-> > +                interrupt-parent = <&gpio1>;
-> > +                interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
-> > +                flip-tilt-x;
-> > +                flip-tilt-y;
-> > +                flip-pos-x;
-> > +                flip-pos-y;
-> > +                flip-distance;
-> > +        };
-> > +    };
-> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > index 041ae90b0d8f..5bca22f035a3 100644
-> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > @@ -1202,6 +1202,8 @@ patternProperties:
-> >      description: Vision Optical Technology Co., Ltd.
-> >    "^vxt,.*":
-> >      description: VXT Ltd
-> > +  "^wacom,.*":
-> > +    description: Wacom Co., Ltd
-> >    "^wand,.*":
-> >      description: Wandbord (Technexion)
-> >    "^waveshare,.*":
-> > --
-> > 2.29.2
-> >
->
-> Thanks.
->
-> --
-> Dmitry
+diff --git a/scripts/Makefile.clean b/scripts/Makefile.clean
+index d9e0ceace6a6..22a8172bce1f 100644
+--- a/scripts/Makefile.clean
++++ b/scripts/Makefile.clean
+@@ -34,9 +34,6 @@ __clean-files	:= \
+ 	$(hostprogs-always-y) $(hostprogs-always-m) $(hostprogs-always-) \
+ 	$(userprogs-always-y) $(userprogs-always-m) $(userprogs-always-)
+ 
+-# deprecated
+-__clean-files	+= $(always) $(hostprogs-y) $(hostprogs-m) $(hostprogs-)
+-
+ __clean-files   := $(filter-out $(no-clean-files), $(__clean-files))
+ 
+ # clean-files is given relative to the current directory, unless it
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index e10b675165cd..b8e587a17dcc 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -1,21 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-# Backward compatibility
+-asflags-y  += $(EXTRA_AFLAGS)
+-ccflags-y  += $(EXTRA_CFLAGS)
+-cppflags-y += $(EXTRA_CPPFLAGS)
+-ldflags-y  += $(EXTRA_LDFLAGS)
+-ifneq ($(always),)
+-$(warning 'always' is deprecated. Please use 'always-y' instead)
+-always-y   += $(always)
+-endif
+-ifneq ($(hostprogs-y),)
+-$(warning 'hostprogs-y' is deprecated. Please use 'hostprogs' instead)
+-hostprogs  += $(hostprogs-y)
+-endif
+-ifneq ($(hostprogs-m),)
+-$(warning 'hostprogs-m' is deprecated. Please use 'hostprogs' instead)
+-hostprogs  += $(hostprogs-m)
+-endif
+ 
+ # flags that take effect in current and sub directories
+ KBUILD_AFLAGS += $(subdir-asflags-y)
+-- 
+2.27.0
+
