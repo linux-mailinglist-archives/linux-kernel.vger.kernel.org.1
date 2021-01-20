@@ -2,148 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6DB2FD926
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 758A82FD908
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392466AbhATTHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:07:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387437AbhATS5y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:57:54 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9458FC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:57:14 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id 31so669534plb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 10:57:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2IjT5vM0wwpC9kpod4C2W/rvy6n2du1gFGDH7SeVYpA=;
-        b=FnEQe4NdFtLMCzMpWBm01f0nkqCIXmpGnyv1Isu2e3YosASvuZSZMrYjbK4n8SXMKA
-         11bXc0VkJx6niIVERe7ZEenE3e3K51Vv3ClAmmpkWCIHiy5yqtGOEHMojs46e1tudcx4
-         +KIkD1vhoSe630IfWDZSi2/JMI5WF+PLk6lbpa61juWxsWRAprfL7r48gLTGHQakJ7YD
-         GpY7BfvBRZOrAG4SP79XUJjH/qy1fxHu/YqL/qQLu+kUC2UJ8z64e5jwz8JI222O5pAf
-         5k8r0BQXnUgeTXrba1KWIDUD6WLARPQD57kBKzC5P3LoMyPDpd4Tn0qooee6liLjXLjl
-         GwHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2IjT5vM0wwpC9kpod4C2W/rvy6n2du1gFGDH7SeVYpA=;
-        b=qqI4ZLEVOIzSg+2i2PbcMmyDyfkUWTlY6RCumVK/+0wiUt4A0z9LZ2XoYZaHaLcAoX
-         sNJra89cWgvLhoZW1DwwQ5t4WLZnV2wVMyhnIFeWtpKlz8pRYeVIaTTOsVwT7CQgC/YL
-         7wbge/E6xJasYI4paQacUIFoJr3JxUP7KrqSz0gBdLxCuqJRYGsh7O1ZVFPkaN9ZbrLu
-         MmOud0H1Cua/Ko0V13vngdEiYAgF1UpMVv2vlf5FFlobrOJOf6AE9SwXFtDxNf88HEZj
-         i8QCm7m2GwRONECkABpy/Qk8zM4Jc39MfRuGD+zzzbGKA883C6WxnVIKKWSrcMCmm6c/
-         4sOw==
-X-Gm-Message-State: AOAM532Em94NqCH9+fwJShuhXRT8/ACL1CBnilvnKLyIWO+b8cuR5mTb
-        WloU/DXHRwayevhX5GhsUS3Q4DSSQfmlq1yRSQc1wg==
-X-Google-Smtp-Source: ABdhPJwVH5hPIt+TGvLTxRBBzGs/IugUmzu+q+OXrVRQdS4VsRDDJ4BtXntxOzCvUMCUXt5VtXebFAiD2WbdPyv7dOM=
-X-Received: by 2002:a17:90b:228f:: with SMTP id kx15mr733291pjb.32.1611169033913;
- Wed, 20 Jan 2021 10:57:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20210120072547.10221-1-yashsri421@gmail.com> <e5c5f8495fbdd063f4272f02a259bbf28b199bdd.camel@perches.com>
- <14707ab9-1872-4f8c-3ed8-e77b663c3adb@gmail.com> <fb1b511d71761c99a9bece803f508b674fce9962.camel@perches.com>
-In-Reply-To: <fb1b511d71761c99a9bece803f508b674fce9962.camel@perches.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 20 Jan 2021 10:57:03 -0800
-Message-ID: <CAKwvOd=HNuB8bqJvXEjvYWorika99QX=jKSfHy2hf0NOKrrc8w@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: add warning for avoiding .L prefix symbols in
- assembly files
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Aditya <yashsri421@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        dwaipayanray1@gmail.com, Mark Brown <broonie@kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1733255AbhATTDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:03:32 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:12555 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387765AbhATS6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:58:13 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DLZX54r44z9tybl;
+        Wed, 20 Jan 2021 19:57:25 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id spdC_h7kWmvk; Wed, 20 Jan 2021 19:57:25 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLZX53xvZz9tybZ;
+        Wed, 20 Jan 2021 19:57:25 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 76BAF8B7F8;
+        Wed, 20 Jan 2021 19:57:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 0BLiNn7tEHnH; Wed, 20 Jan 2021 19:57:25 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 16A798B7F2;
+        Wed, 20 Jan 2021 19:57:25 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id D92D866A56; Wed, 20 Jan 2021 18:57:24 +0000 (UTC)
+Message-Id: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/2] crypto: talitos - Work around SEC6 ERRATA (AES-CTR mode
+ data size error)
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 20 Jan 2021 18:57:24 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:43 AM Joe Perches <joe@perches.com> wrote:
->
-> On Wed, 2021-01-20 at 18:23 +0530, Aditya wrote:
-> > On 20/1/21 2:51 pm, Joe Perches wrote:
-> > > On Wed, 2021-01-20 at 12:55 +0530, Aditya Srivastava wrote:
-> > > > Local symbols prefixed with '.L' do not emit symbol table entries, as
-> > > > they have special meaning for the assembler.
-> > > >
-> > > > '.L' prefixed symbols can be used within a code region, but should be
-> > > > avoided for denoting a range of code via 'SYM_*_START/END' annotations.
-> > > >
-> > > > Add a new check to emit a warning on finding the usage of '.L' symbols
-> > > > in '.S' files, if it lies within SYM_*_START/END annotation pair.
-> > >
-> > > I believe this needs a test for $file as it won't work well on
-> > > patches as the SYM_*_START/END may not be in the patch context.
-> > >
-> > Okay.
-> >
-> > > Also, is this supposed to work for local labels like '.L<foo>:'?
-> > > I don't think a warning should be generated for those.
-> > >
-> > Yes, currently it will generate warning for all symbols which start
-> > with .L and have non- white character symbol following it, if it is
-> > lying within SYM_*_START/END annotation pair.
-> >
-> > Should I reduce the check to \.L_\S+ instead? (please note "_"
-> > following ".L")
->
-> Use grep first.  That would still match several existing labels.
->
-> > Pardon me, I'm not good with assembly :/
->
-> Spending time reading docs can help with that.
->
-> Mark?  Can you please comment about the below?
->
-> I believe the test should be:
->
->         if ($realfile =~ /\.S$/ &&
->             $line =~ /^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
->                 WARN(...);
->         }
->
-> so that only this code currently matches:
->
-> $ git grep -P '^\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L' -- '*.S'
-> arch/x86/boot/compressed/head_32.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
-> arch/x86/boot/compressed/head_32.S:SYM_FUNC_END(.Lrelocated)
-> arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
-> arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lrelocated)
-> arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lpaging_enabled)
-> arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lpaging_enabled)
-> arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lno_longmode)
-> arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lno_longmode)
-> arch/x86/boot/pmjump.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lin_pm32)
-> arch/x86/boot/pmjump.S:SYM_FUNC_END(.Lin_pm32)
-> arch/x86/entry/entry_64.S:SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
-> arch/x86/entry/entry_64.S:SYM_CODE_END(.Lbad_gs)
-> arch/x86/lib/copy_user_64.S:SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
-> arch/x86/lib/copy_user_64.S:SYM_CODE_END(.Lcopy_user_handle_tail)
-> arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_clac)
-> arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_clac)
-> arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_8_clac)
-> arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_8_clac)
-> arch/x86/lib/putuser.S:SYM_CODE_START_LOCAL(.Lbad_put_user_clac)
-> arch/x86/lib/putuser.S:SYM_CODE_END(.Lbad_put_user_clac)
-> arch/x86/realmode/rm/wakeup_asm.S:SYM_DATA_START_LOCAL(.Lwakeup_idt)
-> arch/x86/realmode/rm/wakeup_asm.S:SYM_DATA_END(.Lwakeup_idt)
+Talitos Security Engine AESU considers any input
+data size that is not a multiple of 16 bytes to be an error.
+This is not a problem in general, except for Counter mode
+that is a stream cipher and can have an input of any size.
 
-Josh, I assume objtool does not annotate code under:
-arch/x86/boot/
-arch/x86/entry/
-arch/x86/realmode/
-?
+Test Manager for ctr(aes) fails on 4th test vector which has
+a length of 499 while all previous vectors which have a 16 bytes
+multiple length succeed.
 
-The rest, ie
-arch/x86/lib/
-seem potentially relevant?
+As suggested by Freescale, round up the input data length to the
+nearest 16 bytes.
+
+Fixes: 5e75ae1b3cef ("crypto: talitos - add new crypto modes")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/crypto/talitos.c | 28 ++++++++++++++++------------
+ drivers/crypto/talitos.h |  1 +
+ 2 files changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index 4fd85f31630a..b656983c1ef4 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -1093,11 +1093,12 @@ static void ipsec_esp_decrypt_hwauth_done(struct device *dev,
+  */
+ static int sg_to_link_tbl_offset(struct scatterlist *sg, int sg_count,
+ 				 unsigned int offset, int datalen, int elen,
+-				 struct talitos_ptr *link_tbl_ptr)
++				 struct talitos_ptr *link_tbl_ptr, int align)
+ {
+ 	int n_sg = elen ? sg_count + 1 : sg_count;
+ 	int count = 0;
+ 	int cryptlen = datalen + elen;
++	int padding = ALIGN(cryptlen, align) - cryptlen;
+ 
+ 	while (cryptlen && sg && n_sg--) {
+ 		unsigned int len = sg_dma_len(sg);
+@@ -1121,7 +1122,7 @@ static int sg_to_link_tbl_offset(struct scatterlist *sg, int sg_count,
+ 			offset += datalen;
+ 		}
+ 		to_talitos_ptr(link_tbl_ptr + count,
+-			       sg_dma_address(sg) + offset, len, 0);
++			       sg_dma_address(sg) + offset, sg_next(sg) ? len : len + padding, 0);
+ 		to_talitos_ptr_ext_set(link_tbl_ptr + count, 0, 0);
+ 		count++;
+ 		cryptlen -= len;
+@@ -1144,10 +1145,11 @@ static int talitos_sg_map_ext(struct device *dev, struct scatterlist *src,
+ 			      unsigned int len, struct talitos_edesc *edesc,
+ 			      struct talitos_ptr *ptr, int sg_count,
+ 			      unsigned int offset, int tbl_off, int elen,
+-			      bool force)
++			      bool force, int align)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+ 	bool is_sec1 = has_ftr_sec1(priv);
++	int aligned_len = ALIGN(len, align);
+ 
+ 	if (!src) {
+ 		to_talitos_ptr(ptr, 0, 0, is_sec1);
+@@ -1155,22 +1157,22 @@ static int talitos_sg_map_ext(struct device *dev, struct scatterlist *src,
+ 	}
+ 	to_talitos_ptr_ext_set(ptr, elen, is_sec1);
+ 	if (sg_count == 1 && !force) {
+-		to_talitos_ptr(ptr, sg_dma_address(src) + offset, len, is_sec1);
++		to_talitos_ptr(ptr, sg_dma_address(src) + offset, aligned_len, is_sec1);
+ 		return sg_count;
+ 	}
+ 	if (is_sec1) {
+-		to_talitos_ptr(ptr, edesc->dma_link_tbl + offset, len, is_sec1);
++		to_talitos_ptr(ptr, edesc->dma_link_tbl + offset, aligned_len, is_sec1);
+ 		return sg_count;
+ 	}
+ 	sg_count = sg_to_link_tbl_offset(src, sg_count, offset, len, elen,
+-					 &edesc->link_tbl[tbl_off]);
++					 &edesc->link_tbl[tbl_off], align);
+ 	if (sg_count == 1 && !force) {
+ 		/* Only one segment now, so no link tbl needed*/
+ 		copy_talitos_ptr(ptr, &edesc->link_tbl[tbl_off], is_sec1);
+ 		return sg_count;
+ 	}
+ 	to_talitos_ptr(ptr, edesc->dma_link_tbl +
+-			    tbl_off * sizeof(struct talitos_ptr), len, is_sec1);
++			    tbl_off * sizeof(struct talitos_ptr), aligned_len, is_sec1);
+ 	to_talitos_ptr_ext_or(ptr, DESC_PTR_LNKTBL_JUMP, is_sec1);
+ 
+ 	return sg_count;
+@@ -1182,7 +1184,7 @@ static int talitos_sg_map(struct device *dev, struct scatterlist *src,
+ 			  unsigned int offset, int tbl_off)
+ {
+ 	return talitos_sg_map_ext(dev, src, len, edesc, ptr, sg_count, offset,
+-				  tbl_off, 0, false);
++				  tbl_off, 0, false, 1);
+ }
+ 
+ /*
+@@ -1251,7 +1253,7 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
+ 
+ 	ret = talitos_sg_map_ext(dev, areq->src, cryptlen, edesc, &desc->ptr[4],
+ 				 sg_count, areq->assoclen, tbl_off, elen,
+-				 false);
++				 false, 1);
+ 
+ 	if (ret > 1) {
+ 		tbl_off += ret;
+@@ -1271,7 +1273,7 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
+ 		elen = 0;
+ 	ret = talitos_sg_map_ext(dev, areq->dst, cryptlen, edesc, &desc->ptr[5],
+ 				 sg_count, areq->assoclen, tbl_off, elen,
+-				 is_ipsec_esp && !encrypt);
++				 is_ipsec_esp && !encrypt, 1);
+ 	tbl_off += ret;
+ 
+ 	if (!encrypt && is_ipsec_esp) {
+@@ -1577,6 +1579,8 @@ static int common_nonsnoop(struct talitos_edesc *edesc,
+ 	bool sync_needed = false;
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+ 	bool is_sec1 = has_ftr_sec1(priv);
++	bool is_ctr = (desc->hdr & DESC_HDR_SEL0_MASK) == DESC_HDR_SEL0_AESU &&
++		      (desc->hdr & DESC_HDR_MODE0_AESU_MASK) == DESC_HDR_MODE0_AESU_CTR;
+ 
+ 	/* first DWORD empty */
+ 
+@@ -1597,8 +1601,8 @@ static int common_nonsnoop(struct talitos_edesc *edesc,
+ 	/*
+ 	 * cipher in
+ 	 */
+-	sg_count = talitos_sg_map(dev, areq->src, cryptlen, edesc,
+-				  &desc->ptr[3], sg_count, 0, 0);
++	sg_count = talitos_sg_map_ext(dev, areq->src, cryptlen, edesc, &desc->ptr[3],
++				      sg_count, 0, 0, 0, false, is_ctr ? 16 : 1);
+ 	if (sg_count > 1)
+ 		sync_needed = true;
+ 
+diff --git a/drivers/crypto/talitos.h b/drivers/crypto/talitos.h
+index 1469b956948a..32825119e880 100644
+--- a/drivers/crypto/talitos.h
++++ b/drivers/crypto/talitos.h
+@@ -344,6 +344,7 @@ static inline bool has_ftr_sec1(struct talitos_private *priv)
+ 
+ /* primary execution unit mode (MODE0) and derivatives */
+ #define	DESC_HDR_MODE0_ENCRYPT		cpu_to_be32(0x00100000)
++#define	DESC_HDR_MODE0_AESU_MASK	cpu_to_be32(0x00600000)
+ #define	DESC_HDR_MODE0_AESU_CBC		cpu_to_be32(0x00200000)
+ #define	DESC_HDR_MODE0_AESU_CTR		cpu_to_be32(0x00600000)
+ #define	DESC_HDR_MODE0_DEU_CBC		cpu_to_be32(0x00400000)
 -- 
-Thanks,
-~Nick Desaulniers
+2.25.0
+
