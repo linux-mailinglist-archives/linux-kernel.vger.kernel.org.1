@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C97E2FD47E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977F32FD47B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390914AbhATPsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:48:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57672 "EHLO mail.kernel.org"
+        id S2390971AbhATPrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:47:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733027AbhATPms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:42:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB2FB2336D;
-        Wed, 20 Jan 2021 15:42:06 +0000 (UTC)
+        id S1733042AbhATPmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:42:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80FC823382;
+        Wed, 20 Jan 2021 15:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611157328;
-        bh=mLZRggFw26oduqsoBKrgHCf4iDFskViFHto32MVzJx8=;
+        s=k20201202; t=1611157329;
+        bh=T9xyOgUhu1xz0Ggrk+3PTqE768OmzsjXmHEzzGIrhpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGeTJZfKY9MckoaZvY3DGf/oPlAYeyaMdosuLre3NQeqMOv7iFYpWtQZuWZeZhf7m
-         uO5tVZ9yvl4SbywDsidxKr835oO8pxbWGId84PkIrOzzWYRnWBc0PblJmKmXtTQb0v
-         sbar+VVTitpz5BzFCCW8pThf5K+EnGzvYvR5H3bLn/rvaru45/RAfsnJVXOkqeyoGR
-         yQCW05lKD8KurLWQK6q9bYIr2Y3rKBhnATgiqN08HiSw1DJKHaSG4dJfr4q/9+d99e
-         ph1Int/YVoNosmY7EohdY3rR4KyDOFvRV4bZrCQJ033NV6YxGXTBcFb/uXnuAl6t8q
-         /L02D6OnwjQLw==
+        b=FqWNkBFb06L2Dz3SSmCpMpLQNh4DJvDxiCp0gAC7Q2D1nMpNgd/7jgsjY+8tIqny/
+         mI1JPrlwzzQOqmlt0/RkrIGWlU2pSneDjmmNCPTzhc3UDmXnA13tPMwtmQOwi5dESa
+         /FFZ72hqAAdrq9t+slnz/JjwZvwVeD6JrHgPjSIIvjrORVXQ+NCisNY/k3ZZI32wy4
+         rchFksPfS3R+CrSIpxX2ug1AgCb45LduSWZN4cUXXi3dTcKB+W4K/Z1YU9z9rF5j9p
+         SfFB4rkjDjun//8xFikfDRDs9Y8mPJ0Edvw70wA+yvrj0j7BqYTFGsD4CS/ULL8sEq
+         7he6wt4bujPuA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-rtc@vger.kernel.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
-Subject: [PATCH 1/3] rtc: remove sirfsoc driver
-Date:   Wed, 20 Jan 2021 16:41:56 +0100
-Message-Id: <20210120154158.1860736-2-arnd@kernel.org>
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 2/3] rtc: remove ste coh901 driver
+Date:   Wed, 20 Jan 2021 16:41:57 +0100
+Message-Id: <20210120154158.1860736-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210120154158.1860736-1-arnd@kernel.org>
 References: <20210120154158.1860736-1-arnd@kernel.org>
@@ -43,550 +44,373 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The CSR SiRF prima2/atlas platforms are getting removed, so this driver
-is no longer needed.
+The ST-Ericsson U300 platform is getting removed, so this driver is no
+longer needed.
 
-Cc: Barry Song <baohua@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../bindings/rtc/sirf,prima2-sysrtc.txt       |  13 -
- drivers/rtc/Kconfig                           |   7 -
+ .../bindings/rtc/stericsson,coh901331.txt     |  16 -
+ drivers/rtc/Kconfig                           |  12 -
  drivers/rtc/Makefile                          |   1 -
- drivers/rtc/rtc-sirfsoc.c                     | 446 ------------------
- include/linux/rtc/sirfsoc_rtciobrg.h          |  21 -
- 5 files changed, 488 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt
- delete mode 100644 drivers/rtc/rtc-sirfsoc.c
- delete mode 100644 include/linux/rtc/sirfsoc_rtciobrg.h
+ drivers/rtc/rtc-coh901331.c                   | 290 ------------------
+ 4 files changed, 319 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/rtc/stericsson,coh901331.txt
+ delete mode 100644 drivers/rtc/rtc-coh901331.c
 
-diff --git a/Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt b/Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt
+diff --git a/Documentation/devicetree/bindings/rtc/stericsson,coh901331.txt b/Documentation/devicetree/bindings/rtc/stericsson,coh901331.txt
 deleted file mode 100644
-index 58885b55da21..000000000000
---- a/Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt
+index e615a897b20e..000000000000
+--- a/Documentation/devicetree/bindings/rtc/stericsson,coh901331.txt
 +++ /dev/null
-@@ -1,13 +0,0 @@
--SiRFSoC Real Time Clock
+@@ -1,16 +0,0 @@
+-ST-Ericsson COH 901 331 Real Time Clock
 -
 -Required properties:
--- compatible: must be "sirf,prima2-sysrtc"
+-- compatible: must be "stericsson,coh901331"
 -- reg: address range of rtc register set.
--- interrupts: rtc alarm interrupts.
+-- interrupts: rtc alarm interrupt.
+-- clocks: phandle to the rtc clock source
 -
 -Example:
--	rtc@2000 {
--		compatible = "sirf,prima2-sysrtc";
--		reg = <0x2000 0x1000>;
--		interrupts = <52 53 54>;
+-	rtc: rtc@c0017000 {
+-		compatible = "stericsson,coh901331";
+-		reg = <0xc0017000 0x1000>;
+-		interrupt-parent = <&vicb>;
+-		interrupts = <10>;
+-		clocks = <&rtc_clk>;
 -	};
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 6123f9f4fbc9..8fb9aa55ace1 100644
+index 8fb9aa55ace1..ff583d6a2870 100644
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
-@@ -1799,13 +1799,6 @@ config RTC_DRV_IMX_SC
- 	   If you say yes here you get support for the NXP i.MX System
- 	   Controller RTC module.
+@@ -1645,18 +1645,6 @@ config RTC_DRV_PS3
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called rtc-ps3.
  
--config RTC_DRV_SIRFSOC
--	tristate "SiRFSOC RTC"
--	depends on ARCH_SIRF
+-config RTC_DRV_COH901331
+-	tristate "ST-Ericsson COH 901 331 RTC"
+-	depends on ARCH_U300 || COMPILE_TEST
 -	help
--	  Say "yes" here to support the real time clock on SiRF SOC chips.
--	  This driver can also be built as a module called rtc-sirfsoc.
+-	  If you say Y here you will get access to ST-Ericsson
+-	  COH 901 331 RTC clock found in some ST-Ericsson Mobile
+-	  Platforms.
 -
- config RTC_DRV_ST_LPC
- 	tristate "STMicroelectronics LPC RTC"
- 	depends on ARCH_STI
+-	  This driver can also be built as a module. If so, the module
+-	  will be called "rtc-coh901331".
+-
+-
+ config RTC_DRV_STMP
+ 	tristate "Freescale STMP3xxx/i.MX23/i.MX28 RTC"
+ 	depends on ARCH_MXS || COMPILE_TEST
 diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index bb8f319b09fb..1f00896db507 100644
+index 1f00896db507..8585cd159979 100644
 --- a/drivers/rtc/Makefile
 +++ b/drivers/rtc/Makefile
-@@ -154,7 +154,6 @@ obj-$(CONFIG_RTC_DRV_SA1100)	+= rtc-sa1100.o
- obj-$(CONFIG_RTC_DRV_SC27XX)	+= rtc-sc27xx.o
- obj-$(CONFIG_RTC_DRV_SD3078)   += rtc-sd3078.o
- obj-$(CONFIG_RTC_DRV_SH)	+= rtc-sh.o
--obj-$(CONFIG_RTC_DRV_SIRFSOC)	+= rtc-sirfsoc.o
- obj-$(CONFIG_RTC_DRV_SNVS)	+= rtc-snvs.o
- obj-$(CONFIG_RTC_DRV_SPEAR)	+= rtc-spear.o
- obj-$(CONFIG_RTC_DRV_STARFIRE)	+= rtc-starfire.o
-diff --git a/drivers/rtc/rtc-sirfsoc.c b/drivers/rtc/rtc-sirfsoc.c
+@@ -38,7 +38,6 @@ obj-$(CONFIG_RTC_DRV_BQ4802)	+= rtc-bq4802.o
+ obj-$(CONFIG_RTC_DRV_BRCMSTB)	+= rtc-brcmstb-waketimer.o
+ obj-$(CONFIG_RTC_DRV_CADENCE)	+= rtc-cadence.o
+ obj-$(CONFIG_RTC_DRV_CMOS)	+= rtc-cmos.o
+-obj-$(CONFIG_RTC_DRV_COH901331)	+= rtc-coh901331.o
+ obj-$(CONFIG_RTC_DRV_CPCAP)	+= rtc-cpcap.o
+ obj-$(CONFIG_RTC_DRV_CROS_EC)	+= rtc-cros-ec.o
+ obj-$(CONFIG_RTC_DRV_DA9052)	+= rtc-da9052.o
+diff --git a/drivers/rtc/rtc-coh901331.c b/drivers/rtc/rtc-coh901331.c
 deleted file mode 100644
-index 03a6cca23201..000000000000
---- a/drivers/rtc/rtc-sirfsoc.c
+index 168ced87d93a..000000000000
+--- a/drivers/rtc/rtc-coh901331.c
 +++ /dev/null
-@@ -1,446 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
+@@ -1,290 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
 -/*
-- * SiRFSoC Real Time Clock interface for Linux
-- *
-- * Copyright (c) 2013 Cambridge Silicon Radio Limited, a CSR plc group company.
+- * Copyright (C) 2007-2009 ST-Ericsson AB
+- * Real Time Clock interface for ST-Ericsson AB COH 901 331 RTC.
+- * Author: Linus Walleij <linus.walleij@stericsson.com>
+- * Based on rtc-pl031.c by Deepak Saxena <dsaxena@plexity.net>
+- * Copyright 2006 (c) MontaVista Software, Inc.
 - */
--
+-#include <linux/init.h>
 -#include <linux/module.h>
--#include <linux/err.h>
+-#include <linux/mod_devicetable.h>
 -#include <linux/rtc.h>
+-#include <linux/clk.h>
+-#include <linux/interrupt.h>
+-#include <linux/pm.h>
 -#include <linux/platform_device.h>
--#include <linux/slab.h>
 -#include <linux/io.h>
--#include <linux/of.h>
--#include <linux/regmap.h>
--#include <linux/rtc/sirfsoc_rtciobrg.h>
+-#include <linux/slab.h>
 -
+-/*
+- * Registers in the COH 901 331
+- */
+-/* Alarm value 32bit (R/W) */
+-#define COH901331_ALARM		0x00U
+-/* Used to set current time 32bit (R/W) */
+-#define COH901331_SET_TIME	0x04U
+-/* Indication if current time is valid 32bit (R/-) */
+-#define COH901331_VALID		0x08U
+-/* Read the current time 32bit (R/-) */
+-#define COH901331_CUR_TIME	0x0cU
+-/* Event register for the "alarm" interrupt */
+-#define COH901331_IRQ_EVENT	0x10U
+-/* Mask register for the "alarm" interrupt */
+-#define COH901331_IRQ_MASK	0x14U
+-/* Force register for the "alarm" interrupt */
+-#define COH901331_IRQ_FORCE	0x18U
 -
--#define RTC_CN			0x00
--#define RTC_ALARM0		0x04
--#define RTC_ALARM1		0x18
--#define RTC_STATUS		0x08
--#define RTC_SW_VALUE            0x40
--#define SIRFSOC_RTC_AL1E	(1<<6)
--#define SIRFSOC_RTC_AL1		(1<<4)
--#define SIRFSOC_RTC_HZE		(1<<3)
--#define SIRFSOC_RTC_AL0E	(1<<2)
--#define SIRFSOC_RTC_HZ		(1<<1)
--#define SIRFSOC_RTC_AL0		(1<<0)
--#define RTC_DIV			0x0c
--#define RTC_DEEP_CTRL		0x14
--#define RTC_CLOCK_SWITCH	0x1c
--#define SIRFSOC_RTC_CLK		0x03	/* others are reserved */
--
--/* Refer to RTC DIV switch */
--#define RTC_HZ			16
--
--/* This macro is also defined in arch/arm/plat-sirfsoc/cpu.c */
--#define RTC_SHIFT		4
--
--#define INTR_SYSRTC_CN		0x48
--
--struct sirfsoc_rtc_drv {
--	struct rtc_device	*rtc;
--	u32			rtc_base;
--	u32			irq;
--	unsigned		irq_wake;
--	/* Overflow for every 8 years extra time */
--	u32			overflow_rtc;
--	spinlock_t		lock;
--	struct regmap *regmap;
--#ifdef CONFIG_PM
--	u32		saved_counter;
--	u32		saved_overflow_rtc;
+-/*
+- * Reference to RTC block clock
+- * Notice that the frequent clk_enable()/clk_disable() on this
+- * clock is mainly to be able to turn on/off other clocks in the
+- * hierarchy as needed, the RTC clock is always on anyway.
+- */
+-struct coh901331_port {
+-	struct rtc_device *rtc;
+-	struct clk *clk;
+-	void __iomem *virtbase;
+-	int irq;
+-#ifdef CONFIG_PM_SLEEP
+-	u32 irqmaskstore;
 -#endif
 -};
 -
--static u32 sirfsoc_rtc_readl(struct sirfsoc_rtc_drv *rtcdrv, u32 offset)
+-static irqreturn_t coh901331_interrupt(int irq, void *data)
 -{
--	u32 val;
+-	struct coh901331_port *rtap = data;
 -
--	regmap_read(rtcdrv->regmap, rtcdrv->rtc_base + offset, &val);
--	return val;
--}
--
--static void sirfsoc_rtc_writel(struct sirfsoc_rtc_drv *rtcdrv,
--			       u32 offset, u32 val)
--{
--	regmap_write(rtcdrv->regmap, rtcdrv->rtc_base + offset, val);
--}
--
--static int sirfsoc_rtc_read_alarm(struct device *dev,
--		struct rtc_wkalrm *alrm)
--{
--	unsigned long rtc_alarm, rtc_count;
--	struct sirfsoc_rtc_drv *rtcdrv;
--
--	rtcdrv = dev_get_drvdata(dev);
--
--	spin_lock_irq(&rtcdrv->lock);
--
--	rtc_count = sirfsoc_rtc_readl(rtcdrv, RTC_CN);
--
--	rtc_alarm = sirfsoc_rtc_readl(rtcdrv, RTC_ALARM0);
--	memset(alrm, 0, sizeof(struct rtc_wkalrm));
--
+-	clk_enable(rtap->clk);
+-	/* Ack IRQ */
+-	writel(1, rtap->virtbase + COH901331_IRQ_EVENT);
 -	/*
--	 * assume alarm interval not beyond one round counter overflow_rtc:
--	 * 0->0xffffffff
+-	 * Disable the interrupt. This is necessary because
+-	 * the RTC lives on a lower-clocked line and will
+-	 * not release the IRQ line until after a few (slower)
+-	 * clock cycles. The interrupt will be re-enabled when
+-	 * a new alarm is set anyway.
 -	 */
--	/* if alarm is in next overflow cycle */
--	if (rtc_count > rtc_alarm)
--		rtc_time64_to_tm((rtcdrv->overflow_rtc + 1)
--				 << (BITS_PER_LONG - RTC_SHIFT)
--				 | rtc_alarm >> RTC_SHIFT, &alrm->time);
--	else
--		rtc_time64_to_tm(rtcdrv->overflow_rtc
--				 << (BITS_PER_LONG - RTC_SHIFT)
--				 | rtc_alarm >> RTC_SHIFT, &alrm->time);
--	if (sirfsoc_rtc_readl(rtcdrv, RTC_STATUS) & SIRFSOC_RTC_AL0E)
--		alrm->enabled = 1;
+-	writel(0, rtap->virtbase + COH901331_IRQ_MASK);
+-	clk_disable(rtap->clk);
 -
--	spin_unlock_irq(&rtcdrv->lock);
--
--	return 0;
--}
--
--static int sirfsoc_rtc_set_alarm(struct device *dev,
--		struct rtc_wkalrm *alrm)
--{
--	unsigned long rtc_status_reg, rtc_alarm;
--	struct sirfsoc_rtc_drv *rtcdrv;
--	rtcdrv = dev_get_drvdata(dev);
--
--	if (alrm->enabled) {
--		rtc_alarm = rtc_tm_to_time64(&alrm->time);
--
--		spin_lock_irq(&rtcdrv->lock);
--
--		rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
--		if (rtc_status_reg & SIRFSOC_RTC_AL0E) {
--			/*
--			 * An ongoing alarm in progress - ingore it and not
--			 * to return EBUSY
--			 */
--			dev_info(dev, "An old alarm was set, will be replaced by a new one\n");
--		}
--
--		sirfsoc_rtc_writel(rtcdrv, RTC_ALARM0, rtc_alarm << RTC_SHIFT);
--		rtc_status_reg &= ~0x07; /* mask out the lower status bits */
--		/*
--		 * This bit RTC_AL sets it as a wake-up source for Sleep Mode
--		 * Writing 1 into this bit will clear it
--		 */
--		rtc_status_reg |= SIRFSOC_RTC_AL0;
--		/* enable the RTC alarm interrupt */
--		rtc_status_reg |= SIRFSOC_RTC_AL0E;
--		sirfsoc_rtc_writel(rtcdrv, RTC_STATUS, rtc_status_reg);
--
--		spin_unlock_irq(&rtcdrv->lock);
--	} else {
--		/*
--		 * if this function was called with enabled=0
--		 * then it could mean that the application is
--		 * trying to cancel an ongoing alarm
--		 */
--		spin_lock_irq(&rtcdrv->lock);
--
--		rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
--		if (rtc_status_reg & SIRFSOC_RTC_AL0E) {
--			/* clear the RTC status register's alarm bit */
--			rtc_status_reg &= ~0x07;
--			/* write 1 into SIRFSOC_RTC_AL0 to force a clear */
--			rtc_status_reg |= (SIRFSOC_RTC_AL0);
--			/* Clear the Alarm enable bit */
--			rtc_status_reg &= ~(SIRFSOC_RTC_AL0E);
--
--			sirfsoc_rtc_writel(rtcdrv, RTC_STATUS,
--					   rtc_status_reg);
--		}
--
--		spin_unlock_irq(&rtcdrv->lock);
--	}
--
--	return 0;
--}
--
--static int sirfsoc_rtc_read_time(struct device *dev,
--		struct rtc_time *tm)
--{
--	unsigned long tmp_rtc = 0;
--	struct sirfsoc_rtc_drv *rtcdrv;
--	rtcdrv = dev_get_drvdata(dev);
--	/*
--	 * This patch is taken from WinCE - Need to validate this for
--	 * correctness. To work around sirfsoc RTC counter double sync logic
--	 * fail, read several times to make sure get stable value.
--	 */
--	do {
--		tmp_rtc = sirfsoc_rtc_readl(rtcdrv, RTC_CN);
--		cpu_relax();
--	} while (tmp_rtc != sirfsoc_rtc_readl(rtcdrv, RTC_CN));
--
--	rtc_time64_to_tm(rtcdrv->overflow_rtc << (BITS_PER_LONG - RTC_SHIFT)
--			 | tmp_rtc >> RTC_SHIFT, tm);
--	return 0;
--}
--
--static int sirfsoc_rtc_set_time(struct device *dev,
--		struct rtc_time *tm)
--{
--	unsigned long rtc_time;
--	struct sirfsoc_rtc_drv *rtcdrv;
--	rtcdrv = dev_get_drvdata(dev);
--
--	rtc_time = rtc_tm_to_time64(tm);
--
--	rtcdrv->overflow_rtc = rtc_time >> (BITS_PER_LONG - RTC_SHIFT);
--
--	sirfsoc_rtc_writel(rtcdrv, RTC_SW_VALUE, rtcdrv->overflow_rtc);
--	sirfsoc_rtc_writel(rtcdrv, RTC_CN, rtc_time << RTC_SHIFT);
--
--	return 0;
--}
--
--static int sirfsoc_rtc_alarm_irq_enable(struct device *dev,
--		unsigned int enabled)
--{
--	unsigned long rtc_status_reg = 0x0;
--	struct sirfsoc_rtc_drv *rtcdrv;
--
--	rtcdrv = dev_get_drvdata(dev);
--
--	spin_lock_irq(&rtcdrv->lock);
--
--	rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
--	if (enabled)
--		rtc_status_reg |= SIRFSOC_RTC_AL0E;
--	else
--		rtc_status_reg &= ~SIRFSOC_RTC_AL0E;
--
--	sirfsoc_rtc_writel(rtcdrv, RTC_STATUS, rtc_status_reg);
--
--	spin_unlock_irq(&rtcdrv->lock);
--
--	return 0;
--
--}
--
--static const struct rtc_class_ops sirfsoc_rtc_ops = {
--	.read_time = sirfsoc_rtc_read_time,
--	.set_time = sirfsoc_rtc_set_time,
--	.read_alarm = sirfsoc_rtc_read_alarm,
--	.set_alarm = sirfsoc_rtc_set_alarm,
--	.alarm_irq_enable = sirfsoc_rtc_alarm_irq_enable
--};
--
--static irqreturn_t sirfsoc_rtc_irq_handler(int irq, void *pdata)
--{
--	struct sirfsoc_rtc_drv *rtcdrv = pdata;
--	unsigned long rtc_status_reg = 0x0;
--	unsigned long events = 0x0;
--
--	spin_lock(&rtcdrv->lock);
--
--	rtc_status_reg = sirfsoc_rtc_readl(rtcdrv, RTC_STATUS);
--	/* this bit will be set ONLY if an alarm was active
--	 * and it expired NOW
--	 * So this is being used as an ASSERT
--	 */
--	if (rtc_status_reg & SIRFSOC_RTC_AL0) {
--		/*
--		 * clear the RTC status register's alarm bit
--		 * mask out the lower status bits
--		 */
--		rtc_status_reg &= ~0x07;
--		/* write 1 into SIRFSOC_RTC_AL0 to ACK the alarm interrupt */
--		rtc_status_reg |= (SIRFSOC_RTC_AL0);
--		/* Clear the Alarm enable bit */
--		rtc_status_reg &= ~(SIRFSOC_RTC_AL0E);
--	}
--
--	sirfsoc_rtc_writel(rtcdrv, RTC_STATUS, rtc_status_reg);
--
--	spin_unlock(&rtcdrv->lock);
--
--	/* this should wake up any apps polling/waiting on the read
--	 * after setting the alarm
--	 */
--	events |= RTC_IRQF | RTC_AF;
--	rtc_update_irq(rtcdrv->rtc, 1, events);
+-	/* Set alarm flag */
+-	rtc_update_irq(rtap->rtc, 1, RTC_AF);
 -
 -	return IRQ_HANDLED;
 -}
 -
--static const struct of_device_id sirfsoc_rtc_of_match[] = {
--	{ .compatible = "sirf,prima2-sysrtc"},
--	{},
--};
--
--static const struct regmap_config sysrtc_regmap_config = {
--	.reg_bits = 32,
--	.val_bits = 32,
--	.fast_io = true,
--};
--
--MODULE_DEVICE_TABLE(of, sirfsoc_rtc_of_match);
--
--static int sirfsoc_rtc_probe(struct platform_device *pdev)
+-static int coh901331_read_time(struct device *dev, struct rtc_time *tm)
 -{
--	int err;
--	unsigned long rtc_div;
--	struct sirfsoc_rtc_drv *rtcdrv;
--	struct device_node *np = pdev->dev.of_node;
+-	struct coh901331_port *rtap = dev_get_drvdata(dev);
 -
--	rtcdrv = devm_kzalloc(&pdev->dev,
--		sizeof(struct sirfsoc_rtc_drv), GFP_KERNEL);
--	if (rtcdrv == NULL)
+-	clk_enable(rtap->clk);
+-	/* Check if the time is valid */
+-	if (!readl(rtap->virtbase + COH901331_VALID)) {
+-		clk_disable(rtap->clk);
+-		return -EINVAL;
+-	}
+-
+-	rtc_time64_to_tm(readl(rtap->virtbase + COH901331_CUR_TIME), tm);
+-	clk_disable(rtap->clk);
+-	return 0;
+-}
+-
+-static int coh901331_set_time(struct device *dev, struct rtc_time *tm)
+-{
+-	struct coh901331_port *rtap = dev_get_drvdata(dev);
+-
+-	clk_enable(rtap->clk);
+-	writel(rtc_tm_to_time64(tm), rtap->virtbase + COH901331_SET_TIME);
+-	clk_disable(rtap->clk);
+-
+-	return 0;
+-}
+-
+-static int coh901331_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+-{
+-	struct coh901331_port *rtap = dev_get_drvdata(dev);
+-
+-	clk_enable(rtap->clk);
+-	rtc_time64_to_tm(readl(rtap->virtbase + COH901331_ALARM), &alarm->time);
+-	alarm->pending = readl(rtap->virtbase + COH901331_IRQ_EVENT) & 1U;
+-	alarm->enabled = readl(rtap->virtbase + COH901331_IRQ_MASK) & 1U;
+-	clk_disable(rtap->clk);
+-
+-	return 0;
+-}
+-
+-static int coh901331_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+-{
+-	struct coh901331_port *rtap = dev_get_drvdata(dev);
+-	unsigned long time =  rtc_tm_to_time64(&alarm->time);
+-
+-	clk_enable(rtap->clk);
+-	writel(time, rtap->virtbase + COH901331_ALARM);
+-	writel(alarm->enabled, rtap->virtbase + COH901331_IRQ_MASK);
+-	clk_disable(rtap->clk);
+-
+-	return 0;
+-}
+-
+-static int coh901331_alarm_irq_enable(struct device *dev, unsigned int enabled)
+-{
+-	struct coh901331_port *rtap = dev_get_drvdata(dev);
+-
+-	clk_enable(rtap->clk);
+-	if (enabled)
+-		writel(1, rtap->virtbase + COH901331_IRQ_MASK);
+-	else
+-		writel(0, rtap->virtbase + COH901331_IRQ_MASK);
+-	clk_disable(rtap->clk);
+-
+-	return 0;
+-}
+-
+-static const struct rtc_class_ops coh901331_ops = {
+-	.read_time = coh901331_read_time,
+-	.set_time = coh901331_set_time,
+-	.read_alarm = coh901331_read_alarm,
+-	.set_alarm = coh901331_set_alarm,
+-	.alarm_irq_enable = coh901331_alarm_irq_enable,
+-};
+-
+-static int __exit coh901331_remove(struct platform_device *pdev)
+-{
+-	struct coh901331_port *rtap = platform_get_drvdata(pdev);
+-
+-	if (rtap)
+-		clk_unprepare(rtap->clk);
+-
+-	return 0;
+-}
+-
+-
+-static int __init coh901331_probe(struct platform_device *pdev)
+-{
+-	int ret;
+-	struct coh901331_port *rtap;
+-
+-	rtap = devm_kzalloc(&pdev->dev,
+-			    sizeof(struct coh901331_port), GFP_KERNEL);
+-	if (!rtap)
 -		return -ENOMEM;
 -
--	spin_lock_init(&rtcdrv->lock);
+-	rtap->virtbase  = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(rtap->virtbase))
+-		return PTR_ERR(rtap->virtbase);
 -
--	err = of_property_read_u32(np, "reg", &rtcdrv->rtc_base);
--	if (err) {
--		dev_err(&pdev->dev, "unable to find base address of rtc node in dtb\n");
--		return err;
+-	rtap->irq = platform_get_irq(pdev, 0);
+-	if (devm_request_irq(&pdev->dev, rtap->irq, coh901331_interrupt, 0,
+-			     "RTC COH 901 331 Alarm", rtap))
+-		return -EIO;
+-
+-	rtap->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(rtap->clk)) {
+-		ret = PTR_ERR(rtap->clk);
+-		dev_err(&pdev->dev, "could not get clock\n");
+-		return ret;
 -	}
 -
--	platform_set_drvdata(pdev, rtcdrv);
+-	rtap->rtc = devm_rtc_allocate_device(&pdev->dev);
+-	if (IS_ERR(rtap->rtc))
+-		return PTR_ERR(rtap->rtc);
 -
--	/* Register rtc alarm as a wakeup source */
--	device_init_wakeup(&pdev->dev, 1);
+-	rtap->rtc->ops = &coh901331_ops;
+-	rtap->rtc->range_max = U32_MAX;
 -
--	rtcdrv->regmap = devm_regmap_init_iobg(&pdev->dev,
--			&sysrtc_regmap_config);
--	if (IS_ERR(rtcdrv->regmap)) {
--		err = PTR_ERR(rtcdrv->regmap);
--		dev_err(&pdev->dev, "Failed to allocate register map: %d\n",
--			err);
--		return err;
+-	/* We enable/disable the clock only to assure it works */
+-	ret = clk_prepare_enable(rtap->clk);
+-	if (ret) {
+-		dev_err(&pdev->dev, "could not enable clock\n");
+-		return ret;
 -	}
+-	clk_disable(rtap->clk);
 -
--	/*
--	 * Set SYS_RTC counter in RTC_HZ HZ Units
--	 * We are using 32K RTC crystal (32768 / RTC_HZ / 2) -1
--	 * If 16HZ, therefore RTC_DIV = 1023;
--	 */
--	rtc_div = ((32768 / RTC_HZ) / 2) - 1;
--	sirfsoc_rtc_writel(rtcdrv, RTC_DIV, rtc_div);
+-	platform_set_drvdata(pdev, rtap);
 -
--	/* 0x3 -> RTC_CLK */
--	sirfsoc_rtc_writel(rtcdrv, RTC_CLOCK_SWITCH, SIRFSOC_RTC_CLK);
+-	ret = devm_rtc_register_device(rtap->rtc);
+-	if (ret)
+-		goto out_no_rtc;
 -
--	/* reset SYS RTC ALARM0 */
--	sirfsoc_rtc_writel(rtcdrv, RTC_ALARM0, 0x0);
+-	return 0;
 -
--	/* reset SYS RTC ALARM1 */
--	sirfsoc_rtc_writel(rtcdrv, RTC_ALARM1, 0x0);
--
--	/* Restore RTC Overflow From Register After Command Reboot */
--	rtcdrv->overflow_rtc =
--		sirfsoc_rtc_readl(rtcdrv, RTC_SW_VALUE);
--
--	rtcdrv->rtc = devm_rtc_allocate_device(&pdev->dev);
--	if (IS_ERR(rtcdrv->rtc))
--		return PTR_ERR(rtcdrv->rtc);
--
--	rtcdrv->rtc->ops = &sirfsoc_rtc_ops;
--	rtcdrv->rtc->range_max = (1ULL << 60) - 1;
--
--	rtcdrv->irq = platform_get_irq(pdev, 0);
--	err = devm_request_irq(&pdev->dev, rtcdrv->irq, sirfsoc_rtc_irq_handler,
--			       IRQF_SHARED, pdev->name, rtcdrv);
--	if (err) {
--		dev_err(&pdev->dev, "Unable to register for the SiRF SOC RTC IRQ\n");
--		return err;
--	}
--
--	return devm_rtc_register_device(rtcdrv->rtc);
+- out_no_rtc:
+-	clk_unprepare(rtap->clk);
+-	return ret;
 -}
 -
 -#ifdef CONFIG_PM_SLEEP
--static int sirfsoc_rtc_suspend(struct device *dev)
+-static int coh901331_suspend(struct device *dev)
 -{
--	struct sirfsoc_rtc_drv *rtcdrv = dev_get_drvdata(dev);
--	rtcdrv->overflow_rtc =
--		sirfsoc_rtc_readl(rtcdrv, RTC_SW_VALUE);
+-	struct coh901331_port *rtap = dev_get_drvdata(dev);
 -
--	rtcdrv->saved_counter =
--		sirfsoc_rtc_readl(rtcdrv, RTC_CN);
--	rtcdrv->saved_overflow_rtc = rtcdrv->overflow_rtc;
--	if (device_may_wakeup(dev) && !enable_irq_wake(rtcdrv->irq))
--		rtcdrv->irq_wake = 1;
--
+-	/*
+-	 * If this RTC alarm will be used for waking the system up,
+-	 * don't disable it of course. Else we just disable the alarm
+-	 * and await suspension.
+-	 */
+-	if (device_may_wakeup(dev)) {
+-		enable_irq_wake(rtap->irq);
+-	} else {
+-		clk_enable(rtap->clk);
+-		rtap->irqmaskstore = readl(rtap->virtbase + COH901331_IRQ_MASK);
+-		writel(0, rtap->virtbase + COH901331_IRQ_MASK);
+-		clk_disable(rtap->clk);
+-	}
+-	clk_unprepare(rtap->clk);
 -	return 0;
 -}
 -
--static int sirfsoc_rtc_resume(struct device *dev)
+-static int coh901331_resume(struct device *dev)
 -{
--	u32 tmp;
--	struct sirfsoc_rtc_drv *rtcdrv = dev_get_drvdata(dev);
+-	int ret;
+-	struct coh901331_port *rtap = dev_get_drvdata(dev);
 -
--	/*
--	 * if resume from snapshot and the rtc power is lost,
--	 * restroe the rtc settings
--	 */
--	if (SIRFSOC_RTC_CLK != sirfsoc_rtc_readl(rtcdrv, RTC_CLOCK_SWITCH)) {
--		u32 rtc_div;
--		/* 0x3 -> RTC_CLK */
--		sirfsoc_rtc_writel(rtcdrv, RTC_CLOCK_SWITCH, SIRFSOC_RTC_CLK);
--		/*
--		 * Set SYS_RTC counter in RTC_HZ HZ Units
--		 * We are using 32K RTC crystal (32768 / RTC_HZ / 2) -1
--		 * If 16HZ, therefore RTC_DIV = 1023;
--		 */
--		rtc_div = ((32768 / RTC_HZ) / 2) - 1;
+-	ret = clk_prepare(rtap->clk);
+-	if (ret)
+-		return ret;
 -
--		sirfsoc_rtc_writel(rtcdrv, RTC_DIV, rtc_div);
--
--		/* reset SYS RTC ALARM0 */
--		sirfsoc_rtc_writel(rtcdrv, RTC_ALARM0, 0x0);
--
--		/* reset SYS RTC ALARM1 */
--		sirfsoc_rtc_writel(rtcdrv, RTC_ALARM1, 0x0);
+-	if (device_may_wakeup(dev)) {
+-		disable_irq_wake(rtap->irq);
+-	} else {
+-		clk_enable(rtap->clk);
+-		writel(rtap->irqmaskstore, rtap->virtbase + COH901331_IRQ_MASK);
+-		clk_disable(rtap->clk);
 -	}
--	rtcdrv->overflow_rtc = rtcdrv->saved_overflow_rtc;
--
--	/*
--	 * if current counter is small than previous,
--	 * it means overflow in sleep
--	 */
--	tmp = sirfsoc_rtc_readl(rtcdrv, RTC_CN);
--	if (tmp <= rtcdrv->saved_counter)
--		rtcdrv->overflow_rtc++;
--	/*
--	 *PWRC Value Be Changed When Suspend, Restore Overflow
--	 * In Memory To Register
--	 */
--	sirfsoc_rtc_writel(rtcdrv, RTC_SW_VALUE, rtcdrv->overflow_rtc);
--
--	if (device_may_wakeup(dev) && rtcdrv->irq_wake) {
--		disable_irq_wake(rtcdrv->irq);
--		rtcdrv->irq_wake = 0;
--	}
--
 -	return 0;
 -}
 -#endif
 -
--static SIMPLE_DEV_PM_OPS(sirfsoc_rtc_pm_ops,
--		sirfsoc_rtc_suspend, sirfsoc_rtc_resume);
+-static SIMPLE_DEV_PM_OPS(coh901331_pm_ops, coh901331_suspend, coh901331_resume);
 -
--static struct platform_driver sirfsoc_rtc_driver = {
--	.driver = {
--		.name = "sirfsoc-rtc",
--		.pm = &sirfsoc_rtc_pm_ops,
--		.of_match_table = sirfsoc_rtc_of_match,
--	},
--	.probe = sirfsoc_rtc_probe,
+-static void coh901331_shutdown(struct platform_device *pdev)
+-{
+-	struct coh901331_port *rtap = platform_get_drvdata(pdev);
+-
+-	clk_enable(rtap->clk);
+-	writel(0, rtap->virtbase + COH901331_IRQ_MASK);
+-	clk_disable_unprepare(rtap->clk);
+-}
+-
+-static const struct of_device_id coh901331_dt_match[] = {
+-	{ .compatible = "stericsson,coh901331" },
+-	{},
 -};
--module_platform_driver(sirfsoc_rtc_driver);
+-MODULE_DEVICE_TABLE(of, coh901331_dt_match);
 -
--MODULE_DESCRIPTION("SiRF SoC rtc driver");
--MODULE_AUTHOR("Xianglong Du <Xianglong.Du@csr.com>");
--MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:sirfsoc-rtc");
-diff --git a/include/linux/rtc/sirfsoc_rtciobrg.h b/include/linux/rtc/sirfsoc_rtciobrg.h
-deleted file mode 100644
-index b31f2856733d..000000000000
---- a/include/linux/rtc/sirfsoc_rtciobrg.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * RTC I/O Bridge interfaces for CSR SiRFprimaII
-- * ARM access the registers of SYSRTC, GPSRTC and PWRC through this module
-- *
-- * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
-- */
--#ifndef _SIRFSOC_RTC_IOBRG_H_
--#define _SIRFSOC_RTC_IOBRG_H_
+-static struct platform_driver coh901331_driver = {
+-	.driver = {
+-		.name = "rtc-coh901331",
+-		.pm = &coh901331_pm_ops,
+-		.of_match_table = coh901331_dt_match,
+-	},
+-	.remove = __exit_p(coh901331_remove),
+-	.shutdown = coh901331_shutdown,
+-};
 -
--struct regmap_config;
+-module_platform_driver_probe(coh901331_driver, coh901331_probe);
 -
--extern void sirfsoc_rtc_iobrg_besyncing(void);
--
--extern u32 sirfsoc_rtc_iobrg_readl(u32 addr);
--
--extern void sirfsoc_rtc_iobrg_writel(u32 val, u32 addr);
--struct regmap *devm_regmap_init_iobg(struct device *dev,
--				    const struct regmap_config *config);
--
--#endif
+-MODULE_AUTHOR("Linus Walleij <linus.walleij@stericsson.com>");
+-MODULE_DESCRIPTION("ST-Ericsson AB COH 901 331 RTC Driver");
+-MODULE_LICENSE("GPL");
 -- 
 2.29.2
 
