@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638822FD4A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5042FD4B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391162AbhATP4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:56:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391080AbhATPvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:51:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3458A23340;
-        Wed, 20 Jan 2021 15:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611157819;
-        bh=fBMJEpbeW4fb/1FlOYEHbgt7kuNpM9yvsa0KQlOyNHo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RVDEo4KsJGh9Tb7AghreIaMDU7L2aWJ3JG12Owy6S7VImj/ocpgKYdJi60PF5PL62
-         7sqM05TbpFlQmxpSRTG6zyXqcgypIF0Vyru2eqoZWpaobq5HkF71Tglq8cfKC2+eiz
-         y5jqwpHIo4RnlZox0OB2ct7qBFD4P+r9pxfNoVNA=
-Date:   Wed, 20 Jan 2021 16:50:17 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Walle <michael@walle.cc>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
- builtin_platform_driver()
-Message-ID: <YAhROU8A8ZHduptZ@kroah.com>
-References: <20210120105246.23218-1-michael@walle.cc>
- <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+        id S2387983AbhATP6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:58:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390562AbhATPx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:53:29 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FE4C061575;
+        Wed, 20 Jan 2021 07:52:49 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id o17so34757590lfg.4;
+        Wed, 20 Jan 2021 07:52:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/KIgJpukkTUseLKOL+nfTNs+iHfOcLiaf/sA4jMSc7o=;
+        b=b2NLVokQPZCUuJAyv3kiWNUb/D7/YvKoWfUJcCHR1heKGaiZjLpcSwBstX7Q3YX8MD
+         0VSL3nGarP20z1Z7t1EQA7XA2H4vpXyhlGms2qwFGmlN5vFPCkNOEwhXvgcl2dX2OHl0
+         Fk8lwe7s8eUZ2wwS5RMH6/mUWuXSRNmTjNvQCAwK5Dd3NdzmkpZHt4llHrw8Ni5khkmn
+         myMjJRhAiEUeq/sHdT1yh60NnMmGAROPatvIjJ8mP6HQeV19cvk6YGXY87IpFAtncwaV
+         v00shKKr9e/yxCXAB3jbsK18rnr4dn0SL3OuJ8SyDsoqZnywmH2zxXJFRB0YEqFQqi04
+         OP8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/KIgJpukkTUseLKOL+nfTNs+iHfOcLiaf/sA4jMSc7o=;
+        b=nbGUUFMp2tvkeX6XBsXTytoIiQPoz2eDIbHMmu4obTt01NoNLbaj2f9zx3wVyrCp4j
+         XIEjmjHhN6R1F1fnjSKUn9LIH2fe1HWXJOARadqqsVIByKni7NkJOPdLj+5chmh06SoZ
+         6TH9b14hriqgE1+ThonVV1NND8L1OGT9qf8dXWsrbFRjvgVWZ0Hv2ANhdQP7Pp0rUInH
+         DdyJhS2vnOcnkWMdS4WMk+TAwt6OmI0ezULfIAVj4iUL3FbjIeIkwceqBm8ZxGEFnVmy
+         1k1exhCfw1zlHcU/HC6vF73fyQJL7udqR/YCzWTZyBsWL6xCKgckEZ+apslDjtXdNUTt
+         jDZQ==
+X-Gm-Message-State: AOAM5338hi7aA1pHPOm9dFhgTGZXp4CKCcQIfKiU3dvNwEKhL+T6Bgjo
+        K/NSxyBc5oPD2aA5LNiSlbJh8+WQmjY=
+X-Google-Smtp-Source: ABdhPJz54jp4p6N7ro9OB4UGTlGLwMbj9w9A1NhmVFwuW25RiB7kgYemoqd4C3nN1Esa+ddCNU5GUA==
+X-Received: by 2002:a19:ac45:: with SMTP id r5mr4942869lfc.305.1611157967504;
+        Wed, 20 Jan 2021 07:52:47 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id b4sm74228ljp.53.2021.01.20.07.52.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 07:52:46 -0800 (PST)
+Subject: Re: [PATCH 02/31] opp: Add devres wrapper for
+ dev_pm_opp_set_regulators and dev_pm_opp_put_regulators
+To:     Yangtao Li <tiny.windzz@gmail.com>, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com, cw00.choi@samsung.com, krzk@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
+        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        lukasz.luba@arm.com, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
+        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
+        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
+        marijn.suijten@somainline.org, gustavoars@kernel.org,
+        emil.velikov@collabora.com, jonathan@marek.ca,
+        akhilpo@codeaurora.org, smasetty@codeaurora.org,
+        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, ddavenport@chromium.org,
+        jsanka@codeaurora.org, rnayak@codeaurora.org,
+        tongtiangen@huawei.com, miaoqinglang@huawei.com,
+        khsieh@codeaurora.org, abhinavk@codeaurora.org,
+        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
+        mka@chromium.org, harigovi@codeaurora.org,
+        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
+        georgi.djakov@linaro.org, akashast@codeaurora.org,
+        parashar@codeaurora.org, dianders@chromium.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20210101165507.19486-1-tiny.windzz@gmail.com>
+ <20210101165507.19486-3-tiny.windzz@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <43c251a2-430a-040c-4152-94cf10c884e0@gmail.com>
+Date:   Wed, 20 Jan 2021 18:52:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+In-Reply-To: <20210101165507.19486-3-tiny.windzz@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 08:23:59AM -0600, Rob Herring wrote:
-> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc> wrote:
-> >
-> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> > deferral. Convert it to builtin_platform_driver().
+01.01.2021 19:54, Yangtao Li пишет:
+> Add devres wrapper for dev_pm_opp_set_regulators()
+> dev_pm_opp_put_regulators () to simplify driver code.
 > 
-> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> shouldn't it be fixed or removed? Then we're not fixing drivers later
-> when folks start caring about deferred probe and devlink.
-> 
-> I'd really prefer if we convert this to a module instead. (And all the
-> other PCI host drivers.)
-> 
-> > Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> 
-> This happened!?
+> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> ---
+>  drivers/opp/core.c     | 50 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  9 ++++++++
+>  2 files changed, 59 insertions(+)
 
-It's in linux-next in my tree, but is looking like it might be reverted
-soon.  But finding these issues is good.
-
-thanks,
-
-greg k-h
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
