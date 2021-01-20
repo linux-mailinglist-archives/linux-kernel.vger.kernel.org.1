@@ -2,175 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91FF2FC717
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736872FC718
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbhATBrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:47:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731183AbhATBpi (ORCPT
+        id S1728414AbhATBrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:47:37 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:42183 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731180AbhATBpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:45:38 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F993C061387
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:59 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id n142so24035073qkn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=SWC85EvrfhDWN9GAMNSCIdaWub1yJYYIkxTKcYQyLVs=;
-        b=WezjidD20cBXiwyz9W0oPzrxqqnYifMOP5TKoe0jgFAZVKdB5J3R1PsP90gAYMxfdj
-         gjYlsEK7Wb/bNeMMaWgm+IUfGnQYiLyXUNFBYqaNgr79FjcxxtVlt3KXasC8BCilVSJZ
-         JJFEBvIITAa92TBHXdK7nxJAyRerq8z2rm64n1+8NZVgxMpII6a1QJIu41PIBAVh46cI
-         bXKeUlx3PzuSDhm+vwpxaZujsCO/rBPMKr+PFqMQ+DGHqH6tr59yOpzzWEtFYNCnMJrk
-         DH6O/5Tmptvy9ZUu4e7hBg6Pp/CO+dRcB9XOL1ady7bFnl38V7zYCLtU8UTS/bN9lxrO
-         H/ww==
+        Tue, 19 Jan 2021 20:45:36 -0500
+Received: by mail-ot1-f43.google.com with SMTP id f6so12652918ots.9;
+        Tue, 19 Jan 2021 17:45:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SWC85EvrfhDWN9GAMNSCIdaWub1yJYYIkxTKcYQyLVs=;
-        b=YqbLRzSnNu/llpp/ELZG/IU3Xy88oJkYwa0p9Z9IdgGsmoavbFhv3a/M4c7JrbMg7E
-         bFqEVjEkyLLWnYDJxsqvJmFmoPVk5jr2GOXXUGf//myAVvCrsc7K4LUrs34QWLU1+W8s
-         lFA5NAmA9jMaWS7P8tzEu1TI2RptAmdLcbwgceLWM50pW4vbkKEGMqr//IPpNcBSC1ZR
-         5QLO6TYApKmRQPi7X5xPNm1+asU5NKf+ZurxxX4L4EoAAi0v3HXbTXLDwBIrWC/UF8o7
-         Z8ofOCPRaJIAzT3qJw/UKIroxRw9oWGUSbCkkX3xkSjCDmqCswSV5ecJIf65z8fVwHoN
-         VDSw==
-X-Gm-Message-State: AOAM530zDu7XJUfGrISB024vQPZiEpPb2C39p3yCaN7e4P26GnRwLc3C
-        v0oBjbkZQ8lv5gtOTY48G/WW4jaab8IacQ==
-X-Google-Smtp-Source: ABdhPJw5izQeBjkRMqhjsC9TP9lgwkrU7chc1HNFB77ws4A9Zzmy0nyzIos4bjgkU0IReb0VVUFGvQ==
-X-Received: by 2002:a37:4587:: with SMTP id s129mr7500098qka.62.1611107038455;
-        Tue, 19 Jan 2021 17:43:58 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id a9sm391871qkk.39.2021.01.19.17.43.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4zFLIX6YbpN5aLim6yrRCBFClVwkiMJYaqWYmkOOPrQ=;
+        b=ilOxwK0IkK4JzQDbT9lqRPExZvUnT8UCT+yejraADgL+HLvaVpCbrkUlbKLtfrUrHd
+         bTo99MByXRqsfNwJLSUZRkM6y/IKtA8QUKpbVIezDUg795d1w7yQhyF3CTTT5dAYX8cj
+         V/MD9ZAg+3zIzSob2+/1WwEmaa9uvLLZHggrbmswlNYqEz2K8DjJ4Wm4BuMW7oeA02qW
+         ydmrTX5wsH+tFIq3v69yYfPYeitAHvAdWnZ5NSjwokQUAjhk8LKFki89SbaEwY83E+In
+         7BOF6jWDfuAEvhpx+1Ms5OJVCSCLH4lewbO5rDHU8tHExhaX08pksEa8CRbmGAk5eCtZ
+         K7aA==
+X-Gm-Message-State: AOAM530pLak8BuScDdCYpu5Y+gbcYfnr3hmvhKDlC2mZWJ6rtk+MFGu2
+        SWLXBZs4nvJKc6lYwibolQ==
+X-Google-Smtp-Source: ABdhPJzNzLwDdCRWb7mfJZPjC5yXOTPWn6hRch00Trm6xqHb+giSCQZAzkcjk4lDkIWsGAcxhvOK9g==
+X-Received: by 2002:a9d:313:: with SMTP id 19mr5381524otv.147.1611107095736;
+        Tue, 19 Jan 2021 17:44:55 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s24sm99037oij.20.2021.01.19.17.44.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 17:43:57 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
-        dan.j.williams@intel.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
-        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
-        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
-        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
-        linux-doc@vger.kernel.org, ira.weiny@intel.com,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v6 14/14] selftests/vm: test faulting in kernel, and verify pinnable pages
-Date:   Tue, 19 Jan 2021 20:43:33 -0500
-Message-Id: <20210120014333.222547-15-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210120014333.222547-1-pasha.tatashin@soleen.com>
-References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
+        Tue, 19 Jan 2021 17:44:54 -0800 (PST)
+Received: (nullmailer pid 3016866 invoked by uid 1000);
+        Wed, 20 Jan 2021 01:44:53 -0000
+Date:   Tue, 19 Jan 2021 19:44:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, Heiko Stuebner <heiko@sntech.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH 1/2] dt-bindings: powerpc: Add a schema for the 'sleep'
+ property
+Message-ID: <20210120014453.GA3706951@robh.at.kernel.org>
+References: <20201008142420.2083861-1-robh@kernel.org>
+ <752e9355-defb-6d3c-248b-f626247d4cee@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <752e9355-defb-6d3c-248b-f626247d4cee@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pages are pinned they can be faulted in userland and migrated, and
-they can be faulted right in kernel without migration.
+On Sun, Jan 17, 2021 at 05:10:03PM +0100, Johan Jonker wrote:
+> Hi Rob,
+> 
+> This patch generates notifications in the Rockchip ARM and arm64 tree.
+> Could you limit the scope to PowerPC only.
+> 
+> Kind regards,
+> 
+> Johan Jonker
+> 
+> make ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
+> 
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
+> 
+> Example:
+> 
+> /arch/arm64/boot/dts/rockchip/rk3399pro-rock-pi-n10.dt.yaml: pinctrl:
+> sleep: {'ddrio-pwroff': {'rockchip,pins': [[0, 1, 1, 168]]},
+> 'ap-pwroff': {'rockchip,pins': [[1, 5, 1, 168]]}} is not of type 'array'
+> 	From schema: /Documentation/devicetree/bindings/powerpc/sleep.yaml
 
-In either case, the pinned pages must end-up being pinnable (not movable).
+IMO, the node name should be changed or just removed. The grouping 
+doesn't serve any purpose and changing wouldn't break the ABI.
 
-Add a new test to gup_test, to help verify that the gup/pup
-(get_user_pages() / pin_user_pages()) behavior with respect to pinnable
-and movable pages is reasonable and correct. Specifically, provide a
-way to:
-
-1) Verify that only "pinnable" pages are pinned. This is checked
-automatically for you.
-
-2) Verify that gup/pup performance is reasonable. This requires
-comparing benchmarks between doing gup/pup on pages that have been
-pre-faulted in from user space, vs. doing gup/pup on pages that are not
-faulted in until gup/pup time (via FOLL_TOUCH). This decision is
-controlled with the new -z command line option.
-
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
----
- mm/gup_test.c                         |  6 ++++++
- tools/testing/selftests/vm/gup_test.c | 23 +++++++++++++++++++----
- 2 files changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/mm/gup_test.c b/mm/gup_test.c
-index a6ed1c877679..d974dec19e1c 100644
---- a/mm/gup_test.c
-+++ b/mm/gup_test.c
-@@ -52,6 +52,12 @@ static void verify_dma_pinned(unsigned int cmd, struct page **pages,
- 
- 				dump_page(page, "gup_test failure");
- 				break;
-+			} else if (cmd == PIN_LONGTERM_BENCHMARK &&
-+				WARN(!is_pinnable_page(page),
-+				     "pages[%lu] is NOT pinnable but pinned\n",
-+				     i)) {
-+				dump_page(page, "gup_test failure");
-+				break;
- 			}
- 		}
- 		break;
-diff --git a/tools/testing/selftests/vm/gup_test.c b/tools/testing/selftests/vm/gup_test.c
-index 943cc2608dc2..1e662d59c502 100644
---- a/tools/testing/selftests/vm/gup_test.c
-+++ b/tools/testing/selftests/vm/gup_test.c
-@@ -13,6 +13,7 @@
- 
- /* Just the flags we need, copied from mm.h: */
- #define FOLL_WRITE	0x01	/* check pte is writable */
-+#define FOLL_TOUCH	0x02	/* mark page accessed */
- 
- static char *cmd_to_str(unsigned long cmd)
- {
-@@ -39,11 +40,11 @@ int main(int argc, char **argv)
- 	unsigned long size = 128 * MB;
- 	int i, fd, filed, opt, nr_pages = 1, thp = -1, repeats = 1, write = 1;
- 	unsigned long cmd = GUP_FAST_BENCHMARK;
--	int flags = MAP_PRIVATE;
-+	int flags = MAP_PRIVATE, touch = 0;
- 	char *file = "/dev/zero";
- 	char *p;
- 
--	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHp")) != -1) {
-+	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHpz")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			cmd = PIN_FAST_BENCHMARK;
-@@ -110,6 +111,10 @@ int main(int argc, char **argv)
- 		case 'H':
- 			flags |= (MAP_HUGETLB | MAP_ANONYMOUS);
- 			break;
-+		case 'z':
-+			/* fault pages in gup, do not fault in userland */
-+			touch = 1;
-+			break;
- 		default:
- 			return -1;
- 		}
-@@ -167,8 +172,18 @@ int main(int argc, char **argv)
- 	else if (thp == 0)
- 		madvise(p, size, MADV_NOHUGEPAGE);
- 
--	for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
--		p[0] = 0;
-+	/*
-+	 * FOLL_TOUCH, in gup_test, is used as an either/or case: either
-+	 * fault pages in from the kernel via FOLL_TOUCH, or fault them
-+	 * in here, from user space. This allows comparison of performance
-+	 * between those two cases.
-+	 */
-+	if (touch) {
-+		gup.gup_flags |= FOLL_TOUCH;
-+	} else {
-+		for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
-+			p[0] = 0;
-+	}
- 
- 	/* Only report timing information on the *_BENCHMARK commands: */
- 	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
--- 
-2.25.1
-
+Rob
