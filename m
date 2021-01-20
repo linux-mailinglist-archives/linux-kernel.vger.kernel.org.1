@@ -2,184 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BE92FCD02
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E87182FCD09
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbhATIzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:55:37 -0500
-Received: from mga11.intel.com ([192.55.52.93]:53661 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728895AbhATIym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:54:42 -0500
-IronPort-SDR: H//ImVd3yBsGYerjy2LZq9O1uOtQiZXBfBvjJvQdtM8S2/ksrNtso5ciz++tvvMNdkDRSWEpiJ
- bUYEPiaLrnow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="175565799"
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="175565799"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 00:54:02 -0800
-IronPort-SDR: IJD254fB4SzPFzMAL7NZ7hVw/yg58Wj37D6rJAfFZkJpLV2NEpCKLsnfSM//6daXCF5l01+LHO
- wSVyYzYTTSTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
-   d="scan'208";a="402671742"
-Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 20 Jan 2021 00:54:01 -0800
-Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l29FY-0005is-Nk; Wed, 20 Jan 2021 08:54:00 +0000
-Date:   Wed, 20 Jan 2021 16:53:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- 9c7d9017a49fb8516c13b7bff59b7da2abed23e1
-Message-ID: <6007ef76.C1HvQ4syztLJQdW2%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728911AbhATI7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728613AbhATI6t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 03:58:49 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D04DC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:58:09 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id u27so4161255uaa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:58:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rhz4mNYz5KLhtoaEd5l0S79rWDm6JyG4VqiZ266BH0w=;
+        b=gYyWKKHcQf6taYDLLjDiZjpiKcvQhNiJ6ts6cqUkK9mZyhDUMcS2m7qFjPkF75c6Ia
+         ieMbDS6uHTH6f0nmuBCamq4iqRKCoBGOXLtrRJz1PnBt2kIAwVjQh4MseIPg+xXC4AeH
+         Oi1QWvnAIS0up25R73pmdZkmKRwR+zBp8v/r4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rhz4mNYz5KLhtoaEd5l0S79rWDm6JyG4VqiZ266BH0w=;
+        b=Gx6+Gm0RG7/lcDC9cRLtXk+bMg8GWPQSazwUqUXzCXQi6uIN4Qry70I+XwQp6ZBlSF
+         JZ8FNsT6VNKgqCBSPD7cEeIBSetJf1exQtAVYRyMp0aS1IA5Bod8CdIPBVCdysNb3cuW
+         7vlkVq9n0j0xN4WhD37F4ar0dhxCOHvOAdEjBNpfj/uOTAPFgIdqPVbGVW8RDMJZl7t0
+         dNzKbc0BQqDupvh6civ/gPOAWkIpuXbW8KGBbm2fQPcBO+041LjY5pd1gXi0EG9ygcGA
+         2ONycG5y3HVHFrCQvG8EvtCvQNcC3BzTeH4V9zqvo9+tYXkHSnHOp5BUu+lJQaBm2PsZ
+         T8vw==
+X-Gm-Message-State: AOAM531hRQrIcwuXIR1jR9RPJA8AmF4JuCa0+LBowvABLZ44rHAifOL9
+        CAdoX56s6lKJs6vNfxa1WNk9DGvxa09XwI1/26w5iw==
+X-Google-Smtp-Source: ABdhPJwcDzM1BT+vF0cCZCS5U93rwWVeR7NcrXN5SCCHPtBsMJ5m+3Ha0pvpoXs9OMtPlnuj6kmHglQQVFoNMkTeqeU=
+X-Received: by 2002:ab0:1866:: with SMTP id j38mr5167495uag.27.1611133088434;
+ Wed, 20 Jan 2021 00:58:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <cover.1609380663.git.xji@analogixsemi.com> <d13442f84fefccc992d6c5e48ac1e6129882af31.1609380663.git.xji@analogixsemi.com>
+ <20210111221435.GA3138373@robh.at.kernel.org> <20210112085737.GC5827@pc-user>
+In-Reply-To: <20210112085737.GC5827@pc-user>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 20 Jan 2021 16:57:56 +0800
+Message-ID: <CANMq1KDRL3xmjvjMUWCr+maLJ2YY4hQr05dMC7sE4+baWOUesw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag and
+ swing setting
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Rob Herring <robh@kernel.org>, David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Sheng Pan <span@analogixsemi.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
-branch HEAD: 9c7d9017a49fb8516c13b7bff59b7da2abed23e1  x86: PM: Register syscore_ops for scale invariance
+On Tue, Jan 12, 2021 at 4:59 PM Xin Ji <xji@analogixsemi.com> wrote:
+>
+> Hi Rob Herring, thanks for the comments.
+>
+> On Mon, Jan 11, 2021 at 04:14:35PM -0600, Rob Herring wrote:
+> > On Thu, Dec 31, 2020 at 10:21:12AM +0800, Xin Ji wrote:
+> > > Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
+> > > swing setting for adjusting DP tx PHY swing
+> > >
+> > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > > ---
+> > >  .../bindings/display/bridge/analogix,anx7625.yaml  | 25 ++++++++++++++++++++--
+> > >  1 file changed, 23 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > index 60585a4..4eb0ea3 100644
+> > > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > @@ -34,6 +34,16 @@ properties:
+> > >      description: used for reset chip control, RESET_N pin B7.
+> > >      maxItems: 1
+> > >
+> > > +  analogix,swing-setting:
+> > > +    type: uint8-array
+> >
+> > Humm, this should have be rejected by the meta-schema.
+> We needs define an array to adjust DP tx PHY swing, the developer hopes these
+> settings are changeable, so I moved the register data to DT. Can you
+> give me some suggestion if it is rejected by the meta-schema?
+> >
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> >
+> > This is how types are defined other than boolean or nodes (object).
+> >
+> > > +    description: an array of swing register setting for DP tx PHY
+> > > +
+> > > +  analogix,mipi-dpi-in:
+> > > +    type: int
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    description: indicate the MIPI rx signal type is DPI or DSI
+> >
+> > Why does this need to be in DT, you should be able to determine this
+> > based on what you are connected to.
+> As the anx7625 can receive MIPI DSI and DPI data (depends on hardware
+> implement, we have a project which have two anx7625, one is DSI input,
+> the other is DPI input), we needs to let driver know what kind of MIPI
+> rx signal input. And there is no other way to tell driver the MIPI rx
+> signal type, we needs define this flag.
+> >
+> > > +
+> > >    ports:
+> > >      type: object
+> > >
+> > > @@ -49,8 +59,8 @@ properties:
+> > >            Video port for panel or connector.
+> > >
+> > >      required:
+> > > -        - port@0
+> > > -        - port@1
+> > > +      - port@0
+> > > +      - port@1
+> > >
+> > >  required:
+> > >    - compatible
+> > > @@ -72,6 +82,17 @@ examples:
+> > >              reg = <0x58>;
+> > >              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+> > >              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
+> > > +            analogix,swing-setting = <0x00 0x14>, <0x01 0x54>,
+> > > +                <0x02 0x64>, <0x03 0x74>, <0x04 0x29>,
+> > > +                <0x05 0x7b>, <0x06 0x77>, <0x07 0x5b>,
+> > > +                <0x08 0x7f>, <0x0c 0x20>, <0x0d 0x60>,
+> > > +                <0x10 0x60>, <0x12 0x40>, <0x13 0x60>,
+> > > +                <0x14 0x14>, <0x15 0x54>, <0x16 0x64>,
+> > > +                <0x17 0x74>, <0x18 0x29>, <0x19 0x7b>,
+> > > +                <0x1a 0x77>, <0x1b 0x5b>, <0x1c 0x7f>,
+> > > +                <0x20 0x20>, <0x21 0x60>, <0x24 0x60>,
+> > > +                <0x26 0x40>, <0x27 0x60>;
+> >
+> > This is a matrix, which is different from an array type.
+> OK, I'll change to array if this vendor define has been accepted.
 
-elapsed time: 726m
+I also wonder if we want to split the parameters per lane, and simply
+have a flat array (instead of reg/value pairs like you have now).
 
-configs tested: 122
-configs skipped: 61
+Registers 0x00 to 0x13 have to do with Lane 0 (and 0x14 to 0x27 with
+Lane 1): you can almost tell from the example values, they repeat. I'm
+not sure if there's any value splitting those further (I don't think
+anybody will be able to tune those without ANX's help).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+So, maybe something like:
+anx,swing-setting = <<[reg values for lane 0]>, <[reg values for lane 1]>>
+where <[reg values for lane 0]> would be something like <0x14, 0x54,
+0x64, ...> (that is, all the values between 0x00 and 0x13).
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                         ap325rxa_defconfig
-c6x                        evmc6678_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                          rm200_defconfig
-arm                         s5pv210_defconfig
-sh                              ul2_defconfig
-sh                          polaris_defconfig
-powerpc                      pasemi_defconfig
-sparc64                             defconfig
-arc                           tb10x_defconfig
-m68k                        m5272c3_defconfig
-c6x                        evmc6474_defconfig
-powerpc                      pmac32_defconfig
-mips                           ci20_defconfig
-arm                           sunxi_defconfig
-mips                        bcm63xx_defconfig
-powerpc                  iss476-smp_defconfig
-m68k                            q40_defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-arm                        neponset_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                    adder875_defconfig
-arm                            hisi_defconfig
-arm                         palmz72_defconfig
-powerpc                     sbc8548_defconfig
-i386                                defconfig
-c6x                        evmc6472_defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                         cobalt_defconfig
-arm                           corgi_defconfig
-m68k                        m5407c3_defconfig
-m68k                          amiga_defconfig
-powerpc                      cm5200_defconfig
-arm                       omap2plus_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                       eiger_defconfig
-arc                              alldefconfig
-powerpc                      tqm8xx_defconfig
-arm                            lart_defconfig
-mips                     cu1000-neo_defconfig
-arm                       cns3420vb_defconfig
-um                             i386_defconfig
-xtensa                           alldefconfig
-h8300                            allyesconfig
-arm                        spear6xx_defconfig
-ia64                        generic_defconfig
-powerpc                     mpc83xx_defconfig
-arm                           stm32_defconfig
-sh                           se7780_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210120
-i386                 randconfig-a002-20210120
-i386                 randconfig-a004-20210120
-i386                 randconfig-a006-20210120
-i386                 randconfig-a005-20210120
-i386                 randconfig-a003-20210120
-x86_64               randconfig-a012-20210120
-x86_64               randconfig-a015-20210120
-x86_64               randconfig-a016-20210120
-x86_64               randconfig-a011-20210120
-x86_64               randconfig-a013-20210120
-x86_64               randconfig-a014-20210120
-i386                 randconfig-a013-20210120
-i386                 randconfig-a011-20210120
-i386                 randconfig-a012-20210120
-i386                 randconfig-a014-20210120
-i386                 randconfig-a015-20210120
-i386                 randconfig-a016-20210120
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20210120
-x86_64               randconfig-a003-20210120
-x86_64               randconfig-a001-20210120
-x86_64               randconfig-a005-20210120
-x86_64               randconfig-a006-20210120
-x86_64               randconfig-a004-20210120
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >
+> > > +            analogix,mipi-dpi-in = <0>;
+> > >
+> > >              ports {
+> > >                  #address-cells = <1>;
+> > > --
+> > > 2.7.4
+> > >
