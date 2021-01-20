@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8746B2FDA63
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2B92FDA4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392819AbhATUHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:07:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:42276 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbhATT66 (ORCPT
+        id S2388323AbhATUAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728314AbhATT7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:58:58 -0500
-Date:   Wed, 20 Jan 2021 20:57:57 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611172677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ArQgUZu3uJpF8dcmWtPBA9d/I3lB0qIBjOwmrqwR5Vo=;
-        b=No/hfMoMHm4M3ghg4zS1rFFixxxnD4I/bc8r41okD/e+pj/yVbYmA4FgOGERqWnpxvxFLO
-        AifHxdA1M9fd5mIK98lrjlfeIEyq3Z4ACbZXD9rH3dKymCu9lhdvFlHItXiLwzQg9rp+A/
-        2+ybjEIdN6eJlQ4A4nW0hzDuq5aiButQs3hAzt8H2kHe5/66Rk9WAez064ilkxeUF8K1SH
-        ddCQZAvDw6R6+R5HanfihWidioz//kQIWQXOZcwt4hcihsVEE9v0MFGyOQYoanthlioHUl
-        4l2rhbqudcij+a4ViXrXC4TuN1362IB/ByZ/qz6r8uld0sqQec7nvHMKEIAnDQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611172677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ArQgUZu3uJpF8dcmWtPBA9d/I3lB0qIBjOwmrqwR5Vo=;
-        b=qgx7JoDP8ZdaT8CCIupbzqABOd9h0l0MWsQkpxPKp51haq/jOiU3PIed5SeKGMHSUUyAeU
-        033wzGxg9ti2twDg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
-References: <20210120162148.1973-1-urezki@gmail.com>
+        Wed, 20 Jan 2021 14:59:12 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB05C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:58:25 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id g15so2894343pjd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:58:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oJo4M6632K9snaVFDSf1XhUlP1UsmMayuk5fe53umD4=;
+        b=G36BNaYtJB6cOJoO+cpkrFo5Rz9jEBz7sRhWIAY/mH8XN+L1MplSuDdMu05dGss2+a
+         FWnFgtSL2g9zo8K2f0ne0cvRGXQXJ5zNq437oiHkqdLkiXzN2VbNYR+2tER3XvQk+ji1
+         G7PoqF8r6rJniXOnWROmGVzbbgW6CBWPg9Zyg39tcc52LpcCmYsYhSNhrlnqJheOnZgK
+         SZueUzaRCQeFBcKVKXWTjrHNqcbsYv5mJr1lH7nI5IUoDLvyloOSVtDgrmqLp1vHgwwK
+         lIjv7zT4Jl+/gktHmyPUi6+y/tb+WgX6zJH2p5iqyNAG4fqQnVyQGXVPBhzMTZm9c2FE
+         mzBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oJo4M6632K9snaVFDSf1XhUlP1UsmMayuk5fe53umD4=;
+        b=En+wFfME0hvQEeu8eGw6f7kwEfZniMVerGoW/JdMWST0+O5h4YVmt2G7TLFIN28igI
+         f8eH4AxRdC51zmbE1RESLWxk8XChZeVzeZyYraN4afgOmGYjsKp+bI3ymja3q4ifbBO5
+         K6tVM49LgHca9lewt86ysgJPlXgciHuZ3wL6bJMa8XlmbobBBCIixjTLmJZCb0tZzXF+
+         2y9X3GHWz/A+9iDxD7MAlX7P0ESplCJpKVbsKlLAHMo1jwJhVUd5sXL+OUloF3YDRV+R
+         xNUKRiuZg2wA7t4UKbVj42OfeurOfoQZ0p6WMnNEdxz/+GQFMJzt5/E7t3soCxTPTeRB
+         vqoQ==
+X-Gm-Message-State: AOAM530T3LbofHkSqFuQW0wRihADSfkGGHMFXrMDbbHvwo9ErFyR9qux
+        pYlSkE2fl+D8RScqXk09AaKzUw==
+X-Google-Smtp-Source: ABdhPJwCwKNfimf1xsCwD1k7DYvvlx0rSdT1gRA6HWHsXoJ1WS7/+jmqt8GZoVPe6rGidhNonVQPBg==
+X-Received: by 2002:a17:90a:f692:: with SMTP id cl18mr1789209pjb.124.1611172705222;
+        Wed, 20 Jan 2021 11:58:25 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id w7sm3087741pfb.62.2021.01.20.11.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 11:58:24 -0800 (PST)
+Date:   Wed, 20 Jan 2021 11:58:17 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 08/24] kvm: x86/mmu: Add lockdep when setting a TDP MMU
+ SPTE
+Message-ID: <YAiLWTc1nJv7KSZj@google.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-9-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120162148.1973-1-urezki@gmail.com>
+In-Reply-To: <20210112181041.356734-9-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-20 17:21:46 [+0100], Uladzislau Rezki (Sony) wrote:
-> For a single argument we can directly request a page from a caller
-> context when a "carry page block" is run out of free spots. Instead
-> of hitting a slow path we can request an extra page by demand and
-> proceed with a fast path.
+On Tue, Jan 12, 2021, Ben Gardon wrote:
+> Add lockdep to __tdp_mmu_set_spte to ensure that SPTEs are only modified
+> under the MMU lock. This lockdep will be updated in future commits to
+> reflect and validate changes to the TDP MMU's synchronization strategy.
+
+I'd omit the "updated in future commits" justification.  IMO this is a good
+change even if we never build on it, and the extra justification would be
+confusing if this is merged separately from the parallelization patches.
+
+> No functional change intended.
 > 
-> A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> and that its fallback is the relatively high latency synchronize_rcu().
-> Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> to allow limited sleeping within the memory allocator.
+> Reviewed-by: Peter Feiner <pfeiner@google.com>
 > 
-> [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
->  1 file changed, 26 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index e04e336bee42..2014fb22644d 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
->  	}
->  }
->  
-> +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-> +// state specified by flags.  If can_alloc is true, the caller must
-> +// be schedulable and not be holding any locks or mutexes that might be
-> +// acquired by the memory allocator or anything that it might invoke.
-> +// Returns true if ptr was successfully recorded, else the caller must
-> +// use a fallback.
+> Signed-off-by: Ben Gardon <bgardon@google.com>
 
-The whole RCU department is getting swamped by the // comments. Can't we
-have proper kernel doc and /* */ style comments like the remaining part
-of the kernel?
-
->  static inline bool
-> -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> +	unsigned long *flags, void *ptr, bool can_alloc)
->  {
->  	struct kvfree_rcu_bulk_data *bnode;
->  	int idx;
->  
-> -	if (unlikely(!krcp->initialized))
-> +	*krcp = krc_this_cpu_lock(flags);
-> +	if (unlikely(!(*krcp)->initialized))
->  		return false;
->  
-> -	lockdep_assert_held(&krcp->lock);
->  	idx = !!is_vmalloc_addr(ptr);
->  
->  	/* Check if a new block is required. */
-> -	if (!krcp->bkvhead[idx] ||
-> -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> -		bnode = get_cached_bnode(krcp);
-> -		/* Switch to emergency path. */
-> +	if (!(*krcp)->bkvhead[idx] ||
-> +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> +		bnode = get_cached_bnode(*krcp);
-> +		if (!bnode && can_alloc) {
-> +			krc_this_cpu_unlock(*krcp, *flags);
-> +			bnode = (struct kvfree_rcu_bulk_data *)
-
-There is no need for this cast.
-
-> +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-> +			*krcp = krc_this_cpu_lock(flags);
-
-so if bnode is NULL you could retry get_cached_bnode() since it might
-have been filled (given preemption or CPU migration changed something).
-Judging from patch #3 you think that a CPU migration is a bad thing. But
-why?
-
-Sebastian
+Reviewed-by: Sean Christopherson <seanjc@google.com> 
