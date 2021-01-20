@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237832FD903
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D61AD2FD919
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392451AbhATTDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:03:20 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:24125 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387796AbhATS6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:58:13 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DLZX62sgcz9tybr;
-        Wed, 20 Jan 2021 19:57:26 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id wNUy4APIEvhB; Wed, 20 Jan 2021 19:57:26 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLZX623DVz9tybZ;
-        Wed, 20 Jan 2021 19:57:26 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3CBFF8B7F8;
-        Wed, 20 Jan 2021 19:57:26 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id pDsI-BVMOiaA; Wed, 20 Jan 2021 19:57:26 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 048988B7F2;
-        Wed, 20 Jan 2021 19:57:26 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id D733566A56; Wed, 20 Jan 2021 18:57:25 +0000 (UTC)
-Message-Id: <bb8560ebc6db72a82afd0fcdecf5ca80cb9c9d3d.1611169001.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
-References: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] crypto: talitos - Fix ctr(aes) on SEC1
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 20 Jan 2021 18:57:25 +0000 (UTC)
+        id S2388078AbhATTGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:06:49 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:52034 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392433AbhATTD0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 14:03:26 -0500
+Received: from 89-64-80-175.dynamic.chello.pl (89.64.80.175) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 1695341e921a8916; Wed, 20 Jan 2021 20:02:15 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Subject: [PATCH v1 2/6] ACPI: PM: Clean up printing messages
+Date:   Wed, 20 Jan 2021 19:58:18 +0100
+Message-ID: <1984297.f6DJSeQy12@kreacher>
+In-Reply-To: <2809410.8bz27usjlQ@kreacher>
+References: <2809410.8bz27usjlQ@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While ctr(aes) requires the use of a special descriptor on SEC2 (see
-commit 70d355ccea89 ("crypto: talitos - fix ctr-aes-talitos")), that
-special descriptor doesn't work on SEC1, see commit e738c5f15562
-("powerpc/8xx: Add DT node for using the SEC engine of the MPC885").
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-However, the common nonsnoop descriptor works properly on SEC1 for
-ctr(aes).
+Replace the remaining ACPI_DEBUG_PRINT() instances in device_pm.c
+with dev_dbg() invocations, drop the _COMPONENT and ACPI_MODULE_NAME()
+definitions that are not used any more, and drop the no longer needed
+ACPI_POWER_COMPONENT definition from the headers and documentation.
 
-Add a second template for ctr(aes) that will be registered
-only on SEC1.
-
-Fixes: 70d355ccea89 ("crypto: talitos - fix ctr-aes-talitos")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/crypto/talitos.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ Documentation/firmware-guide/acpi/debug.rst |    1 -
+ drivers/acpi/device_pm.c                    |   20 ++++++++------------
+ drivers/acpi/sysfs.c                        |    1 -
+ include/acpi/acpi_drivers.h                 |    1 -
+ 4 files changed, 8 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index b656983c1ef4..25c9f825b8b5 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -2765,6 +2765,22 @@ static struct talitos_alg_template driver_algs[] = {
- 				     DESC_HDR_SEL0_AESU |
- 				     DESC_HDR_MODE0_AESU_CTR,
- 	},
-+	{	.type = CRYPTO_ALG_TYPE_SKCIPHER,
-+		.alg.skcipher = {
-+			.base.cra_name = "ctr(aes)",
-+			.base.cra_driver_name = "ctr-aes-talitos",
-+			.base.cra_blocksize = 1,
-+			.base.cra_flags = CRYPTO_ALG_ASYNC |
-+					  CRYPTO_ALG_ALLOCATES_MEMORY,
-+			.min_keysize = AES_MIN_KEY_SIZE,
-+			.max_keysize = AES_MAX_KEY_SIZE,
-+			.ivsize = AES_BLOCK_SIZE,
-+			.setkey = skcipher_aes_setkey,
-+		},
-+		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
-+				     DESC_HDR_SEL0_AESU |
-+				     DESC_HDR_MODE0_AESU_CTR,
-+	},
- 	{	.type = CRYPTO_ALG_TYPE_SKCIPHER,
- 		.alg.skcipher = {
- 			.base.cra_name = "ecb(des)",
-@@ -3182,6 +3198,12 @@ static struct talitos_crypto_alg *talitos_alg_alloc(struct device *dev,
- 			t_alg->algt.alg.skcipher.setkey ?: skcipher_setkey;
- 		t_alg->algt.alg.skcipher.encrypt = skcipher_encrypt;
- 		t_alg->algt.alg.skcipher.decrypt = skcipher_decrypt;
-+		if (!strcmp(alg->cra_name, "ctr(aes)") && !has_ftr_sec1(priv) &&
-+		    DESC_TYPE(t_alg->algt.desc_hdr_template) !=
-+		    DESC_TYPE(DESC_HDR_TYPE_AESU_CTR_NONSNOOP)) {
-+			devm_kfree(dev, t_alg);
-+			return ERR_PTR(-ENOTSUPP);
-+		}
- 		break;
- 	case CRYPTO_ALG_TYPE_AEAD:
- 		alg = &t_alg->algt.alg.aead.base;
--- 
-2.25.0
+Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
+===================================================================
+--- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
++++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
+@@ -59,7 +59,6 @@ shows the supported mask values, current
+     ACPI_SBS_COMPONENT              0x00100000
+     ACPI_FAN_COMPONENT              0x00200000
+     ACPI_PCI_COMPONENT              0x00400000
+-    ACPI_POWER_COMPONENT            0x00800000
+     ACPI_CONTAINER_COMPONENT        0x01000000
+     ACPI_SYSTEM_COMPONENT           0x02000000
+     ACPI_THERMAL_COMPONENT          0x04000000
+Index: linux-pm/drivers/acpi/device_pm.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/device_pm.c
++++ linux-pm/drivers/acpi/device_pm.c
+@@ -10,6 +10,8 @@
+  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ 
++#define pr_fmt(fmt) "ACPI: PM: " fmt
++
+ #include <linux/acpi.h>
+ #include <linux/export.h>
+ #include <linux/mutex.h>
+@@ -20,9 +22,6 @@
+ 
+ #include "internal.h"
+ 
+-#define _COMPONENT	ACPI_POWER_COMPONENT
+-ACPI_MODULE_NAME("device_pm");
+-
+ /**
+  * acpi_power_state_string - String representation of ACPI device power state.
+  * @state: ACPI device power state to return the string representation of.
+@@ -130,8 +129,8 @@ int acpi_device_get_power(struct acpi_de
+ 	*state = result;
+ 
+  out:
+-	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Device [%s] power state is %s\n",
+-			  device->pnp.bus_id, acpi_power_state_string(*state)));
++	dev_dbg(&device->dev, "Device power state is %s\n",
++		acpi_power_state_string(*state));
+ 
+ 	return 0;
+ }
+@@ -174,9 +173,8 @@ int acpi_device_set_power(struct acpi_de
+ 
+ 	/* There is a special case for D0 addressed below. */
+ 	if (state > ACPI_STATE_D0 && state == device->power.state) {
+-		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Device [%s] already in %s\n",
+-				  device->pnp.bus_id,
+-				  acpi_power_state_string(state)));
++		dev_dbg(&device->dev, "Device already in %s\n",
++			acpi_power_state_string(state));
+ 		return 0;
+ 	}
+ 
+@@ -276,10 +274,8 @@ int acpi_device_set_power(struct acpi_de
+ 			 acpi_power_state_string(target_state));
+ 	} else {
+ 		device->power.state = target_state;
+-		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+-				  "Device [%s] transitioned to %s\n",
+-				  device->pnp.bus_id,
+-				  acpi_power_state_string(target_state)));
++		dev_dbg(&device->dev, "Power state changed to %s\n",
++			acpi_power_state_string(target_state));
+ 	}
+ 
+ 	return result;
+Index: linux-pm/drivers/acpi/sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/sysfs.c
++++ linux-pm/drivers/acpi/sysfs.c
+@@ -59,7 +59,6 @@ static const struct acpi_dlayer acpi_deb
+ 	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_PCI_COMPONENT),
+-	ACPI_DEBUG_INIT(ACPI_POWER_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_CONTAINER_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_SYSTEM_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_THERMAL_COMPONENT),
+Index: linux-pm/include/acpi/acpi_drivers.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_drivers.h
++++ linux-pm/include/acpi/acpi_drivers.h
+@@ -22,7 +22,6 @@
+ #define ACPI_SBS_COMPONENT		0x00100000
+ #define ACPI_FAN_COMPONENT		0x00200000
+ #define ACPI_PCI_COMPONENT		0x00400000
+-#define ACPI_POWER_COMPONENT		0x00800000
+ #define ACPI_CONTAINER_COMPONENT	0x01000000
+ #define ACPI_SYSTEM_COMPONENT		0x02000000
+ #define ACPI_THERMAL_COMPONENT		0x04000000
+
+
 
