@@ -2,609 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243CE2FCCC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6952FCCC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731047AbhATIc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:32:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38248 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730989AbhATIav (ORCPT
+        id S1730833AbhATIcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:32:13 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:57235 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730864AbhATIa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:30:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611131361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HzsWd8oLISAwhp+HewwlPZfcePCN2xxwuS+CFdNrHKg=;
-        b=dDEKyplE0H9xIIWr/ic90OBB2dQSuWV3JiUbI52EJ7FO1eJZpHNa8OwSgWxuNQJs6ZLeDM
-        LatrRoTIFYNCrUnp37hGGse/Vf1gR4h5ndCKgNcrWz8gbGUboQ1TdeyUMypB4pFcYiXFzO
-        eMf3i0WiDg4hnRVVrn4GDJnCV+/W5Ns=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-DEV-ifN5OA6wOoj4aGRU6A-1; Wed, 20 Jan 2021 03:29:19 -0500
-X-MC-Unique: DEV-ifN5OA6wOoj4aGRU6A-1
-Received: by mail-wr1-f71.google.com with SMTP id u3so10984866wri.19
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:29:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HzsWd8oLISAwhp+HewwlPZfcePCN2xxwuS+CFdNrHKg=;
-        b=d+WzaWdY4abMvUZWo8MiVi7uy5sk4wRxWXrMghgNCnRUW2GLIAjAm/JsokXfFV4xFz
-         tBSp4TqqtiEG1UbFDgf8D+H3NDMr27MN+jJYxD8zREYQWzNU4/2TQaa+yVw7vckaS0Pc
-         tH5vBgrzw4osaoU/ez7wSfRYDY3J0LMabee1Asd+mRKc7Qhe6DimEvAnqb7nNeRc6Tzy
-         2fyjJe/T0DTCgrnxpEXjjVTlfKLHV6V6okzxO5yfZ8/AUZaC2afbMlKl44HFkp/eopi2
-         5+F2ZdOTYR4lxjGRS5DVIZxdpsdDhu7/WAs4cfiG3YLn40YplXHs5CZiS5cF1bru3Z1p
-         6xUA==
-X-Gm-Message-State: AOAM531OQFZgOVv62gDUdVdJOsyeY6Ks15B41rQ3MYsHaUdZPS8vJXGA
-        VWKVjE4IVDDf6BqFUMmdYJPpLNMoQpFEbDkuR1D4h9ofqgU396RIz+XkIwK6HaheYgm4uSJnZP3
-        tbOeejg4vtht7++0440erbbzc
-X-Received: by 2002:a5d:61ca:: with SMTP id q10mr8193264wrv.124.1611131357446;
-        Wed, 20 Jan 2021 00:29:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJynMapmhdXI+nDVF+6V9AayU/8ZBNOmNIiCb8nrFPaeWtFi7j0nLr8G033HHD6vJ/lLTjXzjQ==
-X-Received: by 2002:a5d:61ca:: with SMTP id q10mr8193243wrv.124.1611131357152;
-        Wed, 20 Jan 2021 00:29:17 -0800 (PST)
-Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
-        by smtp.gmail.com with ESMTPSA id d199sm2598105wmd.1.2021.01.20.00.29.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 00:29:15 -0800 (PST)
-Date:   Wed, 20 Jan 2021 03:29:12 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH 4/7] ALSA: virtio: handling control and I/O messages for
- the PCM device
-Message-ID: <20210120032711-mutt-send-email-mst@kernel.org>
-References: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
- <20210120003638.3339987-5-anton.yakovlev@opensynergy.com>
+        Wed, 20 Jan 2021 03:30:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611131405; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Mp4yQQCSbmzB8BgSXIJHw+hGvH34AKSc++wzgF8lU1E=;
+ b=GEehKusQCkr5H4jc8wMjk6ItMPv2IbHEo6IkxC0p27CTzufLPW7G45lJJM/cRDHfW9bqzl8d
+ kgpd3L7HtDWpd758O/LAX2ftD1Xf2zWje7FbgUZKJvzqBmqCMgqELDr+pUvwU7jBbSx4ChUe
+ XMZUrEYIRApMvygDl7/HEeDbZf8=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6007e9f0e23dedcc3a5f08c4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Jan 2021 08:29:36
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 560FBC43465; Wed, 20 Jan 2021 08:29:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2EAB4C433CA;
+        Wed, 20 Jan 2021 08:29:33 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120003638.3339987-5-anton.yakovlev@opensynergy.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 Jan 2021 16:29:33 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 1/3] scsi: ufs: Protect some contexts from unexpected
+ clock scaling
+In-Reply-To: <1611118491.1261.3.camel@mtkswgap22>
+References: <1611057183-6925-1-git-send-email-cang@codeaurora.org>
+ <1611057183-6925-2-git-send-email-cang@codeaurora.org>
+ <1611118491.1261.3.camel@mtkswgap22>
+Message-ID: <ee1bff22e19e522533f5e48b572c80e2@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 01:36:32AM +0100, Anton Yakovlev wrote:
-> The driver implements a message-based transport for I/O substream
-> operations. Before the start of the substream, the hardware buffer is
-> sliced into I/O messages, the number of which is equal to the current
-> number of periods. The size of each message is equal to the current
-> size of one period.
+On 2021-01-20 12:54, Stanley Chu wrote:
+> Hi Can,
 > 
-> I/O messages are organized in an ordered queue. The completion of the
-> I/O message indicates an expired period (the only exception is the end
-> of the stream for the capture substream). Upon completion, the message
-> is automatically re-added to the end of the queue.
+> On Tue, 2021-01-19 at 03:52 -0800, Can Guo wrote:
+>> In contexts like suspend, shutdown and error handling, we need to 
+>> suspend
+>> devfreq to make sure these contexts won't be disturbed by clock 
+>> scaling.
+>> However, suspending devfreq is not enough since users can still 
+>> trigger a
+>> clock scaling by manipulating the devfreq sysfs nodes like 
+>> min/max_freq and
+>> governor even after devfreq is suspended. Moreover, mere suspending 
+>> devfreq
+>> cannot synchroinze a clock scaling which has already been invoked 
+>> through
+>> these sysfs nodes. Add one more flag in struct clk_scaling and wrap 
+>> the
+>> entire func ufshcd_devfreq_scale() with the clk_scaling_lock, so that 
+>> we
+>> can use this flag and clk_scaling_lock to control and synchronize 
+>> clock
+>> scaling invoked through devfreq sysfs nodes.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 83 
+>> +++++++++++++++++++++++++++++------------------
+>>  drivers/scsi/ufs/ufshcd.h |  6 +++-
+>>  2 files changed, 56 insertions(+), 33 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 53fd59c..ba62d84 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -1201,19 +1201,30 @@ static int ufshcd_clock_scaling_prepare(struct 
+>> ufs_hba *hba)
+>>  	 */
+>>  	ufshcd_scsi_block_requests(hba);
+>>  	down_write(&hba->clk_scaling_lock);
+>> -	if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US)) {
+>> +
+>> +	if (!hba->clk_scaling.is_allowed ||
+>> +	    ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US)) {
+>>  		ret = -EBUSY;
+>>  		up_write(&hba->clk_scaling_lock);
+>>  		ufshcd_scsi_unblock_requests(hba);
+>> +		goto out;
+>>  	}
+>> 
+>> +	/* let's not get into low power until clock scaling is completed */
+>> +	ufshcd_hold(hba, false);
+>> +
+>> +out:
+>>  	return ret;
+>>  }
+>> 
+>> -static void ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+>> +static void ufshcd_clock_scaling_unprepare(struct ufs_hba *hba, bool 
+>> writelock)
+>>  {
+>> -	up_write(&hba->clk_scaling_lock);
+>> +	if (writelock)
+>> +		up_write(&hba->clk_scaling_lock);
+>> +	else
+>> +		up_read(&hba->clk_scaling_lock);
+>>  	ufshcd_scsi_unblock_requests(hba);
+>> +	ufshcd_release(hba);
+>>  }
+>> 
+>>  /**
+>> @@ -1228,13 +1239,11 @@ static void 
+>> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+>>  static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
+>>  {
+>>  	int ret = 0;
+>> -
+>> -	/* let's not get into low power until clock scaling is completed */
+>> -	ufshcd_hold(hba, false);
+>> +	bool is_writelock = true;
+>> 
+>>  	ret = ufshcd_clock_scaling_prepare(hba);
+>>  	if (ret)
+>> -		goto out;
+>> +		return ret;
+>> 
+>>  	/* scale down the gear before scaling down clocks */
+>>  	if (!scale_up) {
+>> @@ -1260,14 +1269,12 @@ static int ufshcd_devfreq_scale(struct ufs_hba 
+>> *hba, bool scale_up)
+>>  	}
+>> 
+>>  	/* Enable Write Booster if we have scaled up else disable it */
+>> -	up_write(&hba->clk_scaling_lock);
+>> +	downgrade_write(&hba->clk_scaling_lock);
+>> +	is_writelock = false;
+>>  	ufshcd_wb_ctrl(hba, scale_up);
+>> -	down_write(&hba->clk_scaling_lock);
+>> 
+>>  out_unprepare:
+>> -	ufshcd_clock_scaling_unprepare(hba);
+>> -out:
+>> -	ufshcd_release(hba);
+>> +	ufshcd_clock_scaling_unprepare(hba, is_writelock);
+>>  	return ret;
+>>  }
+>> 
+>> @@ -1541,7 +1548,7 @@ static ssize_t 
+>> ufshcd_clkscale_enable_show(struct device *dev,
+>>  {
+>>  	struct ufs_hba *hba = dev_get_drvdata(dev);
+>> 
+>> -	return snprintf(buf, PAGE_SIZE, "%d\n", 
+>> hba->clk_scaling.is_allowed);
+>> +	return snprintf(buf, PAGE_SIZE, "%d\n", 
+>> hba->clk_scaling.is_enabled);
+>>  }
+>> 
+>>  static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+>> @@ -1555,7 +1562,7 @@ static ssize_t 
+>> ufshcd_clkscale_enable_store(struct device *dev,
+>>  		return -EINVAL;
+>> 
+>>  	value = !!value;
+>> -	if (value == hba->clk_scaling.is_allowed)
+>> +	if (value == hba->clk_scaling.is_enabled)
+>>  		goto out;
+>> 
+>>  	pm_runtime_get_sync(hba->dev);
+>> @@ -1564,7 +1571,7 @@ static ssize_t 
+>> ufshcd_clkscale_enable_store(struct device *dev,
+>>  	cancel_work_sync(&hba->clk_scaling.suspend_work);
+>>  	cancel_work_sync(&hba->clk_scaling.resume_work);
+>> 
+>> -	hba->clk_scaling.is_allowed = value;
+>> +	hba->clk_scaling.is_enabled = value;
+>> 
+>>  	if (value) {
+>>  		ufshcd_resume_clkscaling(hba);
+>> @@ -1902,8 +1909,6 @@ static void ufshcd_init_clk_scaling(struct 
+>> ufs_hba *hba)
+>>  	snprintf(wq_name, sizeof(wq_name), "ufs_clkscaling_%d",
+>>  		 hba->host->host_no);
+>>  	hba->clk_scaling.workq = create_singlethread_workqueue(wq_name);
+>> -
+>> -	ufshcd_clkscaling_init_sysfs(hba);
+>>  }
+>> 
+>>  static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+>> @@ -1911,6 +1916,8 @@ static void ufshcd_exit_clk_scaling(struct 
+>> ufs_hba *hba)
+>>  	if (!ufshcd_is_clkscaling_supported(hba))
+>>  		return;
+>> 
+>> +	if (hba->clk_scaling.enable_attr.attr.name)
+>> +		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+>>  	destroy_workqueue(hba->clk_scaling.workq);
+>>  	ufshcd_devfreq_remove(hba);
+>>  }
+>> @@ -1975,7 +1982,7 @@ static void ufshcd_clk_scaling_start_busy(struct 
+>> ufs_hba *hba)
+>>  	if (!hba->clk_scaling.active_reqs++)
+>>  		queue_resume_work = true;
+>> 
+>> -	if (!hba->clk_scaling.is_allowed || hba->pm_op_in_progress)
+>> +	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress)
+>>  		return;
+>> 
+>>  	if (queue_resume_work)
+>> @@ -5093,7 +5100,8 @@ static void __ufshcd_transfer_req_compl(struct 
+>> ufs_hba *hba,
+>>  				update_scaling = true;
+>>  			}
+>>  		}
+>> -		if (ufshcd_is_clkscaling_supported(hba) && update_scaling)
+>> +		if (ufshcd_is_clkscaling_supported(hba) && update_scaling &&
 > 
-> When an I/O message is completed, the hw_ptr value is incremented
-> unconditionally (to ensure that the hw_ptr always correctly reflects
-> the state of the messages in the virtqueue). Due to its asynchronous
-> nature, a message can be completed when the runtime structure no longer
-> exists. For this reason, the values from this structure are cached in
-> the virtio substream, which are required to calculate the new value of
-> the hw_ptr.
+>> +		    hba->clk_scaling.active_reqs > 0)
+> Do we need to check hba->clk_scaling.active_reqs here?
 > 
-> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> ---
->  sound/virtio/Makefile         |   3 +-
->  sound/virtio/virtio_card.c    |  33 ++++
->  sound/virtio/virtio_card.h    |   9 +
->  sound/virtio/virtio_pcm.c     |   3 +
->  sound/virtio/virtio_pcm.h     |  31 ++++
->  sound/virtio/virtio_pcm_msg.c | 317 ++++++++++++++++++++++++++++++++++
->  6 files changed, 395 insertions(+), 1 deletion(-)
->  create mode 100644 sound/virtio/virtio_pcm_msg.c
-> 
-> diff --git a/sound/virtio/Makefile b/sound/virtio/Makefile
-> index 69162a545a41..626af3cc3ed7 100644
-> --- a/sound/virtio/Makefile
-> +++ b/sound/virtio/Makefile
-> @@ -5,5 +5,6 @@ obj-$(CONFIG_SND_VIRTIO) += virtio_snd.o
->  virtio_snd-objs := \
->  	virtio_card.o \
->  	virtio_ctl_msg.o \
-> -	virtio_pcm.o
-> +	virtio_pcm.o \
-> +	virtio_pcm_msg.o
->  
-> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-> index 293d497f24e7..dc703fc662f5 100644
-> --- a/sound/virtio/virtio_card.c
-> +++ b/sound/virtio/virtio_card.c
-> @@ -145,6 +145,12 @@ static int virtsnd_find_vqs(struct virtio_snd *snd)
->  	callbacks[VIRTIO_SND_VQ_CONTROL] = virtsnd_ctl_notify_cb;
->  	callbacks[VIRTIO_SND_VQ_EVENT] = virtsnd_event_notify_cb;
->  
-> +	virtio_cread(vdev, struct virtio_snd_config, streams, &n);
-> +	if (n) {
-> +		callbacks[VIRTIO_SND_VQ_TX] = virtsnd_pcm_tx_notify_cb;
-> +		callbacks[VIRTIO_SND_VQ_RX] = virtsnd_pcm_rx_notify_cb;
-> +	}
-> +
->  	rc = virtio_find_vqs(vdev, VIRTIO_SND_VQ_MAX, vqs, callbacks, names,
->  			     NULL);
->  	if (rc) {
-> @@ -186,15 +192,42 @@ static int virtsnd_find_vqs(struct virtio_snd *snd)
->   * virtsnd_enable_vqs() - Enable the event, tx and rx virtqueues.
->   * @snd: VirtIO sound device.
->   *
-> + * The tx queue is enabled only if the device supports playback stream(s).
-> + *
-> + * The rx queue is enabled only if the device supports capture stream(s).
-> + *
->   * Context: Any context.
->   */
->  static void virtsnd_enable_vqs(struct virtio_snd *snd)
->  {
-> +	struct virtio_device *vdev = snd->vdev;
->  	struct virtqueue *vqueue;
-> +	struct virtio_pcm *pcm;
-> +	unsigned int npbs = 0;
-> +	unsigned int ncps = 0;
->  
->  	vqueue = snd->queues[VIRTIO_SND_VQ_EVENT].vqueue;
->  	if (!virtqueue_enable_cb(vqueue))
->  		virtsnd_event_notify_cb(vqueue);
-> +
-> +	list_for_each_entry(pcm, &snd->pcm_list, list) {
-> +		npbs += pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].nsubstreams;
-> +		ncps += pcm->streams[SNDRV_PCM_STREAM_CAPTURE].nsubstreams;
-> +	}
-> +
-> +	if (npbs) {
-> +		vqueue = snd->queues[VIRTIO_SND_VQ_TX].vqueue;
-> +		if (!virtqueue_enable_cb(vqueue))
-> +			dev_warn(&vdev->dev,
-> +				 "suspicious notification in the TX queue\n");
-> +	}
-> +
-> +	if (ncps) {
-> +		vqueue = snd->queues[VIRTIO_SND_VQ_RX].vqueue;
-> +		if (!virtqueue_enable_cb(vqueue))
-> +			dev_warn(&vdev->dev,
-> +				 "suspicious notification in the RX queue\n");
-> +	}
+> if hba->clk_scaling.active_reqs is possibly decreased to negative value
+> here, then there may be something to be fixed?
 
-Not sure how all this prevents use of same vq from multiple threads ...
-And why are we sure there are no buffers yet?  If that is because
-nothing yet happened, then I'd also like to point out that a vq starts
-out with callbacks enabled, so you don't need to do that first thing ...
+No actual issue here, just want to be on the safe side.
+Let me remove it in next version.
 
+Thanks,
+Can Guo.
 
-
->  }
->  
->  /**
-> diff --git a/sound/virtio/virtio_card.h b/sound/virtio/virtio_card.h
-> index be6651a6aaf8..b11c09984882 100644
-> --- a/sound/virtio/virtio_card.h
-> +++ b/sound/virtio/virtio_card.h
-> @@ -89,4 +89,13 @@ virtsnd_rx_queue(struct virtio_snd *snd)
->  	return &snd->queues[VIRTIO_SND_VQ_RX];
->  }
->  
-> +static inline struct virtio_snd_queue *
-> +virtsnd_pcm_queue(struct virtio_pcm_substream *substream)
-> +{
-> +	if (substream->direction == SNDRV_PCM_STREAM_PLAYBACK)
-> +		return virtsnd_tx_queue(substream->snd);
-> +	else
-> +		return virtsnd_rx_queue(substream->snd);
-> +}
-> +
->  #endif /* VIRTIO_SND_CARD_H */
-> diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-> index 036990b7b78a..1ab50dcc88c8 100644
-> --- a/sound/virtio/virtio_pcm.c
-> +++ b/sound/virtio/virtio_pcm.c
-> @@ -376,6 +376,7 @@ int virtsnd_pcm_parse_cfg(struct virtio_snd *snd)
->  
->  		substream->snd = snd;
->  		substream->sid = i;
-> +		init_waitqueue_head(&substream->msg_empty);
->  
->  		rc = virtsnd_pcm_build_hw(substream, &info[i]);
->  		if (rc)
-> @@ -530,6 +531,8 @@ void virtsnd_pcm_event(struct virtio_snd *snd, struct virtio_snd_event *event)
->  		break;
->  	}
->  	case VIRTIO_SND_EVT_PCM_XRUN: {
-> +		if (atomic_read(&substream->xfer_enabled))
-> +			atomic_set(&substream->xfer_xrun, 1);
->  		break;
->  	}
->  	}
-> diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
-> index 73fb4d9dc524..d011b7e1d18d 100644
-> --- a/sound/virtio/virtio_pcm.h
-> +++ b/sound/virtio/virtio_pcm.h
-> @@ -24,6 +24,7 @@
->  #include <sound/pcm.h>
->  
->  struct virtio_pcm;
-> +struct virtio_pcm_msg;
->  
->  /**
->   * struct virtio_pcm_substream - VirtIO PCM substream.
-> @@ -34,6 +35,16 @@ struct virtio_pcm;
->   * @features: Stream VirtIO feature bit map (1 << VIRTIO_SND_PCM_F_XXX).
->   * @substream: Kernel ALSA substream.
->   * @hw: Kernel ALSA substream hardware descriptor.
-> + * @frame_bytes: Current frame size in bytes.
-> + * @period_size: Current period size in frames.
-> + * @buffer_size: Current buffer size in frames.
-> + * @hw_ptr: Substream hardware pointer value in frames [0 ... buffer_size).
-> + * @xfer_enabled: Data transfer state (0 - off, 1 - on).
-> + * @xfer_xrun: Data underflow/overflow state (0 - no xrun, 1 - xrun).
-> + * @msgs: I/O messages.
-> + * @msg_last_enqueued: Index of the last I/O message added to the virtqueue.
-> + * @msg_count: Number of pending I/O messages in the virtqueue.
-> + * @msg_empty: Notify when msg_count is zero.
->   */
->  struct virtio_pcm_substream {
->  	struct virtio_snd *snd;
-> @@ -43,6 +54,16 @@ struct virtio_pcm_substream {
->  	u32 features;
->  	struct snd_pcm_substream *substream;
->  	struct snd_pcm_hardware hw;
-> +	unsigned int frame_bytes;
-> +	snd_pcm_uframes_t period_size;
-> +	snd_pcm_uframes_t buffer_size;
-> +	atomic_t hw_ptr;
-> +	atomic_t xfer_enabled;
-> +	atomic_t xfer_xrun;
-> +	struct virtio_pcm_msg *msgs;
-> +	int msg_last_enqueued;
-> +	atomic_t msg_count;
-> +	wait_queue_head_t msg_empty;
->  };
->  
->  /**
-> @@ -86,4 +107,14 @@ struct virtio_pcm *virtsnd_pcm_find(struct virtio_snd *snd, unsigned int nid);
->  struct virtio_pcm *virtsnd_pcm_find_or_create(struct virtio_snd *snd,
->  					      unsigned int nid);
->  
-> +struct virtio_snd_msg *
-> +virtsnd_pcm_ctl_msg_alloc(struct virtio_pcm_substream *substream,
-> +			  unsigned int command, gfp_t gfp);
-> +
-> +int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *substream,
-> +			  unsigned int nmsg, u8 *dma_area,
-> +			  unsigned int period_bytes);
-> +
-> +int virtsnd_pcm_msg_send(struct virtio_pcm_substream *substream);
-> +
->  #endif /* VIRTIO_SND_PCM_H */
-> diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
-> new file mode 100644
-> index 000000000000..cfbe5935527a
-> --- /dev/null
-> +++ b/sound/virtio/virtio_pcm_msg.c
-> @@ -0,0 +1,317 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Sound card driver for virtio
-> + * Copyright (C) 2020  OpenSynergy GmbH
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#include <sound/pcm_params.h>
-> +
-> +#include "virtio_card.h"
-> +
-> +/**
-> + * enum pcm_msg_sg_index - Scatter-gather element indexes for an I/O message.
-> + * @PCM_MSG_SG_XFER: Element containing a virtio_snd_pcm_xfer structure.
-> + * @PCM_MSG_SG_DATA: Element containing a data buffer.
-> + * @PCM_MSG_SG_STATUS: Element containing a virtio_snd_pcm_status structure.
-> + * @PCM_MSG_SG_MAX: The maximum number of elements in the scatter-gather table.
-> + *
-> + * These values are used as the index of the payload scatter-gather table.
-> + */
-> +enum pcm_msg_sg_index {
-> +	PCM_MSG_SG_XFER = 0,
-> +	PCM_MSG_SG_DATA,
-> +	PCM_MSG_SG_STATUS,
-> +	PCM_MSG_SG_MAX
-> +};
-> +
-> +/**
-> + * struct virtio_pcm_msg - VirtIO I/O message.
-> + * @substream: VirtIO PCM substream.
-> + * @xfer: Request header payload.
-> + * @status: Response header payload.
-> + * @sgs: Payload scatter-gather table.
-> + */
-> +struct virtio_pcm_msg {
-> +	struct virtio_pcm_substream *substream;
-> +	struct virtio_snd_pcm_xfer xfer;
-> +	struct virtio_snd_pcm_status status;
-> +	struct scatterlist sgs[PCM_MSG_SG_MAX];
-> +};
-> +
-> +/**
-> + * virtsnd_pcm_msg_alloc() - Allocate I/O messages.
-> + * @substream: VirtIO PCM substream.
-> + * @nmsg: Number of messages (equal to the number of periods).
-> + * @dma_area: Pointer to used audio buffer.
-> + * @period_bytes: Period (message payload) size.
-> + *
-> + * The function slices the buffer into nmsg parts (each with the size of
-> + * period_bytes), and creates nmsg corresponding I/O messages.
-> + *
-> + * Context: Any context that permits to sleep.
-> + * Return: 0 on success, -ENOMEM on failure.
-> + */
-> +int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *substream,
-> +			  unsigned int nmsg, u8 *dma_area,
-> +			  unsigned int period_bytes)
-> +{
-> +	struct virtio_device *vdev = substream->snd->vdev;
-> +	unsigned int i;
-> +
-> +	if (substream->msgs)
-> +		devm_kfree(&vdev->dev, substream->msgs);
-> +
-> +	substream->msgs = devm_kcalloc(&vdev->dev, nmsg,
-> +				       sizeof(*substream->msgs), GFP_KERNEL);
-> +	if (!substream->msgs)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < nmsg; ++i) {
-> +		struct virtio_pcm_msg *msg = &substream->msgs[i];
-> +
-> +		msg->substream = substream;
-> +
-> +		sg_init_table(msg->sgs, PCM_MSG_SG_MAX);
-> +		sg_init_one(&msg->sgs[PCM_MSG_SG_XFER], &msg->xfer,
-> +			    sizeof(msg->xfer));
-> +		sg_init_one(&msg->sgs[PCM_MSG_SG_DATA],
-> +			    dma_area + period_bytes * i, period_bytes);
-> +		sg_init_one(&msg->sgs[PCM_MSG_SG_STATUS], &msg->status,
-> +			    sizeof(msg->status));
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * virtsnd_pcm_msg_send() - Send asynchronous I/O messages.
-> + * @substream: VirtIO PCM substream.
-> + *
-> + * All messages are organized in an ordered circular list. Each time the
-> + * function is called, all currently non-enqueued messages are added to the
-> + * virtqueue. For this, the function keeps track of two values:
-> + *
-> + *   msg_last_enqueued = index of the last enqueued message,
-> + *   msg_count = # of pending messages in the virtqueue.
-> + *
-> + * Context: Any context.
-> + * Return: 0 on success, -EIO on failure.
-> + */
-> +int virtsnd_pcm_msg_send(struct virtio_pcm_substream *substream)
-> +{
-> +	struct snd_pcm_runtime *runtime = substream->substream->runtime;
-> +	struct virtio_snd *snd = substream->snd;
-> +	struct virtio_device *vdev = snd->vdev;
-> +	struct virtqueue *vqueue = virtsnd_pcm_queue(substream)->vqueue;
-> +	int i;
-> +	int n;
-> +	bool notify = false;
-> +
-> +	if (!vqueue)
-> +		return -EIO;
-> +
-> +	i = (substream->msg_last_enqueued + 1) % runtime->periods;
-> +	n = runtime->periods - atomic_read(&substream->msg_count);
-> +
-> +	for (; n; --n, i = (i + 1) % runtime->periods) {
-> +		struct virtio_pcm_msg *msg = &substream->msgs[i];
-> +		struct scatterlist *psgs[PCM_MSG_SG_MAX] = {
-> +			[PCM_MSG_SG_XFER] = &msg->sgs[PCM_MSG_SG_XFER],
-> +			[PCM_MSG_SG_DATA] = &msg->sgs[PCM_MSG_SG_DATA],
-> +			[PCM_MSG_SG_STATUS] = &msg->sgs[PCM_MSG_SG_STATUS]
-> +		};
-> +		int rc;
-> +
-> +		msg->xfer.stream_id = cpu_to_virtio32(vdev, substream->sid);
-> +		memset(&msg->status, 0, sizeof(msg->status));
-> +
-> +		atomic_inc(&substream->msg_count);
-> +
-> +		if (substream->direction == SNDRV_PCM_STREAM_PLAYBACK)
-> +			rc = virtqueue_add_sgs(vqueue, psgs, 2, 1, msg,
-> +					       GFP_ATOMIC);
-> +		else
-> +			rc = virtqueue_add_sgs(vqueue, psgs, 1, 2, msg,
-> +					       GFP_ATOMIC);
-> +
-> +		if (rc) {
-> +			atomic_dec(&substream->msg_count);
-> +			return -EIO;
-> +		}
-> +
-> +		substream->msg_last_enqueued = i;
-> +	}
-> +
-> +	if (!(substream->features & (1U << VIRTIO_SND_PCM_F_MSG_POLLING)))
-> +		notify = virtqueue_kick_prepare(vqueue);
-> +
-> +	if (notify)
-> +		if (!virtqueue_notify(vqueue))
-> +			return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * virtsnd_pcm_msg_complete() - Complete an I/O message.
-> + * @msg: I/O message.
-> + * @size: Number of bytes written.
-> + *
-> + * Completion of the message means the elapsed period:
-> + *   - update hardware pointer,
-> + *   - update latency value,
-> + *   - kick the upper layer.
-> + *
-> + * Context: Interrupt context.
-> + */
-> +static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg, size_t size)
-> +{
-> +	struct virtio_pcm_substream *substream = msg->substream;
-> +	snd_pcm_uframes_t hw_ptr;
-> +	unsigned int msg_count;
-> +
-> +	hw_ptr = (snd_pcm_uframes_t)atomic_read(&substream->hw_ptr);
-> +
-> +	/*
-> +	 * If the capture substream returned an incorrect status, then just
-> +	 * increase the hw_ptr by the period size.
-> +	 */
-> +	if (substream->direction == SNDRV_PCM_STREAM_PLAYBACK ||
-> +	    size <= sizeof(msg->status)) {
-> +		hw_ptr += substream->period_size;
-> +	} else {
-> +		size -= sizeof(msg->status);
-> +		hw_ptr += size / substream->frame_bytes;
-> +	}
-> +
-> +	atomic_set(&substream->hw_ptr, (u32)(hw_ptr % substream->buffer_size));
-> +	atomic_set(&substream->xfer_xrun, 0);
-> +
-> +	msg_count = atomic_dec_return(&substream->msg_count);
-> +
-> +	if (atomic_read(&substream->xfer_enabled)) {
-> +		struct snd_pcm_runtime *runtime = substream->substream->runtime;
-> +
-> +		runtime->delay =
-> +			bytes_to_frames(runtime,
-> +					le32_to_cpu(msg->status.latency_bytes));
-> +
-> +		snd_pcm_period_elapsed(substream->substream);
-> +
-> +		virtsnd_pcm_msg_send(substream);
-> +	} else if (!msg_count) {
-> +		wake_up_all(&substream->msg_empty);
-> +	}
-> +}
-> +
-> +/**
-> + * virtsnd_pcm_notify_cb() - Process all completed I/O messages.
-> + * @vqueue: Underlying tx/rx virtqueue.
-> + *
-> + * If transmission is allowed, then each completed message is immediately placed
-> + * back at the end of the queue.
-> + *
-> + * Context: Interrupt context. Takes and releases the tx/rx queue spinlock.
-> + */
-> +static inline void virtsnd_pcm_notify_cb(struct virtio_snd_queue *queue)
-> +{
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&queue->lock, flags);
-> +	while (queue->vqueue) {
-> +		virtqueue_disable_cb(queue->vqueue);
-> +
-> +		for (;;) {
-> +			struct virtio_pcm_msg *msg;
-> +			u32 length;
-> +
-> +			msg = virtqueue_get_buf(queue->vqueue, &length);
-> +			if (!msg)
-> +				break;
-> +
-> +			virtsnd_pcm_msg_complete(msg, length);
-> +		}
-> +
-> +		if (unlikely(virtqueue_is_broken(queue->vqueue)))
-> +			break;
-> +
-> +		if (virtqueue_enable_cb(queue->vqueue))
-> +			break;
-> +	}
-> +	spin_unlock_irqrestore(&queue->lock, flags);
-> +}
-> +
-> +/**
-> + * virtsnd_pcm_tx_notify_cb() - Process all completed TX messages.
-> + * @vqueue: Underlying tx virtqueue.
-> + *
-> + * Context: Interrupt context.
-> + */
-> +void virtsnd_pcm_tx_notify_cb(struct virtqueue *vqueue)
-> +{
-> +	struct virtio_snd *snd = vqueue->vdev->priv;
-> +
-> +	virtsnd_pcm_notify_cb(virtsnd_tx_queue(snd));
-> +}
-> +
-> +/**
-> + * virtsnd_pcm_rx_notify_cb() - Process all completed RX messages.
-> + * @vqueue: Underlying rx virtqueue.
-> + *
-> + * Context: Interrupt context.
-> + */
-> +void virtsnd_pcm_rx_notify_cb(struct virtqueue *vqueue)
-> +{
-> +	struct virtio_snd *snd = vqueue->vdev->priv;
-> +
-> +	virtsnd_pcm_notify_cb(virtsnd_rx_queue(snd));
-> +}
-> +
-> +/**
-> + * virtsnd_pcm_ctl_msg_alloc() - Allocate and initialize the PCM device control
-> + *                               message for the specified substream.
-> + * @substream: VirtIO PCM substream.
-> + * @command: Control request code (VIRTIO_SND_R_PCM_XXX).
-> + * @gfp: Kernel flags for memory allocation.
-> + *
-> + * Context: Any context. May sleep if @gfp flags permit.
-> + * Return: Allocated message on success, ERR_PTR(-errno) on failure.
-> + */
-> +struct virtio_snd_msg *
-> +virtsnd_pcm_ctl_msg_alloc(struct virtio_pcm_substream *substream,
-> +			  unsigned int command, gfp_t gfp)
-> +{
-> +	struct virtio_device *vdev = substream->snd->vdev;
-> +	size_t request_size = sizeof(struct virtio_snd_pcm_hdr);
-> +	size_t response_size = sizeof(struct virtio_snd_hdr);
-> +	struct virtio_snd_msg *msg;
-> +
-> +	switch (command) {
-> +	case VIRTIO_SND_R_PCM_SET_PARAMS: {
-> +		request_size = sizeof(struct virtio_snd_pcm_set_params);
-> +		break;
-> +	}
-> +	}
-> +
-> +	msg = virtsnd_ctl_msg_alloc(vdev, request_size, response_size, gfp);
-> +	if (!IS_ERR(msg)) {
-> +		struct virtio_snd_pcm_hdr *hdr = sg_virt(&msg->sg_request);
-> +
-> +		hdr->hdr.code = cpu_to_virtio32(vdev, command);
-> +		hdr->stream_id = cpu_to_virtio32(vdev, substream->sid);
-> +	}
-> +
-> +	return msg;
-> +}
-> -- 
-> 2.30.0
 > 
+> Otherwise this patch looks good to me.
 > 
-
+> Thanks,
+> Stanley Chu
+> 
+>>  			hba->clk_scaling.active_reqs--;
+>>  	}
+>> 
+>> @@ -5759,18 +5767,24 @@ static void ufshcd_err_handling_prepare(struct 
+>> ufs_hba *hba)
+>>  		ufshcd_vops_resume(hba, pm_op);
+>>  	} else {
+>>  		ufshcd_hold(hba, false);
+>> -		if (hba->clk_scaling.is_allowed) {
+>> +		if (hba->clk_scaling.is_enabled) {
+>>  			cancel_work_sync(&hba->clk_scaling.suspend_work);
+>>  			cancel_work_sync(&hba->clk_scaling.resume_work);
+>>  			ufshcd_suspend_clkscaling(hba);
+>>  		}
+>> +		down_write(&hba->clk_scaling_lock);
+>> +		hba->clk_scaling.is_allowed = false;
+>> +		up_write(&hba->clk_scaling_lock);
+>>  	}
+>>  }
+>> 
+>>  static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>>  {
+>>  	ufshcd_release(hba);
+>> -	if (hba->clk_scaling.is_allowed)
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = true;
+>> +	up_write(&hba->clk_scaling_lock);
+>> +	if (hba->clk_scaling.is_enabled)
+>>  		ufshcd_resume_clkscaling(hba);
+>>  	pm_runtime_put(hba->dev);
+>>  }
+>> @@ -7750,12 +7764,14 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+>>  			sizeof(struct ufs_pa_layer_attr));
+>>  		hba->clk_scaling.saved_pwr_info.is_valid = true;
+>>  		if (!hba->devfreq) {
+>> +			hba->clk_scaling.is_allowed = true;
+>>  			ret = ufshcd_devfreq_init(hba);
+>>  			if (ret)
+>>  				goto out;
+>> -		}
+>> 
+>> -		hba->clk_scaling.is_allowed = true;
+>> +			hba->clk_scaling.is_enabled = true;
+>> +			ufshcd_clkscaling_init_sysfs(hba);
+>> +		}
+>>  	}
+>> 
+>>  	ufs_bsg_probe(hba);
+>> @@ -8672,11 +8688,14 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	ufshcd_hold(hba, false);
+>>  	hba->clk_gating.is_suspended = true;
+>> 
+>> -	if (hba->clk_scaling.is_allowed) {
+>> +	if (hba->clk_scaling.is_enabled) {
+>>  		cancel_work_sync(&hba->clk_scaling.suspend_work);
+>>  		cancel_work_sync(&hba->clk_scaling.resume_work);
+>>  		ufshcd_suspend_clkscaling(hba);
+>>  	}
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = false;
+>> +	up_write(&hba->clk_scaling_lock);
+>> 
+>>  	if (req_dev_pwr_mode == UFS_ACTIVE_PWR_MODE &&
+>>  			req_link_state == UIC_LINK_ACTIVE_STATE) {
+>> @@ -8773,8 +8792,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	goto out;
+>> 
+>>  set_link_active:
+>> -	if (hba->clk_scaling.is_allowed)
+>> -		ufshcd_resume_clkscaling(hba);
+>>  	ufshcd_vreg_set_hpm(hba);
+>>  	/*
+>>  	 * Device hardware reset is required to exit DeepSleep. Also, for
+>> @@ -8798,7 +8815,10 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+>>  		ufshcd_disable_auto_bkops(hba);
+>>  enable_gating:
+>> -	if (hba->clk_scaling.is_allowed)
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = true;
+>> +	up_write(&hba->clk_scaling_lock);
+>> +	if (hba->clk_scaling.is_enabled)
+>>  		ufshcd_resume_clkscaling(hba);
+>>  	hba->clk_gating.is_suspended = false;
+>>  	hba->dev_info.b_rpm_dev_flush_capable = false;
+>> @@ -8901,7 +8921,10 @@ static int ufshcd_resume(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>> 
+>>  	hba->clk_gating.is_suspended = false;
+>> 
+>> -	if (hba->clk_scaling.is_allowed)
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = true;
+>> +	up_write(&hba->clk_scaling_lock);
+>> +	if (hba->clk_scaling.is_enabled)
+>>  		ufshcd_resume_clkscaling(hba);
+>> 
+>>  	/* Enable Auto-Hibernate if configured */
+>> @@ -8925,8 +8948,6 @@ static int ufshcd_resume(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	ufshcd_vreg_set_lpm(hba);
+>>  disable_irq_and_vops_clks:
+>>  	ufshcd_disable_irq(hba);
+>> -	if (hba->clk_scaling.is_allowed)
+>> -		ufshcd_suspend_clkscaling(hba);
+>>  	ufshcd_setup_clocks(hba, false);
+>>  	if (ufshcd_is_clkgating_allowed(hba)) {
+>>  		hba->clk_gating.state = CLKS_OFF;
+>> @@ -9153,8 +9174,6 @@ void ufshcd_remove(struct ufs_hba *hba)
+>> 
+>>  	ufshcd_exit_clk_scaling(hba);
+>>  	ufshcd_exit_clk_gating(hba);
+>> -	if (ufshcd_is_clkscaling_supported(hba))
+>> -		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+>>  	ufshcd_hba_exit(hba);
+>>  }
+>>  EXPORT_SYMBOL_GPL(ufshcd_remove);
+>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>> index 85f9d0f..d553e46 100644
+>> --- a/drivers/scsi/ufs/ufshcd.h
+>> +++ b/drivers/scsi/ufs/ufshcd.h
+>> @@ -419,7 +419,10 @@ struct ufs_saved_pwr_info {
+>>   * @suspend_work: worker to suspend devfreq
+>>   * @resume_work: worker to resume devfreq
+>>   * @min_gear: lowest HS gear to scale down to
+>> - * @is_allowed: tracks if scaling is currently allowed or not
+>> + * @is_enabled: tracks if scaling is currently enabled or not, 
+>> controlled by
+>> +		clkscale_enable sysfs node
+>> + * @is_allowed: tracks if scaling is currently allowed or not, used 
+>> to block
+>> +		clock scaling which is not invoked from devfreq governor
+>>   * @is_busy_started: tracks if busy period has started or not
+>>   * @is_suspended: tracks if devfreq is suspended or not
+>>   */
+>> @@ -434,6 +437,7 @@ struct ufs_clk_scaling {
+>>  	struct work_struct suspend_work;
+>>  	struct work_struct resume_work;
+>>  	u32 min_gear;
+>> +	bool is_enabled;
+>>  	bool is_allowed;
+>>  	bool is_busy_started;
+>>  	bool is_suspended;
