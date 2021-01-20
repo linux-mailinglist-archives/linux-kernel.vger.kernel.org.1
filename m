@@ -2,162 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC8C2FC64F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF1C2FC64A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730795AbhATBQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:16:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        id S1729070AbhATBON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:14:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727738AbhATBPK (ORCPT
+        with ESMTP id S1728240AbhATBNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:15:10 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFC3C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:14:05 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id e70so6373840ote.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:14:05 -0800 (PST)
+        Tue, 19 Jan 2021 20:13:43 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3D2C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:13:01 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id t7so19830009qtn.19
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:13:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MQG99hmEs+jm/LvVCjiZprhkiqjwfzt+Jg3xINgEKjM=;
-        b=fktRpbRrdqUh9fffOuxiRUCGF0pLaneaLg9AZoel1GJVzwwTQy1gO97PVbv4BLkUeO
-         HNRpkT1znzuaDuIF7JImQ8WkPrPzewC/+b4foYX219/lIzgNfCw4x4F+8iSnYot0Bq/1
-         pi1fkN+fHRU6BZy3FCYVPHDFjOpNDVG+a+C5I=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=x9UCdD5B7kcBZN9/OwzPs4/7bTWXL0nty31C4Zn/i+A=;
+        b=ExVKjE+PPGi9fYEFDJKV4IzybjgvD2DOBEvY6dJ9DUWNNNbtUumJrujI39sEX23YWV
+         /2ma5ai/mYPA6Pj9NUVUmWyq71dwST+IfQK4CbWtKj78I1BU9BxySYmDufEtmm752l2K
+         /V/EExuNR+6XbPO3a2qV+rXp4xGrnS2FzKYYXkFJV45eVTELt0xUgcmsTi12X2YOazyF
+         G1FAMRwdtthSe1HmaO9N5jOLaRlacvoryGdJbxQMCNLLXtXj8kct5Ybx43WlTC5T9Nu8
+         ajYxtVXC7bJPE+sY7FXm4Z1h2vBZUnknQKfZDqMMoDmNzHpyDSeQqvNfa/X+jUiBdbwK
+         MvLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MQG99hmEs+jm/LvVCjiZprhkiqjwfzt+Jg3xINgEKjM=;
-        b=dz+29wUY+TydwQ8s6L/ISwdfrwZJ5i+xkz/UrcwDbsXN4sNmrw4ggdY0r8+toPcljd
-         q9AH9n81wW/ldQV5tdfT4Oh/f9yBVDB01TOENI0uU6+4WtBBTEM9QMDe5ibUGQqCQzji
-         4TyfP6Am6Oe2JI7/sfA8eHWVsCYo6EayZkKd7iMAoxf43/GujD/lv+iu9Y645Jxsr2Fd
-         2AnfAoBhFYoxyoes4gAPbE4viwLNfxJCLwu0wdoHcek2xJ35UPfBp6kSwxRbBPA6/yhR
-         qLkFm/EZyUa69bhLIPKYU/WhvC6XbptvZ+NZ3VwwieuedTorKoBov1o7KAVO5bAzTk33
-         HJjg==
-X-Gm-Message-State: AOAM532WzQ4o+Fh6orFcRcyceOrv2o83PDd1kYCLUEuJQ1b9/obmMTeq
-        34HhA0uxRUlSKl2teG8KXP6HpQ==
-X-Google-Smtp-Source: ABdhPJwESkA44hTMlwkI7NyRO4ent9FTFm7M17ezz6mXaIF0d2DlU0HnD71LeQtdX8uhNbineFUqmQ==
-X-Received: by 2002:a9d:2035:: with SMTP id n50mr5215147ota.44.1611105244599;
-        Tue, 19 Jan 2021 17:14:04 -0800 (PST)
-Received: from grundler-glapstation.lan ([70.134.62.80])
-        by smtp.gmail.com with ESMTPSA id s204sm80339oib.42.2021.01.19.17.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 17:14:03 -0800 (PST)
-From:   Grant Grundler <grundler@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>, Oliver Neukum <oliver@neukum.org>
-Cc:     "David S. Miller" <davem@davemloft.net>, nic_swsd@realtek.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Grant Grundler <grundler@chromium.org>
-Subject: [PATCH net] net: usb: cdc_ncm: don't spew notifications
-Date:   Tue, 19 Jan 2021 17:12:08 -0800
-Message-Id: <20210120011208.3768105-1-grundler@chromium.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=x9UCdD5B7kcBZN9/OwzPs4/7bTWXL0nty31C4Zn/i+A=;
+        b=SeL3onOWnmXq2RZRo5QI8isz23X0ekBg+FlDVMnloUurTJrJ2oPrgWsmUkjRxQIUeH
+         9dib5lFiSSjoKNGVBQcLKyKzZ9ucR82zXV41miWo7aMt/iJXggqS1P/jzhm2Hz98qbmy
+         cwh+eDW2FO4F4iSOU6LegZkpg5XVGzCAPcRxsZCHRwpZrMUacOMPwpYxjd+XJ8J4FGRN
+         mnLr66RRaAmro/HWTaU3zDb+pbzAnPIV3Z5mdna5RZE5251GjLbanWvQsipqHE9BMgRH
+         M/eAOIG/78PiGNS82gm/aKA5WRuWMi1enVEhbVEznBx2XOnuhNZBbvuLmiVAGRL4ZD8s
+         vCPQ==
+X-Gm-Message-State: AOAM531yhrM9DyXbeBnvOWRwzRFWxXpbQwUEJ/lMqIwRM2U4/lDCwzSW
+        oBqINCq5z/yayNBBrQK0kP0h5ScSuHLZVCY=
+X-Google-Smtp-Source: ABdhPJzv4urYPOjpjXybZ6AhHrrXpU5tQIq2UR8DaohRFqjeAH9bQqQYlkhZFZsXZ8bdiOU4GeXr8khzFF4yzLg=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a0c:c30e:: with SMTP id
+ f14mr278151qvi.48.1611105180877; Tue, 19 Jan 2021 17:13:00 -0800 (PST)
+Date:   Tue, 19 Jan 2021 17:12:44 -0800
+Message-Id: <20210120011244.335025-1-saravanak@google.com>
+Mime-Version: 1.0
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v3] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+From:   Saravana Kannan <saravanak@google.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        kernel-team@android.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RTL8156 sends notifications about every 32ms.
-Only display/log notifications when something changes.
+There are multiple instances of GPIO device tree nodes of the form:
 
-This issue has been reported by others:
-	https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
-	https://lkml.org/lkml/2020/8/27/1083
+foo {
+	compatible = "acme,foo";
+	...
 
-...
-[785962.779840] usb 1-1: new high-speed USB device number 5 using xhci_hcd
-[785962.929944] usb 1-1: New USB device found, idVendor=0bda, idProduct=8156, bcdDevice=30.00
-[785962.929949] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=6
-[785962.929952] usb 1-1: Product: USB 10/100/1G/2.5G LAN
-[785962.929954] usb 1-1: Manufacturer: Realtek
-[785962.929956] usb 1-1: SerialNumber: 000000001
-[785962.991755] usbcore: registered new interface driver cdc_ether
-[785963.017068] cdc_ncm 1-1:2.0: MAC-Address: 00:24:27:88:08:15
-[785963.017072] cdc_ncm 1-1:2.0: setting rx_max = 16384
-[785963.017169] cdc_ncm 1-1:2.0: setting tx_max = 16384
-[785963.017682] cdc_ncm 1-1:2.0 usb0: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM, 00:24:27:88:08:15
-[785963.019211] usbcore: registered new interface driver cdc_ncm
-[785963.023856] usbcore: registered new interface driver cdc_wdm
-[785963.025461] usbcore: registered new interface driver cdc_mbim
-[785963.038824] cdc_ncm 1-1:2.0 enx002427880815: renamed from usb0
-[785963.089586] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.121673] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.153682] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-...
+	gpio0: gpio0@xxxxxxxx {
+		compatible = "acme,bar";
+		...
+		gpio-controller;
+	};
 
-This is about 2KB per second and will overwrite all contents of a 1MB
-dmesg buffer in under 10 minutes rendering them useless for debugging
-many kernel problems.
+	gpio1: gpio1@xxxxxxxx {
+		compatible = "acme,bar";
+		...
+		gpio-controller;
+	};
 
-This is also an extra 180 MB/day in /var/logs (or 1GB per week) rendering
-the majority of those logs useless too.
+	...
+}
 
-When the link is up (expected state), spew amount is >2x higher:
-...
-[786139.600992] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.632997] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.665097] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.697100] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.729094] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.761108] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-...
+bazz {
+	my-gpios = <&gpio0 ...>;
+}
 
-Chrome OS cannot support RTL8156 until this is fixed.
+Case 1: The driver for "foo" populates struct device for these gpio*
+nodes and then probes them using a driver that binds with "acme,bar".
+This lines up with how DT nodes with the "compatible" property are
+generally converted to struct devices and then registered with driver
+core to probe them. This also allows the gpio* devices to hook into all
+the driver core capabilities like runtime PM, probe deferral,
+suspend/resume ordering, device links, etc.
 
-Signed-off-by: Grant Grundler <grundler@chromium.org>
+Case 2: The driver for "foo" doesn't populate its child device nodes
+with "compatible" property and instead just loops through its child
+nodes and directly registers the GPIOs with gpiolib without ever
+populating a struct device or binding a driver to it.
+
+Drivers that follow the case 2 cause problems with fw_devlink=on.  This
+is because fw_devlink will prevent bazz from probing until there's a
+struct device that has gpio0 as its fwnode (because bazz lists gpio0 as
+a GPIO supplier). Once the struct device is available, fw_devlink will
+create a device link between with gpio0 as the supplier and bazz as the
+consumer. After this point, the device link will prevent bazz from
+probing until its supplier (the gpio0 device) has bound to a driver.
+Once the supplier is bound to a driver, the probe of bazz is triggered
+automatically.
+
+Finding and refactoring all the instances of drivers that follow case 2
+will cause a lot of code churn and it is not something that can be done
+in one shot. Examples of such instances are [1] [2].
+
+This patch works around this problem and avoids all the code churn by
+simply creating a stub driver to bind to the gpio_device. Since the
+gpio_device already points to the GPIO device tree node, this allows all
+the consumers to continue probing when the driver follows case 2.
+
+If/when all the old drivers are refactored, we can revert this patch.
+
+[1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
+[2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc: Kever Yang <kever.yang@rock-chips.com>
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/net/usb/cdc_ncm.c  | 12 +++++++++++-
- include/linux/usb/usbnet.h |  2 ++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ drivers/gpio/gpiolib.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index 25498c311551..5de096545b86 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -1827,6 +1827,15 @@ cdc_ncm_speed_change(struct usbnet *dev,
- 	uint32_t rx_speed = le32_to_cpu(data->DLBitRRate);
- 	uint32_t tx_speed = le32_to_cpu(data->ULBitRate);
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index b02cc2abd3b6..2cb88b7ca42b 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -574,6 +574,9 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	unsigned	i;
+ 	int		base = gc->base;
+ 	struct gpio_device *gdev;
++	struct device_node *of_node;
++	struct fwnode_handle *fwnode;
++	struct device *fwnode_dev;
  
-+	/* if the speed hasn't changed, don't report it.
-+	 * RTL8156 shipped before 2021 sends notification about every 32ms.
-+	 */
-+	if (dev->rx_speed == rx_speed && dev->tx_speed == tx_speed)
-+		return;
-+
-+	dev->rx_speed = rx_speed;
-+	dev->tx_speed = tx_speed;
-+
  	/*
- 	 * Currently the USB-NET API does not support reporting the actual
- 	 * device speed. Do print it instead.
-@@ -1867,7 +1876,8 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
- 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
- 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
- 		 */
--		usbnet_link_change(dev, !!event->wValue, 0);
-+		if (netif_carrier_ok(dev->net) != !!event->wValue)
-+			usbnet_link_change(dev, !!event->wValue, 0);
- 		break;
+ 	 * First: allocate and populate the internal stat container, and
+@@ -596,6 +599,22 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 		gdev->dev.of_node = gc->of_node;
+ 	else
+ 		gc->of_node = gdev->dev.of_node;
++
++	of_node = gdev->dev.of_node;
++	fwnode = of_fwnode_handle(of_node);
++	fwnode_dev = get_dev_from_fwnode(fwnode);
++	/*
++	 * If your driver hits this warning, it's because you are directly
++	 * parsing a device tree node with "compatible" property and
++	 * initializing it instead of using the standard DT + device driver
++	 * model of creating a struct device and then initializing it in the
++	 * probe function. Please refactor your driver.
++	 */
++	if (!fwnode_dev && of_find_property(of_node, "compatible", NULL)) {
++		pr_warn("Create a real device for %pOF\n", of_node);
++		gdev->dev.fwnode = fwnode;
++	}
++	put_device(fwnode_dev);
+ #endif
  
- 	case USB_CDC_NOTIFY_SPEED_CHANGE:
-diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
-index 88a7673894d5..cfbfd6fe01df 100644
---- a/include/linux/usb/usbnet.h
-+++ b/include/linux/usb/usbnet.h
-@@ -81,6 +81,8 @@ struct usbnet {
- #		define EVENT_LINK_CHANGE	11
- #		define EVENT_SET_RX_MODE	12
- #		define EVENT_NO_IP_ALIGN	13
-+	u32			rx_speed;	/* in bps - NOT Mbps */
-+	u32			tx_speed;	/* in bps - NOT Mbps */
- };
+ 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
+@@ -4202,6 +4221,17 @@ void gpiod_put_array(struct gpio_descs *descs)
+ }
+ EXPORT_SYMBOL_GPL(gpiod_put_array);
  
- static inline struct usb_driver *driver_of(struct usb_interface *intf)
++static int gpio_stub_drv_probe(struct device *dev)
++{
++	return 0;
++}
++
++static struct device_driver gpio_stub_drv = {
++	.name = "gpio_stub_drv",
++	.bus = &gpio_bus_type,
++	.probe = gpio_stub_drv_probe,
++};
++
+ static int __init gpiolib_dev_init(void)
+ {
+ 	int ret;
+@@ -4213,9 +4243,16 @@ static int __init gpiolib_dev_init(void)
+ 		return ret;
+ 	}
+ 
++	if (driver_register(&gpio_stub_drv) < 0) {
++		pr_err("gpiolib: could not register GPIO stub driver\n");
++		bus_unregister(&gpio_bus_type);
++		return ret;
++	}
++
+ 	ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
+ 	if (ret < 0) {
+ 		pr_err("gpiolib: failed to allocate char dev region\n");
++		driver_unregister(&gpio_stub_drv);
+ 		bus_unregister(&gpio_bus_type);
+ 		return ret;
+ 	}
 -- 
-2.29.2
+2.30.0.284.gd98b1dd5eaa7-goog
 
