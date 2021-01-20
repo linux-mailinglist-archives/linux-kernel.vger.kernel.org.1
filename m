@@ -2,131 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0712FD1C3
+	by mail.lfdr.de (Postfix) with ESMTP id EA11E2FD1C4
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389735AbhATN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:26:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729591AbhATNR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:17:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 711AF2245C;
-        Wed, 20 Jan 2021 13:17:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611148637;
-        bh=seFF8AEbY7EFiGT41bEhA6Q4dwI7EdirV4FStnKMPAI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=euNDx1AfrSK3cxkoVZdvr3ri3eVidaV67iWi97T8WJppoKT81vEpWhGGL/7D8izQl
-         E5n+WuyAKViUPjnV1XdZZq7IqxFDjbToHx1LJExzt4y6maiG5mx07fj3p+l3kVwOAc
-         si5xwWiMv3WvhgHyozCFDfLGQnu7aJC+o6mzsYrp+TxereHdapR+ZW4ElcURK48tKO
-         GUGGG2/k9zxD1qhiAfs60slO9nVk7mdND4eCsx+aXT/VvOYtsG8Va49mGCaFlkZiPq
-         QMFaPd1BXEOUZrD0B7yqSA76RkEGIXr7U8BpA+8aR+aVZkq6zAQOMQy4NeA3a+/KdC
-         Avc8OWbS/e8gw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] cpufreq: remove tango driver
-Date:   Wed, 20 Jan 2021 14:16:44 +0100
-Message-Id: <20210120131709.1996711-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S2389784AbhATN0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388268AbhATNSs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:18:48 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7EFC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:18:07 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id h7so4809886lfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:18:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KEq8tBsSJotuDC8emCL/6gnLfDlNS7DjovwJhhjL6ms=;
+        b=ULlMSelK9Ah0BMaovUHmsACU3A8+D692YYxmt2OYno3eGXN24zqnixuDonvFpZ2434
+         yGSCIJLnb9rvtjhVV8XPX2nCR1tR5/W56AKUtGD1OkiGVo7IeB4jiaFQf7E/SPuBZCPk
+         d4Lus8TY9Pvv6JwfYfacYCpF4wqkl22vCHCQTbwiluzAHo44vfyw87aw1bj7GxrJh8cR
+         nZV9kGNYb8OxcaZ9Ql7C/WeH9v4zws6ASGW2+LqT3AtKKoJHzqc0nxsas+X7WZpY7KVr
+         OAUDEHg2PDM3TgJfR2sQZHreqITp3VHs1U9nSDMrPkcdRevPf/w7OuV8CjENhYu9SBn6
+         VcWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KEq8tBsSJotuDC8emCL/6gnLfDlNS7DjovwJhhjL6ms=;
+        b=DYWVI6xofib2LHj0akcKQnPTSz9T7bGb/lKtN6f3c8Soendi2fuukf7sfIUqUki25w
+         FgrEgS+ZJzZWUTy1ALnHeuH3RL2kf+BzBrTJy5Nt1BG0u8c4xN11Lj/5xLr7SCQbyI5I
+         pQq3FVfeWWgJqMqJSQmHlgqq5EN8X2xrfR9QcM9fIH2Vmljh9tKUJrBEqeit+viWkJB9
+         ocjm+SNWleSLveBjiLp2UR1HIWXpGiKVTNA3z74qv3MFY/PXIz3UDanJWoOjQOFUwm0z
+         jQ/3buMAc0R6V9j7Ru5mCcb0CZ/+d2r7DOw+gO8RTCJsVJY1VOxk2V+0JChVjV/j71Dw
+         GdDQ==
+X-Gm-Message-State: AOAM531PaB1NCQUswb2fQbdWRZmYDBRR3WfqaDJXOVn+iQnSrSCpjV8X
+        ZSIf/G05k29dZ3KluSOEbzleDhSekXHA/36Xlog2Qg==
+X-Google-Smtp-Source: ABdhPJzqDqJvZXUcfXv4xFpgmlCE0aHWXWLar3aIIwchg7i4ldiK53CzSQfu3T1ZKIGVaiUK6Qge3/wJtkCQkY/hjps=
+X-Received: by 2002:a19:8cb:: with SMTP id 194mr4180105lfi.463.1611148685415;
+ Wed, 20 Jan 2021 05:18:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
+ <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
+ <20210113142202.GC22493@dhcp22.suse.cz>
+In-Reply-To: <20210113142202.GC22493@dhcp22.suse.cz>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 20 Jan 2021 14:17:39 +0100
+Message-ID: <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
+        Tim Murray <timmurray@google.com>,
+        linux-mm <linux-mm@kvack.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
+> On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
+> > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > >
+> > > On 01/12, Michal Hocko wrote:
+> > > >
+> > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
+> > > >
+> > > > > What we want is the ability for one process to influence another process
+> > > > > in order to optimize performance across the entire system while leaving
+> > > > > the security boundary intact.
+> > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
+> > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
+> > > > > and CAP_SYS_NICE for influencing process performance.
+> > > >
+> > > > I have to say that ptrace modes are rather obscure to me. So I cannot
+> > > > really judge whether MODE_READ is sufficient. My understanding has
+> > > > always been that this is requred to RO access to the address space. But
+> > > > this operation clearly has a visible side effect. Do we have any actual
+> > > > documentation for the existing modes?
+> > > >
+> > > > I would be really curious to hear from Jann and Oleg (now Cced).
+> > >
+> > > Can't comment, sorry. I never understood these security checks and never tried.
+> > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
+> > > is the difference.
 
-The tango platform is getting removed, so the driver is no
-longer needed.
+Yama in particular only does its checks on ATTACH and ignores READ,
+that's the difference you're probably most likely to encounter on a
+normal desktop system, since some distros turn Yama on by default.
+Basically the idea there is that running "gdb -p $pid" or "strace -p
+$pid" as a normal user will usually fail, but reading /proc/$pid/maps
+still works; so you can see things like detailed memory usage
+information and such, but you're not supposed to be able to directly
+peek into a running SSH client and inject data into the existing SSH
+connection, or steal the cryptographic keys for the current
+connection, or something like that.
 
-Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-Cc: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/cpufreq/Kconfig.arm     |  5 -----
- drivers/cpufreq/Makefile        |  1 -
- drivers/cpufreq/tango-cpufreq.c | 38 ---------------------------------
- 3 files changed, 44 deletions(-)
- delete mode 100644 drivers/cpufreq/tango-cpufreq.c
+> > I haven't seen a written explanation on ptrace modes but when I
+> > consulted Jann his explanation was:
+> >
+> > PTRACE_MODE_READ means you can inspect metadata about processes with
+> > the specified domain, across UID boundaries.
+> > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
+> > specified domain, across UID boundaries.
+>
+> Maybe this would be a good start to document expectations. Some more
+> practical examples where the difference is visible would be great as
+> well.
 
-diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-index 1f73fa75b1a0..e65e0a43be64 100644
---- a/drivers/cpufreq/Kconfig.arm
-+++ b/drivers/cpufreq/Kconfig.arm
-@@ -289,11 +289,6 @@ config ARM_STI_CPUFREQ
- 	  this config option if you wish to add CPUFreq support for STi based
- 	  SoCs.
- 
--config ARM_TANGO_CPUFREQ
--	bool
--	depends on CPUFREQ_DT && ARCH_TANGO
--	default y
--
- config ARM_TEGRA20_CPUFREQ
- 	tristate "Tegra20/30 CPUFreq support"
- 	depends on ARCH_TEGRA && CPUFREQ_DT
-diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index f1b7e3dd6e5d..1ab9b1536304 100644
---- a/drivers/cpufreq/Makefile
-+++ b/drivers/cpufreq/Makefile
-@@ -79,7 +79,6 @@ obj-$(CONFIG_ARM_SCPI_CPUFREQ)		+= scpi-cpufreq.o
- obj-$(CONFIG_ARM_SPEAR_CPUFREQ)		+= spear-cpufreq.o
- obj-$(CONFIG_ARM_STI_CPUFREQ)		+= sti-cpufreq.o
- obj-$(CONFIG_ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM) += sun50i-cpufreq-nvmem.o
--obj-$(CONFIG_ARM_TANGO_CPUFREQ)		+= tango-cpufreq.o
- obj-$(CONFIG_ARM_TEGRA20_CPUFREQ)	+= tegra20-cpufreq.o
- obj-$(CONFIG_ARM_TEGRA124_CPUFREQ)	+= tegra124-cpufreq.o
- obj-$(CONFIG_ARM_TEGRA186_CPUFREQ)	+= tegra186-cpufreq.o
-diff --git a/drivers/cpufreq/tango-cpufreq.c b/drivers/cpufreq/tango-cpufreq.c
-deleted file mode 100644
-index 89a7f860bfe8..000000000000
---- a/drivers/cpufreq/tango-cpufreq.c
-+++ /dev/null
-@@ -1,38 +0,0 @@
--#include <linux/of.h>
--#include <linux/cpu.h>
--#include <linux/clk.h>
--#include <linux/pm_opp.h>
--#include <linux/platform_device.h>
--
--static const struct of_device_id machines[] __initconst = {
--	{ .compatible = "sigma,tango4" },
--	{ /* sentinel */ }
--};
--
--static int __init tango_cpufreq_init(void)
--{
--	struct device *cpu_dev = get_cpu_device(0);
--	unsigned long max_freq;
--	struct clk *cpu_clk;
--	void *res;
--
--	if (!of_match_node(machines, of_root))
--		return -ENODEV;
--
--	cpu_clk = clk_get(cpu_dev, NULL);
--	if (IS_ERR(cpu_clk))
--		return -ENODEV;
--
--	max_freq = clk_get_rate(cpu_clk);
--
--	dev_pm_opp_add(cpu_dev, max_freq / 1, 0);
--	dev_pm_opp_add(cpu_dev, max_freq / 2, 0);
--	dev_pm_opp_add(cpu_dev, max_freq / 3, 0);
--	dev_pm_opp_add(cpu_dev, max_freq / 5, 0);
--	dev_pm_opp_add(cpu_dev, max_freq / 9, 0);
--
--	res = platform_device_register_data(NULL, "cpufreq-dt", -1, NULL, 0);
--
--	return PTR_ERR_OR_ZERO(res);
--}
--device_initcall(tango_cpufreq_init);
--- 
-2.29.2
-
+Before documenting the behavior, it would be a good idea to figure out
+what to do with perf_event_open(). That one's weird in that it only
+requires PTRACE_MODE_READ, but actually allows you to sample stuff
+like userspace stack and register contents (if perf_event_paranoid is
+1 or 2). Maybe for SELinux things (and maybe also for Yama), there
+should be a level in between that allows fully inspecting the process
+(for purposes like profiling) but without the ability to corrupt its
+memory or registers or things like that. Or maybe perf_event_open()
+should just use the ATTACH mode.
