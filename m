@@ -2,209 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54A72FD610
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9831B2FD605
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391669AbhATQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:51:56 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:64524 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391623AbhATQr0 (ORCPT
+        id S2403914AbhATQta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:49:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36195 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403868AbhATQsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:47:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1611161246; x=1642697246;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=f/6B+U88WSe2xMQeGzdeR6lOL8Z3BXjNUSDfIqFQAeE=;
-  b=lJUf9Fq2G4pcqfMSwO3LKaJhwi5Oc45gFXAXM+rsm8lp5InTDWZ0GtjV
-   y+nYljyUpFPLmCA4h51zbBoxdL4pam/CCbcEe//K4Swg3vEobR4PEwkSr
-   9rtdqBphtWYSFjX4K7y84KhU28fQlgaxZ6eqijonKiGH6eG5dJ/sDprFl
-   U=;
-X-IronPort-AV: E=Sophos;i="5.79,361,1602547200"; 
-   d="scan'208";a="112233310"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Jan 2021 16:46:34 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 98CBFA18DB;
-        Wed, 20 Jan 2021 16:46:33 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 20 Jan 2021 16:46:33 +0000
-Received: from edge-m1-r3-201.e-iad16.amazon.com (10.43.162.94) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 20 Jan 2021 16:46:31 +0000
-Subject: Re: [RFC PATCH 2/7] arm64: kernel: Add a WFI hook.
-To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "Hector Martin" <marcan@marcan.st>, <linux-kernel@vger.kernel.org>,
-        Stan Skowronek <stan@corellium.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-3-mohamed.mediouni@caramail.com>
-From:   Alexander Graf <graf@amazon.com>
-Message-ID: <b30f1d3a-3a74-b562-afb6-da88a547468b@amazon.com>
-Date:   Wed, 20 Jan 2021 17:46:28 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Wed, 20 Jan 2021 11:48:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611161233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JGvoBwEfX1BREcrRFIIgRtmv/WvcOyuJTfydWwKV9NE=;
+        b=aJJdkB+5F9ePDN/x0ApKSIXwKeHGYfYgk2e+H80XngHit5yF8Df98/pMaVqV+6ymmI1UXZ
+        y8VDHMStxOYWkxcJV5rc685DeRsyVRphbY1hgxI+2MoN98mFaIY2Uv8D9JlrVN6CdiFQen
+        tBo0wXJctqxqgMo3zrgTwXwqowcfVsM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-WLlR4PkLMCWSLt66FQ2M8A-1; Wed, 20 Jan 2021 11:47:11 -0500
+X-MC-Unique: WLlR4PkLMCWSLt66FQ2M8A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1A2C107ACE3;
+        Wed, 20 Jan 2021 16:47:09 +0000 (UTC)
+Received: from x1.localdomain (ovpn-114-1.ams2.redhat.com [10.36.114.1])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CE57B2CFF4;
+        Wed, 20 Jan 2021 16:47:08 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] virt: vbox: Do not use wait_event_interruptible when called from kernel context
+Date:   Wed, 20 Jan 2021 17:47:07 +0100
+Message-Id: <20210120164707.79114-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210120132717.395873-3-mohamed.mediouni@caramail.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.94]
-X-ClientProxiedBy: EX13D16UWB004.ant.amazon.com (10.43.161.170) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.01.21 14:27, Mohamed Mediouni wrote:
-> From: Stan Skowronek <stan@corellium.com>
-> =
+Do not use wait_event_interruptible when vbg_hgcm_call() gets called from
+kernel-context, such as it being called by the vboxsf filesystem code.
 
-> WFI drops register state on Apple Silicon for SMP systems.
+This fixes some filesystem related system calls on shared folders
+unexpectedly failing with -EINTR.
 
-It probably drops the register because it loses power on WFI, right?
+Fixes: 0532a1b0d045 ("virt: vbox: Implement passing requestor info to the host for VirtualBox 6.0.x")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/virt/vboxguest/vboxguest_utils.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-Have you tried to set the ARM64_REG_CYC_OVRD_ok2pwrdn_force_up bit in =
-
-ARM64_REG_CYC_OVRD yet? XNU has a call for that[1]. Maybe that's enough =
-
-to convince the core to preserve its register state for now.
-
-For real power savings, we will probably want much more sophisticated =
-
-deep sleep capabilities later that would reach beyond just register =
-
-saving on WFI (different wakeup mechanisms, IRQ balancing, etc).
-
-
-Alex
-
-[1] =
-
-https://github.com/opensource-apple/xnu/blob/master/osfmk/arm64/machine_rou=
-tines_asm.s#L797
-
-> =
-
-> This hook will be used for a hardware workaround in the
-> Apple CPU start driver.
-> =
-
-> Signed-off-by: Stan Skowronek <stan@corellium.com>
-> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
-> ---
->   arch/arm64/include/asm/cpu_ops.h |  2 ++
->   arch/arm64/kernel/cpu_ops.c      |  6 ++++++
->   arch/arm64/kernel/process.c      | 11 +++++++++--
->   3 files changed, 17 insertions(+), 2 deletions(-)
-> =
-
-> diff --git a/arch/arm64/include/asm/cpu_ops.h b/arch/arm64/include/asm/cp=
-u_ops.h
-> index e95c4df83911..4be0fc5bcaf9 100644
-> --- a/arch/arm64/include/asm/cpu_ops.h
-> +++ b/arch/arm64/include/asm/cpu_ops.h
-> @@ -23,6 +23,7 @@
->    * @cpu_boot:	Boots a cpu into the kernel.
->    * @cpu_postboot: Optionally, perform any post-boot cleanup or necessary
->    *		synchronisation. Called from the cpu being booted.
-> + * @cpu_wfi:    Optionally, replace calls to WFI in default idle with th=
-is.
->    * @cpu_can_disable: Determines whether a CPU can be disabled based on
->    *		mechanism-specific information.
->    * @cpu_disable: Prepares a cpu to die. May fail for some mechanism-spe=
-cific
-> @@ -43,6 +44,7 @@ struct cpu_operations {
->   	int		(*cpu_prepare)(unsigned int);
->   	int		(*cpu_boot)(unsigned int);
->   	void		(*cpu_postboot)(void);
-> +	void		(*cpu_wfi)(void);
->   #ifdef CONFIG_HOTPLUG_CPU
->   	bool		(*cpu_can_disable)(unsigned int cpu);
->   	int		(*cpu_disable)(unsigned int cpu);
-> diff --git a/arch/arm64/kernel/cpu_ops.c b/arch/arm64/kernel/cpu_ops.c
-> index e133011f64b5..6979fc4490b2 100644
-> --- a/arch/arm64/kernel/cpu_ops.c
-> +++ b/arch/arm64/kernel/cpu_ops.c
-> @@ -19,12 +19,18 @@ extern const struct cpu_operations smp_spin_table_ops;
->   extern const struct cpu_operations acpi_parking_protocol_ops;
->   #endif
->   extern const struct cpu_operations cpu_psci_ops;
-> +#ifdef CONFIG_ARCH_APPLE
-> +extern const struct cpu_operations cpu_apple_start_ops;
-> +#endif
-> =
-
->   static const struct cpu_operations *cpu_ops[NR_CPUS] __ro_after_init;
-> =
-
->   static const struct cpu_operations *const dt_supported_cpu_ops[] __init=
-const =3D {
->   	&smp_spin_table_ops,
->   	&cpu_psci_ops,
-> +#ifdef CONFIG_ARCH_APPLE
-> +	&cpu_apple_start_ops,
-> +#endif
->   	NULL,
->   };
-> =
-
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 34ec400288d0..611c639e20be 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -57,6 +57,7 @@
->   #include <asm/processor.h>
->   #include <asm/pointer_auth.h>
->   #include <asm/stacktrace.h>
-> +#include <asm/cpu_ops.h>
-> =
-
->   #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PE=
-R_TASK)
->   #include <linux/stackprotector.h>
-> @@ -74,8 +75,14 @@ void (*arm_pm_restart)(enum reboot_mode reboot_mode, c=
-onst char *cmd);
-> =
-
->   static void noinstr __cpu_do_idle(void)
->   {
-> -	dsb(sy);
-> -	wfi();
-> +	const struct cpu_operations *ops =3D get_cpu_ops(task_cpu(current));
-> +
-> +	if (ops->cpu_wfi) {
-> +		ops->cpu_wfi();
-> +	} else {
-> +		dsb(sy);
-> +		wfi();
-> +	}
->   }
-> =
-
->   static void noinstr __cpu_do_idle_irqprio(void)
-> --
-> 2.29.2
-> =
-
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+diff --git a/drivers/virt/vboxguest/vboxguest_utils.c b/drivers/virt/vboxguest/vboxguest_utils.c
+index ea05af41ec69..8d195e3f8301 100644
+--- a/drivers/virt/vboxguest/vboxguest_utils.c
++++ b/drivers/virt/vboxguest/vboxguest_utils.c
+@@ -468,7 +468,7 @@ static int hgcm_cancel_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call)
+  *               Cancellation fun.
+  */
+ static int vbg_hgcm_do_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call,
+-			    u32 timeout_ms, bool *leak_it)
++			    u32 timeout_ms, bool interruptible, bool *leak_it)
+ {
+ 	int rc, cancel_rc, ret;
+ 	long timeout;
+@@ -495,10 +495,15 @@ static int vbg_hgcm_do_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call,
+ 	else
+ 		timeout = msecs_to_jiffies(timeout_ms);
+ 
+-	timeout = wait_event_interruptible_timeout(
+-					gdev->hgcm_wq,
+-					hgcm_req_done(gdev, &call->header),
+-					timeout);
++	if (interruptible) {
++		timeout = wait_event_interruptible_timeout(gdev->hgcm_wq,
++							   hgcm_req_done(gdev, &call->header),
++							   timeout);
++	} else {
++		timeout = wait_event_timeout(gdev->hgcm_wq,
++					     hgcm_req_done(gdev, &call->header),
++					     timeout);
++	}
+ 
+ 	/* timeout > 0 means hgcm_req_done has returned true, so success */
+ 	if (timeout > 0)
+@@ -631,7 +636,8 @@ int vbg_hgcm_call(struct vbg_dev *gdev, u32 requestor, u32 client_id,
+ 	hgcm_call_init_call(call, client_id, function, parms, parm_count,
+ 			    bounce_bufs);
+ 
+-	ret = vbg_hgcm_do_call(gdev, call, timeout_ms, &leak_it);
++	ret = vbg_hgcm_do_call(gdev, call, timeout_ms,
++			       requestor & VMMDEV_REQUESTOR_USERMODE, &leak_it);
+ 	if (ret == 0) {
+ 		*vbox_status = call->header.result;
+ 		ret = hgcm_call_copy_back_result(call, parms, parm_count,
+-- 
+2.28.0
 
