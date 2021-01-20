@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC33C2FD7A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA562FD7A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731332AbhATR6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:58:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390747AbhATR4b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:56:31 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CEDC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:55:50 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id z9so6952855qtv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H362xI0GtWa0hOIoSQ+pekpVy6ezMEffCM7UWNAOymc=;
-        b=veCH8tNEKxgqYEzpRP8IcBFLfAMCml/hf44I9sYxqhnjOr10ZOvNISY7A4IJZsawvV
-         HCiGOVH7W4/slNrK9mSPMBLcbjWs0yms/XICtsTlYdco9/qMS/xjAeTirOzLycM98iI9
-         TBFSqPw2DOSeal6gVNnc01qD1b3MsVPVPrt8NwsU6qV3qr0NT2QQMFTsnO9aeU61kfhn
-         Bb77vE/Z9/wQcZzI6/eMit/LVrAx72FIydTRTqcUfkM7Fz+2TAhm2sB/MqsY7OKvVKjp
-         WcLwj2cRGgh7/bWbDH6P/Sa7qeY1EOordXmuJcxCTbR09DQKgFG47JO7JyMerl8Hj24v
-         Ksxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H362xI0GtWa0hOIoSQ+pekpVy6ezMEffCM7UWNAOymc=;
-        b=bwfAEMZOwZEJ3Yi+Bb+1SqsRWMKlzp1oiKyjKGEd/GHO9MmsBTdfJsbMv/e6xBv71z
-         HNMW+U9mR1qTShmpII1RI+dtQ/ECGO++tHYjnbJ6xq4I4DAX0mwQye3KdSOGcLxBkKVg
-         Qtd3tRSmdnh+82SIwOo/91I3+QrxFQv63WjD5QaZ6QKveYKkK87DdZbjrMZhta/9lAwZ
-         F5sVTVWjuP6jeft0uTGcJl9mbPetRAGW5rNdzQcjN7oxs6yJpLm4B3/0r+UKvsTY1z9D
-         xeMIy0mzAKYeZvGCja7oKn61jRZ10K6qXAZGgUDhgVvRVtjOP4Zd+JUe5mw0OsYz8Y7r
-         7RFg==
-X-Gm-Message-State: AOAM532m/3aZCBMtgLxYjnoBKcUACWLeHOxIeM+bY5hNJLaVakm6hcAO
-        c6r3KaqSiZFbSOwlwdFLFAKCm2yvG+JDwjoxSQOrCA==
-X-Google-Smtp-Source: ABdhPJyom6O/x/vLdy+hF+kS63EhbC6UqvXwgbwn32Nmb+M6GlijwFxjc32b1qOPGGxqZxd8k9NXhzZfiTIKcBYsx5A=
-X-Received: by 2002:a05:622a:14e:: with SMTP id v14mr10088141qtw.298.1611165349302;
- Wed, 20 Jan 2021 09:55:49 -0800 (PST)
+        id S2390145AbhATR7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:59:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390729AbhATR6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 12:58:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E96A223DB;
+        Wed, 20 Jan 2021 17:58:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611165481;
+        bh=4UTf4DzBG4G1mpWGbL2tGpPcJFcqdXclypXVlwrxw0E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=No+re5rmBxP7HsK1yCKsddd4AgMo4j1g4QcLvEyqUFMQo0qKObc7OleJwBEu64dZ8
+         R6h+S6vQ/2R0IJzxY5NJfhsVfnN8tMUFo94qEOTwtVMXo1aLPhUgEfQsqSH+fzzP65
+         awsdmfW38Z1waFby+I+NXseAoEG0YAWYPHn7I3uY=
+Date:   Wed, 20 Jan 2021 18:57:59 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     mgross@linux.intel.com
+Cc:     markgross@kernel.org, arnd@arndb.de, bp@suse.de,
+        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com, corbet@lwn.net,
+        leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, jassisinghbrar@gmail.com,
+        linux-kernel@vger.kernel.org,
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>
+Subject: Re: [PATCH v2 09/34] misc: xlink-pcie: lh: Add PCIe EPF driver for
+ Local Host
+Message-ID: <YAhvJ2MxqnX2g0nS@kroah.com>
+References: <20210108212600.36850-1-mgross@linux.intel.com>
+ <20210108212600.36850-10-mgross@linux.intel.com>
 MIME-Version: 1.0
-References: <20210118113651.71955-1-colin.king@canonical.com> <YAf+o85Z9lgkq3Nw@mwanda>
-In-Reply-To: <YAf+o85Z9lgkq3Nw@mwanda>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 20 Jan 2021 20:55:38 +0300
-Message-ID: <CAA8EJprP4xm=15Ss540uf0VW1-oXA0Sjr6pmTv_deXvjOqL4tg@mail.gmail.com>
-Subject: Re: [PATCH] soc: qcom: socinfo: Fix an off by one in qcom_show_pmic_model()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108212600.36850-10-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 at 12:58, Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> These need to be < ARRAY_SIZE() instead of <= ARRAY_SIZE() to prevent
-> accessing one element beyond the end of the array.
->
-> Fixes: e9247e2ce577 ("soc: qcom: socinfo: fix printing of pmic_model")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Fri, Jan 08, 2021 at 01:25:35PM -0800, mgross@linux.intel.com wrote:
+> From: Srikanth Thokala <srikanth.thokala@intel.com>
+> 
+> Add PCIe EPF driver for local host (lh) to configure BAR's and other
+> HW resources. Underlying PCIe HW controller is a Synopsys DWC PCIe core.
+> 
+> Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+> Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
+> ---
+>  MAINTAINERS                                 |   6 +
+>  drivers/misc/Kconfig                        |   1 +
+>  drivers/misc/Makefile                       |   1 +
+>  drivers/misc/xlink-pcie/Kconfig             |   9 +
+>  drivers/misc/xlink-pcie/Makefile            |   1 +
+>  drivers/misc/xlink-pcie/local_host/Makefile |   2 +
+>  drivers/misc/xlink-pcie/local_host/epf.c    | 413 ++++++++++++++++++++
+>  drivers/misc/xlink-pcie/local_host/epf.h    |  39 ++
+>  drivers/misc/xlink-pcie/local_host/xpcie.h  |  38 ++
 
-Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Why such a deep directory tree?  Why is "local_host" needed?
+
+Anyway, one thing stood out instantly:
+
+> +static int intel_xpcie_check_bar(struct pci_epf *epf,
+> +				 struct pci_epf_bar *epf_bar,
+> +				 enum pci_barno barno,
+> +				 size_t size, u8 reserved_bar)
+> +{
+> +	if (reserved_bar & (1 << barno)) {
+> +		dev_err(&epf->dev, "BAR%d is already reserved\n", barno);
+> +		return -EFAULT;
+
+That error is only allowed when you really have a fault from
+reading/writing to/from userspace memory.  Not this type of foolish
+programming error by the caller.
+
+> +	}
+> +
+> +	if (epf_bar->size != 0 && epf_bar->size < size) {
+> +		dev_err(&epf->dev, "BAR%d fixed size is not enough\n", barno);
+> +		return -ENOMEM;
+
+Did you really run out of memory or was the parameters sent to you
+incorrect?  -EINVAL is the properly thing here, right?
 
 
--- 
-With best wishes
-Dmitry
+
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int intel_xpcie_configure_bar(struct pci_epf *epf,
+> +				     const struct pci_epc_features
+> +					*epc_features)
+
+Odd indentation :(
+
+> +{
+> +	struct pci_epf_bar *epf_bar;
+> +	bool bar_fixed_64bit;
+> +	int ret, i;
+> +
+> +	for (i = BAR_0; i <= BAR_5; i++) {
+> +		epf_bar = &epf->bar[i];
+> +		bar_fixed_64bit = !!(epc_features->bar_fixed_64bit & (1 << i));
+> +		if (bar_fixed_64bit)
+> +			epf_bar->flags |= PCI_BASE_ADDRESS_MEM_TYPE_64;
+> +		if (epc_features->bar_fixed_size[i])
+> +			epf_bar->size = epc_features->bar_fixed_size[i];
+> +
+> +		if (i == BAR_2) {
+> +			ret = intel_xpcie_check_bar(epf, epf_bar, BAR_2,
+> +						    BAR2_MIN_SIZE,
+> +						    epc_features->reserved_bar);
+> +			if (ret)
+> +				return ret;
+> +		}
+> +
+> +		if (i == BAR_4) {
+> +			ret = intel_xpcie_check_bar(epf, epf_bar, BAR_4,
+> +						    BAR4_MIN_SIZE,
+> +						    epc_features->reserved_bar);
+> +			if (ret)
+> +				return ret;
+> +		}
+
+Why do you need to check all of this?  Where is the data coming from
+that could be incorrect?
+
+thanks,
+
+greg k-h
