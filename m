@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA162FDC18
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2B22FDC19
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388485AbhATVtY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 16:49:24 -0500
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:40460 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729332AbhATVXD (ORCPT
+        id S2388946AbhATVt6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 16:49:58 -0500
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:45175 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729567AbhATVXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:23:03 -0500
-Received: by mail-ej1-f42.google.com with SMTP id gx5so16289655ejb.7;
-        Wed, 20 Jan 2021 13:22:44 -0800 (PST)
+        Wed, 20 Jan 2021 16:23:54 -0500
+Received: by mail-ed1-f43.google.com with SMTP id f1so13356524edr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:23:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m9asNsy5HnoQWApV7l1mj6KR2/fAh9aQXybwGplkTK0=;
-        b=TtVrVD0ov+C/FHNR37HFSA+kAIHXUQ7faESqmRCZJeS2nge1SeO0jqGTBpl1xY9tUc
-         dZQnse4E8y8Q/qSZD65TODELTEtegac3QudqHPX9M7/yQLV7bcbRM9rib9DrO2v7qKDq
-         TCoIOWJhvKxwnHSIgxkTYs1Q8CLoVQUHbCT0M18qVkPAP38khF8k3HWWzm/30YQ61Tfd
-         QKI6E9Fn1wPTEtL4sLXYinLcMdYFc5JQrnFGQNFiBfQ4VseJEGcr4koGhLKdXRvEsdwI
-         vuDPbZax5l50737bzvVEc0Z22hgCOyQzpk3qK109DgTZrExLQA35CHdEF/lNSJpRxBoo
-         63Xg==
-X-Gm-Message-State: AOAM530Q8sdNLgUgzwpTDXw0N4EJqHOO5op+NmoXrepsN9Tntr3F67C8
-        4Apw5y5s+B9gqb7b9LPPffkSb2QR+NEzTtEO92U=
-X-Google-Smtp-Source: ABdhPJxjT9DKoi+Terj23c5j2M65jITn8uwORTUPw/LLMjcdTQ75miYhWZivOKO9BY0+zYWgwanRy6noFPzk0C0iCX8=
-X-Received: by 2002:a17:906:b2d5:: with SMTP id cf21mr7359947ejb.387.1611177738678;
- Wed, 20 Jan 2021 13:22:18 -0800 (PST)
+        bh=cbDUMeEtw544lOujMKMEV/4eHaRUypyOCpdnS+J8w0A=;
+        b=Xrd56/VxPCTU1gAyGDJHOviNfw79an/GgRNqor1G6KHr8pQX3dMH7LdInvA7KgALRa
+         aikyy3tb4BLLnavSdGDLX9uCfn7XhrBu5h6pQiu44jGpcUfNVZwS9mVrGpWlzoBvCILc
+         JCCCVaEurJIPUj9IpL8juN75cD0q5tZ0ugueFVMVyd+Kf0rFBI1WrZKXzckoGrcp4Ujg
+         /FPnaMSbiyGBdocN6s+4XlggRDpwJKXwJ5MOeKMvGZG1vEhaQQAtg3E7PPUeanI8eL/v
+         leQY7jfV3ruNBFwdDEzUAz2jWwDf5+El/zR+uG1CCTd2RYLFz6j5bgwcPizSDnlA5aaI
+         9DfA==
+X-Gm-Message-State: AOAM531DAW2A9IbPa0rn3SPikHv05wlLitXthilmtJ16T0+1B/TcBDJH
+        aoZhbtRwx9bj9M8Wg1CaPJIWi2pCygDn0wmI8d1kWc3Au0zy0A==
+X-Google-Smtp-Source: ABdhPJxF/Bim4+TU7hCkQBq4fPNX320E5ib+1vSQmMCLiXo7PnXlgaMUZqFgiGdOCgcauNIp0e2+r0M8SLVctNSTJ5U=
+X-Received: by 2002:a05:6402:510f:: with SMTP id m15mr8824975edd.267.1611177791518;
+ Wed, 20 Jan 2021 13:23:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210120131859.2056308-1-arnd@kernel.org> <20210120131859.2056308-2-arnd@kernel.org>
-In-Reply-To: <20210120131859.2056308-2-arnd@kernel.org>
+References: <20210120133057.2470873-1-arnd@kernel.org>
+In-Reply-To: <20210120133057.2470873-1-arnd@kernel.org>
 From:   Barry Song <baohua@kernel.org>
-Date:   Thu, 21 Jan 2021 10:22:07 +1300
-Message-ID: <CAGsJ_4zdXODcjO6ACsqGXnoHywtB3viUyzoRGWQbvVTca03nXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dmaengine: remove sirfsoc driver
+Date:   Thu, 21 Jan 2021 10:23:00 +1300
+Message-ID: <CAGsJ_4zaAi1RX0JPYngXKckCsC7Mznyp7H_M=kgi+qKiWgGE5Q@mail.gmail.com>
+Subject: Re: [PATCH] Input: remove sirfsoc power button driver
 To:     Arnd Bergmann <arnd@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, dmaengine@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午2:19写道：
+Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午2:31写道：
 >
 > From: Arnd Bergmann <arnd@arndb.de>
 >
@@ -60,1285 +60,258 @@ Arnd Bergmann <arnd@kernel.org> 于2021年1月21日周四 上午2:19写道：
 Acked-by: Barry Song <baohua@kernel.org>
 
 > ---
->  .../devicetree/bindings/dma/sirfsoc-dma.txt   |   44 -
->  drivers/dma/Kconfig                           |    7 -
->  drivers/dma/Makefile                          |    1 -
->  drivers/dma/sirf-dma.c                        | 1170 -----------------
->  include/linux/sirfsoc_dma.h                   |    7 -
->  5 files changed, 1229 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/dma/sirfsoc-dma.txt
->  delete mode 100644 drivers/dma/sirf-dma.c
->  delete mode 100644 include/linux/sirfsoc_dma.h
+>  drivers/input/misc/Kconfig         |  10 --
+>  drivers/input/misc/Makefile        |   1 -
+>  drivers/input/misc/sirfsoc-onkey.c | 207 -----------------------------
+>  3 files changed, 218 deletions(-)
+>  delete mode 100644 drivers/input/misc/sirfsoc-onkey.c
 >
-> diff --git a/Documentation/devicetree/bindings/dma/sirfsoc-dma.txt b/Documentation/devicetree/bindings/dma/sirfsoc-dma.txt
-> deleted file mode 100644
-> index ccd52d6a231a..000000000000
-> --- a/Documentation/devicetree/bindings/dma/sirfsoc-dma.txt
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> -* CSR SiRFSoC DMA controller
-> -
-> -See dma.txt first
-> -
-> -Required properties:
-> -- compatible: Should be "sirf,prima2-dmac", "sirf,atlas7-dmac" or
-> -  "sirf,atlas7-dmac-v2"
-> -- reg: Should contain DMA registers location and length.
-> -- interrupts: Should contain one interrupt shared by all channel
-> -- #dma-cells: must be <1>. used to represent the number of integer
-> -    cells in the dmas property of client device.
-> -- clocks: clock required
-> -
-> -Example:
-> -
-> -Controller:
-> -dmac0: dma-controller@b00b0000 {
-> -       compatible = "sirf,prima2-dmac";
-> -       reg = <0xb00b0000 0x10000>;
-> -       interrupts = <12>;
-> -       clocks = <&clks 24>;
-> -       #dma-cells = <1>;
-> -};
-> -
-> -
-> -Client:
-> -Fill the specific dma request line in dmas. In the below example, spi0 read
-> -channel request line is 9 of the 2nd dma controller, while write channel uses
-> -4 of the 2nd dma controller; spi1 read channel request line is 12 of the 1st
-> -dma controller, while write channel uses 13 of the 1st dma controller:
-> -
-> -spi0: spi@b00d0000 {
-> -       compatible = "sirf,prima2-spi";
-> -       dmas = <&dmac1 9>,
-> -               <&dmac1 4>;
-> -       dma-names = "rx", "tx";
-> -};
-> -
-> -spi1: spi@b0170000 {
-> -       compatible = "sirf,prima2-spi";
-> -       dmas = <&dmac0 12>,
-> -               <&dmac0 13>;
-> -       dma-names = "rx", "tx";
-> -};
-> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-> index d242c7632621..1935cf39f753 100644
-> --- a/drivers/dma/Kconfig
-> +++ b/drivers/dma/Kconfig
-> @@ -519,13 +519,6 @@ config PLX_DMA
->           These are exposed via extra functions on the switch's
->           upstream port. Each function exposes one DMA channel.
+> diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+> index ad1b6c90bc4d..f824e3435a8e 100644
+> --- a/drivers/input/misc/Kconfig
+> +++ b/drivers/input/misc/Kconfig
+> @@ -789,16 +789,6 @@ config INPUT_XEN_KBDDEV_FRONTEND
+>           To compile this driver as a module, choose M here: the
+>           module will be called xen-kbdfront.
 >
-> -config SIRF_DMA
-> -       tristate "CSR SiRFprimaII/SiRFmarco DMA support"
-> -       depends on ARCH_SIRF
-> -       select DMA_ENGINE
+> -config INPUT_SIRFSOC_ONKEY
+> -       tristate "CSR SiRFSoC power on/off/suspend key support"
+> -       depends on ARCH_SIRF && OF
+> -       default y
 > -       help
-> -         Enable support for the CSR SiRFprimaII DMA engine.
+> -         Say Y here if you want to support for the SiRFSoC power on/off/suspend key
+> -         in Linux, after you press the onkey, system will suspend.
 > -
->  config STE_DMA40
->         bool "ST-Ericsson DMA40 support"
->         depends on ARCH_U8500
-> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-> index 948a8da05f8b..93327554560e 100644
-> --- a/drivers/dma/Makefile
-> +++ b/drivers/dma/Makefile
-> @@ -65,7 +65,6 @@ obj-$(CONFIG_PPC_BESTCOMM) += bestcomm/
->  obj-$(CONFIG_PXA_DMA) += pxa_dma.o
->  obj-$(CONFIG_RENESAS_DMA) += sh/
->  obj-$(CONFIG_SF_PDMA) += sf-pdma/
-> -obj-$(CONFIG_SIRF_DMA) += sirf-dma.o
->  obj-$(CONFIG_STE_DMA40) += ste_dma40.o ste_dma40_ll.o
->  obj-$(CONFIG_STM32_DMA) += stm32-dma.o
->  obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
-> diff --git a/drivers/dma/sirf-dma.c b/drivers/dma/sirf-dma.c
+> -         If unsure, say N.
+> -
+>  config INPUT_IDEAPAD_SLIDEBAR
+>         tristate "IdeaPad Laptop Slidebar"
+>         depends on INPUT
+> diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+> index 7f202ba8f775..0b5871e1bb76 100644
+> --- a/drivers/input/misc/Makefile
+> +++ b/drivers/input/misc/Makefile
+> @@ -72,7 +72,6 @@ obj-$(CONFIG_INPUT_GPIO_ROTARY_ENCODER)       += rotary_encoder.o
+>  obj-$(CONFIG_INPUT_RK805_PWRKEY)       += rk805-pwrkey.o
+>  obj-$(CONFIG_INPUT_SC27XX_VIBRA)       += sc27xx-vibra.o
+>  obj-$(CONFIG_INPUT_SGI_BTNS)           += sgi_btns.o
+> -obj-$(CONFIG_INPUT_SIRFSOC_ONKEY)      += sirfsoc-onkey.o
+>  obj-$(CONFIG_INPUT_SOC_BUTTON_ARRAY)   += soc_button_array.o
+>  obj-$(CONFIG_INPUT_SPARCSPKR)          += sparcspkr.o
+>  obj-$(CONFIG_INPUT_STPMIC1_ONKEY)      += stpmic1_onkey.o
+> diff --git a/drivers/input/misc/sirfsoc-onkey.c b/drivers/input/misc/sirfsoc-onkey.c
 > deleted file mode 100644
-> index a5c2843384fd..000000000000
-> --- a/drivers/dma/sirf-dma.c
+> index 7982bf8fb839..000000000000
+> --- a/drivers/input/misc/sirfsoc-onkey.c
 > +++ /dev/null
-> @@ -1,1170 +0,0 @@
+> @@ -1,207 +0,0 @@
 > -// SPDX-License-Identifier: GPL-2.0-or-later
 > -/*
-> - * DMA controller driver for CSR SiRFprimaII
+> - * Power key driver for SiRF PrimaII
 > - *
-> - * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
+> - * Copyright (c) 2013 - 2014 Cambridge Silicon Radio Limited, a CSR plc group
+> - * company.
 > - */
 > -
 > -#include <linux/module.h>
-> -#include <linux/dmaengine.h>
-> -#include <linux/dma-mapping.h>
-> -#include <linux/pm_runtime.h>
 > -#include <linux/interrupt.h>
-> -#include <linux/io.h>
-> -#include <linux/slab.h>
-> -#include <linux/of_irq.h>
-> -#include <linux/of_address.h>
-> -#include <linux/of_device.h>
-> -#include <linux/of_platform.h>
-> -#include <linux/clk.h>
-> -#include <linux/of_dma.h>
-> -#include <linux/sirfsoc_dma.h>
+> -#include <linux/delay.h>
+> -#include <linux/platform_device.h>
+> -#include <linux/input.h>
+> -#include <linux/rtc/sirfsoc_rtciobrg.h>
+> -#include <linux/of.h>
+> -#include <linux/workqueue.h>
 > -
-> -#include "dmaengine.h"
-> -
-> -#define SIRFSOC_DMA_VER_A7V1                    1
-> -#define SIRFSOC_DMA_VER_A7V2                    2
-> -#define SIRFSOC_DMA_VER_A6                      4
-> -
-> -#define SIRFSOC_DMA_DESCRIPTORS                 16
-> -#define SIRFSOC_DMA_CHANNELS                    16
-> -#define SIRFSOC_DMA_TABLE_NUM                   256
-> -
-> -#define SIRFSOC_DMA_CH_ADDR                     0x00
-> -#define SIRFSOC_DMA_CH_XLEN                     0x04
-> -#define SIRFSOC_DMA_CH_YLEN                     0x08
-> -#define SIRFSOC_DMA_CH_CTRL                     0x0C
-> -
-> -#define SIRFSOC_DMA_WIDTH_0                     0x100
-> -#define SIRFSOC_DMA_CH_VALID                    0x140
-> -#define SIRFSOC_DMA_CH_INT                      0x144
-> -#define SIRFSOC_DMA_INT_EN                      0x148
-> -#define SIRFSOC_DMA_INT_EN_CLR                  0x14C
-> -#define SIRFSOC_DMA_CH_LOOP_CTRL                0x150
-> -#define SIRFSOC_DMA_CH_LOOP_CTRL_CLR            0x154
-> -#define SIRFSOC_DMA_WIDTH_ATLAS7                0x10
-> -#define SIRFSOC_DMA_VALID_ATLAS7                0x14
-> -#define SIRFSOC_DMA_INT_ATLAS7                  0x18
-> -#define SIRFSOC_DMA_INT_EN_ATLAS7               0x1c
-> -#define SIRFSOC_DMA_LOOP_CTRL_ATLAS7            0x20
-> -#define SIRFSOC_DMA_CUR_DATA_ADDR               0x34
-> -#define SIRFSOC_DMA_MUL_ATLAS7                  0x38
-> -#define SIRFSOC_DMA_CH_LOOP_CTRL_ATLAS7         0x158
-> -#define SIRFSOC_DMA_CH_LOOP_CTRL_CLR_ATLAS7     0x15C
-> -#define SIRFSOC_DMA_IOBG_SCMD_EN               0x800
-> -#define SIRFSOC_DMA_EARLY_RESP_SET             0x818
-> -#define SIRFSOC_DMA_EARLY_RESP_CLR             0x81C
-> -
-> -#define SIRFSOC_DMA_MODE_CTRL_BIT               4
-> -#define SIRFSOC_DMA_DIR_CTRL_BIT                5
-> -#define SIRFSOC_DMA_MODE_CTRL_BIT_ATLAS7        2
-> -#define SIRFSOC_DMA_CHAIN_CTRL_BIT_ATLAS7       3
-> -#define SIRFSOC_DMA_DIR_CTRL_BIT_ATLAS7         4
-> -#define SIRFSOC_DMA_TAB_NUM_ATLAS7              7
-> -#define SIRFSOC_DMA_CHAIN_INT_BIT_ATLAS7        5
-> -#define SIRFSOC_DMA_CHAIN_FLAG_SHIFT_ATLAS7     25
-> -#define SIRFSOC_DMA_CHAIN_ADDR_SHIFT            32
-> -
-> -#define SIRFSOC_DMA_INT_FINI_INT_ATLAS7         BIT(0)
-> -#define SIRFSOC_DMA_INT_CNT_INT_ATLAS7          BIT(1)
-> -#define SIRFSOC_DMA_INT_PAU_INT_ATLAS7          BIT(2)
-> -#define SIRFSOC_DMA_INT_LOOP_INT_ATLAS7         BIT(3)
-> -#define SIRFSOC_DMA_INT_INV_INT_ATLAS7          BIT(4)
-> -#define SIRFSOC_DMA_INT_END_INT_ATLAS7          BIT(5)
-> -#define SIRFSOC_DMA_INT_ALL_ATLAS7              0x3F
-> -
-> -/* xlen and dma_width register is in 4 bytes boundary */
-> -#define SIRFSOC_DMA_WORD_LEN                   4
-> -#define SIRFSOC_DMA_XLEN_MAX_V1         0x800
-> -#define SIRFSOC_DMA_XLEN_MAX_V2         0x1000
-> -
-> -struct sirfsoc_dma_desc {
-> -       struct dma_async_tx_descriptor  desc;
-> -       struct list_head                node;
-> -
-> -       /* SiRFprimaII 2D-DMA parameters */
-> -
-> -       int             xlen;           /* DMA xlen */
-> -       int             ylen;           /* DMA ylen */
-> -       int             width;          /* DMA width */
-> -       int             dir;
-> -       bool            cyclic;         /* is loop DMA? */
-> -       bool            chain;          /* is chain DMA? */
-> -       u32             addr;           /* DMA buffer address */
-> -       u64 chain_table[SIRFSOC_DMA_TABLE_NUM]; /* chain tbl */
+> -struct sirfsoc_pwrc_drvdata {
+> -       u32                     pwrc_base;
+> -       struct input_dev        *input;
+> -       struct delayed_work     work;
 > -};
 > -
-> -struct sirfsoc_dma_chan {
-> -       struct dma_chan                 chan;
-> -       struct list_head                free;
-> -       struct list_head                prepared;
-> -       struct list_head                queued;
-> -       struct list_head                active;
-> -       struct list_head                completed;
-> -       unsigned long                   happened_cyclic;
-> -       unsigned long                   completed_cyclic;
+> -#define PWRC_ON_KEY_BIT                        (1 << 0)
 > -
-> -       /* Lock for this structure */
-> -       spinlock_t                      lock;
+> -#define PWRC_INT_STATUS                        0xc
+> -#define PWRC_INT_MASK                  0x10
+> -#define PWRC_PIN_STATUS                        0x14
+> -#define PWRC_KEY_DETECT_UP_TIME                20      /* ms*/
 > -
-> -       int                             mode;
-> -};
-> -
-> -struct sirfsoc_dma_regs {
-> -       u32                             ctrl[SIRFSOC_DMA_CHANNELS];
-> -       u32                             interrupt_en;
-> -};
-> -
-> -struct sirfsoc_dma {
-> -       struct dma_device               dma;
-> -       struct tasklet_struct           tasklet;
-> -       struct sirfsoc_dma_chan         channels[SIRFSOC_DMA_CHANNELS];
-> -       void __iomem                    *base;
-> -       int                             irq;
-> -       struct clk                      *clk;
-> -       int                             type;
-> -       void (*exec_desc)(struct sirfsoc_dma_desc *sdesc,
-> -               int cid, int burst_mode, void __iomem *base);
-> -       struct sirfsoc_dma_regs         regs_save;
-> -};
-> -
-> -struct sirfsoc_dmadata {
-> -       void (*exec)(struct sirfsoc_dma_desc *sdesc,
-> -               int cid, int burst_mode, void __iomem *base);
-> -       int type;
-> -};
-> -
-> -enum sirfsoc_dma_chain_flag {
-> -       SIRFSOC_DMA_CHAIN_NORMAL = 0x01,
-> -       SIRFSOC_DMA_CHAIN_PAUSE = 0x02,
-> -       SIRFSOC_DMA_CHAIN_LOOP = 0x03,
-> -       SIRFSOC_DMA_CHAIN_END = 0x04
-> -};
-> -
-> -#define DRV_NAME       "sirfsoc_dma"
-> -
-> -static int sirfsoc_dma_runtime_suspend(struct device *dev);
-> -
-> -/* Convert struct dma_chan to struct sirfsoc_dma_chan */
-> -static inline
-> -struct sirfsoc_dma_chan *dma_chan_to_sirfsoc_dma_chan(struct dma_chan *c)
+> -static int sirfsoc_pwrc_is_on_key_down(struct sirfsoc_pwrc_drvdata *pwrcdrv)
 > -{
-> -       return container_of(c, struct sirfsoc_dma_chan, chan);
+> -       u32 state = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
+> -                                                       PWRC_PIN_STATUS);
+> -       return !(state & PWRC_ON_KEY_BIT); /* ON_KEY is active low */
 > -}
 > -
-> -/* Convert struct dma_chan to struct sirfsoc_dma */
-> -static inline struct sirfsoc_dma *dma_chan_to_sirfsoc_dma(struct dma_chan *c)
+> -static void sirfsoc_pwrc_report_event(struct work_struct *work)
 > -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(c);
-> -       return container_of(schan, struct sirfsoc_dma, channels[c->chan_id]);
-> -}
+> -       struct sirfsoc_pwrc_drvdata *pwrcdrv =
+> -               container_of(work, struct sirfsoc_pwrc_drvdata, work.work);
 > -
-> -static void sirfsoc_dma_execute_hw_a7v2(struct sirfsoc_dma_desc *sdesc,
-> -               int cid, int burst_mode, void __iomem *base)
-> -{
-> -       if (sdesc->chain) {
-> -               /* DMA v2 HW chain mode */
-> -               writel_relaxed((sdesc->dir << SIRFSOC_DMA_DIR_CTRL_BIT_ATLAS7) |
-> -                              (sdesc->chain <<
-> -                               SIRFSOC_DMA_CHAIN_CTRL_BIT_ATLAS7) |
-> -                              (0x8 << SIRFSOC_DMA_TAB_NUM_ATLAS7) | 0x3,
-> -                              base + SIRFSOC_DMA_CH_CTRL);
+> -       if (sirfsoc_pwrc_is_on_key_down(pwrcdrv)) {
+> -               schedule_delayed_work(&pwrcdrv->work,
+> -                       msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
 > -       } else {
-> -               /* DMA v2 legacy mode */
-> -               writel_relaxed(sdesc->xlen, base + SIRFSOC_DMA_CH_XLEN);
-> -               writel_relaxed(sdesc->ylen, base + SIRFSOC_DMA_CH_YLEN);
-> -               writel_relaxed(sdesc->width, base + SIRFSOC_DMA_WIDTH_ATLAS7);
-> -               writel_relaxed((sdesc->width*((sdesc->ylen+1)>>1)),
-> -                               base + SIRFSOC_DMA_MUL_ATLAS7);
-> -               writel_relaxed((sdesc->dir << SIRFSOC_DMA_DIR_CTRL_BIT_ATLAS7) |
-> -                              (sdesc->chain <<
-> -                               SIRFSOC_DMA_CHAIN_CTRL_BIT_ATLAS7) |
-> -                              0x3, base + SIRFSOC_DMA_CH_CTRL);
+> -               input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 0);
+> -               input_sync(pwrcdrv->input);
 > -       }
-> -       writel_relaxed(sdesc->chain ? SIRFSOC_DMA_INT_END_INT_ATLAS7 :
-> -                      (SIRFSOC_DMA_INT_FINI_INT_ATLAS7 |
-> -                       SIRFSOC_DMA_INT_LOOP_INT_ATLAS7),
-> -                      base + SIRFSOC_DMA_INT_EN_ATLAS7);
-> -       writel(sdesc->addr, base + SIRFSOC_DMA_CH_ADDR);
-> -       if (sdesc->cyclic)
-> -               writel(0x10001, base + SIRFSOC_DMA_LOOP_CTRL_ATLAS7);
 > -}
 > -
-> -static void sirfsoc_dma_execute_hw_a7v1(struct sirfsoc_dma_desc *sdesc,
-> -               int cid, int burst_mode, void __iomem *base)
+> -static irqreturn_t sirfsoc_pwrc_isr(int irq, void *dev_id)
 > -{
-> -       writel_relaxed(1, base + SIRFSOC_DMA_IOBG_SCMD_EN);
-> -       writel_relaxed((1 << cid), base + SIRFSOC_DMA_EARLY_RESP_SET);
-> -       writel_relaxed(sdesc->width, base + SIRFSOC_DMA_WIDTH_0 + cid * 4);
-> -       writel_relaxed(cid | (burst_mode << SIRFSOC_DMA_MODE_CTRL_BIT) |
-> -                      (sdesc->dir << SIRFSOC_DMA_DIR_CTRL_BIT),
-> -                      base + cid * 0x10 + SIRFSOC_DMA_CH_CTRL);
-> -       writel_relaxed(sdesc->xlen, base + cid * 0x10 + SIRFSOC_DMA_CH_XLEN);
-> -       writel_relaxed(sdesc->ylen, base + cid * 0x10 + SIRFSOC_DMA_CH_YLEN);
-> -       writel_relaxed(readl_relaxed(base + SIRFSOC_DMA_INT_EN) |
-> -                      (1 << cid), base + SIRFSOC_DMA_INT_EN);
-> -       writel(sdesc->addr >> 2, base + cid * 0x10 + SIRFSOC_DMA_CH_ADDR);
-> -       if (sdesc->cyclic) {
-> -               writel((1 << cid) | 1 << (cid + 16) |
-> -                      readl_relaxed(base + SIRFSOC_DMA_CH_LOOP_CTRL_ATLAS7),
-> -                      base + SIRFSOC_DMA_CH_LOOP_CTRL_ATLAS7);
-> -       }
+> -       struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_id;
+> -       u32 int_status;
 > -
-> -}
+> -       int_status = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
+> -                                                       PWRC_INT_STATUS);
+> -       sirfsoc_rtc_iobrg_writel(int_status & ~PWRC_ON_KEY_BIT,
+> -                                pwrcdrv->pwrc_base + PWRC_INT_STATUS);
 > -
-> -static void sirfsoc_dma_execute_hw_a6(struct sirfsoc_dma_desc *sdesc,
-> -               int cid, int burst_mode, void __iomem *base)
-> -{
-> -       writel_relaxed(sdesc->width, base + SIRFSOC_DMA_WIDTH_0 + cid * 4);
-> -       writel_relaxed(cid | (burst_mode << SIRFSOC_DMA_MODE_CTRL_BIT) |
-> -                      (sdesc->dir << SIRFSOC_DMA_DIR_CTRL_BIT),
-> -                      base + cid * 0x10 + SIRFSOC_DMA_CH_CTRL);
-> -       writel_relaxed(sdesc->xlen, base + cid * 0x10 + SIRFSOC_DMA_CH_XLEN);
-> -       writel_relaxed(sdesc->ylen, base + cid * 0x10 + SIRFSOC_DMA_CH_YLEN);
-> -       writel_relaxed(readl_relaxed(base + SIRFSOC_DMA_INT_EN) |
-> -                      (1 << cid), base + SIRFSOC_DMA_INT_EN);
-> -       writel(sdesc->addr >> 2, base + cid * 0x10 + SIRFSOC_DMA_CH_ADDR);
-> -       if (sdesc->cyclic) {
-> -               writel((1 << cid) | 1 << (cid + 16) |
-> -                      readl_relaxed(base + SIRFSOC_DMA_CH_LOOP_CTRL),
-> -                      base + SIRFSOC_DMA_CH_LOOP_CTRL);
-> -       }
-> -
-> -}
-> -
-> -/* Execute all queued DMA descriptors */
-> -static void sirfsoc_dma_execute(struct sirfsoc_dma_chan *schan)
-> -{
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(&schan->chan);
-> -       int cid = schan->chan.chan_id;
-> -       struct sirfsoc_dma_desc *sdesc = NULL;
-> -       void __iomem *base;
-> -
-> -       /*
-> -        * lock has been held by functions calling this, so we don't hold
-> -        * lock again
-> -        */
-> -       base = sdma->base;
-> -       sdesc = list_first_entry(&schan->queued, struct sirfsoc_dma_desc,
-> -                                node);
-> -       /* Move the first queued descriptor to active list */
-> -       list_move_tail(&sdesc->node, &schan->active);
-> -
-> -       if (sdma->type == SIRFSOC_DMA_VER_A7V2)
-> -               cid = 0;
-> -
-> -       /* Start the DMA transfer */
-> -       sdma->exec_desc(sdesc, cid, schan->mode, base);
-> -
-> -       if (sdesc->cyclic)
-> -               schan->happened_cyclic = schan->completed_cyclic = 0;
-> -}
-> -
-> -/* Interrupt handler */
-> -static irqreturn_t sirfsoc_dma_irq(int irq, void *data)
-> -{
-> -       struct sirfsoc_dma *sdma = data;
-> -       struct sirfsoc_dma_chan *schan;
-> -       struct sirfsoc_dma_desc *sdesc = NULL;
-> -       u32 is;
-> -       bool chain;
-> -       int ch;
-> -       void __iomem *reg;
-> -
-> -       switch (sdma->type) {
-> -       case SIRFSOC_DMA_VER_A6:
-> -       case SIRFSOC_DMA_VER_A7V1:
-> -               is = readl(sdma->base + SIRFSOC_DMA_CH_INT);
-> -               reg = sdma->base + SIRFSOC_DMA_CH_INT;
-> -               while ((ch = fls(is) - 1) >= 0) {
-> -                       is &= ~(1 << ch);
-> -                       writel_relaxed(1 << ch, reg);
-> -                       schan = &sdma->channels[ch];
-> -                       spin_lock(&schan->lock);
-> -                       sdesc = list_first_entry(&schan->active,
-> -                                                struct sirfsoc_dma_desc, node);
-> -                       if (!sdesc->cyclic) {
-> -                               /* Execute queued descriptors */
-> -                               list_splice_tail_init(&schan->active,
-> -                                                     &schan->completed);
-> -                               dma_cookie_complete(&sdesc->desc);
-> -                               if (!list_empty(&schan->queued))
-> -                                       sirfsoc_dma_execute(schan);
-> -                       } else
-> -                               schan->happened_cyclic++;
-> -                       spin_unlock(&schan->lock);
-> -               }
-> -               break;
-> -
-> -       case SIRFSOC_DMA_VER_A7V2:
-> -               is = readl(sdma->base + SIRFSOC_DMA_INT_ATLAS7);
-> -
-> -               reg = sdma->base + SIRFSOC_DMA_INT_ATLAS7;
-> -               writel_relaxed(SIRFSOC_DMA_INT_ALL_ATLAS7, reg);
-> -               schan = &sdma->channels[0];
-> -               spin_lock(&schan->lock);
-> -               sdesc = list_first_entry(&schan->active,
-> -                                        struct sirfsoc_dma_desc, node);
-> -               if (!sdesc->cyclic) {
-> -                       chain = sdesc->chain;
-> -                       if ((chain && (is & SIRFSOC_DMA_INT_END_INT_ATLAS7)) ||
-> -                               (!chain &&
-> -                               (is & SIRFSOC_DMA_INT_FINI_INT_ATLAS7))) {
-> -                               /* Execute queued descriptors */
-> -                               list_splice_tail_init(&schan->active,
-> -                                                     &schan->completed);
-> -                               dma_cookie_complete(&sdesc->desc);
-> -                               if (!list_empty(&schan->queued))
-> -                                       sirfsoc_dma_execute(schan);
-> -                       }
-> -               } else if (sdesc->cyclic && (is &
-> -                                       SIRFSOC_DMA_INT_LOOP_INT_ATLAS7))
-> -                       schan->happened_cyclic++;
-> -
-> -               spin_unlock(&schan->lock);
-> -               break;
-> -
-> -       default:
-> -               break;
-> -       }
-> -
-> -       /* Schedule tasklet */
-> -       tasklet_schedule(&sdma->tasklet);
+> -       input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 1);
+> -       input_sync(pwrcdrv->input);
+> -       schedule_delayed_work(&pwrcdrv->work,
+> -                             msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
 > -
 > -       return IRQ_HANDLED;
 > -}
 > -
-> -/* process completed descriptors */
-> -static void sirfsoc_dma_process_completed(struct sirfsoc_dma *sdma)
+> -static void sirfsoc_pwrc_toggle_interrupts(struct sirfsoc_pwrc_drvdata *pwrcdrv,
+> -                                          bool enable)
 > -{
-> -       dma_cookie_t last_cookie = 0;
-> -       struct sirfsoc_dma_chan *schan;
-> -       struct sirfsoc_dma_desc *sdesc;
-> -       struct dma_async_tx_descriptor *desc;
-> -       unsigned long flags;
-> -       unsigned long happened_cyclic;
-> -       LIST_HEAD(list);
-> -       int i;
+> -       u32 int_mask;
 > -
-> -       for (i = 0; i < sdma->dma.chancnt; i++) {
-> -               schan = &sdma->channels[i];
-> -
-> -               /* Get all completed descriptors */
-> -               spin_lock_irqsave(&schan->lock, flags);
-> -               if (!list_empty(&schan->completed)) {
-> -                       list_splice_tail_init(&schan->completed, &list);
-> -                       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -                       /* Execute callbacks and run dependencies */
-> -                       list_for_each_entry(sdesc, &list, node) {
-> -                               desc = &sdesc->desc;
-> -
-> -                               dmaengine_desc_get_callback_invoke(desc, NULL);
-> -                               last_cookie = desc->cookie;
-> -                               dma_run_dependencies(desc);
-> -                       }
-> -
-> -                       /* Free descriptors */
-> -                       spin_lock_irqsave(&schan->lock, flags);
-> -                       list_splice_tail_init(&list, &schan->free);
-> -                       schan->chan.completed_cookie = last_cookie;
-> -                       spin_unlock_irqrestore(&schan->lock, flags);
-> -               } else {
-> -                       if (list_empty(&schan->active)) {
-> -                               spin_unlock_irqrestore(&schan->lock, flags);
-> -                               continue;
-> -                       }
-> -
-> -                       /* for cyclic channel, desc is always in active list */
-> -                       sdesc = list_first_entry(&schan->active,
-> -                               struct sirfsoc_dma_desc, node);
-> -
-> -                       /* cyclic DMA */
-> -                       happened_cyclic = schan->happened_cyclic;
-> -                       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -                       desc = &sdesc->desc;
-> -                       while (happened_cyclic != schan->completed_cyclic) {
-> -                               dmaengine_desc_get_callback_invoke(desc, NULL);
-> -                               schan->completed_cyclic++;
-> -                       }
-> -               }
-> -       }
-> -}
-> -
-> -/* DMA Tasklet */
-> -static void sirfsoc_dma_tasklet(struct tasklet_struct *t)
-> -{
-> -       struct sirfsoc_dma *sdma = from_tasklet(sdma, t, tasklet);
-> -
-> -       sirfsoc_dma_process_completed(sdma);
-> -}
-> -
-> -/* Submit descriptor to hardware */
-> -static dma_cookie_t sirfsoc_dma_tx_submit(struct dma_async_tx_descriptor *txd)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(txd->chan);
-> -       struct sirfsoc_dma_desc *sdesc;
-> -       unsigned long flags;
-> -       dma_cookie_t cookie;
-> -
-> -       sdesc = container_of(txd, struct sirfsoc_dma_desc, desc);
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -
-> -       /* Move descriptor to queue */
-> -       list_move_tail(&sdesc->node, &schan->queued);
-> -
-> -       cookie = dma_cookie_assign(txd);
-> -
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       return cookie;
-> -}
-> -
-> -static int sirfsoc_dma_slave_config(struct dma_chan *chan,
-> -                                   struct dma_slave_config *config)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       unsigned long flags;
-> -
-> -       if ((config->src_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES) ||
-> -               (config->dst_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES))
-> -               return -EINVAL;
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -       schan->mode = (config->src_maxburst == 4 ? 1 : 0);
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       return 0;
-> -}
-> -
-> -static int sirfsoc_dma_terminate_all(struct dma_chan *chan)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(&schan->chan);
-> -       int cid = schan->chan.chan_id;
-> -       unsigned long flags;
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -
-> -       switch (sdma->type) {
-> -       case SIRFSOC_DMA_VER_A7V1:
-> -               writel_relaxed(1 << cid, sdma->base + SIRFSOC_DMA_INT_EN_CLR);
-> -               writel_relaxed(1 << cid, sdma->base + SIRFSOC_DMA_CH_INT);
-> -               writel_relaxed((1 << cid) | 1 << (cid + 16),
-> -                              sdma->base +
-> -                              SIRFSOC_DMA_CH_LOOP_CTRL_CLR_ATLAS7);
-> -               writel_relaxed(1 << cid, sdma->base + SIRFSOC_DMA_CH_VALID);
-> -               break;
-> -       case SIRFSOC_DMA_VER_A7V2:
-> -               writel_relaxed(0, sdma->base + SIRFSOC_DMA_INT_EN_ATLAS7);
-> -               writel_relaxed(SIRFSOC_DMA_INT_ALL_ATLAS7,
-> -                              sdma->base + SIRFSOC_DMA_INT_ATLAS7);
-> -               writel_relaxed(0, sdma->base + SIRFSOC_DMA_LOOP_CTRL_ATLAS7);
-> -               writel_relaxed(0, sdma->base + SIRFSOC_DMA_VALID_ATLAS7);
-> -               break;
-> -       case SIRFSOC_DMA_VER_A6:
-> -               writel_relaxed(readl_relaxed(sdma->base + SIRFSOC_DMA_INT_EN) &
-> -                              ~(1 << cid), sdma->base + SIRFSOC_DMA_INT_EN);
-> -               writel_relaxed(readl_relaxed(sdma->base +
-> -                                            SIRFSOC_DMA_CH_LOOP_CTRL) &
-> -                              ~((1 << cid) | 1 << (cid + 16)),
-> -                              sdma->base + SIRFSOC_DMA_CH_LOOP_CTRL);
-> -               writel_relaxed(1 << cid, sdma->base + SIRFSOC_DMA_CH_VALID);
-> -               break;
-> -       default:
-> -               break;
-> -       }
-> -
-> -       list_splice_tail_init(&schan->active, &schan->free);
-> -       list_splice_tail_init(&schan->queued, &schan->free);
-> -
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       return 0;
-> -}
-> -
-> -static int sirfsoc_dma_pause_chan(struct dma_chan *chan)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(&schan->chan);
-> -       int cid = schan->chan.chan_id;
-> -       unsigned long flags;
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -
-> -       switch (sdma->type) {
-> -       case SIRFSOC_DMA_VER_A7V1:
-> -               writel_relaxed((1 << cid) | 1 << (cid + 16),
-> -                              sdma->base +
-> -                              SIRFSOC_DMA_CH_LOOP_CTRL_CLR_ATLAS7);
-> -               break;
-> -       case SIRFSOC_DMA_VER_A7V2:
-> -               writel_relaxed(0, sdma->base + SIRFSOC_DMA_LOOP_CTRL_ATLAS7);
-> -               break;
-> -       case SIRFSOC_DMA_VER_A6:
-> -               writel_relaxed(readl_relaxed(sdma->base +
-> -                                            SIRFSOC_DMA_CH_LOOP_CTRL) &
-> -                              ~((1 << cid) | 1 << (cid + 16)),
-> -                              sdma->base + SIRFSOC_DMA_CH_LOOP_CTRL);
-> -               break;
-> -
-> -       default:
-> -               break;
-> -       }
-> -
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       return 0;
-> -}
-> -
-> -static int sirfsoc_dma_resume_chan(struct dma_chan *chan)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(&schan->chan);
-> -       int cid = schan->chan.chan_id;
-> -       unsigned long flags;
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -       switch (sdma->type) {
-> -       case SIRFSOC_DMA_VER_A7V1:
-> -               writel_relaxed((1 << cid) | 1 << (cid + 16),
-> -                              sdma->base + SIRFSOC_DMA_CH_LOOP_CTRL_ATLAS7);
-> -               break;
-> -       case SIRFSOC_DMA_VER_A7V2:
-> -               writel_relaxed(0x10001,
-> -                              sdma->base + SIRFSOC_DMA_LOOP_CTRL_ATLAS7);
-> -               break;
-> -       case SIRFSOC_DMA_VER_A6:
-> -               writel_relaxed(readl_relaxed(sdma->base +
-> -                                            SIRFSOC_DMA_CH_LOOP_CTRL) |
-> -                              ((1 << cid) | 1 << (cid + 16)),
-> -                              sdma->base + SIRFSOC_DMA_CH_LOOP_CTRL);
-> -               break;
-> -
-> -       default:
-> -               break;
-> -       }
-> -
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       return 0;
-> -}
-> -
-> -/* Alloc channel resources */
-> -static int sirfsoc_dma_alloc_chan_resources(struct dma_chan *chan)
-> -{
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(chan);
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       struct sirfsoc_dma_desc *sdesc;
-> -       unsigned long flags;
-> -       LIST_HEAD(descs);
-> -       int i;
-> -
-> -       pm_runtime_get_sync(sdma->dma.dev);
-> -
-> -       /* Alloc descriptors for this channel */
-> -       for (i = 0; i < SIRFSOC_DMA_DESCRIPTORS; i++) {
-> -               sdesc = kzalloc(sizeof(*sdesc), GFP_KERNEL);
-> -               if (!sdesc) {
-> -                       dev_notice(sdma->dma.dev, "Memory allocation error. "
-> -                               "Allocated only %u descriptors\n", i);
-> -                       break;
-> -               }
-> -
-> -               dma_async_tx_descriptor_init(&sdesc->desc, chan);
-> -               sdesc->desc.flags = DMA_CTRL_ACK;
-> -               sdesc->desc.tx_submit = sirfsoc_dma_tx_submit;
-> -
-> -               list_add_tail(&sdesc->node, &descs);
-> -       }
-> -
-> -       /* Return error only if no descriptors were allocated */
-> -       if (i == 0)
-> -               return -ENOMEM;
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -
-> -       list_splice_tail_init(&descs, &schan->free);
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       return i;
-> -}
-> -
-> -/* Free channel resources */
-> -static void sirfsoc_dma_free_chan_resources(struct dma_chan *chan)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(chan);
-> -       struct sirfsoc_dma_desc *sdesc, *tmp;
-> -       unsigned long flags;
-> -       LIST_HEAD(descs);
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -
-> -       /* Channel must be idle */
-> -       BUG_ON(!list_empty(&schan->prepared));
-> -       BUG_ON(!list_empty(&schan->queued));
-> -       BUG_ON(!list_empty(&schan->active));
-> -       BUG_ON(!list_empty(&schan->completed));
-> -
-> -       /* Move data */
-> -       list_splice_tail_init(&schan->free, &descs);
-> -
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       /* Free descriptors */
-> -       list_for_each_entry_safe(sdesc, tmp, &descs, node)
-> -               kfree(sdesc);
-> -
-> -       pm_runtime_put(sdma->dma.dev);
-> -}
-> -
-> -/* Send pending descriptor to hardware */
-> -static void sirfsoc_dma_issue_pending(struct dma_chan *chan)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       unsigned long flags;
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -
-> -       if (list_empty(&schan->active) && !list_empty(&schan->queued))
-> -               sirfsoc_dma_execute(schan);
-> -
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -}
-> -
-> -/* Check request completion status */
-> -static enum dma_status
-> -sirfsoc_dma_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
-> -       struct dma_tx_state *txstate)
-> -{
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(chan);
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       unsigned long flags;
-> -       enum dma_status ret;
-> -       struct sirfsoc_dma_desc *sdesc;
-> -       int cid = schan->chan.chan_id;
-> -       unsigned long dma_pos;
-> -       unsigned long dma_request_bytes;
-> -       unsigned long residue;
-> -
-> -       spin_lock_irqsave(&schan->lock, flags);
-> -
-> -       if (list_empty(&schan->active)) {
-> -               ret = dma_cookie_status(chan, cookie, txstate);
-> -               dma_set_residue(txstate, 0);
-> -               spin_unlock_irqrestore(&schan->lock, flags);
-> -               return ret;
-> -       }
-> -       sdesc = list_first_entry(&schan->active, struct sirfsoc_dma_desc, node);
-> -       if (sdesc->cyclic)
-> -               dma_request_bytes = (sdesc->xlen + 1) * (sdesc->ylen + 1) *
-> -                       (sdesc->width * SIRFSOC_DMA_WORD_LEN);
+> -       int_mask = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base + PWRC_INT_MASK);
+> -       if (enable)
+> -               int_mask |= PWRC_ON_KEY_BIT;
 > -       else
-> -               dma_request_bytes = sdesc->xlen * SIRFSOC_DMA_WORD_LEN;
-> -
-> -       ret = dma_cookie_status(chan, cookie, txstate);
-> -
-> -       if (sdma->type == SIRFSOC_DMA_VER_A7V2)
-> -               cid = 0;
-> -
-> -       if (sdma->type == SIRFSOC_DMA_VER_A7V2) {
-> -               dma_pos = readl_relaxed(sdma->base + SIRFSOC_DMA_CUR_DATA_ADDR);
-> -       } else {
-> -               dma_pos = readl_relaxed(
-> -                       sdma->base + cid * 0x10 + SIRFSOC_DMA_CH_ADDR) << 2;
-> -       }
-> -
-> -       residue = dma_request_bytes - (dma_pos - sdesc->addr);
-> -       dma_set_residue(txstate, residue);
-> -
-> -       spin_unlock_irqrestore(&schan->lock, flags);
-> -
-> -       return ret;
+> -               int_mask &= ~PWRC_ON_KEY_BIT;
+> -       sirfsoc_rtc_iobrg_writel(int_mask, pwrcdrv->pwrc_base + PWRC_INT_MASK);
 > -}
 > -
-> -static struct dma_async_tx_descriptor *sirfsoc_dma_prep_interleaved(
-> -       struct dma_chan *chan, struct dma_interleaved_template *xt,
-> -       unsigned long flags)
+> -static int sirfsoc_pwrc_open(struct input_dev *input)
 > -{
-> -       struct sirfsoc_dma *sdma = dma_chan_to_sirfsoc_dma(chan);
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       struct sirfsoc_dma_desc *sdesc = NULL;
-> -       unsigned long iflags;
-> -       int ret;
+> -       struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
 > -
-> -       if ((xt->dir != DMA_MEM_TO_DEV) && (xt->dir != DMA_DEV_TO_MEM)) {
-> -               ret = -EINVAL;
-> -               goto err_dir;
-> -       }
-> -
-> -       /* Get free descriptor */
-> -       spin_lock_irqsave(&schan->lock, iflags);
-> -       if (!list_empty(&schan->free)) {
-> -               sdesc = list_first_entry(&schan->free, struct sirfsoc_dma_desc,
-> -                       node);
-> -               list_del(&sdesc->node);
-> -       }
-> -       spin_unlock_irqrestore(&schan->lock, iflags);
-> -
-> -       if (!sdesc) {
-> -               /* try to free completed descriptors */
-> -               sirfsoc_dma_process_completed(sdma);
-> -               ret = 0;
-> -               goto no_desc;
-> -       }
-> -
-> -       /* Place descriptor in prepared list */
-> -       spin_lock_irqsave(&schan->lock, iflags);
-> -
-> -       /*
-> -        * Number of chunks in a frame can only be 1 for prima2
-> -        * and ylen (number of frame - 1) must be at least 0
-> -        */
-> -       if ((xt->frame_size == 1) && (xt->numf > 0)) {
-> -               sdesc->cyclic = 0;
-> -               sdesc->xlen = xt->sgl[0].size / SIRFSOC_DMA_WORD_LEN;
-> -               sdesc->width = (xt->sgl[0].size + xt->sgl[0].icg) /
-> -                               SIRFSOC_DMA_WORD_LEN;
-> -               sdesc->ylen = xt->numf - 1;
-> -               if (xt->dir == DMA_MEM_TO_DEV) {
-> -                       sdesc->addr = xt->src_start;
-> -                       sdesc->dir = 1;
-> -               } else {
-> -                       sdesc->addr = xt->dst_start;
-> -                       sdesc->dir = 0;
-> -               }
-> -
-> -               list_add_tail(&sdesc->node, &schan->prepared);
-> -       } else {
-> -               pr_err("sirfsoc DMA Invalid xfer\n");
-> -               ret = -EINVAL;
-> -               goto err_xfer;
-> -       }
-> -       spin_unlock_irqrestore(&schan->lock, iflags);
-> -
-> -       return &sdesc->desc;
-> -err_xfer:
-> -       spin_unlock_irqrestore(&schan->lock, iflags);
-> -no_desc:
-> -err_dir:
-> -       return ERR_PTR(ret);
-> -}
-> -
-> -static struct dma_async_tx_descriptor *
-> -sirfsoc_dma_prep_cyclic(struct dma_chan *chan, dma_addr_t addr,
-> -       size_t buf_len, size_t period_len,
-> -       enum dma_transfer_direction direction, unsigned long flags)
-> -{
-> -       struct sirfsoc_dma_chan *schan = dma_chan_to_sirfsoc_dma_chan(chan);
-> -       struct sirfsoc_dma_desc *sdesc = NULL;
-> -       unsigned long iflags;
-> -
-> -       /*
-> -        * we only support cycle transfer with 2 period
-> -        * If the X-length is set to 0, it would be the loop mode.
-> -        * The DMA address keeps increasing until reaching the end of a loop
-> -        * area whose size is defined by (DMA_WIDTH x (Y_LENGTH + 1)). Then
-> -        * the DMA address goes back to the beginning of this area.
-> -        * In loop mode, the DMA data region is divided into two parts, BUFA
-> -        * and BUFB. DMA controller generates interrupts twice in each loop:
-> -        * when the DMA address reaches the end of BUFA or the end of the
-> -        * BUFB
-> -        */
-> -       if (buf_len !=  2 * period_len)
-> -               return ERR_PTR(-EINVAL);
-> -
-> -       /* Get free descriptor */
-> -       spin_lock_irqsave(&schan->lock, iflags);
-> -       if (!list_empty(&schan->free)) {
-> -               sdesc = list_first_entry(&schan->free, struct sirfsoc_dma_desc,
-> -                       node);
-> -               list_del(&sdesc->node);
-> -       }
-> -       spin_unlock_irqrestore(&schan->lock, iflags);
-> -
-> -       if (!sdesc)
-> -               return NULL;
-> -
-> -       /* Place descriptor in prepared list */
-> -       spin_lock_irqsave(&schan->lock, iflags);
-> -       sdesc->addr = addr;
-> -       sdesc->cyclic = 1;
-> -       sdesc->xlen = 0;
-> -       sdesc->ylen = buf_len / SIRFSOC_DMA_WORD_LEN - 1;
-> -       sdesc->width = 1;
-> -       list_add_tail(&sdesc->node, &schan->prepared);
-> -       spin_unlock_irqrestore(&schan->lock, iflags);
-> -
-> -       return &sdesc->desc;
-> -}
-> -
-> -/*
-> - * The DMA controller consists of 16 independent DMA channels.
-> - * Each channel is allocated to a different function
-> - */
-> -bool sirfsoc_dma_filter_id(struct dma_chan *chan, void *chan_id)
-> -{
-> -       unsigned int ch_nr = (unsigned int) chan_id;
-> -
-> -       if (ch_nr == chan->chan_id +
-> -               chan->device->dev_id * SIRFSOC_DMA_CHANNELS)
-> -               return true;
-> -
-> -       return false;
-> -}
-> -EXPORT_SYMBOL(sirfsoc_dma_filter_id);
-> -
-> -#define SIRFSOC_DMA_BUSWIDTHS \
-> -       (BIT(DMA_SLAVE_BUSWIDTH_UNDEFINED) | \
-> -       BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) | \
-> -       BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) | \
-> -       BIT(DMA_SLAVE_BUSWIDTH_4_BYTES) | \
-> -       BIT(DMA_SLAVE_BUSWIDTH_8_BYTES))
-> -
-> -static struct dma_chan *of_dma_sirfsoc_xlate(struct of_phandle_args *dma_spec,
-> -       struct of_dma *ofdma)
-> -{
-> -       struct sirfsoc_dma *sdma = ofdma->of_dma_data;
-> -       unsigned int request = dma_spec->args[0];
-> -
-> -       if (request >= SIRFSOC_DMA_CHANNELS)
-> -               return NULL;
-> -
-> -       return dma_get_slave_channel(&sdma->channels[request].chan);
-> -}
-> -
-> -static int sirfsoc_dma_probe(struct platform_device *op)
-> -{
-> -       struct device_node *dn = op->dev.of_node;
-> -       struct device *dev = &op->dev;
-> -       struct dma_device *dma;
-> -       struct sirfsoc_dma *sdma;
-> -       struct sirfsoc_dma_chan *schan;
-> -       struct sirfsoc_dmadata *data;
-> -       struct resource res;
-> -       ulong regs_start, regs_size;
-> -       u32 id;
-> -       int ret, i;
-> -
-> -       sdma = devm_kzalloc(dev, sizeof(*sdma), GFP_KERNEL);
-> -       if (!sdma)
-> -               return -ENOMEM;
-> -
-> -       data = (struct sirfsoc_dmadata *)
-> -               (of_match_device(op->dev.driver->of_match_table,
-> -                                &op->dev)->data);
-> -       sdma->exec_desc = data->exec;
-> -       sdma->type = data->type;
-> -
-> -       if (of_property_read_u32(dn, "cell-index", &id)) {
-> -               dev_err(dev, "Fail to get DMAC index\n");
-> -               return -ENODEV;
-> -       }
-> -
-> -       sdma->irq = irq_of_parse_and_map(dn, 0);
-> -       if (!sdma->irq) {
-> -               dev_err(dev, "Error mapping IRQ!\n");
-> -               return -EINVAL;
-> -       }
-> -
-> -       sdma->clk = devm_clk_get(dev, NULL);
-> -       if (IS_ERR(sdma->clk)) {
-> -               dev_err(dev, "failed to get a clock.\n");
-> -               return PTR_ERR(sdma->clk);
-> -       }
-> -
-> -       ret = of_address_to_resource(dn, 0, &res);
-> -       if (ret) {
-> -               dev_err(dev, "Error parsing memory region!\n");
-> -               goto irq_dispose;
-> -       }
-> -
-> -       regs_start = res.start;
-> -       regs_size = resource_size(&res);
-> -
-> -       sdma->base = devm_ioremap(dev, regs_start, regs_size);
-> -       if (!sdma->base) {
-> -               dev_err(dev, "Error mapping memory region!\n");
-> -               ret = -ENOMEM;
-> -               goto irq_dispose;
-> -       }
-> -
-> -       ret = request_irq(sdma->irq, &sirfsoc_dma_irq, 0, DRV_NAME, sdma);
-> -       if (ret) {
-> -               dev_err(dev, "Error requesting IRQ!\n");
-> -               ret = -EINVAL;
-> -               goto irq_dispose;
-> -       }
-> -
-> -       dma = &sdma->dma;
-> -       dma->dev = dev;
-> -
-> -       dma->device_alloc_chan_resources = sirfsoc_dma_alloc_chan_resources;
-> -       dma->device_free_chan_resources = sirfsoc_dma_free_chan_resources;
-> -       dma->device_issue_pending = sirfsoc_dma_issue_pending;
-> -       dma->device_config = sirfsoc_dma_slave_config;
-> -       dma->device_pause = sirfsoc_dma_pause_chan;
-> -       dma->device_resume = sirfsoc_dma_resume_chan;
-> -       dma->device_terminate_all = sirfsoc_dma_terminate_all;
-> -       dma->device_tx_status = sirfsoc_dma_tx_status;
-> -       dma->device_prep_interleaved_dma = sirfsoc_dma_prep_interleaved;
-> -       dma->device_prep_dma_cyclic = sirfsoc_dma_prep_cyclic;
-> -       dma->src_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
-> -       dma->dst_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
-> -       dma->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
-> -
-> -       INIT_LIST_HEAD(&dma->channels);
-> -       dma_cap_set(DMA_SLAVE, dma->cap_mask);
-> -       dma_cap_set(DMA_CYCLIC, dma->cap_mask);
-> -       dma_cap_set(DMA_INTERLEAVE, dma->cap_mask);
-> -       dma_cap_set(DMA_PRIVATE, dma->cap_mask);
-> -
-> -       for (i = 0; i < SIRFSOC_DMA_CHANNELS; i++) {
-> -               schan = &sdma->channels[i];
-> -
-> -               schan->chan.device = dma;
-> -               dma_cookie_init(&schan->chan);
-> -
-> -               INIT_LIST_HEAD(&schan->free);
-> -               INIT_LIST_HEAD(&schan->prepared);
-> -               INIT_LIST_HEAD(&schan->queued);
-> -               INIT_LIST_HEAD(&schan->active);
-> -               INIT_LIST_HEAD(&schan->completed);
-> -
-> -               spin_lock_init(&schan->lock);
-> -               list_add_tail(&schan->chan.device_node, &dma->channels);
-> -       }
-> -
-> -       tasklet_setup(&sdma->tasklet, sirfsoc_dma_tasklet);
-> -
-> -       /* Register DMA engine */
-> -       dev_set_drvdata(dev, sdma);
-> -
-> -       ret = dma_async_device_register(dma);
-> -       if (ret)
-> -               goto free_irq;
-> -
-> -       /* Device-tree DMA controller registration */
-> -       ret = of_dma_controller_register(dn, of_dma_sirfsoc_xlate, sdma);
-> -       if (ret) {
-> -               dev_err(dev, "failed to register DMA controller\n");
-> -               goto unreg_dma_dev;
-> -       }
-> -
-> -       pm_runtime_enable(&op->dev);
-> -       dev_info(dev, "initialized SIRFSOC DMAC driver\n");
-> -
-> -       return 0;
-> -
-> -unreg_dma_dev:
-> -       dma_async_device_unregister(dma);
-> -free_irq:
-> -       free_irq(sdma->irq, sdma);
-> -irq_dispose:
-> -       irq_dispose_mapping(sdma->irq);
-> -       return ret;
-> -}
-> -
-> -static int sirfsoc_dma_remove(struct platform_device *op)
-> -{
-> -       struct device *dev = &op->dev;
-> -       struct sirfsoc_dma *sdma = dev_get_drvdata(dev);
-> -
-> -       of_dma_controller_free(op->dev.of_node);
-> -       dma_async_device_unregister(&sdma->dma);
-> -       free_irq(sdma->irq, sdma);
-> -       tasklet_kill(&sdma->tasklet);
-> -       irq_dispose_mapping(sdma->irq);
-> -       pm_runtime_disable(&op->dev);
-> -       if (!pm_runtime_status_suspended(&op->dev))
-> -               sirfsoc_dma_runtime_suspend(&op->dev);
+> -       sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
 > -
 > -       return 0;
 > -}
 > -
-> -static int __maybe_unused sirfsoc_dma_runtime_suspend(struct device *dev)
+> -static void sirfsoc_pwrc_close(struct input_dev *input)
 > -{
-> -       struct sirfsoc_dma *sdma = dev_get_drvdata(dev);
+> -       struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
 > -
-> -       clk_disable_unprepare(sdma->clk);
-> -       return 0;
+> -       sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
+> -       cancel_delayed_work_sync(&pwrcdrv->work);
 > -}
 > -
-> -static int __maybe_unused sirfsoc_dma_runtime_resume(struct device *dev)
-> -{
-> -       struct sirfsoc_dma *sdma = dev_get_drvdata(dev);
-> -       int ret;
-> -
-> -       ret = clk_prepare_enable(sdma->clk);
-> -       if (ret < 0) {
-> -               dev_err(dev, "clk_enable failed: %d\n", ret);
-> -               return ret;
-> -       }
-> -       return 0;
-> -}
-> -
-> -static int __maybe_unused sirfsoc_dma_pm_suspend(struct device *dev)
-> -{
-> -       struct sirfsoc_dma *sdma = dev_get_drvdata(dev);
-> -       struct sirfsoc_dma_regs *save = &sdma->regs_save;
-> -       struct sirfsoc_dma_chan *schan;
-> -       int ch;
-> -       int ret;
-> -       int count;
-> -       u32 int_offset;
-> -
-> -       /*
-> -        * if we were runtime-suspended before, resume to enable clock
-> -        * before accessing register
-> -        */
-> -       if (pm_runtime_status_suspended(dev)) {
-> -               ret = sirfsoc_dma_runtime_resume(dev);
-> -               if (ret < 0)
-> -                       return ret;
-> -       }
-> -
-> -       if (sdma->type == SIRFSOC_DMA_VER_A7V2) {
-> -               count = 1;
-> -               int_offset = SIRFSOC_DMA_INT_EN_ATLAS7;
-> -       } else {
-> -               count = SIRFSOC_DMA_CHANNELS;
-> -               int_offset = SIRFSOC_DMA_INT_EN;
-> -       }
-> -
-> -       /*
-> -        * DMA controller will lose all registers while suspending
-> -        * so we need to save registers for active channels
-> -        */
-> -       for (ch = 0; ch < count; ch++) {
-> -               schan = &sdma->channels[ch];
-> -               if (list_empty(&schan->active))
-> -                       continue;
-> -               save->ctrl[ch] = readl_relaxed(sdma->base +
-> -                       ch * 0x10 + SIRFSOC_DMA_CH_CTRL);
-> -       }
-> -       save->interrupt_en = readl_relaxed(sdma->base + int_offset);
-> -
-> -       /* Disable clock */
-> -       sirfsoc_dma_runtime_suspend(dev);
-> -
-> -       return 0;
-> -}
-> -
-> -static int __maybe_unused sirfsoc_dma_pm_resume(struct device *dev)
-> -{
-> -       struct sirfsoc_dma *sdma = dev_get_drvdata(dev);
-> -       struct sirfsoc_dma_regs *save = &sdma->regs_save;
-> -       struct sirfsoc_dma_desc *sdesc;
-> -       struct sirfsoc_dma_chan *schan;
-> -       int ch;
-> -       int ret;
-> -       int count;
-> -       u32 int_offset;
-> -       u32 width_offset;
-> -
-> -       /* Enable clock before accessing register */
-> -       ret = sirfsoc_dma_runtime_resume(dev);
-> -       if (ret < 0)
-> -               return ret;
-> -
-> -       if (sdma->type == SIRFSOC_DMA_VER_A7V2) {
-> -               count = 1;
-> -               int_offset = SIRFSOC_DMA_INT_EN_ATLAS7;
-> -               width_offset = SIRFSOC_DMA_WIDTH_ATLAS7;
-> -       } else {
-> -               count = SIRFSOC_DMA_CHANNELS;
-> -               int_offset = SIRFSOC_DMA_INT_EN;
-> -               width_offset = SIRFSOC_DMA_WIDTH_0;
-> -       }
-> -
-> -       writel_relaxed(save->interrupt_en, sdma->base + int_offset);
-> -       for (ch = 0; ch < count; ch++) {
-> -               schan = &sdma->channels[ch];
-> -               if (list_empty(&schan->active))
-> -                       continue;
-> -               sdesc = list_first_entry(&schan->active,
-> -                       struct sirfsoc_dma_desc,
-> -                       node);
-> -               writel_relaxed(sdesc->width,
-> -                       sdma->base + width_offset + ch * 4);
-> -               writel_relaxed(sdesc->xlen,
-> -                       sdma->base + ch * 0x10 + SIRFSOC_DMA_CH_XLEN);
-> -               writel_relaxed(sdesc->ylen,
-> -                       sdma->base + ch * 0x10 + SIRFSOC_DMA_CH_YLEN);
-> -               writel_relaxed(save->ctrl[ch],
-> -                       sdma->base + ch * 0x10 + SIRFSOC_DMA_CH_CTRL);
-> -               if (sdma->type == SIRFSOC_DMA_VER_A7V2) {
-> -                       writel_relaxed(sdesc->addr,
-> -                               sdma->base + SIRFSOC_DMA_CH_ADDR);
-> -               } else {
-> -                       writel_relaxed(sdesc->addr >> 2,
-> -                               sdma->base + ch * 0x10 + SIRFSOC_DMA_CH_ADDR);
-> -
-> -               }
-> -       }
-> -
-> -       /* if we were runtime-suspended before, suspend again */
-> -       if (pm_runtime_status_suspended(dev))
-> -               sirfsoc_dma_runtime_suspend(dev);
-> -
-> -       return 0;
-> -}
-> -
-> -static const struct dev_pm_ops sirfsoc_dma_pm_ops = {
-> -       SET_RUNTIME_PM_OPS(sirfsoc_dma_runtime_suspend, sirfsoc_dma_runtime_resume, NULL)
-> -       SET_SYSTEM_SLEEP_PM_OPS(sirfsoc_dma_pm_suspend, sirfsoc_dma_pm_resume)
-> -};
-> -
-> -static struct sirfsoc_dmadata sirfsoc_dmadata_a6 = {
-> -       .exec = sirfsoc_dma_execute_hw_a6,
-> -       .type = SIRFSOC_DMA_VER_A6,
-> -};
-> -
-> -static struct sirfsoc_dmadata sirfsoc_dmadata_a7v1 = {
-> -       .exec = sirfsoc_dma_execute_hw_a7v1,
-> -       .type = SIRFSOC_DMA_VER_A7V1,
-> -};
-> -
-> -static struct sirfsoc_dmadata sirfsoc_dmadata_a7v2 = {
-> -       .exec = sirfsoc_dma_execute_hw_a7v2,
-> -       .type = SIRFSOC_DMA_VER_A7V2,
-> -};
-> -
-> -static const struct of_device_id sirfsoc_dma_match[] = {
-> -       { .compatible = "sirf,prima2-dmac", .data = &sirfsoc_dmadata_a6,},
-> -       { .compatible = "sirf,atlas7-dmac", .data = &sirfsoc_dmadata_a7v1,},
-> -       { .compatible = "sirf,atlas7-dmac-v2", .data = &sirfsoc_dmadata_a7v2,},
+> -static const struct of_device_id sirfsoc_pwrc_of_match[] = {
+> -       { .compatible = "sirf,prima2-pwrc" },
 > -       {},
 > -};
-> -MODULE_DEVICE_TABLE(of, sirfsoc_dma_match);
+> -MODULE_DEVICE_TABLE(of, sirfsoc_pwrc_of_match);
 > -
-> -static struct platform_driver sirfsoc_dma_driver = {
-> -       .probe          = sirfsoc_dma_probe,
-> -       .remove         = sirfsoc_dma_remove,
-> -       .driver = {
-> -               .name = DRV_NAME,
-> -               .pm = &sirfsoc_dma_pm_ops,
-> -               .of_match_table = sirfsoc_dma_match,
-> -       },
+> -static int sirfsoc_pwrc_probe(struct platform_device *pdev)
+> -{
+> -       struct device_node *np = pdev->dev.of_node;
+> -       struct sirfsoc_pwrc_drvdata *pwrcdrv;
+> -       int irq;
+> -       int error;
+> -
+> -       pwrcdrv = devm_kzalloc(&pdev->dev, sizeof(struct sirfsoc_pwrc_drvdata),
+> -                              GFP_KERNEL);
+> -       if (!pwrcdrv) {
+> -               dev_info(&pdev->dev, "Not enough memory for the device data\n");
+> -               return -ENOMEM;
+> -       }
+> -
+> -       /*
+> -        * We can't use of_iomap because pwrc is not mapped in memory,
+> -        * the so-called base address is only offset in rtciobrg
+> -        */
+> -       error = of_property_read_u32(np, "reg", &pwrcdrv->pwrc_base);
+> -       if (error) {
+> -               dev_err(&pdev->dev,
+> -                       "unable to find base address of pwrc node in dtb\n");
+> -               return error;
+> -       }
+> -
+> -       pwrcdrv->input = devm_input_allocate_device(&pdev->dev);
+> -       if (!pwrcdrv->input)
+> -               return -ENOMEM;
+> -
+> -       pwrcdrv->input->name = "sirfsoc pwrckey";
+> -       pwrcdrv->input->phys = "pwrc/input0";
+> -       pwrcdrv->input->evbit[0] = BIT_MASK(EV_KEY);
+> -       input_set_capability(pwrcdrv->input, EV_KEY, KEY_POWER);
+> -
+> -       INIT_DELAYED_WORK(&pwrcdrv->work, sirfsoc_pwrc_report_event);
+> -
+> -       pwrcdrv->input->open = sirfsoc_pwrc_open;
+> -       pwrcdrv->input->close = sirfsoc_pwrc_close;
+> -
+> -       input_set_drvdata(pwrcdrv->input, pwrcdrv);
+> -
+> -       /* Make sure the device is quiesced */
+> -       sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
+> -
+> -       irq = platform_get_irq(pdev, 0);
+> -       error = devm_request_irq(&pdev->dev, irq,
+> -                                sirfsoc_pwrc_isr, 0,
+> -                                "sirfsoc_pwrc_int", pwrcdrv);
+> -       if (error) {
+> -               dev_err(&pdev->dev, "unable to claim irq %d, error: %d\n",
+> -                       irq, error);
+> -               return error;
+> -       }
+> -
+> -       error = input_register_device(pwrcdrv->input);
+> -       if (error) {
+> -               dev_err(&pdev->dev,
+> -                       "unable to register input device, error: %d\n",
+> -                       error);
+> -               return error;
+> -       }
+> -
+> -       dev_set_drvdata(&pdev->dev, pwrcdrv);
+> -       device_init_wakeup(&pdev->dev, 1);
+> -
+> -       return 0;
+> -}
+> -
+> -static int __maybe_unused sirfsoc_pwrc_resume(struct device *dev)
+> -{
+> -       struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_get_drvdata(dev);
+> -       struct input_dev *input = pwrcdrv->input;
+> -
+> -       /*
+> -        * Do not mask pwrc interrupt as we want pwrc work as a wakeup source
+> -        * if users touch X_ONKEY_B, see arch/arm/mach-prima2/pm.c
+> -        */
+> -       mutex_lock(&input->mutex);
+> -       if (input_device_enabled(input))
+> -               sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
+> -       mutex_unlock(&input->mutex);
+> -
+> -       return 0;
+> -}
+> -
+> -static SIMPLE_DEV_PM_OPS(sirfsoc_pwrc_pm_ops, NULL, sirfsoc_pwrc_resume);
+> -
+> -static struct platform_driver sirfsoc_pwrc_driver = {
+> -       .probe          = sirfsoc_pwrc_probe,
+> -       .driver         = {
+> -               .name   = "sirfsoc-pwrc",
+> -               .pm     = &sirfsoc_pwrc_pm_ops,
+> -               .of_match_table = sirfsoc_pwrc_of_match,
+> -       }
 > -};
 > -
-> -static __init int sirfsoc_dma_init(void)
-> -{
-> -       return platform_driver_register(&sirfsoc_dma_driver);
-> -}
+> -module_platform_driver(sirfsoc_pwrc_driver);
 > -
-> -static void __exit sirfsoc_dma_exit(void)
-> -{
-> -       platform_driver_unregister(&sirfsoc_dma_driver);
-> -}
-> -
-> -subsys_initcall(sirfsoc_dma_init);
-> -module_exit(sirfsoc_dma_exit);
-> -
-> -MODULE_AUTHOR("Rongjun Ying <rongjun.ying@csr.com>");
-> -MODULE_AUTHOR("Barry Song <baohua.song@csr.com>");
-> -MODULE_DESCRIPTION("SIRFSOC DMA control driver");
 > -MODULE_LICENSE("GPL v2");
-> diff --git a/include/linux/sirfsoc_dma.h b/include/linux/sirfsoc_dma.h
-> deleted file mode 100644
-> index 50161b6afb61..000000000000
-> --- a/include/linux/sirfsoc_dma.h
-> +++ /dev/null
-> @@ -1,7 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef _SIRFSOC_DMA_H_
-> -#define _SIRFSOC_DMA_H_
-> -
-> -bool sirfsoc_dma_filter_id(struct dma_chan *chan, void *chan_id);
-> -
-> -#endif
+> -MODULE_AUTHOR("Binghua Duan <Binghua.Duan@csr.com>, Xianglong Du <Xianglong.Du@csr.com>");
+> -MODULE_DESCRIPTION("CSR Prima2 PWRC Driver");
+> -MODULE_ALIAS("platform:sirfsoc-pwrc");
 > --
 > 2.29.2
 >
