@@ -2,399 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9772FDAE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D602FDAF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391199AbhATUbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387713AbhATUYo (ORCPT
+        id S2388353AbhATUf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:35:26 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:41862 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388177AbhATU3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:24:44 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E92C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:24:01 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b62so21915940ybg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:24:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=aXMIL5qsalVtc+s+kBFolu7vThL+LyG1arvRPXSP7r0=;
-        b=ioUDFuwefqa9RVnEymE/YPxgB/WIkiuDcEqqGn02yX7EnnX2/QelUlthpRYq1CXQbu
-         LSp4OZJFsH/tYQAXQi38QxIohN2LDXwNBM1RRFssDuRskT2YfhcZy/vlPbWfMNEsarE1
-         Jp6RVSbN+tiiFS3fueneYQoOk+RchbXyMlm0cyY9Mjk3wT24BuGP073dOaISx8/+QoT4
-         GtEmalX94PPnfftf0+GbraKEP9WHdvVxMmxFSK/xJYeXxUoGykHwGzR+y8Pfc6CmBymM
-         teQ+1DGbmn0aWS26wZmX/WyKK95QjFahlQMV39F9s4tl5qpNwhupBCjqv+HDa2iV3zxa
-         PPzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=aXMIL5qsalVtc+s+kBFolu7vThL+LyG1arvRPXSP7r0=;
-        b=Mhb3L7AjOe3kjdHDmE7DAGLk2nhI1KLjlUJ+EbOtab2NOVRWrESXToWUQc1VJ0MkRj
-         e39pVaYKAiJlsneos/Zf3+L1G8mzZEFvUlnpEDhTNg5SuNx8Lg0D3gzXqzmTSXiXTyzl
-         VAzPQ8CJjS3/FSX1YnZb5hj3p5yA9EOf0yOYxhU13HrqKsP8rGbYfIWyFFmJZn3L2q3V
-         mzlirUZ1os3X7VFiNkcaLTwW+vcCbeZAaCzNDEr1k+RXVboa719l1fGAUGUP9CBEwEQi
-         J8cwSl2beSlK4qK8/vZpuIDvGV1gEql+/DV4MKxal4Se+7Ki4iEEUE2lezKcrouaLCyQ
-         r5Bw==
-X-Gm-Message-State: AOAM531XiH+6ylx+EhUKwDnlBJCVV44PCUuV2yfh3IWUA6LujvcmIWBc
-        h+GIzw9IqksLSb4cItCrSR1cDsCeyGU=
-X-Google-Smtp-Source: ABdhPJyEZ0oi4rNCubYOlOujp4VAKYBunoFZKIwkq6C78pmuAXpjocHhun54CgedRBYmMIk3NG2UOovXhjE=
-Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f693:9fff:fef4:2055])
- (user=surenb job=sendgmr) by 2002:a25:2349:: with SMTP id j70mr16364263ybj.362.1611174240945;
- Wed, 20 Jan 2021 12:24:00 -0800 (PST)
-Date:   Wed, 20 Jan 2021 12:23:37 -0800
-Message-Id: <20210120202337.1481402-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 1/1] process_madvise.2: Add process_madvise man page
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     linux-man@vger.kernel.org
-Cc:     akpm@linux-foundation.org, jannh@google.com, keescook@chromium.org,
-        jeffv@google.com, minchan@kernel.org, mhocko@suse.com,
-        shakeelb@google.com, rientjes@google.com, edgararriaga@google.com,
-        timmurray@google.com, linux-mm@kvack.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        surenb@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 20 Jan 2021 15:29:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611174523; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=DUldyVZxMpgIEQjSwc3NKK614yX0lFh0/8+DOhlGEf8=; b=DlqlTmKkFKND/TALMzQcvJIs+X6t7Ysk/51H1dvbJh6wJfI0bgBNhmYqUSPq+1i28QO/DCio
+ D1XO1gl3CjJIcxIpdPXEVsS9alXnpHU+ylPylI57l5QITYbH0nul4unm0tWV3RQkLQ69OPwe
+ kBufFJyqgxsgZ1hCCicEy8Z1T2M=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60089254beacd1a2525b5af2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Jan 2021 20:28:04
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8536BC433ED; Wed, 20 Jan 2021 20:28:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB868C43463;
+        Wed, 20 Jan 2021 20:28:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB868C43463
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
+ sendfile
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
+References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
+ <20210120091033.GA3683647@infradead.org>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <c6205eac-582d-6f0b-4ea0-7aa560af2527@codeaurora.org>
+Date:   Wed, 20 Jan 2021 12:28:00 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210120091033.GA3683647@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initial version of process_madvise(2) manual page. Initial text was
-extracted from [1], amended after fix [2] and more details added using
-man pages of madvise(2) and process_vm_read(2) as examples. It also
-includes the changes to required permission proposed in [3].
 
-[1] https://lore.kernel.org/patchwork/patch/1297933/
-[2] https://lkml.org/lkml/2020/12/8/1282
-[3] https://patchwork.kernel.org/project/selinux/patch/20210111170622.2613577-1-surenb@google.com/#23888311
+On 1/20/2021 1:10 AM, Christoph Hellwig wrote:
+> Can you give this patch a spin?
+Thanks! This patch fixed the fallback mechanism for me. Attaching logs:
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
+[   84.410162][  T244] qcom_q6v5_pas xxxxxxxx.remoteproc-cdsp: Direct 
+firmware load for cdsp.bX failed with error -2
+[   84.418276][  T244] qcom_q6v5_pas xxxxxxxx.remoteproc-cdsp: Falling 
+back to sysfs fallback for: cdsp.bX
+[   84.471558][  T393] ueventd: firmware: loading 'cdsp.bX' for 
+'/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/firmware/cdsp.bX'
+[   84.491936][  T393] ueventd: loading 
+/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/firmware/cdsp.bX took 22ms
+[  103.331486][  T244] remoteproc remoteproc1: remote processor 
+xxxxxxxx.remoteproc-cdsp is now up
 
-Adding the plane text version for ease of review:
 
-NAME
-    process_madvise - give advice about use of memory to a process
-
-SYNOPSIS
-    #include <sys/uio.h>
-
-    ssize_t process_madvise(int pidfd,
-                           const struct iovec *iovec,
-                           unsigned long vlen,
-                           int advice,
-                           unsigned int flags);
-
-DESCRIPTION
-    The process_madvise() system call is used to give advice or directions to
-    the kernel about the address ranges from external process as well as local
-    process. It provides the advice to address ranges of process described by
-    iovec and vlen. The goal of such advice is to improve system or application
-    performance.
-
-    The pidfd selects the process referred to by the PID file descriptor
-    specified in pidfd. (see pidofd_open(2) for further information).
-
-    The pointer iovec points to an array of iovec structures, defined in
-    <sys/uio.h> as:
-
-    struct iovec {
-        void  *iov_base;    /* Starting address */
-        size_t iov_len;     /* Number of bytes to transfer */
-    };
-
-    The iovec describes address ranges beginning at iov_base address and with
-    the size of iov_len bytes.
-
-    The vlen represents the number of elements in iovec.
-
-    The advice can be one of the values listed below.
-
-  Linux-specific advice values
-    The following Linux-specific advice values have no counterparts in the
-    POSIX-specified posix_madvise(3), and may or may not have counterparts in
-    the madvise() interface available on other implementations.
-
-    MADV_COLD (since Linux 5.4.1)
-        Deactivate a given range of pages by moving them from active to
-        inactive LRU list. This is done to accelerate the reclaim of these
-        pages. The advice might be ignored for some pages in the range when it
-        is not applicable.
-    MADV_PAGEOUT (since Linux 5.4.1)
-        Reclaim a given range of pages. This is done to free up memory occupied
-        by these pages. If a page is anonymous it will be swapped out. If a
-        page is file-backed and dirty it will be written back into the backing
-        storage. The advice might be ignored for some pages in the range when
-        it is not applicable.
-
-    The flags argument is reserved for future use; currently, this argument must
-    be specified as 0.
-
-    The value specified in the vlen argument must be less than or equal to
-    IOV_MAX (defined in <limits.h> or accessible via the call
-    sysconf(_SC_IOV_MAX)).
-
-    The vlen and iovec arguments are checked before applying any hints. If the
-    vlen is too big, or iovec is invalid, an error will be returned
-    immediately.
-
-    Hint might be applied to a part of iovec if one of its elements points to
-    an invalid memory region in the remote process. No further elements will be
-    processed beyond that point.
-
-    Permission to provide a hint to external process is governed by a ptrace
-    access mode PTRACE_MODE_READ_REALCREDS check; see ptrace(2) and
-    CAP_SYS_ADMIN capability that caller should have in order to affect
-    performance of an external process.
-
-RETURN VALUE
-    On success, process_madvise() returns the number of bytes advised. This
-    return value may be less than the total number of requested bytes, if an
-    error occurred. The caller should check return value to determine whether
-    a partial advice occurred.
-ERRORS
-    EFAULT The memory described by iovec is outside the accessible address
-           space of the process pid.
-    EINVAL flags is not 0.
-    EINVAL The sum of the iov_len values of iovec overflows a ssize_t value.
-    EINVAL vlen is too large.
-    ENOMEM Could not allocate memory for internal copies of the iovec
-           structures.
-    EPERM The caller does not have permission to access the address space of
-          the process pidfd.
-    ESRCH No process with ID pidfd exists.
-
-VERSIONS
-    Since Linux 5.10, support for this system call is optional, depending on
-    the setting of the CONFIG_ADVISE_SYSCALLS configuration option.
-
-SEE ALSO
-    madvise(2), pidofd_open(2), process_vm_readv(2), process_vm_write(2)
-
- man2/process_madvise.2 | 208 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 208 insertions(+)
- create mode 100644 man2/process_madvise.2
-
-diff --git a/man2/process_madvise.2 b/man2/process_madvise.2
-new file mode 100644
-index 000000000..9bb5cb5ed
---- /dev/null
-+++ b/man2/process_madvise.2
-@@ -0,0 +1,208 @@
-+.\" Copyright (C) 2021 Suren Baghdasaryan <surenb@google.com>
-+.\" and Copyright (C) 2021 Minchan Kim <minchan@kernel.org>
-+.\"
-+.\" %%%LICENSE_START(VERBATIM)
-+.\" Permission is granted to make and distribute verbatim copies of this
-+.\" manual provided the copyright notice and this permission notice are
-+.\" preserved on all copies.
-+.\"
-+.\" Permission is granted to copy and distribute modified versions of this
-+.\" manual under the conditions for verbatim copying, provided that the
-+.\" entire resulting derived work is distributed under the terms of a
-+.\" permission notice identical to this one.
-+.\"
-+.\" Since the Linux kernel and libraries are constantly changing, this
-+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-+.\" responsibility for errors or omissions, or for damages resulting from
-+.\" the use of the information contained herein.  The author(s) may not
-+.\" have taken the same level of care in the production of this manual,
-+.\" which is licensed free of charge, as they might when working
-+.\" professionally.
-+.\"
-+.\" Formatted or processed versions of this manual, if unaccompanied by
-+.\" the source, must acknowledge the copyright and authors of this work.
-+.\" %%%LICENSE_END
-+.\"
-+.\" Commit ecb8ac8b1f146915aa6b96449b66dd48984caacc
-+.\"
-+.TH PROCESS_MADVISE 2 2021-01-12 "Linux" "Linux Programmer's Manual"
-+.SH NAME
-+process_madvise \- give advice about use of memory to a process
-+.SH SYNOPSIS
-+.nf
-+.B #include <sys/uio.h>
-+.PP
-+.BI "ssize_t process_madvise(int " pidfd ,
-+.BI "                       const struct iovec *" iovec ,
-+.BI "                       unsigned long " vlen ,
-+.BI "                       int " advice ,
-+.BI "                       unsigned int " flags ");"
-+.fi
-+.SH DESCRIPTION
-+The
-+.BR process_madvise()
-+system call is used to give advice or directions
-+to the kernel about the address ranges from external process as well as
-+local process. It provides the advice to address ranges of process
-+described by
-+.I iovec
-+and
-+.I vlen\.
-+The goal of such advice is to improve system or application performance.
-+.PP
-+The
-+.I pidfd
-+selects the process referred to by the PID file descriptor
-+specified in pidfd. (see
-+.BR pidofd_open(2)
-+for further information).
-+.PP
-+The pointer
-+.I iovec
-+points to an array of iovec structures, defined in
-+.IR <sys/uio.h>
-+as:
-+.PP
-+.in +4n
-+.EX
-+struct iovec {
-+    void  *iov_base;    /* Starting address */
-+    size_t iov_len;     /* Number of bytes to transfer */
-+};
-+.EE
-+.in
-+.PP
-+The
-+.I iovec
-+describes address ranges beginning at
-+.I iov_base
-+address and with the size of
-+.I iov_len
-+bytes.
-+.PP
-+The
-+.I vlen
-+represents the number of elements in
-+.I iovec\.
-+.PP
-+The
-+.I advice
-+can be one of the values listed below.
-+.\"
-+.\" ======================================================================
-+.\"
-+.SS Linux-specific advice values
-+The following Linux-specific
-+.I advice
-+values have no counterparts in the POSIX-specified
-+.BR posix_madvise (3),
-+and may or may not have counterparts in the
-+.BR madvise ()
-+interface available on other implementations.
-+.TP
-+.BR MADV_COLD " (since Linux 5.4.1)"
-+.\" commit 9c276cc65a58faf98be8e56962745ec99ab87636
-+Deactivate a given range of pages by moving them from active to inactive
-+LRU list. This is done to accelerate the reclaim of these pages. The advice
-+might be ignored for some pages in the range when it is not applicable.
-+.TP
-+.BR MADV_PAGEOUT " (since Linux 5.4.1)"
-+.\" commit 1a4e58cce84ee88129d5d49c064bd2852b481357
-+Reclaim a given range of pages. This is done to free up memory occupied by
-+these pages. If a page is anonymous it will be swapped out. If a page is
-+file-backed and dirty it will be written back into the backing storage.
-+The advice might be ignored for some pages in the range when it is not
-+applicable.
-+.PP
-+The
-+.I flags
-+argument is reserved for future use; currently, this argument must be
-+specified as 0.
-+.PP
-+The value specified in the
-+.I vlen
-+argument must be less than or equal to
-+.BR IOV_MAX
-+(defined in
-+.I <limits.h>
-+or accessible via the call
-+.IR sysconf(_SC_IOV_MAX) ).
-+.PP
-+The
-+.I vlen
-+and
-+.I iovec
-+arguments are checked before applying any hints.
-+If the
-+.I vlen
-+is too big, or
-+.I iovec
-+is invalid, an error will be returned immediately.
-+.PP
-+Hint might be applied to a part of
-+.I iovec
-+if one of its elements points to an invalid memory
-+region in the remote process. No further elements will be
-+processed beyond that point.
-+.PP
-+Permission to provide a hint to external process is governed by a
-+ptrace access mode
-+.B PTRACE_MODE_READ_REALCREDS
-+check; see
-+.BR ptrace (2)
-+and
-+.B CAP_SYS_ADMIN
-+capability that caller should have in order to affect performance
-+of an external process.
-+.SH RETURN VALUE
-+On success, process_madvise() returns the number of bytes advised.
-+This return value may be less than the total number of requested
-+bytes, if an error occurred. The caller should check return value
-+to determine whether a partial advice occurred.
-+.SH ERRORS
-+.TP
-+.B EFAULT
-+The memory described by
-+.I iovec
-+is outside the accessible address space of the process pid.
-+.TP
-+.B EINVAL
-+.I flags
-+is not 0.
-+.TP
-+.B EINVAL
-+The sum of the
-+.I iov_len
-+values of
-+.I iovec
-+overflows a ssize_t value.
-+.TP
-+.B EINVAL
-+.I vlen
-+is too large.
-+.TP
-+.B ENOMEM
-+Could not allocate memory for internal copies of the
-+.I iovec
-+structures.
-+.TP
-+.B EPERM
-+The caller does not have permission to access the address space of the process
-+.I pidfd.
-+.TP
-+.B ESRCH
-+No process with ID
-+.I pidfd
-+exists.
-+.SH VERSIONS
-+Since Linux 5.10,
-+.\" commit ecb8ac8b1f146915aa6b96449b66dd48984caacc
-+support for this system call is optional,
-+depending on the setting of the
-+.B CONFIG_ADVISE_SYSCALLS
-+configuration option.
-+.SH SEE ALSO
-+.BR madvise (2),
-+.BR pidofd_open(2),
-+.BR process_vm_readv (2),
-+.BR process_vm_write (2)
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+- Sid
+>
+>
+> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> index f277d023ebcd14..4b5833b3059f9c 100644
+> --- a/fs/kernfs/file.c
+> +++ b/fs/kernfs/file.c
+> @@ -14,6 +14,7 @@
+>   #include <linux/pagemap.h>
+>   #include <linux/sched/mm.h>
+>   #include <linux/fsnotify.h>
+> +#include <linux/uio.h>
+>   
+>   #include "kernfs-internal.h"
+>   
+> @@ -180,11 +181,10 @@ static const struct seq_operations kernfs_seq_ops = {
+>    * it difficult to use seq_file.  Implement simplistic custom buffering for
+>    * bin files.
+>    */
+> -static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
+> -				       char __user *user_buf, size_t count,
+> -				       loff_t *ppos)
+> +static ssize_t kernfs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>   {
+> -	ssize_t len = min_t(size_t, count, PAGE_SIZE);
+> +	struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
+> +	ssize_t len = min_t(size_t, iov_iter_count(iter), PAGE_SIZE);
+>   	const struct kernfs_ops *ops;
+>   	char *buf;
+>   
+> @@ -210,7 +210,7 @@ static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
+>   	of->event = atomic_read(&of->kn->attr.open->event);
+>   	ops = kernfs_ops(of->kn);
+>   	if (ops->read)
+> -		len = ops->read(of, buf, len, *ppos);
+> +		len = ops->read(of, buf, len, iocb->ki_pos);
+>   	else
+>   		len = -EINVAL;
+>   
+> @@ -220,12 +220,12 @@ static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
+>   	if (len < 0)
+>   		goto out_free;
+>   
+> -	if (copy_to_user(user_buf, buf, len)) {
+> +	if (copy_to_iter(buf, len, iter) != len) {
+>   		len = -EFAULT;
+>   		goto out_free;
+>   	}
+>   
+> -	*ppos += len;
+> +	iocb->ki_pos += len;
+>   
+>    out_free:
+>   	if (buf == of->prealloc_buf)
+> @@ -235,31 +235,14 @@ static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
+>   	return len;
+>   }
+>   
+> -/**
+> - * kernfs_fop_read - kernfs vfs read callback
+> - * @file: file pointer
+> - * @user_buf: data to write
+> - * @count: number of bytes
+> - * @ppos: starting offset
+> - */
+> -static ssize_t kernfs_fop_read(struct file *file, char __user *user_buf,
+> -			       size_t count, loff_t *ppos)
+> +static ssize_t kernfs_fop_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>   {
+> -	struct kernfs_open_file *of = kernfs_of(file);
+> -
+> -	if (of->kn->flags & KERNFS_HAS_SEQ_SHOW)
+> -		return seq_read(file, user_buf, count, ppos);
+> -	else
+> -		return kernfs_file_direct_read(of, user_buf, count, ppos);
+> +	if (kernfs_of(iocb->ki_filp)->kn->flags & KERNFS_HAS_SEQ_SHOW)
+> +		return seq_read_iter(iocb, iter);
+> +	return kernfs_file_read_iter(iocb, iter);
+>   }
+>   
+> -/**
+> - * kernfs_fop_write - kernfs vfs write callback
+> - * @file: file pointer
+> - * @user_buf: data to write
+> - * @count: number of bytes
+> - * @ppos: starting offset
+> - *
+> +/*
+>    * Copy data in from userland and pass it to the matching kernfs write
+>    * operation.
+>    *
+> @@ -269,20 +252,18 @@ static ssize_t kernfs_fop_read(struct file *file, char __user *user_buf,
+>    * modify only the the value you're changing, then write entire buffer
+>    * back.
+>    */
+> -static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
+> -				size_t count, loff_t *ppos)
+> +static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
+>   {
+> -	struct kernfs_open_file *of = kernfs_of(file);
+> +	struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
+> +	ssize_t len = iov_iter_count(iter);
+>   	const struct kernfs_ops *ops;
+> -	ssize_t len;
+>   	char *buf;
+>   
+>   	if (of->atomic_write_len) {
+> -		len = count;
+>   		if (len > of->atomic_write_len)
+>   			return -E2BIG;
+>   	} else {
+> -		len = min_t(size_t, count, PAGE_SIZE);
+> +		len = min_t(size_t, len, PAGE_SIZE);
+>   	}
+>   
+>   	buf = of->prealloc_buf;
+> @@ -293,7 +274,7 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
+>   	if (!buf)
+>   		return -ENOMEM;
+>   
+> -	if (copy_from_user(buf, user_buf, len)) {
+> +	if (copy_from_iter(buf, len, iter) != len) {
+>   		len = -EFAULT;
+>   		goto out_free;
+>   	}
+> @@ -312,7 +293,7 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
+>   
+>   	ops = kernfs_ops(of->kn);
+>   	if (ops->write)
+> -		len = ops->write(of, buf, len, *ppos);
+> +		len = ops->write(of, buf, len, iocb->ki_pos);
+>   	else
+>   		len = -EINVAL;
+>   
+> @@ -320,7 +301,7 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
+>   	mutex_unlock(&of->mutex);
+>   
+>   	if (len > 0)
+> -		*ppos += len;
+> +		iocb->ki_pos += len;
+>   
+>   out_free:
+>   	if (buf == of->prealloc_buf)
+> @@ -960,14 +941,16 @@ void kernfs_notify(struct kernfs_node *kn)
+>   EXPORT_SYMBOL_GPL(kernfs_notify);
+>   
+>   const struct file_operations kernfs_file_fops = {
+> -	.read		= kernfs_fop_read,
+> -	.write		= kernfs_fop_write,
+> +	.read_iter	= kernfs_fop_read_iter,
+> +	.write_iter	= kernfs_fop_write_iter,
+>   	.llseek		= generic_file_llseek,
+>   	.mmap		= kernfs_fop_mmap,
+>   	.open		= kernfs_fop_open,
+>   	.release	= kernfs_fop_release,
+>   	.poll		= kernfs_fop_poll,
+>   	.fsync		= noop_fsync,
+> +	.splice_read	= generic_file_splice_read,
+> +	.splice_write	= iter_file_splice_write,
+>   };
+>   
+>   /**
