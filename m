@@ -2,171 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C258C2FD8D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874122FD8F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392131AbhATSu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:50:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52766 "EHLO mail.kernel.org"
+        id S2392449AbhATTBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:01:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388578AbhATSl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:41:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C70233FA;
-        Wed, 20 Jan 2021 18:40:46 +0000 (UTC)
+        id S1729736AbhATRhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 12:37:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2365233ED;
+        Wed, 20 Jan 2021 17:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611168046;
-        bh=So2hXsCPM/a1uUQ14gqh3XEUn2Ub67sRlYHmUx5ZBnU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PPGYkJ0O494qAN1VVylHGRuFEgw78KxA6AEpV+jVdxD1iP7SRb8OW3FUwWYE2+kxp
-         +P+M98lH66kU0nErafFjuARB+RXT5jS0St/UILGmC0TZ59t6CarVkJeoBoPTw5sWhr
-         bglU+5//FcGJm3ZGi3yve2Mo8M+VdEvgk8jP0DLwElsph9xmgUK9O0FECNDpuWc3Xp
-         /XWHL2fVMj8y8zqRmHerPhcFqAb1u6onlJYWpRIgrJkTO3Hj6iazIww7T01SNWmgQw
-         00/pQpVo0KXxl97SAImC+mtFWMd7Tswp1tlBLFhxU3maLoiiNocuoh0KuszqfaeHZA
-         9bDg3jXWwTEzA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 267883522B82; Wed, 20 Jan 2021 10:40:46 -0800 (PST)
-Date:   Wed, 20 Jan 2021 10:40:46 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        s=k20201202; t=1611164182;
+        bh=fsx985f1cF1hEHYZaVWNKqVRb18Pc9UFt6saI96uias=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DVUl+Max0jMmGMvXzEUIQcLVFWxcdykdPnqhw3tSjJWuPNP6+yLq5ZNhba6P0Bz7J
+         M1j/Ht6EVoWncHRlcuTGxP6rdSsOBDFAbLfXbRSfXbb1naFji20egWauJE1r/YliEq
+         dRzkLRkK0hGfHpS9gf0DJzaaale4w5jcprkHkKTMRR+QD/jY0VVfWq995pzMCCTGUP
+         qZckjFa4k4jgFWF3tPFPiMjLb9Q2bqTTqSOiEZF81t83y6rQ/rsB72EBm/UVWOmihJ
+         6aXG5TTaV+mPmVuneIwZcWANOl08n+uZ82diqbwOPp4ZC55Cyk3Qmu4w2TbByj0BAj
+         8twZRX2B5Ynhw==
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210120184046.GE2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210120162148.1973-1-urezki@gmail.com>
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        kernel-team@android.com
+Subject: [PATCH v4 0/8] Create 'old' ptes for faultaround mappings on arm64 with hardware access flag
+Date:   Wed, 20 Jan 2021 17:36:04 +0000
+Message-Id: <20210120173612.20913-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120162148.1973-1-urezki@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 05:21:46PM +0100, Uladzislau Rezki (Sony) wrote:
-> For a single argument we can directly request a page from a caller
-> context when a "carry page block" is run out of free spots. Instead
-> of hitting a slow path we can request an extra page by demand and
-> proceed with a fast path.
-> 
-> A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> and that its fallback is the relatively high latency synchronize_rcu().
-> Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> to allow limited sleeping within the memory allocator.
-> 
-> [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Hi all,
 
-Queued all three for review and testing, thank you!
+This is version four of the patches I previously posted here:
 
-							Thanx, Paul
+  v1: https://lore.kernel.org/r/20201209163950.8494-1-will@kernel.org
+  v2: https://lore.kernel.org/r/20210108171517.5290-1-will@kernel.org
+  v3: https://lore.kernel.org/r/20210114175934.13070-1-will@kernel.org
 
-> ---
->  kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
->  1 file changed, 26 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index e04e336bee42..2014fb22644d 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
->  	}
->  }
->  
-> +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-> +// state specified by flags.  If can_alloc is true, the caller must
-> +// be schedulable and not be holding any locks or mutexes that might be
-> +// acquired by the memory allocator or anything that it might invoke.
-> +// Returns true if ptr was successfully recorded, else the caller must
-> +// use a fallback.
->  static inline bool
-> -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> +	unsigned long *flags, void *ptr, bool can_alloc)
->  {
->  	struct kvfree_rcu_bulk_data *bnode;
->  	int idx;
->  
-> -	if (unlikely(!krcp->initialized))
-> +	*krcp = krc_this_cpu_lock(flags);
-> +	if (unlikely(!(*krcp)->initialized))
->  		return false;
->  
-> -	lockdep_assert_held(&krcp->lock);
->  	idx = !!is_vmalloc_addr(ptr);
->  
->  	/* Check if a new block is required. */
-> -	if (!krcp->bkvhead[idx] ||
-> -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> -		bnode = get_cached_bnode(krcp);
-> -		/* Switch to emergency path. */
-> +	if (!(*krcp)->bkvhead[idx] ||
-> +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> +		bnode = get_cached_bnode(*krcp);
-> +		if (!bnode && can_alloc) {
-> +			krc_this_cpu_unlock(*krcp, *flags);
-> +			bnode = (struct kvfree_rcu_bulk_data *)
-> +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-> +			*krcp = krc_this_cpu_lock(flags);
-> +		}
-> +
->  		if (!bnode)
->  			return false;
->  
->  		/* Initialize the new block. */
->  		bnode->nr_records = 0;
-> -		bnode->next = krcp->bkvhead[idx];
-> +		bnode->next = (*krcp)->bkvhead[idx];
->  
->  		/* Attach it to the head. */
-> -		krcp->bkvhead[idx] = bnode;
-> +		(*krcp)->bkvhead[idx] = bnode;
->  	}
->  
->  	/* Finally insert. */
-> -	krcp->bkvhead[idx]->records
-> -		[krcp->bkvhead[idx]->nr_records++] = ptr;
-> +	(*krcp)->bkvhead[idx]->records
-> +		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
->  
->  	return true;
->  }
-> @@ -3533,8 +3546,6 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  		ptr = (unsigned long *) func;
->  	}
->  
-> -	krcp = krc_this_cpu_lock(&flags);
-> -
->  	// Queue the object but don't yet schedule the batch.
->  	if (debug_rcu_head_queue(ptr)) {
->  		// Probable double kfree_rcu(), just leak.
-> @@ -3542,12 +3553,11 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  			  __func__, head);
->  
->  		// Mark as success and leave.
-> -		success = true;
-> -		goto unlock_return;
-> +		return;
->  	}
->  
->  	kasan_record_aux_stack(ptr);
-> -	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
-> +	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
->  	if (!success) {
->  		run_page_cache_worker(krcp);
->  
-> -- 
-> 2.20.1
-> 
+The patches allow architectures to opt-in at runtime for faultaround
+mappings to be created as 'old' instead of 'young'. Although there have
+been previous attempts at this, they failed either because the decision
+was deferred to userspace [1] or because it was done unconditionally and
+shown to regress benchmarks for particular architectures [2].
+
+The big change since v3 is that the immutable fields of 'struct vm_fault'
+now live in a 'const' anonymous struct. Although Clang will silently
+accept modifications to these fields [3], GCC emits an error. The
+resulting diffstat is _considerably_ more manageable with this approach.
+
+As before, I've also updated this branch:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=faultaround
+
+Cheers,
+
+Will
+
+[1] https://www.spinics.net/lists/linux-mm/msg143831.html
+[2] 315d09bf30c2 ("Revert "mm: make faultaround produce old ptes"")
+[3] https://bugs.llvm.org/show_bug.cgi?id=48755
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vinayak Menon <vinmenon@codeaurora.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: <kernel-team@android.com>
+
+--->8
+
+Kirill A. Shutemov (1):
+  mm: Cleanup faultaround and finish_fault() codepaths
+
+Will Deacon (7):
+  mm: Allow architectures to request 'old' entries when prefaulting
+  arm64: mm: Implement arch_wants_old_prefaulted_pte()
+  mm: Move immutable fields of 'struct vm_fault' into anonymous struct
+  mm: Pass 'address' to map to do_set_pte() and drop FAULT_FLAG_PREFAULT
+  mm: Avoid modifying vmf.address in __collapse_huge_page_swapin()
+  mm: Use static initialisers for immutable fields of 'struct vm_fault'
+  mm: Mark anonymous struct field of 'struct vm_fault' as 'const'
+
+ arch/arm64/include/asm/pgtable.h |  12 +-
+ fs/xfs/xfs_file.c                |   6 +-
+ include/linux/mm.h               |  25 ++--
+ include/linux/pgtable.h          |  11 ++
+ mm/filemap.c                     | 178 ++++++++++++++++++------
+ mm/khugepaged.c                  |  37 +++--
+ mm/memory.c                      | 223 +++++++++++--------------------
+ mm/shmem.c                       |   6 +-
+ mm/swapfile.c                    |  11 +-
+ 9 files changed, 280 insertions(+), 229 deletions(-)
+
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
