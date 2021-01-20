@@ -2,428 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1265B2FDAC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C10E2FDB30
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388622AbhATUZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:25:33 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2387 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388371AbhATUYU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:24:20 -0500
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DLcLX3fsBz67bGK;
-        Thu, 21 Jan 2021 04:19:16 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 20 Jan 2021 21:23:26 +0100
-Received: from localhost (10.47.67.172) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 20 Jan
- 2021 20:23:25 +0000
-Date:   Wed, 20 Jan 2021 20:22:44 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-CC:     <linux-iio@vger.kernel.org>, Dan Robertson <dan@dlrobertson.com>,
-        =?ISO-8859-1?Q?Ga=EBtan_Andr=E9?= <rvlander@gaetanandre.eu>,
-        "Jonathan Bakker" <xc-racer2@live.ca>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 2/2] iio: accel: Add support for the Bosch-Sensortec
- BMI088
-Message-ID: <20210120202244.000009f6@Huawei.com>
-In-Reply-To: <20210119124622.9490-2-mike.looijmans@topic.nl>
-References: <20210119124622.9490-1-mike.looijmans@topic.nl>
-        <20210119124622.9490-2-mike.looijmans@topic.nl>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1727763AbhATNzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:55:36 -0500
+Received: from mout.gmx.net ([212.227.15.15]:59849 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389895AbhATN3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:29:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611149257;
+        bh=SHyn+p6d9tSU0bcfld9T3QsMG6Kshj0bouj+YRflQxg=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=P331zmNtpup6C0kXjNW5FmI+oBCXedb91RdEpZqfhdBzOoUYF03n0snxnScZ6JMY/
+         2MQY7me5Oq27GpOtqvyY+/sYQzH7V5i14H+UqdJHRtc5OfCVwcJFWSj90ADaQMMtWJ
+         yl/Ty4eH7hrz8y7+EU3FyUr08FReijV+1qlJYgN8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.204.192.78]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MAwbz-1l931F3S7V-00BIC6; Wed, 20 Jan 2021 14:27:37 +0100
+From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Stan Skowronek <stan@corellium.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>
+Subject: [RFC PATCH 7/7] irqchip/apple-aic: add SMP support to the Apple AIC driver.
+Date:   Wed, 20 Jan 2021 14:27:17 +0100
+Message-Id: <20210120132717.395873-8-mohamed.mediouni@caramail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.67.172]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UzbF93QD7ewtU45SWccubUGzjxleBAEd8cENkEmwy10LMjhlCnd
+ DQGo+V/owwH1jTprv0HzwwC3JeJOHcSnQBIxmfgUQ39kzXLLPeruGif+m1AEZfvdNb2zEIh
+ nxuipyANKmNwsP4C+wyEBfjE+aJbBpaULJXKnuNjRJLcb2Y7feUNZiojJboECOxdIMtMDqD
+ g4Cp71tGcP6AZdOnkKZyQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GiAGZBgh9e8=:ApCMlQctfbLVb/ERxyRHEW
+ pTnRSo/156O+OQdCC5H2l6dRseBIppf4vBBHFrbSUKkr7CC6VCW4tjhoWKoDKD3kfoqQsJ8iV
+ WvTcxv7R/x7RXFTMqtp3dgQ75lC1XLXGdC0ryLFww9u1AwEJjpFPL0PANlPVkynqlzeMIBzJ1
+ paOIcMU4c54fOq12uMm7k/CKxTGtYz3Lq+58hFyOgQd4dKZzFgJQOlsZ+V626DG+wpp0VTpIh
+ b3gW0xxqAD6stxlOPj6sbTrpmLX6Fl7lm7Z2eTvGQB+0fDemuyRai58Kn1i42fHfrTOsWrA2W
+ TzHeaZ/medH9kpubdFUK8UsqU8d84FYj9FvMIAkmneGcMVqA+9l8V4I2qe32Db0bQRgk75z+5
+ Q3oiUlaTdjkYXUWNiJzLqtMRHMJYjDwSE8bSppolE7XSjUm6UUsR41FQi7gvOrSuI96/zN1J8
+ MM/ZFoBTv0Rmeh6aW6iqda9YCPoes3IjTM+Q8E5OgmpVYR5Ih8Tddb1mOJ2Vcnp8/KD7x3o6q
+ RcYa48ddJMuGbtt7Fu8WC5uAHq5suBKilza/h4AB08jdRm28ERY9LniFRz7ZSFnaT3SeHv6th
+ ZtCx/d7huArqF0NxsosjM5bDu0VPr38nmLivYRmquZRkQrGSKH4hMJUbyu4kPiS8o69DpBUEq
+ kf2+8nNkzgBGGvOXh9eX2KDeMgnx9xJ+SragVDQr5TBHYjIbi5PvcOPxgDi9QuvNivIdo/5Hm
+ CLedIj8ZdhYMzwQRwrUEvELgiE/7ogy9MaCdA2k/zCx7TXAMg6YhcDMG4SPkzafF8kRkWiG3Z
+ VxYO9l0WwsGnzRu+CcGyv++lOSn7h842+UhVOUAe3ra0f74uFtHGdrdJSutLNSpYYG0Tnnj0V
+ H0iLmlghyYmeNM7XUD1FKGGWlUjX/IWuKqNcY7X2Q=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 13:46:22 +0100
-Mike Looijmans <mike.looijmans@topic.nl> wrote:
+From: Stan Skowronek <stan@corellium.com>
 
-> The BMI088 is a combined module with both accelerometer and gyroscope.
-> This adds the accelerometer driver support for the SPI interface.
-> The gyroscope part is already supported by the BMG160 driver.
-> 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> ---
-> 
-> Changes in v6:
-> Hope you have good memory - v5 was almost a year ago now
-*laughs* fresh review so probably disagree with what I said back then on
-something :)
+This includes IPI support and a workaround for non-working WFI on
+Apple processors.
 
+Signed-off-by: Stan Skowronek <stan@corellium.com>
+Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+=2D--
+ drivers/irqchip/irq-apple-aic.c | 177 +++++++++++++++++++++++++++++---
+ 1 file changed, 165 insertions(+), 12 deletions(-)
 
-A few really small comments inline seeing as you are respinning anyway.
+diff --git a/drivers/irqchip/irq-apple-aic.c b/drivers/irqchip/irq-apple-a=
+ic.c
+index c601bc4b501a..ce4e39d56fcf 100644
+=2D-- a/drivers/irqchip/irq-apple-aic.c
++++ b/drivers/irqchip/irq-apple-aic.c
+@@ -17,6 +17,7 @@
 
-> Remove superfluous *val=0
-> Make sample_frequency selection into read_avail list
-> 
-> Changes in v5:
-> Add includes and forward defines in header
-> BIT(7) instead of 0x80
-> Reset already sets defaults, do not set them again
-> Remove now unused bmi088_accel_set_bw
-> Remove unused AXIS_MAX
-> Use MASK define for ODR setting
-> Explain buffer use and alignment
-> Split bmi088_accel_set_power_state into "on" and "off" parts
-> Cosmetic changes to improve readability
-> 
-> Changes in v4:
-> Remove unused #include directives
-> Remove unused #defines for event and irq
-> Replace (ret < 0) with (ret) for all regmap calls
-> Consistent checking of IO errors in probe and init
-> Removed #ifdef CONFIG_PM guard
-> Use bitops for set_frequency instead of loop with shift
-> s/__s16/s16/g
-> Remove excess blank lines
-> Don't return -EAGAIN in pm_runtime
-> 
-> Changes in v3:
-> Processed comments from Jonathan Cameron and Lars-Peter Clausen
-> implement runtime PM (tested by code tracing) and sleep
-> fix scale and offset factors for accel and temperature and
-> return raw values instead of pre-scaled ones
-> Use iio_device_{claim,release}_direct_mode
-> Remove unused code and structs
-> Use a cache-aligned buffer for bulk read
-> Configure and enable caching register values
-> 
-> Changes in v2:
-> Remove unused typedefs and variables
-> Fix error return when iio_device_register fails
-> 
->  drivers/iio/accel/Kconfig             |  18 +
->  drivers/iio/accel/Makefile            |   2 +
->  drivers/iio/accel/bmi088-accel-core.c | 630 ++++++++++++++++++++++++++
->  drivers/iio/accel/bmi088-accel-spi.c  |  85 ++++
->  drivers/iio/accel/bmi088-accel.h      |  18 +
->  5 files changed, 753 insertions(+)
->  create mode 100644 drivers/iio/accel/bmi088-accel-core.c
->  create mode 100644 drivers/iio/accel/bmi088-accel-spi.c
->  create mode 100644 drivers/iio/accel/bmi088-accel.h
-> 
-> diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
-> index 2e0c62c39155..cceda3cecbcf 100644
-> --- a/drivers/iio/accel/Kconfig
-> +++ b/drivers/iio/accel/Kconfig
-> @@ -157,6 +157,24 @@ config BMC150_ACCEL_SPI
->  	tristate
->  	select REGMAP_SPI
->  
-> +config BMI088_ACCEL
-> +	tristate "Bosch BMI088 Accelerometer Driver"
-> +	depends on SPI
-> +	select IIO_BUFFER
-> +	select IIO_TRIGGERED_BUFFER
-> +	select REGMAP
-> +	select BMI088_ACCEL_SPI
-> +	help
-> +	  Say yes here to build support for the Bosch BMI088 accelerometer.
-> +
-> +	  This is a combo module with both accelerometer and gyroscope. This
-> +	  driver only implements the accelerometer part, which has its own
-> +	  address and register map. BMG160 provides the gyroscope driver.
-> +
-> +config BMI088_ACCEL_SPI
-> +	tristate
-> +	select REGMAP_SPI
-> +
->  config DA280
->  	tristate "MiraMEMS DA280 3-axis 14-bit digital accelerometer driver"
->  	depends on I2C
-> diff --git a/drivers/iio/accel/Makefile b/drivers/iio/accel/Makefile
-> index 4f6c1ebe13b0..32cd1342a31a 100644
-> --- a/drivers/iio/accel/Makefile
-> +++ b/drivers/iio/accel/Makefile
-> @@ -20,6 +20,8 @@ obj-$(CONFIG_BMA400_SPI) += bma400_spi.o
->  obj-$(CONFIG_BMC150_ACCEL) += bmc150-accel-core.o
->  obj-$(CONFIG_BMC150_ACCEL_I2C) += bmc150-accel-i2c.o
->  obj-$(CONFIG_BMC150_ACCEL_SPI) += bmc150-accel-spi.o
-> +obj-$(CONFIG_BMI088_ACCEL) += bmi088-accel-core.o
-> +obj-$(CONFIG_BMI088_ACCEL_SPI) += bmi088-accel-spi.o
->  obj-$(CONFIG_DA280)	+= da280.o
->  obj-$(CONFIG_DA311)	+= da311.o
->  obj-$(CONFIG_DMARD06)	+= dmard06.o
-> diff --git a/drivers/iio/accel/bmi088-accel-core.c b/drivers/iio/accel/bmi088-accel-core.c
-> new file mode 100644
-> index 000000000000..788e54ed0728
-> --- /dev/null
-> +++ b/drivers/iio/accel/bmi088-accel-core.c
-> @@ -0,0 +1,630 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * 3-axis accelerometer driver supporting following Bosch-Sensortec chips:
-> + *  - BMI088
-> + *
-> + * Copyright (c) 2018-2020, Topic Embedded Products
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/delay.h>
-As below. Alphabetical ordering preferred.
+ #include <asm/exception.h>
+ #include <asm/irq.h>
++#include <asm/smp.h>
 
-> +#include <linux/slab.h>
-> +#include <linux/acpi.h>
-> +#include <linux/pm.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/sysfs.h>
-> +#include <linux/regmap.h>
-> +#include <asm/unaligned.h>
-> +
-> +#include "bmi088-accel.h"
-...
+ #define REG_ID_REVISION 0x0000
+ #define REG_ID_CONFIG 0x0004
+@@ -53,12 +54,17 @@
+ #define REG_PERCPU(r, c)                                                 =
+      \
+ 	((r) + REG_CPU_REGION - REG_CPU_LOCAL + ((c) << REG_CPU_SHIFT))
 
-> +static int bmi088_accel_chip_init(struct bmi088_accel_data *data)
-> +{
-> +	struct device *dev = regmap_get_device(data->regmap);
-> +	int ret, i;
-> +	unsigned int val;
-> +
-> +	/* Do a dummy read to enable SPI interface, won't harm I2C */
-> +	regmap_read(data->regmap, BMI088_ACCEL_REG_INT_STATUS, &val);
-> +
-> +	/*
-> +	 * Reset chip to get it in a known good state. A delay of 1ms after
-> +	 * reset is required according to the data sheet
-> +	 */
-> +	ret = regmap_write(data->regmap, BMI088_ACCEL_REG_RESET,
-> +			   BMI088_ACCEL_RESET_VAL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	usleep_range(1000, 2000);
-> +
-> +	/* Do a dummy read again after a reset to enable the SPI interface */
-> +	regmap_read(data->regmap, BMI088_ACCEL_REG_INT_STATUS, &val);
-> +
-> +	/* Read chip ID */
-> +	ret = regmap_read(data->regmap, BMI088_ACCEL_REG_CHIP_ID, &val);
-> +	if (ret) {
-> +		dev_err(dev, "Error: Reading chip id\n");
-> +		return ret;
-> +	}
-> +
-> +	/* Validate chip ID */
-> +	for (i = 0; i < ARRAY_SIZE(bmi088_accel_chip_info_tbl); i++) {
-> +		if (bmi088_accel_chip_info_tbl[i].chip_id == val) {
-> +			data->chip_info = &bmi088_accel_chip_info_tbl[i];
-> +			break;
-> +		}
-> +	}
-> +	if (i == ARRAY_SIZE(bmi088_accel_chip_info_tbl)) {
-> +		dev_err(dev, "Invalid chip %x\n", val);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/* Enable accelerometer after reset */
-> +	return bmi088_accel_enable(data, true);
++#define NUM_IPI 8
++
+ static struct aic_chip_data {
+ 	void __iomem *base;
+ 	struct irq_domain *domain;
+ 	unsigned int num_irqs;
++	bool fast_ipi;
+ } aic;
 
-We bring the device up here, but I'm not seeing it turned off again
-in either error paths of probe or remove.
-Am I missing it somewhere?
++static DEFINE_PER_CPU(atomic_t, aic_ipi_mask);
++
+ static void apple_aic_irq_mask(struct irq_data *d)
+ {
+ 	writel(REG_IRQ_xABLE_MASK(d->hwirq),
+@@ -78,18 +84,71 @@ static struct irq_chip apple_aic_irq_chip =3D {
+ 	.irq_unmask =3D apple_aic_irq_unmask,
+ };
 
-> +}
-> +
-> +int bmi088_accel_core_probe(struct device *dev, struct regmap *regmap,
-> +	int irq, const char *name, bool block_supported)
-> +{
-> +	struct bmi088_accel_data *data;
-> +	struct iio_dev *indio_dev;
-> +	int ret;
-> +
-> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	data = iio_priv(indio_dev);
-> +	dev_set_drvdata(dev, indio_dev);
-> +
-> +	data->regmap = regmap;
-> +
-> +	ret = bmi088_accel_chip_init(data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mutex_init(&data->mutex);
-> +
-> +	indio_dev->dev.parent = dev;
-> +	indio_dev->channels = data->chip_info->channels;
-> +	indio_dev->num_channels = data->chip_info->num_channels;
-> +	indio_dev->name = name ? name : data->chip_info->name;
-> +	indio_dev->available_scan_masks = bmi088_accel_scan_masks;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +	indio_dev->info = &bmi088_accel_info;
-> +
-> +	ret = pm_runtime_set_active(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pm_runtime_enable(dev);
-> +	pm_runtime_set_autosuspend_delay(dev, BMI088_AUTO_SUSPEND_DELAY_MS);
-> +	pm_runtime_use_autosuspend(dev);
-> +
-> +	ret = iio_device_register(indio_dev);
-> +	if (ret)
-> +		dev_err(dev, "Unable to register iio device\n");
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(bmi088_accel_core_probe);
-> +
-> +int bmi088_accel_core_remove(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct bmi088_accel_data *data = iio_priv(indio_dev);
-> +
-> +	iio_device_unregister(indio_dev);
-> +
-> +	pm_runtime_disable(dev);
-> +	pm_runtime_set_suspended(dev);
-> +	pm_runtime_put_noidle(dev);
-> +
-> +	mutex_lock(&data->mutex);
-> +	bmi088_accel_set_mode(data, BMI088_ACCEL_MODE_SUSPEND);
-> +	mutex_unlock(&data->mutex);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(bmi088_accel_core_remove);
-> +
-> +/* When going into system sleep, put the chip in power down */
-> +static int __maybe_unused bmi088_accel_suspend(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct bmi088_accel_data *data = iio_priv(indio_dev);
-> +
-> +	mutex_lock(&data->mutex);
-> +	bmi088_accel_set_mode(data, BMI088_ACCEL_MODE_SUSPEND);
-> +	bmi088_accel_enable(data, false);
-> +	mutex_unlock(&data->mutex);
-> +
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused bmi088_accel_resume(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct bmi088_accel_data *data = iio_priv(indio_dev);
-> +
-> +	mutex_lock(&data->mutex);
-> +	bmi088_accel_enable(data, true);
-> +	bmi088_accel_set_mode(data, BMI088_ACCEL_MODE_ACTIVE);
-> +	mutex_unlock(&data->mutex);
-> +
-> +	return 0;
-> +}
-> +
-> +/* For runtime PM put the chip in suspend mode */
-> +static int __maybe_unused bmi088_accel_runtime_suspend(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct bmi088_accel_data *data = iio_priv(indio_dev);
-> +
-> +	return bmi088_accel_set_mode(data, BMI088_ACCEL_MODE_SUSPEND);
-> +}
-> +
-> +static int __maybe_unused bmi088_accel_runtime_resume(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct bmi088_accel_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	ret = bmi088_accel_set_mode(data, BMI088_ACCEL_MODE_ACTIVE);
-> +	if (ret)
-> +		return ret;
-> +
-> +	usleep_range(BMI088_ACCEL_MAX_STARTUP_TIME_US,
-> +		     BMI088_ACCEL_MAX_STARTUP_TIME_US * 2);
-> +
-> +	return 0;
-> +}
-> +
-> +const struct dev_pm_ops bmi088_accel_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(bmi088_accel_suspend, bmi088_accel_resume)
-> +	SET_RUNTIME_PM_OPS(bmi088_accel_runtime_suspend,
-> +			   bmi088_accel_runtime_resume, NULL)
-> +};
-> +EXPORT_SYMBOL_GPL(bmi088_accel_pm_ops);
-> +
-> +MODULE_AUTHOR("Niek van Agt <niek.van.agt@topicproducts.com>");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("BMI088 accelerometer driver (core)");
-> diff --git a/drivers/iio/accel/bmi088-accel-spi.c b/drivers/iio/accel/bmi088-accel-spi.c
-> new file mode 100644
-> index 000000000000..7794090b8e6d
-> --- /dev/null
-> +++ b/drivers/iio/accel/bmi088-accel-spi.c
-> @@ -0,0 +1,85 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * 3-axis accelerometer driver supporting following Bosch-Sensortec chips:
-> + *  - BMI088
-> + *
-> + * Copyright (c) 2018-2020, Topic Embedded Products
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/regmap.h>
+-static void apple_aic_fiq_mask(struct irq_data *d)
++static void apple_aic_fiq_ipi_mask(struct irq_data *d)
+ {
+ }
 
-If no other reason for ordering ever so slight preference for
-alphabetical order.
+-static void apple_aic_fiq_unmask(struct irq_data *d)
++static void apple_aic_fiq_ipi_unmask(struct irq_data *d)
+ {
+ }
 
-> +
-> +#include "bmi088-accel.h"
-> +
-> +int bmi088_regmap_spi_write(void *context, const void *data, size_t count)
-> +{
-> +	struct spi_device *spi = context;
-> +
-> +	/* Write register is same as generic SPI */
-> +	return spi_write(spi, data, count);
-> +}
-> +
-> +int bmi088_regmap_spi_read(void *context, const void *reg,
-> +				size_t reg_size, void *val, size_t val_size)
-> +{
-> +	struct spi_device *spi = context;
-> +	u8 addr[2];
-> +
-> +	addr[0] = *(u8 *)reg;
-> +	addr[0] |= BIT(7); /* Set RW = '1' */
-> +	addr[1] = 0; /* Read requires a dummy byte transfer */
-> +
-> +	return spi_write_then_read(spi, addr, sizeof(addr), val, val_size);
-> +}
-> +
-> +static struct regmap_bus bmi088_regmap_bus = {
-> +	.write = bmi088_regmap_spi_write,
-> +	.read = bmi088_regmap_spi_read,
-> +	.reg_format_endian_default = REGMAP_ENDIAN_BIG,
-> +	.val_format_endian_default = REGMAP_ENDIAN_BIG,
+ static struct irq_chip apple_aic_irq_chip_fiq =3D {
+ 	.name =3D "apple_aic_fiq",
+-	.irq_mask =3D apple_aic_fiq_mask,
+-	.irq_unmask =3D apple_aic_fiq_unmask,
++	.irq_mask =3D apple_aic_fiq_ipi_mask,
++	.irq_unmask =3D apple_aic_fiq_ipi_unmask,
++};
++
++#define SR_APPLE_IPI_LOCAL s3_5_c15_c0_0
++#define SR_APPLE_IPI_REMOTE s3_5_c15_c0_1
++#define SR_APPLE_IPI_STAT s3_5_c15_c1_1
++
++#ifdef CONFIG_SMP
++static void apple_aic_ipi_send_mask(struct irq_data *d,
++				    const struct cpumask *mask)
++{
++	int cpu, lcpu;
++	int irqnr =3D d->hwirq - (aic.num_irqs + 2);
++
++	if (WARN_ON(irqnr < 0 || irqnr >=3D NUM_IPI))
++		return;
++
++	/*
++     * Ensure that stores to Normal memory are visible to the
++     * other CPUs before issuing the IPI.
++     */
++	wmb();
++
++	for_each_cpu (cpu, mask) {
++		smp_mb__before_atomic();
++		atomic_or(1u << irqnr, per_cpu_ptr(&aic_ipi_mask, cpu));
++		smp_mb__after_atomic();
++		lcpu =3D get_cpu();
++		if (aic.fast_ipi) {
++			if ((lcpu >> 2) =3D=3D (cpu >> 2))
++				write_sysreg(cpu & 3, SR_APPLE_IPI_LOCAL);
++			else
++				write_sysreg((cpu & 3) | ((cpu >> 2) << 16),
++					     SR_APPLE_IPI_REMOTE);
++		} else
++			writel(lcpu =3D=3D cpu ? REG_IPI_FLAG_SELF :
++						   (REG_IPI_FLAG_OTHER << cpu),
++			       aic.base + REG_IPI_SET);
++		put_cpu();
++	}
++
++	/* Force the above writes to be executed */
++	if (aic.fast_ipi)
++		isb();
++}
++#else
++#define apple_aic_ipi_send_mask NULL
++#endif
++
++static struct irq_chip apple_aic_irq_chip_ipi =3D {
++	.name =3D "apple_aic_ipi",
++	.irq_mask =3D apple_aic_fiq_ipi_mask,
++	.irq_unmask =3D apple_aic_fiq_ipi_unmask,
++	.ipi_send_mask =3D apple_aic_ipi_send_mask,
+ };
 
-Aren't these both 8 bits, making endian rather irrelevant?
+ static int apple_aic_irq_domain_xlate(struct irq_domain *d,
+@@ -98,16 +157,27 @@ static int apple_aic_irq_domain_xlate(struct irq_doma=
+in *d,
+ 				      unsigned long *out_hwirq,
+ 				      unsigned int *out_type)
+ {
+-	if (intspec[0]) { /* FIQ */
++	switch (intspec[0]) {
++	case 0: /* IRQ */
++		if (intspec[1] >=3D aic.num_irqs)
++			return -EINVAL;
++		if (out_hwirq)
++			*out_hwirq =3D intspec[1];
++		break;
++	case 1: /* FIQ */
+ 		if (intspec[1] >=3D 2)
+ 			return -EINVAL;
+ 		if (out_hwirq)
+ 			*out_hwirq =3D aic.num_irqs + intspec[1];
+-	} else {
+-		if (intspec[1] >=3D aic.num_irqs)
++		break;
++	case 2: /* IPI */
++		if (intspec[1] >=3D NUM_IPI)
+ 			return -EINVAL;
+ 		if (out_hwirq)
+-			*out_hwirq =3D intspec[1];
++			*out_hwirq =3D aic.num_irqs + 2 + intspec[1];
++		break;
++	default:
++		return -EINVAL;
+ 	}
 
-> +};
-...
+ 	if (out_type)
+@@ -118,7 +188,13 @@ static int apple_aic_irq_domain_xlate(struct irq_doma=
+in *d,
+ static int apple_aic_irq_domain_map(struct irq_domain *d, unsigned int vi=
+rq,
+ 				    irq_hw_number_t hw)
+ {
+-	if (hw >=3D aic.num_irqs) {
++	if (hw >=3D aic.num_irqs + 2) {
++		irq_set_percpu_devid(virq);
++		irq_domain_set_info(d, virq, hw, &apple_aic_irq_chip_ipi,
++				    d->host_data, handle_percpu_devid_irq, NULL,
++				    NULL);
++		irq_set_status_flags(virq, IRQ_NOAUTOEN);
++	} else if (hw >=3D aic.num_irqs) {
+ 		irq_set_percpu_devid(virq);
+ 		irq_domain_set_info(d, virq, hw, &apple_aic_irq_chip_fiq,
+ 				    d->host_data, handle_percpu_devid_irq, NULL,
+@@ -141,8 +217,10 @@ static const struct irq_domain_ops apple_aic_irq_doma=
+in_ops =3D {
+
+ static void __exception_irq_entry apple_aic_handle_irq(struct pt_regs *re=
+gs)
+ {
++	atomic_t *maskptr;
+ 	uint32_t ack;
+-	unsigned done =3D 0;
++	unsigned done =3D 0, irqnr;
++	unsigned long mask;
+
+ 	while (1) {
+ 		ack =3D readl(aic.base + REG_IRQ_ACK);
+@@ -154,6 +232,36 @@ static void __exception_irq_entry apple_aic_handle_ir=
+q(struct pt_regs *regs)
+ 			handle_domain_irq(aic.domain,
+ 					  ack & REG_IRQ_ACK_NUM_MASK, regs);
+ 			break;
++		case REG_IRQ_ACK_TYPE_IPI:
++#ifdef CONFIG_SMP
++			if (ack =3D=3D REG_IRQ_ACK_IPI_SELF)
++				writel(REG_IPI_FLAG_SELF,
++				       aic.base + REG_IPI_CLEAR);
++			else
++				writel(REG_IPI_FLAG_OTHER,
++				       aic.base + REG_IPI_CLEAR);
++			maskptr =3D get_cpu_ptr(&aic_ipi_mask);
++			smp_mb__before_atomic();
++			mask =3D atomic_xchg(maskptr, 0);
++			smp_mb__after_atomic();
++			put_cpu_ptr(&aic_ipi_mask);
++			for_each_set_bit (irqnr, &mask, NUM_IPI) {
++				handle_domain_irq(aic.domain,
++						  aic.num_irqs + 2 + irqnr,
++						  regs);
++			}
++			if (ack =3D=3D REG_IRQ_ACK_IPI_SELF)
++				writel(REG_IPI_FLAG_SELF,
++				       aic.base +
++					       REG_PERCPU(REG_IPI_ENABLE,
++							  __smp_processor_id()));
++			else
++				writel(REG_IPI_FLAG_OTHER,
++				       aic.base +
++					       REG_PERCPU(REG_IPI_ENABLE,
++							  __smp_processor_id()));
++#endif
++			break;
+ 		}
+ 		if (done)
+ 			break;
+@@ -162,6 +270,27 @@ static void __exception_irq_entry apple_aic_handle_ir=
+q(struct pt_regs *regs)
+
+ static void __exception_irq_entry apple_aic_handle_fiq(struct pt_regs *re=
+gs)
+ {
++#ifdef CONFIG_SMP
++	atomic_t *maskptr;
++	unsigned long mask;
++	unsigned irqnr;
++
++	if (aic.fast_ipi) {
++		if (read_sysreg(SR_APPLE_IPI_STAT)) {
++			write_sysreg(1, SR_APPLE_IPI_STAT);
++
++			maskptr =3D get_cpu_ptr(&aic_ipi_mask);
++			smp_mb__before_atomic();
++			mask =3D atomic_xchg(maskptr, 0);
++			smp_mb__after_atomic();
++			put_cpu_ptr(&aic_ipi_mask);
++			for_each_set_bit (irqnr, &mask, NUM_IPI)
++				handle_domain_irq(aic.domain,
++						  aic.num_irqs + 2 + irqnr,
++						  regs);
++		}
++	}
++#endif
+ 	handle_domain_irq(aic.domain, aic.num_irqs, regs);
+ }
+
+@@ -169,6 +298,13 @@ void apple_aic_cpu_prepare(unsigned int cpu)
+ {
+ 	unsigned i;
+
++	if (aic.fast_ipi)
++		writel(REG_IPI_FLAG_SELF | REG_IPI_FLAG_OTHER,
++		       aic.base + REG_PERCPU(REG_IPI_DISABLE, cpu));
++	else
++		writel(REG_IPI_FLAG_SELF | REG_IPI_FLAG_OTHER,
++		       aic.base + REG_PERCPU(REG_IPI_ENABLE, cpu));
++
+ 	for (i =3D 0; i < aic.num_irqs; i++)
+ 		writel(readl(aic.base + REG_IRQ_AFFINITY(i)) | (1u << cpu),
+ 		       aic.base + REG_IRQ_AFFINITY(i));
+@@ -178,6 +314,9 @@ static int __init apple_aic_init(struct device_node *n=
+ode,
+ 				 struct device_node *interrupt_parent)
+ {
+ 	unsigned i;
++#ifdef CONFIG_SMP
++	int base_ipi, ret;
++#endif
+
+ 	if (!node)
+ 		return -ENODEV;
+@@ -186,8 +325,11 @@ static int __init apple_aic_init(struct device_node *=
+node,
+ 	if (WARN(!aic.base, "unable to map aic registers\n"))
+ 		return -EINVAL;
+
++	aic.fast_ipi =3D of_property_read_bool(node, "fast-ipi");
++
+ 	aic.num_irqs =3D readl(aic.base + REG_ID_CONFIG) & 0xFFFF;
+-	pr_info("Apple AIC: %d IRQs + 1 FIQ + 1 dummy\n", aic.num_irqs);
++	pr_info("Apple AIC: %d IRQs + 1 FIQ + 1 dummy + %d IPIs%s\n",
++		aic.num_irqs, NUM_IPI, aic.fast_ipi ? " (fast)" : "");
+
+ 	for (i =3D 0; i < aic.num_irqs; i++)
+ 		writel(1, aic.base + REG_IRQ_AFFINITY(i));
+@@ -201,10 +343,21 @@ static int __init apple_aic_init(struct device_node =
+*node,
+
+ 	apple_aic_cpu_prepare(0);
+
+-	aic.domain =3D irq_domain_add_linear(node, aic.num_irqs + 2,
++	aic.domain =3D irq_domain_add_linear(node, aic.num_irqs + 2 + NUM_IPI,
+ 					   &apple_aic_irq_domain_ops,
+ 					   &apple_aic_irq_chip);
+ 	irq_set_default_host(aic.domain);
++
++#ifdef CONFIG_SMP
++	base_ipi =3D aic.num_irqs + 2;
++	ret =3D irq_create_strict_mappings(aic.domain, base_ipi, aic.num_irqs + =
+2,
++					 NUM_IPI);
++	if (ret < 0)
++		pr_err("%s: irq_create_strict_mappings failed with %d\n",
++		       __func__, ret);
++	set_smp_ipi_range(base_ipi, NUM_IPI);
++#endif
++
+ 	return 0;
+ }
+
+=2D-
+2.29.2
+
