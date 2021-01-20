@@ -2,120 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C576B2FDC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 434692FDC2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731856AbhATV7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:59:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50024 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726921AbhATVhn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:37:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611178543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jj+8p192ZV5ikw4sedPFVxEdRg+TWPKG/l+Q0ijiudo=;
-        b=eonSsAwGG6hrpzecc3/6C7h85g5fW9RArsUHsaUyarI11wuuzeGWvyjWF+eFyu3Syx50Wn
-        E7zEoLMavj7JSPpTOveFKhrBS7zE7JrisnPjS2h3+3hwI/YDxrfVzOzoIs+D5ukhWzKL9X
-        OLcbGbDtYnDCG5D3c77C4Le/t6eqLSk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-r0_bLIg7OUGIlvkJjc6Etw-1; Wed, 20 Jan 2021 16:35:41 -0500
-X-MC-Unique: r0_bLIg7OUGIlvkJjc6Etw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1739010054FF;
-        Wed, 20 Jan 2021 21:35:39 +0000 (UTC)
-Received: from krava (unknown [10.40.194.35])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 82D7B6E512;
-        Wed, 20 Jan 2021 21:35:36 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 22:35:35 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, irogers@google.com, kjain@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        qiangqing.zhang@nxp.com
-Subject: Re: [PATCH] perf metricgroup: Fix for metrics containing
- duration_time
-Message-ID: <20210120213535.GB1798087@krava>
-References: <1611159518-226883-1-git-send-email-john.garry@huawei.com>
+        id S1732258AbhATWAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:00:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732679AbhATVys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 16:54:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D80BC235F9;
+        Wed, 20 Jan 2021 21:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611179643;
+        bh=9uCIoNTqSujww0WyWHTQe652w3SNwj3GXwVl53iL7Hk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uQ4lh3g5MNW/4HX7y+c8MMDW4iaA8LHntbZAZBtAKt84AZBdFOSRSn8/PrhGv0dHk
+         rbubLCUw6B2xbYZ+pxprq7X81mgdky5QUH4HWcNMSyEl6MMjyzc9nPOSoI7D0fFU0l
+         yYisLeC6WFJXuIWMHgGBOJynBhbXKTSH9ITi1lRlWVZwpz+ey8GuE9bUMmcGelctey
+         7DMd3ERZutupgx7ta+E9vWdrDCEPjmx84lfD8QeC+mz3ll02/a57reT93Lgo5XJ4Be
+         sEUm0bxPWmISQx4OhX/azWFi7h48zW6axJZSZRTSkUPAQZntPgOBblZQpaZ4yvzISX
+         LK7Qh3aekbgVQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A9AD83522B82; Wed, 20 Jan 2021 13:54:03 -0800 (PST)
+Date:   Wed, 20 Jan 2021 13:54:03 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210120215403.GH2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611159518-226883-1-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:18:38AM +0800, John Garry wrote:
-> Metrics containing duration_time cause a segfault:
+On Wed, Jan 20, 2021 at 08:57:57PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-01-20 17:21:46 [+0100], Uladzislau Rezki (Sony) wrote:
+> > For a single argument we can directly request a page from a caller
+> > context when a "carry page block" is run out of free spots. Instead
+> > of hitting a slow path we can request an extra page by demand and
+> > proceed with a fast path.
+> > 
+> > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > and that its fallback is the relatively high latency synchronize_rcu().
+> > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > to allow limited sleeping within the memory allocator.
+> > 
+> > [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
+> >  1 file changed, 26 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index e04e336bee42..2014fb22644d 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+> >  	}
+> >  }
+> >  
+> > +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+> > +// state specified by flags.  If can_alloc is true, the caller must
+> > +// be schedulable and not be holding any locks or mutexes that might be
+> > +// acquired by the memory allocator or anything that it might invoke.
+> > +// Returns true if ptr was successfully recorded, else the caller must
+> > +// use a fallback.
 > 
-> $./perf stat -v -M L1D_Cache_Fill_BW sleep 1
-> Using CPUID GenuineIntel-6-3D-4
-> metric expr 64 * l1d.replacement / 1000000000 / duration_time for L1D_Cache_Fill_BW
-> found event duration_time
-> found event l1d.replacement
-> adding {l1d.replacement}:W,duration_time
-> l1d.replacement -> cpu/umask=0x1,(null)=0x1e8483,event=0x51/
-> Segmentation fault
-> 
-> In commit c2337d67199a ("perf metricgroup: Fix metrics using aliases
-> covering multiple PMUs"), the logic in find_evsel_group() when iter'ing
-> events was changed to not only select events in same group, but also for
-> aliased PMUs.
-> 
-> Checking whether events were for aliased PMUs was done by comparing the
-> event PMU name. This was not safe for duration_time event, which has no
-> associated PMU (and no PMU name), so fix by checking if the event PMU name
-> is set also.
-> 
-> Fixes: c2337d67199a ("perf metricgroup: Fix metrics using aliases covering multiple PMUs")
-> Reported-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
+> The whole RCU department is getting swamped by the // comments. Can't we
+> have proper kernel doc and /* */ style comments like the remaining part
+> of the kernel?
 
-Tested/Acked-by: Jiri Olsa <jolsa@redhat.com>
+Because // comments are easier to type and take up less horizontal space.
+Also, this kvfree_call_rcu_add_ptr_to_bulk() function is local to
+kvfree_rcu(), and we don't normally docbook-ify such functions.
 
-thanks,
-jirka
-
+> >  static inline bool
+> > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> > +	unsigned long *flags, void *ptr, bool can_alloc)
+> >  {
+> >  	struct kvfree_rcu_bulk_data *bnode;
+> >  	int idx;
+> >  
+> > -	if (unlikely(!krcp->initialized))
+> > +	*krcp = krc_this_cpu_lock(flags);
+> > +	if (unlikely(!(*krcp)->initialized))
+> >  		return false;
+> >  
+> > -	lockdep_assert_held(&krcp->lock);
+> >  	idx = !!is_vmalloc_addr(ptr);
+> >  
+> >  	/* Check if a new block is required. */
+> > -	if (!krcp->bkvhead[idx] ||
+> > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > -		bnode = get_cached_bnode(krcp);
+> > -		/* Switch to emergency path. */
+> > +	if (!(*krcp)->bkvhead[idx] ||
+> > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > +		bnode = get_cached_bnode(*krcp);
+> > +		if (!bnode && can_alloc) {
+> > +			krc_this_cpu_unlock(*krcp, *flags);
+> > +			bnode = (struct kvfree_rcu_bulk_data *)
 > 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 2e60ee170abc..e6d3452031e5 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -162,6 +162,14 @@ static bool contains_event(struct evsel **metric_events, int num_events,
->  	return false;
->  }
->  
-> +static bool evsel_same_pmu(struct evsel *ev1, struct evsel *ev2)
-> +{
-> +	if (!ev1->pmu_name || !ev2->pmu_name)
-> +		return false;
-> +
-> +	return !strcmp(ev1->pmu_name, ev2->pmu_name);
-> +}
-> +
->  /**
->   * Find a group of events in perf_evlist that correspond to those from a parsed
->   * metric expression. Note, as find_evsel_group is called in the same order as
-> @@ -280,8 +288,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
->  			 */
->  			if (!has_constraint &&
->  			    ev->leader != metric_events[i]->leader &&
-> -			    !strcmp(ev->leader->pmu_name,
-> -				    metric_events[i]->leader->pmu_name))
-> +			    evsel_same_pmu(ev->leader, metric_events[i]->leader))
->  				break;
->  			if (!strcmp(metric_events[i]->name, ev->name)) {
->  				set_bit(ev->idx, evlist_used);
-> -- 
-> 2.26.2
-> 
+> There is no need for this cast.
 
+Without it, gcc version 7.5.0 says:
+
+	warning: assignment makes pointer from integer without a cast
+
+> > +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
+> > +			*krcp = krc_this_cpu_lock(flags);
+> 
+> so if bnode is NULL you could retry get_cached_bnode() since it might
+> have been filled (given preemption or CPU migration changed something).
+> Judging from patch #3 you think that a CPU migration is a bad thing. But
+> why?
+
+So that the later "(*krcp)->bkvhead[idx] = bnode" assignment associates
+it with the correct CPU.
+
+Though now that you mention it, couldn't the following happen?
+
+o	Task A on CPU 0 notices that allocation is needed, so it
+	drops the lock disables migration, and sleeps while
+	allocating.
+
+o	Task B on CPU 0 does the same.
+
+o	The two tasks wake up in some order, and the second one
+	causes trouble at the "(*krcp)->bkvhead[idx] = bnode"
+	assignment.
+
+Uladzislau, do we need to recheck "!(*krcp)->bkvhead[idx]" just after
+the migrate_enable()?  Along with the KVFREE_BULK_MAX_ENTR check?
+
+							Thanx, Paul
