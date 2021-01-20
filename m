@@ -2,221 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D592FDD2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EFE2FDD2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389710AbhATWi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 17:38:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49996 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733036AbhATW11 (ORCPT
+        id S2389634AbhATWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:38:57 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:49356 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733236AbhATW1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 17:27:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611181558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TVQXfMRgcYF74aRdJN1EqRV7ahJ/l5qJeAzL/vDKTfE=;
-        b=Ug1jovTwcMmz5zVSxQK1JTgwZpUpzwqHhnT5xpSpzTO6EbEADzqblqD7WEecxd7beODOZW
-        QGYlbXsYo42NJWAvFVyZ0bWE/29O+G/oLngav/o9NKx5+of2nmkEzn9bAmN8HLuXU0/zX6
-        R2t3S8abYOMWkLZwJnVwGV2CSym+e2s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-xPH-US10MAuyz48DdtuL0w-1; Wed, 20 Jan 2021 17:25:55 -0500
-X-MC-Unique: xPH-US10MAuyz48DdtuL0w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02EE0835DE0;
-        Wed, 20 Jan 2021 22:25:53 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13D2562462;
-        Wed, 20 Jan 2021 22:25:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 22/25] afs: Extract writeback extension into its own function
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 20 Jan 2021 22:25:46 +0000
-Message-ID: <161118154610.1232039.1765365632920504822.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
-References: <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 20 Jan 2021 17:27:40 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-48-DiN8dlsEO2SkM7vhnYMaMA-1; Wed, 20 Jan 2021 22:25:58 +0000
+X-MC-Unique: DiN8dlsEO2SkM7vhnYMaMA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 20 Jan 2021 22:25:56 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 20 Jan 2021 22:25:56 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: RE: Splicing to/from a tty
+Thread-Topic: Splicing to/from a tty
+Thread-Index: AQHW72ODm/V94rBWlE2o2nAONgRsB6oxFjPA
+Date:   Wed, 20 Jan 2021 22:25:56 +0000
+Message-ID: <29625ab9f4f94b84aacf96ad9b5da828@AcuMS.aculab.com>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+ <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+ <20210118085311.GA2735@lst.de> <20210118193457.GA736435@zeniv-ca>
+ <CAHk-=wh6HLz_qMam_J=W3X4caBqAGN8P+8c_y+sGFvBaD70K8w@mail.gmail.com>
+ <20210118195400.GC736435@zeniv-ca> <20210120162608.GB740243@zeniv-ca>
+ <20210120191116.GC740243@zeniv-ca>
+ <CAHk-=wjtTC_jNL+K1Ey_wY_KpTYZOR5XwhkZ+Eu7vviVi5itDQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wjtTC_jNL+K1Ey_wY_KpTYZOR5XwhkZ+Eu7vviVi5itDQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extract writeback extension into its own function to break up the writeback
-function a bit.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/afs/write.c |  109 ++++++++++++++++++++++++++++++++++----------------------
- 1 file changed, 67 insertions(+), 42 deletions(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index e1791de90478..89c804bfe253 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -490,47 +490,25 @@ static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,
- }
- 
- /*
-- * Synchronously write back the locked page and any subsequent non-locked dirty
-- * pages.
-+ * Extend the region to be written back to include subsequent contiguously
-+ * dirty pages if possible, but don't sleep while doing so.
-+ *
-+ * If this page holds new content, then we can include filler zeros in the
-+ * writeback.
-  */
--static int afs_write_back_from_locked_page(struct address_space *mapping,
--					   struct writeback_control *wbc,
--					   struct page *primary_page,
--					   pgoff_t final_page)
-+static void afs_extend_writeback(struct address_space *mapping,
-+				 struct afs_vnode *vnode,
-+				 long *_count,
-+				 pgoff_t start,
-+				 pgoff_t final_page,
-+				 unsigned *_offset,
-+				 unsigned *_to,
-+				 bool new_content)
- {
--	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
--	struct iov_iter iter;
- 	struct page *pages[8], *page;
--	unsigned long count, priv;
--	unsigned n, offset, to, f, t;
--	pgoff_t start, first, last;
--	loff_t i_size, pos, end;
--	int loop, ret;
--
--	_enter(",%lx", primary_page->index);
--
--	count = 1;
--	if (test_set_page_writeback(primary_page))
--		BUG();
--
--	/* Find all consecutive lockable dirty pages that have contiguous
--	 * written regions, stopping when we find a page that is not
--	 * immediately lockable, is not dirty or is missing, or we reach the
--	 * end of the range.
--	 */
--	start = primary_page->index;
--	priv = page_private(primary_page);
--	offset = afs_page_dirty_from(primary_page, priv);
--	to = afs_page_dirty_to(primary_page, priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("store"), primary_page);
--
--	WARN_ON(offset == to);
--	if (offset == to)
--		trace_afs_page_dirty(vnode, tracepoint_string("WARN"), primary_page);
--
--	if (start >= final_page ||
--	    (to < PAGE_SIZE && !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)))
--		goto no_more;
-+	unsigned long count = *_count, priv;
-+	unsigned offset = *_offset, to = *_to, n, f, t;
-+	int loop;
- 
- 	start++;
- 	do {
-@@ -551,8 +529,7 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 
- 		for (loop = 0; loop < n; loop++) {
- 			page = pages[loop];
--			if (to != PAGE_SIZE &&
--			    !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags))
-+			if (to != PAGE_SIZE && !new_content)
- 				break;
- 			if (page->index > final_page)
- 				break;
-@@ -566,8 +543,7 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 			priv = page_private(page);
- 			f = afs_page_dirty_from(page, priv);
- 			t = afs_page_dirty_to(page, priv);
--			if (f != 0 &&
--			    !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)) {
-+			if (f != 0 && !new_content) {
- 				unlock_page(page);
- 				break;
- 			}
-@@ -593,6 +569,55 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 	} while (start <= final_page && count < 65536);
- 
- no_more:
-+	*_count = count;
-+	*_offset = offset;
-+	*_to = to;
-+}
-+
-+/*
-+ * Synchronously write back the locked page and any subsequent non-locked dirty
-+ * pages.
-+ */
-+static int afs_write_back_from_locked_page(struct address_space *mapping,
-+					   struct writeback_control *wbc,
-+					   struct page *primary_page,
-+					   pgoff_t final_page)
-+{
-+	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
-+	struct iov_iter iter;
-+	unsigned long count, priv;
-+	unsigned offset, to;
-+	pgoff_t start, first, last;
-+	loff_t i_size, pos, end;
-+	bool new_content = test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags);
-+	int ret;
-+
-+	_enter(",%lx", primary_page->index);
-+
-+	count = 1;
-+	if (test_set_page_writeback(primary_page))
-+		BUG();
-+
-+	/* Find all consecutive lockable dirty pages that have contiguous
-+	 * written regions, stopping when we find a page that is not
-+	 * immediately lockable, is not dirty or is missing, or we reach the
-+	 * end of the range.
-+	 */
-+	start = primary_page->index;
-+	priv = page_private(primary_page);
-+	offset = afs_page_dirty_from(primary_page, priv);
-+	to = afs_page_dirty_to(primary_page, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("store"), primary_page);
-+
-+	WARN_ON(offset == to);
-+	if (offset == to)
-+		trace_afs_page_dirty(vnode, tracepoint_string("WARN"), primary_page);
-+
-+	if (start < final_page &&
-+	    (to == PAGE_SIZE || new_content))
-+		afs_extend_writeback(mapping, vnode, &count, start, final_page,
-+				     &offset, &to, new_content);
-+
- 	/* We now have a contiguous set of dirty pages, each with writeback
- 	 * set; the first page is still locked at this point, but all the rest
- 	 * have been unlocked.
-
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjAgSmFudWFyeSAyMDIxIDE5OjI3DQo+IE9u
+IFdlZCwgSmFuIDIwLCAyMDIxIGF0IDExOjExIEFNIEFsIFZpcm8gPHZpcm9AemVuaXYubGludXgu
+b3JnLnVrPiB3cm90ZToNCj4gPg0KPiA+IFdoeSBkbyB3ZSBjYXJlIGFib3V0IE9fQVBQRU5EIG9u
+IGFueXRoaW5nIHdpdGhvdXQgRk1PREVfUFdSSVRFIChpbmNsdWRpbmcNCj4gPiBwaXBlcyksIGFu
+eXdheT8gIEFsbCB3cml0ZXMgdGhlcmUgaWdub3JlIHBvc2l0aW9uLCBhZnRlciBhbGwuLi4NCj4g
+DQo+IFdlIHNob3VsZG4ndCBjYXJlLg0KPiANCj4gQWxzbywgSSB0aGluayB3ZSBzaG91bGQgdHJ5
+IHRvIG1vdmUgYXdheSBmcm9tIEZNT0RFX1BXUklURS9QUkVBRA0KPiBlbnRpcmVseSwgYW5kIHVz
+ZSBGTU9ERV9TVFJFQU0gYXMgdGhlIHByaW1hcnkgInRoaXMgdGhpbmcgZG9lc24ndCBoYXZlDQo+
+IGEgcG9zaXRpb24gYXQgYWxsIi4NCj4gDQo+IFRoYXQncyB3aGF0IGdldHMgcmlkIG9mIGFsbCB0
+aGUgZl9wb3MgbG9ja2luZyBldGMgYWZ0ZXIgYWxsLiBUaGUNCj4gRk1PREVfUFdSSVRFL1BSRUFE
+IGZsYWdzIGFyZSBJIHRoaW5rIGxlZ2FjeSAoYWx0aG91Z2ggd2UgZG8gc2VlbSB0bw0KPiBoYXZl
+IHRoZSBzZXFfZmlsZSBjYXNlIHRoYXQgbm9ybWFsbHkgYWxsb3dzIHBvc2l0aW9uIG9uIHJlYWRz
+LCBidXQgbm90DQo+IG9uIHdyaXRlcywgc28gd2UgbWF5IG5lZWQgdG8ga2VlcCBhbGwgdGhyZWUg
+Yml0cykuDQo+IA0KPiBBbnl3YXksIEkgdGhpbmsgdGhhdCB3aXRoIEZNT0RFX1NUUkVBTSwgT19B
+UFBFTkQgZGVmaW5pdGVseSBzaG91bGQgYmUgYSBuby1vcC4NCg0KSSBhbHNvIHdvbmRlciBpZiBw
+cmVhZC9wd3JpdGUgd2l0aCBvZmZzZXQgPT0gMCBzaG91bGQgYmUgdmFsaWQNCm9uIHRoaW5ncyB3
+aGVyZSB0aGUgb2Zmc2V0IG1ha2VzIG5vIHNlbnNlLg0KDQpJJ20gcmF0aGVyIHN1cnByaXNlZCB0
+aGUgb2Zmc2V0IGlzbid0IGp1c3Qgc2lsZW50bHkgaWdub3JlZA0KZm9yIGRldmljZXMgd2hlcmUg
+c2Vla2luZyBpcyBub24tc2Vuc2ljYWwuDQpZb3UgbWlnaHQgd2FudCB0byBlcnJvciBpdCBmb3Ig
+bWFnIHRhcGVzLCBidXQgbm90IHBpcGVzLA0KdHR5cywgc29ja2V0cyBldGMuDQoNCkkgcmVhbGx5
+IGNhbid0IHJlbWVtYmVyIHdoYXQgU1lTViwgU29sYXJpcyBvciBOZXRCU0QgZG8uDQoNCglEYXZp
+ZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQg
+RmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4
+NiAoV2FsZXMpDQo=
 
