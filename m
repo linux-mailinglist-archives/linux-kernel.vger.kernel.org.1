@@ -2,89 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A1B2FCA5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36652FCAB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730609AbhATFN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:13:29 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:58435 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730654AbhATFMX (ORCPT
+        id S1729804AbhATFVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:21:35 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:27859 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729781AbhATFOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:12:23 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 94268580655;
-        Wed, 20 Jan 2021 00:11:17 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 20 Jan 2021 00:11:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=ZZ+Isl3JErTgV
-        YzHxSVJeJQJkE/efLPrQzoT7Tl5B4g=; b=Wv0+9VATtvODiO3qBH20SgMuFIRd+
-        SnkoQopJ4jVTvH7dMgCCJNK7QNFkU/7R6tYsQ8OO9lpFM1VwNTATe7JXFS+cADbQ
-        F9lk9hielYRT6zZFsZNGizoH99rc/PYkyVUwfoN0RlUAQL/Rn7BAFxY45zvbZM/u
-        ZjCciRMBm4z5irbaIxCaMXs8Rw194GA9ru4GEf+eK3dkMyuBO4sbGLMRD7rNen7m
-        lmQNlcpvg8GelSdtfPMOqPcIS1t8ns/DhEXXB/7H/8ptEOjcCSPi/7xDIZ88j3+X
-        Pj/yz26dkURlJJ7L9by6dZEqtHZInjh5l7b557c9xulqLYbvMOFZYPBlg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=ZZ+Isl3JErTgVYzHxSVJeJQJkE/efLPrQzoT7Tl5B4g=; b=WPZH20IU
-        Qoj04uldMWmsW8AyTxqhEICyVTxbyHmxvI41XwOg27ZSu61j9WVQkzUPsmVTbCmg
-        LWHd7TR1YqHV/vlb1GpO3WOTbzUFMcT/STFflkdIVxekjC4a09P4jxi+xKHcZYvs
-        ve6Rh6u2EZsxx8TvbHsrEep1Qao4MRAQJlC+xoG89cGl2gmpoUpckgEmWyC6irzR
-        GvG40jWKdNQOtP4AAR8e53lci42fy70lK4UjLB9DTuG+bFOUEb+m3Rpct3mQdVj0
-        snEqrewmLENA9FgrLl/awPIcNe8Hf9WtgmEgttVd54i2VysF5GggK9y6792Hr4Rr
-        xOQX6mfl6B/21A==
-X-ME-Sender: <xms:dLsHYKYjiezCTpPIKiQvgqlvY66QZuDabMpEnZqbI_aWM9Ole_10FA>
-    <xme:dLsHYNZtaQXADo_Yxq3X2lk1w4-oK7aCQiDWJ0i_XbevULFjeki8z3jmQsr-y9VW6
-    CdNBQt5n28IHsv9qQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddugdekudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghj
-    rdhiugdrrghuqeenucggtffrrghtthgvrhhnpeejgfdvveehteekveeggeellefgleette
-    ejffelffdvudduveeiffegteelvefhteenucfkphepudegrddvrddutdejrdeggeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfi
-    esrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:dLsHYE9gOtMm22JjnNNl3XXotQkd6ZiY_V17HidNlgGRwmUwQvJg3Q>
-    <xmx:dLsHYMpnGfLeInrQHf23Y6JF_TC9GhaSR18ryDOZ20l1rZaB_Ux3YA>
-    <xmx:dLsHYFpxjP7zTb2DdetPbiIsnCZjUcl_T8ED-p2jSSVGpxotWPg3JQ>
-    <xmx:dbsHYG6IiDOIFLQ_6Be9kCEJ23p4l7STJR7If9dG0qx3pZj-SvDGAA>
-Received: from localhost.localdomain (ppp14-2-107-44.adl-apt-pir-bras32.tpg.internode.on.net [14.2.107.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 04FBF1080063;
-        Wed, 20 Jan 2021 00:11:10 -0500 (EST)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     chiawei_wang@aspeedtech.com
-Cc:     BMC-SW@aspeedtech.com, andrew@aj.id.au, cyrilbur@gmail.com,
-        devicetree@vger.kernel.org, haiyue.wang@linux.intel.com,
-        joel@jms.id.au, lee.jones@linaro.org, linus.walleij@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        minyard@acm.org, openbmc@lists.ozlabs.org, rlippert@google.com,
-        robh+dt@kernel.org
-Subject: [PATCH v5 5/5] soc: aspeed: Adapt to new LPC device tree layout
-Date:   Wed, 20 Jan 2021 15:40:56 +1030
-Message-Id: <20210120051056.712222-1-andrew@aj.id.au>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210114131622.8951-6-chiawei_wang@aspeedtech.com>
-References: <20210114131622.8951-6-chiawei_wang@aspeedtech.com>
+        Wed, 20 Jan 2021 00:14:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611119665; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ORUMplqyK6IaDqFhTEvsF33PBH35b7H9236CHedemic=;
+ b=e+wTX6PW7QbeVmw1ltyxm1gYjT9UnUIfJRy5n0ulChof/oXQX45bFXAP+w8Y9reTVvXzXMyw
+ QnoDxQXj5huoqHRU8crF2bB9f/LnmuLxvF5KRxgO7QiavOqbd8qcQVU1q2x31ZHRDR2Zpccb
+ iFEcGrARXIDZWTQuVtUSZ2UFisQ=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6007bc17e23dedcc3a11fe5c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Jan 2021 05:13:59
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 84062C4331D; Wed, 20 Jan 2021 05:13:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AB88DC43464;
+        Wed, 20 Jan 2021 05:13:54 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Wed, 20 Jan 2021 10:43:54 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Al Grant <Al.Grant@arm.com>
+Cc:     Suzuki Poulose <Suzuki.Poulose@arm.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        leo.yan@linaro.org, mnissler@google.com,
+        linux-arm-kernel@lists.infradead.org,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
+ tracing
+In-Reply-To: <DB7PR08MB3355472BF00A47087E0130CA86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
+References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
+ <20201015160257.GA1450102@xps15>
+ <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
+ <20210118202354.GC464579@xps15>
+ <32216e9fa5c9ffb9df1123792d40eafb@codeaurora.org>
+ <DB7PR08MB3355E85C72492D4766F0BEFC86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
+ <03b893801841f732a25072b4e62f8e0b@codeaurora.org>
+ <de2487eb-ddb9-589a-8093-fae31235c884@arm.com>
+ <DB7PR08MB3355472BF00A47087E0130CA86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
+Message-ID: <a8377f54c68361ba1aba948704e631ac@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Add check against LPC device v2 compatible string to
-> ensure that the fixed device tree layout is adopted.
-> The LPC register offsets are also fixed accordingly.
+Hi Al,
+
+On 2021-01-19 17:26, Al Grant wrote:
+>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> On 1/19/21 9:51 AM, Sai Prakash Ranjan wrote:
+>> > Hi Al,
+>> >
+>> > On 2021-01-19 14:06, Al Grant wrote:
+>> >> Hi Sai,
+>> >>
+>> >>> From: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+>> >>> Hi Mathieu,
+>> >>>
+>> >>> On 2021-01-19 01:53, Mathieu Poirier wrote:
+>> >>> > On Fri, Jan 15, 2021 at 11:16:24AM +0530, Sai Prakash Ranjan wrote:
+>> >>> >> Hello Mathieu, Suzuki
+>> >>> >>
+>> >>> >> On 2020-10-15 21:32, Mathieu Poirier wrote:
+>> >>> >> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
+>> >>> >> > > On production systems with ETMs enabled, it is preferred to
+>> >>> >> > > exclude kernel mode(NS EL1) tracing for security concerns and
+>> >>> >> > > support only userspace(NS EL0) tracing. So provide an option
+>> >>> >> > > via kconfig to exclude kernel mode tracing if it is required.
+>> >>> >> > > This config is disabled by default and would not affect the
+>> >>> >> > > current configuration which has both kernel and userspace
+>> >>> >> > > tracing enabled by default.
+>> >>> >> > >
+>> >>> >> >
+>> >>> >> > One requires root access (or be part of a special trace group)
+>> >>> >> > to be able to use the cs_etm PMU.  With this kind of elevated
+>> >>> >> > access restricting tracing at EL1 provides little in terms of security.
+>> >>> >> >
+>> >>> >>
+>> >>> >> Apart from the VM usecase discussed, I am told there are other
+>> >>> >> security concerns here regarding need to exclude kernel mode
+>> >>> >> tracing even for the privileged users/root. One such case being
+>> >>> >> the ability to analyze cryptographic code execution since ETMs
+>> >>> >> can record all branch instructions including timestamps in the
+>> >>> >> kernel and there may be other cases as well which I may not be
+>> >>> >> aware of and hence have added Denis and Mattias. Please let us
+>> >>> >> know if you have any questions further regarding this not being a security
+>> concern.
+>> >>> >
+>> >>> > Even if we were to apply this patch there are many ways to
+>> >>> > compromise a system or get the kernel to reveal important
+>> >>> > information using the perf subsystem.  I would perfer to tackle
+>> >>> > the problem at that level rather than concentrating on coresight.
+>> >>> >
+>> >>>
+>> >>> Sorry but I did not understand your point. We are talking about the
+>> >>> capabilities of coresight etm tracing which has the instruction level tracing
+>> and a lot more.
+>> >>> Perf subsystem is just the framework used for it.
+>> >>> In other words, its not the perf subsystem which does instruction
+>> >>> level tracing, its the coresight etm. Why the perf subsystem should
+>> >>> be modified to lockdown kernel mode? If we were to let perf handle
+>> >>> all the trace filtering for different exception levels, then why do
+>> >>> we need the register settings in coresight etm driver to filter out
+>> >>> NS EL* tracing? And more importantly, how do you suppose we handle sysfs
+>> mode of coresight tracing with perf subsystem?
+>> >>
+>> >> You both have good points. Mathieu is right that this is not a
+>> >> CoreSight issue specifically, it is a matter of kernel security
+>> >> policy, and other hardware tracing mechanisms ought to be within its
+>> >> scope. There should be a general "anti kernel exfiltration" config
+>> >> that applies to all mechanisms within its scope, and we'd definitely expect
+>> that to include Intel PT as well as ETM.
+>> >>
+>> >
+>> > I agree with this part where there should be a generic config for all
+>> > hardware tracing families(atleast for Intel PT and ARM Coresight),
+>> > Suzuki suggested that as well. I am under the impression that Mathieu
+>> > didn't like adding such a config and wanted perf subsystem to handle
+>> > it since initial discussion was around whether root compromise meant
+>> > everything is lost already and such a kconfig would not help, but
+>> > Mattias already gave some good examples where that is not true.
+>> >
+>> >> A kernel config that forced exclude_kernel on all perf events would
+>> >> deal with ETM and PT in one place, but miss the sysfs interface to ETM.
+>> >>
+>> >> On the other hand, doing it in the ETM drivers would cover the perf
+>> >> and sysfs interfaces to ETM, but would miss Intel PT.
+>> >>
+>> >> So I think what is needed is a general config option that is both
+>> >> implemented in perf (excluding all kernel tracing events) and by any
+>> >> drivers that provide an alternative interface to hardware tracing events.
+>> >>
+>> >
+>> > I am good with this approach, once Mathieu confirms, I can add a
+>> > kernel wide kconfig as Suzuki suggested earlier and make ETM{3,4}x as
+>> > the initial users. Someone more familiar with Intel PTs can then make
+>> > use of this kconfig.
+>> 
+>> Instead of adding the support for individual drivers, you could handle 
+>> this in the
+>> generic perf layer. e.g, Fail perf_event create with an attribute 
+>> which allows
+>> kernel tracing ?
+>> 
+>> if (!attr.exclude_kernel)
+>> 	return -EINVAL;
+>> 
+>> Or even exclude the kernel silently always.
+>> 
+>> This could also be limited to PMUs with PERF_PMU_CAP_ITRACE, if you 
+>> want to
+>> limit this to PMUs that instruction level tracing.
 > 
-> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-> ---
->  drivers/soc/aspeed/aspeed-lpc-ctrl.c  | 20 ++++++++++++++------
->  drivers/soc/aspeed/aspeed-lpc-snoop.c | 23 +++++++++++++++--------
+> The sysfs interface to ETM also needs to deny access to kernel trace, 
+> so it's
+> safest to enforce it in the drivers in addition to any enforcement done 
+> in perf.
+> 
 
-In the future please do separate patches for separate drivers, but for now:
+Yes, it will be done in drivers for sysfs interface as well based on the
+same kconfig.
 
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> Also, forcing exclude_kernel on all perf events may be too strong. 
+> Including
+> the kernel in counted events e.g. cache misses can help understand the 
+> effect
+> of system calls on performance, and isn't a big side channel compared 
+> to
+> userspace event counts. It doesn't reveal detailed timings in the way
+> trace does.
+> 
+> So there's an argument for locking out kernel trace specifically (ETM 
+> or PT
+> on the kernel); or even, for locking out timed trace with timestamps 
+> and
+> cycle counts, and allowing untimed trace. So, that could be done in 
+> perf, with
+> a more specific test on the type of event, before it forced 
+> exclude_kernel.
+> 
+
+Yes exclude_kernel for all events might not be possible, so it would be
+better if it is initially applied for PMUs with PERF_PMU_CAP_ITRACE as
+Suzuki suggested.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
