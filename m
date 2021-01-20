@@ -2,135 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF252FD379
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E07DD2FD377
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390826AbhATO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390189AbhATOLo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:11:44 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DC9C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:08:38 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id g13so422447uaw.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:08:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eQpo2/GqCSrtTmISxWObvMSxde4cEDeccm8J4/mCD54=;
-        b=lTIxJju2eS/rp0QjBo4fvpCZUn4yw9e3W7e0ZyLUR9HmfbqeoouDNTuc4S3WdM9dGk
-         y1epOqS0EEgxV+4dffWYitfyyo3DRt6F0LdBcOGXEAa6KPC3FU/VbXM7ME275IYEXGgp
-         XdTzWDnLZsx68Aqq+Sarh4vFxSrArQN0uH4vOkI9uyerMbKmsCQwGwPv6+2G4i8S8f16
-         LFg2dHEsu57WQIyD8lLsptAPB9K8nn/c16E0BHU0AH6uweA3IU2xJ1V0SjSQx0ey2NnB
-         gEExCq6JPX1VlHGX64YOtDk2esWYs3V5dtFirm3JdRq5xVdkffWCmMSTq5Awf78lkNLw
-         nYKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eQpo2/GqCSrtTmISxWObvMSxde4cEDeccm8J4/mCD54=;
-        b=Z7YfH0NBRKwPuO+CSz486tOC+XiwHLGuSMw00br5mZtPxvEAwrBQ5nlFn3GYCk2gEg
-         C0My52zC85yT/uaFnEvShvs+je6f127Pza+d29eB45oFVlTTZdUWc54R9q4PdoQa6coG
-         dNuNsgN0cBiSNp6a7t5q2IMNve28MC7UxWVgS6ZQpaeuC2QE4HBbv3eFdXqCfo0QIlwD
-         xFW1jmh2wSMQxuJwqHTBq6O12wrZX7mNzFBFZGv2lx7cr1ixXRk0ZChQ0Bb1X8578V5t
-         7fdcCoarC1BLamZ2qV+dfQV3siSn7Y6JYbv04T2+ffri1ctGEUzxHvIuMCYz4q80t93N
-         6xlw==
-X-Gm-Message-State: AOAM533m/VSPy43n21eTanQCbInqSgo1o19E1G68lvfQqR767sZNSDKw
-        /30IpfYsK6UztilIMFOZXJQSiOI/OGD6L4zmaZcCXQ==
-X-Google-Smtp-Source: ABdhPJybCoOrEGS0XDMKG7uX6jLpbNIxEZ8jIL0POQxHlhWHccui2ZyndJkGmmB+OOhQGKOprR2gBnmX9oDRFoa4/bQ=
-X-Received: by 2002:a9f:2271:: with SMTP id 104mr6172058uad.15.1611151718095;
- Wed, 20 Jan 2021 06:08:38 -0800 (PST)
+        id S2390777AbhATO5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:57:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387560AbhATORU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:17:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BBA723340;
+        Wed, 20 Jan 2021 14:16:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611152191;
+        bh=dXCyW/WJvJElPbs5MwVYcl+ftX5wohGLeESQlhoYh6Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Od12YM8jckMLJuwB4HOZIMv1uGc/3h423VbiluZ4EoqdPK68+8ykqYggobXoXWdTO
+         Nsy52h5qPZIWh78Bfd9A8RcznYkA+EQ254FPHdTG1pzX/h+nfcl7B7wqGRERuog+1Z
+         GN4TX8cd5AnFUHoQ23AUdbOXDz1MhJTXaR+NySKNd9/Xt/3ffguN0wKwynUlYufsKl
+         27lH7EYEcf8GwEzLloRzfVq4NdSxQ6EBKv2b5IqRpycuRf3gSTxBqqtYTuLzVHEGAw
+         60ES+rtOBWTobKtCDcbWuHfO/Cjw2sJmI09747G/P5nuUJjY8yOxDRxKGc6I+HGEdg
+         wkybqd01Kfn4g==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
+Subject: [PATCH] Input: remove sirfsoc power button driver
+Date:   Wed, 20 Jan 2021 15:16:25 +0100
+Message-Id: <20210120141625.2519925-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210120000406.1843400-1-jeremy.linton@arm.com> <20210120000406.1843400-2-jeremy.linton@arm.com>
-In-Reply-To: <20210120000406.1843400-2-jeremy.linton@arm.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 20 Jan 2021 15:08:00 +0100
-Message-ID: <CAPDyKFpLpMU3ec7eV_q8w88oywazLrSo5wyVFZkVrzRqn3bhSQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci-iproc: Add ACPI bindings for the rpi
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        ardb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 at 01:04, Jeremy Linton <jeremy.linton@arm.com> wrote:
->
-> The RPi4 has an Arasan controller it carries over
-> from the RPi3 and a newer eMMC2 controller.
-> Because of a couple of quirks, it seems wiser to bind
-> these controllers to the same driver that DT is using
-> on this platform rather than the generic sdhci_acpi
-> driver with PNP0D40.
->
-> So, BCM2847 describes the older Arasan and
-> BRCME88C describes the newer eMMC2. The older
-> Arasan is reusing an existing ACPI _HID used
-> by other OSs booting these tables on the RPi.
->
-> With this change, Linux is capable of utilizing the
-> SD card slot, and the wifi when booted with
-> UEFI+ACPI on the rpi4.
->
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Applied for next (and by updating the commit message according to the
-nitpick comment from Florian), thanks!
+The CSR SiRF prima2/atlas platforms are getting removed, so this driver
+is no longer needed.
 
-Kind regards
-Uffe
+Cc: Barry Song <baohua@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/input/misc/Kconfig         |  10 --
+ drivers/input/misc/Makefile        |   1 -
+ drivers/input/misc/sirfsoc-onkey.c | 207 -----------------------------
+ 3 files changed, 218 deletions(-)
+ delete mode 100644 drivers/input/misc/sirfsoc-onkey.c
 
+diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+index ad1b6c90bc4d..f824e3435a8e 100644
+--- a/drivers/input/misc/Kconfig
++++ b/drivers/input/misc/Kconfig
+@@ -789,16 +789,6 @@ config INPUT_XEN_KBDDEV_FRONTEND
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called xen-kbdfront.
+ 
+-config INPUT_SIRFSOC_ONKEY
+-	tristate "CSR SiRFSoC power on/off/suspend key support"
+-	depends on ARCH_SIRF && OF
+-	default y
+-	help
+-	  Say Y here if you want to support for the SiRFSoC power on/off/suspend key
+-	  in Linux, after you press the onkey, system will suspend.
+-
+-	  If unsure, say N.
+-
+ config INPUT_IDEAPAD_SLIDEBAR
+ 	tristate "IdeaPad Laptop Slidebar"
+ 	depends on INPUT
+diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+index 7f202ba8f775..0b5871e1bb76 100644
+--- a/drivers/input/misc/Makefile
++++ b/drivers/input/misc/Makefile
+@@ -72,7 +72,6 @@ obj-$(CONFIG_INPUT_GPIO_ROTARY_ENCODER)	+= rotary_encoder.o
+ obj-$(CONFIG_INPUT_RK805_PWRKEY)	+= rk805-pwrkey.o
+ obj-$(CONFIG_INPUT_SC27XX_VIBRA)	+= sc27xx-vibra.o
+ obj-$(CONFIG_INPUT_SGI_BTNS)		+= sgi_btns.o
+-obj-$(CONFIG_INPUT_SIRFSOC_ONKEY)	+= sirfsoc-onkey.o
+ obj-$(CONFIG_INPUT_SOC_BUTTON_ARRAY)	+= soc_button_array.o
+ obj-$(CONFIG_INPUT_SPARCSPKR)		+= sparcspkr.o
+ obj-$(CONFIG_INPUT_STPMIC1_ONKEY)  	+= stpmic1_onkey.o
+diff --git a/drivers/input/misc/sirfsoc-onkey.c b/drivers/input/misc/sirfsoc-onkey.c
+deleted file mode 100644
+index 7982bf8fb839..000000000000
+--- a/drivers/input/misc/sirfsoc-onkey.c
++++ /dev/null
+@@ -1,207 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Power key driver for SiRF PrimaII
+- *
+- * Copyright (c) 2013 - 2014 Cambridge Silicon Radio Limited, a CSR plc group
+- * company.
+- */
+-
+-#include <linux/module.h>
+-#include <linux/interrupt.h>
+-#include <linux/delay.h>
+-#include <linux/platform_device.h>
+-#include <linux/input.h>
+-#include <linux/rtc/sirfsoc_rtciobrg.h>
+-#include <linux/of.h>
+-#include <linux/workqueue.h>
+-
+-struct sirfsoc_pwrc_drvdata {
+-	u32			pwrc_base;
+-	struct input_dev	*input;
+-	struct delayed_work	work;
+-};
+-
+-#define PWRC_ON_KEY_BIT			(1 << 0)
+-
+-#define PWRC_INT_STATUS			0xc
+-#define PWRC_INT_MASK			0x10
+-#define PWRC_PIN_STATUS			0x14
+-#define PWRC_KEY_DETECT_UP_TIME		20	/* ms*/
+-
+-static int sirfsoc_pwrc_is_on_key_down(struct sirfsoc_pwrc_drvdata *pwrcdrv)
+-{
+-	u32 state = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
+-							PWRC_PIN_STATUS);
+-	return !(state & PWRC_ON_KEY_BIT); /* ON_KEY is active low */
+-}
+-
+-static void sirfsoc_pwrc_report_event(struct work_struct *work)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv =
+-		container_of(work, struct sirfsoc_pwrc_drvdata, work.work);
+-
+-	if (sirfsoc_pwrc_is_on_key_down(pwrcdrv)) {
+-		schedule_delayed_work(&pwrcdrv->work,
+-			msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
+-	} else {
+-		input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 0);
+-		input_sync(pwrcdrv->input);
+-	}
+-}
+-
+-static irqreturn_t sirfsoc_pwrc_isr(int irq, void *dev_id)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_id;
+-	u32 int_status;
+-
+-	int_status = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
+-							PWRC_INT_STATUS);
+-	sirfsoc_rtc_iobrg_writel(int_status & ~PWRC_ON_KEY_BIT,
+-				 pwrcdrv->pwrc_base + PWRC_INT_STATUS);
+-
+-	input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 1);
+-	input_sync(pwrcdrv->input);
+-	schedule_delayed_work(&pwrcdrv->work,
+-			      msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static void sirfsoc_pwrc_toggle_interrupts(struct sirfsoc_pwrc_drvdata *pwrcdrv,
+-					   bool enable)
+-{
+-	u32 int_mask;
+-
+-	int_mask = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base + PWRC_INT_MASK);
+-	if (enable)
+-		int_mask |= PWRC_ON_KEY_BIT;
+-	else
+-		int_mask &= ~PWRC_ON_KEY_BIT;
+-	sirfsoc_rtc_iobrg_writel(int_mask, pwrcdrv->pwrc_base + PWRC_INT_MASK);
+-}
+-
+-static int sirfsoc_pwrc_open(struct input_dev *input)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
+-
+-	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
+-
+-	return 0;
+-}
+-
+-static void sirfsoc_pwrc_close(struct input_dev *input)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
+-
+-	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
+-	cancel_delayed_work_sync(&pwrcdrv->work);
+-}
+-
+-static const struct of_device_id sirfsoc_pwrc_of_match[] = {
+-	{ .compatible = "sirf,prima2-pwrc" },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, sirfsoc_pwrc_of_match);
+-
+-static int sirfsoc_pwrc_probe(struct platform_device *pdev)
+-{
+-	struct device_node *np = pdev->dev.of_node;
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv;
+-	int irq;
+-	int error;
+-
+-	pwrcdrv = devm_kzalloc(&pdev->dev, sizeof(struct sirfsoc_pwrc_drvdata),
+-			       GFP_KERNEL);
+-	if (!pwrcdrv) {
+-		dev_info(&pdev->dev, "Not enough memory for the device data\n");
+-		return -ENOMEM;
+-	}
+-
+-	/*
+-	 * We can't use of_iomap because pwrc is not mapped in memory,
+-	 * the so-called base address is only offset in rtciobrg
+-	 */
+-	error = of_property_read_u32(np, "reg", &pwrcdrv->pwrc_base);
+-	if (error) {
+-		dev_err(&pdev->dev,
+-			"unable to find base address of pwrc node in dtb\n");
+-		return error;
+-	}
+-
+-	pwrcdrv->input = devm_input_allocate_device(&pdev->dev);
+-	if (!pwrcdrv->input)
+-		return -ENOMEM;
+-
+-	pwrcdrv->input->name = "sirfsoc pwrckey";
+-	pwrcdrv->input->phys = "pwrc/input0";
+-	pwrcdrv->input->evbit[0] = BIT_MASK(EV_KEY);
+-	input_set_capability(pwrcdrv->input, EV_KEY, KEY_POWER);
+-
+-	INIT_DELAYED_WORK(&pwrcdrv->work, sirfsoc_pwrc_report_event);
+-
+-	pwrcdrv->input->open = sirfsoc_pwrc_open;
+-	pwrcdrv->input->close = sirfsoc_pwrc_close;
+-
+-	input_set_drvdata(pwrcdrv->input, pwrcdrv);
+-
+-	/* Make sure the device is quiesced */
+-	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
+-
+-	irq = platform_get_irq(pdev, 0);
+-	error = devm_request_irq(&pdev->dev, irq,
+-				 sirfsoc_pwrc_isr, 0,
+-				 "sirfsoc_pwrc_int", pwrcdrv);
+-	if (error) {
+-		dev_err(&pdev->dev, "unable to claim irq %d, error: %d\n",
+-			irq, error);
+-		return error;
+-	}
+-
+-	error = input_register_device(pwrcdrv->input);
+-	if (error) {
+-		dev_err(&pdev->dev,
+-			"unable to register input device, error: %d\n",
+-			error);
+-		return error;
+-	}
+-
+-	dev_set_drvdata(&pdev->dev, pwrcdrv);
+-	device_init_wakeup(&pdev->dev, 1);
+-
+-	return 0;
+-}
+-
+-static int __maybe_unused sirfsoc_pwrc_resume(struct device *dev)
+-{
+-	struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_get_drvdata(dev);
+-	struct input_dev *input = pwrcdrv->input;
+-
+-	/*
+-	 * Do not mask pwrc interrupt as we want pwrc work as a wakeup source
+-	 * if users touch X_ONKEY_B, see arch/arm/mach-prima2/pm.c
+-	 */
+-	mutex_lock(&input->mutex);
+-	if (input_device_enabled(input))
+-		sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
+-	mutex_unlock(&input->mutex);
+-
+-	return 0;
+-}
+-
+-static SIMPLE_DEV_PM_OPS(sirfsoc_pwrc_pm_ops, NULL, sirfsoc_pwrc_resume);
+-
+-static struct platform_driver sirfsoc_pwrc_driver = {
+-	.probe		= sirfsoc_pwrc_probe,
+-	.driver		= {
+-		.name	= "sirfsoc-pwrc",
+-		.pm	= &sirfsoc_pwrc_pm_ops,
+-		.of_match_table = sirfsoc_pwrc_of_match,
+-	}
+-};
+-
+-module_platform_driver(sirfsoc_pwrc_driver);
+-
+-MODULE_LICENSE("GPL v2");
+-MODULE_AUTHOR("Binghua Duan <Binghua.Duan@csr.com>, Xianglong Du <Xianglong.Du@csr.com>");
+-MODULE_DESCRIPTION("CSR Prima2 PWRC Driver");
+-MODULE_ALIAS("platform:sirfsoc-pwrc");
+-- 
+2.29.2
 
-> ---
->  drivers/mmc/host/sdhci-iproc.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
-> index c9434b461aab..ddeaf8e1f72f 100644
-> --- a/drivers/mmc/host/sdhci-iproc.c
-> +++ b/drivers/mmc/host/sdhci-iproc.c
-> @@ -296,9 +296,27 @@ static const struct of_device_id sdhci_iproc_of_match[] = {
->  MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
->
->  #ifdef CONFIG_ACPI
-> +/*
-> + * This is a duplicate of bcm2835_(pltfrm_)data without caps quirks
-> + * which are provided by the ACPI table.
-> + */
-> +static const struct sdhci_pltfm_data sdhci_bcm_arasan_data = {
-> +       .quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
-> +                 SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
-> +                 SDHCI_QUIRK_NO_HISPD_BIT,
-> +       .quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-> +       .ops = &sdhci_iproc_32only_ops,
-> +};
-> +
-> +static const struct sdhci_iproc_data bcm_arasan_data = {
-> +       .pdata = &sdhci_bcm_arasan_data,
-> +};
-> +
->  static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
->         { .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
->         { .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
-> +       { .id = "BCM2847",  .driver_data = (kernel_ulong_t)&bcm_arasan_data },
-> +       { .id = "BRCME88C", .driver_data = (kernel_ulong_t)&bcm2711_data },
->         { /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(acpi, sdhci_iproc_acpi_ids);
-> --
-> 2.26.2
->
