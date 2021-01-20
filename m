@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D522FD490
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F1B2FD48B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391099AbhATPv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:51:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732352AbhATPoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:44:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E5723340;
-        Wed, 20 Jan 2021 15:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611157415;
-        bh=kd/paozK38VJWW0FXnITt47RxhG+gJMdUP82dsvezso=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ltuxau2hzQIpfg7IADTCE3SyKcIqxDXb5BG2xo4NwkfX7H6a8x8Nk2Ba5vZ7t5MBO
-         Ss031tqAxAg7aX0eYHnsPWprMIiuTlqIDoR2NzeFd4ndd6XkNfMRgiF/X1tyx5vXMV
-         GjXoZISzYgQiMxJRLO79H7jHbDiDLk1DINHxKfTqiS8LI1nbxejJvgawf75idh7xH8
-         VWbS79T4m+KxBs9AAJDm/a9JIUWoJ0oQ5xv46gLQVgTeG206pfNyLnKfdM3lbhDn33
-         wQAGkIbYqUlY2FS/x2rB822Bi0/HXCSH4mw3nElGeNvz3UzHiCE4pTYwi3tisJlcvc
-         83yG6rc4c+jzA==
-Received: by mail-ej1-f46.google.com with SMTP id l9so28454490ejx.3;
-        Wed, 20 Jan 2021 07:43:35 -0800 (PST)
-X-Gm-Message-State: AOAM530ZPEqUlGAUc//k9q4s/J/cjGquns/URpPhOuHc98WFE6GtWU6E
-        ecRbnLcc9PZRX4QKdQwo9dqBMU/F38G36oPS7g==
-X-Google-Smtp-Source: ABdhPJzmOkLbtAe8nvDkJov21h52898/evdmJ2U4bx2dw7Fbe+76/XnQco8dKKmAAxAtUy0DOx8UmxeSR/8oW2L6r1A=
-X-Received: by 2002:a17:906:958f:: with SMTP id r15mr6314359ejx.360.1611157413992;
- Wed, 20 Jan 2021 07:43:33 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1611124778.git.viresh.kumar@linaro.org>
-In-Reply-To: <cover.1611124778.git.viresh.kumar@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 20 Jan 2021 09:43:21 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLoxHGphf4TbQtGPggq=kEUnpoR2QqCQD77ttjnVNt0wg@mail.gmail.com>
-Message-ID: <CAL_JsqLoxHGphf4TbQtGPggq=kEUnpoR2QqCQD77ttjnVNt0wg@mail.gmail.com>
-Subject: Re: [PATCH V5 0/5] dt: build overlays
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        devicetree@vger.kernel.org,
+        id S2391037AbhATPtQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Jan 2021 10:49:16 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:53175 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389008AbhATPoH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:44:07 -0500
+X-Originating-IP: 86.201.233.230
+Received: from xps13 (lfbn-tou-1-151-230.w86-201.abo.wanadoo.fr [86.201.233.230])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 835311BF204;
+        Wed, 20 Jan 2021 15:43:23 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 16:43:22 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Mans Rullgard <mans@mansr.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] nand: raw: remove tango driver
+Message-ID: <20210120164322.644720d3@xps13>
+In-Reply-To: <CAK8P3a3imz7hiir0iJbAN4v-SVbjQPPiieoV0PJ5UKgj4DaTuA@mail.gmail.com>
+References: <20210120150555.1610132-1-arnd@kernel.org>
+        <20210120162904.1a1588bf@xps13>
+        <CAK8P3a3imz7hiir0iJbAN4v-SVbjQPPiieoV0PJ5UKgj4DaTuA@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 1:07 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> Hi Frank/Rob,
->
-> I have picked all the related patches together into a single patchset,
-> so they can be properly reviewed/tested.
->
-> This patchset makes necessary changes to the kernel to add support for
-> building overlays (%.dtbo) and the required fdtoverlay tool. This also
-> builds static_test.dtb using some of the existing overlay tests present
-> in drivers/of/unittest-data/ for better test coverage.
->
-> Note that in order for anyone to test this stuff, you need to manually
-> run the ./update-dtc-source.sh script once to fetch the necessary
-> changes from the external DTC project (i.e. fdtoverlay.c and this[1]
-> patch).
 
-Do we need a fdtoverlay fix for applying root node changes?
+Arnd Bergmann <arnd@kernel.org> wrote on Wed, 20 Jan 2021 16:41:16
++0100:
 
-Rob
+> On Wed, Jan 20, 2021 at 4:29 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >
+> > Hi Arnd,
+> >
+> > Arnd Bergmann <arnd@kernel.org> wrote on Wed, 20 Jan 2021 16:05:26
+> > +0100:
+> >  
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > The tango platform is getting removed, so the driver is no
+> > > longer needed.
+> > >
+> > > Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+> > > Cc: Mans Rullgard <mans@mansr.com>
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
+> >
+> > I didn't know. I'll just fix the title when applying to something like
+> >
+> >         mtd: rawnand: tango: Remove the driver
+> >
+> > If you don't mind.  
+> 
+> Sure, please do.
+> 
+> If you like, you can also add a pointer to the platform removal
+> 
+> Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
+> 
+> which I had added to some of the other submissions, but forgot here.
+
+Sure, I'll do it.
+
+Miquèl
