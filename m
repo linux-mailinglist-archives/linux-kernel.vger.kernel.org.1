@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96DE2FC9E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B0B2FC9E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbhATETT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730692AbhATEMw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:12:52 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DABC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 20:12:10 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id h16so24129776edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 20:12:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=l9avflWFeErte6PCdfopkFmndIBocFK+Q/nYZfMSQqE=;
-        b=C8X9zRKkt17O637vlA0w7Ei2ZWLSxfOvwrDoOnZpbpLWanHhida3po4heO9YLgkL3h
-         g2rrWM4q75sYgbOcuT7R8Ysq6PNPhyXKwYCrjVwhODO9wH7K/Gp58yjltLJy8hTUDhcW
-         mhLTWMHNIL7Yw9j/eKbhiPuLvflwpUv1jEhGT8drp9zHGpHcuTWMTzmgCQdBAjeu4ehj
-         JlUn/H9Jv4OVBsFlsxG5It9Y90VjsRyGEnCvK8hN94PMvlxdcocSL8tIcgPUxTKL+uPo
-         8Cvia917hnJtJNAsi9qYcfBvhbbNHwORUEA86Z5/h++2U2xB5oXsd4p+RLPy9O13E7J3
-         CPVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=l9avflWFeErte6PCdfopkFmndIBocFK+Q/nYZfMSQqE=;
-        b=EpHx6Jl4LDEpY1Ayt1CP/CKmwbeGrKrPLSUD4L1NRCklK5IitPpPat6aClETfB7b8c
-         SfIwqm9HU6mLByCFstQ54x/b7WB/FEYDBnpy91MgUyJjLVbWz2m0LkfoUkxSpiCltirF
-         EGQFQJgpkVD17IKGIg3Rw2Au/eP9ENExTFhAon4Q/znLw+/suUGE3IwU2xAJ5S6EUUaG
-         ncY3qNlL9fG/5WStKDOtXw5xtErOTPFZsvrsRybtZI445UMS5LtVZpTkUg10xjzU2d2P
-         aw6uK/gF017YYAkgS/57I6YfK7Ak3CNE3bFhc6gBtXbY3d4kEo9K71WD8rH4sNtp0UJB
-         16pQ==
-X-Gm-Message-State: AOAM5325FbcrxOscdFc1iWzBYpF2F2kVH6UBDAJnVhjnVfSRumfuaJkA
-        9UF813z15LpgjKqyGlofLDRvRhjST9KI4d0Z4/Pv2g==
-X-Google-Smtp-Source: ABdhPJxaTZmcMRWRWf1kOl8EoB4XcBiaPjcSic8IErTq56RdAQHmLAtfGaZyRwaI/gCzOTN5YYo0k2RdctfiDacqV4Y=
-X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr3750536edd.52.1611115929077;
- Tue, 19 Jan 2021 20:12:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20210119213727.pkiuSGW9i%akpm@linux-foundation.org> <5f8e2ede-5836-45e1-d8d7-ae949775e76e@infradead.org>
-In-Reply-To: <5f8e2ede-5836-45e1-d8d7-ae949775e76e@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 19 Jan 2021 20:12:01 -0800
-Message-ID: <CAPcyv4iX+7LAgAeSqx7Zw-Zd=ZV9gBv8Bo7oTbwCOOqJoZ3+Yg@mail.gmail.com>
-Subject: Re: [PATCH -mmotm] mm/memory_hotplug: fix for CONFIG_ZONE_DEVICE not enabled
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.cz>, mm-commits@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1728956AbhATET7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:19:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730784AbhATEOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 23:14:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C4532312D;
+        Wed, 20 Jan 2021 04:14:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611116050;
+        bh=3ePYciKZe3v9kuW41JjidNDqr1nlrNykqTEuwNB1IL0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DwjLbCBOdNNktFj/uoJZxURFfmA5Mh7PI0PiR/Vy510SSVEf1N9yw6zimSXnxYCao
+         Ajf6/4Wbg2QdRnJAmNZ8tontWlp7tRIov7ciR+3EnXJmQOo3NEGgwkk8WhCMyUUENT
+         w4Adg2la3cDBWmomcgtn3kg0CRNSjuMrRph9f+vqbZUyZkDtJ570JqBXbVkHW5YnbX
+         xWcfrDlpTjdelxdggw0u/AqZTbSXbcX0DZG81K02ycr0dLZ6ypMWgfBxFSgh8v4Aen
+         uItMqPdOGdvMKmFnTmZxNQHYSry4LbopZ3DdSSuM94cLqW+98BXWeR/IUUlOOJu8sC
+         fprguD7kNllfQ==
+Date:   Wed, 20 Jan 2021 13:14:06 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jianlin Lv <Jianlin.Lv@arm.com>, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: precise log info for kretprobe addr err
+Message-Id: <20210120131406.5a992c1e434681750a0cd5d4@kernel.org>
+In-Reply-To: <20210120122415.76fa3539ce031bfb90e1c862@kernel.org>
+References: <20210119151014.3822465-1-Jianlin.Lv@arm.com>
+        <20210119104106.2213a49c@gandalf.local.home>
+        <20210120122415.76fa3539ce031bfb90e1c862@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 7:05 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> From: Randy Dunlap <rdunlap@infradead.org>
->
-> Fix memory_hotplug.c when CONFIG_ZONE_DEVICE is not enabled.
->
-> Fixes this build error:
->
-> ../mm/memory_hotplug.c: In function =E2=80=98move_pfn_range_to_zone=E2=80=
-=99:
-> ../mm/memory_hotplug.c:772:24: error: =E2=80=98ZONE_DEVICE=E2=80=99 undec=
-lared (first use in this function); did you mean =E2=80=98ZONE_MOVABLE=E2=
-=80=99?
->   if (zone_idx(zone) =3D=3D ZONE_DEVICE) {
+On Wed, 20 Jan 2021 12:24:15 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Thanks Randy. Apologies for the thrash, obviously the kbuild-robot
-does not include a CONFIG_ZONE_DEVICE=3Dn.
+> Hi,
+> 
+> On Tue, 19 Jan 2021 10:41:06 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > Masami,
+> > 
+> > Looks fine to me. What do you think?
+> 
+> Agreed. Since register_kretprobe() checks the address by kprobe_on_func_entry(),
+> if it is not passed, it should always fail to register at last.
+> 
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-I'd prefer to fix this without adding ifdefery in a .c file with
-something like this:
+Oops, sorry I missed one case.
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 0b5c44f730b4..66ba38dae9ba 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -885,6 +885,18 @@ static inline int local_memory_node(int node_id)
-{ return node_id; };
-  */
- #define zone_idx(zone)         ((zone) - (zone)->zone_pgdat->node_zones)
+Since kprobe_events can accept a symbol with module name (MOD:symbol)
+If the given symbol is on a module which is not loaded,
+kprobe_on_func_entry(NULL, symbol, offset) may return false too.
+(But that kretprobe must be enabled after the target module is loaded)
 
-+#ifdef CONFIG_ZONE_DEVICE
-+static inline bool zone_is_zone_device(struct zone *zone)
-+{
-+       return zone_idx(zone) =3D=3D ZONE_DEVICE;
-+}
-+#else
-+static inline bool zone_is_zone_device(struct zone *zone)
-+{
-+       return false;
-+}
-+#endif
-+
- /*
-  * Returns true if a zone has pages managed by the buddy allocator.
-  * All the reclaim decisions have to use this function rather than
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index c78a1bef561b..710e469fb3a1 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -769,7 +769,7 @@ void __ref move_pfn_range_to_zone(struct zone
-*zone, unsigned long start_pfn,
-         * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
-         * section.
-         */
--       if (zone_idx(zone) =3D=3D ZONE_DEVICE) {
-+       if (zone_is_zone_device(zone)) {
-                if (!IS_ALIGNED(start_pfn, PAGES_PER_SECTION))
-                        section_taint_zone_device(start_pfn);
-                if (!IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION))
+To confirm it correctly, add !strchr(symbol, ':') there to check
+it is really bad symbol or not.
+
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 5fff39541b8a..0170f8e6430b 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -830,7 +830,7 @@ static int trace_kprobe_create(int argc, const char *argv[])
+ 			flags |= TPARG_FL_RETURN;
+ 		if (kprobe_on_func_entry(NULL, symbol, offset))
+ 			flags |= TPARG_FL_FENTRY;
+-		if (offset && is_return && !(flags & TPARG_FL_FENTRY)) {
++		if (!strchr(symbol, ':') && is_return && !(flags & TPARG_FL_FENTRY)) {
+ 			trace_probe_log_err(0, BAD_RETPROBE);
+ 			goto parse_error;
+ 		}
+
+Thank you,
+
+> 
+> Thank you!
+> 
+> > 
+> > -- Steve
+> > 
+> > 
+> > On Tue, 19 Jan 2021 23:10:14 +0800
+> > Jianlin Lv <Jianlin.Lv@arm.com> wrote:
+> > 
+> > > When trying to create kretprobe with the wrong function symbol in tracefs;
+> > > The error is triggered in the register_trace_kprobe() and recorded as
+> > > FAIL_REG_PROBE issue,
+> > > 
+> > > Example:
+> > >   $ cd /sys/kernel/debug/tracing
+> > >   $ echo 'r:myprobe ERROR_SYMBOL_XXX ret=%x0' >> kprobe_events
+> > >     bash: echo: write error: Invalid argument
+> > >   $ cat error_log
+> > >     [142797.347877] trace_kprobe: error: Failed to register probe event
+> > >     Command: r:myprobe ERROR_SYMBOL_XXX ret=%x0
+> > >                        ^
+> > > 
+> > > This error can be detected in the parameter parsing stage, the effect of
+> > > applying this patch is as follows:
+> > > 
+> > >   $ echo 'r:myprobe ERROR_SYMBOL_XXX ret=%x0' >> kprobe_events
+> > >     bash: echo: write error: Invalid argument
+> > >   $ cat error_log
+> > >     [415.89]trace_kprobe: error: Retprobe address must be an function entry
+> > >     Command: r:myprobe ERROR_SYMBOL_XXX ret=%x0
+> > >                        ^
+> > > 
+> > > Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+> > > ---
+> > >  kernel/trace/trace_kprobe.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> > > index e6fba1798771..3dfd1b6711a3 100644
+> > > --- a/kernel/trace/trace_kprobe.c
+> > > +++ b/kernel/trace/trace_kprobe.c
+> > > @@ -830,7 +830,7 @@ static int trace_kprobe_create(int argc, const char *argv[])
+> > >  			flags |= TPARG_FL_RETURN;
+> > >  		if (kprobe_on_func_entry(NULL, symbol, offset))
+> > >  			flags |= TPARG_FL_FENTRY;
+> > > -		if (offset && is_return && !(flags & TPARG_FL_FENTRY)) {
+> > > +		if (is_return && !(flags & TPARG_FL_FENTRY)) {
+> > >  			trace_probe_log_err(0, BAD_RETPROBE);
+> > >  			goto parse_error;
+> > >  		}
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
