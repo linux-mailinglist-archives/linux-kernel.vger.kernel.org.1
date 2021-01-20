@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AB62FD48E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03462FD48D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391056AbhATPuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:50:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731685AbhATPmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:42:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 525D2233A1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611157293;
-        bh=U5pHl/bDl13XXoNt00xkmb1grpKCo0LHMfGTYPyuPiA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hbwaDSo5qcMBsQgSCL4f/ZZwNDG0NPAR/eJlHtzC9OknwAO2zQTaUje7cYWEOyD+7
-         Fdu2hMWQQY0S+arZX4ROrfJw/C6QRr7HzDsd548qQuyY5rpI+r1Hy5rpBkxEpVdcKj
-         sApGGQJLC+MpWUVAOLQL0frz5+z+0R+bXl4GLoM4yMIlZKBuE2UmWdAJRaxzltWCIV
-         kcCZEoL2iNT5JRIcGuiDOUYV7KkqgZGeQhdy8g9B9Pq0LYtExrITCg8i+EOyiaD+GE
-         eMtUnmIQrpdTDlo+D7+hh6fWWWhP3oWzneNz1+d0//qsn7wniL7VY6QvIuzwqjwi5C
-         2YRSe0Sc/GEhw==
-Received: by mail-ot1-f47.google.com with SMTP id 34so12918068otd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 07:41:33 -0800 (PST)
-X-Gm-Message-State: AOAM531jPuR+QdhtnItTZb4WM54yfQfojlRThflH7w2vt+NPw8xBgVJ3
-        MRAVfpJz2yAkQ0FycmlTpU48c/BdZ5dMUKD2IOM=
-X-Google-Smtp-Source: ABdhPJw7r6/+HRYvhMB+K+WeJcCiADNCuffoxluoSpAlo3xz6YSw2gE2LG/LXFQjhrnqRvOG7l8Z+efglKcrkgAF0Io=
-X-Received: by 2002:a05:6830:139a:: with SMTP id d26mr7429505otq.305.1611157292731;
- Wed, 20 Jan 2021 07:41:32 -0800 (PST)
+        id S2390905AbhATPtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:49:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732535AbhATPm0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:42:26 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEC8C0613C1;
+        Wed, 20 Jan 2021 07:41:46 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id f17so26568807ljg.12;
+        Wed, 20 Jan 2021 07:41:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9sJ1ScRq8N/XaLEQifnGC6kRifQqptOQ2pXix1nlQlY=;
+        b=Uajiq292D24xViZSilHw5Nw54/tYtaDcIPIzm0DmQ1axRpfxwauVk6W3xes7SPa8ME
+         /Qdm+mMXRCwcadGLIWF8ocpHiR24QX5YLae+1HzZwWnKQztag6cmwfKZbONjTi7Ga3fH
+         q5RP5Oy90ofLvcDP3vqOxS3TLOGic5cXgVIogUXp/KQrop3QNZIJet0XLVPeu7nD0TbD
+         D+ebXCuRzp1A3rlGZmbgc0KU7yLtuJ1A2G4F+M+6jSzOBqkP+P2AsM9JXL7BD78B91O5
+         3ehukk8m/3jWoqMe0tB+VjLGd8sIfjaBrGBx8TIMWxIBRBQ+H7AxMJCw1RextufG0Hc2
+         rRNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9sJ1ScRq8N/XaLEQifnGC6kRifQqptOQ2pXix1nlQlY=;
+        b=J5Tl1owmaH5flvbn/Xed5ltELFrv2dEaRrFAuIY/+FXglX8Dxa/jBMwwW19WbJZcO6
+         T0yfFeFL76FmMXNx9m5LoiapzJSS3FPi06Hfs+0+tvlGx+E4RJdQRIll79LuY+2vJkwe
+         AtsCDWPrs4Ahff9f972DU8Igq8F7iv5UpI/C5QGvgZU4zUlyFY935GNY7iNkkoyiUP8D
+         1SwrjCFZyrvZ7KQt7gE2GP/E3ynVZdZg61i+RNeho5K2S0MAacMQFa29BQlRC1X6mtT9
+         GnZrMi/3/6m0G21k0vhjSyxNumxwNNvmNOYH4LmCmvVfX9ZE0LEJyv302s/aW0EeQc3Q
+         IpZA==
+X-Gm-Message-State: AOAM531RQiq94fBGiowe8DfQybf/jdqF3WYDb0hMd/ufMjdGZhD4g9z3
+        kHeCAz4KloA66Q7Qep2Dx1YVpRGPBZE=
+X-Google-Smtp-Source: ABdhPJwS4Qe/V4DTqXpHPpVFyBynrwBLREgqIfYmzBAewWBaQBUksbpctc33wZx6P9VYWEGo5ma19g==
+X-Received: by 2002:a2e:b4cd:: with SMTP id r13mr1564048ljm.273.1611157304363;
+        Wed, 20 Jan 2021 07:41:44 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id 29sm229492lfr.304.2021.01.20.07.41.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 07:41:43 -0800 (PST)
+Subject: Re: [PATCH v3 00/12] OPP API fixes and improvements
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118114613.fzq7nkrdfm53upkr@vireshk-i7>
+ <1d17901f-6341-d278-f517-33d9c7aadf42@gmail.com>
+Message-ID: <af1044be-263e-0aa2-7061-0b217f94197b@gmail.com>
+Date:   Wed, 20 Jan 2021 18:41:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20210120150555.1610132-1-arnd@kernel.org> <20210120162904.1a1588bf@xps13>
-In-Reply-To: <20210120162904.1a1588bf@xps13>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 20 Jan 2021 16:41:16 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3imz7hiir0iJbAN4v-SVbjQPPiieoV0PJ5UKgj4DaTuA@mail.gmail.com>
-Message-ID: <CAK8P3a3imz7hiir0iJbAN4v-SVbjQPPiieoV0PJ5UKgj4DaTuA@mail.gmail.com>
-Subject: Re: [PATCH] nand: raw: remove tango driver
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1d17901f-6341-d278-f517-33d9c7aadf42@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 4:29 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Arnd,
->
-> Arnd Bergmann <arnd@kernel.org> wrote on Wed, 20 Jan 2021 16:05:26
-> +0100:
->
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The tango platform is getting removed, so the driver is no
-> > longer needed.
-> >
-> > Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-> > Cc: Mans Rullgard <mans@mansr.com>
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> I didn't know. I'll just fix the title when applying to something like
->
->         mtd: rawnand: tango: Remove the driver
->
-> If you don't mind.
+19.01.2021 20:35, Dmitry Osipenko пишет:
+> 18.01.2021 14:46, Viresh Kumar пишет:
+>> On 18-01-21, 03:55, Dmitry Osipenko wrote:
+>>> Hi,
+>>>
+>>> This series fixes problems and adds features to OPP API that are required
+>>> for implementation of a power domain driver for NVIDIA Tegra SoCs.
+>>>
+>>> It is a continuation of [1], where Viresh Kumar asked to factor OPP
+>>> patches into a separate series. I factored out the patches into this
+>>> series, addressed the previous review comments and re-based patches
+>>> on top of [2], which replaced some of my patches that added resource-managed
+>>> helpers.
+>>>
+>>> [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
+>>> [2] https://lore.kernel.org/linux-pm/20210101165507.19486-1-tiny.windzz@gmail.com/
+>>
+>> Hi Dmitry,
+>>
+>> I have applied 9 out of 12 patches already. Thanks.
+>>
+> 
+> Thanks, I checked that everything is applied properly using today's
+> linux-next.
+> 
 
-Sure, please do.
-
-If you like, you can also add a pointer to the platform removal
-
-Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
-
-which I had added to some of the other submissions, but forgot here.
-
-       Arnd
+Turned out that one minor issue was actually introduced, the
+devm_pm_opp_attach_genpd() lost the export. I'll make a patch to fix this.
