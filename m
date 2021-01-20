@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FEE2FCFEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C160D2FCF7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389550AbhATMS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 07:18:27 -0500
-Received: from m12-12.163.com ([220.181.12.12]:45994 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732276AbhATL4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:56:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=Yp61YTYqIPSgUyAXLx
-        mxc3um8VNJsJyV0cVgGrHmGug=; b=TTMhZ6cI2mgr2FLdC4e99khPVydugSXX2/
-        Vo8VoMqjshjnmjj69OF8q9orVA9Uax+IBeDFebWriYqqey0ZS44igfkqZ76pbzp9
-        L1VnKzVn00mxNCxstePH4p+/QyHtfz++Si+YpnRMVVgREtqBLOoxmB5eJ7ny+Yrz
-        BBEkpnAo8=
-Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp8 (Coremail) with SMTP id DMCowADHt_bd9Adg5f7IMw--.65179S4;
-        Wed, 20 Jan 2021 17:16:19 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] drm/imx: fix memory leak when fails to init
-Date:   Wed, 20 Jan 2021 01:16:08 -0800
-Message-Id: <20210120091608.12430-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DMCowADHt_bd9Adg5f7IMw--.65179S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr1xJr47KFW7ur4Duw48Zwb_yoW3Xrg_G3
-        WUXryxWrsa9a4qvw13ZF4Yyryayrn7ZF4Fyr1xKaykJ342v3ZrXFyjgr9rZ348Xa1xCFyk
-        WFs5XF17Zr17CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU9Xo7UUUUU==
-X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/1tbiDgMgclXly8C2BAAAsW
+        id S1728230AbhATLdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:33:43 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:39052 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732248AbhATKR6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 05:17:58 -0500
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 817EE813;
+        Wed, 20 Jan 2021 11:17:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611137836;
+        bh=9LS1tzVULivXbxvsb4fOqaJBauUFKNy4KU9N+8aTcpo=;
+        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
+        b=cerHDvXdwMHMWqmvTHi+HwigwJqHXAIq2h/BlCbCQDg85zA6AdSOnF4T24kUMvaNB
+         4aQbtgMbJr9f4NqfdWTCo5iS9/tkWynjddiGFpSe682QaRKuVjYRmlPWK1r8cYg1YY
+         JD1EI5xmeh4IqeREbcQMTx18ZK7S1BCSYTYBUVaM=
+Subject: Re: [PATCH] media: i2c/Kconfig: Select FWNODE for OV772x sensor
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+References: <20210120090148.30598-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <a1c42817-e2e4-b96a-c494-742808443f6b@ideasonboard.com>
+Date:   Wed, 20 Jan 2021 10:17:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210120090148.30598-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put DRM device on initialization failure path rather than directly
-return error code.
+Hi Lad,
 
-Fixes: a67d5088ceb8 ("drm/imx: drop explicit drm_mode_config_cleanup")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
----
- drivers/gpu/drm/imx/imx-drm-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 20/01/2021 09:01, Lad Prabhakar wrote:
+> Fix OV772x build breakage by selecting V4L2_FWNODE config:
+> 
+> ia64-linux-ld: drivers/media/i2c/ov772x.o: in function `ov772x_probe':
+> ov772x.c:(.text+0x1ee2): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
+> ia64-linux-ld: ov772x.c:(.text+0x1f12): undefined reference to `v4l2_fwnode_endpoint_free'
+> ia64-linux-ld: ov772x.c:(.text+0x2212): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
+> 
+> Fixes: 8a10b4e3601e ("media: i2c: ov772x: Parse endpoint properties")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/imx-drm-core.c
-index d1a9841adeed..e6a88c8cbd69 100644
---- a/drivers/gpu/drm/imx/imx-drm-core.c
-+++ b/drivers/gpu/drm/imx/imx-drm-core.c
-@@ -215,7 +215,7 @@ static int imx_drm_bind(struct device *dev)
- 
- 	ret = drmm_mode_config_init(drm);
- 	if (ret)
--		return ret;
-+		goto err_kms;
- 
- 	ret = drm_vblank_init(drm, MAX_CRTC);
- 	if (ret)
--- 
-2.17.1
+I see this driver uses subdev API too.
 
+Should the driver also select VIDEO_V4L2_SUBDEV_API?
+
+Or is that covered sufficiently already on any platforms that would use
+the driver?
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> ---
+>  drivers/media/i2c/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index eddb10220953..bb1b5a340431 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -1013,6 +1013,7 @@ config VIDEO_OV772X
+>  	tristate "OmniVision OV772x sensor support"
+>  	depends on I2C && VIDEO_V4L2
+>  	select REGMAP_SCCB
+> +	select V4L2_FWNODE
+>  	help
+>  	  This is a Video4Linux2 sensor driver for the OmniVision
+>  	  OV772x camera.
+> 
 
