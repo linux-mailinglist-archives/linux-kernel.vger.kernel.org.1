@@ -2,177 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52E92FC79E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506722FC7A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbhATCQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:16:59 -0500
-Received: from out28-49.mail.aliyun.com ([115.124.28.49]:56477 "EHLO
-        out28-49.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729313AbhATCQa (ORCPT
+        id S1727593AbhATCS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730603AbhATCRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:16:30 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07443002|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00585233-0.000255196-0.993892;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=liu.xiang@zlingsmart.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.JN2OyIq_1611108925;
-Received: from localhost(mailfrom:liu.xiang@zlingsmart.com fp:SMTPD_---.JN2OyIq_1611108925)
-          by smtp.aliyun-inc.com(10.194.99.21);
-          Wed, 20 Jan 2021 10:15:26 +0800
-From:   Liu Xiang <liu.xiang@zlingsmart.com>
-To:     linux-block@vger.kernel.org
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        Liu Xiang <liu.xiang@zlingsmart.com>
-Subject: [PATCH] blk-mq: introduce REQ_COMPLETE_WQ and add a workqueue to complete the request
-Date:   Wed, 20 Jan 2021 10:15:22 +0800
-Message-Id: <20210120021522.28584-1-liu.xiang@zlingsmart.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 19 Jan 2021 21:17:53 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00644C061575;
+        Tue, 19 Jan 2021 18:17:12 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id z21so14215791pgj.4;
+        Tue, 19 Jan 2021 18:17:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t00TCy5wC+D/qG4tfIGdU9KwNyTzKMrXg9QaOPRF4Ro=;
+        b=PAEasWe/eKvuH5ckT6Ewy3isYgo9T9iZXojfJkFRUNrZrWMGnetPLL7qG/zP+QJU+U
+         FxCA47meW4jKiuf2TaW4UAFlGIxApus8zQGruX3tqXrlNbl5I3M3rcEHHNyvrfMteqNV
+         7xN+6lYayp3j+eA8MLAioG+Iue3i0Ey3h6WNq+0M6hL/iHHyk0aXnMZrs0m1laDgJf/8
+         7S45d1fmHJhO4cQ2PHB1PpGOl+TrheS//7FIVOzKy7nw7M9trm4Gv3QX8Ic1YMdPRRRL
+         6EKHtlMGs3HXCOoFPFk6uGfWzct4hdeXbbNSqpU0VRRDiaq7v8DnTSZRKH3rynB6FDHU
+         XhiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t00TCy5wC+D/qG4tfIGdU9KwNyTzKMrXg9QaOPRF4Ro=;
+        b=YlVMtinOAttQa7fOWHxy5Tu2i2u6J2iMoFzzJFRDcZ2KAuPJA3awPo6ccrPbNLIL21
+         L5OmaSohTKB3AFUeuANOkcSSV5KaeYaCBhvOBTnu6UBU+QMeEthKGP1HipwOewNp93KV
+         QOrUn8f1CeLuvhQT4/SPcZ+pSedPZOUnSxc7BIQ/MPZxIibrV3M5h/QZBBbn4rF0UBwr
+         XYgseXAtDqpbNKXJcPOBD/AhWoo9ezNDsRBxxmIQ/oTW8JNqMwPqRYVoJeJnSa0xzJHt
+         Zq/5kG/I/ONl/DbukWJ8mO2eW1ip4TtH3i7zztNAtQiLVJh9qgCo0o+4RhNJTGgmh7Cn
+         4auw==
+X-Gm-Message-State: AOAM531AwiTOJMjDLtruaQDDF+cCV2GjVTIPGY4KFqYVsNxAOv2jiDOw
+        7ID3vIHuKuQWxdHsO0cIeM8=
+X-Google-Smtp-Source: ABdhPJwgHSk1Ov4cHl9ao26GOKsNXQPq6Xf5/0h3Ik0npPPEKPBB5oIvpeD25qEdt7HB9+FnUr0RcA==
+X-Received: by 2002:aa7:9af4:0:b029:19d:975a:3ef2 with SMTP id y20-20020aa79af40000b029019d975a3ef2mr7136388pfp.5.1611109032534;
+        Tue, 19 Jan 2021 18:17:12 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id f7sm241450pjs.25.2021.01.19.18.17.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 18:17:11 -0800 (PST)
+Date:   Tue, 19 Jan 2021 18:17:09 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH 2/3] input/touchscreen: Add device tree support to
+ wacom_i2c
+Message-ID: <YAeSpUIzV/3dWPC+@google.com>
+References: <20210117042428.1497-1-alistair@alistair23.me>
+ <20210117042428.1497-2-alistair@alistair23.me>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210117042428.1497-2-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit "40d09b53bfc557af7481b9d80f060a7ac9c7d314" has solved the
-irqsoff problem by completing the request in softirq. But it may cause
-the system to suffer bad preemptoff time.
-Introduce the REQ_COMPLETE_WQ flag and blk_complete workqueue.
-This flag makes the request to be completed in the blk_complete workqueue.
-It can be used for requests that want to cut down both irqsoff and
-preemptoff time.
+On Sat, Jan 16, 2021 at 08:24:27PM -0800, Alistair Francis wrote:
+> Allow the wacom-i2c device to be exposed via device tree.
 
-Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
----
- block/blk-mq.c            | 46 +++++++++++++++++++++++++++++++++++++++
- include/linux/blk_types.h |  4 ++++
- include/linux/blkdev.h    |  5 +++++
- 3 files changed, 55 insertions(+)
+The patch seems incomplete. I see we are reading and storing properties,
+but we are not using them whatsoever, so I do not see the reason to have
+this in this form.
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index f285a9123..c707582ba 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -42,6 +42,10 @@
- #include "blk-rq-qos.h"
- 
- static DEFINE_PER_CPU(struct list_head, blk_cpu_done);
-+/*
-+ * Controlling structure for block complete
-+ */
-+static struct workqueue_struct *blk_complete_wq;
- 
- static void blk_mq_poll_stats_start(struct request_queue *q);
- static void blk_mq_poll_stats_fn(struct blk_stat_callback *cb);
-@@ -567,6 +571,26 @@ void blk_mq_end_request(struct request *rq, blk_status_t error)
- }
- EXPORT_SYMBOL(blk_mq_end_request);
- 
-+static void blk_mq_complete_work(struct work_struct *work)
-+{
-+	struct request_queue *q =
-+		container_of(work, struct request_queue, complete_work);
-+	struct list_head local_list;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&q->complete_lock, flags);
-+	list_replace_init(&q->complete_list, &local_list);
-+	spin_unlock_irqrestore(&q->complete_lock, flags);
-+
-+	while (!list_empty(&local_list)) {
-+		struct request *rq;
-+
-+		rq = list_entry(local_list.next, struct request, complete_list);
-+		list_del_init(&rq->complete_list);
-+		rq->q->mq_ops->complete(rq);
-+	}
-+}
-+
- /*
-  * Softirq action handler - move entries to local list and loop over them
-  * while passing them to the queue registered handler.
-@@ -680,6 +704,19 @@ bool blk_mq_complete_request_remote(struct request *rq)
- 	if (rq->cmd_flags & REQ_HIPRI)
- 		return false;
- 
-+	/*
-+	 * For a request that wants to complete in workqueue,
-+	 */
-+	if (rq->cmd_flags & REQ_COMPLETE_WQ) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&rq->q->complete_lock, flags);
-+		list_add_tail(&rq->complete_list, &rq->q->complete_list);
-+		spin_unlock_irqrestore(&rq->q->complete_lock, flags);
-+		queue_work(blk_complete_wq, &rq->q->complete_work);
-+		return true;
-+	}
-+
- 	if (blk_mq_complete_need_ipi(rq)) {
- 		INIT_CSD(&rq->csd, __blk_mq_complete_request_remote, rq);
- 		smp_call_function_single_async(rq->mq_ctx->cpu, &rq->csd);
-@@ -3211,6 +3248,10 @@ struct request_queue *blk_mq_init_allocated_queue(struct blk_mq_tag_set *set,
- 	INIT_LIST_HEAD(&q->requeue_list);
- 	spin_lock_init(&q->requeue_lock);
- 
-+	INIT_WORK(&q->complete_work, blk_mq_complete_work);
-+	INIT_LIST_HEAD(&q->complete_list);
-+	spin_lock_init(&q->complete_lock);
-+
- 	q->nr_requests = set->queue_depth;
- 
- 	/*
-@@ -3907,6 +3948,11 @@ static int __init blk_mq_init(void)
- 		INIT_LIST_HEAD(&per_cpu(blk_cpu_done, i));
- 	open_softirq(BLOCK_SOFTIRQ, blk_done_softirq);
- 
-+	blk_complete_wq = alloc_workqueue("blk_complete",
-+					WQ_MEM_RECLAIM | WQ_HIGHPRI, 0);
-+	if (!blk_complete_wq)
-+		panic("Failed to create blk_complete\n");
-+
- 	cpuhp_setup_state_nocalls(CPUHP_BLOCK_SOFTIRQ_DEAD,
- 				  "block/softirq:dead", NULL,
- 				  blk_softirq_cpu_dead);
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 866f74261..251110fd9 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -421,6 +421,9 @@ enum req_flag_bits {
- 
- 	__REQ_HIPRI,
- 
-+	/* do req complete in workqueue */
-+	__REQ_COMPLETE_WQ,
-+
- 	/* for driver use */
- 	__REQ_DRV,
- 	__REQ_SWAP,		/* swapping request. */
-@@ -445,6 +448,7 @@ enum req_flag_bits {
- 
- #define REQ_NOUNMAP		(1ULL << __REQ_NOUNMAP)
- #define REQ_HIPRI		(1ULL << __REQ_HIPRI)
-+#define REQ_COMPLETE_WQ		(1ULL << __REQ_COMPLETE_WQ)
- 
- #define REQ_DRV			(1ULL << __REQ_DRV)
- #define REQ_SWAP		(1ULL << __REQ_SWAP)
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index f94ee3089..758aff8f0 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -143,6 +143,7 @@ struct request {
- 	struct bio *biotail;
- 
- 	struct list_head queuelist;
-+	struct list_head complete_list;
- 
- 	/*
- 	 * The hash is used inside the scheduler, and killed once the
-@@ -543,6 +544,10 @@ struct request_queue {
- 	spinlock_t		requeue_lock;
- 	struct delayed_work	requeue_work;
- 
-+	struct list_head	complete_list;
-+	spinlock_t		complete_lock;
-+	struct work_struct	complete_work;
-+
- 	struct mutex		sysfs_lock;
- 	struct mutex		sysfs_dir_lock;
- 
+Thanks.
+
 -- 
-2.17.1
-
+Dmitry
