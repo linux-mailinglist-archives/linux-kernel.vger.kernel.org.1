@@ -2,99 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BFF2FCD14
+	by mail.lfdr.de (Postfix) with ESMTP id ADA762FCD15
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 10:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbhATJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 04:00:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbhATI7v (ORCPT
+        id S1729598AbhATJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 04:01:09 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:26421 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728945AbhATJAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:59:51 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32B5C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:48:24 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id a12so22222108wrv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:48:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Gj2SSDcR/lcOEweODkO2ajBiYmOm+Uz7CAyJG5h4b/Y=;
-        b=BFmWt4HX68zoZQF/WqhUm4m2zHpgpZElFTMr3+epZrgZv+VYA4EuRtAsrIgBgzOkOE
-         H1xaKKVvn/IiEPqHVX75RFd5T2tyKVrRrnh6BWMlCHMr+sI/AtDNO8bwIz19Sk6TyOOg
-         /UhdGaVGnRgzRSCD7zcLnRUXsUCxYoFEp9YSka8oGMbQ1XYidi0N67nCFAEjj5v4HgqE
-         xvDpKvHm2LpkvP3vX7cl1lh/LcNVOKJYnGYLfZ1YCT2x8VVWX/ZijsNs7XnUQktWbH+p
-         ZRdKjyMRVUNZn2cssC3dJek4HW3+cyrYfCNvojYDH+wWxNI7CQCWf2IoKFDTT76jpvlc
-         ei0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Gj2SSDcR/lcOEweODkO2ajBiYmOm+Uz7CAyJG5h4b/Y=;
-        b=CIrlH4YnRAQhMwIHfrHXfl2wFisIn/QMk2foJtlPfLFV2uO8lX31cSl7QET2pXVAKD
-         LjJOgEIGdIsjkAUxG65pUREvN7ykXFNPC3whQpyf89+7t0n0W59lju0eZZ8IdJ99aa7O
-         F21rpZDDEWPpysrGQV4fJhluzv2w+L6F6KGpouqXZZCqp3TVvdienwqv7FwUxygpUhvI
-         5Q367FWjMKTOd4A1x2p3CvzYX2+l1z87PUIFJjkFVzhnP+ATE4DYfJsi/BAvqM4OLpRh
-         rLztcoR0PDNisavd6JI9ziqYF2FE6WqsYg7zqQbUg/sdRi5bC/bSl1Yrb7dK4JeJGo8V
-         I2mg==
-X-Gm-Message-State: AOAM5316ZbO3XxR6i04gisNcAU+u0D+4BrNlgyEf5ye/M3BVKS2au/xl
-        Y4SVCQPTWLkz6LHvYlcj6Unwkw==
-X-Google-Smtp-Source: ABdhPJwjcov5efX8hRmYe5wuneBd4CxmhfR+MMnODuBQq9Jjxf8bcSSB5aTyR5Q+mmlQzeIfdtSHlg==
-X-Received: by 2002:a05:6000:1788:: with SMTP id e8mr8163262wrg.171.1611132503654;
-        Wed, 20 Jan 2021 00:48:23 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id u6sm2562828wrm.90.2021.01.20.00.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 00:48:23 -0800 (PST)
-Date:   Wed, 20 Jan 2021 08:48:21 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] mfd: iqs62x: Do not change clock frequency during
- ATI
-Message-ID: <20210120084821.GS4903@dell>
-References: <1610942228-7275-1-git-send-email-jeff@labundy.com>
- <1610942228-7275-7-git-send-email-jeff@labundy.com>
+        Wed, 20 Jan 2021 04:00:05 -0500
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 10K8wh3T011274;
+        Wed, 20 Jan 2021 17:58:43 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10K8wh3T011274
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611133124;
+        bh=f3iAmXIDKOPJp4ih3NmOk2Q9n+jGsuMSrON5Z6Bck8U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BQhXc0dE2eTO1n7TOOiwvnQOnCXEO311P3x+bQH5mQtfJC1xO+pVzps+IvH+tBmH1
+         NwGdOqPubfjHuMN2ZI20J2gXvJTcceh+otX32uxKzJrnL21fSkgRPmX9nyNeqjbCpw
+         7rwDNrY/5ihYpfzqhAQDhxBzH8NQgEcs4/7x2r/F3utvIfw0VPLuv47Qi/+X1X3E2g
+         XaRWPl45IIhRSdC59+P6pvmRzwTxa8qiZa26eB3T5OV+JoC8QMzwYmWd7qSA7npE5+
+         +Dkakyo8Mp/XwuvJSgZ0JR0323z0cEVrJknTa9nBwpNFF4wrk/LPG929Wk+TtaDlqx
+         PtCy0aWUi3K2A==
+X-Nifty-SrcIP: [209.85.214.175]
+Received: by mail-pl1-f175.google.com with SMTP id e9so7995193plh.3;
+        Wed, 20 Jan 2021 00:58:43 -0800 (PST)
+X-Gm-Message-State: AOAM530cq6ZuROSLhtwi6vdmv9VYspMyPrXfgczqN1lHtxj2YJJusaD1
+        rlg8uKbpe7FGufHiXD1drH2FV7nB1CcrGK/bQJQ=
+X-Google-Smtp-Source: ABdhPJyAH8wRCGfCRq2QwL41Mk7/GebCnpAr1kspidLm2gMJAwDd7EFDdWQeVRojyza2gre0bVfvj0NCswBLh5tAUB0=
+X-Received: by 2002:a17:902:ed93:b029:de:84d2:9ce1 with SMTP id
+ e19-20020a170902ed93b02900de84d29ce1mr8949832plj.47.1611133122660; Wed, 20
+ Jan 2021 00:58:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1610942228-7275-7-git-send-email-jeff@labundy.com>
+References: <cover.1611124778.git.viresh.kumar@linaro.org> <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
+In-Reply-To: <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 20 Jan 2021 17:58:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATPSBrmSC_if+6sK0pwi1ksBZ7RXK1mndj1AGCX3gkj+g@mail.gmail.com>
+Message-ID: <CAK7LNATPSBrmSC_if+6sK0pwi1ksBZ7RXK1mndj1AGCX3gkj+g@mail.gmail.com>
+Subject: Re: [PATCH V5 4/5] kbuild: Add support to build overlays (%.dtbo)
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Bill Mills <bill.mills@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021, Jeff LaBundy wrote:
-
-> After a reset event, the device automatically triggers ATI at the
-> default core clock frequency (16 MHz). Soon afterward, the driver
-> loads firmware which may attempt to lower the frequency.
-> 
-> If this initial ATI cycle is still in progress when the frequency
-> is changed, however, the device incorrectly reports channels 0, 1
-> and 2 to be in a state of touch once ATI finally completes.
-> 
-> To solve this problem, wait until ATI is complete before lowering
-> the frequency. Because this particular ATI cycle occurs following
-> a reset event, its duration is predictable and a simple delay can
-> suffice.
-> 
-> Signed-off-by: Jeff LaBundy <jeff@labundy.com>
-> Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+On Wed, Jan 20, 2021 at 4:07 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Add support for building DT overlays (%.dtbo). The overlay's source file
+> will have the usual extension, i.e. .dts, though the blob will have
+> .dtbo extension to distinguish it from normal blobs.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
-> Changes in v2:
->   - Added Acked-for-MFD-by trailer
-> 
->  drivers/mfd/iqs62x.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  .gitignore               | 3 +--
+>  Makefile                 | 4 ++--
+>  scripts/Makefile.dtbinst | 3 +++
+>  scripts/Makefile.lib     | 4 +++-
+>  4 files changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/.gitignore b/.gitignore
+> index d01cda8e1177..0458c36f3cb2 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -17,8 +17,7 @@
+>  *.bz2
+>  *.c.[012]*.*
+>  *.dt.yaml
+> -*.dtb
+> -*.dtb.S
+> +*.dtb*
 
-Applied, thanks.
+
+Personally, I prefer adding .dtbo explicitly
+
+
+>  *.dwo
+>  *.elf
+>  *.gcno
+> diff --git a/Makefile b/Makefile
+> index 9e73f82e0d86..b84f5e0b46ab 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1334,7 +1334,7 @@ endif
+>
+>  ifneq ($(dtstree),)
+>
+> -%.dtb: include/config/kernel.release scripts_dtc
+> +%.dtb %.dtbo: include/config/kernel.release scripts_dtc
+>         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+
+
+No, this is wrong because it does not work
+as grouped targets.
+
+You need to separate them.
+
+
+
+%.dtb: include/config/kernel.release scripts_dtc
+         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+
+%.dtbo: include/config/kernel.release scripts_dtc
+         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+
+
+
+
+See GNU make manual.
+
+
+"Pattern rules may have more than one target; however, every target
+must contain a % character.
+Pattern rules are always treated as grouped targets"
+
+https://www.gnu.org/software/make/manual/html_node/Pattern-Intro.html
+
+
+
+
+
+>  PHONY += dtbs dtbs_install dtbs_check
+> @@ -1816,7 +1816,7 @@ clean: $(clean-dirs)
+>         @find $(if $(KBUILD_EXTMOD), $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
+>                 \( -name '*.[aios]' -o -name '*.ko' -o -name '.*.cmd' \
+>                 -o -name '*.ko.*' \
+> -               -o -name '*.dtb' -o -name '*.dtb.S' -o -name '*.dt.yaml' \
+> +               -o -name '*.dtb' -o -name '*.dtbo' -o -name '*.dtb.S' -o -name '*.dt.yaml' \
+>                 -o -name '*.dwo' -o -name '*.lst' \
+>                 -o -name '*.su' -o -name '*.mod' \
+>                 -o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \
+> diff --git a/scripts/Makefile.dtbinst b/scripts/Makefile.dtbinst
+> index 50d580d77ae9..ba01f5ba2517 100644
+> --- a/scripts/Makefile.dtbinst
+> +++ b/scripts/Makefile.dtbinst
+> @@ -29,6 +29,9 @@ quiet_cmd_dtb_install = INSTALL $@
+>  $(dst)/%.dtb: $(obj)/%.dtb
+>         $(call cmd,dtb_install)
+>
+> +$(dst)/%.dtbo: $(obj)/%.dtbo
+> +       $(call cmd,dtb_install)
+> +
+>  PHONY += $(subdirs)
+>  $(subdirs):
+>         $(Q)$(MAKE) $(dtbinst)=$@ dst=$(patsubst $(obj)/%,$(dst)/%,$@)
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 213677a5ed33..30bc0a8e0087 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -86,7 +86,9 @@ extra-$(CONFIG_OF_ALL_DTBS)   += $(dtb-)
+>
+>  ifneq ($(CHECK_DTBS),)
+>  extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+> +extra-y += $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
+>  extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+> +extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
+>  endif
+>
+>  # Add subdir path
+> @@ -324,7 +326,7 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
+>                 -d $(depfile).dtc.tmp $(dtc-tmp) ; \
+>         cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
+>
+> -$(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+> +$(obj)/%.dtb $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+>         $(call if_changed_dep,dtc)
+
+
+Same here.
+
+You need to duplicate the rules everywhere, unfortunately.
+
+
+
+
+
+
+
+>  DT_CHECKER ?= dt-validate
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
+
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best Regards
+Masahiro Yamada
