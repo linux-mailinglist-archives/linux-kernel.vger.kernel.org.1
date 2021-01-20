@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518F12FD578
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6112FD589
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731883AbhATQWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403869AbhATQVN (ORCPT
+        id S2391446AbhATQW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:22:58 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18376 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403915AbhATQVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:21:13 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBE9C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:20:33 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id o20so6383542pfu.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:20:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MBqThV9Olupan+r++p/11MWGguLV0PkDywP+wSQi6Ys=;
-        b=uHr2OtDySDWynGYYVHmG0ZLx5k0Xy3+cFC6x79NNNa1TrWBKQOCABpQ2bdlD2NfWMi
-         +/GIjyJLmUCsaXB/23nUzfp1zu2SliNMi8A6LgxHad+C/2ZVK5kZFAW+jOYUu/xSZk1z
-         EeUJsxPMVvRK6t87oEbGkUYD9HUWh+/eZHJk0qPLpKgo5PyjgsRk7/fUTcvhL2CkJFXs
-         KqzPtAqvrzSyUY9ug0lU74cZsa3LZPrDUIO4XYFHc92PGnpclqfTtS9yQcUmZyxRCM/d
-         IMe3GOyNJNRshNj9B5TpSjLH3tG7KBOic6wfjWmCytNxziT4f9tJX+9TY7otjNedyENs
-         zVHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MBqThV9Olupan+r++p/11MWGguLV0PkDywP+wSQi6Ys=;
-        b=mLvH02fGYrRYBtQC8pJDFx2ihgFoVDyzgtX+riXOZ3bPk/fUvelcqstf4YZPGxJXJs
-         cEeB16gg9gII2OMp3XXL7HVH+cuANs9o2MqiB1k6c572fAGGMDbIuIjXyj83VYEBeH7c
-         O1wjatDyZQT1+huMhYhGF7TjScOlih1qzpBMjqyaMOzdb8JsZ+fMwlDRLMezo6IRwHrT
-         sT4/Oqg6U77LhV/wSBQDz1zNsOJH3CIFuiWodvajqTG+M7foELmqO1dqSFwbV5Xk618L
-         LGwBpTFqgdtd8xOtU4pCooZWOrdx9juYUNITS1zRkWLEDknIbLpwu4lv6QpcP8goP/Jj
-         op8w==
-X-Gm-Message-State: AOAM533z2c/ArFUF0c96S+vrBVn6fefHftnD6ZIaHX09Is8+Rjw9dWty
-        zpEwFrKw4vSveY6Z1WfA+zogQA==
-X-Google-Smtp-Source: ABdhPJwXLSuAW3fgaBQRD1DO4EwQ6ZcDffSH9Tq2hezveyi9uLHs9gN6QuMVUx0nykOdqHLOYMS/7A==
-X-Received: by 2002:a63:e40e:: with SMTP id a14mr10073281pgi.345.1611159632434;
-        Wed, 20 Jan 2021 08:20:32 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id h6sm3049073pfr.47.2021.01.20.08.20.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 08:20:31 -0800 (PST)
-Date:   Wed, 20 Jan 2021 08:20:25 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v2] x86/sgx: Allows ioctl PROVISION to execute before
- CREATE
-Message-ID: <YAhYSdpIr60EUnRI@google.com>
-References: <20210120035309.19545-1-tianjia.zhang@linux.alibaba.com>
+        Wed, 20 Jan 2021 11:21:20 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10KG4BAk123542;
+        Wed, 20 Jan 2021 11:20:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=CMe63OiaCb4tvijzumx1OkCOvIyJLoNXyCnrUNu6Er0=;
+ b=BlH54lqV6clnWudq2Uc+frXAl7UnK1Daxu3zd0jJF258Cqj1GCyLgyZFyYHnpFybKNZY
+ zxchJ3x2ldUSb3qj5S9pMLmbJ6hx8gOT/A4XhW4KAiE8aaJVe1Tn/FkYg1qaUBHXDM9g
+ cCln2M5i5TsZWFPOCH/GsBk/tR/ovkCmRDoDlGAaiLyhAkhp56Yco+GxI3kHHCa++oJz
+ O25iQiiu3G4FSzsdSrrSk+de1mVQBM5H8lAFgTkmIwRTM2F7ktFWdewHTEICMx9Su3+4
+ s10wiFg+YuVq5YffQQFZrju0X+pvz3IeVzSlCA/HizDgFL8/YvhNnGHa7Pu9X/r3RGbw 5g== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 366nfcdhpe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 11:20:30 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10KGGbfj003917;
+        Wed, 20 Jan 2021 16:20:28 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3668nwru19-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jan 2021 16:20:27 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10KGKJOc35979530
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 16:20:19 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C1789AE059;
+        Wed, 20 Jan 2021 16:20:25 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D1DEAE056;
+        Wed, 20 Jan 2021 16:20:25 +0000 (GMT)
+Received: from [9.145.21.215] (unknown [9.145.21.215])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Jan 2021 16:20:25 +0000 (GMT)
+Subject: Re: [PATCH] init/module: split CONFIG_CONSTRUCTORS to fix module gcov
+ on UML
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210119121853.4e22b2506c9a.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
+ <8191aa4a-3bd7-5de7-1ad2-73b851128ff3@linux.ibm.com>
+ <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <1232adfb-cbe8-5cfc-88bc-b8913d6a39c6@linux.ibm.com>
+Date:   Wed, 20 Jan 2021 17:20:25 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120035309.19545-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-20_06:2021-01-20,2021-01-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ mlxlogscore=547 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 mlxscore=0 spamscore=0 malwarescore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101200092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021, Tianjia Zhang wrote:
-> In function sgx_encl_create(), the logic of directly assigning
-> value to attributes_mask determines that the call to
-> SGX_IOC_ENCLAVE_PROVISION must be after the command of
-> SGX_IOC_ENCLAVE_CREATE. If move this assignment statement to
-> function sgx_open(), the PROVISION command can be executed
-> earlier and more flexibly.
-
-Use imperative mood to describe what you're doing, e.g. the "if" leaves the
-reader wonder whether it's a suggestion or what the patch is actually doing.
-
-E.g. something like
-
-  Move the initialization of an enclave's allowed attributes_mask to
-  sgx_open() to allow the ENCLAVE_PROVISION ioctl() to be invoked before
-  ENCLAVE_CREATE.
-
-> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->  arch/x86/kernel/cpu/sgx/driver.c | 3 +++
->  arch/x86/kernel/cpu/sgx/ioctl.c  | 1 -
->  2 files changed, 3 insertions(+), 1 deletion(-)
+On 20.01.2021 17:09, Johannes Berg wrote:
+> On Wed, 2021-01-20 at 17:07 +0100, Peter Oberparleiter wrote:
 > 
-> diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
-> index f2eac41bb4ff..8766580194ae 100644
-> --- a/arch/x86/kernel/cpu/sgx/driver.c
-> +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> @@ -36,6 +36,9 @@ static int sgx_open(struct inode *inode, struct file *file)
->  		return ret;
->  	}
->  
-> +	encl->attributes_mask = SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT |
-> +				SGX_ATTR_KSS;
-
-Probably don't need a newline before SGX_ATTR_KSS.  In fact, I wouldn't be
-surprised if Boris explicitly requested letting the original code go past 80
-chars to improve readability.  Either way, with a cleaned up changelog:
-
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
-
-> +
->  	file->private_data = encl;
->  
->  	return 0;
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-> index 90a5caf76939..1c6ecf9fbeff 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -109,7 +109,6 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->  	encl->base = secs->base;
->  	encl->size = secs->size;
->  	encl->attributes = secs->attributes;
-> -	encl->attributes_mask = SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
->  
->  	/* Set only after completion, as encl->lock has not been taken. */
->  	set_bit(SGX_ENCL_CREATED, &encl->flags);
-> -- 
-> 2.19.1.3.ge56e4f7
+>> Do you expect other users for these new config symbols? 
 > 
+> Probably not.
+> 
+>> If not it seems
+>> to me that the goal of enabling module constructors for UML could also
+>> be achieved without introducing new config symbols.
+> 
+> Yeah, true.
+> 
+>> For example you could suppress calling any built-in kernel constructors
+>> in case of UML by extending the ifdef in do_ctors() to depend on both
+>> CONFIG_CONSTRUCTORS and !CONFIG_UML (maybe with an explanatory comment).
+>>
+>> Of course you'd still need to remove the !UML dependency in
+>> CONFIG_GCOV_KERNEL.
+> 
+> Right.
+> 
+> I can post a separate patch and we can see which one looks nicer?
+
+Sounds good!
+
+
+-- 
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
