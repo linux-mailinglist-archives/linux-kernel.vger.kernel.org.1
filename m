@@ -2,151 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459192FD94F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9B02FD902
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387636AbhATTRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:17:10 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2386 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389703AbhATSwT (ORCPT
+        id S2392405AbhATTCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:02:52 -0500
+Received: from saphodev.broadcom.com ([192.19.232.172]:56962 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392272AbhATSwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:52:19 -0500
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DLZJW6Yxgz67XQp;
-        Thu, 21 Jan 2021 02:47:23 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 20 Jan 2021 19:51:33 +0100
-Received: from localhost (10.47.67.172) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 20 Jan
- 2021 18:51:32 +0000
-Date:   Wed, 20 Jan 2021 18:50:52 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-CC:     <linux-iio@vger.kernel.org>, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/2] dt-bindings: iio: accel: Add bmi088
- accelerometer bindings
-Message-ID: <20210120185052.000064df@Huawei.com>
-In-Reply-To: <20210119124622.9490-1-mike.looijmans@topic.nl>
-References: <20210119124622.9490-1-mike.looijmans@topic.nl>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.67.172]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        Wed, 20 Jan 2021 13:52:43 -0500
+Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 8A70180DA;
+        Wed, 20 Jan 2021 10:51:43 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 8A70180DA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1611168704;
+        bh=yWn2lZmIdUJiqHhTCwVkDPJNGcmB2uqIm0gs3uMXCxc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h84nxHw+edEvAc2ielnkpGCwMucDnuzOju/yKYQ4KJgWFDhsa/aWW205Orp2zlhap
+         sfx00wnD60mLF9OpWBNci5NERDUauST2rWDVCnhD0WP1wg89UcDBGg8qzxEqh4A1ZO
+         eXpNG5UnczJJYfqItXSsAhbPYm8Yqx0CmjbQaylw=
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH] arm64: dts: stingray: remove sata
+Date:   Wed, 20 Jan 2021 10:51:40 -0800
+Message-Id: <20210120185140.16929-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 13:46:21 +0100
-Mike Looijmans <mike.looijmans@topic.nl> wrote:
+Remove sata from stingray as it is unsupported.
 
-> This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
-> the accelerometer part.
-> 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> 
-> ---
-> 
-> Changes in v6:
-> I't been almost a year since the last commit, sorry...
-No problem. Happens to us all sometimes!
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+---
+ .../dts/broadcom/stingray/bcm958742-base.dtsi |  64 ----
+ .../dts/broadcom/stingray/stingray-sata.dtsi  | 278 ------------------
+ .../boot/dts/broadcom/stingray/stingray.dtsi  |   7 -
+ 3 files changed, 349 deletions(-)
+ delete mode 100644 arch/arm64/boot/dts/broadcom/stingray/stingray-sata.dtsi
 
-One thing inline below.
-
-Thanks,
-
-Jonathan
-
-> Fixed the yaml errors
-> Add interrupt, vdd and vddio properties
-> 
-> Changes in v5:
-> submit together with driver code as patch series
-> 
-> Changes in v2:
-> convert to yaml format
-> 
->  .../bindings/iio/accel/bosch,bmi088.yaml      | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
-> new file mode 100644
-> index 000000000000..459b9969fd12
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
-> @@ -0,0 +1,55 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/accel/bosch,bmi088.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Bosch BMI088 IMU accelerometer part
-> +
-> +maintainers:
-> +  - Mike Looijmans <mike.looijmans@topic.nl>
-> +
-> +description: |
-> +  Acceleration part of the IMU sensor with an SPI interface
-> +  Specifications about the sensor can be found at:
-> +    https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi088-ds001.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - bosch,bmi088_accel
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  vdd-supply: true
-> +
-> +  vddio-supply: true
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 2
-> +    description: |
-> +      Type should be either IRQ_TYPE_LEVEL_HIGH or IRQ_TYPE_LEVEL_LOW.
-> +      The first interrupt listed must be the one connected to the INT1 pin, the
-> +      second must be the one connected to the INT2 pin.
-
-What if the board only has the INT2 pin connected?
-That's looks to be a valid hardware configuration.
-
-I'd suggest using interrupt-names to cover this.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    spi {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      bmi088_accel@1 {
-> +        compatible = "bosch,bmi088_accel";
-> +        reg = <1>;
-> +        spi-max-frequency = <10000000>;
-> +        interrupt-parent = <&gpio6>;
-> +        interrupts = <19 IRQ_TYPE_LEVEL_LOW>;
-> +      };
-> +    };
-> +...
+diff --git a/arch/arm64/boot/dts/broadcom/stingray/bcm958742-base.dtsi b/arch/arm64/boot/dts/broadcom/stingray/bcm958742-base.dtsi
+index 43aa5e9c0020..8fe7325cfbb2 100644
+--- a/arch/arm64/boot/dts/broadcom/stingray/bcm958742-base.dtsi
++++ b/arch/arm64/boot/dts/broadcom/stingray/bcm958742-base.dtsi
+@@ -56,70 +56,6 @@
+ 	};
+ };
+ 
+-&sata0 {
+-	status = "okay";
+-};
+-
+-&sata_phy0{
+-	status = "okay";
+-};
+-
+-&sata1 {
+-	status = "okay";
+-};
+-
+-&sata_phy1{
+-	status = "okay";
+-};
+-
+-&sata2 {
+-	status = "okay";
+-};
+-
+-&sata_phy2{
+-	status = "okay";
+-};
+-
+-&sata3 {
+-	status = "okay";
+-};
+-
+-&sata_phy3{
+-	status = "okay";
+-};
+-
+-&sata4 {
+-	status = "okay";
+-};
+-
+-&sata_phy4{
+-	status = "okay";
+-};
+-
+-&sata5 {
+-	status = "okay";
+-};
+-
+-&sata_phy5{
+-	status = "okay";
+-};
+-
+-&sata6 {
+-	status = "okay";
+-};
+-
+-&sata_phy6{
+-	status = "okay";
+-};
+-
+-&sata7 {
+-	status = "okay";
+-};
+-
+-&sata_phy7{
+-	status = "okay";
+-};
+-
+ &pwm {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/broadcom/stingray/stingray-sata.dtsi b/arch/arm64/boot/dts/broadcom/stingray/stingray-sata.dtsi
+deleted file mode 100644
+index 8c68e0c26f1b..000000000000
+--- a/arch/arm64/boot/dts/broadcom/stingray/stingray-sata.dtsi
++++ /dev/null
+@@ -1,278 +0,0 @@
+-/*
+- *  BSD LICENSE
+- *
+- *  Copyright(c) 2016-2017 Broadcom.  All rights reserved.
+- *
+- *  Redistribution and use in source and binary forms, with or without
+- *  modification, are permitted provided that the following conditions
+- *  are met:
+- *
+- *    * Redistributions of source code must retain the above copyright
+- *      notice, this list of conditions and the following disclaimer.
+- *    * Redistributions in binary form must reproduce the above copyright
+- *      notice, this list of conditions and the following disclaimer in
+- *      the documentation and/or other materials provided with the
+- *      distribution.
+- *    * Neither the name of Broadcom nor the names of its
+- *      contributors may be used to endorse or promote products derived
+- *      from this software without specific prior written permission.
+- *
+- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+- *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+- *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+- *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+- *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+- *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+- *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+- *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-	sata {
+-		compatible = "simple-bus";
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		ranges = <0x0 0x0 0x67d00000 0x00800000>;
+-
+-		sata0: ahci@0 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00000000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 321 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata0_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata0_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy0: sata_phy@2100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00002100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata0_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-
+-		sata1: ahci@10000 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00010000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 323 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata1_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata1_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy1: sata_phy@12100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00012100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata1_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-
+-		sata2: ahci@20000 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00020000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 325 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata2_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata2_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy2: sata_phy@22100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00022100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata2_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-
+-		sata3: ahci@30000 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00030000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata3_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata3_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy3: sata_phy@32100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00032100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata3_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-
+-		sata4: ahci@100000 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00100000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 329 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata4_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata4_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy4: sata_phy@102100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00102100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata4_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-
+-		sata5: ahci@110000 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00110000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 331 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata5_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata5_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy5: sata_phy@112100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00112100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata5_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-
+-		sata6: ahci@120000 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00120000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 333 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata6_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata6_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy6: sata_phy@122100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00122100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata6_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-
+-		sata7: ahci@130000 {
+-			compatible = "brcm,iproc-ahci", "generic-ahci";
+-			reg = <0x00130000 0x1000>;
+-			reg-names = "ahci";
+-			interrupts = <GIC_SPI 335 IRQ_TYPE_LEVEL_HIGH>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata7_port0: sata-port@0 {
+-				reg = <0>;
+-				phys = <&sata7_phy0>;
+-				phy-names = "sata-phy";
+-			};
+-		};
+-
+-		sata_phy7: sata_phy@132100 {
+-			compatible = "brcm,iproc-sr-sata-phy";
+-			reg = <0x00132100 0x1000>;
+-			reg-names = "phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-
+-			sata7_phy0: sata-phy@0 {
+-				reg = <0>;
+-				#phy-cells = <0>;
+-			};
+-		};
+-	};
+diff --git a/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi b/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi
+index b425b12c3ed2..2ffb2c92182a 100644
+--- a/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi
++++ b/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi
+@@ -285,7 +285,6 @@
+ 	};
+ 
+ 	#include "stingray-fs4.dtsi"
+-	#include "stingray-sata.dtsi"
+ 	#include "stingray-pcie.dtsi"
+ 	#include "stingray-usb.dtsi"
+ 
+@@ -309,12 +308,6 @@
+ 				#size-cells = <0>;
+ 			};
+ 
+-			mdio@2 { /* SATA */
+-				reg = <0x2>;
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-			};
+-
+ 			mdio@3 { /* USB */
+ 				reg = <0x3>;
+ 				#address-cells = <1>;
+-- 
+2.17.1
 
