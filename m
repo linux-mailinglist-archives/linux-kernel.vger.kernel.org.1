@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3412FC9B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F442FC9B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729899AbhATD7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 22:59:22 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45449 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731757AbhATD6H (ORCPT
+        id S1728865AbhATEAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:00:38 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:35416 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730000AbhATEAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 22:58:07 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UMI0fsI_1611115039;
-Received: from 30.25.183.227(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UMI0fsI_1611115039)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Jan 2021 11:57:20 +0800
-Subject: Re: [PATCH] x86/sgx: Allows ioctl PROVISION to execute before CREATE
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210118133335.98907-1-tianjia.zhang@linux.alibaba.com>
- <YAc7h3zQR06eWPhZ@google.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <5037ee56-0211-f16c-3ea0-86cf8146b7f8@linux.alibaba.com>
-Date:   Wed, 20 Jan 2021 11:57:18 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Tue, 19 Jan 2021 23:00:06 -0500
+Received: by mail-io1-f72.google.com with SMTP id a1so39576263ios.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 19:59:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=pveP83Yk7K0d5WBq+35hC0CXs3D/scBCKZJxfY0uhYQ=;
+        b=EdAkOUkODHuc0qkPtqq9idLZNJkxX2TxhkmsQArib5GpNOf/rRloU5de0tXcanxzBV
+         VQoSQmj17/HrtuwsT929YmfHl5+3eIrZYgcnUJ4q5ElZum7P8khrfs3GGGwYFckF6nU8
+         xgwXHfeX0S43oekfoFG1WjRVdas5M4PqcEQebHX9mW5XnMAJCVYz2RtwaKY2lbys52lw
+         /LGl1YQcSd6Ye3D7PF/MDcWpH1LTq7fpvsQbUsHIDzAYb5/iRNlvrJveZItplqzbipCi
+         NB60lvCxDy4Oqq7caNSEt9dY5UVdIlpxnwjEuqLLRX/AZNieGAtPqGOULUAF+gDq1iV1
+         dH9w==
+X-Gm-Message-State: AOAM533Hz/pDcWGxC2OLImhxFcPTDldq8siL6q6efXp+bEvFdximTSxe
+        vnlR3AnoEoUyM6q5ilpJ/adMHYmM+9614jFg6zhkqILX4Mmg
+X-Google-Smtp-Source: ABdhPJzIsgdiwElT0nZcwjdSSUK7orxipUME4z4qUz1YAzvQj8yY2z8kXyRF+7YmOSO9l1A0KS/2JVcd7AwNMEDomew6PQ3soPZ7
 MIME-Version: 1.0
-In-Reply-To: <YAc7h3zQR06eWPhZ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1908:: with SMTP id w8mr6245044ilu.229.1611115165061;
+ Tue, 19 Jan 2021 19:59:25 -0800 (PST)
+Date:   Tue, 19 Jan 2021 19:59:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001b164705b94cfb58@google.com>
+Subject: WARNING: suspicious RCU usage in inode_security
+From:   syzbot <syzbot+37978b81dea56c7a4249@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On 1/20/21 4:05 AM, Sean Christopherson wrote:
-> On Mon, Jan 18, 2021, Tianjia Zhang wrote:
->> In function sgx_encl_create(), the logic of directly assigning
->> value to attributes_mask determines that the call to
->> SGX_IOC_ENCLAVE_PROVISION must be after the command of
->> SGX_IOC_ENCLAVE_CREATE. If change this assignment statement to
->> or operation, the PROVISION command can be executed earlier and
->> more flexibly.
->>
->> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> ---
->>   arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
->> index f45957c05f69..0ca3fc238bc2 100644
->> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
->> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
->> @@ -108,7 +108,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->>   	encl->base = secs->base;
->>   	encl->size = secs->size;
->>   	encl->attributes = secs->attributes;
->> -	encl->attributes_mask = SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
->> +	encl->attributes_mask |= SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
-> 
-> Alternatively, move the existing code to sgx_open()?  Initializing the field
-> when the encl object is allocated feels more correct.
-> 
+syzbot found the following issue on:
+
+HEAD commit:    82821be8 Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a3da20d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=70f222f8a2ffcbde
+dashboard link: https://syzkaller.appspot.com/bug?extid=37978b81dea56c7a4249
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+37978b81dea56c7a4249@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.11.0-rc3-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7867 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
 
 
-This seems like a good idea. Thanks for your suggestion. I have sent v2 
-patch, include the next two patches.
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by kworker/u17:3/10446:
+ #0: ffff888014f94c00 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: prepare_bprm_creds fs/exec.c:1462 [inline]
+ #0: ffff888014f94c00 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: bprm_execve+0xb2/0x19a0 fs/exec.c:1794
 
-Best regards,
-Tianjia
+stack backtrace:
+CPU: 1 PID: 10446 Comm: kworker/u17:3 Not tainted 5.11.0-rc3-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ___might_sleep+0x229/0x2c0 kernel/sched/core.c:7867
+ __inode_security_revalidate security/selinux/hooks.c:259 [inline]
+ inode_security+0x5d/0x130 security/selinux/hooks.c:296
+ selinux_file_permission+0x140/0x520 security/selinux/hooks.c:3549
+ security_file_permission+0x56/0x560 security/security.c:1448
+ rw_verify_area+0x115/0x350 fs/read_write.c:400
+ kernel_read+0x2a/0x70 fs/read_write.c:469
+ prepare_binprm fs/exec.c:1646 [inline]
+ search_binary_handler fs/exec.c:1700 [inline]
+ exec_binprm fs/exec.c:1757 [inline]
+ bprm_execve fs/exec.c:1826 [inline]
+ bprm_execve+0x740/0x19a0 fs/exec.c:1788
+ kernel_execve+0x370/0x460 fs/exec.c:1969
+ call_usermodehelper_exec_async+0x2de/0x580 kernel/umh.c:110
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
