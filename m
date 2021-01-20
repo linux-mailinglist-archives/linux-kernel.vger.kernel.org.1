@@ -2,68 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2A82FD31A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831202FD2E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390856AbhATOoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:44:09 -0500
-Received: from m12-12.163.com ([220.181.12.12]:47933 "EHLO m12-12.163.com"
+        id S1728891AbhATOkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:40:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33200 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390764AbhATOlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:41:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=y8Z+jU1IE/vKH8MMhw
-        F/F1/xZhIIlIreDEVa8fPEHRM=; b=n8biHLN1jMTnSd/CT269uO2McS1u8rKODW
-        klv1XG5VUTGPFf7hk6Jwg3YQk777iOca3vrtmwfV7aKD7ISjceCaM20Fd+LUMeao
-        3ilKmtOBcjmxuxF7Dyqd/t7H5D8BFCa3rQIY3vYffAhWL7bEZZMQRjHujkDhPbA1
-        +PAL0afpI=
-Received: from localhost.localdomain (unknown [111.201.134.89])
-        by smtp8 (Coremail) with SMTP id DMCowAC3Nvs7QAhgoibuMw--.3261S4;
-        Wed, 20 Jan 2021 22:37:50 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] PCI: xilinx-cpm: Fix reference count leak on error path
-Date:   Wed, 20 Jan 2021 06:37:45 -0800
-Message-Id: <20210120143745.699-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DMCowAC3Nvs7QAhgoibuMw--.3261S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JF15uFWUZF4ruw1rAw1DJrb_yoW3urX_uw
-        1UZF1xur4UCryfJr1vyrWSvr9Yyas7Xwn7KFn3tF13Aa9FgryfZr97A398XryrCrWfJF9r
-        Ar90yay7CFyUCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjYiiPUUUUU==
-X-Originating-IP: [111.201.134.89]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBzx4gclaD9ynmfAAAsS
+        id S2390605AbhATOjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:39:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611153478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MXsF0fqiIHWmqnkg3pyZ7W7l886Xfshgy0aqkUvrN9M=;
+        b=SgfScqFzkVPkpatFXvNoftOGSRhmibBo8EDmuDZxaczYnZ7D0Ylds7dguNNbCR8TPATyiq
+        VpVS+KWnaFc5ZsQv06Cy+kn8t3GVs9mg6/pH6JjqiA0bpknHAIlateNp6pCJDOW1P5Qb8B
+        H6PZ26zGtiucZYmRssmXd/2U0L4p5mA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6E31EADCD;
+        Wed, 20 Jan 2021 14:37:58 +0000 (UTC)
+Subject: Re: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
+To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org,
+        Arthur Borsboom <arthurborsboom@gmail.com>
+References: <20210119105727.95173-1-roger.pau@citrix.com>
+ <CALUcmUkd9Eeau6tC9ZWHbLdvHTYfY34LvK6KKpOOxreYF67Myg@mail.gmail.com>
+ <20210120143515.v2vgyhcxrhnnng6r@Air-de-Roger>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <83d1aca5-2637-f1f2-3006-69fc6ba76bb4@suse.com>
+Date:   Wed, 20 Jan 2021 15:37:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210120143515.v2vgyhcxrhnnng6r@Air-de-Roger>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also drop the reference count of the node on error path.
+On 20.01.2021 15:35, Roger Pau Monné wrote:
+> On Wed, Jan 20, 2021 at 03:23:30PM +0100, Arthur Borsboom wrote:
+>> Hi Roger,
+>>
+>> I have set up a test environment based on Linux 5.11.0-rc4.
+>> The patch did not apply clean, so I copied/pasted the patch manually.
+>>
+>> Without the patch the call trace (as reported) is visible in dmesg.
+>> With the patch the call trace in dmesg is gone, but ... (there is always a
+>> but) ...
+>>
+>> Now the discard action returns the following.
+>>
+>> [arthur@test-arch ~]$ sudo fstrim -v /
+>> fstrim: /: the discard operation is not supported
+>>
+>> It might be correct, but of course I was hoping the Xen VM guest would pass
+>> on the discard request to the block device in the Xen VM host, which is a
+>> disk partition.
+>> Any suggestions?
+> 
+> Hm, that's not what I did see on my testing, the operation worked OK,
+> and that's what I would expect to happen in your case also, since I
+> know the xenstore keys.
 
-Fixes: 508f610648b9 ("PCI: xilinx-cpm: Add Versal CPM Root Port driver")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
----
- drivers/pci/controller/pcie-xilinx-cpm.c | 1 +
- 1 file changed, 1 insertion(+)
+Does discard work on partitions (and not just on entire disks)?
+It's been a while since I last had anything to do with this code,
+so I may well misremember.
 
-diff --git a/drivers/pci/controller/pcie-xilinx-cpm.c b/drivers/pci/controller/pcie-xilinx-cpm.c
-index f92e0152e65e..67937facd90c 100644
---- a/drivers/pci/controller/pcie-xilinx-cpm.c
-+++ b/drivers/pci/controller/pcie-xilinx-cpm.c
-@@ -404,6 +404,7 @@ static int xilinx_cpm_pcie_init_irq_domain(struct xilinx_cpm_pcie_port *port)
- 	return 0;
- out:
- 	xilinx_cpm_free_irq_domains(port);
-+	of_node_put(pcie_intc_node);
- 	dev_err(dev, "Failed to allocate IRQ domains\n");
- 
- 	return -ENOMEM;
--- 
-2.17.1
-
-
+Jan
