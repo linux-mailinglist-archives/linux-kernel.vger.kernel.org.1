@@ -2,132 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9097E2FD76C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E072FD792
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387464AbhATRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732755AbhATRiq (ORCPT
+        id S2388771AbhATRxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:53:34 -0500
+Received: from sendmail.purelymail.com ([34.202.193.197]:51444 "EHLO
+        sendmail.purelymail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727821AbhATRvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:38:46 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B402AC061575;
-        Wed, 20 Jan 2021 09:38:00 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id 19so26099320qkm.8;
-        Wed, 20 Jan 2021 09:38:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fXzwMVogqDvK2f8fn8CTgEE+JZ+HrCHP+qXvVICM9to=;
-        b=de2S+XDN4SetD2uJ6R5xNZS+NHJ3PlRiwed1XKZAtFi+eD36pCrXG54ylI7Cu4D2Mq
-         DNmrJxJCwrZZ87I4DtgSJUdaEXKiXvlzvfMOnDcGsVDtnKcYiiesOM7kvWMk5RmIEIcn
-         JrhacS5eJ12QDZVf+PzNCOJbXnp5kPjCcCa5PcovIOm+DMS6iUqjB71+XTGlKaPD3r+k
-         mL2V7gpMekklrA7UQiwr83jPUJy3fAa7MCJDUJYGrUt+qGIenBxll6Z7i7Sr/pEMltZ5
-         Pc0wl8mf6B6yw0gOiQxK/WEEA1pAY6Q3cYepuu0P716181T444uz0F8QctrrMmzwA4Dt
-         rLdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fXzwMVogqDvK2f8fn8CTgEE+JZ+HrCHP+qXvVICM9to=;
-        b=nbYcVWNreRWqOpud49fFTeBzQkdHJ8PWnFLI8w8OJDrS5lpbEACUX41R0hKoJIGAJB
-         gJEC13Ec1Y3IzN/U0mepkhcPULCKFYUXzgoPOrJVlQHuaSf8jZsgHQNgDC1yKbw/lsvg
-         5TfyI7kxexQzMZn62YZlIcenb4cwbAnVupr8a5qbGnAc1k5oUEaoW19POnnQ7tzPoq18
-         v+3554MAYFQqxFGQly6cDHjOk8RnYgiEkUjdChuxQfil1uowCq+MQUf1B1YJI9ssDzLU
-         3BHnNLG4v4jLbK2gYWakpctALJ9/3hx5y7Op01x/ose2MJ6J2ZWuhKhMB+LiHL62zQw1
-         EsFw==
-X-Gm-Message-State: AOAM533ylTIhlTsDcEv0A1ZC4g2oPu0B98twg+3TmFIhWyKFpZK61Q7s
-        /cQGcwVOXg32nkxSSRloNeI=
-X-Google-Smtp-Source: ABdhPJzlm+CfygWXDAnwQfxgsHclgXc/ogYnn4aSL59U+RNQqGJUw3aMWdOu3o0hwSsLIY0K5aFiWw==
-X-Received: by 2002:a37:a950:: with SMTP id s77mr10546135qke.122.1611164280028;
-        Wed, 20 Jan 2021 09:38:00 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id k23sm1582944qtp.61.2021.01.20.09.37.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 09:37:58 -0800 (PST)
-Date:   Wed, 20 Jan 2021 18:37:56 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v8 4/7] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-Message-ID: <YAhqdGMd/2Iviy2g@ulmo>
-References: <20210116194826.3866540-1-j.neuschaefer@gmx.net>
- <20210116194826.3866540-5-j.neuschaefer@gmx.net>
+        Wed, 20 Jan 2021 12:51:41 -0500
+X-Greylist: delayed 395 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 Jan 2021 12:51:40 EST
+Authentication-Results: purelymail.com; auth=pass
+DKIM-Signature: a=rsa-sha256; b=0vKvmSFzWcheTLjBCdQh7yELER6goDXutqd83TwBMMVY82Z6u6C7lc/KAXvZOr9Y5DroqMbZO5g8JoAnXDnVK2c9usVnIZ4DySlh89kT7Qgjn1lY4Q9vudKemXtuoB20o/tvG5tp9kGk0OnPELvC0bWP9gKpQoKQOCQKT/PFwr0+5GfbN7n6KQIU5aURUtNf3MOesHkx3ksHxfZkm60usmr/Gpj3XDvgNx1A4pnNXgBZQ4DZ4FlFzg+oJRSVmuj+wzktTZXsQZLIX8aeKTnvMGmhRxra5TIi7+Ks8SCLyLmpY8si4cERL6/sClozFMjUQZKLAWgj6+U/qKS9XrsN5Q==; s=purelymail2; d=thezest.dev; v=1; bh=V9VC00tjxDxMC3NfaBpUD4u6Y+zJ6Kv9pzEYq6NvENg=; h=Received:From:To;
+DKIM-Signature: a=rsa-sha256; b=iQuChVOf8ja5PrB7bMBY70Zwp7e+tPjlq7PaQvjgEW/GKtnNuzUXi5Pnqr5tbA2qXCA3JGeGK2X/LPkGe0ehyZ62Mg3uefdPWt5BMw/zGVFCXE1T4dDKgFjgn976hRByQaFE7M/9jco82PSlsa5kxir2XTZFiB+7JIfIo7dn0Zi/QRAXMbJ71Ij6soeCGagzBlSBMYe819XEBhwZVIxeKay05Pf8MmX5PCjQz0/Mv4qJzLSem8euedx2VepiYM3sIPtB4XhWxjZjt2MTGAop1xvk2yggqCYX3iDuEFr5ZkvCuB3wadUYh2qftJc+QAplDAK/5gmNdDXl4kef32N93g==; s=purelymail2; d=purelymail.com; v=1; bh=V9VC00tjxDxMC3NfaBpUD4u6Y+zJ6Kv9pzEYq6NvENg=; h=Feedback-ID:Received:From:To;
+Feedback-ID: 1188:367:null:purelymail
+X-Pm-Original-To: linux-kernel@vger.kernel.org
+Received: by ip-172-30-0-124.ec2.internal (JAMES SMTP Server ) with ESMTPA ID -1145992316;
+          Wed, 20 Jan 2021 17:42:20 +0000 (UTC)
+From:   Diab Neiroukh <lazerl0rd@thezest.dev>
+To:     clang-built-linux@googlegroups.com
+Cc:     Diab Neiroukh <lazerl0rd@thezest.dev>,
+        Danny Lin <danny@kdrag0n.dev>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Quentin Perret <qperret@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: Add support for Clang's polyhedral loop optimizer.
+Date:   Wed, 20 Jan 2021 17:41:45 +0000
+Message-Id: <20210120174146.12287-1-lazerl0rd@thezest.dev>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lBNzTqKU9kiRT1e4"
-Content-Disposition: inline
-In-Reply-To: <20210116194826.3866540-5-j.neuschaefer@gmx.net>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
+Content-Type: text/plain; charset=ANSI_X3.4-1968
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Polly is able to optimize various loops throughout the kernel for cache
+locality. A mathematical representation of the program, based on
+polyhedra, is analysed to find opportunistic optimisations in memory
+access patterns which then leads to loop transformations.
 
---lBNzTqKU9kiRT1e4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Polly is not built with LLVM by default, and requires LLVM to be compiled
+with the Polly "project". This can be done by adding Polly to
+-DLLVM_ENABLE_PROJECTS, for example:
 
-On Sat, Jan 16, 2021 at 08:48:23PM +0100, Jonathan Neusch=C3=A4fer wrote:
-> The Netronix EC provides a PWM output which is used for the backlight
-> on some ebook readers. This patches adds a driver for the PWM output.
->=20
-> The .get_state callback is not implemented, because the PWM state can't
-> be read back from the hardware.
->=20
-> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> Reviewed-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+-DLLVM_ENABLE_PROJECTS=3D"clang;libcxx;libcxxabi;polly"
 
-Acked-by: Thierry Reding <thierry.reding@gmail.com>
+Preliminary benchmarking seems to show an improvement of around two
+percent across perf benchmarks:
 
---lBNzTqKU9kiRT1e4
-Content-Type: application/pgp-signature; name="signature.asc"
+Benchmark                         | Control    | Polly
+--------------------------------------------------------
+bonnie++ -x 2 -s 4096 -r 0        | 12.610s    | 12.547s
+perf bench futex requeue          | 33.553s    | 33.094s
+perf bench futex wake             |  1.032s    |  1.021s
+perf bench futex wake-parallel    |  1.049s    |  1.025s
+perf bench futex requeue          |  1.037s    |  1.020s
 
------BEGIN PGP SIGNATURE-----
+Furthermore, Polly does not produce a much larger image size netting it
+to be a "free" optimisation. A comparison of a bzImage for a kernel with
+and without Polly is shown below:
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAIanQACgkQ3SOs138+
-s6EFrQ/9EEAHn2rbJKEm/DmKgeQNHRPrNspWJNLAd53/w8b0Eb4c7ujIzIEsgRNk
-86gHze1V2P1dKsLKV+ySTJI5TcLmF6GW6I0IVf1uhivnEZ9PtHxniB3BORCZQZvF
-Jk+RaVLggKutE8CJiiCYJAliVJ2/5jLGeTTsLTs14iKZ/a6x17Aw+M0Qvol9B33m
-CfebZDSZzGM2/MbjtSNDfvXW8cYj9rf0bpMO8U8QO8gDmd4zKGsG53RFEmnfrtHa
-ELKkOlUxesIery21g4utWAIdr9ElWV/rs55UuTdxn5PuaLkxQXqTiE04ZowMLnJ0
-8+85TgNAYDR+8gJ1kTZRBxAfV17MIN0lRh+Mduzuius7DEzynTvSJ146xr6rO23s
-lLB84rDocawfBd0kgjYY97axNfHPFiXo98Y+D3e7REdmg4XvV2Q/gkgOzlfQ5kUu
-fd+a13gTJdlJuDQZfbylK7BKB8EQ5FMBCXp6LBstmkfHFVFkzIwRzBETQNC6PPXS
-iXvVMWP7BiM8YXDvKK9msIPPUCHCC8kTDj6X0ugayoz+wezYtS+qqpEkv4UO9VoQ
-jtpjl7aNGLZlymFv0g/R9J1Bsx0fSpKqG6kLUmTyz0b+Y49qkwEYvoye3kqqGvRp
-pgoXtrlwLuotaKafrrzcigIEXmOZGw+jmgVcf2XrKscB8jyXqto=
-=zLz8
------END PGP SIGNATURE-----
+bzImage        | stat --printf=3D"%s\n"
+-------------------------------------
+Control        | 9333728
+Polly          | 9345792
 
---lBNzTqKU9kiRT1e4--
+Compile times were one percent different at best, which is well within
+the range of noise. Therefore, I can say with certainty that Polly has
+a minimal effect on compile times, if none.
+
+Suggested-by: Danny Lin <danny@kdrag0n.dev>
+Signed-off-by: Diab Neiroukh <lazerl0rd@thezest.dev>
+---
+ Makefile     | 16 ++++++++++++++++
+ init/Kconfig | 13 +++++++++++++
+ 2 files changed, 29 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index b9d3a47c57cf..00f15bde5f8b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -740,6 +740,22 @@ else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ KBUILD_CFLAGS +=3D -Os
+ endif
+=20
++ifdef CONFIG_POLLY_CLANG
++KBUILD_CFLAGS=09+=3D -mllvm -polly \
++=09=09   -mllvm -polly-ast-use-context \
++=09=09   -mllvm -polly-invariant-load-hoisting \
++=09=09   -mllvm -polly-opt-fusion=3Dmax \
++=09=09   -mllvm -polly-run-inliner \
++=09=09   -mllvm -polly-vectorizer=3Dstripmine
++# Polly may optimise loops with dead paths beyound what the linker
++# can understand. This may negate the effect of the linker's DCE
++# so we tell Polly to perfom proven DCE on the loops it optimises
++# in order to preserve the overall effect of the linker's DCE.
++ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
++KBUILD_CFLAGS=09+=3D -mllvm -polly-run-dce
++endif
++endif
++
+ # Tell gcc to never replace conditional load with a non-conditional one
+ KBUILD_CFLAGS=09+=3D $(call cc-option,--param=3Dallow-store-data-races=3D0=
+)
+ KBUILD_CFLAGS=09+=3D $(call cc-option,-fno-allow-store-data-races)
+diff --git a/init/Kconfig b/init/Kconfig
+index 05131b3ad0f2..266d7d03ccd1 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -177,6 +177,19 @@ config BUILD_SALT
+ =09  This is mostly useful for distributions which want to ensure the
+ =09  build is unique between builds. It's safe to leave the default.
+=20
++config POLLY_CLANG
++=09bool "Use Clang Polly optimizations"
++=09depends on CC_IS_CLANG && $(cc-option,-mllvm -polly)
++=09depends on !COMPILE_TEST
++=09help
++=09  This option enables Clang's polyhedral loop optimizer known as
++=09  Polly. Polly is able to optimize various loops throughout the
++=09  kernel for cache locality. This requires a Clang toolchain
++=09  compiled with support for Polly. More information can be found
++=09  from Polly's website:
++
++=09    https://polly.llvm.org
++
+ config HAVE_KERNEL_GZIP
+ =09bool
+=20
+--=20
+2.30.0
+
