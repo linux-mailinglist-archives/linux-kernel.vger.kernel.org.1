@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358022FCC9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3CB2FCC53
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730651AbhATIUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729019AbhATIBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:01:47 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08163C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:01:02 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id y17so22122165wrr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:01:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XIKOfdQ39sGdLT3c6gVEbQNxQnjkeYmR/4PVU+oFEnc=;
-        b=sCYGfWzoNVu8KtENM5iDui+OEStVFvELcOSAZgVmUnzeok+qZ8fnFzMZ3sAt/P5Oba
-         e4RhGsXhfWMKRiq0hjgZ/LDIYxuNrJieoznYirdI7l6SHEdfpQ06J/Tzq/wisXzJbiwN
-         bVJRKmM37foNRY/4GHERf8gvgxN8O2UImScxlwakHZeSlOsrfyss9ZkGXwGtZLHASy+C
-         lROJedl6r4hYLInXTsgZ7g1st+iB400AE9Ffn9DGkbhSUBDxJOXhJAWEchY1FkVs360I
-         l2qBGizxkFQxEBxdE5EH5QvXByeCHd+S+iBRUZF1XD8VMqMO2+HJbPGV+oMKzakWA2TR
-         gnQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XIKOfdQ39sGdLT3c6gVEbQNxQnjkeYmR/4PVU+oFEnc=;
-        b=m1Qd0HxaDV3K3PWmQw3mkOdbuhlZU81hwM65cG8wG0B9kl/mqYVfsWmHIRseTF0ePs
-         AL89YLUTwn6P7C4WkxOohJnA5X+1eC+VgiePtLFTG9iiKN4UexoYkgd1awr8J/yIu1wX
-         GrucDYW0vfZo4uAkLQ8eRX95erDyjD2Ns3fvvuKp+9QRXCVhJ31wPypfliVySdbnCzFo
-         LR0WKuq0a8/UEmebPnoMKrgzG1fT50OOM+AEsRxVp+nWerWJGTytkr9cTgFEFbJkUjG+
-         2hXi58BAZtboR0QYECytY6PM9zHsxxUg3bk5plHF186Ks/r32P7+/49x3Tk8UkWeLuxc
-         E/1A==
-X-Gm-Message-State: AOAM533qhZFxor2qw/i/uR0cHEMeqkRMySf8kmcPdPjznwoQMkLXEMT/
-        0E0FFo4OcV/SFQgDNM74X/fxrA==
-X-Google-Smtp-Source: ABdhPJyDym/bNUT6yBQUvaB9v6KUo2LO5JOEREhjvHPqEJz0wGuXCnI7RAtQTBczYi9YiPZEurxeIg==
-X-Received: by 2002:a5d:40d2:: with SMTP id b18mr7677245wrq.369.1611129660723;
-        Wed, 20 Jan 2021 00:01:00 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id i18sm2469692wrp.74.2021.01.20.00.00.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 00:00:59 -0800 (PST)
-Date:   Wed, 20 Jan 2021 08:00:58 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Taehee Yoo <ap420073@gmail.com>
-Subject: Re: [PATCH 00/20] Rid W=1 warnings from Infinibad
-Message-ID: <20210120080058.GK4903@dell>
-References: <20210118223929.512175-1-lee.jones@linaro.org>
- <20210120004046.GA1022538@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210120004046.GA1022538@nvidia.com>
+        id S1730644AbhATIGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:06:21 -0500
+Received: from mx.blih.net ([212.83.155.74]:21225 "EHLO mx.blih.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729643AbhATICY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 03:02:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bidouilliste.com;
+        s=mx; t=1611129668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZsuP9EUESZltLXaS8dgiXaaE9jo809x4YaPbT21PXX0=;
+        b=H7JaUfFmYjDL9GqizsW5Z81btdTOdGyLWR7NoJXuI2Mf0ZC2A7VVQJ8nVadFxPz5Ns7NEh
+        cHlxGitgyOwAdSJ8SVKX199i7PGBz8U75pttMkV2/fnqa6TB1JPFnmJWgpXbUXVAh4UC8z
+        eReXnS+9nC83aog2msOHc1cunSX/oBI=
+Received: from amy.home (lfbn-idf2-1-745-114.w86-247.abo.wanadoo.fr [86.247.192.114])
+        by mx.blih.net (OpenSMTPD) with ESMTPSA id 3bf0e6a4 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 20 Jan 2021 08:01:08 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 09:01:08 +0100
+From:   Emmanuel Vadot <manu@bidouilliste.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] pinctrl: clarify #pinctrl-cells for pinctrl-single,pins
+Message-Id: <20210120090108.bbdee781a237cb931a572323@bidouilliste.com>
+In-Reply-To: <20210120050342.320704-1-drew@beagleboard.org>
+References: <20210120050342.320704-1-drew@beagleboard.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; amd64-portbld-freebsd13.0)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021, Jason Gunthorpe wrote:
+On Tue, 19 Jan 2021 21:03:44 -0800
+Drew Fustini <drew@beagleboard.org> wrote:
 
-> On Mon, Jan 18, 2021 at 10:39:09PM +0000, Lee Jones wrote:
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> > 
-> > This is set 1 of either 2 or 3 sets required to fully clean-up.
-> > 
-> > Lee Jones (20):
-> >   RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
-> >   RDMA/core: device: Fix formatting in worthy kernel-doc header and
-> >     demote another
-> >   RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
-> >     issues
-> >   RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
-> >   RDMA/core/cache: Fix some misspellings, missing and superfluous param
-> >     descriptions
-> >   RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
-> >     'user_pri' and fix 'iwcq'
-> >   RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
-> >   RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
-> >     param 'ib_dev'
-> >   RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
-> >     formatting issues
-> >   RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
-> >     descriptions
-> >   RDMA/core/multicast: Provide description for
-> >     'ib_init_ah_from_mcmember()'s 'rec' param
-> >   RDMA/core/sa_query: Demote non-conformant kernel-doc header
-> >   RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
-> >   RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
-> >   RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
-> >     descriptions
-> >   RDMA/core/restrack: Fix kernel-doc formatting issue
-> >   RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
-> >     others
-> >   RDMA/core/counters: Demote non-conformant kernel-doc headers
-> >   RDMA/core/iwpm_util: Fix some param description misspellings
-> >   RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
+> Document that #pinctrl-cells can be 1 or 2 for pinctrl-single,pins
 > 
-> Looks Ok, applied to for-next, thanks
+> Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
+> Reported-by: Emmanuel Vadot <manu@bidouilliste.com>
+> Link: https://lore.kernel.org/linux-gpio/20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com/
+> Cc: Tony Lindgren <tony@atomide.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
+> index f903eb4471f8..bb9999119314 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
+> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
+> @@ -8,7 +8,7 @@ Required properties:
+>  - reg : offset and length of the register set for the mux registers
+>  
+>  - #pinctrl-cells : number of cells in addition to the index, set to 1
+> -  for pinctrl-single,pins and 2 for pinctrl-single,bits
+> +  or 2 for pinctrl-single,pins and set to 2 for pinctrl-single,bits
+>  
+>  - pinctrl-single,register-width : pinmux register access width in bits
+>  
+> -- 
+> 2.25.1
+> 
 
-Thanks Jason, much obliged.
+ Reviewed-by: Emmanuel Vadot <manu@FreeBSD.org>
 
-I'll get the other set out in the next few days.
-
-Hopefully we can have Infiniband cleaned-up by the end of this cycle.
+ Thanks, now the docs make more sense :)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Emmanuel Vadot <manu@bidouilliste.com> <manu@FreeBSD.org>
