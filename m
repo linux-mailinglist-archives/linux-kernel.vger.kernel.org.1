@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FC92FDC21
+	by mail.lfdr.de (Postfix) with ESMTP id 52C532FDC20
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389322AbhATVwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:52:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        id S1733195AbhATVwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729585AbhATVYv (ORCPT
+        with ESMTP id S1728375AbhATVYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 16:24:51 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEC4C061575;
-        Wed, 20 Jan 2021 13:13:51 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id h205so36039386lfd.5;
-        Wed, 20 Jan 2021 13:13:51 -0800 (PST)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AC9C061757;
+        Wed, 20 Jan 2021 13:13:52 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id q8so4482322lfm.10;
+        Wed, 20 Jan 2021 13:13:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HM+kPSLxbcGuQtpmn+lHuIBs3kdjxoFtz28EJXxS7zg=;
-        b=Rsgpal3kAkbYt71GPypPxgpyohAY5taJJXOGXEjvFATzhq46V+v4nnelJQdHN/dTgu
-         J+wV/xKYGCbgmocmBF057xhuQXaXpzWijWXDEnG/szu6WH02JItR1kHpxmq3gmGsDdso
-         k/b97i87l3qrTyB3WAa51fnxUj8nAdDNUlBvhbYxiSUjbiIVmUOazQw65xJhKtdtlMjV
-         YyUcvEXbDTjacpSG+PI6iFL7HKdWVQu1AextIJZIGAEriMBpg4yUce3WtqHN2OZWSbqh
-         uXpRkYl7i9o3BOBUiqO4z8OhDw3tvvQOgiXwVYItUx4I/bMYLSGzP//diRg6h2eGy19z
-         mnng==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BZyyjughXVQWOCamHA5hQecx4dkH4WA782c6u3ykaXc=;
+        b=lNXdLU+DdJmsFQjB9xuWEX+44vbJRXDESQMP0PnyNXhcDw1LzXMoH9NgAD5Y2lLERK
+         8NtGccxUAflMbyVJTda4y78/TK+fILB6BEWDbgaP0BUHxqEI718k8zgp3BivIOj1baoB
+         VvsEMyh4hF7ouTF2nD/s3sni86dWT9I2qvPaXlHBzw+r1TJEutIKLxfj1QWTWCwQFauH
+         /IK/7nEpxiChvfHROpN/yuWq25KmDGR/4SHjHVE1lVpUfu9LvBivFM/xlv5wspMJEzjI
+         tOx3J9/715C63VncN4BP6m0BZYrtYlsI1w3EOLs62DoqeCUFYuxZvi2cgyYm5iQne2WT
+         +M2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HM+kPSLxbcGuQtpmn+lHuIBs3kdjxoFtz28EJXxS7zg=;
-        b=hu1G8/cyFlZEodtF29Ho0+mQDp14/ZCsmQ/2do4sSmfP2fxfuSDe1b+Ncgc0JJLMv2
-         x3ZJocXmEnBEY8YcnCghqSq7TUhPqQio0L7ICwQd0uJiK7lw94dkDQhFVaXgA1hM3e1I
-         a7ZnEzrLjDg+nfumQWVHRJBzu/U4N3wB1mqqKAMXODBPQv2N2VeQJE6RwUwn+zDq0c/E
-         okYZU2cZYJrni6Ew8FHIDlNHZtjAHnB5KpWQrCjIcmN5HcP6oopRWP1xL7DhM5TLLWDt
-         HJy19c20ILiTEHqntYq2Xzl9m/rgAl0mnYIgOgbRudpWqhbrouHw/UBO0wejQ0Nep9UO
-         RjRQ==
-X-Gm-Message-State: AOAM532QWaEeyZOhe2OoS4sW05vKQDBgsp8WyikWwNj7FDbBM9HKjhyt
-        FcnOFnG7dj60IMTqXP9wbUvvBcLcxME=
-X-Google-Smtp-Source: ABdhPJwppQdoc95LhQkyhFMdU8KkEKCLWzXUoEZZ7CBVaMSh53NI2hFNeLQ2hmtxHzN+Vojv+KrKYw==
-X-Received: by 2002:ac2:58f2:: with SMTP id v18mr4915989lfo.623.1611177230404;
-        Wed, 20 Jan 2021 13:13:50 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BZyyjughXVQWOCamHA5hQecx4dkH4WA782c6u3ykaXc=;
+        b=khK1eJ06jRs9PJT1BtnMV67czSbsobmX2X7EUJt+0+9hn7wDtnbFdho2c4Ef9zG0hb
+         JVyvMWNIkGFPteDzgSpEMg1wTUtCsjqjSNtSwljztIP7ZcgnV3D7XpTmEZfa+NvYe+T5
+         t0zlxha8IrqQQ2xLKrqHQ3VeeqFdRWzloAgQVcLyt1tCPUccQYUOXDmYTiCzwrPBoprm
+         4y8FCHJqQ9rUGY2Gz8xn7SNdxR+XiTyjDWguMm4PCiQnmcfOYc7MKzh7kQRDKiTqSOjG
+         KWu+J7kBt85qmgNN1o3Iy2+w7QXWl0zXCGLdvfe9UrPfKsINdcIjhZ85oq+hN1z2P88G
+         DNJQ==
+X-Gm-Message-State: AOAM533+NWyhQ8KS7l/yyZ4E1AGIa1Pcl/xiqQ+u7sjcmxUllmY2Vu+Y
+        hcTYkehyhSiB8NniDVNYxBQ=
+X-Google-Smtp-Source: ABdhPJwkj0Lo/eNGpw4KKAwbidgNRUzYBBJG1SH49hWuruG5tXCvSHBQJ9EX265XlHQnFeGrtKVJ6Q==
+X-Received: by 2002:a05:6512:3ea:: with SMTP id n10mr5034842lfq.535.1611177231423;
+        Wed, 20 Jan 2021 13:13:51 -0800 (PST)
 Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id 196sm298131lfj.219.2021.01.20.13.13.49
+        by smtp.gmail.com with ESMTPSA id 196sm298131lfj.219.2021.01.20.13.13.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:13:49 -0800 (PST)
+        Wed, 20 Jan 2021 13:13:50 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -63,57 +63,107 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>
 Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-pm@vger.kernel.org
-Subject: [PATCH v5 0/3] GENPD API improvements
-Date:   Thu, 21 Jan 2021 00:12:29 +0300
-Message-Id: <20210120211232.17299-1-digetx@gmail.com>
+Subject: [PATCH v5 1/3] PM: domains: Make set_performance_state() callback optional
+Date:   Thu, 21 Jan 2021 00:12:30 +0300
+Message-Id: <20210120211232.17299-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210120211232.17299-1-digetx@gmail.com>
+References: <20210120211232.17299-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Make set_performance_state() callback optional in order to remove the
+need from power domain drivers to implement a dummy callback. If callback
+isn't implemented by a GENPD driver, then the performance state is passed
+to the parent domain.
 
-This series is a prerequisite for the power domain driver of NVIDIA Tegra
-SoCs [1]. It extends the GENPD core with a better support of performance
-states and eases linking of child/parent PDs for the PD drivers.
+Tested-by: Peter Geis <pgwipeout@gmail.com>
+Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+[tested on NVIDIA Tegra20/30/124 SoCs]
+Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/base/power/domain.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
-
-Changelog:
-
-v5: - Renamed genpd_xlate_performance_state() and its arguments like it
-      was requested by Ulf Hansson and Viresh Kumar in a v4 review.
-
-    - Added r-b from Ulf Hansson to "Make set_performance_state() callback
-      optional" patch.
-
-v4: - Updated the "Make set_performance_state() callback optional" patch.
-      Now the case where one of intermediate domains doesn't implement
-      the set_performance_state() callback is handled properly, thanks
-      to Viresh and Ulf for catching this drawback and suggesting the fix.
-
-    - Added more r-bs from Ulf Hansson and Viresh Kumar.
-
-v3: - Added r-b from Ulf Hansson.
-
-    - Added new patch "Make of_genpd_add_subdomain() to return -EPROBE_DEFER",
-      which was suggested by Ulf Hansson.
-
-    - Improved "Add "performance" column to debug summary" patch by
-      correcting the formatting of debug output, which had a superfluous
-      whitespace.
-
-
-Dmitry Osipenko (3):
-  PM: domains: Make set_performance_state() callback optional
-  PM: domains: Make of_genpd_add_subdomain() to return -EPROBE_DEFER
-  PM: domains: Add "performance" column to debug summary
-
- drivers/base/power/domain.c | 54 +++++++++++++++++++++++--------------
- 1 file changed, 34 insertions(+), 20 deletions(-)
-
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 9a14eedacb92..5c843772f7f4 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -297,6 +297,18 @@ static int _genpd_reeval_performance_state(struct generic_pm_domain *genpd,
+ 	return state;
+ }
+ 
++static int genpd_xlate_performance_state(struct generic_pm_domain *genpd,
++					 struct generic_pm_domain *parent,
++					 unsigned int pstate)
++{
++	if (!parent->set_performance_state)
++		return pstate;
++
++	return dev_pm_opp_xlate_performance_state(genpd->opp_table,
++						  parent->opp_table,
++						  pstate);
++}
++
+ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 					unsigned int state, int depth)
+ {
+@@ -311,13 +323,8 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 	list_for_each_entry(link, &genpd->child_links, child_node) {
+ 		parent = link->parent;
+ 
+-		if (!parent->set_performance_state)
+-			continue;
+-
+ 		/* Find parent's performance state */
+-		ret = dev_pm_opp_xlate_performance_state(genpd->opp_table,
+-							 parent->opp_table,
+-							 state);
++		ret = genpd_xlate_performance_state(genpd, parent, state);
+ 		if (unlikely(ret < 0))
+ 			goto err;
+ 
+@@ -339,9 +346,11 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 			goto err;
+ 	}
+ 
+-	ret = genpd->set_performance_state(genpd, state);
+-	if (ret)
+-		goto err;
++	if (genpd->set_performance_state) {
++		ret = genpd->set_performance_state(genpd, state);
++		if (ret)
++			goto err;
++	}
+ 
+ 	genpd->performance_state = state;
+ 	return 0;
+@@ -352,9 +361,6 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+ 					     child_node) {
+ 		parent = link->parent;
+ 
+-		if (!parent->set_performance_state)
+-			continue;
+-
+ 		genpd_lock_nested(parent, depth + 1);
+ 
+ 		parent_state = link->prev_performance_state;
+@@ -399,9 +405,6 @@ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
+ 	if (!genpd)
+ 		return -ENODEV;
+ 
+-	if (unlikely(!genpd->set_performance_state))
+-		return -EINVAL;
+-
+ 	if (WARN_ON(!dev->power.subsys_data ||
+ 		     !dev->power.subsys_data->domain_data))
+ 		return -EINVAL;
 -- 
 2.29.2
 
