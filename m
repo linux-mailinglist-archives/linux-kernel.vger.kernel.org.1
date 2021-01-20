@@ -2,158 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4592FCC98
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261062FCC97
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730408AbhATISs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        id S1729171AbhATISQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730490AbhATIHF (ORCPT
+        with ESMTP id S1730576AbhATIHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 03:07:05 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A83C061795
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:05:31 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id m187so1987594wme.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:05:31 -0800 (PST)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873E6C061796
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:06:14 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id f63so6199824pfa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:06:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=i0E7CMnkJOpieDzn6Vg+wQQjdFWzO1+rNLsWhsRoe3o=;
-        b=OCmzqzCx+kJKozrzBCDTsmV41sa//C8Xz6MgavuR25f4oaXCkpVJHvPWsgS/XltA9g
-         6MsYyWYfHRBgBYFYevh1ruUsDAO1aCK96HPyTCAT4mYW4BjSb2RygzqlQUBXGQMZyYo4
-         oHcyS26K06EL/6eFa3SOYkGyH0h5522KhkZ9z9CcF1618Y3lDTM061Yj/gpJalQ9pSlf
-         BjL36AZ1kECVP7B92jDo2L9BZRpQrJ4zvGVsDQuphXYnvNXXnR52kOfzjo8BiS+LtI+6
-         3bRjXALY6WVXvu3dC9Djf0Bx8av9XnTcqBqUhhYBD/3Ln/T0JDGmzMzfxu+yKs/9xxE3
-         nf/w==
+         :content-disposition:in-reply-to:user-agent;
+        bh=oNkS7BO+I4iYqbb8e23nWgzCyCIirVtUbZHdA/+LLQk=;
+        b=H8ahtFkrl8XoAAXOdig+ykUsHL1WV8A6ooGgVzGod+L1cIXRgMBoBvdTwc/Bk1DSAw
+         PlXgpR+6+XSKVseQkHvUwtknt1dIbynk1U0WfmpbYJx0KfQJ60w7GCa6j2ZecpEDDwEo
+         nZZoGepdNQ9fPJxFhxL/+9UAerRGCpTZra+L94Rj4OQuHY79Ahi/XVBbvK9hMw9c+U7M
+         8X1qo+PBEB4Y4p9FSHCVeEFTMnNiPSudwgYQ7iYxcN+1kwI6v1CiXCY2zvxc5qAJyP9k
+         iZVJ8Ku2VjFoupFP/yuzfnbVR0/qVdTPP9WFLH6tYXQGiUp6x4P/9Ga2F5nvtoMXwt6r
+         eR5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=i0E7CMnkJOpieDzn6Vg+wQQjdFWzO1+rNLsWhsRoe3o=;
-        b=CtqJw4lfD3aRmiNZweCLeDhYuqi+MVSbbsSrMaihQJ+bS6RiHqA7bA1U5fn2JyqRu6
-         s2gxYliIb+SSwL0uhi7L5gNtPwdxtq7xZBs2ZY4w2fe+rG5rmQknt1734wmVQFteAkda
-         I3KCxJxMcyh5Faxzm8ZpmqPU+pCaePP9yI+Yzuz/VOSMKsEoXnRrAVFTwbHFG8Yytm3a
-         ktJwiDckPqlfHffcopKGMe4RR9gn9MI/ki0f2gbe6E3OywDrt+7qYDpF+gj5o1lFhvpa
-         oA5OGwMgHJf+i5AIxEd6z+O4i9hmS44koavE1G2ZLztduqK7wiB8bFLDwvgChUJKLmX1
-         DNUg==
-X-Gm-Message-State: AOAM532/wa5nsfEYLufOyZAUf18svugpYgJg+yDRvgwxnqCWWrnE6plC
-        Sp46E9+/wrQAEqU+I+bqIFcZvIidTEzdh3/U
-X-Google-Smtp-Source: ABdhPJw03a3Mt+JIRRJlN+qL5Wvmb168qR1zfbc+zME3aDudXf2zqFFDvbGkZ01CEqJS8MlUBAm8PA==
-X-Received: by 2002:a7b:cb46:: with SMTP id v6mr3049511wmj.19.1611129930271;
-        Wed, 20 Jan 2021 00:05:30 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id s13sm2538012wra.53.2021.01.20.00.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 00:05:29 -0800 (PST)
-Date:   Wed, 20 Jan 2021 08:05:26 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Zack Rusin <zackr@vmware.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Eddie Dong <eddie.dong@intel.com>,
-        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        Jackie Li <yaodong.li@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jan Safrata <jan.nikitenko@gmail.com>,
-        Jesse Barnes <jesse.barnes@intel.com>,
-        jim liu <jim.liu@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Keith Packard <keithp@keithp.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
-        Niu Bing <bing.niu@intel.com>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Pei Zhang <pei.zhang@intel.com>,
-        Ping Gao <ping.a.gao@intel.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tina Zhang <tina.zhang@intel.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhiyuan Lv <zhiyuan.lv@intel.com>
-Subject: Re: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
-Message-ID: <20210120080526.GL4903@dell>
-References: <20210115181601.3432599-1-lee.jones@linaro.org>
- <F914D9B9-6DD4-4383-9F7C-8D09FBFE96CE@vmware.com>
- <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
- <20210118150945.GE4903@dell>
- <YAXDgmWMR9s4OgxN@phenom.ffwll.local>
- <20210119082927.GJ4903@dell>
- <8DE96253-47A3-4A16-9331-62F547A2CC44@vmware.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oNkS7BO+I4iYqbb8e23nWgzCyCIirVtUbZHdA/+LLQk=;
+        b=iugb5ext2nK2TLg+5Y9INtueDNMvG/VcBKikd2Wbs19q7q1eLwsD2gK2ps8JAm8LE5
+         I1pQQD94dsi8d+QY044JWAfEQStziRxAcaGwcG4aJdMH0PYqAePRZ5OFXHdKUIpVp7+Z
+         WFdGC8MW/dLEqghOQJOlTildBAywcIzELQfT9XG62D19lPZGQlTQJig0iF6CRZRuXQ08
+         TwZGuvUi6HMBj/JJXQstvFiweLTAbJPHOLU2Z5rn4V7fGwj1cugUUi5VpWuTDWKShrOB
+         6ha2Vu32bTE2urWCO1gSC5dOQGlNdvOSjpq6BvXd7cueu6rJOeEuiVnwTp/Pss9zCSqC
+         +aMA==
+X-Gm-Message-State: AOAM531HsjETH/G1MJlPtP9eq4I5vhgVW5IgVh7GN8Gr1NyN6LwkbJNV
+        Eb1SA8hE62VKK9Bz27M2SZ5g0A==
+X-Google-Smtp-Source: ABdhPJxxnQpjU22yEmNNtaWWmWh2iwZ/WZIldmsDhPNptwyaFHrkBk9JWxSodC3SuvlwGpHnbs4W8g==
+X-Received: by 2002:a63:ef14:: with SMTP id u20mr8314758pgh.93.1611129973985;
+        Wed, 20 Jan 2021 00:06:13 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id p15sm1419910pgl.19.2021.01.20.00.06.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Jan 2021 00:06:12 -0800 (PST)
+Date:   Wed, 20 Jan 2021 13:36:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [BUG] NULL pointer in dev_pm_opp_put_regulators
+Message-ID: <20210120080611.uqmik3hc5kq6mpxw@vireshk-i7>
+References: <20210120075902.lfz6cw4jgqg6e7c3@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8DE96253-47A3-4A16-9331-62F547A2CC44@vmware.com>
+In-Reply-To: <20210120075902.lfz6cw4jgqg6e7c3@kozik-lap>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021, Zack Rusin wrote:
+On 20-01-21, 08:59, Krzysztof Kozlowski wrote:
+> Hi,
+> 
+> Today's next fails to boot on Exynos5422 Odroid HC1 board:
+> 
+> [    6.409023] Unable to handle kernel NULL pointer dereference at virtual address 00000004
+> [    6.417199] pgd = (ptrval)
+> [    6.419748] [00000004] *pgd=00000000
+> [    6.423499] Internal error: Oops: 805 [#1] PREEMPT SMP ARM
+> [    6.428724] Modules linked in:
+> [    6.431752] CPU: 5 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc4-next-20210120 #2
+> [    6.439209] Hardware name: Samsung Exynos (Flattened Device Tree)
+> [    6.445273] PC is at dev_pm_opp_put_regulators+0xb4/0x114
+> ...
+> [    6.680370] [<c086f51c>] (dev_pm_opp_put_regulators) from [<c08d5d48>] (exynos_bus_probe+0x45c/0x620)
+> [    6.689556] [<c08d5d48>] (exynos_bus_probe) from [<c06b49a8>] (platform_probe+0x80/0xc0)
+> [    6.697614] [<c06b49a8>] (platform_probe) from [<c06b1ab4>] (really_probe+0x1d4/0x500)
+> [    6.705499] [<c06b1ab4>] (really_probe) from [<c06b1e58>] (driver_probe_device+0x78/0x1dc)
+> [    6.713731] [<c06b1e58>] (driver_probe_device) from [<c06b236c>] (device_driver_attach+0x58/0x60)
+> [    6.722571] [<c06b236c>] (device_driver_attach) from [<c06b2470>] (__driver_attach+0xfc/0x160)
+> [    6.731149] [<c06b2470>] (__driver_attach) from [<c06af85c>] (bus_for_each_dev+0x68/0xb4)
+> [    6.739294] [<c06af85c>] (bus_for_each_dev) from [<c06b0b5c>] (bus_add_driver+0x158/0x214)
+> [    6.747526] [<c06b0b5c>] (bus_add_driver) from [<c06b3314>] (driver_register+0x78/0x110)
+> [    6.755585] [<c06b3314>] (driver_register) from [<c0102464>] (do_one_initcall+0x8c/0x430)
+> [    6.763731] [<c0102464>] (do_one_initcall) from [<c11010e4>] (kernel_init_freeable+0x190/0x1e0)
+> [    6.772397] [<c11010e4>] (kernel_init_freeable) from [<c0b4fc50>] (kernel_init+0x8/0x120)
+> [    6.780542] [<c0b4fc50>] (kernel_init) from [<c010011c>] (ret_from_fork+0x14/0x38)
+> 
+> https://krzk.eu/#/builders/21/builds/2862/steps/15/logs/serial0
+> 
+> I did not do a bisect but the last commit touching these parts was:
+> 
+> commit 302c014726dbd9fcde852985528c139d2214a1f2
+> Author: Viresh Kumar <viresh.kumar@linaro.org>
+> Date:   Tue Jan 19 11:58:58 2021 +0530
+>     opp: Prepare for ->set_opp() helper to work without regulators
+> 
+> Maybe you have some idea of cause?
 
-> 
-> 
-> > On Jan 19, 2021, at 03:29, Lee Jones <lee.jones@linaro.org> wrote:
-> > 
-> > On Mon, 18 Jan 2021, Daniel Vetter wrote:
-> > 
-> >> On Mon, Jan 18, 2021 at 03:09:45PM +0000, Lee Jones wrote:
-> >>> On Mon, 18 Jan 2021, Daniel Vetter wrote:
-> >>> 
-> >>>> On Fri, Jan 15, 2021 at 06:27:15PM +0000, Zack Rusin wrote:
-> >>>>> 
-> >>>>>> On Jan 15, 2021, at 13:15, Lee Jones <lee.jones@linaro.org> wrote:
-> >>>>>> 
-> >>>>>> This set is part of a larger effort attempting to clean-up W=1
-> >>>>>> kernel builds, which are currently overwhelmingly riddled with
-> >>>>>> niggly little warnings.
-> >>>>>> 
-> >>>>>> Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
-> >>>>> 
-> >>>>> Thanks! For all the vmwgfx bits:
-> >>>>> Reviewed-by: Zack Rusin <zackr@vmware.com>
-> >>>> 
-> >>>> Ok I merged everything except vmwgfx (that's for Zack) and i915/nouveau
-> >>>> (those generally go through other trees, pls holler if they're stuck).
-> >>> 
-> >>> Thanks Daniel, you're a superstar!
-> >>> 
-> >>> So Zack will take the vmwgfx parts?  Despite providing a R-b?
-> >> 
-> >> I only merge stuff that's defacto abandoned already. Everything else I try
-> >> to offload to whomever actually cares :-)
-> > 
-> > Understood.  Thanks for the explanation.
-> > 
-> > Hopefully Zack actually cares. :D
-> 
-> hah, I do. I just pushed all of the changes to drm-misc-next. Let me
-> know if I missed anything. Thanks!
+t a/drivers/opp/core.c b/drivers/opp/core.c
+index 1ed673334565..7c0e0e76a57e 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2038,7 +2038,7 @@ void dev_pm_opp_put_regulators(struct opp_table *opp_table)
+                regulator_put(opp_table->regulators[i]);
+ 
+        mutex_lock(&opp_table->lock);
+-       if (opp_table->sod_supplies) {
++       if (opp_table->set_opp_data) {
+                opp_table->set_opp_data->old_opp.supplies = NULL;
+                opp_table->set_opp_data->new_opp.supplies = NULL;
+        }
 
-Perfect.  Thank you Zack.
+This shall fix it, sorry about that. I have pushed my branch again. Thanks.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+viresh
