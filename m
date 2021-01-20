@@ -2,187 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAB42FC8E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2D22FC90F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 04:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730724AbhATDaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 22:30:08 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:50257 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbhATD3M (ORCPT
+        id S1729858AbhATDdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 22:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730755AbhATDcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 22:29:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611113351; x=1642649351;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=M4nuvjROJD8gM53WiMW4QIN6VnKfsI/ugJIBArJ8Iag=;
-  b=cydazKMXghTzcBfWLVsEPhYXnpDu1cZK+uw1P55VEouubufOJxC19voD
-   czQplhMJumxDogKbc8A1do8mLShYrxGBqMdxR3mqdJbY1NYfwVD6OUBXO
-   E2RgNFbica4jjmrEEd+ZpNbOXEfzKAOoVOcG+MMu7c/vlec7pAALK3zzM
-   u+gyqjszheAUbZLCS7hNVzJUtxgEG3PnErbAiblZR9kAv5TBmHv9aYC8+
-   q8IMT6ctxuMc/Uf7pMLaF2P9jLNWwkzd+QNZbGxJ09thhLIquooJVYvmw
-   uwPQa1wdnVe+G/6LgJGK4ORZ5FM7RI6abgn0ongGx8Whc9XgnxsR+6u5C
-   g==;
-IronPort-SDR: 5+xZGKwR+vWn59Bhi8mkKXqNz/iW4w9Vnu9yAMcqM7RBpWTonEGmyTXdWeHqap0mKuHzjPub3F
- kgz6zEPhIoanstfyptbr7W4g57Bpiof0QZAMtTOoXa/rDvjPmSz0nab0wpZJcAry9GnAZ8+qcC
- M3b7Rsuhp8LY8AgjbdN8oEFWgMWeg2ZnqeOsT8yp/K2it2xvQgYSpT/y5b9E/hAldiyfDW2Px3
- /9Iq5djCd2PWE28ff0fVjFhEynFv3+Q3c6J+cJMdUYE1InGosCicYxFZO8mhm4eSrukifCaTdo
- RGI=
-X-IronPort-AV: E=Sophos;i="5.79,360,1602518400"; 
-   d="scan'208";a="157859380"
-Received: from mail-bn8nam12lp2171.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.171])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Jan 2021 11:27:58 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nIvgvIgSqoJMeejK5wOC/rvWoh/uPTaXwNdGWnxe68UqEKFYLOF9gxcshBHTTEphhOSVZBfFvdID0LbwCHkrI+GcCGUg8SzpxnZWhg0RpxFviKHhztEk4GmLeyBpwLB2nHMp39s6GtSM9QcMPiN86ogsQ/fLPLU5kprWvJUbGk+QwheZ69RPU7s4PhxXetiQBx32R54wLsiXEDfHBALc9KcoS0SwQHEPwLlmasDRWiQK+fDpLKFyCtKzsCmzxJLJZPeraot9n0JDGw4y7WAaYy3DSPHOSlnkRicjh7SPN4L/HA4TCQ9i24sfI2u41/xxF3JBxUehHfSSGWKJ1CJkng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ao3zFQITGqA2aHh0f6JEQROwynf2v+vXzjbrHI/DUFI=;
- b=cnLtrKL2/vH/USc4+KX9bMQ2ei7snm0c5TtBPRMFaTeDletDceoFtZbf1tbDkYcmAy1IflDAXOszqONer6yQme16Ld4fbIkxVVXIu95Wb1sjoCUSjaW+Ing+X5Zc3Adocg0ffZqrBVcxZlz142jYpbYGQoyvJhxHHNkD0wg9BOHWlq6kYEOWbJDTzGFiT7vz+39pDPP8wUUu3zOjiKJp+sYv16+XDd+snAw7q6Ow4BTGW7BoeMwttdjCix4fn0NsDtXTWNGqUXrAKY121U/Q/e2cZ9Yb5WMZa5A8wchjLtgMKCffji6ZgX6vLUTTJJwmGCvTFGFsMzL0W9lEERM7lw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 19 Jan 2021 22:32:43 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F147C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 19:32:03 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id cq1so1270622pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 19:32:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ao3zFQITGqA2aHh0f6JEQROwynf2v+vXzjbrHI/DUFI=;
- b=qPzgsZBsUwQIfS4W2aAP1pPawNzrzDtYNYzGjBTGX/Pn+Z7gcpAOR2mmKTg5p7Jo76rCKmORDKArE9M657syotjOZ41GRUsp8O2zqXTVcbx+xltFXYYtQ5ixv9FVam3eZc+SYM53BNe1qnMNqMLeip1vZJjYatp8sjY5744ly3o=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB4872.namprd04.prod.outlook.com (2603:10b6:a03:42::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Wed, 20 Jan
- 2021 03:27:55 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::716c:4e0c:c6d1:298a]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::716c:4e0c:c6d1:298a%6]) with mapi id 15.20.3742.012; Wed, 20 Jan 2021
- 03:27:55 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>
-CC:     "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "philipp.reisner@linbit.com" <philipp.reisner@linbit.com>,
-        "lars.ellenberg@linbit.com" <lars.ellenberg@linbit.com>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "colyli@suse.de" <colyli@suse.de>,
-        "kent.overstreet@gmail.com" <kent.overstreet@gmail.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "song@kernel.org" <song@kernel.org>, "hch@lst.de" <hch@lst.de>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "rpeterso@redhat.com" <rpeterso@redhat.com>,
-        "agruenba@redhat.com" <agruenba@redhat.com>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "shaggy@kernel.org" <shaggy@kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "jth@kernel.org" <jth@kernel.org>, "tj@kernel.org" <tj@kernel.org>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "jefflexu@linux.alibaba.com" <jefflexu@linux.alibaba.com>
-Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
-Thread-Topic: [RFC PATCH 00/37] block: introduce bio_init_fields()
-Thread-Index: AQHW7iDfXiv5iuHOl0mGSxMcJ7OwhA==
-Date:   Wed, 20 Jan 2021 03:27:55 +0000
-Message-ID: <BYAPR04MB49652C7B57396757FF064C6686A20@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a5b4c018-b955-4aff-42d9-08d8bcf3608a
-x-ms-traffictypediagnostic: BYAPR04MB4872:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR04MB48725C6EE06AE9513255BA5C86A29@BYAPR04MB4872.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lqw/FI7V3h3I7N6LUDiMWfhW2chPZ0fK5VoXZLC7RQTD04IRNr4lXPyMYMfMUREUCjhqbsEYNkR0i0ntiSZcIAZqmjdF57HMmj47+NooF42/0RPaWT26C5YZdfVo75rKokHq9PHjl7dxwLYdYsGdDfeeSENfAfCuDQ6aQWFFVFPiLrgilW2mfde9/lHnT4hAxNphtCZIW+V5C2Py1PVUDiHlYPv2SPmmXl7/djmz9Qbq0Nki1YnQIwziZVTKalwz+WddcgkSnLau7w5rNtFQH859+NQBj6hCuAnSQuBzU1mThUFpsvhXA0yfEbPr+mL40U7l2JqTnG571BQR+R+aM9sPYuQHp0BOzVNjTSR8vodGszQKXWhtLuuwquyO8nXZQjgc+4qjPKcH0W2oDvW51k7EwOI1xZ5LXvKta7v96r3le8A9o3BLdb2CfPmvgpU1Oft1BbJlI4NLPQmkxMqn6sK7khwZMWz9cxpawhQGe8pg2Ierz/Nis188soVv0v/o3jfWHv0lnergYaYQYoLOwQpy9PedA2SAlM0R2GY7OBp1nP3el2JC9YrwDPIXhkfu
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(396003)(376002)(39860400002)(83380400001)(8676002)(921005)(7416002)(64756008)(66446008)(54906003)(53546011)(7696005)(6506007)(71200400001)(86362001)(52536014)(2906002)(5660300002)(478600001)(76116006)(66556008)(66946007)(7406005)(33656002)(66476007)(110136005)(8936002)(316002)(186003)(4744005)(55016002)(26005)(9686003)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?CYeIwzL7+LDwBcGUtwWpgfGZXas4/+HyoB5dQvzgRXUwabx1wNppES5QTFxT?=
- =?us-ascii?Q?kMs/MvxFLYVZI5XqHFhuJeOq9onZPVWZNgeM1d1TVfokEb23W8IjRI9/kJQ8?=
- =?us-ascii?Q?njDQexyJ0VEFzXOM2fBaNuy8G56NIO9iILmStR8rTXkc+GN1VWuYWqmyqz1p?=
- =?us-ascii?Q?M8UvAerZCHQTENnAamWt49x4NLAfr9FFpZfux/lxafxQafyaTIS3nxDmer6n?=
- =?us-ascii?Q?8JRBu5PudXaoLVCIX5TFxJ9BHaj5MvpPcwnMe9yBtbXqD1lRlqEUUHnvhwfK?=
- =?us-ascii?Q?UIftvmnTQROjFbfkJXhZccpAoL/aq5AS0W+TYV2JB6qHUFtSaFLOv3m+7JSZ?=
- =?us-ascii?Q?KB9qT49sztiW8OklmFBypBXzxVxH+sFpG6dedI3pzoiKl+1l+yv8lx+IHIc0?=
- =?us-ascii?Q?bnPJo+pPjByH83zID56ASid+n3EMXQ+AQvu66L3G8/pfCvGGrwcnjiN+wYuE?=
- =?us-ascii?Q?jgn5p46CJnUPI8fVsBvsOPPQvD6RahqlpOCKp6O2gNqlabFChMaHTa/HtLeg?=
- =?us-ascii?Q?XaXE4rLcbgkaSWEuoLPG8GlN6LNp18Xjm2RS/25dq8vNTwk1NzTSmsv6RRZc?=
- =?us-ascii?Q?IhQ78OnwWHRVLF+ZyQ9faxQPYis+oX25aE/PAdTk/AV3kke9/XNbjlyjz6sQ?=
- =?us-ascii?Q?KIglOzm3XKue4E4mZ/Oc+2YadCcFDjxtp0hf2tyIs9TJL1r/GKvdcThyYVBL?=
- =?us-ascii?Q?wRV66Eex1KUdgrzLeEjXT1fMhAelxL2Wq+SWqiZp6VmrBxF5LExsi7A+978r?=
- =?us-ascii?Q?TGNkHEzmUVLuoOEUMQ5T44Jv1898R9lxeWj4JeItOojNBXT3Tq4OcRsZELf6?=
- =?us-ascii?Q?R1dvqhysFLFxXmuVei/nYnRFepqrdE1rAIghfvG53HAVCMokkzIzD53g+VJu?=
- =?us-ascii?Q?kM1xatRvJtNTqOB350/tIRKqR8GtrILKDN38GJ3VpbZ6v0ZDSUF2VCgTSLt7?=
- =?us-ascii?Q?l91pWwrHQtmycz370urFgVYRNv18k5jQ1qOlRwMHa2D1aKdGKoCKPFMikA/F?=
- =?us-ascii?Q?ocZw?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fdl7GPtsxeMh7s7EVrXO7P1C9iXb8ZW1ZclmtoYnKZY=;
+        b=XRj0OR0yGsv+epSl7d7M4vSTDzOw8TE2P27nx2xkX1druNKB/zY1MLIhPX5bW6xzLD
+         9gt4WvlLpPI2Z1J2sD18aHWuVfycYVSh/xRV0qIJClEPF/Fs1mNtP15zXbVLKzFC1e9K
+         45o705TxRDXsjPcu12SPKb+4/0hp56TX2USuvEdw6bnS1dAbR2HhTGsf8elVBFPFKkJ0
+         sWZ9SbFx/0guJ+yAHlvOGObJoBhPFVMMmZhIDFKy7zgegHpmlReufMXCd9ULz/FaelBU
+         yO1xZKXX2wwPO5S9NaDeEUWiMMAycQ4BL2I3G6GpPwiK+S23Q4F4d8MZFA2YOlUFpGO4
+         C6mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fdl7GPtsxeMh7s7EVrXO7P1C9iXb8ZW1ZclmtoYnKZY=;
+        b=tgVkhgr/qMXVhk0fjAtgVCscrYtBta+RVWModALfn+aITN18Q+abDLVWsXr2kgBeKo
+         0HIb/9bDA4Wp3a7bUVonZmOGb1IwB940q7tIWpgg4cNMOP0HZGZUrYVDdpL8CS+L9gWl
+         pW/6laJ6zJv0ubHjruezGwUhLIGP1Df4qoKIt6pHGp+h65Lf+eKLZRVfWdtaqoewO489
+         ohmE/VlOyYwedykoldwr2SPkfMJKOVidXRz5LVBweSp49oJne9KNHXk9Fhz/iKQRpE66
+         S40slrJbhrDnnXrLbkGNhH7rC/2ntMga7FV/tvjAnbay6YkkHNO+S28FWX0fKm6kcLZL
+         oXPg==
+X-Gm-Message-State: AOAM531m2sGVwz9YvytXoqjcSapsSBo7cAL0amw0UAeUK8/6rZxwU6GE
+        JhO9NYQWcYmteEssEWpk0I6lrpnaNtSg0vZ1dnUGLg==
+X-Google-Smtp-Source: ABdhPJyH7oIaEQKW71m8AcdSV/0MkHA8p+HIJbkVuXa4DFarZGJjRUnv3DcyKqny6axTQffACbeml2kgR+geUdLomYE=
+X-Received: by 2002:a17:90b:e8f:: with SMTP id fv15mr3298625pjb.178.1611113522609;
+ Tue, 19 Jan 2021 19:32:02 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5b4c018-b955-4aff-42d9-08d8bcf3608a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2021 03:27:55.2569
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6GChSPAwRaJR+pnJ/NXEbGatSLvEkK5o5I/huExAKkTALRKQxBWJkWD8S6meD32zVWEaMR/TBIKWTtYqKFHLrIZporw6ZI089anAFL9wihk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4872
+References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
+ <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
+ <20210112234822.GA134064@carbon.dhcp.thefacebook.com> <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
+ <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
+ <20210113184302.GA355124@carbon.dhcp.thefacebook.com> <CALvZod4V3M=P8_Z14asBG8bKa=mYic4_OPLeoz5M7J5tsx=Gug@mail.gmail.com>
+ <CAHbLzkrqX9mJb0E_Y4Q76x=bZpg3RNxKa3k8cG_NiU+++1LWsQ@mail.gmail.com> <CALvZod4Ncf4H8VWgetWoRnOWPT4h+QDK_CY+oK11Q4akcs4Eqw@mail.gmail.com>
+In-Reply-To: <CALvZod4Ncf4H8VWgetWoRnOWPT4h+QDK_CY+oK11Q4akcs4Eqw@mail.gmail.com>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Tue, 19 Jan 2021 19:31:51 -0800
+Message-ID: <CAOFY-A2C4=fWQB69rmP1Ff1Sh=NLCPKT1kD-Lpq29342YJvaWA@mail.gmail.com>
+Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/18/21 21:06, Chaitanya Kulkarni wrote:=0A=
-> Hi,=0A=
->=0A=
-> This is a *compile only RFC* which adds a generic helper to initialize=0A=
-> the various fields of the bio that is repeated all the places in=0A=
-> file-systems, block layer, and drivers.=0A=
->=0A=
-> The new helper allows callers to initialize various members such as=0A=
-> bdev, sector, private, end io callback, io priority, and write hints.=0A=
->=0A=
-> The objective of this RFC is to only start a discussion, this it not =0A=
-> completely tested at all.                                                =
-                                                            =0A=
-> Following diff shows code level benefits of this helper :-=0A=
->  38 files changed, 124 insertions(+), 236 deletions(-)=0A=
->=0A=
-> -ck=0A=
-Thanks for replying Mike, Josef and Christoph.=0A=
-=0A=
-I'll move forward with Christoph's suggestion and get rid of=0A=
-optional parameters which is making this API hard to use.=0A=
+On Wed, Jan 13, 2021 at 11:55 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Wed, Jan 13, 2021 at 11:49 AM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > On Wed, Jan 13, 2021 at 11:13 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Wed, Jan 13, 2021 at 10:43 AM Roman Gushchin <guro@fb.com> wrote:
+> > > >
+> > > > On Tue, Jan 12, 2021 at 04:18:44PM -0800, Shakeel Butt wrote:
+> > > > > On Tue, Jan 12, 2021 at 4:12 PM Arjun Roy <arjunroy@google.com> wrote:
+> > > > > >
+> > > > > > On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
+> > > > > > >
+> > > > > [snip]
+> > > > > > > Historically we have a corresponding vmstat counter to each charged page.
+> > > > > > > It helps with finding accounting/stastistics issues: we can check that
+> > > > > > > memory.current ~= anon + file + sock + slab + percpu + stack.
+> > > > > > > It would be nice to preserve such ability.
+> > > > > > >
+> > > > > >
+> > > > > > Perhaps one option would be to have it count as a file page, or have a
+> > > > > > new category.
+> > > > > >
+> > > > >
+> > > > > Oh these are actually already accounted for in NR_FILE_MAPPED.
+> > > >
+> > > > Well, it's confusing. Can't we fix this by looking at the new page memcg flag?
+> > >
+> > > Yes we can. I am inclined more towards just using NR_FILE_PAGES (as
+> > > Arjun suggested) instead of adding a new metric.
+> >
+> > IMHO I tend to agree with Roman, it sounds confusing. I'm not sure how
+> > people relies on the counter to have ballpark estimation about the
+> > amount of reclaimable memory for specific memcg, but they are
+> > unreclaimable. And, I don't think they are accounted to
+> > NR_ACTIVE_FILE/NR_INACTIVE_FILE, right? So, the disparity between
+> > NR_FILE_PAGES and NR_{IN}ACTIVE_FILE may be confusing either.
+> >
+>
+> Please note that due to shmem/tmpfs there is already disparity between
+> NR_FILE_PAGES and NR_{IN}ACTIVE_FILE.
+>
+> BTW I don't have a strong opinion against adding a new metric. If
+> there is consensus we can add one.
+
+Just wanted to see if there were any thoughts/consensus on what the
+best way to proceed is - should there be a v2 patch with specific
+changes? Or is NR_FILE_PAGES alright?
+
+And similar query, for pre-charging vs. post charging.
+
+Thanks,
+-Arjun
