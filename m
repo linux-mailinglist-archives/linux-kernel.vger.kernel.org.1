@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8880E2FF3A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 933A62FF3A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbhAUSyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46982 "EHLO
+        id S1726925AbhAUSzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbhAUS0A (ORCPT
+        with ESMTP id S1727466AbhAUS0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 13:26:00 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C61BC06178B;
-        Thu, 21 Jan 2021 10:23:28 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id j3so3601086ljb.9;
-        Thu, 21 Jan 2021 10:23:28 -0800 (PST)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355CDC06178C;
+        Thu, 21 Jan 2021 10:23:29 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id m22so3877692lfg.5;
+        Thu, 21 Jan 2021 10:23:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HiatAXu0lWhq9U5RWdBwNxgOQuzIndCSuyRgNWnlqxw=;
-        b=km3VqF/hpIhUAyhOvwRgcpp3F5RsD+yTlIbNRgjmqxiDQsp0SAgsKmf7csQ0Y52CzX
-         uWXZU29hTBPNey4LYf+OmMLFb4o/KNl83KHyXE3pHABYwqUKQ5OhXWZqq7eae6zEvLAE
-         ZOTBhRP2iSl178bFCKmS7BK2WZtInlmVjkPkigbkn08KyQUAVVRnWQSbSMUJ3PU3k3dh
-         BpWREHq+qcjPNAqaRVGS5MPgkssiz84rQE/zBueN5gxgsDWSP6I5aF6WdSjUYLOKmLhu
-         8CgxxM4YHdTzwsWLSAF15EZPB/+QFopaMh1LsAmiFiRSPHIDX/Xk1+CITfmyU5DUKMvS
-         /LTA==
+        bh=o+6Qr9g4GUhZQovcGPL0QQ9GPJLut7iCnnUkdOOvXTs=;
+        b=LKSG5HyJfv+CRE2WARL/dTEnMBsuHMPSYjspr/jwJdGYcK+PHbE2gmUUdGKufEYZrc
+         5QctPpyjUXlbxgks/XoJLk6gi7vtonVv/x6eim6WFZagZuQDKnI/8SC43tXDwZQYWptl
+         Glj0QaPpFrTx4+B2wNGz0BK0ZKzPKCdk2bU1dPV6eiW37Ue8Bd1Kz3ZWfKWoXsRZrPig
+         FAuu0p0dVu6+iA1RHtBJCPqDDMzbd6k4xT9Nt0NuYqyKLbgRE2IYEQ0ogITMlIGCVSGK
+         goiz+KLH7igTlXBStRa43dqKBkemDe8FaUHsG+mKlo8DyC6WkaIeemPVjaibmDy6nX7d
+         50gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HiatAXu0lWhq9U5RWdBwNxgOQuzIndCSuyRgNWnlqxw=;
-        b=PMdTz2IHFuh9RAx28cnic73PlasznpHIcTgvQ7Sf2LPvWAk3PqcQVbrDgCvtLXIjOW
-         s2aKj+yEPNSX6UOr5ic0hzAh9r2+cTzXoWVyTLTEAcrb1b6RB779xZJwUlRQ2bNbegtO
-         uOw7rnTTYDPT59SY2IBTrpsgCN6P7XiKI4YzoxUhRJAvS9Q2RgeL6i8DFsPBu6adRqo7
-         aXcgHxbnRfm91L6zqy+w+/3Hd3SkFR5MlIrHtTRsBGa/fdbMzEPBuZZ8uTWfMmuRcVX6
-         fb8EoTACxsqLxWvEmb6aRm2j82h2UNRxDexa4XBeHtqQlo7nhZqtS+8evNAmisIjeuxi
-         JK1Q==
-X-Gm-Message-State: AOAM532Fu73sevBXSifkBpowJnM9N2l7CsNRBK6+PXTSWk70VztuHMdN
-        Nj0TDwIiMo6AZ9kXsjrW7OI=
-X-Google-Smtp-Source: ABdhPJxvTyXUmbIvvCzC2vplEzsF7W8YCxflTUTxC/031//fWtqZLBqvgcOLJTdOT9kQa50ww4l7hA==
-X-Received: by 2002:a2e:8144:: with SMTP id t4mr299903ljg.9.1611253406853;
-        Thu, 21 Jan 2021 10:23:26 -0800 (PST)
+        bh=o+6Qr9g4GUhZQovcGPL0QQ9GPJLut7iCnnUkdOOvXTs=;
+        b=J/sVO6EO86dIbteR0DKwc6MzFRYgE7e21HvoueDe3vc7BlSyM6qYYgVPNIBxLkgSIP
+         Ngaqli8GcLuxz2AcRxYuiwP3YQBizTH2v1HtqliUCXIkG1Bi/7khkuKLQF8h09sn8H2v
+         gcnxXjbQF1uY+xVQjT5x/61lOuu5czlGAAsANBvvK4OCdvGSlR+WL74aD/00dlsPayGn
+         U97lynBY3I+TCl403NNHbsE97X39ZnzFWVkR+pL/STifYdvNjtd63ty/8gXMr3Me1QP2
+         yjO3Smuh1u7siPIiDXBlvv7N7oQSy1E7a5AixvRJXqTzFVIOh6pL7nOOe4amYwoSzzM2
+         be3g==
+X-Gm-Message-State: AOAM5320eZ7HqTvvaJ0u2/nBmtRRW8EP4TNmn6iphJwiG9vAAlcKf2Ss
+        bwYqM34Bxuq/bSe3ek8sezc=
+X-Google-Smtp-Source: ABdhPJzHJv0Wq+Y78TWtoUAd7eukg1lEtqLwT82rLSQ1dF/iRsvB8HaBJwyCxoJdMvWBxB6maw/EGw==
+X-Received: by 2002:a05:6512:2242:: with SMTP id i2mr211459lfu.573.1611253407792;
+        Thu, 21 Jan 2021 10:23:27 -0800 (PST)
 Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
         by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:23:26 -0800 (PST)
+        Thu, 21 Jan 2021 10:23:27 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -56,9 +56,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 06/13] ARM: tegra: acer-a500: Enable core voltage scaling
-Date:   Thu, 21 Jan 2021 21:23:01 +0300
-Message-Id: <20210121182308.16080-7-digetx@gmail.com>
+Subject: [PATCH v1 07/13] ARM: tegra: acer-a500: Reduce thermal throttling hysteresis to 0.2C
+Date:   Thu, 21 Jan 2021 21:23:02 +0300
+Message-Id: <20210121182308.16080-8-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210121182308.16080-1-digetx@gmail.com>
 References: <20210121182308.16080-1-digetx@gmail.com>
@@ -68,35 +68,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow lower core voltages on Acer A500.
+The 2C hysteresis is a bit too high, although CPU never gets hot on A500.
+Nevertheless, let's reduce thermal throttling hysteresis to 0.2C, which is
+a much more reasonable value.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index 40c1bab22155..8531abf329c6 100644
+index 8531abf329c6..64a303cc5395 100644
 --- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
 +++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -578,7 +578,7 @@ sys_reg: sys {
+@@ -1058,7 +1058,7 @@ trips {
+ 				trip0: cpu-alert0 {
+ 					/* start throttling at 50C */
+ 					temperature = <50000>;
+-					hysteresis = <3000>;
++					hysteresis = <200>;
+ 					type = "passive";
+ 				};
  
- 				vdd_core: sm0 {
- 					regulator-name = "vdd_sm0,vdd_core";
--					regulator-min-microvolt = <1200000>;
-+					regulator-min-microvolt = <950000>;
- 					regulator-max-microvolt = <1300000>;
- 					regulator-coupled-with = <&rtc_vdd &vdd_cpu>;
- 					regulator-coupled-max-spread = <170000 550000>;
-@@ -619,7 +619,7 @@ ldo1 {
- 
- 				rtc_vdd: ldo2 {
- 					regulator-name = "vdd_ldo2,vdd_rtc";
--					regulator-min-microvolt = <1200000>;
-+					regulator-min-microvolt = <950000>;
- 					regulator-max-microvolt = <1300000>;
- 					regulator-coupled-with = <&vdd_core &vdd_cpu>;
- 					regulator-coupled-max-spread = <170000 550000>;
 -- 
 2.29.2
 
