@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254E12FF80B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C162FF815
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbhAUWgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbhAUWgp (ORCPT
+        id S1725831AbhAUWip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:38:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27684 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726182AbhAUWii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:36:45 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3FBC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:35:59 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id e9so2139923plh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:35:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HtagZa2utrgVZ8EO6yL1vWOFCbFLgOv3ljBb8Jq8YdU=;
-        b=Om26hhxJRyeJ93IrXhZROKDhjJ435IRJbXSbYJ9gSBnBiQA9i5yA2UijRT0/ySX5PV
-         9OPjibb0E9cXZ1Zhi3X8QiU1Ul5O2PnP0PrjmfErqKyNyWnciScr6CNCJCClOA4HNcRn
-         pwWXfmVd31iUFZbBBeDsDaPESk6SzLx9Qy0ziyzrOlYYvOkQXZ9aO5qYMcgqFnhmtQ7m
-         4BDdXB1qh6TCVbPzDA2iDzKQJpN6MLBZvXwA4QtV4k0QeEJyfgLy6T65ObT1Mgvb5io+
-         26m2v0/SGWMvU+XgN6S1ONunh7VjIFofo8yN7WJirTCPGpoQ+PdKn7XRBbMtD2BkgWS0
-         tlRA==
+        Thu, 21 Jan 2021 17:38:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611268628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9F4FJm6CxPIzCDPXLeRl1F1UfXVZJLDgPR0BedATtNQ=;
+        b=PJ05dneSll9m1U7TN3pW9qKEuvCktcMKjbvSHdIYfUay0RA3sGCW0fsvjt5lmpDQ5CObdj
+        rIwg4oAkJDz9Ju5jEIZtxNj3lsnb3Rliq8UmZ2LI/KLiRuSqxipx/Q3amZapk9wYlizPZt
+        gO99cpbC6Ny0G2WQOnMXBPz47/twr6E=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-lxl9mlX4OYywnQCTXWdlcA-1; Thu, 21 Jan 2021 17:37:07 -0500
+X-MC-Unique: lxl9mlX4OYywnQCTXWdlcA-1
+Received: by mail-qt1-f200.google.com with SMTP id b8so2437495qtr.18
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:37:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HtagZa2utrgVZ8EO6yL1vWOFCbFLgOv3ljBb8Jq8YdU=;
-        b=OqkOEbJVtYG3BztG7FjNDwlXQfgOKaBTU1fooCMFe7UFyGr5uHAVNMduWklJ3bupIz
-         g5TAbwh+a/rVEoJu8Uvh6aDMPNqs0Jog6ekXRO7tk2vjPotUuwUZQ0DlP+IRbEn4Vpl6
-         ViUsoJzzHKBTMKZP1ptGzieXM0hBgMyM87wXkHy4f2xKccK3LROgj7ZqKbweP6Px8twm
-         7ItqPjDJu+Hwn6CJyqa16Orjm5UVi2CND2mbz5KQN1sRda6rmqo/omB2K17dg8YsI/B4
-         Cdg3sy6kkVkiNPLjSc1C3qQp8V96u+44XIVKBi6BS/xA5+athZH5Sq0D3cVMxJ8E4GBV
-         UnsA==
-X-Gm-Message-State: AOAM531ZnR9D4P4OcYRq5ehwKqF1DQwL+R2eYacL8JPtTaQq2Pl/7uWc
-        eGGhQN7q9eTByJsfoqbP+Tm1uA==
-X-Google-Smtp-Source: ABdhPJy9LJ57DCr4V2SGC+Z1NTqWzTbxrQqJBoge5bsU6nlW8rd+uk0CG9BE7uEtO2imrj7na0H7zA==
-X-Received: by 2002:a17:903:248b:b029:de:9885:d1fa with SMTP id p11-20020a170903248bb02900de9885d1famr1583550plw.77.1611268559000;
-        Thu, 21 Jan 2021 14:35:59 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id j10sm6973556pjy.9.2021.01.21.14.35.57
+        bh=9F4FJm6CxPIzCDPXLeRl1F1UfXVZJLDgPR0BedATtNQ=;
+        b=XwkNmYR/dud5Vy7N3Erm2wtfZqLcERBLPfKljNWILx8n2pXi0Yqu1+H1zvlS7NitBE
+         KL+Nahv0Ia76845pU6GufmIpPJphxcLdX3xhrHaDuU+mqdTTj+t8gam56cJ+ZVIZ5jTP
+         wBtH3Hqs7zZc/kxJYPzYqgK18fwFZdiHYzrrdKxe/Z5u0pOZ5EZxBbzv+EhU3zuFszpt
+         UNZQVmQmpI9JLBfHiIqFieLQHsvob0ZvbXfSuar9VQtpgE02yHlkBbsbRV3K9N9i/MGm
+         srKo5ivXhILRZ11u+AmJM2Yi0C1A+3dQbIDR7/mBlnhhyhQfhWE+WHTdjCraKMLDkS8c
+         Phzw==
+X-Gm-Message-State: AOAM5339U61W98ONDodtlSfOdlnkDUUSxM4CSWI7mXou6Rgh/lSdm4IW
+        WL+l/S4v8Zl0FRRbLQfgXqUK0WphQOjFaivsT/BGK7h8J/KlYlzMKDWVMubYRaagx5Mg09CY4ni
+        V3hq2Ls4prTjJhPDIjfAjinUq
+X-Received: by 2002:ac8:7a82:: with SMTP id x2mr1902818qtr.20.1611268626717;
+        Thu, 21 Jan 2021 14:37:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzF3+w++uI/FnvKRDlQcHOvwzcsjyp5Q8slh4ec0gAIH6IQXOf+SKAUhSC7Vg50ypEzJuOuDQ==
+X-Received: by 2002:ac8:7a82:: with SMTP id x2mr1902784qtr.20.1611268626438;
+        Thu, 21 Jan 2021 14:37:06 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id 203sm4955384qkd.81.2021.01.21.14.37.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 14:35:58 -0800 (PST)
-Date:   Thu, 21 Jan 2021 14:35:51 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kernel test robot <lkp@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 11/19] x86/sev-es: Convert to insn_decode()
-Message-ID: <YAoBx6VPp/eMWHE8@google.com>
-References: <20201223174233.28638-12-bp@alien8.de>
- <202012251838.G6eufP3Q-lkp@intel.com>
- <20201225123334.GA5874@zn.tnic>
- <X+ouv0PN6dmva92i@google.com>
- <20210121165845.GD32060@zn.tnic>
+        Thu, 21 Jan 2021 14:37:05 -0800 (PST)
+Date:   Thu, 21 Jan 2021 17:37:03 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH 0/9] userfaultfd: add minor fault handling
+Message-ID: <20210121223703.GH260413@xz-x1>
+References: <20210115190451.3135416-1-axelrasmussen@google.com>
+ <20210121191241.GG260413@xz-x1>
+ <CAJHvVch3iK_UcwpwL5p3LWQAZo_iyLMVxsMTf_GCAStqoQxmTA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210121165845.GD32060@zn.tnic>
+In-Reply-To: <CAJHvVch3iK_UcwpwL5p3LWQAZo_iyLMVxsMTf_GCAStqoQxmTA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021, Borislav Petkov wrote:
-> On Mon, Dec 28, 2020 at 11:15:11AM -0800, Sean Christopherson wrote:
-> > Alternatively, could the kernel case use insn_decode_regs()?  If
-> > vc_fetch_insn_kernel() were also modified to mirror insn_fetch_from_user(), the
-> > two code paths could be unified except for the the fetch and the PFEC.  E.g.
+On Thu, Jan 21, 2021 at 02:13:50PM -0800, Axel Rasmussen wrote:
+> When I wrote this, my thinking was that users of this feature would
+> have two mappings, one of which is not UFFD registered at all. So, to
+> replace the existing page contents, userspace would just write to the
+> non-UFFD mapping (with memcpy() or whatever else, or we could get
+> fancy and imagine using some RDMA technology to copy the page over the
+> network from the live migration source directly in place). After
+> performing the write, we just UFFDIO_CONTINUE.
 > 
-> Personal Firearms Eligibility Check?
+> I believe FALLOC_FL_PUNCH_HOLE / MADV_REMOVE doesn't work with
+> hugetlbfs? Once shmem support is implemented, I would expect
+> FALLOC_FL_PUNCH_HOLE + UFFDIO_COPY to work, but I wonder if such an
+> operation would be more expensive than just copying using the other
+> side of the shared mapping?
 
-Ha, Page Fault Error Code.
+IIUC hugetlb supports that (hugetlbfs_punch_hole()).  But I agree with you on
+what you said should be good enough.  Thanks,
 
-> In any case, I prefer simple, easy to follow code at a quick glance.
-> Stuff like...
-> 
-> > 
-> > static int vc_fetch_insn_kernel(struct es_em_ctxt *ctxt,
-> > 				unsigned char *buffer)
-> > {
-> > 	if (copy_from_kernel_nofault(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE))
-> > 		return 0;
-> > 
-> > 	return MAX_INSN_SIZE;
-> > }
-> > 
-> > static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
-> > {
-> > 	char buffer[MAX_INSN_SIZE];
-> > 	int nbytes;
-> > 
-> > 	if (user_mode(ctxt->regs))
-> > 		nbytes = insn_fetch_from_user(ctxt->regs, buffer);
-> > 	else
-> > 		nbytes = vc_fetch_insn_kernel(ctxt, buffer);
-> > 
-> > 	if (!nbytes) {
-> > 		ctxt->fi.vector     = X86_TRAP_PF;
-> > 		ctxt->fi.error_code = X86_PF_INSTR;
-> > 		if (user_mode(ctxt->regs))
-> 
-> ... this second repeated check here is not what I would call that.
+-- 
+Peter Xu
 
-But then you're stuck maintaining two separate flows that do the same thing.
-
-> But this is my personal preference only so it's up for a vote now.
-
-Rock Paper Scissors?
