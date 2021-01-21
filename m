@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422C92FF5ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F77B2FF602
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727306AbhAUUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:33:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55108 "EHLO mail.kernel.org"
+        id S1727305AbhAUUgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:36:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727114AbhAUUcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:32:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88D37230F9;
-        Thu, 21 Jan 2021 20:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611261098;
-        bh=dTC+Fvj5l3NJgeQEFALnCpXRbWU1+9WuIGk8hQ4mUi8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uTRkv1dnnEpfEgY6zS7wtjYvvzVb0JSz2GGN50rWaYkCASH9Lj/cSYNafrxEzvYbM
-         v76gy2G/l5yk1KZt1fhJvER+bcmJ7G/ICROoJhGLdOzoiL2+KtT6mmUFxEy08IGM+d
-         x0rKF5A00s1njOjO1BvapLJgZ1LLARequfaG+umGjbGUUvrcUlgIF6BGMsVVP82Kw/
-         0NbBoVoTkgSWKY2sRvnIS5NOSyPhvVYNEO8eERLxy50rcJJH+nsj9qCHwfoxR0VR1T
-         HGkLbWGa5wneZ2Rw8QXIM09vigSxyo8HJN4cdx+UE6wPE11xsGVcuGR+ykoOdHGf2k
-         aVGZhR0Fsc+Lg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 717F640513; Thu, 21 Jan 2021 17:31:36 -0300 (-03)
-Date:   Thu, 21 Jan 2021 17:31:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "irogers@google.com" <irogers@google.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
-Message-ID: <20210121203136.GD356537@kernel.org>
-References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
- <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <b25f0861-1cec-3ac8-a0ef-8e9e94c4e662@huawei.com>
- <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
- <DB8PR04MB67951BF5DBE4524CB13BAAE4E6A20@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <c3d8d635-33ab-8d7e-6efc-6a589aebeb52@huawei.com>
+        id S1726840AbhAUUfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:35:46 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F83A230F9;
+        Thu, 21 Jan 2021 20:35:05 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l2gfX-009HND-HV; Thu, 21 Jan 2021 20:35:03 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 0/2] irqchip: Remove obsolete drivers
+Date:   Thu, 21 Jan 2021 20:34:59 +0000
+Message-Id: <161126112131.135928.3923425882090490812.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210120133008.2421897-1-arnd@kernel.org>
+References: <20210120133008.2421897-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3d8d635-33ab-8d7e-6efc-6a589aebeb52@huawei.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: arnd@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, arnd@arndb.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jan 20, 2021 at 09:15:54AM +0000, John Garry escreveu:
-> On 20/01/2021 05:15, Joakim Zhang wrote:
-> > For this patch: Tested-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+On Wed, 20 Jan 2021 14:30:06 +0100, Arnd Bergmann wrote:
+> A few Arm platforms are getting removed in v5.12, this removes
+> the corresponding irqchip drivers.
+> 
+> Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
+> 
+> 
+> Arnd Bergmann (2):
+>   irqchip: remove sigma tango driver
+>   irqchip: remove sirfsoc driver
+> 
+> [...]
 
-> > Hi John, Jolsa,
+Applied to irq/irqchip-5.12, thanks!
 
-> > Is there any way to avoid breaking exist metric expressions? If not, it will always happened after metricgroup changes.
- 
-> They are not normally broken like that. Normally we test beforehand, but
-> these cases were missed here by me. However if you were testing them
-> previously, then it would be expected that you had tested them again for the
-> final patchset which was merged.
- 
-> Anyway, we can look to add metric tests for these.
- 
-> @Arnaldo, I will send separate formal patch for this today.
+[1/2] irqchip: remove sigma tango driver
+      commit: 00e772c4929257b11b51d47e4645f67826ded0fc
+[2/2] irqchip: remove sirfsoc driver
+      commit: 5c1ea0d842b1e73ae04870527ec29d5479c35041
 
-Hi John, can you please take a look at my tmp.perf/urgent branch and see
-if all is well, i.e. the versions of these patches are the ones that
-should be merged and that all the patches discussed are there?
+Cheers,
 
-For your convenience:
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf/urgent
 
-Thanks,
-
-- Arnaldo
