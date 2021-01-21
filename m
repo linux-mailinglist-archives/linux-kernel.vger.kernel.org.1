@@ -2,693 +2,462 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFCA2FE8FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA042FE90C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730650AbhAULjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730331AbhAULYq (ORCPT
+        id S1728411AbhAULk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:40:58 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:53840 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730687AbhAULka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:24:46 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502EAC0613D6;
-        Thu, 21 Jan 2021 03:24:06 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id i7so1151342pgc.8;
-        Thu, 21 Jan 2021 03:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xr9hppALzWU7g8HyX8Rk8vddTHz9Erp2c4aMhr1zgzE=;
-        b=sM4M9g/co939bC2ZcjkgIlmBjoW0bkJHQoYacyB4lhI37J4ZbMjQ+w1OVIrsxeBQkG
-         jVO2+mlTYW0Q4jrsofxUdQOnJ5wDO9dfYyXkqpqoN7F7hLw4ziSU5GHrV4mZxozabFDb
-         RbVjkGIuo/ThIZI0BDTqzH5c7q6+pWF0BtbQuaRkBMxjlasO6isLBuAcSDmSFsrEDX0G
-         pyd22hrFpFg+1sXR5Dz9gwoeTXMP9KZhfR0v1hkutVYxw3+fkGXQ48kUG6uRA0L02mw/
-         5hIQozrq5WR3Kl/a6tHEQ8JirN/5oaye7yd51/sWKhK5eUkr/q9mCPOhMGQbHgaUtlD8
-         eEzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xr9hppALzWU7g8HyX8Rk8vddTHz9Erp2c4aMhr1zgzE=;
-        b=RfninkqM+TQocPB9ajTYE28TMPZU+jQyMPiuE2X/6EOKupPmIGoNvNipjl2ekmdVlk
-         zHrnmx/2Psn7hkFUkTqXCRX4CM9PVo2TCNJygbUPS31gURh+DNU111/Mr6Sfasf8VfmL
-         lmzdCOq9UUN6sspsFCOPqol/YIwIDAbqYucVqnzqhutbOGPHqQt6Xw6YFWzs5pVcWTqq
-         UvvFX99xLyAaWckU7YOvfvX2dnaYtIZKnoxzAU1NrLUgX3SZ4xxOXFURBOsvK+BSaooN
-         GFmJQ3XMt4qX4k7Brvf+GMc6ZXIqJm9kxW1DmdChd1wabhdMU29GstcbAgvTH5Pv4NCb
-         kPZA==
-X-Gm-Message-State: AOAM530JvCfgb3yCvXx6Nj+52qKBX9hjvfuhgSifT1o5G6FtL/CvdQbU
-        PfhQqtxHW7hlmPI0ELeoa8M=
-X-Google-Smtp-Source: ABdhPJwsj1nfkLnAvHbIVtE/l+tLoz3BffYkC/gr+n7zpQoFn8ilx8qc9DATh5Dzo1DLcReJQE9iGw==
-X-Received: by 2002:aa7:80d8:0:b029:1ae:6ac5:5324 with SMTP id a24-20020aa780d80000b02901ae6ac55324mr13711561pfn.1.1611228245746;
-        Thu, 21 Jan 2021 03:24:05 -0800 (PST)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id me5sm5404797pjb.19.2021.01.21.03.24.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 03:24:05 -0800 (PST)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        Kevin Tang <kevin.tang@unisoc.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH v1 2/2] iommu: add Unisoc iommu basic driver
-Date:   Thu, 21 Jan 2021 19:23:49 +0800
-Message-Id: <20210121112349.421464-3-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121112349.421464-1-zhang.lyra@gmail.com>
-References: <20210121112349.421464-1-zhang.lyra@gmail.com>
+        Thu, 21 Jan 2021 06:40:30 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210121113931epoutp032bb8d2a36f2eef3b3b5c66b4ccc91381~cPGUnjmZs2127021270epoutp03-
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:39:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210121113931epoutp032bb8d2a36f2eef3b3b5c66b4ccc91381~cPGUnjmZs2127021270epoutp03-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611229171;
+        bh=xjsaCtkvJnwpBORibxMFzr9mrFt7A7Jl3lQs0qUkz74=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SA4rHnOz2AHsTDQgPcgiZpJjKQrqi3g8Y/rPWYCreArQuiIeRQEErqMIVwqa5QU7E
+         Dc2GHq6AjeiMFuby7wtnglaEIZw1ATNS9AwnsS8m2TWCHuyR2k8EQ3E09XaeI9kF2P
+         4ymWUSDwk2W1ga1NYoNGRY9l5XoiRpHOJblfD3Zo=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210121113930epcas1p2af7ddc9578527173515dffd80ee96631~cPGTky9770600906009epcas1p2B;
+        Thu, 21 Jan 2021 11:39:30 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DM0mK3KPYz4x9Q2; Thu, 21 Jan
+        2021 11:39:29 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E4.05.63458.1F769006; Thu, 21 Jan 2021 20:39:29 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210121113928epcas1p13c9dd6d1322979a977f24ded689b38de~cPGRdeGRz0675106751epcas1p1Z;
+        Thu, 21 Jan 2021 11:39:28 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210121113928epsmtrp2aa0d3e15b4c3e5b5d6565417b864e05f~cPGRcWYAf1777017770epsmtrp2J;
+        Thu, 21 Jan 2021 11:39:28 +0000 (GMT)
+X-AuditID: b6c32a36-6c9ff7000000f7e2-f2-600967f1241a
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E5.A4.08745.0F769006; Thu, 21 Jan 2021 20:39:28 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210121113928epsmtip2a63968e34a88abec2ca6764a4d7ae590~cPGRMLNSh2137021370epsmtip2n;
+        Thu, 21 Jan 2021 11:39:28 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     damien.lemoal@wdc.com
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, mj0123.lee@samsung.com,
+        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+Subject: Re: [PATCH v2] bio: limit bio max size 
+Date:   Thu, 21 Jan 2021 20:24:08 +0900
+Message-Id: <20210121112408.31039-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <7e3d12129d488a45e6117e311e38d41d276b1549.camel@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGJsWRmVeSWpSXmKPExsWy7bCmru7HdM4Eg44JghZzVm1jtFh9t5/N
+        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
+        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
+        bB7v911l8+jbsorR4/MmOY/2A91MARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqG
+        lhbmSgp5ibmptkouPgG6bpk5QN8oKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoM
+        DQr0ihNzi0vz0vWS83OtDA0MjEyBKhNyMi5+O81acDWxoqX7IEsD4w+XLkZODgkBE4mP/16z
+        dzFycQgJ7GCUeLxwLTOE84lRYsKc04wgVUICnxkl5i5U7mLkAOuY+lISomYXo8T+cx2MEA5Q
+        zc+HM9lAGtgEdCT63t4Cs0UEJCVOvfzCBlLELLCPWeLTlmesIAlhAQOJhk9PwIpYBFQllt5/
+        CLaNV8BaYs7MSYwQ98lLPO1dzgxicwq4Sny71AVVIyhxcuYTFhCbGaimeetssLMlBK5wSJz9
+        Mhmq2UXi0PNbrBC2sMSr41vYIWwpic/v9rJBNHQzSjS3zWeEcCYwSix5vowJospY4tPnz4wg
+        TzMLaEqs36UPEVaU2Pl7LiPEZj6Jd197WCHhwivR0SYEUaIicablPjPMrudrd0JN9JBYOr8D
+        Gr4zGCXOHn/OOIFRYRaSh2YheWgWwuYFjMyrGMVSC4pz01OLDQuMkON4EyM4gWuZ7WCc9PaD
+        3iFGJg7GQ4wSHMxKIryPLDkShHhTEiurUovy44tKc1KLDzGaAoN7IrOUaHI+MIfklcQbmhoZ
+        GxtbmJiZm5kaK4nzJho8iBcSSE8sSc1OTS1ILYLpY+LglGpgYthmqaWfwJI48X9wGsv1a3N/
+        VscIs6QUVLTs/Je5IHzFwo2y/wICO/s8ZX+n8+3JrxH7Hv4p4uLy58HdmlK54cWxTCUxj9JT
+        Ag43TprHZ+rvqnigIjry+Hb1nep71tawVW+4v7fvxr2G/KqmxFPr97gnmVznWmv8RcbRJ0Ui
+        SIVlyvnZTkaLFR6mGtgb7dYw/uMsdJDh3lOhbGnrsPC5ro3XTeQ49pv9Ov5Vj/PM38l7bS1f
+        PboX/v/pM3+ZB7xVIYFXig/p6xptmmmy8rGg3d5zN76fcbxdZLJS2qO2SiVpEk9qSblGr8Gj
+        n+EuLNOLnHSullblqdcvM7E74rR0Us3Kd1ZvPv9tLK2NdVJiKc5INNRiLipOBABDsE+uaQQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphkeLIzCtJLcpLzFFi42LZdlhJXvdDOmeCwc3lwhZzVm1jtFh9t5/N
+        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
+        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
+        bB7v911l8+jbsorR4/MmOY/2A91MARxRXDYpqTmZZalF+nYJXBkXv51mLbiaWNHSfZClgfGH
+        SxcjB4eEgInE1JeSXYxcHEICOxgllm7tZO9i5ASKS0kcP/GWFaJGWOLw4WKImo+MEo0dz5lA
+        atgEdCT63t5iA7FFBCQlTr38wgZSxCxwhVli88eZjCAJYQEDiYZPT8CKWARUJZbefwgW5xWw
+        lpgzcxIjxDJ5iae9y5lBbE4BV4lvl7oYQRYLCbhInJiWBlEuKHFy5hMWEJsZqLx562zmCYwC
+        s5CkZiFJLWBkWsUomVpQnJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERxhWlo7GPes+qB3iJGJ
+        g/EQowQHs5II7yNLjgQh3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbB
+        ZJk4OKUamAqTPLRYHm0PXM29ylJVWsrAXk+iriXB9KRPo2G46wdnzXI7KXbDIwtqXm5/ciZF
+        LLti74Urv/T+as2xtxTfaJqboma1qThwue3sgk3OJr//Xa9NO8eruHL6+cVzhK/2+2VXHnyp
+        dTE4sFL2M4+qSPSCIwXsHiEfl/Xfu3Yud+a22RYvVk551ZGpqTNF7OqHXTV/A33V+V8UPw7f
+        sjn+hjBTsvkrdt4036TWOxIT5yvOKo/41v/g1Bu5WX8mi0b+Lch98IW11EY2YdfNVXXuc3+d
+        4Pm6ZuW2aRWcm+qLby5Pbl39o8rl4n8dj/0uW+t3XFhi4+9S2fpl2s7TezO1W/h0q+UOzEyM
+        f5xqzCvvr8RSnJFoqMVcVJwIAABwuu4fAwAA
+X-CMS-MailID: 20210121113928epcas1p13c9dd6d1322979a977f24ded689b38de
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210121113928epcas1p13c9dd6d1322979a977f24ded689b38de
+References: <7e3d12129d488a45e6117e311e38d41d276b1549.camel@wdc.com>
+        <CGME20210121113928epcas1p13c9dd6d1322979a977f24ded689b38de@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> On Thu, 2021-01-21 at 18:36 +0900, Changheun Lee wrote:
+> > > Please drop the "." at the end of the patch title.
+> > > 
+> > > > bio size can grow up to 4GB when muli-page bvec is enabled.
+> > > > but sometimes it would lead to inefficient behaviors.
+> > > > in case of large chunk direct I/O, - 32MB chunk read in user space -
+> > > > all pages for 32MB would be merged to a bio structure if memory address
+> > > > is
+> > > > continued phsycally. it makes some delay to submit until merge complete.
+> > > 
+> > > s/if memory address is continued phsycally/if the pages physical addresses
+> > > are
+> > > contiguous/
+> > > 
+> > > > bio max size should be limited as a proper size.
+> > > 
+> > > s/as/to/
+> > 
+> > Thank you for advice. :)
+> > 
+> > > 
+> > > > 
+> > > > When 32MB chunk read with direct I/O option is coming from userspace,
+> > > > kernel behavior is below now. it's timeline.
+> > > > 
+> > > >  | bio merge for 32MB. total 8,192 pages are merged.
+> > > >  | total elapsed time is over 2ms.
+> > > >  |------------------ ... ----------------------->|
+> > > >                                                  | 8,192 pages merged a
+> > > > bio.
+> > > >                                                  | at this time, first
+> > > > bio submit is done.
+> > > >                                                  | 1 bio is split to 32
+> > > > read request and issue.
+> > > >                                                  |--------------->
+> > > >                                                   |--------------->
+> > > >                                                    |--------------->
+> > > >                                                               ......
+> > > >                                                                    |-----
+> > > > ---------->
+> > > >                                                                     |----
+> > > > ----------->|
+> > > >                           total 19ms elapsed to complete 32MB read done
+> > > > from device. |
+> > > > 
+> > > > If bio max size is limited with 1MB, behavior is changed below.
+> > > > 
+> > > >  | bio merge for 1MB. 256 pages are merged for each bio.
+> > > >  | total 32 bio will be made.
+> > > >  | total elapsed time is over 2ms. it's same.
+> > > >  | but, first bio submit timing is fast. about 100us.
+> > > >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+> > > >       | 256 pages merged a bio.
+> > > >       | at this time, first bio submit is done.
+> > > >       | and 1 read request is issued for 1 bio.
+> > > >       |--------------->
+> > > >            |--------------->
+> > > >                 |--------------->
+> > > >                                       ......
+> > > >                                                  |--------------->
+> > > >                                                   |--------------->|
+> > > >         total 17ms elapsed to complete 32MB read done from device. |
+> > > > 
+> > > > As a result, read request issue timing is faster if bio max size is
+> > > > limited.
+> > > > Current kernel behavior with multipage bvec, super large bio can be
+> > > > created.
+> > > > And it lead to delay first I/O request issue.
+> > > > 
+> > > > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> > > > 
+> > > > ---
+> > > >  block/bio.c               | 17 ++++++++++++++++-
+> > > >  include/linux/bio.h       | 13 +++----------
+> > > >  include/linux/blk_types.h |  1 +
+> > > >  3 files changed, 20 insertions(+), 11 deletions(-)
+> > > > 
+> > > > diff --git a/block/bio.c b/block/bio.c
+> > > > index 1f2cc1fbe283..027503c2e2e7 100644
+> > > > --- a/block/bio.c
+> > > > +++ b/block/bio.c
+> > > > @@ -284,9 +284,24 @@ void bio_init(struct bio *bio, struct bio_vec
+> > > > *table,
+> > > >  
+> > > >  	bio->bi_io_vec = table;
+> > > >  	bio->bi_max_vecs = max_vecs;
+> > > > +	bio->bi_max_size = UINT_MAX;
+> > > >  }
+> > > >  EXPORT_SYMBOL(bio_init);
+> > > >  
+> > > > +void bio_set_dev(struct bio *bio, struct block_device *bdev)
+> > > > +{
+> > > > +	if (bio->bi_disk != bdev->bd_disk)
+> > > > +		bio_clear_flag(bio, BIO_THROTTLED);
+> > > > +
+> > > > +	bio->bi_disk = bdev->bd_disk;
+> > > > +	bio->bi_partno = bdev->bd_partno;
+> > > > +	bio->bi_max_size = blk_queue_get_max_sectors(bio->bi_disk-
+> > > > >queue,
+> > > > +			bio_op(bio)) << SECTOR_SHIFT;
+> > > > +
+> > > > +	bio_associate_blkg(bio);
+> > > > +}
+> > > > +EXPORT_SYMBOL(bio_set_dev);
+> > > > +
+> > > >  /**
+> > > >   * bio_reset - reinitialize a bio
+> > > >   * @bio:	bio to reset
+> > > > @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct
+> > > > page *page,
+> > > >  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+> > > >  
+> > > >  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> > > > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> > > > +			if (bio->bi_iter.bi_size > bio->bi_max_size -
+> > > > len)
+> > > >  				*same_page = false;
+> > > >  				return false;
+> > > >  			}
+> > > > diff --git a/include/linux/bio.h b/include/linux/bio.h
+> > > > index 1edda614f7ce..b9803e80c259 100644
+> > > > --- a/include/linux/bio.h
+> > > > +++ b/include/linux/bio.h
+> > > > @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned
+> > > > len)
+> > > >  	if (bio->bi_vcnt >= bio->bi_max_vecs)
+> > > >  		return true;
+> > > >  
+> > > > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> > > > +	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
+> > > >  		return true;
+> > > >  
+> > > >  	return false;
+> > > > @@ -482,20 +482,13 @@ extern struct bio_vec *bvec_alloc(gfp_t, int,
+> > > > unsigned long *, mempool_t *);
+> > > >  extern void bvec_free(mempool_t *, struct bio_vec *, unsigned int);
+> > > >  extern unsigned int bvec_nr_vecs(unsigned short idx);
+> > > >  extern const char *bio_devname(struct bio *bio, char *buffer);
+> > > > -
+> > > > -#define bio_set_dev(bio, bdev) 			\
+> > > > -do {						\
+> > > > -	if ((bio)->bi_disk != (bdev)->bd_disk)	\
+> > > > -		bio_clear_flag(bio, BIO_THROTTLED);\
+> > > > -	(bio)->bi_disk = (bdev)->bd_disk;	\
+> > > > -	(bio)->bi_partno = (bdev)->bd_partno;	\
+> > > > -	bio_associate_blkg(bio);		\
+> > > > -} while (0)
+> > > > +extern void bio_set_dev(struct bio *bio, struct block_device *bdev);
+> > > >  
+> > > >  #define bio_copy_dev(dst, src)			\
+> > > >  do {						\
+> > > >  	(dst)->bi_disk = (src)->bi_disk;	\
+> > > >  	(dst)->bi_partno = (src)->bi_partno;	\
+> > > > +	(dst)->bi_max_size = (src)->bi_max_size;\
+> > > >  	bio_clone_blkg_association(dst, src);	\
+> > > >  } while (0)
+> > > >  
+> > > > diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+> > > > index 866f74261b3b..e5dd5b7d8fc1 100644
+> > > > --- a/include/linux/blk_types.h
+> > > > +++ b/include/linux/blk_types.h
+> > > > @@ -270,6 +270,7 @@ struct bio {
+> > > >  	 */
+> > > >  
+> > > >  	unsigned short		bi_max_vecs;	/* max bvl_vecs we can
+> > > > hold */
+> > > > +	unsigned int		bi_max_size;	/* max data size we can
+> > > > hold */
+> > > >  
+> > > >  	atomic_t		__bi_cnt;	/* pin count */
+> > > 
+> > > This modification comes at the cost of increasing the bio structure size to
+> > > simply tell the block layer "do not delay BIO splitting"...
+> > > 
+> > > I think there is a much simpler approach. What about:
+> > > 
+> > > 1) Use a request queue flag to indicate "limit BIO size"
+> > > 2) modify __bio_try_merge_page() to look at that flag to disallow page
+> > > merging
+> > > if the bio size exceeds blk_queue_get_max_sectors(), or more ideally a
+> > > version
+> > > of it that takes into account the bio start sector.
+> > > 3) Set the "limit bio size" queue flag in the driver of the device that
+> > > benefit
+> > > from this change. Eventually, that could also be controlled through sysfs.
+> > > 
+> > > With such change, you will get the same result without having to increase
+> > > the
+> > > BIO structure size.
+> > 
+> > I have a qustion.
+> > Is adding new variable in bio not possible?
+> 
+> It is possible, but since it is a critical kernel resource used a lot, keeping
+> it as small as possible for performance reasons is strongly desired. So if
+> there is a coding scheme that can avoid increasing struct bio size, it should
+> be explored first and discarded only with very good reasons.
 
-This patch only adds display iommu support, the driver was tested with sprd
-dpu and image codec processor.
+I see your point.
+I agree with you. it's important thing. :)
 
-The iommu support for others would be added once finished tests with those
-devices, such as a few signal processors, including VSP(video),
-GSP(graphic), ISP(image), and camera CPP, etc.
+> 
+> > Additional check for every page merge like as below is inefficient I think.
+> 
+> For the general case of devices that do not care about limiting the bio size
+> (like now), this will add one boolean evaluation (queue flag test). That's it.
+> For your case, sure you now have 2 boolean evals instead of one. But that must
+> be put in perspective with the cost of increasing the bio size.
+> 
+> > 
+> > bool __bio_try_merge_page(struct bio *bio, struct page *page,
+> > 		unsigned int len, unsigned int off, bool *same_page)
+> > {
+> > 	...
+> > 		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> > 			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> > 				*same_page = false;
+> > 				return false;
+> > 			}
+> > 
+> > +			if (blk_queue_limit_bio_max_size(bio) &&
+> > +			   (bio->bi_iter.bi_size >
+> > blk_queue_get_bio_max_size(bio) - len)) {
+> > +				*same_page = false;
+> > +				return false;
+> > +			}
+> > 
+> > 			bv->bv_len += len;
+> > 			bio->bi_iter.bi_size += len;
+> > 			return true;
+> > 		}
+> > 	...
+> > }
+> > 
+> > 
+> > static inline bool bio_full(struct bio *bio, unsigned len)
+> > {
+> > 	...
+> > 	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> > 		return true;
+> > 
+> > +	if (blk_queue_limit_bio_max_size(bio) &&
+> > +	   (bio->bi_iter.bi_size > blk_queue_get_bio_max_size(bio) - len))
+> > +		return true;
+> > 	...
+> > }
+> > 
+> > 
+> > Page merge is CPU-bound job as you said.
+> > How about below with adding of bi_max_size in bio?
+> 
+> I am not a fan of adding a bio field for using it only in one place.
+> This is only my opinion. I will let others comment about this, but personnally
+> I would rather do something like this:
+> 
+> #define blk_queue_limit_bio_merge_size(q) \
+> test_bit(QUEUE_FLAG_LIMIT_MERGE, &(q)->queue_flags)
+> 
+> static inline unsigned int bio_max_merge_size(struct bio *bio)
+> {
+> struct request_queue *q = bio->bi_disk->queue;
+> 
+> if (blk_queue_limit_bio_merge_size(q))
+> return blk_queue_get_max_sectors(q, bio_op(bio))
+> << SECTOR_SHIFT;
+> return UINT_MAX;
+> }
+> 
+> and use that helper in __bio_try_merge_page(), e.g.:
+> 
+> if (bio->bi_iter.bi_size > bio_max_merge_size(bio) - len) {
+> *same_page = false;
+> return false;
+> }
+> 
+> No need to change the bio struct.
+> 
+> If you measure performance with and without this change on nullblk, you can
+> verify if it has any impact for regular devices. And for your use case, that
+> should give you the same performance.
+> 
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+OK. I'll wait others comment too for a few days.
+I'll prepare v3 patch as you like if there are no feedback. :)
+v2 patch has a compile error already by my misstyping. :(
+
+> > 
+> > bool __bio_try_merge_page(struct bio *bio, struct page *page,
+> > 		unsigned int len, unsigned int off, bool *same_page)
+> > {
+> > 	...
+> > 		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> > +			if (bio->bi_iter.bi_size > bio->bi_max_size - len) {
+> > 				*same_page = false;
+> > 				return false;
+> > 			}
+> > 
+> > 			bv->bv_len += len;
+> > 			bio->bi_iter.bi_size += len;
+> > 			return true;
+> > 		}
+> > 	...
+> > }
+> > 
+> > 
+> > static inline bool bio_full(struct bio *bio, unsigned len)
+> > {
+> > 	...
+> > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> > +	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
+> > 		return true;
+> > 	...
+> > }
+> > 
+> > +void bio_set_dev(struct bio *bio, struct block_device *bdev)
+> > +{
+> > +	if (bio->bi_disk != bdev->bd_disk)
+> > +		bio_clear_flag(bio, BIO_THROTTLED);
+> > +
+> > +	bio->bi_disk = bdev->bd_disk;
+> > +	bio->bi_partno = bdev->bd_partno;
+> > +	if (blk_queue_limit_bio_max_size(bio))
+> > +		bio->bi_max_size = blk_queue_get_bio_max_size(bio);
+> > +
+> > +	bio_associate_blkg(bio);
+> > +}
+> > +EXPORT_SYMBOL(bio_set_dev);
+> > 
+> > > -- 
+> > > Damien Le Moal
+> > > Western Digital Research
+> > 
+> > ---
+> > Changheun Lee
+> > Samsung Electronics
+> 
+> -- 
+> Damien Le Moal
+> Western Digital
+> 
+
 ---
- drivers/iommu/Kconfig      |  12 +
- drivers/iommu/Makefile     |   1 +
- drivers/iommu/sprd-iommu.c | 566 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 579 insertions(+)
- create mode 100644 drivers/iommu/sprd-iommu.c
-
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 192ef8f61310..79af62c519ae 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -408,4 +408,16 @@ config VIRTIO_IOMMU
- 
- 	  Say Y here if you intend to run this kernel as a guest.
- 
-+config SPRD_IOMMU
-+	tristate "Unisoc IOMMU Support"
-+	depends on ARCH_SPRD || COMPILE_TEST
-+	select IOMMU_API
-+	help
-+	  Support for IOMMU on Unisoc's SoCs on which multi-media subsystems
-+	  need IOMMU, such as DPU, Image codec(jpeg) processor, and a few
-+	  signal processors, including VSP(video), GSP(graphic), ISP(image), and
-+	  CPP, etc.
-+
-+	  Say Y here if you want multi-media functions.
-+
- endif # IOMMU_SUPPORT
-diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-index 61bd30cd8369..5925b6af2123 100644
---- a/drivers/iommu/Makefile
-+++ b/drivers/iommu/Makefile
-@@ -28,3 +28,4 @@ obj-$(CONFIG_S390_IOMMU) += s390-iommu.o
- obj-$(CONFIG_HYPERV_IOMMU) += hyperv-iommu.o
- obj-$(CONFIG_VIRTIO_IOMMU) += virtio-iommu.o
- obj-$(CONFIG_IOMMU_SVA_LIB) += iommu-sva-lib.o
-+obj-$(CONFIG_SPRD_IOMMU) += sprd-iommu.o
-diff --git a/drivers/iommu/sprd-iommu.c b/drivers/iommu/sprd-iommu.c
-new file mode 100644
-index 000000000000..44cde44017fa
---- /dev/null
-+++ b/drivers/iommu/sprd-iommu.c
-@@ -0,0 +1,566 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Unisoc IOMMU driver
-+ *
-+ * Copyright (C) 2020 Unisoc, Inc.
-+ * Author: Chunyan Zhang <chunyan.zhang@unisoc.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/dma-iommu.h>
-+#include <linux/errno.h>
-+#include <linux/iommu.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/slab.h>
-+
-+/* SPRD IOMMU page is 4K size alignment */
-+#define SPRD_IOMMU_PAGE_SHIFT	12
-+#define SPRD_IOMMU_PAGE_SIZE	SZ_4K
-+
-+#define SPRD_EX_CFG		0x0
-+#define SPRD_IOMMU_VAOR_BYPASS	BIT(4)
-+#define SPRD_IOMMU_GATE_EN	BIT(1)
-+#define SPRD_IOMMU_EN		BIT(0)
-+#define SPRD_EX_UPDATE		0x4
-+#define SPRD_EX_FIRST_VPN	0x8
-+#define SPRD_EX_VPN_RANGE	0xc
-+#define SPRD_EX_FIRST_PPN	0x10
-+#define SPRD_EX_DEFAULT_PPN	0x14
-+
-+#define SPRD_IOMMU_VERSION	0x0
-+#define SPRD_VERSION_MASK	GENMASK(15, 8)
-+#define SPRD_VERSION_SHIFT	0x8
-+#define SPRD_VAU_CFG		0x4
-+#define SPRD_VAU_UPDATE		0x8
-+#define SPRD_VAU_AUTH_CFG	0xc
-+#define SPRD_VAU_FIRST_PPN	0x10
-+#define SPRD_VAU_DEFAULT_PPN_RD	0x14
-+#define SPRD_VAU_DEFAULT_PPN_WR	0x18
-+#define SPRD_VAU_FIRST_VPN	0x1c
-+#define SPRD_VAU_VPN_RANGE	0x20
-+
-+enum sprd_iommu_version {
-+	SPRD_IOMMU_EX,
-+	SPRD_IOMMU_VAU,
-+};
-+
-+struct sprd_iommu_match_data {
-+	unsigned long reg_offset;
-+};
-+
-+/*
-+ * struct sprd_iommu_device - high-level sprd iommu device representation,
-+ * including hardware information and configuration, also driver data, etc
-+ *
-+ * @mdata:	hardware configuration and information
-+ * @ver:	sprd iommu device version
-+ * @prot_page:	protect page base address, data would be written to here
-+ *		while translation fault
-+ * @base:	mapped base address for accessing registers
-+ * @dev:	pointer to basic device structure
-+ * @iommu:	IOMMU core representation
-+ * @group:	IOMMU group
-+ */
-+struct sprd_iommu_device {
-+	const struct sprd_iommu_match_data *mdata;
-+	enum sprd_iommu_version ver;
-+	u32			*prot_page_va;
-+	dma_addr_t		prot_page_pa;
-+	void __iomem		*base;
-+	struct device		*dev;
-+	struct iommu_device	iommu;
-+	struct iommu_group	*group;
-+};
-+
-+struct sprd_iommu_domain {
-+	spinlock_t		pgtlock; /* lock for page table */
-+	struct iommu_domain	domain;
-+	u32			*pgt_va; /* page table virtual address base */
-+	dma_addr_t		pgt_pa; /* page table physical address base */
-+	struct sprd_iommu_device	*sdev;
-+};
-+
-+static const struct iommu_ops sprd_iommu_ops;
-+
-+static struct sprd_iommu_domain *to_sprd_domain(struct iommu_domain *dom)
-+{
-+	return container_of(dom, struct sprd_iommu_domain, domain);
-+}
-+
-+static inline void
-+sprd_iommu_writel(struct sprd_iommu_device *sdev, unsigned int reg, u32 val)
-+{
-+	writel_relaxed(val, sdev->base + sdev->mdata->reg_offset + reg);
-+}
-+
-+static inline u32
-+sprd_iommu_readl(struct sprd_iommu_device *sdev, unsigned int reg)
-+{
-+	return readl_relaxed(sdev->base + sdev->mdata->reg_offset + reg);
-+}
-+
-+static inline void
-+sprd_iommu_update_bits(struct sprd_iommu_device *sdev, unsigned int reg,
-+		  u32 mask, u32 shift, u32 val)
-+{
-+	u32 t = sprd_iommu_readl(sdev, reg);
-+
-+	t = (t & (~(mask << shift))) | ((val & mask) << shift);
-+	sprd_iommu_writel(sdev, reg, t);
-+}
-+
-+static inline int
-+sprd_iommu_get_version(struct sprd_iommu_device *sdev)
-+{
-+	int ver = (sprd_iommu_readl(sdev, SPRD_IOMMU_VERSION) &
-+		   SPRD_VERSION_MASK) >> SPRD_VERSION_SHIFT;
-+
-+	switch (ver) {
-+	case SPRD_IOMMU_EX:
-+	case SPRD_IOMMU_VAU:
-+		return ver;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static size_t
-+sprd_iommu_pgt_size(struct iommu_domain *domain)
-+{
-+	return (size_t)	(((domain->geometry.aperture_end -
-+			   domain->geometry.aperture_start + 1) >>
-+			  SPRD_IOMMU_PAGE_SHIFT) * 4);
-+}
-+
-+static struct iommu_domain *sprd_iommu_domain_alloc(unsigned int domain_type)
-+{
-+	struct sprd_iommu_domain *dom;
-+
-+	if (domain_type != IOMMU_DOMAIN_DMA && domain_type != IOMMU_DOMAIN_UNMANAGED)
-+		return NULL;
-+
-+	dom = kzalloc(sizeof(*dom), GFP_KERNEL);
-+	if (!dom)
-+		return NULL;
-+
-+	if (iommu_get_dma_cookie(&dom->domain)) {
-+		kfree(dom);
-+		return NULL;
-+	}
-+
-+	spin_lock_init(&dom->pgtlock);
-+
-+	dom->domain.geometry.aperture_start = 0;
-+	dom->domain.geometry.aperture_end = SZ_256M - 1;
-+
-+	return &dom->domain;
-+}
-+
-+static void sprd_iommu_domain_free(struct iommu_domain *domain)
-+{
-+	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-+
-+	kfree(dom);
-+}
-+
-+static void sprd_iommu_first_vpn(struct sprd_iommu_domain *dom)
-+{
-+	struct sprd_iommu_device *sdev = dom->sdev;
-+	u32 val;
-+	unsigned int reg;
-+
-+	if (sdev->ver == SPRD_IOMMU_EX)
-+		reg = SPRD_EX_FIRST_VPN;
-+	else
-+		reg = SPRD_VAU_FIRST_VPN;
-+
-+	val = dom->domain.geometry.aperture_start >> SPRD_IOMMU_PAGE_SHIFT;
-+	sprd_iommu_writel(sdev, reg, val);
-+}
-+
-+static void sprd_iommu_vpn_range(struct sprd_iommu_domain *dom)
-+{
-+	struct sprd_iommu_device *sdev = dom->sdev;
-+	u32 val;
-+	unsigned int reg;
-+
-+	if (sdev->ver == SPRD_IOMMU_EX)
-+		reg = SPRD_EX_VPN_RANGE;
-+	else
-+		reg = SPRD_VAU_VPN_RANGE;
-+
-+	val = (dom->domain.geometry.aperture_end -
-+	       dom->domain.geometry.aperture_start) >> SPRD_IOMMU_PAGE_SHIFT;
-+	sprd_iommu_writel(sdev, reg, val);
-+}
-+
-+static void sprd_iommu_first_ppn(struct sprd_iommu_domain *dom)
-+{
-+	u32 val = dom->pgt_pa >> SPRD_IOMMU_PAGE_SHIFT;
-+	struct sprd_iommu_device *sdev = dom->sdev;
-+	unsigned int reg;
-+
-+	if (sdev->ver == SPRD_IOMMU_EX)
-+		reg = SPRD_EX_FIRST_PPN;
-+	else
-+		reg = SPRD_VAU_FIRST_PPN;
-+
-+	sprd_iommu_writel(sdev, reg, val);
-+}
-+
-+static void sprd_iommu_default_ppn(struct sprd_iommu_device *sdev)
-+{
-+	u32 val = sdev->prot_page_pa >> SPRD_IOMMU_PAGE_SHIFT;
-+
-+	if (sdev->ver == SPRD_IOMMU_EX) {
-+		sprd_iommu_writel(sdev, SPRD_EX_DEFAULT_PPN, val);
-+	} else if (sdev->ver == SPRD_IOMMU_VAU) {
-+		sprd_iommu_writel(sdev, SPRD_VAU_DEFAULT_PPN_RD, val);
-+		sprd_iommu_writel(sdev, SPRD_VAU_DEFAULT_PPN_WR, val);
-+	}
-+}
-+
-+static void sprd_iommu_hw_en(struct sprd_iommu_device *sdev, bool en)
-+{
-+	unsigned int reg_cfg;
-+	u32 mask, val;
-+
-+	if (sdev->ver == SPRD_IOMMU_EX)
-+		reg_cfg = SPRD_EX_CFG;
-+	else
-+		reg_cfg = SPRD_VAU_CFG;
-+
-+	/* enable mmu, clk gate, vaor bypass */
-+	mask = SPRD_IOMMU_EN | SPRD_IOMMU_GATE_EN | SPRD_IOMMU_VAOR_BYPASS;
-+	val = en ? mask : 0;
-+	sprd_iommu_update_bits(sdev, reg_cfg, mask, 0, val);
-+}
-+
-+static int sprd_iommu_attach_device(struct iommu_domain *domain,
-+				    struct device *dev)
-+{
-+	struct sprd_iommu_device *sdev = dev_iommu_priv_get(dev);
-+	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-+	size_t pgt_size = sprd_iommu_pgt_size(domain);
-+
-+	dom->pgt_va = dma_alloc_coherent(sdev->dev, pgt_size, &dom->pgt_pa, GFP_KERNEL);
-+	if (!dom->pgt_va)
-+		return -ENOMEM;
-+
-+	dom->sdev = sdev;
-+
-+	sprd_iommu_first_ppn(dom);
-+	sprd_iommu_first_vpn(dom);
-+	sprd_iommu_vpn_range(dom);
-+	sprd_iommu_default_ppn(sdev);
-+	sprd_iommu_hw_en(sdev, true);
-+
-+	return 0;
-+}
-+
-+static void sprd_iommu_detach_device(struct iommu_domain *domain,
-+					     struct device *dev)
-+{
-+	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-+	struct sprd_iommu_device *sdev = dom->sdev;
-+	size_t pgt_size = sprd_iommu_pgt_size(domain);
-+
-+	dma_free_coherent(sdev->dev, pgt_size, dom->pgt_va, dom->pgt_pa);
-+	sprd_iommu_hw_en(sdev, false);
-+	dom->sdev = NULL;
-+}
-+
-+static int sprd_iommu_map(struct iommu_domain *domain, unsigned long iova,
-+			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-+{
-+	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-+	const struct sprd_iommu_match_data *mdata;
-+	unsigned int page_num = size >> SPRD_IOMMU_PAGE_SHIFT;
-+	unsigned long flags;
-+	unsigned int i;
-+	u32 *pgt_base_iova;
-+	u32 pabase = (u32)paddr;
-+	int map_size = 0;
-+	unsigned long start = domain->geometry.aperture_start;
-+	unsigned long end = domain->geometry.aperture_end;
-+
-+	if (!dom->sdev) {
-+		pr_err("No sprd_iommu_device attached to the domain\n");
-+		return -EINVAL;
-+	}
-+
-+	mdata = dom->sdev->mdata;
-+	if (iova < start || (iova + size) > (end + 1)) {
-+		dev_err(dom->sdev->dev, "(iova(0x%lx) + sixe(0x%lx)) are not in the range!\n",
-+			iova, size);
-+		return -EINVAL;
-+	}
-+
-+	pgt_base_iova = dom->pgt_va + ((iova - start) >> SPRD_IOMMU_PAGE_SHIFT);
-+
-+	spin_lock_irqsave(&dom->pgtlock, flags);
-+	for (i = 0; i < page_num; i++) {
-+		pgt_base_iova[i] = pabase >> SPRD_IOMMU_PAGE_SHIFT;
-+		pabase += SPRD_IOMMU_PAGE_SIZE;
-+		map_size += SPRD_IOMMU_PAGE_SIZE;
-+	}
-+	spin_unlock_irqrestore(&dom->pgtlock, flags);
-+
-+	return map_size == size ? 0 : -EEXIST;
-+}
-+
-+static size_t sprd_iommu_unmap(struct iommu_domain *domain, unsigned long iova,
-+			size_t size, struct iommu_iotlb_gather *iotlb_gather)
-+{
-+	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-+	unsigned long flags;
-+	u32 *pgt_base_iova;
-+	unsigned int page_num = size >> SPRD_IOMMU_PAGE_SHIFT;
-+	unsigned long start = domain->geometry.aperture_start;
-+	unsigned long end = domain->geometry.aperture_end;
-+
-+	if (iova < start || (iova + size) > (end + 1))
-+		return -EINVAL;
-+
-+	pgt_base_iova = dom->pgt_va + ((iova - start) >> SPRD_IOMMU_PAGE_SHIFT);
-+
-+	spin_lock_irqsave(&dom->pgtlock, flags);
-+	memset(pgt_base_iova, 0, page_num * sizeof(u32));
-+	spin_unlock_irqrestore(&dom->pgtlock, flags);
-+
-+	return 0;
-+}
-+
-+static void sprd_iommu_sync_map(struct iommu_domain *domain)
-+{
-+	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-+	unsigned int reg;
-+
-+	if (dom->sdev->ver == SPRD_IOMMU_EX)
-+		reg = SPRD_EX_UPDATE;
-+	else
-+		reg = SPRD_VAU_UPDATE;
-+
-+	/* clear iommu TLB buffer after page table updated */
-+	sprd_iommu_writel(dom->sdev, reg, 0xffffffff);
-+}
-+
-+static void sprd_iommu_sync(struct iommu_domain *domain,
-+				 struct iommu_iotlb_gather *iotlb_gather)
-+{
-+	sprd_iommu_sync_map(domain);
-+}
-+
-+static phys_addr_t sprd_iommu_iova_to_phys(struct iommu_domain *domain,
-+					   dma_addr_t iova)
-+{
-+	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-+	unsigned long flags;
-+	phys_addr_t pa;
-+	unsigned long start = domain->geometry.aperture_start;
-+	unsigned long end = domain->geometry.aperture_end;
-+
-+	if (iova < start || iova > end)
-+		pr_err("iova (0x%llx) exceed the vpn range[0x%lx-0x%lx]!\n",
-+		       iova, start, end);
-+
-+	spin_lock_irqsave(&dom->pgtlock, flags);
-+	pa = *(dom->pgt_va + ((iova - start) >> SPRD_IOMMU_PAGE_SHIFT));
-+	pa = pa << SPRD_IOMMU_PAGE_SHIFT;
-+	spin_unlock_irqrestore(&dom->pgtlock, flags);
-+
-+	return pa;
-+}
-+
-+static struct iommu_device *sprd_iommu_probe_device(struct device *dev)
-+{
-+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-+	struct sprd_iommu_device *sdev;
-+
-+	if (!fwspec || fwspec->ops != &sprd_iommu_ops)
-+		return ERR_PTR(-ENODEV);
-+
-+	sdev = dev_iommu_priv_get(dev);
-+
-+	return &sdev->iommu;
-+}
-+
-+static void sprd_iommu_release_device(struct device *dev)
-+{
-+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-+
-+	if (!fwspec || fwspec->ops != &sprd_iommu_ops)
-+		return;
-+
-+	iommu_fwspec_free(dev);
-+}
-+
-+static struct iommu_group *sprd_iommu_device_group(struct device *dev)
-+{
-+	struct sprd_iommu_device *sdev = dev_iommu_priv_get(dev);
-+
-+	if (!sdev)
-+		return ERR_PTR(-ENODEV);
-+
-+	return iommu_group_ref_get(sdev->group);
-+}
-+
-+static int sprd_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
-+{
-+	struct platform_device *pdev;
-+
-+	if (!dev_iommu_priv_get(dev)) {
-+		pdev = of_find_device_by_node(args->np);
-+		dev_iommu_priv_set(dev, platform_get_drvdata(pdev));
-+	}
-+
-+	return 0;
-+}
-+
-+
-+static const struct iommu_ops sprd_iommu_ops = {
-+	.domain_alloc	= sprd_iommu_domain_alloc,
-+	.domain_free	= sprd_iommu_domain_free,
-+	.attach_dev	= sprd_iommu_attach_device,
-+	.detach_dev	= sprd_iommu_detach_device,
-+	.map		= sprd_iommu_map,
-+	.unmap		= sprd_iommu_unmap,
-+	.iotlb_sync_map	= sprd_iommu_sync_map,
-+	.iotlb_sync	= sprd_iommu_sync,
-+	.iova_to_phys	= sprd_iommu_iova_to_phys,
-+	.probe_device	= sprd_iommu_probe_device,
-+	.release_device	= sprd_iommu_release_device,
-+	.device_group	= sprd_iommu_device_group,
-+	.of_xlate	= sprd_iommu_of_xlate,
-+	.pgsize_bitmap	= ~0UL << SPRD_IOMMU_PAGE_SHIFT,
-+};
-+
-+static const struct sprd_iommu_match_data sprd_iommu_disp = {
-+	.reg_offset = 0x800,
-+};
-+
-+static const struct sprd_iommu_match_data sprd_iommu_jpg = {
-+	.reg_offset = 0x300,
-+};
-+
-+static const struct of_device_id sprd_iommu_of_match[] = {
-+	{ .compatible = "sprd,iommu-v1-disp",
-+	  .data = &sprd_iommu_disp },
-+	{ .compatible = "sprd,iommu-v1-jpg",
-+	  .data = &sprd_iommu_jpg },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, sprd_iommu_of_match);
-+
-+static int sprd_iommu_clk_enable(struct device *dev)
-+{
-+	struct clk *eb;
-+
-+	eb = of_clk_get(dev->of_node, 0);
-+	if (IS_ERR_OR_NULL(eb))
-+		return PTR_ERR(eb);
-+
-+	clk_prepare_enable(eb);
-+
-+	return 0;
-+}
-+
-+static int sprd_iommu_probe(struct platform_device *pdev)
-+{
-+	struct sprd_iommu_device *sdev;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	sdev = devm_kzalloc(dev, sizeof(*sdev), GFP_KERNEL);
-+	if (!sdev)
-+		return -ENOMEM;
-+
-+	sdev->base = devm_platform_ioremap_resource(pdev, 0);
-+	sdev->mdata = device_get_match_data(dev);
-+
-+	sdev->prot_page_va = dma_alloc_coherent(dev, SPRD_IOMMU_PAGE_SIZE,
-+						&sdev->prot_page_pa, GFP_KERNEL);
-+	if (!sdev->prot_page_va)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, sdev);
-+	sdev->dev = dev;
-+
-+	/* All the client devices are in the same iommu-group */
-+	sdev->group = iommu_group_alloc();
-+	if (IS_ERR(sdev->group)) {
-+		ret = PTR_ERR(sdev->group);
-+		goto free_page;
-+	}
-+
-+	ret = iommu_device_sysfs_add(&sdev->iommu, dev, NULL, dev_name(dev));
-+	if (ret)
-+		goto put_group;
-+
-+	iommu_device_set_ops(&sdev->iommu, &sprd_iommu_ops);
-+	iommu_device_set_fwnode(&sdev->iommu, &dev->of_node->fwnode);
-+
-+	ret = iommu_device_register(&sdev->iommu);
-+	if (ret)
-+		goto remove_sysfs;
-+
-+	if (!iommu_present(&platform_bus_type))
-+		bus_set_iommu(&platform_bus_type,  &sprd_iommu_ops);
-+
-+	/* access to some iommus are controlled by gate clock, others are not */
-+	sprd_iommu_clk_enable(dev);
-+
-+	ret = sprd_iommu_get_version(sdev);
-+	if (ret < 0) {
-+		dev_err(dev, "iommu version(%d) is invalid.\n", ret);
-+		goto unregister_iommu;
-+	}
-+	sdev->ver = ret;
-+
-+	return 0;
-+
-+unregister_iommu:
-+	iommu_device_unregister(&sdev->iommu);
-+remove_sysfs:
-+	iommu_device_sysfs_remove(&sdev->iommu);
-+put_group:
-+	iommu_group_put(sdev->group);
-+free_page:
-+	dma_free_coherent(sdev->dev, SPRD_IOMMU_PAGE_SIZE, sdev->prot_page_va, sdev->prot_page_pa);
-+	return ret;
-+}
-+
-+static int sprd_iommu_remove(struct platform_device *pdev)
-+{
-+	struct sprd_iommu_device *sdev = platform_get_drvdata(pdev);
-+
-+	dma_free_coherent(sdev->dev, SPRD_IOMMU_PAGE_SIZE, sdev->prot_page_va, sdev->prot_page_pa);
-+
-+	iommu_group_put(sdev->group);
-+	sdev->group = NULL;
-+
-+	bus_set_iommu(&platform_bus_type, NULL);
-+
-+	platform_set_drvdata(pdev, NULL);
-+	iommu_device_sysfs_remove(&sdev->iommu);
-+	iommu_device_unregister(&sdev->iommu);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver sprd_iommu_driver = {
-+	.driver	= {
-+		.name		= "sprd-iommu",
-+		.of_match_table	= sprd_iommu_of_match,
-+
-+	},
-+	.probe	= sprd_iommu_probe,
-+	.remove	= sprd_iommu_remove,
-+};
-+module_platform_driver(sprd_iommu_driver);
-+
-+MODULE_DESCRIPTION("IOMMU driver for Unisoc SoCs");
-+MODULE_ALIAS("platform:sprd-iommu");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
+Changheun Lee
+Samsung Electronics
 
