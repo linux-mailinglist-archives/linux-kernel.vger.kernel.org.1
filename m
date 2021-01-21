@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C742FE8C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26E92FE8C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730509AbhAUL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:28:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbhAUL0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:26:39 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F21C0613D3;
-        Thu, 21 Jan 2021 03:25:58 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id y4so1717140ybn.3;
-        Thu, 21 Jan 2021 03:25:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k9t1av7olujuCjiWRao1+foelfX8Dllx4K3zuzbAp08=;
-        b=taU/XiBsk52yDFqqDgjQA0bad/3BoAoLe3P8app055QZ9J2qP/yY+2mlnkTfVU3Tl8
-         cqGIRyt1YNUB2iaaKijOP6S978PG7uQm1Yh/2fP0AdgDBdMpn1LMqgk0/5vvf6pCe+zp
-         lqPjzFjgPfH72xqoRJAZUC1I/OUYGnL7KerFnT3avyxGGVYcmC5D55YgILJnMxaKLv6Y
-         qtlLXlY1bop0hAX+le5xO8b1VoQTfd+OwpnTfb88r+dgQJK7s5xa65+oWBtVgGIo+X/i
-         7ygIWTDk9GTKTzUgNdqkd5wpR/oDY2yg4pgbvvKqrHVMMxfB/Ltucgbt2nW0CJ7/I/zz
-         1yDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k9t1av7olujuCjiWRao1+foelfX8Dllx4K3zuzbAp08=;
-        b=rc5TQfKi5Mz6SgrGqbdNMg0vzCOl/tURmL5pFPnpsOqbVfjfEhBhqb+WMNEB1eYMLr
-         DuT3iKCQ4HJHclG7sUPp6gvePcgu5/HhqnpzxAToI/DkJ1TpIEGn07F+km5X7O4st573
-         gqvptJlZwAdbWljkRzjBdVpnK72cAdxns6nqFybzoCxyLRgT11+0cWtHoHZyXiyAt3oy
-         W+io2vg8KkKgdcQizt/cCTxlfAKHnSAcFx14o+rc+iMZQznrmEeRDShGpJZPgJqa0ubm
-         yF5/KX4hMhflImPOToxlzFq8usx4judPhh0eOdIvZiZH+u64DmNqai0AtzDB9AvVjT+D
-         PZwg==
-X-Gm-Message-State: AOAM531h9C/o3orfOyBWY+ZZUw6jahjRvuh+bMj7yf7Z8Z4LU/6Cre+W
-        5Uh0/PPPGtfU+CSbZ2OZLUGMH5b8bI0ZvvUKjps=
-X-Google-Smtp-Source: ABdhPJyh67EExgFHy7v3gQDCtpSciDMQOcV5rIe3/RzF7i5efyrcTPlNOZ5Mb8YhiDN1XyLAnvP7KrY+FuXfZuTud18=
-X-Received: by 2002:a25:538a:: with SMTP id h132mr19654496ybb.247.1611228358033;
- Thu, 21 Jan 2021 03:25:58 -0800 (PST)
+        id S1726873AbhAUL3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:29:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728322AbhAUL2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:28:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7D0E2222B;
+        Thu, 21 Jan 2021 11:27:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611228451;
+        bh=NNIBRAti613JrHVuyoNx3eoND4o9Cxpt15znQz5QslI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t6I/9FOynulb34GA52aJvTWKNLg4FA+lcJ4ttaGKG9Fj2YTUvTHiBNEWASgveGEj6
+         6fAxOEJaBygZ3Ut5JggIIgsfZFQE0a8Zb6DxD/iyYqHe14hMUH0xxsxJNK+aWqgzK7
+         2xJnI24rYKqXCnWiGgGZ0MatLfG0sZVAL5F60RDkISgi3zhgXQuf3LvV4XFMLrhhb8
+         zUI/hwHcinh5UnWaqkWrfxZxqYoEYIeZegK8BA6OTZ9gtLKnn6ZLAK9Jc+qP5kTD3J
+         rkDBa/xQWf0jtSMc0lso6u3bj+ElkKiwRhdf33Yd2iqxYMVw/VH/J9x1dsObKyYwIa
+         V5LnKG0cOHKIQ==
+Date:   Thu, 21 Jan 2021 11:27:26 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Stan Skowronek <stan@corellium.com>
+Subject: Re: [RFC PATCH 3/7] arm64: mm: use nGnRnE instead of nGnRE on Apple
+ processors
+Message-ID: <20210121112725.GA21750@willie-the-truck>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-4-mohamed.mediouni@caramail.com>
 MIME-Version: 1.0
-References: <20210121092026.3261412-1-mudongliangabcd@gmail.com>
- <YAlORNKQ4y7bzYeZ@kroah.com> <CAD-N9QXhD48-6GbpCUYuxPKEbkzGgGTaFKQ8TAaQ93WfD_sT2A@mail.gmail.com>
- <YAljtMMV4oh5uAHC@kroah.com>
-In-Reply-To: <YAljtMMV4oh5uAHC@kroah.com>
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Thu, 21 Jan 2021 19:25:31 +0800
-Message-ID: <CAD-N9QWao8+VFLbE00Dmo0Kpwf2ATzaP=F=QWk=5R8Td_JWsew@mail.gmail.com>
-Subject: Re: [PATCH] rt2x00: reset reg earlier in rt2500usb_register_read
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     davem@davemloft.net, helmut.schaa@googlemail.com,
-        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        sgruszka@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120132717.395873-4-mohamed.mediouni@caramail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 7:21 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Jan 21, 2021 at 06:59:08PM +0800, =E6=85=95=E5=86=AC=E4=BA=AE wro=
-te:
-> > > >       rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
-> > > >                                     USB_VENDOR_REQUEST_IN, offset,
-> > > >                                     &reg, sizeof(reg));
-> > >
-> > > Are you sure this is valid to call this function with a variable on t=
-he
-> > > stack like this?  How did you test this change?
-> >
-> > First, I did not do any changes to this call. Second, the programming
-> > style to pass the pointer of stack variable as arguments is not really
-> > good. Third, I check this same code file, there are many code snippets
-> > with such programming style. :(
->
-> I know you did not change it, what I am asking is how did you test this
-> change works?  I think the kernel will warn you in huge ways that using
-> this pointer on the stack is incorrect, which implies you did not test
-> this change :(
->
+On Wed, Jan 20, 2021 at 02:27:13PM +0100, Mohamed Mediouni wrote:
+> Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious hardware quirk.
+> 
+> On Apple processors, writes using the nGnRE device memory type get dropped in flight,
+> getting to nowhere.
+> 
+> Signed-off-by: Stan Skowronek <stan@corellium.com>
+> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+> ---
+>  arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> index 1f7ee8c8b7b8..06436916f137 100644
+> --- a/arch/arm64/mm/proc.S
+> +++ b/arch/arm64/mm/proc.S
+> @@ -51,6 +51,25 @@
+>  #define TCR_KASAN_HW_FLAGS 0
+>  #endif
+> 
+> +#ifdef CONFIG_ARCH_APPLE
+> +
+> +/*
+> + * Apple cores appear to black-hole writes done with nGnRE.
+> + * We settled on a work-around that uses MAIR vs changing every single user of
+> + * nGnRE across the arm64 code.
+> + */
+> +
+> +#define MAIR_EL1_SET_APPLE						\
+> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> +
+> +#endif
+> +
+>  /*
+>   * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memory and
+>   * changed during __cpu_setup to Normal Tagged if the system supports MTE.
+> @@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
+>  	 * Memory region attributes
+>  	 */
+>  	mov_q	x5, MAIR_EL1_SET
+> +#ifdef CONFIG_ARCH_APPLE
+> +	mrs	x0, MIDR_EL1
+> +	lsr	w0, w0, #24
+> +	mov_q	x1, MAIR_EL1_SET_APPLE
+> +	cmp	x0, #0x61			// 0x61 = Implementer: Apple
+> +	csel	x5, x1, x5, eq
 
-I tested this patch only with PoC. The patched kernel version did not
-crash when executing the PoC.
+Why does this need to be done so early? It would be a lot cleaner if we
+could detect this in a similar fashion to other errata and update the MAIR
+appropriately. If that's not possible because of early IO mappings (which
+ones?), then we could instead initialise to nGnRnE unconditionally, but
+relax it to nGnRE if we detect that we _don't_ have the erratum.
 
-BTW, I did not take notice of the warning information as there are
-many many warnings in building KMSAN.
-
-> thanks,
->
-> greg k-h
+Will
