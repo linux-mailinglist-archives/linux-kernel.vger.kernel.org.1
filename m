@@ -2,192 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D2A2FE645
+	by mail.lfdr.de (Postfix) with ESMTP id B1A3E2FE646
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbhAUJXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:23:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+        id S1728712AbhAUJXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728669AbhAUJWI (ORCPT
+        with ESMTP id S1728413AbhAUJWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:22:08 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2919C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:21:27 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l2W9V-00053L-R1; Thu, 21 Jan 2021 10:21:17 +0100
-Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:37fb:eadb:47a3:78d5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 153C85C98AD;
-        Thu, 21 Jan 2021 09:21:16 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 10:21:15 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Su Yanjun <suyanjun218@gmail.com>
-Cc:     manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com,
-        wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] can: mcp251xfd: replace sizeof(u32) with val_bytes in
- regmap
-Message-ID: <20210121092115.dasphwfzfkthcy64@hardanger.blackshift.org>
-References: <20210121091005.74417-1-suyanjun218@gmail.com>
+        Thu, 21 Jan 2021 04:22:41 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB35C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:22:00 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id u11so1627196ljo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:22:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W2RjDBv9P3j9wxeJUAoiB4MW/LqAwK6JSb2C7o1dWoM=;
+        b=bvWPlHHLe3bjw7pTPhEw3rCRornram+wtOuO7NizVyZiYTs1Dp7QoZch+nmjgd4Y62
+         dTz3pgnSeHVqydBNPjiNGgE2J1QtzPhuS3xKaIhuBLXJNJWV7gPz0hz/m7hmftjNlhE8
+         VvFtH83jLfsaGHVNMD0Rkf81VeVsG1O9dwU2o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W2RjDBv9P3j9wxeJUAoiB4MW/LqAwK6JSb2C7o1dWoM=;
+        b=qRbo4suMjxY+Yxw78X5wbiuuUY8ohfsPWT3k5+Nnni9YOmRRoTzJ2zn7MbrfoHiWAu
+         JXBOfe+7q7IHU+FWWx4a60AZEeHccMWkNtXk0UUyVdeAgMiFBJKjJl1fHm+0HEQcHErt
+         tW7NvBC2OEniHMgMkYafNBEsXpz3ttk9mKnJNPiom93cTqYNEUHwBUnLUviEkjxkAoxB
+         dvTumsT4+GpATdVHnuccSAotK5o8jUSJJaTq8F9c/UXDCSV69AcG2lirY6ptuevm5F1q
+         flfygomy2n5DyNGqqaxGD0Kh0dWPANlOkgPXq5gEgenKUosAKRvUz0W8haclVROr9boS
+         514Q==
+X-Gm-Message-State: AOAM533vk9g7nJ6WUWBm0z1SaH7zx+Zm8lkcO9sqhKhesTtzEj6Laudv
+        2k0LdMQEGyOz3/P2ONYbYdei/JnwDOTEulEvExy4ew==
+X-Google-Smtp-Source: ABdhPJxNj6MOr6RpfwzZgv0VI4M3/od8Hezr+/6Jep8v6YkBDlSuq6ZVsP1gXCdC/IcnmjZecIOBtzvoa/VOt+c+cHE=
+X-Received: by 2002:a2e:9153:: with SMTP id q19mr6211843ljg.173.1611220919160;
+ Thu, 21 Jan 2021 01:21:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="efq2fpiu2im66ptm"
-Content-Disposition: inline
-In-Reply-To: <20210121091005.74417-1-suyanjun218@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210115234947.44014-1-vitaly.wool@konsulko.com>
+In-Reply-To: <20210115234947.44014-1-vitaly.wool@konsulko.com>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Thu, 21 Jan 2021 10:21:48 +0100
+Message-ID: <CAM4kBBLhKsysQCf1GgpSvnGKVV2HsOoVP+4VvYmQaqfpKJ45+A@mail.gmail.com>
+Subject: Re: [PATCH v3] riscv: add BUILTIN_DTB support for MMU-enabled targets
+To:     linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jan 16, 2021 at 12:57 AM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+>
+> Sometimes, especially in a production system we may not want to
+> use a "smart bootloader" like u-boot to load kernel, ramdisk and
+> device tree from a filesystem on eMMC, but rather load the kernel
+> from a NAND partition and just run it as soon as we can, and in
+> this case it is convenient to have device tree compiled into the
+> kernel binary. Since this case is not limited to MMU-less systems,
+> let's support it for these which have MMU enabled too.
+>
+> While at it, provide __dtb_start as a parameter to setup_vm() in
+> BUILTIN_DTB case, so we don't have to duplicate BUILTIN_DTB specific
+> processing in MMU-enabled and MMU-disabled versions of setup_vm().
 
---efq2fpiu2im66ptm
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+@Palmer: ping :)
 
-On Thu, Jan 21, 2021 at 05:10:05PM +0800, Su Yanjun wrote:
+> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
 
-Please describe why you change this.
+While at it, since this is just a respin/concatenation:
+@Damien: are you okay with re-adding 'Tested-By:' ?
+@Anup: are you okay with adding 'Reviewed-by:' since you have reviewed
+both v1 patches that were concatenated?
 
-> No functional effect.
+Best regards,
+   Vitaly
 
-Not quite:
-
-scripts/bloat-o-meter shows:
-
-add/remove: 0/0 grow/shrink: 3/0 up/down: 104/0 (104)
-Function                                     old     new   delta
-mcp251xfd_handle_tefif                       980    1028     +48
-mcp251xfd_irq                               3716    3756     +40
-mcp251xfd_handle_rxif_ring                   964     980     +16
-Total: Before=3D20832, After=3D20936, chg +0.50%
-
->=20
-> Signed-off-by: Su Yanjun <suyanjun218@gmail.com>
 > ---
->  drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net=
-/can/spi/mcp251xfd/mcp251xfd-core.c
-> index f07e8b737d31..b15bfd50b863 100644
-> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-> @@ -181,6 +181,12 @@ static int mcp251xfd_clks_and_vdd_disable(const stru=
-ct mcp251xfd_priv *priv)
->  	return 0;
->  }
-> =20
-> +static inline int
-> +mcp251xfd_get_val_bytes(const struct mcp251xfd_priv *priv)
-> +{
-> +	return regmap_get_val_bytes(priv->map_reg);
-
-You're always using the "map_reg" here
-
-> +}
-> +
->  static inline u8
->  mcp251xfd_cmd_prepare_write_reg(const struct mcp251xfd_priv *priv,
->  				union mcp251xfd_write_reg_buf *write_reg_buf,
-> @@ -1308,6 +1314,7 @@ mcp251xfd_tef_obj_read(const struct mcp251xfd_priv =
-*priv,
->  		       const u8 offset, const u8 len)
+> Changes from v2:
+> * folded "RISC-V: simplify BUILTIN_DTB processing" patch
+> [http://lists.infradead.org/pipermail/linux-riscv/2021-January/004153.html]
+> Changes from v1:
+> * no direct initial_boot_params assignment
+> * skips the temporary mapping for DT if BUILTIN_DTB=y
+>
+>  arch/riscv/Kconfig       |  1 -
+>  arch/riscv/kernel/head.S |  4 ++++
+>  arch/riscv/mm/init.c     | 19 +++++++++++++------
+>  3 files changed, 17 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 2ef05ef921b5..444a1ed1e847 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -445,7 +445,6 @@ endmenu
+>
+>  config BUILTIN_DTB
+>         def_bool n
+> -       depends on RISCV_M_MODE
+>         depends on OF
+>
+>  menu "Power management options"
+> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> index 16e9941900c4..f5a9bad86e58 100644
+> --- a/arch/riscv/kernel/head.S
+> +++ b/arch/riscv/kernel/head.S
+> @@ -260,7 +260,11 @@ clear_bss_done:
+>
+>         /* Initialize page tables and relocate to virtual addresses */
+>         la sp, init_thread_union + THREAD_SIZE
+> +#ifdef CONFIG_BUILTIN_DTB
+> +       la a0, __dtb_start
+> +#else
+>         mv a0, s1
+> +#endif /* CONFIG_BUILTIN_DTB */
+>         call setup_vm
+>  #ifdef CONFIG_MMU
+>         la a0, early_pg_dir
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 30b61f2c6b87..45faad7c4291 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -192,10 +192,13 @@ void __init setup_bootmem(void)
+>  #endif /* CONFIG_BLK_DEV_INITRD */
+>
+>         /*
+> -        * Avoid using early_init_fdt_reserve_self() since __pa() does
+> +        * If DTB is built in, no need to reserve its memblock.
+> +        * Otherwise, do reserve it but avoid using
+> +        * early_init_fdt_reserve_self() since __pa() does
+>          * not work for DTB pointers that are fixmap addresses
+>          */
+> -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> +       if (!IS_ENABLED(CONFIG_BUILTIN_DTB))
+> +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+>
+>         early_init_fdt_scan_reserved_mem();
+>         dma_contiguous_reserve(dma32_phys_limit);
+> @@ -499,6 +502,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>         /* Setup early PMD for DTB */
+>         create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA,
+>                            (uintptr_t)early_dtb_pmd, PGDIR_SIZE, PAGE_TABLE);
+> +#ifndef CONFIG_BUILTIN_DTB
+>         /* Create two consecutive PMD mappings for FDT early scan */
+>         pa = dtb_pa & ~(PMD_SIZE - 1);
+>         create_pmd_mapping(early_dtb_pmd, DTB_EARLY_BASE_VA,
+> @@ -506,7 +510,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>         create_pmd_mapping(early_dtb_pmd, DTB_EARLY_BASE_VA + PMD_SIZE,
+>                            pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
+>         dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
+> +#else /* CONFIG_BUILTIN_DTB */
+> +       dtb_early_va = __va(dtb_pa);
+> +#endif /* CONFIG_BUILTIN_DTB */
+>  #else
+> +#ifndef CONFIG_BUILTIN_DTB
+>         /* Create two consecutive PGD mappings for FDT early scan */
+>         pa = dtb_pa & ~(PGDIR_SIZE - 1);
+>         create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA,
+> @@ -514,6 +522,9 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>         create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA + PGDIR_SIZE,
+>                            pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
+>         dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
+> +#else /* CONFIG_BUILTIN_DTB */
+> +       dtb_early_va = __va(dtb_pa);
+> +#endif /* CONFIG_BUILTIN_DTB */
+>  #endif
+>         dtb_early_pa = dtb_pa;
+>
+> @@ -604,11 +615,7 @@ static void __init setup_vm_final(void)
+>  #else
+>  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
 >  {
->  	const struct mcp251xfd_tx_ring *tx_ring =3D priv->tx;
-> +	int val_bytes =3D mcp251xfd_get_val_bytes(priv);
-> =20
->  	if (IS_ENABLED(CONFIG_CAN_MCP251XFD_SANITY) &&
->  	    (offset > tx_ring->obj_num ||
-> @@ -1322,7 +1329,7 @@ mcp251xfd_tef_obj_read(const struct mcp251xfd_priv =
-*priv,
->  	return regmap_bulk_read(priv->map_rx,
-
-But this works on map_rx.
-
->  				mcp251xfd_get_tef_obj_addr(offset),
->  				hw_tef_obj,
-> -				sizeof(*hw_tef_obj) / sizeof(u32) * len);
-> +				sizeof(*hw_tef_obj) / val_bytes * len);
+> -#ifdef CONFIG_BUILTIN_DTB
+> -       dtb_early_va = (void *) __dtb_start;
+> -#else
+>         dtb_early_va = (void *)dtb_pa;
+> -#endif
+>         dtb_early_pa = dtb_pa;
 >  }
-> =20
->  static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
-> @@ -1511,11 +1518,12 @@ mcp251xfd_rx_obj_read(const struct mcp251xfd_priv=
- *priv,
->  		      const u8 offset, const u8 len)
->  {
->  	int err;
-> +	int val_bytes =3D mcp251xfd_get_val_bytes(priv);
-> =20
->  	err =3D regmap_bulk_read(priv->map_rx,
-
-Same here
-
->  			       mcp251xfd_get_rx_obj_addr(ring, offset),
->  			       hw_rx_obj,
-> -			       len * ring->obj_size / sizeof(u32));
-> +			       len * ring->obj_size / val_bytes);
-> =20
->  	return err;
->  }
-> @@ -2139,6 +2147,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev=
-_id)
->  	struct mcp251xfd_priv *priv =3D dev_id;
->  	irqreturn_t handled =3D IRQ_NONE;
->  	int err;
-> +	int val_bytes =3D mcp251xfd_get_val_bytes(priv);
-> =20
->  	if (priv->rx_int)
->  		do {
-> @@ -2162,7 +2171,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev=
-_id)
->  		err =3D regmap_bulk_read(priv->map_reg, MCP251XFD_REG_INT,
-
-Here it's map_reg.
-
->  				       &priv->regs_status,
->  				       sizeof(priv->regs_status) /
-> -				       sizeof(u32));
-> +				       val_bytes);
->  		if (err)
->  			goto out_fail;
-> =20
-> --=20
-> 2.25.1
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---efq2fpiu2im66ptm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAJR4cACgkQqclaivrt
-76nBmQf/Ugd8lVXzD8dAKIR9Ue89rAxybZUGcZGSiQUEToKfcq0mVC4QFuPVKtoj
-lt+2YsIbLt3t7D/3Sfgrv7ZKH9YZyDaj/hVScKYAdZXDQuR1W6unHvlGLX3+VfA2
-O/h9KYK4t5pkGIdBy8GKWmVChMDJ6/0eurChMzLmHCcfcYU7NqejcO5nc13LMOmX
-CKZdChLBFrFdCVqAFRfA/BWd2L6gnmgDziONA4xhH6K44iKQUrO61m7RkTyFCT5I
-efJsdqx1r5f6GKHhR08byCIDvbHJzFiVikd4mwVqiVYBaWaQNYoQZDmPcTsxTi+P
-QGAqK/vHP9xGzzwN9JsU4BZDUnrVVg==
-=SQnm
------END PGP SIGNATURE-----
-
---efq2fpiu2im66ptm--
+>
+> --
+> 2.20.1
+>
