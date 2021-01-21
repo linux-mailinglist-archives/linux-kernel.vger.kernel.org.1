@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFFE2FEB37
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A06112FEAF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbhAUNDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:03:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57634 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729383AbhAUM6o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:58:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611233838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/QDx1uICxO7SRgcCMtNojL+VasBQOuT1uJCUPAbo6Y=;
-        b=El4hhktXGBU9DHfON+EtYA6MIRMTnlZT1sDCCGAQGhJvEI/PFL4J4XAfNOWxKOHOWa+BLu
-        7hrBFMl86dCjlxN6vTnCQKe0s6/34LYTMTa7ZVQxyVW3Yl8hc4qSAPF5B2CXN4CtEVaLyN
-        6vchIF6PABbyPL6KrYdzPGU63AKZeyY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-LBeykFJWPiqHrgC7_AUeUQ-1; Thu, 21 Jan 2021 07:57:14 -0500
-X-MC-Unique: LBeykFJWPiqHrgC7_AUeUQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CCFB19611AD;
-        Thu, 21 Jan 2021 12:57:13 +0000 (UTC)
-Received: from [10.72.12.73] (ovpn-12-73.pek2.redhat.com [10.72.12.73])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76DDB60C6D;
-        Thu, 21 Jan 2021 12:57:10 +0000 (UTC)
-Subject: Re: [PATCH 2/2 v2] iommu: use the __iommu_attach_device() directly
- for deferred attach
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
-        will@kernel.org, iommu@lists.linux-foundation.org,
-        robin.murphy@arm.com
-References: <20210119111616.12761-1-lijiang@redhat.com>
- <20210119111616.12761-3-lijiang@redhat.com>
- <20210119152939.GB3453587@infradead.org>
-From:   lijiang <lijiang@redhat.com>
-Message-ID: <0ee9d0a5-25f7-60ce-e6de-f7cacea990fa@redhat.com>
-Date:   Thu, 21 Jan 2021 20:57:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1731046AbhAUNB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:01:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730328AbhAUNBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:01:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69B2023A00
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:00:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611234036;
+        bh=zOUmjTvjQhlXVBR+uCOUkYxo/5YaQKWmpamWU0MAFHE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TD+WhK5gaLBMydUeK77ZWEe4YC1mV1T0Q6BJ4Ekr4xMdW0SI9sgxUfsVVOzaIL2H+
+         i0+jpSftYycNbUsafcMZTdOGsF1Q8G2WXOOOj8mPb6KpNwfhhiDVOc6PxEH9aTfPB1
+         y9wFUpphZEwt92K1c0TU3aqYM+V/0o42dUT8gLaYTtCF+RfHLpQs3/Md+kkDXq09Mj
+         K1quJts27Dt3MSpoylnKHlH5BDQqUy64Kg+wR8YGtlqVlwpSOJYgpqRCrbZCyJB0Qc
+         LFMbaiUIWBYbxRwTrLxhs/QjG12L9M2Ep9SmF7pP1s2eKvk0KNTethN80piU2HzARf
+         HGPrBZ2NzFxGQ==
+Received: by mail-ot1-f42.google.com with SMTP id k8so1477570otr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:00:36 -0800 (PST)
+X-Gm-Message-State: AOAM5324+ZVtgLJs0P0BND9wH0/U7o4npU3H68pv6tdspTJCmKQrziOY
+        Iu8HGvlyl2Q0Nl0ACZEpgq+CSUU4l/JkZuOJe+I=
+X-Google-Smtp-Source: ABdhPJzOCtzUf7ZFeL2yzxXslX5TLFUOOJcfbfAGG6M0QVElMOWoobgu655hMG0xg8qBkSm5mRl+iUjHXkYvXMfiqDs=
+X-Received: by 2002:a05:6830:139a:: with SMTP id d26mr10341889otq.305.1611234035653;
+ Thu, 21 Jan 2021 05:00:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210119152939.GB3453587@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-8-mohamed.mediouni@caramail.com> <CAK8P3a1qeVxTxZXpfMe70zpPCSBrTOz23ZTR=PHgw0PP9GUvbw@mail.gmail.com>
+ <E77005CF-8B2A-4D17-9330-72ECFD7F3C93@caramail.com>
+In-Reply-To: <E77005CF-8B2A-4D17-9330-72ECFD7F3C93@caramail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 21 Jan 2021 14:00:19 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3g888Rn=FRaYB80d5ehHA8b9GUZfa0J+D1nXPKkzcpig@mail.gmail.com>
+Message-ID: <CAK8P3a3g888Rn=FRaYB80d5ehHA8b9GUZfa0J+D1nXPKkzcpig@mail.gmail.com>
+Subject: Re: [RFC PATCH 7/7] irqchip/apple-aic: add SMP support to the Apple
+ AIC driver.
+To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Stan Skowronek <stan@corellium.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Christoph
+On Thu, Jan 21, 2021 at 1:50 PM Mohamed Mediouni
+<mohamed.mediouni@caramail.com> wrote:
+> > On 21 Jan 2021, at 13:44, Arnd Bergmann <arnd@kernel.org> wrote:
+> >> @@ -186,8 +325,11 @@ static int __init apple_aic_init(struct device_no=
+de *node,
+> >>       if (WARN(!aic.base, "unable to map aic registers\n"))
+> >>               return -EINVAL;
+> >>
+> >> +       aic.fast_ipi =3D of_property_read_bool(node, "fast-ipi");
+> >
+> > Where is this property documented, and what decides which one to use?
+> It=E2=80=99s getting documented in the next patch set.
+>
+> This property is there to enable support for older iPhone processors
+> later on, some of which do not have fast IPI support.
+>
+> On Apple M1, fast-ipi is always on.
 
-在 2021年01月19日 23:29, Christoph Hellwig 写道:
->> +int iommu_do_deferred_attach(struct device *dev,
->> +			     struct iommu_domain *domain)
-> 
-> I'd remove the "do_" from the name, it doesn't really add any value.
-> 
-OK.
+Ok, makes sense. Does fast-ipi mean you cannot use the other mode at
+all, or is it just faster as implied by the name? If so, how much faster?
 
->> +{
->> +	const struct iommu_ops *ops = domain->ops;
->> +
->> +	if (unlikely(ops->is_attach_deferred &&
->> +		     ops->is_attach_deferred(domain, dev)))
->> +		return __iommu_attach_device(domain, dev);
->> +
->> +	return 0;
-> 
-> Now that everyting is under the static key we don't really need to
-> bother with the unlikely micro optimization, do we?
-> 
-Good understanding. I can remove it, otherwise it should use the likely().
-
->> +extern int iommu_do_deferred_attach(struct device *dev,
->> +				    struct iommu_domain *domain);
-> 
-> No need for the extern.
-> 
-Sounds good. I will remove the 'extern' when I post again.
-
-Thanks.
-Lianbo
-
+       Arnd
