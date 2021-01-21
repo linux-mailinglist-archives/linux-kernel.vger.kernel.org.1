@@ -2,112 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45252FF445
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702232FF420
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbhAUTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:23:15 -0500
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:54055 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727020AbhAUTQ5 (ORCPT
+        id S1727246AbhAUTSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:18:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727155AbhAUTR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:16:57 -0500
-Received: by mail-pj1-f49.google.com with SMTP id p15so2259948pjv.3;
-        Thu, 21 Jan 2021 11:16:41 -0800 (PST)
+        Thu, 21 Jan 2021 14:17:26 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53EDC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:16:43 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id f191so1188599ybg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:16:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=uXaJ+OStKaU1TSDiW6h4CbV+WkJ9mG9O+r64LsV2Mn0=;
+        b=eYA5oY8hKyFgrd6TaGKQAuh6YxqMlqPxpbJ8pyoyuBQ5PnSRAWEUsOSfVIlKlrnTNe
+         1g9UPvefodcMNDtEPBEVZO417AdPQEKhx4hr9piNifguWGsv4TKREN42AXZzhMzK9/Pv
+         ixaynA7Sd0OdpCfDWG+36lcv/ab/sSQE2olYxokM9JRdaDHeEbW8pE9Sg5rrPc4H3YjU
+         cwK/ti8L3uMXvyX6jMTKTQx3IEddmzePDlcylcPGlkZkp60JX3KEGnYxxtO63Q8m9ckF
+         dNphdkfdARYdmL25bczQDMud97R+KKV6D91nxyiHcUxDJbUzJWW+BjgdiPzlxbM4he64
+         C+1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=woffDF3uhRUDrdb3LU2Pk/FCA9mpI3Ytb8KoYeIYJeA=;
-        b=IIU02koRSEoT4q8Q9ehofpACmz28KHNp5Hoo0ciG0PZFexGoI6CrB1+Xk8QwfjWevd
-         9aPp+easnrBYUHsSJIoIo5AZOwH4mPI85IjM6Ovh61PWTrjXE44HqZs+mr6em35jqaGa
-         EeVgBUpgL7u15YnhNnXXicdzfmcBNZVH/5hhEM6nJH9R/8cjNC82E6c1SJ8m8Hb7dzhj
-         kW7zpezLwdNWgixcStg0onr3zTfVOjazOP4jvjxtUhUy8p1UkfN8poImx0/JPZeNNM7F
-         CGpMvXkKLf2j/lGXklS4Pm7FZva+fP1Pv0UbuLcOFEZMPdqgj79+Ud8h2x7I8r05/afi
-         hWWg==
-X-Gm-Message-State: AOAM532jzK13OBfeXyDxm8FOvUju0u68R+8+TuzkaEgVQ8MogjADldH+
-        SIlsGdWLRU0Jex1oyeVCbaY=
-X-Google-Smtp-Source: ABdhPJzI8AJqE+iWCmW+gyRA1cuwSUSwg+34G/hZ8dWOKvbeMCOrdJpb6lBYekcwpzJj0GgfI7rBMw==
-X-Received: by 2002:a17:902:6b0a:b029:dc:31af:8dc3 with SMTP id o10-20020a1709026b0ab02900dc31af8dc3mr1144525plk.41.1611256576405;
-        Thu, 21 Jan 2021 11:16:16 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id w7sm6270590pfb.62.2021.01.21.11.16.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 11:16:15 -0800 (PST)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     lorenzo.pieralisi@arm.com
-Cc:     guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, moritzf@google.com, will@kernel.org,
-        Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH] ACPI/IORT: Do not blindly trust DMA masks from firmware
-Date:   Thu, 21 Jan 2021 11:16:12 -0800
-Message-Id: <20210121191612.90387-1-mdf@kernel.org>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=uXaJ+OStKaU1TSDiW6h4CbV+WkJ9mG9O+r64LsV2Mn0=;
+        b=evSl7Hvw74qPGGRcy9OMyArOvCB4aMQm1xkt2Rt0TP9L55DMoGppCR1f4OIKWvftrc
+         7LIapg0z1lq59WkZBUUDHkgnZcGk3QK5rWu/v0vt0HRa2KDFKDjM9Cl+AU1WQ6RuaPn6
+         A83/jXqj+TmraqjX5AKhNHNGkXbTemknr0z3Ijx4S5W43nURw0AS5RIdUHSTXCreCGvM
+         sX0ZWsNKCpSLx1qCh62RNsHNUqogd47CifLBHAHdu/ngzedr263oeRHLOyYf+/gp6hlK
+         RKkXWLpR/+31Peth57qPpxBU5WXAWlaOB07zI9eCRM9GRqVZlLShHOE9S44HkfNRphBY
+         EO9w==
+X-Gm-Message-State: AOAM532T3yvZwqegCngo0b1DtzgF4GT+H7EDCDjDmB/zHe56SExT0Mph
+        HgthwpAY/iGdtW96jFukuhOAV+Myy0Ml+hs=
+X-Google-Smtp-Source: ABdhPJy4L6QwhSe0V+bSgCGU7lb6sP9PuorwKblCURljHt9RwnFbXh8XjG13AZV/uRwJfoVT4D3nP1Zn8jH2KNU=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a25:243:: with SMTP id
+ 64mr1209671ybc.257.1611256603164; Thu, 21 Jan 2021 11:16:43 -0800 (PST)
+Date:   Thu, 21 Jan 2021 11:16:36 -0800
+In-Reply-To: <20210121191637.1067630-1-saravanak@google.com>
+Message-Id: <20210121191637.1067630-2-saravanak@google.com>
+Mime-Version: 1.0
+References: <20210121191637.1067630-1-saravanak@google.com>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+Subject: [PATCH v2 1/2] of: property: Add fw_devlink support for "gpio" and
+ "gpios" binding
+From:   Saravana Kannan <saravanak@google.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel-team@android.com, linux-tegra <linux-tegra@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Address issue observed on real world system with suboptimal IORT table
-where DMA masks of PCI devices would get set to 0 as result.
+To provide backward compatibility for boards that use deprecated DT
+bindings, we need to add fw_devlink support for "gpio" and "gpios".
 
-iort_dma_setup() would query the root complex' IORT entry for a DMA
-mask, and use that over the one the device has been configured with
-earlier.
+We also need to ignore these properties on nodes with "gpio-hog"
+property because their gpio[s] are all supplied by the parent node.
 
-Ideally we want to use the minimum mask of what the IORT contains for
-the root complex and what the device was configured with, but never 0.
-
-Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Cc: linux-tegra <linux-tegra@vger.kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
-Hi all,
+ drivers/of/property.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-not sure I'm doing this right, but I think the current behavior (while a
-corner case) seems to also fail for 32 bit devices if the IORT specifies
-64 bit. It works on my test system now with a 32 bit device.
-
-Open to suggestions for better solutions (and maybe the
-nc_dma_get_range() should have the same sanity check?)
-
-Thanks,
-Moritz
-
----
- drivers/acpi/arm64/iort.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index d4eac6d7e9fb..c48eabf8c121 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -1126,6 +1126,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 5f9eed79a8aa..b2ea1951d937 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1271,6 +1271,28 @@ static struct device_node *parse_iommu_maps(struct device_node *np,
+ 	return of_parse_phandle(np, prop_name, (index * 4) + 1);
+ }
  
- 	rc = (struct acpi_iort_root_complex *)node->node_data;
- 
-+	if (!rc->memory_address_limit) {
-+		dev_warn(dev, "Root complex has broken memory_address_limit\n");
-+		return -EINVAL;
-+	}
++static struct device_node *parse_gpio_compat(struct device_node *np,
++					     const char *prop_name, int index)
++{
++	struct of_phandle_args sup_args;
 +
- 	*size = rc->memory_address_limit >= 64 ? U64_MAX :
- 			1ULL<<rc->memory_address_limit;
- 
-@@ -1172,9 +1177,9 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
- 		 */
- 		end = dmaaddr + size - 1;
- 		mask = DMA_BIT_MASK(ilog2(end) + 1);
--		dev->bus_dma_limit = end;
--		dev->coherent_dma_mask = mask;
--		*dev->dma_mask = mask;
-+		dev->bus_dma_limit = min_not_zero(dev->bus_dma_limit, end);
-+		dev->coherent_dma_mask = min_not_zero(dev->coherent_dma_mask, mask);
-+		*dev->dma_mask = min_not_zero(*dev->dma_mask, mask);
- 	}
- 
- 	*dma_addr = dmaaddr;
++	if (strcmp(prop_name, "gpio") && strcmp(prop_name, "gpios"))
++		return NULL;
++
++	/*
++	 * Ignore node with gpio-hog property since its gpios are all provided
++	 * by its parent.
++	 */
++	if (of_find_property(np, "gpio-hog", NULL))
++		return NULL;
++
++	if (of_parse_phandle_with_args(np, prop_name, "#gpio-cells", index,
++				       &sup_args))
++		return NULL;
++
++	return sup_args.np;
++}
++
+ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_clocks, },
+ 	{ .parse_prop = parse_interconnects, },
+@@ -1296,6 +1318,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_pinctrl6, },
+ 	{ .parse_prop = parse_pinctrl7, },
+ 	{ .parse_prop = parse_pinctrl8, },
++	{ .parse_prop = parse_gpio_compat, },
+ 	{ .parse_prop = parse_regulators, },
+ 	{ .parse_prop = parse_gpio, },
+ 	{ .parse_prop = parse_gpios, },
 -- 
-2.30.0
+2.30.0.296.g2bfb1c46d8-goog
 
