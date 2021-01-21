@@ -2,107 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E932FF2B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650ED2FF2C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389504AbhAUSCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:02:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
+        id S2389006AbhAUSDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389473AbhAUSBw (ORCPT
+        with ESMTP id S2389517AbhAUSDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:01:52 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12655C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:01:12 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id e22so5814821iom.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:01:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=j4qyNKroZf0PR1hUuEzsx/1WQ9PqO3whBh/bYKsXNk4=;
-        b=NwrMlXcOlysV4djOofPixbwvOb/eBpqs+bb7+bWOAoZNWmZReC52iZGxNDK9o01pX8
-         /qLR8LIa+yMXpxbfxe8xVuck43q5hxfGQ32mw0u9aNYHiQMhWh7cqAcCHltql3kPsNho
-         5ZYHbyKB6Vfoo1syuKP5tlH0NP7+iz4Y/xXjs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j4qyNKroZf0PR1hUuEzsx/1WQ9PqO3whBh/bYKsXNk4=;
-        b=R/uOWlfHH9H7gplGzYKb2juvn01wt0rc2SbF5naRaHHVHgc9EBS40iZmowU8tPn6zv
-         VmeNupVQTb6Iw11JpkEBIdqMIridFjtYZ2BhpnvvPVL11Qthhmk40yyx1O7OnpfWJBuz
-         LIlvqweJDkIpeu5S04CN4kCi1hmtfT1LI1P2naTqhLDAIPAVWrpeGZkyCKYs4Qndz8HX
-         EkiifsaW+nxJWDNEyNBQJsZwFlRDZF7g3qpXJAcUSmoVGCkJTgqZAQpPlz1pO9bg0vtE
-         ux9HqYJyI6fa1VCnqpVSwzZsY835275OZ2Oia9JiQB4wyw6J/s0R5Kph6czzNz1NKeVe
-         mS0g==
-X-Gm-Message-State: AOAM532x0c9Ot0FAg0McWz7KTsbZLckR0tQ/brVPDfW+1majDzKW9i8s
-        yRDwsMRaW0yeqfgxjW+WRzZ/6w==
-X-Google-Smtp-Source: ABdhPJznJJ/QBvTZQKHvjFLkKK9F4sWWxADtpcCtMpyGjJNm2zXjMNAkOgY6mRvBBmnE/WFugEH1Gw==
-X-Received: by 2002:a92:cb47:: with SMTP id f7mr778660ilq.169.1611252071329;
-        Thu, 21 Jan 2021 10:01:11 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s10sm2888397iob.4.2021.01.21.10.01.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 10:01:10 -0800 (PST)
-Subject: Re: rpc_xprt_debugfs_register() - atomic_inc_return() usage
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "Anna.Schumaker@netapp.com" <Anna.Schumaker@netapp.com>
-Cc:     "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <06c8f6ff-f821-e909-d40c-9de98657729f@linuxfoundation.org>
- <020aee05c808b3725db5679967406a918840f86f.camel@hammerspace.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <5952caee-edb4-e9ec-6621-fb50cfe3384f@linuxfoundation.org>
-Date:   Thu, 21 Jan 2021 11:01:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 21 Jan 2021 13:03:22 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AE3C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:02:42 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l2eHw-0003po-Es; Thu, 21 Jan 2021 19:02:32 +0100
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l2eHt-0007zB-Mn; Thu, 21 Jan 2021 19:02:29 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: adc: stm32-adc: enable timestamping for non-DMA usage
+Date:   Thu, 21 Jan 2021 19:02:28 +0100
+Message-Id: <20210121180228.30621-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <020aee05c808b3725db5679967406a918840f86f.camel@hammerspace.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/21/21 10:56 AM, Trond Myklebust wrote:
-> On Wed, 2021-01-20 at 16:52 -0700, Shuah Khan wrote:
->> Hi Anna and Trond,
->>
->> I came across the following while reviewing atomic_inc_return()
->> usages
->> that cast return value to unsigned
->>
->> rpc_xprt_debugfs_register()'s atomic_inc_return() usage looks a bit
->> odd.
->>
->> - cur_id isn't initialized
->> - id = (unsigned int)atomic_inc_return(&cur_id);
->>
->> Please note that id is int. Is it expected that cur_id could
->> overflow?
->> Is there a maximum limit for this value?
->>
-> 
-> Yes, we do expect cur_id to eventually overflow (once you have created
-> 2 billion RPC client instances), however the atomic increment
-> operations are expected to handle this correctly according to the
-> maintainers (I already asked them in a different context). Furthermore,
-> the code itself doesn't care about strict sequentiality. All it wants
-> from the counter is uniqueness, with that uniqueness condition actually
-> being enforced by the subsequent debugfs_create_file() call.
-> 
-> IOW: I don't think this is a real problem.
-> 
+For non-DMA usage, we have an easy way to associate a timestamp with a
+sample: iio_pollfunc_store_time stores a timestamp in the primary
+trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
+to push out the buffer along with the timestamp.
 
-Great. Thank you for a detailed explanation.
+For this to work, the driver needs to register an IIO_TIMESTAMP channel.
+Do this.
 
--- Shuah
+For DMA, it's not as easy, because we don't push the buffers out of
+stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
+a tasklet scheduled after a DMA completion.
+
+Preferably, the DMA controller would copy us the timestamp into that buffer
+as well. Until this is implemented, restrict timestamping support to
+only PIO. For low-frequency sampling, PIO is probably good enough.
+
+Cc: Holger Assmann <has@pengutronix.de>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ drivers/iio/adc/stm32-adc.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index c067c994dae2..91d9483e1f5f 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+ 	}
+ }
+ 
+-static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
++static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+ {
+ 	struct device_node *node = indio_dev->dev.of_node;
+ 	struct stm32_adc *adc = iio_priv(indio_dev);
+@@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+ 		return -EINVAL;
+ 	}
+ 
++	if (timestamping)
++		num_channels++;
++
+ 	channels = devm_kcalloc(&indio_dev->dev, num_channels,
+ 				sizeof(struct iio_chan_spec), GFP_KERNEL);
+ 	if (!channels)
+@@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+ 		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+ 	}
+ 
++	if (timestamping) {
++		struct iio_chan_spec *timestamp = &channels[scan_index];
++
++		timestamp->type = IIO_TIMESTAMP;
++		timestamp->channel = -1;
++		timestamp->scan_index = scan_index;
++		timestamp->scan_type.sign = 's';
++		timestamp->scan_type.realbits = 64;
++		timestamp->scan_type.storagebits = 64;
++
++		scan_index++;
++	}
++
+ 	indio_dev->num_channels = scan_index;
+ 	indio_dev->channels = channels;
+ 
+@@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	irqreturn_t (*handler)(int irq, void *p) = NULL;
+ 	struct stm32_adc *adc;
++	bool timestamping = false;
+ 	int ret;
+ 
+ 	if (!pdev->dev.of_node)
+@@ -1931,16 +1948,18 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = stm32_adc_chan_of_init(indio_dev);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = stm32_adc_dma_request(dev, indio_dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (!adc->dma_chan)
++	if (!adc->dma_chan) {
+ 		handler = &stm32_adc_trigger_handler;
++		timestamping = true;
++	}
++
++	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
++	if (ret < 0)
++		return ret;
+ 
+ 	ret = iio_triggered_buffer_setup(indio_dev,
+ 					 &iio_pollfunc_store_time, handler,
+-- 
+2.30.0
+
