@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5372FEED1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CC62FEF36
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732995AbhAUPbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:31:03 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:46040 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731924AbhAUNWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:22:11 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LDDfln043163;
-        Thu, 21 Jan 2021 13:21:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=m2knT8uSI6MLG69Ij4awUn0WhOK6WWXgzwRlQjg273U=;
- b=NUNs4uOJ1YNaFJUN18BDLqeYKsrNxZ2U0j9SnM1jH08gmuKtV/Llw6L1qOOzqUG8PccB
- sTYIdaGy7B6hnYUOhoP2PRQeLOV4OJVjQwHuSDB1+4SJO/T5m8cThriPn0XQsGDYT6ZO
- d2GFjVmel3tjP1XDYA5ZzwcJBuYeO+4R3jGEC+H7z2KFET7ph+5bFF0K0kgYAZ03HFjn
- cm6diN/JDzuIFtdXLWr6189cWN68e+djsIhcsoUf/AH7avReVXRJF0cuzYRfa3PblbhX
- uNgY8rH3oVjqOxNYHFpnI2LZyjrZfY7wdbBG0DzaIq+sCtY6ruYbtg0d6uMk2aT9Puwe pg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3668qaf9jc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 13:21:12 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LDFkhP106711;
-        Thu, 21 Jan 2021 13:21:12 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3668rexr2m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 13:21:12 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10LDKZJB123118;
-        Thu, 21 Jan 2021 13:21:12 GMT
-Received: from gmananth-linux.oraclecorp.com (dhcp-10-166-171-141.vpn.oracle.com [10.166.171.141])
-        by userp3030.oracle.com with ESMTP id 3668rexq88-3;
-        Thu, 21 Jan 2021 13:21:12 +0000
-From:   Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     viro@zeniv.linux.org.uk, matthew.wilcox@oracle.com,
-        khlebnikov@yandex-team.ru, gautham.ananthakrishna@oracle.com
-Subject: [PATCH RFC 2/6] fsnotify: stop walking child dentries if remaining tail is negative
-Date:   Thu, 21 Jan 2021 18:49:41 +0530
-Message-Id: <1611235185-1685-3-git-send-email-gautham.ananthakrishna@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
-References: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=973
- lowpriorityscore=0 malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101210072
+        id S1731843AbhAUNVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:21:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:36344 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731808AbhAUNUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:20:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B1CE11B3;
+        Thu, 21 Jan 2021 05:20:09 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B3C073F68F;
+        Thu, 21 Jan 2021 05:20:07 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v2 0/2] kasan: Fix metadata detection for KASAN_HW_TAGS
+Date:   Thu, 21 Jan 2021 13:19:54 +0000
+Message-Id: <20210121131956.23246-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+With the introduction of KASAN_HW_TAGS, kasan_report() currently assumes
+that every location in memory has valid metadata associated. This is due
+to the fact that addr_has_metadata() returns always true.
 
-When notification starts/stops listening events from inode's children it
-have to update dentry->d_flags of all positive child dentries. Scanning
-may took a long time if directory has a lot of negative child dentries.
+As a consequence of this, an invalid address (e.g. NULL pointer address)
+passed to kasan_report() when KASAN_HW_TAGS is enabled, leads to a
+kernel panic.
 
-This is main beneficiary of sweeping cached negative dentries to the end.
+Example below, based on arm64:
 
-Before patch:
+ ==================================================================
+ BUG: KASAN: invalid-access in 0x0
+ Read at addr 0000000000000000 by task swapper/0/1
+ Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+ Mem abort info:
+   ESR = 0x96000004
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+ Data abort info:
+   ISV = 0, ISS = 0x00000004
+   CM = 0, WnR = 0
 
-nr_dentry = 24172597    24.2M
-nr_buckets = 8388608    2.9 avg
-nr_unused = 24158110    99.9%
-nr_negative = 24142810  99.9%
+...
 
-inotify time: 0.507182 seconds
+ Call trace:
+  mte_get_mem_tag+0x24/0x40
+  kasan_report+0x1a4/0x410
+  alsa_sound_last_init+0x8c/0xa4
+  do_one_initcall+0x50/0x1b0
+  kernel_init_freeable+0x1d4/0x23c
+  kernel_init+0x14/0x118
+  ret_from_fork+0x10/0x34
+ Code: d65f03c0 9000f021 f9428021 b6cfff61 (d9600000)
+ ---[ end trace 377c8bb45bdd3a1a ]---
+ hrtimer: interrupt took 48694256 ns
+ note: swapper/0[1] exited with preempt_count 1
+ Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+ SMP: stopping secondary CPUs
+ Kernel Offset: 0x35abaf140000 from 0xffff800010000000
+ PHYS_OFFSET: 0x40000000
+ CPU features: 0x0a7e0152,61c0a030
+ Memory Limit: none
+ ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
 
-After patch:
+This series fixes the behavior of addr_has_metadata() that now returns
+true only when the address is valid.
 
-nr_dentry = 24562747    24.6M
-nr_buckets = 8388608    2.9 avg
-nr_unused = 24548714    99.9%
-nr_negative = 24543867  99.9%
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Leon Romanovsky <leonro@mellanox.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-inotify time: 0.000010 seconds
+Vincenzo Frascino (2):
+  arm64: Fix kernel address detection of __is_lm_address()
+  kasan: Add explicit preconditions to kasan_report()
 
-Negative dentries no longer slow down inotify op at parent directory.
+ arch/arm64/include/asm/memory.h | 2 +-
+ mm/kasan/kasan.h                | 2 +-
+ mm/kasan/report.c               | 7 +++++++
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Signed-off-by: Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
----
- fs/notify/fsnotify.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-index 8d3ad5e..4ccb59d 100644
---- a/fs/notify/fsnotify.c
-+++ b/fs/notify/fsnotify.c
-@@ -127,8 +127,12 @@ void __fsnotify_update_child_dentry_flags(struct inode *inode)
- 		 * original inode) */
- 		spin_lock(&alias->d_lock);
- 		list_for_each_entry(child, &alias->d_subdirs, d_child) {
--			if (!child->d_inode)
-+			if (!child->d_inode) {
-+				/* all remaining children are negative */
-+				if (d_is_tail_negative(child))
-+					break;
- 				continue;
-+			}
- 
- 			spin_lock_nested(&child->d_lock, DENTRY_D_LOCK_NESTED);
- 			if (watched)
 -- 
-1.8.3.1
+2.30.0
 
