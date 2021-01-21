@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB862FF26F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4940F2FF271
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388858AbhAURv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:51:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388179AbhAURu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:50:56 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C50DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:50:16 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id 6so3868516ejz.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:50:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OqDGr5OXXLDXoZ+kvErdRqn2LWaoGkSZKNVGtOHo0BI=;
-        b=eVFeNLK0LrN/WxB0D4SEhXIkmQeMvag+qoGefW6ONj0khNhIHCAYmWw9sI6fc2p/Tf
-         iNvWC56d2SekCqH8W6lVW6vuLj7fDrh9atefJI9fHFKN2HbcrU+BybCJPwFsyDFpRFNK
-         aCVFjPZzn5Am8jeJnz5DbslQlxvVq2s9ENXpN8U2sPN5shejLfm8wz/+ocREFbtvzFy1
-         c+nYHU62Xh+DGpT9kdA3H7YH5d1SS4wIR6W3QDVZ9tK9wT6uvi7iMi4JW1x2KQTscaAC
-         6hIH7fPbeJwm/QeZw+nqKA6JnkG1MevMAYjn83JoB8kq1Y5klO9TM5ajhVa7bqHtLcO1
-         yNLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OqDGr5OXXLDXoZ+kvErdRqn2LWaoGkSZKNVGtOHo0BI=;
-        b=JxWY5yqNcM/HEQ4jwdTyUiFCz5OB8kHMm0m9U8Ge9otbwm/1zlw6+yPX7rZpYXE/EH
-         IsOkie4TahmIghKMdf/Bd2pEC+4rPgmkTdWcOtt0yp3HnuwcbnkD0AasUkcMoy8H5jE2
-         uqd5M7wR1vBm4zP5Wlr7Ga6KRRv0H7xlX29+FGtOQqtGSCnEBUzwm3RnSEKYXk4zGCeu
-         Wbg6lt+ZMpEXLawFtVYGgGaMroFInwvWHQJzdHfKLDOL4CSrw9Ebq3/+wYlkaTlfHwgy
-         vl9t1L3VvpYaOy0lBu86Pc+xTYTlFUBpMTqCcfTcKXA2ThbHSI+A5WMknRA9y66tSX1Z
-         MZWA==
-X-Gm-Message-State: AOAM531CRbGU7M0Y5frHpQO29NBEhEIi+j53hg7HH2gl4uX9ltWDlCJp
-        Q6B3A0kKnvykAbPdh/UBToU7tyV/18lJ1ZSCrWwGww==
-X-Google-Smtp-Source: ABdhPJxojGLRdzZFKIOXzAri6ROiq62XZBU5dIKiIeyLRrawBjmoEiHQe3KMqw+7otHRhV8gUwsjuOh2i5mxmcctbnU=
-X-Received: by 2002:a17:906:ce49:: with SMTP id se9mr413181ejb.341.1611251415063;
- Thu, 21 Jan 2021 09:50:15 -0800 (PST)
+        id S2388947AbhAURv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:51:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388079AbhAURve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:51:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 502B8207C5;
+        Thu, 21 Jan 2021 17:50:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611251454;
+        bh=WGwQ/LHJXpuOITyCedmJK7xHBWnLxm4p78A0vIrcCrI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=WWMIaVUrMsoYXKcThZxUsMzkbftbS6wb7aeJVYFAMYi6c7szO0KcwQGFD7qWB9j3x
+         /lc6NcIPhGgD5WUFEt73ESPSagiyNbmFe7NhSYany8aSzG0Rn4+4dA/ikDzT2kHoXX
+         kOTCg/GUj9begEkDotw4k7luq6TLQvfFle5dGuOrJ4dLsHCxF0SHW18DULT+1HDSJi
+         8HjPpYPtvvi+0u9koFHercHFR41yE9w2kZVBfOD3GjNwdUZrqGNMDKbRZMvVrDR3Nd
+         /yAfa+4KDh59SbWxSUP+GqVQj774WcQw7aCvGS09aJf6BLTdIF8uxaudyrix0jrgeF
+         jhh2Ng65m6oRA==
+Date:   Thu, 21 Jan 2021 11:50:50 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] PCI: set dma-can-stall for HiSilicon chip
+Message-ID: <20210121175050.GA2668947@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <161117153248.2853729.2452425259045172318.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161117153776.2853729.6944617921517514510.stgit@dwillia2-desk3.amr.corp.intel.com>
- <YAk3lVeFqnv5vzA2@kroah.com>
-In-Reply-To: <YAk3lVeFqnv5vzA2@kroah.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 21 Jan 2021 09:50:09 -0800
-Message-ID: <CAPcyv4hEpdh_aGcs_73w5KmYWdvR29KB2M2-NNXsaXwxf35Hwg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] cdev: Finish the cdev api with queued mode support
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121165706.GA2663152@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:13 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jan 20, 2021 at 11:38:57AM -0800, Dan Williams wrote:
-> > -void cdev_del(struct cdev *p)
-> > +void cdev_del(struct cdev *cdev)
+On Thu, Jan 21, 2021 at 10:57:09AM -0600, Bjorn Helgaas wrote:
+> On Mon, Jan 18, 2021 at 04:58:36PM +0800, Zhangfei Gao wrote:
+> > HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+> > actually on the AMBA bus. These fake PCI devices can support SVA via
+> > SMMU stall feature, by setting dma-can-stall for ACPI platforms.
+> > 
+> > Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+> > ---
+> > Property dma-can-stall depends on patchset
+> > https://lore.kernel.org/linux-iommu/20210108145217.2254447-1-jean-philippe@linaro.org/
+> > 
+> >  drivers/pci/quirks.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> > 
+> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > index 873d27f..b866cdf 100644
+> > --- a/drivers/pci/quirks.c
+> > +++ b/drivers/pci/quirks.c
+> > @@ -1827,10 +1827,23 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
+> >  
+> >  static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
 > >  {
-> > -     cdev_unmap(p->dev, p->count);
-> > -     kobject_put(&p->kobj);
-> > +     cdev_unmap(cdev->dev, cdev->count);
-> > +     kobject_put(&cdev->kobj);
->
-> After Christoph's patch series, the kobject in struct cdev does nothing,
-> so I will be removing it.  So I don't think this patch set is going to
-> do what you want :(
+> > +	struct property_entry properties[] = {
+> > +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
+> > +		{},
+> > +	};
+> > +
+> >  	if (pdev->revision != 0x21 && pdev->revision != 0x30)
+> >  		return;
+> >  
+> >  	pdev->pasid_no_tlp = 1;
+> > +
+> > +	/*
+> > +	 * Set the dma-can-stall property on ACPI platforms. Device tree
+> > +	 * can set it directly.
+> > +	 */
+> > +	if (!pdev->dev.of_node &&
+> > +	    device_add_properties(&pdev->dev, properties))
+> > +		pci_warn(pdev, "could not add stall property");
+> 
+> What's the purpose of adding the "dma-can-stall" property?  I don't
+> see any reference to that property in the tree or in this series.  If
+> this is related to some other series that uses it, perhaps this part
+> should be moved to that series?
 
-The proposal in this series has nothing to do with kobject lifetime.
-Please take another look at the file_operations shutdown coordination
-problem and the fact that it's not just cdev that has a use case to
-manage file_operations this way. I believe Christoph's only objection,
-correct me if I'm wrong, is that this proposal invents a new third way
-to do this relative to procfs and debugfs. Perhaps there's a way to
-generalize this for all three, and I'm going to put some thought
-there, but at this point I think I'm failing to describe the problem
-clearly.
+Sorry, I missed your note about this above!  Thanks for the pointer.
+
+I hate having code in the tree that's useless pending some other
+series, but I guess doing it this way helps avoid ordering issues
+between this series and that one.
+
+But please include the lore URL to Jean-Philippe's series in the
+commit log so that if this patch is merged before Jean-Philippe's,
+people at least have a hint about what's going on.
+
+> >  }
+> >  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
+> >  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
+> > -- 
+> > 2.7.4
+> > 
