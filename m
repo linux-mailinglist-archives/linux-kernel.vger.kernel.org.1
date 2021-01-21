@@ -2,166 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8A92FE3DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC58B2FE3EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbhAUH0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:26:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726858AbhAUHUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:20:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 714F523A05;
-        Thu, 21 Jan 2021 07:18:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611213508;
-        bh=XRoGZl7hPX9FXNroC22NXe5/j/Fb++liwkJhqkZM5MY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RCJSRr33HyvR9mkHXrFZ1CcG/Wi155wfAMm0OejMisxR5L6tDjSBHect3Oke+U+MS
-         a2S4tvRHCB7h87PaqKVpf4yhfWW+Ru9pVpIstHVetojPtLto3Uw60fRnExLr+WpAaP
-         YiUVomRK1zrBcFM8ECWOhr+OMa5jc5819pASLkov+WCOnqonnzTFhMWM3An1fAOTqp
-         hXjkT2V/cyTWUYxl+uJKK1HZZraG5z+GbWvM0M3Y9KFuiicIZVIKNzioImvsAACVlB
-         my1oxZ6qsTjjQqpgKXh4YT5GLfdzuKc6OyoziRlQeWTVIwN8La+Q+EzFENFdJtQkDo
-         O8UfT7NKOAW9A==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1l2UEb-004Bsb-R2; Thu, 21 Jan 2021 08:18:25 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 20/21] regulator: hi6421v600-regulator: move it from staging
-Date:   Thu, 21 Jan 2021 08:18:22 +0100
-Message-Id: <064067197af633179da88d67e146faedcbab7a7e.1611212783.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1611212783.git.mchehab+huawei@kernel.org>
-References: <cover.1611212783.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+        id S1727712AbhAUH2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:28:18 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:43804 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727303AbhAUHVE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:21:04 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UMOzPSM_1611213609;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMOzPSM_1611213609)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Jan 2021 15:20:13 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     pbonzini@redhat.com
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] kvm: x86/mmu: Assign boolean values to a bool variable
+Date:   Thu, 21 Jan 2021 15:20:07 +0800
+Message-Id: <1611213607-4062-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is ready for mainstream. Move it out of staging.
+Fix the following coccicheck warnings:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+./arch/x86/kvm/mmu/mmu.c:5829:2-9: WARNING: Assignment of 0/1
+to bool variable.
+
+./arch/x86/kvm/mmu/mmu.c:2505:1-11: WARNING: Assignment of 0/1
+to bool variable.
+
+./arch/x86/kvm/mmu/mmu.c:1814:1-11: WARNING: Assignment of 0/1
+to bool variable.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 ---
- MAINTAINERS                                            |  7 +------
- drivers/regulator/Kconfig                              |  8 ++++++++
- drivers/regulator/Makefile                             |  1 +
- .../hikey9xx => regulator}/hi6421v600-regulator.c      |  0
- drivers/staging/Kconfig                                |  2 --
- drivers/staging/Makefile                               |  1 -
- drivers/staging/hikey9xx/Kconfig                       | 10 ----------
- drivers/staging/hikey9xx/Makefile                      |  2 --
- 8 files changed, 10 insertions(+), 21 deletions(-)
- rename drivers/{staging/hikey9xx => regulator}/hi6421v600-regulator.c (100%)
+ arch/x86/kvm/mmu/mmu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 120f14620f56..808fdcdd98ad 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8012,12 +8012,7 @@ L:	linux-kernel@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
- F:	drivers/mfd/hi6421-spmi-pmic.c
--
--HISILICON STAGING DRIVERS FOR HIKEY 960/970
--M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
--L:	devel@driverdev.osuosl.org
--S:	Maintained
--F:	drivers/staging/hikey9xx/
-+F:	drivers/regulator/hi6421v600-regulator.c
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d16481..ced0bd5 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1819,7 +1819,7 @@ static void kvm_unlink_unsync_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+ {
+ 	WARN_ON(!sp->unsync);
+ 	trace_kvm_mmu_sync_page(sp);
+-	sp->unsync = 0;
++	sp->unsync = false;
+ 	--kvm->stat.mmu_unsync;
+ }
  
- HISILICON TRUE RANDOM NUMBER GENERATOR V2 SUPPORT
- M:	Zaibo Xu <xuzaibo@huawei.com>
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 020a00d6696b..ca983e5a7a4d 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -394,6 +394,14 @@ config REGULATOR_HI655X
- 	  This driver provides support for the voltage regulators of the
- 	  Hisilicon Hi655x PMIC device.
+@@ -2510,7 +2510,7 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ {
+ 	trace_kvm_mmu_unsync_page(sp);
+ 	++vcpu->kvm->stat.mmu_unsync;
+-	sp->unsync = 1;
++	sp->unsync = true;
  
-+config REGULATOR_HI6421V600
-+	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
-+	depends on MFD_HI6421_SPMI && OF
-+	help
-+	  This driver provides support for the voltage regulators on
-+	  HiSilicon Hi6421v600 PMU / Codec IC.
-+	  This is used on Kirin 3670 boards, like HiKey 970.
-+
- config REGULATOR_ISL9305
- 	tristate "Intersil ISL9305 regulator"
- 	depends on I2C
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 6ebae516258e..45d1883de54b 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_REGULATOR_FAN53880) += fan53880.o
- obj-$(CONFIG_REGULATOR_GPIO) += gpio-regulator.o
- obj-$(CONFIG_REGULATOR_HI6421) += hi6421-regulator.o
- obj-$(CONFIG_REGULATOR_HI6421V530) += hi6421v530-regulator.o
-+obj-$(CONFIG_REGULATOR_HI6421V600) += hi6421v600-regulator.o
- obj-$(CONFIG_REGULATOR_HI655X) += hi655x-regulator.o
- obj-$(CONFIG_REGULATOR_ISL6271A) += isl6271a-regulator.o
- obj-$(CONFIG_REGULATOR_ISL9305) += isl9305.o
-diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
-similarity index 100%
-rename from drivers/staging/hikey9xx/hi6421v600-regulator.c
-rename to drivers/regulator/hi6421v600-regulator.c
-diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
-index 2d0310448eba..e6c831c6cccc 100644
---- a/drivers/staging/Kconfig
-+++ b/drivers/staging/Kconfig
-@@ -116,6 +116,4 @@ source "drivers/staging/qlge/Kconfig"
+ 	kvm_mmu_mark_parents_unsync(sp);
+ }
+@@ -5839,9 +5839,9 @@ static int set_nx_huge_pages(const char *val, const struct kernel_param *kp)
  
- source "drivers/staging/wfx/Kconfig"
- 
--source "drivers/staging/hikey9xx/Kconfig"
--
- endif # STAGING
-diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index 757a892ab5b9..a3b1fd0622f9 100644
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@ -48,4 +48,3 @@ obj-$(CONFIG_FIELDBUS_DEV)     += fieldbus/
- obj-$(CONFIG_KPC2000)		+= kpc2000/
- obj-$(CONFIG_QLGE)		+= qlge/
- obj-$(CONFIG_WFX)		+= wfx/
--obj-y				+= hikey9xx/
-diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
-index 76337be330f8..d77aa6db9b6e 100644
---- a/drivers/staging/hikey9xx/Kconfig
-+++ b/drivers/staging/hikey9xx/Kconfig
-@@ -10,13 +10,3 @@ config PHY_HI3670_USB
- 	  Enable this to support the HISILICON HI3670 USB PHY.
- 
- 	  To compile this driver as a module, choose M here.
--
--# to be placed at drivers/regulator
--config REGULATOR_HI6421V600
--	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
--	depends on MFD_HI6421_SPMI && OF
--	depends on REGULATOR
--	help
--	  This driver provides support for the voltage regulators on
--	  HiSilicon Hi6421v600 PMU / Codec IC.
--	  This is used on Kirin 3670 boards, like HiKey 970.
-diff --git a/drivers/staging/hikey9xx/Makefile b/drivers/staging/hikey9xx/Makefile
-index d26af65baf8b..f5e12c19ddf6 100644
---- a/drivers/staging/hikey9xx/Makefile
-+++ b/drivers/staging/hikey9xx/Makefile
-@@ -1,5 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_PHY_HI3670_USB)		+= phy-hi3670-usb3.o
--
--obj-$(CONFIG_REGULATOR_HI6421V600)	+= hi6421v600-regulator.o
+ 	/* In "auto" mode deploy workaround only if CPU has the bug. */
+ 	if (sysfs_streq(val, "off"))
+-		new_val = 0;
++		new_val = false;
+ 	else if (sysfs_streq(val, "force"))
+-		new_val = 1;
++		new_val = true;
+ 	else if (sysfs_streq(val, "auto"))
+ 		new_val = get_nx_auto_mode();
+ 	else if (strtobool(val, &new_val) < 0)
 -- 
-2.29.2
+1.8.3.1
 
