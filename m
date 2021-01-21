@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779312FE002
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735DF2FE004
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbhAUDXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:23:11 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:47628 "EHLO loongson.cn"
+        id S1727659AbhAUDZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 22:25:36 -0500
+Received: from mail-eopbgr130058.outbound.protection.outlook.com ([40.107.13.58]:35302
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728698AbhAUDKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:10:30 -0500
-Received: from zhangzhijie.loongson.cn (unknown [10.20.41.29])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxtbxX8AhgxmIIAA--.10521S2;
-        Thu, 21 Jan 2021 11:09:11 +0800 (CST)
-From:   "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
-To:     daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        zhangzhijie@loongson.cn
-Subject: [PATCH v4] drm: Improve the output_poll_changed description
-Date:   Thu, 21 Jan 2021 11:09:09 +0800
-Message-Id: <20210121030909.1126643-1-zhangzhijie@loongson.cn>
-X-Mailer: git-send-email 2.29.2
+        id S1731553AbhAUDV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 22:21:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i8x59aWAAPEgHqAkn6o4eEaOXend9GBDUQRy7/jrVaCzauvASkHQoTCQnk7MpwAlqLrbRPVp/4qtQgbc4H69oBLolvxEilDqiEQvUfq9hm3RPPJHGEBZ7dzRDoITD6A++PPkSEAJgQMMaRCfAo/BJoWzevbjD4Ge56VDikoYXKuRiENrd8s7y0qhM3b/Q3qt9djxplw8eXnZ+eOi2VXeLmDpRHrzCpYY/WtIg5JMq34ETqYl8iUWzYlsbXBOTH3zM9ijQm1noliP/DexU6jPv1K35PWDMK7YxnT797u75xb+bdVGZ+xlTnL48pWDkmB9OpfRjkKNM3Vy9wmu7mWN3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WAAIPKJbSEtADFFLlSVi/BaMTbhTcAAhRRXIR31n108=;
+ b=dA8tyGc1ZtcvdYtluzs13UQjL2LmzfBJGklCQqBjn2B7y9FDG5om6wSpv9e1fcvX3/aPM1qhKfAKPAfYEyZrguhJzafIn927VvQC9X/xfYgNX+SmW6q1Nil5hyflAPNHq2qfQwZDJNW4861HnnkSmEKVy8nAjY6vnDRnX66JFXzaruvC4u3hQvVEg+fAs65PMEt1lMK4tEm2ddO5bQzUPqnSLFBKBvTl6mC5Yvayg9PUuyIki+nIciy4J9N8shsDTwL+sn14WUmLUd5Int/TNPloVIMweryHIzMHrpLBuliIRRV7nJJ0TixR2ExAdGbbG7g90x0axtiJtr6UUtdyYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WAAIPKJbSEtADFFLlSVi/BaMTbhTcAAhRRXIR31n108=;
+ b=svB9iy7paqTERkpd252yTnfgrorZOBhi6iXF1vomvMMqCRcl7w7ezABQfowhfFXLvpwSBlA4eMfrFYS+veRc87Hw7uPCgkRhKBGKEUwAMyJlEVZwEFfeeXmxMLub6teHIDWoyQD0fTc3/93GETlU82Ens0Ml1Y8Xwrf9oW7H4AQ=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB6858.eurprd04.prod.outlook.com (2603:10a6:10:113::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 21 Jan
+ 2021 03:20:15 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3763.016; Thu, 21 Jan 2021
+ 03:20:15 +0000
+From:   peng.fan@nxp.com
+To:     ulf.hansson@linaro.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        adrian.hunter@intel.com
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V2 0/4] imx esdhc dt/driver update
+Date:   Thu, 21 Jan 2021 11:09:49 +0800
+Message-Id: <1611198593-16287-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SGXP274CA0005.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::17)
+ To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxtbxX8AhgxmIIAA--.10521S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr43Jw4kKr18uFWrtr4ruFg_yoW8WF4rpF
-        sFkryYkr4ktFWfZF4UG34xW3WkJan3Gr40qFZ7tw4FvrnIyr9FvFyvgr15uryrWrZxJr4Y
-        q34S9ryrZr15CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
-        WxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK6svP
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: x2kd0wx2klyx3h6o00pqjv00gofq/1tbiAQAIAF3QvM4CmwABsu
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SGXP274CA0005.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 03:20:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3f61199a-0a6f-4229-f9a6-08d8bdbb7839
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6858:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB68583F395126D856221411F688A10@DB8PR04MB6858.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: P4TyBOU7DU1qNozgBmTcyuy1yQIeepi2AoRBqJTh4D+Id+qGRVD86wfajPp5oUGpX6np67cNa8x8D8v70RJtOe8NmCg3txb3kJWuECjetqtvtaXC6YapQ3eu7Ep5pfNlI4mTDOcWFbPFPMGsODmZpRsdtJo5TaVNksDheJfc1E8ZigpEYltmw7qBOcPhjq4iZAuV7JZZhGLaGw6FAWNfKS7UcEfDWpWNlH16BErS5JhLBiR91PEm09BikldNBmyJupxoE/x9/+/BIqSCUFaJlyAIa6AsYTS/fERg9CRySNzlnhrijlsSpXU98b+270WbXCq5Hh0/sNzzlCU4rUl57qSfFy6ctJg9tfJ/LZgSfk8KOT0Ya/FhEnYRxg6mZI/NOjsVQ9zvYOvnBcB9/fwYhs85wzVRXhzXP6vK030oGkixKPSX2Im0CUsbKK9QM8NS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(366004)(86362001)(4744005)(36756003)(6486002)(8936002)(186003)(16526019)(15650500001)(6666004)(66476007)(7416002)(316002)(6512007)(8676002)(5660300002)(66556008)(52116002)(83380400001)(478600001)(66946007)(2906002)(4326008)(6506007)(26005)(956004)(9686003)(2616005)(69590400011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?HT00WrN1ftHm6CDgfHRcABtL5em49E+HxSZ07xox7yLefIcSLDDTBp6+Np2i?=
+ =?us-ascii?Q?BUjwx52MKwUGcBhUbM1BTX7QynndLqyZJqQ9TqCnT4hEWparD5QwkdsuQx+4?=
+ =?us-ascii?Q?fUthSaxDOrvOxNz4A9Scu850KZS5vVW60AWIcJlTzB8oWJ4EbZXW+npOTSfB?=
+ =?us-ascii?Q?y/pue8oOZQq2Q1BGwS7VtrSIbkJP3+04J9f+9haRWGgXMDvuwFOty84quf1m?=
+ =?us-ascii?Q?F30BHJN0MU67WbFnYJpa6sjBzxmURWGsdOaZv9XrmLJHjyYYQAS0oEXffA7F?=
+ =?us-ascii?Q?n9FQgLN3dkmJojDGcsXGdoBb6z9w51VZ6W6mLg0SalZPeuLllu8+inPkfpnh?=
+ =?us-ascii?Q?QKWxNbgh4H9bj+0wOiUbXJ7StQM5t1yqLFy8jO4DeparAmASGxgNgD6uROoz?=
+ =?us-ascii?Q?bJdEutPCdoI3LzlzBBvObidczDJwXbQ1+nCW2z0gNGbxAHERPwF9nuRQ5tfd?=
+ =?us-ascii?Q?KXsCLpHc1sd9HBVu8ZaKYqnnzU0ZGuamQ0LtC8eCQsl4G/MTJqmOV60WdfAp?=
+ =?us-ascii?Q?693sD5bzcSe54gfOeaGWRsVJe9HZRJOcwXV3mr3L/0uxQCL7bf2Dzz1cXEJo?=
+ =?us-ascii?Q?hIipzlqpKPBzsW1yLjJd8NjeN3TwUynTgQ96SXxGYDYNyCeZQOLhpfVaDX4Z?=
+ =?us-ascii?Q?+c86lAJNCYZTA28d6xBqDBxXwL7cXKH44wnrJYflPMITCcxRwTUdW/P48Fei?=
+ =?us-ascii?Q?7VHemhbQ3bfFqDWiVWiIFs77V+Hct71DJBbDyoPUkDOmRiLELPIDxUIt49jy?=
+ =?us-ascii?Q?i5aUepx2jx0XjoHgLfhdDVkEnUIIE6MLif5sXli1xqCRPtPvx3EzuhSCS9Hq?=
+ =?us-ascii?Q?ocPjX9f4ng1y3wYtqqkHYTCK47vxsSzngZnZwcxdzNm8FtxLbaWYkgKVu1ca?=
+ =?us-ascii?Q?usQ7svl8AkRw+iWLKf7zV7/cMIh8bIWg1PtpLcpBSFLiOwhWG5fnKUuH4Gsm?=
+ =?us-ascii?Q?/NznryEQ/FUswyDFRguqtvYFSw8Inn66veTGyV2yzho6IjnrhPdg5BjCy8Iy?=
+ =?us-ascii?Q?AerN?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f61199a-0a6f-4229-f9a6-08d8bdbb7839
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 03:20:15.3371
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BQ4HnPTjxwBI6XHpo6DQcJvWfNmSrtsLiKgybDkvqMqTqh6N6J1CdhK5swzRdBbStP1650UHA7hY7JmO5m3i4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6858
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangzhijie <zhangzhijie@loongson.cn>
+From: Peng Fan <peng.fan@nxp.com>
 
-this callback was used by drm_kms_helper_hotplug_event()
+Patch V2:
+ patch 1, 2, 3 is new
+ patch 4 is not changed
 
-V2: (Thanks for Daniel's suggestions)
-- remove the FIXME below.since with the drm_client
-- infrastructure and the generic fbdev emulation we've
-- resolved this all very neatly now.
+Peng Fan (4):
+  dt-bindings: mmc: fsl-imx-esdhc: add pinctrl bindings
+  dt-bindings: mmc: fsl-imx-esdhc: add clock bindings
+  arm64: dts: imx8qxp: correct usdhc clock-names sequence
+  mmc: sdhci-esdhc-imx: validate pinctrl before use it
 
-V3: Add comments that This hook is deprecated
-- new implementation methods instead of this hook
+ .../bindings/mmc/fsl-imx-esdhc.yaml           | 36 +++++++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8qxp.dtsi    | 18 +++++-----
+ drivers/mmc/host/sdhci-esdhc-imx.c            |  2 +-
+ 3 files changed, 46 insertions(+), 10 deletions(-)
 
-Signed-off-by: ZhiJie.Zhang <zhangzhijie@loongson.cn>
----
- include/drm/drm_mode_config.h | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
-index ab424ddd7665..fbc0da25d7c5 100644
---- a/include/drm/drm_mode_config.h
-+++ b/include/drm/drm_mode_config.h
-@@ -103,14 +103,13 @@ struct drm_mode_config_funcs {
- 	 * Callback used by helpers to inform the driver of output configuration
- 	 * changes.
- 	 *
--	 * Drivers implementing fbdev emulation with the helpers can call
--	 * drm_fb_helper_hotplug_changed from this hook to inform the fbdev
--	 * helper of output changes.
-+	 * Drivers implementing fbdev emulation use drm_kms_helper_hotplug_event()
-+	 * to call this hook to inform the fbdev helper of output changes.
- 	 *
--	 * FIXME:
--	 *
--	 * Except that there's no vtable for device-level helper callbacks
--	 * there's no reason this is a core function.
-+	 * This hook is deprecated, drivers should instead use
-+	 * drm_fbdev_generic_setup() which takes care of any necessary
-+	 * hotplug event forwarding already without further involvement by
-+	 * the driver.
- 	 */
- 	void (*output_poll_changed)(struct drm_device *dev);
- 
 -- 
-2.29.2
+2.28.0
 
