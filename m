@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A840B2FE6A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF66A2FE6B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbhAUJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S1729066AbhAUJsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728846AbhAUJqH (ORCPT
+        with ESMTP id S1728876AbhAUJqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:46:07 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E780FC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:26 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id v184so938758wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:26 -0800 (PST)
+        Thu, 21 Jan 2021 04:46:39 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8768EC061798
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:30 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id a9so1054603wrt.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DuWnTnQlKM5d7eIpepIHxbb/jr5fMrflS56XVI5B5ZI=;
-        b=LVvJvw4WJe3+7vXijwOXM85K/2lPGitkue2jDfxepKvoOG6dCHHTDbzHSXWlKspZJu
-         Hl2kNIBKk05w2PaoGOamZkh5lkelwiryKXtR9bx5WvHO6KHr/pZBczENO2+XFkYsvho0
-         9OPBG6ai394ZE5c59fU8jXyRd80HHYkF8d3GpFCFbRuK89VI4qvJBMeLiSjVkVg8dA/F
-         +uxND7F+FnmRyF69505R6IZutHG6wRACnILzSxy7EJKgGpWhl8kWHlx7fakTa74jnKEE
-         alnse0sizD2R5pLU8EZEBi4nqYsuBYmelN6gg9XK65xNNrKbwRqwMtvIg5pr2FnJF0pK
-         Swkw==
+        bh=ulUZihKhMqKu/FrEiWqrt3ulvrhzcfuoTPlw0e6qsC0=;
+        b=s2Jpzxqbxd53qzUNbh7UAVlZrjT6H0kWcYwxFsR4dCFFaDnTqYtpashSgSX5gR2JDP
+         38nju6rQs1j2eYSe9SOopw/xTiIwmUqQxwnNDVnPtTslhmG3/ISkq5jLXxMx9qUYpBsU
+         wxREzxxNKT6OR0tMGsFojbYU6cNzafQ/4h1XquOj3DnZlyhaxbI2OTLXoPq/l7JuH/QR
+         RNl+UFzRnQnbeaU4B2hLApOxSw2UPdf71nzaj4YK7WyeuKKF3CoFUdRdulqy5FwbFbmO
+         E2odcOx0e9wpUBn0TSVxNq+QXuVxGOHRFfac/EvjPM+/vt3v+mpAFLO1eb6ev/Cm4M5g
+         s4BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DuWnTnQlKM5d7eIpepIHxbb/jr5fMrflS56XVI5B5ZI=;
-        b=DKffDO47tUZFXE/YQPDo9HGp7uIacls6X5cp5LzVyyDGp+ceTsaPrafCRHejGfQk2b
-         xtpz3W3pLCcohkA9faMjiDRQMMh8ciC69+VeF36CSDACPMWOtg9OjbVArmj4hcGKfyf5
-         7pEX9AsAlEO0lF2cEUi0/swV1TirZ8fkbiSfiKRnWE8NMhkhucStkxJ7k2Pk/SObINQ1
-         F3wxXNwiFb19xVNj4MvO36ggKZP+QR1yOD6l5Th0Sv6HVdTUTa9O5lkeorLwMeHxBXKR
-         GSixyH9D8qR9LsowdeNhb9T2hYgPzZuD2FaZ6LXwPYF4kl4IQQSRpzUy02705G7waXMU
-         s7ow==
-X-Gm-Message-State: AOAM5311VSBMFmYuSFcLhd4/dtrIjax22vEN5p7RHzSwVBMmDOCObXZW
-        thvPfgRIHFlMR36zWUnXpF9akg==
-X-Google-Smtp-Source: ABdhPJzZbE02TDkxHr4pcuDCcMT0VK0JklH7GHF4SOka1EHWF5SyStuve8C+Q8twGRUoeDsfSZlExA==
-X-Received: by 2002:a1c:5608:: with SMTP id k8mr8035775wmb.91.1611222325701;
-        Thu, 21 Jan 2021 01:45:25 -0800 (PST)
+        bh=ulUZihKhMqKu/FrEiWqrt3ulvrhzcfuoTPlw0e6qsC0=;
+        b=R0GLKwqrTzarr8BnP38JLb+QpF2FRnNRk+uZfX7/FolXuWsra5CIKsLI+c1TdWXMa+
+         Xigip6GHFgqQuLcA/PL83bT4DjcrwyCZKUIugtQ7laatNq393hPPTgLelfq9XUd1yrcK
+         Rk347mIH4m9won79a6IN6Gu7gvDyzH3edbfLuvSKpQpi2rK5tbh+yAP3jfw9hixvm6aO
+         e2hICG3Gm6SZkGCV4s51gzT/yEwQnPla/NmphcayntMQ7tPshCT26xAu70SGWROPlg7F
+         8uXL82jU2/UisW55bVqprsUVS20gfPGLuqRAkEbaOK8SMhpFH9fTSPSkn0S+fFRofjBU
+         e8ow==
+X-Gm-Message-State: AOAM5320ofXCxegTJZ7cWazTYbkEmKu1kV6FMafGoaftj0zr1BEZKrmP
+        e3LGw42pp7fnP9ZKSCG4MeOA8Q==
+X-Google-Smtp-Source: ABdhPJyloRfA7yE9s0rM4TaoOVsvlwgbcPwr1rQdlqGPliv4/vSWBDY68K0cjoDWPAyHsb9j/ShwZw==
+X-Received: by 2002:a5d:4f82:: with SMTP id d2mr13325203wru.87.1611222329357;
+        Thu, 21 Jan 2021 01:45:29 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.24
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:25 -0800 (PST)
+        Thu, 21 Jan 2021 01:45:28 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 03/30] RDMA/hw/efa/efa_com: Stop using param description notation for non-params
-Date:   Thu, 21 Jan 2021 09:44:52 +0000
-Message-Id: <20210121094519.2044049-4-lee.jones@linaro.org>
+        Jason Gunthorpe <jgg@ziepe.ca>, Intel <ibsupport@intel.com>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH 06/30] RDMA/hw/qib/qib_driver: Fix misspelling in 'ppd's param description
+Date:   Thu, 21 Jan 2021 09:44:55 +0000
+Message-Id: <20210121094519.2044049-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
 References: <20210121094519.2044049-1-lee.jones@linaro.org>
@@ -68,31 +70,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/efa/efa_com.c:801: warning: Excess function parameter 'note' description in 'efa_com_admin_q_comp_intr_handler'
+ drivers/infiniband/hw/qib/qib_driver.c:165: warning: Function parameter or member 'ppd' not described in 'qib_wait_linkstate'
+ drivers/infiniband/hw/qib/qib_driver.c:165: warning: Excess function parameter 'dd' description in 'qib_wait_linkstate'
 
-Cc: Gal Pressman <galpress@amazon.com>
-Cc: Yossi Leybovich <sleybo@amazon.com>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Intel <ibsupport@intel.com>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/efa/efa_com.c | 2 +-
+ drivers/infiniband/hw/qib/qib_driver.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
-index 336bc2c57bb1d..f7242188a8434 100644
---- a/drivers/infiniband/hw/efa/efa_com.c
-+++ b/drivers/infiniband/hw/efa/efa_com.c
-@@ -795,7 +795,7 @@ int efa_com_admin_init(struct efa_com_dev *edev,
-  * This method goes over the admin completion queue and wakes up
-  * all the pending threads that wait on the commands wait event.
+diff --git a/drivers/infiniband/hw/qib/qib_driver.c b/drivers/infiniband/hw/qib/qib_driver.c
+index 92eeea5679e2c..84fc4dcc5399f 100644
+--- a/drivers/infiniband/hw/qib/qib_driver.c
++++ b/drivers/infiniband/hw/qib/qib_driver.c
+@@ -151,7 +151,7 @@ int qib_count_units(int *npresentp, int *nupp)
+ 
+ /**
+  * qib_wait_linkstate - wait for an IB link state change to occur
+- * @dd: the qlogic_ib device
++ * @ppd: the qlogic_ib device
+  * @state: the state to wait for
+  * @msecs: the number of milliseconds to wait
   *
-- * @note: Should be called after MSI-X interrupt.
-+ * Note: Should be called after MSI-X interrupt.
-  */
- void efa_com_admin_q_comp_intr_handler(struct efa_com_dev *edev)
- {
 -- 
 2.25.1
 
