@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166992FF925
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 00:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2B42FF928
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbhAUX4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 18:56:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58860 "EHLO mail.kernel.org"
+        id S1726309AbhAUX5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 18:57:18 -0500
+Received: from mga01.intel.com ([192.55.52.88]:62741 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbhAUX4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 18:56:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91CBD20717;
-        Thu, 21 Jan 2021 23:55:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611273350;
-        bh=8QjqGxP5A6Zb7kZN/Tv3TiVVxYWmPX8SjmAedowBJDA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=m4bvqs+0i3f4ox47gYfFnDN2U326T9Dz6O4YEwqVKhHZHdmU+kBIv1NVixkddaprp
-         g/X0epRNxLZf1txzHhyC8LtzAs8qA7ttbHLVfdTVl3DaeB502YUT1P2XHW/fAcu2QW
-         /E2ITwi/SasMeNVGUIuILrXDHuxgj1vVkx9Ad69aYkw4NRt6EfN26mCzLwkdrumuoj
-         pdmDzHz/+aSlAj/hcxUnMRVPZZ4CPDTCAyGjS4JE1qmlgfId6u5K7wyYOAW3S9jiH6
-         0QNCUNFjOd5HUckqtZ29kN8mpvmArgyphsyro2bx9Jl/QpA2V8xsodToh+exGz8Z2H
-         Fjio1iJ6G9k5A==
-Date:   Thu, 21 Jan 2021 17:55:47 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Antti =?iso-8859-1?Q?J=E4rvinen?= <antti.jarvinen@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [PATCH] PCI: quirk for preventing bus reset on TI C667X
-Message-ID: <20210121235547.GA2705432@bjorn-Precision-5520>
+        id S1726094AbhAUX5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 18:57:10 -0500
+IronPort-SDR: Dy0Hn5B9Nw6CaIdQNXw67vdc0NT322CaCJkc9O79RzxnkKpY3OkzBpnxkIMGnP5S2TsMls/ZwH
+ eQ62mLMDbEYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="198109696"
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="198109696"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 15:56:20 -0800
+IronPort-SDR: MDFgs0Fmqz0OzeT9BLDYmbbMO8ohbDTsFGPpy9En1Wtmc1ebQgiV3sH1wKuMWXRS7wR/KxJWRA
+ AxcXXb5iZmug==
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="467658087"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.212.217.24])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 15:56:20 -0800
+Subject: Re: [PATCH v8 0/1] Intel MAX10 BMC Macros for Secure Update
+To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+References: <20210121225555.302548-1-russell.h.weight@intel.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <6be5e8f1-d6c5-cdc8-4342-7dfa60bbed4f@intel.com>
+Date:   Thu, 21 Jan 2021 15:56:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210112153643.17930-1-antti.jarvinen@gmail.com>
+In-Reply-To: <20210121225555.302548-1-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Alex, Murali, Kishon]
 
-On Tue, Jan 12, 2021 at 03:36:43PM +0000, Antti Järvinen wrote:
-> TI C667X does not support bus/hot reset.
-> See https://e2e.ti.com/support/processors/f/791/t/954382
 
-You can cite the URL as the source, but the URL will eventually become
-stale, so let's include the relevant details here directly.  
+On 1/21/21 2:55 PM, Russ Weight wrote:
+> This patch was previously patch 1 of 6 in the patch-series entitled
+> "Intel MAX10 BMC Secure Update Driver". This is the only patch in
+> the series that is subject to conflicts with other ongoing changes
+> and is separated here to simplify maintenance of the patchset.
+>
+> This patch creates a number of macro definitions that are required
+> for the Intel MAX10 BMC Secure Update Driver.
 
-From the forum, it looks like the device doesn't respond after a
-reset (config accesses return ~0).  It seems somewhat surprising that
-something as basic as a reset would be completely broken.  I wonder if
-we're not doing the reset correctly.
+Please apply this patch first. It was previously accepted but has not
+landed in linux-next yet.
+https://marc.info/?l=linux-kernel&m=161066634118704&w=2
+>
+> Changelog v7 -> v8:
+>   - Rebased on next-20210121
+>   - Separated out from patchset: "Intel MAX10 BMC Secure Update Driver"
+> Changelog v6 -> v7:
+>   - No change
+> Changelog v5 -> v6:
+>   - No change
+> Changelog v4 -> v5:
+>   - Renamed USER_FLASH_COUNT to STAGING_FLASH_COUNT
+> Changelog v3 -> v4:
+>   - No change
+> Changelog v2 -> v3:
+>   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
+>     Update driver"
+>   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+>     underlying functions will be called directly.
+> Changelog v1 -> v2:
+>   - These functions and macros were previously distributed among
+>     the patches that needed them. They are now grouped together
+>     in a single patch containing changes to the Intel MAX10 BMC
+>     driver.
+>   - Added DRBL_ prefix to some definitions
+>   - Some address definitions were moved here from the .c files that
+>     use them.
+>
+> Russ Weight (1):
+>   mfd: intel-m10-bmc: support for MAX10 BMC Secure Updates
+>
+>  include/linux/mfd/intel-m10-bmc.h | 85 +++++++++++++++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>
 
-It looks like we would probably be trying a Secondary Bus Reset using
-the bridge leading to the C667X.  Can you confirm?  Wonder if you
-could try doing what pci_reset_secondary_bus() does by hand:
-
-  # BRIDGE=...                              # PCI address, e.g., 00:1c.0
-  # C667X=...
-  # setpci -s$C667X VENDOR_ID.w
-  # setpci -s$BRIDGE BRIDGE_CONTROL.w       # prints "val"
-  # setpci -s$BRIDGE BRIDGE_CONTROL.w=      # val | 0x40 (set SBR)
-  # sleep 1
-  # setpci -s$BRIDGE BRIDGE_CONTROL.w=      # val (clear SBR)
-  # sleep 1
-  # setpci -s$C667X VENDOR_ID.w=0
-  # setpci -s$C667X VENDOR_ID.w
-
-If we use this quirk and avoid the reset, I assume that means
-assigning the device to VMs with VFIO will leak state between VMs?
-
-> Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
-> ---
->  drivers/pci/quirks.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e3ba9e..c8fcf24c5bd0 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3578,6 +3578,12 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
->   */
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
->  
-> +/*
-> + * Some TI keystone C667X devices do no support bus/hot reset.
-> + * https://e2e.ti.com/support/processors/f/791/t/954382
-> + */
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
-> +
->  static void quirk_no_pm_reset(struct pci_dev *dev)
->  {
->  	/*
-> -- 
-> 2.17.1
-> 
