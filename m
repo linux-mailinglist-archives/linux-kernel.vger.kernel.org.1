@@ -2,177 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355D62FF0DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59A92FF0C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387441AbhAUQrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:47:32 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:56965 "EHLO
+        id S1732716AbhAUQoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:44:54 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:52135 "EHLO
         new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388069AbhAUQhv (ORCPT
+        by vger.kernel.org with ESMTP id S1732681AbhAUQjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:37:51 -0500
+        Thu, 21 Jan 2021 11:39:22 -0500
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 52C6258052E;
-        Thu, 21 Jan 2021 11:36:12 -0500 (EST)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6AEA5580524;
+        Thu, 21 Jan 2021 11:38:33 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 21 Jan 2021 11:36:12 -0500
+  by compute6.internal (MEProxy); Thu, 21 Jan 2021 11:38:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        YJdxl7AyCvWTYx/FjMErajpnwze1gn0rJs1EcbgXfwo=; b=hv9i9oYm8t2EEGgZ
-        Rg8zBM6SfuJwrknmfLal3HvjlkNDzJbtm7PgwWqE2198r32F3Uyl19++yK1FiFnY
-        YomFQuSeP1au66IAWwQEES+zU24v2Jt/Uj9jGs7gZ6GK6GyItrd/s6MtsuhDcPc6
-        xmZj4k2c+cnBumfPQJQh/uZC1MjD1huwBcUdeibhAEVo5sXIcefHeMxaBgIqTcGg
-        gsdURuGTOwSgzg8TD4YgXjhCX3ME99IkzpuS/P4WxmkENo2c/nd2w63QwzcU2RsR
-        JHNk3My73hYQtAXZvq3BP1TdxvTEqNhASRWX2/934swz/2+2w2wHiok8esIduAmX
-        xubo9g==
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=jGeQp6cCdgRQb61rYx3MEZ5kn8M
+        eELzWsDuny0yRFYw=; b=SRiREtqkD3dJbRr71G5KSiZ7ANboAAwVVTw9kq3m2Gn
+        03DtHyDdBA0/ZHBb7GXWXH8J9c7br/Yd8IvKhD3leABgjjZ/k11/MapTmzPNco3X
+        LYP3HV89lOSlsUUeOHovLQYxyvWrTiB/2e/gXYO8+GK8BBxggH2N70WTZbwNcFKJ
+        OFJ2XdUvUWDRnp/r6nQn9Jjns2yF9k2nRj8IG4dsERPZgiC2wNulFne6haT2pAhe
+        v5et/hrzhSMqR0AjAJ31TrySZv3PpZvhdyQetuykK3qFSgF72MvsGsxwAt0tKivA
+        YZBYe5FbA6drsht6sKDoaEWDajcCzBSDRmYnVe+ymAg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=YJdxl7AyCvWTYx/FjMErajpnwze1gn0rJs1EcbgXf
-        wo=; b=DhLfONsiVOMCw7tvUWhAloT5uPGlr+xPaLXsv2Xx6Go5lZ2nbP3giQxos
-        MJ7HIVXzNjFSW24HcsULZb+zVHBIQoy4Ja3B6lJAAD4gSgNRybAEHV/d/S+cux+Z
-        Fe1fWv9+NdMfkSYpR7qC2fRYDiljP1D2nh229q97sITzO18a/6WUAfI/ByXyBpkt
-        GiL0OhWo/7u0RFcjQzQu9duILNz+kKE/FzmPkjsBpyFPqHYglNqbHdUjpO38vriY
-        QaRouUSoKM65XHLSQ1SrYeKvEdc7WQr2KmSxbqfaP9BUJJiCVnwwHlmgr62Od99S
-        gF/SUf/eZNvaANg6g/4E/e1wUJGdw==
-X-ME-Sender: <xms:e60JYJtJYtqwjbnASxD2bS1RwRGUIMa6GjkVGeNroJ0HmjHA-x1t2A>
-    <xme:e60JYCe11NYqtr2ANTZ6LATLzXPoZzKTR2gfsoLAWowo3J7V1wWIYJrugILTVE3Kx
-    s7lfgxZDsNzV0aCifk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggdelfecutefuodetggdotefrodftvf
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jGeQp6
+        cCdgRQb61rYx3MEZ5kn8MeELzWsDuny0yRFYw=; b=UTP4rOuBX7YVXF9N39RbTg
+        uLPjVNQv+MIddZqkFLxuSreA5/hSqPoeal1uoOz9k/OxbYfEz9pGa/YZOD4iIIZn
+        wEmPUERIAlzxskN0SzyuIGDb8INGdVlvxz/gVOOV0BKiSQ8yjiYJGAuVWD/e3yj1
+        P5QFqXobplP+/X3Yw9t9zaLyK8MQOYQJ1+8hiqw/6Ldxlgyl3eXGZmZHH15rYFpy
+        TmUj17ZUGdGk/2WemnhEpinSBoFygaLtXE37zNYmklJ12VZu1r0MBSfpxrtICfzx
+        vYvVHNyi941jsK/zXzuCllF3iJAYRqOI17OHEz47urZgc5t8bfAYtFDhepRFD3uA
+        ==
+X-ME-Sender: <xms:CK4JYCCqEqGKfKxFlhywgyMKRceDbXEwZcM6vJMrDVIfGVGeamcb4Q>
+    <xme:CK4JYMhLQTe50LGYFP2gk5nga4Af17BtWx1EvAQUh7Kfd1uFUhQDeCyb9y24EKSos
+    gPk_MZ499fwLhbcaLI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggdelgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfefgeei
-    keeknecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:fK0JYMyDplySlZ42fVmhtxgLXXpIIIrVaAKOAmOHJlmBmpoGDpd2bg>
-    <xmx:fK0JYAPSQrolEYgxHSXEHWaKJQJbBnwOSzUFCOsChpcXNDpx22a-IA>
-    <xmx:fK0JYJ_hKci4D_MZMzoKKv8T1TsmE13kvtS__mWKEJMxPqtZUh5r6g>
-    <xmx:fK0JYFT3bUOliadDPXQ_6xQ3tyKVRGJmfHNj-X1thrfSeWVb8IMXGQ>
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:CK4JYFlMo3SH-xvEDCQdvBfiPhar0QJCUCqpr8R6poBNNrmbEx37Uw>
+    <xmx:CK4JYAzkDjUsICY34BrnI1k6kIAdM--8A0K5q8QyfoDhFSmKSrpLmA>
+    <xmx:CK4JYHSljdekmPHnk_gI1sm6RCsqFbiE1kYi-VQN-lJMRtQSQytxMg>
+    <xmx:Ca4JYPZyeT5niKWodAbw-j7RMRofwc-pMqGInjX2pAr2rwtDvlF7xg>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BCF9B1080057;
-        Thu, 21 Jan 2021 11:36:11 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id BF38B1080057;
+        Thu, 21 Jan 2021 11:38:31 -0500 (EST)
+Date:   Thu, 21 Jan 2021 17:38:30 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/11] drm/todo: Remove the drm_atomic_state todo item
-Date:   Thu, 21 Jan 2021 17:35:36 +0100
-Message-Id: <20210121163537.1466118-11-maxime@cerno.tech>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121163537.1466118-1-maxime@cerno.tech>
-References: <20210121163537.1466118-1-maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v3 02/21] mmc: sunxi: add support for A100 mmc controller
+Message-ID: <20210121163830.5fhrr3qx4kjbqj5y@gilmour>
+References: <20210118020848.11721-1-andre.przywara@arm.com>
+ <20210118020848.11721-3-andre.przywara@arm.com>
+ <20210118132854.yiwn7rnvcyexgqim@gilmour>
+ <20210118155228.3bd0e909@slackpad.fritz.box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ev4lppgespatcttv"
+Content-Disposition: inline
+In-Reply-To: <20210118155228.3bd0e909@slackpad.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only planes' prepare_fb and cleanup_fb, and encoders' atomic_check and
-atomic_mode_set hooks remain with an object state and not the global
-drm_atomic_state.
 
-prepare_fb and cleanup_fb operate by design on a given state and
-depending on the calling site can operate on either the old or new
-state, so it doesn't really make much sense to convert them.
+--ev4lppgespatcttv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The encoders' atomic_check and atomic_mode_set operate on the CRTC and
-connector state connected to them since encoders don't have a state of
-their own. Without those state pointers, we would need to get the CRTC
-through the drm_connector_state crtc pointer.
+Hi Andre,
 
-However, in order to get the drm_connector_state pointer, we would need
-to get the connector itself and while usually we have a single connector
-connected to the encoder, we can't really get it from the encoder at
-the moment since it could be behind any number of bridges.
+On Mon, Jan 18, 2021 at 03:52:28PM +0000, Andre Przywara wrote:
+> On Mon, 18 Jan 2021 14:28:54 +0100
+> Maxime Ripard <maxime@cerno.tech> wrote:
+>=20
+> Hi Maxime,
+>=20
+> > On Mon, Jan 18, 2021 at 02:08:29AM +0000, Andre Przywara wrote:
+> > > From: Yangtao Li <frank@allwinnertech.com>
+> > >=20
+> > > This patch adds support for A100 MMC controller, which use word
+> > > address for internal dma.
+> > >=20
+> > > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com> =20
+> >=20
+> > We should also disable the timings setup in probe to derive them from
+> > the DT. This is causing issues on some SoCs already, so it would be
+> > best to not make the situation worse
+>=20
+> But only for those new SoCs, where we have the speed modes in the DT
+> in every case (so only new ones)? And this disabling would be
+> SoC/compatible string dependent? Happy to send a patch later if that is
+> what you were thinking about.
 
-While this could be addressed by (for example) listing all the
-connectors and finding the one that has the encoder as its source, it
-feels like an unnecessary rework for something that is slowly getting
-replaced by bridges.
+Yeah, we should only do it for new SoCs at the moment, based on the
+compatible.
 
-Since all the users that matter have been converted, let's remove the
-TODO item.
+I guess at some point we'll have to remove it for the older SoCs as well
+since we have reports of it failing for SoCs as old as the A20, but
+we'll probably want to make it as smooth as possible.
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Maxime
 
----
+--ev4lppgespatcttv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Changes from v1:
-  - New patch
----
- Documentation/gpu/todo.rst | 46 --------------------------------------
- 1 file changed, 46 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-index 009d8e6c7e3c..609794108f5a 100644
---- a/Documentation/gpu/todo.rst
-+++ b/Documentation/gpu/todo.rst
-@@ -440,52 +440,6 @@ Contact: Emil Velikov, respective driver maintainers
- 
- Level: Intermediate
- 
--Plumb drm_atomic_state all over
---------------------------------
--
--Currently various atomic functions take just a single or a handful of
--object states (eg. plane state). While that single object state can
--suffice for some simple cases, we often have to dig out additional
--object states for dealing with various dependencies between the individual
--objects or the hardware they represent. The process of digging out the
--additional states is rather non-intuitive and error prone.
--
--To fix that most functions should rather take the overall
--drm_atomic_state as one of their parameters. The other parameters
--would generally be the object(s) we mainly want to interact with.
--
--For example, instead of
--
--.. code-block:: c
--
--   int (*atomic_check)(struct drm_plane *plane, struct drm_plane_state *state);
--
--we would have something like
--
--.. code-block:: c
--
--   int (*atomic_check)(struct drm_plane *plane, struct drm_atomic_state *state);
--
--The implementation can then trivially gain access to any required object
--state(s) via drm_atomic_get_plane_state(), drm_atomic_get_new_plane_state(),
--drm_atomic_get_old_plane_state(), and their equivalents for
--other object types.
--
--Additionally many drivers currently access the object->state pointer
--directly in their commit functions. That is not going to work if we
--eg. want to allow deeper commit pipelines as those pointers could
--then point to the states corresponding to a future commit instead of
--the current commit we're trying to process. Also non-blocking commits
--execute locklessly so there are serious concerns with dereferencing
--the object->state pointers without holding the locks that protect them.
--Use of drm_atomic_get_new_plane_state(), drm_atomic_get_old_plane_state(),
--etc. avoids these problems as well since they relate to a specific
--commit via the passed in drm_atomic_state.
--
--Contact: Ville Syrjälä, Daniel Vetter
--
--Level: Intermediate
--
- Use struct dma_buf_map throughout codebase
- ------------------------------------------
- 
--- 
-2.29.2
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAmuBgAKCRDj7w1vZxhR
+xar2AP0ZvOuZtBqouyeCYUoO43ULetRbYn4+luZtYdfkCy5wRwEAmk9MFsIvaryi
+3Z1PylgeJOXUkjyhVGs+lWSsIYh91ww=
+=5rlm
+-----END PGP SIGNATURE-----
 
+--ev4lppgespatcttv--
