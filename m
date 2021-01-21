@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4E02FF28B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B58AD2FF298
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389000AbhAURzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:55:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388837AbhAURyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:54:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F32A7207C5;
-        Thu, 21 Jan 2021 17:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611251605;
-        bh=vDwNDLdPpFTwrWqZmAFtSoWHQOtXgmCA2y8ljJ/9Lvk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q6CGLXDIqpndRDF7BL5eQvvqn36AXV/Ziil1sr3uDqHKENxAK1bgi/5nOG4hgsdlh
-         P49tMC2kwamaG1KYCiDaXSnuIqZkwapB5hl0S15Oh+njMP2zl85jtJryEpARqQwN3v
-         eXdznxDwCtF35IPBHReT0E6bQ3LRx8uN1ndYA2RJATKDllXTOf+R0tUm7GOyGEORgy
-         XaaNnP8aBewjV/KCUxEINc+J50T0tXSFl/yn1bD+3vWemUGBOv+rDlpS/YpeiBbMWc
-         qnn9yQJCuiYSZYowZA3kQvXDp71AjoG1P2AaBEnUQqOiPKlctWduLAoWTXjddFZ69H
-         CPyic9Eptlqrw==
-From:   Will Deacon <will@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>, tytso@mit.edu
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, mark.rutland@arm.com,
-        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
-        maz@kernel.org, linux-kernel@vger.kernel.org,
-        andre.przywara@arm.com
-Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting IRQ randomness
-Date:   Thu, 21 Jan 2021 17:53:18 +0000
-Message-Id: <161124379345.536991.7126735996539393054.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201105152944.16953-1-ardb@kernel.org>
-References: <20201105152944.16953-1-ardb@kernel.org>
+        id S2389344AbhAUR5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389229AbhAURzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:55:54 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F682C0613D6;
+        Thu, 21 Jan 2021 09:55:13 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d4so1711542plh.5;
+        Thu, 21 Jan 2021 09:55:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gPMjM19aJ4pm3ETJElwKqqAg8qqzpXB97r3PbN2RvL8=;
+        b=qDC+o38edBIaLnG8PWToxRhj0mPMeIfGyClNNZGIdiSSXZ2tJZWeGMSjqb6Huno5Je
+         +s9NpaIPVTqyciyZTwKM5kcwYq2dDpuaC0zoITN6bASo1/oCbfUYZKU1WDHQFpR4oTNg
+         Q+2MMzLxdK1Ode8CPyEpokjv+oVgNPg+KGhhdt3i2NU2HG/DmJKDhjdILm/UOXIjpOai
+         er6lOvs1xiyuvzkQUHTmK/7TJ35rFG3Qq4hWmU2S0uFXV8TnSr3Uu+mgP7eff89fbX4D
+         Pa584ZSykXNIjOtQdY8kLxVwg4OVsCPqbdHgBWm//V/4HNQhBVmyo2f3msnkwFwkGnCO
+         2CGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=gPMjM19aJ4pm3ETJElwKqqAg8qqzpXB97r3PbN2RvL8=;
+        b=tTIA/jVHiaWhFtKmkLmeBusMNi3TEo0mf+FoqBugcWub+nwYbCFANmEDPMT3qNc1JM
+         /Qo3rRGVHHbPBk3qZh7Mksh1xAym+WJmDtO0vrP/2txQi8opK2bx7bdOp8jwcMEN88gH
+         W2q8nldW+SwdzH+9UNemNxtIsafTT7LCdu2Vn0NHAuzj3E5e7bs7x+48qj10bDtb3C2K
+         z7O7jwQmotu8ejQqBdvwPyOyk+YOef4dOwYtheIP7T4dYS1NwmxKXehA4beWkXA4sKzN
+         iJmxwDBCXVISSlf/KvEIbjfl3en169+/SBL/q2SJ+5gWi0wrnM3JNDXQFoDNnYoA4cu3
+         Z6LA==
+X-Gm-Message-State: AOAM532CDtC9IBzIYiTavQ6sOq2dlND4oq9SHORays1d9ET1GZLId40G
+        mfvqFcfozM4rHDcRu/q06/Y=
+X-Google-Smtp-Source: ABdhPJwua3dS85PxEqSvzV1XHGSp3rtEG3Evxsrqo12dFSbOhRShx1GThlZKPz/+p0B1yNRZEi2OWw==
+X-Received: by 2002:a17:902:59c7:b029:de:25e7:2426 with SMTP id d7-20020a17090259c7b02900de25e72426mr424509plj.21.1611251713128;
+        Thu, 21 Jan 2021 09:55:13 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:74d0:bb24:e25e:dc4d])
+        by smtp.gmail.com with ESMTPSA id t2sm6897317pju.19.2021.01.21.09.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 09:55:12 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        hyesoo.yu@samsung.com, david@redhat.com, mhocko@suse.com,
+        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
+        hridya@google.com, john.stultz@linaro.org, sumit.semwal@linaro.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        hch@infradead.org, robh+dt@kernel.org,
+        linaro-mm-sig@lists.linaro.org, Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v4 2/4] mm: failfast mode with __GFP_NORETRY in alloc_contig_range
+Date:   Thu, 21 Jan 2021 09:55:00 -0800
+Message-Id: <20210121175502.274391-3-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+In-Reply-To: <20210121175502.274391-1-minchan@kernel.org>
+References: <20210121175502.274391-1-minchan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 16:29:44 +0100, Ard Biesheuvel wrote:
-> When reseeding the CRNG periodically, arch_get_random_seed_long() is
-> called to obtain entropy from an architecture specific source if one
-> is implemented. In most cases, these are special instructions, but in
-> some cases, such as on ARM, we may want to back this using firmware
-> calls, which are considerably more expensive.
-> 
-> Another call to arch_get_random_seed_long() exists in the CRNG driver,
-> in add_interrupt_randomness(), which collects entropy by capturing
-> inter-interrupt timing and relying on interrupt jitter to provide
-> random bits. This is done by keeping a per-CPU state, and mixing in
-> the IRQ number, the cycle counter and the return address every time an
-> interrupt is taken, and mixing this per-CPU state into the entropy pool
-> every 64 invocations, or at least once per second. The entropy that is
-> gathered this way is credited as 1 bit of entropy. Every time this
-> happens, arch_get_random_seed_long() is invoked, and the result is
-> mixed in as well, and also credited with 1 bit of entropy.
-> 
-> [...]
+Contiguous memory allocation can be stalled due to waiting
+on page writeback and/or page lock which causes unpredictable
+delay. It's a unavoidable cost for the requestor to get *big*
+contiguous memory but it's expensive for *small* contiguous
+memory(e.g., order-4) because caller could retry the request
+in different range where would have easy migratable pages
+without stalling.
 
-Applied to arm64 (for-next/random), thanks!
+This patch introduce __GFP_NORETRY as compaction gfp_mask in
+alloc_contig_range so it will fail fast without blocking
+when it encounters pages needed waiting.
 
-[1/1] random: avoid arch_get_random_seed_long() when collecting IRQ randomness
-      https://git.kernel.org/arm64/c/390596c9959c
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ mm/page_alloc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Ted -- please shout if you would prefer me not to carry this in the arm64
-tree. I've haven't seen a response from you on this thread, but this patch
-is currently blocking support for the TRNG firmware call on arm64 [1], so
-I've pulled it in as a dependency. The branch above is stable, so you can
-pull it in as well if necessary.
-
-[1] https://lore.kernel.org/r/20210106103453.152275-1-andre.przywara@arm.com
-
-Cheers,
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b031a5ae0bd5..1cdc3ee0b22e 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8491,12 +8491,16 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 	unsigned int nr_reclaimed;
+ 	unsigned long pfn = start;
+ 	unsigned int tries = 0;
++	unsigned int max_tries = 5;
+ 	int ret = 0;
+ 	struct migration_target_control mtc = {
+ 		.nid = zone_to_nid(cc->zone),
+ 		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+ 	};
+ 
++	if (cc->alloc_contig && cc->mode == MIGRATE_ASYNC)
++		max_tries = 1;
++
+ 	migrate_prep();
+ 
+ 	while (pfn < end || !list_empty(&cc->migratepages)) {
+@@ -8513,7 +8517,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 				break;
+ 			}
+ 			tries = 0;
+-		} else if (++tries == 5) {
++		} else if (++tries == max_tries) {
+ 			ret = ret < 0 ? ret : -EBUSY;
+ 			break;
+ 		}
+@@ -8564,7 +8568,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+ 		.nr_migratepages = 0,
+ 		.order = -1,
+ 		.zone = page_zone(pfn_to_page(start)),
+-		.mode = MIGRATE_SYNC,
++		.mode = gfp_mask & __GFP_NORETRY ? MIGRATE_ASYNC : MIGRATE_SYNC,
+ 		.ignore_skip_hint = true,
+ 		.no_set_skip_hint = true,
+ 		.gfp_mask = current_gfp_context(gfp_mask),
 -- 
-Will
+2.30.0.296.g2bfb1c46d8-goog
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
