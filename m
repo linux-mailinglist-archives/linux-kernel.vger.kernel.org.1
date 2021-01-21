@@ -2,161 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA21F2FF5BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7772FF5AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbhAUUVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:21:02 -0500
-Received: from mga04.intel.com ([192.55.52.120]:49885 "EHLO mga04.intel.com"
+        id S1727223AbhAUUSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:18:36 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49295 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726987AbhAUUTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:19:13 -0500
-IronPort-SDR: EdP40jXPw+KKSV3cqCCoVhFR0wuD/kbzmYahGjOhdWGHqM0tcOXfR6ncx1qqB99ytQSnFcD+QI
- v2h7TbUiuFdg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="176764782"
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="176764782"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 12:16:26 -0800
-IronPort-SDR: Xeb6GP6QHS5E+NUN4IsRGZ97r6GOsWNpHXOAkde9SaUDTqrCmzanAvvZHRo2+bsJULzAS4gGR+
- RVNS7GFSD8vw==
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="385443835"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.46.254]) ([10.209.46.254])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 12:16:24 -0800
-Subject: Re: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
- <20201229213053.16395-9-yu-cheng.yu@intel.com>
- <20210121184405.GE32060@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <b4d4bec7-504e-2443-4cf3-0801b179000f@intel.com>
-Date:   Thu, 21 Jan 2021 12:16:23 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727121AbhAUUSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:18:06 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 10LKHEJ2024489;
+        Thu, 21 Jan 2021 21:17:14 +0100
+Date:   Thu, 21 Jan 2021 21:17:14 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/9] tools/nolibc: fix build issues on aarch64 after
+ unistd cleanup
+Message-ID: <20210121201714.GA24484@1wt.eu>
+References: <20210121072031.23777-1-w@1wt.eu>
+ <20210121111117.GA48431@C02TD0UTHF1T.local>
+ <20210121141809.GC24174@1wt.eu>
+ <20210121195432.GS2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20210121184405.GE32060@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121195432.GS2743@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/21/2021 10:44 AM, Borislav Petkov wrote:
-> On Tue, Dec 29, 2020 at 01:30:35PM -0800, Yu-cheng Yu wrote:
-[...]
->> @@ -343,6 +349,16 @@ static inline pte_t pte_mkold(pte_t pte)
->>   
->>   static inline pte_t pte_wrprotect(pte_t pte)
->>   {
->> +	/*
->> +	 * Blindly clearing _PAGE_RW might accidentally create
->> +	 * a shadow stack PTE (RW=0, Dirty=1).  Move the hardware
->> +	 * dirty value to the software bit.
->> +	 */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
->> +		pte.pte |= (pte.pte & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
+On Thu, Jan 21, 2021 at 11:54:32AM -0800, Paul E. McKenney wrote:
+> > > It would be great if this could be applied soon so that it's possible to
+> > > use the rcutorture scripts without applying local hacks.
+> > 
+> > Makes sense. I was wondering, should we mark them for stable ? I don't
+> > know if anyone relies on these tests to validate stable kernels in
+> > fact.
 > 
-> Why the unreadable shifting when you can simply do:
-> 
->                  if (pte.pte & _PAGE_DIRTY)
->                          pte.pte |= _PAGE_COW;
-> 
-> ?
+> I added Fixes tags that should make this happen, and they are now visible
+> at -rcu branch "dev".  Could you please check them for me?
 
-It clears _PAGE_DIRTY and sets _PAGE_COW.  That is,
+I've just rerun all previous tests from my history and all of them are
+OK. Please note however that I only did the manual build test, not through
+the whole kvm.sh script, but a diff shows that the involved files are byte
+for byte identical to those that Valentin and Mark tested, so for me that's
+OK as well.
 
-if (pte.pte & _PAGE_DIRTY) {
-	pte.pte &= ~_PAGE_DIRTY;
-	pte.pte |= _PAGE_COW;
-}
+By the way, thank you for having completed the commit messages, I hope you
+didn't spend too much time on this.
 
-So, shifting makes resulting code more efficient.
-
->> @@ -434,16 +469,40 @@ static inline pmd_t pmd_mkold(pmd_t pmd)
->>   
->>   static inline pmd_t pmd_mkclean(pmd_t pmd)
->>   {
->> -	return pmd_clear_flags(pmd, _PAGE_DIRTY);
->> +	return pmd_clear_flags(pmd, _PAGE_DIRTY_BITS);
->>   }
->>   
->>   static inline pmd_t pmd_wrprotect(pmd_t pmd)
->>   {
->> +	/*
->> +	 * Blindly clearing _PAGE_RW might accidentally create
->> +	 * a shadow stack PMD (RW=0, Dirty=1).  Move the hardware
->> +	 * dirty value to the software bit.
->> +	 */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
->> +		pmdval_t v = native_pmd_val(pmd);
->> +
->> +		v |= (v & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
-> 
-> As above.
-> 
->> @@ -488,17 +554,35 @@ static inline pud_t pud_mkold(pud_t pud)
->>   
->>   static inline pud_t pud_mkclean(pud_t pud)
->>   {
->> -	return pud_clear_flags(pud, _PAGE_DIRTY);
->> +	return pud_clear_flags(pud, _PAGE_DIRTY_BITS);
->>   }
->>   
->>   static inline pud_t pud_wrprotect(pud_t pud)
->>   {
->> +	/*
->> +	 * Blindly clearing _PAGE_RW might accidentally create
->> +	 * a shadow stack PUD (RW=0, Dirty=1).  Move the hardware
->> +	 * dirty value to the software bit.
->> +	 */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
->> +		pudval_t v = native_pud_val(pud);
->> +
->> +		v |= (v & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
-> 
-> Ditto.
-> 
->> @@ -1131,6 +1222,12 @@ extern int pmdp_clear_flush_young(struct vm_area_struct *vma,
->>   #define pmd_write pmd_write
->>   static inline int pmd_write(pmd_t pmd)
->>   {
->> +	/*
->> +	 * If _PAGE_DIRTY is set, then the PMD must either have _PAGE_RW or
->> +	 * be a shadow stack PMD, which is logically writable.
->> +	 */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK))
->> +		return pmd_flags(pmd) & (_PAGE_RW | _PAGE_DIRTY);
-> 
-> 	else
-> 
-> 
->>   	return pmd_flags(pmd) & _PAGE_RW;
->>   }
->>  
+Cheers,
+Willy
