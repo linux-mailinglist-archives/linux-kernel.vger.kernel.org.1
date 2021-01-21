@@ -2,123 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22582FF24E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EADF2FF257
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389033AbhAURq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:46:29 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2393 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733263AbhAURpp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:45:45 -0500
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DM8ld71H0z67RJF;
-        Fri, 22 Jan 2021 01:39:25 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 21 Jan 2021 18:44:59 +0100
-Received: from [10.210.167.120] (10.210.167.120) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 21 Jan 2021 17:44:58 +0000
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH v2 1/3] perf vendor events: Add cache refill and DCZVA
- events
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
-CC:     <mathieu.poirier@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <leo.yan@linaro.org>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210121105425.2695843-1-nakamura.shun@jp.fujitsu.com>
- <20210121105425.2695843-2-nakamura.shun@jp.fujitsu.com>
- <b00bf252-e31f-b0eb-d0aa-0a62bcaee22e@hisilicon.com>
-Message-ID: <0be33a5d-98a1-d2e1-704e-83334063888d@huawei.com>
-Date:   Thu, 21 Jan 2021 17:43:41 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2389092AbhAURrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:47:31 -0500
+Received: from msg-2.mailo.com ([213.182.54.12]:49144 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388987AbhAURps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:45:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1611251056; bh=yDRRZw5pkRK++DBQV9BF8M/0EOWbSJfi9/2x6S2Gfqo=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding;
+        b=bNnntQ2OEwj+eMYrLUf4wNUEOtoAGH5+/JQdJGMeunLwOYAmmT+etU2JbV2wrju2c
+         /QSGXenFyKshNRcXIWDx/VfAmvUOAk6q3QIiFQ6jZz/d+Ysnt4kK9T6ITTr1EDLBrc
+         t4YLk5Hob83RI1vd8rmTTAGzfuYk1Ji3np6+fWjE=
+Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Thu, 21 Jan 2021 18:44:16 +0100 (CET)
+X-EA-Auth: yvnxX2YCMXfd8+j5vum/rlMzFImFoka0+8XUJVCOReMxMR5Cci/wevHfDaVtigmpJxionMsX21uMIXROVD/F7cehNkoysxV80Su6uSka/Lw=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH v3 1/2] dt-bindings: input/touchscreen: add bindings for msg26xx
+Date:   Thu, 21 Jan 2021 18:43:47 +0100
+Message-Id: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <b00bf252-e31f-b0eb-d0aa-0a62bcaee22e@hisilicon.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.167.120]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/01/2021 11:39, Shaokun Zhang wrote:
-> Hi,
-> 
-> ÔÚ 2021/1/21 18:54, Shunsuke Nakamura Ð´µÀ:
->> Adds L1 data cache refill prefetch, L2 data cache refill prefetch,
->> and DCZVA instruction events.
-> 
-> A silly question, Does Arm define these events? I checked Arm ARM
-> document(DDI0487Fc) that these event numbers are reserved. Or maybe
-> I miss something.
+This adds dts bindings for the mstar msg26xx touchscreen.
 
-For events which are reserved (see k3-1), like 0x9f, prob should not be 
-putting in this file, but rather the CPU JSON.
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+Changed in v3:
+- added `touchscreen-size-x: true` and `touchscreen-size-y: true` properties
+Changed in v2:
+- changed M-Star to MStar in title line
+- changed reset gpio to active-low in example section
+---
+ .../input/touchscreen/mstar,msg26xx.yaml      | 69 +++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml
 
-Cheers,
-John
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml
+new file mode 100644
+index 000000000000..5d26a1008bf1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/mstar,msg26xx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MStar msg26xx touchscreen controller Bindings
++
++maintainers:
++  - Vincent Knecht <vincent.knecht@mailoo.org>
++
++allOf:
++  - $ref: touchscreen.yaml#
++
++properties:
++  compatible:
++    const: mstar,msg26xx
++
++  reg:
++    const: 0x26
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  vdd-supply:
++    description: Power supply regulator for the chip
++
++  vddio-supply:
++    description: Power supply regulator for the I2C bus
++
++  touchscreen-size-x: true
++  touchscreen-size-y: true
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - reset-gpios
++  - touchscreen-size-x
++  - touchscreen-size-y
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      touchscreen@26 {
++        compatible = "mstar,msg26xx";
++        reg = <0x26>;
++        interrupt-parent = <&msmgpio>;
++        interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
++        reset-gpios = <&msmgpio 100 GPIO_ACTIVE_LOW>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&ts_int_active>;
++        vdd-supply = <&pm8916_l17>;
++        vddio-supply = <&pm8916_l5>;
++        touchscreen-size-x = <720>;
++        touchscreen-size-y = <1280>;
++      };
++    };
++
++...
+-- 
+2.29.2
 
-> 
->>
->> Signed-off-by: Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
->> ---
->>   .../perf/pmu-events/arch/arm64/armv8-recommended.json  | 18 ++++++++++++++++++
->>   1 file changed, 18 insertions(+)
->>
->> diff --git a/tools/perf/pmu-events/arch/arm64/armv8-recommended.json b/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
->> index d0a1986..ee0e67d 100644
->> --- a/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
->> +++ b/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
->> @@ -54,6 +54,12 @@
->>           "BriefDescription": "L1D cache invalidate"
->>       },
->>       {
->> +        "PublicDescription": "This event counts L1D_CACHE_REFILL caused by software or hardware prefetch.",
->> +        "EventCode": "0x49",
->> +        "EventName": "L1D_CACHE_REFILL_PRF",
->> +        "BriefDescription": "This event counts L1D_CACHE_REFILL caused by software or hardware prefetch."
->> +    },
->> +    {
->>           "PublicDescription": "Attributable Level 1 data TLB refill, read",
->>           "EventCode": "0x4C",
->>           "EventName": "L1D_TLB_REFILL_RD",
->> @@ -120,6 +126,12 @@
->>           "BriefDescription": "L2D cache invalidate"
->>       },
->>       {
->> +        "PublicDescription": "This event counts L2D_CACHE_REFILL caused by software or hardware prefetch.",
->> +        "EventCode": "0x59",
->> +        "EventName": "L2D_CACHE_REFILL_PRF",
->> +        "BriefDescription": "This event counts L2D_CACHE_REFILL caused by software or hardware prefetch."
->> +    },
->> +    {
->>           "PublicDescription": "Attributable Level 2 data or unified TLB refill, read",
->>           "EventCode": "0x5c",
->>           "EventName": "L2D_TLB_REFILL_RD",
->> @@ -408,6 +420,12 @@
->>           "BriefDescription": "Release consistency operation speculatively executed, Store-Release"
->>      },
->>      {
->> +         "PublicDescription": "This event counts architecturally executed zero blocking operations due to the 'DC ZVA' instruction.",
->> +         "EventCode": "0x9f",
->> +         "EventName": "DCZVA_SPEC",
->> +         "BriefDescription": "This event counts architecturally executed zero blocking operations due to the 'DC ZVA' instruction."
->> +   },
->> +   {
->>           "PublicDescription": "Attributable Level 3 data or unified cache access, read",
->>           "EventCode": "0xa0",
->>           "EventName": "L3D_CACHE_RD",
->>
-> .
-> 
+
 
