@@ -2,160 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDFA2FDE71
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531222FDEB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733123AbhAUBEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 20:04:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387432AbhAUAp7 (ORCPT
+        id S1726740AbhAUBVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 20:21:01 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:35952 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392094AbhAUBO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:45:59 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3C6C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 16:45:18 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id b8so199094plh.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 16:45:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=imFglJdTNeqwJvKeJ4VHNFXKPIrBEHFFa5LkwwJ3IZ4=;
-        b=Q1AyKKDlsja1TMOQV5GDSDgMBDo1WtGRYl0lN4Fe7SCs2rDLcDFmDecqwa2+NZq9yQ
-         IFw6nMlD9JBvWxqx3EWKpwWg+vK6F+thiYmsZ4TM2Pc75I+7rVGriCGBiO/VhezBn2Js
-         fICne8Bu70AGfBC2cjMfQADoRdwNpsJWaf6JFRTN6IeArHUmXgYSqqcZ+h7In42aXQly
-         vY+bONJb3YV5NBkzY0GKG6DZti94SYafg4c5l22tLPrX9tWy8rsAm1cPcsjIM0pgVlv3
-         LYSOJbuvYqLb2eSv/k8DtpIxEwQrskbZcUEjCfFXbPO3jc2bThZkSeN9z3AWMRj+Hzy5
-         04YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=imFglJdTNeqwJvKeJ4VHNFXKPIrBEHFFa5LkwwJ3IZ4=;
-        b=nkCV8903cfe0Cm68bQ0qnQTJieC02bilcXlXSKS0CFIwcLR8iD6AxJQo/n6nPv3Tzg
-         JIjbKAqWFC/83K4bwfBFe8Byf+h3IgUkq8fYtzxU93anOwakyuFXNJwhXFdwzLL/udJ1
-         MiuhGLRxU7jIbpmeiVvqzNfuuVTe2aXGfaUjtCko4jZb+fjishAvjuX8cZeEJA4FWX4R
-         NOvBXsyUn3CeXb/rxLNdvFk+tMhDXVzs7pBXJpZXvBBmy5u/u3oT3FhzsD3sZEdRnFQi
-         Jm13IAqo/nAWZwHMzbpncsAvjariIhHPCNPGEZdfjDDdIXh3MI3qN/C9ItPK2AwVq1vs
-         vJQQ==
-X-Gm-Message-State: AOAM530YEf0WOs7Cid/nN0LlWiogOlTNsoGOfXiNTn1C/PtgGM4GThY5
-        TG3Fu+vtLQ+5kYQh1CZd0Et3hw==
-X-Google-Smtp-Source: ABdhPJzCGDnEo0qXcF/pkL5IZn00tv7n/BON+4v0sc/MBGNuUK/1SJtP4hIgeT0GCsbxT9aZhU61jg==
-X-Received: by 2002:a17:902:7b84:b029:da:60e0:9d38 with SMTP id w4-20020a1709027b84b02900da60e09d38mr12191777pll.55.1611189918149;
-        Wed, 20 Jan 2021 16:45:18 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 145sm3341817pfu.8.2021.01.20.16.45.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 16:45:17 -0800 (PST)
-Date:   Wed, 20 Jan 2021 16:45:10 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 18/24] kvm: x86/mmu: Use an rwlock for the x86 TDP MMU
-Message-ID: <YAjOlmhOSkE4YjDE@google.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-19-bgardon@google.com>
+        Wed, 20 Jan 2021 20:14:27 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210121011327epoutp049c41e8841d5422d4568001bc73ab2326~cGjsiP3kg1718017180epoutp04b
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:13:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210121011327epoutp049c41e8841d5422d4568001bc73ab2326~cGjsiP3kg1718017180epoutp04b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611191608;
+        bh=9vQr2GzgZ8KCGqVOlQ6dcP7S4PxwJvGiExe5sk6ZWoE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=IRSiuvwopHPPesizU2T4uMDg2ECw5R05Yq7Jxn9CHdn/eGrwzjYAk2D/Ji/qSYxDQ
+         jUgsAfIT6uxBwejLktGYZjYw57pvKreagjFzhYDGQw2/BBfV0knctMbY0Ukn+4FMSh
+         8PoHwKiP6fCFuDBmbRMTdl8M9AXpcwPSu32jWjtM=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210121011326epcas1p34c5a6dfff24ec47b03b8d28ce6560fe6~cGjriZyFj1290312903epcas1p3Z;
+        Thu, 21 Jan 2021 01:13:26 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DLksx3r7Zz4x9Px; Thu, 21 Jan
+        2021 01:13:25 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3F.CA.10463.535D8006; Thu, 21 Jan 2021 10:13:25 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210121011324epcas1p3a213069e873fd324a7ce3188558f0782~cGjpnKpBF1550615506epcas1p31;
+        Thu, 21 Jan 2021 01:13:24 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210121011324epsmtrp2787f302d75965a95d86e553ac4912200~cGjpmEUQj1645816458epsmtrp2V;
+        Thu, 21 Jan 2021 01:13:24 +0000 (GMT)
+X-AuditID: b6c32a38-f11ff700000028df-b5-6008d535b62c
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6C.0C.08745.435D8006; Thu, 21 Jan 2021 10:13:24 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210121011324epsmtip1d7157936078900a8182def9c359c067e~cGjpSJgyT0190001900epsmtip1L;
+        Thu, 21 Jan 2021 01:13:24 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     Johannes.Thumshirn@wdc.com, axboe@kernel.dk, damien.lemoal@wdc.com,
+        asml.silence@gmail.com, patchwork-bot@kernel.org, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v2] bio: limit bio max size.
+Date:   Thu, 21 Jan 2021 09:58:03 +0900
+Message-Id: <20210121005803.26052-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112181041.356734-19-bgardon@google.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDJsWRmVeSWpSXmKPExsWy7bCmvq7pVY4Eg4cNEhZzVm1jtFh9t5/N
+        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
+        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
+        bB7v911l8+jbsorR4/MmOY/2A91MARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqG
+        lhbmSgp5ibmptkouPgG6bpk5QN8oKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoM
+        DQr0ihNzi0vz0vWS83OtDA0MjEyBKhNyMq6evMlcsEK74vqDVvYGxp1yXYycHBICJhLTut8y
+        djFycQgJ7GCUuLXoFpTziVGisW03G4TzmVHiy54eVpiW7hWzmSASuxgl2vpPssBVfXvUwQhS
+        xSagI9H39hZYu4hAC5PE7Pf/2EEcZoHHjBJXTraxgVQJA1VNOnObGcRmEVCVOPm5hQXE5hWw
+        lth6uIsRYp+8xNPe5cwQcUGJkzOfgNUwA8Wbt85mBhkqIbCHQ6J3Zw87RIOLxPubV6BsYYlX
+        x7dA2VISn9/tZYNo6GaUaG6bzwjhTGCUWPJ8GRNElbHEp8+fgRIcQCs0Jdbv0ocIK0rs/D2X
+        EWIzn8S7r6DQ4ACK80p0tAlBlKhInGm5zwyz6/nanVATPSQu7H0KFhcSiJWY1niEZQKj/Cwk
+        /8xC8s8shMULGJlXMYqlFhTnpqcWGxaYIMfsJkZwstay2ME49+0HvUOMTByMhxglOJiVRHgf
+        WXIkCPGmJFZWpRblxxeV5qQWH2I0BYbwRGYp0eR8YL7IK4k3NDUyNja2MDEzNzM1VhLnTTJ4
+        EC8kkJ5YkpqdmlqQWgTTx8TBKdXAtODL8yO77ztO+n/mnp+Fowi3uMAP18Vp/TwbuN1r1ea3
+        zlxquGn3mraW2TEr/aNObKsKum2VpNb5d8oeK2Uhw+OP/kxarLNkS0rFuflzptxbYvmzedEG
+        62C/zaYOjpKbXxxO5X69iHHJVd3HCjP3TE09L8Sn6R6z5u+zz6FZR2f5K58WPz/lokeurl/Q
+        aocp0yW+LlqwwN/hRnj1lwrRBRcu7uFjLD+xJ0veaa3qkW+dkdWTitY7bxFbteIii5He6SeG
+        WfOti606ygsn5BzOuqlc4fzAT0FyvuuW3lDvgN+Krs9ncD6wWD77OEfeqm1t61/uSZp4yUi5
+        gq3J/+/XC0vVWphajyzq3F8+f33NlA1KLMUZiYZazEXFiQAFB2eAXwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOLMWRmVeSWpSXmKPExsWy7bCSnK7JVY4Eg439OhZzVm1jtFh9t5/N
+        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
+        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
+        bB7v911l8+jbsorR4/MmOY/2A91MARxRXDYpqTmZZalF+nYJXBlXT95kLlihXXH9QSt7A+NO
+        uS5GTg4JAROJ7hWzmboYuTiEBHYwStxe18EMkZCSOH7iLWsXIweQLSxx+HAxRM1HRolL8w6x
+        gdSwCehI9L29xQaSEBGYxCRx9toPsEnMAq8ZJboeL2IBqRIGqpp05jbYVBYBVYmTn1vA4rwC
+        1hJbD3cxQmyTl3jau5wZIi4ocXLmE7AaZqB489bZzBMY+WYhSc1CklrAyLSKUTK1oDg3PbfY
+        sMAoL7Vcrzgxt7g0L10vOT93EyM4brS0djDuWfVB7xAjEwfjIUYJDmYlEd5HlhwJQrwpiZVV
+        qUX58UWlOanFhxilOViUxHkvdJ2MFxJITyxJzU5NLUgtgskycXBKNTA5S07o4sv+F3TiRFCY
+        8I1zzD+TUxQ0tk9kl/IUkVc+YP/UNvaNUa7G8/q8a+rn9rb1bz5l8cq2RWa/t4LaLAFV8dvr
+        C3qCN7rvnrbgbdcGqQuyCl+LmHgun7Znn6FwJ+rlKa+GLbaspvteRM47rP3O3yt1g+pMfeea
+        txXZVzqu6p7XTFoV2bvvQ+4Jz8rvkY5T0r6cK2u59Ubzt+P0X8qBBdn33omdMntpaHKNJ2vV
+        k2mfnn2wmXfXNPS93znbxQIm+WZHOoqylr5z1WZZweO23MXxXnmGV1vIE/338TpGE/unhgRy
+        Vs/UW7/V+vHDxONqMzyuHfq4Z+3r6epusyr4J/E6LhdSmfKU5ZSikJsSS3FGoqEWc1FxIgCP
+        aZy0CgMAAA==
+X-CMS-MailID: 20210121011324epcas1p3a213069e873fd324a7ce3188558f0782
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210121011324epcas1p3a213069e873fd324a7ce3188558f0782
+References: <CGME20210121011324epcas1p3a213069e873fd324a7ce3188558f0782@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Ben Gardon wrote:
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index ba296ad051c3..280d7cd6f94b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5471,6 +5471,11 @@ void kvm_mmu_init_vm(struct kvm *kvm)
->  
->  	kvm_mmu_init_tdp_mmu(kvm);
->  
-> +	if (kvm->arch.tdp_mmu_enabled)
-> +		rwlock_init(&kvm->arch.mmu_rwlock);
-> +	else
-> +		spin_lock_init(&kvm->arch.mmu_lock);
+bio size can grow up to 4GB when muli-page bvec is enabled.
+but sometimes it would lead to inefficient behaviors.
+in case of large chunk direct I/O, - 32MB chunk read in user space -
+all pages for 32MB would be merged to a bio structure if memory address is
+continued phsycally. it makes some delay to submit until merge complete.
+bio max size should be limited as a proper size.
 
-Rather than use different lock types, what if we always use a rwlock, but only
-acquire it for read when handling page faults for TDP MMUs?  That would
-significantly reduce the amount of boilerplate conditionals.
+When 32MB chunk read with direct I/O option is coming from userspace,
+kernel behavior is below now. it's timeline.
 
-The fast paths for write_lock() and spin_lock() are nearly identical, and
-I would hope any differences in the slow paths are hidden in the noise.
+ | bio merge for 32MB. total 8,192 pages are merged.
+ | total elapsed time is over 2ms.
+ |------------------ ... ----------------------->|
+                                                 | 8,192 pages merged a bio.
+                                                 | at this time, first bio submit is done.
+                                                 | 1 bio is split to 32 read request and issue.
+                                                 |--------------->
+                                                  |--------------->
+                                                   |--------------->
+                                                              ......
+                                                                   |--------------->
+                                                                    |--------------->|
+                          total 19ms elapsed to complete 32MB read done from device. |
 
-> +
->  	node->track_write = kvm_mmu_pte_write;
->  	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
->  	kvm_page_track_register_notifier(kvm, node);
-> @@ -6074,3 +6079,87 @@ void kvm_mmu_pre_destroy_vm(struct kvm *kvm)
->  	if (kvm->arch.nx_lpage_recovery_thread)
->  		kthread_stop(kvm->arch.nx_lpage_recovery_thread);
->  }
-> +
-> +void kvm_mmu_lock_shared(struct kvm *kvm)
-> +{
-> +	WARN_ON(!kvm->arch.tdp_mmu_enabled);
-> +	read_lock(&kvm->arch.mmu_rwlock);
-> +}
-> +
-> +void kvm_mmu_unlock_shared(struct kvm *kvm)
-> +{
-> +	WARN_ON(!kvm->arch.tdp_mmu_enabled);
-> +	read_unlock(&kvm->arch.mmu_rwlock);
-> +}
-> +
-> +void kvm_mmu_lock_exclusive(struct kvm *kvm)
-> +{
-> +	WARN_ON(!kvm->arch.tdp_mmu_enabled);
-> +	write_lock(&kvm->arch.mmu_rwlock);
-> +}
-> +
-> +void kvm_mmu_unlock_exclusive(struct kvm *kvm)
-> +{
-> +	WARN_ON(!kvm->arch.tdp_mmu_enabled);
-> +	write_unlock(&kvm->arch.mmu_rwlock);
-> +}
+If bio max size is limited with 1MB, behavior is changed below.
 
-I'm not a fan of all of these wrappers.  It's extra layers and WARNs, and
-introduces terminology that differs from the kernel's locking terminology,
-e.g. read vs. shared.  The WARNs are particularly wasteful as these all have
-exactly one caller that explicitly checks kvm->arch.tdp_mmu_enabled.
+ | bio merge for 1MB. 256 pages are merged for each bio.
+ | total 32 bio will be made.
+ | total elapsed time is over 2ms. it's same.
+ | but, first bio submit timing is fast. about 100us.
+ |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+      | 256 pages merged a bio.
+      | at this time, first bio submit is done.
+      | and 1 read request is issued for 1 bio.
+      |--------------->
+           |--------------->
+                |--------------->
+                                      ......
+                                                 |--------------->
+                                                  |--------------->|
+        total 17ms elapsed to complete 32MB read done from device. |
 
-Even if we don't unconditionally use the rwlock, I think I'd prefer to omit
-these rwlock wrappers and instead use read/write_lock directly (and drop the
-WARNs). 
+As a result, read request issue timing is faster if bio max size is limited.
+Current kernel behavior with multipage bvec, super large bio can be created.
+And it lead to delay first I/O request issue.
 
-> +
-> +void kvm_mmu_lock(struct kvm *kvm)
-> +{
-> +	if (kvm->arch.tdp_mmu_enabled)
-> +		kvm_mmu_lock_exclusive(kvm);
-> +	else
-> +		spin_lock(&kvm->arch.mmu_lock);
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_mmu_lock);
-> +
-> +void kvm_mmu_unlock(struct kvm *kvm)
-> +{
-> +	if (kvm->arch.tdp_mmu_enabled)
-> +		kvm_mmu_unlock_exclusive(kvm);
-> +	else
-> +		spin_unlock(&kvm->arch.mmu_lock);
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_mmu_unlock);
+Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
 
-These exports aren't needed, I don't see any callers in kvm_intel or kvm_amd.
-That's a moot point if we use rwlock unconditionally.
+---
+ block/bio.c               | 17 ++++++++++++++++-
+ include/linux/bio.h       | 13 +++----------
+ include/linux/blk_types.h |  1 +
+ 3 files changed, 20 insertions(+), 11 deletions(-)
 
-> +
+diff --git a/block/bio.c b/block/bio.c
+index 1f2cc1fbe283..027503c2e2e7 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -284,9 +284,24 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+ 
+ 	bio->bi_io_vec = table;
+ 	bio->bi_max_vecs = max_vecs;
++	bio->bi_max_size = UINT_MAX;
+ }
+ EXPORT_SYMBOL(bio_init);
+ 
++void bio_set_dev(struct bio *bio, struct block_device *bdev)
++{
++	if (bio->bi_disk != bdev->bd_disk)
++		bio_clear_flag(bio, BIO_THROTTLED);
++
++	bio->bi_disk = bdev->bd_disk;
++	bio->bi_partno = bdev->bd_partno;
++	bio->bi_max_size = blk_queue_get_max_sectors(bio->bi_disk->queue,
++			bio_op(bio)) << SECTOR_SHIFT;
++
++	bio_associate_blkg(bio);
++}
++EXPORT_SYMBOL(bio_set_dev);
++
+ /**
+  * bio_reset - reinitialize a bio
+  * @bio:	bio to reset
+@@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+ 		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+ 
+ 		if (page_is_mergeable(bv, page, len, off, same_page)) {
+-			if (bio->bi_iter.bi_size > UINT_MAX - len) {
++			if (bio->bi_iter.bi_size > bio->bi_max_size - len)
+ 				*same_page = false;
+ 				return false;
+ 			}
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 1edda614f7ce..b9803e80c259 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+ 	if (bio->bi_vcnt >= bio->bi_max_vecs)
+ 		return true;
+ 
+-	if (bio->bi_iter.bi_size > UINT_MAX - len)
++	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
+ 		return true;
+ 
+ 	return false;
+@@ -482,20 +482,13 @@ extern struct bio_vec *bvec_alloc(gfp_t, int, unsigned long *, mempool_t *);
+ extern void bvec_free(mempool_t *, struct bio_vec *, unsigned int);
+ extern unsigned int bvec_nr_vecs(unsigned short idx);
+ extern const char *bio_devname(struct bio *bio, char *buffer);
+-
+-#define bio_set_dev(bio, bdev) 			\
+-do {						\
+-	if ((bio)->bi_disk != (bdev)->bd_disk)	\
+-		bio_clear_flag(bio, BIO_THROTTLED);\
+-	(bio)->bi_disk = (bdev)->bd_disk;	\
+-	(bio)->bi_partno = (bdev)->bd_partno;	\
+-	bio_associate_blkg(bio);		\
+-} while (0)
++extern void bio_set_dev(struct bio *bio, struct block_device *bdev);
+ 
+ #define bio_copy_dev(dst, src)			\
+ do {						\
+ 	(dst)->bi_disk = (src)->bi_disk;	\
+ 	(dst)->bi_partno = (src)->bi_partno;	\
++	(dst)->bi_max_size = (src)->bi_max_size;\
+ 	bio_clone_blkg_association(dst, src);	\
+ } while (0)
+ 
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index 866f74261b3b..e5dd5b7d8fc1 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -270,6 +270,7 @@ struct bio {
+ 	 */
+ 
+ 	unsigned short		bi_max_vecs;	/* max bvl_vecs we can hold */
++	unsigned int		bi_max_size;	/* max data size we can hold */
+ 
+ 	atomic_t		__bi_cnt;	/* pin count */
+ 
+-- 
+2.28.0
+
