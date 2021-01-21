@@ -2,162 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D27B2FF2E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6FF2FF2F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389724AbhAUSJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728929AbhAUSIu (ORCPT
+        id S2389574AbhAUSKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:10:20 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:34839 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389720AbhAUSJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:08:50 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10E8C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:08:10 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id s2so1565211vsk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:08:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w5QgTLBTO6KI/Wir8QrnsKoondIbwMGDgfCI0iaRxNk=;
-        b=XEXHKF0gOBKJfMzkK6wQhBMUp/elDLkq5m84FWLkP6mqgAJ+orGy/QYpZt5t3Dg4xF
-         hNcDyrpeyZGTKfrkMLMz+yuBTukKIwXAQ6qiUoAUWRpJwHP2WIf6lbEC9QUgTRxS6zXh
-         M579NVhjc8NpJBDlWtlJ1glbv2Y+UdRjTmAfs=
+        Thu, 21 Jan 2021 13:09:33 -0500
+Received: by mail-oi1-f169.google.com with SMTP id w8so3135895oie.2;
+        Thu, 21 Jan 2021 10:09:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=w5QgTLBTO6KI/Wir8QrnsKoondIbwMGDgfCI0iaRxNk=;
-        b=tjrVR45blVuA/wPTkH3/FGYuXJ0iMQ+OHDU5oAg4lUMHyynWRDHh/G/LmLS9TiRHLQ
-         lMEFvMMcGUv+lLVRiZxq6w0ElhlZ3cqKteOz4j7VNvqKVvnq3izltgpoHsPCQH/hChea
-         UATPyHusxKlCAur51vA5ApHF9rCyOAIeNuIKVHhuJ25HxKsn1iIgbejsOkWmLcbMl1x/
-         pbCRamL8DxeqGCjNEI73lJ+8j6Vr8wb4V512Zs9qL2o6tFV2wPlVYcOXg1oknTHaWvQh
-         DGlhbmegBAtvFj9MRKAGcc8n4HUNOmGyD/AskXf4aD+n+gt327o5duiV/RIa0uHLHrmj
-         AVeA==
-X-Gm-Message-State: AOAM530lugRvrJq0oeUXc0xYStTPy5ZLdO89o6fpoJ8gLeXmUGwWLerA
-        +efDXGsfAgPw8f4il8dQ5vo+KjdAtYlM10zzP58qnQ==
-X-Google-Smtp-Source: ABdhPJzqx8YiNjmgvGESJNRr4lYAdFMPoLctq+oCwVK2qjKbdSiJTK9TvzTGeqAPitoq30FvB3wX1y4m8XmMzy8sttQ=
-X-Received: by 2002:a67:e353:: with SMTP id s19mr948518vsm.53.1611252489314;
- Thu, 21 Jan 2021 10:08:09 -0800 (PST)
+        bh=rZuG0eDaYJNboNh8e3LplxwDe2N2H+yB/LmrSLFUl6M=;
+        b=mpkd3gCV1ZB6Juf+EQnHYyaq+CeUe3ecQxGnUd7uu/l9DT1GyHAiYpRPiCTckxdwcu
+         V3xwqZSMqz3SwpPlslSYftoRE8zgYGXGIqgbhtBymwtR/Qdn4elnQiJCGdfo/T813M83
+         J/MhKLhpC/q+UEDX69wVRJiVlTIv9hvf1q4QVqvWlREkpH23j0nyzcy+Z+44gUdslrWl
+         3QH+ltYD/mDAqm2VcdfaPv4fDRGoiyrPx2w55sysQEICePLlNj/eXJhenl8Q7aNbXaZw
+         nzjIKsutWYadXq0/4Td18vt+mmSi2cakIwlMWAeOuaS0uc+QlhDxeQgRz9wH42+1woke
+         Snog==
+X-Gm-Message-State: AOAM530kLzE1PB5BRbLrkjTQus1vv5zd702sh82DuavPC1AjLIu0oIXy
+        s22k5WItbF+VkjmilXT6kTT+uNZzlTKiricwjCM=
+X-Google-Smtp-Source: ABdhPJzonsjyrNxpDyasZkL5KpTZWxHq4Ux3HEM1YkApyJQtDjSw14vrAyNsETjZ7up7pvN+p39lnrgFySegxATtRNE=
+X-Received: by 2002:aca:308a:: with SMTP id w132mr552636oiw.69.1611252522742;
+ Thu, 21 Jan 2021 10:08:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119060746.7515-1-max.chou@realtek.com>
-In-Reply-To: <20210119060746.7515-1-max.chou@realtek.com>
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date:   Thu, 21 Jan 2021 10:07:57 -0800
-Message-ID: <CANFp7mVh51=S9=wTE9rcKOtO4ro-_hEZ7ctRA+kAaEq=STGD+w@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: btrtl: Enable WBS for the specific Realtek devices
-To:     max.chou@realtek.com
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Lu <alex_lu@realsil.com.cn>, hildawu@realtek.com,
-        kidman@realtek.com, Shyh-In Hwang <josephsih@chromium.org>
+References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com> <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+ <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com> <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+ <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com> <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
+ <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
+In-Reply-To: <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 21 Jan 2021 19:08:31 +0100
+Message-ID: <CAJZ5v0jVxMMGh6k-vXeBRsCtD0L14poNUrg4kZOpCfOz2sZGZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
+On Thu, Jan 21, 2021 at 5:34 PM Daniel Scally <djrscally@gmail.com> wrote:
+>
+>
+> On 21/01/2021 14:39, Rafael J. Wysocki wrote:
+> > On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
+> >>
+> >> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
+> >>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>> Hi Rafael
+> >>>>
+> >>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+> >>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+> >>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+> >>>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+> >>>>>>>> specification intends. We need to be able to find those devices "from"
+> >>>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
+> >>>>>>>> the include the handle of the dependee device in their _DEP buffer.
+> >>>>>>> What exactly do you need this for?
+> >>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+> >>>>>> refer to those INT3472's in their _DEP method. The driver binds to the
+> >>>>>> INT3472 device, we need to find the sensors dependent on them.
+> >>>>>>
+> >>>>> Well, this is an interesting concept. :-)
+> >>>>>
+> >>>>> Why does _DEP need to be used for that?  Isn't there any other way to
+> >>>>> look up the dependent sensors?
+> >>>>>
+> >>>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+> >>>>>>>
+> >>>>>>> Note that supplier drivers may remove entries from there, but does
+> >>>>>>> that matter for your use case?
+> >>>>>> Ah - that may work, yes. Thank you, let me test that.
+> >>>>> Even if that doesn't work right away, but it can be made work, I would
+> >>>>> very much prefer that to the driver parsing _DEP for every device in
+> >>>>> the namespace by itself.
+> >>>> This does work; do you prefer it in scan.c, or in utils.c (in which case
+> >>>> with acpi_dep_list declared as external var in internal.h)?
+> >>> Let's put it in scan.c for now, because there is the lock protecting
+> >>> the list in there too.
+> >>>
+> >>> How do you want to implement this?  Something like "walk the list and
+> >>> run a callback for the matching entries" or do you have something else
+> >>> in mind?
+> >>
+> >> Something like this (though with a mutex_lock()). It could be simplified
+> >> by dropping the prev stuff, but we have seen INT3472 devices with
+> >> multiple sensors declaring themselves dependent on the same device
+> >>
+> >>
+> >> struct acpi_device *
+> >> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
+> >>                 struct acpi_device *prev)
+> >> {
+> >>     struct acpi_dep_data *dep;
+> >>     struct acpi_device *adev;
+> >>     int ret;
+> >>
+> >>     if (!supplier)
+> >>         return ERR_PTR(-EINVAL);
+> >>
+> >>     if (prev) {
+> >>         /*
+> >>          * We need to find the previous device in the list, so we know
+> >>          * where to start iterating from.
+> >>          */
+> >>         list_for_each_entry(dep, &acpi_dep_list, node)
+> >>             if (dep->consumer == prev->handle &&
+> >>                 dep->supplier == supplier->handle)
+> >>                 break;
+> >>
+> >>         dep = list_next_entry(dep, node);
+> >>     } else {
+> >>         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
+> >>                        node);
+> >>     }
+> >>
+> >>
+> >>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
+> >>         if (dep->supplier == supplier->handle) {
+> >>             ret = acpi_bus_get_device(dep->consumer, &adev);
+> >>             if (ret)
+> >>                 return ERR_PTR(ret);
+> >>
+> >>             return adev;
+> >>         }
+> >>     }
+> >>
+> >>     return NULL;
+> >> }
+> > That would work I think, but would it be practical to modify
+> > acpi_walk_dep_device_list() so that it runs a callback for every
+> > consumer found instead of or in addition to the "delete from the list
+> > and free the entry" operation?
+>
+>
+> I think that this would work fine, if that's the way you want to go.
+> We'd just need to move everything inside the if (dep->supplier ==
+> handle) block to a new callback, and for my purposes I think also add a
+> way to stop parsing the list from the callback (so like have the
+> callbacks return int and stop parsing on a non-zero return). Do you want
+> to expose that ability to pass a callback outside of ACPI?
 
-On Mon, Jan 18, 2021 at 10:07 PM <max.chou@realtek.com> wrote:
->
-> From: Max Chou <max.chou@realtek.com>
->
-> By this change, it will enable WBS supported on the specific Realtek BT
-> devices, such as RTL8822C and RTL8852A.
-> In the future, it's able to maintain what the Realtek devices support WBS
-> here.
->
-> Tested-by: Hilda Wu <hildawu@realtek.com>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Max Chou <max.chou@realtek.com>
->
-> ---
-> v2:
->  - edit the null check
-> ---
->  drivers/bluetooth/btrtl.c | 28 ++++++++++++++++++++++++----
->  1 file changed, 24 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-> index 24f03a1f8d57..363e23b15faf 100644
-> --- a/drivers/bluetooth/btrtl.c
-> +++ b/drivers/bluetooth/btrtl.c
-> @@ -38,6 +38,19 @@
->         .hci_ver = (hciv), \
->         .hci_bus = (bus)
->
-> +enum  btrtl_chip_id {
-> +       CHIP_ID_8723A,          /* index  0 for RTL8723A*/
-> +       CHIP_ID_8723B,          /* index  1 for RTL8723B*/
-> +       CHIP_ID_8821A,          /* index  2 for RTL8821A*/
-> +       CHIP_ID_8761A,          /* index  3 for RTL8761A*/
-> +       CHIP_ID_8822B = 8,      /* index  8 for RTL8822B */
-> +       CHIP_ID_8723D,          /* index  9 for RTL8723D */
-> +       CHIP_ID_8821C,          /* index 10 for RTL8821C */
-> +       CHIP_ID_8822C = 13,     /* index 13 for RTL8822C */
-> +       CHIP_ID_8761B,          /* index 14 for RTL8761B */
-> +       CHIP_ID_8852A = 18,     /* index 18 for RTL8852A */
-> +};
-> +
->  struct id_table {
->         __u16 match_flags;
->         __u16 lmp_subver;
-> @@ -58,6 +71,7 @@ struct btrtl_device_info {
->         u8 *cfg_data;
->         int cfg_len;
->         bool drop_fw;
-> +       int project_id;
->  };
->
->  static const struct id_table ic_id_table[] = {
-> @@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
->
->         /* Find project_id in table */
->         for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
-> -               if (project_id == project_id_to_lmp_subver[i].id)
-> +               if (project_id == project_id_to_lmp_subver[i].id) {
-> +                       btrtl_dev->project_id = project_id;
->                         break;
-> +               }
->         }
->
->         if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
-> @@ -719,18 +735,22 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
->          */
->         set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
->
-> -       if (!btrtl_dev->ic_info)
-> +       if (!btrtl_dev->project_id)
->                 goto done;
+Yes.
 
-Since btrtl_dev->project_id is not a pointer, this check should not be
-necessary. The switch below has a default case that prints when
-project_id = 0.
+> Or just export helpers to call each of the callbacks (one to fetch the next
+> dependent device, one to decrement the unmet dependencies counter)
 
->
->         /* Enable central-peripheral role (able to create new connections with
->          * an existing connection in slave role).
->          */
-> -       switch (btrtl_dev->ic_info->lmp_subver) {
-> -       case RTL_ROM_LMP_8822B:
-> +       /* Enable WBS supported for the specific Realtek devices. */
-> +       switch (btrtl_dev->project_id) {
-> +       case CHIP_ID_8822C:
-> +       case CHIP_ID_8852A:
->                 set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
-> +               set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
->                 break;
->         default:
->                 rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
-> +               rtl_dev_dbg(hdev, "WBS supported not enabled.");
->                 break;
->         }
->
-> --
-> 2.17.1
->
+If you can run a callback for every matching entry, you don't really
+need to have a callback to return the next matching entry.  You can do
+stuff for all of them in one go (note that it probably is not a good
+idea to run the callback under the lock, so the for loop currently in
+there is not really suitable for that).
+
+> Otherwise, I'd just need to update the 5 users of that function either
+> to use the new helper or else to also pass the decrement dependencies
+> callback.
+
+Or have a wrapper around it passing the decrement dependencies
+callback for the "typical" users.
