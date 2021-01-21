@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253FB2FE34D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A4C2FE357
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbhAUHAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:00:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
+        id S1727102AbhAUHCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:02:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726445AbhAUG5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:57:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0027423788;
-        Thu, 21 Jan 2021 06:56:39 +0000 (UTC)
+        id S1726847AbhAUG7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:59:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19262239E7;
+        Thu, 21 Jan 2021 06:57:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611212201;
-        bh=BDKID0D/DjLf0/giy43ab3WNpzv+B/Dv/2ljTkyqQm0=;
+        s=k20201202; t=1611212230;
+        bh=+H2zPsLci1bezk2S3JmavBPHLPQUue/AmNZ7OZAGcJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IjuEqZKpP7TNniwWXxfJkftqyW3qH0ErAKyt4LAHLMRrJldC0k5vRPtOIhoNvWQ/n
-         /QeSM5v+XadjoxnRo0P+OO/e0xS8xwqOFBueGZ/+o8EUpEPnNtqNoCk1foqc+sSh8y
-         KttUxgxz+GZu+EAaqUT+jAUGdwQ/r0ZxPvDXDwBvrwlbw2oR2ndspa8cumGRGF52zz
-         ndjJSBnI9vJL45xAYpm1lMSFJTjhZ4tTQztSnuvwd5SSwoF/2jJF6ufJOikDrotBVa
-         YCXxWhueshFPn5Pf7TxHHte0b5icYCE9rGlJGimARVW9wAbqiba7FSCI/nugTHK4Rj
-         zqQKECqSQmT5A==
+        b=s94hz0ctLE03TEDMS4oSergz79QSBeWnA4adayWZ1ry5Zi4nB34tD77GvSoJlG7mK
+         1742CZG9vko3YaJ58A+er4JWgNoclTtCe7ZjNTsv99JExVltr2QYh/g1RO5mgG73pJ
+         pIIzvXTvxVgvG+3yg1kzw9YllolB8A+PU1jg2306qQwK8clx/yXv19uGo5U2j0Ww2F
+         lq6fLVOCFICR9TUBigGUX+3LCH3wkbXx8IU37TmVpOtSLToUD2GmtLML92TgsDAJTw
+         RcGWIFgm6ZU1kANh8WZI+TIFvyEvtArD/5RDPjy0tEkgZP2KSC8AAloL+EKJxQOlUu
+         707IKeZpqK9hA==
 From:   guoren@kernel.org
 To:     guoren@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH 05/29] csky: Fixup barrier design
-Date:   Thu, 21 Jan 2021 14:53:25 +0800
-Message-Id: <20210121065349.3188251-5-guoren@kernel.org>
+Subject: [PATCH 16/29] csky: Add faulthandler_disabled() check
+Date:   Thu, 21 Jan 2021 14:53:36 +0800
+Message-Id: <20210121065349.3188251-16-guoren@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210121065349.3188251-1-guoren@kernel.org>
 References: <20210121065349.3188251-1-guoren@kernel.org>
@@ -39,119 +39,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-Remove shareable bit for ordering barrier, just keep ordering
-in current hart is enough for SMP. Using three continuous
-sync.is as PTW barrier to prevent speculative PTW in 860
-microarchitecture.
+Similar to other architectures:
+In addition to in_atomic, we also need pagefault_disabled() to
+check.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 ---
- arch/csky/include/asm/barrier.h | 82 ++++++++++++++++++++++++---------
- 1 file changed, 60 insertions(+), 22 deletions(-)
+ arch/csky/mm/fault.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/csky/include/asm/barrier.h b/arch/csky/include/asm/barrier.h
-index a430e7fddf35..117e6224defa 100644
---- a/arch/csky/include/asm/barrier.h
-+++ b/arch/csky/include/asm/barrier.h
-@@ -8,6 +8,61 @@
+diff --git a/arch/csky/mm/fault.c b/arch/csky/mm/fault.c
+index cecca6729b04..9533bd8d9a6a 100644
+--- a/arch/csky/mm/fault.c
++++ b/arch/csky/mm/fault.c
+@@ -143,12 +143,11 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+ 		return;
+ 	}
  
- #define nop()	asm volatile ("nop\n":::"memory")
+-	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ 	/*
+ 	 * If we're in an interrupt or have no user
+ 	 * context, we must not take the fault..
+ 	 */
+-	if (in_atomic() || !mm)
++	if (unlikely(faulthandler_disabled() || !mm))
+ 		goto bad_area_nosemaphore;
  
-+#ifdef CONFIG_SMP
-+
-+/*
-+ * bar.brwarws: ordering barrier for all load/store instructions
-+ *              before/after
-+ *
-+ * |31|30 26|25 21|20 16|15  10|9   5|4           0|
-+ *  1  10000 00000 00000 100001	00001 0 bw br aw ar
-+ *
-+ * b: before
-+ * a: after
-+ * r: read
-+ * w: write
-+ *
-+ * Here are all combinations:
-+ *
-+ * bar.brw
-+ * bar.br
-+ * bar.bw
-+ * bar.arw
-+ * bar.ar
-+ * bar.aw
-+ * bar.brwarw
-+ * bar.brarw
-+ * bar.bwarw
-+ * bar.brwar
-+ * bar.brwaw
-+ * bar.brar
-+ * bar.bwaw
-+ */
-+#define __bar_brw()	asm volatile (".long 0x842cc000\n":::"memory")
-+#define __bar_br()	asm volatile (".long 0x8424c000\n":::"memory")
-+#define __bar_bw()	asm volatile (".long 0x8428c000\n":::"memory")
-+#define __bar_arw()	asm volatile (".long 0x8423c000\n":::"memory")
-+#define __bar_ar()	asm volatile (".long 0x8421c000\n":::"memory")
-+#define __bar_aw()	asm volatile (".long 0x8422c000\n":::"memory")
-+#define __bar_brwarw()	asm volatile (".long 0x842fc000\n":::"memory")
-+#define __bar_brarw()	asm volatile (".long 0x8427c000\n":::"memory")
-+#define __bar_bwarw()	asm volatile (".long 0x842bc000\n":::"memory")
-+#define __bar_brwar()	asm volatile (".long 0x842dc000\n":::"memory")
-+#define __bar_brwaw()	asm volatile (".long 0x842ec000\n":::"memory")
-+#define __bar_brar()	asm volatile (".long 0x8425c000\n":::"memory")
-+#define __bar_brar()	asm volatile (".long 0x8425c000\n":::"memory")
-+#define __bar_bwaw()	asm volatile (".long 0x842ac000\n":::"memory")
-+
-+#define __smp_mb()	__bar_brwarw()
-+#define __smp_rmb()	__bar_brar()
-+#define __smp_wmb()	__bar_bwaw()
-+
-+#define ACQUIRE_FENCE		".long 0x8427c000\n"
-+#define __smp_acquire_fence()	__bar_brarw()
-+#define __smp_release_fence()	__bar_brwaw()
-+
-+#endif /* CONFIG_SMP */
-+
- /*
-  * sync:        completion barrier, all sync.xx instructions
-  *              guarantee the last response recieved by bus transaction
-@@ -15,31 +70,14 @@
-  * sync.s:      inherit from sync, but also shareable to other cores
-  * sync.i:      inherit from sync, but also flush cpu pipeline
-  * sync.is:     the same with sync.i + sync.s
-- *
-- * bar.brwarw:  ordering barrier for all load/store instructions before it
-- * bar.brwarws: ordering barrier for all load/store instructions before it
-- *						and shareable to other cores
-- * bar.brar:    ordering barrier for all load       instructions before it
-- * bar.brars:   ordering barrier for all load       instructions before it
-- *						and shareable to other cores
-- * bar.bwaw:    ordering barrier for all store      instructions before it
-- * bar.bwaws:   ordering barrier for all store      instructions before it
-- *						and shareable to other cores
-  */
-+#define mb()		asm volatile ("sync\n":::"memory")
+ 	if (user_mode(regs))
+@@ -157,6 +156,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+ 	if (is_write(regs))
+ 		flags |= FAULT_FLAG_WRITE;
  
- #ifdef CONFIG_CPU_HAS_CACHEV2
--#define mb()		asm volatile ("sync.s\n":::"memory")
--
--#ifdef CONFIG_SMP
--#define __smp_mb()	asm volatile ("bar.brwarws\n":::"memory")
--#define __smp_rmb()	asm volatile ("bar.brars\n":::"memory")
--#define __smp_wmb()	asm volatile ("bar.bwaws\n":::"memory")
--#endif /* CONFIG_SMP */
--
--#define sync_is()	asm volatile ("sync.is\n":::"memory")
--
--#else /* !CONFIG_CPU_HAS_CACHEV2 */
--#define mb()		asm volatile ("sync\n":::"memory")
-+/*
-+ * Using three sync.is to prevent speculative PTW
-+ */
-+#define sync_is()	asm volatile ("sync.is\nsync.is\nsync.is\n":::"memory")
- #endif
- 
- #include <asm-generic/barrier.h>
++	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ retry:
+ 	mmap_read_lock(mm);
+ 	vma = find_vma(mm, address);
 -- 
 2.17.1
 
