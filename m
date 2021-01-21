@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5239F2FF63C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B440E2FF648
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbhAUUqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:46:04 -0500
-Received: from saphodev.broadcom.com ([192.19.232.172]:49076 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726532AbhAUUpg (ORCPT
+        id S1727317AbhAUUsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727264AbhAUUsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:45:36 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 0BD3346B32;
-        Thu, 21 Jan 2021 12:44:42 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 0BD3346B32
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611261884;
-        bh=pJqSPhCLxEaf/K5XZRxqMWZzZdmg6FHkG7wWkQ5Qg+4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=hadffBV3nHLJ1opLGh/26I+97ZmpGHYp5G7l/UreyROHkiCWMPTOcKsQu6yZqKmRd
-         v9isA2Oi/Uonj42mrihqQ0ifZ1Ix6aR8de87UNRi1VkhCm7xpLN1Ckt7gZMik8vojw
-         4RFGSOcEmIHGVKq0vV3Gvty8MyYf/VGnj1dIQRtk=
-Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang line
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Finn Behrens <me@kloenk.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210121170736.2266-1-scott.branden@broadcom.com>
- <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <62f87d72-1804-fb5c-d020-64f2efd2bc0e@broadcom.com>
-Date:   Thu, 21 Jan 2021 12:44:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 21 Jan 2021 15:48:16 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66102C06174A;
+        Thu, 21 Jan 2021 12:47:34 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id g3so1988986plp.2;
+        Thu, 21 Jan 2021 12:47:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ELInXzZ8TUNTAEej3drCLWmZEdzDmk8Uo5iybhZjGao=;
+        b=vHaK+CWc4FOZ/kNe0O/IZNq9yw29fH+NxREotadYV1JNSgdz6wK16XJXlSbizorJDn
+         N8mZljdnEYxfZb8CFKjefuuyUb90v35A2CRrebI3iLY76q7lO3NGp5+v6gm7EPkX0tl9
+         hyDuNXSEduFml9z74kru9YbM6Pe1WMhRHFAvSyDF3GRvl1QzxO4BCmAmUT2CxBotg95k
+         IkIz5m11SGBtftNddCoJgOJ8TaDT3OZpRjpL8FsdX4Bt5KqZ4KAGmm1ZrXRD5XNX2PMc
+         l4BHLjhfkhe8cK4CKXE0f5NDOkA8YD0FidBjvioPNGopCWAZTiVI3/QKi3sImt/U/2vI
+         0WHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ELInXzZ8TUNTAEej3drCLWmZEdzDmk8Uo5iybhZjGao=;
+        b=fi6C8zi1UHOqZ/3OhHYfaTJY101qXi6wD/+QyjOsP/zM52qjoeVpvP6hil6hIICv2l
+         vMTaPX6tQJ7AHIL6mSNCMfnST8UCME2n9LyzOgInJ0ZUSBwRS7PXPMNo81G7/dZI4fEM
+         gx6udxq8fy3jqScDVuHXZF0YadBzD9KoUMxCLOB6wr5eM+Ta2LdUp6QAi4rd2AjSeyJL
+         WFZp6aaw1uBC1Cm2H93nLRYSOEFkGxcxYH0gvEvYG1LrjOxgqcvKxKsCi13s0kiUeYib
+         /Y50FL3d2TAZHNBt5lUhX8sR2v7CV75B8tlzek0VFk7er3/gR+jF97lrtkwKq44YgqSW
+         JWGw==
+X-Gm-Message-State: AOAM5325QKkVcgfqCsViChsyWML2YD0R6CHxsLjZCZ6mRQYTALrW7mNX
+        LD24Lz/i9bgdSfxxwVrzSDbEW6eod8E=
+X-Google-Smtp-Source: ABdhPJyjsdFeLHVJHwq5y1JgXapjXbM770ZwENnHCMpH6PDrGPswomhz8Dbfjqep5tUiMlu/5e8SVg==
+X-Received: by 2002:a17:902:e750:b029:de:8c17:fd64 with SMTP id p16-20020a170902e750b02900de8c17fd64mr1136847plf.54.1611262053535;
+        Thu, 21 Jan 2021 12:47:33 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id c189sm6611473pfb.175.2021.01.21.12.47.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 12:47:32 -0800 (PST)
+Subject: Re: [PATCH] ata: ahci_brcm: Add back regulators management
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>
+References: <20201223224130.738590-1-f.fainelli@gmail.com>
+ <057c3619-022f-1d79-6c9d-51f9085ea963@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1cc0cacd-7ab2-c11e-db5c-363c69991f1e@gmail.com>
+Date:   Thu, 21 Jan 2021 12:47:30 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
+In-Reply-To: <057c3619-022f-1d79-6c9d-51f9085ea963@gmail.com>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
 
-On 2021-01-21 12:25 p.m., Masahiro Yamada wrote:
-> On Fri, Jan 22, 2021 at 2:17 AM Scott Branden
-> <scott.branden@broadcom.com> wrote:
->> Use python3 instead of python in diffconfig Shebang line.
->> python2 was sunset January 1, 2000 and environments do not need
->> to support python any more.
+
+On 1/14/2021 12:46 PM, Florian Fainelli wrote:
+> On 12/23/20 2:41 PM, Florian Fainelli wrote:
+>> While reworking the resources management and departing from using
+>> ahci_platform_enable_resources() which did not allow a proper step
+>> separation like we need, we unfortunately lost the ability to control
+>> AHCI regulators. This broke some Broadcom STB systems that do expect
+>> regulators to be turned on to link up with attached hard drives.
 >>
->> Fixes: b24413180f56 ("tweewide: Fix most Shebang lines")
->> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+>> Fixes: c0cdf2ac4b5b ("ata: ahci_brcm: Fix AHCI resources management")
+>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 >> ---
->>  scripts/diffconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> Jens,
 >>
->> diff --git a/scripts/diffconfig b/scripts/diffconfig
->> index 627eba5849b5..d5da5fa05d1d 100755
->> --- a/scripts/diffconfig
->> +++ b/scripts/diffconfig
->> @@ -1,4 +1,4 @@
->> -#!/usr/bin/env python
->> +#!/usr/bin/env python3
->>  # SPDX-License-Identifier: GPL-2.0
->>  #
->>  # diffconfig - a tool to compare .config files.
->> --
->> 2.17.1
->>
-> Just from curiosity, what problem is this solving?
-It is solving the problem that python is long past its life:
-https://www.python.org/doc/sunset-python-2/
+>> This is based on your for-next branch, let me know if you need me to
+>> rebase to a different branch. Thanks!
+> 
+> Jens, this is a bug fix so it would be nice to get this applied at some> point. Thank you
 
-The 5.11-rc kernel diffconfig doesn't work now due
-to the /usr/bin/python change to /usr/bin/env python.
-
-Could we please ensure this makes it into 5.11 and/or
-maintains the FIxes tag if it does not?
->
-> Is there a distribution where 'python' does not exist,
-> but 'python3' does ?
-Yes, Python is finally being removed from some distributions
-and has already been done so from my yocto builds where
-I detected the problem.
->
-Thanks,
-Scott
+Jens, can you apply this patch or let me know if you need me to change
+something? Thanks
+-- 
+Florian
