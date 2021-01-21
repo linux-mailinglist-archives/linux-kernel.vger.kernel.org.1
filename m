@@ -2,88 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80AC2FDE8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312042FDE8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390774AbhAUBLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 20:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387955AbhAUBIj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 20:08:39 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D668FC061757;
-        Wed, 20 Jan 2021 17:07:57 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id q12so174803lfo.12;
-        Wed, 20 Jan 2021 17:07:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=af8uGqPNbWOtj2lXGhOrp3lNnRFLV41/jmYgbh0DDyw=;
-        b=Rah5x9v7JkbaQ4n4PKUPnIa1iWBztdlO2QWBpiJmfKZF7VCtJAplypvtJCanlKLh8c
-         cCxUwJdHCJNPEUQ+3kAQNCyOMLZi3JKn1vqARmlm1YIAbXdE6ZHv39zUUq/prN7AsLi9
-         1TV1zpvn/1bF9B/Sc0NWAYLnGcwNqAoDi/zBGT8NuGOBJ5FAw9BAyz8dyjB73IRbq/gO
-         +qIDsDOeoDLXoqyKwXFervRVofhZ5VojimZ3QiwQwqP4ju76EBWVA/3ue4nxYG0vgL/t
-         tY75qhBvXT5BygLZU624LXsQbfaqqwchePf3GdKeF0DAHqDfzVEWwiLsCUV1TsvA36Tf
-         7fZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=af8uGqPNbWOtj2lXGhOrp3lNnRFLV41/jmYgbh0DDyw=;
-        b=qy3H6b/27ZaOoKkshMdltPIxx47FSBdTpdE1oM4Eqj04q7H9LXkJlYcGYR2Qh7fdU7
-         jSE1R6n5UBO+hELX6OuRq6ydXQNLdAPJHAaMXqMthXJf2LmlzvB17zea7pKZwISVSAdO
-         lKgSG1PrIGmk9qVrzhJxccYMKOUF1X4J0sxYL2na+CCg0xHS32rirnzUxtBBmQ0ZHrUU
-         nh6VKxSp6YqocfT8rWQK7fnp/wtLul8YEtCRW2v4bFEgAUpI9SnQH+VzNYjRmqUO7SDC
-         9hU9ErV/0W32PElTsFHfP/2e/+9y6v4uelSLPemUf30J3Ceb8MO1xcmGtyzadxcmqm6R
-         VAHQ==
-X-Gm-Message-State: AOAM5339oumw7JO5FUEs6WSSbjWXo5zkQsPtTul3mvpm2lOPgNn7Sdv5
-        bdW7XMGIBuk8OJZ/QkCxMKXhuqXb+/gUi57udKKLLer3
-X-Google-Smtp-Source: ABdhPJzH2gtAdO871xVRD5ps8Vj2EJhYvwPW2zpeUgOIm18BZ5w6hBUBhwCBYZ8qJmiL9u40KXk6krqa4p2RKmtrlz8=
-X-Received: by 2002:a19:8983:: with SMTP id l125mr5193184lfd.182.1611191276166;
- Wed, 20 Jan 2021 17:07:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210120133946.2107897-1-jackmanb@google.com> <20210120133946.2107897-3-jackmanb@google.com>
- <CAKXUXMxw4JP4q-iGTMsnS2j4KYfU7WDRTLbAdWu4DrvCa=R+NQ@mail.gmail.com>
-In-Reply-To: <CAKXUXMxw4JP4q-iGTMsnS2j4KYfU7WDRTLbAdWu4DrvCa=R+NQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 20 Jan 2021 17:07:44 -0800
-Message-ID: <CAADnVQLGnsc0r0ZXbZys7N5cpxiRSP8BfUOr9PO5vYwQPMzWpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] docs: bpf: Clarify -mcpu=v3 requirement
- for atomic ops
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
+        id S2390948AbhAUBMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 20:12:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46172 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391847AbhAUBJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:09:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 04A5EAC95;
+        Thu, 21 Jan 2021 01:09:15 +0000 (UTC)
+Message-ID: <1611191354.18842.7.camel@suse.cz>
+Subject: Re: [PATCH] x86,sched: On AMD EPYC set freq_max = max_boost in
+ schedutil invariant formula
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Date:   Thu, 21 Jan 2021 02:09:14 +0100
+In-Reply-To: <20210121003550.20415-1-ggherdovich@suse.cz>
+References: <20210121003550.20415-1-ggherdovich@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:57 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> On Wed, Jan 20, 2021 at 2:39 PM Brendan Jackman <jackmanb@google.com> wrote:
-> >
-> > Alexei pointed out [1] that this wording is pretty confusing. Here's
-> > an attempt to be more explicit and clear.
-> >
-> > [1] https://lore.kernel.org/bpf/CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com/T/#m07264fc18fdc43af02fc1320968afefcc73d96f4
-> >
->
-> It is common practice to use "Link: URL" to refer to other mail
-> threads; and to use the "permalink":
->
-> https://lore.kernel.org/bpf/CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com/
->
-> which is a bit shorter than the link you provided.
+On Thu, 2021-01-21 at 01:35 +0100, Giovanni Gherdovich wrote:
+> Phoronix.com discovered a severe performance regression on AMD APYC
+> introduced on schedutil [see link 1] by the following commits from v5.11-rc1
+> 
+>     commit 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD systems")
+>     commit 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
+> 
+> Furthermore commit db865272d9c4 ("cpufreq: Avoid configuring old governors as
+> default with intel_pstate") from v5.10 made it extremely easy to default to
+> schedutil even if the preferred driver is acpi_cpufreq. Distros are likely to
+> build both intel_pstate and acpi_cpufreq on x86, and the presence of the
+> former removes ondemand from the defaults. This situation amplifies the
+> visibility of the bug we're addressing.
+> 
+> [link 1] https://www.phoronix.com/scan.php?page=article&item=linux511-amd-schedutil&num=1
+> 
+> 1. PROBLEM DESCRIPTION   : over-utilization and schedutil
+> 2. PROPOSED SOLUTION     : raise freq_max in schedutil formula
+> 3. DATA TABLE            : image processing benchmark
+> 4. ANALYSIS AND COMMENTS : with over-utilization, freq-invariance is lost
 
-I fixed it up while applying.
-Thanks everyone.
+I've sent this patch twice by mistake, sorry about that.
+
+In case it is of interest, I've shared some plots made while studying this
+regression in a bugzilla entry:
+
+  https://bugzilla.kernel.org/show_bug.cgi?id=211305
+
+
+Thanks,
+Giovanni
