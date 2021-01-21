@@ -2,92 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEF02FE735
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5E52FE73B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728436AbhAUKLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:11:34 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:25266 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728866AbhAUKKM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:10:12 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-189-BXRXaqkPN2KtFxGAXuKLPQ-1; Thu, 21 Jan 2021 10:08:33 +0000
-X-MC-Unique: BXRXaqkPN2KtFxGAXuKLPQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 21 Jan 2021 10:08:31 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 21 Jan 2021 10:08:31 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Oliver Giles <ohw.giles@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: RE: Splicing to/from a tty
-Thread-Topic: Splicing to/from a tty
-Thread-Index: AQHW75FXm/V94rBWlE2o2nAONgRsB6ox2eiQ
-Date:   Thu, 21 Jan 2021 10:08:30 +0000
-Message-ID: <5ce6fe95ee9c4e0f9699a8dc48ec7eab@AcuMS.aculab.com>
-References: <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
- <20210118085311.GA2735@lst.de> <20210118193457.GA736435@zeniv-ca>
- <CAHk-=wh6HLz_qMam_J=W3X4caBqAGN8P+8c_y+sGFvBaD70K8w@mail.gmail.com>
- <20210118195400.GC736435@zeniv-ca> <20210120162608.GB740243@zeniv-ca>
- <20210120191116.GC740243@zeniv-ca>
- <CAHk-=wjtTC_jNL+K1Ey_wY_KpTYZOR5XwhkZ+Eu7vviVi5itDQ@mail.gmail.com>
- <20210120231439.GE740243@zeniv-ca>
- <CAHk-=widQ+oLHbm=wSrewpLgXJg_FWCZV3BERmaEAx+ZCMfmZg@mail.gmail.com>
- <20210121003835.GF740243@zeniv-ca>
- <CAHk-=whWGwcZXpqDFv-j2fcChtT1jE0ZMFCmQHp3BrSkp+XZ6A@mail.gmail.com>
-In-Reply-To: <CAHk-=whWGwcZXpqDFv-j2fcChtT1jE0ZMFCmQHp3BrSkp+XZ6A@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728904AbhAUKM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:12:26 -0500
+Received: from mail-eopbgr760040.outbound.protection.outlook.com ([40.107.76.40]:62939
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728469AbhAUKLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:11:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fxbqf/usKPyuAbIinmdsQzwFJEaLH4Lv8eX3+9q3RBknphdXptx4s9HTE0p0FQYOS0F9BgTic8sduCXkW9zpyE2NlGDbBPJzDTbFbI+QM+k1pbsTb/1J+QbUw9m7dgKFuqYuesRTsNquyutwDtubLL0JPYy1R/MoDMFXVRw/ND2nmK8MLSFy58gDdpYEjFm4BAWmt1nNOFRPZ5TdOndcu9DudhSmgX2uY8AEgsPPVfUblP7gPzxkQjNQwZAsJqWKduZsMTkhqz06aq7U+jsKqZ/+mMGcH+IqlxRcdA3bBMKeaOH8qaBtdBSiA7I7aJhoE3pGd7QSxYmZTmRNIBFUsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yS7yU5sUlSO2Q3Ui6v3Nky50meJEIllnE4EAjjSxEOY=;
+ b=RFddAq2ksqYeKvpy3YCURbYJyRrstJNNcobJzhkGkjWdI+NpA/UqsyoTBcKfxusfimbrZVzt6Fgz+abcWTrcwO1uOu4Sph75WiA8n5RgZY+xJvUab/NX08wG0mjAPA4LRp99b/ZYcSVedIeSaBl2AZzLCnmKZzuHcCaCd+VgBEKaBEN/q8+nOXEBnIGuOZbib4o4MpVFrui/4lMtR8/lMV3N4HJ8F5fBT2fHsfkWqXpYbDI0/gVZepkWgfA+347kjr2CyajfsX2QZOZVwDYMwdPv28sQg92i+QbC+WiX7IJV+rtYYR3hJ+tpfOacnqwJLzxcge8osLibzTFp7D3ahw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yS7yU5sUlSO2Q3Ui6v3Nky50meJEIllnE4EAjjSxEOY=;
+ b=s8sTaAXfOdFbv4M7VVKD1FcSfte/oPipJ3bpX+d08Pd0oeAWNn8Da6N9vZ85mHjhImAtXZtm2eMuXx2dO63Frj/7pMHnEUUTNXcD5dxSzfgihfmZgvVsmys2u32JCAwwcu7j80B9LND4wywN2yGIINz79tYB/byygE1TToCwGZo=
+Received: from CY4PR18CA0056.namprd18.prod.outlook.com (2603:10b6:903:13f::18)
+ by MN2PR02MB5904.namprd02.prod.outlook.com (2603:10b6:208:113::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.14; Thu, 21 Jan
+ 2021 10:10:21 +0000
+Received: from CY1NAM02FT037.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:13f:cafe::4b) by CY4PR18CA0056.outlook.office365.com
+ (2603:10b6:903:13f::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend
+ Transport; Thu, 21 Jan 2021 10:10:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT037.mail.protection.outlook.com (10.152.75.77) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 10:10:21 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 21 Jan 2021 02:10:10 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Thu, 21 Jan 2021 02:10:10 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ rajan.vaja@xilinx.com,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ robh+dt@kernel.org,
+ krzk@kernel.org,
+ monstr@monstr.eu,
+ linux-kernel@vger.kernel.org,
+ laurent.pinchart@ideasonboard.com
+Received: from [172.30.17.109] (port=45914)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1l2Wun-0002sH-2D; Thu, 21 Jan 2021 02:10:09 -0800
+Subject: Re: [PATCH 04/12] arm64: dts: zynqmp: Enable and wire reset
+ controller
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <git@xilinx.com>, Kalyani Akula <kalyani.akula@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <cover.1606917949.git.michal.simek@xilinx.com>
+ <c0a99c5b0438e34073429624d99a2c3f16532016.1606917949.git.michal.simek@xilinx.com>
+ <X81dXV0uCccZ3360@pendragon.ideasonboard.com>
+ <dd199853-71b1-aeef-fe17-57a4110d2da9@xilinx.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <6543a8d1-bf0b-ed44-8ccd-115f14e48dcc@xilinx.com>
+Date:   Thu, 21 Jan 2021 11:10:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <dd199853-71b1-aeef-fe17-57a4110d2da9@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4e992a93-c2d5-4c9f-de13-08d8bdf4c330
+X-MS-TrafficTypeDiagnostic: MN2PR02MB5904:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <MN2PR02MB5904F7324D50AA591CC4C760C6A10@MN2PR02MB5904.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lMiDrn4DFpiaoZVpLFD1oiNlfAQpUoEy8r0mG+XlMw1CFBh8DLBSY5ZgX/pB7XjX/svMPqspPorRZkMcvD0C5AQyPddF4fiA39YB+EmmHTd37qp1wUB2zSxSY6dzI6lLd7Ofz817gUEtd3Y9EoPEfA5MU278yqsincBoC5PydCBiZeYghtM4THPSg0TuDooE1wRIj7bZXGcXrox3cdnAPYtunXjxc5E99fu6L3u6yTNwVydsfxVkwpIGjQMkA0qow4c8yJIQrBQXwgHWA0U/pMV0WaWhiEGShYf3znt1Jzqd2jA5viZHJA8S3zJPvkiTsvJILB+P1tOF6mp1xzvdifqZxVb4VE7IDSEji/p7w/DGyH6GU2mfcW1CzxU7GB280R/TkA++jz6D4CMEActbN8wFkCud1kWfCy1mHNQCc0rhR0RrlR8jcI6viv2384ZSyJI0CQZbx6ZItLF+vVnHC/UAp2inzBpmEO7+6QCYQoiW/Zxiu23u+jmiazbM1og4uf0Pj6r+A1RNQHS+8AvmEQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(46966006)(82740400003)(36756003)(8936002)(53546011)(8676002)(6666004)(44832011)(31686004)(47076005)(356005)(2906002)(83380400001)(9786002)(316002)(186003)(26005)(70206006)(2616005)(478600001)(36906005)(82310400003)(31696002)(336012)(5660300002)(54906003)(4326008)(110136005)(7636003)(70586007)(426003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 10:10:21.6735
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e992a93-c2d5-4c9f-de13-08d8bdf4c330
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT037.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB5904
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjEgSmFudWFyeSAyMDIxIDAxOjA0DQo+IE9u
-IFdlZCwgSmFuIDIwLCAyMDIxIGF0IDQ6MzggUE0gQWwgVmlybyA8dmlyb0B6ZW5pdi5saW51eC5v
-cmcudWs+IHdyb3RlOg0KPiA+DQo+ID4gT0suLi4gIEkgd29uZGVyIGhvdyBtYW55IGRlYnVnZnMg
-d3JpdGFibGUgZmlsZXMgYWxsb3cgcHdyaXRlKCkgd2l0aA0KPiA+IEJTIHJlc3VsdHMuLi4NCj4g
-DQo+IEkgaG9wZSBzb21lIG9mIHRoZW0gY2hlY2sgZm9yICJwb3MgPT0gMCIgd2hlbiB0aGV5IHN0
-YXJ0IHBhcnNpbmcgaW50ZWdlcnMuDQo+IA0KPiBCdXQgaG9uZXN0bHksIEkgZG9uJ3QgdGhpbmsg
-aXQncyBhIGJpZyBkZWFsLiBXZSd2ZSBoYWQgdGhlc2UgdGhpbmdzDQo+IHRoYXQganVzdCBiYXNp
-Y2FsbHkgYXNzdW1lIHRoYXQgd2hlbmV2ZXIgeW91IHdyaXRlLCB0aGUgb2Zmc2V0IGp1c3QNCj4g
-ZG9lc24ndCBtYXR0ZXIgYXQgYWxsLCBhbmQgYXMgbG9uZyBhcyBzb21lIG51bWJlciBjb21lcyBp
-biBvbmUgc2luZ2xlDQo+IHdyaXRlIGNhbGwsIHdlIGFjY2VwdCBpdC4NCj4gDQo+IEJlY2F1c2Ug
-ZXZlbiBpZiB5b3UgZW5kIHVwIGRvaW5nIHNvbWV0aGluZyBsaWtlIGp1c3QNCj4gDQo+ICAgIGVj
-aG8gJFNPTUVUSElORyA+IC9zeXMveHl6L2FiYw0KPiANCj4gYW5kIHRoYXQgIiRTT01FVEhJTkci
-IGNvdWxkIGJlIGRvbmUgbXVsdGlwbGUgd3JpdGVzLCBpbiBwcmFjdGljZSBpdA0KPiBhbGwgd29y
-a3Mgb3V0IGp1c3QgZmluZSBhbmQgaXQgbmV2ZXIgcmVhbGx5IGlzLiBZb3UgYWxtb3N0IGhhdmUg
-dG8gdHJ5DQo+IHRvIHNjcmV3IHVwIHdpdGggc29tZXRoaW5nIGxpa2UNCj4gDQo+ICAgKGVjaG8g
-LW4gMzsgZWNobyAtbiA0KSA+IC9zeXMveHl6L2FiYw0KPiANCj4gdG8gYWN0dWFsbHkgc2VlIHR3
-byB3cml0ZXMgb2YgIjMiIGFuZCAiNCIgaW5zdGVhZCBvZiBvbmUgd3JpdGUgd2l0aA0KPiAiMzQi
-LiBBbmQgaG9uZXN0bHksIGlmIHNvbWVib2R5IGRvZXMgc29tZXRoaW5nIGxpa2UgdGhhdCwgZG8g
-d2UgcmVhbGx5DQo+IGNhcmU/IFRoZXkgbWlnaHQgZ2V0IDMsIHRoZXkgbWlnaHQgZ2V0IDQsIGFu
-ZCB0aGV5IG1pZ2h0IGdldCAzNC4gVGhleQ0KPiBnZXQgd2hhdCB0aGV5IGRlc2VydmUuDQoNCk9y
-IHdvcnNlOg0KCWVjaG8gYWJjID4vc3lzL3h5ei9hYmMNCgllY2hvIHggfCBkZCBicz0xIGNvdW50
-PTIgb3NlZWs9MSBjb252PW5vdHJ1bmMgb2Y9L3N5cy94eXovYWJjDQp3aGljaCAoaWYgSSBnb3Qg
-dGhlIGRkIGNvbW1hbmQgcmlnaHQpIHdvdWxkIGdlbmVyYXRlICJheGMiIG9uIGEgcmVhbCBmaWxl
-Lg0KDQpPVE9IIG11bHRpcGxlIHNob3J0IHJlYWRzIGFyZSBxdWl0ZSBsaWtlbHkuDQpCZXN0IG5v
-dCBkb25lIG9uIGEgY291bnRlci4uLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
-IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
-UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Hi,
+
+On 12/7/20 10:32 AM, Michal Simek wrote:
+> 
+> 
+> On 06. 12. 20 23:38, Laurent Pinchart wrote:
+>> Hi Michal,
+>>
+>> Thank you for the patch.
+>>
+>> On Wed, Dec 02, 2020 at 03:06:03PM +0100, Michal Simek wrote:
+>>> Enable reset controller for several IPs.
+>>>
+>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+>>> ---
+>>>
+>>>  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 29 ++++++++++++++++++++++++++
+>>>  1 file changed, 29 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+>>> index 68923fbd0e89..4fa820f78d76 100644
+>>> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+>>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+>>> @@ -187,6 +187,11 @@ zynqmp_pcap: pcap {
+>>>  			xlnx_aes: zynqmp-aes {
+>>>  				compatible = "xlnx,zynqmp-aes";
+>>>  			};
+>>> +
+>>> +			zynqmp_reset: reset-controller {
+>>> +				compatible = "xlnx,zynqmp-reset";
+>>> +				#reset-cells = <1>;
+>>> +			};
+>>>  		};
+>>>  	};
+>>>  
+>>> @@ -466,6 +471,8 @@ gem0: ethernet@ff0b0000 {
+>>>  			#address-cells = <1>;
+>>>  			#size-cells = <0>;
+>>>  			power-domains = <&zynqmp_firmware PD_ETH_0>;
+>>> +			resets = <&zynqmp_reset ZYNQMP_RESET_GEM0>;
+>>> +			reset-names = "gem0_rst";
+>>
+>> I don't see any of the reset-names used in this patch defined in DT
+>> bindings (or used in drivers). For all devices but the USB controllers
+>> it seems they can be dropped. For the USB controllers, the bindings need
+>> to be updated first.
+> 
+> Let me double check it. IIRC if there is just one there is likely no
+> need to list the name but if there are more then one names should be
+> also there. But you are right it should be the part of dt binding.
+
+I will skip this patch.
+
+Thanks,
+Michal
 
