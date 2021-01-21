@@ -2,247 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1772FF080
+	by mail.lfdr.de (Postfix) with ESMTP id C877E2FF081
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387961AbhAUQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:36:32 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59174 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387838AbhAUQgP (ORCPT
+        id S2388005AbhAUQgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387904AbhAUQfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:36:15 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10LGYY9Z015105;
-        Thu, 21 Jan 2021 10:34:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611246874;
-        bh=0C95p2TJTee5NxsyRqKfLfHSXpWD72818vOy9G5u+38=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=FH8Xhebb3350iM8nhIDQOnYQxWmoOTkgmoitHE8kxCyvg7xTpSt3686nNM9Z9dVRE
-         Dk3d7VwtM1jZYfUBDWr/uGU/4+QfQt+ErnceXkBQcx8nOeZirg/5e/h7xE5YGthAhm
-         f7bJ7aZzGKXs1Glgz7r3ECrwE4tW5QTzjm4HBX44=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10LGYYDs048024
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 Jan 2021 10:34:34 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
- Jan 2021 10:34:34 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 21 Jan 2021 10:34:34 -0600
-Received: from [10.250.35.71] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10LGYXba105581;
-        Thu, 21 Jan 2021 10:34:33 -0600
-Subject: Re: [PATCH] arm64: dts: ti: k3: mmc: fix dtbs_check warnings
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Faiz Abbas <faiz_abbas@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Aswath Govindraju <a-govindraju@ti.com>
-References: <20210115193016.5581-1-grygorii.strashko@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <fd37ce1c-9aaa-5bce-e683-3c2fd09657b8@ti.com>
-Date:   Thu, 21 Jan 2021 10:34:33 -0600
+        Thu, 21 Jan 2021 11:35:22 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19CBC061756;
+        Thu, 21 Jan 2021 08:34:39 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id c12so2365189wrc.7;
+        Thu, 21 Jan 2021 08:34:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=YlHLVnRR0WKe78VA0AWZic/mxYHhEfei59jaU+AgjMQ=;
+        b=LHkxrpTK325aR3GoREcT0iu2gmRw30nISJ6T2HCmZuC4Soi5CcJavgt5FEhbbWj5W0
+         drfbkA7ocXITcm4yOOUsj2gX14C8A1iX8UdduwhCkSlLyM2gi2vsLhJVYqeDg+BOzG18
+         XXuuNBH+1MezzfJ/yiMxNdKlULushk79pH2sBzWCbCWfYomYQbz0keojZdcVfOWqOgmA
+         fo6A5tjEc+y1PDIUIsW1DsK9MdK2GVhW10israYRPBrUVe2z7BzwdVn3/JccEEHCeAuP
+         KGzHC3TkCRQz5xOZu0kalBHLk3bi2YOe2nNnPyOCQY6hUVNz6m4dvciFXLXmXHS7A4r8
+         zcWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=YlHLVnRR0WKe78VA0AWZic/mxYHhEfei59jaU+AgjMQ=;
+        b=aSomIlcgqM85suz+RXh04OpXL9JmMVNvTyd6+R0+hYNooxrYdJQAEY2Jueur5//WBK
+         cQa16XAO7Jktgashb56jQDG2eCWdMP/sPVeO3y9cf6jZLMct12EAbaHJFzJcDePPjERl
+         iDQg14M32vcwq4Ngc9blrBFoHtslNb+fBDup+3uxo1Du45qEwfbr2sNCIgtgNTrtEje6
+         U4pjFhePuVH/4uTnppFeXC+wJSsGpcNTxL7Ge+EZK/NTiRTaiVD3t+O90KGBPfYLc0qz
+         Y8zPK1viyp1YQjrTQyiL5b9Jnz0XsqQpGOPIMIsXuoQUGdsvT9rXbW6x8cMpG5wp2rJZ
+         GMrQ==
+X-Gm-Message-State: AOAM530HhhxG5M60jw68C30oSaZBjqmq2ss+PBnrtuWAilkpQh2w6sxt
+        4C84JMKsa0qJ32PFqSWRMuY=
+X-Google-Smtp-Source: ABdhPJzJH7xRVK5uCUcH3hOOY9JvWe9hwD1lAGxZ5+zzt5t/3cUyk9Y/LnRu4HUOk/BIg9MoVMIWMA==
+X-Received: by 2002:a5d:434d:: with SMTP id u13mr324307wrr.6.1611246878638;
+        Thu, 21 Jan 2021 08:34:38 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id h23sm8462795wmi.26.2021.01.21.08.34.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 08:34:38 -0800 (PST)
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
+ acpi_devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
+ <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+ <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
+ <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+ <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
+ <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
+Date:   Thu, 21 Jan 2021 16:34:37 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210115193016.5581-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 1:30 PM, Grygorii Strashko wrote:
-> Now the dtbs_check produces below warnings
->  sdhci@4f80000: clock-names:0: 'clk_ahb' was expected
->  sdhci@4f80000: clock-names:1: 'clk_xin' was expected
->  $nodename:0: 'sdhci@4f80000' does not match '^mmc(@.*)?$'
-> 
-> Fix above warnings by updating mmc DT definitions to follow
-> sdhci-am654.yaml bindings:
->  - rename sdhci dt nodes to 'mmc@'
->  - swap clk_xin/clk_ahb clocks, the clk_ahb clock expected to be defined
-> first
-> 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-Thanks for fixing these Grygorii,
+On 21/01/2021 14:39, Rafael J. Wysocki wrote:
+> On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
+>>
+>> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
+>>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>> Hi Rafael
+>>>>
+>>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+>>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+>>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+>>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+>>>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+>>>>>>>> specification intends. We need to be able to find those devices "from"
+>>>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
+>>>>>>>> the include the handle of the dependee device in their _DEP buffer.
+>>>>>>> What exactly do you need this for?
+>>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+>>>>>> refer to those INT3472's in their _DEP method. The driver binds to the
+>>>>>> INT3472 device, we need to find the sensors dependent on them.
+>>>>>>
+>>>>> Well, this is an interesting concept. :-)
+>>>>>
+>>>>> Why does _DEP need to be used for that?  Isn't there any other way to
+>>>>> look up the dependent sensors?
+>>>>>
+>>>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+>>>>>>>
+>>>>>>> Note that supplier drivers may remove entries from there, but does
+>>>>>>> that matter for your use case?
+>>>>>> Ah - that may work, yes. Thank you, let me test that.
+>>>>> Even if that doesn't work right away, but it can be made work, I would
+>>>>> very much prefer that to the driver parsing _DEP for every device in
+>>>>> the namespace by itself.
+>>>> This does work; do you prefer it in scan.c, or in utils.c (in which case
+>>>> with acpi_dep_list declared as external var in internal.h)?
+>>> Let's put it in scan.c for now, because there is the lock protecting
+>>> the list in there too.
+>>>
+>>> How do you want to implement this?  Something like "walk the list and
+>>> run a callback for the matching entries" or do you have something else
+>>> in mind?
+>>
+>> Something like this (though with a mutex_lock()). It could be simplified
+>> by dropping the prev stuff, but we have seen INT3472 devices with
+>> multiple sensors declaring themselves dependent on the same device
+>>
+>>
+>> struct acpi_device *
+>> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
+>>                 struct acpi_device *prev)
+>> {
+>>     struct acpi_dep_data *dep;
+>>     struct acpi_device *adev;
+>>     int ret;
+>>
+>>     if (!supplier)
+>>         return ERR_PTR(-EINVAL);
+>>
+>>     if (prev) {
+>>         /*
+>>          * We need to find the previous device in the list, so we know
+>>          * where to start iterating from.
+>>          */
+>>         list_for_each_entry(dep, &acpi_dep_list, node)
+>>             if (dep->consumer == prev->handle &&
+>>                 dep->supplier == supplier->handle)
+>>                 break;
+>>
+>>         dep = list_next_entry(dep, node);
+>>     } else {
+>>         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
+>>                        node);
+>>     }
+>>
+>>
+>>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
+>>         if (dep->supplier == supplier->handle) {
+>>             ret = acpi_bus_get_device(dep->consumer, &adev);
+>>             if (ret)
+>>                 return ERR_PTR(ret);
+>>
+>>             return adev;
+>>         }
+>>     }
+>>
+>>     return NULL;
+>> }
+> That would work I think, but would it be practical to modify
+> acpi_walk_dep_device_list() so that it runs a callback for every
+> consumer found instead of or in addition to the "delete from the list
+> and free the entry" operation?
 
-Reviewed-by: Suman Anna <s-anna@ti.com>
 
-On a side note, there are still couple more warnings on J721E dtb
+I think that this would work fine, if that's the way you want to go.
+We'd just need to move everything inside the if (dep->supplier ==
+handle) block to a new callback, and for my purposes I think also add a
+way to stop parsing the list from the callback (so like have the
+callbacks return int and stop parsing on a non-zero return). Do you want
+to expose that ability to pass a callback outside of ACPI? Or just
+export helpers to call each of the callbacks (one to fetch the next
+dependent device, one to decrement the unmet dependencies counter)
 
-/uhome/projects/opensrc/kernels/linux-next/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
-mmc@4fb0000: compatible: More than one condition true in oneOf schema:
-	{'oneOf': [{'additionalItems': False,
-	            'items': [{'const': 'ti,am654-sdhci-5.1'}],
-	            'maxItems': 1,
-	            'minItems': 1,
-	            'type': 'array'},
-	           {'additionalItems': False,
-	            'items': [{'const': 'ti,j721e-sdhci-8bit'}],
-	            'maxItems': 1,
-	            'minItems': 1,
-	            'type': 'array'},
-	           {'additionalItems': False,
-	            'items': [{'const': 'ti,j721e-sdhci-4bit'}],
-	            'maxItems': 1,
-	            'minItems': 1,
-	            'type': 'array'},
-	           {'additionalItems': False,
-	            'items': [{'const': 'ti,j721e-sdhci-4bit'}],
-	            'maxItems': 1,
-	            'minItems': 1,
-	            'type': 'array'},
-	           {'additionalItems': False,
-	            'items': [{'const': 'ti,am64-sdhci-8bit'}],
-	            'maxItems': 1,
-	            'minItems': 1,
-	            'type': 'array'},
-	           {'additionalItems': False,
-	            'items': [{'const': 'ti,am64-sdhci-4bit'}],
-	            'maxItems': 1,
-	            'minItems': 1,
-	            'type': 'array'},
-	           {'additionalItems': False,
-	            'items': [{'const': 'ti,j7200-sdhci-8bit'},
-	                      {'const': 'ti,j721e-sdhci-8bit'}],
-	            'maxItems': 2,
-	            'minItems': 2,
-	            'type': 'array'},
-	           {'additionalItems': False,
-	            'items': [{'const': 'ti,j7200-sdhci-4bit'},
-	                      {'const': 'ti,j721e-sdhci-4bit'}],
-	            'maxItems': 2,
-	            'minItems': 2,
-	            'type': 'array'}]}
-	From schema:
-/uhome/projects/opensrc/kernels/linux-next/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
 
-Also, the YAML itself can do with some improvements. I see a minItems of 1, so I
-am assuming clk_ahb is always the mandatory clock where applicable, can you confirm?
-
-regards
-Suman
-
-> ---
->  arch/arm64/boot/dts/ti/k3-am65-main.dtsi  |  4 ++--
->  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi |  8 ++++----
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 18 +++++++++---------
->  3 files changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index 12591a854020..ceb579fb427d 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -256,7 +256,7 @@
->  		#size-cells = <0>;
->  	};
->  
-> -	sdhci0: sdhci@4f80000 {
-> +	sdhci0: mmc@4f80000 {
->  		compatible = "ti,am654-sdhci-5.1";
->  		reg = <0x0 0x4f80000 0x0 0x260>, <0x0 0x4f90000 0x0 0x134>;
->  		power-domains = <&k3_pds 47 TI_SCI_PD_EXCLUSIVE>;
-> @@ -280,7 +280,7 @@
->  		dma-coherent;
->  	};
->  
-> -	sdhci1: sdhci@4fa0000 {
-> +	sdhci1: mmc@4fa0000 {
->  		compatible = "ti,am654-sdhci-5.1";
->  		reg = <0x0 0x4fa0000 0x0 0x260>, <0x0 0x4fb0000 0x0 0x134>;
->  		power-domains = <&k3_pds 48 TI_SCI_PD_EXCLUSIVE>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> index 4e39f0325c03..3f23b913b498 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> @@ -506,8 +506,8 @@
->  		reg = <0x00 0x04f80000 0x00 0x260>, <0x00 0x4f88000 0x00 0x134>;
->  		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
->  		power-domains = <&k3_pds 91 TI_SCI_PD_EXCLUSIVE>;
-> -		clock-names = "clk_xin", "clk_ahb";
-> -		clocks = <&k3_clks 91 3>, <&k3_clks 91 0>;
-> +		clock-names = "clk_ahb", "clk_xin";
-> +		clocks = <&k3_clks 91 0>, <&k3_clks 91 3>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-mmc-hs = <0x0>;
->  		ti,otap-del-sel-ddr52 = <0x6>;
-> @@ -525,8 +525,8 @@
->  		reg = <0x00 0x04fb0000 0x00 0x260>, <0x00 0x4fb8000 0x00 0x134>;
->  		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
->  		power-domains = <&k3_pds 92 TI_SCI_PD_EXCLUSIVE>;
-> -		clock-names = "clk_xin", "clk_ahb";
-> -		clocks = <&k3_clks 92 2>, <&k3_clks 92 1>;
-> +		clock-names = "clk_ahb", "clk_xin";
-> +		clocks = <&k3_clks 92 1>, <&k3_clks 92 2>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-sd-hs = <0x0>;
->  		ti,otap-del-sel-sdr12 = <0xf>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> index 2d526ea44a85..8c84dafb7125 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> @@ -1032,13 +1032,13 @@
->  		clock-names = "gpio";
->  	};
->  
-> -	main_sdhci0: sdhci@4f80000 {
-> +	main_sdhci0: mmc@4f80000 {
->  		compatible = "ti,j721e-sdhci-8bit";
->  		reg = <0x0 0x4f80000 0x0 0x1000>, <0x0 0x4f88000 0x0 0x400>;
->  		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
->  		power-domains = <&k3_pds 91 TI_SCI_PD_EXCLUSIVE>;
-> -		clock-names = "clk_xin", "clk_ahb";
-> -		clocks = <&k3_clks 91 1>, <&k3_clks 91 0>;
-> +		clock-names = "clk_ahb", "clk_xin";
-> +		clocks = <&k3_clks 91 0>, <&k3_clks 91 1>;
->  		assigned-clocks = <&k3_clks 91 1>;
->  		assigned-clock-parents = <&k3_clks 91 2>;
->  		bus-width = <8>;
-> @@ -1054,13 +1054,13 @@
->  		dma-coherent;
->  	};
->  
-> -	main_sdhci1: sdhci@4fb0000 {
-> +	main_sdhci1: mmc@4fb0000 {
->  		compatible = "ti,j721e-sdhci-4bit";
->  		reg = <0x0 0x04fb0000 0x0 0x1000>, <0x0 0x4fb8000 0x0 0x400>;
->  		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
->  		power-domains = <&k3_pds 92 TI_SCI_PD_EXCLUSIVE>;
-> -		clock-names = "clk_xin", "clk_ahb";
-> -		clocks = <&k3_clks 92 0>, <&k3_clks 92 5>;
-> +		clock-names = "clk_ahb", "clk_xin";
-> +		clocks = <&k3_clks 92 5>, <&k3_clks 92 0>;
->  		assigned-clocks = <&k3_clks 92 0>;
->  		assigned-clock-parents = <&k3_clks 92 1>;
->  		ti,otap-del-sel-legacy = <0x0>;
-> @@ -1074,13 +1074,13 @@
->  		dma-coherent;
->  	};
->  
-> -	main_sdhci2: sdhci@4f98000 {
-> +	main_sdhci2: mmc@4f98000 {
->  		compatible = "ti,j721e-sdhci-4bit";
->  		reg = <0x0 0x4f98000 0x0 0x1000>, <0x0 0x4f90000 0x0 0x400>;
->  		interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
->  		power-domains = <&k3_pds 93 TI_SCI_PD_EXCLUSIVE>;
-> -		clock-names = "clk_xin", "clk_ahb";
-> -		clocks = <&k3_clks 93 0>, <&k3_clks 93 5>;
-> +		clock-names = "clk_ahb", "clk_xin";
-> +		clocks = <&k3_clks 93 5>, <&k3_clks 93 0>;
->  		assigned-clocks = <&k3_clks 93 0>;
->  		assigned-clock-parents = <&k3_clks 93 1>;
->  		ti,otap-del-sel-legacy = <0x0>;
-> 
+Otherwise, I'd just need to update the 5 users of that function either
+to use the new helper or else to also pass the decrement dependencies
+callback.
 
