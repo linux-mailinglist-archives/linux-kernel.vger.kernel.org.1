@@ -2,131 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023F92FF11C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C294C2FF115
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388299AbhAUQyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:54:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729842AbhAUPzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:55:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D06BA23A1D;
-        Thu, 21 Jan 2021 15:54:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611244487;
-        bh=hhZx/Ee+Xm9H79fb1J5cDRefS6ThbB9mATSkmjREweo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=bXnfeDo0omSMD3KJcPgmF+Vo69xhpAs9l+5o/Mwk2G1Jx0DbNZ846sA7HqfoZgNaD
-         Swan94fkPGc49EqGESxX0Nt/zUWTLHgppmDaJ2wRKTPYBizX9CB1tcGPSX6Is2dlE9
-         V5Q5F8QkFtHi77fmW5p/ms7iZqMrXHEtXgcIKbiZtcnZL0Oc3myUi8t/dK5r84pBnB
-         8xHU7Sen+5VhCX+xeAu7o5OMWGQ75gam6m5AuOfnfsC88oPWtYQjd+Lk+zIlwqRc1b
-         9OspZsssgr1C7gi3n3GNuTdtPj1ZC0bakGJDkk2D4vmMw7eD3ipoUCjG5VBbzZXOWI
-         hCgOHN1Uz/kjA==
-Date:   Thu, 21 Jan 2021 09:54:45 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-Message-ID: <20210121155445.GA2657778@bjorn-Precision-5520>
+        id S2388169AbhAUQwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:52:55 -0500
+Received: from smtp-42ac.mail.infomaniak.ch ([84.16.66.172]:53793 "EHLO
+        smtp-42ac.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731060AbhAUP4V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:56:21 -0500
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DM6Rc2ptdzMprhV;
+        Thu, 21 Jan 2021 16:55:24 +0100 (CET)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DM6Rc0j8qzlh8TC;
+        Thu, 21 Jan 2021 16:55:24 +0100 (CET)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH v4 01/10] tools/certs: Add print-cert-tbs-hash.sh
+Date:   Thu, 21 Jan 2021 16:55:04 +0100
+Message-Id: <20210121155513.539519-2-mic@digikod.net>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210121155513.539519-1-mic@digikod.net>
+References: <20210121155513.539519-1-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1cf42837-bf98-944f-697c-8407a0ebd623@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Greg may be able to help compare/contrast this s390 UID with udev
-persistent names]
+From: Mickaël Salaün <mic@linux.microsoft.com>
 
-On Thu, Jan 21, 2021 at 04:31:55PM +0100, Niklas Schnelle wrote:
-> On 1/15/21 4:29 PM, Bjorn Helgaas wrote:
-> > On Fri, Jan 15, 2021 at 12:20:59PM +0100, Niklas Schnelle wrote:
-> >> On 1/14/21 5:14 PM, Greg Kroah-Hartman wrote:
-> >>> On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
-> >>>> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
-> >>>>> On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
-> >>>>>> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
-> >>>>>>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
-> >>>>>>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
-> >>>>>>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
-> >>>>>>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
-> >>>>>>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
-> >> ... snip ...
-> >>
-> >>>
-> >>>> 	if (!zpci_global_kset)
-> >>>> 		return -ENOMEM;
-> >>>>
-> >>>> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
-> >>>
-> >>> Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
-> >>> that's usually a huge clue that you are doing something wrong.
-> >>>
-> >>> Try the above again, with a simple attribute group, and name for it, and
-> >>> it should "just work".
-> >>
-> >> I'm probably missing something but I don't get how this could work
-> >> in this case. If I'm seeing this right the default attribute group
-> >> here is pci_bus_type.bus_groups and that is already set in
-> >> drivers/pci/pci-driver.c so I don't think I should set that.
-> >>
-> >> I did however find bus_create_file() which does work when using the
-> >> path /sys/bus/pci/uid_checking instead. This would work for us if
-> >> Bjorn is okay with that path and the code is really clean and simple
-> >> too.
-> >>
-> >> That said, I think we could also add something like
-> >> bus_create_group().  Then we could use that to also clean up
-> >> drivers/pci/slot.c:pci_slot_init() and get the original path
-> >> /sys/bus/pci/zpci/uid_checking.
-> > 
-> > I don't think "uid_checking" is quite the right name.  It says
-> > something about the *implementation*, but it doesn't convey what that
-> > *means* to userspace.  IIUC this file tells userspace something about
-> > whether a given PCI device always has the same PCI domain/bus/dev/fn
-> > address (or maybe just the same domain?)
-> > 
-> > It sounds like this feature could be useful beyond just s390, and
-> > other arches might implement it differently, without the UID concept.
-> > If so, I'm OK with something at the /sys/bus/pci/xxx level as long as
-> > the name is not s390-specific (and "uid" sounds s390-specific).
-> > 
-> > I assume it would also help with the udev/systemd end if you could
-> > make this less s390 dependent.
-> 
-> I've thought about this more and even implemented a proof of concept
-> patch for a global attribute using a pcibios_has_reproducible_addressing()
-> hook. 
-> 
-> However after implementing it I think as a more general and
-> future proof concept it makes more sense to do this as a per device
-> attribute, maybe as another flag in "stuct pci_dev" named something
-> like "reliable_address". My reasoning behind this can be best be seen
-> with a QEMU example. While I expect that QEMU can easily guarantee
-> that one can always use "0000:01:00.0" for a virtio-pci NIC and
-> thus enp1s0 interface name, the same might be harder to guarantee
-> for a SR-IOV VF passed through with vfio-pci in that same VM and
-> even less so if a thunderbolt controller is passed through and
-> enumeration may depend on daisy chaining. The QEMU example
-> also applies to s390 and maybe others will in the future.
+Add a new helper print-cert-tbs-hash.sh to generate a TBSCertificate
+hash from a given certificate.  This is useful to generate a blacklist
+key description used to forbid loading a specific certificate in a
+keyring, or to invalidate a certificate provided by a PKCS#7 file.
 
-I'm a little wary of using the PCI geographical address
-("0000:01:00.0") as a stable name.  Even if you can make a way to use
-that to identify a specific device instance, regardless of how it is
-plugged in or passed through, it sounds like we could end up with
-"physical PCI addresses" and "virtual PCI addresses" that look the
-same and would cause confusion.
+This kind of hash formatting is required to populate the file pointed
+out by CONFIG_SYSTEM_BLACKLIST_HASH_LIST, but only the kernel code was
+available to understand how to effectively create such hash.
 
-This concept sounds similar to the udev concept of a "persistent
-device name".  What advantages does this s390 UID have over the udev
-approach?
+Cc: David Howells <dhowells@redhat.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+---
 
-There are optional PCI device serial numbers that we currently don't
-really make use of.  Would that be a generic way to help with this?
+Changes since v3:
+* Explain in the commit message that this kind of formating is not new
+  but it wasn't documented.
+
+Changes since v1:
+* Fix typo.
+* Use "if" block instead of "||" .
+---
+ MAINTAINERS                        |  1 +
+ tools/certs/print-cert-tbs-hash.sh | 91 ++++++++++++++++++++++++++++++
+ 2 files changed, 92 insertions(+)
+ create mode 100755 tools/certs/print-cert-tbs-hash.sh
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 00836f6452f0..773a362e807f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4120,6 +4120,7 @@ F:	Documentation/admin-guide/module-signing.rst
+ F:	certs/
+ F:	scripts/extract-cert.c
+ F:	scripts/sign-file.c
++F:	tools/certs/
+ 
+ CFAG12864B LCD DRIVER
+ M:	Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+diff --git a/tools/certs/print-cert-tbs-hash.sh b/tools/certs/print-cert-tbs-hash.sh
+new file mode 100755
+index 000000000000..c93df5387ec9
+--- /dev/null
++++ b/tools/certs/print-cert-tbs-hash.sh
+@@ -0,0 +1,91 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright © 2020, Microsoft Corporation. All rights reserved.
++#
++# Author: Mickaël Salaün <mic@linux.microsoft.com>
++#
++# Compute and print the To Be Signed (TBS) hash of a certificate.  This is used
++# as description of keys in the blacklist keyring to identify certificates.
++# This output should be redirected, without newline, in a file (hash0.txt) and
++# signed to create a PKCS#7 file (hash0.p7s).  Both of these files can then be
++# loaded in the kernel with.
++#
++# Exemple on a workstation:
++# ./print-cert-tbs-hash.sh certificate-to-invalidate.pem > hash0.txt
++# openssl smime -sign -in hash0.txt -inkey builtin-private-key.pem \
++#               -signer builtin-certificate.pem -certfile certificate-chain.pem \
++#               -noattr -binary -outform DER -out hash0.p7s
++#
++# Exemple on a managed system:
++# keyctl padd blacklist "$(< hash0.txt)" %:.blacklist < hash0.p7s
++
++set -u -e -o pipefail
++
++CERT="${1:-}"
++BASENAME="$(basename -- "${BASH_SOURCE[0]}")"
++
++if [ $# -ne 1 ] || [ ! -f "${CERT}" ]; then
++	echo "usage: ${BASENAME} <certificate>" >&2
++	exit 1
++fi
++
++# Checks that it is indeed a certificate (PEM or DER encoded) and exclude the
++# optional PEM text header.
++if ! PEM="$(openssl x509 -inform DER -in "${CERT}" 2>/dev/null || openssl x509 -in "${CERT}")"; then
++	echo "ERROR: Failed to parse certificate" >&2
++	exit 1
++fi
++
++# TBSCertificate starts at the second entry.
++# Cf. https://tools.ietf.org/html/rfc3280#section-4.1
++#
++# Exemple of first lines printed by openssl asn1parse:
++#    0:d=0  hl=4 l= 763 cons: SEQUENCE
++#    4:d=1  hl=4 l= 483 cons: SEQUENCE
++#    8:d=2  hl=2 l=   3 cons: cont [ 0 ]
++#   10:d=3  hl=2 l=   1 prim: INTEGER           :02
++#   13:d=2  hl=2 l=  20 prim: INTEGER           :3CEB2CB8818D968AC00EEFE195F0DF9665328B7B
++#   35:d=2  hl=2 l=  13 cons: SEQUENCE
++#   37:d=3  hl=2 l=   9 prim: OBJECT            :sha256WithRSAEncryption
++RANGE_AND_DIGEST_RE='
++2s/^\s*\([0-9]\+\):d=\s*[0-9]\+\s\+hl=\s*[0-9]\+\s\+l=\s*\([0-9]\+\)\s\+cons:\s*SEQUENCE\s*$/\1 \2/p;
++7s/^\s*[0-9]\+:d=\s*[0-9]\+\s\+hl=\s*[0-9]\+\s\+l=\s*[0-9]\+\s\+prim:\s*OBJECT\s*:\(.*\)$/\1/p;
++'
++
++RANGE_AND_DIGEST=($(echo "${PEM}" | \
++	openssl asn1parse -in - | \
++	sed -n -e "${RANGE_AND_DIGEST_RE}"))
++
++if [ "${#RANGE_AND_DIGEST[@]}" != 3 ]; then
++	echo "ERROR: Failed to parse TBSCertificate." >&2
++	exit 1
++fi
++
++OFFSET="${RANGE_AND_DIGEST[0]}"
++END="$(( OFFSET + RANGE_AND_DIGEST[1] ))"
++DIGEST="${RANGE_AND_DIGEST[2]}"
++
++# The signature hash algorithm is used by Linux to blacklist certificates.
++# Cf. crypto/asymmetric_keys/x509_cert_parser.c:x509_note_pkey_algo()
++DIGEST_MATCH=""
++while read -r DIGEST_ITEM; do
++	if [ -z "${DIGEST_ITEM}" ]; then
++		break
++	fi
++	if echo "${DIGEST}" | grep -qiF "${DIGEST_ITEM}"; then
++		DIGEST_MATCH="${DIGEST_ITEM}"
++		break
++	fi
++done < <(openssl list -digest-commands | tr ' ' '\n' | sort -ur)
++
++if [ -z "${DIGEST_MATCH}" ]; then
++	echo "ERROR: Unknown digest algorithm: ${DIGEST}" >&2
++	exit 1
++fi
++
++echo "${PEM}" | \
++	openssl x509 -in - -outform DER | \
++	dd "bs=1" "skip=${OFFSET}" "count=${END}" "status=none" | \
++	openssl dgst "-${DIGEST_MATCH}" - | \
++	awk '{printf "tbs:" $2}'
+-- 
+2.30.0
+
