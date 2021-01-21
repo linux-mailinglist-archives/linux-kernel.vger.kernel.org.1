@@ -2,85 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CA32FEF8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C102FEF93
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731610AbhAUP4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:56:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731723AbhAUPxp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:53:45 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA292C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:52:59 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id j3so3018581ljb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:52:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=JgJ9soxybA1o27bKejN8yKs9EOx9gsIQCO6dTbQVL9c=;
-        b=ZwI8PpIUolJOdFomVXItWc6Ei9K6Xlnxm5Je1UlruTVxwV8/5MKEhFHUNJy2RelrSR
-         mVjJkRTv9PGcoVSw6cCjitPuJ21NHvqakZ0U+qGjOXrwURslvqFzFx7U7jkDGKFPjVFw
-         +1mjDQcArQjUoPInkCnHSvriac5lShzk07L5IiODdLW8xZpJgXX1yLjBNQdIa8AXzn0m
-         tUZJtbm4H+JIYl0yfXq41+dIyrP4VI8eBWfS015dtAjorV62ukH9PAQqf9eNP44WW3RL
-         s7hGPD/RH1YCrs9xGMJYCQLA4bRyRvYR/PfC/EXFKB98kwa+Jt3HuLU0y9d512V7Vx5Q
-         qA2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JgJ9soxybA1o27bKejN8yKs9EOx9gsIQCO6dTbQVL9c=;
-        b=law77pQ1O+Ht2kWio6P2u04Ry7Z63JktiNxqIFJcbx59Orxq3sxD4onAbztMp/Nf4b
-         QMcCL+phpMLeXV6tv5g6lTN0NBTD2mQt9eIEAYeU6gYbklan9YfEhjbPf1wPVI5DgkpR
-         8bd3VE9AG4SVCf+dOH9i+0ci2yT/zzffL5rd6jo9H25/1DK6DePo4qkBrcpZjx2s1ncM
-         Oei+NLOSPwAZl4uK9Iw9giOElwTNIR9SgtbqTb4/tUnbMx2CymsuUaC5k8wfu9QSlZHT
-         iM3Yfejzbzsqp4Rjv+x9RYxzlZrxQqwyZT2/H4MFp+P/kqLMOj8CgWUnqL6L8kb5Xnhz
-         G8jw==
-X-Gm-Message-State: AOAM532iJEdE5uAV8POQlCN0U3BB1fA2sDuItb/jHwyKK+st4UFxrCJ7
-        JFzZk1jJhzF+e5+RbyEFQfx2GQ==
-X-Google-Smtp-Source: ABdhPJzBas/8VImlBe+3srXin6AiXd1AubNON2XkPDcrMPRT0OoveVfac9pRS6bgKYVKOKxw6/sV2w==
-X-Received: by 2002:a2e:5018:: with SMTP id e24mr7505282ljb.425.1611244378214;
-        Thu, 21 Jan 2021 07:52:58 -0800 (PST)
-Received: from zr.local ([185.200.81.30])
-        by smtp.gmail.com with ESMTPSA id l7sm616628lja.15.2021.01.21.07.52.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 07:52:57 -0800 (PST)
-From:   Zyta Szpak <zr@semihalf.com>
-To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH] arm64: dts: freescale: fix dcfg address range
-Date:   Thu, 21 Jan 2021 16:52:37 +0100
-Message-Id: <20210121155237.15517-1-zr@semihalf.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729271AbhAUP5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:57:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729541AbhAUPzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:55:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AE822C9F;
+        Thu, 21 Jan 2021 15:54:12 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 15:54:10 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Christoph Lameter <cl@linux.com>
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Price <steven.price@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH 1/1] arm64/sparsemem: reduce SECTION_SIZE_BITS
+Message-ID: <20210121155410.GH21811@gaia>
+References: <cover.1611206601.git.sudaraja@codeaurora.org>
+ <43843c5e092bfe3ec4c41e3c8c78a7ee35b69bb0.1611206601.git.sudaraja@codeaurora.org>
+ <alpine.DEB.2.22.394.2101211004540.100764@www.lameter.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2101211004540.100764@www.lameter.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dcfg was overlapping with clockgen address space which resulted
-in failure in memory allocation for dcfg. According regs description
-dcfg size should not be bigger than 4KB.
+On Thu, Jan 21, 2021 at 10:08:17AM +0000, Christoph Lameter wrote:
+> On Wed, 20 Jan 2021, Sudarshan Rajagopalan wrote:
+> 
+> > But there are other problems in reducing SECTION_SIZE_BIT. Reducing it by too
+> > much would over populate /sys/devices/system/memory/ and also consume too many
+> > page->flags bits in the !vmemmap case. Also section size needs to be multiple
+> > of 128MB to have PMD based vmemmap mapping with CONFIG_ARM64_4K_PAGES.
+> 
+> There is also the issue of requiring more space in the TLB cache with
+> smaller page sizes. Or does ARM resolve these into smaller TLB entries
+> anyways (going on my x86 kwon how here)? Anyways if there are only a few
+> TLB entries then the effect could
+> be significant.
 
-Signed-off-by: Zyta Szpak <zr@semihalf.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There is indeed more TLB pressure with smaller page sizes but this patch
+doesn't change this.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-index 025e1f587662..565934cbfa28 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-@@ -385,7 +385,7 @@
- 
- 		dcfg: dcfg@1ee0000 {
- 			compatible = "fsl,ls1046a-dcfg", "syscon";
--			reg = <0x0 0x1ee0000 0x0 0x10000>;
-+			reg = <0x0 0x1ee0000 0x0 0x1000>;
- 			big-endian;
- 		};
- 
 -- 
-2.17.1
-
+Catalin
