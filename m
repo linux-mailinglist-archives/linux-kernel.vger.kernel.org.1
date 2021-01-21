@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063042FEFBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED77E2FEFB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387684AbhAUQDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:03:40 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:41361 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730948AbhAUQCo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:02:44 -0500
-Received: by mail-ot1-f46.google.com with SMTP id k8so2049079otr.8;
-        Thu, 21 Jan 2021 08:02:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=R7T+rwQb5qFYaX5d/2NvmgUHeg2xX0pNv3pOpEsj5EQ=;
-        b=SBbpcdZs75+uuVyamxKETSWX910avja5NY+d6wzMBrQ/Ix8h3qaMtsvhysaK7Bua5E
-         09e2LEVWN3ssjaveSoA4mStlCF56nCR9bOWBHKkNU9Agrz6hnWcDH2VGY/Bpms2i9lWt
-         ujf+bgWfH1TgkWbTcuqNohkakFwYy+Sl5wuiXlFQYM52UpxbWB/zpS2EYtatlyhgQ79T
-         o1ddZ9z41xcBV5h3ShPOOSlNpV9S9UnG/9G9kfJoe8ejtqxi5Q9VEx78d+J9cHcw220b
-         uD+GFJZn5qcVWX14Bh8CAI1MhoIRUe0pWAPGmvp2GuKUAAYYF2qUOL1BE52ZPmkkJeDm
-         rOIA==
-X-Gm-Message-State: AOAM533uzxgOTbUznwquxBjMBxDhVGGi/eFHrP4WFhQoEwEJQou1ob0t
-        fLc2WxXULIdJK69ChOibDQ==
-X-Google-Smtp-Source: ABdhPJwS6VjtPTdD/z11/eIoNH9msXpk4/83WflzvJ8QoI9+UatXRZ93RUwX3ZrBn6ZL8LWIEaPb3w==
-X-Received: by 2002:a9d:66da:: with SMTP id t26mr8416980otm.279.1611244923483;
-        Thu, 21 Jan 2021 08:02:03 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q6sm1115776otm.68.2021.01.21.08.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 08:02:02 -0800 (PST)
-Received: (nullmailer pid 2814842 invoked by uid 1000);
-        Thu, 21 Jan 2021 16:01:58 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
-        max.oss.09@gmail.com, todor.too@gmail.com, mchehab@kernel.org,
-        michael@walle.cc,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>, catalin.marinas@arm.com,
-        vkoul@kernel.org, shawnguo@kernel.org,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        will@kernel.org, devicetree@vger.kernel.org, leoyang.li@nxp.com,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>, robh+dt@kernel.org,
-        agx@sigxcpu.org,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        linux-arm-kernel@lists.infradead.org, bjorn.andersson@linaro.org,
-        geert+renesas@glider.be, Anson.Huang@nxp.com
-In-Reply-To: <20210120134357.1522254-14-robert.foss@linaro.org>
-References: <20210120134357.1522254-1-robert.foss@linaro.org> <20210120134357.1522254-14-robert.foss@linaro.org>
-Subject: Re: [PATCH v2 14/22] dt-bindings: media: camss: Add qcom, msm8996-camss binding
-Date:   Thu, 21 Jan 2021 10:01:58 -0600
-Message-Id: <1611244918.520900.2814841.nullmailer@robh.at.kernel.org>
+        id S2387471AbhAUQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:02:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:40164 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732740AbhAUP71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:59:27 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66F7A139F;
+        Thu, 21 Jan 2021 07:58:25 -0800 (PST)
+Received: from [10.37.8.32] (unknown [10.37.8.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 740DD3F68F;
+        Thu, 21 Jan 2021 07:58:23 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] arm64: Fix kernel address detection of
+ __is_lm_address()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+References: <20210121131956.23246-1-vincenzo.frascino@arm.com>
+ <20210121131956.23246-2-vincenzo.frascino@arm.com>
+ <20210121151206.GI48431@C02TD0UTHF1T.local>
+ <95727b4c-4578-6eb5-b518-208482e8ba62@arm.com>
+ <20210121154938.GJ48431@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <5a389787-4f6a-7577-22fc-f5594409e1ae@arm.com>
+Date:   Thu, 21 Jan 2021 16:02:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210121154938.GJ48431@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 14:43:49 +0100, Robert Foss wrote:
-> Add bindings for qcom,msm8996-camss in order to support the camera
-> subsystem on MSM8996.
+
+
+On 1/21/21 3:49 PM, Mark Rutland wrote:
+> On Thu, Jan 21, 2021 at 03:30:51PM +0000, Vincenzo Frascino wrote:
+>> On 1/21/21 3:12 PM, Mark Rutland wrote:
+>>> On Thu, Jan 21, 2021 at 01:19:55PM +0000, Vincenzo Frascino wrote:
+>>>> Currently, the __is_lm_address() check just masks out the top 12 bits
+>>>> of the address, but if they are 0, it still yields a true result.
+>>>> This has as a side effect that virt_addr_valid() returns true even for
+>>>> invalid virtual addresses (e.g. 0x0).
+>>>
+>>> When it was added, __is_lm_address() was intended to distinguish valid
+>>> kernel virtual addresses (i.e. those in the TTBR1 address range), and
+>>> wasn't intended to do anything for addresses outside of this range. See
+>>> commit:
+>>>
+>>>   ec6d06efb0bac6cd ("arm64: Add support for CONFIG_DEBUG_VIRTUAL")
+>>>
+>>> ... where it simply tests a bit.
+>>>
+>>> So I believe that it's working as intended (though this is poorly
+>>> documented), but I think you're saying that usage isn't aligned with
+>>> that intent. Given that, I'm not sure the fixes tag is right; I think it
+>>> has never had the semantic you're after.
+>>>
+>> I did not do much thinking on the intended semantics. I based my interpretation
+>> on what you are saying (the usage is not aligned with the intent). Based on what
+>> you are are saying, I will change the patch description removing the "Fix" term.
 > 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
+> Thanks! I assume that also means removing the fixes tag.
+>
+
+Obviously ;)
+
+>>> I had thought the same was true for virt_addr_valid(), and that wasn't
+>>> expected to be called for VAs outside of the kernel VA range. Is it
+>>> actually safe to call that with NULL on other architectures?
+>>
+>> I am not sure on this, did not do any testing outside of arm64.
 > 
-> Changes since v1:
->  - Laurent: Reworked driver to use dtschema
-> 
-> 
->  .../bindings/media/qcom,msm8996-camss.yaml    | 418 ++++++++++++++++++
->  1 file changed, 418 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> I think it'd be worth checking, if we're going to use this in common
+> code.
 > 
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Ok, I will run some tests and let you know.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml:418:7: [error] no new line character at the end of file (new-line-at-end-of-file)
+>>> I wonder if it's worth virt_addr_valid() having an explicit check for
+>>> the kernel VA range, instead.
+>>
+>> I have no strong opinion either way even if personally I feel that modifying
+>> __is_lm_address() is more clear. Feel free to propose something.
+> 
+> Sure; I'm happy for it to live within __is_lm_address() if that's
+> simpler overall, given it doesn't look like it's making that more
+> complex or expensive.
+> 
+>>>> Fix the detection checking that it's actually a kernel address starting
+>>>> at PAGE_OFFSET.
+>>>>
+>>>> Fixes: f4693c2716b35 ("arm64: mm: extend linear region for 52-bit VA configurations")
+>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>> Cc: Will Deacon <will@kernel.org>
+>>>> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+>>>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>>>> ---
+>>>>  arch/arm64/include/asm/memory.h | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+>>>> index 18fce223b67b..e04ac898ffe4 100644
+>>>> --- a/arch/arm64/include/asm/memory.h
+>>>> +++ b/arch/arm64/include/asm/memory.h
+>>>> @@ -249,7 +249,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+>>>>  /*
+>>>>   * The linear kernel range starts at the bottom of the virtual address space.
+>>>>   */
+>>>> -#define __is_lm_address(addr)	(((u64)(addr) & ~PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+>>>> +#define __is_lm_address(addr)	(((u64)(addr) ^ PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+>>>
+>>> If we're going to make this stronger, can we please expand the comment
+>>> with the intended semantic? Otherwise we're liable to break this in
+>>> future.
+>>
+>> Based on your reply on the above matter, if you agree, I am happy to extend the
+>> comment.
+> 
+> Works for me; how about:
+> 
+> /*
+>  * Check whether an arbitrary address is within the linear map, which
+>  * lives in the [PAGE_OFFSET, PAGE_END) interval at the bottom of the
+>  * kernel's TTBR1 address range.
+>  */
+> 
+> ... with "arbitrary" being the key word.
+> 
 
-dtschema/dtc warnings/errors:
+Sounds good to me! I will post the new version after confirming the behavior of
+virt_addr_valid() on the other architectures.
 
-See https://patchwork.ozlabs.org/patch/1429444
+> Thanks,
+> Mark.
+> 
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+Regards,
+Vincenzo
