@@ -2,181 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AD02FF82C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C652A2FF82F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbhAUWqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbhAUWpt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:45:49 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD696C061756;
-        Thu, 21 Jan 2021 14:45:08 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id f1so4388738edr.12;
-        Thu, 21 Jan 2021 14:45:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=js608cf7+b6uuSx4xSNXkCTdpGlQyO53l8ri6uI5Ugk=;
-        b=OQ13GQFV3ZKMP2IsaYeS9IbNflRAvsauNeh1LiK6cY1iUbq+8h9tcm190yB2Y2cs9Z
-         oo7YZxmWNtaAQoxDsMpl+WTlS3p8Wn+/HUoDI/lTY9kF2ha0KR9knHP38zbQtxLF4UQf
-         oOn6twWZ1MEkgO1xJYJlPRHVdOA1sGybDrskKcm28EOl0RPytu/GLA0SnWpVTv3FAA+5
-         BKdqo1dgkld0OE6+Z0h1wmGHbkOSR+hauscyqc4RFE1H7/HizN6MlYxPtHGOTHrWGM3d
-         dJ12iOiQBd4uDN+r2xcRp36uuJ40snZXNtThkoXekqZlfI9eArVlww3XJARmlVZfIFJv
-         40tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=js608cf7+b6uuSx4xSNXkCTdpGlQyO53l8ri6uI5Ugk=;
-        b=XB6Ye/umNKIYkPLFospwDXGSowBJgdhY9NJjQfjV7c2PqdyAHrI8W6hYfEuAAH8feC
-         jLBtODPqiZwi414+jQslK9juR2yOmTIoR5pmck1PInlSAfQz3YNf7FudskJRpwxEVmNe
-         ISZvjg/MYVAmJ+n2CggFK9V8+tTCZeOLXmsQw0pzY/wb0nr4LugaT6POgK84EKaj4JPO
-         X2iPSgbQUBts++8zyzlwKFs79MB3ND1atC9M1ENSu+ylC9hoAFUqjJ7/cFSZI8MB1Ylp
-         eDv5qOJQBSlJYCp7sY7dIX5eq+C4gtfnEyLabj38EThPUwVamb4UafYr2xn2NePa9rXv
-         XA7A==
-X-Gm-Message-State: AOAM533bLUiwhlJTtopicenHrPCduvUnt/7th6lLat1nDJabtU/0d2+X
-        kMvQ8D20BseHCSH6YqKGc7c=
-X-Google-Smtp-Source: ABdhPJzdsAmZeMTtJofoH0OpmfOghYFNG5Mw7eCThZjIa7BwAAu43KDhcre/+DiKEUAE2RebrWMEpA==
-X-Received: by 2002:aa7:d8c6:: with SMTP id k6mr1042147eds.265.1611269107502;
-        Thu, 21 Jan 2021 14:45:07 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id t21sm3595648edv.82.2021.01.21.14.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 14:45:06 -0800 (PST)
-Date:   Fri, 22 Jan 2021 00:45:05 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Pawel Dembicki <paweldembicki@gmail.com>
-Cc:     netdev@vger.kernel.org, Linus Wallej <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dsa: vsc73xx: add support for vlan filtering
-Message-ID: <20210121224505.nwfipzncw2h5d3rw@skbuf>
-References: <20210120063019.1989081-1-paweldembicki@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120063019.1989081-1-paweldembicki@gmail.com>
+        id S1726995AbhAUWr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:47:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726583AbhAUWrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 17:47:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C867F23A61;
+        Thu, 21 Jan 2021 22:46:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1611269188;
+        bh=96Z526pBbuqUE3z3L6f5CHO9G46NkdGHX9wOnkYrw4o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FE+TJQtgLz9AxfV9MtnIhD3VwHTBtqYreaWHiScdgFDyz6n9wbVOgT2mEmSFbIygR
+         4CbK9MItXsgMkSQTaTZcTt2MIJiGWdOHDxZwNUK4xv4aP9XCRpfbNikb7cwSqidx+O
+         jO82+MkbvdL6lGQGjFROcRNzMsB/tuy24+FKhUV8=
+Date:   Thu, 21 Jan 2021 14:46:27 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        haitao.huang@intel.com, Kai Huang <kai.huang@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH] mm: Optimizing error condition detection in
+ do_mprotect_pkey()
+Message-Id: <20210121144627.64a60437fe97786596f389d0@linux-foundation.org>
+In-Reply-To: <YAg+QHhczqtTZt4Z@kernel.org>
+References: <20210118133310.98375-1-tianjia.zhang@linux.alibaba.com>
+        <YAg+QHhczqtTZt4Z@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pawel,
+On Wed, 20 Jan 2021 16:29:20 +0200 Jarkko Sakkinen <jarkko@kernel.org> wrote:
 
-On Wed, Jan 20, 2021 at 07:30:18AM +0100, Pawel Dembicki wrote:
-> This patch adds support for vlan filtering in vsc73xx driver.
 > 
-> After vlan filtering enable, CPU_PORT is configured as trunk, without
-> non-tagged frames. This allows to avoid problems with transmit untagged
-> frames because vsc73xx is DSA_TAG_PROTO_NONE.
 > 
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+> On Mon, Jan 18, 2021 at 09:33:10PM +0800, Tianjia Zhang wrote:
+> > Obviously, the error variable detection of the if statement is
+> > for the mprotect callback function, so it is also put into the
+> > scope of calling callbck.
+> > 
+> > Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+> > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> 
+> No fixes tag, no description what this commit does. Nothing
+> makes sense to me.
 
-What are the issues that are preventing you from getting rid of
-DSA_TAG_PROTO_NONE? Not saying that making the driver VLAN aware is a
-bad idea, but maybe also adding a tagging driver should really be the
-path going forward. If there are hardware issues surrounding the native
-tagging support, then DSA can make use of your VLAN features by
-transforming them into a software-defined tagger, see
-net/dsa/tag_8021q.c. But using a trunk CPU port with 8021q uppers on top
-of the DSA master is a poor job of achieving that.
+It's a little cleanup.  Makes the flow at this site consistent with the
+other places where this function handles errors.  I added a bit to the
+changelog mentioning this.
 
-> ---
-> +static int
-> +vsc73xx_port_read_vlan_table_entry(struct dsa_switch *ds, u16 vid, u8 *portmap)
-> +{
-> +	struct vsc73xx *vsc = ds->priv;
-> +	u32 val;
-> +	int ret;
-> +
-> +	if (vid > 4095)
-> +		return -EPERM;
 
-This is a paranoid check and should be removed (not only here but
-everywhere).
-
-> +static int vsc73xx_port_vlan_prepare(struct dsa_switch *ds, int port,
-> +				     const struct switchdev_obj_port_vlan *vlan)
-> +{
-> +	/* nothing needed */
-> +	return 0;
-> +}
-
-Can you please rebase your work on top of the net-next/master branch?
-You will see that the API has changed.
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-
-> +
-> +static void vsc73xx_port_vlan_add(struct dsa_switch *ds, int port,
-> +				  const struct switchdev_obj_port_vlan *vlan)
-> +{
-> +	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-> +	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
-> +	struct vsc73xx *vsc = ds->priv;
-> +	int ret;
-> +	u32 tmp;
-> +
-> +	if (!dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
-> +		return;
-
-Sorry, but no. You need to support the case where the bridge (or 8021q
-module) adds a VLAN even when the port is not enforcing VLAN filtering.
-See commit:
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=0ee2af4ebbe3c4364429859acd571018ebfb3424
-
-> +
-> +	ret = vsc73xx_port_update_vlan_table(ds, port, vlan->vid_begin,
-> +					     vlan->vid_end, 1);
-> +	if (ret)
-> +		return;
-> +
-> +	if (untagged && port != CPU_PORT) {
-> +		/* VSC73xx can have only one untagged vid per port. */
-> +		vsc73xx_read(vsc, VSC73XX_BLOCK_MAC, port,
-> +			     VSC73XX_TXUPDCFG, &tmp);
-> +
-> +		if (tmp & VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_ENA)
-> +			dev_warn(vsc->dev,
-> +				 "Chip support only one untagged VID per port. Overwriting...\n");
-
-Just return an error, don't overwrite, this leaves the bridge VLAN
-information out of sync with the hardware otherwise, which is not a
-great idea.
-
-FWIW the drivers/net/dsa/ocelot/felix.c and drivers/net/mscc/ocelot.c
-files support switching chips from the same vendor. The VSC73XX family
-is much older, but some of the limitations apply to both architectures
-nonetheless (like this one), you can surely borrow some ideas from
-ocelot - in this case search for ocelot_vlan_prepare.
-
-> +
-> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
-> +				    VSC73XX_TXUPDCFG,
-> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID,
-> +				    (vlan->vid_end <<
-> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_SHIFT) &
-> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID);
-> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
-> +				    VSC73XX_TXUPDCFG,
-> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_ENA,
-> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_ENA);
-> +	}
-> +	if (pvid && port != CPU_PORT) {
-> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
-> +				    VSC73XX_CAT_DROP,
-> +				    VSC73XX_CAT_DROP_UNTAGGED_ENA,
-> +				    ~VSC73XX_CAT_DROP_UNTAGGED_ENA);
-> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
-> +				    VSC73XX_CAT_PORT_VLAN,
-> +				    VSC73XX_CAT_PORT_VLAN_VLAN_VID,
-> +				    vlan->vid_end &
-> +				    VSC73XX_CAT_PORT_VLAN_VLAN_VID);
-> +	}
-> +}
