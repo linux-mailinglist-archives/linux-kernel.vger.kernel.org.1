@@ -2,253 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4092FF4C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428232FF4A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbhAUTkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:40:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37789 "EHLO
+        id S1726735AbhAUTel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:34:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24733 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726443AbhAUSs3 (ORCPT
+        by vger.kernel.org with ESMTP id S1726733AbhAUSvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:48:29 -0500
+        Thu, 21 Jan 2021 13:51:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611254820;
+        s=mimecast20190719; t=1611254984;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S+Ku3Ce/RlpmoJYQD8InrfxdVWhR01oEy0SQfdERl30=;
-        b=RodjjkWh5QjIWNaOJGHLuuGEgxepza+CW/tWEFKBqBnI+oxw369WvowP4ibHRmBYN8k3Nt
-        qBLLJ78Z27+ER+EMV2MM41ryRdQaSoloLUZtzx1ovQoLqGUf41WplIOPReS+a8dd7BZdwx
-        0HxGvu6sJYRgmLOYR799eBlsxLDNaq0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-Zy5nkR7ONPqf5PZD0-wpbQ-1; Thu, 21 Jan 2021 13:46:56 -0500
-X-MC-Unique: Zy5nkR7ONPqf5PZD0-wpbQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32ABC192AB71;
-        Thu, 21 Jan 2021 18:46:54 +0000 (UTC)
-Received: from [10.36.115.70] (ovpn-115-70.ams2.redhat.com [10.36.115.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 635AA5D749;
-        Thu, 21 Jan 2021 18:46:50 +0000 (UTC)
-Subject: Re: [PATCH v4 1/4] mm: cma: introduce gfp flag in cma_alloc instead
- of no_warn
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        hyesoo.yu@samsung.com, mhocko@suse.com, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
-        john.stultz@linaro.org, sumit.semwal@linaro.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        hch@infradead.org, robh+dt@kernel.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20210121175502.274391-1-minchan@kernel.org>
- <20210121175502.274391-2-minchan@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a8906f32-cc15-928c-2638-76cee4b7054d@redhat.com>
-Date:   Thu, 21 Jan 2021 19:46:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        bh=6TBkn8Pkdag13BDPCcX3RZw7vW2DCMiBVqUE7wTSuKQ=;
+        b=aob6rBYcQBsjpbP+tce5qAJAcefpByz4EgICCX+59M7rckh2c+t2YKUyQAVrxijhWnRcJl
+        Zam/eC3Z5FPmbIuZ1PSZcQ9v1Ybqbp8UJsc5QVXFnm4MM/qqaOUixWIJvdxN/6vNBhZdSR
+        L7+FkEyS2s75+b2zWrqeIzdn8/yftOw=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-lcThh6i3M56WsQZt5JvDFw-1; Thu, 21 Jan 2021 13:49:42 -0500
+X-MC-Unique: lcThh6i3M56WsQZt5JvDFw-1
+Received: by mail-qt1-f197.google.com with SMTP id h16so1844929qta.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:49:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6TBkn8Pkdag13BDPCcX3RZw7vW2DCMiBVqUE7wTSuKQ=;
+        b=VUCfYFy4IDYikj40YokiPHinyL4GcCZfwXf+87q2Em30rCwRCfOxuS6wX7Qi+uHm9g
+         fzJTFs66QAT56/jmQgZpFddPn5rf08Lu6VKv/Vu+aD3OHk97yAVGgep7mMl5DuoMImKz
+         GHn8BHf9GTgkR+b5OZL+FCPb7UWc1z1nZBxY5cxN+jxGrzxXWYkZk3h/kKUWexev1cgk
+         2ahUA5dmfh5cr1e1axsweD3ibhqxBIVkunpTbe03s8BODCbIuGftWWXzwiBaw4dnYtJ/
+         xtGD3B/BludVvME1l3mCVAEDEd5+Qz+iL+NGl1e9OahfQzrYewVqZmULGKEbv6A0OQUf
+         mwDQ==
+X-Gm-Message-State: AOAM530ThUcqJGArpaF/O+lO1ET6cbj5t4V+434H2qpdxkHc/c3U1YhZ
+        tljumLC7RfVoGL+L/mcLsTcw/inoTrpmcr4RgjFgYeTE+JiKDxcVMl7Pc3inkIp7oHbmmJD7/Yn
+        rNN6lts17ArjsdiutP/cie5KJ
+X-Received: by 2002:aed:232d:: with SMTP id h42mr969222qtc.143.1611254981799;
+        Thu, 21 Jan 2021 10:49:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx9EXEbSwwBAfssfPtJdgfpx76Zd/+F9KwLJUZY61Z2fBXkPSvOmQovBQztwF+Z2ca8S+P7cw==
+X-Received: by 2002:aed:232d:: with SMTP id h42mr969190qtc.143.1611254981496;
+        Thu, 21 Jan 2021 10:49:41 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id c7sm3846216qtc.82.2021.01.21.10.49.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 10:49:40 -0800 (PST)
+Date:   Thu, 21 Jan 2021 13:49:38 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH 5/9] userfaultfd: add minor fault registration mode
+Message-ID: <20210121184938.GD260413@xz-x1>
+References: <20210115190451.3135416-1-axelrasmussen@google.com>
+ <20210115190451.3135416-6-axelrasmussen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210121175502.274391-2-minchan@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Disposition: inline
+In-Reply-To: <20210115190451.3135416-6-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.01.21 18:54, Minchan Kim wrote:
-> The upcoming patch will introduce __GFP_NORETRY semantic
-> in alloc_contig_range which is a failfast mode of the API.
-> Instead of adding a additional parameter for gfp, replace
-> no_warn with gfp flag.
-> 
-> To keep old behaviors, it follows the rule below.
-> 
->   no_warn 			gfp_flags
-> 
->   false         		GFP_KERNEL
->   true          		GFP_KERNEL|__GFP_NOWARN
->   gfp & __GFP_NOWARN		GFP_KERNEL | (gfp & __GFP_NOWARN)
-> 
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  drivers/dma-buf/heaps/cma_heap.c |  2 +-
->  drivers/s390/char/vmcp.c         |  2 +-
->  include/linux/cma.h              |  2 +-
->  kernel/dma/contiguous.c          |  3 ++-
->  mm/cma.c                         | 12 ++++++------
->  mm/cma_debug.c                   |  2 +-
->  mm/hugetlb.c                     |  6 ++++--
->  mm/secretmem.c                   |  3 ++-
->  8 files changed, 18 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-> index 364fc2f3e499..0afc1907887a 100644
-> --- a/drivers/dma-buf/heaps/cma_heap.c
-> +++ b/drivers/dma-buf/heaps/cma_heap.c
-> @@ -298,7 +298,7 @@ static int cma_heap_allocate(struct dma_heap *heap,
->  	if (align > CONFIG_CMA_ALIGNMENT)
->  		align = CONFIG_CMA_ALIGNMENT;
->  
-> -	cma_pages = cma_alloc(cma_heap->cma, pagecount, align, false);
-> +	cma_pages = cma_alloc(cma_heap->cma, pagecount, align, GFP_KERNEL);
->  	if (!cma_pages)
->  		goto free_buffer;
->  
-> diff --git a/drivers/s390/char/vmcp.c b/drivers/s390/char/vmcp.c
-> index 9e066281e2d0..78f9adf56456 100644
-> --- a/drivers/s390/char/vmcp.c
-> +++ b/drivers/s390/char/vmcp.c
-> @@ -70,7 +70,7 @@ static void vmcp_response_alloc(struct vmcp_session *session)
->  	 * anymore the system won't work anyway.
->  	 */
->  	if (order > 2)
-> -		page = cma_alloc(vmcp_cma, nr_pages, 0, false);
-> +		page = cma_alloc(vmcp_cma, nr_pages, 0, GFP_KERNEL);
->  	if (page) {
->  		session->response = (char *)page_to_phys(page);
->  		session->cma_alloc = 1;
-> diff --git a/include/linux/cma.h b/include/linux/cma.h
-> index 217999c8a762..d6c02d08ddbc 100644
-> --- a/include/linux/cma.h
-> +++ b/include/linux/cma.h
-> @@ -45,7 +45,7 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->  					const char *name,
->  					struct cma **res_cma);
->  extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> -			      bool no_warn);
-> +			      gfp_t gfp_mask);
->  extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
->  
->  extern int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data);
-> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-> index 3d63d91cba5c..552ed531c018 100644
-> --- a/kernel/dma/contiguous.c
-> +++ b/kernel/dma/contiguous.c
-> @@ -260,7 +260,8 @@ struct page *dma_alloc_from_contiguous(struct device *dev, size_t count,
->  	if (align > CONFIG_CMA_ALIGNMENT)
->  		align = CONFIG_CMA_ALIGNMENT;
->  
-> -	return cma_alloc(dev_get_cma_area(dev), count, align, no_warn);
-> +	return cma_alloc(dev_get_cma_area(dev), count, align, GFP_KERNEL |
-> +			(no_warn ? __GFP_NOWARN : 0));
+Hi, Axel,
+
+On Fri, Jan 15, 2021 at 11:04:47AM -0800, Axel Rasmussen wrote:
+> diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+> index c63ccdae3eab..7aa1461e1a8b 100644
+> --- a/include/linux/userfaultfd_k.h
+> +++ b/include/linux/userfaultfd_k.h
+> @@ -71,6 +71,11 @@ static inline bool userfaultfd_wp(struct vm_area_struct *vma)
+>  	return vma->vm_flags & VM_UFFD_WP;
 >  }
 >  
->  /**
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 0ba69cd16aeb..d50627686fec 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -419,13 +419,13 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
->   * @cma:   Contiguous memory region for which the allocation is performed.
->   * @count: Requested number of pages.
->   * @align: Requested alignment of pages (in PAGE_SIZE order).
-> - * @no_warn: Avoid printing message about failed allocation
-> + * @gfp_mask: GFP mask to use during the cma allocation.
->   *
->   * This function allocates part of contiguous memory on specific
->   * contiguous memory area.
->   */
->  struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> -		       bool no_warn)
-> +		       gfp_t gfp_mask)
+> +static inline bool userfaultfd_minor(struct vm_area_struct *vma)
+> +{
+> +	return vma->vm_flags & VM_UFFD_MINOR;
+> +}
+> +
+>  static inline bool userfaultfd_pte_wp(struct vm_area_struct *vma,
+>  				      pte_t pte)
 >  {
->  	unsigned long mask, offset;
->  	unsigned long pfn = -1;
-> @@ -438,8 +438,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->  	if (!cma || !cma->count || !cma->bitmap)
->  		return NULL;
+> @@ -85,7 +90,7 @@ static inline bool userfaultfd_huge_pmd_wp(struct vm_area_struct *vma,
 >  
-> -	pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
-> -		 count, align);
-> +	pr_debug("%s(cma %p, count %zu, align %d gfp_mask 0x%x)\n", __func__,
-> +			(void *)cma, count, align, gfp_mask);
->  
->  	if (!count)
->  		return NULL;
-> @@ -471,7 +471,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->  
->  		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
->  		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
-> -				     GFP_KERNEL | (no_warn ? __GFP_NOWARN : 0));
-> +						gfp_mask);
->  
->  		if (ret == 0) {
->  			page = pfn_to_page(pfn);
-> @@ -500,7 +500,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->  			page_kasan_tag_reset(page + i);
->  	}
->  
-> -	if (ret && !no_warn) {
-> +	if (ret && !(gfp_mask & __GFP_NOWARN)) {
->  		pr_err("%s: alloc failed, req-size: %zu pages, ret: %d\n",
->  			__func__, count, ret);
->  		cma_debug_show_areas(cma);
-> diff --git a/mm/cma_debug.c b/mm/cma_debug.c
-> index d5bf8aa34fdc..00170c41cf81 100644
-> --- a/mm/cma_debug.c
-> +++ b/mm/cma_debug.c
-> @@ -137,7 +137,7 @@ static int cma_alloc_mem(struct cma *cma, int count)
->  	if (!mem)
->  		return -ENOMEM;
->  
-> -	p = cma_alloc(cma, count, 0, false);
-> +	p = cma_alloc(cma, count, 0, GFP_KERNEL);
->  	if (!p) {
->  		kfree(mem);
->  		return -ENOMEM;
+>  static inline bool userfaultfd_armed(struct vm_area_struct *vma)
+>  {
+> -	return vma->vm_flags & (VM_UFFD_MISSING | VM_UFFD_WP);
+> +	return vma->vm_flags & (VM_UFFD_MISSING | VM_UFFD_WP | VM_UFFD_MINOR);
+>  }
+
+Maybe move the __VM_UFFD_FLAGS into this header so use it too here?
+
+[...]
+
+> diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
+> index 5f2d88212f7c..1cc2cd8a5279 100644
+> --- a/include/uapi/linux/userfaultfd.h
+> +++ b/include/uapi/linux/userfaultfd.h
+> @@ -19,15 +19,19 @@
+>   * means the userland is reading).
+>   */
+>  #define UFFD_API ((__u64)0xAA)
+> +#define UFFD_API_REGISTER_MODES (UFFDIO_REGISTER_MODE_MISSING |	\
+> +				 UFFDIO_REGISTER_MODE_WP |	\
+> +				 UFFDIO_REGISTER_MODE_MINOR)
+>  #define UFFD_API_FEATURES (UFFD_FEATURE_PAGEFAULT_FLAG_WP |	\
+>  			   UFFD_FEATURE_EVENT_FORK |		\
+>  			   UFFD_FEATURE_EVENT_REMAP |		\
+> -			   UFFD_FEATURE_EVENT_REMOVE |	\
+> +			   UFFD_FEATURE_EVENT_REMOVE |		\
+>  			   UFFD_FEATURE_EVENT_UNMAP |		\
+>  			   UFFD_FEATURE_MISSING_HUGETLBFS |	\
+>  			   UFFD_FEATURE_MISSING_SHMEM |		\
+>  			   UFFD_FEATURE_SIGBUS |		\
+> -			   UFFD_FEATURE_THREAD_ID)
+> +			   UFFD_FEATURE_THREAD_ID |		\
+> +			   UFFD_FEATURE_MINOR_FAULT_HUGETLBFS)
+
+I'd remove the "_FAULT" to align with the missing features...
+
 > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index a6bad1f686c5..4209a2ed1e1b 100644
+> index 61d6346ed009..2b3741d6130c 100644
 > --- a/mm/hugetlb.c
 > +++ b/mm/hugetlb.c
-> @@ -1266,7 +1266,8 @@ static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
->  
->  		if (hugetlb_cma[nid]) {
->  			page = cma_alloc(hugetlb_cma[nid], nr_pages,
-> -					huge_page_order(h), true);
-> +					huge_page_order(h),
-> +					GFP_KERNEL | __GFP_NOWARN);
->  			if (page)
->  				return page;
+> @@ -4377,6 +4377,37 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
 >  		}
-> @@ -1277,7 +1278,8 @@ static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
->  					continue;
+>  	}
 >  
->  				page = cma_alloc(hugetlb_cma[node], nr_pages,
-> -						huge_page_order(h), true);
-> +						huge_page_order(h),
-> +						GFP_KERNEL | __GFP_NOWARN);
->  				if (page)
->  					return page;
->  			}
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index b8a32954ac68..585d55b9f9d8 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -86,7 +86,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
->  	struct page *page;
->  	int err;
->  
-> -	page = cma_alloc(secretmem_cma, nr_pages, PMD_SIZE, gfp & __GFP_NOWARN);
-> +	page = cma_alloc(secretmem_cma, nr_pages, PMD_SIZE,
-> +				GFP_KERNEL | (gfp & __GFP_NOWARN));
->  	if (!page)
->  		return -ENOMEM;
->  
-> 
+> +	/* Check for page in userfault range. */
+> +	if (!new_page && userfaultfd_minor(vma)) {
+> +		u32 hash;
+> +		struct vm_fault vmf = {
+> +			.vma = vma,
+> +			.address = haddr,
+> +			.flags = flags,
+> +			/*
+> +			 * Hard to debug if it ends up being used by a callee
+> +			 * that assumes something about the other uninitialized
+> +			 * fields... same as in memory.c
+> +			 */
+> +		};
+> +
+> +		unlock_page(page);
+> +
+> +		/*
+> +		 * hugetlb_fault_mutex and i_mmap_rwsem must be dropped before
+> +		 * handling userfault.  Reacquire after handling fault to make
+> +		 * calling code simpler.
+> +		 */
+> +
+> +		hash = hugetlb_fault_mutex_hash(mapping, idx);
+> +		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+> +		i_mmap_unlock_read(mapping);
+> +		ret = handle_userfault(&vmf, VM_UFFD_MINOR);
+> +		i_mmap_lock_read(mapping);
+> +		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+> +		goto out;
 
-Acked-by: David Hildenbrand <david@redhat.com>
+I figured it easier if the whole chunk be put into the else block right after
+find_lock_page(); will that work the same?
 
--- 
+It's just not obviously clear on when we'll go into this block otherwise,
+basically the dependency of new_page variable and when it's unset.
+
 Thanks,
 
-David / dhildenb
+-- 
+Peter Xu
 
