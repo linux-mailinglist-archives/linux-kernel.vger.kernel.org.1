@@ -2,244 +2,473 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C6D2FF244
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C59D2FF256
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388979AbhAURpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:45:14 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49556 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388836AbhAURok (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:44:40 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10LHUpPn064907;
-        Thu, 21 Jan 2021 12:43:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=oULFrUE/8j7evqB4d8hINsedHYv00n4/CAIOLxr+a6A=;
- b=TtmzbFAIIyaagDiAsB5nkLz8g7jPjp8VUhtbXfc22X9sOfQM2XelLl1UQTKmJsCovsFI
- lvRrwcNdKTazsyhYsBakkeqApP77F75iCWNKUmOkOq9YjWQU5FM7z25XWxAGCcDuY6LY
- QKsAVwtRPEMZ7Fbm5uUIGm5uxXjjBQejiN0fvM5wPiM333ca3B82aWD//GPjooLWpdbs
- dh7/rMqhXglecJaCrwYYnXNKDUJmqiubUGRQQMnnUrtCeAhCTET2Ra0UfO80F8WibiJs
- OboLZ8zsWr4C7eUyVhNORyxpTrXs8fLLjWMcj2jyVydjG+XOG8CZmzIiXP9CHEaClepe sw== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 367cwmtthw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 12:43:52 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10LHhp5w028832;
-        Thu, 21 Jan 2021 17:43:51 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 3668p4gyhw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 17:43:50 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10LHhffj21234140
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 17:43:41 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDCA852052;
-        Thu, 21 Jan 2021 17:43:47 +0000 (GMT)
-Received: from [9.145.88.16] (unknown [9.145.88.16])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 64B9B52051;
-        Thu, 21 Jan 2021 17:43:47 +0000 (GMT)
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-References: <20210121155445.GA2657778@bjorn-Precision-5520>
- <ae24ccfb-9fb6-5fad-8495-538fab95066e@linux.ibm.com>
- <YAm5w7Le1lMdiYTa@kroah.com>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <8d395591-4167-9d85-8ef4-56f80683cd3a@linux.ibm.com>
-Date:   Thu, 21 Jan 2021 18:43:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2389046AbhAURrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:47:13 -0500
+Received: from msg-1.mailo.com ([213.182.54.11]:54596 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388986AbhAURpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:45:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1611251072; bh=Ol3TZ0sTqgF4rFxvgLrVIEIpeyv3k3XNk3s9XI55UWo=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
+         References:MIME-Version:Content-Transfer-Encoding;
+        b=ABXbSczlK6yQTn7G8PhSa/NGHP7L7on5ykXwiLkhJeTwEI2gAK+rGkfQkJspX2L8D
+         lGBkFMLxJobV2hWJOwp4r40nbqea2O0SeDAvtBnCYsygPKeQ1KbyEjprqWsjqJtZnA
+         JE0QTQz8qK1oHhc3L1zq7Pxy3JdAhHbw3ZjTLOH8=
+Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Thu, 21 Jan 2021 18:44:32 +0100 (CET)
+X-EA-Auth: kblRdG1EOe00xx71bQv0cNksKyZD6CxdWT8cRwYawF+F8Kf7UBbEfiISfwhV/+rRLcpoInF/YuhyuWq0zXDqU9lp6gJz1T6zLYbXDBXHVMg=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH v3 2/2] Input: add MStar msg26xx touchscreen driver
+Date:   Thu, 21 Jan 2021 18:43:48 +0100
+Message-Id: <20210121174359.1455393-2-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
+References: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
-In-Reply-To: <YAm5w7Le1lMdiYTa@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-21_09:2021-01-21,2021-01-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 mlxscore=0 clxscore=1015 spamscore=0 malwarescore=0
- phishscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101210090
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for the msg26xx touchscreen IC from MStar.
+This driver reuses zinitix.c structure, while the checksum and irq handler
+functions are based on out-of-tree driver for Alcatel Idol 3 (4.7").
+
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+Changed in v3:
+- no change
+Changed in v2:
+- don't use bitfields in packet struct, to prevent endian-ness related problems (Dmitry)
+- fix reset gpiod calls order in mstar_power_on() (Dmitry)
+---
+ drivers/input/touchscreen/Kconfig   |  12 +
+ drivers/input/touchscreen/Makefile  |   1 +
+ drivers/input/touchscreen/msg26xx.c | 369 ++++++++++++++++++++++++++++
+ 3 files changed, 382 insertions(+)
+ create mode 100644 drivers/input/touchscreen/msg26xx.c
+
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index f012fe746df0..bc4f604b4841 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -1334,4 +1334,16 @@ config TOUCHSCREEN_ZINITIX
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called zinitix.
+ 
++config TOUCHSCREEN_MSG26XX
++	tristate "MStar msg26xx touchscreen support"
++	depends on I2C
++	depends on GPIOLIB || COMPILE_TEST
++	help
++	  Say Y here if you have an I2C touchscreen using MStar msg26xx.
++
++	  If unsure, say N.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called msg26xx.
++
+ endif
+diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+index 6233541e9173..830ebf4973cb 100644
+--- a/drivers/input/touchscreen/Makefile
++++ b/drivers/input/touchscreen/Makefile
+@@ -112,3 +112,4 @@ obj-$(CONFIG_TOUCHSCREEN_ROHM_BU21023)	+= rohm_bu21023.o
+ obj-$(CONFIG_TOUCHSCREEN_RASPBERRYPI_FW)	+= raspberrypi-ts.o
+ obj-$(CONFIG_TOUCHSCREEN_IQS5XX)	+= iqs5xx.o
+ obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
++obj-$(CONFIG_TOUCHSCREEN_MSG26XX)	+= msg26xx.o
+diff --git a/drivers/input/touchscreen/msg26xx.c b/drivers/input/touchscreen/msg26xx.c
+new file mode 100644
+index 000000000000..6c1b1dd3c1ae
+--- /dev/null
++++ b/drivers/input/touchscreen/msg26xx.c
+@@ -0,0 +1,369 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Driver for MStar msg26xx touchscreens
++ *
++ * Copyright (c) 2021 Vincent Knecht <vincent.knecht@mailoo.org>
++ *
++ * Checksum and IRQ handler based on mstar_drv_common.c and mstar_drv_mutual_fw_control.c
++ * Copyright (c) 2006-2012 MStar Semiconductor, Inc.
++ *
++ * Driver structure based on zinitix.c by Michael Srba <Michael.Srba@seznam.cz>
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/input.h>
++#include <linux/input/mt.h>
++#include <linux/input/touchscreen.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/regulator/consumer.h>
++#include <linux/slab.h>
++
++#define MODE_DATA_RAW			0x5A
++
++#define TPD_WIDTH			2048
++#define TPD_HEIGHT			2048
++
++#define MAX_SUPPORTED_FINGER_NUM	5
++
++#define CHIP_ON_DELAY			15 // ms
++#define FIRMWARE_ON_DELAY		50 // ms
++
++struct point_coord {
++	u16	x;
++	u16	y;
++};
++
++struct packet {
++	u8	xy_hi; /* higher bits of x and y coordinates */
++	u8	x_low;
++	u8	y_low;
++	u8	pressure;
++};
++
++struct touch_event {
++	u8	mode;
++	struct	packet pkt[MAX_SUPPORTED_FINGER_NUM];
++	u8	proximity;
++	u8	checksum;
++};
++
++struct msg26xx_ts_data {
++	struct i2c_client *client;
++	struct input_dev *input_dev;
++	struct touchscreen_properties prop;
++	struct regulator_bulk_data supplies[2];
++	struct gpio_desc *reset_gpiod;
++};
++
++static int mstar_init_regulators(struct msg26xx_ts_data *msg26xx)
++{
++	struct i2c_client *client = msg26xx->client;
++	int error;
++
++	msg26xx->supplies[0].supply = "vdd";
++	msg26xx->supplies[1].supply = "vddio";
++	error = devm_regulator_bulk_get(&client->dev,
++					ARRAY_SIZE(msg26xx->supplies),
++					msg26xx->supplies);
++	if (error < 0) {
++		dev_err(&client->dev, "Failed to get regulators: %d\n", error);
++		return error;
++	}
++
++	return 0;
++}
++
++static void mstar_power_on(struct msg26xx_ts_data *msg26xx)
++{
++	gpiod_set_value(msg26xx->reset_gpiod, 1);
++	mdelay(10);
++	gpiod_set_value(msg26xx->reset_gpiod, 0);
++	mdelay(FIRMWARE_ON_DELAY);
++
++	enable_irq(msg26xx->client->irq);
++}
++
++static void mstar_report_finger(struct msg26xx_ts_data *msg26xx, int slot,
++				const struct point_coord *pc)
++{
++	input_mt_slot(msg26xx->input_dev, slot);
++	input_mt_report_slot_state(msg26xx->input_dev, MT_TOOL_FINGER, true);
++	touchscreen_report_pos(msg26xx->input_dev, &msg26xx->prop, pc->x, pc->y, true);
++	input_report_abs(msg26xx->input_dev, ABS_MT_TOUCH_MAJOR, 1);
++}
++
++static u8 mstar_checksum(u8 *data, u32 length)
++{
++	s32 sum = 0;
++	u32 i;
++
++	for (i = 0; i < length; i++)
++		sum += data[i];
++
++	return (u8)((-sum) & 0xFF);
++}
++
++static irqreturn_t mstar_ts_irq_handler(int irq, void *msg26xx_handler)
++{
++	struct msg26xx_ts_data *msg26xx = msg26xx_handler;
++	struct i2c_client *client = msg26xx->client;
++	struct touch_event touch_event;
++	struct point_coord coord;
++	struct i2c_msg msg[1];
++	struct packet *p;
++	u32 len;
++	int ret;
++	int i;
++
++	len = sizeof(struct touch_event);
++	memset(&touch_event, 0, len);
++
++	msg[0].addr = client->addr;
++	msg[0].flags = I2C_M_RD;
++	msg[0].len = len;
++	msg[0].buf = (u8 *)&touch_event;
++
++	ret = i2c_transfer(client->adapter, msg, 1);
++	if (ret != 1) {
++		dev_err(&client->dev, "Failed I2C transfer in irq handler!\n");
++		goto out;
++	}
++
++	if (touch_event.mode != MODE_DATA_RAW)
++		goto out;
++
++	if (mstar_checksum((u8 *)&touch_event, len - 1) != touch_event.checksum) {
++		dev_err(&client->dev, "Failed checksum!\n");
++		goto out;
++	}
++
++	for (i = 0; i < MAX_SUPPORTED_FINGER_NUM; i++) {
++		p = &touch_event.pkt[i];
++		/* Ignore non-pressed finger data */
++		if (p->xy_hi == 0xFF && p->x_low == 0xFF && p->y_low == 0xFF)
++			continue;
++
++		coord.x = (((p->xy_hi & 0xF0) << 4) | p->x_low) * msg26xx->prop.max_x / TPD_WIDTH;
++		coord.y = (((p->xy_hi & 0x0F) << 8) | p->y_low) * msg26xx->prop.max_y / TPD_HEIGHT;
++		mstar_report_finger(msg26xx, i, &coord);
++	}
++
++	input_mt_sync_frame(msg26xx->input_dev);
++	input_sync(msg26xx->input_dev);
++
++out:
++	return IRQ_HANDLED;
++}
++
++static int mstar_start(struct msg26xx_ts_data *msg26xx)
++{
++	int error;
++
++	error = regulator_bulk_enable(ARRAY_SIZE(msg26xx->supplies),
++				      msg26xx->supplies);
++	if (error) {
++		dev_err(&msg26xx->client->dev,
++			"Failed to enable regulators: %d\n", error);
++		return error;
++	}
++
++	msleep(CHIP_ON_DELAY);
++
++	mstar_power_on(msg26xx);
++
++	return 0;
++}
++
++static int mstar_stop(struct msg26xx_ts_data *msg26xx)
++{
++	int error;
++
++	disable_irq(msg26xx->client->irq);
++
++	error = regulator_bulk_disable(ARRAY_SIZE(msg26xx->supplies),
++				       msg26xx->supplies);
++	if (error) {
++		dev_err(&msg26xx->client->dev,
++			"Failed to disable regulators: %d\n", error);
++		return error;
++	}
++
++	return 0;
++}
++
++static int mstar_input_open(struct input_dev *dev)
++{
++	struct msg26xx_ts_data *msg26xx = input_get_drvdata(dev);
++
++	return mstar_start(msg26xx);
++}
++
++static void mstar_input_close(struct input_dev *dev)
++{
++	struct msg26xx_ts_data *msg26xx = input_get_drvdata(dev);
++
++	mstar_stop(msg26xx);
++}
++
++static int mstar_init_input_dev(struct msg26xx_ts_data *msg26xx)
++{
++	struct input_dev *input_dev;
++	int error;
++
++	input_dev = devm_input_allocate_device(&msg26xx->client->dev);
++	if (!input_dev) {
++		dev_err(&msg26xx->client->dev,
++			"Failed to allocate input device.");
++		return -ENOMEM;
++	}
++
++	input_set_drvdata(input_dev, msg26xx);
++	msg26xx->input_dev = input_dev;
++
++	input_dev->name = "MStar TouchScreen";
++	input_dev->phys = "input/ts";
++	input_dev->id.bustype = BUS_I2C;
++	input_dev->open = mstar_input_open;
++	input_dev->close = mstar_input_close;
++
++	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_X);
++	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_Y);
++	input_set_abs_params(input_dev, ABS_MT_WIDTH_MAJOR, 0, 15, 0, 0);
++	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
++
++	touchscreen_parse_properties(input_dev, true, &msg26xx->prop);
++	if (!msg26xx->prop.max_x || !msg26xx->prop.max_y) {
++		dev_err(&msg26xx->client->dev,
++			"touchscreen-size-x and/or touchscreen-size-y not set in dts\n");
++		return -EINVAL;
++	}
++
++	error = input_mt_init_slots(input_dev, MAX_SUPPORTED_FINGER_NUM,
++				    INPUT_MT_DIRECT | INPUT_MT_DROP_UNUSED);
++	if (error) {
++		dev_err(&msg26xx->client->dev,
++			"Failed to initialize MT slots: %d", error);
++		return error;
++	}
++
++	error = input_register_device(input_dev);
++	if (error) {
++		dev_err(&msg26xx->client->dev,
++			"Failed to register input device: %d", error);
++		return error;
++	}
++
++	return 0;
++}
++
++static int mstar_ts_probe(struct i2c_client *client)
++{
++	struct msg26xx_ts_data *msg26xx;
++	int error;
++
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
++		dev_err(&client->dev,
++			"Failed to assert adapter's support for plain I2C.\n");
++		return -ENXIO;
++	}
++
++	msg26xx = devm_kzalloc(&client->dev, sizeof(*msg26xx), GFP_KERNEL);
++	if (!msg26xx)
++		return -ENOMEM;
++
++	msg26xx->client = client;
++	i2c_set_clientdata(client, msg26xx);
++
++	error = mstar_init_regulators(msg26xx);
++	if (error) {
++		dev_err(&client->dev,
++			"Failed to initialize regulators: %d\n", error);
++		return error;
++	}
++
++	msg26xx->reset_gpiod = devm_gpiod_get(&client->dev, "reset", GPIOD_OUT_LOW);
++	if (IS_ERR(msg26xx->reset_gpiod)) {
++		error = PTR_ERR(msg26xx->reset_gpiod);
++		dev_err(&client->dev, "Failed to request reset GPIO: %d\n", error);
++		return error;
++	}
++
++	error = mstar_init_input_dev(msg26xx);
++	if (error) {
++		dev_err(&client->dev,
++			"Failed to initialize input device: %d\n", error);
++		return error;
++	}
++
++	irq_set_status_flags(client->irq, IRQ_NOAUTOEN);
++	error = devm_request_threaded_irq(&client->dev, client->irq,
++					  NULL, mstar_ts_irq_handler,
++					  IRQF_ONESHOT, client->name, msg26xx);
++	if (error) {
++		dev_err(&client->dev, "Failed to request IRQ: %d\n", error);
++		return error;
++	}
++
++	return 0;
++}
++
++static int __maybe_unused mstar_suspend(struct device *dev)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++	struct msg26xx_ts_data *msg26xx = i2c_get_clientdata(client);
++
++	mutex_lock(&msg26xx->input_dev->mutex);
++
++	if (input_device_enabled(msg26xx->input_dev))
++		mstar_stop(msg26xx);
++
++	mutex_unlock(&msg26xx->input_dev->mutex);
++
++	return 0;
++}
++
++static int __maybe_unused mstar_resume(struct device *dev)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++	struct msg26xx_ts_data *msg26xx = i2c_get_clientdata(client);
++	int ret = 0;
++
++	mutex_lock(&msg26xx->input_dev->mutex);
++
++	if (input_device_enabled(msg26xx->input_dev))
++		ret = mstar_start(msg26xx);
++
++	mutex_unlock(&msg26xx->input_dev->mutex);
++
++	return ret;
++}
++
++static SIMPLE_DEV_PM_OPS(mstar_pm_ops, mstar_suspend, mstar_resume);
++
++#ifdef CONFIG_OF
++static const struct of_device_id mstar_of_match[] = {
++	{ .compatible = "mstar,msg26xx" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, mstar_of_match);
++#endif
++
++static struct i2c_driver mstar_ts_driver = {
++	.probe_new = mstar_ts_probe,
++	.driver = {
++		.name = "MStar-TS",
++		.pm = &mstar_pm_ops,
++		.of_match_table = of_match_ptr(mstar_of_match),
++	},
++};
++module_i2c_driver(mstar_ts_driver);
++
++MODULE_AUTHOR("Vincent Knecht <vincent.knecht@mailoo.org>");
++MODULE_DESCRIPTION("MStar touchscreen driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.29.2
 
 
-On 1/21/21 6:28 PM, Greg Kroah-Hartman wrote:
-> On Thu, Jan 21, 2021 at 06:04:52PM +0100, Niklas Schnelle wrote:
->>
->>
->> On 1/21/21 4:54 PM, Bjorn Helgaas wrote:
->>> [Greg may be able to help compare/contrast this s390 UID with udev
->>> persistent names]
->>>
->>> On Thu, Jan 21, 2021 at 04:31:55PM +0100, Niklas Schnelle wrote:
->>>> On 1/15/21 4:29 PM, Bjorn Helgaas wrote:
->>>>> On Fri, Jan 15, 2021 at 12:20:59PM +0100, Niklas Schnelle wrote:
->>>>>> On 1/14/21 5:14 PM, Greg Kroah-Hartman wrote:
->>>>>>> On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
->>>>>>>> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
->>>>>>>>> On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
->>>>>>>>>> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
->>>>>>>>>>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
->>>>>>>>>>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
->>>>>>>>>>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
->>>>>>>>>>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
->>>>>>>>>>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
->>>>>> ... snip ...
->>>>>>
->>>>>>>
->>>>>>>> 	if (!zpci_global_kset)
->>>>>>>> 		return -ENOMEM;
->>>>>>>>
->>>>>>>> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
->>>>>>>
->>>>>>> Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
->>>>>>> that's usually a huge clue that you are doing something wrong.
->>>>>>>
->>>>>>> Try the above again, with a simple attribute group, and name for it, and
->>>>>>> it should "just work".
->>>>>>
->>>>>> I'm probably missing something but I don't get how this could work
->>>>>> in this case. If I'm seeing this right the default attribute group
->>>>>> here is pci_bus_type.bus_groups and that is already set in
->>>>>> drivers/pci/pci-driver.c so I don't think I should set that.
->>>>>>
->>>>>> I did however find bus_create_file() which does work when using the
->>>>>> path /sys/bus/pci/uid_checking instead. This would work for us if
->>>>>> Bjorn is okay with that path and the code is really clean and simple
->>>>>> too.
->>>>>>
->>>>>> That said, I think we could also add something like
->>>>>> bus_create_group().  Then we could use that to also clean up
->>>>>> drivers/pci/slot.c:pci_slot_init() and get the original path
->>>>>> /sys/bus/pci/zpci/uid_checking.
->>>>>
->>>>> I don't think "uid_checking" is quite the right name.  It says
->>>>> something about the *implementation*, but it doesn't convey what that
->>>>> *means* to userspace.  IIUC this file tells userspace something about
->>>>> whether a given PCI device always has the same PCI domain/bus/dev/fn
->>>>> address (or maybe just the same domain?)
->>>>>
->>>>> It sounds like this feature could be useful beyond just s390, and
->>>>> other arches might implement it differently, without the UID concept.
->>>>> If so, I'm OK with something at the /sys/bus/pci/xxx level as long as
->>>>> the name is not s390-specific (and "uid" sounds s390-specific).
->>>>>
->>>>> I assume it would also help with the udev/systemd end if you could
->>>>> make this less s390 dependent.
->>>>
->>>> I've thought about this more and even implemented a proof of concept
->>>> patch for a global attribute using a pcibios_has_reproducible_addressing()
->>>> hook. 
->>>>
->>>> However after implementing it I think as a more general and
->>>> future proof concept it makes more sense to do this as a per device
->>>> attribute, maybe as another flag in "stuct pci_dev" named something
->>>> like "reliable_address". My reasoning behind this can be best be seen
->>>> with a QEMU example. While I expect that QEMU can easily guarantee
->>>> that one can always use "0000:01:00.0" for a virtio-pci NIC and
->>>> thus enp1s0 interface name, the same might be harder to guarantee
->>>> for a SR-IOV VF passed through with vfio-pci in that same VM and
->>>> even less so if a thunderbolt controller is passed through and
->>>> enumeration may depend on daisy chaining. The QEMU example
->>>> also applies to s390 and maybe others will in the future.
->>>
->>> I'm a little wary of using the PCI geographical address
->>> ("0000:01:00.0") as a stable name.  Even if you can make a way to use
->>> that to identify a specific device instance, regardless of how it is
->>> plugged in or passed through, it sounds like we could end up with
->>> "physical PCI addresses" and "virtual PCI addresses" that look the
->>> same and would cause confusion.
->>>
->>> This concept sounds similar to the udev concept of a "persistent
->>> device name".  What advantages does this s390 UID have over the udev
->>> approach?
->>>
->>> There are optional PCI device serial numbers that we currently don't
->>> really make use of.  Would that be a generic way to help with this?
->>>
->>
->> As far as I understand systemd/udev uses the PCI geographical address
->> by default ("enP<domain>p<bus>s<hotplug_slot_idx>...") for PCI attached
->> network interfaces in many cases and a lot of users have already built
->> their firewall/routing rules on these.
-> 
-> Which is fine as "normally" that does not change.  But on some machines,
-> it is quite volatile so users pick a different naming scheme.
-> 
-> And this is all done in userspace, I really don't understand what you
-> want to do in the kernel here.  If you want to expose another unique
-> thing that the hardware knows about, wonderful, userspace can then use
-> that if it wants to in how it names specific devices.  But don't put
-> that naming in the kernel, that's not where it belongs.
 
-Oh no I definitely don't want to put any naming in the kernel.
-Rather this is very much "a thing that the hardware knows".
-The thing being:
-
-  We're a virtual platform and this PCI devices' address is generated
-  from user configuration and we guarantee it's stable.
-
-> 
->> Now taking this beyond s390 my idea is that under some circumstances
->> just as with UID Uniqueness for us, the platform can tell if a PCI
->> geographical address is a reliable identifier thus sytemd/udev
->> has more information about the quality of existing naming schemes
->> incorporating information from the geographical address.
-> 
-> The platform does not "know" if this is reliable or not, sorry.  That's
-> not how PCI or UEFI works.
-
-Yes I assumed as much which is why my examples were all about virtualized
-platforms/hypervisors. I would say QEMU very much knows if the PCI address
-is coming from its fluffy virtual sandbox or real wild hardware (pass-through).
-
-> 
->> Looking at my personal KVM guests (Ubuntu, Arch Linux, Ubuntu ARM64)
->> as well as my workstation (Arch Linux) all of them use a scheme
->> with parts of the geographical address.
-> 
-> Because for the most part, yes, this works.  Until you plug another
-> device into the system.  Or remove one.  Or plug a hotplug device in and
-> then cold boot with it plugged in (or removed).  Or, my favorite system,
-> just decide to renumber the PCI bus every other boot "just because".
-> 
-> None of that variability can be known by the kernel, that's only known by
-> the user of that system, so again, they can make the best decision as to
-> how to name their devices.  If you want to use the systemd default,
-> wonderful, but know that it does not work for everyone, so systemd
-> allows you to do whatever you want.
-> 
->> So in essence my idea is all about either choosing the best existing
->> default name or making sure we at least know if it may not be reliable.
-> 
-> There is no reliability "score" here, sorry.  Hardware is fun :)
-
-Well as said above, at the very least there is real hardware, emulated
-hardware and our always virtualizing machines that keep things cozy
-and reliable enough that you can keep running OSs from the 70s largely
-unchanged on >5 GHz CPUs. So I think at least our platform has a pretty
-good track record in this regard.
-
-> 
-> good luck!
-> 
-> greg k-h
-> 
