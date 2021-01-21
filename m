@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD992FE6A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3282FE6AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbhAUJpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:45:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
+        id S1728656AbhAUJrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727839AbhAUJpO (ORCPT
+        with ESMTP id S1728810AbhAUJqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:45:14 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79667C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:44:33 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l2WVt-0007QS-Bo; Thu, 21 Jan 2021 10:44:25 +0100
-Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:37fb:eadb:47a3:78d5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 634405C98FE;
-        Thu, 21 Jan 2021 09:44:23 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 10:44:22 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Su <suyanjun218@gmail.com>
-Cc:     manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com,
-        wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] can: mcp251xfd: replace sizeof(u32) with val_bytes in
- regmap
-Message-ID: <20210121094422.h5tjjyhsn7gvhlrm@hardanger.blackshift.org>
-References: <20210121091005.74417-1-suyanjun218@gmail.com>
- <20210121092115.dasphwfzfkthcy64@hardanger.blackshift.org>
- <5ed3d488-3ea6-cc07-a04d-73a6678d772a@gmail.com>
+        Thu, 21 Jan 2021 04:46:06 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7178C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:25 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 190so873812wmz.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wJ33o4tgodcPX4COD9SPtmLKlxciPGqpB+G6YKGSIJU=;
+        b=qpboCo6Jn4F2KnFbGAFSpZ3Z+ZIt1BPReMS4x7K68RtMci3SjRk0oS6255uZFpOK2W
+         aJpDGAD4eOiRN5oyF/O4L7D4sAew4VHKYjj6Mb0ZzmqbLkMtV4Sb0n7SwB8qUnMBXjwL
+         An6/bpLCThSMN4TXuV84ciDR+7UAdSg4Gt+e+Lcdz0mAKv9r4ozbQnCvulyeGaakeCAS
+         IfHhwsxGx7wyI/rbPKHLl7TT3G7kBh5av16hAHMNCMEaLjF59eYkXBT80CLnhgTPj+ML
+         lKIBv5L5xDRa/KxrXn1fu3Km6ueUNZTeyxynnOxHO28l2HCsWP01X997cEHL80e0Vutn
+         rKQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wJ33o4tgodcPX4COD9SPtmLKlxciPGqpB+G6YKGSIJU=;
+        b=WO01+4jJSVz7/lNkh5VoUljEyTDEH2lA8F0EX51VPg4I/v/7Z5cCpbJHJxxRCpwIzP
+         R0kh0iO2ThC1O1jgaaIEaU3a2rFl39jFUVZ925fboIIJ8jBJqKI7iqDhOK2snHifTdiV
+         Z2Pb2NsOhprW93/WB/NVc/lDGsl4/+d7/3YBCodXCIfCu5BYAYBzdMamN9fwe9LEQnwm
+         ENBaDtX5NTQ+LE0s1SvgJ9vmss+J6GALkPQvL/QpQgj8CSpXU6IAh3U6HPssP/79MmbL
+         DlqdxttUUnH5U/ScL5TjykRi4dF2k3r1hb4qPOIL/qfebLP+ysu2Q5npvEHbPWGIgCLk
+         beNw==
+X-Gm-Message-State: AOAM533ffmvTQ5pPFirJGstpgDZBeYooO/QHE4aHSNmpd+h1OD8AZsn6
+        AgrWNh3QRhTw1SYKj+dZs05K5g==
+X-Google-Smtp-Source: ABdhPJzLatP3nSzaG3gu3Zq9S87pzShfBipjh2qaGsUDLMVOi1AGC6tbdhTzGv40b+h971zvRsW6Eg==
+X-Received: by 2002:a1c:6741:: with SMTP id b62mr8216797wmc.21.1611222324492;
+        Thu, 21 Jan 2021 01:45:24 -0800 (PST)
+Received: from dell.default ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 01:45:23 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 02/30] RDMA/hw/mlx5/qp: Demote non-conformant kernel-doc header
+Date:   Thu, 21 Jan 2021 09:44:51 +0000
+Message-Id: <20210121094519.2044049-3-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
+References: <20210121094519.2044049-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zrug2yvgvouevx6t"
-Content-Disposition: inline
-In-Reply-To: <5ed3d488-3ea6-cc07-a04d-73a6678d772a@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes the following W=1 kernel build warning(s):
 
---zrug2yvgvouevx6t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ drivers/infiniband/hw/mlx5/qp.c:5384: warning: Function parameter or member 'qp' not described in 'mlx5_ib_qp_set_counter'
+ drivers/infiniband/hw/mlx5/qp.c:5384: warning: Function parameter or member 'counter' not described in 'mlx5_ib_qp_set_counter'
 
-On Thu, Jan 21, 2021 at 05:33:40PM +0800, Su wrote:
-> The sizeof(u32) is hardcoded. IMO it's better to use the config value in
-> regmap.
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/infiniband/hw/mlx5/qp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I got why you want to change this. Please update the patch description, com=
-ment
-on the increase of the object size and address the other issues I pointed o=
-ut.
-I think it makes no sense to have the function mcp251xfd_get_val_bytes() as=
- you
-have to use several regmaps anyways.
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 0cb7cc642d87d..c916e48b2e529 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -5376,7 +5376,7 @@ void mlx5_ib_drain_rq(struct ib_qp *qp)
+ 	handle_drain_completion(cq, &rdrain, dev);
+ }
+ 
+-/**
++/*
+  * Bind a qp to a counter. If @counter is NULL then bind the qp to
+  * the default counter
+  */
+-- 
+2.25.1
 
-> > > No functional effect.
-> > Not quite:
-> >=20
-> > scripts/bloat-o-meter shows:
-> >=20
-> > add/remove: 0/0 grow/shrink: 3/0 up/down: 104/0 (104)
-> > Function                                     old     new   delta
-> > mcp251xfd_handle_tefif                       980    1028     +48
-> > mcp251xfd_irq                               3716    3756     +40
-> > mcp251xfd_handle_rxif_ring                   964     980     +16
-> > Total: Before=3D20832, After=3D20936, chg +0.50%
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---zrug2yvgvouevx6t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAJTPQACgkQqclaivrt
-76kmLAf/Yexh9D+O2IOdOK2R9xP9k0PGIxsk6HhUz2wMqvIP8HBRd/Tuqj+5hFQU
-NO17xotVj9XVvvYHSI4mp8zfMyLVz7rylzimdLuxrGDaKmeMA+txcEU6BASpkXpy
-OadMbHTaor2CZt4blUVeeQcTGKhwH35cSIaRfXLcDr5dZADwwQcz5l1TkNe4dxEw
-9qFaWENDjwoqnkwFVjQGVCM04kthvcQA8kRtwq0ne3VpoiyY1phSbzYO784CO3+F
-+uj0zJUNqUwpa5zA2HG6zby4h4af2hca8mdZQNlAmgyJzTCmQ9rjpPGHKiBuSZ+A
-PPN08M3HNARYwFYda7Qwhs9XW2t36Q==
-=stZm
------END PGP SIGNATURE-----
-
---zrug2yvgvouevx6t--
