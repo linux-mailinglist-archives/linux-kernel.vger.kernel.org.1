@@ -2,208 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A662FEE1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:10:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD0E2FEE29
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732305AbhAUPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:09:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732600AbhAUPIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:08:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0157D238A1;
-        Thu, 21 Jan 2021 15:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611241661;
-        bh=t66ihdVricTWu9MQVQckI4MNndPEFqeK9SofzzdlUCw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HBSFMs9lw1kmippPS/jl1FCp+oJOHG3OaPDy3l/HYs0RaiVduuJWowkyg1RnAZWOn
-         Px+sJ4HlXwFIMYTxvmkPIRylg+e21QvcehiLgcxqxM0luVsGHOvthSgmBHtHW6JgE8
-         2w7DUeirRsKKfzOVQGHaZbzkZ8xYoufYsMoZggJdMGJFnWblRrs0hcVhnEhk8PJ79w
-         jtRetuqSSiuntQviBafoQ+0H8EbcptU/Irz3T+mXqirEGmIyRWPZwWvMphivX+50U1
-         RDY1QO94TS9NGFW8tJrgNEMfnCfcq2CH9Ugv7JBbV8+9YglO1Kfz6p2Dx6C0GIdy9t
-         gWmupy3CQ8byA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B0E19352268F; Thu, 21 Jan 2021 07:07:40 -0800 (PST)
-Date:   Thu, 21 Jan 2021 07:07:40 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210121150740.GO2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
- <20210120215403.GH2743@paulmck-ThinkPad-P72>
- <20210121133510.GB1872@pc638.lan>
+        id S1732594AbhAUPLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:11:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22464 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732419AbhAUPJ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:09:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611241682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wvd+jy6q8BKUme7850ggcsv11SJHMPahz6UFff8VXOs=;
+        b=Sv52+GHLlIoqKQLOJHL2SgMhkoJdbl2v7F3sSpup8qQPXdj5EGNuZiGynola7nFcGufs3X
+        wucw1x8WaoiQ7ZUbFGq3QAy+hIhHbKQQXbpyCdAXEse4W4ZJD51yj481qKGO3tdBh3V0+d
+        6T3Yi869sxGpjOuJHymQ0wvxhUXLmMM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-193-62fEbWlzO5qJ56tJ_7DdSg-1; Thu, 21 Jan 2021 10:07:58 -0500
+X-MC-Unique: 62fEbWlzO5qJ56tJ_7DdSg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E41361005504;
+        Thu, 21 Jan 2021 15:07:56 +0000 (UTC)
+Received: from x1.localdomain (ovpn-115-46.ams2.redhat.com [10.36.115.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C675C5D9C6;
+        Thu, 21 Jan 2021 15:07:55 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
+        Ludovic Pouzenc <bugreports@pouzenc.fr>
+Subject: [PATCH v2] virt: vbox: Do not use wait_event_interruptible when called from kernel context
+Date:   Thu, 21 Jan 2021 16:07:54 +0100
+Message-Id: <20210121150754.147598-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121133510.GB1872@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 02:35:10PM +0100, Uladzislau Rezki wrote:
-> On Wed, Jan 20, 2021 at 01:54:03PM -0800, Paul E. McKenney wrote:
-> > On Wed, Jan 20, 2021 at 08:57:57PM +0100, Sebastian Andrzej Siewior wrote:
+Do not use wait_event_interruptible when vbg_hgcm_call() gets called from
+kernel-context, such as it being called by the vboxsf filesystem code.
 
-[ . . . ]
+This fixes some filesystem related system calls on shared folders
+unexpectedly failing with -EINTR.
 
-> > > so if bnode is NULL you could retry get_cached_bnode() since it might
-> > > have been filled (given preemption or CPU migration changed something).
-> > > Judging from patch #3 you think that a CPU migration is a bad thing. But
-> > > why?
-> > 
-> > So that the later "(*krcp)->bkvhead[idx] = bnode" assignment associates
-> > it with the correct CPU.
-> > 
-> > Though now that you mention it, couldn't the following happen?
-> > 
-> > o	Task A on CPU 0 notices that allocation is needed, so it
-> > 	drops the lock disables migration, and sleeps while
-> > 	allocating.
-> > 
-> > o	Task B on CPU 0 does the same.
-> > 
-> > o	The two tasks wake up in some order, and the second one
-> > 	causes trouble at the "(*krcp)->bkvhead[idx] = bnode"
-> > 	assignment.
-> > 
-> > Uladzislau, do we need to recheck "!(*krcp)->bkvhead[idx]" just after
-> > the migrate_enable()?  Along with the KVFREE_BULK_MAX_ENTR check?
-> > 
-> Probably i should have mentioned your sequence you described, that two tasks
-> can get a page on same CPU, i was thinking about it :) Yep, it can happen
-> since we drop the lock and a context is fully preemptible, so another one
-> can trigger kvfree_rcu() ending up at the same place - entering a page
-> allocator.
-> 
-> I spent some time simulating it, but with no any luck, therefore i did not
-> reflect this case in the commit message, thus did no pay much attention to
-> such scenario.
-> 
-> >
-> > Uladzislau, do we need to recheck "!(*krcp)->bkvhead[idx]" just after
-> > the migrate_enable()?  Along with the KVFREE_BULK_MAX_ENTR check?
-> >
-> Two woken tasks will be serialized, i.e. an assignment is protected by
-> the our local lock. We do krc_this_cpu_lock(flags); as a first step
-> right after that we do restore a migration. A migration in that case
-> can occur only when krc_this_cpu_unlock(*krcp, *flags); is invoked.
-> 
-> The scenario you described can happen, in that case a previous bnode
-> in the drain list can be either empty or partly utilized. But, again
-> i was non able to trigger such scenario.
+Fixes: 0532a1b0d045 ("virt: vbox: Implement passing requestor info to the host for VirtualBox 6.0.x")
+Reported-by: Ludovic Pouzenc <bugreports@pouzenc.fr>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changes in v2:
+- Add Reported-by: Ludovic Pouzenc <bugreports@pouzenc.fr>
+---
+ drivers/virt/vboxguest/vboxguest_utils.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-Ah, we did discuss this previously, and yes, the result for a very
-rare race is just underutilization of a page.  With the change below,
-the result of this race is instead needless use of the slowpath.
+diff --git a/drivers/virt/vboxguest/vboxguest_utils.c b/drivers/virt/vboxguest/vboxguest_utils.c
+index ea05af41ec69..8d195e3f8301 100644
+--- a/drivers/virt/vboxguest/vboxguest_utils.c
++++ b/drivers/virt/vboxguest/vboxguest_utils.c
+@@ -468,7 +468,7 @@ static int hgcm_cancel_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call)
+  *               Cancellation fun.
+  */
+ static int vbg_hgcm_do_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call,
+-			    u32 timeout_ms, bool *leak_it)
++			    u32 timeout_ms, bool interruptible, bool *leak_it)
+ {
+ 	int rc, cancel_rc, ret;
+ 	long timeout;
+@@ -495,10 +495,15 @@ static int vbg_hgcm_do_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call,
+ 	else
+ 		timeout = msecs_to_jiffies(timeout_ms);
+ 
+-	timeout = wait_event_interruptible_timeout(
+-					gdev->hgcm_wq,
+-					hgcm_req_done(gdev, &call->header),
+-					timeout);
++	if (interruptible) {
++		timeout = wait_event_interruptible_timeout(gdev->hgcm_wq,
++							   hgcm_req_done(gdev, &call->header),
++							   timeout);
++	} else {
++		timeout = wait_event_timeout(gdev->hgcm_wq,
++					     hgcm_req_done(gdev, &call->header),
++					     timeout);
++	}
+ 
+ 	/* timeout > 0 means hgcm_req_done has returned true, so success */
+ 	if (timeout > 0)
+@@ -631,7 +636,8 @@ int vbg_hgcm_call(struct vbg_dev *gdev, u32 requestor, u32 client_id,
+ 	hgcm_call_init_call(call, client_id, function, parms, parm_count,
+ 			    bounce_bufs);
+ 
+-	ret = vbg_hgcm_do_call(gdev, call, timeout_ms, &leak_it);
++	ret = vbg_hgcm_do_call(gdev, call, timeout_ms,
++			       requestor & VMMDEV_REQUESTOR_USERMODE, &leak_it);
+ 	if (ret == 0) {
+ 		*vbox_status = call->header.result;
+ 		ret = hgcm_call_copy_back_result(call, parms, parm_count,
+-- 
+2.28.0
 
-> If we should fix it, i think we can go with below "alloc_in_progress"
-> protection:
-> 
-> <snip>
-> urezki@pc638:~/data/raid0/coding/linux-rcu.git$ git diff
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cad36074366d..95485ec7267e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3488,12 +3488,19 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->         if (!(*krcp)->bkvhead[idx] ||
->                         (*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
->                 bnode = get_cached_bnode(*krcp);
-> -               if (!bnode && can_alloc) {
-> +               if (!bnode && can_alloc && !(*krcp)->alloc_in_progress)  {
->                         migrate_disable();
-> +
-> +                       /* Set it before dropping the lock. */
-> +                       (*krcp)->alloc_in_progress = true;
->                         krc_this_cpu_unlock(*krcp, *flags);
-> +
->                         bnode = (struct kvfree_rcu_bulk_data *)
->                                 __get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
->                         *krcp = krc_this_cpu_lock(flags);
-> +
-> +                       /* Clear it, the lock was taken back. */
-> +                       (*krcp)->alloc_in_progress = false;
->                         migrate_enable();
->                 }
->  
-> urezki@pc638:~/data/raid0/coding/linux-rcu.git$
-> <snip>
-> 
-> in that case a second task will follow a fallback path bypassing a page
-> request. I can send it as a separate patch if there are no any objections.
-
-I was thinking in terms of something like the following.  Thoughts?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-static bool add_ptr_to_bulk_krc_no_space(struct kfree_rcu_cpu *krcp)
-{
-	return !(krcp)->bkvhead[idx] ||
-	       (krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR;
-}
-
-static inline bool
-add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-	unsigned long *flags, void *ptr, bool can_alloc)
-{
-	struct kvfree_rcu_bulk_data *bnode;
-	int idx;
-
-	*krcp = krc_this_cpu_lock(flags);
-	if (unlikely(!(*krcp)->initialized))
-		return false;
-
-	idx = !!is_vmalloc_addr(ptr);
-
-	/* Check if a new block is required. */
-	if (add_ptr_to_bulk_krc_no_space(*krcp)) {
-		bnode = get_cached_bnode(*krcp);
-		if (!bnode && can_alloc) {
-			migrate_disable();
-			krc_this_cpu_unlock(*krcp, *flags);
-			bnode = (struct kvfree_rcu_bulk_data *)
-				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
-			*krcp = krc_this_cpu_lock(flags);
-			migrate_enable();
-		}
-
-		if (!bnode && add_ptr_to_bulk_krc_no_space(*krcp)) {
-			return false;
-		} else if (bnode && add_ptr_to_bulk_krc_no_space(*krcp))
-			/* Initialize the new block. */
-			bnode->nr_records = 0;
-			bnode->next = (*krcp)->bkvhead[idx];
-
-			/* Attach it to the head. */
-			(*krcp)->bkvhead[idx] = bnode;
-		} else if (bnode) {
-			// Or attempt to add it to the cache?
-			free_page((unsigned long)bnode);
-		}
-	}
-
-	/* Finally insert. */
-	(*krcp)->bkvhead[idx]->records
-		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
-
-	return true;
-}
