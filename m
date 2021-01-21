@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024232FF6F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EC92FF6CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbhAUVPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:15:03 -0500
-Received: from relay.smtp-ext.broadcom.com ([192.19.232.172]:49422 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727085AbhAUU5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:57:18 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727535AbhAUVIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:08:37 -0500
+Received: from ozlabs.org ([203.11.71.1]:44605 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727473AbhAUU6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:58:50 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 6C4CD46B32;
-        Thu, 21 Jan 2021 12:56:16 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 6C4CD46B32
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611262577;
-        bh=eYhNwwTn1bALpgeS+eXfEH6620QkIt6R1FEbTfM0Zdk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FTbvtvuB24fScFgMqFbjcb2VVG8RjV2h8O8xpot8IoRslhlaAAsdWwWzn3FbBUBjD
-         69bp9Y0Q/n46zh0tKACcZbxHLrxpOFqhR1/ehvgdZbYF5VXAdcEZ+EXXYpUPVczUxX
-         lRUHvCm/Xma2Bg1NGK670Pvu/Sk0qb/OPoQpN4tQ=
-Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang line
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Finn Behrens <me@kloenk.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210121170736.2266-1-scott.branden@broadcom.com>
- <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
- <CAHp75Vf=Ba+e8PDsvi8eDiuNDvC6Pfx3RsRAkaOZvD26Z2pnQA@mail.gmail.com>
- <CAHp75VcLi8hjYaDXrfAjbj+Kw_FRef=xnKiXr_Kv+YUToEjHTQ@mail.gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <fad34db6-a8b7-a49a-3c45-d51a6fe10d6a@broadcom.com>
-Date:   Thu, 21 Jan 2021 12:56:15 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMF8X3v6Cz9s1l;
+        Fri, 22 Jan 2021 07:57:48 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611262668;
+        bh=e4hR1kPAHbwnex+QqprC9WLpJ5biZMKwufiDGhGGoiQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=COr8aJ2/DqjAmeRFhRZNhnTmeQ7wUiVHTuIYtpJpgYLUTldtBCC5GCZVn/rWobtrt
+         5D7CI3rDrPyPY9718R/i9nGT36LmDSgi0L023nPgDY/woXjiCdz7/L1VZNTCPwnYqN
+         qA7hjLkqT4uvHC4eLHhlA38Bm46RM6AxxFa99rb+rAP3KAkiIiHZn6Z3WBwEr+YLrn
+         INYEdR0mg0KvHdc7RZM89B4JBCArDpISV5zFTSmJW3Mi0p+ur8clt3ulKsbtlE3JvC
+         cG1cfin0yypBjPp8UyO8MyCWJzdjXrqwRPFg+TaHwNY/EKhSNAzuTlHCGAQE90+050
+         fuEeuxU87IR3Q==
+Date:   Fri, 22 Jan 2021 07:57:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Kir Kolyshkin <kolyshkin@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the jc_docs tree
+Message-ID: <20210122075747.3622cd8e@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcLi8hjYaDXrfAjbj+Kw_FRef=xnKiXr_Kv+YUToEjHTQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+Content-Type: multipart/signed; boundary="Sig_/RD_ah6h49n0YX1J3I=fksSp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+--Sig_/RD_ah6h49n0YX1J3I=fksSp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021-01-21 12:35 p.m., Andy Shevchenko wrote:
-> On Thu, Jan 21, 2021 at 10:31 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->> On Thu, Jan 21, 2021 at 10:28 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>> On Fri, Jan 22, 2021 at 2:17 AM Scott Branden
->>> <scott.branden@broadcom.com> wrote:
->>>> Use python3 instead of python in diffconfig Shebang line.
->>>> python2 was sunset January 1, 2000 and environments do not need
->>>> to support python any more.
->>> Just from curiosity, what problem is this solving?
->>>
->>> Is there a distribution where 'python' does not exist,
->>> but 'python3' does ?
->> Yes. Called surprise surprise Debian
->> An it's a rare case when I agree with them.
-> For the record, you seems haven't noticed:
-> https://lkml.org/lkml/2020/12/9/446
-It doesn't look like your change made it into 5.11-rc but I think it should be added?
+Hi all,
 
+In commit
+
+  cf9cadf16b19 ("docs/admin-guide: cgroup-v2: typos and spaces")
+
+Fixes tag
+
+  Fixes: 5f9a4f4a70960
+
+has these problem(s):
+
+  - missing subject
+
+Maybe you meant
+
+Fixes: 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface f=
+or cgroup v2")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/RD_ah6h49n0YX1J3I=fksSp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAJ6ssACgkQAVBC80lX
+0GxUwQf/d86s1Rxw+HRyYejUVAnecM4HHUk5jR5CZ5n0ugtfiKZxndqanuEz6LXa
+92nIXbb0qHj0lHRY4UcUXjVUFatlXWYR36T6TEzmDYGREQXn2mqZ9E+IWigPcgpz
+QbrNSzkzra7EnVfCxov2IRx4ZHhbAqnedjPBtP0Unna0lxEBSHk6Kh79A0VvPWxo
+FPXAAnce607+6wxguhG1aw8t2YzyC+CpaoaRKpRyzEexlDE8cumwJOvwvpVOw2tp
+pZuDTSMhrKOCKuxcLHrBtJP0SsTQ9BCkpseRqO/Yb5WG2fEmGSoXwwurKhyjwj0W
+n5lldv+pRPBuyIdcrHYiq31hsMo+7w==
+=qI88
+-----END PGP SIGNATURE-----
+
+--Sig_/RD_ah6h49n0YX1J3I=fksSp--
