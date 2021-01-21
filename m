@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260AB2FF3A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7439D2FF3A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727155AbhAUSy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:54:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
+        id S1727044AbhAUSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:54:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727461AbhAUS0A (ORCPT
+        with ESMTP id S1727552AbhAUS0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 13:26:00 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D95C0617A7;
-        Thu, 21 Jan 2021 10:23:32 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id b10so3612334ljp.6;
-        Thu, 21 Jan 2021 10:23:32 -0800 (PST)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EBEC0617A9;
+        Thu, 21 Jan 2021 10:23:33 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id q8so3856975lfm.10;
+        Thu, 21 Jan 2021 10:23:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ypUw/eWje7JsdwKcZj2L6qITXPb045n6mG7TDpv0Hp8=;
-        b=VJ5cpDa6ymZFADGC3BvTIm4C0OIPela2+17LdYMT0XTuXlPTrsFn9NRuTBeK3rIMxv
-         ssNqrqZkSZX8JGna9RiEdwSL/Dj8Krfwmv/EtRRaGhyx6R9tnd7vgUaQKe7AyK9kZUMx
-         P0SeImwnhlUL9/uCpdAl3pJxsfW7OWHzHb/MkecnsNG3U1skOzG8zFUojqWv0GTzDJOh
-         mYFBjuv8M8cgYD78zk6X3dIdX4gLadzzJ6YA4yY17XDC4bBxCx+RtG21ORzBESzLNyn+
-         YJak+3Um2aZSsOWKSxA+yyx+x3hvM/EsWDmRugOL11Y8B5wJH2/QUBkTkqxMIBHLIRl/
-         59ew==
+        bh=Vf+9cpXQr7hrQ9itCdssJG4n/IaJKoI9Dc3YxNuM01M=;
+        b=o5Ye9gMF72fWHRBui21mTmICrBvCc5m9GXhaKHXa0eQguL40is2zgkaqEQlMynGhPo
+         nitqtjR+M5tfz6nEmb80NB+iKhoetuV5eHQ7Z7I5Y0GMS6tLIS9Zi5074V7Mt6Lktss9
+         SltRsP0fWngxdEwwUzAH2D+ADfv9QQZxU/4ntlaRz6iLMNxwpBi5NXm78A8ZkjAVkrhb
+         xsDyCMT4yo0zYf193olm5DkQ4sikcJ9QDyU9/316wGJNtCwBSgNw388Hz0/6iCzWHab1
+         Ec5AbDBDr7SbAlbfbdhBgkOmpCkn2+tkmaAZ9nJSWSfbMKGkkNZ62XwJmq4XCrBbq0dP
+         m/dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ypUw/eWje7JsdwKcZj2L6qITXPb045n6mG7TDpv0Hp8=;
-        b=NjelTF8CyfdKVs41hbFw7ycdcY+ue3+Ad7/P/YfdNBtDeEJVPUFB0nX8cXujdHEytf
-         pxgaqib6KVWxLq+4BlRXRyg1jS8oYsyWvrvBEcc/r3sSVuuKazY3DYqXBn065YUli7vN
-         qu/SO+UtVH0PjXGr1bfKPSY7Uq9NyV9UMB8qN1hcM5NNWQcUegq3m4lDQpEeErZQSQu7
-         MiTU2eygS7UoukOQzO9Uw9L9k5O9raU1TKxlrkKHSAq2Qnnp9hLlsUcMGYA/BdpfF2ku
-         MhHwALe9r3Opfc1iYst6SE57LyLRNSo+K0YdU+wG0zRZiNeefasMS2Fwhag1IAp2YvSg
-         3o1A==
-X-Gm-Message-State: AOAM532ltaQKgSivHJDucBQg76zPByJwverVIDbz9uv57gJ1LKG4/ws7
-        VzEXpsoflwRq2KiiUl3B5Dw=
-X-Google-Smtp-Source: ABdhPJxll1cE4U5ITMzQderkVtHw2DiYoF/Tc1kDf3xYNpvzocmqQZXs+dkzhWvWqVAXVeYIs9TS4w==
-X-Received: by 2002:a2e:580b:: with SMTP id m11mr313021ljb.426.1611253411067;
+        bh=Vf+9cpXQr7hrQ9itCdssJG4n/IaJKoI9Dc3YxNuM01M=;
+        b=mdjMZ6FUszW5vTRPYyZ7v8O0uFfAPPcYiqJZeqpe5M1nm/O0VW2pw8SVwlL/jMiH+o
+         2NJow4LPcs57ygkFrI6qNychSfJ+w3CTk4zBAb/qN0h5wBNjJvEP2CbIrQg0snJe33zm
+         Lm5W7VSE1n1nyjgLrIAoue74Wro7fFt9WJlG/SSYVLMnknjJOmjgszdFd0R/oJSw6BQ3
+         W7P6ydOXQcYtXIQ8/EMJjUtgX6zBEY2YhrMnW+klKmOrbGOAJeIo5NY6ACByLxAuthcm
+         grshsfM24RHw0gMn/AUbBLUTlBgAkrA5FnmZyq5N7KcipT37OntC+tFIN6wsIC9UwLsR
+         WO8Q==
+X-Gm-Message-State: AOAM532rXpPXrlIv2oOIEXctFlQzQZ9jQ5nFHUfOuNHgPnzpyKv+XIrA
+        MpfoqcQZgzOMDqX6ii1lKe7ZJXM36nU=
+X-Google-Smtp-Source: ABdhPJwWbwh9KY8Tgl9qgPq1NZeHo/yQR3AVqMoBwuFZEFSV2OBQN2fr41MltvUP5ilxNIPDLj2AQA==
+X-Received: by 2002:a19:8bc6:: with SMTP id n189mr215509lfd.291.1611253411859;
         Thu, 21 Jan 2021 10:23:31 -0800 (PST)
 Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.30
+        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:23:30 -0800 (PST)
+        Thu, 21 Jan 2021 10:23:31 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -56,9 +56,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 11/13] ARM: tegra: ouya: Specify all CPU cores as cooling devices
-Date:   Thu, 21 Jan 2021 21:23:06 +0300
-Message-Id: <20210121182308.16080-12-digetx@gmail.com>
+Subject: [PATCH v1 12/13] ARM: tegra: Specify CPU suspend OPP in device-tree
+Date:   Thu, 21 Jan 2021 21:23:07 +0300
+Message-Id: <20210121182308.16080-13-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210121182308.16080-1-digetx@gmail.com>
 References: <20210121182308.16080-1-digetx@gmail.com>
@@ -68,65 +68,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CPU0 is unplugged the cooling device can not rebind to CPU1. And if
-CPU0 is plugged in again, the cooling device may fail to initialize.
+Specify CPU suspend OPP in a device-tree, just for consistency. Now CPU
+will always suspend on the same frequency.
 
-If the CPUs are mapped with the physical CPU0 to Linux numbering
-CPU1, the cooling device mapping will fail.
-
-Hence specify all CPU cores as a cooling devices in the device-tree.
-
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra30-ouya.dts | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/tegra20-cpu-opp.dtsi | 2 ++
+ arch/arm/boot/dts/tegra30-cpu-opp.dtsi | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
-index 8f66b16a786f..faeccc301368 100644
---- a/arch/arm/boot/dts/tegra30-ouya.dts
-+++ b/arch/arm/boot/dts/tegra30-ouya.dts
-@@ -392,19 +392,23 @@ cpu0: cpu@0 {
- 			cpu-supply = <&vdd_cpu>;
- 			#cooling-cells = <2>;
- 		};
--		cpu@1 {
-+
-+		cpu1: cpu@1 {
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			cpu-supply = <&vdd_cpu>;
-+			#cooling-cells = <2>;
+diff --git a/arch/arm/boot/dts/tegra20-cpu-opp.dtsi b/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
+index 702a635e88e7..135de316383b 100644
+--- a/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
++++ b/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
+@@ -9,12 +9,14 @@ opp@216000000,750 {
+ 			clock-latency-ns = <400000>;
+ 			opp-supported-hw = <0x0F 0x0003>;
+ 			opp-hz = /bits/ 64 <216000000>;
++			opp-suspend;
  		};
  
--		cpu@2 {
-+		cpu2: cpu@2 {
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			cpu-supply = <&vdd_cpu>;
-+			#cooling-cells = <2>;
+ 		opp@216000000,800 {
+ 			clock-latency-ns = <400000>;
+ 			opp-supported-hw = <0x0F 0x0004>;
+ 			opp-hz = /bits/ 64 <216000000>;
++			opp-suspend;
  		};
  
--		cpu@3 {
-+		cpu3: cpu@3 {
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			cpu-supply = <&vdd_cpu>;
-+			#cooling-cells = <2>;
+ 		opp@312000000,750 {
+diff --git a/arch/arm/boot/dts/tegra30-cpu-opp.dtsi b/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
+index 0f7135006d19..72f2fe26cc0e 100644
+--- a/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
++++ b/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
+@@ -45,18 +45,21 @@ opp@204000000,800 {
+ 			clock-latency-ns = <100000>;
+ 			opp-supported-hw = <0x1F 0x31FE>;
+ 			opp-hz = /bits/ 64 <204000000>;
++			opp-suspend;
  		};
- 	};
  
-@@ -456,7 +460,10 @@ map0 {
- 				};
- 				map1 {
- 					trip = <&cpu_alert1>;
--					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
- 				};
- 			};
+ 		opp@204000000,850 {
+ 			clock-latency-ns = <100000>;
+ 			opp-supported-hw = <0x1F 0x0C01>;
+ 			opp-hz = /bits/ 64 <204000000>;
++			opp-suspend;
  		};
+ 
+ 		opp@204000000,912 {
+ 			clock-latency-ns = <100000>;
+ 			opp-supported-hw = <0x1F 0x0200>;
+ 			opp-hz = /bits/ 64 <204000000>;
++			opp-suspend;
+ 		};
+ 
+ 		opp@312000000,850 {
 -- 
 2.29.2
 
