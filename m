@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3382FE9EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97C02FE9E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730494AbhAUMYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:24:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47538 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728078AbhAUMWs (ORCPT
+        id S1730659AbhAUMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:22:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730532AbhAUMWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:22:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611231681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EdNOWiSvpp1h1FQ1yCUgYu+uACMYKqVEBGPORZ+jdtY=;
-        b=ENZwl9a9rUiP+YnNq7bBmZY/LFIX7XeFyWQ09bhL9wItUXHtzLR83RfY6EypqomYlFawxo
-        glY4JSA57ancEw7ZuufcsJRy2sRlFuVKq1krd/Z2L9PiVdaTEh5QwP/dbrJhBJ6zWCkpPl
-        sb15Q2B2mgmUP1nBJzjQKzB/TxUt1sY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-gVia8A6FOX638Qz587PhRw-1; Thu, 21 Jan 2021 07:21:19 -0500
-X-MC-Unique: gVia8A6FOX638Qz587PhRw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EAD628144E0;
-        Thu, 21 Jan 2021 12:21:17 +0000 (UTC)
-Received: from [10.72.12.73] (ovpn-12-73.pek2.redhat.com [10.72.12.73])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9DB4060BF3;
-        Thu, 21 Jan 2021 12:21:15 +0000 (UTC)
-Subject: Re: [PATCH 1/2 v2] dma-iommu: use static-key to minimize the impact
- in the fast-path
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
-        will@kernel.org, iommu@lists.linux-foundation.org,
-        robin.murphy@arm.com
-References: <20210119111616.12761-1-lijiang@redhat.com>
- <20210119111616.12761-2-lijiang@redhat.com>
- <20210119152641.GA3453587@infradead.org>
-From:   lijiang <lijiang@redhat.com>
-Message-ID: <fcddfd41-19b5-1a56-8c64-ea9ce851030d@redhat.com>
-Date:   Thu, 21 Jan 2021 20:21:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 21 Jan 2021 07:22:07 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01727C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:21:27 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id b26so2205632lff.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:21:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yimdx4ZEIYCrRVLF+2NU0OizS0WCMrr/pbZs3FbSvjM=;
+        b=EPnXHr6yZpdy1V1kIy3ctOUkkRMRXgJTomkYX2dAHRkNMS3UYGt1znP8t297cMQQmm
+         OY3EIWxjL+xbNp453Csnx7qFabFAldU7devy9J28VbqbS4xS2KkHegc3974CLjGDSFE1
+         aW8bykzakwL2wk1PLa0tGg6yV1hPKUpJwwur7Embl1m6EXTSR8Xhtqhhj4gPksUGD9ex
+         alBF9q+TnkN6YQtrHgl3jBBxUER0mlve+6jr80D92D/X9eEpkmNew8yqKtKYjZOCcj+d
+         IVhA8unhx+dT9sGGmezYWST4I6NmBI8j865N/Kn2jHtAa4nPnqGsdFmQUWNETa96ylYt
+         bBbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yimdx4ZEIYCrRVLF+2NU0OizS0WCMrr/pbZs3FbSvjM=;
+        b=MmgOczarXprQMcWsrt+RGlF93+ysEGQuJPgcZsAFNH6YtUdxwP3rhPuXGRbIiNYqzY
+         TxlV74OHEOWsbV/dcz6xkgPOK8juUOKf0kC2lVVw5GS40zNCBbavQaxPRWyFboUcx0Fx
+         31+SEJtGRLVMJtpF4t0VJO0ZBdmjz+f+M6PPoMZ4x0Oxe4caKPGt8FEXXGULWMQja2Jk
+         L4UnqcqXwL8GZ62ysJOSmYPeaYmSy1Afi00X04ky/eyMt1soKQ93o46hkf0fp6X8eMjt
+         GntbRyigV++KOnMKVl9y8mWGEE50hh/2wfwJKSGdvwEXf5tv+kPXtQMFL6SRvF8/spJu
+         IkAw==
+X-Gm-Message-State: AOAM533shHOTkaH8By1G5IQrvIx4gpCtyzdW0pIejTjzvD2J5KNEmpVU
+        kewx+TO6c6v2JR8nhjcX74n83/dZ04rhMsY26F9epQ==
+X-Google-Smtp-Source: ABdhPJyLoUO3vEOj/0GCCxA14/vsoSsvNgo7yEAm7/If4CXqAzS/7+UNrJ+Rlq/37pc5T2F42NDbBhHJ/Sa5azjikAE=
+X-Received: by 2002:a19:6557:: with SMTP id c23mr6061478lfj.157.1611231685556;
+ Thu, 21 Jan 2021 04:21:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210119152641.GA3453587@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210120142642.256235-1-arnd@kernel.org>
+In-Reply-To: <20210120142642.256235-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 21 Jan 2021 13:21:14 +0100
+Message-ID: <CACRpkdajBcW6VX1=R5fRS4WrrvsbBUF3geHSTs9rLG5Wc4ztWQ@mail.gmail.com>
+Subject: Re: [PATCH] mfd: remove ab3100 driver
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Christoph
+On Wed, Jan 20, 2021 at 3:26 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-Thanks for the comment.
-在 2021年01月19日 23:26, Christoph Hellwig 写道:
-> On Tue, Jan 19, 2021 at 07:16:15PM +0800, Lianbo Jiang wrote:
->> +static DEFINE_STATIC_KEY_FALSE(__deferred_attach);
-> Why the strange underscores?  Wouldn't iommu_deferred_attach_enabled
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The ST-Ericsson U300 platform is getting removed, so this driver is no
+> longer needed.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The variable is defined with the static keyword, which indicates that the
-variable is only used in the local module(file), and gives a hint explicitly
-with the underscore prefix. Anyway, this is my personal opinion.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> be a better name?
-> 
-It could be a long name?
-
-Thanks.
-Lianbo
-
+Yours,
+Linus Walleij
