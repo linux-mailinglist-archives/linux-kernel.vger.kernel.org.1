@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E312FE238
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35852FE23E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:05:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbhAUC70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 21:59:26 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11115 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727471AbhAUCpE (ORCPT
+        id S1726348AbhAUGEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:04:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393499AbhAUDBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 21:45:04 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DLmsZ1ZkPz15w7n;
-        Thu, 21 Jan 2021 10:43:14 +0800 (CST)
-Received: from [10.174.177.2] (10.174.177.2) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Thu, 21 Jan 2021
- 10:44:21 +0800
-Subject: Re: [PATCH] mm/vmalloc: Separate put pages and flush VM flags
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-CC:     <hch@lst.de>, <dja@axtens.net>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <21e2ed55-90f5-3e26-06ff-e4fd81709ffd@huawei.com>
-Date:   Thu, 21 Jan 2021 10:44:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 20 Jan 2021 22:01:32 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD714C0613CF;
+        Wed, 20 Jan 2021 19:00:51 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id l9so583797ejx.3;
+        Wed, 20 Jan 2021 19:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YdnR/g1AUsA802dFK4Bs9r1QCNRoeBKoAACTpgBxsAQ=;
+        b=S82oKn6Q+hAvCVWp3R9ocfOXM2/txxi1xOjHxUHmByrZ8kBz2L+vdZmpZsEoegtsH7
+         kEKPOe4hs5bnGP8bgsWbRPouosUnKNj9uWM25NvOl6npKH6Q3aIq351tyu35oZ16Gcd9
+         gI+/RZHwBoUQXrBob5pPzeDFlql7a72PNMpdC/G6NQL7jOeLy08k8OzSFgGhZ/81pKeb
+         bfGMAqvNxE6MPJJ+X7pfFTpMlP/b5cWbsk8wBXFKl5pUb3B1PIYLs2reLAOvnsUFUsv7
+         f1sf/+zO67e9eDmjS0bptW4tw0r9uzixuWtFOktEToRwo2mwE5lw5fhIJQSO5xGWaVtk
+         y6dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YdnR/g1AUsA802dFK4Bs9r1QCNRoeBKoAACTpgBxsAQ=;
+        b=ez9h2LlsuvWrYsPqp/PeF+WDfmqlNQbArORHLxSXOEglSJoXQgGO1qbofj49C2zR76
+         QME0+VhhuRakNmZQnYNwAFqJvBRjzcDp0+VKXHnG4i/lnLcHmAa2pXvd6VXi6VUtvEK5
+         5mKu3fvHenQji/0UfwZXh/NjDnGUZALGS/2NV89BOrO6+c36vb9l+M9L/CxOwJ4UJPh0
+         Ne8St4Uf0E3tocdo+8rQoWoz8qVD8VkpbtO8o5rsHAmLwSO3siEMI0+savsequQ2NRi/
+         r+VoaiNwHEA+MIzFlvu93p0EVMdO+H+N1Dz+0KppinyKsSBfQK+nZec+hZwGwnRJUi4n
+         Nx6g==
+X-Gm-Message-State: AOAM533fZeGuuVM+IMtHB9WAYJBYPR0JZRgY7vVzIWcez9FSQvyRRlJD
+        1I8IP3oT954QEQz91EpA0C2vILPUd4rAc4wHnmE=
+X-Google-Smtp-Source: ABdhPJx4hIKkKiU2iBKXjdqE5eWNNe7e0osIQ9gJJ07rfesCCPovnPnhiYH+s1vpHW57b+spuuKB7GPDWGgtgfAiGN4=
+X-Received: by 2002:a17:906:9619:: with SMTP id s25mr7999226ejx.345.1611198050485;
+ Wed, 20 Jan 2021 19:00:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.2]
-X-CFilter-Loop: Reflected
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Thu, 21 Jan 2021 14:00:38 +1100
+Message-ID: <CAGRGNgWLspr6M1COgX9cuDDgYdiXvQQjWQb7XYLsmFpfMYt0sA@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
+        Jens Axboe <axboe@kernel.dk>, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, Denis Efremov <efremov@linux.com>,
+        colyli@suse.de, kent.overstreet@gmail.com, agk@redhat.com,
+        snitzer@redhat.com, song@kernel.org,
+        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
+        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, Tejun Heo <tj@kernel.org>,
+        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
+        asml.silence@gmail.com, jefflexu@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/1/21 9:41, Rick Edgecombe wrote:
-> When VM_MAP_PUT_PAGES was added, it was defined with the same value as
-> VM_FLUSH_RESET_PERMS. This doesn't seem like it will cause any big
+Hi Chaitanya,
 
-Good catch!
+On Tue, Jan 19, 2021 at 5:01 PM Chaitanya Kulkarni
+<chaitanya.kulkarni@wdc.com> wrote:
+>
+> Hi,
+>
+> This is a *compile only RFC* which adds a generic helper to initialize
+> the various fields of the bio that is repeated all the places in
+> file-systems, block layer, and drivers.
+>
+> The new helper allows callers to initialize various members such as
+> bdev, sector, private, end io callback, io priority, and write hints.
+>
+> The objective of this RFC is to only start a discussion, this it not
+> completely tested at all.
+> Following diff shows code level benefits of this helper :-
+>  38 files changed, 124 insertions(+), 236 deletions(-)
 
-> functional problems other than some excess flushing for VM_MAP_PUT_PAGES
-> allocations.
-> 
-> Redefine VM_MAP_PUT_PAGES to have its own value. Also, move the comment
-> and remove whitespace for VM_KASAN such that the flags lower down are less
-> likely to be missed in the future.
->> Fixes: b944afc9d64d ("mm: add a VM_MAP_PUT_PAGES flag for vmap")
+On a more abstract note, I don't think this diffstat is actually
+illustrating the benefits of this as much as you think it is.
 
-Is this worth a Cc stable ?
+Yeah, we've reduced the code by 112 lines, but that's barely half the
+curn here. It looks, from the diffstat, that you've effectively
+reduced 2 lines into 1. That isn't much of a saving.
 
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> ---
->  include/linux/vmalloc.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 80c0181c411d..0b3dd135aa5d 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -23,9 +23,6 @@ struct notifier_block;		/* in notifier.h */
->  #define VM_DMA_COHERENT		0x00000010	/* dma_alloc_coherent */
->  #define VM_UNINITIALIZED	0x00000020	/* vm_struct is not fully initialized */
->  #define VM_NO_GUARD		0x00000040      /* don't add guard page */
-> -#define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
-> -#define VM_MAP_PUT_PAGES	0x00000100	/* put pages and free array in vfree */
-> -
->  /*
->   * VM_KASAN is used slighly differently depending on CONFIG_KASAN_VMALLOC.
->   *
-> @@ -36,12 +33,13 @@ struct notifier_block;		/* in notifier.h */
->   * Otherwise, VM_KASAN is set for kasan_module_alloc() allocations and used to
->   * determine which allocations need the module shadow freed.
->   */
-> -
-> +#define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
->  /*
->   * Memory with VM_FLUSH_RESET_PERMS cannot be freed in an interrupt or with
->   * vfree_atomic().
->   */
->  #define VM_FLUSH_RESET_PERMS	0x00000100      /* Reset direct map and flush TLB on unmap */
-> +#define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
->  
->  /* bits [20..32] reserved for arch specific ioremap internals */
->  
-> 
+Thanks,
 
-Looks good to me.
+-- 
+Julian Calaby
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
