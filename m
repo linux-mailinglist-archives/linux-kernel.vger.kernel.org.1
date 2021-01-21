@@ -2,136 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B52FF7FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BC62FF801
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbhAUWcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:32:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbhAUWcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:32:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 248C8239EF;
-        Thu, 21 Jan 2021 22:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611268301;
-        bh=EEf8rabDeI15xaIquULAh8d9pPh9A++4exLQ0e/ACdM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=byN+jFdhb7bSBDjr2iwxHKQVRmnDYUmTvXjhAtxBXtU69FjhISlVnP4oNAYtj97cj
-         NXzfaCIQmuADYionFEpJq0GgE//3I0lCbuaGUjhkzolNhA0DOLeb6e5ljwC/0sGnzD
-         97bmLd+bNkXSsErv9j7P1uVSHhxKOaiye6hb9rGcZR2i4HWQhyHsOAA/ifLMElysbY
-         ecWPlg3IDRo3xF6JZQ0069/lN7oNjDOeU7p6csPluvEcdVdAHRODGEU65IezLghgjW
-         Goe6G83GUVziPEWEzHkr/KwTj7p251a8CF8jy0XhqxVkHO7n8Uq95xhxlO03QWbDcK
-         7pn+rHxWhNJEA==
-Date:   Thu, 21 Jan 2021 16:31:39 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        linux-pci@vger.kernel.org, mingchuang.qiao@mediatek.com,
-        matthias.bgg@gmail.com, lambert.wang@mediatek.com,
-        linux-mediatek@lists.infradead.org, haijun.liu@mediatek.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH v2] PCI: Re-enable downstream port LTR if it was
- previously enabled
-Message-ID: <20210121223139.GA2698934@bjorn-Precision-5520>
+        id S1726493AbhAUWfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:35:00 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:25120 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726414AbhAUWey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 17:34:54 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-38-cV8mqR_5PLm3VtoUQ_JE_Q-1; Thu, 21 Jan 2021 22:32:43 +0000
+X-MC-Unique: cV8mqR_5PLm3VtoUQ_JE_Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 21 Jan 2021 22:32:35 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 21 Jan 2021 22:32:35 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Randy Dunlap' <rdunlap@infradead.org>,
+        "'Yu, Yu-cheng'" <yu-cheng.yu@intel.com>,
+        Borislav Petkov <bp@alien8.de>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eugene Syromiatnikov" <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: RE: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
+Thread-Topic: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
+Thread-Index: AQHW8DMjsVkr7OKTZEWf0jgz1DSfFaoyopGAgAAD/wCAAAFTAA==
+Date:   Thu, 21 Jan 2021 22:32:35 +0000
+Message-ID: <b6eda0f414f34634b4e1aca80c4b5d5d@AcuMS.aculab.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-9-yu-cheng.yu@intel.com>
+ <20210121184405.GE32060@zn.tnic>
+ <b4d4bec7-504e-2443-4cf3-0801b179000f@intel.com>
+ <cd9d04ab66d144b7942b5030d9813115@AcuMS.aculab.com>
+ <9344cd90-1818-a716-91d2-2b85df01347b@infradead.org>
+In-Reply-To: <9344cd90-1818-a716-91d2-2b85df01347b@infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119131410.27528-1-mika.westerberg@linux.intel.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Alex and Mingchuang et al from
-https://lore.kernel.org/r/20210112072739.31624-1-mingchuang.qiao@mediatek.com]
+RnJvbTogUmFuZHkgRHVubGFwDQo+IFNlbnQ6IDIxIEphbnVhcnkgMjAyMSAyMjoxOQ0KPiANCj4g
+T24gMS8yMS8yMSAyOjE2IFBNLCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4gRnJvbTogWXUsIFl1
+LWNoZW5nDQo+ID4+DQo+ID4+IE9uIDEvMjEvMjAyMSAxMDo0NCBBTSwgQm9yaXNsYXYgUGV0a292
+IHdyb3RlOg0KPiA+Pj4gT24gVHVlLCBEZWMgMjksIDIwMjAgYXQgMDE6MzA6MzVQTSAtMDgwMCwg
+WXUtY2hlbmcgWXUgd3JvdGU6DQo+ID4+IFsuLi5dDQo+ID4+Pj4gQEAgLTM0Myw2ICszNDksMTYg
+QEAgc3RhdGljIGlubGluZSBwdGVfdCBwdGVfbWtvbGQocHRlX3QgcHRlKQ0KPiA+Pj4+DQo+ID4+
+Pj4gICBzdGF0aWMgaW5saW5lIHB0ZV90IHB0ZV93cnByb3RlY3QocHRlX3QgcHRlKQ0KPiA+Pj4+
+ICAgew0KPiA+Pj4+ICsJLyoNCj4gPj4+PiArCSAqIEJsaW5kbHkgY2xlYXJpbmcgX1BBR0VfUlcg
+bWlnaHQgYWNjaWRlbnRhbGx5IGNyZWF0ZQ0KPiA+Pj4+ICsJICogYSBzaGFkb3cgc3RhY2sgUFRF
+IChSVz0wLCBEaXJ0eT0xKS4gIE1vdmUgdGhlIGhhcmR3YXJlDQo+ID4+Pj4gKwkgKiBkaXJ0eSB2
+YWx1ZSB0byB0aGUgc29mdHdhcmUgYml0Lg0KPiA+Pj4+ICsJICovDQo+ID4+Pj4gKwlpZiAoY3B1
+X2ZlYXR1cmVfZW5hYmxlZChYODZfRkVBVFVSRV9TSFNUSykpIHsNCj4gPj4+PiArCQlwdGUucHRl
+IHw9IChwdGUucHRlICYgX1BBR0VfRElSVFkpID4+IF9QQUdFX0JJVF9ESVJUWSA8PCBfUEFHRV9C
+SVRfQ09XOw0KPiA+Pj4NCj4gPj4+IFdoeSB0aGUgdW5yZWFkYWJsZSBzaGlmdGluZyB3aGVuIHlv
+dSBjYW4gc2ltcGx5IGRvOg0KPiA+Pj4NCj4gPj4+ICAgICAgICAgICAgICAgICAgaWYgKHB0ZS5w
+dGUgJiBfUEFHRV9ESVJUWSkNCj4gPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICBwdGUucHRl
+IHw9IF9QQUdFX0NPVzsNCj4gPj4+DQo+ID4NCj4gPj4+ID8NCj4gPj4NCj4gPj4gSXQgY2xlYXJz
+IF9QQUdFX0RJUlRZIGFuZCBzZXRzIF9QQUdFX0NPVy4gIFRoYXQgaXMsDQo+ID4+DQo+ID4+IGlm
+IChwdGUucHRlICYgX1BBR0VfRElSVFkpIHsNCj4gPj4gCXB0ZS5wdGUgJj0gfl9QQUdFX0RJUlRZ
+Ow0KPiA+PiAJcHRlLnB0ZSB8PSBfUEFHRV9DT1c7DQo+ID4+IH0NCj4gPj4NCj4gPj4gU28sIHNo
+aWZ0aW5nIG1ha2VzIHJlc3VsdGluZyBjb2RlIG1vcmUgZWZmaWNpZW50Lg0KPiA+DQo+ID4gRG9l
+cyB0aGUgY29tcGlsZXIgbWFuYWdlIHRvIGRvIG9uZSBzaGlmdD8NCj4gPg0KPiA+IEhvdyBjYW4g
+aXQgY2xlYXIgYW55dGhpbmc/DQo+IA0KPiBJdCBjb3VsZCBzaGlmdCBpdCBvZmYgZWl0aGVyIGVu
+ZCBzaW5jZSB0aGVyZSBhcmUgYm90aCA8PCBhbmQgPj4uDQoNCkl0IGlzIHN0aWxsOg0KCXB0ZS5w
+dGUgfD0geHh4eHh4eDsNCg0KPiA+IFRoZXJlIGlzIG9ubHkgYW4gfD0gYWdhaW5zdCB0aGUgdGFy
+Z2V0Lg0KPiA+DQo+ID4gU29tZXRoaW5nIGhvcnJpZCB3aXRoIF49IG1pZ2h0IHNldCBhbmQgY2xl
+YXIuDQoNCkl0IGNvdWxkIGJlIDQgaW5zdHJ1Y3Rpb25zOg0KCWlzX2RpcnR5ID0gcHRlLnB0ZSAm
+IFBBR0VfRElSVFk7DQoJcHRlLnB0ZSAmPSB+UEFHRV9ESVJUWTsgLy8gb3IgcHRlLnB0ZSBePSBp
+c19kaXJ0eQ0KCWlzX2NvdyA9IGlzX2RpcnR5IDw8IChCSVRfQ09XIC0gQklUX0RJUlRZKTsgLy8g
+b3IgZXF1aXZhbGVudCA+Pg0KCXB0ZS5wdGUgfD0gaXNfY293Ow0KcHJvdmlkZWQgeW91J3ZlIGEg
+dGhyZWUgb3BlcmFuZCBmb3JtIGZvciBvbmUgb2YgdGhlIGZpcnN0IHR3byBpbnN0cnVjdGlvbnMu
+DQpTb21ldGhpbmcgbGlrZSBBUk0gbWlnaHQgbWFuYWdlIHRvIG1lcmdlIHRoZSBsYXN0IHR3byBh
+cyB3ZWxsLg0KQnV0IHRoZSByZWdpc3RlciBkZXBlbmRlbmN5IGNoYWluIGxlbmd0aCBtYXkgbWF0
+dGVyIG1vcmUgdGhhbg0KdGhlIG51bWJlciBvZiBpbnN0cnVjdGlvbnMuDQpUaGUgYWJvdmUgaXMg
+bGlrZWx5IHRvIGJlIHRocmVlIGxvbmcuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
+c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
+IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-On Tue, Jan 19, 2021 at 04:14:10PM +0300, Mika Westerberg wrote:
-> PCIe r5.0, sec 7.5.3.16 says that the downstream ports must reset the
-> LTR enable bit if the link goes down (port goes DL_Down status). Now, if
-> we had LTR previously enabled and the PCIe endpoint gets hot-removed and
-> then hot-added back the ->ltr_path of the downstream port is still set
-> but the port now does not have the LTR enable bit set anymore.
-> 
-> For this reason check if the bridge upstream had LTR enabled previously
-> and re-enable it before enabling LTR for the endpoint.
-> 
-> Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-
-I think this and Mingchuang's patch, which is essentially identical,
-are right and solves the problem for hot-remove/hot-add.  In that
-scenario we call pci_configure_ltr() on the hot-added device, and
-with this patch, we'll re-enable LTR on the bridge leading to the new
-device before enabling LTR on the new device itself.
-
-But don't we have a similar problem if we simply do a Fundamental
-Reset on a device?  I think the reset path will restore the device's
-state, including PCI_EXP_DEVCTL2, but it doesn't do anything with the
-upstream bridge, does it?
-
-So if a bridge and a device below it both have LTR enabled, can't we
-have the following:
-
-  - bridge LTR enabled
-  - device LTR enabled
-  - reset device, e.g., via Secondary Bus Reset
-  - link goes down, bridge disables LTR
-  - link comes back up, LTR disabled in both bridge and device
-  - restore device state, including LTR enable
-  - device sends LTR message
-  - bridge reports Unsupported Request
-
-> ---
-> Previous version can be found here:
-> 
->   https://lore.kernel.org/linux-pci/20210114134724.79511-1-mika.westerberg@linux.intel.com/
-> 
-> Changes from the previous version:
-> 
->   * Corrected typos in the commit message
->   * No need to call pcie_downstream_port()
-> 
->  drivers/pci/probe.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 0eb68b47354f..a4a8c0305fb9 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2153,7 +2153,7 @@ static void pci_configure_ltr(struct pci_dev *dev)
->  {
->  #ifdef CONFIG_PCIEASPM
->  	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
-> -	struct pci_dev *bridge;
-> +	struct pci_dev *bridge = NULL;
->  	u32 cap, ctl;
->  
->  	if (!pci_is_pcie(dev))
-> @@ -2191,6 +2191,21 @@ static void pci_configure_ltr(struct pci_dev *dev)
->  	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
->  	    ((bridge = pci_upstream_bridge(dev)) &&
->  	      bridge->ltr_path)) {
-> +		/*
-> +		 * Downstream ports reset the LTR enable bit when the
-> +		 * link goes down (e.g on hot-remove) so re-enable the
-> +		 * bit here if not set anymore.
-> +		 * PCIe r5.0, sec 7.5.3.16.
-> +		 */
-> +		if (bridge) {
-> +			pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
-> +			if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
-> +				pci_dbg(bridge, "re-enabling LTR\n");
-> +				pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
-> +							 PCI_EXP_DEVCTL2_LTR_EN);
-> +			}
-> +		}
-> +		pci_dbg(dev, "enabling LTR\n");
->  		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
->  					 PCI_EXP_DEVCTL2_LTR_EN);
->  		dev->ltr_path = 1;
-> -- 
-> 2.29.2
-> 
