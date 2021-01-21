@@ -2,91 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD9D2FE235
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F572FE241
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbhAUGB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:01:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbhAUGB1 (ORCPT
+        id S1725923AbhAUGFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:05:24 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:61813 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbhAUGEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:01:27 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D3BC061757;
-        Wed, 20 Jan 2021 22:00:43 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id s15so668169plr.9;
-        Wed, 20 Jan 2021 22:00:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=nm/d5EhZ/OB8dy9RYltdCSlYB2STRBBjiHimEPU8NOw=;
-        b=oD+OZniXZxdd2Cw+nAnP8VWLSUTfEFYCyR5mej2IGW5/W8u/E8BvWsvX4uEi9N6yjZ
-         6FHjvrxSsGGFQpO3qZ8nrIZt1Vhk1j/nlSrqyqMJNB0WmvAdEG2G+ibbcZqQqGQwWm5u
-         I+SpRqJLK1bzWHLAuLTqqm4Y4Ho9doYEIX2lSwazWKVoE4qMH9IeVEN5jrfGsYjt/Na9
-         yu8GorLbx8AxJR8OZRCXFAbYYpvwhOskya9gKHyhx2LGQq2R4SWtpeM9KQWLnopQ2jFo
-         JacczzMS4deT2l/5w/aRjDkn3Fq5QREZr1y0yDQr7sqowxySmefspXy6T7/PtejWQuDc
-         awog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=nm/d5EhZ/OB8dy9RYltdCSlYB2STRBBjiHimEPU8NOw=;
-        b=DfEq0+d9G6R1pVqVuQ1yIMt3wXxT3PmD0CC3Uh1WaPl59AuwYCThNdniIlnF+NKx/B
-         PLSxV9RdU0nASWYSHwRIfYyxJ3/+mLsDi2+hRemNbAM/rYTQZpCCNMEUmqVujJtKxTEB
-         Xv8CBrTT5dMfTUXR698EGRvbmFA1cCEBOn5IKhqFY4FoijOPWpy9g1mSJHJltY9RLtYQ
-         3W2SdIcgAWLmf0+X5/LJwsQqeL/Igjw6gboXdUZFM3hyA99WraO+dFH6/yUgUwg9uW0f
-         25T6/iNwPAEEZOd0wdHNedVBgl53xQFkSOtkb9ehl4n9pqCBNN4xUEGUlOUw6sW48JTm
-         a8pA==
-X-Gm-Message-State: AOAM530J9QQ6xSVpPVZxzNkXs8oLsiPeZXGWokDPZMXZf4tmPvbizMih
-        WLpxMk/GEtMbSHn0oVNA+HICVY+TkTQ1ceMp/zG9etpeCqI=
-X-Google-Smtp-Source: ABdhPJydWax2/fugoXpsWOXPL01l7yleuBY5u23KrpMyhc/IQf/3F5aX/FL17gNJlX/FYGjZX7GiSH/t/sdYO//bk+M=
-X-Received: by 2002:a17:90a:9a83:: with SMTP id e3mr9984025pjp.210.1611208842977;
- Wed, 20 Jan 2021 22:00:42 -0800 (PST)
+        Thu, 21 Jan 2021 01:04:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611209032; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vMMS0y9cspIupZ5HdJuclFp1qJwYkuG3sETR3tQ2Syg=;
+ b=MJ7LiTpv0xap6xaU1VQ4Xk5sKH1T9LYbhC19//GTGLiZBotBXRIucUt/H9Wce/7eVdCFlljf
+ SGUoDxphMwS1i0v3ztA+bjBHmrOR24zFvnOBNruVBOB6iZhIN5oemt+pwH6mqIxIiJyY8cU+
+ WijihSVChgMdLdRbVCMXRuO/Rsg=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6009192ad75e1218e33a4cd6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Jan 2021 06:03:22
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D9666C43461; Thu, 21 Jan 2021 06:03:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7656C433CA;
+        Thu, 21 Jan 2021 06:03:20 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210120102837.23663-1-xie.he.0141@gmail.com> <CAJht_EOdpq5wQfcFROpx587kCZ9dGRz6kesyPVhgZyKdoqS8Cg@mail.gmail.com>
-In-Reply-To: <CAJht_EOdpq5wQfcFROpx587kCZ9dGRz6kesyPVhgZyKdoqS8Cg@mail.gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Wed, 20 Jan 2021 22:00:32 -0800
-Message-ID: <CAJht_ENjV3k_d7TyeJmKopSPoVeGZb0s5PnkTeX_2hCOXNsWwg@mail.gmail.com>
-Subject: Re: [PATCH net v4] net: lapb: Add locking to the lapb module
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 21 Jan 2021 11:33:20 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Al Grant <Al.Grant@arm.com>,
+        Suzuki Poulose <Suzuki.Poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, leo.yan@linaro.org,
+        mnissler@google.com
+Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
+ tracing
+In-Reply-To: <20210120184839.GB708905@xps15>
+References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
+ <20201015160257.GA1450102@xps15>
+ <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
+ <20210118202354.GC464579@xps15>
+ <32216e9fa5c9ffb9df1123792d40eafb@codeaurora.org>
+ <DB7PR08MB3355E85C72492D4766F0BEFC86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
+ <20210120184839.GB708905@xps15>
+Message-ID: <45b0c83833ac0e2e8d231da3c4bb8e0e@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:42 PM Xie He <xie.he.0141@gmail.com> wrote:
->
-> With this patch, there is still a problem that lapb_unregister may run
-> concurrently with other LAPB API functions (such as
-> lapb_data_received). This other LAPB API function can get the
-> lapb->lock after lapb->lock is released by lapb_unregister, and
-> continue to do its work. This is not correct.
->
-> We can fix this problem by adding a new field "bool stop" to "struct
-> lapb_cb" (just like "bool t1timer_stop, t2timer_stop"), and make every
-> API function abort whenever it sees lapb->stop == true after getting
-> the lock.
->
-> Alternatively we can also require the callers (the LAPB drivers) to
-> never call lapb_unregister concurrently with other LAPB APIs. They
-> should make sure all LAPB API functions are only called after
-> lapb_register ends and before lapb_unregister starts. This is a
-> reasonable requirement, because if they don't follow this requirement,
-> even if we do the fix in the LAPB module (as said above), the LAPB
-> driver will still get the "LAPB_BADTOKEN" error from the LAPB module.
-> This is not desirable and I think LAPB drivers should avoid this from
-> happening.
->
-> So I think this problem may not need to be fixed here in the LAPB
-> module because the LAPB drivers should deal with this problem anyway.
+On 2021-01-21 00:18, Mathieu Poirier wrote:
+> On Tue, Jan 19, 2021 at 08:36:22AM +0000, Al Grant wrote:
+>> Hi Sai,
+>> 
+>> > From: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+>> > Hi Mathieu,
+>> >
+>> > On 2021-01-19 01:53, Mathieu Poirier wrote:
+>> > > On Fri, Jan 15, 2021 at 11:16:24AM +0530, Sai Prakash Ranjan wrote:
+>> > >> Hello Mathieu, Suzuki
+>> > >>
+>> > >> On 2020-10-15 21:32, Mathieu Poirier wrote:
+>> > >> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
+>> > >> > > On production systems with ETMs enabled, it is preferred to
+>> > >> > > exclude kernel mode(NS EL1) tracing for security concerns and
+>> > >> > > support only userspace(NS EL0) tracing. So provide an option via
+>> > >> > > kconfig to exclude kernel mode tracing if it is required.
+>> > >> > > This config is disabled by default and would not affect the
+>> > >> > > current configuration which has both kernel and userspace tracing
+>> > >> > > enabled by default.
+>> > >> > >
+>> > >> >
+>> > >> > One requires root access (or be part of a special trace group) to
+>> > >> > be able to use the cs_etm PMU.  With this kind of elevated access
+>> > >> > restricting tracing at EL1 provides little in terms of security.
+>> > >> >
+>> > >>
+>> > >> Apart from the VM usecase discussed, I am told there are other
+>> > >> security concerns here regarding need to exclude kernel mode tracing
+>> > >> even for the privileged users/root. One such case being the ability
+>> > >> to analyze cryptographic code execution since ETMs can record all
+>> > >> branch instructions including timestamps in the kernel and there may
+>> > >> be other cases as well which I may not be aware of and hence have
+>> > >> added Denis and Mattias. Please let us know if you have any questions
+>> > >> further regarding this not being a security concern.
+>> > >
+>> > > Even if we were to apply this patch there are many ways to compromise
+>> > > a system or get the kernel to reveal important information using the
+>> > > perf subsystem.  I would perfer to tackle the problem at that level
+>> > > rather than concentrating on coresight.
+>> > >
+>> >
+>> > Sorry but I did not understand your point. We are talking about the capabilities
+>> > of coresight etm tracing which has the instruction level tracing and a lot more.
+>> > Perf subsystem is just the framework used for it.
+>> > In other words, its not the perf subsystem which does instruction level tracing,
+>> > its the coresight etm. Why the perf subsystem should be modified to lockdown
+>> > kernel mode? If we were to let perf handle all the trace filtering for different
+>> > exception levels, then why do we need the register settings in coresight etm
+>> > driver to filter out NS EL* tracing? And more importantly, how do you suppose
+>> > we handle sysfs mode of coresight tracing with perf subsystem?
+>> 
+>> You both have good points. Mathieu is right that this is not a 
+>> CoreSight
+>> issue specifically, it is a matter of kernel security policy, and 
+>> other hardware
+>> tracing mechanisms ought to be within its scope. There should be a 
+>> general
+>> "anti kernel exfiltration" config that applies to all mechanisms 
+>> within
+>> its scope, and we'd definitely expect that to include Intel PT as well 
+>> as ETM.
+>> 
+>> A kernel config that forced exclude_kernel on all perf events would 
+>> deal with
+>> ETM and PT in one place, but miss the sysfs interface to ETM.
+>> 
+>> On the other hand, doing it in the ETM drivers would cover the perf 
+>> and sysfs
+>> interfaces to ETM, but would miss Intel PT.
+>> 
+>> So I think what is needed is a general config option that is both 
+>> implemented
+>> in perf (excluding all kernel tracing events) and by any drivers that 
+>> provide
+>> an alternative interface to hardware tracing events.
+>> 
+> 
+> I also think this is the right solution.
+> 
 
-Never mind, I have sent a v5 to deal with this problem. In v5, I made
-lapb_unregister wait for the "lapb" refcnt to drop, so that we can
-make sure all other API calls have finished. Please see my v5.
+Thanks for confirming, I will be working on this suggestion.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
