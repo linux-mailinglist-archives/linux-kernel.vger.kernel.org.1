@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5CD2FF607
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 413F82FF60D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbhAUHuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:50:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
+        id S1727412AbhAUUil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:38:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbhAUG6O (ORCPT
+        with ESMTP id S1727872AbhAUHtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:58:14 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9350BC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:57:32 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id g15so1020750pjd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:57:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rUtmDYOZWBTxf9UWZYyTgxEJymEAYD1V+CFm2Cwj5oE=;
-        b=zKWYsAaGAVfkuVwHuXb2le1Ng7fKUWMobE0WXs3dqRKkU7n5Wv1zcU3wNMT76oiTUz
-         lLVzgAHjb16iIK2ipXv5aBuUDH1vLeJBVPM325Qpf5SXYOkyopMaPwuzj3nGvEh3oyCZ
-         vgEJoAVBW7R8zdFmazofWHebI4dxKvt9zxdt0Dn8Qjx63oYuy7nbAnnjomTJxo7vm22G
-         GjD4th4VSyw84uD8FnaejQWDFGH8CYHr9zFqz0K4TT0kTjNzRo5mI/6sXlTdPLQqukqU
-         L0vHeWu+0istqq10w3eS3yE3urL9XpPvd8KdVeC7OIz6a8ktEPhgf4wjmXBK9dzx6y/h
-         NkNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rUtmDYOZWBTxf9UWZYyTgxEJymEAYD1V+CFm2Cwj5oE=;
-        b=HZLiHSdbMAgy2gFd16ZJvMOpCfRLCwe71c2TcjG1Tk3QUBFeY4nHUg7yeBnJTrq9l5
-         AeCDN6QXtw5ov4l5xTd3ACLwohlFo6vAO9KI5xbUoO6CKVpJDwMXYOx0J//ZTfDHUZbp
-         4QwiCbasovah2nMb8NU4tSoh/sWbWM0pULfDBTcdn80l04J88XCbsjJ1oW4ZJ5zel4zc
-         j3f8CifQN2yGi0OPbQZxvbbzxWBYBKpnCrkcSx5YqSeTikHkjhgOla0xKVVA78kdJ3tC
-         Mc8vdBBnQRVobH9GsXnNPRltmcUKkKKvhQLKh1I3BLJtBJmdSveE5Xy78TxEyeiUOK2T
-         pNVA==
-X-Gm-Message-State: AOAM533w+AZxlg+IGnKFue8hPuhUn3IER0IrJPzkqS6PQp4TAkLptsC2
-        RUkxq13vlLQ5dlIVO6iByiCR+Q==
-X-Google-Smtp-Source: ABdhPJzhOl0HtEqutqCzxnWljZBU8BwIKjgI+j16tebtc4O5786lYFY0Hbxtp5+iVNVOGNHTqKEsXA==
-X-Received: by 2002:a17:902:ff04:b029:df:d5e5:9acc with SMTP id f4-20020a170902ff04b02900dfd5e59accmr334016plj.1.1611212252012;
-        Wed, 20 Jan 2021 22:57:32 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id t2sm4593111pju.19.2021.01.20.22.57.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Jan 2021 22:57:31 -0800 (PST)
-Date:   Thu, 21 Jan 2021 12:27:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
-Subject: Re: [PATCH V5 5/5] of: unittest: Statically apply overlays using
- fdtoverlay
-Message-ID: <20210121065728.trqph5uwvp43k46l@vireshk-i7>
-References: <cover.1611124778.git.viresh.kumar@linaro.org>
- <696c137461be8ec4395c733c559c269bb4ad586e.1611124778.git.viresh.kumar@linaro.org>
- <20210121005145.GF5174@yekko.fritz.box>
- <7d6adfd9-da1e-d4ca-3a04-b192f0cf36b0@gmail.com>
- <20210121053426.4dw5oqz7qb4y7hvm@vireshk-i7>
- <20210121063438.GJ5174@yekko.fritz.box>
+        Thu, 21 Jan 2021 02:49:52 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C67C061757;
+        Wed, 20 Jan 2021 23:41:40 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLvTs3mGcz9sB4;
+        Thu, 21 Jan 2021 18:41:37 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611214897;
+        bh=Gw203rkDGuemdWIYSTD9EC5OQyUDh8xmdS8SRg/nKuk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RujtOeYFJ7QREi0MpQ6rEFTsRWRnoQ+SBuYhRCG5DTGzV85S4Sj/pMkV73sbeBtge
+         I41dpG/H+S4T0fHtUxKm91VCh8so8YNXqHFM6QkakWNfBaocnIBDmGDBtEfDUU2K4u
+         3t46W93HmwD5NgSwrHR92wouPgYUYQ9faXRQfTaZ4YC+vTCb72onP0YCmGyg9NiDOT
+         L54qiaGC5ioR3rCb3zfcaX9lu7565WO6Vhuuxu/TZcTTNbifv874KX/Swa//kCtfDv
+         o2DVM9v6kJM3LBcIDVmOiKsLTXN7wC6dGFbJ/GyiwShFMf6YtU7BnFxkJ3md2tJ3Xn
+         5QaRZCFLZNRQQ==
+Date:   Thu, 21 Jan 2021 18:41:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Gross <agross@kernel.org>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the qcom tree
+Message-ID: <20210121184136.43c30669@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121063438.GJ5174@yekko.fritz.box>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="Sig_/cO7fI6BTtm2wPkZKK9b/X1b";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-21, 17:34, David Gibson wrote:
-> No, this is the wrong way around.  The expected operation here is that
-> you apply overlay (1) to the base tree, giving you, say, output1.dtb.
-> output1.dtb is (effectively) a base tree itself, to which you can then
-> apply overlay-(2).
+--Sig_/cO7fI6BTtm2wPkZKK9b/X1b
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the confirmation about this.
+Hi all,
 
-> Merging overlays is
-> something that could make sense, but fdtoverlay will not do it at
-> present.
+In commit
 
-FWIW, I think it works fine right now even if it not intentional. I
-did inspect the output dtb (made by merging two overlays) using
-fdtdump and it looked okay. But yeah, I understand that we shouldn't
-do it.
+  d4863ef399a2 ("arm64: dts: qcom: sdm845-db845c: Fix reset-pin of ov8856 n=
+ode")
 
--- 
-viresh
+Fixes tag
+
+  Fixes: d4919a44564b ("arm64: dts: qcom: sdm845-db845c: Add ov8856 & ov7251
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+Pleas do not split Fixes tags over more than one line.  Also, keep all
+the commit message tags together at the end of the message.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/cO7fI6BTtm2wPkZKK9b/X1b
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAJMDAACgkQAVBC80lX
+0Gywywf9FFAYqxJpWSf6wZKsjpuzRwTHA/aJA0mZJ0wOnmApV46s0ZtOxah/4O1D
+CX7lmFGRVXL43kreBHxgmKQ1sFgbjcMo7FLJYiCdErRuP/cP3jCvzdrOKr1V9vuH
+6vLBaKTa0kyDjk1xbHEPVvn6h+ynrolbQVatcAq9YTsDdvkESs+rZOCoDJQt4ORB
+zFnpFdmf1HLbksR7F4ws5MyUI4llHyrXCD6/juUmWpZb567tBtXhAM1qcGN1VEIq
+d26cBqXzxLs8fWqtko14itRLqVrNjDkN/hAh7flFJ56LDjRQEVRp/4f9Xlr7N/eS
+LGXnwWlbFideZbNw6swWzE+zWt7F/w==
+=hYHU
+-----END PGP SIGNATURE-----
+
+--Sig_/cO7fI6BTtm2wPkZKK9b/X1b--
