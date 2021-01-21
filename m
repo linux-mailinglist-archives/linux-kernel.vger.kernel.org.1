@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38B12FF7CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C85C2FF7D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbhAUWQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:16:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726575AbhAUWPI (ORCPT
+        id S1727029AbhAUWSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:18:01 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:24095 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726070AbhAUWRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:15:08 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0F3C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:14:27 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id y19so7293623iov.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:14:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O2R6G+JQomFrmP9HO7+cEOKXT8jw8uCDjvCWyH87E3w=;
-        b=FozQaxbvtJXB+IozviQH2OUL+/gJEXx3LdIg5KlULHJ/JcijC3OTsPE0MwypuN3fqo
-         O3zhoj3RuyZmmxvJKd/WbU6AIfeLwcnOqdrFcu3dMWp5qwK3yr0GSYc4gBw7l8uAu2AB
-         MyKJopx+bY1jlZX2i4Qqx26ZUjVsQAYoeM8nI2EM+z7JYv4c/n9kK71N6N6utGRBzB+J
-         WFsOFwvNoIZL1r5txOYFCPYvT1KczLHV5VHqIuhZ7qIdW/3bwtPgKBc8Woi+7msRmNgz
-         FDMzIltl1bnCnGBOW0qUoBy8SePB68bkYe2R53WNLe2FF8KCtNRSdR21g2faMHF9Qayx
-         y2dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O2R6G+JQomFrmP9HO7+cEOKXT8jw8uCDjvCWyH87E3w=;
-        b=TYIjHcb9D7Jl92JV9br0Nf5A45JvCxdWW18Vn4s9ddAa+nxRtEeGepAVeD3v/yQ14X
-         LREzXIzxqgOas9TExgVyuRWA+B4TzHD39a+n/fs0v504nfxhuPHDLeNUbD9Ja7bE6Neq
-         80n8Gbnz3NRkxyR9u9sgEUrwHJbh7FnuJN8yudduCv0/TMsUcgompPWJPzwP5gArY+95
-         KkwCyNWUE6zN8X2dCzKYowk3fQ+exNF5VCQG7sEzDEVSyU5Fu0HCeTed0dPrDENuCVaK
-         B8djueX7wExZt706wpNTxYcb9yj0S8vsmkXk6gBHxJjOvVmbqxxTKg3biSOsLu4kMiL3
-         6xEw==
-X-Gm-Message-State: AOAM533cbuWkgJ3CwdmST5ghESdfZYaX8STDBSfPJZs7H1lL8czKT3bs
-        xfHmSEoXAehnMc85yc3CG/Iyk/s3o/VYqbGmz79Ckw==
-X-Google-Smtp-Source: ABdhPJzTjt3TB+ykOZeLyHdIzwOleNs/mipT9Li327q3wBoTK1DHufVnbXilw914LnUDbHj3R79jXmVoKNYblt4kgD8=
-X-Received: by 2002:a02:7610:: with SMTP id z16mr1116868jab.99.1611267266926;
- Thu, 21 Jan 2021 14:14:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20210115190451.3135416-1-axelrasmussen@google.com> <20210121191241.GG260413@xz-x1>
-In-Reply-To: <20210121191241.GG260413@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 21 Jan 2021 14:13:50 -0800
-Message-ID: <CAJHvVch3iK_UcwpwL5p3LWQAZo_iyLMVxsMTf_GCAStqoQxmTA@mail.gmail.com>
-Subject: Re: [PATCH 0/9] userfaultfd: add minor fault handling
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
+        Thu, 21 Jan 2021 17:17:48 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-244-l2OEnG_AOqSZjOQ6quE8Sw-1; Thu, 21 Jan 2021 22:16:09 +0000
+X-MC-Unique: l2OEnG_AOqSZjOQ6quE8Sw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 21 Jan 2021 22:16:08 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 21 Jan 2021 22:16:08 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Yu, Yu-cheng'" <yu-cheng.yu@intel.com>,
+        Borislav Petkov <bp@alien8.de>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eugene Syromiatnikov" <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
         Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "Weijiang Yang" <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: RE: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
+Thread-Topic: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
+Thread-Index: AQHW8DMjsVkr7OKTZEWf0jgz1DSfFaoyopGA
+Date:   Thu, 21 Jan 2021 22:16:08 +0000
+Message-ID: <cd9d04ab66d144b7942b5030d9813115@AcuMS.aculab.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-9-yu-cheng.yu@intel.com>
+ <20210121184405.GE32060@zn.tnic>
+ <b4d4bec7-504e-2443-4cf3-0801b179000f@intel.com>
+In-Reply-To: <b4d4bec7-504e-2443-4cf3-0801b179000f@intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 11:12 AM Peter Xu <peterx@redhat.com> wrote:
->
-> On Fri, Jan 15, 2021 at 11:04:42AM -0800, Axel Rasmussen wrote:
-> > UFFDIO_COPY and UFFDIO_ZEROPAGE cannot be used to resolve minor faults. Without
-> > modifications, the existing codepath assumes a new page needs to be allocated.
-> > This is okay, since userspace must have a second non-UFFD-registered mapping
-> > anyway, thus there isn't much reason to want to use these in any case (just
-> > memcpy or memset or similar).
-> >
-> > - If UFFDIO_COPY is used on a minor fault, -EEXIST is returned.
->
-> When minor fault the dst VM will report to src with the address.  The src could
-> checkup whether dst contains the latest data on that (pmd) page and either:
->
->   - it's latest, then tells dst, dst does UFFDIO_CONTINUE
->
->   - it's not latest, then tells dst (probably along with the page data?  if
->     hugetlbfs doesn't support double map, we'd need to batch all the dirty
->     small pages in one shot), dst does whatever to replace the page
->
-> Then, I'm thinking what would be the way to replace an old page.. is that one
-> FALLOC_FL_PUNCH_HOLE plus one UFFDIO_COPY at last?
+RnJvbTogWXUsIFl1LWNoZW5nIA0KPiANCj4gT24gMS8yMS8yMDIxIDEwOjQ0IEFNLCBCb3Jpc2xh
+diBQZXRrb3Ygd3JvdGU6DQo+ID4gT24gVHVlLCBEZWMgMjksIDIwMjAgYXQgMDE6MzA6MzVQTSAt
+MDgwMCwgWXUtY2hlbmcgWXUgd3JvdGU6DQo+IFsuLi5dDQo+ID4+IEBAIC0zNDMsNiArMzQ5LDE2
+IEBAIHN0YXRpYyBpbmxpbmUgcHRlX3QgcHRlX21rb2xkKHB0ZV90IHB0ZSkNCj4gPj4NCj4gPj4g
+ICBzdGF0aWMgaW5saW5lIHB0ZV90IHB0ZV93cnByb3RlY3QocHRlX3QgcHRlKQ0KPiA+PiAgIHsN
+Cj4gPj4gKwkvKg0KPiA+PiArCSAqIEJsaW5kbHkgY2xlYXJpbmcgX1BBR0VfUlcgbWlnaHQgYWNj
+aWRlbnRhbGx5IGNyZWF0ZQ0KPiA+PiArCSAqIGEgc2hhZG93IHN0YWNrIFBURSAoUlc9MCwgRGly
+dHk9MSkuICBNb3ZlIHRoZSBoYXJkd2FyZQ0KPiA+PiArCSAqIGRpcnR5IHZhbHVlIHRvIHRoZSBz
+b2Z0d2FyZSBiaXQuDQo+ID4+ICsJICovDQo+ID4+ICsJaWYgKGNwdV9mZWF0dXJlX2VuYWJsZWQo
+WDg2X0ZFQVRVUkVfU0hTVEspKSB7DQo+ID4+ICsJCXB0ZS5wdGUgfD0gKHB0ZS5wdGUgJiBfUEFH
+RV9ESVJUWSkgPj4gX1BBR0VfQklUX0RJUlRZIDw8IF9QQUdFX0JJVF9DT1c7DQo+ID4NCj4gPiBX
+aHkgdGhlIHVucmVhZGFibGUgc2hpZnRpbmcgd2hlbiB5b3UgY2FuIHNpbXBseSBkbzoNCj4gPg0K
+PiA+ICAgICAgICAgICAgICAgICAgaWYgKHB0ZS5wdGUgJiBfUEFHRV9ESVJUWSkNCj4gPiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgcHRlLnB0ZSB8PSBfUEFHRV9DT1c7DQo+ID4NCg0KPiA+ID8N
+Cj4gDQo+IEl0IGNsZWFycyBfUEFHRV9ESVJUWSBhbmQgc2V0cyBfUEFHRV9DT1cuICBUaGF0IGlz
+LA0KPiANCj4gaWYgKHB0ZS5wdGUgJiBfUEFHRV9ESVJUWSkgew0KPiAJcHRlLnB0ZSAmPSB+X1BB
+R0VfRElSVFk7DQo+IAlwdGUucHRlIHw9IF9QQUdFX0NPVzsNCj4gfQ0KPiANCj4gU28sIHNoaWZ0
+aW5nIG1ha2VzIHJlc3VsdGluZyBjb2RlIG1vcmUgZWZmaWNpZW50Lg0KDQpEb2VzIHRoZSBjb21w
+aWxlciBtYW5hZ2UgdG8gZG8gb25lIHNoaWZ0Pw0KDQpIb3cgY2FuIGl0IGNsZWFyIGFueXRoaW5n
+Pw0KVGhlcmUgaXMgb25seSBhbiB8PSBhZ2FpbnN0IHRoZSB0YXJnZXQuDQoNClNvbWV0aGluZyBo
+b3JyaWQgd2l0aCBePSBtaWdodCBzZXQgYW5kIGNsZWFyLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0
+ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBL
+ZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-When I wrote this, my thinking was that users of this feature would
-have two mappings, one of which is not UFFD registered at all. So, to
-replace the existing page contents, userspace would just write to the
-non-UFFD mapping (with memcpy() or whatever else, or we could get
-fancy and imagine using some RDMA technology to copy the page over the
-network from the live migration source directly in place). After
-performing the write, we just UFFDIO_CONTINUE.
-
-I believe FALLOC_FL_PUNCH_HOLE / MADV_REMOVE doesn't work with
-hugetlbfs? Once shmem support is implemented, I would expect
-FALLOC_FL_PUNCH_HOLE + UFFDIO_COPY to work, but I wonder if such an
-operation would be more expensive than just copying using the other
-side of the shared mapping?
-
->
-> Thanks,
->
-> --
-> Peter Xu
->
