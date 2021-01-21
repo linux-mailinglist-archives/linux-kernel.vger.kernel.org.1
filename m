@@ -2,130 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89AB2FE78D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AB32FE79D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729230AbhAUK12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:27:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729177AbhAUK0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:26:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AE1C233EF;
-        Thu, 21 Jan 2021 10:25:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611224726;
-        bh=1WqH3NdCK1Aq7P98SXwjbmM2Zdvym1uIUTpuB2RRcL8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=elv1kMdaVzgDBRV2OScyEeuPivjIFBFpHBpelrYLvprzGAjfenBqWdqWe2I2hjNDn
-         VQHCYP0vjYGkrCcY5aMc9UIpsDW5oQUCTUOB+DDsfN+0EjpiWX6JTWDoeiFDR4MwsR
-         JdXiulX7C/RM13EtMBgRuu1yYCWTELFBTCXPylTNa9eTc+a9lmHUUzmh7y7ItXCMil
-         pyTHGv/BDgL68Pi02rpYKc81dnoGwDGgjNsK1FcqPSAhdBRORZOR5uJPnY8o0fAyDe
-         dXnKckQ4ArvULxO8b/nFzeh37e2T7HjztHNpIeG5wfFq4Dp7PFsPm8oD1pRv7dh4Yd
-         xHw7akBcncUuA==
-Date:   Thu, 21 Jan 2021 11:25:23 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Denis Efremov <efremov@linux.com>
-cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Wim Osterholt <wim@djo.tudelft.nl>
-Subject: Re: [PATCH RESEND] floppy: fix open(O_ACCMODE) for ioctl-only open
-In-Reply-To: <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
-Message-ID: <nycvar.YFH.7.76.2101211122290.5622@cbobk.fhfr.pm>
-References: <20160610230255.GA27770@djo.tudelft.nl> <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm> <20160614184308.GA6188@djo.tudelft.nl> <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm> <20160615132040.GZ14480@ZenIV.linux.org.uk>
- <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm> <20160615224722.GA9545@djo.tudelft.nl> <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm> <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm> <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
- <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm> <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1729397AbhAUK32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:29:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49340 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729232AbhAUK2D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:28:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611224785;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ioXqDDiFH1FLFozZBQ+HRIcOlQIXWLS3JcruiTjdisI=;
+        b=B8qahuPcFsItxiAoc0BojRGvpNK8KZaxW1SRhPeED+uZjcqOl1q6WBRoqXWESiojl0lN6C
+        KHDWBHEKNHu/5vU+ui7GidA3j00p2raXaLgIIylAeQnZPryVwovJwX2TiZDbMWacePUG8K
+        TB25+oTBfFryD58kggBVXuMIzldlfw8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-dm33LaqPPA2tgoaLyyCBPQ-1; Thu, 21 Jan 2021 05:26:23 -0500
+X-MC-Unique: dm33LaqPPA2tgoaLyyCBPQ-1
+Received: by mail-wr1-f69.google.com with SMTP id o17so737295wra.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 02:26:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ioXqDDiFH1FLFozZBQ+HRIcOlQIXWLS3JcruiTjdisI=;
+        b=IuSKKOHy2vQsLIwoB0ivWa511Oo35H1FPuHyNA3SHioXlfpPMzaxZ1HkaYK/c52uXD
+         UTM74K6eA1dZM3yMzkM5zprPbhZ1HFjUbnlzaWq5MLQyW73FghvALqiMAwsafdVFZWy1
+         ZohOXWjuebxqT5aUZoQhtQBMAjLphbJwpvbBBQRpyVBHmE//QTRIz+5BwhbOidr/aVUE
+         q652dNFl8c4RVnj4JGdVVWL9oLAK/M8pxVu6grehP797hFtnKgWhDIjmSqh1gX/wvCeP
+         ioFATrELX0ZAMPiNZW4wcQ1pZx78K6kmosMtUfgo9uYkWA+wYPaa5ynxLyGCndebU63u
+         nXUg==
+X-Gm-Message-State: AOAM532Oiw5i1nC4HR4ENvHmYciFbUxO6btN/PvgnQG2qNdCzNgA61sV
+        nomQkz5EDSESVOTyjlZ3EoNWX9Xp+TBsL1YlG2wewLWiITcTAxHP3pJv1YvCj5Tatsd/pENe9VS
+        1iAFyYsEAWg7KT1BReWCJOXGY
+X-Received: by 2002:a1c:740b:: with SMTP id p11mr8434070wmc.34.1611224782065;
+        Thu, 21 Jan 2021 02:26:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJytwLyArMdkrGW2euiv2F5R+LcpKlJ7dFLk1oelXDZLOX3sUNvrSI1pLXYiudKjaGFuCBlfJQ==
+X-Received: by 2002:a1c:740b:: with SMTP id p11mr8434041wmc.34.1611224781804;
+        Thu, 21 Jan 2021 02:26:21 -0800 (PST)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id a6sm7378064wmj.27.2021.01.21.02.26.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 02:26:21 -0800 (PST)
+Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+References: <20210120173800.1660730-1-jthierry@redhat.com>
+ <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com>
+Date:   Thu, 21 Jan 2021 11:26:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021, Denis Efremov wrote:
+Hi Ard,
 
-> I think it's hard to recall the exact reasons after so many years. 
+On 1/21/21 10:03 AM, Ard Biesheuvel wrote:
+> Hello Julien,
+> 
+> On Wed, 20 Jan 2021 at 18:38, Julien Thierry <jthierry@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> This series enables objtool to start doing stack validation on arm64
+>> kernel builds.
+> 
+> Could we elaborate on this point, please? 'Stack validation' means
+> getting an accurate picture of all kernel code that will be executed
+> at some point in the future, due to the fact that there are stack
+> frames pointing to them. And this ability is essential in order to do
+> live patching safely?
+> 
+> If this is the goal, I wonder whether this is the right approach for
+> arm64 (or for any other architecture, for that matter)
+> 
+> Parsing/decoding the object code and even worse, relying on GCC
+> plugins to annotate some of the idioms as they are being generated, in
+> order to infer intent on the part of the compiler goes *way* beyond
+> what we should be comfortable with. The whole point of this exercise
+> is to guarantee that there are no false positives when it comes to
+> deciding whether the kernel is in a live patchable state, and I don't
+> see how we can ever provide such a guarantee when it is built on such
+> a fragile foundation.
+> 
+> If we want to ensure that the stack contents are always an accurate
+> reflection of the real call stack, we should work with the toolchain
+> folks to identify issues that may interfere with this, and implement
+> controls over these behaviors that we can decide to use in the build.
+> In the past, I have already proposed adding a 'kernel' code model to
+> the AArch64 compiler that guarantees certain things, such as adrp/add
+> for symbol references, and no GOT indirections for position
+> independent code. Inhibiting optimizations that may impact our ability
+> to infer the real call stack from the stack contents is something we
+> might add here as well.
+> 
 
-Yeah, I guess so :)
+I'm not familiar with toolcahin code models, but would this approach be 
+able to validate assembly code (either inline or in assembly files?)
 
-> I'll send a patch today based on this one.
+> Another thing that occurred to me is that inferring which kernel code
+> is actually live in terms of pending function returns could be
+> inferred much more easily from a shadow call stack, which is a thing
+> we already implement for Clang builds.
+> 
 
-I am currently waiting for confirmation by the original reporter that the 
-patch below fixes the issue.
+I was not familiar with the shadow call stack. If I understand correctly 
+that would be a stack of return addresses of function currently on the 
+call stack, is that correct?
 
+That would indeed be a simpler approach, however I guess the 
+instrumentation has a cost. Is the instrumentation also available with 
+GCC? And is this instrumentation efficient enough to be suitable for 
+production builds?
 
+If we can rely on shadow call stack to implement the reliable unwinder, 
+I guess this could be the way to go.
 
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH] floppy: reintroduce O_NDELAY fix
+> In summary, I would not be in favor of enabling objtool on arm64 at
+> all until we have exhausted other options for providing the
+> functionality that we need it for (given that objtool provides many
+> other things that only x86 cares about, IIUC)
+> 
+I understand the concern and appreciate the suggestion. I guess this 
+does need some thorough discussions for the right approach.
 
-Originally fixed in 09954bad4 ("floppy: refactor open() flags handling")
-then reverted for unknown reason in f2791e7eadf437 instead of taking
-the open(O_ACCMODE) for ioctl-only open fix, which had the changelog below
-
-====
-Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
-side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
-this is being used setfdprm userspace for ioctl-only open().
-
-Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
-modes, while still keeping the original O_NDELAY bug fixed.
-
-Cc: stable@vger.kernel.org # v4.5+
-Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
-Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-=====
-
-Fixes: 09954bad4 ("floppy: refactor open() flags handling")
-Fixes: f2791e7ead ("Revert "floppy: refactor open() flags handling"")
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
----
- drivers/block/floppy.c | 29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-index dfe1dfc901cc..bda9417aa0a8 100644
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -4121,23 +4121,22 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
- 	if (fdc_state[FDC(drive)].rawcmd == 1)
- 		fdc_state[FDC(drive)].rawcmd = 2;
- 
--	if (!(mode & FMODE_NDELAY)) {
--		if (mode & (FMODE_READ|FMODE_WRITE)) {
--			drive_state[drive].last_checked = 0;
--			clear_bit(FD_OPEN_SHOULD_FAIL_BIT,
--				  &drive_state[drive].flags);
--			if (bdev_check_media_change(bdev))
--				floppy_revalidate(bdev->bd_disk);
--			if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
--				goto out;
--			if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
--				goto out;
--		}
--		res = -EROFS;
--		if ((mode & FMODE_WRITE) &&
--		    !test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
-+	if (mode & (FMODE_READ|FMODE_WRITE)) {
-+		UDRS->last_checked = 0;
-+		clear_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags);
-+		check_disk_change(bdev);
-+		if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
-+			goto out;
-+		if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
- 			goto out;
- 	}
-+
-+	res = -EROFS;
-+
-+	if ((mode & FMODE_WRITE) &&
-+			!test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
-+		goto out;
-+
- 	mutex_unlock(&open_lock);
- 	mutex_unlock(&floppy_mutex);
- 	return 0;
+Thanks,
 
 -- 
-Jiri Kosina
-SUSE Labs
+Julien Thierry
 
