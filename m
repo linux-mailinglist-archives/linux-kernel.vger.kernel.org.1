@@ -2,162 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61432FE35D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4EA2FE392
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbhAUHDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:03:49 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:43397 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727030AbhAUG7z (ORCPT
+        id S1727325AbhAUHNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:13:16 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:61981 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbhAUHJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:59:55 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 083A35C00FF;
-        Thu, 21 Jan 2021 01:56:54 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 21 Jan 2021 01:56:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=D5q7/JpfWnXMs
-        /U4/SdqmnZ4pMs2OR5puiCrTr0sajE=; b=Hrq9b3zieHUW2k/J5MFrdHjXoSHXk
-        F0wYlJo5rqOauNSaFl/d42c52Sb6adSfvalqc6tR1KJtjyfJwJ7ZlWxM/7y4Hp0o
-        1vLqUBWodEJFAdnxVu/ZZjhskFM9HFD7SUQAjTCrZQf0xC8MAsthbyDcvWUlFX33
-        A/QFVebDaFeELKm2/wryWZoGQmA7Gaz8lNZMFpEt8a7a4IllciDQb6CXAsK5ytcX
-        j8t7VuDAxr/PDUiIAAXiihOTVXbskq8gJFoyeNUHthQgFS5RVhaCSBzfWwWKNUID
-        2qHK/JgF7gaLJGHZqsW7etfQsWFc+dAKm9aehk9pBic6gfjquXmCMTGeQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=D5q7/JpfWnXMs/U4/SdqmnZ4pMs2OR5puiCrTr0sajE=; b=R82duAvM
-        aKVruW7TzsaWPlo+/2zLpA31XfK9/2gisBAfmxi7rFCrEvrZ8jlXUK7xlD9R3OtO
-        f1V7u+v0Y4fpuqzOlj72glXGcpLXRz4ix8PFh6Rcms2MFrdqgjlG7xN6GEiTvORi
-        BGDKcUkXknYCZmdy3wt+Yb0D364MN8g5IT+Wddrg2jT/krQ4WS6gg9y/28pRHPj5
-        zDd/0rTsiGwafYUbpapnTAcyuH0I07mBcFUIq8Ba9Zb846uKoPI1lHPQfxpNvW9d
-        2PmKzrRYHcXHEPKAUl/t/DQEeLHa9JoiAu8L8X7e3y4fkNGzD0YXE+Oc55Y0U7ZA
-        54jGLgLL3t6qZw==
-X-ME-Sender: <xms:tSUJYHFdAPeW4Yo4D0hYpgwT6cA3v8WzHzoZptdzj30mNRHSjEGGBw>
-    <xme:tSUJYEVrPek4ktdgPWQWcG41lk3eiQMGS8yjNS8EzymBSvbGINsaFS7aVtf-1QRMD
-    3sZtK2AWgEEogmYhzw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefgddutddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
-    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeeggedtteejke
-    eggeeugfehueevudegvdetjeeviedugedvtdekffekhedtteduhfenucfkphepjeefrdel
-    fedrkeegrddvtdeknecuvehluhhsthgvrhfuihiivgepgeenucfrrghrrghmpehmrghilh
-    hfrhhomheprghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgv
-X-ME-Proxy: <xmx:tSUJYJICgy65XJAZxLMxqOnt7FYdEh8G-iMQLbwFyqzPwDXrJ_gAtQ>
-    <xmx:tSUJYFGwksHwDLP_CyNaWPShNXQnoNMg1i-O1aM3o-Jd8oqKTHrrZg>
-    <xmx:tSUJYNWczTpwEpesbtHRVU1dQm_mvINgrWn0c9NK4HBT81wEy52Ubw>
-    <xmx:tiUJYAQkZhGFuBSjx-gi5Sg5Wmuo9-VX0bLx_J-PxAxcC5jiOlNkYg>
-Received: from ThinkpadX1Yoga3.localdomain (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 13D0C1080057;
-        Thu, 21 Jan 2021 01:56:52 -0500 (EST)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de
-Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v2 6/6] arch/arm: reMarkable2: Enable wacom_i2c
-Date:   Wed, 20 Jan 2021 22:56:43 -0800
-Message-Id: <20210121065643.342-7-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210121065643.342-1-alistair@alistair23.me>
-References: <20210121065643.342-1-alistair@alistair23.me>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 21 Jan 2021 02:09:34 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210121070840epoutp0346253e4c6ab2be84a6d3628614efe06d~cLZ1yTg4w0970709707epoutp03N
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:08:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210121070840epoutp0346253e4c6ab2be84a6d3628614efe06d~cLZ1yTg4w0970709707epoutp03N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611212920;
+        bh=A+3jbTyF6ufeu8ESMdpYJqVLwy5jij2UUmPAwjDCvhs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CiLbB9cf+P4F0n1t8WPsgs4YAiFEoVTWPlw5PGg65OBDdf9ywiycTdWbtD/72WAec
+         y+/hxgVZY+BJtvlz7chQHBr+1o4XVDZhdmCtPKGWkGiY02DQ+BvBZjbgZpqdLjokjD
+         DMH8s17s1mMafYxNc3KuOOR9crY4d8UVM1QhlxyM=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210121070840epcas2p1fbcce04077f28e1873403204e82959ff~cLZ1H5lH72013420134epcas2p1p;
+        Thu, 21 Jan 2021 07:08:40 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.191]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DLtlp2Sf9z4x9Pv; Thu, 21 Jan
+        2021 07:08:38 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E6.40.52511.57829006; Thu, 21 Jan 2021 16:08:37 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210121070836epcas2p130c0f62d82aa3fcd2e021a1ef88a7ebd~cLZxuNq9E1983419834epcas2p1J;
+        Thu, 21 Jan 2021 07:08:36 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210121070836epsmtrp106d41adf269ca1a4e9dbcb4340f2aa29~cLZxth4Un0074500745epsmtrp1_;
+        Thu, 21 Jan 2021 07:08:36 +0000 (GMT)
+X-AuditID: b6c32a48-4f9ff7000000cd1f-e3-6009287549bf
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C1.34.08745.47829006; Thu, 21 Jan 2021 16:08:36 +0900 (KST)
+Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210121070836epsmtip2eff9c92b3f89751b00feca2ea8bb0e74~cLZxc5odo2241422414epsmtip2G;
+        Thu, 21 Jan 2021 07:08:36 +0000 (GMT)
+From:   Oh Eomji <eomji.oh@samsung.com>
+To:     balbi@kernel.org
+Cc:     Oh Eomji <eomji.oh@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: gadget: f_mass_storage: cahnge wait_event to
+ wait_event_timeout
+Date:   Thu, 21 Jan 2021 15:56:45 +0900
+Message-Id: <1611212208-84202-1-git-send-email-eomji.oh@samsung.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <eomji.oh@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCKsWRmVeSWpSXmKPExsWy7bCmqW6pBmeCwYszXBa9TdOZLI61PWG3
+        mPbhJ7PFqeULmSyaF69ns/h1cRqrxeVdc9gsFi1rZXbg8Lh8xdtj06pONo95JwM99s9dw+7R
+        t2UVo8fnTXIBbFE5NhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+
+        AbpumTlA5ygplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCgwNC/SKE3OLS/PS9ZLz
+        c60MDQyMTIEqE3Iynq44y1zQwFGxu28pSwPjS7YuRk4OCQETifP3f7N3MXJxCAnsYJTomLqM
+        DcL5xChx8EETM4TzmVGi+d57RpiWfR83MUIkdjFKfNv5ix0kISTwg1Hi5h03EJtNQFVi+rLt
+        YA0iAiISbc9nMIE0MAvMZ5LYvaEVaAcHh7BAuMS7zxkgNSxA9a8XLGQFsXkFXCTuNn5ghlgm
+        J3HzXCeYzSmgLLHs41awxRIC59gluj68Z4cocpFYeuMI1EPCEq+Ob4GKS0m87G+Dssslzs45
+        DdXcwChx5dkjFoiEscSsZ+2MIAcxC2hKrN+lD2JKAC07cgusglmAT6Lj8F92iDCvREebEESj
+        ksSkpk4mCFtCYsXnJijbQ2Ll6g9skCApk9gy7RHTBEa5WQjzFzAyrmIUSy0ozk1PLTYqMEGO
+        sE2M4OSm5bGDcfbbD3qHGJk4GA8xSnAwK4nwPrLkSBDiTUmsrEotyo8vKs1JLT7EaAoMu4nM
+        UqLJ+cD0mlcSb2hqZGZmYGlqYWpmZKEkzltk8CBeSCA9sSQ1OzW1ILUIpo+Jg1OqgUnl6gNH
+        9eypp/b4BpSnhJqf7mIX0fcsFl7NZme6Oz+6N2RS8t69p3dNOL6qeNfLOSvXTVv8JWRhYszU
+        4P3z/Q5sDNX2e71H5fDUmbs0ZjN+nMb568it2xO+37tuEWYVs2Fp7b8JbgJdJx78z/lpXcUx
+        ofvG+h8Su5TN1fyD5AN2aM2fnbvt6tEZPCyFbPF3Y2TFPz6IW84h7/909oIbr7pMtV5Y3O2z
+        69KuuhAqZRk/gdEg+TSX9uMXhUdsnfO0Z0yuZJrLv/BvtElq3F+/hd8m5kdy/yoq2T4n4u1E
+        9VehE6Ze//jx3fXzsnOtJpT9lihyVLDiZxAoithqtELXg21/Qc3F+u9H7h3I5lo2446ZEktx
+        RqKhFnNRcSIA9fcRr/cDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPLMWRmVeSWpSXmKPExsWy7bCSvG6JBmeCwe9dUha9TdOZLI61PWG3
+        mPbhJ7PFqeULmSyaF69ns/h1cRqrxeVdc9gsFi1rZXbg8Lh8xdtj06pONo95JwM99s9dw+7R
+        t2UVo8fnTXIBbFFcNimpOZllqUX6dglcGU9XnGUuaOCo2N23lKWB8SVbFyMnh4SAicS+j5sY
+        QWwhgR2MEptvJkPEJSQWdL1mhrCFJe63HGHtYuQCqvnGKHH00UGwBjYBVYnpy7aD2SICIhJt
+        z2cwgRQxCyxmkmj8PpcFJCEsECpxf9YcsEksQA2vFyxkBbF5BVwk7jZ+gNogJ3HzXCeYzSmg
+        LLHs41aoi5Qkdr3fyTyBkW8BI8MqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgMNTS
+        2sG4Z9UHvUOMTByMhxglOJiVRHgfWXIkCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkgg
+        PbEkNTs1tSC1CCbLxMEp1cDU/Ofc3NPtXEcy9ty21LUrlnoS/GpbWJK/1hUm3z/MMlHzl0co
+        x2zzYAr1z0rp2i7B/zMnfcFv35PX/K+Jij3w/6g091e+SV3JVPt0hV0dp+1b9Gr/LT+z5nVT
+        64+KKLWdvemspc/3Gznv3j3xqfg1h+oznEfqfQsm1xoed5OxfLn9oO79sjtK+09qPd6yccON
+        hW5tyzebHuOYubt7V/CrkLZZp6JuSmjHaNVN2JBRxHxw6+3Tz3aYr6j6LLS6eUN8rotsierq
+        59NnL0/VvKqbyf3mzMtnt2SVRHef7n2+b+XrybodgoE7fXT/HpNKrTDfVc4Xn7PbVpG5oODN
+        Q5ECuYLEaU/jPty0s+rv0TytxFKckWioxVxUnAgAbwAAzbICAAA=
+X-CMS-MailID: 20210121070836epcas2p130c0f62d82aa3fcd2e021a1ef88a7ebd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210121070836epcas2p130c0f62d82aa3fcd2e021a1ef88a7ebd
+References: <eomji.oh@samsung.com>
+        <CGME20210121070836epcas2p130c0f62d82aa3fcd2e021a1ef88a7ebd@epcas2p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the wacom_i2c touchscreen for the reMarkable2.
+Changed to return a timeout error if there is no response for a certain
+period of time in order to solve the problem of waiting for a event
+complete while executing unbind.
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
+Signed-off-by: Oh Eomji <eomji.oh@samsung.com>
 ---
- arch/arm/boot/dts/imx7d-remarkable2.dts | 41 +++++++++++++++++++++++++
- arch/arm/configs/imx_v6_v7_defconfig    |  1 +
- 2 files changed, 42 insertions(+)
+ drivers/usb/gadget/function/f_mass_storage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-index fba55a0e028a..8052d884a5e5 100644
---- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -150,6 +150,30 @@ &dma_apbh {
- 	status = "disabled";
- };
+diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
+index 950c943..b474840 100644
+--- a/drivers/usb/gadget/function/f_mass_storage.c
++++ b/drivers/usb/gadget/function/f_mass_storage.c
+@@ -3000,7 +3000,7 @@ static void fsg_unbind(struct usb_configuration *c, struct usb_function *f)
+ 	if (fsg->common->fsg == fsg) {
+ 		__raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE, NULL);
+ 		/* FIXME: make interruptible or killable somehow? */
+-		wait_event(common->fsg_wait, common->fsg != fsg);
++		wait_event_timeout(common->fsg_wait, common->fsg != fsg, HZ / 4);
+ 	}
  
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	pinctrl-1 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	digitizer: wacom-i2c@9 {
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_wacom>;
-+		pinctrl-1 = <&pinctrl_wacom>;
-+		compatible = "wacom,wacom-i2c";
-+		reg = <0x09>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <1 2>;
-+		flip-tilt-x;
-+		flip-tilt-y;
-+		flip-pos-x;
-+		flip-pos-y;
-+		flip-distance;
-+		vdd-supply = <&reg_digitizer>;
-+	};
-+};
-+
- &sdma {
- 	status = "okay";
- };
-@@ -221,6 +245,16 @@ &wdog1 {
- };
- 
- &iomuxc_lpsr {
-+	pinctrl_wacom: wacomgrp {
-+		fsl,pins = <
-+			/*MX7D_PAD_LPSR_GPIO1_IO00__GPIO1_IO0	0x00000074 /* WACOM RESET */
-+			MX7D_PAD_LPSR_GPIO1_IO01__GPIO1_IO1	0x00000034 /* WACOM INT */
-+			MX7D_PAD_LPSR_GPIO1_IO04__GPIO1_IO4	0x00000074 /* PDCTB */
-+			/*MX7D_PAD_LPSR_GPIO1_IO05__GPIO1_IO5	0x00000014 /* FWE */
-+			/*MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x00000014 /* WACOM PWR ENABLE */
-+		>;
-+	};
-+
- 	pinctrl_digitizer_reg: digitizerreggrp {
- 		fsl,pins = <
- 			/* DIGITIZER_PWR_EN */
-@@ -236,6 +270,13 @@ MX7D_PAD_SAI1_RX_SYNC__GPIO6_IO16	0x59
- 		>;
- 	};
- 
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX7D_PAD_I2C1_SDA__I2C1_SDA		0x4000007f
-+			MX7D_PAD_I2C1_SCL__I2C1_SCL		0x4000007f
-+		>;
-+	};
-+
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index fa9229616106..2fc8dc6a8b0a 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -167,6 +167,7 @@ CONFIG_TOUCHSCREEN_DA9052=y
- CONFIG_TOUCHSCREEN_EGALAX=y
- CONFIG_TOUCHSCREEN_GOODIX=y
- CONFIG_TOUCHSCREEN_ILI210X=y
-+CONFIG_TOUCHSCREEN_WACOM_I2C=y
- CONFIG_TOUCHSCREEN_MAX11801=y
- CONFIG_TOUCHSCREEN_IMX6UL_TSC=y
- CONFIG_TOUCHSCREEN_EDT_FT5X06=y
+ 	usb_free_all_descriptors(&fsg->function);
 -- 
-2.29.2
+2.7.4
 
