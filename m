@@ -2,164 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EE92FED25
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E467A2FED42
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731459AbhAUOlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:41:44 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45994 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731621AbhAUOk5 (ORCPT
+        id S1731038AbhAUOo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732192AbhAUOns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:40:57 -0500
-Received: by mail-ot1-f53.google.com with SMTP id n42so1754160ota.12;
-        Thu, 21 Jan 2021 06:40:33 -0800 (PST)
+        Thu, 21 Jan 2021 09:43:48 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E636AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 06:43:07 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id z21so1488205pgj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 06:43:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=brR+1dZEzhE8ISbtb0SjjMZw/hxFjcuos1tZ/GY2UHc=;
+        b=CcAfnCDbMttSn7IoKwPwcQE2alUK7BW7toApaGyz4Xw079cY01HQAmDRE/GCDb25Z5
+         MsfMELx/a7wZleVYUtsss98itqxOvy0EU5TtsXAwUUh0d/kl1R0/S200OxwdfgYmVrCQ
+         MUQAkQm6bw73M/GlAnb0VdagOc/fr4/W2SGLuLJSrq5YLZcT++7PjM5dXfzwzb0Pk3yd
+         3i88HG5ThTWbangBw3SA7VnyZhtd1lECjHBUiee2ZyKMFw9UYqSUhAFnI3yFKeHPWioM
+         BHjYqMaDHt2kJaj+gAaJ51YlhndmV248vCX6pw2b/RBObSYTkM8Vg47U0AM6IX0v9Ju9
+         QJ6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e2wC/gqTSVsEHUIwD9i+N/18O78gZ5uCZkeTAoDdvWM=;
-        b=N/Dm8JP1SX8I81Iak5zh5Lc1eM6okSBElw7EryE1P35cBxz2Z7gktT6Rfu/D8CwG5a
-         7+pzRGeQtoUELB7LOHVRQLONWOAI2H4A5FL+k3tglrNexAuxL4Qhbrb6zKAXPRb0tMLe
-         9+m2DYlpHwwtDkiFsu6gJVXSFaLopRHi9hmU0IWUOA8hL7onSWrDOD7Vba2Wv0UuizlM
-         a7KhgAWIo4eIUsb1k3E49stKjzCfnEPzUMlfrD4jfUCSQbPPvW/JbjikFRW2X5uDPjjh
-         kgOLcoSN3Wk9aMD+ZdTsa84SjFe/r7pKAoNRsyZHk44/XzRI8eHzTl45sDlCDN8RXntq
-         smZg==
-X-Gm-Message-State: AOAM531+sL7HuYayhPMFJQtH+pHe21FVVco7Yt5j2EltybfUH5t332B6
-        6QrAMxW5VIuIC5KJx5w8hzJ/nj8KYuyM1gopmRA=
-X-Google-Smtp-Source: ABdhPJxygx7O8j/Cs5KFm/tGd04SykZqet5/kp/3jkr6W6fOeKCg3atmGLgcAGJqtDf4Cqjy9l1O2Q+aMR5sGiyOhng=
-X-Received: by 2002:a9d:1710:: with SMTP id i16mr10445162ota.260.1611240007526;
- Thu, 21 Jan 2021 06:40:07 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=brR+1dZEzhE8ISbtb0SjjMZw/hxFjcuos1tZ/GY2UHc=;
+        b=t3ZWYV4Q1NJ1hH5YjeiOPkzU10/tsnFMPq6uCfqd0ufSQqupP+2UeGJ7DcCsHicCGx
+         qVyVmVu/pTwzfnum56nQ6zL+Z0KR41qqi6Lmspl4xpYHDJXzW33KS0+/QxOqkt9MC1dv
+         bOXF/T7MPsbVK8TWX2tXnMeeMqOHESxHb63SYYiqWbEJqjTnt3zLqM+92hc7AjUpu6/y
+         UC3+0WRaCWamsO4kcsYomuYTGsp7PB82+s81uA8FtrqEUQ2P4UtyWVh7o3Z13GwcVVyJ
+         OSRdHyHHMwgYP7XLHvqAEbU32La4oRZuEy0wcVHCF3So9PyrLauykLtVnX4dKHyDRvBW
+         PgWQ==
+X-Gm-Message-State: AOAM531X8gwB7LHUbLGh66CTv8O2DujchCep8K2O7Gzh3rGmrwLvsmVa
+        UlTKoINqxDukFZwAlLp74FiH
+X-Google-Smtp-Source: ABdhPJwXOxw/CDdpSS+LC2AFUa7KBxN6RjcU85Nl1dKC3n4k4/O/po+Rnn0dG1eFFUggTRZvcQoz4g==
+X-Received: by 2002:a65:44cd:: with SMTP id g13mr10663351pgs.248.1611240187221;
+        Thu, 21 Jan 2021 06:43:07 -0800 (PST)
+Received: from work ([103.77.37.184])
+        by smtp.gmail.com with ESMTPSA id l13sm6331240pjh.2.2021.01.21.06.43.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Jan 2021 06:43:05 -0800 (PST)
+Date:   Thu, 21 Jan 2021 20:13:02 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v5 3/9] bus: mhi: core: Improvements to the channel
+ handling state machine
+Message-ID: <20210121144302.GA5473@work>
+References: <1610139297-36435-1-git-send-email-bbhatt@codeaurora.org>
+ <1610139297-36435-4-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
- <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
- <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com> <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
- <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com> <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
- <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
-In-Reply-To: <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 21 Jan 2021 15:39:55 +0100
-Message-ID: <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610139297-36435-4-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
->
->
-> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
-> > On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
-> >> Hi Rafael
-> >>
-> >> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
-> >>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
-> >>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
-> >>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
-> >>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
-> >>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
-> >>>>>> specification intends. We need to be able to find those devices "from"
-> >>>>>> the dependee, so add a function to parse all ACPI Devices and check if
-> >>>>>> the include the handle of the dependee device in their _DEP buffer.
-> >>>>> What exactly do you need this for?
-> >>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
-> >>>> refer to those INT3472's in their _DEP method. The driver binds to the
-> >>>> INT3472 device, we need to find the sensors dependent on them.
-> >>>>
-> >>> Well, this is an interesting concept. :-)
-> >>>
-> >>> Why does _DEP need to be used for that?  Isn't there any other way to
-> >>> look up the dependent sensors?
-> >>>
-> >>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
-> >>>>>
-> >>>>> Note that supplier drivers may remove entries from there, but does
-> >>>>> that matter for your use case?
-> >>>> Ah - that may work, yes. Thank you, let me test that.
-> >>> Even if that doesn't work right away, but it can be made work, I would
-> >>> very much prefer that to the driver parsing _DEP for every device in
-> >>> the namespace by itself.
-> >>
-> >> This does work; do you prefer it in scan.c, or in utils.c (in which case
-> >> with acpi_dep_list declared as external var in internal.h)?
-> > Let's put it in scan.c for now, because there is the lock protecting
-> > the list in there too.
-> >
-> > How do you want to implement this?  Something like "walk the list and
-> > run a callback for the matching entries" or do you have something else
-> > in mind?
->
->
-> Something like this (though with a mutex_lock()). It could be simplified
-> by dropping the prev stuff, but we have seen INT3472 devices with
-> multiple sensors declaring themselves dependent on the same device
->
->
-> struct acpi_device *
-> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
->                 struct acpi_device *prev)
-> {
->     struct acpi_dep_data *dep;
->     struct acpi_device *adev;
->     int ret;
->
->     if (!supplier)
->         return ERR_PTR(-EINVAL);
->
->     if (prev) {
->         /*
->          * We need to find the previous device in the list, so we know
->          * where to start iterating from.
->          */
->         list_for_each_entry(dep, &acpi_dep_list, node)
->             if (dep->consumer == prev->handle &&
->                 dep->supplier == supplier->handle)
->                 break;
->
->         dep = list_next_entry(dep, node);
->     } else {
->         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
->                        node);
->     }
->
->
->     list_for_each_entry_from(dep, &acpi_dep_list, node) {
->         if (dep->supplier == supplier->handle) {
->             ret = acpi_bus_get_device(dep->consumer, &adev);
->             if (ret)
->                 return ERR_PTR(ret);
->
->             return adev;
->         }
->     }
->
->     return NULL;
-> }
+On Fri, Jan 08, 2021 at 12:54:51PM -0800, Bhaumik Bhatt wrote:
+> Improve the channel handling state machine such that all commands
+> go through a common function and validation process to ensure
+> that the state machine is not violated in any way and adheres to
+> the MHI specification.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/init.c     |   6 ++
+>  drivers/bus/mhi/core/internal.h |  12 +++
+>  drivers/bus/mhi/core/main.c     | 166 +++++++++++++++++++++++-----------------
+>  3 files changed, 114 insertions(+), 70 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 03c5786..482b365 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -54,6 +54,12 @@ const char * const mhi_state_str[MHI_STATE_MAX] = {
+>  	[MHI_STATE_SYS_ERR] = "SYS_ERR",
+>  };
+>  
+> +const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX] = {
+> +	[MHI_CH_STATE_TYPE_RESET] = "RESET",
+> +	[MHI_CH_STATE_TYPE_STOP] = "STOP",
+> +	[MHI_CH_STATE_TYPE_START] = "START",
+> +};
+> +
+>  static const char * const mhi_pm_state_str[] = {
+>  	[MHI_PM_STATE_DISABLE] = "DISABLE",
+>  	[MHI_PM_STATE_POR] = "POR",
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 6f80ec3..7e3aac1 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -369,6 +369,18 @@ enum mhi_ch_state {
+>  	MHI_CH_STATE_ERROR = 0x5,
+>  };
+>  
+> +enum mhi_ch_state_type {
+> +	MHI_CH_STATE_TYPE_RESET,
+> +	MHI_CH_STATE_TYPE_STOP,
+> +	MHI_CH_STATE_TYPE_START,
+> +	MHI_CH_STATE_TYPE_MAX,
+> +};
+> +
+> +extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
+> +#define TO_CH_STATE_TYPE_STR(state) (((state) >= MHI_CH_STATE_TYPE_MAX) ? \
+> +				     "INVALID_STATE" : \
+> +				     mhi_ch_state_type_str[(state)])
+> +
+>  #define MHI_INVALID_BRSTMODE(mode) (mode != MHI_DB_BRST_DISABLE && \
+>  				    mode != MHI_DB_BRST_ENABLE)
+>  
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index c22d7df..081fdf0 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -1250,56 +1250,118 @@ int mhi_send_cmd(struct mhi_controller *mhi_cntrl,
+>  	return 0;
+>  }
+>  
+> -static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+> -				    struct mhi_chan *mhi_chan)
+> +static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+> +				    struct mhi_chan *mhi_chan,
+> +				    enum mhi_ch_state_type to_state)
+>  {
+> -	int ret;
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> +	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+> +	int ret = -EIO;
+> +
+> +	dev_dbg(dev, "Updating channel %s(%d) state to: %s\n", mhi_chan->name,
+> +		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
 
-That would work I think, but would it be practical to modify
-acpi_walk_dep_device_list() so that it runs a callback for every
-consumer found instead of or in addition to the "delete from the list
-and free the entry" operation?
+Instead of explicitly using the channel name and its id, you should be
+able to use `mhi_chan->mhi_dev->dev` so that dev_dbg() can provide that
+information for you. For instance,
+
+mhi0_IPCR: Updating channel state to RESET
+
+Do it for all instances below.
+
+> +
+> +	switch (to_state) {
+> +	case MHI_CH_STATE_TYPE_RESET:
+> +		write_lock_irq(&mhi_chan->lock);
+> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
+> +		    mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
+> +		    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
+> +			write_unlock_irq(&mhi_chan->lock);
+> +			goto exit_invalid_state;
+> +		}
+> +		mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
+> +		write_unlock_irq(&mhi_chan->lock);
+>  
+> -	dev_dbg(dev, "Entered: unprepare channel:%d\n", mhi_chan->chan);
+> +		cmd = MHI_CMD_RESET_CHAN;
+> +		break;
+> +	case MHI_CH_STATE_TYPE_STOP:
+> +		if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED)
+> +			goto exit_invalid_state;
+>  
+> -	/* no more processing events for this channel */
+> -	mutex_lock(&mhi_chan->mutex);
+> -	write_lock_irq(&mhi_chan->lock);
+> -	if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
+> -	    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
+> -		write_unlock_irq(&mhi_chan->lock);
+> -		mutex_unlock(&mhi_chan->mutex);
+> -		return;
+> +		cmd = MHI_CMD_STOP_CHAN;
+> +		break;
+> +	case MHI_CH_STATE_TYPE_START:
+> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
+> +		    mhi_chan->ch_state != MHI_CH_STATE_DISABLED)
+> +			goto exit_invalid_state;
+> +
+> +		cmd = MHI_CMD_START_CHAN;
+> +		break;
+> +	default:
+> +		goto exit_invalid_state;
+>  	}
+>  
+> -	mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
+> -	write_unlock_irq(&mhi_chan->lock);
+> +	/* bring host and device out of suspended states */
+> +	ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
+
+You are sneaking in a change here. Please add it to the commit description.
+
+> +	if (ret)
+> +		return ret;
+> +	mhi_cntrl->runtime_get(mhi_cntrl);
+>  
+>  	reinit_completion(&mhi_chan->completion);
+> -	read_lock_bh(&mhi_cntrl->pm_lock);
+> -	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
+> -		read_unlock_bh(&mhi_cntrl->pm_lock);
+> -		goto error_invalid_state;
+> +	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, cmd);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to send %s(%d) %s command\n",
+> +			mhi_chan->name, mhi_chan->chan,
+> +			TO_CH_STATE_TYPE_STR(to_state));
+> +		goto exit_command_failure;
+>  	}
+>  
+> -	mhi_cntrl->wake_toggle(mhi_cntrl);
+> -	read_unlock_bh(&mhi_cntrl->pm_lock);
+> +	ret = wait_for_completion_timeout(&mhi_chan->completion,
+> +				       msecs_to_jiffies(mhi_cntrl->timeout_ms));
+> +	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS) {
+> +		dev_err(dev, "Failed to receive %s(%d) %s command completion\n",
+> +			mhi_chan->name, mhi_chan->chan,
+> +			TO_CH_STATE_TYPE_STR(to_state));
+> +		ret = -EIO;
+> +		goto exit_command_failure;
+> +	}
+>  
+> -	mhi_cntrl->runtime_get(mhi_cntrl);
+> +	ret = 0;
+> +
+> +	if (to_state != MHI_CH_STATE_TYPE_RESET) {
+> +		write_lock_irq(&mhi_chan->lock);
+> +		mhi_chan->ch_state = (to_state == MHI_CH_STATE_TYPE_START) ?
+> +				      MHI_CH_STATE_ENABLED : MHI_CH_STATE_STOP;
+> +		write_unlock_irq(&mhi_chan->lock);
+> +	}
+> +
+> +	dev_dbg(dev, "Channel %s(%d) state change to %s successful\n",
+> +		mhi_chan->name, mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+> +
+> +exit_command_failure:
+>  	mhi_cntrl->runtime_put(mhi_cntrl);
+> -	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, MHI_CMD_RESET_CHAN);
+> -	if (ret)
+> -		goto error_invalid_state;
+> +	mhi_device_put(mhi_cntrl->mhi_dev);
+>  
+> -	/* even if it fails we will still reset */
+> -	ret = wait_for_completion_timeout(&mhi_chan->completion,
+> -				msecs_to_jiffies(mhi_cntrl->timeout_ms));
+> -	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS)
+> -		dev_err(dev,
+> -			"Failed to receive cmd completion, still resetting\n");
+> +	return ret;
+> +
+
+This is not a recommended way to handle error paths. There should be a
+single return for all error paths. Please fix it.
+
+> +exit_invalid_state:
+> +	dev_err(dev, "Channel %s(%d) update to %s not allowed\n",
+> +		mhi_chan->name, mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+> +				    struct mhi_chan *mhi_chan)
+> +{
+> +	int ret;
+> +	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> +
+> +	/* no more processing events for this channel */
+
+Move this comment below.
+
+Thanks,
+Mani
