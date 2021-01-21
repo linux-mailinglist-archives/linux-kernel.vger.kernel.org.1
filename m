@@ -2,137 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0000F2FF6DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55692FF6E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbhAUVLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:11:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
+        id S1726612AbhAUVMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:12:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727667AbhAUVJI (ORCPT
+        with ESMTP id S1727720AbhAUVLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:09:08 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2479CC061756;
-        Thu, 21 Jan 2021 13:08:28 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id m4so3100127wrx.9;
-        Thu, 21 Jan 2021 13:08:28 -0800 (PST)
+        Thu, 21 Jan 2021 16:11:00 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20245C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:10:12 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id v67so4584570lfa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:10:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=OMFMRDIlKBCL9Ohj87OUa8tkrf6G4uCu7Gi4SktmUto=;
-        b=KIp5eccKN5MoF5EXrpEigjcHLx1XdU7pp8SCXjiUMhOP7z30XgYU21ZTTHczLR/j/V
-         JjnhKqS1LUsWLbRXTE4le0QiPC1m3iNG2Fili4MHXGLYx3YVMoOu0bc7sRsN6v+BFMpv
-         UjkckzY8iVFdijAmbxeupjYIL1YnEjAmdVXYIWq0IYB94NdcYmoghMZAnxgWAHGGmkFL
-         pXO/3NlyjnPbCHVv+QktRvMlRkld1BBaQZ2rTQccbzW4J5ify05AH23Rc89B/K/jIJcr
-         O1hOXNLtrjxcpeye37n7r7VVgdCFpW2TV5wdXh9MG4JH7lrRSBbKp/r58QcL0LQQcVPB
-         4h+w==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WNDrIesQBMT+L7yI5WzMZVksP2sWpDQawNGFxdnXsVc=;
+        b=YH89x/0HgEErWXoTAUXprkP3EHdeEN46kljJDNBHcff7MrXy7u4CRasLq//STK5KYg
+         NiErWYVfHmqNO+Ee5yf7schI12GFshlJ1YfEvUy5R4K9gVQJxXQaiMsviiyQQd2RgENj
+         orniTEbi/3tc2vtYG8Va0woM+RDTwwca2RihY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=OMFMRDIlKBCL9Ohj87OUa8tkrf6G4uCu7Gi4SktmUto=;
-        b=HEmT3MNZAfLxK3s6N/s2U5X15HRLC6TC6qHYU6vaFfq5hE/vSS3TLqYRZOsNblEST2
-         bIcUu6XRR8MAnEcQuZmqNeGhYWkMJo/FooOSoQ8oSo94myTompW+uR1PNHIwy2mhSDGd
-         ikGKDMMaF6dpFuU/G21h6aCed/oam/yCD906a7xUAOyiltHOSPWeqrdkPdOPV/z9kwQL
-         ojGcKHCSh6Fbxkny+yzW4PIBK0pYzee+2Oy7GE7BX90CFQA4BpRRkMnXdgDJpCD2Hnp4
-         TJdK3/MLRtJsMZCJj01s8DRWdwv6k/wZuIuFsgY1Z4JFFT+O8KkqPC/VTUREuc7iKWbq
-         9jSQ==
-X-Gm-Message-State: AOAM5302hU3OZW0OeaZg1zfiL9O6uyB5SiGyUtUMi7PVnYR6SGUBLG65
-        S5kwXjOM+fwe5ssTkIt9WDA=
-X-Google-Smtp-Source: ABdhPJw3191VKC674udlSDdtZ4NJ1fR1XfdltPOh/9Cz1AcR6fwweuP3nkh4JmZd0P/D8rW7WCg83Q==
-X-Received: by 2002:a05:6000:1374:: with SMTP id q20mr1279024wrz.44.1611263306941;
-        Thu, 21 Jan 2021 13:08:26 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id i131sm8816923wmi.25.2021.01.21.13.08.25
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WNDrIesQBMT+L7yI5WzMZVksP2sWpDQawNGFxdnXsVc=;
+        b=TErUAQBN5xuPL1c8Usu9Noy7+c1iQ5m0vlnOtEcSsPL66r+Mk/Jh4Lzcyf00yYqALK
+         Afa6bOnXr/dIad/cVYiVKNbVT2JraBjWt7dnBdAwrV7N+KOc1u5rAc93ckjLQZIXEx2x
+         PSXE0BVWFow13I98wvwFFVESXNvD1GGSyt2/SuIUDBa07QMuf+XQKaYwvRU3K9K4fQbb
+         wO+ZP+A+K+PcWGkmeEZclyCKgqJw6pDiLAKngwOQ1jUCVaZVILKkb4nElPYXoJTchj9y
+         L9xRxL99oQzhmoPGtxuFkl3MArmbE1788/PNLDBtlR5JoUiE/dgvKjdfqM00km/1Ighd
+         1b7A==
+X-Gm-Message-State: AOAM530a+uM6266SoA1vTiRSkNJvicy/PZ2uCwYRHyvOrRpPLEadZ5kc
+        nDyXiQENxuojJEjCqCyt6yaDTmlFGkbjDw==
+X-Google-Smtp-Source: ABdhPJz2jmtcAlqEw9AtwYk3TZ4ZuDqFPsCGywnENJJnePeVZmxCwtXem4sVv2zwV0LD/7cwZVpy9g==
+X-Received: by 2002:a05:6512:34d3:: with SMTP id w19mr540927lfr.418.1611263409866;
+        Thu, 21 Jan 2021 13:10:09 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id d21sm419528lfl.199.2021.01.21.13.10.08
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 13:08:26 -0800 (PST)
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, kieran.bingham@ideasonboard.com
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
- <1053125f-7cb2-8aa0-3204-24df62986184@gmail.com>
- <20210119093358.GO4077@smile.fi.intel.com>
- <YAcKj9fyNZY8QETd@pendragon.ideasonboard.com>
- <YAcaM9Tcif1rS3V/@smile.fi.intel.com>
- <YAevLTVlUSXMylWL@pendragon.ideasonboard.com>
- <YAgXlgLauIGEe05w@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <837b221d-57ad-88fb-65df-e1cae64f0ad0@gmail.com>
-Date:   Thu, 21 Jan 2021 21:08:25 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 21 Jan 2021 13:10:08 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id v67so4584387lfa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:10:08 -0800 (PST)
+X-Received: by 2002:a19:c14c:: with SMTP id r73mr124334lff.201.1611263407882;
+ Thu, 21 Jan 2021 13:10:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAgXlgLauIGEe05w@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
+ <f4c72a0a-25e6-5c7a-559b-6d3b7c930100@kernel.org> <CAHk-=whE3fmgWx+aNvC6qkNqJtWPre3dVnv-_qYj7GaWnW72Vg@mail.gmail.com>
+ <YAnAfNcE8Bw95+SV@kroah.com> <CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com>
+ <YAnZaYj1ohUNinaf@kroah.com>
+In-Reply-To: <YAnZaYj1ohUNinaf@kroah.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Jan 2021 13:09:51 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgfEiuxr6QbVXV3PXCBq35V_xVt8xMMBV3kTR4SarToSg@mail.gmail.com>
+Message-ID: <CAHk-=wgfEiuxr6QbVXV3PXCBq35V_xVt8xMMBV3kTR4SarToSg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] tty: implement write_iter
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.cz>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oliver Giles <ohw.giles@gmail.com>,
+        Robert Karszniewicz <r.karszniewicz@phytec.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi both
-
-On 20/01/2021 11:44, Andy Shevchenko wrote:
-> On Wed, Jan 20, 2021 at 06:18:53AM +0200, Laurent Pinchart wrote:
->> On Tue, Jan 19, 2021 at 07:43:15PM +0200, Andy Shevchenko wrote:
->>> On Tue, Jan 19, 2021 at 06:36:31PM +0200, Laurent Pinchart wrote:
->>>> On Tue, Jan 19, 2021 at 11:33:58AM +0200, Andy Shevchenko wrote:
->>>>> On Tue, Jan 19, 2021 at 12:11:40AM +0000, Daniel Scally wrote:
->>>>>> On 18/01/2021 21:19, Daniel Scally wrote:
-> ...
+On Thu, Jan 21, 2021 at 11:43 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
->>>>> See my previous reply. TL;DR: you have to modify clk-gpio.c to export couple of
->>>>> methods to be able to use it as a library.
->>>> That seems really overkill given the very simple implementation of the
->>>> clock provided here.
->>> Less code in the end is called an overkill? Hmm...
->>> I think since we in Linux it's better to utilize what it provides. Do you want
->>> me to prepare a patch to show that there is no overkill at all?
->> The amount of code we would save it very small. It's not necessarily a
->> bad idea, but I think such an improvement could be made on top, it
->> shouldn't block this series.
-> Okay, let's wait what Dan will say on this.
-> I can probably help to achieve this improvement sooner than later.
+> This works, thanks for these.  I'll wait for Jiri to review them before
+> applying them to my branches...
 
+Let's hope Jiri sees them, since he had some email issue earlier..
 
-Well; turns out that we missed an operation we really need to add
-(clk_recalc_rate) which in our case needs to read a fixed value stored
-in a buffer in ACPI; most of the code is shared with an existing
-function in the driver so it's not much extra to add, but I think it
-kinda precludes using clk-gpio for this anyway
+I'll add his suse address here too.
 
->>>>>> (also, Laurent, if we did it this way we wouldn't be able to also handle
->>>>>> the led-indicator GPIO here without some fairly major rework)
->>>>> LED indicators are done as LED class devices (see plenty of examples in PDx86
->>>>> drivers: drivers/platform/x86/)
->>>> How do you expose the link between the sensor and its indicator LED to
->>>> userspace ? Isn't it better to handle it in the kernel to avoid rogue
->>>> userspace turning the camera on without notifying the user ?
->>> I didn't get this. It's completely a LED handling driver business. We may
->>> expose it to user space or not, but it's orthogonal to the usage of LED class
->>> IIUC. Am I mistaken here?
->> If it stays internal to the kernel and is solely controlled from the
->> int3472 driver, there's no need to involve the LED class. If we want to
->> expose the privacy LED to userspace then the LED framework is the way to
->> go, but we will also need to find a way to expose the link between the
->> camera sensor and the LED to userspace. If there are two privacy LEDs,
->> one for the front sensor and one for the back sensor, userspace will
->> need to know which is which.
-> I see. For now we probably can keep GPIO LED implementation internally.
->
+           Linus
