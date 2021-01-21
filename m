@@ -2,78 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8462FE871
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D99382FE872
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730350AbhAULLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:11:12 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:49952 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729908AbhAULIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:08:10 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10LB7AFh8001254, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10LB7AFh8001254
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 21 Jan 2021 19:07:10 +0800
-Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 21 Jan
- 2021 19:07:10 +0800
-From:   <ricky_wu@realtek.com>
-To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <bhelgaas@google.com>, <ricky_wu@realtek.com>,
-        <vaibhavgupta40@gmail.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] misc: rtsx: init value of aspm_enabled
-Date:   Thu, 21 Jan 2021 19:07:04 +0800
-Message-ID: <20210121110704.2981-1-ricky_wu@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730234AbhAULLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:11:24 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49282 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729365AbhAULIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:08:51 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 10LB7tpV024188;
+        Thu, 21 Jan 2021 12:07:55 +0100
+Date:   Thu, 21 Jan 2021 12:07:55 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/9] tools/nolibc: fix build issues on aarch64 after
+ unistd cleanup
+Message-ID: <20210121110754.GB24174@1wt.eu>
+References: <20210121072031.23777-1-w@1wt.eu>
+ <jhjzh1235yr.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.88.222]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjzh1235yr.mognet@arm.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricky Wu <ricky_wu@realtek.com>
+On Thu, Jan 21, 2021 at 11:05:48AM +0000, Valentin Schneider wrote:
+> This lets me run the following invocation without a hitch:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10 --configs "4*SRCU-P" --trust-make
+> 
+> where before I would get some errors building the initrd due to missing
+> __NR_foo.
+> 
+> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
 
-make sure ASPM state sync with pcr->aspm_enabled
-init value pcr->aspm_enabled
+Thank you Valentin! Much appreciated!
 
-Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
----
- drivers/misc/cardreader/rtsx_pcr.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index 2aa6648fa41f..5a491d2cd1ae 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -1512,6 +1512,7 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
- 	struct pcr_handle *handle;
- 	u32 base, len;
- 	int ret, i, bar = 0;
-+	u8 val;
- 
- 	dev_dbg(&(pcidev->dev),
- 		": Realtek PCI-E Card Reader found at %s [%04x:%04x] (rev %x)\n",
-@@ -1577,7 +1578,11 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
- 	pcr->host_cmds_addr = pcr->rtsx_resv_buf_addr;
- 	pcr->host_sg_tbl_ptr = pcr->rtsx_resv_buf + HOST_CMDS_BUF_LEN;
- 	pcr->host_sg_tbl_addr = pcr->rtsx_resv_buf_addr + HOST_CMDS_BUF_LEN;
--
-+	rtsx_pci_read_register(pcr, ASPM_FORCE_CTL, &val);
-+	if (val & FORCE_ASPM_CTL0 && val & FORCE_ASPM_CTL1)
-+		pcr->aspm_enabled = false;
-+	else
-+		pcr->aspm_enabled = true;
- 	pcr->card_inserted = 0;
- 	pcr->card_removed = 0;
- 	INIT_DELAYED_WORK(&pcr->carddet_work, rtsx_pci_card_detect);
--- 
-2.17.1
-
+Willy
