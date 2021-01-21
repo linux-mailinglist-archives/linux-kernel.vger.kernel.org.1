@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B78A2FF60B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85AE2FF5FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbhAUUiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S1726643AbhAUUfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:35:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727864AbhAUHuN (ORCPT
+        with ESMTP id S1727158AbhAUHyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:50:13 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4991C0613C1;
-        Wed, 20 Jan 2021 23:49:32 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id g24so1284908edw.9;
-        Wed, 20 Jan 2021 23:49:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n0kVyilkbftdlhrZGBzYXl+bMHX+Nzyhy+1J+qK9jjI=;
-        b=fv3ivvntYxxPUhrJb3+zPJxO8OIJuhpnp9BZ7IMLgLKd7i0n80zEGOlQePgYYjWbU9
-         44MmOi9vxggwQ9j6BAo27frRmyI6koeynqELS9CCAeXeOp/DVbkuu1HOdKET49ELVadr
-         8Pt9ngTFvf9hHBouOyg45MkXl+XhujYr2j7vd1JiyF4Ml8eZ1qO42xr9D/EKUhaA36F7
-         Ho66gRxB/g/cdSgXgHE0SwO5PVQnPX4Ca9sg7Karft29NtUjz7eDTa9m/ey1ApivI9lD
-         EoeymaoX1B6l6UPfM6yl0Qq/T+da4RzVQh9YFZt7I94ZUO1cvLkLV0Qc8Qt4qLZGQPEw
-         CEvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=n0kVyilkbftdlhrZGBzYXl+bMHX+Nzyhy+1J+qK9jjI=;
-        b=Yc+g0eevkSSs+Tmw4srzCnBReEInBuKzqthkSqG02T3ddtB7vLFvln/RPnLUQl822q
-         ycqMurdMR7QGnDsuxE+6AJHUkca6YE6qquPFpvIwrf0cgFh35u3bOwoM/AZ3k5dOgYI2
-         yU1RSryLT6Gi7uY4xCyxb6Juk3jFgdp6GLxakfVD2KH3t+cpkQQPUkkUc+zr2BF7lq6+
-         9Uyrrkfvxmyyygo1Z6ucbKnczCW+LCBfKhaTRUDAC/vJ93veZiEDCs20th6uuunTWD7j
-         pB6SyeZ99vkwOZeSjR5dQxLzKF2Grmb2yiNbELwFdo7v2tnMA0+K7pHUjYR+DR6as8Te
-         u/eA==
-X-Gm-Message-State: AOAM531y8yQhYPkeUoMJZtVX+yuff93b90vHWmsuQmodXCrDcIvgtdgP
-        DndY90/EVP9LEpB6lvnAgL1qX2dbMHk=
-X-Google-Smtp-Source: ABdhPJxkJJ8mCPvmxZOt0+ncQM1iIBTaVCp6iEK8CWEH+NfAjrAuyOjerE6XoqZKGigy6eZEGeGLPA==
-X-Received: by 2002:a05:6402:1549:: with SMTP id p9mr10319164edx.387.1611215371583;
-        Wed, 20 Jan 2021 23:49:31 -0800 (PST)
-Received: from gmail.com (20014C4E1C877B00F0D36816790CCC7F.dsl.pool.telekom.hu. [2001:4c4e:1c87:7b00:f0d3:6816:790c:cc7f])
-        by smtp.gmail.com with ESMTPSA id u23sm2276091edt.78.2021.01.20.23.49.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 23:49:30 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 21 Jan 2021 08:49:28 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org
-Subject: Re: [tip: x86/entry] x86/entry: Build thunk_$(BITS) only if
- CONFIG_PREEMPTION=y
-Message-ID: <20210121074928.GA1346795@gmail.com>
-References: <YAAvk0UQelq0Ae7+@xps-13-7390>
- <161121327995.414.14890124942899525500.tip-bot2@tip-bot2>
+        Thu, 21 Jan 2021 02:54:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1CAC0613C1;
+        Wed, 20 Jan 2021 23:53:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=UGANRP/KM5q83XfobVV7DWx5ZvtoCTKMobbFGMONdGw=; b=lEUjKYCeFs939aYUT/oDk6x8Y8
+        cQ3mrs840LqXWpjhVo/H1r9njWTQ2UPMp9vFEXNfezGdicLLr/cpJYuAIPKokMcQdsrz5ps+wCZNK
+        nZ2RUpOEkYuO5olwBDJmnGrb7/ILlsTg617y335c8QBpy3BbsWSMBVQgNHVcD3kQsM+HbV3hK4fA9
+        oqMsrTu5NsH9B5ZNHX/iQUwurf1JG18BrQ4usaMdfm8xeUK3jmKB47YIhmvEp4W3VqZRJ+yOtCKrq
+        95e+rD3HXbyxkwd44BUDiR7XtNG/my8cZkRGEyei9qwBKaHcXWITUTwK8+IKHsYEr6qESVUJyPNHu
+        1BsbRzLQ==;
+Received: from 089144206130.atnat0015.highway.bob.at ([89.144.206.130] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2UlI-00Gm22-Ef; Thu, 21 Jan 2021 07:52:17 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: module loader dead code removal and cleanusp
+Date:   Thu, 21 Jan 2021 08:49:46 +0100
+Message-Id: <20210121074959.313333-1-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161121327995.414.14890124942899525500.tip-bot2@tip-bot2>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
-* tip-bot2 for Andrea Righi <tip-bot2@linutronix.de> wrote:
+this series removes support for long term unused export types and
+cleans up various loose ends in the module loader.
 
-> The following commit has been merged into the x86/entry branch of tip:
-> 
-> Commit-ID:     e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
-> Gitweb:        https://git.kernel.org/tip/e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
-> Author:        Andrea Righi <andrea.righi@canonical.com>
-> AuthorDate:    Thu, 14 Jan 2021 12:48:35 +01:00
-> Committer:     Ingo Molnar <mingo@kernel.org>
-> CommitterDate: Thu, 21 Jan 2021 08:11:52 +01:00
-> 
-> x86/entry: Build thunk_$(BITS) only if CONFIG_PREEMPTION=y
-> 
-> With CONFIG_PREEMPTION disabled, arch/x86/entry/thunk_64.o is just an
-> empty object file.
-> 
-> With the newer binutils (tested with 2.35.90.20210113-1ubuntu1) the GNU
-> assembler doesn't generate a symbol table for empty object files and
-> objtool fails with the following error when a valid symbol table cannot
-> be found:
-> 
->   arch/x86/entry/thunk_64.o: warning: objtool: missing symbol table
-> 
-> To prevent this from happening, build thunk_$(BITS).o only if
-> CONFIG_PREEMPTION is enabled.
-> 
->   BugLink: https://bugs.launchpad.net/bugs/1911359
-> 
-> Fixes: 320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Link: https://lore.kernel.org/r/YAAvk0UQelq0Ae7+@xps-13-7390
-
-Hm, this fails to build on UML defconfig:
-
- /home/mingo/gcc/cross/lib/gcc/x86_64-linux/9.3.1/../../../../x86_64-linux/bin/ld: arch/x86/um/../entry/thunk_64.o: in function `preempt_schedule_thunk':
- /home/mingo/tip.cross/arch/x86/um/../entry/thunk_64.S:34: undefined reference to `preempt_schedule'
- /home/mingo/gcc/cross/lib/gcc/x86_64-linux/9.3.1/../../../../x86_64-linux/bin/ld: arch/x86/um/../entry/thunk_64.o: in function `preempt_schedule_notrace_thunk':
- /home/mingo/tip.cross/arch/x86/um/../entry/thunk_64.S:35: undefined reference to `preempt_schedule_notrace'
-
-Thanks,
-
-	Ingo
+Diffstat:
+ arch/arm/configs/bcm2835_defconfig          |    1 
+ arch/arm/configs/mxs_defconfig              |    1 
+ arch/mips/configs/nlm_xlp_defconfig         |    1 
+ arch/mips/configs/nlm_xlr_defconfig         |    1 
+ arch/parisc/configs/generic-32bit_defconfig |    1 
+ arch/parisc/configs/generic-64bit_defconfig |    1 
+ arch/powerpc/configs/ppc6xx_defconfig       |    1 
+ arch/powerpc/platforms/powernv/pci-cxl.c    |   22 -
+ arch/s390/configs/debug_defconfig           |    1 
+ arch/s390/configs/defconfig                 |    1 
+ arch/sh/configs/edosk7760_defconfig         |    1 
+ arch/sh/configs/sdk7780_defconfig           |    1 
+ arch/x86/configs/i386_defconfig             |    1 
+ arch/x86/configs/x86_64_defconfig           |    1 
+ arch/x86/tools/relocs.c                     |    4 
+ drivers/gpu/drm/drm_crtc_helper_internal.h  |   10 
+ drivers/gpu/drm/drm_fb_helper.c             |   21 -
+ drivers/gpu/drm/drm_kms_helper_common.c     |   26 +-
+ include/asm-generic/vmlinux.lds.h           |   42 ---
+ include/linux/export.h                      |    9 
+ include/linux/kallsyms.h                    |   17 -
+ include/linux/module.h                      |   42 ---
+ init/Kconfig                                |   17 -
+ kernel/kallsyms.c                           |    8 
+ kernel/livepatch/core.c                     |   61 +----
+ kernel/module.c                             |  319 ++++++++++------------------
+ kernel/trace/trace_kprobe.c                 |    4 
+ lib/bug.c                                   |    3 
+ scripts/checkpatch.pl                       |    6 
+ scripts/mod/modpost.c                       |   50 ----
+ scripts/mod/modpost.h                       |    3 
+ scripts/module.lds.S                        |    6 
+ tools/include/linux/export.h                |    3 
+ 33 files changed, 181 insertions(+), 505 deletions(-)
