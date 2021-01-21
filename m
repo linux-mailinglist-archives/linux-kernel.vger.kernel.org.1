@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5C62FE2E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4DD2FE32A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbhAUGbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbhAUGNn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:13:43 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0D3C061799
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:12:15 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l2TC4-0006PN-3b; Thu, 21 Jan 2021 07:11:44 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l2TC2-00062E-Bo; Thu, 21 Jan 2021 07:11:42 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
+        id S1727110AbhAUGpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:45:17 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42147 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726669AbhAUGof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:44:35 -0500
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4DLtCB5Rlxz9sVk; Thu, 21 Jan 2021 17:43:50 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1611211430;
+        bh=pBBSMXuxBB+p5rfNgeBN8mfyddkOc7DxMG4elSoPAOg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ghevZNhFSIHu88CoobWGVo1cr6jnc6NZotnX3ZBp4LGmAA7tIPjZsyeBNxVDKpTKC
+         BQ74iPhotubQemKucihHrW32E+j9xdJPtQk5FTl5OmMNfb9KAfGYHl1yCaClsqx6wj
+         ULAO4PqGxI7cmfPY+jYguifBfFtKkrzt4ervFSDg=
+Date:   Thu, 21 Jan 2021 17:25:10 +1100
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 7/7] ARM: dts: imx6dl-plym2m: remove touchscreen-size-* properties
-Date:   Thu, 21 Jan 2021 07:11:41 +0100
-Message-Id: <20210121061141.23062-8-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210121061141.23062-1-o.rempel@pengutronix.de>
-References: <20210121061141.23062-1-o.rempel@pengutronix.de>
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH V5 4/5] kbuild: Add support to build overlays (%.dtbo)
+Message-ID: <20210121062510.GH5174@yekko.fritz.box>
+References: <cover.1611124778.git.viresh.kumar@linaro.org>
+ <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
+ <20210121004955.GE5174@yekko.fritz.box>
+ <20210121041300.ocerhqaieytj6gds@vireshk-i7>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rCwQ2Y43eQY6RBgR"
+Content-Disposition: inline
+In-Reply-To: <20210121041300.ocerhqaieytj6gds@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove touchscreen-size-* properties.  This values are not correct, event if it
-works with ts_test tool, it fails to work properly with weston.
-And the real range of values reported by the driver (or measured by the
-controller) is close to max values and may change with time on resistive
-panels. So, it make no sense to keep this values in the device tree.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/boot/dts/imx6dl-plym2m.dts | 2 --
- 1 file changed, 2 deletions(-)
+--rCwQ2Y43eQY6RBgR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/imx6dl-plym2m.dts b/arch/arm/boot/dts/imx6dl-plym2m.dts
-index 4d0d3d3386af..c97274f0df07 100644
---- a/arch/arm/boot/dts/imx6dl-plym2m.dts
-+++ b/arch/arm/boot/dts/imx6dl-plym2m.dts
-@@ -138,8 +138,6 @@ touchscreen@0 {
- 		interrupts-extended = <&gpio3 20 IRQ_TYPE_EDGE_FALLING>;
- 		pendown-gpio = <&gpio3 20 GPIO_ACTIVE_LOW>;
- 
--		touchscreen-size-x = <800>;
--		touchscreen-size-y = <480>;
- 		touchscreen-inverted-x;
- 		touchscreen-inverted-y;
- 		touchscreen-max-pressure = <4095>;
--- 
-2.30.0
+On Thu, Jan 21, 2021 at 09:43:00AM +0530, Viresh Kumar wrote:
+> On 21-01-21, 11:49, David Gibson wrote:
+> > If you're using overlays, you probably need the -@ flag, for both the
+> > base file and the overlays, which AFAICT is not already the case.
+>=20
+> I think the idea was to do that in the platform specific Makefiles,
+> unless I have misunderstood that from earlier discussions. So a
+> platform may want to do that per-file or just enable it for the entire
+> platform.
 
+Hm, ok.  Any platform that does anything with dtbo files is likely to
+want it, though.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--rCwQ2Y43eQY6RBgR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmAJHkQACgkQbDjKyiDZ
+s5Kr0A/9Ho+X/IGM5PoeQ3SGhL4nJEuNbMHeOPrJfTQyMnQbqbma3SSxQSbKPfEz
+nZ8RkE8RPvuJuOHleGqw7sP8WQ6W6V9xn9PD8yijUc45NmtyIYtP5KWi/Tw2L24m
+CFj18/nBR4Twbe8BSiD7nHFLbu8ChPvWChKQX5ViANNE3pV5pNWK5P0gB7AmoPrh
+WzJ47l4K7Kxb0LGk/FkmAA0zRO/EYkQSvB3JvIlvHHJhDwj4PxhzubWkTKUnN5jd
+P0GLfrwC1WOzn/RuubEjXv4DMLF2rgay30eBKmy3O0hOumL7vOlHfDgmgUVIFjiE
+HaIfP+otOcCgLfdCzzMJhngPOxLNqttWz7XH9E+oLig03Gxd2RYveXFYzFJwAC7R
+vNtQM38mPHeKxIldatAaZHPdVr8RGjaRP13jRzINKyULe99u7GJRXi3jMsmkmxiK
+RyzjVdfpvROPKuGBs+OLl/41jZ/WN51YtyS+sU5XchlrtKpaKPI/4yrqqUwMw6oL
+e+I/MSA8hsltmUEdmo8DLcoG/eBPoucmk7JL67Ys3MB7hr+0RlmN/l2WannV/L6y
+QoMg6Oxx7Y6eYxHtZeK0J42QskMQXekpfoF/VvVZcEKvxMk6j7v4fG2dF2hwhso4
+h12cY91isN7eROjwonaUsFw1O3bJk3w0G5CYcRBnFcc4L+qZ0zA=
+=dv40
+-----END PGP SIGNATURE-----
+
+--rCwQ2Y43eQY6RBgR--
