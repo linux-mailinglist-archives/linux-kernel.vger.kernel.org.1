@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C662FF179
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3152FF162
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388234AbhAURLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:11:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35360 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388320AbhAURE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:04:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B5BBAC63;
-        Thu, 21 Jan 2021 17:04:00 +0000 (UTC)
-From:   Enzo Matsumiya <ematsumiya@suse.de>
-To:     linux-scsi@vger.kernel.org
-Cc:     Enzo Matsumiya <ematsumiya@suse.de>,
-        Don Brace <don.brace@microchip.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        storagedev@microchip.com, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] scsi: smartpqi: create module parameters for LUN reset
-Date:   Thu, 21 Jan 2021 14:03:39 -0300
-Message-Id: <20210121170339.11891-1-ematsumiya@suse.de>
-X-Mailer: git-send-email 2.30.0
+        id S2388477AbhAURHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:07:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47574 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387569AbhAURFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:05:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611248650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wDqjq1H9v8ghcGa3bJeTD9dliqNL4xtCFKkD6bW/J1U=;
+        b=eR56YIGzPlcfaVQ2p5ZQqarjcsVnb9IEQ5On13OCihS/9MUF9byE+AT8CGHAcudyft+uP0
+        ZY+Qc1zSSMlpc/MAvBVHbky2G3P6yBvnIMy0Ilta66gtJ9GyW0mkLlpJqZgMUt+FpGplKh
+        LHKFeyc7sgIcI43wqDgwtOBxRlzAbPc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-Y8KW-VbFNfGkSVA-CyONCQ-1; Thu, 21 Jan 2021 12:04:06 -0500
+X-MC-Unique: Y8KW-VbFNfGkSVA-CyONCQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEA251936B65;
+        Thu, 21 Jan 2021 17:04:04 +0000 (UTC)
+Received: from starship (unknown [10.35.206.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B42926E51B;
+        Thu, 21 Jan 2021 17:04:01 +0000 (UTC)
+Message-ID: <c6b1dec841182178c41a564fb822a615acc97762.camel@redhat.com>
+Subject: Re: [PATCH v2 3/3] KVM: VMX: read idt_vectoring_info a bit earlier
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>
+Date:   Thu, 21 Jan 2021 19:04:00 +0200
+In-Reply-To: <YADhzRqE6QHmTOkx@google.com>
+References: <20210114205449.8715-1-mlevitsk@redhat.com>
+         <20210114205449.8715-4-mlevitsk@redhat.com> <YADhzRqE6QHmTOkx@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c2922f174fa0 ("scsi: smartpqi: fix LUN reset when fw bkgnd thread is hung")
-added support for a timeout on LUN resets.
+On Thu, 2021-01-14 at 16:29 -0800, Sean Christopherson wrote:
+> On Thu, Jan 14, 2021, Maxim Levitsky wrote:
+> > This allows it to be printed correctly by the trace print
+> 
+> It'd be helpful to explicitly say which tracepoint, and explain that the value
+> is read by vmx_get_exit_info().  It's far from obvious how this gets consumed.
+> 
+> > that follows.
+> > 
+> 
+> Fixes: dcf068da7eb2 ("KVM: VMX: Introduce generic fastpath handler")
+> 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/vmx/vmx.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 2af05d3b05909..9b6e7dbf5e2bd 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -6771,6 +6771,8 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+> >  	}
+> >  
+> >  	vmx->exit_reason = vmcs_read32(VM_EXIT_REASON);
+> > +	vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+> 
+> Hrm, it probably makes sense to either do the VMREAD conditionally, or to
+> zero idt_vectoring_info in the vmx->fail path.  I don't care about the cycles
+> on VM-Exit consistency checks, just that this would hide that the field is valid
+> if and only if VM-Enter fully succeeded.  A third option would be to add a
+> comment saying that it's unnecessary if VM-Enter failed, but faster in the
+> common case to just do the VMREAD.
 
-However, when there are 2 or more devices connected to the same
-controller and you hot-remove one of them, I/O will stall on the
-devices still online for PQI_LUN_RESET_RETRIES * PQI_LUN_RESET_RETRY_INTERVAL_MSECS
-miliseconds.
+Allright, I will add this.
 
-This commit makes those values configurable via module parameters.
+Best regards,
+	Maxim Levitsky
 
-Changing the bail out condition on rc in _pqi_device_reset() might be possible,
-but could also break the original purpose of commit c2922f174fa0.
 
-Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
----
- drivers/scsi/smartpqi/smartpqi_init.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 2af05d3b0590..3c172c05570a 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6774,13 +6774,15 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>         if (unlikely((u16)vmx->exit_reason == EXIT_REASON_MCE_DURING_VMENTRY))
+>                 kvm_machine_check();
+> 
+> +       if (likely(!(vmx->exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY)))
+> +               vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+> +
+>         trace_kvm_exit(vmx->exit_reason, vcpu, KVM_ISA_VMX);
+> 
+>         if (unlikely(vmx->exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY))
+>                 return EXIT_FASTPATH_NONE;
+> 
+>         vmx->loaded_vmcs->launched = 1;
+> -       vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+> 
+>         vmx_recover_nmi_blocking(vmx);
+>         vmx_complete_interrupts(vmx);
+> 
+> 
+> > +
+> >  	if (unlikely((u16)vmx->exit_reason == EXIT_REASON_MCE_DURING_VMENTRY))
+> >  		kvm_machine_check();
+> >  
+> > @@ -6780,7 +6782,6 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+> >  		return EXIT_FASTPATH_NONE;
+> >  
+> >  	vmx->loaded_vmcs->launched = 1;
+> > -	vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+> >  
+> >  	vmx_recover_nmi_blocking(vmx);
+> >  	vmx_complete_interrupts(vmx);
+> > -- 
+> > 2.26.2
+> > 
 
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index c53f456fbd09..9835b2e5b91a 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -157,6 +157,18 @@ module_param_named(hide_vsep,
- MODULE_PARM_DESC(hide_vsep,
- 	"Hide the virtual SEP for direct attached drives.");
- 
-+static int pqi_lun_reset_retries = 3;
-+module_param_named(lun_reset_retries,
-+	pqi_lun_reset_retries, int, 0644);
-+MODULE_PARM_DESC(lun_reset_retries,
-+	"Number of retries when resetting a LUN");
-+
-+static int pqi_lun_reset_tmo_interval = 10000;
-+module_param_named(lun_reset_tmo_interval,
-+	pqi_lun_reset_tmo_interval, int, 0644);
-+MODULE_PARM_DESC(lun_reset_tmo_interval,
-+	"LUN reset timeout interval (in miliseconds)");
-+
- static char *raid_levels[] = {
- 	"RAID-0",
- 	"RAID-4",
-@@ -5687,8 +5699,6 @@ static int pqi_lun_reset(struct pqi_ctrl_info *ctrl_info,
- 
- /* Performs a reset at the LUN level. */
- 
--#define PQI_LUN_RESET_RETRIES			3
--#define PQI_LUN_RESET_RETRY_INTERVAL_MSECS	10000
- #define PQI_LUN_RESET_PENDING_IO_TIMEOUT_SECS	120
- 
- static int _pqi_device_reset(struct pqi_ctrl_info *ctrl_info,
-@@ -5700,9 +5710,9 @@ static int _pqi_device_reset(struct pqi_ctrl_info *ctrl_info,
- 
- 	for (retries = 0;;) {
- 		rc = pqi_lun_reset(ctrl_info, device);
--		if (rc == 0 || ++retries > PQI_LUN_RESET_RETRIES)
-+		if (rc == 0 || ++retries > pqi_lun_reset_retries)
- 			break;
--		msleep(PQI_LUN_RESET_RETRY_INTERVAL_MSECS);
-+		msleep(pqi_lun_reset_tmo_interval);
- 	}
- 
- 	timeout_secs = rc ? PQI_LUN_RESET_PENDING_IO_TIMEOUT_SECS : NO_TIMEOUT;
--- 
-2.30.0
 
