@@ -2,128 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DD22FDF21
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:18:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1202FDF1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbhAUAyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:54:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
+        id S2392517AbhAUBnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 20:43:24 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33217 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732524AbhAUAEi (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:04:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6476523715;
-        Thu, 21 Jan 2021 00:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611187437;
-        bh=5fr4z5/rmbcCQOdmoOF/n3lxb1XPUGiO7WPhD1Lx9rc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tcbzaI657iesOt4GyEiDhf/28WQQz0Npes1+o/o1TfQ2MlC2PgO3gi8X7mktdff0z
-         y4oLOF74BURA8AIgOEkfa5P/nwF6t9JhQ07bZeJSsM/jgaKhoFmBlsXYj+7pd3BRnh
-         Y1DNO9oAIySwphO/i+zFXwzP778YIDT9SFp/nPH3eCJk1Lctj6VGLN8ceR2MOrWDLZ
-         tdawvUvsGCOTLioJJLS33I5cAwNbgakmnT96FtCxgtKhQTN8JCpo0OIZuO2uYr7kbp
-         OzzI9IRaZenmq6PxhToaXHpAPhfOLvoL3C+UBKlZzrsXavj7tgf596TPk0Sbw2/C65
-         huFfelaYgiuow==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1945540513; Wed, 20 Jan 2021 21:03:55 -0300 (-03)
-Date:   Wed, 20 Jan 2021 21:03:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     "Jin, Yao" <yao.jin@linux.intel.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2] perf stat: Append to default list if use -e +event
-Message-ID: <20210121000355.GB106434@kernel.org>
-References: <20210104021837.30473-1-yao.jin@linux.intel.com>
- <20210112100807.GB1273297@krava>
- <64dba2a3-0bf2-3af3-6f54-6e200840017d@linux.intel.com>
- <20210120212553.GA1798087@krava>
+        id S2391964AbhAUBYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:24:54 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLl6M0M08z9sW1;
+        Thu, 21 Jan 2021 12:24:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611192251;
+        bh=fJgsWSD+vSfoKKK5J0FULDzWwW0DmcDHglLGMSyXTz0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EKdThzj1fPxTC6h7erGvYI5qiJtbo774JaJyuVjY5dBJui2qZul7b1op6hVZndj0O
+         ooQ6yp8pTjyaNJ6/IVzZxCvo+yE1Mn17UfLBZ76uOhO1NTeceNabumaj4z3KmT7H6s
+         YhO/gWSrsi++Ct24PiRcKgpMCLELaDQLqIWAa+O67MPV5ZUrsBLpzjny17/ioVb3Jz
+         9G+MadsR4BHT0grN8hliYqA+6PqqweiCYd7CxIBMj1rjhAyD1qiYU2fAsxQisZkxmr
+         Ko2eS+bOP9PooY+RcE7OPjtB79BCju/L3Bi3fG6GDOZtO9wwwDrBfgheq1BQ4LcLlh
+         MLUkamtJ7RLMA==
+Date:   Thu, 21 Jan 2021 12:24:10 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
+Message-ID: <20210121122410.1b804d28@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120212553.GA1798087@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: multipart/signed; boundary="Sig_/oXO+eC.o1Sp6EZP+P.ON6IT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jan 20, 2021 at 10:25:53PM +0100, Jiri Olsa escreveu:
-> On Mon, Jan 18, 2021 at 12:54:37PM +0800, Jin, Yao wrote:
-> > root@kbl-ppc:# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
+--Sig_/oXO+eC.o1Sp6EZP+P.ON6IT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> >  Performance counter stats for 'system wide':
+Hi all,
 
-> >               2.02 Joules +power/energy-pkg/
+Today's linux-next merge of the drm-misc tree got a conflict in:
 
-> >        1.000859434 seconds time elapsed
+  drivers/gpu/drm/ttm/ttm_pool.c
 
-> > The '+' prefix is printed. So I finally decide not to remove the '+' prefix
-> > in order to keep original behavior.
- 
-> hm, originaly there's no purpose for the '+', right?
-> it seems it's more like bug then anything else
- 
-> you added function to the '+' to add default events to specified event,
-> which I think is good idea, but I don't think we should display the
-> extra '+' in output
+between commit:
 
-The value would be to stress that that is an event added to the ones
-without the + prefix, i.e. the default ones.
+  bb52cb0dec8d ("drm/ttm: make the pool shrinker lock a mutex")
 
-But by having the command line copied over and the added events at the
-first lines we should have that abundantly clear.
+from Linus' tree and commits:
 
-Also we won't print removed events (using -), is that available already?
+  ba051901d10f ("drm/ttm: add a debugfs file for the global page pools")
+  f987c9e0f537 ("drm/ttm: optimize ttm pool shrinker a bit")
 
-Nope:
+from the drm-misc tree.
 
-[root@quaco ~]# perf stat -e -cycles sleep
-event syntax error: '-cycles'
-                     \___ parser error
-Run 'perf list' for a list of valid events
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
- Usage: perf stat [<options>] [<command>]
+--=20
+Cheers,
+Stephen Rothwell
 
-    -e, --event <event>   event selector. use 'perf list' to list available events
-[root@quaco ~]#
+diff --cc drivers/gpu/drm/ttm/ttm_pool.c
+index 11e0313db0ea,e0617717113f..000000000000
+--- a/drivers/gpu/drm/ttm/ttm_pool.c
++++ b/drivers/gpu/drm/ttm/ttm_pool.c
+@@@ -503,11 -505,14 +506,13 @@@ void ttm_pool_init(struct ttm_pool *poo
+  	pool->use_dma_alloc =3D use_dma_alloc;
+  	pool->use_dma32 =3D use_dma32;
+ =20
+- 	for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i)
+- 		for (j =3D 0; j < MAX_ORDER; ++j)
+- 			ttm_pool_type_init(&pool->caching[i].orders[j],
+- 					   pool, i, j);
++ 	if (use_dma_alloc) {
++ 		for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i)
++ 			for (j =3D 0; j < MAX_ORDER; ++j)
++ 				ttm_pool_type_init(&pool->caching[i].orders[j],
++ 						   pool, i, j);
++ 	}
+  }
+ -EXPORT_SYMBOL(ttm_pool_init);
+ =20
+  /**
+   * ttm_pool_fini - Cleanup a pool
+@@@ -521,9 -526,34 +526,33 @@@ void ttm_pool_fini(struct ttm_pool *poo
+  {
+  	unsigned int i, j;
+ =20
+- 	for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i)
+- 		for (j =3D 0; j < MAX_ORDER; ++j)
+- 			ttm_pool_type_fini(&pool->caching[i].orders[j]);
++ 	if (pool->use_dma_alloc) {
++ 		for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i)
++ 			for (j =3D 0; j < MAX_ORDER; ++j)
++ 				ttm_pool_type_fini(&pool->caching[i].orders[j]);
++ 	}
++ }
+ -EXPORT_SYMBOL(ttm_pool_fini);
++=20
++ /* As long as pages are available make sure to release at least one */
++ static unsigned long ttm_pool_shrinker_scan(struct shrinker *shrink,
++ 					    struct shrink_control *sc)
++ {
++ 	unsigned long num_freed =3D 0;
++=20
++ 	do
++ 		num_freed +=3D ttm_pool_shrink();
++ 	while (!num_freed && atomic_long_read(&allocated_pages));
++=20
++ 	return num_freed;
++ }
++=20
++ /* Return the number of pages available or SHRINK_EMPTY if we have none */
++ static unsigned long ttm_pool_shrinker_count(struct shrinker *shrink,
++ 					     struct shrink_control *sc)
++ {
++ 	unsigned long num_pages =3D atomic_long_read(&allocated_pages);
++=20
++ 	return num_pages ? num_pages : SHRINK_EMPTY;
+  }
+ =20
+  #ifdef CONFIG_DEBUG_FS
+@@@ -553,6 -594,35 +593,35 @@@ static void ttm_pool_debugfs_orders(str
+  	seq_puts(m, "\n");
+  }
+ =20
++ /* Dump the total amount of allocated pages */
++ static void ttm_pool_debugfs_footer(struct seq_file *m)
++ {
++ 	seq_printf(m, "\ntotal\t: %8lu of %8lu\n",
++ 		   atomic_long_read(&allocated_pages), page_pool_size);
++ }
++=20
++ /* Dump the information for the global pools */
++ static int ttm_pool_debugfs_globals_show(struct seq_file *m, void *data)
++ {
++ 	ttm_pool_debugfs_header(m);
++=20
+ -	spin_lock(&shrinker_lock);
+++	mutex_lock(&shrinker_lock);
++ 	seq_puts(m, "wc\t:");
++ 	ttm_pool_debugfs_orders(global_write_combined, m);
++ 	seq_puts(m, "uc\t:");
++ 	ttm_pool_debugfs_orders(global_uncached, m);
++ 	seq_puts(m, "wc 32\t:");
++ 	ttm_pool_debugfs_orders(global_dma32_write_combined, m);
++ 	seq_puts(m, "uc 32\t:");
++ 	ttm_pool_debugfs_orders(global_dma32_uncached, m);
+ -	spin_unlock(&shrinker_lock);
+++	mutex_unlock(&shrinker_lock);
++=20
++ 	ttm_pool_debugfs_footer(m);
++=20
++ 	return 0;
++ }
++ DEFINE_SHOW_ATTRIBUTE(ttm_pool_debugfs_globals);
++=20
+  /**
+   * ttm_pool_debugfs - Debugfs dump function for a pool
+   *
+@@@ -565,23 -635,14 +634,14 @@@ int ttm_pool_debugfs(struct ttm_pool *p
+  {
+  	unsigned int i;
+ =20
+- 	mutex_lock(&shrinker_lock);
+-=20
+- 	seq_puts(m, "\t ");
+- 	for (i =3D 0; i < MAX_ORDER; ++i)
+- 		seq_printf(m, " ---%2u---", i);
+- 	seq_puts(m, "\n");
+-=20
+- 	seq_puts(m, "wc\t:");
+- 	ttm_pool_debugfs_orders(global_write_combined, m);
+- 	seq_puts(m, "uc\t:");
+- 	ttm_pool_debugfs_orders(global_uncached, m);
++ 	if (!pool->use_dma_alloc) {
++ 		seq_puts(m, "unused\n");
++ 		return 0;
++ 	}
+ =20
+- 	seq_puts(m, "wc 32\t:");
+- 	ttm_pool_debugfs_orders(global_dma32_write_combined, m);
+- 	seq_puts(m, "uc 32\t:");
+- 	ttm_pool_debugfs_orders(global_dma32_uncached, m);
++ 	ttm_pool_debugfs_header(m);
+ =20
+ -	spin_lock(&shrinker_lock);
+++	mutex_lock(&shrinker_lock);
+  	for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i) {
+  		seq_puts(m, "DMA ");
+  		switch (i) {
+@@@ -597,12 -658,9 +657,9 @@@
+  		}
+  		ttm_pool_debugfs_orders(pool->caching[i].orders, m);
+  	}
+-=20
+- 	seq_printf(m, "\ntotal\t: %8lu of %8lu\n",
+- 		   atomic_long_read(&allocated_pages), page_pool_size);
+-=20
+ -	spin_unlock(&shrinker_lock);
+ +	mutex_unlock(&shrinker_lock);
+ =20
++ 	ttm_pool_debugfs_footer(m);
+  	return 0;
+  }
+  EXPORT_SYMBOL(ttm_pool_debugfs);
 
-Like with:
+--Sig_/oXO+eC.o1Sp6EZP+P.ON6IT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-[root@quaco ~]# perf stat -d sleep 1
+-----BEGIN PGP SIGNATURE-----
 
- Performance counter stats for 'sleep 1':
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAI17oACgkQAVBC80lX
+0Gyttgf/S7HYCIBsCN70DVdqIdUxLAekKp2nj7dBoYmemiFGY1hGBVKfw8/ITi41
+w7Q8HzGTayI0Ah8uXdvTMc69m4aH2ldDkYJSIyKq4CyFLeoDdsqa62sr3HsiDZkZ
+JTFMFo7kKouUCMteBI96p30xl0hgvApIyRBrChtuXCAVrge9lWPzQsCECOyJLT5r
+5WAvSUxRysQHXFoZ7nPRp7d7SYcJ+0HxYjMvnV8aULEE55vb2KjVy2j+Nju4xnV2
+MCmp7JzUFpXazyKhjUfSFytIlCTmN2+HnQ5swuzGAVwPer0aei7VvU3SfmAwNRxp
+jQ1QdGeqJGrCk6jlN9Rq1qmP0VJTAA==
+=/m5T
+-----END PGP SIGNATURE-----
 
-              0.80 msec task-clock                #    0.001 CPUs utilized
-                 1      context-switches          #    0.001 M/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                59      page-faults               #    0.073 M/sec
-         2,215,522      cycles                    #    2.757 GHz                      (7.40%)
-         1,073,189      instructions              #    0.48  insn per cycle           (80.59%)
-           203,615      branches                  #  253.392 M/sec
-             8,309      branch-misses             #    4.08% of all branches
-           245,866      L1-dcache-loads           #  305.972 M/sec
-            14,024      L1-dcache-load-misses     #    5.70% of all L1-dcache accesses  (92.60%)
-     <not counted>      LLC-loads                                                     (0.00%)
-     <not counted>      LLC-load-misses                                               (0.00%)
-
-       1.001887261 seconds time elapsed
-
-       0.000000000 seconds user
-       0.001413000 seconds sys
-
-
-Some events weren't counted. Try disabling the NMI watchdog:
-	echo 0 > /proc/sys/kernel/nmi_watchdog
-	perf stat ...
-	echo 1 > /proc/sys/kernel/nmi_watchdog
-[root@quaco ~]# perf stat -e -LLC* -d sleep 1
-event syntax error: '-LLC*'
-                     \___ parser error
-Run 'perf list' for a list of valid events
-
- Usage: perf stat [<options>] [<command>]
-
-    -e, --event <event>   event selector. use 'perf list' to list available events
-[root@quaco ~]#
-
-- Arnaldo
+--Sig_/oXO+eC.o1Sp6EZP+P.ON6IT--
