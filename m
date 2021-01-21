@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435E22FF01B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6436C2FF02B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387653AbhAUQXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733007AbhAUQWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:22:55 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88FBC06174A;
-        Thu, 21 Jan 2021 08:22:12 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id u17so5149546iow.1;
-        Thu, 21 Jan 2021 08:22:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pOZTpMXT17PVYMkulSbikIGTBpiuv8HOqsaxEWDtVj8=;
-        b=A3vzMQb/36J0lVy1OgWr3dblEGH46YVOUARzBjLKwh4wXOIuveHBCLjBoTEbDsJV8i
-         PPmFl0n5n0U10vZncreFQLS7jKCTyWNF2CXZ0ERHcCe3qt/MCxmMcjuiPo5TVnQsYoAp
-         1esqElXwHTmxMxxpJcVg+otxUpi7POoTTcZ6JKN+3Rob7dCLemR28AE/z3Y9x3ziW9nr
-         iH1KmeEK2rW9MJZjpvDpSyzgczGftUwlGsfR92iyUWiSJZYINffOZHkRcBtElAomU3O2
-         rIjwmN8cHT95xar57P4J7VBHdoUm9BMq8xFvAzruQdwGWB/qwypE+WwWqO8VQnwvaynQ
-         AJvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pOZTpMXT17PVYMkulSbikIGTBpiuv8HOqsaxEWDtVj8=;
-        b=E5FjXGJIEWcdO+7+JSlUBIpyOQmXj0DNHt0HxlH2LLE237DEnRjwe6NlBkQzWQenFD
-         O47adZEsisRyWl7pNlb28E4TYmBC/fRPCyMSA8SvHAM3EkwTLE3Xkga9Rane+oJt/EjV
-         SDfMNurUW3o61TSbFfhbXUEUBWsQJctVKlnqaygO9OsPa0XHZ7mmpGGxq1L1etR/bPI3
-         wWG5seIhuP1MBfUI5azd4bXtintHXyQ2iImhRHGhXj/sD9IYTHTOci0zDedPsBBtmggg
-         QaUtLuL/UXKoNcmd2cBHPxjP4vqIxaLoTSElELg7KDzaDZ0demI1GtcBpgFrfpoxjUC0
-         pNAg==
-X-Gm-Message-State: AOAM532wYfRmOZ56Z6y+ycJdpuBlaHRyca/5guLZSiI6mQ3r7A+c9mK3
-        dYxk2DaOTB7MftDkkg1F2h+zKXMtbkey6lTaA28=
-X-Google-Smtp-Source: ABdhPJyoOU2GKeESIlStRxScs834KK8VsGmEz5CPl4TBgGbpem/m6DC6szMsWlSSmtoWFKmWyBcBd14QozAIrvGajIc=
-X-Received: by 2002:a05:6638:138e:: with SMTP id w14mr12101645jad.98.1611246132168;
- Thu, 21 Jan 2021 08:22:12 -0800 (PST)
+        id S2387820AbhAUQZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:25:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387790AbhAUQYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:24:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28A46206D8;
+        Thu, 21 Jan 2021 16:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611246211;
+        bh=uROovJ44LLe0pdBZ9ITux1uflMtGS1qHKsqt1LSzBXA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=afQhVqID28+G/Hp/5oipH1QBbcyCG1tF2aPrHexosB7ouHUAaYc2PkmgdjKTDCByf
+         uWqBCp5gKkwcUriaebIz+rfKzXQ9dxpOjdGbWSqj59rnMDZsu/9AyUSZDz9VIGHfVh
+         S8yW4UK2zvKwzCktGIWPtPIA2n4JCa8qLxX8LH5G5NWNmAty0JmcnLILdIL2FuIuCc
+         uZXwqVJSFAJrOUKhC024irFtXGIogD7R67yKhO+wuWHYN3hYzclqVVEoajPyYriexU
+         c1yZA3s4mQUcDy3yCrQRIZJNj6oBCo8K77rXGvEvOiXGf8mXeCzifbikUSkwOcr8MJ
+         1JCHmpS+YKIqg==
+Received: by wens.tw (Postfix, from userid 1000)
+        id 6B2DA5FB93; Fri, 22 Jan 2021 00:23:28 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 0/4] arm64: rockchip: Fix PCIe ep-gpios requirement and Add Nanopi M4B
+Date:   Fri, 22 Jan 2021 00:23:17 +0800
+Message-Id: <20210121162321.4538-1-wens@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210121160115.4676-1-lukas.bulwahn@gmail.com> <CA+icZUV3p+yQYXn=iVseNNQwUSvoMwztLxNDOFpdFb731kDOJg@mail.gmail.com>
-In-Reply-To: <CA+icZUV3p+yQYXn=iVseNNQwUSvoMwztLxNDOFpdFb731kDOJg@mail.gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 21 Jan 2021 17:22:01 +0100
-Message-ID: <CAKXUXMyrZ7oaA2K5vBkG4uVMbjDBg0yHrQwiJNGCnXq_ZBhmLg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: adjust to clang-version.sh removal
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 5:16 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Thu, Jan 21, 2021 at 5:01 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> >
-> > Commit 6c8ad4427f6e ("kbuild: check the minimum compiler version in
-> > Kconfig") removed ./scripts/clang-version.sh and moved its content to
-> > ./scripts/cc-version.sh.
-> >
-> > Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> >
-> >   warning: no file matches    F:    scripts/clang-version.sh
-> >
-> > The CLANG/LLVM BUILD SUPPORT section in MAINTAINERS intends to track
-> > changes in ./scripts/clang-version.sh; as the file is removed, track
-> > changes in ./scripts/cc-version.sh instead now.
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->
-> Good catch, Lukas.
->
-> As a tipp:
-> Next time you can pass '--subject-prefix="PATCH next-YYYYMMDD"' when
-> doing 'git format-patch ...' (or whatever you use to generate the
-> patch).
->
+From: Chen-Yu Tsai <wens@csie.org>
 
-Thanks for the hint.
+Hi everyone,
 
-> Cannot say if we can add a "Fixes:" tag with commit hash-id of
-> "kbuild: check the minimum compiler version in Kconfig" - this missed
-> that move.
-> Maybe Masahiro does a respin and can fold this into above commit?
-> That's not my decision.
->
-> Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
->
+This is v4 of my Nanopi M4B series.
 
-...and thanks for the review.
+Changes since v3 include:
 
-Lukas
+  - Directly return dev_err_probe() instead of having a separate return
+    statement
+
+Changes since v2 include:
+
+  - Replaced dev_err() with dev_err_probe() for gpiod_get_optional() error
+  - Added Reviewed-by tag from Robin Murphy for patch 3
+
+Changes since v1 include:
+
+  - Rewrite subject of patch 1 to match existing convention and reference
+    'ep-gpios' DT property instead of the 'ep_gpio' field
+ 
+This series mainly adds support for the new Nanopi M4B, which is a newer
+variant of the Nanopi M4.
+
+The differences against the original Nanopi M4 that are common with the
+other M4V2 revision include:
+
+  - microphone header removed
+  - power button added
+  - recovery button added
+
+Additional changes specific to the M4B:
+
+  - USB 3.0 hub removed; board now has 2x USB 3.0 type-A ports and 2x
+    USB 2.0 ports
+  - ADB toggle switch added; this changes the top USB 3.0 host port to
+    a peripheral port
+  - Type-C port no longer supports data or PD
+  - WiFi/Bluetooth combo chip switched to AP6256, which supports BT 5.0
+    but only 1T1R (down from 2T2R) for WiFi
+
+While working on this, I found that for the M4 family, the PCIe reset
+pin (from the M.2 expansion board) was not wired to the SoC. Only the
+NanoPC T4 has this wired. This ended up in patches 1 and 3.
+
+Patch 1 makes ep_gpio in the Rockchip PCIe driver optional. This property
+is optional in the DT binding, so this just makes the driver adhere to
+the binding.
+
+Patch 2 adds a new compatible string for the new board.
+
+Patch 3 moves the ep-gpios property of the pcie controller from the
+common nanopi4.dtsi file to the nanopc-t4.dts file.
+
+Patch 4 adds a new device tree file for the new board. It includes the
+original device tree for the M4, and then lists the differences.
+
+Given that patch 3 would make PCIe unusable without patch 1, I suggest
+merging patch 1 through the PCI tree as a fix for 5.11, and the rest
+for 5.12 through the Rockchip tree.
+
+Please have a look. The changes are mostly trivial.
+
+
+Regards
+ChenYu
+
+Chen-Yu Tsai (4):
+  PCI: rockchip: Make 'ep-gpios' DT property optional
+  dt-bindings: arm: rockchip: Add FriendlyARM NanoPi M4B
+  arm64: dts: rockchip: nanopi4: Move ep-gpios property to nanopc-t4
+  arm64: dts: rockchip: rk3399: Add NanoPi M4B
+
+ .../devicetree/bindings/arm/rockchip.yaml     |  1 +
+ arch/arm64/boot/dts/rockchip/Makefile         |  1 +
+ .../boot/dts/rockchip/rk3399-nanopc-t4.dts    |  1 +
+ .../boot/dts/rockchip/rk3399-nanopi-m4b.dts   | 52 +++++++++++++++++++
+ .../boot/dts/rockchip/rk3399-nanopi4.dtsi     |  1 -
+ drivers/pci/controller/pcie-rockchip.c        |  9 ++--
+ 6 files changed, 59 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
+
+-- 
+2.29.2
+
