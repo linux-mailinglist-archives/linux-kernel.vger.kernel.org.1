@@ -2,118 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4552FF25A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 190EB2FF260
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389166AbhAURsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:48:11 -0500
-Received: from mga07.intel.com ([134.134.136.100]:30940 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389104AbhAURrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:47:16 -0500
-IronPort-SDR: ROO8cuwcpUha8mo+hwjLipvN32FSQD90VdNH57mCELSdodjEWCeXU25Q+j8q1wah1ro2Iigd+B
- CjHYiKxblr7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="243384025"
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="243384025"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 09:45:24 -0800
-IronPort-SDR: FGDfNZ5uVSfF+AG8jkgOhNj4k+ISYc+3flz+AUhyvW2Xz7k42lbQWl8DPt88RyTfFGD7vJvvL8
- eSjdS52jpIiQ==
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="351532590"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 09:45:21 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2e2J-007oKb-28; Thu, 21 Jan 2021 19:46:23 +0200
-Date:   Thu, 21 Jan 2021 19:46:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Lukasz Majczak <lma@semihalf.com>
-Subject: Re: [PATCH v2 1/2] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib
- skl_tplg_complete
-Message-ID: <YAm977TOZBgaQChA@smile.fi.intel.com>
-References: <20210121171644.131059-1-ribalda@chromium.org>
+        id S2388751AbhAURtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389139AbhAURr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:47:58 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C97C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:47:18 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id v24so3706892lfr.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:47:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kykA4foeTxbLS8CWzJvsbjzmd7nBL3addKFMK7SYEtY=;
+        b=iMK3aw8mffMX36Y2EfAfZFJwILSWj2+hpckNL/ptc1M+mDKqVH7G2Xfr1xPz5MKBWT
+         LzzZ0TZfDZ1vdcpvPg1LakBoHzZQR/oPP/dJSYoEjHwrolgId+nUmqluTElLkH2f+t9Y
+         1pxoCYScqNMWRHqBZ2Opt52NmMZq6sI0K+NSQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kykA4foeTxbLS8CWzJvsbjzmd7nBL3addKFMK7SYEtY=;
+        b=U3OV7EM6g1oFtZplke5GYRex8iKUdpEyLR9dD5+WpHk5MCwIUq6kiJ96OM95kS4jIK
+         1Rb2DOfhkF9u8izZVhegA8o/kjipopapKNE84y5raQqPTk3YF4mMEPhwkdbcCKrpNfTQ
+         gWJ9aUoPbm7CCzYHFl1wkBeGUoWxgNenpu0hHL+Na4mJfJp4LLBoBpPLD40VnN6V0jJl
+         XUNqDNl8h2bMtBvm1PWnA2jyn/V2Cj9jT1nhR86fTEgb8QNZD9v+EIZinQ40LVP+O0Pt
+         eG2OQ1U3PvpXk93qv/Pf7YM2A3zxK+vTql0zhqgVTJybTFnPdhb11lqEuOzNXDR0hUNk
+         5nyg==
+X-Gm-Message-State: AOAM533dz9PGG8I+uxc7cHf42yUU+VPYh1sJbe6lbGp3t35NaDxh/feV
+        fse2HktLXnP2NaUgPPsBJUf5wGfRnO8Q/A==
+X-Google-Smtp-Source: ABdhPJyWVlxMs4cgFP4RyFQw8ElGOu0k1QgQnS1SIcXmJPHiM8TRpLo5f6Hze/aJSs/0Rt/ICRQaqg==
+X-Received: by 2002:a19:2245:: with SMTP id i66mr166761lfi.400.1611251236181;
+        Thu, 21 Jan 2021 09:47:16 -0800 (PST)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id o4sm594962lfo.24.2021.01.21.09.47.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 09:47:15 -0800 (PST)
+Received: by mail-lj1-f177.google.com with SMTP id i17so3512530ljn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:47:15 -0800 (PST)
+X-Received: by 2002:a2e:8995:: with SMTP id c21mr214331lji.251.1611251234794;
+ Thu, 21 Jan 2021 09:47:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121171644.131059-1-ribalda@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
+ <20210121090020.3147058-2-gregkh@linuxfoundation.org> <ff6709dc-bb42-1e52-b348-c52036960bdd@kernel.org>
+In-Reply-To: <ff6709dc-bb42-1e52-b348-c52036960bdd@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Jan 2021 09:46:58 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whMm=NM4=ch++YqFn3W=ceNDOhLTFqdP47nxayzVt41Qw@mail.gmail.com>
+Message-ID: <CAHk-=whMm=NM4=ch++YqFn3W=ceNDOhLTFqdP47nxayzVt41Qw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] tty: convert tty_ldisc_ops 'read()' function to take
+ a kernel pointer
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oliver Giles <ohw.giles@gmail.com>,
+        Robert Karszniewicz <r.karszniewicz@phytec.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:16:43PM +0100, Ricardo Ribalda wrote:
-> If dobj->control is not initialized we end up in an OOPs during
-> skl_tplg_complete:
-> 
-> [   26.553358] BUG: kernel NULL pointer dereference, address:
-> 0000000000000078
-> [   26.561151] #PF: supervisor read access in kernel mode
-> [   26.566897] #PF: error_code(0x0000) - not-present page
-> [   26.572642] PGD 0 P4D 0
-> [   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
-> [   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
-> 5.4.81 #4
-> [   26.588232] Hardware name: HP Soraka/Soraka, BIOS
-> Google_Soraka.10431.106.0 12/03/2019
-> [   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
+On Thu, Jan 21, 2021 at 3:02 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+>
+> n_hdlc_tty_read will return EOVERFLOW when size is 0, so this EFAULT is
+> never propagated, if I am looking correctly? n_tty seems to be fine
+> (returns zero for zeroed size).
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+I'll fix that up too.
 
-> Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  sound/soc/intel/skylake/skl-topology.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> index ae466cd59292..1ef30ca45410 100644
-> --- a/sound/soc/intel/skylake/skl-topology.c
-> +++ b/sound/soc/intel/skylake/skl-topology.c
-> @@ -3619,15 +3619,16 @@ static void skl_tplg_complete(struct snd_soc_component *component)
->  
->  	list_for_each_entry(dobj, &component->dobj_list, list) {
->  		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
-> -		struct soc_enum *se =
-> -			(struct soc_enum *)kcontrol->private_value;
-> -		char **texts = dobj->control.dtexts;
-> +		struct soc_enum *se;
+Greg - same question - do you want an incremental patch, or just a new series?
 
-> +		char **texts;
-
-A nit-pick: Can we place this after below line?
-
->  		char chan_text[4];
->  
-> -		if (dobj->type != SND_SOC_DOBJ_ENUM ||
-> -		    dobj->control.kcontrol->put !=
-> -		    skl_tplg_multi_config_set_dmic)
-> +		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
-> +		    kcontrol->put != skl_tplg_multi_config_set_dmic)
->  			continue;
-> +
-> +		se = (struct soc_enum *)kcontrol->private_value;
-> +		texts = dobj->control.dtexts;
->  		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
->  
->  		for (i = 0; i < se->items; i++) {
-> -- 
-> 2.30.0.296.g2bfb1c46d8-goog
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+              Linus
