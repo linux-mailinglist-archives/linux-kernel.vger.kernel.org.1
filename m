@@ -2,180 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683E92FF38A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E33D02FF36D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbhAUSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:48:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728203AbhAUIxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:53:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B63242399A;
-        Thu, 21 Jan 2021 08:52:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611219150;
-        bh=mNihBvO5Yvgk58XMrmvOtyRt7C4KQOem/4OsdCpxCX8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kQ3CtDSqUcSwRUOHsStwuS+IP3di5JSymqVEJ7QmTSKY2rHpbDZ9gDyMNY38ypnJk
-         21HU7y2WKOV0Webz4I6rB0z6YjLaoQGb5tT2I5SWOEARuJTtYTv2s0B6ddgpRPaB3W
-         U/V+27+QLILbMwuM41How/roD1RwTDY0aXvBGM/I=
-Date:   Thu, 21 Jan 2021 09:52:27 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     davem@davemloft.net, helmut.schaa@googlemail.com, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        stf_xl@wp.pl, syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: "KMSAN: uninit-value in rt2500usb_bbp_read" and "KMSAN:
- uninit-value in rt2500usb_probe_hw" should be duplicate crash reports
-Message-ID: <YAlAy/tQXW0X310V@kroah.com>
-References: <CAD-N9QX=vVdiSf5UkuoYovamfw5a0e5RQJA0dQMOKmCbs-Gyiw@mail.gmail.com>
+        id S1728894AbhAUSOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:14:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728899AbhAUJq6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:46:58 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176B7C06179F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:34 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id v184so939107wma.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+H03APXDfdyL7LaFA/b0g0zCzrZS1ohEeqXf8bvJDzc=;
+        b=gHfXC3dpfxVrG1AHvM5pWZgIn/rUAADDCIUSmEHMDfEsPyUGK+N/+uqhpMtMNwkLi7
+         3UXIcgVHSXd/IoQuekp10s4hm/O7L0/q8vh3SzksXOq+sQ6n0UtldsQgwjtoL+bfGVoe
+         zm2jQNnnmC+XwQYvYiO1jsfPaaDIegC1eKzMmnFctK7pJN3Oj7QAUm8wECvwZ4dsseYf
+         YdJlaJT3b3pss8AlG02O+VaBL4BZX6U6QHThsZgvINWbazBEoshNQ+P7GVDoo7wm5hOL
+         B7G4UwUTsk1lb2syfCslJWPn47KuYJzHcA+/zHDc28F4tBB+9GLzAsXWhYJbH11mfmiG
+         h8EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+H03APXDfdyL7LaFA/b0g0zCzrZS1ohEeqXf8bvJDzc=;
+        b=nYaAjIgG0lREETdclthuzpJ+ocobMFiGFJrfgXSQLQlAfT6T7AVBXwn57MvG9HYaQm
+         RlmDICNgGBr1HoK/dflfL2Xq2i90idPvdpflDqTj1EWtCDwrj7ZdUFBW+dmENzPyr7RJ
+         kf6W/RJyjgaIEGVlNPPYxWLLH05x+62srvRYAL9FfsxxIedhsr9PFSEEY3ucMf1Svevn
+         7SHDq1tfCl8ifloiabmU3VdncOSAEkEG0AdciTIDVs2F2ssO8PbpmDroqvuXLHWG0j2h
+         TiJVw3Pgx6+Mvf4NZkt9jyBOQEwq+KO65mZk+ygRSHucRIaF7BRE00DTBOK2D4M4tJuj
+         C8lw==
+X-Gm-Message-State: AOAM532/H5WKetzXtPano0YUWymdWyanjfD/76Erqi66kSO8qOpPkDVt
+        koY28tyEaZgzrhKFOgmBmDTH/g==
+X-Google-Smtp-Source: ABdhPJxqr9xHKchQbaXjh71PW8euM5LCZv2yrvaYhwC6CnOhV7vk3K4gwav0E881INC9hql6/FvDYw==
+X-Received: by 2002:a1c:de09:: with SMTP id v9mr8437204wmg.0.1611222332813;
+        Thu, 21 Jan 2021 01:45:32 -0800 (PST)
+Received: from dell.default ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 01:45:32 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 09/30] RDMA/hw/qib/qib_mad: Fix a few misspellings and supply missing descriptions
+Date:   Thu, 21 Jan 2021 09:44:58 +0000
+Message-Id: <20210121094519.2044049-10-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
+References: <20210121094519.2044049-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QX=vVdiSf5UkuoYovamfw5a0e5RQJA0dQMOKmCbs-Gyiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 04:47:37PM +0800, 慕冬亮 wrote:
-> Dear kernel developers,
-> 
-> I found that on the syzbot dashboard, “KMSAN: uninit-value in
-> rt2500usb_bbp_read” [1] and "KMSAN: uninit-value in
-> rt2500usb_probe_hw" [2] should share the same root cause.
-> 
-> ## Duplication
-> 
-> The reasons for the above statement:
-> 1) The PoCs are exactly the same with each other;
-> 2) The stack trace is almost the same except for the top 2 functions;
-> 
-> ## Root Cause Analysis
-> 
-> After looking at the difference between the two stack traces, we found
-> they diverge at the function - rt2500usb_probe_hw.
-> ------------------------------------------------------------------------------------------------------------------------
-> static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
-> {
->         ......
->         // rt2500usb_validate_eeprom->rt2500usb_bbp_read->rt2500usb_regbusy_read->rt2500usb_register_read_lock
-> from KMSAN
->         retval = rt2500usb_validate_eeprom(rt2x00dev);
->         if (retval)
->                 return retval;
->         // rt2500usb_init_eeprom-> rt2500usb_register_read from KMSAN
->         retval = rt2500usb_init_eeprom(rt2x00dev);
->         if (retval)
->                 return retval;
-> ------------------------------------------------------------------------------------------------------------------------
-> >From the implementation of rt2500usb_register_read and
-> rt2500usb_register_read_lock, we know that, in some situation, reg is
-> not initialized in the function invocation
-> (rt2x00usb_vendor_request_buff/rt2x00usb_vendor_req_buff_lock), and
-> KMSAN reports uninit-value at its first memory access.
-> ------------------------------------------------------------------------------------------------------------------------
-> static u16 rt2500usb_register_read(struct rt2x00_dev *rt2x00dev,
->                                    const unsigned int offset)
-> {
->         __le16 reg;
->         // reg is not initialized during the following function all
->         rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
->                                       USB_VENDOR_REQUEST_IN, offset,
->                                       &reg, sizeof(reg));
->         return le16_to_cpu(reg);
-> }
-> static u16 rt2500usb_register_read_lock(struct rt2x00_dev *rt2x00dev,
->                                         const unsigned int offset)
-> {
->         __le16 reg;
->         // reg is not initialized during the following function all
->         rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
->                                        USB_VENDOR_REQUEST_IN, offset,
->                                        &reg, sizeof(reg), REGISTER_TIMEOUT);
->         return le16_to_cpu(reg);
-> }
-> ------------------------------------------------------------------------------------------------------------------------
-> Take rt2x00usb_vendor_req_buff_lock as an example, let me illustrate
-> the issue when the "reg" variable is uninitialized. No matter the CSR
-> cache is unavailable or the status is not right, the buffer or reg
-> will be not initialized.
-> And all those issues are probabilistic events. If they occur in
-> rt2500usb_register_read, KMSAN reports "uninit-value in
-> rt2500usb_probe_hw"; Otherwise, it reports "uninit-value in
-> rt2500usb_bbp_read".
-> ------------------------------------------------------------------------------------------------------------------------
-> int rt2x00usb_vendor_req_buff_lock(struct rt2x00_dev *rt2x00dev,
->                                    const u8 request, const u8 requesttype,
->                                    const u16 offset, void *buffer,
->                                    const u16 buffer_length, const int timeout)
-> {
->         if (unlikely(!rt2x00dev->csr.cache || buffer_length > CSR_CACHE_SIZE)) {
->                 rt2x00_err(rt2x00dev, "CSR cache not available\n");
->                 return -ENOMEM;
->         }
-> 
->         if (requesttype == USB_VENDOR_REQUEST_OUT)
->                 memcpy(rt2x00dev->csr.cache, buffer, buffer_length);
-> 
->         status = rt2x00usb_vendor_request(rt2x00dev, request, requesttype,
->                                           offset, 0, rt2x00dev->csr.cache,
->                                           buffer_length, timeout);
-> 
->         if (!status && requesttype == USB_VENDOR_REQUEST_IN)
->                 memcpy(buffer, rt2x00dev->csr.cache, buffer_length);
-> 
->         return status;
-> }
-> ------------------------------------------------------------------------------------------------------------------------
-> 
-> ## Patch
-> 
-> I propose to memset reg variable before invoking
-> rt2x00usb_vendor_req_buff_lock/rt2x00usb_vendor_request_buff.
-> 
-> ------------------------------------------------------------------------------------------------------------------------
-> diff --git a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
-> b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
-> index fce05fc88aaf..f6c93a25b18c 100644
-> --- a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
-> +++ b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
-> @@ -48,6 +48,7 @@ static u16 rt2500usb_register_read(struct rt2x00_dev
-> *rt2x00dev,
->                                    const unsigned int offset)
->  {
->         __le16 reg;
-> +       memset(&reg, 0, sizeof(reg));
->         rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
->                                       USB_VENDOR_REQUEST_IN, offset,
->                                       &reg, sizeof(reg));
-> @@ -58,6 +59,7 @@ static u16 rt2500usb_register_read_lock(struct
-> rt2x00_dev *rt2x00dev,
->                                         const unsigned int offset)
->  {
->         __le16 reg;
-> +       memset(&reg, 0, sizeof(reg));
->         rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
->                                        USB_VENDOR_REQUEST_IN, offset,
->                                        &reg, sizeof(reg), REGISTER_TIMEOUT);
-> ------------------------------------------------------------------------------------------------------------------------
-> 
-> If you can have any issues with this statement or our information is
-> useful to you, please let us know. Thanks very much.
-> 
-> [1] “KMSAN: uninit-value in rt2500usb_bbp_read” -
-> https://syzkaller.appspot.com/bug?id=f35d123de7d393019c1ed4d4e60dc66596ed62cd
-> [2] “KMSAN: uninit-value in rt2500usb_probe_hw” -
-> https://syzkaller.appspot.com/bug?id=5402df7259c74e15a12992e739b5ac54c9b8a4ce
-> 
+Fixes the following W=1 kernel build warning(s):
 
-Can you please resend this in a form in which we can apply it?  Full
-details on how to do this can be found in
-Documentation/SubmittingPatches.
+ drivers/infiniband/hw/qib/qib_mad.c:896: warning: Function parameter or member 'ppd' not described in 'rm_pkey'
+ drivers/infiniband/hw/qib/qib_mad.c:896: warning: Excess function parameter 'dd' description in 'rm_pkey'
+ drivers/infiniband/hw/qib/qib_mad.c:926: warning: Function parameter or member 'ppd' not described in 'add_pkey'
+ drivers/infiniband/hw/qib/qib_mad.c:926: warning: Excess function parameter 'dd' description in 'add_pkey'
+ drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'in' not described in 'qib_process_mad'
+ drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'out' not described in 'qib_process_mad'
+ drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'out_mad_size' not described in 'qib_process_mad'
+ drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'out_mad_pkey_index' not described in 'qib_process_mad'
+ drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Excess function parameter 'in_mad' description in 'qib_process_mad'
+ drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Excess function parameter 'out_mad' description in 'qib_process_mad'
 
-thanks,
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/infiniband/hw/qib/qib_mad.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-greg k-h
+diff --git a/drivers/infiniband/hw/qib/qib_mad.c b/drivers/infiniband/hw/qib/qib_mad.c
+index f83e331977f82..44e2f813024a6 100644
+--- a/drivers/infiniband/hw/qib/qib_mad.c
++++ b/drivers/infiniband/hw/qib/qib_mad.c
+@@ -886,7 +886,7 @@ static int subn_set_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
+ 
+ /**
+  * rm_pkey - decrecment the reference count for the given PKEY
+- * @dd: the qlogic_ib device
++ * @ppd: the qlogic_ib device
+  * @key: the PKEY index
+  *
+  * Return true if this was the last reference and the hardware table entry
+@@ -916,7 +916,7 @@ static int rm_pkey(struct qib_pportdata *ppd, u16 key)
+ 
+ /**
+  * add_pkey - add the given PKEY to the hardware table
+- * @dd: the qlogic_ib device
++ * @ppd: the qlogic_ib device
+  * @key: the PKEY
+  *
+  * Return an error code if unable to add the entry, zero if no change,
+@@ -2346,8 +2346,10 @@ static int process_cc(struct ib_device *ibdev, int mad_flags,
+  * @port: the port number this packet came in on
+  * @in_wc: the work completion entry for this packet
+  * @in_grh: the global route header for this packet
+- * @in_mad: the incoming MAD
+- * @out_mad: any outgoing MAD reply
++ * @in: the incoming MAD
++ * @out: any outgoing MAD reply
++ * @out_mad_size: size of the outgoing MAD reply
++ * @out_mad_pkey_index: unused
+  *
+  * Returns IB_MAD_RESULT_SUCCESS if this is a MAD that we are not
+  * interested in processing.
+-- 
+2.25.1
+
