@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582102FF234
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951AF2FF243
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388964AbhAURmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:42:51 -0500
-Received: from mickerik.phytec.de ([195.145.39.210]:63634 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388835AbhAURm2 (ORCPT
+        id S2388989AbhAURo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388246AbhAURnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:42:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1611250895; x=1613842895;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9QcfXGfK2f5YxK/K7zmQNjegnxFFDNUBiNhCddIYLuk=;
-        b=Caa8XaLUT4A2bPMzDwAMHWyfK9iJ65CCxYCuKxgTO/qie2q1zE17leKpofms0JtS
-        1ryRWZSajhqP2lG8xiknYB0Y1iNNFIM0VjBDMpdudJrERSbVzukGJWMMM8ZBAsKy
-        VU8TAx7bH21wUTYpdHWuVyc86N3nUJm6p8+cHPRfB+8=;
-X-AuditID: c39127d2-0d3b770000001c86-b6-6009bccfd4d7
-Received: from Florix.phytec.de (florix.phytec.de [172.16.0.118])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 5A.FA.07302.FCCB9006; Thu, 21 Jan 2021 18:41:35 +0100 (CET)
-Received: from [172.16.21.73] (172.16.0.116) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 21 Jan
- 2021 18:41:35 +0100
-Subject: Re: restore splice and sendfile support on kernfs
-To:     Christoph Hellwig <hch@lst.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-CC:     Siddharth Gupta <sidgup@codeaurora.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210120204631.274206-1-hch@lst.de>
-From:   Robert Karszniewicz <r.karszniewicz@phytec.de>
-Message-ID: <5a13228c-6003-2499-a987-23d39f1926cf@phytec.de>
-Date:   Thu, 21 Jan 2021 18:41:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 21 Jan 2021 12:43:47 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD50C06174A;
+        Thu, 21 Jan 2021 09:43:07 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 76FF46E97; Thu, 21 Jan 2021 12:43:06 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 76FF46E97
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1611250986;
+        bh=PB+xzpEUfQlsg5w3ytd7m/NvmGA9LS0ZccMgPVPs9ro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TaZx3mg2hPpbFINECvqd0XPYdFb2ROMgzcamiqBmYnLl1LUmy4whb8tvaFgHJKxlD
+         dUW8rxyyJ/S0Q1+gsFu+/N5RyNNq0XImHaTJoc+Og2Qizwf1z86MrkLh6xVxL7Dh5S
+         WFc/Bjuyiw0ymgARs6vnuzUiUo+toU1sUvZ/pfH4=
+Date:   Thu, 21 Jan 2021 12:43:06 -0500
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
+Message-ID: <20210121174306.GB20964@fieldses.org>
+References: <20210121164645.GA20964@fieldses.org>
+ <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
+ <1794286.1611248577@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210120204631.274206-1-hch@lst.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.0.116]
-X-ClientProxiedBy: Florix.phytec.de (172.16.0.118) To Florix.phytec.de
- (172.16.0.118)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLLMWRmVeSWpSXmKPExsWyRoChTPf8Hs4Eg6UbTC2aF69ns1i5+iiT
-        xeVdc9gs7r17z2rxa/lRRgdWj8t9vUwem1Z1snnsn7uG3WP3zQY2j8+b5AJYo7hsUlJzMstS
-        i/TtErgy2junMBf8ZK242v+HtYHxJUsXIyeHhICJxM1lS9i7GLk4hASWMUnM39LKDOHcZ5Q4
-        /ewjG0iVsICVxKE9m4BsDg4RgQKJ01P9QcLMAt4SD48sYwWxhQQMJC613mcGsdmAhu5uvgVm
-        8wrYSJz7uBFsDIuAqsTkSc1gcVGBCInWvk6oGkGJkzOfsICM5xQwlHi2RxvEZBbQlFi/Sx9i
-        k7jErSfzmSBseYntb+cwQ2xVlTjd9poJ4hUFibm/JzJD2OES837PYp/AKDwLyYJZCFNnIZk6
-        C8nUBYwsqxiFcjOTs1OLMrP1CjIqS1KT9VJSNzECo+TwRPVLOxj75ngcYmTiYDzEKMHBrCTC
-        +8iSI0GINyWxsiq1KD++qDQntfgQozQHi5I47wbekjAhgfTEktTs1NSC1CKYLBMHp1QDY/mc
-        +sIHMrumTudpe5V67dFiu0r1nNJbvy4fE/msPuO/od/xCzerFcvLG9pXeLd86L2aZ7sghENW
-        7vXmnHu8juvTb3GKfvSbIF35ojuzpF3s5rSpR480LZ4tteRu7uK7J4OaTk2dz7Nkk5jAWREf
-        c//QF9VvrmSZp35asY7n3UQ9VcbL5tt36yixFGckGmoxFxUnAgDCgALjgAIAAA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1794286.1611248577@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/20/21 9:46 PM, Christoph Hellwig wrote:
-> Hi Greg and Tejun,
+On Thu, Jan 21, 2021 at 05:02:57PM +0000, David Howells wrote:
+> J. Bruce Fields <bfields@fieldses.org> wrote:
 > 
-> this fixes a regression in Linux 5.10 that stopped sendfile and splice
-> from working on kernfs/sysfs files.
+> > On Wed, Jan 20, 2021 at 10:21:24PM +0000, David Howells wrote:
+> > >      Note that this uses SEEK_HOLE/SEEK_DATA to locate the data available
+> > >      to be read from the cache.  Whilst this is an improvement from the
+> > >      bmap interface, it still has a problem with regard to a modern
+> > >      extent-based filesystem inserting or removing bridging blocks of
+> > >      zeros.
+> > 
+> > What are the consequences from the point of view of a user?
 > 
-> Diffstt:
->  file.c |   65 ++++++++++++++++++++++++-----------------------------------------
->  1 file changed, 24 insertions(+), 41 deletions(-)
+> The cache can get both false positive and false negative results on checks for
+> the presence of data because an extent-based filesystem can, at will, insert
+> or remove blocks of contiguous zeros to make the extents easier to encode
+> (ie. bridge them or split them).
 > 
+> A false-positive means that you get a block of zeros in the middle of your
+> file that very probably shouldn't be there (ie. file corruption); a
+> false-negative means that we go and reload the missing chunk from the server.
+> 
+> The problem exists in cachefiles whether we use bmap or we use
+> SEEK_HOLE/SEEK_DATA.  The only way round it is to keep track of what data is
+> present independently of backing filesystem's metadata.
+> 
+> To this end, it shouldn't (mis)behave differently than the code already there
+> - except that it handles better the case in which the backing filesystem
+> blocksize != PAGE_SIZE (which may not be relevant on an extent-based
+> filesystem anyway if it packs parts of different files together in a single
+> block) because the current implementation only bmaps the first block in a page
+> and doesn't probe for the rest.
+> 
+> Fixing this requires a much bigger overhaul of cachefiles than this patchset
+> performs.
 
-Tested-by: Robert Karszniewicz <r.karszniewicz@phytec.de>
+That sounds like "sometimes you may get file corruption and there's
+nothing you can do about it".  But I know people actually use fscache,
+so it must be reliable at least for some use cases.
 
-Confirm that it fixes firmwared for me.
+Is it that those "bridging" blocks only show up in certain corner cases
+that users can arrange to avoid?  Or that it's OK as long as you use
+certain specific file systems whose behavior goes beyond what's
+technically required by the bamp or seek interfaces?
 
-Also, I am 100% sure that the commit that actually breaks firmwared for me is
-4d03e3cc5982 ("fs: don't allow kernel reads and writes without iter ops")
-which is one commit right before
-36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
-. I just verified it again.
+--b.
 
-Thank you,
-Robert
+> 
+> Also, it works towards getting rid of this use of bmap, but that's not user
+> visible.
+> 
+> David
