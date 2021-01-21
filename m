@@ -2,156 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739912FF197
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F242FF1CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388702AbhAURRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:17:01 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2391 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388382AbhAURQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:16:09 -0500
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DM88G1Gjfz67fT6;
-        Fri, 22 Jan 2021 01:12:14 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 21 Jan 2021 18:15:25 +0100
-Received: from [10.210.167.120] (10.210.167.120) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 21 Jan 2021 17:15:23 +0000
-Subject: Re: [PATCH] perf metricgroup: Fix for metrics containing
- duration_time
-To:     Ian Rogers <irogers@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        kajoljain <kjain@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
-References: <1611159518-226883-1-git-send-email-john.garry@huawei.com>
- <CAP-5=fVr0pFpqpev0DW6MMYB1VouH4rL0_wY3_OsbQLS=deJag@mail.gmail.com>
- <26a9e447-b2ef-c459-ebf1-9992ee5c5cd0@huawei.com>
- <CAP-5=fX3C8v02ZbXPGWs1eKrbO5YAddegJuig2B755=Ubd1w1Q@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4f8d8e1f-c37b-5ba4-7fe4-b46398cf6578@huawei.com>
-Date:   Thu, 21 Jan 2021 17:14:07 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2388626AbhAURZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:25:39 -0500
+Received: from mga14.intel.com ([192.55.52.115]:57783 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388758AbhAURYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:24:44 -0500
+IronPort-SDR: rtiQ39BNacDDXYG89UWI7VdiF2QCUFdED8Bu9BQv6Ewd6TxWrs9ExSKqroGKEmO59uf0NuHQ+E
+ W/k4N0V4h0ag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="178527918"
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="178527918"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 09:23:59 -0800
+IronPort-SDR: /OujRDvzmBuHXUOqqf+jMYfr6/R1+gaos5+YvGZEXGrFqFw/f5WG8o4e+tdUU3hg0pRvXlmE/l
+ WKRkVu7m5R3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="366989002"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga002.jf.intel.com with ESMTP; 21 Jan 2021 09:23:55 -0800
+Date:   Thu, 21 Jan 2021 18:14:23 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com, Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
+ queues
+Message-ID: <20210121171423.GB44125@ranger.igk.intel.com>
+References: <20210120212759.81548-1-ivan@cloudflare.com>
+ <20210121181130.77c06723@carbon>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fX3C8v02ZbXPGWs1eKrbO5YAddegJuig2B755=Ubd1w1Q@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.167.120]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121181130.77c06723@carbon>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->      >
->      >
->      > Thanks for this, it should be fairly easy to add a test. Could we
->     do this?
+On Thu, Jan 21, 2021 at 06:11:30PM +0100, Jesper Dangaard Brouer wrote:
+> On Wed, 20 Jan 2021 13:27:59 -0800
+> Ivan Babrou <ivan@cloudflare.com> wrote:
 > 
->     I don't mind following up with that.
+> > Without this change the driver tries to allocate too many queues,
+> > breaching the number of available msi-x interrupts on machines
+> > with many logical cpus and default adapter settings:
+> > 
+> > Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> > 
+> > Which in turn triggers EINVAL on XDP processing:
+> > 
+> > sfc 0000:86:00.0 ext0: XDP TX failed (-22)
 
-How about this:
+Please mention in commit message *how* you are addressing/fixing this
+issue.
 
----- >8 ----
+> > 
+> > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+> > ---
+> 
+> I guess the patch is good in itself due to available msi-x interrupts.
+> 
+> Per earlier discussion: What will happen if a CPU with an ID higher
+> than available XDP TX-queues redirect a packet out this driver?
 
- From 38e9d5aa07588d552378d97760b6b79f19d59bbd Mon Sep 17 00:00:00 2001
-From: John Garry <john.garry@huawei.com>
-Date: Thu, 21 Jan 2021 16:55:17 +0000
-Subject: [PATCH] perf test: Add parse-metric memory bandwidth testcase
++1 on that question
 
-Event duration_time in a metric expression requires special handling.
-
-Improve test coverage by including a metric whose expression includes
-duration_time. The actual metric is copied from the L1D_Cache_Fill_BW
-metric on my broadwell machine.
-
-Signed-off-by: John Garry <john.garry@huawei.com>
-
-diff --git a/tools/perf/tests/parse-metric.c 
-b/tools/perf/tests/parse-metric.c
-index ce7be37f0d88..98b9570c6194 100644
---- a/tools/perf/tests/parse-metric.c
-+++ b/tools/perf/tests/parse-metric.c
-@@ -11,6 +11,7 @@
-  #include "debug.h"
-  #include "expr.h"
-  #include "stat.h"
-+#include <math.h>
-
-  static struct pmu_event pme_test[] = {
-  {
-@@ -69,6 +70,10 @@ static struct pmu_event pme_test[] = {
-  	.metric_expr	= "1/m3",
-  	.metric_name	= "M3",
-  },
-+{
-+	.metric_expr	= "64 * l1d.replacement / 1000000000 / duration_time",
-+	.metric_name	= "L1D_Cache_Fill_BW",
-+},
-  {
-  	.name	= NULL,
-  }
-@@ -107,6 +112,8 @@ static void load_runtime_stat(struct runtime_stat 
-*st, struct evlist *evlist,
-  	evlist__for_each_entry(evlist, evsel) {
-  		count = find_value(evsel->name, vals);
-  		perf_stat__update_shadow_stats(evsel, count, 0, st);
-+		if (!strcmp(evsel->name, "duration_time"))
-+			update_stats(&walltime_nsecs_stats, count);
-  	}
-  }
-
-@@ -321,6 +328,24 @@ static int test_recursion_fail(void)
-  	return 0;
-  }
-
-+static int test_memory_bandwidth(void)
-+{
-+	double ratio;
-+	struct value vals[] = {
-+		{ .event = "l1d.replacement", .val = 304334545 },
-+		{ .event = "duration_time",  .val = 1001057587 },
-+		{ .event = NULL, },
-+	};
-+
-+	TEST_ASSERT_VAL("failed to compute metric",
-+			compute_metric("L1D_Cache_Fill_BW", vals, &ratio) == 0);
-+
-+	TEST_ASSERT_VAL("L1D_Cache_Fill_BW, wrong ratio",
-+			fabs(ratio - 19.45) < 0.01);
-+
-+	return 0;
-+}
-+
-  static int test_metric_group(void)
-  {
-  	double ratio1, ratio2;
-@@ -353,5 +378,6 @@ int test__parse_metric(struct test *test 
-__maybe_unused, int subtest __maybe_unu
-  	TEST_ASSERT_VAL("DCache_L2 failed", test_dcache_l2() == 0);
-  	TEST_ASSERT_VAL("recursion fail failed", test_recursion_fail() == 0);
-  	TEST_ASSERT_VAL("test metric group", test_metric_group() == 0);
-+	TEST_ASSERT_VAL("Memory bandwidth", test_memory_bandwidth() == 0);
-  	return 0;
-  }
--- 
-2.26.2
-
-Cheers,
-John
+> 
+> 
+> >  drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+> > index a4a626e9cd9a..1bfeee283ea9 100644
+> > --- a/drivers/net/ethernet/sfc/efx_channels.c
+> > +++ b/drivers/net/ethernet/sfc/efx_channels.c
+> > @@ -17,6 +17,7 @@
+> >  #include "rx_common.h"
+> >  #include "nic.h"
+> >  #include "sriov.h"
+> > +#include "workarounds.h"
+> >  
+> >  /* This is the first interrupt mode to try out of:
+> >   * 0 => MSI-X
+> > @@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+> >  {
+> >  	unsigned int n_channels = parallelism;
+> >  	int vec_count;
+> > +	int tx_per_ev;
+> >  	int n_xdp_tx;
+> >  	int n_xdp_ev;
+> >  
+> > @@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+> >  	 * multiple tx queues, assuming tx and ev queues are both
+> >  	 * maximum size.
+> >  	 */
+> > -
+> > +	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
+> >  	n_xdp_tx = num_possible_cpus();
+> > -	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
+> > +	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
+> >  
+> >  	vec_count = pci_msix_vec_count(efx->pci_dev);
+> >  	if (vec_count < 0)
+> 
+> 
+> 
+> -- 
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+> 
