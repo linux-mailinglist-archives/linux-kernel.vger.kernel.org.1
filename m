@@ -2,240 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0592FE08A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9772FE086
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730254AbhAUEXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:23:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:45094 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732150AbhAUEST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:18:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97ADA1509;
-        Wed, 20 Jan 2021 20:17:32 -0800 (PST)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8BDAF3F719;
-        Wed, 20 Jan 2021 20:17:32 -0800 (PST)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
-        bhelgaas@google.com, robh@kernel.org, vidyas@nvidia.com,
-        linux-kernel@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH v3 1/1] arm64: PCI: Enable SMC conduit
-Date:   Wed, 20 Jan 2021 22:17:29 -0600
-Message-Id: <20210121041729.1858499-2-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210121041729.1858499-1-jeremy.linton@arm.com>
-References: <20210121041729.1858499-1-jeremy.linton@arm.com>
+        id S1728833AbhAUEWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:22:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732560AbhAUESk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 23:18:40 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C33DC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:18:00 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id e9so571654plh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:18:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4tTr8eXgVxiwRpPC9gZvJZDtddYvKVLD2bFKDwCFSiA=;
+        b=PV6eVrZXQByxMSbKyDIAVtuZtlF5kM/z3qCYq7aLGz6D3nxRURPTor8Gp9IKD26iZa
+         pxCNHdb7B3A0A/ukNsrBTfcWWqyQ/TZFMW8sOScCtCkhazrXnQpkUncInTnXnshGgyRJ
+         85jbWWDrHTVX/4il9NSxKfcFoVkLD18N4B6t23fbobPsXqXvRZxcnS0SUK0QH9lReqnJ
+         k10NQC1qoDp1GXUJOuYqV8efkhvti1UNOWvCZwQFhTLrkqqlbW2hk0NcwSJ3SVrbaLkj
+         n26HYIs6iiymw7lh+M6s/2viOnSOCxSanQ9OvTRD7iweYM5cwZmHh/a4jN0b6VfOjxtv
+         U0NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4tTr8eXgVxiwRpPC9gZvJZDtddYvKVLD2bFKDwCFSiA=;
+        b=j2xAXzN+Cq/iY4v8diseRJD2s+AqXiRMC+C7XfFZ+P4oTnDKe+MwhWUOZifkOX2X6W
+         50IJWcRcZSoERAu67Gzs/PwsZZ+Px+/FVifu6a92VEL3WCErNg5iBqKyW4qeIiBen9I0
+         BWkW2EI7jxoIav5yeIiGMlk5tyXTTWzZYF7/LF0qvzlFhNLZ19PW0CYETy38PGVgPgOR
+         RgiVgnbKExe0OITrCFfUS7ddf7y7clIvMEwU26Q+nRvxrelHBCdUFjspr3L8IluqI6ST
+         wXsGTK74nKCSMlry9LtMJZEuxkACmGzybfaR8Y3tL8XSY0r7LJWGDPwh3WHBuKZceGIZ
+         kxpA==
+X-Gm-Message-State: AOAM533yfZYD+Ao7dVIwwDFivV4jYRnS6212oSc4QMOKsiUTytEsrDWw
+        aUCjGHRqizGuiB/WRq1scXzYWQ==
+X-Google-Smtp-Source: ABdhPJw/jXkwi5A1wuQNM2yFxvpDQNZHFYeg9vIMkqXkkdaqAm7dJKntq6dLaTRAmbcGvPZslX5GDA==
+X-Received: by 2002:a17:90b:30d4:: with SMTP id hi20mr9182278pjb.41.1611202679751;
+        Wed, 20 Jan 2021 20:17:59 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id n7sm3816756pfn.141.2021.01.20.20.17.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Jan 2021 20:17:59 -0800 (PST)
+Date:   Thu, 21 Jan 2021 09:47:57 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+Subject: Re: [PATCH V5 3/5] scripts: dtc: Remove the unused fdtdump.c file
+Message-ID: <20210121041757.cskxlai5e7a2pfgb@vireshk-i7>
+References: <cover.1611124778.git.viresh.kumar@linaro.org>
+ <f63b3fd7fadf8912e8e7e8653df45b5b78f5d005.1611124778.git.viresh.kumar@linaro.org>
+ <20210121004457.GD5174@yekko.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121004457.GD5174@yekko.fritz.box>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given that most arm64 platforms' PCI implementations need quirks
-to deal with problematic config accesses, this is a good place
-to apply a firmware abstraction. The ARM PCI Configuration Space
-Access Firmware Interface specification details a standard SMC
-conduit designed to provide a simple PCI config accessor. This
-specification enhances the existing ACPI/PCI abstraction and
-expects power, config, etc., is handled by the platform. It also
-is very explicit that the resulting config space registers must
-behave as is specified by the PCI specification.
+On 21-01-21, 11:44, David Gibson wrote:
+> On Wed, Jan 20, 2021 at 12:36:45PM +0530, Viresh Kumar wrote:
+> > This was copied from external DTC repository long back and isn't used
+> > anymore. Over that the dtc tool can be used to generate the dts source
+> > back from the dtb. Remove the unused fdtdump.c file.
+> > 
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> 
+> Doesn't this make updating the kernel dtc from upstream needlessly
+> more difficult?
 
-Hook the ACPI/PCI config path, and when missing MCFG data is
-detected, attempt to probe the SMC conduit. If the conduit
-exists and responds to the requested segment,  provided by the
-ACPI namespace, attach a custom pci_ecam_ops which redirects
-all config read/write requests to the firmware.
+Hmm, I am not sure I understand the concern well. The kernel keeps a
+list of files[1] it needs to automatically copy (using a script) from
+the upstream dtc repo and fdtdump.c was never part of that. Keeping it
+there isn't going to make any difficulty I believe.
 
-The Arm PCI Configuration Space Access Firmware Interface:
-https://developer.arm.com/documentation/den0115/latest
-
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- arch/arm64/kernel/pci.c   | 111 ++++++++++++++++++++++++++++++++++++++
- include/linux/arm-smccc.h |  29 ++++++++++
- 2 files changed, 140 insertions(+)
-
-diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-index 1006ed2d7c60..80c60cc0137a 100644
---- a/arch/arm64/kernel/pci.c
-+++ b/arch/arm64/kernel/pci.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/arm-smccc.h>
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-@@ -107,6 +108,114 @@ static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
- 	return status;
- }
- 
-+static int smccc_pcie_has_conduit(void)
-+{
-+	struct arm_smccc_res res;
-+
-+	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
-+		return -EOPNOTSUPP;
-+
-+	arm_smccc_1_1_invoke(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
-+	if ((int)res.a0 < 0)
-+		return -EOPNOTSUPP;
-+
-+	arm_smccc_1_1_invoke(SMCCC_PCI_FEATURES,
-+			     SMCCC_PCI_WRITE, 0, 0, 0, 0, 0, 0, &res);
-+	if ((int)res.a0 < 0)
-+		return -EOPNOTSUPP;
-+
-+	arm_smccc_1_1_invoke(SMCCC_PCI_FEATURES,
-+			     SMCCC_PCI_READ, 0, 0, 0, 0, 0, 0, &res);
-+	if ((int)res.a0 < 0)
-+		return -EOPNOTSUPP;
-+
-+	arm_smccc_1_1_invoke(SMCCC_PCI_FEATURES,
-+			     SMCCC_PCI_SEG_INFO, 0, 0, 0, 0, 0, 0, &res);
-+	if ((int)res.a0 < 0)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+
-+static int smccc_pcie_config_read(struct pci_bus *bus, unsigned int devfn,
-+				  int where, int size, u32 *val)
-+{
-+	struct arm_smccc_res res;
-+
-+	devfn |= bus->number << 8;
-+	devfn |= bus->domain_nr << 16;
-+
-+	arm_smccc_1_1_invoke(SMCCC_PCI_READ, devfn, where, size,
-+			     0, 0, 0, 0, &res);
-+	if (res.a0) {
-+		*val = ~0;
-+		return -PCIBIOS_BAD_REGISTER_NUMBER;
-+	}
-+
-+	*val = res.a1;
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int smccc_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
-+				   int where, int size, u32 val)
-+{
-+	struct arm_smccc_res res;
-+
-+	devfn |= bus->number << 8;
-+	devfn |= bus->domain_nr << 16;
-+
-+	arm_smccc_1_1_invoke(SMCCC_PCI_WRITE, devfn, where, size, val,
-+			     0, 0, 0, &res);
-+	if (res.a0)
-+		return -PCIBIOS_BAD_REGISTER_NUMBER;
-+
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static const struct pci_ecam_ops smccc_pcie_ops = {
-+	.pci_ops	= {
-+		.read		= smccc_pcie_config_read,
-+		.write		= smccc_pcie_config_write,
-+	}
-+};
-+
-+static struct pci_config_window *
-+pci_acpi_setup_smccc_mapping(struct acpi_pci_root *root)
-+{
-+	struct device *dev = &root->device->dev;
-+	struct arm_smccc_res res;
-+	struct resource *bus_res = &root->secondary;
-+	struct pci_config_window *cfg;
-+	u16 seg = root->segment;
-+
-+	arm_smccc_1_1_invoke(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
-+	if ((int)res.a0 < 0) {
-+		pr_warn("PCI: SMC segment %d doesn't exist\n", seg);
-+		return NULL;
-+	}
-+
-+	if (FIELD_GET(SMCCC_PCI_SEG_INFO_START_BUS, res.a1) != bus_res->start ||
-+	    FIELD_GET(SMCCC_PCI_SEG_INFO_END_BUS, res.a1) != bus_res->end) {
-+		pr_warn("PCI: SMC segment %d doesn't match ACPI description\n", seg);
-+		return NULL;
-+	}
-+
-+	cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
-+	if (!cfg)
-+		return NULL;
-+
-+	cfg->parent = dev;
-+	cfg->ops = &smccc_pcie_ops;
-+	cfg->busr.start = bus_res->start;
-+	cfg->busr.end = bus_res->end;
-+	cfg->busr.flags = IORESOURCE_BUS;
-+	cfg->res.name = "PCI SMCCC";
-+
-+	pr_info("PCI: SMC conduit attached to segment %d\n", seg);
-+
-+	return cfg;
-+}
-+
- /*
-  * Lookup the bus range for the domain in MCFG, and set up config space
-  * mapping.
-@@ -125,6 +234,8 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
- 
- 	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
- 	if (ret) {
-+		if (!smccc_pcie_has_conduit())
-+			return pci_acpi_setup_smccc_mapping(root);
- 		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
- 		return NULL;
- 	}
-diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-index f860645f6512..a1a8fe0ea5aa 100644
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -89,6 +89,35 @@
- 
- #define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
- 
-+/* PCI ECAM conduit (defined by ARM DEN0115A) */
-+#define SMCCC_PCI_VERSION						\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-+			   ARM_SMCCC_SMC_32,				\
-+			   ARM_SMCCC_OWNER_STANDARD, 0x0130)
-+
-+#define SMCCC_PCI_FEATURES						\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-+			   ARM_SMCCC_SMC_32,				\
-+			   ARM_SMCCC_OWNER_STANDARD, 0x0131)
-+
-+#define SMCCC_PCI_READ							\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-+			   ARM_SMCCC_SMC_32,				\
-+			   ARM_SMCCC_OWNER_STANDARD, 0x0132)
-+
-+#define SMCCC_PCI_WRITE							\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-+			   ARM_SMCCC_SMC_32,				\
-+			   ARM_SMCCC_OWNER_STANDARD, 0x0133)
-+
-+#define SMCCC_PCI_SEG_INFO						\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-+			   ARM_SMCCC_SMC_32,				\
-+			   ARM_SMCCC_OWNER_STANDARD, 0x0134)
-+
-+#define SMCCC_PCI_SEG_INFO_START_BUS  GENMASK(7, 0)
-+#define SMCCC_PCI_SEG_INFO_END_BUS    GENMASK(15, 8)
-+
- /* Paravirtualised time calls (defined by ARM DEN0057A) */
- #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
- 	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
 -- 
-2.26.2
+viresh
 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/dtc/update-dtc-source.sh
