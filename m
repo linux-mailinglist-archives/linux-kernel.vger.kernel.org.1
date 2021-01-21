@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308482FE200
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9775A2FE1BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbhAUFsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:48:05 -0500
-Received: from mail.v3.sk ([167.172.186.51]:43214 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728081AbhAUDmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:42:53 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 4E37FE0AA4;
-        Thu, 21 Jan 2021 03:37:41 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id HsLto3Ueifax; Thu, 21 Jan 2021 03:37:41 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 0DF9CE0A82;
-        Thu, 21 Jan 2021 03:37:41 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1CLtL-kJSw_c; Thu, 21 Jan 2021 03:37:40 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id CEB8BE0AA5;
-        Thu, 21 Jan 2021 03:37:40 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, SoC Team <soc@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH 04/12] ARM: dts: mmp2-olpc-xo-1-75: Drop linux,usable-memory from /memory
-Date:   Thu, 21 Jan 2021 04:41:22 +0100
-Message-Id: <20210121034130.1381872-5-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121034130.1381872-1-lkundrak@v3.sk>
-References: <20210121034130.1381872-1-lkundrak@v3.sk>
+        id S1726189AbhAUFbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:31:00 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:14032 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbhAUFar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 00:30:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611207008; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=hfAxKpHRFM9Y26tV/QvUdyavnpRphrMju5aLp3NQ+4Y=; b=lZ5qIGYqRgP6urTtbdy3jJrIdj0tEsniLd0HB3forAJJfTrr1OIhp918KxUIp9UY9plEzZmZ
+ bk++7GQGmB9BsgcLahSxCwFJCIdQbNJgnzfFOEVSvEjm9nu+33LcvLX1/lW8mL6pn2HqBHwb
+ 89W8koEx2VjnJJrWLx86csY8pRQ=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 600911365677aca7bd782bbd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Jan 2021 05:29:26
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8D77BC43461; Thu, 21 Jan 2021 05:29:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5BDA1C433C6;
+        Thu, 21 Jan 2021 05:29:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5BDA1C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH 0/1] arm64/sparsemem: reduce SECTION_SIZE_BITS
+Date:   Wed, 20 Jan 2021 21:29:12 -0800
+Message-Id: <cover.1611206601.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the linux,usable-memory properties; the schema is unhappy about
-them:
+This patch is the follow-up from the discussions in the thread [1].
+Reducing the section size has the merit of reducing wastage of reserved memory
+for vmmemmap mappings for sections with large memory holes. Also with smaller 
+section size gives more grunularity and agility for memory hot(un)plugging.
 
-  mmp2-olpc-xo-1-75.dt.yaml: /: memory: False schema does not allow
-  {'linux,usable-memory': [[0, 528482304]],
-   'available': [[847872, 519245824, 4096, 782336]],
-   'reg': [[0, 536870912]], 'device_type': ['memory']}
+But there are also constraints in reducing SECTION_SIZE_BIT:
 
-They've been cargo-culted from Open Firmware and I don't know what
-purpose they serve. Perhaps they are meant to provide the OFW runtime.
-In that case it's still okay to drop them from here; OFW is welcome to ad=
-d
-it upon boot.
+- Should accommodate highest order page for a given config
+- Should not break PMD mapping in vmemmap for 4K pages
+- Should not consume too many page->flags bits reducing space for other info
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
----
- arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts | 1 -
- 1 file changed, 1 deletion(-)
+This patch uses the suggestions from Anshuman Khandual and David Hildenbrand
+in thread [1] to set the least possible section size to 128MB for 4K and 16K
+base page size configs for simplicity, and to 512MB for 64K base page size config.
 
-diff --git a/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts b/arch/arm/boot/dts/=
-mmp2-olpc-xo-1-75.dts
-index e16171ddd93ec..0f8b5ad48deed 100644
---- a/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
-+++ b/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
-@@ -33,7 +33,6 @@ framebuffer@1fc00000 {
- 	};
-=20
- 	memory@0 {
--		linux,usable-memory =3D <0x0 0x1f800000>;
- 		available =3D <0xcf000 0x1ef31000 0x1000 0xbf000>;
- 		reg =3D <0x0 0x20000000>;
- 		device_type =3D "memory";
---=20
-2.29.2
+[1] https://lore.kernel.org/lkml/cover.1609895500.git.sudaraja@codeaurora.org/T/#m8ee60ae69db5e9eb06ca7999c43828d49ccb9626
+
+
+Sudarshan Rajagopalan (1):
+  arm64/sparsemem: reduce SECTION_SIZE_BITS
+
+ arch/arm64/include/asm/sparsemem.h | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
