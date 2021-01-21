@@ -2,240 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163A32FEA1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4994E2FEA27
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731238AbhAUMbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:31:50 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:56452 "EHLO a.mx.secunet.com"
+        id S1731356AbhAUMeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:34:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:34770 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731137AbhAUM3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:29:49 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 04C322018D;
-        Thu, 21 Jan 2021 13:28:59 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FC8YExFQj8NY; Thu, 21 Jan 2021 13:28:58 +0100 (CET)
-Received: from mail-essen-01.secunet.de (unknown [10.53.40.204])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 0E689200AC;
-        Thu, 21 Jan 2021 13:28:58 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-01.secunet.de (10.53.40.204) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Thu, 21 Jan 2021 13:28:57 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Thu, 21 Jan
- 2021 13:28:57 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 49CFE3181CAC;
- Thu, 21 Jan 2021 13:28:57 +0100 (CET)
-Date:   Thu, 21 Jan 2021 13:28:57 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Dongseok Yi <dseok.yi@samsung.com>
-CC:     "'David S. Miller'" <davem@davemloft.net>,
-        'Alexander Lobakin' <alobakin@pm.me>,
-        <namkyu78.kim@samsung.com>, 'Jakub Kicinski' <kuba@kernel.org>,
-        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
-        "'Willem de Bruijn'" <willemb@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
- GRO fraglist
-Message-ID: <20210121122857.GS3576117@gauss3.secunet.de>
-References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
- <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
- <20210118132736.GM3576117@gauss3.secunet.de>
- <012d01d6eef9$45516d40$cff447c0$@samsung.com>
+        id S1731060AbhAUMcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:32:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88F9811B3;
+        Thu, 21 Jan 2021 04:31:46 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.35.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29BEC3F66E;
+        Thu, 21 Jan 2021 04:31:43 -0800 (PST)
+Date:   Thu, 21 Jan 2021 12:31:40 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@codeaurora.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: Fatal signal handling within uaccess faults
+Message-ID: <20210121123140.GD48431@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <012d01d6eef9$45516d40$cff447c0$@samsung.com>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 03:55:42PM +0900, Dongseok Yi wrote:
-> On 2021-01-18 22:27, Steffen Klassert wrote:
-> > On Fri, Jan 15, 2021 at 10:20:35PM +0900, Dongseok Yi wrote:
-> > > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> > > forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> > > skb_gso_segment is updated but following frag_skbs are not updated.
-> > >
-> > > A call path skb_mac_gso_segment -> inet_gso_segment ->
-> > > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> > > does not try to update UDP/IP header of the segment list but copy
-> > > only the MAC header.
-> > >
-> > > Update dport, daddr and checksums of each skb of the segment list
-> > > in __udp_gso_segment_list. It covers both SNAT and DNAT.
-> > >
-> > > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-> > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> > > ---
-> > > v1:
-> > > Steffen Klassert said, there could be 2 options.
-> > > https://lore.kernel.org/patchwork/patch/1362257/
-> > > I was trying to write a quick fix, but it was not easy to forward
-> > > segmented list. Currently, assuming DNAT only.
-> > >
-> > > v2:
-> > > Per Steffen Klassert request, move the procedure from
-> > > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
-> > >
-> > > To Alexander Lobakin, I've checked your email late. Just use this
-> > > patch as a reference. It support SNAT too, but does not support IPv6
-> > > yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
-> > > to the file is in IPv4 directory.
-> > >
-> > >  include/net/udp.h      |  2 +-
-> > >  net/ipv4/udp_offload.c | 62 ++++++++++++++++++++++++++++++++++++++++++++++----
-> > >  net/ipv6/udp_offload.c |  2 +-
-> > >  3 files changed, 59 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/include/net/udp.h b/include/net/udp.h
-> > > index 877832b..01351ba 100644
-> > > --- a/include/net/udp.h
-> > > +++ b/include/net/udp.h
-> > > @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
-> > >  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
-> > >
-> > >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> > > -				  netdev_features_t features);
-> > > +				  netdev_features_t features, bool is_ipv6);
-> > >
-> > >  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
-> > >  {
-> > > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> > > index ff39e94..c532d3b 100644
-> > > --- a/net/ipv4/udp_offload.c
-> > > +++ b/net/ipv4/udp_offload.c
-> > > @@ -187,8 +187,57 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
-> > >  }
-> > >  EXPORT_SYMBOL(skb_udp_tunnel_segment);
-> > >
-> > > +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
-> > > +				     __be32 *oldip, __be32 *newip,
-> > > +				     __be16 *oldport, __be16 *newport)
-> > > +{
-> > > +	struct udphdr *uh = udp_hdr(seg);
-> > > +	struct iphdr *iph = ip_hdr(seg);
-> > > +
-> > > +	if (uh->check) {
-> > > +		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
-> > > +					 true);
-> > > +		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
-> > > +					 false);
-> > > +		if (!uh->check)
-> > > +			uh->check = CSUM_MANGLED_0;
-> > > +	}
-> > > +	uh->dest = *newport;
-> > > +
-> > > +	csum_replace4(&iph->check, *oldip, *newip);
-> > > +	iph->daddr = *newip;
-> > > +}
-> > 
-> > Can't we just do the checksum recalculation for this case as it is done
-> > with standard GRO?
-> 
-> If I understand standard GRO correctly, it calculates full checksum.
-> Should we adopt the same method to UDP GRO fraglist? I did not find
-> a simple method for the incremental checksum update.
-> 
-> > 
-> > > +
-> > > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
-> > > +{
-> > > +	struct sk_buff *seg;
-> > > +	struct udphdr *uh, *uh2;
-> > > +	struct iphdr *iph, *iph2;
-> > > +
-> > > +	seg = segs;
-> > > +	uh = udp_hdr(seg);
-> > > +	iph = ip_hdr(seg);
-> > > +
-> > > +	while ((seg = seg->next)) {
-> > > +		uh2 = udp_hdr(seg);
-> > > +		iph2 = ip_hdr(seg);
-> > > +
-> > > +		if (uh->source != uh2->source || iph->saddr != iph2->saddr)
-> > > +			__udpv4_gso_segment_csum(seg,
-> > > +						 &iph2->saddr, &iph->saddr,
-> > > +						 &uh2->source, &uh->source);
-> > > +
-> > > +		if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
-> > > +			__udpv4_gso_segment_csum(seg,
-> > > +						 &iph2->daddr, &iph->daddr,
-> > > +						 &uh2->dest, &uh->dest);
-> > > +	}
+Hi all,
 
+Arch maintainers, if you are Cc'd I believe your architecture has a
+user-triggerable livelock; please see below for details. Apologies in
+advance if I am mistaken!
 
-> > 
-> > You don't need to check the addresses and ports of all packets in the
-> > segment list. If the addresses and ports are equal for the first and
-> > second packet in the list, then this also holds for the rest of the
-> > packets.
-> 
-> I think we can try this with an additional flag (seg_csum).
-> 
-> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> index 36b7e30..3f892df 100644
-> --- a/net/ipv4/udp_offload.c
-> +++ b/net/ipv4/udp_offload.c
-> @@ -213,25 +213,36 @@ static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
->         struct sk_buff *seg;
->         struct udphdr *uh, *uh2;
->         struct iphdr *iph, *iph2;
-> +       bool seg_csum = false;
-> 
->         seg = segs;
->         uh = udp_hdr(seg);
->         iph = ip_hdr(seg);
+I believe the following architectures ARE affected:
 
-Why not
+	alpha, hexagon, ia64, m68k, microblaze, mips, nios2, openrisc,
+	parisc, riscv, sparc (32 & 64), xtensa
 
-       if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
-           (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
-           (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
-           (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
-	   	return segs;
+I believe the following architectures ARE NOT affected:
 
-Then you don't need to test inside the loop. Just update all
-packets if there is a header mismatch.
+	arc, arm, arm64, c6x, h8300, nds32, powerpc, s390, sh, x86
 
-> 
-> -       while ((seg = seg->next)) {
-> +       seg = seg->next;
-> +       do {
-> +               if (!seg)
-> +                       break;
-> +
->                 uh2 = udp_hdr(seg);
->                 iph2 = ip_hdr(seg);
-> 
-> -               if (uh->source != uh2->source || iph->saddr != iph2->saddr)
-> +               if (uh->source != uh2->source || iph->saddr != iph2->saddr) {
->                         __udpv4_gso_segment_csum(seg,
->                                                  &iph2->saddr, &iph->saddr,
->                                                  &uh2->source, &uh->source);
-> +                       seg_csum = true;
-> +               }
-> 
-> -               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
-> +               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr) {
->                         __udpv4_gso_segment_csum(seg,
->                                                  &iph2->daddr, &iph->daddr,
->                                                  &uh2->dest, &uh->dest);
-> -       }
-> +                       seg_csum = true;
-> +               }
-> +
-> +               seg = seg->next;
-> +       } while (seg_csum);
-> 
->         return segs;
->  }
+... and csky has a fix pending as of today.
+
+The issue is that in the fault handling path, architectures have a check
+with the shape:
+
+| if (fault_signal_pending(fault, regs))
+|         return;
+
+... where if a uaccess (e.g. get_user()) triggers a fault and there's a
+fault signal pending, the handler will return to the uaccess without
+having performed a uaccess fault fixup, and so the CPU will immediately
+execute the uaccess instruction again, whereupon it will livelock
+bouncing between that instruction and the fault handler.
+
+The architectures (with an MMU) which are not affected apply the uaccess
+fixup, and so return to the error handler for the uaccess, and make
+forward progress. Usually, this looks something like:
+
+| if (fault_signal_pending(fault, regs)) {
+|         if (!user_mode(regs))
+|                 goto no_context; // or fixup_exception(...), etc
+|         return;
+| }
+
+I believe similar changes need to be made to each of the architectures
+I've listed as affected above.
+
+This was previously reported back in July 2017:
+
+https://lore.kernel.org/lkml/20170822102527.GA14671@leverpostej/
+
+... but it looks like it looks like that wasn't sufficiently visible, so
+I'm poking folk explicitly this time around.
+
+I believe that this can be triggered with the test case below,
+duplicated from the previous posting. If the architecture is affected,
+it will not be possible to kill the test program with any signal.
+
+Thanks,
+Mark.
+
+---->8----
+#include <errno.h>
+#include <linux/userfaultfd.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/syscall.h>
+#include <sys/vfs.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+        void *mem;
+        long pagesz;
+        int uffd, ret;
+        struct uffdio_api api = {
+                .api = UFFD_API
+        };
+        struct uffdio_register reg;
+
+        pagesz = sysconf(_SC_PAGESIZE);
+        if (pagesz < 0) {
+        return errno;
+        }
+
+        mem = mmap(NULL, pagesz, PROT_READ | PROT_WRITE,
+        	   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+        if (mem == MAP_FAILED)
+                return errno;
+
+        uffd = syscall(__NR_userfaultfd, 0);
+        if (uffd < 0)
+                return errno;
+
+        ret = ioctl(uffd, UFFDIO_API, &api);
+        if (ret < 0)
+                return errno;
+
+        reg = (struct uffdio_register) {
+                        .range = {
+                        .start = (unsigned long)mem,
+                        .len = pagesz
+                },
+                .mode = UFFDIO_REGISTER_MODE_MISSING
+        };
+
+        ret = ioctl(uffd, UFFDIO_REGISTER, &reg);
+        if (ret < 0)
+                return errno;
+
+        /*
+         * Force an arbitrary uaccess to memory monitored by the userfaultfd.
+         * This will block, but when a SIGKILL is sent, will consume all
+         * available CPU time without being killed, and may inhibit forward
+         * progress of the system.
+         */
+        ret = fstatfs(0, (struct statfs *)mem);
+
+        return 0;
+}
