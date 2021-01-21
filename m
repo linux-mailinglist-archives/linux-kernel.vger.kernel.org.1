@@ -2,92 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C902FE785
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89AB2FE78D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:28:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbhAUK0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:26:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57384 "EHLO mail.kernel.org"
+        id S1729230AbhAUK12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:27:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729104AbhAUKYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:24:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EF6F23356;
-        Thu, 21 Jan 2021 10:23:49 +0000 (UTC)
+        id S1729177AbhAUK0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:26:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AE1C233EF;
+        Thu, 21 Jan 2021 10:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611224629;
-        bh=Vk+g6s1/mECeUrJ4TEUTgxd3IC/yHrCw9bhT4vdIydE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y//oif6RNho7eiB/JWL7uxdyTnNwfe6Ifi9MR5XodbwLLMrMhEK5H8/qaRkrWyHAG
-         aXW67zyO4Od3bbGPy3z4r1/nVh6zgS/QoZpqwQz6W4sZIXZFXLSejsr/5GzQaI52I8
-         sG+cYCkR0tZSYQcvQxrZxUuadGMHC5SrZMR0Lk03tjXa+CxlcfTlxCF3c8hH8P/EFg
-         lDNWSqqnb2RHiA0GDEbKwIlxGSVQaxhk4y6gUmt0Fpgah2WaioaLmqQylm420hB/Db
-         TnZiYnM1wugBTgtg28bpB4MpHMXMO6pIslQnZTDf1AdNBDQsmXEm9xfp6yGG3UPQv5
-         9E272uahxLWLQ==
-Received: from johan by xi with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l2X88-0004VM-4w; Thu, 21 Jan 2021 11:23:56 +0100
-Date:   Thu, 21 Jan 2021 11:23:56 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patong.mxl@gmail.com, linus.walleij@linaro.org,
-        mchehab+huawei@kernel.org, angelo.dureghello@timesys.com
-Subject: Re: [PATCH v5 3/3] usb: cdc-acm: Ignore Exar XR21V141X when serial
- driver is built
-Message-ID: <YAlWPF0vn/zFRsQu@hovoldconsulting.com>
-References: <20201122170822.21715-1-mani@kernel.org>
- <20201122170822.21715-4-mani@kernel.org>
+        s=k20201202; t=1611224726;
+        bh=1WqH3NdCK1Aq7P98SXwjbmM2Zdvym1uIUTpuB2RRcL8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=elv1kMdaVzgDBRV2OScyEeuPivjIFBFpHBpelrYLvprzGAjfenBqWdqWe2I2hjNDn
+         VQHCYP0vjYGkrCcY5aMc9UIpsDW5oQUCTUOB+DDsfN+0EjpiWX6JTWDoeiFDR4MwsR
+         JdXiulX7C/RM13EtMBgRuu1yYCWTELFBTCXPylTNa9eTc+a9lmHUUzmh7y7ItXCMil
+         pyTHGv/BDgL68Pi02rpYKc81dnoGwDGgjNsK1FcqPSAhdBRORZOR5uJPnY8o0fAyDe
+         dXnKckQ4ArvULxO8b/nFzeh37e2T7HjztHNpIeG5wfFq4Dp7PFsPm8oD1pRv7dh4Yd
+         xHw7akBcncUuA==
+Date:   Thu, 21 Jan 2021 11:25:23 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Denis Efremov <efremov@linux.com>
+cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Wim Osterholt <wim@djo.tudelft.nl>
+Subject: Re: [PATCH RESEND] floppy: fix open(O_ACCMODE) for ioctl-only open
+In-Reply-To: <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
+Message-ID: <nycvar.YFH.7.76.2101211122290.5622@cbobk.fhfr.pm>
+References: <20160610230255.GA27770@djo.tudelft.nl> <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm> <20160614184308.GA6188@djo.tudelft.nl> <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm> <20160615132040.GZ14480@ZenIV.linux.org.uk>
+ <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm> <20160615224722.GA9545@djo.tudelft.nl> <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm> <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm> <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
+ <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm> <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201122170822.21715-4-mani@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 10:38:22PM +0530, Manivannan Sadhasivam wrote:
-> From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> 
-> The RTS/CTS line discipline for this device doesn't follow
-> the standard. So, in order to properly support TX, a separate
-> driver is needed.
+On Thu, 21 Jan 2021, Denis Efremov wrote:
 
-This took a bit of effort to understand, but I think I know what you're
-referring to now. In ACM mode the device has RTS/CTS flow control
-enabled, which means TX will be disabled in case CTS isn't wired up
-correctly.
+> I think it's hard to recall the exact reasons after so many years. 
 
-It as nothing to do with line disciplines though.
+Yeah, I guess so :)
 
-> Ensure that cdc_acm will ignore it during probe time, if the
-> Kernel is built with support for it.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+> I'll send a patch today based on this one.
 
-> ---
->  drivers/usb/class/cdc-acm.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-> index 30ef946a8e1a..719829e6b6db 100644
-> --- a/drivers/usb/class/cdc-acm.c
-> +++ b/drivers/usb/class/cdc-acm.c
-> @@ -1890,6 +1890,12 @@ static const struct usb_device_id acm_ids[] = {
->  	},
->  #endif
->  
-> +#if IS_ENABLED(CONFIG_USB_SERIAL_XR)
-> +	{ USB_DEVICE(0x04e2, 0x1410),   /* Ignore XR21V141X USB to Serial converter */
-> +	.driver_info = IGNORE_DEVICE,
-> +	},
-> +#endif
-> +
->  	/*Samsung phone in firmware update mode */
->  	{ USB_DEVICE(0x04e8, 0x685d),
->  	.driver_info = IGNORE_DEVICE,
+I am currently waiting for confirmation by the original reporter that the 
+patch below fixes the issue.
 
-I've rewritten the commit message and applied this one now.
 
-Johan
+
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH] floppy: reintroduce O_NDELAY fix
+
+Originally fixed in 09954bad4 ("floppy: refactor open() flags handling")
+then reverted for unknown reason in f2791e7eadf437 instead of taking
+the open(O_ACCMODE) for ioctl-only open fix, which had the changelog below
+
+====
+Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
+side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
+this is being used setfdprm userspace for ioctl-only open().
+
+Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
+modes, while still keeping the original O_NDELAY bug fixed.
+
+Cc: stable@vger.kernel.org # v4.5+
+Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
+Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+=====
+
+Fixes: 09954bad4 ("floppy: refactor open() flags handling")
+Fixes: f2791e7ead ("Revert "floppy: refactor open() flags handling"")
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+---
+ drivers/block/floppy.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+index dfe1dfc901cc..bda9417aa0a8 100644
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -4121,23 +4121,22 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
+ 	if (fdc_state[FDC(drive)].rawcmd == 1)
+ 		fdc_state[FDC(drive)].rawcmd = 2;
+ 
+-	if (!(mode & FMODE_NDELAY)) {
+-		if (mode & (FMODE_READ|FMODE_WRITE)) {
+-			drive_state[drive].last_checked = 0;
+-			clear_bit(FD_OPEN_SHOULD_FAIL_BIT,
+-				  &drive_state[drive].flags);
+-			if (bdev_check_media_change(bdev))
+-				floppy_revalidate(bdev->bd_disk);
+-			if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
+-				goto out;
+-			if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
+-				goto out;
+-		}
+-		res = -EROFS;
+-		if ((mode & FMODE_WRITE) &&
+-		    !test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
++	if (mode & (FMODE_READ|FMODE_WRITE)) {
++		UDRS->last_checked = 0;
++		clear_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags);
++		check_disk_change(bdev);
++		if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
++			goto out;
++		if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
+ 			goto out;
+ 	}
++
++	res = -EROFS;
++
++	if ((mode & FMODE_WRITE) &&
++			!test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
++		goto out;
++
+ 	mutex_unlock(&open_lock);
+ 	mutex_unlock(&floppy_mutex);
+ 	return 0;
+
+-- 
+Jiri Kosina
+SUSE Labs
+
