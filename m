@@ -2,167 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297BE2FE865
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263652FE868
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbhAULH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:07:58 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:33804 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729838AbhAULGK (ORCPT
+        id S1729910AbhAULJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:09:07 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:47698 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729455AbhAULHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:06:10 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UMQRtsp_1611227105;
-Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UMQRtsp_1611227105)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 21 Jan 2021 19:05:06 +0800
-From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
-To:     changhuaixin@linux.alibaba.com
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
-        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
-        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
-Subject: [PATCH v3 4/4] sched/fair: Add document for burstable CFS bandwidth control
-Date:   Thu, 21 Jan 2021 19:04:53 +0800
-Message-Id: <20210121110453.18899-5-changhuaixin@linux.alibaba.com>
-X-Mailer: git-send-email 2.14.4.44.g2045bb6
-In-Reply-To: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
-References: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
- <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
+        Thu, 21 Jan 2021 06:07:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611227227; x=1642763227;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FUPJkA6UQ+VJzJ9X4wX7xHYQ0eub7h5Unnnw3J+RJ+k=;
+  b=pxIHN1fqe7VArcfNHHz359ZtCfAxpERUPc0y/oCK5L8jaj6Pzeo082YN
+   STI9q6NXY+sziero+canydOgppFmqt+6sVq78KQXn9W8rYCXkg/Lzx7Ao
+   BENrq8o156eV3Mb5Ofa4yaG2Lgru9S6dmG+DTOOXIMhwmBywagr3YqXR8
+   iqnUH8hmVup3ui7F+eK4W9Yd1bvYety6H2dBHgYPM0aflvnwIfTZFLcqQ
+   iAM5bMoyVnxtERs3Mc20VQEK/Xlv9KozaolK3PFijZ7cGx1oN5CPN2vst
+   ovX39yNHnMXFL81m0os8QeslkmFqpDokkv5lec2Isav5w9E/O5DeeVymL
+   Q==;
+IronPort-SDR: scwBJjnYZqOO6VGzs9/H4d/+v4FJDXADCPzD/0xGEhKt1lwVC9VaF5tJBkAuR9msGR3Yb51HwF
+ Rdzzsqnopr3whgDnHtSxDezsL2hQIhCpDj2eT3yP4klfYa2UDCOJVuykYboyAJLAG/wuYjM1js
+ Ctw4cFgF2aCEaKLqw2qqseysOTaiiYko7M/7tco0W8OLtdZpZvEYXQOqOpFgSaYch3Pdn8mehu
+ DWqQ/6+b8Z+7k1BbeffYzvlIqod2aoMn9FXTrMmhtyB6AeOnQwA7LmQf+pOvtH9qjMbQ+Umuv5
+ eGY=
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="111915343"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Jan 2021 04:05:50 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 21 Jan 2021 04:05:50 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 21 Jan 2021 04:05:48 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <michael@walle.cc>, <vigneshr@ti.com>, <p.yadav@ti.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <Kavyasree.Kotagiri@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH v3 1/2] mtd: spi-nor: Add Global Block Unlock command
+Date:   Thu, 21 Jan 2021 13:05:45 +0200
+Message-ID: <20210121110546.382633-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Basic description of usage and effect for CFS Bandwidth Control Burst.
+The Global Block Unlock command has different names depending
+on the manufacturer, but always the same command value: 0x98.
+Macronix's MX25U12835F names it Gang Block Unlock, Winbond's
+W25Q128FV names it Global Block Unlock and Microchip's
+SST26VF064B names it Global Block Protection Unlock.
 
-Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
-Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
+Used in the Individual Block Protection mode, which is mutually
+exclusive with the Block Protection mode (BP0-3).
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Reviewed-by: Michael Walle <michael@walle.cc>
 ---
- Documentation/scheduler/sched-bwc.rst | 70 +++++++++++++++++++++++++++++++++--
- 1 file changed, 66 insertions(+), 4 deletions(-)
+v3:
+- s/Winbound/Winbond
+- Add Michael's R-b tag
+v2:
+- s/mutual/mutually/
+- set the GBULK cmd buswidth to 0 and call spi_nor_spimem_setup_op()
+to update it, because the op can can be issued in QPI mode as well.
+- add Pratyush's R-b tag
 
-diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
-index 9801d6b284b1..0933c66cc68b 100644
---- a/Documentation/scheduler/sched-bwc.rst
-+++ b/Documentation/scheduler/sched-bwc.rst
-@@ -21,18 +21,46 @@ cfs_quota units at each period boundary. As threads consume this bandwidth it
- is transferred to cpu-local "silos" on a demand basis. The amount transferred
- within each of these updates is tunable and described as the "slice".
+ drivers/mtd/spi-nor/core.c  | 37 +++++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.h  |  1 +
+ include/linux/mtd/spi-nor.h |  1 +
+ 3 files changed, 39 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 20df44b753da..e82732dd31e1 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -853,6 +853,43 @@ int spi_nor_wait_till_ready(struct spi_nor *nor)
+ 						    DEFAULT_READY_WAIT_JIFFIES);
+ }
  
-+By default, CPU bandwidth consumption is strictly limited to quota within each
-+given period. For the sequence of CPU usage u_i served under CFS bandwidth
-+control, if for any j <= k N(j,k) is the number of periods from u_j to u_k:
++/**
++ * spi_nor_global_block_unlock() - Unlock Global Block Protection.
++ * @nor:	pointer to 'struct spi_nor'.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_global_block_unlock(struct spi_nor *nor)
++{
++	int ret;
 +
-+        u_j+...+u_k <= quota * N(j,k)
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
 +
-+For a bursty sequence among which interval u_j...u_k are at the peak, CPU
-+requests might have to wait for more periods to replenish enough quota.
-+Otherwise, larger quota is required.
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_GBULK, 0),
++				   SPI_MEM_OP_NO_ADDR,
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_NO_DATA);
 +
-+With "burst" buffer, CPU requests might be served as long as:
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
 +
-+        u_j+...+u_k <= B_j + quota * N(j,k)
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_GBULK,
++						       NULL, 0);
++	}
 +
-+if for any j <= k N(j,k) is the number of periods from u_j to u_k and B_j is
-+the accumulated quota from previous periods in burst buffer serving u_j.
-+Burst buffer helps in that serving whole bursty CPU requests without throttling
-+them can be done with moderate quota setting and accumulated quota in burst
-+buffer, if:
++	if (ret) {
++		dev_dbg(nor->dev, "error %d on Global Block Unlock\n", ret);
++		return ret;
++	}
 +
-+        u_0+...+u_n <= B_0 + quota * N(0,n)
++	return spi_nor_wait_till_ready(nor);
++}
 +
-+where B_0 is the initial state of burst buffer. The maximum accumulated quota in
-+the burst buffer is capped by burst. With proper burst setting, the available
-+bandwidth is still determined by quota and period on the long run.
-+
- Management
- ----------
--Quota and period are managed within the cpu subsystem via cgroupfs.
-+Quota, period and burst are managed within the cpu subsystem via cgroupfs.
+ /**
+  * spi_nor_write_sr() - Write the Status Register.
+  * @nor:	pointer to 'struct spi_nor'.
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index d631ee299de3..eb26796db026 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -434,6 +434,7 @@ int spi_nor_write_disable(struct spi_nor *nor);
+ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+ int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
+ int spi_nor_wait_till_ready(struct spi_nor *nor);
++int spi_nor_global_block_unlock(struct spi_nor *nor);
+ int spi_nor_lock_and_prep(struct spi_nor *nor);
+ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
+ int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index d13958de6d8a..a0d572855444 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -53,6 +53,7 @@
+ #define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
+ #define SPINOR_OP_SRSTEN	0x66	/* Software Reset Enable */
+ #define SPINOR_OP_SRST		0x99	/* Software Reset */
++#define SPINOR_OP_GBULK		0x98    /* Global Block Unlock */
  
--cpu.cfs_quota_us: the total available run-time within a period (in microseconds)
-+cpu.cfs_quota_us: run-time replenished within a period (in microseconds)
- cpu.cfs_period_us: the length of a period (in microseconds)
-+cpu.cfs_burst_us: the maximum accumulated run-time (in microseconds)
- cpu.stat: exports throttling statistics [explained further below]
- 
- The default values are::
- 
- 	cpu.cfs_period_us=100ms
--	cpu.cfs_quota=-1
-+	cpu.cfs_quota_us=-1
-+	cpu.cfs_burst_us=0
- 
- A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
- bandwidth restriction in place, such a group is described as an unconstrained
-@@ -48,6 +76,11 @@ more detail below.
- Writing any negative value to cpu.cfs_quota_us will remove the bandwidth limit
- and return the group to an unconstrained state once more.
- 
-+A value of 0 for cpu.cfs_burst_us indicates that the group can not accumulate
-+any unused bandwidth. It makes the traditional bandwidth control behavior for
-+CFS unchanged. Writing any (valid) positive value(s) into cpu.cfs_burst_us
-+will enact the cap on unused bandwidth accumulation.
-+
- Any updates to a group's bandwidth specification will result in it becoming
- unthrottled if it is in a constrained state.
- 
-@@ -65,9 +98,21 @@ This is tunable via procfs::
- Larger slice values will reduce transfer overheads, while smaller values allow
- for more fine-grained consumption.
- 
-+There is also a global switch to turn off burst for all groups::
-+       /proc/sys/kernel/sched_cfs_bw_burst_enabled (default=1)
-+
-+By default it is enabled. Writing a 0 value means no accumulated CPU time can be
-+used for any group, even if cpu.cfs_burst_us is configured.
-+
-+Sometimes users might want a group to burst without accumulation. This is
-+tunable via::
-+       /proc/sys/kernel/sched_cfs_bw_burst_onset_percent (default=0)
-+
-+Up to 100% runtime of cpu.cfs_burst_us might be given on setting bandwidth.
-+
- Statistics
- ----------
--A group's bandwidth statistics are exported via 3 fields in cpu.stat.
-+A group's bandwidth statistics are exported via 6 fields in cpu.stat.
- 
- cpu.stat:
- 
-@@ -75,6 +120,11 @@ cpu.stat:
- - nr_throttled: Number of times the group has been throttled/limited.
- - throttled_time: The total time duration (in nanoseconds) for which entities
-   of the group have been throttled.
-+- current_bw: Current runtime in global pool.
-+- nr_burst: Number of periods burst occurs.
-+- burst_time: Cumulative wall-time that any CPUs has used above quota in
-+  respective periods
-+
- 
- This interface is read-only.
- 
-@@ -172,3 +222,15 @@ Examples
- 
-    By using a small period here we are ensuring a consistent latency
-    response at the expense of burst capacity.
-+
-+4. Limit a group to 20% of 1 CPU, and allow accumulate up to 60% of 1 CPU
-+   additionally, in case accumulation has been done.
-+
-+   With 50ms period, 10ms quota will be equivalent to 20% of 1 CPU.
-+   And 30ms burst will be equivalent to 60% of 1 CPU.
-+
-+	# echo 10000 > cpu.cfs_quota_us /* quota = 10ms */
-+	# echo 50000 > cpu.cfs_period_us /* period = 50ms */
-+	# echo 30000 > cpu.cfs_burst_us /* burst = 30ms */
-+
-+   Larger buffer setting allows greater burst capacity.
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+ #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
 -- 
-2.14.4.44.g2045bb6
+2.25.1
 
