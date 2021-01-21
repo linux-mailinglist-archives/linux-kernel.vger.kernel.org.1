@@ -2,244 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC75B2FE2D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 491082FE2D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbhAUG1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:27:00 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:27596 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727001AbhAUG0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:26:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611210342; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=pJq/ux+uNougAFTA98Ujww3oEURPxlPExUtHDMCMge8=;
- b=r6YZD6GwvaZlvysZVaBN/mdSHrhDD0+a3YmZFaq2B1lSfVvREw8LQ+JSBArecMo/QN2QIYH1
- q9uMzpt5QER/kSmRxeoBbqwxYrNr8d6GIQTZF+konisQa6VMgC0xy58hzq/A67S7NMfxyx/7
- tlUa1jccOg2QAzRFWUXBYcI7Iag=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60091e4abeacd1a252c1389c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Jan 2021 06:25:13
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D9A25C43469; Thu, 21 Jan 2021 06:25:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38338C43462;
-        Thu, 21 Jan 2021 06:25:11 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 21 Jan 2021 11:55:11 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        linux-arm-msm@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-kernel@vger.kernel.org,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 2/2] drm/msm/a6xx: Create an A6XX GPU specific address
- space
-In-Reply-To: <1120efd2-151b-4643-9a57-c15c46ab6e16@somainline.org>
-References: <cover.1610366113.git.saiprakash.ranjan@codeaurora.org>
- <c5848b1c15765c8d6db7de2305baac856e818f12.1610366113.git.saiprakash.ranjan@codeaurora.org>
- <1120efd2-151b-4643-9a57-c15c46ab6e16@somainline.org>
-Message-ID: <fa15ea8d634bad2f7ec1654416fc5776@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S1727177AbhAUG2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:28:17 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:54301 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727108AbhAUG0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:26:43 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UMOvXFQ_1611210339;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMOvXFQ_1611210339)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Jan 2021 14:25:44 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     njavali@marvell.com
+Cc:     mrangankar@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH v3] scsi/qla4xxx: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Thu, 21 Jan 2021 14:25:37 +0800
+Message-Id: <1611210337-92686-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Angelo,
+Fix the following coccicheck warning:
 
-On 2021-01-20 16:34, AngeloGioacchino Del Regno wrote:
-> Il 11/01/21 13:04, Sai Prakash Ranjan ha scritto:
->> A6XX GPUs have support for last level cache(LLC) also known
->> as system cache and need to set the bus attributes to
->> use it. Currently we use a generic adreno iommu address space
->> implementation which are also used by older GPU generations
->> which do not have LLC and might introduce issues accidentally
->> and is not clean in a way that anymore additions of GPUs
->> supporting LLC would have to be guarded under ifdefs. So keep
->> the generic code separate and make the address space creation
->> A6XX specific. We also have a helper to set the llc attributes
->> so that if the newer GPU generations do support them, we can
->> use it instead of open coding domain attribute setting for each
->> GPU.
->> 
-> 
-> Hello!
-> 
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 46 
->> ++++++++++++++++++++++++-
->>   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 +++++--------
->>   drivers/gpu/drm/msm/adreno/adreno_gpu.h |  7 ++--
->>   3 files changed, 55 insertions(+), 21 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c 
->> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> index 3b798e883f82..3c7ad51732bb 100644
->> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> @@ -1239,6 +1239,50 @@ static unsigned long a6xx_gpu_busy(struct 
->> msm_gpu *gpu)
->>   	return (unsigned long)busy_time;
->>   }
->>   +static struct msm_gem_address_space *
->> +a6xx_create_address_space(struct msm_gpu *gpu, struct platform_device 
->> *pdev)
->> +{
->> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
->> +	struct iommu_domain *iommu;
->> +	struct msm_mmu *mmu;
->> +	struct msm_gem_address_space *aspace;
->> +	u64 start, size;
->> +
->> +	iommu = iommu_domain_alloc(&platform_bus_type);
->> +	if (!iommu)
->> +		return NULL;
->> +
->> +	/*
->> +	 * This allows GPU to set the bus attributes required to use system
->> +	 * cache on behalf of the iommu page table walker.
->> +	 */
->> +	if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice))
->> +		adreno_set_llc_attributes(iommu);
->> +
->> +	mmu = msm_iommu_new(&pdev->dev, iommu);
->> +	if (IS_ERR(mmu)) {
->> +		iommu_domain_free(iommu);
->> +		return ERR_CAST(mmu);
->> +	}
->> +
->> +	/*
->> +	 * Use the aperture start or SZ_16M, whichever is greater. This will
->> +	 * ensure that we align with the allocated pagetable range while 
->> still
->> +	 * allowing room in the lower 32 bits for GMEM and whatnot
->> +	 */
->> +	start = max_t(u64, SZ_16M, iommu->geometry.aperture_start);
->> +	size = iommu->geometry.aperture_end - start + 1;
->> +
->> +	aspace = msm_gem_address_space_create(mmu, "gpu",
->> +		start & GENMASK_ULL(48, 0), size);
->> +
->> +	if (IS_ERR(aspace) && !IS_ERR(mmu))
->> +		mmu->funcs->destroy(mmu);
->> +
->> +	return aspace;
->> +}
->> +
-> 
-> I get what you're trying to do - yes the intentions are good, 
-> however...
-> you are effectively duplicating code 1:1, as this *is* the same as
-> function adreno_iommu_create_address_space.
-> 
-> I don't see adding two lines to a function as a valid justification to
-> duplicate all the rest: perhaps, you may want to find another way to do
-> this;
-> 
-> Here's one of the many ideas, perhaps you could:
-> 1. Introduce a "generic feature" to signal LLCC support (perhaps in
->    struct adreno_info ?)
-> 2. If LLCC is supported, and LLCC slices are initialized, set the LLCC
->    attributes on the IOMMU. Of course this would mean passing the init
->    state of the slices (maybe just a bool would be fine) back to the
->    generic adreno_gpu.c
-> 
-> This, unless you tell me that the entire function is going to be a6xx
-> specific, but that doesn't seem to be the case at all.
-> 
-> Concerns are that when an hypotetical Adreno A7XX comes and perhaps 
-> also
-> uses the LLCC slices, this function will be duplicated yet another 
-> time.
-> 
+./drivers/scsi/qla4xxx/ql4_attr.c: WARNING: use scnprintf or
+sprintf
 
-As Rob mentioned in other reply, this was more of a point to not break
-older gen gpus when we add some feature which is specific to a6xx.
-So there are a{3,4,5}xx using adreno_iommu_create_address_space and
-any addition to a6xx or let's say in future a7xx(assuming we do not
-have its own address space impl and use this generic one), then all
-these older gens need to be taken care of either via some conditions
-and test on those so that they won't break. IMO, rather than keep
-adding ifs in the generic code, it is better to have a separate
-address space impl.
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+Changes in v3:
+  - convert sysfs_emit_at to sysfs_emit.
 
->>   static struct msm_gem_address_space *
->>   a6xx_create_private_address_space(struct msm_gpu *gpu)
->>   {
->> @@ -1285,7 +1329,7 @@ static const struct adreno_gpu_funcs funcs = {
->>   		.gpu_state_get = a6xx_gpu_state_get,
->>   		.gpu_state_put = a6xx_gpu_state_put,
->>   #endif
->> -		.create_address_space = adreno_iommu_create_address_space,
->> +		.create_address_space = a6xx_create_address_space,
->>   		.create_private_address_space = a6xx_create_private_address_space,
->>   		.get_rptr = a6xx_get_rptr,
->>   	},
->> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c 
->> b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> index b35914de1b27..0f184c3dd9d9 100644
->> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> @@ -186,11 +186,18 @@ int adreno_zap_shader_load(struct msm_gpu *gpu, 
->> u32 pasid)
->>   	return zap_shader_load_mdt(gpu, adreno_gpu->info->zapfw, pasid);
->>   }
->>   +void adreno_set_llc_attributes(struct iommu_domain *iommu)
-> 
-> Since this function is relative to the iommu part of this driver, I
-> think that it would be appropriate to give it the same prefix as all
-> the other functions that are "working in this context".
-> Hint: adreno_iommu_set_llc_attributes
+ drivers/scsi/qla4xxx/ql4_attr.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-Yes, I will change the name to adreno_iommu_set_llc_attributes.
-
-> Alternatively, this two lines function may just be a static inline in
-> the header....
-> 
-> 
-> But then, what are we talking about, here?
-> Since you should stop code duplication and bring everything back in
-> here (in a generic way!!!), then this helper would be of no use, at 
-> all,
-> because then you would be just "throwing" these two lines back in the
-> function adreno_iommu_create_address_space....
-> 
-> 
-
-See above reply. Thanks for taking a look.
-
-Thanks,
-Sai
-
+diff --git a/drivers/scsi/qla4xxx/ql4_attr.c b/drivers/scsi/qla4xxx/ql4_attr.c
+index ec43528..dc94622 100644
+--- a/drivers/scsi/qla4xxx/ql4_attr.c
++++ b/drivers/scsi/qla4xxx/ql4_attr.c
+@@ -156,11 +156,11 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 
+ 	if (is_qla80XX(ha))
+-		return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d (%x)\n",
++		return sysfs_emit(buf, "%d.%02d.%02d (%x)\n",
+ 				ha->fw_info.fw_major, ha->fw_info.fw_minor,
+ 				ha->fw_info.fw_patch, ha->fw_info.fw_build);
+ 	else
+-		return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
++		return sysfs_emit(buf, "%d.%02d.%02d.%02d\n",
+ 				ha->fw_info.fw_major, ha->fw_info.fw_minor,
+ 				ha->fw_info.fw_patch, ha->fw_info.fw_build);
+ }
+@@ -170,7 +170,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ha->serial_number);
++	return sysfs_emit(buf, "%s\n", ha->serial_number);
+ }
+ 
+ static ssize_t
+@@ -178,7 +178,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			   char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%d.%02d\n", ha->fw_info.iscsi_major,
++	return sysfs_emit(buf, "%d.%02d\n", ha->fw_info.iscsi_major,
+ 			ha->fw_info.iscsi_minor);
+ }
+ 
+@@ -187,7 +187,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			    char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
++	return sysfs_emit(buf, "%d.%02d.%02d.%02d\n",
+ 			ha->fw_info.bootload_major, ha->fw_info.bootload_minor,
+ 			ha->fw_info.bootload_patch, ha->fw_info.bootload_build);
+ }
+@@ -197,7 +197,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 		      char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "0x%08X\n", ha->board_id);
++	return sysfs_emit(buf, "0x%08X\n", ha->board_id);
+ }
+ 
+ static ssize_t
+@@ -207,7 +207,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 
+ 	qla4xxx_get_firmware_state(ha);
+-	return snprintf(buf, PAGE_SIZE, "0x%08X%8X\n", ha->firmware_state,
++	return sysfs_emit(buf, "0x%08X%8X\n", ha->firmware_state,
+ 			ha->addl_fw_state);
+ }
+ 
+@@ -220,7 +220,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	if (is_qla40XX(ha))
+ 		return -ENOSYS;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_cnt);
++	return sysfs_emit(buf, "0x%04X\n", ha->phy_port_cnt);
+ }
+ 
+ static ssize_t
+@@ -232,7 +232,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	if (is_qla40XX(ha))
+ 		return -ENOSYS;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_num);
++	return sysfs_emit(buf, "0x%04X\n", ha->phy_port_num);
+ }
+ 
+ static ssize_t
+@@ -244,7 +244,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	if (is_qla40XX(ha))
+ 		return -ENOSYS;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->iscsi_pci_func_cnt);
++	return sysfs_emit(buf, "0x%04X\n", ha->iscsi_pci_func_cnt);
+ }
+ 
+ static ssize_t
+@@ -253,7 +253,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ha->model_name);
++	return sysfs_emit(buf, "%s\n", ha->model_name);
+ }
+ 
+ static ssize_t
+@@ -261,7 +261,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			  char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%s %s\n", ha->fw_info.fw_build_date,
++	return sysfs_emit(buf, "%s %s\n", ha->fw_info.fw_build_date,
+ 			ha->fw_info.fw_build_time);
+ }
+ 
+@@ -270,7 +270,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			   char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ha->fw_info.fw_build_user);
++	return sysfs_emit(buf, "%s\n", ha->fw_info.fw_build_user);
+ }
+ 
+ static ssize_t
+@@ -278,7 +278,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			      char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ha->fw_info.extended_timestamp);
++	return sysfs_emit(buf, "%s\n", ha->fw_info.extended_timestamp);
+ }
+ 
+ static ssize_t
+@@ -300,7 +300,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 		break;
+ 	}
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", load_src);
++	return sysfs_emit(buf, "%s\n", load_src);
+ }
+ 
+ static ssize_t
+@@ -309,7 +309,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 	qla4xxx_about_firmware(ha);
+-	return snprintf(buf, PAGE_SIZE, "%u.%u secs\n", ha->fw_uptime_secs,
++	return sysfs_emit(buf, "%u.%u secs\n", ha->fw_uptime_secs,
+ 			ha->fw_uptime_msecs);
+ }
+ 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+1.8.3.1
+
