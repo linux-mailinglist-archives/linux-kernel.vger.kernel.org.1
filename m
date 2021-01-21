@@ -2,111 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C2E2FE2B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FA42FE2CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbhAUGYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:24:25 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:43312 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbhAUGXt (ORCPT
+        id S1726923AbhAUG0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:26:42 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50618 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726883AbhAUGZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:23:49 -0500
-Received: from mail-lj1-f197.google.com ([209.85.208.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1l2TMt-0005zo-M7
-        for linux-kernel@vger.kernel.org; Thu, 21 Jan 2021 06:22:55 +0000
-Received: by mail-lj1-f197.google.com with SMTP id f20so357829ljj.15
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:22:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=286+aLvFTV4FtvBetACGVIfc0aQZT7xsQ6Fn1YFzNWE=;
-        b=BtQrvkaJQK44Wkez5c4niGT6EkhKiLWJFv4r4Qh77ToNi5Drrk5Kci3GPtDHxY1aqN
-         6VVxqwsYzjrV33kGVJW5NpkV63gW/8rMDAnD+pGmLB9YVFDTD/RQ4IgOMkbBVTcFtYza
-         K1YgFaG5VHVN79rFk6ATAGwM4O/qT00O0iY+RZor7o5DhwSD3WsYNBEcdC3yCHlaWJxE
-         XNnnAK4H/sONEwS8LLr7h9Nt6nOl2ooGZbXdRDq04f3Ba7DLoty/N0mJvxjC/cJEyXjy
-         G+mPsq425rXrB8TT9i3k4yAFw79CYGQKegkLz2UvA6KS86AUakq3DOj30p3Iw1EqnrMx
-         1DWg==
-X-Gm-Message-State: AOAM533YxCHOpLuJiIZbP8wSGCD+Pe+8pkHinkPAiJUy7Iif27Ej93OM
-        Q25qPZfdFpzdmLOk12DAEUUw0n1F0UTRyPIaYT181jXYmsSCusclpoMosr49neOBn0BnrX0ctrE
-        M/OvjscTliX13Xj6gvu6XP6Q0/RpJfw5B/BMAgqToEmfKrKaaeP0SCGNseg==
-X-Received: by 2002:a2e:8947:: with SMTP id b7mr6258776ljk.116.1611210175143;
-        Wed, 20 Jan 2021 22:22:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzCYbbieVYKMHA4ivsq3wSRzf1SDvF4od/jM20SWLxethLb+Wu7rnFyvpDvgKmiBX6k5moAFl+6vWRHEoXwphQ=
-X-Received: by 2002:a2e:8947:: with SMTP id b7mr6258769ljk.116.1611210174921;
- Wed, 20 Jan 2021 22:22:54 -0800 (PST)
+        Thu, 21 Jan 2021 01:25:43 -0500
+X-UUID: 51aea3e4f8f743199f00b183621cc2d5-20210121
+X-UUID: 51aea3e4f8f743199f00b183621cc2d5-20210121
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2044207395; Thu, 21 Jan 2021 14:24:59 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 21 Jan 2021 14:24:58 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 21 Jan 2021 14:24:57 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <yi.kuo@mediatek.com>
+Subject: Support MTK_SMI modular
+Date:   Thu, 21 Jan 2021 14:24:26 +0800
+Message-ID: <20210121062429.26504-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210119081513.300938-1-kai.heng.feng@canonical.com>
- <YAaXz9Pg5x3DsCs3@kroah.com> <CAAd53p7tdFiARtW1RXsjN8+OwRXWzMnok_rfKHDHCh-JSam3cQ@mail.gmail.com>
- <20210119094159.GQ4077@smile.fi.intel.com> <YAa1ygjr2L3VxBKF@kroah.com>
-In-Reply-To: <YAa1ygjr2L3VxBKF@kroah.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 21 Jan 2021 14:22:43 +0800
-Message-ID: <CAAd53p4MTSzuPEp3Y5=wP3HwguTOkyTrVZpi6xOCS0_Q1qcMdQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI / device_sysfs: Use OF_MODALIAS for "compatible" modalias
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 6:34 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Jan 19, 2021 at 11:41:59AM +0200, Andy Shevchenko wrote:
-> > On Tue, Jan 19, 2021 at 04:41:48PM +0800, Kai-Heng Feng wrote:
-> > > On Tue, Jan 19, 2021 at 4:27 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > On Tue, Jan 19, 2021 at 04:15:13PM +0800, Kai-Heng Feng wrote:
-> >
-> > ...
-> >
-> > > > Who will use OF_MODALIAS and where have you documented it?
-> > >
-> > > After this lands in mainline, I'll modify the pull request for systemd
-> > > to add a new rule for OF_MODALIAS.
-> > > I'll modify the comment on the function to document the change.
-> >
-> > I'm wondering why to have two fixes in two places instead of fixing udev to
-> > understand multiple MODALIAS= events?
->
-> It's not a matter of multiple events, it's a single event with a
-> key/value pair with duplicate keys and different values.
->
-> What is this event with different values supposed to be doing in
-> userspace?  Do you want multiple invocations of `modprobe` or something
-> else?
->
-> Usually a "device" only has a single "signature" that modprobe uses to
-> look up the correct module for.  Modules can support any number of
-> device signatures, but traditionally it is odd to think that a device
-> itself can be supported by multiple modules, which is what you are
-> saying is happening here.
->
-> So what should userspace do with this, and why does a device need to
-> have multiple module alias signatures?
+This patchset mainly support MTK_SMI could be modular. No other function add.
+The MTK_IOMMU config will be another patchset.
 
-From the original use case [1], I think the "compatible" modalias
-should be enough.
-Andy and Mika, what do you think? Can we remove the ACPI modalias for this case?
+rebase on v5.11-rc1.
 
-[1] https://lwn.net/Articles/612062/
+Yong Wu (3):
+  memory: mtk-smi: Use platform_register_drivers
+  memory: mtk-smi: Add module_exit and module_license
+  memory: mtk-smi: Switch MTK_SMI to tristate
 
-Kai-Heng
+ drivers/memory/Kconfig     |  2 +-
+ drivers/memory/mtk-smi.c   | 33 +++++++++++++++------------------
+ include/soc/mediatek/smi.h |  2 +-
+ 3 files changed, 17 insertions(+), 20 deletions(-)
 
->
-> thanks,
->
-> greg k-h
+-- 
+2.18.0
+
+
