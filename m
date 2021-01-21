@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2984D2FF7BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703AE2FF7B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbhAUWII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:08:08 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:63130 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbhAUWIB (ORCPT
+        id S1726755AbhAUWHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:07:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50142 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbhAUWHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:08:01 -0500
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 10LM74Ga018049
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:07:05 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 10LM74Ga018049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611266825;
-        bh=MjWZFSssMPbyWrPt1Q7VeUt87lBCgSnFjOoettOI7mc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hA4NS2VPgMbXelAT7IVcZktkuQltTMYqMXSG0ayROijmyCFBnYwm5gw0ZI/zTQe91
-         K6egCmV8OYyFak3fzOecWreEDmvei5DS+zyCHDcme5JSlYY9f0WL+piHUDOj5yzyK6
-         JpYbWiFk9Og/dt4r8CHG1B1ivT3iPEXhI0Y6yJSGtuGJE5YmJEBVX0AhB/l1aJI7Xy
-         ZlforJtUHtNA+YVFd4vOsUGh3lLJJgpDuUc+Z6goRf51IZo6hFsJxa7O1++H8ckBv3
-         V/xyXS/bE+UGgnS5UoeVJoz4esfwvoMeGFHWNbaKWUAOmiqHSBTFDcI6wVQ/PM/w14
-         A0cqdyjOy2Sow==
-X-Nifty-SrcIP: [209.85.210.172]
-Received: by mail-pf1-f172.google.com with SMTP id i63so2365630pfg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:07:04 -0800 (PST)
-X-Gm-Message-State: AOAM532qDZ/TyNMdTVOVELa/70KUdJhGcPmxV3PIxqTMlz07DvEhw5Cz
-        cauazFTiLs6fh/lAfnobY6EolfaKuimahek6/1g=
-X-Google-Smtp-Source: ABdhPJzOTrs51F64/7+tiY00uNsvZJqdeT6syyZfBtQQk6TdnoI0U5xwGCZ2RXYLsUVS9Ai3+SGtJiOPdE+Cb/GJLtA=
-X-Received: by 2002:a63:ff09:: with SMTP id k9mr1418784pgi.175.1611266824104;
- Thu, 21 Jan 2021 14:07:04 -0800 (PST)
+        Thu, 21 Jan 2021 17:07:30 -0500
+Date:   Thu, 21 Jan 2021 22:06:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611266805;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAqNmS9C2PfBLAnZ7EYj5MUeLg1by+I0hZpIR7HVej0=;
+        b=LseDNlA7JtJy9ttK5nyu/Q7byKaep7m66A0Zld2qOKgEbdA+J38VS4ttUHsUcSQX/EUCMt
+        rrP78wGaTmPZ2pUZniMSMf7Q17Vb42LB0eE7xyJp0PQnrHhvWxMyYxiUtFDMi4eOvtTxEE
+        95Ghr7tMPUFmPjwD/QQ4v45cHWXhz5nVF7Me8um/1amHn/F4GpvsJWCkllzPs4Ze2+PjoV
+        rqjjlKJoj3aaxOUFMIjT//ElVsxvjcPhb31wLPGtRPEWz9FxpiNkt2iOoK601LEXMNVmlx
+        1rGox9RO8vlWtJJa1+N381COzYCpRmoMKifFTexYNCHsWLQ4coCyzsWqhYStfQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611266805;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAqNmS9C2PfBLAnZ7EYj5MUeLg1by+I0hZpIR7HVej0=;
+        b=56OS7QqFttHoH6XGu69b/q0pSyLKiPL7l7D8H8kUXzLed+CTpUwIEuYiA3Rf1QPDK0ItiX
+        lvghwKzO83IwiEDg==
+From:   "tip-bot2 for Gayatri Kammela" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/cpu: Add another Alder Lake CPU to the Intel family
+Cc:     Gayatri Kammela <gayatri.kammela@intel.com>,
+        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210121215004.11618-1-tony.luck@intel.com>
+References: <20210121215004.11618-1-tony.luck@intel.com>
 MIME-Version: 1.0
-References: <20210121170736.2266-1-scott.branden@broadcom.com>
- <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
- <CAHp75Vf=Ba+e8PDsvi8eDiuNDvC6Pfx3RsRAkaOZvD26Z2pnQA@mail.gmail.com> <CAHp75VcLi8hjYaDXrfAjbj+Kw_FRef=xnKiXr_Kv+YUToEjHTQ@mail.gmail.com>
-In-Reply-To: <CAHp75VcLi8hjYaDXrfAjbj+Kw_FRef=xnKiXr_Kv+YUToEjHTQ@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 22 Jan 2021 07:06:27 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARL570EgjijCMY_CF91frwtTeatyhYcnD8-s08aiduFnQ@mail.gmail.com>
-Message-ID: <CAK7LNARL570EgjijCMY_CF91frwtTeatyhYcnD8-s08aiduFnQ@mail.gmail.com>
-Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang line
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Finn Behrens <me@kloenk.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161126680417.414.11680360777018059432.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 5:35 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Jan 21, 2021 at 10:31 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Thu, Jan 21, 2021 at 10:28 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > On Fri, Jan 22, 2021 at 2:17 AM Scott Branden
-> > > <scott.branden@broadcom.com> wrote:
-> > > >
-> > > > Use python3 instead of python in diffconfig Shebang line.
-> > > > python2 was sunset January 1, 2000 and environments do not need
-> > > > to support python any more.
-> >
-> > > Just from curiosity, what problem is this solving?
-> > >
-> > > Is there a distribution where 'python' does not exist,
-> > > but 'python3' does ?
-> >
-> > Yes. Called surprise surprise Debian
-> > An it's a rare case when I agree with them.
->
-> For the record, you seems haven't noticed:
-> https://lkml.org/lkml/2020/12/9/446
+The following commit has been merged into the x86/urgent branch of tip:
 
+Commit-ID:     6e1239c13953f3c2a76e70031f74ddca9ae57cd3
+Gitweb:        https://git.kernel.org/tip/6e1239c13953f3c2a76e70031f74ddca9ae57cd3
+Author:        Gayatri Kammela <gayatri.kammela@intel.com>
+AuthorDate:    Thu, 21 Jan 2021 13:50:04 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 21 Jan 2021 23:01:51 +01:00
 
-Ohh, I missed it.
-I know many patches are falling into a crack.
+x86/cpu: Add another Alder Lake CPU to the Intel family
 
-To respect the first submitter, and it solves
-another file, I just picked up Andy's one.
+Add Alder Lake mobile CPU model number to Intel family.
 
+Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210121215004.11618-1-tony.luck@intel.com
+---
+ arch/x86/include/asm/intel-family.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-I use Ubuntu, where /usr/bin/python is a symlink
-to /usr/bin/python3.
-
-I just booted Debian in a VM, and confirmed
-/usr/bin/python no longer exists.
-
-Thanks for the explanation.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index 5e658ba..9abe842 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -97,6 +97,7 @@
+ 
+ #define	INTEL_FAM6_LAKEFIELD		0x8A
+ #define INTEL_FAM6_ALDERLAKE		0x97
++#define INTEL_FAM6_ALDERLAKE_L		0x9A
+ 
+ /* "Small Core" Processors (Atom) */
+ 
