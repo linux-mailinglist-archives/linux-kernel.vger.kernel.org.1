@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E012FDFC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9A62FDF8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392886AbhAUCuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 21:50:09 -0500
-Received: from m12-14.163.com ([220.181.12.14]:55558 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436829AbhAUC1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 21:27:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=aK3UL
-        Y00MYQGj6IGa55PKkl6dXVNizNs2jDN5NTvN0M=; b=emh5CO22znJJwE36Tv/IG
-        fkXLhnnyjECQSHBtCKNvIRDM0RroX49ntSzA0wh2ToQgTJk9rVNzO5qFUc6LNxJj
-        /wbAsA0Jetdb9ml/B+e6XsbFi6CHMNNUSi2WnqrthbLjcRMYWtg+AKu9oFk9Smqd
-        5DhKXebFchNcL8qnENTnks=
-Received: from COOL-20200911ZP.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowABHSR3b4QhgGWdXhA--.34257S2;
-        Thu, 21 Jan 2021 10:07:29 +0800 (CST)
-From:   ChunyouTang <tangchunyou@163.com>
-To:     akpm@linux-foundation.org, colin.king@canonical.com,
-        xndchn@gmail.com, j.neuschaefer@gmx.net, luca@lucaceresoli.net,
-        naoki.hayama@lineo.co.jp, ebiggers@google.com, sjpark@amazon.de,
-        joe@perches.com
-Cc:     linux-kernel@vger.kernel.org, zhangwen@yulong.com,
-        tangchunyou@yulong.com
-Subject: [PATCH] scripts/spelling.txt: increase error-prone spell checking
-Date:   Thu, 21 Jan 2021 10:07:31 +0800
-Message-Id: <20210121020731.2316-1-tangchunyou@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
+        id S2436799AbhAUC0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:26:16 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:60436 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2436671AbhAUCIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 21:08:47 -0500
+Received: by ajax-webmail-mail.loongson.cn (Coremail) ; Thu, 21 Jan 2021
+ 10:07:48 +0800 (GMT+08:00)
+X-Originating-IP: [112.3.198.184]
+Date:   Thu, 21 Jan 2021 10:07:48 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   =?UTF-8?B?5Y+45bu26IW+?= <siyanteng@loongson.cn>
+To:     "Jonathan Corbet" <corbet@lwn.net>
+Cc:     "Stephen Rothwell" <sfr@canb.auug.org.au>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>
+Subject: Re: Re: linux-next: build warning after merge of the jc_docs tree
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10a build 20191018(4c4f6d15)
+ Copyright (c) 2002-2021 www.mailtech.cn .loongson.cn
+In-Reply-To: <20210113162730.4f6dc0ac@lwn.net>
+References: <20210113150748.1efc75aa@canb.auug.org.au>
+ <20210113162730.4f6dc0ac@lwn.net>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowABHSR3b4QhgGWdXhA--.34257S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUr_M-UUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbipQAhUVUMb9PClAABsn
+Message-ID: <4b5a642b.4d7e.17722b2a4af.Coremail.siyanteng@loongson.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAf9Dx2+T14QhgKVwIAA--.3865W
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/1tbiAQAGEV3QvM3eFwAbs4
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: tangchunyou <tangchunyou@yulong.com>
-
-Increase direcly,maping,manger spelling error check
-
-Signed-off-by: WenZhang <zhangwen@yulong.com>
----
- scripts/spelling.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 953f4a2..ebcb27b 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -875,6 +875,7 @@ manger||manager
- manoeuvering||maneuvering
- manufaucturing||manufacturing
- mappping||mapping
-+maping||mapping
- matchs||matches
- mathimatical||mathematical
- mathimatic||mathematic
--- 
-1.9.1
-
-
+U29ycnksIEkgYXBvbG9naXplIGZvciB0aGUgaW5jb252ZW5pZW5jZSBjYXVzZWQgdG8geW91LCBJ
+IGRvIG5vdCBxdWliYmxlLCBidXQgSSBoYXZlIGJlZW4gc3R1ZHlpbmcgZm9yIG5lYXJseSBhIHdl
+ZWssIHBsZWFzZSBwYXkgYXR0ZW50aW9uIHRvIG15IGZ1dHVyZSBwYXRjaGVzLgoKVGhhbmtzCllh
+bnRlbmcKCgomZ3Q7IC0tLS0t5Y6f5aeL6YKu5Lu2LS0tLS0KJmd0OyDlj5Hku7bkuro6ICJKb25h
+dGhhbiBDb3JiZXQiIDxjb3JiZXRAbHduLm5ldD4KJmd0OyDlj5HpgIHml7bpl7Q6IDIwMjEtMDEt
+MTQgMDc6Mjc6MzAgKOaYn+acn+WbmykKJmd0OyDmlLbku7bkuro6ICJTdGVwaGVuIFJvdGh3ZWxs
+IiA8c2ZyQGNhbmIuYXV1Zy5vcmcuYXU+CiZndDsg5oqE6YCBOiAiWWFudGVuZyBTaSIgPHNpeWFu
+dGVuZ0Bsb29uZ3Nvbi5jbj4sICJMaW51eCBLZXJuZWwgTWFpbGluZyBMaXN0IiA8bGludXgta2Vy
+bmVsQHZnZXIua2VybmVsLm9yZz4sICJMaW51eCBOZXh0IE1haWxpbmcgTGlzdCIgPGxpbnV4LW5l
+eHRAdmdlci5rZXJuZWwub3JnPgomZ3Q7IOS4u+mimDogUmU6IGxpbnV4LW5leHQ6IGJ1aWxkIHdh
+cm5pbmcgYWZ0ZXIgbWVyZ2Ugb2YgdGhlIGpjX2RvY3MgdHJlZQomZ3Q7IAomZ3Q7IE9uIFdlZCwg
+MTMgSmFuIDIwMjEgMTU6MDc6NDggKzExMDAKJmd0OyBTdGVwaGVuIFJvdGh3ZWxsIDxzZnJAY2Fu
+Yi5hdXVnLm9yZy5hdT4gd3JvdGU6CiZndDsgCiZndDsgJmd0OyBBZnRlciBtZXJnaW5nIHRoZSBq
+Y19kb2NzIHRyZWUsIHRvZGF5J3MgbGludXgtbmV4dCBidWlsZCAoaHRtbGRvY3MpCiZndDsgJmd0
+OyBwcm9kdWNlZCB0aGlzIHdhcm5pbmc6CiZndDsgJmd0OyAKJmd0OyAmZ3Q7IERvY3VtZW50YXRp
+b24vdHJhbnNsYXRpb25zL3poX0NOL21pcHMvaW5nZW5pYy10Y3UucnN0OjYxOiBXQVJOSU5HOiBN
+YWxmb3JtZWQgdGFibGUuCiZndDsgJmd0OyBUZXh0IGluIGNvbHVtbiBtYXJnaW4gaW4gdGFibGUg
+bGluZSA2LgomZ3Q7ICZndDsgCiZndDsgJmd0OyA9PT09PT09PT09PSAgICAgICAgID09PT09CiZn
+dDsgJmd0OyDml7bpkp8gICAgICAgICAgICAgICAgZHJpdmVycy9jbGsvaW5nZW5pYy90Y3UuYwom
+Z3Q7ICZndDsg5Lit5patICAgICAgICAgICAgICAgIGRyaXZlcnMvaXJxY2hpcC9pcnEtaW5nZW5p
+Yy10Y3UuYwomZ3Q7ICZndDsg5a6a5pe25ZmoICAgICAgICAgICAgICBkcml2ZXJzL2Nsb2Nrc291
+cmNlL2luZ2VuaWMtdGltZXIuYwomZ3Q7ICZndDsgT1NUICAgICAgICAgICAgICAgICBkcml2ZXJz
+L2Nsb2Nrc291cmNlL2luZ2VuaWMtb3N0LmMKJmd0OyAmZ3Q7IOiEieWGsuWuveW6puiwg+WItuWZ
+qCAgICAgIGRyaXZlcnMvcHdtL3B3bS1qejQ3NDAuYwomZ3Q7ICZndDsg55yL6Zeo54uXICAgICAg
+ICAgICAgICBkcml2ZXJzL3dhdGNoZG9nL2p6NDc0MF93ZHQuYwomZ3Q7ICZndDsgPT09PT09PT09
+PT0gICAgICAgICA9PT09PQomZ3Q7ICZndDsgCiZndDsgJmd0OyBJbnRyb2R1Y2VkIGJ5IGNvbW1p
+dAomZ3Q7ICZndDsgCiZndDsgJmd0OyAgIDQxOWIxZDRlZDFjYiAoImRvYy96aF9DTjogYWRkIG1p
+cHMgaW5nZW5pYy10Y3UucnN0IHRyYW5zbGF0aW9uIikKJmd0OyAKJmd0OyBNZW1vIHRvIHNlbGY6
+IHlvdSBjYW4ndCBza2lwIGRvaW5nIGEgbmV3IGJ1aWxkIGV2ZW4gZm9yIHNpbXBsZQomZ3Q7IHRy
+YW5zbGF0aW9ucyB0aGF0IG9idmlvdXNseSBzaG91bGRuJ3QgYWRkIGFueSBuZXcgcHJvYmxlbXMu
+ICBTb3JyeSBmb3IgdGhlCiZndDsgbm9pc2UsIEkndmUgYXBwbGllZCBmaXhlcyBmcm9tIEx1a2Fz
+IEJ1bHdhaG4gZm9yIGFsbCBvZiB0aGlzIHdob2xlIG1lc3Mgb2YKJmd0OyBlcnJvcnMuCiZndDsg
+CiZndDsgWWFudGFuZywgKnBsZWFzZSogZG8gbm90IHN1Ym1pdCBkb2N1bWVudGF0aW9uIHBhdGNo
+ZXMgd2l0aG91dCBoYXZpbmcgZG9uZQomZ3Q7IGEgZG9jcyBidWlsZCB0byBtYWtlIHN1cmUgdGhp
+bmdzIHdvcmsgYXMgZXhwZWN0ZWQhCiZndDsgCiZndDsgVGhhbmtzLAomZ3Q7IAomZ3Q7IGpvbgoK
+Cjwvc2ZyQGNhbmIuYXV1Zy5vcmcuYXU+PC9saW51eC1uZXh0QHZnZXIua2VybmVsLm9yZz48L2xp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+PC9zaXlhbnRlbmdAbG9vbmdzb24uY24+PC9zZnJA
+Y2FuYi5hdXVnLm9yZy5hdT48L2NvcmJldEBsd24ubmV0Pg==
