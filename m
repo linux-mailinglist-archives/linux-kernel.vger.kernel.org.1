@@ -2,147 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A062FEABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166E62FEAB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731462AbhAUMxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:53:46 -0500
-Received: from mout.gmx.net ([212.227.15.19]:33185 "EHLO mout.gmx.net"
+        id S1731546AbhAUMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:52:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:35584 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730017AbhAUMxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:53:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611233448;
-        bh=wxmgfpmBhrsdPK93rM0xenUVwYAc2Qsuo4Jdk1DH/TU=;
-        h=X-UI-Sender-Class:Subject:From:In-Reply-To:Date:Cc:References:To;
-        b=bw1sSKonISN7cfR6Z+TEqNH9nFwgRxacHSMQFZbFAOcPNxSIJ1xIyHsDDfqZ0o5uj
-         U4oEcZWMAzkPODGtakLkgiUivhvRBYquNchZ3Q0Y1igFfIHMeTOhbvloJbB0UpJ6JB
-         CRIq3HF+QFbA8a0sifNDdxL6wKr+myc4C2ZCN2xY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.42.0.78] ([83.204.192.78]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MBDnI-1lAmcI1v5S-00Cm34; Thu, 21
- Jan 2021 13:50:48 +0100
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.5\))
-Subject: Re: [RFC PATCH 7/7] irqchip/apple-aic: add SMP support to the Apple
- AIC driver.
-From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
-In-Reply-To: <CAK8P3a1qeVxTxZXpfMe70zpPCSBrTOz23ZTR=PHgw0PP9GUvbw@mail.gmail.com>
-Date:   Thu, 21 Jan 2021 13:50:47 +0100
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        id S1730577AbhAUMvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:51:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8F4011D4;
+        Thu, 21 Jan 2021 04:50:54 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39C563F68F;
+        Thu, 21 Jan 2021 04:50:53 -0800 (PST)
+Subject: Re: [PATCH 2/2] Revert "iommu/arm-smmu-v3: Don't reserve
+ implementation defined register space"
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Stan Skowronek <stan@corellium.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E77005CF-8B2A-4D17-9330-72ECFD7F3C93@caramail.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-8-mohamed.mediouni@caramail.com>
- <CAK8P3a1qeVxTxZXpfMe70zpPCSBrTOz23ZTR=PHgw0PP9GUvbw@mail.gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.5)
-X-Provags-ID: V03:K1:oZzUZUD1iqzn6wnOqTNUiSAJB4BtZLaIkOKa0UB4zSYBgDFKcm0
- SusL/+ROWQfkMv60Nj8L0mP1V/jJToGuqaD+haRAkfbwRto1UsD60moR7+2L/sjcLGMb7HM
- O0KqAGDg+jhzu0NHalzHPC3lwMPp1kCf7V+dWtQCAAPcHvxo9cZRmyXs22XECgJhTQFFVgP
- v/Jyj+XadF1Lijdq6fjZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zdrNY4ysWEA=:CQ1F9tuXRmDE6hoCLvA/Uy
- SYw+rVAXXqDHCLpl2wQg4tiEv1TKZ1h/E8n/ceX/3wZhwQZVM00t/PsuqYzJ4LbeRWGCNsmG/
- BegIwDeWuQezUZzoWkrk0e5LnnY21f1eZbNHVjjVTq+1SWd5/5gKrinIDFUDq2zNLDRYIor56
- 5v11P98lxqbSJBzLH5qeAhlN5jpsqft0+xI29cMQRcjAAydnqB8ZrP0Te0JWr+KGhAp1ZqyaZ
- 1D8sxz8Lw1Sc66po7GyLMGS+ddVT41JYOf35hjmVerDhmuMkFKnXh3cStpFNF9hhpAsxMR3bN
- fWXN7VdAsT/4+YVTWStZmKAXq//3FQzp8OW+cf20OMCzduu2hPfQ2ydCBp9A50FXQQQS+QtNt
- aiFj15cgx2qH2mpymiVIyV4n0rCYPrYBi+/J8sYD0cnQnYuhjL4jrobAWZh8CQoAZldxRdPm5
- XwRaQSfwosmg+TIxMwkwk9lJD/U+NmUKqYc99QGvdb3b45krLBpOjGTTsCG3sR79Mtga1Z1XG
- 8GT7aJm3G6sNxX301U5xPqfhy+LN8Y8WIOsuRO1Ics3hdGw4OUPSUtx198qG6anrm08r18vRa
- MAetMNhQFdLZ5HZV0a012gBV9w8XnpKbUS0WiJO2JKBYCco1qUR1dQdIQydfRG+SF/LdBNref
- x5iz9IfkLAn/k7PVsAaTo831vTe+cqi2GtLQNcr7acde+RH4BiEKgrEEEkjEIAGwLwTKZAB7x
- UwWLzf5+DKbWnQebdlhk6Nq82m0qhqMrdXGMotG5zVQ+tYf9keLiDDtkSaMGCQNIP1bNUUeb7
- tUXGkjKcIjXOP7nPU+RLr/BrxRgH0vE2YEXbA6ITSb2jhBSD59kWh1rBUnOSuPXqDtRE6IkTL
- qghbXsoO7BpT//wbiwA6PV/ggO1HVOxAGRzRlR5No=
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
+ <20210119015951.1042-3-thunder.leizhen@huawei.com>
+ <888312dc-85b7-4d5e-f264-bbdd9e3638f6@arm.com>
+ <ca469958-179d-02c5-b147-0a0ff951d503@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <72c979bd-501f-df9b-7bca-02b8c11d3860@arm.com>
+Date:   Thu, 21 Jan 2021 12:50:51 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <ca469958-179d-02c5-b147-0a0ff951d503@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-21 02:04, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/1/20 23:02, Robin Murphy wrote:
+>> On 2021-01-19 01:59, Zhen Lei wrote:
+>>> This reverts commit 52f3fab0067d6fa9e99c1b7f63265dd48ca76046.
+>>>
+>>> This problem has been fixed by another patch. The original method had side
+>>> effects, it was not mapped to the user-specified resource size. The code
+>>> will become more complex when ECMDQ is supported later.
+>>
+>> FWIW I don't think that's a significant issue either way - there could be any number of imp-def pages between SMMU page 0 and the ECMDQ control pages, so it will still be logical to map them as another separate thing anyway.
+> 
+> Yes, so now I'm thinking of preserving the SMMUv3 resources and eliminating the imp-def area. Then use another devm_ioremap() to cover the entire resource，assign it to smmu->base.
+> Otherwise, a base pointer needs to be defined for each separated register space，or call a function to convert each time.
 
+But we'll almost certainly want to maintain a pointer to start of the 
+ECMDQ control page block anyway, since that's not fixed relative to 
+smmu->base. Therefore what's the harm in handling that via a dedicated 
+mapping, once we've determined that we *do* intend to use ECMDQs? 
+Otherwise we end up with in the complicated dance of trying to map 
+"everything" up-front in order to be able to read the ID registers to 
+determine what the actual extent of "everything" is supposed to be.
 
-> On 21 Jan 2021, at 13:44, Arnd Bergmann <arnd@kernel.org> wrote:
->=20
-> On Wed, Jan 20, 2021 at 2:27 PM Mohamed Mediouni
-> <mohamed.mediouni@caramail.com> wrote:
->=20
->> +#ifdef CONFIG_SMP
->> +static void apple_aic_ipi_send_mask(struct irq_data *d,
->> +                                   const struct cpumask *mask)
->=20
-> Not sure we care about the #ifdef here, given that arch/arm64 does not
-> allow building a kernel without CONFIG_SMP.
->=20
->> +       /*
->> +     * Ensure that stores to Normal memory are visible to the
->> +     * other CPUs before issuing the IPI.
->> +     */
->> +       wmb();
->> +
->> +       for_each_cpu (cpu, mask) {
->> +               smp_mb__before_atomic();
->> +               atomic_or(1u << irqnr, per_cpu_ptr(&aic_ipi_mask, =
-cpu));
->> +               smp_mb__after_atomic();
->> +               lcpu =3D get_cpu();
->> +               if (aic.fast_ipi) {
->> +                       if ((lcpu >> 2) =3D=3D (cpu >> 2))
->> +                               write_sysreg(cpu & 3, =
-SR_APPLE_IPI_LOCAL);
->> +                       else
->> +                               write_sysreg((cpu & 3) | ((cpu >> 2) =
-<< 16),
->> +                                            SR_APPLE_IPI_REMOTE);
->> +               } else
->> +                       writel(lcpu =3D=3D cpu ? REG_IPI_FLAG_SELF :
->> +                                                  =
-(REG_IPI_FLAG_OTHER << cpu),
->> +                              aic.base + REG_IPI_SET);
->> +               put_cpu();
->> +       }
->> +
->> +       /* Force the above writes to be executed */
->> +       if (aic.fast_ipi)
->> +               isb();
->> +}
->=20
-> Since this just loops over all CPUs, I'd probably just turn it into
-> an ipi_send_single() callback and have the caller do the
-> loop for simplicity.
->=20
-> I also have the feeling that splitting one hardware IPI into multiple
-> logical interrupts, which are then all registered by the same irq
-> handler adds a little more complexity than necessary.
->=20
-> Changing this would of course require modifications to
-> arch/arm64/kernel/smp.c, which is hardwired to use
-> CONFIG_GENERIC_IRQ_IPI in smp_cross_call(), and allowing
-> a different code path there may be worse than emulating an
-> irqchip.
->=20
->> @@ -186,8 +325,11 @@ static int __init apple_aic_init(struct =
-device_node *node,
->>       if (WARN(!aic.base, "unable to map aic registers\n"))
->>               return -EINVAL;
->>=20
->> +       aic.fast_ipi =3D of_property_read_bool(node, "fast-ipi");
->=20
-> Where is this property documented, and what decides which one to use?
-It=E2=80=99s getting documented in the next patch set.
+(also this reminds me that I was going to remove arm_smmu_page1_fixup() 
+entirely - I'd totally forgotten about that...)
 
-This property is there to enable support for older iPhone processors
-later on, some of which do not have fast IPI support.
+Robin.
 
-On Apple M1, fast-ipi is always on.
-
-Thank you,
->       Arnd
-
+>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>> ---
+>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 32 ++++-------------------------
+>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 ---
+>>>    2 files changed, 4 insertions(+), 31 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> index 8ca7415d785d9bf..477f473842e5272 100644
+>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> @@ -91,8 +91,9 @@ struct arm_smmu_option_prop {
+>>>    static inline void __iomem *arm_smmu_page1_fixup(unsigned long offset,
+>>>                             struct arm_smmu_device *smmu)
+>>>    {
+>>> -    if (offset > SZ_64K)
+>>> -        return smmu->page1 + offset - SZ_64K;
+>>> +    if ((offset > SZ_64K) &&
+>>> +        (smmu->options & ARM_SMMU_OPT_PAGE0_REGS_ONLY))
+>>> +        offset -= SZ_64K;
+>>>          return smmu->base + offset;
+>>>    }
+>>> @@ -3486,18 +3487,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
+>>>        return err;
+>>>    }
+>>>    -static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
+>>> -                      resource_size_t size)
+>>> -{
+>>> -    struct resource res = {
+>>> -        .flags = IORESOURCE_MEM,
+>>> -        .start = start,
+>>> -        .end = start + size - 1,
+>>> -    };
+>>> -
+>>> -    return devm_ioremap_resource(dev, &res);
+>>> -}
+>>> -
+>>>    static int arm_smmu_device_probe(struct platform_device *pdev)
+>>>    {
+>>>        int irq, ret;
+>>> @@ -3533,23 +3522,10 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
+>>>        }
+>>>        ioaddr = res->start;
+>>>    -    /*
+>>> -     * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
+>>> -     * the PMCG registers which are reserved by the PMU driver.
+>>> -     */
+>>> -    smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
+>>> +    smmu->base = devm_ioremap_resource(dev, res);
+>>>        if (IS_ERR(smmu->base))
+>>>            return PTR_ERR(smmu->base);
+>>>    -    if (arm_smmu_resource_size(smmu) > SZ_64K) {
+>>> -        smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
+>>> -                           ARM_SMMU_REG_SZ);
+>>> -        if (IS_ERR(smmu->page1))
+>>> -            return PTR_ERR(smmu->page1);
+>>> -    } else {
+>>> -        smmu->page1 = smmu->base;
+>>> -    }
+>>> -
+>>>        /* Interrupt lines */
+>>>          irq = platform_get_irq_byname_optional(pdev, "combined");
+>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>>> index 96c2e9565e00282..0c3090c60840c22 100644
+>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>>> @@ -152,8 +152,6 @@
+>>>    #define ARM_SMMU_PRIQ_IRQ_CFG1        0xd8
+>>>    #define ARM_SMMU_PRIQ_IRQ_CFG2        0xdc
+>>>    -#define ARM_SMMU_REG_SZ            0xe00
+>>> -
+>>>    /* Common MSI config fields */
+>>>    #define MSI_CFG0_ADDR_MASK        GENMASK_ULL(51, 2)
+>>>    #define MSI_CFG2_SH            GENMASK(5, 4)
+>>> @@ -584,7 +582,6 @@ struct arm_smmu_strtab_cfg {
+>>>    struct arm_smmu_device {
+>>>        struct device            *dev;
+>>>        void __iomem            *base;
+>>> -    void __iomem            *page1;
+>>>      #define ARM_SMMU_FEAT_2_LVL_STRTAB    (1 << 0)
+>>>    #define ARM_SMMU_FEAT_2_LVL_CDTAB    (1 << 1)
+>>>
+>>
+>> .
+>>
+> 
