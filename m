@@ -2,231 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE092FE752
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAC92FE751
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728866AbhAUKQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:16:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        id S1728987AbhAUKQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:16:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728236AbhAUJrp (ORCPT
+        with ESMTP id S1728708AbhAUJrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:47:45 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2991C061348
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:46:01 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id g10so1072398wrx.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:46:01 -0800 (PST)
+        Thu, 21 Jan 2021 04:47:49 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998C9C061575;
+        Thu, 21 Jan 2021 01:47:31 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id b5so1050428wrr.10;
+        Thu, 21 Jan 2021 01:47:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XqksBZrA3odDFn/ITnacc/iTVMMrBkdLV36fQYYpBKs=;
-        b=IUHmUEPz1ssVdtT4iImldKBIPFQSaTjNATWl7tdiuiuCD6yIIvpW1LcjWqf2zC+kP+
-         ONvIqMfLNnBxYsAjFxhqUZKTgOetpiOucBtGyycM6K+34CFTNmR2j8iHyiDqRazhlGBc
-         qRh3c3qTtOWnDb00KWaUh/UZexq0lrQYMf1ezzoInYRh3sJOLgEhcH+uNVGNB9u0/363
-         q/3qmOMCHAwiHnsJUKhCLptQuhFk04j4h3uYAiguVyK4Q1f90DtcDDwc3OD/guHvROCn
-         z3lbMc5Eq/0vCPRmQ3u98ZqEe8k0K11pYmvcz7IhGcZJDA7vIWZn7yDejUNqs68yMmY7
-         kgrw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=yKc5i0pAM0tVHvQhN0nKtZMVSNkJgO1BmOAhXjVUe9U=;
+        b=jIYHon01Ye/54nu5CwPQAQ1eytx++CbmX92yv5dAYqEzAk0u6CSuQBswvAjb0XZdjc
+         /OS/PSaOUHTY1TJq6dp1oPKEGQeCSRw6NJw73BzzcQqQep3Xbru5wnL0mRUjYcB2nd2M
+         HUC7yB3w6wJFnLcFHlIbh7Ppm8ILeqye9tIFD2kFAyi9xIhMwUwk/1FJ7AtsJxeEnO72
+         FO+HTjnEz/9GUR1c8OwVuO04P54NRbYIkws+lqSHxuyBPIz2Doi6LlBDJadZnb8RHkML
+         xfkza48hXgIx5aVxKUAIBrgKqzPCK47T8+XgbVSqQo7zftiSAtInnyeaZ1JbVTsl9DJT
+         mRZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XqksBZrA3odDFn/ITnacc/iTVMMrBkdLV36fQYYpBKs=;
-        b=AdbOPTNR4MHVXIyxD8/EmLB1TklhDhmzOVLPTZQ0QEmrxTELZKn7O9LfAyz1kJ/00d
-         J/EDhxl6MjtNVYH4hcjFJ2qZHjY8ImDwzbHHiOCiYoQXXLiEndpgKftQCb0nVKf9Nqba
-         iomzbykygwkinVZmqBxkGRky39lId2CoW4WWVZF6F5JWo3ybvRwEUDcRImVhIHswCYaU
-         Y89f4bw+ESpgQhBjdpjSCKoyMLfPTQXisAweMvb3aEGHbJ54QPwwybpX0joQiyhtG/rt
-         CAebMjUvG4w84sxAduiHrzA72yLHWYal6SrPU38aq3zSAMY2XxnQ3mFbPhr0akDrPzrJ
-         B2gg==
-X-Gm-Message-State: AOAM533MV2HrLLBLLjZDVC2SbCmP8Ds0CbO1cplcz1xppYH3ynyHGzvn
-        Kf5+uZpAUkf5yYkPYyr3TDWXzg==
-X-Google-Smtp-Source: ABdhPJzC+77t2FW0BclKKfKW3nlo0wzlW6UtCmvMAeUddP508BE1nW6k6f4Ou+MV0qRyLsxZmlPopQ==
-X-Received: by 2002:a5d:4bc2:: with SMTP id l2mr13557020wrt.204.1611222360687;
-        Thu, 21 Jan 2021 01:46:00 -0800 (PST)
-Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:46:00 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 30/30] RDMA/sw/rdmavt/qp: Fix a bunch of kernel-doc misdemeanours
-Date:   Thu, 21 Jan 2021 09:45:19 +0000
-Message-Id: <20210121094519.2044049-31-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
-References: <20210121094519.2044049-1-lee.jones@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=yKc5i0pAM0tVHvQhN0nKtZMVSNkJgO1BmOAhXjVUe9U=;
+        b=bWHH2iFPNcPCMju5nj88bv4k8A9wCNEg3F3bZx2ywYjijEfVRYP1OHjpOPmK/W733W
+         CwOJiJ+AOrUfyKgkUO/QO0ZD3op0ddBnhHucs6XmHEuDq+LjoyJhiacw+fgev8H6Nlbs
+         Ch9milkC5dJ4nAB4hfmWXOePbrYwJTuJc6TIl1/HC9qNiqwYvFFY8Bon9+36eMymr2e6
+         bdLvyCu/dX08Y9VGDa0CCgtvOUCW+z5aICrhtn/L7twxZo+KZ4OvB78p/zAHblQ7F2ed
+         YCYAzX+mLpl7KYsyf57esTcoNBnSyIeAfvJBVa8m3ruNq8AM/P5jEvODeaXMhxXD+5M8
+         5bRw==
+X-Gm-Message-State: AOAM530wFjzXsY3SHlgz85modexMT00GJ25fHhXWWjDE5RgKibDoY6V3
+        jKd1Mmk7sa9/w8ESl4MNj/U=
+X-Google-Smtp-Source: ABdhPJwjt1eJ+KrHwe5acgIBFhZjuKePkobn9OcmLVCO2pB2kKBCZs08qinTPDkGKYdcEneH3v0nqA==
+X-Received: by 2002:adf:902a:: with SMTP id h39mr13230023wrh.147.1611222450386;
+        Thu, 21 Jan 2021 01:47:30 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id u5sm8350654wmg.9.2021.01.21.01.47.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 01:47:29 -0800 (PST)
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
+ acpi_devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
+ <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
+Date:   Thu, 21 Jan 2021 09:47:28 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hi Rafael
 
- drivers/infiniband/sw/rdmavt/qp.c:165: warning: Function parameter or member 'rdi' not described in 'rvt_wss_init'
- drivers/infiniband/sw/rdmavt/qp.c:329: warning: Function parameter or member 'rdi' not described in 'init_qpn_table'
- drivers/infiniband/sw/rdmavt/qp.c:534: warning: Function parameter or member 'type' not described in 'alloc_qpn'
- drivers/infiniband/sw/rdmavt/qp.c:664: warning: Function parameter or member 'wqe' not described in 'rvt_swqe_has_lkey'
- drivers/infiniband/sw/rdmavt/qp.c:664: warning: Function parameter or member 'lkey' not described in 'rvt_swqe_has_lkey'
- drivers/infiniband/sw/rdmavt/qp.c:682: warning: Function parameter or member 'qp' not described in 'rvt_qp_sends_has_lkey'
- drivers/infiniband/sw/rdmavt/qp.c:682: warning: Function parameter or member 'lkey' not described in 'rvt_qp_sends_has_lkey'
- drivers/infiniband/sw/rdmavt/qp.c:706: warning: Function parameter or member 'qp' not described in 'rvt_qp_acks_has_lkey'
- drivers/infiniband/sw/rdmavt/qp.c:706: warning: Function parameter or member 'lkey' not described in 'rvt_qp_acks_has_lkey'
- drivers/infiniband/sw/rdmavt/qp.c:866: warning: Function parameter or member 'rdi' not described in 'rvt_init_qp'
- drivers/infiniband/sw/rdmavt/qp.c:920: warning: Function parameter or member 'rdi' not described in '_rvt_reset_qp'
- drivers/infiniband/sw/rdmavt/qp.c:1736: warning: Function parameter or member 'udata' not described in 'rvt_destroy_qp'
- drivers/infiniband/sw/rdmavt/qp.c:1924: warning: Function parameter or member 'qp' not described in 'rvt_qp_valid_operation'
- drivers/infiniband/sw/rdmavt/qp.c:1924: warning: Function parameter or member 'post_parms' not described in 'rvt_qp_valid_operation'
- drivers/infiniband/sw/rdmavt/qp.c:1924: warning: Function parameter or member 'wr' not described in 'rvt_qp_valid_operation'
- drivers/infiniband/sw/rdmavt/qp.c:2020: warning: Function parameter or member 'call_send' not described in 'rvt_post_one_wr'
- drivers/infiniband/sw/rdmavt/qp.c:2621: warning: Function parameter or member 'qp' not described in 'rvt_stop_rnr_timer'
+On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+>>>> specification intends. We need to be able to find those devices "from"
+>>>> the dependee, so add a function to parse all ACPI Devices and check if
+>>>> the include the handle of the dependee device in their _DEP buffer.
+>>> What exactly do you need this for?
+>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+>> refer to those INT3472's in their _DEP method. The driver binds to the
+>> INT3472 device, we need to find the sensors dependent on them.
+>>
+> Well, this is an interesting concept. :-)
+>
+> Why does _DEP need to be used for that?  Isn't there any other way to
+> look up the dependent sensors?
+>
+>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+>>>
+>>> Note that supplier drivers may remove entries from there, but does
+>>> that matter for your use case?
+>> Ah - that may work, yes. Thank you, let me test that.
+> Even if that doesn't work right away, but it can be made work, I would
+> very much prefer that to the driver parsing _DEP for every device in
+> the namespace by itself.
 
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/infiniband/sw/rdmavt/qp.c | 34 ++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index 22fa9bde54199..76d6bbfbec50c 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -156,7 +156,7 @@ void rvt_wss_exit(struct rvt_dev_info *rdi)
- 	rdi->wss = NULL;
- }
- 
--/**
-+/*
-  * rvt_wss_init - Init wss data structures
-  *
-  * Return: 0 on success
-@@ -323,6 +323,7 @@ static void get_map_page(struct rvt_qpn_table *qpt,
- 
- /**
-  * init_qpn_table - initialize the QP number table for a device
-+ * @rdi: rvt dev struct
-  * @qpt: the QPN table
-  */
- static int init_qpn_table(struct rvt_dev_info *rdi, struct rvt_qpn_table *qpt)
-@@ -524,6 +525,7 @@ static inline unsigned mk_qpn(struct rvt_qpn_table *qpt,
-  *	       IB_QPT_SMI/IB_QPT_GSI
-  * @rdi: rvt device info structure
-  * @qpt: queue pair number table pointer
-+ * @type: the QP type
-  * @port_num: IB port number, 1 based, comes from core
-  * @exclude_prefix: prefix of special queue pair number being allocated
-  *
-@@ -655,8 +657,8 @@ static void rvt_clear_mr_refs(struct rvt_qp *qp, int clr_sends)
- 
- /**
-  * rvt_swqe_has_lkey - return true if lkey is used by swqe
-- * @wqe - the send wqe
-- * @lkey - the lkey
-+ * @wqe: the send wqe
-+ * @lkey: the lkey
-  *
-  * Test the swqe for using lkey
-  */
-@@ -675,8 +677,8 @@ static bool rvt_swqe_has_lkey(struct rvt_swqe *wqe, u32 lkey)
- 
- /**
-  * rvt_qp_sends_has_lkey - return true is qp sends use lkey
-- * @qp - the rvt_qp
-- * @lkey - the lkey
-+ * @qp: the rvt_qp
-+ * @lkey: the lkey
-  */
- static bool rvt_qp_sends_has_lkey(struct rvt_qp *qp, u32 lkey)
- {
-@@ -699,8 +701,8 @@ static bool rvt_qp_sends_has_lkey(struct rvt_qp *qp, u32 lkey)
- 
- /**
-  * rvt_qp_acks_has_lkey - return true if acks have lkey
-- * @qp - the qp
-- * @lkey - the lkey
-+ * @qp: the qp
-+ * @lkey: the lkey
-  */
- static bool rvt_qp_acks_has_lkey(struct rvt_qp *qp, u32 lkey)
- {
-@@ -716,10 +718,10 @@ static bool rvt_qp_acks_has_lkey(struct rvt_qp *qp, u32 lkey)
- 	return false;
- }
- 
--/*
-+/**
-  * rvt_qp_mr_clean - clean up remote ops for lkey
-- * @qp - the qp
-- * @lkey - the lkey that is being de-registered
-+ * @qp: the qp
-+ * @lkey: the lkey that is being de-registered
-  *
-  * This routine checks if the lkey is being used by
-  * the qp.
-@@ -853,6 +855,7 @@ int rvt_alloc_rq(struct rvt_rq *rq, u32 size, int node,
- 
- /**
-  * rvt_init_qp - initialize the QP state to the reset state
-+ * @rdi: rvt dev struct
-  * @qp: the QP to init or reinit
-  * @type: the QP type
-  *
-@@ -907,6 +910,7 @@ static void rvt_init_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
- 
- /**
-  * _rvt_reset_qp - initialize the QP state to the reset state
-+ * @rdi: rvt dev struct
-  * @qp: the QP to reset
-  * @type: the QP type
-  *
-@@ -1726,6 +1730,7 @@ int rvt_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- /**
-  * rvt_destroy_qp - destroy a queue pair
-  * @ibqp: the queue pair to destroy
-+ * @udata: unused by the driver
-  *
-  * Note that this can be called while the QP is actively sending or
-  * receiving!
-@@ -1901,9 +1906,9 @@ int rvt_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
- 
- /**
-  * rvt_qp_valid_operation - validate post send wr request
-- * @qp - the qp
-- * @post-parms - the post send table for the driver
-- * @wr - the work request
-+ * @qp: the qp
-+ * @post_parms_ the post send table for the driver
-+ * @wr: the work request
-  *
-  * The routine validates the operation based on the
-  * validation table an returns the length of the operation
-@@ -2013,6 +2018,7 @@ static inline int rvt_qp_is_avail(
-  * rvt_post_one_wr - post one RC, UC, or UD send work request
-  * @qp: the QP to post on
-  * @wr: the work request to send
-+ * @call_send: kick the send engine into gear
-  */
- static int rvt_post_one_wr(struct rvt_qp *qp,
- 			   const struct ib_send_wr *wr,
-@@ -2612,7 +2618,7 @@ EXPORT_SYMBOL(rvt_stop_rc_timers);
- 
- /**
-  * rvt_stop_rnr_timer - stop an rnr timer
-- * @qp - the QP
-+ * @qp: the QP
-  *
-  * stop an rnr timer and return if the timer
-  * had been pending.
--- 
-2.25.1
+This does work; do you prefer it in scan.c, or in utils.c (in which case
+with acpi_dep_list declared as external var in internal.h)?
+
+
 
