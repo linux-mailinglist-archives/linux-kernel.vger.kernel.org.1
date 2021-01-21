@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F082FF3FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914552FF403
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbhAUTNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:13:02 -0500
-Received: from ms.lwn.net ([45.79.88.28]:37962 "EHLO ms.lwn.net"
+        id S1726595AbhAUTOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:14:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbhAUTK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:10:56 -0500
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 67463615C;
-        Thu, 21 Jan 2021 19:09:55 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 67463615C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1611256197; bh=0PfEGC/cPJ5o5ce4iP7kPM3qg+xRX/ZAzMq8mA7LR+w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LfmTwdSQP3IBIFsgIimE+P0zc4qOuRRENhFAbFZ81/G0xiY0DScELhTCtldW3XIfz
-         Ugs8obCBqzDnsrsJoi5krEbWrGHjyZPpGee+9oAGUJ1ZDXrSP/jMHtPw39Va3bBst2
-         L4SlcWZ4eBnLVGq3hawDKWCzzYzGfx0DG20ajnIZZRO05FEVzu6Z6QH1o0t7hxv9Z5
-         FAGLGDnT/R3zaflLKjCnNdzZoWBPmMbSxH+vE+gp8swBNJrsI901YZhh5xO0J5KAQE
-         q+gS4MkjsOprcfN5wLvJLeHWfw2eGdzUGLUYeV2MifPW5V3sfXPnjMGNWyuhz0xfWx
-         Q0+/sodoN2x/A==
-Date:   Thu, 21 Jan 2021 12:09:54 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Richard Gong <richard.gong@linux.intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Will Drewry <wad@chromium.org>,
-        Ying Xue <ying.xue@windriver.com>,
-        dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net
-Subject: Re: [PATCH v6 00/16] Fix several bad kernel-doc markups
-Message-ID: <20210121120954.5ed4c3b2@lwn.net>
-In-Reply-To: <cover.1610610937.git.mchehab+huawei@kernel.org>
-References: <cover.1610610937.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        id S1726982AbhAUTNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:13:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8597E221E7;
+        Thu, 21 Jan 2021 19:12:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611256349;
+        bh=gePeo1d++9CotISBWeKzhTR/pKZ+NFGN4GknjJNIk/A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ilpozm4oEOgOeuinhxdzZwVAmejw2ovGgagbCX3evNiZlJet+cOeVyYnSZqtO85SV
+         oiFMzKeozXMWhu1hFdKYmcSU5u/N+kqS7b2OKuaTCaW8HjEjkly0+XGkTFSOARcGhV
+         Q3/T09iuuH2ArriOXnC25AaHh15SeUXCAxPmwoQc=
+Date:   Thu, 21 Jan 2021 20:12:26 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, stable@vger.kernel.org,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] driver core: Fix device link device name collision
+Message-ID: <YAnSGo05jjlQwnor@kroah.com>
+References: <20210110175408.1465657-1-saravanak@google.com>
+ <10c82099cb39f176dde96c16d9cc6100@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10c82099cb39f176dde96c16d9cc6100@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 09:04:36 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-
-> 1)  10 remaining fixup patches from the series I sent back on Dec, 1st:
+On Thu, Jan 21, 2021 at 08:01:24PM +0100, Michael Walle wrote:
+> Hi,
 > 
->    parport: fix a kernel-doc markup
->    rapidio: fix kernel-doc a markup
->    fs: fix kernel-doc markups
->    pstore/zone: fix a kernel-doc markup
->    firmware: stratix10-svc: fix kernel-doc markups
->    connector: fix a kernel-doc markup
->    lib/crc7: fix a kernel-doc markup
->    memblock: fix kernel-doc markups
->    w1: fix a kernel-doc markup
->    selftests: kselftest_harness.h: partially fix kernel-doc markups
+> Am 2021-01-10 18:54, schrieb Saravana Kannan:
+> > The device link device's name was of the form:
+> > <supplier-dev-name>--<consumer-dev-name>
+> > 
+> > This can cause name collision as reported here [1] as device names are
+> > not globally unique. Since device names have to be unique within the
+> > bus/class, add the bus/class name as a prefix to the device names used
+> > to
+> > construct the device link device name.
+> > 
+> > So the devuce link device's name will be of the form:
+> > <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
+> > 
+> > [1] -
+> > https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+> > Reported-by: Michael Walle <michael@walle.cc>
+> > Tested-by: Michael Walle <michael@walle.cc>
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> 
+> Greg, any news here?
 
-A week later none of these have shown up in linux-next, so I went ahead
-and applied the set.
+Burried in other patches...
 
-Thanks,
+I'll go pick this up now, sorry for the delay.
 
-jon
+greg k-h
