@@ -2,110 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DA92FF77E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441172FF777
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727478AbhAUVmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:42:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
+        id S1727822AbhAUVlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:41:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbhAUVgu (ORCPT
+        with ESMTP id S1727704AbhAUVhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:36:50 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5706C06174A;
-        Thu, 21 Jan 2021 13:36:09 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id p13so4237643ljg.2;
-        Thu, 21 Jan 2021 13:36:09 -0800 (PST)
+        Thu, 21 Jan 2021 16:37:35 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2ED0C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:36:50 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id l17so2009950pff.17
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:36:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YVqgssMQdQhf9y4JoWK0z3t3swC1/ivpAtAAVdvhll4=;
-        b=s/o8iP3f3g2RyAf0tsVr2o+psJr/byantEoQeD3hFGfAIysCZTR59lyN5PZ3XKN1qW
-         /xvkhqeg2suJDIb+8ByOo5mgTbwsHJH5qM1SAQCd2h+0QO8zG/L6pjwWlbcC6COTaOyl
-         +KGRl3IcRVFS5tXYbGgL0MShb+stQyDjOK2zhlF5rxntfW5yFJVU1SVWo6IWbIxuhhrR
-         5k5QLe5ddFfQYycgWlOjNSP+BMjPQjmyhC5pMqVKxujTrP+F4NMckZfULHmo8HA8Szga
-         Fl7DbYX+KTT+VSgn2b3v+T9CRDx9K7lk4APaIfekExKBDRBcP8vlYQyWUbFCm9yIkcCG
-         EUdw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=uOdIV+OIC4oe0YbeVn+NOSkcdmkyaip5vjXYADMjhaU=;
+        b=ZlxZGSGgQOyJdUuWoZTSjeF9XkcRXQJePTB7YUDoh6tqXVijT1lQOPNlwAqmftcOBc
+         kJXBChowZUUe7Q+oQOdS3wCW7vYewV7DeLRxjC5ePRBtQnutxetlDy0K3QBCZzhNaCTp
+         016Yupa76hS7oLOwskhPVay+7V8POo6Iw3A0GT5LTllEeZ4RhxAmtn9IqRr1780kVsBm
+         6l6GBIYfF7OCTKKp+pvxyRpTfvaXGjAeae3fFa6LQCCjVhufnuJITFyLABWro/3VEGz8
+         FMRWJcV/s3e8NKViGJQZVNq41JDyWOK7qww2LWprB9Ch6iiNF66jfe39SAXHjloDn3e3
+         yG3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YVqgssMQdQhf9y4JoWK0z3t3swC1/ivpAtAAVdvhll4=;
-        b=HK68l1QWyfb4eUQ03GfUvyeXyLq2+wj2ttouSAv90VaZtZTHezM8zk3of0S38OABtW
-         eR2rXZiRfTPHXIgesLH17jYIFo38J9qDCINmcNfw+11zD2PGqbksgy4Gzu+EZPwJJoIR
-         3YTwS2tFm8lhs6M9LupYsGUpV9Y5NixrfQ0eKGeKuE5GISLgxJUPalpi8KbXD5+5c9gD
-         15ifsVD0+zlODTJk5vG/CUmCUm6IldQJwUZnayW/enaKZ+gMpjiKW8Ba2dvfPwaPgvbG
-         yv9qDFkpp2oKdrdvf/xAIHs9v1EZmx5kTVQVIicdcT5ypdNCbxKCxCfgaZnojO3vZVGB
-         vAmg==
-X-Gm-Message-State: AOAM531E4R1c+kql3ocWVKU4qvawpVVVuw5gM+5+Rc8JbCLflSkOgvc8
-        QvDnRLe8AVc/uiMWXiSaGVN02Vnsil8=
-X-Google-Smtp-Source: ABdhPJwIPaV85WcNNtbxmI3PgM7773oygI3tszwUBIQeJepq5sb+YObOjRnU/5o3/Z0ZlU4qsIoo8Q==
-X-Received: by 2002:a05:651c:2049:: with SMTP id t9mr693818ljo.58.1611264968032;
-        Thu, 21 Jan 2021 13:36:08 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id p3sm652233lfu.271.2021.01.21.13.36.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 13:36:07 -0800 (PST)
-Subject: Re: [PATCH 11/13] devfreq: tegra30: Migrate to dev_pm_opp_set_opp()
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-tegra@vger.kernel.org
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <71451eb2-46b2-1ea0-efcc-0811568159a4@gmail.com>
-Date:   Fri, 22 Jan 2021 00:36:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=uOdIV+OIC4oe0YbeVn+NOSkcdmkyaip5vjXYADMjhaU=;
+        b=rIt9QMJmIM5nb3u6WWbeeBFvexDnVaXtTtJ5TBpuTXNe8BBntkBOCLb/i99a6ILzX9
+         ckhesE8FQyMzAraA56VdzuVNkTvWBBStmtEUCBwZfZ6Gi+uoCf6cIPZmfijzBMYkg+nq
+         d068+tnUosw+r9Ok/qfe/MfE/BNTL6kSMiADFO9rnCmlMFhHrT5kp7Ji5rY1ouz2t8nQ
+         i2bGtUEHDUVSNBLRwO6zPHRO1oeEgiSDN7kGtDWGR9DP2aUVMYcHDAjPmYXUkltaaTkO
+         a4FxRVCSk8eD9Y1siLgPPyexP1/c9mxVDCd8bv0QVOsKM3QWkFLNrTzD7Xy1tHat2CRA
+         r41A==
+X-Gm-Message-State: AOAM531uDcMXq08Ieq98gmnpj42yP3i0OV6S20uVhPk4gex/uHQLCdT3
+        x3P3Z2oXTLLZslBiZtG8xHhZ4pe95/lCImkUErI=
+X-Google-Smtp-Source: ABdhPJxGV5fBBV9xgsrnjgaUKTfwa0NLICCljMdw6HsrlTYRTpINFURAbxG6w47IFeZAsE3xRZzuGdfAL9kNkRhgTlc=
+Sender: "willmcvicker via sendgmr" <willmcvicker@willmcvicker.c.googlers.com>
+X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:2dd0])
+ (user=willmcvicker job=sendgmr) by 2002:a17:90a:3948:: with SMTP id
+ n8mr1541963pjf.206.1611265010212; Thu, 21 Jan 2021 13:36:50 -0800 (PST)
+Date:   Thu, 21 Jan 2021 21:36:41 +0000
+Message-Id: <20210121213641.3477522-1-willmcvicker@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH v6] modules: introduce the MODULE_SCMVERSION config
+From:   Will McVicker <willmcvicker@google.com>
+To:     Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com, Will McVicker <willmcvicker@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.01.2021 14:17, Viresh Kumar пишет:
-> dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
-> be used instead. Migrate to the new API.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/devfreq/tegra30-devfreq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index 117cad7968ab..d2477d7d1f66 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -647,7 +647,7 @@ static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
->  		return PTR_ERR(opp);
->  	}
->  
-> -	ret = dev_pm_opp_set_bw(dev, opp);
-> +	ret = dev_pm_opp_set_opp(dev, opp);
->  	dev_pm_opp_put(opp);
->  
->  	return ret;
-> 
+Config MODULE_SCMVERSION introduces a new module attribute --
+`scmversion` -- which can be used to identify a given module's SCM
+version.  This is very useful for developers that update their kernel
+independently from their kernel modules or vice-versa since the SCM
+version provided by UTS_RELEASE (`uname -r`) will now differ from the
+module's vermagic attribute.
 
-This patch introduces a very serious change that needs to be fixed.
+For example, we have a CI setup that tests new kernel changes on the
+hikey960 and db845c devices without updating their kernel modules. When
+these tests fail, we need to be able to identify the exact device
+configuration the test was using. By including MODULE_SCMVERSION, we can
+identify the exact kernel and modules' SCM versions for debugging the
+failures.
 
-Now dev_pm_opp_set_opp() changes both clock rate and bandwidth, this is
-unacceptable for this driver because it shall not touch the clock rate.
+Additionally, by exposing the SCM version via the sysfs node
+/sys/module/MODULENAME/scmversion, one can also verify the SCM versions
+of the modules loaded from the initramfs. Currently, modinfo can only
+retrieve module attributes from the module's ko on disk and not from the
+actual module that is loaded in RAM.
 
-I think dev_pm_opp_set_bw() can't be removed.
+You can retrieve the SCM version in two ways,
+
+1) By using modinfo:
+    > modinfo -F scmversion MODULENAME
+2) By module sysfs node:
+    > cat /sys/module/MODULENAME/scmversion
+
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+---
+Changelog since v5:
+- Simplified scripts/Makefile.modpost to not check for a relative M= path
+- Added space between -v and $(module_scmversion)
+- Updated modpost.c to not check for a missing argument to -v
+
+ Documentation/ABI/stable/sysfs-module | 18 ++++++++++++++++++
+ include/linux/module.h                |  1 +
+ init/Kconfig                          | 14 ++++++++++++++
+ kernel/module.c                       |  2 ++
+ scripts/Makefile.modpost              | 14 ++++++++++++++
+ scripts/mod/modpost.c                 | 22 +++++++++++++++++++++-
+ 6 files changed, 70 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
+index 6272ae5fb366..a75d137e79f4 100644
+--- a/Documentation/ABI/stable/sysfs-module
++++ b/Documentation/ABI/stable/sysfs-module
+@@ -32,3 +32,21 @@ Description:
+ 		Note: If the module is built into the kernel, or if the
+ 		CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
+ 		this file will not be present.
++
++What:		/sys/module/MODULENAME/scmversion
++Date:		November 2020
++KernelVersion:	5.12
++Contact:	Will McVicker <willmcvicker@google.com>
++Description:	This read-only file will appear if modpost was supplied with an
++		SCM version for the module. It can be enabled with the config
++		MODULE_SCMVERSION. The SCM version is retrieved by
++		scripts/setlocalversion, which means that the presence of this
++		file depends on CONFIG_LOCALVERSION_AUTO=y. When read, the SCM
++		version that the module was compiled with is returned. The SCM
++		version is returned in the following format::
++
++		===
++		Git:		g[a-f0-9]\+(-dirty)\?
++		Mercurial:	hg[a-f0-9]\+(-dirty)\?
++		Subversion:	svn[0-9]\+
++		===
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 7a0bcb5b1ffc..3b1612193cf9 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -372,6 +372,7 @@ struct module {
+ 	struct module_attribute *modinfo_attrs;
+ 	const char *version;
+ 	const char *srcversion;
++	const char *scmversion;
+ 	struct kobject *holders_dir;
+ 
+ 	/* Exported symbols */
+diff --git a/init/Kconfig b/init/Kconfig
+index b77c60f8b963..3d9dac3c4e8f 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2131,6 +2131,20 @@ config MODULE_SRCVERSION_ALL
+ 	  the version).  With this option, such a "srcversion" field
+ 	  will be created for all modules.  If unsure, say N.
+ 
++config MODULE_SCMVERSION
++	bool "SCM version for modules"
++	depends on LOCALVERSION_AUTO
++	help
++	  This enables the module attribute "scmversion" which can be used
++	  by developers to identify the SCM version of a given module, e.g.
++	  git sha1 or hg sha1. The SCM version can be queried by modinfo or
++	  via the sysfs node: /sys/modules/MODULENAME/scmversion. This is
++	  useful when the kernel or kernel modules are updated separately
++	  since that causes the vermagic of the kernel and the module to
++	  differ.
++
++	  If unsure, say N.
++
+ config MODULE_SIG
+ 	bool "Module signature verification"
+ 	select MODULE_SIG_FORMAT
+diff --git a/kernel/module.c b/kernel/module.c
+index 4bf30e4b3eaa..d0b359c7e9c9 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -837,6 +837,7 @@ static struct module_attribute modinfo_##field = {                    \
+ 
+ MODINFO_ATTR(version);
+ MODINFO_ATTR(srcversion);
++MODINFO_ATTR(scmversion);
+ 
+ static char last_unloaded_module[MODULE_NAME_LEN+1];
+ 
+@@ -1298,6 +1299,7 @@ static struct module_attribute *modinfo_attrs[] = {
+ 	&module_uevent,
+ 	&modinfo_version,
+ 	&modinfo_srcversion,
++	&modinfo_scmversion,
+ 	&modinfo_initstate,
+ 	&modinfo_coresize,
+ 	&modinfo_initsize,
+diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+index f54b6ac37ac2..13ec3e96650c 100644
+--- a/scripts/Makefile.modpost
++++ b/scripts/Makefile.modpost
+@@ -66,6 +66,7 @@ ifeq ($(KBUILD_EXTMOD),)
+ 
+ input-symdump := vmlinux.symvers
+ output-symdump := Module.symvers
++module_srcpath := $(srctree)
+ 
+ else
+ 
+@@ -82,9 +83,22 @@ MODPOST += -e
+ 
+ input-symdump := Module.symvers $(KBUILD_EXTRA_SYMBOLS)
+ output-symdump := $(KBUILD_EXTMOD)/Module.symvers
++module_srcpath := $(KBUILD_EXTMOD)
+ 
+ endif
+ 
++ifeq ($(CONFIG_MODULE_SCMVERSION),y)
++# Get the SCM version of the module. Sed verifies setlocalversion returns
++# a proper revision based on the SCM type, e.g. git, mercurial, or svn.
++# Note: relative M= paths are not supported when building the kernel out of the
++# srctree since setlocalversion won't be able to find the module srctree.
++module_scmversion := $(shell $(srctree)/scripts/setlocalversion $(module_srcpath) | \
++	sed -n 's/.*-\(\(g\|hg\)[a-fA-F0-9]\+\(-dirty\)\?\|svn[0-9]\+\).*/\1/p')
++ifneq ($(module_scmversion),)
++MODPOST += -v $(module_scmversion)
++endif
++endif
++
+ # modpost options for modules (both in-kernel and external)
+ MODPOST += \
+ 	$(addprefix -i ,$(wildcard $(input-symdump))) \
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index d6c81657d695..92c4bd88f875 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -30,6 +30,8 @@ static int have_vmlinux = 0;
+ static int all_versions = 0;
+ /* If we are modposting external module set to 1 */
+ static int external_module = 0;
++#define MODULE_SCMVERSION_SIZE 64
++static char module_scmversion[MODULE_SCMVERSION_SIZE];
+ /* Only warn about unresolved symbols */
+ static int warn_unresolved = 0;
+ /* How a symbol is exported */
+@@ -2264,6 +2266,20 @@ static void add_intree_flag(struct buffer *b, int is_intree)
+ 		buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
+ }
+ 
++/**
++ * add_scmversion() - Adds the MODULE_INFO macro for the scmversion.
++ * @b: Buffer to append to.
++ *
++ * This function fills in the module attribute `scmversion` for the kernel
++ * module. This is useful for determining a given module's SCM version on
++ * device via /sys/modules/<module>/scmversion and/or using the modinfo tool.
++ */
++static void add_scmversion(struct buffer *b)
++{
++	if (module_scmversion[0] != '\0')
++		buf_printf(b, "\nMODULE_INFO(scmversion, \"%s\");\n", module_scmversion);
++}
++
+ /* Cannot check for assembler */
+ static void add_retpoline(struct buffer *b)
+ {
+@@ -2546,7 +2562,7 @@ int main(int argc, char **argv)
+ 	struct dump_list *dump_read_start = NULL;
+ 	struct dump_list **dump_read_iter = &dump_read_start;
+ 
+-	while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:")) != -1) {
++	while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:v:")) != -1) {
+ 		switch (opt) {
+ 		case 'e':
+ 			external_module = 1;
+@@ -2584,6 +2600,9 @@ int main(int argc, char **argv)
+ 		case 'd':
+ 			missing_namespace_deps = optarg;
+ 			break;
++		case 'v':
++			strncpy(module_scmversion, optarg, sizeof(module_scmversion) - 1);
++			break;
+ 		default:
+ 			exit(1);
+ 		}
+@@ -2630,6 +2649,7 @@ int main(int argc, char **argv)
+ 		add_depends(&buf, mod);
+ 		add_moddevtable(&buf, mod);
+ 		add_srcversion(&buf, mod);
++		add_scmversion(&buf);
+ 
+ 		sprintf(fname, "%s.mod.c", mod->name);
+ 		write_if_changed(&buf, fname);
+-- 
+2.30.0.280.ga3ce27912f-goog
+
