@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF3A2FE683
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641E92FE68A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbhAUJaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:30:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30467 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728179AbhAUJCJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:02:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611219643;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1+1P7b60HaR2MAzWv8XFsDjrssAyoeWJipGT+zaJVmE=;
-        b=WIgCLIc98D/mVtehfsc0KhUW2TVB4bNP1B4YGP3unlLimQbP0t/WSjljHtBKQiFKH1LMuP
-        UAw1kNgPgnTFHPmiSy7jgBN5WuxUsUAXSzr0ygkDxmcF9o+51YQ+6Pca7EYgkTOFgr46jW
-        v77o+rjs2Tp41JMHREN1kyPV4eb6UWQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-jDmMz9WnOKKAMlu3hfLq8w-1; Thu, 21 Jan 2021 04:00:39 -0500
-X-MC-Unique: jDmMz9WnOKKAMlu3hfLq8w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DA241005D4E;
-        Thu, 21 Jan 2021 09:00:38 +0000 (UTC)
-Received: from [10.72.13.67] (ovpn-13-67.pek2.redhat.com [10.72.13.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C7D0819C46;
-        Thu, 21 Jan 2021 09:00:26 +0000 (UTC)
-Subject: Re: [PATCH 1/1] vhost scsi: allocate vhost_scsi with GFP_NOWAIT to
- avoid delay
-To:     Dongli Zhang <dongli.zhang@oracle.com>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mst@redhat.com, pbonzini@redhat.com,
-        stefanha@redhat.com, joe.jin@oracle.com,
-        aruna.ramakrishna@oracle.com
-References: <20210121050328.7891-1-dongli.zhang@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3aa5c6ca-abd3-13c4-b6a6-504f3a52bae7@redhat.com>
-Date:   Thu, 21 Jan 2021 17:00:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210121050328.7891-1-dongli.zhang@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1728383AbhAUJkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:40:23 -0500
+Received: from m12-17.163.com ([220.181.12.17]:50367 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728708AbhAUJjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:39:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=LcPAqHxUl72bUh++s/
+        JaCuY9FecmEkxLra2ChECTzy8=; b=jV5R1Z7YTjED/uiqTKAEe+MEhWS3H1hPAe
+        rfeFA3ct7btWUh6VAj4Eg4LnO8L+hGSN+HTV5d4tWkowd2y66dE5P0mx1cDPRu8F
+        9Jygm/kAaUZRLCOX4D83f4gPXSQF+lbgLJQuWB53dwN6puYryLTKmMvSab1x4qdO
+        FQWZAs2Lw=
+Received: from localhost.localdomain (unknown [119.3.119.20])
+        by smtp13 (Coremail) with SMTP id EcCowABXXZ38RglgC3Gogw--.2681S4;
+        Thu, 21 Jan 2021 17:18:56 +0800 (CST)
+From:   Pan Bian <bianpan2016@163.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] mtd: spi-nor: hisi-sfc: Put child node np on error path
+Date:   Thu, 21 Jan 2021 01:18:47 -0800
+Message-Id: <20210121091847.85362-1-bianpan2016@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: EcCowABXXZ38RglgC3Gogw--.2681S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF1xJw48uFyxKr4kWw1rJFb_yoWfWrcE9F
+        4xuFyxZrs2kF4rKwnFkw18uryYka1FgryfCa1SyF9xt3y7WrnYga4DZrW5Zwn8Ar42yryD
+        uw4qvryxCr47CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUj-6pJUUUUU==
+X-Originating-IP: [119.3.119.20]
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/1tbiDgAhclXly8wsIwAAsl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Put the child node np when it fails to get or register device.
 
-On 2021/1/21 13:03, Dongli Zhang wrote:
-> The size of 'struct vhost_scsi' is order-10 (~2.3MB). It may take long time
-> delay by kzalloc() to compact memory pages when there is a lack of
-> high-order pages. As a result, there is latency to create a VM (with
-> vhost-scsi) or to hotadd vhost-scsi-based storage.
->
-> The prior commit 595cb754983d ("vhost/scsi: use vmalloc for order-10
-> allocation") prefers to fallback only when really needed, while this patch
-> changes allocation to GFP_NOWAIT in order to avoid the delay caused by
-> memory page compact.
->
-> Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-> Cc: Joe Jin <joe.jin@oracle.com>
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
-> Another option is to rework by reducing the size of 'struct vhost_scsi',
-> e.g., by replacing inline vhost_scsi.vqs with just memory pointers while
-> each vhost_scsi.vqs[i] should be allocated separately. Please let me
-> know if that option is better.
->
->   drivers/vhost/scsi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
-> index 4ce9f00ae10e..85eaa4e883f4 100644
-> --- a/drivers/vhost/scsi.c
-> +++ b/drivers/vhost/scsi.c
-> @@ -1814,7 +1814,7 @@ static int vhost_scsi_open(struct inode *inode, struct file *f)
->   	struct vhost_virtqueue **vqs;
->   	int r = -ENOMEM, i;
->   
-> -	vs = kzalloc(sizeof(*vs), GFP_KERNEL | __GFP_NOWARN | __GFP_RETRY_MAYFAIL);
-> +	vs = kzalloc(sizeof(*vs), GFP_NOWAIT | __GFP_NOWARN);
->   	if (!vs) {
->   		vs = vzalloc(sizeof(*vs));
->   		if (!vs)
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+---
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-
-Can we use kvzalloc?
-
-Thanks
+diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+index 7c26f8f565cb..47fbf1d1e557 100644
+--- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
++++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+@@ -399,8 +399,10 @@ static int hisi_spi_nor_register_all(struct hifmc_host *host)
+ 
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		ret = hisi_spi_nor_register(np, host);
+-		if (ret)
++		if (ret) {
++			of_node_put(np);
+ 			goto fail;
++		}
+ 
+ 		if (host->num_chip == HIFMC_MAX_CHIP_NUM) {
+ 			dev_warn(dev, "Flash device number exceeds the maximum chipselect number\n");
+-- 
+2.17.1
 
 
