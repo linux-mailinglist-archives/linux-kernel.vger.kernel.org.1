@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7410C2FE06B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B540D2FE06A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbhAUEKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:10:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
+        id S1730995AbhAUEKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727550AbhAUEGt (ORCPT
+        with ESMTP id S1726641AbhAUEGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:06:49 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F045C061757;
-        Wed, 20 Jan 2021 20:06:07 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id j12so743427pjy.5;
-        Wed, 20 Jan 2021 20:06:07 -0800 (PST)
+        Wed, 20 Jan 2021 23:06:50 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAB4C0613ED;
+        Wed, 20 Jan 2021 20:06:09 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id 11so734644pfu.4;
+        Wed, 20 Jan 2021 20:06:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dEAELiJFMu38K3TYT5cxHaQJx7scLJfJbiIj6L7V5Zs=;
-        b=J2+IZgF76UZ5DBBcV6h6lSJME8cHBlKKUErinK4Xvpa/yQpQBeHS59kgVvps8YUp6/
-         lijUHqdM1/UQbKT+UNCGJanjJENdmztcSBE6vYAew5bfEShV32hJJc+HSJP+b09JRb33
-         4C+AdqzMrIk0EkfbA5APzxz3UkEqyJrABrDRoZfNFXwihVIn397j4yuYJ9ZW12fIWkRI
-         0KJdB/8ByS0gAZYSu+WD/xK7MWSnn4BHSMxxt3YBucBHSEZuFdtYolDM6CUMkBkzRen+
-         MSfbQ/fJ+vEkYstqFE1q/4AqMVVmr1oTr+RdIkEWsO945USMT6HNY/nhsmMa7KdbvNU7
-         BzJQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EGNpPEaAZpjchbtN5ftgX7ECKSLHxDYAbQnFlmBO7DQ=;
+        b=pRLpnkc4pCp6AUbIuLnk/e6ZgTkOMu9hiOPtGua5lQx75J73QaspjkAu1+BM/Ec4FH
+         bUn1o+w5/N9HXPERSsgORFBPkw1l8dq/EvST3SD1T1AqBEovxkI10wH58qHRV55DvpeZ
+         LAB15ulXkvMPmsUnJ93E9nHkBXwxjBU+QhCnLOF2nzQvQntKZgVMKY3SZtOmtDvYB1br
+         LLRb3dX7TAuA2qO52ptTeaS8TZgKd1TPxHI6Eo838qeBOhHEUqnLGF5qM7ohWFQUrlvP
+         aQ7YCYEmK1GUY0oj+wRVoIJU80OTG2+2scnj5r5PZrfXF3TTiXAVjhk5II4f7PgpbBwV
+         y4MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dEAELiJFMu38K3TYT5cxHaQJx7scLJfJbiIj6L7V5Zs=;
-        b=K5hTLZ97AgIgr2fNu2INSYMRTH2pfmlHKnPCLzIY1Y6k+h5ywOlOI2dZH5GzEJqow4
-         CAKi02Qigl0AJYRcNu5oh6Ph77W+GiZBCpF3ElrKqWuIKpDSFHZ1/i9fWJOw7gpjywfH
-         rV+3Vy6Db8VeCRqFaYTPmyLgkBuqzhUgGovEReysRbCgRjk1xegc1mH6qgM9cEgqdDAy
-         54Ov0qICg3FaOF2lo2r5O3mu/XuypnbxJK7JnRAOZw5i0M61irwC/l3hkoOqfkMpgsp6
-         3PsFXdsFhA4uIMgYBVbC3zBS1NZNAxlB811hvr6JsWe8cXda6+8PVpnWFka/vV5Gfbmp
-         yCfQ==
-X-Gm-Message-State: AOAM533oB5TNTNC5v70hyWsDvkC5nEsygSrIPILCKyEpMmYMj32NI8Uq
-        5zDWhS9KCzSKMU+UaxqNCqQcX7cDKzU=
-X-Google-Smtp-Source: ABdhPJyPkkeEXsC/0/2M/kVhpNZCDJofZK6zqz081klTKVJv6+kqvX1gRFSdXLGMb53wJU9/llAGDA==
-X-Received: by 2002:a17:90a:b296:: with SMTP id c22mr9336798pjr.91.1611201966578;
-        Wed, 20 Jan 2021 20:06:06 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EGNpPEaAZpjchbtN5ftgX7ECKSLHxDYAbQnFlmBO7DQ=;
+        b=ks0VSNh4u+x0zJx1OOD5TwKN4alftlxWEiCl9YMECh585wKUACTfsxpC77sIj5cY2D
+         o/DmkEveYLoxr8NRuJ+QsOxNiLRhFNv8O+L+sSPeuoOU6bhKC3s7ZZv7Zp8ft0cEGtAB
+         LkmVjwRaiDZdimAQe+eaUglC3jKcMR24480YuYfjxlnTI3PHbTXlbZCTsW9T8sBn2kEv
+         t8qe5FdPWNxhambh0FvWFqr0WiUeT7rkGoedDTvXOQwF5wWOYjMjh2tD3BZOKg+EEQcK
+         qXH5IraEWmmrkZCCBZW1/qqFxc9RY4PlE+7wV9bS7KWAu1iPFy83Ih4u13LQimeTk1YZ
+         Gm7g==
+X-Gm-Message-State: AOAM531U+NKSMKAgjoFiJyOif+skHXUt5i3HVQ6dyPYueTlAqRJL3dpS
+        +s3UjlHFi21AyciAfY038U/JdLpEMLI=
+X-Google-Smtp-Source: ABdhPJyQgPx5ZJ6Di8EYfs8mILdeTZuCwz0GgsxYtOZnz/I17TifScmq0qOlOYux9x+b572n1c5JRw==
+X-Received: by 2002:a62:35c6:0:b029:1ba:e795:d20e with SMTP id c189-20020a6235c60000b02901bae795d20emr5774210pfa.37.1611201968564;
+        Wed, 20 Jan 2021 20:06:08 -0800 (PST)
 Received: from localhost.localdomain (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id f24sm3808567pjj.5.2021.01.20.20.06.04
+        by smtp.gmail.com with ESMTPSA id f24sm3808567pjj.5.2021.01.20.20.06.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 20:06:05 -0800 (PST)
+        Wed, 20 Jan 2021 20:06:07 -0800 (PST)
 From:   Richard Cochran <richardcochran@gmail.com>
 To:     netdev@vger.kernel.org
 Cc:     David Miller <davem@davemloft.net>,
@@ -61,41 +61,40 @@ Cc:     David Miller <davem@davemloft.net>,
         Vivien Didelot <vivien.didelot@gmail.com>,
         Vladimir Oltean <olteanv@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 0/4] Remove unneeded PHY time stamping option.
-Date:   Wed, 20 Jan 2021 20:05:59 -0800
-Message-Id: <cover.1611198584.git.richardcochran@gmail.com>
+Subject: [PATCH net 1/4] net: dsa: mv88e6xxx: Remove bogus Kconfig dependency.
+Date:   Wed, 20 Jan 2021 20:06:00 -0800
+Message-Id: <ad52391dba15c5365e197aea54781037a1c223c7.1611198584.git.richardcochran@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1611198584.git.richardcochran@gmail.com>
+References: <cover.1611198584.git.richardcochran@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NETWORK_PHY_TIMESTAMPING configuration option adds additional
-checks into the networking hot path, and it is only needed by two
-rather esoteric devices, namely the TI DP83640 PHYTER and the ZHAW
-InES 1588 IP core.  Very few end users have these devices, and those
-that do have them are building specialized embedded systems.
+The mv88e6xxx is a DSA driver, and it implements DSA style time
+stamping of PTP frames.  It has no need of the expensive option to
+enable PHY time stamping.  Remove the bogus dependency.
 
-Unfortunately two unrelated drivers depend on this option, and two
-defconfigs enable it.  It is probably my fault for not paying enough
-attention in reviews.
+Signed-off-by: Richard Cochran <richardcochran@gmail.com>
+Fixes: 2fa8d3af4bad ("net: dsa: mv88e6xxx: expose switch time as a PTP hardware clock")
+---
+ drivers/net/dsa/mv88e6xxx/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-This series corrects the gratuitous use of NETWORK_PHY_TIMESTAMPING.
-
-
-Richard Cochran (4):
-  net: dsa: mv88e6xxx: Remove bogus Kconfig dependency.
-  net: mvpp2: Remove unneeded Kconfig dependency.
-  ARM: socfpga_defconfig: Disable PHY time stamping by default.
-  ARM: axm55xx_defconfig: Disable PHY time stamping by default.
-
- arch/arm/configs/axm55xx_defconfig   | 1 -
- arch/arm/configs/socfpga_defconfig   | 6 +-----
- drivers/net/dsa/mv88e6xxx/Kconfig    | 1 -
- drivers/net/ethernet/marvell/Kconfig | 1 -
- 4 files changed, 1 insertion(+), 8 deletions(-)
-
+diff --git a/drivers/net/dsa/mv88e6xxx/Kconfig b/drivers/net/dsa/mv88e6xxx/Kconfig
+index 51185e4d7d15..b17540926c11 100644
+--- a/drivers/net/dsa/mv88e6xxx/Kconfig
++++ b/drivers/net/dsa/mv88e6xxx/Kconfig
+@@ -25,7 +25,6 @@ config NET_DSA_MV88E6XXX_PTP
+ 	default n
+ 	depends on NET_DSA_MV88E6XXX_GLOBAL2
+ 	depends on PTP_1588_CLOCK
+-	imply NETWORK_PHY_TIMESTAMPING
+ 	help
+ 	  Say Y to enable PTP hardware timestamping on Marvell 88E6xxx switch
+ 	  chips that support it.
 -- 
 2.20.1
 
