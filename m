@@ -2,236 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A522FEE9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F122FEEA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732931AbhAUP04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:26:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43296 "EHLO mail.kernel.org"
+        id S1732494AbhAUP2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:28:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:39370 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732749AbhAUPZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:25:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A4D0239FD;
-        Thu, 21 Jan 2021 15:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611242698;
-        bh=L0Pud472BRi3AshF8Fh1sZebxJpxTvi4JjsH97V1n0E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZrhjxAjc98/bKTQk+eMROsePSSRbA2Y3MH2aj7CeZoqoJBhDHUK6zjbfXjcOxmT1b
-         qoec7YI0r21Enc9SRmG6c+LyyzGdLs53sGd2b3Mxy1B/u331twBawkimCt80nlH11O
-         u3BYTQDD8XtJDhqr3nRa5Z3JzR1yN7JHkFDIobuakIkVrzg+rc3/Fd43LfnWsPlCNu
-         15NUhlRVTGbyjFpNRFCK3fJEDBHOFpSBQj1VZRiV5JnwBgWgGnwn3fS4d8nE438be8
-         t9W0L/7Ce4fd1L+yqnSBzaHPkkrtcnb8Ik1m3Mm/fi8m9miDzHoZ/hT5rTm5vMBUN5
-         jZpbp+mg4kPQA==
-Date:   Thu, 21 Jan 2021 17:24:56 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jerome Forissier <jerome@forissier.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        op-tee@lists.trustedfirmware.org, Jonathan Corbet <corbet@lwn.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-integrity@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
-Message-ID: <YAmcyKnYCK+Y4IGW@kernel.org>
-References: <X/x+N0fgrzIZTeNi@kernel.org>
- <CAFA6WYOUvWAZtYfR4q8beZFkX-CtdxqwJaRQM+GHNMDfQiEWOA@mail.gmail.com>
- <X/+m6+m2/snYj9Vc@kernel.org>
- <CAFA6WYNyirit_AFhoE+XR9PHw=OjRgEdXDqz1uanj_SN2NXeMw@mail.gmail.com>
- <YAa0ys4YJcZtKdfF@kernel.org>
- <YAeH2pb8szQyjusL@kernel.org>
- <CAFA6WYP5G6NfGk96ePOC+2kpD6B+4hz9nywyUM9Nh=dJDYMiuA@mail.gmail.com>
- <01000177223f74d3-1eef7685-4a19-40d2-ace6-d4cd7f35579d-000000@email.amazonses.com>
- <dc3979e8-6bf0-adb7-164d-d50e805a048f@forissier.org>
- <YAmYu9FxWcLPhBhs@kernel.org>
+        id S1732765AbhAUP1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:27:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD45C11D4;
+        Thu, 21 Jan 2021 07:27:03 -0800 (PST)
+Received: from [10.37.8.32] (unknown [10.37.8.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 24B3B3F68F;
+        Thu, 21 Jan 2021 07:27:01 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] arm64: Fix kernel address detection of
+ __is_lm_address()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+References: <20210121131956.23246-1-vincenzo.frascino@arm.com>
+ <20210121131956.23246-2-vincenzo.frascino@arm.com>
+ <20210121151206.GI48431@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <95727b4c-4578-6eb5-b518-208482e8ba62@arm.com>
+Date:   Thu, 21 Jan 2021 15:30:51 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210121151206.GI48431@C02TD0UTHF1T.local>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YAmYu9FxWcLPhBhs@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 05:07:42PM +0200, Jarkko Sakkinen wrote:
-> On Thu, Jan 21, 2021 at 09:44:07AM +0100, Jerome Forissier wrote:
-> > 
-> > 
-> > On 1/21/21 1:02 AM, Jarkko Sakkinen via OP-TEE wrote:
-> > > On Wed, Jan 20, 2021 at 12:53:28PM +0530, Sumit Garg wrote:
-> > >> On Wed, 20 Jan 2021 at 07:01, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > >>>
-> > >>> On Tue, Jan 19, 2021 at 12:30:42PM +0200, Jarkko Sakkinen wrote:
-> > >>>> On Fri, Jan 15, 2021 at 11:32:31AM +0530, Sumit Garg wrote:
-> > >>>>> On Thu, 14 Jan 2021 at 07:35, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > >>>>>>
-> > >>>>>> On Wed, Jan 13, 2021 at 04:47:00PM +0530, Sumit Garg wrote:
-> > >>>>>>> Hi Jarkko,
-> > >>>>>>>
-> > >>>>>>> On Mon, 11 Jan 2021 at 22:05, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > >>>>>>>>
-> > >>>>>>>> On Tue, Nov 03, 2020 at 09:31:44PM +0530, Sumit Garg wrote:
-> > >>>>>>>>> Add support for TEE based trusted keys where TEE provides the functionality
-> > >>>>>>>>> to seal and unseal trusted keys using hardware unique key.
-> > >>>>>>>>>
-> > >>>>>>>>> Refer to Documentation/tee.txt for detailed information about TEE.
-> > >>>>>>>>>
-> > >>>>>>>>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > >>>>>>>>
-> > >>>>>>>> I haven't yet got QEMU environment working with aarch64, this produces
-> > >>>>>>>> just a blank screen:
-> > >>>>>>>>
-> > >>>>>>>> ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -kernel output/images/Image -initrd output/images/rootfs.cpio -serial stdio
-> > >>>>>>>>
-> > >>>>>>>> My BuildRoot fork for TPM and keyring testing is located over here:
-> > >>>>>>>>
-> > >>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/buildroot-tpmdd.git/
-> > >>>>>>>>
-> > >>>>>>>> The "ARM version" is at this point in aarch64 branch. Over time I will
-> > >>>>>>>> define tpmdd-x86_64 and tpmdd-aarch64 boards and everything will be then
-> > >>>>>>>> in the master branch.
-> > >>>>>>>>
-> > >>>>>>>> To create identical images you just need to
-> > >>>>>>>>
-> > >>>>>>>> $ make tpmdd_defconfig && make
-> > >>>>>>>>
-> > >>>>>>>> Can you check if you see anything obviously wrong? I'm eager to test this
-> > >>>>>>>> patch set, and in bigger picture I really need to have ready to run
-> > >>>>>>>> aarch64 environment available.
-> > >>>>>>>
-> > >>>>>>> I would rather suggest you to follow steps listed here [1] as to test
-> > >>>>>>> this feature on Qemu aarch64 we need to build firmwares such as TF-A,
-> > >>>>>>> OP-TEE, UEFI etc. which are all integrated into OP-TEE Qemu build
-> > >>>>>>> system [2]. And then it would be easier to migrate them to your
-> > >>>>>>> buildroot environment as well.
-> > >>>>>>>
-> > >>>>>>> [1] https://lists.trustedfirmware.org/pipermail/op-tee/2020-May/000027.html
-> > >>>>>>> [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
-> > >>>>>>>
-> > >>>>>>> -Sumit
-> > >>>>>>
-> > >>>>>> Can you provide 'keyctl_change'? Otherwise, the steps are easy to follow.
-> > >>>>>>
-> > >>>>>
-> > >>>>> $ cat keyctl_change
-> > >>>>> diff --git a/common.mk b/common.mk
-> > >>>>> index aeb7b41..663e528 100644
-> > >>>>> --- a/common.mk
-> > >>>>> +++ b/common.mk
-> > >>>>> @@ -229,6 +229,7 @@ BR2_PACKAGE_OPTEE_TEST_SDK ?= $(OPTEE_OS_TA_DEV_KIT_DIR)
-> > >>>>>  BR2_PACKAGE_OPTEE_TEST_SITE ?= $(OPTEE_TEST_PATH)
-> > >>>>>  BR2_PACKAGE_STRACE ?= y
-> > >>>>>  BR2_TARGET_GENERIC_GETTY_PORT ?= $(if
-> > >>>>> $(CFG_NW_CONSOLE_UART),ttyAMA$(CFG_NW_CONSOLE_UART),ttyAMA0)
-> > >>>>> +BR2_PACKAGE_KEYUTILS := y
-> > >>>>>
-> > >>>>>  # All BR2_* variables from the makefile or the environment are appended to
-> > >>>>>  # ../out-br/extra.conf. All values are quoted "..." except y and n.
-> > >>>>> diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
-> > >>>>> index 368c18a..832ab74 100644
-> > >>>>> --- a/kconfigs/qemu.conf
-> > >>>>> +++ b/kconfigs/qemu.conf
-> > >>>>> @@ -20,3 +20,5 @@ CONFIG_9P_FS=y
-> > >>>>>  CONFIG_9P_FS_POSIX_ACL=y
-> > >>>>>  CONFIG_HW_RANDOM=y
-> > >>>>>  CONFIG_HW_RANDOM_VIRTIO=y
-> > >>>>> +CONFIG_TRUSTED_KEYS=y
-> > >>>>> +CONFIG_ENCRYPTED_KEYS=y
-> > >>>>>
-> > >>>>>> After I've successfully tested 2/4, I'd suggest that you roll out one more
-> > >>>>>> version and CC the documentation patch to Elaine and Mini, and clearly
-> > >>>>>> remark in the commit message that TEE is a standard, with a link to the
-> > >>>>>> specification.
-> > >>>>>>
-> > >>>>>
-> > >>>>> Sure, I will roll out the next version after your testing.
-> > >>>>
-> > >>>> Thanks, I'll try this at instant, and give my feedback.
-> > >>>
-> > >>> I bump into this:
-> > >>>
-> > >>> $ make run-only
-> > >>> ln -sf /home/jarkko/devel/tpm/optee/build/../out-br/images/rootfs.cpio.gz /home/jarkko/devel/tpm/optee/build/../out/bin/
-> > >>> ln: failed to create symbolic link '/home/jarkko/devel/tpm/optee/build/../out/bin/': No such file or directory
-> > >>> make: *** [Makefile:194: run-only] Error 1
-> > >>>
-> > >>
-> > >> Could you check if the following directory tree is built after
-> > >> executing the below command?
-> > >>
-> > >> $ make -j`nproc`
-> > >> CFG_IN_TREE_EARLY_TAS=trusted_keys/f04a0fe7-1f5d-4b9b-abf7-619b85b4ce8c
-> > >>
-> > >> $ tree out/bin/
-> > >> out/bin/
-> > >> ├── bl1.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl1.bin
-> > >> ├── bl2.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl2.bin
-> > >> ├── bl31.bin ->
-> > >> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl31.bin
-> > >> ├── bl32.bin ->
-> > >> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-header_v2.bin
-> > >> ├── bl32_extra1.bin ->
-> > >> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pager_v2.bin
-> > >> ├── bl32_extra2.bin ->
-> > >> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pageable_v2.bin
-> > >> ├── bl33.bin ->
-> > >> /home/sumit/build/optee/build/../edk2/Build/ArmVirtQemuKernel-AARCH64/RELEASE_GCC49/FV/QEMU_EFI.fd
-> > >> ├── Image -> /home/sumit/build/optee/build/../linux/arch/arm64/boot/Image
-> > >> └── rootfs.cpio.gz ->
-> > >> /home/sumit/build/optee/build/../out-br/images/rootfs.cpio.gz
-> > >>
-> > >> 0 directories, 9 files
-> > >>
-> > >> -Sumit
-> > > 
-> > > I actually spotted a build error that was unnoticed last time:
-> > > 
-> > > make[2]: Entering directory '/home/jarkko/devel/tpm/optee/edk2/BaseTools/Tests'
-> > > /bin/sh: 1: python: not found
-> > > 
-> > > I'd prefer not to install Python2. It has been EOL over a year.
-> > 
-> > AFAIK, everything should build fine with Python3. On my Ubuntu 20.04
-> > machine, this is accomplished by installing package "python-is-python3"
-> > (after uninstalling "python-is-python2" if need be).
-> > 
-> > $ ls -l /usr/bin/python
-> > lrwxrwxrwx 1 root root 7 Apr 15  2020 /usr/bin/python -> python3
-> 
-> Right, just found about this in unrelated context :-) [*]
-> 
-> Hope this will work out...
-> 
-> [*] https://github.com/surge-synthesizer/surge/pull/3655
 
-Now I get
 
-Traceback (most recent call last):
-  File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/RunTests.py", line 36, in <module>
-    allTests = GetAllTestsSuite()
-  File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/RunTests.py", line 33, in GetAllTestsSuite
-    return unittest.TestSuite([GetCTestSuite(), GetPythonTestSuite()])
-  File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/RunTests.py", line 25, in GetCTestSuite
-    import CToolsTests
-  File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/CToolsTests.py", line 22, in <module>
-    import TianoCompress
-  File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/TianoCompress.py", line 69, in <module>
-    TheTestSuite = TestTools.MakeTheTestSuite(locals())
-  File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/TestTools.py", line 43, in MakeTheTestSuite
-    for name, item in localItems.iteritems():
-AttributeError: 'dict' object has no attribute 'iteritems'
+On 1/21/21 3:12 PM, Mark Rutland wrote:
+> [adding Ard]
+>
 
-/Jarkko
+Thanks for this, it is related to his patch and I forgot to Cc: him directly.
+
+> On Thu, Jan 21, 2021 at 01:19:55PM +0000, Vincenzo Frascino wrote:
+>> Currently, the __is_lm_address() check just masks out the top 12 bits
+>> of the address, but if they are 0, it still yields a true result.
+>> This has as a side effect that virt_addr_valid() returns true even for
+>> invalid virtual addresses (e.g. 0x0).
+> 
+> When it was added, __is_lm_address() was intended to distinguish valid
+> kernel virtual addresses (i.e. those in the TTBR1 address range), and
+> wasn't intended to do anything for addresses outside of this range. See
+> commit:
+> 
+>   ec6d06efb0bac6cd ("arm64: Add support for CONFIG_DEBUG_VIRTUAL")
+> 
+> ... where it simply tests a bit.
+> 
+> So I believe that it's working as intended (though this is poorly
+> documented), but I think you're saying that usage isn't aligned with
+> that intent. Given that, I'm not sure the fixes tag is right; I think it
+> has never had the semantic you're after.
+>
+
+I did not do much thinking on the intended semantics. I based my interpretation
+on what you are saying (the usage is not aligned with the intent). Based on what
+you are are saying, I will change the patch description removing the "Fix" term.
+
+> I had thought the same was true for virt_addr_valid(), and that wasn't
+> expected to be called for VAs outside of the kernel VA range. Is it
+> actually safe to call that with NULL on other architectures?
+> 
+
+I am not sure on this, did not do any testing outside of arm64.
+
+> I wonder if it's worth virt_addr_valid() having an explicit check for
+> the kernel VA range, instead.
+> 
+
+I have no strong opinion either way even if personally I feel that modifying
+__is_lm_address() is more clear. Feel free to propose something.
+
+>> Fix the detection checking that it's actually a kernel address starting
+>> at PAGE_OFFSET.
+>>
+>> Fixes: f4693c2716b35 ("arm64: mm: extend linear region for 52-bit VA configurations")
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>> ---
+>>  arch/arm64/include/asm/memory.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+>> index 18fce223b67b..e04ac898ffe4 100644
+>> --- a/arch/arm64/include/asm/memory.h
+>> +++ b/arch/arm64/include/asm/memory.h
+>> @@ -249,7 +249,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+>>  /*
+>>   * The linear kernel range starts at the bottom of the virtual address space.
+>>   */
+>> -#define __is_lm_address(addr)	(((u64)(addr) & ~PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+>> +#define __is_lm_address(addr)	(((u64)(addr) ^ PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+> 
+> If we're going to make this stronger, can we please expand the comment
+> with the intended semantic? Otherwise we're liable to break this in
+> future.
+> 
+
+Based on your reply on the above matter, if you agree, I am happy to extend the
+comment.
+
+> Thanks,
+> Mark.
+> 
+
+-- 
+Regards,
+Vincenzo
