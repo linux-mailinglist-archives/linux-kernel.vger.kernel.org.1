@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6242FEB31
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474F02FEB10
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731054AbhAUNEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:04:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729294AbhAUKbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:31:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3562239EB;
-        Thu, 21 Jan 2021 10:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611224970;
-        bh=v5TgOwXWj0YY94HrnCt3iZPfS8p5FlPm3RviRv/L0ME=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mKY1pyJ5iW32eEeBPWbGWV4NQzWsqnbFjXsBeshkGsrUCN1s35y819qTxGvcME6H1
-         F20FMpcEU8JHAJjwQQXXrFj4HHLcDFTp40F+nr/aW6KNm8AhgESBChwxTKwlgtcnPx
-         athTudEMfwVgz0ygLTzGDk5PDX0SvHjpmTiSSP9rTaHE6a+otvPpZRWWz3+QcV4Kfr
-         frVdJD5r193stCExKb2PXyhSA5N6qwb7HtQdKmVoGUCIROHBxsBr2ARmeY2J46cGMl
-         eUeeoO85RR2s8pPvQ3G22lXcMBRuozk+1mghQOybuSFMELPAzM01Uf7oT6MyFyUXUi
-         AvGHeHZW6TAqw==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l2XDd-0004Yj-Fe; Thu, 21 Jan 2021 11:29:37 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     linux-usb@vger.kernel.org
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 10/10] USB: serial: xr: fix B0 handling
-Date:   Thu, 21 Jan 2021 11:29:22 +0100
-Message-Id: <20210121102922.17439-12-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210121102922.17439-1-johan@kernel.org>
-References: <20210121102922.17439-1-johan@kernel.org>
+        id S1728419AbhAUNFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:05:43 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11561 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729165AbhAUKbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:31:17 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DLzC02YL9zMNH7;
+        Thu, 21 Jan 2021 18:29:00 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 21 Jan
+ 2021 18:30:23 +0800
+Subject: Re: [f2fs-dev] [PATCH v2 2/2] f2fs: add ckpt_thread_ioprio sysfs node
+To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Daeho Jeong <daehojeong@google.com>
+References: <20210114062302.3809664-1-daeho43@gmail.com>
+ <20210114062302.3809664-2-daeho43@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <d4c12d47-db33-7e76-b7ad-4d80ced1aba9@huawei.com>
+Date:   Thu, 21 Jan 2021 18:30:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114062302.3809664-2-daeho43@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix up B0 handling which should leave the baud rate unchanged and
-specifically not report back a non-B0 rate when B0 is requested; must
-temporarily disable hardware flow control so that RTS can be deasserted;
-and should reassert DTR/RTS when moving from B0.
+On 2021/1/14 14:23, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Added "ckpt_thread_ioprio" sysfs node to give a way to change checkpoint
+> merge daemon's io priority. Its default value is "be,3", which means
+> "BE" I/O class and I/O priority "3". We can select the class between "rt"
+> and "be", and set the I/O priority within valid range of it.
+> "," delimiter is necessary in between I/O class and priority number.
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+> v2:
+> - adapt to inlining ckpt_req_control of f2fs_sb_info
+> ---
+>   Documentation/ABI/testing/sysfs-fs-f2fs |  8 ++++
+>   fs/f2fs/checkpoint.c                    |  2 +-
+>   fs/f2fs/f2fs.h                          |  1 +
+>   fs/f2fs/sysfs.c                         | 51 +++++++++++++++++++++++++
+>   4 files changed, 61 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index 3dfee94e0618..0c48b2e7dfd4 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -377,3 +377,11 @@ Description:	This gives a control to limit the bio size in f2fs.
+>   		Default is zero, which will follow underlying block layer limit,
+>   		whereas, if it has a certain bytes value, f2fs won't submit a
+>   		bio larger than that size.
+> +What:		/sys/fs/f2fs/<disk>/ckpt_thread_ioprio
+> +Date:		January 2021
+> +Contact:	"Daeho Jeong" <daehojeong@google.com>
+> +Description:	Give a way to change checkpoint merge daemon's io priority.
+> +		Its default value is "be,3", which means "BE" I/O class and
+> +		I/O priority "3". We can select the class between "rt" and "be",
+> +		and set the I/O priority within valid range of it. "," delimiter
+> +		is necessary in between I/O class and priority number.
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index e0668cec3b80..62bd6f449bb7 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -1840,7 +1840,7 @@ int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi)
+>   	if (IS_ERR(cprc->f2fs_issue_ckpt))
+>   		return PTR_ERR(cprc->f2fs_issue_ckpt);
+>   
+> -	set_task_ioprio(cprc->f2fs_issue_ckpt, DEFAULT_CHECKPOINT_IOPRIO);
+> +	set_task_ioprio(cprc->f2fs_issue_ckpt, cprc->ckpt_thread_ioprio);
 
-Fixes: a8f54b7bd132 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/xr_serial.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+Where do we set default value of cprc->ckpt_thread_ioprio? I guess it should
+be f2fs_init_ckpt_req_control()?
 
-diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-index f67e7dba9509..483d07dee19d 100644
---- a/drivers/usb/serial/xr_serial.c
-+++ b/drivers/usb/serial/xr_serial.c
-@@ -341,8 +341,11 @@ static int xr_set_baudrate(struct tty_struct *tty,
- 	u16 tx_mask, rx_mask;
- 	int ret;
- 
--	baud = clamp(tty->termios.c_ospeed, XR21V141X_MIN_SPEED,
--		     XR21V141X_MAX_SPEED);
-+	baud = tty->termios.c_ospeed;
-+	if (!baud)
-+		return 0;
-+
-+	baud = clamp(baud, XR21V141X_MIN_SPEED, XR21V141X_MAX_SPEED);
- 	divisor = XR_INT_OSC_HZ / baud;
- 	idx = ((32 * XR_INT_OSC_HZ) / baud) & 0x1f;
- 	tx_mask = xr21v141x_txrx_clk_masks[idx].tx;
-@@ -399,7 +402,8 @@ static int xr_set_baudrate(struct tty_struct *tty,
- }
- 
- static void xr_set_flow_mode(struct tty_struct *tty,
--			     struct usb_serial_port *port)
-+			     struct usb_serial_port *port,
-+			     struct ktermios *old_termios)
- {
- 	u8 flow, gpio_mode;
- 	int ret;
-@@ -411,7 +415,7 @@ static void xr_set_flow_mode(struct tty_struct *tty,
- 	/* Set GPIO mode for controlling the pins manually by default. */
- 	gpio_mode &= ~XR21V141X_UART_MODE_GPIO_MASK;
- 
--	if (C_CRTSCTS(tty)) {
-+	if (C_CRTSCTS(tty) && C_BAUD(tty) != B0) {
- 		dev_dbg(&port->dev, "Enabling hardware flow ctrl\n");
- 		gpio_mode |= XR21V141X_UART_MODE_RTS_CTS;
- 		flow = XR21V141X_UART_FLOW_MODE_HW;
-@@ -438,6 +442,11 @@ static void xr_set_flow_mode(struct tty_struct *tty,
- 	xr_uart_enable(port);
- 
- 	xr_set_reg_uart(port, XR21V141X_REG_GPIO_MODE, gpio_mode);
-+
-+	if (C_BAUD(tty) == B0)
-+		xr_dtr_rts(port, 0);
-+	else if (old_termios && (old_termios->c_cflag & CBAUD) == B0)
-+		xr_dtr_rts(port, 1);
- }
- 
- static void xr_set_termios(struct tty_struct *tty,
-@@ -493,11 +502,7 @@ static void xr_set_termios(struct tty_struct *tty,
- 	if (ret)
- 		return;
- 
--	/* If baud rate is B0, clear DTR and RTS */
--	if (C_BAUD(tty) == B0)
--		xr_dtr_rts(port, 0);
--
--	xr_set_flow_mode(tty, port);
-+	xr_set_flow_mode(tty, port, old_termios);
- }
- 
- static int xr_open(struct tty_struct *tty, struct usb_serial_port *port)
--- 
-2.26.2
-
+Thanks,
