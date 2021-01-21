@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D694F2FF133
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CA62FF135
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387917AbhAUQ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:58:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
+        id S2387529AbhAUQ7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:59:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732160AbhAUQ5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:57:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0D5223A51;
-        Thu, 21 Jan 2021 16:57:08 +0000 (UTC)
+        id S1733067AbhAUQ6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:58:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 712B923A54;
+        Thu, 21 Jan 2021 16:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611248229;
-        bh=7NqW+561qsjMOCC/bfVRpec8+rgmHi6zGR3uVlBcjfY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=H4VresKbjlKd6LVrJLsRqAbZWXKv7KnjWA7lVSLdAysd0pjkZGPCso16qXdFZZmx3
-         vqPT7ECr0Bh+oKxDv4KffXwcuiA4KweMipR0LebDE6MRtX9nX04lN+sX7ya8I1rlrf
-         R4rNYp//C/hOJWCBject85rrTkI/wf9K5W5BwOAKh7+WmfztxuB53gcOVwxF52MkhO
-         2pkXr7fCtqd4Qv7DLcIy9gPIckRNAHW8pzns85JlJRmM+kZmJrsj/ROQSgd8UW6oI2
-         nTOv1hWUyarbh0Bnu52ZqCUUm+giPfyKKiJSBL84jjJPT1KLlDz0RhppKCU1OuKQAZ
-         q43Cw/C7Dya7A==
-Date:   Thu, 21 Jan 2021 10:57:06 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] PCI: set dma-can-stall for HiSilicon chip
-Message-ID: <20210121165706.GA2663152@bjorn-Precision-5520>
+        s=k20201202; t=1611248245;
+        bh=TH0uv+xJ3OXI8rF8g5eWJpI12gPgdit8dO28ZyUTVhQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=K8z1EvX6ZySbMsAzaAQlw/2sQYDnGb7eO7baOFXvejYx93Wpq8gpVjxDQcvNdn2jV
+         YeBqIptoPnInDMKkMzMlacSAW0fAVnati8FLzBqxlLzA7eq9p8cxGkHSBfwZnwR3aD
+         NygyNoTsC2xf9v2BRrehyTmyTNVmRQV4JtiAcyhNj3pWiawgK3EMC7rBOp50udK6va
+         cDG9L7dFkbhUEtAwQuR8+VQaJq4CcgqCyirqww2D6idZ8Fr+HUhIV/REfWsQmWKd4I
+         G5ALPRkRogkxBJWLRlBs2Vlh/DlQjC/oEA/hpqHCUt06lqDailL6Y8pa1JasLzZnYc
+         UNx3TLQLSCuPw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 14F39352268F; Thu, 21 Jan 2021 08:57:25 -0800 (PST)
+Date:   Thu, 21 Jan 2021 08:57:25 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        kernel-team@fb.com, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH RFC cpumask] Allow "all", "none", and "last" in cpumask
+ strings
+Message-ID: <20210121165725.GP2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
+ <CAAH8bW95nyx6PEnPiBPoHMLoduvgU9KO7N=K7mhLORkA+zzhDw@mail.gmail.com>
+ <CAAH8bW8-q-2LaTC5DE0PnUBqs3V_69EAefLvwdZoeFSow8NYZA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1610960316-28935-4-git-send-email-zhangfei.gao@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAH8bW8-q-2LaTC5DE0PnUBqs3V_69EAefLvwdZoeFSow8NYZA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:58:36PM +0800, Zhangfei Gao wrote:
-> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
-> actually on the AMBA bus. These fake PCI devices can support SVA via
-> SMMU stall feature, by setting dma-can-stall for ACPI platforms.
+On Wed, Jan 20, 2021 at 11:11:48PM -0800, Yury Norov wrote:
+> On Wed, Jan 6, 2021 at 12:49 AM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > On Tue, Jan 5, 2021 at 4:48 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > Hello!
+> > >
+> > > This series allows "all", "none", and "last" to be used in cpumask
+> > > strings.  This allows these strings to be less dependent on the underlying
+> > > system.  For example, currently a string specifying all but the first
+> > > CPU must be "1-7" on an eight-CPU system and "1-15" on a 16-CPU system.
+> > > With this series, the single string "1-last" can be used regardless of the
+> > > number of CPUs (at least assuming that each system has at least one CPU).
+> >
+> > 'none' may be implemented as an empty string or string with separators only,
+> > but I have nothing against explicit 'none'. See other comments inline.
+> >
+> > Thanks,
+> > Yury.
+> >
+> > > 1.      Un-inline cpulist_parse for SMP; prepare for ascii helpers,
+> > >         courtesy of Paul Gortmaker.
+> > >
+> > > 2.      Make "all" alias global and not just RCU, courtesy of Paul
+> > >         Gortmaker.
+> > >
+> > > 3.      Add a "none" alias to complement "all", courtesy of Paul
+> > >         Gortmaker.
+> > >
+> > > 4.      Add "last" alias for cpu list specifications, courtesy of Paul
+> > >         Gortmaker.
+> > >
+> > > 5.      Use "all" and "last" in "nohz_full" and "rcu_nocbs".
+> > >
+> > >                                                 Thanx, Paul
 > 
-> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
-> ---
-> Property dma-can-stall depends on patchset
-> https://lore.kernel.org/linux-iommu/20210108145217.2254447-1-jean-philippe@linaro.org/
+> Hi Paul,
 > 
->  drivers/pci/quirks.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+> Today I found this series in linux-next despite downsides discovered during
+> the review. This series introduces absolutely unneeded cap on the number of
+> cpus in the system (9999), and also adds unsafe and non-optimal code.
 > 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 873d27f..b866cdf 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -1827,10 +1827,23 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
->  
->  static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
->  {
-> +	struct property_entry properties[] = {
-> +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
-> +		{},
-> +	};
-> +
->  	if (pdev->revision != 0x21 && pdev->revision != 0x30)
->  		return;
->  
->  	pdev->pasid_no_tlp = 1;
-> +
-> +	/*
-> +	 * Set the dma-can-stall property on ACPI platforms. Device tree
-> +	 * can set it directly.
-> +	 */
-> +	if (!pdev->dev.of_node &&
-> +	    device_add_properties(&pdev->dev, properties))
-> +		pci_warn(pdev, "could not add stall property");
+> In addition to that, I observe this warning on powerpc:
+>   CC      lib/cpumask.o
+> lib/cpumask.c: In function ‘cpulist_parse’:
+> lib/cpumask.c:222:17: warning: cast from pointer to integer of
+> different size [-Wpointer-to-int-cast]
+>   222 |   memblock_free((phys_addr_t)cpulist, len);
+>       |                 ^
+> 
+> Can you please revert this series unless all the problems will be fixed?
 
-What's the purpose of adding the "dma-can-stall" property?  I don't
-see any reference to that property in the tree or in this series.  If
-this is related to some other series that uses it, perhaps this part
-should be moved to that series?
+Thank you for your further review and comments!
 
->  }
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
-> -- 
-> 2.7.4
-> 
+I had been keeping the old series as a placeholder for its anticipated
+replacement, but given the compiler warning you note above and given
+that it is getting uncomfortably close to the time when I send my pull
+request, I will remove it from the -rcu rcu/next branch sourced by -next.
+
+							Thanx, Paul
