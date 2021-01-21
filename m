@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EC62FF223
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104C52FF226
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388077AbhAURj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388747AbhAURhN (ORCPT
+        id S2388959AbhAURkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:40:02 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:58572 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731961AbhAURh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:37:13 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636C7C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:36:32 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id m25so3643681lfc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:36:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3SEf/V9yt14A7uM1ShvJd/4xdflgWn5dGZUA33xKMms=;
-        b=XsmwIVO/V6h9mFWHl2r06aivASYcATaOgZwv77wC9xKZ/MN82fjm8u7omAINuA1Scw
-         c1VmYF+ubgVCmTpUmTsElehCOCVMnmpf0n6fq4jybmEfTRTfcbOTcVdHviLHNHx2JH5v
-         QzrzTEgw1sPErL/gsZ+W3dS1Lr8wULt9K585p0yvce9SeZ7IesBVjoqerfQtQrUPD6JQ
-         pY1P5zMFMLUKsAWY7VF04g6klEW5AV7iU25tyr+CtaTfJuwZD1cGVSZaUyGXUxOsWHgE
-         bvGURQHtbTrxXDwbLeVAC8rAjogHb/IyI+i9Hlv8vY2O5dQN0XplvmtERPVRetjtuxX4
-         2P+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3SEf/V9yt14A7uM1ShvJd/4xdflgWn5dGZUA33xKMms=;
-        b=rWqGQEwmalRW3LOkXlBqDLW4PpUOJFz55Pu4KTv6mNgexhGC1oJQGU0Ue2j3KmsHkY
-         eEd0jmaU2Kk3Jw9gllrHsoVdj3XF2rVe8jnn3/DRMpVyXXFkLqqVj1CRmNI7HV8Ndrqu
-         iXZzgecign3CP4sjV2Ju8nlfTZrAxWkVAb7wm72dTvf2RqnuVBKbjg5OI0rg2dZjmAcz
-         pTvMjk3XY0o7yxIY5o8G3twW0YFblF0hHmLC8ublx1FSJr1VAcsxgb8fCPV5f7/7IuR0
-         hQO4IceTobQ1ojV3RRRkiYZstZqQaRPHLVU39WjmqChxcF3LI3J+2Lt+7rjqzyPavSQY
-         v/lw==
-X-Gm-Message-State: AOAM5329kOcv+Ji84GH3l3pUY5LcV+ivLFkyDn9Vf+9EA1ubiarEBees
-        60b7iuvnLA9GRMZz7sbjqiSmaD1LQUNPmxD0yYXKbg==
-X-Google-Smtp-Source: ABdhPJyU3qGpfN5OW/ZoN3v4IosoHPldFT+rj5yOhl+7TTN/cxJTIMmsdJaPlTiqZfdUPbh64yjywinHu1g+7RUxlYo=
-X-Received: by 2002:a19:4191:: with SMTP id o139mr154189lfa.224.1611250590545;
- Thu, 21 Jan 2021 09:36:30 -0800 (PST)
+        Thu, 21 Jan 2021 12:37:58 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 30AE920B7192;
+        Thu, 21 Jan 2021 09:37:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 30AE920B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1611250637;
+        bh=fbcRcp3idFFWOwiOjLdBsLqpIczhr4t2xXWIs0rFOng=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fmcd9KrwyIO9TqvZmr0jqA0gEJmzIDHUMnaPFQFbijMEsfENZEAaX5Xo++kbH58i2
+         agEegx67+IM2QDODuukFUevio4kE2yxldq9dWrZ+0CmuNgv6vejrdDnHKRZRE9PLqW
+         uEJDWxGe0Mz7g7InS7KFcW/oXqQJKMMVZuGT+FUw=
+Date:   Thu, 21 Jan 2021 11:37:15 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, ebiederm@xmission.com,
+        gregkh@linuxfoundation.org, sashal@kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 2/2] ima: Free IMA measurement buffer after kexec syscall
+Message-ID: <20210121173715.GF259508@sequoia>
+References: <20210121173003.18324-1-nramas@linux.microsoft.com>
+ <20210121173003.18324-2-nramas@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20210121163943.9889-1-vincenzo.frascino@arm.com> <20210121163943.9889-4-vincenzo.frascino@arm.com>
-In-Reply-To: <20210121163943.9889-4-vincenzo.frascino@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 21 Jan 2021 18:36:19 +0100
-Message-ID: <CAAeHK+wS-HCrayJrWkD=HSS2xLzVfsgTFcAAQZL8DSZ2o3tCrA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/6] kasan: Add report for async mode
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121173003.18324-2-nramas@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 5:39 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> KASAN provides an asynchronous mode of execution.
->
-> Add reporting functionality for this mode.
->
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+On 2021-01-21 09:30:03, Lakshmi Ramasubramanian wrote:
+> IMA allocates kernel virtual memory to carry forward the measurement
+> list, from the current kernel to the next kernel on kexec system call,
+> in ima_add_kexec_buffer() function.  This buffer is not freed before
+> completing the kexec system call resulting in memory leak.
+> 
+> Add ima_buffer field in "struct kimage" to store the virtual address
+> of the buffer allocated for the IMA measurement list.
+> Free the memory allocated for the IMA measurement list in
+> kimage_file_post_load_cleanup() function.
+> 
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
+
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+
+Tyler
+
 > ---
->  include/linux/kasan.h |  2 ++
->  mm/kasan/report.c     | 11 +++++++++++
->  2 files changed, 13 insertions(+)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index bb862d1f0e15..b0a1d9dfa85c 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -351,6 +351,8 @@ static inline void *kasan_reset_tag(const void *addr)
->  bool kasan_report(unsigned long addr, size_t size,
->                 bool is_write, unsigned long ip);
->
-> +void kasan_report_async(void);
+>  include/linux/kexec.h              | 5 +++++
+>  kernel/kexec_file.c                | 5 +++++
+>  security/integrity/ima/ima_kexec.c | 2 ++
+>  3 files changed, 12 insertions(+)
+> 
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index 9e93bef52968..5f61389f5f36 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -300,6 +300,11 @@ struct kimage {
+>  	/* Information for loading purgatory */
+>  	struct purgatory_info purgatory_info;
+>  #endif
 > +
->  #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
->
->  static inline void *kasan_reset_tag(const void *addr)
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 234f35a84f19..2fd6845a95e9 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -358,6 +358,17 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
->         end_report(&flags);
+> +#ifdef CONFIG_IMA_KEXEC
+> +	/* Virtual address of IMA measurement buffer for kexec syscall */
+> +	void *ima_buffer;
+> +#endif
+>  };
+>  
+>  /* kexec interface functions */
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index b02086d70492..5c3447cf7ad5 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -166,6 +166,11 @@ void kimage_file_post_load_cleanup(struct kimage *image)
+>  	vfree(pi->sechdrs);
+>  	pi->sechdrs = NULL;
+>  
+> +#ifdef CONFIG_IMA_KEXEC
+> +	vfree(image->ima_buffer);
+> +	image->ima_buffer = NULL;
+> +#endif /* CONFIG_IMA_KEXEC */
+> +
+>  	/* See if architecture has anything to cleanup post load */
+>  	arch_kimage_file_post_load_cleanup(image);
+>  
+> diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
+> index 212145008a01..8eadd0674629 100644
+> --- a/security/integrity/ima/ima_kexec.c
+> +++ b/security/integrity/ima/ima_kexec.c
+> @@ -130,6 +130,8 @@ void ima_add_kexec_buffer(struct kimage *image)
+>  		return;
+>  	}
+>  
+> +	image->ima_buffer = kexec_buffer;
+> +
+>  	pr_debug("kexec measurement buffer for the loaded kernel at 0x%lx.\n",
+>  		 kbuf.mem);
 >  }
->
-> +void kasan_report_async(void)
-> +{
-> +       unsigned long flags;
-> +
-> +       start_report(&flags);
-> +       pr_err("BUG: KASAN: invalid-access\n");
-> +       pr_err("Asynchronous mode enabled: no access details available\n");
-> +       dump_stack();
-> +       end_report(&flags);
-> +}
-> +
->  static void __kasan_report(unsigned long addr, size_t size, bool is_write,
->                                 unsigned long ip)
->  {
-> --
+> -- 
 > 2.30.0
->
-
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-
-FTR: this will conflict with the Alex's patch:
-
-https://lore.kernel.org/linux-api/20210121131915.1331302-1-glider@google.com/T/#m8872c56af85babfc08784e2b2fcd5cc1c0c73859
+> 
