@@ -2,162 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CFD2FF716
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B51A2FF71B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727424AbhAUVVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:21:18 -0500
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:39964 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727457AbhAUVSY (ORCPT
+        id S1726705AbhAUVXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:23:05 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:3388 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbhAUVW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:18:24 -0500
-Received: by mail-pf1-f182.google.com with SMTP id i63so2288443pfg.7;
-        Thu, 21 Jan 2021 13:18:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nCPV03LmtFFgNcmlSbKeR1ygTL47bRCqEh8UZyzy3+Q=;
-        b=P04qPiUWgcgEPj12Dz+M/9rq/H5gR9gqN8VWQ+1NRZmjjgQN0QEdduUMrEURBnueh/
-         7QU8EGByec6JaUjSziCpOZ6/42G9Lr3QwosAhqn71znFVsWsgvuwd1J1RN+5phrHGd6w
-         d/R1p+Cr9b6zBlXbrJJkjAksYnJ1lqBO2nbgDYTpOmNMHgTY1vZbqm/hpeS6lW2yowdS
-         qR40V2wMozFD6V+xNoAL0D1opbtL1N8jUA5F3yKf/hbnYILXxwddFwI0hKWr4NBeItNb
-         wVppceIWiB03aPXK+uAiGXgrz6Y8iWnrIRuUaU/Q1R9LNJfgjXbUFaWp5QkGhL+chQn+
-         1xvw==
-X-Gm-Message-State: AOAM531IFzb5ASHjBJCoQ5i3rtgfw4e2Pg1nbANZYAv+HhXO3x8xIavn
-        /v4KqpfzTvrkQwa2StAkjWHQIgupkWU=
-X-Google-Smtp-Source: ABdhPJx4ZPV+AWlNMwICVk+gIH9l4TV9qGoMwij2g0OwOsYnUuQjDnNztMqliT7x8AdhiylRKEpAWw==
-X-Received: by 2002:a63:f106:: with SMTP id f6mr1227988pgi.163.1611263860562;
-        Thu, 21 Jan 2021 13:17:40 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id l12sm6575702pjq.7.2021.01.21.13.17.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 13:17:39 -0800 (PST)
-Date:   Thu, 21 Jan 2021 13:17:38 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, lorenzo.pieralisi@arm.com,
-        guohanjun@huawei.com, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ACPI/IORT: Do not blindly trust DMA masks from firmware
-Message-ID: <YAnvckodi9MOTrV4@epycbox.lan>
-References: <20210121191612.90387-1-mdf@kernel.org>
- <faa089d5-48e3-d51d-0d14-849e5446dbf4@arm.com>
+        Thu, 21 Jan 2021 16:22:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611264146; x=1642800146;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IU7N6M9WqExUVmZAY20bnYzUlhHSkV8kquJkto9eAP0=;
+  b=GjPJPFatPWvDhqT9JS7d0Y5M1fnd/2A+uedw8MKfDc+QfwPG6spXrm6o
+   VsflD6RpXoQq09VDpwJSrXLkzJbpRKttYNwGDNoq+uTcpfW7r1QybCVCi
+   Vp0DZFwtZNWjXLl2GWuHIZqDcu3GhR6qf44ppeiUbqgc6EdF5rff8fmRu
+   j1DuAHl3MAB0VZr7fgdqjORkIlmxfcppZikho3mlAwKJ31hDj/u9IrI63
+   mSI2yuuonS9e/s0fWKsZrSlVgV2fkv4Tq/cRj81lIFtxHrAiod9t6HCdK
+   ljUQc5CIH5b1edDJfsyhZCT6Z8I2H53QTyGzczUyAObE3kzYiZvk+gJux
+   w==;
+IronPort-SDR: VQhmM0FZL1T92OJLLiODRsCJEF8Q7muLfGs3WBaMgk6PGjWKxSDTiLegwUXGkdj70Nj+mxwo3N
+ cRRfiyOCdgVNPilk8wf5ewOCiHfzcJO1H96QacFP5joJWLPIHEVaO+POJDzYmHHjsWUx7Nw5Bs
+ Y/zhslARHk2SeNxKI3Iqqce3ii8hMlFcLR3pNVfcOOeuRx8vSHk3L9OBlNUi0W/Q+/+YzCRy/M
+ Gdi13yLSWvKfovqydu7jlaJkexHbFx8e6X4AmffpmlLazu/49rm8RrHrTT33OCo46qT2Jz38gM
+ Kj4=
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="111998573"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Jan 2021 14:20:58 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 21 Jan 2021 14:20:58 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 21 Jan 2021 14:20:58 -0700
+Date:   Thu, 21 Jan 2021 22:20:57 +0100
+From:   Ludovic Desroches <ludovic.desroches@microchip.com>
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+CC:     <ulf.hansson@linaro.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mmc: Assign boolean values to a bool variable
+Message-ID: <20210121212057.kxoh7timeczhd4yh@sekiro>
+References: <1611128377-66216-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <faa089d5-48e3-d51d-0d14-849e5446dbf4@arm.com>
+In-Reply-To: <1611128377-66216-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Robin,
-
-On Thu, Jan 21, 2021 at 08:08:42PM +0000, Robin Murphy wrote:
-> On 2021-01-21 19:16, Moritz Fischer wrote:
-> > Address issue observed on real world system with suboptimal IORT table
-> > where DMA masks of PCI devices would get set to 0 as result.
-> > 
-> > iort_dma_setup() would query the root complex' IORT entry for a DMA
-> > mask, and use that over the one the device has been configured with
-> > earlier.
-> > 
-> > Ideally we want to use the minimum mask of what the IORT contains for
-> > the root complex and what the device was configured with, but never 0.
-> > 
-> > Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
-> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> > ---
-> > Hi all,
-> > 
-> > not sure I'm doing this right, but I think the current behavior (while a
-> > corner case) seems to also fail for 32 bit devices if the IORT specifies
-> > 64 bit. It works on my test system now with a 32 bit device.
+On Wed, Jan 20, 2021 at 03:39:37PM +0800, Jiapeng Zhong wrote:
+> Fix the following coccicheck warnings:
 > 
-> I suppose it could go wrong if it's an old driver that doesn't explicitly
-> set its own masks and assumes they will always be 32-bit. Technically we'd
-> consider that the driver's fault these days, but there's a lot of legacy
-> around still.
-
-Huh, ok :) That's news to me. On my system I had three devices running
-into this, so yeah I think it's quite common.
-
-If that's the official stance I can send patches for the drivers in
-question :)
-
+> ./drivers/mmc/host/atmel-mci.c:2436:2-34: WARNING: Assignment
+> of 0/1 to bool variable.
 > 
-> > Open to suggestions for better solutions (and maybe the
-> > nc_dma_get_range() should have the same sanity check?)
+> ./drivers/mmc/host/atmel-mci.c:2425:2-20: WARNING: Assignment
+> of 0/1 to bool variable.
 > 
-> Honestly the more I come back to this, the more I think we should give up
-> trying to be clever and just leave the default masks alone beyond the
-> initial "is anything set up at all?" sanity checks. Setting the bus limit is
-> what really matters these days, and should be sufficient to encode any
-> genuine restriction. There's certainly no real need to widen the default
-> masks above 32 bits just because firmware suggests so, since the driver
-> should definitely be calling dma_set_mask() and friends later if it's
-> >32-bit capable anyway.
-> 
-> > Thanks,
-> > Moritz
-> > 
-> > ---
-> >   drivers/acpi/arm64/iort.c | 11 ++++++++---
-> >   1 file changed, 8 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> > index d4eac6d7e9fb..c48eabf8c121 100644
-> > --- a/drivers/acpi/arm64/iort.c
-> > +++ b/drivers/acpi/arm64/iort.c
-> > @@ -1126,6 +1126,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
-> >   	rc = (struct acpi_iort_root_complex *)node->node_data;
-> > +	if (!rc->memory_address_limit) {
-> > +		dev_warn(dev, "Root complex has broken memory_address_limit\n");
-> 
-> Probably warrants a FW_BUG in there.
-> 
-> > +		return -EINVAL;
-> > +	}
-> > +
-> >   	*size = rc->memory_address_limit >= 64 ? U64_MAX :
-> >   			1ULL<<rc->memory_address_limit;
-> > @@ -1172,9 +1177,9 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
-> >   		 */
-> >   		end = dmaaddr + size - 1;
-> >   		mask = DMA_BIT_MASK(ilog2(end) + 1);
-> > -		dev->bus_dma_limit = end;
-> > -		dev->coherent_dma_mask = mask;
-> > -		*dev->dma_mask = mask;
-> > +		dev->bus_dma_limit = min_not_zero(dev->bus_dma_limit, end);
-> 
-> This doesn't need to change, since the default bus limit is 0 anyway (and
-> that means "no limit").
-Ok, I'll drop this.
-> 
-> > +		dev->coherent_dma_mask = min_not_zero(dev->coherent_dma_mask, mask);
-> > +		*dev->dma_mask = min_not_zero(*dev->dma_mask, mask);
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
 
-I'll keep those two?
-> AFAICS the only way an empty mask could get here now is from
-> nc_dma_get_range(), so I'd rather see a consistent warning there than just
-> silently start working around that too.
+Thanks
 
-In my case the empty mask came from the pci dev branch returning a size
-of 1. (1 << 0).
-
-I'll replace the dev_warn() with a pr_warn(FW_BUG ...) for both
-{nc,rc}_dma_get_range() cases then?
-
+> ---
+>  drivers/mmc/host/atmel-mci.c | 46 ++++++++++++++++++++++----------------------
+>  1 file changed, 23 insertions(+), 23 deletions(-)
 > 
-> Of course IORT doesn't say these fields are optional (other than the lack of
-> a root complex limit in older table versions), so we're giving bad firmware
-> a pass to never be fixed, ho hum...
-
-I think if we yell loud enough (like FW_BUG) that'll get people's
-attention?
-
-Thanks for the quick reply
-- Moritz
+> diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
+> index 444bd3a..6324120 100644
+> --- a/drivers/mmc/host/atmel-mci.c
+> +++ b/drivers/mmc/host/atmel-mci.c
+> @@ -2401,45 +2401,45 @@ static void atmci_get_cap(struct atmel_mci *host)
+>         dev_info(&host->pdev->dev,
+>                         "version: 0x%x\n", version);
+> 
+> -       host->caps.has_dma_conf_reg = 0;
+> -       host->caps.has_pdc = 1;
+> -       host->caps.has_cfg_reg = 0;
+> -       host->caps.has_cstor_reg = 0;
+> -       host->caps.has_highspeed = 0;
+> -       host->caps.has_rwproof = 0;
+> -       host->caps.has_odd_clk_div = 0;
+> -       host->caps.has_bad_data_ordering = 1;
+> -       host->caps.need_reset_after_xfer = 1;
+> -       host->caps.need_blksz_mul_4 = 1;
+> -       host->caps.need_notbusy_for_read_ops = 0;
+> +       host->caps.has_dma_conf_reg = false;
+> +       host->caps.has_pdc = true;
+> +       host->caps.has_cfg_reg = false;
+> +       host->caps.has_cstor_reg = false;
+> +       host->caps.has_highspeed = false;
+> +       host->caps.has_rwproof = false;
+> +       host->caps.has_odd_clk_div = false;
+> +       host->caps.has_bad_data_ordering = true;
+> +       host->caps.need_reset_after_xfer = true;
+> +       host->caps.need_blksz_mul_4 = true;
+> +       host->caps.need_notbusy_for_read_ops = false;
+> 
+>         /* keep only major version number */
+>         switch (version & 0xf00) {
+>         case 0x600:
+>         case 0x500:
+> -               host->caps.has_odd_clk_div = 1;
+> +               host->caps.has_odd_clk_div = true;
+>                 fallthrough;
+>         case 0x400:
+>         case 0x300:
+> -               host->caps.has_dma_conf_reg = 1;
+> -               host->caps.has_pdc = 0;
+> -               host->caps.has_cfg_reg = 1;
+> -               host->caps.has_cstor_reg = 1;
+> -               host->caps.has_highspeed = 1;
+> +               host->caps.has_dma_conf_reg = true;
+> +               host->caps.has_pdc = false;
+> +               host->caps.has_cfg_reg = true;
+> +               host->caps.has_cstor_reg = true;
+> +               host->caps.has_highspeed = true;
+>                 fallthrough;
+>         case 0x200:
+> -               host->caps.has_rwproof = 1;
+> -               host->caps.need_blksz_mul_4 = 0;
+> -               host->caps.need_notbusy_for_read_ops = 1;
+> +               host->caps.has_rwproof = true;
+> +               host->caps.need_blksz_mul_4 = false;
+> +               host->caps.need_notbusy_for_read_ops = true;
+>                 fallthrough;
+>         case 0x100:
+> -               host->caps.has_bad_data_ordering = 0;
+> -               host->caps.need_reset_after_xfer = 0;
+> +               host->caps.has_bad_data_ordering = false;
+> +               host->caps.need_reset_after_xfer = false;
+>                 fallthrough;
+>         case 0x0:
+>                 break;
+>         default:
+> -               host->caps.has_pdc = 0;
+> +               host->caps.has_pdc = false;
+>                 dev_warn(&host->pdev->dev,
+>                                 "Unmanaged mci version, set minimum capabilities\n");
+>                 break;
+> --
+> 1.8.3.1
+> 
