@@ -2,183 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB94B2FE9A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBE12FE9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730277AbhAUMKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730864AbhAUMFR (ORCPT
+        id S1729497AbhAUMMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:12:23 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:33315 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730429AbhAUMK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:05:17 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09234C061757;
-        Thu, 21 Jan 2021 04:04:33 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id y187so1310093wmd.3;
-        Thu, 21 Jan 2021 04:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=NPaJmIoqOQ2ZtBkLTXast52ZNe1Rt1J2mdt0JMfHVxE=;
-        b=MMEoBFia73Ara9Y6z+76gKokEEI1bzPJ9TpoHM+qHnrUCVU0RGG3mYhqcZl36/rgK0
-         ca92dJ7ZDT7DUMqo6tSKr1pxGQZK3zYyHHqPhjtDvCbMdumYU6g06q+z+sJVAqtP9USN
-         XoTGkadKrFekrw0EnRDNFXSUBCXIk/z3TkxjgdKzsOWd38Ffl2PHDK/ANcQzDS4Yn4lM
-         hHXDqH5yGHBK6+xyNVWrLs5Z/Uwz6jv84fokQ6IiCGkuy4+gYYGSvHvVcr8hTwZr7wIU
-         kq8PlZ/Wia4iPy4CjGhFIsvUPZ2CYiBctH7AaPAEacWwR5IoYnBjc6fi1pPzvtkGD82j
-         HbPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=NPaJmIoqOQ2ZtBkLTXast52ZNe1Rt1J2mdt0JMfHVxE=;
-        b=G1+U4J6u4tkCd/LYMiyQ3IjD7/ByW7KdWYs8Fx45oOYDOsqZj0kp6cur7F30i9U49J
-         CdR2tDM8/m1jgrtnRnhcNa1m7qqRqdOVoJ8bnI57xZ8oAowmLEJfbeOIDv7eYXdM0BtX
-         m+djLA1sfuDqSTZFJ5he9DtlKNuhoDGHQn/gcP1gNHCbHrpIbQqoWSj1cO4Ut4fiKDBD
-         dxLSd178pWCHoV0qD5EO9ivgtq1tM5Z5eXUIANBCcQjK8BM4BTNHRiHZcz7W13w9uyw7
-         v5v/+V4/MMQFDRrJUGUetx6I+mNX15k7B2o2KnpuAbGMHJ9Q7ydiVoCxalW4no1W3ZSf
-         iJjA==
-X-Gm-Message-State: AOAM5334wnc3JTPqeWQZVUwtPvKwh8uDgw8jd6jIBbyVBtK1KyoDAKBf
-        JzHu8LfQ8e4BkMwoIVtrq08=
-X-Google-Smtp-Source: ABdhPJwLdBKcGRNBAVpRiCip7CUbIQZuIXcYHBeps2IOw9tAKoPEKqtROcIFSlKGeTrZSbBGNejK9g==
-X-Received: by 2002:a1c:18e:: with SMTP id 136mr8788559wmb.69.1611230671786;
-        Thu, 21 Jan 2021 04:04:31 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id m2sm7632951wml.34.2021.01.21.04.04.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 04:04:31 -0800 (PST)
-Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
- acpi_devices
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Thu, 21 Jan 2021 07:10:26 -0500
+X-UUID: 5a2df3b9216b4d6690159d9618ec6e75-20210121
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=zNZH3/LsBp9Y/OdU986Oo7orqrZZnPxXD4joO6JpwMc=;
+        b=TC1PjYU0iNC3U8lh4RGmEi4O8Sd2vpPVBtSc84oBnDo4mGJT2yC/Uhv/bPwxAF7ezMxjYyTDa62ZEFgvKbUOKm2zNi3ZH1pMPxTZ8ZZ590nunUUACLQz1jOr/qhyRIaXq7C92H+bX/Unf9HZCcGveHNmg2vdLT7TFVmU8n50V94=;
+X-UUID: 5a2df3b9216b4d6690159d9618ec6e75-20210121
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <hailong.fan@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1776075303; Thu, 21 Jan 2021 20:09:38 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 21 Jan
+ 2021 20:09:35 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 21 Jan 2021 20:09:35 +0800
+Message-ID: <1611230975.2493.17.camel@mhfsdcap03>
+Subject: Re: [PATCH RESEND] pinctrl: mediatek: Fix trigger type setting
+ follow for unexpected interrupt
+From:   mtk15103 <hailong.fan@mediatek.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+CC:     Sean Wang <sean.wang@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-3-djrscally@gmail.com>
- <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
- <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
- <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
- <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
- <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
-Date:   Thu, 21 Jan 2021 12:04:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, <youlin.pei@mediatek.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Chen-Tsung Hsieh <chentsung@chromium.org>,
+        <gtk_pangao@mediatek.com>, Hanks Chen <hanks.chen@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>
+Date:   Thu, 21 Jan 2021 20:09:35 +0800
+In-Reply-To: <CANMq1KBqKUofLaM+OEaTq6PSeYomNSLvn65c+Wyi1cKsLDNboQ@mail.gmail.com>
+References: <20210121075149.1310-1-hailong.fan@mediatek.com>
+         <CANMq1KBqKUofLaM+OEaTq6PSeYomNSLvn65c+Wyi1cKsLDNboQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-TM-SNTS-SMTP: 4E6329E5FCAF1294E2B63B436C20D324CBD425A786A4F33099F48BD4223BC63E2000:8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 21/01/2021 11:58, Rafael J. Wysocki wrote:
-> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
->> Hi Rafael
->>
->> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
->>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
->>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
->>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
->>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
->>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
->>>>>> specification intends. We need to be able to find those devices "from"
->>>>>> the dependee, so add a function to parse all ACPI Devices and check if
->>>>>> the include the handle of the dependee device in their _DEP buffer.
->>>>> What exactly do you need this for?
->>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
->>>> refer to those INT3472's in their _DEP method. The driver binds to the
->>>> INT3472 device, we need to find the sensors dependent on them.
->>>>
->>> Well, this is an interesting concept. :-)
->>>
->>> Why does _DEP need to be used for that?  Isn't there any other way to
->>> look up the dependent sensors?
->>>
->>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
->>>>>
->>>>> Note that supplier drivers may remove entries from there, but does
->>>>> that matter for your use case?
->>>> Ah - that may work, yes. Thank you, let me test that.
->>> Even if that doesn't work right away, but it can be made work, I would
->>> very much prefer that to the driver parsing _DEP for every device in
->>> the namespace by itself.
->>
->> This does work; do you prefer it in scan.c, or in utils.c (in which case
->> with acpi_dep_list declared as external var in internal.h)?
-> Let's put it in scan.c for now, because there is the lock protecting
-> the list in there too.
->
-> How do you want to implement this?  Something like "walk the list and
-> run a callback for the matching entries" or do you have something else
-> in mind?
-
-
-Something like this (though with a mutex_lock()). It could be simplified
-by dropping the prev stuff, but we have seen INT3472 devices with
-multiple sensors declaring themselves dependent on the same device
-
-
-struct acpi_device *
-acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
-                struct acpi_device *prev)
-{
-    struct acpi_dep_data *dep;
-    struct acpi_device *adev;
-    int ret;
-
-    if (!supplier)
-        return ERR_PTR(-EINVAL);
-
-    if (prev) {
-        /*
-         * We need to find the previous device in the list, so we know
-         * where to start iterating from.
-         */
-        list_for_each_entry(dep, &acpi_dep_list, node)
-            if (dep->consumer == prev->handle &&
-                dep->supplier == supplier->handle)
-                break;
-
-        dep = list_next_entry(dep, node);
-    } else {
-        dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
-                       node);
-    }
-
-
-    list_for_each_entry_from(dep, &acpi_dep_list, node) {
-        if (dep->supplier == supplier->handle) {
-            ret = acpi_bus_get_device(dep->consumer, &adev);
-            if (ret)
-                return ERR_PTR(ret);
-
-            return adev;
-        }
-    }
-
-    return NULL;
-}
+T24gVGh1LCAyMDIxLTAxLTIxIGF0IDE2OjU1ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
+DQo+IE9uIFRodSwgSmFuIDIxLCAyMDIxIGF0IDM6NTIgUE0gSGFpbG9uZyBGYW4gPGhhaWxvbmcu
+ZmFuQG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBXaGVuIGZsaXBwaW5nIHRoZSBwb2xh
+cml0eSB3aWxsIGJlIGdlbmVyYXRlZCBpbnRlcnJ1cHQgdW5kZXIgY2VydGFpbg0KPiA+IGNpcmN1
+bXN0YW5jZXMsIGJ1dCBHUElPIGV4dGVybmFsIHNpZ25hbCBoYXMgbm90IGNoYW5nZWQuDQo+ID4g
+VGhlbiwgbWFzayB0aGUgaW50ZXJydXB0IGJlZm9yZSBwb2xhcml0eSBzZXR0aW5nLCBhbmQgY2xl
+YXIgdGhlDQo+ID4gdW5leHBlY3RlZCBpbnRlcnJ1cHQgYWZ0ZXIgdHJpZ2dlciB0eXBlIHNldHRp
+bmcgY29tcGxldGVkLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSGFpbG9uZyBGYW4gPGhhaWxv
+bmcuZmFuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiBSZXNlbmQgc2luY2Ugc29tZSBzZXJ2
+ZXIgcmVqZWN0Lg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvbXRrLWVp
+bnQuYyB8IDEzICsrKysrKysrKysrLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlv
+bnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9waW5j
+dHJsL21lZGlhdGVrL210ay1laW50LmMgYi9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvbXRrLWVp
+bnQuYw0KPiA+IGluZGV4IDIyNzM2ZjYwYzE2Yy4uM2FjZGE2YmI0MDFlIDEwMDY0NA0KPiA+IC0t
+LSBhL2RyaXZlcnMvcGluY3RybC9tZWRpYXRlay9tdGstZWludC5jDQo+ID4gKysrIGIvZHJpdmVy
+cy9waW5jdHJsL21lZGlhdGVrL210ay1laW50LmMNCj4gPiBAQCAtMTU3LDYgKzE1Nyw3IEBAIHN0
+YXRpYyB2b2lkIG10a19laW50X2FjayhzdHJ1Y3QgaXJxX2RhdGEgKmQpDQo+ID4gIHN0YXRpYyBp
+bnQgbXRrX2VpbnRfc2V0X3R5cGUoc3RydWN0IGlycV9kYXRhICpkLCB1bnNpZ25lZCBpbnQgdHlw
+ZSkNCj4gPiAgew0KPiA+ICAgICAgICAgc3RydWN0IG10a19laW50ICplaW50ID0gaXJxX2RhdGFf
+Z2V0X2lycV9jaGlwX2RhdGEoZCk7DQo+ID4gKyAgICAgICB1bnNpZ25lZCBpbnQgdW5tYXNrOw0K
+PiANCj4gYm9vbD8NClllcyx0aGFua3MuDQo+IA0KPiA+ICAgICAgICAgdTMyIG1hc2sgPSBCSVQo
+ZC0+aHdpcnEgJiAweDFmKTsNCj4gPiAgICAgICAgIHZvaWQgX19pb21lbSAqcmVnOw0KPiA+DQo+
+ID4gQEAgLTE3Myw2ICsxNzQsMTMgQEAgc3RhdGljIGludCBtdGtfZWludF9zZXRfdHlwZShzdHJ1
+Y3QgaXJxX2RhdGEgKmQsIHVuc2lnbmVkIGludCB0eXBlKQ0KPiA+ICAgICAgICAgZWxzZQ0KPiA+
+ICAgICAgICAgICAgICAgICBlaW50LT5kdWFsX2VkZ2VbZC0+aHdpcnFdID0gMDsNCj4gPg0KPiA+
+ICsgICAgICAgaWYgKCFtdGtfZWludF9nZXRfbWFzayhlaW50LCBkLT5od2lycSkpIHsNCj4gPiAr
+ICAgICAgICAgICAgICAgbXRrX2VpbnRfbWFzayhkKTsNCj4gPiArICAgICAgICAgICAgICAgdW5t
+YXNrID0gMTsNCj4gPiArICAgICAgIH0gZWxzZSB7DQo+ID4gKyAgICAgICAgICAgICAgIHVubWFz
+ayA9IDA7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICAgICAgICAgaWYgKHR5cGUgJiAoSVJR
+X1RZUEVfTEVWRUxfTE9XIHwgSVJRX1RZUEVfRURHRV9GQUxMSU5HKSkgew0KPiA+ICAgICAgICAg
+ICAgICAgICByZWcgPSBtdGtfZWludF9nZXRfb2Zmc2V0KGVpbnQsIGQtPmh3aXJxLCBlaW50LT5y
+ZWdzLT5wb2xfY2xyKTsNCj4gPiAgICAgICAgICAgICAgICAgd3JpdGVsKG1hc2ssIHJlZyk7DQo+
+ID4gQEAgLTE4OSw4ICsxOTcsOSBAQCBzdGF0aWMgaW50IG10a19laW50X3NldF90eXBlKHN0cnVj
+dCBpcnFfZGF0YSAqZCwgdW5zaWduZWQgaW50IHR5cGUpDQo+ID4gICAgICAgICAgICAgICAgIHdy
+aXRlbChtYXNrLCByZWcpOw0KPiA+ICAgICAgICAgfQ0KPiA+DQo+ID4gLSAgICAgICBpZiAoZWlu
+dC0+ZHVhbF9lZGdlW2QtPmh3aXJxXSkNCj4gPiAtICAgICAgICAgICAgICAgbXRrX2VpbnRfZmxp
+cF9lZGdlKGVpbnQsIGQtPmh3aXJxKTsNCj4gDQo+IFdoeSBhcmUgeW91IGRyb3BwaW5nIHRoaXM/
+IEFyZW4ndCB3ZSBhdCByaXNrIHRvIG1pc3MgdGhlIGZpcnN0IGVkZ2UNCj4gYWZ0ZXIgbXRrX2Vp
+bnRfc2V0X3R5cGUgaXMgY2FsbGVkPw0KbXRrX2VpbnRfdW5tYXNrKCkgd2lsbCBkbyBpdC4NCklm
+IHVubWFzayAhPSAxLCB1c2VyIG5lZWQgdG8gY2FsbCBtdGtfZWludF91bm1hc2soKSB0byBlbmFi
+bGUgdGhlDQppbnRlcnJ1cHQgYmVmb3JlIHVzZSBpdCwgdGhhbmtzLg0KPiA+ICsgICAgICAgbXRr
+X2VpbnRfYWNrKGQpOw0KPiA+ICsgICAgICAgaWYgKHVubWFzayA9PSAxKQ0KPiANCj4gSnVzdCBg
+aWYgKHVubWFzaylgDQpZZXMsdGhhbmtzLg0KPiA+ICsgICAgICAgICAgICAgICBtdGtfZWludF91
+bm1hc2soZCk7DQo+ID4NCj4gPiAgICAgICAgIHJldHVybiAwOw0KPiA+ICB9DQo+ID4gLS0NCj4g
+PiAyLjE4LjANCg0K
 
