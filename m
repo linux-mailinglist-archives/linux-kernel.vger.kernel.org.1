@@ -2,202 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889EF2FEA0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBFF2FEAD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731129AbhAUM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:28:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50962 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726570AbhAUM1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:27:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E29E2AE87;
-        Thu, 21 Jan 2021 12:26:53 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 13:27:57 +0100
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     ltp@lists.linux.it, linux-kernel@vger.kernel.org,
-        libc-alpha@sourceware.org
-Cc:     lwn@lwn.net, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org
-Subject: [ANNOUNCE] The Linux Test Project has been released for JANUARY 2021
-Message-ID: <YAlzTaWcKTGurolF@yuki.lan>
+        id S1729498AbhAUKdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728939AbhAUJrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:47:23 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4498C0617AB
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:40 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id 6so1065723wri.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=l5TP7SOW2qS+epdcMI5v0wC0XhSdnGQZ2H2fkGXdgtw=;
+        b=GHgcG5XwW3b1jiCm5xGS6W9EwgGh2Ytv30roeEV7x4YCdpXWj5wk2VYAFaBBtG30iG
+         cEkBNIoUlCFw0OnJXTjq45+lkursH/CjoS2fGHGeYAfF8XqY6aDuAxZH9MD1VXPR7ycs
+         XletK79gfIi2IZn4t6/4aEPNmzHAHlGvyyQm4BQCsFp4r+/d92YWdkBBIk+/XrM88bud
+         /NV+jJDE1VNWDU27m3wyt96ZIsoNvK8MsOWrkLhkCaamaRtOhznSDJy0ox374zwt7Ydp
+         XK0HlyUwbRq5ol8VjxQmj6gDqIhkwNDwj9mSiRrhfHgDas70bhu1j6l9L6kekyUvbdYi
+         FxcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=l5TP7SOW2qS+epdcMI5v0wC0XhSdnGQZ2H2fkGXdgtw=;
+        b=gIXDalakB+uxb9ycI8yn08GLuKneVZAtNeYOkPI1v7BvHLPDy7iyFJXdd7DCJoUxCj
+         kpm2c9OYV/Pl3SlnL4a241Jd9G6JCcX8TrxpyyJUFz0UhQYciLU0aYNjGh8rp3WHTjG6
+         srNnqLGBt3E4zQrmXbPzeKJG4p4HZ1T+K4obWVHEWEQVppe7ledhCsTDKy/DBnahv3W/
+         ptnTIjgVxIF1DbNqONP++v8aBlpHo4fGcpD2DWTxXgrRAo2Aq8v+VGsgfk+A8UfJov9K
+         nlF0n2CxA5sbSqlRCUMIOYpyy2wbzq9orhQ6RPsnlCc6baDfp8TqOtlRaXukkKfbeU96
+         tF5g==
+X-Gm-Message-State: AOAM533rqiO8PnoXq9aAAFinr7ri8FH8B7T6B006g6IhB0oGrjfDjQVu
+        SvkDUXcsGgM3lrxc+M329AJfiQ==
+X-Google-Smtp-Source: ABdhPJyw5JGcIev6YI1r4Oogk+Z/zXtt6cDAcLCzW8hq8pf6WIY4/7B0GzBugt0neuEHI5VHfZpryg==
+X-Received: by 2002:adf:f512:: with SMTP id q18mr1959752wro.55.1611222339429;
+        Thu, 21 Jan 2021 01:45:39 -0800 (PST)
+Received: from dell.default ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 01:45:38 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 14/30] RDMA/hw/qib/qib_rc: Fix some worthy kernel-docs demote hardly complete one
+Date:   Thu, 21 Jan 2021 09:45:03 +0000
+Message-Id: <20210121094519.2044049-15-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
+References: <20210121094519.2044049-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good news everyone,
+Fixes the following W=1 kernel build warning(s):
 
-the Linux Test Project test suite stable release for *January 2021* has been
-released.
+ drivers/infiniband/hw/qib/qib_rc.c:216: warning: Function parameter or member 'flags' not described in 'qib_make_rc_req'
+ drivers/infiniband/hw/qib/qib_rc.c:1008: warning: Function parameter or member 'aeth' not described in 'do_rc_ack'
+ drivers/infiniband/hw/qib/qib_rc.c:1008: warning: Function parameter or member 'val' not described in 'do_rc_ack'
+ drivers/infiniband/hw/qib/qib_rc.c:1008: warning: Function parameter or member 'rcd' not described in 'do_rc_ack'
+ drivers/infiniband/hw/qib/qib_rc.c:1274: warning: Function parameter or member 'rcd' not described in 'qib_rc_rcv_resp'
+ drivers/infiniband/hw/qib/qib_rc.c:1497: warning: Function parameter or member 'rcd' not described in 'qib_rc_rcv_error'
 
-Since the last release 303 patches by 35 authors were merged.
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/infiniband/hw/qib/qib_rc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-NOTABLE CHANGES
-===============
-
-* New tests
-  - finit_module()
-  - init_module()
-  - delete_module()
-  - semctl09 for SEM_STAT_ANY flag
-  - msgctl06 for MSG_STAT_ANY flag
-  - shmctl04 for SHM_STAT_ANY flag
-  - sendmmsg() failure tests
-  - recvmmsg() failure tests
-  - open_by_handle_at()
-  - name_to_handle_at()
-  - ptrace11 to check if we can trace PID 1
-  - select04 failure tests
-  - select04 to check if rfds/wfds flags are clered on empty/full fd
-
-* New regression tests
-  - inotify10 added test for fecc4559780d (fsnotify: fix events reported to watching parent and child)
-  - fanotify09 for 7372e79c9eb9 (fanotify: fix logic of reporting name info with watched parent)
-  - ptrace10 bd14406b78e6 (perf/hw_breakpoint: Modify breakpoint even if the new attr has disabled set)
-
-* Increased coverage
-  - fanotify09 added case with FAN_CLOSE_NOWRITE on a sibling non-dir child
-
-* Removed tests
-  - sync01, sync02 these tests were useless so there was no point in keeping them 
-
-* The metadata extraction patchset was merged. LTP now produces metadata.json
-  with a metadata for new library testcases and also html test catalogue build
-  from the extracted metadata.
-
-  https://github.com/linux-test-project/ltp/blob/master/docparse/README.md
-
-* Kernel .config parser was rewritten to support proper boolean expressions
-
-* LTP now requires pkg-config > 0.23 (working version 0.24 was released in 2010)
-
-* Error handling in test library (mostly SAFE_MACROS()) was unified
-
-* High level test library overview was written:
-  https://github.com/linux-test-project/ltp/blob/master/lib/README.md
-
-* IMA/EVM
- - fixed ima_tpm.sh for TPM 2.0 and for TPM 1.2 on kernel >= v5.8 (commit 6f1a1d103b48)
- - rewrote ima_boot_aggregate.c to new API
-
-* 16 testcases were converted to the new test library
-
-+ The usual amount of fixes and cleanups.
-
-NOTABLE CHANGES IN NETWORK TESTS
-================================
-brought to you by Petr Vorel
-
-* New tests
-  - wireguard tests
-
-* Fixes
-  - fix various false-positive failures in tests using tst_netload
-    (tests in net.features and net_stress.ipsec_* runtest files)
-  - if-mtu-change.sh on s390x: fix max packet size for IPv4
-
-* Compatibility fixes:
-  - ping and traceroute from BusyBox
-  - MUSL (netstress)
-  - traceroute6 from iputils
-
-+ various other fixes and cleanup
-
-* Rewrite into new API
-  - host01
-  - netstat01.sh
-
-DOWNLOAD AND LINKS
-==================
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20210121
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-http://linux-test-project.github.io/
-
-If you ever wondered how to write a LTP testcase, don't miss our developer
-documentation at:
-
-https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
-
-Patches, new tests, bugs, comments or questions should go to to our mailing
-list at ltp@lists.linux.it.
-
-CREDITS
-=======
-
-Many thanks to the people contributing to this release:
-
-git shortlog -s -e -n 20200930..
-
-    88  Petr Vorel <pvorel@suse.cz>
-    52  Cyril Hrubis <chrubis@suse.cz>
-    25  Martin Doucha <mdoucha@suse.cz>
-    19  Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-    18  Viresh Kumar <viresh.kumar@linaro.org>
-    10  Xiao Yang <yangx.jy@cn.fujitsu.com>
-     8  Alexey Kodanev <alexey.kodanev@oracle.com>
-     8  Amir Goldstein <amir73il@gmail.com>
-     8  Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-     8  Kory Maincent <kory.maincent@bootlin.com>
-     7  Radoslav Kolev <radoslav.kolev@suse.com>
-     5  Richard Palethorpe <rpalethorpe@suse.com>
-     4  Cixi Geng <cixi.geng1@unisoc.com>
-     4  Krzysztof Dynowski <k.dynowski@samsung.com>
-     4  Li Wang <liwang@redhat.com>
-     4  Po-Hsu Lin <po-hsu.lin@canonical.com>
-     4  Joerg Vehlow <joerg.vehlow@aox-tech.de>
-     3  Alexander Egorenkov <egorenar@linux.ibm.com>
-     2  Khem Raj <raj.khem@gmail.com>
-     2  Li Zhijian <lizhijian@cn.fujitsu.com>
-     2  Pengfei Xu <pengfei.xu@intel.com>
-     2  Tree Davies <tdavies@darkphysics.net>
-     2  Yang Xu <xuyang_jy_0410@163.com>
-     2  Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-     2  Johannes Nixdorf <j.nixdorf@avm.de>
-     1  Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
-     1  Deepak Rawat <derawa@microsoft.com>
-     1  Filip Bozuta <Filip.Bozuta@syrmia.com>
-     1  Jan Stancek <jstancek@redhat.com>
-     1  Peter Bee <bijunda1@xiaomi.com>
-     1  Petr Cervinka via ltp <ltp@lists.linux.it>
-     1  Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-     1  Radoslav Kolev via ltp <ltp@lists.linux.it>
-     1  Xinpeng Liu <liuxp11@chinatelecom.cn>
-     1  bhargavdas <bhargav_das@mentor.com>
-
-And also thanks to patch reviewers:
-
-git log 20200930.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
-
-    114 Cyril Hrubis <chrubis@suse.cz>
-     58 Petr Vorel <pvorel@suse.cz>
-     51 Li Wang <liwang@redhat.com>
-     13 Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-     11 Amir Goldstein <amir73il@gmail.com>
-     10 Alexey Kodanev <alexey.kodanev@oracle.com>
-      9 Jan Stancek <jstancek@redhat.com>
-      5 Xiao Yang <yangx.jy@cn.fujitsu.com>
-      5 Jan Kara <jack@suse.cz>
-      3 Xiao Yang <yangx.jy@cn.fujitsu.com>
-      5 Richard Palethorpe <rpalethorpe@suse.com>
-      3 Martin Doucha <mdoucha@suse.cz>
-      2 Mimi Zohar <zohar@linux.ibm.com>
-      1 Kory Maincent <kory.maincent@bootlin.com>
-      1 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-
+diff --git a/drivers/infiniband/hw/qib/qib_rc.c b/drivers/infiniband/hw/qib/qib_rc.c
+index 3915e5b4a9bc1..a1c20ffb44903 100644
+--- a/drivers/infiniband/hw/qib/qib_rc.c
++++ b/drivers/infiniband/hw/qib/qib_rc.c
+@@ -207,6 +207,7 @@ static int qib_make_rc_ack(struct qib_ibdev *dev, struct rvt_qp *qp,
+ /**
+  * qib_make_rc_req - construct a request packet (SEND, RDMA r/w, ATOMIC)
+  * @qp: a pointer to the QP
++ * @flags: unused
+  *
+  * Assumes the s_lock is held.
+  *
+@@ -992,7 +993,7 @@ static struct rvt_swqe *do_rc_completion(struct rvt_qp *qp,
+ 	return wqe;
+ }
+ 
+-/**
++/*
+  * do_rc_ack - process an incoming RC ACK
+  * @qp: the QP the ACK came in on
+  * @psn: the packet sequence number of the ACK
+@@ -1259,6 +1260,7 @@ static void rdma_seq_err(struct rvt_qp *qp, struct qib_ibport *ibp, u32 psn,
+  * @psn: the packet sequence number for this packet
+  * @hdrsize: the header length
+  * @pmtu: the path MTU
++ * @rcd: the context pointer
+  *
+  * This is called from qib_rc_rcv() to process an incoming RC response
+  * packet for the given QP.
+@@ -1480,6 +1482,7 @@ static void qib_rc_rcv_resp(struct qib_ibport *ibp,
+  * @opcode: the opcode for this packet
+  * @psn: the packet sequence number for this packet
+  * @diff: the difference between the PSN and the expected PSN
++ * @rcd: the context pointer
+  *
+  * This is called from qib_rc_rcv() to process an unexpected
+  * incoming RC packet for the given QP.
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
