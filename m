@@ -2,156 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E892FF921
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 00:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166992FF925
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 00:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbhAUXyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 18:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbhAUXxx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 18:53:53 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491F9C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:53:01 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id u11so2188758plg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oJrGhqFdkfW9wRZyay7gwNcE73cpE4zERtrcMcbTWr0=;
-        b=OPELpH75YfQI1ATMiUGuilGIUBPs8DsfCGvxdD/RxoAW+K4McjtBdgnhXdrGn/sFIi
-         FFFHaobn9FbUP/3jpSBU7Fl48nrsSETVJaAgZhzmJQKea0q2Tp6Q1S3iREur5mT8Fndj
-         ToIWyQPv+mVhJ9RNEMO17mrBpmavV39aPqP9VcmYkLbjxLLgB2fpALfHSVVLh2+NnGtp
-         79qKIAvIN9KaZlHViSxHuZjpU8ONYfEyGA5Vd8U0YSDWUpboZ+vQ1o7s9FgyJorqqn7m
-         vzFHOo40C6i18UnWn60qehhiBeY9fckRMbffVdWOyea5kZlP/q6124YSsJ4Oah15AoFc
-         GOpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oJrGhqFdkfW9wRZyay7gwNcE73cpE4zERtrcMcbTWr0=;
-        b=MEoUFaQu2w7cjVPFqTNDxEuTb1s1OYVF7YA9yYkCWFfqwctGGnc/hAAoe6c9nBxOZl
-         qg8P08Wct4oustgNSw0+T4yRhYtdNOWCBKGUmUsOGSuHUc/yjUND6mRhfraVw+8ExfR8
-         aS8fJRuQU4JATm2zziuCgA720HLd3JcBDKCE6ZCk92/4mm80S24ZJhtgPzrmZksxWW5R
-         zvoradGZWWrLYmx4RCJ5K96OtsfLgRkTSgijJ5gxe6vHxcJa1X3xPYM44vAMOuwk1ElQ
-         utFT0tFsiPnJwy//yqT0PuZ54w9jG2/tXVd7YoafTsIa5/IqZ4I5W/jadxWFwNr39jo1
-         fwDQ==
-X-Gm-Message-State: AOAM531hkaZIEnrbaUXb5Uf/9mcmJHG5ukuUXXybKhtmjx85kuTGnidB
-        Hk2/PPP+HHnvV5if4WkLOBA+xw==
-X-Google-Smtp-Source: ABdhPJw7vWA2rsCwRMG2SZYl6Oy49UG7A7wKq6eSudZ3L0H49zTx2h1DTw4Jgm7bepuEOjnJz6wz5g==
-X-Received: by 2002:a17:902:834a:b029:de:343e:adb0 with SMTP id z10-20020a170902834ab02900de343eadb0mr1943726pln.28.1611273180836;
-        Thu, 21 Jan 2021 15:53:00 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id n128sm6948132pga.55.2021.01.21.15.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 15:53:00 -0800 (PST)
-Date:   Thu, 21 Jan 2021 16:52:58 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 04/16] rpmsg: ctrl: implement the ioctl function to
- create device
-Message-ID: <20210121235258.GG611676@xps15>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
- <20201222105726.16906-5-arnaud.pouliquen@foss.st.com>
+        id S1726261AbhAUX4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 18:56:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725910AbhAUX4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 18:56:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91CBD20717;
+        Thu, 21 Jan 2021 23:55:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611273350;
+        bh=8QjqGxP5A6Zb7kZN/Tv3TiVVxYWmPX8SjmAedowBJDA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=m4bvqs+0i3f4ox47gYfFnDN2U326T9Dz6O4YEwqVKhHZHdmU+kBIv1NVixkddaprp
+         g/X0epRNxLZf1txzHhyC8LtzAs8qA7ttbHLVfdTVl3DaeB502YUT1P2XHW/fAcu2QW
+         /E2ITwi/SasMeNVGUIuILrXDHuxgj1vVkx9Ad69aYkw4NRt6EfN26mCzLwkdrumuoj
+         pdmDzHz/+aSlAj/hcxUnMRVPZZ4CPDTCAyGjS4JE1qmlgfId6u5K7wyYOAW3S9jiH6
+         0QNCUNFjOd5HUckqtZ29kN8mpvmArgyphsyro2bx9Jl/QpA2V8xsodToh+exGz8Z2H
+         Fjio1iJ6G9k5A==
+Date:   Thu, 21 Jan 2021 17:55:47 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Antti =?iso-8859-1?Q?J=E4rvinen?= <antti.jarvinen@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [PATCH] PCI: quirk for preventing bus reset on TI C667X
+Message-ID: <20210121235547.GA2705432@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201222105726.16906-5-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210112153643.17930-1-antti.jarvinen@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 11:57:14AM +0100, Arnaud Pouliquen wrote:
-> Implement the ioctl function that parses the list of
-> rpmsg drivers registered to create an associated device.
-> To be ISO user API, in a first step, the driver_override
-> is only allowed for the RPMsg raw service, supported by the
-> rpmsg_char driver.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+[+cc Alex, Murali, Kishon]
+
+On Tue, Jan 12, 2021 at 03:36:43PM +0000, Antti Järvinen wrote:
+> TI C667X does not support bus/hot reset.
+> See https://e2e.ti.com/support/processors/f/791/t/954382
+
+You can cite the URL as the source, but the URL will eventually become
+stale, so let's include the relevant details here directly.  
+
+From the forum, it looks like the device doesn't respond after a
+reset (config accesses return ~0).  It seems somewhat surprising that
+something as basic as a reset would be completely broken.  I wonder if
+we're not doing the reset correctly.
+
+It looks like we would probably be trying a Secondary Bus Reset using
+the bridge leading to the C667X.  Can you confirm?  Wonder if you
+could try doing what pci_reset_secondary_bus() does by hand:
+
+  # BRIDGE=...                              # PCI address, e.g., 00:1c.0
+  # C667X=...
+  # setpci -s$C667X VENDOR_ID.w
+  # setpci -s$BRIDGE BRIDGE_CONTROL.w       # prints "val"
+  # setpci -s$BRIDGE BRIDGE_CONTROL.w=      # val | 0x40 (set SBR)
+  # sleep 1
+  # setpci -s$BRIDGE BRIDGE_CONTROL.w=      # val (clear SBR)
+  # sleep 1
+  # setpci -s$C667X VENDOR_ID.w=0
+  # setpci -s$C667X VENDOR_ID.w
+
+If we use this quirk and avoid the reset, I assume that means
+assigning the device to VMs with VFIO will leak state between VMs?
+
+> Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
 > ---
->  drivers/rpmsg/rpmsg_ctrl.c | 43 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 41 insertions(+), 2 deletions(-)
+>  drivers/pci/quirks.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> index 065e2e304019..8381b5b2b794 100644
-> --- a/drivers/rpmsg/rpmsg_ctrl.c
-> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> @@ -56,12 +56,51 @@ static int rpmsg_ctrl_dev_open(struct inode *inode, struct file *filp)
->  	return 0;
->  }
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 653660e3ba9e..c8fcf24c5bd0 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3578,6 +3578,12 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
+>   */
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
 >  
-> +static const char *rpmsg_ctrl_get_drv_name(u32 service)
-> +{
-> +	struct rpmsg_ctl_info *drv_info;
+> +/*
+> + * Some TI keystone C667X devices do no support bus/hot reset.
+> + * https://e2e.ti.com/support/processors/f/791/t/954382
+> + */
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
 > +
-> +	list_for_each_entry(drv_info, &rpmsg_drv_list, node) {
-> +		if (drv_info->ctrl->service == service)
-> +			return drv_info->ctrl->drv_name;
-> +	}
-> +
-
-I'm unsure about the above... To me this looks like what the .match() function
-of a bus would do.  And when I read Bjorn's comment he brought up the
-auxiliary_bus.  I don't know about the auxiliary_bus but it is worth looking
-into.  Registering with a bus would streamline a lot of the code in this
-patchset.
-
-I'm out of time for today - I will continue tomorrow.
-
-Thanks,
-Mathieu
-
-> +	return NULL;
-> +}
-> +
->  static long rpmsg_ctrl_dev_ioctl(struct file *fp, unsigned int cmd,
->  				 unsigned long arg)
+>  static void quirk_no_pm_reset(struct pci_dev *dev)
 >  {
->  	struct rpmsg_ctrl_dev *ctrldev = fp->private_data;
-> -
-> -	dev_info(&ctrldev->dev, "Control not yet implemented\n");
-> +	void __user *argp = (void __user *)arg;
-> +	struct rpmsg_channel_info chinfo;
-> +	struct rpmsg_endpoint_info eptinfo;
-> +	struct rpmsg_device *newch;
-> +
-> +	if (cmd != RPMSG_CREATE_EPT_IOCTL)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
-> +		return -EFAULT;
-> +
-> +	/*
-> +	 * In a frst step only the rpmsg_raw service is supported.
-> +	 * The override is foorced to RPMSG_RAW_SERVICE
-> +	 */
-> +	chinfo.driver_override = rpmsg_ctrl_get_drv_name(RPMSG_RAW_SERVICE);
-> +	if (!chinfo.driver_override)
-> +		return -ENODEV;
-> +
-> +	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
-> +	chinfo.name[RPMSG_NAME_SIZE - 1] = '\0';
-> +	chinfo.src = eptinfo.src;
-> +	chinfo.dst = eptinfo.dst;
-> +
-> +	newch = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
-> +	if (!newch) {
-> +		dev_err(&ctrldev->dev, "rpmsg_create_channel failed\n");
-> +		return -ENXIO;
-> +	}
->  
->  	return 0;
->  };
+>  	/*
 > -- 
 > 2.17.1
 > 
