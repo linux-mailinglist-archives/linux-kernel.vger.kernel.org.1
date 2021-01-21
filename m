@@ -2,85 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203282FEB51
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B9F2FEB4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731722AbhAUNPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:15:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35698 "EHLO
+        id S1729532AbhAUNO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731573AbhAUNNB (ORCPT
+        with ESMTP id S1731723AbhAUNNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:13:01 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753EDC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:12:20 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id a25so1266803ljn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:12:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=47HDQmqatFJEKXLv4r1tqHnGg1O7gF/kMf8JxqyY3HI=;
-        b=B+ofP3N9cw2DRKlNdxTQ0Am4niyM+1VvQaVipuUYDJNl1BN6r57YuCfMkAfRVsN28q
-         oihxt7uvf7TlY+yjyh57UPU5tYQAlgX3ei1F/1yIRMvNlPmMjA/c1II9dO2/PVxrklqg
-         AN0w0MCJZzaf3si/HIBxibUQc3hdrUFM7b1OZ37lDnFufpg/Pt/9z4xHcgWFPEf/R79i
-         iEog+RvVlWuMlW/g4bYKDc4iituhzoLAmvecRs71S2l7yii+S70b2sulEiht14Z45xVJ
-         x7OMpyiNZd/yz0rdichaytWAlSAIjdmo+UqDFIfHto6dTp5SDqF1DsE8udHUu1HTHb9g
-         bM+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=47HDQmqatFJEKXLv4r1tqHnGg1O7gF/kMf8JxqyY3HI=;
-        b=aoVC79E7rMYQ70CoZB5C2f31Qi8wQ8UM73UNyF3bdSMIJFvNdUwSXRxAtqa+IeUSIl
-         2+L/ueO/TXDOgohxririTbKfqtifPWyWCMq9eJgd8tcOmDzFsJq9nhaStAgVYbR7feR1
-         ypNySjxs5Lju3N+9DxZyP9270ZQ2qF8YFbgGLwGyPTMKdoj58nccm1KVQyieXZFkvFIk
-         4MFEkwA4Du1Lj+iJNnWuc11MiiWhXHC3q//wVRK5bVZiORwVShYJjDFyhF6NIrD4FpOk
-         5+gJR6OQo4E1VaVhIfOy4uD567lFkWYOBetnqOPe7h9jQH3sCWoFqw2Ja1GtDwaEr2/h
-         k5bQ==
-X-Gm-Message-State: AOAM530VISMVFiH+k5zIDlzqLJNh8IVVwp6E89Jfv01dvjnlZO3qpJsB
-        Y39L5HuWcPxxy70g+sruQixD4oTxENKXwnp7vEE3Kw==
-X-Google-Smtp-Source: ABdhPJyYLUDoklQU++7GwvgK4FZhhv5diXxOMOA4kImyzoS22TfNc7EWPRXHO/OybdPh/v1SQ5NWE47oJiAfepcUFro=
-X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr6868618ljo.368.1611234738978;
- Thu, 21 Jan 2021 05:12:18 -0800 (PST)
+        Thu, 21 Jan 2021 08:13:21 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DF7C0613ED;
+        Thu, 21 Jan 2021 05:12:38 -0800 (PST)
+Date:   Thu, 21 Jan 2021 13:12:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611234755;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ezha1d0Zd2429mrCjSWxK7xBksyVQkmSg+5fZNwJrMs=;
+        b=NH6s+kbVUTyfsbkfppbsd3bwQ2b8oWWfZJh3iY4sFnfkWxSIT9S6OJEJEH7xguM1ohJ07u
+        hH9VdQe96rWQfUVV+ysTqgr15T46ZuWSwyRD9coB4cjU1SO49ID5SsPQVOJMjXAaHllriU
+        99Ip9Hr4ZW8c3CifsPMbVahupjycLhINgq92baxKrxZmL+hpDJtsqxKjE+N2ufnIMRjWN+
+        RuwiN3iv66F/yCgiQZPaUKw1sm8DvTt2Kp7H5dT6Kv4PIHXniPy60GXvQ+pAIxK39GPrE8
+        xiWg8/sGkit2mR4LtrV9Thf3zyRpHtv51nVqM/F3Cfxzr81iGD82IF2LpDJ8zQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611234755;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ezha1d0Zd2429mrCjSWxK7xBksyVQkmSg+5fZNwJrMs=;
+        b=7xUqdyt/GrUdqi7VkLKIDegNIVTLjiTf/ZxRzCJam7pHyMFOUnHxPS4ZljkgD5wSCP8qpu
+        xKVsuoubWVBLKkBg==
+From:   "tip-bot2 for Sami Tolvanen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] x86/sgx: Fix the return type of sgx_init()
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
+References: <20210113232311.277302-1-samitolvanen@google.com>
 MIME-Version: 1.0
-References: <20210120080522.471120-1-saravanak@google.com> <20210120080522.471120-3-saravanak@google.com>
-In-Reply-To: <20210120080522.471120-3-saravanak@google.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 21 Jan 2021 14:12:07 +0100
-Message-ID: <CACRpkdYon8jc_Twa83ynGVnWg7mnZ-ix3=mg2xn1XoFQ+Hq-_A@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] of: property: Add fw_devlink support for interrupts
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161123475481.414.2596508265480174315.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 9:05 AM Saravana Kannan <saravanak@google.com> wrote:
+The following commit has been merged into the x86/sgx branch of tip:
 
-> This allows fw_devlink to create device links between consumers of an
-> interrupt and the supplier of the interrupt.
->
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Kevin Hilman <khilman@baylibre.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+Commit-ID:     31bf92881714fe9962d43d097b5114a9b4ad0a12
+Gitweb:        https://git.kernel.org/tip/31bf92881714fe9962d43d097b5114a9b4ad0a12
+Author:        Sami Tolvanen <samitolvanen@google.com>
+AuthorDate:    Wed, 13 Jan 2021 15:23:11 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 21 Jan 2021 14:04:06 +01:00
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+x86/sgx: Fix the return type of sgx_init()
 
-Yours,
-Linus Walleij
+device_initcall() expects a function of type initcall_t, which returns
+an integer. Change the signature of sgx_init() to match.
+
+Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/20210113232311.277302-1-samitolvanen@google.com
+---
+ arch/x86/kernel/cpu/sgx/main.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index c519fc5..8df81a3 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -700,25 +700,27 @@ static bool __init sgx_page_cache_init(void)
+ 	return true;
+ }
+ 
+-static void __init sgx_init(void)
++static int __init sgx_init(void)
+ {
+ 	int ret;
+ 	int i;
+ 
+ 	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+-		return;
++		return -ENODEV;
+ 
+ 	if (!sgx_page_cache_init())
+-		return;
++		return -ENOMEM;
+ 
+-	if (!sgx_page_reclaimer_init())
++	if (!sgx_page_reclaimer_init()) {
++		ret = -ENOMEM;
+ 		goto err_page_cache;
++	}
+ 
+ 	ret = sgx_drv_init();
+ 	if (ret)
+ 		goto err_kthread;
+ 
+-	return;
++	return 0;
+ 
+ err_kthread:
+ 	kthread_stop(ksgxd_tsk);
+@@ -728,6 +730,8 @@ err_page_cache:
+ 		vfree(sgx_epc_sections[i].pages);
+ 		memunmap(sgx_epc_sections[i].virt_addr);
+ 	}
++
++	return ret;
+ }
+ 
+ device_initcall(sgx_init);
