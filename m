@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE07C2FEFF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E542FEFFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732989AbhAUQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        id S1733170AbhAUQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732040AbhAUQQS (ORCPT
+        with ESMTP id S1732933AbhAUQQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:16:18 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB560C061756;
-        Thu, 21 Jan 2021 08:15:37 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id hs11so3422773ejc.1;
-        Thu, 21 Jan 2021 08:15:37 -0800 (PST)
+        Thu, 21 Jan 2021 11:16:50 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F311AC06174A;
+        Thu, 21 Jan 2021 08:16:09 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id n2so5042572iom.7;
+        Thu, 21 Jan 2021 08:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l5RECMC/UZiLa9CjXR39r8x2ssvcHHs78h5TJlU06LQ=;
-        b=BficDcR+oe8bQAmTHSDQoDle1d8W2bEMWN6b/69rK5ZsV51D3sAauEztEVQoQYw4XP
-         ExVaI16sp18UvwTht1H6GFNF5YortjsdH3rfDCFdGeJ8eUWo3h08lDgHlWyNEAHe7cbC
-         Uz1KDBzSRohwcpKvZFyqP73mBaA0BA3BrCyFK1sv7vifVDHTSuf9zRjoQFC7X9BfsPrx
-         PWzQGQPZmTWk10lVBC18aSeeJ+/mazmqmHXQ48lBuyZ5c/JwWYbTfDwKrYdUu6mvVi1F
-         ALLREr2+lnuvMnKdlOsciO0q3a+7CgOgfHQmG7QJlj8BU8gJPZrmJxwT2riYddkUhNpJ
-         4csg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=a9iCtFUmnzGGIbS1P+ZeOeO6idkiYX7p0cUJy2173kY=;
+        b=OFZX1TOcdb3B5ESJuTfEFaYcgQQFZhTMlfpW+5cR1QPoriPk6xfh65LivViF45KFlt
+         cuJmm4cxwqAZAPp4+o1c6nSpiyjlM7YevO7kH6be4rfmtHkpRz2KjcpD3HTl7hwF9rcx
+         zeeznGL7BWPwdZOV93Z3n25lO5i4uw+g4HG7+1HAYgHmr2vm/rw02cJROGEnMAKKvw8/
+         DPEYDV6jGsSubdKDI0l8ajryDpj3O+Xw0GxMqhs/pZuxohx2A3iGsD0StOCdfsn1nbXh
+         Muo7HXbUgdUYWxkMakDY8r8tiJkRcfs7ruXJ8vxSgswxAAUEDnFNiOGK1pqwyyaMfbS+
+         9a2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l5RECMC/UZiLa9CjXR39r8x2ssvcHHs78h5TJlU06LQ=;
-        b=PXpN7+Ad0dBaB2CrbdiU4vCptYEt186+56ndmSN9Mpy/mlWCgOFuR338f6DUeYPC0p
-         zL5yNt06tawLW1e8uETsC0z28dM27Kitz3VwQkugkxOguWc+vb1VShvIEpWhqDCMPCA+
-         UN1Cn6/BW3wJw1a3G8N7n9W79duiR4MF+lhyY8Hv9JDtXL6jhaUHONVtJEb9zm6p2ULd
-         PQIVYPF11fa4HaHx5gIIrZTL2vDWmcshleJ0wWkoh1NcCj//5osrZLdqrpJhOQYdd+4F
-         wLl4an5BbULsHMTTk1edQGWmw951yiyU7b0bYuwix7CRwkZ2O5DmEJ62reiW0lESXgD1
-         qNQg==
-X-Gm-Message-State: AOAM53361yQm+C7g/WS/q9LreGvbAJsxJmnKdYd3IXxPDWXtgLtbW5GK
-        ElrV9JjnXLN1vN4jUqYXwSo=
-X-Google-Smtp-Source: ABdhPJxOjMAb78L405u1aCIm/2XrgwQPxT5WMpvhSefgJo6zY5WPweEkO4xvnjz3zPNxxtSoyGnLnw==
-X-Received: by 2002:a17:906:690:: with SMTP id u16mr168733ejb.186.1611245736490;
-        Thu, 21 Jan 2021 08:15:36 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id w17sm2382919ejk.124.2021.01.21.08.15.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 Jan 2021 08:15:36 -0800 (PST)
-Message-ID: <151f95faf537717ec480d9a256ba2d62b2c9aa44.camel@gmail.com>
-Subject: Re: [PATCH v7 0/6] Several changes for UFS WriteBooster
-From:   Bean Huo <huobean@gmail.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        stanley.chu@mediatek.com, beanhuo@micron.com, bvanassche@acm.org,
-        tomas.winkler@intel.com, cang@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 21 Jan 2021 17:15:33 +0100
-In-Reply-To: <yq14kjbgey8.fsf@ca-mkp.ca.oracle.com>
-References: <20210119163847.20165-1-huobean@gmail.com>
-         <yq14kjbgey8.fsf@ca-mkp.ca.oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=a9iCtFUmnzGGIbS1P+ZeOeO6idkiYX7p0cUJy2173kY=;
+        b=ATnY4wIlXoXuqgwBTS6CMun8ZlwI7sIsTZ/4uEa67883xizwanZh4xTqCjSLrR1s48
+         Xcu42QA93bz0dfm+M1NEbrmBdaKq2MsMw+d8aKdhmsGqG2Atm5FPAOa5cSS43dsVXg1y
+         Jc2uaubdjVEp8BbbXGowyO5T7f6qawv34H+EGr58u56B2rxZqpDkuQBaFO8wd/qV5J4p
+         kc7CKuWhmvHokZYi0YEE/JPGRugihPudraDeQy0XKopNyXNbYMgk3+wXB8hWtTa4q6mZ
+         hNFbPsXqrVtr0sETLTlsWwfzzmb+EJU0h2Zim9StWPAJMlZUsXgA4RSjyIPCJiUr8kKj
+         vYXw==
+X-Gm-Message-State: AOAM530op7Z9MCumTqQ5nVAlB1O5ohLlQ8urIe5DViLYu+gUA9VFLUJm
+        Xsq7dzDzqr1QUmfw/VxvvhUW7EAM224kWKhOh5k=
+X-Google-Smtp-Source: ABdhPJxyLc9l8AVtlxAb6nsWuOiEnw6L7M5mXAyncFsZ/zt0B7N8wO5wtZTjo1TSsU1szNOMouVOiysde20YA91Lqlw=
+X-Received: by 2002:a5e:9b06:: with SMTP id j6mr138100iok.171.1611245769353;
+ Thu, 21 Jan 2021 08:16:09 -0800 (PST)
+MIME-Version: 1.0
+References: <20210121160115.4676-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210121160115.4676-1-lukas.bulwahn@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 21 Jan 2021 17:15:56 +0100
+Message-ID: <CA+icZUV3p+yQYXn=iVseNNQwUSvoMwztLxNDOFpdFb731kDOJg@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust to clang-version.sh removal
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-20 at 22:15 -0500, Martin K. Petersen wrote:
-> Bean,
-> 
-> > Bean Huo (6):
-> >    scsi: ufs: Add "wb_on" sysfs node to control WB on/off
-> >    docs: ABI: Add wb_on documentation for new entry wb_on
-> >    scsi: ufs: Changes comment in the function ufshcd_wb_probe()
-> >    scsi: ufs: Remove two WB related fields from struct ufs_dev_info
-> >    scsi: ufs: Group UFS WB related flags to struct ufs_dev_info
-> >    scsi: ufs: Cleanup WB buffer flush toggle implementation
-> 
-> Applied patches 1-5 to 5.12/scsi-staging. Patch 6 didn't apply,
-> please
-> resubmit.
-> 
-> Also, I had to fix up your sysfs ABI documentation indentation.
+On Thu, Jan 21, 2021 at 5:01 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 6c8ad4427f6e ("kbuild: check the minimum compiler version in
+> Kconfig") removed ./scripts/clang-version.sh and moved its content to
+> ./scripts/cc-version.sh.
+>
+> Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
+>
+>   warning: no file matches    F:    scripts/clang-version.sh
+>
+> The CLANG/LLVM BUILD SUPPORT section in MAINTAINERS intends to track
+> changes in ./scripts/clang-version.sh; as the file is removed, track
+> changes in ./scripts/cc-version.sh instead now.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Martin,
-thanks.  I will update patch 6 later.
+Good catch, Lukas.
 
-Thanks,
-Bean
+As a tipp:
+Next time you can pass '--subject-prefix="PATCH next-YYYYMMDD"' when
+doing 'git format-patch ...' (or whatever you use to generate the
+patch).
 
+Cannot say if we can add a "Fixes:" tag with commit hash-id of
+"kbuild: check the minimum compiler version in Kconfig" - this missed
+that move.
+Maybe Masahiro does a respin and can fold this into above commit?
+That's not my decision.
+
+Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+- Sedat -
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=for-next&id=6c8ad4427f6ea306a1eee951d684a41f517b5986
+
+
+
+> ---
+> applies cleanly on next-20210121
+>
+> Masahiro-san, please pick this quick fix-up patch.
+>
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e5d7cf38ec82..aafbea806a82 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4355,8 +4355,8 @@ B:        https://github.com/ClangBuiltLinux/linux/issues
+>  C:     irc://chat.freenode.net/clangbuiltlinux
+>  F:     Documentation/kbuild/llvm.rst
+>  F:     include/linux/compiler-clang.h
+> +F:     scripts/cc-version.sh
+>  F:     scripts/clang-tools/
+> -F:     scripts/clang-version.sh
+>  F:     scripts/lld-version.sh
+>  K:     \b(?i:clang|llvm)\b
+>
+> --
+> 2.17.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210121160115.4676-1-lukas.bulwahn%40gmail.com.
