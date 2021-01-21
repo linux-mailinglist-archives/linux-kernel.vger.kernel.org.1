@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40322FE54B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 888252FE54C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbhAUIoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:44:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727965AbhAUImR (ORCPT
+        id S1727965AbhAUIpD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Jan 2021 03:45:03 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:33407 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727029AbhAUImp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:42:17 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DE0C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:41:35 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id o19so1432741lfo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:41:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D4Ur7uejEis62r1h02HTSFCNj1UtMoW8pgWn2VYhOr8=;
-        b=NAQNFpqFLDRhTju5fWH5J5g6zV78HecVvFhDMl+IrwEFSva5ttvLLjlblTebF2haV8
-         gltDa/Kifpxr7+kjQLl5EqSWQNXPv7/QXEVaxJqmtsTTA9tnuUHjQjI1KRjIsFmaQZ0Y
-         f9bxBCa6KBaP7nheT7D6TML/Yq3jOkdJXxGOaQ1xCtx1q+W55SnjTPY2vKTLih5fwvAp
-         YnYPqmexJmAuNp9kuOiUSztJZ3xwtBL4m0/CtaAj0vN3IRpb6Pzn4QWbDmocFE6UPxw9
-         UBKIARRk2DJRNMu2tk1wMjmQ7ZkTXnrhE/jGXhIjBImEeSrsVCNInzpEffa3GCMj4l9Y
-         IttA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D4Ur7uejEis62r1h02HTSFCNj1UtMoW8pgWn2VYhOr8=;
-        b=M0W/XtXp0Ls/VIGMUU+hAO5yhu30zGuzSWwCppu0KFNVLTuiApNRFGymmDbXUCF5fa
-         2yUG6HUwMeKQDM4JuVOqovT88Wx6k9ZHTQ3nnlhZforIFoDZGQ/RmepxzubZtFCPPbJH
-         rjIklGR8MHnDDoHXPRLX2Wa7mhheFQqOIgwzk0/o+gb+jNTfdEozTvPvUkQjHfDtGHpw
-         +LFX/89pz/z19CE2cVXxW79ikFzmSMZix6wzrn7DHjbrh9N4EdWkcBqhptunEVdPH3y4
-         +6FXi8wtH2aatSfcERPiCi360ob8ybx1MkbWxnPmXofOOVVRrWhQM0jLcvugHIO0ZVGN
-         a8xQ==
-X-Gm-Message-State: AOAM531AQ4A/54sESUnq/c5MXQk2W2FNRfMgkKaPtv54fn/5AHXIBCsx
-        1oHiVyyf7uBGHrpXeZTkzZoPeTdKmXs5pzVirNz7vw==
-X-Google-Smtp-Source: ABdhPJx3oYCu6IEIa2cM3DmV0hFuobbIzq+JKqIQS2zmgt4Tj4taSGT43w7fqtuXFyfamL84a4raKwGpyzkwtWthNz4=
-X-Received: by 2002:ac2:5597:: with SMTP id v23mr5794597lfg.649.1611218494357;
- Thu, 21 Jan 2021 00:41:34 -0800 (PST)
+        Thu, 21 Jan 2021 03:42:45 -0500
+Received: from [77.244.183.192] (port=64474 helo=[192.168.178.24])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1l2VXA-00FUnG-L5; Thu, 21 Jan 2021 09:41:40 +0100
+Subject: Re: [PATCH] scripts/spelling.txt: increase error-prone spell checking
+To:     Chunyou Tang <tangchunyou@163.com>, Joe Perches <joe@perches.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
+        colin.king@canonical.com, xndchn@gmail.com, j.neuschaefer@gmx.net,
+        naoki.hayama@lineo.co.jp, ebiggers@google.com, sjpark@amazon.de,
+        linux-kernel@vger.kernel.org, zhangwen@yulong.com,
+        tangchunyou@yulong.com
+References: <20210121020731.2316-1-tangchunyou@163.com>
+ <47008cd9-2b87-f5b2-5fad-e8f009869dda@infradead.org>
+ <1a3ab487bfb0365991355147fadbf51df14a4772.camel@perches.com>
+ <20210121112115.00005cb6@163.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <7937a406-812e-0a41-12c5-41576737a44f@lucaceresoli.net>
+Date:   Thu, 21 Jan 2021 09:41:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210120131859.2056308-1-arnd@kernel.org> <20210120131859.2056308-4-arnd@kernel.org>
-In-Reply-To: <20210120131859.2056308-4-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 21 Jan 2021 09:41:23 +0100
-Message-ID: <CACRpkdYQz=Nw-shfwcydyMqFkx3bc+MN8jEEzQ3OFcZKSTypmw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] dmaengine: remove coh901318 driver
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210121112115.00005cb6@163.com>
+Content-Type: text/plain; charset=gb18030
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 2:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
+Hi,
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The ST-Ericsson U300 platform is getting removed, so this driver is no
-> longer needed.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 21/01/21 04:21, Chunyou Tang wrote:
+> On Wed, 20 Jan 2021 19:09:05 -0800
+> Joe Perches <joe@perches.com> wrote:
+> 
+>> On Wed, 2021-01-20 at 19:02 -0800, Randy Dunlap wrote:
+>>> On 1/20/21 6:07 PM, ChunyouTang wrote:  
+>>>> From: tangchunyou <tangchunyou@yulong.com>
+>>>>
+>>>> Increase direcly,maping,manger spelling error check  
+>>>
+>>> Hi,
+>>> I don't see all of those in the patch below.
+>>> What happened?  
+>>
+>> I think mostly it's just a poor commit message as
+>> direcly and manger are already in spelling.txt
+>>
+>>>> diff --git a/scripts/spelling.txt b/scripts/spelling.txt  
+>> []
+>>>> @@ -875,6 +875,7 @@ manger||manager
+>>>>  manoeuvering||maneuvering
+>>>>  manufaucturing||manufacturing
+>>>>  mappping||mapping
+>>>> +maping||mapping
+>>>>  matchs||matches
+>>>>  mathimatical||mathematical
+>>>>  mathimatic||mathematic  
+>>
+> 
+> yes,you are right,the commit message is bad,I change the commit message
+> 
+> and resend it.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+While doing that, also improve the subject (1st line of commit message)
+by mentioning the typo you are adding. For example, as in previous commits:
 
-The proper work that would have needed to get done would be
-to integrate it with the PL08x driver since it is obviously a
-derivative of that hardware. Oh well, now we need not worry
-about it.
+  scripts/spelling.txt: add "maping" typo
 
-Yours,
-Linus Walleij
+It's more informative and even shorter.
+
+Thanks
+-- 
+Luca
+
