@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0ADA2FE4B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0F72FE4B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbhAUIPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:15:01 -0500
-Received: from m12-12.163.com ([220.181.12.12]:33444 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727393AbhAUIOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:14:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=ujwu2jhAKdseHeYdwe
-        bRz68PXQCswbggcNQ1+Mquy+U=; b=FrvZQz9/padfrDZ2aAG0AOswdOGb5LSvjE
-        wm17EDxVe0/z5Tx4KU4VF/V1JpqZLcFDbOzztP51jjgWND7dCDxbXVDRejQDh8l+
-        EnoXwvEPEObb6NTpG3MzGaKv8fc2yfaNxYWKhrcRuz5q1jURNbrXm4/QxeAC1oMV
-        oSg+8lfFc=
-Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp8 (Coremail) with SMTP id DMCowAAnZ8MINwlg68ZdNA--.63399S4;
-        Thu, 21 Jan 2021 16:10:52 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andre Guedes <andre.guedes@openbossa.org>
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] Bluetooth: Put HCI device if inquiry procedure interrupts
-Date:   Thu, 21 Jan 2021 00:10:45 -0800
-Message-Id: <20210121081045.38121-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DMCowAAnZ8MINwlg68ZdNA--.63399S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur48Gr48uFWkAr13GF18AFb_yoWfGFc_ua
-        ykZayfWr45Ga45Jr12vFW3Zw1j93yfCrn3Gw1IqFWUKryDWr1DJFn3Wrn8CFyfWwsrCrW3
-        ZrsruFWavw1fGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbNeoUUUUUU==
-X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBZAwhclQHMD9WnAAAst
+        id S1726769AbhAUIOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:14:17 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:36812 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727681AbhAUIN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:13:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UMPTkGS_1611216755;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMPTkGS_1611216755)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Jan 2021 16:12:43 +0800
+From:   Yang Li <abaci-bugfix@linux.alibaba.com>
+To:     dyoung@redhat.com
+Cc:     bhe@redhat.com, vgoyal@redhat.com, adobriyan@gmail.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Yang Li <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] vmalloc: remove redundant NULL check
+Date:   Thu, 21 Jan 2021 16:12:33 +0800
+Message-Id: <1611216753-44598-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jump to the label done to decrement the reference count of HCI device
-hdev on path that the Inquiry procedure is interrupted.
+Fix below warnings reported by coccicheck:
+./fs/proc/vmcore.c:1503:2-7: WARNING: NULL check before some freeing
+functions is not needed.
 
-Fixes: 3e13fa1e1fab ("Bluetooth: Fix hci_inquiry ioctl usage")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
 ---
- net/bluetooth/hci_core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/proc/vmcore.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 9d2c9a1c552f..9f8573131b97 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1362,8 +1362,10 @@ int hci_inquiry(void __user *arg)
- 		 * cleared). If it is interrupted by a signal, return -EINTR.
- 		 */
- 		if (wait_on_bit(&hdev->flags, HCI_INQUIRY,
--				TASK_INTERRUPTIBLE))
--			return -EINTR;
-+				TASK_INTERRUPTIBLE)) {
-+			err = -EINTR;
-+			goto done;
-+		}
- 	}
+diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+index c3a345c..9a15334 100644
+--- a/fs/proc/vmcore.c
++++ b/fs/proc/vmcore.c
+@@ -1503,11 +1503,8 @@ int vmcore_add_device_dump(struct vmcoredd_data *data)
+ 	return 0;
  
- 	/* for unlimited number of responses we will use buffer with
+ out_err:
+-	if (buf)
+-		vfree(buf);
+-
+-	if (dump)
+-		vfree(dump);
++	vfree(buf);
++	vfree(dump);
+ 
+ 	return ret;
+ }
 -- 
-2.17.1
-
+1.8.3.1
 
