@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7225E2FEB3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6A82FEB41
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731554AbhAUNMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:12:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731495AbhAUNLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:11:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3DCA239FD;
-        Thu, 21 Jan 2021 13:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611234667;
-        bh=2y3nGlOhKVuLqnNjQEH4fvR9yoxLXv3W74n69qv+ztU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DMGerGrEyeuqZjQcioHC6qJlSjxztZkPOzz9rPBbGMGM4CrCsv2OoPx+nqbx/5U6V
-         qqnUASiYhMVlSFup3Xtd+GhMe9vouxtjgM5xEUoC6vloFLyuBsYJMqoV6HDsfK2Jwt
-         s+Fn9tbQHe7o+zXPgNW3OjfJ3quFDKohpqwKv0OVYn2/OrqHoFw8VXYruoZLw0NJQs
-         NnxmPBHMheaB9NLaz2p2IamJL7YC3LegARCqCn5DcSxRv6Ta0fLczedsj26scJmFLN
-         hmuJp9osXG++3J9N+kDY72bLNkZ3z2e6KAhFY9IiGFany5cGQ8RQH4E7acxjU2EdIO
-         Im3FHP1GKDehg==
-Date:   Thu, 21 Jan 2021 13:11:01 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        luc.vanoostenryck@gmail.com
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v4 8/8] mm: Mark anonymous struct field of 'struct
- vm_fault' as 'const'
-Message-ID: <20210121131101.GD22123@willie-the-truck>
-References: <20210120173612.20913-1-will@kernel.org>
- <20210120173612.20913-9-will@kernel.org>
- <CAKwvOd=B+tMi7-82Q8hEYnQ+BzkLDygOhMh6cQ2L+3SaL+F4tQ@mail.gmail.com>
- <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com>
+        id S1731717AbhAUNNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731649AbhAUNMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:12:17 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A115BC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:11:36 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id a8so2417576lfi.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5SfYgMEZhXd25eYi6qDsESTLBn/H15YeTrdDgpcnnLg=;
+        b=XqZam54V6WNMaJGpQ/zvStXdECi0C+QtAqbDl16uTP8QioYtk1POCI5rq4ekLBZUIz
+         kqDKzYSX8IHExWGey4zMVWfm90PVJegAsI9pSoEhlbTENGMDh6pSp4b5tlefIzBvwoB7
+         swLIZazE6kk/8MNF4dLmLSJIrM8sHNzVLmNYgrRKEF5y/duOdwPTw5jSGwqDUcPL2yOW
+         /3gI2Ht6mM2RpqVZMAsGhxcMSW0j4+Drz600DkSUVF++LOFmjgQVLj7ePlqSQPMe6O5m
+         RCXQMtC2csH8UIsDZyKtdZkpiiK+RX3uZ5/KpaVAust1eNvovi0wfgU+mm2jEKTPOJXO
+         r0IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5SfYgMEZhXd25eYi6qDsESTLBn/H15YeTrdDgpcnnLg=;
+        b=orrdmH/mCyxsaoED0Z7NHCz7ktVsVDrIQ+asJmeJ9Q4jJw/2BWW9C3+LR2/R7G+Tch
+         O0WqX9Nvm65Kg6wc6eHNnWMmueW4xLMng74KC6Lhb8ImMjxcTF/7dOriOx/HPCk3swHj
+         lnWqCU4/i8DxdzpwB9R2YFG4KxTR/57kIqU5aMjtVOOkMPR0LPhkXPaqFKIBGLkfb5Ga
+         bPXPPN59NznIv6mqpm+ofh33g9+t+jJ/8qP6JQuiCgv3iFLOOmvMsoY7yFwGTJf3JrcL
+         XShLXYDjqJ/J9QpCuhDdgL/erlEuaw1EQnOmPDS1PKNmVmTnF38Qrd99OVOM5Jy9IJhi
+         CloA==
+X-Gm-Message-State: AOAM530ZWj+aYhD60Fl9VMXcsnmr6atvABqIX60sR91q6Vh+AmwDnyM6
+        KUVi25C4cyQv+jDcdtZanoBT2RVFZiVVgkIaaP2K6A==
+X-Google-Smtp-Source: ABdhPJwFTZwp0woXY9zVcoMioOYsSx1rGdrNSXqJ/is4tl/LS3ywlrqFOWHMdDa3yy6WG1BJ0UNlQtoKVhMMhIRbxeI=
+X-Received: by 2002:ac2:5597:: with SMTP id v23mr6289121lfg.649.1611234695050;
+ Thu, 21 Jan 2021 05:11:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210120080522.471120-1-saravanak@google.com> <20210120080522.471120-2-saravanak@google.com>
+In-Reply-To: <20210120080522.471120-2-saravanak@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 21 Jan 2021 14:11:24 +0100
+Message-ID: <CACRpkdbEC6duR=fJQD_Nw9o=HW0DEe2_Ks3SYCgJmkOjzKz3Jg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] of: property: Add fw_devlink support for "gpio"
+ and "gpios" binding
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:02:06AM -0800, Linus Torvalds wrote:
-> On Wed, Jan 20, 2021 at 10:27 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > Is there a difference between: [ const unnamed struct and individual const members ]
-> 
-> Semantically? No.
-> 
-> Syntactically the "group the const members together" is a lot cleaner,
-> imho. Not just from a "just a single const" standpoint, but from a
-> "code as documentation" standpoint.
-> 
-> But I guess to avoid the clang issue, we could do the "mark individual
-> fields" thing.
+On Wed, Jan 20, 2021 at 9:05 AM Saravana Kannan <saravanak@google.com> wrote:
 
-I'd prefer to wait until the bug against LLVM has been resolved before we
-try to work around anything. Although I couldn't find any other examples
-like this in the kernel, requiring all of the member fields to be marked as
-'const' still feels pretty fragile to me; it's only a matter of time before
-new non-const fields get added, at which point the temptation for developers
-to remove 'const' from other fields when it gets in the way is pretty high.
+> To provide backward compatibility for boards that use deprecated DT
+> bindings, we need to add fw_devlink support for "gpio" and "gpios".
 
-None of this is bullet-proof, of course, but if clang ends up emitting a
-warning (even if it's gated behind an option) then I think we're in a good
-place.
+You do some more stuff in the patch so describe that too.
+Especially the check for hogs and #gpio-cells.
+Describe why you do that. Maybe even with a comment in
+the code because I don't think everyone will understand.
 
-> (It turns out that sparse gets this wrong too, so it's not just clang).
+> +       if (strcmp(prop_name, "gpio") && strcmp(prop_name, "gpios"))
+> +               return NULL;
 
-Adding Luc, as hopefully that's fixable.
+This part is easy to understand.
 
-Will
+> +       if (of_find_property(np, "gpio-hog", NULL))
+> +               return NULL;
+> +
+> +       if (of_parse_phandle_with_args(np, prop_name, "#gpio-cells", index,
+> +                                      &sup_args))
+> +               return NULL;
+
+This part is hard to understand. Insert comments and tell the reader
+of the code what is going on and why.
+
+Yours,
+Linus Walleij
