@@ -2,64 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BA82FE0BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 856C92FE0CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732849AbhAUEb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:31:56 -0500
-Received: from mga06.intel.com ([134.134.136.31]:11852 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbhAUEOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:14:20 -0500
-IronPort-SDR: zF5tu2wdk9LnvIgCINtJSg1rgLf2Mr7CMGdnqrgXnN0XMNIG906Fa2V379FjLLfQJ3rkxEIrm8
- WKvDmASWGrjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="240755743"
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="240755743"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 20:12:22 -0800
-IronPort-SDR: njPOBu4LcriKX6PHAigfnEp1F4PwrR+KhFjsYXuGIvbaXpGf84K2YcvI1oY4Sy1uhoNerTI9I/
- J7X+i7eFSDCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="400021030"
-Received: from sgsxdev004.isng.phoenix.local (HELO localhost) ([10.226.81.179])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Jan 2021 20:12:20 -0800
-From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        mallikarjunax.reddy@linux.intel.com, malliamireddy009@gmail.com
-Subject: [PATCH 1/1] dt-bindings: dma: intel-ldma: Fix for JSON pointers syntax error
-Date:   Thu, 21 Jan 2021 12:12:18 +0800
-Message-Id: <2c0d0d87352a3af132c4eb18e9e1581e03b03eba.1611202226.git.mallikarjunax.reddy@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728624AbhAUEec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729117AbhAUENn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 23:13:43 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A30C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:13:02 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id n7so555829pgg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yc5sQoByld/hyuMTGXnutyShMdqAx6iOCrjbfzusVe8=;
+        b=OkllhuEWFCX1TeteF/cwCQCaB8qVbP3JtdM3NiPeIa67Snmy5RTlWnTmY1aQ6FnQOS
+         U1whlfJjuzCbGmQVFEEncQEDCfi+QFZaT3vo6jfp3AYGoor+tfaDAnNUxHcRg7JbZMiR
+         1Qb7LU/B+/WXxYqU95NkV8n4vMDX1FQ3SCzQL5u4nuZWheHDJrPcgXJdvGjYpTK8k+3E
+         cf6CnQGh72zO2SQfuJQgVHD1gttD8bg9vjX3cGXOgKHIwqn98UJn5X+u3hIw/TBfv9pt
+         p+ZEzJFb9LRlL851AqLoDp6Y8CcPNSMYXP20M16aPaz0mCl4nVqh/7tEst8l4z+V9Nxi
+         XdGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yc5sQoByld/hyuMTGXnutyShMdqAx6iOCrjbfzusVe8=;
+        b=At7cvaSTtEyrtwgSOlHdF3uTr3rV9K70+uN8fVYnO9xk65VtZnhuRhFeWPn5EHJmNn
+         XXsu9FvcW4WDSPR8EY1NVhKZqkJOXrTyegpTLjZT307zlgzNoubq9gsBiVZD5ppEVkjw
+         w8Z8vXWUYkv4Sc7ZYYrWzVjZLR6yww4TzA5X45xogXO9levAxtrVcah09HDURvEBRfOq
+         AvfP5k9eCPdB74wDY/qqsgCWl5MCw6nPF2Sk0h3jyjqcuipJQl1HCi8LHE+PxPTuM1Qw
+         D+Kyb87zhYh9bnav3pAuoIre/2a2bAH52D6DHJqxdJIhiGjtZ++60XMGo8rWdsPCcDL5
+         kIkA==
+X-Gm-Message-State: AOAM531PvcUvkDZw9cYARbesIADkg7k+v+niov0/mwFCrZfIX0gkoN11
+        3HW2t5rr/Mz6+3xtd8OaCJ3hkw==
+X-Google-Smtp-Source: ABdhPJzyBgR2jF8DPAxnHdQlNowaHrlEIfkQvW2esOvhX/6tHDmlitN+26RRuC2jJxpD8CQXlyzuNA==
+X-Received: by 2002:a65:450d:: with SMTP id n13mr12582028pgq.208.1611202382444;
+        Wed, 20 Jan 2021 20:13:02 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id k15sm3857699pfp.115.2021.01.20.20.13.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Jan 2021 20:13:01 -0800 (PST)
+Date:   Thu, 21 Jan 2021 09:43:00 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH V5 4/5] kbuild: Add support to build overlays (%.dtbo)
+Message-ID: <20210121041300.ocerhqaieytj6gds@vireshk-i7>
+References: <cover.1611124778.git.viresh.kumar@linaro.org>
+ <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
+ <20210121004955.GE5174@yekko.fritz.box>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121004955.GE5174@yekko.fritz.box>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There have been some fixes for JSON pointers and tools check now got this is missing a '/'.
-Add missing a '/' in '/schemas/types.yaml#definitions/uint32'
+On 21-01-21, 11:49, David Gibson wrote:
+> If you're using overlays, you probably need the -@ flag, for both the
+> base file and the overlays, which AFAICT is not already the case.
 
-Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
----
- Documentation/devicetree/bindings/dma/intel,ldma.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think the idea was to do that in the platform specific Makefiles,
+unless I have misunderstood that from earlier discussions. So a
+platform may want to do that per-file or just enable it for the entire
+platform.
 
-diff --git a/Documentation/devicetree/bindings/dma/intel,ldma.yaml b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
-index 866d4c758a7a..a5c4be783593 100644
---- a/Documentation/devicetree/bindings/dma/intel,ldma.yaml
-+++ b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
-@@ -56,7 +56,7 @@ properties:
-     maxItems: 1
- 
-   intel,dma-poll-cnt:
--    $ref: /schemas/types.yaml#definitions/uint32
-+    $ref: /schemas/types.yaml#/definitions/uint32
-     description:
-       DMA descriptor polling counter is used to control the poling mechanism
-       for the descriptor fetching for all channels.
 -- 
-2.17.1
-
+viresh
