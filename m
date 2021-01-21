@@ -2,236 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0994E2FF82A
+	by mail.lfdr.de (Postfix) with ESMTP id E3AD02FF82C
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbhAUWpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:45:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
+        id S1726900AbhAUWqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbhAUWpX (ORCPT
+        with ESMTP id S1725805AbhAUWpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:45:23 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A172DC06174A;
-        Thu, 21 Jan 2021 14:44:43 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id x21so7376256iog.10;
-        Thu, 21 Jan 2021 14:44:43 -0800 (PST)
+        Thu, 21 Jan 2021 17:45:49 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD696C061756;
+        Thu, 21 Jan 2021 14:45:08 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id f1so4388738edr.12;
+        Thu, 21 Jan 2021 14:45:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=HvccmrfS5SgOEYdUs1blncI3hgFwaeqGnzFVcQFt3dc=;
-        b=u1Qb7yOF9p/rb88qzEq4GviRLuH+MUSUAmAvzHLo5dvpmFP9zzB1w3jxT36IkT01MQ
-         jitUXXbfbizxWQIi+aro8R5/RJaewpWWzpbgLwBMDylqZ8Sr2IWJESBKP7P/OKbJTY4N
-         xLv7eyGHNVn7iv2If3D/zraYRTu67CNBtAaoV16zjOhdqrcgFa/sD2Qghn0LisjieqD0
-         Kd4kDONo8FAvJkN4eYazTWOfQ/bSzE3G7PaJTrUNbGP3mHfVcREyhK53vgvKc1Dt2pRN
-         RWePftjwHAWfexMa1aInBwqJ3oil0f6Qr70oIyp/l7IvVt4arfrZVrqV8kAfkDuTgLTO
-         kLmA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=js608cf7+b6uuSx4xSNXkCTdpGlQyO53l8ri6uI5Ugk=;
+        b=OQ13GQFV3ZKMP2IsaYeS9IbNflRAvsauNeh1LiK6cY1iUbq+8h9tcm190yB2Y2cs9Z
+         oo7YZxmWNtaAQoxDsMpl+WTlS3p8Wn+/HUoDI/lTY9kF2ha0KR9knHP38zbQtxLF4UQf
+         oOn6twWZ1MEkgO1xJYJlPRHVdOA1sGybDrskKcm28EOl0RPytu/GLA0SnWpVTv3FAA+5
+         BKdqo1dgkld0OE6+Z0h1wmGHbkOSR+hauscyqc4RFE1H7/HizN6MlYxPtHGOTHrWGM3d
+         dJ12iOiQBd4uDN+r2xcRp36uuJ40snZXNtThkoXekqZlfI9eArVlww3XJARmlVZfIFJv
+         40tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=HvccmrfS5SgOEYdUs1blncI3hgFwaeqGnzFVcQFt3dc=;
-        b=YVgHCsH1FNNd4tSZ/s8X98eY7ijrbdrDCr56sgpIt5ctvyrt2BPGHnEXn7dLQne8E2
-         J9AjZHGhhHs4On85SO9p0iayLhGYXsjv1ZSCnA+wNay17wguPvrz/1VwQv9NhIynyWlN
-         QSVbCRJ2CYzjP2hzZj/uWDLHquRxb3YQ8JcsKOai3jcunbohDxtB38C16ovklU8BKSiQ
-         UISEDFVkk4mJJvD5SVHqLDIvTBKRX5pI0RTKk6ClbobwqkzTLuhmn2R06TZpsyGIY0SW
-         p2uvxhbJ5dsGZlgAXDpA0aY7bvYIlp9RDgIEB8rrb7kFnFHznq7Hp2XFFJYEEDW6tOv1
-         jUAQ==
-X-Gm-Message-State: AOAM531QUuS9k32IJIQ5zFt3jpEabrWTWz+OqFqO6otBklBWIQo2Asnc
-        tezzRF58WfxLQmftbThdYc7XZkZkr0+KwqwvkGTS4qWxeevMJYN5
-X-Google-Smtp-Source: ABdhPJz43mrrriVp8Cqor+enuQGh/IB1IH0yc1vlFlsHxQTDHV/y7F+MU5VgTHcPTlbl3EyCA2T/f/E5BRMe/AQgz7Y=
-X-Received: by 2002:a6b:6a0e:: with SMTP id x14mr1296225iog.57.1611269083021;
- Thu, 21 Jan 2021 14:44:43 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=js608cf7+b6uuSx4xSNXkCTdpGlQyO53l8ri6uI5Ugk=;
+        b=XB6Ye/umNKIYkPLFospwDXGSowBJgdhY9NJjQfjV7c2PqdyAHrI8W6hYfEuAAH8feC
+         jLBtODPqiZwi414+jQslK9juR2yOmTIoR5pmck1PInlSAfQz3YNf7FudskJRpwxEVmNe
+         ISZvjg/MYVAmJ+n2CggFK9V8+tTCZeOLXmsQw0pzY/wb0nr4LugaT6POgK84EKaj4JPO
+         X2iPSgbQUBts++8zyzlwKFs79MB3ND1atC9M1ENSu+ylC9hoAFUqjJ7/cFSZI8MB1Ylp
+         eDv5qOJQBSlJYCp7sY7dIX5eq+C4gtfnEyLabj38EThPUwVamb4UafYr2xn2NePa9rXv
+         XA7A==
+X-Gm-Message-State: AOAM533bLUiwhlJTtopicenHrPCduvUnt/7th6lLat1nDJabtU/0d2+X
+        kMvQ8D20BseHCSH6YqKGc7c=
+X-Google-Smtp-Source: ABdhPJzdsAmZeMTtJofoH0OpmfOghYFNG5Mw7eCThZjIa7BwAAu43KDhcre/+DiKEUAE2RebrWMEpA==
+X-Received: by 2002:aa7:d8c6:: with SMTP id k6mr1042147eds.265.1611269107502;
+        Thu, 21 Jan 2021 14:45:07 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id t21sm3595648edv.82.2021.01.21.14.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 14:45:06 -0800 (PST)
+Date:   Fri, 22 Jan 2021 00:45:05 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Pawel Dembicki <paweldembicki@gmail.com>
+Cc:     netdev@vger.kernel.org, Linus Wallej <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dsa: vsc73xx: add support for vlan filtering
+Message-ID: <20210121224505.nwfipzncw2h5d3rw@skbuf>
+References: <20210120063019.1989081-1-paweldembicki@gmail.com>
 MIME-Version: 1.0
-References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
- <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
- <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
- <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
- <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
- <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
- <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
- <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
- <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
- <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
- <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
- <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
- <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
- <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
- <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com>
- <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com>
- <CAGG=3QUcaY1wzJhBD4ZGhPSNPik-kL0PuoE1SJqkFJEM_mkGYA@mail.gmail.com> <CA+icZUU+OWW46CVq4Co-y7hckGjoV5bbqxS-G+HDqUDci_AzHw@mail.gmail.com>
-In-Reply-To: <CA+icZUU+OWW46CVq4Co-y7hckGjoV5bbqxS-G+HDqUDci_AzHw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 21 Jan 2021 23:44:31 +0100
-Message-ID: <CA+icZUV17FxhopdQhDCW6vBaSfgU-86vAE5QpoaW1iLxtsg5HA@mail.gmail.com>
-Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120063019.1989081-1-paweldembicki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 3:03 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Mon, Jan 18, 2021 at 10:56 PM Bill Wendling <morbo@google.com> wrote:
-> >
-> > On Mon, Jan 18, 2021 at 9:26 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Mon, Jan 18, 2021 at 1:39 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
-> > > > >
-> > > > > On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > >
-> > > > > > [ big snip ]
-> > > > >
-> > > > > [More snippage.]
-> > > > >
-> > > > > > [ CC Fangrui ]
-> > > > > >
-> > > > > > With the attached...
-> > > > > >
-> > > > > >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
-> > > > > > undefined symbols
-> > > > > >
-> > > > > > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
-> > > > > > For details see ClangBuiltLinux issue #1250 "Unknown symbol
-> > > > > > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
-> > > > > >
-> > > > > Thanks for confirming that this works with the above patch.
-> > > > >
-> > > > > > @ Bill Nick Sami Nathan
-> > > > > >
-> > > > > > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
-> > > > >
-> > > > > The integrated assembler and this option are more-or-less orthogonal
-> > > > > to each other. One can still use the GNU assembler with PGO. If you're
-> > > > > having an issue, it may be related to ClangBuiltLinux issue #1250.
-> > > > >
-> > > > > > 2. Can you please try Nick's DWARF v5 support patchset v5 and
-> > > > > > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
-> > > > > >
-> > > > > I know Nick did several tests with PGO. He may have looked into it
-> > > > > already, but we can check.
-> > > > >
-> > > >
-> > > > Reproducible.
-> > > >
-> > > > LLVM_IAS=1 + DWARF5 = Not bootable
-> > > >
-> > > > I will try:
-> > > >
-> > > > LLVM_IAS=1 + DWARF4
-> > > >
-> > >
-> > > I was not able to boot into such a built Linux-kernel.
-> > >
-> > PGO will have no effect on debugging data. If this is an issue with
-> > DWARF, then it's likely orthogonal to the PGO patch.
-> >
-> > > For me worked: DWARF2 and LLVM_IAS=1 *not* set.
-> > >
-> > > Of course, this could be an issue with my system's LLVM/Clang.
-> > >
-> > > Debian clang version
-> > > 12.0.0-++20210115111113+45ef053bd709-1~exp1~20210115101809.3724
-> > >
-> > Please use the official clang 11.0.1 release
-> > (https://releases.llvm.org/download.html), modifying the
-> > kernel/pgo/Kconfig as I suggested above. The reason we specify clang
-> > 12 for the minimal version is because of an issue that was recently
-> > fixed.
-> >
->
-> I downgraded to clang-11.1.0-rc1.
-> ( See attachment. )
->
-> Doing the first build with PGO enabled plus DWARF5 and LLVM_IAS=1 works.
->
-> But again after generating vmlinux.profdata and doing the PGO-rebuild
-> - the resulting Linux-kernel does NOT boot in QEMU or on bare metal.
-> With GNU/as I can boot.
->
-> So this is independent of DWARF v4 or DWARF v5 (LLVM_IAS=1 and DWARF
-> v2 is not allowed).
-> There is something wrong (here) with passing LLVM_IAS=1 to make when
-> doing the PGO-rebuild.
->
-> Can someone please verify and confirm that the PGO-rebuild with
-> LLVM_IAS=1 boots or boots not?
->
-> Thanks.
->
-> - Sedat -
->
-> > > Can you give me a LLVM commit-id where you had success with LLVM_IAS=1
-> > > and especially CONFIG_DEBUG_INFO_DWARF5=y?
-> > > Success means I was able to boot in QEMU and/or bare metal.
-> > >
-> > The DWARF5 patch isn't in yet, so I don't want to rely upon it too much.
-> >
+Hi Pawel,
 
-I passed LLVM_IAS=1 with KAFLAGS=-fprofile-use=vmlinux.profdata:
+On Wed, Jan 20, 2021 at 07:30:18AM +0100, Pawel Dembicki wrote:
+> This patch adds support for vlan filtering in vsc73xx driver.
+> 
+> After vlan filtering enable, CPU_PORT is configured as trunk, without
+> non-tagged frames. This allows to avoid problems with transmit untagged
+> frames because vsc73xx is DSA_TAG_PROTO_NONE.
+> 
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 
-/usr/bin/perf_5.10 stat make V=1 -j4 HOSTCC=clang HOSTCXX=clang++
-HOSTLD=ld.lld CC=clang LD=ld.lld PAHOLE=/opt/paho
-le/bin/pahole LOCALVERSION=-2-amd64-clang11-pgo KBUILD_VERBOSE=1
-KBUILD_BUILD_HOST=iniza KBUILD_BUILD_USER=sedat.dilek@gmail.com
-KBUILD_BUILD_TIMESTAMP=2021-01-21 bind
-eb-pkg KDEB_PKGVERSION=5.11.0~rc4-2~bullseye+dileks1 LLVM=1
-KCFLAGS=-fprofile-use=vmlinux.profdata LLVM_IAS=1
-KAFLAGS=-fprofile-use=vmlinux.profdata
+What are the issues that are preventing you from getting rid of
+DSA_TAG_PROTO_NONE? Not saying that making the driver VLAN aware is a
+bad idea, but maybe also adding a tagging driver should really be the
+path going forward. If there are hardware issues surrounding the native
+tagging support, then DSA can make use of your VLAN features by
+transforming them into a software-defined tagger, see
+net/dsa/tag_8021q.c. But using a trunk CPU port with 8021q uppers on top
+of the DSA master is a poor job of achieving that.
 
-The resulting Linux-kernel does not boot.
+> ---
+> +static int
+> +vsc73xx_port_read_vlan_table_entry(struct dsa_switch *ds, u16 vid, u8 *portmap)
+> +{
+> +	struct vsc73xx *vsc = ds->priv;
+> +	u32 val;
+> +	int ret;
+> +
+> +	if (vid > 4095)
+> +		return -EPERM;
 
-But I see in the build-log these warnings:
+This is a paranoid check and should be removed (not only here but
+everywhere).
 
-warning: arch/x86/platform/efi/quirks.c: Function control flow change
-detected (hash mismatch) efi_arch_mem_reserve Hash = 73770966985
-[-Wbackend-plugin]
-warning: arch/x86/platform/efi/efi.c: Function control flow change
-detected (hash mismatch) efi_attr_is_visible Hash = 57959232386
-[-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) memcmp Hash = 12884901887
-[-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) bcmp Hash = 12884901887
-[-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) strcmp Hash = 44149752232
-[-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) strnlen Hash = 29212902728
-[-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) simple_strtoull Hash =
-288230479369728480 [-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) strstr Hash = 76464046323
-[-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) strchr Hash = 30948479515
-[-Wbackend-plugin]
-warning: arch/x86/boot/compressed/string.c: Function control flow
-change detected (hash mismatch) kstrtoull Hash = 288230543187488006
-[-Wbackend-plugin]
+> +static int vsc73xx_port_vlan_prepare(struct dsa_switch *ds, int port,
+> +				     const struct switchdev_obj_port_vlan *vlan)
+> +{
+> +	/* nothing needed */
+> +	return 0;
+> +}
 
-What does "Function control flow change detected (hash mismatch)" mean?
-Related with my boot problems?
+Can you please rebase your work on top of the net-next/master branch?
+You will see that the API has changed.
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
 
-- Sedat -
+> +
+> +static void vsc73xx_port_vlan_add(struct dsa_switch *ds, int port,
+> +				  const struct switchdev_obj_port_vlan *vlan)
+> +{
+> +	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+> +	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
+> +	struct vsc73xx *vsc = ds->priv;
+> +	int ret;
+> +	u32 tmp;
+> +
+> +	if (!dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
+> +		return;
+
+Sorry, but no. You need to support the case where the bridge (or 8021q
+module) adds a VLAN even when the port is not enforcing VLAN filtering.
+See commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=0ee2af4ebbe3c4364429859acd571018ebfb3424
+
+> +
+> +	ret = vsc73xx_port_update_vlan_table(ds, port, vlan->vid_begin,
+> +					     vlan->vid_end, 1);
+> +	if (ret)
+> +		return;
+> +
+> +	if (untagged && port != CPU_PORT) {
+> +		/* VSC73xx can have only one untagged vid per port. */
+> +		vsc73xx_read(vsc, VSC73XX_BLOCK_MAC, port,
+> +			     VSC73XX_TXUPDCFG, &tmp);
+> +
+> +		if (tmp & VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_ENA)
+> +			dev_warn(vsc->dev,
+> +				 "Chip support only one untagged VID per port. Overwriting...\n");
+
+Just return an error, don't overwrite, this leaves the bridge VLAN
+information out of sync with the hardware otherwise, which is not a
+great idea.
+
+FWIW the drivers/net/dsa/ocelot/felix.c and drivers/net/mscc/ocelot.c
+files support switching chips from the same vendor. The VSC73XX family
+is much older, but some of the limitations apply to both architectures
+nonetheless (like this one), you can surely borrow some ideas from
+ocelot - in this case search for ocelot_vlan_prepare.
+
+> +
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
+> +				    VSC73XX_TXUPDCFG,
+> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID,
+> +				    (vlan->vid_end <<
+> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_SHIFT) &
+> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID);
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
+> +				    VSC73XX_TXUPDCFG,
+> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_ENA,
+> +				    VSC73XX_TXUPDCFG_TX_UNTAGGED_VID_ENA);
+> +	}
+> +	if (pvid && port != CPU_PORT) {
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
+> +				    VSC73XX_CAT_DROP,
+> +				    VSC73XX_CAT_DROP_UNTAGGED_ENA,
+> +				    ~VSC73XX_CAT_DROP_UNTAGGED_ENA);
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_MAC, port,
+> +				    VSC73XX_CAT_PORT_VLAN,
+> +				    VSC73XX_CAT_PORT_VLAN_VLAN_VID,
+> +				    vlan->vid_end &
+> +				    VSC73XX_CAT_PORT_VLAN_VLAN_VID);
+> +	}
+> +}
