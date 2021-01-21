@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933F12FDF8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9232FDF6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436784AbhAUC0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 21:26:12 -0500
-Received: from mga07.intel.com ([134.134.136.100]:31113 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389436AbhAUB6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 20:58:10 -0500
-IronPort-SDR: Eel21chMWO+df4GH/8jz9vn70NHL5002gHYOOAy+sByKq3t6K+X5s4wFFk3b+48TRfXN5at0fu
- R8s8CcsC49gw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="243275406"
-X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
-   d="scan'208";a="243275406"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 17:53:39 -0800
-IronPort-SDR: QNr0O4qpQMTHS7ga7fh2HdCPLX6cLjIEWA7Dfi+bY5r8+391q/1SYFco6bS6gXkO6Ym3Cn9XNe
- gYyS8ZtGQc+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
-   d="scan'208";a="391762270"
-Received: from allen-box.sh.intel.com ([10.239.159.28])
-  by orsmga007.jf.intel.com with ESMTP; 20 Jan 2021 17:53:37 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 3/3] iommu/vt-d: Use INVALID response code instead of FAILURE
-Date:   Thu, 21 Jan 2021 09:45:05 +0800
-Message-Id: <20210121014505.1659166-4-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121014505.1659166-1-baolu.lu@linux.intel.com>
-References: <20210121014505.1659166-1-baolu.lu@linux.intel.com>
+        id S2393043AbhAUB7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 20:59:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387560AbhAUBr1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:47:27 -0500
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BFFC06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 17:46:00 -0800 (PST)
+Received: by mail-oo1-xc35.google.com with SMTP id q6so122032ooo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 17:45:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6KQrJpxzoEOP183dwS54dhdJ00ZQkcSYlNAckMrfyS4=;
+        b=pWN+Q8SFX0/VoEi62+5ReF1K5LVJ8inQdlJsatRbtoMa9Or+sx8ejT9jJ7YkPOvzlU
+         mKLchPlYnhLgHBRTt90Kln+V0lXx0QutBR5YeXqVCkxuZ8I4nLHsj2nE9NgOqIqlCCOJ
+         NMNvqyJihw6wqTUCccLQXOAoHPRhHzegPzrg5qqetLwqCxBumeiaqBqZNEiuALRgD9qx
+         OGpTwXSF5PgxONbhZPcT/qm67ZhKr4yObFx5PoRcJNt4Ger4FMuHf48qWG8m+3+aK9PF
+         xRW52FzedpD6N7xXriTG8t2lngDRnNnqBz8eaITE62Jf8+z8DljEU2NSqRRZCmR0ON06
+         Q8Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6KQrJpxzoEOP183dwS54dhdJ00ZQkcSYlNAckMrfyS4=;
+        b=qRq+b/cZyGuvEwo43WyRBWmZmM3C/5Vuuy2BH5nvQPE4e1qwNwIP7MwTs8OUR9BQgY
+         6Mp/q9CnoWa/2QxdATpPj1TmpZfqsZKXkVA2z1Em8XWuTgjuke/LLoPLHGsj6Iqd7h3E
+         1IkMP+ypOgJxdo5SF5nITdgj/n0K7a2jTC1UYacinXeiVp+IdKUpI+KUa3BfOrL+sLGY
+         paaf4JPnYywGU3wos24A3VtlJ8g79cuj9lIt9DWd0KlJHBL63Q/P8AjoxaAwHjNmaaVv
+         yDcO7RGsg0yFM6WB7ZnxSfwAOBkhkx9q3oTxhWmnf2+U7wTq4xJmUaYN33uhzoFsbXfl
+         MQTg==
+X-Gm-Message-State: AOAM533/Wf/7vC4cZxBmn3fO0hY9myUJlqglm51HCZSLX5b7hznsRyTO
+        EouibBVQkYAuSX6qxfXc5VyTsQ==
+X-Google-Smtp-Source: ABdhPJw7hcw3C3V4C4SQV3doWhAKFFrJsBA2zpYFqPvJYlRSPdw9RtlatXpFYUcp9cqtI/6r1ZGBTQ==
+X-Received: by 2002:a4a:9608:: with SMTP id q8mr3051298ooi.79.1611193559419;
+        Wed, 20 Jan 2021 17:45:59 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j17sm784398otj.52.2021.01.20.17.45.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 17:45:58 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] soc: qcom: aoss: Add SC8180X compatible
+Date:   Wed, 20 Jan 2021 17:46:06 -0800
+Message-Id: <20210121014606.1612668-2-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210121014606.1612668-1-bjorn.andersson@linaro.org>
+References: <20210121014606.1612668-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VT-d IOMMU response RESPONSE_FAILURE for a page request in below
-cases:
+The Qualcomm SC8180X platform has an AOSS that needs to be communicated
+with, add a compatible for this.
 
-- When it gets a Page_Request with no PASID;
-- When it gets a Page_Request with PASID that is not in use for this
-  device.
-
-This is allowed by the spec, but IOMMU driver doesn't support such cases
-today. When the device receives RESPONSE_FAILURE, it sends the device
-state machine to HALT state. Now if we try to unload the driver, it hangs
-since the device doesn't send any outbound transactions to host when the
-driver is trying to clear things up. The only possible responses would be
-for invalidation requests.
-
-Let's use RESPONSE_INVALID instead for now, so that the device state
-machine doesn't enter HALT state.
-
-Suggested-by: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/iommu/intel/svm.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/soc/qcom/qcom_aoss.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 77509a0a863e..021f58899c16 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -907,10 +907,8 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 		u64 address;
+diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+index b5840d624bc6..bc01ff7c5d3f 100644
+--- a/drivers/soc/qcom/qcom_aoss.c
++++ b/drivers/soc/qcom/qcom_aoss.c
+@@ -597,6 +597,7 @@ static int qmp_remove(struct platform_device *pdev)
  
- 		handled = 1;
--
- 		req = &iommu->prq[head / sizeof(*req)];
--
--		result = QI_RESP_FAILURE;
-+		result = QI_RESP_INVALID;
- 		address = (u64)req->addr << VTD_PAGE_SHIFT;
- 		if (!req->pasid_present) {
- 			pr_err("%s: Page request without PASID: %08llx %08llx\n",
-@@ -948,7 +946,6 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 			rcu_read_unlock();
- 		}
- 
--		result = QI_RESP_INVALID;
- 		/* Since we're using init_mm.pgd directly, we should never take
- 		 * any faults on kernel addresses. */
- 		if (!svm->mm)
+ static const struct of_device_id qmp_dt_match[] = {
+ 	{ .compatible = "qcom,sc7180-aoss-qmp", },
++	{ .compatible = "qcom,sc8180x-aoss-qmp", },
+ 	{ .compatible = "qcom,sdm845-aoss-qmp", },
+ 	{ .compatible = "qcom,sm8150-aoss-qmp", },
+ 	{ .compatible = "qcom,sm8250-aoss-qmp", },
 -- 
-2.25.1
+2.29.2
 
