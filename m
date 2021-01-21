@@ -2,236 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE342FE221
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6EF2FE213
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729735AbhAUD1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:27:03 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:55403 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732616AbhAUDX5 (ORCPT
+        id S1726819AbhAUFzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:55:00 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:52964 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbhAUDfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:23:57 -0500
-IronPort-SDR: t5UuSi4kM6fxEGFF/J78THeEzwbXRDfNYha/4mFia/z0jtG+6Ej3lLvqzF2doSXM+Gp83mlW/D
- LTAJBuoc0miYVmbmMmadt1w8wW0SHDSpd2qpeWi2tiFk7yqVEqhtw8m2o9AwoguFbLNieNQKwh
- AnIY9BLlRNXETJ2im6gLbPdUx0VR7P8MvyUtZY3V+IU/NbNXzn5D6rHz8EE4STu09HmZEK2KVL
- vpXzSJ4qUeRKEosV5iFCsC0fN5PpuGyHYv3dVOYoe4Mqs7PLtczZUTnTCeV7O0d2d/6Bg+ExMg
- meU=
-X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
-   d="scan'208";a="47685556"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 20 Jan 2021 19:23:10 -0800
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 20 Jan 2021 19:23:09 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 7BE56218EF; Wed, 20 Jan 2021 19:23:09 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] scsi: ufs: Fix some problems in task management request implementation
-Date:   Wed, 20 Jan 2021 19:23:03 -0800
-Message-Id: <1611199388-24668-1-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 20 Jan 2021 22:35:19 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L3TYOM018652;
+        Thu, 21 Jan 2021 03:32:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=MY/aJQJXPOpKk7ezNJRgPboN93+ijNO53q2Z/8WBzSU=;
+ b=BBtE3lL1R/mv2aEx0DkbT6B47060w6kce8FadsfI0a1DzrJSRoQDSmnrO4YM/llgvEAa
+ u6urxAEcrsRe5d0pVj9799A+qOzfyolPe+JUqaVUZUiguqANRdiLp1tbQ7v8BSb9TMAB
+ cnaZ3MqV7JWb2rfC64B4iuaXA0vgYrIfoKKcC3+krLA+GQsEMayT6NrgvMklj2aBU6Yy
+ r0/kOsBFuo/va24+9JaLOjKPU32NBP4GMTLFPMs4W9/jFWmr3aknnICH2Tgs3r5Jl4Ca
+ SnDYg5j24yIkPTdSB7bzkXZYthN3VXIDOUwOAcn+kaQFCqAcKvgjvE8k6023dtkGvqVC cg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3668qadcju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 03:32:01 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L3AfxE112209;
+        Thu, 21 Jan 2021 03:30:00 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
+        by aserp3030.oracle.com with ESMTP id 3668qwabnn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 03:30:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=amuFoa07apHYvr3cKe1yBSeCrdIyuEeM0qHjGK3g+GoRPGZu+/sYAm+ssp7HvjsyKTbX7WKXfaRCOA1h6guGs/jS0GgF5sSyoDFLWGiIfHYZJiq4Rl6wQXhl8Ozs4BP4w0j4XwhuqinYrk5PPnh84Lmde83xpxkyRoLq3+ZmZqovShCwG7fdQx5LM2OBsQ42Gb/vLdqHMvzcr7Ccxz5OhrAEmTeK2kBxd8pIFXduHf+N0gUJkLjVaU0009rNvPk0KPv7YncV33iIjjBKoBjQsDc7Stn4f5Rib30h2H09s5mqxH2TGH2+1R/t+SpV2z96iynecXHyp4vZ1zmoDGyJ3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MY/aJQJXPOpKk7ezNJRgPboN93+ijNO53q2Z/8WBzSU=;
+ b=j+H3rp+3zM4zFgbOYGFVsmOJ0afHUWuh/Bgsv6EblAmvHD0hAxkvA9Oe3YODct6Kb5ToJ34Q31v1h9a0GcTK/xccnqErKBzfG8zFjdkSpBbTVXEcOmSOR7rI7C82dH/0azo3f0uOXxKqnwJ/9lVcnGi28sbDOYOh2KGTqmeKAYGY17EjpatQZLR/sOMLNQd5qpBKzP1Nv/hqjQXEWrfL7EurUwQjHABDo/DOGYg3felXy0IDFNcBNOUdZI2cfTh2auz27HDr7MLHkipsUmNEh/gwL4+dTCZNS+v6xlCxgLPu/m98NZp1Xm6XSQA4JdsyLSJSb9F0tMqe8zHf4BXcxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MY/aJQJXPOpKk7ezNJRgPboN93+ijNO53q2Z/8WBzSU=;
+ b=TYswQ3K0DayH+5wdnz4eCv6KxsBmou80wKu0y1rvhLR17dMuCAu4rL5pwThZwyg9KDhM4UdtD3IiNQM0yfPVRNqAKPjkey8tztELufo7bsvFDDLfUI13WTNKbk7AFBcGe8Xs+lCAgwnc5U/1/mFqZR9ROOicERkH7Se/d30gj6c=
+Authentication-Results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4440.namprd10.prod.outlook.com (2603:10b6:510:35::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Thu, 21 Jan
+ 2021 03:29:58 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.013; Thu, 21 Jan 2021
+ 03:29:58 +0000
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Subject: Re: [PATCH v3 0/3] scsi: ufs: Cleanup and refactor clock scaling
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1mtx3ezmd.fsf@ca-mkp.ca.oracle.com>
+References: <20210120150142.5049-1-stanley.chu@mediatek.com>
+Date:   Wed, 20 Jan 2021 22:29:54 -0500
+In-Reply-To: <20210120150142.5049-1-stanley.chu@mediatek.com> (Stanley Chu's
+        message of "Wed, 20 Jan 2021 23:01:39 +0800")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: CH2PR16CA0029.namprd16.prod.outlook.com
+ (2603:10b6:610:50::39) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by CH2PR16CA0029.namprd16.prod.outlook.com (2603:10b6:610:50::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 03:29:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1bd9c62d-d4a4-4d1d-1f66-08d8bdbcd435
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4440:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4440C132B079C696A37145818EA19@PH0PR10MB4440.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lvqd3vk07T9HJfGOpUxAqzZernPQgrFWBswOYTZmGAQH8ZbXNkE7yKSXBPKQNg+xXoAcaaf+FbMp+fwtg0eghFRuMEhWHBtpziz2ZcHbq+iMO9MGdXAYwkVQxY3IXc6YieOysquL/xhU0Gyd5YNAjI5nwFmJ43sR4fNDef3fR5WAy8/auQJ/pqkkwiT36/b9iJ5Xu06OOUQ52ydOETsgpkk3MXdicsl/P5dO2Nlze5U2VQchM6MitOYJuoiDo8zD+kd7QekIjMjBIbQNAMvu1fM5qLJhh3V3c7VZfAglhV1PI/SdsSYVu1W9AEGYGkCFeUXe3R3/9C1ZIpHXUWjte0t2eutJ6eyvRFDpzyV/42J280TeOl9wUuHThVJD9ixVoZjWsWQFYIjRPWvIe9L/rA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(346002)(376002)(396003)(8676002)(508600001)(7696005)(52116002)(36916002)(956004)(8936002)(6666004)(4326008)(316002)(6916009)(54906003)(7416002)(26005)(558084003)(16526019)(186003)(55016002)(66476007)(66556008)(86362001)(2906002)(66946007)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?CK3JYwf6mHFiJ5MYLwVnME+rFqlQgu91q+6Fk33LQqfbvtCvTUgBBv7YxJnT?=
+ =?us-ascii?Q?oKFKLhxKtf+jeVp1n+u8QLBES+Q+P0FRM2r0JItTsBj4izEErnxhsTHuWuvS?=
+ =?us-ascii?Q?3KwFx56guH8ZK2ffzKc3RN5YLD1o1orluzhdI7f/jHFadl5SQzKRQhX4MsWI?=
+ =?us-ascii?Q?o7h8hQLAxHfQpQD6MwlYhD/jACRBPqxtqoenmde5gGZGZTIfQrXf0lolej/K?=
+ =?us-ascii?Q?qMGnSoP8nfIw1maVDuvr60SzZchh87WcM54EkAddjv6SqJdVbDl8Wf9Qy5dU?=
+ =?us-ascii?Q?ePBss3awasFtnEpDRAqD5UW9VpmJ36aysDAg8Ry1hCSvy9oacnghrY3SuMrG?=
+ =?us-ascii?Q?67Brx/MsHvzNxpcmPPEEQJCg5tytfQc8MU1DwEFocCEMHREOvF00qA1uRZ52?=
+ =?us-ascii?Q?x6pYtkJS8kRPesWkEFSrRFiiRuucHGAVKUDypYm/DlgKGHtDtEGuRGtM31gL?=
+ =?us-ascii?Q?sEgWZHDpTZaMrW1FnzkoJocFPANhpwqzhRlc9d0u1zYyguz4XFSaJfQ5kPGJ?=
+ =?us-ascii?Q?pAWGaQH5lmPOLmcOPClS/N4cnOotFeCRBz0NCUR03/HW0UP0De3FXwvAiHv/?=
+ =?us-ascii?Q?VVraRKkFP69DcHjB/5YcaRANvzwBbtwwDpJqmKl8IZutpNEQK9F0wrItAr8e?=
+ =?us-ascii?Q?ymI9P8L5C8r/IZO2zwuQwLeYvUTMjLvYHyfC3+7VBlAKzqJhvF3/sP8BuGwn?=
+ =?us-ascii?Q?7wvffAY6IFPXfImqfJZzjCmQQoQew1h3+23X8w31vhz/kJZ6Dw+BEyZ1xbBl?=
+ =?us-ascii?Q?WkfwyxJkn1AXuwanjULRyagKYLlnMVvuEZt/mVPMULlsObEs0XY8OcimrKrA?=
+ =?us-ascii?Q?MBRAiCXIuOxchL3QlYtQ+ohif5sj61+l0S/CpjrRjGobDOe7NtNn25zktqSi?=
+ =?us-ascii?Q?ZOQ/BWuDKknXJnzU95+t0TlkPhos56iY3IY7/i34A6fcE5NNrfT7f9Flzu9F?=
+ =?us-ascii?Q?EYeyE/g2qP7jSpZlFhvBZgLacDgrENRCO5DarO3vySa2d1Elyl6noOn/IkPl?=
+ =?us-ascii?Q?GTHO?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1bd9c62d-d4a4-4d1d-1f66-08d8bdbcd435
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 03:29:58.5812
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ceo8OR4dHZWkmZoNOAkqeiyauP3N780CwS7vmMFQ6fqx8fbOWIYFKbLQLH7pNvvBRmNqXM5ejYkum0U6ZwxWA/OG3oDY2UJYSNlrUmeqIzQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4440
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210014
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current task management request send/compl implementation is broken, the
-problems and fixes are listed as below:
 
-Problem: TMR completion timeout. ufshcd_tmc_handler() calls
-         blk_mq_tagset_busy_iter(fn == ufshcd_compl_tm()), but since
-         blk_mq_tagset_busy_iter() only iterates over all reserved tags and
-         started requests, so ufshcd_compl_tm() never gets a chance to run.
-Fix:     Call blk_mq_start_request() in __ufshcd_issue_tm_cmd().
+Stanley,
 
-Problem: Race condition in send/compl paths. ufshcd_compl_tm() looks for
-         all 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL and call complete()
-         for each req who has the req->end_io_data set. There can be a race
-         condition btw tmc send/compl, because req->end_io_data is set, in
-         __ufshcd_issue_tm_cmd(), without host lock protection, so it is
-         possible that when ufshcd_compl_tm() checks the req->end_io_data,
-         req->end_io_data is set but the corresponding tag has not been set
-         in the REG_UTP_TASK_REQ_DOOR_BELL. Thus, ufshcd_tmc_handler() may
-         wrongly complete TMRs which have not been sent.
-Fix:     Protect req->end_io_data with host lock. And let ufshcd_compl_tm()
-         only handle those tm cmds which have been completed instead of
-         looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
+> This series cleans up and refactors clk-scaling feature, and shall not
+> change any functionality.
 
-Problem: In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs +
-         req->tag as the Task Tag in one TMR UPIU.
-Fix:     Directly use req->tag as Task Tag.
+Applied to 5.12/scsi-staging, thanks!
 
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
-
-Change since v1:
-- Typo fixed
-
-This change is based on Jaegeuk's change - https://git.kernel.org/mkp/scsi/c/eeb1b55b6e25
-
----
- drivers/scsi/ufs/ufshcd.c | 71 +++++++++++++++++++++++++----------------------
- 1 file changed, 38 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 4be35bf..8935c57 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6213,7 +6213,7 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
- 
- struct ctm_info {
- 	struct ufs_hba	*hba;
--	unsigned long	pending;
-+	unsigned long	completed;
- 	unsigned int	ncpl;
- };
- 
-@@ -6222,13 +6222,13 @@ static bool ufshcd_compl_tm(struct request *req, void *priv, bool reserved)
- 	struct ctm_info *const ci = priv;
- 	struct completion *c;
- 
--	WARN_ON_ONCE(reserved);
--	if (test_bit(req->tag, &ci->pending))
--		return true;
--	ci->ncpl++;
--	c = req->end_io_data;
--	if (c)
--		complete(c);
-+	if (test_bit(req->tag, &ci->completed)) {
-+		__clear_bit(req->tag, &ci->hba->outstanding_tasks);
-+		ci->ncpl++;
-+		c = req->end_io_data;
-+		if (c)
-+			complete(c);
-+	}
- 	return true;
- }
- 
-@@ -6244,11 +6244,19 @@ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba)
- {
- 	struct request_queue *q = hba->tmf_queue;
- 	struct ctm_info ci = {
--		.hba	 = hba,
--		.pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL),
-+		.hba = hba,
-+		.ncpl = 0,
- 	};
-+	u32 tm_doorbell;
-+	unsigned long completed;
-+
-+	tm_doorbell = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
-+	completed = tm_doorbell ^ hba->outstanding_tasks;
- 
--	blk_mq_tagset_busy_iter(q->tag_set, ufshcd_compl_tm, &ci);
-+	if (completed) {
-+		ci.completed = completed;
-+		blk_mq_tagset_busy_iter(q->tag_set, ufshcd_compl_tm, &ci);
-+	}
- 	return ci.ncpl ? IRQ_HANDLED : IRQ_NONE;
- }
- 
-@@ -6366,37 +6374,33 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 	DECLARE_COMPLETION_ONSTACK(wait);
- 	struct request *req;
- 	unsigned long flags;
--	int free_slot, task_tag, err;
-+	int task_tag, err;
- 
- 	/*
--	 * Get free slot, sleep if slots are unavailable.
--	 * Even though we use wait_event() which sleeps indefinitely,
--	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
-+	 * blk_get_request() used here is only to get a free tag.
- 	 */
- 	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
- 	if (IS_ERR(req))
- 		return PTR_ERR(req);
- 
--	req->end_io_data = &wait;
--	free_slot = req->tag;
--	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
- 	ufshcd_hold(hba, false);
--
- 	spin_lock_irqsave(host->host_lock, flags);
--	task_tag = hba->nutrs + free_slot;
-+	req->end_io_data = &wait;
-+	blk_mq_start_request(req);
- 
-+	task_tag = req->tag;
- 	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
- 
--	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
--	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
-+	memcpy(hba->utmrdl_base_addr + task_tag, treq, sizeof(*treq));
-+	ufshcd_vops_setup_task_mgmt(hba, task_tag, tm_function);
- 
- 	/* send command to the controller */
--	__set_bit(free_slot, &hba->outstanding_tasks);
-+	__set_bit(task_tag, &hba->outstanding_tasks);
- 
- 	/* Make sure descriptors are ready before ringing the task doorbell */
- 	wmb();
- 
--	ufshcd_writel(hba, 1 << free_slot, REG_UTP_TASK_REQ_DOOR_BELL);
-+	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);
- 	/* Make sure that doorbell is committed immediately */
- 	wmb();
- 
-@@ -6408,32 +6412,33 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 	err = wait_for_completion_io_timeout(&wait,
- 			msecs_to_jiffies(TM_CMD_TIMEOUT));
- 	if (!err) {
-+		spin_lock_irqsave(hba->host->host_lock, flags);
- 		/*
- 		 * Make sure that ufshcd_compl_tm() does not trigger a
- 		 * use-after-free.
- 		 */
- 		req->end_io_data = NULL;
-+		spin_unlock_irqrestore(hba->host->host_lock, flags);
- 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete_err");
- 		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
- 				__func__, tm_function);
--		if (ufshcd_clear_tm_cmd(hba, free_slot))
--			dev_WARN(hba->dev, "%s: unable clear tm cmd (slot %d) after timeout\n",
--					__func__, free_slot);
-+		if (ufshcd_clear_tm_cmd(hba, task_tag)) {
-+			dev_WARN(hba->dev, "%s: unable to clear tm cmd (slot %d) after timeout\n",
-+					__func__, task_tag);
-+		} else {
-+			__clear_bit(task_tag, &hba->outstanding_tasks);
-+		}
- 		err = -ETIMEDOUT;
- 	} else {
- 		err = 0;
--		memcpy(treq, hba->utmrdl_base_addr + free_slot, sizeof(*treq));
-+		memcpy(treq, hba->utmrdl_base_addr + task_tag, sizeof(*treq));
- 
- 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete");
- 	}
- 
--	spin_lock_irqsave(hba->host->host_lock, flags);
--	__clear_bit(free_slot, &hba->outstanding_tasks);
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
--
-+	ufshcd_release(hba);
- 	blk_put_request(req);
- 
--	ufshcd_release(hba);
- 	return err;
- }
- 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Martin K. Petersen	Oracle Linux Engineering
