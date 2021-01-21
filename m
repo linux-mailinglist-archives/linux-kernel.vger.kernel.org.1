@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CA62FF135
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158012FF13C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387529AbhAUQ7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:59:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
+        id S1727512AbhAURAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:00:08 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:42588 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733067AbhAUQ6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:58:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 712B923A54;
-        Thu, 21 Jan 2021 16:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611248245;
-        bh=TH0uv+xJ3OXI8rF8g5eWJpI12gPgdit8dO28ZyUTVhQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=K8z1EvX6ZySbMsAzaAQlw/2sQYDnGb7eO7baOFXvejYx93Wpq8gpVjxDQcvNdn2jV
-         YeBqIptoPnInDMKkMzMlacSAW0fAVnati8FLzBqxlLzA7eq9p8cxGkHSBfwZnwR3aD
-         NygyNoTsC2xf9v2BRrehyTmyTNVmRQV4JtiAcyhNj3pWiawgK3EMC7rBOp50udK6va
-         cDG9L7dFkbhUEtAwQuR8+VQaJq4CcgqCyirqww2D6idZ8Fr+HUhIV/REfWsQmWKd4I
-         G5ALPRkRogkxBJWLRlBs2Vlh/DlQjC/oEA/hpqHCUt06lqDailL6Y8pa1JasLzZnYc
-         UNx3TLQLSCuPw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 14F39352268F; Thu, 21 Jan 2021 08:57:25 -0800 (PST)
-Date:   Thu, 21 Jan 2021 08:57:25 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        kernel-team@fb.com, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH RFC cpumask] Allow "all", "none", and "last" in cpumask
- strings
-Message-ID: <20210121165725.GP2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
- <CAAH8bW95nyx6PEnPiBPoHMLoduvgU9KO7N=K7mhLORkA+zzhDw@mail.gmail.com>
- <CAAH8bW8-q-2LaTC5DE0PnUBqs3V_69EAefLvwdZoeFSow8NYZA@mail.gmail.com>
+        id S1732032AbhAUQ7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:59:39 -0500
+Received: from zn.tnic (p200300ec2f1575008f111d19c272cab6.dip0.t-ipconnect.de [IPv6:2003:ec:2f15:7500:8f11:1d19:c272:cab6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ECC551EC05C2;
+        Thu, 21 Jan 2021 17:58:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611248331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=aAowCgPKnj8lJNpLWRHPtz+od612hKZl8mosyJYxxbc=;
+        b=PgrGVRVA3VMNJUCpJ6bPgsHll8aCYW8clLpzyFLNiDJMVMBToIhgFobxNQ/gmXDhXKfduJ
+        vVrS86Fbs63253wBH6T8TMp/Cc1Pve1xB7XVN27UxbERSrTBADQA50Yha8/KCzcUle6Jpm
+        ce/OcJE+Jx1sG02qNi/2nZLU+QUe3ME=
+Date:   Thu, 21 Jan 2021 17:58:45 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 11/19] x86/sev-es: Convert to insn_decode()
+Message-ID: <20210121165845.GD32060@zn.tnic>
+References: <20201223174233.28638-12-bp@alien8.de>
+ <202012251838.G6eufP3Q-lkp@intel.com>
+ <20201225123334.GA5874@zn.tnic>
+ <X+ouv0PN6dmva92i@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAH8bW8-q-2LaTC5DE0PnUBqs3V_69EAefLvwdZoeFSow8NYZA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <X+ouv0PN6dmva92i@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:11:48PM -0800, Yury Norov wrote:
-> On Wed, Jan 6, 2021 at 12:49 AM Yury Norov <yury.norov@gmail.com> wrote:
-> >
-> > On Tue, Jan 5, 2021 at 4:48 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > Hello!
-> > >
-> > > This series allows "all", "none", and "last" to be used in cpumask
-> > > strings.  This allows these strings to be less dependent on the underlying
-> > > system.  For example, currently a string specifying all but the first
-> > > CPU must be "1-7" on an eight-CPU system and "1-15" on a 16-CPU system.
-> > > With this series, the single string "1-last" can be used regardless of the
-> > > number of CPUs (at least assuming that each system has at least one CPU).
-> >
-> > 'none' may be implemented as an empty string or string with separators only,
-> > but I have nothing against explicit 'none'. See other comments inline.
-> >
-> > Thanks,
-> > Yury.
-> >
-> > > 1.      Un-inline cpulist_parse for SMP; prepare for ascii helpers,
-> > >         courtesy of Paul Gortmaker.
-> > >
-> > > 2.      Make "all" alias global and not just RCU, courtesy of Paul
-> > >         Gortmaker.
-> > >
-> > > 3.      Add a "none" alias to complement "all", courtesy of Paul
-> > >         Gortmaker.
-> > >
-> > > 4.      Add "last" alias for cpu list specifications, courtesy of Paul
-> > >         Gortmaker.
-> > >
-> > > 5.      Use "all" and "last" in "nohz_full" and "rcu_nocbs".
-> > >
-> > >                                                 Thanx, Paul
-> 
-> Hi Paul,
-> 
-> Today I found this series in linux-next despite downsides discovered during
-> the review. This series introduces absolutely unneeded cap on the number of
-> cpus in the system (9999), and also adds unsafe and non-optimal code.
-> 
-> In addition to that, I observe this warning on powerpc:
->   CC      lib/cpumask.o
-> lib/cpumask.c: In function ‘cpulist_parse’:
-> lib/cpumask.c:222:17: warning: cast from pointer to integer of
-> different size [-Wpointer-to-int-cast]
->   222 |   memblock_free((phys_addr_t)cpulist, len);
->       |                 ^
-> 
-> Can you please revert this series unless all the problems will be fixed?
+On Mon, Dec 28, 2020 at 11:15:11AM -0800, Sean Christopherson wrote:
+> Alternatively, could the kernel case use insn_decode_regs()?  If
+> vc_fetch_insn_kernel() were also modified to mirror insn_fetch_from_user(), the
+> two code paths could be unified except for the the fetch and the PFEC.  E.g.
 
-Thank you for your further review and comments!
+Personal Firearms Eligibility Check?
 
-I had been keeping the old series as a placeholder for its anticipated
-replacement, but given the compiler warning you note above and given
-that it is getting uncomfortably close to the time when I send my pull
-request, I will remove it from the -rcu rcu/next branch sourced by -next.
+In any case, I prefer simple, easy to follow code at a quick glance.
+Stuff like...
 
-							Thanx, Paul
+> 
+> static int vc_fetch_insn_kernel(struct es_em_ctxt *ctxt,
+> 				unsigned char *buffer)
+> {
+> 	if (copy_from_kernel_nofault(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE))
+> 		return 0;
+> 
+> 	return MAX_INSN_SIZE;
+> }
+> 
+> static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
+> {
+> 	char buffer[MAX_INSN_SIZE];
+> 	int nbytes;
+> 
+> 	if (user_mode(ctxt->regs))
+> 		nbytes = insn_fetch_from_user(ctxt->regs, buffer);
+> 	else
+> 		nbytes = vc_fetch_insn_kernel(ctxt, buffer);
+> 
+> 	if (!nbytes) {
+> 		ctxt->fi.vector     = X86_TRAP_PF;
+> 		ctxt->fi.error_code = X86_PF_INSTR;
+> 		if (user_mode(ctxt->regs))
+
+... this second repeated check here is not what I would call that.
+
+But this is my personal preference only so it's up for a vote now.
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
