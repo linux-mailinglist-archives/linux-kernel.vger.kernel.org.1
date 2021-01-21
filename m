@@ -2,185 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDAE2FECA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6063D2FEC9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730986AbhAUOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:08:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57870 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730087AbhAUOFr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:05:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611237860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sp6rLbwiHZzd3veiVsN2ORKZEPLAFluLK58UL3HjX8M=;
-        b=M4130tKPK3Ul5inrPzsf+YAn4HiCfyjHBpASI6Uq3J5/QcmKriChwEDxrCepQTcDmUFT/f
-        WAB1cFWUYxf0W59yt+i2SwaBtgMducvpZAaKdYuNKVLLFb7JcxHecJv6RC0heeiCJAW/Zi
-        Ji5WdDliSHM+t8aw6w5koZleCQwZsJk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-I18_8X0iPTWVDQFiq42UuA-1; Thu, 21 Jan 2021 09:04:16 -0500
-X-MC-Unique: I18_8X0iPTWVDQFiq42UuA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7983E767;
-        Thu, 21 Jan 2021 14:04:05 +0000 (UTC)
-Received: from starship (unknown [10.35.206.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 52F8D1971A;
-        Thu, 21 Jan 2021 14:04:01 +0000 (UTC)
-Message-ID: <82a82abaab276fd75f0cb47f1a32d5a44fa3bec5.camel@redhat.com>
-Subject: Re: [PATCH v2 1/4] KVM: x86: Factor out x86 instruction emulation
- with decoding
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, luto@amacapital.net
-Date:   Thu, 21 Jan 2021 16:04:00 +0200
-In-Reply-To: <20210121065508.1169585-2-wei.huang2@amd.com>
-References: <20210121065508.1169585-1-wei.huang2@amd.com>
-         <20210121065508.1169585-2-wei.huang2@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1730412AbhAUOF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:05:59 -0500
+Received: from mga01.intel.com ([192.55.52.88]:15529 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728755AbhAUOFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 09:05:15 -0500
+IronPort-SDR: trkLDEy6ZyshJE6KJzsgj3cdpmlvHY5iRJZ0GMFUfJGjnq3F9cZ2Lx3Jz0HNDcI05fVYZnKjDl
+ TZkGFvsyBZvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="198008803"
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="198008803"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 06:04:14 -0800
+IronPort-SDR: bUnefDbu9ylWHGHb3rbC3Q00oXM8Z5Asw+lIx2qhuhZ9X7wrB1bAjeqF7PYUVjteD2JCwjp266
+ cjurINTo6fsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="571707934"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.149])
+  by fmsmga006.fm.intel.com with ESMTP; 21 Jan 2021 06:04:13 -0800
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] perf auxtrace: Automatically group aux-output events
+Date:   Thu, 21 Jan 2021 16:04:18 +0200
+Message-Id: <20210121140418.14705-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-21 at 01:55 -0500, Wei Huang wrote:
-> Move the instruction decode part out of x86_emulate_instruction() for it
-> to be used in other places. Also kvm_clear_exception_queue() is moved
-> inside the if-statement as it doesn't apply when KVM are coming back from
-> userspace.
-> 
-> Co-developed-by: Bandan Das <bsd@redhat.com>
-> Signed-off-by: Bandan Das <bsd@redhat.com>
-> Signed-off-by: Wei Huang <wei.huang2@amd.com>
-> ---
->  arch/x86/kvm/x86.c | 63 +++++++++++++++++++++++++++++-----------------
->  arch/x86/kvm/x86.h |  2 ++
->  2 files changed, 42 insertions(+), 23 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9a8969a6dd06..580883cee493 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -7298,6 +7298,43 @@ static bool is_vmware_backdoor_opcode(struct x86_emulate_ctxt *ctxt)
->  	return false;
->  }
->  
-> +/*
-> + * Decode and emulate instruction. Return EMULATION_OK if success.
-> + */
-> +int x86_emulate_decoded_instruction(struct kvm_vcpu *vcpu, int emulation_type,
-> +				    void *insn, int insn_len)
+aux-output events need to have an AUX area event as the group leader.
+However, grouping events does not allow the AUX area event to be given
+an address filter because the --filter option must come after the event,
+which conflicts with the grouping syntax.
 
-Isn't the name of this function wrong? This function decodes the instruction.
-So I would expect something like x86_decode_instruction.
+To allow filtering in that case, automatically create a group since that
+is the requirement anyway.
 
-> +{
-> +	int r = EMULATION_OK;
-> +	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
-> +
-> +	init_emulate_ctxt(vcpu);
-> +
-> +	/*
-> +	 * We will reenter on the same instruction since
-> +	 * we do not set complete_userspace_io.  This does not
-> +	 * handle watchpoints yet, those would be handled in
-> +	 * the emulate_ops.
-> +	 */
-> +	if (!(emulation_type & EMULTYPE_SKIP) &&
-> +	    kvm_vcpu_check_breakpoint(vcpu, &r))
-> +		return r;
-> +
-> +	ctxt->interruptibility = 0;
-> +	ctxt->have_exception = false;
-> +	ctxt->exception.vector = -1;
-> +	ctxt->perm_ok = false;
-> +
-> +	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
-> +
-> +	r = x86_decode_insn(ctxt, insn, insn_len);
-> +
-> +	trace_kvm_emulate_insn_start(vcpu);
-> +	++vcpu->stat.insn_emulation;
-> +
-> +	return r;
-> +}
-> +EXPORT_SYMBOL_GPL(x86_emulate_decoded_instruction);
-> +
->  int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  			    int emulation_type, void *insn, int insn_len)
->  {
-> @@ -7317,32 +7354,12 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  	 */
->  	write_fault_to_spt = vcpu->arch.write_fault_to_shadow_pgtable;
->  	vcpu->arch.write_fault_to_shadow_pgtable = false;
-> -	kvm_clear_exception_queue(vcpu);
+Example: (requires Intel Tremont)
 
-I think that this change is OK, but I can't be 100% sure about this.
+  perf record -c 500 -e 'intel_pt//u' --filter 'filter main @ /bin/ls' -e 'cycles/aux-output/pp' ls
 
-Best regards,
-	Maxim Levitsky
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ tools/perf/builtin-record.c |  2 ++
+ tools/perf/util/auxtrace.c  | 15 +++++++++++++++
+ tools/perf/util/auxtrace.h  |  6 ++++++
+ 3 files changed, 23 insertions(+)
 
-
->  
->  	if (!(emulation_type & EMULTYPE_NO_DECODE)) {
-> -		init_emulate_ctxt(vcpu);
-> -
-> -		/*
-> -		 * We will reenter on the same instruction since
-> -		 * we do not set complete_userspace_io.  This does not
-> -		 * handle watchpoints yet, those would be handled in
-> -		 * the emulate_ops.
-> -		 */
-> -		if (!(emulation_type & EMULTYPE_SKIP) &&
-> -		    kvm_vcpu_check_breakpoint(vcpu, &r))
-> -			return r;
-> -
-> -		ctxt->interruptibility = 0;
-> -		ctxt->have_exception = false;
-> -		ctxt->exception.vector = -1;
-> -		ctxt->perm_ok = false;
-> -
-> -		ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
-> -
-> -		r = x86_decode_insn(ctxt, insn, insn_len);
-> +		kvm_clear_exception_queue(vcpu);
->  
-> -		trace_kvm_emulate_insn_start(vcpu);
-> -		++vcpu->stat.insn_emulation;
-> +		r = x86_emulate_decoded_instruction(vcpu, emulation_type,
-> +						    insn, insn_len);
->  		if (r != EMULATION_OK)  {
->  			if ((emulation_type & EMULTYPE_TRAP_UD) ||
->  			    (emulation_type & EMULTYPE_TRAP_UD_FORCED)) {
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index c5ee0f5ce0f1..fc42454a4c27 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -273,6 +273,8 @@ bool kvm_mtrr_check_gfn_range_consistency(struct kvm_vcpu *vcpu, gfn_t gfn,
->  					  int page_num);
->  bool kvm_vector_hashing_enabled(void);
->  void kvm_fixup_and_inject_pf_error(struct kvm_vcpu *vcpu, gva_t gva, u16 error_code);
-> +int x86_emulate_decoded_instruction(struct kvm_vcpu *vcpu, int emulation_type,
-> +				    void *insn, int insn_len);
->  int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  			    int emulation_type, void *insn, int insn_len);
->  fastpath_t handle_fastpath_set_msr_irqoff(struct kvm_vcpu *vcpu);
-
-
-
-
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 8a0127d4fb52..687f1449a845 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -731,6 +731,8 @@ static int record__auxtrace_init(struct record *rec)
+ 	if (err)
+ 		return err;
+ 
++	auxtrace_regroup_aux_output(rec->evlist);
++
+ 	return auxtrace_parse_filters(rec->evlist);
+ }
+ 
+diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+index a60878498139..953f4afacd3b 100644
+--- a/tools/perf/util/auxtrace.c
++++ b/tools/perf/util/auxtrace.c
+@@ -788,6 +788,21 @@ int auxtrace_parse_sample_options(struct auxtrace_record *itr,
+ 	return auxtrace_validate_aux_sample_size(evlist, opts);
+ }
+ 
++void auxtrace_regroup_aux_output(struct evlist *evlist)
++{
++	struct evsel *evsel, *aux_evsel = NULL;
++	struct evsel_config_term *term;
++
++	evlist__for_each_entry(evlist, evsel) {
++		if (evsel__is_aux_event(evsel))
++			aux_evsel = evsel;
++		term = evsel__get_config_term(evsel, AUX_OUTPUT);
++		/* If possible, group with the AUX event */
++		if (term && aux_evsel)
++			evlist__regroup(evlist, aux_evsel, evsel);
++	}
++}
++
+ struct auxtrace_record *__weak
+ auxtrace_record__init(struct evlist *evlist __maybe_unused, int *err)
+ {
+diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+index 7e5c9e1552bd..a4fbb33b7245 100644
+--- a/tools/perf/util/auxtrace.h
++++ b/tools/perf/util/auxtrace.h
+@@ -559,6 +559,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
+ int auxtrace_parse_sample_options(struct auxtrace_record *itr,
+ 				  struct evlist *evlist,
+ 				  struct record_opts *opts, const char *str);
++void auxtrace_regroup_aux_output(struct evlist *evlist);
+ int auxtrace_record__options(struct auxtrace_record *itr,
+ 			     struct evlist *evlist,
+ 			     struct record_opts *opts);
+@@ -740,6 +741,11 @@ int auxtrace_parse_sample_options(struct auxtrace_record *itr __maybe_unused,
+ 	return -EINVAL;
+ }
+ 
++static inline
++void auxtrace_regroup_aux_output(struct evlist *evlist __maybe_unused)
++{
++}
++
+ static inline
+ int auxtrace__process_event(struct perf_session *session __maybe_unused,
+ 			    union perf_event *event __maybe_unused,
+-- 
+2.17.1
 
