@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079CD2FE500
+	by mail.lfdr.de (Postfix) with ESMTP id 73ED92FE501
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbhAUI2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:28:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
+        id S1726316AbhAUI3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:29:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54702 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725922AbhAUI2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:28:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C9F23976;
-        Thu, 21 Jan 2021 08:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611217660;
-        bh=9GHkPoKU7YkckCkJQxzTRA5qEkvV7woYB8UWDbqK4WA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PMqrrIxrCL45N1tcR6tvsdCmNnpPN0fNoTXIimsYg/R6Z8nPAxWiEIpPTMG5HtXC6
-         /PEAp1uc+eG3eCxqmm99YnWS2gM4bM2Cywoyx4BTdwBuUyi3mLVcdhGNYBkx/nkuoR
-         4RhQp+tSU9MQvKRVzNY+RutuFdeV2Su2CIJfe88A=
-Date:   Thu, 21 Jan 2021 09:27:37 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "ricky_wu@realtek.corp-partner.google.com" 
-        <ricky_wu@realtek.corp-partner.google.com>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "levinale@google.com" <levinale@google.com>,
-        "keitasuzuki.park@sslab.ics.keio.ac.jp" 
-        <keitasuzuki.park@sslab.ics.keio.ac.jp>,
-        "kdlnx@doth.eu" <kdlnx@doth.eu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rtsx: pci: fix device aspm state bug
-Message-ID: <YAk6+ZgNPQy3snB1@kroah.com>
-References: <20210121072858.32028-1-ricky_wu@realtek.com>
- <8563fc3264ad4f46bfa05a3cbdb7d644@realtek.com>
- <YAk2NtOqIohpBJIt@kroah.com>
- <46473ff62a284bf1bdb703e13884beac@realtek.com>
+        id S1727529AbhAUI2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:28:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2C576AAAE;
+        Thu, 21 Jan 2021 08:27:52 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 09:27:49 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/5] hugetlb: convert page_huge_active()
+ HPageMigratable flag
+Message-ID: <20210121082749.GB9553@linux>
+References: <20210120013049.311822-1-mike.kravetz@oracle.com>
+ <20210120013049.311822-3-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <46473ff62a284bf1bdb703e13884beac@realtek.com>
+In-Reply-To: <20210120013049.311822-3-mike.kravetz@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 08:15:46AM +0000, 吳昊澄 Ricky wrote:
-> > -----Original Message-----
-> > From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
-> > Sent: Thursday, January 21, 2021 4:07 PM
-> > To: 吳昊澄 Ricky <ricky_wu@realtek.com>
-> > Cc: arnd@arndb.de; ricky_wu@realtek.corp-partner.google.com;
-> > sashal@kernel.org; levinale@google.com; keitasuzuki.park@sslab.ics.keio.ac.jp;
-> > kdlnx@doth.eu; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH] rtsx: pci: fix device aspm state bug
-> > 
-> > On Thu, Jan 21, 2021 at 07:33:03AM +0000, 吳昊澄 Ricky wrote:
-> > > Hi Greg kh,
-> > >
-> > > This patch to fix misc: rtsx bug for kernel 5.4
-> > 
-> > I do not understand what this means, sorry.  Can you please explain it?
-> > 
-> On the newest upstream we don’t set config space for en/disable aspm, 
-> so it will not happen this issue
-> but on kernel 5.4 longterm version we need to fix it
+On Tue, Jan 19, 2021 at 05:30:46PM -0800, Mike Kravetz wrote:
+> Use the new hugetlb page specific flag HPageMigratable to replace the
+> page_huge_active interfaces.  By it's name, page_huge_active implied
+> that a huge page was on the active list.  However, that is not really
+> what code checking the flag wanted to know.  It really wanted to determine
+> if the huge page could be migrated.  This happens when the page is actually
+> added the page cache and/or task page table.  This is the reasoning behind
+> the name change.
+> 
+> The VM_BUG_ON_PAGE() calls in the *_huge_active() interfaces are not
+> really necessary as we KNOW the page is a hugetlb page.  Therefore, they
+> are removed.
+> 
+> The routine page_huge_active checked for PageHeadHuge before testing the
+> active bit.  This is unnecessary in the case where we hold a reference or
+> lock and know it is a hugetlb head page.  page_huge_active is also called
+> without holding a reference or lock (scan_movable_pages), and can race with
+> code freeing the page.  The extra check in page_huge_active shortened the
+> race window, but did not prevent the race.  Offline code calling
+> scan_movable_pages already deals with these races, so removing the check
+> is acceptable.  Add comment to racy code.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Please read
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to submit patches to the stable tree properly.
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-And if this is not an issue in Linus's tree, why not just backport the
-commits that fixed this issue?  That's the best way to do this.
+> -/*
+> - * Test to determine whether the hugepage is "active/in-use" (i.e. being linked
+> - * to hstate->hugepage_activelist.)
+> - *
+> - * This function can be called for tail pages, but never returns true for them.
+> - */
+> -bool page_huge_active(struct page *page)
+> -{
+> -	return PageHeadHuge(page) && PagePrivate(&page[1]);
 
-thanks,
+This made me think once again.
+I wonder if we could ever see a scenario where page[0] is a rightful page while
+page[1] is poisoned/unitialized (poison_pages()).
+A lot of things would have to happen between the two checks, so I do not see it
+possible and as you mentioned earlier, the race is already there.
 
-greg k-h
+Just wanted to speak up my mind. 
+
+-- 
+Oscar Salvador
+SUSE L3
