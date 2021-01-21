@@ -2,72 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFA92FF3DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB12FF448
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbhAUTJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:09:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:44108 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726292AbhAUTIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:08:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBD39139F;
-        Thu, 21 Jan 2021 10:59:40 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D91463F66E;
-        Thu, 21 Jan 2021 10:59:38 -0800 (PST)
-Subject: Re: [PATCH 0/1] mm: Optimizing hugepage zeroing in arm64
-To:     Will Deacon <will@kernel.org>,
-        Prathu Baronia <prathubaronia2011@gmail.com>
-Cc:     Prathu Baronia <prathu.baronia@oneplus.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-kernel@vger.kernel.org, chintan.pandya@oneplus.com,
-        "glider@google.com" <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210121165153.17828-1-prathu.baronia@oneplus.com>
- <20210121174616.GA22740@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <de782758-a7bc-d5a5-832e-c09ce8fe7c00@arm.com>
-Date:   Thu, 21 Jan 2021 18:59:37 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727505AbhAUTXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726943AbhAUTJy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:09:54 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA31EC06178C;
+        Thu, 21 Jan 2021 11:00:19 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id c128so2423112wme.2;
+        Thu, 21 Jan 2021 11:00:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d/ziHaJ/3CRX+7Ak8L6tc/6XTy9kd0cfBe4hNikwO/c=;
+        b=AoVItIzETjxlFlcIaNNnp30X8ff2ER7nSIMY/AvIZ2B2/uFpej8ETL7uEvOaAkfbVV
+         xHuYDlnUevhdF9zBT5pXI11pKCwQoAnq5XHhIJFBtcPGf9SG0nsWuYrpmPmUFwgHya+N
+         B/OTLb9xCcfViUiALg0skecxp4H+NE7uhwf5H0gtfZkp5rBj4Ts2yymTagIErt/bAGCy
+         OpeQuqHj3DewMioI7mM2iRYLVWnM5TuYGRD7k8oHr67uWiR6AiohOO2/TlOZmAO9T3CD
+         xbfzUrH8q82nxOMgd4fC44JltYsnjVTopVA/k/DxPWEUnY4auWMIoraSw7SyoGXlvA0i
+         QvXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d/ziHaJ/3CRX+7Ak8L6tc/6XTy9kd0cfBe4hNikwO/c=;
+        b=sUwjbcvU3aJzZ8hecxJIiZ4MKQ1h/roAfmWlHzzGgZ8R8CfSRrAsTqEZAQ0rUqy4wz
+         8gHADxB6Cdujt+IoaaITZqIPk8hfNdog0lRUY9pnwG1yqCpFwOIl2kFULbwygx2XrFUN
+         5k9yUokrd2YTC7RZ0tCOiRGem9arEEEGIZWrNoj4h2zSN8AuApxbUlQJxAd3ttOcvg9n
+         4hAZ0jO92o6Ulxh2NFmb0Q7DayhNiMqd6nIobLjk7apKg5BpcSS0QHSWnyIoTdwm9o/p
+         S4cKRH95jdHalUXo1Bvl6B085U9Fxb79C0r1bzB0eM+mvYPWkAlF2bphs79uOwXN1pru
+         NQ6g==
+X-Gm-Message-State: AOAM532i2+EqGwqYar8kWsv9bsWY6HcBuP8W6cgafHhk0+53IK0peTNj
+        KkWeIucjnHxp0QuuYJCGimA=
+X-Google-Smtp-Source: ABdhPJxgZ/IjwFq4Y/En1Jx4MO2W/E1hS4TJTyXYAdVydizAYJvZO0e/z5E1QRunLxKU368UllRi1Q==
+X-Received: by 2002:a05:600c:4ed3:: with SMTP id g19mr674158wmq.95.1611255618587;
+        Thu, 21 Jan 2021 11:00:18 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id w4sm8901051wmc.13.2021.01.21.11.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 11:00:17 -0800 (PST)
+Date:   Thu, 21 Jan 2021 20:00:16 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     broonie@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com
+Subject: Re: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header for
+ Tegra210
+Message-ID: <YAnPQO2BZKxnvnZU@ulmo>
+References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
+ <1611048496-24650-6-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210121174616.GA22740@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mqXVJD2aWFFDAbPm"
+Content-Disposition: inline
+In-Reply-To: <1611048496-24650-6-git-send-email-spujar@nvidia.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-21 17:46, Will Deacon wrote:
-> On Thu, Jan 21, 2021 at 10:21:50PM +0530, Prathu Baronia wrote:
->> This patch removes the unnecessary kmap calls in the hugepage zeroing path and
->> improves the timing by 62%.
->>
->> I had proposed a similar change in Apr-May'20 timeframe in memory.c where I
->> proposed to clear out a hugepage by directly calling a memset over the whole
->> hugepage but got the opposition that the change was not architecturally neutral.
->>
->> Upon revisiting this now I see significant improvement by removing around 2k
->> barrier calls from the zeroing path. So hereby I propose an arm64 specific
->> definition of clear_user_highpage().
-> 
-> Given that barrier() is purely a thing for the compiler, wouldn't the same
-> change yield a benefit on any other architecture without HIGHMEM? In which
-> case, I think this sort of change belongs in the core code if it's actually
-> worthwhile.
 
-I would have thought it's more the constant manipulation of the preempt 
-and pagefault counts, rather than the compiler barriers between them, 
-that has the impact. Either way, if arm64 doesn't need to be atomic WRT 
-preemption when clearing parts of hugepages then I also can't imagine 
-that anyone else (at least for !HIGHMEM) would either.
+--mqXVJD2aWFFDAbPm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Robin.
+On Tue, Jan 19, 2021 at 02:58:15PM +0530, Sameer Pujar wrote:
+> Expose a header which describes DT bindings required to use audio-graph
+> based sound card. All Tegra210 based platforms can include this header
+> and add platform specific information. Currently, from SoC point of view,
+> all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
+>=20
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 +++++++++++++++=
+++++++
+>  1 file changed, 153 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
+
+Applied, thanks.
+
+Thierry
+
+--mqXVJD2aWFFDAbPm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAJz0AACgkQ3SOs138+
+s6FQ+xAAh5sFlbnqM8oTZQFjZluJrD7PLbFf2es+YGmrReDA5xAJXmlq1AhaaGiq
+bjsm9rKGYbE7TYu9kfoNBpx5p4zKChGqstucZAoKuMfrcJlgyyD+s7oj0OVVIyjz
+TRHfCZFcvZfjK3IaR1Ik5u8ZzkfKvPsaSOeGQuUoMnlyCoEuMJk/PhbwDF2F7f72
+ZKH8qDRbXwy8AtibLAG8zqs68RLnh87WgRktXpd/DcHHmWrGM8Gy3/tdCAL/p3Fa
+YX5kt/DhyzCcQAo6QH47QCXtwopLo/0tL60MuYgCYbnf0nAsov32w2x+aV2GvN7l
+8FHdCfLFIDuQOuyoJgD5cpURS3ydWyWN2FdPOEqEak2kkS14DXePs9/aWr7Nmr1W
+ChlUDh2aw9VgmOsp3EGQO3YzcCYu4RQnBaEUw9sGukEy6uZ853Cqa2S+euBou9rY
+R9KjuQh4f6eeKuYxJ3vOdoooYi7nlphIejc94o19wnNu7riAy0XopLjcPyTVYypz
+vLsHgMhnSsOcb7Zwc5W1DRxL5gGU90dOSChBnNCTsxeiIYRbmK1YXeBNy7gtbI0R
+7Yhj5yvd+sSbfTzJNZvrg5rdh3QHXZpMICGJW0SQXmyovDLwTkNpy5Tc6YltOOv6
++F873C2UDSoeGnbRz2wFvpaX/lZI1mbhD5EyyZe7txKRP6eYHTo=
+=74uA
+-----END PGP SIGNATURE-----
+
+--mqXVJD2aWFFDAbPm--
