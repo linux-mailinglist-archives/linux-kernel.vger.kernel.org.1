@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECAC2FF4F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3E92FF4F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbhAUToG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:44:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47218 "EHLO mail.kernel.org"
+        id S1726690AbhAUTog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:44:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726379AbhAUTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726374AbhAUTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 14:42:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6963923A58;
-        Thu, 21 Jan 2021 19:41:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC1CD23A5C;
+        Thu, 21 Jan 2021 19:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611258082;
-        bh=0QYR5KmCtKag9rOF6VidoID5aOHjcHwGjqdyHwpS1D4=;
+        s=k20201202; t=1611258087;
+        bh=mU37xmaWVsYmEyXUA/R0/Rg9UFy1EWNpO+H9A0Xrad8=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=YOMZxoo895UzC5ALOjoWCgmA5syurHHcR7axlYutGzdIf20UE2qnib9VDuoc68dmT
-         Y9P0+00Vyq31HyL7AK3Vo7eFOmUUI/mwebu50FOgi5Eo9GvMm/5jtCcx1q3lkoVF4r
-         LI/0q1eFOBQz/a0makBubUsDvYod2EmBEUfusN7dL3isK/pLyF2Tfha9YUXeCdOwU/
-         l2aSfRHOQccXkTtf8gXVtCcnZDgTVe7I4aadnU+j9IZzsj0IwVfLxSwhNWdJKuxD3F
-         YVoF1kQDq77hXO6zZ8S4Y3Z4FR3MxAaHWjy2VVVQ1yQF7u2O220X6lPzpsoSmPTIrt
-         LW5O5yxw2r8cg==
+        b=GworRcHB2aPCq59uEq9X24TIJVieY7eoe70t/N9h9AN8ErV5J6xq2ts4vNHxemVVw
+         gJwTD2P7HgP8RSKsb3/YpUEGPWIBXEolwXsvnENF/aVU9XaPtTP+5msZ0Lxavhtpn8
+         525oCnnLD0Hy6d1qU2PDdD+9pjG2r0mSsZ66vOlDJx3BmNuYyzEFYw6WLyZpfwRsyR
+         gpRp2wCNhzAsK8bkdfj36DXUDWBe72ECc////H0SmSpiVl1UG4+gWSNKtmeaY8lvem
+         L9Fa9/sk+I767dbPTeyn0gAu+az6/5cM2Us5FB/FkPlvfNZdScwLQgHqc5SZT5+u+W
+         z89KXZiXJT8rw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Pan Bian <bianpan2016@163.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20210120205844.12658-1-digetx@gmail.com>
-References: <20210120205844.12658-1-digetx@gmail.com>
-Subject: Re: [PATCH v1] regulator: consumer: Add missing stubs to regulator/consumer.h
-Message-Id: <161125803281.35944.2080830659749037080.b4-ty@kernel.org>
+        Lee Jones <lee.jones@linaro.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+In-Reply-To: <20210121032756.49501-1-bianpan2016@163.com>
+References: <20210121032756.49501-1-bianpan2016@163.com>
+Subject: Re: [PATCH] regulator: s5m8767: Fix reference count leak
+Message-Id: <161125803282.35944.8538521264425095601.b4-ty@kernel.org>
 Date:   Thu, 21 Jan 2021 19:40:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -41,10 +43,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 23:58:44 +0300, Dmitry Osipenko wrote:
-> Add missing stubs to regulator/consumer.h in order to fix COMPILE_TEST
-> of the kernel. In particular this should fix compile-testing of OPP core
-> because of a missing stub for regulator_sync_voltage().
+On Wed, 20 Jan 2021 19:27:56 -0800, Pan Bian wrote:
+> Call of_node_put() to drop references of regulators_np and reg_np before
+> returning error code.
 
 Applied to
 
@@ -52,8 +53,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: consumer: Add missing stubs to regulator/consumer.h
-      commit: 51dfb6ca3728bd0a0a3c23776a12d2a15a1d2457
+[1/1] regulator: s5m8767: Fix reference count leak
+      commit: dea6dd2ba63f8c8532addb8f32daf7b89a368a42
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
