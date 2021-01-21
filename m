@@ -2,61 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD0B2FF18D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA7D2FF193
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388484AbhAUROu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388549AbhAURMX (ORCPT
+        id S2388598AbhAURQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:16:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52646 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388569AbhAURNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:12:23 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6F0C06174A;
-        Thu, 21 Jan 2021 09:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=b4r0GzLAgyF8l8XKCsVbT4fA5aek9/RzgCt1cC8yk6M=; b=JjGNO8/Snl3Vsvi/ucOYGvbwQf
-        Ty0B0MNaPn1IJ9ogl+h/tL7XnsfaZcMifvFRUpbxAZA28HP2orkt7G+6C0lwBlQ3hfCrEytIHE5vN
-        Ftm8TK/5tkRqEIuqoP/piwnAvgdDitIa2M+TFNESW1s4KbntvWQ+gbXxMxjJtaZpQmZw/twpPpYvZ
-        1DiWtFRkmMHW5gMwJJwEvE2E8eyjGMQnGzJqM18oHcAnv/Lu4rjqWsFIBl6k8WWIr2p8Z0xGjC0qJ
-        bcWU531t2wLBROrXrCqgbr17umy1AfASIA0boWrLHo0oUAL3bpBocHEQLE/zYUoED2I5PwT2Yi96f
-        LD7tjILA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2dUX-00HIgd-LQ; Thu, 21 Jan 2021 17:11:33 +0000
-Date:   Thu, 21 Jan 2021 17:11:29 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 0/7] ensure bios aren't split in middle of crypto data
- unit
-Message-ID: <20210121171129.GA4122715@infradead.org>
-References: <20210114154723.2495814-1-satyat@google.com>
+        Thu, 21 Jan 2021 12:13:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611249102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zpfe9pV1wDccOzvvQj2AB8KEGCkQf3RaJd2xe765gDc=;
+        b=Tp22aZQGNkl6ekin78dGWo8htIR3//vE75F/RRt7sz4MSy3zcow1eJiyQZVamTxsUHEKY4
+        oGIYAmyon5YWtv64VFw/j17G075kVDe16cKxBqhuGDcvMfI4Hwq2atlA29VfCJanzg1LLU
+        lNzWAj348LPHHfEveEboKUWD9FmtvVg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-glX1a6oRMK6Ogrp9MQn1ng-1; Thu, 21 Jan 2021 12:11:38 -0500
+X-MC-Unique: glX1a6oRMK6Ogrp9MQn1ng-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B87C80A5D7;
+        Thu, 21 Jan 2021 17:11:36 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 356AD5F9D7;
+        Thu, 21 Jan 2021 17:11:32 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 18:11:30 +0100
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
+ queues
+Message-ID: <20210121181130.77c06723@carbon>
+In-Reply-To: <20210120212759.81548-1-ivan@cloudflare.com>
+References: <20210120212759.81548-1-ivan@cloudflare.com>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114154723.2495814-1-satyat@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 03:47:16PM +0000, Satya Tangirala wrote:
-> When a bio has an encryption context, its size must be aligned to its
-> crypto data unit size. A bio must not be split in the middle of a data
-> unit. Currently, bios are split at logical block boundaries, but a crypto
-> data unit size might be larger than the logical block size - e.g. a machine
-> could be using fscrypt (which uses 4K crypto data units) with an eMMC block
-> device with inline encryption hardware that has a logical block size of
-> 512 bytes. So we need to support cases where the data unit size is larger
-> than the logical block size.
+On Wed, 20 Jan 2021 13:27:59 -0800
+Ivan Babrou <ivan@cloudflare.com> wrote:
 
-I think this model is rather broken.  Instead of creating an -EIO path
-we can't handle anywhere make sure that the size limits exposed by the
-driver that wants to split always align to the crypto data units to
-avoid this issue to start with.
+> Without this change the driver tries to allocate too many queues,
+> breaching the number of available msi-x interrupts on machines
+> with many logical cpus and default adapter settings:
+> 
+> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> 
+> Which in turn triggers EINVAL on XDP processing:
+> 
+> sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+> 
+> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+> ---
+
+I guess the patch is good in itself due to available msi-x interrupts.
+
+Per earlier discussion: What will happen if a CPU with an ID higher
+than available XDP TX-queues redirect a packet out this driver?
+
+
+>  drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+> index a4a626e9cd9a..1bfeee283ea9 100644
+> --- a/drivers/net/ethernet/sfc/efx_channels.c
+> +++ b/drivers/net/ethernet/sfc/efx_channels.c
+> @@ -17,6 +17,7 @@
+>  #include "rx_common.h"
+>  #include "nic.h"
+>  #include "sriov.h"
+> +#include "workarounds.h"
+>  
+>  /* This is the first interrupt mode to try out of:
+>   * 0 => MSI-X
+> @@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+>  {
+>  	unsigned int n_channels = parallelism;
+>  	int vec_count;
+> +	int tx_per_ev;
+>  	int n_xdp_tx;
+>  	int n_xdp_ev;
+>  
+> @@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+>  	 * multiple tx queues, assuming tx and ev queues are both
+>  	 * maximum size.
+>  	 */
+> -
+> +	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
+>  	n_xdp_tx = num_possible_cpus();
+> -	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
+> +	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
+>  
+>  	vec_count = pci_msix_vec_count(efx->pci_dev);
+>  	if (vec_count < 0)
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
