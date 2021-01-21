@@ -2,193 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89AF2FF33E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200722FF349
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbhAUSeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:34:37 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2394 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728826AbhAUS23 (ORCPT
+        id S1728927AbhAUSgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728778AbhAUS21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:28:29 -0500
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DM9ht26mvz67cZB;
-        Fri, 22 Jan 2021 02:22:06 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 21 Jan 2021 19:27:40 +0100
-Received: from localhost (10.47.68.198) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 21 Jan
- 2021 18:27:39 +0000
-Date:   Thu, 21 Jan 2021 18:26:58 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-CC:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kamel.bouhara@bootlin.com>, <gwendal@chromium.org>,
-        <a.fatoum@pengutronix.de>, <david@lechnology.com>,
-        <linux-iio@vger.kernel.org>, <patrick.havelange@essensium.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <alexandre.belloni@bootlin.com>, <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        <mcoquelin.stm32@gmail.com>, David Jander <david@protonic.nl>,
-        <fabrice.gasnier@st.com>, <syednwaris@gmail.com>,
-        <kernel@pengutronix.de>, <jic23@kernel.org>,
-        <alexandre.torgue@st.com>
-Subject: Re: [PATCH v6 3/5] counter: Add character device interface
-Message-ID: <20210121182658.00000d95@Huawei.com>
-In-Reply-To: <YAk1PzXYQaJvhGSj@shinobu>
-References: <cover.1606075915.git.vilhelm.gray@gmail.com>
-        <b52a62196399d33221f78a1689276ac193c10229.1606075915.git.vilhelm.gray@gmail.com>
-        <20210119092022.GA14502@pengutronix.de>
-        <YAk1PzXYQaJvhGSj@shinobu>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 21 Jan 2021 13:28:27 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFACAC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:27:36 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id g69so2400725oib.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:27:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/H0aoheHseHt1sjJzu2klJDRMVHnD4hrW5WhfCcGaHk=;
+        b=lbuk4UssK7pPAYl0GKPLzyxB2YaAQmS9WYAZyDpzmzfOFSRSLZrrSwosjlJE/bnvmq
+         FVc+QjyPB1fd1h0Pwzk+SvnJSeTDkgolSVGr6yjJfMZ+ffGZ2+rGevk97sGCOhZT9Tyh
+         X8JkW0ilzpDbaYjo5d7VUtRmDmsQDF1maqcPU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/H0aoheHseHt1sjJzu2klJDRMVHnD4hrW5WhfCcGaHk=;
+        b=CBi1YKc6hX/TzyOPzkCfDT+S5DZ0dozMAm/QYdpScmlx3EUM61w7jxcYtOHEzfXz4m
+         Thxxq0cgFm72JSr/BiZCFHIrGZf+BZlCGcWVPcphdzoI8dSpwLr8W0U8xpoM1pYn1h1G
+         DRZUke5XOjHkUx8S3sSsUROdN1zFaV2X+v2n8faSWIc9P0ZzFuzxhyvHr+168KZ+Vz5j
+         0d4NqAsIUZTZMUvOOQGD7qc14qnpZ4PY4hx5tfILFjEHqu/och7in7lCOUFuBIGFtvsc
+         ibAFWoSEmECXdP5yidFGqwW+5uAS6jW9YzeYop3t+VwqljX3lLtubzWVafhYizsASV9q
+         CfiQ==
+X-Gm-Message-State: AOAM531/c3i7n4Bilo7QF4cVcjopazfy0Sdg2x+EjICaA07YRBJ0NtJv
+        xqrtAxMFea917JizEBdGXJAkgM9v2auXlW4GdYqLYQ==
+X-Google-Smtp-Source: ABdhPJyxZe12HyY9+PM04dG1ImqNmTiEYnWcS1P+uLp55HzlWuLXv5Bm+BIKd2BL818abya33PUOGCkFjZLucsLjBEQ=
+X-Received: by 2002:aca:1906:: with SMTP id l6mr615820oii.101.1611253656345;
+ Thu, 21 Jan 2021 10:27:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.68.198]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210121163537.1466118-1-maxime@cerno.tech> <20210121163537.1466118-11-maxime@cerno.tech>
+In-Reply-To: <20210121163537.1466118-11-maxime@cerno.tech>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 21 Jan 2021 19:27:25 +0100
+Message-ID: <CAKMK7uHEnsZty40YOc+ySDwJLkGWm0aPaTKDvecnymVX4yLjAA@mail.gmail.com>
+Subject: Re: [PATCH v2 11/11] drm/todo: Remove the drm_atomic_state todo item
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 17:03:11 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+On Thu, Jan 21, 2021 at 5:36 PM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Only planes' prepare_fb and cleanup_fb, and encoders' atomic_check and
+> atomic_mode_set hooks remain with an object state and not the global
+> drm_atomic_state.
+>
+> prepare_fb and cleanup_fb operate by design on a given state and
+> depending on the calling site can operate on either the old or new
+> state, so it doesn't really make much sense to convert them.
+>
+> The encoders' atomic_check and atomic_mode_set operate on the CRTC and
+> connector state connected to them since encoders don't have a state of
+> their own. Without those state pointers, we would need to get the CRTC
+> through the drm_connector_state crtc pointer.
+>
+> However, in order to get the drm_connector_state pointer, we would need
+> to get the connector itself and while usually we have a single connector
+> connected to the encoder, we can't really get it from the encoder at
+> the moment since it could be behind any number of bridges.
+>
+> While this could be addressed by (for example) listing all the
+> connectors and finding the one that has the encoder as its source, it
+> feels like an unnecessary rework for something that is slowly getting
+> replaced by bridges.
+>
+> Since all the users that matter have been converted, let's remove the
+> TODO item.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-> On Tue, Jan 19, 2021 at 10:20:22AM +0100, Oleksij Rempel wrote:
-> > On Sun, Nov 22, 2020 at 03:29:54PM -0500, William Breathitt Gray wrote:  
-> > > This patch introduces a character device interface for the Counter
-> > > subsystem. Device data is exposed through standard character device read
-> > > operations. Device data is gathered when a Counter event is pushed by
-> > > the respective Counter device driver. Configuration is handled via ioctl
-> > > operations on the respective Counter character device node.
-> > > 
-> > > Cc: David Lechner <david@lechnology.com>
-> > > Cc: Gwendal Grignou <gwendal@chromium.org>
-> > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > > ---  
-> > 
-> > Hello William,
-> > 
-> > the series looks quite interesting, we have some thoughts... see below:
-> > 
-> > [...]  
-> > > +/**
-> > > + * counter_push_event - queue event for userspace reading
-> > > + * @counter:	pointer to Counter structure
-> > > + * @event:	triggered event
-> > > + * @channel:	event channel
-> > > + *
-> > > + * Note: If no one is watching for the respective event, it is silently
-> > > + * discarded.
-> > > + *
-> > > + * RETURNS:
-> > > + * 0 on success, negative error number on failure.
-> > > + */
-> > > +int counter_push_event(struct counter_device *const counter, const u8 event,
-> > > +		       const u8 channel)
-> > > +{
-> > > +	struct counter_event ev = {0};
-> > > +	unsigned int copied = 0;
-> > > +	unsigned long flags;
-> > > +	struct counter_event_node *event_node;
-> > > +	struct counter_comp_node *comp_node;
-> > > +	int err = 0;
-> > > +
-> > > +	ev.timestamp = ktime_get_ns();
-> > > +	ev.watch.event = event;
-> > > +	ev.watch.channel = channel;
-> > > +
-> > > +	raw_spin_lock_irqsave(&counter->events_lock, flags);
-> > > +
-> > > +	/* Search for event in the list */
-> > > +	list_for_each_entry(event_node, &counter->events_list, l)
-> > > +		if (event_node->event == event &&
-> > > +		    event_node->channel == channel)
-> > > +			break;
-> > > +
-> > > +	/* If event is not in the list */
-> > > +	if (&event_node->l == &counter->events_list)
-> > > +		goto exit_early;
-> > > +
-> > > +	/* Read and queue relevant comp for userspace */
-> > > +	list_for_each_entry(comp_node, &event_node->comp_list, l) {
-> > > +		err = counter_get_data(counter, comp_node, &ev.value);
-> > > +		if (err)
-> > > +			goto exit_early;
-> > > +
-> > > +		ev.watch.component = comp_node->component;
-> > > +
-> > > +		copied += kfifo_put(&counter->events, ev);  
-> > 
-> > We want to calculate the frequency of some IRQ pulses in user space and
-> > counter values with time stamps really fits well here. As the pulses are
-> > from a physical system (rotating wheel), they will only change at a
-> > certain rate. We want to have the possibility to read from the counter
-> > device less often, we intentionally want to skip (meaning miss)
-> > events.
-> > 
-> > When reading we're interested in the newest events. The kfifo implements
-> > a "tail" drop FIFO, which means new values are added at the end, and if
-> > the FIFO is full, they are dropped. We need a "head" drop FIFO which
-> > discards the oldest events, keeping only the recent ones.
-> > 
-> > As far as we know, kfifo doesn't offer a head drop mode, but I think
-> > this can be added.  
-> 
-> I'm not sure if kfifo has this kind of mode, but it seems like something
-> that should be there if it is not already -- I imagine this kind of
-> operation mode would be pretty common. Perhaps someone knows how to
-> achieve this and will share here.
-> 
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-I don't think it does.  In IIO we started with a ring (effectively this)
-- hopefully no one else remembers the horrible mess I made of it ;),
-but eventually decided that there were very few usecases that
-actually demanded it so just switched over to kfifo.
-
-It's actually pretty rare that you aren't better off draining to
-a backing store of some type.
-
-Not had any demand to bring a ring back to IIO since we dropped it.
+>
+> ---
+>
+> Changes from v1:
+>   - New patch
+> ---
+>  Documentation/gpu/todo.rst | 46 --------------------------------------
+>  1 file changed, 46 deletions(-)
+>
+> diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
+> index 009d8e6c7e3c..609794108f5a 100644
+> --- a/Documentation/gpu/todo.rst
+> +++ b/Documentation/gpu/todo.rst
+> @@ -440,52 +440,6 @@ Contact: Emil Velikov, respective driver maintainers
+>
+>  Level: Intermediate
+>
+> -Plumb drm_atomic_state all over
+> --------------------------------
+> -
+> -Currently various atomic functions take just a single or a handful of
+> -object states (eg. plane state). While that single object state can
+> -suffice for some simple cases, we often have to dig out additional
+> -object states for dealing with various dependencies between the individu=
+al
+> -objects or the hardware they represent. The process of digging out the
+> -additional states is rather non-intuitive and error prone.
+> -
+> -To fix that most functions should rather take the overall
+> -drm_atomic_state as one of their parameters. The other parameters
+> -would generally be the object(s) we mainly want to interact with.
+> -
+> -For example, instead of
+> -
+> -.. code-block:: c
+> -
+> -   int (*atomic_check)(struct drm_plane *plane, struct drm_plane_state *=
+state);
+> -
+> -we would have something like
+> -
+> -.. code-block:: c
+> -
+> -   int (*atomic_check)(struct drm_plane *plane, struct drm_atomic_state =
+*state);
+> -
+> -The implementation can then trivially gain access to any required object
+> -state(s) via drm_atomic_get_plane_state(), drm_atomic_get_new_plane_stat=
+e(),
+> -drm_atomic_get_old_plane_state(), and their equivalents for
+> -other object types.
+> -
+> -Additionally many drivers currently access the object->state pointer
+> -directly in their commit functions. That is not going to work if we
+> -eg. want to allow deeper commit pipelines as those pointers could
+> -then point to the states corresponding to a future commit instead of
+> -the current commit we're trying to process. Also non-blocking commits
+> -execute locklessly so there are serious concerns with dereferencing
+> -the object->state pointers without holding the locks that protect them.
+> -Use of drm_atomic_get_new_plane_state(), drm_atomic_get_old_plane_state(=
+),
+> -etc. avoids these problems as well since they relate to a specific
+> -commit via the passed in drm_atomic_state.
+> -
+> -Contact: Ville Syrj=C3=A4l=C3=A4, Daniel Vetter
+> -
+> -Level: Intermediate
+> -
+>  Use struct dma_buf_map throughout codebase
+>  ------------------------------------------
+>
+> --
+> 2.29.2
+>
 
 
-> > 
-> > [...]
-> >   
-> > >  struct counter_device {
-> > >  	const char *name;
-> > > @@ -270,12 +270,20 @@ struct counter_device {
-> > >  
-> > >  	int id;
-> > >  	struct device dev;
-> > > +	struct cdev chrdev;
-> > > +	raw_spinlock_t events_lock;
-> > > +	struct list_head events_list;
-> > > +	struct list_head next_events_list;
-> > > +	DECLARE_KFIFO(events, struct counter_event, 64);  
-> > 
-> > Do you plan to make the size of the FIFO configurable?
-> > 
-> > regards,
-> > Oleksij & Marc  
-> 
-> I suppose it wouldn't be a problem to make this a configurable setting;
-> I think I can implement this via kfifo_alloc() and kfifo_free(). How
-> would users control this -- maybe using a sysfs attribute?
-
-Would make sense to do it from sysfs.
-
-Jonathan
-
-> 
-> William Breathitt Gray
-> 
-
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
