@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6854C2FDFF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196E22FDFFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbhAUDD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:03:28 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11116 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393200AbhAUCvQ (ORCPT
+        id S1727081AbhAUDQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 22:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbhAUDIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 21:51:16 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DLn0k2LSsz15wTp;
-        Thu, 21 Jan 2021 10:49:26 +0800 (CST)
-Received: from [10.174.177.2] (10.174.177.2) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 21 Jan 2021
- 10:50:31 +0800
-Subject: Re: [PATCH] mm: Fix ZONE_DEVICE usage in move_pfn_range_to_zone()
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Randy Dunlap <rdunlap@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <161111619868.2787408.1710192276369197040.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <176cc797-7aab-58f5-baee-66a62081f953@huawei.com>
-Date:   Thu, 21 Jan 2021 10:50:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 20 Jan 2021 22:08:18 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA68C061575;
+        Wed, 20 Jan 2021 19:07:35 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id 15so680660oix.8;
+        Wed, 20 Jan 2021 19:07:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BG1xLGWcnyY9xQR12boOLCRylQDrIp7cDoolAVHFjIY=;
+        b=GcOMpy6ipAWgydQzaw2NMeLsPnmNTu8VU43mYpvLc+MvOT3YxULe4T31AL7VE0WZ7t
+         PSwY2DegOZXBphfMoWMp+/qxtmymjpf9D6F+2fIBLyrjLabAzdDVlj38eRGXpJvsj+X7
+         UTSlPMYRMCFLP7a4NDbbr8eqZT85YdppPZ2AqT74Pusow2p/onJOCdQWvuT9RjuYH//t
+         q2wRZNTWgKOWwaGNqT/UUJSrg20+f4ItRlckLfSec8DWqq2fMM4L0BAMA4mEzkl375MB
+         ULn7/qmE8pHD91XWdaWA1GsmTrlB5oNwj81Q44V3UCbnsGSLQt6GO24yCD8EDRMnLHPT
+         p3DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BG1xLGWcnyY9xQR12boOLCRylQDrIp7cDoolAVHFjIY=;
+        b=V5hRlmwmxnLLguGBWHExjoEJxcI//ONuu/nu32Vg64ToQz75JJY3Sa6sBODXLp2c5z
+         oCkde0YLowCQMPKo+/7nJEJV6Y73659G9gL/RBKqzk/KfpeTW860046jrzK6H0Yy72vd
+         9h/jFRHhFuySAbpznJePNDwrHt4N/9Vh7Gh/WmxdTMyAJTnJm4AKBNc+zRLsQzSCRqN6
+         DEm3Ttn+TDlPGcPcYEdlzr2YeVqrH0WnV7TEElyA4AuqPZNjccDaTPyxpph+s3R943D/
+         NXPYuCe2dAX0W2lACKTz8sQzinRZHZmUAUgmgW3L7oFRRemvqx7TIYlBCq2n4ydaYXUG
+         M8XA==
+X-Gm-Message-State: AOAM533lmd6Rpt1rpHukUqAgwF/fnsI1YGPV9XqLQ/dIWvk0YBprDbpp
+        2NzCZrm3KqwAaRpEqNAzkMvL7UbIbn9CtVnqrrk=
+X-Google-Smtp-Source: ABdhPJzLb2aGPpWZaLInDmWBYV6zXb9BIywLTNbMJZ2rVC4CBpAmeacPihmMLdnl1xm6+LBEpB3z9zH6KUEINwdM2Z0=
+X-Received: by 2002:aca:1a17:: with SMTP id a23mr4749105oia.120.1611198454758;
+ Wed, 20 Jan 2021 19:07:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <161111619868.2787408.1710192276369197040.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.2]
-X-CFilter-Loop: Reflected
+References: <20210115120014.4211dec6@canb.auug.org.au> <20210120171501.61aa0786@canb.auug.org.au>
+ <20210121115341.012c1a55@canb.auug.org.au>
+In-Reply-To: <20210121115341.012c1a55@canb.auug.org.au>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 20 Jan 2021 22:07:23 -0500
+Message-ID: <CADnq5_PuH6RNpkAKfUD011rDEXCRd5-0_ad0Rv40k_2gqiQaYA@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the amdgpu tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/20 12:16, Dan Williams wrote:
-> Randy reports the build breaks with recent additions of
-> section_taint_zone_device() in move_pfn_range_to_zone(). Fix that by
-> including a conditionally stubbed out zone_is_zone_device() helper.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
-> Andrew, apologies for the thrash. Please fold this into:
-> 
-> mm-teach-pfn_to_online_page-about-zone_device-section-collisions.patch
-> 
->  include/linux/mmzone.h |   12 ++++++++++++
->  mm/memory_hotplug.c    |    2 +-
->  2 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 0b5c44f730b4..66ba38dae9ba 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -885,6 +885,18 @@ static inline int local_memory_node(int node_id) { return node_id; };
->   */
->  #define zone_idx(zone)		((zone) - (zone)->zone_pgdat->node_zones)
->  
-> +#ifdef CONFIG_ZONE_DEVICE
-> +static inline bool zone_is_zone_device(struct zone *zone)
-> +{
-> +	return zone_idx(zone) == ZONE_DEVICE;
-> +}
-> +#else
-> +static inline bool zone_is_zone_device(struct zone *zone)
-> +{
-> +	return false;
-> +}
-> +#endif
-> +
->  /*
->   * Returns true if a zone has pages managed by the buddy allocator.
->   * All the reclaim decisions have to use this function rather than
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index c78a1bef561b..710e469fb3a1 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -769,7 +769,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
->  	 * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
->  	 * section.
->  	 */
-> -	if (zone_idx(zone) == ZONE_DEVICE) {
-> +	if (zone_is_zone_device(zone)) {
->  		if (!IS_ALIGNED(start_pfn, PAGES_PER_SECTION))
->  			section_taint_zone_device(start_pfn);
->  		if (!IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION))
-> 
-> 
-> .
-> 
+On Wed, Jan 20, 2021 at 7:53 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> On Wed, 20 Jan 2021 17:15:01 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > On Fri, 15 Jan 2021 12:00:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > After merging the amdgpu tree, today's linux-next build (x86_64
+> > > allmodconfig) failed like this:
+> > >
+> > > drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'dm_set_vblank':
+> > > drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5380:33: warning: unused variable 'dm' [-Wunused-variable]
+> > >  5380 |  struct amdgpu_display_manager *dm = &adev->dm;
+> > >       |                                 ^~
+> > >
+> > > Caused by commit
+> > >
+> > >   98ab5f3513f9 ("drm/amd/display: Fix deadlock during gpu reset v3")
+> >
+> > I am still getting this warning.
+>
+> I now get this warning from the drm tree merge.
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Bhawan sent out the fix today:
+https://patchwork.freedesktop.org/patch/415092/
+
+Alex
+
+>
+> --
+> Cheers,
+> Stephen Rothwell
