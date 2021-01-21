@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE49A2FDF89
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E012FDFC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436759AbhAUCZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 21:25:28 -0500
-Received: from mail-m972.mail.163.com ([123.126.97.2]:44260 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393018AbhAUB5D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 20:57:03 -0500
+        id S2392886AbhAUCuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:50:09 -0500
+Received: from m12-14.163.com ([220.181.12.14]:55558 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436829AbhAUC1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 21:27:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0SG1m
-        BGTBN7J7iDBsfJomUMUwZVAJjt/AMZicpcW+DM=; b=JqTv2ln6m/oRKelN3O85k
-        lqbKCaFuLGJNO1pwYP8mpwDracg3tcMqfk1a5R/OIBPfKy7GWiz9UzSp1vMA77Xl
-        UNBP8BrR4thL2UGZzAYQuo3CdcaAtVT2JnHeHwt6wCESds62403NhTBDzbMmyVzx
-        IKRqGRsuuSpgTBf3bwfXbM=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=aK3UL
+        Y00MYQGj6IGa55PKkl6dXVNizNs2jDN5NTvN0M=; b=emh5CO22znJJwE36Tv/IG
+        fkXLhnnyjECQSHBtCKNvIRDM0RroX49ntSzA0wh2ToQgTJk9rVNzO5qFUc6LNxJj
+        /wbAsA0Jetdb9ml/B+e6XsbFi6CHMNNUSi2WnqrthbLjcRMYWtg+AKu9oFk9Smqd
+        5DhKXebFchNcL8qnENTnks=
 Received: from COOL-20200911ZP.ccdomain.com (unknown [218.94.48.178])
-        by smtp2 (Coremail) with SMTP id GtxpCgCH29D53ghgtFIlJw--.8411S2;
-        Thu, 21 Jan 2021 09:55:12 +0800 (CST)
+        by smtp10 (Coremail) with SMTP id DsCowABHSR3b4QhgGWdXhA--.34257S2;
+        Thu, 21 Jan 2021 10:07:29 +0800 (CST)
 From:   ChunyouTang <tangchunyou@163.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, ardb@kernel.org, anup@brainfault.org,
-        atish.patra@wdc.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zhangwen@yulong.com, tangchunyou@yulong.com
-Subject: [PATCH] arch/riscv:fix typo in a comment in arch/riscv/kernel/image-vars.h
-Date:   Thu, 21 Jan 2021 09:55:13 +0800
-Message-Id: <20210121015513.2258-1-tangchunyou@163.com>
+To:     akpm@linux-foundation.org, colin.king@canonical.com,
+        xndchn@gmail.com, j.neuschaefer@gmx.net, luca@lucaceresoli.net,
+        naoki.hayama@lineo.co.jp, ebiggers@google.com, sjpark@amazon.de,
+        joe@perches.com
+Cc:     linux-kernel@vger.kernel.org, zhangwen@yulong.com,
+        tangchunyou@yulong.com
+Subject: [PATCH] scripts/spelling.txt: increase error-prone spell checking
+Date:   Thu, 21 Jan 2021 10:07:31 +0800
+Message-Id: <20210121020731.2316-1-tangchunyou@163.com>
 X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GtxpCgCH29D53ghgtFIlJw--.8411S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw4DKw45Jr4rZry5CFyDKFg_yoW3tFcEgw
-        n7G3s7WrWfArZ2vryUJ3yS9rnYy348GFyF9r1UZrW8CrykWw4Dt39IqF15Crn8GrnYqFZ3
-        Ar9xGrs8ArW7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8Wq2tUUUUU==
+X-CM-TRANSID: DsCowABHSR3b4QhgGWdXhA--.34257S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUr_M-UUUUU
 X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbipQAhUVUMb9PClAAAsm
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbipQAhUVUMb9PClAABsn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: tangchunyou <tangchunyou@yulong.com>
 
-"kerne" -> "kernel"
+Increase direcly,maping,manger spelling error check
 
 Signed-off-by: WenZhang <zhangwen@yulong.com>
 ---
- arch/riscv/kernel/image-vars.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/spelling.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/kernel/image-vars.h b/arch/riscv/kernel/image-vars.h
-index 8c212ef..71a76a6 100644
---- a/arch/riscv/kernel/image-vars.h
-+++ b/arch/riscv/kernel/image-vars.h
-@@ -3,7 +3,7 @@
-  * Copyright (C) 2020 Western Digital Corporation or its affiliates.
-  * Linker script variables to be set after section resolution, as
-  * ld.lld does not like variables assigned before SECTIONS is processed.
-- * Based on arch/arm64/kerne/image-vars.h
-+ * Based on arch/arm64/kernel/image-vars.h
-  */
- #ifndef __RISCV_KERNEL_IMAGE_VARS_H
- #define __RISCV_KERNEL_IMAGE_VARS_H
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index 953f4a2..ebcb27b 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -875,6 +875,7 @@ manger||manager
+ manoeuvering||maneuvering
+ manufaucturing||manufacturing
+ mappping||mapping
++maping||mapping
+ matchs||matches
+ mathimatical||mathematical
+ mathimatic||mathematic
 -- 
 1.9.1
+
 
