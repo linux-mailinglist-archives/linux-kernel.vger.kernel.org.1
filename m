@@ -2,197 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D801B2FDE97
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068912FDE94
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392315AbhAUBOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 20:14:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:36906 "EHLO foss.arm.com"
+        id S2391842AbhAUBNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 20:13:06 -0500
+Received: from ozlabs.org ([203.11.71.1]:55765 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732776AbhAUBKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 20:10:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2B7B14FF;
-        Wed, 20 Jan 2021 17:10:04 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A93E3F68F;
-        Wed, 20 Jan 2021 17:09:58 -0800 (PST)
-Subject: Re: [RFC PATCH v3 5/6] dt-bindings: of: Add restricted DMA pool
-To:     Rob Herring <robh@kernel.org>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Grant Likely <grant.likely@arm.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        xen-devel@lists.xenproject.org, Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-6-tientzu@chromium.org>
- <20210120165348.GA220770@robh.at.kernel.org>
- <313f8052-a591-75de-c4c2-ee9ea8f02e7f@arm.com>
- <CAL_JsqKjTqcCbCLksRbCh7=f-A3Y09A3jNqtUApaA+p=RKd_Eg@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c0d631de-8840-4f6e-aebf-41bb8449f78c@arm.com>
-Date:   Thu, 21 Jan 2021 01:09:56 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2391751AbhAUBMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:12:30 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DLkr40gmkz9sWX;
+        Thu, 21 Jan 2021 12:11:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611191508;
+        bh=7c7cvqA9gS0UzEg1pIAqrmG+QQlvyJGWNl+BfzEM8Qg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qPzlgw1+mwOM4cL3xrLVdWUk4xYPshoS6DDLmKu5lUDgwni2Rfh2PtaEk/Y0C8UJL
+         I6omYlYGYJrycMJTFRzJjP9mp+Ly5SxJ3XDCoFhNhByr8IErZm1DO6IxAzd4mcLf5z
+         gkQDve2ZAcNNh74Ek9M2m2sFjlpamVwGsR421NrBTGtlNfBNjwShnseLl6n2y2z81h
+         rySJXZ2E77zUOlpMQQWryaJ//ko8EorIgWqxiiOwdeJZ0OVHtZp2kSMgm94ZU/6Ojh
+         Zp/MZTGwebNXoirHDtyDa8FXRNWvhW7PJwNShfzxmNMDIiC681jZhai+ztSI1Xu2xu
+         EnBCc1acg3e9A==
+Date:   Thu, 21 Jan 2021 12:11:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Lyude Paul <lyude@redhat.com>, Jani Nikula <jani.nikula@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm-intel tree
+Message-ID: <20210121121146.6133975e@canb.auug.org.au>
+In-Reply-To: <20210120105715.4391dd95@canb.auug.org.au>
+References: <20210120105715.4391dd95@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKjTqcCbCLksRbCh7=f-A3Y09A3jNqtUApaA+p=RKd_Eg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/TCcYvsvZ=n.2WdGUBVd4Svo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-20 21:31, Rob Herring wrote:
-> On Wed, Jan 20, 2021 at 11:30 AM Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-01-20 16:53, Rob Herring wrote:
->>> On Wed, Jan 06, 2021 at 11:41:23AM +0800, Claire Chang wrote:
->>>> Introduce the new compatible string, restricted-dma-pool, for restricted
->>>> DMA. One can specify the address and length of the restricted DMA memory
->>>> region by restricted-dma-pool in the device tree.
->>>
->>> If this goes into DT, I think we should be able to use dma-ranges for
->>> this purpose instead. Normally, 'dma-ranges' is for physical bus
->>> restrictions, but there's no reason it can't be used for policy or to
->>> express restrictions the firmware has enabled.
->>
->> There would still need to be some way to tell SWIOTLB to pick up the
->> corresponding chunk of memory and to prevent the kernel from using it
->> for anything else, though.
-> 
-> Don't we already have that problem if dma-ranges had a very small
-> range? We just get lucky because the restriction is generally much
-> more RAM than needed.
+--Sig_/TCcYvsvZ=n.2WdGUBVd4Svo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Not really - if a device has a naturally tiny addressing capability that 
-doesn't even cover ZONE_DMA32 where the regular SWIOTLB buffer will be 
-allocated then it's unlikely to work well, but that's just crap system 
-design. Yes, memory pressure in ZONE_DMA{32} is particularly problematic 
-for such limited devices, but it's irrelevant to the issue at hand here.
+Hi all,
 
-What we have here is a device that's not allowed to see *kernel* memory 
-at all. It's been artificially constrained to a particular region by a 
-TZASC or similar, and the only data which should ever be placed in that 
-region is data intended for that device to see. That way if it tries to 
-go rogue it physically can't start slurping data intended for other 
-devices or not mapped for DMA at all. The bouncing is an important part 
-of this - I forget the title off-hand but there was an interesting paper 
-a few years ago which demonstrated that even with an IOMMU, streaming 
-DMA of in-place buffers could reveal enough adjacent data from the same 
-page to mount an attack on the system. Memory pressure should be 
-immaterial since the size of each bounce pool carveout will presumably 
-be tuned for the needs of the given device.
+On Wed, 20 Jan 2021 10:57:15 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the drm-intel tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+>=20
+> drivers/gpu/drm/msm/dp/dp_ctrl.c: In function 'dp_ctrl_use_fixed_nvid':
+> drivers/gpu/drm/msm/dp/dp_ctrl.c:1425:16: error: implicit declaration of =
+function 'drm_dp_get_edid_quirks'; did you mean 'drm_do_get_edid'? [-Werror=
+=3Dimplicit-function-declaration]
+>  1425 |  edid_quirks =3D drm_dp_get_edid_quirks(ctrl->panel->edid);
+>       |                ^~~~~~~~~~~~~~~~~~~~~~
+>       |                drm_do_get_edid
+> drivers/gpu/drm/msm/dp/dp_ctrl.c:1431:11: error: too many arguments to fu=
+nction 'drm_dp_has_quirk'
+>  1431 |   return (drm_dp_has_quirk(&ctrl->panel->desc, edid_quirks,
+>       |           ^~~~~~~~~~~~~~~~
+> In file included from drivers/gpu/drm/msm/dp/dp_ctrl.c:15:
+> include/drm/drm_dp_helper.h:2087:1: note: declared here
+>  2087 | drm_dp_has_quirk(const struct drm_dp_desc *desc, enum drm_dp_quir=
+k quirk)
+>       | ^~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   7c553f8b5a7d ("drm/dp: Revert "drm/dp: Introduce EDID-based quirks"")
+>=20
+> Since the drm-intel tree still has its other build failure, I used the
+> version from next-20210108 again today.
 
-> In any case, wouldn't finding all the dma-ranges do this? We're
-> already walking the tree to find the max DMA address now.
+I still get this failure, but not the one from the drm tree, so I have
+used the drm-intel tree from next-20210119 for today.
 
-If all you can see are two "dma-ranges" properties, how do you propose 
-to tell that one means "this is the extent of what I can address, please 
-set my masks and dma-range-map accordingly and try to allocate things 
-where I can reach them" while the other means "take this output range 
-away from the page allocator and hook it up as my dedicated bounce pool, 
-because it is Serious Security Time"? Especially since getting that 
-choice wrong either way would be a Bad Thing.
+--=20
+Cheers,
+Stephen Rothwell
 
-Robin.
+--Sig_/TCcYvsvZ=n.2WdGUBVd4Svo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->>>> Signed-off-by: Claire Chang <tientzu@chromium.org>
->>>> ---
->>>>    .../reserved-memory/reserved-memory.txt       | 24 +++++++++++++++++++
->>>>    1 file changed, 24 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
->>>> index e8d3096d922c..44975e2a1fd2 100644
->>>> --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
->>>> +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
->>>> @@ -51,6 +51,20 @@ compatible (optional) - standard definition
->>>>              used as a shared pool of DMA buffers for a set of devices. It can
->>>>              be used by an operating system to instantiate the necessary pool
->>>>              management subsystem if necessary.
->>>> +        - restricted-dma-pool: This indicates a region of memory meant to be
->>>> +          used as a pool of restricted DMA buffers for a set of devices. The
->>>> +          memory region would be the only region accessible to those devices.
->>>> +          When using this, the no-map and reusable properties must not be set,
->>>> +          so the operating system can create a virtual mapping that will be used
->>>> +          for synchronization. The main purpose for restricted DMA is to
->>>> +          mitigate the lack of DMA access control on systems without an IOMMU,
->>>> +          which could result in the DMA accessing the system memory at
->>>> +          unexpected times and/or unexpected addresses, possibly leading to data
->>>> +          leakage or corruption. The feature on its own provides a basic level
->>>> +          of protection against the DMA overwriting buffer contents at
->>>> +          unexpected times. However, to protect against general data leakage and
->>>> +          system memory corruption, the system needs to provide way to restrict
->>>> +          the DMA to a predefined memory region.
->>>>            - vendor specific string in the form <vendor>,[<device>-]<usage>
->>>>    no-map (optional) - empty property
->>>>        - Indicates the operating system must not create a virtual mapping
->>>> @@ -120,6 +134,11 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
->>>>                       compatible = "acme,multimedia-memory";
->>>>                       reg = <0x77000000 0x4000000>;
->>>>               };
->>>> +
->>>> +            restricted_dma_mem_reserved: restricted_dma_mem_reserved {
->>>> +                    compatible = "restricted-dma-pool";
->>>> +                    reg = <0x50000000 0x400000>;
->>>> +            };
->>>>       };
->>>>
->>>>       /* ... */
->>>> @@ -138,4 +157,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
->>>>               memory-region = <&multimedia_reserved>;
->>>>               /* ... */
->>>>       };
->>>> +
->>>> +    pcie_device: pcie_device@0,0 {
->>>> +            memory-region = <&restricted_dma_mem_reserved>;
->>>
->>> PCI hosts often have inbound window configurations that limit the
->>> address range and translate PCI to bus addresses. Those windows happen
->>> to be configured by dma-ranges. In any case, wouldn't you want to put
->>> the configuration in the PCI host node? Is there a usecase of
->>> restricting one PCIe device and not another?
->>
->> The general design seems to accommodate devices having their own pools
->> such that they can't even snoop on each others' transient DMA data. If
->> the interconnect had a way of wiring up, say, PCI RIDs to AMBA NSAIDs,
->> then in principle you could certainly apply that to PCI endpoints too
->> (presumably you'd also disallow them from peer-to-peer transactions at
->> the PCI level too).
-> 
-> At least for PCI, I think we can handle this. We have the BDF in the
-> 3rd address cell in dma-ranges. The Openfirmware spec says those are 0
-> in the case of ranges. It doesn't talk about dma-ranges though. But I
-> think we could extend it to allow for BDF. Though typically with PCIe
-> every device is behind its own bridge and each bridge node can have a
-> dma-ranges.
-> 
-> Rob
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAI1NIACgkQAVBC80lX
+0GyzfAgAnyS+ybHffHP2bTfDMvIkkgOUx97yFSBTtMuNvpYhgPzkKPbLOZ9RaAhU
+QWUsHkTs430Ar2XuVlTBULbjVBTD3UdOv3aXYGQPsEnKH2bMl7rQtgoj/xTqk3Os
+G22yM7FpWgAnvjL6AeMujVjnr+GQDsYh+s/mg21XDZo4qqr/nUGHWDSAQkk+knFY
+04aKuUT8nun+b3yMTy2mUrXbh+wvqRbz0qC3rezN85dNZrmbLjSP2AqG3OhqCZzD
+0xD4wf+gyyLt24BnKxH9gB1d/w1JuaPBoMUzYQzWiBxWnBIh3FjVN7nabl0gKge8
+KadGXBjYDZNvpSJ1J5aiVQ2S5xUj3g==
+=tDMC
+-----END PGP SIGNATURE-----
+
+--Sig_/TCcYvsvZ=n.2WdGUBVd4Svo--
