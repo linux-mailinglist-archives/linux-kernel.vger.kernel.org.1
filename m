@@ -2,131 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EF82FE64B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31562FE64E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbhAUJZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:25:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54092 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728568AbhAUJYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:24:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D74B4AAAE;
-        Thu, 21 Jan 2021 09:23:35 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 10:23:33 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 1/3] mm/memory_hotplug: Prevalidate the address range
- being added with platform
-Message-ID: <20210121092328.GA11001@linux>
-References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
- <1610975582-12646-2-git-send-email-anshuman.khandual@arm.com>
- <691872bb-b251-83e0-126e-afd54683c83e@redhat.com>
- <3d4f3b14-0715-b2b3-b015-04b8a77abfb8@arm.com>
+        id S1728515AbhAUJZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:25:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728524AbhAUJZN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:25:13 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884D0C061575;
+        Thu, 21 Jan 2021 01:24:32 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id x6so1429561ybr.1;
+        Thu, 21 Jan 2021 01:24:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5aDb7W14bl7wAiVr1ce4T8OE9GGC14LW/8PhwVGuMuo=;
+        b=sqKk91vWV5eIzVZDdvj1w4rChHj9SY0E6kNEE/dxlPMaoLnteGK9eKilpkr8dcPo6L
+         4OYh7PQ5azIF7r1zV8NzFd3Tb+zl3SwaLcEbWpSN2v/v7ctMMwQ7mCqvaoF+YfP6KXA3
+         5c9Se6/By+ZZzo5+QjtBPovS6/53AZT/oH/wsvEuksTuwExnvMXhVpdkikLHhLyJV1aY
+         O+cdkjmBM1r5SJzJh1ZhJ58LiOdqNiTlROyjdj0C35aiEJNBXBZdUzKgt+Z5FLuuMNPT
+         43qMZceBPhPhDu8cPddanrcAXZJ+1bkXRJL25oVdq3D/yAwapvIPCfWf0rnTIWjkarmr
+         ua4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5aDb7W14bl7wAiVr1ce4T8OE9GGC14LW/8PhwVGuMuo=;
+        b=QoYIfryOU168iRu+pYQY8OwJBt4ALKPm0B6QerKrRXhtS4bppR0eqTqlRRbeoZK+9r
+         555Uj7jwWT7e33aem3QmgZlfzrz9zHS6IY0Zso2/hE6xd2FzEWu2etqaI5r5gFsepM1x
+         m3ZHooNQkSrxIXyQy2y/+Sekn0pBViOCtABjOG+ujnNrSSh5kdaU/mgjG/rNXTV0ySY+
+         jVeC3bjNND5lt2pbnenKFtehJrzqHz9hvjFlxaLpdLeOTWNO2XDaRMdO5pgH2WCNAwdE
+         zb+/P0agJT0hf5RPtyj9Mgg77hKLQ65shpKjCtK33wkKDB+p78giMDIPsCGjH9er5hVk
+         6IZQ==
+X-Gm-Message-State: AOAM530hWjJVT34m+4XKAgHLfrWQHChgYPnshD0VQodv3rlzAOBzIzvu
+        HK8G3nnorgVXK4CIYQvqA/TFVFXTWSO4FYTGoYA=
+X-Google-Smtp-Source: ABdhPJwvcdy/GKpSDqsgWL3Qqn/BdSA6UirMTMIeWJxIURXlUYi+n0pDoqgl+88UQi4WfjkNUy85xaJJMvwoqBPNrq8=
+X-Received: by 2002:a25:8c5:: with SMTP id 188mr7663135ybi.18.1611221071750;
+ Thu, 21 Jan 2021 01:24:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d4f3b14-0715-b2b3-b015-04b8a77abfb8@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAD-N9QX=vVdiSf5UkuoYovamfw5a0e5RQJA0dQMOKmCbs-Gyiw@mail.gmail.com>
+ <YAlAy/tQXW0X310V@kroah.com>
+In-Reply-To: <YAlAy/tQXW0X310V@kroah.com>
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Thu, 21 Jan 2021 17:24:05 +0800
+Message-ID: <CAD-N9QVz23ihqfCAY1VocPDhXO97oXoranP9M9Lw9Dqr9feSMQ@mail.gmail.com>
+Subject: Re: "KMSAN: uninit-value in rt2500usb_bbp_read" and "KMSAN:
+ uninit-value in rt2500usb_probe_hw" should be duplicate crash reports
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     davem@davemloft.net, helmut.schaa@googlemail.com, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        stf_xl@wp.pl, syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 02:03:45PM +0530, Anshuman Khandual wrote:
-> Just to be sure, will the following change achieve what you are
-> suggesting here. pagemap_range() after this change, will again
-> be the same like the V1 series.
+On Thu, Jan 21, 2021 at 4:52 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Jan 21, 2021 at 04:47:37PM +0800, =E6=85=95=E5=86=AC=E4=BA=AE wro=
+te:
+> > Dear kernel developers,
+> >
+> > I found that on the syzbot dashboard, =E2=80=9CKMSAN: uninit-value in
+> > rt2500usb_bbp_read=E2=80=9D [1] and "KMSAN: uninit-value in
+> > rt2500usb_probe_hw" [2] should share the same root cause.
+> >
+> > ## Duplication
+> >
+> > The reasons for the above statement:
+> > 1) The PoCs are exactly the same with each other;
+> > 2) The stack trace is almost the same except for the top 2 functions;
+> >
+> > ## Root Cause Analysis
+> >
+> > After looking at the difference between the two stack traces, we found
+> > they diverge at the function - rt2500usb_probe_hw.
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> > static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
+> > {
+> >         ......
+> >         // rt2500usb_validate_eeprom->rt2500usb_bbp_read->rt2500usb_reg=
+busy_read->rt2500usb_register_read_lock
+> > from KMSAN
+> >         retval =3D rt2500usb_validate_eeprom(rt2x00dev);
+> >         if (retval)
+> >                 return retval;
+> >         // rt2500usb_init_eeprom-> rt2500usb_register_read from KMSAN
+> >         retval =3D rt2500usb_init_eeprom(rt2x00dev);
+> >         if (retval)
+> >                 return retval;
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> > >From the implementation of rt2500usb_register_read and
+> > rt2500usb_register_read_lock, we know that, in some situation, reg is
+> > not initialized in the function invocation
+> > (rt2x00usb_vendor_request_buff/rt2x00usb_vendor_req_buff_lock), and
+> > KMSAN reports uninit-value at its first memory access.
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> > static u16 rt2500usb_register_read(struct rt2x00_dev *rt2x00dev,
+> >                                    const unsigned int offset)
+> > {
+> >         __le16 reg;
+> >         // reg is not initialized during the following function all
+> >         rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
+> >                                       USB_VENDOR_REQUEST_IN, offset,
+> >                                       &reg, sizeof(reg));
+> >         return le16_to_cpu(reg);
+> > }
+> > static u16 rt2500usb_register_read_lock(struct rt2x00_dev *rt2x00dev,
+> >                                         const unsigned int offset)
+> > {
+> >         __le16 reg;
+> >         // reg is not initialized during the following function all
+> >         rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
+> >                                        USB_VENDOR_REQUEST_IN, offset,
+> >                                        &reg, sizeof(reg), REGISTER_TIME=
+OUT);
+> >         return le16_to_cpu(reg);
+> > }
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> > Take rt2x00usb_vendor_req_buff_lock as an example, let me illustrate
+> > the issue when the "reg" variable is uninitialized. No matter the CSR
+> > cache is unavailable or the status is not right, the buffer or reg
+> > will be not initialized.
+> > And all those issues are probabilistic events. If they occur in
+> > rt2500usb_register_read, KMSAN reports "uninit-value in
+> > rt2500usb_probe_hw"; Otherwise, it reports "uninit-value in
+> > rt2500usb_bbp_read".
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> > int rt2x00usb_vendor_req_buff_lock(struct rt2x00_dev *rt2x00dev,
+> >                                    const u8 request, const u8 requestty=
+pe,
+> >                                    const u16 offset, void *buffer,
+> >                                    const u16 buffer_length, const int t=
+imeout)
+> > {
+> >         if (unlikely(!rt2x00dev->csr.cache || buffer_length > CSR_CACHE=
+_SIZE)) {
+> >                 rt2x00_err(rt2x00dev, "CSR cache not available\n");
+> >                 return -ENOMEM;
+> >         }
+> >
+> >         if (requesttype =3D=3D USB_VENDOR_REQUEST_OUT)
+> >                 memcpy(rt2x00dev->csr.cache, buffer, buffer_length);
+> >
+> >         status =3D rt2x00usb_vendor_request(rt2x00dev, request, request=
+type,
+> >                                           offset, 0, rt2x00dev->csr.cac=
+he,
+> >                                           buffer_length, timeout);
+> >
+> >         if (!status && requesttype =3D=3D USB_VENDOR_REQUEST_IN)
+> >                 memcpy(buffer, rt2x00dev->csr.cache, buffer_length);
+> >
+> >         return status;
+> > }
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> >
+> > ## Patch
+> >
+> > I propose to memset reg variable before invoking
+> > rt2x00usb_vendor_req_buff_lock/rt2x00usb_vendor_request_buff.
+> >
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> > diff --git a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> > b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> > index fce05fc88aaf..f6c93a25b18c 100644
+> > --- a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> > +++ b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> > @@ -48,6 +48,7 @@ static u16 rt2500usb_register_read(struct rt2x00_dev
+> > *rt2x00dev,
+> >                                    const unsigned int offset)
+> >  {
+> >         __le16 reg;
+> > +       memset(&reg, 0, sizeof(reg));
+> >         rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
+> >                                       USB_VENDOR_REQUEST_IN, offset,
+> >                                       &reg, sizeof(reg));
+> > @@ -58,6 +59,7 @@ static u16 rt2500usb_register_read_lock(struct
+> > rt2x00_dev *rt2x00dev,
+> >                                         const unsigned int offset)
+> >  {
+> >         __le16 reg;
+> > +       memset(&reg, 0, sizeof(reg));
+> >         rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
+> >                                        USB_VENDOR_REQUEST_IN, offset,
+> >                                        &reg, sizeof(reg), REGISTER_TIME=
+OUT);
+> > -----------------------------------------------------------------------=
+-------------------------------------------------
+> >
+> > If you can have any issues with this statement or our information is
+> > useful to you, please let us know. Thanks very much.
+> >
+> > [1] =E2=80=9CKMSAN: uninit-value in rt2500usb_bbp_read=E2=80=9D -
+> > https://syzkaller.appspot.com/bug?id=3Df35d123de7d393019c1ed4d4e60dc665=
+96ed62cd
+> > [2] =E2=80=9CKMSAN: uninit-value in rt2500usb_probe_hw=E2=80=9D -
+> > https://syzkaller.appspot.com/bug?id=3D5402df7259c74e15a12992e739b5ac54=
+c9b8a4ce
+> >
+>
+> Can you please resend this in a form in which we can apply it?  Full
+> details on how to do this can be found in
+> Documentation/SubmittingPatches.
 
-With below diff on top it looks good to me:
+I have sent a patch to the corresponding maintainers. We can take it
+as a base to discuss the corresponding bug.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
-The only nit I would have is whether the declaration of arch_get_mappable_range
-should be in include/linux/memory_hotplug.h.
-As you pointed out, arch_get_mappable_range() might be used by the platform
-for other purposes, and since you are defining it out of CONFIG_MEMORY_HOTPLUG
-anyway.
-Would include/linu/memory.h be a better fit?
-
-As I said, nothing to bikeshed about, just my thoughts.
-
-> ---
->  mm/memory_hotplug.c |  3 +--
->  mm/memremap.c       | 12 +++++-------
->  2 files changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 46faa914aa25..10d4ec8f349c 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -304,8 +304,7 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
->  	if (WARN_ON_ONCE(!params->pgprot.pgprot))
->  		return -EINVAL;
->  
-> -	if(!memhp_range_allowed(PFN_PHYS(pfn), nr_pages * PAGE_SIZE, false))
-> -		return -E2BIG;
-> +	VM_BUG_ON(!memhp_range_allowed(PFN_PHYS(pfn), nr_pages * PAGE_SIZE, false));
->  
->  	if (altmap) {
->  		/*
-> diff --git a/mm/memremap.c b/mm/memremap.c
-> index e15b13736f6a..26c1825756cc 100644
-> --- a/mm/memremap.c
-> +++ b/mm/memremap.c
-> @@ -185,6 +185,7 @@ static void dev_pagemap_percpu_release(struct percpu_ref *ref)
->  static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->  		int range_id, int nid)
->  {
-> +	const bool is_private = pgmap->type == MEMORY_DEVICE_PRIVATE;
->  	struct range *range = &pgmap->ranges[range_id];
->  	struct dev_pagemap *conflict_pgmap;
->  	int error, is_ram;
-> @@ -230,6 +231,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->  	if (error)
->  		goto err_pfn_remap;
->  
-> +	if (!memhp_range_allowed(range->start, range_len(range), !is_private))
-> +		goto err_pfn_remap;
-> +
->  	mem_hotplug_begin();
->  
->  	/*
-> @@ -243,7 +247,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->  	 * the CPU, we do want the linear mapping and thus use
->  	 * arch_add_memory().
->  	 */
-> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
-> +	if (is_private) {
->  		error = add_pages(nid, PHYS_PFN(range->start),
->  				PHYS_PFN(range_len(range)), params);
->  	} else {
-> @@ -253,12 +257,6 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->  			goto err_kasan;
->  		}
->  
-> -		if (!memhp_range_allowed(range->start, range_len(range), true)) {
-> -			error = -ERANGE;
-> -			mem_hotplug_done();
-> -			goto err_add_memory;
-> -		}
-> -
->  		error = arch_add_memory(nid, range->start, range_len(range),
->  					params);
->  	}
-> -- 
-> 2.20.1
-> 
-
--- 
-Oscar Salvador
-SUSE L3
+>
+> thanks,
+>
+> greg k-h
