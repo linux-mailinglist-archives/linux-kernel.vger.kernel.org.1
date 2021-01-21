@@ -2,61 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33532FE4BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 565C22FE4C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbhAUIPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:15:30 -0500
-Received: from out28-2.mail.aliyun.com ([115.124.28.2]:36758 "EHLO
-        out28-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726993AbhAUIOm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:14:42 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1421534|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00192036-0.000106734-0.997973;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=liu.xiang@zlingsmart.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.JNl771T_1611216832;
-Received: from localhost(mailfrom:liu.xiang@zlingsmart.com fp:SMTPD_---.JNl771T_1611216832)
-          by smtp.aliyun-inc.com(10.194.97.171);
-          Thu, 21 Jan 2021 16:13:52 +0800
-From:   Liu Xiang <liu.xiang@zlingsmart.com>
-To:     linux-mmc@vger.kernel.org
-Cc:     ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
-        liuxiang_1999@126.com, Liu Xiang <liu.xiang@zlingsmart.com>
-Subject: [PATCH] mmc: block: use REQ_HIPRI flag to complete request directly in own complete workqueue
-Date:   Thu, 21 Jan 2021 16:13:49 +0800
-Message-Id: <20210121081349.8266-1-liu.xiang@zlingsmart.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726997AbhAUIRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:17:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726765AbhAUIQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:16:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EA932395B;
+        Thu, 21 Jan 2021 08:15:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611216948;
+        bh=jlGXwu1tfbij7TJcmlF5/XEfn/3LQg2wD0tO1MQn1WE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rgOWqcHpKKCiOpXET9VzHjKBIXwWiW2ZUWA+oV/ir8LnBLyEjWZzWCxPQow8wKKan
+         CsYu2KuRioZXH9e2rDzBeY3BTOoFyIhgoTrUUmxGBmvsMMPwAAopQEg6ro8g6R2Zwu
+         FIFwsPrENE3I8GA+JQNG1xu+K47RJUOo/Wni4tZk=
+Date:   Thu, 21 Jan 2021 09:15:44 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, logang@deltatee.com,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
+Subject: Re: [PATCH 3/3] libnvdimm/ioctl: Switch to cdev_register_queued()
+Message-ID: <YAk4MMMmmbKe6XEQ@kroah.com>
+References: <161117153248.2853729.2452425259045172318.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161117154856.2853729.1012816981381380656.stgit@dwillia2-desk3.amr.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161117154856.2853729.1012816981381380656.stgit@dwillia2-desk3.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit "40d09b53bfc557af7481b9d80f060a7ac9c7d314", request is
-completed in softirq. This may cause the system to suffer bad preemptoff
-time.
-The mmc driver has its own complete workqueue, but it can not work
-well now.
-The REQ_HIPRI flag can be used to complete request directly in its own
-complete workqueue and the preemptoff problem could be avoided.
+On Wed, Jan 20, 2021 at 11:39:08AM -0800, Dan Williams wrote:
+> The ioctl implementation in libnvdimm is a case study in what can be
+> cleaned up when the cdev core handles synchronizing in-flight ioctls
+> with device removal. Switch to cdev_register_queued() which allows for
+> the ugly context lookup and activity tracking implementation to be
+> dropped, among other cleanups.
 
-Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
----
- drivers/mmc/core/block.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I'm confused, the cdev handles the filesystem access from /dev/ which
+handles the ioctl.  Any use of a cdev with relationship to a struct
+device that might go away is independent, so we really should not tie
+these together in any way.
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 42e27a298..c27239a89 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1985,8 +1985,10 @@ static void mmc_blk_mq_post_req(struct mmc_queue *mq, struct request *req)
- 	 */
- 	if (mq->in_recovery)
- 		mmc_blk_mq_complete_rq(mq, req);
--	else if (likely(!blk_should_fake_timeout(req->q)))
-+	else if (likely(!blk_should_fake_timeout(req->q))) {
-+		req->cmd_flags |= REQ_HIPRI;
- 		blk_mq_complete_request(req);
-+	}
- 
- 	mmc_blk_mq_dec_in_flight(mq, req);
- }
--- 
-2.17.1
+thanks,
 
+greg k-h
