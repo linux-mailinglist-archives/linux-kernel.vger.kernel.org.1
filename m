@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D382FF4C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B266F2FF51A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbhAUSsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:48:30 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:35073 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727975AbhAUItD (ORCPT
+        id S1727667AbhAUTuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:50:37 -0500
+Received: from mail-m974.mail.163.com ([123.126.97.4]:34900 "EHLO
+        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbhAUTtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:49:03 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1l2Vd9-002Y9D-Lp; Thu, 21 Jan 2021 09:47:51 +0100
-Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1l2Vd9-000TGF-0k; Thu, 21 Jan 2021 09:47:51 +0100
-Subject: Re: [PATCH 1/6] arch: rearrahge headers inclusion order in asm/bitops
- for m68k and sh
-To:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-References: <20210121000630.371883-1-yury.norov@gmail.com>
- <20210121000630.371883-2-yury.norov@gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <464fa4c5-5a21-0a9b-61c3-a5fc85472b0a@physik.fu-berlin.de>
-Date:   Thu, 21 Jan 2021 09:47:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210121000630.371883-2-yury.norov@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.166.30
+        Thu, 21 Jan 2021 14:49:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=DCQNuATp1OYUDQRh6i
+        JYi/PlkzzDX7MrFZdp4K62XsI=; b=IkI3+XC7CjjnQT+I7OFNWb/umvDEkz8nhO
+        PLBe0UCOIwbUBecjdcaZ/Rt/d+wCTntLbr5jov9e/cg6likD4errYIQLzF28duOl
+        7Q+T9GPRvcPuqZq6FEIp5BgeDAaNTsTId/0Nmv4i/utDIsViyfGyDUCYvPJfTrKe
+        l5bT/yXEY=
+Received: from localhost.localdomain (unknown [111.201.134.89])
+        by smtp4 (Coremail) with SMTP id HNxpCgDXYRBqlglg4ixihA--.16912S4;
+        Thu, 21 Jan 2021 22:57:49 +0800 (CST)
+From:   Pan Bian <bianpan2016@163.com>
+To:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] chtls: Fix potential resource leak
+Date:   Thu, 21 Jan 2021 06:57:38 -0800
+Message-Id: <20210121145738.51091-1-bianpan2016@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: HNxpCgDXYRBqlglg4ixihA--.16912S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrur15WryrtF1UWry3ury5CFg_yoWkKwc_Cr
+        W7uF10gw4jvr1F9w4jgr45WFyYk395Xr95Xr1xtFy5Z3W7Kr4UZFyxCFy3Wr1Uuw47CasI
+        kwnrJFn5A34I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUXo2UUUUUU==
+X-Originating-IP: [111.201.134.89]
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBzw0hclaD9zXeSgAAsS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yury!
+The dst entry should be released if no neighbour is found. Goto label
+free_dst to fix the issue. Besides, the check of ndev against NULL is
+redundant.
 
-On 1/21/21 1:06 AM, Yury Norov wrote:
-> m68k and sh include bitmap/find.h prior to ffs/fls headers. New
-> fast-path implementation in find.h requires ffs/fls. Reordering
-> the order of headers inclusion helps to prevent compile-time
-> implicit-function-declaration error.
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+---
+ .../net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c    | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Can you fix the commit message?
-
-"arch: rearrahge headers inclusion order in asm/bitops for m68k and sh"
-       ^^^^^^^^^
-       rearrange
-
-Adrian
-
+diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
+index e5cfbe196ba6..19dc7dc054a2 100644
+--- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
+@@ -1158,11 +1158,9 @@ static struct sock *chtls_recv_sock(struct sock *lsk,
+ #endif
+ 	}
+ 	if (!n || !n->dev)
+-		goto free_sk;
++		goto free_dst;
+ 
+ 	ndev = n->dev;
+-	if (!ndev)
+-		goto free_dst;
+ 	if (is_vlan_dev(ndev))
+ 		ndev = vlan_dev_real_dev(ndev);
+ 
+@@ -1250,7 +1248,8 @@ static struct sock *chtls_recv_sock(struct sock *lsk,
+ free_csk:
+ 	chtls_sock_release(&csk->kref);
+ free_dst:
+-	neigh_release(n);
++	if (n)
++		neigh_release(n);
+ 	dst_release(dst);
+ free_sk:
+ 	inet_csk_prepare_forced_close(newsk);
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.17.1
 
