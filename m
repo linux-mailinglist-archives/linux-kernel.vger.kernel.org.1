@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304292FE7A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA7E2FE7A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729256AbhAUKax convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Jan 2021 05:30:53 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2555 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728341AbhAUKTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:19:16 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DLywf1qpSzW2x4;
-        Thu, 21 Jan 2021 18:16:34 +0800 (CST)
-Received: from dggpemm500010.china.huawei.com (7.185.36.134) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 21 Jan 2021 18:18:24 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm500010.china.huawei.com (7.185.36.134) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 21 Jan 2021 18:18:24 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
- Thu, 21 Jan 2021 18:18:24 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>
-CC:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-accelerators@lists.ozlabs.org" 
-        <linux-accelerators@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: RE: [PATCH] uacce: Add uacce_ctrl misc device
-Thread-Topic: [PATCH] uacce: Add uacce_ctrl misc device
-Thread-Index: AQHW79ZyYq1sk039MU+9J2rOLgF+UaoxTpyAgACJurA=
-Date:   Thu, 21 Jan 2021 10:18:24 +0000
-Message-ID: <ea0511c1309a486d9646d5a32715c861@hisilicon.com>
-References: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
- <YAlNTSOMmsFPFAhk@kroah.com>
-In-Reply-To: <YAlNTSOMmsFPFAhk@kroah.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.204]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729141AbhAUKaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:30:23 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:37830 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728910AbhAUKZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:25:44 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 705431A0CC1;
+        Thu, 21 Jan 2021 11:24:50 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 628901A01EC;
+        Thu, 21 Jan 2021 11:24:50 +0100 (CET)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 4DD2A203A1;
+        Thu, 21 Jan 2021 11:24:50 +0100 (CET)
+Date:   Thu, 21 Jan 2021 12:24:50 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Adam Ford <aford173@gmail.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3] clk: imx: Fix reparenting of UARTs not associated
+ with sdout
+Message-ID: <20210121102450.lisl3mzqczdsmzda@fsr-ub1664-175>
+References: <20210115182909.314756-1-aford173@gmail.com>
+ <20210118125204.hxsanoohwvdtdvym@fsr-ub1664-175>
+ <CAHCN7x+CXUuPN7upiv3D+REOU4d_=i30no+SkRzUjWY58o=uUQ@mail.gmail.com>
+ <20210120144454.f6b72lnasw4q3bde@fsr-ub1664-175>
+ <20210120151305.GC19063@pengutronix.de>
+ <20210120152813.x2pbs5vprevkly23@fsr-ub1664-175>
+ <20210120155001.GD19063@pengutronix.de>
+ <20210120161421.h3yng57m3fetwwih@fsr-ub1664-175>
+ <20210121095617.GI19063@pengutronix.de>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121095617.GI19063@pengutronix.de>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
-> Sent: Thursday, January 21, 2021 10:46 PM
-> To: Wangzhou (B) <wangzhou1@hisilicon.com>
-> Cc: Zhangfei Gao <zhangfei.gao@linaro.org>; Arnd Bergmann <arnd@arndb.de>;
-> linux-accelerators@lists.ozlabs.org; linux-kernel@vger.kernel.org;
-> chensihang (A) <chensihang1@hisilicon.com>
-> Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
+On 21-01-21 10:56:17, Sascha Hauer wrote:
+> On Wed, Jan 20, 2021 at 06:14:21PM +0200, Abel Vesa wrote:
+> > On 21-01-20 16:50:01, Sascha Hauer wrote:
+> > > On Wed, Jan 20, 2021 at 05:28:13PM +0200, Abel Vesa wrote:
+> > > > On 21-01-20 16:13:05, Sascha Hauer wrote:
+> > > > > Hi Abel,
+> > > > > 
+> > > > > On Wed, Jan 20, 2021 at 04:44:54PM +0200, Abel Vesa wrote:
+> > > > > > On 21-01-18 08:00:43, Adam Ford wrote:
+> > > > > > > On Mon, Jan 18, 2021 at 6:52 AM Abel Vesa <abel.vesa@nxp.com> wrote:
+> > > > 
+> > > > ...
+> > > > 
+> > > > > > > 
+> > > > > > > >
+> > > > > > > > TBH, I'm against the idea of having to call consumer API from a clock provider driver.
+> > > > > > > > I'm still investigating a way of moving the uart clock control calls in drivers/serial/imx,
+> > > > > > > > where they belong.
+> > > > > > > 
+> > > > > > > That makes sense.
+> > > > > > > 
+> > > > > > 
+> > > > > > Just a thought. The uart clock used for console remains on from u-boot,
+> > > > > > so maybe it's enough to just add the CLK_IGNORE_UNUSED flag to all the
+> > > > > > uart root clocks and remove the prepare/enable calls for uart clocks 
+> > > > > > for good. I don't really have a way to test it right now, but maybe
+> > > > > > you could give it a try.
+> > > > > 
+> > > > > That would mean that UART clocks will never be disabled, regardless of
+> > > > > whether they are used for console or not. That doesn't sound very
+> > > > > appealing.
+> > > > 
+> > > > AFAIK, the only uart clock that is enabled by u-boot is the one used for
+> > > > the console. Later on, when the serial driver probes, it will enable it itself.
+> > > > 
+> > > > Unless I'm missing something, this is exactly what we need.
+> > > 
+> > > It might enable it, but with CLK_IGNORE_UNUSED the clock won't be
+> > > disabled again when a port is closed after usage
+> > 
+> > OK, tell me what I'm getting wrong in the following scenario:
+> > 
+> > U-boot leaves the console uart clock enabled. All the other ones are disabled.
+> > 
+> > Kernel i.MX clk driver registers the uart clocks with flag CLK_IGNORE_UNUSED.
 > 
-> On Thu, Jan 21, 2021 at 05:09:14PM +0800, Zhou Wang wrote:
-> > When IO page fault happens, DMA performance will be affected. Pin user page
-> > can avoid IO page fault, this patch introduces a new char device named
-> > /dev/uacce_ctrl to help to maintain pin/unpin pages. User space can do
-> > pin/unpin pages by ioctls of an open file of /dev/uacce_ctrl, all pinned
-> > pages under one file will be unpinned in file release process.
+> I was wrong at that point. I originally thought the kernel will never
+> disable these clocks, but in fact it only leaves them enabled during the
+> clk_disable_unused call.
 > 
-> Also, what are you really trying to do here?  If you need to mess with
-> memory pages, why can't the existing memory apis work properly for you?
-> Please work with the linux-mm developers to resolve the issue using the
-> standard apis and not creating a one-off char device node for this type
-> of thing.
+> However, when CLK_IGNORE_UNUSED becomes relevant it's too late already.
+> I just chatted with Lucas and he told me what the original problem was
+> that his patch solved.
+> 
+> The problem comes when an unrelated device and the earlycon UART have
+> the same parent clocks. The parent clock is enabled, but it's reference
+> count is zero. Now when the unrelated device probes and toggles its
+> clocks then the shared parent clock will be disabled due to the
+> reference count being zero. Next time earlycon prints a character the
+> system hangs because the UART gates are still enabled, but their parent
+> clocks no longer are.
+> 
 
-Basically the purpose is implementing a pinned memory poll for userspace
-DMA to achieve better performance by removing io page fault.
+Hmm, that is indeed a problem. That's why I think there should be some
+kind of NOCACHE flag for almost all the types of clocks. For example,
+in this case, it makes sense for the core to check the bit in the register
+and then disable the parent based on that instead of relying on the refcount.
+Anyway, that's something that needs to be added in the CCF.
 
-I really like this can be done in generic mm code. Unfortunately there is no
-this standard API in kernel to support userspace pin. Right now, various
-subsystems depend on the ioctl of /dev/<name> to implement the pin, for example,
-v4l2, gpu, infiniband, media etc.
+> Overall I think Lucas' patches are still valid and relevant and with
+> Adams patches we even no longer have to enable all UART clocks, but
+> only the ones which are actually needed.
 
-I feel it is extremely hard to sell a standard mpin() API like mlock()
-for this stage as mm could hardly buy this. And it will require
-huge changes in kernel.
-We need a way to manage what pages are pinned by process and ensure the
-pages can be unpinned while the process is killed abnormally. otherwise,
-memory gets leaked.
-file_operations release() is a good entry for this kind of things. In
-this way, we don't have to maintain the pinned page set in task_struct
-and unpin them during exit().
-
-If there is anything to make it better by doing this in a driver. I
-would believe we could have a generic misc driver for pin like
-vms_ballon.c for ballon. The driver doesn't have to bind with uacce.
-
-In this way, the pinned memory pool implementation in userspace doesn't
-need to depend on a specific uacce driver any more.
+Yeah, for now, I think we can go with Adam's patches. But longterm, I would
+like to remove the special case of the uart clocks we have right now in all
+the i.MX clock drivers.
 
 > 
-> thanks,
+> Sascha
 > 
-> greg k-h
-
-Thanks
-Barry
-
+> 
+> -- 
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fwww.pengutronix.de%2F&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7Ceed68987c68f4aeaa63408d8bdf2d051%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637468197861821302%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=X1J8KgxFquNin80zKVz0Ao22vv1MuTMWf91BUTczh9Y%3D&amp;reserved=0  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
