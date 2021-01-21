@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60B52FE2D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D011A2FE2D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbhAUG2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:28:49 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42586 "EHLO
+        id S1726278AbhAUG2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:28:00 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:41940 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725764AbhAUG0q (ORCPT
+        with ESMTP id S1726925AbhAUGZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:26:46 -0500
-X-UUID: a347601d477e49238e2e91dcebbe502d-20210121
-X-UUID: a347601d477e49238e2e91dcebbe502d-20210121
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
+        Thu, 21 Jan 2021 01:25:53 -0500
+X-UUID: db84775019e34fb48449a98a5c0c0a27-20210121
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=u/2JBongcc8EOmFCMEZfjQxigadfi0DwujXfFHAcodo=;
+        b=Bqwxte2tZ3n/5PkJnk6mDiQxGlK9q9hgB/NtFzAcYjH6fV5CE6S5dMQvQLs1j7XI1rFVEerUSEfI1o9cRopO8LnuHjyAaymhUUQwu0yieLdHrjJM3jHLpFkC+JjrJTjUbK7Hw0fDXB9YQ8/Yo5IscPslStq53FS5hkq0kNoqRQ4=;
+X-UUID: db84775019e34fb48449a98a5c0c0a27-20210121
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <skylake.huang@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 279293618; Thu, 21 Jan 2021 14:25:34 +0800
+        with ESMTP id 1202323220; Thu, 21 Jan 2021 14:24:55 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
  mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 21 Jan 2021 14:25:30 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ 15.0.1497.2; Thu, 21 Jan 2021 14:24:53 +0800
+Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 21 Jan 2021 14:25:29 +0800
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Tomasz Figa <tfiga@google.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
+ Transport; Thu, 21 Jan 2021 14:24:53 +0800
+Message-ID: <1611210278.32249.12.camel@mtksdccf07>
+Subject: Re: [PATCH v2] dts64: mt7622: fix slow sd card access
+From:   SkyLake Huang <skylake.huang@mediatek.com>
+To:     Frank Wunderlich <linux@fw-web.de>
+CC:     <linux-mediatek@lists.infradead.org>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "Jimin Wang" <jimin.wang@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
-        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
-        <anan.sun@mediatek.com>, <yi.kuo@mediatek.com>
-Subject: [PATCH 3/3] memory: mtk-smi: Switch MTK_SMI to tristate
-Date:   Thu, 21 Jan 2021 14:24:29 +0800
-Message-ID: <20210121062429.26504-4-yong.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210121062429.26504-1-yong.wu@mediatek.com>
-References: <20210121062429.26504-1-yong.wu@mediatek.com>
+        <linux-kernel@vger.kernel.org>,
+        sin_wenjiehu <sin_wenjiehu@mediatek.com>,
+        <Wenbin.Mei@mediatek.com>, <stable@vger.kernel.org>
+Date:   Thu, 21 Jan 2021 14:24:38 +0800
+In-Reply-To: <20210113180919.49523-1-linux@fw-web.de>
+References: <20210113180919.49523-1-linux@fw-web.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain
 X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch switches MTK_SMI to tristate. Support it could be 'm'.
-
-Meanwhile, Fix a build issue while MTK_SMI is built as module.
-
-Signed-off-by: Yong Wu <yong.wu@mediatek.com>
----
-This patch has a little conflict with the mt8192 iommu patch which
-delete the MTK_LARB_NR_MAX in smi.h(It's still reviewing).
-This patch rebase on the clean v5.11-rc1.
----
- drivers/memory/Kconfig     | 2 +-
- include/soc/mediatek/smi.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 3ea6913df176..d5f0f4680880 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -173,7 +173,7 @@ config JZ4780_NEMC
- 	  memory devices such as NAND and SRAM.
- 
- config MTK_SMI
--	bool "Mediatek SoC Memory Controller driver" if COMPILE_TEST
-+	tristate "Mediatek SoC Memory Controller driver" if COMPILE_TEST
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
- 	help
- 	  This driver is for the Memory Controller module in MediaTek SoCs,
-diff --git a/include/soc/mediatek/smi.h b/include/soc/mediatek/smi.h
-index 5a34b87d89e3..29e2fb8f33d6 100644
---- a/include/soc/mediatek/smi.h
-+++ b/include/soc/mediatek/smi.h
-@@ -9,7 +9,7 @@
- #include <linux/bitops.h>
- #include <linux/device.h>
- 
--#ifdef CONFIG_MTK_SMI
-+#if IS_ENABLED(CONFIG_MTK_SMI)
- 
- #define MTK_LARB_NR_MAX		16
- 
--- 
-2.18.0
+T24gV2VkLCAyMDIxLTAxLTEzIGF0IDE5OjA5ICswMTAwLCBGcmFuayBXdW5kZXJsaWNoIHdyb3Rl
+Og0KPiBGcm9tOiBGcmFuayBXdW5kZXJsaWNoIDxmcmFuay13QHB1YmxpYy1maWxlcy5kZT4NCj4g
+DQo+IEZpeCBleHRyZW1lIHNsb3cgc3BlZWQgKDIwME1CIHRha2VzIH4yMCBtaW4pIG9uIHdyaXRp
+bmcgc2RjYXJkIG9uDQo+IGJhbmFuYXBpLXI2NCBieSBhZGRpbmcgcmVzZXQtY29udHJvbCBmb3Ig
+bW1jMSBsaWtlIGl0J3MgZG9uZSBmb3IgbW1jMC9lbW1jLg0KPiANCj4gQ2M6IHN0YWJsZUB2Z2Vy
+Lmtlcm5lbC5vcmcNCj4gRml4ZXM6IDJjMDAyYTMwNDlmNyAoImFybTY0OiBkdHM6IG10NzYyMjog
+YWRkIG1tYyByZWxhdGVkIGRldmljZSBub2RlcyIpDQo+IFNpZ25lZC1vZmYtYnk6IEZyYW5rIFd1
+bmRlcmxpY2ggPGZyYW5rLXdAcHVibGljLWZpbGVzLmRlPg0KPiAtLS0NCj4gY2hhbmdlcyBzaW5j
+ZSB2MToNCj4gIC0gZHJvcCBjaGFuZ2UgdG8gdWhzLW1vZGUgYmVjYXVzZSBtdDc2MjIgZG9lcyBu
+b3Qgc3VwcG9ydCBpdA0KPiAtLS0NCj4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3
+NjIyLmR0c2kgfCAyICsrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDc2MjIuZHRzaSBi
+L2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLmR0c2kNCj4gaW5kZXggNWI5ZWMw
+MzJjZThkLi43YzZkODcxNTM4YTYgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMv
+bWVkaWF0ZWsvbXQ3NjIyLmR0c2kNCj4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRl
+ay9tdDc2MjIuZHRzaQ0KPiBAQCAtNjk4LDYgKzY5OCw4IEBAIG1tYzE6IG1tY0AxMTI0MDAwMCB7
+DQo+ICAJCWNsb2NrcyA9IDwmcGVyaWNmZyBDTEtfUEVSSV9NU0RDMzBfMV9QRD4sDQo+ICAJCQkg
+PCZ0b3Bja2dlbiBDTEtfVE9QX0FYSV9TRUw+Ow0KPiAgCQljbG9jay1uYW1lcyA9ICJzb3VyY2Ui
+LCAiaGNsayI7DQo+ICsJCXJlc2V0cyA9IDwmcGVyaWNmZyBNVDc2MjJfUEVSSV9NU0RDMV9TV19S
+U1Q+Ow0KPiArCQlyZXNldC1uYW1lcyA9ICJocnN0IjsNClRoaXMgbG9va3Mgb2sgdG8gbWUuIEkg
+dGhpbmsgaXQncyBhbHNvIG5lY2Vzc2FyeSB0byB0cmlnZ2VyIHNvZnR3YXJlDQpyZXNldCBmb3Ig
+U0QobW1jMSkgYmVjYXVzZSBsb2FkZXIodWJvb3QpIG1pZ2h0IG1lc3MgdXAgTVNEQydzIHJlZ2lz
+dGVycy4NCiJTb2Z0d2FyZSByZXNldCIgaGVyZSB3aWxsIHJlc2V0IHJlZ2lzdGVycyBvZiBBSEIv
+QVhJIGJ1cyBkb21haW4sIHN1Y2gNCmFzIE1TRENfQ0ZHWzg6MTVdLiBtc2RjX3Jlc2V0X2h3KCkg
+aW4gbXRrLXNkLmMgd2lsbCBvbmx5IHJlc2V0IHJlZ2lzdGVycw0Kb2YgTVNEQyBDSyBkb21haW4u
+DQo=
 
