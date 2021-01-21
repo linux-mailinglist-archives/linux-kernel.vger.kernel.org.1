@@ -2,158 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B404F2FF2C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E932FF2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389376AbhAUSCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:02:45 -0500
-Received: from mga04.intel.com ([192.55.52.120]:37976 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733311AbhAUSCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:02:35 -0500
-IronPort-SDR: x/H7FBF3km1ithgUA9MAl/GcQ/PYQOV9RJAoa0do6D7gljfUiKVzkhfTO9cqd8f2SD64VcC9FI
- rdImyIMftJ1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="176740063"
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="176740063"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 10:00:46 -0800
-IronPort-SDR: WbrhJ1s/WXBl7c594rfxC/HuUP/PkmBXeJ4I2wCTdEr3SjQf3h2E8bpa6/NABbH42Aa3FuL1Rf
- /KnXMnaUzQeg==
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="354853875"
-Received: from swehrlex-mobl.amr.corp.intel.com (HELO [10.212.61.64]) ([10.212.61.64])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 10:00:44 -0800
-Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
- <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
- <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
- <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
- <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
- <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
-Date:   Thu, 21 Jan 2021 12:00:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389504AbhAUSCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389473AbhAUSBw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 13:01:52 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12655C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:01:12 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id e22so5814821iom.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:01:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j4qyNKroZf0PR1hUuEzsx/1WQ9PqO3whBh/bYKsXNk4=;
+        b=NwrMlXcOlysV4djOofPixbwvOb/eBpqs+bb7+bWOAoZNWmZReC52iZGxNDK9o01pX8
+         /qLR8LIa+yMXpxbfxe8xVuck43q5hxfGQ32mw0u9aNYHiQMhWh7cqAcCHltql3kPsNho
+         5ZYHbyKB6Vfoo1syuKP5tlH0NP7+iz4Y/xXjs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j4qyNKroZf0PR1hUuEzsx/1WQ9PqO3whBh/bYKsXNk4=;
+        b=R/uOWlfHH9H7gplGzYKb2juvn01wt0rc2SbF5naRaHHVHgc9EBS40iZmowU8tPn6zv
+         VmeNupVQTb6Iw11JpkEBIdqMIridFjtYZ2BhpnvvPVL11Qthhmk40yyx1O7OnpfWJBuz
+         LIlvqweJDkIpeu5S04CN4kCi1hmtfT1LI1P2naTqhLDAIPAVWrpeGZkyCKYs4Qndz8HX
+         EkiifsaW+nxJWDNEyNBQJsZwFlRDZF7g3qpXJAcUSmoVGCkJTgqZAQpPlz1pO9bg0vtE
+         ux9HqYJyI6fa1VCnqpVSwzZsY835275OZ2Oia9JiQB4wyw6J/s0R5Kph6czzNz1NKeVe
+         mS0g==
+X-Gm-Message-State: AOAM532x0c9Ot0FAg0McWz7KTsbZLckR0tQ/brVPDfW+1majDzKW9i8s
+        yRDwsMRaW0yeqfgxjW+WRzZ/6w==
+X-Google-Smtp-Source: ABdhPJznJJ/QBvTZQKHvjFLkKK9F4sWWxADtpcCtMpyGjJNm2zXjMNAkOgY6mRvBBmnE/WFugEH1Gw==
+X-Received: by 2002:a92:cb47:: with SMTP id f7mr778660ilq.169.1611252071329;
+        Thu, 21 Jan 2021 10:01:11 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s10sm2888397iob.4.2021.01.21.10.01.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 10:01:10 -0800 (PST)
+Subject: Re: rpc_xprt_debugfs_register() - atomic_inc_return() usage
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        "Anna.Schumaker@netapp.com" <Anna.Schumaker@netapp.com>
+Cc:     "bfields@fieldses.org" <bfields@fieldses.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <06c8f6ff-f821-e909-d40c-9de98657729f@linuxfoundation.org>
+ <020aee05c808b3725db5679967406a918840f86f.camel@hammerspace.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <5952caee-edb4-e9ec-6621-fb50cfe3384f@linuxfoundation.org>
+Date:   Thu, 21 Jan 2021 11:01:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
+In-Reply-To: <020aee05c808b3725db5679967406a918840f86f.camel@hammerspace.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/21/21 9:41 AM, Srinivas Kandagatla wrote:
-> 
-> 
-> On 21/01/2021 14:56, Pierre-Louis Bossart wrote:
+On 1/21/21 10:56 AM, Trond Myklebust wrote:
+> On Wed, 2021-01-20 at 16:52 -0700, Shuah Khan wrote:
+>> Hi Anna and Trond,
 >>
+>> I came across the following while reviewing atomic_inc_return()
+>> usages
+>> that cast return value to unsigned
 >>
->>> Port allocations are something like this:
->>>
->>> RX: (Simple)
->>> Port 1 -> HPH L/R
->>> Port 2 -> CLASS H Amp
->>> Port 3 -> COMP
->>> Port 4 -> DSD.
->>>
->>> TX: (This get bit more complicated)
->>> Port 1: PCM
->>> Port 2: ADC 1 & 2
->>> Port 3: ADC 3 & 4
->>> Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
->>> Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
->>>
->>> We handle the port allocation dynamically based on mixer and dapm 
->>> widgets in my code! Also channel allocations are different for each 
->>> function!
+>> rpc_xprt_debugfs_register()'s atomic_inc_return() usage looks a bit
+>> odd.
 >>
->> Sorry, I am not following here. What is dynamic here and use-case 
->> dependent? And is this a mapping on the master or the codec sides that 
->> you want to modify?
-> 
-> [SLAVE]-------[MASTER]
-> NA-------------Port 1: PCM
-> Port 1---------Port 2: ADC 1 & 2
-> Port 2---------Port 3: ADC 3 & 4
-> Port 3---------Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
-> Port 4---------Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
-> 
-> 
-> Mapping is still static however Number of ports selection and channel 
-> mask will be dynamic here.
-> 
-> 
-> Example: for Headset MIC usecase we will be using Slv Port1, Slv Port3 
-> along with Mstr Port2 and Master Port4
-> 
-> Similarly for usecases like Digital MIC or other Analog MICs.
-
-Sorry, I must be thick here, but in my experience the choice of Digital 
-or analog mics is a hardware design level not a use-case one. Using ADC 
-1 & 2 at the same time as DMICs is very surprising to me. You'd have 
-different sensitivities/performance, not sure how you would combine the 
-results.
-
-I also don't see how a headset mic can both use Analog and digital, 
-unless we have a different definition of what a 'headset' is.
-
->>>> Does this help and can you align on what Intel started with?
->>>
->>> Firstly, This is where the issue comes, if we go with the 
->>> suggested(dai->id) solution, we would end up with a long list of 
->>> dai-links with different combinations of both inputs/output 
->>> connections and usecases. Again we have to deal with limited DSP 
->>> resources too!
->>>
->>> Secondly, The check [1] in stream.c will not allow more than one 
->>> master port config to be added to master runtime. Ex: RX Port 1, 2, 3 
->>> is used for Headset Playback.
+>> - cur_id isn't initialized
+>> - id = (unsigned int)atomic_inc_return(&cur_id);
 >>
->> I am confused here, we do have examples in existing codec drivers 
->> where we use multiple ports for a single stream, e.g. for IV feedback 
->> we use 2 ports.
+>> Please note that id is int. Is it expected that cur_id could
+>> overflow?
+>> Is there a maximum limit for this value?
+>>
 > 
-> Is this on multi_link? which is why it might be working for you.
-
-no, this is done at the codec driver level, which has no notion of 
-multi-link. we pass a port_config as a array of 2.
-
-> Currently we have below check in sdw_stream_add_master().
+> Yes, we do expect cur_id to eventually overflow (once you have created
+> 2 billion RPC client instances), however the atomic increment
+> operations are expected to handle this correctly according to the
+> maintainers (I already asked them in a different context). Furthermore,
+> the code itself doesn't care about strict sequentiality. All it wants
+> from the counter is uniqueness, with that uniqueness condition actually
+> being enforced by the subsequent debugfs_create_file() call.
 > 
-> if (!bus->multi_link && stream->m_rt_count > 0) {
->      dev_err(bus->dev, "Multilink not supported, link %d\n", bus->link_id);
->      ret = -EINVAL;
->      goto unlock;
-> }
+> IOW: I don't think this is a real problem.
 > 
-> If we have single master(like my case) and dai-links which have more 
-> then one port  will be calling  sdw_stream_add_master() for each port, 
-> so m_rt_count above check will fail for the second call!
 
-if you use multiple ports in a given master for the same stream, you 
-should have the m_rt_count == 1. That's a feature, not a bug.
+Great. Thank you for a detailed explanation.
 
-A port is not a stream... You cannot call sdw_stream_add_master() for 
-each port, that's not what the concept was. You allocate ONE master_rt 
-per master, and that master_rt deals with one or more ports - your choice.
-
-A 'stream' is an abstract data transport which can be split across 
-multiple masters/sales and for each master/slave use multiple ports.
-When calling sdw_stream_add_master/slave, you need to provide a 
-port_config/num_ports to state which ports will be used on that 
-master/slave when using the stream. That's how we e.g. deal with 4ch 
-streams that are handled by two ports on each side.
-
-To up-level a bit, the notion of 'stream' is actually very very similar 
-to the notion of dailink. And in fact, the 'stream' is actually created 
-for Intel in the dailink .startup callback, so I am quite in the dark on 
-what you are trying to accomplish.
+-- Shuah
