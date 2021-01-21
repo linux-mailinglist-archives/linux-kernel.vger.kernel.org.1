@@ -2,73 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941752FE391
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4806B2FE393
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbhAUHNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:13:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727245AbhAUHLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:11:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A602C23877;
-        Thu, 21 Jan 2021 07:11:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611213062;
-        bh=X8yOPN+hKmInC/DRSvodSFKBWlat9kFmX3xsgoJYdZM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZqcEJytwGxeNaHcnvuLUiVfmLw7fhsyYn0CZzeYSEo72ucAxqD3uCMlcLjF/eruTZ
-         X+KA2Q2gvs1JukSAUPxZ6musFFJ0U+JMOewc2vX0JboxpJ5LDVeUxx6vYkbBniOxJ7
-         3p2vTQSU6uBtX7O8IrLyoC8xBbcBFityIyZ7oQBG4Qrc9p3zNL7DIoPfwWTQv5Ou5o
-         Nan+Hb1k261xsaANI8jq22CN6R6SiPVfh50x1DobHHJXCcnFoHFRzy3iZ93QoVjbhM
-         1Ugf+0pIl8lKm8A0zI2Djb1Y9HOmKy64oLz+mb46cO03JZiO8CZqOESiCtt0X038A/
-         SADfJTHxrVlnQ==
-Received: by mail-lf1-f45.google.com with SMTP id q8so1080723lfm.10;
-        Wed, 20 Jan 2021 23:11:01 -0800 (PST)
-X-Gm-Message-State: AOAM531HpiAUzSKyL41H2UL6X73uMb6sLwarylDvAB6z6T26KsJuqKru
-        b/RG9CP4Q6Ono7u94a5HZkY1mxLJ4KPT6wM7nic=
-X-Google-Smtp-Source: ABdhPJzrttCf3+Cf6MMkmGYKoV85CCdb2RCt8TvCgNmGnsV7Nlh6bzvtcwOMXaI/OwHAiLYaSy2Mj1Q8injhDzcn47c=
-X-Received: by 2002:ac2:4ade:: with SMTP id m30mr2534205lfp.231.1611213059919;
- Wed, 20 Jan 2021 23:10:59 -0800 (PST)
+        id S1726176AbhAUHOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:14:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726993AbhAUHMq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:12:46 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D66CC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:12:00 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id d81so2110405iof.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:12:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OZsWazF4dYZC98wDHpd0ubD48NULfRdKE5OyG6sJFcU=;
+        b=neIL2EfnYVasG+0/pAyXJfR/iIhhTdgEiw4bw+WlLk+JKZmBQET9JcfliErYor0xdm
+         U2h17CF63f9tqBFK8870j5tn/MkFtNYlIK7MZ6qhFdJR0nEXMapF+37aoA/gzq03CCtx
+         bSkXYk7WnFgvKaVF7/IGRX7CqDAL7dKjX3ou0LUFqTjUp5AJ58ki/NHnI13ezUxHJ7TV
+         v+fBJk3DTFb5bDMJZSTn7ULg2b1XaQDJKQUjy0vZYUswE9afhLmcrEAYXPIL6L5/lvLG
+         fsZ5RzFX7DBWUz7ad/iKMNg7xLpykzWcoSdah6KYCwMxihPw1gtoVIxxJE6LDbJ8G2J8
+         g55Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OZsWazF4dYZC98wDHpd0ubD48NULfRdKE5OyG6sJFcU=;
+        b=piZc8q3eThHN5FoVBg3SGc0EFZm/cGYLOgEvQc33EpgYyWJN0ZMtGp5OXpxA5TGal4
+         SCGUgnFLdvl/iJKdSoABrP2B2RYfGWiSCN+RuJdpE6GIlQGzSC/a9X6+rzYPdbvnw6xg
+         D7Mlv/1RXIzvwdtSwkMVw4PGIVfCiDNO1dO5wQQE0BWfNLlLc7NrCO2UHHOG59MkcaVu
+         NeDraoH1w/FhK238kNJuATvLiYlJvcBGY+qTpHUczSTe/IVqchjsfOPbvHtz34Po4isw
+         rKVKKWUxwhWoOz+wo2Di43L2jwQKndFFd4fEUCpHaQcwTdZjXE8xG6K14Xrl+OTftkQM
+         Claw==
+X-Gm-Message-State: AOAM531YlWj1XXphihFaxM8m5JG29e9MUqL9GAa4Za4S6kyTlsXXZHI8
+        gCDyy3MLp0+qH6F+ehu+XkfzaXvRHPv3oRvMXSI=
+X-Google-Smtp-Source: ABdhPJyJKdG0Gx122QH0/Kk/9iNZ6eTm68QHP/ojGwW8Aci3AtTeJvR+gThK8saWcRiqUngbf4Fki7IaErP52K+A2kQ=
+X-Received: by 2002:a92:cd81:: with SMTP id r1mr11070047ilb.252.1611213119750;
+ Wed, 20 Jan 2021 23:11:59 -0800 (PST)
 MIME-Version: 1.0
-References: <1608478763-60148-1-git-send-email-guoren@kernel.org> <X/buKPr5OCH3C32J@hirez.programming.kicks-ass.net>
-In-Reply-To: <X/buKPr5OCH3C32J@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 21 Jan 2021 15:10:48 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSLLC8yLzLNkuRwLXBihs3uy9TXVVKRpEF9mM4nN4FopQ@mail.gmail.com>
-Message-ID: <CAJF2gTSLLC8yLzLNkuRwLXBihs3uy9TXVVKRpEF9mM4nN4FopQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] csky: Remove custom asm/atomic.h implementation
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
+References: <20210106004850.GA11682@paulmck-ThinkPad-P72> <CAAH8bW95nyx6PEnPiBPoHMLoduvgU9KO7N=K7mhLORkA+zzhDw@mail.gmail.com>
+In-Reply-To: <CAAH8bW95nyx6PEnPiBPoHMLoduvgU9KO7N=K7mhLORkA+zzhDw@mail.gmail.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Wed, 20 Jan 2021 23:11:48 -0800
+Message-ID: <CAAH8bW8-q-2LaTC5DE0PnUBqs3V_69EAefLvwdZoeFSow8NYZA@mail.gmail.com>
+Subject: Re: [PATCH RFC cpumask] Allow "all", "none", and "last" in cpumask strings
+To:     paulmck@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        kernel-team@fb.com, Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On Thu, Jan 7, 2021 at 7:19 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Jan 6, 2021 at 12:49 AM Yury Norov <yury.norov@gmail.com> wrote:
 >
-> On Sun, Dec 20, 2020 at 03:39:19PM +0000, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
+> On Tue, Jan 5, 2021 at 4:48 PM Paul E. McKenney <paulmck@kernel.org> wrot=
+e:
 > >
-> > Use generic atomic implementation based on cmpxchg. So remove csky
-> > asm/atomic.h.
+> > Hello!
+> >
+> > This series allows "all", "none", and "last" to be used in cpumask
+> > strings.  This allows these strings to be less dependent on the underly=
+ing
+> > system.  For example, currently a string specifying all but the first
+> > CPU must be "1-7" on an eight-CPU system and "1-15" on a 16-CPU system.
+> > With this series, the single string "1-last" can be used regardless of =
+the
+> > number of CPUs (at least assuming that each system has at least one CPU=
+).
 >
-> Clarification would be good. Typically cmpxchg() loops perform
-> sub-optimal on LL/SC architectures, due to the double loop construction.
+> 'none' may be implemented as an empty string or string with separators on=
+ly,
+> but I have nothing against explicit 'none'. See other comments inline.
+>
+> Thanks,
+> Yury.
+>
+> > 1.      Un-inline cpulist_parse for SMP; prepare for ascii helpers,
+> >         courtesy of Paul Gortmaker.
+> >
+> > 2.      Make "all" alias global and not just RCU, courtesy of Paul
+> >         Gortmaker.
+> >
+> > 3.      Add a "none" alias to complement "all", courtesy of Paul
+> >         Gortmaker.
+> >
+> > 4.      Add "last" alias for cpu list specifications, courtesy of Paul
+> >         Gortmaker.
+> >
+> > 5.      Use "all" and "last" in "nohz_full" and "rcu_nocbs".
+> >
+> >                                                 Thanx, Paul
 
-Yes, you are right. But I still want to use comm cmpxchg instead of my
-implementation. Maybe in the future, we'll optimize it back.
+Hi Paul,
 
--- 
-Best Regards
- Guo Ren
+Today I found this series in linux-next despite downsides discovered during
+the review. This series introduces absolutely unneeded cap on the number of
+cpus in the system (9999), and also adds unsafe and non-optimal code.
 
-ML: https://lore.kernel.org/linux-csky/
+In addition to that, I observe this warning on powerpc:
+  CC      lib/cpumask.o
+lib/cpumask.c: In function =E2=80=98cpulist_parse=E2=80=99:
+lib/cpumask.c:222:17: warning: cast from pointer to integer of
+different size [-Wpointer-to-int-cast]
+  222 |   memblock_free((phys_addr_t)cpulist, len);
+      |                 ^
+
+Can you please revert this series unless all the problems will be fixed?
+
+Thanks,
+Yury
