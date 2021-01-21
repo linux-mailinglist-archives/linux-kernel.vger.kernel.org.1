@@ -2,120 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2FC2FE709
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEE22FE6F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbhAUKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:02:54 -0500
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:59581 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728324AbhAUJyi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:54:38 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id 2WeqlaRy1yutM2WetlgfcZ; Thu, 21 Jan 2021 10:53:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1611222823; bh=K6rNhnDxeeTsqdMiv2tJcjLeXv41h7g7u11/X7msR1Q=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=m+HrI34bcefDetmshtOZ7HnBR/SxQuknbxf1t9r4SARXYw1WvW/3LJOLFgGKzrtrc
-         tB5uvLfftgvx0RVRoZAS9/YHz9bj6WEXAYRSs5KENH5H3oUN4anwx/+JDsji745SCP
-         muC8llBxTZu5icslJhZ7L02ZoRY5Bp0DLLSIso30hmrl/OXKxmvRH1R5l5xcxzPUYe
-         0u6tHKtQvxwJ1DuKNDQOmhKnayUWwqf7vj3xvw6XxbxMwu4PtdBkgn5wggrXSzbYoA
-         HCi3hE53Lokx6nHlnbrx4ASUw70zRs676PsF/ukWdzTcA3++l5LCfMgoDDOuzEb3Uj
-         CQi+uAc88nr2Q==
-Subject: Re: [PATCH 5/9] media: jpu: Do not zero reserved fields
-To:     kieran.bingham+renesas@ideasonboard.com,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mikhail Ulyanov <mikhail.ulyanov@cogentembedded.com>
-References: <20210111145445.28854-1-ribalda@chromium.org>
- <20210111145445.28854-6-ribalda@chromium.org>
- <faacd5b3-949e-54bd-0ab8-bd43100809b0@ideasonboard.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <63e16013-43f7-0ad5-76d1-a4d10c666382@xs4all.nl>
-Date:   Thu, 21 Jan 2021 10:53:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728951AbhAUKAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:00:49 -0500
+Received: from mail-eopbgr760059.outbound.protection.outlook.com ([40.107.76.59]:15968
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728336AbhAUKAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:00:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LM/u6uIGejPHjEjwPzQDmOxru+ocbBsNDZBmCF1DAq28rV1W/ysTsWG/8sylY0LvsNyBvLFwvn7q49REWvS6WtxjCynCx6qWrKYh/QS9IL/UxXSBSMog/6lpbHk/jMn521EH06wnyUaaO5ZOrwuarZ4gWkin4k97qbW+9IiBha2eY0Lvjhoc4j/dfuKilBDEuUdk/TwuSJLm9XbFyRKIEOffoLcFfHiADscGpZeUIVSVwfwVn/oriwKkPtuCZnTI9l1cPooWoKF6pgNZ++vDvKllz5QBVJBYKmj6jQ+jPj/OSgMioP0OMYVx614sP+ZFYRHgQ4XyvZAYauAvyJ93bQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4OchD7+pkMKuxP1fklda8kDbYhh2bXCkrzfYWcP3Lno=;
+ b=hldNsCZ719wpDBv3As/VbLw9Nl6Q3jHPWEh+oi+P5uCiM33eamlMkz3CFmIjAyXCk4Z71PRqA1aigoOMOFpUw1pORI4jbxHCWFLbN8DCosxKqbudST3iGmHFLtUiISyAxlm8ld3kTSEKNXN3KvnXQ+ZVHj7AFhP9mY5DnXmC+1b7pSg3/CXcjMRMpKhyRj+ebdJdKddGQbqydEoDInLR3JG92gTNJEYStrdTcl9ozniFF1cy7EkJGpVGGtflEPVNlhRi/Q93TPVqoCaU3JczJG9bmQdCF6GYVrkb8yYIOoqSHm8pXDqs26mzbn97KPYCVwAQWI5tM+ER+8PXG87HRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4OchD7+pkMKuxP1fklda8kDbYhh2bXCkrzfYWcP3Lno=;
+ b=OHzA7EJQZ/iH2vhLlWFmcaVHDd3CAe+JMubT2dvKua7IosvWpPGd5wUdgA8QgYhfK54Rb6oFpqRm8WbPso6kmDcDsYAXF0LHy/UO69pADq+sXT90K64RzNCiVencwsJsql41GnCV6yA0ok3mmVMdo8gxxLhaYVuN+uq/fJCgU4o=
+Received: from MN2PR20CA0014.namprd20.prod.outlook.com (2603:10b6:208:e8::27)
+ by BL0PR02MB4546.namprd02.prod.outlook.com (2603:10b6:208:26::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.14; Thu, 21 Jan
+ 2021 09:59:27 +0000
+Received: from BL2NAM02FT059.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:e8:cafe::75) by MN2PR20CA0014.outlook.office365.com
+ (2603:10b6:208:e8::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend
+ Transport; Thu, 21 Jan 2021 09:59:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT059.mail.protection.outlook.com (10.152.76.247) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 09:59:26 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 21 Jan 2021 01:59:22 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Thu, 21 Jan 2021 01:59:22 -0800
+Envelope-to: bharat.kumar.gogada@xilinx.com,
+ linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ bhelgaas@google.com
+Received: from [10.140.9.2] (port=42522 helo=xhdbharatku40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <bharat.kumar.gogada@xilinx.com>)
+        id 1l2WkM-0000of-3Z; Thu, 21 Jan 2021 01:59:22 -0800
+From:   Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <bhelgaas@google.com>,
+        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+Subject: [PATCH] PCI: xilinx-nwl: Enable coherenct PCIe traffic using CCI
+Date:   Thu, 21 Jan 2021 15:29:16 +0530
+Message-ID: <1611223156-8787-1-git-send-email-bharat.kumar.gogada@xilinx.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <faacd5b3-949e-54bd-0ab8-bd43100809b0@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDqQLMGHHOnIl9p2EtW0A1upeLBdfxINItgfAzO2ijb0TA7j6RetrHEaZNrfAad4vXa6LhfwtwsTi8CnItZCE3RYfO74jjMN4sek9Vl8p/dPJHoV2UV8
- a0/VCui6az3loozealCLCJP4CNuhxkhCgoX/xin9uSinrrMx3g7iBgaQM8AGM5K/Z3PEelwhmW4ZgvT/o/DXvxXjn6HqEhKvV/lOCB5AhqWxZ8KIHYstL8C3
- DkakfVflGFqsHupWV6MnWlntnugVlAXUF4RM4RZE7lUjCcImklF2UBPV/pinCalKwA9rEruDjn+u8P8A3QUF0OsOvnzndNggH24Klbw7HahXus49wu9FvYth
- FdahRTOm0+8KQmYqZKQinOLXjzC4kw==
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 08473162-bdb7-4459-f9e0-08d8bdf33ce7
+X-MS-TrafficTypeDiagnostic: BL0PR02MB4546:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB454670503844F420BA908FDDA5A10@BL0PR02MB4546.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4JGz07VU21SWfjXrEVQX+K7bbttj4Vm/QFaxbloA3X4et55Ev60y/sSTZkq4IvhoDxipaWeigStiGKcYBkKTGUqEDUaK4nQdg5U4UmNQlVBjfZlJz1aSb3VFTphfnRw4gDbeMSnwgPGxwjw0tNxxFHKgy6ubLm7BZeSCxlZUqUYxzJST/StIBM6hVYl+KgLE1O8Tit31J9pUyuG2ULAv66LamYI9VlUNFTcbQoMYCnp+FYm+adomRROPTWtWEtrf2E0LnjfCukH2Jrt3Fz9uy2MxEgzA2H3VtMj7DUB+c1aoPIcv2N7z0rrEO1copgrIlJ+VRkiSLh3Eq6dL/w7zlWEPbUYfeZ1ppfFyQ8HD84OsY+egqwLazJ7pKNKIFaUJFIvuHQDH//lbj9DXVKbVc1TZPnVkiqZt9SurDFo432/B2uDYp4NW8vBAC5nd4iVmb4sS6tDze7Ys51IYqhLFT+F+ZPmmzQ9WIQ5DLkwJyrueHUk7JGYKtFs092iS6rtvR1Hy2lktrG/0u8oibh6ojH3KyDQH3L3gLr+ACi54raY5qL9e92EPWF7STpVQLoxvgg7/qNtyaDsGmyzleJicMFbUe9nNIm5whJkJNugMptpKDFCXpLm2cVZwp++5tMS9
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(46966006)(110136005)(4326008)(5660300002)(26005)(2906002)(47076005)(7636003)(186003)(426003)(478600001)(356005)(6666004)(8676002)(36756003)(107886003)(54906003)(7696005)(8936002)(316002)(82310400003)(82740400003)(70586007)(70206006)(336012)(9786002)(2616005)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 09:59:26.8056
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08473162-bdb7-4459-f9e0-08d8bdf33ce7
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT059.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4546
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/2021 12:07, Kieran Bingham wrote:
-> Hi Ricardo,
-> 
-> On 11/01/2021 14:54, Ricardo Ribalda wrote:
->> Core code already clears reserved fields of struct
->> v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
->> v4l2_plane_pix_format reserved fields").
->>
->> Cc: Mikhail Ulyanov <mikhail.ulyanov@cogentembedded.com>
->> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
->> ---
->>  drivers/media/platform/rcar_jpu.c | 5 -----
->>  1 file changed, 5 deletions(-)
->>
->> diff --git a/drivers/media/platform/rcar_jpu.c b/drivers/media/platform/rcar_jpu.c
->> index 9b99ff368698..2bddc957cb87 100644
->> --- a/drivers/media/platform/rcar_jpu.c
->> +++ b/drivers/media/platform/rcar_jpu.c
-> 
-> There's a memset(cap->reserved...) in jpu_querycap()
-> 
-> Is that also applicable and covered by the core?
+- Add support for routing PCIe traffic coherently when
+ Cache Coherent Interconnect(CCI) is enabled in the system.
 
-Yes: VIDIOC_QUERYCAP is a read-only ioctl: the core will always zero
-the struct in that case before handing it over to the driver.
+Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+---
+ drivers/pci/controller/pcie-xilinx-nwl.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-This is something for a separate patch, though. There may well be
-more drivers that do this for querycap.
-
-Regards,
-
-	Hans
-
-> 
-> Looking at v4l_querycap() it doesn't seem to be so:
-> 
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
->> @@ -793,7 +793,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
->>  	pix->colorspace = fmt->colorspace;
->>  	pix->field = V4L2_FIELD_NONE;
->>  	pix->num_planes = fmt->num_planes;
->> -	memset(pix->reserved, 0, sizeof(pix->reserved));
->>  
->>  	jpu_bound_align_image(&pix->width, JPU_WIDTH_MIN, JPU_WIDTH_MAX,
->>  			      fmt->h_align, &pix->height, JPU_HEIGHT_MIN,
->> @@ -808,8 +807,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
->>  			pix->plane_fmt[0].sizeimage = JPU_JPEG_HDR_SIZE +
->>  				(JPU_JPEG_MAX_BYTES_PER_PIXEL * w * h);
->>  		pix->plane_fmt[0].bytesperline = 0;
->> -		memset(pix->plane_fmt[0].reserved, 0,
->> -		       sizeof(pix->plane_fmt[0].reserved));
->>  	} else {
->>  		unsigned int i, bpl = 0;
->>  
->> @@ -822,8 +819,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
->>  		for (i = 0; i < pix->num_planes; ++i) {
->>  			pix->plane_fmt[i].bytesperline = bpl;
->>  			pix->plane_fmt[i].sizeimage = bpl * h * fmt->bpp[i] / 8;
->> -			memset(pix->plane_fmt[i].reserved, 0,
->> -			       sizeof(pix->plane_fmt[i].reserved));
->>  		}
->>  	}
->>  
->>
-> 
+diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
+index 07e3666..08e06057 100644
+--- a/drivers/pci/controller/pcie-xilinx-nwl.c
++++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+@@ -26,6 +26,7 @@
+ 
+ /* Bridge core config registers */
+ #define BRCFG_PCIE_RX0			0x00000000
++#define BRCFG_PCIE_RX1			0x00000004
+ #define BRCFG_INTERRUPT			0x00000010
+ #define BRCFG_PCIE_RX_MSG_FILTER	0x00000020
+ 
+@@ -128,6 +129,7 @@
+ #define NWL_ECAM_VALUE_DEFAULT		12
+ 
+ #define CFG_DMA_REG_BAR			GENMASK(2, 0)
++#define CFG_PCIE_CACHE			GENMASK(7, 0)
+ 
+ #define INT_PCI_MSI_NR			(2 * 32)
+ 
+@@ -675,6 +677,12 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
+ 	nwl_bridge_writel(pcie, CFG_ENABLE_MSG_FILTER_MASK,
+ 			  BRCFG_PCIE_RX_MSG_FILTER);
+ 
++	/* This routes the PCIe DMA traffic to go through CCI path */
++	if (of_dma_is_coherent(dev->of_node)) {
++		nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX1) |
++				  CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
++	}
++
+ 	err = nwl_wait_for_link(pcie);
+ 	if (err)
+ 		return err;
+-- 
+2.7.4
 
