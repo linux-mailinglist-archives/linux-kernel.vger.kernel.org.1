@@ -2,68 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8012FE44D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE0C2FE472
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727718AbhAUHrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:47:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46300 "EHLO mail.kernel.org"
+        id S1727954AbhAUH4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:56:36 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49273 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727402AbhAUHqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:46:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 189C52396D;
-        Thu, 21 Jan 2021 07:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611215142;
-        bh=mixHPt/ihTHTK+S1giCmJV/xpmx+9AtQGmWtkT5kkAI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZaWDKzIl9YuT1XMYZLu5HJ2wDGUdi8Opmm+laj3J7PcwwdCMHN/TBx1jmfMAAssSe
-         qUFlW1Di6oPKaONpqTcQcaH/fqgp/VeBmCzU3aOAmwbe9o9BybcyTp9aw41mjkNLuu
-         rT82l+K37avxtpFgddANBCmnvSrGac6jjD4anEvM=
-Date:   Thu, 21 Jan 2021 08:45:37 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ricky_wu@realtek.com
-Cc:     arnd@arndb.de, ricky_wu@realtek.corp-partner.google.com,
-        sashal@kernel.org, levinale@google.com,
-        keitasuzuki.park@sslab.ics.keio.ac.jp, kdlnx@doth.eu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtsx: pci: fix device aspm state bug
-Message-ID: <YAkxIYvpGYQfd/bz@kroah.com>
-References: <20210121072858.32028-1-ricky_wu@realtek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121072858.32028-1-ricky_wu@realtek.com>
+        id S1727651AbhAUHtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:49:00 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 10L7mCIr024127;
+        Thu, 21 Jan 2021 08:48:12 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org, Willy Tarreau <w@1wt.eu>
+Subject: [PATCH 10/9] tools/rcutorture: fix position of -lgcc in mkinitrd.sh
+Date:   Thu, 21 Jan 2021 08:48:08 +0100
+Message-Id: <20210121074808.24087-1-w@1wt.eu>
+X-Mailer: git-send-email 2.9.0
+In-Reply-To: <20210121072031.23777-1-w@1wt.eu>
+References: <20210121072031.23777-1-w@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 03:28:58PM +0800, ricky_wu@realtek.com wrote:
-> From: Ricky Wu <ricky_wu@realtek.corp-partner.google.com>
-> 
-> changed rtsx_pci_disable_aspm() to rtsx_disable_aspm()
-> make sure pcr->aspm_enabled to sync with aspm state
+I placed -lgcc poorly in the build options, resulting in possible build
+failures that are typically encountered on ARM when uidiv is required;
+-lgcc must be placed after the source files.
 
-Can you make this a bit more descriptive?
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+---
 
+Sorry for this last one, I figured after my last documentation fix that
+the incorrect command line did indeed slip into one command line that is
+in mkinitrd.sh. It would break ARM builds if a divide is required by the
+init code.
 
-> 
-> BUG=b:175338107
-> TEST=chromeos-kernel-5_4
+ tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-What are these lines for?
+diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+index 38e424d..70d62fd 100755
+--- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
++++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+@@ -70,7 +70,7 @@ if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
+ 	# architecture supported by nolibc
+         ${CROSS_COMPILE}gcc -fno-asynchronous-unwind-tables -fno-ident \
+ 		-nostdlib -include ../../../../include/nolibc/nolibc.h \
+-		-lgcc -s -static -Os -o init init.c
++		-s -static -Os -o init init.c -lgcc
+ else
+ 	${CROSS_COMPILE}gcc -s -static -Os -o init init.c
+ fi
+-- 
+2.9.0
 
-> 
-> Signed-off-by: Ricky Wu <ricky_wu@realtek.corp-partner.google.com>
-
-This email does not match your From: address :(
-
-> Change-Id: I4b146dcdaaf2f2a965381c32780b0b110d751258
-
-Please use checkpatch.pl before sending patches to us :(
-
-And why did you send this twice?
-
-thanks,
-
-greg k-h
