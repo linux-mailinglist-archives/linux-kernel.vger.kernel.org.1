@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067782FE1FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECFD2FE206
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbhAUFqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
+        id S1727202AbhAUFtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbhAUFqG (ORCPT
+        with ESMTP id S1727378AbhAUFs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 00:46:06 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD964C061575;
-        Wed, 20 Jan 2021 21:45:25 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id z22so791037qto.7;
-        Wed, 20 Jan 2021 21:45:25 -0800 (PST)
+        Thu, 21 Jan 2021 00:48:26 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9DFC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:47:35 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id i20so568100otl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:47:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YuenuPcIMSAFG1N1r41eV0meYVfjDDNayQuIYb1dHOA=;
-        b=bGkystrN6DozAxdsd/ui49OciuzFQMMde0teysSzup/W2tswIvehRAcTqq1GQ9VCv5
-         YzRYZICpTLHnVBuMdzH0Nr+LUZQU3R2pCa8htUSbXYNupwsLxXkwjBmytE4cIja+FU1n
-         9xT0NYdU4juWrZT4RdcdiYI8624y4NIJSOfOivoBkD079imGXWiXxcw8iRHjgtN7kKx6
-         T2iQil88BNyTD4vygvMlS4fM24SblRSZv5s0ssu+EIdyTsn0KU+Utamc5kmmFFdrelm4
-         JZYSfZ9Ug8UzyH9xGcurs1kjh6btmv26Si4nD0k+rE++ZVAOmVGemizoD1CEuWiI02pV
-         PCbg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=So7n4CXW5rfKosTBs+wAYGz48ULvBM4ktYJXBciZ7Dc=;
+        b=glVhYP4Hu5qOk9XNH1PetEtPf065rkp8x4wHsjwwkBo4jfTlVvwx0U706YM9o7PlR5
+         jBrl2ZnGv2+mtCQkUqkUbXZF4jOYpgKTK2w7nMqOyAM8r6+C9uGiL6L7PejsYpWlskc2
+         q7bRCXo5M6tg2AdAtkq3kPcJJlp5mg9D018HK5w39x3c5b2FQ+XvbzDfx2nhkaQKN8II
+         9q5JFrFOlXnCOUl+EcPlaDaq8s3YIFMhhugXN/b6aDSNjT53LFqi2QKTJk0CSWfd6Sp+
+         9bv7f5wxXfKVh3XEBLOxQskKVuqy6fLBVHSHXIblh64umV+rQT8/x5vdGUxi1rlE07DA
+         +XSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YuenuPcIMSAFG1N1r41eV0meYVfjDDNayQuIYb1dHOA=;
-        b=uRb2b5JbpOm0zWn1F243xrDn0GiO0mMFnHKU+tox8+/ysfdy+b8iHBxPbgl7D/2rz0
-         od/EYMdv6jlkseexJd5XlGy7MNp6GhGw3+mqWqiKRzeDckefZKxh6vutPB3V6lYwooMf
-         OnYZihyYNXAoLIK9Z9jEJsZTUkKqYMYu2DYXONLY9rrQCTY574GTmpP8C7WdpY0hWIiK
-         Dc4tnTQ05qIzv57wUQSwCcDOXY7HEyAAtUcZDSEPxzFlfVPlkvJgY72w1X2TZtwCcHct
-         fMMNsyyFe6JirXoBim5GcTKW/In4AJkB3U722Yso2KOoOsr8kT4N9jMqfWCLeoH5nE3x
-         ZMcw==
-X-Gm-Message-State: AOAM532vMzKw3wCNcySSxIvfJoGv/R8if59eD/qGSzaAsHdyeOGqHlwt
-        sRmL5wV5O9JlBJv5ENZK1UABU4kgMsf2vA==
-X-Google-Smtp-Source: ABdhPJzUJvZZVLZRw2gaUDP+9z9uGn7QdTJh6Fj+tI8FPAblytHtu46WIRXqYtnPMzLjgdU6u0a3Og==
-X-Received: by 2002:ac8:7101:: with SMTP id z1mr12161237qto.210.1611207925194;
-        Wed, 20 Jan 2021 21:45:25 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id v67sm3189649qkd.94.2021.01.20.21.45.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 21:45:24 -0800 (PST)
-Subject: Re: [PATCH V5 5/5] of: unittest: Statically apply overlays using
- fdtoverlay
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
-References: <cover.1611124778.git.viresh.kumar@linaro.org>
- <696c137461be8ec4395c733c559c269bb4ad586e.1611124778.git.viresh.kumar@linaro.org>
- <20210121005145.GF5174@yekko.fritz.box>
- <7d6adfd9-da1e-d4ca-3a04-b192f0cf36b0@gmail.com>
- <20210121053426.4dw5oqz7qb4y7hvm@vireshk-i7>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <1cbafa2a-fe9e-04ec-35cc-d675a781a5b6@gmail.com>
-Date:   Wed, 20 Jan 2021 23:45:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=So7n4CXW5rfKosTBs+wAYGz48ULvBM4ktYJXBciZ7Dc=;
+        b=gEiEqvKC7Pf9KkdIqJjZVFVNCUTbIOxEofTBu9cCiDOyEIN2wxdyj6GHhHGjABTr8b
+         3kOXLG4VWKFxEHpYdXnUNt0t6T+a1986T57i0l5w9y8A5zwI9GTsBJ8+rD/4cv/D77Js
+         x5a25HwpZeEfZYgZMTKh4fEpZ9SlFEtiyTU5oowk6D5XnZ0ZaNJW6BGhps+hW3CSzLnD
+         mgWtbqjr0It1Kw92fR3tGazvThBz/QeOKHmHbM+Ren4kO3jbFv+kN8vkk00BnziBF/fx
+         q9+gKwNn8Er4fdyE9DpTVzmnyJYTrNsqvWIMtG/gk4BMyQcBLpROx62I/cCzVgT8nCx9
+         ozBA==
+X-Gm-Message-State: AOAM531+0F3TFh0JPtpnquHRGeGA2nfFhcy6T4sd3vPTPhHONDJwC6MQ
+        Nsp0LR3dXnICVkJR2K1n5L+YkA==
+X-Google-Smtp-Source: ABdhPJysvLoMeu7qgenoO6uU13klsr+b3S9kAO++BSTs7ZLhpyiB2MkpLh7oktSJj0YYNOZnAM70Iw==
+X-Received: by 2002:a9d:611b:: with SMTP id i27mr4298758otj.352.1611208054744;
+        Wed, 20 Jan 2021 21:47:34 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 67sm79061ott.64.2021.01.20.21.47.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 21:47:33 -0800 (PST)
+Date:   Wed, 20 Jan 2021 23:47:32 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] clk: qcom: gcc: Add global clock controller driver
+ for SC8180x
+Message-ID: <YAkVdOmy0MTeRQhz@builder.lan>
+References: <20210120223556.1610214-1-bjorn.andersson@linaro.org>
+ <20210120223556.1610214-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210121053426.4dw5oqz7qb4y7hvm@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120223556.1610214-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/20/21 11:34 PM, Viresh Kumar wrote:
-> On 20-01-21, 23:14, Frank Rowand wrote:
->> It is a convenient FDT to use because it provides the frame that the overlays
->> require to be applied.  It is fortunate that fdtoverlay does not reject the use
->> of an FDT with overlay metadata as the base blob.
-> 
->> This is probably a good idea instead of depending on the leniency of fdtoverlay.
-> 
-> I believe fdtoverlay allows that intentionally, that would be required
-> for the cases where we have a hierarchy of extension boards or
-> overlays.
-> 
-> A platform can have a base dtb (with /plugin/;), then we can have an
-> overlay (1) for an extension board (with /plugin/;) and then an
-> overlay (2) for an extension board for the previous extension board.
-> 
-> In such a case overlay-(2) can't be applied directly to the base dtb
-> as it may not find all the nodes it is trying to update. And so
-> overlay-(2) needs to be applied to overlay-(1) and then the output of
-> this can be applied to the base dtb.
+On Wed 20 Jan 16:35 CST 2021, Bjorn Andersson wrote:
+> diff --git a/drivers/clk/qcom/gcc-sc8180x.c b/drivers/clk/qcom/gcc-sc8180x.c
+[..]
+> +static struct gdsc emac_gdsc = {
+> +	.gdscr = 0x106004,
 
-I have only the most surface knowledge of fdtoverlay, mostly from
-"fdtoverlay --help", but you can apply multiple overlays with a
-single invocation of fdtoverlay.  My _assumption_ was that the
-overlays would be applied in order, and after any given overlay
-was applied, subsequent overlays could reference the previously
-applied overlay.
+Seems like I missed squashing the fixup where I subtract the gcc base
+address after migrating these from the downstream dts.
 
-Is my assumption incorrect?
+As written the platform doesn't boot.
 
-> 
-> This is very similar to what I tried with the intermediate.dtb
-> earlier.
-> 
+Please let me know if there's any other feedback before I respin v2.
 
+Regards,
+Bjorn
+
+> +	.pd = {
+> +		.name = "emac_gdsc",
+> +	},
+> +	.pwrsts = PWRSTS_OFF_ON,
+> +	.flags = POLL_CFG_GDSCR,
+> +};
