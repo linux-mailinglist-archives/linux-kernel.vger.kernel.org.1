@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339922FEC33
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EF72FEC2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbhAUNnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:43:14 -0500
-Received: from mail-pf1-f170.google.com ([209.85.210.170]:34900 "EHLO
-        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbhAUNh5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726274AbhAUNmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:42:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727031AbhAUNh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 08:37:57 -0500
-Received: by mail-pf1-f170.google.com with SMTP id w14so1516014pfi.2;
-        Thu, 21 Jan 2021 05:37:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=UUiCXFOSqjAdUvC0wdNT72TPUZ0us785diWKGNau67U=;
-        b=adl9o12y/CgGMozjQrScnzyDArrOBpch+XzKVCE5zuSJ4ox39Kw7mp6ozBLrYG28+c
-         i36ubnze3YsUclaEEloh7yqjTMvAaWrg8qu9I34KaLaBYfJ1YaNocm31W0UaTTQGaYhx
-         Pfj5HRiLKDVMPm/IpZhaFJpEJx+1zDCrJsyE2nGB9BI3KZmsJCxSPKH7+YN/fKc08Xzs
-         8IYekaofdrbvcK4vyJ8eutmQqEnNALh4MwVvD/7dNnBY2kfrRa0/1Wr+WNVFbcCubyfM
-         qQ0ZjFLC23Kcw0OicuHjSMhE5Olam6U/pD92c6fTSMQLpp8QNBtaR1cdQMdhSclgdjUd
-         nZWw==
-X-Gm-Message-State: AOAM530qt/ZqpEQkNeQGqI5u1R7hrpFL8CQ7u+kYOSW6clWuVG/COmjM
-        y20HpXOpioZTKSIepnmun0Y=
-X-Google-Smtp-Source: ABdhPJwJtZ3kQCTWB3UcwNNL4F5Dgg+OSEw3EyBIYjfB6PBauVbsf8bu80Dphfic1UGjQfQipMeypw==
-X-Received: by 2002:a63:f109:: with SMTP id f9mr14587480pgi.390.1611236216077;
-        Thu, 21 Jan 2021 05:36:56 -0800 (PST)
-Received: from [10.101.46.154] (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id w186sm1795614pfc.182.2021.01.21.05.36.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 05:36:54 -0800 (PST)
-To:     Luca Coelho <luciano.coelho@intel.com>,
-        Ihab Zhaika <ihab.zhaika@intel.com>
-From:   You-Sheng Yang <vicamo.yang@canonical.com>
-Subject: iwlwifi may wrongly cast a iwl_cfg_trans_params to iwl_cfg
-Cc:     "David S. Miller\"" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        You-Sheng Yang <vicamo@gmail.com>
-Message-ID: <c651c75d-e1f4-ac7b-aa8f-b0a2035cbf4f@canonical.com>
-Date:   Thu, 21 Jan 2021 21:36:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45A0023877;
+        Thu, 21 Jan 2021 13:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611236218;
+        bh=2s+lWo7KDrJYr75WaZovApC/psdJ+hHVFHC0BqGesDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YCbc/X5axhrDjjnt7f7J2xL/lmC2QSuqSPKWdv8BS9xiKmGccNikKBxjewEqdcdDR
+         Gxaww/ztz6vqEBALb00zrL0v/4Illfj868zga21Y6XltJuGm84IuvgXiPShuBzT/2w
+         v0IadtCgzIm6IsYnRBBLhYBJ1qXVu3DxEH58/RqqhK5iRc/JUnm14Kq0S3tS5YlwSv
+         qWS7X0pKkMgyyLl8fOCrnu/dKRO5Z7TfhQEvsbiFfqG7TuhnwR8xZlgAdgFotvtuRv
+         coKwcVbHv09axDK2ZTfQLLh8F4pw+lWrJCnALJXbl8Bp1qxi817EMAUM2w+KyH+xDS
+         YiqE37tGEJXYQ==
+Date:   Thu, 21 Jan 2021 13:36:52 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Price <steven.price@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH 1/1] arm64/sparsemem: reduce SECTION_SIZE_BITS
+Message-ID: <20210121133652.GA22341@willie-the-truck>
+References: <cover.1611206601.git.sudaraja@codeaurora.org>
+ <43843c5e092bfe3ec4c41e3c8c78a7ee35b69bb0.1611206601.git.sudaraja@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43843c5e092bfe3ec4c41e3c8c78a7ee35b69bb0.1611206601.git.sudaraja@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jan 20, 2021 at 09:29:13PM -0800, Sudarshan Rajagopalan wrote:
+> memory_block_size_bytes() determines the memory hotplug granularity i.e the
+> amount of memory which can be hot added or hot removed from the kernel. The
+> generic value here being MIN_MEMORY_BLOCK_SIZE (1UL << SECTION_SIZE_BITS)
+> for memory_block_size_bytes() on platforms like arm64 that does not override.
+> 
+> Current SECTION_SIZE_BITS is 30 i.e 1GB which is large and a reduction here
+> increases memory hotplug granularity, thus improving its agility. A reduced
+> section size also reduces memory wastage in vmemmmap mapping for sections
+> with large memory holes. So we try to set the least section size as possible.
+> 
+> A section size bits selection must follow:
+> (MAX_ORDER - 1 + PAGE_SHIFT) <= SECTION_SIZE_BITS
+> 
+> CONFIG_FORCE_MAX_ZONEORDER is always defined on arm64 and so just following it
+> would help achieve the smallest section size.
+> 
+> SECTION_SIZE_BITS = (CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT)
+> 
+> SECTION_SIZE_BITS = 22 (11 - 1 + 12) i.e 4MB   for 4K pages
+> SECTION_SIZE_BITS = 24 (11 - 1 + 14) i.e 16MB  for 16K pages without THP
+> SECTION_SIZE_BITS = 25 (12 - 1 + 14) i.e 32MB  for 16K pages with THP
+> SECTION_SIZE_BITS = 26 (11 - 1 + 16) i.e 64MB  for 64K pages without THP
+> SECTION_SIZE_BITS = 29 (14 - 1 + 16) i.e 512MB for 64K pages with THP
+> 
+> But there are other problems in reducing SECTION_SIZE_BIT. Reducing it by too
+> much would over populate /sys/devices/system/memory/ and also consume too many
+> page->flags bits in the !vmemmap case. Also section size needs to be multiple
+> of 128MB to have PMD based vmemmap mapping with CONFIG_ARM64_4K_PAGES.
+> 
+> Given these constraints, lets just reduce the section size to 128MB for 4K
+> and 16K base page size configs, and to 512MB for 64K base page size config.
+> 
+> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+> Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Logan Gunthorpe <logang@deltatee.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Steven Price <steven.price@arm.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  arch/arm64/include/asm/sparsemem.h | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
 
-With an Intel AX201 Wi-Fi [8086:43f0] subsystem [1a56:1652] pcie card,
-device fails to load firmware with following error messages:
+Anshuman -- are you happy with this now?
 
-  Intel(R) Wireless WiFi driver for Linux
-  iwlwifi 0000:00:14.3: enabling device (0000 -> 0002)
-  iwlwifi 0000:00:14.3: Direct firmware load for (efault)128.ucode
-failed with error -2
-  iwlwifi 0000:00:14.3: Direct firmware load for (efault)127.ucode
-failed with error -2
-  ...
-  iwlwifi 0000:00:14.3: Direct firmware load for (efault)0.ucode failed
-with error -2
-  iwlwifi 0000:00:14.3: no suitable firmware found!
-  iwlwifi 0000:00:14.3: minimum version required: (efault)0
-  iwlwifi 0000:00:14.3: maximum version supported: (efault)128
-
-This is also reported on some public forums:
-
-*
-https://askubuntu.com/questions/1297311/ubuntu-20-04-wireless-not-working-for-intel-ax1650i-lenovo-thinkpad
-*
-https://www.reddit.com/r/pop_os/comments/jxmnre/wifi_and_bluetooth_issues_in_2010/
-
-In drivers/net/wireless/intel/iwlwifi/pcie/drv.c:
-
-  static const struct pci_device_id iwl_hw_card_ids[] = {
-    {IWL_PCI_DEVICE(0x4232, 0x1201, iwl5100_agn_cfg)},
-    ...
-    {IWL_PCI_DEVICE(0x43F0, PCI_ANY_ID, iwl_qu_long_latency_trans_cfg)},
-    ...
-  };
-
-The third argument to IWL_PCI_DEVICE macro will be assigned to
-driver_data field of struct pci_device_id. However, iwl5100_agn_cfg has
-type struct iwl_cfg, and yet iwl_qu_long_latency_trans_cfg is typed
-struct iwl_cfg_trans_params.
-
-  struct iwl_cfg_trans_params {
-    ...
-  };
-
-  struct iwl_cfg {
-    struct iwl_cfg_trans_params trans;
-    const char *name;
-    const char *fw_name_pre;
-    ...
-  };
-
-It's fine to cast a pointer to struct iwl_cfg, but it's not always valid
-to cast a struct iwl_cfg_trans_params to struct iwl_cfg.
-
-In function iwl_pci_probe, it tries to find an alternative cfg by
-iterating throughout iwl_dev_info_table, but in our case, [8086:43f0]
-subsystem [1a56:1652], there will be no match in all of the candidates,
-and iwl_qu_long_latency_trans_cfg will be assigned as the ultimate
-struct iwl_cfg, which will be certainly wrong when you're trying to
-dereference anything beyond sizeof(struct iwl_cfg_trans_params), e.g.
-cfg->fw_name_pre.
-
-In this case, ((struct
-iwl_cfg_trans_params*)&iwl_qu_long_latency_trans_cfg)->name will be "'",
-and ((struct
-iwl_cfg_trans_params*)&iwl_qu_long_latency_trans_cfg)->fw_name_pre gives
-"(efault)", pure garbage data.
-
-So is there something missed in the iwl_dev_info_table, or better, just
-find another solid safe way to handle such trans/cfg mix?
-
-Regards,
-You-Sheng Yang
+Will
