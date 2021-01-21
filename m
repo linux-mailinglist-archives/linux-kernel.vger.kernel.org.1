@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CAD2FEAFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF892FEB50
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbhAUNBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:01:08 -0500
-Received: from m12-14.163.com ([220.181.12.14]:48011 "EHLO m12-14.163.com"
+        id S1731495AbhAUNO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:14:56 -0500
+Received: from m12-14.163.com ([220.181.12.14]:46912 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729516AbhAUNAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:00:00 -0500
+        id S1731713AbhAUNNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:13:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=FEdSHQ+VY9QSsQqqOi
-        sGJNCqPdWCuaYg20onoC444ig=; b=L7JAkcxBw3NQbgfQrQQbjYKBW8UwDHFMdp
-        kKGKYKsoM+9YWai8041JNiJyXtemYZDCtVGSKO+6+bW3TnUDQAiXG+8Qqih3W3GP
-        dpEXwmIq4EG1Pfx8uvIHZG8CcsaLfEXUpDBd/QIcZlvq2qMqfrT3by7Ztqp6LtH/
-        jTNwlvTHw=
+        s=s110527; h=From:Subject:Date:Message-Id; bh=xUdecuC7vvbq3Zw4lX
+        6slIDn9RFCjzwmGVMWNixg2e4=; b=PKUKUNGQ8XeHyTK85add9f8bwp0+gxdQ7T
+        AEsepw3akoxRkbpQCCSyQltQgB2ZLKsty4fsQem0BPIjySmYDVC/Dp//KftLT48E
+        gQQZLncr3qUAcS0+f3+1PG4eNBycKxdZwJxIeJUfrCk28XFu2yBMEzmsKV1gDacO
+        lbHyogPpk=
 Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp10 (Coremail) with SMTP id DsCowAA3XoqjKwlg_aB8hA--.62335S4;
-        Thu, 21 Jan 2021 15:22:15 +0800 (CST)
+        by smtp10 (Coremail) with SMTP id DsCowABHk3t9Lglgt_V9hA--.20648S4;
+        Thu, 21 Jan 2021 15:34:25 +0800 (CST)
 From:   Pan Bian <bianpan2016@163.com>
-To:     Matias Bjorling <mb@lightnvm.io>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] lightnvm: fix memory leak when submit fails
-Date:   Wed, 20 Jan 2021 23:22:02 -0800
-Message-Id: <20210121072202.120810-1-bianpan2016@163.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Gustavo Padovan <gustavo.padovan@collabora.co.uk>,
+        Andrei Emeltchenko <andrei.emeltchenko@intel.com>
+Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] Bluetooth: drop HCI device reference before return
+Date:   Wed, 20 Jan 2021 23:34:19 -0800
+Message-Id: <20210121073419.14219-1-bianpan2016@163.com>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DsCowAA3XoqjKwlg_aB8hA--.62335S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF1kuFy7Cr47Xr4rXry5Arb_yoWfJrb_C3
-        WjvFs7AryrCay2qwn8t3W3Z3s29w4rWrsY9r4ftasxJryDXwnIyayYgr9Iqa4Yvr43ur9x
-        GaykAF17uw1rtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5_rc3UUUUU==
+X-CM-TRANSID: DsCowABHk3t9Lglgt_V9hA--.20648S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrur4DtrWUCryDKFy3uryfZwb_yoWxKFc_uF
+        47urZ3ur48ta1Yq3y0kFZa9r1xJrs3Xan3WwnIgrW3X3sxGr45Jr4xurn8Gr1xWw4DCry7
+        ZF4kXFy5Aw48WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5oGQDUUUUU==
 X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBzx4hclaD9zBl9gABsC
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBUQIhclaD9tmcKQAAsP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The allocated page is not released if error occurs in
-nvm_submit_io_sync_raw(). __free_page() is moved ealier to avoid
-possible memory leak issue.
+Call hci_dev_put() to decrement reference count of HCI device hdev if
+fails to duplicate memory.
 
-Fixes: aff3fb18f957 ("lightnvm: move bad block and chunk state logic to core")
+Fixes: 0b26ab9dce74 ("Bluetooth: AMP: Handle Accept phylink command status evt")
 Signed-off-by: Pan Bian <bianpan2016@163.com>
 ---
- drivers/lightnvm/core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/bluetooth/a2mp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/lightnvm/core.c b/drivers/lightnvm/core.c
-index c1bcac71008c..28ddcaa5358b 100644
---- a/drivers/lightnvm/core.c
-+++ b/drivers/lightnvm/core.c
-@@ -844,11 +844,10 @@ static int nvm_bb_chunk_sense(struct nvm_dev *dev, struct ppa_addr ppa)
- 	rqd.ppa_addr = generic_to_dev_addr(dev, ppa);
- 
- 	ret = nvm_submit_io_sync_raw(dev, &rqd);
-+	__free_page(page);
- 	if (ret)
- 		return ret;
- 
--	__free_page(page);
--
- 	return rqd.error;
- }
+diff --git a/net/bluetooth/a2mp.c b/net/bluetooth/a2mp.c
+index da7fd7c8c2dc..5974fd828c35 100644
+--- a/net/bluetooth/a2mp.c
++++ b/net/bluetooth/a2mp.c
+@@ -512,6 +512,7 @@ static int a2mp_createphyslink_req(struct amp_mgr *mgr, struct sk_buff *skb,
+ 		assoc = kmemdup(req->amp_assoc, assoc_len, GFP_KERNEL);
+ 		if (!assoc) {
+ 			amp_ctrl_put(ctrl);
++			hci_dev_put(hdev);
+ 			return -ENOMEM;
+ 		}
  
 -- 
 2.17.1
