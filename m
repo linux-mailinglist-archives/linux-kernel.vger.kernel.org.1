@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E522FEB64
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C881E2FEB79
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731613AbhAUNRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729435AbhAUKaD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:30:03 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8A4C0617A9;
-        Thu, 21 Jan 2021 02:27:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ggrNn6bZ56Xs3I/wJOYKm6l6UVf9CFaFXZUAbJsjYKM=; b=Z49kf7iabIfilu1w+JmdPo4LJ
-        674DosO+McSf2IJK+jNUcCz+gt6UcV1Y3CMdUj87sUI9kpP9o6c5Ub7aU3HNiZNsDzFDLdaQD7rhO
-        c++43CcfCfyEbwWf3XLlotI1l6LV545Rve6KS7HFidPrgBlnKAW1Svv3d9RuWvHgjdV4xUcEMVisy
-        OsCQpS73dykyuwBWSPqYjCvQQf4dUldXqt+bKV7W6BmgA5R01B94esaGzAiRWq51/wNxWZrYecSWk
-        4+q9LFPZghOSIsxZK/G6ASMWAvQ2ANkNZvB3LE5AS0pDI7jaU5dIpnQoLNx1iDPvIfKlCVmrvrIUG
-        DUOk9jH/g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50774)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l2XC0-0001CX-14; Thu, 21 Jan 2021 10:27:56 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l2XBy-0006yr-36; Thu, 21 Jan 2021 10:27:54 +0000
-Date:   Thu, 21 Jan 2021 10:27:54 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Brandon Streiff <brandon.streiff@ni.com>,
-        Olof Johansson <olof@lixom.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net 2/4] net: mvpp2: Remove unneeded Kconfig dependency.
-Message-ID: <20210121102753.GO1551@shell.armlinux.org.uk>
-References: <cover.1611198584.git.richardcochran@gmail.com>
- <1069fecd4b7e13485839e1c66696c5a6c70f6144.1611198584.git.richardcochran@gmail.com>
+        id S1731775AbhAUNTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:19:25 -0500
+Received: from mga07.intel.com ([134.134.136.100]:40972 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729337AbhAUK3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:29:03 -0500
+IronPort-SDR: TUATUDGwUn7VaKLb5yV24oEW+7xMrYOXYvC5urHuNGHCU5ysvc2W2/py6L9O+UuVnADY9efPH7
+ aLdhT+dAzCYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="243321049"
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="243321049"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:27:04 -0800
+IronPort-SDR: QgeIy8Ssun2hy6R9w17UY0Ll/AXBiBRb1BeFr667ljwzuCW2rJkpwHDq8WPMolQ61OBDnrLG/t
+ VJau4CgcO5fw==
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="570684050"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:27:00 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l2XC6-007Nsw-Be; Thu, 21 Jan 2021 12:28:02 +0200
+Date:   Thu, 21 Jan 2021 12:28:02 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: Re: [PATCH 4/6] lib: inline _find_next_bit() wrappers
+Message-ID: <YAlXMj7sIoPjZP3W@smile.fi.intel.com>
+References: <20210121000630.371883-1-yury.norov@gmail.com>
+ <20210121000630.371883-5-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1069fecd4b7e13485839e1c66696c5a6c70f6144.1611198584.git.richardcochran@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210121000630.371883-5-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 08:06:01PM -0800, Richard Cochran wrote:
-> The mvpp2 is an Ethernet driver, and it implements MAC style time
-> stamping of PTP frames.  It has no need of the expensive option to
-> enable PHY time stamping.  Remove the incorrect dependency.
-> 
-> Signed-off-by: Richard Cochran <richardcochran@gmail.com>
-> Fixes: 91dd71950bd7 ("net: mvpp2: ptp: add TAI support")
+On Wed, Jan 20, 2021 at 04:06:28PM -0800, Yury Norov wrote:
+> lib/find_bit.c declares five single-line wrappers for _find_next_bit().
+> We may turn those wrappers to inline functions. It eliminates
+> unneeded function calls and opens room for compile-time optimizations.
 
-NAK.
+...
 
-> ---
->  drivers/net/ethernet/marvell/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/Kconfig b/drivers/net/ethernet/marvell/Kconfig
-> index 41815b609569..7fe15a3286f4 100644
-> --- a/drivers/net/ethernet/marvell/Kconfig
-> +++ b/drivers/net/ethernet/marvell/Kconfig
-> @@ -94,7 +94,6 @@ config MVPP2
+> --- a/include/asm-generic/bitops/le.h
+> +++ b/include/asm-generic/bitops/le.h
+> @@ -4,6 +4,7 @@
 >  
->  config MVPP2_PTP
->  	bool "Marvell Armada 8K Enable PTP support"
-> -	depends on NETWORK_PHY_TIMESTAMPING
->  	depends on (PTP_1588_CLOCK = y && MVPP2 = y) || \
->  		   (PTP_1588_CLOCK && MVPP2 = m)
->  
-> -- 
-> 2.20.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+>  #include <asm/types.h>
+>  #include <asm/byteorder.h>
+> +#include <asm-generic/bitops/find.h>
+
+I'm wondering if generic header inclusion should go before arch-dependent ones.
+
+...
+
+> -#ifndef find_next_bit
+
+> -#ifndef find_next_zero_bit
+
+> -#if !defined(find_next_and_bit)
+
+> -#ifndef find_next_zero_bit_le
+
+> -#ifndef find_next_bit_le
+
+Shouldn't you leave these in new wrappers as well?
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+With Best Regards,
+Andy Shevchenko
+
+
