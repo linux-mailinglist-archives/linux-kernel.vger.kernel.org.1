@@ -2,281 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7D32FF7C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38B12FF7CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbhAUWOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S1726789AbhAUWQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:16:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727162AbhAUWN2 (ORCPT
+        with ESMTP id S1726575AbhAUWPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:13:28 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6A2C0613D6;
-        Thu, 21 Jan 2021 14:12:47 -0800 (PST)
-Date:   Thu, 21 Jan 2021 22:12:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611267165;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEOf2Xra16PGUReQEhC2To0LOR9b9PUjbvcNavJS5Yg=;
-        b=EmLVxGrz3KID+o3ySUwOBdQEsD1RDlqBOjVBn+pUhao0nfHOf+CIyqsVIAWLdLNdK87tky
-        HA94dFi3pRmoPDXJeICSSJnz/qiZBCIDPg2b/gnLqSEYWUSJya2mCNPOCjvOUsQF3cgJAm
-        J/A9gaZvIm5VCVpNdOQ0E9hv8k9lmGziCOUh0GUB3rvZV3XLh2kP9+nkdDnzXuvYQIf21x
-        SbNFgU65LuTlOggylgDSnZ4XNu+SOVFhhQCY6vgBxfxEKAn6nI8a2087UOqK+r57xNs2BJ
-        8K/asSZiV817QP1/whFt5PFz6qAuTEJRm+UaP9JiXwH+u8K5fi5No9VLl09PVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611267165;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEOf2Xra16PGUReQEhC2To0LOR9b9PUjbvcNavJS5Yg=;
-        b=LvYfFCT6ndspTYCQXcDqAYoXUJ2s7h4oWsuLvLuqPfXTmYodiZK4xGFspVc34V5xTqitJO
-        D9xxpLoSWDl+n+Bw==
-From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/vm86/32: Remove VM86_SCREEN_BITMAP support
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Stas Sergeev <stsp2@yandex.ru>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <f3086de0babcab36f69949b5780bde851f719bc8.1611078018.git.luto@kernel.org>
-References: <f3086de0babcab36f69949b5780bde851f719bc8.1611078018.git.luto@kernel.org>
+        Thu, 21 Jan 2021 17:15:08 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0F3C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:14:27 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id y19so7293623iov.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:14:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O2R6G+JQomFrmP9HO7+cEOKXT8jw8uCDjvCWyH87E3w=;
+        b=FozQaxbvtJXB+IozviQH2OUL+/gJEXx3LdIg5KlULHJ/JcijC3OTsPE0MwypuN3fqo
+         O3zhoj3RuyZmmxvJKd/WbU6AIfeLwcnOqdrFcu3dMWp5qwK3yr0GSYc4gBw7l8uAu2AB
+         MyKJopx+bY1jlZX2i4Qqx26ZUjVsQAYoeM8nI2EM+z7JYv4c/n9kK71N6N6utGRBzB+J
+         WFsOFwvNoIZL1r5txOYFCPYvT1KczLHV5VHqIuhZ7qIdW/3bwtPgKBc8Woi+7msRmNgz
+         FDMzIltl1bnCnGBOW0qUoBy8SePB68bkYe2R53WNLe2FF8KCtNRSdR21g2faMHF9Qayx
+         y2dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O2R6G+JQomFrmP9HO7+cEOKXT8jw8uCDjvCWyH87E3w=;
+        b=TYIjHcb9D7Jl92JV9br0Nf5A45JvCxdWW18Vn4s9ddAa+nxRtEeGepAVeD3v/yQ14X
+         LREzXIzxqgOas9TExgVyuRWA+B4TzHD39a+n/fs0v504nfxhuPHDLeNUbD9Ja7bE6Neq
+         80n8Gbnz3NRkxyR9u9sgEUrwHJbh7FnuJN8yudduCv0/TMsUcgompPWJPzwP5gArY+95
+         KkwCyNWUE6zN8X2dCzKYowk3fQ+exNF5VCQG7sEzDEVSyU5Fu0HCeTed0dPrDENuCVaK
+         B8djueX7wExZt706wpNTxYcb9yj0S8vsmkXk6gBHxJjOvVmbqxxTKg3biSOsLu4kMiL3
+         6xEw==
+X-Gm-Message-State: AOAM533cbuWkgJ3CwdmST5ghESdfZYaX8STDBSfPJZs7H1lL8czKT3bs
+        xfHmSEoXAehnMc85yc3CG/Iyk/s3o/VYqbGmz79Ckw==
+X-Google-Smtp-Source: ABdhPJzTjt3TB+ykOZeLyHdIzwOleNs/mipT9Li327q3wBoTK1DHufVnbXilw914LnUDbHj3R79jXmVoKNYblt4kgD8=
+X-Received: by 2002:a02:7610:: with SMTP id z16mr1116868jab.99.1611267266926;
+ Thu, 21 Jan 2021 14:14:26 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161126716483.414.1924096848671679376.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210115190451.3135416-1-axelrasmussen@google.com> <20210121191241.GG260413@xz-x1>
+In-Reply-To: <20210121191241.GG260413@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu, 21 Jan 2021 14:13:50 -0800
+Message-ID: <CAJHvVch3iK_UcwpwL5p3LWQAZo_iyLMVxsMTf_GCAStqoQxmTA@mail.gmail.com>
+Subject: Re: [PATCH 0/9] userfaultfd: add minor fault handling
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Thu, Jan 21, 2021 at 11:12 AM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Fri, Jan 15, 2021 at 11:04:42AM -0800, Axel Rasmussen wrote:
+> > UFFDIO_COPY and UFFDIO_ZEROPAGE cannot be used to resolve minor faults. Without
+> > modifications, the existing codepath assumes a new page needs to be allocated.
+> > This is okay, since userspace must have a second non-UFFD-registered mapping
+> > anyway, thus there isn't much reason to want to use these in any case (just
+> > memcpy or memset or similar).
+> >
+> > - If UFFDIO_COPY is used on a minor fault, -EEXIST is returned.
+>
+> When minor fault the dst VM will report to src with the address.  The src could
+> checkup whether dst contains the latest data on that (pmd) page and either:
+>
+>   - it's latest, then tells dst, dst does UFFDIO_CONTINUE
+>
+>   - it's not latest, then tells dst (probably along with the page data?  if
+>     hugetlbfs doesn't support double map, we'd need to batch all the dirty
+>     small pages in one shot), dst does whatever to replace the page
+>
+> Then, I'm thinking what would be the way to replace an old page.. is that one
+> FALLOC_FL_PUNCH_HOLE plus one UFFDIO_COPY at last?
 
-Commit-ID:     8ece53ef7f428ee3f8eab936268b1a3fe2725e6b
-Gitweb:        https://git.kernel.org/tip/8ece53ef7f428ee3f8eab936268b1a3fe2725e6b
-Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Tue, 19 Jan 2021 09:40:55 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 21 Jan 2021 20:08:53 +01:00
+When I wrote this, my thinking was that users of this feature would
+have two mappings, one of which is not UFFD registered at all. So, to
+replace the existing page contents, userspace would just write to the
+non-UFFD mapping (with memcpy() or whatever else, or we could get
+fancy and imagine using some RDMA technology to copy the page over the
+network from the live migration source directly in place). After
+performing the write, we just UFFDIO_CONTINUE.
 
-x86/vm86/32: Remove VM86_SCREEN_BITMAP support
+I believe FALLOC_FL_PUNCH_HOLE / MADV_REMOVE doesn't work with
+hugetlbfs? Once shmem support is implemented, I would expect
+FALLOC_FL_PUNCH_HOLE + UFFDIO_COPY to work, but I wonder if such an
+operation would be more expensive than just copying using the other
+side of the shared mapping?
 
-The implementation was rather buggy.  It unconditionally marked PTEs
-read-only, even for VM_SHARED mappings.  I'm not sure whether this is
-actually a problem, but it certainly seems unwise.  More importantly, it
-released the mmap lock before flushing the TLB, which could allow a racing
-CoW operation to falsely believe that the underlying memory was not
-writable.
-
-I can't find any users at all of this mechanism, so just remove it.
-
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Stas Sergeev <stsp2@yandex.ru>
-Link: https://lkml.kernel.org/r/f3086de0babcab36f69949b5780bde851f719bc8.1611078018.git.luto@kernel.org
----
- arch/x86/include/asm/vm86.h      |  1 +-
- arch/x86/include/uapi/asm/vm86.h |  4 +-
- arch/x86/kernel/vm86_32.c        | 62 +++++++------------------------
- arch/x86/mm/fault.c              | 30 +---------------
- 4 files changed, 16 insertions(+), 81 deletions(-)
-
-diff --git a/arch/x86/include/asm/vm86.h b/arch/x86/include/asm/vm86.h
-index 26efbec..9e8ac50 100644
---- a/arch/x86/include/asm/vm86.h
-+++ b/arch/x86/include/asm/vm86.h
-@@ -36,7 +36,6 @@ struct vm86 {
- 	unsigned long saved_sp0;
- 
- 	unsigned long flags;
--	unsigned long screen_bitmap;
- 	unsigned long cpu_type;
- 	struct revectored_struct int_revectored;
- 	struct revectored_struct int21_revectored;
-diff --git a/arch/x86/include/uapi/asm/vm86.h b/arch/x86/include/uapi/asm/vm86.h
-index d2ee4e3..18909b8 100644
---- a/arch/x86/include/uapi/asm/vm86.h
-+++ b/arch/x86/include/uapi/asm/vm86.h
-@@ -97,7 +97,7 @@ struct revectored_struct {
- struct vm86_struct {
- 	struct vm86_regs regs;
- 	unsigned long flags;
--	unsigned long screen_bitmap;
-+	unsigned long screen_bitmap;		/* unused, preserved by vm86() */
- 	unsigned long cpu_type;
- 	struct revectored_struct int_revectored;
- 	struct revectored_struct int21_revectored;
-@@ -106,7 +106,7 @@ struct vm86_struct {
- /*
-  * flags masks
-  */
--#define VM86_SCREEN_BITMAP	0x0001
-+#define VM86_SCREEN_BITMAP	0x0001        /* no longer supported */
- 
- struct vm86plus_info_struct {
- 	unsigned long force_return_for_pic:1;
-diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
-index 764573d..e5a7a10 100644
---- a/arch/x86/kernel/vm86_32.c
-+++ b/arch/x86/kernel/vm86_32.c
-@@ -134,7 +134,11 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
- 	unsafe_put_user(regs->ds, &user->regs.ds, Efault_end);
- 	unsafe_put_user(regs->fs, &user->regs.fs, Efault_end);
- 	unsafe_put_user(regs->gs, &user->regs.gs, Efault_end);
--	unsafe_put_user(vm86->screen_bitmap, &user->screen_bitmap, Efault_end);
-+
-+	/*
-+	 * Don't write screen_bitmap in case some user had a value there
-+	 * and expected it to remain unchanged.
-+	 */
- 
- 	user_access_end();
- 
-@@ -160,49 +164,6 @@ Efault:
- 	do_exit(SIGSEGV);
- }
- 
--static void mark_screen_rdonly(struct mm_struct *mm)
--{
--	struct vm_area_struct *vma;
--	spinlock_t *ptl;
--	pgd_t *pgd;
--	p4d_t *p4d;
--	pud_t *pud;
--	pmd_t *pmd;
--	pte_t *pte;
--	int i;
--
--	mmap_write_lock(mm);
--	pgd = pgd_offset(mm, 0xA0000);
--	if (pgd_none_or_clear_bad(pgd))
--		goto out;
--	p4d = p4d_offset(pgd, 0xA0000);
--	if (p4d_none_or_clear_bad(p4d))
--		goto out;
--	pud = pud_offset(p4d, 0xA0000);
--	if (pud_none_or_clear_bad(pud))
--		goto out;
--	pmd = pmd_offset(pud, 0xA0000);
--
--	if (pmd_trans_huge(*pmd)) {
--		vma = find_vma(mm, 0xA0000);
--		split_huge_pmd(vma, pmd, 0xA0000);
--	}
--	if (pmd_none_or_clear_bad(pmd))
--		goto out;
--	pte = pte_offset_map_lock(mm, pmd, 0xA0000, &ptl);
--	for (i = 0; i < 32; i++) {
--		if (pte_present(*pte))
--			set_pte(pte, pte_wrprotect(*pte));
--		pte++;
--	}
--	pte_unmap_unlock(pte, ptl);
--out:
--	mmap_write_unlock(mm);
--	flush_tlb_mm_range(mm, 0xA0000, 0xA0000 + 32*PAGE_SIZE, PAGE_SHIFT, false);
--}
--
--
--
- static int do_vm86_irq_handling(int subfunction, int irqnumber);
- static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus);
- 
-@@ -282,6 +243,15 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
- 			offsetof(struct vm86_struct, int_revectored)))
- 		return -EFAULT;
- 
-+
-+	/* VM86_SCREEN_BITMAP had numerous bugs and appears to have no users. */
-+	if (v.flags & VM86_SCREEN_BITMAP) {
-+		char comm[TASK_COMM_LEN];
-+
-+		pr_info_once("vm86: '%s' uses VM86_SCREEN_BITMAP, which is no longer supported\n", get_task_comm(comm, current));
-+		return -EINVAL;
-+	}
-+
- 	memset(&vm86regs, 0, sizeof(vm86regs));
- 
- 	vm86regs.pt.bx = v.regs.ebx;
-@@ -302,7 +272,6 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
- 	vm86regs.gs = v.regs.gs;
- 
- 	vm86->flags = v.flags;
--	vm86->screen_bitmap = v.screen_bitmap;
- 	vm86->cpu_type = v.cpu_type;
- 
- 	if (copy_from_user(&vm86->int_revectored,
-@@ -370,9 +339,6 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
- 	update_task_stack(tsk);
- 	preempt_enable();
- 
--	if (vm86->flags & VM86_SCREEN_BITMAP)
--		mark_screen_rdonly(tsk->mm);
--
- 	memcpy((struct kernel_vm86_regs *)regs, &vm86regs, sizeof(vm86regs));
- 	return regs->ax;
- }
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index f1f1b5a..106b22d 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -262,25 +262,6 @@ void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
- 	}
- }
- 
--/*
-- * Did it hit the DOS screen memory VA from vm86 mode?
-- */
--static inline void
--check_v8086_mode(struct pt_regs *regs, unsigned long address,
--		 struct task_struct *tsk)
--{
--#ifdef CONFIG_VM86
--	unsigned long bit;
--
--	if (!v8086_mode(regs) || !tsk->thread.vm86)
--		return;
--
--	bit = (address - 0xA0000) >> PAGE_SHIFT;
--	if (bit < 32)
--		tsk->thread.vm86->screen_bitmap |= 1 << bit;
--#endif
--}
--
- static bool low_pfn(unsigned long pfn)
- {
- 	return pfn < max_low_pfn;
-@@ -335,15 +316,6 @@ KERN_ERR
- "******* Disabling USB legacy in the BIOS may also help.\n";
- #endif
- 
--/*
-- * No vm86 mode in 64-bit mode:
-- */
--static inline void
--check_v8086_mode(struct pt_regs *regs, unsigned long address,
--		 struct task_struct *tsk)
--{
--}
--
- static int bad_address(void *p)
- {
- 	unsigned long dummy;
-@@ -1416,8 +1388,6 @@ good_area:
- 		mm_fault_error(regs, hw_error_code, address, fault);
- 		return;
- 	}
--
--	check_v8086_mode(regs, address, tsk);
- }
- NOKPROBE_SYMBOL(do_user_addr_fault);
- 
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
