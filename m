@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EC92FF6CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFD52FF6BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbhAUVIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:08:37 -0500
-Received: from ozlabs.org ([203.11.71.1]:44605 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727473AbhAUU6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:58:50 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMF8X3v6Cz9s1l;
-        Fri, 22 Jan 2021 07:57:48 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611262668;
-        bh=e4hR1kPAHbwnex+QqprC9WLpJ5biZMKwufiDGhGGoiQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=COr8aJ2/DqjAmeRFhRZNhnTmeQ7wUiVHTuIYtpJpgYLUTldtBCC5GCZVn/rWobtrt
-         5D7CI3rDrPyPY9718R/i9nGT36LmDSgi0L023nPgDY/woXjiCdz7/L1VZNTCPwnYqN
-         qA7hjLkqT4uvHC4eLHhlA38Bm46RM6AxxFa99rb+rAP3KAkiIiHZn6Z3WBwEr+YLrn
-         INYEdR0mg0KvHdc7RZM89B4JBCArDpISV5zFTSmJW3Mi0p+ur8clt3ulKsbtlE3JvC
-         cG1cfin0yypBjPp8UyO8MyCWJzdjXrqwRPFg+TaHwNY/EKhSNAzuTlHCGAQE90+050
-         fuEeuxU87IR3Q==
-Date:   Fri, 22 Jan 2021 07:57:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Kir Kolyshkin <kolyshkin@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the jc_docs tree
-Message-ID: <20210122075747.3622cd8e@canb.auug.org.au>
+        id S1726448AbhAUVGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:06:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727481AbhAUVC4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 16:02:56 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D906C06174A;
+        Thu, 21 Jan 2021 13:02:15 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id p13so4141695ljg.2;
+        Thu, 21 Jan 2021 13:02:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HTSI5kPzLoA4thqADbG4CT4ZHn9/tnIJfNYkNNeKGi0=;
+        b=pL5Ut6SetM5MPOm/3ixVXBM3DPvSn7HbiYCbSxTe4Ys7us9j7lJnVR+jlWE1sjup58
+         8buGxJAu5vvM3HAi6kpWSegsvF9IXz9zR6u2oq6SeDfvET2xuL2A9OQ3f4N4jfwSoPmT
+         QUhDxmGKn9WzMZ+fpeXnKtow5vK2CTRLkUBO2e9V/7E28TdvTacN3ODwGM4LlNmj/wHW
+         2SUeETpzKAuOG9X8M6or3ny3Jl3QHT9HKw19XV4fI40DIsqeS6OUchOXFlczrtwwekr6
+         bIBNBIRZUHJd+/kDuz8vXsR35GRgnXqRTC7wfNVxusUaOpeh1QTgGaWnEqymUEH8lwpT
+         lHTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HTSI5kPzLoA4thqADbG4CT4ZHn9/tnIJfNYkNNeKGi0=;
+        b=JEp3Vbbzi6OQ0HREZB5+k7m7QDUjOm1n5J0D4sy5XHlDicl0S7ee1kY4tdMBCRmRQ0
+         4+SAxwc1X1O61/V6kaiShptPi6JbY8y5QzDXuIf9dgwdRIMJ2Y22YNKKOWJKfygpLoXs
+         smjLp8KT/Zs4Ky9pDJZtQ/sQxW1vKcwD4C5HTtNREC8PUWH9TpPypvi8wg2Z6KqiiBK6
+         ZrXJHCKs8VSTOZ9JvxGhf/sKqqPksJ3JvNlWhfSXzCogw1t37ISjt6hUqqftrvPDxRdS
+         ZY4rw1xhZE4vdPeNIAFbDupbK8pYyWvdJ/vxHzS9kQ2kz0Y/ENFPSEwvPf03J5Z/N7DV
+         ImjA==
+X-Gm-Message-State: AOAM531DBmHz4oqmf7O3Ef/9pZ27K3M7EWj17lAcW8R1I1fEDXeSzb+A
+        b0b54KNu6pehzkBe6ZuYWZIOnaKYIv4=
+X-Google-Smtp-Source: ABdhPJysbwgbBj7t7ErG5NYCTp7ZNZBostezYf6/TCcQqQ7j4wHzOFhtnC3qIrzpw23Zmovd9C7evA==
+X-Received: by 2002:a2e:9214:: with SMTP id k20mr591843ljg.45.1611262933987;
+        Thu, 21 Jan 2021 13:02:13 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id s2sm498041lfc.261.2021.01.21.13.02.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 13:02:13 -0800 (PST)
+Subject: Re: [PATCH V2] opp: Prepare for ->set_opp() helper to work without
+ regulators
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org
+References: <fb69353c-a35b-9b7c-46bc-d464c6dab6f5@gmail.com>
+ <d60bc79ed2ac3fd2f2911449ba994b4d55bd1bfd.1611228541.git.viresh.kumar@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <58d15e20-8688-99be-b107-4350ff81e90a@gmail.com>
+Date:   Fri, 22 Jan 2021 00:02:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RD_ah6h49n0YX1J3I=fksSp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <d60bc79ed2ac3fd2f2911449ba994b4d55bd1bfd.1611228541.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RD_ah6h49n0YX1J3I=fksSp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+21.01.2021 14:30, Viresh Kumar пишет:
+> @@ -1952,9 +1930,16 @@ void dev_pm_opp_put_regulators(struct opp_table *opp_table)
+>  	for (i = opp_table->regulator_count - 1; i >= 0; i--)
+>  		regulator_put(opp_table->regulators[i]);
+>  
+> -	_free_set_opp_data(opp_table);
+> +	mutex_lock(&opp_table->lock);
+> +	if (opp_table->set_opp_data) {
+> +		opp_table->set_opp_data->old_opp.supplies = NULL;
+> +		opp_table->set_opp_data->new_opp.supplies = NULL;
+> +	}
+> +	mutex_unlock(&opp_table->lock);
+>  
+> +	kfree(opp_table->sod_supplies);
+>  	kfree(opp_table->regulators);
+> +	opp_table->sod_supplies = NULL;
+>  	opp_table->regulators = NULL;
+>  	opp_table->regulator_count = -1;
 
-Hi all,
-
-In commit
-
-  cf9cadf16b19 ("docs/admin-guide: cgroup-v2: typos and spaces")
-
-Fixes tag
-
-  Fixes: 5f9a4f4a70960
-
-has these problem(s):
-
-  - missing subject
-
-Maybe you meant
-
-Fixes: 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface f=
-or cgroup v2")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/RD_ah6h49n0YX1J3I=fksSp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAJ6ssACgkQAVBC80lX
-0GxUwQf/d86s1Rxw+HRyYejUVAnecM4HHUk5jR5CZ5n0ugtfiKZxndqanuEz6LXa
-92nIXbb0qHj0lHRY4UcUXjVUFatlXWYR36T6TEzmDYGREQXn2mqZ9E+IWigPcgpz
-QbrNSzkzra7EnVfCxov2IRx4ZHhbAqnedjPBtP0Unna0lxEBSHk6Kh79A0VvPWxo
-FPXAAnce607+6wxguhG1aw8t2YzyC+CpaoaRKpRyzEexlDE8cumwJOvwvpVOw2tp
-pZuDTSMhrKOCKuxcLHrBtJP0SsTQ9BCkpseRqO/Yb5WG2fEmGSoXwwurKhyjwj0W
-n5lldv+pRPBuyIdcrHYiq31hsMo+7w==
-=qI88
------END PGP SIGNATURE-----
-
---Sig_/RD_ah6h49n0YX1J3I=fksSp--
+The sod_supplies should be unset under the lock.
