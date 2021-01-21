@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81EA2FF76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572382FF774
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727497AbhAUVhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:37:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24878 "EHLO
+        id S1727453AbhAUViH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:38:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39371 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726809AbhAUVbw (ORCPT
+        by vger.kernel.org with ESMTP id S1727270AbhAUVby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:31:52 -0500
+        Thu, 21 Jan 2021 16:31:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611264626;
+        s=mimecast20190719; t=1611264628;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Toc9537JqJ2dLw1H52wuwGCGvMuQYC963u/ZIocjrIE=;
-        b=KKVdyqlUUO1UaHcIL0LpHHVdkQ/lslJ62ouiu1ojHV8CDYo1MZekEP4pWzGK0W1MZYbqxN
-        HCkohW6ZTdUn/GYmXmWR7OdvNJpUxMGVCaXCAHnv+b1/b7iSPLRHZe0ePIyxV30jLE4C2L
-        dubDOVDMqq04cFJRAfuAnX+G+wmihI0=
+        bh=UWVlmQnnLAZPay8Iz+zWMT6CoT4fmpbJ6j9gtoJeVF8=;
+        b=hLR9nvOucaq+9IPBQUbUM+tke1eYOEF83pd1L7S8sxKm2uiI2iNHruwzNnt7lGzYmaLK2i
+        6uFvnyEr2nLH745AkXanoLoJysOtfP8D9Zo9RiCLjSFYWaJLed6x/KZ4mCaea5ODtnvXhs
+        4SqSZAhTYq2UWSBgqlFWJz+CZgX0rfo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-VxeouvR9PLOOa-J3NyN53Q-1; Thu, 21 Jan 2021 16:30:22 -0500
-X-MC-Unique: VxeouvR9PLOOa-J3NyN53Q-1
+ us-mta-33-4_JPhvGCO7yypZu3gWCRZg-1; Thu, 21 Jan 2021 16:30:24 -0500
+X-MC-Unique: 4_JPhvGCO7yypZu3gWCRZg-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DEBA1800D41;
-        Thu, 21 Jan 2021 21:30:21 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F3F61842140;
+        Thu, 21 Jan 2021 21:30:22 +0000 (UTC)
 Received: from treble.redhat.com (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA97019C59;
-        Thu, 21 Jan 2021 21:30:15 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 30ED119C59;
+        Thu, 21 Jan 2021 21:30:21 +0000 (UTC)
 From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -44,11 +44,10 @@ Cc:     linux-kernel@vger.kernel.org,
         Nick Desaulniers <ndesaulniers@google.com>,
         clang-built-linux@googlegroups.com,
         Miroslav Benes <mbenes@suse.cz>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH v2 14/20] x86/xen/pvh: Annotate indirect branch as safe
-Date:   Thu, 21 Jan 2021 15:29:30 -0600
-Message-Id: <4797c72a258b26e06741c58ccd4a75c42db39c1d.1611263462.git.jpoimboe@redhat.com>
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v2 15/20] x86/ftrace: Support objtool vmlinux.o validation in ftrace_64.S
+Date:   Thu, 21 Jan 2021 15:29:31 -0600
+Message-Id: <14f48e623f61dbdcd84cf27a56ed8ccae73199ef.1611263462.git.jpoimboe@redhat.com>
 In-Reply-To: <cover.1611263461.git.jpoimboe@redhat.com>
 References: <cover.1611263461.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
@@ -58,36 +57,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This indirect jump is harmless; annotate it to keep objtool's retpoline
-validation happy.
+With objtool vmlinux.o validation of return_to_handler(), now that
+objtool has visibility inside the retpoline, jumping from EMPTY state to
+a proper function state results in a stack state mismatch.
 
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
+return_to_handler() is actually quite normal despite the underlying
+magic.  Just annotate it as a normal function.
+
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- arch/x86/platform/pvh/head.S | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/ftrace_64.S | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-index 43b4d864817e..d2ccadc247e6 100644
---- a/arch/x86/platform/pvh/head.S
-+++ b/arch/x86/platform/pvh/head.S
-@@ -16,6 +16,7 @@
- #include <asm/boot.h>
- #include <asm/processor-flags.h>
- #include <asm/msr.h>
-+#include <asm/nospec-branch.h>
- #include <xen/interface/elfnote.h>
+diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+index 1bf568d901b1..7c273846c687 100644
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -334,8 +334,7 @@ SYM_FUNC_START(ftrace_graph_caller)
+ 	retq
+ SYM_FUNC_END(ftrace_graph_caller)
  
- 	__HEAD
-@@ -105,6 +106,7 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
- 	/* startup_64 expects boot_params in %rsi. */
- 	mov $_pa(pvh_bootparams), %rsi
- 	mov $_pa(startup_64), %rax
-+	ANNOTATE_RETPOLINE_SAFE
- 	jmp *%rax
+-SYM_CODE_START(return_to_handler)
+-	UNWIND_HINT_EMPTY
++SYM_FUNC_START(return_to_handler)
+ 	subq  $24, %rsp
  
- #else /* CONFIG_X86_64 */
+ 	/* Save the return values */
+@@ -350,5 +349,5 @@ SYM_CODE_START(return_to_handler)
+ 	movq (%rsp), %rax
+ 	addq $24, %rsp
+ 	JMP_NOSPEC rdi
+-SYM_CODE_END(return_to_handler)
++SYM_FUNC_END(return_to_handler)
+ #endif
 -- 
 2.29.2
 
