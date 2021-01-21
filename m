@@ -2,564 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB6C2FF913
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 00:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C972FF91E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 00:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbhAUXrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 18:47:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbhAUXrk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 18:47:40 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF68C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:46:57 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id n2so7670514iom.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:46:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gOCoJB/4MgZNThu+dIcZm9WGwjvb6fwN+0FgO8Y/DRE=;
-        b=kk1/XO5+RiMWH2eaK5KmtMsXb29FEaSVMOrkC35wb5VV7QDwFG1KKlWwkq/1SGVZri
-         HP3BqvME4CQw5sqA2exWLXQ9EC+o6BsnWgvNHANuddXyNLqRcd5RcyVtuPNb/9OhLboX
-         vw3xuJy5y6J4x9eiSA8ShEcZ+vAPdW/aqN4S/SeUQQV0LEz2C+M0K38iPVzWp3seN4QU
-         6jfsHFv0xGrTZbVxfPIhciaT7iTr62Nrhk1weJ9+8vV7cmPKdylb3vBT+VwULA82fxFt
-         EqqV7fiQJVc4SV9MStjDq+sLwXk4S+x+2628h0GA5Le1LUlr+EICsR6kQPYcmQr17RW1
-         Xpvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gOCoJB/4MgZNThu+dIcZm9WGwjvb6fwN+0FgO8Y/DRE=;
-        b=kzaaV1NwVusJIIgsiM62F75tLTLWx90piIbXLfRYwr9R1r36NtvAt6pOrZv2D2fYK3
-         L/NWR2oSdXZzakn7HTrXJgZXfsi535m9YoCGw7HxW2SSa+OfxkXNReDSI3VoOrnYVjQ/
-         8J7kFcn6AexPTHQNFryYHdfyPfRTksBH2qa6R7jcBSWSeJ/fpIOmpE2xNROrFuod22v+
-         yb8xw06wfK2IBfCCQMfkuzjHUbVqP9+sMcpzBJtqIHQRNjVbAp5tg7G9bFjMgTgKjgRs
-         ijYe8wHrX2zT7BaE5zZFo6hh5GSifFWaLF9zsIV9l7XIY4INigP4QzV8ZotWWl+25IsY
-         cLOg==
-X-Gm-Message-State: AOAM530rtVnv2cyxupmlkvL+tpbawK4BQ+1adZr3yulwFsLcUcuR3zYP
-        gn74jQ0AI04l0bUt5K6A5GjdvhyFnue+g63IbEzomw==
-X-Google-Smtp-Source: ABdhPJzSUPZQ6ModwKLMEWPK38OQLUaKOIvdn0QWyMDHu9TXnBHg5fjtX9E+l5VqMox7OgGLf/A0D4cAnwJCK5gMr10=
-X-Received: by 2002:a6b:5915:: with SMTP id n21mr1509425iob.20.1611272816818;
- Thu, 21 Jan 2021 15:46:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210115190451.3135416-1-axelrasmussen@google.com>
- <20210115190451.3135416-8-axelrasmussen@google.com> <20210121224653.GI260413@xz-x1>
-In-Reply-To: <20210121224653.GI260413@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 21 Jan 2021 15:46:20 -0800
-Message-ID: <CAJHvVciAEdUiDyKPsyYKzg8v4sCXFsWpFY9D+2prk7VK5MyvHg@mail.gmail.com>
-Subject: Re: [PATCH 7/9] userfaultfd: add UFFDIO_CONTINUE ioctl
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        id S1726239AbhAUXwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 18:52:03 -0500
+Received: from mail-eopbgr770080.outbound.protection.outlook.com ([40.107.77.80]:15619
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726101AbhAUXwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 18:52:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j9D5WJD7lrzwcJ3nsG8l5VIbsRvhG6QuvEf9JikoHMtKA991ebTzVtOL//TS3ZXz7RGFhlJ7iku+mSAWAwf8jrX4RBaGcyvc4iRq8mI87Wk9DDenx++Ygl6ExN8VEX5PX7vIMxQ+sEVZ4lSrnDVCibXhR0vXOzD9spMCz4itkDpbV0Ez9tpQarmNzm+SXFdriuCRX8umTTCRQ6q6vdAuf7yoLpq3QfzM/vBVY3xShlOyuqu9Rn64bW/UJxxt6jr6TYIDqqgPW22fbnI8dl+I88Ejd9EU/sehqe4DrS9pynF4RIKPHK4Tj14HXLt6WrP64+u8z2RsRhFeyME9rIY+Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YmA9YpvtupZtkEPZd2rBFOuvIyWskg0ueNR0jUVca/k=;
+ b=cVgrxWDogD+UuyuxJv5bJT3je8afvIucKLPCs3HdOYCbhwF7uHs1f1sYhaBOWIPejvX/6PnBYmZyZDBsn2kYzPp+jR4dfnjzWsYlLY9qHH3kpLtc/vdb4+lF+jm6FfAeEWf1zjOJkGw/+Um6EplZA12Ej+7FsORYwpNz9oU2wvel3zhMUMAaaP+j1tARTRQDMNJQahlcqRs4SWZSUBCikrs8duaX7lfbVs8Xfc1C+TlU7sWWeetVWgodnRa0MevlycKYTCIHvDO2KksQAr6yOasE0VobX//UwO2Y5lrSMovFaUXQba9k3mc/50iN5OXoK/UzhekEnUsy7fke1RFidw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YmA9YpvtupZtkEPZd2rBFOuvIyWskg0ueNR0jUVca/k=;
+ b=xbMiRgTaivmTAdWPbvxcU+hWr3sh6t7wcHlGwnAKPyby0M2gpjNUeBoDpePw3qNYGeyyLHZMWF8dQC/9wQg2G6slE6R46s8wx+daIxD5HX/m771JImGf+18JUA2rKAfzDekuQbebSb87gtsxNQ0rnpQ/7o4rLejikMTObucZT8k=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SA0PR12MB4480.namprd12.prod.outlook.com (2603:10b6:806:99::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Thu, 21 Jan
+ 2021 23:51:12 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::8c0e:9a64:673b:4fff]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::8c0e:9a64:673b:4fff%5]) with mapi id 15.20.3784.012; Thu, 21 Jan 2021
+ 23:51:12 +0000
+Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
+From:   Babu Moger <babu.moger@amd.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
+ <83a96ca9-0810-6c07-2e45-5aa2da9b1ab0@redhat.com>
+ <5df9b517-448f-d631-2222-6e78d6395ed9@amd.com>
+ <CALMp9eRDSW66+XvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com>
+ <bb2315e3-1c24-c5ae-3947-27c5169a9d47@amd.com>
+ <CALMp9eQBY50kZT6WdM-D2gmUgDZmCYTn+kxcxk8EQTg=SygLKA@mail.gmail.com>
+ <21ee28c6-f693-e7c0-6d83-92daa9a46880@amd.com>
+ <01cf2fd7-626e-c084-5a6a-1a53d111d9fa@amd.com>
+Message-ID: <84f42bad-9fb0-8a76-7f9b-580898b634b9@amd.com>
+Date:   Thu, 21 Jan 2021 17:51:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <01cf2fd7-626e-c084-5a6a-1a53d111d9fa@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9PR13CA0166.namprd13.prod.outlook.com
+ (2603:10b6:806:28::21) To SN1PR12MB2560.namprd12.prod.outlook.com
+ (2603:10b6:802:26::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.136] (165.204.77.1) by SA9PR13CA0166.namprd13.prod.outlook.com (2603:10b6:806:28::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6 via Frontend Transport; Thu, 21 Jan 2021 23:51:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e34d9bdb-cd94-4182-ece5-08d8be676ec9
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4480:
+X-Microsoft-Antispam-PRVS: <SA0PR12MB44800EA1ECDAC2091F13E67B95A19@SA0PR12MB4480.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wUit9FSvsCslGSUW8/KThApcaWuCHpYmLdd6Yy6gqqcgC08wy5qbupYYEGrWIzoMkxpCsHOskH5G7GyLnKZmhb9w75VJNTxqfjoeUwVI1gPeHDBtZHX8fPm1yJMXPXpHZQ0/glKijBQgqG03cZn+6G9vj3QQC+5FFmGbKdM8SKM65698t7XPoseLtfhU/79RPfSemKcfi5WS9d4tws/BnYHxHlKms9rTGiNEptaDa8sgcNvElnDR2rGiZwM2nk0aEtIbRBkIgWLPIvRZCETHO1Gk5JlxkWAMQH76eafV32xWa3W03iwjT9deuDN7qufYom5EcY4katXQLmUydtMGVlhRUSdRBENZVH4r3TtbSqX5f3reHt03/AwPEsscW/mpCEHhHcLLBSI509bSOhQMh4sjlRaP9Ex5wx20OttSbaMCFXIOdnyko3VDx7gf2Y+te6QmbsuCVVr09Pt3cZMPBVpCseW5/6v7rSsWG9/uQsKPkG9TpVjE2IV5oM+T+KxjZRHH1vcRWnBSuEJDwKi3NB9oqYfEtOlKy6XPF1hA8synNsFm31iRGe21fVKhwdNL49q01vOa/x3aaBMG8Nilgs5VZbcPqc8c71EGEbTRMKnGrVzLYs2YPfkPOysLXK2AnYiFn5U5mBaEw9kZiLi8O2Yyoro8Lfd69sBgEM0mB4IqSg1mxE3E2uZGgrNp6Hsd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(366004)(39860400002)(136003)(36756003)(6486002)(6916009)(31696002)(8936002)(4326008)(83380400001)(44832011)(956004)(86362001)(45080400002)(2616005)(478600001)(966005)(66946007)(2906002)(8676002)(31686004)(66476007)(5660300002)(26005)(52116002)(16526019)(316002)(7416002)(16576012)(66556008)(54906003)(186003)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dm8zSnd0aDRSalRYcGNXbzBsbzA2aVlKTnlDMDdSaWR3V0U1Y1dzM2lWeHVY?=
+ =?utf-8?B?NDBYZkl2aGZUKzlPQWJna2NkMThPRjZHS1FsTUtWUjRwZXJwRWlNOTgwR0tw?=
+ =?utf-8?B?R1lWeXpmTkhjM0JyeVQ3Zk5ORXhka1BEUnJaM0FBdTBWRGdOcFNoSVNtVkNY?=
+ =?utf-8?B?dmJFcXpaN3ByNytNandRQkpSY041empPaittZHFXVVFlVGFiVlEvMjM1SnQz?=
+ =?utf-8?B?aFhMOU43c2MzSFIxckI1NFZxc3hES3IzL3FFTnRVeHZzRzJ2d0tPdms0NGoz?=
+ =?utf-8?B?UE96RHJnMGxaWUhhMTFGUTZSOWhhUkRyTHBVYTB0TVpUT21SQStoTThtT0E3?=
+ =?utf-8?B?S3pkeWFPUnZ6Qkk2dGVnaFJRcHNXLzJiOE0xRUxsY05PMjhOT1FNcHJVY0xh?=
+ =?utf-8?B?MmZia3NPNFhBYjBjQURqRjRiK1NzVTZlTUFZZzZJM0M5ekt1bjZPTFM1ekZy?=
+ =?utf-8?B?ZDB2MkdqazBwZktZb2JSclF3SFlwQ0FDTWI3ZWsyYUU4bitWZ2dxTGxxamFU?=
+ =?utf-8?B?NlNEYSt5ZldwWEtyZTBkRmkybS9mTkRNTEdGd0tKb09sK0pXWFVRYXp5Qkpt?=
+ =?utf-8?B?Ym9ITW8xWUhRaERRK1J0M05rQUxQcC9PWUVxbXZrckUxZ3NucGNtVDY3TW1T?=
+ =?utf-8?B?TmNBbWs4NmlxSUNINkhNbFFMbWRDdUFQNG5LcXlrMWE4RUxHQ3RUSDlpRHVh?=
+ =?utf-8?B?S1lDVjBUamw0UWg2MHJnQ3BBdGVrUFRmLzhWRUZpTWE2UWFSaHFBZ0lTVFd0?=
+ =?utf-8?B?T2NaWkRUblFRNVVBV0tlMVpjYkg3b2FKSStISmFQLzV0ZTdlZEZ3UXFJTDNY?=
+ =?utf-8?B?dUhrMHdDT3FEUytKTWdERU1XWHZXKzEyN3l3TGxBeGhiVVZiK3NpZjVwUnFJ?=
+ =?utf-8?B?Tmp5QzZiM3NEYWYybk5aMU1ZZmxxUVhRR1l0ZHZnbXN6bnRJUmliZkZoT3Rh?=
+ =?utf-8?B?UWdBZFAxMmsvbnVWWUJVekJlWnQzK2JGd1c0dTlFS2haNFZsc21XMzV2eWR1?=
+ =?utf-8?B?QThZaVNuRU9TN1I2dURkUjY5ZWpCeC95UDBGRTJ1Y2UrRk1SMlc5M1RnazVo?=
+ =?utf-8?B?VDZpV2hiL1RWbXlFbldpR1p5QU1nekRoTUNxVk9YYkZpeXFtT05JRXcxNjJF?=
+ =?utf-8?B?UnBOVXpFNXcwTGdPK3A5QUVQOHpyaVlLNGpsVVdVMDEvb1BVU1J6dE5rOXRT?=
+ =?utf-8?B?K283Rkp3S2VOQjVhQTFxM2k4a3pqai9mMnNlWk8yczhaMUN3MUNnZ2hhaXVY?=
+ =?utf-8?B?d3lEVFcyVUhyTWFsS3RzTWsvaXFvemdJc0ZNelZueXVhUXhiNExyZ3Y3UUpY?=
+ =?utf-8?Q?TpiK3oWMAGkBBUqWmFFRDjP2pg/eFAXhbW?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e34d9bdb-cd94-4182-ece5-08d8be676ec9
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 23:51:12.4919
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u39lX6SH9HjQXttnUS1tYMDPpia/Q280x1ANvYCQTeske+ausMe/uz/xdlGl22Ko
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4480
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 2:47 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Fri, Jan 15, 2021 at 11:04:49AM -0800, Axel Rasmussen wrote:
-> > This ioctl is how userspace ought to resolve "minor" userfaults. The
-> > idea is, userspace is notified that a minor fault has occurred. It might
-> > change the contents of the page using its second non-UFFD mapping, or
-> > not. Then, it calls UFFDIO_CONTINUE to tell the kernel "I have ensured
-> > the page contents are correct, carry on setting up the mapping".
-> >
-> > Note that it doesn't make much sense to use UFFDIO_{COPY,ZEROPAGE} for
-> > MINOR registered VMAs. ZEROPAGE maps the VMA to the zero page; but in
-> > the minor fault case, we already have some pre-existing underlying page.
-> > Likewise, UFFDIO_COPY isn't useful if we have a second non-UFFD mapping.
-> > We'd just use memcpy() or similar instead.
-> >
-> > It turns out hugetlb_mcopy_atomic_pte() already does very close to what
-> > we want, if an existing page is provided via `struct page **pagep`. We
-> > already special-case the behavior a bit for the UFFDIO_ZEROPAGE case, so
-> > just extend that design: add an enum for the three modes of operation,
-> > and make the small adjustments needed for the MCOPY_ATOMIC_CONTINUE
-> > case. (Basically, look up the existing page, and avoid adding the
-> > existing page to the page cache or calling set_page_huge_active() on
-> > it.)
-> >
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >  fs/userfaultfd.c                 | 67 +++++++++++++++++++++++++
-> >  include/linux/userfaultfd_k.h    |  2 +
-> >  include/uapi/linux/userfaultfd.h | 21 +++++++-
-> >  mm/hugetlb.c                     | 11 ++--
-> >  mm/userfaultfd.c                 | 86 ++++++++++++++++++++++++--------
-> >  5 files changed, 158 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > index 19d6925be03f..f0eb2d63289f 100644
-> > --- a/fs/userfaultfd.c
-> > +++ b/fs/userfaultfd.c
-> > @@ -1530,6 +1530,10 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
-> >               if (!(uffdio_register.mode & UFFDIO_REGISTER_MODE_WP))
-> >                       ioctls_out &= ~((__u64)1 << _UFFDIO_WRITEPROTECT);
-> >
-> > +             /* CONTINUE ioctl is only supported for MINOR ranges. */
-> > +             if (!(uffdio_register.mode & UFFDIO_REGISTER_MODE_MINOR))
-> > +                     ioctls_out &= ~((__u64)1 << _UFFDIO_CONTINUE);
-> > +
-> >               /*
-> >                * Now that we scanned all vmas we can already tell
-> >                * userland which ioctls methods are guaranteed to
-> > @@ -1883,6 +1887,66 @@ static int userfaultfd_writeprotect(struct userfaultfd_ctx *ctx,
-> >       return ret;
-> >  }
-> >
-> > +static int userfaultfd_continue(struct userfaultfd_ctx *ctx, unsigned long arg)
-> > +{
-> > +     __s64 ret;
-> > +     struct uffdio_continue uffdio_continue;
-> > +     struct uffdio_continue __user *user_uffdio_continue;
-> > +     struct userfaultfd_wake_range range;
-> > +
-> > +     user_uffdio_continue = (struct uffdio_continue __user *)arg;
-> > +
-> > +     ret = -EAGAIN;
-> > +     if (READ_ONCE(ctx->mmap_changing))
-> > +             goto out;
-> > +
-> > +     ret = -EFAULT;
-> > +     if (copy_from_user(&uffdio_continue, user_uffdio_continue,
-> > +                        /* don't copy the output fields */
-> > +                        sizeof(uffdio_continue) - (sizeof(__s64))))
-> > +             goto out;
-> > +
-> > +     ret = validate_range(ctx->mm, &uffdio_continue.range.start,
-> > +                          uffdio_continue.range.len);
-> > +     if (ret)
-> > +             goto out;
-> > +
-> > +     ret = -EINVAL;
-> > +     /* double check for wraparound just in case. */
-> > +     if (uffdio_continue.range.start + uffdio_continue.range.len <=
-> > +         uffdio_continue.range.start) {
-> > +             goto out;
-> > +     }
-> > +     if (uffdio_continue.mode & ~UFFDIO_CONTINUE_MODE_DONTWAKE)
-> > +             goto out;
-> > +
-> > +     if (mmget_not_zero(ctx->mm)) {
-> > +             ret = mcopy_continue(ctx->mm, uffdio_continue.range.start,
-> > +                                  uffdio_continue.range.len,
-> > +                                  &ctx->mmap_changing);
-> > +             mmput(ctx->mm);
-> > +     } else {
-> > +             return -ESRCH;
-> > +     }
-> > +
-> > +     if (unlikely(put_user(ret, &user_uffdio_continue->mapped)))
-> > +             return -EFAULT;
-> > +     if (ret < 0)
-> > +             goto out;
-> > +
-> > +     /* len == 0 would wake all */
-> > +     BUG_ON(!ret);
-> > +     range.len = ret;
-> > +     if (!(uffdio_continue.mode & UFFDIO_CONTINUE_MODE_DONTWAKE)) {
-> > +             range.start = uffdio_continue.range.start;
-> > +             wake_userfault(ctx, &range);
-> > +     }
-> > +     ret = range.len == uffdio_continue.range.len ? 0 : -EAGAIN;
-> > +
-> > +out:
-> > +     return ret;
-> > +}
-> > +
-> >  static inline unsigned int uffd_ctx_features(__u64 user_features)
-> >  {
-> >       /*
-> > @@ -1967,6 +2031,9 @@ static long userfaultfd_ioctl(struct file *file, unsigned cmd,
-> >       case UFFDIO_WRITEPROTECT:
-> >               ret = userfaultfd_writeprotect(ctx, arg);
-> >               break;
-> > +     case UFFDIO_CONTINUE:
-> > +             ret = userfaultfd_continue(ctx, arg);
-> > +             break;
-> >       }
-> >       return ret;
-> >  }
-> > diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-> > index ed157804ca02..49d7e7b4581f 100644
-> > --- a/include/linux/userfaultfd_k.h
-> > +++ b/include/linux/userfaultfd_k.h
-> > @@ -41,6 +41,8 @@ extern ssize_t mfill_zeropage(struct mm_struct *dst_mm,
-> >                             unsigned long dst_start,
-> >                             unsigned long len,
-> >                             bool *mmap_changing);
-> > +extern ssize_t mcopy_continue(struct mm_struct *dst_mm, unsigned long dst_start,
-> > +                           unsigned long len, bool *mmap_changing);
-> >  extern int mwriteprotect_range(struct mm_struct *dst_mm,
-> >                              unsigned long start, unsigned long len,
-> >                              bool enable_wp, bool *mmap_changing);
-> > diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
-> > index 1cc2cd8a5279..9a48305f4bdd 100644
-> > --- a/include/uapi/linux/userfaultfd.h
-> > +++ b/include/uapi/linux/userfaultfd.h
-> > @@ -40,10 +40,12 @@
-> >       ((__u64)1 << _UFFDIO_WAKE |             \
-> >        (__u64)1 << _UFFDIO_COPY |             \
-> >        (__u64)1 << _UFFDIO_ZEROPAGE |         \
-> > -      (__u64)1 << _UFFDIO_WRITEPROTECT)
-> > +      (__u64)1 << _UFFDIO_WRITEPROTECT |     \
-> > +      (__u64)1 << _UFFDIO_CONTINUE)
-> >  #define UFFD_API_RANGE_IOCTLS_BASIC          \
-> >       ((__u64)1 << _UFFDIO_WAKE |             \
-> > -      (__u64)1 << _UFFDIO_COPY)
-> > +      (__u64)1 << _UFFDIO_COPY |             \
-> > +      (__u64)1 << _UFFDIO_CONTINUE)
-> >
-> >  /*
-> >   * Valid ioctl command number range with this API is from 0x00 to
-> > @@ -59,6 +61,7 @@
-> >  #define _UFFDIO_COPY                 (0x03)
-> >  #define _UFFDIO_ZEROPAGE             (0x04)
-> >  #define _UFFDIO_WRITEPROTECT         (0x06)
-> > +#define _UFFDIO_CONTINUE             (0x07)
-> >  #define _UFFDIO_API                  (0x3F)
-> >
-> >  /* userfaultfd ioctl ids */
-> > @@ -77,6 +80,8 @@
-> >                                     struct uffdio_zeropage)
-> >  #define UFFDIO_WRITEPROTECT  _IOWR(UFFDIO, _UFFDIO_WRITEPROTECT, \
-> >                                     struct uffdio_writeprotect)
-> > +#define UFFDIO_CONTINUE              _IOR(UFFDIO, _UFFDIO_CONTINUE,  \
-> > +                                  struct uffdio_continue)
-> >
-> >  /* read() structure */
-> >  struct uffd_msg {
-> > @@ -268,6 +273,18 @@ struct uffdio_writeprotect {
-> >       __u64 mode;
-> >  };
-> >
-> > +struct uffdio_continue {
-> > +     struct uffdio_range range;
-> > +#define UFFDIO_CONTINUE_MODE_DONTWAKE                ((__u64)1<<0)
-> > +     __u64 mode;
-> > +
-> > +     /*
-> > +      * Fields below here are written by the ioctl and must be at the end:
-> > +      * the copy_from_user will not read past here.
-> > +      */
-> > +     __s64 mapped;
-> > +};
-> > +
-> >  /*
-> >   * Flags for the userfaultfd(2) system call itself.
-> >   */
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 2b3741d6130c..84392d5fa079 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -4666,12 +4666,14 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
-> >       spinlock_t *ptl;
-> >       int ret;
-> >       struct page *page;
-> > +     bool new_page = false;
-> >
-> >       if (!*pagep) {
-> >               ret = -ENOMEM;
-> >               page = alloc_huge_page(dst_vma, dst_addr, 0);
-> >               if (IS_ERR(page))
-> >                       goto out;
-> > +             new_page = true;
-> >
-> >               ret = copy_huge_page_from_user(page,
-> >                                               (const void __user *) src_addr,
-> > @@ -4699,10 +4701,8 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
-> >       mapping = dst_vma->vm_file->f_mapping;
-> >       idx = vma_hugecache_offset(h, dst_vma, dst_addr);
-> >
-> > -     /*
-> > -      * If shared, add to page cache
-> > -      */
-> > -     if (vm_shared) {
-> > +     /* Add shared, newly allocated pages to the page cache. */
-> > +     if (vm_shared && new_page) {
->
-> hugetlb_mcopy_atomic_pte() can be called with *page being set, when
-> copy_huge_page_from_user(allow_pagefault=true) is called outside of this
-> function before the retry.
->
-> IIUC this change could break that case because here new_page will also be false
-> then we won't insert page cache (while we should).
->
-> So I think instead of the new_page flag we may also want to pass in the new
-> mcopy_atomic_mode into this function, otherwise I don't see how we can identify
-> these cases.
 
-Ah, indeed, I hadn't fully considered this case. You're absolutely
-right that in this path hugetlb_mcopy_atomic_pte will have allocated,
-but not fully set up, a page, and it needs to notice that this
-happened and deal with it.
 
-I thought about some alternatives, like only ever calling
-copy_huge_page_from_user in one of these functions or the other, but
-that would be too messy I think. Another alternative would be to have
-hugetlb_mcopy_atomic_pte take some new struct instead of a struct page
-**, which records not just the page pointer but also what
-initialization has / needs to be done ... but this seems messier than
-just exposing / passing mcopy_atomic_mode.
+On 1/20/21 9:10 PM, Babu Moger wrote:
+> 
+> 
+> On 1/20/21 3:45 PM, Babu Moger wrote:
+>>
+>>
+>> On 1/20/21 3:14 PM, Jim Mattson wrote:
+>>> On Tue, Jan 19, 2021 at 3:45 PM Babu Moger <babu.moger@amd.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 1/19/21 5:01 PM, Jim Mattson wrote:
+>>>>> On Mon, Sep 14, 2020 at 11:33 AM Babu Moger <babu.moger@amd.com> wrote:
+>>>>>
+>>>>>> Thanks Paolo. Tested Guest/nested guest/kvm units tests. Everything works
+>>>>>> as expected.
+>>>>>
+>>>>> Debian 9 does not like this patch set. As a kvm guest, it panics on a
+>>>>> Milan CPU unless booted with 'nopcid'. Gmail mangles long lines, so
+>>>>> please see the attached kernel log snippet. Debian 10 is fine, so I
+>>>>> assume this is a guest bug.
+>>>>>
+>>>>
+>>>> We had an issue with PCID feature earlier. This was showing only with SEV
+>>>> guests. It is resolved recently. Do you think it is not related that?
+>>>> Here are the patch set.
+>>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fkvm%2F160521930597.32054.4906933314022910996.stgit%40bmoger-ubuntu%2F&amp;data=04%7C01%7CBabu.Moger%40amd.com%7C3009e5f7f32b4dbd4aee08d8bdc045c9%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637467980841376327%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=%2Bva7em372XD7uaCrSy3UBH6a9n8xaTTXWCAlA3gJX78%3D&amp;reserved=0
+>>>
+>>> The Debian 9 release we tested is not an SEV guest.
+>> ok. I have not tested Debian 9 before. I will try now. Will let you know
+>> how it goes. thanks
+>>
+> 
+> I have reproduced the issue locally. Will investigate. thanks
+> 
+Few updates.
+1. Like Jim mentioned earlier, this appears to be guest kernel issue.
+Debian 9 runs the base kernel 4.9.0-14. Problem can be seen consistently
+with this kernel.
 
-I'll send a v2 which implements this suggestion. :)
+2. This guest kernel(4.9.0-14) does not like the new feature INVPCID.
 
-Thanks for the thorough review!
+3. System comes up fine when invpcid feature is disabled with the boot
+parameter "noinvpcid" and also with "nopcid". nopcid disables both pcid
+and invpcid.
 
->
-> >               size = i_size_read(mapping->host) >> huge_page_shift(h);
-> >               ret = -EFAULT;
-> >               if (idx >= size)
-> > @@ -4762,7 +4762,8 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
-> >       update_mmu_cache(dst_vma, dst_addr, dst_pte);
-> >
-> >       spin_unlock(ptl);
-> > -     set_page_huge_active(page);
-> > +     if (new_page)
-> > +             set_page_huge_active(page);
->
-> Same here.
->
-> >       if (vm_shared)
-> >               unlock_page(page);
-> >       ret = 0;
-> > diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> > index b2ce61c1b50d..0ecc50525dd4 100644
-> > --- a/mm/userfaultfd.c
-> > +++ b/mm/userfaultfd.c
-> > @@ -197,6 +197,16 @@ static pmd_t *mm_alloc_pmd(struct mm_struct *mm, unsigned long address)
-> >       return pmd_alloc(mm, pud, address);
-> >  }
-> >
-> > +/* The mode of operation for __mcopy_atomic and its helpers. */
-> > +enum mcopy_atomic_mode {
-> > +     /* A normal copy_from_user into the destination range. */
-> > +     MCOPY_ATOMIC_NORMAL,
-> > +     /* Don't copy; map the destination range to the zero page. */
-> > +     MCOPY_ATOMIC_ZEROPAGE,
-> > +     /* Just setup the dst_vma, without modifying the underlying page(s). */
-> > +     MCOPY_ATOMIC_CONTINUE,
-> > +};
-> > +
-> >  #ifdef CONFIG_HUGETLB_PAGE
-> >  /*
-> >   * __mcopy_atomic processing for HUGETLB vmas.  Note that this routine is
-> > @@ -207,7 +217,7 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
-> >                                             unsigned long dst_start,
-> >                                             unsigned long src_start,
-> >                                             unsigned long len,
-> > -                                           bool zeropage)
-> > +                                           enum mcopy_atomic_mode mode)
-> >  {
-> >       int vm_alloc_shared = dst_vma->vm_flags & VM_SHARED;
-> >       int vm_shared = dst_vma->vm_flags & VM_SHARED;
-> > @@ -227,7 +237,7 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
-> >        * by THP.  Since we can not reliably insert a zero page, this
-> >        * feature is not supported.
-> >        */
-> > -     if (zeropage) {
-> > +     if (mode == MCOPY_ATOMIC_ZEROPAGE) {
-> >               mmap_read_unlock(dst_mm);
-> >               return -EINVAL;
-> >       }
-> > @@ -273,8 +283,6 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
-> >       }
-> >
-> >       while (src_addr < src_start + len) {
-> > -             pte_t dst_pteval;
-> > -
-> >               BUG_ON(dst_addr >= dst_start + len);
-> >
-> >               /*
-> > @@ -297,12 +305,22 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
-> >                       goto out_unlock;
-> >               }
-> >
-> > -             err = -EEXIST;
-> > -             dst_pteval = huge_ptep_get(dst_pte);
-> > -             if (!huge_pte_none(dst_pteval)) {
-> > -                     mutex_unlock(&hugetlb_fault_mutex_table[hash]);
-> > -                     i_mmap_unlock_read(mapping);
-> > -                     goto out_unlock;
-> > +             if (mode == MCOPY_ATOMIC_CONTINUE) {
-> > +                     /* hugetlb_mcopy_atomic_pte unlocks the page. */
-> > +                     page = find_lock_page(mapping, idx);
->
-> If my above understanding is right, we may also consider to move this
-> find_lock_page() into hugetlb_mcopy_atomic_pte() directly, then as we pass in
-> hugetlb_mcopy_atomic_pte(page==NULL, mode==MCOPY_ATOMIC_CONTINUE) we'll fetch
-> the page cache instead of allocation.
+4. Upgraded the guest kernel to v5.0 and system comes up fine.
 
-Agreed, if we expose mcopy_atomic_mode anyway, this is a better place
-for find_lock_page.
+5. Also system comes up fine with latest guest kernel 5.11.0-rc4.
 
->
-> > +                     if (!page) {
-> > +                             err = -EFAULT;
-> > +                             mutex_unlock(&hugetlb_fault_mutex_table[hash]);
-> > +                             i_mmap_unlock_read(mapping);
-> > +                             goto out_unlock;
-> > +                     }
-> > +             } else {
-> > +                     if (!huge_pte_none(huge_ptep_get(dst_pte))) {
-> > +                             err = -EEXIST;
-> > +                             mutex_unlock(&hugetlb_fault_mutex_table[hash]);
-> > +                             i_mmap_unlock_read(mapping);
-> > +                             goto out_unlock;
-> > +                     }
-> >               }
-> >
-> >               err = hugetlb_mcopy_atomic_pte(dst_mm, dst_pte, dst_vma,
-> > @@ -408,7 +426,7 @@ extern ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
-> >                                     unsigned long dst_start,
-> >                                     unsigned long src_start,
-> >                                     unsigned long len,
-> > -                                   bool zeropage);
-> > +                                   enum mcopy_atomic_mode mode);
-> >  #endif /* CONFIG_HUGETLB_PAGE */
-> >
-> >  static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
-> > @@ -417,7 +435,7 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
-> >                                               unsigned long dst_addr,
-> >                                               unsigned long src_addr,
-> >                                               struct page **page,
-> > -                                             bool zeropage,
-> > +                                             enum mcopy_atomic_mode mode,
-> >                                               bool wp_copy)
-> >  {
-> >       ssize_t err;
-> > @@ -433,22 +451,38 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
-> >        * and not in the radix tree.
-> >        */
-> >       if (!(dst_vma->vm_flags & VM_SHARED)) {
-> > -             if (!zeropage)
-> > +             switch (mode) {
-> > +             case MCOPY_ATOMIC_NORMAL:
-> >                       err = mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma,
-> >                                              dst_addr, src_addr, page,
-> >                                              wp_copy);
-> > -             else
-> > +                     break;
-> > +             case MCOPY_ATOMIC_ZEROPAGE:
-> >                       err = mfill_zeropage_pte(dst_mm, dst_pmd,
-> >                                                dst_vma, dst_addr);
-> > +                     break;
-> > +             /* It only makes sense to CONTINUE for shared memory. */
-> > +             case MCOPY_ATOMIC_CONTINUE:
-> > +                     err = -EINVAL;
-> > +                     break;
-> > +             }
-> >       } else {
-> >               VM_WARN_ON_ONCE(wp_copy);
-> > -             if (!zeropage)
-> > +             switch (mode) {
-> > +             case MCOPY_ATOMIC_NORMAL:
-> >                       err = shmem_mcopy_atomic_pte(dst_mm, dst_pmd,
-> >                                                    dst_vma, dst_addr,
-> >                                                    src_addr, page);
-> > -             else
-> > +                     break;
-> > +             case MCOPY_ATOMIC_ZEROPAGE:
-> >                       err = shmem_mfill_zeropage_pte(dst_mm, dst_pmd,
-> >                                                      dst_vma, dst_addr);
-> > +                     break;
-> > +             case MCOPY_ATOMIC_CONTINUE:
-> > +                     /* FIXME: Add minor fault interception for shmem. */
-> > +                     err = -EINVAL;
-> > +                     break;
-> > +             }
-> >       }
-> >
-> >       return err;
-> > @@ -458,7 +492,7 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
-> >                                             unsigned long dst_start,
-> >                                             unsigned long src_start,
-> >                                             unsigned long len,
-> > -                                           bool zeropage,
-> > +                                           enum mcopy_atomic_mode mcopy_mode,
-> >                                             bool *mmap_changing,
-> >                                             __u64 mode)
-> >  {
-> > @@ -527,7 +561,7 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
-> >        */
-> >       if (is_vm_hugetlb_page(dst_vma))
-> >               return  __mcopy_atomic_hugetlb(dst_mm, dst_vma, dst_start,
-> > -                                             src_start, len, zeropage);
-> > +                                             src_start, len, mcopy_mode);
-> >
-> >       if (!vma_is_anonymous(dst_vma) && !vma_is_shmem(dst_vma))
-> >               goto out_unlock;
-> > @@ -577,7 +611,7 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
-> >               BUG_ON(pmd_trans_huge(*dst_pmd));
-> >
-> >               err = mfill_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
-> > -                                    src_addr, &page, zeropage, wp_copy);
-> > +                                    src_addr, &page, mcopy_mode, wp_copy);
-> >               cond_resched();
-> >
-> >               if (unlikely(err == -ENOENT)) {
-> > @@ -626,14 +660,22 @@ ssize_t mcopy_atomic(struct mm_struct *dst_mm, unsigned long dst_start,
-> >                    unsigned long src_start, unsigned long len,
-> >                    bool *mmap_changing, __u64 mode)
-> >  {
-> > -     return __mcopy_atomic(dst_mm, dst_start, src_start, len, false,
-> > -                           mmap_changing, mode);
-> > +     return __mcopy_atomic(dst_mm, dst_start, src_start, len,
-> > +                           MCOPY_ATOMIC_NORMAL, mmap_changing, mode);
-> >  }
-> >
-> >  ssize_t mfill_zeropage(struct mm_struct *dst_mm, unsigned long start,
-> >                      unsigned long len, bool *mmap_changing)
-> >  {
-> > -     return __mcopy_atomic(dst_mm, start, 0, len, true, mmap_changing, 0);
-> > +     return __mcopy_atomic(dst_mm, start, 0, len, MCOPY_ATOMIC_ZEROPAGE,
-> > +                           mmap_changing, 0);
-> > +}
-> > +
-> > +ssize_t mcopy_continue(struct mm_struct *dst_mm, unsigned long start,
-> > +                    unsigned long len, bool *mmap_changing)
-> > +{
-> > +     return __mcopy_atomic(dst_mm, start, 0, len, MCOPY_ATOMIC_CONTINUE,
-> > +                           mmap_changing, 0);
-> >  }
-> >
-> >  int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
-> > --
-> > 2.30.0.284.gd98b1dd5eaa7-goog
-> >
->
-> --
-> Peter Xu
->
+I did not bisect further yet.
+Babu
+Thanks
