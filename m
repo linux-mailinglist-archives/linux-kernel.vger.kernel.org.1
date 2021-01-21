@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EC42FF289
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4E02FF28B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389177AbhAURyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388889AbhAURxc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:53:32 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CEDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:52:52 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id b26so3724990lff.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:52:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r+y6HoOTll1MrzW4hWMYJZHq72DOCpTTxfpDkrq4N/Y=;
-        b=FmSo8fym+siyyWbcP6UJV64jCQmMTi8M0aceneJgTnzYSWzLEZBNHkHRRjvSbZT6nr
-         9NPdk32hoP7CozXT4K1gD5rIfkh8wQSpJJYxvSmy++Xxxy1qpTZ7DwWaIBmK8Fjtxy6D
-         8kyG56odyty95Psbws6h//gOfRFBwGjbRNqWk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r+y6HoOTll1MrzW4hWMYJZHq72DOCpTTxfpDkrq4N/Y=;
-        b=G9azPdWqzKxIi5w9ITn+IzA8zW1uu06dB1r5LDBEA85r+UtzYfsrH0qn2gvA2gT/l/
-         W1p1UHECq1eCTFYniwy3ORuz3EFGL5rSJWQdivTG6F/UQoDxNzvMFQUIMZdIAN8tUR6z
-         LyonEirWeaHVjdIGvu4i/ixde3npUxXx4wT7cMARAtW+nrT+2jLma5HsbDXzH4+jPGLK
-         4oKNt7vy23IPIrunB9gdyuihBZF8vrgOclwkxyYBhc0t6eqCsc7HXESPIgMuh1s+M16v
-         EM6c84nuVXcchkd5PMXEJSZWa25CAteKIK15YOhmpQEHq9hO2wY94Nba0ZT1m6YVnAmJ
-         48Eg==
-X-Gm-Message-State: AOAM531RjQetqsQ8rzc8pgusW20OpY1pqHew5TlkpJiVbUKZ54pZNlic
-        KyALx6vEmpsPvjtzaqvALUMBDnk64SIS0A==
-X-Google-Smtp-Source: ABdhPJz5fi2x+1CCG82h/o5FSm4/obBXnsTxYtZJc5NtB2vCGQVaBZ1Vlxwko6rZPc8L1ZBepGMakg==
-X-Received: by 2002:ac2:5201:: with SMTP id a1mr154999lfl.515.1611251570165;
-        Thu, 21 Jan 2021 09:52:50 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id s2sm449256lfc.261.2021.01.21.09.52.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 09:52:48 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id n11so3503105lji.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:52:48 -0800 (PST)
-X-Received: by 2002:a2e:808e:: with SMTP id i14mr221403ljg.411.1611251568409;
- Thu, 21 Jan 2021 09:52:48 -0800 (PST)
+        id S2389000AbhAURzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:55:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388837AbhAURyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:54:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F32A7207C5;
+        Thu, 21 Jan 2021 17:53:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611251605;
+        bh=vDwNDLdPpFTwrWqZmAFtSoWHQOtXgmCA2y8ljJ/9Lvk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=q6CGLXDIqpndRDF7BL5eQvvqn36AXV/Ziil1sr3uDqHKENxAK1bgi/5nOG4hgsdlh
+         P49tMC2kwamaG1KYCiDaXSnuIqZkwapB5hl0S15Oh+njMP2zl85jtJryEpARqQwN3v
+         eXdznxDwCtF35IPBHReT0E6bQ3LRx8uN1ndYA2RJATKDllXTOf+R0tUm7GOyGEORgy
+         XaaNnP8aBewjV/KCUxEINc+J50T0tXSFl/yn1bD+3vWemUGBOv+rDlpS/YpeiBbMWc
+         qnn9yQJCuiYSZYowZA3kQvXDp71AjoG1P2AaBEnUQqOiPKlctWduLAoWTXjddFZ69H
+         CPyic9Eptlqrw==
+From:   Will Deacon <will@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>, tytso@mit.edu
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, mark.rutland@arm.com,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+        maz@kernel.org, linux-kernel@vger.kernel.org,
+        andre.przywara@arm.com
+Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting IRQ randomness
+Date:   Thu, 21 Jan 2021 17:53:18 +0000
+Message-Id: <161124379345.536991.7126735996539393054.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201105152944.16953-1-ardb@kernel.org>
+References: <20201105152944.16953-1-ardb@kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=wiDX9K0aj6mQsQM54yyJTg2fkzME82aSswB2woFGmW81Q@mail.gmail.com>
- <C8NLE0OB4QWG.31VIPNC9SIDPG@oguc> <CAHk-=wj48Bdz6MPojis0ONMGO=0L+9bquD9e1_pGc4-et=uLbg@mail.gmail.com>
- <CAHk-=wiw=+A3Lnru7cvTbEka0QTpt14QBA06C49n+SJ_WQ1VFw@mail.gmail.com>
- <ce1230bd-e310-9b2a-a1ed-1547bd7181e7@kernel.org> <1005a065-fbe7-ccaa-90a0-6488b8fa66de@kernel.org>
-In-Reply-To: <1005a065-fbe7-ccaa-90a0-6488b8fa66de@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 Jan 2021 09:52:32 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgW9DXzC2KJGfm7XcXtd82y5J6MW2Patj8UiGaK+3Pqsw@mail.gmail.com>
-Message-ID: <CAHk-=wgW9DXzC2KJGfm7XcXtd82y5J6MW2Patj8UiGaK+3Pqsw@mail.gmail.com>
-Subject: Re: tty splice branch (was "Re: Splicing to/from a tty")
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Oliver Giles <ohw.giles@gmail.com>,
-        Robert Karszniewicz <r.karszniewicz@phytec.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:58 AM Jiri Slaby <jirislaby@kernel.org> wrote:
->
-> Which is weird as you Cced me. Let me check what is wrong with my e-mail
-> setup.
+On Thu, 5 Nov 2020 16:29:44 +0100, Ard Biesheuvel wrote:
+> When reseeding the CRNG periodically, arch_get_random_seed_long() is
+> called to obtain entropy from an architecture specific source if one
+> is implemented. In most cases, these are special instructions, but in
+> some cases, such as on ARM, we may want to back this using firmware
+> calls, which are considerably more expensive.
+> 
+> Another call to arch_get_random_seed_long() exists in the CRNG driver,
+> in add_interrupt_randomness(), which collects entropy by capturing
+> inter-interrupt timing and relying on interrupt jitter to provide
+> random bits. This is done by keeping a per-CPU state, and mixing in
+> the IRQ number, the cycle counter and the return address every time an
+> interrupt is taken, and mixing this per-CPU state into the entropy pool
+> every 64 invocations, or at least once per second. The entropy that is
+> gathered this way is credited as 1 bit of entropy. Every time this
+> happens, arch_get_random_seed_long() is invoked, and the result is
+> mixed in as well, and also credited with 1 bit of entropy.
+> 
+> [...]
 
-Yeah, I think you were cc'd on not just the patches, but on all the
-discussion that preceded them.
+Applied to arm64 (for-next/random), thanks!
 
-But better late than never. I was actually much more nervous about the
-much more subtle "cookie continuation" stuff, not the trivial
-conversion patches.
+[1/1] random: avoid arch_get_random_seed_long() when collecting IRQ randomness
+      https://git.kernel.org/arm64/c/390596c9959c
 
-Which just goes to show that most bugs are when you don't really think
-about it because it's "trivial".
+Ted -- please shout if you would prefer me not to carry this in the arm64
+tree. I've haven't seen a response from you on this thread, but this patch
+is currently blocking support for the TRNG firmware call on arm64 [1], so
+I've pulled it in as a dependency. The branch above is stable, so you can
+pull it in as well if necessary.
 
-            Linus
+[1] https://lore.kernel.org/r/20210106103453.152275-1-andre.przywara@arm.com
+
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
