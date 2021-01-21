@@ -2,108 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863F42FF05A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA832FF06E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387937AbhAUQbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:31:17 -0500
-Received: from smtp180.sjtu.edu.cn ([202.120.2.180]:53972 "EHLO
-        smtp180.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730948AbhAUQau (ORCPT
+        id S1733224AbhAUQey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732779AbhAUQdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:30:50 -0500
-Received: from mta04.sjtu.edu.cn (mta04.sjtu.edu.cn [202.121.179.8])
-        by smtp180.sjtu.edu.cn (Postfix) with ESMTPS id 8BE881008CBFA;
-        Fri, 22 Jan 2021 00:30:04 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mta04.sjtu.edu.cn (Postfix) with ESMTP id 69AC9180695CD;
-        Fri, 22 Jan 2021 00:30:04 +0800 (CST)
-X-Virus-Scanned: amavisd-new at mta04.sjtu.edu.cn
-Received: from mta04.sjtu.edu.cn ([127.0.0.1])
-        by localhost (mta04.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qhxFy0bwXTQo; Fri, 22 Jan 2021 00:30:04 +0800 (CST)
-Received: from mstore107.sjtu.edu.cn (unknown [10.118.0.107])
-        by mta04.sjtu.edu.cn (Postfix) with ESMTP id 21E19180695CC;
-        Fri, 22 Jan 2021 00:30:04 +0800 (CST)
-Date:   Fri, 22 Jan 2021 00:30:00 +0800 (CST)
-From:   Zhongwei Cai <sunrise_l@sjtu.edu.cn>
-To:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>
-Cc:     Mikulas Patocka <mpatocka@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Mingkai Dong <mingkaidong@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        Rajesh Tadakamadla <rajesh.tadakamadla@hpe.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Message-ID: <323586311.2762348.1611246600848.JavaMail.zimbra@sjtu.edu.cn>
-In-Reply-To: <20210120141834.GA24063@quack2.suse.cz>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210107151125.GB5270@casper.infradead.org> <17045315-CC1F-4165-B8E3-BA55DD16D46B@gmail.com> <2041983017.5681521.1610459100858.JavaMail.zimbra@sjtu.edu.cn> <alpine.LRH.2.02.2101131008530.27448@file01.intranet.prod.int.rdu2.redhat.com> <1224425872.715547.1610703643424.JavaMail.zimbra@sjtu.edu.cn> <20210120044700.GA4626@dread.disaster.area> <20210120141834.GA24063@quack2.suse.cz>
-Subject: Re: Expense of read_iter
+        Thu, 21 Jan 2021 11:33:50 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697F2C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 08:33:07 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id hs11so3510783ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 08:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XHMaKLxeLNrn8A/sCpy0/0lMtZdWQ1dZidHHduxH5Z0=;
+        b=KFPXKJ+wud/d1vTB3FLQqxUYFEgB6U24/jTmV4ZePABaV+Yw6Ww93EBBHssBD4jFkJ
+         LbecXvtvqFQGNP+TFmztHylPLjEYURooVAaOqnn4ezFzvj88lmInUk5oqIls7N3i1bo8
+         TVnK8aRfq+c9zs+jVj+1nKxMOAG32galJEst0rBcpiq2T/5AZLPQdKpzvBX9OKSKUX92
+         FpKEUDzSchADDDE6HL8yWJRFy0gE3hcH17y5nNxD7STpiMd8cy5SVW0eWTnK0fwMVZef
+         t/+AgmcykXabX3mbpiUi4hvVdFBPhgE5R6omI4LzhwO869MkYKPlgvvNi9amFvZuXIjo
+         TUfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XHMaKLxeLNrn8A/sCpy0/0lMtZdWQ1dZidHHduxH5Z0=;
+        b=h4elbi0PwoCUd/5yjVPu57QxMmjFkqOzNQ6Ep0CQc4Fx+kmMogY1eePy1FTZcQ+BVb
+         bJZCRnLc0XvFpW6p5yskOpmhceW0aoieFZFUSW7crd+ojEH7Di93rWTF+iB1sZIJ0qJZ
+         K9f7pkwwitDrbsavYoE8s+HnlTpGPBMA50sCKKiS0E0GTUnk9xGbbDGx1mhsUdoui8lj
+         BNuFA5Jn/KyTbgUCJLBz2VhlLnzYIWOWczFulejGewgSQZlJcE0hxUfhrLJYV6wtifgN
+         11nvcf3BGHOkV7uvGvz0ItNoZK9MW4PQv1BGNwOqxWtOM/RTlaPaF5x7FcxjO9Q8xnRy
+         kVEA==
+X-Gm-Message-State: AOAM5319cDg0wgYBw1Og2WccYTaWs3SrA0XwyjIabzIJlWnYfdaI3Chh
+        5d52ULPsHlvxkD9dI4KtBtHHUVFYKFU6bpfRj5Q=
+X-Google-Smtp-Source: ABdhPJwz4+tEcNN4OYhAszwhWg8ru3lxyxLaHNYNbrGg8xmUu9wu/CtQu5A/j4hYcseK+dCHbrpM5sFipW+/lHfv52g=
+X-Received: by 2002:a17:906:af15:: with SMTP id lx21mr218750ejb.6.1611246786193;
+ Thu, 21 Jan 2021 08:33:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [58.196.139.16]
-X-Mailer: Zimbra 8.8.15_GA_3980 (ZimbraWebClient - FF84 (Win)/8.8.15_GA_3928)
-Thread-Topic: Expense of read_iter
-Thread-Index: iDlr565GHhmBWjkzqz9bX3XXoj59EA==
+Received: by 2002:a17:906:12d3:0:0:0:0 with HTTP; Thu, 21 Jan 2021 08:33:05
+ -0800 (PST)
+Reply-To: hkmohammedh@gmail.com
+From:   Mohammed Hossain <rw63208@gmail.com>
+Date:   Thu, 21 Jan 2021 16:33:05 +0000
+Message-ID: <CALF-9AE=gUA9uy_D_1NEC75s-MVYSeW+4d1j6YUt6JV=3k=pzA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 20 Jan 2021, Jan Kara wrote:
-> On Wed 20-01-21 15:47:00, Dave Chinner wrote:
-> > On Fri, Jan 15, 2021 at 05:40:43PM +0800, Zhongwei Cai wrote:
-> > > On Thu, 14 Jan 2021, Mikulas wrote:
-> > > For Ext4-dax, the overhead of dax_iomap_rw is significant
-> > > compared to the overhead of struct iov_iter. Although methods
-> > > proposed by Mikulas can eliminate the overhead of iov_iter
-> > > well, they can not be applied in Ext4-dax unless we implement an
-> > > internal "read" method in Ext4-dax.
-> > >
->> > For Ext4-dax, there could be two approaches to optimizing:
-> > > 1) implementing the internal "read" method without the complexity
-> > > of iterators and dax_iomap_rw;
-> >
-> > Please do not go an re-invent the wheel just for ext4. If there's a
-> > problem in a shared path - ext2, FUSE and XFS all use dax_iomap_rw()
-> > as well, so any improvements to that path benefit all DAX users, not
-> > just ext4.
-> >
-> > > 2) optimizing how dax_iomap_rw works.
-> > > Since dax_iomap_rw requires ext4_iomap_begin, which further involves
-> > > the iomap structure and others (e.g., journaling status locks in Ext4),
-> > > we think implementing the internal "read" method would be easier.
-> >
-> > Maybe it is, but it's also very selfish. The DAX iomap path was
-> > written to be correct for all users, not inecessarily provide
-> > optimal performance. There will be lots of things that could be done
-> > to optimise it, so rather than creating a special snowflake in ext4
-> > that makes DAX in ext4 much harder to maintain for non-ext4 DAX
-> > developers, please work to improve the common DAX IO path and so
-> > provide the same benefit to all the filesystems that use it.
->
-> Yeah, I agree. I'm against ext4 private solution for this read problem. And
-> I'm also against duplicating ->read_iter functionatily in ->read handler.
-> The maintenance burden of this code duplication is IMHO just too big. We
-> rather need to improve the generic code so that the fast path is faster.
-> And every filesystem will benefit because this is not ext4 specific
-> problem.
-> 
->                                                                 Honza
-
-We agree that maintenance burden could be a problem here. So we will take
-your suggestions and try to optimize on the generic path. But as Mikulas
-said ( https://lkml.org/lkml/2021/1/20/618 ), it seems that some parts of
-the overhead are hard to avoid, such as new_sync_read, and we are concerned
-that optimizing on the generic path will have limited effect. Nevertheless,
-we will try to optimize the generic path and see how much we can improve.
-
-Zhongwei
+-- 
+I  have an proposal for you get back for more details.
