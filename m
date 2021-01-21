@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C881E2FEB79
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7A92FEB1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731775AbhAUNTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:19:25 -0500
-Received: from mga07.intel.com ([134.134.136.100]:40972 "EHLO mga07.intel.com"
+        id S1731582AbhAUNH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:07:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729337AbhAUK3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:29:03 -0500
-IronPort-SDR: TUATUDGwUn7VaKLb5yV24oEW+7xMrYOXYvC5urHuNGHCU5ysvc2W2/py6L9O+UuVnADY9efPH7
- aLdhT+dAzCYQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="243321049"
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="243321049"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:27:04 -0800
-IronPort-SDR: QgeIy8Ssun2hy6R9w17UY0Ll/AXBiBRb1BeFr667ljwzuCW2rJkpwHDq8WPMolQ61OBDnrLG/t
- VJau4CgcO5fw==
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="570684050"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:27:00 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2XC6-007Nsw-Be; Thu, 21 Jan 2021 12:28:02 +0200
-Date:   Thu, 21 Jan 2021 12:28:02 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH 4/6] lib: inline _find_next_bit() wrappers
-Message-ID: <YAlXMj7sIoPjZP3W@smile.fi.intel.com>
-References: <20210121000630.371883-1-yury.norov@gmail.com>
- <20210121000630.371883-5-yury.norov@gmail.com>
+        id S1729438AbhAUKaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:30:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 470BD23433;
+        Thu, 21 Jan 2021 10:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611224969;
+        bh=U8ydBIs1leOt47Wm9+F882XwGauCR/7D8HJT0x7aOzw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s2usR8TO08WVo313XMa3f32skpfdGhMQBnBaI79kXJj7L4MzgK0baK4eVyJWGdgTP
+         0otLU/QmXeIsbHZYhqE5qAId2n/Vgbg7FivIdSaossFEupuG6TDpVscwgi5Lkk9Yxp
+         W7VkIno+Mq3twjtYkt2EHQV5YmvdHQgzj+a0PA7Xpj7b7j985oxUmTOUHiPr8SCl+j
+         5QUaLSpwLlJl1NZP8iuF2sajjl0mV2hwdvreAAUH+2Ta2GBbX2JeqVUJpiPkj/Vgka
+         0HFgs8MhK8ileGinx1XQymM0VySHvDRQO16qZjMEpS3LHA4JtwS+M8EjB0j26kMdEJ
+         KT7Is2XUMdncA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l2XDc-0004YD-9n; Thu, 21 Jan 2021 11:29:36 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     linux-usb@vger.kernel.org
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 00/10] USB: serial: xr: fix up remaining issues in new driver
+Date:   Thu, 21 Jan 2021 11:29:11 +0100
+Message-Id: <20210121102922.17439-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121000630.371883-5-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 04:06:28PM -0800, Yury Norov wrote:
-> lib/find_bit.c declares five single-line wrappers for _find_next_bit().
-> We may turn those wrappers to inline functions. It eliminates
-> unneeded function calls and opens room for compile-time optimizations.
+This series fixes the remaining issues in the new MaxLinear driver that
+were pointed out here:
 
-...
+	https://lore.kernel.org/r/YAlVLOqzx8otPgOg@hovoldconsulting.com
 
-> --- a/include/asm-generic/bitops/le.h
-> +++ b/include/asm-generic/bitops/le.h
-> @@ -4,6 +4,7 @@
->  
->  #include <asm/types.h>
->  #include <asm/byteorder.h>
-> +#include <asm-generic/bitops/find.h>
+Johan
 
-I'm wondering if generic header inclusion should go before arch-dependent ones.
 
-...
+Johan Hovold (10):
+  USB: serial: xr: fix NULL-deref at probe
+  USB: serial: xr: fix interface leak at disconnect
+  USB: serial: xr: use subsystem usb_device at probe
+  USB: serial: xr: use termios flag helpers
+  USB: serial: xr: document vendor-request recipient
+  USB: serial: xr: clean up line-settings handling
+  USB: serial: xr: simplify line-speed logic
+  USB: serial: xr: fix gpio-mode handling
+  USB: serial: xr: fix pin configuration
+  USB: serial: xr: fix B0 handling
 
-> -#ifndef find_next_bit
-
-> -#ifndef find_next_zero_bit
-
-> -#if !defined(find_next_and_bit)
-
-> -#ifndef find_next_zero_bit_le
-
-> -#ifndef find_next_bit_le
-
-Shouldn't you leave these in new wrappers as well?
+ drivers/usb/serial/xr_serial.c | 102 +++++++++++++++++++--------------
+ 1 file changed, 59 insertions(+), 43 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.2
 
