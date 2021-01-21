@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85AE2FF5FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1832FF603
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbhAUUfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727158AbhAUHyQ (ORCPT
+        id S1726509AbhAUUhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:37:10 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38762 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727738AbhAUHxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:54:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1CAC0613C1;
-        Wed, 20 Jan 2021 23:53:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=UGANRP/KM5q83XfobVV7DWx5ZvtoCTKMobbFGMONdGw=; b=lEUjKYCeFs939aYUT/oDk6x8Y8
-        cQ3mrs840LqXWpjhVo/H1r9njWTQ2UPMp9vFEXNfezGdicLLr/cpJYuAIPKokMcQdsrz5ps+wCZNK
-        nZ2RUpOEkYuO5olwBDJmnGrb7/ILlsTg617y335c8QBpy3BbsWSMBVQgNHVcD3kQsM+HbV3hK4fA9
-        oqMsrTu5NsH9B5ZNHX/iQUwurf1JG18BrQ4usaMdfm8xeUK3jmKB47YIhmvEp4W3VqZRJ+yOtCKrq
-        95e+rD3HXbyxkwd44BUDiR7XtNG/my8cZkRGEyei9qwBKaHcXWITUTwK8+IKHsYEr6qESVUJyPNHu
-        1BsbRzLQ==;
-Received: from 089144206130.atnat0015.highway.bob.at ([89.144.206.130] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2UlI-00Gm22-Ef; Thu, 21 Jan 2021 07:52:17 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: module loader dead code removal and cleanusp
-Date:   Thu, 21 Jan 2021 08:49:46 +0100
-Message-Id: <20210121074959.313333-1-hch@lst.de>
-X-Mailer: git-send-email 2.29.2
+        Thu, 21 Jan 2021 02:53:01 -0500
+X-UUID: 8a517e9c67fd4e4d827d11f90b4bfc9d-20210121
+X-UUID: 8a517e9c67fd4e4d827d11f90b4bfc9d-20210121
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <hailong.fan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 213492092; Thu, 21 Jan 2021 15:52:00 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 21 Jan 2021 15:51:53 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 21 Jan 2021 15:51:53 +0800
+From:   Hailong Fan <hailong.fan@mediatek.com>
+To:     Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <srv_heupstream@mediatek.com>, <chentsung@chromium.org>,
+        <gtk_pangao@mediatek.com>, <hanks.chen@mediatek.com>,
+        <yong.wu@mediatek.com>, Hailong Fan <hailong.fan@mediatek.com>
+Subject: [PATCH RESEND] pinctrl: mediatek: Fix trigger type setting follow for unexpected interrupt
+Date:   Thu, 21 Jan 2021 15:51:49 +0800
+Message-ID: <20210121075149.1310-1-hailong.fan@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+When flipping the polarity will be generated interrupt under certain
+circumstances, but GPIO external signal has not changed.
+Then, mask the interrupt before polarity setting, and clear the
+unexpected interrupt after trigger type setting completed.
 
-this series removes support for long term unused export types and
-cleans up various loose ends in the module loader.
+Signed-off-by: Hailong Fan <hailong.fan@mediatek.com>
+---
+Resend since some server reject.
+---
+ drivers/pinctrl/mediatek/mtk-eint.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Diffstat:
- arch/arm/configs/bcm2835_defconfig          |    1 
- arch/arm/configs/mxs_defconfig              |    1 
- arch/mips/configs/nlm_xlp_defconfig         |    1 
- arch/mips/configs/nlm_xlr_defconfig         |    1 
- arch/parisc/configs/generic-32bit_defconfig |    1 
- arch/parisc/configs/generic-64bit_defconfig |    1 
- arch/powerpc/configs/ppc6xx_defconfig       |    1 
- arch/powerpc/platforms/powernv/pci-cxl.c    |   22 -
- arch/s390/configs/debug_defconfig           |    1 
- arch/s390/configs/defconfig                 |    1 
- arch/sh/configs/edosk7760_defconfig         |    1 
- arch/sh/configs/sdk7780_defconfig           |    1 
- arch/x86/configs/i386_defconfig             |    1 
- arch/x86/configs/x86_64_defconfig           |    1 
- arch/x86/tools/relocs.c                     |    4 
- drivers/gpu/drm/drm_crtc_helper_internal.h  |   10 
- drivers/gpu/drm/drm_fb_helper.c             |   21 -
- drivers/gpu/drm/drm_kms_helper_common.c     |   26 +-
- include/asm-generic/vmlinux.lds.h           |   42 ---
- include/linux/export.h                      |    9 
- include/linux/kallsyms.h                    |   17 -
- include/linux/module.h                      |   42 ---
- init/Kconfig                                |   17 -
- kernel/kallsyms.c                           |    8 
- kernel/livepatch/core.c                     |   61 +----
- kernel/module.c                             |  319 ++++++++++------------------
- kernel/trace/trace_kprobe.c                 |    4 
- lib/bug.c                                   |    3 
- scripts/checkpatch.pl                       |    6 
- scripts/mod/modpost.c                       |   50 ----
- scripts/mod/modpost.h                       |    3 
- scripts/module.lds.S                        |    6 
- tools/include/linux/export.h                |    3 
- 33 files changed, 181 insertions(+), 505 deletions(-)
+diff --git a/drivers/pinctrl/mediatek/mtk-eint.c b/drivers/pinctrl/mediatek/mtk-eint.c
+index 22736f60c16c..3acda6bb401e 100644
+--- a/drivers/pinctrl/mediatek/mtk-eint.c
++++ b/drivers/pinctrl/mediatek/mtk-eint.c
+@@ -157,6 +157,7 @@ static void mtk_eint_ack(struct irq_data *d)
+ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+ {
+ 	struct mtk_eint *eint = irq_data_get_irq_chip_data(d);
++	unsigned int unmask;
+ 	u32 mask = BIT(d->hwirq & 0x1f);
+ 	void __iomem *reg;
+ 
+@@ -173,6 +174,13 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+ 	else
+ 		eint->dual_edge[d->hwirq] = 0;
+ 
++	if (!mtk_eint_get_mask(eint, d->hwirq)) {
++		mtk_eint_mask(d);
++		unmask = 1;
++	} else {
++		unmask = 0;
++	}
++
+ 	if (type & (IRQ_TYPE_LEVEL_LOW | IRQ_TYPE_EDGE_FALLING)) {
+ 		reg = mtk_eint_get_offset(eint, d->hwirq, eint->regs->pol_clr);
+ 		writel(mask, reg);
+@@ -189,8 +197,9 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+ 		writel(mask, reg);
+ 	}
+ 
+-	if (eint->dual_edge[d->hwirq])
+-		mtk_eint_flip_edge(eint, d->hwirq);
++	mtk_eint_ack(d);
++	if (unmask == 1)
++		mtk_eint_unmask(d);
+ 
+ 	return 0;
+ }
+-- 
+2.18.0
+
