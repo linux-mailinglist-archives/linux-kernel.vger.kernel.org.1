@@ -2,113 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABE42FE446
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C232FE447
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbhAUHqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbhAUHns (ORCPT
+        id S1726830AbhAUHq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:46:29 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:18463 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727486AbhAUHpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:43:48 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537A5C0613C1;
-        Wed, 20 Jan 2021 23:43:07 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id g10so743276wrx.1;
-        Wed, 20 Jan 2021 23:43:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kgam/JcAMv4/Hclb81fC+FVrhWIpAb1YZ0aXLXlhAoU=;
-        b=tGcaXPu2LOMfxg2jDro99XXVO4QDl9TAdMXYImUZZpAzTfVfLuV+7+4TeKdjso38EZ
-         ki/MN1Mbn6qQjl/+vdOiYLRcfAr6TZHUKRhcaecJehpzoYSXcwirGlaOSUK2faF4//7p
-         O8zLHUbXiMrKyAPbN2pkwWS05Kl7AsGeAZdNK5v1Idh6D0FwYi+6zjeAg1kVHv7P4v4p
-         Ti2M5kTAPCGSzfCqQi8knReYvvqdvVeHrE/Sm8M/jMDbHpIKAtNvZJanq5vL+4+dkzgB
-         yXsoFRN2ZZbuK+zLKPNAYkcyOZWgw53p8BzUHcT6j62g6eLz76TTXMRpemvM4LcM4kvP
-         LJeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kgam/JcAMv4/Hclb81fC+FVrhWIpAb1YZ0aXLXlhAoU=;
-        b=YPmKVcEb5wiOwtRogNsw6SAWUPZgRw1uTBJB8nSd21vGLHuAfoVOyQU/skXySJ5N22
-         QxCTv4dnK31BQPY0SUakQXk+1fB2m2ZcEF40zK67MvZccG1EODoIw/iZWCTiuxOk8U/7
-         Z8tC9vvrfOOm7CeA0XUX9k2jhgpwJvLFNVgjG9N//hhu/PHKWnihK03bgqmwsOjmtePD
-         Nqh7yckPc6wfozY0rAeqQHNrZRmLB3RaafL37gynv2u4R28tKWZy5/fPXBlEms7I1SJR
-         0BKccxhkwYNuGbiDIa0VAG6CacXU9HPJpM5yeakaQebV9OOgNPOKJZApFGCnxm6YbWrn
-         xDWg==
-X-Gm-Message-State: AOAM5315R9uiuA8L3XZnSf6uGlzC5u8UI3B9Bn0+d9oVFiDwilOfY7a9
-        U+gFAdh+5V0ddTNLeMIkgv/Vhw2//O33NUZLpfw/bQf7/W3igZGe
-X-Google-Smtp-Source: ABdhPJwzMl4PpyMqGnMviLbKnQbsLou+EJWi88QswY7xQEmVfHG1Cs+1CbAzbJ4rIlMeILSLe4VqP+/Abfquaw+c/vo=
-X-Received: by 2002:adf:9427:: with SMTP id 36mr12828885wrq.271.1611214986136;
- Wed, 20 Jan 2021 23:43:06 -0800 (PST)
+        Thu, 21 Jan 2021 02:45:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611215080; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=45SHXNGLf2GW49IFygSLw/pVD2P3JuS39NiipoEW1UQ=; b=U3bvABjJ1Fih3qHbVB/rBq8r+naO4d159jEIKnOHdVLjaB5cdTcdssQ/VkBbHta/lgg3nXgu
+ 3t0vZSO0fHAatxSSbNy7NXARtv7vaN/hdHVd7q0nye1cKI5Fj6yVV2E5xIMPrjPmdzh8/u/o
+ 3Rv6B2yNwiUlnq5IblTPtCBRMHc=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 600930c95677aca7bdbe0b14 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Jan 2021 07:44:09
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 573DFC43464; Thu, 21 Jan 2021 07:44:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.7.112] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 185CCC433CA;
+        Thu, 21 Jan 2021 07:44:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 185CCC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: usb: dwc3: gadget: skip pullup and set_speed after suspend
+To:     Jung Daehwan <dh10.jung@samsung.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CGME20210120035123epcas2p2048f6d9896bd21f19d939a56fe0b6610@epcas2p2.samsung.com>
+ <1611113968-102424-1-git-send-email-dh10.jung@samsung.com>
+ <fbde7781-8eef-ab3a-a339-8a2f61ca83be@synopsys.com>
+ <20210121064956.GA69382@ubuntu>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <6c6429da-5d27-2d6a-9bcf-3606810e71a6@codeaurora.org>
+Date:   Wed, 20 Jan 2021 23:44:05 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210108113851.354947-1-zhang.lyra@gmail.com> <20210108113851.354947-3-zhang.lyra@gmail.com>
- <47f73502-15fe-5d65-6fc9-22eb078d7797@arm.com> <CAAfSe-vd5eRopOBZMuTi8vq1FqY1qAVSdMHscVuA+uHtL2H=gw@mail.gmail.com>
- <3a2561fc-65a6-4c68-fdb7-a5b670706f43@arm.com>
-In-Reply-To: <3a2561fc-65a6-4c68-fdb7-a5b670706f43@arm.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Thu, 21 Jan 2021 15:42:30 +0800
-Message-ID: <CAAfSe-tgyTp7BYwfhH7xevhdgj5riNET53A=+K6vKsGwrxtFDw@mail.gmail.com>
-Subject: Re: [RFC PATCH V2 2/2] iommu: add Unisoc iommu basic driver
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        Kevin Tang <kevin.tang@unisoc.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210121064956.GA69382@ubuntu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 at 20:29, Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-01-20 11:40, Chunyan Zhang wrote:
-> [...]
-> >>> +     pgt_base_iova = dom->pgt_va +
-> >>> +             ((iova - mdata->iova_start) >> SPRD_IOMMU_PAGE_SHIFT);
-> >>> +
-> >>> +     spin_lock_irqsave(&dom->pgtlock, flags);
-> >>> +     for (i = 0; i < page_num; i++) {
-> >>> +             pgt_base_iova[i] = pabase >> SPRD_IOMMU_PAGE_SHIFT;
-> >>
-> >> Out of curiosity, is the pagetable walker cache-coherent, or is this
-> >> currently managing to work by pure chance and natural cache churn?
-> >
-> > ->iotlb_sync_map() was implemented in this driver, I guess that has
-> > done what you say here?
->
-> No, sync_map only ensures that the previous (invalid) PTE isn't held in
-> the IOMMU's TLB. If pgt_va is a regular page allocation then you're
-> writing the new PTE to normal kernel memory, with nothing to guarantee
-> that write goes any further than the CPU's L1 cache. Thus either the
-> IOMMU has capable of snooping the CPU caches in order to see the updated
-> PTE value (rather than refetching the stale value from DRAM), or you're
-> just incredibly lucky that by the time the IOMMU *does* go to fetch the
-> PTE for that address, that updated cache line has already been evicted
-> out to DRAM naturally.
->
 
-Got it, thanks for the detailed explanation.
-In order to make clear why this code can work, I made a test, and
-found that if I wrote more than 1024 PTEs, the value would be updated
-to DRAM immediately, otherwise the cache line seems not updated even
-if I wrote 1023 PTEs.
 
-> This is not an issue if you use the proper DMA allocator, since that
-> will ensure you get a non-cacheable buffer if you need one.
->
+On 1/20/2021 10:49 PM, Jung Daehwan wrote:
+> Hi,
+> 
+> On Thu, Jan 21, 2021 at 01:00:32AM +0000, Thinh Nguyen wrote:
+>> Hi,
+>>
+>> Daehwan Jung wrote:
+>>> Sometimes dwc3_gadget_pullup and dwc3_gadget_set_speed are called after
+>>> entering suspend. That's why it needs to check whether suspend
+>>>
+>>> 1. dwc3 sends disconnect uevent and turn off. (suspend)
+>>> 2. Platform side causes pullup or set_speed(e.g., adbd closes ffs node)
+>>> 3. It causes unexpected behavior like ITMON error.
+>>>
+>>> Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
+>>> ---
+>>>  drivers/usb/dwc3/gadget.c | 6 ++++++
+>>>  1 file changed, 6 insertions(+)
+>>>
+>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>> index ee44321..d7d4202 100644
+>>> --- a/drivers/usb/dwc3/gadget.c
+>>> +++ b/drivers/usb/dwc3/gadget.c
+>>> @@ -2093,6 +2093,9 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>>  	unsigned long		flags;
+>>>  	int			ret;
+>>>  
+>>> +	if (pm_runtime_suspended(dwc->dev))
+>>> +		return 0;
+>>> +
+>>>  	is_on = !!is_on;
+>>>  
+>>>  	/*
+>>> @@ -2403,6 +2406,9 @@ static void dwc3_gadget_set_speed(struct usb_gadget *g,
+>>>  	unsigned long		flags;
+>>>  	u32			reg;
+>>>  
+>>> +	if (pm_runtime_suspended(dwc->dev))
+>>> +		return;
+>>> +
+>>>  	spin_lock_irqsave(&dwc->lock, flags);
+>>>  	reg = dwc3_readl(dwc->regs, DWC3_DCFG);
+>>>  	reg &= ~(DWC3_DCFG_SPEED_MASK);
+>>
+>> This is already addressed in Wesley Cheng's patches. Can you try the
+>> latest changes of DWC3 in Greg's usb-next branch?
+>>
+>> Thanks,
+>> Thinh
+> 
+> I checked Wesly Cheng's pathces but it's not same.
+> What I want to do for this patch is to avoid pullup from platform side.
+> (android in my case)
+> 
+> It's possible that platform side tries to pullup by UDC_Store after usb is already disconnected.
+> It can finally run controller and enable irq.
+> 
+> I think we have to avoid it and other possible things related to platform side.
+> 
+> 
 
-I will switch to use dma_alloc_coherent().
+Hi Daehwan,
 
-Thanks again.
+I think what you're trying to do is to avoid the unnecessary runtime
+resume if the cable is disconnected and userspace attempts to
+bind/unbind the UDC.
 
-Chunyan
+I'm not exactly sure what patches you've pulled in, but assuming you
+didn't pull in any of the recent suspend changes:
 
-> Robin.
+usb: dwc3: gadget: Allow runtime suspend if UDC unbinded
+usb: dwc3: gadget: Preserve UDC max speed setting
+
+Please consider the following scenario:
+1.  USB connected
+2.  UDC unbinded
+3.  DWC3 will continue to stay in runtime active, since dwc->connected =
+true
+
+In this scenario, we should allow the DWC3 to enter runtime suspend,
+since runstop has been disabled.
+
+If you have pulled in the above changes, and adding your changes on top
+of it, then consider the following:
+1.  USB connected
+2.  UDC unbinded
+3.  DWC enters runtime suspend (due to the above changes)
+4.  UDC binded
+
+The check for pm_runtime_suspended() will block step#4 from re-enabling
+the runstop bit even if the USB cable is connected.
+
+Thanks
+Wesley Cheng
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
