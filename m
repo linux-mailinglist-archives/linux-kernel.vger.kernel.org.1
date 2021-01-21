@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B352FE22A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95E02FE22B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388748AbhAUDHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:07:17 -0500
-Received: from mail-m972.mail.163.com ([123.126.97.2]:57830 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729636AbhAUDAS (ORCPT
+        id S1726299AbhAUF66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:58:58 -0500
+Received: from smtprelay0059.hostedemail.com ([216.40.44.59]:35224 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726929AbhAUDKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:00:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=dqcHSmHAfDMQIlJJSN
-        4wpg35l5Qu7xOOGot1v9uNrfM=; b=UgmHeHyANBrnjbaK385ZOUqyGsjLPTuKDn
-        eWRvRXkJEfe8xSkV4O64KNYx2gH67NXhxRI3li7uZBRiRbySOG+9Hl0BQcQIg/yi
-        35JhfhxgaCg6fiQ34Eehrp3bd5qKTffj+uX5udyRhnNkbwTLGZNhmTdUqgq1zg0y
-        gWvY3oUYQ=
-Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp2 (Coremail) with SMTP id GtxpCgCnEcw+4ghgGLEmJw--.3551S4;
-        Thu, 21 Jan 2021 10:09:06 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] bpf: put file handler if no storage found
-Date:   Wed, 20 Jan 2021 18:08:56 -0800
-Message-Id: <20210121020856.25507-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: GtxpCgCnEcw+4ghgGLEmJw--.3551S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jry8KryxArWkKry5Cw4rXwb_yoWfZrb_XF
-        WUX3yxKr4q9rZ7Xws8CaySq3s2yF4rKr1kC347KF4UG3Z8Z3s8JFnrAwnxZFyrtw4rKFZx
-        JrZ3Zr95Gr15ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1BbytUUUUU==
-X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBUQIhclaD9tYxSgAAsO
+        Wed, 20 Jan 2021 22:10:00 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id CE02618021C95;
+        Thu, 21 Jan 2021 03:09:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3151:3351:3622:3865:3866:3868:3870:3872:4184:4321:5007:6119:7576:7652:8957:10004:10400:11232:11658:11914:12043:12048:12295:12297:12533:12740:12895:13069:13095:13146:13230:13311:13357:13439:13894:14180:14181:14659:14721:21060:21080:21433:21451:21600:21611:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: work76_21134a92755f
+X-Filterd-Recvd-Size: 1782
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 21 Jan 2021 03:09:06 +0000 (UTC)
+Message-ID: <1a3ab487bfb0365991355147fadbf51df14a4772.camel@perches.com>
+Subject: Re: [PATCH] scripts/spelling.txt: increase error-prone spell
+ checking
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        ChunyouTang <tangchunyou@163.com>, akpm@linux-foundation.org,
+        colin.king@canonical.com, xndchn@gmail.com, j.neuschaefer@gmx.net,
+        luca@lucaceresoli.net, naoki.hayama@lineo.co.jp,
+        ebiggers@google.com, sjpark@amazon.de
+Cc:     linux-kernel@vger.kernel.org, zhangwen@yulong.com,
+        tangchunyou@yulong.com
+Date:   Wed, 20 Jan 2021 19:09:05 -0800
+In-Reply-To: <47008cd9-2b87-f5b2-5fad-e8f009869dda@infradead.org>
+References: <20210121020731.2316-1-tangchunyou@163.com>
+         <47008cd9-2b87-f5b2-5fad-e8f009869dda@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put file f if inode_storage_ptr() returns NULL.
+On Wed, 2021-01-20 at 19:02 -0800, Randy Dunlap wrote:
+> On 1/20/21 6:07 PM, ChunyouTang wrote:
+> > From: tangchunyou <tangchunyou@yulong.com>
+> > 
+> > Increase direcly,maping,manger spelling error check
+> 
+> Hi,
+> I don't see all of those in the patch below.
+> What happened?
 
-Fixes: 8ea636848aca ("bpf: Implement bpf_local_storage for inodes")
-Acked-by: KP Singh <kpsingh@kernel.org>
-Signed-off-by: Pan Bian <bianpan2016@163.com>
----
- kernel/bpf/bpf_inode_storage.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+I think mostly it's just a poor commit message as
+direcly and manger are already in spelling.txt
 
-diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
-index 6edff97ad594..089d5071d4fc 100644
---- a/kernel/bpf/bpf_inode_storage.c
-+++ b/kernel/bpf/bpf_inode_storage.c
-@@ -125,8 +125,12 @@ static int bpf_fd_inode_storage_update_elem(struct bpf_map *map, void *key,
- 
- 	fd = *(int *)key;
- 	f = fget_raw(fd);
--	if (!f || !inode_storage_ptr(f->f_inode))
-+	if (!f)
-+		return -EBADF;
-+	if (!inode_storage_ptr(f->f_inode)) {
-+		fput(f);
- 		return -EBADF;
-+	}
- 
- 	sdata = bpf_local_storage_update(f->f_inode,
- 					 (struct bpf_local_storage_map *)map,
--- 
-2.17.1
+> > diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+[]
+> > @@ -875,6 +875,7 @@ manger||manager
+> >  manoeuvering||maneuvering
+> >  manufaucturing||manufacturing
+> >  mappping||mapping
+> > +maping||mapping
+> >  matchs||matches
+> >  mathimatical||mathematical
+> >  mathimatic||mathematic
+
 
