@@ -2,222 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FF02FF373
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA5A2FF3AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727484AbhAUSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:41:54 -0500
-Received: from mga04.intel.com ([192.55.52.120]:41448 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbhAUSlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:41:36 -0500
-IronPort-SDR: Gnj00ZfF8g+yyRNBTPSdbKOEzeY6vEYD9lam/VcD4VkpCLqnHsQTb2zq5nJGWLHKOSx+u06W9B
- YKu1ojPJ14SA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="176747681"
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="176747681"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 10:40:43 -0800
-IronPort-SDR: 7zvoVKsgeq7e6EpaNxZ2fCy5jza869ddxJ26eTcXGKm5qrQRN2UecNPmGNGbsAw6hOC+sHspgL
- +L7o7L5zH5Yw==
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="385412345"
-Received: from jonesmel-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.130.74])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 10:40:43 -0800
-Date:   Thu, 21 Jan 2021 10:40:41 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        daniel.lll@alibaba-inc.com
-Subject: Re: [RFC PATCH v3 13/16] cxl/mem: Create concept of enabled commands
-Message-ID: <20210121184041.r7x7tofhu2qqneus@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
- <20210111225121.820014-15-ben.widawsky@intel.com>
- <20210114172531.0000347a@Huawei.com>
+        id S1726680AbhAUS4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:56:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727556AbhAUSmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 13:42:24 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887A1C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:41:33 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id m1so2061991wrq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:41:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1LZdJjGc48/gwLzyAgp0Q9hkzPKTZ92XadLVHIdNeus=;
+        b=UD6zT62AGvo2fkoK8hEZH4D0yvQgJfrJUmPrHfaow3f8ai0CV5F14TRdrLUrfrHfS7
+         tPT8wNAqsCD3dlFHt+lylV23YroI4y+uWBeBXFoYbmLfQKRevZWiiMSH+CQNHC7+DLG6
+         CE3WJtsuxOSURAXoqqTtb3rewX+RZc/LBapifzI5lT60egICl9V23Px7ajkNaxOoiLYx
+         PXh+4RRQrMYgDm/Y6uQyMngL143bihRL75rMmJdqX/868pLucWFY44PqNBiEaYuZ3RSy
+         VsUuFz+6IqAIpYO5AJLAnKnDKlDY0E6aeKB14S6wICxCQXWNiugvnxtN6DLUtmTRC45c
+         J6EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1LZdJjGc48/gwLzyAgp0Q9hkzPKTZ92XadLVHIdNeus=;
+        b=Cppl9hn0gxgGKEcQcAJF4lpmtuoGf3T9j1nmeGowpVba0RW4JZ/0Ypmy/+3x9qE1Vl
+         lac9NBZaUareA/9AiE60I/eu4ZwM4Z6r0Ez3HuvG47/FLCjNEh35VBRgqwdnSv7jAAUq
+         Z5B3kNQxll6pqsQG9MnCagEwUQb+g0M13pii7FCcJ61UlLkD6v6ht+3ZRTaMgKONs7yz
+         98coasYU+y1L3r4aBOAkyu2F9sQrBpXWTHKNCFhN7YBvNwkRropN/pKJbH5CfbEkeJrz
+         o6cJXx9F+ApV/rTdW7v6hrZsqK+ZjM/FEVlhihY2eV5OX9f9fLTAHJiEGXY37tx1GZyI
+         nT8g==
+X-Gm-Message-State: AOAM530MNm1H4uI5va9KkvIyIC5XkP5w1IxviBswWFPPe/SHIYsDge/1
+        BiKFEiEA1n6MA0NxnmWOqnAxVdVKTmObJA==
+X-Google-Smtp-Source: ABdhPJx8D0CkZqme6uOFhWSz66F7vNTs1DfA97Uneyp1dieL6ivNfdJxzmiwg5skCfOhlEJAyKj4Ew==
+X-Received: by 2002:a5d:4241:: with SMTP id s1mr788988wrr.269.1611254491953;
+        Thu, 21 Jan 2021 10:41:31 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id g192sm9878730wmg.18.2021.01.21.10.41.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Jan 2021 10:41:31 -0800 (PST)
+Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+Cc:     gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
+ <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+ <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
+ <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
+ <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
+ <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
+ <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
+Date:   Thu, 21 Jan 2021 18:41:30 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114172531.0000347a@Huawei.com>
+In-Reply-To: <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-14 17:25:31, Jonathan Cameron wrote:
-> On Mon, 11 Jan 2021 14:51:18 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
+
+
+On 21/01/2021 18:00, Pierre-Louis Bossart wrote:
 > 
-> > CXL devices must implement the Device Command Interface (described in
-> > 8.2.9 of the CXL 2.0 spec). While the driver already maintains a list of
-> > commands it supports, there is still a need to be able to distinguish
-> > between commands that the driver knows about from commands that may not
-> > be supported by the hardware. No such commands currently are defined in
-> > the driver.
-> > 
-> > The implementation leaves the statically defined table of commands and
-> > supplements it with a bitmap to determine commands that are enabled.
-> > 
-> > ---
-> > 
-> > There are multiple approaches that can be taken, but this is nice for a
-> > few reasons.
-> > 
-> > Here are some of the other solutions:
-> > 
-> > Create a per instance table with only the supported commands.
-> > 1. Having a fixed command id -> command mapping is much easier to manage
-> >    for development and debugging.
-> > 2. Dealing with dynamic memory allocation for the table adds unnecessary
-> >    complexity.
-> > 3. Most tables for device types are likely to be quite similar.
-> > 4. Makes it difficult to implement helper macros like cxl_for_each_cmd()
-> > 
-> > If the per instance table did preserve ids, #1 above can be addressed.
-> > However, as "enable" is currently the only mutable state for the
-> > commands, it would yield a lot of overhead for not much gain.
-> > Additionally, the other issues remain.
-> > 
-> > If "enable" remains the only mutable state, I believe this to be the
-> > best solution. Once the number of mutable elements in a command grows,
-> > it probably makes sense to move to per device instance state with a
-> > fixed command ID mapping.
-> Agreed with the logic.   
 > 
-> However, patch wise, should either drop the --- above or move this below the
-> --- after your sign off.  Otherwise you run the risk of git dropping your
-> sign off and resulting complaints from anyone run validation scripts
-> of the kernel tree that check for that.
+> On 1/21/21 9:41 AM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 21/01/2021 14:56, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>>> Port allocations are something like this:
+>>>>
+>>>> RX: (Simple)
+>>>> Port 1 -> HPH L/R
+>>>> Port 2 -> CLASS H Amp
+>>>> Port 3 -> COMP
+>>>> Port 4 -> DSD.
+>>>>
+>>>> TX: (This get bit more complicated)
+>>>> Port 1: PCM
+>>>> Port 2: ADC 1 & 2
+>>>> Port 3: ADC 3 & 4
+>>>> Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
+>>>> Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
+>>>>
+>>>> We handle the port allocation dynamically based on mixer and dapm 
+>>>> widgets in my code! Also channel allocations are different for each 
+>>>> function!
+>>>
+>>> Sorry, I am not following here. What is dynamic here and use-case 
+>>> dependent? And is this a mapping on the master or the codec sides 
+>>> that you want to modify?
+>>
+>> [SLAVE]-------[MASTER]
+>> NA-------------Port 1: PCM
+>> Port 1---------Port 2: ADC 1 & 2
+>> Port 2---------Port 3: ADC 3 & 4
+>> Port 3---------Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
+>> Port 4---------Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
+>>
+>>
+>> Mapping is still static however Number of ports selection and channel 
+>> mask will be dynamic here.
+>>
+>>
+>> Example: for Headset MIC usecase we will be using Slv Port1, Slv Port3 
+>> along with Mstr Port2 and Master Port4
+>>
+>> Similarly for usecases like Digital MIC or other Analog MICs.
 > 
-> > 
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > ---
-> >  drivers/cxl/cxl.h |  4 ++++
-> >  drivers/cxl/mem.c | 38 +++++++++++++++++++++++++++++++++++++-
-> >  2 files changed, 41 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > index 537ac4d8e6bd..963ba30cb200 100644
-> > --- a/drivers/cxl/cxl.h
-> > +++ b/drivers/cxl/cxl.h
-> > @@ -17,6 +17,9 @@
-> >  
-> >  #define CXL_GET_FIELD(word, field) FIELD_GET(field##_MASK, word)
-> >  
-> > +/* XXX: Arbitrary max */
-> > +#define CXL_MAX_COMMANDS 32
-> 
-> If going this way, probably want a build time check that you don't
-> go beyond this value for a given command set.  I haven't actually
-> thought about how to construct that but should be easy enough.
+> Sorry, I must be thick here, but in my experience the choice of Digital 
+> or analog mics is a hardware design level not a use-case one. Using ADC 
+> 1 & 2 at the same time as DMICs is very surprising to me. You'd have 
+> different sensitivities/performance, not sure how you would combine the 
+> results.
+
+In this particular case, ADC2 on Port2 is used along with the MBHC(Multi 
+Button and Headset Detection) channel on Master Port4. This is intended 
+for Headset Button Click Suppression!. This again can be  dynamically 
+selected based on if headset button Click Suppression is enabled or not.
+
+So this is not really mixing ADC with DMICs here!
+
+
 > 
 
-I think BUILD_BUG_ON of ARRAY_SIZE mem_commands is sufficient. Let me know if
-you want anything more.
-
-> > +
-> >  /* Device  (CXL 2.0 - 8.2.8.3) */
-> >  #define CXLDEV_CAP_ARRAY_REG 0x0
-> >  #define CXLDEV_CAP_ARRAY_CAP_ID 0
-> > @@ -88,6 +91,7 @@ struct cxl_mem {
-> >  	} ram;
-> >  
-> >  	char firmware_version[0x10];
-> > +	DECLARE_BITMAP(enabled_cmds, CXL_MAX_COMMANDS);
-> >  
-> >  	/* Cap 0001h - CXL_CAP_CAP_ID_DEVICE_STATUS */
-> >  	struct {
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index a824cfd4342a..20b26fa2c466 100644
-> > --- a/drivers/cxl/mem.c
-> > +++ b/drivers/cxl/mem.c
-> > @@ -114,6 +114,8 @@ static struct {
-> >   *    would typically be used for deprecated commands.
-> >   *  * %CXL_CMD_FLAG_MANDATORY: Hardware must support this command. This flag is
-> >   *    only used internally by the driver for sanity checking.
-> > + *  * %CXL_CMD_INTERNAL_FLAG_PSEUDO: This is a pseudo command which doesn't have
-> > + *    a direct mapping to hardware. They are implicitly always enabled.
-> >   *
-> >   * The cxl_mem_command is the driver's internal representation of commands that
-> >   * are supported by the driver. Some of these commands may not be supported by
-> > @@ -129,6 +131,7 @@ struct cxl_mem_command {
-> >  #define CXL_CMD_INTERNAL_FLAG_NONE 0
-> >  #define CXL_CMD_INTERNAL_FLAG_HIDDEN BIT(0)
-> >  #define CXL_CMD_INTERNAL_FLAG_MANDATORY BIT(1)
-> > +#define CXL_CMD_INTERNAL_FLAG_PSEUDO BIT(2)
-> >  };
-> >  
-> >  /*
-> > @@ -140,7 +143,7 @@ struct cxl_mem_command {
-> >  static struct cxl_mem_command mem_commands[] = {
-> >  	CXL_CMD(INVALID, KERNEL, 0, 0, HIDDEN),
-> >  	CXL_CMD(IDENTIFY, NONE, 0, 0x43, MANDATORY),
-> > -	CXL_CMD(RAW, NONE, ~0, ~0, MANDATORY),
-> > +	CXL_CMD(RAW, NONE, ~0, ~0, PSEUDO),
-> >  };
-> >  
-> >  #define cxl_for_each_cmd(cmd)                                                  \
-> > @@ -618,6 +621,10 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
-> >  	c = &mem_commands[send_cmd->id];
-> >  	info = &c->info;
-> >  
-> > +	/* Check that the command is enabled for hardware */
-> > +	if (!test_bit(cxl_cmd_index(c), cxlm->enabled_cmds))
-> > +		return -ENOTTY;
-> > +
-> >  	if (info->flags & CXL_MEM_COMMAND_FLAG_KERNEL)
-> >  		return -EPERM;
-> >  
-> > @@ -1029,6 +1036,31 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-> >  	return rc;
-> >  }
-> >  
-> > +/**
-> > + * cxl_mem_enumerate_cmds() - Enumerate commands for a device.
-> > + * @cxlm: The device.
-> > + *
-> > + * Returns 0 if enumerate completed successfully.
-> > + *
-> > + * CXL devices have optional support for certain commands. This function will
-> > + * determine the set of supported commands for the hardware and update the
-> > + * enabled_cmds bitmap in the @cxlm.
-> > + */
-> > +static int cxl_mem_enumerate_cmds(struct cxl_mem *cxlm)
-> > +{
-> > +	struct cxl_mem_command *c;
-> > +
-> > +	/* All commands are considered enabled for now (except INVALID). */
-> > +	cxl_for_each_cmd(c) {
-> > +		if (c->flags & CXL_CMD_INTERNAL_FLAG_HIDDEN)
-> > +			continue;
-> > +
-> > +		set_bit(cxl_cmd_index(c), cxlm->enabled_cmds);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  /**
-> >   * cxl_mem_identify() - Send the IDENTIFY command to the device.
-> >   * @cxlm: The device to identify.
-> > @@ -1147,6 +1179,10 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> >  	if (rc)
-> >  		goto err;
-> >  
-> > +	rc = cxl_mem_enumerate_cmds(cxlm);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> >  	rc = cxl_mem_identify(cxlm);
-> >  	if (rc)
-> >  		goto err;
+> I also don't see how a headset mic can both use Analog and digital, 
+> unless we have a different definition of what a 'headset' is.
 > 
+>>>>> Does this help and can you align on what Intel started with?
+>>>>
+>>>> Firstly, This is where the issue comes, if we go with the 
+>>>> suggested(dai->id) solution, we would end up with a long list of 
+>>>> dai-links with different combinations of both inputs/output 
+>>>> connections and usecases. Again we have to deal with limited DSP 
+>>>> resources too!
+>>>>
+>>>> Secondly, The check [1] in stream.c will not allow more than one 
+>>>> master port config to be added to master runtime. Ex: RX Port 1, 2, 
+>>>> 3 is used for Headset Playback.
+>>>
+>>> I am confused here, we do have examples in existing codec drivers 
+>>> where we use multiple ports for a single stream, e.g. for IV feedback 
+>>> we use 2 ports.
+>>
+>> Is this on multi_link? which is why it might be working for you.
+> 
+> no, this is done at the codec driver level, which has no notion of 
+> multi-link. we pass a port_config as a array of 2.
+> 
+
+Am referring to sdw_stream_add_master() not sdw_stream_add_slave().
+
+>> Currently we have below check in sdw_stream_add_master().
+>>
+>> if (!bus->multi_link && stream->m_rt_count > 0) {
+>>      dev_err(bus->dev, "Multilink not supported, link %d\n", 
+>> bus->link_id);
+>>      ret = -EINVAL;
+>>      goto unlock;
+>> }
+>>
+>> If we have single master(like my case) and dai-links which have more 
+>> then one port  will be calling  sdw_stream_add_master() for each port, 
+>> so m_rt_count above check will fail for the second call!
+> 
+> if you use multiple ports in a given master for the same stream, you 
+> should have the m_rt_count == 1. That's a feature, not a bug.
+> 
+> A port is not a stream... You cannot call sdw_stream_add_master() for 
+> each port, that's not what the concept was. You allocate ONE master_rt
+
+Am looking at intel_hw_params(). Isn't sdw_stream_add_master() called 
+for every dai in the dai link.
+
+> per master, and that master_rt deals with one or more ports - your choice. >
+> A 'stream' is an abstract data transport which can be split across 
+> multiple masters/sales and for each master/slave use multiple ports.
+> When calling sdw_stream_add_master/slave, you need to provide a 
+> port_config/num_ports to state which ports will be used on that 
+> master/slave when using the stream. That's how we e.g. deal with 4ch 
+> streams that are handled by two ports on each side.
+> 
+> To up-level a bit, the notion of 'stream' is actually very very similar 
+> to the notion of dailink. And in fact, the 'stream' is actually created 
+> for Intel in the dailink .startup callback, so I am quite in the dark on 
+> what you are trying to accomplish.
+In qcom case stream is also allocated for in dai startup().
+
+I think we are talking about two different issues,
+
+1>one is the failure I see in sdw_stream_add_master() when I try to use 
+dai-link dai-id style approach suggested. I will dig this bit more and 
+collect more details!
+
+2>(Main issue) Ability for slave to select different combination of 
+ports at runtime based on the mixer setting or active dapm.
+
+All this patch is trying do is the pass this *CURRENT/ACTIVE* static 
+port mapping between slave and master while setting up the stream.
+With the dailink approach number of ports are pretty much static and may 
+not be required for particular use case. As above example if we have a 
+headset with button click suppression we would need 2 Ports and 
+similarly without we only need one port.
+
+This is not possible with dai-link approach, unless we create two 
+different dai links for the above example usecase!
+
+Hopefully this adds some light to the issue :-)
+
+--srini
