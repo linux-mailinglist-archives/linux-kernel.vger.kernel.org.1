@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3E92FF4F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA422FF4DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbhAUTog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:44:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47274 "EHLO mail.kernel.org"
+        id S1727322AbhAUTmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:42:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726374AbhAUTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727069AbhAUTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 14:42:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC1CD23A5C;
-        Thu, 21 Jan 2021 19:41:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26EA923A5A;
+        Thu, 21 Jan 2021 19:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611258087;
-        bh=mU37xmaWVsYmEyXUA/R0/Rg9UFy1EWNpO+H9A0Xrad8=;
+        s=k20201202; t=1611258092;
+        bh=Chxeu+g19JLsrGMWeKplIRP6g6WFenfG7k7lC/ePb1E=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=GworRcHB2aPCq59uEq9X24TIJVieY7eoe70t/N9h9AN8ErV5J6xq2ts4vNHxemVVw
-         gJwTD2P7HgP8RSKsb3/YpUEGPWIBXEolwXsvnENF/aVU9XaPtTP+5msZ0Lxavhtpn8
-         525oCnnLD0Hy6d1qU2PDdD+9pjG2r0mSsZ66vOlDJx3BmNuYyzEFYw6WLyZpfwRsyR
-         gpRp2wCNhzAsK8bkdfj36DXUDWBe72ECc////H0SmSpiVl1UG4+gWSNKtmeaY8lvem
-         L9Fa9/sk+I767dbPTeyn0gAu+az6/5cM2Us5FB/FkPlvfNZdScwLQgHqc5SZT5+u+W
-         z89KXZiXJT8rw==
+        b=pUFsvjIiPxCW6jnr1GDLL+RimioFgWewhbcDTV8VZKTBZ1784Wdj2znDzokbterxw
+         4xHHkBoCNn5VpT4/BKawLUFdoQT9yPl7J6AsxVJ5EmmVf8MDt1v0G+OUvpnDHNGiim
+         wYxXLPuTxBoTO7wHNOcZbm3WeXkkaUduE0RsW1W9Miybzj89ljmQUqaBZ9GOGQOjNj
+         PTAnk0GTUNuadN6RdDqgrDNLHhjpk/83YjeLqzW1vo0FqPZm7DQf9+nHI85kK9ar41
+         PvP7TOKifqg5HdRihgx1WzPWtVMSs4FP/91WN0NjHYUH2oWUe1zGORKcsYILgIRgRZ
+         7wb1E9WmTdCqg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Pan Bian <bianpan2016@163.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-In-Reply-To: <20210121032756.49501-1-bianpan2016@163.com>
-References: <20210121032756.49501-1-bianpan2016@163.com>
-Subject: Re: [PATCH] regulator: s5m8767: Fix reference count leak
-Message-Id: <161125803282.35944.8538521264425095601.b4-ty@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+In-Reply-To: <20210120224901.1611232-1-bjorn.andersson@linaro.org>
+References: <20210120224901.1611232-1-bjorn.andersson@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: regulator: qcom-rpmh: Add pmc8180 and pmc8180c
+Message-Id: <161125803281.35944.8325193773140119701.b4-ty@kernel.org>
 Date:   Thu, 21 Jan 2021 19:40:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -43,9 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 19:27:56 -0800, Pan Bian wrote:
-> Call of_node_put() to drop references of regulators_np and reg_np before
-> returning error code.
+On Wed, 20 Jan 2021 14:49:00 -0800, Bjorn Andersson wrote:
+> Add RPMH regulator compatibles for two of the PMIC variants used on the
+> SC8180x platform.
 
 Applied to
 
@@ -53,8 +52,10 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: s5m8767: Fix reference count leak
-      commit: dea6dd2ba63f8c8532addb8f32daf7b89a368a42
+[1/2] dt-bindings: regulator: qcom-rpmh: Add pmc8180 and pmc8180c
+      commit: 71ca776a8885aff469f2aa45382518513ecce883
+[2/2] regulator: qcom-rpmh: Add pmc8180 and pmc8180c
+      commit: e46c52f7efa25a1cd72c7a7399af9fddc41f5a8e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
