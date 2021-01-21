@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443982FEFDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C7A2FEFD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387686AbhAUQK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:10:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52454 "EHLO mx2.suse.de"
+        id S1733015AbhAUQIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:08:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52910 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387588AbhAUQFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:05:00 -0500
+        id S1731852AbhAUQFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:05:14 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611245042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=DOI+jYAvlBgnxxJTqfKpQC1cXQerHTMceZ6glAqUpA8=;
-        b=aiwGivKbWCbQK1C3bNcTApgmxQeiwSIFK+ogbbYAJ+nya2D3s0L1NZZfce5JZIRRNIT8F1
-        c7z4wS0ic3DrEKLalohvuLHhX6tZgKFQyU6e0OVbparcZlgrHzkUANoy+QOCKqzT56iau4
-        5zG2dwhJYQbjNzW2zcXZ4AIKP9VZcAg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 81A45AC63;
-        Thu, 21 Jan 2021 16:04:02 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 17:04:01 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] printk regression fixes for 5.11-rc5
-Message-ID: <YAml8WLMo3mVSoKR@alley>
+        by mx2.suse.de (Postfix) with ESMTP id 6DD20AB7A;
+        Thu, 21 Jan 2021 16:04:22 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH] MIPS: mm: abort uaccess retries upon fatal signal
+Date:   Thu, 21 Jan 2021 17:04:16 +0100
+Message-Id: <20210121160416.111298-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170912 (1.9.0)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+When there's a fatal signal pending, MIPS's do_page_fault()
+implementation returns. The intent is that we'll return to the
+faulting userspace instruction, delivering the signal on the way.
 
-please pull three printk fixes from
+However, if we take a fatal signal during fixing up a uaccess, this
+results in a return to the faulting kernel instruction, which will be
+instantly retried, resulting in the same fault being taken forever. As
+the task never reaches userspace, the signal is not delivered, and the
+task is left unkillable. While the task is stuck in this state, it can
+inhibit the forward progress of the system.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.11-printk-rework-fixup
+To avoid this, we must ensure that when a fatal signal is pending, we
+apply any necessary fixup for a faulting kernel instruction. Thus we
+will return to an error path, and it is up to that code to make forward
+progress towards delivering the fatal signal.
 
-===============================
+[ Description taken from commit 746a272e4414 ("ARM: 8692/1: mm: abort
+   uaccess retries upon fatal signal") ]
 
-- Fix line counting and buffer size calculation. Both regressions
-  caused that a reader buffer might not get filled as much as possible.
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/mm/fault.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-- Restore non-documented behavior of printk() reader API and make it
-  official. It did not fill the last byte of the provided buffer before
-  5.10. Two architectures, powerpc and um, used it to add
-  the trailing '\0'. There might theoretically be more callers
-  depending on this behavior in userspace.
+diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
+index 7c871b14e74a..e7abda9c013f 100644
+--- a/arch/mips/mm/fault.c
++++ b/arch/mips/mm/fault.c
+@@ -156,8 +156,11 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+ 	 */
+ 	fault = handle_mm_fault(vma, address, flags, regs);
+ 
+-	if (fault_signal_pending(fault, regs))
++	if (fault_signal_pending(fault, regs)) {
++		if (!user_mode(regs))
++			goto no_context;
+ 		return;
++	}
+ 
+ 	if (unlikely(fault & VM_FAULT_ERROR)) {
+ 		if (fault & VM_FAULT_OOM)
+-- 
+2.29.2
 
-===============================
-
-All three regressions were found and fixed by John when
-working on another changes.
-
-----------------------------------------------------------------
-John Ogness (3):
-      printk: ringbuffer: fix line counting
-      printk: fix kmsg_dump_get_buffer length calulations
-      printk: fix buffer overflow potential for print_text()
-
-Petr Mladek (1):
-      Merge branch 'printk-rework' into for-linus
-
- kernel/printk/printk.c            | 40 ++++++++++++++++++++++++++++-----------
- kernel/printk/printk_ringbuffer.c |  2 +-
- 2 files changed, 30 insertions(+), 12 deletions(-)
