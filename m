@@ -2,91 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FBB2FEFE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2419E2FEFE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387777AbhAUQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:12:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732884AbhAUQLo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:11:44 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C226C0613D6;
-        Thu, 21 Jan 2021 08:11:02 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id c12so2286648wrc.7;
-        Thu, 21 Jan 2021 08:11:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3fk+Ltd/WJun2rMhD/0B1TRdBjEBWKb5kM3nBcZ4ddo=;
-        b=lyedh99Ckt5+2Zdw9xnwKh8S2EIazsc1QHLioysl5Nmgf3VlQMG6C2iQvkJNY3dUEl
-         HbFNskw5fruTXnGPHku1SiUDsF6z//OJm7Md/VHA0yHH/Ekg1BsW6vht0s9BnVMWoua8
-         edBAKsQ6uCWONCPOC4WkD/ErQT+PPieYPxfygLD/ldPTPDl1kZwss7spmq6yqARmcdO+
-         pf/i9xli3pq8s77/9PP8cYd4wpS72CnHfexqcQtgXpedr5BhfWBe4J/bOt3HWZTjg6h/
-         JFNISt2uaW8vdEjwbC5G5IfmVFs03oMvInAJXC1+kqtBqfFFSMFT4nLp0zcPUhcyt/Od
-         IfRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3fk+Ltd/WJun2rMhD/0B1TRdBjEBWKb5kM3nBcZ4ddo=;
-        b=skCiQl9vDCfCj0TCzuR2XihopG58CXZYqDt2AnDwwQZjm8v8RcXq5DfAuoOG1Abhmu
-         hhrittQPSvzul11DtZngfd9W8pPd200fKpOxLKDbv2E2VWFnYaYikAGTQBiuOS4v7tlk
-         fzJIwsv7T/4pv3qOfgU3IVhxPOG08yRC8oarghnCPGbYDHTozma3ManeIBhaozZfTyLF
-         egpOkdtgrHROv829lXtHd3srhYIIDoZofsgMmxAlxEL0D39vHaYb10RJTap+v/prk1TX
-         OKneXY1ZBj3Z0O11XQq5WxQ1WAxjm7jC0maClQqlX8U8+WAkafi2Y9EqE2AJsaipacsO
-         u5UQ==
-X-Gm-Message-State: AOAM532lbvRg6abG3BFBzm7UGoxTMNd0JmcGO5asKZ3UrMaKf9C0Tl+r
-        R2qzhvhdfPfu4A2CeJq29aU=
-X-Google-Smtp-Source: ABdhPJxWQdlgzYligRW+q9HCSyXSEChFX5mO2uWlk6p7GRWbht/G/Er4S6YAzwNQrk633Q3qHi8ckw==
-X-Received: by 2002:a5d:4d4f:: with SMTP id a15mr148527wru.315.1611245461008;
-        Thu, 21 Jan 2021 08:11:01 -0800 (PST)
-Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
-        by smtp.gmail.com with ESMTPSA id g194sm8582133wme.39.2021.01.21.08.10.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 08:11:00 -0800 (PST)
-Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
- queues
-To:     Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@cloudflare.com,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20210120212759.81548-1-ivan@cloudflare.com>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <201b4e33-eec5-efcd-808b-1f15a979d998@gmail.com>
-Date:   Thu, 21 Jan 2021 16:10:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2387785AbhAUQM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:12:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731699AbhAUQMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:12:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 850CB23A23;
+        Thu, 21 Jan 2021 16:11:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611245514;
+        bh=OVEIUtuoedkG3hYog+0eKNwTMSkV3Iyaz4tQF4gL37s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TDmjjmYc2BPSpXyZFdoZg8JVTFco3/YGBUCAyn/QQrkgOOBQcjmTjcb/h7iGHeggz
+         K2bxCcc/CaRmmDGbJwKsrKuX8rK2S51/fvbDu7P6OiH9Dy/F10V3Of2BBIx0PLGi4R
+         yH2TC9RpAVoMjTV9gfoL4JB8xGs2WyjkssWPUKdk=
+Date:   Thu, 21 Jan 2021 17:11:51 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
+Message-ID: <YAmnx2AkVc0rbibQ@kroah.com>
+References: <1cf42837-bf98-944f-697c-8407a0ebd623@linux.ibm.com>
+ <20210121155445.GA2657778@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210120212759.81548-1-ivan@cloudflare.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121155445.GA2657778@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/2021 21:27, Ivan Babrou wrote:
-> Without this change the driver tries to allocate too many queues,
-> breaching the number of available msi-x interrupts on machines
-> with many logical cpus and default adapter settings:
+On Thu, Jan 21, 2021 at 09:54:45AM -0600, Bjorn Helgaas wrote:
+> [Greg may be able to help compare/contrast this s390 UID with udev
+> persistent names]
 > 
-> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> On Thu, Jan 21, 2021 at 04:31:55PM +0100, Niklas Schnelle wrote:
+> > On 1/15/21 4:29 PM, Bjorn Helgaas wrote:
+> > > On Fri, Jan 15, 2021 at 12:20:59PM +0100, Niklas Schnelle wrote:
+> > >> On 1/14/21 5:14 PM, Greg Kroah-Hartman wrote:
+> > >>> On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
+> > >>>> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
+> > >>>>> On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
+> > >>>>>> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
+> > >>>>>>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
+> > >>>>>>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
+> > >>>>>>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
+> > >>>>>>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
+> > >>>>>>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
+> > >> ... snip ...
+> > >>
+> > >>>
+> > >>>> 	if (!zpci_global_kset)
+> > >>>> 		return -ENOMEM;
+> > >>>>
+> > >>>> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
+> > >>>
+> > >>> Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
+> > >>> that's usually a huge clue that you are doing something wrong.
+> > >>>
+> > >>> Try the above again, with a simple attribute group, and name for it, and
+> > >>> it should "just work".
+> > >>
+> > >> I'm probably missing something but I don't get how this could work
+> > >> in this case. If I'm seeing this right the default attribute group
+> > >> here is pci_bus_type.bus_groups and that is already set in
+> > >> drivers/pci/pci-driver.c so I don't think I should set that.
+> > >>
+> > >> I did however find bus_create_file() which does work when using the
+> > >> path /sys/bus/pci/uid_checking instead. This would work for us if
+> > >> Bjorn is okay with that path and the code is really clean and simple
+> > >> too.
+> > >>
+> > >> That said, I think we could also add something like
+> > >> bus_create_group().  Then we could use that to also clean up
+> > >> drivers/pci/slot.c:pci_slot_init() and get the original path
+> > >> /sys/bus/pci/zpci/uid_checking.
+> > > 
+> > > I don't think "uid_checking" is quite the right name.  It says
+> > > something about the *implementation*, but it doesn't convey what that
+> > > *means* to userspace.  IIUC this file tells userspace something about
+> > > whether a given PCI device always has the same PCI domain/bus/dev/fn
+> > > address (or maybe just the same domain?)
+> > > 
+> > > It sounds like this feature could be useful beyond just s390, and
+> > > other arches might implement it differently, without the UID concept.
+> > > If so, I'm OK with something at the /sys/bus/pci/xxx level as long as
+> > > the name is not s390-specific (and "uid" sounds s390-specific).
+> > > 
+> > > I assume it would also help with the udev/systemd end if you could
+> > > make this less s390 dependent.
+> > 
+> > I've thought about this more and even implemented a proof of concept
+> > patch for a global attribute using a pcibios_has_reproducible_addressing()
+> > hook. 
+> > 
+> > However after implementing it I think as a more general and
+> > future proof concept it makes more sense to do this as a per device
+> > attribute, maybe as another flag in "stuct pci_dev" named something
+> > like "reliable_address". My reasoning behind this can be best be seen
+> > with a QEMU example. While I expect that QEMU can easily guarantee
+> > that one can always use "0000:01:00.0" for a virtio-pci NIC and
+> > thus enp1s0 interface name, the same might be harder to guarantee
+> > for a SR-IOV VF passed through with vfio-pci in that same VM and
+> > even less so if a thunderbolt controller is passed through and
+> > enumeration may depend on daisy chaining. The QEMU example
+> > also applies to s390 and maybe others will in the future.
 > 
-> Which in turn triggers EINVAL on XDP processing:
-> 
-> sfc 0000:86:00.0 ext0: XDP TX failed (-22)
-> 
-> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+> I'm a little wary of using the PCI geographical address
+> ("0000:01:00.0") as a stable name.  Even if you can make a way to use
+> that to identify a specific device instance, regardless of how it is
+> plugged in or passed through, it sounds like we could end up with
+> "physical PCI addresses" and "virtual PCI addresses" that look the
+> same and would cause confusion.
 
-Acked-by: Edward Cree <ecree.xilinx@gmail.com>
+Agreed, as we all know, PCI addresses are never a stable name and can
+change every boot on some systems.  Never rely on them, but you can use
+them as a "hint" for something that you have to determine is different
+from something else that is the same type of device.
+
+> This concept sounds similar to the udev concept of a "persistent
+> device name".  What advantages does this s390 UID have over the udev
+> approach?
+> 
+> There are optional PCI device serial numbers that we currently don't
+> really make use of.  Would that be a generic way to help with this?
+
+Only if you can require that they be unique.  Is there such a
+requirement and who enforces it?
+
+For USB, it was only "required" to have unique serial numbers for one
+class of devices (printers), and even then, it really wasn't enforced
+that much so you can't rely on it being unique at all, which makes it
+pretty useless :(
+
+thanks,
+
+greg k-h
