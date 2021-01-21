@@ -2,73 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214752FE8BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A572FE8BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbhAUL12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:27:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730394AbhAULXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:23:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 613D1238D7;
-        Thu, 21 Jan 2021 11:22:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611228163;
-        bh=E5lCW8e76KF7jwvUqsIhRLZSQqyjdf7prScrWNH7Nro=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wnSHf/ilpNKTbTEYx9lGFGhJB2AN0rQKyG+KR6aoSOC4W68hfqDHneEwtc8IlSvBS
-         zkSRN0BfTTA4tiWAy7ywdg633RBYVOtdc31M+MLCXoz1kkY1UUzPBhVojV2ZfcjSDl
-         pfdd7QZz0LQ6zz5N9lr7ZpLgfxlfSdiJW1B6SOQU=
-Date:   Thu, 21 Jan 2021 12:22:40 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oh Eomji <eomji.oh@samsung.com>
-Cc:     balbi@kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: f_mass_storage: cahnge wait_event to
- wait_event_timeout
-Message-ID: <YAlkAHt5RQpE/qzZ@kroah.com>
-References: <eomji.oh@samsung.com>
- <CGME20210121070836epcas2p130c0f62d82aa3fcd2e021a1ef88a7ebd@epcas2p1.samsung.com>
- <1611212208-84202-1-git-send-email-eomji.oh@samsung.com>
+        id S1727470AbhAUL2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729539AbhAULYB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:24:01 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA66C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:23:18 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id h14so1251551otr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:23:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b2rMzfq0UH/F+eLfm27e8RT4cWjxNkuh3W9X3FO/pmE=;
+        b=BAG2wgYYSoqHd+DzOqnaf2XloG6h8bisgVdttJVNDSeHpO2T60TTr7oftDgacbG++z
+         FWPFJ7hdHVj7asQbzl1FiKoOBR4iGZhMKOoPDtWwob5eImQXBXeKj3EvrZWVEkeJQQKj
+         fuvuKpu9YR6biF7ybZJEkp7YQ/ov/XcCHaV6I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b2rMzfq0UH/F+eLfm27e8RT4cWjxNkuh3W9X3FO/pmE=;
+        b=o/+r8zcOm3qB5QweHMCORmlXrWPhQleIhRgdW+9oPBwtYJgmNL6aU71PBpXlezggoc
+         tOjOGgPknKV/mweN1ziDEaYzUHfPQ4rOY+sggosAoxkCcfLtiwhUhJKAQQU2JghFMY6a
+         crYkPrTY52CAe9euGZyp1t5t0XEL/XOYf+zqetOTAKS0pU63smwU/PYsyAWKi3jPseDD
+         UPUm+z/5fW8DJOwKnAJhsJsK190Kc8UvYVwITE0x2RwyE2HpXGwnbwtk7uy+vbz9dLd6
+         TXsnRD+BzrB71dgn2ZSzVGmYDxOK+uqwP6gqs4thEgV6zkoIFfq8+Tkmx5edi2t7oRNf
+         62Jg==
+X-Gm-Message-State: AOAM533LLruOyCFBJrtw0BhBnMs+iiFPNWwcAEYOXuhyD4xR6FaE3Tnf
+        P4xJ0a8bAZSQbEnRr9MZxKydbNQ0wnfUW87W0mSOJrhqYTfNXw==
+X-Google-Smtp-Source: ABdhPJwuTGzWQAuFKkuYSb3G3c5sxDjEUQ9z8aWWFLseIzCwQa2p+C86ONLqWh5bBBra+SI82M1uIeUTsaA8ArqC1t0=
+X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr9879029otb.303.1611228197779;
+ Thu, 21 Jan 2021 03:23:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611212208-84202-1-git-send-email-eomji.oh@samsung.com>
+References: <20210121030909.1126643-1-zhangzhijie@loongson.cn>
+In-Reply-To: <20210121030909.1126643-1-zhangzhijie@loongson.cn>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 21 Jan 2021 12:23:07 +0100
+Message-ID: <CAKMK7uF=scYJ=gyS=xjYz25mdDzKA0QHSyPndfSBweE7vfDkWQ@mail.gmail.com>
+Subject: Re: [PATCH v4] drm: Improve the output_poll_changed description
+To:     "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 03:56:45PM +0900, Oh Eomji wrote:
-> Changed to return a timeout error if there is no response for a certain
-> period of time in order to solve the problem of waiting for a event
-> complete while executing unbind.
-> 
-> Signed-off-by: Oh Eomji <eomji.oh@samsung.com>
+On Thu, Jan 21, 2021 at 4:09 AM ZhiJie.Zhang <zhangzhijie@loongson.cn> wrote:
+>
+> From: zhangzhijie <zhangzhijie@loongson.cn>
+>
+> this callback was used by drm_kms_helper_hotplug_event()
+>
+> V2: (Thanks for Daniel's suggestions)
+> - remove the FIXME below.since with the drm_client
+> - infrastructure and the generic fbdev emulation we've
+> - resolved this all very neatly now.
+>
+> V3: Add comments that This hook is deprecated
+> - new implementation methods instead of this hook
+>
+> Signed-off-by: ZhiJie.Zhang <zhangzhijie@loongson.cn>
 > ---
->  drivers/usb/gadget/function/f_mass_storage.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
-> index 950c943..b474840 100644
-> --- a/drivers/usb/gadget/function/f_mass_storage.c
-> +++ b/drivers/usb/gadget/function/f_mass_storage.c
-> @@ -3000,7 +3000,7 @@ static void fsg_unbind(struct usb_configuration *c, struct usb_function *f)
->  	if (fsg->common->fsg == fsg) {
->  		__raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE, NULL);
->  		/* FIXME: make interruptible or killable somehow? */
-> -		wait_event(common->fsg_wait, common->fsg != fsg);
-> +		wait_event_timeout(common->fsg_wait, common->fsg != fsg, HZ / 4);
+>  include/drm/drm_mode_config.h | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
+> index ab424ddd7665..fbc0da25d7c5 100644
+> --- a/include/drm/drm_mode_config.h
+> +++ b/include/drm/drm_mode_config.h
+> @@ -103,14 +103,13 @@ struct drm_mode_config_funcs {
+>          * Callback used by helpers to inform the driver of output configuration
+>          * changes.
+>          *
+> -        * Drivers implementing fbdev emulation with the helpers can call
+> -        * drm_fb_helper_hotplug_changed from this hook to inform the fbdev
+> -        * helper of output changes.
 
-That's a random choice of a timeout value.
+Not sure why this isn't clear, but the above is important information
+that we should keep. Maybe good to fix up the formatting to make it a
+hyperlink, and your addition here is fine too, but the above is the
+important part really.
+-Daniel
 
-Please document this really really really well as to why you picked this
-number, and what it means.
+> +        * Drivers implementing fbdev emulation use drm_kms_helper_hotplug_event()
+> +        * to call this hook to inform the fbdev helper of output changes.
+>          *
+> -        * FIXME:
+> -        *
+> -        * Except that there's no vtable for device-level helper callbacks
+> -        * there's no reason this is a core function.
+> +        * This hook is deprecated, drivers should instead use
+> +        * drm_fbdev_generic_setup() which takes care of any necessary
+> +        * hotplug event forwarding already without further involvement by
+> +        * the driver.
+>          */
+>         void (*output_poll_changed)(struct drm_device *dev);
+>
+> --
+> 2.29.2
+>
 
-Also, is the commet above this line still correct now?
 
-thanks,
-
-greg k-h
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
