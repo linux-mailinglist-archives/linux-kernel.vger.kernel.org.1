@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB972FEB04
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7225E2FEB3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729351AbhAUNDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:03:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36730 "EHLO mail.kernel.org"
+        id S1731554AbhAUNMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:12:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731075AbhAUNDJ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:03:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F3D523A00;
-        Thu, 21 Jan 2021 13:02:28 +0000 (UTC)
+        id S1731495AbhAUNLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:11:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3DCA239FD;
+        Thu, 21 Jan 2021 13:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611234148;
-        bh=zX97QFz98GSlO9uDxJjp3v1pZ+rFCAVbXIs+lebua4U=;
+        s=k20201202; t=1611234667;
+        bh=2y3nGlOhKVuLqnNjQEH4fvR9yoxLXv3W74n69qv+ztU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tKtEigbWsw+Kv30BP7IHX/W1KNgnALbBqj9JIWUE02ZlemxWhCMUP4k+C0dEbaeVe
-         PLltac1lae7ydgVg69hhbZyB+7W6xXjqF2sTwtnMPfW9YLSrUBF8XkhiBdQsL0vBv3
-         Un4AWrTnRl+mx77CAy8vBHeHai1+gqbbiSaIQcsxU/CCA87Oyykp/97qi+K/2CxMt+
-         kOcqd5tBlRANpGK4kyGUSF55aeMomfm/p3udpSzqdjxCMziPyv8323Mu01CbVsnPXj
-         azwVZUJQLiVtpsq7j0w7cX3rAYtImvvwN3lLG7WV766lWL16JhYd7K/eQ6ole8gKWb
-         Xa2zLvkV60oZw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DF1EB40513; Thu, 21 Jan 2021 10:02:25 -0300 (-03)
-Date:   Thu, 21 Jan 2021 10:02:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2] perf stat: Append to default list if use -e +event
-Message-ID: <20210121130225.GV12699@kernel.org>
-References: <20210104021837.30473-1-yao.jin@linux.intel.com>
- <20210112100807.GB1273297@krava>
- <64dba2a3-0bf2-3af3-6f54-6e200840017d@linux.intel.com>
- <20210120212553.GA1798087@krava>
- <20210121000355.GB106434@kernel.org>
- <2d2c8e32-53f2-560d-3f69-a0ed7c3810e6@linux.intel.com>
+        b=DMGerGrEyeuqZjQcioHC6qJlSjxztZkPOzz9rPBbGMGM4CrCsv2OoPx+nqbx/5U6V
+         qqnUASiYhMVlSFup3Xtd+GhMe9vouxtjgM5xEUoC6vloFLyuBsYJMqoV6HDsfK2Jwt
+         s+Fn9tbQHe7o+zXPgNW3OjfJ3quFDKohpqwKv0OVYn2/OrqHoFw8VXYruoZLw0NJQs
+         NnxmPBHMheaB9NLaz2p2IamJL7YC3LegARCqCn5DcSxRv6Ta0fLczedsj26scJmFLN
+         hmuJp9osXG++3J9N+kDY72bLNkZ3z2e6KAhFY9IiGFany5cGQ8RQH4E7acxjU2EdIO
+         Im3FHP1GKDehg==
+Date:   Thu, 21 Jan 2021 13:11:01 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        luc.vanoostenryck@gmail.com
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v4 8/8] mm: Mark anonymous struct field of 'struct
+ vm_fault' as 'const'
+Message-ID: <20210121131101.GD22123@willie-the-truck>
+References: <20210120173612.20913-1-will@kernel.org>
+ <20210120173612.20913-9-will@kernel.org>
+ <CAKwvOd=B+tMi7-82Q8hEYnQ+BzkLDygOhMh6cQ2L+3SaL+F4tQ@mail.gmail.com>
+ <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2d2c8e32-53f2-560d-3f69-a0ed7c3810e6@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jan 21, 2021 at 02:08:52PM +0800, Jin, Yao escreveu:
-> Hi Arnaldo,
+On Wed, Jan 20, 2021 at 11:02:06AM -0800, Linus Torvalds wrote:
+> On Wed, Jan 20, 2021 at 10:27 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > Is there a difference between: [ const unnamed struct and individual const members ]
 > 
-> On 1/21/2021 8:03 AM, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Jan 20, 2021 at 10:25:53PM +0100, Jiri Olsa escreveu:
-> > > On Mon, Jan 18, 2021 at 12:54:37PM +0800, Jin, Yao wrote:
-> > > > root@kbl-ppc:# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
-> > 
-> > > >   Performance counter stats for 'system wide':
-> > 
-> > > >                2.02 Joules +power/energy-pkg/
-> > 
-> > > >         1.000859434 seconds time elapsed
-> > 
-> > > > The '+' prefix is printed. So I finally decide not to remove the '+' prefix
-> > > > in order to keep original behavior.
-> > > hm, originaly there's no purpose for the '+', right?
-> > > it seems it's more like bug then anything else
-> > > you added function to the '+' to add default events to specified event,
-> > > which I think is good idea, but I don't think we should display the
-> > > extra '+' in output
-> > 
-> > The value would be to stress that that is an event added to the ones
-> > without the + prefix, i.e. the default ones.
-> > 
-> > But by having the command line copied over and the added events at the
-> > first lines we should have that abundantly clear.
-> > 
-> > Also we won't print removed events (using -), is that available already?
-> > 
+> Semantically? No.
 > 
-> Sorry, the '-' support is not available in this patch. Can I do the patch
-> for '+' first and then do a follow up patch for '-' at next step?
+> Syntactically the "group the const members together" is a lot cleaner,
+> imho. Not just from a "just a single const" standpoint, but from a
+> "code as documentation" standpoint.
+> 
+> But I guess to avoid the clang issue, we could do the "mark individual
+> fields" thing.
 
-Yeah, it can be done afterwards, to be symmetric.
- 
-> > Nope:
-> > 
-> > [root@quaco ~]# perf stat -e -cycles sleep
-> > event syntax error: '-cycles'
-> >                       \___ parser error
-> > Run 'perf list' for a list of valid events
-> > 
-> >   Usage: perf stat [<options>] [<command>]
-> > 
-> >      -e, --event <event>   event selector. use 'perf list' to list available events
- 
-> So if we just want to append the default list, we only need to set
-> detailed_run=1, then ideally perf-stat will print the default list.
- 
-> But for now, there are no task-clock, context-switches, cpu-migrations,
-> page-faults, instructions, branches and branch-misses displayed.
- 
-> root@kbl-ppc:~# ./perf stat -e cycles -d -a -- sleep 1
-> 
->  Performance counter stats for 'system wide':
-> 
->        124,178,207      cycles                                                        (80.02%)
->          6,444,490      L1-dcache-loads                                               (80.01%)
->          1,043,169      L1-dcache-load-misses     #   16.19% of all L1-dcache accesses  (80.02%)
->            564,474      LLC-loads                                                     (80.02%)
->             49,262      LLC-load-misses           #    8.73% of all LL-cache accesses  (79.92%)
-> 
->        1.001614947 seconds time elapsed
-> 
-> Do we still need the '+' prefix to add the specified event on top of default
-> list? It looks current syntax should already support that feature, but just
-> need to fix some issues.
+I'd prefer to wait until the bug against LLVM has been resolved before we
+try to work around anything. Although I couldn't find any other examples
+like this in the kernel, requiring all of the member fields to be marked as
+'const' still feels pretty fragile to me; it's only a matter of time before
+new non-const fields get added, at which point the temptation for developers
+to remove 'const' from other fields when it gets in the way is pretty high.
 
-I think we can do away with that '+' when showing the added events and
-its counts.
+None of this is bullet-proof, of course, but if clang ends up emitting a
+warning (even if it's gated behind an option) then I think we're in a good
+place.
 
-- Arnaldo
+> (It turns out that sparse gets this wrong too, so it's not just clang).
+
+Adding Luc, as hopefully that's fixable.
+
+Will
