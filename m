@@ -2,147 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8372FED00
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D649D2FECF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731149AbhAUOgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:36:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39247 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731419AbhAUOf2 (ORCPT
+        id S1731132AbhAUOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:34:11 -0500
+Received: from mail-lj1-f180.google.com ([209.85.208.180]:35545 "EHLO
+        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728539AbhAUOdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:35:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611239641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OPgZQ9Q0d3vyyfzwXvao6f1etHw0jK/2oOivmLElAWA=;
-        b=dn4XobPimT+vVgbsoqDRbe/Z/d2YkcmicDcGEC8qiE0DoCkR/LE8q9YeYxED7i4BNj3DmK
-        FHCMkxIqd12bSmZvCVqCTMK8gy9fhPdqnLt5iedvy5UyvoBWqKHBtBIDCo+9BQE0ITnaEH
-        CiNmHGibXbZ3P/0235QM+juAVacT8Js=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-L4BcwH6HMSC9O0yYb_aFmQ-1; Thu, 21 Jan 2021 09:30:23 -0500
-X-MC-Unique: L4BcwH6HMSC9O0yYb_aFmQ-1
-Received: by mail-qv1-f70.google.com with SMTP id cu12so1543906qvb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 06:30:23 -0800 (PST)
+        Thu, 21 Jan 2021 09:33:37 -0500
+Received: by mail-lj1-f180.google.com with SMTP id p13so2727249ljg.2;
+        Thu, 21 Jan 2021 06:31:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=OPgZQ9Q0d3vyyfzwXvao6f1etHw0jK/2oOivmLElAWA=;
-        b=HjYyV/T1gHdkLD9ms6XYAeHfqoHwgiVvUpcukovZ0+BiVMQe2syl+KiLqH7wi8GDCw
-         0U9f/jBSGFZNHdEhhSxgIGjzEgukiYqHlmarrd3XKUybKB/nU6u7Iu03yuRBeuUvgKjF
-         z9c8h6FSFZRpvJdhy9/mcagJ52BX6gsGw4oq7v7kEmb76HGEcSDU78b1kXIIe/rC+v+Q
-         d6iZ1x79syMTRFbkVfndkkR68KtvLDPYI/ulagBmmcqkFTqisG7pHw+YTpcxosukvuxw
-         A+HXG8k6tyMM3bAgDFN6CKtRNUXL4fhGBKSTdV9wva8zyA4xuSW2cYF15gXNKQOi+SZD
-         zJQA==
-X-Gm-Message-State: AOAM5339BctIY9lTIk/XoipEsxXzMGJsNW2fTeobvjq/c32HkndIvEvQ
-        PxTuVR2UJP7n1LDpGNoqO4IdGsasQ8euK1e6AK7NCpEyKCNf1iyJX5TNrrZ7JLTT/QmIKFV02N1
-        EbvbQe25ftpCR/NgXGc1gL3F6
-X-Received: by 2002:ac8:24c8:: with SMTP id t8mr13708960qtt.328.1611239423458;
-        Thu, 21 Jan 2021 06:30:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwG9N+ifnQhFiSEWYUQWQZ6h6RlgnLaIwbr7ZsgJ1C6oKEbZ3bEHc8bcMxj/oT1ikk0/sN74g==
-X-Received: by 2002:ac8:24c8:: with SMTP id t8mr13708936qtt.328.1611239423108;
-        Thu, 21 Jan 2021 06:30:23 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id v8sm3541315qtq.80.2021.01.21.06.30.21
+        h=x-gm-message-state:reply-to:to:cc:references:from:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=APW156g847GApT5w4zwnqo1cY8IWq1gEgYTuU+r1B+I=;
+        b=feU/wbc9lE5lD5dBv+Krx9tth3LUkl+rdVckS8dRVCFoiUN6maRW8zmTtnaAsdvj62
+         QANqKnIQKON9+oExL9rxp1BlhQhmmLqfB/VN0HVL8xoo0PC3f5TjuaZurID16TAweafT
+         6aZh/LsYy2hCPPtLtWoIRq71JKA5/qoOR4FATBcAjwgx5PP/fOi/1kug/C9nBBzpLF1i
+         ds0Bg68B/lkCKXAJisDthG21o/d0aU4ZJFjByDA9qHoswBqLS6L2PRO8a6EUgmyJ7blI
+         JDiqZnD2V4BJaCBurXLIw8sIfIPLwAO5MzzJtU4i9H3FhFlx94n2a7Kpp2gyKdfg3xYq
+         DfRw==
+X-Gm-Message-State: AOAM530sFTO+fv1Tn/jy5tb3O2Ci71lqX+uU+CzAxpX464zgWPPJFaSS
+        MDfkiIUpFxwtXc34uIt1UoPCoAvwn78=
+X-Google-Smtp-Source: ABdhPJzibql/N2jqZ9Ae9+ulUhlOJtia8NssNCW5luj8xFPlSeUaIBgM/gExQy/3nyo/TAYtJ0oMzw==
+X-Received: by 2002:a2e:b896:: with SMTP id r22mr6140648ljp.234.1611239442732;
+        Thu, 21 Jan 2021 06:30:42 -0800 (PST)
+Received: from [10.68.32.148] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id f21sm548520lfe.6.2021.01.21.06.30.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 06:30:22 -0800 (PST)
-Subject: Re: [PATCH v6 1/2] fpga: dfl: add the userspace I/O device support
- for DFL devices
-To:     Moritz Fischer <mdf@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Xu Yilun <yilun.xu@intel.com>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lgoncalv@redhat.com, hao.wu@intel.com
-References: <1610502848-30345-1-git-send-email-yilun.xu@intel.com>
- <1610502848-30345-2-git-send-email-yilun.xu@intel.com>
- <YARbgGU6lr3zZaKP@kroah.com> <YARkTFMrotPo45ic@epycbox.lan>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <1d205328-6ffa-0f77-0bdf-0f4b822edc3a@redhat.com>
-Date:   Thu, 21 Jan 2021 06:30:20 -0800
+        Thu, 21 Jan 2021 06:30:42 -0800 (PST)
+Reply-To: efremov@linux.com
+To:     Gaurav Kohli <gkohli@codeaurora.org>, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        stable@vger.kernel.org
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+From:   Denis Efremov <efremov@linux.com>
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+Message-ID: <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+Date:   Thu, 21 Jan 2021 17:30:40 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <YARkTFMrotPo45ic@epycbox.lan>
+In-Reply-To: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 1/17/21 8:22 AM, Moritz Fischer wrote:
-> Greg,
->
-> On Sun, Jan 17, 2021 at 04:45:04PM +0100, Greg KH wrote:
->> On Wed, Jan 13, 2021 at 09:54:07AM +0800, Xu Yilun wrote:
->>> This patch supports the DFL drivers be written in userspace. This is
->>> realized by exposing the userspace I/O device interfaces.
->>>
->>> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
->>> platform device with the DFL device's resources, and let the generic UIO
->>> platform device driver provide support to userspace access to kernel
->>> interrupts and memory locations.
->> Why doesn't the existing uio driver work for this, why do you need a new
->> one?
->>
->>> ---
->>>  drivers/fpga/Kconfig        | 10 +++++
->>>  drivers/fpga/Makefile       |  1 +
->>>  drivers/fpga/dfl-uio-pdev.c | 93 +++++++++++++++++++++++++++++++++++++++++++++
->> uio drivers traditionally go in drivers/uio/ and start with "uio", so
->> shouldn't this be drivers/uio/uio_dfl_pdev.c to match the same naming
->> scheme?
-> I had considered suggesting that, but ultimately this driver only
-> creates a 'uio_pdrv_genirq' platform device, so it didn't seem like a
-> good fit.
->> But again, you need to explain in detail, why the existing uio driver
->> doesn't work properly, or why you can't just add a few lines to an
->> existing one.
-> Ultimately there are three options I see:
-> 1) Do what Xu does, which is re-use the 'uio_pdrv_genirq' uio driver by
->   creating a platform device for it as sub-device of the dfl device that
->   we bind to uio_pdrv_genirq
-> 2) Add a module_dfl_driver part to drivers/uio/uio_pdrv_genirq.c and
->   corresponding id table
-> 3) Create a new uio_dfl_genirq kind of driver that uses the dfl bus and
->   that would make sense to then put into drivers/uio. (This would
->   duplicate code in uio_pdrv_genirq to some extend)
->
-> Overall I think in terms of code re-use I think Xu's choice might be
-> less new code as it simply wraps the uio platform device driver, and
-> allows for defining the resources passed to the UIO driver to be defined
-> by hardware through a DFL.
->
-> I've seen the pattern that Xu proposed used in other places like the
-> macb network driver where you'd have macb_main (the platform driver) and
-> macb_pci that wraps it for a pci usage.
->
-> - Moritz
+This patch (CVE-2020-27825) was tagged with
+Fixes: b23d7a5f4a07a ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
 
-Thinking of this problem more generally.
+I'm not an expert here but it seems like b23d7a5f4a07a only refactored
+ring_buffer_reset_cpu() by introducing reset_disabled_cpu_buffer() without
+significant changes. Hence, mutex_lock(&buffer->mutex)/mutex_unlock(&buffer->mutex)
+can be backported further than b23d7a5f4a07a~ and to all LTS kernels. Is
+b23d7a5f4a07a the actual cause of the bug?
 
-Every fpga will have a handful of sub devices.
+Thanks,
+Denis
 
-Do we want to carry them in the fpga subsystem or carry them in the other subsystems ?
-
-Consider the short term reviewing and long term maintenance of the sub devices by the subsystem maintainers.
-
-It easier for them if the sub devices are in the other subsystems.
-
-
-Applying this to specifically for dfl_uio.
-
-No one from the uio subsystem reviewing this change is a problem.
-
-I think this change needs to go to the uio subsystem.
-
-And a new entry in the MAINTAINERS file to keep the fpga subsystem in the loop for reviews and acks
-
-Tom
-
+On 10/6/20 12:33 PM, Gaurav Kohli wrote:
+> Below race can come, if trace_open and resize of
+> cpu buffer is running parallely on different cpus
+> CPUX                                CPUY
+> 				    ring_buffer_resize
+> 				    atomic_read(&buffer->resize_disabled)
+> tracing_open
+> tracing_reset_online_cpus
+> ring_buffer_reset_cpu
+> rb_reset_cpu
+> 				    rb_update_pages
+> 				    remove/insert pages
+> resetting pointer
+> 
+> This race can cause data abort or some times infinte loop in
+> rb_remove_pages and rb_insert_pages while checking pages
+> for sanity.
+> 
+> Take buffer lock to fix this.
+> 
+> Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+> Cc: stable@vger.kernel.org
+> ---
+> Changes since v0:
+>   -Addressed Steven's review comments.
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 93ef0ab..15bf28b 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -4866,6 +4866,9 @@ void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
+>  	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+>  		return;
+>  
+> +	/* prevent another thread from changing buffer sizes */
+> +	mutex_lock(&buffer->mutex);
+> +
+>  	atomic_inc(&cpu_buffer->resize_disabled);
+>  	atomic_inc(&cpu_buffer->record_disabled);
+>  
+> @@ -4876,6 +4879,8 @@ void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
+>  
+>  	atomic_dec(&cpu_buffer->record_disabled);
+>  	atomic_dec(&cpu_buffer->resize_disabled);
+> +
+> +	mutex_unlock(&buffer->mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
+>  
+> @@ -4889,6 +4894,9 @@ void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
+>  	struct ring_buffer_per_cpu *cpu_buffer;
+>  	int cpu;
+>  
+> +	/* prevent another thread from changing buffer sizes */
+> +	mutex_lock(&buffer->mutex);
+> +
+>  	for_each_online_buffer_cpu(buffer, cpu) {
+>  		cpu_buffer = buffer->buffers[cpu];
+>  
+> @@ -4907,6 +4915,8 @@ void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
+>  		atomic_dec(&cpu_buffer->record_disabled);
+>  		atomic_dec(&cpu_buffer->resize_disabled);
+>  	}
+> +
+> +	mutex_unlock(&buffer->mutex);
+>  }
+>  
+>  /**
+> 
