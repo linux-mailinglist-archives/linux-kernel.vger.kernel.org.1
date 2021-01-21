@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E07C2FE833
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155A02FE879
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729815AbhAUK5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:57:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729851AbhAUK4r (ORCPT
+        id S1730380AbhAULNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:13:24 -0500
+Received: from esa5.hc1455-7.c3s2.iphmx.com ([68.232.139.130]:46893 "EHLO
+        esa5.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730243AbhAULK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:56:47 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDECCC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 02:56:06 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id g12so1954207ejf.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 02:56:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n7vyQPX3uPALE1358gqAQz7N/ntgLKSkbInGXz9Zji0=;
-        b=qkjQ/pFvBgp/gCR2gs/tVKcH5GN+kzHscswOAkoKSyS1cVEGYw8/sHS1xhj9jKEs3p
-         AmThCgKnnIxrggbPdz64RPdUa7Pe49ngYGEDNKss5f3VuQV93wQnzpJ/iEHKjiBJbYr/
-         XzrmXMG48li+vFJlbrnWa3RnC3CyXUqjL9KerL/wShthDbEbPrDOAW5j7nQjtdpOfqEA
-         8zJP3UXcJa0hVd2ITQUEcHlnYew5II/ylCNlolW+X8bRGW676pz6H3EUrlKhffQSZQaa
-         oVKssRoQ/ER8hZCXw3lkQ/IQc5NOrqSD44762o2whdTpLWyLnG9sBnOtVYu6l7S+7Ywn
-         5XhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=n7vyQPX3uPALE1358gqAQz7N/ntgLKSkbInGXz9Zji0=;
-        b=Wl0BPqZk32siB2DEkzdaHfgYXBabcit2L+nvsNlgTNIdUBPXI3oDGljQahbmwJB5H0
-         1KvmVIjXxJQCYlw1labc3+mlGlZT7JjpB+xm75j1vcO2zYGU2JpI7MrSll7QNva8AYW0
-         opAIScb1viNdnuBVwzelP63qEZeTU1m39tiCDIFw/8SraIcLwxVFULJLKVFV4EbOka2Z
-         bHZQVmo3aKPExXg0qokQIAtz+NKBazMzEG4xbg9jlazP/SJsHtMw2hPw6gln+d9cKA4X
-         Hd4+pgeWkmaqRS68VRE3P3Fc+Co5796b7XAje49//upLushh052AKQXsqHsmqCCgbgdV
-         oGoA==
-X-Gm-Message-State: AOAM531+Tt1cLiUs8RjfgA9Pt74uKWMO5RrJZcLDIMcPGeWsygsYsoow
-        tRbzw7c5hzN91HUABuF+FWyBI60fcHZmQ8gJ
-X-Google-Smtp-Source: ABdhPJx2VleGnV3dYNc5W+JH4VynG0VP7pjQieyjcOK2I4jPVke98qWCngKJk8awVb+J79c4V6XIZQ==
-X-Received: by 2002:a17:906:a115:: with SMTP id t21mr8704788ejy.549.1611226565283;
-        Thu, 21 Jan 2021 02:56:05 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id j23sm2603035edv.45.2021.01.21.02.56.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 Jan 2021 02:56:04 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] dt-bindings: arm: Fix typo in zcu111 board
-Date:   Thu, 21 Jan 2021 11:56:03 +0100
-Message-Id: <13d064fc4850f96904a04e330cea5295d3751e46.1611226560.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.30.0
+        Thu, 21 Jan 2021 06:10:26 -0500
+IronPort-SDR: 6Y+ZmjVsSC6E+RQq1epqzfL/s/107k++Yd7h32RmlUvjISd01Qtbp4UY0SRb6sy15zbz8vAR2D
+ +4iAGFythupBOzMwI1eZzQWE+tiXGLAkODpg+3+oGjLt1PbVvk0crauEBzqtHbWbPlOp2bCsDv
+ X19jjIh77aO/XziVBMpofxp/5wTMPxXYDO34SUzWia4mEjMlDWFNRMM73+N6H8aXPOWmezmdt6
+ T09PSeq3Sr3EpQh7vONVPynexmFwnEag2vOG5Ya9DDE1QtHJc9f9Ve33S6CfQpzgwblIIy/h9F
+ C1Q=
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="15913512"
+X-IronPort-AV: E=Sophos;i="5.79,363,1602514800"; 
+   d="scan'208";a="15913512"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+  by esa5.hc1455-7.c3s2.iphmx.com with ESMTP; 21 Jan 2021 20:00:15 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com [192.168.87.61])
+        by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 45E97395742
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:00:13 +0900 (JST)
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 7D36D44ABAB
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:00:12 +0900 (JST)
+Received: by pumpkin.openstacklocal (Postfix, from userid 1012)
+        id 55679846; Thu, 21 Jan 2021 19:54:25 +0900 (JST)
+From:   Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
+To:     john.garry@huawei.com
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
+Subject: [PATCH v2 0/3] perf vendor events: Support PMU events for A64FX
+Date:   Thu, 21 Jan 2021 19:54:22 +0900
+Message-Id: <20210121105425.2695843-1-nakamura.shun@jp.fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trivial fix.
+(I forgot to add Signed-off. Will resend. Sorry about that.)
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+This patch series supports A64FX PMU event v1.2.
 
- Documentation/devicetree/bindings/arm/xilinx.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The first patch adds L1 data cache refill prefetch, L2 data cache refill prefetch, 
+and DCZVA instruction events.
 
-diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
-index ae0ef1bf7965..97e77b4e077c 100644
---- a/Documentation/devicetree/bindings/arm/xilinx.yaml
-+++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
-@@ -108,7 +108,7 @@ properties:
-         items:
-           - enum:
-               - xlnx,zynqmp-zcu111-revA
--              - xlnx,zynqmp-zcu11-rev1.0
-+              - xlnx,zynqmp-zcu111-rev1.0
-           - const: xlnx,zynqmp-zcu111
-           - const: xlnx,zynqmp
- 
+The second patch fixes the lexical definition of event name so that 
+perf can recognize event name that start with a number.
+
+The third patch adds PMU events for A64FX.
+
+Shunsuke Nakamura (3):
+  perf vendor events: Add cache refill and DCZVA events
+  perf tools: Fix lexical definition of event name
+  perf vendor events: Add Fujitsu A64FX V1.2 pmu event
+
+ .../pmu-events/arch/arm64/armv8-recommended.json   |  18 ++
+ .../arch/arm64/fujitsu/a64fx/branch.json           |  14 ++
+ .../pmu-events/arch/arm64/fujitsu/a64fx/bus.json   |  62 ++++++
+ .../pmu-events/arch/arm64/fujitsu/a64fx/cache.json | 164 ++++++++++++++++
+ .../pmu-events/arch/arm64/fujitsu/a64fx/cycle.json |   8 +
+ .../arch/arm64/fujitsu/a64fx/execution.json        |  32 +++
+ .../arch/arm64/fujitsu/a64fx/instruction.json      | 143 ++++++++++++++
+ .../arch/arm64/fujitsu/a64fx/memory.json           |   8 +
+ .../pmu-events/arch/arm64/fujitsu/a64fx/other.json | 188 ++++++++++++++++++
+ .../arch/arm64/fujitsu/a64fx/pipeline.json         | 200 +++++++++++++++++++
+ .../pmu-events/arch/arm64/fujitsu/a64fx/sve.json   | 218 +++++++++++++++++++++
+ tools/perf/pmu-events/arch/arm64/mapfile.csv       |   1 +
+ tools/perf/util/parse-events.l                     |   2 +-
+ 13 files changed, 1057 insertions(+), 1 deletion(-)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/execution.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+
 -- 
-2.30.0
+1.8.3.1
 
