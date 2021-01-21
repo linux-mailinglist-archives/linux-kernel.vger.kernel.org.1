@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8EC2FE8D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E372FE8CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbhAULbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:31:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
+        id S1725863AbhAULas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730459AbhAUL0E (ORCPT
+        with ESMTP id S1730129AbhAUL0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:26:04 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4BBC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:25:22 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id cq1so1449677pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:25:22 -0800 (PST)
+        Thu, 21 Jan 2021 06:26:25 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D04C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:25:40 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id z21so1172471pgj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:25:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0OcdjvobOk+GPxpivSATMN83Kpqse1ZwZ2bkbAfIi3I=;
-        b=Ny0GKzB+6ASi8RoV11oi9EEWdjvtCnewhNQUTK2+73E91tXrFr7IL6BX3fDd63oA/F
-         aVQ402ywrcPsofOg0lg4QSmbMtCwwhgdtx1KggjnD+gg93oarzjm8+4WrydeLdaVtDOj
-         Aq0SdDdeoysffCAvxgh8eR7gjpnQkuCz8XKL9DjOB1qz/W26dwvFzv5SVvhkCLitUw9q
-         39xBwqfQ7rNpcpNfHkdMXhljq2I0pdkEp4DUdjGO22lqQa+eJ0nr2owznK5wSwGMEGJS
-         /loaRZEUNmogKsciBitAN092h/gm3aW6cYeNqHkX2rHifWMVuGoV7D0pjUlCFC3oJBcs
-         F0iw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=aL4GPeleTKRCNW1fK6e7red/YB+a/GG2BxvUEBjR5W8=;
+        b=uGsuauxP904q8sXK2v9yGjasS/3E0sveYxPOJmpLwGSi0oqBbCwrPmIPkOuJYT+MYu
+         FYRI5PtnqyoNs940vWo4wo28MBZ+p0+AZYB9TpsTfbF0aA4zt6KH3GFB2lylaluC2tvw
+         JYagpbIyXmtu0aLvHUJ9wsLY/8Zqc+LsAQUfvGnHrqT73WF09RgkemvFlkvlfkZHqi/V
+         azpQ42z9E8mpTT9k8//Q4tGdsHr338AQ+ZV6xy0t9n20jacy/8beAPVsGQnMu4ThhlMm
+         sdMrNlByVcszUPl3XxOsE5hy5v1ZBsNtDoIVMQBc7MndALFzFc8HQS/4I34evxiDFOgw
+         nR6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0OcdjvobOk+GPxpivSATMN83Kpqse1ZwZ2bkbAfIi3I=;
-        b=XeQcsrZh6GU6kSip9twdA+ZdwSt78O7VwLPvotv33/dOzsqOhnH5Xret1PY0pBlPOp
-         msL8iDsVc0+0PbPHdsd6uT04kNmwJCqf3IktQbkFdS/04AIlnMY4ceAzg8Lg9JqDpJ2l
-         OAJID3qUNsuM9gZmGDJkGyezhU6oXbN2uFhAiLh8YgqSv5TZZ2KC4oPhSkpMSFZtvZXx
-         FIIJpwbis6xp+E2Bh7BHsh2ex9ZR8j3ffF7rDYZISfhXH8IjsQdH/saYbDLbO9zVYo8I
-         MEiUeF5IVaLAqBLo3ejrmLatidSAqc9Lsdn1r11CVdLVrW+ebkxWxNTOJfCl+2VQKRdt
-         QRig==
-X-Gm-Message-State: AOAM533dsR45CG2kNWYzGZc6Pxke6kl3osVz7ldFuEIf0ymRv1y6N0Lx
-        P3Jn/rtb42YseWjxqNoEPt/S
-X-Google-Smtp-Source: ABdhPJwTqLONGyllam1rWz9UROqUdgwC5myu9UQulmmXu6Vjawb5lfxDJ7kjTLbZ+naXu7NgnqNZMg==
-X-Received: by 2002:a17:90a:f2d2:: with SMTP id gt18mr11402525pjb.102.1611228321558;
-        Thu, 21 Jan 2021 03:25:21 -0800 (PST)
-Received: from thinkpad ([2409:4072:6182:23c4:4d5:e6d9:fc7e:c8e2])
-        by smtp.gmail.com with ESMTPSA id h3sm5171463pgm.67.2021.01.21.03.25.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 03:25:20 -0800 (PST)
-Date:   Thu, 21 Jan 2021 16:55:15 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v5 1/9] bus: mhi: core: Allow sending the STOP channel
- command
-Message-ID: <20210121112515.GE30041@thinkpad>
-References: <1610139297-36435-1-git-send-email-bbhatt@codeaurora.org>
- <1610139297-36435-2-git-send-email-bbhatt@codeaurora.org>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aL4GPeleTKRCNW1fK6e7red/YB+a/GG2BxvUEBjR5W8=;
+        b=W7r9fOyBbLMem932J4aiopiWNS+vNAJeVl6VCu5NwZwgjAy65YGUgvaaLmdCtnu8jb
+         A6yQRqqgH8/SbtfpbdAVQAwNgBUpiFhEEKY98ZB+t/ar5oTH3W0LU3gXHelMejakeSvj
+         jyY55pUbsDFMBPCl9dIh/0eWWfZQW0LQ7HWyleCp+P3f9zNeZERFDOs2xr+OQZbatice
+         cRA4jil3zQh/4Ve4ydv+G/iTx6idAEZnZH5AEF3Fgg0nsrm/QnEF7a2KacIA17xW77zm
+         ZBBBIWhmMEEY72yfUsPdTmfTYaiSWsM9w9LpVtKfhrV8uW/f8kAC1s8CoyMmGaIMHbva
+         IXGQ==
+X-Gm-Message-State: AOAM530crxCQJZkzVn4BiBHKof7g7cvxuuX0egavuWqIq/AENH0mJM1S
+        TusOFL/LAQ+0/yC9f12HtcSsBw==
+X-Google-Smtp-Source: ABdhPJytWTErMkAfHV/6jgBPSRvh619jqHgv42YX3SLD7FLTMtKCDSBmc6FUIlFUK6j2ejD79Twvvw==
+X-Received: by 2002:a63:e058:: with SMTP id n24mr1472541pgj.345.1611228339475;
+        Thu, 21 Jan 2021 03:25:39 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id a30sm5139273pfh.66.2021.01.21.03.25.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Jan 2021 03:25:38 -0800 (PST)
+Date:   Thu, 21 Jan 2021 16:55:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] opp: Prepare for ->set_opp() helper to work without
+ regulators
+Message-ID: <20210121112536.pwdxikqtgpxmmizt@vireshk-i7>
+References: <fb69353c-a35b-9b7c-46bc-d464c6dab6f5@gmail.com>
+ <302c014726dbd9fcde852985528c139d2214a1f2.1611038066.git.viresh.kumar@linaro.org>
+ <c657b5b0-b841-1b26-8008-2fb4b490d63d@gmail.com>
+ <20210120073912.yl4rgkthdyyznbfh@vireshk-i7>
+ <94f4ed8d-ab54-4180-87f7-4ddafb52074f@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1610139297-36435-2-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <94f4ed8d-ab54-4180-87f7-4ddafb52074f@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:54:49PM -0800, Bhaumik Bhatt wrote:
-> Add support to allow sending the STOP channel command. If a
-> client driver would like to STOP a channel and have the device
-> retain the channel context instead of issuing a RESET to it and
-> clearing the context, this would provide support for it after
-> the ability to send this command is exposed to clients.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+On 20-01-21, 17:50, Dmitry Osipenko wrote:
+> If OPP API was meant to be thread-safe, then the
+> dev_pm_opp_unregister_set_opp_helper() should unset the
+> opp_table->set_opp_data under the lock since it races with
+> dev_pm_opp_set_regulators().
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Right, I will fix that.
 
-Thanks,
-Mani
+> Secondly, functions like dev_pm_opp_set_rate() don't have any locks at all.
 
-> ---
->  drivers/bus/mhi/core/main.c | 5 +++++
->  1 file changed, 5 insertions(+)
+It was on purpose. It is expected that this routine specially will
+only have a single caller and calls will be in sequence. This gets
+called a lot and we wanted to make it as much efficient as possible.
+
+> It should be better not to add "random" locks into the code because it
+> only creates an illusion for an oblivious API user that OPP API cares
+> about thread safety, IMO.
 > 
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 8576b0f..c22d7df 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -1224,6 +1224,11 @@ int mhi_send_cmd(struct mhi_controller *mhi_cntrl,
->  		cmd_tre->dword[0] = MHI_TRE_CMD_RESET_DWORD0;
->  		cmd_tre->dword[1] = MHI_TRE_CMD_RESET_DWORD1(chan);
->  		break;
-> +	case MHI_CMD_STOP_CHAN:
-> +		cmd_tre->ptr = MHI_TRE_CMD_STOP_PTR;
-> +		cmd_tre->dword[0] = MHI_TRE_CMD_STOP_DWORD0;
-> +		cmd_tre->dword[1] = MHI_TRE_CMD_STOP_DWORD1(chan);
-> +		break;
->  	case MHI_CMD_START_CHAN:
->  		cmd_tre->ptr = MHI_TRE_CMD_START_PTR;
->  		cmd_tre->dword[0] = MHI_TRE_CMD_START_DWORD0;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> Making OPP API thread-safe will take some effort and a careful review of
+> every lock will be needed.
+
+I agree, we have kept some part out of the lock intentionally, but
+every other thing which can happen in parallel is well protected.
+There maybe bugs, which I am not aware of.
+
+Another reason you see less locks is because of the way I have used
+the kref thing here. That allows us to take locks for very small
+section of code and not big routines.
+
+-- 
+viresh
