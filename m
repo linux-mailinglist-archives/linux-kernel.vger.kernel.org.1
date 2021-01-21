@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A2A2FEE45
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BCA2FEE42
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732739AbhAUPRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:17:55 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34910 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732297AbhAUPPs (ORCPT
+        id S1732717AbhAUPRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:17:02 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:60617 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732645AbhAUPPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 10:15:48 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10LF3NdL038914;
-        Thu, 21 Jan 2021 10:15:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=f/iVi2BnD5qrsshoRRjT0AaZeRvDrPk45GZQX1577jQ=;
- b=DwWixBXsPqUV5I3ptePSD9NK64IXHChx2hhQ1eH+QXdL4qPiiZv6UCZTDNoKtiWh7rdL
- fcbN8ypG05iq7pXlzPhW/FmLnmp8tPmrIoJs4R0dCxYSI1yU6Lpwv9yYX1ssaLa3Oy4u
- rp+cubA42isxv7sUGtlgJJhJUHDzNxvn06MonVbOLYnFVE8hKv/cOocon0c5ahKb/PNb
- 4Uh5qVWs1s9XwIL9CwZJUwxEbz0FQdArM+am4lnIxv1SBy0WIupGQOPuYLo5X2cBwmDb
- 4fPB8a1en9wVMYB2a7ikk5d7v23F9LAIE5nJCJPPOPxS4xyyZBQ/P2nId21tSMppyJLp 3A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 367bc2hveq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 10:15:07 -0500
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10LF3k2M040701;
-        Thu, 21 Jan 2021 10:15:06 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 367bc2hvd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 10:15:06 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10LFDKYA018797;
-        Thu, 21 Jan 2021 15:15:04 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3668nwss47-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 15:15:04 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10LFF1sS44499390
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 15:15:01 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E44A11C05C;
-        Thu, 21 Jan 2021 15:15:01 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13F4211C066;
-        Thu, 21 Jan 2021 15:15:00 +0000 (GMT)
-Received: from linux01.pok.stglabs.ibm.com (unknown [9.114.17.81])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 21 Jan 2021 15:14:59 +0000 (GMT)
-From:   Janosch Frank <frankja@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, thuth@redhat.com, david@redhat.com,
-        borntraeger@de.ibm.com, imbrenda@linux.ibm.com, cohuck@redhat.com,
-        linux-s390@vger.kernel.org, gor@linux.ibm.com, hca@linux.ibm.com,
-        mihajlov@linux.ibm.com
-Subject: [PATCH v2 2/2] s390: mm: Fix secure storage access exception handling
-Date:   Thu, 21 Jan 2021 10:14:35 -0500
-Message-Id: <20210121151436.417240-3-frankja@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121151436.417240-1-frankja@linux.ibm.com>
-References: <20210121151436.417240-1-frankja@linux.ibm.com>
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id AD5FD22F99;
+        Thu, 21 Jan 2021 16:14:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611242092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NCqhHiLG+HIy/KpgWMep43uHSdTreIHEy2UEo+8BPmQ=;
+        b=HNjygoJezksRVrvq/4vj1sKQDQb5mPiv2rc55WUhpe3aopQ7M2LIyyuEPBUtf9o03Zl113
+        ma8PB8ark1Pj8VS9ssD5D8gx0rIK3rVUkV83Aqzl/lPBfBF8KGHwKC+ZlgMxM6GkFwpo+/
+        IOYx1Od4kLHNbdITzw+8WcWLZ9lTJNU=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-21_08:2021-01-21,2021-01-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
- impostorscore=0 spamscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101210081
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 21 Jan 2021 16:14:52 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org
+Subject: Re: [PATCH 0/3] add Ebang EBAZ4205 support
+In-Reply-To: <cbfc4899-eb92-938a-95f2-23ca9485beaf@xilinx.com>
+References: <20210120194033.26970-1-michael@walle.cc>
+ <fff420d1-fc9a-23ce-0d07-58a3c6f10c4d@xilinx.com>
+ <aa96fcaa362181d4b6fef9f1de0aa914@walle.cc>
+ <0a1c6ebf-1d5b-4f06-56db-f04e87d2ae9a@xilinx.com>
+ <bd86194a13882ce472764d0c91029e33@walle.cc>
+ <8917c9a1-09e9-0a39-5732-da7f555ae9ad@xilinx.com>
+ <df072e37bb6f3500d713be565cfa1328@walle.cc>
+ <cbfc4899-eb92-938a-95f2-23ca9485beaf@xilinx.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <a346e761397a14d2effd4806e53395e5@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turns out that the bit 61 in the TEID is not always 1 and if that's
-the case the address space ID and the address are
-unpredictable. Without an address and its address space ID we can't
-export memory and hence we can only send a SIGSEGV to the process or
-panic the kernel depending on who caused the exception.
+Am 2021-01-21 14:16, schrieb Michal Simek:
+> On 1/21/21 11:41 AM, Michael Walle wrote:
+>> Am 2021-01-21 11:23, schrieb Michal Simek:
+>>>>> Back to your case. Board is cheap which is not all the time case 
+>>>>> for
+>>>>> any
+>>>>> xilinx board but you have only uart, sd and partially described
+>>>>> ethernet
+>>>>> which doesn't work without PL. Is it worth to have this described?
+>>>> 
+>>>> I got your point. But it is at least a jump start for the users if 
+>>>> that
+>>>> board boots out of the box. And yes, its unfortunate, that ethernet
+>>>> just works if the PL is configured. This is already done by the
+>>>> bootloader, because there I do have the same problem.
+>>> 
+>>> Zynq/ZynqMP boards can use U-Boot SPL. "Advantage" of this solution
+>>> especially for Zynq is that in u-boot there is open a way for adding
+>>> ps7_init file which is determined by device tree name.
+>>> I think it would make sense to add these DTs and also ps7_init to 
+>>> U-Boot
+>>> project and wire it up with zynq_virt platform and then you can boot
+>>> Linux with using U-Boot's DT pointed by $fdtcontroladdr.
+>>> Then you will get support from scratch to be able to boot.
+>> 
+>> I already have patches for u-boot (using SPL). But my impression was
+>> that linux is the master for the device trees. Esp. if there are some
+>> problems with the board its often useful to have an in-tree device
+>> tree.
+>> 
+>> What is the difference between this board and the other zynq boards
+>> in the kernel?
+>> 
+>> In any case, please make this decision now: will you accept this
+>> device tree or not?
+> 
+> If you promise to regularly test it I am fine with it.
 
-Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-Fixes: 084ea4d611a3d ("s390/mm: add (non)secure page access exceptions handlers")
-Cc: stable@vger.kernel.org
----
- arch/s390/mm/fault.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+I might even integrate it into our lava lab.
 
-diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-index e30c7c781172..3e8685ad938d 100644
---- a/arch/s390/mm/fault.c
-+++ b/arch/s390/mm/fault.c
-@@ -791,6 +791,20 @@ void do_secure_storage_access(struct pt_regs *regs)
- 	struct page *page;
- 	int rc;
- 
-+	/* There are cases where we don't have a TEID. */
-+	if (!(regs->int_parm_long & 0x4)) {
-+		/*
-+		 * When this happens, userspace did something that it
-+		 * was not supposed to do, e.g. branching into secure
-+		 * memory. Trigger a segmentation fault.
-+		 */
-+		if (user_mode(regs)) {
-+			send_sig(SIGSEGV, current, 0);
-+			return;
-+		} else
-+			panic("Unexpected PGM 0x3d with TEID bit 61=0");
-+	}
-+
- 	switch (get_fault_type(regs)) {
- 	case USER_FAULT:
- 		mm = current->mm;
--- 
-2.25.1
-
+-michael
