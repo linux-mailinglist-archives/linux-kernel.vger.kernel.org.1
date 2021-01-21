@@ -2,139 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3EB2FF1B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C006F2FF1B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388069AbhAURWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
+        id S2388216AbhAURVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:21:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733184AbhAURTl (ORCPT
+        with ESMTP id S2387463AbhAURVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:19:41 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F8DC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:18:59 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id d81so5536263iof.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:18:59 -0800 (PST)
+        Thu, 21 Jan 2021 12:21:17 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD36C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:20:30 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id j12so2058652pjy.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:20:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=3S5/DXeaDQ8qpjJtyiUfgqJbVPCCQbbQmxHzoiqKbfw=;
-        b=eTIl8xYGkfIvNkn7JUsAULTn7yxxSb7ObKhbaSAxe6brnlC2bWZO64DeYv/ErJ5mMt
-         U23KiOWt3QUHQ1pgEgUSvj0hZQM4vUL6fmcDhh/uNfDx8b5aVxO+fnDC8m+0lCIiBCJS
-         AmOlGhOjNWoe56S3vdMhEDTKlb3Pxl5xdwVMw=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=42oikTOcG3h7qaAKgY5xG16dol6URHxOGjSC7f21gjU=;
+        b=sPQS8E+87PHGLgnMDQitks4WWJAzyeo4voTz/8HKQK99bnWInEXfYJ7tsEUeQe4hUK
+         wYxB/YENDxR87poUbgsP+uH+HW2JUg0hzivo1kKSkyfqSfdZO6pwD0rziJBaCS/Rvz2n
+         GSVRKFTcwVEzDdyA2HGYEt7N5pGrYkDegBb69sBHysC9YTngx1sWmR+ss7Ee1maJ7KFl
+         vPT+I6Ldsy+1vLAuyTQ7ol5IyGZW+MrFw6v7zAk02YxPrsGjFhLU/AwY+0RX+eD2sAAR
+         bmjCVNN+TgsHF/KWv+BFKWtII2SPWEbF+FprJ2xQhaiV6ijsb01kZObIMrZCxlJvUCxL
+         FyAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=3S5/DXeaDQ8qpjJtyiUfgqJbVPCCQbbQmxHzoiqKbfw=;
-        b=dUFSFIsav4dDKYScecun4NjYeAHn0qnGocLrWJ5NLpKndYXUBZHoWeCxVoqHG5JB6e
-         LWDNULFvCZ7N7ajs1QiAko1aWZguhfas450V/eYfHL2vJgaMCnrTobkUaKf1PQXYVm6l
-         N8PyROfBWU0VjDddDftUlIKRjpaKzObX4I8uhekSO9LD8CMGuxZFXbeE1xcR6JvmaUvk
-         e3ZnDlRgWdiAGI5jlfn84nMegFJMQ/YupvH1Y4sDpsHK1rhJksirmUL16yvJgx+SAe6o
-         LdgUumLAA+jtpa8dagokkQhOUmYQqEK8QUNBmIFpqMCGx8BcsZBmohWIkSD/czvAcmPj
-         A2JQ==
-X-Gm-Message-State: AOAM531oJyu8wiJ44sZfBz0nFugMopCFyB99LsNbePPP/bdRFFKCBGHT
-        2wvBbD9Vy/OnKC2CeX3uyL5GazFEjOT/lQ==
-X-Google-Smtp-Source: ABdhPJzFvU3l2v+VBglpCpZ+oP6tPVaU9t27HQhkRh03+9cerEWhrBKv0maWXPvObkb/wNNLiMVwKw==
-X-Received: by 2002:a92:d705:: with SMTP id m5mr662357iln.85.1611249537875;
-        Thu, 21 Jan 2021 09:18:57 -0800 (PST)
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
-        by smtp.gmail.com with ESMTPSA id v2sm1174082ilj.19.2021.01.21.09.18.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 09:18:57 -0800 (PST)
-Received: by mail-io1-f42.google.com with SMTP id x21so5459489iog.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:18:56 -0800 (PST)
-X-Received: by 2002:a05:6638:a1b:: with SMTP id 27mr157986jan.144.1611249536281;
- Thu, 21 Jan 2021 09:18:56 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=42oikTOcG3h7qaAKgY5xG16dol6URHxOGjSC7f21gjU=;
+        b=D2vP2nSU+5Ytky5vGGIKo3DEG9nwsZb2UEzBukGEjMLtNOfN8fOJ9exlHfRcaUJMoZ
+         WPO10MwKgBNgpKgjn0xvupBVYSHPP36NnMhhA7hKzRkoA6y6zQu3q/ZYoKfentryo1Jt
+         zbitN017etU1/u8jSJxp65kwYoN8vxG/5AAW1qv3TREINZkAJJLwbFlIk5KGWa/Jr08I
+         ZPAKOaYPQE55xORCb9ZFTJvKoUTrRI95p2/AQwweWZqtet2mMFoOPuTSFslLAXf5jw8o
+         Ia6NROJgGd22R+nkhAhGwMRxDPjK5caxhVEkc/evEFcohL6j/XgmTAjm/kV7BLdcp9wY
+         kvUQ==
+X-Gm-Message-State: AOAM5333ZWA30i9jGeA0llcU/eDKLqFSdFoaMgWNBVYk8r00i4Fmgmsp
+        qopdy3pKqUctiBXsNbYEJQAsMLfTrsoUxtxZrqWkoQ==
+X-Google-Smtp-Source: ABdhPJyMk1qNapUs5suZMcCehTLdBoxpk5/kwzTkn0e27jOgeHFVKMiU/HgrEtBWQ+9YPtd7Ayn4BWxPHTIsReuoRLI=
+X-Received: by 2002:a17:903:31d1:b029:de:8361:739b with SMTP id
+ v17-20020a17090331d1b02900de8361739bmr658090ple.85.1611249629456; Thu, 21 Jan
+ 2021 09:20:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121171644.131059-1-ribalda@chromium.org>
-In-Reply-To: <20210121171644.131059-1-ribalda@chromium.org>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Thu, 21 Jan 2021 18:18:45 +0100
-X-Gmail-Original-Message-ID: <CANiDSCuaB+7YwRG1uLMJjkOao7rsF6EB8rScDDiY8ynzQThFsw@mail.gmail.com>
-Message-ID: <CANiDSCuaB+7YwRG1uLMJjkOao7rsF6EB8rScDDiY8ynzQThFsw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib skl_tplg_complete
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        alsa-devel@alsa-project.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lukasz Majczak <lma@semihalf.com>
+References: <20210121131956.23246-1-vincenzo.frascino@arm.com> <20210121131956.23246-3-vincenzo.frascino@arm.com>
+In-Reply-To: <20210121131956.23246-3-vincenzo.frascino@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 21 Jan 2021 18:20:17 +0100
+Message-ID: <CAAeHK+yCq+p-D8C+LgHUSkuGZmZscJPTan9p6GT8GoUAVdnOqA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kasan: Add explicit preconditions to kasan_report()
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-This is just a v2 from my patch from December with the ={}: in a second patch.
-
-
-Best regards!
-
-On Thu, Jan 21, 2021 at 6:16 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
+On Thu, Jan 21, 2021 at 2:20 PM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
 >
-> If dobj->control is not initialized we end up in an OOPs during
-> skl_tplg_complete:
+> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
+> the address passed as a parameter.
 >
-> [   26.553358] BUG: kernel NULL pointer dereference, address:
-> 0000000000000078
-> [   26.561151] #PF: supervisor read access in kernel mode
-> [   26.566897] #PF: error_code(0x0000) - not-present page
-> [   26.572642] PGD 0 P4D 0
-> [   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
-> [   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
-> 5.4.81 #4
-> [   26.588232] Hardware name: HP Soraka/Soraka, BIOS
-> Google_Soraka.10431.106.0 12/03/2019
-> [   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
+> Add a comment to make sure that the preconditions to the function are
+> explicitly clarified.
 >
-> Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> Note: An invalid address (e.g. NULL) passed to the function when,
+> KASAN_HW_TAGS is enabled, leads to a kernel panic.
+>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Leon Romanovsky <leonro@mellanox.com>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 > ---
->  sound/soc/intel/skylake/skl-topology.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+>  mm/kasan/kasan.h  | 2 +-
+>  mm/kasan/report.c | 7 +++++++
+>  2 files changed, 8 insertions(+), 1 deletion(-)
 >
-> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> index ae466cd59292..1ef30ca45410 100644
-> --- a/sound/soc/intel/skylake/skl-topology.c
-> +++ b/sound/soc/intel/skylake/skl-topology.c
-> @@ -3619,15 +3619,16 @@ static void skl_tplg_complete(struct snd_soc_component *component)
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index cc4d9e1d49b1..8c706e7652f2 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -209,7 +209,7 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
 >
->         list_for_each_entry(dobj, &component->dobj_list, list) {
->                 struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
-> -               struct soc_enum *se =
-> -                       (struct soc_enum *)kcontrol->private_value;
-> -               char **texts = dobj->control.dtexts;
-> +               struct soc_enum *se;
-> +               char **texts;
->                 char chan_text[4];
+>  static inline bool addr_has_metadata(const void *addr)
+>  {
+> -       return true;
+> +       return (is_vmalloc_addr(addr) || virt_addr_valid(addr));
+>  }
 >
-> -               if (dobj->type != SND_SOC_DOBJ_ENUM ||
-> -                   dobj->control.kcontrol->put !=
-> -                   skl_tplg_multi_config_set_dmic)
-> +               if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
-> +                   kcontrol->put != skl_tplg_multi_config_set_dmic)
->                         continue;
-> +
-> +               se = (struct soc_enum *)kcontrol->private_value;
-> +               texts = dobj->control.dtexts;
->                 sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
+>  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index c0fb21797550..8b690091cb37 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -403,6 +403,13 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>         end_report(&flags);
+>  }
 >
->                 for (i = 0; i < se->items; i++) {
+> +/**
+> + * kasan_report - report kasan fault details
+
+print a report about a bad memory access detected by KASAN
+
+> + * @addr: valid address of the allocation where the tag fault was detected
+
+address of the bad access
+
+> + * @size: size of the allocation where the tag fault was detected
+
+size of the bad access
+
+> + * @is_write: the instruction that caused the fault was a read or write?
+
+whether the bad access is a write or a read
+
+(no question mark at the end)
+
+> + * @ip: pointer to the instruction that cause the fault
+
+instruction pointer for the accessibility check or the bad access itself
+
+> + */
+
+And please move this to include/kasan/kasan.h.
+
+>  bool kasan_report(unsigned long addr, size_t size, bool is_write,
+>                         unsigned long ip)
+>  {
 > --
-> 2.30.0.296.g2bfb1c46d8-goog
+> 2.30.0
 >
-
-
--- 
-Ricardo Ribalda
