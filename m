@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6A92FF3DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5026E2FF400
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbhAUTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56436 "EHLO
+        id S1727102AbhAUTN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:13:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725819AbhAUTId (ORCPT
+        with ESMTP id S1727001AbhAUTK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:08:33 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E671C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:07:53 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id md11so2262113pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:07:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8IL7omGXKEqUEF+imDmaysOYy0Y9v5wjKeu9DQV9gtM=;
-        b=LS1oZDTgEfmQ3PeXTj9eJTcnp2nnkJHRgZnIQ6BaqfTxUcZQIBJP9s1WwoSmTd0Tvj
-         rVcEUaeF7v1T11FsVCzrVr8VzPztXZAh2VHIE388NN4u5C3WckelWSMGDmUiXvYw8ece
-         ozHA8/ZacmBUmdv7CgWaDVDGkG5XkKQRASUATeXlbO2CvZBEEK0IGYToF8nFxVpliy5R
-         7+VfMV0h4wrHr0hJsXDHCvJ3rnZOFLQ3tgu7wiSV9MvgKRI9SoENgA1pSjEd5AknhJ6j
-         zjAYUehG61fD9+/i7Ux4zs2888ksSw6YrAKM6VODwXeKHmSUKFVpM060dvq0UcTIrhQ4
-         PSfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8IL7omGXKEqUEF+imDmaysOYy0Y9v5wjKeu9DQV9gtM=;
-        b=mbIOqq873wrVUqPTLEWQq5HWYzOxiFeLNcSkbPF489E1X2PH/Cp7CY8EC46bh/sBq+
-         j28FfFZzxJXH0R+FLj0yx7P/ZG7TRRXeb9lcQ8aXyBg3DHi22lssmdYhUEL1nRLeM6aQ
-         X9SYZxEPsVbATElid+8T56beOUxGBYXo2+BAxsH0XPDoHj6NVbjfHiVQUCi+M8cz14aU
-         OydTUNY1DbkJeP+XHTQU6sTgjSRRA/mxfMytVkUUnpbbQuYs5i5nSKSH/e+xdcnT4eEg
-         Ol4WfY2dftPG3J+/PXACEBbVMBjXDUCELNWtedkr+j1U+OAxSP3rXSdQdHOS2kAgDliq
-         m9tw==
-X-Gm-Message-State: AOAM530Pw3S40AG1+TIZsjA9osJRrWMQhjzQD3urxBNn//gt146f3RsN
-        JWFK5b45XzjAiTY68zqDX6ekC7Yw4tH+YBD1otrqYg==
-X-Google-Smtp-Source: ABdhPJw9KzZqv85PaIESUgWolglnwMOJ9jGn3M+rVEij1uGHL/1mW94pX1XUEo3JQ0kRBCWDpSgfN//WT2bqvioGnLk=
-X-Received: by 2002:a17:902:9f87:b029:de:9e09:ee94 with SMTP id
- g7-20020a1709029f87b02900de9e09ee94mr707417plq.29.1611256072666; Thu, 21 Jan
- 2021 11:07:52 -0800 (PST)
+        Thu, 21 Jan 2021 14:10:56 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1C8C061756;
+        Thu, 21 Jan 2021 11:09:38 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 7790068A6; Thu, 21 Jan 2021 14:09:37 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 7790068A6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1611256177;
+        bh=N/byAs1v6tc9Fx3ki4Hix9OpQ2b4N7bUlr5L+Udyz04=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v12SGAI5TdTGVdUXLNRFq4bYEJiB3wwXNox11gArFVnndbZSQLf36kKRFo95UyeQY
+         CO7QjlprxG0AHzpbsAXIme2ZNIcWn0te5LWMp6nGA+4cNMBpacJ9xmATTjhLCoftDm
+         vFchlftsuiau3nyD/mo1dMyfCGV87yqk3pnkw+U0=
+Date:   Thu, 21 Jan 2021 14:09:37 -0500
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
+Message-ID: <20210121190937.GE20964@fieldses.org>
+References: <20210121174306.GB20964@fieldses.org>
+ <20210121164645.GA20964@fieldses.org>
+ <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
+ <1794286.1611248577@warthog.procyon.org.uk>
+ <1851804.1611255313@warthog.procyon.org.uk>
 MIME-Version: 1.0
-References: <20201111021131.822867-1-ndesaulniers@google.com>
- <031790d7-ee26-f919-9338-b135e9b94635@nvidia.com> <CAJZ5v0it3KfdNo7kwq-7__C+Kvr4Eo7x8-3rBi09B5rHfNv-hQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0it3KfdNo7kwq-7__C+Kvr4Eo7x8-3rBi09B5rHfNv-hQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 21 Jan 2021 11:07:41 -0800
-Message-ID: <CAKwvOdnG6Ew+7HMjJuH3Or8kEE_ZyP-xNGbwaX8HdT=6FApYxA@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix -Wfallthrough
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Robert Moore <robert.moore@intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1851804.1611255313@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 11:03 AM Rafael J. Wysocki <rafael@kernel.org> wrot=
-e:
->
-> On Thu, Jan 21, 2021 at 11:08 AM Jon Hunter <jonathanh@nvidia.com> wrote:
-> >
-> >
-> > On 11/11/2020 02:11, Nick Desaulniers wrote:
-> > > The "fallthrough" pseudo-keyword was added as a portable way to denot=
-e
-> > > intentional fallthrough. This code seemed to be using a mix of
-> > > fallthrough comments that GCC recognizes, and some kind of lint marke=
-r.
-> > > I'm guessing that linter hasn't been run in a while from the mixed us=
-e
-> > > of the marker vs comments.
-> > >
-> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> >
-> >
-> > I know this is not the exact version that was merged, I can't find it o=
-n
-> > the list, but looks like the version that was merged [0],
->
-> It would be this patch:
->
-> https://patchwork.kernel.org/project/linux-acpi/patch/20210115184826.2250=
--4-erik.kaneda@intel.com/
->
-> Nick, Erik?
+On Thu, Jan 21, 2021 at 06:55:13PM +0000, David Howells wrote:
+> J. Bruce Fields <bfields@fieldses.org> wrote:
+> 
+> > > Fixing this requires a much bigger overhaul of cachefiles than this patchset
+> > > performs.
+> > 
+> > That sounds like "sometimes you may get file corruption and there's
+> > nothing you can do about it".  But I know people actually use fscache,
+> > so it must be reliable at least for some use cases.
+> 
+> Yes.  That's true for the upstream code because that uses bmap.
 
-oh, shit, looks like a line was dropped.  Here's what I sent upstream:
-https://github.com/acpica/acpica/pull/650/files#diff-cccd96e900e01f7224c815=
-08cbddfb1af6fcfbff959d6bfb55123e1b9cad4e38R1543
-Note in the patch Rafael links to that line is missing and there's
-instead an #ifdef that's empty.  Was this line accidentally dropped?
+Sorry, when you say "that's true", what part are you referring to?
 
->
-> > is causing build errors with older toolchains (GCC v6) ...
-> >
-> > /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/acpi/acpica/dscon=
-trol.c: In function =E2=80=98acpi_ds_exec_begin_control_op=E2=80=99:
-> > /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/acpi/acpica/dscon=
-trol.c:65:3: error: =E2=80=98ACPI_FALLTHROUGH=E2=80=99 undeclared (first us=
-e in this function)
-> >    ACPI_FALLTHROUGH;
-> >    ^~~~~~~~~~~~~~~~
-> > /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/acpi/acpica/dscon=
-trol.c:65:3: note: each undeclared identifier is reported only once for eac=
-h function it appears in
-> > /dvs/git/dirty/git-master_l4t-upstream/kernel/scripts/Makefile.build:28=
-7: recipe for target 'drivers/acpi/acpica/dscontrol.o' failed
-> >
-> > Cheers
-> > Jon
-> >
-> > [0] https://github.com/acpica/acpica/commit/4b9135f5
-> >
-> > --
-> > nvpublic
+> I'm switching
+> to use SEEK_HOLE/SEEK_DATA to get rid of the bmap usage, but it doesn't change
+> the issue.
+> 
+> > Is it that those "bridging" blocks only show up in certain corner cases
+> > that users can arrange to avoid?  Or that it's OK as long as you use
+> > certain specific file systems whose behavior goes beyond what's
+> > technically required by the bamp or seek interfaces?
+> 
+> That's a question for the xfs, ext4 and btrfs maintainers, and may vary
+> between kernel versions and fsck or filesystem packing utility versions.
 
+So, I'm still confused: there must be some case where we know fscache
+actually works reliably and doesn't corrupt your data, right?
 
-
---=20
-Thanks,
-~Nick Desaulniers
+--b.
