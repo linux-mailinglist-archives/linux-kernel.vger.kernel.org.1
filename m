@@ -2,52 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50112FE40F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106B32FE435
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbhAUHfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:35:53 -0500
-Received: from out28-53.mail.aliyun.com ([115.124.28.53]:39247 "EHLO
-        out28-53.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbhAUHeS (ORCPT
+        id S1727472AbhAUHly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:41:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36450 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727312AbhAUHkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:34:18 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1303425|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0211761-0.00130404-0.97752;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=liu.xiang@zlingsmart.com;NM=1;PH=DW;RN=4;RT=4;SR=0;TI=W4_6085603_DEFAULT_0AC264B5_1611214294767_o7001c689i;
-Received: from WS-web (liu.xiang@zlingsmart.com[W4_6085603_DEFAULT_0AC264B5_1611214294767_o7001c689i]) by ay29a011140100061.et135 at Thu, 21 Jan 2021 15:33:26 +0800
-Date:   Thu, 21 Jan 2021 15:33:26 +0800
-From:   "liu xiang" <liu.xiang@zlingsmart.com>
-To:     "Christoph Hellwig" <hch@infradead.org>
-Cc:     "linux-block" <linux-block@vger.kernel.org>,
-        "axboe" <axboe@kernel.dk>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Reply-To: "liu xiang" <liu.xiang@zlingsmart.com>
-Message-ID: <460a3fcd-b7a1-42f4-abc3-b1a267259c26.liu.xiang@zlingsmart.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gYmxrLW1xOiBpbnRyb2R1Y2UgUkVRX0NPTVBMRVRFX1dRIGFuZCBhZGQg?=
-  =?UTF-8?B?YSB3b3JrcXVldWUgdG8gY29tcGxldGUgdGhlIHJlcXVlc3Q=?=
-X-Mailer: [Alimail-Mailagent revision 794][W4_6085603][DEFAULT][Chrome]
+        Thu, 21 Jan 2021 02:40:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611214709;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9kVSG4L8Yartqrk7tDiDkwAUqYMAcqaSatvYzcqcPL4=;
+        b=LeyADgyy7B/yfHSABRbvr9CaiScoqat/7ksyORy3oOXwtLIxSZ0pLQuju6oMowdzkE12s2
+        LpzKUj8Gl8gh9qStXB/3D01pyGqGbr2CIl3jrCXMtWcr3kq2MOlAsjnTluWoONz4v7nJeM
+        fcCcFQVROuKYwT9+Uw8g66/mTo6H66w=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-YbZxZ0wXPO-YwWDrDHKBBA-1; Thu, 21 Jan 2021 02:38:27 -0500
+X-MC-Unique: YbZxZ0wXPO-YwWDrDHKBBA-1
+Received: by mail-ej1-f70.google.com with SMTP id x22so422725ejb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:38:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9kVSG4L8Yartqrk7tDiDkwAUqYMAcqaSatvYzcqcPL4=;
+        b=SyBRcJnapyKX9LYRi1aDM1zI3ws8gQY2SeTbhk0jP8oQCSFWOMi9N1ENt+cmR2+yD4
+         I8+OSTH+dFRPE8ByzYe5As4LdTDxpAknAhhKrothc9a9p0KU2GR+cSXAbNgmVUXk+wbD
+         tpm/Z/eFZxgfVJvthBZE+SyZAKPOHSpuObW+aT4p4q3+a07K5ZrtjDxmoOAWiAuCTHZ6
+         I4535mN3A3sw6yqtFkiRJBD9zy6JYE1G93huFwql/7wLWTwOi43yheycbHDNs/WFCrJv
+         h4z9E/f2z9z4xXHWbIUo1zPrbc+FrrZlDxXbEgRkf5DIKku2CT9dolpRATmyY2HHPpMm
+         7xUQ==
+X-Gm-Message-State: AOAM532Fp8gTog1mJ6Oib8fBI2kpDYjKY4rv48nmZwVa6FNEokdCeQBF
+        vAgcdrHGH6EUS6EbuPK7gQGhf58Gn3kBOr6Cs9YLT/aD3ciKLFozxsZuEraqTw2I4xI6Genlf0v
+        WX1CDIJiLFjkormR6tP4W40GSy/PGkivSZ6GDX4t7IUwH2a+o+5lKgHaVvILkVxZghSs09VraEi
+        fU
+X-Received: by 2002:a50:8a90:: with SMTP id j16mr9604914edj.334.1611214706413;
+        Wed, 20 Jan 2021 23:38:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw/lOSqu6uXUKuOy+1WLJIYPND6L/NE5QVph99g7Qdwq/QUL/k9KAYBc6DnaADWuUUprMQxtg==
+X-Received: by 2002:a50:8a90:: with SMTP id j16mr9604907edj.334.1611214706243;
+        Wed, 20 Jan 2021 23:38:26 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id he38sm1790782ejc.96.2021.01.20.23.38.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 23:38:25 -0800 (PST)
+Subject: Re: PING: [PATCH v5 0/2] misc: pvpanic: introduce capability & event
+ attribute
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        zhenwei pi <pizhenwei@bytedance.com>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
+References: <20210110115358.79100-1-pizhenwei@bytedance.com>
+ <cee80030-dab1-fe79-f14c-24e45532d814@bytedance.com>
+ <YAhuD04p4daZd/1W@kroah.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a7b9e8a9-d5de-3b29-8bf3-3d002b984dda@redhat.com>
+Date:   Thu, 21 Jan 2021 08:38:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210120021522.28584-1-liu.xiang@zlingsmart.com>,<20210120095409.GB3694085@infradead.org>
-In-Reply-To: <20210120095409.GB3694085@infradead.org>
-x-aliyun-mail-creator: W4_6085603_DEFAULT_AoSTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV09XNjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS83NS4wLjM3NzAuMTAwIFNhZmFyaS81MzcuMzY=zN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+In-Reply-To: <YAhuD04p4daZd/1W@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCBKYW4gMjAsIDIwMjEgYXQgMTA6MTU6MjJBTSArMDgwMCwgTGl1IFhpYW5nIHdyb3Rl
-Ogo+IFRoZSBjb21taXQgIjQwZDA5YjUzYmZjNTU3YWY3NDgxYjlkODBmMDYwYTdhYzljN2QzMTQi
-IGhhcyBzb2x2ZWQgdGhlCj4gaXJxc29mZiBwcm9ibGVtIGJ5IGNvbXBsZXRpbmcgdGhlIHJlcXVl
-c3QgaW4gc29mdGlycS4gQnV0IGl0IG1heSBjYXVzZQo+IHRoZSBzeXN0ZW0gdG8gc3VmZmVyIGJh
-ZCBwcmVlbXB0b2ZmIHRpbWUuCj4gSW50cm9kdWNlIHRoZSBSRVFfQ09NUExFVEVfV1EgZmxhZyBh
-bmQgYmxrX2NvbXBsZXRlIHdvcmtxdWV1ZS4KPiBUaGlzIGZsYWcgbWFrZXMgdGhlIHJlcXVlc3Qg
-dG8gYmUgY29tcGxldGVkIGluIHRoZSBibGtfY29tcGxldGUgd29ya3F1ZXVlLgo+IEl0IGNhbiBi
-ZSB1c2VkIGZvciByZXF1ZXN0cyB0aGF0IHdhbnQgdG8gY3V0IGRvd24gYm90aCBpcnFzb2ZmIGFu
-ZAo+IHByZWVtcHRvZmYgdGltZS4KCkluIGFkZGl0aW9uIHRvIGJsb2F0aW5nIHRoZSByZXF1ZXN0
-X3F1ZXVlIGFuZCBpbnRyb2R1Y2luZyB0aGUgY29tcGxldGlvbgpmYXN0IHBhdGggdGhpcyBzZWVt
-cyB0byBsYWNrIGFuIGFjdHVhbCB1c2VyLgoKSSBoYXZlIHRlc3RlZCBtbWMgYW5kIHZpcnRpb19i
-bGsgZHJpdmVycy4gVGhleSBib3RoIGhhdmUgcHJlZW1wdG9mZiBwcm9ibGVtLgpUaGUgbW1jIGRy
-aXZlciBoYXMgaXRzIG93biBjb21wbGV0ZSB3b3JrcXVldWUuIEJ1dCBpdCBjYW4gbm90IHdvcmsg
-d2VsbCBub3cuIApJIHRoaW5rIGl0IGlzIGJldHRlciB0byBjb21wbGV0ZSByZXF1ZXN0IGRpcmVj
-dGx5IHdpdGggUkVRX0hJUFJJIGZsYWcuClRoZSB2aXJ0aW9fYmxrIGRyaXZlciBjYW4gdXNlIFJF
-UV9DT01QTEVURV9XUSBmbGFnIHRvIGF2b2lkIHByZWVtcHRvZmYgcHJvYmxlbS4=
+On 20/01/21 18:53, Greg KH wrote:
+> On Mon, Jan 18, 2021 at 09:42:57AM +0800, zhenwei pi wrote:
+>> Hi, Greg
+>>
+>> What's the next step I should take?
+> 
+> I need some reviews by the people who will be doing the qemu portion of
+> this, or someone else, please.
+
+QEMU bits are already part of the last release, so all good from our 
+side.  As far as the "hardware" spec is concerned,
+
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+
+Paolo
+
