@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4EC2FF3C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E312FF3E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbhAUTF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:05:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51731 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725950AbhAUTFE (ORCPT
+        id S1726963AbhAUTKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:10:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbhAUTJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:05:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611255783;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q9aC69Rrd685E5LorLOvTrA44ELra9S4V5jph1Dfqxg=;
-        b=LyyT+Pg2KaHVr0sD0BC74NsLOy8cevivdasiyT4k1lq/bo2bgEMfYnajYxxVnlMXTA3FgQ
-        zzBs7//SOGdVpvVPmnq3wBL4R13uvxgknxuJ4LNSFRM/MqVisx7y0LRfYQPWU0sqf7D87t
-        K5PmOPqz3kTKpK+XlQlYiftggb/t4nc=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-nDDHqKMmNMe_nbuBgx-8JA-1; Thu, 21 Jan 2021 13:59:31 -0500
-X-MC-Unique: nDDHqKMmNMe_nbuBgx-8JA-1
-Received: by mail-qv1-f70.google.com with SMTP id c17so2123656qvv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:59:31 -0800 (PST)
+        Thu, 21 Jan 2021 14:09:55 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C8FC06178B;
+        Thu, 21 Jan 2021 10:59:37 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id z11so2724533qkj.7;
+        Thu, 21 Jan 2021 10:59:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RDTUmyi6TX1dMW73o3akqz8xuDPvL4pb5fyygLXF4I8=;
+        b=qhXcdVQsNa91XXCzLVDPU/KqxOxUQZkfZtbeQrwUU4IlsbysGk6QJ+Q3vOXbR9dmGl
+         r9jKgAaSXICozJbVVlFl0Qye8z7BCSKijeJM1ijBLLjv0vcbalesCtsDnUwoFXf90rPq
+         6+jgC6lftZJ2ESX97wnAn+KAARFJbSNugo9OHNnkP7rIaAscP84QXuvGsYe1G6eEM8XZ
+         DEDEql0vKSNM5ktuSfDfROgZbzSax7OQnCbuctNmmYeTZOy0KDyfVOC7PMrESzXHEdM/
+         1rtpIVkXx3jhDr+pSt4jN3gnXS+SwLQSEScht/y+OnRi3jqfmH1VjqVllnE4glJZeCIz
+         jiPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q9aC69Rrd685E5LorLOvTrA44ELra9S4V5jph1Dfqxg=;
-        b=fW+W1oFNnoGsoxm+rjXyrEmaxsW9y9EYcHH1JIJaGUuqZ6gVu1Nt+vVZFOMKcicMfF
-         1cBbXJ+WZpCMF8s041tiSUVdr/lb8orSNvkUmYpyIhXbP0Zrez+RVPhNJpWVc7PQzpc+
-         9dE9El7Wlk8yAHKsR8NeSWJun68fKWo1BErISw65rIlox5aqDtgompMNlLah8H69+9NB
-         0Rqvtfct3zQOvIMmKVT0T0pmF9VaZWe7rR/WAHoy78ENk7ZA9+3/4nkCCJ+5+Gg9YkiX
-         KYb7o92m/MqAdKBSPZlae2h/3SlDcduGe+s6CKBzqPVyOKeMdLE864RH2OWcIEw1ASRo
-         qUyQ==
-X-Gm-Message-State: AOAM531MU6A0eRoSqb/LrAoYZES6f4O5H9GF4fg0RRuKN8jPbSWwmuEb
-        JCmZL/beb0Mtrwe3dPyAa30NQt+qYfgd+l+JjhyrudgzU1Ei/7NRJMann7LBs6uhICeWxY47VOB
-        1Db+TsAzEUUDW0ACEoy4VNomW
-X-Received: by 2002:a37:4905:: with SMTP id w5mr1238026qka.332.1611255571013;
-        Thu, 21 Jan 2021 10:59:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwpPfqGEB5hWMaS7ODRJG0nJlz/OA1oFXO3oLmpasvHghnddIsNoZXPMGIOq60g/FNnFLxxvQ==
-X-Received: by 2002:a37:4905:: with SMTP id w5mr1238009qka.332.1611255570798;
-        Thu, 21 Jan 2021 10:59:30 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id u5sm4409823qka.86.2021.01.21.10.59.28
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RDTUmyi6TX1dMW73o3akqz8xuDPvL4pb5fyygLXF4I8=;
+        b=AfbOfDoK7aNb4gc6wzSdwXu4xAfJ7KGUNXfo3+izhJ8iT+iEYLSc3Bq2G1jqdGQgva
+         7Lkq+2S5317Mcp8ZENare8anhguQPese4LQSZEINDFj1WzKIWnDmCOzKToXFSAeXWiys
+         dO+aRylsgm09UuSBuMYdtc8c9gCdFWx2lul2taaXdOx85rDKXJYBEQfMsYF566vUEajO
+         ZLNiYtFDeD1Ijns2P1ZwB2gCUNZCXO1zxOKb8FC4wBaOUUNyI1G3ZsK7/qSWLZ/7+1Oe
+         CcfYRP5a2/tQcGfnNueIW91xD6vluMoixG8I8FcTyhgWllulOoMK5N5GSy97wsz70zzN
+         WexQ==
+X-Gm-Message-State: AOAM530Q5vCg3hEx5CsxvdZeyiZkG8pBoP4qtzePtCGekEJD+ouZ6BeP
+        L07xAiOfKOKCvCcbjX5uKf8=
+X-Google-Smtp-Source: ABdhPJwohk2DIFAJlac5ohtlYAVxOFCDRj/GRbEUUa3RQ01XDV7/9jInryHqvORzkYAcKk6YUf52KA==
+X-Received: by 2002:a05:620a:1206:: with SMTP id u6mr1183789qkj.209.1611255576713;
+        Thu, 21 Jan 2021 10:59:36 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id 196sm2961883qkl.4.2021.01.21.10.59.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:59:30 -0800 (PST)
-Date:   Thu, 21 Jan 2021 13:59:28 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH 6/9] userfaultfd: disable huge PMD sharing for MINOR
- registered VMAs
-Message-ID: <20210121185928.GF260413@xz-x1>
-References: <20210115190451.3135416-1-axelrasmussen@google.com>
- <20210115190451.3135416-7-axelrasmussen@google.com>
+        Thu, 21 Jan 2021 10:59:35 -0800 (PST)
+Date:   Thu, 21 Jan 2021 19:59:33 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     broonie@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com
+Subject: Re: [RESEND PATCH v6 4/6] arm64: defconfig: Enable Tegra audio graph
+ card driver
+Message-ID: <YAnPFV6WBDmJR7uU@ulmo>
+References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
+ <1611048496-24650-5-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UNXIJuGPFxobgmD3"
 Content-Disposition: inline
-In-Reply-To: <20210115190451.3135416-7-axelrasmussen@google.com>
+In-Reply-To: <1611048496-24650-5-git-send-email-spujar@nvidia.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 11:04:48AM -0800, Axel Rasmussen wrote:
-> As the comment says: for the MINOR fault use case, although the page
-> might be present and populated in the other (non-UFFD-registered) half
-> of the shared mapping, it may be out of date, and we explicitly want
-> userspace to get a minor fault so it can check and potentially update
-> the page's contents.
-> 
-> Huge PMD sharing would prevent these faults from occurring for
-> suitably aligned areas, so disable it upon UFFD registration.
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+--UNXIJuGPFxobgmD3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Peter Xu
+On Tue, Jan 19, 2021 at 02:58:14PM +0530, Sameer Pujar wrote:
+> This commit enables Tegra audio graph card driver which is based on
+> the generic audio-graph card driver. This is intended to be used
+> on platforms based on Tegra210 and later chips.
+>=20
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
+Applied, thanks.
+
+Thierry
+
+--UNXIJuGPFxobgmD3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAJzxUACgkQ3SOs138+
+s6HJ3Q/+L0jCt+mm47rX9vykjTeqtyF8JyoUyIhqNIhYPtlqgW/Em7qfuq/lZ2M2
+dZysuBm51BUIZXN1mVZwBVXpvv7lbITPA2lbBaIA85hFvVThA2/wKrEC6GlEIiCx
+boRAWs3lDqFzU6sha+t6BIizmePN3rWMkvuJeuLCK6F4xov819o1NGRlG/uJJ4B4
+d6Q4CpGVvJDCU0h3raq+bXKRoXgzOUUX9xuCT6ZLzmQ2hRzuLi5M7pKm6TGGTxTw
+2ySGWiOaOouDqKErnq7KqOBEKHAdjfeelmU0gHMCBziO4fKG/Tcj1mv+8P/pg/HS
+TZSQRY7ExONu2W7UQB5SHxvFU/TLpnS15UF1+r426KkdPueCqQRdeDc5se8YzVuc
+VadOQGvEaOArxddyyyFSeWL7NFFVLG7ZB9B11hvsx71XGOFMJ3BNBEP8kwrr+thl
+azMw+U0JAu8Hikbd9UoqTl8xoRg3ihKJKmS1ilXPmnsx7ztHx1BhGojMW2bv8S4l
+Lf3VzmI9yGu/AbQ4wCB1WZShVr5nx36TpbZzorg72cBJx7zXjkNFadGpjfdRYnwb
+SXFuwnQIXngaAoRVlFH5MGRcY2klZRHU1DPdnm2FxH1F8DewCK6AfF0aWHGmrXHp
+RgsS7NHpckY8lQ3acKsx53I0B9XV8nYxNhtB291SLwkTP9Y5Je0=
+=n94E
+-----END PGP SIGNATURE-----
+
+--UNXIJuGPFxobgmD3--
