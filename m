@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E8B2FDFE1
+	by mail.lfdr.de (Postfix) with ESMTP id 181742FDFE0
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404860AbhATX41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 18:56:27 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:36556 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730652AbhATVkO (ORCPT
+        id S2436618AbhAUCBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:01:22 -0500
+Received: from brightrain.aerifal.cx ([216.12.86.13]:49870 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392365AbhAUBnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:40:14 -0500
-Received: by mail-ot1-f43.google.com with SMTP id v21so7069524otj.3;
-        Wed, 20 Jan 2021 13:39:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7CQ3HB1nTNFRMwomepbdzCXSM0Vunqc4+WhRW4CgReg=;
-        b=EoVhPifZeKWe9ZHumV2OIz5KoVESejoU8hf/s630VQR9cAlZ2CcUh5TcnHHWbcSzJb
-         hiPOx4Sp6p7tmordMDjiJR62kTniopVmv2R+FXkIlFl4y59Yz/qmZi17CGtd0OzeDkY0
-         dtn7ZMveBksX68tgXN7BdKebwle+qNw9IvYxRbwMa6av0ubqgv/cCRLvCmrXOxEXLqCi
-         t1SMJWUFRwZOyy06UHKV9H1b5PIE5+7F1TvUN/Mw40ojsFhZsN1/K5tF58XbRmfYeEKE
-         UnVawYQQdqGScQ50x4UmlVNleXRRNNRRgwDgpKyllzbFWp5+naj6pXo7bztDdiRM2T6K
-         cHOA==
-X-Gm-Message-State: AOAM5320D4Bhu+dgqMSordN8TzmRmZh8UoZejdmh27FcaUAGc+EWuZHL
-        /BpjiQaL+SaINT2bVD8eSw==
-X-Google-Smtp-Source: ABdhPJzGDS+Z9qNM9dct2YDH/2pXy5NEBm+Yj/vIMrRQLRDGQVMBKKxSHAjSx6WNW2sbX8BiGlOZHw==
-X-Received: by 2002:a05:6830:1e19:: with SMTP id s25mr8204614otr.249.1611178772240;
-        Wed, 20 Jan 2021 13:39:32 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 70sm657133otf.39.2021.01.20.13.39.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:39:30 -0800 (PST)
-Received: (nullmailer pid 880940 invoked by uid 1000);
-        Wed, 20 Jan 2021 21:39:29 -0000
-Date:   Wed, 20 Jan 2021 15:39:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: use always-y instead of extra-y
-Message-ID: <20210120213929.GA875847@robh.at.kernel.org>
-References: <20210120062351.3011786-1-masahiroy@kernel.org>
+        Wed, 20 Jan 2021 20:43:18 -0500
+Date:   Wed, 20 Jan 2021 20:42:23 -0500
+From:   Rich Felker <dalias@libc.org>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Rob Landley <rob@landley.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Pending patches for linux-sh
+Message-ID: <20210121014222.GM23432@brightrain.aerifal.cx>
+References: <133f8171-09ec-39b3-0660-de780cd879d6@physik.fu-berlin.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120062351.3011786-1-masahiroy@kernel.org>
+In-Reply-To: <133f8171-09ec-39b3-0660-de780cd879d6@physik.fu-berlin.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 03:23:51PM +0900, Masahiro Yamada wrote:
-> As commit d0e628cd817f ("kbuild: doc: clarify the difference between
-> extra-y and always-y") explained, extra-y should be used for listing
-> the prerequsites of vmlinux. always-y is a better fix here.
-
-prerequisites
-
-Glad to see this clarified. I think just tried both and picked one.
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Wed, Jan 20, 2021 at 12:32:16PM +0100, John Paul Adrian Glaubitz wrote:
+> Hi Rich!
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+> I have tested or acked the following patches which are fine from my point of view.
 > 
->  Documentation/devicetree/bindings/Makefile |  8 ++++----
->  drivers/gpu/drm/i915/Makefile              |  2 +-
->  scripts/Makefile.lib                       | 10 +++++-----
->  scripts/gdb/linux/Makefile                 |  2 +-
->  4 files changed, 11 insertions(+), 11 deletions(-)
+> "Tested" means I have built and booted a current kernel with the patch in question,
+> "acked" means, I have looked over the patch and consider the changes to be correct
+> in the case where testing was not possible since the changes affect other SH hardware
+> I cannot test at the moment.
+> 
+> Here the list:
+> 
+> - [PATCH] [sh] fix trivial misannotations
+> - https://marc.info/?l=linux-kernel&m=160945707001399&w=2
+> 
+> - [PATCH] sh: check return code of request_irq
+> - https://marc.info/?l=linux-kernel&m=160867050030140&w=2
+> 
+> - [PATCH] sh: boards: Fix the cacography in irq.c
+> - https://marc.info/?l=linux-sh&m=160578410511403&w=2
+> 
+> - [PATCH v1] sh: Drop ARCH_NR_GPIOS definition
+> - https://marc.info/?l=linux-sh&m=160578410511403&w=2
+> 
+> - [PATCH 1/2] sh: boot: add intermediate vmlinux.bin* to targets instead of extra-y
+> - https://marc.info/?l=linux-kernel&m=161088234517301&w=2
+> 
+> - [PATCH 2/2] sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
+> - https://marc.info/?l=linux-kernel&m=161088245817344&w=2
+> 
+> - [PATCH] arch: sh: remove duplicate include
+> - https://marc.info/?l=linux-kernel&m=160488997017438&w=2
+> 
+> - [PATCH] maple: fix wrong return value of maple_bus_init().
+> - https://marc.info/?l=linux-kernel&m=160635878212678&w=2
+> 
+> - [PATCH] sh: kdump: add some attribute to function
+> - https://marc.info/?l=linux-kernel&m=160758311622653&w=2
+> 
+> - [PATCH] sh: kernel: traps: remove unused variable
+> - https://marc.info/?l=linux-kernel&m=160760435528709&w=2
+> 
+> - [PATCH] sh: Remove unused HAVE_COPY_THREAD_TLS macro
+> - https://marc.info/?l=linux-kernel&m=160247465514800&w=2
+> 
+> I will check later whether there are more patches we might have forgotten.
+
+Hi! Thanks for the list. From the names, I think some overlap with the
+pending set in linux-next (ending at a118584e7e60) that I'm about to
+send as a PR.
+
+Rich
