@@ -2,478 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A192FEA26
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 163A32FEA1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731302AbhAUMd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:33:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56730 "EHLO mail.kernel.org"
+        id S1731238AbhAUMbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:31:50 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:56452 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730980AbhAUMaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:30:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A61623A22;
-        Thu, 21 Jan 2021 12:29:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611232170;
-        bh=QCyk29L+/YnC25PEa9uZAFcJZDrkvY6AexHtzQsre5w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kQpbM1QE1NlNqBdwoey5+R0tvBdgWTTH/hmrIaBDRNZQQJfUZrCciIOLRgleJE0oF
-         FhkrSvNAZoBWIacJ4pNh41o1r0cXq//ctSe3sE4fUbvFaIaZgfksRmGBjyquXaai4I
-         J4I95lLrYv6Q4ZOFikH/ATKVWP4dIVXsXqaBo1h3S0viknOVS7L5A981JnGRzmf88e
-         nAq0S0D6LHUEYIB1tIvLClrZIzjJztYBHu3HTWRCQ3nAHo/g/JcfBhvvlZgiKCaI+p
-         qkqNe0gES2UPTFcP0if8H9X9muHYxD3w7dqhMRMCMQW4p0pjYpN8zfJ5s/o949oif9
-         dfgphaoPsyDjw==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH v16 11/11] secretmem: test: add basic selftest for memfd_secret(2)
-Date:   Thu, 21 Jan 2021 14:27:23 +0200
-Message-Id: <20210121122723.3446-12-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210121122723.3446-1-rppt@kernel.org>
-References: <20210121122723.3446-1-rppt@kernel.org>
+        id S1731137AbhAUM3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:29:49 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 04C322018D;
+        Thu, 21 Jan 2021 13:28:59 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FC8YExFQj8NY; Thu, 21 Jan 2021 13:28:58 +0100 (CET)
+Received: from mail-essen-01.secunet.de (unknown [10.53.40.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 0E689200AC;
+        Thu, 21 Jan 2021 13:28:58 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ mail-essen-01.secunet.de (10.53.40.204) with Microsoft SMTP Server (TLS) id
+ 14.3.487.0; Thu, 21 Jan 2021 13:28:57 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Thu, 21 Jan
+ 2021 13:28:57 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 49CFE3181CAC;
+ Thu, 21 Jan 2021 13:28:57 +0100 (CET)
+Date:   Thu, 21 Jan 2021 13:28:57 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Dongseok Yi <dseok.yi@samsung.com>
+CC:     "'David S. Miller'" <davem@davemloft.net>,
+        'Alexander Lobakin' <alobakin@pm.me>,
+        <namkyu78.kim@samsung.com>, 'Jakub Kicinski' <kuba@kernel.org>,
+        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
+        "'Willem de Bruijn'" <willemb@google.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
+ GRO fraglist
+Message-ID: <20210121122857.GS3576117@gauss3.secunet.de>
+References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
+ <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
+ <20210118132736.GM3576117@gauss3.secunet.de>
+ <012d01d6eef9$45516d40$cff447c0$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <012d01d6eef9$45516d40$cff447c0$@samsung.com>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Jan 20, 2021 at 03:55:42PM +0900, Dongseok Yi wrote:
+> On 2021-01-18 22:27, Steffen Klassert wrote:
+> > On Fri, Jan 15, 2021 at 10:20:35PM +0900, Dongseok Yi wrote:
+> > > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+> > > forwarding. Only the header of head_skb from ip_finish_output_gso ->
+> > > skb_gso_segment is updated but following frag_skbs are not updated.
+> > >
+> > > A call path skb_mac_gso_segment -> inet_gso_segment ->
+> > > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+> > > does not try to update UDP/IP header of the segment list but copy
+> > > only the MAC header.
+> > >
+> > > Update dport, daddr and checksums of each skb of the segment list
+> > > in __udp_gso_segment_list. It covers both SNAT and DNAT.
+> > >
+> > > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+> > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > > ---
+> > > v1:
+> > > Steffen Klassert said, there could be 2 options.
+> > > https://lore.kernel.org/patchwork/patch/1362257/
+> > > I was trying to write a quick fix, but it was not easy to forward
+> > > segmented list. Currently, assuming DNAT only.
+> > >
+> > > v2:
+> > > Per Steffen Klassert request, move the procedure from
+> > > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
+> > >
+> > > To Alexander Lobakin, I've checked your email late. Just use this
+> > > patch as a reference. It support SNAT too, but does not support IPv6
+> > > yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
+> > > to the file is in IPv4 directory.
+> > >
+> > >  include/net/udp.h      |  2 +-
+> > >  net/ipv4/udp_offload.c | 62 ++++++++++++++++++++++++++++++++++++++++++++++----
+> > >  net/ipv6/udp_offload.c |  2 +-
+> > >  3 files changed, 59 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/include/net/udp.h b/include/net/udp.h
+> > > index 877832b..01351ba 100644
+> > > --- a/include/net/udp.h
+> > > +++ b/include/net/udp.h
+> > > @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
+> > >  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
+> > >
+> > >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> > > -				  netdev_features_t features);
+> > > +				  netdev_features_t features, bool is_ipv6);
+> > >
+> > >  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
+> > >  {
+> > > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > > index ff39e94..c532d3b 100644
+> > > --- a/net/ipv4/udp_offload.c
+> > > +++ b/net/ipv4/udp_offload.c
+> > > @@ -187,8 +187,57 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
+> > >  }
+> > >  EXPORT_SYMBOL(skb_udp_tunnel_segment);
+> > >
+> > > +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
+> > > +				     __be32 *oldip, __be32 *newip,
+> > > +				     __be16 *oldport, __be16 *newport)
+> > > +{
+> > > +	struct udphdr *uh = udp_hdr(seg);
+> > > +	struct iphdr *iph = ip_hdr(seg);
+> > > +
+> > > +	if (uh->check) {
+> > > +		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
+> > > +					 true);
+> > > +		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
+> > > +					 false);
+> > > +		if (!uh->check)
+> > > +			uh->check = CSUM_MANGLED_0;
+> > > +	}
+> > > +	uh->dest = *newport;
+> > > +
+> > > +	csum_replace4(&iph->check, *oldip, *newip);
+> > > +	iph->daddr = *newip;
+> > > +}
+> > 
+> > Can't we just do the checksum recalculation for this case as it is done
+> > with standard GRO?
+> 
+> If I understand standard GRO correctly, it calculates full checksum.
+> Should we adopt the same method to UDP GRO fraglist? I did not find
+> a simple method for the incremental checksum update.
+> 
+> > 
+> > > +
+> > > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
+> > > +{
+> > > +	struct sk_buff *seg;
+> > > +	struct udphdr *uh, *uh2;
+> > > +	struct iphdr *iph, *iph2;
+> > > +
+> > > +	seg = segs;
+> > > +	uh = udp_hdr(seg);
+> > > +	iph = ip_hdr(seg);
+> > > +
+> > > +	while ((seg = seg->next)) {
+> > > +		uh2 = udp_hdr(seg);
+> > > +		iph2 = ip_hdr(seg);
+> > > +
+> > > +		if (uh->source != uh2->source || iph->saddr != iph2->saddr)
+> > > +			__udpv4_gso_segment_csum(seg,
+> > > +						 &iph2->saddr, &iph->saddr,
+> > > +						 &uh2->source, &uh->source);
+> > > +
+> > > +		if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
+> > > +			__udpv4_gso_segment_csum(seg,
+> > > +						 &iph2->daddr, &iph->daddr,
+> > > +						 &uh2->dest, &uh->dest);
+> > > +	}
 
-The test verifies that file descriptor created with memfd_secret does
-not allow read/write operations, that secret memory mappings respect
-RLIMIT_MEMLOCK and that remote accesses with process_vm_read() and
-ptrace() to the secret memory fail.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Elena Reshetova <elena.reshetova@intel.com>
-Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James Bottomley <jejb@linux.ibm.com>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tycho Andersen <tycho@tycho.ws>
-Cc: Will Deacon <will@kernel.org>
----
- tools/testing/selftests/vm/.gitignore     |   1 +
- tools/testing/selftests/vm/Makefile       |   3 +-
- tools/testing/selftests/vm/memfd_secret.c | 296 ++++++++++++++++++++++
- tools/testing/selftests/vm/run_vmtests    |  17 ++
- 4 files changed, 316 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/vm/memfd_secret.c
+> > 
+> > You don't need to check the addresses and ports of all packets in the
+> > segment list. If the addresses and ports are equal for the first and
+> > second packet in the list, then this also holds for the rest of the
+> > packets.
+> 
+> I think we can try this with an additional flag (seg_csum).
+> 
+> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> index 36b7e30..3f892df 100644
+> --- a/net/ipv4/udp_offload.c
+> +++ b/net/ipv4/udp_offload.c
+> @@ -213,25 +213,36 @@ static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
+>         struct sk_buff *seg;
+>         struct udphdr *uh, *uh2;
+>         struct iphdr *iph, *iph2;
+> +       bool seg_csum = false;
+> 
+>         seg = segs;
+>         uh = udp_hdr(seg);
+>         iph = ip_hdr(seg);
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index 9a35c3f6a557..c8deddc81e7a 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -21,4 +21,5 @@ va_128TBswitch
- map_fixed_noreplace
- write_to_hugetlbfs
- hmm-tests
-+memfd_secret
- local_config.*
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index d42115e4284d..0200fb61646c 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -34,6 +34,7 @@ TEST_GEN_FILES += khugepaged
- TEST_GEN_FILES += map_fixed_noreplace
- TEST_GEN_FILES += map_hugetlb
- TEST_GEN_FILES += map_populate
-+TEST_GEN_FILES += memfd_secret
- TEST_GEN_FILES += mlock-random-test
- TEST_GEN_FILES += mlock2-tests
- TEST_GEN_FILES += mremap_dontunmap
-@@ -133,7 +134,7 @@ warn_32bit_failure:
- endif
- endif
- 
--$(OUTPUT)/mlock-random-test: LDLIBS += -lcap
-+$(OUTPUT)/mlock-random-test $(OUTPUT)/memfd_secret: LDLIBS += -lcap
- 
- $(OUTPUT)/gup_test: ../../../../mm/gup_test.h
- 
-diff --git a/tools/testing/selftests/vm/memfd_secret.c b/tools/testing/selftests/vm/memfd_secret.c
-new file mode 100644
-index 000000000000..c878c2b841fc
---- /dev/null
-+++ b/tools/testing/selftests/vm/memfd_secret.c
-@@ -0,0 +1,296 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright IBM Corporation, 2020
-+ *
-+ * Author: Mike Rapoport <rppt@linux.ibm.com>
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/uio.h>
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/ptrace.h>
-+#include <sys/syscall.h>
-+#include <sys/resource.h>
-+#include <sys/capability.h>
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdio.h>
-+
-+#include "../kselftest.h"
-+
-+#define fail(fmt, ...) ksft_test_result_fail(fmt, ##__VA_ARGS__)
-+#define pass(fmt, ...) ksft_test_result_pass(fmt, ##__VA_ARGS__)
-+#define skip(fmt, ...) ksft_test_result_skip(fmt, ##__VA_ARGS__)
-+
-+#ifdef __NR_memfd_secret
-+
-+#define PATTERN	0x55
-+
-+static const int prot = PROT_READ | PROT_WRITE;
-+static const int mode = MAP_SHARED;
-+
-+static unsigned long page_size;
-+static unsigned long mlock_limit_cur;
-+static unsigned long mlock_limit_max;
-+
-+static int memfd_secret(unsigned long flags)
-+{
-+	return syscall(__NR_memfd_secret, flags);
-+}
-+
-+static void test_file_apis(int fd)
-+{
-+	char buf[64];
-+
-+	if ((read(fd, buf, sizeof(buf)) >= 0) ||
-+	    (write(fd, buf, sizeof(buf)) >= 0) ||
-+	    (pread(fd, buf, sizeof(buf), 0) >= 0) ||
-+	    (pwrite(fd, buf, sizeof(buf), 0) >= 0))
-+		fail("unexpected file IO\n");
-+	else
-+		pass("file IO is blocked as expected\n");
-+}
-+
-+static void test_mlock_limit(int fd)
-+{
-+	size_t len;
-+	char *mem;
-+
-+	len = mlock_limit_cur;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("unable to mmap secret memory\n");
-+		return;
-+	}
-+	munmap(mem, len);
-+
-+	len = mlock_limit_max * 2;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem != MAP_FAILED) {
-+		fail("unexpected mlock limit violation\n");
-+		munmap(mem, len);
-+		return;
-+	}
-+
-+	pass("mlock limit is respected\n");
-+}
-+
-+static void try_process_vm_read(int fd, int pipefd[2])
-+{
-+	struct iovec liov, riov;
-+	char buf[64];
-+	char *mem;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		exit(KSFT_FAIL);
-+	}
-+
-+	liov.iov_len = riov.iov_len = sizeof(buf);
-+	liov.iov_base = buf;
-+	riov.iov_base = mem;
-+
-+	if (process_vm_readv(getppid(), &liov, 1, &riov, 1, 0) < 0) {
-+		if (errno == ENOSYS)
-+			exit(KSFT_SKIP);
-+		exit(KSFT_PASS);
-+	}
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void try_ptrace(int fd, int pipefd[2])
-+{
-+	pid_t ppid = getppid();
-+	int status;
-+	char *mem;
-+	long ret;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		perror("pipe write");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = ptrace(PTRACE_ATTACH, ppid, 0, 0);
-+	if (ret) {
-+		perror("ptrace_attach");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = waitpid(ppid, &status, WUNTRACED);
-+	if ((ret != ppid) || !(WIFSTOPPED(status))) {
-+		fprintf(stderr, "weird waitppid result %ld stat %x\n",
-+			ret, status);
-+		exit(KSFT_FAIL);
-+	}
-+
-+	if (ptrace(PTRACE_PEEKDATA, ppid, mem, 0))
-+		exit(KSFT_PASS);
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void check_child_status(pid_t pid, const char *name)
-+{
-+	int status;
-+
-+	waitpid(pid, &status, 0);
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == KSFT_SKIP) {
-+		skip("%s is not supported\n", name);
-+		return;
-+	}
-+
-+	if ((WIFEXITED(status) && WEXITSTATUS(status) == KSFT_PASS) ||
-+	    WIFSIGNALED(status)) {
-+		pass("%s is blocked as expected\n", name);
-+		return;
-+	}
-+
-+	fail("%s: unexpected memory access\n", name);
-+}
-+
-+static void test_remote_access(int fd, const char *name,
-+			       void (*func)(int fd, int pipefd[2]))
-+{
-+	int pipefd[2];
-+	pid_t pid;
-+	char *mem;
-+
-+	if (pipe(pipefd)) {
-+		fail("pipe failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	pid = fork();
-+	if (pid < 0) {
-+		fail("fork failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	if (pid == 0) {
-+		func(fd, pipefd);
-+		return;
-+	}
-+
-+	mem = mmap(NULL, page_size, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("Unable to mmap secret memory\n");
-+		return;
-+	}
-+
-+	ftruncate(fd, page_size);
-+	memset(mem, PATTERN, page_size);
-+
-+	if (write(pipefd[1], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	check_child_status(pid, name);
-+}
-+
-+static void test_process_vm_read(int fd)
-+{
-+	test_remote_access(fd, "process_vm_read", try_process_vm_read);
-+}
-+
-+static void test_ptrace(int fd)
-+{
-+	test_remote_access(fd, "ptrace", try_ptrace);
-+}
-+
-+static int set_cap_limits(rlim_t max)
-+{
-+	struct rlimit new;
-+	cap_t cap = cap_init();
-+
-+	new.rlim_cur = max;
-+	new.rlim_max = max;
-+	if (setrlimit(RLIMIT_MEMLOCK, &new)) {
-+		perror("setrlimit() returns error");
-+		return -1;
-+	}
-+
-+	/* drop capabilities including CAP_IPC_LOCK */
-+	if (cap_set_proc(cap)) {
-+		perror("cap_set_proc() returns error");
-+		return -2;
-+	}
-+
-+	return 0;
-+}
-+
-+static void prepare(void)
-+{
-+	struct rlimit rlim;
-+
-+	page_size = sysconf(_SC_PAGE_SIZE);
-+	if (!page_size)
-+		ksft_exit_fail_msg("Failed to get page size %s\n",
-+				   strerror(errno));
-+
-+	if (getrlimit(RLIMIT_MEMLOCK, &rlim))
-+		ksft_exit_fail_msg("Unable to detect mlock limit: %s\n",
-+				   strerror(errno));
-+
-+	mlock_limit_cur = rlim.rlim_cur;
-+	mlock_limit_max = rlim.rlim_max;
-+
-+	printf("page_size: %ld, mlock.soft: %ld, mlock.hard: %ld\n",
-+	       page_size, mlock_limit_cur, mlock_limit_max);
-+
-+	if (page_size > mlock_limit_cur)
-+		mlock_limit_cur = page_size;
-+	if (page_size > mlock_limit_max)
-+		mlock_limit_max = page_size;
-+
-+	if (set_cap_limits(mlock_limit_max))
-+		ksft_exit_fail_msg("Unable to set mlock limit: %s\n",
-+				   strerror(errno));
-+}
-+
-+#define NUM_TESTS 4
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd;
-+
-+	prepare();
-+
-+	ksft_print_header();
-+	ksft_set_plan(NUM_TESTS);
-+
-+	fd = memfd_secret(0);
-+	if (fd < 0) {
-+		if (errno == ENOSYS)
-+			ksft_exit_skip("memfd_secret is not supported\n");
-+		else
-+			ksft_exit_fail_msg("memfd_secret failed: %s\n",
-+					   strerror(errno));
-+	}
-+
-+	test_mlock_limit(fd);
-+	test_file_apis(fd);
-+	test_process_vm_read(fd);
-+	test_ptrace(fd);
-+
-+	close(fd);
-+
-+	ksft_exit(!ksft_get_fail_cnt());
-+}
-+
-+#else /* __NR_memfd_secret */
-+
-+int main(int argc, char *argv[])
-+{
-+	printf("skip: skipping memfd_secret test (missing __NR_memfd_secret)\n");
-+	return KSFT_SKIP;
-+}
-+
-+#endif /* __NR_memfd_secret */
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftests/vm/run_vmtests
-index e953f3cd9664..95a67382f132 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -346,4 +346,21 @@ else
- 	exitcode=1
- fi
- 
-+echo "running memfd_secret test"
-+echo "------------------------------------"
-+./memfd_secret
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	echo "[SKIP]"
-+	exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
-+exit $exitcode
-+
- exit $exitcode
--- 
-2.28.0
+Why not
 
+       if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
+           (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
+           (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
+           (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
+	   	return segs;
+
+Then you don't need to test inside the loop. Just update all
+packets if there is a header mismatch.
+
+> 
+> -       while ((seg = seg->next)) {
+> +       seg = seg->next;
+> +       do {
+> +               if (!seg)
+> +                       break;
+> +
+>                 uh2 = udp_hdr(seg);
+>                 iph2 = ip_hdr(seg);
+> 
+> -               if (uh->source != uh2->source || iph->saddr != iph2->saddr)
+> +               if (uh->source != uh2->source || iph->saddr != iph2->saddr) {
+>                         __udpv4_gso_segment_csum(seg,
+>                                                  &iph2->saddr, &iph->saddr,
+>                                                  &uh2->source, &uh->source);
+> +                       seg_csum = true;
+> +               }
+> 
+> -               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
+> +               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr) {
+>                         __udpv4_gso_segment_csum(seg,
+>                                                  &iph2->daddr, &iph->daddr,
+>                                                  &uh2->dest, &uh->dest);
+> -       }
+> +                       seg_csum = true;
+> +               }
+> +
+> +               seg = seg->next;
+> +       } while (seg_csum);
+> 
+>         return segs;
+>  }
