@@ -2,247 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB8C2FE333
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC66F2FE2F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbhAUGrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:47:16 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:38066 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbhAUGq4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:46:56 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L6fPsv127833;
-        Thu, 21 Jan 2021 06:46:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=seQuyGYo9v2lH1z0iBy3n60lw8YL3g3G68Vu2n7+Hyw=;
- b=palL15T3H+fNI1xmekxgngojpb5Z645duxGw706fOh6iDdxPaj3PnYKQCaqVhpOav8WX
- Tm5oMg215PIbGmy3DGyfrCUhYaKS6sWvGyrKNXu+/uPvIEQCdDc7rD/0ZO+xm7hexDwk
- LOA8Wow4WyWzgpcg3PYwat/JVGsGt8veIfYyOqAhFY+2B1fPJPe6WYqmouwjKHPjRonh
- dk2SdLAtIsKi0CwBDFwQvMoSaHV/8f29l1nSA7BasreLOjd103k9tG5u1xyRMhtV7LFc
- brJ1FzopWO7yfmOTXW8VMnyNLmyIYguUyfNUWvrKjo8bHO+3jZwMVz/eo8xb9FdjUGCg rQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 3668qrduqk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 06:46:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L6TrNI171311;
-        Thu, 21 Jan 2021 06:44:08 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3668rf71gr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 06:44:08 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10L6i74d014380;
-        Thu, 21 Jan 2021 06:44:07 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 20 Jan 2021 22:44:06 -0800
-Date:   Thu, 21 Jan 2021 09:44:00 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Antoine Jacquet <royale@zerezo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] media: zr364xx: fix memory leaks in probe()
-Message-ID: <YAkisFB1Ly0e2pPe@mwanda>
+        id S1727036AbhAUGfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:35:17 -0500
+Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:9664
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727102AbhAUGcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:32:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LsUVHFLnnMn1ydQLlV/4LrVfsKTqe5tuQPDbco2MX8/6l5SStbESkZZE2pnkRss0B60r02uBOV06UJDuARFOhvcn2MNYK6cBCbemqSTh19NHzCPNDGHAQzU3oqncF4EcAc/lm1l7gdwp+IYBPSoOYObCuVBLp2weziEa5d4RhSo7dVNX3SGVyY99TIobhhoajP81hZKnSuRzhtWS/lQh6Z1+Hs1OHD6hHkN87LbsdJtBrS1p/Qo9gT48bPu6jNB4lcs86Xd2NksDJErR3YL21QyuWnkiaOM4XpCTiN6qAk4kbclSDlFkpgB661nEi0VaUmsYlUPVAeZG2KD+x3/7Dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r9TGsCPBLgSvGknUGTaA1ZQbCBgPuOSKLCcLa6W7mEE=;
+ b=Domj2HM3zW6jDsmJKWarnNg02CbjwZ+T/pTN7yK8CzdG5qZW03/n4jjTyIYaPLlscaFqUEFwFVRxFT9ZFiWZwjjVueZJLFLPU2YMIFj0wecTH0Fu0hAn9JIU/xzmit//GuSZ1m1vcaTc/T/jo8B8rNdTC2lj2zsywmTIaNpnWRSV97+NMUTpeV8fmFRv0/BEYs45pY7yfUjNTNbHRKEVBZlKPjImNdnVtFihmgusV5z0WfeIfYYYhCvpZklRgznMK7FHQR6jw/y6OulgcpKFSboR3JHvihYFgAPTF5WuGJDkm6Ztcxz78qpijMREAdujYG0DrGDp9wYhagQh7DLxNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r9TGsCPBLgSvGknUGTaA1ZQbCBgPuOSKLCcLa6W7mEE=;
+ b=b+3uZXYMVQKbASwjjgjrwmQnrEI6yTu77/Oa757voRJsmwm7jgvD1rPBAJg21ExIzpPwHKoHeh6wTikLOnj1UemkAxnQ68c2zG73JLGZndzusHUobYDFN4r2h5FMP94JLdGely8epAuSpdqisN+2DT1ZgCtYn+LOWHm8oX1XMxU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by SJ0PR11MB5008.namprd11.prod.outlook.com (2603:10b6:a03:2d5::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Thu, 21 Jan
+ 2021 06:32:02 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3763.014; Thu, 21 Jan 2021
+ 06:32:02 +0000
+From:   qiang.zhang@windriver.com
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+Date:   Thu, 21 Jan 2021 14:49:49 +0800
+Message-Id: <20210121064949.16164-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR03CA0101.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::17) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <196887f5-677f-0aeb-5f5c-fb4a918d6128@xs4all.nl>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101210033
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
- suspectscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101210033
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK0PR03CA0101.apcprd03.prod.outlook.com (2603:1096:203:b0::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Thu, 21 Jan 2021 06:32:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 54f68f6f-6119-40dc-68c2-08d8bdd642f4
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB5008:
+X-Microsoft-Antispam-PRVS: <SJ0PR11MB50088552310C2DE0442BBEE2FFA10@SJ0PR11MB5008.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:126;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TjdvbGQ8UTu902FhdGDMZn+VmP7tYJQGMyTYxd6GnprXoXZM+IwR/sQoZoDrd04wf1TOFPjzk/fr78lxJeI+Hy2kmeYvWu3p6NmCOZV69MhstiDrIJovODRUj6NDLJGbNtoICdBbaC+xCShiC5PGz9SNi8NJxnmHB0zfzvu3/4J7VSGJwroa+7HJR0C33JOK+1ESjZRMGbwZ8hQhm/teYKrj9WscsFT6VfgTgIqlPMfURJ9cNQ583lR5EAlr7Cl7imUzjUlFNNRxx1/mxYKuCTU9/JiEYBkjiB8PdzwQY70L54xfWGG4kZ9vkvy9MUuk1hGDBWigLP0AficBHgSxaE/qqsgpWbpZRoXf+Uoc/dtFLvpQEKHPqAWQCRYBfo4e
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39850400004)(366004)(376002)(5660300002)(26005)(8676002)(83380400001)(956004)(16526019)(478600001)(186003)(6916009)(2906002)(36756003)(4326008)(66476007)(66556008)(2616005)(9686003)(8936002)(6486002)(6512007)(52116002)(1076003)(6506007)(6666004)(66946007)(66574015)(86362001)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UjotW8rCF1CN2dyT6VYI5ioa7ZNDBV1LPwI2p4qi7jgHneTHzIThQlqKnTkf?=
+ =?us-ascii?Q?qyfnSmLP/c7VYUW13pWEuhy3P44YUddWBF/Ae+E+/ylXEbOYlW1SHVL31S5y?=
+ =?us-ascii?Q?nuZijloEcImtsE7Rfem4KpIpWm0dn9ZYGHDNn2wiv4HSwXtQ6p5osLmUM8fH?=
+ =?us-ascii?Q?jRJ9ydoH1n/q+VY66CDPY0bEB4UYYLz+dP6wh78mlz/SVO08epi9sXyFPCV4?=
+ =?us-ascii?Q?77lZktRSrdAO9AXei1mb84GucVCnbBdRD4xarkAEkxX8KTgRdA9/EX4Aynhe?=
+ =?us-ascii?Q?FfyNT05vrevDOsRRFW5T0YuUuy5K4gLR1HfCW2hf3Tvg13rT9mMbScA/dRAx?=
+ =?us-ascii?Q?MFsyjhxqRCD/+sDCCRunZVwMXcqIAT05uECe+htulZKohS5ormlVAdB6Aajb?=
+ =?us-ascii?Q?krFXOsXc2Q65TrMgtBiXU7ug3ARUtSB7cQJVbNaXTHDyOhA1rV1SfvR60Cm4?=
+ =?us-ascii?Q?kIOd9rQNdDSMsTxx9JL1X7romJXuWq41lV4vRFsZ3vX5qDKCmE1+msWIVzPa?=
+ =?us-ascii?Q?6jBqGuR5ltrTTAV5ViyB9G/PnOCRmju7u7OsFi3Of9WNQ89GvEKJlN3yUsKu?=
+ =?us-ascii?Q?srD2Ccy1SEooXiD/9ohPXohAJ2XK7ItjK1UvCNhtqe9UtHac5NW3miMtTWo9?=
+ =?us-ascii?Q?H36hOsp2hSmaNovBSSWbFQnh/J5ZKNKaAzPxsGq9NDVWQUXKSDKnD3wkulXP?=
+ =?us-ascii?Q?ccIB5xwPkcPvZmrfrv3G3kDCvQqT2SeFlQTD/Z5YV/TSLwPivD2BqAJaa18W?=
+ =?us-ascii?Q?Gwc66NhjCRAihPV1GwUdFEoJHeXi9JhMxr2NItgYxV9buVNwN+hb7ARXZ8/Q?=
+ =?us-ascii?Q?uv/b0Rolt7sIYKKe7zLMfou9vhaund1JSGCJmXd+blHA5xum8ZCXp2gYTHoN?=
+ =?us-ascii?Q?UeCKYRVl/H0hCmHDhoh/gxZVwU7F4c267pCkeNU/ShHL3UDKQDUNcI3v50i0?=
+ =?us-ascii?Q?SQ5et5N7wXlGBoWLkAqpzocLPOxLMeggSpwIj+5NrOI=3D?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54f68f6f-6119-40dc-68c2-08d8bdd642f4
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 06:32:02.2986
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Li0rpPw+wj3FXw92blLnea4zWZdmmFy2bsK/3xxv0n92Vcpc1VKWnoNNZ6f0o2+Kn7QVPkX2z0USCTjCFm4n/TAdh857ljILGxcCvny4C/4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5008
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot discovered that the probe error handling doesn't clean up the
-resources allocated in zr364xx_board_init().  There are several
-related bugs in this code so I have re-written the error handling.
+From: Zqiang <qiang.zhang@windriver.com>
 
-1)  Introduce a new function zr364xx_board_uninit() which cleans up
-    the resources in zr364xx_board_init().
-2)  In zr364xx_board_init() if the call to zr364xx_start_readpipe()
-    fails then release the "cam->buffer.frame[i].lpvbits" memory
-    before returning.  This way every function either allocates
-    everything successfully or it cleans up after itself.
-3)  Re-write the probe function so that each failure path goto frees
-    the most recent allocation.  That way we don't free anything
-    before it has been allocated and we can also verify that
-    everything is freed.
-4)  Originally, in the probe function the "cam->v4l2_dev.release"
-    pointer was set to "zr364xx_release" near the start but I moved
-    that assignment to the end, after everything had succeeded.  The
-    release function was never actually called during the probe cleanup
-    process, but with this change I wanted to make it clear that we
-    don't want to call zr364xx_release() until everything is
-    allocated successfully.
+If CPUs go offline, the corresponding krcp's page cache can
+not be use util the CPU come back online, or maybe the CPU
+will never go online again, this commit therefore free krcp's
+page cache when CPUs go offline.
 
-Next I re-wrote the zr364xx_release() function.  Ideally this would
-have been a simple matter of copy and pasting the cleanup code from
-probe and adding an additional call to video_unregister_device().  But
-there are a couple quirks to note.
-
-1)  The probe function does not call videobuf_mmap_free() and I don't
-    know where the videobuf_mmap is allocated.  I left the code as-is to
-    avoid introducing a bug in code I don't understand.
-2)  The zr364xx_board_uninit() has a call to zr364xx_stop_readpipe()
-    which is a change from the original behavior with regards to
-    unloading the driver.  Calling zr364xx_stop_readpipe() on a stopped
-    pipe is not a problem so this is safe and is potentially a bugfix.
-
-Reported-by: syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 ---
-v2: The first version introduced a double call of video_unregister_device()
-    in the unload path.
+ kernel/rcu/tree.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 1 deletion(-)
 
- drivers/media/usb/zr364xx/zr364xx.c | 49 ++++++++++++++++++-----------
- 1 file changed, 31 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
-index 1e1c6b4d1874..d29b861367ea 100644
---- a/drivers/media/usb/zr364xx/zr364xx.c
-+++ b/drivers/media/usb/zr364xx/zr364xx.c
-@@ -1181,15 +1181,11 @@ static int zr364xx_open(struct file *file)
- 	return err;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e04e336bee42..2eaf6f287483 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -158,6 +158,9 @@ static void sync_sched_exp_online_cleanup(int cpu);
+ static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+ 
++static void krc_offline(unsigned int cpu, bool off);
++static void free_krc_page_cache(int cpu);
++
+ /* rcuc/rcub kthread realtime priority */
+ static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+ module_param(kthread_prio, int, 0444);
+@@ -2457,6 +2460,9 @@ int rcutree_dead_cpu(unsigned int cpu)
+ 
+ 	// Stop-machine done, so allow nohz_full to disable tick.
+ 	tick_dep_clear(TICK_DEP_BIT_RCU);
++
++	krc_offline(cpu, true);
++	free_krc_page_cache(cpu);
+ 	return 0;
  }
  
--static void zr364xx_release(struct v4l2_device *v4l2_dev)
-+static void zr364xx_board_uninit(struct zr364xx_camera *cam)
+@@ -3169,6 +3175,7 @@ struct kfree_rcu_cpu {
+ 
+ 	struct llist_head bkvcache;
+ 	int nr_bkv_objs;
++	bool offline;
+ };
+ 
+ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+@@ -3220,6 +3227,8 @@ static inline bool
+ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+ 	struct kvfree_rcu_bulk_data *bnode)
  {
--	struct zr364xx_camera *cam =
--		container_of(v4l2_dev, struct zr364xx_camera, v4l2_dev);
- 	unsigned long i;
++	if (krcp->offline)
++		return false;
+ 	// Check the limit.
+ 	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+ 		return false;
+@@ -3230,6 +3239,39 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
  
--	v4l2_device_unregister(&cam->v4l2_dev);
--
--	videobuf_mmap_free(&cam->vb_vidq);
-+	zr364xx_stop_readpipe(cam);
+ }
  
- 	/* release sys buffers */
- 	for (i = 0; i < FRAMES; i++) {
-@@ -1200,9 +1196,19 @@ static void zr364xx_release(struct v4l2_device *v4l2_dev)
- 		cam->buffer.frame[i].lpvbits = NULL;
- 	}
- 
--	v4l2_ctrl_handler_free(&cam->ctrl_handler);
- 	/* release transfer buffer */
- 	kfree(cam->pipe->transfer_buffer);
++static void krc_offline(unsigned int cpu, bool off)
++{
++	unsigned long flags;
++	struct kfree_rcu_cpu *krcp;
++
++	krcp = per_cpu_ptr(&krc, cpu);
++	raw_spin_lock_irqsave(&krcp->lock, flags);
++	if (off)
++		krcp->offline = true;
++	else
++		krcp->offline = false;
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
 +}
 +
-+static void zr364xx_release(struct v4l2_device *v4l2_dev)
++static void free_krc_page_cache(int cpu)
 +{
-+	struct zr364xx_camera *cam =
-+		container_of(v4l2_dev, struct zr364xx_camera, v4l2_dev);
++	unsigned long flags;
++	struct kfree_rcu_cpu *krcp;
++	int i;
++	struct kvfree_rcu_bulk_data *bnode;
 +
-+	videobuf_mmap_free(&cam->vb_vidq);
-+	v4l2_ctrl_handler_free(&cam->ctrl_handler);
-+	zr364xx_board_uninit(cam);
-+	v4l2_device_unregister(&cam->v4l2_dev);
- 	kfree(cam);
++	krcp = per_cpu_ptr(&krc, cpu);
++
++	for (i = 0; i < rcu_min_cached_objs; i++) {
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		bnode = get_cached_bnode(krcp);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		if (!bnode)
++			break;
++		free_page((unsigned long)bnode);
++	}
++}
++
+ /*
+  * This function is invoked in workqueue context after a grace period.
+  * It frees all the objects queued on ->bhead_free or ->head_free.
+@@ -3549,7 +3591,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	kasan_record_aux_stack(ptr);
+ 	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+ 	if (!success) {
+-		run_page_cache_worker(krcp);
++		if (!krcp->offline)
++			run_page_cache_worker(krcp);
+ 
+ 		if (head == NULL)
+ 			// Inline if kvfree_rcu(one_arg) call.
+@@ -4086,6 +4129,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	rcu_spawn_cpu_nocb_kthread(cpu);
+ 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
+ 
++	krc_offline(cpu, false);
+ 	return 0;
  }
  
-@@ -1376,11 +1382,14 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
- 	/* start read pipe */
- 	err = zr364xx_start_readpipe(cam);
- 	if (err)
--		goto err_free;
-+		goto err_free_frames;
- 
- 	DBG(": board initialized\n");
- 	return 0;
- 
-+err_free_frames:
-+	for (i = 0; i < FRAMES; i++)
-+		vfree(cam->buffer.frame[i].lpvbits);
- err_free:
- 	kfree(cam->pipe->transfer_buffer);
- 	cam->pipe->transfer_buffer = NULL;
-@@ -1409,12 +1418,10 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (!cam)
- 		return -ENOMEM;
- 
--	cam->v4l2_dev.release = zr364xx_release;
- 	err = v4l2_device_register(&intf->dev, &cam->v4l2_dev);
- 	if (err < 0) {
- 		dev_err(&udev->dev, "couldn't register v4l2_device\n");
--		kfree(cam);
--		return err;
-+		goto free_cam;
+@@ -4591,6 +4635,7 @@ static void __init kfree_rcu_batch_init(void)
+ 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+ 		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
+ 		krcp->initialized = true;
++		krcp->offline = true;
  	}
- 	hdl = &cam->ctrl_handler;
- 	v4l2_ctrl_handler_init(hdl, 1);
-@@ -1423,7 +1430,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (hdl->error) {
- 		err = hdl->error;
- 		dev_err(&udev->dev, "couldn't register control\n");
--		goto fail;
-+		goto unregister;
- 	}
- 	/* save the init method used by this camera */
- 	cam->method = id->driver_info;
-@@ -1496,7 +1503,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (!cam->read_endpoint) {
- 		err = -ENOMEM;
- 		dev_err(&intf->dev, "Could not find bulk-in endpoint\n");
--		goto fail;
-+		goto unregister;
- 	}
- 
- 	/* v4l */
-@@ -1507,10 +1514,11 @@ static int zr364xx_probe(struct usb_interface *intf,
- 
- 	/* load zr364xx board specific */
- 	err = zr364xx_board_init(cam);
--	if (!err)
--		err = v4l2_ctrl_handler_setup(hdl);
- 	if (err)
--		goto fail;
-+		goto unregister;
-+	err = v4l2_ctrl_handler_setup(hdl);
-+	if (err)
-+		goto board_uninit;
- 
- 	spin_lock_init(&cam->slock);
- 
-@@ -1525,16 +1533,21 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	err = video_register_device(&cam->vdev, VFL_TYPE_VIDEO, -1);
- 	if (err) {
- 		dev_err(&udev->dev, "video_register_device failed\n");
--		goto fail;
-+		goto free_handler;
- 	}
-+	cam->v4l2_dev.release = zr364xx_release;
- 
- 	dev_info(&udev->dev, DRIVER_DESC " controlling device %s\n",
- 		 video_device_node_name(&cam->vdev));
- 	return 0;
- 
--fail:
-+free_handler:
- 	v4l2_ctrl_handler_free(hdl);
-+board_uninit:
-+	zr364xx_board_uninit(cam);
-+unregister:
- 	v4l2_device_unregister(&cam->v4l2_dev);
-+free_cam:
- 	kfree(cam);
- 	return err;
- }
+ 	if (register_shrinker(&kfree_rcu_shrinker))
+ 		pr_err("Failed to register kfree_rcu() shrinker!\n");
 -- 
 2.29.2
 
