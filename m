@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7439D2FF3A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520912FF357
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbhAUSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S1727305AbhAUSkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:40:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727552AbhAUS0A (ORCPT
+        with ESMTP id S1727651AbhAUS0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:26:00 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EBEC0617A9;
-        Thu, 21 Jan 2021 10:23:33 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id q8so3856975lfm.10;
-        Thu, 21 Jan 2021 10:23:33 -0800 (PST)
+        Thu, 21 Jan 2021 13:26:35 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88776C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:25:40 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id o17so3904481lfg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:25:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Vf+9cpXQr7hrQ9itCdssJG4n/IaJKoI9Dc3YxNuM01M=;
-        b=o5Ye9gMF72fWHRBui21mTmICrBvCc5m9GXhaKHXa0eQguL40is2zgkaqEQlMynGhPo
-         nitqtjR+M5tfz6nEmb80NB+iKhoetuV5eHQ7Z7I5Y0GMS6tLIS9Zi5074V7Mt6Lktss9
-         SltRsP0fWngxdEwwUzAH2D+ADfv9QQZxU/4ntlaRz6iLMNxwpBi5NXm78A8ZkjAVkrhb
-         xsDyCMT4yo0zYf193olm5DkQ4sikcJ9QDyU9/316wGJNtCwBSgNw388Hz0/6iCzWHab1
-         Ec5AbDBDr7SbAlbfbdhBgkOmpCkn2+tkmaAZ9nJSWSfbMKGkkNZ62XwJmq4XCrBbq0dP
-         m/dg==
+        d=lightnvm-io.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=naHVEnSYOWef7MvwaqCJ+q7eHIkeW6Zanvb4EHnCtZs=;
+        b=2SOjPlI9iq/n6X9HOZBwldDRy0DTeUL4fXlMPdU7TiZIp8RruDeGDWpPnoYC1i7SPq
+         LbNczGf2Yrq9RNl+4UHR7Wt52YQFxvTnzofu6cdCFM+eDzX50FjtSg8a3quPEKNGr1MQ
+         c9LqOmnZbly73Mhr4tLcZP5JtMORbFScG64d3eHbX1XYLV4yxgX3zgGMZlyUBZ8SX0op
+         osZR0oHEHNSnOipVYYkd93XCpYe6iflcHfhQv1fgaRSg7m9JF8q/0OWOGaPfmWXOiVO5
+         976K0ZrlNU8VTsuWxJOeGcv5WmHAcKenE72lndFv0HMGDYLes86pTPJ1bOpFrzHRRvTX
+         8xGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Vf+9cpXQr7hrQ9itCdssJG4n/IaJKoI9Dc3YxNuM01M=;
-        b=mdjMZ6FUszW5vTRPYyZ7v8O0uFfAPPcYiqJZeqpe5M1nm/O0VW2pw8SVwlL/jMiH+o
-         2NJow4LPcs57ygkFrI6qNychSfJ+w3CTk4zBAb/qN0h5wBNjJvEP2CbIrQg0snJe33zm
-         Lm5W7VSE1n1nyjgLrIAoue74Wro7fFt9WJlG/SSYVLMnknjJOmjgszdFd0R/oJSw6BQ3
-         W7P6ydOXQcYtXIQ8/EMJjUtgX6zBEY2YhrMnW+klKmOrbGOAJeIo5NY6ACByLxAuthcm
-         grshsfM24RHw0gMn/AUbBLUTlBgAkrA5FnmZyq5N7KcipT37OntC+tFIN6wsIC9UwLsR
-         WO8Q==
-X-Gm-Message-State: AOAM532rXpPXrlIv2oOIEXctFlQzQZ9jQ5nFHUfOuNHgPnzpyKv+XIrA
-        MpfoqcQZgzOMDqX6ii1lKe7ZJXM36nU=
-X-Google-Smtp-Source: ABdhPJwWbwh9KY8Tgl9qgPq1NZeHo/yQR3AVqMoBwuFZEFSV2OBQN2fr41MltvUP5ilxNIPDLj2AQA==
-X-Received: by 2002:a19:8bc6:: with SMTP id n189mr215509lfd.291.1611253411859;
-        Thu, 21 Jan 2021 10:23:31 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:23:31 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 12/13] ARM: tegra: Specify CPU suspend OPP in device-tree
-Date:   Thu, 21 Jan 2021 21:23:07 +0300
-Message-Id: <20210121182308.16080-13-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121182308.16080-1-digetx@gmail.com>
-References: <20210121182308.16080-1-digetx@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=naHVEnSYOWef7MvwaqCJ+q7eHIkeW6Zanvb4EHnCtZs=;
+        b=Hay8C5N1aVQBymQWwYGZDHny/D6o739jD3Acemu1x/kP3VHq+8X3xC0Y69I+KOVb6r
+         H49H50k7rWt4sQ+J48u2FOg/+H5wA0D5REWxnZeY3yIyWmTla+Z80chyRTJ77J3R9Yi3
+         qF9hR9TNVqOEw/eU2GV6WrtwajfiuMTtxDjwdli/WzTzKGjeiSbV54PBkZb+1QzR54rz
+         jAnLDTlEjPggcqMTqlXSrYNoktDIiFaWWZkmV3gZyEMYnO+VUZecQoXTl+aXV6uOu4Dd
+         NDDvBV38oR8+xHUjmolW/JyzBsVbbiNPVF2NttIomoeGzheYcp+wyz+l6UPIEoVZ7TKU
+         F3gQ==
+X-Gm-Message-State: AOAM532FuepSbFwXF/7PlmIMuclqalH8gtOb7Zei9Hj/TAbpLS9pWUHt
+        91azI42wePDHZrq7SvUx3vrSMhAcS0XyYw==
+X-Google-Smtp-Source: ABdhPJyRWQ0qyA2AKW9WeVu1GaFeBM5sBtIw2LijGJVzw3EsuQQND/aukYGI7ZLIr0fqrUdv/J/igw==
+X-Received: by 2002:a05:6512:745:: with SMTP id c5mr224191lfs.489.1611253538797;
+        Thu, 21 Jan 2021 10:25:38 -0800 (PST)
+Received: from [10.0.0.6] (xb932c246.cust.hiper.dk. [185.50.194.70])
+        by smtp.gmail.com with ESMTPSA id n13sm599375lfu.265.2021.01.21.10.25.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 10:25:38 -0800 (PST)
+Subject: Re: [PATCH] lightnvm: fix memory leak when submit fails
+To:     Heiner Litz <hlitz@ucsc.edu>
+Cc:     Jens Axboe <axboe@kernel.dk>, Pan Bian <bianpan2016@163.com>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210121072202.120810-1-bianpan2016@163.com>
+ <55045608-01cb-d5af-682b-5a213944e33d@kernel.dk>
+ <474055ad-978a-4da5-d7f0-e2dc862b781c@lightnvm.io>
+ <CAJbgVnWxmwfmdgk-e290kcMfhUNAjP9uO2k45rx7R=x8jBdJcw@mail.gmail.com>
+From:   =?UTF-8?Q?Matias_Bj=c3=b8rling?= <mb@lightnvm.io>
+Message-ID: <59a735f0-9fef-5e6d-f7eb-851e14a2883e@lightnvm.io>
+Date:   Thu, 21 Jan 2021 19:25:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <CAJbgVnWxmwfmdgk-e290kcMfhUNAjP9uO2k45rx7R=x8jBdJcw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify CPU suspend OPP in a device-tree, just for consistency. Now CPU
-will always suspend on the same frequency.
+On 21/01/2021 17.58, Heiner Litz wrote:
+> I don't think that ZNS supersedes OCSSD. OCSSDs provide much more
+> flexibility and device control and remain valuable for academia. For
+> us, PBLK is the most accurate "SSD Emulator" out there that, as
+> another benefit, enables real-time performance measurements.
+> That being said, I understand that this may not be a good enough
+> reason to keep it around, but I wouldn't mind if it stayed for another
+> while.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra20-cpu-opp.dtsi | 2 ++
- arch/arm/boot/dts/tegra30-cpu-opp.dtsi | 3 +++
- 2 files changed, 5 insertions(+)
+The key difference between ZNS SSDs, and OCSSDs is that wear-leveling is 
+done on the SSD, whereas it is on the host with OCSSD.
 
-diff --git a/arch/arm/boot/dts/tegra20-cpu-opp.dtsi b/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
-index 702a635e88e7..135de316383b 100644
---- a/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
-+++ b/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
-@@ -9,12 +9,14 @@ opp@216000000,750 {
- 			clock-latency-ns = <400000>;
- 			opp-supported-hw = <0x0F 0x0003>;
- 			opp-hz = /bits/ 64 <216000000>;
-+			opp-suspend;
- 		};
- 
- 		opp@216000000,800 {
- 			clock-latency-ns = <400000>;
- 			opp-supported-hw = <0x0F 0x0004>;
- 			opp-hz = /bits/ 64 <216000000>;
-+			opp-suspend;
- 		};
- 
- 		opp@312000000,750 {
-diff --git a/arch/arm/boot/dts/tegra30-cpu-opp.dtsi b/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
-index 0f7135006d19..72f2fe26cc0e 100644
---- a/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
-+++ b/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
-@@ -45,18 +45,21 @@ opp@204000000,800 {
- 			clock-latency-ns = <100000>;
- 			opp-supported-hw = <0x1F 0x31FE>;
- 			opp-hz = /bits/ 64 <204000000>;
-+			opp-suspend;
- 		};
- 
- 		opp@204000000,850 {
- 			clock-latency-ns = <100000>;
- 			opp-supported-hw = <0x1F 0x0C01>;
- 			opp-hz = /bits/ 64 <204000000>;
-+			opp-suspend;
- 		};
- 
- 		opp@204000000,912 {
- 			clock-latency-ns = <100000>;
- 			opp-supported-hw = <0x1F 0x0200>;
- 			opp-hz = /bits/ 64 <204000000>;
-+			opp-suspend;
- 		};
- 
- 		opp@312000000,850 {
--- 
-2.29.2
+While that is interesting in itself, the bulk of the research that is 
+based upon OCSSD, is to control which dies are accessed. As that is 
+already compatible with NVMe Endurance Groups/NVM Sets, there is really 
+no reason to keep OCSSD around to have that flexibility.
+
+If we take it out of the kernel, it would still be maintained in the 
+github repository and available for researchers. Given the few changes 
+that have happened over the past year, it should be relatively easy to 
+rebase for each kernel release for quite a while.
+
+Best, Matias
+
+
+
+>
+> On Thu, Jan 21, 2021 at 5:57 AM Matias Bjørling <mb@lightnvm.io> wrote:
+>> On 21/01/2021 13.47, Jens Axboe wrote:
+>>> On 1/21/21 12:22 AM, Pan Bian wrote:
+>>>> The allocated page is not released if error occurs in
+>>>> nvm_submit_io_sync_raw(). __free_page() is moved ealier to avoid
+>>>> possible memory leak issue.
+>>> Applied, thanks.
+>>>
+>>> General question for Matias - is lightnvm maintained anymore at all, or
+>>> should we remove it? The project seems dead from my pov, and I don't
+>>> even remember anyone even reviewing fixes from other people.
+>>>
+>> Hi Jens,
+>>
+>> ZNS has superseded OCSSD/lightnvm. As a result, the hardware and
+>> software development around OCSSD have also moved on to ZNS. To my
+>> knowledge, there is not anyone implementing OCSSD1.2/2.0 commercially at
+>> this point, and what has been deployed in production does not utilize
+>> the Linux kernel stack.
+>>
+>> I do not mind continuing to keep an eye on it, but on the other hand, it
+>> has served its purpose. It enabled the "Open-Channel SSD architectures"
+>> of the world to take hold in the market and thereby gained enough
+>> momentum to be standardized in NVMe as ZNS.
+>>
+>> Would you like me to send a PR to remove lightnvm immediately, or should
+>> we mark it as deprecated for a while before pulling it?
+>>
+>> Best, Matias
+>>
+>>
 
