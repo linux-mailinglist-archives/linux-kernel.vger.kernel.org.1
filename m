@@ -2,213 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E767F2FE335
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136142FE338
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725950AbhAUGvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:51:09 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:64218 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbhAUGvE (ORCPT
+        id S1726229AbhAUGwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbhAUGwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:51:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611211832; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=PwTBUKX4zXJvBDtn++wgHmrDeVAGMzEFT5WBMoLMpQo=; b=qH2PkBia0lgnFdR/9Rl1c0tUxe1z/Xh3FRbOgH1uv5i3OXhTebl2A2Euo6wn407V2N/3GVp+
- 3C038JbRpyBi10WL1eWAszda9pKHapHVjbP+U+lc858j2AnixXtZs++6R/N+P5ajs3pHkO59
- WiJSZcS8lQtyMOZEQM3tn55Fu/E=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6009241bad4c9e395bda0421 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Jan 2021 06:50:03
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 82FECC43462; Thu, 21 Jan 2021 06:50:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [49.204.182.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AFEB9C433CA;
-        Thu, 21 Jan 2021 06:49:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AFEB9C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH V1] clk: qcom: gcc-sc7180: Mark the MM XO clocks to be
- always ON
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette ? <mturquette@baylibre.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
- <YAixaN6fta27XDnO@builder.lan>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <71dc2c94-7488-1a69-5cb8-2ff4db184338@codeaurora.org>
-Date:   Thu, 21 Jan 2021 12:19:54 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 21 Jan 2021 01:52:32 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E0FC061575;
+        Wed, 20 Jan 2021 22:51:51 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id z22so1972683ioh.9;
+        Wed, 20 Jan 2021 22:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RmR5J8GicNZJLuhUFmP22EBtCzbCjmN4ktsEfPuUAvI=;
+        b=BVIdcrIW4TMNNH77NUQtJS/OLJPOzEtNC1rGn5ZUr7j1YYmCBVCgI8I8pBRc2QPK8h
+         KGCEvwn0P8NY2sKTxJUCm3YTS/t6Oz1OgyGP69kP/VqmIuh44HTpGySJH+UqLD+ZYJfb
+         QMCrYKmBk5Mr+SXBTOM9kNE1VQwUbjaUiugQxDMc/4O3ALH/muNeRBr5UhFI9zUjVhmd
+         097YqXPABQeut+0o9M4Ve0zDrYsD5QbLV5UmRR4xcjaUb1etpp37Pt7rk0Nm8evKqIDZ
+         RYdqBQahBQePa8hNeHlNJIHDDVF2OovqIz9NpzCTYFFgBdW1XfmyuIArWZrQxvo/TWZu
+         qxVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RmR5J8GicNZJLuhUFmP22EBtCzbCjmN4ktsEfPuUAvI=;
+        b=J11Hy9DkKCjY5W56BvYGdc5nfWbVIpwQjG1UVu7CczB6H+XTHhwlNMWgJblUjQIRKw
+         XNZaeMEEHpoQ0eFLvwkhVwAcR3gYBu9OVTSlnzznYMCgP+MQOEK+W3sj2/HHzuLkbaGO
+         bS//fTEqXdD5YwtLAu1Ymiba9+k6L6oGe8sxh9NG7mMDqHCxKCUxrig9D/tISx0nvwnm
+         SiqOP9t5BaZzVRtgWviqaYy75Yx1zhKQ8GtdOchw0bJMtIwIkVeucKsQvypE/IcgZ/zM
+         IySm6U4DXJjCTS+xnajyf6W6135XF+O4yZgR1LtSiLQ2n3doa8m3b5SM1aWeuCncFQIx
+         GxBg==
+X-Gm-Message-State: AOAM530TPdHmA+4JuXclu6pkK5ndT6txI5ga/IJeuhrLBkaoJaeQxzbW
+        JWschGvcP6pRLbypxTIx1b0IGbij+f4J0HkzQZ8=
+X-Google-Smtp-Source: ABdhPJzZypTHMl5wMUilCwobB+qETmo15/kKxbdZRtGuuWn0dgPCe3PfFNxAIAp+fBjASBT1+5X2Hc2flnjf1pYjgfU=
+X-Received: by 2002:a02:2544:: with SMTP id g65mr10543131jag.91.1611211910995;
+ Wed, 20 Jan 2021 22:51:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAixaN6fta27XDnO@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210117042428.1497-1-alistair@alistair23.me> <20210117042428.1497-2-alistair@alistair23.me>
+ <YAeSpUIzV/3dWPC+@google.com>
+In-Reply-To: <YAeSpUIzV/3dWPC+@google.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Wed, 20 Jan 2021 22:51:24 -0800
+Message-ID: <CAKmqyKOFe0_JgFA1_9vemW40g-daBt5RY=S9CAXU5Yj-FftGGw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] input/touchscreen: Add device tree support to wacom_i2c
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        linux-input@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Tue, Jan 19, 2021 at 6:17 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> On Sat, Jan 16, 2021 at 08:24:27PM -0800, Alistair Francis wrote:
+> > Allow the wacom-i2c device to be exposed via device tree.
+>
+> The patch seems incomplete. I see we are reading and storing properties,
+> but we are not using them whatsoever, so I do not see the reason to have
+> this in this form.
 
-On 1/21/2021 4:10 AM, Bjorn Andersson wrote:
-> On Wed 20 Jan 01:47 CST 2021, Taniya Das wrote:
-> 
->> There are intermittent GDSC power-up failures observed for titan top
->> gdsc, which requires the XO clock. Thus mark all the MM XO clocks always
->> enabled from probe.
->>
-> 
-> But if this is the reason for keeping all these {ahb,xo}_clks critical
-> (or upstream just a bunch of hard coded regmap_update_bits()) why don't
-> we properly describe them as dependencies for the clock controller/gdsc?
-> I.e. by the use of pm_clk_add()?
-> 
-> Regards,
-> Bjorn
+Good point. I am trying to split up the work, but I guess here I split
+it up a little too much. I'm sending a v2 that should fix this.
 
-They are already defined in the camcc driver, but they are not working 
-as expected, thus I am forced to mark them always ON.
+Alistair
 
-> 
->> Fixes: 8d4025943e13 ("clk: qcom: camcc-sc7180: Use runtime PM ops instead of clk ones")
->> Signed-off-by: Taniya Das <tdas@codeaurora.org>
->> ---
->>   drivers/clk/qcom/gcc-sc7180.c | 47 ++++---------------------------------------
->>   1 file changed, 4 insertions(+), 43 deletions(-)
->>
->> diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
->> index b05901b..88e896a 100644
->> --- a/drivers/clk/qcom/gcc-sc7180.c
->> +++ b/drivers/clk/qcom/gcc-sc7180.c
->> @@ -1,6 +1,6 @@
->>   // SPDX-License-Identifier: GPL-2.0-only
->>   /*
->> - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
->>    */
->>
->>   #include <linux/clk-provider.h>
->> @@ -919,19 +919,6 @@ static struct clk_branch gcc_camera_throttle_hf_axi_clk = {
->>   	},
->>   };
->>
->> -static struct clk_branch gcc_camera_xo_clk = {
->> -	.halt_reg = 0xb02c,
->> -	.halt_check = BRANCH_HALT,
->> -	.clkr = {
->> -		.enable_reg = 0xb02c,
->> -		.enable_mask = BIT(0),
->> -		.hw.init = &(struct clk_init_data){
->> -			.name = "gcc_camera_xo_clk",
->> -			.ops = &clk_branch2_ops,
->> -		},
->> -	},
->> -};
->> -
->>   static struct clk_branch gcc_ce1_ahb_clk = {
->>   	.halt_reg = 0x4100c,
->>   	.halt_check = BRANCH_HALT_VOTED,
->> @@ -1096,19 +1083,6 @@ static struct clk_branch gcc_disp_throttle_hf_axi_clk = {
->>   	},
->>   };
->>
->> -static struct clk_branch gcc_disp_xo_clk = {
->> -	.halt_reg = 0xb030,
->> -	.halt_check = BRANCH_HALT,
->> -	.clkr = {
->> -		.enable_reg = 0xb030,
->> -		.enable_mask = BIT(0),
->> -		.hw.init = &(struct clk_init_data){
->> -			.name = "gcc_disp_xo_clk",
->> -			.ops = &clk_branch2_ops,
->> -		},
->> -	},
->> -};
->> -
->>   static struct clk_branch gcc_gp1_clk = {
->>   	.halt_reg = 0x64000,
->>   	.halt_check = BRANCH_HALT,
->> @@ -2159,19 +2133,6 @@ static struct clk_branch gcc_video_throttle_axi_clk = {
->>   	},
->>   };
->>
->> -static struct clk_branch gcc_video_xo_clk = {
->> -	.halt_reg = 0xb028,
->> -	.halt_check = BRANCH_HALT,
->> -	.clkr = {
->> -		.enable_reg = 0xb028,
->> -		.enable_mask = BIT(0),
->> -		.hw.init = &(struct clk_init_data){
->> -			.name = "gcc_video_xo_clk",
->> -			.ops = &clk_branch2_ops,
->> -		},
->> -	},
->> -};
->> -
->>   static struct clk_branch gcc_mss_cfg_ahb_clk = {
->>   	.halt_reg = 0x8a000,
->>   	.halt_check = BRANCH_HALT,
->> @@ -2304,7 +2265,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->>   	[GCC_BOOT_ROM_AHB_CLK] = &gcc_boot_rom_ahb_clk.clkr,
->>   	[GCC_CAMERA_HF_AXI_CLK] = &gcc_camera_hf_axi_clk.clkr,
->>   	[GCC_CAMERA_THROTTLE_HF_AXI_CLK] = &gcc_camera_throttle_hf_axi_clk.clkr,
->> -	[GCC_CAMERA_XO_CLK] = &gcc_camera_xo_clk.clkr,
->>   	[GCC_CE1_AHB_CLK] = &gcc_ce1_ahb_clk.clkr,
->>   	[GCC_CE1_AXI_CLK] = &gcc_ce1_axi_clk.clkr,
->>   	[GCC_CE1_CLK] = &gcc_ce1_clk.clkr,
->> @@ -2317,7 +2277,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->>   	[GCC_DISP_GPLL0_DIV_CLK_SRC] = &gcc_disp_gpll0_div_clk_src.clkr,
->>   	[GCC_DISP_HF_AXI_CLK] = &gcc_disp_hf_axi_clk.clkr,
->>   	[GCC_DISP_THROTTLE_HF_AXI_CLK] = &gcc_disp_throttle_hf_axi_clk.clkr,
->> -	[GCC_DISP_XO_CLK] = &gcc_disp_xo_clk.clkr,
->>   	[GCC_GP1_CLK] = &gcc_gp1_clk.clkr,
->>   	[GCC_GP1_CLK_SRC] = &gcc_gp1_clk_src.clkr,
->>   	[GCC_GP2_CLK] = &gcc_gp2_clk.clkr,
->> @@ -2413,7 +2372,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->>   	[GCC_VIDEO_AXI_CLK] = &gcc_video_axi_clk.clkr,
->>   	[GCC_VIDEO_GPLL0_DIV_CLK_SRC] = &gcc_video_gpll0_div_clk_src.clkr,
->>   	[GCC_VIDEO_THROTTLE_AXI_CLK] = &gcc_video_throttle_axi_clk.clkr,
->> -	[GCC_VIDEO_XO_CLK] = &gcc_video_xo_clk.clkr,
->>   	[GPLL0] = &gpll0.clkr,
->>   	[GPLL0_OUT_EVEN] = &gpll0_out_even.clkr,
->>   	[GPLL6] = &gpll6.clkr,
->> @@ -2510,6 +2468,9 @@ static int gcc_sc7180_probe(struct platform_device *pdev)
->>   	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
->>   	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
->>   	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
->> +	regmap_update_bits(regmap, 0x0b02c, BIT(0), BIT(0));
->> +	regmap_update_bits(regmap, 0x0b028, BIT(0), BIT(0));
->> +	regmap_update_bits(regmap, 0x0b030, BIT(0), BIT(0));
->>   	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
->>
->>   	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
->> --
->> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
->> of the Code Aurora Forum, hosted by the  Linux Foundation.
->>
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+>
+> Thanks.
+>
+> --
+> Dmitry
