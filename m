@@ -2,113 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFCD2FE599
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E802FE5AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbhAUIxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:53:24 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:46312 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbhAUIwo (ORCPT
+        id S1728400AbhAUI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728256AbhAUI4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:52:44 -0500
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1l2VhB-0000aV-Pe
-        for linux-kernel@vger.kernel.org; Thu, 21 Jan 2021 08:52:01 +0000
-Received: by mail-ej1-f71.google.com with SMTP id v11so480146ejx.22
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:52:01 -0800 (PST)
+        Thu, 21 Jan 2021 03:56:25 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E54C061757;
+        Thu, 21 Jan 2021 00:55:32 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id h11so2477717ioh.11;
+        Thu, 21 Jan 2021 00:55:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=1W5ctKqJEh15657vCDtsaXBORxGKTTf2ebPpWs4xoy8=;
+        b=ED1aFQMSum6yeY8qkzzGJ3WnKanouDr1DC/viKrXY+D9RAs9X+P189vkC900O7XuTe
+         Ob5NDiukGoGXnBM8y/FSE/CVMLcAPmYmUu6Apq2k6GloLz6yj7mhXi5Uqco/3+wxDbpd
+         rIy6gKxAK2BL7hoKwhlgQaUDICbL4ryEZVIFXgNg0xAFBHqDbXZ8MmMBhbcj3OP7AcPl
+         CfpjBBZ6HBek5j4tylrOEfQ67KxRdDEqOAQ7Duezbjm1uNc5pDRey2rBrKyR/TcdrU2q
+         7dQ2sRd53CqHw6MtFgT4immwOJDEHUl0ZWu26/i8pVwbkitqPpWDba64tmN55soU5Co0
+         k6gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GS6uyl18DS5/tavzuQl/Q5aTYUmkCKLCcwIE6hhMVf8=;
-        b=q2dSSqLnbOMeUJOIaQYya2F7gIcOzD25mvTHPLnO3zNrdvWFLxszWXeryJOmSJU0Gc
-         42Oi7xEskjZXQqNlcklEjYEpfg2fiWiHIJXs8b/8U5rJa7R5l8vupiWmgPgba63lVADZ
-         bJGobtkSJI8xDZuj13mBOFqXK90inrLvNLmU/myz9KRBxn4KDctfzC8TmspYwIajuybW
-         eYQUGcBOVUAd05itKtU7mjVE8bBkCa58bH9WYeZ42FQ9HKMOgBnGoEjdsIF1B4uNQqdu
-         xOHxMLn7QVi5vv4GDio5Bj64W9xwy6EGXEYrpkNlnMF/V3FImdA7dvfXB6LC3/nH00uU
-         dnnQ==
-X-Gm-Message-State: AOAM5310/oqD0ftjZ9ESVzc/RXNrBJ3iobndZzoWTP8tj2Tgonr9le8L
-        nlY8uL902sHWKUaoRd+zGkwSdbmwDf+sEvveUBirib7awOjdbRqLIA0D+WQR7+1j8p3cNuFeVCK
-        G6+0v0Q7u1PnTOratg9kXY6KKYEV96lXveeKb1HA13Q==
-X-Received: by 2002:a17:906:3b97:: with SMTP id u23mr8458743ejf.147.1611219121170;
-        Thu, 21 Jan 2021 00:52:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzvJfiKbOKkjZDF6lmyAN2L3bi0sbtRcMnGkDUWOTFgdjS6xZ6S9hdOVwWiufnA1Evdn8LRMA==
-X-Received: by 2002:a17:906:3b97:: with SMTP id u23mr8458724ejf.147.1611219120941;
-        Thu, 21 Jan 2021 00:52:00 -0800 (PST)
-Received: from localhost (host-79-52-126-228.retail.telecomitalia.it. [79.52.126.228])
-        by smtp.gmail.com with ESMTPSA id ce7sm1937436ejb.100.2021.01.21.00.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 00:52:00 -0800 (PST)
-Date:   Thu, 21 Jan 2021 09:51:59 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org
-Subject: Re: [tip: x86/entry] x86/entry: Build thunk_$(BITS) only if
- CONFIG_PREEMPTION=y
-Message-ID: <YAlAr1Gs+Jm4r5o7@xps-13-7390>
-References: <YAAvk0UQelq0Ae7+@xps-13-7390>
- <161121327995.414.14890124942899525500.tip-bot2@tip-bot2>
- <20210121074928.GA1346795@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=1W5ctKqJEh15657vCDtsaXBORxGKTTf2ebPpWs4xoy8=;
+        b=REeEZ+oT3ipUQe436XOY6KyTTBcJzQAvNblCvEDEpaYD5IJY//YcVpVNbXyJ975xNx
+         2LVZ7zA5iYHX/lyIdI053MY4NqYAZpS1CmgU+KUFIDDNqSUpq5tMCSBtftGxt0LLcoGR
+         g20OcOUi9U64oPf2BKjMx3FY09CeoajM5n72oKlCzPorFJbDXzjdkx8kBeK+bGyXx+2/
+         kp5Ghy4grbLio+e/AyxmdocaAt6g3+bCIO1BvQo+Agoj7nKsP8K3WFLAQ5AVJ974hTC/
+         Zh8N0UruVwI7aw/fkshjmKwWK2ElpY8aYD+IsY4xKX0JJvV9UUm79LASE2vWmLPHjHSw
+         tHmA==
+X-Gm-Message-State: AOAM533wIPH3GjpcXkESn7uoYLHbaTOywfyMBxIaGIqN3wvlqefQhIx2
+        l9TZ/fE2Xlbe6woReeB3XozoF1W199GoVKNomWQ=
+X-Google-Smtp-Source: ABdhPJzohOPe9CXB7Wl5N+uCE8ZsLSdvZeIUL3eB0kFqz0DNcE8LR0B3Cnmp49TpCOXWPJx2b23RvCsoNS1FX70YTlU=
+X-Received: by 2002:a6b:6a0e:: with SMTP id x14mr9605695iog.57.1611219331865;
+ Thu, 21 Jan 2021 00:55:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121074928.GA1346795@gmail.com>
+References: <1611206855-22555-1-git-send-email-yangtiezhu@loongson.cn>
+ <20210121053627.GA1680146@ubuntu-m3-large-x86> <CAEf4BzbZxuy8LRmngRzLZ3VTnrDw=Rf70Ghkbu1a5+fNpQud5Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzbZxuy8LRmngRzLZ3VTnrDw=Rf70Ghkbu1a5+fNpQud5Q@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 21 Jan 2021 09:55:20 +0100
+Message-ID: <CA+icZUWNu1JaS+m+Ne1ZB+tCARRUaiVh2KbqarnGEtM46PD1NA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] samples/bpf: Update build procedure for
+ manually compiling LLVM and Clang
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 08:49:28AM +0100, Ingo Molnar wrote:
-> 
-> * tip-bot2 for Andrea Righi <tip-bot2@linutronix.de> wrote:
-> 
-> > The following commit has been merged into the x86/entry branch of tip:
-> > 
-> > Commit-ID:     e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
-> > Gitweb:        https://git.kernel.org/tip/e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
-> > Author:        Andrea Righi <andrea.righi@canonical.com>
-> > AuthorDate:    Thu, 14 Jan 2021 12:48:35 +01:00
-> > Committer:     Ingo Molnar <mingo@kernel.org>
-> > CommitterDate: Thu, 21 Jan 2021 08:11:52 +01:00
-> > 
-> > x86/entry: Build thunk_$(BITS) only if CONFIG_PREEMPTION=y
-> > 
-> > With CONFIG_PREEMPTION disabled, arch/x86/entry/thunk_64.o is just an
-> > empty object file.
-> > 
-> > With the newer binutils (tested with 2.35.90.20210113-1ubuntu1) the GNU
-> > assembler doesn't generate a symbol table for empty object files and
-> > objtool fails with the following error when a valid symbol table cannot
-> > be found:
-> > 
-> >   arch/x86/entry/thunk_64.o: warning: objtool: missing symbol table
-> > 
-> > To prevent this from happening, build thunk_$(BITS).o only if
-> > CONFIG_PREEMPTION is enabled.
-> > 
-> >   BugLink: https://bugs.launchpad.net/bugs/1911359
-> > 
-> > Fixes: 320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Link: https://lore.kernel.org/r/YAAvk0UQelq0Ae7+@xps-13-7390
-> 
-> Hm, this fails to build on UML defconfig:
-> 
->  /home/mingo/gcc/cross/lib/gcc/x86_64-linux/9.3.1/../../../../x86_64-linux/bin/ld: arch/x86/um/../entry/thunk_64.o: in function `preempt_schedule_thunk':
->  /home/mingo/tip.cross/arch/x86/um/../entry/thunk_64.S:34: undefined reference to `preempt_schedule'
->  /home/mingo/gcc/cross/lib/gcc/x86_64-linux/9.3.1/../../../../x86_64-linux/bin/ld: arch/x86/um/../entry/thunk_64.o: in function `preempt_schedule_notrace_thunk':
->  /home/mingo/tip.cross/arch/x86/um/../entry/thunk_64.S:35: undefined reference to `preempt_schedule_notrace'
-> 
-> Thanks,
-> 
-> 	Ingo
+On Thu, Jan 21, 2021 at 9:08 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Jan 20, 2021 at 9:36 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > On Thu, Jan 21, 2021 at 01:27:35PM +0800, Tiezhu Yang wrote:
+> > > The current LLVM and Clang build procedure in samples/bpf/README.rst is
+> > > out of date. See below that the links are not accessible any more.
+> > >
+> > > $ git clone http://llvm.org/git/llvm.git
+> > > Cloning into 'llvm'...
+> > > fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
+> > > $ git clone --depth 1 http://llvm.org/git/clang.git
+> > > Cloning into 'clang'...
+> > > fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+> > >
+> > > The LLVM community has adopted new ways to build the compiler. There are
+> > > different ways to build LLVM and Clang, the Clang Getting Started page [1]
+> > > has one way. As Yonghong said, it is better to copy the build procedure
+> > > in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
+> > >
+> > > I verified the procedure and it is proved to be feasible, so we should
+> > > update README.rst to reflect the reality. At the same time, update the
+> > > related comment in Makefile.
+> > >
+> > > Additionally, as Fangrui said, the dir llvm-project/llvm/build/install is
+> > > not used, BUILD_SHARED_LIBS=OFF is the default option [2], so also change
+> > > Documentation/bpf/bpf_devel_QA.rst together.
+> > >
+> > > [1] https://clang.llvm.org/get_started.html
+> > > [2] https://www.llvm.org/docs/CMake.html
+> > >
+> > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > > Acked-by: Yonghong Song <yhs@fb.com>
+> >
+> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> >
+> > Small comment below.
+> >
+> > > ---
+> > >
+> > > v2: Update the commit message suggested by Yonghong,
+> > >     thank you very much.
+> > >
+> > > v3: Remove the default option BUILD_SHARED_LIBS=OFF
+> > >     and just mkdir llvm-project/llvm/build suggested
+> > >     by Fangrui.
+> > >
+> > >  Documentation/bpf/bpf_devel_QA.rst |  3 +--
+> > >  samples/bpf/Makefile               |  2 +-
+> > >  samples/bpf/README.rst             | 16 +++++++++-------
+> > >  3 files changed, 11 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+> > > index 5b613d2..18788bb 100644
+> > > --- a/Documentation/bpf/bpf_devel_QA.rst
+> > > +++ b/Documentation/bpf/bpf_devel_QA.rst
+> > > @@ -506,11 +506,10 @@ that set up, proceed with building the latest LLVM and clang version
+> > >  from the git repositories::
+> > >
+> > >       $ git clone https://github.com/llvm/llvm-project.git
+> > > -     $ mkdir -p llvm-project/llvm/build/install
+> > > +     $ mkdir -p llvm-project/llvm/build
+> > >       $ cd llvm-project/llvm/build
+> > >       $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+> > >                  -DLLVM_ENABLE_PROJECTS="clang"    \
+> > > -                -DBUILD_SHARED_LIBS=OFF           \
+> > >                  -DCMAKE_BUILD_TYPE=Release        \
+> > >                  -DLLVM_BUILD_RUNTIME=OFF
+> > >       $ ninja
+> > > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > > index 26fc96c..d061446 100644
+> > > --- a/samples/bpf/Makefile
+> > > +++ b/samples/bpf/Makefile
+> > > @@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock               += -pthread -lcap
+> > >  TPROGLDLIBS_xsk_fwd          += -pthread
+> > >
+> > >  # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
+> > > -#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+> > > +# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+> > >  LLC ?= llc
+> > >  CLANG ?= clang
+> > >  OPT ?= opt
+> > > diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+> > > index dd34b2d..23006cb 100644
+> > > --- a/samples/bpf/README.rst
+> > > +++ b/samples/bpf/README.rst
+> > > @@ -65,17 +65,19 @@ To generate a smaller llc binary one can use::
+> > >  Quick sniplet for manually compiling LLVM and clang
+> > >  (build dependencies are cmake and gcc-c++)::
+> >
+> > Technically, ninja is now a build dependency as well, it might be worth
+> > mentioning that here (usually the package is ninja or ninja-build).
+>
+> it's possible to generate Makefile by passing `-g "Unix Makefiles"`,
+> which would avoid dependency on ninja, no?
+>
 
-I've been able to reproduce it, I'm looking at this right now. Thanks!
+AFAICS, cmake is now the default and "Unix Makefiles" deprecated with
+newer versions of LLVM/Clang.
 
--Andrea
+- Sedat -
+
+> >
+> > Regardless of whether that is addressed or not (because it is small),
+> > feel free to carry forward my tag in any future revisions unless they
+> > drastically change.
+> >
+> > > - $ git clone http://llvm.org/git/llvm.git
+> > > - $ cd llvm/tools
+> > > - $ git clone --depth 1 http://llvm.org/git/clang.git
+> > > - $ cd ..; mkdir build; cd build
+> > > - $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
+> > > - $ make -j $(getconf _NPROCESSORS_ONLN)
+> > > + $ git clone https://github.com/llvm/llvm-project.git
+> > > + $ mkdir -p llvm-project/llvm/build
+> > > + $ cd llvm-project/llvm/build
+> > > + $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+> > > +            -DLLVM_ENABLE_PROJECTS="clang"    \
+> > > +            -DCMAKE_BUILD_TYPE=Release        \
+> > > +            -DLLVM_BUILD_RUNTIME=OFF
+> > > + $ ninja
+> > >
+> > >  It is also possible to point make to the newly compiled 'llc' or
+> > >  'clang' command via redefining LLC or CLANG on the make command line::
+> > >
+> > > - make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+> > > + make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+> > >
+> > >  Cross compiling samples
+> > >  -----------------------
+> > > --
+> > > 2.1.0
+> > >
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAEf4BzbZxuy8LRmngRzLZ3VTnrDw%3DRf70Ghkbu1a5%2BfNpQud5Q%40mail.gmail.com.
