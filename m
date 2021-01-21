@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F212FE98C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BEF2FE989
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730521AbhAUMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:02:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728590AbhAULTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:19:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91534238E3;
-        Thu, 21 Jan 2021 11:18:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611227930;
-        bh=PZuL4K4MYilESgvpiWC4rYkLNV2J+t9XEez4xaSZDhQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=toli/KAXTTPqeLTr5dhCpZSbbkR/nfPoBwIhlslp/Jr2Ej1AMLBlb8/Np8uj9qh5r
-         ckT+4oKqdLY2RKQYnAGZ0EJCvXNhDz2l0w3JVn8zB8vy+O23CVfbdO/4I3UkspLJZN
-         fn3hYrpjVDZgEgj+mXiPzIOcWrba1k/zzwq96sV4=
-Date:   Thu, 21 Jan 2021 12:18:47 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-accelerators@lists.ozlabs.org" 
-        <linux-accelerators@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
-Message-ID: <YAljF+Y4/SxVKmXo@kroah.com>
-References: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
- <YAlNTSOMmsFPFAhk@kroah.com>
- <ea0511c1309a486d9646d5a32715c861@hisilicon.com>
+        id S1731017AbhAUMAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:00:35 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:42838 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728846AbhAUL7f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:59:35 -0500
+Received: by mail-ot1-f41.google.com with SMTP id f6so1319644ots.9;
+        Thu, 21 Jan 2021 03:59:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LMQpWTlwXlB+6DhuZpRPyd2/2y3TLAjilyG8Sg/pBQ4=;
+        b=tbYRWno+wlZxOIOXoc2efdBECq/zwJxHZz1DYSHEeo+FGar5goxcUjpkxY3rGtxCeJ
+         fVg67s99LYEEctteoTQ+xRmZ3ewBDg4T4lUF4yAREJRFr0j/N8K/m/YKAKg2Vgc4xbB6
+         iEVO+UGhc8mKZ1xM7xdgDSchClUVeQvpsGbqXUDHcwMgPpX9d9Rg1GlCmDCq7u9jU954
+         GxnGuhfllwcvkfjkEuB+oYpodG9Xwyf9ROKGbVu1hHbGJ70bSXqdT5FOjD44ps9ysPA1
+         HgTK8dCXKw1DEhDwBAclb7jJtK0cuW7IsUemF0WzulbJavAPHbzIAKaiD3dCOikBTzAj
+         r6Rg==
+X-Gm-Message-State: AOAM53133IraZqjTiy30MFqRAaPr71tvh56qzkH6t7K4zJmFvIJ8+FjT
+        QFRQ/pwpkIz00imBdtTk60g7XAsjdeAn19ik9eo=
+X-Google-Smtp-Source: ABdhPJzUXT3Qcu1MEek/JIy1QokhzlIz+1Z889izuguqO0chtBSEj4LHKA87+uH8We9MoxEatFnak9b3i0z82NlULJU=
+X-Received: by 2002:a9d:1710:: with SMTP id i16mr9965157ota.260.1611230334235;
+ Thu, 21 Jan 2021 03:58:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ea0511c1309a486d9646d5a32715c861@hisilicon.com>
+References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com> <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+ <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
+In-Reply-To: <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 21 Jan 2021 12:58:43 +0100
+Message-ID: <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:18:24AM +0000, Song Bao Hua (Barry Song) wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
-> > Sent: Thursday, January 21, 2021 10:46 PM
-> > To: Wangzhou (B) <wangzhou1@hisilicon.com>
-> > Cc: Zhangfei Gao <zhangfei.gao@linaro.org>; Arnd Bergmann <arnd@arndb.de>;
-> > linux-accelerators@lists.ozlabs.org; linux-kernel@vger.kernel.org;
-> > chensihang (A) <chensihang1@hisilicon.com>
-> > Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
-> > 
-> > On Thu, Jan 21, 2021 at 05:09:14PM +0800, Zhou Wang wrote:
-> > > When IO page fault happens, DMA performance will be affected. Pin user page
-> > > can avoid IO page fault, this patch introduces a new char device named
-> > > /dev/uacce_ctrl to help to maintain pin/unpin pages. User space can do
-> > > pin/unpin pages by ioctls of an open file of /dev/uacce_ctrl, all pinned
-> > > pages under one file will be unpinned in file release process.
-> > 
-> > Also, what are you really trying to do here?  If you need to mess with
-> > memory pages, why can't the existing memory apis work properly for you?
-> > Please work with the linux-mm developers to resolve the issue using the
-> > standard apis and not creating a one-off char device node for this type
-> > of thing.
-> 
-> Basically the purpose is implementing a pinned memory poll for userspace
-> DMA to achieve better performance by removing io page fault.
+On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
+>
+> Hi Rafael
+>
+> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+> > On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+> >> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+> >>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+> >>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+> >>>> specification intends. We need to be able to find those devices "from"
+> >>>> the dependee, so add a function to parse all ACPI Devices and check if
+> >>>> the include the handle of the dependee device in their _DEP buffer.
+> >>> What exactly do you need this for?
+> >> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+> >> refer to those INT3472's in their _DEP method. The driver binds to the
+> >> INT3472 device, we need to find the sensors dependent on them.
+> >>
+> > Well, this is an interesting concept. :-)
+> >
+> > Why does _DEP need to be used for that?  Isn't there any other way to
+> > look up the dependent sensors?
+> >
+> >>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+> >>>
+> >>> Note that supplier drivers may remove entries from there, but does
+> >>> that matter for your use case?
+> >> Ah - that may work, yes. Thank you, let me test that.
+> > Even if that doesn't work right away, but it can be made work, I would
+> > very much prefer that to the driver parsing _DEP for every device in
+> > the namespace by itself.
+>
+>
+> This does work; do you prefer it in scan.c, or in utils.c (in which case
+> with acpi_dep_list declared as external var in internal.h)?
 
-And what could possibly go wrong with that :)
+Let's put it in scan.c for now, because there is the lock protecting
+the list in there too.
 
-> I really like this can be done in generic mm code. Unfortunately there is no
-> this standard API in kernel to support userspace pin. Right now, various
-> subsystems depend on the ioctl of /dev/<name> to implement the pin, for example,
-> v4l2, gpu, infiniband, media etc.
-> 
-> I feel it is extremely hard to sell a standard mpin() API like mlock()
-> for this stage as mm could hardly buy this. And it will require
-> huge changes in kernel.
-
-Why?  This is what mlock() is for, why can't you use it?
-
-> We need a way to manage what pages are pinned by process and ensure the
-> pages can be unpinned while the process is killed abnormally. otherwise,
-> memory gets leaked.
-
-Can't mlock() handle that?  It works on the process that called it.
-
-> file_operations release() is a good entry for this kind of things. In
-> this way, we don't have to maintain the pinned page set in task_struct
-> and unpin them during exit().
-> 
-> If there is anything to make it better by doing this in a driver. I
-> would believe we could have a generic misc driver for pin like
-> vms_ballon.c for ballon. The driver doesn't have to bind with uacce.
-> 
-> In this way, the pinned memory pool implementation in userspace doesn't
-> need to depend on a specific uacce driver any more.
-
-Please work with the mm developers to get them to agree with this type
-of thing, as well as the dma developers, both of which you didn't cc: on
-this patch :(
-
-Remember, you are creating a new api for Linux that goes around existing
-syscalls, but is in reality, a new syscall, so why not just make it a
-new syscall?
-
-thanks,
-
-greg k-h
+How do you want to implement this?  Something like "walk the list and
+run a callback for the matching entries" or do you have something else
+in mind?
