@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D73A2FE482
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AAE2FE47F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbhAUH6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
+        id S1728008AbhAUH54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:57:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727776AbhAUHyy (ORCPT
+        with ESMTP id S1727725AbhAUHvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:54:54 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4C4C0613CF;
-        Wed, 20 Jan 2021 23:54:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=GGrjojACjhG+8+TH5sgivGQzb3BJ/eSauJM3q5KfBTs=; b=Ktv0btKAweC7bgWiS0Tq9kQcDq
-        lur3JwNvnp9BIFyDhZcmUI1H3pxmjd/ZLvA2pRyULJoTJauKkKBe3DSoBTDJQV1JqQkoFJq9Bggb/
-        9fo/7N4p/S2mX+gKVtR2JCvftPc1c+niZwyH3x8iQYowJRjI1y9N55LbKj6NZXHZ9lNyh1bcQc0is
-        82naw907YI2rbhBZ6CTkkzH9BFv9pwJu+HRnB8QYUDtNr1CDTSoaXl2Sx7RwAd218qaJbpAr0dal1
-        UFAfSxVf8j/5ACKYD7rhFBOTJkxhehMlzgqP21VL+D/N0FubU73KdhAX/7mIcfo+iJ4E5TJ9qGcpg
-        z/nWA2Ug==;
-Received: from [2001:4bb8:188:1954:d5b3:2657:287:e45f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2Umc-00Gm60-80; Thu, 21 Jan 2021 07:53:35 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH 03/13] livepatch: refactor klp_init_object
-Date:   Thu, 21 Jan 2021 08:49:49 +0100
-Message-Id: <20210121074959.313333-4-hch@lst.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121074959.313333-1-hch@lst.de>
-References: <20210121074959.313333-1-hch@lst.de>
+        Thu, 21 Jan 2021 02:51:11 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2DDC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:50:30 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id q131so1008346pfq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:50:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ArpukKqgHaMQZrpxDemmGF/e2k0kfVvSSfm28/4Eajg=;
+        b=DxdlftMrvjU0fFdVCZUiVxOENUjQAxQ5q3grNRXS2DaVvl5XJ8zzLYQBo95qvUEk36
+         Uz+SkBigXiXTjaaQp6MNHvohSlPS2ZxLRX8M1qW88yORg2sNbUMpwe5n7ie6d5C4Yw+J
+         lu2FE6i9VcYG4M0esNqxuhVcTKzjpO46JIFEsa2yNTi6ReS7ms7kgSH7ygTBsM6KuFCA
+         EdjACO5nPmVvNkQKUwZzHb0hd/yMr8LujBfJ/QenS5hiFWRfWtVwdP/EQJwAzSnwrpcx
+         jfbYDXnnRff/7G0Uv2EdJMSRFC9tc1xZ9mw5meLiJiXyVWWsvTlYouO3zoIQKkN6PHGX
+         M1Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ArpukKqgHaMQZrpxDemmGF/e2k0kfVvSSfm28/4Eajg=;
+        b=kAb+Gzj/jnn0SuO8/jHT5Wtx/Lu3LQoWo5oQZ+SxHtgWZiGDlvAv4jKOvp6UHDK1IX
+         1q9naJRyNVfpyHCS/sYg0pK+Oe1LcZcMr6w4WMfv6nsoNRVWCyA264jLiHkO1YCrwuAa
+         NhZbGYGCglkQdEgw2CndMHYnpACjkd16l6aBKH6FLz3qXJ8nkCpQmp2764GzzSi61ehH
+         melhEf43Eu2VONR8Dd1khgepRjPgEE9+7gYXje+jfcNt7BNrTYqjsdeALzcK+aWarQE8
+         TsT/U25ctU5vPsA4DzCcTR6slF8wS0nAcB+az2idJXyWUFCXk86oYcw7bjukAN304JpC
+         UZ9A==
+X-Gm-Message-State: AOAM532Cxzc6E1O2kRYOcRE+xGUoheeoso7c1914Et9EZDIe9Y524ld8
+        1pXoqDrGs1hlDFpOCS8nIQyc
+X-Google-Smtp-Source: ABdhPJzLO4YjHwLIXAeASc3SG0WAxtF3gM2EPAuV/kqvQN0pQASMkju6ZWl5Pdiq14ij4kWWNA+zNg==
+X-Received: by 2002:a62:528c:0:b029:19e:4a39:d9ea with SMTP id g134-20020a62528c0000b029019e4a39d9eamr12954725pfb.20.1611215430389;
+        Wed, 20 Jan 2021 23:50:30 -0800 (PST)
+Received: from thinkpad ([2409:4072:6182:23c4:4d5:e6d9:fc7e:c8e2])
+        by smtp.gmail.com with ESMTPSA id w20sm5139557pga.90.2021.01.20.23.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 23:50:29 -0800 (PST)
+Date:   Thu, 21 Jan 2021 13:20:22 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v2 1/3] bus: mhi: core: Clear devices when moving
+ execution environments
+Message-ID: <20210121075022.GA30041@thinkpad>
+References: <1610651795-31287-1-git-send-email-bbhatt@codeaurora.org>
+ <1610651795-31287-2-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610651795-31287-2-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Merge three calls to klp_is_module (including one hidden inside
-klp_find_object_module) into a single one to simplify the code a bit.
+On Thu, Jan 14, 2021 at 11:16:33AM -0800, Bhaumik Bhatt wrote:
+> When moving from SBL to mission mode execution environment, there
+> is no remove callback notification to MHI client drivers which
+> operate on SBL mode only. Client driver devices are being created
+> in SBL or AMSS(mission mode) and only destroyed after power down
+> or SYS_ERROR. If there exist any SBL-specific channels, those are
+> left open and client drivers are thus unaware of the new execution
+> environment where those channels cannot operate. Close the gap and
+> issue remove callbacks to SBL-specific client drivers once device
+> enters mission mode.
+> 
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- kernel/livepatch/core.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+What are the SBL specific channels and the client drivers operating on them?
+If this is something going to come in future, then this patch can come later.
 
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index f76fdb9255323d..a7f625dc24add3 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -54,9 +54,6 @@ static void klp_find_object_module(struct klp_object *obj)
- {
- 	struct module *mod;
- 
--	if (!klp_is_module(obj))
--		return;
--
- 	mutex_lock(&module_mutex);
- 	/*
- 	 * We do not want to block removal of patched modules and therefore
-@@ -73,7 +70,6 @@ static void klp_find_object_module(struct klp_object *obj)
- 	 */
- 	if (mod && mod->klp_alive)
- 		obj->mod = mod;
--
- 	mutex_unlock(&module_mutex);
- }
- 
-@@ -823,15 +819,19 @@ static int klp_init_object(struct klp_patch *patch, struct klp_object *obj)
- 	int ret;
- 	const char *name;
- 
--	if (klp_is_module(obj) && strlen(obj->name) >= MODULE_NAME_LEN)
--		return -EINVAL;
--
- 	obj->patched = false;
- 	obj->mod = NULL;
- 
--	klp_find_object_module(obj);
-+	if (klp_is_module(obj)) {
-+		if (strlen(obj->name) >= MODULE_NAME_LEN)
-+			return -EINVAL;
-+		name = obj->name;
-+
-+		klp_find_object_module(obj);
-+	} else {
-+		name = "vmlinux";
-+	}
- 
--	name = klp_is_module(obj) ? obj->name : "vmlinux";
- 	ret = kobject_add(&obj->kobj, &patch->kobj, "%s", name);
- 	if (ret)
- 		return ret;
--- 
-2.29.2
-
+Thanks,
+Mani
