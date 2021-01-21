@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293B22FF0B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 434392FF0B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388147AbhAUQnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:43:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:41158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387897AbhAUQlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:41:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F8111596;
-        Thu, 21 Jan 2021 08:40:04 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D3BC3F68F;
-        Thu, 21 Jan 2021 08:40:02 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v5 6/6] kasan: Forbid kunit tests when async mode is enabled
-Date:   Thu, 21 Jan 2021 16:39:43 +0000
-Message-Id: <20210121163943.9889-7-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210121163943.9889-1-vincenzo.frascino@arm.com>
-References: <20210121163943.9889-1-vincenzo.frascino@arm.com>
+        id S1731894AbhAUQmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:42:44 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:39699 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387489AbhAUQla (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:41:30 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3EF415C01D2;
+        Thu, 21 Jan 2021 11:40:16 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 21 Jan 2021 11:40:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=juHRcEeMVZKNRFcN4WekqTV/Dka
+        fl+ufNPbmU8vMOGw=; b=qGMe4HLldxJ5tL009Da+FS+uVADr9ftMfdaaEX/A5XG
+        mue+IkCUkCty5PfN1O7c4MIGFJMGX6H/28ineJBaHkpqLk7tRU169iO0oVhdNHku
+        btScS7P7FU1pKRU1MUVwEHnxqEO9F+4HR32FpakSDInB0WvNJaT0ulStCcnYimvc
+        UF9hDcLANaEsUX6YoSX1c4fh9afSMUU2CUCwS4UQI+d4+oYOjx0vuCJVHWy6bkvE
+        WGGWM4Wb+V157HoUmgTTMQu01N4rSG188ziBdturiX6cunRKh1z9oVqCUxiEKtS1
+        vGVHTyUbRKRvCXoYEzDh4uESEzsxvQ8pNJRaTLgBgKQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=juHRcE
+        eMVZKNRFcN4WekqTV/Dkafl+ufNPbmU8vMOGw=; b=Lisa+IU7N9cYgUBSEatDPy
+        zx0J9y4G/ZNe1dJ7I9Sd2tYA4MkRF2RNh33UEWGGOyIlKlAp79HBzIBvpfBI31Bd
+        gOJcWRALArycbJDEvcnK62y7uKQM4E/nsUHntWywhyKMms1KoHl7cb41pDYFERiV
+        y4j8gjcmna1oYSD+boz/mqkxGLKJZ2OeTQEWGj75Zj+DJn1w3Ix4KJ2UFnDds609
+        z+MtrPZ/Y9L1iD0oDVhcN4/8NaL90r8GtTG5J+EZhmLO8Teq5oCkMY0pJRWSv21O
+        AHmoyK/zYWR1fGGqmpHQntJhpEYP7DLY6F6BSkvpf0F77Y5pF5RY+NytQCors0NA
+        ==
+X-ME-Sender: <xms:bq4JYH5w8prMK1Ejrw95Wt8Mep6DITrkdqcO-OiJicQoCehzcCy0vQ>
+    <xme:bq4JYM2a6Cq0mP-mSBoEbr-FlcK6qvg1eCvI6m7fuPzpb9BOSZMnJ3nr1nhMMbmzq
+    Ql8dZLMiOa86acd4Wo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggdelhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:bq4JYLUMP1znYviGohik7iukACze7dOQMUp7Wf_Wax5onZngtpiW9A>
+    <xmx:bq4JYP7zyVpiWBefm7Vi4j2D30nsg7uxmHC-7s_VgfswgprWzt4h3w>
+    <xmx:bq4JYKIgWlrDxamGeUcdu8YbFw7qE6aqIjg6hIuV_RA43pCDifsnug>
+    <xmx:cK4JYGFpbCaG0UiCcqhe1ACq41lK9hhDEkpo8lRCYReUzphuOiuBfQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5FF2E1080069;
+        Thu, 21 Jan 2021 11:40:14 -0500 (EST)
+Date:   Thu, 21 Jan 2021 17:40:13 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Liu Xiang <liu.xiang@zlingsmart.com>
+Cc:     linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        wens@csie.org, jernej.skrabec@siol.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        liuxiang_1999@126.com
+Subject: Re: [PATCH] pinctrl: sunxi: fix use-after-free in sunxi_pmx_free()
+Message-ID: <20210121164013.cqfxvach4ugkohm7@gilmour>
+References: <20210119062908.20169-1-liu.xiang@zlingsmart.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7o5h6w6sna7w4xki"
+Content-Disposition: inline
+In-Reply-To: <20210119062908.20169-1-liu.xiang@zlingsmart.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Architectures supported by KASAN_HW_TAGS can provide a sync or async
-mode of execution. KASAN KUNIT tests can be executed only when sync
-mode is enabled.
 
-Forbid the execution of the KASAN KUNIT tests when async mode is
-enabled.
+--7o5h6w6sna7w4xki
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- lib/test_kasan.c | 5 +++++
- mm/kasan/kasan.h | 2 ++
- 2 files changed, 7 insertions(+)
+Hi,
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 7285dcf9fcc1..1306f707b4fe 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -52,6 +52,11 @@ static int kasan_test_init(struct kunit *test)
- 		return -1;
- 	}
- 
-+	if (!hw_is_mode_sync()) {
-+		kunit_err(test, "can't run KASAN tests in async mode");
-+		return -1;
-+	}
-+
- 	multishot = kasan_save_enable_multi_shot();
- 	hw_set_tagging_report_once(false);
- 	return 0;
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 3923d9744105..3464113042ab 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -296,6 +296,7 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- 
- #define hw_enable_tagging_sync()		arch_enable_tagging_sync()
- #define hw_enable_tagging_async()		arch_enable_tagging_async()
-+#define hw_is_mode_sync()			arch_is_mode_sync()
- #define hw_init_tags(max_tag)			arch_init_tags(max_tag)
- #define hw_set_tagging_report_once(state)	arch_set_tagging_report_once(state)
- #define hw_get_random_tag()			arch_get_random_tag()
-@@ -306,6 +307,7 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- 
- #define hw_enable_tagging_sync()
- #define hw_enable_tagging_async()
-+#define hw_is_mode_sync()
- #define hw_set_tagging_report_once(state)
- 
- #endif /* CONFIG_KASAN_HW_TAGS */
--- 
-2.30.0
+On Tue, Jan 19, 2021 at 02:29:08PM +0800, Liu Xiang wrote:
+> When CONFIG_REGULATOR is not set, sunxi_pmx_request() always return
+> success. Even a group of pins call sunxi_pmx_request(), the refcount
+> is only 1. This can cause a use-after-free warning in sunxi_pmx_free().
+> To solve this problem, go to err path if regulator_get() return NULL
+> or error.
+>=20
+> Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
 
+Is there any drawback to depending on CONFIG_REGULATOR?
+
+Given that we need those regulators enabled anyway, I guess we could
+just select or depends on it
+
+Maxime
+
+--7o5h6w6sna7w4xki
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAmubQAKCRDj7w1vZxhR
+xYLnAQCoVnvqgYNOCD7XrY/g88dCWcaLLFceHcAeb/60OCJd2wD/deGbhmb9+die
+jeRU+To65zPfDYtY61jzRQjFPv2odQw=
+=VCdd
+-----END PGP SIGNATURE-----
+
+--7o5h6w6sna7w4xki--
