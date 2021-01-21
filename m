@@ -2,93 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EEE2FE375
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885832FE38F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727284AbhAUHHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:07:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
+        id S1726127AbhAUHNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:13:07 -0500
+Received: from verein.lst.de ([213.95.11.211]:59095 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727223AbhAUHG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:06:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5F522396F;
-        Thu, 21 Jan 2021 07:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611212773;
-        bh=+bR9mDjPABrW2I1N+ggiiIHfc5sdRePQ1Z2nWFNy3v8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kO1My+E6E5Z8kmHmyP/MKIPDBqje9m1WfAwCSmwq7fgrWDJHCOGHb7+obLXxVcVUf
-         2bSRE/N9/kHF2ItTiCZAvOQ1FkgDiqz4//FdN+fnbPGUU8QueIzbjppd1RQnzRAxIa
-         8/TTuHkWF+wlly55WkxMYD6vSihJoCB78ChXBxefrMcdxOTa6psEsrbGDD4LJb+Ve6
-         eBaiCE056mVQglJpaM9WtrlxWxM6DIiS8a7qhw27P/3D8vV2kVClav8yzZG3uTPxg6
-         agW0vDPfe5mjzno7f59umtfO0DNPZC0Gds3TBPwAHPBzYGTbM5NrdT/dyTj8DkvDSU
-         Gb00+JArEjQJg==
-Received: by mail-lj1-f172.google.com with SMTP id x23so1293769lji.7;
-        Wed, 20 Jan 2021 23:06:12 -0800 (PST)
-X-Gm-Message-State: AOAM530DW6WSV0Rdq8wIU4SoKINsadI+cfD/EMonffAre0R8VyTZw+u9
-        9qqB5PTYWc0lCkdJOD7zs0uDrLnUaqRdMSCR2Bk=
-X-Google-Smtp-Source: ABdhPJy+uqjQSznP0t82Diob/W2b6pomXLxlwX3tvtwMmaH/yL0+bnfafklzET/z2EdofQ8T7rS4I6hnaNNa15w41uE=
-X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr6599880ljf.18.1611212771058;
- Wed, 20 Jan 2021 23:06:11 -0800 (PST)
+        id S1726898AbhAUHJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:09:34 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7A8DE67357; Thu, 21 Jan 2021 08:08:35 +0100 (CET)
+Date:   Thu, 21 Jan 2021 08:08:35 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc:     akpm@linux-foundation.org, hch@lst.de, dja@axtens.net,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/vmalloc: Separate put pages and flush VM flags
+Message-ID: <20210121070835.GA23327@lst.de>
+References: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
 MIME-Version: 1.0
-References: <1608478763-60148-1-git-send-email-guoren@kernel.org>
- <1608478763-60148-4-git-send-email-guoren@kernel.org> <X/cBV8Bll0K2PwTx@hirez.programming.kicks-ass.net>
-In-Reply-To: <X/cBV8Bll0K2PwTx@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 21 Jan 2021 15:05:59 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQDs+mfr2QU2JqYWswdt9kV9CmC=K7=LwDHeE=rVaLf5A@mail.gmail.com>
-Message-ID: <CAJF2gTQDs+mfr2QU2JqYWswdt9kV9CmC=K7=LwDHeE=rVaLf5A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] csky: Fixup asm/cmpxchg.h with correct ordering barrier
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Wed, Jan 20, 2021 at 05:41:18PM -0800, Rick Edgecombe wrote:
+> When VM_MAP_PUT_PAGES was added, it was defined with the same value as
+> VM_FLUSH_RESET_PERMS. This doesn't seem like it will cause any big
+> functional problems other than some excess flushing for VM_MAP_PUT_PAGES
+> allocations.
+> 
+> Redefine VM_MAP_PUT_PAGES to have its own value. Also, move the comment
+> and remove whitespace for VM_KASAN such that the flags lower down are less
+> likely to be missed in the future.
+> 
+> Fixes: b944afc9d64d ("mm: add a VM_MAP_PUT_PAGES flag for vmap")
+> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 
-On Thu, Jan 7, 2021 at 8:41 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Sun, Dec 20, 2020 at 03:39:22PM +0000, guoren@kernel.org wrote:
->
->
-> > +#define cmpxchg(ptr, o, n)                                   \
-> > +({                                                           \
-> > +     __typeof__(*(ptr)) __ret;                               \
-> > +     __smp_release_fence();                                  \
-> > +     __ret = cmpxchg_relaxed(ptr, o, n);                     \
-> > +     __smp_acquire_fence();                                  \
-> > +     __ret;                                                  \
-> > +})
->
-> So you failed to Cc me on patch #2 that introduces these barriers. I've
-> dug it out, but I'm still terribly confused on all that.
->
-> On first reading the above looks wrong.
->
-> Could you also clarify the difference (if any) between your bar.brwarw
-> and sync instruction?
->
-> Specifically, about transitiviry, or whatever we seem to be calling that
-> today.
+Ooops.  Looks good:
 
-bar.brwarw just like riscv fence.rwrw
-bar means barrier
-brw means before read and write would happen before the instruction.
-arw means after read and write would happen after the instruction
-So it also could be bar.brarw / bar.arw / bar.brw / bar.braw
-
-sync means we need to wait until all instructions complete in the CPU
-pipeline and then issue the next instructions.
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Reviewed-by: Christoph Hellwig <hch@lst.de>
