@@ -2,296 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D62A2FE4E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BA92FE4EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbhAUIY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727979AbhAUIXo (ORCPT
+        id S1727977AbhAUI0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:26:54 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:11106 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbhAUIZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:23:44 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D6EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:22:52 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id t17so890291qvv.17
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:22:52 -0800 (PST)
+        Thu, 21 Jan 2021 03:25:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611217519; x=1642753519;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=5xDViCNWTWpt74+S63VrlNc8LWu+dxnOf+RyPFe7hss=;
+  b=HhFVAA+E4+S3it4ImT8VrG7pgo76LoNpf/ueeRpCKVdFUK+XoSBoy2Ce
+   1+Bjl/3HIobrEoA/8pYuIfhSnc2KfTWNcKnq1cys+FwgP/HuaHLrauCoC
+   NKO7nws9Zs2Vgak87sS77bOJTxYrnTvu4sxgqp4g+GTRCdCo7Rg17foG6
+   YqVYRy2CmP7fvpEFFy7Pb0Q+lhj0p2yLTM1K//+nQ33LZRSl1GNqZz+dJ
+   KDEf8qXIdLtY5vKU2bVimiT86cwn79kYQh+PPmkG6e0EyaQcXM8YeS1c8
+   6U1V/F+AxGUv1rCrCJNjOdC9nMy8Ysg/SP7ZhQ+xjHzK2KbY3yj5gjvgs
+   g==;
+IronPort-SDR: nopY/1/vZtTbFd6l0+IpzksjZWV827taoYGdI6nTCvXcD+NT6atg+8pFyCQqv+c16JkaXOoL0D
+ KZ4ZA1yIKpkpX5wZeHBX/9xKxHqY0oEbQqAoXtVeOlDWitYpkamuITHncU/F4of0v0+vfTCvA1
+ 8qvStsDmXY9OCQe7EPLXrsBBarKmqoRU5iWs00KcZ6PkYEsEa49IMfyV+qwhw4SkboXxG08Km6
+ tzg8JeOoO/gZkor8VHecJdk53+ftE6lSIRjTitLfOZZNK7atzziYHzHo7RWXAh9orbProOBDgX
+ qkU=
+X-IronPort-AV: E=Sophos;i="5.79,363,1602518400"; 
+   d="scan'208";a="261948044"
+Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Jan 2021 16:43:06 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lw68XCNKrU/qui9r1XSPq6hnWUBUdN/CfDi270C7BJeOnIzrp6qBQlCcjU+S9EGPNdg/DQ8OYphkmMhy7CVeybh82BxKsz4MwvpLcFqZIiOBiSQjpDQ2Bqol9TSWenr6xXXpcqa3xNnfKtOclaOqXDe9MnJy6nuBYdY6xn3P2cH223ZYGc4Yc8qw1KxiWmgpftekj+FIBNuNiz7iUfzVH04NZ+jD1ozB3trYByAOZMz6ZU+c3NCyxa8JoMF/m62PWe0Md2WN9/pUQtGLkUgsHuk6lut1C/P6B3ex214voxw3DMPYPzPhMXbM++tqT3pYdhe93xkdY8lAPQY+rboeag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H0PH6GNao/klmOr5IzzIaOMg/PvFVYJ+pZQvveYwX64=;
+ b=bOjNMUdbSeuUnFo9IrVW/LqAa07ep3nTQcmI2FgbBgtSEiGlbP9fxaIAWn2bLwbR0qxEwbpdToLb5qVWFFxaJfPspEcT6gxgUWyGagD3htFPcBoSUJobCMw95Ta5QLNipzaiy85bcNYkfnVc84J/ZnGPEkGjqpuM8TjJ28AgBENd0TJ28lmYt1CoJ/MssPzIgsbkg10pF6WAWCw5BgNsH3D9dOpKfeZ9EPW2PXfg4ZRHc/yakrCdIFQj9gu6QfyLcuag8hD2+fj0xanIYMuBDpIhztQAzTX6m6QXhR+FTzbm6JliOr6eDJ5KFR0uLV90E75pq3cV/uBINjreOzEzqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=He3ar/MTK5MMTHLPAyc/YOgGj/eE6d07+Lgx6V1wQsY=;
-        b=C8XCAguqZ99f5zJfx3/7Ij5ULSa+QZ2Yyw8wJVruImNEpiD6nFB0PnZ2UJE2eb6jxo
-         I5wFAeoUGndVQIloVvcTIBV/iWeqXxoOhDH3+6KRWmXxFm6OgQ56Zc+aGPFzAkbVA6HA
-         Tot9+SRAU5sWpgb0D8wjP6tWm3aEGK3MyFwFOi4ZiCi56whNwVNKT4Ogx2DYFELwgLAp
-         hhUdmQOWUPXOlDTW+4rj5f/4GV5QlZ1ftgHCnBwuqBqCTmZ5PGgbUMygnbOuk378hV/+
-         5YAHsGjrgGB8eUWOz50hP61Vt2jhLyr58j0t7u3OA3EVTh3lwZL3ufffBkvRyyNGFcjq
-         CCgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=He3ar/MTK5MMTHLPAyc/YOgGj/eE6d07+Lgx6V1wQsY=;
-        b=kr9ypTIG8OBiPt44sp0TBJVxzt3M4EKvZ3bERmRQzYxhWbJuKGhXYVYN3dhbqOTFAs
-         3ktPmS4I+SoKN117gH0bli4ZSVQpF7IKjuBxadOBBNTArCbplNRElmbFHOMhB9MCwJft
-         QKuMCChHoCf9cpmJoKOi6gAzJzMumZFTjRCxX9gIcWhIH+3nIUBEJJF5/q5VCTS1WGjt
-         kju+/CL7rK9EFhcelkERnIycRRf5xglHrrSMINCNBO/4PThb1TYNdz8QRNq8mZ8PHe8E
-         Ix6+cH0x6qOQZ40htKBWxjLnT9uSfoc+tjh6O6ncTfvpLEPuIdoxMcZFOOKlfQ9QzchS
-         nU4w==
-X-Gm-Message-State: AOAM531iyzqoMDKgV042ddSMWGDtoXL3AToLVMExzIcHWT0NItB64UAD
-        sP8d8S/jCeoADy5UOIF9EgDeYJRJa5nB8w0=
-X-Google-Smtp-Source: ABdhPJzA68BXbtByMkrhMvj2c8KSwGxuNkyLOcPNTmsTOY+y+vgk2O5oVdgXGhD48pPyTTyz36p8s05OoWK8cJg=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a0c:c211:: with SMTP id
- l17mr13353032qvh.53.1611217371639; Thu, 21 Jan 2021 00:22:51 -0800 (PST)
-Date:   Thu, 21 Jan 2021 00:22:47 -0800
-In-Reply-To: <20201218031703.3053753-6-saravanak@google.com>
-Message-Id: <20210121082248.883253-1-saravanak@google.com>
-Mime-Version: 1.0
-References: <20201218031703.3053753-6-saravanak@google.com>
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-Subject: [TEST PATCH v1] driver: core: Make fw_devlink=on more forgiving
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H0PH6GNao/klmOr5IzzIaOMg/PvFVYJ+pZQvveYwX64=;
+ b=tgQ731nUeMOhgE+X8aJokO/3/gyG/vVOcs6a2e/emcs4H/n2HmGEuaZba4xmEtuF7WrO9aQ4Anb5zLf+0Gh/62xUtq6RSHNCkq8+v/D73mis01yDlsTmWrqZaqc9MCJ4Vvx5Fzn5ynIqnpCID+L0WCfk+HJopSJseRjrC1PJxRk=
+Received: from DM6PR04MB4972.namprd04.prod.outlook.com (2603:10b6:5:fc::10) by
+ DM5PR04MB1035.namprd04.prod.outlook.com (2603:10b6:4:3e::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11; Thu, 21 Jan 2021 08:23:20 +0000
+Received: from DM6PR04MB4972.namprd04.prod.outlook.com
+ ([fe80::9a1:f2ba:2679:8188]) by DM6PR04MB4972.namprd04.prod.outlook.com
+ ([fe80::9a1:f2ba:2679:8188%7]) with mapi id 15.20.3763.010; Thu, 21 Jan 2021
+ 08:23:20 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Julian Calaby <julian.calaby@gmail.com>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "jfs-discussion@lists.sourceforge.net" 
+        <jfs-discussion@lists.sourceforge.net>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>
+Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
+Thread-Topic: [RFC PATCH 00/37] block: introduce bio_init_fields()
+Thread-Index: AQHW7iDfXiv5iuHOl0mGSxMcJ7OwhA==
+Date:   Thu, 21 Jan 2021 08:23:20 +0000
+Message-ID: <DM6PR04MB4972029B58F81B22033E31F386A10@DM6PR04MB4972.namprd04.prod.outlook.com>
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+ <CAGRGNgWLspr6M1COgX9cuDDgYdiXvQQjWQb7XYLsmFpfMYt0sA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2600:1700:31ee:290:6c3f:2942:f9ba:e594]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1b399c6d-302c-405d-7f89-08d8bde5cfd2
+x-ms-traffictypediagnostic: DM5PR04MB1035:
+x-microsoft-antispam-prvs: <DM5PR04MB103558D7CAA67BC277FBE0E586A19@DM5PR04MB1035.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: luBm2A9fQFDbAs+wwf5UQLQqGI+U9qrY9qOoLl278vLFEhZYF8PCPE1mzg6Tt00oqorUoJZeH6SroLCiDqfwK9XrIA5LmEasW9gV2WFpREOKVrf0vl5YIGT/uz5MOZLMc95bMXi+Hw5BHRva63Z5/1PuoE1WocRTm129bzScDkldj9CvFwvFGhDH9Et4QKMXUX+IciSSEzf5XTQnwBQ4Ce56JAClngNy5hTRHQCC5L4OmkCPDAyuCVPr/ljXo1Jgx+wBya1uqegcbpFR6wk99WVD4J4hLzl4XOz2eSJuA7hIeWxB1OEAXp8WrdWox86N/lXoRtgzme1lqsuaDmQHfwv/fCM9Q/yzofM2yqu2Jy068UIlRYCsj/6zdaLjN0gxaku4C3m0vY9X1srG/ZD+9g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB4972.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(366004)(136003)(396003)(376002)(316002)(52536014)(6916009)(186003)(54906003)(5660300002)(76116006)(9686003)(55016002)(8936002)(71200400001)(83380400001)(4326008)(53546011)(7416002)(7696005)(8676002)(66476007)(91956017)(478600001)(33656002)(66946007)(64756008)(66556008)(86362001)(2906002)(66446008)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?iASZoPJYzsgBoHOG0e4uj4eYwMJzI7AYx9ibXkU8WlIY/45eI5Lozn9IMLqg?=
+ =?us-ascii?Q?K1fUjrE61rIj9pVmoTN18nQMr+gvGY4G6wJ+Ny4pZYARx/NQUcSJcxlwZktO?=
+ =?us-ascii?Q?bHqvL2+WTuwKfq2jk97rHh4iKZQYlGKj9o5IFGIIiC6E0WKGXNOAogExeiH7?=
+ =?us-ascii?Q?tO53jk+LmhpLuLYm0OVz3gHZc25lTvqogVwbwvUqG3rX45XT/251vlSLhLDN?=
+ =?us-ascii?Q?BiAaGVE7uBNDX6Lo7JJvKKpz+6vrvuvatx4hhONQ7MN7a+Zn8FxjYQrE2SUa?=
+ =?us-ascii?Q?uH7RyUQL1jRl4VoRuKHUwCaNA0ebTkVOQKvC2VmJ6rJqt2gYMsgZjF2sAvYF?=
+ =?us-ascii?Q?ZwtuZCJhEJsAawETHIlGBaxry0pr7057QSOs8vA7S+uAfyiqeL3YEqc6ejxT?=
+ =?us-ascii?Q?RixON+06jvKRSioN7m1wLJ0XqsMUTEiwAu81zEEefyjFa/50E45jN0Pifbq2?=
+ =?us-ascii?Q?YQIZxBpt2Hqxx1KKyTlN2pXg4IQbafIQchs+7TVmwY/vsp9tQR7uEafp0BDS?=
+ =?us-ascii?Q?bu5T812yyckpVYAeXogWT4zDgQOCOO47FhLaIz3EFn6kvRW51FFMDKyBoiir?=
+ =?us-ascii?Q?wXwhkX75FSf1Qw4pnCXK4hYvl2cDv1YYOEYl1WdmIjJ5O2HNpEWKeTvOxwCX?=
+ =?us-ascii?Q?6grVS6+rBLLWAffAcMo7a016G35j79LX7hwn96/LgR3wCcwVNSh6y48Rw/g5?=
+ =?us-ascii?Q?buriD3gNHqhP6WETZHEu3zlHI7zs9yJmY9x9tAS7fU8E1W8RjXRnFv3rsLTV?=
+ =?us-ascii?Q?mGTcmEpB3F0x56xPLqIzECmw12+8LqLQ8UDlGJuGXusb8MbbIGileZPhB+uM?=
+ =?us-ascii?Q?eYZwo7QTxj15lHNkB6nFsDURRPPebs3b77L/3uwexEDpxECQDVj7jI8ssHcj?=
+ =?us-ascii?Q?+WRw7u4eTJ3rUDPixBZPxm7sdD54H8NacygfAoLOu7DQVosWaIjmoJMeqwei?=
+ =?us-ascii?Q?UQpipq7k3iuDVr8GZd3RD+7YB2iiiLLxt9SAooJrWAExIIw2daPBw3LpDI2I?=
+ =?us-ascii?Q?v+AxiMYRd5DaVrZHEoGe1XFXE53nsSzE545xeS/B8kIzqSQ6QWmjCxUgzTIz?=
+ =?us-ascii?Q?RlRAUztqVUa3QAZZjmDwWD85Sb5txeijXEhtYjBST9cPs9YLaZg6pekySFU5?=
+ =?us-ascii?Q?eMN2lhUlrZ6V1wO6BG46/XYS7R06vKBnUA=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB4972.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b399c6d-302c-405d-7f89-08d8bde5cfd2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jan 2021 08:23:20.3555
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: q/0OYkC/ek5ytB2UVtDM2si2ySo1pVi+WyQqr0ClrR0sMEWiGpRaV17E+ClET0fPiMj8qHuKJIGPJIy3pAz1DySUTHtG+BdCm5OrLj07ghM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is for test purposes only and pretty experimental. Code might
-not be optimized, clean, formatted properly, etc.
-
-Please review it only for functional bugs like locking bugs, wrong
-logic, etc.
-
-It's basically trying to figure out which devices will never probe and
-ignore them. Might not always work.
-
-Marek, Geert, Marc,
-
-Can you please try this patch INSTEAD of the other workarounds we found?
-
-Jon, Michael,
-
-I'm explicitly not including you in the "To" because this patch won't
-work for your issues.
-
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/base/base.h |   3 ++
- drivers/base/core.c | 117 +++++++++++++++++++++++++++++++++++++++++++-
- drivers/base/dd.c   |  24 +++++++++
- 3 files changed, 142 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/base/base.h b/drivers/base/base.h
-index f5600a83124f..8d5fd95fa147 100644
---- a/drivers/base/base.h
-+++ b/drivers/base/base.h
-@@ -106,6 +106,9 @@ struct device_private {
- #define to_device_private_class(obj)	\
- 	container_of(obj, struct device_private, knode_class)
- 
-+bool fw_devlink_is_permissive(void);
-+bool fw_devlink_unblock_probe(struct device *dev);
-+
- /* initialisation functions */
- extern int devices_init(void);
- extern int buses_init(void);
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index e61e62b624ce..8528704bbb40 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -49,7 +49,6 @@ early_param("sysfs.deprecated", sysfs_deprecated_setup);
- static LIST_HEAD(deferred_sync);
- static unsigned int defer_sync_state_count = 1;
- static DEFINE_MUTEX(fwnode_link_lock);
--static bool fw_devlink_is_permissive(void);
- 
- /**
-  * fwnode_link_add - Create a link between two fwnode_handles.
-@@ -1481,7 +1480,7 @@ u32 fw_devlink_get_flags(void)
- 	return fw_devlink_flags;
- }
- 
--static bool fw_devlink_is_permissive(void)
-+bool fw_devlink_is_permissive(void)
- {
- 	return fw_devlink_flags == FW_DEVLINK_FLAGS_PERMISSIVE;
- }
-@@ -1552,6 +1551,120 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
- 	return ret;
- }
- 
-+static int __device_links_suppliers_available(struct device *dev)
-+{
-+	struct device_link *link;
-+	int ret = 0;
-+
-+	if (dev->fwnode && !list_empty(&dev->fwnode->suppliers) &&
-+	    !fw_devlink_is_permissive()) {
-+		return -EPROBE_DEFER;
-+	}
-+
-+	list_for_each_entry(link, &dev->links.suppliers, c_node) {
-+		if (!(link->flags & DL_FLAG_MANAGED))
-+			continue;
-+
-+		if (link->status != DL_STATE_AVAILABLE &&
-+		    !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
-+			ret = -EPROBE_DEFER;
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+bool fw_devlink_unblock_probe(struct device *dev)
-+{
-+	struct fwnode_link *link, *tmp;
-+	struct device_link *dev_link, *dev_ln;
-+	struct fwnode_handle *fwnode = dev->fwnode;
-+	bool unblocked = false;
-+
-+	if (!fw_devlink_get_flags() || fw_devlink_is_permissive())
-+		return false;
-+
-+	if (!fwnode)
-+		return false;
-+
-+	mutex_lock(&fwnode_link_lock);
-+
-+	/* Delete questionable fwnode links */
-+	list_for_each_entry_safe(link, tmp, &fwnode->suppliers, c_hook) {
-+		struct device *par_dev;
-+		struct fwnode_handle *par;
-+		bool bound;
-+
-+		/*
-+		 * Walk up fwnode tree of supplier till we find a parent device
-+		 * that has been added or a parent fwnode that has fwnode links
-+		 * (this is a firmware node that is expected to be added as a
-+		 * device in the future).
-+		 */
-+		par = fwnode_get_parent(link->supplier);
-+		while (par && list_empty(&par->suppliers) && !par->dev)
-+			par = fwnode_get_next_parent(par);
-+
-+		/* Supplier is waiting on parent device to be added. */
-+		if (par && !par->dev) {
-+			fwnode_handle_put(par);
-+			continue;
-+		}
-+
-+		if (par && par->dev) {
-+			par_dev = get_dev_from_fwnode(fwnode);
-+			device_lock(par_dev);
-+			bound = device_is_bound(par_dev);
-+			device_unlock(par_dev);
-+			put_device(par_dev);
-+
-+			/* Supplier is waiting on parent device to be bound. */
-+			if (!bound)
-+				continue;
-+		}
-+
-+		/*
-+		 * Supplier has no parent or the immediate parent device has
-+		 * been bound to a device. It should have been added by now.
-+		 * So, this link is spurious. Delete it.
-+		 */
-+		dev_info(dev, "Deleting fwnode link to %pfwP\n",
-+			 link->supplier);
-+		list_del(&link->s_hook);
-+		list_del(&link->c_hook);
-+		kfree(link);
-+		unblocked = true;
-+	}
-+
-+	if (IS_ENABLED(CONFIG_MODULES))
-+		goto out;
-+
-+	device_links_write_lock();
-+
-+	list_for_each_entry_safe(dev_link, dev_ln, &dev->links.suppliers,
-+				 c_node) {
-+		if (!(dev_link->flags & DL_FLAG_INFERRED) ||
-+		    dev_link->flags & DL_FLAG_SYNC_STATE_ONLY ||
-+		    dev_link->status != DL_STATE_DORMANT)
-+			continue;
-+
-+		/* This supplier should have probed by now. */
-+		if (!__device_links_suppliers_available(dev_link->supplier)) {
-+			dev_info(dev, "Deleting dev link to %s\n",
-+				 dev_name(dev_link->supplier));
-+			device_link_drop_managed(dev_link);
-+			unblocked = true;
-+		}
-+	}
-+
-+	device_links_write_unlock();
-+
-+out:
-+	mutex_unlock(&fwnode_link_lock);
-+	return unblocked;
-+}
-+
- /**
-  * fw_devlink_create_devlink - Create a device link from a consumer to fwnode
-  * @con - Consumer device for the device link
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 2f32f38a11ed..d4ccd2a2b6a4 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -301,6 +301,25 @@ static void deferred_probe_timeout_work_func(struct work_struct *work)
- }
- static DECLARE_DELAYED_WORK(deferred_probe_timeout_work, deferred_probe_timeout_work_func);
- 
-+static bool deferred_probe_fw_devlink_unblock(void)
-+{
-+	struct device *dev;
-+	struct device_private *private;
-+	bool unblocked = false;
-+
-+	if (!fw_devlink_get_flags() || fw_devlink_is_permissive())
-+		return false;
-+
-+	mutex_lock(&deferred_probe_mutex);
-+	list_for_each_entry(private, &deferred_probe_pending_list, deferred_probe) {
-+		dev = private->device;
-+		unblocked |= fw_devlink_unblock_probe(dev);
-+	}
-+	mutex_unlock(&deferred_probe_mutex);
-+
-+	return unblocked;
-+}
-+
- /**
-  * deferred_probe_initcall() - Enable probing of deferred devices
-  *
-@@ -317,6 +336,11 @@ static int deferred_probe_initcall(void)
- 	driver_deferred_probe_trigger();
- 	/* Sort as many dependencies as possible before exiting initcalls */
- 	flush_work(&deferred_probe_work);
-+
-+	while (deferred_probe_fw_devlink_unblock()) {
-+		driver_deferred_probe_trigger();
-+		flush_work(&deferred_probe_work);
-+	}
- 	initcalls_done = true;
- 
- 	/*
--- 
-2.30.0.296.g2bfb1c46d8-goog
-
+On 1/20/21 7:01 PM, Julian Calaby wrote:=0A=
+> Hi Chaitanya,=0A=
+>=0A=
+> On Tue, Jan 19, 2021 at 5:01 PM Chaitanya Kulkarni=0A=
+> <chaitanya.kulkarni@wdc.com> wrote:=0A=
+>> Hi,=0A=
+>>=0A=
+>> This is a *compile only RFC* which adds a generic helper to initialize=
+=0A=
+>> the various fields of the bio that is repeated all the places in=0A=
+>> file-systems, block layer, and drivers.=0A=
+>>=0A=
+>> The new helper allows callers to initialize various members such as=0A=
+>> bdev, sector, private, end io callback, io priority, and write hints.=0A=
+>>=0A=
+>> The objective of this RFC is to only start a discussion, this it not=0A=
+>> completely tested at all.=0A=
+>> Following diff shows code level benefits of this helper :-=0A=
+>>  38 files changed, 124 insertions(+), 236 deletions(-)=0A=
+> On a more abstract note, I don't think this diffstat is actually=0A=
+> illustrating the benefits of this as much as you think it is.=0A=
+>=0A=
+> Yeah, we've reduced the code by 112 lines, but that's barely half the=0A=
+> curn here. It looks, from the diffstat, that you've effectively=0A=
+> reduced 2 lines into 1. That isn't much of a saving.=0A=
+>=0A=
+> Thanks,=0A=
+The diff stat is not the only measure since every component fs/driver=0A=
+has a different style and nested call it just to show the effect.=0A=
+Thanks for your comment, we have decided to go with the bio_new approach.=
+=0A=
+=0A=
+=0A=
