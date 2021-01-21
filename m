@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43C62FE548
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4292FE526
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbhAUIm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:42:56 -0500
-Received: from mga18.intel.com ([134.134.136.126]:23355 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbhAUIkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:40:10 -0500
-IronPort-SDR: 9EirF5JO0HpOKAYeRABxLlZEDmB+WpED3d4m/hrbr+dfwMmBc7wMQ0hRksFtQB44jvA5kM5o7W
- T1SLrdY0ouFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="166908458"
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="166908458"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 00:39:24 -0800
-IronPort-SDR: hNGaiVZhrwzcezD89Yi38zIrGN3TKMza0SoVQbss1XNbns7Nmyb5HZ8hD/k6hEHm/4vLQPGxbr
- SRV6Pt6TKuPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="385215614"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by orsmga008.jf.intel.com with ESMTP; 21 Jan 2021 00:39:22 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, rdunlap@infradead.org
-Subject: [PATCH v8 0/2] UIO support for dfl devices
-Date:   Thu, 21 Jan 2021 16:34:43 +0800
-Message-Id: <1611218085-28269-1-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727992AbhAUIhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:37:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727818AbhAUIfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:35:38 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2C9C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:34:57 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id u11so1485980ljo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lS8yS4z5gTRHyWYZ/MorqH00QDK2F6AOgR3jNZjO6uw=;
+        b=BPXcee2xlc4t3zVun2eTfkyri06k5pl6h7fkauTSz0bMHzX51jxkZGvUWY4HmCBHfU
+         Uqos+y9JB+nfRQXjsyU+fk7JyjMM/PI+94oZGRP4bEToOrt0vz4OgIUj2WqYPU5MTQ2R
+         5YzLNlb/3NrRjd7nZOfVCtQD8MZLu7Ift+AacsLu2R2thwngH4IxM/2eABKE3/kiP/kN
+         6RmQcR/yIW31FDZQrU8qJ+ViMK58pM+f5C80rGqK/lkl1AvWmMwXGH5by8rSwK8cs160
+         mTcFLMuvN9xyAMiVc6emqDMHJrosXy13tNeBMWbkFJMQ5iV9aHlUZ/zzRRq5Ok71qehj
+         cVIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lS8yS4z5gTRHyWYZ/MorqH00QDK2F6AOgR3jNZjO6uw=;
+        b=YNK1ar56lIqW8NMP28aesejgOOqw55jXojb0+yKu9nE6PwE4TiSob5AMFj3rZ+VtUb
+         GVAm0cyGpfA+ZPzw4g+fR5jY5iE7wEgwdUOPR1H6Ty8LHBFFCSCwGxAlDzqo6IAnkqAK
+         fnSoOpjn+vWFJL9Aul/Tu3VQctrI6XC0zUvOL9X+Gnwb1Rj9QtA6Hj+qWI+WQVMxV7TA
+         g1YEdhUnq8nwmO3Msl6ib0tVCWXC1l68MwkEjnIxb+tBcVmeLx/xCmkp7iOkzzPZ1Qmi
+         gdd/6gxcLwNvZJ4c8i3bMSxPcgJKbylkfcXIceNRTExlm8zUCFIcVhXh5Vniqmfegp2L
+         /r9w==
+X-Gm-Message-State: AOAM5327bZ3IODamYOzg9NS/Nq+E+xTIkopkOfCnazH8fn4zht8DibaQ
+        kMPZBtUzb4sVSiDtZr1R582fESnUW/D1VSw0LDyT7QCBfDXMZg==
+X-Google-Smtp-Source: ABdhPJxMfoLva9Z9+4Vk5RdQNogIN4B9DKEC7RABIHA5mu0hvaAFjmZSPKffe1TCkudstO+9cv1RdOfrQh93Tq/e4jQ=
+X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr6291564ljo.368.1611218095600;
+ Thu, 21 Jan 2021 00:34:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20210120124812.2800027-1-arnd@kernel.org> <20210120124812.2800027-6-arnd@kernel.org>
+In-Reply-To: <20210120124812.2800027-6-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 21 Jan 2021 09:34:44 +0100
+Message-ID: <CACRpkdaMZdUebQy7KOeAQz9wqGUWW3_PJUcD8N500NQZ0wXX2Q@mail.gmail.com>
+Subject: Re: [PATCH 5/5] ARM: remove u300 platform
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset supports some dfl device drivers written in userspace.
+On Wed, Jan 20, 2021 at 1:48 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-In the patchset v1, the "driver_override" interface should be used to bind
-the DFL UIO driver to DFL devices. But there is concern that the
-"driver_override" interface is not OK itself.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The Ericsson U300 platform was one of two ARM929 based SoC platforms for
+> mobile phones in ST-Ericsson after the merger of Ericsson with ST-NXP
+> into ST-Ericsson, the other one being the ST Nomadik.
+>
+> The platform was not widely adopted in Linux based systems and was
+> replaced with the far superior ST-Ericsson U8500 in 2011, but Linus
+> Walleij kept maintaining the code for the whole time.
+>
+> Linus continues to use the Nomadik machine, but decided to drop
+> u300 from the kernel as part of this year's spring cleaning.
+> Thanks for having maintained it all these years.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Link: https://lore.kernel.org/lkml/CACRpkdbJkiHR9FSfJTH_5d_qRU1__dRXHM1TL40iqNRKbGQfrQ@mail.gmail.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-In v2, we use a new matching algorithem. The "driver_override" interface
-is abandoned, the DFL UIO driver matches any DFL device which could not be
-handled by other DFL drivers. So the DFL UIO driver could be used for new
-DFL devices which are not supported by kernel. The concern is the UIO may
-not be suitable as a default/generic driver for all dfl features, such as
-features with multiple interrupts.
+I was planning to do this but you got there first :)
 
-In v4, we specify each matching device in the id_table of the UIO driver,
-just the same as other dfl drivers do. Now the UIO driver supports Ether
-Group feature. To support more DFL features, their feature ids should be
-added to the driver's id_table.
+The reason I cannot work on it anymore is that the device
+requires a special signing server to flash new kernels and
+I don't have access to that, and we never created a U-boot or
+similar for this device so anything needed to go in through
+that flashing tool.
 
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Main changes from v1:
-- switch to the new matching algorithem. It matches DFL devices which could
-  not be handled by other DFL drivers.
-- refacor the code about device resources filling.
-- add the documentation.
+Will you queue the patch for ARM SoC?
 
-Main changes from v2:
-- split the match ops changes in dfl.c to an independent patch.
-- move the declarations needed for dfl-uio-pdev from include/linux/dfl.h
-  to driver/fpga/dfl.h
-- some minor fixes.
-
-Main changes from v3:
-- switch to specifying each matching device in the driver's id_table.
-- refactor the irq handling code.
-
-Main changes from v4:
-- refactor the irq handling code.
-
-Main changes from v5:
-- fix the res[] zero initialization issue.
-- improve the return code for probe().
-- some doc improvement.
-
-Main changes from v6:
-- use platform_device_register_resndata() for pdev creation.
-
-Main changes from v7:
-- some doc fixes.
-
-Xu Yilun (2):
-  fpga: dfl: add the userspace I/O device support for DFL devices
-  Documentation: fpga: dfl: Add description for DFL UIO support
-
- Documentation/fpga/dfl.rst  | 25 ++++++++++++++
- drivers/fpga/Kconfig        | 10 ++++++
- drivers/fpga/Makefile       |  1 +
- drivers/fpga/dfl-uio-pdev.c | 84 +++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 120 insertions(+)
- create mode 100644 drivers/fpga/dfl-uio-pdev.c
-
--- 
-2.7.4
-
+Yours,
+Linus Walleij
