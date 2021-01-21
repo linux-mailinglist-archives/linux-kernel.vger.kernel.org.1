@@ -2,146 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932942FE4E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D62A2FE4E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbhAUIZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:25:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726716AbhAUIWb (ORCPT
+        id S1726242AbhAUIY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:24:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727979AbhAUIXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:22:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611217264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0gba4+t4e2AipgLr57aF/TlL6LFHCc9J8pUh2gVcris=;
-        b=BcpzMVeXNkj07EDc1NvNPrD3UGpnPj81WtvN2iBHpA19n4MdLpJI/OVw7ui7dDu6z1DtiO
-        PoL5f7PudjaFgrOe7B8Bz7gaFfASpfxO73CPY0n255ghgFZiPKKoU2XofmyxedY2Rrm3Wo
-        ZnIio3scO5iB+X/vY2O0ZnXWo7vaMew=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-RYrER6NZN9yxIYxlQV358g-1; Thu, 21 Jan 2021 03:20:59 -0500
-X-MC-Unique: RYrER6NZN9yxIYxlQV358g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DEF310054FF;
-        Thu, 21 Jan 2021 08:20:57 +0000 (UTC)
-Received: from gondolin (ovpn-113-94.ams2.redhat.com [10.36.113.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 546B871C9A;
-        Thu, 21 Jan 2021 08:20:47 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 09:20:44 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        mjrosato@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com
-Subject: Re: [PATCH 1/1] s390/vfio-ap: No need to disable IRQ after queue
- reset
-Message-ID: <20210121092044.628b77c7.cohuck@redhat.com>
-In-Reply-To: <20210121072008.76523-1-pasic@linux.ibm.com>
-References: <20210121072008.76523-1-pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Thu, 21 Jan 2021 03:23:44 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D6EC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:22:52 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id t17so890291qvv.17
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:22:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=He3ar/MTK5MMTHLPAyc/YOgGj/eE6d07+Lgx6V1wQsY=;
+        b=C8XCAguqZ99f5zJfx3/7Ij5ULSa+QZ2Yyw8wJVruImNEpiD6nFB0PnZ2UJE2eb6jxo
+         I5wFAeoUGndVQIloVvcTIBV/iWeqXxoOhDH3+6KRWmXxFm6OgQ56Zc+aGPFzAkbVA6HA
+         Tot9+SRAU5sWpgb0D8wjP6tWm3aEGK3MyFwFOi4ZiCi56whNwVNKT4Ogx2DYFELwgLAp
+         hhUdmQOWUPXOlDTW+4rj5f/4GV5QlZ1ftgHCnBwuqBqCTmZ5PGgbUMygnbOuk378hV/+
+         5YAHsGjrgGB8eUWOz50hP61Vt2jhLyr58j0t7u3OA3EVTh3lwZL3ufffBkvRyyNGFcjq
+         CCgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=He3ar/MTK5MMTHLPAyc/YOgGj/eE6d07+Lgx6V1wQsY=;
+        b=kr9ypTIG8OBiPt44sp0TBJVxzt3M4EKvZ3bERmRQzYxhWbJuKGhXYVYN3dhbqOTFAs
+         3ktPmS4I+SoKN117gH0bli4ZSVQpF7IKjuBxadOBBNTArCbplNRElmbFHOMhB9MCwJft
+         QKuMCChHoCf9cpmJoKOi6gAzJzMumZFTjRCxX9gIcWhIH+3nIUBEJJF5/q5VCTS1WGjt
+         kju+/CL7rK9EFhcelkERnIycRRf5xglHrrSMINCNBO/4PThb1TYNdz8QRNq8mZ8PHe8E
+         Ix6+cH0x6qOQZ40htKBWxjLnT9uSfoc+tjh6O6ncTfvpLEPuIdoxMcZFOOKlfQ9QzchS
+         nU4w==
+X-Gm-Message-State: AOAM531iyzqoMDKgV042ddSMWGDtoXL3AToLVMExzIcHWT0NItB64UAD
+        sP8d8S/jCeoADy5UOIF9EgDeYJRJa5nB8w0=
+X-Google-Smtp-Source: ABdhPJzA68BXbtByMkrhMvj2c8KSwGxuNkyLOcPNTmsTOY+y+vgk2O5oVdgXGhD48pPyTTyz36p8s05OoWK8cJg=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a0c:c211:: with SMTP id
+ l17mr13353032qvh.53.1611217371639; Thu, 21 Jan 2021 00:22:51 -0800 (PST)
+Date:   Thu, 21 Jan 2021 00:22:47 -0800
+In-Reply-To: <20201218031703.3053753-6-saravanak@google.com>
+Message-Id: <20210121082248.883253-1-saravanak@google.com>
+Mime-Version: 1.0
+References: <20201218031703.3053753-6-saravanak@google.com>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+Subject: [TEST PATCH v1] driver: core: Make fw_devlink=on more forgiving
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Zyngier <maz@kernel.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 08:20:08 +0100
-Halil Pasic <pasic@linux.ibm.com> wrote:
+This patch is for test purposes only and pretty experimental. Code might
+not be optimized, clean, formatted properly, etc.
 
-> From: Tony Krowiak <akrowiak@linux.ibm.com>
-> 
-> The queues assigned to a matrix mediated device are currently reset when:
-> 
-> * The VFIO_DEVICE_RESET ioctl is invoked
-> * The mdev fd is closed by userspace (QEMU)
-> * The mdev is removed from sysfs.
-> 
-> Immediately after the reset of a queue, a call is made to disable
-> interrupts for the queue. This is entirely unnecessary because the reset of
-> a queue disables interrupts, so this will be removed.
-> 
-> Furthermore, vfio_ap_irq_disable() does an unconditional PQAP/AQIC which
-> can result in a specification exception (when the corresponding facility
-> is not available), so this is actually a bugfix.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> [pasic@linux.ibm.com: minor rework before merging]
-> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: ec89b55e3bce ("s390: ap: implement PAPQ AQIC interception in kernel")
-> Cc: <stable@vger.kernel.org>
-> 
-> ---
-> 
-> Since it turned out disabling the interrupts via PQAP/AQIC is not only
-> unnecesary but also buggy, we decided to put this patch, which
-> used to be apart of the series https://lkml.org/lkml/2020/12/22/757 on the fast
-> lane.
-> 
-> If the backports turn out to be a bother, which I hope won't be the case
-> not, I am happy to help with those.
-> 
-> ---
->  drivers/s390/crypto/vfio_ap_drv.c     |   6 +-
->  drivers/s390/crypto/vfio_ap_ops.c     | 100 ++++++++++++++++----------
->  drivers/s390/crypto/vfio_ap_private.h |  12 ++--
->  3 files changed, 69 insertions(+), 49 deletions(-)
-> 
+Please review it only for functional bugs like locking bugs, wrong
+logic, etc.
 
-(...)
+It's basically trying to figure out which devices will never probe and
+ignore them. Might not always work.
 
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index f46dde56b464..28e9d9989768 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -88,11 +88,6 @@ struct ap_matrix_mdev {
->  	struct mdev_device *mdev;
->  };
->  
-> -extern int vfio_ap_mdev_register(void);
-> -extern void vfio_ap_mdev_unregister(void);
-> -int vfio_ap_mdev_reset_queue(unsigned int apid, unsigned int apqi,
-> -			     unsigned int retry);
-> -
->  struct vfio_ap_queue {
->  	struct ap_matrix_mdev *matrix_mdev;
->  	unsigned long saved_pfn;
-> @@ -100,5 +95,10 @@ struct vfio_ap_queue {
->  #define VFIO_AP_ISC_INVALID 0xff
->  	unsigned char saved_isc;
->  };
-> -struct ap_queue_status vfio_ap_irq_disable(struct vfio_ap_queue *q);
-> +
-> +int vfio_ap_mdev_register(void);
-> +void vfio_ap_mdev_unregister(void);
+Marek, Geert, Marc,
 
-Nit: was moving these two necessary?
+Can you please try this patch INSTEAD of the other workarounds we found?
 
-> +int vfio_ap_mdev_reset_queue(struct vfio_ap_queue *q,
-> +			     unsigned int retry);
-> +
->  #endif /* _VFIO_AP_PRIVATE_H_ */
-> 
-> base-commit: 9791581c049c10929e97098374dd1716a81fefcc
+Jon, Michael,
 
-Anyway, if I didn't entangle myself in the various branches, this seems
-sane.
+I'm explicitly not including you in the "To" because this patch won't
+work for your issues.
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/base.h |   3 ++
+ drivers/base/core.c | 117 +++++++++++++++++++++++++++++++++++++++++++-
+ drivers/base/dd.c   |  24 +++++++++
+ 3 files changed, 142 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index f5600a83124f..8d5fd95fa147 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -106,6 +106,9 @@ struct device_private {
+ #define to_device_private_class(obj)	\
+ 	container_of(obj, struct device_private, knode_class)
+ 
++bool fw_devlink_is_permissive(void);
++bool fw_devlink_unblock_probe(struct device *dev);
++
+ /* initialisation functions */
+ extern int devices_init(void);
+ extern int buses_init(void);
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index e61e62b624ce..8528704bbb40 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -49,7 +49,6 @@ early_param("sysfs.deprecated", sysfs_deprecated_setup);
+ static LIST_HEAD(deferred_sync);
+ static unsigned int defer_sync_state_count = 1;
+ static DEFINE_MUTEX(fwnode_link_lock);
+-static bool fw_devlink_is_permissive(void);
+ 
+ /**
+  * fwnode_link_add - Create a link between two fwnode_handles.
+@@ -1481,7 +1480,7 @@ u32 fw_devlink_get_flags(void)
+ 	return fw_devlink_flags;
+ }
+ 
+-static bool fw_devlink_is_permissive(void)
++bool fw_devlink_is_permissive(void)
+ {
+ 	return fw_devlink_flags == FW_DEVLINK_FLAGS_PERMISSIVE;
+ }
+@@ -1552,6 +1551,120 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
+ 	return ret;
+ }
+ 
++static int __device_links_suppliers_available(struct device *dev)
++{
++	struct device_link *link;
++	int ret = 0;
++
++	if (dev->fwnode && !list_empty(&dev->fwnode->suppliers) &&
++	    !fw_devlink_is_permissive()) {
++		return -EPROBE_DEFER;
++	}
++
++	list_for_each_entry(link, &dev->links.suppliers, c_node) {
++		if (!(link->flags & DL_FLAG_MANAGED))
++			continue;
++
++		if (link->status != DL_STATE_AVAILABLE &&
++		    !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
++			ret = -EPROBE_DEFER;
++			break;
++		}
++	}
++
++	return ret;
++}
++
++bool fw_devlink_unblock_probe(struct device *dev)
++{
++	struct fwnode_link *link, *tmp;
++	struct device_link *dev_link, *dev_ln;
++	struct fwnode_handle *fwnode = dev->fwnode;
++	bool unblocked = false;
++
++	if (!fw_devlink_get_flags() || fw_devlink_is_permissive())
++		return false;
++
++	if (!fwnode)
++		return false;
++
++	mutex_lock(&fwnode_link_lock);
++
++	/* Delete questionable fwnode links */
++	list_for_each_entry_safe(link, tmp, &fwnode->suppliers, c_hook) {
++		struct device *par_dev;
++		struct fwnode_handle *par;
++		bool bound;
++
++		/*
++		 * Walk up fwnode tree of supplier till we find a parent device
++		 * that has been added or a parent fwnode that has fwnode links
++		 * (this is a firmware node that is expected to be added as a
++		 * device in the future).
++		 */
++		par = fwnode_get_parent(link->supplier);
++		while (par && list_empty(&par->suppliers) && !par->dev)
++			par = fwnode_get_next_parent(par);
++
++		/* Supplier is waiting on parent device to be added. */
++		if (par && !par->dev) {
++			fwnode_handle_put(par);
++			continue;
++		}
++
++		if (par && par->dev) {
++			par_dev = get_dev_from_fwnode(fwnode);
++			device_lock(par_dev);
++			bound = device_is_bound(par_dev);
++			device_unlock(par_dev);
++			put_device(par_dev);
++
++			/* Supplier is waiting on parent device to be bound. */
++			if (!bound)
++				continue;
++		}
++
++		/*
++		 * Supplier has no parent or the immediate parent device has
++		 * been bound to a device. It should have been added by now.
++		 * So, this link is spurious. Delete it.
++		 */
++		dev_info(dev, "Deleting fwnode link to %pfwP\n",
++			 link->supplier);
++		list_del(&link->s_hook);
++		list_del(&link->c_hook);
++		kfree(link);
++		unblocked = true;
++	}
++
++	if (IS_ENABLED(CONFIG_MODULES))
++		goto out;
++
++	device_links_write_lock();
++
++	list_for_each_entry_safe(dev_link, dev_ln, &dev->links.suppliers,
++				 c_node) {
++		if (!(dev_link->flags & DL_FLAG_INFERRED) ||
++		    dev_link->flags & DL_FLAG_SYNC_STATE_ONLY ||
++		    dev_link->status != DL_STATE_DORMANT)
++			continue;
++
++		/* This supplier should have probed by now. */
++		if (!__device_links_suppliers_available(dev_link->supplier)) {
++			dev_info(dev, "Deleting dev link to %s\n",
++				 dev_name(dev_link->supplier));
++			device_link_drop_managed(dev_link);
++			unblocked = true;
++		}
++	}
++
++	device_links_write_unlock();
++
++out:
++	mutex_unlock(&fwnode_link_lock);
++	return unblocked;
++}
++
+ /**
+  * fw_devlink_create_devlink - Create a device link from a consumer to fwnode
+  * @con - Consumer device for the device link
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 2f32f38a11ed..d4ccd2a2b6a4 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -301,6 +301,25 @@ static void deferred_probe_timeout_work_func(struct work_struct *work)
+ }
+ static DECLARE_DELAYED_WORK(deferred_probe_timeout_work, deferred_probe_timeout_work_func);
+ 
++static bool deferred_probe_fw_devlink_unblock(void)
++{
++	struct device *dev;
++	struct device_private *private;
++	bool unblocked = false;
++
++	if (!fw_devlink_get_flags() || fw_devlink_is_permissive())
++		return false;
++
++	mutex_lock(&deferred_probe_mutex);
++	list_for_each_entry(private, &deferred_probe_pending_list, deferred_probe) {
++		dev = private->device;
++		unblocked |= fw_devlink_unblock_probe(dev);
++	}
++	mutex_unlock(&deferred_probe_mutex);
++
++	return unblocked;
++}
++
+ /**
+  * deferred_probe_initcall() - Enable probing of deferred devices
+  *
+@@ -317,6 +336,11 @@ static int deferred_probe_initcall(void)
+ 	driver_deferred_probe_trigger();
+ 	/* Sort as many dependencies as possible before exiting initcalls */
+ 	flush_work(&deferred_probe_work);
++
++	while (deferred_probe_fw_devlink_unblock()) {
++		driver_deferred_probe_trigger();
++		flush_work(&deferred_probe_work);
++	}
+ 	initcalls_done = true;
+ 
+ 	/*
+-- 
+2.30.0.296.g2bfb1c46d8-goog
 
