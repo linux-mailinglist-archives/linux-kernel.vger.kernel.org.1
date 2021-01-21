@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389A42FE980
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6A02FE975
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730808AbhAUL7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        id S1730921AbhAUL6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbhAULUn (ORCPT
+        with ESMTP id S1729853AbhAULUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:20:43 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603DEC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:48 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id j12so1434405pjy.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:48 -0800 (PST)
+        Thu, 21 Jan 2021 06:20:45 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F2AC061799
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:55 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id x18so1106865pln.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t5BvkMjuaVY08gUJbMK2zLQ+31ycbwXJT/Kur/3Z95w=;
-        b=F1sJbjeFjLx44rMNM9VXJT1VmL0MJFDwx3vGHr2mL8qHmnto11WjN8OD6D0Tyl/3vP
-         yxjF81dLQrtt3ea+reaI7O2lR4kp3WgLQ2E6yT65oolB8vJLDeETZLwZ8AT+H4p8KKFM
-         eVMKCCkc3lJqxoLslpyYIPktsJtfe5IAPrM3JkeG+gRiiPJgp7Ea+eeujptT99yVRHvE
-         3w0lz9qDfeIR6CqQj7nyk17ZQYSS2gaCG++MImOdhNGYBOSZMr3IFxb3hxWFMP1rpLwi
-         t0cbvWkGBBmFxH5Ts7PPu2urw4C14l638fkduz4HQve/esYKhJsb+KyPYqvVC6MIXtUr
-         81tQ==
+        bh=yGSozZ62BYCUnvHz15lG2EnbQmWJ88vlwijLJGHrCgo=;
+        b=jMznsEDClSg4+xGGHd4ynKf8aBhP9BTp/c1fcRIW0bwCmouHvmrSfMLRDtlokUPLPV
+         7uZ6cisbhC2/bCQhc1Sf8gCz0qzy7gUIZQPY641HZOSD9Ne58dPVd1v3P52FQQFJDQ5r
+         BIEh2MsMfTZXAeF2tHcy4OjrZF5MSsSSxlisois1xZMV8twzKfyA/YgxLL7chity4eV6
+         HqMTn0S0YphcvWIdJERsciBUfz3VyFW4wXWKZaGZwJW8ZeXt2D84zqcdL5KTQc00Owqp
+         EKOGoSCDNRgLk8dZXgxqPtahXM2N2MsO9eo7nghpRuI4W7dDgRIhCNczCqPqveO8WmTe
+         iNTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t5BvkMjuaVY08gUJbMK2zLQ+31ycbwXJT/Kur/3Z95w=;
-        b=uSC/+qzN4x3KpB3urKqRcXPj3fxkPSkUjcDSPd5E4bfj8twmAKC0OCYJLcB9jVLIHI
-         KjQU9yA4GPmI47JfLuV5KN41slxGsIJmPdwpFn6MPdi7LddqrM/VDlGfXTFElRIx28qn
-         4zpWXkk0Ye39Ms+lLnR4ZfHiccSxZ5AUAmP/P56loogd5pXboFU3iCdvaTUCHksxhOho
-         xGjypiD8xznErKWxQrAkU9YWOyRD2FbfnabffOGcpqdEz0k9pJoiw4WOxDjWgY6M+Ufs
-         mLwZV3+hFIM1KofYY0eSeBUtDaikMZ+R+lt2QoUb8jM2MRbE8wVYV6ZRj3GuKDsAPGre
-         1+NQ==
-X-Gm-Message-State: AOAM531srWG2bieMCrIAxGW6976MNgOY8TSP1f8YUwlc9VrUBbkH924X
-        gHLLgCLd1iFHi15bM3K2UGSv9Q==
-X-Google-Smtp-Source: ABdhPJz7q/I5ANoKOSZSRSNYadjp4zVir7HUG9/UL0WMu7ayW5Oc9Bj7FnQUI7AdPHyZwNvg7ZPdOg==
-X-Received: by 2002:a17:90a:9eb:: with SMTP id 98mr4799013pjo.40.1611227927908;
-        Thu, 21 Jan 2021 03:18:47 -0800 (PST)
+        bh=yGSozZ62BYCUnvHz15lG2EnbQmWJ88vlwijLJGHrCgo=;
+        b=hKb4O/MoR4vkJ+dMib2xBmlSEGt+e9haShSF4/L02E4/TnzwYW7KCCe+gtLpJaai2g
+         peXOaKrftkHUQNHbiiMXe3F82ktC5mwEHVH2BdvCSahWio5LOxFk3uDNDRfMHEc3jSOy
+         FKUv9tBdaw2I2ymmCSxJomBwxTxgAK7p240hObSJevZyiRMUz/JYhzQLnJ5yvYxPWvF7
+         b8n0kt5/oqJ7BjGRKkBI2TTeLOuYu918QK6L7+m3i3QrkaAhMjDJvkRfl3P39cLjg8Ao
+         8ieUCB5GeOY3SHU5vCeDH7DSbItWnOQwLkGi4tyPcnEWZd5MEp0Do8f9OxiPCcbF2boE
+         9QHA==
+X-Gm-Message-State: AOAM533fkNVaKpH//y1KnAxTDTtpJR8uCGCx4LdVxQlSqPhTlAFseY3H
+        soOMehI/FQibBYumm+EwOxTE6g==
+X-Google-Smtp-Source: ABdhPJxCDceYWRati28gRyR2MZg5jIN0/VdJ4+0q1+AusUpULOSN9NiaiWRtWjYKJucbY9Swc+dQTw==
+X-Received: by 2002:a17:90a:2947:: with SMTP id x7mr11321170pjf.157.1611227934689;
+        Thu, 21 Jan 2021 03:18:54 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id d22sm5661965pjv.11.2021.01.21.03.18.46
+        by smtp.gmail.com with ESMTPSA id g5sm5980697pfb.194.2021.01.21.03.18.53
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 03:18:47 -0800 (PST)
+        Thu, 21 Jan 2021 03:18:54 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>,
         Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
@@ -57,9 +57,9 @@ Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
         Rafael Wysocki <rjw@rjwysocki.net>,
         Sibi Sankar <sibis@codeaurora.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 02/13] opp: No need to check clk for errors
-Date:   Thu, 21 Jan 2021 16:47:42 +0530
-Message-Id: <26fe0df01647061cee8278af64a86610d65711f6.1611227342.git.viresh.kumar@linaro.org>
+Subject: [PATCH 04/13] opp: Split _set_opp() out of dev_pm_opp_set_rate()
+Date:   Thu, 21 Jan 2021 16:47:44 +0530
+Message-Id: <c6eed208018610123c451d4dd0b2583046c5e294.1611227342.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1611227342.git.viresh.kumar@linaro.org>
 References: <cover.1611227342.git.viresh.kumar@linaro.org>
@@ -69,69 +69,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clock is not optional for users who call into dev_pm_opp_set_rate().
-Remove the unnecessary checks.
-
-While at it also drop the local variable for clk and use opp_table->clk
-instead.
+The _set_opp() helper will be used for devices which don't change their
+frequency (like power domains, etc.) later on, prepare for that by
+breaking the generic part out of dev_pm_opp_set_rate().
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/opp/core.c | 17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+ drivers/opp/core.c | 126 +++++++++++++++++++++++++--------------------
+ 1 file changed, 71 insertions(+), 55 deletions(-)
 
 diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 9ec8e42981d0..cb5b67ccf5cf 100644
+index 4ee598344e6a..5313dc322bdd 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
-@@ -987,7 +987,6 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 	struct opp_table *opp_table;
- 	unsigned long freq, old_freq, temp_freq;
- 	struct dev_pm_opp *old_opp, *opp;
--	struct clk *clk;
+@@ -992,72 +992,27 @@ static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
+ 	return ret;
+ }
+ 
+-/**
+- * dev_pm_opp_set_rate() - Configure new OPP based on frequency
+- * @dev:	 device for which we do this operation
+- * @target_freq: frequency to achieve
+- *
+- * This configures the power-supplies to the levels specified by the OPP
+- * corresponding to the target_freq, and programs the clock to a value <=
+- * target_freq, as rounded by clk_round_rate(). Device wanting to run at fmax
+- * provided by the opp, should have already rounded to the target OPP's
+- * frequency.
+- */
+-int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
++static int _set_opp(struct device *dev, struct opp_table *opp_table,
++		    struct dev_pm_opp *opp, unsigned long freq)
+ {
+-	struct opp_table *opp_table;
+-	unsigned long freq, old_freq, temp_freq;
+-	struct dev_pm_opp *old_opp, *opp;
++	struct dev_pm_opp *old_opp;
++	unsigned long old_freq;
  	int ret;
  
- 	opp_table = _find_opp_table(dev);
-@@ -1001,19 +1000,11 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 		goto put_opp_table;
- 	}
- 
--	clk = opp_table->clk;
--	if (IS_ERR(clk)) {
--		dev_err(dev, "%s: No clock available for the device\n",
--			__func__);
--		ret = PTR_ERR(clk);
+-	opp_table = _find_opp_table(dev);
+-	if (IS_ERR(opp_table)) {
+-		dev_err(dev, "%s: device opp doesn't exist\n", __func__);
+-		return PTR_ERR(opp_table);
+-	}
+-
+-	if (unlikely(!target_freq)) {
+-		ret = _disable_opp_table(dev, opp_table);
 -		goto put_opp_table;
 -	}
 -
--	freq = clk_round_rate(clk, target_freq);
-+	freq = clk_round_rate(opp_table->clk, target_freq);
- 	if ((long)freq <= 0)
- 		freq = target_freq;
+-	freq = clk_round_rate(opp_table->clk, target_freq);
+-	if ((long)freq <= 0)
+-		freq = target_freq;
+-
+-	/*
+-	 * For IO devices which require an OPP on some platforms/SoCs
+-	 * while just needing to scale the clock on some others
+-	 * we look for empty OPP tables with just a clock handle and
+-	 * scale only the clk. This makes dev_pm_opp_set_rate()
+-	 * equivalent to a clk_set_rate()
+-	 */
+-	if (!_get_opp_count(opp_table)) {
+-		ret = _generic_set_opp_clk_only(dev, opp_table->clk, freq);
+-		goto put_opp_table;
+-	}
++	if (unlikely(!opp))
++		return _disable_opp_table(dev, opp_table);
  
--	old_freq = clk_get_rate(clk);
-+	old_freq = clk_get_rate(opp_table->clk);
+ 	/* Find the currently set OPP if we don't know already */
+ 	if (unlikely(!opp_table->current_opp))
+ 		_find_current_opp(dev, opp_table);
+ 
+-	temp_freq = freq;
+-	opp = _find_freq_ceil(opp_table, &temp_freq);
+-	if (IS_ERR(opp)) {
+-		ret = PTR_ERR(opp);
+-		dev_err(dev, "%s: failed to find OPP for freq %lu (%d)\n",
+-			__func__, freq, ret);
+-		goto put_opp_table;
+-	}
+-
+ 	old_opp = opp_table->current_opp;
+ 	old_freq = old_opp->rate;
  
  	/* Return early if nothing to do */
- 	if (opp_table->enabled && old_freq == freq) {
-@@ -1031,7 +1022,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 	 * equivalent to a clk_set_rate()
- 	 */
- 	if (!_get_opp_count(opp_table)) {
--		ret = _generic_set_opp_clk_only(dev, clk, freq);
-+		ret = _generic_set_opp_clk_only(dev, opp_table->clk, freq);
- 		goto put_opp_table;
+ 	if (opp_table->enabled && old_opp == opp) {
+ 		dev_dbg(dev, "%s: OPPs are same, nothing to do\n", __func__);
+-		ret = 0;
+-		goto put_opp;
++		return 0;
  	}
  
-@@ -1071,7 +1062,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 						 opp->supplies);
- 	} else {
- 		/* Only frequency scaling */
--		ret = _generic_set_opp_clk_only(dev, clk, freq);
-+		ret = _generic_set_opp_clk_only(dev, opp_table->clk, freq);
+ 	dev_dbg(dev, "%s: switching OPP: %lu Hz --> %lu Hz\n", __func__,
+@@ -1067,7 +1022,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 	if (freq >= old_freq) {
+ 		ret = _set_required_opps(dev, opp_table, opp, true);
+ 		if (ret)
+-			goto put_opp;
++			return ret;
  	}
  
- 	/* Scaling down? Configure required OPPs after frequency */
+ 	if (opp_table->set_opp) {
+@@ -1101,8 +1056,69 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 		}
+ 	}
+ 
+-put_opp:
+-	dev_pm_opp_put(opp);
++	return ret;
++}
++
++/**
++ * dev_pm_opp_set_rate() - Configure new OPP based on frequency
++ * @dev:	 device for which we do this operation
++ * @target_freq: frequency to achieve
++ *
++ * This configures the power-supplies to the levels specified by the OPP
++ * corresponding to the target_freq, and programs the clock to a value <=
++ * target_freq, as rounded by clk_round_rate(). Device wanting to run at fmax
++ * provided by the opp, should have already rounded to the target OPP's
++ * frequency.
++ */
++int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
++{
++	struct opp_table *opp_table;
++	unsigned long freq = 0, temp_freq;
++	struct dev_pm_opp *opp = NULL;
++	int ret;
++
++	opp_table = _find_opp_table(dev);
++	if (IS_ERR(opp_table)) {
++		dev_err(dev, "%s: device's opp table doesn't exist\n", __func__);
++		return PTR_ERR(opp_table);
++	}
++
++	if (target_freq) {
++		/*
++		 * For IO devices which require an OPP on some platforms/SoCs
++		 * while just needing to scale the clock on some others
++		 * we look for empty OPP tables with just a clock handle and
++		 * scale only the clk. This makes dev_pm_opp_set_rate()
++		 * equivalent to a clk_set_rate()
++		 */
++		if (!_get_opp_count(opp_table)) {
++			ret = _generic_set_opp_clk_only(dev, opp_table->clk, target_freq);
++			goto put_opp_table;
++		}
++
++		freq = clk_round_rate(opp_table->clk, target_freq);
++		if ((long)freq <= 0)
++			freq = target_freq;
++
++		/*
++		 * The clock driver may support finer resolution of the
++		 * frequencies than the OPP table, don't update the frequency we
++		 * pass to clk_set_rate() here.
++		 */
++		temp_freq = freq;
++		opp = _find_freq_ceil(opp_table, &temp_freq);
++		if (IS_ERR(opp)) {
++			ret = PTR_ERR(opp);
++			dev_err(dev, "%s: failed to find OPP for freq %lu (%d)\n",
++				__func__, freq, ret);
++			goto put_opp_table;
++		}
++	}
++
++	ret = _set_opp(dev, opp_table, opp, freq);
++
++	if (opp)
++		dev_pm_opp_put(opp);
+ put_opp_table:
+ 	dev_pm_opp_put_opp_table(opp_table);
+ 	return ret;
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
