@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A2B2FF5E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D592FF5F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbhAUUa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:30:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43337 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726057AbhAUUXt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:23:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611260534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ovEdbJJtNMDz8ByLenzszBFqIe93cujvjHmoLWVzLg=;
-        b=VyD4VguWlUUpYaJ8m4/K1YAug5/4O2R/TVtS7M2g5vATALQ5DjqHTuMQrSxqzr/IZfYzLY
-        JWmTp4cLxLkB9IcLVQbOUc+7pzlZuGickWlxRi2JPDVukmB+4L4XoXO16s6kKdcEonbKdg
-        nCgD/8QOcWIv4//VsgQ007r7q5HBL98=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-SduXfsD2OyuI_PtRmrmAeQ-1; Thu, 21 Jan 2021 15:22:13 -0500
-X-MC-Unique: SduXfsD2OyuI_PtRmrmAeQ-1
-Received: by mail-ej1-f72.google.com with SMTP id md20so1242779ejb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:22:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4ovEdbJJtNMDz8ByLenzszBFqIe93cujvjHmoLWVzLg=;
-        b=ZOj2dxcBUqObgS6Um6Wk5xbT6OtIbh1KGZtRsyN2X4E27koTcKJn1oqqsDvZcJJKZq
-         u71TZu8TKDaCbcBw/y2q7i9pXZ0INFCBP8AbMobuFHwbvYL0mMsrYh3mVEK9AkYqhNnD
-         Vjfr3/NUNPMXuDaTqhITzguhuwjNqrtu4LH6eFHc9Yj7XsaE+qehrHRinm/4+BgZIQ6t
-         ZzGUcawij3JYZ/kPogn6qf/hUZSwqqdu1kwb4DTK7A0MnL9OeMsJZl9wKyjNrSIYokKb
-         3Q5xjh8GVAoQeYZ24mXTjP7a54r4iUjhcPUrtWyz4wr1v4q+db9YgIB+SLjaRD57lTfz
-         ryNA==
-X-Gm-Message-State: AOAM531bPeaA2gUQBSyBgQag8/Dkw8rRKamEPW0sAtxUG+JCeqdcq6ih
-        nfujsYsVLIGUT8BotYLZkTE8FvZYbbfzOdBl3V96pVLRBLMmAkenUNAmQFgD73jUwxM+NYnb0J5
-        yyCrdY2PW63+9WFNPKx0lqDk5
-X-Received: by 2002:a17:906:3ce:: with SMTP id c14mr793780eja.497.1611260531971;
-        Thu, 21 Jan 2021 12:22:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxohfZqlf87vOYxknBsFBhbTukEHWWxs7vQ6a0oQLkzvkgLnE79GERCpSdg+mhmNHXL4S1gcw==
-X-Received: by 2002:a17:906:3ce:: with SMTP id c14mr793764eja.497.1611260531839;
-        Thu, 21 Jan 2021 12:22:11 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b26sm3282219edy.57.2021.01.21.12.22.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 12:22:10 -0800 (PST)
-Subject: Re: [PATCH 04/24] kvm: x86/mmu: change TDP MMU yield function returns
- to match cond_resched
-To:     Sean Christopherson <seanjc@google.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-5-bgardon@google.com> <YAh4q6ZCOw3qDzHP@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <611654f0-5dcb-b6a2-1b1f-26d10f2b8f7f@redhat.com>
-Date:   Thu, 21 Jan 2021 21:22:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727246AbhAUUeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:34:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36520 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727102AbhAUUaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:30:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C4D1FABDA;
+        Thu, 21 Jan 2021 20:29:01 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: pwc: Fix the URB buffer allocation
+Date:   Thu, 21 Jan 2021 21:28:55 +0100
+Message-Id: <20210121202855.17400-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YAh4q6ZCOw3qDzHP@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/21 19:38, Sean Christopherson wrote:
-> Currently the TDP MMU yield / cond_resched functions either return
-> nothing or return true if the TLBs were not flushed. These are confusing
-> semantics, especially when making control flow decisions in calling
-> functions.
-> 
-> To clean things up, change both functions to have the same
-> return value semantics as cond_resched: true if the thread yielded,
-> false if it did not. If the function yielded in the_flush_  version,
-> then the TLBs will have been flushed.
+The URB buffer allocation of pwc driver involves with the
+dma_map_single(), and it needs to pass the right device.  Currently it
+passes usb_device.dev, but it's no real device that manages the DMA.
+Since the passed device has no DMA mask set up, now the pwc driver
+hits the WARN_ON_ONCE() check in dma_map_page_attrs() (that was
+introduced in 5.10), resulting in an error at URB allocations.
+Eventually this ended up with the black output.
 
-My fault here.  The return value was meant to simplify the assignments 
-below.  But it's clearer to return true if the cond_resched happened, 
-indeed.
+This patch fixes the bug by passing the proper device, the bus
+controller, to make the URB allocation and map working again.
 
->>
->>  
->>  		if (can_yield)
->> -			flush_needed = tdp_mmu_iter_flush_cond_resched(kvm, &iter);
->> +			flush_needed = !tdp_mmu_iter_flush_cond_resched(kvm,
->> +									&iter);
-> 
-> As with the existing code, I'd let this poke out.  Alternatively, this could be
-> written as:
-> 
-> 		flush_needed = !can_yield ||
-> 			       !tdp_mmu_iter_flush_cond_resched(kvm, &iter);
-> 
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1181133
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/media/usb/pwc/pwc-if.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yeah, no new line here.
-
-Paolo
+diff --git a/drivers/media/usb/pwc/pwc-if.c b/drivers/media/usb/pwc/pwc-if.c
+index 61869636ec61..d771160bb168 100644
+--- a/drivers/media/usb/pwc/pwc-if.c
++++ b/drivers/media/usb/pwc/pwc-if.c
+@@ -461,7 +461,7 @@ static int pwc_isoc_init(struct pwc_device *pdev)
+ 		urb->pipe = usb_rcvisocpipe(udev, pdev->vendpoint);
+ 		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+ 		urb->transfer_buffer_length = ISO_BUFFER_SIZE;
+-		urb->transfer_buffer = pwc_alloc_urb_buffer(&udev->dev,
++		urb->transfer_buffer = pwc_alloc_urb_buffer(udev->bus->controller,
+ 							    urb->transfer_buffer_length,
+ 							    &urb->transfer_dma);
+ 		if (urb->transfer_buffer == NULL) {
+@@ -524,7 +524,7 @@ static void pwc_iso_free(struct pwc_device *pdev)
+ 		if (urb) {
+ 			PWC_DEBUG_MEMORY("Freeing URB\n");
+ 			if (urb->transfer_buffer)
+-				pwc_free_urb_buffer(&urb->dev->dev,
++				pwc_free_urb_buffer(urb->dev->bus->controller,
+ 						    urb->transfer_buffer_length,
+ 						    urb->transfer_buffer,
+ 						    urb->transfer_dma);
+-- 
+2.26.2
 
