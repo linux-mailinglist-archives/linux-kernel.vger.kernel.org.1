@@ -2,153 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AD32FEE7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676212FEDF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732011AbhAUNZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:25:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38776 "EHLO
+        id S1730356AbhAUN2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:28:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37809 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731824AbhAUNVo (ORCPT
+        by vger.kernel.org with ESMTP id S1732205AbhAUNZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:21:44 -0500
+        Thu, 21 Jan 2021 08:25:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611235202;
+        s=mimecast20190719; t=1611235438;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fe58BLIexty2xmujDnCbY+8Tf1cyecAvfRgThTe/JUs=;
-        b=HSodnuvOH/0WnwpSGIK/LVybD810QiCBSgDrCcMsomOUDHDAGrY1LtLCAgteb61NgvMpjA
-        4m03m/XcKkgVNZ4qzzPGplzy+fYfEXgxuYkl8wMrdiXqFg3iv69mT6pLBl7IjY1olJxjS1
-        7mdVtxWILvFtR3EnE5HhlJHFqHJB1u4=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-oWmflDnQOcqlAhkWQFdBTA-1; Thu, 21 Jan 2021 08:20:00 -0500
-X-MC-Unique: oWmflDnQOcqlAhkWQFdBTA-1
-Received: by mail-qk1-f198.google.com with SMTP id q7so1540887qki.16
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:20:00 -0800 (PST)
+        bh=cvCR/SJT7x/0z+1fK/OgzO3ZsWGWZSRqQrMopnsNWp8=;
+        b=T+7BZodwH+s5uNb6IgziWkF2rTEj8/CI9DjoNaI8nvlQ9Nqzi24xA3yXBm7B/1iPEq3KMz
+        pojsXC6+BragRoFK4CJ75+2VQ9Ji6fo5iw8VFLrgi26OezYha8pS2imRgMqtQpOVokI8L8
+        4kkz/8bbL1/gt8kJRUJaxIiYlf34Xnk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-eft2UYMGPSytmiLanXDPQw-1; Thu, 21 Jan 2021 08:23:56 -0500
+X-MC-Unique: eft2UYMGPSytmiLanXDPQw-1
+Received: by mail-wr1-f72.google.com with SMTP id v7so1010711wra.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:23:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=fe58BLIexty2xmujDnCbY+8Tf1cyecAvfRgThTe/JUs=;
-        b=XIpa9rCDV4aAw8HUHVLb5ovWleliao8xzSqYK9vy3EjUtbvrYUWgFZdwmiAwQpJ4L4
-         ZjRr9V4U3dI+zTKyUEXjXGIUc6JBb38kG8LKoqEqai/aQwm+abx/7lHww0zLoPQC5szJ
-         FdZkmmsfpPrE7MN2ywSv9GrLBnb8foEwMlEYGdbbwgeJaHlednxHFsiRc9HfUI4X8T/B
-         Iuh3S6xPASHewK+m+bwwHnNT2DNacAASc6xm/QzdpvMFVY+ZYPziEtrTMZjGpgwtydNk
-         r2T5Q3AZX7f8ikBHWo5086dFRlCxYSO4xDHynMoGhSmApbKQDEX7IBTHN7w4zRPlqIW1
-         VVWg==
-X-Gm-Message-State: AOAM532W/aalAlBHmuYob/T4yu/RycNBkvoSTNSzHv8Mb/rBQ2PKGhfD
-        cIBeleIzp/uwTvk7/sd3FTxelBfWeZaaSSs4bCfx1JBCd60fZ3rPkTQuUoFFvA6HRgoeyjq6pCq
-        bHqwG0bsXdLIopSOqSFuwjXhi
-X-Received: by 2002:a0c:a789:: with SMTP id v9mr13886263qva.41.1611235199849;
-        Thu, 21 Jan 2021 05:19:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyDVKdP23zxA0pQ4Mkr+NkAMW0WFN8qDK9CFSoW7BvF1AzVctv3tUVf8v9yUR8XGBkHI0dStg==
-X-Received: by 2002:a0c:a789:: with SMTP id v9mr13886245qva.41.1611235199654;
-        Thu, 21 Jan 2021 05:19:59 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id d71sm2145543qkc.75.2021.01.21.05.19.57
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cvCR/SJT7x/0z+1fK/OgzO3ZsWGWZSRqQrMopnsNWp8=;
+        b=JtET2dCwHujbGz772lnLH6ap1Go61IOZFqrC3iTmUFoVjzPDz7AmFQCG6KV6bE5lbL
+         xuE/bEkrqMynMFYEnvJUNlIalQJCIqcYy01oaljlMyM6ZSyYnwKPXXg1r3yDzNW2N+LK
+         Vl6jGIQzgg9SDd750ItpGi4tCS+SqumhJ/y0Vn/jKQc2YyYT6KN7QBCQ0ebONJ4mOKlG
+         UtqTbqKH5EhhBWM4aib5MD8c/9Ntpum5Jw827816b4MJZ10WbQUkf36NuZR+MMUTVFyS
+         oKHtRaoTV4YhBkcmEhEiNKx8bOEMEE9vHImqxrxlwI5Xs2V0ptfHNXhFQ24Ny/OWlBgv
+         UH9w==
+X-Gm-Message-State: AOAM533vXZ/RsswUKaMGYKPXiYlJlQFY1YC7bbRQ2Ujp2iLnvq8wuJEG
+        EIGvJbo7R+B2p2C4SRVALtghR0zrroPGhgirbal8Qq5DvNzmXoS+EsFhlLwGpqxq2GdiIdYLeDH
+        4yOE/Ux6a5Qcir4F1eaCvFtd8
+X-Received: by 2002:adf:c18d:: with SMTP id x13mr14020216wre.128.1611235435255;
+        Thu, 21 Jan 2021 05:23:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz+HMrNE/GzNA0eRvoWZynPl2cm00oo1pYl3yrQV7e/rEXRQYgFCSqJngzxT5WNmFeOF92XUQ==
+X-Received: by 2002:adf:c18d:: with SMTP id x13mr14020198wre.128.1611235435102;
+        Thu, 21 Jan 2021 05:23:55 -0800 (PST)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id d30sm9999764wrc.92.2021.01.21.05.23.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 05:19:58 -0800 (PST)
-Subject: Re: [PATCH 2/2] mfd: intel-m10-bmc: add access table configuration to
- the regmap
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-References: <1611110081-10056-1-git-send-email-yilun.xu@intel.com>
- <1611110081-10056-2-git-send-email-yilun.xu@intel.com>
- <0f17f8a7-d2f5-e88e-b3dc-0a75ea7f5ada@redhat.com>
- <20210121080554.GA1943@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <82884394-f8aa-4957-04c3-285381e13d57@redhat.com>
-Date:   Thu, 21 Jan 2021 05:19:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 21 Jan 2021 05:23:54 -0800 (PST)
+Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+References: <20210120173800.1660730-1-jthierry@redhat.com>
+ <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
+ <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com>
+ <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <6e21cd51-017e-2135-ed9d-33a60f22a457@redhat.com>
+Date:   Thu, 21 Jan 2021 14:23:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210121080554.GA1943@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 1/21/21 12:05 AM, Xu Yilun wrote:
-> On Wed, Jan 20, 2021 at 07:32:53AM -0800, Tom Rix wrote:
->> On 1/19/21 6:34 PM, Xu Yilun wrote:
->>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>
->>> This patch adds access tables to the MAX 10 BMC regmap. This prevents
->>> the host from accessing the unwanted I/O space. It also filters out the
->>> invalid outputs when reading the regmap debugfs interface.
->>>
->>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
->>> ---
->>>  drivers/mfd/intel-m10-bmc.c       | 14 ++++++++++++++
->>>  include/linux/mfd/intel-m10-bmc.h |  5 ++++-
->>>  2 files changed, 18 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
->>> index b84579b..0ae3053 100644
->>> --- a/drivers/mfd/intel-m10-bmc.c
->>> +++ b/drivers/mfd/intel-m10-bmc.c
->>> @@ -23,10 +23,24 @@ static struct mfd_cell m10bmc_pacn3000_subdevs[] = {
->>>  	{ .name = "n3000bmc-secure" },
->>>  };
->>>  
->>> +static const struct regmap_range m10bmc_regmap_range[] = {
->>> +	regmap_reg_range(M10BMC_LEGACY_SYS_BASE + M10BMC_BUILD_VER,
->>> +			 M10BMC_LEGACY_SYS_BASE + M10BMC_BUILD_VER),
->> If this is the only value in the legacy map to be accessed, could it have its own #define ?
+
+On 1/21/21 12:08 PM, Ard Biesheuvel wrote:
+> On Thu, 21 Jan 2021 at 11:26, Julien Thierry <jthierry@redhat.com> wrote:
 >>
->> Something like
+>> Hi Ard,
 >>
->> #define M10BMC_LEGACY_BUILD_VER ?
-> Yes, it could be more clear. I'll change it.
->
->>> +	regmap_reg_range(M10BMC_SYS_BASE, M10BMC_SYS_END),
->>> +	regmap_reg_range(M10BMC_FLASH_BASE, M10BMC_FLASH_END),
->>> +};
->>> +
->>> +static const struct regmap_access_table m10bmc_access_table = {
->>> +	.yes_ranges	= m10bmc_regmap_range,
->>> +	.n_yes_ranges	= ARRAY_SIZE(m10bmc_regmap_range),
->>> +};
->>> +
->>>  static struct regmap_config intel_m10bmc_regmap_config = {
->>>  	.reg_bits = 32,
->>>  	.val_bits = 32,
->>>  	.reg_stride = 4,
->>> +	.wr_table = &m10bmc_access_table,
->>> +	.rd_table = &m10bmc_access_table,
->> The legacy build ver should only be read, so shouldn't these tables be different ?
-> I'm not sure if a register could be regarded as writable if hardware
-> ensures writing it has no effect but makes no harm. Usually these
-> registers are marked as RO in spec.
->
-> I think it could be quite common case in hardware design. But it could
-> be trivial if we pick every such register out of wr_table. I just want
-> to define the valid reg range.
->
-> So could I keep the current implementation?
+>> On 1/21/21 10:03 AM, Ard Biesheuvel wrote:
+>>> Hello Julien,
+>>>
+>>> On Wed, 20 Jan 2021 at 18:38, Julien Thierry <jthierry@redhat.com> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> This series enables objtool to start doing stack validation on arm64
+>>>> kernel builds.
+>>>
+>>> Could we elaborate on this point, please? 'Stack validation' means
+>>> getting an accurate picture of all kernel code that will be executed
+>>> at some point in the future, due to the fact that there are stack
+>>> frames pointing to them. And this ability is essential in order to do
+>>> live patching safely?
+>>>
+>>> If this is the goal, I wonder whether this is the right approach for
+>>> arm64 (or for any other architecture, for that matter)
+>>>
+>>> Parsing/decoding the object code and even worse, relying on GCC
+>>> plugins to annotate some of the idioms as they are being generated, in
+>>> order to infer intent on the part of the compiler goes *way* beyond
+>>> what we should be comfortable with. The whole point of this exercise
+>>> is to guarantee that there are no false positives when it comes to
+>>> deciding whether the kernel is in a live patchable state, and I don't
+>>> see how we can ever provide such a guarantee when it is built on such
+>>> a fragile foundation.
+>>>
+>>> If we want to ensure that the stack contents are always an accurate
+>>> reflection of the real call stack, we should work with the toolchain
+>>> folks to identify issues that may interfere with this, and implement
+>>> controls over these behaviors that we can decide to use in the build.
+>>> In the past, I have already proposed adding a 'kernel' code model to
+>>> the AArch64 compiler that guarantees certain things, such as adrp/add
+>>> for symbol references, and no GOT indirections for position
+>>> independent code. Inhibiting optimizations that may impact our ability
+>>> to infer the real call stack from the stack contents is something we
+>>> might add here as well.
+>>>
+>>
+>> I'm not familiar with toolcahin code models, but would this approach be
+>> able to validate assembly code (either inline or in assembly files?)
+>>
+> 
+> No, it would not. But those files are part of the code base, and can
+> be reviewed and audited.
+> 
 
-I mean that the write table would not have first element the read table has because it has the single ro entry.
+That means that every actor maintaining their own stable version of the 
+kernel have to do their own audit when they do backports (assuming the 
+audit would be done for upstream) to be able to provide a safe 
+livepatching feature in their kernel.
 
-The other ranges i am sure have ro's and are not worth breaking apart.
+>>> Another thing that occurred to me is that inferring which kernel code
+>>> is actually live in terms of pending function returns could be
+>>> inferred much more easily from a shadow call stack, which is a thing
+>>> we already implement for Clang builds.
+>>>
+>>
+>> I was not familiar with the shadow call stack. If I understand correctly
+>> that would be a stack of return addresses of function currently on the
+>> call stack, is that correct?
+>>
+>> That would indeed be a simpler approach, however I guess the
+>> instrumentation has a cost. Is the instrumentation also available with
+>> GCC? And is this instrumentation efficient enough to be suitable for
+>> production builds?
+>>
+> 
+> I am not aware of any plans to enable this in GCC, but the Clang
+> implementation is definitely intended for production use (it's a CFI
+> feature for ROP/JOP mitigation)
+> 
 
-If something like
+I think most people interested in livepatching are using GCC built 
+kernels, but I could be mistaken (althought in the long run, both 
+compilers should be supported, and yes, I realize the objtool solution 
+currently only would support GCC).
 
-.wr_table = &m10bmc_access_table[1] doesn't work or looks to hacky, i don't mind leaving it as-is.
+I don't know how feasible it will be to get it into GCC if people decide 
+to go with that. Also, now that I think about it, it will probably come 
+with similar limitations as stackframes where the unwinder would need to 
+know when/where the shadow call stack is unavailable for some reason and 
+the stack trace is not reliable. (it might be a bit simpler to audit 
+than stack frame setting and maybe have less limitations, but I guess 
+there will still be cases where we can't rely on it)
 
-Tom
-
->
-> Thanks,
-> Yilun
->
+-- 
+Julien Thierry
 
