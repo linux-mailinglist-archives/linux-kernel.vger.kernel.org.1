@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6822FF507
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5432FF52B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbhAUTr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:47:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48122 "EHLO mail.kernel.org"
+        id S1726685AbhAUTyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:54:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727550AbhAUTo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:44:58 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4A0123A00;
-        Thu, 21 Jan 2021 19:44:16 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 14:44:15 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>, linux-doc@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch/Kconfig: update a broken file reference
-Message-ID: <20210121144415.7b2ddf3c@gandalf.local.home>
-In-Reply-To: <20210121114458.614ee8da@lwn.net>
-References: <20210119095326.13896-1-lukas.bulwahn@gmail.com>
-        <20210121114458.614ee8da@lwn.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727555AbhAUTtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:49:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D5C18224B2;
+        Thu, 21 Jan 2021 19:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611258512;
+        bh=yDuJiRNGJ1fr/X6Tqb8i9aDfd7Zg8O+kwZdDjT8KwTI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=AJFEFH2CH/GyiOl8BuoITwKWn3TqN4anbwS34sAJeY4DbYztjxVTkOIOViT5ph+WO
+         zdeZTScdjyRBNJkV51crKIMGpJGNb4uGqqRt7lG/wcvZKD8k2WFNAeQb2faMa/H2lh
+         0QgC47/M0XXc4I0r/2ErWcYNZtsVdqTGWOppq6DEAZURom+zrpwy7N3SF7A86Vyf8j
+         Dko5naOfM+j2hu+ibFZRc6de2/gambKX/S1X78xoOtU3SutCPGiOb8Mou412Duq8pB
+         Alp6A0wJ1lDlg82Y+krjhRPuBqkhKmuBuqrnLz4Wk7ngtL52vBuhMxm6lAkBF1rvmZ
+         W1RuV1Vb67dDA==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id CB06060192;
+        Thu, 21 Jan 2021 19:48:32 +0000 (UTC)
+Subject: Re: [GIT PULL] pin control fixes for the v5.11 kernel
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CACRpkdYqT+jt=aNt3JN0fak7snCwxvT___QVV8L8Bjr_YSB+0A@mail.gmail.com>
+References: <CACRpkdYqT+jt=aNt3JN0fak7snCwxvT___QVV8L8Bjr_YSB+0A@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CACRpkdYqT+jt=aNt3JN0fak7snCwxvT___QVV8L8Bjr_YSB+0A@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.11-2
+X-PR-Tracked-Commit-Id: cf9d052aa6005f1e8dfaf491d83bf37f368af69e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 63858ac326561af6a1e583ad4314cc1be16852ad
+Message-Id: <161125851282.32181.13972393198581325206.pr-tracker-bot@kernel.org>
+Date:   Thu, 21 Jan 2021 19:48:32 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 11:44:58 -0700
-Jonathan Corbet <corbet@lwn.net> wrote:
+The pull request you sent on Thu, 21 Jan 2021 09:52:07 +0100:
 
-> On Tue, 19 Jan 2021 10:53:26 +0100
-> Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> 
-> > Commit adab66b71abf ("Revert: "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"")
-> > added the config HAVE_64BIT_ALIGNED_ACCESS back into arch/Kconfig with this
-> > revert. In the meantime, commit c9b54d6f362c ("docs: move other kAPI
-> > documents to core-api") changed ./Documentation/unaligned-memory-access.txt
-> > to ./Documentation/core-api/unaligned-memory-access.rst.
-> > 
-> > Fortunately, ./scripts/documentation-file-ref-check detects this and warns
-> > about this broken reference.
-> > 
-> > Update the file reference in arch/Kconfig.
-> > 
-> > Fixes: adab66b71abf ("Revert: "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"")
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> > applies cleanly on current master and next-20210118
-> > 
-> > Steven, could you pick this fix to your commit or, at least, ack it so that
-> > Jonathan can pick it?  
-> 
-> I've gone ahead and applied it, thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.11-2
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/63858ac326561af6a1e583ad4314cc1be16852ad
 
-Thanks Jon!
+Thank you!
 
--- Steve
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
