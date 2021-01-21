@@ -2,96 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E282FF7F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171B52FF7FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbhAUWcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:32:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbhAUWbq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:31:46 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB9C0613D6;
-        Thu, 21 Jan 2021 14:31:04 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMHD62TsXz9sCD;
-        Fri, 22 Jan 2021 09:31:01 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611268262;
-        bh=uVaQ65fEPi72B62bEe+ohl4M6CtunMGDfjs6tVElKmo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dZCa/N5jtJbt2gckDY0h6iK7P32nbtALrYKYNvA7I3ntku2CEc3isserLIP6fjdAu
-         P/dcssaVS3uswMoECBAALA58XIFQKtNVpoRzU0Coviq6R7/GweMlnHfleeNcdxfJPu
-         tcIHBhU1gKCNLU0zan785QJUFK629DJDW0MNkLkIHGlVZsXKgJxvVbH9dwa5jZIpq9
-         M43ZL4NzdvoNlI09FrGOezzcub9fNLyY3vyOBv/W4yeikBwIJJ25irutfdEoLJvw5q
-         L7gOeLNmmt0kQdkc2nhpTvjEzooHlOCMn/+vGabO/iPiCazY027RjhYZzV1pyDlkD7
-         GwakTxOnJyxCA==
-Date:   Fri, 22 Jan 2021 09:31:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] s390: allow reschedule on syscall restart
-Message-ID: <20210122093101.058cbc6a@canb.auug.org.au>
-In-Reply-To: <20210122083249.60d29c33@canb.auug.org.au>
-References: <20210121143926.21440-1-svens@linux.ibm.com>
-        <20210121143926.21440-2-svens@linux.ibm.com>
-        <20210122083249.60d29c33@canb.auug.org.au>
+        id S1726242AbhAUWcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:32:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726182AbhAUWcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 17:32:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 248C8239EF;
+        Thu, 21 Jan 2021 22:31:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611268301;
+        bh=EEf8rabDeI15xaIquULAh8d9pPh9A++4exLQ0e/ACdM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=byN+jFdhb7bSBDjr2iwxHKQVRmnDYUmTvXjhAtxBXtU69FjhISlVnP4oNAYtj97cj
+         NXzfaCIQmuADYionFEpJq0GgE//3I0lCbuaGUjhkzolNhA0DOLeb6e5ljwC/0sGnzD
+         97bmLd+bNkXSsErv9j7P1uVSHhxKOaiye6hb9rGcZR2i4HWQhyHsOAA/ifLMElysbY
+         ecWPlg3IDRo3xF6JZQ0069/lN7oNjDOeU7p6csPluvEcdVdAHRODGEU65IezLghgjW
+         Goe6G83GUVziPEWEzHkr/KwTj7p251a8CF8jy0XhqxVkHO7n8Uq95xhxlO03QWbDcK
+         7pn+rHxWhNJEA==
+Date:   Thu, 21 Jan 2021 16:31:39 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        linux-pci@vger.kernel.org, mingchuang.qiao@mediatek.com,
+        matthias.bgg@gmail.com, lambert.wang@mediatek.com,
+        linux-mediatek@lists.infradead.org, haijun.liu@mediatek.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH v2] PCI: Re-enable downstream port LTR if it was
+ previously enabled
+Message-ID: <20210121223139.GA2698934@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CzqynzLpR=zJy.WU4h/xyDt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119131410.27528-1-mika.westerberg@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/CzqynzLpR=zJy.WU4h/xyDt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+[+cc Alex and Mingchuang et al from
+https://lore.kernel.org/r/20210112072739.31624-1-mingchuang.qiao@mediatek.com]
 
-Hi all,
+On Tue, Jan 19, 2021 at 04:14:10PM +0300, Mika Westerberg wrote:
+> PCIe r5.0, sec 7.5.3.16 says that the downstream ports must reset the
+> LTR enable bit if the link goes down (port goes DL_Down status). Now, if
+> we had LTR previously enabled and the PCIe endpoint gets hot-removed and
+> then hot-added back the ->ltr_path of the downstream port is still set
+> but the port now does not have the LTR enable bit set anymore.
+> 
+> For this reason check if the bridge upstream had LTR enabled previously
+> and re-enable it before enabling LTR for the endpoint.
+> 
+> Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-On Fri, 22 Jan 2021 08:32:49 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> I add that today as a merge fixup patch to the merge of the rcu tree
-> (which contains commit 845f44e8ef28 ("sched: Report local wake up on
-> resched blind zone within idle loop") ).
+I think this and Mingchuang's patch, which is essentially identical,
+are right and solves the problem for hot-remove/hot-add.  In that
+scenario we call pci_configure_ltr() on the hot-added device, and
+with this patch, we'll re-enable LTR on the bridge leading to the new
+device before enabling LTR on the new device itself.
 
-That is now commit
+But don't we have a similar problem if we simply do a Fundamental
+Reset on a device?  I think the reset path will restore the device's
+state, including PCI_EXP_DEVCTL2, but it doesn't do anything with the
+upstream bridge, does it?
 
-  0932934fd95e ("sched: Report local wake up on resched blind zone within i=
-dle loop")
+So if a bridge and a device below it both have LTR enabled, can't we
+have the following:
 
-in the rcu tree.
---=20
-Cheers,
-Stephen Rothwell
+  - bridge LTR enabled
+  - device LTR enabled
+  - reset device, e.g., via Secondary Bus Reset
+  - link goes down, bridge disables LTR
+  - link comes back up, LTR disabled in both bridge and device
+  - restore device state, including LTR enable
+  - device sends LTR message
+  - bridge reports Unsupported Request
 
---Sig_/CzqynzLpR=zJy.WU4h/xyDt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAKAKUACgkQAVBC80lX
-0GzlYQf9FfgFaTc08lXMGDpckNE6vyrnGiwmjbFAW9i7Tyx0npcJVS6zFj+Wv89P
-EqLT1lveFrgcYklR2JgrewzRGwcX8aIUU95m3btWge3I/pEvHqiwbQXmnj2eZUOD
-RSQKWLG8RtEOW2DSaD2cHVHLNkPp0jkYn2G2dAcBGvLVbGpu89Mdr6FyymcgSKef
-wnR3ymrujOe1R6I/euwjpuuwgqP6mM5NLka8HuyiZ54IEinTKHgnsP6yCV0yZu12
-SLrEsLHJmSrPiG7cBDdXLo/a/HTv0zvdH0rvOU00szPecBbEkxctIjz/GprW4Bxg
-pAvTq94p9WQI9OstjfV6LoKTPJPkaQ==
-=nX5+
------END PGP SIGNATURE-----
-
---Sig_/CzqynzLpR=zJy.WU4h/xyDt--
+> ---
+> Previous version can be found here:
+> 
+>   https://lore.kernel.org/linux-pci/20210114134724.79511-1-mika.westerberg@linux.intel.com/
+> 
+> Changes from the previous version:
+> 
+>   * Corrected typos in the commit message
+>   * No need to call pcie_downstream_port()
+> 
+>  drivers/pci/probe.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 0eb68b47354f..a4a8c0305fb9 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -2153,7 +2153,7 @@ static void pci_configure_ltr(struct pci_dev *dev)
+>  {
+>  #ifdef CONFIG_PCIEASPM
+>  	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
+> -	struct pci_dev *bridge;
+> +	struct pci_dev *bridge = NULL;
+>  	u32 cap, ctl;
+>  
+>  	if (!pci_is_pcie(dev))
+> @@ -2191,6 +2191,21 @@ static void pci_configure_ltr(struct pci_dev *dev)
+>  	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+>  	    ((bridge = pci_upstream_bridge(dev)) &&
+>  	      bridge->ltr_path)) {
+> +		/*
+> +		 * Downstream ports reset the LTR enable bit when the
+> +		 * link goes down (e.g on hot-remove) so re-enable the
+> +		 * bit here if not set anymore.
+> +		 * PCIe r5.0, sec 7.5.3.16.
+> +		 */
+> +		if (bridge) {
+> +			pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
+> +			if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
+> +				pci_dbg(bridge, "re-enabling LTR\n");
+> +				pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
+> +							 PCI_EXP_DEVCTL2_LTR_EN);
+> +			}
+> +		}
+> +		pci_dbg(dev, "enabling LTR\n");
+>  		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+>  					 PCI_EXP_DEVCTL2_LTR_EN);
+>  		dev->ltr_path = 1;
+> -- 
+> 2.29.2
+> 
