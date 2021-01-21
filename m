@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C442FF452
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B160B2FF453
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbhAUTZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:25:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S1727269AbhAUT0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727556AbhAUTYd (ORCPT
+        with ESMTP id S1727213AbhAUTZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:24:33 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E916C06174A;
-        Thu, 21 Jan 2021 11:23:53 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id j12so2259380pjy.5;
-        Thu, 21 Jan 2021 11:23:53 -0800 (PST)
+        Thu, 21 Jan 2021 14:25:28 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB554C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:24:47 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 30so1997843pgr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:24:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yiY7HD46FUvTU9Oj6CSOT7lbeUEzegOMDCYKa4T7F94=;
-        b=Z5XiKLNwDOfUbX/CovSxaboSwcc188M6BVytHUDexBth6QFlcnD5g1k4HK9xyE69U3
-         LVu/SPf9QcFY7885bLrdrcCFaOxTAAUFkWpByOPaNTCA4P3Z8IWcIqUB6RNQZaiZjax2
-         82cgY9Ry6x1W1+CPCBOqJ+wsxw6yarxPoKI4UlBaIu2uD5MeuAo+xqC0qlW03GYI6Uq3
-         MLkiYkzx11ASlkIH5DnVlZbL83eeWwR9LDx0bpDd7lviKlQfpNIcC2CyqngHxNG00Bwv
-         NeaMnLJhSUvr+o1rxaHqX8IUyjEf7Q7G8juZ8cu38zGgDWMIIS6Rbq/qzygYo30I2WVM
-         RRDg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/gqSp7OcRr/ed55qU/19Bnmbh+jsqIQNuD5w35l1bQs=;
+        b=V0LztueDbN4iG0gjmN25TNfzITrA3aCeZH/L7I6Ksa+5VCc63DQfSQZ7OBLMBjRHg2
+         7eYdFa5BCmIwSTuLdq5y29eDGRwl3SpKtc58yMRonCi/CYQTOSyn3/ld3rO/ABzn3Hyu
+         u577D/KK23BerSVmTUda1Hhzq1mkd2vnS/1W3t8TlfcM5xx+JSuYo5Sr7IAAj+bCxT+B
+         voc7iIzKjE+UM2ntT40FwdJ1WxdpXX1F9bzClRmVTkwRNB+S7CIC9slJxJbYyIBykUCj
+         LNO1hBC7rfgLEwTWC868gS/Kj64358n9mTFfLHlA0cTVYpfpTDZSyfKCDHPxXGipSSeh
+         c01g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yiY7HD46FUvTU9Oj6CSOT7lbeUEzegOMDCYKa4T7F94=;
-        b=opUMVKqe0TUZg28QJRVaUymy5kQmHRhWeqiSp8hZwcV/y6uptLK5KStD2z789wZz2A
-         xaIyJ2PUfpbmcS5NiwmV86dkBnF7VEY7+JdIp/o+4WFsLEjWMzZeH0t7VGQVVj0DVf5n
-         MwCFUCzRvKRKmRSbAPtN2fvKpPa9EaTdIwkQhVasF+g8D2/+OZ09iu3fYZcWo5wbE/U7
-         i7Sy3UGAVb7aRKGyI95gryKx7EXIdqXCagYJ/TtJTn85w6uZVVdY6VfvelegzQbmiE2z
-         CxAK++VgKeDaCWzTmld8J0ChJWdhl8lgyANy0fgA3WVzi2nlzG21JcnYW1BQ8btl0gfy
-         xZMw==
-X-Gm-Message-State: AOAM530AJBALIawd/2qdqVnBmQvjXlxBnj+03p2wWK4HAHxVGKyRSfMB
-        mTQndGnGk4Sw4Bsb26c++j7POJm+oS0=
-X-Google-Smtp-Source: ABdhPJy1tIhNY3xUiRniEpUrqJK1i7hcf9RFMz6Nv1JgC1ejFXtwfrgX7yX6kHVQbn0QSa3gxct6wg==
-X-Received: by 2002:a17:90a:c902:: with SMTP id v2mr1015256pjt.144.1611257032397;
-        Thu, 21 Jan 2021 11:23:52 -0800 (PST)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id r14sm6783315pgi.27.2021.01.21.11.23.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 11:23:51 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: stingray: remove sata
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210120185140.16929-1-scott.branden@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <5430df77-4364-7cc1-48dc-a335ca4c409a@gmail.com>
-Date:   Thu, 21 Jan 2021 11:23:43 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/gqSp7OcRr/ed55qU/19Bnmbh+jsqIQNuD5w35l1bQs=;
+        b=Uhe6p6j5MX9q2zEY0gUtjPC/JWDsK8dIfUCPUGgCZbbhSZY9devtZ+riRlmuDLytz3
+         exKrCMysEgupQBqE3+SlSlPWwOFcu6ArGtsShVv4bbHbKJGi8NCnV0TkQi44mJLZfZjx
+         ecUpWv7nHmDmHtVgRzmPL6chhC5caYuhpNRcUYf205VUHed13GlB4dBrOHcVgFiNGqn5
+         yoartoTA3E42JIWhKvHFv/0/O8LAKoNd+hh5Crz7vDOQBoDOCx3X6wTzT8fUurcACeQD
+         Cq65aSI5zaOU+nAjTIEyFs/eGs2Pd7ScKWYlq58nhBotFnhPb22Y78Jp2Erf6WJ9A7OR
+         4DBA==
+X-Gm-Message-State: AOAM533PhTKHIO0L2kN9lIpbfzGK2vp7pUIKDHT8AQjMSJoVCGhKuMEM
+        MGfviMrtfFsggNX4LYakIKC0SFEg+uHoAUMb97xR1A==
+X-Google-Smtp-Source: ABdhPJyRkjYcnaiD6RGS63GWq9+T6pTjXHEcp654EFy2JWq7JLVbynLjUukaZB9crrdy/DhTTewtfYeve07hc7LLaeU=
+X-Received: by 2002:a62:7896:0:b029:1b6:7319:52a7 with SMTP id
+ t144-20020a6278960000b02901b6731952a7mr1026808pfc.30.1611257087169; Thu, 21
+ Jan 2021 11:24:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210120185140.16929-1-scott.branden@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210120173612.20913-1-will@kernel.org> <20210120173612.20913-9-will@kernel.org>
+ <CAKwvOd=B+tMi7-82Q8hEYnQ+BzkLDygOhMh6cQ2L+3SaL+F4tQ@mail.gmail.com>
+ <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com> <20210121131101.GD22123@willie-the-truck>
+In-Reply-To: <20210121131101.GD22123@willie-the-truck>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 21 Jan 2021 11:24:36 -0800
+Message-ID: <CAKwvOdnmHH+sCqzdaAt_LYms_KULx5VpzmQZjSOy_Qyj0+hbgQ@mail.gmail.com>
+Subject: Re: [PATCH v4 8/8] mm: Mark anonymous struct field of 'struct
+ vm_fault' as 'const'
+To:     Will Deacon <will@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 21, 2021 at 5:11 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Wed, Jan 20, 2021 at 11:02:06AM -0800, Linus Torvalds wrote:
+> > On Wed, Jan 20, 2021 at 10:27 AM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > Is there a difference between: [ const unnamed struct and individual const members ]
+> >
+> > Semantically? No.
+> >
+> > Syntactically the "group the const members together" is a lot cleaner,
+> > imho. Not just from a "just a single const" standpoint, but from a
+> > "code as documentation" standpoint.
+> >
+> > But I guess to avoid the clang issue, we could do the "mark individual
+> > fields" thing.
+>
+> I'd prefer to wait until the bug against LLVM has been resolved before we
+> try to work around anything. Although I couldn't find any other examples
+> like this in the kernel, requiring all of the member fields to be marked as
+> 'const' still feels pretty fragile to me; it's only a matter of time before
+> new non-const fields get added, at which point the temptation for developers
+> to remove 'const' from other fields when it gets in the way is pretty high.
+
+What's to stop a new non-const field from getting added outside the
+const qualified anonymous struct?
+What's to stop someone from removing const from the anonymous struct?
+What's to stop a number of callers from manipulating the structure
+temporarily before restoring it when returning by casting away the
+const?
+
+Code review.
+
+Using a non-toolchain-portable solution certainly could be considered
+more fragile.
+
+It's always possible that the resolution is the C standards body goes
+the C++ route, at which point GCC would be forced to address this and
+potentially change behavior.  Kind of like how people avoid going to
+court since things are never guaranteed to work out in their favor.
+
+>
+> None of this is bullet-proof, of course, but if clang ends up emitting a
+> warning (even if it's gated behind an option) then I think we're in a good
+> place.
+>
+> > (It turns out that sparse gets this wrong too, so it's not just clang).
+>
+> Adding Luc, as hopefully that's fixable.
+>
+> Will
 
 
-On 1/20/2021 10:51 AM, Scott Branden wrote:
-> Remove sata from stingray as it is unsupported.
-> 
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 
-Applied to devicetree-arm64/next with a slightly reworded subject and
-commit message along with Ray's acked-by tag:
-
-https://github.com/Broadcom/stblinux/commit/142836ca820a7ad3b397bbdda7c35971f4b9772d
-
-Thanks!
--- 
-Florian
+--
+Thanks,
+~Nick Desaulniers
