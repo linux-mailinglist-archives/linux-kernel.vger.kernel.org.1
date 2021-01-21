@@ -2,109 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FF52FF44E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9008E2FF450
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbhAUTYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:24:24 -0500
-Received: from mail-dm3gcc02on2139.outbound.protection.outlook.com ([40.107.91.139]:39489
-        "EHLO GCC02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727302AbhAUTW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:22:28 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mzUeAkAtY5v7gAlI+DTgD4RIqt7BkgPxztOpV8EuAT55xsYGf37xVMzJ6DZcOOk/z5DN+YFj2JABHuOOMXxm9jd5xW6af0GygKeptDLwEsnQixJCPozPHCeE1bjt+R1h5IsoAZJITaDG72i4FozWZ7DV141ugYAdmol6S4E8bu6UhcWrU1L2yTkP6JnM9JHTocAH6DZls5TD0ULxfb2xJ9Gs3HbXVeT7KswsnqCvVIHWhabduFHs4G+8P85LiwEJi/tLP1LLaloeco81YZWzDSiMbqLFZ0CYe0Ffa2lLkurxdXLdMFYr2bTxIijWRgrCSN5egUU49KeKNGzkXNiYWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hc4i/5yYx/4QNu8x5zpc+jp150xKitrKlxVwMHdzcBI=;
- b=gpLBSthLNKcImf/sMDnIaZHRGlPDiie/eEH3MlXl+TR1Gx4bk2nNuK+w4RA4/m2at7wrwGnf9CqaZmpHjkUB/WP/1AQlyzTTz7UdmD9A/CM+kAYWO83ps5SCAgAjdj2ZZpDDgIiBfwmY8LlGOazE3zt0go5/gNaCaRuAQvNgQQxrbJlsRG5i9wthZzmgvd2wouWaLW3sG6OP5d7+iPr7xrZIkNRlOHE/srzrTxKUND/iqEFzUsoDj3RZ+j4p0hk2bhvp9mXYVjnwVEkQS2PxkrI0wnK5bhuMRDmTjQ658ViYIHJqDqWi8Qwvu8W4PotQth5aOfyTCgJKwFqdT08sEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starlab.io; dmarc=pass action=none header.from=starlab.io;
- dkim=pass header.d=starlab.io; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=starlab.io;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hc4i/5yYx/4QNu8x5zpc+jp150xKitrKlxVwMHdzcBI=;
- b=kGZ69Nly93w/yYqRTRncQrwoeYaFzGCS4WYtCLw/Jj3ECoA13i2fNjVMnxxPXNTTMJfo9uGznBdt1E4zup4NZxrV/qERQuXkXyD4vn5DQj8s6P6ZjumJ5loBogwkxaGUnzegew4lYh4v1S+ZLp4tLQG74WkfDaXGPpBo2NbX3cU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=starlab.io;
-Received: from DM8PR09MB6997.namprd09.prod.outlook.com (2603:10b6:5:2e0::10)
- by DM6PR09MB5973.namprd09.prod.outlook.com (2603:10b6:5:269::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 21 Jan
- 2021 19:21:35 +0000
-Received: from DM8PR09MB6997.namprd09.prod.outlook.com
- ([fe80::d16d:8c95:983d:28f9]) by DM8PR09MB6997.namprd09.prod.outlook.com
- ([fe80::d16d:8c95:983d:28f9%5]) with mapi id 15.20.3784.014; Thu, 21 Jan 2021
- 19:21:35 +0000
-Date:   Thu, 21 Jan 2021 13:21:33 -0600
-From:   Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xfs: set inode size after creating symlink
-Message-ID: <20210121192133.GA9807@jeffrey-work-20.04>
-References: <20210121151912.4429-1-jeffrey.mitchell@starlab.io>
- <20210121184137.GB1282159@magnolia>
+        id S1727008AbhAUTY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726952AbhAUTXf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:23:35 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B473CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:22:52 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id y8so1833778plp.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:22:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zKsHotGXgvprTlpljGXGLKdBrcmy/Fn0NltUb7fu5lk=;
+        b=SR2Vs6lWfpe+LZrVSZg2Qh6+dPYcXM7skWkPE19rhLYayubSvW2MJBuuOAi+3nEP0u
+         8ddD1sSNbCmHC/v64EYVwWyZ1AQj4CnB7HgiKfDoGmwzUs0qv4t4xvL9SdEzQZSs8Xv2
+         RF+zP+x+IUuKB5/cWknemRDVXgDGr7Y52YtUT49a3GLr/6sMlBye/Nmltb1CG4Oxuwe0
+         DMc1U0Aag7z7o2P29pdis2xXWSvoB2Nu2sWcJrU33BdnO/cKRH5zmsO/BskWDjwvXgMk
+         6Vlf0m9cP7yTs4S3YGbO+glVFdYoSEc1Bd5MCqXh5CIOHnQSaXUJwVYzGkvEUHmbldpw
+         hQSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zKsHotGXgvprTlpljGXGLKdBrcmy/Fn0NltUb7fu5lk=;
+        b=XvEMKhN3tlgSphuLHi4ibTARpsCx4IzxJ/zAJy094jXtLKloRGjWX31/BYj7+hA49O
+         BQAypIU54nLzZkn/oW7VWiwRprCmkYwN0mmAJMJGQTRJoidS4pk6VnetxNGhTs4Oo4t9
+         h4kYVJsww50L4uqGz8tiwjHaE/LTZoTwfwdznXYOz/kwzRfAXkGB0EuzBoM6UYZ6iBAy
+         ZeAnqCdNQVdyyOqnRbmYphsK3wqxp3Q1xFvzXY6yLV7bCof3xcLf88A8edPJOrLdion1
+         wO4k09fEyJeHRHnbV2inCAkhw78X+/ysaBlHH7lnWQgnofz3O1Q1IoLGSeX5muRWUlx/
+         G2qg==
+X-Gm-Message-State: AOAM532UhOx2KQzgpGibzenPT9pRpwmW5dWSY6hC6It2lRiUp1TCiNUc
+        Mz1OYY3a0EVq+vdaM/1VnNV3Kg==
+X-Google-Smtp-Source: ABdhPJz10HdM3ZLqhQf++MXK/auC7Itc6QN3487igCFrBclxhRG0eOX6nOYMQ8tGJd/GDL3UDPaODw==
+X-Received: by 2002:a17:90a:6643:: with SMTP id f3mr999802pjm.33.1611256972123;
+        Thu, 21 Jan 2021 11:22:52 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id x8sm3218020pjf.55.2021.01.21.11.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 11:22:51 -0800 (PST)
+Date:   Thu, 21 Jan 2021 11:22:44 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 19/24] kvm: x86/mmu: Protect tdp_mmu_pages with a lock
+Message-ID: <YAnUhCocizx97FWL@google.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-20-bgardon@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121184137.GB1282159@magnolia>
-X-Originating-IP: [47.218.202.86]
-X-ClientProxiedBy: SN7PR04CA0154.namprd04.prod.outlook.com
- (2603:10b6:806:125::9) To DM8PR09MB6997.namprd09.prod.outlook.com
- (2603:10b6:5:2e0::10)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jeffrey-work-20 (47.218.202.86) by SN7PR04CA0154.namprd04.prod.outlook.com (2603:10b6:806:125::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Thu, 21 Jan 2021 19:21:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7575242c-e691-4f3a-e911-08d8be41c483
-X-MS-TrafficTypeDiagnostic: DM6PR09MB5973:
-X-Microsoft-Antispam-PRVS: <DM6PR09MB5973A3B04D9A79C1A314FF01F8A10@DM6PR09MB5973.namprd09.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f441okwDE0htOSxz9WzMavTIxhFLK+Gh3ecIMgSdsaK0na6oSCjMp0may9F1NX6nOoAZ5zWFyY1qiLy4d6o4bcB/0N8vz8HDHHrDahCPIIXhZEihbodojvPF+mbsriSIRzewKbfdfE+7PTls0XTIA48AseiCeray7+f07VkTD/c4zVoEkADW7d6rFxsl3kIy4zXka2tQ8kikGzYNPByjH1zTI2RSkgvqPs/jZU/94HNCJzG3o5qkX/Ky0sv1kP9jcC2+cuFJrWHWgU2Q1JZ9UBVFflOweCjdpmoNvbc2hKdjpTR9SoVaAYIh5tLPz8UdTaquDKMny0e1uxOQhORL0cmEgP1UmzUByY+x981des3feUvndmcPym9b+uAKCb2vXoVRW0cVtx3rQj+QUc8xhw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR09MB6997.namprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39830400003)(346002)(376002)(136003)(366004)(478600001)(1076003)(26005)(6916009)(316002)(5660300002)(16526019)(14286002)(2906002)(6496006)(66556008)(8676002)(4744005)(66946007)(9686003)(83380400001)(6486002)(4326008)(66476007)(186003)(956004)(44832011)(33656002)(52116002)(86362001)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?XquzyA3D2RYAemjD7RZsyeKp8io8h9nqt4Z0dal59OX8nY79Byex9IOZIvft?=
- =?us-ascii?Q?rZthngqu9h8u8mWP4H11lzmXuPxvsHMBY9jYXzBRw9ZM3+sYfDFt4THGjuXD?=
- =?us-ascii?Q?vqS96k0TwXzuBi+7VXSTSL9+t7m2FAEV1Q6hVOJAdQ+IqSVSHm2pxx6xXMMK?=
- =?us-ascii?Q?U6jK7GEsOvLZ/fo0b/9aZiECQqazAXwnFkxiDhm9DNW4gcHuD+0xIUPSXzci?=
- =?us-ascii?Q?plTq0xaL61hVbW3Lw9UqGnE0uB04nusza+4jGxZmHRqiCUxW3UP7RdTsfjzQ?=
- =?us-ascii?Q?dDxEVa86//IWYKIRF1q0HvkI3hfT+7z+7iI9QWJmIPSKpb6Z2RhSKZFCorFG?=
- =?us-ascii?Q?u+5FZ1HPVrVYem2r/Am3CzcT2TWAxo5/v+A/dFWTMohqaeZ50+vcGwwoIKKa?=
- =?us-ascii?Q?KeEKy9Ocu9w73N5Wfg3XKwl0HMjoDypFxY9CJd9EQ4EcH04brHLAWmnmHMIi?=
- =?us-ascii?Q?qOnH0fNi/9/eMTZZDRMiEcj4JUM2hzPwL+cLSPXla1wJ3HpcwkmW42IGn//h?=
- =?us-ascii?Q?tAaKdMsW5Vr5v1bMaZKoDzs4Sm+nUdaM4+JGArDanyb8ZdRiAczB+6Hs/O5T?=
- =?us-ascii?Q?m6mtSJlhD43y3D0nzW5hU0xKMKWX9DatvZykg+Hjz3fjkcuvYGZaRfncjtJh?=
- =?us-ascii?Q?lmHnb/mb5C0Z/n4fH513FzCt/tzdnSQp2F2hqWDONvndz5SUiRWBZPo+BFyc?=
- =?us-ascii?Q?FjOiLJlfkoG9mC8+W/6vCcBkxeUdlS1VOas8IKyKSnLcq2CKDE5Z/Js3pjrm?=
- =?us-ascii?Q?yLkWBdWOah3QevJmA3SlXo6xwgVeksYlF6R+avxGLx7ZCQqckEiWfh/oHGJD?=
- =?us-ascii?Q?3hxn8elpJhYcSqhrtvwGP7sEbj9mTAAoXNZNFg6p3ksYJO6FQcn8s/Nf4taO?=
- =?us-ascii?Q?kVk5WMhQx+VaBGFdKjvu8fTi1toEX5hwIGggEbKyYednDAlQnDr349uJ92hh?=
- =?us-ascii?Q?dv9eb7d0fMQasG6EUG9m5AP036WRv2IMTFn/ABPrlXZNNRQFfR3UTmSsCXQE?=
- =?us-ascii?Q?LurZ?=
-X-OriginatorOrg: starlab.io
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7575242c-e691-4f3a-e911-08d8be41c483
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR09MB6997.namprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 19:21:35.2991
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e611933-986f-4838-a403-4acb432ce224
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T+mxlKSCWbOc1dWTXBbgBEeks9lwJVXdkeyO1A86xu7qeZHpR13KBcBG8GQwZqMvdWj12S2gw18UDwc8TGswCxVgbPjIE4VY1mODb9xDzF8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR09MB5973
+In-Reply-To: <20210112181041.356734-20-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:41:37AM -0800, Darrick J. Wong wrote:
-> Do directories have the same problem?
+On Tue, Jan 12, 2021, Ben Gardon wrote:
+> Add a lock to protect the data structures that track the page table
+> memory used by the TDP MMU. In order to handle multiple TDP MMU
+> operations in parallel, pages of PT memory must be added and removed
+> without the exclusive protection of the MMU lock. A new lock to protect
+> the list(s) of in-use pages will cause some serialization, but only on
+> non-leaf page table entries, so the lock is not expected to be very
+> contended.
+> 
+> Reviewed-by: Peter Feiner <pfeiner@google.com>
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 15 ++++++++
+>  arch/x86/kvm/mmu/tdp_mmu.c      | 67 +++++++++++++++++++++++++++++----
+>  2 files changed, 74 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 92d5340842c8..f8dccb27c722 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1034,6 +1034,21 @@ struct kvm_arch {
+>  	 * tdp_mmu_page set and a root_count of 0.
+>  	 */
+>  	struct list_head tdp_mmu_pages;
+> +
+> +	/*
+> +	 * Protects accesses to the following fields when the MMU lock is
+> +	 * not held exclusively:
+> +	 *  - tdp_mmu_pages (above)
+> +	 *  - the link field of struct kvm_mmu_pages used by the TDP MMU
+> +	 *    when they are part of tdp_mmu_pages (but not when they are part
+> +	 *    of the tdp_mmu_free_list or tdp_mmu_disconnected_list)
 
-Yes, I just checked in a VM. While ecryptfs does call vfs_getattr(), it
-only uses the "blocks" value to supplement the data from an identical
-generic_fillattr() call to what ecryptfs_getattr_link() uses. The reported
-size still comes from i_size_read().
+Neither tdp_mmu_free_list nor tdp_mmu_disconnected_list exists.
 
-V/R,
-Jeffrey Mitchell
+> +	 *  - lpage_disallowed_mmu_pages
+> +	 *  - the lpage_disallowed_link field of struct kvm_mmu_pages used
+> +	 *    by the TDP MMU
+> +	 *  May be acquired under the MMU lock in read mode or non-overlapping
+> +	 *  with the MMU lock.
+> +	 */
+> +	spinlock_t tdp_mmu_pages_lock;
+>  };
+>  
+>  struct kvm_vm_stat {
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 8b61bdb391a0..264594947c3b 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -33,6 +33,7 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
+>  	kvm->arch.tdp_mmu_enabled = true;
+>  
+>  	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
+> +	spin_lock_init(&kvm->arch.tdp_mmu_pages_lock);
+>  	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_pages);
+>  }
+>  
+> @@ -262,6 +263,58 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+>  	}
+>  }
+>  
+> +/**
+> + * tdp_mmu_link_page - Add a new page to the list of pages used by the TDP MMU
+> + *
+> + * @kvm: kvm instance
+> + * @sp: the new page
+> + * @atomic: This operation is not running under the exclusive use of the MMU
+> + *	    lock and the operation must be atomic with respect to ther threads
+> + *	    that might be adding or removing pages.
+> + * @account_nx: This page replaces a NX large page and should be marked for
+> + *		eventual reclaim.
+> + */
+> +static void tdp_mmu_link_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+> +			      bool atomic, bool account_nx)
+> +{
+> +	if (atomic)
+
+This is unnecessary, there is exactly one caller and it is always "atomic".
+
+Assuming some of this code lives on (see below), I'd prefer a different name
+than "atomic".  Writing the SPTE is atomic (though even that is a bit of a lie,
+e.g. tdp_mmu_zap_spte_atomic() is very much not atomic), but all the other
+operations are the exact opposite of atomic.
+
+Maybe change it from a bool to an enum with READ/WRITE_LOCKED or something?
+
+> +		spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> +	else
+> +		kvm_mmu_lock_assert_held_exclusive(kvm);
+> +
+> +	list_add(&sp->link, &kvm->arch.tdp_mmu_pages);
+> +	if (account_nx)
+> +		account_huge_nx_page(kvm, sp);
+> +
+> +	if (atomic)
+> +		spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> +}
+> +
+> +/**
+> + * tdp_mmu_unlink_page - Remove page from the list of pages used by the TDP MMU
+> + *
+> + * @kvm: kvm instance
+> + * @sp: the page to be removed
+> + * @atomic: This operation is not running under the exclusive use of the MMU
+> + *	    lock and the operation must be atomic with respect to ther threads
+> + *	    that might be adding or removing pages.
+> + */
+> +static void tdp_mmu_unlink_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+> +				bool atomic)
+> +{
+> +	if (atomic)
+
+Summarizing an off-list discussion with Ben:
+
+This path isn't reachable in this series, which means all the RCU stuff is more
+or less untestable.  Only the page fault path modifies the MMU while hold a read
+lock, and it can't zap non-leaf shadow pages (only zaps large SPTEs and installs
+new SPs).
+
+The intent is to convert other zap-happy paths to a read lock, notably
+kvm_mmu_zap_collapsible_sptes() and kvm_recover_nx_lpages().  Ben will include
+patches to convert at least one of those in the next version of this series so
+that there is justification and coverage for the RCU-deferred freeing.
+
+> +		spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> +	else
+> +		kvm_mmu_lock_assert_held_exclusive(kvm);
+> +	list_del(&sp->link);
+> +	if (sp->lpage_disallowed)
+> +		unaccount_huge_nx_page(kvm, sp);
+> +
+> +	if (atomic)
+> +		spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> +}
+> +
+>  /**
+>   * handle_disconnected_tdp_mmu_page - handle a pt removed from the TDP structure
+>   *
