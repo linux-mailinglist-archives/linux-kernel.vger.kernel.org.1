@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470B12FF7EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E282FF7F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbhAUWaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:30:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        id S1726296AbhAUWcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbhAUWaO (ORCPT
+        with ESMTP id S1726182AbhAUWbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:30:14 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07F9C06174A;
-        Thu, 21 Jan 2021 14:29:33 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 78ECF50E;
-        Thu, 21 Jan 2021 23:29:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611268169;
-        bh=bSpsB6iz35fpcRamCYl6FESXLSgAPyQnt/ONPb0XVR0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pzSbXgjIq0gMeq5GoIgz737IVoY3jMy839L7SJo+VjITuzzFWGvHFXyi989Nj5y8+
-         uPx4iYyo6wP/vjx3b8CJp83GEb47dqEFDHYxBy+lOAxmSMMGDapf9ALgnwsKMRLYm5
-         vpLAm2py/mSCZoCQYTh/D71qwqNxY+dFLyw2XDaE=
-Date:   Fri, 22 Jan 2021 00:29:11 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 06/12] arm64: dts: zynqmp: Add label for zynqmp_ipi
-Message-ID: <YAoAN3JF27zWnjn5@pendragon.ideasonboard.com>
-References: <cover.1606917949.git.michal.simek@xilinx.com>
- <272e23e0123f02c559bfa4ada9de73eb197aced8.1606917949.git.michal.simek@xilinx.com>
- <X81fXtxvsc7KE7cK@pendragon.ideasonboard.com>
- <99008851-6c12-3acc-6530-25af08429ff5@xilinx.com>
- <X86poiQSzv5Uva1r@pendragon.ideasonboard.com>
- <4010c2d4-bee1-827b-1079-1f1bbf1f10d1@xilinx.com>
+        Thu, 21 Jan 2021 17:31:46 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB9C0613D6;
+        Thu, 21 Jan 2021 14:31:04 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMHD62TsXz9sCD;
+        Fri, 22 Jan 2021 09:31:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611268262;
+        bh=uVaQ65fEPi72B62bEe+ohl4M6CtunMGDfjs6tVElKmo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dZCa/N5jtJbt2gckDY0h6iK7P32nbtALrYKYNvA7I3ntku2CEc3isserLIP6fjdAu
+         P/dcssaVS3uswMoECBAALA58XIFQKtNVpoRzU0Coviq6R7/GweMlnHfleeNcdxfJPu
+         tcIHBhU1gKCNLU0zan785QJUFK629DJDW0MNkLkIHGlVZsXKgJxvVbH9dwa5jZIpq9
+         M43ZL4NzdvoNlI09FrGOezzcub9fNLyY3vyOBv/W4yeikBwIJJ25irutfdEoLJvw5q
+         L7gOeLNmmt0kQdkc2nhpTvjEzooHlOCMn/+vGabO/iPiCazY027RjhYZzV1pyDlkD7
+         GwakTxOnJyxCA==
+Date:   Fri, 22 Jan 2021 09:31:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] s390: allow reschedule on syscall restart
+Message-ID: <20210122093101.058cbc6a@canb.auug.org.au>
+In-Reply-To: <20210122083249.60d29c33@canb.auug.org.au>
+References: <20210121143926.21440-1-svens@linux.ibm.com>
+        <20210121143926.21440-2-svens@linux.ibm.com>
+        <20210122083249.60d29c33@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4010c2d4-bee1-827b-1079-1f1bbf1f10d1@xilinx.com>
+Content-Type: multipart/signed; boundary="Sig_/CzqynzLpR=zJy.WU4h/xyDt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+--Sig_/CzqynzLpR=zJy.WU4h/xyDt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I've just realized I forgot to reply to this e-mail, sorry.
+Hi all,
 
-On Tue, Dec 08, 2020 at 08:26:41AM +0100, Michal Simek wrote:
-> On 07. 12. 20 23:16, Laurent Pinchart wrote:
-> > On Mon, Dec 07, 2020 at 10:39:25AM +0100, Michal Simek wrote:
-> >> On 06. 12. 20 23:46, Laurent Pinchart wrote:
-> >>> On Wed, Dec 02, 2020 at 03:06:05PM +0100, Michal Simek wrote:
-> >>>> Add label which is used by bootloader for adding bootloader specific flag.
-> >>>>
-> >>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> >>>> ---
-> >>>>
-> >>>> U-Boot needs to add u-boot,dm-pre-reloc; property
-> >>>
-> >>> I'm not entirely sure what best practice rules are in this area, but
-> >>> shouldn't U-Boot locate the node by name instead of label ?
-> >>
-> >> Labels are not listed in dt binding and there are two approaches how to
-> >> reference nodes. Via full path with node name or via labels.
-> >> I do normally use labels which are much simple.
-> > 
-> > Note that labels require the DTB to be compiled with the -@ option,
-> > otherwise they're not present in the binary.
-> 
-> U-Boot is using different concept. You can see that there are a lot of
-> -u-boot.dtsi files in dts folders. These are automatically included to
-> DTS before DTC is called. It means you don't need to build overlay to
-> get merged.
-> 
-> >> And also if you take a look how dtb looks like (convert back to dts) you
-> >> can see that for example aliases are using full path (just &label) but
-> >> clocks/gic which is the part of <> is handled via phandles as numbers.
-> >>
-> >> And labels names can vary and shouldn't be the part of binding doc as
-> >> far as I know. But I can be wrong of course.
-> > 
-> > The DT bindings should document the interface with the operating system,
-> > and if applicable, the boot loader. If the boot loader requires a
-> > particular label, then it becomes part of the ABI, and I think it should
-> > be documented in the bindings.
-> 
-> We have been discussing with Rob some month ago but didn't have a time
-> to do step further. Just keep it short Rob was ok to keep bootloader
-> binding inside Linux repo.
+On Fri, 22 Jan 2021 08:32:49 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> I add that today as a merge fixup patch to the merge of the rcu tree
+> (which contains commit 845f44e8ef28 ("sched: Report local wake up on
+> resched blind zone within idle loop") ).
 
-I think that makes sense, DT bindings are meant to be OS-agnostic, so
-boot loader requirements should be documented there.
+That is now commit
 
-> There is no hardcoding for a particular name. There is just a need to
-> have any label. U-Boot needs to have one property(e.g.
-> u-boot,dm-pre-reloc;) just to do early allocation.
-> The name is just reference and none is really looking for it. It is just
-> a way how to include it in much easier way.
+  0932934fd95e ("sched: Report local wake up on resched blind zone within i=
+dle loop")
 
-Just to make sure I understand this issue correctly, does this mean that
-you need to reference the node in a *-u-boot.dtsi file, and want a label
-to do so ? The label name needs to be the same in the base file (taken
-from the Linux source tree) and the *-u-boot.dtsi file (in the U-Boot
-source tree) in that case. Isn't it the role of DT bindings to document
-such requirements ?
+in the rcu tree.
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Regards,
+--Sig_/CzqynzLpR=zJy.WU4h/xyDt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Laurent Pinchart
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAKAKUACgkQAVBC80lX
+0GzlYQf9FfgFaTc08lXMGDpckNE6vyrnGiwmjbFAW9i7Tyx0npcJVS6zFj+Wv89P
+EqLT1lveFrgcYklR2JgrewzRGwcX8aIUU95m3btWge3I/pEvHqiwbQXmnj2eZUOD
+RSQKWLG8RtEOW2DSaD2cHVHLNkPp0jkYn2G2dAcBGvLVbGpu89Mdr6FyymcgSKef
+wnR3ymrujOe1R6I/euwjpuuwgqP6mM5NLka8HuyiZ54IEinTKHgnsP6yCV0yZu12
+SLrEsLHJmSrPiG7cBDdXLo/a/HTv0zvdH0rvOU00szPecBbEkxctIjz/GprW4Bxg
+pAvTq94p9WQI9OstjfV6LoKTPJPkaQ==
+=nX5+
+-----END PGP SIGNATURE-----
+
+--Sig_/CzqynzLpR=zJy.WU4h/xyDt--
