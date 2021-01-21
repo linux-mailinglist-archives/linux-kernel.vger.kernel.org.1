@@ -2,143 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D02FE617
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D102FE60E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbhAUJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:16:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728383AbhAUJLq (ORCPT
+        id S1728521AbhAUJOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:14:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47612 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728171AbhAUJMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:11:46 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FED5C061796
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:11:15 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id dj23so1520740edb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:11:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WLXeWIIoAu3UvtfUefXR9qcSia3PjDVI/Fbc5zrav74=;
-        b=L0WyjqaHw0/lRmseCIJJbm0McdMQpzOm/7kVIAnPv9TUdDWiA0dMSeUtNdBHKJD+3t
-         r0JwbHmd5Z23dT9lioDVG2jgdlTOM1lnbmB4M7fNcvygWoRf8krfXnzPP0Bcz/z8YG9p
-         FoDZz5hLYSFh1bTyeIepXRlh+VS5k0TBAaqcd4YWIaptS0i7CTeFPH8AveyFs/enFj1P
-         OHCA72zAkf80LvVLIQqekwMPMD+DUJbmTNB00ALDKuauYkRB+TNZyk05sSSRqMcNgHrZ
-         C2u//DcTUii2Oca69dD2DvQW8RLLX0XHRjaWUJsF6j0FEFs8BxSteQAwpCOBtdqdti64
-         qMCA==
+        Thu, 21 Jan 2021 04:12:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611220285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pbplf9Sl2OA+jEnptp1T53Sr+m67yaibfSpRJ5rlkAU=;
+        b=iykNEo+irgVMXyZuQd4ZH3kTLVz6ImpJpfugYAnGH5jVawQj69nnneoVEXhJGl7Jxh22+d
+        wCn07+GGZK94p7qYCmYQaE0Ob4rX9qkPch7xIe0QOQw4MbhhSptc7SC2FRacgYqX+y+8FO
+        Wwm7WdTZix8KiFYcyUFewwD9nk+LwUo=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-HYSzY8zpPliYlgs11mGjig-1; Thu, 21 Jan 2021 04:11:21 -0500
+X-MC-Unique: HYSzY8zpPliYlgs11mGjig-1
+Received: by mail-wm1-f70.google.com with SMTP id u9so165595wmj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:11:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WLXeWIIoAu3UvtfUefXR9qcSia3PjDVI/Fbc5zrav74=;
-        b=Bq8w72eik7XoW3WfkAGMflVIcrW0r0mjWM3H/x+fOY1f2v9+SzHH1E6CDM8zqYbydK
-         apMCyMxHaFq1VqSpCs7qLJ3QmL10JL9fi5aCtsFblPCMYqdqVswj4F98FVuCslBrl8Vn
-         YTXQiH93nUS7bCfOgiWFzf4PrWX9xunsY7i3dl77KJROkaVW66Q2is+ovkCweVz8EBZU
-         Nlu2A3qlilRFumYXmgYcpDJXYR9jb80+J7046TRv/zbA9qNlBC3Nt5/rGAdLYpEkpEM+
-         IJrJVT7+VrWZmu/wlmUzZ9AkOqys4SwEvhaykXAAaxZWSD8mZVikoU/e76VlG0sOIBN9
-         C7tg==
-X-Gm-Message-State: AOAM533ICzl5fMWhel/uDXKwZXZL9UYq6zw4b8q6hk3OHErFZM7X4aAm
-        G8eGpA5XcsEyvr8uPOWVcVk188WXQLUlp4ZUntfM5A==
-X-Google-Smtp-Source: ABdhPJzCxyeIcXGOlc4+TBm6gMHiw/i/Y7fx9SBhhCx7//bBXwiSd+CK8jbzA4TdALgfZUw3o+e89xwXFxeHzE+WiQA=
-X-Received: by 2002:aa7:c384:: with SMTP id k4mr10130943edq.23.1611220274094;
- Thu, 21 Jan 2021 01:11:14 -0800 (PST)
+         :message-id:subject:to;
+        bh=pbplf9Sl2OA+jEnptp1T53Sr+m67yaibfSpRJ5rlkAU=;
+        b=ZB+/is2cHpn2mN+fa4Y2LJMfyD92CTtOc2fALqvgglGCJhWApcbFRVXmGGn8BxDDXG
+         x2jxMl/hNAVLFp7ozYeOIgqOtbfPtvVhjlFoWQqetjsojv+EvXHodFgeMsLKetv+TfOv
+         f7G874/Mm4wFVNDbKRK2sF9hufmc5j+Ybl6hBMWfXn63O6LmJ2OOmP0l0yYOHBuNgp9r
+         u3znBfsM2yhNXXjDtp2u0YoLW6wm3y7/meyPxuK9oI8w4OcAKu0fhS9+2UeVqgvgO71i
+         ir1uaq63OK2R2CZrjI6HyxHPuic2F69qksDf4DKZflZUXptnXjZJVGQARS5tMq8QX4LL
+         r0JA==
+X-Gm-Message-State: AOAM5337JSqq5M1LulJfKbaKVkbYf9qhwe3MG0u/rPkj7frmiOvK0v4g
+        ycbap5tO/FPMp2lCnAGUi1z/cPZHGeOVwrhcRJFwKcM6RUCDPSJM1FmUdu7NIyY3vr8NGoziwkd
+        zHuJKjcYiVhaeLi+uCCov7yq9vAHLIdmJAz2keJ6v
+X-Received: by 2002:adf:f707:: with SMTP id r7mr13713616wrp.113.1611220279901;
+        Thu, 21 Jan 2021 01:11:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzgpVWzocCygyTPT6dDjY2yHIjCUEEPxumfl2nlkz6PJc3SRXyHWigURBcpybIrjahQRYJLof4gUYHYKxg4is8=
+X-Received: by 2002:adf:f707:: with SMTP id r7mr13713588wrp.113.1611220279662;
+ Thu, 21 Jan 2021 01:11:19 -0800 (PST)
 MIME-Version: 1.0
-References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz>
-In-Reply-To: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Jan 2021 14:41:02 +0530
-Message-ID: <CA+G9fYsyXsNSXGy6BWZ6mgpAP=+7r6Xy9jQ2xxb9mXyHdRoBCg@mail.gmail.com>
-Subject: Re: [PATCH] PM / clk: make PM clock layer compatible with clocks that
- must sleep
-To:     Nicolas Pitre <npitre@baylibre.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+References: <X+WV8OiQzTIfLdgW@audible.transient.net> <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
+ <X/NO9kAlCd/k8Di2@audible.transient.net> <X/NT0iN9KlSXQJJ7@audible.transient.net>
+ <X/UsBWwFR+V0hIOS@audible.transient.net> <CACO55ttrFCOzREQxi3+SSaCSsAP1bEUBEt78ajkRGQQU1xYxtw@mail.gmail.com>
+ <YAjn9jR+d2zRfNjb@audible.transient.net>
+In-Reply-To: <YAjn9jR+d2zRfNjb@audible.transient.net>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Thu, 21 Jan 2021 10:11:08 +0100
+Message-ID: <CACO55tu+5vv3dU3+O=DGDo9EdcyqFtpF4WR-VNj5eo89WMSfpw@mail.gmail.com>
+Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
+To:     Karol Herbst <kherbst@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+fyi, there is a patch which solves a maybe related issue on your GPU,
+mind giving it a try before we dig further?
+https://gitlab.freedesktop.org/drm/nouveau/-/issues/14#note_767791
 
-On Tue, 5 Jan 2021 at 08:48, Nicolas Pitre <npitre@baylibre.com> wrote:
+On Thu, Jan 21, 2021 at 3:33 AM Jamie Heilman
+<jamie@audible.transient.net> wrote:
 >
-> The clock API splits its interface into sleepable ant atomic contexts:
+> Karol Herbst wrote:
+> > On Wed, Jan 6, 2021 at 4:25 AM Jamie Heilman
+> > <jamie@audible.transient.net> wrote:
+> > >
+> > > Jamie Heilman wrote:
+> > > > Jamie Heilman wrote:
+> > > > > Karol Herbst wrote:
+> > > > > > do you think you'd be able to do a kernel bisect in order to pinpoint
+> > > > > > the actual commit causing it? Thanks
+> > > > >
+> > > > > No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
+> > > > > be a problem but as I can't and as it can take weeks for the problem
+> > > > > to occur there's essentially no chance.  I know it regressed roughly
+> > > > > in 5.8-rc1 only because that's what I was running when the first event
+> > > > > occured.
+> > > >
+> > > > er, 5.9.0-rc1 rather
+> > >
+> > > Actually ... I've found a way to reproduce this in hours intead of
+> > > weeks, so I think I may be able to bisect it after all, it's something
+> > > of a brute force approach and its probably doing horrible things to
+> > > the backlight in my poor old monitor, but just running this:
+> > >
+> > > #!/bin/sh
+> > > sleep 5
+> > > while ! dmesg | tail | grep -q nouveau
+> > > do
+> > >     xset dpms force off
+> > >     sleep 65
+> > >     xdotool mousemove 1024 1024 mousemove restore
+> > >     sleep 10
+> > > done
+> > >
+> > > Does manage to trip the issue sooner than it would otherwise happen
+> > > with natural usage.  Given that this is my primary workstation and I
+> > > sort of need it functional during waking hours, it'll take me a bit,
+> > > but I'll update folks when I have the error more dialed in.
+> > >
+> >
+> > huh interesting. Kind of feels like a random thing still. But I think
+> > in general you'd spend way too much time on this if you can't
+> > reproduce within seconds/minutes and then it might not point out the
+> > actual issue, because randomly the issue didn't appear and stuff.
+> >
+> > maybe you can tune it to have shorter pauses or something? I'd really
+> > try to bring down the time per cycle.
 >
-> - clk_prepare/clk_unprepare for stuff that might sleep
+> Well I'm confident enough, at this point, to say this bisects to
+> 0a96099691c8 ("drm/nouveau/kms/nv50-: implement proper push buffer control logic")
 >
-> - clk_enable_clk_disable for anything that may be done in atomic context
+> Now... I wish I could say the bisection was straightforward and
+> simple, but it wasn't thanks to still not having a reproducer really
+> dialed in.  The above script doesn't work unless I've got some normal
+> usage around it.  It certainly triggers the issue sooner than it
+> otherwise would, but by itself it isn't enough.  I modified it
+> somewhat in the hopes of capturing the rough idea of how many
+> itterations it would take to trigger the problem by using:
+>
+> #!/bin/sh
+> I=0
+> trap 'echo;echo $I' 0
+> trap 'exit' INT
+> sleep 5
+> while ! dmesg | tail | grep -q nouveau
+> do
+>     I=$(($I + 1))
+>     xset dpms force off
+>     sleep 32
+>     xdotool mousemove 1 12 mousemove restore
+>     sleep 28
+> done
+>
+> but ultimately that didn't really pan out the way I'd hoped.  I don't
+> think the itterations have all that much to do with the condition in
+> the end.  I wanted to try applying ca386aa7155a
+> ("drm/nouveau/kms/nv50-gp1xx: add WAR for EVO push buffer HW bug") on
+> top of the first bad commit becuase I sort of felt like when I was
+> running -rc versions that things got a bit less chaotic after that
+> commit landed, but it was just a gut feeling and I wanted to see if I
+> could support it with metrics---but no, I can't really get consistent
+> metrics even without that commit so I gave up, and decided to report
+> what I've got so far.
+>
+>
+>
+> > > I'm using git bisect start -- drivers/gpu/drm include/drm include/video
+> > > in an effort to make this go a bit quicker, let me know if you think
+> > > that's a bad idea or I should add other paths.
+> > >
+> > > > > > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
+> > > > > > <jamie@audible.transient.net> wrote:
+> > > > > > >
+> > > > > > > Something between v5.8 and v5.9 has resulted in periodically losing video.
+> > > > > > > Unfortunately, I can't reliably reproduce it, it seems to happen every
+> > > > > > > once in a long while---I can go weeks without an occurance, but it
+> > > > > > > always seems to happen after my workstation has been idle long enough
+> > > > > > > to screen blank and put the monitor to sleep.  I'm using a single
+> > > > > > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
+> > > > > > > Debian sid).  I don't really do anything fancy, xterms, a browser or
+> > > > > > > two, play the occasional video, but like I said, I can't reliably
+> > > > > > > reproduce this.  I've had it happen about 11 times since August.
+> > > > > > >
+> > > > > > > lspci -vv output is:
+> > > > > > >
+> > > > > > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
+> > > > > > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
+> > > > > > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+> > > > > > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+> > > > > > >         Latency: 0, Cache Line Size: 64 bytes
+> > > > > > >         Interrupt: pin A routed to IRQ 28
+> > > > > > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
+> > > > > > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
+> > > > > > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
+> > > > > > >         Region 5: I/O ports at dc80 [size=128]
+> > > > > > >         Expansion ROM at 000c0000 [disabled] [size=128K]
+> > > > > > >         Capabilities: [60] Power Management version 2
+> > > > > > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+> > > > > > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+> > > > > > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+> > > > > > >                 Address: 00000000fee01004  Data: 4023
+> > > > > > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
+> > > > > > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
+> > > > > > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
+> > > > > > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
+> > > > > > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+> > > > > > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
+> > > > > > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+> > > > > > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+> > > > > > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
+> > > > > > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+> > > > > > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+> > > > > > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
+> > > > > > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+> > > > > > >         Capabilities: [100 v1] Virtual Channel
+> > > > > > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
+> > > > > > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
+> > > > > > >                 Ctrl:   ArbSelect=Fixed
+> > > > > > >                 Status: InProgress-
+> > > > > > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
+> > > > > > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+> > > > > > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
+> > > > > > >                         Status: NegoPending- InProgress-
+> > > > > > >         Capabilities: [128 v1] Power Budgeting <?>
+> > > > > > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
+> > > > > > >         Kernel driver in use: nouveau
+> > > > > > >
+> > > > > > > The last time this happened, this is what got logged:
+> > > > > > >
+> > > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > > > > > nouveau 0000:01:00.0: disp: Base 1:
+> > > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > > > > > nouveau 0000:01:00.0: disp: Base 1:
+> > > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > > > > > nouveau 0000:01:00.0: DRM: core notifier timeout
+> > > > > > > nouveau 0000:01:00.0: DRM: base-0: timeout
+> > > > > > >
+> > > > > > > I've got logs of all of this, if they help I can collect them.  The
+> > > > > > > timeout message are consistent the error messages a little less so.
+> > > > > > >
+> > > > > > > If there's more debugging I can do when this happens, I'd love to know
+> > > > > > > what it is.
+> > > > > > >
+> > > > > > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
+> > > > > > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
+> > > > > > >
+> > > > > > > --
+> > > > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > > > > > > _______________________________________________
+> > > > > > > Nouveau mailing list
+> > > > > > > Nouveau@lists.freedesktop.org
+> > > > > > > https://lists.freedesktop.org/mailman/listinfo/nouveau
+> > > > > > >
+> > > > > >
+> > > > >
+> > > > > --
+> > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > > >
+> > > > --
+> > > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > >
+> > > --
+> > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > >
+> >
+>
+> --
+> Jamie Heilman                     http://audible.transient.net/~jamie/
 >
 
-<trim>
-
->
-> Signed-off-by: Nicolas Pitre <npitre@baylibre.com>
->
-> diff --git a/drivers/base/power/clock_ops.c b/drivers/base/power/clock_ops.c
-> index ced6863a16..a62fb0f9b1 100644
-> --- a/drivers/base/power/clock_ops.c
-> +++ b/drivers/base/power/clock_ops.c
-
-<trim>
-
-> @@ -64,17 +166,20 @@ static void pm_clk_acquire(struct device *dev, struct pm_clock_entry *ce)
->                 ce->clk = clk_get(dev, ce->con_id);
->         if (IS_ERR(ce->clk)) {
->                 ce->status = PCE_STATUS_ERROR;
-> +               return;
-> +       } else if (clk_is_enabled_when_prepared(ce->clk)) {
-
-arm-linux-gnueabihf-ld: drivers/base/power/clock_ops.o: in function
-`pm_clk_acquire':
-drivers/base/power/clock_ops.c:170: undefined reference to
-`clk_is_enabled_when_prepared'
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-This build error was noticed on arm architecture on linux next 20210121 tag.
-Following builds failed.
- - arm (omap1_defconfig) with clang-10 - FAILED
- - arm (omap1_defconfig) with clang-11 - FAILED
-
- - arm (omap1_defconfig) with gcc-8 - FAILED
- - arm (omap1_defconfig) with gcc-9 - FAILED
- - arm (omap1_defconfig) with gcc-10 - FAILED
-
-Steps to reproduce:
----------------------------
-1)
-
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-tuxmake --runtime docker --target-arch arm --toolchain gcc-8 --kconfig
-omap1_defconfig
-
-2)
-tuxbuild build --git-repo
-https://gitlab.com/Linaro/lkft/mirrors/next/linux-next --git-sha
-bc085f8fc88fc16796c9f2364e2bfb3fef305cad --target-arch arm --toolchain
-gcc-8 --kconfig omap1_defconfig
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
