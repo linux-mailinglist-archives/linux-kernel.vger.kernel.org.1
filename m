@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39A32FF581
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC8D2FF583
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbhAUUKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:10:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:45078 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbhAUUJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:09:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF84511D4;
-        Thu, 21 Jan 2021 12:08:45 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF64C3F66E;
-        Thu, 21 Jan 2021 12:08:43 -0800 (PST)
-Subject: Re: [PATCH] ACPI/IORT: Do not blindly trust DMA masks from firmware
-To:     Moritz Fischer <mdf@kernel.org>, lorenzo.pieralisi@arm.com
-Cc:     guohanjun@huawei.com, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
+        id S1727017AbhAUUKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:10:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725819AbhAUUKZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:10:25 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC09C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:09:39 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id v19so2058936pgj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1PBuVr98tisNyNC2AA1cvPVEXnxqIUbtO/yR5FgQiPQ=;
+        b=csD8hjg4i4nfK3OO3VeKqrrkT22R5GdmArVqGVFy54ZUOR8p+F3D1ueui+RU6v0iLt
+         uDNb5prExVm7e5EOzc7hVw6cdAjiWwLI/rH3XCBE8R1WMnSp1yEFU1vVRX6f6McjYyij
+         XAUoup3W+4gkNSWonaWday/B4cyBI8gcNRBhH0SuBg9L2aPB7eRMDPAfnmGD5jXv5KGJ
+         U8RnsRI6jzik3lnN9P4Ki/iKqG9MWTbp4LViMZ4/SLfkiRdnQnNw3z7IsRNY7Ewk62N1
+         hr8E/K9sstGXYUUJVIk+NkZBHufvATEBuW4CBBB1dFgzqZyFflGjgG1Bu6dd6hoKgj0X
+         Tc2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1PBuVr98tisNyNC2AA1cvPVEXnxqIUbtO/yR5FgQiPQ=;
+        b=hTn7y07WuXuhIVe8IFMZGjIyXpbHbmck1I1HlSu7XnydrGC8LA0G50FTmwvQWjv/uU
+         xOUxOIYCw7s0uA7Xmi7Lp8enRvHb2rbAFaF1p+w/3oYFcPcIu05eYYjld0/llgRjTiMv
+         EDTXPXeRF4WZJ4Mne7rVCFOzL4l5SzT1K9BS9obPBVZHgbqWk8zuUEnT3W3sQMWxpwVi
+         JCGzPxEYUpnSPEnQTNG7fmQJGOpcb8cP0rQzN3PPAuwyMv3JVBxcFU3e3gUFfT1KJzuw
+         nN8LySnEgRbm+GzzEkNr0hsRbu+og3gsUVO0KdmHz4eMcRuSNe3B1ZSyTwDuJpmIA5dF
+         p0AA==
+X-Gm-Message-State: AOAM531DitEo3Bk9gj3dKAj6GnS0HcGvvDDzQY9QVfAnnDZ6eiodfxHc
+        fZmKpfr5W2+nLDxd4YCNpuPo8Ik3uMo=
+X-Google-Smtp-Source: ABdhPJzCzlBPQNgN11cYcMP6nA2MJmWB9U7wsIPP5ysZYCupQB2GvTpGtwTWJS5VkmYnPc1qeOaxpw==
+X-Received: by 2002:a63:af05:: with SMTP id w5mr1005481pge.22.1611259778677;
+        Thu, 21 Jan 2021 12:09:38 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id v9sm3428705pfm.80.2021.01.21.12.09.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 12:09:37 -0800 (PST)
+Subject: Re: [PATCH] ARM: brcmstb: Add debug UART entry for 72116
+To:     Florian Fainelli <f.fainelli@gmail.com>,
         linux-arm-kernel@lists.infradead.org
-References: <20210121191612.90387-1-mdf@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <faa089d5-48e3-d51d-0d14-849e5446dbf4@arm.com>
-Date:   Thu, 21 Jan 2021 20:08:42 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+Cc:     Russell King <linux@armlinux.org.uk>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210120200156.2782528-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <01b9fc82-8c80-80b0-3249-5f1bdb03d6c6@gmail.com>
+Date:   Thu, 21 Jan 2021 12:09:36 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210121191612.90387-1-mdf@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210120200156.2782528-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-21 19:16, Moritz Fischer wrote:
-> Address issue observed on real world system with suboptimal IORT table
-> where DMA masks of PCI devices would get set to 0 as result.
+
+
+On 1/20/2021 12:01 PM, Florian Fainelli wrote:
+> 72116 has the same memory map as 7255 and the same physical address for
+> the UART, alias the definition accordingly.
 > 
-> iort_dma_setup() would query the root complex' IORT entry for a DMA
-> mask, and use that over the one the device has been configured with
-> earlier.
-> 
-> Ideally we want to use the minimum mask of what the IORT contains for
-> the root complex and what the device was configured with, but never 0.
-> 
-> Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
-> Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> ---
-> Hi all,
-> 
-> not sure I'm doing this right, but I think the current behavior (while a
-> corner case) seems to also fail for 32 bit devices if the IORT specifies
-> 64 bit. It works on my test system now with a 32 bit device.
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-I suppose it could go wrong if it's an old driver that doesn't 
-explicitly set its own masks and assumes they will always be 32-bit. 
-Technically we'd consider that the driver's fault these days, but 
-there's a lot of legacy around still.
-
-> Open to suggestions for better solutions (and maybe the
-> nc_dma_get_range() should have the same sanity check?)
-
-Honestly the more I come back to this, the more I think we should give 
-up trying to be clever and just leave the default masks alone beyond the 
-initial "is anything set up at all?" sanity checks. Setting the bus 
-limit is what really matters these days, and should be sufficient to 
-encode any genuine restriction. There's certainly no real need to widen 
-the default masks above 32 bits just because firmware suggests so, since 
-the driver should definitely be calling dma_set_mask() and friends later 
-if it's >32-bit capable anyway.
-
-> Thanks,
-> Moritz
-> 
-> ---
->   drivers/acpi/arm64/iort.c | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index d4eac6d7e9fb..c48eabf8c121 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-> @@ -1126,6 +1126,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
->   
->   	rc = (struct acpi_iort_root_complex *)node->node_data;
->   
-> +	if (!rc->memory_address_limit) {
-> +		dev_warn(dev, "Root complex has broken memory_address_limit\n");
-
-Probably warrants a FW_BUG in there.
-
-> +		return -EINVAL;
-> +	}
-> +
->   	*size = rc->memory_address_limit >= 64 ? U64_MAX :
->   			1ULL<<rc->memory_address_limit;
->   
-> @@ -1172,9 +1177,9 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
->   		 */
->   		end = dmaaddr + size - 1;
->   		mask = DMA_BIT_MASK(ilog2(end) + 1);
-> -		dev->bus_dma_limit = end;
-> -		dev->coherent_dma_mask = mask;
-> -		*dev->dma_mask = mask;
-> +		dev->bus_dma_limit = min_not_zero(dev->bus_dma_limit, end);
-
-This doesn't need to change, since the default bus limit is 0 anyway 
-(and that means "no limit").
-
-> +		dev->coherent_dma_mask = min_not_zero(dev->coherent_dma_mask, mask);
-> +		*dev->dma_mask = min_not_zero(*dev->dma_mask, mask);
-
-AFAICS the only way an empty mask could get here now is from 
-nc_dma_get_range(), so I'd rather see a consistent warning there than 
-just silently start working around that too.
-
-Of course IORT doesn't say these fields are optional (other than the 
-lack of a root complex limit in older table versions), so we're giving 
-bad firmware a pass to never be fixed, ho hum...
-
-Thanks,
-Robin.
-
->   	}
->   
->   	*dma_addr = dmaaddr;
-> 
+Applied to soc/next, thanks!
+-- 
+Florian
