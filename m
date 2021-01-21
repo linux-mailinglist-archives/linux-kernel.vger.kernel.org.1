@@ -2,156 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9B72FE74A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7808F2FE75C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbhAUKPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:15:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728469AbhAUKOX (ORCPT
+        id S1729102AbhAUKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:18:37 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:48727 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729014AbhAUKQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:14:23 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949CBC061575;
-        Thu, 21 Jan 2021 02:13:39 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id EBF8522FAD;
-        Thu, 21 Jan 2021 11:13:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1611224018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I4dLSkqJXtXHKLU0U+8YrniJxd+5nWGvaigg4fV1hAc=;
-        b=SaKNVZKxfgcGcg2JHt7BBiGpOI/zUgMnud/Si+cf7OFIUUWbsZUaKmESPwdKR2Iu8A+krE
-        fKxfc4D4j84vWKYeiLatvNJ9GKYzRrN6GKvGjXGiWZvHvB2TYRW4dnJi1NkwCOR9Nd2zNX
-        H/6+PYgGfZ0RWFUsxIdOsdRXDzHXckc=
+        Thu, 21 Jan 2021 05:16:49 -0500
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1l2X0E-00005A-SL
+        for linux-kernel@vger.kernel.org; Thu, 21 Jan 2021 10:15:46 +0000
+Received: by mail-ej1-f71.google.com with SMTP id dc21so550818ejb.19
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 02:15:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nUFfyvUlJANPl5QUFEVLx1yTXROv8TYtpca6Xw1vx/o=;
+        b=SYAwZeWcsV+fz+1J9uNeo4rsC1+ksO9SlJ+NwBT8Ojag81o0IYHnAOzodKMzrq4C/4
+         k3Tw6HxyjPJivXlHd2rB14MBuKCK0SFGrSvhQsMhNYA7UGEOU6S11AdO0gYaP+EtUeeW
+         cAmVZKjpejr5wttOcDnZ1qhCr6VcVO7O03Kklw8oTyX1fZI4zOVWUkAiskIx1URWEbEH
+         ABvHsv6UpaSkg68b7Kcbw02pU95vWpRMjFamgd2dS+TDT3DiQOgwzLxXcfiWmlI316Rm
+         QUOoBDLHg3pOZ8k3YWNHnmmyH+KlUGti47nTWrL9bbNDoHYtk3osdYO14DfQRLv81ecF
+         akTA==
+X-Gm-Message-State: AOAM532Qsd/IZcQXifiIDw5bkoY1eTNFx1qMHSXHKwWqPcfyjyv9USek
+        zXKzFIipL3LM3dRpmzJDB0GqYqU4eyS0rh9VIJa6Cm3DQhQmOJF7tTBwijuRtPvr/wssMJODMPZ
+        nLjWowTUcRLawjDr/Gw4jEq5A0Yn4bP2CMGWJUevMbg==
+X-Received: by 2002:a05:6402:22ba:: with SMTP id cx26mr10620065edb.350.1611224146480;
+        Thu, 21 Jan 2021 02:15:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz6n3kKv/0vJWfWS+YdCglfI3p85TXbTNS8r/5TQCFcL3E7z1I3d31X/VJhF590p/Y3CYG4Kw==
+X-Received: by 2002:a05:6402:22ba:: with SMTP id cx26mr10620055edb.350.1611224146269;
+        Thu, 21 Jan 2021 02:15:46 -0800 (PST)
+Received: from localhost (host-79-52-126-228.retail.telecomitalia.it. [79.52.126.228])
+        by smtp.gmail.com with ESMTPSA id bl13sm2053785ejb.64.2021.01.21.02.15.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 02:15:45 -0800 (PST)
+Date:   Thu, 21 Jan 2021 11:15:44 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org
+Subject: Re: [tip: x86/entry] x86/entry: Build thunk_$(BITS) only if
+ CONFIG_PREEMPTION=y
+Message-ID: <YAlUUBs2qPIqLgCt@xps-13-7390>
+References: <YAAvk0UQelq0Ae7+@xps-13-7390>
+ <161121327995.414.14890124942899525500.tip-bot2@tip-bot2>
+ <20210121074928.GA1346795@gmail.com>
+ <YAlAr1Gs+Jm4r5o7@xps-13-7390>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 21 Jan 2021 11:13:37 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org
-Subject: Re: [PATCH 0/3] add Ebang EBAZ4205 support
-In-Reply-To: <0a1c6ebf-1d5b-4f06-56db-f04e87d2ae9a@xilinx.com>
-References: <20210120194033.26970-1-michael@walle.cc>
- <fff420d1-fc9a-23ce-0d07-58a3c6f10c4d@xilinx.com>
- <aa96fcaa362181d4b6fef9f1de0aa914@walle.cc>
- <0a1c6ebf-1d5b-4f06-56db-f04e87d2ae9a@xilinx.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <bd86194a13882ce472764d0c91029e33@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAlAr1Gs+Jm4r5o7@xps-13-7390>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jan 21, 2021 at 09:52:01AM +0100, Andrea Righi wrote:
+> On Thu, Jan 21, 2021 at 08:49:28AM +0100, Ingo Molnar wrote:
+> > 
+> > * tip-bot2 for Andrea Righi <tip-bot2@linutronix.de> wrote:
+> > 
+> > > The following commit has been merged into the x86/entry branch of tip:
+> > > 
+> > > Commit-ID:     e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
+> > > Gitweb:        https://git.kernel.org/tip/e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
+> > > Author:        Andrea Righi <andrea.righi@canonical.com>
+> > > AuthorDate:    Thu, 14 Jan 2021 12:48:35 +01:00
+> > > Committer:     Ingo Molnar <mingo@kernel.org>
+> > > CommitterDate: Thu, 21 Jan 2021 08:11:52 +01:00
+> > > 
+> > > x86/entry: Build thunk_$(BITS) only if CONFIG_PREEMPTION=y
+> > > 
+> > > With CONFIG_PREEMPTION disabled, arch/x86/entry/thunk_64.o is just an
+> > > empty object file.
+> > > 
+> > > With the newer binutils (tested with 2.35.90.20210113-1ubuntu1) the GNU
+> > > assembler doesn't generate a symbol table for empty object files and
+> > > objtool fails with the following error when a valid symbol table cannot
+> > > be found:
+> > > 
+> > >   arch/x86/entry/thunk_64.o: warning: objtool: missing symbol table
+> > > 
+> > > To prevent this from happening, build thunk_$(BITS).o only if
+> > > CONFIG_PREEMPTION is enabled.
+> > > 
+> > >   BugLink: https://bugs.launchpad.net/bugs/1911359
+> > > 
+> > > Fixes: 320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
+> > > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > > Cc: Borislav Petkov <bp@alien8.de>
+> > > Link: https://lore.kernel.org/r/YAAvk0UQelq0Ae7+@xps-13-7390
+> > 
+> > Hm, this fails to build on UML defconfig:
+> > 
+> >  /home/mingo/gcc/cross/lib/gcc/x86_64-linux/9.3.1/../../../../x86_64-linux/bin/ld: arch/x86/um/../entry/thunk_64.o: in function `preempt_schedule_thunk':
+> >  /home/mingo/tip.cross/arch/x86/um/../entry/thunk_64.S:34: undefined reference to `preempt_schedule'
+> >  /home/mingo/gcc/cross/lib/gcc/x86_64-linux/9.3.1/../../../../x86_64-linux/bin/ld: arch/x86/um/../entry/thunk_64.o: in function `preempt_schedule_notrace_thunk':
+> >  /home/mingo/tip.cross/arch/x86/um/../entry/thunk_64.S:35: undefined reference to `preempt_schedule_notrace'
+> > 
+> > Thanks,
+> > 
+> > 	Ingo
+> 
+> I've been able to reproduce it, I'm looking at this right now. Thanks!
 
-Am 2021-01-21 10:57, schrieb Michal Simek:
-> Hi,
-> 
-> On 1/21/21 10:35 AM, Michael Walle wrote:
->> Hi Michal,
->> 
->> Am 2021-01-21 10:25, schrieb Michal Simek:
->>> On 1/20/21 8:40 PM, Michael Walle wrote:
->>>> Add support for the Ebang EBAZ4205 board. This board was once used 
->>>> as a
->>>> control board for a bitcoin mining device. Nowawdays it is sold as a
->>>> cheap
->>>> Zynq-7000 eval board.
->>>> 
->>>> Michael Walle (3):
->>>>   dt-bindings: add ebang vendor prefix
->>>>   dt-bindings: arm: add Ebang EBAZ4205 board
->>>>   ARM: dts: add Ebang EBAZ4205 device tree
->>>> 
->>>>  .../devicetree/bindings/arm/xilinx.yaml       |   1 +
->>>>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->>>>  arch/arm/boot/dts/Makefile                    |   1 +
->>>>  arch/arm/boot/dts/zynq-ebaz4205.dts           | 109 
->>>> ++++++++++++++++++
->>>>  4 files changed, 113 insertions(+)
->>>>  create mode 100644 arch/arm/boot/dts/zynq-ebaz4205.dts
->>>> 
->>> 
->>> any link with schematics?
->> 
->> https://github.com/xjtuecho/EBAZ4205, looks like these are
->> reverse engineered (from a layout file?) though.
-> 
-> Interesting but at least something.
-> 
->> 
->>> I will let dt guys to comment 1/3 but series look good to me.
->>> The board doesn't look interesting from description point of view 
->>> that's
->>> why all the time thinking if makes sense to add it to kernel.
->> 
->> What do you want to tell me? That for the time being, it didn't
->> appear to you to add the board yourself - or do you thing it
->> doesn't make sense at all. If its the latter, what would be
->> actual reason to have a board in mainline?
-> 
-> I have bad experience with for example Avnet boards which people add 
-> and
-> none is really updating them and they are in the same state for years.
+I see, basically UML selects ARCH_NO_PREEMPT, but in
+arch/x86/um/Makefile it explicitly includes thunk_$(BITS).o regardless.
 
-Wouldn't it be better then to pull the plug at some time and remove 
-these
-boards.
+Considering that thunk_$(BITS) only contains preemption code now, we can
+probably drop it from the Makefile, or, to be more consistent with the
+x86 change, we could include it only if CONFIG_PREEMPTION is enabled
+(even if it would never be, because UML has ARCH_NO_PREEMPT).
 
-TBH I was a bit disappointed by your statement. It sounded like "nah
-this board isn't worth it". Esp. because it is just one (small) file.
-But more below.
+If it's unlikely that preemption will be enabled in UML one day I'd
+probably go with the former, otherwise I'd go with the latter, because
+it looks more consistent.
 
-> Long time ago we agreed that doesn't make sense to describe PL in
-> upstream projects and we only describe PS part. It means you likely 
-> miss
-> several things which are useful and the reason for using these SoCs is 
-> PL.
-> 
-> As you likely know Xilinx has Versal device and I didn't push any 
-> device
-> tree to any upstream project and thinking not to add any description 
-> for
-> boards and stay in sort of space that "virtual" description for SoC
-> should be enough. Maybe just versal.dtsi and one kitchen sink DT should
-> be added but not description for all boards.
-> 
-> The same is if make sense to push all DTs for all standard xilinx 
-> zynqmp
-> evaluation boards. If there is something interesting/new I thought it
-> makes sense to add it as pattern to follow. But for boards which looks
-> very similar from PS point of view I don't think there is real value to
-> add and invest time for maintaining.
-> 
-> Back to your case. Board is cheap which is not all the time case for 
-> any
-> xilinx board but you have only uart, sd and partially described 
-> ethernet
-> which doesn't work without PL. Is it worth to have this described?
+Opinions?
 
-I got your point. But it is at least a jump start for the users if that
-board boots out of the box. And yes, its unfortunate, that ethernet
-just works if the PL is configured. This is already done by the
-bootloader, because there I do have the same problem.
-
-> Especially when it is visible that you need to describe custom PL and 
-> DT
-> overlays are not solid yet.
-> 
-> Thanks,
-> Michal
-
--- 
--michael
+Thanks,
+-Andrea
