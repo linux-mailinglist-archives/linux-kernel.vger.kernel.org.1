@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CDE2FE694
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF3A2FE683
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbhAUJml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:42:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728358AbhAUJBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:01:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7CF7239D1;
-        Thu, 21 Jan 2021 09:00:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611219650;
-        bh=d7B6Q+MrQYXKsRPWSNaOGucuXxTtWybTduIueMuOFao=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sXuZMgQTk0q/baEoxRVgtXlfTVmrQsjAhWdqBeptSnq616YEorX/Zz5qCNoxYQQcz
-         PvYE6FYeSVqOABhXWjAbrz9InxhCjesk/9yp9rQv1f5n5YyvIoVq+hRqNUho4BwNNp
-         N8iKSAiDO+Glh+Ch9FJK4uGWyI9PGGa4BH6ictgI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     jirislaby@kernel.org, linux-serial@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, hch@lst.de, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, ohw.giles@gmail.com,
-        r.karszniewicz@phytec.de,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 6/6] tty: teach the n_tty ICANON case about the new "cookie continuations" too
-Date:   Thu, 21 Jan 2021 10:00:20 +0100
-Message-Id: <20210121090020.3147058-6-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
-References: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
+        id S1728669AbhAUJaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:30:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30467 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728179AbhAUJCJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:02:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611219643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1+1P7b60HaR2MAzWv8XFsDjrssAyoeWJipGT+zaJVmE=;
+        b=WIgCLIc98D/mVtehfsc0KhUW2TVB4bNP1B4YGP3unlLimQbP0t/WSjljHtBKQiFKH1LMuP
+        UAw1kNgPgnTFHPmiSy7jgBN5WuxUsUAXSzr0ygkDxmcF9o+51YQ+6Pca7EYgkTOFgr46jW
+        v77o+rjs2Tp41JMHREN1kyPV4eb6UWQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-jDmMz9WnOKKAMlu3hfLq8w-1; Thu, 21 Jan 2021 04:00:39 -0500
+X-MC-Unique: jDmMz9WnOKKAMlu3hfLq8w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DA241005D4E;
+        Thu, 21 Jan 2021 09:00:38 +0000 (UTC)
+Received: from [10.72.13.67] (ovpn-13-67.pek2.redhat.com [10.72.13.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C7D0819C46;
+        Thu, 21 Jan 2021 09:00:26 +0000 (UTC)
+Subject: Re: [PATCH 1/1] vhost scsi: allocate vhost_scsi with GFP_NOWAIT to
+ avoid delay
+To:     Dongli Zhang <dongli.zhang@oracle.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, mst@redhat.com, pbonzini@redhat.com,
+        stefanha@redhat.com, joe.jin@oracle.com,
+        aruna.ramakrishna@oracle.com
+References: <20210121050328.7891-1-dongli.zhang@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3aa5c6ca-abd3-13c4-b6a6-504f3a52bae7@redhat.com>
+Date:   Thu, 21 Jan 2021 17:00:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210121050328.7891-1-dongli.zhang@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
 
-The ICANON case is a bit messy, since it has to look for the line
-ending, and has special code to then suppress line ending characters if
-they match the __DISABLED_CHAR.  So it actually looks up the line ending
-even past the point where it knows it won't copy it to the result
-buffer.
+On 2021/1/21 13:03, Dongli Zhang wrote:
+> The size of 'struct vhost_scsi' is order-10 (~2.3MB). It may take long time
+> delay by kzalloc() to compact memory pages when there is a lack of
+> high-order pages. As a result, there is latency to create a VM (with
+> vhost-scsi) or to hotadd vhost-scsi-based storage.
+>
+> The prior commit 595cb754983d ("vhost/scsi: use vmalloc for order-10
+> allocation") prefers to fallback only when really needed, while this patch
+> changes allocation to GFP_NOWAIT in order to avoid the delay caused by
+> memory page compact.
+>
+> Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+> Cc: Joe Jin <joe.jin@oracle.com>
+> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+> Another option is to rework by reducing the size of 'struct vhost_scsi',
+> e.g., by replacing inline vhost_scsi.vqs with just memory pointers while
+> each vhost_scsi.vqs[i] should be allocated separately. Please let me
+> know if that option is better.
+>
+>   drivers/vhost/scsi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+> index 4ce9f00ae10e..85eaa4e883f4 100644
+> --- a/drivers/vhost/scsi.c
+> +++ b/drivers/vhost/scsi.c
+> @@ -1814,7 +1814,7 @@ static int vhost_scsi_open(struct inode *inode, struct file *f)
+>   	struct vhost_virtqueue **vqs;
+>   	int r = -ENOMEM, i;
+>   
+> -	vs = kzalloc(sizeof(*vs), GFP_KERNEL | __GFP_NOWARN | __GFP_RETRY_MAYFAIL);
+> +	vs = kzalloc(sizeof(*vs), GFP_NOWAIT | __GFP_NOWARN);
+>   	if (!vs) {
+>   		vs = vzalloc(sizeof(*vs));
+>   		if (!vs)
 
-That said, apart from all those odd legacy N_TTY ICANON cases, the
-actual "should we continue copying" logic isn't really all that
-complicated or different from the non-canon case.  In fact, the lack of
-"wait for at least N characters" arguably makes the repeat case slightly
-simpler.  It really just boils down to "there's more of the line to be
-copied".
 
-So add the necessarily trivial logic, and now the N_TTY case will give
-long result lines even when in canon mode.
+Can we use kvzalloc?
 
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
----
- drivers/tty/n_tty.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+Thanks
 
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index b89308d52ade..9e546d0cc55c 100644
---- a/drivers/tty/n_tty.c
-+++ b/drivers/tty/n_tty.c
-@@ -2009,21 +2009,22 @@ static bool copy_from_read_buf(struct tty_struct *tty,
-  *		read_tail published
-  */
- 
--static void canon_copy_from_read_buf(struct tty_struct *tty,
-+static bool canon_copy_from_read_buf(struct tty_struct *tty,
- 				     unsigned char **kbp,
- 				     size_t *nr)
- {
- 	struct n_tty_data *ldata = tty->disc_data;
- 	size_t n, size, more, c;
- 	size_t eol;
--	size_t tail;
-+	size_t tail, canon_head;
- 	int found = 0;
- 
- 	/* N.B. avoid overrun if nr == 0 */
- 	if (!*nr)
--		return;
-+		return false;
- 
--	n = min(*nr + 1, smp_load_acquire(&ldata->canon_head) - ldata->read_tail);
-+	canon_head = smp_load_acquire(&ldata->canon_head);
-+	n = min(*nr + 1, canon_head - ldata->read_tail);
- 
- 	tail = ldata->read_tail & (N_TTY_BUF_SIZE - 1);
- 	size = min_t(size_t, tail + n, N_TTY_BUF_SIZE);
-@@ -2067,7 +2068,11 @@ static void canon_copy_from_read_buf(struct tty_struct *tty,
- 		else
- 			ldata->push = 0;
- 		tty_audit_push();
-+		return false;
- 	}
-+
-+	/* No EOL found - do a continuation retry if there is more data */
-+	return ldata->read_tail != canon_head;
- }
- 
- extern ssize_t redirected_tty_write(struct file *, const char __user *,
-@@ -2141,8 +2146,13 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
- 	 * termios_rwsem, and can just continue to copy data.
- 	 */
- 	if (*cookie) {
--		if (copy_from_read_buf(tty, &kb, &nr))
--			return kb - kbuf;
-+		if (ldata->icanon && !L_EXTPROC(tty)) {
-+			if (canon_copy_from_read_buf(tty, &kb, &nr))
-+				return kb - kbuf;
-+		} else {
-+			if (copy_from_read_buf(tty, &kb, &nr))
-+				return kb - kbuf;
-+		}
- 
- 		/* No more data - release locks and stop retries */
- 		n_tty_kick_worker(tty);
-@@ -2239,7 +2249,8 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
- 		}
- 
- 		if (ldata->icanon && !L_EXTPROC(tty)) {
--			canon_copy_from_read_buf(tty, &kb, &nr);
-+			if (canon_copy_from_read_buf(tty, &kb, &nr))
-+				goto more_to_be_read;
- 		} else {
- 			/* Deal with packet mode. */
- 			if (packet && kb == kbuf) {
-@@ -2257,6 +2268,7 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
- 			 * will release them when done.
- 			 */
- 			if (copy_from_read_buf(tty, &kb, &nr) && kb - kbuf >= minimum) {
-+more_to_be_read:
- 				remove_wait_queue(&tty->read_wait, &wait);
- 				*cookie = cookie;
- 				return kb - kbuf;
--- 
-2.30.0
 
