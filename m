@@ -2,82 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9398E2FF00B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AC02FF010
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387622AbhAUQUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:20:08 -0500
-Received: from pb-smtp21.pobox.com ([173.228.157.53]:64563 "EHLO
-        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732100AbhAUQTi (ORCPT
+        id S1733058AbhAUQVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:21:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbhAUQVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:19:38 -0500
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id E28A1106769;
-        Thu, 21 Jan 2021 11:18:52 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=xwglBKNBDOQa41zIQ1eVypVyscM=; b=dYOM9G
-        FYHGC97iyU6/IxQRN5Of9psoeePTQJOmHWgvn1zdAo8NtJrkw1PaCbHG10n+f5i2
-        lHwUwFW8wtHRc8AlalvHmVMnFfMryEeV8QgDuv4FMzKvLjtYzaduxcktcCVKcKYa
-        bbQHN5MI8upRWw1VVF9CIkKkoVWZoaeATF3dA=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id D99A9106765;
-        Thu, 21 Jan 2021 11:18:51 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=5fBPzAB/LUGoYmsC4s4Q3GVI9ZCjSpshAfLaiXN9zLg=; b=Iha+EsdhQeI8Ki7aaPar41/MZhotmmhAYcR34Vm/RS2dry4qKAqsQtlQhZKV0Ek7B2gTcuZkSsF+zj14sE/pefEZ0KxehuMt3FLCJ+xZMfjB1nQW910K9iXBqhM00ZTuEIx5hB+vdwsqvTzbBU3BHWl7QTUQbDEr+8tRol/Tvmk=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id BC6CB10675B;
-        Thu, 21 Jan 2021 11:18:48 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 14E2D2DA015D;
-        Thu, 21 Jan 2021 11:18:47 -0500 (EST)
-Date:   Thu, 21 Jan 2021 11:18:46 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] PM / clk: make PM clock layer compatible with clocks
- that must sleep
-In-Reply-To: <CAJZ5v0hFjpGp2GbV1Evi+BbUF7Am4ETY4Cm8VzTrvTJ=7=oyPQ@mail.gmail.com>
-Message-ID: <43p026p5-468-n892-4nss-6ro5s047qp9@syhkavp.arg>
-References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz> <CA+G9fYsyXsNSXGy6BWZ6mgpAP=+7r6Xy9jQ2xxb9mXyHdRoBCg@mail.gmail.com> <CAMuHMdULW4bnb0Jc0+ZaF9P2VNgnYsvEks7y8WYCk045BHqh7A@mail.gmail.com> <CA+G9fYvh0iSyEDQs7+0CX82FLPDCg5UmAt+1JuPsndmfmYF3kw@mail.gmail.com>
- <CAJZ5v0hFjpGp2GbV1Evi+BbUF7Am4ETY4Cm8VzTrvTJ=7=oyPQ@mail.gmail.com>
+        Thu, 21 Jan 2021 11:21:16 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C28C061756;
+        Thu, 21 Jan 2021 08:20:36 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id u17so5138823iow.1;
+        Thu, 21 Jan 2021 08:20:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=s5ioEialcPghhwYMEAzTyJUkH/AuGrrjAPbLEmiPOmA=;
+        b=K+i9De1+0/AkY7DBtIlkJZK25ohudC1lVuRYF1Z6/dZFXwrazgV64k5wk5T0eo9bqM
+         87rmLWVDCf9L20IE3Rwo4ljC5Bb2DzowliW/wbCU0M3LpO57MQvYLqzz20562+bdbIA6
+         aG0joPrharX5N94cp48ktNLYUWD17Zyf2hIwsi5hD2SceCtUznuofBduBKjBSunVVPRK
+         CUNNGl7edYMTEIVvFhJcG9IQZiIAEUOmrZkZijfWNf5NhvX4zcKzsVE2vNqpqe3fi143
+         YBq6VWlnEht6RX5l1MoAIRWyaFmOdtUiVShBk0/fB+lTZ2xnyc3FdH9LdxHS+5XXvKyC
+         db0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=s5ioEialcPghhwYMEAzTyJUkH/AuGrrjAPbLEmiPOmA=;
+        b=kB+tH6jYhAW/qnZd+AOSQi4hYyEErR5NmRLJf1zgSEfACwl5h7nhz44LMiqiG5brKL
+         05k8EXm3+JInJq3hN6OJICocibwof6hNJ7VGSow0kgmaH3UjRRs3LQcUoCT/xljBhBOz
+         bwL8/WPCKKuMbkR0XZ6iGZYIHE5AnUbDpxwowQndXtZkSDUJ75Fx/BLwfaCrhTO5Bzr1
+         OKjTSl9VdbvmrdcWBeI1Ls0G4lL+7g5ol2Nto7DZ4eHP2TCeShW1BycctHcJCci72d+J
+         VBd+itIwwqWgHQM9GpA9DJoCo7S42/ENYcbVBWPqr4tc06oUaYPqyPgKNC2eIVOoS2pv
+         mAow==
+X-Gm-Message-State: AOAM5332Nt01TLrzrtVphMwUtMVGtsDoCDpCqrgkznGcRsTLGFF5fo3F
+        iFRqOOIwFA1EDD9h+nppe3b3TM16PYK3eeMSyqE0pPuMyhopHa49
+X-Google-Smtp-Source: ABdhPJyHlhtzbpWJkSohXFyxniXGmLQeTxR0Q60zG4XbeIWQ9LfdGeUBVwR6r85dVxewQCzImcwHQwwqvpLjrxaD7Z0=
+X-Received: by 2002:a92:c5c8:: with SMTP id s8mr447401ilt.186.1611246035407;
+ Thu, 21 Jan 2021 08:20:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 57D11538-5C04-11EB-9E8A-D609E328BF65-78420484!pb-smtp21.pobox.com
+References: <20210121160115.4676-1-lukas.bulwahn@gmail.com> <20210121161640.GA1101379@ubuntu-m3-large-x86>
+In-Reply-To: <20210121161640.GA1101379@ubuntu-m3-large-x86>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 21 Jan 2021 17:20:23 +0100
+Message-ID: <CA+icZUU8Oh03L2t39g1H3dOWQZF0iXZ=FSgPdsi_ZjZnFmGEAw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust to clang-version.sh removal
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021, Rafael J. Wysocki wrote:
-
-> On Thu, Jan 21, 2021 at 1:11 PM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
+On Thu, Jan 21, 2021 at 5:16 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Thu, Jan 21, 2021 at 05:01:15PM +0100, Lukas Bulwahn wrote:
+> > Commit 6c8ad4427f6e ("kbuild: check the minimum compiler version in
+> > Kconfig") removed ./scripts/clang-version.sh and moved its content to
+> > ./scripts/cc-version.sh.
 > >
-> > ref:
-> > https://builds.tuxbuild.com/1nN0vkpNP4qhvIuIJN12j7tTpQs/
-> 
-> So I'm going to drop this patch from linux-next until the issue is
-> resolved, thanks!
+> > Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> >
+> >   warning: no file matches    F:    scripts/clang-version.sh
+> >
+> > The CLANG/LLVM BUILD SUPPORT section in MAINTAINERS intends to track
+> > changes in ./scripts/clang-version.sh; as the file is removed, track
+> > changes in ./scripts/cc-version.sh instead now.
+> >
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> > applies cleanly on next-20210121
+> >
+> > Masahiro-san, please pick this quick fix-up patch.
+>
+> Masahiro cannot pick this up because the patch to add clang-version.sh
+> to MAINTAINERS is in mmotm.
+>
+> I think the better solution is for Andrew to drop the current version of
+>
+> maintainers-add-a-couple-more-files-to-the-clang-llvm-section.patch
+>
+> and pick up the second one I sent, which allows us to deal with this:
+>
+> https://lore.kernel.org/lkml/20210114171629.592007-1-natechancellor@gmail.com/
+>
+> I am not sure it is right for us to maintain cc-version.sh but I am open
+> to it if Masahiro agrees.
+>
 
-No problem - I'm on it.
+Sounds like a good idea to integrate both patches from Lukas and
+Nathan into a new version of "kbuild: check the minimum compiler
+version in Kconfig".
+...up to the maintainers.
 
-Thanks Naresh for reporting the issue.
+- Sedat -
 
-
-Nicolas
+> >  MAINTAINERS | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index e5d7cf38ec82..aafbea806a82 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -4355,8 +4355,8 @@ B:      https://github.com/ClangBuiltLinux/linux/issues
+> >  C:   irc://chat.freenode.net/clangbuiltlinux
+> >  F:   Documentation/kbuild/llvm.rst
+> >  F:   include/linux/compiler-clang.h
+> > +F:   scripts/cc-version.sh
+> >  F:   scripts/clang-tools/
+> > -F:   scripts/clang-version.sh
+> >  F:   scripts/lld-version.sh
+> >  K:   \b(?i:clang|llvm)\b
+> >
+> > --
+> > 2.17.1
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210121161640.GA1101379%40ubuntu-m3-large-x86.
