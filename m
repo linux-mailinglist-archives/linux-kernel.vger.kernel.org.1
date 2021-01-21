@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EF72FE958
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FEC2FE953
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbhAULxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730855AbhAULt4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:49:56 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA842C061796
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:48:30 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id p72so3278496iod.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kygNnWwNHZcFAU/IIMmhkkxZa/aeNIwUlXt4TwJxOxI=;
-        b=iBqbR3UUymSgU0tbCuyTM6KqEaC8KTyTxtL74a2ptRCBtg2p8l7KAc2emVSeiRVlzn
-         Ol6xudYj6Xfx6Mvqe9L9bTv+hrhVwqFUvejUoPORXwkxlYxilNIh2evsIsme0A4y+pbH
-         o2XXRpFMBcNA4vpBbue/O37Fu62mlx+gbtT7lXd6X0pn2Sz//LfS8O17tmJ4fDHBxlDC
-         Ran//KgAXyokLzjX9TWG/swnrmFE21Bw+UR78g+nYXlLy8pJllBKM2bq+iU9Vz8JpR/a
-         b+HL5//a/7Azc77jZv3t04WfD8wlb2UEiSNaZXhv/NuWCSiMwxv9Hgs/yBBYUnHN4su5
-         +Bbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kygNnWwNHZcFAU/IIMmhkkxZa/aeNIwUlXt4TwJxOxI=;
-        b=pNLd4UQQGi0ZYYFKwHBcp0ObXWyTy2U288KIDGSLlDA/L21VVE5CvLex/njGWYovSs
-         xg+62PO7nPPW1pbgJ0Wal9skJ1/fPhCidqFZM43qNW9YqxrSPF09qjmUn+73C2CLt0KI
-         BA/4lkbkH1x0OsmzpUI3KbYlQI0ZF5ujzD6lAJVhCls2qkOhjJfs/dPYCl++Yech12uF
-         vjatzSYhf9oaCJU3BRzMwQfkIfSWunP4KEQ08QC7Po0UoJOO0YElj7aTf1szUNtA/wBS
-         NDy8PTlTwqfPXztB83TmB9nFXyFaClZsbi1+6GXAwbMFVjbs9KMrzaxQDRL67VQoYneX
-         xEJQ==
-X-Gm-Message-State: AOAM533lEdlS/hBg1EjOn8uLxpvxdN9Y3c1dXtucPa9Ea94YvhU2IM2d
-        mZqa3aHn4KKXwpU0LOgEN84FUkXY3HFXDA==
-X-Google-Smtp-Source: ABdhPJxyMCFPpbWOZIEDq7tkNa//YBAk3BA6vKqH5lQhK9bxQp3v9W61kNtEP8l2HxV3DXSVtw7bwQ==
-X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr4380146ili.39.1611229710111;
-        Thu, 21 Jan 2021 03:48:30 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id p5sm2762766ilm.80.2021.01.21.03.48.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 03:48:29 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 5/5] net: ipa: disable IEOB interrupts before clearing
-Date:   Thu, 21 Jan 2021 05:48:21 -0600
-Message-Id: <20210121114821.26495-6-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210121114821.26495-1-elder@linaro.org>
-References: <20210121114821.26495-1-elder@linaro.org>
+        id S1730641AbhAULvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:51:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729951AbhAULtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:49:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D07239D3;
+        Thu, 21 Jan 2021 11:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611229735;
+        bh=4LoYAC73s65Y5H0iYwUuGzJLofq3OtSrbEyyV4z/Kog=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oBpyGboZuZUjl523dwPWQwgTBZSYXSYF7piXJkDfjOhUnVt0mpF8tpsy6IyLDmxlw
+         qEEdYZQyh7zk9SiuMR9gAne8ettknwKIH/ju5oblc2y0c8cPAUbRYfRSGNlkO0j1m5
+         2FEsgxre++Ar5NxlVBxnqODtLjLTLhKARflHZfGoN/TgbXUdsYgKdTh45LAroo4mZ1
+         KrNgaP/zIEMCm4OYGIAbJrPzRzEjpubHHEu8KTitI8Y9Di8C5W4rZvaOFat+emLEP9
+         CFszvu3uSFjl4ka4jogtXmDQEiwwvM0XQJx+6s9dFEcoSFPXRNu8TODLF5zOVsnT1c
+         Zv/hYiVOlhZrQ==
+Received: by mail-ot1-f45.google.com with SMTP id 36so1322264otp.2;
+        Thu, 21 Jan 2021 03:48:55 -0800 (PST)
+X-Gm-Message-State: AOAM533gRuAtpuHrz4A9DAiBfvMD331Nq3NGfb4Thi7F7IcWhzt4L/Er
+        qpo8xB4FjnfFhXyjNReCt/fa7uaOM+Ud7cl8VU8=
+X-Google-Smtp-Source: ABdhPJwd56HgLproI09sgiWpE983hjJPCQ2fDWHVcfiofuOXt425n9x+OHdx1ZUjKLrj2FNAoQtyENmXNJ9zYiszajE=
+X-Received: by 2002:a05:6830:1e2a:: with SMTP id t10mr4636246otr.90.1611229734707;
+ Thu, 21 Jan 2021 03:48:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210120173800.1660730-1-jthierry@redhat.com> <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
+ <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com> <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
+ <YAlkOFwkb6/hFm1Q@hirez.programming.kicks-ass.net>
+In-Reply-To: <YAlkOFwkb6/hFm1Q@hirez.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 21 Jan 2021 12:48:43 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXE+675mbS66kteKHNfcrco84WTaEL6ncVkkV7tQgbMpFw@mail.gmail.com>
+Message-ID: <CAMj1kXE+675mbS66kteKHNfcrco84WTaEL6ncVkkV7tQgbMpFw@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Julien Thierry <jthierry@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently in gsi_isr_ieob(), event ring IEOB interrupts are disabled
-one at a time.  The loop disables the IEOB interrupt for all event
-rings represented in the event mask.  Instead, just disable them all
-at once.
+On Thu, 21 Jan 2021 at 12:23, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Jan 21, 2021 at 12:08:23PM +0100, Ard Biesheuvel wrote:
+> > On Thu, 21 Jan 2021 at 11:26, Julien Thierry <jthierry@redhat.com> wrote:
+>
+> > > I'm not familiar with toolcahin code models, but would this approach be
+> > > able to validate assembly code (either inline or in assembly files?)
+> > >
+> >
+> > No, it would not. But those files are part of the code base, and can
+> > be reviewed and audited.
+>
+> x86 has a long history if failing at exactly that.
 
-Disable them all *before* clearing the interrupt condition.  This
-guarantees we'll schedule NAPI for each event once, before another
-IEOB interrupt could be signaled.
+That's a fair point. But on the flip side, maintaining objtool does
+not look like it has been a walk in the park either.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What i am especially concerned about is things like 3193c0836f20,
+where we actually have to disable certain compiler optimizations
+because they interfere with objtool's ability to understand the
+resulting object code. Correctness and performance are challenging
+enough as requirements for generated code.
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 0391f5a207c9f..f79cf3c327c1c 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -1205,6 +1205,7 @@ static void gsi_isr_ieob(struct gsi *gsi)
- 	u32 event_mask;
- 
- 	event_mask = ioread32(gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_OFFSET);
-+	gsi_irq_ieob_disable(gsi, event_mask);
- 	iowrite32(event_mask, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_CLR_OFFSET);
- 
- 	while (event_mask) {
-@@ -1212,7 +1213,6 @@ static void gsi_isr_ieob(struct gsi *gsi)
- 
- 		event_mask ^= BIT(evt_ring_id);
- 
--		gsi_irq_ieob_disable_one(gsi, evt_ring_id);
- 		napi_schedule(&gsi->evt_ring[evt_ring_id].channel->napi);
- 	}
- }
--- 
-2.20.1
+Mind you, I am not saying it is not worth it *for x86*, where there is
+a lot of other stuff going on. But on arm64, we don't care about ORC,
+about -fomit-frame-pointer, about retpolines or about any of the other
+things objtool enables.
 
+On arm64, all it currently seems to provide is a way to capture the
+call stack accurately, and given that it needs a GCC plugin for this
+(which needs to be maintained as well, which is non-trivial, and also
+bars us from using objtool with Clang builds), my current position is
+simply that opening this can of worms at this point is just not worth
+it.
