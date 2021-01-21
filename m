@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138C72FF477
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610C82FF47C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbhAUTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:30:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
+        id S1727249AbhAUTag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:30:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727073AbhAUT3F (ORCPT
+        with ESMTP id S1725983AbhAUTa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:29:05 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9383C061756;
-        Thu, 21 Jan 2021 11:28:24 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id q205so3328783oig.13;
-        Thu, 21 Jan 2021 11:28:24 -0800 (PST)
+        Thu, 21 Jan 2021 14:30:26 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE56C06174A;
+        Thu, 21 Jan 2021 11:29:45 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id 63so2765166oty.0;
+        Thu, 21 Jan 2021 11:29:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=uIqOfM2nGNmNmW5GJyvb2PshT2T7EyDIFenfC9VbZOU=;
-        b=atyPr/ZW5t2Vmh8IYjskk56vqMkIZlf54X5VB04CS+lG7yxeVFwaYNEUbqr7RfjfVl
-         AFTDH1wxOoUuLIWtSKG0GNgIzjyn1e3WisT4OD3kT8cc8/tngthFA8CHlXOAnp+cguXo
-         lWgOBTQJPud3Qgv4HaDjUs19PIk169NpZ3xrja8eXzcGmCbPRsxsg7AOZtspWpldy0gk
-         LaqQCtkKThy9iMFR0cKrVXgjeLmk3yixSa54m+fUdOUheUUuxgDmtTwzaza47MFxui9u
-         A1JdNXY6M0RdxvoIpS8DKw6RkB6+JGZE9LeG6w1giWBF2DiGYsUOAG+g7eGlQLjkYDjA
-         tmew==
+        bh=73Y0t5hPGjjpPYhjQyYWX8rpxWuyxwzbV2Lo/FDBge4=;
+        b=EehH8SpP28aEsQDI8w25/2iIu+hQJOIqwvPjIEaMpRPhkwf97oFXgKybCLPLqKXmr5
+         BpWBsV0CVBgQOQ+v9WQ6NE6uDG1m6aWTBfQzThHe9g7me/jrwWFbjwg0XGkgrxnXmWKp
+         aggZOqck2l1OyM5Sow8r1UrpO3xOnYWYbu5IVY83LjnAFEBP01BHfiKIavBhScQNOifw
+         Zwxbh35KjiUI5v/IGS/Lus0jw8IfsEi2nm3Ct9QLtk8fHbI6W0wwpAvoATgoU3EQvoDN
+         0s/VnC3MnaMmZhgPCNzHgMGWMnx6M/FMcqqG1Uk7bUEEFO77WTf83mdszvhyxyHJY9ue
+         UuNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uIqOfM2nGNmNmW5GJyvb2PshT2T7EyDIFenfC9VbZOU=;
-        b=MKxAPjQ6ItN9Zi2aCFvn/t5gcEUpZEWZGFFIppo9beOR4LGMz6ul549H2vZWAVv+mF
-         q+v26n1Qhfj+eGk4KubsLZl/zZsm23YXX1k7Qnxz6C/xcfcVeXhFGluadpIFWJpRjiYw
-         5bw+Hb0TGLWbhSn2z2t12pvom6amQmV6rNjGZYVkGtqx0dvrufQaJwF8alxkVG891u14
-         lOFOi9jBgYe0NDpHsO7JRMmgqvQ2yRpkekfqgFLuuFCLMrKJIx/7hwXtalsFBHDZtgg9
-         Alk6Q2oIAFbcBga/1TXyqRmgl+K6X21M9Rqmt7hd4WtztqpzTghcsnEUmHQ0CMP5rZFV
-         M5FQ==
-X-Gm-Message-State: AOAM5325aWRKJA5WvgZ7wDt+cfp7vZyF5vp873dwSDZIHgDHTkYfnrGY
-        NXrLGQNvC6sewuQ3UdEwFxm53h+t408=
-X-Google-Smtp-Source: ABdhPJwmpUeOJD8jIymEPDsXht34jkpccZE07uKyfStQg796SoOxuF3uCfkUEbCCUIIeiRSSaBgYug==
-X-Received: by 2002:aca:5185:: with SMTP id f127mr861048oib.18.1611257304238;
-        Thu, 21 Jan 2021 11:28:24 -0800 (PST)
+        bh=73Y0t5hPGjjpPYhjQyYWX8rpxWuyxwzbV2Lo/FDBge4=;
+        b=tta60oj5AejdkhHmRVL099k84/PvLAG4FTIkviEw3tCO0vQKdIdVJUaWFyK4rwbBge
+         rzolQabYEzElZjytRcpSxwrHrXVnWz3S7Nu3IUYJCmGiSYK+4CNf2X0pWypVUPDwFIw0
+         JNaH91vCbkhe/afkPGDIE+GXbYWw9FL67xlA0HVcqp8ByYP8AIz4ydPPUbKRtPgAsa92
+         EuB8o0nrfB0PRkxoKwCcZUW8tgkfAMg13fU4D4T2x2UHWGZjWsXjXiSHP+Me3aWRRVf/
+         Eex9B+K8uAnxBB7gySFDin4rZ1pkbIpBndaDxMI/L+JLN8AL3E40E7djhXZ8s91lIh0E
+         mHQw==
+X-Gm-Message-State: AOAM531OacipsLFQiWvYYfTicQLV4qQ7hsF1RGBrN6QnAcEmHbEAnUpr
+        w/5ZzNrb/Jh4piEfbZrgz67rUIuyoDg=
+X-Google-Smtp-Source: ABdhPJw/j9/9fPly2TroN61wFsJPBNljJix91bPE7Mj+BKuLcQtWh2c9jOt1YUovPQSM3mRYg5aw9Q==
+X-Received: by 2002:a05:6830:1254:: with SMTP id s20mr520006otp.155.1611257384847;
+        Thu, 21 Jan 2021 11:29:44 -0800 (PST)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s69sm1238876oih.38.2021.01.21.11.28.23
+        by smtp.gmail.com with ESMTPSA id h11sm1180923ooj.36.2021.01.21.11.29.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 Jan 2021 11:28:23 -0800 (PST)
+        Thu, 21 Jan 2021 11:29:44 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 21 Jan 2021 11:28:22 -0800
+Date:   Thu, 21 Jan 2021 11:29:42 -0800
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 16/24] Documentation/hwmon/ina2xx.rst: update
- ti,ina2xx.yaml reference
-Message-ID: <20210121192822.GA31091@roeck-us.net>
-References: <cover.1610535349.git.mchehab+huawei@kernel.org>
- <886bd248721b146d844d46e26ddd4cd277f51446.1610535350.git.mchehab+huawei@kernel.org>
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: abx500: style: Simplify bool comparison
+Message-ID: <20210121192942.GA31224@roeck-us.net>
+References: <1610358729-86795-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <886bd248721b146d844d46e26ddd4cd277f51446.1610535350.git.mchehab+huawei@kernel.org>
+In-Reply-To: <1610358729-86795-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:59:17AM +0100, Mauro Carvalho Chehab wrote:
-> Changeset 94f1ab944565 ("dt-bindings: hwmon: convert TI INA2xx bindings to dt-schema")
-> renamed: Documentation/devicetree/bindings/hwmon/ina2xx.txt
-> to: Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml.
+On Mon, Jan 11, 2021 at 05:52:09PM +0800, YANG LI wrote:
+> Fix the following coccicheck warning:
+> ./drivers/hwmon/abx500.c:84:8-26: WARNING: Comparison to bool
 > 
-> Update its cross-reference accordingly.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
 
-Applied.
+This driver will be removed in v5.11.
 
-Thanks,
 Guenter
+
+> ---
+>  drivers/hwmon/abx500.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/abx500.c b/drivers/hwmon/abx500.c
+> index 4b96488..3879b13 100644
+> --- a/drivers/hwmon/abx500.c
+> +++ b/drivers/hwmon/abx500.c
+> @@ -81,7 +81,7 @@ static void gpadc_monitor(struct work_struct *work)
+>  
+>  		if (data->min[i] != 0) {
+>  			if (temp < data->min[i]) {
+> -				if (data->min_alarm[i] == false) {
+> +				if (!data->min_alarm[i]) {
+>  					data->min_alarm[i] = true;
+>  					updated_min_alarm = true;
+>  				}
