@@ -2,168 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FEE2FEE58
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A662FEE2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732689AbhAUPUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:20:20 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:37888 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732472AbhAUPDd (ORCPT
+        id S1732605AbhAUPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732300AbhAUPDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:03:33 -0500
-Received: by mail-lf1-f51.google.com with SMTP id m22so2932560lfg.5;
-        Thu, 21 Jan 2021 07:03:16 -0800 (PST)
+        Thu, 21 Jan 2021 10:03:36 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E236C0613D6;
+        Thu, 21 Jan 2021 07:02:56 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id a12so2056137wrv.8;
+        Thu, 21 Jan 2021 07:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rn7bqja/hjsV21hhP4YsXCz0nt90F/2AcPINKmzjka4=;
+        b=fLi2Z8Eq7UWNXbf6WeWQ1hMalTKrb04/uKUUzxuMGodhDFxwjEITBjrIqw9j+gEl8H
+         GrJmYP/czPbpT0RmNoheSK7ADRmW4nSY4Hh7LxaIjGvQZkAkkHBQYwhHAoR7i1EKxlyb
+         TTpJoF9oSKBQEFG/m7IVwEXJmmnmeLYNpuktoEHTdrnp+BOYVcbbiq7aSYBQJ8gbJOMV
+         wezedunwgyFtP8iR7k61bgqCFiC9QEv4rEihwIx8n5Jv/2/y+nNOVnWlWNW+I+qXRWMh
+         d/dEpnLTjQovmFjMI4Rr+zCC3qPLm7rwR1VjJZHrNsizEwpnMnsPfjdhw8LdSUkrm3B1
+         itUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:to:cc:references:from:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=KczDQBYnwUc6Db3Y4wdjMxvDRIDolHP882VvzzfUBDk=;
-        b=YBaQiDuRER6CzJ2xgeTmxKLaym7I5kTCssN5m8/PntnZ5x8IGHc9u3p5xNXVoGybOF
-         DnFFW5h7KHhBQxvSxxcv++4AYhNbguSK+bB+Dof1MghVv1C8S8q/xkHBUDfLGiOH35Cx
-         wkMmVrWV8BTARjWhLl016AYGaE5AZ9Ic4eYiFBuVIzZgGYPUbVehP1hl+EmU4SPuOjYG
-         GR3J6UauefXS+xFlx4VwfQdaugemxayFFV+fPeLVWqvag0H714anfYvr+A/likQb+4vK
-         W6EWMKpK5qODhVfLv/ukenyFKDOJML8hYV2bpepTczkh2cDN9Ji3ELUPdo8PoWXknVN9
-         4Z/w==
-X-Gm-Message-State: AOAM531vbmR9t7yaU+lJrPKuSJMsH5tOgk7FgIcWRuAmRGSmu2JWE5tJ
-        6z9g+ir1oJMQH17o15QIyzM=
-X-Google-Smtp-Source: ABdhPJwoKe7rQL58Fz74MlnRk483tfISgGrn5h7fvXquVY0DB7zvefQOv6gc5jRpGxaXOBwrtzulIg==
-X-Received: by 2002:a05:6512:1311:: with SMTP id x17mr6830381lfu.307.1611241370510;
-        Thu, 21 Jan 2021 07:02:50 -0800 (PST)
-Received: from [10.68.32.148] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id l11sm554314lfp.284.2021.01.21.07.02.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 07:02:49 -0800 (PST)
-Reply-To: efremov@linux.com
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Wim Osterholt <wim@djo.tudelft.nl>
-References: <20160610230255.GA27770@djo.tudelft.nl>
- <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm>
- <20160614184308.GA6188@djo.tudelft.nl>
- <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm>
- <20160615132040.GZ14480@ZenIV.linux.org.uk>
- <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm>
- <20160615224722.GA9545@djo.tudelft.nl>
- <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm>
- <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm>
- <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
- <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm>
- <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
- <nycvar.YFH.7.76.2101211122290.5622@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2101211543230.5622@cbobk.fhfr.pm>
-From:   Denis Efremov <efremov@linux.com>
-Subject: Re: [PATCH RESEND] floppy: fix open(O_ACCMODE) for ioctl-only open
-Message-ID: <e503292b-5f51-eac5-771f-e35991d1084c@linux.com>
-Date:   Thu, 21 Jan 2021 18:02:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rn7bqja/hjsV21hhP4YsXCz0nt90F/2AcPINKmzjka4=;
+        b=SxEPa0a16Oo0pmDcZjBYwxM+KwRC1BZsCB03fvystlXxL1tm2FrFXoVFYgWpaDLLEG
+         o9NL+DAmJbgnjStX8+Nt/Oc2bMETFPWloFi2vy+Taxp3XjXzj4G9mSo0eMIJ01PxPnle
+         61ciDOIBd2N9VicxIT7sbswlXVG1fLR7c/7ptnkGNOOUwJSjQPo5A6rfQ39oy55g95dZ
+         6Lq9Af6ThJVjFS9KyJnmTZb21wNXlYqH9qrqYTdRK6Wm8xCz+YZY7B7nAO0fh46YwF9e
+         clkqN3kZPPNv74QZfbbfPqIMcluL4oQlgZU8MuAboi+u1aiWN4r45mOCjSVYIIClg4XO
+         3YGA==
+X-Gm-Message-State: AOAM531jqWcACyNw0tyYlpbk/S++0XD8WDppTBS7ZFXIYtC351iuxYEi
+        aI9hAqvzAhp5ZDxRVBhSYz0=
+X-Google-Smtp-Source: ABdhPJxDLK6FDyVY8vrSC9WiRz1lqEbbiMMYfloHXLfXaIfgIZXqxlsdX2Q97Ky1u1gFkxt2ntO8ag==
+X-Received: by 2002:a5d:4443:: with SMTP id x3mr13248358wrr.409.1611241374905;
+        Thu, 21 Jan 2021 07:02:54 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id l20sm9524242wrh.82.2021.01.21.07.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 07:02:53 -0800 (PST)
+Date:   Thu, 21 Jan 2021 16:02:52 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     arm@kernel.org, soc@kernel.org, Peter Geis <pgwipeout@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Matt Merhar <mattmerhar@protonmail.com>
+Subject: Re: [PATCH v3] ARM: tegra: ouya: Fix eMMC on specific bootloaders
+Message-ID: <YAmXnCSPVTcNrJxx@ulmo>
+References: <20210107165658.1354191-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <nycvar.YFH.7.76.2101211543230.5622@cbobk.fhfr.pm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fGGnx9KInWbJddqW"
+Content-Disposition: inline
+In-Reply-To: <20210107165658.1354191-1-pgwipeout@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--fGGnx9KInWbJddqW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/21/21 5:44 PM, Jiri Kosina wrote:
-> On Thu, 21 Jan 2021, Jiri Kosina wrote:
-> 
->> I am currently waiting for confirmation by the original reporter that the 
->> patch below fixes the issue.
-> 
-> ... a now a patch that actually compiles :) (made a mistake when 
-> forward-porting from the older kernel on which this has been reported).
-
-Oh, sorry for the last message (forgot to check the inbox before hitting
-the send button). I'll test the patch. A couple of nitpicks below.
-
-> 
-> From: Jiri Kosina <jkosina@suse.cz>
-> Subject: [PATCH v2] floppy: reintroduce O_NDELAY fix
-> 
-> Originally fixed in 09954bad4 ("floppy: refactor open() flags handling")
-> then reverted for unknown reason in f2791e7eadf437 instead of taking
-> the open(O_ACCMODE) for ioctl-only open fix, which had the changelog below
-> 
-> ====
-> Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
-> side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
-> this is being used setfdprm userspace for ioctl-only open().
-> 
-> Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
-> modes, while still keeping the original O_NDELAY bug fixed.
-> 
-> Cc: stable@vger.kernel.org # v4.5+
-
-Are you sure that it's not worth to backport it to LTS v4.4?
-Because f2791e7ead is just a revert and 09954bad4 is not
-presented in v4.4 I'm not sure what fixes tag is better to
-use in this case.
-
-> Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
-> Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
-> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> =====
-> 
-> Fixes: 09954bad4 ("floppy: refactor open() flags handling")
-> Fixes: f2791e7ead ("Revert "floppy: refactor open() flags handling"")
-> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+On Thu, Jan 07, 2021 at 04:56:59PM +0000, Peter Geis wrote:
+> Ouya fails to detect the eMMC module when booted via certain bootloaders.
+> Fastboot and hard-kexec bootloaders fail while u-boot does not. It was
+> discovered that the issue manifests if the sdmmc4 alternate configuration
+> clock pin is input disabled.
+>=20
+> Ouya uses sdmmc4 in the primary pin configuration. It is unknown why this
+> occurs, though it is likely related to other eMMC limitations experienced
+> on Ouya.
+>=20
+> For now, fix it by enabling input on cam_mclk_pcc0.
+>=20
+> Fixes: d7195ac5c9c5 ("ARM: tegra: Add device-tree for Ouya")
+> Reported-by: Matt Merhar <mattmerhar@protonmail.com>
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
 > ---
-> 
-> v1 -> v2: fix build issue due to bad forward-port
-> 
->  drivers/block/floppy.c | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-> index dfe1dfc901cc..f9e839c8c5aa 100644
-> --- a/drivers/block/floppy.c
-> +++ b/drivers/block/floppy.c
-> @@ -4121,23 +4121,23 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
->  	if (fdc_state[FDC(drive)].rawcmd == 1)
->  		fdc_state[FDC(drive)].rawcmd = 2;
->  
-> -	if (!(mode & FMODE_NDELAY)) {
-> -		if (mode & (FMODE_READ|FMODE_WRITE)) {
-> -			drive_state[drive].last_checked = 0;
-> -			clear_bit(FD_OPEN_SHOULD_FAIL_BIT,
-> -				  &drive_state[drive].flags);
-> -			if (bdev_check_media_change(bdev))
-> -				floppy_revalidate(bdev->bd_disk);
-> -			if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
-> -				goto out;
-> -			if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
-> -				goto out;
-> -		}
-> -		res = -EROFS;
-> -		if ((mode & FMODE_WRITE) &&
-> -		    !test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
-> +	if (mode & (FMODE_READ|FMODE_WRITE)) {
-> +		UDRS->last_checked = 0;
+> Changes v3:
+> Removed stable tag, applies to v5.11+ only
+>=20
+> Changes v2:
+> -Added stable tag.
+> -Improved commit message.
+>=20
+>  arch/arm/boot/dts/tegra30-ouya.dts | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-UDRS will still break the compilation here.
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-> +		clear_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags);
-> +		if (bdev_check_media_change(bdev))
-> +			floppy_revalidate(bdev->bd_disk);
-> +		if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
-> +			goto out;
-> +		if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
->  			goto out;
->  	}
-> +
-> +	res = -EROFS;
-> +
-> +	if ((mode & FMODE_WRITE) &&
-> +			!test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
-> +		goto out;
-> +
->  	mutex_unlock(&open_lock);
->  	mutex_unlock(&floppy_mutex);
->  	return 0;
-> 
+Arnd, Olof,
+
+can you guys pick this up directly for v5.11, since I don't currently
+have any other fixes queued up?
+
+Here's a patchwork link:
+
+	http://patchwork.ozlabs.org/project/linux-tegra/patch/20210107165658.13541=
+91-1-pgwipeout@gmail.com/
+
+Thanks,
+Thierry
+
+> diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra=
+30-ouya.dts
+> index 74da1360d297..0368b3b816ef 100644
+> --- a/arch/arm/boot/dts/tegra30-ouya.dts
+> +++ b/arch/arm/boot/dts/tegra30-ouya.dts
+> @@ -4352,8 +4352,8 @@ cam_mclk_pcc0 {
+>  		nvidia,pins =3D "cam_mclk_pcc0";
+>  		nvidia,function =3D "vi_alt3";
+>  		nvidia,pull =3D <TEGRA_PIN_PULL_NONE>;
+> -		nvidia,tristate =3D <TEGRA_PIN_ENABLE>;
+> -		nvidia,enable-input =3D <TEGRA_PIN_DISABLE>;
+> +		nvidia,tristate =3D <TEGRA_PIN_DISABLE>;
+> +		nvidia,enable-input =3D <TEGRA_PIN_ENABLE>;
+>  	};
+>  	pcc1 {
+>  		nvidia,pins =3D "pcc1";
+> --=20
+> 2.25.1
+>=20
+
+--fGGnx9KInWbJddqW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAJl5kACgkQ3SOs138+
+s6EKPA/8CPZIippS9fE8NcFsxBz/e79qQJtdtCEE9x1jcmpCe+59A71pXnkvD2W6
+iEUGXkfZUrYzmS4tbe36d36qqx9Z592uKMw4SSEQidNPUUvO8uxVDgXvXcSQhvAB
+5rN+PJ/uOfl6HVdyO5/uZR83ipk5EtWX78F12QkAst9oc0AgAgGvkvtiS/hKZ+QV
+qbdG7sre7EKIiYUaN6zY8v3P75a2lYglqmlVevdnyFDzoK2OTUIZmrMbeUQ4vsJ/
+a6yzqKXUdnOGAi7ePHPc/BHizzZxN2x5BqFS+HlOCqI7c0tmnhFq3A7VycSEvBce
+DHxkyXZuhWYb+4JT0VLwYMmtZ1vjWoc9FhjBh1c3pho0t5nAoSKbd7IRSF6pLGrz
+AFQIzS/jY+A2BJ2W8otkWb7+ciNUqooXQzaCHmEmDgklM2vzRE+Gtu3QHVAczi19
+a091GUMYWbqV4reh80rZN23HlrCMczzcd/SkVzvDeMSSbk8buSY/aKS3XEKuoQMN
+Q12unnwncq76ux0MH+k2iFWp89g9S77/QNLINunNxuzuowJ0QMKwx3MpBeJ3Xr3H
+9BzgY5+r9/mXAheD44d9JSXzepTuURITqRbKdVitAil1FqnShOM/WbvMDWTPWle9
+/y87+qUOYY1IV0TxWAlvXwB1GvJQOvXw0A1I6i+35JdoM8etc2E=
+=Y5ex
+-----END PGP SIGNATURE-----
+
+--fGGnx9KInWbJddqW--
