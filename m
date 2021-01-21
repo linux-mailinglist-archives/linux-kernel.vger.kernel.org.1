@@ -2,236 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671172FE69E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03B52FE6A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbhAUJoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:44:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728844AbhAUJnQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:43:16 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8464EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:42:35 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id w1so1644949ejf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:42:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=q1sxdGZD2/X5bbv5Su2MmfvmNcVhU6OquqVWEeRoJSE=;
-        b=SjERRRhg5yIjkuVWky5j9YXJkNAc2YBsj+xwPgjKsFlZIv1APv1lh8d5uK8uINigmq
-         tVkFp99+R2orIYEQN48KyjAqhAjyuepvdEz3Drv5qpVTHVAQ5pnNso+nvU/Y9l+DMG2Y
-         ZqAfa6XDiOJjD5kWGjTHmpPE41/yOUqcHnzWmwPvKHf/h2f9vtdm1PGuK0kgsC/3f4D2
-         Rqa2KYyqPfXM1vn1NP/EGhaCF9vWCYd/3Cd9T8bPbAiVSD6xfVMAPZNnGCWSrPn1QJZS
-         GLlgTgJj/yKXs/Bw+YFh9LeknklhvsGArdZKuIM3j8gasuaJZYlQMidstnetIFXF5umF
-         mwLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=q1sxdGZD2/X5bbv5Su2MmfvmNcVhU6OquqVWEeRoJSE=;
-        b=NZo6ul/MQ0pP194J/UeMSnSVAwx+sgXH5IPQBWz0nundAugPzo/cc8MNMg2dfMjzU2
-         xq+Md199T6772re4ZHIIunejLXM3tOCPB1mPPEkl9RRBgCOJZmQ6GltdQyVL05+OyECF
-         xfo1dYRI0VqfsV2cbe4yrw75+hUB9I0yIlwya2EIkUREHTwFHtYY/aiLBwxkQ548hVDv
-         CELsO1IZbO7BKgemCtgnxnhilY8Bo7lev6PzQC1ONNAwZGb536ipJz+TgZcXyrsekuRY
-         7gWWkxC+zEp4LGfGFz2wlYsqv49nLoxC7kaqvfz34ezZF5HS/r2j+5MHGlMC15fMIXVk
-         aD/w==
-X-Gm-Message-State: AOAM530BxO5J9hO6X1jpTw8TpJg7c9f4UNOpj2YWbsL7b8qTvMH+DGlt
-        f+AD1Ptt3CKN2/YcCH3IN6A=
-X-Google-Smtp-Source: ABdhPJwq2V6qHp7HnDgzHBV5QXdFskHuDe1T8q2q0GUrm56nR3mKk86ZU+aHzhaORjI09+u2xKJlEw==
-X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr8952974ejb.355.1611222154240;
-        Thu, 21 Jan 2021 01:42:34 -0800 (PST)
-Received: from ?IPv6:2a02:8070:b9d:f2fc:7e7a:91ff:fe47:1404? ([2a02:8070:b9d:f2fc:7e7a:91ff:fe47:1404])
-        by smtp.googlemail.com with ESMTPSA id f5sm1990735ejz.70.2021.01.21.01.42.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 01:42:33 -0800 (PST)
-Message-ID: <1611222152.1561.5.camel@googlemail.com>
-Subject: Re: [PATCH] regulator: pf8x00: Add suspend support
-From:   Christoph Fritz <chf.fritz@googlemail.com>
-Reply-To: chf.fritz@googlemail.com
-To:     Jagan Teki <jagan@amarulasolutions.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Thu, 21 Jan 2021 10:42:32 +0100
-In-Reply-To: <4c2e79d4fa96befdc9a6c59c3ff27b0a34f9fb56.camel@googlemail.com>
-References: <4c2e79d4fa96befdc9a6c59c3ff27b0a34f9fb56.camel@googlemail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.12.9-1+b1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1728819AbhAUJpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:45:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728438AbhAUJpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:45:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D10052054F;
+        Thu, 21 Jan 2021 09:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611222261;
+        bh=rnOFhjKeP8EAn8Ap9GJ+VBcmXTL1TVON/vmYb/JDU8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OEP4MvS9L5cdjs8/MB4FxQuAmD6tpgLBiS3E6oXy3M6V2pKP7lzI83FCbz6oDyN5p
+         1rVsUMjomt5vxBzdXAezvOk8MfuX+Ds9uiSlegDNhkQtZu5PnYF2dVSR/tSEhkuCad
+         LOPPIHgdBBD/tN1DimO4VEmz1+NY75A4HlZqT/sk=
+Date:   Thu, 21 Jan 2021 10:44:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Zhou Wang <wangzhou1@hisilicon.com>
+Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Sihang Chen <chensihang1@hisilicon.com>
+Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
+Message-ID: <YAlM8hC9OGm3X/0k@kroah.com>
+References: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jagan,
-
- as your new role as Maintainer of this driver, is there a chance to get
-your Feedback/Ack/Review/Signed anytime soon?
-
-Thanks
-  -- Christoph
-
-On Sun, 2021-01-17 at 21:49 +0100, Christoph Fritz wrote:
-> This patch adds suspend/resume support so that it is possible to
-> configure the LDOs and BUCKs as on or off during suspend phase as
-> well as to configure suspend specific voltages.
+On Thu, Jan 21, 2021 at 05:09:14PM +0800, Zhou Wang wrote:
+> When IO page fault happens, DMA performance will be affected. Pin user page
+> can avoid IO page fault, this patch introduces a new char device named
+> /dev/uacce_ctrl to help to maintain pin/unpin pages. User space can do
+> pin/unpin pages by ioctls of an open file of /dev/uacce_ctrl, all pinned
+> pages under one file will be unpinned in file release process.
 > 
-> Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
+> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+> Signed-off-by: Sihang Chen <chensihang1@hisilicon.com>
+> Suggested-by: Barry Song <song.bao.hua@hisilicon.com>
 > ---
->  drivers/regulator/pf8x00-regulator.c | 75 ++++++++++++++++++++++++++--
->  1 file changed, 70 insertions(+), 5 deletions(-)
+>  drivers/misc/uacce/uacce.c      | 172 +++++++++++++++++++++++++++++++++++++++-
+>  include/uapi/misc/uacce/uacce.h |  16 ++++
+>  2 files changed, 187 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
-> index 1e5582d73405..02892e04acce 100644
-> --- a/drivers/regulator/pf8x00-regulator.c
-> +++ b/drivers/regulator/pf8x00-regulator.c
-> @@ -125,8 +125,12 @@ enum pf8x00_devid {
->  #define PF8X00_DEVICE_FAM_MASK		GENMASK(7, 4)
->  #define PF8X00_DEVICE_ID_MASK		GENMASK(3, 0)
+> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+> index d07af4e..b8ac408 100644
+> --- a/drivers/misc/uacce/uacce.c
+> +++ b/drivers/misc/uacce/uacce.c
+> @@ -2,6 +2,7 @@
+>  #include <linux/compat.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/iommu.h>
+> +#include <linux/miscdevice.h>
+>  #include <linux/module.h>
+>  #include <linux/poll.h>
+>  #include <linux/slab.h>
+> @@ -12,6 +13,16 @@ static dev_t uacce_devt;
+>  static DEFINE_MUTEX(uacce_mutex);
+>  static DEFINE_XARRAY_ALLOC(uacce_xa);
 >  
-> -struct pf8x00_regulator {
-> +struct pf8x00_regulator_data {
->  	struct regulator_desc desc;
-> +	unsigned int suspend_enable_reg;
-> +	unsigned int suspend_enable_mask;
-> +	unsigned int suspend_voltage_reg;
-> +	unsigned int suspend_voltage_cache;
->  };
->  
->  struct pf8x00_chip {
-> @@ -276,6 +280,53 @@ static int pf8x00_of_parse_cb(struct device_node *np,
->  	return 0;
+> +struct uacce_pin_container {
+> +	struct xarray array;
+> +};
+> +
+> +struct pin_pages {
+> +	unsigned long first;
+> +	unsigned long nr_pages;
+> +	struct page **pages;
+> +};
+> +
+>  static int uacce_start_queue(struct uacce_queue *q)
+>  {
+>  	int ret = 0;
+> @@ -497,6 +508,152 @@ void uacce_remove(struct uacce_device *uacce)
 >  }
+>  EXPORT_SYMBOL_GPL(uacce_remove);
 >  
-> +static int pf8x00_suspend_enable(struct regulator_dev *rdev)
+> +int uacce_ctrl_open(struct inode *inode, struct file *file)
 > +{
-> +	struct pf8x00_regulator_data *regl = rdev_get_drvdata(rdev);
-> +	struct regmap *rmap = rdev_get_regmap(rdev);
+> +	struct uacce_pin_container *p;
 > +
-> +	return regmap_update_bits(rmap, regl->suspend_enable_reg,
-> +				  regl->suspend_enable_mask,
-> +				  regl->suspend_enable_mask);
-> +}
+> +	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> +	if (!p)
+> +		return -ENOMEM;
+> +	file->private_data = p;
 > +
-> +static int pf8x00_suspend_disable(struct regulator_dev *rdev)
-> +{
-> +	struct pf8x00_regulator_data *regl = rdev_get_drvdata(rdev);
-> +	struct regmap *rmap = rdev_get_regmap(rdev);
-> +
-> +	return regmap_update_bits(rmap, regl->suspend_enable_reg,
-> +				  regl->suspend_enable_mask, 0);
-> +}
-> +
-> +static int pf8x00_set_suspend_voltage(struct regulator_dev *rdev, int uV)
-> +{
-> +	struct pf8x00_regulator_data *regl = rdev_get_drvdata(rdev);
-> +	int ret;
-> +
-> +	if (regl->suspend_voltage_cache == uV)
-> +		return 0;
-> +
-> +	ret = regulator_map_voltage_iterate(rdev, uV, uV);
-> +	if (ret < 0) {
-> +		dev_err(rdev_get_dev(rdev), "failed to map %i uV\n", uV);
-> +		return ret;
-> +	}
-> +
-> +	dev_dbg(rdev_get_dev(rdev), "uV: %i, reg: 0x%x, msk: 0x%x, val: 0x%x\n",
-> +		uV, regl->suspend_voltage_reg, regl->desc.vsel_mask, ret);
-> +	ret = regmap_update_bits(rdev->regmap, regl->suspend_voltage_reg,
-> +				 regl->desc.vsel_mask, ret);
-> +	if (ret < 0) {
-> +		dev_err(rdev_get_dev(rdev), "failed to set %i uV\n", uV);
-> +		return ret;
-> +	}
-> +
-> +	regl->suspend_voltage_cache = uV;
+> +	xa_init(&p->array);
 > +
 > +	return 0;
 > +}
 > +
->  static const struct regulator_ops pf8x00_ldo_ops = {
->  	.enable = regulator_enable_regmap,
->  	.disable = regulator_disable_regmap,
-> @@ -283,6 +334,9 @@ static const struct regulator_ops pf8x00_ldo_ops = {
->  	.list_voltage = regulator_list_voltage_table,
->  	.set_voltage_sel = regulator_set_voltage_sel_regmap,
->  	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-> +	.set_suspend_enable = pf8x00_suspend_enable,
-> +	.set_suspend_disable = pf8x00_suspend_disable,
-> +	.set_suspend_voltage = pf8x00_set_suspend_voltage,
->  };
+> +int uacce_ctrl_release(struct inode *inode, struct file *file)
+> +{
+> +	struct uacce_pin_container *priv = file->private_data;
+> +	struct pin_pages *p;
+> +	unsigned long idx;
+> +
+> +	xa_for_each(&priv->array, idx, p) {
+> +		unpin_user_pages(p->pages, p->nr_pages);
+> +		xa_erase(&priv->array, p->first);
+> +		vfree(p->pages);
+> +		kfree(p);
+> +	}
+> +
+> +	xa_destroy(&priv->array);
+> +	kfree(priv);
+> +
+> +	return 0;
+> +}
+> +
+> +static int uacce_pin_page(struct uacce_pin_container *priv,
+> +			  struct uacce_pin_address *addr)
+> +{
+> +	unsigned int flags = FOLL_FORCE | FOLL_WRITE;
+> +	unsigned long first, last, nr_pages;
+> +	struct page **pages;
+> +	struct pin_pages *p;
+> +	int ret;
+> +
+> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
+> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
+> +	nr_pages = last - first + 1;
+> +
+> +	pages = vmalloc(nr_pages * sizeof(struct page *));
+> +	if (!pages)
+> +		return -ENOMEM;
+> +
+> +	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> +	if (!p) {
+> +		ret = -ENOMEM;
+> +		goto free;
+> +	}
+> +
+> +	ret = pin_user_pages_fast(addr->addr & PAGE_MASK, nr_pages,
+> +				  flags | FOLL_LONGTERM, pages);
+> +	if (ret != nr_pages) {
+> +		pr_err("uacce: Failed to pin page\n");
+> +		goto free_p;
+> +	}
+> +	p->first = first;
+> +	p->nr_pages = nr_pages;
+> +	p->pages = pages;
+> +
+> +	ret = xa_err(xa_store(&priv->array, p->first, p, GFP_KERNEL));
+> +	if (ret)
+> +		goto unpin_pages;
+> +
+> +	return 0;
+> +
+> +unpin_pages:
+> +	unpin_user_pages(pages, nr_pages);
+> +free_p:
+> +	kfree(p);
+> +free:
+> +	vfree(pages);
+> +	return ret;
+> +}
+> +
+> +static int uacce_unpin_page(struct uacce_pin_container *priv,
+> +			    struct uacce_pin_address *addr)
+> +{
+> +	unsigned long first, last, nr_pages;
+> +	struct pin_pages *p;
+> +
+> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
+> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
+> +	nr_pages = last - first + 1;
+> +
+> +	/* find pin_pages */
+> +	p = xa_load(&priv->array, first);
+> +	if (!p)
+> +		return -ENODEV;
+> +
+> +	if (p->nr_pages != nr_pages)
+> +		return -EINVAL;
+> +
+> +	/* unpin */
+> +	unpin_user_pages(p->pages, p->nr_pages);
+> +
+> +	/* release resource */
+> +	xa_erase(&priv->array, first);
+> +	vfree(p->pages);
+> +	kfree(p);
+> +
+> +	return 0;
+> +}
+> +
+> +static long uacce_ctrl_unl_ioctl(struct file *filep, unsigned int cmd,
+> +				 unsigned long arg)
+> +{
+> +	struct uacce_pin_container *p = filep->private_data;
+> +	struct uacce_pin_address addr;
+> +	int ret;
+> +
+> +	if (copy_from_user(&addr, (void __user *)arg,
+> +			   sizeof(struct uacce_pin_address)))
+> +		return -EFAULT;
+> +
+> +	switch (cmd) {
+> +	case UACCE_CMD_PIN:
+> +		return uacce_pin_page(p, &addr);
+> +
+> +	case UACCE_CMD_UNPIN:
+> +		return uacce_unpin_page(p, &addr);
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const struct file_operations uacce_ctrl_fops = {
+> +	.owner = THIS_MODULE,
+> +	.open = uacce_ctrl_open,
+> +	.release = uacce_ctrl_release,
+> +	.unlocked_ioctl	= uacce_ctrl_unl_ioctl,
+> +};
+> +
+> +static struct miscdevice uacce_ctrl_miscdev = {
+> +	.name = "uacce_ctrl",
+> +	.minor = MISC_DYNAMIC_MINOR,
+> +	.fops = &uacce_ctrl_fops,
+> +};
+> +
+>  static int __init uacce_init(void)
+>  {
+>  	int ret;
+> @@ -507,13 +664,26 @@ static int __init uacce_init(void)
 >  
-> 
-> @@ -295,6 +349,9 @@ static const struct regulator_ops pf8x00_buck1_6_ops = {
->  	.get_voltage_sel = regulator_get_voltage_sel_regmap,
->  	.get_current_limit = regulator_get_current_limit_regmap,
->  	.set_current_limit = regulator_set_current_limit_regmap,
-> +	.set_suspend_enable = pf8x00_suspend_enable,
-> +	.set_suspend_disable = pf8x00_suspend_disable,
-> +	.set_suspend_voltage = pf8x00_set_suspend_voltage,
->  };
->  
->  static const struct regulator_ops pf8x00_buck7_ops = {
-> @@ -306,6 +363,8 @@ static const struct regulator_ops pf8x00_buck7_ops = {
->  	.get_voltage_sel = regulator_get_voltage_sel_regmap,
->  	.get_current_limit = regulator_get_current_limit_regmap,
->  	.set_current_limit = regulator_set_current_limit_regmap,
-> +	.set_suspend_enable = pf8x00_suspend_enable,
-> +	.set_suspend_disable = pf8x00_suspend_disable,
->  };
->  
->  static const struct regulator_ops pf8x00_vsnvs_ops = {
-> @@ -337,6 +396,9 @@ static const struct regulator_ops pf8x00_vsnvs_ops = {
->  			.disable_val = 0x0,			\
->  			.enable_mask = 2,			\
->  		},						\
-> +		.suspend_enable_reg = (base) + LDO_CONFIG2,	\
-> +		.suspend_enable_mask = 1,			\
-> +		.suspend_voltage_reg = (base) + LDO_STBY_VOLT,	\
->  	}
->  
->  #define PF8X00BUCK(_id, _name, base, voltages)			\
-> @@ -367,6 +429,9 @@ static const struct regulator_ops pf8x00_vsnvs_ops = {
->  			.enable_mask = 0x3,			\
->  			.enable_time = 500,			\
->  		},						\
-> +		.suspend_enable_reg = (base) + SW_MODE1,	\
-> +		.suspend_enable_mask = 0xc,			\
-> +		.suspend_voltage_reg = (base) + SW_STBY_VOLT,	\
->  	}
->  
->  #define PF8X00BUCK7(_name, base, voltages)			\
-> @@ -415,7 +480,7 @@ static const struct regulator_ops pf8x00_vsnvs_ops = {
->  		},						\
->  	}
->  
-> -static struct pf8x00_regulator pf8x00_regulators_data[PF8X00_MAX_REGULATORS] = {
-> +static struct pf8x00_regulator_data pf8x00_regs_data[PF8X00_MAX_REGULATORS] = {
->  	PF8X00LDO(1, "ldo1", PF8X00_LDO_BASE(PF8X00_LDO1), pf8x00_ldo_voltages),
->  	PF8X00LDO(2, "ldo2", PF8X00_LDO_BASE(PF8X00_LDO2), pf8x00_ldo_voltages),
->  	PF8X00LDO(3, "ldo3", PF8X00_LDO_BASE(PF8X00_LDO3), pf8x00_ldo_voltages),
-> @@ -500,12 +565,12 @@ static int pf8x00_i2c_probe(struct i2c_client *client)
+>  	ret = alloc_chrdev_region(&uacce_devt, 0, MINORMASK, UACCE_NAME);
 >  	if (ret)
->  		return ret;
+> -		class_destroy(uacce_class);
+> +		goto destroy_class;
+> +
+> +	ret = misc_register(&uacce_ctrl_miscdev);
+> +	if (ret) {
+> +		pr_err("uacce: ctrl dev registration failed\n");
+> +		goto unregister_cdev;
+> +	}
 >  
-> -	for (id = 0; id < ARRAY_SIZE(pf8x00_regulators_data); id++) {
-> -		struct pf8x00_regulator *data = &pf8x00_regulators_data[id];
-> +	for (id = 0; id < ARRAY_SIZE(pf8x00_regs_data); id++) {
-> +		struct pf8x00_regulator_data *data = &pf8x00_regs_data[id];
->  		struct regulator_dev *rdev;
+> +	return 0;
+> +
+> +unregister_cdev:
+> +	unregister_chrdev_region(uacce_devt, MINORMASK);
+> +destroy_class:
+> +	class_destroy(uacce_class);
+>  	return ret;
+>  }
 >  
->  		config.dev = chip->dev;
-> -		config.driver_data = chip;
-> +		config.driver_data = data;
->  		config.regmap = chip->regmap;
+>  static __exit void uacce_exit(void)
+>  {
+> +	misc_deregister(&uacce_ctrl_miscdev);
+>  	unregister_chrdev_region(uacce_devt, MINORMASK);
+>  	class_destroy(uacce_class);
+>  }
+> diff --git a/include/uapi/misc/uacce/uacce.h b/include/uapi/misc/uacce/uacce.h
+> index cc71856..f9e326f 100644
+> --- a/include/uapi/misc/uacce/uacce.h
+> +++ b/include/uapi/misc/uacce/uacce.h
+> @@ -35,4 +35,20 @@ enum uacce_qfrt {
+>  	UACCE_QFRT_DUS = 1,
+>  };
 >  
->  		rdev = devm_regulator_register(&client->dev, &data->desc, &config);
+> +/**
+> + * struct uacce_pin_address - Expected pin user space address and size
+> + * @addr: Address to pin
+> + * @size: Size of pin address
+> + */
+> +struct uacce_pin_address {
+> +	unsigned long addr;
+> +	unsigned long size;
 
+These are not valid ioctl structure members for crossing the user/kernel
+boundry.  Please make them work properly (i.e. use __u64 and friends).
 
+thanks,
 
+greg k-h
