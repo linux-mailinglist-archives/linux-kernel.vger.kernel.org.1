@@ -2,109 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944592FF489
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E076A2FF483
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727333AbhAUTb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:31:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbhAUTFG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:05:06 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0E0C0613D6;
-        Thu, 21 Jan 2021 10:53:53 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id b5so2767896wrr.10;
-        Thu, 21 Jan 2021 10:53:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GSNo4GQaMF01CN3jcOZYky+NX759MUu9sdXp7CoIzS0=;
-        b=nAQr/sRJATdK0DqAwkGDw0KKvUrP1/VyLrtLabyHoZZQAjVySysTjzEjvXARgPpYQS
-         ivx/E8XQ+kStGQummVVzsk8djxm1W5e5QVWTn0mTvSRLxnU20fmx8EGKMRtn7VBQiatZ
-         p0nHYtI+edbkBt+ad0HJIw4xjgaSo5IO6tMSopKQkoIi/5nAj5SbnVG8x1HQqLIO7r9M
-         XyM98dnWNXdkccXdZ1VPDdi3ks+6GawTeU+YDT1YW6MPfXgMXA5ZubrOBB4mnKQAmTOz
-         B/4NGdLPWqiW2W9WN2d4z2vItET0EZ8rQmJlnaZzpRN7Ykkg6Yai5BDrTFrFf730Lj9M
-         tucQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GSNo4GQaMF01CN3jcOZYky+NX759MUu9sdXp7CoIzS0=;
-        b=efT1Ka00wc0UgxK14fVrOCygS83lM8vp9wp4uj2pRz38fZN86SHAwTmNc6hoTRNUE3
-         wpq9GlpXUg4p7TumsjqbPjx5EobXtjfJ/7k7BqvSY1NoqPciz6Q8WtwaUhLOlnBp3lyu
-         Rn2PhGephgYZytx1sbY2X9MHbUHqb1eszEw+cx5B51HLjVJdnJFl0GkSRmNBZiVX33lV
-         YXeGPh7xM87lD4ncImzK/GbItFmf8KB+/lOiQRLbSC7z/6Ga+Ut7X6PPmxErglOWKyQf
-         6BsJozdXBWpbJlXmuHqylR2ltJQ7LGz8guGzNo5J/h5/5t2WLTpjpWwzVQjBvrpfhF9n
-         eqsw==
-X-Gm-Message-State: AOAM532V3CtOqtqygvqNS26Ikxa908WrbaP8qhUCfufYzftctN/Ebk64
-        YvXShec688mMN7ST3QnPktRulfucW+I=
-X-Google-Smtp-Source: ABdhPJz5DlIzazgq+BpxAwHtAA/1THEgWazEtaOcDMZtKX1BTXdxh2SoRvXrjAQxa2kh0FKvRjOjbQ==
-X-Received: by 2002:adf:f5c5:: with SMTP id k5mr893553wrp.286.1611255232632;
-        Thu, 21 Jan 2021 10:53:52 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id h16sm8830498wmb.41.2021.01.21.10.53.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:53:51 -0800 (PST)
-Date:   Thu, 21 Jan 2021 19:53:49 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, jonathanh@nvidia.com,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: tegra: Enable Jetson-Xavier J512 USB host
-Message-ID: <YAnNvTtlx8jHyRG3@ulmo>
-References: <20210119022349.136453-1-jckuo@nvidia.com>
+        id S1726630AbhAUTbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:31:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726666AbhAUTHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:07:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DE023A5A;
+        Thu, 21 Jan 2021 18:56:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611255376;
+        bh=2Xojm14IB9nPhE0F1jD09AO119Qz7ER3XWRWdlK1oac=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=h1jx/Bkol+Eqmn1yGDHDI3ryPseCSwR/jDuGEOJTqSimQRwD7QNED2RcnGRh1h6aK
+         ZwwG7B/JJSWo8XEnhaLO+zRnQ1ag6jeA+s7a8oJu2vJar4zpnvDatQ8oi13rr9Vdnn
+         3HUxjl1soOxfwyerFpRrWKY9pkFM5EVusQgtu8jQGHcnGNd4GL/lY60UMZnLwJTzr+
+         814mM5jzrjzem9ku9yqhKQQD6ClbFyAdzkwJJiPE3beD406twslKvTCL/vdo7p0rvs
+         wN6hpaXI9sZEXisjFk0Ls5vz1h4K2Jek8txVhsL+1DhPRSrVQ504AITKFJHoDxMVKW
+         hlrXCE1N8WIkg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 992AA35214EB; Thu, 21 Jan 2021 10:56:15 -0800 (PST)
+Date:   Thu, 21 Jan 2021 10:56:15 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     qiang.zhang@windriver.com
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, urezki@gmail.com
+Subject: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going
+ offline
+Message-ID: <20210121185615.GR2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210121064949.16164-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RWasVtTkUFJY1dK5"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119022349.136453-1-jckuo@nvidia.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+In-Reply-To: <20210121064949.16164-1-qiang.zhang@windriver.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
+> 
+> If CPUs go offline, the corresponding krcp's page cache can
+> not be use util the CPU come back online, or maybe the CPU
+> will never go online again, this commit therefore free krcp's
+> page cache when CPUs go offline.
+> 
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
---RWasVtTkUFJY1dK5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Adding Uladzislau on CC for his thoughts.
 
-On Tue, Jan 19, 2021 at 10:23:49AM +0800, JC Kuo wrote:
-> This commit enables USB host mode at J512 type-C port of Jetson-Xavier.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+							Thanx, Paul
+
 > ---
->  .../arm64/boot/dts/nvidia/tegra194-p2888.dtsi |  8 +++++++
->  .../boot/dts/nvidia/tegra194-p2972-0000.dts   | 24 +++++++++++++++++--
->  2 files changed, 30 insertions(+), 2 deletions(-)
-
-Applied, thanks.
-
-Thierry
-
---RWasVtTkUFJY1dK5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAJzbUACgkQ3SOs138+
-s6FGwA//XuVbtQA6LY/Mptb4ENgPKL5kotvFnpTGdmQRuBhTV/Ga+zORCUVCSiRt
-P9x5LUnMSHpgyZn+TKaNiZIrcxdV8m//TnjrwL+bDIlEZDBxHVOmapanhTjkNEhY
-MNZ0NGXZsmzFRXeb2q6FC51lQEQeBT9yC33fe/5/KTCnMr+15NcmCy9nd+aWmImH
-PHx7OJwoen7dXfcTKR/Q6Kxc0yKjcujyXKH64gXlSRjWJUnInF114Gc6GnGIMSOu
-CBnW2i63lw21RAiR3s7Ys91pnjhXudoP/GogEeK05Zf/LufuW3vZ7hhLrk/sqG/g
-LFbhE1UKGc44wuoMq2OFT/HwHsg9PcvNOaJ3sil1/9Pzjak4xeLHsF5W3NFWyiCj
-LeqICBXqCqABTKckIjWy0U+LCcieHxVACb3gltOzASiJ5EA7ivzu4nebtPGuy4O3
-PF2vC8xHO6beTQwYYAjK9J6cydttiOqrJeY0d5mhla6U0hR+YeSONeLJ+hNNfI8u
-Y9gwJ53QRLW6t79av1NcBe5I+O9fguko3fqlnVwhvW0saqpIneYBy8J7a61KvqvH
-PcLk4M2rfIMsWUTraaRw2q5gpM/ApPz46Nbdv+U17wJZQL5QbbIQeI7pYXeXulAG
-4vz3q57PdpLkEMt0dfmflHZx0k2LxPRBkb3hcx4vrfPUPwYZf5E=
-=Pioz
------END PGP SIGNATURE-----
-
---RWasVtTkUFJY1dK5--
+>  kernel/rcu/tree.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 46 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index e04e336bee42..2eaf6f287483 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -158,6 +158,9 @@ static void sync_sched_exp_online_cleanup(int cpu);
+>  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+>  
+> +static void krc_offline(unsigned int cpu, bool off);
+> +static void free_krc_page_cache(int cpu);
+> +
+>  /* rcuc/rcub kthread realtime priority */
+>  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+>  module_param(kthread_prio, int, 0444);
+> @@ -2457,6 +2460,9 @@ int rcutree_dead_cpu(unsigned int cpu)
+>  
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+> +
+> +	krc_offline(cpu, true);
+> +	free_krc_page_cache(cpu);
+>  	return 0;
+>  }
+>  
+> @@ -3169,6 +3175,7 @@ struct kfree_rcu_cpu {
+>  
+>  	struct llist_head bkvcache;
+>  	int nr_bkv_objs;
+> +	bool offline;
+>  };
+>  
+>  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> @@ -3220,6 +3227,8 @@ static inline bool
+>  put_cached_bnode(struct kfree_rcu_cpu *krcp,
+>  	struct kvfree_rcu_bulk_data *bnode)
+>  {
+> +	if (krcp->offline)
+> +		return false;
+>  	// Check the limit.
+>  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+>  		return false;
+> @@ -3230,6 +3239,39 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+>  
+>  }
+>  
+> +static void krc_offline(unsigned int cpu, bool off)
+> +{
+> +	unsigned long flags;
+> +	struct kfree_rcu_cpu *krcp;
+> +
+> +	krcp = per_cpu_ptr(&krc, cpu);
+> +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> +	if (off)
+> +		krcp->offline = true;
+> +	else
+> +		krcp->offline = false;
+> +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +}
+> +
+> +static void free_krc_page_cache(int cpu)
+> +{
+> +	unsigned long flags;
+> +	struct kfree_rcu_cpu *krcp;
+> +	int i;
+> +	struct kvfree_rcu_bulk_data *bnode;
+> +
+> +	krcp = per_cpu_ptr(&krc, cpu);
+> +
+> +	for (i = 0; i < rcu_min_cached_objs; i++) {
+> +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> +		bnode = get_cached_bnode(krcp);
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +		if (!bnode)
+> +			break;
+> +		free_page((unsigned long)bnode);
+> +	}
+> +}
+> +
+>  /*
+>   * This function is invoked in workqueue context after a grace period.
+>   * It frees all the objects queued on ->bhead_free or ->head_free.
+> @@ -3549,7 +3591,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	kasan_record_aux_stack(ptr);
+>  	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+>  	if (!success) {
+> -		run_page_cache_worker(krcp);
+> +		if (!krcp->offline)
+> +			run_page_cache_worker(krcp);
+>  
+>  		if (head == NULL)
+>  			// Inline if kvfree_rcu(one_arg) call.
+> @@ -4086,6 +4129,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+>  	rcu_spawn_cpu_nocb_kthread(cpu);
+>  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
+>  
+> +	krc_offline(cpu, false);
+>  	return 0;
+>  }
+>  
+> @@ -4591,6 +4635,7 @@ static void __init kfree_rcu_batch_init(void)
+>  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+>  		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
+>  		krcp->initialized = true;
+> +		krcp->offline = true;
+>  	}
+>  	if (register_shrinker(&kfree_rcu_shrinker))
+>  		pr_err("Failed to register kfree_rcu() shrinker!\n");
+> -- 
+> 2.29.2
+> 
