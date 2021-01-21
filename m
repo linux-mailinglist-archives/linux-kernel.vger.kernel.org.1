@@ -2,61 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887FE2FED38
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512A42FECF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731971AbhAUOoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:44:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:38428 "EHLO foss.arm.com"
+        id S1731220AbhAUOeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:34:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732107AbhAUOng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:43:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FF5411D4;
-        Thu, 21 Jan 2021 06:31:24 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C40733F68F;
-        Thu, 21 Jan 2021 06:31:22 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-        cai@redhat.com, vincent.donnefort@arm.com, decui@microsoft.com,
-        paulmck@kernel.org, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, tj@kernel.org, peterz@infradead.org
-Subject: Re: [PATCH -v3 5/9] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
-In-Reply-To: <20210121103506.693465814@infradead.org>
-References: <20210121101702.402798862@infradead.org> <20210121103506.693465814@infradead.org>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Thu, 21 Jan 2021 14:31:20 +0000
-Message-ID: <jhja6t2mkef.mognet@arm.com>
+        id S1731094AbhAUOdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 09:33:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3669E20897;
+        Thu, 21 Jan 2021 14:32:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611239549;
+        bh=7LcSyLbJf0dlJv1At01hxj+I6o7NhrEPAVw8kSdv1FQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SvjE1+A402FAAf9lDmILVQ9+oegkeyrwaN+6l1FYseKo8RkfdrkbESP2KVwLMxhK7
+         7pwL9lVwnpsKzgB2AQD7V6sujxZLOUQeKIzTE6t8vXlnpvkVH5v/cgBN6svODqUwFE
+         3VcYOcAxoyP6ki5q3zhwUWsJG0t0Z3JN4erXIBwtVzZefg3J4O7VQPvw1IxX8dgFbI
+         BfmVbpCXDP8am/l9uXDTotTfSQnLJcUlwSzdD3CoLdl7yIe5juhrRSPmSfciUNg7kH
+         dY7D9iClUfKW1t0vfBZ70D4pA3ORwQd3grj7S/pgz/28Ww+YuDxZGUlrl5Q1BqQlvm
+         v6DmH2Qf0ZQeA==
+Date:   Thu, 21 Jan 2021 16:32:26 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     joeyli <jlee@suse.com>
+Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ben Boeckel <me@benboeckel.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] X.509: Add CodeSigning extended key usage parsing
+Message-ID: <YAmQeiM0EHNrjyES@kernel.org>
+References: <20210120090517.23851-1-jlee@suse.com>
+ <20210120090517.23851-2-jlee@suse.com>
+ <YAi/gERomykYZqKZ@kernel.org>
+ <20210121042353.GA4730@linux-l9pv.suse>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121042353.GA4730@linux-l9pv.suse>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/01/21 11:17, Peter Zijlstra wrote:
-> @@ -4972,9 +4977,11 @@ static void rebind_workers(struct worker
->  	 * of all workers first and then clear UNBOUND.  As we're called
->  	 * from CPU_ONLINE, the following shouldn't fail.
->  	 */
-> -	for_each_pool_worker(worker, pool)
-> +	for_each_pool_worker(worker, pool) {
-> +		kthread_set_per_cpu(worker->task, pool->cpu);
->  		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
->  						  pool->attrs->cpumask) < 0);
+On Thu, Jan 21, 2021 at 12:23:53PM +0800, joeyli wrote:
+> Hi Jarkko,
+> 
+> On Thu, Jan 21, 2021 at 01:40:48AM +0200, Jarkko Sakkinen wrote:
+> > On Wed, Jan 20, 2021 at 05:05:14PM +0800, Lee, Chun-Yi wrote:
+> > > This patch adds the logic for parsing the CodeSign extended key usage
+> > > extension in X.509. The parsing result will be set to the eku flag
+> > > which is carried by public key. It can be used in the PKCS#7
+> > > verification.
+> > > 
+> > > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> > > ---
+> > >  crypto/asymmetric_keys/x509_cert_parser.c | 24 ++++++++++++++++++++++++
+> > >  include/crypto/public_key.h               |  1 +
+> > >  include/linux/oid_registry.h              |  5 +++++
+> > >  3 files changed, 30 insertions(+)
+> > > 
+> > > diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> > > index 52c9b455fc7d..65721313b265 100644
+> > > --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> > > +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> > > @@ -497,6 +497,8 @@ int x509_process_extension(void *context, size_t hdrlen,
+> > >  	struct x509_parse_context *ctx = context;
+> > >  	struct asymmetric_key_id *kid;
+> > >  	const unsigned char *v = value;
+> > > +	int i = 0;
+> > > +	enum OID oid;
+> > >  
+> > >  	pr_debug("Extension: %u\n", ctx->last_oid);
+> > >  
+> > > @@ -526,6 +528,28 @@ int x509_process_extension(void *context, size_t hdrlen,
+> > >  		return 0;
+> > >  	}
+> > >  
+> > > +	if (ctx->last_oid == OID_extKeyUsage) {
+> > > +		if (v[0] != ((ASN1_UNIV << 6) | ASN1_CONS_BIT | ASN1_SEQ) ||
+> > > +		    v[1] != vlen - 2)
+> > > +			return -EBADMSG;
+> > > +		i += 2;
+> > > +
+> > > +		while (i < vlen) {
+> > > +			/* A 10 bytes EKU OID Octet blob =
+> > > +			 * ASN1_OID + size byte + 8 bytes OID */
+> > > +			if (v[i] != ASN1_OID || v[i + 1] != 8 || (i + 10) > vlen)
+> > > +				return -EBADMSG;
+> > > +
+> > > +			oid = look_up_OID(v + i + 2, v[i + 1]);
+> > > +			if (oid == OID_codeSigning) {
+> > > +				ctx->cert->pub->eku |= EKU_codeSigning;
+> > > +			}
+> > > +			i += 10;
+> > > +		}
+> > > +		pr_debug("extKeyUsage: %d\n", ctx->cert->pub->eku);
+> > 
+> > With eBPF around, does this make any sense?
+> >
+> 
+> I think that the dynamic debug log is still easier for checking the EKU
+> setting.
 
-At the end of this series, is_cpu_allowed() allows kthreads with
-KTHREAD_IS_PER_CPU on any online CPU, even if it isn't the designated
-kthread->cpu.
+Why?
 
-I thought there might be a race here, given this gives us a window where a
-pcpu kworker has the flag but is still affined to cpus_possible_mask. Now,
-given cpus_write_lock(), we can't have a CPU going up while another goes
-down. So I think it's actually fine, and I've been chasing ghosts yet again.
+> Thanks
+> Joey Lee
 
-> +	}
->  
->  	raw_spin_lock_irq(&pool->lock);
->  
+/Jarkko
