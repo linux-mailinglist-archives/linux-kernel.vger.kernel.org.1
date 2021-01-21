@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4940F2FF271
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A162FF276
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388947AbhAURv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:51:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388079AbhAURve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:51:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 502B8207C5;
-        Thu, 21 Jan 2021 17:50:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611251454;
-        bh=WGwQ/LHJXpuOITyCedmJK7xHBWnLxm4p78A0vIrcCrI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=WWMIaVUrMsoYXKcThZxUsMzkbftbS6wb7aeJVYFAMYi6c7szO0KcwQGFD7qWB9j3x
-         /lc6NcIPhGgD5WUFEt73ESPSagiyNbmFe7NhSYany8aSzG0Rn4+4dA/ikDzT2kHoXX
-         kOTCg/GUj9begEkDotw4k7luq6TLQvfFle5dGuOrJ4dLsHCxF0SHW18DULT+1HDSJi
-         8HjPpYPtvvi+0u9koFHercHFR41yE9w2kZVBfOD3GjNwdUZrqGNMDKbRZMvVrDR3Nd
-         /yAfa+4KDh59SbWxSUP+GqVQj774WcQw7aCvGS09aJf6BLTdIF8uxaudyrix0jrgeF
-         jhh2Ng65m6oRA==
-Date:   Thu, 21 Jan 2021 11:50:50 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] PCI: set dma-can-stall for HiSilicon chip
-Message-ID: <20210121175050.GA2668947@bjorn-Precision-5520>
+        id S2389305AbhAURwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389054AbhAURwh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:52:37 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6CAC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:51:54 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id l9so3878519ejx.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:51:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=51VcyZ0wcuGuW2m213F8YE94gBtxdpp+DVm+1XUV/kc=;
+        b=H5RbvKJzOAZSzZttqk+4D6J5otSROP5TEODNUwb21iPJKfP+Ab3VInvWrEmmIXc51D
+         kT4vXcIGucGm/xDXGd5766NQhpstAG53Q8NLEmg4cvuF7NJn7NI2aqKPPNarNCatpphL
+         n04UttoRPSTulyYrFLysFiGhqiFnUg2Vsf0CI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=51VcyZ0wcuGuW2m213F8YE94gBtxdpp+DVm+1XUV/kc=;
+        b=O4HCZ7mYKduYgP7avcEyQi0b20SyI/aGrUsYMpEKVyrY/2PPgbVJQzveDnj42wFXQY
+         qNsHzDMIhJgPJ3SVuxgUbiidZfxw5CHfSlKfLdWzFJRvkjQ+GyQ12aNCWx8s0xajyboc
+         I0KOMMmBlrEPipS+Gcfsvth46CvKomwi1L7J+SYgYbwG97LPV1rZ5BSdV1REeYL51yxx
+         YQrTy778uWrTmZfxnnOO7vP/bd6bunjtylhi0Zn7WyTMzqgo0g0F6JjWiTFXJQph2r8a
+         /6lBkFWbn0fJtn9CnnEV7qrq6BUbu1z60mBj5t50oaDtue4hywSgGifDnRGhm96P+J3z
+         0ncQ==
+X-Gm-Message-State: AOAM533m1k5kht1N8PjejMkxOVdUePPJHmRFXFJ2cdW+3vaUta86APWK
+        JawuDipSzlM7mnCTWkaApN/HpQ==
+X-Google-Smtp-Source: ABdhPJx+D8/Miw7niFfErjOQWn8sH7EaMNhkJL7TJSDo4zIFgNNDjogLT0p7KxD+/CzpFUu1z+e5Lw==
+X-Received: by 2002:a17:906:4893:: with SMTP id v19mr421764ejq.454.1611251513363;
+        Thu, 21 Jan 2021 09:51:53 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id w16sm3232349edv.4.2021.01.21.09.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 09:51:52 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Lukasz Majczak <lma@semihalf.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
+Subject: [PATCH v3 1/2] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib skl_tplg_complete
+Date:   Thu, 21 Jan 2021 18:51:50 +0100
+Message-Id: <20210121175151.139111-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121165706.GA2663152@bjorn-Precision-5520>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:57:09AM -0600, Bjorn Helgaas wrote:
-> On Mon, Jan 18, 2021 at 04:58:36PM +0800, Zhangfei Gao wrote:
-> > HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
-> > actually on the AMBA bus. These fake PCI devices can support SVA via
-> > SMMU stall feature, by setting dma-can-stall for ACPI platforms.
-> > 
-> > Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
-> > ---
-> > Property dma-can-stall depends on patchset
-> > https://lore.kernel.org/linux-iommu/20210108145217.2254447-1-jean-philippe@linaro.org/
-> > 
-> >  drivers/pci/quirks.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> > 
-> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > index 873d27f..b866cdf 100644
-> > --- a/drivers/pci/quirks.c
-> > +++ b/drivers/pci/quirks.c
-> > @@ -1827,10 +1827,23 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
-> >  
-> >  static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
-> >  {
-> > +	struct property_entry properties[] = {
-> > +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
-> > +		{},
-> > +	};
-> > +
-> >  	if (pdev->revision != 0x21 && pdev->revision != 0x30)
-> >  		return;
-> >  
-> >  	pdev->pasid_no_tlp = 1;
-> > +
-> > +	/*
-> > +	 * Set the dma-can-stall property on ACPI platforms. Device tree
-> > +	 * can set it directly.
-> > +	 */
-> > +	if (!pdev->dev.of_node &&
-> > +	    device_add_properties(&pdev->dev, properties))
-> > +		pci_warn(pdev, "could not add stall property");
-> 
-> What's the purpose of adding the "dma-can-stall" property?  I don't
-> see any reference to that property in the tree or in this series.  If
-> this is related to some other series that uses it, perhaps this part
-> should be moved to that series?
+If dobj->control is not initialized we end up in an OOPs during
+skl_tplg_complete:
 
-Sorry, I missed your note about this above!  Thanks for the pointer.
+[   26.553358] BUG: kernel NULL pointer dereference, address:
+0000000000000078
+[   26.561151] #PF: supervisor read access in kernel mode
+[   26.566897] #PF: error_code(0x0000) - not-present page
+[   26.572642] PGD 0 P4D 0
+[   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
+[   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
+5.4.81 #4
+[   26.588232] Hardware name: HP Soraka/Soraka, BIOS
+Google_Soraka.10431.106.0 12/03/2019
+[   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
 
-I hate having code in the tree that's useless pending some other
-series, but I guess doing it this way helps avoid ordering issues
-between this series and that one.
+Cc: <stable@vger.kernel.org>
+Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
+Tested-by: Lukasz Majczak <lma@semihalf.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+v3: order local variables by length
 
-But please include the lore URL to Jean-Philippe's series in the
-commit log so that if this patch is merged before Jean-Philippe's,
-people at least have a hint about what's going on.
+ sound/soc/intel/skylake/skl-topology.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-> >  }
-> >  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
-> >  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
-> > -- 
-> > 2.7.4
-> > 
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index ae466cd59292..ffd37aaecdf1 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3619,15 +3619,16 @@ static void skl_tplg_complete(struct snd_soc_component *component)
+ 
+ 	list_for_each_entry(dobj, &component->dobj_list, list) {
+ 		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
+-		struct soc_enum *se =
+-			(struct soc_enum *)kcontrol->private_value;
+-		char **texts = dobj->control.dtexts;
++		struct soc_enum *se;
+ 		char chan_text[4];
++		char **texts;
+ 
+-		if (dobj->type != SND_SOC_DOBJ_ENUM ||
+-		    dobj->control.kcontrol->put !=
+-		    skl_tplg_multi_config_set_dmic)
++		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
++		    kcontrol->put != skl_tplg_multi_config_set_dmic)
+ 			continue;
++
++		se = (struct soc_enum *)kcontrol->private_value;
++		texts = dobj->control.dtexts;
+ 		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
+ 
+ 		for (i = 0; i < se->items; i++) {
+-- 
+2.30.0.296.g2bfb1c46d8-goog
+
