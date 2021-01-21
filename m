@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722912FE232
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD9D2FE235
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbhAUGBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
+        id S1726232AbhAUGB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:01:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbhAUGAb (ORCPT
+        with ESMTP id S1726007AbhAUGB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:00:31 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D150EC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:59:24 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id b11so965251ybj.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:59:24 -0800 (PST)
+        Thu, 21 Jan 2021 01:01:27 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D3BC061757;
+        Wed, 20 Jan 2021 22:00:43 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id s15so668169plr.9;
+        Wed, 20 Jan 2021 22:00:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=RAwQ3f/drnpP6XT80kBEqSV7iw2D3W05baQeYgmRFTk=;
-        b=hXAjtQJjP+Ukk3nvZ6FJOkxXH9+24Wskxuvc+U3n5/H7M9yVYvgpNfwn9WuGq5bkCc
-         a4QdTe3iXSRBwl/aShwNCjkeHpaP+2FeYRTSkUDbeJYAXet/OPVy+aXFIJnowoWmHQbt
-         YV+C7OWt89RvUjLhG1dxpsfREWBgokE3CLg0wtUvDGzf+lwEFKb85chQt4t627THJ7sf
-         fHcUouVLVdqYCoqNFD6EMMaJFePhSBNZEmr8+pi16GYxMsr+Q8Vl747oTydsQ8A2Gims
-         Yi2cDQBX6Z5k7pjbh2LbUGiXFP6PTySYdcS/YHWGrpdDo9gxS1+CN2XD13WxJjmlfGkh
-         3ZOg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=nm/d5EhZ/OB8dy9RYltdCSlYB2STRBBjiHimEPU8NOw=;
+        b=oD+OZniXZxdd2Cw+nAnP8VWLSUTfEFYCyR5mej2IGW5/W8u/E8BvWsvX4uEi9N6yjZ
+         6FHjvrxSsGGFQpO3qZ8nrIZt1Vhk1j/nlSrqyqMJNB0WmvAdEG2G+ibbcZqQqGQwWm5u
+         I+SpRqJLK1bzWHLAuLTqqm4Y4Ho9doYEIX2lSwazWKVoE4qMH9IeVEN5jrfGsYjt/Na9
+         yu8GorLbx8AxJR8OZRCXFAbYYpvwhOskya9gKHyhx2LGQq2R4SWtpeM9KQWLnopQ2jFo
+         JacczzMS4deT2l/5w/aRjDkn3Fq5QREZr1y0yDQr7sqowxySmefspXy6T7/PtejWQuDc
+         awog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=RAwQ3f/drnpP6XT80kBEqSV7iw2D3W05baQeYgmRFTk=;
-        b=UMyAR/ohfarUBKKtwM+xFaJdFQH9+elW7jIFl1GZIK7BMIv13pZHBke/R3xqjkP2lz
-         IEVv9r7jHXdGCbthAb81IViui7Z2UHdew9SaOTbXVPIq04Nc8EqsR3ok5l6mr1dl8SiD
-         3akzsr5Vc92ECguiSe3BYa/0RH0wTS24dxYXm8xnKWgmD5RRBBSIVwPUhREZYvAjioho
-         uheE4IcSqTl81K0fjwcQydM84bhzOZThEfE01gvsSknf68w9pTWblzKm8b/nBU7VMLtk
-         hD1wQeXxx45x/9zdQ7l5kGvUW5mhx4V5748ZsHIwerWsAXTamF9iSa1sc+nXJGAz512O
-         mRxg==
-X-Gm-Message-State: AOAM533tB/z91Kk/zcRRPU86H/e8lqVofbAS6+dAb00/UZng0o4HVguL
-        8nCxpUkO7NQX5a2E30eTJW0Bz+LbXKruJ8SU+vg=
-X-Google-Smtp-Source: ABdhPJxzAtJqqxJIhsCnoTrZ53BLm8DnOm7cWTUyFAcZy+YjcICGgkhKyDfsjODwIadBrSfEOfyL15do8ahQNTwKEuU=
-X-Received: by 2002:a25:ea53:: with SMTP id o19mr8007050ybe.94.1611208764152;
- Wed, 20 Jan 2021 21:59:24 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=nm/d5EhZ/OB8dy9RYltdCSlYB2STRBBjiHimEPU8NOw=;
+        b=DfEq0+d9G6R1pVqVuQ1yIMt3wXxT3PmD0CC3Uh1WaPl59AuwYCThNdniIlnF+NKx/B
+         PLSxV9RdU0nASWYSHwRIfYyxJ3/+mLsDi2+hRemNbAM/rYTQZpCCNMEUmqVujJtKxTEB
+         Xv8CBrTT5dMfTUXR698EGRvbmFA1cCEBOn5IKhqFY4FoijOPWpy9g1mSJHJltY9RLtYQ
+         3W2SdIcgAWLmf0+X5/LJwsQqeL/Igjw6gboXdUZFM3hyA99WraO+dFH6/yUgUwg9uW0f
+         25T6/iNwPAEEZOd0wdHNedVBgl53xQFkSOtkb9ehl4n9pqCBNN4xUEGUlOUw6sW48JTm
+         a8pA==
+X-Gm-Message-State: AOAM530J9QQ6xSVpPVZxzNkXs8oLsiPeZXGWokDPZMXZf4tmPvbizMih
+        WLpxMk/GEtMbSHn0oVNA+HICVY+TkTQ1ceMp/zG9etpeCqI=
+X-Google-Smtp-Source: ABdhPJydWax2/fugoXpsWOXPL01l7yleuBY5u23KrpMyhc/IQf/3F5aX/FL17gNJlX/FYGjZX7GiSH/t/sdYO//bk+M=
+X-Received: by 2002:a17:90a:9a83:: with SMTP id e3mr9984025pjp.210.1611208842977;
+ Wed, 20 Jan 2021 22:00:42 -0800 (PST)
 MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Thu, 21 Jan 2021 13:58:58 +0800
-Message-ID: <CAD-N9QXHkGkwihX=E7HAnDs3L90=Q5FerLb0mJhdXMb+pH-tew@mail.gmail.com>
-Subject: "INFO: task hung in exit_mm" and "INFO: task hung in do_exit" should
- be duplicate crash reports
-To:     aarcange@redhat.com, akpm@linux-foundation.org, avagin@gmail.com,
-        davem@davemloft.net, ebiederm@xmission.com,
-        linux-kernel <linux-kernel@vger.kernel.org>, oleg@redhat.com,
-        prsood@codeaurora.org, tj@kernel.org
-Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
+References: <20210120102837.23663-1-xie.he.0141@gmail.com> <CAJht_EOdpq5wQfcFROpx587kCZ9dGRz6kesyPVhgZyKdoqS8Cg@mail.gmail.com>
+In-Reply-To: <CAJht_EOdpq5wQfcFROpx587kCZ9dGRz6kesyPVhgZyKdoqS8Cg@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Wed, 20 Jan 2021 22:00:32 -0800
+Message-ID: <CAJht_ENjV3k_d7TyeJmKopSPoVeGZb0s5PnkTeX_2hCOXNsWwg@mail.gmail.com>
+Subject: Re: [PATCH net v4] net: lapb: Add locking to the lapb module
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear kernel developers,
+On Wed, Jan 20, 2021 at 12:42 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> With this patch, there is still a problem that lapb_unregister may run
+> concurrently with other LAPB API functions (such as
+> lapb_data_received). This other LAPB API function can get the
+> lapb->lock after lapb->lock is released by lapb_unregister, and
+> continue to do its work. This is not correct.
+>
+> We can fix this problem by adding a new field "bool stop" to "struct
+> lapb_cb" (just like "bool t1timer_stop, t2timer_stop"), and make every
+> API function abort whenever it sees lapb->stop == true after getting
+> the lock.
+>
+> Alternatively we can also require the callers (the LAPB drivers) to
+> never call lapb_unregister concurrently with other LAPB APIs. They
+> should make sure all LAPB API functions are only called after
+> lapb_register ends and before lapb_unregister starts. This is a
+> reasonable requirement, because if they don't follow this requirement,
+> even if we do the fix in the LAPB module (as said above), the LAPB
+> driver will still get the "LAPB_BADTOKEN" error from the LAPB module.
+> This is not desirable and I think LAPB drivers should avoid this from
+> happening.
+>
+> So I think this problem may not need to be fixed here in the LAPB
+> module because the LAPB drivers should deal with this problem anyway.
 
-I found that on the syzbot dashboard, =E2=80=9CINFO: task hung in exit_mm=
-=E2=80=9D[1]
-and "INFO: task hung in do_exit"[2] should share the same root cause.
-
-The reasons for the above statement:
-1) the stack trace is the same, and this title difference is due to
-the inline property of "exit_mm";
-2) their PoCs are the same as each other;
-
-If you can have any issues with this statement or our information is
-useful to you, please let us know. Thanks very much.
-
-[1] =E2=80=9CINFO: task hung in exit_mm=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3Ddd115babf1498c3370fab8758d58940b7c6b=
-ffa4
-
-[2] =E2=80=9CINFO: task hung in do_exit=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3D3e6c42e24155e5f0125368e609bee32f2b73=
-94fe
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
+Never mind, I have sent a v5 to deal with this problem. In v5, I made
+lapb_unregister wait for the "lapb" refcnt to drop, so that we can
+make sure all other API calls have finished. Please see my v5.
