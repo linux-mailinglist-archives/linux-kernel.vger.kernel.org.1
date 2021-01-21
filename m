@@ -2,177 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200722FF349
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F8D2FF348
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728927AbhAUSgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
+        id S1728705AbhAUSfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728778AbhAUS21 (ORCPT
+        with ESMTP id S1729326AbhAUSbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:28:27 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFACAC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:27:36 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id g69so2400725oib.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:27:36 -0800 (PST)
+        Thu, 21 Jan 2021 13:31:11 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E33C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:30:30 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id r32so2982769ybd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:30:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/H0aoheHseHt1sjJzu2klJDRMVHnD4hrW5WhfCcGaHk=;
-        b=lbuk4UssK7pPAYl0GKPLzyxB2YaAQmS9WYAZyDpzmzfOFSRSLZrrSwosjlJE/bnvmq
-         FVc+QjyPB1fd1h0Pwzk+SvnJSeTDkgolSVGr6yjJfMZ+ffGZ2+rGevk97sGCOhZT9Tyh
-         X8JkW0ilzpDbaYjo5d7VUtRmDmsQDF1maqcPU=
+         :cc;
+        bh=ZMx/E/2jxeFQ/OIv6Rd62p8bKvIIXSarZZ/uxbDSpwY=;
+        b=pB8CSuCQ1t5NAIwfgQPsRbm4+N0eqdS2xb3sYibQkm9BQS2mwqlUtyPpO6iLIpNvTf
+         ka2NAi+p0KSBwruk+USrd4lKF2udHHqkPF0ROeViCgN+c39XCGmlkVQrEnBDBBfQb1Rg
+         jP8JiSiRCC6E5j7+BBHU/UFYNf7FaNMZNfB0EbDL8QQf4rIGpMEWlKackhI+O0PYy7/V
+         Wk0AsR7mxPL1ZgKcB7pW6DIXFGPDn2CG7XE3S4u+4mHhCA7Xy7EQC+JAgzutVdOnplRI
+         joaAAbzHTBkH+075AARQ5Rv/iJXt2YomkRDsTnU502319R63zcWAh7Zb47O8SRgVGtv+
+         Oelg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/H0aoheHseHt1sjJzu2klJDRMVHnD4hrW5WhfCcGaHk=;
-        b=CBi1YKc6hX/TzyOPzkCfDT+S5DZ0dozMAm/QYdpScmlx3EUM61w7jxcYtOHEzfXz4m
-         Thxxq0cgFm72JSr/BiZCFHIrGZf+BZlCGcWVPcphdzoI8dSpwLr8W0U8xpoM1pYn1h1G
-         DRZUke5XOjHkUx8S3sSsUROdN1zFaV2X+v2n8faSWIc9P0ZzFuzxhyvHr+168KZ+Vz5j
-         0d4NqAsIUZTZMUvOOQGD7qc14qnpZ4PY4hx5tfILFjEHqu/och7in7lCOUFuBIGFtvsc
-         ibAFWoSEmECXdP5yidFGqwW+5uAS6jW9YzeYop3t+VwqljX3lLtubzWVafhYizsASV9q
-         CfiQ==
-X-Gm-Message-State: AOAM531/c3i7n4Bilo7QF4cVcjopazfy0Sdg2x+EjICaA07YRBJ0NtJv
-        xqrtAxMFea917JizEBdGXJAkgM9v2auXlW4GdYqLYQ==
-X-Google-Smtp-Source: ABdhPJyxZe12HyY9+PM04dG1ImqNmTiEYnWcS1P+uLp55HzlWuLXv5Bm+BIKd2BL818abya33PUOGCkFjZLucsLjBEQ=
-X-Received: by 2002:aca:1906:: with SMTP id l6mr615820oii.101.1611253656345;
- Thu, 21 Jan 2021 10:27:36 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=ZMx/E/2jxeFQ/OIv6Rd62p8bKvIIXSarZZ/uxbDSpwY=;
+        b=ITasInqBHng6LSumGgRwW0MB35SoeN1Dv9J366j3OECjoMEZLN2g7VFhni8Aupx/sm
+         OX/CXb6Uf1eaxPEiGRwVMxcLuj9GZ/tzcL6fwo1Pexb5S5bItgVN1f7nQwMLAWvXnfWq
+         Sw92rWESQNx2PzfvkVI5+h3TGP1HK7ky09xuvId2LXoy2FXyiCi4Kv/YlXxxXx7hVWXs
+         c9diebO0kuQymtvd6CSNjkpir/nBpQH8T/dRjTDFrayuPr3dxVeLmXUX+QyYo6rchHrz
+         ne9Io3QMeP1NjmGzSftCiRVjDQIPmYxVqeHLZf/ilEj0w7WOf8ddP3XcR/f3fKYf7r5R
+         yYsw==
+X-Gm-Message-State: AOAM532TiZL4U93Ux1d2e/cBN2WJw8gH4YfyFMryxIftYRQml4hlx/qe
+        Y/GtkYhKecEF9C+GS1fYwymeqdqI7dbS1b90l8Wsog==
+X-Google-Smtp-Source: ABdhPJwnZpmvD+AZqcXVdjUOu32h6NtnBg2N1jGh81MiZd0VG0aCJtfW7+8+aKL/Muz7mdDJKzVA4r+78/0mqdECUOs=
+X-Received: by 2002:a25:dfcb:: with SMTP id w194mr883475ybg.346.1611253829911;
+ Thu, 21 Jan 2021 10:30:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121163537.1466118-1-maxime@cerno.tech> <20210121163537.1466118-11-maxime@cerno.tech>
-In-Reply-To: <20210121163537.1466118-11-maxime@cerno.tech>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 21 Jan 2021 19:27:25 +0100
-Message-ID: <CAKMK7uHEnsZty40YOc+ySDwJLkGWm0aPaTKDvecnymVX4yLjAA@mail.gmail.com>
-Subject: Re: [PATCH v2 11/11] drm/todo: Remove the drm_atomic_state todo item
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210120080522.471120-1-saravanak@google.com> <20210120080522.471120-2-saravanak@google.com>
+ <CACRpkdbEC6duR=fJQD_Nw9o=HW0DEe2_Ks3SYCgJmkOjzKz3Jg@mail.gmail.com>
+In-Reply-To: <CACRpkdbEC6duR=fJQD_Nw9o=HW0DEe2_Ks3SYCgJmkOjzKz3Jg@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 21 Jan 2021 10:29:54 -0800
+Message-ID: <CAGETcx9HFtnuA=XDdbXOq+HEEkbtpQ7J7Nz4uTWhoswZbHpsfw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] of: property: Add fw_devlink support for "gpio"
+ and "gpios" binding
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 5:36 PM Maxime Ripard <maxime@cerno.tech> wrote:
+On Thu, Jan 21, 2021 at 5:11 AM Linus Walleij <linus.walleij@linaro.org> wrote:
 >
-> Only planes' prepare_fb and cleanup_fb, and encoders' atomic_check and
-> atomic_mode_set hooks remain with an object state and not the global
-> drm_atomic_state.
+> On Wed, Jan 20, 2021 at 9:05 AM Saravana Kannan <saravanak@google.com> wrote:
 >
-> prepare_fb and cleanup_fb operate by design on a given state and
-> depending on the calling site can operate on either the old or new
-> state, so it doesn't really make much sense to convert them.
+> > To provide backward compatibility for boards that use deprecated DT
+> > bindings, we need to add fw_devlink support for "gpio" and "gpios".
 >
-> The encoders' atomic_check and atomic_mode_set operate on the CRTC and
-> connector state connected to them since encoders don't have a state of
-> their own. Without those state pointers, we would need to get the CRTC
-> through the drm_connector_state crtc pointer.
->
-> However, in order to get the drm_connector_state pointer, we would need
-> to get the connector itself and while usually we have a single connector
-> connected to the encoder, we can't really get it from the encoder at
-> the moment since it could be behind any number of bridges.
->
-> While this could be addressed by (for example) listing all the
-> connectors and finding the one that has the encoder as its source, it
-> feels like an unnecessary rework for something that is slowly getting
-> replaced by bridges.
->
-> Since all the users that matter have been converted, let's remove the
-> TODO item.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> You do some more stuff in the patch so describe that too.
+> Especially the check for hogs and #gpio-cells.
+> Describe why you do that. Maybe even with a comment in
+> the code because I don't think everyone will understand.
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Ack
 
 >
-> ---
+> > +       if (strcmp(prop_name, "gpio") && strcmp(prop_name, "gpios"))
+> > +               return NULL;
 >
-> Changes from v1:
->   - New patch
-> ---
->  Documentation/gpu/todo.rst | 46 --------------------------------------
->  1 file changed, 46 deletions(-)
+> This part is easy to understand.
 >
-> diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-> index 009d8e6c7e3c..609794108f5a 100644
-> --- a/Documentation/gpu/todo.rst
-> +++ b/Documentation/gpu/todo.rst
-> @@ -440,52 +440,6 @@ Contact: Emil Velikov, respective driver maintainers
+> > +       if (of_find_property(np, "gpio-hog", NULL))
+> > +               return NULL;
+> > +
+> > +       if (of_parse_phandle_with_args(np, prop_name, "#gpio-cells", index,
+> > +                                      &sup_args))
+> > +               return NULL;
 >
->  Level: Intermediate
->
-> -Plumb drm_atomic_state all over
-> --------------------------------
-> -
-> -Currently various atomic functions take just a single or a handful of
-> -object states (eg. plane state). While that single object state can
-> -suffice for some simple cases, we often have to dig out additional
-> -object states for dealing with various dependencies between the individu=
-al
-> -objects or the hardware they represent. The process of digging out the
-> -additional states is rather non-intuitive and error prone.
-> -
-> -To fix that most functions should rather take the overall
-> -drm_atomic_state as one of their parameters. The other parameters
-> -would generally be the object(s) we mainly want to interact with.
-> -
-> -For example, instead of
-> -
-> -.. code-block:: c
-> -
-> -   int (*atomic_check)(struct drm_plane *plane, struct drm_plane_state *=
-state);
-> -
-> -we would have something like
-> -
-> -.. code-block:: c
-> -
-> -   int (*atomic_check)(struct drm_plane *plane, struct drm_atomic_state =
-*state);
-> -
-> -The implementation can then trivially gain access to any required object
-> -state(s) via drm_atomic_get_plane_state(), drm_atomic_get_new_plane_stat=
-e(),
-> -drm_atomic_get_old_plane_state(), and their equivalents for
-> -other object types.
-> -
-> -Additionally many drivers currently access the object->state pointer
-> -directly in their commit functions. That is not going to work if we
-> -eg. want to allow deeper commit pipelines as those pointers could
-> -then point to the states corresponding to a future commit instead of
-> -the current commit we're trying to process. Also non-blocking commits
-> -execute locklessly so there are serious concerns with dereferencing
-> -the object->state pointers without holding the locks that protect them.
-> -Use of drm_atomic_get_new_plane_state(), drm_atomic_get_old_plane_state(=
-),
-> -etc. avoids these problems as well since they relate to a specific
-> -commit via the passed in drm_atomic_state.
-> -
-> -Contact: Ville Syrj=C3=A4l=C3=A4, Daniel Vetter
-> -
-> -Level: Intermediate
-> -
->  Use struct dma_buf_map throughout codebase
->  ------------------------------------------
->
-> --
-> 2.29.2
->
+> This part is hard to understand. Insert comments and tell the reader
+> of the code what is going on and why.
+
+I assume the "hard to understand" part is the gpio-hog part? Because
+the last line is pretty straightforward -- it's returning the index-th
+phandle. Also, it's a copy-paste from the DEFINE_SIMPLE_PROP macro.
 
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+-Saravana
