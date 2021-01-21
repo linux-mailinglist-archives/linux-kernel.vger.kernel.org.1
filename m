@@ -2,84 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AB82FE73F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929242FE744
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbhAUKNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:13:14 -0500
-Received: from mga11.intel.com ([192.55.52.93]:32295 "EHLO mga11.intel.com"
+        id S1728913AbhAUKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:14:19 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:57799 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729034AbhAUKMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:12:41 -0500
-IronPort-SDR: E6niDBA9gJTR7cvOBw2U+P6ivJbBPcOML8s+sGe5mUsrNi2ZWdi5xELpspnbfh8dIzs+I0rUQF
- bWAtEB4b1UKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="175740727"
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="175740727"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:10:46 -0800
-IronPort-SDR: uSMUMKGDE8CjOR1D9RKRhatqrMNNcGkc1dDf6wcc56HUsKxyho4JA6fGSyYp8chHGIq7ViYfus
- B6Br5TKGIJRA==
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="356407175"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:10:44 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2WwM-007MxW-HN; Thu, 21 Jan 2021 12:11:46 +0200
-Date:   Thu, 21 Jan 2021 12:11:46 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Oh Eomji <eomji.oh@samsung.com>
-Cc:     balbi@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: f_mass_storage: cahnge wait_event to
- wait_event_timeout
-Message-ID: <YAlTYvi538xtAobf@smile.fi.intel.com>
-References: <eomji.oh@samsung.com>
- <CGME20210121070836epcas2p130c0f62d82aa3fcd2e021a1ef88a7ebd@epcas2p1.samsung.com>
- <1611212208-84202-1-git-send-email-eomji.oh@samsung.com>
+        id S1728469AbhAUKMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:12:51 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DLyqV31mGz9v6LW;
+        Thu, 21 Jan 2021 11:12:06 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id zxJatTC41KQg; Thu, 21 Jan 2021 11:12:06 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLyqV20H6z9v6LV;
+        Thu, 21 Jan 2021 11:12:06 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 745508B7F9;
+        Thu, 21 Jan 2021 11:12:07 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ktfuIS4yHAOi; Thu, 21 Jan 2021 11:12:07 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F11788B771;
+        Thu, 21 Jan 2021 11:12:06 +0100 (CET)
+Subject: Re: [PATCH 1/2] crypto: talitos - Work around SEC6 ERRATA (AES-CTR
+ mode data size error)
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>
+References: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
+ <CAMj1kXE7B05eAnR7KoDCym09Cw5qnzrV8KfNT2zJrko+mFic+w@mail.gmail.com>
+ <6b804eff-bc9f-5e05-d479-f398de4e2b30@csgroup.eu>
+ <CAMj1kXHz8LdDgfOcifcB-MBMM9-TbymOU_psT3JBFQfyvQ=EjQ@mail.gmail.com>
+ <ecdd07b3-afca-7e26-b6b6-3a3a985bc5a1@csgroup.eu>
+ <CAMj1kXFNZba9T45RaB_W58Z+4sdAyUDVJM_ZZPk+Y6Mf9DZUQw@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <80ea6d2d-c29e-0c4c-9402-76579fe1eef9@csgroup.eu>
+Date:   Thu, 21 Jan 2021 11:12:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611212208-84202-1-git-send-email-eomji.oh@samsung.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAMj1kXFNZba9T45RaB_W58Z+4sdAyUDVJM_ZZPk+Y6Mf9DZUQw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 03:56:45PM +0900, Oh Eomji wrote:
-> Changed to return a timeout error if there is no response for a certain
-> period of time in order to solve the problem of waiting for a event
-> complete while executing unbind.
 
-Can you shed a light on the choice of the timeout length?
 
-> Signed-off-by: Oh Eomji <eomji.oh@samsung.com>
-> ---
->  drivers/usb/gadget/function/f_mass_storage.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Le 21/01/2021 à 11:02, Ard Biesheuvel a écrit :
+> On Thu, 21 Jan 2021 at 10:54, Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 21/01/2021 à 08:31, Ard Biesheuvel a écrit :
+>>> On Thu, 21 Jan 2021 at 06:35, Christophe Leroy
+>>> <christophe.leroy@csgroup.eu> wrote:
+>>>>
+>>>>
+>>>>
+>>>> Le 20/01/2021 à 23:23, Ard Biesheuvel a écrit :
+>>>>> On Wed, 20 Jan 2021 at 19:59, Christophe Leroy
+>>>>> <christophe.leroy@csgroup.eu> wrote:
+>>>>>>
+>>>>>> Talitos Security Engine AESU considers any input
+>>>>>> data size that is not a multiple of 16 bytes to be an error.
+>>>>>> This is not a problem in general, except for Counter mode
+>>>>>> that is a stream cipher and can have an input of any size.
+>>>>>>
+>>>>>> Test Manager for ctr(aes) fails on 4th test vector which has
+>>>>>> a length of 499 while all previous vectors which have a 16 bytes
+>>>>>> multiple length succeed.
+>>>>>>
+>>>>>> As suggested by Freescale, round up the input data length to the
+>>>>>> nearest 16 bytes.
+>>>>>>
+>>>>>> Fixes: 5e75ae1b3cef ("crypto: talitos - add new crypto modes")
+>>>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>>>
+>>>>> Doesn't this cause the hardware to write outside the given buffer?
+>>>>
+>>>>
+>>>> Only the input length is modified. Not the output length.
+>>>>
+>>>> The ERRATA says:
+>>>>
+>>>> The input data length (in the descriptor) can be rounded up to the nearest 16B. Set the
+>>>> data-in length (in the descriptor) to include X bytes of data beyond the payload. Set the
+>>>> data-out length to only output the relevant payload (don't need to output the padding).
+>>>> SEC reads from memory are not destructive, so the extra bytes included in the AES-CTR
+>>>> operation can be whatever bytes are contiguously trailing the payload.
+>>>
+>>> So what happens if the input is not 16 byte aligned, and rounding it
+>>> up causes it to extend across a page boundary into a page that is not
+>>> mapped by the IOMMU/SMMU?
+>>>
+>>
+>> What is the IOMMU/SMMU ?
+>>
+>> The mpc8xx, mpc82xx and mpc83xx which embed the Talitos Security Engine don't have such thing, the
+>> security engine uses DMA and has direct access to the memory bus for reading and writing.
+>>
 > 
-> diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
-> index 950c943..b474840 100644
-> --- a/drivers/usb/gadget/function/f_mass_storage.c
-> +++ b/drivers/usb/gadget/function/f_mass_storage.c
-> @@ -3000,7 +3000,7 @@ static void fsg_unbind(struct usb_configuration *c, struct usb_function *f)
->  	if (fsg->common->fsg == fsg) {
->  		__raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE, NULL);
->  		/* FIXME: make interruptible or killable somehow? */
-> -		wait_event(common->fsg_wait, common->fsg != fsg);
-> +		wait_event_timeout(common->fsg_wait, common->fsg != fsg, HZ / 4);
->  	}
->  
->  	usb_free_all_descriptors(&fsg->function);
-> -- 
-> 2.7.4
+> OK, good. So the only case where this could break is when the DMA
+> access spills over into a page that does not exist, and I suppose this
+> could only happen if the transfer involves a buffer located at the
+> very top of DRAM, right?
 > 
 
--- 
-With Best Regards,
-Andy Shevchenko
+Right.
 
-
+Christophe
