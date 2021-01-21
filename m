@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FA32FF2C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2762FF2C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731872AbhAUSDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730887AbhAUNVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:21:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63753C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:20:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=63CLHf7zjvPRV1A3pYRsrLhDaACd8lpm/i6WY+5CgAk=; b=wVxb+uHqg27IQFOxXd2/qL+lRL
-        vrrzxnk//dCzxGYMHb9nsLxsE8JSRqiIYje7uvBHmLVX3SWqZPJXughCuXIuOUfMcTqr/XURvpnQ+
-        rAgnmI+H0mxx8MJECTsHng1BctQsop1yNph0NiK/0mIIY70FAHWvv8bU2tGD9wVF29Nfym9RFNkZv
-        ihyr00In6p2TvQKEqCtmDlUx1d1G+pARpKPTUZPTtDp3nSo0j3x8kCG8k/gI8WaVEsEeFA1XXZ2Vh
-        t2G9J0//LsOAB+pESddolU1cb6SUzje4XaReU5mul96Zxu4P6J9vhh+p0pPhkfVC438qOxf7Rqxxo
-        CK4uAVPQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2Zs4-00H5CZ-Nf; Thu, 21 Jan 2021 13:19:47 +0000
-Date:   Thu, 21 Jan 2021 13:19:32 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     akpm@linux-foundation.org, hch@lst.de, dja@axtens.net,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/vmalloc: Separate put pages and flush VM flags
-Message-ID: <20210121131932.GO2260413@casper.infradead.org>
-References: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
+        id S2389473AbhAUSCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:02:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388958AbhAURzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:55:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 414C621973;
+        Thu, 21 Jan 2021 17:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611251665;
+        bh=UoorRMvSGUceggy9m7jQ580i3cz0aYpDS1TAbvR/rEk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A08rRJRbcUEexudiHrvqmX6AgJwLL+HJOEIqjMdYrhGPSBMaRSmAp77HRfl/uEhJr
+         GDgqkSHYixgVJ6aZ3/d1//Rqo7o8dspi6AgBkV92oCVtU8OZWeDquOIjJBQlyHr9Jv
+         enuXyQFtAe1WvTAfA036bxCKVyOZtMOix7roLxWNR7rWsvWNXsmSt56F0bXEfuzusc
+         QjCarXuyOSzhmmsrD1QJxh3oASray65OGKXi5FJGAHdHBjt5uDnPGZOED7AjUNYlps
+         u58NTQShoDQr6IoCETUMwnJNU8EemE1sc/ErtHbnwHv4ZF969qqtAg1Ib3doLCmeSp
+         wp85wTVhx/DZg==
+Date:   Thu, 21 Jan 2021 17:54:20 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Theodore Ts'o <tytso@mit.edu>, Mark Brown <broonie@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 0/5] ARM: arm64: Add SMCCC TRNG entropy service
+Message-ID: <20210121175419.GA22963@willie-the-truck>
+References: <20210106103453.152275-1-andre.przywara@arm.com>
+ <161114590396.218530.9227813162726341261.b4-ty@kernel.org>
+ <CAMj1kXHW4gPdWXc93eAYpHNU3H+Whg-n2mcEKX=Zro0nANhgSg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
+In-Reply-To: <CAMj1kXHW4gPdWXc93eAYpHNU3H+Whg-n2mcEKX=Zro0nANhgSg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 05:41:18PM -0800, Rick Edgecombe wrote:
-> When VM_MAP_PUT_PAGES was added, it was defined with the same value as
-> VM_FLUSH_RESET_PERMS. This doesn't seem like it will cause any big
-> functional problems other than some excess flushing for VM_MAP_PUT_PAGES
-> allocations.
+On Wed, Jan 20, 2021 at 02:15:59PM +0100, Ard Biesheuvel wrote:
+> On Wed, 20 Jan 2021 at 14:01, Will Deacon <will@kernel.org> wrote:
+> >
+> > On Wed, 6 Jan 2021 10:34:48 +0000, Andre Przywara wrote:
+> > > a fix to v5, now *really* fixing the wrong priority of SMCCC vs. RNDR
+> > > in arch_get_random_seed_long_early(). Apologies for messing this up
+> > > in v5 and thanks to broonie for being on the watch!
+> > >
+> > > Will, Catalin: it would be much appreciated if you could consider taking
+> > > patch 1/5. This contains the common definitions, and is a prerequisite
+> > > for every other patch, although they are somewhat independent and likely
+> > > will need to go through different subsystems.
+> > >
+> > > [...]
+> >
+> > Applied the first patch only to arm64 (for-next/rng), thanks!
+> >
+> > [1/5] firmware: smccc: Add SMCCC TRNG function call IDs
+> >       https://git.kernel.org/arm64/c/67c6bb56b649
+> >
+> > What's the plan for the rest of the series, and I think the related
+> > change over at [1]?
+> >
 > 
-> Redefine VM_MAP_PUT_PAGES to have its own value. Also, move the comment
-> and remove whitespace for VM_KASAN such that the flags lower down are less
-> likely to be missed in the future.
+> Given that Ted seems to have lost interest in /dev/random patches, I
+> was hoping [1] could be taken via the arm64 tree instead. Without this
+> patch, I don't think we should expose the SMCCC RNG interface via
+> arch_get_random_seed(), given how insanely often it will be called in
+> that case.
 
-Er ... I think the problem was that VM_FLUSH_RESET_PERMS was put away from
-all the other flags!
+Ok, let's give that a shot -- I'll additionally pick patches 2 and 4 out
+of this series, and merge in the /dev/random change on its own branch in
+case there are any late objections.
 
-Why not this?
-
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 938eaf9517e26..458c41b99215e 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -24,7 +24,8 @@ struct notifier_block;		/* in notifier.h */
- #define VM_UNINITIALIZED	0x00000020	/* vm_struct is not fully initialized */
- #define VM_NO_GUARD		0x00000040      /* don't add guard page */
- #define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
--#define VM_MAP_PUT_PAGES	0x00000100	/* put pages and free array in vfree */
-+#define VM_FLUSH_RESET_PERMS	0x00000100      /* Reset direct map and flush TLB on unmap. cannot be freed in atomic context */
-+#define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
- 
- /*
-  * VM_KASAN is used slighly differently depending on CONFIG_KASAN_VMALLOC.
-@@ -37,12 +38,6 @@ struct notifier_block;		/* in notifier.h */
-  * determine which allocations need the module shadow freed.
-  */
- 
--/*
-- * Memory with VM_FLUSH_RESET_PERMS cannot be freed in an interrupt or with
-- * vfree_atomic().
-- */
--#define VM_FLUSH_RESET_PERMS	0x00000100      /* Reset direct map and flush TLB on unmap */
--
- /* bits [20..32] reserved for arch specific ioremap internals */
- 
- /*
-
+Will
