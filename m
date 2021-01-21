@@ -2,123 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5512FF5A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA21F2FF5BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbhAUUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:16:36 -0500
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:47056 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726674AbhAUUQI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:16:08 -0500
-Received: by mail-lf1-f47.google.com with SMTP id o10so4307671lfl.13;
-        Thu, 21 Jan 2021 12:15:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:to:cc:references:from:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=dVsjvKaCVwralxI5zARSOQQIxlzovaj1ya8SYQBcCCE=;
-        b=J6Wq1E/EcLyb7cZ7OVsTDBCxC4yMk1O2t7hb6NPvvMLv0rEHX2r9mIUbcsnBXDCL9d
-         f/eZfX4M549U4clI9R2knH98WYbS29Zjj4VTgrstkxrhlDqMky1oL1wkL1U0td1wg2++
-         F846LZYZsCYeqI6KkjKnapTmZK1rrEPemy9HI6qYNsYLhXsISabAmuzkuJScCUb2wJer
-         DwI6a+xSR5iwtj1DgmgjONoSbffTfxyXj5z9NrYe2fDo/dYFBbLEGAdY26jdNVBZckOa
-         NPEaIuiK+/HFsbOJxDWpUV/PlzL+uIxEHI3rUiURjW5WSGeE+5U1jzyL/6fdVQQ+DkKd
-         3tgQ==
-X-Gm-Message-State: AOAM533WFLsRm+7EpHE0ELmCcvmnriZAqjIDN39k+pXJwc8PwzzXMGlp
-        mjMcI2gWr/CQCJNtqAvg+Ec=
-X-Google-Smtp-Source: ABdhPJztUOXA2UEP44W6sfFicy+OUij/Vcd2aeJkNJaNKcmlgiV5wLM2KhltZLxQHfRAiYhBuIwy7w==
-X-Received: by 2002:a05:6512:20d2:: with SMTP id u18mr28647lfr.47.1611260124380;
-        Thu, 21 Jan 2021 12:15:24 -0800 (PST)
-Received: from [10.68.32.148] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id m12sm682023lji.110.2021.01.21.12.15.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 12:15:23 -0800 (PST)
-Reply-To: efremov@linux.com
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Gaurav Kohli <gkohli@codeaurora.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org,
-        Julia Lawall <julia.lawall@inria.fr>
-References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
- <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
- <20210121140951.2a554a5e@gandalf.local.home>
-From:   Denis Efremov <efremov@linux.com>
-Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
-Message-ID: <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
-Date:   Thu, 21 Jan 2021 23:15:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727069AbhAUUVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:21:02 -0500
+Received: from mga04.intel.com ([192.55.52.120]:49885 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726987AbhAUUTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:19:13 -0500
+IronPort-SDR: EdP40jXPw+KKSV3cqCCoVhFR0wuD/kbzmYahGjOhdWGHqM0tcOXfR6ncx1qqB99ytQSnFcD+QI
+ v2h7TbUiuFdg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="176764782"
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="176764782"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 12:16:26 -0800
+IronPort-SDR: Xeb6GP6QHS5E+NUN4IsRGZ97r6GOsWNpHXOAkde9SaUDTqrCmzanAvvZHRo2+bsJULzAS4gGR+
+ RVNS7GFSD8vw==
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="385443835"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.46.254]) ([10.209.46.254])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 12:16:24 -0800
+Subject: Re: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-9-yu-cheng.yu@intel.com>
+ <20210121184405.GE32060@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <b4d4bec7-504e-2443-4cf3-0801b179000f@intel.com>
+Date:   Thu, 21 Jan 2021 12:16:23 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210121140951.2a554a5e@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210121184405.GE32060@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/21/21 10:09 PM, Steven Rostedt wrote:
-> On Thu, 21 Jan 2021 17:30:40 +0300
-> Denis Efremov <efremov@linux.com> wrote:
+On 1/21/2021 10:44 AM, Borislav Petkov wrote:
+> On Tue, Dec 29, 2020 at 01:30:35PM -0800, Yu-cheng Yu wrote:
+[...]
+>> @@ -343,6 +349,16 @@ static inline pte_t pte_mkold(pte_t pte)
+>>   
+>>   static inline pte_t pte_wrprotect(pte_t pte)
+>>   {
+>> +	/*
+>> +	 * Blindly clearing _PAGE_RW might accidentally create
+>> +	 * a shadow stack PTE (RW=0, Dirty=1).  Move the hardware
+>> +	 * dirty value to the software bit.
+>> +	 */
+>> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
+>> +		pte.pte |= (pte.pte & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
 > 
->> Hi,
->>
->> This patch (CVE-2020-27825) was tagged with
->> Fixes: b23d7a5f4a07a ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
->>
->> I'm not an expert here but it seems like b23d7a5f4a07a only refactored
->> ring_buffer_reset_cpu() by introducing reset_disabled_cpu_buffer() without
->> significant changes. Hence, mutex_lock(&buffer->mutex)/mutex_unlock(&buffer->mutex)
->> can be backported further than b23d7a5f4a07a~ and to all LTS kernels. Is
->> b23d7a5f4a07a the actual cause of the bug?
->>
+> Why the unreadable shifting when you can simply do:
 > 
-> Ug, that looks to be a mistake. Looking back at the thread about this:
+>                  if (pte.pte & _PAGE_DIRTY)
+>                          pte.pte |= _PAGE_COW;
 > 
->   https://lore.kernel.org/linux-arm-msm/20200915141304.41fa7c30@gandalf.local.home/
+> ?
 
-I see from the link that it was planned to backport the patch to LTS kernels:
+It clears _PAGE_DIRTY and sets _PAGE_COW.  That is,
 
-> Actually we are seeing issue in older kernel like 4.19/4.14/5.4 and there below patch was not 
-> present in stable branches:
-> Commit b23d7a5f4a07 ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
+if (pte.pte & _PAGE_DIRTY) {
+	pte.pte &= ~_PAGE_DIRTY;
+	pte.pte |= _PAGE_COW;
+}
 
-The point is that it's not backported yet. Maybe because of Fixes tag. I've discovered
-this while trying to formalize CVE-2020-27825 bug in cvehound
-https://github.com/evdenis/cvehound/blob/master/cvehound/cve/CVE-2020-27825.cocci
+So, shifting makes resulting code more efficient.
 
-I think that the backport to the 4.4+ should be something like:
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 547a3a5ac57b..2171b377bbc1 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -4295,6 +4295,8 @@ void ring_buffer_reset_cpu(struct ring_buffer *buffer, int cpu)
- 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
- 		return;
- 
-+	mutex_lock(&buffer->mutex);
-+
- 	atomic_inc(&buffer->resize_disabled);
- 	atomic_inc(&cpu_buffer->record_disabled);
- 
-@@ -4317,6 +4319,8 @@ void ring_buffer_reset_cpu(struct ring_buffer *buffer, int cpu)
- 
- 	atomic_dec(&cpu_buffer->record_disabled);
- 	atomic_dec(&buffer->resize_disabled);
-+
-+	mutex_unlock(&buffer->mutex);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
- 
-
-Thanks,
-Denis
-
-
-
-
-
+>> @@ -434,16 +469,40 @@ static inline pmd_t pmd_mkold(pmd_t pmd)
+>>   
+>>   static inline pmd_t pmd_mkclean(pmd_t pmd)
+>>   {
+>> -	return pmd_clear_flags(pmd, _PAGE_DIRTY);
+>> +	return pmd_clear_flags(pmd, _PAGE_DIRTY_BITS);
+>>   }
+>>   
+>>   static inline pmd_t pmd_wrprotect(pmd_t pmd)
+>>   {
+>> +	/*
+>> +	 * Blindly clearing _PAGE_RW might accidentally create
+>> +	 * a shadow stack PMD (RW=0, Dirty=1).  Move the hardware
+>> +	 * dirty value to the software bit.
+>> +	 */
+>> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
+>> +		pmdval_t v = native_pmd_val(pmd);
+>> +
+>> +		v |= (v & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
+> 
+> As above.
+> 
+>> @@ -488,17 +554,35 @@ static inline pud_t pud_mkold(pud_t pud)
+>>   
+>>   static inline pud_t pud_mkclean(pud_t pud)
+>>   {
+>> -	return pud_clear_flags(pud, _PAGE_DIRTY);
+>> +	return pud_clear_flags(pud, _PAGE_DIRTY_BITS);
+>>   }
+>>   
+>>   static inline pud_t pud_wrprotect(pud_t pud)
+>>   {
+>> +	/*
+>> +	 * Blindly clearing _PAGE_RW might accidentally create
+>> +	 * a shadow stack PUD (RW=0, Dirty=1).  Move the hardware
+>> +	 * dirty value to the software bit.
+>> +	 */
+>> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
+>> +		pudval_t v = native_pud_val(pud);
+>> +
+>> +		v |= (v & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
+> 
+> Ditto.
+> 
+>> @@ -1131,6 +1222,12 @@ extern int pmdp_clear_flush_young(struct vm_area_struct *vma,
+>>   #define pmd_write pmd_write
+>>   static inline int pmd_write(pmd_t pmd)
+>>   {
+>> +	/*
+>> +	 * If _PAGE_DIRTY is set, then the PMD must either have _PAGE_RW or
+>> +	 * be a shadow stack PMD, which is logically writable.
+>> +	 */
+>> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK))
+>> +		return pmd_flags(pmd) & (_PAGE_RW | _PAGE_DIRTY);
+> 
+> 	else
+> 
+> 
+>>   	return pmd_flags(pmd) & _PAGE_RW;
+>>   }
+>>  
