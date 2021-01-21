@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1F72FE0EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E512FE118
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731204AbhAUEmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:42:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726753AbhAUElE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:41:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5004E238EB;
-        Thu, 21 Jan 2021 04:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611204022;
-        bh=uqaKgj8ERy+L2vgyvOGN9yOlUjntHTGqoSn1YcsOB4A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ChtW9EXEiiWJxlBj7fuIxQ7XefenOGQVnbZqWkrO87TFGKbgemZLagxOHaZk/4kka
-         wxn06cX0D3wv2w38+MTLz5PH0TMf+N8DTO/XWbcON0F0f5bgamdV7Y8iMGdk/AMorf
-         t3fgbd4G1m86rNagSTgGmIhTRUnzUIT3hpT1e57SJdix3NxDf7Ncdb5bt0DxSNpxJO
-         9mH00TP+bdGAuuW1b2I6VsPAnURpTfX+lcNsBa+Gka2wdFHnJ2qDOK+RmOIoSlYe54
-         u0jEVjLSe6PRr7h3UsAwBv+4mGImUl/2QU2+2cnJhs2YaoToBeVf93khK4kLQnQhEp
-         e9UDpSh9Drs9w==
-Received: by mail-lf1-f53.google.com with SMTP id v24so717272lfr.7;
-        Wed, 20 Jan 2021 20:40:22 -0800 (PST)
-X-Gm-Message-State: AOAM533GtWUJa27noS14tDl2kUVw8BuM9+Bde9aYe9sSSMrLLcxIlMLX
-        +q7etbmVIcd+t92Yz8El6cueZbKdMOcDCgS4R/Y=
-X-Google-Smtp-Source: ABdhPJy8qhijve3RxQKPzmAsfsPdPAN5DUoEmElkmffNcBcnxlrBtAU2YthDmaPnmQr4komT5WSroZndwC/ucSf4o2w=
-X-Received: by 2002:a19:810:: with SMTP id 16mr5771851lfi.233.1611204020484;
- Wed, 20 Jan 2021 20:40:20 -0800 (PST)
+        id S1726718AbhAUEvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:51:37 -0500
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:41723 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729117AbhAUEpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 23:45:06 -0500
+Received: by mail-lj1-f176.google.com with SMTP id f11so998957ljm.8;
+        Wed, 20 Jan 2021 20:44:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=f9bbvmIOKEeCYUQRPFOOVdYth7vYiJBVFzn7Om7oKyw=;
+        b=O89m19fCyCQLTYQdq7l+ECZRc3H7VhzvSRG39/LgsDfhTsDs0op2mLQ89BJeM7lQWI
+         mlZa+rIB8ljR2VU7UBxSwb2B6GpcHESoKInye0P0HUb9o2oLx7qw8VLnPKE0dcWFgglz
+         yql+C/NYsxvfcGatN2Y6KKRnK0u5eNFlKADRANLRurakh4GF/a6BRUj1jW4hVTrq5asc
+         n2TfEzH/lwozcExON3i+n+AM8JO6VLcK8wy3s1VQGUR7kr/eRb0baykWl8p9bg0p5SWl
+         CPvMEkhlfJ2PwjbtPA3MM6awu/SsHKJp/8sJ92CNoCoPl4/WsGRQa4seXNLVbOnupYaW
+         53gg==
+X-Gm-Message-State: AOAM531iVMqE5Bdz5xBD8LTLRnlF1OUOmAD8fPV7CSMw4ubUKWzCkYaV
+        pUr3rlbT+5Llt0LoyFs1B58chXyX5is=
+X-Google-Smtp-Source: ABdhPJxOqw3xd1Tos0Qlvw4CbA4x84U4Vgw6vdbsiB8+EeqtZIbskGJAeLl/ya7StQa9SC8jVVjbMw==
+X-Received: by 2002:a05:651c:1398:: with SMTP id k24mr6085638ljb.30.1611204262043;
+        Wed, 20 Jan 2021 20:44:22 -0800 (PST)
+Received: from [10.68.32.148] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id b31sm434380ljf.38.2021.01.20.20.44.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 20:44:21 -0800 (PST)
+Reply-To: efremov@linux.com
+Subject: Re: [PATCH RESEND] floppy: fix open(O_ACCMODE) for ioctl-only open
+To:     Jiri Kosina <jikos@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Wim Osterholt <wim@djo.tudelft.nl>
+References: <20160610230255.GA27770@djo.tudelft.nl>
+ <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm>
+ <20160614184308.GA6188@djo.tudelft.nl>
+ <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm>
+ <20160615132040.GZ14480@ZenIV.linux.org.uk>
+ <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm>
+ <20160615224722.GA9545@djo.tudelft.nl>
+ <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm>
+ <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm>
+ <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
+ <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <5cb57175-7f0b-5536-925d-337241bcda93@linux.com>
+Date:   Thu, 21 Jan 2021 07:44:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20200902181234.13955-1-lindsey.stanpoor@gmail.com>
- <CAEr9=gsH2UhjMO_55FKmGKS0DYrT_-XKf0iwCKCNc93epbiXNw@mail.gmail.com>
- <87ft5ly5nh.fsf@kernel.org> <CAEr9=gsc0L=rn5YDLrArqbOMSt25HhHF7cwhp7sxdPa6-PQGpg@mail.gmail.com>
-In-Reply-To: <CAEr9=gsc0L=rn5YDLrArqbOMSt25HhHF7cwhp7sxdPa6-PQGpg@mail.gmail.com>
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Thu, 21 Jan 2021 12:40:09 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64L94oudNnjhumEE6P6B=MjyOpmbYuZFfDc-fDDBZ_+jQ@mail.gmail.com>
-Message-ID: <CAGb2v64L94oudNnjhumEE6P6B=MjyOpmbYuZFfDc-fDDBZ_+jQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] dt-bindings: usb: add rk3328 dwc3 docs
-To:     Lindsey Stanpoor <lindsey.stanpoor@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        cnemo@tutanota.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:30 PM Lindsey Stanpoor
-<lindsey.stanpoor@gmail.com> wrote:
->
-> On Fri, Nov 6, 2020 at 11:42 PM Felipe Balbi <balbi@kernel.org> wrote:
-> >
-> >
-> > Hi,
-> >
-> > Lindsey Stanpoor <lindsey.stanpoor@gmail.com> writes:
-> > > On Wed, Sep 2, 2020 at 11:12 AM <lindsey.stanpoor@gmail.com> wrote:
-> > >>
-> > >> From: Cameron Nemo <cnemo@tutanota.com>
-> > >>
-> > >> Document compatible for dwc3 on the Rockchip rk3328 platform.
-> > >
-> > > Hi all,
-> > >
-> > > Wanted to give this patch submission a gentle ping.
-> > >
-> > > Rob Herring acked the documentation changes, but I have not heard
-> > > anything
-> > > from the USB or Rockchip maintainers. This patchset would facilitate USB3
-> > > support for Rockchip rk3328 devices like the Pine Rock64.
-> > >
-> > > If there is anything I can do to help move this along, please let me know.
-> >
-> > Sorry, it had fallen through the cracks. It's now in my testing/next.
->
-> Following up on this. Will this move out of your testing/next?
+Hi,
 
-The binding changes are likely stale now that the dwc3 binding has been
-converted to YAML. See Greg's USB tree.
+On 1/19/21 6:53 PM, Jiri Kosina wrote:
+> On Mon, 25 Jul 2016, Jens Axboe wrote:
+> 
+>>> From: Jiri Kosina <jkosina@suse.cz>
+>>>
+>>> Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
+>>> side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
+>>> this is being used setfdprm userspace for ioctl-only open().
+>>>
+>>> Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
+>>> modes, while still keeping the original O_NDELAY bug fixed.
+>>>
+>>> Cc: stable@vger.kernel.org # v4.5+
+>>> Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
+>>> Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
+>>> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+>>
+>> Added for this series, thanks.
+> 
+> [ CCing Denis too ]
+> 
+> Let me revive this 4 years old thread.
+> 
+> I've just now noticed that instead of my patch above being merged, what 
+> happened instead was
+> 
+> 	commit f2791e7eadf437633f30faa51b30878cf15650be
+> 	Author: Jens Axboe <axboe@fb.com>
+> 	Date:   Thu Aug 25 08:56:51 2016 -0600
+> 
+> 	    Revert "floppy: refactor open() flags handling"
+>     
+> 	    This reverts commit 09954bad448791ef01202351d437abdd9497a804.
+> 
+> 
+> which was plain revert of 09954bad4 (without any further explanation), 
+> which in turn reintroduced the O_NDELAY issue, and I've just been hit by 
+> it again.
+> 
+> I am not able to find any e-mail thread that'd indicate why ultimately 
+> revert happened, instead of mergin my fix.
 
-Also the DT changes should go through the arm-soc tree separately, so
-we can stack on additional changes enabling USB3 on other boards.
+I think it's hard to recall the exact reasons after so many years.
+I'll send a patch today based on this one.
 
-ChenYu
-
-
-
-> --
-> Cameron
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Best Regards,
+Denis
