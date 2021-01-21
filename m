@@ -2,92 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1C62FE777
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0AF2FE77C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729193AbhAUKXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:23:15 -0500
-Received: from mga03.intel.com ([134.134.136.65]:56036 "EHLO mga03.intel.com"
+        id S1729174AbhAUKY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:24:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:57996 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729214AbhAUKUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:20:43 -0500
-IronPort-SDR: 51fRsr49keQUVP/Sv0UmNEtwvoEvC3+KhUfIQLRicUBuYrZnVDPDp4yf90wLzksWBJWq5iqAwi
- Co2wTvWjR7kA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="179332589"
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="179332589"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:18:56 -0800
-IronPort-SDR: Eokc4XQnbp9MzSQi/L/39fhZWWjDql3WR7ucevTyf+OJ+D23NzyX6BvsX3dwqqwf0sqwyu96dt
- IqltuelJsLDw==
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="502108595"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:18:52 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2X4D-007NQN-Nc; Thu, 21 Jan 2021 12:19:53 +0200
-Date:   Thu, 21 Jan 2021 12:19:53 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH 2/6] bitmap: move some macros from linux/bitmap.h to
- linux/bitops.h
-Message-ID: <YAlVScX1d9KKvSZN@smile.fi.intel.com>
-References: <20210121000630.371883-1-yury.norov@gmail.com>
- <20210121000630.371883-3-yury.norov@gmail.com>
+        id S1729088AbhAUKXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:23:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2980CD6E;
+        Thu, 21 Jan 2021 02:22:05 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80C683F719;
+        Thu, 21 Jan 2021 02:22:03 -0800 (PST)
+Date:   Thu, 21 Jan 2021 10:22:01 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        Jonathan.Cameron@huawei.com, arnd@kernel.org, robh@kernel.org,
+        cristian.marussi@arm.com
+Subject: Re: [PATCH v4 2/2] firmware: arm_scmi: Add SCMI System Power Control
+ driver
+Message-ID: <20210121102145.GE23332@e120937-lin>
+References: <20210105130945.8192-1-cristian.marussi@arm.com>
+ <20210105130945.8192-2-cristian.marussi@arm.com>
+ <X/cw+7Uq+Slg45fe@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121000630.371883-3-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <X/cw+7Uq+Slg45fe@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 04:06:26PM -0800, Yury Norov wrote:
-> In the following patches of the series they are used by
-> find_bit subsystem.
+Hi Greg,
 
-s/subsystem/API/
+sorry for the delayed answer but this spawned a good deal of internal
+discussions.
 
-...
+On Thu, Jan 07, 2021 at 05:04:11PM +0100, Greg KH wrote:
+> On Tue, Jan 05, 2021 at 01:09:45PM +0000, Cristian Marussi wrote:
+> > diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> > index 3f14dffb9669..2b39453e9dd1 100644
+> > --- a/drivers/firmware/Kconfig
+> > +++ b/drivers/firmware/Kconfig
+> > @@ -40,6 +40,18 @@ config ARM_SCMI_POWER_DOMAIN
+> >  	  will be called scmi_pm_domain. Note this may needed early in boot
+> >  	  before rootfs may be available.
+> >  
+> > +config ARM_SCMI_POWER_CONTROL
+> > +	bool "SCMI system power control driver"
+> > +	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
+> > +	default n
+> 
+> n is always the default, no need to list it here.
+> 
+Ok
 
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -7,6 +7,17 @@
->  
->  #include <uapi/linux/kernel.h>
->  
-> +#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
-> +#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
+> > +	help
+> > +	  This enables System Power control logic which binds system shutdown or
+> > +	  reboot actions to SCMI System Power notifications generated by SCP
+> > +	  firmware.
+> > +
+> > +	  Graceful requests' methods and timeout and can be configured using
+> > +	  a few available module parameters.
+> > +
+> >  config ARM_SCPI_PROTOCOL
+> >  	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
+> >  	depends on ARM || ARM64 || COMPILE_TEST
+> > diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+> > index 6a2ef63306d6..ddddb4636ebd 100644
+> > --- a/drivers/firmware/arm_scmi/Makefile
+> > +++ b/drivers/firmware/arm_scmi/Makefile
+> > @@ -9,3 +9,4 @@ scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
+> >  		    $(scmi-transport-y)
+> >  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
+> >  obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
+> > +obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
+> > diff --git a/drivers/firmware/arm_scmi/scmi_power_control.c b/drivers/firmware/arm_scmi/scmi_power_control.c
+> > new file mode 100644
+> > index 000000000000..216c2f031111
+> > --- /dev/null
+> > +++ b/drivers/firmware/arm_scmi/scmi_power_control.c
+> > @@ -0,0 +1,359 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * SCMI Generic SystemPower Control driver.
+> > + *
+> > + * Copyright (C) 2020-2021 ARM Ltd.
+> > + */
+> > +/**
+> > + * DOC: Theory of operation
+> 
+> What does "DOC:" provide?  Did you tie this into the kernel doc build
+> system?  If not, then what is this tag for?
+>
+Right, it is not indeed tied into the kernel-doc build, I'll remove the
+tag.
 
-Hmm... Naming here is not in the bitops namespace.
-I would expect BITS rather than BITMAP for these two.
+> > + *
+> > + * In order to handle platform originated SCMI SystemPower requests (like
+> > + * shutdowns or cold/warm resets) we register an SCMI Notification notifier
+> > + * block to react when such SCMI SystemPower events are emitted.
+> > + *
+> > + * Once such a notification is received we act accordingly to perform the
+> > + * required system transition depending on the kind of request.
+> > + *
+> > + * By default graceful requests are routed to userspace through the same
+> > + * API methods (orderly_poweroff/reboot()) used by ACPI when handling ACPI
+> > + * Shutdown bus events: alternatively, by properly setting a couple of module
+> > + * parameters (scmi_graceful_*_signum), it is possible to choose to use signals
+> > + * to CAD pid as a mean to communicate such graceful requests to userspace.
+> > + *
+> > + * Forceful requests, instead, will simply cause an immediate emergency_sync()
+> > + * and subsequent Kernel-only shutdown/reboot.
+> > + *
+> > + * Additionally, setting scmi_graceful_request_tmo_ms to a non-zero value, it
+> > + * is possible to convert a timed-out graceful request to a forceful one.
+> > + *
+> > + * The assumption here is that even graceful requests can be upper-bound by a
+> > + * maximum final timeout strictly enforced by the platform itself which can
+> > + * ultimately cut the power off at will anytime: in order to avoid such extreme
+> > + * scenario, when scmi_graceful_request_tmo_ms is non-zero, we track progress of
+> > + * graceful requests through the means of a reboot notifier converting timed-out
+> > + * graceful requests to forceful ones: in such a way at least we perform a
+> > + * clean sync and shutdown/restart before the power is cut.
+> > + *
+> > + * Given that such platform hard-timeout, if present, is anyway highly platform
+> > + * and event specific and not exposed at run-time by the SCMI SytemPower
+> > + * protocol, the parameter scmi_graceful_request_tmo_ms defaults to zero.
+> > + */
+> > +
+> > +#define pr_fmt(fmt) "SCMI SystemPower - " fmt
+> 
+> drivers should not need this, and even if they do, that's a HUGE prefix,
+> be more terse please.  Always use dev_*() calls instead of pr_() as you
+> have access to a device at all times, right?  If not, then this isn't a
+> driver :)
+> 
 
-So, we have at least the following options:
- - split to a separate header, like bitmap_macros.h
- - s/BITMAP/BITS/ and either define BITMAP_* as respective BITS_* or rename it
-   everywhere in bitmap.*
- - your variant
- - ...???...
+Indeed I'm plenty of devices :D, I moved to pr_ when I started using
+common shared status (as you spotted below), I'll move back to dev_
 
+> > +enum scmi_syspower_state {
+> > +	SCMI_SYSPOWER_IDLE,
+> > +	SCMI_SYSPOWER_IN_PROGRESS,
+> > +	SCMI_SYSPOWER_REBOOTING
+> > +};
+> > +
+> > +static enum scmi_syspower_state scmi_state;
+> > +/* Protect access to scmi_state */
+> > +static DEFINE_MUTEX(scmi_state_mtx);
+> 
+> Why does this only handle "one" state and device?  Shouldn't this all be
+> per-device?
+> 
 
--- 
-With Best Regards,
-Andy Shevchenko
+This was made on purpose because you can have multiple chiplets/node on
+the system each one running it own SCMI platform fw described in the DT
+by distinct nodes and exposed via distinct SCMI buses with per-SCMI-protocol
+devices attached to each of them, so that every SCMI driver (like this one)
+can be indeed instantiated against multiple devices each one talking on
+distinct underlying transport channels: that's fine in general for other
+SCMI protocols BUT for this particular SystemPower protocol the OSPM is
+really interested to receive shutdown/reboot requests (notifications),
+so as soon as I received the first valid shudtwon/reboot request is game
+over for all: as a consequence I keep a shared state and once a valid
+reboot/shutdown is initiated any other following request from the same or
+other SCMI platforms is ignored. (that's also the reason I removed all the
+dynamic per-device data too and moved from dev_ to pr_...)
 
+NOW, even if all the above still holds true, after internal discussions
+turns out that we do not really want to promote a system design in which
+SystemPower requests can be emitted by multiple SCMI platforms because
+that would complicate a lot the fw design (each platform would have to
+sync with each other and shudown on their side too), but instead we want
+to encourage a SCMI system fw design in which only a master SCMI platform
+is in charge of communicating SystemPower notifications to the OSPM.
 
+For this reason, in the next V5 I'll take care, in a separate patch in
+this series, to enforce the creation of a single unique device dedicated
+to SystemPower across all the possible SCMI platforms (buses), or WARN
+otherwise when more SCMI platform are attempting to register SystemPower
+support, so that this driver will be effectively instantiated only once.
+
+> > +
+> > +static enum scmi_system_events scmi_required_transition = SCMI_SYSTEM_MAX;
+> > +
+> > +static unsigned int scmi_graceful_poweroff_signum;
+> > +static unsigned int scmi_graceful_reboot_signum;
+> > +static unsigned int scmi_graceful_request_tmo_ms;
+> 
+> why "unsigned int"?
+> 
+
+They represents timeouts and signals (positive values), but I'll remove
+them (see down below)
+
+> > +
+> > +static struct timer_list scmi_request_timer;
+> > +static struct work_struct scmi_forceful_work;
+> > +
+> > +/**
+> > + * scmi_reboot_notifier  - A reboot notifier to catch an ongoing successful
+> > + * system transition
+> > + * @nb: Reference to the related notifier block
+> > + * @reason: The reason for the ongoing reboot
+> > + * @__unused: The cmd being executed on a restart request (unused)
+> > + *
+> > + * When an ongoing system transition is detected, compatible with the one
+> > + * requested by SCMI, cancel the timer work.
+> > + * This is registered only when a valid SCMI SystemPower transition has been
+> > + * received and scmi_graceful_request_tmo_ms was non-zero.
+> > + *
+> > + * Return: NOTIFY_OK in any case
+> > + */
+> > +static int scmi_reboot_notifier(struct notifier_block *nb,
+> > +				unsigned long reason, void *__unused)
+> > +{
+> > +	mutex_lock(&scmi_state_mtx);
+> > +	switch (reason) {
+> > +	case SYS_HALT:
+> > +	case SYS_POWER_OFF:
+> > +		if (scmi_required_transition == SCMI_SYSTEM_SHUTDOWN)
+> > +			scmi_state = SCMI_SYSPOWER_REBOOTING;
+> > +		break;
+> > +	case SYS_RESTART:
+> > +		if (scmi_required_transition == SCMI_SYSTEM_COLDRESET ||
+> > +		    scmi_required_transition == SCMI_SYSTEM_WARMRESET)
+> > +			scmi_state = SCMI_SYSPOWER_REBOOTING;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	if (scmi_state == SCMI_SYSPOWER_REBOOTING) {
+> > +		pr_debug("Reboot in progress...cancel timer.\n");
+> 
+> use dev_dbg() and pass it your device pointer please.
+> 
+> Same for all usages of pr_*() in the driver.
+> 
+
+Ok
+
+> > +static int scmi_syspower_probe(struct scmi_device *sdev)
+> > +{
+> > +	int ret;
+> > +	struct scmi_handle *handle = sdev->handle;
+> > +	struct notifier_block *userspace_nb;
+> > +
+> > +	if (!handle)
+> > +		return -ENODEV;
+> > +
+> > +	userspace_nb = devm_kzalloc(&sdev->dev, sizeof(*userspace_nb),
+> > +				    GFP_KERNEL);
+> > +	if (!userspace_nb)
+> > +		return -ENOMEM;
+> > +
+> > +	userspace_nb->notifier_call = &scmi_userspace_notifier;
+> > +	ret = handle->notify_ops->register_event_notifier(handle,
+> > +						SCMI_PROTOCOL_SYSTEM,
+> > +					SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
+> > +					    NULL, userspace_nb);
+> 
+> Crazy indentation, checkpatch was ok with this?
+> 
+
+Yes, I check with --strict, but I agree it's awful I'll re-formmat
+
+> > +module_param(scmi_graceful_request_tmo_ms, uint, 0644);
+> > +MODULE_PARM_DESC(scmi_graceful_request_tmo_ms,
+> > +		 "Maximum time(ms) allowed to userspace for complying to the request. Unlimited if zero.");
+> > +
+> > +module_param(scmi_graceful_poweroff_signum, uint, 0644);
+> > +MODULE_PARM_DESC(scmi_graceful_poweroff_signum,
+> > +		 "Signal to request graceful poweroff to CAD process. Ignored if zero.");
+> > +
+> > +module_param(scmi_graceful_reboot_signum, uint, 0644);
+> > +MODULE_PARM_DESC(scmi_graceful_reboot_signum,
+> > +		 "Signal to request graceful reboot to CAD process. Ignored if zero.");
+> 
+> This is not the 1990's, please do not add module parameters.  Make this
+> "just work", or worst case, sysfs attributes.
+> 
+
+These optional parameters were meant to support: 
+
+- configurable timeouts for the grace shutdown requests
+  Here the assumption is that even a graceful shutdown request from the SCMI-fw
+  will be somehow upper-bound by the SCMI fw itself to a maximum timeout and
+  then a brutal powercut will be anyway served if userspace is lagging behing,
+  so in order to minimize possible corruption in this scenario I track the
+  reboot process with a reboot_notifier and issue an emergency_sync +
+  kernel shutdown/reboot when userspace is late and the timeout is hit.
+
+  Anyway, since this timeout is highly dependent on the specific SCMI fw
+  implementation and the specific event/cause for the request, it seemed to me
+  not sane that you had to guess such timeout in a module param indeed, so I
+  asked achitects to add such information to the SCMI SystenPower notification
+  payload itself so that can be generated and handled dynamically.
+
+  I'll drop this module param and stick to a very high fixed max timeout for now
+  and once the next SCMIvNN spec is released with this extension I'll add such
+  dynamic handling to this driver.
+                                                                                                                                                                                                                                                                                                                                                                                                                                         
+- an alternative way to pass graceful reboot/shutdwon requests to userspace
+  To support systems where the init process allows (like systemd) or expects to
+  receive some sort of signal to initiate reboot/shutdown instead of poweroff/
+  reboot_cmd as invoked by the kernel usermodehelper via orderly_reboot/poweroff
+  (like this driver and ACPI does by default)
+
+  Moving this to sysfs attributes would mean:
+                                                                                                                                                                                                                                                                                                                                                                                                                                         
+  - moving signals params to some higher-than-device-driver attrs groups
+  (class or bus) given that they are common to any instance of this driver
+
+  - exposing a new sysfs ABI for which I really do not have a real user at
+  the moment (but just hypotethical ones like systemd) and for an optionally
+  built driver like this, thing that I'm not sure is allowed at all.
+
+  So I'd drop this params and the alternative signal based communication
+  as a whole for the moment.
+
+This was supposed to be a concise summary of the why's, not sure to have
+been so concise :D
+
+Thanks
+
+Cristian
+
+> thanks,
+> 
+> greg k-h
