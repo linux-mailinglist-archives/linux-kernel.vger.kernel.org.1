@@ -2,86 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256002FED84
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDABF2FED90
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729301AbhAUOwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S1731615AbhAUOyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731020AbhAUOvD (ORCPT
+        with ESMTP id S1731472AbhAUOxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:51:03 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91058C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 06:50:23 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id 31so1391159plb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 06:50:23 -0800 (PST)
+        Thu, 21 Jan 2021 09:53:34 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DFEC061786;
+        Thu, 21 Jan 2021 06:52:51 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id v184so1781503wma.1;
+        Thu, 21 Jan 2021 06:52:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=A6/bA1MgplZUG26J8G5Fe59NQfim1BcuRy5CK9gZx1U=;
-        b=Fy4+3Ag3HLw5h41R0aJPqvEEDeIBHVKxNIYfA7ZgLQcBVuTi/skbW1/6nyy+eMsI1b
-         PbiNvWBLFObZH6xgWZbEcLgOih+Dfiqg/2wco7WZuJ0zJqdUauaWQfGGclFPPGgd1DMW
-         jImQv9/vqz1i7+0lYNsKNXjlspGE2HLu2BaF099X9T66EOeeYYYTMSUbP9hFTfaIjahx
-         Qr6iv8p/N4O6y4Mh9vFwenhn/yhpV/SUo1p9brFpAplLvTDtrvJHuRx2V502FBkzGi6A
-         WJKMWy2fy1x6dtcqSIeI4eHLqHvm+mTdMxYREKtokwNVaGVyq27uMAaDM75yMeO7yM3g
-         QlIQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PAuOHqNvw5LrpRMcJxDvIcXZ7AE5uKAtyIkRUHEvlHs=;
+        b=pabi6FPEw7Cq6K88ztgcFDlZU7ArdrS9Uqcg2TsmZLOCnmP+dYK5YcZ5soglaqF51y
+         kYyMVRtSjgUZzEJ/kKOyoJNAJ18NYGAvBETKo1aqsOwKPAH7OKfEBDVXun/VpDMiz9dB
+         791en1OGGNGAIIxsHSw0CUNf+hqJqoOVQ+7BegvKfkcxujP0EZJx1QStzsZkV8IF3vTT
+         6WBqnxqwTAQV8HlGi2zvebKra4YRZIz0vhX1u0lMJi0hONvTe9+27I91LNBl6uBNxegy
+         sPXYJTpkLxAZFLvXs7ZUO6ylCs/4Il90JSvt2TnGLTr4MUX9kCOwpbrdsMXTmDrFOolE
+         fs6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=A6/bA1MgplZUG26J8G5Fe59NQfim1BcuRy5CK9gZx1U=;
-        b=at/zx42O3c446wiMd4LsjDFArJevjN/Of3v7QLOd9+A/7M+4ZHLnkXk3maN2sPSJM4
-         qbjieXPU6+jTR8nECTZDACgoM6cds8A3miEoueU0inYjce7akjhlez6Jmk1gbQhdgUHK
-         9VabuMmkosPEoc41ZfUbtD0B3ch0bqkHFM1ZfOrq3cVBzw6RexmiZ5AOSUXpsJrtL5Qc
-         GzDhfM2YZhxYwkzjTQ0iEHQe/SmTsaambMCaUETLuwmZpia2CoczNLHMYLPbAEfZ6rK/
-         6NaRldBlAvogyQ9SmAGB9ewComr9xpG3RFfk1U6WXAKcAHoVx7ruM+7QtP8UqFlkL+c+
-         7jkg==
-X-Gm-Message-State: AOAM531vz5ZKpPMNWGHJ+7eyNcyewXX6RZABDEAleg5Xj3RCek9T7FQZ
-        qFKVyBo1a+8HUw3uU7+K3JKm
-X-Google-Smtp-Source: ABdhPJxNYAJ9GhFAWoHDUq/s5lhwjbtg58T00xGm5r0pJVsZWTtt+NuJ4fCgvN9vovCU/LKam1xLuQ==
-X-Received: by 2002:a17:90b:182:: with SMTP id t2mr12712899pjs.50.1611240623014;
-        Thu, 21 Jan 2021 06:50:23 -0800 (PST)
-Received: from work ([103.77.37.184])
-        by smtp.gmail.com with ESMTPSA id c85sm5787366pfb.37.2021.01.21.06.50.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 Jan 2021 06:50:21 -0800 (PST)
-Date:   Thu, 21 Jan 2021 20:20:18 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v5 5/9] bus: mhi: core: Add support to stop or start
- channel data transfers
-Message-ID: <20210121145018.GC5473@work>
-References: <1610139297-36435-1-git-send-email-bbhatt@codeaurora.org>
- <1610139297-36435-6-git-send-email-bbhatt@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PAuOHqNvw5LrpRMcJxDvIcXZ7AE5uKAtyIkRUHEvlHs=;
+        b=cLYnENcOoavA2nJlBMFEADAFAm6f9NLdJbD7jKRGg6w+qtwn9qqG9TFlTmAuDuY4e2
+         tBXQjNe5oNs+jMlSrv4ZFq+p/05dwUf6shmBcRfWZahGLnWwf4S14ejMmHZ1QZS4JTkc
+         mN0/qK6t8shf13MwnZtbqccFVO7exC3WZnRi/sGuHIk62Zs7cw9IGMdiDU30R/LEBIk+
+         I5YOTFCAcfJvfvBZ3jiOHFOurN7SHg6FUNsDDINN8uIdMBTn8+w+uO4laV3DSeGbUkTJ
+         J11Ripq2wjPtmFlyhKOaiyOt0YpZI9xhZ/Z+IvpTldfcpJVR1Lh4dKXxOlY6rWrkw01C
+         LpYQ==
+X-Gm-Message-State: AOAM530xOl5c1fySflpFBDbvgqzYW40UqROqolCVncf1FIxRycVwaoLS
+        N+5xqTGJzFY/4CiWrC3pGnU=
+X-Google-Smtp-Source: ABdhPJz4X8WbDb8Cbd5dbXJqW/DlyoXHfzQ+hohZ4WTi0o9uOgVdn3tLe4tvyn8CTVogIm+K2aY1xw==
+X-Received: by 2002:a1c:3d56:: with SMTP id k83mr9301050wma.25.1611240769655;
+        Thu, 21 Jan 2021 06:52:49 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e0a:cc:9f0:5e81:68ba:d485:b4e3])
+        by smtp.googlemail.com with ESMTPSA id v4sm8851475wrw.42.2021.01.21.06.52.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 06:52:48 -0800 (PST)
+From:   corentin <corentin.noel56@gmail.com>
+X-Google-Original-From: corentin <corentin.noel.external@stormshield.eu>
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corentin <corentin.noel56@gmail.com>
+Subject: [PATCH] drivers: spi: spi-au1550: Add suffix "int" to all "unsigned"
+Date:   Thu, 21 Jan 2021 15:52:36 +0100
+Message-Id: <20210121145236.26460-1-corentin.noel.external@stormshield.eu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610139297-36435-6-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:54:53PM -0800, Bhaumik Bhatt wrote:
-> Some MHI client drivers may want to request a pause or halt of
-> data transfer activity on their channels. Support for this does
-> not exist and must be introduced, wherein the channel context is
-> not reset or cleared but only the STOP channel command is issued.
-> This would need to be paired with an API that allows resuming the
-> data transfer activity on channels by use of the START channel
-> command. This API assumes that the context information is already
-> setup. Enable this using two new APIs, mhi_start_transfer() and
-> mhi_stop_transfer().
-> 
+From: corentin <corentin.noel56@gmail.com>
 
-Do you have any user for these APIs? If not then please post it when one
-is available.
+Signed-off-by: corentin <corentin.noel56@gmail.com>
+---
+ drivers/spi/spi-au1550.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Thanks,
-Mani
+diff --git a/drivers/spi/spi-au1550.c b/drivers/spi/spi-au1550.c
+index dfb7196f4caf..13ee3a95078d 100644
+--- a/drivers/spi/spi-au1550.c
++++ b/drivers/spi/spi-au1550.c
+@@ -26,7 +26,7 @@
+ 
+ #include <asm/mach-au1x00/au1550_spi.h>
+ 
+-static unsigned usedma = 1;
++static unsigned int usedma = 1;
+ module_param(usedma, uint, 0644);
+ 
+ /*
+@@ -43,9 +43,9 @@ struct au1550_spi {
+ 	volatile psc_spi_t __iomem *regs;
+ 	int irq;
+ 
+-	unsigned len;
+-	unsigned tx_count;
+-	unsigned rx_count;
++	unsigned int len;
++	unsigned int tx_count;
++	unsigned int rx_count;
+ 	const u8 *tx;
+ 	u8 *rx;
+ 
+@@ -56,14 +56,14 @@ struct au1550_spi {
+ 
+ 	struct completion master_done;
+ 
+-	unsigned usedma;
++	unsigned int usedma;
+ 	u32 dma_tx_id;
+ 	u32 dma_rx_id;
+ 	u32 dma_tx_ch;
+ 	u32 dma_rx_ch;
+ 
+ 	u8 *dma_rx_tmpbuf;
+-	unsigned dma_rx_tmpbuf_size;
++	unsigned int dma_rx_tmpbuf_size;
+ 	u32 dma_rx_tmpbuf_addr;
+ 
+ 	struct spi_master *master;
+@@ -99,7 +99,7 @@ static void au1550_spi_bits_handlers_set(struct au1550_spi *hw, int bpw);
+  *    BRG valid range is 4..63
+  *    DIV valid range is 0..3
+  */
+-static u32 au1550_spi_baudcfg(struct au1550_spi *hw, unsigned speed_hz)
++static u32 au1550_spi_baudcfg(struct au1550_spi *hw, unsigned int speed_hz)
+ {
+ 	u32 mainclk_hz = hw->pdata->mainclk_hz;
+ 	u32 div, brg;
+@@ -161,7 +161,7 @@ static void au1550_spi_reset_fifos(struct au1550_spi *hw)
+ static void au1550_spi_chipsel(struct spi_device *spi, int value)
+ {
+ 	struct au1550_spi *hw = spi_master_get_devdata(spi->master);
+-	unsigned cspol = spi->mode & SPI_CS_HIGH ? 1 : 0;
++	unsigned int cspol = spi->mode & SPI_CS_HIGH ? 1 : 0;
+ 	u32 cfg, stat;
+ 
+ 	switch (value) {
+@@ -221,7 +221,7 @@ static void au1550_spi_chipsel(struct spi_device *spi, int value)
+ static int au1550_spi_setupxfer(struct spi_device *spi, struct spi_transfer *t)
+ {
+ 	struct au1550_spi *hw = spi_master_get_devdata(spi->master);
+-	unsigned bpw, hz;
++	unsigned int bpw, hz;
+ 	u32 cfg, stat;
+ 
+ 	if (t) {
+@@ -276,7 +276,7 @@ static int au1550_spi_setupxfer(struct spi_device *spi, struct spi_transfer *t)
+  * spi master done event irq is not generated unless rx fifo is empty (emptied)
+  * so we need rx tmp buffer to use for rx dma if user does not provide one
+  */
+-static int au1550_spi_dma_rxtmp_alloc(struct au1550_spi *hw, unsigned size)
++static int au1550_spi_dma_rxtmp_alloc(struct au1550_spi *hw, unsigned int size)
+ {
+ 	hw->dma_rx_tmpbuf = kmalloc(size, GFP_KERNEL);
+ 	if (!hw->dma_rx_tmpbuf)
+-- 
+2.25.1
+
