@@ -2,165 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B296C2FF61D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5919A2FF62A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbhAUUkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:40:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbhAUUk1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:40:27 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF65AC0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:39:42 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y187so2616465wmd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:39:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xayxyu0fFQJrTg31QncwBsdYtRLwkVs0VoYzDdqVhX4=;
-        b=o0sMq3fT9e4YSTYIY2l5VuqpueCXe0rnYJvOmqtdyrcRS9/cB2D3Ns6ENbWbFKsLer
-         +hAiH+We4B2gizqtx6LxbfSJslYevSZzgbZoIRxeNGIjWtT70bIp0DAk80Q43vvSQdwd
-         7dneBNgcZHjF5PXR9/81BtHoCd8dPHTO6ht8VgkUlPJy9E/iE92MYRrgnt1CPvVQyFX3
-         gT7ps41pFrRruheAooxE+HMU1M7fgf0GJk8KEcwNlTGAvh0dxrudAeTgghVCKkYpdZIA
-         UTWQXZjNVumz0YHHt+aVpS4XF6B5FclaX6VCmetG0+h7cuKrviw7gwu6FuKQwMz6S3j0
-         6G5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xayxyu0fFQJrTg31QncwBsdYtRLwkVs0VoYzDdqVhX4=;
-        b=scsZMNKExz6USUPkQTjCQheg18m2nwVWtwIH1GQDp4gIXlNEY0ZuorRed6TnKVh7hW
-         CutGf9hRf9/uGbR7IMvujzGyblHs8W69dZ3cT3IAn11hDh3A7u10xVJz07svJ0uNCCMp
-         RcUAfDgQ9cYjGm9wyrU0aC5oQeVpYpMjhOkHEw6DNLtHQ8xzxOb49w0RsbHDh+yGmAMi
-         0FDYvbeFNtyE8k2EChHbPuVwVhNa4YU8Q/PCSVJWzUYmxIDbyDcWaCOBOAOsbp4QIvWl
-         0cgHryLG5+X6DADw6sIfsHuT5YVPA3xzGz3tI4DC43vw/d5SXrYc8pDtuLophj4OCMZ+
-         a10g==
-X-Gm-Message-State: AOAM532qMS5Ow8PC36ZEUPCicDK67ec0wEt9G2lllTFNQjkJ3bzZBbMq
-        aIhiyg1uSEgSv0IVLr0OZqNoUg6/wp4=
-X-Google-Smtp-Source: ABdhPJwAvjvv7mqDZ3SsZ3LCUqrKyOah2ikRyjvnwEOfHPcnOK1XtxlUJHi2e05Q1JAo0XillVwxzw==
-X-Received: by 2002:a7b:cb54:: with SMTP id v20mr1013794wmj.148.1611261581596;
-        Thu, 21 Jan 2021 12:39:41 -0800 (PST)
-Received: from [192.168.0.160] ([170.253.49.0])
-        by smtp.gmail.com with ESMTPSA id l5sm9479286wrv.44.2021.01.21.12.39.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 12:39:41 -0800 (PST)
-Subject: Re: [PATCH -V9 2/3] NOT kernel/man2/set_mempolicy.2: Add mode flag
- MPOL_F_NUMA_BALANCING
-To:     Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@suse.de>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210120061235.148637-1-ying.huang@intel.com>
- <20210120061235.148637-3-ying.huang@intel.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <99b71573-714f-5ec6-37e5-3e6e080432fc@gmail.com>
-Date:   Thu, 21 Jan 2021 21:39:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210120061235.148637-3-ying.huang@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1727530AbhAUUm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:42:56 -0500
+Received: from mail-eopbgr80124.outbound.protection.outlook.com ([40.107.8.124]:15589
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727437AbhAUUmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:42:10 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WfyVFZG5TlHgwMf02bH26BJCJF4d+q3DDN6JfKOFPMgHkRDClz24SvvgDS7qA90Pq7jTohF8fXHgbPRdFa6XDLK02c3RvtL9Bkd83Vk2yYqm20gBXqYMJu1GMDZkdLlgdXxO6nvddCVBo/0LPPrryhHl7/ZIgqde16tQJJgke2xBztu7+XdV0b6aUlAc8ly7U97c+LUKW8zJCesvw6d3KZNIDPHPURmYGNJ4mfESMugHRs18sFFHZCHAcT7jctGQbBWuTSPMCRFbLqSBqdZNW19J3uGnkd9Jvnvs5IyI0ewbnirqI0HJz51WTiXZuimJR94bRGH7KdLjsB7ql1KYVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tm/NMkDv3SArjMTKWFhdftJI+QNms4IaevBmfXtim3A=;
+ b=mWIg9QL3e9buPlBGPa1dMHgNRnRnShuKMasKDbAEA8jFK02XZlTErl7HZa+KVXLoOyhFmvljD6KlQSi6bKRR8/BF5XsY62lB/EbfZrZareF6SFERXXR2XbaTFZS+Uy9izn7xVSab5lYg2en/ZupBVvCiQdWwALFKLFrsWSgHdlkKgnnYY6kxRbSSb6RxGok2rR8vFebp0d5J/abpIr6xKF7XJL66S/EFpoKHvuu5XW9uVshIVR5omD3xreL9Sbva4BdmkaDiGgHjlNOjVqgAOQrdo1WJQkCKKUdKiYDIFHXnZXeY30nsfZEKBtuADPPDOzBcA5HYsXJ1up0rifLbZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tm/NMkDv3SArjMTKWFhdftJI+QNms4IaevBmfXtim3A=;
+ b=M10lqSyyx8rLbRqYW3RhSTc1MSZGBMkDa6f5zBR8MRS20loQ+1XfODLSORJoadnX38sJkzCVQNeqeo2zoAGw2ChisRLNABy+LZceIpJunNq8dhAh4DjV75OlfPso53VJcWDVl6VBnfouuMTYIYsGLsBQ2j0i5H2CzgUSKCazxmI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM0PR10MB3011.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Thu, 21 Jan
+ 2021 20:40:47 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3763.014; Thu, 21 Jan 2021
+ 20:40:47 +0000
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To:     netdev@vger.kernel.org
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: [PATCH net v2 0/2] fix and move definitions of MRP data structures
+Date:   Thu, 21 Jan 2021 21:40:35 +0100
+Message-Id: <20210121204037.61390-1-rasmus.villemoes@prevas.dk>
+X-Mailer: git-send-email 2.23.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: AM6P195CA0047.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:209:87::24) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from prevas-ravi.prevas.se (5.186.115.188) by AM6P195CA0047.EURP195.PROD.OUTLOOK.COM (2603:10a6:209:87::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Thu, 21 Jan 2021 20:40:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f04a5b6a-80ea-4f6b-bf92-08d8be4cd4ec
+X-MS-TrafficTypeDiagnostic: AM0PR10MB3011:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR10MB3011D3DB8E24BCD66C7F21A993A10@AM0PR10MB3011.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:519;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dafNUSuGTGGE8YvqSEacXwJmH971ywAIWOxx3llImiW0/OaW6e08JjSqthH+QHGM39aKX7TqcD4k2+Yd9ikKUhpkOMhH4HMph+g8YnliIQX+7afbtBCkPsDdn+LlcJx3tBlx/VSHo6mNVST19x5Kxfej1wh6USmGJnJul6sxiaBMxK6GXWMXc/PHgDjfty4cU6+GNeAkT/I2kxgTHF9HqcpsMAsOEwdPie3wF2yh7lKksL5wElbrc1uzmEmzs/XWjUHzu9rHRKa9uQMlPXPvE6TN1JXMs4LMJUOxrAQf81kqttu/MAt/nAR8DBnL4M2dhieCzliD5nLywuEz0DAHbVUGuVaadqPIMldIHpdcPEaa3oj1nCda99Q0aTOQxdD4MKprNVXbZQKhQuZgfU4dXw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(396003)(39830400003)(346002)(478600001)(2616005)(52116002)(107886003)(6506007)(5660300002)(4744005)(6486002)(6666004)(44832011)(26005)(1076003)(86362001)(83380400001)(4326008)(186003)(316002)(66556008)(8936002)(6916009)(8676002)(66476007)(956004)(8976002)(6512007)(36756003)(66946007)(16526019)(54906003)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?71sxjBPKBRXDMKiyjKc6RBLtQOZzzgzBbgOlsZW7SfZKukMNkFUrO0KkIxcF?=
+ =?us-ascii?Q?wPMDRC5jTNd92iobkeLBi/kz8jcAJXvjavqJJxfaKLBMsoG9XelLZ/ISU6WT?=
+ =?us-ascii?Q?sdd2CU1+VkvCKL3FhitUoP9i3Be0hjKFzse5N/pk1ZznzkbkXUU3bAetszaQ?=
+ =?us-ascii?Q?Ud7OOcEmmAdcN9lazaQAiV23jcVnU708T+y6iJpDPVvo11IxT28Y87DYlmiC?=
+ =?us-ascii?Q?++NO8PQom23Kf3CC9k/XeSW/Gx54qMpuECuOOik8ooJtYOdSijluQhQITM0x?=
+ =?us-ascii?Q?8kT2bF7sjwXfpKXQ77F79EfGkYWpjoLAWsSivqisPEz35vsNiKL22Mty4cHn?=
+ =?us-ascii?Q?ZYxnWCrKFMxwRzr3R6pkEnwlfj+JUEYccXijB9RBO3Ys9XVZJxjKKynuEahW?=
+ =?us-ascii?Q?K+wQM00ScgrmFIG+2QOwHlv7UR2vR4mgpZeqC1SVdV8djfVntiDKRBGontAG?=
+ =?us-ascii?Q?1Xi1k24u+IRdBfxeai5Uj1EJsvY93ugt3AQ207qy/WaXph1wW7lQO1XTZPQt?=
+ =?us-ascii?Q?5VzfFBRB47sgqvukEktp9vGEtVequljH0Ot1mpvGeZragq3lNJzrgQBq0AR0?=
+ =?us-ascii?Q?ZZAQfBYx3Hp2nEJFbV4tjwBwt5joVma/nKGw3eRI+WSVnCUGwiqz8YUw+okW?=
+ =?us-ascii?Q?Nix5xYpW2agcNPKCRS5IVdsAsoRmlhD5yPhofACeBIt6x9wmACjNcbX9Vx1w?=
+ =?us-ascii?Q?ISfAdb1xByII6HbOdos9InX10ciO87R2L4RHKUkA6nZM+1CKb65LUf0XaL4i?=
+ =?us-ascii?Q?k6VF/RVES9l/tOHMqqCd57+xfB1ZWPVU8FAXPuklSyan6JCWxU8PmWWjfa33?=
+ =?us-ascii?Q?3Q4/o3KsjkFD2RRzHFyKrI0e8zKDPsCxUZlmfOGCkLWJ3YAYc468copwdfml?=
+ =?us-ascii?Q?s2ftWH7HfCNsCRH8Z8BUr70DhrhF8P+h/SWWulcaBMagPdzNUzRftamlj4+S?=
+ =?us-ascii?Q?Z5XaxsCf3BeORui8/smtv/mYkr3swemF1slfrg2MhWkIB/ey/VSEzm4JCL0V?=
+ =?us-ascii?Q?KEvo?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: f04a5b6a-80ea-4f6b-bf92-08d8be4cd4ec
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 20:40:47.4201
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ViWZ3CJxqZgM2WGoPVkU2C8p0Tlm3toVJjXL7AehU1Gm2Q0F5b+BIi526uw7p6OkwQA2Aijgp+PsWDCeNkQjv8pSCT8w0zusV9j4Cow2Xgk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huang Ying,
+v2: update commit log of the patch to include comments on 32 bit
+alignment; include second patch moving the structs out of uapi.
 
-On 1/20/21 7:12 AM, Huang Ying wrote:
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: "Alejandro Colomar" <alx.mailinglists@gmail.com>
+Rasmus Villemoes (2):
+  net: mrp: fix definitions of MRP test packets
+  net: mrp: move struct definitions out of uapi
 
-Sorry, for the confusion.
-I have a different email for reading lists.
-I use alx.manpages@ for everything,
-and alx.mailinglists@ just for reading lists, but sometimes,
-when I answer emails not sent to me,
-I forget to change the reply address,
-and you see that address (which I intended to be readonly).
-
-Please, use alx.manpages@gmail.com,
-or your mail might get lost between many list emails ;)
-
-> ---
->  man2/set_mempolicy.2 | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/man2/set_mempolicy.2 b/man2/set_mempolicy.2
-> index 68011eecb..fa64a1820 100644
-> --- a/man2/set_mempolicy.2
-> +++ b/man2/set_mempolicy.2
-> @@ -113,6 +113,22 @@ A nonempty
->  .I nodemask
->  specifies node IDs that are relative to the set of
->  node IDs allowed by the process's current cpuset.
-> +.TP
-> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.12)"
-> +When
-> +.I mode
-> +is
-> +.BR MPOL_BIND ,
-> +enable the kernel NUMA balancing for the task if it is supported by
-> +the kernel.
-> +If the flag isn't supported by the kernel, or is used with
-> +.I mode
-> +other than
-> +.BR MPOL_BIND ,
-> +return \-1 and
-> +.I errno
-> +is set to
-> +.BR EINVAL .
-
-The wording here is a bit weird:
-[return // is set].  It would be better as
-[return // set] or [returns // sets] or [is returned // is set].
-
-The same page, has:
-
-[
-RETURN VALUE
-       On success, set_mempolicy() returns 0; on error, -1 is  re‐
-       turned and errno is set to indicate the error.
-]
-
-so I'd use the latter for consistency.
-
->  .PP
->  .I nodemask
->  points to a bit mask of node IDs that contains up to
-> @@ -293,6 +309,12 @@ argument specified both
->  .B MPOL_F_STATIC_NODES
->  and
->  .BR MPOL_F_RELATIVE_NODES .
-> +Or, the
-> +.B MPOL_F_NUMA_BALANCING
-> +isn't supported by the kernel, or is used with
-> +.I mode
-> +other than
-> +.BR MPOL_BIND .
->  .TP
->  .B ENOMEM
->  Insufficient kernel memory was available.
-> 
-
-Other than that, it's good for me.
-
-Thanks,
-
-Alex
-
-Just a reminder for myself (please ignore it):
-- Break EINVAL into multiple paragraphs.
-- (Maybe) reorder lists to be in alphabetical order.
+ include/uapi/linux/mrp_bridge.h | 86 ---------------------------------
+ net/bridge/br_private_mrp.h     | 29 +++++++++++
+ 2 files changed, 29 insertions(+), 86 deletions(-)
 
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+2.23.0
+
