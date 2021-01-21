@@ -2,101 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2A52FE070
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85302FE07D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbhAUENN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        id S1727980AbhAUEPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727442AbhAUEJK (ORCPT
+        with ESMTP id S1727367AbhAUEMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:09:10 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4510C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:08:29 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id j12so713186pfj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:08:29 -0800 (PST)
+        Wed, 20 Jan 2021 23:12:09 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40337C0613C1;
+        Wed, 20 Jan 2021 20:11:29 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id y4so818758ybn.3;
+        Wed, 20 Jan 2021 20:11:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=X4Jw/E+MtQCCTnL+PGuuK0p7Rc+43AmkTUUI5e9cfl8=;
-        b=zNayIhusqeaJcQKJoNACth9N6WIAptS33FTJhomoi5rFhdlCG4d3T63nrUWB2tTHVC
-         lWi7KXdFnO0nXBbBVghWQjlANtXi1z79PkIeDAi1VkBwIbgG1/SSc2QTDgTUxZggeTbT
-         ZhyW84SuqbzH8Zr9pUCUW8rqgb9YtgOcGfddOuCAI7cRbsLkEDq7gjuE6+0QTb8cDOOs
-         qm9cOa6Vf4NzBN/x7g5Wz/KoKYozCfulX++avvbOu5a07qXNTUsnojSE3j89VFxzE6eH
-         Vj8beYYR8bgec4BVA6sM434V20kxQM/tEi6+cn0U7+l7yzbuf6tEbaJLUaV10f2pKQfQ
-         7Zpg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qu3/Zdh2BNKct5hYooah1p1b6g8ncNuNlKHamiSiivA=;
+        b=g1GDQ0/2al2sF4aWAkymdbAOYl7xXJT9cS080xkUl2BLzz4WAflrgOdR9Ojm2yyihp
+         +/2j5bPtR3kI6MDbS1UBXWQknA+PjJxtmtSL0IrGqd8jjbtLYqLua7bgJFLlSD/5NdSO
+         ob+0I1vujlrPSvbyDDsM5YGUZkEUPmmu+eFeG4nN8H9gRtKvLlu3a314psxwaJGExRKt
+         El2oKC32NDPolLz8s+n/hgAlQAsVgZv7Dn2joEGFXA648OXggdgKoOHq9N3oyK8ph/o9
+         oYQl10t7H6B3aiXNX07rmuS/22JNKBdl0g35Hm00uC8tJyXIyT70jh3XfU+kvW0g0XF1
+         ZOYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=X4Jw/E+MtQCCTnL+PGuuK0p7Rc+43AmkTUUI5e9cfl8=;
-        b=jbHwnDs7383vd7Om1ZRKUpwgExPx5ym/bDtHoG1jvaoSooTnBIdS4bgizxL9Xi3xeA
-         iaSZDXHzz1fEWOEjuJtXQvGVaU4MJNx3zYpkJ+CTY1RzRdeKaWwxYVfsex0yYhsgzl7K
-         crl7N9eGXwDueW5r3cazsti5SaixGP2jHwBpu0iajFRRiMCmjkF99xJtIog8NQDYVEIn
-         9cfEWfRTrt4rm4nClTsqXWz7R0z8wWt5Z42k5yJQ8MnXSsSjAKGlFPEcP6tClr9nnzV8
-         TV3aniSJx9lYMBll/JsobTk4xGPoFiaZVs4WKbfXnXMxJjLe5x0SgIqj7IdRDvw2ZJ30
-         Z1qg==
-X-Gm-Message-State: AOAM532JpE/j14Jz1yZgCdrfyw9DjJTSSPE8JrHr9Sq0HksLWPttVbyN
-        ci8Y+KxxJSmkQwbL5fMxvv1o1A==
-X-Google-Smtp-Source: ABdhPJytsWhRYcWkltf5/Tc9Fp63GWINBFAh/gZQi00WIv4gQiwq3VmsZi6nh+YyCfv8eBHuYPnT+Q==
-X-Received: by 2002:a62:64c9:0:b029:1b9:6b48:7901 with SMTP id y192-20020a6264c90000b02901b96b487901mr11809332pfb.0.1611202109309;
-        Wed, 20 Jan 2021 20:08:29 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id 126sm3687628pfu.31.2021.01.20.20.08.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Jan 2021 20:08:28 -0800 (PST)
-Date:   Thu, 21 Jan 2021 09:38:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] PM: domains: Make set_performance_state()
- callback optional
-Message-ID: <20210121040826.jsxdv24vxnobq45s@vireshk-i7>
-References: <20210120211232.17299-1-digetx@gmail.com>
- <20210120211232.17299-2-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qu3/Zdh2BNKct5hYooah1p1b6g8ncNuNlKHamiSiivA=;
+        b=c4wHGn0x3aLzt/mXOFGHJFkVOo7Xz42pXlhy7uTOsoZQNiIg9u3z+T2LoJSpcD7h8d
+         MTtRX21jXnsR7ygGMuXs0lTmChodWWRCriBK1v6SD2PudONPL5Yl2rqiBu9TzODzLb5E
+         x+YzAwcCpQovQ6g6tXBx1VE+4SWWvICZmUpbH95Ycn6R3fhhmXcZKv866h6yyBkMnE0c
+         et73H2TnHnqdv39wCR8+o2oenRqhK4mP2PFNr5cZ+Y8NpY+WwmJ9ORe0Dw+JG9GMFqTE
+         8kSh0uH36gSLMDjzCWp3fYuWNHZm0W+c59BLrxiwahI9ksV/v0ZqoYVTXdIqAMrqQBfI
+         jwvg==
+X-Gm-Message-State: AOAM533hRfHNo2+XYl5pqEl91qEuAlcRWNp9aJ8N5eCQBoWQQVVQuECI
+        KhuXVv4vb2FA49o5AJwvXQ5hCsXDPPcgIMlVjnc=
+X-Google-Smtp-Source: ABdhPJyxFuBO0yyPvtF2m38+Pza5hBaaFi/2NaRzY0gNKkmdle6tpnDcpYQwquLeBzDnAk+uYOMOqOY7XTzGP2g34QQ=
+X-Received: by 2002:a25:854a:: with SMTP id f10mr16748389ybn.510.1611202288424;
+ Wed, 20 Jan 2021 20:11:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120211232.17299-2-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com> <1610921764-7526-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1610921764-7526-2-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Jan 2021 20:11:17 -0800
+Message-ID: <CAEf4BzYvPiWnJYfVjg5qXaefYOsR1QHHzMfB6XFUSVeOA9W8Rg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/4] libbpf: add btf_has_size() and btf_int() inlines
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, morbo@google.com,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-21, 00:12, Dmitry Osipenko wrote:
-> Make set_performance_state() callback optional in order to remove the
-> need from power domain drivers to implement a dummy callback. If callback
-> isn't implemented by a GENPD driver, then the performance state is passed
-> to the parent domain.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> [tested on NVIDIA Tegra20/30/124 SoCs]
-> Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On Sun, Jan 17, 2021 at 2:22 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> BTF type data dumping will use them in later patches, and they
+> are useful generally when handling BTF data.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->  drivers/base/power/domain.c | 33 ++++++++++++++++++---------------
->  1 file changed, 18 insertions(+), 15 deletions(-)
+>  tools/lib/bpf/btf.h | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index 1237bcd..0c48f2e 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -294,6 +294,20 @@ static inline bool btf_is_datasec(const struct btf_type *t)
+>         return btf_kind(t) == BTF_KIND_DATASEC;
+>  }
+>
+> +static inline bool btf_has_size(const struct btf_type *t)
+> +{
+> +       switch (BTF_INFO_KIND(t->info)) {
+> +       case BTF_KIND_INT:
+> +       case BTF_KIND_STRUCT:
+> +       case BTF_KIND_UNION:
+> +       case BTF_KIND_ENUM:
+> +       case BTF_KIND_DATASEC:
+> +               return true;
+> +       default:
+> +               return false;
+> +       }
+> +}
 
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+it's not clear what "has_size" means, actually. E.g., array type
+definitely has size, it's not just as readily available. And you are
+actually misusing this in your algorithm, I'll point it out in the
+respective patch. Please remove this, or if absolutely necessary move
+into btf_dump.c as an inner static function.
 
--- 
-viresh
+> +
+>  static inline __u8 btf_int_encoding(const struct btf_type *t)
+>  {
+>         return BTF_INT_ENCODING(*(__u32 *)(t + 1));
+> @@ -309,6 +323,11 @@ static inline __u8 btf_int_bits(const struct btf_type *t)
+>         return BTF_INT_BITS(*(__u32 *)(t + 1));
+>  }
+>
+> +static inline __u32 btf_int(const struct btf_type *t)
+> +{
+> +       return *(__u32 *)(t + 1);
+> +}
+> +
+
+there is btf_int_encoding(), btf_ind_offset() and btf_int_bits() that
+properly decompose what btf_int() above returns. I'm not convinced
+btf_int() has to be exposed as a public API.
+
+>  static inline struct btf_array *btf_array(const struct btf_type *t)
+>  {
+>         return (struct btf_array *)(t + 1);
+> --
+> 1.8.3.1
+>
