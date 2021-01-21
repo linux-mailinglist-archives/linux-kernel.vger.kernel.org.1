@@ -2,235 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F4F2FF817
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7FE2FF816
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbhAUWiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:38:51 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35602 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbhAUWil (ORCPT
+        id S1726952AbhAUWis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:38:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbhAUWik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:38:41 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1E35A50E;
-        Thu, 21 Jan 2021 23:37:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611268676;
-        bh=mWURBj6RaXT6C5m2AXt2YVFGkQ1ZtlccLo1/SMFcSWA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qbWAd+5RdXT6IMz1qh1A4vJDeBfKtbmfIzfhb4OMxTg4W/M4Dau9r9bK9COk/4bXi
-         ItPL60lN55I1TX7zKGWN36rjkNCQOOLh9McJfXtgzFIUM1FKmQ2qKP39WwAB8TvKoR
-         ZwEwberf0+cL019Mq0BnXESyH3tRk2fiwtr9rjds=
-Date:   Fri, 22 Jan 2021 00:37:38 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] arm64: dts: zynqmp: Wire up the DisplayPort subsystem
-Message-ID: <YAoCMqq/hpY0Jz6A@pendragon.ideasonboard.com>
-References: <cover.1611232558.git.michal.simek@xilinx.com>
- <9769d4d103b6eb75e3324825117f6832a746004e.1611232558.git.michal.simek@xilinx.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9769d4d103b6eb75e3324825117f6832a746004e.1611232558.git.michal.simek@xilinx.com>
+        Thu, 21 Jan 2021 17:38:40 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602CFC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:38:00 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id x206so2089543pfc.16
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:38:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=MopP3ly3bA3eMHB1Y9//RmGNL7s+QTEOsJtmIObREmY=;
+        b=MEtgBsAiJAWzjTXNj0Kyb544HT8CFWU9eqOGurRGiEnWlDib4RRvUzwNUpT5xyJMZG
+         /C04/VuRPk7kbkXh2lGXpvGLu/jHTg3lp21DW0FXtQof0mygH0q+0bFYVt8In5Yn0t2X
+         eyPOntSR6JJqdRdUH+QTA05LDLmd+9I0o3gouyn0HIlzsH0YKNSj1NkMmX44/e4x7unI
+         Mvnm0uH6I7uKXJVbCmO/gp2gTxCUjtXZQEY/mVwDKYsVuQ4b5TiTa6aF3DAs/Y9EB0YD
+         rd91Oi0WLzVFvxOI/ejfqIQSh5iuwyNtBUK/lqJNXvGb7tZNVn6KlwGnXPb6j2r7gve+
+         6HpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=MopP3ly3bA3eMHB1Y9//RmGNL7s+QTEOsJtmIObREmY=;
+        b=c+YYONb0nXHKzskGWecNZ8cJ8JYLGvwipQ3vTLtm1EcTevS8A57555lopjhP4VZjDw
+         Mg3CsAHP1oYHTAU2fRCsHOLZ99ZtrYzIh2bZGHAfKNK9Kyk7lIL6bYQ+Tj2BYk9d6vpE
+         6CGy0yPvPgYr9iiAPZGBytbEsJfCU0wRxM7dTMfL/1CyOrLVzv1ZH9JfYMN0XUE7yaE9
+         knHZHOImyLj8MP8QoKm08tzIIKNiOlxWmR2K5AKAsxwYG5IaAMFBiFn2OblnFNw/PU0g
+         E/KpQ4EQ1UF4whTneHq2/Y2DiovpwfVq13NK9hYxzmz/v8wyDNccmRbmI0lCO0qi9NUJ
+         heBA==
+X-Gm-Message-State: AOAM530PcgV4AO6scMb+6dQHiQ9djWN0UuTogRcBegyyxqeCuOmKD3dK
+        pD0VHCPZ9GQE5HawUegDpiP/hDCMRWQE2nc=
+X-Google-Smtp-Source: ABdhPJz0NkBI32v4RrdI7Lh0LHnl+nzLY849ZAp3v7+PfBG67Wykw/8zcPqdJE2zPV8PIZ7jfC0kcjWcEJFCOko=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a63:720c:: with SMTP id
+ n12mr1529729pgc.97.1611268679599; Thu, 21 Jan 2021 14:37:59 -0800 (PST)
+Date:   Thu, 21 Jan 2021 14:37:56 -0800
+Message-Id: <20210121223756.1112199-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH v4] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+From:   Saravana Kannan <saravanak@google.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        kernel-team@android.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+There are multiple instances of GPIO device tree nodes of the form:
 
-Thank you for the patch.
+foo {
+	compatible = "acme,foo";
+	...
 
-On Thu, Jan 21, 2021 at 01:36:07PM +0100, Michal Simek wrote:
-> From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> Enable the dpsub device and wire it up to the PS-GTR PHY lanes routed to
-> the DisplayPort connector.
-> 
-> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> 
-> Wire all the boards
-> 
-> ---
->  .../boot/dts/xilinx/zynqmp-zcu100-revC.dts    | 31 +++++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    | 10 ++++++
->  .../boot/dts/xilinx/zynqmp-zcu104-revA.dts    | 11 +++++++
->  .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    | 11 +++++++
->  .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    | 11 +++++++
->  .../boot/dts/xilinx/zynqmp-zcu111-revA.dts    | 11 +++++++
->  6 files changed, 85 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-> index 71ebcaadb7c8..a53598c3624b 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-> @@ -15,6 +15,7 @@
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/phy/phy.h>
->  
->  / {
->  	model = "ZynqMP ZCU100 RevC";
-> @@ -108,6 +109,18 @@ ina226 {
->  		compatible = "iio-hwmon";
->  		io-channels = <&u35 0>, <&u35 1>, <&u35 2>, <&u35 3>;
->  	};
-> +
-> +	si5335a_0: clk26 {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <26000000>;
-> +	};
-> +
-> +	si5335a_1: clk27 {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <27000000>;
-> +	};
+	gpio0: gpio0@xxxxxxxx {
+		compatible = "acme,bar";
+		...
+		gpio-controller;
+	};
 
-This is fine as a workaround for now, but I'm still wondering how we'll
-solve this properly. We can declare the SI5335A in DT without wiring the
-output that provides the clock to the PS, otherwise it will be disabled
-as part of the boot process.
+	gpio1: gpio1@xxxxxxxx {
+		compatible = "acme,bar";
+		...
+		gpio-controller;
+	};
 
->  };
->  
->  &dcc {
-> @@ -224,6 +237,13 @@ i2csw_7: i2c@7 {
->  	};
->  };
->  
-> +&psgtr {
-> +	status = "okay";
-> +	/* usb3, dps */
-> +	clocks = <&si5335a_0>, <&si5335a_1>;
-> +	clock-names = "ref0", "ref1";
-> +};
-> +
->  &rtc {
->  	status = "okay";
->  };
-> @@ -295,3 +315,14 @@ &usb1 {
->  &watchdog0 {
->  	status = "okay";
->  };
-> +
-> +&zynqmp_dpdma {
-> +	status = "okay";
-> +};
-> +
-> +&zynqmp_dpsub {
-> +	status = "okay";
-> +	phy-names = "dp-phy0", "dp-phy1";
-> +	phys = <&psgtr 1 PHY_TYPE_DP 0 1>,
-> +	       <&psgtr 0 PHY_TYPE_DP 1 1>;
-> +};
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
-> index 9abd10f6785a..12e8bd48dc8c 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
-> @@ -714,3 +714,13 @@ &usb0 {
->  &watchdog0 {
->  	status = "okay";
->  };
-> +
-> +&zynqmp_dpdma {
-> +	status = "okay";
-> +};
-> +
-> +&zynqmp_dpsub {
-> +	status = "okay";
-> +	phy-names = "dp-phy0";
-> +	phys = <&psgtr 1 PHY_TYPE_DP 0 3>;
-> +};
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-> index 8ede619fea52..5637e1c17fdf 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-> @@ -224,3 +224,14 @@ &usb0 {
->  &watchdog0 {
->  	status = "okay";
->  };
-> +
-> +&zynqmp_dpdma {
-> +	status = "okay";
-> +};
-> +
-> +&zynqmp_dpsub {
-> +	status = "okay";
-> +	phy-names = "dp-phy0", "dp-phy1";
-> +	phys = <&psgtr 1 PHY_TYPE_DP 0 3>,
-> +	       <&psgtr 0 PHY_TYPE_DP 1 3>;
-> +};
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-> index 414f98f1831e..7f2e32831b05 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-> @@ -280,3 +280,14 @@ &usb0 {
->  &watchdog0 {
->  	status = "okay";
->  };
-> +
-> +&zynqmp_dpdma {
-> +	status = "okay";
-> +};
-> +
-> +&zynqmp_dpsub {
-> +	status = "okay";
-> +	phy-names = "dp-phy0", "dp-phy1";
-> +	phys = <&psgtr 1 PHY_TYPE_DP 0 3>,
-> +	       <&psgtr 0 PHY_TYPE_DP 1 3>;
-> +};
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-> index d60a30787022..18771e868399 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-> @@ -156,6 +156,17 @@ &dcc {
->  	status = "okay";
->  };
->  
-> +&zynqmp_dpdma {
-> +	status = "okay";
-> +};
-> +
-> +&zynqmp_dpsub {
-> +	status = "okay";
-> +	phy-names = "dp-phy0", "dp-phy1";
-> +	phys = <&psgtr 1 PHY_TYPE_DP 0 3>,
-> +	       <&psgtr 0 PHY_TYPE_DP 1 3>;
-> +};
-> +
->  /* fpd_dma clk 667MHz, lpd_dma 500MHz */
->  &fpd_dma_chan1 {
->  	status = "okay";
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
-> index 758de05c4a4b..d4b68f0d0098 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
-> @@ -584,3 +584,14 @@ &usb0 {
->  	status = "okay";
->  	dr_mode = "host";
->  };
-> +
-> +&zynqmp_dpdma {
-> +	status = "okay";
-> +};
-> +
-> +&zynqmp_dpsub {
-> +	status = "okay";
-> +	phy-names = "dp-phy0", "dp-phy1";
-> +	phys = <&psgtr 1 PHY_TYPE_DP 0 1>,
-> +	       <&psgtr 0 PHY_TYPE_DP 1 1>;
-> +};
+	...
+}
 
+bazz {
+	my-gpios = <&gpio0 ...>;
+}
+
+Case 1: The driver for "foo" populates struct device for these gpio*
+nodes and then probes them using a driver that binds with "acme,bar".
+This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
+This lines up with how DT nodes with the "compatible" property are
+typically converted to struct devices and then registered with driver
+core to probe them. This also allows the gpio* devices to hook into all
+the driver core capabilities like runtime PM, probe deferral,
+suspend/resume ordering, device links, etc.
+
+Case 2: The driver for "foo" doesn't populate struct devices for these
+gpio* nodes before registering them with gpiolib. Instead it just loops
+through its child nodes and directly registers the gpio* nodes with
+gpiolib.
+
+Drivers that follow case 2 cause problems with fw_devlink=on. This is
+because fw_devlink will prevent bazz from probing until there's a struct
+device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
+supplier). Once the struct device is available, fw_devlink will create a
+device link with gpio0 device as the supplier and bazz device as the
+consumer. After this point, since the gpio0 device will never bind to a
+driver, the device link will prevent bazz device from ever probing.
+
+Finding and refactoring all the instances of drivers that follow case 2
+will cause a lot of code churn and it is not something that can be done
+in one shot. In some instances it might not even be possible to refactor
+them cleanly. Examples of such instances are [1] [2].
+
+This patch works around this problem and avoids all the code churn by
+simply setting the fwnode of the gpio_device and creating a stub driver
+to bind to the gpio_device. This allows all the consumers to continue
+probing when the driver follows case 2.
+
+[1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
+[2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc: Kever Yang <kever.yang@rock-chips.com>
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+v1 -> v2:
+- Fixed up compilation errors that were introduced accidentally
+- Fixed a missing put_device()
+
+v2 -> v3:
+- Changed chip_warn() to pr_warn()
+- Changed some variable names
+
+v3 -> v4:
+- Dropped the warning since it's not always valid
+- This simplifies the code a lot
+- Added comments and fixed up commit text
+
+ drivers/gpio/gpiolib.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index b02cc2abd3b6..f42eaca08d9a 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -596,6 +596,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 		gdev->dev.of_node = gc->of_node;
+ 	else
+ 		gc->of_node = gdev->dev.of_node;
++	gdev->dev.fwnode = of_fwnode_handle(gdev->dev.of_node);
+ #endif
+ 
+ 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
+@@ -4202,6 +4203,29 @@ void gpiod_put_array(struct gpio_descs *descs)
+ }
+ EXPORT_SYMBOL_GPL(gpiod_put_array);
+ 
++static int gpio_stub_drv_probe(struct device *dev)
++{
++	/*
++	 * The DT node of some GPIO chips have a "compatible" property, but
++	 * never have a struct device added and probed by a driver to register
++	 * the GPIO chip with gpiolib. In such cases, fw_devlink=on will cause
++	 * the consumers of the GPIO chip to get probe deferred forever because
++	 * they will be waiting for a device associated with the GPIO chip
++	 * firmware node to get added and bound to a driver.
++	 *
++	 * To allow these consumers to probe, we associate the struct
++	 * gpio_device of the GPIO chip with the firmware node and then simply
++	 * bind it to this stub driver.
++	 */
++	return 0;
++}
++
++static struct device_driver gpio_stub_drv = {
++	.name = "gpio_stub_drv",
++	.bus = &gpio_bus_type,
++	.probe = gpio_stub_drv_probe,
++};
++
+ static int __init gpiolib_dev_init(void)
+ {
+ 	int ret;
+@@ -4213,9 +4237,16 @@ static int __init gpiolib_dev_init(void)
+ 		return ret;
+ 	}
+ 
++	if (driver_register(&gpio_stub_drv) < 0) {
++		pr_err("gpiolib: could not register GPIO stub driver\n");
++		bus_unregister(&gpio_bus_type);
++		return ret;
++	}
++
+ 	ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
+ 	if (ret < 0) {
+ 		pr_err("gpiolib: failed to allocate char dev region\n");
++		driver_unregister(&gpio_stub_drv);
+ 		bus_unregister(&gpio_bus_type);
+ 		return ret;
+ 	}
 -- 
-Regards,
+2.30.0.280.ga3ce27912f-goog
 
-Laurent Pinchart
