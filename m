@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F222FF80A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 165442FF805
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbhAUWgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:36:38 -0500
-Received: from mail-co1nam11on2078.outbound.protection.outlook.com ([40.107.220.78]:64737
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S1726574AbhAUWfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:35:33 -0500
+Received: from mail-bn8nam12on2053.outbound.protection.outlook.com ([40.107.237.53]:41085
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726414AbhAUWgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:36:12 -0500
+        id S1726501AbhAUWfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 17:35:12 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JUKBjE6AozQF0XuDJEcp9vfDa+CC103ldAsK6FsFXyrot9B8vjMVA5ii4M2UeV9HpPE4FxMGh7Cc85oiPjL7JqqcLSeu1ryn5WAxIZ2uKupEBEbivYjCDWB26F4w0H7/Mn51N4oaJ46cAOb80IgKOQHMMgnH4vUlW0Sm1EGRYUEP5YnkDDjXFx6s5SGySXkkxOCIs+sSrO3TwwEHDfRymRUNJRmJDdwbRucDoElAHsJlQsMINr1k/xym0Kh0+W+OFhnRJT14U42joYk/RAeZe2IxuVqMTTrCPVXauAwINYdB9DK8YMriVmR+8cmCUI5231C1zO2mZBSwHuXLzBcxUQ==
+ b=L0KFoJqmZs+ftjugiPnbb56lNVWOeNvFzPiFLEmcUe9LDU8FSrqqNJqtr9TnCUFp4zk4EtPk0P+gJOoNOM6GqUJQFYur171tGagbQg2vrPd4pFvMU0syyygJ4k9Tt8ka/i2Sz0Z4M+VSrmZG0+/4LsFdfyNOyk1wcLDzveo/T8sad7uuM4rycTVGbf75U/5W9URcDJLlIDyvAEYqCFRdYrBwT/5/6vn6r+79mVX0gEbwYM61tYcK+A0PBnrSxfIaWjCjymXGTW3vjXFsKe5qz0OSZCO9wUC7v444jZESXfY75+utAi0PIf6xXo82yp6KtORvr6Wud2zxpDszh73ioQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=klpmG8ruLYplavEjwoU+UpEl0wLiTq9LnIFTjkAh1Ak=;
- b=Dbk0UVhr6cfbksz4s3S6sg2osKcjZI3KCLxWwPKiqEjgRY/IJCvK/fHBEW3nJKo56wXc1blAT55cvvNHSwq8gmB7pob69PvfabiyZDxFpWchb+4gdA0lXF3YhANeV6RRRYr4WgY1/1sN7EM+WTRJ94Esa5Ya2RNmrWqIaPPSSB5/j2r6PRsc65NGyWtSbftsOgPs8DPVCYs8r66TBv1zCQbCxrLE2IeEc1+fPuNWRXENelZ8q3jU8hOrWESB7qG9tkMZ+enyW87VgersdJEJOWN222ZBWPIXC4NdFgdSmXHBkCtUq4wQfWkW8g1SosSPI6I77bTkez8pr51MroX0rQ==
+ bh=5A5Sepq5BCfckorQUuh7RSm+qsW9Y+/2Tr2dTKUyca0=;
+ b=f8151OMG0pC0zz3hG8CVq/pu4UaYqxcUAPanF+WBH05X/3+0XRxIsfsh+TsKdoGxi4YwY7lvJAlYVv+yWjBE70tY7p9qo1/63MUT85v/UVxwgjC66vcy4vMwGW81i8YuJmH7adziwJ6oBLPESxwUXoOVqmamA9bTlWfY1zXhLq7mLpmo/dDfyQgF2/FoibSwyq4cAuBtVqqfVnOl6TM98u+1sEoAYTK3jk6ih1ANNIfFlrTcJD4V7FX5vjWDqtqz46J/czjdJ/q7ZSxo13Wkc3Za+Ubc0kFz0JCXhWLqSVUlBb5N6dA30XDUKzmjV2H8hIdOMFZczxsB1o39Yw1Vhg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=windriver.com; dmarc=pass action=none
  header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
@@ -26,29 +26,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=windriversystems.onmicrosoft.com;
  s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=klpmG8ruLYplavEjwoU+UpEl0wLiTq9LnIFTjkAh1Ak=;
- b=HQGrgB0ggijW05VVy4oJJOFRpe8g3TbQI9/d4XJHbt2LcJ9Y39SLxiJj2WevZW4t/nl5vyydj9ge6kmvszbXY8wlp8hWNOrX0vcG39SKPMA65PtwPtxETKO+Ofxf/f0VJt+anIuo+m5Q/NJPl0BUu1HHqxhRFlDV6eRosFvm1F4=
+ bh=5A5Sepq5BCfckorQUuh7RSm+qsW9Y+/2Tr2dTKUyca0=;
+ b=EzmxqGL1sTTJB9EZYiWgtP8eb+zOEtDQ1nHbyivyQZO7ULT9SsxIPIn/06m/0egrQP2rEKWUwzeq4ausjgZidLoKJk/E1jVZ7iaRBhlKEdd/un2hOmMpMYIJIJgIi8/siZg8HBMQtyL2sYfTgilUZ2CSinrGsQ5i6+VhlF+03MU=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none
  header.from=windriver.com;
 Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM6PR11MB2763.namprd11.prod.outlook.com (2603:10b6:5:c6::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Thu, 21 Jan
- 2021 22:34:23 +0000
+ by DM5PR11MB2011.namprd11.prod.outlook.com (2603:10b6:3:f::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3763.13; Thu, 21 Jan 2021 22:34:24 +0000
 Received: from DM6PR11MB4545.namprd11.prod.outlook.com
  ([fe80::87:8baa:7135:501d]) by DM6PR11MB4545.namprd11.prod.outlook.com
  ([fe80::87:8baa:7135:501d%4]) with mapi id 15.20.3784.013; Thu, 21 Jan 2021
- 22:34:23 +0000
+ 22:34:24 +0000
 From:   Paul Gortmaker <paul.gortmaker@windriver.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
         Yury Norov <yury.norov@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 2/3] rcu: dont special case "all" handling; let bitmask deal with it
-Date:   Thu, 21 Jan 2021 17:33:54 -0500
-Message-Id: <20210121223355.59780-3-paul.gortmaker@windriver.com>
+Subject: [PATCH 3/3] lib: support N as end of range in bitmap_parselist()
+Date:   Thu, 21 Jan 2021 17:33:55 -0500
+Message-Id: <20210121223355.59780-4-paul.gortmaker@windriver.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210121223355.59780-1-paul.gortmaker@windriver.com>
 References: <20210121223355.59780-1-paul.gortmaker@windriver.com>
@@ -61,104 +60,148 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 Received: from yow-pgortmak-lx2.corp.ad.wrs.com (128.224.252.2) by YTOPR0101CA0047.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:14::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Thu, 21 Jan 2021 22:34:23 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 695601e5-0530-44c1-41d2-08d8be5cb3ad
-X-MS-TrafficTypeDiagnostic: DM6PR11MB2763:
+X-MS-Office365-Filtering-Correlation-Id: d75c1791-b00f-43f1-1ac8-08d8be5cb3fc
+X-MS-TrafficTypeDiagnostic: DM5PR11MB2011:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR11MB2763096A99E59EC17A66EF6D83A19@DM6PR11MB2763.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam-PRVS: <DM5PR11MB201133C0636895DCBFD3F94B83A10@DM5PR11MB2011.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WPn+GuvHUsyF9bZz/396Zr2Pp4rUXCEcfj6HtkIjbiz62uQeXLOgGdbVfDtPFT70GMgWSIJTZ7IDrrWslDhK7VLvpJwe/fM9EpD4XG6G0Thvc4aCQzfKyQRv5/bKZXMQB8wn76Z6FoIj1y9htQaDDQcEE8XCGNGI6SDQPV7m4cyiIlqPD9U5pJh34qBDnYTM0jvUnZ5EFtvotwqjZy1N+SXYTPfcgxeJCwyTcaHcDjH1tMP9coSPzKGNE1N9mH0RiIikCeWkLv3y96VYy2PTiY33E9baiIz4iyqgBFdQ7dLE3xgUnuE/B6qBFhuYpl3hrwmc6luCR+gp8XlRGS+BZ79So/nwjphkVmEP318tWhK9V89ETxdE5J2g2KpYh3NZ/DyMblOZZU7ZYnZnCq5md0m2yTKD2KuFqaeTldAGGBqVwz5oAAbdkv0bPwTW2GQx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39850400004)(346002)(136003)(396003)(4326008)(66556008)(66946007)(8676002)(478600001)(6666004)(8936002)(6486002)(86362001)(66476007)(6512007)(36756003)(1076003)(44832011)(2906002)(2616005)(6916009)(83380400001)(316002)(26005)(5660300002)(54906003)(186003)(956004)(52116002)(16526019)(6506007)(192303002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?t1r6qvvEH6nEwXjnYlcYnwPJmM9mJAaxqlQFgIlCSeJ1fg2FsmycN+iPuH5b?=
- =?us-ascii?Q?lrangmVnoYwtxcbMXr5OwlCSQOdVLmsnTarFGCCFOMa1trBP5w1aQScYum0F?=
- =?us-ascii?Q?lc+ocYPLdoICVg3uenq6kJMUsU6Jv7ANWp5yCu4wGlAbXp9CMxR+M3dTWQMZ?=
- =?us-ascii?Q?KHeVRbTPSNUoWHDLQuMraH87Sjp4JLZslv3jCGs+1mQBBBaEuJIZkJxUVWK5?=
- =?us-ascii?Q?UvSSftJQ41fawzpet6S7gdRpeN/lNKpLuyhc11y4mpRmUvsY70PPCtzlKRlg?=
- =?us-ascii?Q?N5O14nQBGPV+960ogt03vvboDETa4nZQH652QOgiC8ZYzLttObAMuLcR/JeG?=
- =?us-ascii?Q?uF5euZUI6jDYRwQEtTRfx6cI4AKnuQLIbp15oT6PX7778Lcxh52Nr3DEAaMH?=
- =?us-ascii?Q?dbN1EXBzBNCHyckohgOC3g+Uz36RivL+Dd1+JjpTuApd6B0vIFV62n9Ok/Yv?=
- =?us-ascii?Q?Yz66H7oGhoueoPfAGrVv2YH4H8GI1MN549FHaqKK+Ss5SLadeV4eqzrwBVpg?=
- =?us-ascii?Q?0Z1fMnfJQO4bMakGf3RIFkgjVGPbFDG5gq0Rx/2CZ4FQzFPmh8C+n7dkIvDX?=
- =?us-ascii?Q?MJIv+t0XZmX63JxeakJ8qGUeW2jNUNyecFREoXwJro2is7Q7BbfkyEj5Mxm+?=
- =?us-ascii?Q?T+PbBjwIVm3fnxWavTu+s52hpY83F4H1aCVEmqSMbv2GDObSEzJ4WBz7LZio?=
- =?us-ascii?Q?uyhDIw9mG1ujqp+0UJEFb3CmrFKaMASgZGZzIRRkm9R/8dBY5xu/PJ7MNSog?=
- =?us-ascii?Q?r/Rda4FTx+L1oPsEBszV7X7Bglu+qT//2AfXnjcq/b+v4mSoHLbmja/sdvkD?=
- =?us-ascii?Q?5IDy4o+/kmwFaryt7ZxZ99twJH0DzNt0+K/NGTkEOhkMdNvrnmPdrT0KT8ci?=
- =?us-ascii?Q?qEfpTaWp31UbnVrGyowQt9DupeuoJVZzbYGCjWQDc/CmErnMpUOoaVOgtnq+?=
- =?us-ascii?Q?X7aFEHdmJ9VkzzxPBLMcDHMlnXxX9mQPgI90tX7fBmnRBeyWh2456atp3ikl?=
- =?us-ascii?Q?DSvI?=
+X-Microsoft-Antispam-Message-Info: e0sCtbxMo8q2CgqKaouJn5L1PiptOai7+ez+fHeh2RaDAmWpw3etAAIkNVFaA9+ZTEtiYekZGa56aUJbxHuS0DbS28T9KehdpdRpILXNAI5kd9RAADgGRS8XSHxjh8JN+DPHYEILFwXl+Q4SMBVDnGU0I2Wydpxy4XoVV6OlmRNUSNwkC8EVAQ3tsJuft7aIOdHnDiwdg4N0PaL6rxEIQuYFqGCLmZ6q+7KMh7J+ehp3Tza1uaZ3KSELnfIEUqwoGqya2Ck468vYst909S0wZy+5TxrNq2cnWig+M2HhudgmEUd34msLM6f5dfomNVYyYWtiRKROokRplc9qlS0dGTsHXVIKPFroiW8EfQAa7u40j0G3tDwmiCD/EOMvLW3dT4BwfcaKHIipiP1KenDBsg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(136003)(376002)(366004)(5660300002)(86362001)(316002)(66946007)(66476007)(1076003)(52116002)(2616005)(44832011)(6486002)(956004)(54906003)(6666004)(83380400001)(186003)(26005)(16526019)(8676002)(2906002)(478600001)(8936002)(6512007)(36756003)(6916009)(6506007)(4326008)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2FDnclsUdal7XJuwylfspjU9UM7iD3oD6ZCCFo3aA65u16vDvjyPQSiO8wSS?=
+ =?us-ascii?Q?QId4NFODK3WWtmv7jlS4HTWOlAZh7AsVlLSbIDrXqYxm4a/NujFByR9nqa28?=
+ =?us-ascii?Q?hK3AwD4+7RrPzk5gZLEdkVOiijkyEJcoB2r0sbBK744rgYV/FGsaEKCy6gGH?=
+ =?us-ascii?Q?9f5NstAbOlwFyNiBH9HhJx/byQgMB5PPyLWv9GrtAPYg/lKTtxUUszNKcVYB?=
+ =?us-ascii?Q?4Ct+f37+zP1z7RBytZTvnAH96Z0aU/nmyDrilWpM8R2S8eScckTRD1FLOTSW?=
+ =?us-ascii?Q?V3/tAoykZsd78MtWPJTTMmVoLYsvYZ6hBfspXo61NttVytWRw5Pu4xtgw2ZY?=
+ =?us-ascii?Q?Fpeo4NBFyDhslvGaBwlXBv5vNElVd09uGau8KGandK/jPGg+A0uVcIyyJ8jj?=
+ =?us-ascii?Q?6JVM9/cZhXke3BlEdwtEUwaljiJyLpg7K8rEKpYeI7Kt2pQHV+HVz4QrjQwg?=
+ =?us-ascii?Q?3xDTcGAa67jJqTCFzB05tj/+vNlRXKbyM7cq3Em9Bj9vSOelLEG6u8Tza8sV?=
+ =?us-ascii?Q?dJ9YGm7SXQ4a6P4OF7kjBoOp5g4+T42qhgcN9C4b71V8jNG3yDk3wvgAWCl/?=
+ =?us-ascii?Q?/xFUjNNDVysRbE3CZPhWoN5TUMcPKCd4YSS0gt0XdEH1fiyCWp5pdPHyhsfk?=
+ =?us-ascii?Q?UwL0HH/+ISVWva5QSdWYpUFRaZ+AGdM562irKn9l8/J6Dbk+Wp2RZqY+603P?=
+ =?us-ascii?Q?EF+LF7YUGDJ6IVfLEtgdEEgqZ0ZbsR3mX2JGJtjieKC0YkZfo/CDTplDtPbG?=
+ =?us-ascii?Q?5HUHCHeh7k+FQ2XgowkFdCpJ46cAC1DAmvsuDZtGHPdT8jxVnUvlpX418E9y?=
+ =?us-ascii?Q?NrDv2MItOFuDmouvBtJ9vq6f+sBqthQ//KbBW+kdBBI3Nd5XR6M8RUYexkxn?=
+ =?us-ascii?Q?dXULfbnCWRsXZESiUppYLDV9dDpuT9oaGJrcpGO4E8dD0OiPKLnu1VbnLgl0?=
+ =?us-ascii?Q?A+aIib1uMWbRNe4dUrFWTLC7/foiTRYP3C5rSauOer8/UdpDXV2Nfq59m1h0?=
+ =?us-ascii?Q?7j89?=
 X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 695601e5-0530-44c1-41d2-08d8be5cb3ad
+X-MS-Exchange-CrossTenant-Network-Message-Id: d75c1791-b00f-43f1-1ac8-08d8be5cb3fc
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 22:34:23.4815
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 22:34:23.9982
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jx0nzHEnFdhe36JEUpPt3S403xGE6vzs4otTenmMkiHDz6mH26HNu+b4VSN4ASl7eK7C8vk7+yd4xD1KpBfi8eqC/lf1d/hROfdqETv3udU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2763
+X-MS-Exchange-CrossTenant-UserPrincipalName: HmDYMkQwVbK/05mdLsAobkcH17dAKLPSOwh6FFTyhW1uccIUtDv1NUf/3+XKnbOfp1rPb+2p6TTuSclQH7xUVF/cbXM6UNaAoYF00YP2Wi4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB2011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the core bitmap parse code respects the "all" parameter, there
-is no need for RCU to have its own special check for it.
+While this is done for all bitmaps, the original use case in mind was
+for CPU masks and cpulist_parse().  Credit to Yury who suggested to
+push it down from CPU subsys to bitmap - it simplified things a lot.
+
+It seems that a common configuration is to use the 1st couple cores
+for housekeeping tasks, and or driving a busy peripheral that generates
+a lot of interrupts, or something similar.
+
+This tends to leave the remaining ones to form a pool of similarly
+configured cores to take on the real workload of interest to the user.
+
+So on machine A - with 32 cores, it could be 0-3 for "system" and then
+4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
+setting up the worker pool of CPUs.
+
+But then newer machine B is added, and it has 48 cores, and so while
+the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
+
+Deployment would be easier if we could just simply replace 31 and 47
+with "N" and let the system substitute in the actual number at boot;
+a number that it knows better than we do.
+
+No need to have custom boot args per node, no need to do a trial boot
+in order to snoop /proc/cpuinfo and/or /sys/devices/system/cpu - no
+more fencepost errors of using 32 and 48 instead of 31 and 47.
 
 Cc: Yury Norov <yury.norov@gmail.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  4 +---
- kernel/rcu/tree_plugin.h                        | 13 ++++---------
- 2 files changed, 5 insertions(+), 12 deletions(-)
+ .../admin-guide/kernel-parameters.rst          |  4 ++++
+ lib/bitmap.c                                   | 18 +++++++++++++-----
+ 2 files changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a10b545c2070..a116c0ff0a91 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4037,9 +4037,7 @@
- 				see CONFIG_RAS_CEC help text.
+diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
+index 5e080080b058..668f0b69fb4f 100644
+--- a/Documentation/admin-guide/kernel-parameters.rst
++++ b/Documentation/admin-guide/kernel-parameters.rst
+@@ -68,6 +68,10 @@ For example one can add to the command line following parameter:
  
- 	rcu_nocbs=	[KNL]
--			The argument is a cpu list, as described above,
--			except that the string "all" can be used to
--			specify every CPU on the system.
-+			The argument is a cpu list, as described above.
+ where the final item represents CPUs 100,101,125,126,150,151,...
  
- 			In kernels built with CONFIG_RCU_NOCB_CPU=y, set
- 			the specified list of CPUs to be no-callback CPUs.
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 7e291ce0a1d6..642ebd6569c7 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1463,20 +1463,15 @@ static void rcu_cleanup_after_idle(void)
++The value "N" can be used as the end of a range, to represent the numerically
++last CPU on the system, i.e "foo_cpus=16-N" would be equivalent to "16-31" on
++a 32 core system.
++
+ The following convenience aliases are also accepted and used:
  
- /*
-  * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
-- * The string after the "rcu_nocbs=" is either "all" for all CPUs, or a
-- * comma-separated list of CPUs and/or CPU ranges.  If an invalid list is
-- * given, a warning is emitted and all CPUs are offloaded.
-+ * If the list is invalid, a warning is emitted and all CPUs are offloaded.
-  */
- static int __init rcu_nocb_setup(char *str)
- {
- 	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
--	if (!strcasecmp(str, "all"))
-+	if (cpulist_parse(str, rcu_nocb_mask)) {
-+		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
- 		cpumask_setall(rcu_nocb_mask);
--	else
--		if (cpulist_parse(str, rcu_nocb_mask)) {
--			pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
--			cpumask_setall(rcu_nocb_mask);
--		}
-+	}
- 	return 1;
+         foo_cpus=all
+diff --git a/lib/bitmap.c b/lib/bitmap.c
+index a1010646fbe5..d498ea9d526b 100644
+--- a/lib/bitmap.c
++++ b/lib/bitmap.c
+@@ -571,7 +571,7 @@ static const char *bitmap_find_region_reverse(const char *start, const char *end
+ 	return end;
  }
- __setup("rcu_nocbs=", rcu_nocb_setup);
+ 
+-static const char *bitmap_parse_region(const char *str, struct region *r)
++static const char *bitmap_parse_region(const char *str, struct region *r, int nmaskbits)
+ {
+ 	str = bitmap_getnum(str, &r->start);
+ 	if (IS_ERR(str))
+@@ -583,9 +583,15 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
+ 	if (*str != '-')
+ 		return ERR_PTR(-EINVAL);
+ 
+-	str = bitmap_getnum(str + 1, &r->end);
+-	if (IS_ERR(str))
+-		return str;
++	str++;
++	if (*str == 'N') {
++		r->end = nmaskbits - 1;
++		str++;
++	} else {
++		str = bitmap_getnum(str, &r->end);
++		if (IS_ERR(str))
++			return str;
++	}
+ 
+ 	if (end_of_region(*str))
+ 		goto no_pattern;
+@@ -628,6 +634,8 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
+  * Syntax: range:used_size/group_size
+  * Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
+  * Optionally the self-descriptive "all" or "none" can be used.
++ * The value 'N' can be used as the end of a range to indicate the maximum
++ * allowed value; i.e (nmaskbits - 1).
+  *
+  * Returns: 0 on success, -errno on invalid input strings. Error values:
+  *
+@@ -656,7 +664,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+ 		if (buf == NULL)
+ 			return 0;
+ 
+-		buf = bitmap_parse_region(buf, &r);
++		buf = bitmap_parse_region(buf, &r, nmaskbits);
+ 		if (IS_ERR(buf))
+ 			return PTR_ERR(buf);
+ 
 -- 
 2.17.1
 
