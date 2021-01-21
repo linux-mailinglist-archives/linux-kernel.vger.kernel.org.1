@@ -2,166 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05A72FE968
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624F72FE9F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729952AbhAUL4X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Jan 2021 06:56:23 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2866 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730933AbhAULxo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:53:44 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DM12H3CRRz5JrP;
-        Thu, 21 Jan 2021 19:51:35 +0800 (CST)
-Received: from dggpemm100011.china.huawei.com (7.185.36.112) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 21 Jan 2021 19:52:58 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm100011.china.huawei.com (7.185.36.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 21 Jan 2021 19:52:57 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
- Thu, 21 Jan 2021 19:52:57 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-accelerators@lists.ozlabs.org" 
-        <linux-accelerators@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: RE: [PATCH] uacce: Add uacce_ctrl misc device
-Thread-Topic: [PATCH] uacce: Add uacce_ctrl misc device
-Thread-Index: AQHW79ZyYq1sk039MU+9J2rOLgF+UaoxTpyAgACJurD//5BAgIAAiKPA
-Date:   Thu, 21 Jan 2021 11:52:57 +0000
-Message-ID: <4ebea7d714ed4c5a8cee9291101b0a9b@hisilicon.com>
-References: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
- <YAlNTSOMmsFPFAhk@kroah.com> <ea0511c1309a486d9646d5a32715c861@hisilicon.com>
- <YAljF+Y4/SxVKmXo@kroah.com>
-In-Reply-To: <YAljF+Y4/SxVKmXo@kroah.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.204]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1727484AbhAUMZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:25:49 -0500
+Received: from mga05.intel.com ([192.55.52.43]:1666 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727900AbhAUKpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:45:32 -0500
+IronPort-SDR: iK5J0kb9pZGcqoCW7frbpLwcVx4x4tEv/SnXNx2dCvHDirUIS2V3dnozK1sMGpwdaZOhK+0SYa
+ yYc0AuVXF9cg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="264064898"
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="264064898"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:44:46 -0800
+IronPort-SDR: U/BYs4TmlOYrAtGVLsA7+bIfaTy9EHPUgEBoKcsPjK8LMAhldQtUt8//yq1Uy7y/n0191HJrTS
+ jG5m0DHJu6Ow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="356417382"
+Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Jan 2021 02:44:43 -0800
+From:   Sia Jee Heng <jee.heng.sia@intel.com>
+To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, jee.heng.sia@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v11 00/16] dmaengine: dw-axi-dmac: support Intel KeemBay AxiDMA
+Date:   Thu, 21 Jan 2021 18:27:10 +0800
+Message-Id: <20210121102726.22805-1-jee.heng.sia@intel.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The below patch series are to support AxiDMA running on Intel KeemBay SoC.
+The base driver is dw-axi-dmac. This driver only support DMA memory copy transfers.
+Code refactoring is needed so that additional features can be supported.
+The features added in this patch series are:
+- Replacing Linked List with virtual descriptor management.
+- Remove unrelated hw desc stuff from dma memory pool.
+- Manage dma memory pool alloc/destroy based on channel activity.
+- Support dmaengine device_sync() callback.
+- Support dmaengine device_config().
+- Support dmaengine device_prep_slave_sg().
+- Support dmaengine device_prep_dma_cyclic().
+- Support of_dma_controller_register().
+- Support burst residue granularity.
+- Support Intel KeemBay AxiDMA registers.
+- Support Intel KeemBay AxiDMA device handshake.
+- Support Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Add constraint to Max segment size.
+- Virtually split the linked-list.
+
+This patch series are tested on Intel KeemBay platform.
+Eugeniy Paltsev has runtime tested this patch series on HSDK SoC/board.
+
+v11:
+- Fixed bot build warning.
+
+v10:
+- Rebased to kernel v5.11-rc4
+- Added Reviewed-by and Tested-by tag from Eugeniy Paltsev.
+
+v9:
+- Logic checked on apb_regs inside the function.
+- Improved code scalability so that missing of apb_regs wouldn't failed
+  the common callback functions.
+
+v8:
+- Rebased to kernel v5.11-rc1.
+- Added reviewed-by tag from Rob.
+
+v7:
+- Added 'allOf' and '$ref:dma-controller.yaml#' in DT binding.
+- Removed the dma-channels common description in DT binding.
+- Removed the default fields in DT binding.
+
+v6:
+- Removed 'allOf' cases in DT binding.
+- Added '>' at the end of the email address.
+- Removed additional '|' at the start of description.
+- Fixed space indent.
+- Added proper constraint in DT binding.
+- Removed second example in DT binding.
+
+v5:
+- Added comment to the Apb registers used by Intel KeemBay Soc.
+- Renamed "hs_num" to "handshake_num".
+- Conditional check for the compatible property and return error
+  instead of printing warning.
+- Added patch 16th to virtually split the linked-list as per
+  request from ALSA team.
+
+v4:
+- Fixed bot found errors running make_dt_binding_check.
+- Added minItems: 1 to the YAML schemas DT binding.
+- Updated "reg" field to the YAML schemas DT binding.
+
+v3:
+- Added additionalProperties: false to the YAML schemas DT binding.
+- Reordered patch sequence for patch 10th, 11th and 12th so that
+  DT binding come first, follow by adding Intel KeemBay SoC registers
+  and update .compatible field.
+- Checked txstate NULL condition.
+- Created helper function dw_axi_dma_set_hw_desc() to handle common code.
+
+v2:
+- Rebased to v5.10-rc1 kernel.
+- Added support for dmaengine device_config().
+- Added support for dmaengine device_prep_slave_sg().
+- Added support for dmaengine device_prep_dma_cyclic().
+- Added support for of_dma_controller_register().
+- Added support for burst residue granularity.
+- Added support for Intel KeemBay AxiDMA registers.
+- Added support for Intel KeemBay AxiDMA device handshake.
+- Added support for Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Added constraint to Max segment size.
+
+v1:
+- Initial version. Patch on top of dw-axi-dma driver. This version improve
+  the descriptor management by replacing Linked List Item (LLI) with
+  virtual descriptor management, only allocate hardware LLI memories from
+  DMA memory pool, manage DMA memory pool alloc/destroy based on channel
+  activity and to support device_sync callback.
+
+Sia Jee Heng (16):
+  dt-bindings: dma: Add YAML schemas for dw-axi-dmac
+  dmaengine: dw-axi-dmac: simplify descriptor management
+  dmaengine: dw-axi-dmac: move dma_pool_create() to
+    alloc_chan_resources()
+  dmaengine: dw-axi-dmac: Add device_synchronize() callback
+  dmaengine: dw-axi-dmac: Add device_config operation
+  dmaengine: dw-axi-dmac: Support device_prep_slave_sg
+  dmaegine: dw-axi-dmac: Support device_prep_dma_cyclic()
+  dmaengine: dw-axi-dmac: Support of_dma_controller_register()
+  dmaengine: dw-axi-dmac: Support burst residue granularity
+  dt-binding: dma: dw-axi-dmac: Add support for Intel KeemBay AxiDMA
+  dmaengine: dw-axi-dmac: Add Intel KeemBay DMA register fields
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA support
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA handshake
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA BYTE and HALFWORD
+    registers
+  dmaengine: dw-axi-dmac: Set constraint to the Max segment size
+  dmaengine: dw-axi-dmac: Virtually split the linked-list
+
+ .../bindings/dma/snps,dw-axi-dmac.txt         |  39 -
+ .../bindings/dma/snps,dw-axi-dmac.yaml        | 126 ++++
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 696 +++++++++++++++---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |  34 +-
+ 4 files changed, 763 insertions(+), 132 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
 
 
-> -----Original Message-----
-> From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
-> Sent: Friday, January 22, 2021 12:19 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; Zhangfei Gao
-> <zhangfei.gao@linaro.org>; Arnd Bergmann <arnd@arndb.de>;
-> linux-accelerators@lists.ozlabs.org; linux-kernel@vger.kernel.org;
-> chensihang (A) <chensihang1@hisilicon.com>
-> Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
-> 
-> On Thu, Jan 21, 2021 at 10:18:24AM +0000, Song Bao Hua (Barry Song) wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
-> > > Sent: Thursday, January 21, 2021 10:46 PM
-> > > To: Wangzhou (B) <wangzhou1@hisilicon.com>
-> > > Cc: Zhangfei Gao <zhangfei.gao@linaro.org>; Arnd Bergmann <arnd@arndb.de>;
-> > > linux-accelerators@lists.ozlabs.org; linux-kernel@vger.kernel.org;
-> > > chensihang (A) <chensihang1@hisilicon.com>
-> > > Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
-> > >
-> > > On Thu, Jan 21, 2021 at 05:09:14PM +0800, Zhou Wang wrote:
-> > > > When IO page fault happens, DMA performance will be affected. Pin user
-> page
-> > > > can avoid IO page fault, this patch introduces a new char device named
-> > > > /dev/uacce_ctrl to help to maintain pin/unpin pages. User space can do
-> > > > pin/unpin pages by ioctls of an open file of /dev/uacce_ctrl, all pinned
-> > > > pages under one file will be unpinned in file release process.
-> > >
-> > > Also, what are you really trying to do here?  If you need to mess with
-> > > memory pages, why can't the existing memory apis work properly for you?
-> > > Please work with the linux-mm developers to resolve the issue using the
-> > > standard apis and not creating a one-off char device node for this type
-> > > of thing.
-> >
-> > Basically the purpose is implementing a pinned memory poll for userspace
-> > DMA to achieve better performance by removing io page fault.
-> 
-> And what could possibly go wrong with that :)
+base-commit: 9791581c049c10929e97098374dd1716a81fefcc
+-- 
+2.18.0
 
-I think we have resolved this concern while uacce came in :-)
-Uacce is based on SVA so devices are accessing memory in userspace
-by strict permission control.
-
-> 
-> > I really like this can be done in generic mm code. Unfortunately there is
-> no
-> > this standard API in kernel to support userspace pin. Right now, various
-> > subsystems depend on the ioctl of /dev/<name> to implement the pin, for example,
-> > v4l2, gpu, infiniband, media etc.
-> >
-> > I feel it is extremely hard to sell a standard mpin() API like mlock()
-> > for this stage as mm could hardly buy this. And it will require
-> > huge changes in kernel.
-> 
-> Why?  This is what mlock() is for, why can't you use it?
-
-mlock() can only guarantee memory won't be swapped out, it doesn't
-make sure memory won't move. alloc_pages() can cause memory compaction,
-cma, numa balance, huge pages etc can move mlock()-ed pages.
-We would still see many I/O page faults for mlock() area.
-
-> 
-> > We need a way to manage what pages are pinned by process and ensure the
-> > pages can be unpinned while the process is killed abnormally. otherwise,
-> > memory gets leaked.
-> 
-> Can't mlock() handle that?  It works on the process that called it.
-> 
-> > file_operations release() is a good entry for this kind of things. In
-> > this way, we don't have to maintain the pinned page set in task_struct
-> > and unpin them during exit().
-> >
-> > If there is anything to make it better by doing this in a driver. I
-> > would believe we could have a generic misc driver for pin like
-> > vms_ballon.c for ballon. The driver doesn't have to bind with uacce.
-> >
-> > In this way, the pinned memory pool implementation in userspace doesn't
-> > need to depend on a specific uacce driver any more.
-> 
-> Please work with the mm developers to get them to agree with this type
-> of thing, as well as the dma developers, both of which you didn't cc: on
-> this patch :(
-
-Yep.
-
-> 
-> Remember, you are creating a new api for Linux that goes around existing
-> syscalls, but is in reality, a new syscall, so why not just make it a
-> new syscall?
-
-The difficulty would be how to record which pages are pinned for a process
-if it is done by a new syscall.
-
-For mlock(), it can be much easier as it will change VMA. Hardly we can
-change VMA for pin. On the other hand, if the implementation is done in
-driver, with file_operations, we can record pinned pages in the private
-data of an opened file.
-
-> 
-> thanks,
-> 
-> greg k-h
-
-Thanks
-Barry
