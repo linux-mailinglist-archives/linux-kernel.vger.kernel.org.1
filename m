@@ -2,183 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374CA2FEA11
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889EF2FEA0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730968AbhAUM3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:29:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55472 "EHLO mail.kernel.org"
+        id S1731129AbhAUM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:28:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50962 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731134AbhAUM22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:28:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC38239D1;
-        Thu, 21 Jan 2021 12:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611232067;
-        bh=yaiGaY9CsCce4ziujW0DI0CJqQEDns2mxFIXWr5A2d8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=URpLdAui1A3REY2XYW9SaWUzljd1JeS4pqdT+UqN9xM7doZKzetjoPOxE2ZvyB0EA
-         nmmAWm3E31c7sQtafFElXD25S+aU+Fxr1IGWirOLCQq2urltKHxVtDHt62T9bzjV6B
-         5QF4DxRwZMibez4Fo7cTgo4JakJjyLu+wpRDxwc7booM5/EQpzElXHYRrLTkeQ+LTQ
-         hq+Eke2Zun77b9rU8157ukwdqkmIVsZplM9+V2OKpWISKe4Wg08EwRA9ft70p2ua8+
-         xFA0AKpB6lJEOPh1xUI/KbtlTN/rz6KUa6agwHCJ+OQuJn/fpYxdAzIOH/LWlpZsl6
-         yCQ7lmRDOD8Tg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH v16 01/11] mm: add definition of PMD_PAGE_ORDER
-Date:   Thu, 21 Jan 2021 14:27:13 +0200
-Message-Id: <20210121122723.3446-2-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210121122723.3446-1-rppt@kernel.org>
-References: <20210121122723.3446-1-rppt@kernel.org>
+        id S1726570AbhAUM1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:27:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E29E2AE87;
+        Thu, 21 Jan 2021 12:26:53 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 13:27:57 +0100
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     ltp@lists.linux.it, linux-kernel@vger.kernel.org,
+        libc-alpha@sourceware.org
+Cc:     lwn@lwn.net, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org
+Subject: [ANNOUNCE] The Linux Test Project has been released for JANUARY 2021
+Message-ID: <YAlzTaWcKTGurolF@yuki.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Good news everyone,
 
-The definition of PMD_PAGE_ORDER denoting the number of base pages in the
-second-level leaf page is already used by DAX and maybe handy in other
-cases as well.
+the Linux Test Project test suite stable release for *January 2021* has been
+released.
 
-Several architectures already have definition of PMD_ORDER as the size of
-second level page table, so to avoid conflict with these definitions use
-PMD_PAGE_ORDER name and update DAX respectively.
+Since the last release 303 patches by 35 authors were merged.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Elena Reshetova <elena.reshetova@intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James Bottomley <jejb@linux.ibm.com>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tycho Andersen <tycho@tycho.ws>
-Cc: Will Deacon <will@kernel.org>
-Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
----
- fs/dax.c                | 11 ++++-------
- include/linux/pgtable.h |  3 +++
- 2 files changed, 7 insertions(+), 7 deletions(-)
+NOTABLE CHANGES
+===============
 
-diff --git a/fs/dax.c b/fs/dax.c
-index 26d5dcd2d69e..0f109eb16196 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -49,9 +49,6 @@ static inline unsigned int pe_order(enum page_entry_size pe_size)
- #define PG_PMD_COLOUR	((PMD_SIZE >> PAGE_SHIFT) - 1)
- #define PG_PMD_NR	(PMD_SIZE >> PAGE_SHIFT)
- 
--/* The order of a PMD entry */
--#define PMD_ORDER	(PMD_SHIFT - PAGE_SHIFT)
--
- static wait_queue_head_t wait_table[DAX_WAIT_TABLE_ENTRIES];
- 
- static int __init init_dax_wait_table(void)
-@@ -98,7 +95,7 @@ static bool dax_is_locked(void *entry)
- static unsigned int dax_entry_order(void *entry)
- {
- 	if (xa_to_value(entry) & DAX_PMD)
--		return PMD_ORDER;
-+		return PMD_PAGE_ORDER;
- 	return 0;
- }
- 
-@@ -1470,7 +1467,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
- {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct address_space *mapping = vma->vm_file->f_mapping;
--	XA_STATE_ORDER(xas, &mapping->i_pages, vmf->pgoff, PMD_ORDER);
-+	XA_STATE_ORDER(xas, &mapping->i_pages, vmf->pgoff, PMD_PAGE_ORDER);
- 	unsigned long pmd_addr = vmf->address & PMD_MASK;
- 	bool write = vmf->flags & FAULT_FLAG_WRITE;
- 	bool sync;
-@@ -1529,7 +1526,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
- 	 * entry is already in the array, for instance), it will return
- 	 * VM_FAULT_FALLBACK.
- 	 */
--	entry = grab_mapping_entry(&xas, mapping, PMD_ORDER);
-+	entry = grab_mapping_entry(&xas, mapping, PMD_PAGE_ORDER);
- 	if (xa_is_internal(entry)) {
- 		result = xa_to_internal(entry);
- 		goto fallback;
-@@ -1695,7 +1692,7 @@ dax_insert_pfn_mkwrite(struct vm_fault *vmf, pfn_t pfn, unsigned int order)
- 	if (order == 0)
- 		ret = vmf_insert_mixed_mkwrite(vmf->vma, vmf->address, pfn);
- #ifdef CONFIG_FS_DAX_PMD
--	else if (order == PMD_ORDER)
-+	else if (order == PMD_PAGE_ORDER)
- 		ret = vmf_insert_pfn_pmd(vmf, pfn, FAULT_FLAG_WRITE);
- #endif
- 	else
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 8fcdfa52eb4b..ea5c4102c23e 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -28,6 +28,9 @@
- #define USER_PGTABLES_CEILING	0UL
- #endif
- 
-+/* Number of base pages in a second level leaf page */
-+#define PMD_PAGE_ORDER	(PMD_SHIFT - PAGE_SHIFT)
-+
- /*
-  * A page table page can be thought of an array like this: pXd_t[PTRS_PER_PxD]
-  *
+* New tests
+  - finit_module()
+  - init_module()
+  - delete_module()
+  - semctl09 for SEM_STAT_ANY flag
+  - msgctl06 for MSG_STAT_ANY flag
+  - shmctl04 for SHM_STAT_ANY flag
+  - sendmmsg() failure tests
+  - recvmmsg() failure tests
+  - open_by_handle_at()
+  - name_to_handle_at()
+  - ptrace11 to check if we can trace PID 1
+  - select04 failure tests
+  - select04 to check if rfds/wfds flags are clered on empty/full fd
+
+* New regression tests
+  - inotify10 added test for fecc4559780d (fsnotify: fix events reported to watching parent and child)
+  - fanotify09 for 7372e79c9eb9 (fanotify: fix logic of reporting name info with watched parent)
+  - ptrace10 bd14406b78e6 (perf/hw_breakpoint: Modify breakpoint even if the new attr has disabled set)
+
+* Increased coverage
+  - fanotify09 added case with FAN_CLOSE_NOWRITE on a sibling non-dir child
+
+* Removed tests
+  - sync01, sync02 these tests were useless so there was no point in keeping them 
+
+* The metadata extraction patchset was merged. LTP now produces metadata.json
+  with a metadata for new library testcases and also html test catalogue build
+  from the extracted metadata.
+
+  https://github.com/linux-test-project/ltp/blob/master/docparse/README.md
+
+* Kernel .config parser was rewritten to support proper boolean expressions
+
+* LTP now requires pkg-config > 0.23 (working version 0.24 was released in 2010)
+
+* Error handling in test library (mostly SAFE_MACROS()) was unified
+
+* High level test library overview was written:
+  https://github.com/linux-test-project/ltp/blob/master/lib/README.md
+
+* IMA/EVM
+ - fixed ima_tpm.sh for TPM 2.0 and for TPM 1.2 on kernel >= v5.8 (commit 6f1a1d103b48)
+ - rewrote ima_boot_aggregate.c to new API
+
+* 16 testcases were converted to the new test library
+
++ The usual amount of fixes and cleanups.
+
+NOTABLE CHANGES IN NETWORK TESTS
+================================
+brought to you by Petr Vorel
+
+* New tests
+  - wireguard tests
+
+* Fixes
+  - fix various false-positive failures in tests using tst_netload
+    (tests in net.features and net_stress.ipsec_* runtest files)
+  - if-mtu-change.sh on s390x: fix max packet size for IPv4
+
+* Compatibility fixes:
+  - ping and traceroute from BusyBox
+  - MUSL (netstress)
+  - traceroute6 from iputils
+
++ various other fixes and cleanup
+
+* Rewrite into new API
+  - host01
+  - netstat01.sh
+
+DOWNLOAD AND LINKS
+==================
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/20210121
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list at ltp@lists.linux.it.
+
+CREDITS
+=======
+
+Many thanks to the people contributing to this release:
+
+git shortlog -s -e -n 20200930..
+
+    88  Petr Vorel <pvorel@suse.cz>
+    52  Cyril Hrubis <chrubis@suse.cz>
+    25  Martin Doucha <mdoucha@suse.cz>
+    19  Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+    18  Viresh Kumar <viresh.kumar@linaro.org>
+    10  Xiao Yang <yangx.jy@cn.fujitsu.com>
+     8  Alexey Kodanev <alexey.kodanev@oracle.com>
+     8  Amir Goldstein <amir73il@gmail.com>
+     8  Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+     8  Kory Maincent <kory.maincent@bootlin.com>
+     7  Radoslav Kolev <radoslav.kolev@suse.com>
+     5  Richard Palethorpe <rpalethorpe@suse.com>
+     4  Cixi Geng <cixi.geng1@unisoc.com>
+     4  Krzysztof Dynowski <k.dynowski@samsung.com>
+     4  Li Wang <liwang@redhat.com>
+     4  Po-Hsu Lin <po-hsu.lin@canonical.com>
+     4  Joerg Vehlow <joerg.vehlow@aox-tech.de>
+     3  Alexander Egorenkov <egorenar@linux.ibm.com>
+     2  Khem Raj <raj.khem@gmail.com>
+     2  Li Zhijian <lizhijian@cn.fujitsu.com>
+     2  Pengfei Xu <pengfei.xu@intel.com>
+     2  Tree Davies <tdavies@darkphysics.net>
+     2  Yang Xu <xuyang_jy_0410@163.com>
+     2  Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+     2  Johannes Nixdorf <j.nixdorf@avm.de>
+     1  Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
+     1  Deepak Rawat <derawa@microsoft.com>
+     1  Filip Bozuta <Filip.Bozuta@syrmia.com>
+     1  Jan Stancek <jstancek@redhat.com>
+     1  Peter Bee <bijunda1@xiaomi.com>
+     1  Petr Cervinka via ltp <ltp@lists.linux.it>
+     1  Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+     1  Radoslav Kolev via ltp <ltp@lists.linux.it>
+     1  Xinpeng Liu <liuxp11@chinatelecom.cn>
+     1  bhargavdas <bhargav_das@mentor.com>
+
+And also thanks to patch reviewers:
+
+git log 20200930.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+
+    114 Cyril Hrubis <chrubis@suse.cz>
+     58 Petr Vorel <pvorel@suse.cz>
+     51 Li Wang <liwang@redhat.com>
+     13 Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+     11 Amir Goldstein <amir73il@gmail.com>
+     10 Alexey Kodanev <alexey.kodanev@oracle.com>
+      9 Jan Stancek <jstancek@redhat.com>
+      5 Xiao Yang <yangx.jy@cn.fujitsu.com>
+      5 Jan Kara <jack@suse.cz>
+      3 Xiao Yang <yangx.jy@cn.fujitsu.com>
+      5 Richard Palethorpe <rpalethorpe@suse.com>
+      3 Martin Doucha <mdoucha@suse.cz>
+      2 Mimi Zohar <zohar@linux.ibm.com>
+      1 Kory Maincent <kory.maincent@bootlin.com>
+      1 Joerg Vehlow <joerg.vehlow@aox-tech.de>
+
 -- 
-2.28.0
-
+Cyril Hrubis
+chrubis@suse.cz
