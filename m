@@ -2,139 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405EB2FE997
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F212FE98C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730924AbhAUMC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:02:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727463AbhAULTM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:19:12 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9181C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:26 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id i7so1144017pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x3SmdleK8UZBluZ+gLv61IXIdA7ChI0uJ8q02WGnkWs=;
-        b=kKul5ID8v5TbX97ww+cpfmgrUv3kSKDwJ5+iClldpCxSEMEvh16BW9c99r9D6TxUF/
-         UJy9U+fbp6GgTXqQAKH2vpfq+OBFaUhJAFtmu2GlHVA0WGpq/UGkkQR9iGMbQoj1Iitv
-         n10xlrNXdq0kiQQIE5ELsxJO+0LGCp2wS9uujRkXF7ZC8F+po6ARY/vc2Wfe1Q2Hl5ea
-         ea/DVLs27iqJz6zMgl0grfTLeQyN5TuTmnmrzme3iilGPe9v/xC35tR/mdM3Bl/HM1qU
-         XZS/WWhF29VdoamNtm9NTJNGg++hLG8LJsFS9ZiaU3Au8PjSKQyPReA9zoIHqr/wIRDf
-         hK1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x3SmdleK8UZBluZ+gLv61IXIdA7ChI0uJ8q02WGnkWs=;
-        b=qAl2FnmCw/SoLQivJA+6llWStUTW9rdz0BCQtmVfGzDSnkQ2lBzOfYxBUv5CFJ+dSd
-         lmr3/Y40FSns82d036ms/pTWraA0ySw7dndXVAZAgqIoSdZhWOLrytccac+MzUuD29PQ
-         PbHw+ISurYtqEQnZCu4ZTGUtyXpIDNfNH5R0AzZn85Sc575S9ByUKni8AiCWxWdRusgb
-         prWrMQFMLtSLqdAFHtb/FOKLQeFP6X/jjkMOgfoukIGbOVOQUs3kGWan/i8c7jEvq1nG
-         kFHYSbt3Zp1LUjqPmXL0QXy0jl1BfSIV32naH2MZCQou0dP9uAwtB84Yx4fyNlUviHUa
-         Dlcg==
-X-Gm-Message-State: AOAM530uKiWzei/Hp5n7Tn1WCczDC1vQFvFfnKa4ppwWpjKdtijRVdZL
-        LWqVc4U9b+HT2mE8V9/dkk4bhg==
-X-Google-Smtp-Source: ABdhPJzYjBGnMJtovsRHZ48WHArs33wC1W8Lrm5qvHpSIs5QnnIQMqLBBg9eMiM+WEzPlls9eOjVdQ==
-X-Received: by 2002:aa7:84d5:0:b029:19d:da20:73fe with SMTP id x21-20020aa784d50000b029019dda2073femr13718975pfn.16.1611227895317;
-        Thu, 21 Jan 2021 03:18:15 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id 68sm5691390pfg.90.2021.01.21.03.18.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 03:18:14 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH 00/13] opp: Implement dev_pm_opp_set_opp()
-Date:   Thu, 21 Jan 2021 16:47:40 +0530
-Message-Id: <cover.1611227342.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        id S1730521AbhAUMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:02:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728590AbhAULTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:19:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91534238E3;
+        Thu, 21 Jan 2021 11:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611227930;
+        bh=PZuL4K4MYilESgvpiWC4rYkLNV2J+t9XEez4xaSZDhQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=toli/KAXTTPqeLTr5dhCpZSbbkR/nfPoBwIhlslp/Jr2Ej1AMLBlb8/Np8uj9qh5r
+         ckT+4oKqdLY2RKQYnAGZ0EJCvXNhDz2l0w3JVn8zB8vy+O23CVfbdO/4I3UkspLJZN
+         fn3hYrpjVDZgEgj+mXiPzIOcWrba1k/zzwq96sV4=
+Date:   Thu, 21 Jan 2021 12:18:47 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-accelerators@lists.ozlabs.org" 
+        <linux-accelerators@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
+Message-ID: <YAljF+Y4/SxVKmXo@kroah.com>
+References: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
+ <YAlNTSOMmsFPFAhk@kroah.com>
+ <ea0511c1309a486d9646d5a32715c861@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea0511c1309a486d9646d5a32715c861@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jan 21, 2021 at 10:18:24AM +0000, Song Bao Hua (Barry Song) wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
+> > Sent: Thursday, January 21, 2021 10:46 PM
+> > To: Wangzhou (B) <wangzhou1@hisilicon.com>
+> > Cc: Zhangfei Gao <zhangfei.gao@linaro.org>; Arnd Bergmann <arnd@arndb.de>;
+> > linux-accelerators@lists.ozlabs.org; linux-kernel@vger.kernel.org;
+> > chensihang (A) <chensihang1@hisilicon.com>
+> > Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
+> > 
+> > On Thu, Jan 21, 2021 at 05:09:14PM +0800, Zhou Wang wrote:
+> > > When IO page fault happens, DMA performance will be affected. Pin user page
+> > > can avoid IO page fault, this patch introduces a new char device named
+> > > /dev/uacce_ctrl to help to maintain pin/unpin pages. User space can do
+> > > pin/unpin pages by ioctls of an open file of /dev/uacce_ctrl, all pinned
+> > > pages under one file will be unpinned in file release process.
+> > 
+> > Also, what are you really trying to do here?  If you need to mess with
+> > memory pages, why can't the existing memory apis work properly for you?
+> > Please work with the linux-mm developers to resolve the issue using the
+> > standard apis and not creating a one-off char device node for this type
+> > of thing.
+> 
+> Basically the purpose is implementing a pinned memory poll for userspace
+> DMA to achieve better performance by removing io page fault.
 
-This patchset implements a new API dev_pm_opp_set_opp(), which
-configures the devices represented by an opp table to a particular opp.
-The opp core supports a wide variety of devices now, some of them can
-change frequency and other properties (like CPUs), while others can just
-change their pstates or regulators (like power domains) and then there
-are others which can change their bandwidth as well (interconnects).
-Instead of having separate implementations for all of them, where all
-will eventually lack something or the other, lets try to implement a
-common solution for everyone. This takes care of setting regulators, bw,
-required opps, etc for all device types.
+And what could possibly go wrong with that :)
 
-Dmitry, please go ahead and try this series. This is based of opp tree's
-linux-next branch.
+> I really like this can be done in generic mm code. Unfortunately there is no
+> this standard API in kernel to support userspace pin. Right now, various
+> subsystems depend on the ioctl of /dev/<name> to implement the pin, for example,
+> v4l2, gpu, infiniband, media etc.
+> 
+> I feel it is extremely hard to sell a standard mpin() API like mlock()
+> for this stage as mm could hardly buy this. And it will require
+> huge changes in kernel.
 
-Sibi, since you added dev_pm_opp_set_bw() earlier, it would be good if
-you can give this a try. In case this breaks anything for you.
+Why?  This is what mlock() is for, why can't you use it?
 
-I have already tested this on hikey board for CPU devices.
+> We need a way to manage what pages are pinned by process and ensure the
+> pages can be unpinned while the process is killed abnormally. otherwise,
+> memory gets leaked.
 
-To get this tested better and as early as possible, I have pushed it
-here:
+Can't mlock() handle that?  It works on the process that called it.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/linux-next
+> file_operations release() is a good entry for this kind of things. In
+> this way, we don't have to maintain the pinned page set in task_struct
+> and unpin them during exit().
+> 
+> If there is anything to make it better by doing this in a driver. I
+> would believe we could have a generic misc driver for pin like
+> vms_ballon.c for ballon. The driver doesn't have to bind with uacce.
+> 
+> In this way, the pinned memory pool implementation in userspace doesn't
+> need to depend on a specific uacce driver any more.
 
-This will be part of linux-next tomorrow.
+Please work with the mm developers to get them to agree with this type
+of thing, as well as the dma developers, both of which you didn't cc: on
+this patch :(
 
-Note, all the patches need to go through OPP tree here. Please provide
-your Acks for platform specific bits.
+Remember, you are creating a new api for Linux that goes around existing
+syscalls, but is in reality, a new syscall, so why not just make it a
+new syscall?
 
---
-Viresh
+thanks,
 
-Viresh Kumar (13):
-  opp: Rename _opp_set_rate_zero()
-  opp: No need to check clk for errors
-  opp: Keep track of currently programmed OPP
-  opp: Split _set_opp() out of dev_pm_opp_set_rate()
-  opp: Allow _set_opp() to work for non-freq devices
-  opp: Allow _generic_set_opp_regulator() to work for non-freq devices
-  opp: Allow _generic_set_opp_clk_only() to work for non-freq devices
-  opp: Update parameters of  _set_opp_custom()
-  opp: Implement dev_pm_opp_set_opp()
-  cpufreq: qcom: Migrate to dev_pm_opp_set_opp()
-  devfreq: tegra30: Migrate to dev_pm_opp_set_opp()
-  drm: msm: Migrate to dev_pm_opp_set_opp()
-  opp: Remove dev_pm_opp_set_bw()
-
- drivers/cpufreq/qcom-cpufreq-hw.c     |   2 +-
- drivers/devfreq/tegra30-devfreq.c     |   2 +-
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c |   8 +-
- drivers/opp/core.c                    | 314 ++++++++++++++------------
- drivers/opp/opp.h                     |   2 +
- include/linux/pm_opp.h                |   6 +-
- 6 files changed, 184 insertions(+), 150 deletions(-)
-
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+greg k-h
