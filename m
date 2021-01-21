@@ -2,109 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3075A2FEAAB
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD492FEAAC
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731434AbhAUMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731386AbhAUMue (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:50:34 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EA9C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:49:52 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id q2so3589425iow.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:49:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XtJzgKzVRJpARygSVTsNyuHH5dLSN0DrMqlgv5UOqDc=;
-        b=RLqBM9veRRKlB4rylFHd7Swdy4CvbRNJjmVI8wM8bnYJYMbGIWZ5tZGlQNhcUottyq
-         vHdpT/4mttMKyZ5RAxM3AikpJ3EwGrswUKw4FWw5mjuz5uIzcsEDiOBX9Rdjv8gReTqm
-         7snQhjCLzTzKCIA0ZBOYMxJpYa3zIcdMLsPTbagNVvsSrYNGna8p5+UUvOcaz/Rqs5Qv
-         H8Qj1YYCk+ChuiLkJSBdrUquzvVvgCuiEDmj1N8Cbs6LrztdkeSPVsnWElnd38bbfVZe
-         MFrMMtIn3KxqHZIPKrEziK06Tkl8jemC4WeGhLiY1oRc9TmqKm3YMVqA+ZPdrl6PlhAi
-         /84Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XtJzgKzVRJpARygSVTsNyuHH5dLSN0DrMqlgv5UOqDc=;
-        b=MTKsxvxllsocP3qFvxkDqH0UZvd5KGBKrBYIdCYR7cL64u8Nl8oxyzX6vOGSpSF24G
-         EYnm0N7x/IxxkBotM0ORcf6JkrWXFA3x6KqI2gZbUPfCSAcxGxpikRtMgyJ8wvbw5o02
-         zwtJNV1Ij51flsrO3UI2qftm2c0SyZnDNQIcNTZECuiiBJ7XgJXfFy2N7O2n9VNIbiOy
-         +KUpGHJbD0ftqN62eFL9Hink6gi/zWOi19zZfwI3O/f3lM7px63t8tyVn/44Ya6H21IC
-         aQmrp+IWfZXRZq92Z7yKrVzWFJA9vVKqaVAqCfVv0h6a5FYtn32FHou9keehvFPzrswV
-         rxLQ==
-X-Gm-Message-State: AOAM531GlCbpIybYKTgyDSHjh2vjM04FK/O4mSwjw/sZ6RlwHPS/wyFG
-        4p12G9S/zTFC1i3/JXATsWVWqryrMWc3bhC7fUnUsvCIKjzRDA==
-X-Google-Smtp-Source: ABdhPJwZTiCZN3giTtWGBStHjP+xWxJpS0IrKvCmpoXVA5rQ9jAt2zsEQvXLTxfDpATV+oBFYqyKFQnYyFme6d1LiUU=
-X-Received: by 2002:a5e:8d15:: with SMTP id m21mr10401165ioj.114.1611233391723;
- Thu, 21 Jan 2021 04:49:51 -0800 (PST)
+        id S1731514AbhAUMwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:52:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731386AbhAUMva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:51:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF22239FD;
+        Thu, 21 Jan 2021 12:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611233449;
+        bh=2X/UdBtskFG5nLtVzkFy8EK565N+XAb9l90On4yYN/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fzKT2k1TVufQRMdOpt9MiPdsouFFgMF7aMiXH35ldlRBAiRsZ2zw3Xl7+/y83VtaN
+         uiH/Qf3itPcNTA1hH/dswt4Fi3CPqWgHAjk+NtQ2AnaIkUBRW4JkudI1nKryEz8lNN
+         ttYo5y7ckYo16OHK+htDWCJJ8jgxCSBihJwGCJzbUjOMGLvfVy6u87xnSMme5Wu2BK
+         f3aOhMuM61fyHeqvQ+vMiBWRXH3DX9fd2r1D7xRQgcys886Hxgsl/t/dyBKLAmZs+2
+         UtKc8oAslBAsi6i+Bc0YNEVYRKYBMSMM+xt29ya3FZ7F7Z/wX4llL2Iy6cp/0oCdou
+         cTbxMFkF4crjw==
+Date:   Thu, 21 Jan 2021 12:50:44 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v4 7/8] mm: Use static initialisers for immutable fields
+ of 'struct vm_fault'
+Message-ID: <20210121125043.GC22123@willie-the-truck>
+References: <20210120173612.20913-1-will@kernel.org>
+ <20210120173612.20913-8-will@kernel.org>
+ <CAKwvOdkqGy9O8yAnyeJO-P3WssRa1=OS=Q-T2ZV1vGwdwi=6+A@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAD-N9QV7H8cRUAbnrU9KuXvKbtwL6tLk8-p6HcGpwHn3NeqHJA@mail.gmail.com>
-In-Reply-To: <CAD-N9QV7H8cRUAbnrU9KuXvKbtwL6tLk8-p6HcGpwHn3NeqHJA@mail.gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 21 Jan 2021 13:49:43 +0100
-Message-ID: <CAKXUXMwcNqd61O2t23zyMSBrCNuHi98uym1LLZQZOZO5NOR3Jg@mail.gmail.com>
-Subject: Re: "possible deadlock in console_lock_spinning_enable" and "possible
- deadlock in console_unlock" should be duplicate crash behaviors
-To:     =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkqGy9O8yAnyeJO-P3WssRa1=OS=Q-T2ZV1vGwdwi=6+A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 6:37 AM =E6=85=95=E5=86=AC=E4=BA=AE <mudongliangabc=
-d@gmail.com> wrote:
->
-> Dear kernel developers,
->
-> I found that on the syzbot dashboard, =E2=80=9Cpossible deadlock in
-> console_lock_spinning_enable=E2=80=9D[1] and "possible deadlock in
-> console_unlock"[2] should share the same root cause.
->
-> The reasons for the above statement:
-> 1) the stack trace is the same, and this title difference is due to
-> the inline property of "console_lock_spinning_enable";
-> 2) their PoCs are the same as each other;
->
-> If you can have any issues with this statement or our information is
-> useful to you, please let us know. Thanks very much.
->
-> [1] =E2=80=9Cpossible deadlock in console_lock_spinning_enable=E2=80=9D -
-> https://syzkaller.appspot.com/bug?id=3D2820deb61d92a8d7ab17a56ced58e963e6=
-5d76d0
-> [2] =E2=80=9Cpossible deadlock in console_unlock=E2=80=9D -
-> https://syzkaller.appspot.com/bug?id=3D39ea6caa479af471183997376dc7e90bc7=
-d64a6a
->
->
+On Wed, Jan 20, 2021 at 10:21:33AM -0800, Nick Desaulniers wrote:
+> On Wed, Jan 20, 2021 at 9:36 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > In preparation for const-ifying the anonymous struct field of
+> > 'struct vm_fault', ensure that it is initialised using static
+> > initialisers.
+> 
+> FWIW these are known as "designated initializers", ie.
+> 
+> struct foo my_foo = {
+>   .bar = 42,
+> };
+> 
+> https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
 
-Dongliang, what is the purpose of this activity?
+Thanks, I'm useless with terminology. Will update.
 
-Why do inform the kernel maintainers that two issues share the root cause?
-
-How does this activity contribute to fixing the bugs? Why does it
-become easier to fix the issue/create a patch with the information you
-provide?
-(Honestly, I do not see how it does. I believe if anyone becomes
-active and fixes the issue due to either one of the two reports, the
-one report would be closed by the reported-by tag and the other report
-would simply disappear after time because it could never be reproduced
-and hence, syzbot would close it.)
-
-Would it not be more reasonable to fix issues rather than identifying
-duplicates in the automatically filled and managed database?
-
-Best regards,
-
-Lukas
+Will
