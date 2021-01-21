@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208C42FE924
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00E82FE964
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbhAULqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:46:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730453AbhAULpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:45:14 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C629E238E3;
-        Thu, 21 Jan 2021 11:44:25 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l2YNz-009B6g-L6; Thu, 21 Jan 2021 11:44:23 +0000
+        id S1730704AbhAUL4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730769AbhAULtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:49:06 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDCDC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:48:25 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id d81so3378358iof.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:48:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pgzMn/k8q2SpPgT62u+sa9vYo/2bqeDqsny+/wqvXnI=;
+        b=KCTJPPWZrJ0zTy1H+SG6DCOf0FH+X6DrC8EUoRFmpYGlFUAa0DXvBlsVGTs+IpoJ3V
+         h0SS1tzw6N/O26VsfkxyATuXInBXc3QRdVHUgztUU0XxD9zzh6JtzWl4BB8nVQy8Nc2p
+         vOiUWRgcdBJT1QdltB3ho5ICJ7rti3tfUIaocSBC68wBDlIqi246BMgGD0SKLIA/dS9W
+         1kE8teNFCAYB24+EvN90qpcIOXQWAdTTEEqUuqjM/B+lrUwx5UTgX8ZL2N5nbi6bPrJf
+         CMnCfkfom2qA8d69kgcs6g+GiwGIA3yn1movkyOJb7vPDFc1V5dqCtu0ksPuJjsK8JnZ
+         blrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pgzMn/k8q2SpPgT62u+sa9vYo/2bqeDqsny+/wqvXnI=;
+        b=jB7Qr9MLlbr5s+aBKzeIoyEBTNxS/UWPGgroLMCH5U1AMnBj8T2LeQsURIdEGS0BDb
+         g7FlmeJ2fEt/P15hgO5Zuio9qTXfCnMwZfIsNQBQaWy8c67h/CBO96QiRNAoBOcKfmM+
+         W2QCGAnBoK2jlo8hednAdkhIaiUdZvDTqSC+AFcEcCE1XPr5Q6SHGd1Ma8T+lqRh9OxM
+         lzuVUpb7er8YZ3ygVWoNIBxQVkdtq1fujWGg58wdGjsGq250c4RLCSBmJozEh0raFPZw
+         7M5JLkC2lN8wxKpmTjow/9+zoxab3ej/RxL1+tS9FFG9TFvrb7rySKhjj4AXg4HPS+6H
+         /c7Q==
+X-Gm-Message-State: AOAM532e+JdB5pSuSNVHY4Lq/8iVsGaImQ+2Lz4DJI9Gr21Wt11nMMh/
+        mALUERWV+kUppNZdkLQyfNB41Q==
+X-Google-Smtp-Source: ABdhPJxzUz6DR6rGcz/VIUM/2sK+xmL9J7EJci3gxnMTRr6fEKLP9yblRLjHfzJVeVo0fyhPHC5iXw==
+X-Received: by 2002:a92:404d:: with SMTP id n74mr10746398ila.88.1611229704756;
+        Thu, 21 Jan 2021 03:48:24 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id p5sm2762766ilm.80.2021.01.21.03.48.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 03:48:24 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/5] net: ipa: NAPI poll updates
+Date:   Thu, 21 Jan 2021 05:48:16 -0600
+Message-Id: <20210121114821.26495-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 21 Jan 2021 11:44:23 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Stan Skowronek <stan@corellium.com>
-Subject: Re: [RFC PATCH 3/7] arm64: mm: use nGnRnE instead of nGnRE on Apple
- processors
-In-Reply-To: <20210121112725.GA21750@willie-the-truck>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-4-mohamed.mediouni@caramail.com>
- <20210121112725.GA21750@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <fdc49d125ef9f520254196509f6c0aa2@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, mohamed.mediouni@caramail.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, mark.rutland@arm.com, marcan@marcan.st, linux-kernel@vger.kernel.org, stan@corellium.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-21 11:27, Will Deacon wrote:
-> On Wed, Jan 20, 2021 at 02:27:13PM +0100, Mohamed Mediouni wrote:
->> Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious 
->> hardware quirk.
->> 
->> On Apple processors, writes using the nGnRE device memory type get 
->> dropped in flight,
->> getting to nowhere.
->> 
->> Signed-off-by: Stan Skowronek <stan@corellium.com>
->> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
->> ---
->>  arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
->>  1 file changed, 26 insertions(+)
->> 
->> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
->> index 1f7ee8c8b7b8..06436916f137 100644
->> --- a/arch/arm64/mm/proc.S
->> +++ b/arch/arm64/mm/proc.S
->> @@ -51,6 +51,25 @@
->>  #define TCR_KASAN_HW_FLAGS 0
->>  #endif
->> 
->> +#ifdef CONFIG_ARCH_APPLE
->> +
->> +/*
->> + * Apple cores appear to black-hole writes done with nGnRE.
->> + * We settled on a work-around that uses MAIR vs changing every 
->> single user of
->> + * nGnRE across the arm64 code.
->> + */
->> +
->> +#define MAIR_EL1_SET_APPLE						\
->> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
->> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |	\
->> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
->> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
->> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
->> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
->> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
->> +
->> +#endif
->> +
->>  /*
->>   * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal 
->> memory and
->>   * changed during __cpu_setup to Normal Tagged if the system supports 
->> MTE.
->> @@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
->>  	 * Memory region attributes
->>  	 */
->>  	mov_q	x5, MAIR_EL1_SET
->> +#ifdef CONFIG_ARCH_APPLE
->> +	mrs	x0, MIDR_EL1
->> +	lsr	w0, w0, #24
->> +	mov_q	x1, MAIR_EL1_SET_APPLE
->> +	cmp	x0, #0x61			// 0x61 = Implementer: Apple
->> +	csel	x5, x1, x5, eq
-> 
-> Why does this need to be done so early? It would be a lot cleaner if we
-> could detect this in a similar fashion to other errata and update the 
-> MAIR
-> appropriately. If that's not possible because of early IO mappings 
-> (which
-> ones?), then we could instead initialise to nGnRnE unconditionally, but
-> relax it to nGnRE if we detect that we _don't_ have the erratum.
+Version 1 of this series inadvertently dropped the "static" that
+limits the scope of gsi_channel_update().  Version 2 fixes this
+(in patch 3).
 
-Would that imply another round-trip into the idmap, much like we do
-when we switch to non-global mappings? Or do you expect that we can 
-change
-the MAIR with live mappings?
+While reviewing the IPA NAPI polling code in detail I found two
+problems.  This series fixes those, and implements a few other
+improvements to this part of the code.
 
-         M.
+The first two patches are minor bug fixes that avoid extra passes
+through the poll function.  The third simplifies code inside the
+polling loop a bit.
+
+The last two update how interrupts are disabled; previously it was
+possible for another I/O completion condition to be recorded before
+NAPI got scheduled.
+
+					-Alex
+
+
+Alex Elder (5):
+  net: ipa: count actual work done in gsi_channel_poll()
+  net: ipa: heed napi_complete() return value
+  net: ipa: have gsi_channel_update() return a value
+  net: ipa: repurpose gsi_irq_ieob_disable()
+  net: ipa: disable IEOB interrupts before clearing
+
+ drivers/net/ipa/gsi.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
+
 -- 
-Jazz is not dead. It just smells funny...
+2.20.1
+
