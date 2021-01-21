@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DC12FE0E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C842FE0D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727318AbhAUEkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:40:55 -0500
-Received: from mail.v3.sk ([167.172.186.51]:43646 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732044AbhAUDzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:55:45 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 8290FE0AAE;
-        Thu, 21 Jan 2021 03:37:45 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id LcSkUZQy2OKO; Thu, 21 Jan 2021 03:37:45 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 025ECE0AA6;
-        Thu, 21 Jan 2021 03:37:45 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pXgSsFwuFnmt; Thu, 21 Jan 2021 03:37:44 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id C10F2E0AA9;
-        Thu, 21 Jan 2021 03:37:44 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, SoC Team <soc@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH 10/12] ARM: dts: mmp3-dell-ariel: Add the power button node
-Date:   Thu, 21 Jan 2021 04:41:28 +0100
-Message-Id: <20210121034130.1381872-11-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121034130.1381872-1-lkundrak@v3.sk>
-References: <20210121034130.1381872-1-lkundrak@v3.sk>
+        id S1729300AbhAUEiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727318AbhAUEGF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 23:06:05 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB396C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:05:15 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id b5so779804pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:05:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fvYm9s8KKtqxpGWVnETTEpvuaLditNYFEaGSLA8ZGRI=;
+        b=oZkLOcQvlVOO3euYo9voMSY5pW7P8rwsobNz/ox/VTkUhlBsitTclHx3TJkFrcYR92
+         0QnsgHJCgbAOUoMBblKWIQ1a+DHuAWEEiILqfYWxkWYoFBvNMAZng1U0loYJgV5/PKc+
+         tNgSVfB9RGCJKrxQVpW+4HHDge4/bFLvuGzalOpt3P32NYftV3RSeBe2xHmpeMqadtIQ
+         2mlTttZ9vnWbaivNj46schRegq5v+frchYA5HJ4gGaei/+y+EB0CnDh9FiU4n6GsIj3R
+         ILKiip2vYpnLMBctKeoQkGg+scdpwYsMFX91Q0D9MkGHjV9bnoz/aRpAFgIyen4V8hQY
+         H+hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fvYm9s8KKtqxpGWVnETTEpvuaLditNYFEaGSLA8ZGRI=;
+        b=b1Z37IVS8+0gpGe5B6KkKPtI7BYDBdbxLWd2kHxQZEzxm4v9mwbW7BWtrU/qKv/sh1
+         7UrNKhv5X85oSqIIRopuk88Vj5YeQJwc1vVCMuAvNvEFP9FjU2iOycaqzoJQAWn9HcFY
+         YZQ9YLRXEpI6u3kDI2ghhj+wpH9SwybRE36tm+3ojzsyC1ecyTqVrxikC9bfI036FKXu
+         CDIbtV9/hUI3s5VRWznRBoXRb/pFcaCSZB+75VWlxs6jLr+FCAScUMzvySRJubEgVPso
+         SUpmHhLG0YUTNOTx2cdrkn9KJGXs44jA6iL+H/5ARVppH8mtl1nTKB82P2y03EwamcbP
+         9AfQ==
+X-Gm-Message-State: AOAM5304mCzgwfgQAQ2G7rJ5hGXJoRY6FzXI9W5tyqTOBq6jCRRJwXX5
+        1Yul11W/M+hZ8DhAJ03rm+DkRg==
+X-Google-Smtp-Source: ABdhPJxUt04znGBAtDNsElWCyoOyFAKpAJD3XhZplRtlm6ODiesa+eoPz6UgTurjg/6Dwmc082xOTg==
+X-Received: by 2002:a17:90a:e396:: with SMTP id b22mr9346207pjz.155.1611201915269;
+        Wed, 20 Jan 2021 20:05:15 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id 141sm3782733pfa.65.2021.01.20.20.05.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Jan 2021 20:05:14 -0800 (PST)
+Date:   Thu, 21 Jan 2021 09:35:12 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Mans Rullgard <mans@mansr.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] cpufreq: remove tango driver
+Message-ID: <20210121040512.kmkphnktiwylvo3n@vireshk-i7>
+References: <20210120131709.1996711-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120131709.1996711-1-arnd@kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the power button attached to the Embedded Controlle=
-r
-on a Dell Wyse 3020 "Ariel" board.
+On 20-01-21, 14:16, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The tango platform is getting removed, so the driver is no
+> longer needed.
+> 
+> Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+> Cc: Mans Rullgard <mans@mansr.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/cpufreq/Kconfig.arm     |  5 -----
+>  drivers/cpufreq/Makefile        |  1 -
+>  drivers/cpufreq/tango-cpufreq.c | 38 ---------------------------------
+>  3 files changed, 44 deletions(-)
+>  delete mode 100644 drivers/cpufreq/tango-cpufreq.c
 
-However, while the EC itself is controlled via I2C, the input capability
-for the power button acts as a separate device attached to the SPI, hence
-it has a separate device node.
+Applied with below diff. Thanks.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
----
- arch/arm/boot/dts/mmp3-dell-ariel.dts | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index bd2db0188cbb..3ba2f716fe97 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -141,8 +141,6 @@ static const struct of_device_id blacklist[] __initconst = {
+        { .compatible = "st,stih410", },
+        { .compatible = "st,stih418", },
+ 
+-       { .compatible = "sigma,tango4", },
+-
+        { .compatible = "ti,am33xx", },
+        { .compatible = "ti,am43", },
+        { .compatible = "ti,dra7", },
 
-diff --git a/arch/arm/boot/dts/mmp3-dell-ariel.dts b/arch/arm/boot/dts/mm=
-p3-dell-ariel.dts
-index 565cd0fadf3d3..c4a6bd876d849 100644
---- a/arch/arm/boot/dts/mmp3-dell-ariel.dts
-+++ b/arch/arm/boot/dts/mmp3-dell-ariel.dts
-@@ -119,8 +119,16 @@ firmware-flash@0 {
- };
-=20
- &ssp2 {
--	cs-gpios =3D <&gpio 56 GPIO_ACTIVE_LOW>;
- 	status =3D "okay";
-+	cs-gpios =3D <&gpio 56 GPIO_ACTIVE_LOW>;
-+
-+	power-button@0 {
-+		reg =3D <0>;
-+		interrupt-parent =3D <&gpio>;
-+		interrupts =3D <60 IRQ_TYPE_EDGE_RISING>;
-+		compatible =3D "dell,wyse-ariel-ec-input", "ene,kb3930-input";
-+		spi-max-frequency =3D <33000000>;
-+	};
- };
-=20
- &gpu_2d {
---=20
-2.29.2
-
+-- 
+viresh
