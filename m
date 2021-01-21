@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67FF2FE8BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 214752FE8BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730410AbhAUL1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:27:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43546 "EHLO mail.kernel.org"
+        id S1727315AbhAUL12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:27:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729299AbhAULWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:22:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 799F6238D7;
-        Thu, 21 Jan 2021 11:21:26 +0000 (UTC)
+        id S1730394AbhAULXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:23:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 613D1238D7;
+        Thu, 21 Jan 2021 11:22:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611228087;
-        bh=p/F2cRf0JaXDMfcU39v/0M/n67VUPSyvsSPiFPPDGZ4=;
+        s=korg; t=1611228163;
+        bh=E5lCW8e76KF7jwvUqsIhRLZSQqyjdf7prScrWNH7Nro=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SFNEvmlLdERsubFDap97OvzqtzuAqvYcNmxYf+ejBCBz5MT8FT8HlXAaZh7bvyQ8P
-         XnhG3BGAENw4E7/3Q1lfW775thc3Ek7LBmnrjIs1S/FZFxF5ks3OsbUuU3IvPTuheg
-         GXHgvIuMEbI1CJMTs2z6B8+ioEB68Z6intIIQt0M=
-Date:   Thu, 21 Jan 2021 12:21:24 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     davem@davemloft.net, helmut.schaa@googlemail.com,
-        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        sgruszka@redhat.com
-Subject: Re: [PATCH] rt2x00: reset reg earlier in rt2500usb_register_read
-Message-ID: <YAljtMMV4oh5uAHC@kroah.com>
-References: <20210121092026.3261412-1-mudongliangabcd@gmail.com>
- <YAlORNKQ4y7bzYeZ@kroah.com>
- <CAD-N9QXhD48-6GbpCUYuxPKEbkzGgGTaFKQ8TAaQ93WfD_sT2A@mail.gmail.com>
+        b=wnSHf/ilpNKTbTEYx9lGFGhJB2AN0rQKyG+KR6aoSOC4W68hfqDHneEwtc8IlSvBS
+         zkSRN0BfTTA4tiWAy7ywdg633RBYVOtdc31M+MLCXoz1kkY1UUzPBhVojV2ZfcjSDl
+         pfdd7QZz0LQ6zz5N9lr7ZpLgfxlfSdiJW1B6SOQU=
+Date:   Thu, 21 Jan 2021 12:22:40 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oh Eomji <eomji.oh@samsung.com>
+Cc:     balbi@kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: f_mass_storage: cahnge wait_event to
+ wait_event_timeout
+Message-ID: <YAlkAHt5RQpE/qzZ@kroah.com>
+References: <eomji.oh@samsung.com>
+ <CGME20210121070836epcas2p130c0f62d82aa3fcd2e021a1ef88a7ebd@epcas2p1.samsung.com>
+ <1611212208-84202-1-git-send-email-eomji.oh@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QXhD48-6GbpCUYuxPKEbkzGgGTaFKQ8TAaQ93WfD_sT2A@mail.gmail.com>
+In-Reply-To: <1611212208-84202-1-git-send-email-eomji.oh@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:59:08PM +0800, 慕冬亮 wrote:
-> > >       rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
-> > >                                     USB_VENDOR_REQUEST_IN, offset,
-> > >                                     &reg, sizeof(reg));
-> >
-> > Are you sure this is valid to call this function with a variable on the
-> > stack like this?  How did you test this change?
+On Thu, Jan 21, 2021 at 03:56:45PM +0900, Oh Eomji wrote:
+> Changed to return a timeout error if there is no response for a certain
+> period of time in order to solve the problem of waiting for a event
+> complete while executing unbind.
 > 
-> First, I did not do any changes to this call. Second, the programming
-> style to pass the pointer of stack variable as arguments is not really
-> good. Third, I check this same code file, there are many code snippets
-> with such programming style. :(
+> Signed-off-by: Oh Eomji <eomji.oh@samsung.com>
+> ---
+>  drivers/usb/gadget/function/f_mass_storage.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
+> index 950c943..b474840 100644
+> --- a/drivers/usb/gadget/function/f_mass_storage.c
+> +++ b/drivers/usb/gadget/function/f_mass_storage.c
+> @@ -3000,7 +3000,7 @@ static void fsg_unbind(struct usb_configuration *c, struct usb_function *f)
+>  	if (fsg->common->fsg == fsg) {
+>  		__raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE, NULL);
+>  		/* FIXME: make interruptible or killable somehow? */
+> -		wait_event(common->fsg_wait, common->fsg != fsg);
+> +		wait_event_timeout(common->fsg_wait, common->fsg != fsg, HZ / 4);
 
-I know you did not change it, what I am asking is how did you test this
-change works?  I think the kernel will warn you in huge ways that using
-this pointer on the stack is incorrect, which implies you did not test
-this change :(
+That's a random choice of a timeout value.
+
+Please document this really really really well as to why you picked this
+number, and what it means.
+
+Also, is the commet above this line still correct now?
 
 thanks,
 
