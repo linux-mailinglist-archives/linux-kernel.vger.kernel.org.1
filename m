@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC842FF54B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDF72FF549
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbhAUUBo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Jan 2021 15:01:44 -0500
-Received: from mailoutvs41.siol.net ([185.57.226.232]:52768 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726848AbhAUTzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:55:01 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id A146F520BDA;
-        Thu, 21 Jan 2021 20:54:09 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id B90abY8oWMUe; Thu, 21 Jan 2021 20:54:09 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 5D80B5235B6;
-        Thu, 21 Jan 2021 20:54:09 +0100 (CET)
-Received: from kista.localnet (cpe-86-58-58-53.static.triera.net [86.58.58.53])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id EC71B520BDA;
-        Thu, 21 Jan 2021 20:54:07 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     linux-arm-kernel@lists.infradead.org,
-        Hermann Lauer <Hermann.Lauer@iwr.uni-heidelberg.de>
-Cc:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: dts: sun7i: a20: bananapro: Fix ethernet node
-Date:   Thu, 21 Jan 2021 20:54:07 +0100
-Message-ID: <2438641.b0YrFlWa0f@kista>
-In-Reply-To: <20210121170836.GA4948@lemon.iwr.uni-heidelberg.de>
-References: <20210121170836.GA4948@lemon.iwr.uni-heidelberg.de>
+        id S1726662AbhAUUBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:01:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727095AbhAUT5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:57:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9482A224B2;
+        Thu, 21 Jan 2021 19:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611259015;
+        bh=xRFtoH8ETucU1mVkARB8R7nIZSJDffjwdHq/w8EpcCQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BjF+pnobo2sBYiPFcK+n2sBIAvs0QmdzuR5FZ9URY5DJEBBs5HMFPdy3VuZQ5wDgK
+         DFVZktvVNRjPtKgW2PVVMBgTgMSKXwctOdG7mBiyXvtZDpBnzsTahgPT6TzjhP9EHE
+         EZcCa9clhNJ7TX7+cqmO7aaZJ7N0ohKI4dMIR7yY1UHgC7af46ZhSm/eYUsy9fhAdY
+         VGm1A5fkOWJsvdNyrxMy1s5nvv/rDjFm/4+0MirTfZ4RAbSb66bcyBiIgUWu6oU3uo
+         XH1MYYSMwccZQdpJDsEt+AXybx6ohX2h5QeTmYoFfMYzchEkhw4ZTkN73CRxVgpQ5V
+         pfwHGoTs0xpAg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 34D4D35214EB; Thu, 21 Jan 2021 11:56:55 -0800 (PST)
+Date:   Thu, 21 Jan 2021 11:56:55 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        jiangshanlai@gmail.com, valentin.schneider@arm.com, cai@redhat.com,
+        vincent.donnefort@arm.com, decui@microsoft.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
+Subject: Re: [PATCH -v3 0/9] sched: Fix hot-unplug regression
+Message-ID: <20210121195655.GT2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210121101702.402798862@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121101702.402798862@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne četrtek, 21. januar 2021 ob 18:08:36 CET je Hermann Lauer napisal(a):
-> BPi Pro needs TX and RX delay for Gbit to work reliable and avoid high
-> packet loss rates. The realtek phy driver overrides the settings of the
-> pull ups for the delays, so fix this for Banana Pro.
+On Thu, Jan 21, 2021 at 11:17:02AM +0100, Peter Zijlstra wrote:
+> Hi,
 > 
-> Signed-off-by: Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>
+> Some cautious optimism lets me post v3 of these patches. They (knock on wood)
+> fix the regression introduced by commit:
+> 
+>   1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
+> 
+> These patches survived overnight runs for both me and Valentin, but I'll let it
+> run for at least another 12 hours before committing these patches.
+> 
+> New in this version is patch #7.
+> 
+> Much thanks to Valentin for his continued support and debugging efforts.
 
-Much better. Now the only thing missing is "Fixes" tag, which references 
-commit which introduced the issue. Probably this will be the commit which 
-added ethernet node. This tag is important for deciding which commits should 
-be backported to stable releases. Take a look in v1 for M2U fixes tag.
+Thank you all!!!  I have started testing these on top of -rcu.
 
-Btw, each version should have changelog under "---" line, so maintainers and 
-reviewers know what changed.
-
-Best regards,
-Jernej
-
-
+							Thanx, Paul
