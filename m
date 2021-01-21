@@ -2,145 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180F12FF826
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0994E2FF82A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbhAUWoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:44:17 -0500
-Received: from mail-bn8nam12on2085.outbound.protection.outlook.com ([40.107.237.85]:35265
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725961AbhAUWoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:44:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nlHB0iww+C58ENFZJwjkO2l2/3rctrPbC71ZafXaikpToUWaL6hlw9Slc5JPES2A6md7IK9oe7DkcWNMNzC+jkAX3ZA9W/6hcWpdEMI0yhUJxYqBNm/olwSNg3NEkg8Lv+8pzbSuyAaqUWJ8q9a0LX6E/jWHUixeBCh/eMHN27CYqfvl6iZsHKVo9+cZmLdbNkR4qdGthhvPTfNbIwlQxdiA7Whv1MdJiGa7Opzyyab+sDd3scjcWgcj+VN9ajoGcfqvcCl3Jr5tB0ZmtgCguZ7KnYh2cCHZUPf/ABbizlqBc4HAA9F7r6UxJYGJSg/upp4OMM6KpiaLRKd77Pm4WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gCo3oWfppe0agiYF83xoIQb2+8R5L/rO6qcyI/XOXzQ=;
- b=VVo+k7i3BJaNUAR9mu5Uaoo+ZgFQVwoLcPtcf1v0Qye11wZZgdY0S4P5J+ZL0FgZIfZN5BsULoxWTulkzW2WyH9pvAaLHqYgvJzY+I+EPZgNHlMeaK33UIeNiubyVHptS7/r6uDc7LXDQ6964nxLP73wXTj9c0igbhP2jj1aQUDTUcX3yO9IrGHbGGWzqvcUgq3ODfw3i+rIx6lsl7OX1wNPRYzgREvcfJGKzxAWob8xkaRGGspFoIRtXvSmdGYmMN8obfOjHcA/SyYJ9gmfW7hYzM5T+/akwYCu4iLFso8SCqXi0c5VRosDKpsGWYY4+EZgt/Peb5SOEXzRLbHeEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726636AbhAUWpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:45:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbhAUWpX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 17:45:23 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A172DC06174A;
+        Thu, 21 Jan 2021 14:44:43 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id x21so7376256iog.10;
+        Thu, 21 Jan 2021 14:44:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gCo3oWfppe0agiYF83xoIQb2+8R5L/rO6qcyI/XOXzQ=;
- b=lJ+EaQ5x2lnNgHTaKotrFwbQrzJsyPzB16Scm7XvS34V8M9FLDvyoW7tjw/gVLXzQTMm+jd+10twdIH34u2prv0y85Z5rtcf6uy/R64R6Pojq8e23wLZubmaMh2VvhORSVOvcI9BWsyiJjyQSnisHflw7A4l23C900/YyUxyeUY=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM5PR11MB2011.namprd11.prod.outlook.com (2603:10b6:3:f::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.13; Thu, 21 Jan 2021 22:42:55 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d%4]) with mapi id 15.20.3784.013; Thu, 21 Jan 2021
- 22:42:55 +0000
-Date:   Thu, 21 Jan 2021 17:42:52 -0500
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     paulmck@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH RFC cpumask] Allow "all", "none", and "last" in cpumask
- strings
-Message-ID: <20210121224252.GQ16838@windriver.com>
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
- <CAAH8bW95nyx6PEnPiBPoHMLoduvgU9KO7N=K7mhLORkA+zzhDw@mail.gmail.com>
- <CAAH8bW8-q-2LaTC5DE0PnUBqs3V_69EAefLvwdZoeFSow8NYZA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAH8bW8-q-2LaTC5DE0PnUBqs3V_69EAefLvwdZoeFSow8NYZA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: YT1PR01CA0006.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::19)
- To DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=HvccmrfS5SgOEYdUs1blncI3hgFwaeqGnzFVcQFt3dc=;
+        b=u1Qb7yOF9p/rb88qzEq4GviRLuH+MUSUAmAvzHLo5dvpmFP9zzB1w3jxT36IkT01MQ
+         jitUXXbfbizxWQIi+aro8R5/RJaewpWWzpbgLwBMDylqZ8Sr2IWJESBKP7P/OKbJTY4N
+         xLv7eyGHNVn7iv2If3D/zraYRTu67CNBtAaoV16zjOhdqrcgFa/sD2Qghn0LisjieqD0
+         Kd4kDONo8FAvJkN4eYazTWOfQ/bSzE3G7PaJTrUNbGP3mHfVcREyhK53vgvKc1Dt2pRN
+         RWePftjwHAWfexMa1aInBwqJ3oil0f6Qr70oIyp/l7IvVt4arfrZVrqV8kAfkDuTgLTO
+         kLmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=HvccmrfS5SgOEYdUs1blncI3hgFwaeqGnzFVcQFt3dc=;
+        b=YVgHCsH1FNNd4tSZ/s8X98eY7ijrbdrDCr56sgpIt5ctvyrt2BPGHnEXn7dLQne8E2
+         J9AjZHGhhHs4On85SO9p0iayLhGYXsjv1ZSCnA+wNay17wguPvrz/1VwQv9NhIynyWlN
+         QSVbCRJ2CYzjP2hzZj/uWDLHquRxb3YQ8JcsKOai3jcunbohDxtB38C16ovklU8BKSiQ
+         UISEDFVkk4mJJvD5SVHqLDIvTBKRX5pI0RTKk6ClbobwqkzTLuhmn2R06TZpsyGIY0SW
+         p2uvxhbJ5dsGZlgAXDpA0aY7bvYIlp9RDgIEB8rrb7kFnFHznq7Hp2XFFJYEEDW6tOv1
+         jUAQ==
+X-Gm-Message-State: AOAM531QUuS9k32IJIQ5zFt3jpEabrWTWz+OqFqO6otBklBWIQo2Asnc
+        tezzRF58WfxLQmftbThdYc7XZkZkr0+KwqwvkGTS4qWxeevMJYN5
+X-Google-Smtp-Source: ABdhPJz43mrrriVp8Cqor+enuQGh/IB1IH0yc1vlFlsHxQTDHV/y7F+MU5VgTHcPTlbl3EyCA2T/f/E5BRMe/AQgz7Y=
+X-Received: by 2002:a6b:6a0e:: with SMTP id x14mr1296225iog.57.1611269083021;
+ Thu, 21 Jan 2021 14:44:43 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (128.224.252.2) by YT1PR01CA0006.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Thu, 21 Jan 2021 22:42:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b76c6701-7935-4d5c-cfaa-08d8be5de4a5
-X-MS-TrafficTypeDiagnostic: DM5PR11MB2011:
-X-Microsoft-Antispam-PRVS: <DM5PR11MB20110F672F7257DBD1EA694E83A10@DM5PR11MB2011.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pwGicLLzcu+8DxYqxPRP7tfmH/7gbRQI8vW/AutHpNWTuAe6MVsonQPtiOrRyvO2gIyKfkmu9dd0l/GSPORSozXvKUjsITSHwno5Onn/Kp3kCu2cvU0S8r/OGBfwvlltchIEBL+61SzPkG4TkYyMKhFDATUrESnXdxBK2OODe7jqXaNSJf+1IX+VLOG9FGLKaraxRZVjBE/Dmq5bjxaWhS2ueA56c2YTFXF9Ufo0F42uA/Qc/rPPR3NjPt3gnW6MHTz2tIRbbyTmMfClSoj6P644c1L8fnPLRNHbd7EQiQ4xL20banxzkyb5iVZqbL74ZOh7AQiO4Wu0JIfIcZxuHnZY1RfLTzaw9crGvV7WsW9oh+DSAPgqWJGI0dg6QsM94vwUlFQqc0v70PtqL13K6bfcuusMiI2y7wSpPqS32zWJbQXJaC8nECTIv6i/MOQgpsqlh+0jjKakCvwI330ZQw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(136003)(376002)(366004)(5660300002)(86362001)(316002)(8886007)(7696005)(66946007)(66476007)(55016002)(1076003)(52116002)(2616005)(44832011)(956004)(54906003)(83380400001)(186003)(26005)(16526019)(8676002)(2906002)(478600001)(8936002)(33656002)(36756003)(6916009)(4326008)(66556008)(966005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?b1RPZTJPSjdoNTZVUDFMT3JlaFVtbzBNOUx6dmc0clp0RnBRUGRsQm9mQjUw?=
- =?utf-8?B?K3E3eXExbU83V2VsQXZzeTNVRjd2dU9JdDFISzVZdDMrUy9xNVB0cnpHa3pQ?=
- =?utf-8?B?TXBEU3lUdlhDSHYyZ1VxRTlUanYvRTh0aU54anNIM3cwRVNSbDZSV0ExSHVy?=
- =?utf-8?B?WEVuZTlGM1hUNWVHSGxId0VlL1pMT3UrNGl3N3VCekdxN0NlNk12R00yKzRp?=
- =?utf-8?B?bGJ5L29FemIveWdtNkZYSXMwaHNvSzhSNTM5K1E3THdXQjNhMVRmU2F2QUJh?=
- =?utf-8?B?YVJncHlKMitQKzBiR3RzNTR4V0dvOFQwcVVOSnRTeUpKTVNHbXRWWHo1cmg5?=
- =?utf-8?B?SjFJQjBOd0htOTVPdUxUaDZPVDJ2bUI3bS9vVmFkaDl2SWE2REk3NHVQb1h5?=
- =?utf-8?B?S05wL3JDTW1JUXhRRmcrZk1FZDhnRStpVG5NV21NYTFtaU5qWGEzLzlsUHh6?=
- =?utf-8?B?K1Z1bUVqWjA1MkJwcDFOQXd1YzRaMU1UV3ljVGplTkNNRzE2VmgzQjVnZXJ3?=
- =?utf-8?B?Z2hGOXpDL1QyYTlhTmxnbUZpbW1nc3VyQ013STJhRmtnSWZUN0s3VlBsTWc5?=
- =?utf-8?B?L3JtUWpKZzFFYVFtQzRzUXFzWWE4aFMvOVF6c055c081UjMrQjU4UWxCalVD?=
- =?utf-8?B?Z011Y25Ud0g5Qnc1R0hLL2dVdjlRaHZWN0JqQzBqSHlrNUVaR1BHdCtRUmRN?=
- =?utf-8?B?ZktFL2pTVUNCYjlhR1BjQjg1MnlJVE9oUmIwbVFIanQ5M0U5UTRJdnhLR2Jm?=
- =?utf-8?B?U2Y5NFArK05RUEtxT2lib1dGU1c4aERScUNrRXdjajZNWnFwQ01rc3A1ZFpX?=
- =?utf-8?B?U092eUtHVUdpTmhYYjh2cURGeFVGT3MzVnEvV3ovUGZuYjRldUxwWjBWNVZ1?=
- =?utf-8?B?cS9SR0JkamJBRWRIcU11ZWsvUHgzdENiNC9uaW1hYjE5TlQyV3VwcmIxSDY0?=
- =?utf-8?B?YmJLS2VEZEdGaHRvMGJFc0lZb0tVRUVuODh2NVNMVk41bjRKR2lpdGx1d2tr?=
- =?utf-8?B?Z0V1QXpSMVJqcXptWjBrWjVEbjhJcWxwOE9mWVJGdU9IWEsvUlBidmFBZWtU?=
- =?utf-8?B?Vzl4K05OK2RFeFAycHZ1UjNPcXBINXNSRVRxUWFTSEJZNGpOSzI2dmJ4aFBR?=
- =?utf-8?B?dnI5WHArSFR3MmZPWjBvRUtYRkJKNWhWT083US91WW9iU3p2NlAxM2dnc0Fi?=
- =?utf-8?B?dm8zSkJHcGF5cG5nQ0ZxZTRsbjAxMW5xMVRybnVUcU1EdTdxR3doQU1UVWNw?=
- =?utf-8?B?RXoyS1VRVEFLVlYvbzN0L0hNUDlrdldCUDk4cTVqaTZCeW5RRGFVeXBrMG5T?=
- =?utf-8?Q?fK1wkIl/uxm1+VbJx7YBbPikIy8wb63d6u?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b76c6701-7935-4d5c-cfaa-08d8be5de4a5
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 22:42:55.1447
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fOJBJkAlUHVwBN/qtyNDvOUeH0qXYujPTapbfnLLZNXdQMcfF9eAqVwROBbQHQkFW6BtriEC0LeDY00rRXRjdTY+VQum2WLJJ7tA6D7RxDA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB2011
+References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
+ <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
+ <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
+ <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
+ <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
+ <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
+ <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
+ <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
+ <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
+ <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
+ <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
+ <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
+ <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
+ <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
+ <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com>
+ <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com>
+ <CAGG=3QUcaY1wzJhBD4ZGhPSNPik-kL0PuoE1SJqkFJEM_mkGYA@mail.gmail.com> <CA+icZUU+OWW46CVq4Co-y7hckGjoV5bbqxS-G+HDqUDci_AzHw@mail.gmail.com>
+In-Reply-To: <CA+icZUU+OWW46CVq4Co-y7hckGjoV5bbqxS-G+HDqUDci_AzHw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 21 Jan 2021 23:44:31 +0100
+Message-ID: <CA+icZUV17FxhopdQhDCW6vBaSfgU-86vAE5QpoaW1iLxtsg5HA@mail.gmail.com>
+Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Bill Wendling <morbo@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Re: [PATCH RFC cpumask] Allow "all", "none", and "last" in cpumask strings] On 20/01/2021 (Wed 23:11) Yury Norov wrote:
+On Thu, Jan 21, 2021 at 3:03 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Mon, Jan 18, 2021 at 10:56 PM Bill Wendling <morbo@google.com> wrote:
+> >
+> > On Mon, Jan 18, 2021 at 9:26 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > On Mon, Jan 18, 2021 at 1:39 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > >
+> > > > On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
+> > > > >
+> > > > > On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > >
+> > > > > > [ big snip ]
+> > > > >
+> > > > > [More snippage.]
+> > > > >
+> > > > > > [ CC Fangrui ]
+> > > > > >
+> > > > > > With the attached...
+> > > > > >
+> > > > > >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
+> > > > > > undefined symbols
+> > > > > >
+> > > > > > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
+> > > > > > For details see ClangBuiltLinux issue #1250 "Unknown symbol
+> > > > > > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
+> > > > > >
+> > > > > Thanks for confirming that this works with the above patch.
+> > > > >
+> > > > > > @ Bill Nick Sami Nathan
+> > > > > >
+> > > > > > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
+> > > > >
+> > > > > The integrated assembler and this option are more-or-less orthogonal
+> > > > > to each other. One can still use the GNU assembler with PGO. If you're
+> > > > > having an issue, it may be related to ClangBuiltLinux issue #1250.
+> > > > >
+> > > > > > 2. Can you please try Nick's DWARF v5 support patchset v5 and
+> > > > > > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
+> > > > > >
+> > > > > I know Nick did several tests with PGO. He may have looked into it
+> > > > > already, but we can check.
+> > > > >
+> > > >
+> > > > Reproducible.
+> > > >
+> > > > LLVM_IAS=1 + DWARF5 = Not bootable
+> > > >
+> > > > I will try:
+> > > >
+> > > > LLVM_IAS=1 + DWARF4
+> > > >
+> > >
+> > > I was not able to boot into such a built Linux-kernel.
+> > >
+> > PGO will have no effect on debugging data. If this is an issue with
+> > DWARF, then it's likely orthogonal to the PGO patch.
+> >
+> > > For me worked: DWARF2 and LLVM_IAS=1 *not* set.
+> > >
+> > > Of course, this could be an issue with my system's LLVM/Clang.
+> > >
+> > > Debian clang version
+> > > 12.0.0-++20210115111113+45ef053bd709-1~exp1~20210115101809.3724
+> > >
+> > Please use the official clang 11.0.1 release
+> > (https://releases.llvm.org/download.html), modifying the
+> > kernel/pgo/Kconfig as I suggested above. The reason we specify clang
+> > 12 for the minimal version is because of an issue that was recently
+> > fixed.
+> >
+>
+> I downgraded to clang-11.1.0-rc1.
+> ( See attachment. )
+>
+> Doing the first build with PGO enabled plus DWARF5 and LLVM_IAS=1 works.
+>
+> But again after generating vmlinux.profdata and doing the PGO-rebuild
+> - the resulting Linux-kernel does NOT boot in QEMU or on bare metal.
+> With GNU/as I can boot.
+>
+> So this is independent of DWARF v4 or DWARF v5 (LLVM_IAS=1 and DWARF
+> v2 is not allowed).
+> There is something wrong (here) with passing LLVM_IAS=1 to make when
+> doing the PGO-rebuild.
+>
+> Can someone please verify and confirm that the PGO-rebuild with
+> LLVM_IAS=1 boots or boots not?
+>
+> Thanks.
+>
+> - Sedat -
+>
+> > > Can you give me a LLVM commit-id where you had success with LLVM_IAS=1
+> > > and especially CONFIG_DEBUG_INFO_DWARF5=y?
+> > > Success means I was able to boot in QEMU and/or bare metal.
+> > >
+> > The DWARF5 patch isn't in yet, so I don't want to rely upon it too much.
+> >
 
-> Hi Paul,
-> 
-> Today I found this series in linux-next despite downsides discovered during
-> the review. This series introduces absolutely unneeded cap on the number of
-> cpus in the system (9999), and also adds unsafe and non-optimal code.
-> 
-> In addition to that, I observe this warning on powerpc:
->   CC      lib/cpumask.o
-> lib/cpumask.c: In function ‘cpulist_parse’:
-> lib/cpumask.c:222:17: warning: cast from pointer to integer of
-> different size [-Wpointer-to-int-cast]
->   222 |   memblock_free((phys_addr_t)cpulist, len);
->       |                 ^
-> 
-> Can you please revert this series unless all the problems will be fixed?
+I passed LLVM_IAS=1 with KAFLAGS=-fprofile-use=vmlinux.profdata:
 
-That was my fault - I should have explicitly asked PaulM to yank it once
-I didn't get to creating v2 immediately.  Sorry.
+/usr/bin/perf_5.10 stat make V=1 -j4 HOSTCC=clang HOSTCXX=clang++
+HOSTLD=ld.lld CC=clang LD=ld.lld PAHOLE=/opt/paho
+le/bin/pahole LOCALVERSION=-2-amd64-clang11-pgo KBUILD_VERBOSE=1
+KBUILD_BUILD_HOST=iniza KBUILD_BUILD_USER=sedat.dilek@gmail.com
+KBUILD_BUILD_TIMESTAMP=2021-01-21 bind
+eb-pkg KDEB_PKGVERSION=5.11.0~rc4-2~bullseye+dileks1 LLVM=1
+KCFLAGS=-fprofile-use=vmlinux.profdata LLVM_IAS=1
+KAFLAGS=-fprofile-use=vmlinux.profdata
 
-Your suggested changes made things much more simple and smaller - thanks!
+The resulting Linux-kernel does not boot.
 
-I believe v2 does address all the problems - please have a look when you
-have some time.  It should be easier to review, given the smaller size.
+But I see in the build-log these warnings:
 
-https://lore.kernel.org/lkml/20210121223355.59780-1-paul.gortmaker@windriver.com/
+warning: arch/x86/platform/efi/quirks.c: Function control flow change
+detected (hash mismatch) efi_arch_mem_reserve Hash = 73770966985
+[-Wbackend-plugin]
+warning: arch/x86/platform/efi/efi.c: Function control flow change
+detected (hash mismatch) efi_attr_is_visible Hash = 57959232386
+[-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) memcmp Hash = 12884901887
+[-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) bcmp Hash = 12884901887
+[-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) strcmp Hash = 44149752232
+[-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) strnlen Hash = 29212902728
+[-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) simple_strtoull Hash =
+288230479369728480 [-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) strstr Hash = 76464046323
+[-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) strchr Hash = 30948479515
+[-Wbackend-plugin]
+warning: arch/x86/boot/compressed/string.c: Function control flow
+change detected (hash mismatch) kstrtoull Hash = 288230543187488006
+[-Wbackend-plugin]
 
-Thanks again,
-Paul.
---
+What does "Function control flow change detected (hash mismatch)" mean?
+Related with my boot problems?
 
-> 
-> Thanks,
-> Yury
+- Sedat -
