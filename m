@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE352FDF91
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4614B2FDFB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393160AbhAUCWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 21:22:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392239AbhAUBkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 20:40:39 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20E1C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 17:39:59 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id e70so147790ote.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 17:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OzybDX/Xt3GwRPQyEqB7XUFKbLslFfqKE8yCIx/zRK0=;
-        b=Ic4hbBuNyAhH77UympHAdRhVtmjkRRK7AuwrbOo083hrfT222pag7ZdAcjU+coGOBG
-         SegTBROdZyDXrIHKHPpD7OKNSP+S2Bp8aEu3r2C5bIpaSoi3+BbvZqAgaTsA/nHcFFxD
-         hGqfU772nEHnlswa5nwbY1oEB7toAR0dr3ZS9LQDqFVqehrYakJD18wdgS7RmbiBmo6n
-         3VmR8dzHxAkcx5IqcyKmmutDJnRDm8A3fV4luzraAFmRJGNrE4B5OhpfhEbsw/7atDVd
-         O5evtHnFyC8CjcgSrcdi7mEtyHgvThZxqzHvTpSx1VAAjl/9QRQ1Xcgd+gg0T/JjUX8F
-         A+yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OzybDX/Xt3GwRPQyEqB7XUFKbLslFfqKE8yCIx/zRK0=;
-        b=sIykc84BGVvnChn3/gtukBJwzO6YXLPNHkhRkXSxsHd6MBmdAvOd6ovJqWfRfY5gZB
-         OcnfRNRwf/V6mJEpfnrMDDZnlHpv3AyAPYkY0JC2087gPcQXAZB01QsRx3AWd68qUdTb
-         iYEDWHibUf7mv3ZF1pZNK8EQ81Mn81Waq5neWdTAs0VQslI39p9srnYwHI89lj3jFEzK
-         WpXW1Majxmo+n0OyY0iFzKINbZUQ0u2YywfS0PZhZ7jg+peu3EkXSTN/2c/T28lUamUA
-         7QjzDcbPnYbxYLCkRLXxUkyJEMOU9HyyCP+rDkXdmONAMQblYEvw97YkkAoKi2/OsYh6
-         9GdA==
-X-Gm-Message-State: AOAM530P1LmXzc6SUa2gTr17cYL4ip5R0DcqApgTluqg0awqErM+GMwH
-        H1tiIdfv+xrgCwOAn40LNIh2uQ==
-X-Google-Smtp-Source: ABdhPJzSuzuFRbQfleUmMZxwP8jChSlAgkL5r/QPnevAdK69YCOfcV2uckVZyBhzjOw5Qnz8X5Yqfw==
-X-Received: by 2002:a9d:84d:: with SMTP id 71mr8916828oty.338.1611193199082;
-        Wed, 20 Jan 2021 17:39:59 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s2sm729597oov.35.2021.01.20.17.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 17:39:58 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] iommu/arm-smmu-qcom: Add Qualcomm SC8180X impl
-Date:   Wed, 20 Jan 2021 17:40:05 -0800
-Message-Id: <20210121014005.1612382-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121014005.1612382-1-bjorn.andersson@linaro.org>
-References: <20210121014005.1612382-1-bjorn.andersson@linaro.org>
+        id S2436653AbhAUCB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:01:57 -0500
+Received: from mga17.intel.com ([192.55.52.151]:22094 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392363AbhAUBnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:43:13 -0500
+IronPort-SDR: xnv54pVLWKlM+wz0zlvLDNdRxLc3vhn5BXKQogmWXZd2E3rAdC/b3rKU5ICi9tLk2doPmWr3XD
+ JyGc+OK7uAjw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="158979047"
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="158979047"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 17:42:17 -0800
+IronPort-SDR: 1OihG1Kgjr1KhWtwdRu0DPbq77xHsbumzcNymwn3HECK9ZEZsaqd9WQWTDJVl5CROmi2MZwWa+
+ CaEp/RkGxJKA==
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="351295429"
+Received: from rpedgeco-mobl3.amr.corp.intel.com (HELO localhost.intel.com) ([10.212.106.147])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 17:42:16 -0800
+From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
+To:     akpm@linux-foundation.org
+Cc:     hch@lst.de, dja@axtens.net, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: [PATCH] mm/vmalloc: Separate put pages and flush VM flags
+Date:   Wed, 20 Jan 2021 17:41:18 -0800
+Message-Id: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The primary SMMU found in Qualcomm SC8180X platform needs to use the
-Qualcomm implementation, so add a specific compatible for this.
+When VM_MAP_PUT_PAGES was added, it was defined with the same value as
+VM_FLUSH_RESET_PERMS. This doesn't seem like it will cause any big
+functional problems other than some excess flushing for VM_MAP_PUT_PAGES
+allocations.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Redefine VM_MAP_PUT_PAGES to have its own value. Also, move the comment
+and remove whitespace for VM_KASAN such that the flags lower down are less
+likely to be missed in the future.
+
+Fixes: b944afc9d64d ("mm: add a VM_MAP_PUT_PAGES flag for vmap")
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/vmalloc.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index bcda17012aee..82c7edc6e025 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -166,6 +166,7 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- 	{ .compatible = "qcom,mdss" },
- 	{ .compatible = "qcom,sc7180-mdss" },
- 	{ .compatible = "qcom,sc7180-mss-pil" },
-+	{ .compatible = "qcom,sc8180x-mdss" },
- 	{ .compatible = "qcom,sdm845-mdss" },
- 	{ .compatible = "qcom,sdm845-mss-pil" },
- 	{ }
-@@ -327,6 +328,7 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
- static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
- 	{ .compatible = "qcom,msm8998-smmu-v2" },
- 	{ .compatible = "qcom,sc7180-smmu-500" },
-+	{ .compatible = "qcom,sc8180x-smmu-500" },
- 	{ .compatible = "qcom,sdm630-smmu-v2" },
- 	{ .compatible = "qcom,sdm845-smmu-500" },
- 	{ .compatible = "qcom,sm8150-smmu-500" },
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 80c0181c411d..0b3dd135aa5d 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -23,9 +23,6 @@ struct notifier_block;		/* in notifier.h */
+ #define VM_DMA_COHERENT		0x00000010	/* dma_alloc_coherent */
+ #define VM_UNINITIALIZED	0x00000020	/* vm_struct is not fully initialized */
+ #define VM_NO_GUARD		0x00000040      /* don't add guard page */
+-#define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
+-#define VM_MAP_PUT_PAGES	0x00000100	/* put pages and free array in vfree */
+-
+ /*
+  * VM_KASAN is used slighly differently depending on CONFIG_KASAN_VMALLOC.
+  *
+@@ -36,12 +33,13 @@ struct notifier_block;		/* in notifier.h */
+  * Otherwise, VM_KASAN is set for kasan_module_alloc() allocations and used to
+  * determine which allocations need the module shadow freed.
+  */
+-
++#define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
+ /*
+  * Memory with VM_FLUSH_RESET_PERMS cannot be freed in an interrupt or with
+  * vfree_atomic().
+  */
+ #define VM_FLUSH_RESET_PERMS	0x00000100      /* Reset direct map and flush TLB on unmap */
++#define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
+ 
+ /* bits [20..32] reserved for arch specific ioremap internals */
+ 
 -- 
-2.29.2
+2.20.1
 
