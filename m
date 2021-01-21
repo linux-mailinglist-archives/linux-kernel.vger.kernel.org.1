@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0622FF527
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C997A2FF518
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbhAUTyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:54:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48748 "EHLO mail.kernel.org"
+        id S1726302AbhAUTuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:50:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726019AbhAUTtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:49:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BAF1620888;
-        Thu, 21 Jan 2021 19:48:32 +0000 (UTC)
+        id S1727593AbhAUTtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:49:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1FE412310F;
+        Thu, 21 Jan 2021 19:48:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611258512;
-        bh=KyDVZYNpUl35gHFIEHGrqSFtSLOH+5OQtKQ39wPmLs8=;
+        s=k20201202; t=1611258514;
+        bh=TaV9F1KgmlAbeRrJvDmJkqScIXqT1TJ8FbNzKQcAcoM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=nNhYbvx7LPK3edkAE1hz+2AG9kN3PNAGfS9JmqZ0bsSS81a4yIKFymUeiIs5xqZ9X
-         f+m6dPhL3usR7fxjWe5G6Cpidc8W9OXyQ3TqorLJXu9fd8di2O7kU9gEeTD2PRD09n
-         OWYRSGENvu+XN6meaKl0pmAtObEPJL8xTlZLsqNUwbgx0xiOpoGJXbgXo1yScFuhAn
-         l0PIqYahbmPma7umUCvZZudcNDUvMP+rwdCFu1M7ZUrjwJ4tGils3Sr6ULgUyrGDEq
-         IFQpY/gtpuyNAjWTxSMn8PzUvTloPaj4yg9Hh2Cpf2t1xy8FPWq9RgE6tAWN7NAqwO
-         ADYUZn/ZL7f7g==
+        b=rVTmRgc6MXIMw2R69CExAiHNU/A5bpiRVtzKfwei9+7ZC+goMcNx+ktuHNqVFvvs/
+         I9ocK3zKnL9vX8CxViuk4C5e+q/i9JSP0785D27Ock+vqJcx7ZvW5EHI+Aag/yMv0C
+         DAo6/cTm38h0HLReU+kL7YYIwpNpAH+JdT2+ewYx5kLIz76l9U2g4loKR8ec6zL26y
+         GE5Acj9L7McJ2nFoz3Br5f3V8MXQIZilZeh0z8PczGBO/sQQ1q3wxK2MWPOnx3kNM+
+         9bOfiW6tGRWp36h3+Z7NEbf9iFXIUmfT9f5QWAbBKQohuSO5mVzMeyNQswpyBpOqse
+         PM919+fnRU8Eg==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id A187060584;
-        Thu, 21 Jan 2021 19:48:32 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: fixes for v5.11-rc5
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 15B9C60584;
+        Thu, 21 Jan 2021 19:48:34 +0000 (UTC)
+Subject: Re: [GIT PULL] ACPI fix for v5.11-rc5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210121095246.11061-1-brgl@bgdev.pl>
-References: <20210121095246.11061-1-brgl@bgdev.pl>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210121095246.11061-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11-rc5
-X-PR-Tracked-Commit-Id: 298d75c9b18875d2d582dcd5145a45cac8d2bae2
+In-Reply-To: <CAJZ5v0iN2y5wQNaY3nGEQkq2aXbNzGLHzU29tTqew65CdqTafA@mail.gmail.com>
+References: <CAJZ5v0iN2y5wQNaY3nGEQkq2aXbNzGLHzU29tTqew65CdqTafA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0iN2y5wQNaY3nGEQkq2aXbNzGLHzU29tTqew65CdqTafA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.11-rc5
+X-PR-Tracked-Commit-Id: 78a18fec5258c8df9435399a1ea022d73d3eceb9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d7631e4378f26c8e1ba1ad372888e89e69678709
-Message-Id: <161125851259.32181.5561744363662207366.pr-tracker-bot@kernel.org>
-Date:   Thu, 21 Jan 2021 19:48:32 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
+X-PR-Merge-Commit-Id: 6a52f4cf863a53b8196286e2b95d3ef3bd8183ad
+Message-Id: <161125851408.32181.6153273874458228152.pr-tracker-bot@kernel.org>
+Date:   Thu, 21 Jan 2021 19:48:34 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 21 Jan 2021 10:52:46 +0100:
+The pull request you sent on Thu, 21 Jan 2021 20:05:54 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11-rc5
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.11-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d7631e4378f26c8e1ba1ad372888e89e69678709
+https://git.kernel.org/torvalds/c/6a52f4cf863a53b8196286e2b95d3ef3bd8183ad
 
 Thank you!
 
