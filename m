@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9152FE94A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D410B2FE92E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730798AbhAULtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
+        id S1730542AbhAULrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730210AbhAULU6 (ORCPT
+        with ESMTP id S1730147AbhAULV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:20:58 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F78C06179E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:04 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id i63so1301190pfg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:04 -0800 (PST)
+        Thu, 21 Jan 2021 06:21:27 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31775C0617A3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:10 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id m6so1306856pfm.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CYbzCFVCi3fEgZJohV5hqu59RAY6Et7w7QbAOId9XrY=;
-        b=lMZb9UiNz5IoKRjlVfTRbe5AbsFjgYug6+3rBQBORQMTS2UMUtLozNugVAnuXzVu8y
-         EYEMj8NSmofsA6xXlvjPMTlIYrPcpAfABG+1v1OmZz7r9X5YWSkh16Cxrsokim45C5sJ
-         tUjvk+6bmsgYppq/z+2OjYh9iv2r6nSz0qXHsQ+GHP9yy0kYl4kID2DhPeeyCjK4vjlb
-         Icdu8T9ko+aqp872q9wMRgxdPOSbnY8xrtxNYrFWzjrxlAklUobL0Gl0pA9p1ggkdKGE
-         zQrS52KKBl/kFz3wQD/xWCCxYLYBNGWJvjbTLdPsvcwnxS60d3h0uiITwge2NEyNxN4s
-         6jvA==
+        bh=ztcbVczwcxvX+Nme8Zu1bVyHZiwA0aS5UzQfgwSCEM4=;
+        b=uvEyLQq53T//ZW0fW9IuJXmQ0IpdbzBOHOZkvCWGZ4qs23KbdM1qBbTqsBvRapbFjQ
+         GFTzRYWISYJfZppc2Zk7RHboU5zZ4TVr9NOy3uFsFZN3WNsrlkPVDczNsuKmY3q5BE+B
+         WJn2+aBHGJLNiN6/ELjw0OPDd33iZ3H6kAA4chYfT/sr2Gd/6TnwEmeW8lfDuPWeru/u
+         C7NgP8XEQydN5j4ZOwOQDckF78X8cApKr6rG9CXIybnq9UjECRHrVggyvlYqLI+ZC7T7
+         3ywLOkm13JVjMF9xUIgRTuNR6fYT/JHPI2hQ8dokW8N1jPAkvjp3iKDDfY80HBbwF3Xp
+         Or9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CYbzCFVCi3fEgZJohV5hqu59RAY6Et7w7QbAOId9XrY=;
-        b=AHvlQTEGpkvwmVxl4JaBBrkbbWAzZRY6mkfrgOQZamN2S/XJKBJty/OIYg6pyFt0d1
-         xlfX5pVkg0gcwy8pZBKv1+z7UnKceYsVKPsvPjEUIh/jeXguuoUhMTrGGinjFBbyVJTE
-         nn2Q7FiyhgG1h7zIrdwMD/vto/KaY2MecsY7cppvtq6QukHiSWNsQ/ga1UCvg9Y3365d
-         eckmC77fedgkDWFCfmT/kQ/pa85SuJUj23qFlAnjg1SyL2Lt89NRZ0Ol99xTbrJYf84E
-         ecWD4/hKAtzbqSSbe6TcDyE4NfBUwIp/s6WXAf64Zzt37CLC294QXakAEZfYDE0rnQtA
-         AizA==
-X-Gm-Message-State: AOAM531dtNStm160HdCryiW3cjoJeqwu8bHeXCN66onnhN95L9CU1L5m
-        gq8S1oljMF9edA/LCvangOAhxQ==
-X-Google-Smtp-Source: ABdhPJyEgpWlB1DXX6+xj9reAgkGRUJ/18nmuXm2a77WwY0rHW9XG4b7O5gR3XoNa+V5ylK4UmmqzA==
-X-Received: by 2002:a63:d42:: with SMTP id 2mr8226764pgn.236.1611227943683;
-        Thu, 21 Jan 2021 03:19:03 -0800 (PST)
+        bh=ztcbVczwcxvX+Nme8Zu1bVyHZiwA0aS5UzQfgwSCEM4=;
+        b=GpTj3UOuGQMvZD3aDXwhxsqyTEuUIKq8WkEFYZhHcdjJk4YqOjbz0HCweKY2JwedHl
+         XRf/gYkKzxx0OjSlfBWz9s+fu0zV3lOh8979ieVheaIN7EFS6xYeSQvgOdTYFqCntaz8
+         QLmTDvarrbLGA0E0UWzqBRXEVASE9F3IE9I3PumnbwBtiYpg+ZejbS5wuBdrLHxrnH2u
+         y6avxYmlKV5ruanm4hmrUmShVqiXxvxsicvm2EAqUmcxNFaRuV8rMRki/i3hyUC4qU6P
+         g81c0YIYQYYtuH4DikAuBWzmLbpx47h1Rny6dwEHXq5ZYF3n78L9RtUZhYf5YGY/L2OC
+         ltVA==
+X-Gm-Message-State: AOAM531MAyE0LsYy1HIcufULlGgM2MIkNpWlAVFTUc5il06cu0TZeFIs
+        KNqyA92aW5LZd89XymLXWm+rcA==
+X-Google-Smtp-Source: ABdhPJz5dsmD2BduPt5SpiKRdA3AKAE60DsVpNwYRtx4HLW3+yCJkDvh+JXODFHsTDqqF3ffOKvzYw==
+X-Received: by 2002:a63:d446:: with SMTP id i6mr14020045pgj.446.1611227949698;
+        Thu, 21 Jan 2021 03:19:09 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id w21sm4497087pff.220.2021.01.21.03.19.02
+        by smtp.gmail.com with ESMTPSA id u189sm5203484pfb.51.2021.01.21.03.19.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 03:19:03 -0800 (PST)
+        Thu, 21 Jan 2021 03:19:09 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>,
         Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
         Sibi Sankar <sibis@codeaurora.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 07/13] opp: Allow _generic_set_opp_clk_only() to work for non-freq devices
-Date:   Thu, 21 Jan 2021 16:47:47 +0530
-Message-Id: <1585f6c21ea8aee64fe4da0bf72b36ea4d74a779.1611227342.git.viresh.kumar@linaro.org>
+Subject: [PATCH 09/13] opp: Implement dev_pm_opp_set_opp()
+Date:   Thu, 21 Jan 2021 16:47:49 +0530
+Message-Id: <7d62f63ac64e59ee3327789ff1bc9cebc2da6944.1611227342.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1611227342.git.viresh.kumar@linaro.org>
 References: <cover.1611227342.git.viresh.kumar@linaro.org>
@@ -69,31 +69,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid conditional statements at the caller site, this patch
-updates _generic_set_opp_clk_only() to work for devices that don't
-change frequency (like power domains, etc.). Return 0 if the clk pointer
-passed to this routine is not valid.
+The new helper dev_pm_opp_set_opp() can be used for configuring the
+devices for a particular OPP and can be used by different type of
+devices, even the ones which don't change frequency (like power
+domains).
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/opp/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/opp/core.c     | 28 ++++++++++++++++++++++++++++
+ include/linux/pm_opp.h |  6 ++++++
+ 2 files changed, 34 insertions(+)
 
 diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index a96ffd9051b1..6b09d468d37a 100644
+index 3500cc9de66b..5a367ef02b92 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
-@@ -726,6 +726,10 @@ static inline int _generic_set_opp_clk_only(struct device *dev, struct clk *clk,
- {
- 	int ret;
+@@ -1130,6 +1130,34 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_set_rate);
  
-+	/* We may reach here for devices which don't change frequency */
-+	if (unlikely(!clk))
-+		return 0;
++/**
++ * dev_pm_opp_set_opp() - Configure device for OPP
++ * @dev: device for which we do this operation
++ * @opp: OPP to set to
++ *
++ * This configures the device based on the properties of the OPP passed to this
++ * routine.
++ *
++ * Return: 0 on success, a negative error number otherwise.
++ */
++int dev_pm_opp_set_opp(struct device *dev, struct dev_pm_opp *opp)
++{
++	struct opp_table *opp_table;
++	int ret;
 +
- 	ret = clk_set_rate(clk, freq);
- 	if (ret) {
- 		dev_err(dev, "%s: failed to set clock rate: %d\n", __func__,
++	opp_table = _find_opp_table(dev);
++	if (IS_ERR(opp_table)) {
++		dev_err(dev, "%s: device opp doesn't exist\n", __func__);
++		return PTR_ERR(opp_table);
++	}
++
++	ret = _set_opp(dev, opp_table, opp, opp->rate);
++	dev_pm_opp_put_opp_table(opp_table);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(dev_pm_opp_set_opp);
++
+ /* OPP-dev Helpers */
+ static void _remove_opp_dev(struct opp_device *opp_dev,
+ 			    struct opp_table *opp_table)
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index f8e9a8e3eb59..2d8a706f8d00 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -158,6 +158,7 @@ void dev_pm_opp_detach_genpd(struct opp_table *opp_table);
+ struct opp_table *devm_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs);
+ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table, struct opp_table *dst_table, unsigned int pstate);
+ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq);
++int dev_pm_opp_set_opp(struct device *dev, struct dev_pm_opp *opp);
+ int dev_pm_opp_set_bw(struct device *dev, struct dev_pm_opp *opp);
+ int dev_pm_opp_set_sharing_cpus(struct device *cpu_dev, const struct cpumask *cpumask);
+ int dev_pm_opp_get_sharing_cpus(struct device *cpu_dev, struct cpumask *cpumask);
+@@ -376,6 +377,11 @@ static inline int dev_pm_opp_set_rate(struct device *dev, unsigned long target_f
+ 	return -ENOTSUPP;
+ }
+ 
++static inline int dev_pm_opp_set_opp(struct device *dev, struct dev_pm_opp *opp)
++{
++	return -ENOTSUPP;
++}
++
+ static inline int dev_pm_opp_set_bw(struct device *dev, struct dev_pm_opp *opp)
+ {
+ 	return -EOPNOTSUPP;
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
