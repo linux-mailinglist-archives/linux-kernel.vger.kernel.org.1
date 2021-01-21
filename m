@@ -2,69 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936A02FE2AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C2E2FE2B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbhAUGWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:22:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbhAUGUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:20:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id ACDFD2396D;
-        Thu, 21 Jan 2021 06:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611210008;
-        bh=3OUlOwnyM/Lq6dcSDU7VFLAgwB1L2BEv2nrFHtIfGZI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gmkaysQdC+C8KtxfnWCiL2l1hwazNyxA0OR4MXtwUbkKsDwt8HFJt7qqyMhqsA21m
-         Co+mJDRLp/cpuhF8jjEhJImipHZ04+ocPkEl+ALKr6yYCvkgzDt4L7Gvqnvml8tGPw
-         RntRHXrv+hcH+bFN1+ZlD0OtZisD1gip1VEewKcLUzRQrpvznrmezLzPD9BIOSl0AS
-         +zgBGLkh5VBugmE8sTD3CyHnmYRmspReCGGYa7lLGKB4b9iPQwlPTHvgdhkuQtF7Nz
-         yO9BUqkZrE/CWYTwDpiAAnnZhVzET3QdbjvQkf+Nzg3oq+q5L101IdWTALM8IAvnLI
-         e5bVBLDm0o9Bg==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 9F67660591;
-        Thu, 21 Jan 2021 06:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726880AbhAUGYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:24:25 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:43312 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726736AbhAUGXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:23:49 -0500
+Received: from mail-lj1-f197.google.com ([209.85.208.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1l2TMt-0005zo-M7
+        for linux-kernel@vger.kernel.org; Thu, 21 Jan 2021 06:22:55 +0000
+Received: by mail-lj1-f197.google.com with SMTP id f20so357829ljj.15
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:22:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=286+aLvFTV4FtvBetACGVIfc0aQZT7xsQ6Fn1YFzNWE=;
+        b=BtQrvkaJQK44Wkez5c4niGT6EkhKiLWJFv4r4Qh77ToNi5Drrk5Kci3GPtDHxY1aqN
+         6VVxqwsYzjrV33kGVJW5NpkV63gW/8rMDAnD+pGmLB9YVFDTD/RQ4IgOMkbBVTcFtYza
+         K1YgFaG5VHVN79rFk6ATAGwM4O/qT00O0iY+RZor7o5DhwSD3WsYNBEcdC3yCHlaWJxE
+         XNnnAK4H/sONEwS8LLr7h9Nt6nOl2ooGZbXdRDq04f3Ba7DLoty/N0mJvxjC/cJEyXjy
+         G+mPsq425rXrB8TT9i3k4yAFw79CYGQKegkLz2UvA6KS86AUakq3DOj30p3Iw1EqnrMx
+         1DWg==
+X-Gm-Message-State: AOAM533YxCHOpLuJiIZbP8wSGCD+Pe+8pkHinkPAiJUy7Iif27Ej93OM
+        Q25qPZfdFpzdmLOk12DAEUUw0n1F0UTRyPIaYT181jXYmsSCusclpoMosr49neOBn0BnrX0ctrE
+        M/OvjscTliX13Xj6gvu6XP6Q0/RpJfw5B/BMAgqToEmfKrKaaeP0SCGNseg==
+X-Received: by 2002:a2e:8947:: with SMTP id b7mr6258776ljk.116.1611210175143;
+        Wed, 20 Jan 2021 22:22:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzCYbbieVYKMHA4ivsq3wSRzf1SDvF4od/jM20SWLxethLb+Wu7rnFyvpDvgKmiBX6k5moAFl+6vWRHEoXwphQ=
+X-Received: by 2002:a2e:8947:: with SMTP id b7mr6258769ljk.116.1611210174921;
+ Wed, 20 Jan 2021 22:22:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: stmmac: dwmac-meson8b: fix the RX delay validation
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161121000864.22302.2434343187659178869.git-patchwork-notify@kernel.org>
-Date:   Thu, 21 Jan 2021 06:20:08 +0000
-References: <20210119202424.591349-1-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20210119202424.591349-1-martin.blumenstingl@googlemail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        martijn@martijnvandeventer.nl
+References: <20210119081513.300938-1-kai.heng.feng@canonical.com>
+ <YAaXz9Pg5x3DsCs3@kroah.com> <CAAd53p7tdFiARtW1RXsjN8+OwRXWzMnok_rfKHDHCh-JSam3cQ@mail.gmail.com>
+ <20210119094159.GQ4077@smile.fi.intel.com> <YAa1ygjr2L3VxBKF@kroah.com>
+In-Reply-To: <YAa1ygjr2L3VxBKF@kroah.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 21 Jan 2021 14:22:43 +0800
+Message-ID: <CAAd53p4MTSzuPEp3Y5=wP3HwguTOkyTrVZpi6xOCS0_Q1qcMdQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPI / device_sysfs: Use OF_MODALIAS for "compatible" modalias
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Tue, Jan 19, 2021 at 6:34 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Jan 19, 2021 at 11:41:59AM +0200, Andy Shevchenko wrote:
+> > On Tue, Jan 19, 2021 at 04:41:48PM +0800, Kai-Heng Feng wrote:
+> > > On Tue, Jan 19, 2021 at 4:27 PM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > > On Tue, Jan 19, 2021 at 04:15:13PM +0800, Kai-Heng Feng wrote:
+> >
+> > ...
+> >
+> > > > Who will use OF_MODALIAS and where have you documented it?
+> > >
+> > > After this lands in mainline, I'll modify the pull request for systemd
+> > > to add a new rule for OF_MODALIAS.
+> > > I'll modify the comment on the function to document the change.
+> >
+> > I'm wondering why to have two fixes in two places instead of fixing udev to
+> > understand multiple MODALIAS= events?
+>
+> It's not a matter of multiple events, it's a single event with a
+> key/value pair with duplicate keys and different values.
+>
+> What is this event with different values supposed to be doing in
+> userspace?  Do you want multiple invocations of `modprobe` or something
+> else?
+>
+> Usually a "device" only has a single "signature" that modprobe uses to
+> look up the correct module for.  Modules can support any number of
+> device signatures, but traditionally it is odd to think that a device
+> itself can be supported by multiple modules, which is what you are
+> saying is happening here.
+>
+> So what should userspace do with this, and why does a device need to
+> have multiple module alias signatures?
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+From the original use case [1], I think the "compatible" modalias
+should be enough.
+Andy and Mika, what do you think? Can we remove the ACPI modalias for this case?
 
-On Tue, 19 Jan 2021 21:24:24 +0100 you wrote:
-> When has_prg_eth1_rgmii_rx_delay is true then we support RX delays
-> between 0ps and 3000ps in 200ps steps. Swap the validation of the RX
-> delay based on the has_prg_eth1_rgmii_rx_delay flag so the 200ps check
-> is now applied correctly on G12A SoCs (instead of only allow 0ps or
-> 2000ps on G12A, but 0..3000ps in 200ps steps on older SoCs which don't
-> support that).
-> 
-> [...]
+[1] https://lwn.net/Articles/612062/
 
-Here is the summary with links:
-  - net: stmmac: dwmac-meson8b: fix the RX delay validation
-    https://git.kernel.org/netdev/net-next/c/9e8789c85dee
+Kai-Heng
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> thanks,
+>
+> greg k-h
