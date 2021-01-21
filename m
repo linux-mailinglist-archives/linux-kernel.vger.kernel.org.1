@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AD12FEB18
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC6B2FEB0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731504AbhAUNG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:06:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59686 "EHLO mail.kernel.org"
+        id S1731555AbhAUNFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:05:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729447AbhAUKaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:30:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F15A23899;
+        id S1729287AbhAUKbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:31:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 951CD238D7;
         Thu, 21 Jan 2021 10:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611224969;
-        bh=l37/E/vH4XbFHwCeL/usOurAN4NyJR1QzSmrjcbEVUE=;
+        bh=cAZ+bdotNq2+OepIgVZlBcVcWLCXIE8JG8JDOtK1y0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IeCt3T7xJntsvWfSdnZj23s60eW/tzIClgPhPw4LPMSdGpbnCgPDVjjnwbKWgVhLP
-         SQlMROeEU6Yv/cxQ8XMt+xB25mP/FrJsRhqEXjXXM4JJZJl97smwrCf7F58z51BfSZ
-         YOtwRKG8YBW69YzYo9EwphVdDyGNO6bZPAqNnHg3h8SehCRR++KvBinqCpVHf3dz9Q
-         VRlix76zis9/0rVn9wy/laoDBeZwlmhvZkhCy8U5Z7rKe9gDmFh+4t58BR4kmvEf9I
-         UmZTwcsupU5n4ShABu0eKhqAt12aR94azlCU1NKJssbq0Ftu4G4CUpkEqQlUzmcKhD
-         CxNUlwpkrDJWg==
+        b=aNu4QWe29ncRnTTRRqNLAhTO3N5Pxq22g4ct+MhNDnCmZL0JMowzE1UQcYcThdyie
+         GZBlcZY1XFDsUd5YDCDtmFM3eaH/grtyX/yRfa3F8x6WMwxJ5b4TG8NV0Zi3ydqIve
+         HjnLi4Tc9yxwa7adRgPq9/CyJ0rhLGI99X8Baj8LdX7LsIaRW3g7Lpl3XcjCrLxLcx
+         D8LupIjWZqqfTgCYCiYh4NQX12fchVCFyJg9lCyomjUA9lnJZ+WDs1sNpDDhyIERSZ
+         cHM64ncsUdOcnNhjW+mzqLwOzVqI3SqadhcixmtGgDxcTnMh21HzV/s6uxxEF1Rl1r
+         NT92oIqElj2QA==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1l2XDc-0004YK-Ks; Thu, 21 Jan 2021 11:29:36 +0100
+        id 1l2XDc-0004YR-R0; Thu, 21 Jan 2021 11:29:36 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     linux-usb@vger.kernel.org
 Cc:     Manivannan Sadhasivam <mani@kernel.org>,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 02/10] USB: serial: xr: fix interface leak at disconnect
-Date:   Thu, 21 Jan 2021 11:29:14 +0100
-Message-Id: <20210121102922.17439-4-johan@kernel.org>
+Subject: [PATCH 04/10] USB: serial: xr: use termios flag helpers
+Date:   Thu, 21 Jan 2021 11:29:16 +0100
+Message-Id: <20210121102922.17439-6-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210121102922.17439-1-johan@kernel.org>
 References: <20210121102922.17439-1-johan@kernel.org>
@@ -42,43 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure to release the control interface at disconnect so that the
-driver can be unbound without leaking resources (and later rebound).
+Use the termios flag helpers consistently, including for CRTSCTS.
 
-Fixes: a8f54b7bd132 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/xr_serial.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/serial/xr_serial.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-index 7be6da6a5cf3..5e110b0c8e71 100644
+index 8f81f866d681..52909dccb4dc 100644
 --- a/drivers/usb/serial/xr_serial.c
 +++ b/drivers/usb/serial/xr_serial.c
-@@ -564,6 +564,15 @@ static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
- 	return 0;
- }
+@@ -401,7 +401,6 @@ static int xr_set_baudrate(struct tty_struct *tty,
+ static void xr_set_flow_mode(struct tty_struct *tty,
+ 			     struct usb_serial_port *port)
+ {
+-	unsigned int cflag = tty->termios.c_cflag;
+ 	u8 flow, gpio_mode;
+ 	int ret;
  
-+static void xr_disconnect(struct usb_serial *serial)
-+{
-+	struct usb_driver *driver = serial->type->usb_driver;
-+	struct usb_interface *control_interface;
-+
-+	control_interface = usb_ifnum_to_if(serial->dev, 0);
-+	usb_driver_release_interface(driver, control_interface);
-+}
-+
- static const struct usb_device_id id_table[] = {
- 	{ USB_DEVICE(0x04e2, 0x1410) }, /* XR21V141X */
- 	{ }
-@@ -578,6 +587,7 @@ static struct usb_serial_driver xr_device = {
- 	.id_table		= id_table,
- 	.num_ports		= 1,
- 	.probe			= xr_probe,
-+	.disconnect		= xr_disconnect,
- 	.open			= xr_open,
- 	.close			= xr_close,
- 	.break_ctl		= xr_break_ctl,
+@@ -409,7 +408,7 @@ static void xr_set_flow_mode(struct tty_struct *tty,
+ 	if (ret)
+ 		return;
+ 
+-	if (cflag & CRTSCTS) {
++	if (C_CRTSCTS(tty)) {
+ 		dev_dbg(&port->dev, "Enabling hardware flow ctrl\n");
+ 
+ 		/*
 -- 
 2.26.2
 
