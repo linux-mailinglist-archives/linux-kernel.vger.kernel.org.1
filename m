@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045B72FF786
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE892FF78D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727306AbhAUVpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:45:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbhAUVm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:42:29 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314E9C06174A;
-        Thu, 21 Jan 2021 13:41:49 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id q8so4652567lfm.10;
-        Thu, 21 Jan 2021 13:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OwuZCb9ewdwlU+R/2zHWpei3yNvd7dd0S6nSVQta5DI=;
-        b=fBXm2YJcCsvdZxWSnDxe/6wr+lLyhhW/ocizS5IVOEGEsxlADb/3eud4ZWJ1MG8YXL
-         5NE9bDKTm8l2Z02uo7/iFyuCYTalmI4QI2Fdmb2Zmi78Myt1ipoJxjusnOIg7v/LvKK8
-         Aj8LVwX8RvzchjEWZcLU+xpsVW9/XeQF87sDfB5diveC5sPCzjrAnw0IPL1nupN5bLwK
-         FDjBUaUCN6kRGaEpGD2ajy5c03UI2swJEVXdO8TpcchZTilYpwrSSSGho87p65ZEgoQn
-         /Yst5iGJaHO3tT3BaNAnfHWD2wSwoKECXWphYhMOmJMaIKUldWVDbCiN6hs+HZRu//Ar
-         rDBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OwuZCb9ewdwlU+R/2zHWpei3yNvd7dd0S6nSVQta5DI=;
-        b=JefvMK/jpMuMNXDkJ2ZFBsn/Evf5QUZ75SmEOqghEbMRkSMyq2r4jBxPimnneaffZW
-         fTz9m3ecM8NgXX91OC9uUv+wD52DvzciOUvb7b1Qqj6ktatCS9a93EkPRun56OCkXyVY
-         P9aG9ZU07OIr8RQhi6Afob+pGu6aumUoTaVidUsmopuhM5I6NCHTljwt5BCIbrIFnYy3
-         BohFIwd3hNTsArYmezH7/B5e9w5Lj0fZB1P1Z+OtEIPeXVnfbVPZP+vy9s8+XqYfeA1D
-         4RkHqLmtOs9/pz5ZAjn9mphJx01lY05equI+bHxvWzePimJ+HLtVcgsQPBBbYA1qUZrx
-         67kQ==
-X-Gm-Message-State: AOAM532noOnO2P7/z5XtCVGvACd/NNJf8yIiMkYkPYJjmCAvCeR8QOUQ
-        SFwt8hNQ7xoyC0KGtfS2Q5I=
-X-Google-Smtp-Source: ABdhPJwUBFzNUJ46w/nJOtGCGRLB+ZGcj7SVGuZbwv03crhNkdJ1EaxnAm5+WhSafvSKthj5QXdsZg==
-X-Received: by 2002:ac2:54ac:: with SMTP id w12mr629640lfk.514.1611265307783;
-        Thu, 21 Jan 2021 13:41:47 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id g21sm75276lfb.263.2021.01.21.13.41.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 13:41:47 -0800 (PST)
-Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b634343a-8005-fc35-e38b-bfeaa7310a70@gmail.com>
-Date:   Fri, 22 Jan 2021 00:41:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1726733AbhAUVqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:46:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727273AbhAUVoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 16:44:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7507E23A54;
+        Thu, 21 Jan 2021 21:43:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611265394;
+        bh=qj3RrM+hGGEbQA50Mwahsi0VaXZuShqtsPO0Lx/8LwE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=je6Vk1jj8Fnh78pX6xyhg1YoN+8oFceX96bVh0UxwrAVx8RYxb0l8yPf7dyQTOxgV
+         X11Bk/O3tF3RmMvaQoEQ8ROGIdpkhOZCc4vRWf0zjCQqQL/e9rQ5bKrpPBkvrnQupU
+         7QklaabUw8fnF6kKU61Mhz92siKB12guuQzlCHYnPBjHVH7r2cZVGSdrwpo1zK3W5i
+         zVe6/vcB0ihX0rL4EWcdMtCjEiSY2dca+QfjfyA/RQ/RY4+zgh6RL/PUHw0Sog96cI
+         dpHUC7VfEW96+SjnX+Efwp2Ly0o+nW4dRcb77BQwdd8SJ0TCaFRFsEcEheGZ/peIHM
+         DLcazNBbBgFDQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3F1AA35226D8; Thu, 21 Jan 2021 13:43:14 -0800 (PST)
+Date:   Thu, 21 Jan 2021 13:43:14 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>, rcu@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com
+Subject: Re: rcu-torture: Internal error: Oops: 96000006
+Message-ID: <20210121214314.GW2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
+ <20210121185521.GQ2743@paulmck-ThinkPad-P72>
+ <20210121213110.GB23234@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121213110.GB23234@willie-the-truck>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.01.2021 14:17, Viresh Kumar пишет:
-> @@ -1074,15 +1091,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  
->  	if (!ret) {
->  		ret = _set_opp_bw(opp_table, opp, dev, false);
-> -		if (!ret)
-> +		if (!ret) {
->  			opp_table->enabled = true;
-> +			dev_pm_opp_put(old_opp);
-> +
-> +			/* Make sure current_opp doesn't get freed */
-> +			dev_pm_opp_get(opp);
-> +			opp_table->current_opp = opp;
-> +		}
->  	}
+On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
+> On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
+> > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
+> > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
+> > > the following kernel crash noticed. This started happening from Linux next
+> > > next-20210111 tag to next-20210121.
+> > > 
+> > > metadata:
+> > >   git branch: master
+> > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+> > >   git describe: next-20210111
+> > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
+> > > 
+> > > output log:
+> > > 
+> > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
+> > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
+> > > = ffff8000091ab8e0
+> > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
+> > > [  621.546696] Unable to handle kernel NULL pointer dereference at
+> > > virtual address 0000000000000008
+> 
+> [...]
+> 
+> > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
+> > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
+> > like your configuration rejects NULL as an invalid virtual address,
+> > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
+> > are not allowed to dereference a ZERO_SIZE_PTR?
+> > 
+> > Adding the ARM64 guys on CC for their thoughts.
+> 
+> Spooky timing, there was a thread _today_ about that:
+> 
+> https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
 
-I'm a bit surprised that _set_opp_bw() isn't used similarly to
-_set_opp_voltage() in _generic_set_opp_regulator().
+Very good, then my workaround (shown below for Naresh's ease of testing)
+is only a short-term workaround.  Yay!  ;-)
 
-I'd expect the BW requirement to be raised before the clock rate goes UP.
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index cefa9ae..a8375d1 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -550,7 +550,8 @@ bool kmem_valid_obj(void *object)
+ {
+ 	struct page *page;
+ 
+-	if (!virt_addr_valid(object))
++	/* Some arches consider ZERO_SIZE_PTR to be a valid address. */
++	if (object < (void *)PAGE_SIZE || !virt_addr_valid(object))
+ 		return false;
+ 	page = virt_to_head_page(object);
+ 	return PageSlab(page);
