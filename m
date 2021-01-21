@@ -2,140 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981542FE619
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A997C2FE626
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbhAUJRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        id S1728600AbhAUJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:19:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727249AbhAUJLI (ORCPT
+        with ESMTP id S1726668AbhAUJK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:11:08 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063A3C0613ED;
-        Thu, 21 Jan 2021 01:10:28 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id l14so584653qvh.2;
-        Thu, 21 Jan 2021 01:10:27 -0800 (PST)
+        Thu, 21 Jan 2021 04:10:58 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C678CC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:10:17 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id hs11so1588705ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:10:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+h3XO1KHkOJ1WE2lVC/8D0t/DmItYejrYEfvh5uWFfA=;
-        b=CefFG/UZeDEyOZR6R1hkPmmASHVpA8OFOj2xdj3iY7d4oQ5ctaUKOQLkEisCJrPe/+
-         RK8rKKh0qkgfztY9mZ9gj82lD2fPGlkmWJPhilA2HvvYnxCBwF8o0VI5fWuE/GX2sYnw
-         M9ja4/mLLTugc5nmForFBjElcVeFsQQdC+mLclAN6Rmukt9wUtRMp+VAQW2zZK5E5iFM
-         wraCd8m4gBTEmDYMjzUn1fm/4ukVUEm8zZB8srJtU6ZYFoOXeAjw8UE6HzZiZNFRj4oT
-         0z8AMM2uSB/bA48XUdFEGtLjWXw8IadTltZ36zdh7fj2Xa5XeR0UvUGT66aGrPet04B5
-         YUJA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KvSZXCYCWOThZAfGsURUVFj6535QaWB9mdWG/Okc3Dc=;
+        b=KwxrYMpHH9qLRqqFUZUCA/DpVUlNgagc9NdihZv6Bm4DwVruBYO7srGUU9Nq3fnieT
+         5mkU7Hmeen6wQzsG8A5DBEisThlpyPJ+haaaE9pTRg1QnpDswmpCOd2KaB1y1kV90/I9
+         WNRuxeh7payKI6+CrTTdR0mKCFBIamgnCzS997gxh1RUMHZgxiZIFrIl5Y82kNSvWZ+0
+         UgY3NtQouMUwza9ORQ/KGtT+AdFxOWZtxlKdLyS4GdbFQtQhkaeQiZoteAoxI+PzTVGL
+         +5KblkR4eZm1JIi1CybByAZJWA3BHsvxZJLkz2r72TfxDhzbtNroCZsXPBZT7xI/cdfz
+         BelQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+h3XO1KHkOJ1WE2lVC/8D0t/DmItYejrYEfvh5uWFfA=;
-        b=OUne90d4yzOGoIBc6ya9683FC3PcchXV5+cRpFyIP3/zr+LRm55Cu2smnu2ago/PZ8
-         PgYRTsDr7G9Y85lpdUbSQnGJ0hGbD92KG26By2kcnzbPSDoBf8X1C9U0mw8HGORT2rn5
-         +5oTBDKyJOTHSnGjoJ4yZCMq/Gh2i+HqCf9uuvBnqQQ+u0l0pVWoZxCZQJRBHBGsIv8f
-         qMK6kb8EkEPHAPe2+G+sxlQvr1NSA0Q2YdvAMmv4xVkhGDEUfAX+k+63oPc0xQUMtPED
-         GMp0QDkF47AjFnq6PapcV5BoMHB1J7zNTHfxLB3syc+M2+BpsUNG7Tqr70j+KSPHJlTH
-         Uz5w==
-X-Gm-Message-State: AOAM5310C+cbXHswyS+Ih/YlJlYDlc16tmZ7WgTJoKZW9X35MGMdEpe3
-        10GuZibc0g7pBhuSvxWcStk=
-X-Google-Smtp-Source: ABdhPJyUlF4d0UezjmzlvVLRM4fC3skEghQEEetNaz4NlKgT6QmXaTfR9rbccpFGIbqyQEvgvUMdMg==
-X-Received: by 2002:ad4:5187:: with SMTP id b7mr13655408qvp.2.1611220227359;
-        Thu, 21 Jan 2021 01:10:27 -0800 (PST)
-Received: from localhost.localdomain ([45.32.7.59])
-        by smtp.gmail.com with ESMTPSA id b16sm2903733qtx.85.2021.01.21.01.10.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:10:26 -0800 (PST)
-From:   Su Yanjun <suyanjun218@gmail.com>
-To:     mkl@pengutronix.de, manivannan.sadhasivam@linaro.org,
-        thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
-        kuba@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Su Yanjun <suyanjun218@gmail.com>
-Subject: [PATCH v2] can: mcp251xfd: replace sizeof(u32) with val_bytes in regmap
-Date:   Thu, 21 Jan 2021 17:10:05 +0800
-Message-Id: <20210121091005.74417-1-suyanjun218@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KvSZXCYCWOThZAfGsURUVFj6535QaWB9mdWG/Okc3Dc=;
+        b=J3FJ0X1+KlIT5AEatXmIKv+waIvGN96Via30LGJf/rn17nka+7E+tRhh1CqmoSsNtn
+         73nB1bPImd1lAm0qfjA+FUQIbbrTi97dlSzODA6cUitDDDebAtpMHZDCo+Czr+a2nU4b
+         MDqmMN7u+MqShzVO8dGhFUnaSA0WDQI5pTHoqVjliXOYJTlKum6qrmZP4VoFhwbul1zm
+         6Fj+ITIAWZP1oChS3JMzF10drbhtnQUKfEvXktH91cZ5jQTkntIxcHazs297SyCwul1H
+         FwVGbb6C40SWETKMBbCrtbsR20UTvuXxrlEpjaBthCi/O9gg45aAAA+KZHtET0eYhzTb
+         fjEw==
+X-Gm-Message-State: AOAM5330jLSrddLOGV+jbj5JbwMZFkoW+Nn4/WgFR7q684uW9U0fsedl
+        mRLFepDNvmFTZ3jXrkMPFEIEACGFZ4k/G03U8dnh/nqzbCU=
+X-Google-Smtp-Source: ABdhPJzcDVgtUI8VbkH5psf2+PhlkdEMXEoekbPbL+gHtEGw/aDUCBqg1KYZYSHgu+t5lCtRgdvSbxl+tt0/5XpuByI=
+X-Received: by 2002:a17:906:3146:: with SMTP id e6mr8232507eje.363.1611220216355;
+ Thu, 21 Jan 2021 01:10:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210119123059.102004-1-warthog618@gmail.com>
+In-Reply-To: <20210119123059.102004-1-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 21 Jan 2021 10:10:05 +0100
+Message-ID: <CAMpxmJVfeWW81UKpsx-pCQF1jhHwrFiuxVfvkgBxFLCHPeEXXQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] selftests: gpio: rework and port to GPIO uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional effect.
+On Tue, Jan 19, 2021 at 1:31 PM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Initially I just wanted to port the selftests to the latest GPIO uAPI,
+> but on finding that, due to dependency issues, the selftests are not built
+> for the buildroot environments that I do most of my GPIO testing in, I
+> decided to take a closer look.
+>
+> The first patch is essentially a rewrite of the exising test suite.
+> It uses a simplified abstraction of the uAPI interfaces to allow a common
+> test suite to test the gpio-mockup using either of the uAPI interfaces.
+> The simplified cdev interface is implemented in gpio-mockup.sh, with the
+> actual driving of the uAPI implemented in gpio-mockup-cdev.c.
+> The simplified sysfs interface replaces gpio-mockup-sysfs.sh and is
+> loaded over the cdev implementation when selected.
+>
+> The new tests should also be simpler to extend to cover new mockup
+> interfaces, such as the one Bart has been working on.
+>
+> I have dropped support for testing modules other than gpio-mockup from
+> the command line options, as the tests are very gpio-mockup specific so
+> I didn't see any calling for it.
+>
+> I have also tried to emphasise in the test output that the tests are
+> covering the gpio-mockup itself.  They do perform some implicit testing
+> of gpiolib and the uAPI interfaces, and so can be useful as smoke tests
+> for those, but their primary focus is the gpio-mockup.
+>
+> Patches 2 through 5 do some cleaning up that is now possible with the
+> new implementation, including enabling building in buildroot environments.
+> Patch 4 doesn't strictly clean up all the old gpio references that it
+> could - the gpio was the only Level 1 test, so the Level 1 tests could
+> potentially be removed, but I was unsure if there may be other
+> implications to removing a whole test level, or that it may be useful
+> as a placeholder in case other static LDLIBS tests are added in
+> the future??
+>
+> Patch 6 finally gets around to porting the tests to the latest GPIO uAPI.
+>
+> And Patch 7 updates the config to set the CONFIG_GPIO_CDEV option that
+> was added in v5.10.
+>
+> Cheers,
+> Kent.
+>
+> Changes v2 -> v3:
+>  - remove 'commit' from Fixes tag in patch 1.
+>  - rebase on Bart's gpio/for-next
+>
+> Changes v1 -> v2 (all in patch 1 and gpio-mockup.sh unless stated
+>  otherwise):
+>  - reorder includes in gpio-mockup-cdev.c
+>  - a multitude of improvements to gpio-mockup.sh and gpio-mockup-sysfs.sh
+>    based on Andy's review comments
+>  - improved cleanup to ensure all child processes are killed on exit
+>  - added race condition prevention or mitigation including the wait in
+>    release_line, the retries in assert_mock, the assert_mock in set_mock,
+>    and the sleep in set_line
+>
+> Kent Gibson (7):
+>   selftests: gpio: rework and simplify test implementation
+>   selftests: gpio: remove obsolete gpio-mockup-chardev.c
+>   selftests: remove obsolete build restriction for gpio
+>   selftests: remove obsolete gpio references from kselftest_deps.sh
+>   tools: gpio: remove uAPI v1 code no longer used by selftests
+>   selftests: gpio: port to GPIO uAPI v2
+>   selftests: gpio: add CONFIG_GPIO_CDEV to config
+>
+>  tools/gpio/gpio-utils.c                       |  89 ----
+>  tools/gpio/gpio-utils.h                       |   6 -
+>  tools/testing/selftests/Makefile              |   9 -
+>  tools/testing/selftests/gpio/Makefile         |  26 +-
+>  tools/testing/selftests/gpio/config           |   1 +
+>  .../testing/selftests/gpio/gpio-mockup-cdev.c | 198 +++++++
+>  .../selftests/gpio/gpio-mockup-chardev.c      | 323 ------------
+>  .../selftests/gpio/gpio-mockup-sysfs.sh       | 168 ++----
+>  tools/testing/selftests/gpio/gpio-mockup.sh   | 497 ++++++++++++------
+>  tools/testing/selftests/kselftest_deps.sh     |   4 +-
+>  10 files changed, 603 insertions(+), 718 deletions(-)
+>  create mode 100644 tools/testing/selftests/gpio/gpio-mockup-cdev.c
+>  delete mode 100644 tools/testing/selftests/gpio/gpio-mockup-chardev.c
+>
+>
+> base-commit: 64e6066e16b8c562983dd9d33e604c0001ae0fc7
+> --
+> 2.30.0
+>
 
-Signed-off-by: Su Yanjun <suyanjun218@gmail.com>
----
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+Series applied, thanks!
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index f07e8b737d31..b15bfd50b863 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -181,6 +181,12 @@ static int mcp251xfd_clks_and_vdd_disable(const struct mcp251xfd_priv *priv)
- 	return 0;
- }
- 
-+static inline int
-+mcp251xfd_get_val_bytes(const struct mcp251xfd_priv *priv)
-+{
-+	return regmap_get_val_bytes(priv->map_reg);
-+}
-+
- static inline u8
- mcp251xfd_cmd_prepare_write_reg(const struct mcp251xfd_priv *priv,
- 				union mcp251xfd_write_reg_buf *write_reg_buf,
-@@ -1308,6 +1314,7 @@ mcp251xfd_tef_obj_read(const struct mcp251xfd_priv *priv,
- 		       const u8 offset, const u8 len)
- {
- 	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
-+	int val_bytes = mcp251xfd_get_val_bytes(priv);
- 
- 	if (IS_ENABLED(CONFIG_CAN_MCP251XFD_SANITY) &&
- 	    (offset > tx_ring->obj_num ||
-@@ -1322,7 +1329,7 @@ mcp251xfd_tef_obj_read(const struct mcp251xfd_priv *priv,
- 	return regmap_bulk_read(priv->map_rx,
- 				mcp251xfd_get_tef_obj_addr(offset),
- 				hw_tef_obj,
--				sizeof(*hw_tef_obj) / sizeof(u32) * len);
-+				sizeof(*hw_tef_obj) / val_bytes * len);
- }
- 
- static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
-@@ -1511,11 +1518,12 @@ mcp251xfd_rx_obj_read(const struct mcp251xfd_priv *priv,
- 		      const u8 offset, const u8 len)
- {
- 	int err;
-+	int val_bytes = mcp251xfd_get_val_bytes(priv);
- 
- 	err = regmap_bulk_read(priv->map_rx,
- 			       mcp251xfd_get_rx_obj_addr(ring, offset),
- 			       hw_rx_obj,
--			       len * ring->obj_size / sizeof(u32));
-+			       len * ring->obj_size / val_bytes);
- 
- 	return err;
- }
-@@ -2139,6 +2147,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
- 	struct mcp251xfd_priv *priv = dev_id;
- 	irqreturn_t handled = IRQ_NONE;
- 	int err;
-+	int val_bytes = mcp251xfd_get_val_bytes(priv);
- 
- 	if (priv->rx_int)
- 		do {
-@@ -2162,7 +2171,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
- 		err = regmap_bulk_read(priv->map_reg, MCP251XFD_REG_INT,
- 				       &priv->regs_status,
- 				       sizeof(priv->regs_status) /
--				       sizeof(u32));
-+				       val_bytes);
- 		if (err)
- 			goto out_fail;
- 
--- 
-2.25.1
-
+Bartosz
