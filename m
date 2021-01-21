@@ -2,236 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7EF2FF6E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BBD2FF6EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbhAUVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:12:14 -0500
-Received: from mga14.intel.com ([192.55.52.115]:11671 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727457AbhAUVLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:11:00 -0500
-IronPort-SDR: XRRKeFJq/BTbt4KEJlScneN4Q7YrInsrVOzh2O9X74v55KULBYamMnj/Tf6iDiGi5ZZujg3e1v
- mdvDyEE4lTaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="178567844"
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="178567844"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 13:10:00 -0800
-IronPort-SDR: mivUkPtMTq+2YxUYYHU6a6jY5lhCpSm6CQ6kFo0esSvqZwTl7bi+YtusSy51YHaXRtuZ5WKJOj
- 9i9vrFNOJpiQ==
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="348048621"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 13:10:00 -0800
-Date:   Thu, 21 Jan 2021 13:09:59 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <20210121210959.GA10304@agluck-desk2.amr.corp.intel.com>
-References: <20210111214452.1826-1-tony.luck@intel.com>
- <20210115003817.23657-1-tony.luck@intel.com>
- <20210115152754.GC9138@zn.tnic>
- <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
- <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
- <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
- <20210119105632.GF27433@zn.tnic>
- <20210119235759.GA9970@agluck-desk2.amr.corp.intel.com>
- <20210120121812.GF825@zn.tnic>
+        id S1727590AbhAUVOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:14:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727483AbhAUVNn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 16:13:43 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDA2C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:13:02 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id m25so4549313lfc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 13:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eb+yS6a18O5VfaxpCUEMmL8LlEDI5AuUqrKys+aojR8=;
+        b=ImbDU+3ZJgYqxPTG8HId64dX0M2hX5bGDe/oCBXQsayIVueCw7xXuhPmBIvLOxEpFA
+         aYstTbpPrhXwGCVIW8NURQCMNm2QhmHwZ7shG6s6dK4zGeUTkJxh6hqn+/lecEERKyhO
+         lWaOMV6eJWkaGyf7pktFflDmSH/lOZ0ggPiH2CjRzO2/UrlvGkiEenaAeDaXwO5K9Spe
+         8BDrIr7QRqXz8zjm8/oMCItLO7EPg4Fjvq8rQQvZGA0ZtixgBkkjK4F5vRZVPnTAmQ1n
+         dqnHB2oZYTZpPf6w6YMggP5QFApT1RxKqVVJjhnPTqtTitEb2Dkj+VJLT0tFrdbe6YBU
+         i9yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eb+yS6a18O5VfaxpCUEMmL8LlEDI5AuUqrKys+aojR8=;
+        b=kSiHzg/YyJoNXr/OOkRp+WLtH7PehCiDlKskEp0WFyyJlhaTO1DYeHC+PIpS91/jLk
+         rdMtChDJZPCqANXi4PNRJ5dEFaFNqT3mV4inxMyFrD1YsXJFGrqluY9IGe2omHvZRhRw
+         Q5ltOrIkTFqbH9sQO9KXolTLSRibNtmK2n1vhJJJUyD60DEkosi0tOn1kP7LKmMmYuix
+         kiljGMaoQCkBObzKQs0WxvSvXO+v81lRxO4JMKJOq7UxhDEuHmsCCnBvwM47tLkhS6X8
+         Lw4ihwvrIVQ+9qknYhrBHv0ThV08+zi5c4a1fDAIdCHpXKdJAeTYKBpl1yaEmlLcsR6s
+         pfcw==
+X-Gm-Message-State: AOAM530OOzHqHYtBkp9lDOM5kuKdjIMrRGDVMPNIbVDQfn80/zrKENPT
+        JnOpVPdoyL+eWwVAIBI6De+fLJs58e5fOkwN2mFhQA==
+X-Google-Smtp-Source: ABdhPJxE0BGrPkRiVaX0zLa3SLSvGCLEp6Q6sZSHqqiRB0ZRHWuYJfq4qpc6Jw+Ng/1SIvKD1iBwk12TaR8aIHYJXYs=
+X-Received: by 2002:a05:6512:3238:: with SMTP id f24mr564045lfe.29.1611263581282;
+ Thu, 21 Jan 2021 13:13:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120121812.GF825@zn.tnic>
+References: <20210118020848.11721-1-andre.przywara@arm.com> <20210118020848.11721-4-andre.przywara@arm.com>
+In-Reply-To: <20210118020848.11721-4-andre.przywara@arm.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 21 Jan 2021 22:12:50 +0100
+Message-ID: <CACRpkdZKmDjaz9Pg9s3P_ve68tNhumHHcUL0coT+dAnoct+Fww@mail.gmail.com>
+Subject: Re: [PATCH v3 03/21] dt-bindings: pinctrl: Add Allwinner H616
+ compatible strings
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 01:18:12PM +0100, Borislav Petkov wrote:
-> On Tue, Jan 19, 2021 at 03:57:59PM -0800, Luck, Tony wrote:
-> > But the real validation folks took my patch and found that it has
-> > destabilized cases 1 & 2 (and case 3 also chokes if you repeat a few
-> > more times). System either hangs or panics. Generally before 100
-> > injection/conumption cycles.
-> 
-> Hmm, that mce_count increment and check stuff might turn out to be
-> fragile in the face of a race condition. But I don't see it...
+On Mon, Jan 18, 2021 at 3:09 AM Andre Przywara <andre.przywara@arm.com> wrote:
 
-I can't see what the race is either.  As far as I can see the flow
-looks like this (for a machine check in user mode)
+> A new SoC, a new compatible string.
+> Also we were too miserly with just allowing seven interrupt banks.
+>
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
-	user-mode
+Patch applied to the pinctrl tree.
 
-		do_machine_check() [in atomic context on IST etc.]
-
-			queue_task_work()
-				increments current->mce_count
-				first (only) call saves address etc. and calls task_work_add()
-		return from machine check
-
-Plausibly we might context switch to another process here. We could even
-resume on a different CPU.
-
-		do_task_work() [in process context]
-
-			kill_me_maybe()
-				sets mce_count back to zero, ready for another #MC
-				memory_failure()
-				send SIGBUS
-
-The kernel get_user() case is similar, but may take extra machine checks before
-before calling code decides get_user() really is going to keep saying -EFAULT.
-
-
-But, on a whim, I changed the type of mce_count from "int" to "atomic_t" and
-fixeed up the increment & clear to use atomic_inc_return() and atomic_set().
-See updated patch below.
-
-I can't see why this should have made any difference. But the "int" version
-crashes in a few dozen machine checks. The "atomic_t" version has run many
-thousands of machine checks (10213 in the current boot according to /proc/interrupts)
-with no issues.
-
--Tony
-
-From d1b003f1de92f87c8dc53dd710fd79ad6e277364 Mon Sep 17 00:00:00 2001
-From: Tony Luck <tony.luck@intel.com>
-Date: Wed, 20 Jan 2021 12:40:50 -0800
-Subject: [PATCH] x86/mce: Avoid infinite loop for copy from user recovery
-
-Recovery action when get_user() triggers a machine check uses the fixup
-path to make get_user() return -EFAULT.  Also queue_task_work() sets up
-so that kill_me_maybe() will be called on return to user mode to send a
-SIGBUS to the current process.
-
-But there are places in the kernel where the code assumes that this
-EFAULT return was simply because of a page fault. The code takes some
-action to fix that, and then retries the access. This results in a second
-machine check.
-
-While processing this second machine check queue_task_work() is called
-again. But since this uses the same callback_head structure that
-was used in the first call, the net result is an entry on the
-current->task_works list that points to itself. When task_work_run()
-is called it loops forever in this code:
-
-		do {
-			next = work->next;
-			work->func(work);
-			work = next;
-			cond_resched();
-		} while (work);
-
-Add a counter (current->mce_count) to keep track of repeated machine checks
-before task_work() is called. First machine check saves the address information
-and calls task_work_add(). Subsequent machine checks before that task_work
-call back is executed check that the address is in the same page as the first
-machine check (since the callback will offline exactly one page).
-
-Expected worst case is two machine checks before moving on (e.g. one user
-access with page faults disabled, then a repeat to the same addrsss with
-page faults enabled). Just in case there is some code that loops forever
-enforce a limit of 10.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/core.c | 35 +++++++++++++++++++++++++++-------
- include/linux/sched.h          |  1 +
- 2 files changed, 29 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 13d3f1cbda17..4a8660058b67 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1238,6 +1238,9 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
- 
- static void kill_me_now(struct callback_head *ch)
- {
-+	struct task_struct *p = container_of(ch, struct task_struct, mce_kill_me);
-+
-+	atomic_set(&p->mce_count, 0);
- 	force_sig(SIGBUS);
- }
- 
-@@ -1246,6 +1249,7 @@ static void kill_me_maybe(struct callback_head *cb)
- 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
- 	int flags = MF_ACTION_REQUIRED;
- 
-+	atomic_set(&p->mce_count, 0);
- 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
- 
- 	if (!p->mce_ripv)
-@@ -1266,12 +1270,29 @@ static void kill_me_maybe(struct callback_head *cb)
- 	}
- }
- 
--static void queue_task_work(struct mce *m, int kill_current_task)
-+static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
- {
--	current->mce_addr = m->addr;
--	current->mce_kflags = m->kflags;
--	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
--	current->mce_whole_page = whole_page(m);
-+	int count = atomic_inc_return(&current->mce_count);
-+
-+	/* First call, save all the details */
-+	if (count == 1) {
-+		current->mce_addr = m->addr;
-+		current->mce_kflags = m->kflags;
-+		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
-+		current->mce_whole_page = whole_page(m);
-+	}
-+
-+	/* Ten is likley overkill. Don't expect more than two faults before task_work() */
-+	if (count > 10)
-+		mce_panic("Too many machine checks while accessing user data", m, msg);
-+
-+	/* Second or later call, make sure page address matches the one from first call */
-+	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
-+		mce_panic("Machine checks to different user pages", m, msg);
-+
-+	/* Do not call task_work_add() more than once */
-+	if (count > 1)
-+		return;
- 
- 	if (kill_current_task)
- 		current->mce_kill_me.func = kill_me_now;
-@@ -1414,7 +1435,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		/* If this triggers there is no way to recover. Die hard. */
- 		BUG_ON(!on_thread_stack() || !user_mode(regs));
- 
--		queue_task_work(&m, kill_current_task);
-+		queue_task_work(&m, msg, kill_current_task);
- 
- 	} else {
- 		/*
-@@ -1432,7 +1453,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		}
- 
- 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
--			queue_task_work(&m, kill_current_task);
-+			queue_task_work(&m, msg, kill_current_task);
- 	}
- out:
- 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 6e3a5eeec509..5727d59ab737 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1362,6 +1362,7 @@ struct task_struct {
- 					mce_whole_page : 1,
- 					__mce_reserved : 62;
- 	struct callback_head		mce_kill_me;
-+	atomic_t			mce_count;
- #endif
- 
- #ifdef CONFIG_KRETPROBES
--- 
-2.21.1
-
+Yours,
+Linus Walleij
