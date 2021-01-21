@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5026E2FF400
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 275992FF3EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbhAUTN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:13:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727001AbhAUTK4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:10:56 -0500
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1C8C061756;
-        Thu, 21 Jan 2021 11:09:38 -0800 (PST)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 7790068A6; Thu, 21 Jan 2021 14:09:37 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 7790068A6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1611256177;
-        bh=N/byAs1v6tc9Fx3ki4Hix9OpQ2b4N7bUlr5L+Udyz04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v12SGAI5TdTGVdUXLNRFq4bYEJiB3wwXNox11gArFVnndbZSQLf36kKRFo95UyeQY
-         CO7QjlprxG0AHzpbsAXIme2ZNIcWn0te5LWMp6nGA+4cNMBpacJ9xmATTjhLCoftDm
-         vFchlftsuiau3nyD/mo1dMyfCGV87yqk3pnkw+U0=
-Date:   Thu, 21 Jan 2021 14:09:37 -0500
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
-Message-ID: <20210121190937.GE20964@fieldses.org>
-References: <20210121174306.GB20964@fieldses.org>
- <20210121164645.GA20964@fieldses.org>
- <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
- <1794286.1611248577@warthog.procyon.org.uk>
- <1851804.1611255313@warthog.procyon.org.uk>
+        id S1727059AbhAUTL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:11:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726821AbhAUTKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:10:37 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BDCF221E7;
+        Thu, 21 Jan 2021 19:09:52 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 14:09:51 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Gaurav Kohli <gkohli@codeaurora.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+Message-ID: <20210121140951.2a554a5e@gandalf.local.home>
+In-Reply-To: <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+        <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1851804.1611255313@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:55:13PM +0000, David Howells wrote:
-> J. Bruce Fields <bfields@fieldses.org> wrote:
-> 
-> > > Fixing this requires a much bigger overhaul of cachefiles than this patchset
-> > > performs.
-> > 
-> > That sounds like "sometimes you may get file corruption and there's
-> > nothing you can do about it".  But I know people actually use fscache,
-> > so it must be reliable at least for some use cases.
-> 
-> Yes.  That's true for the upstream code because that uses bmap.
+On Thu, 21 Jan 2021 17:30:40 +0300
+Denis Efremov <efremov@linux.com> wrote:
 
-Sorry, when you say "that's true", what part are you referring to?
-
-> I'm switching
-> to use SEEK_HOLE/SEEK_DATA to get rid of the bmap usage, but it doesn't change
-> the issue.
+> Hi,
 > 
-> > Is it that those "bridging" blocks only show up in certain corner cases
-> > that users can arrange to avoid?  Or that it's OK as long as you use
-> > certain specific file systems whose behavior goes beyond what's
-> > technically required by the bamp or seek interfaces?
+> This patch (CVE-2020-27825) was tagged with
+> Fixes: b23d7a5f4a07a ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
 > 
-> That's a question for the xfs, ext4 and btrfs maintainers, and may vary
-> between kernel versions and fsck or filesystem packing utility versions.
+> I'm not an expert here but it seems like b23d7a5f4a07a only refactored
+> ring_buffer_reset_cpu() by introducing reset_disabled_cpu_buffer() without
+> significant changes. Hence, mutex_lock(&buffer->mutex)/mutex_unlock(&buffer->mutex)
+> can be backported further than b23d7a5f4a07a~ and to all LTS kernels. Is
+> b23d7a5f4a07a the actual cause of the bug?
+> 
 
-So, I'm still confused: there must be some case where we know fscache
-actually works reliably and doesn't corrupt your data, right?
+Ug, that looks to be a mistake. Looking back at the thread about this:
 
---b.
+  https://lore.kernel.org/linux-arm-msm/20200915141304.41fa7c30@gandalf.local.home/
+
+That should have been:
+
+Depends-on: b23d7a5f4a07 ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
+
+-- Steve
