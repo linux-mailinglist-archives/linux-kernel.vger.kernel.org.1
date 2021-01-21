@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40C22FE466
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA042FE463
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727805AbhAUHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:53:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36776 "EHLO mail.kernel.org"
+        id S1727676AbhAUHw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:52:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726553AbhAUG6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726578AbhAUG6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 01:58:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AEE12399A;
-        Thu, 21 Jan 2021 06:56:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D75DD23975;
+        Thu, 21 Jan 2021 06:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611212212;
-        bh=Z+bg+iAtLQPpdcJLw9E+9nYUzqpHPBWC2aL/oAWGmFY=;
+        s=k20201202; t=1611212214;
+        bh=oxrWdVN1jjUNfPNGVTpzLGl9h7s88l7H9ReGOAzQUS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NsEEvpNYc67jV886pPWKTIm9jLif/ISCljYrspwBQEIXLjhFojkG7xr8uKKUS9Jkp
-         gRBReZ7BAvNeFhRJF3eKnQIQGiH9sF/oDqZ8ynUggkMGcMNM6g+w4oilcAPWLFvT7f
-         FVOg2Rtwqw/Wnk9xDzacO4IpGaeIALYgMUNSFxewfNlJKHQ+xVJZAL4aJZavDMUJ0F
-         3brA3GJgVp5e2q1L1xeU0OfXl+SE6oZnSphW41P0HenRV1PxiylBLDk2erlPymk9zZ
-         y1Mrt6sdNjDzdRcbWCHcmrCFaF4ZJ1slwU8IwDrwpPC/M6Dtmw6nL9Io1Od1Mo4CTI
-         nBk6jGKO+ntmw==
+        b=kUNd8Qh3ffY2klERX+Q4uvPseISziF58s7BizswGoLg+eVrZTWOjQBPaaHbnr8Ba+
+         gHNvONXO/2OFY2h705ImduKSwJtq5Fqw3otAqW1HX9AlMAqvLh+e7oOFXhhXaAcDAC
+         Tsq7dAs1qZE4g5y+wdb/ejn6vTE0Qyjr2LGEbgP0wHxvddcZ/TGKkO1+cpl30eVDFr
+         bM1lcLR3L0vmf2CWCFC8Xd/XfpUzx2SAggHTmTaT6/xuaAqTRAOKek3zJsHZgExjlb
+         wIar4ZOqR3+51zndtL3WA6RB7/I7/zNNBPMBzpojc+O/c8Wm6LfcCbOOaILOGCA+fW
+         Dmgo8hWyAJ+gg==
 From:   guoren@kernel.org
 To:     guoren@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 08/29] csky: Cleanup asm/spinlock.h
-Date:   Thu, 21 Jan 2021 14:53:28 +0800
-Message-Id: <20210121065349.3188251-8-guoren@kernel.org>
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH 09/29] csky: Fixup PTE global for 2.5:1.5 virtual memory
+Date:   Thu, 21 Jan 2021 14:53:29 +0800
+Message-Id: <20210121065349.3188251-9-guoren@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210121065349.3188251-1-guoren@kernel.org>
 References: <20210121065349.3188251-1-guoren@kernel.org>
@@ -41,241 +39,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-There are two implementation of spinlock in arch/csky:
- - simple one (NR_CPU = 1,2)
- - tick's one (NR_CPU = 3,4)
-Remove the simple one.
+Fixup commit c2d1adfa9a24 "csky: Add memory layout 2.5G(user):1.5G
+(kernel)". That patch broke the global bit in PTE.
 
-There is already smp_mb in spinlock, so remove the definition of
-smp_mb__after_spinlock.
+C-SKY TLB's entry contain two pages:
+vpn, vpn + 1 -> ppn0, ppn1
 
-Link: https://lore.kernel.org/linux-csky/20200807081253.GD2674@hirez.programming.kicks-ass.net/#t
+All PPN's attributes contain global bit and final global is PPN0.G
+& PPN1.G. So we must keep PPN0.G and PPN1.G same in one TLB's
+entry.
+
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Peter Zijlstra <peterz@infradead.org>k
-Cc: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/csky/Kconfig                      |   2 +-
- arch/csky/include/asm/spinlock.h       | 167 -------------------------
- arch/csky/include/asm/spinlock_types.h |  10 --
- 3 files changed, 1 insertion(+), 178 deletions(-)
+ arch/csky/include/asm/pgtable.h | 2 +-
+ arch/csky/mm/init.c             | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index c74a8e2e8549..af640a41b749 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -7,7 +7,7 @@ config CSKY
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_USE_BUILTIN_BSWAP
--	select ARCH_USE_QUEUED_RWLOCKS if NR_CPUS>2
-+	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
- 	select COMMON_CLK
-diff --git a/arch/csky/include/asm/spinlock.h b/arch/csky/include/asm/spinlock.h
-index 7cf3f2b34cea..69f5aa249c5f 100644
---- a/arch/csky/include/asm/spinlock.h
-+++ b/arch/csky/include/asm/spinlock.h
-@@ -6,8 +6,6 @@
- #include <linux/spinlock_types.h>
- #include <asm/barrier.h>
+diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
+index 6ec97af0d1ff..2485db84dba8 100644
+--- a/arch/csky/include/asm/pgtable.h
++++ b/arch/csky/include/asm/pgtable.h
+@@ -34,7 +34,7 @@
  
--#ifdef CONFIG_QUEUED_RWLOCKS
--
- /*
-  * Ticket-based spin-locking.
-  */
-@@ -88,169 +86,4 @@ static inline int arch_spin_is_contended(arch_spinlock_t *lock)
+ #define pmd_page(pmd)	(pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT))
+ #define pte_clear(mm, addr, ptep)	set_pte((ptep), \
+-	(((unsigned int) addr & PAGE_OFFSET) ? __pte(_PAGE_GLOBAL) : __pte(0)))
++	(((unsigned int) addr >= PAGE_OFFSET) ? __pte(_PAGE_GLOBAL) : __pte(0)))
+ #define pte_none(pte)		(!(pte_val(pte) & ~_PAGE_GLOBAL))
+ #define pte_present(pte)	(pte_val(pte) & _PAGE_PRESENT)
+ #define pte_pfn(x)	((unsigned long)((x).pte_low >> PAGE_SHIFT))
+diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+index 7742f1441a67..8170d7ce116b 100644
+--- a/arch/csky/mm/init.c
++++ b/arch/csky/mm/init.c
+@@ -30,9 +30,12 @@
+ #include <asm/tlb.h>
+ #include <asm/cacheflush.h>
  
- #include <asm/qrwlock.h>
++#define PTRS_KERN_TABLE \
++		((PTRS_PER_PGD - USER_PTRS_PER_PGD) * PTRS_PER_PTE)
++
+ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+ pte_t invalid_pte_table[PTRS_PER_PTE] __page_aligned_bss;
+-pte_t kernel_pte_tables[(PTRS_PER_PGD - USER_PTRS_PER_PGD)*PTRS_PER_PTE] __page_aligned_bss;
++pte_t kernel_pte_tables[PTRS_KERN_TABLE] __page_aligned_bss;
  
--/* See include/linux/spinlock.h */
--#define smp_mb__after_spinlock()	smp_mb()
--
--#else /* CONFIG_QUEUED_RWLOCKS */
--
--/*
-- * Test-and-set spin-locking.
-- */
--static inline void arch_spin_lock(arch_spinlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 1b   \n"
--		"	movi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--	smp_mb();
--}
--
--static inline void arch_spin_unlock(arch_spinlock_t *lock)
--{
--	smp_mb();
--	WRITE_ONCE(lock->lock, 0);
--}
--
--static inline int arch_spin_trylock(arch_spinlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 2f   \n"
--		"	movi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		"	movi		%0, 0    \n"
--		"2:				 \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--
--	if (!tmp)
--		smp_mb();
--
--	return !tmp;
--}
--
--#define arch_spin_is_locked(x)	(READ_ONCE((x)->lock) != 0)
--
--/*
-- * read lock/unlock/trylock
-- */
--static inline void arch_read_lock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	blz		%0, 1b   \n"
--		"	addi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--	smp_mb();
--}
--
--static inline void arch_read_unlock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	smp_mb();
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	subi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--}
--
--static inline int arch_read_trylock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	blz		%0, 2f   \n"
--		"	addi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		"	movi		%0, 0    \n"
--		"2:				 \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--
--	if (!tmp)
--		smp_mb();
--
--	return !tmp;
--}
--
--/*
-- * write lock/unlock/trylock
-- */
--static inline void arch_write_lock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 1b   \n"
--		"	subi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--	smp_mb();
--}
--
--static inline void arch_write_unlock(arch_rwlock_t *lock)
--{
--	smp_mb();
--	WRITE_ONCE(lock->lock, 0);
--}
--
--static inline int arch_write_trylock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 2f   \n"
--		"	subi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		"	movi		%0, 0    \n"
--		"2:				 \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--
--	if (!tmp)
--		smp_mb();
--
--	return !tmp;
--}
--
--#endif /* CONFIG_QUEUED_RWLOCKS */
- #endif /* __ASM_CSKY_SPINLOCK_H */
-diff --git a/arch/csky/include/asm/spinlock_types.h b/arch/csky/include/asm/spinlock_types.h
-index 88b82438b182..8ff0f6ff3a00 100644
---- a/arch/csky/include/asm/spinlock_types.h
-+++ b/arch/csky/include/asm/spinlock_types.h
-@@ -22,16 +22,6 @@ typedef struct {
+ EXPORT_SYMBOL(invalid_pte_table);
+ unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)]
+@@ -149,6 +152,9 @@ void __init mmu_init(unsigned long min_pfn, unsigned long max_pfn)
+ 		swapper_pg_dir[i].pgd =
+ 			__pa(kernel_pte_tables + (PTRS_PER_PTE * (i - USER_PTRS_PER_PGD)));
  
- #define __ARCH_SPIN_LOCK_UNLOCKED	{ { 0 } }
++	for (i = 0; i < PTRS_KERN_TABLE; i++)
++		set_pte(&kernel_pte_tables[i], __pte(_PAGE_GLOBAL));
++
+ 	for (i = min_pfn; i < max_pfn; i++)
+ 		set_pte(&kernel_pte_tables[i - PFN_DOWN(va_pa_offset)], pfn_pte(i, PAGE_KERNEL));
  
--#ifdef CONFIG_QUEUED_RWLOCKS
- #include <asm-generic/qrwlock_types.h>
- 
--#else /* CONFIG_NR_CPUS > 2 */
--
--typedef struct {
--	u32 lock;
--} arch_rwlock_t;
--
--#define __ARCH_RW_LOCK_UNLOCKED		{ 0 }
--
--#endif /* CONFIG_QUEUED_RWLOCKS */
- #endif /* __ASM_CSKY_SPINLOCK_TYPES_H */
 -- 
 2.17.1
 
