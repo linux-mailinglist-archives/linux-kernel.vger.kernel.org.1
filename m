@@ -2,61 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C102FEF93
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3DD2FEF99
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbhAUP5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:57:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729541AbhAUPzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:55:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AE822C9F;
-        Thu, 21 Jan 2021 15:54:12 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 15:54:10 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Christoph Lameter <cl@linux.com>
-Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 1/1] arm64/sparsemem: reduce SECTION_SIZE_BITS
-Message-ID: <20210121155410.GH21811@gaia>
-References: <cover.1611206601.git.sudaraja@codeaurora.org>
- <43843c5e092bfe3ec4c41e3c8c78a7ee35b69bb0.1611206601.git.sudaraja@codeaurora.org>
- <alpine.DEB.2.22.394.2101211004540.100764@www.lameter.com>
+        id S1731545AbhAUP5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:57:43 -0500
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:46784 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730017AbhAUPzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:55:54 -0500
+Received: by mail-ed1-f41.google.com with SMTP id dj23so3023122edb.13;
+        Thu, 21 Jan 2021 07:55:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7cfwWzcxKAkrfbqLS31dTG25iiqLlFnIt2NCXBcjsGU=;
+        b=UqzBqawGGkZ3vHFAqpmHqr66KLks2t+mDlUfhCCnoueTB8IlyvQPPB4mnHCKB4gXWR
+         2dPt6O3KUqiRn4u5ZeQQTyHjuBxQqOIFhHYI73QWWU1U2nozia1NVfSo3R43X+o9+skq
+         w1e9rVxdeoVlgplOGyRcCNwa7k6OVncqPzfckQV+JSrBfli4NqAZ9U3RQZVe58GwFA3B
+         KjrblOSLIHv//aa7BOBZWB2Xi8cew1SRUttEf1Awn2jR0+l8Q32kBT7Lx3DchD7kkb/1
+         dvLok6GlKRaKpM7jHqFMI0Mm0BkWK6fvhHYDbrXSx1hq7q2/XfynhPAnguuFEo/hDUNd
+         A+Aw==
+X-Gm-Message-State: AOAM5324IFVCoiuUynxdrosqmgtayTM0SFs6/JQa++dnxDfGD25y7Bmf
+        6FHEWnNyI0RVxPSXehrMQDw=
+X-Google-Smtp-Source: ABdhPJzL+2yPmE8VsTyymmmEUJBAhrdYSaEoS1rKwWL41e3WgjNz9TZAQhzjQ13fQMTCu5+1phJd4A==
+X-Received: by 2002:a05:6402:94f:: with SMTP id h15mr8442507edz.106.1611244491261;
+        Thu, 21 Jan 2021 07:54:51 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id k2sm2411216ejp.6.2021.01.21.07.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 07:54:49 -0800 (PST)
+Date:   Thu, 21 Jan 2021 16:54:47 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH] regulator: s5m8767: Fix reference count leak
+Message-ID: <20210121155447.m75vmrxllotlmc2w@kozik-lap>
+References: <20210121032756.49501-1-bianpan2016@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2101211004540.100764@www.lameter.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210121032756.49501-1-bianpan2016@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:08:17AM +0000, Christoph Lameter wrote:
-> On Wed, 20 Jan 2021, Sudarshan Rajagopalan wrote:
+On Wed, Jan 20, 2021 at 07:27:56PM -0800, Pan Bian wrote:
+> Call of_node_put() to drop references of regulators_np and reg_np before
+> returning error code.
 > 
-> > But there are other problems in reducing SECTION_SIZE_BIT. Reducing it by too
-> > much would over populate /sys/devices/system/memory/ and also consume too many
-> > page->flags bits in the !vmemmap case. Also section size needs to be multiple
-> > of 128MB to have PMD based vmemmap mapping with CONFIG_ARM64_4K_PAGES.
+> Fixes: 9ae5cc75ceaa ("regulator: s5m8767: Pass descriptor instead of GPIO number")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
+> ---
+>  drivers/regulator/s5m8767.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> There is also the issue of requiring more space in the TLB cache with
-> smaller page sizes. Or does ARM resolve these into smaller TLB entries
-> anyways (going on my x86 kwon how here)? Anyways if there are only a few
-> TLB entries then the effect could
-> be significant.
 
-There is indeed more TLB pressure with smaller page sizes but this patch
-doesn't change this.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
--- 
-Catalin
+Best regards,
+Krzysztof
