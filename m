@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F702FE22E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E312FE238
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbhAUF7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbhAUF7D (ORCPT
+        id S1729035AbhAUC70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:59:26 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11115 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727471AbhAUCpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 00:59:03 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B5FC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:58:23 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id n10so663755pgl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:58:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=z5VmVFEUNkE+fR4NUGGnMzYHVXWCdiImlaKQN0S2ixk=;
-        b=bQ1Uc5ygT5K4XceUViH0UPlujm180IO7i9jfk68RtpSH5woe9nWgMsYAfA9xC0t+0y
-         XcmXo3AlQ4D4AYzWypZI3bp2rG1v2lshxjZRiVGO89imAlWz1VS+53NKdZMB5ZCtlGKc
-         CESXeWw9SNErIDF2UwHuDTZCkvmTK/iQKuZ3+ounYm+bHpW6h3IU0PyKVcoyP5f3d5rI
-         f7laXvvvjtYid+dztrdZtPZHHgOxNjMXt4sBvp5bNc+tNMHaGenvsJP7rYlBjXbNT51E
-         EuUgmT5isUOpdjghqd3uo//bzvLkDwL3Pl5IRxtbSvulTZzYb7Cc2mxPTb3aI/D4bX50
-         VIOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z5VmVFEUNkE+fR4NUGGnMzYHVXWCdiImlaKQN0S2ixk=;
-        b=Ru5zyo30ayfIQwiVSatK33DTOsx0sbuikF8Hiy6SYR8FknAn5Pnmm0XeglEg0cxxdd
-         /SJ9OeRm8Q/2G1J1cDLfQRWHO9sQjXt+RQn8aFUKsCglPUGr0/6iXiraFyntSReZdL7c
-         XErYRfaouFNY2jL0voa+HnfdDp5jX2vwUXpXd5vUcGKHTc5pAX5SuXHFmSt4WrlRxySz
-         /YD8q6hU6gTxHBkkIiL+YPJhRQlabjtMDPw6bkB+G+qnrYq9c8yC0yWu9RoCbroDAr0w
-         zuICfbI7OwQs4llX8rp+hyat3TgN0XCq9SSdhb+atzffTIVAO/n5nNO8ECeMYpc9tItD
-         AltA==
-X-Gm-Message-State: AOAM531PVFuaceDDFIYM9cS0mf0maNXCFINY19+j9Ug6/JIRCDw+kh8F
-        qLePztUYj93PSNuWa78z8ZTqoA==
-X-Google-Smtp-Source: ABdhPJw+djOazZ/yvnG3PUwjwbM6nBOD1AJfGJWw/dPQUucUpCsVGIhHYsxPBHMLwxm8GnQ0MpC44A==
-X-Received: by 2002:aa7:9af1:0:b029:19e:568e:c452 with SMTP id y17-20020aa79af10000b029019e568ec452mr12472321pfp.28.1611208702920;
-        Wed, 20 Jan 2021 21:58:22 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id z6sm4148525pfj.22.2021.01.20.21.58.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Jan 2021 21:58:22 -0800 (PST)
-Date:   Thu, 21 Jan 2021 11:28:20 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
-Subject: Re: [PATCH V5 5/5] of: unittest: Statically apply overlays using
- fdtoverlay
-Message-ID: <20210121055820.e5z3uykfttvxffhe@vireshk-i7>
-References: <cover.1611124778.git.viresh.kumar@linaro.org>
- <696c137461be8ec4395c733c559c269bb4ad586e.1611124778.git.viresh.kumar@linaro.org>
- <20210121005145.GF5174@yekko.fritz.box>
- <7d6adfd9-da1e-d4ca-3a04-b192f0cf36b0@gmail.com>
- <a6b5e6ac-90ec-9571-4fce-de7344bfcee9@gmail.com>
- <20210121054340.e4do45uvdns5bl5f@vireshk-i7>
- <91dadafc-26e1-13c1-37a2-d05ebd7b151f@gmail.com>
+        Wed, 20 Jan 2021 21:45:04 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DLmsZ1ZkPz15w7n;
+        Thu, 21 Jan 2021 10:43:14 +0800 (CST)
+Received: from [10.174.177.2] (10.174.177.2) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Thu, 21 Jan 2021
+ 10:44:21 +0800
+Subject: Re: [PATCH] mm/vmalloc: Separate put pages and flush VM flags
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
+CC:     <hch@lst.de>, <dja@axtens.net>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <21e2ed55-90f5-3e26-06ff-e4fd81709ffd@huawei.com>
+Date:   Thu, 21 Jan 2021 10:44:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91dadafc-26e1-13c1-37a2-d05ebd7b151f@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210121014118.31922-1-rick.p.edgecombe@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.2]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-01-21, 23:55, Frank Rowand wrote:
-> yes, but using the modified versions ("/plugin/;" removed) of
-> testcases.dtb and overlay_base.dtb.
+Hi:
+On 2021/1/21 9:41, Rick Edgecombe wrote:
+> When VM_MAP_PUT_PAGES was added, it was defined with the same value as
+> VM_FLUSH_RESET_PERMS. This doesn't seem like it will cause any big
 
-Okay, that would work fine I guess. I will try to implement this in
-the new version.
+Good catch!
 
-> I apologize in advance if I get confused in these threads or cause confusion.
-> I find myself going in circles and losing track of how things fit together as
-> I move through the various pieces of unittest.
+> functional problems other than some excess flushing for VM_MAP_PUT_PAGES
+> allocations.
+> 
+> Redefine VM_MAP_PUT_PAGES to have its own value. Also, move the comment
+> and remove whitespace for VM_KASAN such that the flags lower down are less
+> likely to be missed in the future.
+>> Fixes: b944afc9d64d ("mm: add a VM_MAP_PUT_PAGES flag for vmap")
 
-Me too :)
+Is this worth a Cc stable ?
 
-Today is the first time where we have some overlap in our work hours
-(probably you working late :)), and we are able to get this sorted out
-quickly enough.
+> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> ---
+>  include/linux/vmalloc.h | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 80c0181c411d..0b3dd135aa5d 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -23,9 +23,6 @@ struct notifier_block;		/* in notifier.h */
+>  #define VM_DMA_COHERENT		0x00000010	/* dma_alloc_coherent */
+>  #define VM_UNINITIALIZED	0x00000020	/* vm_struct is not fully initialized */
+>  #define VM_NO_GUARD		0x00000040      /* don't add guard page */
+> -#define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
+> -#define VM_MAP_PUT_PAGES	0x00000100	/* put pages and free array in vfree */
+> -
+>  /*
+>   * VM_KASAN is used slighly differently depending on CONFIG_KASAN_VMALLOC.
+>   *
+> @@ -36,12 +33,13 @@ struct notifier_block;		/* in notifier.h */
+>   * Otherwise, VM_KASAN is set for kasan_module_alloc() allocations and used to
+>   * determine which allocations need the module shadow freed.
+>   */
+> -
+> +#define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
+>  /*
+>   * Memory with VM_FLUSH_RESET_PERMS cannot be freed in an interrupt or with
+>   * vfree_atomic().
+>   */
+>  #define VM_FLUSH_RESET_PERMS	0x00000100      /* Reset direct map and flush TLB on unmap */
+> +#define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
+>  
+>  /* bits [20..32] reserved for arch specific ioremap internals */
+>  
+> 
 
-Thanks for your feedback Frank.
+Looks good to me.
 
--- 
-viresh
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
