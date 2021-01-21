@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9C12FF04C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F422FF0AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733110AbhAUQ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:29:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59460 "EHLO mail.kernel.org"
+        id S1733159AbhAUQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:41:45 -0500
+Received: from m12-14.163.com ([220.181.12.14]:48681 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732818AbhAUQ3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:29:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 081D9206D8;
-        Thu, 21 Jan 2021 16:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611246510;
-        bh=Zf8jgI/znTml17RA4NO0vaF+2LzStyZ+d/XnHcMtsV4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=sCDbhm0B2bnYK9DcRQON1x/sDXtjMRK/xOu2WSEbxuJXPJW2XKfA/9IyjAYsuKVGl
-         FzT9WVmzZmacrC3B197YKTnsmYPEejSz0wrjXLiojimZqjHgfI63Mu0Om9EL299wyc
-         HfnALXtyvpgdx6YK0BPr4FCH1Aipm90ZJGg2tDz6JEK2pVaxOohL++37va9QE7JaTd
-         UCkPi61JY7UqwW/KUNTFUfgxIhJ+R0K5SgUsbheD2kxZyOXf5t4OzzdFXwlJSn19Yo
-         J6W3qZuN0230hQLfAJkX1G5OLYbT2QgptntqMlt1rmnzDy8L9vvVx2UAB6IGlGmXfl
-         c6g5CqBF22G/Q==
-Date:   Thu, 21 Jan 2021 10:28:27 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhelgaas@google.com, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] PCI: xilinx-nwl: Enable coherenct PCIe traffic using CCI
-Message-ID: <20210121162827.GA2658969@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611223156-8787-1-git-send-email-bharat.kumar.gogada@xilinx.com>
+        id S1731301AbhAUQko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:40:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=mRrXWTfO5bQ9bVZqp5
+        gY4L7jsQlsJ0kDsPmVU8rsXus=; b=ctj26Fmq3goGflfXydIZLJl5ZUQv4o9Dh5
+        6mC/9vp4kgcoAuD/BsGqt9rFTHS165wfTBHrF2Tkva04jOBRStCHvOHrN14Xo9NH
+        /R76KLU/O0Pt3tzvElgz1XGv/RBJ5ddNAkTRif8BUMABY4eUFauyNAz23tkoEnQ4
+        uaB5hy6Q0=
+Received: from localhost.localdomain (unknown [119.3.119.20])
+        by smtp10 (Coremail) with SMTP id DsCowAA3tio0aglgrnuehA--.22787S4;
+        Thu, 21 Jan 2021 19:49:12 +0800 (CST)
+From:   Pan Bian <bianpan2016@163.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] bus: qcom: Put child node before return
+Date:   Thu, 21 Jan 2021 03:49:07 -0800
+Message-Id: <20210121114907.109267-1-bianpan2016@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DsCowAA3tio0aglgrnuehA--.22787S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtFyDGw13CF4UAF4DXrW7twb_yoWfZwb_C3
+        92qFWxGrsY9F47ZanFqw4UZr92qF1Dur18uFWSqa4av34UXa1DWrn5Zr95W34furW7tas0
+        kF98AF18ur1xZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeAOzDUUUUU==
+X-Originating-IP: [119.3.119.20]
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/1tbiDgghclXly8w3ewABsv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Rob]
+Put child node before return to fix potential reference count leak.
+Generally, the reference count of child is incremented and decremented
+automatically in the macro for_each_available_child_of_node() and should
+be decremented manually if the loop is broken in loop body.
 
-s/coherenct/coherent/ in subject
-s/traffic/DMA/ (this applies specifically to DMA, not to MMIO)
+Fixes: 335a12754808 ("bus: qcom: add EBI2 driver")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+---
+ drivers/bus/qcom-ebi2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Thu, Jan 21, 2021 at 03:29:16PM +0530, Bharat Kumar Gogada wrote:
-> - Add support for routing PCIe traffic coherently when
->  Cache Coherent Interconnect(CCI) is enabled in the system.
+diff --git a/drivers/bus/qcom-ebi2.c b/drivers/bus/qcom-ebi2.c
+index 03ddcf426887..0b8f53a688b8 100644
+--- a/drivers/bus/qcom-ebi2.c
++++ b/drivers/bus/qcom-ebi2.c
+@@ -353,8 +353,10 @@ static int qcom_ebi2_probe(struct platform_device *pdev)
+ 
+ 		/* Figure out the chipselect */
+ 		ret = of_property_read_u32(child, "reg", &csindex);
+-		if (ret)
++		if (ret) {
++			of_node_put(child);
+ 			return ret;
++		}
+ 
+ 		if (csindex > 5) {
+ 			dev_err(dev,
+-- 
+2.17.1
 
-s/- Add/Add/
-s/Interconnect(CCI)/Interconnect (CCI)/
 
-Can you include a URL to a CCI spec?  I'm not familiar with it.  I
-guess this is something upstream from the host bridge, i.e., between
-the CPU and the host bridge, so it's outside the PCI domain?
-
-I'd like to mention the DT "dma-coherent" property in the commit log
-to help connect this with the knob that controls it.
-
-The "dma-coherent" property is mentioned several places in
-Documentation/devicetree/bindings/pci/ (but not anything obviously
-related to xilinx-nwl).  Should it be moved to something like
-Documentation/devicetree/bindings/pci/pci.txt to make it more generic?
-
-> Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-> ---
->  drivers/pci/controller/pcie-xilinx-nwl.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
-> index 07e3666..08e06057 100644
-> --- a/drivers/pci/controller/pcie-xilinx-nwl.c
-> +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-> @@ -26,6 +26,7 @@
->  
->  /* Bridge core config registers */
->  #define BRCFG_PCIE_RX0			0x00000000
-> +#define BRCFG_PCIE_RX1			0x00000004
->  #define BRCFG_INTERRUPT			0x00000010
->  #define BRCFG_PCIE_RX_MSG_FILTER	0x00000020
->  
-> @@ -128,6 +129,7 @@
->  #define NWL_ECAM_VALUE_DEFAULT		12
->  
->  #define CFG_DMA_REG_BAR			GENMASK(2, 0)
-> +#define CFG_PCIE_CACHE			GENMASK(7, 0)
->  
->  #define INT_PCI_MSI_NR			(2 * 32)
->  
-> @@ -675,6 +677,12 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
->  	nwl_bridge_writel(pcie, CFG_ENABLE_MSG_FILTER_MASK,
->  			  BRCFG_PCIE_RX_MSG_FILTER);
->  
-> +	/* This routes the PCIe DMA traffic to go through CCI path */
-> +	if (of_dma_is_coherent(dev->of_node)) {
-> +		nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX1) |
-> +				  CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
-> +	}
-> +
->  	err = nwl_wait_for_link(pcie);
->  	if (err)
->  		return err;
-> -- 
-> 2.7.4
-> 
