@@ -2,185 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAF92FF3B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A4A2FF3BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727314AbhAUS6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:58:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51322 "EHLO
+        id S1726960AbhAUSxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbhAUSoy (ORCPT
+        with ESMTP id S1727635AbhAUS0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:44:54 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AD2C0613D6;
-        Thu, 21 Jan 2021 10:44:13 -0800 (PST)
-Received: from zn.tnic (p200300ec2f1575000bca919cfb20ab7c.dip0.t-ipconnect.de [IPv6:2003:ec:2f15:7500:bca:919c:fb20:ab7c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5826E1EC01E0;
-        Thu, 21 Jan 2021 19:44:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611254650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=FD6FQ6tukOCLwD6fNln6IY5OGb/JtEuN8OVZbhIeo5o=;
-        b=C+ixRZOWUtm8yEAwwAKy0C/ygFqQvTETyMjJ0OwfhMpBAgwFydfj7120JKzkaTwVrFxde/
-        Oj8iKaH8j7vf/WYo85cHloFwNwzslaLwe7lW0Nb9cPQ9wdOsllCoE4u9d94EJv6HuV13HT
-        arxbhF7qcqokTpmq1wXUDgm9Cf8k2SQ=
-Date:   Thu, 21 Jan 2021 19:44:05 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
-Message-ID: <20210121184405.GE32060@zn.tnic>
-References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
- <20201229213053.16395-9-yu-cheng.yu@intel.com>
+        Thu, 21 Jan 2021 13:26:00 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA324C061797;
+        Thu, 21 Jan 2021 10:23:31 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id q8so3856851lfm.10;
+        Thu, 21 Jan 2021 10:23:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qXZh7vyQ2J2UJfaf/gy0esqvLP8/x2DgurRZz5ydknM=;
+        b=B1WnslMyVrxWMuOGS2ylENr8VsLJ5E/6MrPGSDvWp2tl+RGRxKd1SkHUwojuHsjv7S
+         iV1QUgFUWDae2Br6D/yC3ZDvZ81u5fxq1HhfCpAV9g/OcKyFLx11qHoD5Nj8WFQirFXt
+         K0zvZ2jelh454RFzkfCAOwv0niChY4VPXbG0ogSghdBu0WfmNKFKn57QKKfGf2jxDVTV
+         DNxmON+/2843y1CTkebOzWKFFiw2S5r+4LT4Rk8CsBKV6+QeaUwaYni13x8nPJxGzJIy
+         FaVkJiD10jEFBJvtCaNCuNf9lVqvQgZm+tNCahwpscPMPrDu1Hb2P6WKgg34VF9WPmun
+         BvKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qXZh7vyQ2J2UJfaf/gy0esqvLP8/x2DgurRZz5ydknM=;
+        b=qHcl7b8jMqgG8B127fn9bgjeB17wqs2t2Zui4JSLMCGw1MZ5XjyIlcS4KSWzcoZz6Z
+         f7U9tNma/xPq7TQ/gyrb6cWymQQmOr6PdBnwjg/Qq4rtRmZFqOZ+0LxGKAgZzmJK4tls
+         zfzxsg6YiSN4WcPAVLuq153mlwLz4XGIrt/K92Hupbq1KcvmFDWDh6F1WHmntMQv5DNZ
+         yDmNcQfXg3hRFIqwINDyCxih6tCE6ILZMo+WhYk2FpNTz9rOWbs++jWAfnFF1jf1vZ+5
+         PdFAf7/sQgQD6xIYUq6T0QJYVPs3Cz7FZ/worYRB8FQFHOP0PDc9w8gV8vE1l0UFyNBx
+         NEUA==
+X-Gm-Message-State: AOAM532mMNZgKFNpYRsa4XZKr32/jsldg/VyoKtdOcyaob5kdo1ZdUiU
+        3Rvw95dIPRGHYYfOfnDnaAU=
+X-Google-Smtp-Source: ABdhPJzkHjyfygys1XpqzR0zHpDxBxW5NYowsVNXHxzy9IN5Mz1VCOlHbh3/IQ0WVzcuyoE5f4dTUA==
+X-Received: by 2002:a05:6512:330d:: with SMTP id k13mr16088lfe.173.1611253410281;
+        Thu, 21 Jan 2021 10:23:30 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 10:23:29 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 10/13] ARM: tegra: nexus7: Specify all CPU cores as cooling devices
+Date:   Thu, 21 Jan 2021 21:23:05 +0300
+Message-Id: <20210121182308.16080-11-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210121182308.16080-1-digetx@gmail.com>
+References: <20210121182308.16080-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201229213053.16395-9-yu-cheng.yu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 01:30:35PM -0800, Yu-cheng Yu wrote:
-> @@ -182,6 +182,12 @@ static inline int pud_young(pud_t pud)
->  
->  static inline int pte_write(pte_t pte)
->  {
-> +	/*
-> +	 * If _PAGE_DIRTY is set, the PTE must either have _PAGE_RW or be
-> +	 * a shadow stack PTE, which is logically writable.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK))
-> +		return pte_flags(pte) & (_PAGE_RW | _PAGE_DIRTY);
->  	return pte_flags(pte) & _PAGE_RW;
+If CPU0 is unplugged the cooling device can not rebind to CPU1. And if
+CPU0 is plugged in again, the cooling device may fail to initialize.
 
-        if (cpu_feature_enabled(X86_FEATURE_SHSTK))
-                return pte_flags(pte) & (_PAGE_RW | _PAGE_DIRTY);
-        else
-                return pte_flags(pte) & _PAGE_RW;
+If the CPUs are mapped with the physical CPU0 to Linux numbering
+CPU1, the cooling device mapping will fail.
 
-The else makes it ballanced and easier to read.
+Hence specify all CPU cores as a cooling devices in the device-tree.
 
+Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ .../dts/tegra30-asus-nexus7-grouper-common.dtsi    | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-> @@ -333,7 +339,7 @@ static inline pte_t pte_clear_uffd_wp(pte_t pte)
->  
->  static inline pte_t pte_mkclean(pte_t pte)
->  {
-> -	return pte_clear_flags(pte, _PAGE_DIRTY);
-> +	return pte_clear_flags(pte, _PAGE_DIRTY_BITS);
->  }
->  
->  static inline pte_t pte_mkold(pte_t pte)
-> @@ -343,6 +349,16 @@ static inline pte_t pte_mkold(pte_t pte)
->  
->  static inline pte_t pte_wrprotect(pte_t pte)
->  {
-> +	/*
-> +	 * Blindly clearing _PAGE_RW might accidentally create
-> +	 * a shadow stack PTE (RW=0, Dirty=1).  Move the hardware
-> +	 * dirty value to the software bit.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-> +		pte.pte |= (pte.pte & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
-
-Why the unreadable shifting when you can simply do:
-
-                if (pte.pte & _PAGE_DIRTY)
-                        pte.pte |= _PAGE_COW;
-
-?
-
-> @@ -434,16 +469,40 @@ static inline pmd_t pmd_mkold(pmd_t pmd)
->  
->  static inline pmd_t pmd_mkclean(pmd_t pmd)
->  {
-> -	return pmd_clear_flags(pmd, _PAGE_DIRTY);
-> +	return pmd_clear_flags(pmd, _PAGE_DIRTY_BITS);
->  }
->  
->  static inline pmd_t pmd_wrprotect(pmd_t pmd)
->  {
-> +	/*
-> +	 * Blindly clearing _PAGE_RW might accidentally create
-> +	 * a shadow stack PMD (RW=0, Dirty=1).  Move the hardware
-> +	 * dirty value to the software bit.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-> +		pmdval_t v = native_pmd_val(pmd);
-> +
-> +		v |= (v & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
-
-As above.
-
-> @@ -488,17 +554,35 @@ static inline pud_t pud_mkold(pud_t pud)
->  
->  static inline pud_t pud_mkclean(pud_t pud)
->  {
-> -	return pud_clear_flags(pud, _PAGE_DIRTY);
-> +	return pud_clear_flags(pud, _PAGE_DIRTY_BITS);
->  }
->  
->  static inline pud_t pud_wrprotect(pud_t pud)
->  {
-> +	/*
-> +	 * Blindly clearing _PAGE_RW might accidentally create
-> +	 * a shadow stack PUD (RW=0, Dirty=1).  Move the hardware
-> +	 * dirty value to the software bit.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-> +		pudval_t v = native_pud_val(pud);
-> +
-> +		v |= (v & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
-
-Ditto.
-
-> @@ -1131,6 +1222,12 @@ extern int pmdp_clear_flush_young(struct vm_area_struct *vma,
->  #define pmd_write pmd_write
->  static inline int pmd_write(pmd_t pmd)
->  {
-> +	/*
-> +	 * If _PAGE_DIRTY is set, then the PMD must either have _PAGE_RW or
-> +	 * be a shadow stack PMD, which is logically writable.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK))
-> +		return pmd_flags(pmd) & (_PAGE_RW | _PAGE_DIRTY);
-
-	else
-
-
->  	return pmd_flags(pmd) & _PAGE_RW;
->  }
->  
+diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
+index ac1c1a63eb0e..dc773b1bf8ee 100644
+--- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
++++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
+@@ -1056,19 +1056,22 @@ cpu0: cpu@0 {
+ 			#cooling-cells = <2>;
+ 		};
+ 
+-		cpu@1 {
++		cpu1: cpu@1 {
+ 			cpu-supply = <&vdd_cpu>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			#cooling-cells = <2>;
+ 		};
+ 
+-		cpu@2 {
++		cpu2: cpu@2 {
+ 			cpu-supply = <&vdd_cpu>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			#cooling-cells = <2>;
+ 		};
+ 
+-		cpu@3 {
++		cpu3: cpu@3 {
+ 			cpu-supply = <&vdd_cpu>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			#cooling-cells = <2>;
+ 		};
+ 	};
+ 
+@@ -1281,7 +1284,10 @@ trip1: cpu-crit {
+ 			cooling-maps {
+ 				map0 {
+ 					trip = <&trip0>;
+-					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+ 				};
+ 			};
+ 		};
 -- 
-Regards/Gruss,
-    Boris.
+2.29.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
