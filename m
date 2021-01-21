@@ -2,153 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84262FE8CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389A42FE980
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728738AbhAUL3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:29:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
+        id S1730808AbhAUL7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbhAUL32 (ORCPT
+        with ESMTP id S1728859AbhAULUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:29:28 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F090C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:28:48 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id q20so1314326pfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:28:48 -0800 (PST)
+        Thu, 21 Jan 2021 06:20:43 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603DEC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:48 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id j12so1434405pjy.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=huY+KC/gEp573SNNBNWHPTaHjdoKETtT7Ro68K+8opY=;
-        b=MGR0m11onGFZ3r3ghkbbbbafSIuaMZIlX9t609QHVCmqOM9IrDgBVV+RnzWxZ9c8cM
-         l9DxSqjnLAkV02i/0SrvQFkarzl4z5EFCq8lVgYZGZfk2V+2x3marPii5hO6sZcrhEDE
-         IMmQzQKK3XCcsI08zKtaoVyohc4oEomnA3eZ0WwM89z3qSA/oJOVh9BD1ATcSWBPOY2b
-         j2EoqGNwSbCb6yMtQVxAh7TkBVo3QaVvXEtmMIlt30QvyD0boYqeqQofXptmxdKb7e/A
-         ZPj1xaXEtc2neQqwCB+PYdG5qz/nQW4DJSFfTo/IafeOV7K5yU6gzK58SbP6fe13a0Xu
-         f/Lw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=t5BvkMjuaVY08gUJbMK2zLQ+31ycbwXJT/Kur/3Z95w=;
+        b=F1sJbjeFjLx44rMNM9VXJT1VmL0MJFDwx3vGHr2mL8qHmnto11WjN8OD6D0Tyl/3vP
+         yxjF81dLQrtt3ea+reaI7O2lR4kp3WgLQ2E6yT65oolB8vJLDeETZLwZ8AT+H4p8KKFM
+         eVMKCCkc3lJqxoLslpyYIPktsJtfe5IAPrM3JkeG+gRiiPJgp7Ea+eeujptT99yVRHvE
+         3w0lz9qDfeIR6CqQj7nyk17ZQYSS2gaCG++MImOdhNGYBOSZMr3IFxb3hxWFMP1rpLwi
+         t0cbvWkGBBmFxH5Ts7PPu2urw4C14l638fkduz4HQve/esYKhJsb+KyPYqvVC6MIXtUr
+         81tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=huY+KC/gEp573SNNBNWHPTaHjdoKETtT7Ro68K+8opY=;
-        b=BGIE/bi0WRsKgdt7QcmecJSb7+hL8unEFynDY7B2Ktx5T5OMicmLLPxDA7hcY5YH1l
-         3Z3ntCFd+IGTVKHnzTsL/RykK8h6xGqD+HwrLXkyYvZDhJ8C0B/DGP48FjnAPfbMFUPo
-         rW8hOcoYePP0haD5tqBy0ZzUDt0ynfA97+Y5evii3e1ypTJgBcU5MWHpAsDo1c8/qMIO
-         Jk8nCgbFSjddbT5cWrut1C/01zDVVJcFwKMpSMqJWffoARsBgFfCyWeB4+lQO7SPRMrY
-         JOJYx23h8ZbKfSxK8+zr3D9rKcP1eCKKE0VsVmHQmncwr97P9AophY/GNiMLvuJ+zNPf
-         TC4Q==
-X-Gm-Message-State: AOAM532AYoNjehEB+/eWyURhnxaVIr9PPc3/hbO9FUXJk1zM1knFdPSU
-        e155fLitaPZD2mWufjv1HXBVww==
-X-Google-Smtp-Source: ABdhPJyZ9MJX8Kwm8tbNkiRPLk2ZzY0XdKZs5UhqqTMRIitX1Fef5dEki6ICReP6VfFb9ivRgaD8Zg==
-X-Received: by 2002:aa7:8b51:0:b029:1ae:687f:d39b with SMTP id i17-20020aa78b510000b02901ae687fd39bmr13557158pfd.50.1611228528086;
-        Thu, 21 Jan 2021 03:28:48 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=t5BvkMjuaVY08gUJbMK2zLQ+31ycbwXJT/Kur/3Z95w=;
+        b=uSC/+qzN4x3KpB3urKqRcXPj3fxkPSkUjcDSPd5E4bfj8twmAKC0OCYJLcB9jVLIHI
+         KjQU9yA4GPmI47JfLuV5KN41slxGsIJmPdwpFn6MPdi7LddqrM/VDlGfXTFElRIx28qn
+         4zpWXkk0Ye39Ms+lLnR4ZfHiccSxZ5AUAmP/P56loogd5pXboFU3iCdvaTUCHksxhOho
+         xGjypiD8xznErKWxQrAkU9YWOyRD2FbfnabffOGcpqdEz0k9pJoiw4WOxDjWgY6M+Ufs
+         mLwZV3+hFIM1KofYY0eSeBUtDaikMZ+R+lt2QoUb8jM2MRbE8wVYV6ZRj3GuKDsAPGre
+         1+NQ==
+X-Gm-Message-State: AOAM531srWG2bieMCrIAxGW6976MNgOY8TSP1f8YUwlc9VrUBbkH924X
+        gHLLgCLd1iFHi15bM3K2UGSv9Q==
+X-Google-Smtp-Source: ABdhPJz7q/I5ANoKOSZSRSNYadjp4zVir7HUG9/UL0WMu7ayW5Oc9Bj7FnQUI7AdPHyZwNvg7ZPdOg==
+X-Received: by 2002:a17:90a:9eb:: with SMTP id 98mr4799013pjo.40.1611227927908;
+        Thu, 21 Jan 2021 03:18:47 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id y11sm3425797pfo.121.2021.01.21.03.28.47
+        by smtp.gmail.com with ESMTPSA id d22sm5661965pjv.11.2021.01.21.03.18.46
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 03:28:47 -0800 (PST)
-Date:   Thu, 21 Jan 2021 16:58:45 +0530
+        Thu, 21 Jan 2021 03:18:47 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>,
         Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
         Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pm@vger.kernel.org,
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Rafael Wysocki <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] opp: Prepare for ->set_opp() helper to work without
- regulators
-Message-ID: <20210121112845.hq5ry6mdbvuglg6e@vireshk-i7>
-References: <fb69353c-a35b-9b7c-46bc-d464c6dab6f5@gmail.com>
- <302c014726dbd9fcde852985528c139d2214a1f2.1611038066.git.viresh.kumar@linaro.org>
- <20210120080833.bw4c5bh2wntmiaqi@vireshk-i7>
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 02/13] opp: No need to check clk for errors
+Date:   Thu, 21 Jan 2021 16:47:42 +0530
+Message-Id: <26fe0df01647061cee8278af64a86610d65711f6.1611227342.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <cover.1611227342.git.viresh.kumar@linaro.org>
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120080833.bw4c5bh2wntmiaqi@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-01-21, 13:38, Viresh Kumar wrote:
-> On 19-01-21, 12:05, Viresh Kumar wrote:
-> > Until now the ->set_opp() helper (i.e. special implementation for
-> > setting the OPPs for platforms) was implemented only to take care of
-> > multiple regulators case, but going forward we would need that for other
-> > use cases as well.
-> > 
-> > This patch prepares for that by allocating the regulator specific part
-> > from dev_pm_opp_set_regulators() and the opp helper part from
-> > dev_pm_opp_register_set_opp_helper().
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> > Dmitry,
-> > 
-> > I haven't tested this patch, can you please help with that ?
-> > 
-> >  drivers/opp/core.c | 81 ++++++++++++++++++++++++----------------------
-> >  drivers/opp/opp.h  |  2 ++
-> >  2 files changed, 45 insertions(+), 38 deletions(-)
-> 
-> Pushed with this diff.
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 1ed673334565..1dc5ca3f6d26 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -1939,7 +1939,6 @@ struct opp_table *dev_pm_opp_set_regulators(struct device *dev,
->                                             unsigned int count)
->  {
->         struct dev_pm_opp_supply *supplies;
-> -       struct dev_pm_set_opp_data *data;
->         struct opp_table *opp_table;
->         struct regulator *reg;
->         int ret, i;
-> @@ -1990,9 +1989,8 @@ struct opp_table *dev_pm_opp_set_regulators(struct device *dev,
->         mutex_lock(&opp_table->lock);
->         opp_table->sod_supplies = supplies;
->         if (opp_table->set_opp_data) {
-> -               data = opp_table->set_opp_data;
-> -               data->old_opp.supplies = supplies;
-> -               data->new_opp.supplies = supplies + count;
-> +               opp_table->set_opp_data->old_opp.supplies = supplies;
-> +               opp_table->set_opp_data->new_opp.supplies = supplies + count;
->         }
->         mutex_unlock(&opp_table->lock);
->  
-> @@ -2038,7 +2036,7 @@ void dev_pm_opp_put_regulators(struct opp_table *opp_table)
->                 regulator_put(opp_table->regulators[i]);
->  
->         mutex_lock(&opp_table->lock);
-> -       if (opp_table->sod_supplies) {
-> +       if (opp_table->set_opp_data) {
->                 opp_table->set_opp_data->old_opp.supplies = NULL;
->                 opp_table->set_opp_data->new_opp.supplies = NULL;
->         }
+Clock is not optional for users who call into dev_pm_opp_set_rate().
+Remove the unnecessary checks.
 
-And some more as pointed out by Dmitry (I will resend it again
-properly).
+While at it also drop the local variable for clk and use opp_table->clk
+instead.
 
-t a/drivers/opp/core.c b/drivers/opp/core.c
-index d8ca15d96ce9..747bdc4338f3 100644
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/opp/core.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 9ec8e42981d0..cb5b67ccf5cf 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
-@@ -2118,8 +2118,12 @@ void dev_pm_opp_unregister_set_opp_helper(struct opp_table *opp_table)
-        WARN_ON(!list_empty(&opp_table->opp_list));
+@@ -987,7 +987,6 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 	struct opp_table *opp_table;
+ 	unsigned long freq, old_freq, temp_freq;
+ 	struct dev_pm_opp *old_opp, *opp;
+-	struct clk *clk;
+ 	int ret;
  
-        opp_table->set_opp = NULL;
-+
-+       mutex_lock(&opp_table->lock);
-        kfree(opp_table->set_opp_data);
-        opp_table->set_opp_data = NULL;
-+       mutex_unlock(&opp_table->lock);
-+
-        dev_pm_opp_put_opp_table(opp_table);
- }
- EXPORT_SYMBOL_GPL(dev_pm_opp_unregister_set_opp_helper);
-
+ 	opp_table = _find_opp_table(dev);
+@@ -1001,19 +1000,11 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 		goto put_opp_table;
+ 	}
+ 
+-	clk = opp_table->clk;
+-	if (IS_ERR(clk)) {
+-		dev_err(dev, "%s: No clock available for the device\n",
+-			__func__);
+-		ret = PTR_ERR(clk);
+-		goto put_opp_table;
+-	}
+-
+-	freq = clk_round_rate(clk, target_freq);
++	freq = clk_round_rate(opp_table->clk, target_freq);
+ 	if ((long)freq <= 0)
+ 		freq = target_freq;
+ 
+-	old_freq = clk_get_rate(clk);
++	old_freq = clk_get_rate(opp_table->clk);
+ 
+ 	/* Return early if nothing to do */
+ 	if (opp_table->enabled && old_freq == freq) {
+@@ -1031,7 +1022,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 	 * equivalent to a clk_set_rate()
+ 	 */
+ 	if (!_get_opp_count(opp_table)) {
+-		ret = _generic_set_opp_clk_only(dev, clk, freq);
++		ret = _generic_set_opp_clk_only(dev, opp_table->clk, freq);
+ 		goto put_opp_table;
+ 	}
+ 
+@@ -1071,7 +1062,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 						 opp->supplies);
+ 	} else {
+ 		/* Only frequency scaling */
+-		ret = _generic_set_opp_clk_only(dev, clk, freq);
++		ret = _generic_set_opp_clk_only(dev, opp_table->clk, freq);
+ 	}
+ 
+ 	/* Scaling down? Configure required OPPs after frequency */
 -- 
-viresh
+2.25.0.rc1.19.g042ed3e048af
+
