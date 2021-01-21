@@ -2,182 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FF72FE4FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079CD2FE500
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbhAUI1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727999AbhAUI0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:26:35 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C77C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:25:51 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id p5so1324989oif.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:25:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dcZ1FYPsDBKXN3hC2IcAkzYMcxDaDlTQqW6wszGPCkA=;
-        b=YufljbHlHbmx/xR31VlXerp95BT7cxahfNrgURan972flhmsJdRcjQQZPRQWrNUYh4
-         CnnyhIjhUyKVgMeBMcRkWiTtjRH1msLOlPhiWTVc6MPBTrLwIF55Jy/g9n0z5adm/DV4
-         9g0IgTn9NeBXXyMQuIXUYV37SgwCy062PaU3k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dcZ1FYPsDBKXN3hC2IcAkzYMcxDaDlTQqW6wszGPCkA=;
-        b=omijWxzcyJQaDiy6NfN6rG7IR1kiOxYUZEWvIr/w+nn9Z2BYkiS7J7lGbB8DIwOR9d
-         qwXcne7+1CMjn48NDuT3JqfMp1jkNs9OdlWhXFQ96h9hGg7pSQzH6eiGKnDqtpGlRGSw
-         VyF+KL8CvINN85fVB4Zk0JmXFUH9cfF4Psb835gZjR1IrvWH/GbsAD1CMRrzUX9aQYcr
-         N4203DkArqXtMTDdXKlnSVJI15UcbWoOHSCmgWi5iDv4H1pbuEDZ9r8vJ03O3uVau33p
-         X0joezbmqT1kDq1C77sRVZ54bJs8sKQ0Zk75wpHgLDE3rtcJLY5UF303oIh0lochZNb9
-         PMBQ==
-X-Gm-Message-State: AOAM532dCgYiwPfpohAoB16FCkVx0uJtoKC7sBNFGyC74qrqMaRKU5p7
-        q75OQ9KmYiQLXoeNMpUTrb0b3l1E8G4jqcb/DA6t4A==
-X-Google-Smtp-Source: ABdhPJzz0JkV/k4V0avoNCaP5d/Ro05hcp5CHt9s45BuCIcuqAorp3oRURqBTkqgwJQymAvgou+9FyRGO03Vf0s8NqQ=
-X-Received: by 2002:aca:ad92:: with SMTP id w140mr5398682oie.128.1611217551051;
- Thu, 21 Jan 2021 00:25:51 -0800 (PST)
+        id S1727943AbhAUI2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:28:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725922AbhAUI2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:28:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C9F23976;
+        Thu, 21 Jan 2021 08:27:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611217660;
+        bh=9GHkPoKU7YkckCkJQxzTRA5qEkvV7woYB8UWDbqK4WA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PMqrrIxrCL45N1tcR6tvsdCmNnpPN0fNoTXIimsYg/R6Z8nPAxWiEIpPTMG5HtXC6
+         /PEAp1uc+eG3eCxqmm99YnWS2gM4bM2Cywoyx4BTdwBuUyi3mLVcdhGNYBkx/nkuoR
+         4RhQp+tSU9MQvKRVzNY+RutuFdeV2Su2CIJfe88A=
+Date:   Thu, 21 Jan 2021 09:27:37 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>
+Cc:     "arnd@arndb.de" <arnd@arndb.de>,
+        "ricky_wu@realtek.corp-partner.google.com" 
+        <ricky_wu@realtek.corp-partner.google.com>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "levinale@google.com" <levinale@google.com>,
+        "keitasuzuki.park@sslab.ics.keio.ac.jp" 
+        <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        "kdlnx@doth.eu" <kdlnx@doth.eu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rtsx: pci: fix device aspm state bug
+Message-ID: <YAk6+ZgNPQy3snB1@kroah.com>
+References: <20210121072858.32028-1-ricky_wu@realtek.com>
+ <8563fc3264ad4f46bfa05a3cbdb7d644@realtek.com>
+ <YAk2NtOqIohpBJIt@kroah.com>
+ <46473ff62a284bf1bdb703e13884beac@realtek.com>
 MIME-Version: 1.0
-References: <20210121074959.313333-1-hch@lst.de> <20210121074959.313333-9-hch@lst.de>
-In-Reply-To: <20210121074959.313333-9-hch@lst.de>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 21 Jan 2021 09:25:40 +0100
-Message-ID: <CAKMK7uFo3epNAUdcp0vvW=VyWMMTZghGyRTPbz_Z37S6nem_2A@mail.gmail.com>
-Subject: Re: [PATCH 08/13] drm: remove drm_fb_helper_modinit
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        live-patching@vger.kernel.org,
-        linux-kbuild <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <46473ff62a284bf1bdb703e13884beac@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 8:55 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> drm_fb_helper_modinit has a lot of boilerplate for what is not very
-> simple functionality.  Just open code it in the only caller using
-> IS_ENABLED and IS_MODULE.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Thu, Jan 21, 2021 at 08:15:46AM +0000, 吳昊澄 Ricky wrote:
+> > -----Original Message-----
+> > From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > Sent: Thursday, January 21, 2021 4:07 PM
+> > To: 吳昊澄 Ricky <ricky_wu@realtek.com>
+> > Cc: arnd@arndb.de; ricky_wu@realtek.corp-partner.google.com;
+> > sashal@kernel.org; levinale@google.com; keitasuzuki.park@sslab.ics.keio.ac.jp;
+> > kdlnx@doth.eu; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH] rtsx: pci: fix device aspm state bug
+> > 
+> > On Thu, Jan 21, 2021 at 07:33:03AM +0000, 吳昊澄 Ricky wrote:
+> > > Hi Greg kh,
+> > >
+> > > This patch to fix misc: rtsx bug for kernel 5.4
+> > 
+> > I do not understand what this means, sorry.  Can you please explain it?
+> > 
+> On the newest upstream we don’t set config space for en/disable aspm, 
+> so it will not happen this issue
+> but on kernel 5.4 longterm version we need to fix it
 
-I didn't spot any dependencies with your series, should I just merge
-this through drm trees? Or do you want an ack?
--Daniel
+Please read
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to submit patches to the stable tree properly.
 
-> ---
->  drivers/gpu/drm/drm_crtc_helper_internal.h | 10 ---------
->  drivers/gpu/drm/drm_fb_helper.c            | 16 -------------
->  drivers/gpu/drm/drm_kms_helper_common.c    | 26 +++++++++++-----------
->  3 files changed, 13 insertions(+), 39 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_crtc_helper_internal.h b/drivers/gpu/drm/drm_crtc_helper_internal.h
-> index 25ce42e799952c..61e09f8a8d0ff0 100644
-> --- a/drivers/gpu/drm/drm_crtc_helper_internal.h
-> +++ b/drivers/gpu/drm/drm_crtc_helper_internal.h
-> @@ -32,16 +32,6 @@
->  #include <drm/drm_encoder.h>
->  #include <drm/drm_modes.h>
->
-> -/* drm_fb_helper.c */
-> -#ifdef CONFIG_DRM_FBDEV_EMULATION
-> -int drm_fb_helper_modinit(void);
-> -#else
-> -static inline int drm_fb_helper_modinit(void)
-> -{
-> -       return 0;
-> -}
-> -#endif
-> -
->  /* drm_dp_aux_dev.c */
->  #ifdef CONFIG_DRM_DP_AUX_CHARDEV
->  int drm_dp_aux_dev_init(void);
-> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-> index ce6d63ca75c32a..0b9f1ae1b7864c 100644
-> --- a/drivers/gpu/drm/drm_fb_helper.c
-> +++ b/drivers/gpu/drm/drm_fb_helper.c
-> @@ -2499,19 +2499,3 @@ void drm_fbdev_generic_setup(struct drm_device *dev,
->         drm_client_register(&fb_helper->client);
->  }
->  EXPORT_SYMBOL(drm_fbdev_generic_setup);
-> -
-> -/* The Kconfig DRM_KMS_HELPER selects FRAMEBUFFER_CONSOLE (if !EXPERT)
-> - * but the module doesn't depend on any fb console symbols.  At least
-> - * attempt to load fbcon to avoid leaving the system without a usable console.
-> - */
-> -int __init drm_fb_helper_modinit(void)
-> -{
-> -#if defined(CONFIG_FRAMEBUFFER_CONSOLE_MODULE) && !defined(CONFIG_EXPERT)
-> -       const char name[] = "fbcon";
-> -
-> -       if (!module_loaded(name))
-> -               request_module_nowait(name);
-> -#endif
-> -       return 0;
-> -}
-> -EXPORT_SYMBOL(drm_fb_helper_modinit);
-> diff --git a/drivers/gpu/drm/drm_kms_helper_common.c b/drivers/gpu/drm/drm_kms_helper_common.c
-> index 221a8528c9937a..b694a7da632eae 100644
-> --- a/drivers/gpu/drm/drm_kms_helper_common.c
-> +++ b/drivers/gpu/drm/drm_kms_helper_common.c
-> @@ -64,19 +64,19 @@ MODULE_PARM_DESC(edid_firmware,
->
->  static int __init drm_kms_helper_init(void)
->  {
-> -       int ret;
-> -
-> -       /* Call init functions from specific kms helpers here */
-> -       ret = drm_fb_helper_modinit();
-> -       if (ret < 0)
-> -               goto out;
-> -
-> -       ret = drm_dp_aux_dev_init();
-> -       if (ret < 0)
-> -               goto out;
-> -
-> -out:
-> -       return ret;
-> +       /*
-> +        * The Kconfig DRM_KMS_HELPER selects FRAMEBUFFER_CONSOLE (if !EXPERT)
-> +        * but the module doesn't depend on any fb console symbols.  At least
-> +        * attempt to load fbcon to avoid leaving the system without a usable
-> +        * console.
-> +        */
-> +       if (IS_ENABLED(CONFIG_DRM_FBDEV_EMULATION) &&
-> +           IS_MODULE(CONFIG_FRAMEBUFFER_CONSOLE) &&
-> +           !IS_ENABLED(CONFIG_EXPERT) &&
-> +           !module_loaded("fbcon"))
-> +               request_module_nowait("fbcon");
-> +
-> +       return drm_dp_aux_dev_init();
->  }
->
->  static void __exit drm_kms_helper_exit(void)
-> --
-> 2.29.2
->
+And if this is not an issue in Linus's tree, why not just backport the
+commits that fixed this issue?  That's the best way to do this.
 
+thanks,
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+greg k-h
