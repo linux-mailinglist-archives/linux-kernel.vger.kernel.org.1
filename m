@@ -2,95 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4292FE526
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2A52FE546
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbhAUIhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:37:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbhAUIfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:35:38 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2C9C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:34:57 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id u11so1485980ljo.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:34:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lS8yS4z5gTRHyWYZ/MorqH00QDK2F6AOgR3jNZjO6uw=;
-        b=BPXcee2xlc4t3zVun2eTfkyri06k5pl6h7fkauTSz0bMHzX51jxkZGvUWY4HmCBHfU
-         Uqos+y9JB+nfRQXjsyU+fk7JyjMM/PI+94oZGRP4bEToOrt0vz4OgIUj2WqYPU5MTQ2R
-         5YzLNlb/3NrRjd7nZOfVCtQD8MZLu7Ift+AacsLu2R2thwngH4IxM/2eABKE3/kiP/kN
-         6RmQcR/yIW31FDZQrU8qJ+ViMK58pM+f5C80rGqK/lkl1AvWmMwXGH5by8rSwK8cs160
-         mTcFLMuvN9xyAMiVc6emqDMHJrosXy13tNeBMWbkFJMQ5iV9aHlUZ/zzRRq5Ok71qehj
-         cVIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lS8yS4z5gTRHyWYZ/MorqH00QDK2F6AOgR3jNZjO6uw=;
-        b=YNK1ar56lIqW8NMP28aesejgOOqw55jXojb0+yKu9nE6PwE4TiSob5AMFj3rZ+VtUb
-         GVAm0cyGpfA+ZPzw4g+fR5jY5iE7wEgwdUOPR1H6Ty8LHBFFCSCwGxAlDzqo6IAnkqAK
-         fnSoOpjn+vWFJL9Aul/Tu3VQctrI6XC0zUvOL9X+Gnwb1Rj9QtA6Hj+qWI+WQVMxV7TA
-         g1YEdhUnq8nwmO3Msl6ib0tVCWXC1l68MwkEjnIxb+tBcVmeLx/xCmkp7iOkzzPZ1Qmi
-         gdd/6gxcLwNvZJ4c8i3bMSxPcgJKbylkfcXIceNRTExlm8zUCFIcVhXh5Vniqmfegp2L
-         /r9w==
-X-Gm-Message-State: AOAM5327bZ3IODamYOzg9NS/Nq+E+xTIkopkOfCnazH8fn4zht8DibaQ
-        kMPZBtUzb4sVSiDtZr1R582fESnUW/D1VSw0LDyT7QCBfDXMZg==
-X-Google-Smtp-Source: ABdhPJxMfoLva9Z9+4Vk5RdQNogIN4B9DKEC7RABIHA5mu0hvaAFjmZSPKffe1TCkudstO+9cv1RdOfrQh93Tq/e4jQ=
-X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr6291564ljo.368.1611218095600;
- Thu, 21 Jan 2021 00:34:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20210120124812.2800027-1-arnd@kernel.org> <20210120124812.2800027-6-arnd@kernel.org>
-In-Reply-To: <20210120124812.2800027-6-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 21 Jan 2021 09:34:44 +0100
-Message-ID: <CACRpkdaMZdUebQy7KOeAQz9wqGUWW3_PJUcD8N500NQZ0wXX2Q@mail.gmail.com>
-Subject: Re: [PATCH 5/5] ARM: remove u300 platform
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727950AbhAUImQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:42:16 -0500
+Received: from mga18.intel.com ([134.134.136.126]:23362 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726398AbhAUIkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:40:10 -0500
+IronPort-SDR: lkrkN1gf2GZY+GxBscBIfRpplbnSLlRk8OdWDa3aypNcf0hCYdPMQgPLqvY0fyAlJn6v98LPy7
+ FHvGG6NzogzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="166908479"
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="166908479"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 00:39:27 -0800
+IronPort-SDR: 1d8tisPyEPpySLDaQgoDBLScEUXIb5ZOF7dld53fbxXcoU2XhGBdaMQGIZBFdeaxl5233b5VgC
+ GANzeRq0Qr5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="385215635"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga008.jf.intel.com with ESMTP; 21 Jan 2021 00:39:25 -0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, rdunlap@infradead.org
+Subject: [PATCH v8 1/2] fpga: dfl: add the userspace I/O device support for DFL devices
+Date:   Thu, 21 Jan 2021 16:34:44 +0800
+Message-Id: <1611218085-28269-2-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611218085-28269-1-git-send-email-yilun.xu@intel.com>
+References: <1611218085-28269-1-git-send-email-yilun.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 1:48 PM Arnd Bergmann <arnd@kernel.org> wrote:
+This patch supports the DFL drivers be written in userspace. This is
+realized by exposing the userspace I/O device interfaces.
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The Ericsson U300 platform was one of two ARM929 based SoC platforms for
-> mobile phones in ST-Ericsson after the merger of Ericsson with ST-NXP
-> into ST-Ericsson, the other one being the ST Nomadik.
->
-> The platform was not widely adopted in Linux based systems and was
-> replaced with the far superior ST-Ericsson U8500 in 2011, but Linus
-> Walleij kept maintaining the code for the whole time.
->
-> Linus continues to use the Nomadik machine, but decided to drop
-> u300 from the kernel as part of this year's spring cleaning.
-> Thanks for having maintained it all these years.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Link: https://lore.kernel.org/lkml/CACRpkdbJkiHR9FSfJTH_5d_qRU1__dRXHM1TL40iqNRKbGQfrQ@mail.gmail.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
+platform device with the DFL device's resources, and let the generic UIO
+platform device driver provide support to userspace access to kernel
+interrupts and memory locations.
 
-I was planning to do this but you got there first :)
+The driver now supports the ether group feature. To support a new DFL
+feature been directly accessed via UIO, its feature id should be added to
+the driver's id_table.
 
-The reason I cannot work on it anymore is that the device
-requires a special signing server to flash new kernels and
-I don't have access to that, and we never created a U-boot or
-similar for this device so anything needed to go in through
-that flashing tool.
+Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+Acked-by: Wu Hao <hao.wu@intel.com>
+---
+v2: switch to the new matching algorithem. It matches DFL devices which
+     could not be handled by other DFL drivers.
+    refacor the code about device resources filling.
+    fix some comments.
+v3: split the dfl.c changes out of this patch.
+    some minor fixes
+v4: drop the idea of a generic matching algorithem, instead we specify
+     each matching device in id_table.
+    to make clear that only one irq is supported, the irq handling code
+     is refactored.
+v5: refactor the irq resource code.
+v6: fix the res[] zero initialization issue.
+    improve the return code for probe().
+v7: use platform_device_register_resndata() for pdev creation.
+    remove some unnecessary head file includings.
+    some minor fixes.
+v8: no change.
+---
+ drivers/fpga/Kconfig        | 10 ++++++
+ drivers/fpga/Makefile       |  1 +
+ drivers/fpga/dfl-uio-pdev.c | 84 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 95 insertions(+)
+ create mode 100644 drivers/fpga/dfl-uio-pdev.c
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+index 5ff9438..0a21bf2 100644
+--- a/drivers/fpga/Kconfig
++++ b/drivers/fpga/Kconfig
+@@ -203,6 +203,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
+ 	  the card. It also instantiates the SPI master (spi-altera) for
+ 	  the card's BMC (Board Management Controller).
+ 
++config FPGA_DFL_UIO_PDEV
++	tristate "FPGA DFL Driver for Userspace I/O platform devices"
++	depends on FPGA_DFL && UIO_PDRV_GENIRQ
++	help
++	  Enable this to allow DFL drivers to be written in userspace. It
++	  adds the uio_pdrv_genirq platform device with the DFL feature's
++	  resources, and lets the generic UIO platform device driver provide
++	  support for userspace access to kernel interrupts and memory
++	  locations.
++
+ config FPGA_DFL_PCI
+ 	tristate "FPGA DFL PCIe Device Driver"
+ 	depends on PCI && FPGA_DFL
+diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+index 18dc9885..8847fe0 100644
+--- a/drivers/fpga/Makefile
++++ b/drivers/fpga/Makefile
+@@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
+ dfl-afu-objs += dfl-afu-error.o
+ 
+ obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
++obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
+ 
+ # Drivers for FPGAs which implement DFL
+ obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
+new file mode 100644
+index 0000000..9572ffd
+--- /dev/null
++++ b/drivers/fpga/dfl-uio-pdev.c
+@@ -0,0 +1,84 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * DFL driver for Userspace I/O platform devices
++ *
++ * Copyright (C) 2020 Intel Corporation, Inc.
++ */
++#include <linux/dfl.h>
++#include <linux/errno.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/uio_driver.h>
++
++#define DRIVER_NAME "dfl-uio-pdev"
++
++static int dfl_uio_pdev_probe(struct dfl_device *ddev)
++{
++	struct resource res[2] = { { 0 } };
++	struct uio_info uio_pdata = { 0 };
++	struct platform_device *uio_pdev;
++	struct device *dev = &ddev->dev;
++	unsigned int num_res = 1;
++
++	res[0].parent = &ddev->mmio_res;
++	res[0].flags = IORESOURCE_MEM;
++	res[0].start = ddev->mmio_res.start;
++	res[0].end = ddev->mmio_res.end;
++
++	if (ddev->num_irqs) {
++		if (ddev->num_irqs > 1)
++			dev_warn(dev,
++				 "%d irqs for %s, but UIO only supports the first one\n",
++				 ddev->num_irqs, dev_name(dev));
++
++		res[1].flags = IORESOURCE_IRQ;
++		res[1].start = ddev->irqs[0];
++		res[1].end = ddev->irqs[0];
++		num_res++;
++	}
++
++	uio_pdata.name = DRIVER_NAME;
++	uio_pdata.version = "0";
++
++	uio_pdev = platform_device_register_resndata(dev,
++						     "uio_pdrv_genirq",
++						     PLATFORM_DEVID_AUTO,
++						     res, num_res,
++						     &uio_pdata,
++						     sizeof(uio_pdata));
++	if (IS_ERR(uio_pdev))
++		return PTR_ERR(uio_pdev);
++
++	dev_set_drvdata(dev, uio_pdev);
++
++	return 0;
++}
++
++static void dfl_uio_pdev_remove(struct dfl_device *ddev)
++{
++	struct platform_device *uio_pdev = dev_get_drvdata(&ddev->dev);
++
++	platform_device_unregister(uio_pdev);
++}
++
++#define FME_FEATURE_ID_ETH_GROUP	0x10
++
++static const struct dfl_device_id dfl_uio_pdev_ids[] = {
++	{ FME_ID, FME_FEATURE_ID_ETH_GROUP },
++	{ }
++};
++MODULE_DEVICE_TABLE(dfl, dfl_uio_pdev_ids);
++
++static struct dfl_driver dfl_uio_pdev_driver = {
++	.drv	= {
++		.name       = DRIVER_NAME,
++	},
++	.id_table = dfl_uio_pdev_ids,
++	.probe	= dfl_uio_pdev_probe,
++	.remove	= dfl_uio_pdev_remove,
++};
++module_dfl_driver(dfl_uio_pdev_driver);
++
++MODULE_DESCRIPTION("DFL driver for Userspace I/O platform devices");
++MODULE_AUTHOR("Intel Corporation");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
 
-Will you queue the patch for ARM SoC?
-
-Yours,
-Linus Walleij
