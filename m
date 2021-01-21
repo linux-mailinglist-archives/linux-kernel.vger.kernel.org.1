@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7152FE38A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 509662FE382
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725874AbhAUHLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:11:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36776 "EHLO mail.kernel.org"
+        id S1726840AbhAUHKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:10:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbhAUG7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:59:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D589923977;
-        Thu, 21 Jan 2021 06:57:36 +0000 (UTC)
+        id S1727067AbhAUHAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:00:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59737239ED;
+        Thu, 21 Jan 2021 06:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611212258;
-        bh=UQhakrY4O9KxkZ5EbI2PfDss2LPTvSAVrHSUQiAzu7U=;
+        s=k20201202; t=1611212261;
+        bh=XovlzmUsIAz9wxP3jozqCwwmw2ckkB7WIL7vTczeqFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WsR0Kzg8ZgL1dw5jbDO3PvApfunnnfRngag7sPOEqDx5Ly870A9wu0BB4pQvIQpCa
-         Z2QEp87CZ0pAL2Z7X9Jvxw/KGgUqlgzXpvSjlx0HYsU3dajUMwdBpYhWwcy2UOGuUH
-         UN8TT7GUz2UHt698pGqnEOdSjwwcG23844AhFnDDsCvFc64xt4w+cnu7YRKV0H3/eD
-         oDZCeTJZwdcjqF0SHTjP0GPchrECYGAEGOkFRAv3rAlZomA91wCi7xuSuhhnbWQyG5
-         X1U5tJz5YpIxl2NyNFA/i/YzSwYTmHXI7HTWljT4T6wVeWB6PhVg84GPBdl+yh2/tm
-         n1HWUKfOZrx3A==
+        b=pktTEqlF+c5hpufKGsAYQCaJxibt3sPuv+ePr3YKUy2qBQPlFj8FBy5wIOjuY7eME
+         PmqNLfGSURlYmIaohZwOWst40aTUp+Yms0O6248kvwBQxq/XnhNHGozAVmW85ZXXTt
+         /TXv0QN6MWmBynZXt/X/EQ8bMlfdhPCwqfvqZiGX2aRcbsoayamsMWjEbaUtlPaxFA
+         sLXmU+HB02VmVJ/gYkLwavQzwiO3tUszuPbNGCNpgrTXmsY8NuITK6HbKDHrUcp3l4
+         Tkhmh1kUINzgYIUJjFCw8GFHTarHRbqLR/G7xvPd+n8LA6WjxURPtOwyptiPaGEt0C
+         dHdLI6/on+w5Q==
 From:   guoren@kernel.org
 To:     guoren@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 25/29] csky: Fixup swapon
-Date:   Thu, 21 Jan 2021 14:53:45 +0800
-Message-Id: <20210121065349.3188251-25-guoren@kernel.org>
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH 26/29] csky: kprobe: fix code in simulate without 'long'
+Date:   Thu, 21 Jan 2021 14:53:46 +0800
+Message-Id: <20210121065349.3188251-26-guoren@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210121065349.3188251-1-guoren@kernel.org>
 References: <20210121065349.3188251-1-guoren@kernel.org>
@@ -40,131 +40,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-Current csky's swappon is broken by wrong swap PTE entry format.
-Now redesign the new format for abiv1 & abiv2 and make swappon +
-zram work properly on csky machines.
+The type of 'val' is 'unsigned long' in simulate_blz32, so 'val < 0'
+can't be true.
 
-C-SKY PTE has VALID, DIRTY to emulate PRESENT, READ, WRITE, EXEC
-attributes. GLOBAL bit is shared by two pages in the same tlb
-entry. So we need to keep GLOBAL, VALID, PRESENT zero in swp_pte.
+Cast 'val' to 'long' here to determine branch token or not,
 
-To distinguish PAGE_NONE and swp_pte, we need to use an additional
-bit (abiv1 is _PAGE_READ, abiv2 is _PAGE_WRITE).
+Fixup instructions: bnezad32, bhsz32, bhz32, blsz32, blz32
 
+Link: https://lore.kernel.org/linux-csky/CAJF2gTQjKXR9gpo06WAWG1aquiT87mATiMGorXs6ChxOxoe90Q@mail.gmail.com/T/#t
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
+Co-developed-by: Menglong Dong <dong.menglong@zte.com.cn>
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
- arch/csky/abiv1/inc/abi/pgtable-bits.h | 22 ++++++++++++++++++++++
- arch/csky/abiv2/inc/abi/pgtable-bits.h | 22 ++++++++++++++++++++++
- arch/csky/include/asm/pgtable.h        | 17 ++++++++---------
- 3 files changed, 52 insertions(+), 9 deletions(-)
+ arch/csky/kernel/probes/simulate-insn.c | 22 +++++++---------------
+ 1 file changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/arch/csky/abiv1/inc/abi/pgtable-bits.h b/arch/csky/abiv1/inc/abi/pgtable-bits.h
-index 6583333b2b0c..50ebe9c28095 100644
---- a/arch/csky/abiv1/inc/abi/pgtable-bits.h
-+++ b/arch/csky/abiv1/inc/abi/pgtable-bits.h
-@@ -24,6 +24,28 @@
- #define _CACHE_CACHED		_PAGE_CACHE
- #define _CACHE_UNCACHED		_PAGE_UNCACHE
+diff --git a/arch/csky/kernel/probes/simulate-insn.c b/arch/csky/kernel/probes/simulate-insn.c
+index 4e464fed52ec..d6e8d092c9b7 100644
+--- a/arch/csky/kernel/probes/simulate-insn.c
++++ b/arch/csky/kernel/probes/simulate-insn.c
+@@ -274,9 +274,9 @@ void __kprobes
+ simulate_bnezad32(u32 opcode, long addr, struct pt_regs *regs)
+ {
+ 	unsigned long tmp = opcode & 0x1f;
+-	unsigned long val;
++	long val;
  
-+#define _PAGE_PROT_NONE		_PAGE_READ
-+
-+/*
-+ * Encode and decode a swap entry
-+ *
-+ * Format of swap PTE:
-+ *     bit          0:    _PAGE_PRESENT (zero)
-+ *     bit          1:    _PAGE_READ (zero)
-+ *     bit      2 - 5:    swap type[0 - 3]
-+ *     bit          6:    _PAGE_GLOBAL (zero)
-+ *     bit          7:    _PAGE_VALID (zero)
-+ *     bit          8:    swap type[4]
-+ *     bit     9 - 31:    swap offset
-+ */
-+#define __swp_type(x)			((((x).val >> 2) & 0xf) | \
-+					(((x).val >> 4) & 0x10))
-+#define __swp_offset(x)			((x).val >> 9)
-+#define __swp_entry(type, offset)	((swp_entry_t) { \
-+					((type & 0xf) << 2) | \
-+					((type & 0x10) << 4) | \
-+					((offset) << 9)})
-+
- #define HAVE_ARCH_UNMAPPED_AREA
+-	csky_insn_reg_get_val(regs, tmp, &val);
++	csky_insn_reg_get_val(regs, tmp, (unsigned long *)&val);
  
- #endif /* __ASM_CSKY_PGTABLE_BITS_H */
-diff --git a/arch/csky/abiv2/inc/abi/pgtable-bits.h b/arch/csky/abiv2/inc/abi/pgtable-bits.h
-index 09303dbc89a6..5b27eaf18aa8 100644
---- a/arch/csky/abiv2/inc/abi/pgtable-bits.h
-+++ b/arch/csky/abiv2/inc/abi/pgtable-bits.h
-@@ -24,4 +24,26 @@
- #define _CACHE_CACHED		(_PAGE_CACHE | _PAGE_BUF)
- #define _CACHE_UNCACHED		(0)
+ 	val -= 1;
  
-+#define _PAGE_PROT_NONE		_PAGE_WRITE
-+
-+/*
-+ * Encode and decode a swap entry
-+ *
-+ * Format of swap PTE:
-+ *     bit          0:    _PAGE_GLOBAL (zero)
-+ *     bit          1:    _PAGE_VALID (zero)
-+ *     bit      2 - 6:    swap type
-+ *     bit      7 - 8:    swap offset[0 - 1]
-+ *     bit          9:    _PAGE_WRITE (zero)
-+ *     bit         10:    _PAGE_PRESENT (zero)
-+ *     bit    11 - 31:    swap offset[2 - 22]
-+ */
-+#define __swp_type(x)			(((x).val >> 2) & 0x1f)
-+#define __swp_offset(x)			((((x).val >> 7) & 0x3) | \
-+					(((x).val >> 9) & 0x7ffffc))
-+#define __swp_entry(type, offset)	((swp_entry_t) { \
-+					((type & 0x1f) << 2) | \
-+					((offset & 0x3) << 7) | \
-+					((offset & 0x7ffffc) << 9)})
-+
- #endif /* __ASM_CSKY_PGTABLE_BITS_H */
-diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
-index 9dfbe7c0ddca..d349335616e2 100644
---- a/arch/csky/include/asm/pgtable.h
-+++ b/arch/csky/include/asm/pgtable.h
-@@ -41,13 +41,6 @@
- #define pfn_pte(pfn, prot) __pte(((unsigned long long)(pfn) << PAGE_SHIFT) \
- 				| pgprot_val(prot))
+@@ -286,7 +286,7 @@ simulate_bnezad32(u32 opcode, long addr, struct pt_regs *regs)
+ 	} else
+ 		instruction_pointer_set(regs, addr + 4);
  
--#define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_MODIFIED | \
--			 _CACHE_MASK)
+-	csky_insn_reg_set_val(regs, tmp, val);
++	csky_insn_reg_set_val(regs, tmp, (unsigned long)val);
+ }
+ 
+ void __kprobes
+@@ -297,13 +297,11 @@ simulate_bhsz32(u32 opcode, long addr, struct pt_regs *regs)
+ 
+ 	csky_insn_reg_get_val(regs, tmp, &val);
+ 
+-	if (val >= 0) {
++	if ((long) val >= 0) {
+ 		instruction_pointer_set(regs,
+ 			addr + sign_extend32((opcode & 0xffff0000) >> 15, 15));
+ 	} else
+ 		instruction_pointer_set(regs, addr + 4);
 -
--#define __swp_type(x)			(((x).val >> 4) & 0xff)
--#define __swp_offset(x)			((x).val >> 12)
--#define __swp_entry(type, offset)	((swp_entry_t) {((type) << 4) | \
--					((offset) << 12) })
- #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+-	csky_insn_reg_set_val(regs, tmp, val);
+ }
  
-@@ -61,8 +54,7 @@
-  */
- #define _PAGE_BASE	(_PAGE_PRESENT | _PAGE_ACCESSED)
+ void __kprobes
+@@ -314,13 +312,11 @@ simulate_bhz32(u32 opcode, long addr, struct pt_regs *regs)
  
--#define PAGE_NONE	__pgprot(_PAGE_BASE | \
--				_CACHE_CACHED)
-+#define PAGE_NONE	__pgprot(_PAGE_PROT_NONE)
- #define PAGE_READ	__pgprot(_PAGE_BASE | _PAGE_READ | \
- 				_CACHE_CACHED)
- #define PAGE_WRITE	__pgprot(_PAGE_BASE | _PAGE_READ | _PAGE_WRITE | \
-@@ -78,6 +70,13 @@
- 				_PAGE_GLOBAL | \
- 				_CACHE_UNCACHED | _PAGE_SO)
+ 	csky_insn_reg_get_val(regs, tmp, &val);
  
-+#define _PAGE_CHG_MASK	(~(unsigned long) \
-+				(_PAGE_PRESENT | _PAGE_READ | _PAGE_WRITE | \
-+				_CACHE_MASK | _PAGE_GLOBAL))
-+
-+#define MAX_SWAPFILES_CHECK() \
-+		BUILD_BUG_ON(MAX_SWAPFILES_SHIFT != 5)
-+
- #define __P000	PAGE_NONE
- #define __P001	PAGE_READ
- #define __P010	PAGE_READ
+-	if (val > 0) {
++	if ((long) val > 0) {
+ 		instruction_pointer_set(regs,
+ 			addr + sign_extend32((opcode & 0xffff0000) >> 15, 15));
+ 	} else
+ 		instruction_pointer_set(regs, addr + 4);
+-
+-	csky_insn_reg_set_val(regs, tmp, val);
+ }
+ 
+ void __kprobes
+@@ -331,13 +327,11 @@ simulate_blsz32(u32 opcode, long addr, struct pt_regs *regs)
+ 
+ 	csky_insn_reg_get_val(regs, tmp, &val);
+ 
+-	if (val <= 0) {
++	if ((long) val <= 0) {
+ 		instruction_pointer_set(regs,
+ 			addr + sign_extend32((opcode & 0xffff0000) >> 15, 15));
+ 	} else
+ 		instruction_pointer_set(regs, addr + 4);
+-
+-	csky_insn_reg_set_val(regs, tmp, val);
+ }
+ 
+ void __kprobes
+@@ -348,13 +342,11 @@ simulate_blz32(u32 opcode, long addr, struct pt_regs *regs)
+ 
+ 	csky_insn_reg_get_val(regs, tmp, &val);
+ 
+-	if (val < 0) {
++	if ((long) val < 0) {
+ 		instruction_pointer_set(regs,
+ 			addr + sign_extend32((opcode & 0xffff0000) >> 15, 15));
+ 	} else
+ 		instruction_pointer_set(regs, addr + 4);
+-
+-	csky_insn_reg_set_val(regs, tmp, val);
+ }
+ 
+ void __kprobes
 -- 
 2.17.1
 
