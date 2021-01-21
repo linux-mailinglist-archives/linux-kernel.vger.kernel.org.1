@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2F62FDFF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6854C2FDFF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388058AbhAUDG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:06:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbhAUC5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 21:57:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2111523884;
-        Thu, 21 Jan 2021 02:46:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611197165;
-        bh=c1XsJT/SXPWs5fqOseN8Eebhs8J1o75FxNXKgsJnSIc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=NYWE9SMnDc3ZX8r69M2IAJPIMqU03VJt5VgjP/Au5NlA1q40qVo8cxLf4vGe9pGPJ
-         5UVAgaO+PRHYaK0gGinYEC+Y58Pgta3ULKtzBEXJagCVsbb9aqmQX7aMe3IC+hXERI
-         HHa/LTu5zc0LxrBBGOvGVNVkfx6WjLShbSz4CAV7AQJjQ5FDt1+DMMUAIzWZ7oEri6
-         d0RPCBfeejOuujlPfOUMmhB1Ffs1dJ+Lwnqq48OKJ4SMEcw5HVFJKQUrKHvT13gE0b
-         PUv8tBWKTh1dIicht0jaVd5h2EMsGtF/Lbqup+kzhvm4/5XE0QJUZuuEXMP/17YQJy
-         PFgnW6WkLzGbA==
-Content-Type: text/plain; charset="utf-8"
+        id S1728405AbhAUDD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 22:03:28 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11116 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393200AbhAUCvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 21:51:16 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DLn0k2LSsz15wTp;
+        Thu, 21 Jan 2021 10:49:26 +0800 (CST)
+Received: from [10.174.177.2] (10.174.177.2) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 21 Jan 2021
+ 10:50:31 +0800
+Subject: Re: [PATCH] mm: Fix ZONE_DEVICE usage in move_pfn_range_to_zone()
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     Randy Dunlap <rdunlap@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <161111619868.2787408.1710192276369197040.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <176cc797-7aab-58f5-baee-66a62081f953@huawei.com>
+Date:   Thu, 21 Jan 2021 10:50:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <e6843147-514b-8901-a04c-b1d6e3ebf1c2@somainline.org>
-References: <1611128871-5898-1-git-send-email-tdas@codeaurora.org> <e6843147-514b-8901-a04c-b1d6e3ebf1c2@somainline.org>
-Subject: Re: [PATCH V1] clk: qcom: gcc-sc7180: Mark the MM XO clocks to be always ON
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Wed, 20 Jan 2021 18:46:03 -0800
-Message-ID: <161119716362.3661239.18168143877101107424@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <161111619868.2787408.1710192276369197040.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.2]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting AngeloGioacchino Del Regno (2021-01-20 01:16:17)
-> Il 20/01/21 08:47, Taniya Das ha scritto:
-> > There are intermittent GDSC power-up failures observed for titan top
-> > gdsc, which requires the XO clock. Thus mark all the MM XO clocks always
-> > enabled from probe.
-> >=20
->=20
-> Hello Tanya,
->=20
-> > Fixes: 8d4025943e13 ("clk: qcom: camcc-sc7180: Use runtime PM ops inste=
-ad of clk ones")
-> > Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> > ---
-> >   drivers/clk/qcom/gcc-sc7180.c | 47 ++++------------------------------=
----------
-> >   1 file changed, 4 insertions(+), 43 deletions(-)
-> >=20
-> > --
-> > Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-> > of the Code Aurora Forum, hosted by the  Linux Foundation.
-> >=20
-> > diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc718=
-0.c
-> > index b05901b..88e896a 100644
-> > --- a/drivers/clk/qcom/gcc-sc7180.c
-> > +++ b/drivers/clk/qcom/gcc-sc7180.c
-> > @@ -1,6 +1,6 @@
-> >   // SPDX-License-Identifier: GPL-2.0-only
-> >   /*
-> > - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
-> > + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
-> >    */
-> >=20
-> >   #include <linux/clk-provider.h>
-> > @@ -919,19 +919,6 @@ static struct clk_branch gcc_camera_throttle_hf_ax=
-i_clk =3D {
-> >       },
-> >   };
-> >=20
-> > -static struct clk_branch gcc_camera_xo_clk =3D {
-> > -     .halt_reg =3D 0xb02c,
-> > -     .halt_check =3D BRANCH_HALT,
-> > -     .clkr =3D {
-> > -             .enable_reg =3D 0xb02c,
-> > -             .enable_mask =3D BIT(0),
-> > -             .hw.init =3D &(struct clk_init_data){
-> > -                     .name =3D "gcc_camera_xo_clk",
-> > -                     .ops =3D &clk_branch2_ops,
-> > -             },
-> > -     },
-> > -};
-> > -
->=20
-> Why are you avoiding to register these clocks entirely?
-> If this is needed by the Titan GDSC, this clock "does indeed exist".
->=20
-> If these clocks shall never be turned off, then you should add the
-> CLK_IS_CRITICAL flag and perhaps add a comment explaining why.
+On 2021/1/20 12:16, Dan Williams wrote:
+> Randy reports the build breaks with recent additions of
+> section_taint_zone_device() in move_pfn_range_to_zone(). Fix that by
+> including a conditionally stubbed out zone_is_zone_device() helper.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> Andrew, apologies for the thrash. Please fold this into:
+> 
+> mm-teach-pfn_to_online_page-about-zone_device-section-collisions.patch
+> 
+>  include/linux/mmzone.h |   12 ++++++++++++
+>  mm/memory_hotplug.c    |    2 +-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 0b5c44f730b4..66ba38dae9ba 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -885,6 +885,18 @@ static inline int local_memory_node(int node_id) { return node_id; };
+>   */
+>  #define zone_idx(zone)		((zone) - (zone)->zone_pgdat->node_zones)
+>  
+> +#ifdef CONFIG_ZONE_DEVICE
+> +static inline bool zone_is_zone_device(struct zone *zone)
+> +{
+> +	return zone_idx(zone) == ZONE_DEVICE;
+> +}
+> +#else
+> +static inline bool zone_is_zone_device(struct zone *zone)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  /*
+>   * Returns true if a zone has pages managed by the buddy allocator.
+>   * All the reclaim decisions have to use this function rather than
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index c78a1bef561b..710e469fb3a1 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -769,7 +769,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+>  	 * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
+>  	 * section.
+>  	 */
+> -	if (zone_idx(zone) == ZONE_DEVICE) {
+> +	if (zone_is_zone_device(zone)) {
+>  		if (!IS_ALIGNED(start_pfn, PAGES_PER_SECTION))
+>  			section_taint_zone_device(start_pfn);
+>  		if (!IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION))
+> 
+> 
+> .
+> 
 
-I'd rather not have critical clks wasting kernel memory and registration
-time if they're never going to be turned off and we're basically just
-writing a bit so that they're always on. This patch looks OK to me from
-that perspective. There aren't any parents for these clks either so
-really it's a glorified bit toggle and poll to make sure that it is
-enabled. Maybe we should be checking that they're actually enabled at
-the end of probe, but otherwise we don't need all this complexity.
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
