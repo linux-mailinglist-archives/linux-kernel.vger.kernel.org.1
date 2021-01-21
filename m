@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1162FF5E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422C92FF5ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727249AbhAUUcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726997AbhAUUbA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:31:00 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4112C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:30:19 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id o19so4435248lfo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:30:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=896t3XFraNFaUpJ/WXoxxUghqXuMbEjBhaMz/gtS348=;
-        b=K2i0lVeEjB2y6CXAjGcel9x4JSIg81Q1kC2NxxuY4Ld0TwUvcOTwyiWfjO9rlCuG8K
-         w490zA9pWssE6t436TYJo6j/P4TSz7i6FwtS2T8NtlVzIipnn+yVV7uwjgwG2a41sd2Y
-         Dr1FMshe1fjrpRk5989Moe+MyDW7/yQSglu7X6FK3OliC3FDsY8uWqGD2MNglFQTVbEQ
-         MCz4ZrYmA43dNaCjKw2Vd5jn2EZFuXWNv7jhgkLt1b5qvk0Qg2wwSbWzLiZol29sLcpE
-         0xRQBzJxRpEVYmpPZOLEEmri1sRHHib9G/A22yKWbo0keNFopoIF7Av4S2wTOyuY0vbj
-         Tw6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=896t3XFraNFaUpJ/WXoxxUghqXuMbEjBhaMz/gtS348=;
-        b=TvyaoMej4EVsZVDrgKrK/Q5UfY57192brqM7qvehBzDKnklqnJwSHQEBILn0SzVu72
-         tMf87IPZRtw90HwVzJx6P9iAnX4GHmLDvRV6JM9KtP7ZqliULjYVSSPYSZQLIG0fqYRi
-         ytTW/9I8kJMxPROW90Q7KT7Xqqpcm5ZpQOUJC5Gbe9Pzk4FMc4Nk94FjghPFVPuZ9EtU
-         9b56W9W469Ylo8SLfRWJis2lnkJ3lrMnypM742Z0N+w2vVGnc8meD3F7VoEwLitf52Jo
-         WNYzihpJtDKOfFapoM//YfZBEDoJUlY38IZcvLjCKagmVRTqLmn+IzlCg5WUEHAc0sBq
-         B7HQ==
-X-Gm-Message-State: AOAM530k29Be65a0z7W5ix+MGuG23p8xBD8/a/3gGYYhUPz/WPaL1WHj
-        u5SilDjoJUW+SLzO+uhE10Gc3aYtzVOeOghdHjA=
-X-Google-Smtp-Source: ABdhPJw5rqo7HedIqkIAMBVdBvtFsx/QR+P1Y95q5N23Ty3a8DLrFyxSCgn+QZ3GKAdHjYFK/nnARbP+PG0zOf3ebLM=
-X-Received: by 2002:a05:6512:694:: with SMTP id t20mr469379lfe.151.1611261018385;
- Thu, 21 Jan 2021 12:30:18 -0800 (PST)
+        id S1727306AbhAUUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:33:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727114AbhAUUcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:32:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88D37230F9;
+        Thu, 21 Jan 2021 20:31:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611261098;
+        bh=dTC+Fvj5l3NJgeQEFALnCpXRbWU1+9WuIGk8hQ4mUi8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uTRkv1dnnEpfEgY6zS7wtjYvvzVb0JSz2GGN50rWaYkCASH9Lj/cSYNafrxEzvYbM
+         v76gy2G/l5yk1KZt1fhJvER+bcmJ7G/ICROoJhGLdOzoiL2+KtT6mmUFxEy08IGM+d
+         x0rKF5A00s1njOjO1BvapLJgZ1LLARequfaG+umGjbGUUvrcUlgIF6BGMsVVP82Kw/
+         0NbBoVoTkgSWKY2sRvnIS5NOSyPhvVYNEO8eERLxy50rcJJH+nsj9qCHwfoxR0VR1T
+         HGkLbWGa5wneZ2Rw8QXIM09vigSxyo8HJN4cdx+UE6wPE11xsGVcuGR+ykoOdHGf2k
+         aVGZhR0Fsc+Lg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 717F640513; Thu, 21 Jan 2021 17:31:36 -0300 (-03)
+Date:   Thu, 21 Jan 2021 17:31:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
+Message-ID: <20210121203136.GD356537@kernel.org>
+References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
+ <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <b25f0861-1cec-3ac8-a0ef-8e9e94c4e662@huawei.com>
+ <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
+ <DB8PR04MB67951BF5DBE4524CB13BAAE4E6A20@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <c3d8d635-33ab-8d7e-6efc-6a589aebeb52@huawei.com>
 MIME-Version: 1.0
-References: <20210121170736.2266-1-scott.branden@broadcom.com> <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
-In-Reply-To: <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 21 Jan 2021 22:31:07 +0200
-Message-ID: <CAHp75Vf=Ba+e8PDsvi8eDiuNDvC6Pfx3RsRAkaOZvD26Z2pnQA@mail.gmail.com>
-Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang line
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Finn Behrens <me@kloenk.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3d8d635-33ab-8d7e-6efc-6a589aebeb52@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:28 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Fri, Jan 22, 2021 at 2:17 AM Scott Branden
-> <scott.branden@broadcom.com> wrote:
-> >
-> > Use python3 instead of python in diffconfig Shebang line.
-> > python2 was sunset January 1, 2000 and environments do not need
-> > to support python any more.
+Em Wed, Jan 20, 2021 at 09:15:54AM +0000, John Garry escreveu:
+> On 20/01/2021 05:15, Joakim Zhang wrote:
+> > For this patch: Tested-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-> Just from curiosity, what problem is this solving?
->
-> Is there a distribution where 'python' does not exist,
-> but 'python3' does ?
+> > Hi John, Jolsa,
 
-Yes. Called surprise surprise Debian
-An it's a rare case when I agree with them.
+> > Is there any way to avoid breaking exist metric expressions? If not, it will always happened after metricgroup changes.
+ 
+> They are not normally broken like that. Normally we test beforehand, but
+> these cases were missed here by me. However if you were testing them
+> previously, then it would be expected that you had tested them again for the
+> final patchset which was merged.
+ 
+> Anyway, we can look to add metric tests for these.
+ 
+> @Arnaldo, I will send separate formal patch for this today.
 
+Hi John, can you please take a look at my tmp.perf/urgent branch and see
+if all is well, i.e. the versions of these patches are the ones that
+should be merged and that all the patches discussed are there?
 
--- 
-With Best Regards,
-Andy Shevchenko
+For your convenience:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf/urgent
+
+Thanks,
+
+- Arnaldo
