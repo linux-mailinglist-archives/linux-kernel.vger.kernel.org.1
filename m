@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CE82FF545
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C4A2FF540
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbhAUT7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:59:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbhAUTzQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:55:16 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5EDC061793;
-        Thu, 21 Jan 2021 11:52:56 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B2E023EEED;
-        Thu, 21 Jan 2021 20:52:54 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     viresh.kumar@linaro.org
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v5 6/7] cpufreq: qcom-hw: Allow getting the maximum transition latency for OPPs
-Date:   Thu, 21 Jan 2021 20:52:49 +0100
-Message-Id: <20210121195250.492500-7-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210121195250.492500-1-angelogioacchino.delregno@somainline.org>
-References: <20210121195250.492500-1-angelogioacchino.delregno@somainline.org>
+        id S1726073AbhAUT7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:59:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727013AbhAUTzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:55:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7754323A56;
+        Thu, 21 Jan 2021 19:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611258872;
+        bh=EP1snMm+Xlof0Ui6e/5e3S7pxlCggQLH3+hl2fl2Heg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sSD5NrYI7cevdO+TTyY4saO86jvRh37/iqfjVn7J5zBOSMMbjy6TCQ7yZmyEzbkrQ
+         JkkBkZowH3eCo1A/DZ1GFykNWiiHPtq8lTwV/+vz1Wv4fYSCs0TiVrpm2KmBara/YT
+         hHmliBoDrhKY/7rTNaG4i9sjI0wJXJ8j8A0vY9io5DvHxxhHwokkhKNbQqWM9XTOwP
+         cnn2limdZzXzGOCGNrL2EH5kwD+FvtYNmw60LD/CMidcRqRhJKlD9w3Jiw1BKaEY6R
+         eEZw4o4e739xIP8/R3dZf+0T25U3Ns5aX4kZfUXY4qBsKKE3EYXhQCAjpMwyzZvx96
+         NqQVBW0Cs3PSg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1741D35214EB; Thu, 21 Jan 2021 11:54:32 -0800 (PST)
+Date:   Thu, 21 Jan 2021 11:54:32 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Mark Rutland <mark.rutland@arm.com>, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/9] tools/nolibc: fix build issues on aarch64 after
+ unistd cleanup
+Message-ID: <20210121195432.GS2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210121072031.23777-1-w@1wt.eu>
+ <20210121111117.GA48431@C02TD0UTHF1T.local>
+ <20210121141809.GC24174@1wt.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121141809.GC24174@1wt.eu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to fine-tune the frequency scaling from various governors,
-allow to set a maximum transition latency from OPPs, which may be
-different depending on the SoC.
+On Thu, Jan 21, 2021 at 03:18:09PM +0100, Willy Tarreau wrote:
+> On Thu, Jan 21, 2021 at 11:11:17AM +0000, Mark Rutland wrote:
+> > So FWIW:
+> > 
+> > Tested-by: Mark Rutland <mark.rutland@arm.com> [arm64]
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/cpufreq/qcom-cpufreq-hw.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Thank you all!
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index 9a213a3046bb..d2b913582197 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -1405,6 +1405,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- 	void __iomem *base;
- 	struct qcom_cpufreq_data *data;
- 	const char *fdom_resname;
-+	unsigned int transition_latency;
- 	int cpu_count, index, ret;
- 
- 	cpu_dev = get_cpu_device(policy->cpu);
-@@ -1482,6 +1483,12 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- 		goto error;
- 	}
- 
-+	transition_latency = dev_pm_opp_get_max_transition_latency(cpu_dev);
-+	if (!transition_latency)
-+		transition_latency = CPUFREQ_ETERNAL;
-+
-+	policy->cpuinfo.transition_latency = transition_latency;
-+
- 	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
- 
- 	return 0;
--- 
-2.30.0
+> Perfect, thanks! Paul, may I let you copy-paste the tested-by yourself ?
+> If you prefer I'm fine with resending a series to you, I just don't want
+> to needlessly spam you :-)
 
+Done, with Valentin's and Mark's Tested-by.
+
+> > It would be great if this could be applied soon so that it's possible to
+> > use the rcutorture scripts without applying local hacks.
+> 
+> Makes sense. I was wondering, should we mark them for stable ? I don't
+> know if anyone relies on these tests to validate stable kernels in
+> fact.
+
+I added Fixes tags that should make this happen, and they are now visible
+at -rcu branch "dev".  Could you please check them for me?
+
+c261145 tools/nolibc: Add the definition for dup()
+79f220e tools/nolibc: Make dup2() rely on dup3() when available
+c0c7c10 tools/nolibc: Make getpgrp() fall back to getpgid(0)
+be60ca4 tools/nolibc: Implement fork() based on clone()
+5b1c827 tools/nolibc: Implement poll() based on ppoll()
+70ca7ae tools/nolibc: Get timeval, timespec and timezone from linux/time.h
+f65d711 tools/nolibc: Remove incorrect definitions of __ARCH_WANT_*
+35635d7 tools/nolibc: Emit detailed error for missing alternate syscall number definitions
+3c6ce7a tools/nolibc: Fix position of -lgcc in the documented example
+26cec81 tools/rcutorture: Fix position of -lgcc in mkinitrd.sh
+
+> > Willy, thanks for sorting this out, especially so quickly!
+> 
+> You're welcome, and thanks to you for the detailed report and explanations.
+
+Again, thank you all!
+
+On getting this upstream quickly, if all goes well I expect to include
+this in my pull request for the upcoming merge window.
+
+							Thanx, Paul
