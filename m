@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0722FE1C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DA92FE1CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbhAUFfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:35:01 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:47458 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726731AbhAUFcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 00:32:43 -0500
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxeL7GEQlgHXEIAA--.13206S6;
-        Thu, 21 Jan 2021 13:31:54 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        Jun-Ru Chang <jrjang@realtek.com>
-Subject: [PATCH v2 4/4] MIPS: Add is_jr_ra_ins() to end the loop early
-Date:   Thu, 21 Jan 2021 13:31:38 +0800
-Message-Id: <1611207098-11381-5-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn>
-References: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn>
-X-CM-TRANSID: AQAAf9DxeL7GEQlgHXEIAA--.13206S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxXF47ZF1ktr15Jr18Xw1UJrb_yoW5Jw4xpr
-        43Ars3Gr1rJr13Jr1fJ395Jry5Jrs5JrsxtFW7trW8Wwn8CryUZr1fAr1FyrWUJryUKw18
-        GFy5Ar1UGr1DA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0V
-        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1l
-        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8WwCF04k20x
-        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIx
-        AIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAI
-        cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
-        IEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07bYKZAUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1727349AbhAUFgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:36:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726337AbhAUFdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 00:33:53 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB72C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:33:11 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id b5so900443pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PHlzH0Ourl1mu7oe7NxeEbG4XHfC6NVL5g1u9VF/oMA=;
+        b=uZuc/rNvyqGSYV8PEbuyrvYpt1fd4IwmupPpl6az7+KBxHPx0bRKkBNejfZPA7TwQm
+         pZu3lQ/SpNpE+oJcJl+nvNjW7aj+WY7j6iiBmjNYYB7c8k/ykrHwyR7JQrn2KiXoelxb
+         GUdkydoQLBDkfNO5gFyC0UDOlTJbupc0ReshgbxrtW4WrkcnWCXozcdBW2t2Ilz8Px8E
+         EO024M0CPeBx7hebVYzJiZ+njciNpZsfIrdsm7FCDpFls2QbQb0/KYCjm9A+IztIgbml
+         XtkdQaxoqIpvEx7dlzILt+QHbvcLILb14yKzKNWMo3EcrPwPKK8ltUgT0WjSxneX8SU6
+         EohA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PHlzH0Ourl1mu7oe7NxeEbG4XHfC6NVL5g1u9VF/oMA=;
+        b=FXSPymGY4Sdf+lSXi/h1UccdhEOixTZSm2wCNQE1CNgNKnJ3ykolg7VdZwqW0O7arC
+         cPG4mcNQ5YH00U7OjFi/F5RSqK52jO1sYeV8tgFxkGk4ettagL5ejabL/yIsswsBWr4e
+         YzcLf7/OtW8HaMeZjuBN2iPZ2YnXqtS/Ryb5B166XLYFD5gat4jNY2YXOI3CNKvsiVrS
+         kDs9lwRu5ZJoBDegMS+1RM9qdSRr619BlA6O41all7NCiWKYSUPWtTN8mgGMxtadaCUd
+         GSFtAE9UidCqDkOIOCC5/LOpct82ZuiwSSDB0gunTx1vjWtw1F3vb1adZbBxMRZsvVJD
+         sJ3Q==
+X-Gm-Message-State: AOAM532VgumbHC/hIdW7Mnnaxt0wSfgr3BqpsCYc4Z7lUqKiw/b2PLpG
+        0QtEuKAruK7+g96cOgETyzFE
+X-Google-Smtp-Source: ABdhPJyEXBsa5cIQ6433QxYClwHOsGn90ME+c0KidCIQJJlsNxIEjP1pX7vMvv7mmE9guQzppIqlPg==
+X-Received: by 2002:a17:90a:5501:: with SMTP id b1mr9450580pji.7.1611207191416;
+        Wed, 20 Jan 2021 21:33:11 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:6182:23c4:4d5:e6d9:fc7e:c8e2])
+        by smtp.gmail.com with ESMTPSA id o14sm4332850pgr.44.2021.01.20.21.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 21:33:10 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     georgi.djakov@linaro.org, robh+dt@kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        okukatla@codeaurora.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 0/2] Add interconnect driver for SDX55
+Date:   Thu, 21 Jan 2021 11:02:52 +0530
+Message-Id: <20210121053254.8355-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For those leaf functions, they are likely to have no stack operations.
-Add is_jr_ra_ins() to determine whether jr ra has been touched before
-the frame_size is found. Without this patch, the get frame_size operation
-may be out of range and get the frame_size from the next nested function.
+Hello Georgi,
 
-There is no POOL32A format in uapi/asm/inst.h, so some bits here use the
-format of r_format instead.
-e.g.
----------------------------------------------------------------------
-|    format      |  31:26  | 25:21 | 20:16 |    15:6    |    5:0    |
------------------+---------+-------+-------+------------+------------
-| pool32a_format | pool32a |  rt   |  rs   |   jalrc    | pool32axf |
------------------+---------+-------+-------+------------+------------
-|    r_format    |  opcode |  rs   |  rt   | rd:5, re:5 |    func   |
----------------------------------------------------------------------
+This small series adds interconnect driver support for SDX55 platform for
+scaling the bandwidth requirements over RPMh. The driver has been tested
+on SDX55-MTP and gives below DDR metrics using mbw [1] tool:
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
-v2:
-- microMIPS: ip->r_format.rs -> ip->r_format.rt
+Src port: SDX55_MASTER_AMPSS_M0
+Dest port: SDX55_SLAVE_EBI_CH0
 
- arch/mips/kernel/process.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+Command: mbw 100
 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index adf29f7..592f02e 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -186,6 +186,36 @@ struct mips_frame_info {
- #define J_TARGET(pc,target)	\
- 		(((unsigned long)(pc) & 0xf0000000) | ((target) << 2))
- 
-+static inline int is_jr_ra_ins(union mips_instruction *ip)
-+{
-+#ifdef CONFIG_CPU_MICROMIPS
-+	/*
-+	 * jr16 ra
-+	 * jr ra
-+	 */
-+	if (mm_insn_16bit(ip->word >> 16)) {
-+		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
-+		    ip->mm16_r5_format.rt == mm_jr16_op &&
-+		    ip->mm16_r5_format.imm == 31)
-+			return 1;
-+		return 0;
-+	}
-+
-+	if (ip->r_format.opcode == mm_pool32a_op &&
-+	    ip->r_format.func == mm_pool32axf_op &&
-+	    ((ip->u_format.uimmediate >> 6) & GENMASK(9, 0)) == mm_jalr_op &&
-+	    ip->r_format.rt == 31)
-+		return 1;
-+	return 0;
-+#else
-+	if (ip->r_format.opcode == spec_op &&
-+	    ip->r_format.func == jr_op &&
-+	    ip->r_format.rs == 31)
-+		return 1;
-+	return 0;
-+#endif
-+}
-+
- static inline int is_ra_save_ins(union mips_instruction *ip, int *poff)
- {
- #ifdef CONFIG_CPU_MICROMIPS
-@@ -398,7 +428,9 @@ static int get_frame_info(struct mips_frame_info *info)
- 			last_insn_size = 4;
- 		}
- 
--		if (!info->frame_size) {
-+		if (is_jr_ra_ins(ip)) {
-+			break;
-+		} else if (!info->frame_size) {
- 			is_sp_move_ins(&insn, &info->frame_size);
- 			continue;
- 		} else if (!saw_jump && is_jump_ins(ip)) {
+With bandwidth 500000:
+AVG     Method: MEMCPY  Elapsed: 0.59058        MiB: 100.00000  Copy: 169.324 MiB/s
+With bandwidth 700000:
+AVG     Method: MEMCPY  Elapsed: 0.29267        MiB: 100.00000  Copy: 341.678 MiB/s
+With bandwidth 900000:
+AVG     Method: MEMCPY  Elapsed: 0.19608        MiB: 100.00000  Copy: 510.005 MiB/s
+
+The copy speed seems to be the same for all bandwidth less than 500000 and
+greater than 900000.
+
+Note: The CPUFreq governer needs to be set to something other than schedutil to
+see the difference. Otherwise the speed seems to be the same for all bandwidth.
+
+Thanks,
+Mani
+
+[1] https://github.com/raas/mbw
+
+Changes in v2:
+
+* Changed the copyright year to 2021, fixed Kconfig dependency and constified
+  provider struct definitions.
+
+Manivannan Sadhasivam (2):
+  dt-bindings: interconnect: Add Qualcomm SDX55 DT bindings
+  interconnect: qcom: Add SDX55 interconnect provider driver
+
+ .../bindings/interconnect/qcom,rpmh.yaml      |   4 +
+ drivers/interconnect/qcom/Kconfig             |   9 +
+ drivers/interconnect/qcom/Makefile            |   2 +
+ drivers/interconnect/qcom/sdx55.c             | 356 ++++++++++++++++++
+ drivers/interconnect/qcom/sdx55.h             |  70 ++++
+ include/dt-bindings/interconnect/qcom,sdx55.h |  76 ++++
+ 6 files changed, 517 insertions(+)
+ create mode 100644 drivers/interconnect/qcom/sdx55.c
+ create mode 100644 drivers/interconnect/qcom/sdx55.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sdx55.h
+
 -- 
-2.1.0
+2.25.1
 
