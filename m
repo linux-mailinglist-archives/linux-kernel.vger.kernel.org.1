@@ -2,217 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6F72FF78C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C219E2FF76F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 22:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbhAUVqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 16:46:21 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:31655 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbhAUVbX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:31:23 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611264658; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=tq0FX0gjjypNx35NWziv3I0HuJg9vmylS8439Swmh1c=;
- b=uXDQNruC5jKlBPz3/862djrn9UHchaZzXBeQYcIPb9158nLZM4DH2ASUk7HScVPvP5KnXNvc
- rSDdyuQGpGChOr3A3aalXGBlfHQvBLBzXDwH8WLMzCvTu4xiRe5YCbkvt9pLHZ7+bgF6QNg+
- H4ebexU7jIDeegk098I9gv4bnoc=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6009f2662c36b2106d4d1aff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Jan 2021 21:30:14
- GMT
-Sender: isaacm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 70486C43462; Thu, 21 Jan 2021 21:30:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: isaacm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DC07C43461;
-        Thu, 21 Jan 2021 21:30:12 +0000 (UTC)
+        id S1727759AbhAUVjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 16:39:11 -0500
+Received: from mga12.intel.com ([192.55.52.136]:30562 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727353AbhAUVcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 16:32:16 -0500
+IronPort-SDR: ZKpuEba31gwLocUgw/44gJLmLCSduBe+mv6BDef13x5qLkQ60AbRKwCYlAbak4CoIz70Ptamc2
+ 7CCQi62g7HLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="158530151"
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="158530151"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 13:30:20 -0800
+IronPort-SDR: puBLcVzT9eJ+vIEIfZMikqkWfC79PhC7Iyym3fIAXbYVaD2V9Erx+5ZkIgUhHKhrHHNVAQX/nu
+ 6nBx1C69sZdQ==
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="367062423"
+Received: from mengyent-mobl1.amr.corp.intel.com (HELO [10.209.48.213]) ([10.209.48.213])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 13:30:19 -0800
+Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+Cc:     gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
+ <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+ <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
+ <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
+ <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
+ <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
+ <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
+ <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <eaf13d70-86fe-3e18-7a5a-4043f2d8a22d@linux.intel.com>
+Date:   Thu, 21 Jan 2021 15:30:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 21 Jan 2021 13:30:12 -0800
-From:   isaacm@codeaurora.org
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     will@kernel.org, joro@8bytes.org, iommu@lists.linux-foundation.org,
-        pratikp@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, pdaly@codeaurora.org
-Subject: Re: [PATCH v2 0/5] Optimize iommu_map_sg() performance
-In-Reply-To: <8ad6db90-1d86-db2a-ccb5-dc3f01213289@arm.com>
-References: <1610376862-927-1-git-send-email-isaacm@codeaurora.org>
- <8ad6db90-1d86-db2a-ccb5-dc3f01213289@arm.com>
-Message-ID: <2580095e227403893b78856edbaeb77b@codeaurora.org>
-X-Sender: isaacm@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-12 08:00, Robin Murphy wrote:
-> On 2021-01-11 14:54, Isaac J. Manjarres wrote:
->> The iommu_map_sg() code currently iterates through the given
->> scatter-gather list, and in the worst case, invokes iommu_map()
->> for each element in the scatter-gather list, which calls into
->> the IOMMU driver through an indirect call. For an IOMMU driver
->> that uses a format supported by the io-pgtable code, the IOMMU
->> driver will then call into the io-pgtable code to map the chunk.
->> 
->> Jumping between the IOMMU core code, the IOMMU driver, and the
->> io-pgtable code and back for each element in a scatter-gather list
->> is not efficient.
->> 
->> Instead, add a map_sg() hook in both the IOMMU driver ops and the
->> io-pgtable ops. iommu_map_sg() can then call into the IOMMU driver's
->> map_sg() hook with the entire scatter-gather list, which can call
->> into the io-pgtable map_sg() hook, which can process the entire
->> scatter-gather list, signficantly reducing the number of indirect
->> calls, and jumps between these layers, boosting performance.
-> 
-> Out of curiosity, how much of the difference is attributable to actual
-> indirect call overhead vs. the additional massive reduction in visits
-> to arm_smmu_rpm_{get,put} that you fail to mention?There are ways to
-I did an experiment where I compared the two approaches without any 
-calls
-to arm_smmu_rpm_[get/put]. There's still a large amount of difference
-without the overhead incurred by power management calls. Here are the 
-results:
 
-no optimizations and no power management calls:
-  size        iommu_map_sg
-       4K            0.609 us
-      64K            8.583 us
-       1M          136.083 us
-       2M          273.145 us
-      12M         1442.119 us
-      24M         2876.078 us
-      32M         3832.041 us
+>>> [SLAVE]-------[MASTER]
+>>> NA-------------Port 1: PCM
+>>> Port 1---------Port 2: ADC 1 & 2
+>>> Port 2---------Port 3: ADC 3 & 4
+>>> Port 3---------Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
+>>> Port 4---------Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
+>>>
+>>>
+>>> Mapping is still static however Number of ports selection and channel 
+>>> mask will be dynamic here.
+>>>
+>>>
+>>> Example: for Headset MIC usecase we will be using Slv Port1, Slv 
+>>> Port3 along with Mstr Port2 and Master Port4
+>>>
+>>> Similarly for usecases like Digital MIC or other Analog MICs.
+>>
+>> Sorry, I must be thick here, but in my experience the choice of 
+>> Digital or analog mics is a hardware design level not a use-case one. 
+>> Using ADC 1 & 2 at the same time as DMICs is very surprising to me. 
+>> You'd have different sensitivities/performance, not sure how you would 
+>> combine the results.
+> 
+> In this particular case, ADC2 on Port2 is used along with the MBHC(Multi 
+> Button and Headset Detection) channel on Master Port4. This is intended 
+> for Headset Button Click Suppression!. This again can be  dynamically 
+> selected based on if headset button Click Suppression is enabled or not.
 
-iommu_map_sg optimizations and no power management calls:
-size        iommu_map_sg
-       4K            0.645 us
-      64K            1.229 us
-       1M            9.531 us
-       2M           23.198 us
-      12M           99.250 us
-      24M          185.713 us
-      32M          248.781 us
+The question is whether the ADC2 and MBHC ports convey data for the same 
+'stream'. If they need to be synchronous, they have to be part of the 
+same stream and triggered at the same time.
 
- From here, we can see that the amount of latency incurred by the 
-indirect
-calls is fairly large.
+we don't have the ability to change the stream definition at run-time 
+when an ALSA control value changes. The only thing you could do is 
+enabled it always, and drop the data on the floor inside of the master 
+if/when the control value changes.
 
-> optimise indirect calling that would benefit *all* cases, rather than
-> just one operation for one particular driver.
-Do you mind sharing some more information on how to optimize the 
-existing
-approach further, such that it benefits other drivers as well?
+
+>>>>> Firstly, This is where the issue comes, if we go with the 
+>>>>> suggested(dai->id) solution, we would end up with a long list of 
+>>>>> dai-links with different combinations of both inputs/output 
+>>>>> connections and usecases. Again we have to deal with limited DSP 
+>>>>> resources too!
+
+Like I said above, your ability to reconfigure is limited, and you may 
+have to stop/start streaming if you want to optimize allocation.
+
+>>>>> Secondly, The check [1] in stream.c will not allow more than one 
+>>>>> master port config to be added to master runtime. Ex: RX Port 1, 2, 
+>>>>> 3 is used for Headset Playback.
+>>>>
+>>>> I am confused here, we do have examples in existing codec drivers 
+>>>> where we use multiple ports for a single stream, e.g. for IV 
+>>>> feedback we use 2 ports.
+>>>
+>>> Is this on multi_link? which is why it might be working for you.
+>>
+>> no, this is done at the codec driver level, which has no notion of 
+>> multi-link. we pass a port_config as a array of 2.
+>>
 > 
->> On a system that uses the ARM SMMU driver, and the ARM LPAE format,
->> the current implementation of iommu_map_sg() yields the following
->> latencies for mapping scatter-gather lists of various sizes. These
->> latencies are calculated by repeating the mapping operation 10 times:
->> 
->>      size        iommu_map_sg latency
->>        4K            0.624 us
->>       64K            9.468 us
->>        1M          122.557 us
->>        2M          239.807 us
->>       12M         1435.979 us
->>       24M         2884.968 us
->>       32M         3832.979 us
->> 
->> On the same system, the proposed modifications yield the following
->> results:
->> 
->>      size        iommu_map_sg latency
->>        4K            3.645 us
->>       64K            4.198 us
->>        1M           11.010 us
->>        2M           17.125 us
->>       12M           82.416 us
->>       24M          158.677 us
->>       32M          210.468 us
->> 
->> The procedure for collecting the iommu_map_sg latencies is
->> the same in both experiments. Clearly, reducing the jumps
->> between the different layers in the IOMMU code offers a
->> signficant performance boost in iommu_map_sg() latency.
+> Am referring to sdw_stream_add_master() not sdw_stream_add_slave().
+
+It doesn't matter, it's the same concept that for a given stream, you 
+tell the device which ports will be used.
+
+The API is quasi-identical, in the master case the bus/master/link are 
+the same concept.
+
+int sdw_stream_add_master(struct sdw_bus *bus,
+			  struct sdw_stream_config *stream_config,
+			  struct sdw_port_config *port_config,
+			  unsigned int num_ports,
+			  struct sdw_stream_runtime *stream)
+
+
+int sdw_stream_add_slave(struct sdw_slave *slave,
+			 struct sdw_stream_config *stream_config,
+			 struct sdw_port_config *port_config,
+			 unsigned int num_ports,
+			 struct sdw_stream_runtime *stream)
+
+
+>>> Currently we have below check in sdw_stream_add_master().
+>>>
+>>> if (!bus->multi_link && stream->m_rt_count > 0) {
+>>>      dev_err(bus->dev, "Multilink not supported, link %d\n", 
+>>> bus->link_id);
+>>>      ret = -EINVAL;
+>>>      goto unlock;
+>>> }
+>>>
+>>> If we have single master(like my case) and dai-links which have more 
+>>> then one port  will be calling  sdw_stream_add_master() for each 
+>>> port, so m_rt_count above check will fail for the second call!
+>>
+>> if you use multiple ports in a given master for the same stream, you 
+>> should have the m_rt_count == 1. That's a feature, not a bug.
+>>
+>> A port is not a stream... You cannot call sdw_stream_add_master() for 
+>> each port, that's not what the concept was. You allocate ONE master_rt
 > 
-> Presumably those are deliberately worst-case numbers? After all, a
-> 32MB scatterlist *could* incur less overhead than a 64KB one if things
-> line up just right (still 16 ->map calls, but each with one fewer
-Yes, these are worst case numbers (i.e. a buffer is composed entirely
-of 4 KB pages, so higher order mappings don't get used).
-> level of pagetable to traverse). TBH I find the significant regression
-> of the 4KB case the most interesting - what's going on there?
-That was an error on my part. After fixing my error, I observed that the
-time spent mapping the 4 KB buffer is comparable with and without 
-optimizations,
-which is expected.
+> Am looking at intel_hw_params(). Isn't sdw_stream_add_master() called 
+> for every dai in the dai link.
+
+Yes, that's correct, but again a dai may use one or more ports.
+
+if you defined each port as a dai, and want to call 
+sdw_stream_add_master() for each port you are doing something the API 
+was not designed for. There is a 'num_ports' argument for a reason :-)
+
+>> per master, and that master_rt deals with one or more ports - your 
+>> choice. >
+>> A 'stream' is an abstract data transport which can be split across 
+>> multiple masters/sales and for each master/slave use multiple ports.
+>> When calling sdw_stream_add_master/slave, you need to provide a 
+>> port_config/num_ports to state which ports will be used on that 
+>> master/slave when using the stream. That's how we e.g. deal with 4ch 
+>> streams that are handled by two ports on each side.
+>>
+>> To up-level a bit, the notion of 'stream' is actually very very 
+>> similar to the notion of dailink. And in fact, the 'stream' is 
+>> actually created for Intel in the dailink .startup callback, so I am 
+>> quite in the dark on what you are trying to accomplish.
+> In qcom case stream is also allocated for in dai startup().
 > 
-> My main reservation here is that we get an explosion of duplicate
-> copies of almost the same code, and it's code that's just non-trivial
-> enough to start being bug-prone. And it's all still only for one
-> specific operation - your argument about calling through multiple
-> layers for each element applies just as much to iommu_map() itself, so
-> why aren't we trying to make more fundamental improvements with wider
-> benefits? Indeed I can't imagine the existing iommu_map_sg() loop
-> really adds significant overhead compared to a single iommu_map() call
-> that results in the equivalent set of ->map calls to the driver.
+> I think we are talking about two different issues,
 > 
-> At a glance, I reckon that simply extending the internal ->map and
-> ->unmap interfaces to encode a number of consecutive identical pages
-> would already get us a large chunk of the way there; then we'd be in a
-> better place to consider options for the io-pgtable interface.
+> 1>one is the failure I see in sdw_stream_add_master() when I try to use 
+> dai-link dai-id style approach suggested. I will dig this bit more and 
+> collect more details!
 > 
-Do you mean physically contiguous pages? If so, that still wouldn't help 
-the
-case where a buffer is composed entirely of 4 KB pages, correct?
-> Robin.
+> 2>(Main issue) Ability for slave to select different combination of 
+> ports at runtime based on the mixer setting or active dapm.
 > 
->> Changes since v1:
->> 
->> -Fixed an off by one error in arm_[lpae/v7s]_map_by_pgsize
->> when checking if the IOVA and physical address ranges being
->> mapped are within the appropriate limits.
->> -Added Sai Prakash Ranjan's "Tested-by" tag.
->> 
->> Thanks,
->> Isaac
->> 
->> Isaac J. Manjarres (5):
->>    iommu/io-pgtable: Introduce map_sg() as a page table op
->>    iommu/io-pgtable-arm: Hook up map_sg()
->>    iommu/io-pgtable-arm-v7s: Hook up map_sg()
->>    iommu: Introduce map_sg() as an IOMMU op for IOMMU drivers
->>    iommu/arm-smmu: Hook up map_sg()
->> 
->>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 19 ++++++++
->>   drivers/iommu/io-pgtable-arm-v7s.c    | 90 
->> +++++++++++++++++++++++++++++++++++
->>   drivers/iommu/io-pgtable-arm.c        | 86 
->> +++++++++++++++++++++++++++++++++
->>   drivers/iommu/iommu.c                 | 25 ++++++++--
->>   include/linux/io-pgtable.h            |  6 +++
->>   include/linux/iommu.h                 | 13 +++++
->>   6 files changed, 234 insertions(+), 5 deletions(-)
->> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> All this patch is trying do is the pass this *CURRENT/ACTIVE* static 
+> port mapping between slave and master while setting up the stream.
+> With the dailink approach number of ports are pretty much static and may 
+> not be required for particular use case. As above example if we have a 
+> headset with button click suppression we would need 2 Ports and 
+> similarly without we only need one port.
+
+As I said above you cannot enable the button click suppression 
+dynamically *after* the headset capture hw_params/prepare.
+
+> This is not possible with dai-link approach, unless we create two 
+> different dai links for the above example usecase!
+
+The current approach is a worst-case one, where you would create a 
+single 'headset capture' dailink.
+
+We never envisioned a case where you modify what the definition of 
+'headset capture' is based on control events, and I really challenge the 
+fact that it is feasible/realistic. This is really about streaming data 
+across a bus, and we are limited on what we can do. It's the same 
+problem that we never modify the number of channels dynamically on a PCM 
+device.
+
+
+
+
