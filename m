@@ -2,142 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365F22FF51B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040E62FF521
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbhAUTup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S1726424AbhAUTwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:52:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727617AbhAUTuR (ORCPT
+        with ESMTP id S1727683AbhAUTwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:50:17 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010ABC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:49:37 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id o13so4265013lfr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 11:49:36 -0800 (PST)
+        Thu, 21 Jan 2021 14:52:35 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8818C06174A;
+        Thu, 21 Jan 2021 11:51:54 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id r32so3214836ybd.5;
+        Thu, 21 Jan 2021 11:51:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ucsc.edu; s=ucsc-google-2018;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=z+Z/Wt6rvVADhJswHCD/Dni8asWlloYwHnyximWQy4E=;
-        b=peSQ1IOqT8FS1WUCZOwAjIq2KsEjEDMKMoLYCDbRLrh5REIxJJSZ1RlMZVeYAEp7b5
-         8O+/wDIGnFotBWeuZe5Q7yLjnM3RWMG8H2XWcHgsfVOnzsTogUDBZIJ5wDk8d8c+bOhM
-         KwpvRamNLsjrGUcR0nCXLzD31GLUS8ud0JHnjI2k5aGL0qrG0MghNoKENtEu0SxxojC7
-         e/tsyIGmIWRais8Nw4T8OXiqLz2iM7oUcVNbdGQUh8df1wkylYsSNj2la2JidI0IjAs4
-         yDeQZKgo8b9+Mc3Lvd0SPVDsD3jg41Ez+LOi3Q+74/1aIhfrPOOHBq6AhpjpB8cCmdtk
-         dhzg==
+         :cc;
+        bh=b+ryxI2bZ0j1bhmK50ERwXaK1thGqk3WteUbJ53i1ic=;
+        b=nikmWnXA40vWCwZZVZZ5j0u1OqClkFGXfPfH6h5HRuYzVE4DSuawQF7VqmvpNe8Mtz
+         GDtonQs5pYYLSZxVEMhbHHgFhUVSfmL26s9qp38hCV8nU5aC4ujtDqfAwxAkY3Ml7CAs
+         ikEmVcDOins6/8X8WXmGSQcWU3Asm1ZTjq7o1eyKRO9UXtmn5ovccnC5BcOYEbzh3yhf
+         +b5zl1mxeIFvCL6o6DFXcoBAIuG5UMWKHEhFaj/tCpJUqprd9b5d261pO1cIL0j4XDJe
+         yfQZtUkp5mbXRgVv80J17ja2o0ag9mTZymUyqlQioxYKJnhk44DoOUD/H0lt1bqX2d2W
+         nHjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=z+Z/Wt6rvVADhJswHCD/Dni8asWlloYwHnyximWQy4E=;
-        b=CoZ6YFHoJxC+LQwK6YsK/qGlqT9Cjgwj98Ba2mQ2W7yQAj5VRUXk3bIYw78tJGZAfT
-         v3zItTeWwN7g9d/Ul8Ens43rTh93lkSPxrT7cYvZkHebT7svkKPfhcikHp3kyAjALYV9
-         p/soAj0ic2UvgvFDooRGpblDWlgUmGkDMB4fRS8VIolT9feDZ/+1eOXXbTxpCSNVKkoq
-         wGvgN+pdlOWlFT16OU+sa7CZAif0/EcYvtGMTzMhbu2h+l+eP///GzsjkrFRaIWUwOua
-         VlB742XvPJy2XLf2OJPLeSJeLAjm2vZludEHEUuWlOP3QbhvYoiIwobwYZotUtl/hxW+
-         kbPw==
-X-Gm-Message-State: AOAM531TuWDILJ4Io/ZZxrLCo5BCQh/ozMlCeGTvZPuhh4BlQgW1BvUo
-        lZ2EK2HfKKQvF4oMPOBZzrneQXflM910/dvJgKKhUA==
-X-Google-Smtp-Source: ABdhPJwAYHU9v6UjcqSueLcHrhvoptrHtkmEXl8gtTcnpEMVPNkoAekanUQXfR796oJxN6utL/21Z57mi2HaH046/CM=
-X-Received: by 2002:a19:810c:: with SMTP id c12mr408496lfd.244.1611258575483;
- Thu, 21 Jan 2021 11:49:35 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=b+ryxI2bZ0j1bhmK50ERwXaK1thGqk3WteUbJ53i1ic=;
+        b=cUB1OtZFGkPBwcjI03XKRPob/KHA1HSJPQeT/dsbOWfArEMfjbyGgfTfRp6qL/gIa+
+         TEXRU63U+2Cm/Uy8KouO6ovLzEcapXSZX8y/y705p3y6cqwoks70z2psf0tsiSqmbz8M
+         XpAjzqrRAnVZevx9KD7JFOMTLEZVexAF5v4xxm/NobrgkQnrvQMqhJHhjwuCwphRGHEQ
+         /pJJ+qOAHuvhxaxXqbb/oko8i8MzQQy1Wu2U2ElQlaYpQJLuKFs0zyIcoCRLadwIg2Dx
+         aOSEwrqD1ZMPVPoXwTjUqu5hhWJL7+I+3iWZ8wI2PT20FZjxoedtebv769kMgQCWkPcE
+         2asg==
+X-Gm-Message-State: AOAM530WC90lHuge56pQU0fkRs1BIaAe2UlZB3IVhQOleiuEGw47d5Mq
+        biB1MrQ9QRWcRrK/Z8GwWmFaYd/9Q6OUFnsySI28N6Dy+yiiQQ==
+X-Google-Smtp-Source: ABdhPJytes9LDpHx1Bo4tt/+3nzBLErqkMs9KmRH9qNLLMFrQ4ALSFqZyyK7xkNsATVIzwxKb6W2jv+rt1D4z3DKlKM=
+X-Received: by 2002:a25:f40e:: with SMTP id q14mr1431799ybd.230.1611258714152;
+ Thu, 21 Jan 2021 11:51:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121072202.120810-1-bianpan2016@163.com> <55045608-01cb-d5af-682b-5a213944e33d@kernel.dk>
- <474055ad-978a-4da5-d7f0-e2dc862b781c@lightnvm.io> <CAJbgVnWxmwfmdgk-e290kcMfhUNAjP9uO2k45rx7R=x8jBdJcw@mail.gmail.com>
- <59a735f0-9fef-5e6d-f7eb-851e14a2883e@lightnvm.io>
-In-Reply-To: <59a735f0-9fef-5e6d-f7eb-851e14a2883e@lightnvm.io>
-From:   Heiner Litz <hlitz@ucsc.edu>
-Date:   Thu, 21 Jan 2021 11:49:24 -0800
-Message-ID: <CAJbgVnW40qrYBdsM6dC5uhDFZJJDc9kwvCWtK24Rg5GWCHpb2g@mail.gmail.com>
-Subject: Re: [PATCH] lightnvm: fix memory leak when submit fails
-To:     =?UTF-8?Q?Matias_Bj=C3=B8rling?= <mb@lightnvm.io>
-Cc:     Jens Axboe <axboe@kernel.dk>, Pan Bian <bianpan2016@163.com>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com>
+ <1610921764-7526-4-git-send-email-alan.maguire@oracle.com> <CAEf4BzZ6bYenSTUmwu7jXqQOyD=AG75oLsLE5B=9ycPjm1jOkw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ6bYenSTUmwu7jXqQOyD=AG75oLsLE5B=9ycPjm1jOkw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 Jan 2021 11:51:42 -0800
+Message-ID: <CAEf4Bzb4z+ZA+taOEo=N9eSGZaCqMALpFxShujm9GahBOFnhvg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: BTF dumper support for typed data
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-there are a couple more, but again I would understand if those are
-deemed not important enough to keep it.
-
-device emulation of (non-ZNS) SSD block device
-die control: yes endurance groups would help but I am not aware of any
-vendor supporting it
-finer-grained control: 1000's of open blocks vs. a handful of
-concurrently open zones
-OOB area: helpful for L2P recovery
-
-On Thu, Jan 21, 2021 at 10:25 AM Matias Bj=C3=B8rling <mb@lightnvm.io> wrot=
-e:
+On Wed, Jan 20, 2021 at 10:56 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On 21/01/2021 17.58, Heiner Litz wrote:
-> > I don't think that ZNS supersedes OCSSD. OCSSDs provide much more
-> > flexibility and device control and remain valuable for academia. For
-> > us, PBLK is the most accurate "SSD Emulator" out there that, as
-> > another benefit, enables real-time performance measurements.
-> > That being said, I understand that this may not be a good enough
-> > reason to keep it around, but I wouldn't mind if it stayed for another
-> > while.
->
-> The key difference between ZNS SSDs, and OCSSDs is that wear-leveling is
-> done on the SSD, whereas it is on the host with OCSSD.
->
-> While that is interesting in itself, the bulk of the research that is
-> based upon OCSSD, is to control which dies are accessed. As that is
-> already compatible with NVMe Endurance Groups/NVM Sets, there is really
-> no reason to keep OCSSD around to have that flexibility.
->
-> If we take it out of the kernel, it would still be maintained in the
-> github repository and available for researchers. Given the few changes
-> that have happened over the past year, it should be relatively easy to
-> rebase for each kernel release for quite a while.
->
-> Best, Matias
->
->
->
+> On Sun, Jan 17, 2021 at 2:22 PM Alan Maguire <alan.maguire@oracle.com> wrote:
 > >
-> > On Thu, Jan 21, 2021 at 5:57 AM Matias Bj=C3=B8rling <mb@lightnvm.io> w=
-rote:
-> >> On 21/01/2021 13.47, Jens Axboe wrote:
-> >>> On 1/21/21 12:22 AM, Pan Bian wrote:
-> >>>> The allocated page is not released if error occurs in
-> >>>> nvm_submit_io_sync_raw(). __free_page() is moved ealier to avoid
-> >>>> possible memory leak issue.
-> >>> Applied, thanks.
-> >>>
-> >>> General question for Matias - is lightnvm maintained anymore at all, =
-or
-> >>> should we remove it? The project seems dead from my pov, and I don't
-> >>> even remember anyone even reviewing fixes from other people.
-> >>>
-> >> Hi Jens,
-> >>
-> >> ZNS has superseded OCSSD/lightnvm. As a result, the hardware and
-> >> software development around OCSSD have also moved on to ZNS. To my
-> >> knowledge, there is not anyone implementing OCSSD1.2/2.0 commercially =
-at
-> >> this point, and what has been deployed in production does not utilize
-> >> the Linux kernel stack.
-> >>
-> >> I do not mind continuing to keep an eye on it, but on the other hand, =
-it
-> >> has served its purpose. It enabled the "Open-Channel SSD architectures=
-"
-> >> of the world to take hold in the market and thereby gained enough
-> >> momentum to be standardized in NVMe as ZNS.
-> >>
-> >> Would you like me to send a PR to remove lightnvm immediately, or shou=
-ld
-> >> we mark it as deprecated for a while before pulling it?
-> >>
-> >> Best, Matias
-> >>
-> >>
+> > Add a BTF dumper for typed data, so that the user can dump a typed
+> > version of the data provided.
+> >
+> > The API is
+> >
+> > int btf_dump__emit_type_data(struct btf_dump *d, __u32 id,
+> >                              const struct btf_dump_emit_type_data_opts *opts,
+> >                              void *data);
+> >
+
+Two more things I realized about this API overnight:
+
+1. It's error-prone to specify only the pointer to data without
+specifying the size. If user screws up and scecifies wrong type ID or
+if BTF data is corrupted, then this API would start reading and
+printing memory outside the bounds. I think it's much better to also
+require user to specify the size and bail out with error if we reach
+the end of the allowed memory area.
+
+2. This API would be more useful if it also returns the amount of
+"consumed" bytes. That way users can do more flexible and powerful
+pretty-printing of raw data. So on success we'll have >= 0 number of
+bytes used for dumping given BTF type, or <0 on error. WDYT?
+
+> > ...where the id is the BTF id of the data pointed to by the "void *"
+> > argument; for example the BTF id of "struct sk_buff" for a
+> > "struct skb *" data pointer.  Options supported are
+> >
+> >  - a starting indent level (indent_lvl)
+> >  - a set of boolean options to control dump display, similar to those
+> >    used for BPF helper bpf_snprintf_btf().  Options are
+> >         - compact : omit newlines and other indentation
+> >         - noname: omit member names
+> >         - zero: show zero-value members
+> >
+> > Default output format is identical to that dumped by bpf_snprintf_btf(),
+> > for example a "struct sk_buff" representation would look like this:
+> >
+> > struct sk_buff){
+> >  (union){
+> >   (struct){
 >
+> Curious, these explicit anonymous (union) and (struct), is that
+> preferred way for explicitness, or is it just because it makes
+> implementation simpler and thus was chosen? I.e., if the goal was to
+> mimic C-style data initialization, you'd just have plain .next = ...,
+> .prev = ..., .dev = ..., .dev_scratch = ..., all on the same level. So
+> just checking for myself.
+>
+> >    .next = (struct sk_buff *)0xffffffffffffffff,
+> >    .prev = (struct sk_buff *)0xffffffffffffffff,
+> >    (union){
+> >     .dev = (struct net_device *)0xffffffffffffffff,
+> >     .dev_scratch = (long unsigned int)18446744073709551615,
+> >    },
+> >   },
+> > ...
+> >
+> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > ---
+>
+
+[...]
