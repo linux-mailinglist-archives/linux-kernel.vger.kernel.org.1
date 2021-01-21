@@ -2,78 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171A32FEC90
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDAE2FECA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728976AbhAUOCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:02:48 -0500
-Received: from foss.arm.com ([217.140.110.172]:37386 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729449AbhAUOBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:01:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19767139F;
-        Thu, 21 Jan 2021 06:01:07 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AB593F68F;
-        Thu, 21 Jan 2021 06:01:05 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-        cai@redhat.com, vincent.donnefort@arm.com, decui@microsoft.com,
-        paulmck@kernel.org, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, tj@kernel.org, peterz@infradead.org
-Subject: Re: [PATCH -v3 8/9] sched: Fix CPU hotplug / tighten is_per_cpu_kthread()
-In-Reply-To: <20210121103507.102416009@infradead.org>
-References: <20210121101702.402798862@infradead.org> <20210121103507.102416009@infradead.org>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Thu, 21 Jan 2021 14:01:03 +0000
-Message-ID: <jhjeeiemlsw.mognet@arm.com>
+        id S1730986AbhAUOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:08:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730087AbhAUOFr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 09:05:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611237860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sp6rLbwiHZzd3veiVsN2ORKZEPLAFluLK58UL3HjX8M=;
+        b=M4130tKPK3Ul5inrPzsf+YAn4HiCfyjHBpASI6Uq3J5/QcmKriChwEDxrCepQTcDmUFT/f
+        WAB1cFWUYxf0W59yt+i2SwaBtgMducvpZAaKdYuNKVLLFb7JcxHecJv6RC0heeiCJAW/Zi
+        Ji5WdDliSHM+t8aw6w5koZleCQwZsJk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-I18_8X0iPTWVDQFiq42UuA-1; Thu, 21 Jan 2021 09:04:16 -0500
+X-MC-Unique: I18_8X0iPTWVDQFiq42UuA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7983E767;
+        Thu, 21 Jan 2021 14:04:05 +0000 (UTC)
+Received: from starship (unknown [10.35.206.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 52F8D1971A;
+        Thu, 21 Jan 2021 14:04:01 +0000 (UTC)
+Message-ID: <82a82abaab276fd75f0cb47f1a32d5a44fa3bec5.camel@redhat.com>
+Subject: Re: [PATCH v2 1/4] KVM: x86: Factor out x86 instruction emulation
+ with decoding
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, luto@amacapital.net
+Date:   Thu, 21 Jan 2021 16:04:00 +0200
+In-Reply-To: <20210121065508.1169585-2-wei.huang2@amd.com>
+References: <20210121065508.1169585-1-wei.huang2@amd.com>
+         <20210121065508.1169585-2-wei.huang2@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/01/21 11:17, Peter Zijlstra wrote:
-> @@ -7504,6 +7525,9 @@ int sched_cpu_deactivate(unsigned int cp
->        * preempt-disabled and RCU users of this state to go away such that
->        * all new such users will observe it.
->        *
-> +	 * Specifically, we rely on ttwu to no longer target this CPU, see
-> +	 * ttwu_queue_cond() and is_cpu_allowed().
-> +	 *
+On Thu, 2021-01-21 at 01:55 -0500, Wei Huang wrote:
+> Move the instruction decode part out of x86_emulate_instruction() for it
+> to be used in other places. Also kvm_clear_exception_queue() is moved
+> inside the if-statement as it doesn't apply when KVM are coming back from
+> userspace.
+> 
+> Co-developed-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Wei Huang <wei.huang2@amd.com>
+> ---
+>  arch/x86/kvm/x86.c | 63 +++++++++++++++++++++++++++++-----------------
+>  arch/x86/kvm/x86.h |  2 ++
+>  2 files changed, 42 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9a8969a6dd06..580883cee493 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7298,6 +7298,43 @@ static bool is_vmware_backdoor_opcode(struct x86_emulate_ctxt *ctxt)
+>  	return false;
+>  }
+>  
+> +/*
+> + * Decode and emulate instruction. Return EMULATION_OK if success.
+> + */
+> +int x86_emulate_decoded_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+> +				    void *insn, int insn_len)
 
-So the last time ttwu_queue_wakelist() can append a task onto a dying
-CPU's wakelist is before sched_cpu_deactivate()'s synchronize_rcu()
-returns. 
+Isn't the name of this function wrong? This function decodes the instruction.
+So I would expect something like x86_decode_instruction.
 
-As discussed on IRC, paranoia would have us issue a
+> +{
+> +	int r = EMULATION_OK;
+> +	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+> +
+> +	init_emulate_ctxt(vcpu);
+> +
+> +	/*
+> +	 * We will reenter on the same instruction since
+> +	 * we do not set complete_userspace_io.  This does not
+> +	 * handle watchpoints yet, those would be handled in
+> +	 * the emulate_ops.
+> +	 */
+> +	if (!(emulation_type & EMULTYPE_SKIP) &&
+> +	    kvm_vcpu_check_breakpoint(vcpu, &r))
+> +		return r;
+> +
+> +	ctxt->interruptibility = 0;
+> +	ctxt->have_exception = false;
+> +	ctxt->exception.vector = -1;
+> +	ctxt->perm_ok = false;
+> +
+> +	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+> +
+> +	r = x86_decode_insn(ctxt, insn, insn_len);
+> +
+> +	trace_kvm_emulate_insn_start(vcpu);
+> +	++vcpu->stat.insn_emulation;
+> +
+> +	return r;
+> +}
+> +EXPORT_SYMBOL_GPL(x86_emulate_decoded_instruction);
+> +
+>  int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  			    int emulation_type, void *insn, int insn_len)
+>  {
+> @@ -7317,32 +7354,12 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  	 */
+>  	write_fault_to_spt = vcpu->arch.write_fault_to_shadow_pgtable;
+>  	vcpu->arch.write_fault_to_shadow_pgtable = false;
+> -	kvm_clear_exception_queue(vcpu);
 
-  flush_smp_call_function_from_idle()
+I think that this change is OK, but I can't be 100% sure about this.
 
-upon returning from said sync, but this will require further surgery.
+Best regards,
+	Maxim Levitsky
 
-Do we want something like the below in the meantime? Ideally we'd warn on
-setting rq->ttwu_pending when !cpu_active(), but as per the above this is
-allowed before the synchronize_rcu() returns.
 
----
+>  
+>  	if (!(emulation_type & EMULTYPE_NO_DECODE)) {
+> -		init_emulate_ctxt(vcpu);
+> -
+> -		/*
+> -		 * We will reenter on the same instruction since
+> -		 * we do not set complete_userspace_io.  This does not
+> -		 * handle watchpoints yet, those would be handled in
+> -		 * the emulate_ops.
+> -		 */
+> -		if (!(emulation_type & EMULTYPE_SKIP) &&
+> -		    kvm_vcpu_check_breakpoint(vcpu, &r))
+> -			return r;
+> -
+> -		ctxt->interruptibility = 0;
+> -		ctxt->have_exception = false;
+> -		ctxt->exception.vector = -1;
+> -		ctxt->perm_ok = false;
+> -
+> -		ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+> -
+> -		r = x86_decode_insn(ctxt, insn, insn_len);
+> +		kvm_clear_exception_queue(vcpu);
+>  
+> -		trace_kvm_emulate_insn_start(vcpu);
+> -		++vcpu->stat.insn_emulation;
+> +		r = x86_emulate_decoded_instruction(vcpu, emulation_type,
+> +						    insn, insn_len);
+>  		if (r != EMULATION_OK)  {
+>  			if ((emulation_type & EMULTYPE_TRAP_UD) ||
+>  			    (emulation_type & EMULTYPE_TRAP_UD_FORCED)) {
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index c5ee0f5ce0f1..fc42454a4c27 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -273,6 +273,8 @@ bool kvm_mtrr_check_gfn_range_consistency(struct kvm_vcpu *vcpu, gfn_t gfn,
+>  					  int page_num);
+>  bool kvm_vector_hashing_enabled(void);
+>  void kvm_fixup_and_inject_pf_error(struct kvm_vcpu *vcpu, gva_t gva, u16 error_code);
+> +int x86_emulate_decoded_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+> +				    void *insn, int insn_len);
+>  int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  			    int emulation_type, void *insn, int insn_len);
+>  fastpath_t handle_fastpath_set_msr_irqoff(struct kvm_vcpu *vcpu);
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ed6ff94aa68a..4b5b4b02ee64 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7590,6 +7590,7 @@ int sched_cpu_starting(unsigned int cpu)
-  */
- int sched_cpu_wait_empty(unsigned int cpu)
- {
-+	WARN_ON_ONCE(READ_ONCE(cpu_rq(cpu)->ttwu_pending));
- 	balance_hotplug_wait();
- 	return 0;
- }
 
->        * Do sync before park smpboot threads to take care the rcu boost case.
->        */
->       synchronize_rcu();
+
+
+
