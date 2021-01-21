@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33D02FF36D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 080902FF32F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728894AbhAUSOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728899AbhAUJq6 (ORCPT
+        id S1727810AbhAUSad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:30:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42962 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732981AbhAUSPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:46:58 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176B7C06179F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:34 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id v184so939107wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+H03APXDfdyL7LaFA/b0g0zCzrZS1ohEeqXf8bvJDzc=;
-        b=gHfXC3dpfxVrG1AHvM5pWZgIn/rUAADDCIUSmEHMDfEsPyUGK+N/+uqhpMtMNwkLi7
-         3UXIcgVHSXd/IoQuekp10s4hm/O7L0/q8vh3SzksXOq+sQ6n0UtldsQgwjtoL+bfGVoe
-         zm2jQNnnmC+XwQYvYiO1jsfPaaDIegC1eKzMmnFctK7pJN3Oj7QAUm8wECvwZ4dsseYf
-         YdJlaJT3b3pss8AlG02O+VaBL4BZX6U6QHThsZgvINWbazBEoshNQ+P7GVDoo7wm5hOL
-         B7G4UwUTsk1lb2syfCslJWPn47KuYJzHcA+/zHDc28F4tBB+9GLzAsXWhYJbH11mfmiG
-         h8EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+H03APXDfdyL7LaFA/b0g0zCzrZS1ohEeqXf8bvJDzc=;
-        b=nYaAjIgG0lREETdclthuzpJ+ocobMFiGFJrfgXSQLQlAfT6T7AVBXwn57MvG9HYaQm
-         RlmDICNgGBr1HoK/dflfL2Xq2i90idPvdpflDqTj1EWtCDwrj7ZdUFBW+dmENzPyr7RJ
-         kf6W/RJyjgaIEGVlNPPYxWLLH05x+62srvRYAL9FfsxxIedhsr9PFSEEY3ucMf1Svevn
-         7SHDq1tfCl8ifloiabmU3VdncOSAEkEG0AdciTIDVs2F2ssO8PbpmDroqvuXLHWG0j2h
-         TiJVw3Pgx6+Mvf4NZkt9jyBOQEwq+KO65mZk+ygRSHucRIaF7BRE00DTBOK2D4M4tJuj
-         C8lw==
-X-Gm-Message-State: AOAM532/H5WKetzXtPano0YUWymdWyanjfD/76Erqi66kSO8qOpPkDVt
-        koY28tyEaZgzrhKFOgmBmDTH/g==
-X-Google-Smtp-Source: ABdhPJxqr9xHKchQbaXjh71PW8euM5LCZv2yrvaYhwC6CnOhV7vk3K4gwav0E881INC9hql6/FvDYw==
-X-Received: by 2002:a1c:de09:: with SMTP id v9mr8437204wmg.0.1611222332813;
-        Thu, 21 Jan 2021 01:45:32 -0800 (PST)
-Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:32 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 09/30] RDMA/hw/qib/qib_mad: Fix a few misspellings and supply missing descriptions
-Date:   Thu, 21 Jan 2021 09:44:58 +0000
-Message-Id: <20210121094519.2044049-10-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
-References: <20210121094519.2044049-1-lee.jones@linaro.org>
+        Thu, 21 Jan 2021 13:15:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611252861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lEgMkUTOCJsoedIDEpBA2hjPtpKSlnIAkYz8Z2MMNg0=;
+        b=KxjYv2QaoHVMB4M1GTbQtoMfTUTowMlKbAfFVCSx/njpJ9xVXAy7v2U/h0tn2o+AMFkc3J
+        FdbTkcHeeFjjvTvmORn+fgN7I9w79uUg+wz4BUVwTktWFpCn+lmE9Pz0C1i+6aQaOznPEp
+        FRiVYI8SpWso0vNA+fzjepkZvVDT+0M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-4sowHxENOA-jNF3X_XPxfw-1; Thu, 21 Jan 2021 13:14:19 -0500
+X-MC-Unique: 4sowHxENOA-jNF3X_XPxfw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87956107ACE3;
+        Thu, 21 Jan 2021 18:14:16 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1251139A63;
+        Thu, 21 Jan 2021 18:14:15 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 11:14:14 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: Re: [PATCH v2 2/2] vfio/iommu_type1: Sanity check pfn_list when
+ remove vfio_dma
+Message-ID: <20210121111414.143e3e4e@omen.home.shazbot.org>
+In-Reply-To: <32f8b347-587a-1a9a-bee8-569f09a03a15@huawei.com>
+References: <20210115092643.728-1-zhukeqian1@huawei.com>
+        <20210115092643.728-3-zhukeqian1@huawei.com>
+        <20210115121447.54c96857@omen.home.shazbot.org>
+        <32f8b347-587a-1a9a-bee8-569f09a03a15@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Mon, 18 Jan 2021 21:16:08 +0800
+Keqian Zhu <zhukeqian1@huawei.com> wrote:
 
- drivers/infiniband/hw/qib/qib_mad.c:896: warning: Function parameter or member 'ppd' not described in 'rm_pkey'
- drivers/infiniband/hw/qib/qib_mad.c:896: warning: Excess function parameter 'dd' description in 'rm_pkey'
- drivers/infiniband/hw/qib/qib_mad.c:926: warning: Function parameter or member 'ppd' not described in 'add_pkey'
- drivers/infiniband/hw/qib/qib_mad.c:926: warning: Excess function parameter 'dd' description in 'add_pkey'
- drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'in' not described in 'qib_process_mad'
- drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'out' not described in 'qib_process_mad'
- drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'out_mad_size' not described in 'qib_process_mad'
- drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Function parameter or member 'out_mad_pkey_index' not described in 'qib_process_mad'
- drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Excess function parameter 'in_mad' description in 'qib_process_mad'
- drivers/infiniband/hw/qib/qib_mad.c:2365: warning: Excess function parameter 'out_mad' description in 'qib_process_mad'
+> On 2021/1/16 3:14, Alex Williamson wrote:
+> > On Fri, 15 Jan 2021 17:26:43 +0800
+> > Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> >   
+> >> vfio_sanity_check_pfn_list() is used to check whether pfn_list of
+> >> vfio_dma is empty when remove the external domain, so it makes a
+> >> wrong assumption that only external domain will add pfn to dma pfn_list.
+> >>
+> >> Now we apply this check when remove a specific vfio_dma and extract
+> >> the notifier check just for external domain.  
+> > 
+> > The page pinning interface is gated by having a notifier registered for
+> > unmaps, therefore non-external domains would also need to register a
+> > notifier.  There's currently no other way to add entries to the
+> > pfn_list.  So if we allow pinning for such domains, then it's wrong to
+> > WARN_ON() when the notifier list is not-empty when removing an external
+> > domain.  Long term we should probably extend page {un}pinning for the
+> > caller to pass their notifier to be validated against the notifier list
+> > rather than just allowing page pinning if *any* notifier is registered.
+> > Thanks,  
+> I was misled by the code comments. So when the commit a54eb55045ae is
+> added, the only user of pin interface is mdev vendor driver, but now
+> we also allow iommu backed group to use this interface to constraint
+> dirty scope. Is vfio_iommu_unmap_unpin_all() a proper place to put
+> this WARN()?
 
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/infiniband/hw/qib/qib_mad.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+vfio_iommu_unmap_unpin_all() deals with removing vfio_dmas, it's
+logically unrelated to whether any driver is registered to receive
+unmap notifications.  Thanks,
 
-diff --git a/drivers/infiniband/hw/qib/qib_mad.c b/drivers/infiniband/hw/qib/qib_mad.c
-index f83e331977f82..44e2f813024a6 100644
---- a/drivers/infiniband/hw/qib/qib_mad.c
-+++ b/drivers/infiniband/hw/qib/qib_mad.c
-@@ -886,7 +886,7 @@ static int subn_set_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
- 
- /**
-  * rm_pkey - decrecment the reference count for the given PKEY
-- * @dd: the qlogic_ib device
-+ * @ppd: the qlogic_ib device
-  * @key: the PKEY index
-  *
-  * Return true if this was the last reference and the hardware table entry
-@@ -916,7 +916,7 @@ static int rm_pkey(struct qib_pportdata *ppd, u16 key)
- 
- /**
-  * add_pkey - add the given PKEY to the hardware table
-- * @dd: the qlogic_ib device
-+ * @ppd: the qlogic_ib device
-  * @key: the PKEY
-  *
-  * Return an error code if unable to add the entry, zero if no change,
-@@ -2346,8 +2346,10 @@ static int process_cc(struct ib_device *ibdev, int mad_flags,
-  * @port: the port number this packet came in on
-  * @in_wc: the work completion entry for this packet
-  * @in_grh: the global route header for this packet
-- * @in_mad: the incoming MAD
-- * @out_mad: any outgoing MAD reply
-+ * @in: the incoming MAD
-+ * @out: any outgoing MAD reply
-+ * @out_mad_size: size of the outgoing MAD reply
-+ * @out_mad_pkey_index: unused
-  *
-  * Returns IB_MAD_RESULT_SUCCESS if this is a MAD that we are not
-  * interested in processing.
--- 
-2.25.1
+Alex
 
