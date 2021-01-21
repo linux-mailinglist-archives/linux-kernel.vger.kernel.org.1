@@ -2,240 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633882FE723
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DF32FE72A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbhAUKIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:08:49 -0500
-Received: from www.zeus03.de ([194.117.254.33]:48484 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbhAUKH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:07:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=k1; bh=ikbIfM7+1dIC1e
-        1IQLe0jNrwz9NKadaOzjOrT7MTOC0=; b=HRxLTigWXYJXcdhgnPwnDXJ7PQ5Qbc
-        VDhdi333OFks4Wu+Y70Gqn334SKqiUTIT7aqdxNVg7LeQYMF/MPOkq100iY8u2Hr
-        M1BiHlwfri4S0/O24nElSaYVfgP9dcYxX+zdLplsMiUP08UCewl9/N/7eVIkr1L1
-        NBdTVuoROR2Po=
-Received: (qmail 1790615 invoked from network); 21 Jan 2021 11:06:29 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 21 Jan 2021 11:06:29 +0100
-X-UD-Smtp-Session: l3s3148p1@B+S2OWa5ur4gAwDPXyX1ACWcscxtZ2TX
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] WIP! arm64: dts: renesas: falcon: Add Ethernet-AVB1-5 support
-Date:   Thu, 21 Jan 2021 11:06:19 +0100
-Message-Id: <20210121100619.5653-6-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121100619.5653-1-wsa+renesas@sang-engineering.com>
-References: <20210121100619.5653-1-wsa+renesas@sang-engineering.com>
+        id S1728694AbhAUKJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:09:55 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:43847 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726427AbhAUKJC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:09:02 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10LA7mdI6024004, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs02.realtek.com.tw[172.21.6.95])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10LA7mdI6024004
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 21 Jan 2021 18:07:48 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.29) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 21 Jan 2021 18:07:48 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS06.realtek.com.tw (172.21.6.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 21 Jan 2021 18:07:47 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee]) by
+ RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee%5]) with mapi id
+ 15.01.2106.006; Thu, 21 Jan 2021 18:07:47 +0800
+From:   =?utf-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "ricky_wu@realtek.corp-partner.google.com" 
+        <ricky_wu@realtek.corp-partner.google.com>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "levinale@google.com" <levinale@google.com>,
+        "keitasuzuki.park@sslab.ics.keio.ac.jp" 
+        <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        "kdlnx@doth.eu" <kdlnx@doth.eu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] rtsx: pci: fix device aspm state bug
+Thread-Topic: [PATCH] rtsx: pci: fix device aspm state bug
+Thread-Index: AQHW78cZCdI+a5xevUmIEuTodtJmaKoxrtDQ//+EZACAAIZHwP//f2eAgAChITA=
+Date:   Thu, 21 Jan 2021 10:07:47 +0000
+Message-ID: <d5ae119edc574e3283c68639067fc5e4@realtek.com>
+References: <20210121072858.32028-1-ricky_wu@realtek.com>
+ <8563fc3264ad4f46bfa05a3cbdb7d644@realtek.com> <YAk2NtOqIohpBJIt@kroah.com>
+ <46473ff62a284bf1bdb703e13884beac@realtek.com> <YAk6+ZgNPQy3snB1@kroah.com>
+In-Reply-To: <YAk6+ZgNPQy3snB1@kroah.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.88.99]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PHYs on the subboard could not be reached via remote access. But this is
-the latest DTS snipplet with some fixes suggested by Geert as a starting
-point. Not for upstream yet!
-
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
-Change since v1:
-
-* new patch
-* removed rxc-skew-ps property
-* renamed phy-addresses to 0 ('@0')
-* dropped '_tx' suffix from 'pins_mii' config
-* added 'okay' status
-* moved entries to Falcon CPU dtsi
-
- .../boot/dts/renesas/r8a779a0-falcon-cpu.dtsi | 160 ++++++++++++++++++
- 1 file changed, 160 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
-index f96b03f39787..0059381443f6 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
-@@ -50,6 +50,81 @@ phy0: ethernet-phy@0 {
- 	};
- };
- 
-+&avb1 {
-+	pinctrl-0 = <&avb1_pins>;
-+	pinctrl-names = "default";
-+	phy-handle = <&phy1>;
-+	phy-mode = "rgmii-txid";
-+	status = "okay";
-+
-+	phy1: ethernet-phy@0 {
-+		reg = <0>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
-+		reset-gpios = <&gpio5 15 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&avb2 {
-+	pinctrl-0 = <&avb2_pins>;
-+	pinctrl-names = "default";
-+	phy-handle = <&phy2>;
-+	phy-mode = "rgmii-txid";
-+	status = "okay";
-+
-+	phy2: ethernet-phy@0 {
-+		reg = <0>;
-+		interrupt-parent = <&gpio6>;
-+		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
-+		reset-gpios = <&gpio6 15 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&avb3 {
-+	pinctrl-0 = <&avb3_pins>;
-+	pinctrl-names = "default";
-+	phy-handle = <&phy3>;
-+	phy-mode = "rgmii-txid";
-+	status = "okay";
-+
-+	phy3: ethernet-phy@0 {
-+		reg = <0>;
-+		interrupt-parent = <&gpio7>;
-+		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
-+		reset-gpios = <&gpio7 15 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&avb4 {
-+	pinctrl-0 = <&avb4_pins>;
-+	pinctrl-names = "default";
-+	phy-handle = <&phy4>;
-+	phy-mode = "rgmii-txid";
-+	status = "okay";
-+
-+	phy4: ethernet-phy@0 {
-+		reg = <0>;
-+		interrupt-parent = <&gpio8>;
-+		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
-+		reset-gpios = <&gpio8 15 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&avb5 {
-+	pinctrl-0 = <&avb5_pins>;
-+	pinctrl-names = "default";
-+	phy-handle = <&phy5>;
-+	phy-mode = "rgmii-txid";
-+	status = "okay";
-+
-+	phy5: ethernet-phy@0 {
-+		reg = <0>;
-+		interrupt-parent = <&gpio9>;
-+		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
-+		reset-gpios = <&gpio9 15 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
- &extal_clk {
- 	clock-frequency = <16666666>;
- };
-@@ -133,6 +208,91 @@ pins_mii {
- 
- 	};
- 
-+	avb1_pins: avb1 {
-+		mux {
-+			groups = "avb1_link", "avb1_mdio", "avb1_rgmii", "avb1_txcrefclk";
-+			function = "avb1";
-+		};
-+
-+		pins_mdio {
-+			groups = "avb1_mdio";
-+			drive-strength = <21>;
-+		};
-+
-+		pins_mii {
-+			groups = "avb1_rgmii";
-+			drive-strength = <21>;
-+		};
-+	};
-+
-+	avb2_pins: avb2 {
-+		mux {
-+			groups = "avb2_link", "avb2_mdio", "avb2_rgmii", "avb2_txcrefclk";
-+			function = "avb2";
-+		};
-+
-+		pins_mdio {
-+			groups = "avb2_mdio";
-+			drive-strength = <21>;
-+		};
-+
-+		pins_mii {
-+			groups = "avb2_rgmii";
-+			drive-strength = <21>;
-+		};
-+	};
-+
-+	avb3_pins: avb3 {
-+		mux {
-+			groups = "avb3_link", "avb3_mdio", "avb3_rgmii", "avb3_txcrefclk";
-+			function = "avb3";
-+		};
-+
-+		pins_mdio {
-+			groups = "avb3_mdio";
-+			drive-strength = <21>;
-+		};
-+
-+		pins_mii {
-+			groups = "avb3_rgmii";
-+			drive-strength = <21>;
-+		};
-+	};
-+
-+	avb4_pins: avb4 {
-+		mux {
-+			groups = "avb4_link", "avb4_mdio", "avb4_rgmii", "avb4_txcrefclk";
-+			function = "avb4";
-+		};
-+
-+		pins_mdio {
-+			groups = "avb4_mdio";
-+			drive-strength = <21>;
-+		};
-+
-+		pins_mii {
-+			groups = "avb4_rgmii";
-+			drive-strength = <21>;
-+		};
-+	};
-+
-+	avb5_pins: avb5 {
-+		mux {
-+			groups = "avb5_link", "avb5_mdio", "avb5_rgmii", "avb5_txcrefclk";
-+			function = "avb5";
-+		};
-+
-+		pins_mdio {
-+			groups = "avb5_mdio";
-+			drive-strength = <21>;
-+		};
-+
-+		ins_mii {
-+			groups = "avb5_rgmii";
-+			drive-strength = <21>;
-+		};
-+	};
-+
- 	i2c0_pins: i2c0 {
- 		groups = "i2c0";
- 		function = "i2c0";
--- 
-2.29.2
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBncmVna2hAbGludXhmb3VuZGF0
+aW9uLm9yZyA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+IFNlbnQ6IFRodXJzZGF5LCBK
+YW51YXJ5IDIxLCAyMDIxIDQ6MjggUE0NCj4gVG86IOWQs+aYiua+hCBSaWNreSA8cmlja3lfd3VA
+cmVhbHRlay5jb20+DQo+IENjOiBhcm5kQGFybmRiLmRlOyByaWNreV93dUByZWFsdGVrLmNvcnAt
+cGFydG5lci5nb29nbGUuY29tOw0KPiBzYXNoYWxAa2VybmVsLm9yZzsgbGV2aW5hbGVAZ29vZ2xl
+LmNvbTsga2VpdGFzdXp1a2kucGFya0Bzc2xhYi5pY3Mua2Vpby5hYy5qcDsNCj4ga2RsbnhAZG90
+aC5ldTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENI
+XSBydHN4OiBwY2k6IGZpeCBkZXZpY2UgYXNwbSBzdGF0ZSBidWcNCj4gDQo+IE9uIFRodSwgSmFu
+IDIxLCAyMDIxIGF0IDA4OjE1OjQ2QU0gKzAwMDAsIOWQs+aYiua+hCBSaWNreSB3cm90ZToNCj4g
+PiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBncmVna2hAbGludXhm
+b3VuZGF0aW9uLm9yZyA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+ID4gPiBTZW50OiBU
+aHVyc2RheSwgSmFudWFyeSAyMSwgMjAyMSA0OjA3IFBNDQo+ID4gPiBUbzog5ZCz5piK5r6EIFJp
+Y2t5IDxyaWNreV93dUByZWFsdGVrLmNvbT4NCj4gPiA+IENjOiBhcm5kQGFybmRiLmRlOyByaWNr
+eV93dUByZWFsdGVrLmNvcnAtcGFydG5lci5nb29nbGUuY29tOw0KPiA+ID4gc2FzaGFsQGtlcm5l
+bC5vcmc7IGxldmluYWxlQGdvb2dsZS5jb207DQo+ID4gPiBrZWl0YXN1enVraS5wYXJrQHNzbGFi
+Lmljcy5rZWlvLmFjLmpwOw0KPiA+ID4ga2RsbnhAZG90aC5ldTsgbGludXgta2VybmVsQHZnZXIu
+a2VybmVsLm9yZw0KPiA+ID4gU3ViamVjdDogUmU6IFtQQVRDSF0gcnRzeDogcGNpOiBmaXggZGV2
+aWNlIGFzcG0gc3RhdGUgYnVnDQo+ID4gPg0KPiA+ID4gT24gVGh1LCBKYW4gMjEsIDIwMjEgYXQg
+MDc6MzM6MDNBTSArMDAwMCwg5ZCz5piK5r6EIFJpY2t5IHdyb3RlOg0KPiA+ID4gPiBIaSBHcmVn
+IGtoLA0KPiA+ID4gPg0KPiA+ID4gPiBUaGlzIHBhdGNoIHRvIGZpeCBtaXNjOiBydHN4IGJ1ZyBm
+b3Iga2VybmVsIDUuNA0KPiA+ID4NCj4gPiA+IEkgZG8gbm90IHVuZGVyc3RhbmQgd2hhdCB0aGlz
+IG1lYW5zLCBzb3JyeS4gIENhbiB5b3UgcGxlYXNlIGV4cGxhaW4gaXQ/DQo+ID4gPg0KPiA+IE9u
+IHRoZSBuZXdlc3QgdXBzdHJlYW0gd2UgZG9u4oCZdCBzZXQgY29uZmlnIHNwYWNlIGZvciBlbi9k
+aXNhYmxlIGFzcG0sDQo+ID4gc28gaXQgd2lsbCBub3QgaGFwcGVuIHRoaXMgaXNzdWUgYnV0IG9u
+IGtlcm5lbCA1LjQgbG9uZ3Rlcm0gdmVyc2lvbiB3ZQ0KPiA+IG5lZWQgdG8gZml4IGl0DQo+IA0K
+PiBQbGVhc2UgcmVhZA0KPiAgICAgaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC9sYXRl
+c3QvcHJvY2Vzcy9zdGFibGUta2VybmVsLXJ1bGVzLmh0bWwNCj4gZm9yIGhvdyB0byBzdWJtaXQg
+cGF0Y2hlcyB0byB0aGUgc3RhYmxlIHRyZWUgcHJvcGVybHkuDQo+IA0KPiBBbmQgaWYgdGhpcyBp
+cyBub3QgYW4gaXNzdWUgaW4gTGludXMncyB0cmVlLCB3aHkgbm90IGp1c3QgYmFja3BvcnQgdGhl
+IGNvbW1pdHMNCj4gdGhhdCBmaXhlZCB0aGlzIGlzc3VlPyAgVGhhdCdzIHRoZSBiZXN0IHdheSB0
+byBkbyB0aGlzLg0KPiANClRoYW5rcyB5b3VyIGFkdmljZQ0KV2UgZGlzY3VzcyBpdCBpbnRlcm5h
+bGx5DQoNCiANCj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUg
+cHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
