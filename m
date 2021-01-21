@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796422FEE15
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66FB2FEE21
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732461AbhAUPIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:08:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:38878 "EHLO foss.arm.com"
+        id S1730597AbhAUPKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:10:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732285AbhAUPG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:06:27 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BCCC11D4;
-        Thu, 21 Jan 2021 07:05:41 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A45B3F68F;
-        Thu, 21 Jan 2021 07:05:40 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Meelis Roos <mroos@linux.ee>, LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: 5.11-rc4+git: Shortest NUMA path spans too many nodes
-In-Reply-To: <3ec17983-7959-eccd-af25-400056a5877d@linux.ee>
-References: <3ec17983-7959-eccd-af25-400056a5877d@linux.ee>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Thu, 21 Jan 2021 15:05:32 +0000
-Message-ID: <jhjmtx22uv7.mognet@arm.com>
+        id S1732421AbhAUPGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:06:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 712DC235FF;
+        Thu, 21 Jan 2021 15:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611241556;
+        bh=qRBq4u7IBFJWAXc+l6+Z4BWGpd3fk5F9IR1G/OirCzw=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=uWwiMQ8WxDMfmMeAE+vYHFkePF5KTk6uBeasfNO/dnCJ7nvQE0ZBnK78g/OkrtQES
+         gVP8X9klIuBGtZDmQOXMrLFqMh7ELL7k+IeSomNgF6Kcfyv6doEdJUrhs+iOIVpDTH
+         i1GaGf4AUQa8zDlDuOFnugysBdrKExBWhI5CASF1r2mxORZWaPaP8vIZuE6/j0jfqg
+         JNl1y/cL69uo0eVohMe3AQJp4yYs34Cj2ZrR356csQzmiJWZrcRMxEvtt6kpAT+La9
+         H/PFRYZrN6hpe4jXhjuYKWSXNvbmYclNg6SM/5MIo/wKchuW2idSUsWZk/qtEa2/BH
+         XLMvIUG4nI5aA==
+Date:   Thu, 21 Jan 2021 16:05:52 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Denis Efremov <efremov@linux.com>
+cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Wim Osterholt <wim@djo.tudelft.nl>
+Subject: Re: [PATCH RESEND] floppy: fix open(O_ACCMODE) for ioctl-only open
+In-Reply-To: <e503292b-5f51-eac5-771f-e35991d1084c@linux.com>
+Message-ID: <nycvar.YFH.7.76.2101211603590.5622@cbobk.fhfr.pm>
+References: <20160610230255.GA27770@djo.tudelft.nl> <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm> <20160614184308.GA6188@djo.tudelft.nl> <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm> <20160615132040.GZ14480@ZenIV.linux.org.uk>
+ <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm> <20160615224722.GA9545@djo.tudelft.nl> <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm> <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm> <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
+ <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm> <5cb57175-7f0b-5536-925d-337241bcda93@linux.com> <nycvar.YFH.7.76.2101211122290.5622@cbobk.fhfr.pm> <nycvar.YFH.7.76.2101211543230.5622@cbobk.fhfr.pm> <e503292b-5f51-eac5-771f-e35991d1084c@linux.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 21 Jan 2021, Denis Efremov wrote:
 
-(+Cc relevant folks)
+> > From: Jiri Kosina <jkosina@suse.cz>
+> > Subject: [PATCH v2] floppy: reintroduce O_NDELAY fix
+> > 
+> > Originally fixed in 09954bad4 ("floppy: refactor open() flags handling")
+> > then reverted for unknown reason in f2791e7eadf437 instead of taking
+> > the open(O_ACCMODE) for ioctl-only open fix, which had the changelog below
+> > 
+> > ====
+> > Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
+> > side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
+> > this is being used setfdprm userspace for ioctl-only open().
+> > 
+> > Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
+> > modes, while still keeping the original O_NDELAY bug fixed.
+> > 
+> > Cc: stable@vger.kernel.org # v4.5+
+> 
+> Are you sure that it's not worth to backport it to LTS v4.4? Because 
+> f2791e7ead is just a revert and 09954bad4 is not presented in v4.4 I'm 
+> not sure what fixes tag is better to use in this case.
 
-Hi,
+You are right; I'll drop the '4.5+' indicator and will backport it once/if 
+it hits Linus' tree.
 
-On 21/01/21 15:41, Meelis Roos wrote:
-> This happens on Sun Fire X4600 M2 - 32 cores in 8 CPU slots. 5.10 was silent. Current git and
-> 5.10.0-13256-g5814bc2d4cc2 exhibit this message in dmesg but otherwise seem to work fine
-> (kernel compilation succeeds).
->
+> > +	if (mode & (FMODE_READ|FMODE_WRITE)) {
+> > +		UDRS->last_checked = 0;
+> 
+> UDRS will still break the compilation here.
 
-b5b217346de8 ("sched/topology: Warn when NUMA diameter > 2") was added in
-5.11-rc1, and I believe was marked for stable.
+Doh, forgot to refresh before sending, sorry for the noise.
+I'll send the final version once I get confirmation from the reporter that 
+it's fixing the issue properly, add his Reported-by: etc.
 
-It doesn't come with a scheduler behaviour change, it only catches
-topologies that end up being silently (unless run with SCHED_DEBUG=y)
-misrepresented / misinterpreted by the scheduler.
+Thanks,
 
-Up until now I had only seen it fire on a single, somewhat unusual
-topology. As fixing it is far from trivial, I figured adding this warning
-would let us build a case for actually fixing it if we get some more
-reports.
+-- 
+Jiri Kosina
+SUSE Labs
 
-Could you paste the output of the below?
-
-  $ cat /sys/devices/system/node/node*/distance
-
-Additionally, booting your system with CONFIG_SCHED_DEBUG=y and
-appending 'sched_debug' to your cmdline should yield some extra data.
