@@ -2,129 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF5A2FEEE1
+	by mail.lfdr.de (Postfix) with ESMTP id 7D19E2FEEE2
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732904AbhAUPcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:32:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44822 "EHLO mail.kernel.org"
+        id S1733084AbhAUPcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:32:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732996AbhAUPb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:31:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB1623A1C;
-        Thu, 21 Jan 2021 15:30:45 +0000 (UTC)
+        id S1733003AbhAUPcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:32:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADAB223A1D;
+        Thu, 21 Jan 2021 15:31:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611243046;
-        bh=46aIcbRTsz8tFFP2Hj5yj5BUbFIG/ba6L71tLXDA3dQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=aftAQewZujwvMZm2hiUsnbTGld1THjBzhheyQdZsXmm8Xw5JlSpK59Nt98wuI2b86
-         jL+J7o4Tq0Sa8/kZnmMtCZNzivHqms5eG+zMZtcmqk1PrCIKXuWiqi6eUVK9bob6/o
-         p4fhcHpTD92D1vmmcPrpcL1XLGRH/MWAkBxq44XdCgI3clYNiDhmoHh1FJ8ArK42qm
-         Qo6jZDtAgFeI0LVS+9dxOCQ3/icLKgaDHESG+6A0tXAVxWnLUPZdkaE8kvUAf5t67e
-         NLxU3eqpzqsGtff/nMvOEQSPJzpD2phoCTgV5RJkewTM1O09RK2O/OYA9koHGFVBsr
-         BTnP32SoIY4vw==
-Date:   Thu, 21 Jan 2021 09:30:43 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Chiqijun <chiqijun@huawei.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Yinshi (Stone)" <yin.yinshi@huawei.com>,
-        "Wangxiaoyun (Cloud)" <cloud.wangxiaoyun@huawei.com>,
-        zengweiliang zengweiliang <zengweiliang.zengweiliang@huawei.com>,
-        "Chenlizhong (IT Chip)" <chenlizhong@huawei.com>
-Subject: Re: [v3] PCI: Add pci reset quirk for Huawei Intelligent NIC virtual
- function
-Message-ID: <20210121153043.GA2654954@bjorn-Precision-5520>
+        s=k20201202; t=1611243081;
+        bh=tBLsV1VNuegTHfS6+bEovqF+AKToDG2mT/Z3c56FLvk=;
+        h=In-Reply-To:References:From:Cc:To:Subject:Date:From;
+        b=Dz/0PK/HKOZWTiyTZ2IsVaYJSIZnW7BAiwOu2fYT5qwSV0GrrM5g0OM7NWTYDpNN2
+         cr1BEuFAcNnqcuYnmBD0vBTNu4/YM3cYf894DKTA1jLgdvJWY9NWf2Fp6XY1O/gKHG
+         6OLoaF/eHmhIiyQsdzIEy/FPRF9HAlNRNPcUYF71mJ4WVmlKxKJQHwQpuVUt2Euppu
+         OZ9psP1/D3NpF+0/m+zHKa7wAK5bOC2sfLmoEsDdf+uovW2XlucEVgQekgwUGmvagy
+         h7YeKzSpdDs42UfptB3svhqFgTsUAfz3Jm3hjoijVuhCXiQ3gJ+vGDTPktggXzOPaI
+         NY3B50DOnUoEQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e0a6c6c-a12c-ee54-0468-69079b8edde4@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210121151126.74627-1-bianpan2016@163.com>
+References: <20210121151126.74627-1-bianpan2016@163.com>
+From:   Antoine Tenart <atenart@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
+To:     Pan Bian <bianpan2016@163.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH] reset: berlin: Put parent device node on error path
+Message-ID: <161124307799.3192.6156233333339423791@kwain.local>
+Date:   Thu, 21 Jan 2021 16:31:18 +0100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Alex is a reset expert, hoping he can chime in]
+Hello,
 
-On Thu, Jan 21, 2021 at 08:53:12PM +0800, Chiqijun wrote:
-> On 2021/1/9 6:25, Bjorn Helgaas wrote:
-> > On Fri, Dec 25, 2020 at 05:25:30PM +0800, Chiqijun wrote:
-> > > When multiple VFs do FLR at the same time, the firmware is
-> > > processed serially, resulting in some VF FLRs being delayed more
-> > > than 100ms, when the virtual machine restarts and the device
-> > > driver is loaded, the firmware is doing the corresponding VF
-> > > FLR, causing the driver to fail to load.
-> > > 
-> > > To solve this problem, add host and firmware status synchronization
-> > > during FLR.
-> > > 
-> > > Signed-off-by: Chiqijun <chiqijun@huawei.com>
-> > > ...
+Quoting Pan Bian (2021-01-21 16:11:26)
+> Put parent device node parent_np if there is no enough memory.
+>=20
+> Fixes: aed6f3cadc86 ("reset: berlin: convert to a platform driver")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
+> ---
+>  drivers/reset/reset-berlin.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/reset/reset-berlin.c b/drivers/reset/reset-berlin.c
+> index 371197bbd055..cae58e40f639 100644
+> --- a/drivers/reset/reset-berlin.c
+> +++ b/drivers/reset/reset-berlin.c
+> @@ -72,8 +72,10 @@ static int berlin2_reset_probe(struct platform_device =
+*pdev)
+>         struct berlin_reset_priv *priv;
+> =20
+>         priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> -       if (!priv)
+> +       if (!priv) {
+> +               of_node_put(parent_np);
+>                 return -ENOMEM;
+> +       }
 
-> > > +	 * Get and check firmware capabilities.
-> > > +	 */
-> > > +	val = readl(bar + HINIC_VF_FLR_TYPE);
-> > > +	if (!(val & (1UL << HINIC_VF_FLR_CAP_BIT_SHIFT))) {
-> > > +		pci_iounmap(pdev, bar);
-> > > +		return -ENOTTY;
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * Set the processing bit for the start of FLR, which will be cleared
-> > > +	 * by the firmware after FLR is completed.
-> > > +	 */
-> > > +	val = readl(bar + HINIC_VF_OP);
-> > > +	val = val | (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT);
-> > > +	writel(val, bar + HINIC_VF_OP);
-> > > +
-> > > +	/* Perform the actual device function reset */
-> > > +	pcie_flr(pdev);
-> > > +
-> > > +	/*
-> > > +	 * The device must learn BDF after FLR in order to respond to BAR's
-> > > +	 * read request, therefore, we issue a configure write request to let
-> > > +	 * the device capture BDF.
-> > > +	 */
-> > > +	pci_read_config_word(pdev, PCI_COMMAND, &command);
-> > > +	pci_write_config_word(pdev, PCI_COMMAND, command);
-> > 
-> > I assume this is because of this requirement from PCIe r5.0, sec
-> > 2.2.9:
-> > 
-> >    Functions must capture the Bus and Device Numbers supplied with all
-> >    Type 0 Configuration Write Requests completed by the Function, and
-> >    supply these numbers in the Bus and Device Number fields of the
-> >    Completer ID for all Completions generated by the Device/Function.
-> > 
-> > I'm a little concerned because it seems like this requirement should
-> > apply to *all* resets, and I don't see where we do a similar write
-> > following other resets.  Can you help me out?  Do we need this in
-> > other cases?  Do we do it?
-> 
-> This depends on the hardware device. The HINIC device clears the BDF
-> information of the VF during FLR, so it relies on Configuration
-> Write Requests to capture BDF. If other devices do not clear the DBF
-> information during FLR, this operation is not required.
+You could also move the of_get_parent() call here, to avoid having to
+handle parent_np in an error path. That would improve maintainability
+imho.
 
-If the spec says devices must keep the latched BDF during FLR, and the
-HINIC doesn't comply with that, then it makes sense to do a config
-write here in HINIC-specific code.
+Thanks,
+Antoine
 
-But if devices are allowed to clear the BDF during FLR, the OS has to
-assume they all do, and the generic code for FLR (and probably other
-resets) should do a config write so devices can latch the BDF again.
-
-> In addition, I did not find other devices directly access the BAR register
-> after FLR in resets.
-
-I didn't catch your meaning here.
-
-If a device loses the BDF during FLR and we don't do something to
-allow it to latch the BDF again, any completions from the device will
-have the wrong information.  We will likely do *some* config write to
-the device eventually, which will fix this, but we can't rely on some
-unknown future write to do this.  If it's a problem, we need to
-explicitly do a write for this purpose.
-
-Bjorn
+>         priv->regmap =3D syscon_node_to_regmap(parent_np);
+>         of_node_put(parent_np);
