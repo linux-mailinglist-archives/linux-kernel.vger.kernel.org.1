@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645D72FE407
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DDF2FE414
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbhAUHdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:33:44 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:53231 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726320AbhAUHbn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:31:43 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UMPU06O_1611214231;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMPU06O_1611214231)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 21 Jan 2021 15:30:54 +0800
-From:   Yang Li <abaci-bugfix@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yang Li <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] mm/swap_slots.c: remove redundant NULL check
-Date:   Thu, 21 Jan 2021 15:30:29 +0800
-Message-Id: <1611214229-11225-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1727138AbhAUHgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:36:42 -0500
+Received: from mga02.intel.com ([134.134.136.20]:49573 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727526AbhAUHco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:32:44 -0500
+IronPort-SDR: Gl3TPYjD9nEoGTgXA6WQEnpmlfFGZAtkkHqxUqufkAI7bXWwFvOhjA9k5QHaQbVCrXKkTDXNMb
+ rDrIOXctY45Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="166328010"
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="166328010"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 23:30:49 -0800
+IronPort-SDR: AOG4XXvWQN48550IygiL41XaMpoVpth4b1yFQHG8pcb02wp/T2mxes6VXVLrycUwlpNzuZb9NZ
+ Dz/CnKUQ9nqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="467367000"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 20 Jan 2021 23:30:31 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 21 Jan 2021 09:30:30 +0200
+Date:   Thu, 21 Jan 2021 09:30:30 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, Kyle Tso <kyletso@google.com>,
+        linux@roeck-us.net, badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/3] AMS, Collision Avoidance, and Protocol Error
+Message-ID: <20210121073030.GA423216@kuha.fi.intel.com>
+References: <20210114145053.1952756-1-kyletso@google.com>
+ <2211ad43-b76c-fbe9-2cc8-bb40c4ee4e89@redhat.com>
+ <YAhlrxRdURu0djbf@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAhlrxRdURu0djbf@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warnings reported by coccicheck:
-./mm/swap_slots.c:197:3-9: WARNING: NULL check before some freeing
-functions is not needed.
+On Wed, Jan 20, 2021 at 06:17:35PM +0100, Greg KH wrote:
+> On Wed, Jan 20, 2021 at 02:45:02PM +0100, Hans de Goede wrote:
+> > Hi,
+> > 
+> > On 1/14/21 3:50 PM, Kyle Tso wrote:
+> > > v5 https://lore.kernel.org/r/20210105163927.1376770-1-kyletso@google.com
+> > > 
+> > > "usb: typec: tcpm: AMS and Collision Avoidance"
+> > >  - removed the signed-off
+> > >  - modified the coding style suggested from Heikki
+> > >  - added FR_SWAP AMS handling
+> > > 
+> > > "usb: typec: tcpm: Protocol Error handling"
+> > >  - removed the signed-off
+> > >  - modified the coding style suggested from Heikki
+> > >  - modified more coding style problems (line wrapping limit)
+> > > 
+> > > "usb: typec: tcpm: Respond Wait if VDM state machine is running"
+> > >  - no change
+> > 
+> > I've finally gotten around to testing this. I'm happy to
+> > report that the power-role swapping regression seen in one
+> > of the older versions of this patch-set is gone.
+> > 
+> > So the entire series is:
+> > Tested-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Thanks for testing and the review.
+> 
+> Heikki, any thoughts?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
----
- mm/swap_slots.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Looks good to me.
 
-diff --git a/mm/swap_slots.c b/mm/swap_slots.c
-index 0357fbe..be9de6d 100644
---- a/mm/swap_slots.c
-+++ b/mm/swap_slots.c
-@@ -193,8 +193,7 @@ static void drain_slots_cache_cpu(unsigned int cpu, unsigned int type,
- 			cache->slots_ret = NULL;
- 		}
- 		spin_unlock_irq(&cache->free_lock);
--		if (slots)
--			kvfree(slots);
-+		kvfree(slots);
- 	}
- }
- 
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
 -- 
-1.8.3.1
-
+heikki
