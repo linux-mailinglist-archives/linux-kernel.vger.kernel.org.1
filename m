@@ -2,120 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B5E2FF153
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5352A2FF15E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732314AbhAURE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:04:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60752 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731897AbhAURCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:02:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611248453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MHUBImslCfwg00guChsEavbd7sCyVGiqiWBeO3xrKQQ=;
-        b=JWRW94A4vmq1G8MqQuImEQR8N3qyKavAw9eHjeZINNu21w2QPbmqK2NlHj0Ngcb/CRZamb
-        Oa6eASt9SyP8fEUft3QCdYb28jGAgwbnqYVNKV1ZjYXt26WJThonxmB+2GdajXDZ/IIFTd
-        mWZH7y4Q0U7ETOKaLsHULk+hCI6zqFY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-_NQY7GI2N5SYMSTnmwzfEQ-1; Thu, 21 Jan 2021 12:00:52 -0500
-X-MC-Unique: _NQY7GI2N5SYMSTnmwzfEQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A19C8066E7;
-        Thu, 21 Jan 2021 17:00:50 +0000 (UTC)
-Received: from starship (unknown [10.35.206.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B949F648A8;
-        Thu, 21 Jan 2021 17:00:46 +0000 (UTC)
-Message-ID: <073961282a8dad53bd5923bec2bf3df0b8b9975e.camel@redhat.com>
-Subject: Re: [PATCH v2 2/3] KVM: nVMX: add kvm_nested_vmlaunch_resume
- tracepoint
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Jim Mattson <jmattson@google.com>
-Date:   Thu, 21 Jan 2021 19:00:45 +0200
-In-Reply-To: <YAHDIJMACMBnboIZ@google.com>
-References: <20210114205449.8715-1-mlevitsk@redhat.com>
-         <20210114205449.8715-3-mlevitsk@redhat.com> <YADeT8+fssKw3SSi@google.com>
-         <18c386f2-a588-6324-fcde-d13b66f66d4f@redhat.com>
-         <YAHDIJMACMBnboIZ@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S2388444AbhAURHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:07:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732045AbhAURBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:01:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8840823A51;
+        Thu, 21 Jan 2021 17:01:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611248473;
+        bh=xsFntiwwvHqrjKVyqiKPpys0lY41LyLwy0m3Ri7czx8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=axJMWFfs/hlUpq1m8+TV4nkpMhHfFhjhu9eOcxjwipwNGIWuSU/i3oEMIagMmNULU
+         3rzjl233NRZizUZKeyZ2GjrfobWnaUYbVFEFZDtwicJunmGkPG+ah/FKGByfu5cvlx
+         1s60l0Srs52o7zGXy130heAhMD/qWn4U+780Kj6yVSXbYee7i3D64Dy8YMqWwDaDNU
+         7Tko6ebKGph+Ym14Tjsdb7DoHZOHk+sOOMH35npaUkNuXEyb7BewehEsybp+AgBN/j
+         pZnIUm9kTx40N4DH5e2z2s+r/h3FFfumq0td7OiCQOpuJB0vLLSFi6xGnrD4GqTCD5
+         YlbsDej/xefSA==
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     rostedt@goodmis.org, axelrasmussen@google.com
+Cc:     mhiramat@kernel.org, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/6] tracing: More synthetic event error fixes
+Date:   Thu, 21 Jan 2021 11:01:03 -0600
+Message-Id: <cover.1611243025.git.zanussi@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-15 at 08:30 -0800, Sean Christopherson wrote:
-> On Fri, Jan 15, 2021, Paolo Bonzini wrote:
-> > On 15/01/21 01:14, Sean Christopherson wrote:
-> > > > +	trace_kvm_nested_vmlaunch_resume(kvm_rip_read(vcpu),
-> > > Hmm, won't this RIP be wrong for the migration case?  I.e. it'll be L2, not L1
-> > > as is the case for the "true" nested VM-Enter path.
-> > 
-> > It will be the previous RIP---might as well be 0xfffffff0 depending on what
-> > userspace does.  I don't think you can do much better than that, using
-> > vmcs12->host_rip would be confusing in the SMM case.
-> > 
-> > > > +					 vmx->nested.current_vmptr,
-> > > > +					 vmcs12->guest_rip,
-> > > > +					 vmcs12->vm_entry_intr_info_field);
-> > > The placement is a bit funky.  I assume you put it here so that calls from
-> > > vmx_set_nested_state() also get traced.  But, that also means
-> > > vmx_pre_leave_smm() will get traced, and it also creates some weirdness where
-> > > some nested VM-Enters that VM-Fail will get traced, but others will not.
-> > > 
-> > > Tracing vmx_pre_leave_smm() isn't necessarily bad, but it could be confusing,
-> > > especially if the debugger looks up the RIP and sees RSM.  Ditto for the
-> > > migration case.
-> > 
-> > Actually tracing vmx_pre_leave_smm() is good, and pointing to RSM makes
-> > sense so I'm not worried about that.
-> 
-> Ideally there would something in the tracepoint to differentiate the various
-> cases.  Not that the RSM/migration cases will pop up often, but I think it's an
-> easily solved problem that could avoid confusion.
-> 
-> What if we captured vmx->nested.smm.guest_mode and from_vmentry, and explicitly
-> record what triggered the entry?
-> 
-> 	TP_printk("from: %s rip: 0x%016llx vmcs: 0x%016llx nrip: 0x%016llx intr_info: 0x%08x",
-> 		  __entry->vmenter ? "VM-Enter" : __entry->smm ? "RSM" : "SET_STATE",
-> 		  __entry->rip, __entry->vmcs, __entry->nested_rip,
-> 		  __entry->entry_intr_info
+Hi,
 
-I think that this is a good idea, but should be done in a separate patch.
+This is v6 of the synthetic event error fix patchset.  This version
+removes the semicolon-adding pass and instead adds an inner loop as
+suggested by Masami.  A different mechanism adding per-version field
+checks was also added in place of the previous whole-string audit.
 
-> 
-> Side topic, can we have an "official" ruling on whether KVM tracepoints should
-> use colons and/or commas? And probably same question for whether or not to
-> prepend zeros.  E.g. kvm_entry has "vcpu %u, rip 0x%lx" versus "rip: 0x%016llx
-> vmcs: 0x%016llx".  It bugs me that we're so inconsistent.
-> 
+Also, moved the parse_synth_field() error message back into patch 2/6
+(tracing: Rework synthetic event command parsing) and fixed the
+problem with the !name problem as also noted by Masami, and added a
+new patch (selftests/ftrace: Add '!event' synthetic event syntax
+check) to check for that and prevent future changes from breaking it
+again.
 
-As I said the kvm tracing has a lot of things that can be imporoved, 
-and as it is often the only way to figure out complex bugs as these I had to deal with recently,
-I will do more improvements in this area as time permits.
-
-Best regards,
-	Maxim Levitsky
+Tom
 
 
+v5 text:
+
+Hi,
+
+This is v5 of the sythetic event error fix patchset.  This version is
+the same as v4 but with a few variable-initialization fixes flagged by
+Dan Carpenter and the kernel test robot.
+
+Tom
+
+v4 text:
+
+Hi,
+
+This is v4 of the sythetic event error fix patchset.  As suggested by
+Steve, I added a new pass that adds semicolons to 'old' commands that
+may be missing them, in order to maintain backward compatibility.  All
+commands are handled by the new and improved parsing code, but
+commands missing the semicolons have them added before processing and
+are therefore still valid.  At some point in the future, as new
+features are added and we can require any command containing them to
+require semicolons, this pass can be completely skipped by detecting
+those features in the currently empty audit_old_buffer() hook.
+
+Also, as a result, the patch adding semicolons to the selftests is no
+longer necessary (selftests/ftrace: Add synthetic event field
+separators) and has been dropped in this series.
+
+Tom
+
+
+v3 text:
+
+Hi,
+
+This is v3 of the sythetic event error fix patchset.  As suggested by
+Masami, I split the 'tracing/dynevent: Delegate parsing to create
+function' into two - one containing just the interface changes and the
+second with the synthetic event parsing changes the first enabled.
+
+I also replaced a couple argv_split() with strpbrk() as suggested by
+Masami, along with removing the no-longer-used consume lines and
+another line that tested ECANCELED that was no longer needed.
+
+Also, removed a test case that was no longer needed since the commands
+are now stripped of whitespace first.
+
+Thanks, Masami, for the suggestions.
+
+Tom
+
+v2 text:
+
+This is v2 of the previous sythetic event error fix patchset.
+
+This version drops the original ([PATCH 1/4] tracing: Make
+trace_*_run_command() more flexible) and (tracing: Use new
+trace_run_command() options) patches and replaces them with Masami's
+patch (tracing/dynevent: Delegate parsing to create function) [1].
+The new version adds in all the synthetic event changes needed to
+compile and use the new interface.
+
+A new patch was also added (selftests/ftrace: Add synthetic event
+field separators) that fixes more invalid synthetic event syntax I
+found while testing.
+
+I also added some more new checks to the synthetic event sytax error
+testcase.
+
+As before, I didn't see any problems running the entire ftrace
+testsuite or the test modules that also use the things that were
+touched here.
+
+[1] https://lore.kernel.org/lkml/20201019001504.70dc3ec608277ed22060d2f7@kernel.org/
+
+Thanks,
+
+Tom
+
+
+v1 text:
+
+Hi,
+
+This patchset addresses the synthetic event error anomalies reported
+by Masami in the last patchset [1].
+
+It turns out that most of the problems boil down to clunky separator
+parsing; adding a couple new abilities to trace_run_command() and then
+adapting the existing users seemed to me the best way to fix these
+things, and also gets rid of some code.
+
+Also, to make things easier for error display, I changed these to
+preserve the original command string and pass it through the callback
+instead of rebuilding it for error display.
+
+I added some new error strings and removed unused ones as well, and
+added a bunch of new test cases to the synthetic parser error test
+case.
+
+I didn't see any problems running the entire ftrace testsuite or the
+test modules that also use the things that were touched here.
+
+Thanks,
+
+Tom
+
+[1] https://lore.kernel.org/lkml/20201014110636.139df7be275d40a23b523b84@kernel.org/
+
+The following changes since commit f6a694665f132cbf6e2222dd2f173dc35330a8aa:
+
+  tracing: Offload eval map updates to a work queue (2020-12-15 09:29:14 -0500)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-trace.git ftrace/synth-fixes-v6
+
+Masami Hiramatsu (1):
+  tracing/dynevent: Delegate parsing to create function
+
+Tom Zanussi (5):
+  tracing: Rework synthetic event command parsing
+  tracing: Update synth command errors
+  tracing: Add a backward-compatibility check for synthetic event
+    creation
+  selftests/ftrace: Update synthetic event syntax errors
+  selftests/ftrace: Add '!event' synthetic event syntax check
+
+ kernel/trace/trace.c                          |  23 +-
+ kernel/trace/trace.h                          |   3 +-
+ kernel/trace/trace_dynevent.c                 |  35 ++-
+ kernel/trace/trace_dynevent.h                 |   4 +-
+ kernel/trace/trace_events_synth.c             | 294 ++++++++++++------
+ kernel/trace/trace_kprobe.c                   |  33 +-
+ kernel/trace/trace_probe.c                    |  17 +
+ kernel/trace/trace_probe.h                    |   1 +
+ kernel/trace/trace_uprobe.c                   |  17 +-
+ .../trigger-synthetic-event-syntax.tc         |   4 +
+ .../trigger-synthetic_event_syntax_errors.tc  |  35 ++-
+ 11 files changed, 309 insertions(+), 157 deletions(-)
+
+-- 
+2.17.1
 
