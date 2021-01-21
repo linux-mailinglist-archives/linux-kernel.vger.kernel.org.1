@@ -2,202 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E922FDE38
+	by mail.lfdr.de (Postfix) with ESMTP id C3E462FDE39
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbhAUAxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:53:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731633AbhAUAD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:03:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C55DB2368A;
-        Thu, 21 Jan 2021 00:01:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611187313;
-        bh=Eh0u5i8AW4x9ntLsFlUAc6rlbY2JykroCggN1fE25ec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gZ2nE1nWc5IEdueOVVKR9vTP5loybR/I49ORFIwya9nGkp8IRtTWQXNmdnpsV9SHt
-         IbC4NVTSRTaW/UTjXdq3t02Fixqlc484JqdK3sdr59lnUVQTR5HL2nmYDC4pzq1Zdl
-         qtVGeiJMy2stNYuVaJGshQIh1w82JdOV4Txew7VIhlSAW1jXPry/NY4csB5Ch2gHbo
-         UifuHCqGdSgu/kcRvIlwwIsX4+vTLbjmba7Rh6/dmaKun51d+pSOHgGzYj48BPQMmL
-         N8XAe+Ze+T3z+dF15H49ScwHfVm4IiTfiLegna6iqRUOAFensVr6vH+u3F/YwcZ+rf
-         3owAiDsd4Zxqg==
-Date:   Thu, 21 Jan 2021 02:01:46 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
-Message-ID: <YAjEaq+ZWD/eHU/x@kernel.org>
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <1604419306-26105-3-git-send-email-sumit.garg@linaro.org>
- <X/x+N0fgrzIZTeNi@kernel.org>
- <CAFA6WYOUvWAZtYfR4q8beZFkX-CtdxqwJaRQM+GHNMDfQiEWOA@mail.gmail.com>
- <X/+m6+m2/snYj9Vc@kernel.org>
- <CAFA6WYNyirit_AFhoE+XR9PHw=OjRgEdXDqz1uanj_SN2NXeMw@mail.gmail.com>
- <YAa0ys4YJcZtKdfF@kernel.org>
- <YAeH2pb8szQyjusL@kernel.org>
- <CAFA6WYP5G6NfGk96ePOC+2kpD6B+4hz9nywyUM9Nh=dJDYMiuA@mail.gmail.com>
+        id S1729700AbhAUAyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390718AbhAUAGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 19:06:15 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B16EC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 16:05:35 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id i5so72097pgo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 16:05:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nuUfS7QyWVj4DqwW9jCtE7Cofep4078qimVCK4eE9us=;
+        b=FaSud171o3vOuOM0uB1Kd6T1FIQPuwqWSDp4jWK5idu1oYbdBmkSaioYKvyaIH+fQT
+         OOKPxICsR8vywWuGQN+vQCEN1juEVrH+sKF6MmpEnEERJ1cvGIwzfeQ1XRAY7mbwCeo6
+         4e1qKDWKTACh6KOb3sHYD9bsDrf+du94dGY3W0NeYE1meXS3ItT56giLk3XuO2SAeQgv
+         DqwTdJBJaQI7aZU0ixu92VFq6vUD40xyr+f/ikmroAqd49uxwAepBAiYTYeKRsi66Po2
+         55F13YZtXlnT0ug7RT5mbKq6bcE/nDNqR5x8DY3TcfkeEbCjOdBlGn41chF/kHA25/GO
+         Povw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nuUfS7QyWVj4DqwW9jCtE7Cofep4078qimVCK4eE9us=;
+        b=aNLN7ZaG43JZ9rVPwf+r23QOtnd6gkcWKZz2sbCq64cr9ScIYmnwY/i8wep9j6i0kV
+         69EFLRer2PeMENPu1ltOPPErQuc0ejcDFUGj6neiPJp1xv0ivjLJdl7kL1nb6iz/cFpN
+         oPgCJitCaiVUkyYBRAJw2WgGuu7o7c51+Y1LW7aJnQYdZFUOka1MoeXWyfjzgTI+FXbQ
+         BeYxdarYlV9n41YlAdF2+WJl9DYDjV9egojumFApupFlMAxGvvlEybBCfS0MAvLFk2MF
+         yHcamYPdwXLW7NjlyxXXs9XCQp9gWosJ9S2mUWJwAK/1kyOO/saJlRy8XLDV49bQBRBl
+         Uj3w==
+X-Gm-Message-State: AOAM532t2qhqEtFzVYxBqX2lbwaoqNVZSrsskBO0AJDtac0gNQph6M+W
+        kxUsR4gNn5aoRr5BRHD4mXTf/A==
+X-Google-Smtp-Source: ABdhPJy5aaOb0eiFrvHiqL3IEGUX+5Xp5mJH52u1xlaSOoIb//HjAcMVDEcm88yUhvyroR7teN4rfw==
+X-Received: by 2002:a65:6290:: with SMTP id f16mr11781319pgv.69.1611187534208;
+        Wed, 20 Jan 2021 16:05:34 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id a189sm3587518pfd.117.2021.01.20.16.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 16:05:33 -0800 (PST)
+Date:   Wed, 20 Jan 2021 16:05:26 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 22/24] kvm: x86/mmu: Flush TLBs after zap in TDP MMU PF
+ handler
+Message-ID: <YAjFRoCPB9anInnj@google.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-23-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFA6WYP5G6NfGk96ePOC+2kpD6B+4hz9nywyUM9Nh=dJDYMiuA@mail.gmail.com>
+In-Reply-To: <20210112181041.356734-23-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:53:28PM +0530, Sumit Garg wrote:
-> On Wed, 20 Jan 2021 at 07:01, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> >
-> > On Tue, Jan 19, 2021 at 12:30:42PM +0200, Jarkko Sakkinen wrote:
-> > > On Fri, Jan 15, 2021 at 11:32:31AM +0530, Sumit Garg wrote:
-> > > > On Thu, 14 Jan 2021 at 07:35, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > > > >
-> > > > > On Wed, Jan 13, 2021 at 04:47:00PM +0530, Sumit Garg wrote:
-> > > > > > Hi Jarkko,
-> > > > > >
-> > > > > > On Mon, 11 Jan 2021 at 22:05, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Tue, Nov 03, 2020 at 09:31:44PM +0530, Sumit Garg wrote:
-> > > > > > > > Add support for TEE based trusted keys where TEE provides the functionality
-> > > > > > > > to seal and unseal trusted keys using hardware unique key.
-> > > > > > > >
-> > > > > > > > Refer to Documentation/tee.txt for detailed information about TEE.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > > > >
-> > > > > > > I haven't yet got QEMU environment working with aarch64, this produces
-> > > > > > > just a blank screen:
-> > > > > > >
-> > > > > > > ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -kernel output/images/Image -initrd output/images/rootfs.cpio -serial stdio
-> > > > > > >
-> > > > > > > My BuildRoot fork for TPM and keyring testing is located over here:
-> > > > > > >
-> > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/buildroot-tpmdd.git/
-> > > > > > >
-> > > > > > > The "ARM version" is at this point in aarch64 branch. Over time I will
-> > > > > > > define tpmdd-x86_64 and tpmdd-aarch64 boards and everything will be then
-> > > > > > > in the master branch.
-> > > > > > >
-> > > > > > > To create identical images you just need to
-> > > > > > >
-> > > > > > > $ make tpmdd_defconfig && make
-> > > > > > >
-> > > > > > > Can you check if you see anything obviously wrong? I'm eager to test this
-> > > > > > > patch set, and in bigger picture I really need to have ready to run
-> > > > > > > aarch64 environment available.
-> > > > > >
-> > > > > > I would rather suggest you to follow steps listed here [1] as to test
-> > > > > > this feature on Qemu aarch64 we need to build firmwares such as TF-A,
-> > > > > > OP-TEE, UEFI etc. which are all integrated into OP-TEE Qemu build
-> > > > > > system [2]. And then it would be easier to migrate them to your
-> > > > > > buildroot environment as well.
-> > > > > >
-> > > > > > [1] https://lists.trustedfirmware.org/pipermail/op-tee/2020-May/000027.html
-> > > > > > [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
-> > > > > >
-> > > > > > -Sumit
-> > > > >
-> > > > > Can you provide 'keyctl_change'? Otherwise, the steps are easy to follow.
-> > > > >
-> > > >
-> > > > $ cat keyctl_change
-> > > > diff --git a/common.mk b/common.mk
-> > > > index aeb7b41..663e528 100644
-> > > > --- a/common.mk
-> > > > +++ b/common.mk
-> > > > @@ -229,6 +229,7 @@ BR2_PACKAGE_OPTEE_TEST_SDK ?= $(OPTEE_OS_TA_DEV_KIT_DIR)
-> > > >  BR2_PACKAGE_OPTEE_TEST_SITE ?= $(OPTEE_TEST_PATH)
-> > > >  BR2_PACKAGE_STRACE ?= y
-> > > >  BR2_TARGET_GENERIC_GETTY_PORT ?= $(if
-> > > > $(CFG_NW_CONSOLE_UART),ttyAMA$(CFG_NW_CONSOLE_UART),ttyAMA0)
-> > > > +BR2_PACKAGE_KEYUTILS := y
-> > > >
-> > > >  # All BR2_* variables from the makefile or the environment are appended to
-> > > >  # ../out-br/extra.conf. All values are quoted "..." except y and n.
-> > > > diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
-> > > > index 368c18a..832ab74 100644
-> > > > --- a/kconfigs/qemu.conf
-> > > > +++ b/kconfigs/qemu.conf
-> > > > @@ -20,3 +20,5 @@ CONFIG_9P_FS=y
-> > > >  CONFIG_9P_FS_POSIX_ACL=y
-> > > >  CONFIG_HW_RANDOM=y
-> > > >  CONFIG_HW_RANDOM_VIRTIO=y
-> > > > +CONFIG_TRUSTED_KEYS=y
-> > > > +CONFIG_ENCRYPTED_KEYS=y
-> > > >
-> > > > > After I've successfully tested 2/4, I'd suggest that you roll out one more
-> > > > > version and CC the documentation patch to Elaine and Mini, and clearly
-> > > > > remark in the commit message that TEE is a standard, with a link to the
-> > > > > specification.
-> > > > >
-> > > >
-> > > > Sure, I will roll out the next version after your testing.
-> > >
-> > > Thanks, I'll try this at instant, and give my feedback.
-> >
-> > I bump into this:
-> >
-> > $ make run-only
-> > ln -sf /home/jarkko/devel/tpm/optee/build/../out-br/images/rootfs.cpio.gz /home/jarkko/devel/tpm/optee/build/../out/bin/
-> > ln: failed to create symbolic link '/home/jarkko/devel/tpm/optee/build/../out/bin/': No such file or directory
-> > make: *** [Makefile:194: run-only] Error 1
-> >
+On Tue, Jan 12, 2021, Ben Gardon wrote:
+> When the TDP MMU is allowed to handle page faults in parallel there is
+> the possiblity of a race where an SPTE is cleared and then imediately
+> replaced with a present SPTE pointing to a different PFN, before the
+> TLBs can be flushed. This race would violate architectural specs. Ensure
+> that the TLBs are flushed properly before other threads are allowed to
+> install any present value for the SPTE.
 > 
-> Could you check if the following directory tree is built after
-> executing the below command?
+> Reviewed-by: Peter Feiner <pfeiner@google.com>
 > 
-> $ make -j`nproc`
-> CFG_IN_TREE_EARLY_TAS=trusted_keys/f04a0fe7-1f5d-4b9b-abf7-619b85b4ce8c
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/kvm/mmu/spte.h    | 16 +++++++++-
+>  arch/x86/kvm/mmu/tdp_mmu.c | 62 ++++++++++++++++++++++++++++++++------
+>  2 files changed, 68 insertions(+), 10 deletions(-)
 > 
-> $ tree out/bin/
-> out/bin/
-> ├── bl1.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl1.bin
-> ├── bl2.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl2.bin
-> ├── bl31.bin ->
-> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl31.bin
-> ├── bl32.bin ->
-> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-header_v2.bin
-> ├── bl32_extra1.bin ->
-> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pager_v2.bin
-> ├── bl32_extra2.bin ->
-> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pageable_v2.bin
-> ├── bl33.bin ->
-> /home/sumit/build/optee/build/../edk2/Build/ArmVirtQemuKernel-AARCH64/RELEASE_GCC49/FV/QEMU_EFI.fd
-> ├── Image -> /home/sumit/build/optee/build/../linux/arch/arm64/boot/Image
-> └── rootfs.cpio.gz ->
-> /home/sumit/build/optee/build/../out-br/images/rootfs.cpio.gz
-> 
-> 0 directories, 9 files
-> 
-> -Sumit
+> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+> index 2b3a30bd38b0..ecd9bfbccef4 100644
+> --- a/arch/x86/kvm/mmu/spte.h
+> +++ b/arch/x86/kvm/mmu/spte.h
+> @@ -130,6 +130,20 @@ extern u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
+>  					  PT64_EPT_EXECUTABLE_MASK)
+>  #define SHADOW_ACC_TRACK_SAVED_BITS_SHIFT PT64_SECOND_AVAIL_BITS_SHIFT
+>  
+> +/*
+> + * If a thread running without exclusive control of the MMU lock must perform a
+> + * multi-part operation on an SPTE, it can set the SPTE to FROZEN_SPTE as a
+> + * non-present intermediate value. This will guarantee that other threads will
+> + * not modify the spte.
+> + *
+> + * This constant works because it is considered non-present on both AMD and
+> + * Intel CPUs and does not create a L1TF vulnerability because the pfn section
+> + * is zeroed out.
+> + *
+> + * Only used by the TDP MMU.
+> + */
+> +#define FROZEN_SPTE (1ull << 59)
 
-I actually spotted a build error that was unnoticed last time:
+I dislike FROZEN, for similar reasons that I disliked "disconnected".  The SPTE
+isn't frozen in the sense that it's temporarily immutable, rather it's been
+removed but hasn't been flushed and so can't yet be reused.  Given that
+FROZEN_SPTEs are treated as not-preset SPTEs, there's zero chance that this can
+be extended in the future to be a generic temporarily freeze mechanism.
 
-make[2]: Entering directory '/home/jarkko/devel/tpm/optee/edk2/BaseTools/Tests'
-/bin/sh: 1: python: not found
+Mabye REMOVED_SPTE to match earlier feedback?
 
-I'd prefer not to install Python2. It has been EOL over a year.
+> +
+>  /*
+>   * In some cases, we need to preserve the GFN of a non-present or reserved
+>   * SPTE when we usurp the upper five bits of the physical address space to
+> @@ -187,7 +201,7 @@ static inline bool is_access_track_spte(u64 spte)
+>  
+>  static inline int is_shadow_present_pte(u64 pte)
 
-/Jarkko
+Waaaay off topic, I'm going to send a patch to have this, and any other pte
+helpers that return an int, return a bool.  While futzing around with ideas I
+managed to turn this into a nop by doing
+
+	return pte & SPTE_PRESENT;
+
+which is guaranteed to be 0 if SPTE_PRESENT is a bit > 31.  I'm sure others will
+point out that I'm a heathen for not doing !!(pte & SPTE_PRESENT), but still...
+
+>  {
+> -	return (pte != 0) && !is_mmio_spte(pte);
+> +	return (pte != 0) && !is_mmio_spte(pte) && (pte != FROZEN_SPTE);
+
+For all other checks, I'd strongly prefer to add a helper, e.g. is_removed_spte()
+or whatever.  That way changing the implementation won't be as painful, and we
+can add assertions and whatnot if we break things.  Especially since FROZEN_SPTE
+is a single bit, which makes it look like a flag even though it's used as a full
+64-bit constant.
+
+For this, I worry that is_shadow_present_pte() is getting bloated.  It's also a
+bit unfortunate that it's bloated for the old MMU, without any benefit. That
+being said, most that bloat is from the existing MMIO checks.  Looking
+elsewhere, TDX's SEPT also has a similar concept that may or may not need to
+hook is_shadow_present_pte().
+
+Rather than bundle MMIO SPTEs into the access-tracking flags and have a bunch of
+special cases for not-present SPTEs, what if we add an explicit flag to mark
+SPTEs as present (or not-present)?  Defining SPTE_PRESENT instead of
+SPTE_NOT_PRESENT might require a few more changes, but it would be the most
+optimal for is_shadow_present_pte().
+
+I'm thinking something like this (completely untested):
+
+diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+index c51ad544f25b..86f6c84569c4 100644
+--- a/arch/x86/kvm/mmu/spte.c
++++ b/arch/x86/kvm/mmu/spte.c
+@@ -38,7 +38,7 @@ static u64 generation_mmio_spte_mask(u64 gen)
+        u64 mask;
+
+        WARN_ON(gen & ~MMIO_SPTE_GEN_MASK);
+-       BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_SPECIAL_MASK);
++       BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_MMIO);
+
+        mask = (gen << MMIO_SPTE_GEN_LOW_SHIFT) & MMIO_SPTE_GEN_LOW_MASK;
+        mask |= (gen << MMIO_SPTE_GEN_HIGH_SHIFT) & MMIO_SPTE_GEN_HIGH_MASK;
+@@ -86,7 +86,7 @@ int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
+                     bool can_unsync, bool host_writable, bool ad_disabled,
+                     u64 *new_spte)
+ {
+-       u64 spte = 0;
++       u64 spte = SPTE_PRESENT;
+        int ret = 0;
+
+        if (ad_disabled)
+@@ -247,7 +247,7 @@ void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 access_mask)
+        BUG_ON((u64)(unsigned)access_mask != access_mask);
+        WARN_ON(mmio_value & (shadow_nonpresent_or_rsvd_mask << SHADOW_NONPRESENT_OR_RSVD_MASK_LEN));
+        WARN_ON(mmio_value & shadow_nonpresent_or_rsvd_lower_gfn_mask);
+-       shadow_mmio_value = mmio_value | SPTE_MMIO_MASK;
++       shadow_mmio_value = mmio_value | SPTE_MMIO;
+        shadow_mmio_access_mask = access_mask;
+ }
+ EXPORT_SYMBOL_GPL(kvm_mmu_set_mmio_spte_mask);
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index ecd9bfbccef4..465e43d34034 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -5,18 +5,15 @@
+
+ #include "mmu_internal.h"
+
++/* Software available bits for present SPTEs. */
+ #define PT_FIRST_AVAIL_BITS_SHIFT 10
+ #define PT64_SECOND_AVAIL_BITS_SHIFT 54
+
+-/*
+- * The mask used to denote special SPTEs, which can be either MMIO SPTEs or
+- * Access Tracking SPTEs.
+- */
++/* The mask used to denote Access Tracking SPTEs.  Note, val=3 is available. */
+ #define SPTE_SPECIAL_MASK (3ULL << 52)
+ #define SPTE_AD_ENABLED_MASK (0ULL << 52)
+ #define SPTE_AD_DISABLED_MASK (1ULL << 52)
+ #define SPTE_AD_WRPROT_ONLY_MASK (2ULL << 52)
+-#define SPTE_MMIO_MASK (3ULL << 52)
+
+ #ifdef CONFIG_DYNAMIC_PHYSICAL_MASK
+ #define PT64_BASE_ADDR_MASK (physical_mask & ~(u64)(PAGE_SIZE-1))
+@@ -55,12 +52,16 @@
+ #define SPTE_HOST_WRITEABLE    (1ULL << PT_FIRST_AVAIL_BITS_SHIFT)
+ #define SPTE_MMU_WRITEABLE     (1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
+
++#define SPTE_REMOVED           BIT_ULL(60)
++#define SPTE_MMIO              BIT_ULL(61)
++#define SPTE_PRESENT           BIT_ULL(62)
++
+ /*
+  * Due to limited space in PTEs, the MMIO generation is a 18 bit subset of
+  * the memslots generation and is derived as follows:
+  *
+  * Bits 0-8 of the MMIO generation are propagated to spte bits 3-11
+- * Bits 9-17 of the MMIO generation are propagated to spte bits 54-62
++ * Bits 9-17 of the MMIO generation are propagated to spte bits 52-60
+  *
+  * The KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS flag is intentionally not included in
+  * the MMIO generation number, as doing so would require stealing a bit from
+@@ -73,8 +74,8 @@
+ #define MMIO_SPTE_GEN_LOW_START                3
+ #define MMIO_SPTE_GEN_LOW_END          11
+
+-#define MMIO_SPTE_GEN_HIGH_START       PT64_SECOND_AVAIL_BITS_SHIFT
+-#define MMIO_SPTE_GEN_HIGH_END         62
++#define MMIO_SPTE_GEN_HIGH_START       52
++#define MMIO_SPTE_GEN_HIGH_END         60
+
+ #define MMIO_SPTE_GEN_LOW_MASK         GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
+                                                    MMIO_SPTE_GEN_LOW_START)
+@@ -162,7 +163,7 @@ extern u8 __read_mostly shadow_phys_bits;
+
+ static inline bool is_mmio_spte(u64 spte)
+ {
+-       return (spte & SPTE_SPECIAL_MASK) == SPTE_MMIO_MASK;
++       return spte & SPTE_MMIO;
+ }
+
+ static inline bool sp_ad_disabled(struct kvm_mmu_page *sp)
+@@ -199,9 +200,9 @@ static inline bool is_access_track_spte(u64 spte)
+        return !spte_ad_enabled(spte) && (spte & shadow_acc_track_mask) == 0;
+ }
+
+-static inline int is_shadow_present_pte(u64 pte)
++static inline bool is_shadow_present_pte(u64 pte)
+ {
+-       return (pte != 0) && !is_mmio_spte(pte) && (pte != FROZEN_SPTE);
++       return pte & SPTE_PRESENT;
+ }
+
+ static inline int is_large_pte(u64 pte)
+
+
+>  }
+>  
+>  static inline int is_large_pte(u64 pte)
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 7b12a87a4124..5c9d053000ad 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -429,15 +429,19 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>  	 */
+>  	if (!was_present && !is_present) {
+>  		/*
+> -		 * If this change does not involve a MMIO SPTE, it is
+> -		 * unexpected. Log the change, though it should not impact the
+> -		 * guest since both the former and current SPTEs are nonpresent.
+> +		 * If this change does not involve a MMIO SPTE or FROZEN_SPTE,
+
+For comments and error message, I think we should avoid using the exact constant
+name, and instead call them "removed SPTE", similar to MMIO SPTE.  That will
+help reduce thrash and/or stale comments if the name changes.
+
+> +		 * it is unexpected. Log the change, though it should not
+> +		 * impact the guest since both the former and current SPTEs
+> +		 * are nonpresent.
+>  		 */
+> -		if (WARN_ON(!is_mmio_spte(old_spte) && !is_mmio_spte(new_spte)))
+> +		if (WARN_ON(!is_mmio_spte(old_spte) &&
+> +			    !is_mmio_spte(new_spte) &&
+> +			    new_spte != FROZEN_SPTE))
+>  			pr_err("Unexpected SPTE change! Nonpresent SPTEs\n"
+>  			       "should not be replaced with another,\n"
+>  			       "different nonpresent SPTE, unless one or both\n"
+> -			       "are MMIO SPTEs.\n"
+> +			       "are MMIO SPTEs, or the new SPTE is\n"
+> +			       "FROZEN_SPTE.\n"
+>  			       "as_id: %d gfn: %llx old_spte: %llx new_spte: %llx level: %d",
+>  			       as_id, gfn, old_spte, new_spte, level);
+>  		return;
