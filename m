@@ -2,191 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6FF2FF2F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1335C2FF2F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389574AbhAUSKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:10:20 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:34839 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389720AbhAUSJd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:09:33 -0500
-Received: by mail-oi1-f169.google.com with SMTP id w8so3135895oie.2;
-        Thu, 21 Jan 2021 10:09:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rZuG0eDaYJNboNh8e3LplxwDe2N2H+yB/LmrSLFUl6M=;
-        b=mpkd3gCV1ZB6Juf+EQnHYyaq+CeUe3ecQxGnUd7uu/l9DT1GyHAiYpRPiCTckxdwcu
-         V3xwqZSMqz3SwpPlslSYftoRE8zgYGXGIqgbhtBymwtR/Qdn4elnQiJCGdfo/T813M83
-         J/MhKLhpC/q+UEDX69wVRJiVlTIv9hvf1q4QVqvWlREkpH23j0nyzcy+Z+44gUdslrWl
-         3QH+ltYD/mDAqm2VcdfaPv4fDRGoiyrPx2w55sysQEICePLlNj/eXJhenl8Q7aNbXaZw
-         nzjIKsutWYadXq0/4Td18vt+mmSi2cakIwlMWAeOuaS0uc+QlhDxeQgRz9wH42+1woke
-         Snog==
-X-Gm-Message-State: AOAM530kLzE1PB5BRbLrkjTQus1vv5zd702sh82DuavPC1AjLIu0oIXy
-        s22k5WItbF+VkjmilXT6kTT+uNZzlTKiricwjCM=
-X-Google-Smtp-Source: ABdhPJzonsjyrNxpDyasZkL5KpTZWxHq4Ux3HEM1YkApyJQtDjSw14vrAyNsETjZ7up7pvN+p39lnrgFySegxATtRNE=
-X-Received: by 2002:aca:308a:: with SMTP id w132mr552636oiw.69.1611252522742;
- Thu, 21 Jan 2021 10:08:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
- <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
- <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com> <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
- <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com> <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
- <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com> <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
- <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
-In-Reply-To: <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 21 Jan 2021 19:08:31 +0100
-Message-ID: <CAJZ5v0jVxMMGh6k-vXeBRsCtD0L14poNUrg4kZOpCfOz2sZGZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2389221AbhAUSNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:13:05 -0500
+Received: from mout.gmx.net ([212.227.15.19]:44949 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389591AbhAUSLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 13:11:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611252540;
+        bh=QfhxphCdVKvLvjpXaoa7/kvLOstgKECKtAZEQWM8ywU=;
+        h=X-UI-Sender-Class:Subject:From:In-Reply-To:Date:Cc:References:To;
+        b=IY3a82MBVXnR+XuDjaYBKX0Gm2ZtmPej+W4WID0kHUEvp+jUAxPMycqWXV2WCpElP
+         QknDY3O/U/+JtQVBBk09hvbMRkuaw+u7VSXR6hYjxSf+xb3gfASz4mkG237ZOQ9MpJ
+         uD6yRdWgL+Jhzy9l7WRCtPoBBZwSCzmXMr0A9CVg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [10.42.0.78] ([83.204.192.78]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mz9Yv-1lxvjc2tOt-00wB2z; Thu, 21
+ Jan 2021 19:08:59 +0100
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.5\))
+Subject: Re: [RFC PATCH 7/7] irqchip/apple-aic: add SMP support to the Apple
+ AIC driver.
+From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
+In-Reply-To: <CAL_Jsq+V74tMGJ==OVdsssfqTTa3TrFujfRjj0174uZNonpQSA@mail.gmail.com>
+Date:   Thu, 21 Jan 2021 19:08:54 +0100
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Stan Skowronek <stan@corellium.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <950D140B-491A-40EB-9FDB-D7173B86737B@caramail.com>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-8-mohamed.mediouni@caramail.com>
+ <CAK8P3a1qeVxTxZXpfMe70zpPCSBrTOz23ZTR=PHgw0PP9GUvbw@mail.gmail.com>
+ <E77005CF-8B2A-4D17-9330-72ECFD7F3C93@caramail.com>
+ <CAL_JsqJq_wfLrJm8rwspkgz81Be2V9WTudRjMAXSrZD50ewFYA@mail.gmail.com>
+ <FEDB12D6-2916-4430-A8DC-FBD9352F3730@caramail.com>
+ <CAL_Jsq+V74tMGJ==OVdsssfqTTa3TrFujfRjj0174uZNonpQSA@mail.gmail.com>
+To:     Rob Herring <robh@kernel.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.5)
+X-Provags-ID: V03:K1:5bi+UftWGgKXkK5CIHh5y7Fh4dvoWEqrHS3XkxOUDATNs77NJGF
+ 4QIhagnStQ1QzuSIgQ7O/WwU4bR+9pnsCmbKNoTv/16ubpo/MMhbUvbGHDgZSxeS5dNg1Es
+ 5xnaTkcQ+EJUlixHAJ69SX0Wt2GJYNpX1BpXhq0M+uuPmmlV9t62F/A52NQVnMhC5wo/LMw
+ w0aBftSJVAf9g+a9zZ1rQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UY3jSNqU8UY=:2uCTpKuUB+Y6//w3U0RofH
+ ssB8BOxWDK7PGddfOJGKVe3pk2J3f6OacbSt2dQMeZGv0kDPpnKBgvfFe94ZyNRb1s/xe8Pu3
+ OQ2Gc5r8C5XubKGBm7RNOzKDwQasYuhmTjpWXMciImY71M8NrENMtrng+JjV0Pm2epG84xTPh
+ raWoT5D6ytpjU11PRvZRdFpjMZQ69bfJ9jD1KbqqhJi/iTKmSZus2oBVnudwzqWbYugAX+0me
+ T5yAV535XmKC4euHxyPn126pKVSDnVaxdRsiALsowgeu9RdnyGU3TUMJW6p+iR3FwEcqCATxz
+ OEijtOQ1wCwyLRw5+ewoXCGAWZbCK0SC5NvFUTQ0djLYmtdguf12FLml+wMSLwtgwHcs+jkkM
+ axqCe2WxelSsVWAw5hmhHjlt4C6JHYIXZh8TwLlupqnxOXMxD7v4d2oQxx6C3QSLRn/uxVtpb
+ GSAnzuOrS2nEs3/dxuKV8EvEr4JMvELm6nbPKQqNJF54lvyEdFm4EKSPJFu38PfnBDcGyaC+F
+ X29xswgIhIS96mk88Mz0Xy0d3J7eRjTCHwf/AwuachJH5xqr+Le0IPHV1Q0eqyTXyGThu525Z
+ I5xml3F0cHAE0wxVPxRZbNTTAsOGTTr1aAAGFqDlP+07W+Y0E1lNfjUFXdalDc0M0D/FbC1OB
+ Lyue8dPh7aAoBiI2pDnAOOKAyLefKu/oi1JPMVjfYVZZnyIDwywx8np020luFEQmR6yQq61V0
+ EoKKX323gFh8jeZOeO4y9Ep5lmSYHazaMdvbTEHwGEZ7Le60TXYoMxiXUrqD7gVb/qiWpki3y
+ QoxWOZ0bRknbPcZJK+2J/LDe9mPDnPPJylleMbAlZGAl8liStbS1nU+FTp8odFzxpgoMHLxyD
+ rJzihuFnEhcOVhgRaltfiPTyJzV/BXcTqj7k+Oql8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 5:34 PM Daniel Scally <djrscally@gmail.com> wrote:
->
->
-> On 21/01/2021 14:39, Rafael J. Wysocki wrote:
-> > On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
-> >>
-> >> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
-> >>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
-> >>>> Hi Rafael
-> >>>>
-> >>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
-> >>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
-> >>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
-> >>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
-> >>>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
-> >>>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
-> >>>>>>>> specification intends. We need to be able to find those devices "from"
-> >>>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
-> >>>>>>>> the include the handle of the dependee device in their _DEP buffer.
-> >>>>>>> What exactly do you need this for?
-> >>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
-> >>>>>> refer to those INT3472's in their _DEP method. The driver binds to the
-> >>>>>> INT3472 device, we need to find the sensors dependent on them.
-> >>>>>>
-> >>>>> Well, this is an interesting concept. :-)
-> >>>>>
-> >>>>> Why does _DEP need to be used for that?  Isn't there any other way to
-> >>>>> look up the dependent sensors?
-> >>>>>
-> >>>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
-> >>>>>>>
-> >>>>>>> Note that supplier drivers may remove entries from there, but does
-> >>>>>>> that matter for your use case?
-> >>>>>> Ah - that may work, yes. Thank you, let me test that.
-> >>>>> Even if that doesn't work right away, but it can be made work, I would
-> >>>>> very much prefer that to the driver parsing _DEP for every device in
-> >>>>> the namespace by itself.
-> >>>> This does work; do you prefer it in scan.c, or in utils.c (in which case
-> >>>> with acpi_dep_list declared as external var in internal.h)?
-> >>> Let's put it in scan.c for now, because there is the lock protecting
-> >>> the list in there too.
-> >>>
-> >>> How do you want to implement this?  Something like "walk the list and
-> >>> run a callback for the matching entries" or do you have something else
-> >>> in mind?
-> >>
-> >> Something like this (though with a mutex_lock()). It could be simplified
-> >> by dropping the prev stuff, but we have seen INT3472 devices with
-> >> multiple sensors declaring themselves dependent on the same device
-> >>
-> >>
-> >> struct acpi_device *
-> >> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
-> >>                 struct acpi_device *prev)
-> >> {
-> >>     struct acpi_dep_data *dep;
-> >>     struct acpi_device *adev;
-> >>     int ret;
-> >>
-> >>     if (!supplier)
-> >>         return ERR_PTR(-EINVAL);
-> >>
-> >>     if (prev) {
-> >>         /*
-> >>          * We need to find the previous device in the list, so we know
-> >>          * where to start iterating from.
-> >>          */
-> >>         list_for_each_entry(dep, &acpi_dep_list, node)
-> >>             if (dep->consumer == prev->handle &&
-> >>                 dep->supplier == supplier->handle)
-> >>                 break;
-> >>
-> >>         dep = list_next_entry(dep, node);
-> >>     } else {
-> >>         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
-> >>                        node);
-> >>     }
-> >>
-> >>
-> >>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
-> >>         if (dep->supplier == supplier->handle) {
-> >>             ret = acpi_bus_get_device(dep->consumer, &adev);
-> >>             if (ret)
-> >>                 return ERR_PTR(ret);
-> >>
-> >>             return adev;
-> >>         }
-> >>     }
-> >>
-> >>     return NULL;
-> >> }
-> > That would work I think, but would it be practical to modify
-> > acpi_walk_dep_device_list() so that it runs a callback for every
-> > consumer found instead of or in addition to the "delete from the list
-> > and free the entry" operation?
->
->
-> I think that this would work fine, if that's the way you want to go.
-> We'd just need to move everything inside the if (dep->supplier ==
-> handle) block to a new callback, and for my purposes I think also add a
-> way to stop parsing the list from the callback (so like have the
-> callbacks return int and stop parsing on a non-zero return). Do you want
-> to expose that ability to pass a callback outside of ACPI?
 
-Yes.
 
-> Or just export helpers to call each of the callbacks (one to fetch the next
-> dependent device, one to decrement the unmet dependencies counter)
+> On 21 Jan 2021, at 18:37, Rob Herring <robh@kernel.org> wrote:
+>=20
+> On Thu, Jan 21, 2021 at 10:43 AM Mohamed Mediouni
+> <mohamed.mediouni@caramail.com> wrote:
+>>> On 21 Jan 2021, at 17:40, Rob Herring <robh@kernel.org> wrote:
+>>> On Thu, Jan 21, 2021 at 6:52 AM Mohamed Mediouni
+>>> <mohamed.mediouni@caramail.com> wrote:
+>>>>> On 21 Jan 2021, at 13:44, Arnd Bergmann <arnd@kernel.org> wrote:
+>>>>> On Wed, Jan 20, 2021 at 2:27 PM Mohamed Mediouni
+>>>>> <mohamed.mediouni@caramail.com> wrote:
+>=20
+> [...]
+>=20
+>>>>>> @@ -186,8 +325,11 @@ static int __init apple_aic_init(struct =
+device_node *node,
+>>>>>>     if (WARN(!aic.base, "unable to map aic registers\n"))
+>>>>>>             return -EINVAL;
+>>>>>>=20
+>>>>>> +       aic.fast_ipi =3D of_property_read_bool(node, "fast-ipi");
+>>>>>=20
+>>>>> Where is this property documented, and what decides which one to =
+use?
+>>>> It=E2=80=99s getting documented in the next patch set.
+>>>>=20
+>>>> This property is there to enable support for older iPhone =
+processors
+>>>> later on, some of which do not have fast IPI support.
+>>>>=20
+>>>> On Apple M1, fast-ipi is always on.
+>>>=20
+>>> This should be implied by the compatible string which needs to be =
+more
+>>> specific and include the SoC name.
+>>>=20
+>>> Rob
+>>=20
+>> Then we=E2=80=99ll eventually have two aic compatible strings, aic =
+which is compatible
+>> with Apple A7 onwards and aicv2 which is a superset with fast IPI =
+(introduced
+>> on the Apple A11, 3 years ago, with no further programmer-visible =
+changes since
+>> then).
+>>=20
+>> Does that look right?
+>=20
+> If we did this from the start, it would evolve like this:
+>=20
+> A7: "AAPL,a7-aic"
+> A8: "AAPL,a8-aic", "AAPL,a7-aic"  # Read this as A8 AIC is backwards
+> compatible with A7 AIC
+> A9: "AAPL,a9-aic", "AAPL,a7-aic"
+>=20
+> A11: "AAPL,a11-aic", "AAPL,a7-aic"
+>=20
+> If the A11 version could work on an OS that only supported the
+> original model (sounds like this is the case) Or if it's not backwards
+> compatible:
+>=20
 
-If you can run a callback for every matching entry, you don't really
-need to have a callback to return the next matching entry.  You can do
-stuff for all of them in one go (note that it probably is not a good
-idea to run the callback under the lock, so the for loop currently in
-there is not really suitable for that).
+The A11 AIC indeed can be used by older drivers that aren=E2=80=99t =
+aware
+of the fast IPI path introduced on A11 just fine.
 
-> Otherwise, I'd just need to update the 5 users of that function either
-> to use the new helper or else to also pass the decrement dependencies
-> callback.
+> A11: "AAPL,a11-aic"
+>=20
+> If the A11 is different and not backwards compatible.
+>=20
+> Then M1 could be:
+>=20
+> M1: "AAPL,m1-aic", "AAPL,a11-aic"
+>=20
+> Or to even support an OS with only v1 support:
+>=20
+> M1: "AAPL,m1-aic", "AAPL,a11-aic", "AAPL,a7-aic"
+>=20
+> You don't really need the fallback here because there isn't any
+> existing OS support and the baseline is the M1.
+>=20
+> If you want to have generic fallback compatible strings with versions,
+> that's fine too. I'm not really a fan of version numbers that are just
+> made up by the binding author though. Most SoC vendors don't have
+> rigorous versioning of their IP and those that do seem to have a new
+> version on every SoC.
+>=20
+> The important part is *always* having an SoC specific compatible so
+> you can deal with any quirk or feature without having to change the
+> DTB. Everyone says blocks are 'the same' until they aren=E2=80=99t.
+>=20
+Is it fine if such a SoC-specific compatible is present but with having
+the driver only know about AAPL,a11-aic for example?
+(To just have it when it=E2=80=99d be needed if ever in the future, but =
+not uselessly
+add entries to the driver that will not be currently used)
 
-Or have a wrapper around it passing the decrement dependencies
-callback for the "typical" users.
+On a tangent:
+
+The internal naming scheme used by Apple is off-by-one:
+
+Apple A14 for example is Apple H13P (H-series 13th gen processor, Phone)
+Apple M1 is Apple H13G (H-series 13th gen, G series)
+(And Apple A12X is Apple H11G for example, with A12 being H11P)
+
+Should we bother with those or use the marketing names? Especially =
+because
+the beefier SoCs might not be of the H series anyway=E2=80=A6 as the =
+internal scheme
+reveals that M1 could as well have been an A14X.
+
+And there=E2=80=99s also the other internal naming scheme:
+Apple A12 being t8020, Apple A12X being t8027
+Apple A14 being t8101
+Apple M1 being t8103
+
+T there means the foundry at which the chip was manufactured, in the =
+cases above TSMC.
+
+Of course Apple itself uses both=E2=80=A6 with the marketing name being =
+nowhere in their device
+trees.
+
+Thank you,
+
+> Rob
+
