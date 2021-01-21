@@ -2,205 +2,683 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C877E2FF081
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 184CF2FF08D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388005AbhAUQgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:36:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387904AbhAUQfW (ORCPT
+        id S2388163AbhAUQij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:38:39 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:36171 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732716AbhAUQg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:35:22 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19CBC061756;
-        Thu, 21 Jan 2021 08:34:39 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id c12so2365189wrc.7;
-        Thu, 21 Jan 2021 08:34:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=YlHLVnRR0WKe78VA0AWZic/mxYHhEfei59jaU+AgjMQ=;
-        b=LHkxrpTK325aR3GoREcT0iu2gmRw30nISJ6T2HCmZuC4Soi5CcJavgt5FEhbbWj5W0
-         drfbkA7ocXITcm4yOOUsj2gX14C8A1iX8UdduwhCkSlLyM2gi2vsLhJVYqeDg+BOzG18
-         XXuuNBH+1MezzfJ/yiMxNdKlULushk79pH2sBzWCbCWfYomYQbz0keojZdcVfOWqOgmA
-         fo6A5tjEc+y1PDIUIsW1DsK9MdK2GVhW10israYRPBrUVe2z7BzwdVn3/JccEEHCeAuP
-         KGzHC3TkCRQz5xOZu0kalBHLk3bi2YOe2nNnPyOCQY6hUVNz6m4dvciFXLXmXHS7A4r8
-         zcWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YlHLVnRR0WKe78VA0AWZic/mxYHhEfei59jaU+AgjMQ=;
-        b=aSomIlcgqM85suz+RXh04OpXL9JmMVNvTyd6+R0+hYNooxrYdJQAEY2Jueur5//WBK
-         cQa16XAO7Jktgashb56jQDG2eCWdMP/sPVeO3y9cf6jZLMct12EAbaHJFzJcDePPjERl
-         iDQg14M32vcwq4Ngc9blrBFoHtslNb+fBDup+3uxo1Du45qEwfbr2sNCIgtgNTrtEje6
-         U4pjFhePuVH/4uTnppFeXC+wJSsGpcNTxL7Ge+EZK/NTiRTaiVD3t+O90KGBPfYLc0qz
-         Y8zPK1viyp1YQjrTQyiL5b9Jnz0XsqQpGOPIMIsXuoQUGdsvT9rXbW6x8cMpG5wp2rJZ
-         GMrQ==
-X-Gm-Message-State: AOAM530HhhxG5M60jw68C30oSaZBjqmq2ss+PBnrtuWAilkpQh2w6sxt
-        4C84JMKsa0qJ32PFqSWRMuY=
-X-Google-Smtp-Source: ABdhPJzJH7xRVK5uCUcH3hOOY9JvWe9hwD1lAGxZ5+zzt5t/3cUyk9Y/LnRu4HUOk/BIg9MoVMIWMA==
-X-Received: by 2002:a5d:434d:: with SMTP id u13mr324307wrr.6.1611246878638;
-        Thu, 21 Jan 2021 08:34:38 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id h23sm8462795wmi.26.2021.01.21.08.34.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 08:34:38 -0800 (PST)
-Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
- acpi_devices
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-3-djrscally@gmail.com>
- <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
- <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
- <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
- <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
- <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
- <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
- <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
-Date:   Thu, 21 Jan 2021 16:34:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 21 Jan 2021 11:36:57 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 37ED258050C;
+        Thu, 21 Jan 2021 11:35:46 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 21 Jan 2021 11:35:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=r4Vxxrrdci/UKakenHhubLh2ka
+        KVP9guh/v/B0f11mE=; b=DZUXNszA9o/w69rGU2plv9n1W+Ks2EBM+vIkE+OkWK
+        JzDoXwNfyskyD59KMRwmfW4rf4oCHEFF2RMOeCnCdlHkLgMbLwIBcwMs04i+TFnO
+        ZEwOcCLgkkwCVVE8sN2xMvc8M3CnRPHThsYf0cLtb0aCfz08MSfOPgFCOL/CtdXm
+        Vgve/H6OQeuXxW80DorA/eJcK09CEQLtgc9qHUUvJPhc035xZx0PCT0E3fEJY0IY
+        quoru4DtpYY4r+XHR9Fvk/3wf/hWDZm6sYBm4XUycrKFgk+vxSLEvOM3qeYGpzXc
+        zSrN0XAZIBW80GsFbr5EY7ojn683dqC9C6galGV6tNzA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=r4Vxxrrdci/UKaken
+        HhubLh2kaKVP9guh/v/B0f11mE=; b=QvoKt6QN+Yau9H36kTic8+JINJ0VwE5zf
+        2vojDJ4OuQbm7WYZ3e9M8lk3YGvvi8KwHPaumvysXnIiT/kD5bHmtfPGl2ky2bG2
+        so7mqyKUJ/pa0mhVeXzcxVaG13Mp93dFfIVt7ZbM1TxsOAdE9sKQF5QHll8VmBLb
+        5NgqpblID7kKs9Ns8VhpAimpFOySgvc4yKydd0AeISojp+m/9qqOucTaBsgGBcMW
+        QDaS/g1ssS07rBgMIzlWlkRTtJOzsK/Fq8JkwLrdZoTU+kVenx2qzC++ttY6/pOk
+        CEAKtjUZ16N0530Jdt+/TxkpGC6xJaQg4iHJVUP5lODmmfDtGi0EQ==
+X-ME-Sender: <xms:Xa0JYHxn_lEj30jkRR95X7h8ZbuHLGulPBVofMTsyzcOSHGC1FVxEA>
+    <xme:Xa0JYPSTkbBV3Gml71CX0Mq1-6cd4ol4IbS4duWhyYS6uZmUvWt4ThjOpg8Bot_vr
+    74f-jLS4M9oGqgEasI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggdelfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepofgrgihimhgvucft
+    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
+    hnpeejffehuddvvddvlefhgeelleffgfeijedvhefgieejtdeiueetjeetfeeukeejgeen
+    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:Xa0JYBWPOe0dX453hqpvUtFlrG6tNc4FVS5qYSYGH37f-WkaGGexnA>
+    <xmx:Xa0JYBg2ThqEyz-nkSd8Q_lL-_xwEGzNINBg21gKGFVsJNTJGc8YZQ>
+    <xmx:Xa0JYJBcSmK0TKm_tCjSsg-v00bV1Mfv0MbBDRfW4_kQqjLp6KY8mg>
+    <xmx:Yq0JYLyfhlmOSfhKk7uqYh9aw9xc-srbEggtSqRRW8fNPoeGxwBRGg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3739C108005F;
+        Thu, 21 Jan 2021 11:35:41 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     dri-devel@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Eric Anholt <eric@anholt.net>, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-rockchip@lists.infradead.org
+Subject: [PATCH v2 01/11] drm/atomic: Pass the full state to planes async atomic check and update
+Date:   Thu, 21 Jan 2021 17:35:26 +0100
+Message-Id: <20210121163537.1466118-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current atomic helpers have either their object state being passed as
+an argument or the full atomic state.
 
-On 21/01/2021 14:39, Rafael J. Wysocki wrote:
-> On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
->>
->> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
->>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
->>>> Hi Rafael
->>>>
->>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
->>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
->>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
->>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
->>>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
->>>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
->>>>>>>> specification intends. We need to be able to find those devices "from"
->>>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
->>>>>>>> the include the handle of the dependee device in their _DEP buffer.
->>>>>>> What exactly do you need this for?
->>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
->>>>>> refer to those INT3472's in their _DEP method. The driver binds to the
->>>>>> INT3472 device, we need to find the sensors dependent on them.
->>>>>>
->>>>> Well, this is an interesting concept. :-)
->>>>>
->>>>> Why does _DEP need to be used for that?  Isn't there any other way to
->>>>> look up the dependent sensors?
->>>>>
->>>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
->>>>>>>
->>>>>>> Note that supplier drivers may remove entries from there, but does
->>>>>>> that matter for your use case?
->>>>>> Ah - that may work, yes. Thank you, let me test that.
->>>>> Even if that doesn't work right away, but it can be made work, I would
->>>>> very much prefer that to the driver parsing _DEP for every device in
->>>>> the namespace by itself.
->>>> This does work; do you prefer it in scan.c, or in utils.c (in which case
->>>> with acpi_dep_list declared as external var in internal.h)?
->>> Let's put it in scan.c for now, because there is the lock protecting
->>> the list in there too.
->>>
->>> How do you want to implement this?  Something like "walk the list and
->>> run a callback for the matching entries" or do you have something else
->>> in mind?
->>
->> Something like this (though with a mutex_lock()). It could be simplified
->> by dropping the prev stuff, but we have seen INT3472 devices with
->> multiple sensors declaring themselves dependent on the same device
->>
->>
->> struct acpi_device *
->> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
->>                 struct acpi_device *prev)
->> {
->>     struct acpi_dep_data *dep;
->>     struct acpi_device *adev;
->>     int ret;
->>
->>     if (!supplier)
->>         return ERR_PTR(-EINVAL);
->>
->>     if (prev) {
->>         /*
->>          * We need to find the previous device in the list, so we know
->>          * where to start iterating from.
->>          */
->>         list_for_each_entry(dep, &acpi_dep_list, node)
->>             if (dep->consumer == prev->handle &&
->>                 dep->supplier == supplier->handle)
->>                 break;
->>
->>         dep = list_next_entry(dep, node);
->>     } else {
->>         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
->>                        node);
->>     }
->>
->>
->>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
->>         if (dep->supplier == supplier->handle) {
->>             ret = acpi_bus_get_device(dep->consumer, &adev);
->>             if (ret)
->>                 return ERR_PTR(ret);
->>
->>             return adev;
->>         }
->>     }
->>
->>     return NULL;
->> }
-> That would work I think, but would it be practical to modify
-> acpi_walk_dep_device_list() so that it runs a callback for every
-> consumer found instead of or in addition to the "delete from the list
-> and free the entry" operation?
+The former is the pattern that was done at first, before switching to the
+latter for new hooks or when it was needed.
 
+Let's start convert all the remaining helpers to provide a consistent
+interface, starting with the planes atomic_async_check and
+atomic_async_update.
 
-I think that this would work fine, if that's the way you want to go.
-We'd just need to move everything inside the if (dep->supplier ==
-handle) block to a new callback, and for my purposes I think also add a
-way to stop parsing the list from the callback (so like have the
-callbacks return int and stop parsing on a non-zero return). Do you want
-to expose that ability to pass a callback outside of ACPI? Or just
-export helpers to call each of the callbacks (one to fetch the next
-dependent device, one to decrement the unmet dependencies counter)
+The conversion was done using the coccinelle script below, built tested on
+all the drivers.
 
+@@
+identifier plane, plane_state;
+symbol state;
+@@
 
-Otherwise, I'd just need to update the 5 users of that function either
-to use the new helper or else to also pass the decrement dependencies
-callback.
+ struct drm_plane_helper_funcs {
+ 	...
+	int (*atomic_async_check)(struct drm_plane *plane,
+-				  struct drm_plane_state *plane_state);
++				  struct drm_atomic_state *state);
+	...
+ }
+
+@@
+identifier plane, plane_state;
+symbol state;
+@@
+ struct drm_plane_helper_funcs {
+ 	...
+	void (*atomic_async_update)(struct drm_plane *plane,
+-				    struct drm_plane_state *plane_state);
++				    struct drm_atomic_state *state);
+	...
+ }
+
+@ plane_atomic_func @
+identifier helpers;
+identifier func;
+@@
+
+(
+ static const struct drm_plane_helper_funcs helpers = {
+	...,
+ 	.atomic_async_check = func,
+	...,
+ };
+|
+ static const struct drm_plane_helper_funcs helpers = {
+ 	...,
+ 	.atomic_async_update = func,
+ 	...,
+ };
+)
+
+@@
+struct drm_plane_helper_funcs *FUNCS;
+identifier f;
+identifier dev;
+identifier plane, plane_state, state;
+@@
+
+ f(struct drm_device *dev, struct drm_atomic_state *state)
+ {
+ 	<+...
+-	FUNCS->atomic_async_check(plane, plane_state)
++	FUNCS->atomic_async_check(plane, state)
+ 	...+>
+ }
+
+@@
+struct drm_plane_helper_funcs *FUNCS;
+identifier f;
+identifier dev;
+identifier plane, plane_state, state;
+@@
+
+ f(struct drm_device *dev, struct drm_atomic_state *state)
+ {
+ 	<+...
+-	FUNCS->atomic_async_update(plane, plane_state)
++	FUNCS->atomic_async_update(plane, state)
+ 	...+>
+ }
+
+@@
+identifier mtk_plane_atomic_async_update;
+identifier plane;
+symbol new_state, state;
+expression e;
+@@
+
+  void mtk_plane_atomic_async_update(struct drm_plane *plane, struct drm_plane_state *new_state)
+{
+  ...
+- struct mtk_plane_state *state = e;
++ struct mtk_plane_state *new_plane_state = e;
+  <+...
+-       state
++       new_plane_state
+  ...+>
+  }
+
+@@
+identifier plane_atomic_func.func;
+identifier plane;
+symbol state;
+@@
+
+ func(struct drm_plane *plane,
+-    struct drm_plane_state *state)
++    struct drm_plane_state *new_plane_state)
+ {
+	<...
+-	state
++	new_plane_state
+	...>
+ }
+
+@ ignores_new_state @
+identifier plane_atomic_func.func;
+identifier plane, new_plane_state;
+@@
+
+ func(struct drm_plane *plane, struct drm_plane_state *new_plane_state)
+ {
+	... when != new_plane_state
+ }
+
+@ adds_new_state depends on plane_atomic_func && !ignores_new_state @
+identifier plane_atomic_func.func;
+identifier plane, new_plane_state;
+@@
+
+ func(struct drm_plane *plane, struct drm_plane_state *new_plane_state)
+ {
++	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state, plane);
+ 	...
+ }
+
+@ depends on plane_atomic_func @
+identifier plane_atomic_func.func;
+identifier plane, plane_state;
+@@
+
+ func(struct drm_plane *plane,
+-     struct drm_plane_state *plane_state
++     struct drm_atomic_state *state
+     )
+ { ... }
+
+@ include depends on adds_new_state @
+@@
+
+ #include <drm/drm_atomic.h>
+
+@ no_include depends on !include && adds_new_state @
+@@
+
++ #include <drm/drm_atomic.h>
+  #include <drm/...>
+
+@@
+identifier plane_atomic_func.func;
+identifier plane, state;
+identifier plane_state;
+@@
+
+ func(struct drm_plane *plane, struct drm_atomic_state *state) {
+        ...
+        struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
+        <+...
+-       plane_state->state
++       state
+        ...+>
+ }
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+---
+
+Changes from v1:
+  - Updated the comment according to Thomas suggestions
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  8 ++-
+ drivers/gpu/drm/drm_atomic_helper.c           |  4 +-
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c      | 26 +++++----
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c    | 33 ++++++-----
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c   | 16 ++++--
+ drivers/gpu/drm/vc4/vc4_plane.c               | 56 ++++++++++---------
+ include/drm/drm_modeset_helper_vtables.h      | 18 +++---
+ 7 files changed, 89 insertions(+), 72 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 86c2b2c897bb..7caebb1a475a 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6469,7 +6469,7 @@ static int dm_plane_atomic_check(struct drm_plane *plane,
+ }
+ 
+ static int dm_plane_atomic_async_check(struct drm_plane *plane,
+-				       struct drm_plane_state *new_plane_state)
++				       struct drm_atomic_state *state)
+ {
+ 	/* Only support async updates on cursor planes. */
+ 	if (plane->type != DRM_PLANE_TYPE_CURSOR)
+@@ -6479,10 +6479,12 @@ static int dm_plane_atomic_async_check(struct drm_plane *plane,
+ }
+ 
+ static void dm_plane_atomic_async_update(struct drm_plane *plane,
+-					 struct drm_plane_state *new_state)
++					 struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
++									   plane);
+ 	struct drm_plane_state *old_state =
+-		drm_atomic_get_old_plane_state(new_state->state, plane);
++		drm_atomic_get_old_plane_state(state, plane);
+ 
+ 	trace_amdgpu_dm_atomic_update_cursor(new_state);
+ 
+diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+index a84dc427cf82..f9488fd25b1d 100644
+--- a/drivers/gpu/drm/drm_atomic_helper.c
++++ b/drivers/gpu/drm/drm_atomic_helper.c
+@@ -1742,7 +1742,7 @@ int drm_atomic_helper_async_check(struct drm_device *dev,
+ 		return -EBUSY;
+ 	}
+ 
+-	return funcs->atomic_async_check(plane, new_plane_state);
++	return funcs->atomic_async_check(plane, state);
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_async_check);
+ 
+@@ -1772,7 +1772,7 @@ void drm_atomic_helper_async_commit(struct drm_device *dev,
+ 		struct drm_framebuffer *old_fb = plane->state->fb;
+ 
+ 		funcs = plane->helper_private;
+-		funcs->atomic_async_update(plane, plane_state);
++		funcs->atomic_async_update(plane, state);
+ 
+ 		/*
+ 		 * ->atomic_async_update() is supposed to update the
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+index 92141a19681b..30ebcfd8832f 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+@@ -77,12 +77,14 @@ static void mtk_drm_plane_destroy_state(struct drm_plane *plane,
+ }
+ 
+ static int mtk_plane_atomic_async_check(struct drm_plane *plane,
+-					struct drm_plane_state *state)
++					struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
++										 plane);
+ 	struct drm_crtc_state *crtc_state;
+ 	int ret;
+ 
+-	if (plane != state->crtc->cursor)
++	if (plane != new_plane_state->crtc->cursor)
+ 		return -EINVAL;
+ 
+ 	if (!plane->state)
+@@ -91,16 +93,16 @@ static int mtk_plane_atomic_async_check(struct drm_plane *plane,
+ 	if (!plane->state->fb)
+ 		return -EINVAL;
+ 
+-	ret = mtk_drm_crtc_plane_check(state->crtc, plane,
+-				       to_mtk_plane_state(state));
++	ret = mtk_drm_crtc_plane_check(new_plane_state->crtc, plane,
++				       to_mtk_plane_state(new_plane_state));
+ 	if (ret)
+ 		return ret;
+ 
+-	if (state->state)
+-		crtc_state = drm_atomic_get_existing_crtc_state(state->state,
+-								state->crtc);
++	if (state)
++		crtc_state = drm_atomic_get_existing_crtc_state(state,
++								new_plane_state->crtc);
+ 	else /* Special case for asynchronous cursor updates. */
+-		crtc_state = state->crtc->state;
++		crtc_state = new_plane_state->crtc->state;
+ 
+ 	return drm_atomic_helper_check_plane_state(plane->state, crtc_state,
+ 						   DRM_PLANE_HELPER_NO_SCALING,
+@@ -109,9 +111,11 @@ static int mtk_plane_atomic_async_check(struct drm_plane *plane,
+ }
+ 
+ static void mtk_plane_atomic_async_update(struct drm_plane *plane,
+-					  struct drm_plane_state *new_state)
++					  struct drm_atomic_state *state)
+ {
+-	struct mtk_plane_state *state = to_mtk_plane_state(plane->state);
++	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
++									   plane);
++	struct mtk_plane_state *new_plane_state = to_mtk_plane_state(plane->state);
+ 
+ 	plane->state->crtc_x = new_state->crtc_x;
+ 	plane->state->crtc_y = new_state->crtc_y;
+@@ -122,7 +126,7 @@ static void mtk_plane_atomic_async_update(struct drm_plane *plane,
+ 	plane->state->src_h = new_state->src_h;
+ 	plane->state->src_w = new_state->src_w;
+ 	swap(plane->state->fb, new_state->fb);
+-	state->pending.async_dirty = true;
++	new_plane_state->pending.async_dirty = true;
+ 
+ 	mtk_drm_crtc_async_update(new_state->crtc, plane, new_state);
+ }
+diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+index 83423092de2f..05fa8255caeb 100644
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+@@ -5,6 +5,7 @@
+  * Author: Rob Clark <robdclark@gmail.com>
+  */
+ 
++#include <drm/drm_atomic.h>
+ #include <drm/drm_damage_helper.h>
+ #include <drm/drm_fourcc.h>
+ #include <drm/drm_print.h>
+@@ -438,41 +439,43 @@ static void mdp5_plane_atomic_update(struct drm_plane *plane,
+ }
+ 
+ static int mdp5_plane_atomic_async_check(struct drm_plane *plane,
+-					 struct drm_plane_state *state)
++					 struct drm_atomic_state *state)
+ {
+-	struct mdp5_plane_state *mdp5_state = to_mdp5_plane_state(state);
++	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
++										 plane);
++	struct mdp5_plane_state *mdp5_state = to_mdp5_plane_state(new_plane_state);
+ 	struct drm_crtc_state *crtc_state;
+ 	int min_scale, max_scale;
+ 	int ret;
+ 
+-	crtc_state = drm_atomic_get_existing_crtc_state(state->state,
+-							state->crtc);
++	crtc_state = drm_atomic_get_existing_crtc_state(state,
++							new_plane_state->crtc);
+ 	if (WARN_ON(!crtc_state))
+ 		return -EINVAL;
+ 
+ 	if (!crtc_state->active)
+ 		return -EINVAL;
+ 
+-	mdp5_state = to_mdp5_plane_state(state);
++	mdp5_state = to_mdp5_plane_state(new_plane_state);
+ 
+ 	/* don't use fast path if we don't have a hwpipe allocated yet */
+ 	if (!mdp5_state->hwpipe)
+ 		return -EINVAL;
+ 
+ 	/* only allow changing of position(crtc x/y or src x/y) in fast path */
+-	if (plane->state->crtc != state->crtc ||
+-	    plane->state->src_w != state->src_w ||
+-	    plane->state->src_h != state->src_h ||
+-	    plane->state->crtc_w != state->crtc_w ||
+-	    plane->state->crtc_h != state->crtc_h ||
++	if (plane->state->crtc != new_plane_state->crtc ||
++	    plane->state->src_w != new_plane_state->src_w ||
++	    plane->state->src_h != new_plane_state->src_h ||
++	    plane->state->crtc_w != new_plane_state->crtc_w ||
++	    plane->state->crtc_h != new_plane_state->crtc_h ||
+ 	    !plane->state->fb ||
+-	    plane->state->fb != state->fb)
++	    plane->state->fb != new_plane_state->fb)
+ 		return -EINVAL;
+ 
+ 	min_scale = FRAC_16_16(1, 8);
+ 	max_scale = FRAC_16_16(8, 1);
+ 
+-	ret = drm_atomic_helper_check_plane_state(state, crtc_state,
++	ret = drm_atomic_helper_check_plane_state(new_plane_state, crtc_state,
+ 						  min_scale, max_scale,
+ 						  true, true);
+ 	if (ret)
+@@ -485,15 +488,17 @@ static int mdp5_plane_atomic_async_check(struct drm_plane *plane,
+ 	 * also assign/unassign the hwpipe(s) tied to the plane. We avoid
+ 	 * taking the fast path for both these reasons.
+ 	 */
+-	if (state->visible != plane->state->visible)
++	if (new_plane_state->visible != plane->state->visible)
+ 		return -EINVAL;
+ 
+ 	return 0;
+ }
+ 
+ static void mdp5_plane_atomic_async_update(struct drm_plane *plane,
+-					   struct drm_plane_state *new_state)
++					   struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
++									   plane);
+ 	struct drm_framebuffer *old_fb = plane->state->fb;
+ 
+ 	plane->state->src_x = new_state->src_x;
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index 8d15cabdcb02..fefeab73ca27 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -1021,8 +1021,10 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ }
+ 
+ static int vop_plane_atomic_async_check(struct drm_plane *plane,
+-					struct drm_plane_state *state)
++					struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
++										 plane);
+ 	struct vop_win *vop_win = to_vop_win(plane);
+ 	const struct vop_win_data *win = vop_win->data;
+ 	int min_scale = win->phy->scl ? FRAC_16_16(1, 8) :
+@@ -1031,7 +1033,7 @@ static int vop_plane_atomic_async_check(struct drm_plane *plane,
+ 					DRM_PLANE_HELPER_NO_SCALING;
+ 	struct drm_crtc_state *crtc_state;
+ 
+-	if (plane != state->crtc->cursor)
++	if (plane != new_plane_state->crtc->cursor)
+ 		return -EINVAL;
+ 
+ 	if (!plane->state)
+@@ -1040,9 +1042,9 @@ static int vop_plane_atomic_async_check(struct drm_plane *plane,
+ 	if (!plane->state->fb)
+ 		return -EINVAL;
+ 
+-	if (state->state)
+-		crtc_state = drm_atomic_get_existing_crtc_state(state->state,
+-								state->crtc);
++	if (state)
++		crtc_state = drm_atomic_get_existing_crtc_state(state,
++								new_plane_state->crtc);
+ 	else /* Special case for asynchronous cursor updates. */
+ 		crtc_state = plane->crtc->state;
+ 
+@@ -1052,8 +1054,10 @@ static int vop_plane_atomic_async_check(struct drm_plane *plane,
+ }
+ 
+ static void vop_plane_atomic_async_update(struct drm_plane *plane,
+-					  struct drm_plane_state *new_state)
++					  struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
++									   plane);
+ 	struct vop *vop = to_vop(plane->state->crtc);
+ 	struct drm_framebuffer *old_fb = plane->state->fb;
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_plane.c b/drivers/gpu/drm/vc4/vc4_plane.c
+index 6bd8260aa9f2..ff485e58d271 100644
+--- a/drivers/gpu/drm/vc4/vc4_plane.c
++++ b/drivers/gpu/drm/vc4/vc4_plane.c
+@@ -1118,32 +1118,34 @@ void vc4_plane_async_set_fb(struct drm_plane *plane, struct drm_framebuffer *fb)
+ }
+ 
+ static void vc4_plane_atomic_async_update(struct drm_plane *plane,
+-					  struct drm_plane_state *state)
++					  struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
++										 plane);
+ 	struct vc4_plane_state *vc4_state, *new_vc4_state;
+ 
+-	swap(plane->state->fb, state->fb);
+-	plane->state->crtc_x = state->crtc_x;
+-	plane->state->crtc_y = state->crtc_y;
+-	plane->state->crtc_w = state->crtc_w;
+-	plane->state->crtc_h = state->crtc_h;
+-	plane->state->src_x = state->src_x;
+-	plane->state->src_y = state->src_y;
+-	plane->state->src_w = state->src_w;
+-	plane->state->src_h = state->src_h;
+-	plane->state->src_h = state->src_h;
+-	plane->state->alpha = state->alpha;
+-	plane->state->pixel_blend_mode = state->pixel_blend_mode;
+-	plane->state->rotation = state->rotation;
+-	plane->state->zpos = state->zpos;
+-	plane->state->normalized_zpos = state->normalized_zpos;
+-	plane->state->color_encoding = state->color_encoding;
+-	plane->state->color_range = state->color_range;
+-	plane->state->src = state->src;
+-	plane->state->dst = state->dst;
+-	plane->state->visible = state->visible;
++	swap(plane->state->fb, new_plane_state->fb);
++	plane->state->crtc_x = new_plane_state->crtc_x;
++	plane->state->crtc_y = new_plane_state->crtc_y;
++	plane->state->crtc_w = new_plane_state->crtc_w;
++	plane->state->crtc_h = new_plane_state->crtc_h;
++	plane->state->src_x = new_plane_state->src_x;
++	plane->state->src_y = new_plane_state->src_y;
++	plane->state->src_w = new_plane_state->src_w;
++	plane->state->src_h = new_plane_state->src_h;
++	plane->state->src_h = new_plane_state->src_h;
++	plane->state->alpha = new_plane_state->alpha;
++	plane->state->pixel_blend_mode = new_plane_state->pixel_blend_mode;
++	plane->state->rotation = new_plane_state->rotation;
++	plane->state->zpos = new_plane_state->zpos;
++	plane->state->normalized_zpos = new_plane_state->normalized_zpos;
++	plane->state->color_encoding = new_plane_state->color_encoding;
++	plane->state->color_range = new_plane_state->color_range;
++	plane->state->src = new_plane_state->src;
++	plane->state->dst = new_plane_state->dst;
++	plane->state->visible = new_plane_state->visible;
+ 
+-	new_vc4_state = to_vc4_plane_state(state);
++	new_vc4_state = to_vc4_plane_state(new_plane_state);
+ 	vc4_state = to_vc4_plane_state(plane->state);
+ 
+ 	vc4_state->crtc_x = new_vc4_state->crtc_x;
+@@ -1187,23 +1189,25 @@ static void vc4_plane_atomic_async_update(struct drm_plane *plane,
+ }
+ 
+ static int vc4_plane_atomic_async_check(struct drm_plane *plane,
+-					struct drm_plane_state *state)
++					struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
++										 plane);
+ 	struct vc4_plane_state *old_vc4_state, *new_vc4_state;
+ 	int ret;
+ 	u32 i;
+ 
+-	ret = vc4_plane_mode_set(plane, state);
++	ret = vc4_plane_mode_set(plane, new_plane_state);
+ 	if (ret)
+ 		return ret;
+ 
+ 	old_vc4_state = to_vc4_plane_state(plane->state);
+-	new_vc4_state = to_vc4_plane_state(state);
++	new_vc4_state = to_vc4_plane_state(new_plane_state);
+ 	if (old_vc4_state->dlist_count != new_vc4_state->dlist_count ||
+ 	    old_vc4_state->pos0_offset != new_vc4_state->pos0_offset ||
+ 	    old_vc4_state->pos2_offset != new_vc4_state->pos2_offset ||
+ 	    old_vc4_state->ptr0_offset != new_vc4_state->ptr0_offset ||
+-	    vc4_lbm_size(plane->state) != vc4_lbm_size(state))
++	    vc4_lbm_size(plane->state) != vc4_lbm_size(new_plane_state))
+ 		return -EINVAL;
+ 
+ 	/* Only pos0, pos2 and ptr0 DWORDS can be updated in an async update
+diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
+index eb706342861d..2b4d085da450 100644
+--- a/include/drm/drm_modeset_helper_vtables.h
++++ b/include/drm/drm_modeset_helper_vtables.h
+@@ -1292,9 +1292,9 @@ struct drm_plane_helper_funcs {
+ 	/**
+ 	 * @atomic_async_check:
+ 	 *
+-	 * Drivers should set this function pointer to check if the plane state
+-	 * can be updated in a async fashion. Here async means "not vblank
+-	 * synchronized".
++	 * Drivers should set this function pointer to check if the plane's
++	 * atomic state can be updated in a async fashion. Here async means
++	 * "not vblank synchronized".
+ 	 *
+ 	 * This hook is called by drm_atomic_async_check() to establish if a
+ 	 * given update can be committed asynchronously, that is, if it can
+@@ -1306,7 +1306,7 @@ struct drm_plane_helper_funcs {
+ 	 * can not be applied in asynchronous manner.
+ 	 */
+ 	int (*atomic_async_check)(struct drm_plane *plane,
+-				  struct drm_plane_state *state);
++				  struct drm_atomic_state *state);
+ 
+ 	/**
+ 	 * @atomic_async_update:
+@@ -1322,11 +1322,9 @@ struct drm_plane_helper_funcs {
+ 	 * update won't happen if there is an outstanding commit modifying
+ 	 * the same plane.
+ 	 *
+-	 * Note that unlike &drm_plane_helper_funcs.atomic_update this hook
+-	 * takes the new &drm_plane_state as parameter. When doing async_update
+-	 * drivers shouldn't replace the &drm_plane_state but update the
+-	 * current one with the new plane configurations in the new
+-	 * plane_state.
++	 * When doing async_update drivers shouldn't replace the
++	 * &drm_plane_state but update the current one with the new plane
++	 * configurations in the new plane_state.
+ 	 *
+ 	 * Drivers should also swap the framebuffers between current plane
+ 	 * state (&drm_plane.state) and new_state.
+@@ -1345,7 +1343,7 @@ struct drm_plane_helper_funcs {
+ 	 *    for deferring if needed, until a common solution is created.
+ 	 */
+ 	void (*atomic_async_update)(struct drm_plane *plane,
+-				    struct drm_plane_state *new_state);
++				    struct drm_atomic_state *state);
+ };
+ 
+ /**
+-- 
+2.29.2
 
