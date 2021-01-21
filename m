@@ -2,152 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC7A2FDFF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA04A2FDFDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390802AbhAUDA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:00:56 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11420 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436661AbhAUCFi (ORCPT
+        id S2393445AbhAUCzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:55:42 -0500
+Received: from audible.transient.net ([24.143.126.66]:37030 "HELO
+        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726456AbhAUCea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 21:05:38 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DLm0535L0zj8K4;
-        Thu, 21 Jan 2021 10:03:49 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Thu, 21 Jan 2021
- 10:04:32 +0800
-Subject: Re: [PATCH 2/2] Revert "iommu/arm-smmu-v3: Don't reserve
- implementation defined register space"
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Neil Leeder <nleeder@codeaurora.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
- <20210119015951.1042-3-thunder.leizhen@huawei.com>
- <888312dc-85b7-4d5e-f264-bbdd9e3638f6@arm.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <ca469958-179d-02c5-b147-0a0ff951d503@huawei.com>
-Date:   Thu, 21 Jan 2021 10:04:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 20 Jan 2021 21:34:30 -0500
+Received: (qmail 32730 invoked from network); 21 Jan 2021 02:33:27 -0000
+Received: from cucamonga.audible.transient.net (192.168.2.5)
+  by canarsie.audible.transient.net with QMQP; 21 Jan 2021 02:33:27 -0000
+Received: (nullmailer pid 23115 invoked by uid 1000);
+        Thu, 21 Jan 2021 02:33:27 -0000
+Date:   Thu, 21 Jan 2021 02:33:26 +0000
+From:   Jamie Heilman <jamie@audible.transient.net>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Ben Skeggs <bskeggs@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>
+Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
+Message-ID: <YAjn9jR+d2zRfNjb@audible.transient.net>
+Mail-Followup-To: Karol Herbst <kherbst@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>
+References: <X+WV8OiQzTIfLdgW@audible.transient.net>
+ <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
+ <X/NO9kAlCd/k8Di2@audible.transient.net>
+ <X/NT0iN9KlSXQJJ7@audible.transient.net>
+ <X/UsBWwFR+V0hIOS@audible.transient.net>
+ <CACO55ttrFCOzREQxi3+SSaCSsAP1bEUBEt78ajkRGQQU1xYxtw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <888312dc-85b7-4d5e-f264-bbdd9e3638f6@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACO55ttrFCOzREQxi3+SSaCSsAP1bEUBEt78ajkRGQQU1xYxtw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Karol Herbst wrote:
+> On Wed, Jan 6, 2021 at 4:25 AM Jamie Heilman
+> <jamie@audible.transient.net> wrote:
+> >
+> > Jamie Heilman wrote:
+> > > Jamie Heilman wrote:
+> > > > Karol Herbst wrote:
+> > > > > do you think you'd be able to do a kernel bisect in order to pinpoint
+> > > > > the actual commit causing it? Thanks
+> > > >
+> > > > No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
+> > > > be a problem but as I can't and as it can take weeks for the problem
+> > > > to occur there's essentially no chance.  I know it regressed roughly
+> > > > in 5.8-rc1 only because that's what I was running when the first event
+> > > > occured.
+> > >
+> > > er, 5.9.0-rc1 rather
+> >
+> > Actually ... I've found a way to reproduce this in hours intead of
+> > weeks, so I think I may be able to bisect it after all, it's something
+> > of a brute force approach and its probably doing horrible things to
+> > the backlight in my poor old monitor, but just running this:
+> >
+> > #!/bin/sh
+> > sleep 5
+> > while ! dmesg | tail | grep -q nouveau
+> > do
+> >     xset dpms force off
+> >     sleep 65
+> >     xdotool mousemove 1024 1024 mousemove restore
+> >     sleep 10
+> > done
+> >
+> > Does manage to trip the issue sooner than it would otherwise happen
+> > with natural usage.  Given that this is my primary workstation and I
+> > sort of need it functional during waking hours, it'll take me a bit,
+> > but I'll update folks when I have the error more dialed in.
+> >
+> 
+> huh interesting. Kind of feels like a random thing still. But I think
+> in general you'd spend way too much time on this if you can't
+> reproduce within seconds/minutes and then it might not point out the
+> actual issue, because randomly the issue didn't appear and stuff.
+> 
+> maybe you can tune it to have shorter pauses or something? I'd really
+> try to bring down the time per cycle.
+
+Well I'm confident enough, at this point, to say this bisects to
+0a96099691c8 ("drm/nouveau/kms/nv50-: implement proper push buffer control logic")
+
+Now... I wish I could say the bisection was straightforward and
+simple, but it wasn't thanks to still not having a reproducer really
+dialed in.  The above script doesn't work unless I've got some normal
+usage around it.  It certainly triggers the issue sooner than it
+otherwise would, but by itself it isn't enough.  I modified it
+somewhat in the hopes of capturing the rough idea of how many
+itterations it would take to trigger the problem by using:
+
+#!/bin/sh
+I=0
+trap 'echo;echo $I' 0
+trap 'exit' INT
+sleep 5
+while ! dmesg | tail | grep -q nouveau
+do
+    I=$(($I + 1))
+    xset dpms force off
+    sleep 32
+    xdotool mousemove 1 12 mousemove restore
+    sleep 28
+done
+
+but ultimately that didn't really pan out the way I'd hoped.  I don't
+think the itterations have all that much to do with the condition in
+the end.  I wanted to try applying ca386aa7155a
+("drm/nouveau/kms/nv50-gp1xx: add WAR for EVO push buffer HW bug") on
+top of the first bad commit becuase I sort of felt like when I was
+running -rc versions that things got a bit less chaotic after that
+commit landed, but it was just a gut feeling and I wanted to see if I
+could support it with metrics---but no, I can't really get consistent
+metrics even without that commit so I gave up, and decided to report
+what I've got so far.
 
 
-On 2021/1/20 23:02, Robin Murphy wrote:
-> On 2021-01-19 01:59, Zhen Lei wrote:
->> This reverts commit 52f3fab0067d6fa9e99c1b7f63265dd48ca76046.
->>
->> This problem has been fixed by another patch. The original method had side
->> effects, it was not mapped to the user-specified resource size. The code
->> will become more complex when ECMDQ is supported later.
-> 
-> FWIW I don't think that's a significant issue either way - there could be any number of imp-def pages between SMMU page 0 and the ECMDQ control pages, so it will still be logical to map them as another separate thing anyway.
 
-Yes, so now I'm thinking of preserving the SMMUv3 resources and eliminating the imp-def area. Then use another devm_ioremap() to cover the entire resource，assign it to smmu->base.
-Otherwise, a base pointer needs to be defined for each separated register space，or call a function to convert each time.
+> > I'm using git bisect start -- drivers/gpu/drm include/drm include/video
+> > in an effort to make this go a bit quicker, let me know if you think
+> > that's a bad idea or I should add other paths.
+> >
+> > > > > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
+> > > > > <jamie@audible.transient.net> wrote:
+> > > > > >
+> > > > > > Something between v5.8 and v5.9 has resulted in periodically losing video.
+> > > > > > Unfortunately, I can't reliably reproduce it, it seems to happen every
+> > > > > > once in a long while---I can go weeks without an occurance, but it
+> > > > > > always seems to happen after my workstation has been idle long enough
+> > > > > > to screen blank and put the monitor to sleep.  I'm using a single
+> > > > > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
+> > > > > > Debian sid).  I don't really do anything fancy, xterms, a browser or
+> > > > > > two, play the occasional video, but like I said, I can't reliably
+> > > > > > reproduce this.  I've had it happen about 11 times since August.
+> > > > > >
+> > > > > > lspci -vv output is:
+> > > > > >
+> > > > > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
+> > > > > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
+> > > > > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+> > > > > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+> > > > > >         Latency: 0, Cache Line Size: 64 bytes
+> > > > > >         Interrupt: pin A routed to IRQ 28
+> > > > > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
+> > > > > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
+> > > > > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
+> > > > > >         Region 5: I/O ports at dc80 [size=128]
+> > > > > >         Expansion ROM at 000c0000 [disabled] [size=128K]
+> > > > > >         Capabilities: [60] Power Management version 2
+> > > > > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+> > > > > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+> > > > > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+> > > > > >                 Address: 00000000fee01004  Data: 4023
+> > > > > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
+> > > > > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
+> > > > > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
+> > > > > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
+> > > > > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+> > > > > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
+> > > > > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+> > > > > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+> > > > > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
+> > > > > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+> > > > > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+> > > > > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
+> > > > > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+> > > > > >         Capabilities: [100 v1] Virtual Channel
+> > > > > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
+> > > > > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
+> > > > > >                 Ctrl:   ArbSelect=Fixed
+> > > > > >                 Status: InProgress-
+> > > > > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
+> > > > > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+> > > > > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
+> > > > > >                         Status: NegoPending- InProgress-
+> > > > > >         Capabilities: [128 v1] Power Budgeting <?>
+> > > > > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
+> > > > > >         Kernel driver in use: nouveau
+> > > > > >
+> > > > > > The last time this happened, this is what got logged:
+> > > > > >
+> > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > > > > nouveau 0000:01:00.0: disp: Base 1:
+> > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > > > > nouveau 0000:01:00.0: disp: Base 1:
+> > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > > > > nouveau 0000:01:00.0: DRM: core notifier timeout
+> > > > > > nouveau 0000:01:00.0: DRM: base-0: timeout
+> > > > > >
+> > > > > > I've got logs of all of this, if they help I can collect them.  The
+> > > > > > timeout message are consistent the error messages a little less so.
+> > > > > >
+> > > > > > If there's more debugging I can do when this happens, I'd love to know
+> > > > > > what it is.
+> > > > > >
+> > > > > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
+> > > > > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
+> > > > > >
+> > > > > > --
+> > > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > > > > > _______________________________________________
+> > > > > > Nouveau mailing list
+> > > > > > Nouveau@lists.freedesktop.org
+> > > > > > https://lists.freedesktop.org/mailman/listinfo/nouveau
+> > > > > >
+> > > > >
+> > > >
+> > > > --
+> > > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > >
+> > > --
+> > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> >
+> > --
+> > Jamie Heilman                     http://audible.transient.net/~jamie/
+> >
+> 
 
-> 
-> Robin.
-> 
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 32 ++++-------------------------
->>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 ---
->>   2 files changed, 4 insertions(+), 31 deletions(-)
->>
->> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> index 8ca7415d785d9bf..477f473842e5272 100644
->> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> @@ -91,8 +91,9 @@ struct arm_smmu_option_prop {
->>   static inline void __iomem *arm_smmu_page1_fixup(unsigned long offset,
->>                            struct arm_smmu_device *smmu)
->>   {
->> -    if (offset > SZ_64K)
->> -        return smmu->page1 + offset - SZ_64K;
->> +    if ((offset > SZ_64K) &&
->> +        (smmu->options & ARM_SMMU_OPT_PAGE0_REGS_ONLY))
->> +        offset -= SZ_64K;
->>         return smmu->base + offset;
->>   }
->> @@ -3486,18 +3487,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
->>       return err;
->>   }
->>   -static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
->> -                      resource_size_t size)
->> -{
->> -    struct resource res = {
->> -        .flags = IORESOURCE_MEM,
->> -        .start = start,
->> -        .end = start + size - 1,
->> -    };
->> -
->> -    return devm_ioremap_resource(dev, &res);
->> -}
->> -
->>   static int arm_smmu_device_probe(struct platform_device *pdev)
->>   {
->>       int irq, ret;
->> @@ -3533,23 +3522,10 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->>       }
->>       ioaddr = res->start;
->>   -    /*
->> -     * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
->> -     * the PMCG registers which are reserved by the PMU driver.
->> -     */
->> -    smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
->> +    smmu->base = devm_ioremap_resource(dev, res);
->>       if (IS_ERR(smmu->base))
->>           return PTR_ERR(smmu->base);
->>   -    if (arm_smmu_resource_size(smmu) > SZ_64K) {
->> -        smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
->> -                           ARM_SMMU_REG_SZ);
->> -        if (IS_ERR(smmu->page1))
->> -            return PTR_ERR(smmu->page1);
->> -    } else {
->> -        smmu->page1 = smmu->base;
->> -    }
->> -
->>       /* Interrupt lines */
->>         irq = platform_get_irq_byname_optional(pdev, "combined");
->> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->> index 96c2e9565e00282..0c3090c60840c22 100644
->> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->> @@ -152,8 +152,6 @@
->>   #define ARM_SMMU_PRIQ_IRQ_CFG1        0xd8
->>   #define ARM_SMMU_PRIQ_IRQ_CFG2        0xdc
->>   -#define ARM_SMMU_REG_SZ            0xe00
->> -
->>   /* Common MSI config fields */
->>   #define MSI_CFG0_ADDR_MASK        GENMASK_ULL(51, 2)
->>   #define MSI_CFG2_SH            GENMASK(5, 4)
->> @@ -584,7 +582,6 @@ struct arm_smmu_strtab_cfg {
->>   struct arm_smmu_device {
->>       struct device            *dev;
->>       void __iomem            *base;
->> -    void __iomem            *page1;
->>     #define ARM_SMMU_FEAT_2_LVL_STRTAB    (1 << 0)
->>   #define ARM_SMMU_FEAT_2_LVL_CDTAB    (1 << 1)
->>
-> 
-> .
-> 
-
+-- 
+Jamie Heilman                     http://audible.transient.net/~jamie/
