@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605C72FE2E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08252FE2E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbhAUGbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S1726286AbhAUGcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:32:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbhAUGNn (ORCPT
+        with ESMTP id S1726566AbhAUGNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 01:13:43 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05D3C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:12:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37E6C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:11:59 -0800 (PST)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1l2TC4-0006PJ-3b; Thu, 21 Jan 2021 07:11:44 +0100
+        id 1l2TC4-0006PL-3g; Thu, 21 Jan 2021 07:11:44 +0100
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1l2TC2-00061d-7S; Thu, 21 Jan 2021 07:11:42 +0100
+        id 1l2TC2-00061w-9g; Thu, 21 Jan 2021 07:11:42 +0100
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         David Jander <david@protonic.nl>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 3/7] ARM: dts: imx6dl-prtvt7: Add display and panel nodes
-Date:   Thu, 21 Jan 2021 07:11:37 +0100
-Message-Id: <20210121061141.23062-4-o.rempel@pengutronix.de>
+Subject: [PATCH v2 5/7] ARM: dts: imx6dl-prtvt7: Remove backlight enable gpio
+Date:   Thu, 21 Jan 2021 07:11:39 +0100
+Message-Id: <20210121061141.23062-6-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210121061141.23062-1-o.rempel@pengutronix.de>
 References: <20210121061141.23062-1-o.rempel@pengutronix.de>
@@ -56,93 +56,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Innolux G070Y2-T02 panel to the Protonic VT7 board.
+The backlight power is controlled through the reg_bl_12v0 regulator.
 
+Co-Developed-by: Robin van der Gracht <robin@protonic.nl>
 Signed-off-by: Robin van der Gracht <robin@protonic.nl>
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- arch/arm/boot/dts/imx6dl-prtvt7.dts | 47 +++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ arch/arm/boot/dts/imx6dl-prtvt7.dts | 9 ---------
+ 1 file changed, 9 deletions(-)
 
 diff --git a/arch/arm/boot/dts/imx6dl-prtvt7.dts b/arch/arm/boot/dts/imx6dl-prtvt7.dts
-index ae6da241f13e..d9cb1e41cc10 100644
+index 836026a0e219..8a1491975da8 100644
 --- a/arch/arm/boot/dts/imx6dl-prtvt7.dts
 +++ b/arch/arm/boot/dts/imx6dl-prtvt7.dts
-@@ -31,6 +31,30 @@ backlight_lcd: backlight-lcd {
- 		enable-gpios = <&gpio4 28 GPIO_ACTIVE_HIGH>;
+@@ -21,14 +21,11 @@ memory@10000000 {
+ 
+ 	backlight_lcd: backlight-lcd {
+ 		compatible = "pwm-backlight";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_backlight>;
+ 		pwms = <&pwm1 0 500000>;
+ 		brightness-levels = <0 20 81 248 1000>;
+ 		default-brightness-level = <20>;
+ 		num-interpolated-steps = <21>;
+ 		power-supply = <&reg_bl_12v0>;
+-		enable-gpios = <&gpio4 28 GPIO_ACTIVE_HIGH>;
  	};
  
-+	display {
-+		compatible = "fsl,imx-parallel-display";
-+		pinctrl-0 = <&pinctrl_ipu1_disp>;
-+		pinctrl-names = "default";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+
-+			display_in: endpoint {
-+				remote-endpoint = <&ipu1_di0_disp0>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+
-+			display_out: endpoint {
-+				remote-endpoint = <&panel_in>;
-+			};
-+		};
-+	};
-+
- 	keys {
- 		compatible = "gpio-keys";
- 		autorepeat;
-@@ -138,6 +162,18 @@ led-debug0 {
- 		};
+ 	display {
+@@ -362,12 +359,6 @@ MX6QDL_PAD_CSI0_DAT6__AUD3_TXFS		0x130b0
+ 		>;
  	};
  
-+	panel {
-+		compatible = "innolux,g070y2-t02";
-+		backlight = <&backlight_lcd>;
-+		power-supply = <&reg_3v3>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&display_out>;
-+			};
-+		};
-+	};
-+
- 	reg_bl_12v0: regulator-bl-12v0 {
- 		compatible = "regulator-fixed";
- 		pinctrl-names = "default";
-@@ -149,6 +185,13 @@ reg_bl_12v0: regulator-bl-12v0 {
- 		enable-active-high;
- 	};
- 
-+	reg_3v3: regulator-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
- 	reg_1v8: regulator-1v8 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "1v8";
-@@ -260,6 +303,10 @@ &ipu1 {
- 	status = "okay";
- };
- 
-+&ipu1_di0_disp0 {
-+	remote-endpoint = <&display_in>;
-+};
-+
- &pwm1 {
- 	#pwm-cells = <2>;
- 	pinctrl-names = "default";
+-	pinctrl_backlight: backlightgrp {
+-		fsl,pins = <
+-			MX6QDL_PAD_DISP0_DAT7__GPIO4_IO28	0x1b0b0
+-		>;
+-	};
+-
+ 	pinctrl_can1phy: can1phy {
+ 		fsl,pins = <
+ 			/* CAN1_SR */
 -- 
 2.30.0
 
