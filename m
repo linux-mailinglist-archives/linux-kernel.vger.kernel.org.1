@@ -2,128 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A4A2FF3BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1982FF3C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbhAUSxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:53:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727635AbhAUS0A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:26:00 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA324C061797;
-        Thu, 21 Jan 2021 10:23:31 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id q8so3856851lfm.10;
-        Thu, 21 Jan 2021 10:23:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qXZh7vyQ2J2UJfaf/gy0esqvLP8/x2DgurRZz5ydknM=;
-        b=B1WnslMyVrxWMuOGS2ylENr8VsLJ5E/6MrPGSDvWp2tl+RGRxKd1SkHUwojuHsjv7S
-         iV1QUgFUWDae2Br6D/yC3ZDvZ81u5fxq1HhfCpAV9g/OcKyFLx11qHoD5Nj8WFQirFXt
-         K0zvZ2jelh454RFzkfCAOwv0niChY4VPXbG0ogSghdBu0WfmNKFKn57QKKfGf2jxDVTV
-         DNxmON+/2843y1CTkebOzWKFFiw2S5r+4LT4Rk8CsBKV6+QeaUwaYni13x8nPJxGzJIy
-         FaVkJiD10jEFBJvtCaNCuNf9lVqvQgZm+tNCahwpscPMPrDu1Hb2P6WKgg34VF9WPmun
-         BvKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qXZh7vyQ2J2UJfaf/gy0esqvLP8/x2DgurRZz5ydknM=;
-        b=qHcl7b8jMqgG8B127fn9bgjeB17wqs2t2Zui4JSLMCGw1MZ5XjyIlcS4KSWzcoZz6Z
-         f7U9tNma/xPq7TQ/gyrb6cWymQQmOr6PdBnwjg/Qq4rtRmZFqOZ+0LxGKAgZzmJK4tls
-         zfzxsg6YiSN4WcPAVLuq153mlwLz4XGIrt/K92Hupbq1KcvmFDWDh6F1WHmntMQv5DNZ
-         yDmNcQfXg3hRFIqwINDyCxih6tCE6ILZMo+WhYk2FpNTz9rOWbs++jWAfnFF1jf1vZ+5
-         PdFAf7/sQgQD6xIYUq6T0QJYVPs3Cz7FZ/worYRB8FQFHOP0PDc9w8gV8vE1l0UFyNBx
-         NEUA==
-X-Gm-Message-State: AOAM532mMNZgKFNpYRsa4XZKr32/jsldg/VyoKtdOcyaob5kdo1ZdUiU
-        3Rvw95dIPRGHYYfOfnDnaAU=
-X-Google-Smtp-Source: ABdhPJzkHjyfygys1XpqzR0zHpDxBxW5NYowsVNXHxzy9IN5Mz1VCOlHbh3/IQ0WVzcuyoE5f4dTUA==
-X-Received: by 2002:a05:6512:330d:: with SMTP id k13mr16088lfe.173.1611253410281;
-        Thu, 21 Jan 2021 10:23:30 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:23:29 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 10/13] ARM: tegra: nexus7: Specify all CPU cores as cooling devices
-Date:   Thu, 21 Jan 2021 21:23:05 +0300
-Message-Id: <20210121182308.16080-11-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121182308.16080-1-digetx@gmail.com>
-References: <20210121182308.16080-1-digetx@gmail.com>
+        id S1726212AbhAUTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:04:52 -0500
+Received: from ms.lwn.net ([45.79.88.28]:36258 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726823AbhAUSxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 13:53:46 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 91882615F;
+        Thu, 21 Jan 2021 18:52:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 91882615F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1611255148; bh=TLHAsi6Ty8O0y2qbsmaLJjfL5054cf7/wZfX1o0btdA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HdMTC+/pzgwibyhHpFXEgZz4hQnlDgiLzf9Ir8UAu9s7MeI5KvP1UQIeF8rFflVGa
+         9M++bSybS/4M0YWty863fPt/VmsUJxsK3x2URWh0RJh0B3snAmqy3MvdKyrPYuRpEg
+         CTFRLehmTWSxPfhN7x3SGe0wCSAO5B2xxi20zocEjFIXF2vJWwFevX4R3dgn4Q1gwB
+         evMHlfNrQmVbVAVLLxmEBy60zB2Ux53lh1gj94N8pYANebEk99GsHKbOTZt4sw2DTh
+         rbQksh9CB1mEc7xiRnurSG0IYif2UReHx3SHfiRBzaXi43UeUTw2gB/IzukM9QoHbT
+         vXJm+aqtme1hQ==
+Date:   Thu, 21 Jan 2021 11:52:26 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-doc@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] Documentation: livepatch: Document reliable
+ stacktrace and minor cleanup
+Message-ID: <20210121115226.565790ef@lwn.net>
+In-Reply-To: <20210120164714.16581-1-broonie@kernel.org>
+References: <20210120164714.16581-1-broonie@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CPU0 is unplugged the cooling device can not rebind to CPU1. And if
-CPU0 is plugged in again, the cooling device may fail to initialize.
+On Wed, 20 Jan 2021 16:47:12 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
-If the CPUs are mapped with the physical CPU0 to Linux numbering
-CPU1, the cooling device mapping will fail.
+> This series adds a document, mainly written by Mark Rutland, which makes
+> explicit the requirements for implementing reliable stacktrace in order
+> to aid architectures adding this feature.  It also updates the other
+> livepatching documents to use automatically generated tables of contents
+> following review comments on Mark's document.
 
-Hence specify all CPU cores as a cooling devices in the device-tree.
+So...is this deemed ready and, if so, do you want it to go through the
+docs tree or via some other path?
 
-Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- .../dts/tegra30-asus-nexus7-grouper-common.dtsi    | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Thanks,
 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-index ac1c1a63eb0e..dc773b1bf8ee 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-@@ -1056,19 +1056,22 @@ cpu0: cpu@0 {
- 			#cooling-cells = <2>;
- 		};
- 
--		cpu@1 {
-+		cpu1: cpu@1 {
- 			cpu-supply = <&vdd_cpu>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@2 {
-+		cpu2: cpu@2 {
- 			cpu-supply = <&vdd_cpu>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@3 {
-+		cpu3: cpu@3 {
- 			cpu-supply = <&vdd_cpu>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			#cooling-cells = <2>;
- 		};
- 	};
- 
-@@ -1281,7 +1284,10 @@ trip1: cpu-crit {
- 			cooling-maps {
- 				map0 {
- 					trip = <&trip0>;
--					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
- 				};
- 			};
- 		};
--- 
-2.29.2
-
+jon
