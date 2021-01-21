@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64A82FEC9E
+	by mail.lfdr.de (Postfix) with ESMTP id 784E52FEC9D
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbhAUOFL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Jan 2021 09:05:11 -0500
-Received: from unicorn.mansr.com ([81.2.72.234]:60292 "EHLO unicorn.mansr.com"
+        id S1729766AbhAUOEU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Jan 2021 09:04:20 -0500
+Received: from unicorn.mansr.com ([81.2.72.234]:60308 "EHLO unicorn.mansr.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbhAUOAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:00:13 -0500
-Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:8d8e::3])
-        by unicorn.mansr.com (Postfix) with ESMTPS id 209A915363;
-        Thu, 21 Jan 2021 13:59:02 +0000 (GMT)
+        id S1729244AbhAUOAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 09:00:50 -0500
+Received: from raven.mansr.com (raven.mansr.com [81.2.72.235])
+        by unicorn.mansr.com (Postfix) with ESMTPS id 2C9CC15362;
+        Thu, 21 Jan 2021 13:59:33 +0000 (GMT)
 Received: by raven.mansr.com (Postfix, from userid 51770)
-        id 1D75621A3D9; Thu, 21 Jan 2021 13:59:02 +0000 (GMT)
+        id 29B4521A3D9; Thu, 21 Jan 2021 13:59:33 +0000 (GMT)
 From:   =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] pci: remove tango host controller driver
-References: <20210120150800.1650898-1-arnd@kernel.org>
-Date:   Thu, 21 Jan 2021 13:59:02 +0000
-In-Reply-To: <20210120150800.1650898-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Wed, 20 Jan 2021 16:07:29 +0100")
-Message-ID: <yw1x4kjaz909.fsf@mansr.com>
+        Marc Gonzalez <marc.w.gonzalez@free.fr>
+Subject: Re: [PATCH 1/2] thermal: remove tango driver
+References: <20210120162400.4115366-1-arnd@kernel.org>
+        <20210120162400.4115366-2-arnd@kernel.org>
+Date:   Thu, 21 Jan 2021 13:59:33 +0000
+In-Reply-To: <20210120162400.4115366-2-arnd@kernel.org> (Arnd Bergmann's
+        message of "Wed, 20 Jan 2021 17:23:59 +0100")
+Message-ID: <yw1xzh12xuey.fsf@mansr.com>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -52,396 +53,203 @@ Arnd Bergmann <arnd@kernel.org> writes:
 Acked-by: Mans Rullgard <mans@mansr.com>
 
 > ---
->  drivers/pci/controller/Kconfig      |  14 --
->  drivers/pci/controller/Makefile     |   1 -
->  drivers/pci/controller/pcie-tango.c | 341 ----------------------------
->  3 files changed, 356 deletions(-)
->  delete mode 100644 drivers/pci/controller/pcie-tango.c
+>  .../bindings/thermal/tango-thermal.txt        |  17 ---
+>  drivers/thermal/Kconfig                       |   9 --
+>  drivers/thermal/Makefile                      |   1 -
+>  drivers/thermal/tango_thermal.c               | 126 ------------------
+>  4 files changed, 153 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/thermal/tango-thermal.txt
+>  delete mode 100644 drivers/thermal/tango_thermal.c
 >
-> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-> index 64e2f5e379aa..8c85c16594f2 100644
-> --- a/drivers/pci/controller/Kconfig
-> +++ b/drivers/pci/controller/Kconfig
-> @@ -242,20 +242,6 @@ config PCIE_MEDIATEK
->  	  Say Y here if you want to enable PCIe controller support on
->  	  MediaTek SoCs.
->
-> -config PCIE_TANGO_SMP8759
-> -	bool "Tango SMP8759 PCIe controller (DANGEROUS)"
-> -	depends on ARCH_TANGO && PCI_MSI && OF
-> -	depends on BROKEN
-> -	select PCI_HOST_COMMON
-> -	help
-> -	  Say Y here to enable PCIe controller support for Sigma Designs
-> -	  Tango SMP8759-based systems.
-> -
-> -	  Note: The SMP8759 controller multiplexes PCI config and MMIO
-> -	  accesses, and Linux doesn't provide a way to serialize them.
-> -	  This can lead to data corruption if drivers perform concurrent
-> -	  config and MMIO accesses.
-> -
->  config VMD
->  	depends on PCI_MSI && X86_64 && SRCU
->  	tristate "Intel Volume Management Device Driver"
-> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
-> index 04c6edc285c5..b3a7912f8a5c 100644
-> --- a/drivers/pci/controller/Makefile
-> +++ b/drivers/pci/controller/Makefile
-> @@ -27,7 +27,6 @@ obj-$(CONFIG_PCIE_ROCKCHIP) += pcie-rockchip.o
->  obj-$(CONFIG_PCIE_ROCKCHIP_EP) += pcie-rockchip-ep.o
->  obj-$(CONFIG_PCIE_ROCKCHIP_HOST) += pcie-rockchip-host.o
->  obj-$(CONFIG_PCIE_MEDIATEK) += pcie-mediatek.o
-> -obj-$(CONFIG_PCIE_TANGO_SMP8759) += pcie-tango.o
->  obj-$(CONFIG_VMD) += vmd.o
->  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
->  obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
-> diff --git a/drivers/pci/controller/pcie-tango.c b/drivers/pci/controller/pcie-tango.c
+> diff --git a/Documentation/devicetree/bindings/thermal/tango-thermal.txt b/Documentation/devicetree/bindings/thermal/tango-thermal.txt
 > deleted file mode 100644
-> index 62a061f1d62e..000000000000
-> --- a/drivers/pci/controller/pcie-tango.c
+> index 2c918d742867..000000000000
+> --- a/Documentation/devicetree/bindings/thermal/tango-thermal.txt
 > +++ /dev/null
-> @@ -1,341 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/irqchip/chained_irq.h>
-> -#include <linux/irqdomain.h>
-> -#include <linux/pci-ecam.h>
+> @@ -1,17 +0,0 @@
+> -* Tango Thermal
+> -
+> -The SMP8758 SoC includes 3 instances of this temperature sensor
+> -(in the CPU, video decoder, and PCIe controller).
+> -
+> -Required properties:
+> -- #thermal-sensor-cells: Should be 0 (see Documentation/devicetree/bindings/thermal/thermal-sensor.yaml)
+>
+> -- compatible: "sigma,smp8758-thermal"
+> -- reg: Address range of the thermal registers
+> -
+> -Example:
+> -
+> -	cpu_temp: thermal@920100 {
+> -		#thermal-sensor-cells = <0>;
+> -		compatible = "sigma,smp8758-thermal";
+> -		reg = <0x920100 12>;
+> -	};
+>
+> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+> index 7edc8dc6bbab..cf199574c096 100644
+> --- a/drivers/thermal/Kconfig
+> +++ b/drivers/thermal/Kconfig
+> @@ -450,15 +450,6 @@ depends on (ARCH_STI || ARCH_STM32) && OF
+>  source "drivers/thermal/st/Kconfig"
+>  endmenu
+>
+> -config TANGO_THERMAL
+> -	tristate "Tango thermal management"
+> -	depends on ARCH_TANGO || COMPILE_TEST
+> -	help
+> -	  Enable the Tango thermal driver, which supports the primitive
+> -	  temperature sensor embedded in Tango chips since the SMP8758.
+> -	  This sensor only generates a 1-bit signal to indicate whether
+> -	  the die temperature exceeds a programmable threshold.
+> -
+>  source "drivers/thermal/tegra/Kconfig"
+>
+>  config GENERIC_ADC_THERMAL
+> diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
+> index b64dd50a6629..a44dda2d03bc 100644
+> --- a/drivers/thermal/Makefile
+> +++ b/drivers/thermal/Makefile
+> @@ -42,7 +42,6 @@ obj-y				+= samsung/
+>  obj-$(CONFIG_DOVE_THERMAL)  	+= dove_thermal.o
+>  obj-$(CONFIG_DB8500_THERMAL)	+= db8500_thermal.o
+>  obj-$(CONFIG_ARMADA_THERMAL)	+= armada_thermal.o
+> -obj-$(CONFIG_TANGO_THERMAL)	+= tango_thermal.o
+>  obj-$(CONFIG_IMX_THERMAL)	+= imx_thermal.o
+>  obj-$(CONFIG_IMX_SC_THERMAL)	+= imx_sc_thermal.o
+>  obj-$(CONFIG_IMX8MM_THERMAL)	+= imx8mm_thermal.o
+> diff --git a/drivers/thermal/tango_thermal.c b/drivers/thermal/tango_thermal.c
+> deleted file mode 100644
+> index 304b461e12aa..000000000000
+> --- a/drivers/thermal/tango_thermal.c
+> +++ /dev/null
+> @@ -1,126 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -#include <linux/io.h>
 > -#include <linux/delay.h>
-> -#include <linux/msi.h>
-> -#include <linux/of_address.h>
+> -#include <linux/module.h>
+> -#include <linux/thermal.h>
+> -#include <linux/platform_device.h>
 > -
-> -#define MSI_MAX			256
+> -/*
+> - * According to a data sheet draft, "this temperature sensor uses a bandgap
+> - * type of circuit to compare a voltage which has a negative temperature
+> - * coefficient with a voltage that is proportional to absolute temperature.
+> - * A resistor bank allows 41 different temperature thresholds to be selected
+> - * and the logic output will then indicate whether the actual die temperature
+> - * lies above or below the selected threshold."
+> - */
 > -
-> -#define SMP8759_MUX		0x48
-> -#define SMP8759_TEST_OUT	0x74
-> -#define SMP8759_DOORBELL	0x7c
-> -#define SMP8759_STATUS		0x80
-> -#define SMP8759_ENABLE		0xa0
+> -#define TEMPSI_CMD	0
+> -#define TEMPSI_RES	4
+> -#define TEMPSI_CFG	8
 > -
-> -struct tango_pcie {
-> -	DECLARE_BITMAP(used_msi, MSI_MAX);
-> -	u64			msi_doorbell;
-> -	spinlock_t		used_msi_lock;
-> -	void __iomem		*base;
-> -	struct irq_domain	*dom;
+> -#define CMD_OFF		0
+> -#define CMD_ON		1
+> -#define CMD_READ	2
+> -
+> -#define IDX_MIN		15
+> -#define IDX_MAX		40
+> -
+> -struct tango_thermal_priv {
+> -	void __iomem *base;
+> -	int thresh_idx;
 > -};
 > -
-> -static void tango_msi_isr(struct irq_desc *desc)
+> -static bool temp_above_thresh(void __iomem *base, int thresh_idx)
 > -{
-> -	struct irq_chip *chip = irq_desc_get_chip(desc);
-> -	struct tango_pcie *pcie = irq_desc_get_handler_data(desc);
-> -	unsigned long status, base, virq, idx, pos = 0;
+> -	writel(CMD_READ | thresh_idx << 8, base + TEMPSI_CMD);
+> -	usleep_range(10, 20);
+> -	writel(CMD_READ | thresh_idx << 8, base + TEMPSI_CMD);
 > -
-> -	chained_irq_enter(chip, desc);
-> -	spin_lock(&pcie->used_msi_lock);
+> -	return readl(base + TEMPSI_RES);
+> -}
 > -
-> -	while ((pos = find_next_bit(pcie->used_msi, MSI_MAX, pos)) < MSI_MAX) {
-> -		base = round_down(pos, 32);
-> -		status = readl_relaxed(pcie->base + SMP8759_STATUS + base / 8);
-> -		for_each_set_bit(idx, &status, 32) {
-> -			virq = irq_find_mapping(pcie->dom, base + idx);
-> -			generic_handle_irq(virq);
-> -		}
-> -		pos = base + 32;
+> -static int tango_get_temp(void *arg, int *res)
+> -{
+> -	struct tango_thermal_priv *priv = arg;
+> -	int idx = priv->thresh_idx;
+> -
+> -	if (temp_above_thresh(priv->base, idx)) {
+> -		/* Search upward by incrementing thresh_idx */
+> -		while (idx < IDX_MAX && temp_above_thresh(priv->base, ++idx))
+> -			cpu_relax();
+> -		idx = idx - 1; /* always return lower bound */
+> -	} else {
+> -		/* Search downward by decrementing thresh_idx */
+> -		while (idx > IDX_MIN && !temp_above_thresh(priv->base, --idx))
+> -			cpu_relax();
 > -	}
 > -
-> -	spin_unlock(&pcie->used_msi_lock);
-> -	chained_irq_exit(chip, desc);
-> -}
-> -
-> -static void tango_ack(struct irq_data *d)
-> -{
-> -	struct tango_pcie *pcie = d->chip_data;
-> -	u32 offset = (d->hwirq / 32) * 4;
-> -	u32 bit = BIT(d->hwirq % 32);
-> -
-> -	writel_relaxed(bit, pcie->base + SMP8759_STATUS + offset);
-> -}
-> -
-> -static void update_msi_enable(struct irq_data *d, bool unmask)
-> -{
-> -	unsigned long flags;
-> -	struct tango_pcie *pcie = d->chip_data;
-> -	u32 offset = (d->hwirq / 32) * 4;
-> -	u32 bit = BIT(d->hwirq % 32);
-> -	u32 val;
-> -
-> -	spin_lock_irqsave(&pcie->used_msi_lock, flags);
-> -	val = readl_relaxed(pcie->base + SMP8759_ENABLE + offset);
-> -	val = unmask ? val | bit : val & ~bit;
-> -	writel_relaxed(val, pcie->base + SMP8759_ENABLE + offset);
-> -	spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
-> -}
-> -
-> -static void tango_mask(struct irq_data *d)
-> -{
-> -	update_msi_enable(d, false);
-> -}
-> -
-> -static void tango_unmask(struct irq_data *d)
-> -{
-> -	update_msi_enable(d, true);
-> -}
-> -
-> -static int tango_set_affinity(struct irq_data *d, const struct cpumask *mask,
-> -			      bool force)
-> -{
-> -	return -EINVAL;
-> -}
-> -
-> -static void tango_compose_msi_msg(struct irq_data *d, struct msi_msg *msg)
-> -{
-> -	struct tango_pcie *pcie = d->chip_data;
-> -	msg->address_lo = lower_32_bits(pcie->msi_doorbell);
-> -	msg->address_hi = upper_32_bits(pcie->msi_doorbell);
-> -	msg->data = d->hwirq;
-> -}
-> -
-> -static struct irq_chip tango_chip = {
-> -	.irq_ack		= tango_ack,
-> -	.irq_mask		= tango_mask,
-> -	.irq_unmask		= tango_unmask,
-> -	.irq_set_affinity	= tango_set_affinity,
-> -	.irq_compose_msi_msg	= tango_compose_msi_msg,
-> -};
-> -
-> -static void msi_ack(struct irq_data *d)
-> -{
-> -	irq_chip_ack_parent(d);
-> -}
-> -
-> -static void msi_mask(struct irq_data *d)
-> -{
-> -	pci_msi_mask_irq(d);
-> -	irq_chip_mask_parent(d);
-> -}
-> -
-> -static void msi_unmask(struct irq_data *d)
-> -{
-> -	pci_msi_unmask_irq(d);
-> -	irq_chip_unmask_parent(d);
-> -}
-> -
-> -static struct irq_chip msi_chip = {
-> -	.name = "MSI",
-> -	.irq_ack = msi_ack,
-> -	.irq_mask = msi_mask,
-> -	.irq_unmask = msi_unmask,
-> -};
-> -
-> -static struct msi_domain_info msi_dom_info = {
-> -	.flags	= MSI_FLAG_PCI_MSIX
-> -		| MSI_FLAG_USE_DEF_DOM_OPS
-> -		| MSI_FLAG_USE_DEF_CHIP_OPS,
-> -	.chip	= &msi_chip,
-> -};
-> -
-> -static int tango_irq_domain_alloc(struct irq_domain *dom, unsigned int virq,
-> -				  unsigned int nr_irqs, void *args)
-> -{
-> -	struct tango_pcie *pcie = dom->host_data;
-> -	unsigned long flags;
-> -	int pos;
-> -
-> -	spin_lock_irqsave(&pcie->used_msi_lock, flags);
-> -	pos = find_first_zero_bit(pcie->used_msi, MSI_MAX);
-> -	if (pos >= MSI_MAX) {
-> -		spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
-> -		return -ENOSPC;
-> -	}
-> -	__set_bit(pos, pcie->used_msi);
-> -	spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
-> -	irq_domain_set_info(dom, virq, pos, &tango_chip,
-> -			pcie, handle_edge_irq, NULL, NULL);
+> -	*res = (idx * 9 / 2 - 38) * 1000; /* millidegrees Celsius */
+> -	priv->thresh_idx = idx;
 > -
 > -	return 0;
 > -}
 > -
-> -static void tango_irq_domain_free(struct irq_domain *dom, unsigned int virq,
-> -				  unsigned int nr_irqs)
-> -{
-> -	unsigned long flags;
-> -	struct irq_data *d = irq_domain_get_irq_data(dom, virq);
-> -	struct tango_pcie *pcie = d->chip_data;
-> -
-> -	spin_lock_irqsave(&pcie->used_msi_lock, flags);
-> -	__clear_bit(d->hwirq, pcie->used_msi);
-> -	spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
-> -}
-> -
-> -static const struct irq_domain_ops dom_ops = {
-> -	.alloc	= tango_irq_domain_alloc,
-> -	.free	= tango_irq_domain_free,
+> -static const struct thermal_zone_of_device_ops ops = {
+> -	.get_temp	= tango_get_temp,
 > -};
 > -
-> -static int smp8759_config_read(struct pci_bus *bus, unsigned int devfn,
-> -			       int where, int size, u32 *val)
+> -static void tango_thermal_init(struct tango_thermal_priv *priv)
 > -{
-> -	struct pci_config_window *cfg = bus->sysdata;
-> -	struct tango_pcie *pcie = dev_get_drvdata(cfg->parent);
-> -	int ret;
-> -
-> -	/* Reads in configuration space outside devfn 0 return garbage */
-> -	if (devfn != 0)
-> -		return PCIBIOS_FUNC_NOT_SUPPORTED;
-> -
-> -	/*
-> -	 * PCI config and MMIO accesses are muxed.  Linux doesn't have a
-> -	 * mutual exclusion mechanism for config vs. MMIO accesses, so
-> -	 * concurrent accesses may cause corruption.
-> -	 */
-> -	writel_relaxed(1, pcie->base + SMP8759_MUX);
-> -	ret = pci_generic_config_read(bus, devfn, where, size, val);
-> -	writel_relaxed(0, pcie->base + SMP8759_MUX);
-> -
-> -	return ret;
+> -	writel(0, priv->base + TEMPSI_CFG);
+> -	writel(CMD_ON, priv->base + TEMPSI_CMD);
 > -}
 > -
-> -static int smp8759_config_write(struct pci_bus *bus, unsigned int devfn,
-> -				int where, int size, u32 val)
+> -static int tango_thermal_probe(struct platform_device *pdev)
 > -{
-> -	struct pci_config_window *cfg = bus->sysdata;
-> -	struct tango_pcie *pcie = dev_get_drvdata(cfg->parent);
-> -	int ret;
-> -
-> -	writel_relaxed(1, pcie->base + SMP8759_MUX);
-> -	ret = pci_generic_config_write(bus, devfn, where, size, val);
-> -	writel_relaxed(0, pcie->base + SMP8759_MUX);
-> -
-> -	return ret;
-> -}
-> -
-> -static const struct pci_ecam_ops smp8759_ecam_ops = {
-> -	.pci_ops	= {
-> -		.map_bus	= pci_ecam_map_bus,
-> -		.read		= smp8759_config_read,
-> -		.write		= smp8759_config_write,
-> -	}
-> -};
-> -
-> -static int tango_pcie_link_up(struct tango_pcie *pcie)
-> -{
-> -	void __iomem *test_out = pcie->base + SMP8759_TEST_OUT;
-> -	int i;
-> -
-> -	writel_relaxed(16, test_out);
-> -	for (i = 0; i < 10; ++i) {
-> -		u32 ltssm_state = readl_relaxed(test_out) >> 8;
-> -		if ((ltssm_state & 0x1f) == 0xf) /* L0 */
-> -			return 1;
-> -		usleep_range(3000, 4000);
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -static int tango_pcie_probe(struct platform_device *pdev)
-> -{
-> -	struct device *dev = &pdev->dev;
-> -	struct tango_pcie *pcie;
 > -	struct resource *res;
-> -	struct fwnode_handle *fwnode = of_node_to_fwnode(dev->of_node);
-> -	struct irq_domain *msi_dom, *irq_dom;
-> -	struct of_pci_range_parser parser;
-> -	struct of_pci_range range;
-> -	int virq, offset;
+> -	struct tango_thermal_priv *priv;
+> -	struct thermal_zone_device *tzdev;
 > -
-> -	dev_warn(dev, "simultaneous PCI config and MMIO accesses may cause data corruption\n");
-> -	add_taint(TAINT_CRAP, LOCKDEP_STILL_OK);
-> -
-> -	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> -	if (!pcie)
+> -	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> -	if (!priv)
 > -		return -ENOMEM;
 > -
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -	pcie->base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(pcie->base))
-> -		return PTR_ERR(pcie->base);
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	priv->base = devm_ioremap_resource(&pdev->dev, res);
+> -	if (IS_ERR(priv->base))
+> -		return PTR_ERR(priv->base);
 > -
-> -	platform_set_drvdata(pdev, pcie);
+> -	platform_set_drvdata(pdev, priv);
+> -	priv->thresh_idx = IDX_MIN;
+> -	tango_thermal_init(priv);
 > -
-> -	if (!tango_pcie_link_up(pcie))
-> -		return -ENODEV;
-> -
-> -	if (of_pci_dma_range_parser_init(&parser, dev->of_node) < 0)
-> -		return -ENOENT;
-> -
-> -	if (of_pci_range_parser_one(&parser, &range) == NULL)
-> -		return -ENOENT;
-> -
-> -	range.pci_addr += range.size;
-> -	pcie->msi_doorbell = range.pci_addr + res->start + SMP8759_DOORBELL;
-> -
-> -	for (offset = 0; offset < MSI_MAX / 8; offset += 4)
-> -		writel_relaxed(0, pcie->base + SMP8759_ENABLE + offset);
-> -
-> -	virq = platform_get_irq(pdev, 1);
-> -	if (virq < 0)
-> -		return virq;
-> -
-> -	irq_dom = irq_domain_create_linear(fwnode, MSI_MAX, &dom_ops, pcie);
-> -	if (!irq_dom) {
-> -		dev_err(dev, "Failed to create IRQ domain\n");
-> -		return -ENOMEM;
-> -	}
-> -
-> -	msi_dom = pci_msi_create_irq_domain(fwnode, &msi_dom_info, irq_dom);
-> -	if (!msi_dom) {
-> -		dev_err(dev, "Failed to create MSI domain\n");
-> -		irq_domain_remove(irq_dom);
-> -		return -ENOMEM;
-> -	}
-> -
-> -	pcie->dom = irq_dom;
-> -	spin_lock_init(&pcie->used_msi_lock);
-> -	irq_set_chained_handler_and_data(virq, tango_msi_isr, pcie);
-> -
-> -	return pci_host_common_probe(pdev);
+> -	tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, 0, priv, &ops);
+> -	return PTR_ERR_OR_ZERO(tzdev);
 > -}
 > -
-> -static const struct of_device_id tango_pcie_ids[] = {
+> -static int __maybe_unused tango_thermal_resume(struct device *dev)
+> -{
+> -	tango_thermal_init(dev_get_drvdata(dev));
+> -	return 0;
+> -}
+> -
+> -static SIMPLE_DEV_PM_OPS(tango_thermal_pm, NULL, tango_thermal_resume);
+> -
+> -static const struct of_device_id tango_sensor_ids[] = {
 > -	{
-> -		.compatible = "sigma,smp8759-pcie",
-> -		.data = &smp8759_ecam_ops,
+> -		.compatible = "sigma,smp8758-thermal",
 > -	},
-> -	{ },
+> -	{ /* sentinel */ }
 > -};
+> -MODULE_DEVICE_TABLE(of, tango_sensor_ids);
 > -
-> -static struct platform_driver tango_pcie_driver = {
-> -	.probe	= tango_pcie_probe,
+> -static struct platform_driver tango_thermal_driver = {
+> -	.probe	= tango_thermal_probe,
 > -	.driver	= {
-> -		.name = KBUILD_MODNAME,
-> -		.of_match_table = tango_pcie_ids,
-> -		.suppress_bind_attrs = true,
+> -		.name		= "tango-thermal",
+> -		.of_match_table	= tango_sensor_ids,
+> -		.pm		= &tango_thermal_pm,
 > -	},
 > -};
-> -builtin_platform_driver(tango_pcie_driver);
 > -
-> -/*
-> - * The root complex advertises the wrong device class.
-> - * Header Type 1 is for PCI-to-PCI bridges.
-> - */
-> -static void tango_fixup_class(struct pci_dev *dev)
-> -{
-> -	dev->class = PCI_CLASS_BRIDGE_PCI << 8;
-> -}
-> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0024, tango_fixup_class);
-> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0028, tango_fixup_class);
+> -module_platform_driver(tango_thermal_driver);
 > -
-> -/*
-> - * The root complex exposes a "fake" BAR, which is used to filter
-> - * bus-to-system accesses.  Only accesses within the range defined by this
-> - * BAR are forwarded to the host, others are ignored.
-> - *
-> - * By default, the DMA framework expects an identity mapping, and DRAM0 is
-> - * mapped at 0x80000000.
-> - */
-> -static void tango_fixup_bar(struct pci_dev *dev)
-> -{
-> -	dev->non_compliant_bars = true;
-> -	pci_write_config_dword(dev, PCI_BASE_ADDRESS_0, 0x80000000);
-> -}
-> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0024, tango_fixup_bar);
-> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0028, tango_fixup_bar);
+> -MODULE_LICENSE("GPL");
+> -MODULE_AUTHOR("Sigma Designs");
+> -MODULE_DESCRIPTION("Tango temperature sensor");
 > -- 
 >
 > 2.29.2
