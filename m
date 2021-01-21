@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8A42FE0B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2212FE0CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732701AbhAUEbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:31:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbhAUEOY (ORCPT
+        id S1731107AbhAUEfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:35:31 -0500
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:33828 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728563AbhAUEeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:14:24 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9C2C061757;
-        Wed, 20 Jan 2021 20:13:41 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id k4so806133ybp.6;
-        Wed, 20 Jan 2021 20:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qdYGbaNQ6RXEEqSgvnErn9aTL2ruB523HmhLn4769P0=;
-        b=Y/wjnmDnqQEicOrIEn5igWesvc6VvkLe6H9gn0MNXrK8Od0OitS4GowYF4fZBPPYQU
-         aw0yU20PJVRA8tRoevm8VV1ZbEtrxk6Zy07mJdq9//Rq1/ub6dOFDxCxo3hEgCA4hOte
-         KP/8aLcT9f5NbXSKYIXEIe31sGI/yzcYnesDXp27vM1RLObprjK5syz6KZ7mtXQ5GrtF
-         XoHnNU+CcQRGdj8I7/F9UDwS9ibTJfJcwFDc5pBC2nn+LtJQ8ByNM1w37YKH1Tvqsoo8
-         VkRL8yFmGOdzvLdAR+SUHLcEd6aUFTvh3eInfHRyXS7mC6ailuxwU3oTpZOONIV6XwXJ
-         umvA==
+        Wed, 20 Jan 2021 23:34:31 -0500
+Received: by mail-lf1-f43.google.com with SMTP id o19so730535lfo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:34:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qdYGbaNQ6RXEEqSgvnErn9aTL2ruB523HmhLn4769P0=;
-        b=a/p+AMFuKBF2yCuOnbaLzuXQdmA6oJ/qPvzOLk8QI1gEc+aMXEZFCVM+T0OTmIkSVa
-         vQLO9GyI04l1H63Mq+Y/3YLNDKBo/mwWRSPDT7njmOPhJjPLP1IcP7WR4onJiKkLTGk1
-         c/zokrL4UHuUZ1yg4L96HykdnWKg/l7RIAU80vElKfLgslbKvePl2BPjiQOBjRmtkEvR
-         RtJyUEdoctoUNwjcr3zWHFC/J+pyK27ydvGBiGaGOjROhC/LeNRs3oJ5uBLWX220Ncrp
-         xcCqpt4YJWnP5mGBMlHb4Nm+VfYZLLexPtoRPEI+G7SdLQuXOut9H1sUv3ZDgMQevCDr
-         7b9g==
-X-Gm-Message-State: AOAM530gO+WhPdJZQAPH8APCPWKX5ZCNN98XIbhRcN5dYTyt0xIyj71R
-        U4iLBUYV+Ex06jybOMFivy3+90gdhPjIY70ldRQ=
-X-Google-Smtp-Source: ABdhPJyw6udgxJBFQX0Vwqra1a/DaIb34pvGjg38qbZt2xv9lkediK7L08qo1hXvj7SN4BasIaTVpqghIM8fjo3C5sQ=
-X-Received: by 2002:a25:4b86:: with SMTP id y128mr3828051yba.403.1611202420666;
- Wed, 20 Jan 2021 20:13:40 -0800 (PST)
+        bh=8ovp6uu8GZU/72kGxqTfPjkW2rvPcfWPOhm7bRXegKI=;
+        b=KCgabE9AxNqPeBXT8gnPfFlDg43VDtcwUE0zbH6gdGHpD878gx058ylXjh/L7ZVAR5
+         gj0RzmNX+P3eVeBcOa2f74ugn8TrdkAjTe/4MZj5A3z+D9tgrOueLgKvsnLNtLnAbja+
+         DnG0Jv15EcY6XnJStyvvl50UY1meL1WMiMeH17EUYG4naNbjCoggJtlWPIqqCdLjXXtx
+         GxO+3REAqYETKdgZCuYUFzWqhMd1n4fNAaibqCzOmHxhAWyY9ovcrPm9CY0Mns8wy6M5
+         +8zel3rzD/vla58TKHEXPYFXvUbZCZBxKnWVb6tBOtyUEwLNYe6cXo553mv/ZsCKw5cL
+         waRQ==
+X-Gm-Message-State: AOAM5316kAyv4IoCZxG9gmBIeijtlc5i20hOB3/aI0LcTbpfgiR0Jluk
+        sFuN7mH8ApPMiXnYACgIcO1Rxlmm2ybbgKBEDrU=
+X-Google-Smtp-Source: ABdhPJzABLfvJQtVsXhTz35dJokFcI7bTeriXRdo3qP69tixcnhJoKjsUkauG4RBi5PXr9T0kTxz0nQE/H+KH1yMBAA=
+X-Received: by 2002:a19:8584:: with SMTP id h126mr5709146lfd.152.1611203629557;
+ Wed, 20 Jan 2021 20:33:49 -0800 (PST)
 MIME-Version: 1.0
-References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com> <1610921764-7526-3-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1610921764-7526-3-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Jan 2021 20:13:29 -0800
-Message-ID: <CAEf4BzYZNUsdLH=fVqO_zXh2gwK6g325pQ7UeyH1NTK8kxSFmA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/4] libbpf: make skip_mods_and_typedefs
- available internally in libbpf
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, morbo@google.com,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20201216090556.813996-1-namhyung@kernel.org> <20201216090556.813996-3-namhyung@kernel.org>
+ <20201229115158.GH521329@kernel.org> <CAM9d7cidFuM5gmjq8=uy+mJjHHEVE=q6qESkc_OeTeGEQkGbnA@mail.gmail.com>
+ <CAM9d7chBmkG6S1QzF+gDU8=5ce8zQo2xM5Jr1t_iptsh_+t7NQ@mail.gmail.com>
+In-Reply-To: <CAM9d7chBmkG6S1QzF+gDU8=5ce8zQo2xM5Jr1t_iptsh_+t7NQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 21 Jan 2021 13:33:37 +0900
+Message-ID: <CAM9d7ci5W06UNthEBBs=-wJLjusO=bpFg2sFj=M0W3h20+oaHA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] tools/lib/fs: Cache cgroupfs mount point
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 2:20 PM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> btf_dump.c will need it for type-based data display.
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+Hi Arnaldo,
 
-Given we make it into an internal API, let's call it
-btf_skip_mods_and_typedefs()? Otherwise all ok.
+Can you share your thoughts on this?
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  tools/lib/bpf/libbpf.c          | 4 +---
->  tools/lib/bpf/libbpf_internal.h | 2 ++
->  2 files changed, 3 insertions(+), 3 deletions(-)
+On Fri, Jan 8, 2021 at 2:51 PM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 2abbc38..4ef84e1 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -73,8 +73,6 @@
->  #define __printf(a, b) __attribute__((format(printf, a, b)))
+> On Wed, Jan 6, 2021 at 10:33 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hi Arnaldo,
+> >
+> > On Tue, Dec 29, 2020 at 8:51 PM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > Em Wed, Dec 16, 2020 at 06:05:56PM +0900, Namhyung Kim escreveu:
+> > > > Currently it parses the /proc file everytime it opens a file in the
+> > > > cgroupfs.  Save the last result to avoid it (assuming it won't be
+> > > > changed between the accesses).
+> > >
+> > > Which is the most likely case, but can't we use something like inotify
+> > > to detect that and bail out or warn the user?
+> >
+> > Hmm.. looks doable.  Will check.
 >
->  static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
-> -static const struct btf_type *
-> -skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id);
+> So I've played with inotify a little bit, and it seems it needs to monitor
+> changes on the file or the directory.  I didn't get any notification from
+> the /proc/mounts file even if I did some mount/umount.
 >
->  static int __base_pr(enum libbpf_print_level level, const char *format,
->                      va_list args)
-> @@ -1885,7 +1883,7 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
->         return 0;
->  }
+> Instead, I could get IN_UNMOUNT when the cgroup filesystem was
+> unmounted.  But for the monitoring, we need to do one of a) select-like
+> syscall to wait for the events, b) signal-driven IO notification or c) read
+> the inotify file with non-block mode everytime.
 >
-> -static const struct btf_type *
-> +const struct btf_type *
->  skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id)
->  {
->         const struct btf_type *t = btf__type_by_id(btf, id);
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index 969d0ac..c25d2df 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -108,6 +108,8 @@ static inline void *libbpf_reallocarray(void *ptr, size_t nmemb, size_t size)
->  void *btf_add_mem(void **data, size_t *cap_cnt, size_t elem_sz,
->                   size_t cur_cnt, size_t max_cnt, size_t add_cnt);
->  int btf_ensure_mem(void **data, size_t *cap_cnt, size_t elem_sz, size_t need_cnt);
-> +const struct btf_type *skip_mods_and_typedefs(const struct btf *btf, __u32 id,
-> +                                             __u32 *res_id);
+> In a library code, I don't think we can do a) or b) since it can affect
+> user program behaviors.  Then we should go with c) but I think
+> it's opposite to the purpose of this patch. :)
 >
->  static inline bool libbpf_validate_opts(const char *opts,
->                                         size_t opts_sz, size_t user_sz,
-> --
-> 1.8.3.1
+> As you said, I think mostly we don't care as the accesses will happen
+> in a short period of time.  But if you really care, maybe for the upcoming
+> perf daemon changes, I think we can add an API to invalidate the cache
+> or internal time-based invalidation logic (like remove it after 10 sec.).
 >
+> Thoughts?
+>
+> Thanks,
+> Namhyung
