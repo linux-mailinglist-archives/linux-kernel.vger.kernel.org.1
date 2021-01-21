@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF942FE8B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 836EA2FE8AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbhAUL0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:26:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730243AbhAULWJ (ORCPT
+        id S1730446AbhAULXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:23:40 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:36685 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730094AbhAULVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:22:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F51C0617BB
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WqyNpXI5pmXHjcYlLaaycMpQoGvzt5SeeKBz6CK9jCI=; b=uNJUY6vur+KShXtcvcl0JkKTH6
-        uQ5C2vQfecaFSiumG/gAoAgO420EEc/WIdLjhUkZSo5ASTR1Ukin8yk6GIM80Gbqh2zBG9dgmil12
-        JrfXY+K2BF2MsB+rJBInM8JqCN2ZzPPsoJfIwirGmcpKXXD1Up3WUJrN7ke9T5mXrrI9chKeUUJoz
-        EUw1/egd7orKJcxkOzE4SzG62+YUJjrXHrD+5vIhtcrEresP1QcnOfqfq5475VSJ4/DE3KVlx8uH7
-        eTZ84wiXGboB/CpKgCvXv/D/qiIkMGS6LNK/pXiQB4ER0w0s1fbNJLVTVCyI07Ad3m9UHzbEiv8Su
-        t3lSmkHA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2Xz0-00Gxt2-CM; Thu, 21 Jan 2021 11:18:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF74A303271;
-        Thu, 21 Jan 2021 12:18:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BB6542028D4B7; Thu, 21 Jan 2021 12:18:33 +0100 (CET)
-Date:   Thu, 21 Jan 2021 12:18:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com
-Subject: Re: [PATCH 3/4] cpu/hotplug: Add cpuhp_invoke_callback_range()
-Message-ID: <YAljCQZf+ZqB3S4K@hirez.programming.kicks-ass.net>
-References: <1610385047-92151-1-git-send-email-vincent.donnefort@arm.com>
- <1610385047-92151-4-git-send-email-vincent.donnefort@arm.com>
- <YAhsLPLXg37fs/BA@hirez.programming.kicks-ass.net>
- <YAhuHdcfKnyWKdka@hirez.programming.kicks-ass.net>
- <20210121105756.GA312559@e120877-lin.cambridge.arm.com>
+        Thu, 21 Jan 2021 06:21:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611228085; x=1642764085;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=kRZXc300p60UJfVkYg5FlShWwQxkCBZFRuUKh/65ln0=;
+  b=oHsRAzeOMzi2Ya8out5iM36QhQmXmpXSYqX/L7UL5tNKqebTXn+E1O1O
+   k0YxBj0MOqSMd6cgLAaOG3Xi6K/cuUz/EjuOf3reeF4THdg51jGs/yhPj
+   dWGrWKLNttQZTBkKP6GQqTdiO/C3yWl2mzkGztZUFmxDkkZIO5u4gqZ1i
+   JIwrt3Ov0JQykNIsr2con/IHuslJTxS6tXp8QdYeXNjHE0dLLroeNyfIA
+   KmzrJR0wgWtzTGuJM/Dmk0jL43hPkHgnMp3FeDsV6qFOLt27edKaEm8BD
+   phWv7T9KAeqSdLrZwGjoQW/dVJfDGHiITQygR2djhFeug3qG1tPl4n9m/
+   A==;
+IronPort-SDR: nPZaVjtTdwT8oNhl4Jp4+1NNWxeljVH3rMQKXxTeR8/iU4gBQcAN5eIv1rBPbT2jrfk/Yh5pNb
+ ZKYylzZZMPh2f+MKixtxMf+8xO61kyB9WGX/4ei/jkUdYuZZ+12RBdz5rW014ci5jyL656i+n0
+ 7088xuyUK6Xmp9tT1sZeehshtYHlkODCq1CUwMr1ZxAogxEWDoAE/d3nlrXIfHZnF4TjsDjMkN
+ 9mBp6E+3di31NfDOasOafd8Cn5KPfBtVvuHsqIctwG3C0UH4dfmQCAunfwk2zy9j3cpi92f2WS
+ ToM=
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="100892447"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Jan 2021 04:19:41 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 21 Jan 2021 04:19:41 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 21 Jan 2021 04:19:36 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <viresh.kumar@linaro.org>, <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 3/5] clk: at91: sama7g5: add securam's peripheral clock
+Date:   Thu, 21 Jan 2021 13:19:09 +0200
+Message-ID: <1611227951-4590-4-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611227951-4590-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1611227951-4590-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121105756.GA312559@e120877-lin.cambridge.arm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:57:57AM +0000, Vincent Donnefort wrote:
-> On Wed, Jan 20, 2021 at 06:53:33PM +0100, Peter Zijlstra wrote:
-> > On Wed, Jan 20, 2021 at 06:45:16PM +0100, Peter Zijlstra wrote:
-> > > On Mon, Jan 11, 2021 at 05:10:46PM +0000, vincent.donnefort@arm.com wrote:
-> > > > @@ -475,6 +478,11 @@ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
-> > > >  static inline void
-> > > >  cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
-> > > >  {
-> > > > +	st->target = prev_state;
-> > > > +
-> > > > +	if (st->rollback)
-> > > > +		return;
-> > > 
-> > > I'm thinking that if we call rollback while already rollback we're hosed
-> > > something fierce, no?
-> > > 
-> > > That like going up, failing, going back down again, also failing, giving
-> > > up in a fiery death.
-> > 
-> > Ooh, is this a hack for _cpu_down():
-> > 
-> > 	ret = cpuhp_down_callbacks(cpu, st, target);
-> > 	if (ret && st->state == CPUHP_TEARDOWN_CPU && st->state < prev_state) {
-> > 		cpuhp_reset_state(st, prev_state);
-> > 		__cpuhp_kick_ap(st);
-> > 	}
-> > 
-> > Where cpuhp_down_callbacks() can already have called cpuhp_reset_state() ?
-> 
-> Yes, it is now possible that this function will be called twice during the
-> rollback. Shall I avoid this and treat the case above differently ? i.e. "if we
-> are here, state has already been reset, and we should only set st->target".
+Add SECURAM's peripheral clock.
 
-Not sure, but a comment would be useful :-)
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/clk/at91/sama7g5.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
+index a6e20b35960e..28e26fb90417 100644
+--- a/drivers/clk/at91/sama7g5.c
++++ b/drivers/clk/at91/sama7g5.c
+@@ -377,6 +377,7 @@ static const struct {
+ 	u8 id;
+ } sama7g5_periphck[] = {
+ 	{ .n = "pioA_clk",	.p = "mck0", .id = 11, },
++	{ .n = "securam_clk",	.p = "mck0", .id = 18, },
+ 	{ .n = "sfr_clk",	.p = "mck1", .id = 19, },
+ 	{ .n = "hsmc_clk",	.p = "mck1", .id = 21, },
+ 	{ .n = "xdmac0_clk",	.p = "mck1", .id = 22, },
+-- 
+2.7.4
+
