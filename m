@@ -2,198 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A1E2FE368
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 619902FE36F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbhAUHGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:06:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        id S1727225AbhAUHHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727135AbhAUHC1 (ORCPT
+        with ESMTP id S1727031AbhAUHEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:02:27 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20356C0613C1;
-        Wed, 20 Jan 2021 23:01:47 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id i141so1129234yba.0;
-        Wed, 20 Jan 2021 23:01:47 -0800 (PST)
+        Thu, 21 Jan 2021 02:04:00 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8061BC061757;
+        Wed, 20 Jan 2021 23:03:20 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id g15so758445pgu.9;
+        Wed, 20 Jan 2021 23:03:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q4Mx5AhqDtoCmA+H1AN8MmUPrDLatjJc96dmb4/mqdU=;
-        b=YqtszlM8OrX8lq4+B4r2zEPr+sdzPb8JO2JCf1DdzlmcdPO76slbYAHH5b9NHdJawj
-         fjXyRvfETJ78Ne6F/iX5mtpXrvoMBuPt4Iqywvjza+MbDFGzVAozGNRhIKEm1MryfxgZ
-         Wyom8WBYQOya2QElN39nyGxyQqdvsX1cA7XB1+3S3PldvYY/XlAVG0naGmCky2RU1jTG
-         ecWKHaGwfZGCea9yfHkf02kxYLr8utpwwJ6O6/txkmfuKnmBu1v1umY46k5tmR9VPp61
-         y0iZ/cPb2pV8unb2ffMl/B5yKLs4revbtEyS6y8fO6H1Pm/wGMttwrlyXOiv7cwmYjz3
-         ZKrw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bt1RhgQCBL8vSlSAI92FVm4jXQBzK6402/hgUyySzzI=;
+        b=S1UT77sY5PQZPgwNzRXSNVMqPbi9PNxML4cbqY2loTRkVguZg5XQ0hgs6lkwbHjRj8
+         Cu2Cr08+SZ9q8ubMEJkylmxeG42L/e+n/I+Yf0GqYYE+MrgbrTM/6US0vs9Sdn9V3a2g
+         27VOmbPFaFamjxOP/DjYbywSyLf/YV4i3ied3nXThxOqYpLPj1u6v/JVzqKXTY1rWXPN
+         3kEEAdiLbN6KGGWKfT3QEVwgOFTTnfY91ePrzr8KyHft5DZBz8DtmVfNsmaIsRMFd5s4
+         MUT3IHAGy/1YmhShG0N8dG80rDzPrUU3UujXFAacseFRRx8iRYEcRCK2Ht71f1FdlmpL
+         Ad+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q4Mx5AhqDtoCmA+H1AN8MmUPrDLatjJc96dmb4/mqdU=;
-        b=DHGgKCV73AscCvCtwQXlR4NsLrMD+i0+R4yohXOd+4UvCgIStJz+au22CTJ7/38EdB
-         6W7f4F9Js5WhAnEUeSBJD6z/EPyyLt1YMOQEo7I+OOgFBbJiiG1dkha7jJUuaRA4UdE6
-         pShcNBG3tqnCQ1ejWyZspwDzKrWjXimghaFH7SnlB0G3TmA9L+l7TrKhZOfD4YMxATjS
-         WZ13VCz+oMxhHeYz/qlR9JP2qvge6Zm9pz2d2lE7uN3DRYm02+7OQcdV+//DFPaW3MjE
-         Ac0uwNw/sWv1LXfuBU1vl5kdhMn0FuzYidehpoT1de1BL66H/nJHeFYHA33MB39eJDef
-         XeTA==
-X-Gm-Message-State: AOAM532p7+ma4Z0VZxC7rEILeWbKdTIbmk+q0a+w2nA1yieUSlB9NK7z
-        V/r9dJni1UZlk44Vve7M9GpHITwa2P3EaknJGSg=
-X-Google-Smtp-Source: ABdhPJwEe9iKqTMPnxebf9ou14kmF7GajEuAXPiW/CJvlrSlSK1JYQH43V2gg18GOTEzOd9zMBKVoiE6EkUM1T0rnJM=
-X-Received: by 2002:a25:d6d0:: with SMTP id n199mr18534077ybg.27.1611212506452;
- Wed, 20 Jan 2021 23:01:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bt1RhgQCBL8vSlSAI92FVm4jXQBzK6402/hgUyySzzI=;
+        b=BZRqjO70KlEbWZGubG7Hrnjt1oFKET3dzQmSVY5u1e9Fd3a6SINePMPweeALzdpobp
+         WVLfaNU8chEnRd9VPRPJM2YMsbB4oFuAm40RoXyuqZdK75Tx2BVkCxIJlASsTchvfOAo
+         Atg6exxIo/SPIkxwP5iTdtE6mRpZ7nksfOf+1XkvB6rqUwQId0WeHlp9xbsKfAYBO0bK
+         3vUsN9YOfSfuNNBjJFGTYwTmQZzV0WLg5UD6zaXObZHftUMaVRgUPAzcsD/UAa4e4zFM
+         r2sFbhS09FNQANeisvE+oUyRmJvBno8XrhA4hUiwAXLk9hRsnWv6LH5/Uo6WEmzANHKh
+         bryg==
+X-Gm-Message-State: AOAM533KXTjxo3PfekXsdcGDpfN1ZRxN2rZfBHOpp6My9AF4UW3+6buG
+        NcFqHtE+rL1aVdeLBWP22YYudSj75Us=
+X-Google-Smtp-Source: ABdhPJymAS0KIMjXSx54qH9XTceoFYqEpwBvGHJ8N970hw1/PJmGIWYQum/VGl0FcsJjTY9tg3jYig==
+X-Received: by 2002:aa7:8b51:0:b029:1ae:687f:d39b with SMTP id i17-20020aa78b510000b02901ae687fd39bmr12664320pfd.50.1611212599905;
+        Wed, 20 Jan 2021 23:03:19 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id j9sm4363753pgb.47.2021.01.20.23.03.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 23:03:18 -0800 (PST)
+Date:   Wed, 20 Jan 2021 23:03:16 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 2/2] Input: add MStar msg26xx touchscreen driver
+Message-ID: <YAknNNgx66HDtrgQ@google.com>
+References: <20210120180119.849588-1-vincent.knecht@mailoo.org>
+ <20210120180119.849588-2-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
-References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com> <1610921764-7526-5-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1610921764-7526-5-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Jan 2021 23:01:35 -0800
-Message-ID: <CAEf4BzZdO+tJ+L4uJysrPa=PzM2nEbTT-Xnu1MGQUdhbwzpVXw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: add dump type data tests
- to btf dump tests
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, morbo@google.com,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120180119.849588-2-vincent.knecht@mailoo.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 2:21 PM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> Test various type data dumping operations by comparing expected
-> format with the dumped string; an snprintf-style printf function
-> is used to record the string dumped.
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/btf_dump.c | 233 ++++++++++++++++++++++
->  1 file changed, 233 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> index c60091e..262561f4 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> @@ -232,6 +232,237 @@ void test_btf_dump_incremental(void)
->         btf__free(btf);
->  }
->
-> +#define STRSIZE                                2048
-> +#define        EXPECTED_STRSIZE                256
+Hi Vincent,
+
+On Wed, Jan 20, 2021 at 07:01:08PM +0100, Vincent Knecht wrote:
+> +struct packet {
+> +	u8	y_high : 4;
+> +	u8	x_high : 4;
+
+This will not work on big endian devices as order of bitfields changes.
+I'd recommended treating contact packet as sequence of bytes and parse,
+i.e.
+
+	x = ((buf[0] & 0x0f) << 8) | buf[1];
+	x = ((buf[0] & 0xf0) << 4) | buf[2];
+	...
+
+> +	u8	x_low;
+> +	u8	y_low;
+> +	u8	pressure;
+> +};
 > +
-> +void btf_dump_snprintf(void *ctx, const char *fmt, va_list args)
+> +
+> +static void mstar_power_on(struct msg26xx_ts_data *msg26xx)
 > +{
-> +       char *s = ctx, new[STRSIZE];
-> +
-> +       vsnprintf(new, STRSIZE, fmt, args);
-> +       strncat(s, new, STRSIZE);
-> +       vfprintf(ctx, fmt, args);
-> +}
-> +
-> +/* skip "enum "/"struct " prefixes */
-> +#define SKIP_PREFIX(_typestr, _prefix)                                 \
-> +       do {                                                            \
-> +               if (strstr(_typestr, _prefix) == _typestr)              \
+> +	gpiod_set_value(msg26xx->reset_gpiod, 0);
+> +	mdelay(10);
+> +	gpiod_set_value(msg26xx->reset_gpiod, 1);
+> +	mdelay(FIRMWARE_ON_DELAY);
 
-why not strncmp?
+I am pretty sure this is incorrect. You are saying that you release the
+reset line, wait a bit, and then assert it. gpiod is a logical API, with
+0 being inactive and 1 being active, and here you want to activate the
+reset line, wait appropriate time, release it, and wait for the device
+to initialize. What does the datasheet say about reset GPIO polarity?
 
-> +                       _typestr += strlen(_prefix) + 1;                \
-> +       } while (0)
-> +
-> +int btf_dump_data(struct btf *btf, struct btf_dump *d,
-> +                 char *ptrtype, __u64 flags, void *ptr,
-> +                 char *str, char *expectedval)
-> +{
-> +       struct btf_dump_emit_type_data_opts opts = { 0 };
-> +       int ret = 0, cmp;
-> +       __s32 type_id;
-> +
-> +       opts.sz = sizeof(opts);
-> +       opts.compact = true;
+Thanks.
 
-Please use DECLARE_LIBBPF_OPTS(), check other examples in selftests
-
-> +       if (flags & BTF_F_NONAME)
-> +               opts.noname = true;
-> +       if (flags & BTF_F_ZERO)
-> +               opts.zero = true;
-> +       SKIP_PREFIX(ptrtype, "enum");
-> +       SKIP_PREFIX(ptrtype, "struct");
-> +       SKIP_PREFIX(ptrtype, "union");
-> +       type_id = btf__find_by_name(btf, ptrtype);
-> +       if (CHECK(type_id <= 0, "find type id",
-> +                 "no '%s' in BTF: %d\n", ptrtype, type_id)) {
-> +               ret = -ENOENT;
-> +               goto err;
-> +       }
-> +       str[0] = '\0';
-> +       ret = btf_dump__emit_type_data(d, type_id, &opts, ptr);
-> +       if (CHECK(ret < 0, "btf_dump__emit_type_data",
-> +                 "failed: %d\n", ret))
-> +               goto err;
-> +
-> +       cmp = strncmp(str, expectedval, EXPECTED_STRSIZE);
-> +       if (CHECK(cmp, "ensure expected/actual match",
-> +                 "'%s' does not match expected '%s': %d\n",
-> +                 str, expectedval, cmp))
-> +               ret = -EFAULT;
-> +
-> +err:
-> +       if (ret)
-> +               btf_dump__free(d);
-> +       return ret;
-> +}
-> +
-> +#define TEST_BTF_DUMP_DATA(_b, _d, _str, _type, _flags, _expected, ...)        \
-> +       do {                                                            \
-> +               char _expectedval[EXPECTED_STRSIZE] = _expected;        \
-> +               char __ptrtype[64] = #_type;                            \
-> +               char *_ptrtype = (char *)__ptrtype;                     \
-> +               static _type _ptrdata = __VA_ARGS__;                    \
-> +               void *_ptr = &_ptrdata;                                 \
-> +                                                                       \
-> +               if (btf_dump_data(_b, _d, _ptrtype, _flags, _ptr,       \
-> +                                 _str, _expectedval))                  \
-> +                       return;                                         \
-> +       } while (0)
-> +
-> +/* Use where expected data string matches its stringified declaration */
-> +#define TEST_BTF_DUMP_DATA_C(_b, _d, _str, _type, _opts, ...)          \
-> +       TEST_BTF_DUMP_DATA(_b, _d, _str, _type, _opts,                  \
-> +                          "(" #_type ")" #__VA_ARGS__, __VA_ARGS__)
-> +
-> +void test_btf_dump_data(void)
-> +{
-> +       struct btf *btf = libbpf_find_kernel_btf();
-> +       char str[STRSIZE];
-> +       struct btf_dump_opts opts = { .ctx = str };
-> +       struct btf_dump *d;
-> +
-> +       if (CHECK(!btf, "get kernel BTF", "no kernel BTF found"))
-> +               return;
-> +
-
-use libbpf_get_error(), btf won't be NULL on error
-
-> +       d = btf_dump__new(btf, NULL, &opts, btf_dump_snprintf);
-> +
-> +       if (CHECK(!d, "new dump", "could not create BTF dump"))
-
-same, d won't be NULL on error
-
-> +               return;
-> +
-> +       /* Verify type display for various types. */
-> +
-
-[...]
+-- 
+Dmitry
