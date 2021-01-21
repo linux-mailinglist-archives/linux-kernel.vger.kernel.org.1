@@ -2,207 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D91A2FF5EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1162FF5E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbhAUUcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:32:43 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:35011 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbhAUUb3 (ORCPT
+        id S1727249AbhAUUcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:32:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726997AbhAUUbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:31:29 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210121203041euoutp017329bc5c04243f347ee694444afbca14~cWWF0iSn-1824818248euoutp01-
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:30:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210121203041euoutp017329bc5c04243f347ee694444afbca14~cWWF0iSn-1824818248euoutp01-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611261041;
-        bh=h6zKDtX6u5QFojsyZseVpclsd7VNDEJ9rj+biyf1v3A=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Bq0AYuOE4clGGAJvxD9GVVa7k/wl2kZP1LNOb6t5wlxjQUq6OdW/BpXF6bV0W49Qa
-         XPyEKNVFlLy1uwUqn5hM2QBarFjNGtcNYVI5WgYZZOL27l67UmEaQDhBkgt7d5rMD3
-         mDEWSJUQdPiomt+lEz7vczLuy79sxMIZr6dLjXYE=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210121203041eucas1p1e1f6d8770ee77de01bd792b77df733a5~cWWFJwYwr0484104841eucas1p1d;
-        Thu, 21 Jan 2021 20:30:41 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 58.89.45488.074E9006; Thu, 21
-        Jan 2021 20:30:40 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210121203040eucas1p2818713a21a74b580ad05383ce6ee9f8e~cWWElLBxO0875408754eucas1p2M;
-        Thu, 21 Jan 2021 20:30:40 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210121203040eusmtrp209f45cf289b60741a9fd0b304277cb61~cWWEkkODc0577405774eusmtrp2P;
-        Thu, 21 Jan 2021 20:30:40 +0000 (GMT)
-X-AuditID: cbfec7f5-c5fff7000000b1b0-b2-6009e470cdb2
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id C8.4D.16282.074E9006; Thu, 21
-        Jan 2021 20:30:40 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210121203039eusmtip2ab1db0c7bf3a433d19781fa9c5cdd5f8~cWWDyf-Hx2324623246eusmtip2e;
-        Thu, 21 Jan 2021 20:30:39 +0000 (GMT)
-Subject: Re: [PATCH] regulator: core: avoid regulator_resolve_supply() race
- condition
-To:     Mark Brown <broonie@kernel.org>
-Cc:     David Collins <collinsd@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <e7e4b633-21cb-54e6-f75c-fac28147396c@samsung.com>
-Date:   Thu, 21 Jan 2021 21:30:39 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.6.1
+        Thu, 21 Jan 2021 15:31:00 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4112C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:30:19 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id o19so4435248lfo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 12:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=896t3XFraNFaUpJ/WXoxxUghqXuMbEjBhaMz/gtS348=;
+        b=K2i0lVeEjB2y6CXAjGcel9x4JSIg81Q1kC2NxxuY4Ld0TwUvcOTwyiWfjO9rlCuG8K
+         w490zA9pWssE6t436TYJo6j/P4TSz7i6FwtS2T8NtlVzIipnn+yVV7uwjgwG2a41sd2Y
+         Dr1FMshe1fjrpRk5989Moe+MyDW7/yQSglu7X6FK3OliC3FDsY8uWqGD2MNglFQTVbEQ
+         MCz4ZrYmA43dNaCjKw2Vd5jn2EZFuXWNv7jhgkLt1b5qvk0Qg2wwSbWzLiZol29sLcpE
+         0xRQBzJxRpEVYmpPZOLEEmri1sRHHib9G/A22yKWbo0keNFopoIF7Av4S2wTOyuY0vbj
+         Tw6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=896t3XFraNFaUpJ/WXoxxUghqXuMbEjBhaMz/gtS348=;
+        b=TvyaoMej4EVsZVDrgKrK/Q5UfY57192brqM7qvehBzDKnklqnJwSHQEBILn0SzVu72
+         tMf87IPZRtw90HwVzJx6P9iAnX4GHmLDvRV6JM9KtP7ZqliULjYVSSPYSZQLIG0fqYRi
+         ytTW/9I8kJMxPROW90Q7KT7Xqqpcm5ZpQOUJC5Gbe9Pzk4FMc4Nk94FjghPFVPuZ9EtU
+         9b56W9W469Ylo8SLfRWJis2lnkJ3lrMnypM742Z0N+w2vVGnc8meD3F7VoEwLitf52Jo
+         WNYzihpJtDKOfFapoM//YfZBEDoJUlY38IZcvLjCKagmVRTqLmn+IzlCg5WUEHAc0sBq
+         B7HQ==
+X-Gm-Message-State: AOAM530k29Be65a0z7W5ix+MGuG23p8xBD8/a/3gGYYhUPz/WPaL1WHj
+        u5SilDjoJUW+SLzO+uhE10Gc3aYtzVOeOghdHjA=
+X-Google-Smtp-Source: ABdhPJw5rqo7HedIqkIAMBVdBvtFsx/QR+P1Y95q5N23Ty3a8DLrFyxSCgn+QZ3GKAdHjYFK/nnARbP+PG0zOf3ebLM=
+X-Received: by 2002:a05:6512:694:: with SMTP id t20mr469379lfe.151.1611261018385;
+ Thu, 21 Jan 2021 12:30:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210121154418.GE4588@sirena.org.uk>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMKsWRmVeSWpSXmKPExsWy7djP87oFTzgTDBqnWFpsnLGe1WLqwyds
-        Fl1tQhbnz29gt/h2pYPJYuL+s+wWl3fNYbOYcX4fkwOHx+W+XiaPnbPusntsWtXJ5tG3ZRWj
-        x+dNcgGsUVw2Kak5mWWpRfp2CVwZex4kFRwSqbjdPIGlgfE+fxcjJ4eEgInE2QM3WLsYuTiE
-        BFYwSsw/NoUFwvnCKPGoayqU85lR4tebx4wwLVt3/maHSCxnlPjesQLK+cgosWHKD1aQKmGB
-        cIm1/36ygNgiAsoSV7/vBRvFLLCaSeLClS42kASbgKFE11sIm1fATmLu5rlgzSwCqhJzO+ex
-        g9iiAkkSd+8cZoKoEZQ4OfMJ2FBOASOJKR+bwU5iFpCXaN46mxnCFpe49WQ+E8gyCYEnHBJn
-        Zr9kgbjbRWLThV1QtrDEq+Nb2CFsGYn/O2EamhklHp5byw7h9DBKXG6aAfW1tcSdc7+ATuUA
-        WqEpsX6XPkTYUWLqiqfMIGEJAT6JG28FIY7gk5i0bTpUmFeio00IolpNYtbxdXBrD164xDyB
-        UWkWktdmIXlnFpJ3ZiHsXcDIsopRPLW0ODc9tdg4L7Vcrzgxt7g0L10vOT93EyMwHZ3+d/zr
-        DsYVrz7qHWJk4mA8xCjBwawkwvvIkiNBiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+urWvihQTS
-        E0tSs1NTC1KLYLJMHJxSDUylca+sWG1tZLYJqbFYq4r/edeledo+0eDdRoGbRiEvuQXmnr43
-        94CX9zfdi065E2+sZxTZUReUVvtvntFv5jy5e4XtgTeb5aPf3tXPdfp8IW9FxvdACYXZU3wu
-        WUTl8wvOFHkTuqcnI1Cp6PP301uqkt9MW/DhjnR9NtsS6ZDf0z/dzwxTeK8Tt03/Ppe/m1mH
-        xt1Fp/tcspzn1jMb/LrKt3iPgKTUmY8ZO6PXGq78F6/zS2627aZMH9uwKdN+159+uzjanrHl
-        75OIYlOu16GlF7Jjd58WvXrTbJuMCvehmOZzU58IaO+d84P18PbPWpm8s2faSG1q/b1/30fH
-        9BMJXnyO/+7wTr7Qu7lGKkWJpTgj0VCLuag4EQD5ArBBtgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsVy+t/xe7oFTzgTDJYvYrPYOGM9q8XUh0/Y
-        LLrahCzOn9/AbvHtSgeTxcT9Z9ktLu+aw2Yx4/w+JgcOj8t9vUweO2fdZffYtKqTzaNvyypG
-        j8+b5AJYo/RsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOtjEyV9O1sUlJzMstSi/Tt
-        EvQy9jxIKjgkUnG7eQJLA+N9/i5GTg4JAROJrTt/s3cxcnEICSxllNjyfDETREJG4uS0BlYI
-        W1jiz7UuNoii94wShz9eYQNJCAuES6z995MFxBYRUJa4+n0vC0gRs8BqJomPryaxQnRcYZK4
-        eXsjWBWbgKFE19susG5eATuJuZvngq1gEVCVmNs5jx3EFhVIkjgx6xMzRI2gxMmZT8B6OQWM
-        JKZ8bGYEsZkFzCTmbX7IDGHLSzRvnQ1li0vcejKfaQKj0Cwk7bOQtMxC0jILScsCRpZVjCKp
-        pcW56bnFRnrFibnFpXnpesn5uZsYgfG37djPLTsYV776qHeIkYmD8RCjBAezkgjvI0uOBCHe
-        lMTKqtSi/Pii0pzU4kOMpkD/TGSWEk3OByaAvJJ4QzMDU0MTM0sDU0szYyVxXpMja+KFBNIT
-        S1KzU1MLUotg+pg4OKUamDKZ/8plhX1effPctgvpWaqV269aOp/hXqRubrHHZ7fE6+uqTU4f
-        nXjmXq+KC2xjzlFM/r5hxURXPkGRWu8JK25ylmVtbLKfYNa9l61pubWj6of+qa/d4ySnz04V
-        rbf/mXzX0FX390IX9ia5Of4Fzz7PCN29bv2KQq3HugwsXyQubJCQ1d0UYrrA+nTrgl+aumpf
-        RJZUsaXMrnT/LmQjdurDjM4Fi0uuSZ5fMY/Nwjn3YXbiFObK71oHZ8v9f7w4UOzdBRlB118n
-        +49HN3fWtNRlMan88ZA7OVOkbfd9tfesHeIVbmcdFlalLrnjG/7t24GzWqrb7Z+t2jLz0f1n
-        Bw4tOu95zmzTlS2m9ivvFimxFGckGmoxFxUnAgBULiA6SAMAAA==
-X-CMS-MailID: 20210121203040eucas1p2818713a21a74b580ad05383ce6ee9f8e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d
-References: <1610068562-4410-1-git-send-email-collinsd@codeaurora.org>
-        <CGME20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d@eucas1p2.samsung.com>
-        <e512ee85-7fa6-e5fe-eb30-f088bb83cf23@samsung.com>
-        <20210118204958.GS4455@sirena.org.uk>
-        <5f37ae96-c5f9-6619-d88f-21c5e483ff8e@samsung.com>
-        <20210121154418.GE4588@sirena.org.uk>
+References: <20210121170736.2266-1-scott.branden@broadcom.com> <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
+In-Reply-To: <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 21 Jan 2021 22:31:07 +0200
+Message-ID: <CAHp75Vf=Ba+e8PDsvi8eDiuNDvC6Pfx3RsRAkaOZvD26Z2pnQA@mail.gmail.com>
+Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang line
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Finn Behrens <me@kloenk.de>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-On 21.01.2021 16:44, Mark Brown wrote:
-> On Thu, Jan 21, 2021 at 10:41:59AM +0100, Marek Szyprowski wrote:
->> On 18.01.2021 21:49, Mark Brown wrote:
->>> Does this help (completely untested):
->> Sadly nope. I get same warning:
-> Try this instead:
+On Thu, Jan 21, 2021 at 10:28 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-> index 3ae5ccd9277d..31503776dbd7 100644
-> --- a/drivers/regulator/core.c
-> +++ b/drivers/regulator/core.c
-> @@ -1823,17 +1823,6 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
->   	if (rdev->supply)
->   		return 0;
->   
-> -	/*
-> -	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
-> -	 * between rdev->supply null check and setting rdev->supply in
-> -	 * set_supply() from concurrent tasks.
-> -	 */
-> -	regulator_lock(rdev);
-> -
-> -	/* Supply just resolved by a concurrent task? */
-> -	if (rdev->supply)
-> -		goto out;
-> -
->   	r = regulator_dev_lookup(dev, rdev->supply_name);
->   	if (IS_ERR(r)) {
->   		ret = PTR_ERR(r);
-> @@ -1885,12 +1874,29 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
->   		goto out;
->   	}
->   
-> +	/*
-> +	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
-> +	 * between rdev->supply null check and setting rdev->supply in
-> +	 * set_supply() from concurrent tasks.
-> +	 */
-> +	regulator_lock(rdev);
-> +
-> +	/* Supply just resolved by a concurrent task? */
-> +	if (rdev->supply) {
-> +		regulator_unlock(rdev);
-> +		put_device(&r->dev);
-> +		return ret;
-> +	}
-> +
->   	ret = set_supply(rdev, r);
->   	if (ret < 0) {
-> +		regulator_unlock(rdev);
->   		put_device(&r->dev);
-> -		goto out;
-> +		return ret;
->   	}
->   
-> +	regulator_unlock(rdev);
-> +
->   	/*
->   	 * In set_machine_constraints() we may have turned this regulator on
->   	 * but we couldn't propagate to the supply if it hadn't been resolved
-> @@ -1901,12 +1907,11 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
->   		if (ret < 0) {
->   			_regulator_put(rdev->supply);
->   			rdev->supply = NULL;
-> -			goto out;
-> +			goto out_rdev_lock;
+> On Fri, Jan 22, 2021 at 2:17 AM Scott Branden
+> <scott.branden@broadcom.com> wrote:
+> >
+> > Use python3 instead of python in diffconfig Shebang line.
+> > python2 was sunset January 1, 2000 and environments do not need
+> > to support python any more.
 
-drivers/regulator/core.c:1910:4: error: label ‘out_rdev_lock’ used but 
-not defined
+> Just from curiosity, what problem is this solving?
+>
+> Is there a distribution where 'python' does not exist,
+> but 'python3' does ?
 
->   		}
->   	}
->   
->   out:
-> -	regulator_unlock(rdev);
->   	return ret;
->   }
->   
+Yes. Called surprise surprise Debian
+An it's a rare case when I agree with them.
 
-It looks that it finally fixes the locking issue, with the above goto 
-removed completely to fix build. Feel free to add:
-
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-Best regards
 
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+With Best Regards,
+Andy Shevchenko
