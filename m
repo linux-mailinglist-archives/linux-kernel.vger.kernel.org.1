@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC6B2FF052
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6272FF060
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731902AbhAUQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732792AbhAUQCH (ORCPT
+        id S2387979AbhAUQc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:32:26 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:39390 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727046AbhAUQCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:02:07 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3F4C06174A;
-        Thu, 21 Jan 2021 08:01:27 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id q7so2233925wre.13;
-        Thu, 21 Jan 2021 08:01:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=J7bgRKp0teiSnNGg4UCSmhQzrOjTg56xRkU9D9eD0Ps=;
-        b=ke5mLZm5hoyt4q6IYzlTxuFr/paokUApMJA33yBOHB1GDTHQDiDMkl3B7AR9KIsTxB
-         h80btkWHcfbqxZYX+91Qthq9ug7IbTNBukToZqryUvSvd0fk3zs4VGFZiaXfn48mGic7
-         LJHidNSw8Fg/ZWoxf+BAiVgTN0lGUkLvTygf5CV5al6b5aU6hEZfDRtkRaktTxsWxr+e
-         RfQOMj7GUnR40Dzz/TwhySZQFDVrQ30K6So+Qub01oLooLLIaqrrISQmGPQBRr/KmWNs
-         EmImCp13d5H1pAkFz/L2axTUWh2sm3FMEsWYbapIRGNnxCGfHFrj68t8G9P7+jMUHFD9
-         PHFg==
+        Thu, 21 Jan 2021 11:02:54 -0500
+Received: by mail-oi1-f176.google.com with SMTP id w124so2620220oia.6;
+        Thu, 21 Jan 2021 08:02:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=J7bgRKp0teiSnNGg4UCSmhQzrOjTg56xRkU9D9eD0Ps=;
-        b=mjeguNCS6b/jr98Uv6Rh67UgQbRWBYUa8PLarIJNWwDXp0V+pBdur72nXawJdIC085
-         TofZmnCLYq5hB9MVrrQjHIlLjyNMnXJehme4g44TkSFFPxBBxqVPhmI2k8O9Tyewky4k
-         cLFp3C2AaJBNg5Bc2af1XIXd0ghqD0XwbqdCSeLGkqi5VmKkBoqEO4LSJxpovlfwgX1G
-         kXCD31841vwednwi9wA74FWNEvlgijKJDJv5A5A+FDIfCr4bPtYM+613aJ+pU/Lngdwv
-         glBdNYYYstNn/6sEtOlhNKXPO4Pk2blP8Mpt/iuAJB+L58aZ6zCfifEzR1q4kglW7Kof
-         ee0g==
-X-Gm-Message-State: AOAM531V1T1nsvdWAfis+3R7GXVQZZhgEDum8yu68AbKDwAL1MzCdU/a
-        AKo+VK+RkS+INJdZxaGStME=
-X-Google-Smtp-Source: ABdhPJxTVQfJFn1flo2XVyPjKWzlFf1LP+U3/12W9uxNqe6rqvqYjqH2lS9nvnq50JMojSwM3U3FYg==
-X-Received: by 2002:a5d:68ce:: with SMTP id p14mr135945wrw.386.1611244886023;
-        Thu, 21 Jan 2021 08:01:26 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dca:1300:4982:bb9c:f32e:b0de])
-        by smtp.gmail.com with ESMTPSA id m8sm6424482wrv.37.2021.01.21.08.01.24
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=PD67+q56IeIWwh9EcTTNcTtnquhiZRr+vB5SR3iRFJk=;
+        b=MZXLHVFSFTcEcRL1w3Hx66YcsR03KGd27c3d/l6/XaHet+QsLaKmZFM82DE3a92Vkj
+         yul6zt9JCt7VRhc4ZI2iuPeJ0EWeg1JhRic5QN6305D14x9Us0KI27xLF+gT+Ci9S/Zv
+         Fe0bY1Lx5WY+Yi4nyLamweW5MSY8r7T2qqRkB4gtr3w27z/i9RyBmQi+FOEHRSm/TpkW
+         izMmu2RkHCqszaMUYAmko+xxcRejQs+xAr7+6kBOj5JboSBERLTgExxXpeKNF9pQhOM+
+         Vqun3tTs76KBAZckqBlK0OXlohGduhoiqiE860eF3E8axbBQvcxCBYO08LjPLELfv5AG
+         93lA==
+X-Gm-Message-State: AOAM530sc+aOqY0EuifNK9Nzoe5BTvQk8EkuUtgeI1wAi+Q+7gfa4BnO
+        GP82kPwvJ/UbrhZaRB9PvA==
+X-Google-Smtp-Source: ABdhPJyvXB9rRhGO02XjfCZa3hxB2PIUYgQ37EJIgD33OLAmbwcyZt+AucqbzdlDxGOYHSpEfQFISA==
+X-Received: by 2002:a05:6808:158:: with SMTP id h24mr142023oie.135.1611244933771;
+        Thu, 21 Jan 2021 08:02:13 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 67sm302686ott.64.2021.01.21.08.02.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 08:01:25 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com, Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust to clang-version.sh removal
-Date:   Thu, 21 Jan 2021 17:01:15 +0100
-Message-Id: <20210121160115.4676-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 21 Jan 2021 08:02:11 -0800 (PST)
+Received: (nullmailer pid 2814848 invoked by uid 1000);
+        Thu, 21 Jan 2021 16:01:58 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     peng.fan@nxp.com
+Cc:     linux-mmc@vger.kernel.org, robh+dt@kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, ulf.hansson@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, shawnguo@kernel.org,
+        festevam@gmail.com, adrian.hunter@intel.com, s.hauer@pengutronix.de
+In-Reply-To: <1611198593-16287-3-git-send-email-peng.fan@nxp.com>
+References: <1611198593-16287-1-git-send-email-peng.fan@nxp.com> <1611198593-16287-3-git-send-email-peng.fan@nxp.com>
+Subject: Re: [PATCH V2 2/4] dt-bindings: mmc: fsl-imx-esdhc: add clock bindings
+Date:   Thu, 21 Jan 2021 10:01:58 -0600
+Message-Id: <1611244918.545866.2814847.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6c8ad4427f6e ("kbuild: check the minimum compiler version in
-Kconfig") removed ./scripts/clang-version.sh and moved its content to
-./scripts/cc-version.sh.
+On Thu, 21 Jan 2021 11:09:51 +0800, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Add clock bindings for fsl-imx-esdhc yaml
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml        | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
 
-Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-  warning: no file matches    F:    scripts/clang-version.sh
+yamllint warnings/errors:
 
-The CLANG/LLVM BUILD SUPPORT section in MAINTAINERS intends to track
-changes in ./scripts/clang-version.sh; as the file is removed, track
-changes in ./scripts/cc-version.sh instead now.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: clock-names:1: 'ahb' was expected
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: clock-names:2: 'per' was expected
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210121
+See https://patchwork.ozlabs.org/patch/1429619
 
-Masahiro-san, please pick this quick fix-up patch.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e5d7cf38ec82..aafbea806a82 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4355,8 +4355,8 @@ B:	https://github.com/ClangBuiltLinux/linux/issues
- C:	irc://chat.freenode.net/clangbuiltlinux
- F:	Documentation/kbuild/llvm.rst
- F:	include/linux/compiler-clang.h
-+F:	scripts/cc-version.sh
- F:	scripts/clang-tools/
--F:	scripts/clang-version.sh
- F:	scripts/lld-version.sh
- K:	\b(?i:clang|llvm)\b
- 
--- 
-2.17.1
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
