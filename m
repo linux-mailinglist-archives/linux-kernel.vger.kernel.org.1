@@ -2,167 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C162FEF39
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAE22FEF3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732966AbhAUPm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:42:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733104AbhAUPmP (ORCPT
+        id S1733008AbhAUPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:43:01 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39676 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733185AbhAUPmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:42:15 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2248AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:41:27 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id c124so1839674wma.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:41:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yYkGSQxEuVHgVYqPR33Yj58TultHi9vTZtbAI8y9az4=;
-        b=onBsKdxvVavssmI8rA12b808rcLn2XtCSJgb41Bvl3//4pD0tRiSupygejhTlK+hlh
-         j8L4A6ZdO1pmgDaoCAm12y2CEHVGnUUbZyo/OK8LYp35ILcxLpTwrl69zTc12m6T7BaW
-         Zxf7phQdRPfMN/MmQBby9qMcW4ljpqsE2kTU1/ThZz9ZgrR4Rw/qM0PEMSQbpp4DCK1C
-         7h3lvVRqTV4qJPygVo4iuwD3ZobeCdmTtlC0C1vezn8rOy6xOBAhoPEMw1ctenF8wDZ/
-         /mocORrCmSeDuiQgPYSQr/ZtbXbjFdeHoV7Hl9bjHLYWdf5F9J+A+j4DzWMt5X5WDJLS
-         WN/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yYkGSQxEuVHgVYqPR33Yj58TultHi9vTZtbAI8y9az4=;
-        b=FReMHoH09Z7PbqcCvQnpdjMifG1igtyG4CZKzzqlOhPJ7H9IwdLjzEbJ3oWTorC3NT
-         T9FRHXPnADmJ2gCjS/4AqLfOHS5m+KZ25mcRMvQDe4kcmQunk68FbYxQuRzEDmzptY6t
-         CFI+sIfQadIzrxhSix9WHO7vMNiXVcPj9tiDLNXEJ5sLYMcj8mdP3b6orFPxNYMTp/vX
-         t9GLBA6ZGccldnRKAzXC2kfUwQXryYnSMd+52DiW1IQDrgg0y/F37lfCmCOC/H5wtBlT
-         /jczGQIs5W64mQSoCgJNxwxNGMqlyVge+wnzfVyYxTxnsdi/332/wiGEeL+PV0WgFNiu
-         c3gw==
-X-Gm-Message-State: AOAM533RDz40fLjtp180z2FJKxcITEwrqq8A3zl2sDrycUi9UDbfeiqD
-        fgJwcXkzzbIINcDTanPDJByJvONqY90/zw==
-X-Google-Smtp-Source: ABdhPJzFImVwxFfXZaO5auJux/Yh75i+5b++ELZ9n6+/zSvtapYTTlq6W1J+hTLH4w0FVli7+5ex/w==
-X-Received: by 2002:a1c:e055:: with SMTP id x82mr8433273wmg.185.1611243685461;
-        Thu, 21 Jan 2021 07:41:25 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id t67sm8814444wmt.28.2021.01.21.07.41.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 07:41:24 -0800 (PST)
-Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
- <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
- <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
- <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
- <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
-Date:   Thu, 21 Jan 2021 15:41:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 21 Jan 2021 10:42:16 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10LFWRhs073514;
+        Thu, 21 Jan 2021 10:41:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=LQEFsMUUTQDsJs61V/Z80GR7yZ2xEqRbbbkdvaivo6s=;
+ b=IB86BBbqi6FwKtZvjABRgqtjhiJ9wx8Cp+WR/MsdVAK04OD0SUs3y73ShCej5yfoWoAZ
+ qLdW/oxJ1+ds5fmgW5y1LZN5+v3lIUIZq1I6rlT3Ug4l82xjsmbv8nIkCUNuqokrQFAY
+ W3UEPMItaz16ZjS+zPDqxpo93rmwYhzHC2wMY32hRWu7BAxP34fKaqAClsgIsYHD+eVq
+ azOPG3orq27oihRUSxqg439+bbQDSOrIpKrKsldm6DbdrJojyvUJzwv7+VLF9iVamOcK
+ Emiylx1zsP8RHB5tv2EusRVDFDbGQlRTkYDAwB+uZ8gypZ7AKol1qNdjrQa7ySMhHCQf OA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 367c8h8j2k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Jan 2021 10:41:32 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10LFXfdK084843;
+        Thu, 21 Jan 2021 10:41:32 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 367c8h8j0v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Jan 2021 10:41:32 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10LFXBZf007106;
+        Thu, 21 Jan 2021 15:41:30 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 3668ny0x6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Jan 2021 15:41:30 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10LFfRet43188612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 15:41:27 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6E3904C044;
+        Thu, 21 Jan 2021 15:41:27 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF2F34C040;
+        Thu, 21 Jan 2021 15:41:26 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.91.116])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 21 Jan 2021 15:41:26 +0000 (GMT)
+Subject: Re: [PATCH v2 2/2] s390: mm: Fix secure storage access exception
+ handling
+To:     Janosch Frank <frankja@linux.ibm.com>, linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, thuth@redhat.com, david@redhat.com,
+        imbrenda@linux.ibm.com, cohuck@redhat.com,
+        linux-s390@vger.kernel.org, gor@linux.ibm.com, hca@linux.ibm.com,
+        mihajlov@linux.ibm.com
+References: <20210121151436.417240-1-frankja@linux.ibm.com>
+ <20210121151436.417240-3-frankja@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <a1d228f4-0710-bdaa-a923-d2ca24cff9f7@de.ibm.com>
+Date:   Thu, 21 Jan 2021 16:41:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210121151436.417240-3-frankja@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-21_08:2021-01-21,2021-01-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
+ clxscore=1011 bulkscore=0 phishscore=0 mlxscore=0 spamscore=0
+ impostorscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101210085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 21/01/2021 14:56, Pierre-Louis Bossart wrote:
+On 21.01.21 16:14, Janosch Frank wrote:
+> Turns out that the bit 61 in the TEID is not always 1 and if that's
+> the case the address space ID and the address are
+> unpredictable. Without an address and its address space ID we can't
+> export memory and hence we can only send a SIGSEGV to the process or
+> panic the kernel depending on who caused the exception.
 > 
+> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
+> Fixes: 084ea4d611a3d ("s390/mm: add (non)secure page access exceptions handlers")
+> Cc: stable@vger.kernel.org
+
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+
+we should let it run in our CI for some days, though.
+
+> ---
+>  arch/s390/mm/fault.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
->> Port allocations are something like this:
->>
->> RX: (Simple)
->> Port 1 -> HPH L/R
->> Port 2 -> CLASS H Amp
->> Port 3 -> COMP
->> Port 4 -> DSD.
->>
->> TX: (This get bit more complicated)
->> Port 1: PCM
->> Port 2: ADC 1 & 2
->> Port 3: ADC 3 & 4
->> Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
->> Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
->>
->> We handle the port allocation dynamically based on mixer and dapm 
->> widgets in my code! Also channel allocations are different for each 
->> function!
-> 
-> Sorry, I am not following here. What is dynamic here and use-case 
-> dependent? And is this a mapping on the master or the codec sides that 
-> you want to modify?
-
-[SLAVE]-------[MASTER]
-NA-------------Port 1: PCM
-Port 1---------Port 2: ADC 1 & 2
-Port 2---------Port 3: ADC 3 & 4
-Port 3---------Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
-Port 4---------Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
-
-
-Mapping is still static however Number of ports selection and channel 
-mask will be dynamic here.
-
-
-Example: for Headset MIC usecase we will be using Slv Port1, Slv Port3 
-along with Mstr Port2 and Master Port4
-
-Similarly for usecases like Digital MIC or other Analog MICs.
-
-
-> 
->>> Does this help and can you align on what Intel started with?
->>
->> Firstly, This is where the issue comes, if we go with the 
->> suggested(dai->id) solution, we would end up with a long list of 
->> dai-links with different combinations of both inputs/output 
->> connections and usecases. Again we have to deal with limited DSP 
->> resources too!
->>
->> Secondly, The check [1] in stream.c will not allow more than one 
->> master port config to be added to master runtime. Ex: RX Port 1, 2, 3 
->> is used for Headset Playback.
-> 
-> I am confused here, we do have examples in existing codec drivers where 
-> we use multiple ports for a single stream, e.g. for IV feedback we use 2 
-> ports.
-
-Is this on multi_link? which is why it might be working for you.
-
-> 
-
-Currently we have below check in sdw_stream_add_master().
-
-if (!bus->multi_link && stream->m_rt_count > 0) {
-	dev_err(bus->dev, "Multilink not supported, link %d\n", bus->link_id);
-	ret = -EINVAL;
-	goto unlock;
-}
-
-If we have single master(like my case) and dai-links which have more 
-then one port  will be calling  sdw_stream_add_master() for each port, 
-so m_rt_count above check will fail for the second call!
-
-
-
-> In your "RX Port 1, 2, 3" example, are you referring to the codec or the 
-> master side? If it's for the codec, it's already supported, see e.g. 
-
-Master side.
-
-> https://github.com/thesofproject/linux/pull/2514, we use DP2 and DP4 for 
-
-This fine on slave side! Issue is on the master side!
-
-> the same stream. This is done with the port_config capability.
-> 
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index e30c7c781172..3e8685ad938d 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -791,6 +791,20 @@ void do_secure_storage_access(struct pt_regs *regs)
+>  	struct page *page;
+>  	int rc;
+>  
+> +	/* There are cases where we don't have a TEID. */
+> +	if (!(regs->int_parm_long & 0x4)) {
+> +		/*
+> +		 * When this happens, userspace did something that it
+> +		 * was not supposed to do, e.g. branching into secure
+> +		 * memory. Trigger a segmentation fault.
+> +		 */
+> +		if (user_mode(regs)) {
+> +			send_sig(SIGSEGV, current, 0);
+> +			return;
+> +		} else
+> +			panic("Unexpected PGM 0x3d with TEID bit 61=0");
+> +	}
+> +
+>  	switch (get_fault_type(regs)) {
+>  	case USER_FAULT:
+>  		mm = current->mm;
 > 
