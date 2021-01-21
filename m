@@ -2,179 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A975F2FEF9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9962FEFA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732226AbhAUP61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:58:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
+        id S1733036AbhAUP7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:59:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729940AbhAUPzx (ORCPT
+        with ESMTP id S1731303AbhAUP5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:55:53 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F962C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:54:51 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id s6so1100030qvn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:54:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F9T5QDxYqfmfnPwZxITw0CZr4ZjJM1vepPOWi52m39U=;
-        b=NsC+3swtSkqDnokK/hyMWclsUQ9GXS8r9bavs5m/3LSPYzs/+aMV0LdEOiBh1DVz0a
-         WEYgoDDs8Ltk7B4gtTfQmNoWKHoL55gqizW9xXKpftoBVvhpHjuW89CRHoJ7K7U92NrA
-         itZA+iTErC5vCFrKYoIG5Z8dtSL+v0xX2DawGsh+qCIgvr53WR6YjovETnBMl5fHJJ1E
-         bXpJYRFwideDInvuhh8lbAmMm5pdUmbHhN17/14vULZNENqe78u7mMTJWVuqLaxtTq7g
-         i3ASsclaOjM7l22H4t9qbYa6vgl0LzyECK1mJ4MmkVZoT3fWqByDY8Yj3xEaLdbLEwQf
-         +dkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=F9T5QDxYqfmfnPwZxITw0CZr4ZjJM1vepPOWi52m39U=;
-        b=bTfhs+Fb49aij9oToAXYq6r7G1rjpfhs6G+Fqhn6nwvZDzMdwfcm0VzI2ma00uPOGg
-         6l+m4El2VozIECmvoeN4jDr0L5gNo7Ect+QEv98ihk1a+Nhk60CKMRYpRxYiVTD0hpM7
-         fkX0e38INxo9SdqLsCqHW7b79M00IHH3uQ4YE/S3E9Hj/lAX9pIDfDdvEmRT31862uJQ
-         Ktd3nSUHaLi7lBi8FbPvDpxHdj96zjlJLs+r8VYVxMyokxGLGHqm9KC95+1Be1+r09X4
-         lZg6+J7R+yKG15+lWObzRXjN98VUi6MFAVFDO3YukQt24jJ2uOtRXDpaFfMJ3mHefqW9
-         ASIg==
-X-Gm-Message-State: AOAM530isSTVMww5ufnpnlpR0OCYLALj32TFMrRTKuygp6MBF+D5/f1k
-        pXFJ9/ZJgdaUrIN2gkEWFrM=
-X-Google-Smtp-Source: ABdhPJwNsEnMNHiGxuj0djSejhTBW8B9coHKR/39OcWJ9zxAUPgbRnu8QXGIawtpyB9uEGA/q8haWA==
-X-Received: by 2002:ad4:4ae2:: with SMTP id cp2mr239567qvb.50.1611244490644;
-        Thu, 21 Jan 2021 07:54:50 -0800 (PST)
-Received: from fedora (209-6-208-110.s8556.c3-0.smr-cbr2.sbo-smr.ma.cable.rcncustomer.com. [209.6.208.110])
-        by smtp.gmail.com with ESMTPSA id x21sm3053378qkn.61.2021.01.21.07.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 07:54:50 -0800 (PST)
-Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
-Date:   Thu, 21 Jan 2021 10:54:48 -0500
-From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     Ram Pai <linuxram@us.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Subject: Re: [PATCH] powerpc/mm: Limit allocation of SWIOTLB on server
- machines
-Message-ID: <20210121155448.GA97019@fedora>
-References: <20201218062103.76102-1-bauerman@linux.ibm.com>
- <20201223205838.GA4102@ram-ibm-com.ibm.com>
- <87o8ikukye.fsf@manicouagan.localdomain>
- <20201224031409.GB4102@ram-ibm-com.ibm.com>
- <87bldzlzu2.fsf@manicouagan.localdomain>
+        Thu, 21 Jan 2021 10:57:01 -0500
+Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [IPv6:2001:1600:4:17::42aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB50EC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:55:27 -0800 (PST)
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DM6Rb0l2mzMqbZ9;
+        Thu, 21 Jan 2021 16:55:23 +0100 (CET)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DM6RY3TkSzlppyk;
+        Thu, 21 Jan 2021 16:55:21 +0100 (CET)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH v4 00/10] Enable root to update the blacklist keyring
+Date:   Thu, 21 Jan 2021 16:55:03 +0100
+Message-Id: <20210121155513.539519-1-mic@digikod.net>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bldzlzu2.fsf@manicouagan.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:27:01PM -0300, Thiago Jung Bauermann wrote:
-> 
-> Ram Pai <linuxram@us.ibm.com> writes:
-> 
-> > On Wed, Dec 23, 2020 at 09:06:01PM -0300, Thiago Jung Bauermann wrote:
-> >> 
-> >> Hi Ram,
-> >> 
-> >> Thanks for reviewing this patch.
-> >> 
-> >> Ram Pai <linuxram@us.ibm.com> writes:
-> >> 
-> >> > On Fri, Dec 18, 2020 at 03:21:03AM -0300, Thiago Jung Bauermann wrote:
-> >> >> On server-class POWER machines, we don't need the SWIOTLB unless we're a
-> >> >> secure VM. Nevertheless, if CONFIG_SWIOTLB is enabled we unconditionally
-> >> >> allocate it.
-> >> >> 
-> >> >> In most cases this is harmless, but on a few machine configurations (e.g.,
-> >> >> POWER9 powernv systems with 4 GB area reserved for crashdump kernel) it can
-> >> >> happen that memblock can't find a 64 MB chunk of memory for the SWIOTLB and
-> >> >> fails with a scary-looking WARN_ONCE:
-> >> >> 
-> >> >>  ------------[ cut here ]------------
-> >> >>  memblock: bottom-up allocation failed, memory hotremove may be affected
-> >> >>  WARNING: CPU: 0 PID: 0 at mm/memblock.c:332 memblock_find_in_range_node+0x328/0x340
-> >> >>  Modules linked in:
-> >> >>  CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc2-orig+ #6
-> >> >>  NIP:  c000000000442f38 LR: c000000000442f34 CTR: c0000000001e0080
-> >> >>  REGS: c000000001def900 TRAP: 0700   Not tainted  (5.10.0-rc2-orig+)
-> >> >>  MSR:  9000000002021033 <SF,HV,VEC,ME,IR,DR,RI,LE>  CR: 28022222  XER: 20040000
-> >> >>  CFAR: c00000000014b7b4 IRQMASK: 1
-> >> >>  GPR00: c000000000442f34 c000000001defba0 c000000001deff00 0000000000000047
-> >> >>  GPR04: 00000000ffff7fff c000000001def828 c000000001def820 0000000000000000
-> >> >>  GPR08: 0000001ffc3e0000 c000000001b75478 c000000001b75478 0000000000000001
-> >> >>  GPR12: 0000000000002000 c000000002030000 0000000000000000 0000000000000000
-> >> >>  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000002030000
-> >> >>  GPR20: 0000000000000000 0000000000010000 0000000000010000 c000000001defc10
-> >> >>  GPR24: c000000001defc08 c000000001c91868 c000000001defc18 c000000001c91890
-> >> >>  GPR28: 0000000000000000 ffffffffffffffff 0000000004000000 00000000ffffffff
-> >> >>  NIP [c000000000442f38] memblock_find_in_range_node+0x328/0x340
-> >> >>  LR [c000000000442f34] memblock_find_in_range_node+0x324/0x340
-> >> >>  Call Trace:
-> >> >>  [c000000001defba0] [c000000000442f34] memblock_find_in_range_node+0x324/0x340 (unreliable)
-> >> >>  [c000000001defc90] [c0000000015ac088] memblock_alloc_range_nid+0xec/0x1b0
-> >> >>  [c000000001defd40] [c0000000015ac1f8] memblock_alloc_internal+0xac/0x110
-> >> >>  [c000000001defda0] [c0000000015ac4d0] memblock_alloc_try_nid+0x94/0xcc
-> >> >>  [c000000001defe30] [c00000000159c3c8] swiotlb_init+0x78/0x104
-> >> >>  [c000000001defea0] [c00000000158378c] mem_init+0x4c/0x98
-> >> >>  [c000000001defec0] [c00000000157457c] start_kernel+0x714/0xac8
-> >> >>  [c000000001deff90] [c00000000000d244] start_here_common+0x1c/0x58
-> >> >>  Instruction dump:
-> >> >>  2c230000 4182ffd4 ea610088 ea810090 4bfffe84 39200001 3d42fff4 3c62ff60
-> >> >>  3863c560 992a8bfc 4bd0881d 60000000 <0fe00000> ea610088 4bfffd94 60000000
-> >> >>  random: get_random_bytes called from __warn+0x128/0x184 with crng_init=0
-> >> >>  ---[ end trace 0000000000000000 ]---
-> >> >>  software IO TLB: Cannot allocate buffer
-> >> >> 
-> >> >> Unless this is a secure VM the message can actually be ignored, because the
-> >> >> SWIOTLB isn't needed. Therefore, let's avoid the SWIOTLB in those cases.
-> >> >
-> >> > The above warn_on is conveying a genuine warning. Should it be silenced?
-> >> 
-> >> Not sure I understand your point. This patch doesn't silence the
-> >> warning, it avoids the problem it is warning about.
-> >
-> > Sorry, I should have explained it better. My point is...  
-> >
-> > 	If CONFIG_SWIOTLB is enabled, it means that the kernel is
-> > 	promising the bounce buffering capability. I know, currently we
-> > 	do not have any kernel subsystems that use bounce buffers on
-> > 	non-secure-pseries-kernel or powernv-kernel.  But that does not
-> > 	mean, there wont be any. In case there is such a third-party
-> > 	module needing bounce buffering, it wont be able to operate,
-> > 	because of the proposed change in your patch.
-> >
-> > 	Is that a good thing or a bad thing, I do not know. I will let
-> > 	the experts opine.
-> 
-> Ping? Does anyone else has an opinion on this? The other option I can
-> think of is changing the crashkernel code to not reserve so much memory
-> below 4 GB. Other people are considering this option, but it's not
-> planned for the near future.
+This fourth patch series mainly reorder patches and add more
+documentation as requested by Jarkko.  This series is based on
+v5.11-rc4.
 
-That seems a more suitable solution regardless, but there is always
-the danger of not being enough or being too big.
+The goal of these patches is to add a new configuration option to enable the
+root user to load signed keys in the blacklist keyring.  This keyring is useful
+to "untrust" certificates or files.  Enabling to safely update this keyring
+without recompiling the kernel makes it more usable.
 
-There was some autocrashkernel allocation patches going around
-for x86 and ARM that perhaps could be re-used?
+Previous patch series:
+https://lore.kernel.org/lkml/20210114151909.2344974-1-mic@digikod.net/
 
-> 
-> Also, there's a patch currently in linux-next which removes the scary
-> warning because of unrelated reasons:
-> 
-> https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
-> 
-> So assuming that the patch above goes in and keeping the assumption that
-> the swiotlb won't be needed in the powernv machines where I've seen the
-> warning happen, we can just leave things as they are now.
+Regards,
 
-If that solves the problem, then that is OK.
+Alex Shi (1):
+  certs/blacklist: fix kernel doc interface issue
+
+David Howells (1):
+  certs: Fix blacklist flag type confusion
+
+Mickaël Salaün (8):
+  tools/certs: Add print-cert-tbs-hash.sh
+  certs: Check that builtin blacklist hashes are valid
+  certs: Fix blacklisted hexadecimal hash string check
+  certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID
+  certs: Make blacklist_vet_description() more strict
+  certs: Factor out the blacklist hash creation
+  PKCS#7: Fix missing include
+  certs: Allow root user to append signed hashes to the blacklist
+    keyring
+
+ MAINTAINERS                                   |   2 +
+ certs/.gitignore                              |   1 +
+ certs/Kconfig                                 |  17 +-
+ certs/Makefile                                |  15 +-
+ certs/blacklist.c                             | 217 ++++++++++++++----
+ certs/system_keyring.c                        |   5 +-
+ crypto/asymmetric_keys/x509_public_key.c      |   3 +-
+ include/keys/system_keyring.h                 |  14 +-
+ include/linux/key.h                           |   1 +
+ include/linux/verification.h                  |   2 +
+ scripts/check-blacklist-hashes.awk            |  37 +++
+ security/integrity/ima/ima_mok.c              |   4 +-
+ .../platform_certs/keyring_handler.c          |  26 +--
+ security/keys/key.c                           |   2 +
+ tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
+ 15 files changed, 350 insertions(+), 87 deletions(-)
+ create mode 100755 scripts/check-blacklist-hashes.awk
+ create mode 100755 tools/certs/print-cert-tbs-hash.sh
 
 
-> 
-> -- 
-> Thiago Jung Bauermann
-> IBM Linux Technology Center
+base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+-- 
+2.30.0
+
