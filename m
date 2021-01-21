@@ -2,131 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372EB2FF16A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD7A2FF1A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388487AbhAURKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388502AbhAURIO (ORCPT
+        id S1732309AbhAURTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:19:30 -0500
+Received: from relay.smtp-ext.broadcom.com ([192.19.221.30]:37592 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388785AbhAURSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:08:14 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24836C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:07:34 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id w1so3616877ejf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:07:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=eQLhd0RmecsUtEwCOZ8FyndJtq64hLkT3ga0vHtTJyA=;
-        b=cVnCzHWFDMq4b1Y+wJLNcLc+tppx3MXwY2Cstab5yAO3oBx1p9md0AU31OZIUJm9U1
-         Nqp87MRNfENPWnHem7RBWmPEDrFFg+GF4aNGpget7mS6Ibe+/Fvzq97P9qp4MAKXSXvV
-         YRlNTq+h3snzqV6GBTLYwblp0Ioz1bBlqEuqfYVFAriuThvhYGECX5oftPmiDOSRDH/D
-         YkpW+HxMZftqG4IN0MhpdpR599evmq7R9HhiLm0YSO4liM4OIomKtUYCN54tN5Aw8N+d
-         7ham/alDhE28VnkaUNyQ2pJIaoYZj+ohp2M4xQDIvqDUjEINPxVAEmOUVIhLrLcCmhNJ
-         A6aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=eQLhd0RmecsUtEwCOZ8FyndJtq64hLkT3ga0vHtTJyA=;
-        b=IWMDUJQEzuCU1/XQPXPqgkt1N3cyClDxFx0hxhbQDuOOs26zXWavYm9pPRmO2waXiS
-         646K8+hX7mijYsbZR7mJUqATH685YTiDT8+yj9Y3+ZKjRQfjcUczNrto95uxqaHevgLt
-         nwH7K4KFDgfSvybnIkAIIpNfqbxy2QlYrmtf3oDDGEmr7xy5yRdPpjfEyA6FOPpCs+WM
-         CiVmpCJjh9ReBJ5q/x7u1tCsOANzqPZF5fml1MRQOZr4CyPVpysZlPPZ0otrIsGgJTGX
-         FKWY3nt0STDN7A4TOwGcAA7FV+U3xRrkGSTgzY/mqjPZbE8Qal+Xk+AE+w3y7BTQbzIF
-         T4cw==
-X-Gm-Message-State: AOAM533UDDac80LYp6LAwJDQBtfV0i6INo7XgekksaWYQFBnC1enmYEp
-        MPO0es4p4ITKcVjmLTiHm5X0v7ebdovcV5hMqaUWBXbZXirsE2Eb
-X-Google-Smtp-Source: ABdhPJy26oMJqrssJrRugiqhP60IfyO4cinwsLNNZtZpjPkgr6BozMryJUzfIoUzBChNvfJweoKhon2o9u48dshOJhU=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr279216eju.375.1611248852718;
- Thu, 21 Jan 2021 09:07:32 -0800 (PST)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Jan 2021 22:37:21 +0530
-Message-ID: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
-Subject: rcu-torture: Internal error: Oops: 96000006
-To:     rcu@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 21 Jan 2021 12:18:33 -0500
+X-Greylist: delayed 586 seconds by postgrey-1.27 at vger.kernel.org; Thu, 21 Jan 2021 12:18:32 EST
+Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 1A1BF2257C;
+        Thu, 21 Jan 2021 09:07:39 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 1A1BF2257C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1611248863;
+        bh=8XFqEBg6MOXtrlaSwjKTsCeoHs6q0ILUIphsmIehoac=;
+        h=From:To:Cc:Subject:Date:From;
+        b=djqWm+ysuGjN1gWZaQyO4KjRUF6m2WDGsF27UgJYoMc5Sc1DulvE9PKwgqWDb/don
+         0F6lGe1aDTXDuwkSSycRM3uB+BJf526AVBDXIwnpCCG10/QQMxADdvmd5vpJzPJkUW
+         KEviqRDG+ZINNu081HhbT4tR83lKvxoq3Dqgiwgo=
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>, Finn Behrens <me@kloenk.de>
+Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH] diffconfig: use python3 instead of python in Shebang line
+Date:   Thu, 21 Jan 2021 09:07:36 -0800
+Message-Id: <20210121170736.2266-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
-the following kernel crash noticed. This started happening from Linux next
-next-20210111 tag to next-20210121.
+Use python3 instead of python in diffconfig Shebang line.
+python2 was sunset January 1, 2000 and environments do not need
+to support python any more.
 
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git describe: next-20210111
-  kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
+Fixes: b24413180f56 ("tweewide: Fix most Shebang lines")
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+---
+ scripts/diffconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-output log:
-
-[  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
-ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
-= ffff8000091ab8e0
-[  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
-[  621.546696] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000008
-[  621.555431] Mem abort info:
-[  621.557243]   ESR = 0x96000006
-[  621.559074]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  621.562240]   SET = 0, FnV = 0
-[  621.563626]   EA = 0, S1PTW = 0
-[  621.565134] Data abort info:
-[  621.566425]   ISV = 0, ISS = 0x00000006
-[  621.568064]   CM = 0, WnR = 0
-[  621.569571] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101ef0000
-[  621.572446] [0000000000000008] pgd=0000000102ee1003,
-p4d=0000000102ee1003, pud=0000000100b25003, pmd=0000000000000000
-[  621.577007] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[  621.579359] Modules linked in: rcutorture(-) torture rfkill crct10dif_ce fuse
-[  621.582549] CPU: 2 PID: 422 Comm: rcu_torture_sta Not tainted
-5.11.0-rc2-next-20210111 #2
-[  621.585294] Hardware name: linux,dummy-virt (DT)
-[  621.586671] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-[  621.588497] pc : kmem_valid_obj+0x58/0xa8
-[  621.589748] lr : kmem_valid_obj+0x40/0xa8
-[  621.591022] sp : ffff800012debdc0
-[  621.592026] x29: ffff800012debdc0 x28: 0000000000000000
-[  621.593652] x27: ffff800012e8b988 x26: ffff0000c634dbc0
-[  621.595287] x25: 0000000000000000 x24: ffff8000091a1e60
-[  621.596882] x23: ffff8000091ab8e0 x22: ffff0000c0a3ac40
-[  621.598464] x21: ffff0000c1f44100 x20: ffff8000091a5e90
-[  621.600070] x19: 0000000000000000 x18: 0000000000000010
-[  621.601692] x17: 0000000000007fff x16: 00000000ffffffff
-[  621.603303] x15: ffff0000c0a3b0b8 x14: 66203d2070687226
-[  621.604866] x13: 202c303463613361 x12: 2c30346562656432
-[  621.606455] x11: ffff80001246cbc0 x10: ffff800012454b80
-[  621.608064] x9 : ffff8000100370c8 x8 : 0000000100000000
-[  621.609649] x7 : 0000000000000018 x6 : ffff800012816348
-[  621.611253] x5 : ffff800012816348 x4 : 0000000000000001
-[  621.612849] x3 : 0000000000000001 x2 : 0000000140000000
-[  621.614455] x1 : 0000000000000000 x0 : fffffc0000000000
-[  621.616062] Call trace:
-[  621.616816]  kmem_valid_obj+0x58/0xa8
-[  621.617933]  mem_dump_obj+0x20/0xc8
-[  621.619015]  rcu_torture_stats+0xf0/0x298 [rcutorture]
-[  621.620578]  kthread+0x120/0x158
-[  621.621583]  ret_from_fork+0x10/0x34
-[  621.622685] Code: 8b000273 b25657e0 d34cfe73 8b131813 (f9400660)
-[  621.624570] ---[ end trace 2a00688830f37ea1 ]---
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Full test log:
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210111/testrun/3716647/suite/linux-log-parser/test/check-kernel-oops-2124993/log
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210121/testrun/3791289/suite/linux-log-parser/test/check-kernel-oops-2172413/log
-
+diff --git a/scripts/diffconfig b/scripts/diffconfig
+index 627eba5849b5..d5da5fa05d1d 100755
+--- a/scripts/diffconfig
++++ b/scripts/diffconfig
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # diffconfig - a tool to compare .config files.
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.17.1
+
