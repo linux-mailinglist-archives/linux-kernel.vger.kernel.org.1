@@ -2,131 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784ED2FEDCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCADC2FEDD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732382AbhAUO7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:59:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24885 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732023AbhAUO6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:58:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611240994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8nCcl62e6GfJVT0Q+3a0+mnSZi/+Kdfk1t5E0aKT7a0=;
-        b=GlUfMQQONHqnNJ67L+AYjYDXXtTav9UrmZ0KgFs17pGWbQqp0vzRWbLmjC073a14MPf91W
-        Anzk61XbcFoWoPyGSK/ZGg7nZ0YNNCFDDdHUaVyZJVgzj9K7acK+iFmBoC90xLasPkFFy5
-        jlPXKEKSas18sCHooH4hmu7GYEvQokQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-z2uOodC7PMq_brP9sYullA-1; Thu, 21 Jan 2021 09:56:33 -0500
-X-MC-Unique: z2uOodC7PMq_brP9sYullA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 58BEA10151EC;
-        Thu, 21 Jan 2021 14:56:31 +0000 (UTC)
-Received: from work-vm (ovpn-115-101.ams2.redhat.com [10.36.115.101])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05C066E51B;
-        Thu, 21 Jan 2021 14:56:24 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 14:56:22 +0000
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Wei Huang <wei.huang2@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, mlevitsk@redhat.com,
-        seanjc@google.com, joro@8bytes.org, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        luto@amacapital.net
-Subject: Re: [PATCH v2 4/4] KVM: SVM: Support #GP handling for the case of
- nested on nested
-Message-ID: <20210121145622.GH3072@work-vm>
-References: <20210121065508.1169585-1-wei.huang2@amd.com>
- <20210121065508.1169585-5-wei.huang2@amd.com>
+        id S1732394AbhAUO7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:59:35 -0500
+Received: from mga01.intel.com ([192.55.52.88]:19535 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732176AbhAUO6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 09:58:25 -0500
+IronPort-SDR: erk9+RHnf7L1V3NvdMgWAut193e0/UOA02idcHPGhVYpm40ycx0bRHgvQ/szafFnznY2h4v9eX
+ ms/Fnp32JDOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="198016025"
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="198016025"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 06:56:26 -0800
+IronPort-SDR: W74hvUF2c/5+F/l5fu8K8Cgr6Xq1W49lAZJiJbNOTI+yBnUbs6lb9zduxyvNgGCCfQp6q4Slgx
+ bGBmc6RnAwxg==
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="427378077"
+Received: from rjstacey-mobl2.amr.corp.intel.com (HELO [10.212.160.37]) ([10.212.160.37])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 06:56:25 -0800
+Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+Cc:     gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
+ <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+ <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
+ <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
+Date:   Thu, 21 Jan 2021 08:56:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121065508.1169585-5-wei.huang2@amd.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Wei Huang (wei.huang2@amd.com) wrote:
-> Under the case of nested on nested (e.g. L0->L1->L2->L3), #GP triggered
-> by SVM instructions can be hided from L1. Instead the hypervisor can
-> inject the proper #VMEXIT to inform L1 of what is happening. Thus L1
-> can avoid invoking the #GP workaround. For this reason we turns on
-> guest VM's X86_FEATURE_SVME_ADDR_CHK bit for KVM running inside VM to
-> receive the notification and change behavior.
-
-Doesn't this mean a VM migrated between levels (hmm L2 to L1???) would
-see different behaviour?
-(I've never tried such a migration, but I thought in principal it should
-work).
-
-Dave
 
 
-> Co-developed-by: Bandan Das <bsd@redhat.com>
-> Signed-off-by: Bandan Das <bsd@redhat.com>
-> Signed-off-by: Wei Huang <wei.huang2@amd.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
+> Port allocations are something like this:
 > 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 2a12870ac71a..89512c0e7663 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2196,6 +2196,11 @@ static int svm_instr_opcode(struct kvm_vcpu *vcpu)
->  
->  static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
->  {
-> +	const int guest_mode_exit_codes[] = {
-> +		[SVM_INSTR_VMRUN] = SVM_EXIT_VMRUN,
-> +		[SVM_INSTR_VMLOAD] = SVM_EXIT_VMLOAD,
-> +		[SVM_INSTR_VMSAVE] = SVM_EXIT_VMSAVE,
-> +	};
->  	int (*const svm_instr_handlers[])(struct vcpu_svm *svm) = {
->  		[SVM_INSTR_VMRUN] = vmrun_interception,
->  		[SVM_INSTR_VMLOAD] = vmload_interception,
-> @@ -2203,7 +2208,14 @@ static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
->  	};
->  	struct vcpu_svm *svm = to_svm(vcpu);
->  
-> -	return svm_instr_handlers[opcode](svm);
-> +	if (is_guest_mode(vcpu)) {
-> +		svm->vmcb->control.exit_code = guest_mode_exit_codes[opcode];
-> +		svm->vmcb->control.exit_info_1 = 0;
-> +		svm->vmcb->control.exit_info_2 = 0;
-> +
-> +		return nested_svm_vmexit(svm);
-> +	} else
-> +		return svm_instr_handlers[opcode](svm);
->  }
->  
->  /*
-> @@ -4034,6 +4046,11 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  	/* Check again if INVPCID interception if required */
->  	svm_check_invpcid(svm);
->  
-> +	if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM)) {
-> +		best = kvm_find_cpuid_entry(vcpu, 0x8000000A, 0);
-> +		best->edx |= (1 << 28);
-> +	}
-> +
->  	/* For sev guests, the memory encryption bit is not reserved in CR3.  */
->  	if (sev_guest(vcpu->kvm)) {
->  		best = kvm_find_cpuid_entry(vcpu, 0x8000001F, 0);
-> -- 
-> 2.27.0
+> RX: (Simple)
+> Port 1 -> HPH L/R
+> Port 2 -> CLASS H Amp
+> Port 3 -> COMP
+> Port 4 -> DSD.
 > 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> TX: (This get bit more complicated)
+> Port 1: PCM
+> Port 2: ADC 1 & 2
+> Port 3: ADC 3 & 4
+> Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
+> Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
+> 
+> We handle the port allocation dynamically based on mixer and dapm 
+> widgets in my code! Also channel allocations are different for each 
+> function!
+
+Sorry, I am not following here. What is dynamic here and use-case 
+dependent? And is this a mapping on the master or the codec sides that 
+you want to modify?
+
+>> Does this help and can you align on what Intel started with?
+> 
+> Firstly, This is where the issue comes, if we go with the 
+> suggested(dai->id) solution, we would end up with a long list of 
+> dai-links with different combinations of both inputs/output connections 
+> and usecases. Again we have to deal with limited DSP resources too!
+> 
+> Secondly, The check [1] in stream.c will not allow more than one master 
+> port config to be added to master runtime. Ex: RX Port 1, 2, 3 is used 
+> for Headset Playback.
+
+I am confused here, we do have examples in existing codec drivers where 
+we use multiple ports for a single stream, e.g. for IV feedback we use 2 
+ports.
+
+In your "RX Port 1, 2, 3" example, are you referring to the codec or the 
+master side? If it's for the codec, it's already supported, see e.g. 
+https://github.com/thesofproject/linux/pull/2514, we use DP2 and DP4 for 
+the same stream. This is done with the port_config capability.
+
 
