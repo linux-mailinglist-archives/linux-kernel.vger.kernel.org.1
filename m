@@ -2,86 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96E62FF81A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1D12FF81C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbhAUWjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:39:45 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35622 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbhAUWjX (ORCPT
+        id S1727137AbhAUWkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:40:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727075AbhAUWjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:39:23 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BD2AD8AE;
-        Thu, 21 Jan 2021 23:38:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611268722;
-        bh=mTQDzFLz8lnA56YiNe1nBrmoqyjpQjUrMbQWPECDNsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vgFywrRqn3LvYAWiHZ+FgcnFwlJ8v3xIvAK+SmRtck8UQi0FNMXfyidz8WZbzJTOM
-         3CnFPa9OmqYp8JjucgrpxK8VsDXGHTLJ6d8zjOedRL29ujb65oCXP/kwz+1MFjZwNC
-         DdT+Qc3+cgD2YN/yhYfw0PUSbtMmjz8BUPPeuqg8=
-Date:   Fri, 22 Jan 2021 00:38:23 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 04/12] arm64: dts: zynqmp: Enable reset controller
- driver
-Message-ID: <YAoCX6/zidjXZ0Mf@pendragon.ideasonboard.com>
-References: <cover.1611224800.git.michal.simek@xilinx.com>
- <4fb62952f61e5046d750fff0e3e469c7abd1d0d0.1611224800.git.michal.simek@xilinx.com>
+        Thu, 21 Jan 2021 17:39:48 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5712C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:39:06 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id q129so7439753iod.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 14:39:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=hm2msTaf5VzRjPCAA+w+1MuBzYiewjiIsmSAGwC1ATw=;
+        b=VpDkjP0RBffgqKeiDwDH49oRl+fGXlnjw8knPur/vHA375hwrkQrzXx8KBxwilM4BF
+         bX2q+PuusDI60fmv3V78yvJSDXLg4htFHioaeCv1B2pTqyhZ63gGJGMgfo7u2plH72lx
+         CV7yCPIDKA8BxQf4WARiU2WWYwloGPz+gIOySd8iQGODZ6jnEd9vAZYqn1pMJ3BxuU+N
+         BygLNDIFgWexWUO530BoXY2asUoyJsTfIG2NJ/S4fpSTFMOqMbDh4cmexUfFY1AvsFhA
+         i/h3FTwSUe8W7b1EnWtdT4C9y02RQYm7W2QVK6jRyPJMWupssPwEYSVv7vonUdHDYq3N
+         NGow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=hm2msTaf5VzRjPCAA+w+1MuBzYiewjiIsmSAGwC1ATw=;
+        b=lwxl7rWE6ySbVlIwA0ibT3hdgNcRsICoDH8JqG5nk6A5XU33npSLA7tnfKfZc3tBd7
+         ivDHBcvHc2in6Hm6vwxD+LuCiQvZlCcpdzLUN7oHbxwuP3oqi5Pn4GNlIBc+nSnhbNDa
+         YTiJDprr+LXrzm2RumtO+EJLA+m8hvl9khslb0KSCKNBCH2Ztd7qeFY04WJzWV7oQ7a7
+         d9wX35Ic+rcavr43KZU2HRw/lxfYDUkNdROrJUGcaQ32y3/CJaWZD6ceobGxxpyy5XUk
+         kUA2O8yz2USx59WLsMZnTM/7Gx1X/HUx8hCu/KCiTxnBXTpqsxY2ESXvfkEJMrwk9HAB
+         hnPA==
+X-Gm-Message-State: AOAM533COlQCBN//XQvTCRyc1YfbfrEn1+GNqYX9EBpJ3ys57wpMbJ6+
+        lzNQXmHKSp7cFe9WkyuLMj5PDSGEyjRig41fAzA=
+X-Google-Smtp-Source: ABdhPJxaEXqiA08rlt5zbnY8+4sz7vcv99g3mcjfYYkWSpyBfZr0RYdcDsTFLhSbTBH5tE5iItPzFfgdsReQTzm3LWY=
+X-Received: by 2002:a05:6602:2f93:: with SMTP id u19mr1341198iow.110.1611268745483;
+ Thu, 21 Jan 2021 14:39:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4fb62952f61e5046d750fff0e3e469c7abd1d0d0.1611224800.git.michal.simek@xilinx.com>
+References: <cover.1611263461.git.jpoimboe@redhat.com>
+In-Reply-To: <cover.1611263461.git.jpoimboe@redhat.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 21 Jan 2021 23:38:54 +0100
+Message-ID: <CA+icZUU6QBeahDWpgYPjkf_OmRC+4T4SAnCg=iObNq9+CGT6jA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/20] objtool: vmlinux.o and CLANG LTO support
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Thu, Jan 21, 2021 at 10:29 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> v2:
+> - fix commit description for why xen hypervisor page contents don't
+>   matter [Juergen]
+> - annotate indirect jumps as safe instead of converting them to
+>   retpolines [Andrew, Juergen]
+> - drop patch 1 - fake jumps no longer exist
+> - add acks
+>
+> Based on tip/objtool/core.
+>
+>
+> Add support for proper vmlinux.o validation, which will be needed for
+> Sami's upcoming x86 LTO set.  (And vmlinux validation is the future for
+> objtool anyway, for other reasons.)
+>
+> This isn't 100% done -- most notably, crypto still needs to be supported
+> -- but I think this gets us most of the way there.
+>
+> This can also be found at
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
+>
 
-Thank you for the patch.
+Should this be s/objtool-vmlinux/objtool-vmlinux-v2 ?
 
-On Thu, Jan 21, 2021 at 11:26:52AM +0100, Michal Simek wrote:
-> Enable reset controller to be prepared for use.
-> 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+- Sedat -
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> 
-> Changes in v2:
-> - Remove reset description for IPs from this patch. IPs will be enabled
->   separately with DT binding update.
-> - Change patch subject
-> 
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> index cdc1a0ddfa01..94a2e1f2b713 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> @@ -187,6 +187,11 @@ zynqmp_pcap: pcap {
->  			xlnx_aes: zynqmp-aes {
->  				compatible = "xlnx,zynqmp-aes";
->  			};
-> +
-> +			zynqmp_reset: reset-controller {
-> +				compatible = "xlnx,zynqmp-reset";
-> +				#reset-cells = <1>;
-> +			};
->  		};
->  	};
->  
-
--- 
-Regards,
-
-Laurent Pinchart
+> And for more testing it can be combined with Sami's x86 LTO patches:
+>
+>   https://github.com/samitolvanen/linux clang-lto
+>
+>
+> Josh Poimboeuf (20):
+>   objtool: Fix error handling for STD/CLD warnings
+>   objtool: Fix retpoline detection in asm code
+>   objtool: Fix ".cold" section suffix check for newer versions of GCC
+>   objtool: Support retpoline jump detection for vmlinux.o
+>   x86/ftrace: Add UNWIND_HINT_FUNC annotation for ftrace_stub
+>   objtool: Assume only ELF functions do sibling calls
+>   objtool: Add asm version of STACK_FRAME_NON_STANDARD
+>   objtool: Combine UNWIND_HINT_RET_OFFSET and UNWIND_HINT_FUNC
+>   objtool: Add xen_start_kernel() to noreturn list
+>   objtool: Move unsuffixed symbol conversion to a helper function
+>   objtool: Add CONFIG_CFI_CLANG support
+>   x86/xen: Support objtool validation in xen-asm.S
+>   x86/xen: Support objtool vmlinux.o validation in xen-head.S
+>   x86/xen/pvh: Annotate indirect branch as safe
+>   x86/ftrace: Support objtool vmlinux.o validation in ftrace_64.S
+>   x86/acpi: Annotate indirect branch as safe
+>   x86/acpi: Support objtool validation in wakeup_64.S
+>   x86/power: Annotate indirect branches as safe
+>   x86/power: Move restore_registers() to top of the file
+>   x86/power: Support objtool validation in hibernate_asm_64.S
+>
+>  arch/x86/include/asm/unwind_hints.h   |  13 +---
+>  arch/x86/kernel/acpi/Makefile         |   1 -
+>  arch/x86/kernel/acpi/wakeup_64.S      |   4 +
+>  arch/x86/kernel/ftrace_64.S           |   8 +-
+>  arch/x86/lib/retpoline.S              |   2 +-
+>  arch/x86/platform/pvh/head.S          |   2 +
+>  arch/x86/power/Makefile               |   1 -
+>  arch/x86/power/hibernate_asm_64.S     | 103 +++++++++++++-------------
+>  arch/x86/xen/Makefile                 |   1 -
+>  arch/x86/xen/xen-asm.S                |  29 +++++---
+>  arch/x86/xen/xen-head.S               |   5 +-
+>  include/linux/objtool.h               |  13 +++-
+>  tools/include/linux/objtool.h         |  13 +++-
+>  tools/objtool/arch/x86/decode.c       |   4 +-
+>  tools/objtool/arch/x86/special.c      |   2 +-
+>  tools/objtool/check.c                 |  89 ++++++++++++----------
+>  tools/objtool/elf.c                   |  88 ++++++++++++++++------
+>  tools/objtool/include/objtool/check.h |  12 ++-
+>  tools/objtool/include/objtool/elf.h   |   2 +-
+>  19 files changed, 240 insertions(+), 152 deletions(-)
+>
+> --
+> 2.29.2
+>
