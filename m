@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DAE2FE134
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6462FE146
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbhAUE4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:56:24 -0500
-Received: from mail-qv1-f52.google.com ([209.85.219.52]:44277 "EHLO
-        mail-qv1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727610AbhAUEzX (ORCPT
+        id S1727766AbhAUE5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:57:11 -0500
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:43935 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726893AbhAUEzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:55:23 -0500
-Received: by mail-qv1-f52.google.com with SMTP id d11so359536qvo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:55:03 -0800 (PST)
+        Wed, 20 Jan 2021 23:55:49 -0500
+Received: by mail-pf1-f180.google.com with SMTP id q131so773748pfq.10;
+        Wed, 20 Jan 2021 20:55:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ovkYtOPUuG5VhHSVRVaRC9GgRg3OX+tBxgdnBr0JDxw=;
-        b=P0pNl0BSDxG7UDmc8N3ikNp0vBkVBxaom4VUndPhybiqQXbz3t5/102FrZL7+v+7RY
-         1pt+lTpbl20f2+v7txVbLfyKQT6tyWJOar1YYhRM8HCh+G0UrHD5vGNDr/vNP18bdaaw
-         T6+5m28LmLECkVhBS/wQCeaY17Ny2tO1bRhN8tbO1bXuXGPGsv0a+r9q9PNUiUqAkVrJ
-         0H6ciZwhC4wcOM0zcEChUTEhhy+mQhsqlUy1eyKP7C9JWuXPDJ2nDuMQ9WQ/17sEaJDX
-         nMJVPArlPlK84aUPXI1TKqKXS3VNO9eZ8Wpvqg8cm5eeFN59L4b9i+8UY2tLQypuQ28X
-         0pTg==
-X-Gm-Message-State: AOAM532Xr950Q7UUqT3q3Z3+F/SgJA5e0/HF+cAKjg13dRgpHmhAJLgu
-        l6G2hJNGzwpd5TZMBr6F2eQDGjHCVC7Nn7XXepYXmRN4x4w=
-X-Google-Smtp-Source: ABdhPJzrH5s7XhWslkIEmtDtussHb2Et1L/e93VpnGmi0f7h2cN4GS6WBjgHsJ0nD7Ik6x0nOJVwCm05xa4buUKOrtk=
-X-Received: by 2002:a0c:dc13:: with SMTP id s19mr13074921qvk.26.1611204878192;
- Wed, 20 Jan 2021 20:54:38 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PBIzSn5Y6foZ7Tj9M6MKSIos+ef1dkG6dprinExElvI=;
+        b=Otys6HvmLSsifO5cFMrfGKZm1HDTwdgPPP3URXjwXcop0BTwSo/zAJ8J5LtXUvuKg5
+         45kqf0h43sK1vzkFUDbFlhW85g633z/qJCC/4jCuufAz9KVcn1qhJYb/sC14bq2srd6S
+         OKRDQ4O1mp/DzY5MHTaUGWZCP0ZujTHOEi1ATVNqcElJDZzGATlOwV9QoTmwU+qNqGG2
+         ahUpnfLQoC+f/WRQ1zX84XjQUiAvn/cLZhNnUnYIf41RFMirz1gUcMebzATGMtjkp7dT
+         ZE7hZnXVsKsXZN+Md9EhJlnp4i1TnikN1+nDGuFYRhLeZSE4n9X3vUr2Dpz/hGucw/yc
+         RWJA==
+X-Gm-Message-State: AOAM5305zPLfUxKPiOMOouH5CV3MejQ0MBTaEGDgJmVFUU842+ALgQNI
+        VS97gnbmTGn04LqENdRnL251Ym9jIto=
+X-Google-Smtp-Source: ABdhPJwLBbh9u2kcoS9CMW/M27MDUr3Du3tURIRWHdLf1+MPNb8nb6g0zMF8G0BWogzuMwPlMBp1iQ==
+X-Received: by 2002:a63:d814:: with SMTP id b20mr12628905pgh.202.1611204907616;
+        Wed, 20 Jan 2021 20:55:07 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:b5ed:474a:81d5:2e31? ([2601:647:4000:d7:b5ed:474a:81d5:2e31])
+        by smtp.gmail.com with ESMTPSA id y22sm3646907pfb.132.2021.01.20.20.55.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 20:55:06 -0800 (PST)
+Subject: Re: [PATCH v2] scsi/qla4xxx: convert sysfs sprintf/snprintf family to
+ sysfs_emit/sysfs_emit_at
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>, njavali@marvell.com
+Cc:     mrangankar@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1611201437-111938-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <9d745731-f8a3-98bf-3ca8-6367ef53aa8d@acm.org>
+Date:   Wed, 20 Jan 2021 20:55:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210102220441.794923-1-jolsa@kernel.org> <20210102220441.794923-9-jolsa@kernel.org>
- <CAM9d7cgSx7WFo5fwxSoU9h2vD19LJxaM7p5i5+W+HLM6kpkwpw@mail.gmail.com> <20210119174901.GD1717058@krava>
-In-Reply-To: <20210119174901.GD1717058@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 21 Jan 2021 13:54:27 +0900
-Message-ID: <CAM9d7ciuvab0MbcZh=Uj4V0AbvSr=TABJ_=NMBDSP9edJHgkOw@mail.gmail.com>
-Subject: Re: [PATCH 08/22] perf daemon: Add config file change check
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1611201437-111938-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 3:51 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Jan 19, 2021 at 02:31:55PM +0900, Namhyung Kim wrote:
-> > On Sun, Jan 3, 2021 at 7:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Adding support to detect daemon's config file changes
-> > > and re-read the configuration when that happens.
-> >
-> > Hmm.. maybe some of the code in the previous commit can be moved here.
->
-> do you mean the config file support?
->
-> I think this patch is quite small and straightforward - adds
-> the inotify processing for checking config change
->
-> perhaps we can separate some of the code from previous commit,
-> and make it simpler, I'll check
+On 1/20/21 7:57 PM, Jiapeng Zhong wrote:
+> -		return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d (%x)\n",
+> +		return sysfs_emit_at(buf, PAGE_SIZE, "%d.%02d.%02d (%x)\n",
+>  				ha->fw_info.fw_major, ha->fw_info.fw_minor,
+>  				ha->fw_info.fw_patch, ha->fw_info.fw_build);
 
-I thought the reconfig logic could move to here.
+From the sysfs_emit_at() source code:
 
-Thanks,
-Namhyung
+WARN(... || at >= PAGE_SIZE, "invalid sysfs_emit_at: buf:%p at:%d\n",
+buf, at)
+
+In other words, this patch is wrong. sysfs_emit() should have been used
+instead of sysfs_emit_at().
+
+Bart.
