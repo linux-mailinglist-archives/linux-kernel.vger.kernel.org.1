@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2262FE1DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0259A2FE1EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725294AbhAUFkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
+        id S1727760AbhAUFmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727685AbhAUFiM (ORCPT
+        with ESMTP id S1726641AbhAUFlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 00:38:12 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AA2C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:37:31 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id z1so947170ybr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 21:37:31 -0800 (PST)
+        Thu, 21 Jan 2021 00:41:39 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132A1C061575;
+        Wed, 20 Jan 2021 21:40:57 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id z9so786004qtv.6;
+        Wed, 20 Jan 2021 21:40:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=7zu8GUqZprm/GlryywXSearLwZoSZ1S/MZLkgUPCsQ4=;
-        b=sRBBM2xhd97UbqcxnVW6yJlyVyg9lS1erTS769tAqdcoUAWJGY12Rum5Xqdi5S/Hi7
-         hjcFI3gDy9/1OBAMdXO3sECdk0eq44tRIOTEe9zpBnhImV6VY+htXFo83cXrBHqfTi3B
-         X0xj0Y6eMvUMBz5W9H9MdLLehuFzzTzdKgi64Qs/nCGnsuB0fttclqlsSZXNm03/bJEd
-         kfOy9F3174leF8KlBOPYuAFuoB5nvYy2Z2PQYcUQY5Ptv9Jr2sQVqyYmG5k4fiqf7syv
-         hmlsZ1gk1J3z1LMQ4LkYe4Civxq+XOAnHbBGSzeHp12XDpmWHyIXoQgxFQmjcs//zzuJ
-         D5Zg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wc4BdW8DfiuiCxiD8pUU/hmHmIuYrd2v3NyDbHD7XFE=;
+        b=vF0pRSSd1MrruFpO5/ZNN9Te3xVAxmqYQG+BEa2o4Pn6hCDbkt8CT7v2a01G+6Vdb7
+         811HKrFHMB4NKlKusxwOo786bDC1USVA6KRJ3SKbJtLGfzCA3s6N6Pvyv/9B8Vh8ucMS
+         OPgUIypBE1pOSkBYdIAPixnqexehLNS24q5tciiSijGUIrBKszE+hdqKOs3gYBwxTZUI
+         /nKM0wCqTGdbCPogxueZw17oTPjZ/kwgvd7Tqzr8kNH1C0y1Tr4Prfd9C4qwWBGZbwIZ
+         OnOM1OSirkdX11DqJGeYeaVFM46+HYJzAA8+Ngp+6cLXiP2UlJU9kzwDjsTeLNvzTYKh
+         4cJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=7zu8GUqZprm/GlryywXSearLwZoSZ1S/MZLkgUPCsQ4=;
-        b=qBwhVvmMiyQ3pTxbgpsNjheHC1GZ8j6Xyh/u75HcYE9mINlmzRmU7A8gU+mbdRowAI
-         UdfMMecSvl/F6kHCwx7ix7KkS3unvfsT82fjBT02Ed/3veoagRCBgtO9JSIP8Akh8b4l
-         5mcXL/oh7d0Yqqx4kiOniEnt92RaWzE48mA7IvPew6hsMxPZF+E/cBQeBp67pyZqrxgP
-         tLf6X5UCzpVb0CwGk7RnyhJgLWXHAhK0v+aTakV2hJrmNuGdHe1saMmvrii1KISuJV5j
-         0/N9vnSAVQDZNdiCNybZAnu76VdDGAWsDiVWqmznO61/nVhV2jRX3S+1weijlHyKV0W4
-         UomA==
-X-Gm-Message-State: AOAM531F1OU4Q9mnuFs0Eg1YBH2UD1UD0czCAZbkuJwkN5GnQRkIU4pu
-        G46kvMZzJ2zMYw2K67hRZaH0VA1al1V6U+08LiQ=
-X-Google-Smtp-Source: ABdhPJy32zQ2r5eOLK5p91IMfeoLxKAMN2BiCh9Tz+JVsAlr98znTPJec7YbtpnZAchmZJEDFeJ/+gNq7Yk3mLL9wkg=
-X-Received: by 2002:a25:538a:: with SMTP id h132mr18132366ybb.247.1611207451064;
- Wed, 20 Jan 2021 21:37:31 -0800 (PST)
+        bh=wc4BdW8DfiuiCxiD8pUU/hmHmIuYrd2v3NyDbHD7XFE=;
+        b=ijCqCuI3yZzQipIxRS/UfjwrLB2ZtJ05VdN4X4tZ/Kc+XPoTpTzDGlC0sKMJP981oL
+         l8CmXrBoUwq3cUhl17/J7jkHugc4/eu3zAh2uoqQ3SwKJhkAAmfca6pu8uJUQwkfCepS
+         vhDrE/F0QCswedjfM1vfjpaEe2qjAPEBSdB6ZnTW3MqmEUqQ4N2KV/rVWVSGRw0xujgi
+         DCtlEZQe+RlwemX+22VaF6aJ7gAQnasm8hz5gpgVwOD/hZT5MdNu4NldesStjN8AcftY
+         Qzt0xkHOasERQNkovbFfAsdAebhemxvBqhirl9YKKiDwTxgX2Wsgd02uumzpGk1jEq0w
+         Debw==
+X-Gm-Message-State: AOAM533uWeCjDqNK9/7yU6uSo2HAHWJok8pQvmpKgfhYOCdbS3UH1mem
+        TXVG2iUWvrF//yL5gFAon+I=
+X-Google-Smtp-Source: ABdhPJzXse0K6Rcv9KIoDD5E8H/hDibE2NCTH+S9FlEBa/EVR5q216Nbi5ehVdT011WGAVK/z3qTGA==
+X-Received: by 2002:a05:622a:4d1:: with SMTP id q17mr12358188qtx.272.1611207656402;
+        Wed, 20 Jan 2021 21:40:56 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id 2sm2728926qtt.24.2021.01.20.21.40.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 21:40:56 -0800 (PST)
+Subject: Re: [PATCH V5 4/5] kbuild: Add support to build overlays (%.dtbo)
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        linux-kbuild@vger.kernel.org
+References: <cover.1611124778.git.viresh.kumar@linaro.org>
+ <6e57e9c84429416c628f1f4235c42a5809747c4c.1611124778.git.viresh.kumar@linaro.org>
+ <20210121004955.GE5174@yekko.fritz.box>
+ <20210121041300.ocerhqaieytj6gds@vireshk-i7>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <84f85320-b9cd-6ebc-671a-d21b5266d264@gmail.com>
+Date:   Wed, 20 Jan 2021 23:40:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Thu, 21 Jan 2021 13:37:05 +0800
-Message-ID: <CAD-N9QV7H8cRUAbnrU9KuXvKbtwL6tLk8-p6HcGpwHn3NeqHJA@mail.gmail.com>
-Subject: "possible deadlock in console_lock_spinning_enable" and "possible
- deadlock in console_unlock" should be duplicate crash behaviors
-To:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210121041300.ocerhqaieytj6gds@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear kernel developers,
+On 1/20/21 10:13 PM, Viresh Kumar wrote:
+> On 21-01-21, 11:49, David Gibson wrote:
+>> If you're using overlays, you probably need the -@ flag, for both the
+>> base file and the overlays, which AFAICT is not already the case.
+> 
+> I think the idea was to do that in the platform specific Makefiles,
+> unless I have misunderstood that from earlier discussions. So a
+> platform may want to do that per-file or just enable it for the entire
+> platform.
+> 
 
-I found that on the syzbot dashboard, =E2=80=9Cpossible deadlock in
-console_lock_spinning_enable=E2=80=9D[1] and "possible deadlock in
-console_unlock"[2] should share the same root cause.
+Yes, that is correct.  For drivers/of/unitest-data/Makefile, we have
+entries like:
 
-The reasons for the above statement:
-1) the stack trace is the same, and this title difference is due to
-the inline property of "console_lock_spinning_enable";
-2) their PoCs are the same as each other;
+DTC_FLAGS_overlay += -@
+DTC_FLAGS_overlay_bad_phandle += -@
+DTC_FLAGS_overlay_bad_symbol += -@
+DTC_FLAGS_overlay_base += -@
+DTC_FLAGS_testcases += -@
 
-If you can have any issues with this statement or our information is
-useful to you, please let us know. Thanks very much.
-
-[1] =E2=80=9Cpossible deadlock in console_lock_spinning_enable=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3D2820deb61d92a8d7ab17a56ced58e963e65d=
-76d0
-[2] =E2=80=9Cpossible deadlock in console_unlock=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3D39ea6caa479af471183997376dc7e90bc7d6=
-4a6a
-
-
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
+-Frank
