@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFB72FE89F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7962FE8A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730246AbhAULVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
+        id S1730233AbhAULWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728116AbhAULUk (ORCPT
+        with ESMTP id S1729766AbhAULUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:20:40 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729D3C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:45 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 15so1150529pgx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:45 -0800 (PST)
+        Thu, 21 Jan 2021 06:20:45 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E821C061795
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:52 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id e6so1465429pjj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:18:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DAtjI7/BPs0IoV2iaS54lmWpFTE0HbF0Es/G22rWt3g=;
-        b=ZpmS5LN1rts74B7Ode0O1RTIMsoc8Gi0J/g/qdh4T4B+Pl5+6gDcpGtwEy3pxwaa1n
-         KJMIk8ywsFR4wtEZeD3cynSaQbttOpg++x8NwKSnz5NE2yMDL+xniSZ2kjT0faYRi5pL
-         M+Ww1NxEYcW6YGEkuuNHvtUhb0dRL8IgsIE9SQlSprdhSHMaSGscj1dOZ0pc7bkhMeRY
-         40VDRsunRhdrZp8VxhHfj0mrnlOz/vOMk0C1DUU9eLTtmhKiclL+GWz1UIm6g+zTmw1Y
-         u2QUTm7Kird1vwS6WBpw7kK7Uo1YQ75ztHo2FgLS8AEfwPTzQ4+ugUeRvnqx9lyoBgi/
-         jm/Q==
+        bh=YF247aIKbCY2/r4PGlk3GxBCCQW3KMMZcpJEZOc5/Q0=;
+        b=q4aQO8etJergPAghmEtuVxVLdykQPpd3HcPHMD6EQfoX4tjuP7MhEF6K18XC4Inuvs
+         RKy9SstcZSdr5meQkznW9PfhKeD+22MQjTjs4PHJH9L58N3mnjyCGPezVaH7gzv1IJhs
+         bT8Lesss5bsMcmN703omHfIN795Q3hMsxgr9GzjVPd43t1fDQ4eATXjN6CiHR+qCOpzC
+         8WvFnYva6RL0BKdBzgnMwkV+jxxe4VLJOt1F2Jbz//EiJliXk3CRa8qY5cwHxmXPFaho
+         DxRROl7t7RugdR/omHIBFABHDp6JPTYdUWtoOf4Stb2KFicJr+1c4y7rqExGmMRTsAS4
+         tcaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DAtjI7/BPs0IoV2iaS54lmWpFTE0HbF0Es/G22rWt3g=;
-        b=DTTHDxqnysSn2DS1YFOGg186st0FRw5qj7db31bdsXNoZSIQT6+LLrUWI+VieIm6dn
-         jO4o7XaYMYieT+HNz5O6io3gc8Agne9lBffXd/taGR1p68RXppGdzYTKt34iTCcGoxt2
-         gSf9xDtJYsyz9hJiRghMcDk2Rl3SKENhUUWIgrvKjAMyzKD8i2hDh8i1gDE1ZA9HZ81e
-         +HDxZsw1ZinrJXHs+DSgDlHT7kSompJbGUxfTvEO9XcB8KjNkpEPBQ3DsH4jPOPIZ/OW
-         ZtTg9SnuNFpf5jpiacgI14/QkXlGn6fksuTm35td6nsS+it935mAhjNkqcsEQ0pWdetx
-         qBMA==
-X-Gm-Message-State: AOAM530BY8c2HO8PiUvHC4pLaFtXjcio0cyyL6RyhPXH5dhuXEl+vknS
-        4VoBu4sdEx0+ZXwVHtFKzEH5ww==
-X-Google-Smtp-Source: ABdhPJyts296w7aWmAZLnK+2Ns297gN4vfmOwF34Q5MA6SM/rmkzGZINgd1d7pMVUGniT2QI9Kk1mQ==
-X-Received: by 2002:a05:6a00:a8d:b029:1ba:71d1:fe3c with SMTP id b13-20020a056a000a8db02901ba71d1fe3cmr9122927pfl.51.1611227909301;
-        Thu, 21 Jan 2021 03:18:29 -0800 (PST)
+        bh=YF247aIKbCY2/r4PGlk3GxBCCQW3KMMZcpJEZOc5/Q0=;
+        b=Brxg2DEj4WO+ki+TKUODoVfOdRyHYfukTR0WwMLQnhSsr3c4rAcew3Sh7Su5jEvcv7
+         RFKrbQLN6ucQp/qB+SRpAMmg3GO5CrE76wAqr9/FcpDjs1V661rpsEJ6D/irW9S/3c57
+         IA2eTJ0ND+B1i7Qc0DK2Fx0qZWwXtqZxYM1uLrL6QOr2JTdmDNEOfu9MZ4jNFnHj+QXB
+         aRq/1wJ9cFDLKH6BrIrPc6dcS6lKJwfoQUqHw+N+R0Xx+8IaYBSJJeiaDn8/2wEffoqq
+         FqpwRL2NOjEiYf4kmzygj87QXVmi1UYQYn5BweStpGrE3jI/pYuRyULsxkK3wWnONC4S
+         1Oxg==
+X-Gm-Message-State: AOAM533mA4kkb4HjftZgvTC9jiV6HgDniJ9dpUZcPgLLTynsuV2ltpUv
+        fGW6WhlY/bOe/ArtbjDHEJd5TA==
+X-Google-Smtp-Source: ABdhPJwfrY+H9LpE/xzRxcE/UG1SyICoTj1JCeeOTMnUNb06bH1CDejbbABKsIFbSOnrOGELyi32/w==
+X-Received: by 2002:a17:902:c509:b029:de:c3c7:9433 with SMTP id o9-20020a170902c509b02900dec3c79433mr14234653plx.71.1611227931401;
+        Thu, 21 Jan 2021 03:18:51 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id u1sm5595280pjr.51.2021.01.21.03.18.28
+        by smtp.gmail.com with ESMTPSA id z13sm5392343pgf.89.2021.01.21.03.18.50
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 03:18:28 -0800 (PST)
+        Thu, 21 Jan 2021 03:18:50 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>,
         Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
@@ -57,9 +57,9 @@ Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
         Rafael Wysocki <rjw@rjwysocki.net>,
         Sibi Sankar <sibis@codeaurora.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 01/13] opp: Rename _opp_set_rate_zero()
-Date:   Thu, 21 Jan 2021 16:47:41 +0530
-Message-Id: <b55e4579ef70d47ceeec8e4b96108e8f3e0f1b81.1611227342.git.viresh.kumar@linaro.org>
+Subject: [PATCH 03/13] opp: Keep track of currently programmed OPP
+Date:   Thu, 21 Jan 2021 16:47:43 +0530
+Message-Id: <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1611227342.git.viresh.kumar@linaro.org>
 References: <cover.1611227342.git.viresh.kumar@linaro.org>
@@ -69,36 +69,211 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This routine has nothing to do with frequency, it just disables all the
-resources previously enabled. Rename it to match its purpose.
+The dev_pm_opp_set_rate() helper needs to know the currently programmed
+OPP to make few decisions and currently we try to find it on every
+invocation of this routine.
+
+Lets start keeping track of the current_opp programmed for the devices
+of the opp table, that will be quite useful going forward.
+
+If we fail to find the current OPP, we pick the first one available in
+the list, as the list is in ascending order of frequencies, level, or
+bandwidth and that's the best guess we can make anyway.
+
+Note that we used to do the frequency comparison a bit early in
+dev_pm_opp_set_rate() previously, and now instead we check the target
+opp, which shall be more accurate anyway.
+
+We need to make sure that current_opp's memory doesn't get freed while
+it is being used and so we keep a reference of it until the time it is
+used.
+
+Now that current_opp will always be set, we can drop some unnecessary
+checks as well.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/opp/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/opp/core.c | 83 +++++++++++++++++++++++++++++-----------------
+ drivers/opp/opp.h  |  2 ++
+ 2 files changed, 55 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index aea0b9d7203c..9ec8e42981d0 100644
+index cb5b67ccf5cf..4ee598344e6a 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
-@@ -943,7 +943,7 @@ int dev_pm_opp_set_bw(struct device *dev, struct dev_pm_opp *opp)
+@@ -788,8 +788,7 @@ static int _generic_set_opp_regulator(struct opp_table *opp_table,
+ 			__func__, old_freq);
+ restore_voltage:
+ 	/* This shouldn't harm even if the voltages weren't updated earlier */
+-	if (old_supply)
+-		_set_opp_voltage(dev, reg, old_supply);
++	_set_opp_voltage(dev, reg, old_supply);
+ 
+ 	return ret;
+ }
+@@ -839,10 +838,7 @@ static int _set_opp_custom(const struct opp_table *opp_table,
+ 
+ 	data->old_opp.rate = old_freq;
+ 	size = sizeof(*old_supply) * opp_table->regulator_count;
+-	if (!old_supply)
+-		memset(data->old_opp.supplies, 0, size);
+-	else
+-		memcpy(data->old_opp.supplies, old_supply, size);
++	memcpy(data->old_opp.supplies, old_supply, size);
+ 
+ 	data->new_opp.rate = freq;
+ 	memcpy(data->new_opp.supplies, new_supply, size);
+@@ -943,6 +939,31 @@ int dev_pm_opp_set_bw(struct device *dev, struct dev_pm_opp *opp)
  }
  EXPORT_SYMBOL_GPL(dev_pm_opp_set_bw);
  
--static int _opp_set_rate_zero(struct device *dev, struct opp_table *opp_table)
-+static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
++static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
++{
++	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
++	unsigned long freq;
++
++	if (!IS_ERR(opp_table->clk)) {
++		freq = clk_get_rate(opp_table->clk);
++		opp = _find_freq_ceil(opp_table, &freq);
++	}
++
++	/*
++	 * Unable to find the current OPP ? Pick the first from the list since
++	 * it is in ascending order, otherwise rest of the code will need to
++	 * make special checks to validate current_opp.
++	 */
++	if (IS_ERR(opp)) {
++		mutex_lock(&opp_table->lock);
++		opp = list_first_entry(&opp_table->opp_list, struct dev_pm_opp, node);
++		dev_pm_opp_get(opp);
++		mutex_unlock(&opp_table->lock);
++	}
++
++	opp_table->current_opp = opp;
++}
++
+ static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
  {
  	int ret;
+@@ -1004,16 +1025,6 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 	if ((long)freq <= 0)
+ 		freq = target_freq;
  
-@@ -997,7 +997,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 	}
- 
- 	if (unlikely(!target_freq)) {
--		ret = _opp_set_rate_zero(dev, opp_table);
-+		ret = _disable_opp_table(dev, opp_table);
+-	old_freq = clk_get_rate(opp_table->clk);
+-
+-	/* Return early if nothing to do */
+-	if (opp_table->enabled && old_freq == freq) {
+-		dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
+-			__func__, freq);
+-		ret = 0;
+-		goto put_opp_table;
+-	}
+-
+ 	/*
+ 	 * For IO devices which require an OPP on some platforms/SoCs
+ 	 * while just needing to scale the clock on some others
+@@ -1026,12 +1037,9 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
  		goto put_opp_table;
  	}
  
+-	temp_freq = old_freq;
+-	old_opp = _find_freq_ceil(opp_table, &temp_freq);
+-	if (IS_ERR(old_opp)) {
+-		dev_err(dev, "%s: failed to find current OPP for freq %lu (%ld)\n",
+-			__func__, old_freq, PTR_ERR(old_opp));
+-	}
++	/* Find the currently set OPP if we don't know already */
++	if (unlikely(!opp_table->current_opp))
++		_find_current_opp(dev, opp_table);
+ 
+ 	temp_freq = freq;
+ 	opp = _find_freq_ceil(opp_table, &temp_freq);
+@@ -1039,7 +1047,17 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 		ret = PTR_ERR(opp);
+ 		dev_err(dev, "%s: failed to find OPP for freq %lu (%d)\n",
+ 			__func__, freq, ret);
+-		goto put_old_opp;
++		goto put_opp_table;
++	}
++
++	old_opp = opp_table->current_opp;
++	old_freq = old_opp->rate;
++
++	/* Return early if nothing to do */
++	if (opp_table->enabled && old_opp == opp) {
++		dev_dbg(dev, "%s: OPPs are same, nothing to do\n", __func__);
++		ret = 0;
++		goto put_opp;
+ 	}
+ 
+ 	dev_dbg(dev, "%s: switching OPP: %lu Hz --> %lu Hz\n", __func__,
+@@ -1054,11 +1072,10 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 
+ 	if (opp_table->set_opp) {
+ 		ret = _set_opp_custom(opp_table, dev, old_freq, freq,
+-				      IS_ERR(old_opp) ? NULL : old_opp->supplies,
+-				      opp->supplies);
++				      old_opp->supplies, opp->supplies);
+ 	} else if (opp_table->regulators) {
+ 		ret = _generic_set_opp_regulator(opp_table, dev, old_freq, freq,
+-						 IS_ERR(old_opp) ? NULL : old_opp->supplies,
++						 old_opp->supplies,
+ 						 opp->supplies);
+ 	} else {
+ 		/* Only frequency scaling */
+@@ -1074,15 +1091,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 
+ 	if (!ret) {
+ 		ret = _set_opp_bw(opp_table, opp, dev, false);
+-		if (!ret)
++		if (!ret) {
+ 			opp_table->enabled = true;
++			dev_pm_opp_put(old_opp);
++
++			/* Make sure current_opp doesn't get freed */
++			dev_pm_opp_get(opp);
++			opp_table->current_opp = opp;
++		}
+ 	}
+ 
+ put_opp:
+ 	dev_pm_opp_put(opp);
+-put_old_opp:
+-	if (!IS_ERR(old_opp))
+-		dev_pm_opp_put(old_opp);
+ put_opp_table:
+ 	dev_pm_opp_put_opp_table(opp_table);
+ 	return ret;
+@@ -1276,6 +1296,9 @@ static void _opp_table_kref_release(struct kref *kref)
+ 	list_del(&opp_table->node);
+ 	mutex_unlock(&opp_table_lock);
+ 
++	if (opp_table->current_opp)
++		dev_pm_opp_put(opp_table->current_opp);
++
+ 	_of_clear_opp_table(opp_table);
+ 
+ 	/* Release clk */
+diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
+index 4408cfcb0f31..359fd89d5770 100644
+--- a/drivers/opp/opp.h
++++ b/drivers/opp/opp.h
+@@ -135,6 +135,7 @@ enum opp_table_access {
+  * @clock_latency_ns_max: Max clock latency in nanoseconds.
+  * @parsed_static_opps: Count of devices for which OPPs are initialized from DT.
+  * @shared_opp: OPP is shared between multiple devices.
++ * @current_opp: Currently configured OPP for the table.
+  * @suspend_opp: Pointer to OPP to be used during device suspend.
+  * @genpd_virt_dev_lock: Mutex protecting the genpd virtual device pointers.
+  * @genpd_virt_devs: List of virtual devices for multiple genpd support.
+@@ -183,6 +184,7 @@ struct opp_table {
+ 
+ 	unsigned int parsed_static_opps;
+ 	enum opp_table_access shared_opp;
++	struct dev_pm_opp *current_opp;
+ 	struct dev_pm_opp *suspend_opp;
+ 
+ 	struct mutex genpd_virt_dev_lock;
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
