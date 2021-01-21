@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196E22FDFFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 779312FE002
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbhAUDQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726472AbhAUDIS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:08:18 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA68C061575;
-        Wed, 20 Jan 2021 19:07:35 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 15so680660oix.8;
-        Wed, 20 Jan 2021 19:07:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BG1xLGWcnyY9xQR12boOLCRylQDrIp7cDoolAVHFjIY=;
-        b=GcOMpy6ipAWgydQzaw2NMeLsPnmNTu8VU43mYpvLc+MvOT3YxULe4T31AL7VE0WZ7t
-         PSwY2DegOZXBphfMoWMp+/qxtmymjpf9D6F+2fIBLyrjLabAzdDVlj38eRGXpJvsj+X7
-         UTSlPMYRMCFLP7a4NDbbr8eqZT85YdppPZ2AqT74Pusow2p/onJOCdQWvuT9RjuYH//t
-         q2wRZNTWgKOWwaGNqT/UUJSrg20+f4ItRlckLfSec8DWqq2fMM4L0BAMA4mEzkl375MB
-         ULn7/qmE8pHD91XWdaWA1GsmTrlB5oNwj81Q44V3UCbnsGSLQt6GO24yCD8EDRMnLHPT
-         p3DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BG1xLGWcnyY9xQR12boOLCRylQDrIp7cDoolAVHFjIY=;
-        b=V5hRlmwmxnLLguGBWHExjoEJxcI//ONuu/nu32Vg64ToQz75JJY3Sa6sBODXLp2c5z
-         oCkde0YLowCQMPKo+/7nJEJV6Y73659G9gL/RBKqzk/KfpeTW860046jrzK6H0Yy72vd
-         9h/jFRHhFuySAbpznJePNDwrHt4N/9Vh7Gh/WmxdTMyAJTnJm4AKBNc+zRLsQzSCRqN6
-         DEm3Ttn+TDlPGcPcYEdlzr2YeVqrH0WnV7TEElyA4AuqPZNjccDaTPyxpph+s3R943D/
-         NXPYuCe2dAX0W2lACKTz8sQzinRZHZmUAUgmgW3L7oFRRemvqx7TIYlBCq2n4ydaYXUG
-         M8XA==
-X-Gm-Message-State: AOAM533lmd6Rpt1rpHukUqAgwF/fnsI1YGPV9XqLQ/dIWvk0YBprDbpp
-        2NzCZrm3KqwAaRpEqNAzkMvL7UbIbn9CtVnqrrk=
-X-Google-Smtp-Source: ABdhPJzLb2aGPpWZaLInDmWBYV6zXb9BIywLTNbMJZ2rVC4CBpAmeacPihmMLdnl1xm6+LBEpB3z9zH6KUEINwdM2Z0=
-X-Received: by 2002:aca:1a17:: with SMTP id a23mr4749105oia.120.1611198454758;
- Wed, 20 Jan 2021 19:07:34 -0800 (PST)
+        id S1729181AbhAUDXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 22:23:11 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47628 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728698AbhAUDKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 22:10:30 -0500
+Received: from zhangzhijie.loongson.cn (unknown [10.20.41.29])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxtbxX8AhgxmIIAA--.10521S2;
+        Thu, 21 Jan 2021 11:09:11 +0800 (CST)
+From:   "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
+To:     daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        zhangzhijie@loongson.cn
+Subject: [PATCH v4] drm: Improve the output_poll_changed description
+Date:   Thu, 21 Jan 2021 11:09:09 +0800
+Message-Id: <20210121030909.1126643-1-zhangzhijie@loongson.cn>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210115120014.4211dec6@canb.auug.org.au> <20210120171501.61aa0786@canb.auug.org.au>
- <20210121115341.012c1a55@canb.auug.org.au>
-In-Reply-To: <20210121115341.012c1a55@canb.auug.org.au>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 20 Jan 2021 22:07:23 -0500
-Message-ID: <CADnq5_PuH6RNpkAKfUD011rDEXCRd5-0_ad0Rv40k_2gqiQaYA@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the amdgpu tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxtbxX8AhgxmIIAA--.10521S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr43Jw4kKr18uFWrtr4ruFg_yoW8WF4rpF
+        sFkryYkr4ktFWfZF4UG34xW3WkJan3Gr40qFZ7tw4FvrnIyr9FvFyvgr15uryrWrZxJr4Y
+        q34S9ryrZr15CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        WxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK6svP
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: x2kd0wx2klyx3h6o00pqjv00gofq/1tbiAQAIAF3QvM4CmwABsu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 7:53 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> On Wed, 20 Jan 2021 17:15:01 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > On Fri, 15 Jan 2021 12:00:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > After merging the amdgpu tree, today's linux-next build (x86_64
-> > > allmodconfig) failed like this:
-> > >
-> > > drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'dm_set_vblank':
-> > > drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5380:33: warning: unused variable 'dm' [-Wunused-variable]
-> > >  5380 |  struct amdgpu_display_manager *dm = &adev->dm;
-> > >       |                                 ^~
-> > >
-> > > Caused by commit
-> > >
-> > >   98ab5f3513f9 ("drm/amd/display: Fix deadlock during gpu reset v3")
-> >
-> > I am still getting this warning.
->
-> I now get this warning from the drm tree merge.
+From: zhangzhijie <zhangzhijie@loongson.cn>
 
-Bhawan sent out the fix today:
-https://patchwork.freedesktop.org/patch/415092/
+this callback was used by drm_kms_helper_hotplug_event()
 
-Alex
+V2: (Thanks for Daniel's suggestions)
+- remove the FIXME below.since with the drm_client
+- infrastructure and the generic fbdev emulation we've
+- resolved this all very neatly now.
 
->
-> --
-> Cheers,
-> Stephen Rothwell
+V3: Add comments that This hook is deprecated
+- new implementation methods instead of this hook
+
+Signed-off-by: ZhiJie.Zhang <zhangzhijie@loongson.cn>
+---
+ include/drm/drm_mode_config.h | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
+index ab424ddd7665..fbc0da25d7c5 100644
+--- a/include/drm/drm_mode_config.h
++++ b/include/drm/drm_mode_config.h
+@@ -103,14 +103,13 @@ struct drm_mode_config_funcs {
+ 	 * Callback used by helpers to inform the driver of output configuration
+ 	 * changes.
+ 	 *
+-	 * Drivers implementing fbdev emulation with the helpers can call
+-	 * drm_fb_helper_hotplug_changed from this hook to inform the fbdev
+-	 * helper of output changes.
++	 * Drivers implementing fbdev emulation use drm_kms_helper_hotplug_event()
++	 * to call this hook to inform the fbdev helper of output changes.
+ 	 *
+-	 * FIXME:
+-	 *
+-	 * Except that there's no vtable for device-level helper callbacks
+-	 * there's no reason this is a core function.
++	 * This hook is deprecated, drivers should instead use
++	 * drm_fbdev_generic_setup() which takes care of any necessary
++	 * hotplug event forwarding already without further involvement by
++	 * the driver.
+ 	 */
+ 	void (*output_poll_changed)(struct drm_device *dev);
+ 
+-- 
+2.29.2
+
