@@ -2,227 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E922FF32B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3162FF367
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728986AbhAUS3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:29:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbhAUSYG (ORCPT
+        id S1727029AbhAUIrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:47:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55824 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726509AbhAUIov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:24:06 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CDBC061786;
-        Thu, 21 Jan 2021 10:23:25 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id b10so3611935ljp.6;
-        Thu, 21 Jan 2021 10:23:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uEGR0Vr7AMQgEHyEUs3GRzdZFS1e5Q8NHr9ae+1nias=;
-        b=KFgjTXLWIZihYsO5qwdqEEIF4V3DyRBPX/kmjvETLZkxwjsmuidwoQchpGefqxEGy+
-         Ce/P/7FqZDun5FZg89COskpUFM5CcU3xmkBS53Q2rNrDwIl0lIAHoyw1LKK/xm+W1Jdl
-         dqQ07L18HN3t5HS7uDnA4E3dwHtp11t9/yTlSxUHLw/AjYBE/iMgAcoxc4FFt56ef02O
-         O4JoZBXNuBS23naHmI1QZqe+BemH3Yx/xRY0H6pNLGJLyWUc6ebq4hFcT9bOiKr5yZHM
-         LHxeQiHUaUdVESMAbWQbG9hOqfXRYeuCT9UUrDNUCulK3lyDrgp6kPmd2JwXItPWsfFP
-         t1zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uEGR0Vr7AMQgEHyEUs3GRzdZFS1e5Q8NHr9ae+1nias=;
-        b=cYspLCM1Tv7QaA0GSf2jpXCSWxEL44qvd/X3SsHwyaGQcBUpFBbgmWgbJWuaCI0ZdX
-         KdpCaZYmka2TJAkpn12A+oU87NFc0xvzgN1B8I8+NaBmBTet1wsccApeM2uB8x0mVo/d
-         2MEVEmE0Far+fyHoDYeYgncFK9ydYZhLvaFuTP2o3DqMu2yku/EXeWVdUtAb+BwwuYLm
-         ZJTzYl0igIRBL74vXQEikq6wkjPJFZ9j+tY6ekJmV4uNDvxo/HlJ4rGC94FVCSdRsc1Y
-         gQsmapJXRRKCz7j16VNWU0dwO/I99T3SuMigw56kX9Ibx9i6ITC2OasYc3czSMO8KSSh
-         RImg==
-X-Gm-Message-State: AOAM532CcnkKXVXUMCzP3PeV9R4DzyDKncFq5TPggJzVi/hLCHpyAbfD
-        gX27rhP3WMYcfWfHtUYZiTHKy7lkCQ4=
-X-Google-Smtp-Source: ABdhPJzBVHfSIfXBWFGJAEfSaTl4tQN7KtGU3suCY0eHG8155cbc1foAGDXONfpQWeBrpe7hDUdl3g==
-X-Received: by 2002:a2e:90d2:: with SMTP id o18mr290192ljg.395.1611253404317;
-        Thu, 21 Jan 2021 10:23:24 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:23:23 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 03/13] ARM: tegra: cardhu: Support CPU frequency and voltage scaling on all board variants
-Date:   Thu, 21 Jan 2021 21:22:58 +0300
-Message-Id: <20210121182308.16080-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121182308.16080-1-digetx@gmail.com>
-References: <20210121182308.16080-1-digetx@gmail.com>
+        Thu, 21 Jan 2021 03:44:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611218597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1qceA6Mj17tYbQrPYRIWS65DjH+HsiHQ9R/ygw96D7U=;
+        b=iQ+mqrrkz/mXlcvvhMYENQlXfGyz1rAS8bEpqnJ1l3PlpHbFOmCU5ZzlETCXsJhm+mPYW7
+        uCKQRMbglzKL/nZlPioeSyEE30fCpXbgJOUL4jH1qUNF4fY0ipcrp1SXpV+zVIa9CsnB7V
+        cyBPFo4cEowHYaKp84aoVPffDapmBI8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-3dqsZpoiMAml-8w_v8ipCQ-1; Thu, 21 Jan 2021 03:43:13 -0500
+X-MC-Unique: 3dqsZpoiMAml-8w_v8ipCQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 592B551DA;
+        Thu, 21 Jan 2021 08:43:12 +0000 (UTC)
+Received: from localhost (ovpn-12-177.pek2.redhat.com [10.72.12.177])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C35210016FF;
+        Thu, 21 Jan 2021 08:43:08 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 16:43:05 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, david@redhat.com
+Subject: Re: [PATCH v4 1/4] mm: rename memmap_init() and memmap_init_zone()
+Message-ID: <20210121084305.GI20161@MiWiFi-R3L-srv>
+References: <20210120045213.6571-2-bhe@redhat.com>
+ <202101202302.EE9LLAFu-lkp@intel.com>
+ <20210121081727.GG20161@MiWiFi-R3L-srv>
+ <20210121082522.GS1106298@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121082522.GS1106298@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CPU frequency and voltage scaling on all Tegra30 Cardhu board variants.
+On 01/21/21 at 10:25am, Mike Rapoport wrote:
+> On Thu, Jan 21, 2021 at 04:17:27PM +0800, Baoquan He wrote:
+> > On 01/20/21 at 11:47pm, kernel test robot wrote:
+> > > Hi Baoquan,
+> > > 
+> > > I love your patch! Perhaps something to improve:
+> > > 
+> > > [auto build test WARNING on linux/master]
+> > > [also build test WARNING on linus/master v5.11-rc4 next-20210120]
+> > > [cannot apply to mmotm/master hnaz-linux-mm/master ia64/next]
+> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > And when submitting patch, we suggest to use '--base' as documented in
+> > > https://git-scm.com/docs/git-format-patch]
+> > > 
+> > > url:    https://github.com/0day-ci/linux/commits/Baoquan-He/mm-clean-up-names-and-parameters-of-memmap_init_xxxx-functions/20210120-135239
+> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1e2a199f6ccdc15cf111d68d212e2fd4ce65682e
+> > > config: mips-randconfig-r036-20210120 (attached as .config)
+> > > compiler: mips-linux-gcc (GCC) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://github.com/0day-ci/linux/commit/1bbb0b35dd2fae4a7a38098e63899677c2e53108
+> > >         git remote add linux-review https://github.com/0day-ci/linux
+> > >         git fetch --no-tags linux-review Baoquan-He/mm-clean-up-names-and-parameters-of-memmap_init_xxxx-functions/20210120-135239
+> > >         git checkout 1bbb0b35dd2fae4a7a38098e63899677c2e53108
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All warnings (new ones prefixed by >>):
+> > > 
+> > >    mm/page_alloc.c:3597:15: warning: no previous prototype for 'should_fail_alloc_page' [-Wmissing-prototypes]
+> > >     3597 | noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
+> > >          |               ^~~~~~~~~~~~~~~~~~~~~~
+> > > >> mm/page_alloc.c:6258:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
+> > >     6258 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
+> > 
+> > This is not introduced by this patch, but existing issue, should
+> > be not related to this patchset. I will investigate and see what we
+> > should do with memmap_init_zone(), adding static or adding it to header
+> > file, or just leave it as should_fail_alloc_page().
+> > 
+> > 
+> > By the way, I tried to reproduce on a fedora 32 system of x86 arch, but
+> > met below issue. could you help check what I can do to fix the error.
+> > 
+> > 
+> > [root@dell-per710-01 linux]# COMPILER_INSTALL_PATH=~/0day COMPILER=gcc-9.3.0 ~/bin/make.cross ARCH=mips
+> > Compiler will be installed in /root/0day
+> > make W=1 CONFIG_OF_ALL_DTBS=y CONFIG_DTC=y CROSS_COMPILE=/root/0day/gcc-9.3.0-nolibc/mips-linux/bin/mips-linux- --jobs=16 ARCH=mips
+> >   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
+> >   HOSTCXX scripts/gcc-plugins/structleak_plugin.so
+> >   HOSTCXX scripts/gcc-plugins/randomize_layout_plugin.so
+> > In file included from /root/0day/gcc-9.3.0-nolibc/mips-linux/bin/../lib/gcc/mips-linux/9.3.0/plugin/include/gcc-plugin.h:28,
+> >                  from scripts/gcc-plugins/gcc-common.h:7,
+> >                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
+> > /root/0day/gcc-9.3.0-nolibc/mips-linux/bin/../lib/gcc/mips-linux/9.3.0/plugin/include/system.h:687:10: fatal error: gmp.h: No such file or directy
+> >   687 | #include <gmp.h>
+> >       |          ^~~~~~~
+> > compilation terminated.
+> > make[2]: *** [scripts/gcc-plugins/Makefile:47: scripts/gcc-plugins/latent_entropy_plugin.so] Error 1
+> > make[2]: *** Waiting for unfinished jobs..
+> 
+> Do you have gmp-devel installed?
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra30-cardhu-a04.dts | 48 ------------------------
- arch/arm/boot/dts/tegra30-cardhu.dtsi    | 40 ++++++++++++++++++--
- 2 files changed, 37 insertions(+), 51 deletions(-)
-
-diff --git a/arch/arm/boot/dts/tegra30-cardhu-a04.dts b/arch/arm/boot/dts/tegra30-cardhu-a04.dts
-index c1c0ca628af1..a11028b8b67b 100644
---- a/arch/arm/boot/dts/tegra30-cardhu-a04.dts
-+++ b/arch/arm/boot/dts/tegra30-cardhu-a04.dts
-@@ -2,8 +2,6 @@
- /dts-v1/;
- 
- #include "tegra30-cardhu.dtsi"
--#include "tegra30-cpu-opp.dtsi"
--#include "tegra30-cpu-opp-microvolt.dtsi"
- 
- /* This dts file support the cardhu A04 and later versions of board */
- 
-@@ -92,50 +90,4 @@ vdd_bl2_reg: regulator@106 {
- 		enable-active-high;
- 		gpio = <&gpio TEGRA_GPIO(DD, 0) GPIO_ACTIVE_HIGH>;
- 	};
--
--	i2c@7000d000 {
--		pmic: tps65911@2d {
--			regulators {
--				vddctrl_reg: vddctrl {
--					regulator-min-microvolt = <800000>;
--					regulator-max-microvolt = <1125000>;
--					regulator-coupled-with = <&vddcore_reg>;
--					regulator-coupled-max-spread = <300000>;
--					regulator-max-step-microvolt = <100000>;
--
--					nvidia,tegra-cpu-regulator;
--				};
--			};
--		};
--
--		vddcore_reg: tps62361@60 {
--			regulator-coupled-with = <&vddctrl_reg>;
--			regulator-coupled-max-spread = <300000>;
--			regulator-max-step-microvolt = <100000>;
--
--			nvidia,tegra-core-regulator;
--		};
--	};
--
--	cpus {
--		cpu0: cpu@0 {
--			cpu-supply = <&vddctrl_reg>;
--			operating-points-v2 = <&cpu0_opp_table>;
--		};
--
--		cpu@1 {
--			cpu-supply = <&vddctrl_reg>;
--			operating-points-v2 = <&cpu0_opp_table>;
--		};
--
--		cpu@2 {
--			cpu-supply = <&vddctrl_reg>;
--			operating-points-v2 = <&cpu0_opp_table>;
--		};
--
--		cpu@3 {
--			cpu-supply = <&vddctrl_reg>;
--			operating-points-v2 = <&cpu0_opp_table>;
--		};
--	};
- };
-diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-index 788f16d2a0fa..309538bdcd66 100644
---- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
-+++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <dt-bindings/input/input.h>
- #include "tegra30.dtsi"
-+#include "tegra30-cpu-opp.dtsi"
-+#include "tegra30-cpu-opp-microvolt.dtsi"
- 
- /**
-  * This file contains common DT entry for all fab version of Cardhu.
-@@ -273,9 +275,14 @@ vdd2_reg: vdd2 {
- 
- 				vddctrl_reg: vddctrl {
- 					regulator-name = "vdd_cpu,vdd_sys";
--					regulator-min-microvolt = <1000000>;
--					regulator-max-microvolt = <1000000>;
-+					regulator-min-microvolt = <800000>;
-+					regulator-max-microvolt = <1250000>;
-+					regulator-coupled-with = <&vdd_core>;
-+					regulator-coupled-max-spread = <300000>;
-+					regulator-max-step-microvolt = <100000>;
- 					regulator-always-on;
-+
-+					nvidia,tegra-cpu-regulator;
- 				};
- 
- 				vio_reg: vio {
-@@ -343,17 +350,22 @@ temperature-sensor@4c {
- 			interrupts = <TEGRA_GPIO(CC, 2) IRQ_TYPE_LEVEL_LOW>;
- 		};
- 
--		tps62361@60 {
-+		vdd_core: tps62361@60 {
- 			compatible = "ti,tps62361";
- 			reg = <0x60>;
- 
- 			regulator-name = "tps62361-vout";
- 			regulator-min-microvolt = <500000>;
- 			regulator-max-microvolt = <1500000>;
-+			regulator-coupled-with = <&vddctrl_reg>;
-+			regulator-coupled-max-spread = <300000>;
-+			regulator-max-step-microvolt = <100000>;
- 			regulator-boot-on;
- 			regulator-always-on;
- 			ti,vsel0-state-high;
- 			ti,vsel1-state-high;
-+
-+			nvidia,tegra-core-regulator;
- 		};
- 	};
- 
-@@ -425,6 +437,28 @@ clk32k_in: clock@0 {
- 		#clock-cells = <0>;
- 	};
- 
-+	cpus {
-+		cpu0: cpu@0 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+
-+		cpu2: cpu@2 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+
-+		cpu3: cpu@3 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+	};
-+
- 	panel: panel {
- 		compatible = "chunghwa,claa101wb01";
- 		ddc-i2c-bus = <&panelddc>;
--- 
-2.29.2
+Ah, I didn't, thanks. Then libmpc-devel is needed. Will continue.
 
