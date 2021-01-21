@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A0E2FF328
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685802FF329
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbhAUS15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:27:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        id S1729286AbhAUS2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbhAUSYD (ORCPT
+        with ESMTP id S1726310AbhAUSYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:24:03 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D1BC061756;
-        Thu, 21 Jan 2021 10:23:23 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id f17so3580088ljg.12;
-        Thu, 21 Jan 2021 10:23:23 -0800 (PST)
+        Thu, 21 Jan 2021 13:24:05 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05922C0613ED;
+        Thu, 21 Jan 2021 10:23:24 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id u11so3558877ljo.13;
+        Thu, 21 Jan 2021 10:23:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=89jyxgrDe0DSWtjs78T4nIeRsMhc0aN5cKbJ7Tw17og=;
-        b=QOqIRxf35ewhvn04s/0Q8tI+a3salB7qTTJacThdp+mC1GkhmWRNGOH8E6WL+ELxtU
-         i+p5XHaNIGUB9GJ39aD3Y09cIjbBkW306T3WMoJb85kwVrudEMci7s1nEVhPiISv5tvn
-         Mu1fyMF0EckKFtj6mTiQQTLaSiKciaYN+m7cYrKkb2nXy2bMCzeoEkfE4OrcFlysqeDX
-         6Bhcnej/Au67DV6Mv/gQPkYRkN9C/BB0IVjrK5jIwehOO2tykKdpA1kk+34FSQuW3xhL
-         7F4/vpuaXt2XFIYgwrsfIDVA3CFZVodS+nZwlMwMg76vmzeuGsE3/tV+WZ7/J2Obc7ng
-         er2w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=y5maEnFY9Zpzvtrt4gFbzNHegl8kGjroQ7s0Tf+aY64=;
+        b=IokDQnJqE5cWZ9OFF3cTPE4T0vZ/6Ay8800T5GPu+jhwCGZKFun6gWwZEz+XilaTHh
+         jx55BS1PJm79rlM0g5UW5vZ5EVQJgNyLMj52Ya8PvRk5UwdZOx64ylr8BT4y7E23vCWK
+         IpR5opDxoRNMZLes09Jl6favSsQgjTtko/sWji4vc7Z/+WdUpMG+Ob+ttC9UzrTqIZkc
+         /sKPkphst9mXFTv3Xn+J52w3SMl6N00zpcb9ANsV5RXG8lzFhmdijOy1ef0Ktl+NwdYd
+         KJffAqRGz3G10fz//MNjSFC7J7S4zhY9WKSUn1zknZsiGdZA0oRLiPkWq52+y21V6WBf
+         tpcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=89jyxgrDe0DSWtjs78T4nIeRsMhc0aN5cKbJ7Tw17og=;
-        b=MsXGXGbDW033rYNQfLN4S5oTSfe54oJbvILfxgtxALGDfl1KWWeTTxFtE0Xcg3w/yI
-         5+eCckRb3a2M5xFwh1VxkoUPBLI2r82IcWuXYcwk+/ox2g4xn/LIQbqIpd3e8hSAXnXz
-         UsjGWnPBTYqduv5lrTLaNptowVUsORDtoUfO3E9H4SPD4+LxMLH7aT05or5Rmmd5r/Ns
-         DljqzxmCDO238LQE7pcVGwmPJqB9B1Q258EmBRU7F05IMPld9AVCh6INNHi51GJtHBtE
-         ws7/KXmrFs/cF0Frl7nm2nMAt1sjSCyLd053a23H/aUgGfvys1eyVSkmxjdar/zNeMFt
-         cP/Q==
-X-Gm-Message-State: AOAM531A2XCG08iia6w7TQuuwcADPXnG3CpFf/5GZiz2jLmuwv1BuJl4
-        UGwtFuHwW2769kOqEdwZsMA=
-X-Google-Smtp-Source: ABdhPJw2L+nKF9lHc5i/UyGsLbd1a1XalDqdXEEinha48a25+KYOzqkvd67l4r1tDRA4mOZ7a5zI2g==
-X-Received: by 2002:a2e:9192:: with SMTP id f18mr289786ljg.487.1611253401649;
-        Thu, 21 Jan 2021 10:23:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=y5maEnFY9Zpzvtrt4gFbzNHegl8kGjroQ7s0Tf+aY64=;
+        b=eB6Gb/ci1Eq0HbcyFEXpINSiprTznc4Jd33qAMFlmq886fduwkLz2hxHdpmhEyOreE
+         gWH0F9mGu81RLZO1BS3CcnD8gJkMtZBXB9BAyfK1JVgS5eG0/EF1qyLiTohWh8YdKbWg
+         3taezfqejRVdVlkuft0I2rX61CtTAmUdZflZicEUJ5T/uFkpKD5JfyKPEL0QBszOeCYH
+         kvBTreffr8cYQRvpqjmCPznw2wpgx1ytU5P/Ds9Su4yy6oycDFY5J+8+4e2AL4ZQJ1sn
+         WgT/lMMMigZyHF8R4sThKZQnZadzy/30dQ8DINYs5kG/Jkpv94wF+9Kw5J6vHNmWo6hV
+         9n/g==
+X-Gm-Message-State: AOAM533PjeBqlEdnFNGOMhfXT9T1aBuAsq1AvVOjm8vSyL5RAYB52EiA
+        kAUz4cYYOsTqTG1yr4vhLb3QQbzvJ+Q=
+X-Google-Smtp-Source: ABdhPJy2VIPcHOVJv6Lk5HUrxb7kEBoJGHlsHWmPFqo2Ecm9Mu1umPqk8xiu7NFyqacSy65z74yeug==
+X-Received: by 2002:a2e:b54d:: with SMTP id a13mr305737ljn.438.1611253403443;
+        Thu, 21 Jan 2021 10:23:23 -0800 (PST)
 Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.20
+        by smtp.gmail.com with ESMTPSA id f186sm600537lfd.289.2021.01.21.10.23.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 10:23:20 -0800 (PST)
+        Thu, 21 Jan 2021 10:23:22 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -56,61 +56,102 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 00/13] NVIDIA Tegra ARM32 device-tree improvements
-Date:   Thu, 21 Jan 2021 21:22:55 +0300
-Message-Id: <20210121182308.16080-1-digetx@gmail.com>
+Subject: [PATCH v1 02/13] ARM: tegra: ventana: Support CPU thermal throttling
+Date:   Thu, 21 Jan 2021 21:22:57 +0300
+Message-Id: <20210121182308.16080-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210121182308.16080-1-digetx@gmail.com>
+References: <20210121182308.16080-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Enable CPU thermal throttling on Tegra20 Ventana board.
 
-This series is partially factored out from [1] since the DT patches
-could be applied separately. In addition I added couple more new
-patches and implemented suggestion given by Daniel Lezcano to [1],
-see "Specify all CPU cores as cooling devices" patches.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ arch/arm/boot/dts/tegra20-ventana.dts | 41 +++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 2 deletions(-)
 
-[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
-
-Please note that this patchset enables voltage scaling for a few boards,
-but currently voltage scaling is limited in kernel by the regulator coupler
-drivers, so it's safe to change the device-trees. Voltage scaling will
-be fully unlocked once [1] will be merged.
-
-Dmitry Osipenko (13):
-  ARM: tegra: ventana: Support CPU and Core voltage scaling
-  ARM: tegra: ventana: Support CPU thermal throttling
-  ARM: tegra: cardhu: Support CPU frequency and voltage scaling on all
-    board variants
-  ARM: tegra: cardhu: Support CPU thermal throttling
-  ARM: tegra: paz00: Enable full voltage scaling ranges for CPU and Core
-    domains
-  ARM: tegra: acer-a500: Enable core voltage scaling
-  ARM: tegra: acer-a500: Reduce thermal throttling hysteresis to 0.2C
-  ARM: tegra: acer-a500: Specify all CPU cores as cooling devices
-  ARM: tegra: acer-a500: Rename avdd to vdda of touchscreen node
-  ARM: tegra: nexus7: Specify all CPU cores as cooling devices
-  ARM: tegra: ouya: Specify all CPU cores as cooling devices
-  ARM: tegra: Specify CPU suspend OPP in device-tree
-  ARM: tegra: Specify memory suspend OPP in device-tree
-
- .../boot/dts/tegra124-peripherals-opp.dtsi    |  5 ++
- .../boot/dts/tegra20-acer-a500-picasso.dts    | 14 ++--
- arch/arm/boot/dts/tegra20-cpu-opp.dtsi        |  2 +
- arch/arm/boot/dts/tegra20-paz00.dts           | 14 ++--
- .../arm/boot/dts/tegra20-peripherals-opp.dtsi |  1 +
- arch/arm/boot/dts/tegra20-ventana.dts         | 78 ++++++++++++++---
- .../tegra30-asus-nexus7-grouper-common.dtsi   | 14 +++-
- arch/arm/boot/dts/tegra30-cardhu-a04.dts      | 48 -----------
- arch/arm/boot/dts/tegra30-cardhu.dtsi         | 83 ++++++++++++++++++-
- arch/arm/boot/dts/tegra30-cpu-opp.dtsi        |  3 +
- arch/arm/boot/dts/tegra30-ouya.dts            | 15 +++-
- .../arm/boot/dts/tegra30-peripherals-opp.dtsi |  3 +
- 12 files changed, 196 insertions(+), 84 deletions(-)
-
+diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
+index 02b94ed722d0..99a356c1ccec 100644
+--- a/arch/arm/boot/dts/tegra20-ventana.dts
++++ b/arch/arm/boot/dts/tegra20-ventana.dts
+@@ -2,6 +2,7 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/thermal/thermal.h>
+ #include "tegra20.dtsi"
+ #include "tegra20-cpu-opp.dtsi"
+ #include "tegra20-cpu-opp-microvolt.dtsi"
+@@ -528,9 +529,10 @@ ldo_rtc {
+ 			};
+ 		};
+ 
+-		temperature-sensor@4c {
++		nct1008: temperature-sensor@4c {
+ 			compatible = "onnn,nct1008";
+ 			reg = <0x4c>;
++			#thermal-sensor-cells = <1>;
+ 		};
+ 	};
+ 
+@@ -614,11 +616,13 @@ cpus {
+ 		cpu0: cpu@0 {
+ 			cpu-supply = <&vdd_cpu>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			#cooling-cells = <2>;
+ 		};
+ 
+-		cpu@1 {
++		cpu1: cpu@1 {
+ 			cpu-supply = <&vdd_cpu>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			#cooling-cells = <2>;
+ 		};
+ 	};
+ 
+@@ -716,4 +720,37 @@ sound {
+ 			 <&tegra_car TEGRA20_CLK_CDEV1>;
+ 		clock-names = "pll_a", "pll_a_out0", "mclk";
+ 	};
++
++	thermal-zones {
++		cpu-thermal {
++			polling-delay-passive = <1000>; /* milliseconds */
++			polling-delay = <5000>; /* milliseconds */
++
++			thermal-sensors = <&nct1008 1>;
++
++			trips {
++				trip0: cpu-alert0 {
++					/* start throttling at 50C */
++					temperature = <50000>;
++					hysteresis = <200>;
++					type = "passive";
++				};
++
++				trip1: cpu-crit {
++					/* shut down at 60C */
++					temperature = <60000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++
++			cooling-maps {
++				map0 {
++					trip = <&trip0>;
++					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
++			};
++		};
++	};
+ };
 -- 
 2.29.2
 
