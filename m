@@ -2,155 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D842FE39B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540142FE3D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbhAUHQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:16:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
+        id S1726587AbhAUHV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:21:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbhAUHPX (ORCPT
+        with ESMTP id S1726898AbhAUHTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:15:23 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D23C061575;
-        Wed, 20 Jan 2021 23:14:42 -0800 (PST)
-Date:   Thu, 21 Jan 2021 07:14:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611213280;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rhSh/HQgdN2lB7/EZd4gRNSdAORZpzmyu4+TIebLNY8=;
-        b=Um1EJA3dPP+CiPWRe6fDf6FinFU4NWe9rq8Hyay6pERPXNtPwEccZ4wggwH9oBjzxyYP4U
-        Vcskd7WrRLZODTr1NYHzpongoMGcuAZMACYZ1UVVuqqLZFFyMzl+zAGkO0iWCrVPpfznpo
-        KZ/Dru0oUOJm4gEYXrK8UXskcd54+xPXoHj8ZfACHFPhHnqnPQQJj1RQNZ2L8MqwKOlOwV
-        Mg3QiZ0sJE8LiK3pltERr9haoG3HUQWGr6P5ukZsP99m1PIXJAh42FONsYR9MVkqFiThmB
-        RBovyuAW8B8PguTfUWaX2Hhz1Ltq38ry/umJEIzmwcdGy4VBz8pQRY9BOsT2QQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611213280;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rhSh/HQgdN2lB7/EZd4gRNSdAORZpzmyu4+TIebLNY8=;
-        b=RXj5TaUagGHYePH1fU0VySk7d12MR8mlMTh5IFM1ptDeyDMfmqKjPAkEF9UXxtvA0BG6XI
-        9Tsts0WD5YM/piDA==
-From:   "tip-bot2 for Andrea Righi" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Build thunk_$(BITS) only if CONFIG_PREEMPTION=y
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <YAAvk0UQelq0Ae7+@xps-13-7390>
-References: <YAAvk0UQelq0Ae7+@xps-13-7390>
+        Thu, 21 Jan 2021 02:19:03 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813C7C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:17:56 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id e22so2118154iom.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:17:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FvUB6aKTOzb1ncLTrU4MC8B0a/Xf0eV3JbdY7KR8XWI=;
+        b=QwVlgg8H6YaIXQT8K3QbhZQTqbg+fz1+f8csutbYeK0afl43h35YReYeN7eW0fK7uM
+         cKKo4VHjgH0wfjQJ/0bHJqJR5ZLU1zmy1t8aS2f4SnwCza3+QJKLdP3IrUq9Ds9BdDia
+         bwXPDY26PwIHrJu6ccb3XvEV9wkek0iOJl5R5N/ptYEnf8h1AkmMMPVavUTSzJ4VIbyY
+         hf87LxPVQv4SBjrFWEV8s3T6sipvBuG6jj5fp63VzQbBlg/ZQPLVUrVgDf9NeCD3U2mT
+         5kwSHK1LHp8cwvAQ+ENR2VJbtAyElHXd2rWyliC0FoH7HHagDNOdfCKwh2zP6rl1MEf7
+         B/Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FvUB6aKTOzb1ncLTrU4MC8B0a/Xf0eV3JbdY7KR8XWI=;
+        b=mcfiqw6EGaLYOmxOEq6jor1b9oTyKTVIITifNUAwZmevfJLfqq1YTMqI8BGRMsar07
+         HDnMHmKwc9OoB40WJw2wggwMw7Vofiq23hS4ny4+T8Dn2B1coA7wHYdqKk+I6+CDuGrn
+         IQC+vLYs0xY/7M0beD/q0zXhGesvMT4aCzjVZnoDqs+NVOVba0XUU+mAZFS0MLDA3iWK
+         pxd8s0JraeJKv1ycHXcDuGtjDbjGQdV0yUSc3P3xmFIpVjRZSbxyRkKHpfoWJnJlHW9t
+         rOep1c7iLjzI0+h9nLJgUvQbMp9TZ8a2uTQ2il3DTa1im7SXQb5ycXWhMJtZmxoYpwUs
+         BLpQ==
+X-Gm-Message-State: AOAM532+JQbGXHJevIE3mnCmtJrerXsJmiHBi8Qc/oZEp6AWR3hkOdHn
+        52eYT1MB6VQpgXj8hBG19Rj/LW9yn0OB6FfwTnOoImfFxlZMRg==
+X-Google-Smtp-Source: ABdhPJwgRob+ZjxdJAWZNxtHrVKFw7ZkLEMIbc6KQ7HYWxcfM4fkRI2BTyyG9XtnH6owVm+gjLQlUk2Q+xSGkAr+Odw=
+X-Received: by 2002:a6b:d804:: with SMTP id y4mr9243979iob.141.1611213475934;
+ Wed, 20 Jan 2021 23:17:55 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161121327995.414.14890124942899525500.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <CAAH8bW8-6Dp29fe6rrnA4eL1vo+mu0HuAVJ-5yjbwxDSvaHdeQ@mail.gmail.com>
+ <6c442012-3bef-321b-bbc3-09c54608661f@infradead.org>
+In-Reply-To: <6c442012-3bef-321b-bbc3-09c54608661f@infradead.org>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Wed, 20 Jan 2021 23:17:45 -0800
+Message-ID: <CAAH8bW-az-WSnbHshwmFuu=oANiZyVKCZ+dHoN119Cy-5KftMA@mail.gmail.com>
+Subject: Re: [PATCH] powerpc: fix AKEBONO build failures
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+On Wed, Jan 20, 2021 at 10:10 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 1/20/21 1:29 PM, Yury Norov wrote:
+> > Hi all,
+> >
+> > I found the power pc build broken on today's
+> > linux-next (647060f3b592).
+>
+> Darn, I was building linux-5.11-rc4.
+>
+> I'll try linux-next after I send this.
+>
+> ---
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fulfill AKEBONO Kconfig requirements.
+>
+> Fixes these Kconfig warnings (and more) and fixes the subsequent
+> build errors:
+>
+> WARNING: unmet direct dependencies detected for NETDEVICES
+>   Depends on [n]: NET [=n]
+>   Selected by [y]:
+>   - AKEBONO [=y] && PPC_47x [=y]
+>
+> WARNING: unmet direct dependencies detected for MMC_SDHCI
+>   Depends on [n]: MMC [=n] && HAS_DMA [=y]
+>   Selected by [y]:
+>   - AKEBONO [=y] && PPC_47x [=y]
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Yury Norov <yury.norov@gmail.com>
+> ---
+>  arch/powerpc/platforms/44x/Kconfig |    2 ++
+>  1 file changed, 2 insertions(+)
+>
+> --- lnx-511-rc4.orig/arch/powerpc/platforms/44x/Kconfig
+> +++ lnx-511-rc4/arch/powerpc/platforms/44x/Kconfig
+> @@ -206,6 +206,7 @@ config AKEBONO
+>         select PPC4xx_HSTA_MSI
+>         select I2C
+>         select I2C_IBM_IIC
+> +       select NET
+>         select NETDEVICES
+>         select ETHERNET
+>         select NET_VENDOR_IBM
+> @@ -213,6 +214,7 @@ config AKEBONO
+>         select USB if USB_SUPPORT
+>         select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
+>         select USB_EHCI_HCD_PLATFORM if USB_EHCI_HCD
+> +       select MMC
+>         select MMC_SDHCI
+>         select MMC_SDHCI_PLTFM
+>         select ATA
 
-Commit-ID:     e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
-Gitweb:        https://git.kernel.org/tip/e6d92b6680371ae1aeeb6c5eb2387fdc5d9a2c89
-Author:        Andrea Righi <andrea.righi@canonical.com>
-AuthorDate:    Thu, 14 Jan 2021 12:48:35 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 21 Jan 2021 08:11:52 +01:00
+Looks working, thanks.
 
-x86/entry: Build thunk_$(BITS) only if CONFIG_PREEMPTION=y
-
-With CONFIG_PREEMPTION disabled, arch/x86/entry/thunk_64.o is just an
-empty object file.
-
-With the newer binutils (tested with 2.35.90.20210113-1ubuntu1) the GNU
-assembler doesn't generate a symbol table for empty object files and
-objtool fails with the following error when a valid symbol table cannot
-be found:
-
-  arch/x86/entry/thunk_64.o: warning: objtool: missing symbol table
-
-To prevent this from happening, build thunk_$(BITS).o only if
-CONFIG_PREEMPTION is enabled.
-
-  BugLink: https://bugs.launchpad.net/bugs/1911359
-
-Fixes: 320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Link: https://lore.kernel.org/r/YAAvk0UQelq0Ae7+@xps-13-7390
----
- arch/x86/entry/Makefile   | 3 ++-
- arch/x86/entry/thunk_32.S | 2 --
- arch/x86/entry/thunk_64.S | 4 ----
- 3 files changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-index 08bf95d..83c98da 100644
---- a/arch/x86/entry/Makefile
-+++ b/arch/x86/entry/Makefile
-@@ -21,12 +21,13 @@ CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
- CFLAGS_syscall_32.o		+= $(call cc-option,-Wno-override-init,)
- CFLAGS_syscall_x32.o		+= $(call cc-option,-Wno-override-init,)
- 
--obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
-+obj-y				:= entry_$(BITS).o syscall_$(BITS).o
- obj-y				+= common.o
- 
- obj-y				+= vdso/
- obj-y				+= vsyscall/
- 
-+obj-$(CONFIG_PREEMPTION)	+= thunk_$(BITS).o
- obj-$(CONFIG_IA32_EMULATION)	+= entry_64_compat.o syscall_32.o
- obj-$(CONFIG_X86_X32_ABI)	+= syscall_x32.o
- 
-diff --git a/arch/x86/entry/thunk_32.S b/arch/x86/entry/thunk_32.S
-index f1f96d4..5997ec0 100644
---- a/arch/x86/entry/thunk_32.S
-+++ b/arch/x86/entry/thunk_32.S
-@@ -29,10 +29,8 @@ SYM_CODE_START_NOALIGN(\name)
- SYM_CODE_END(\name)
- 	.endm
- 
--#ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
- 	EXPORT_SYMBOL(preempt_schedule_thunk)
- 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
--#endif
- 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index 496b11e..9d543c4 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -31,14 +31,11 @@ SYM_FUNC_END(\name)
- 	_ASM_NOKPROBE(\name)
- 	.endm
- 
--#ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
- 	EXPORT_SYMBOL(preempt_schedule_thunk)
- 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
--#endif
- 
--#ifdef CONFIG_PREEMPTION
- SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
- 	popq %r11
- 	popq %r10
-@@ -53,4 +50,3 @@ SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
- 	ret
- 	_ASM_NOKPROBE(__thunk_restore)
- SYM_CODE_END(__thunk_restore)
--#endif
+Tested-by: Yury Norov <yury.norov@gmail.com>
