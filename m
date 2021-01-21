@@ -2,125 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3162FF367
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323CF2FF385
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbhAUIrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:47:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55824 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726509AbhAUIov (ORCPT
+        id S1726318AbhAUSsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:48:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727933AbhAUIsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:44:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611218597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1qceA6Mj17tYbQrPYRIWS65DjH+HsiHQ9R/ygw96D7U=;
-        b=iQ+mqrrkz/mXlcvvhMYENQlXfGyz1rAS8bEpqnJ1l3PlpHbFOmCU5ZzlETCXsJhm+mPYW7
-        uCKQRMbglzKL/nZlPioeSyEE30fCpXbgJOUL4jH1qUNF4fY0ipcrp1SXpV+zVIa9CsnB7V
-        cyBPFo4cEowHYaKp84aoVPffDapmBI8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-3dqsZpoiMAml-8w_v8ipCQ-1; Thu, 21 Jan 2021 03:43:13 -0500
-X-MC-Unique: 3dqsZpoiMAml-8w_v8ipCQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 592B551DA;
-        Thu, 21 Jan 2021 08:43:12 +0000 (UTC)
-Received: from localhost (ovpn-12-177.pek2.redhat.com [10.72.12.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C35210016FF;
-        Thu, 21 Jan 2021 08:43:08 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 16:43:05 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, david@redhat.com
-Subject: Re: [PATCH v4 1/4] mm: rename memmap_init() and memmap_init_zone()
-Message-ID: <20210121084305.GI20161@MiWiFi-R3L-srv>
-References: <20210120045213.6571-2-bhe@redhat.com>
- <202101202302.EE9LLAFu-lkp@intel.com>
- <20210121081727.GG20161@MiWiFi-R3L-srv>
- <20210121082522.GS1106298@kernel.org>
+        Thu, 21 Jan 2021 03:48:46 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C667CC061575;
+        Thu, 21 Jan 2021 00:48:04 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id r32so1321640ybd.5;
+        Thu, 21 Jan 2021 00:48:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=DAKzWfI+WV1BtESP96vgOG0X+j7cbNfQKOeLD/qtt8U=;
+        b=lC6IYS6CEA7T4L4rYYL//fUkY+d5BaIrd211d0i1qE+tLBumvZQUotP+9mIkSLAsnw
+         8VSxPArB0v9HuV1mg/TpSkI07D1D/1mYYSiiVMX7JmvyIXXT6jwJt+ClBhIfgdJOZ2xi
+         VQv2ceD0d1n5OoGDEURtBVW1mkhAYuY/IZR3bUsR9vIM5B+8eLnTCozsQQ8gqF3abEgK
+         TGjzlpYjsXTTts8WZ/ntb/eegvKs4m7EjkD/ugOSdlv3hj74+2salZmDB0ai+LA/Y3S1
+         FR8LBxhqZU1M6buyjafevU99ogljIev/r/+02i6E/4pV8IqndQ91NPKvpJKvLavFGLFf
+         CsRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=DAKzWfI+WV1BtESP96vgOG0X+j7cbNfQKOeLD/qtt8U=;
+        b=RV3pfCRTIZFgeQDEbWUQEXwicA9RcVB3kESsl4HfNuHMnTQThLBicpisYUckHQMQ8z
+         wmV76k+VR5DZ/fWjuE0KYhn4uNTJsrDoIWYf2TbHDI01AOzXNpkvRuuy4iw14+MlJgK8
+         J9S9DlZ/kaCUQbyQ5a42+qnaXKSDk7cta0Cx3ClLbtLBHREvlhogESTBlKSx8gaX9rx3
+         iMsTfRTjxiZ1OXwDUSJ/E1OBk/3+jop0wsSrGPZ8fLoUH9A4ZcYkt1R54tOvUOISLH5o
+         rJSdLQVLTd034+NI4Yl+nNxh+IIsLDwU+kSU1gZlmxeuUkDFDSqzvl51JLZzk7XUzHb+
+         vZ2Q==
+X-Gm-Message-State: AOAM533F7sFjaHjc/yFGIl8NmeiZZJpsr9oZ9s/mVzQq3hwR2eJrQoH9
+        iWZAlGaFIBOpAJsnTOez29zZQWPZ0uXhJszEDDQ=
+X-Google-Smtp-Source: ABdhPJwVmB+bKPx06kt5BW+qCLKDzoIkZ7EZSXZVsxhLo71ZQjSmY1j3ZeSYR5zLwT5Jvz3rbpyiDJ2tG6FFdoRxa9k=
+X-Received: by 2002:a25:3457:: with SMTP id b84mr18603418yba.167.1611218883982;
+ Thu, 21 Jan 2021 00:48:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121082522.GS1106298@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Thu, 21 Jan 2021 16:47:37 +0800
+Message-ID: <CAD-N9QX=vVdiSf5UkuoYovamfw5a0e5RQJA0dQMOKmCbs-Gyiw@mail.gmail.com>
+Subject: "KMSAN: uninit-value in rt2500usb_bbp_read" and "KMSAN: uninit-value
+ in rt2500usb_probe_hw" should be duplicate crash reports
+To:     davem@davemloft.net, helmut.schaa@googlemail.com, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        stf_xl@wp.pl, Greg KH <greg@kroah.com>
+Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/21/21 at 10:25am, Mike Rapoport wrote:
-> On Thu, Jan 21, 2021 at 04:17:27PM +0800, Baoquan He wrote:
-> > On 01/20/21 at 11:47pm, kernel test robot wrote:
-> > > Hi Baoquan,
-> > > 
-> > > I love your patch! Perhaps something to improve:
-> > > 
-> > > [auto build test WARNING on linux/master]
-> > > [also build test WARNING on linus/master v5.11-rc4 next-20210120]
-> > > [cannot apply to mmotm/master hnaz-linux-mm/master ia64/next]
-> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > And when submitting patch, we suggest to use '--base' as documented in
-> > > https://git-scm.com/docs/git-format-patch]
-> > > 
-> > > url:    https://github.com/0day-ci/linux/commits/Baoquan-He/mm-clean-up-names-and-parameters-of-memmap_init_xxxx-functions/20210120-135239
-> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1e2a199f6ccdc15cf111d68d212e2fd4ce65682e
-> > > config: mips-randconfig-r036-20210120 (attached as .config)
-> > > compiler: mips-linux-gcc (GCC) 9.3.0
-> > > reproduce (this is a W=1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # https://github.com/0day-ci/linux/commit/1bbb0b35dd2fae4a7a38098e63899677c2e53108
-> > >         git remote add linux-review https://github.com/0day-ci/linux
-> > >         git fetch --no-tags linux-review Baoquan-He/mm-clean-up-names-and-parameters-of-memmap_init_xxxx-functions/20210120-135239
-> > >         git checkout 1bbb0b35dd2fae4a7a38098e63899677c2e53108
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
-> > > 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All warnings (new ones prefixed by >>):
-> > > 
-> > >    mm/page_alloc.c:3597:15: warning: no previous prototype for 'should_fail_alloc_page' [-Wmissing-prototypes]
-> > >     3597 | noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
-> > >          |               ^~~~~~~~~~~~~~~~~~~~~~
-> > > >> mm/page_alloc.c:6258:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
-> > >     6258 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
-> > 
-> > This is not introduced by this patch, but existing issue, should
-> > be not related to this patchset. I will investigate and see what we
-> > should do with memmap_init_zone(), adding static or adding it to header
-> > file, or just leave it as should_fail_alloc_page().
-> > 
-> > 
-> > By the way, I tried to reproduce on a fedora 32 system of x86 arch, but
-> > met below issue. could you help check what I can do to fix the error.
-> > 
-> > 
-> > [root@dell-per710-01 linux]# COMPILER_INSTALL_PATH=~/0day COMPILER=gcc-9.3.0 ~/bin/make.cross ARCH=mips
-> > Compiler will be installed in /root/0day
-> > make W=1 CONFIG_OF_ALL_DTBS=y CONFIG_DTC=y CROSS_COMPILE=/root/0day/gcc-9.3.0-nolibc/mips-linux/bin/mips-linux- --jobs=16 ARCH=mips
-> >   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
-> >   HOSTCXX scripts/gcc-plugins/structleak_plugin.so
-> >   HOSTCXX scripts/gcc-plugins/randomize_layout_plugin.so
-> > In file included from /root/0day/gcc-9.3.0-nolibc/mips-linux/bin/../lib/gcc/mips-linux/9.3.0/plugin/include/gcc-plugin.h:28,
-> >                  from scripts/gcc-plugins/gcc-common.h:7,
-> >                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
-> > /root/0day/gcc-9.3.0-nolibc/mips-linux/bin/../lib/gcc/mips-linux/9.3.0/plugin/include/system.h:687:10: fatal error: gmp.h: No such file or directy
-> >   687 | #include <gmp.h>
-> >       |          ^~~~~~~
-> > compilation terminated.
-> > make[2]: *** [scripts/gcc-plugins/Makefile:47: scripts/gcc-plugins/latent_entropy_plugin.so] Error 1
-> > make[2]: *** Waiting for unfinished jobs..
-> 
-> Do you have gmp-devel installed?
+Dear kernel developers,
 
-Ah, I didn't, thanks. Then libmpc-devel is needed. Will continue.
+I found that on the syzbot dashboard, =E2=80=9CKMSAN: uninit-value in
+rt2500usb_bbp_read=E2=80=9D [1] and "KMSAN: uninit-value in
+rt2500usb_probe_hw" [2] should share the same root cause.
 
+## Duplication
+
+The reasons for the above statement:
+1) The PoCs are exactly the same with each other;
+2) The stack trace is almost the same except for the top 2 functions;
+
+## Root Cause Analysis
+
+After looking at the difference between the two stack traces, we found
+they diverge at the function - rt2500usb_probe_hw.
+---------------------------------------------------------------------------=
+---------------------------------------------
+static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
+{
+        ......
+        // rt2500usb_validate_eeprom->rt2500usb_bbp_read->rt2500usb_regbusy=
+_read->rt2500usb_register_read_lock
+from KMSAN
+        retval =3D rt2500usb_validate_eeprom(rt2x00dev);
+        if (retval)
+                return retval;
+        // rt2500usb_init_eeprom-> rt2500usb_register_read from KMSAN
+        retval =3D rt2500usb_init_eeprom(rt2x00dev);
+        if (retval)
+                return retval;
+---------------------------------------------------------------------------=
+---------------------------------------------
+From the implementation of rt2500usb_register_read and
+rt2500usb_register_read_lock, we know that, in some situation, reg is
+not initialized in the function invocation
+(rt2x00usb_vendor_request_buff/rt2x00usb_vendor_req_buff_lock), and
+KMSAN reports uninit-value at its first memory access.
+---------------------------------------------------------------------------=
+---------------------------------------------
+static u16 rt2500usb_register_read(struct rt2x00_dev *rt2x00dev,
+                                   const unsigned int offset)
+{
+        __le16 reg;
+        // reg is not initialized during the following function all
+        rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
+                                      USB_VENDOR_REQUEST_IN, offset,
+                                      &reg, sizeof(reg));
+        return le16_to_cpu(reg);
+}
+static u16 rt2500usb_register_read_lock(struct rt2x00_dev *rt2x00dev,
+                                        const unsigned int offset)
+{
+        __le16 reg;
+        // reg is not initialized during the following function all
+        rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
+                                       USB_VENDOR_REQUEST_IN, offset,
+                                       &reg, sizeof(reg), REGISTER_TIMEOUT)=
+;
+        return le16_to_cpu(reg);
+}
+---------------------------------------------------------------------------=
+---------------------------------------------
+Take rt2x00usb_vendor_req_buff_lock as an example, let me illustrate
+the issue when the "reg" variable is uninitialized. No matter the CSR
+cache is unavailable or the status is not right, the buffer or reg
+will be not initialized.
+And all those issues are probabilistic events. If they occur in
+rt2500usb_register_read, KMSAN reports "uninit-value in
+rt2500usb_probe_hw"; Otherwise, it reports "uninit-value in
+rt2500usb_bbp_read".
+---------------------------------------------------------------------------=
+---------------------------------------------
+int rt2x00usb_vendor_req_buff_lock(struct rt2x00_dev *rt2x00dev,
+                                   const u8 request, const u8 requesttype,
+                                   const u16 offset, void *buffer,
+                                   const u16 buffer_length, const int timeo=
+ut)
+{
+        if (unlikely(!rt2x00dev->csr.cache || buffer_length > CSR_CACHE_SIZ=
+E)) {
+                rt2x00_err(rt2x00dev, "CSR cache not available\n");
+                return -ENOMEM;
+        }
+
+        if (requesttype =3D=3D USB_VENDOR_REQUEST_OUT)
+                memcpy(rt2x00dev->csr.cache, buffer, buffer_length);
+
+        status =3D rt2x00usb_vendor_request(rt2x00dev, request, requesttype=
+,
+                                          offset, 0, rt2x00dev->csr.cache,
+                                          buffer_length, timeout);
+
+        if (!status && requesttype =3D=3D USB_VENDOR_REQUEST_IN)
+                memcpy(buffer, rt2x00dev->csr.cache, buffer_length);
+
+        return status;
+}
+---------------------------------------------------------------------------=
+---------------------------------------------
+
+## Patch
+
+I propose to memset reg variable before invoking
+rt2x00usb_vendor_req_buff_lock/rt2x00usb_vendor_request_buff.
+
+---------------------------------------------------------------------------=
+---------------------------------------------
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+index fce05fc88aaf..f6c93a25b18c 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+@@ -48,6 +48,7 @@ static u16 rt2500usb_register_read(struct rt2x00_dev
+*rt2x00dev,
+                                   const unsigned int offset)
+ {
+        __le16 reg;
++       memset(&reg, 0, sizeof(reg));
+        rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
+                                      USB_VENDOR_REQUEST_IN, offset,
+                                      &reg, sizeof(reg));
+@@ -58,6 +59,7 @@ static u16 rt2500usb_register_read_lock(struct
+rt2x00_dev *rt2x00dev,
+                                        const unsigned int offset)
+ {
+        __le16 reg;
++       memset(&reg, 0, sizeof(reg));
+        rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
+                                       USB_VENDOR_REQUEST_IN, offset,
+                                       &reg, sizeof(reg), REGISTER_TIMEOUT)=
+;
+---------------------------------------------------------------------------=
+---------------------------------------------
+
+If you can have any issues with this statement or our information is
+useful to you, please let us know. Thanks very much.
+
+[1] =E2=80=9CKMSAN: uninit-value in rt2500usb_bbp_read=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3Df35d123de7d393019c1ed4d4e60dc66596ed=
+62cd
+[2] =E2=80=9CKMSAN: uninit-value in rt2500usb_probe_hw=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3D5402df7259c74e15a12992e739b5ac54c9b8=
+a4ce
+
+
+--
+My best regards to you.
+
+     No System Is Safe!
+     Dongliang Mu
