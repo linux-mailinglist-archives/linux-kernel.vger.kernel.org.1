@@ -2,176 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11082FE32C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB8C2FE333
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbhAUGp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:45:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726793AbhAUGog (ORCPT
+        id S1726430AbhAUGrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:47:16 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:38066 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbhAUGq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:44:36 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83514C0613C1;
-        Wed, 20 Jan 2021 22:43:56 -0800 (PST)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4DLtCC2807z9sWg; Thu, 21 Jan 2021 17:43:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1611211431;
-        bh=f/xtaWh7e4rADud+eV43gL9MZJQJ41Y2/cBit7jRpIc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I/REnNaGaKdk+/b6ZmtFkTbr5jOK3tGbva5+dwrA7QkZ48I6wuyrm5KmlfxvPak39
-         zzvWkjA3waR/CDX/f+zjzaNeD/2bvHn/IbZWLgzXEnlQBFc3UywuSEvWnJec6xNSOE
-         deRsySiupsqu58XEfCUbX1ZlYs05QxYQ0sgeDOXc=
-Date:   Thu, 21 Jan 2021 17:41:24 +1100
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        pantelis.antoniou@konsulko.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-Message-ID: <20210121064124.GM5174@yekko.fritz.box>
-References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <20210119022154.2338781-1-frowand.list@gmail.com>
- <20210119080546.dzec3jatsz2662qs@vireshk-i7>
- <f7133d16-510b-f730-a43b-89edab08aabe@gmail.com>
- <20210120050606.b2m4jssh73wexybx@vireshk-i7>
- <95cfc497-3d12-fd46-6e42-2a77612236ea@gmail.com>
+        Thu, 21 Jan 2021 01:46:56 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L6fPsv127833;
+        Thu, 21 Jan 2021 06:46:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=seQuyGYo9v2lH1z0iBy3n60lw8YL3g3G68Vu2n7+Hyw=;
+ b=palL15T3H+fNI1xmekxgngojpb5Z645duxGw706fOh6iDdxPaj3PnYKQCaqVhpOav8WX
+ Tm5oMg215PIbGmy3DGyfrCUhYaKS6sWvGyrKNXu+/uPvIEQCdDc7rD/0ZO+xm7hexDwk
+ LOA8Wow4WyWzgpcg3PYwat/JVGsGt8veIfYyOqAhFY+2B1fPJPe6WYqmouwjKHPjRonh
+ dk2SdLAtIsKi0CwBDFwQvMoSaHV/8f29l1nSA7BasreLOjd103k9tG5u1xyRMhtV7LFc
+ brJ1FzopWO7yfmOTXW8VMnyNLmyIYguUyfNUWvrKjo8bHO+3jZwMVz/eo8xb9FdjUGCg rQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 3668qrduqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 06:46:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L6TrNI171311;
+        Thu, 21 Jan 2021 06:44:08 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 3668rf71gr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 06:44:08 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10L6i74d014380;
+        Thu, 21 Jan 2021 06:44:07 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 20 Jan 2021 22:44:06 -0800
+Date:   Thu, 21 Jan 2021 09:44:00 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Antoine Jacquet <royale@zerezo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] media: zr364xx: fix memory leaks in probe()
+Message-ID: <YAkisFB1Ly0e2pPe@mwanda>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bZ2MuwyI/0uB8yuJ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <95cfc497-3d12-fd46-6e42-2a77612236ea@gmail.com>
+In-Reply-To: <196887f5-677f-0aeb-5f5c-fb4a918d6128@xs4all.nl>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210033
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101210033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Syzbot discovered that the probe error handling doesn't clean up the
+resources allocated in zr364xx_board_init().  There are several
+related bugs in this code so I have re-written the error handling.
 
---bZ2MuwyI/0uB8yuJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+1)  Introduce a new function zr364xx_board_uninit() which cleans up
+    the resources in zr364xx_board_init().
+2)  In zr364xx_board_init() if the call to zr364xx_start_readpipe()
+    fails then release the "cam->buffer.frame[i].lpvbits" memory
+    before returning.  This way every function either allocates
+    everything successfully or it cleans up after itself.
+3)  Re-write the probe function so that each failure path goto frees
+    the most recent allocation.  That way we don't free anything
+    before it has been allocated and we can also verify that
+    everything is freed.
+4)  Originally, in the probe function the "cam->v4l2_dev.release"
+    pointer was set to "zr364xx_release" near the start but I moved
+    that assignment to the end, after everything had succeeded.  The
+    release function was never actually called during the probe cleanup
+    process, but with this change I wanted to make it clear that we
+    don't want to call zr364xx_release() until everything is
+    allocated successfully.
 
-On Wed, Jan 20, 2021 at 11:00:17PM -0600, Frank Rowand wrote:
->=20
-> +David
->=20
-> so I don't have to repeat this in another thread
->=20
-> On 1/19/21 11:06 PM, Viresh Kumar wrote:
-> > On 19-01-21, 09:44, Frank Rowand wrote:
-> >> No.  overlay_base.dts is intentionally compiled into a base FDT, not
-> >> an overlay.  Unittest intentionally unflattens this FDT in early boot,
-> >> in association with unflattening the system FDT.  One key intent
-> >> behind this is to use the same memory allocation method that is
-> >> used for the system FDT.
-> >>
-> >> Do not try to convert overlay_base.dts into an overlay.
-> >=20
-> > Okay, but why does it have /plugin/; specified in it then ?
->=20
-> OK, so I sortof lied about overlay_base.dts not being an overlay.  It is
-> a Frankenstein monster or a Schrodinger's dts/dtb.  It is not a normal
-> object.  Nobody who is not looking at how it is abused inside unittest.c
-> should be trying to touch it or understand it.
+Next I re-wrote the zr364xx_release() function.  Ideally this would
+have been a simple matter of copy and pasting the cleanup code from
+probe and adding an additional call to video_unregister_device().  But
+there are a couple quirks to note.
 
-In that case, it absolutely should not be used as your standard base
-dtb.
+1)  The probe function does not call videobuf_mmap_free() and I don't
+    know where the videobuf_mmap is allocated.  I left the code as-is to
+    avoid introducing a bug in code I don't understand.
+2)  The zr364xx_board_uninit() has a call to zr364xx_stop_readpipe()
+    which is a change from the original behavior with regards to
+    unloading the driver.  Calling zr364xx_stop_readpipe() on a stopped
+    pipe is not a problem so this is safe and is potentially a bugfix.
 
-Note that overlays in general rely on particular details of the base
-dtb they apply to - they'll need certain symbols and expect certain
-paths to be there.  So applying random overlays to a "standard" base
-dtb sounds destined to failure anyway.
+Reported-by: syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+---
+v2: The first version introduced a double call of video_unregister_device()
+    in the unload path.
 
-Also, whatever they hell you're doing with testcases.dts sounds like a
-terrible idea to begin with.
+ drivers/media/usb/zr364xx/zr364xx.c | 49 ++++++++++++++++++-----------
+ 1 file changed, 31 insertions(+), 18 deletions(-)
 
-> unittest.c first unflattens overlay_base.dtb during early boot.  Then lat=
-er
-> it does some phandle resolution using the overlay metadata from overlay_b=
-ase.
-> Then it removes the overlay metadata from the in kernel devicetree data
-> structure.  It is a hack, it is ugly, but it enables some overlay unit
-> tests.
->=20
-> Quit trying to change overlay_base.dts.
->=20
-> In my suggested changes to the base patch I put overlay_base.dtb in the
-> list of overlays for fdtoverlay to apply (apply_static_overlay in the
-> Makefile) because overlay_base.dts is compiled as an overlay into
-> overlay_base.dtb and it can be applied on top of the base tree
-> testcases.dtb.  This gives a little bit more testcase data for
-> fdtoverlay from an existing dtb.
->=20
-> If you keep trying to change overlay_base.dts I will just tell you
-> to remove overlay_base.dtb from apply_static_overlay, and then the
-> test coverage will become smaller.  I do not see that as a good change.
->=20
-> If you want more extensive testing of fdtoverlay, then create your
-> own specific test cases from scratch and submit patches for them
-> to the kernel or to the dtc compiler project.
->=20
-> >=20
-> > And shouldn't we create two separate dtb-s now, static_test.dtb and
-> > static_overlay_test.dtb ? As fdtoverlay will not be able to merge it wi=
-th
-> > testcase.dtb anyway.
-> >=20
-> > Or maybe we can create another file static_overlay.dts (like testcases.=
-dts)
-> > which can include both testcases.dts and overlay_base.dts, and then we =
-can
-> > create static_test.dtb out of it ? That won't impact the runtime tests =
-at all.
-> >=20
->=20
-> Stop trying to use all of the unittest .dts test data files.  It is conve=
-nient
-> that so many of them can be used in their current form.  That is goodness
-> and nice leveraging.  Just ignore the .dts test data files that are not
-> easily consumed by fdtoverlay.
->=20
-> The email threads around the various versions of this patch series show h=
-ow
-> normal devicetree knowledgeable people look at the contents of some of the
-> .dts test data files and think that they are incorrect.  That is because
-> the way that unittest uses them is not normal.  Trying to modify one or t=
-wo
-> of the many unittest .dts test data files so that they are usable by both
-> the static fdtoverlay and the run time unittest is not worth it.
->=20
-> -Frank
->=20
+diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
+index 1e1c6b4d1874..d29b861367ea 100644
+--- a/drivers/media/usb/zr364xx/zr364xx.c
++++ b/drivers/media/usb/zr364xx/zr364xx.c
+@@ -1181,15 +1181,11 @@ static int zr364xx_open(struct file *file)
+ 	return err;
+ }
+ 
+-static void zr364xx_release(struct v4l2_device *v4l2_dev)
++static void zr364xx_board_uninit(struct zr364xx_camera *cam)
+ {
+-	struct zr364xx_camera *cam =
+-		container_of(v4l2_dev, struct zr364xx_camera, v4l2_dev);
+ 	unsigned long i;
+ 
+-	v4l2_device_unregister(&cam->v4l2_dev);
+-
+-	videobuf_mmap_free(&cam->vb_vidq);
++	zr364xx_stop_readpipe(cam);
+ 
+ 	/* release sys buffers */
+ 	for (i = 0; i < FRAMES; i++) {
+@@ -1200,9 +1196,19 @@ static void zr364xx_release(struct v4l2_device *v4l2_dev)
+ 		cam->buffer.frame[i].lpvbits = NULL;
+ 	}
+ 
+-	v4l2_ctrl_handler_free(&cam->ctrl_handler);
+ 	/* release transfer buffer */
+ 	kfree(cam->pipe->transfer_buffer);
++}
++
++static void zr364xx_release(struct v4l2_device *v4l2_dev)
++{
++	struct zr364xx_camera *cam =
++		container_of(v4l2_dev, struct zr364xx_camera, v4l2_dev);
++
++	videobuf_mmap_free(&cam->vb_vidq);
++	v4l2_ctrl_handler_free(&cam->ctrl_handler);
++	zr364xx_board_uninit(cam);
++	v4l2_device_unregister(&cam->v4l2_dev);
+ 	kfree(cam);
+ }
+ 
+@@ -1376,11 +1382,14 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
+ 	/* start read pipe */
+ 	err = zr364xx_start_readpipe(cam);
+ 	if (err)
+-		goto err_free;
++		goto err_free_frames;
+ 
+ 	DBG(": board initialized\n");
+ 	return 0;
+ 
++err_free_frames:
++	for (i = 0; i < FRAMES; i++)
++		vfree(cam->buffer.frame[i].lpvbits);
+ err_free:
+ 	kfree(cam->pipe->transfer_buffer);
+ 	cam->pipe->transfer_buffer = NULL;
+@@ -1409,12 +1418,10 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	if (!cam)
+ 		return -ENOMEM;
+ 
+-	cam->v4l2_dev.release = zr364xx_release;
+ 	err = v4l2_device_register(&intf->dev, &cam->v4l2_dev);
+ 	if (err < 0) {
+ 		dev_err(&udev->dev, "couldn't register v4l2_device\n");
+-		kfree(cam);
+-		return err;
++		goto free_cam;
+ 	}
+ 	hdl = &cam->ctrl_handler;
+ 	v4l2_ctrl_handler_init(hdl, 1);
+@@ -1423,7 +1430,7 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	if (hdl->error) {
+ 		err = hdl->error;
+ 		dev_err(&udev->dev, "couldn't register control\n");
+-		goto fail;
++		goto unregister;
+ 	}
+ 	/* save the init method used by this camera */
+ 	cam->method = id->driver_info;
+@@ -1496,7 +1503,7 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	if (!cam->read_endpoint) {
+ 		err = -ENOMEM;
+ 		dev_err(&intf->dev, "Could not find bulk-in endpoint\n");
+-		goto fail;
++		goto unregister;
+ 	}
+ 
+ 	/* v4l */
+@@ -1507,10 +1514,11 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 
+ 	/* load zr364xx board specific */
+ 	err = zr364xx_board_init(cam);
+-	if (!err)
+-		err = v4l2_ctrl_handler_setup(hdl);
+ 	if (err)
+-		goto fail;
++		goto unregister;
++	err = v4l2_ctrl_handler_setup(hdl);
++	if (err)
++		goto board_uninit;
+ 
+ 	spin_lock_init(&cam->slock);
+ 
+@@ -1525,16 +1533,21 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	err = video_register_device(&cam->vdev, VFL_TYPE_VIDEO, -1);
+ 	if (err) {
+ 		dev_err(&udev->dev, "video_register_device failed\n");
+-		goto fail;
++		goto free_handler;
+ 	}
++	cam->v4l2_dev.release = zr364xx_release;
+ 
+ 	dev_info(&udev->dev, DRIVER_DESC " controlling device %s\n",
+ 		 video_device_node_name(&cam->vdev));
+ 	return 0;
+ 
+-fail:
++free_handler:
+ 	v4l2_ctrl_handler_free(hdl);
++board_uninit:
++	zr364xx_board_uninit(cam);
++unregister:
+ 	v4l2_device_unregister(&cam->v4l2_dev);
++free_cam:
+ 	kfree(cam);
+ 	return err;
+ }
+-- 
+2.29.2
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---bZ2MuwyI/0uB8yuJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmAJIhQACgkQbDjKyiDZ
-s5KQug//WNZC6if+14D8n0zTFBT4SyEOFDoTExrCjdJo9q5TfxwOAFKP0M9dEPPO
-hd4F+sKIPR76qRuNpjCT0EmtUi28M4HeWN4yXA9saGh/7S5trpoRnvAhzvwvIUmM
-m5TdwgU1F2kYpYMDMYBAzPVZoR7Hcuck/8qFtd69KhPNBXjqtP4GB4mb9vnnlKmc
-vifyu+YyCoqmJ2qXYLAnFgyBfzLBTIzZwjRiBXSOuQT8G3F9ytZgS/Y2sztYVia9
-VusSecQeYDViKV1WrwDPFrjMN4ZmqD4StSQyeoF3DlBkNmVCLqyTHAAqfwjhkOgG
-u1KoCZBzxT0HGyNomqy4Ss5e05rbZ+q4E4tLt/22wUFZ8apwU3TBXg8tXHqjZDyO
-ObdnPtZsFMWeMwxA2Qi5CwoqZIKpz6zmNrAz7srSVGBGzpUcWn7ZqUdcUh/ow5Sy
-ucSGletYuaXhBwp2vgfoZqseShOtWBVqNZ8vhc205b4jTPgT8poHGqYwskdQx8mj
-t2vS8Szt5e8HoPnSifU6gCH9KFWIFleTiuVRm7eJ8u/DBtc765Kgvdw56j5OsBV8
-/FLSjx9Y/4bGoApF1/UqFjX/sK+7ngX8gSIKojFc6URDTokR6/2gNCTPt0sqI6XM
-Q5K3x4s1S2xVKVuNPqci78TSvUEt3jkjb0jLqHdFx14SYMns7lM=
-=GnG+
------END PGP SIGNATURE-----
-
---bZ2MuwyI/0uB8yuJ--
