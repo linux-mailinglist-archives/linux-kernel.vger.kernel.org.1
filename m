@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428E72FE71B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AD82FE755
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727390AbhAUKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
+        id S1728878AbhAUKQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:16:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728727AbhAUJru (ORCPT
+        with ESMTP id S1728983AbhAUJro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:47:50 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C456C061342
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:58 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id a1so1057490wrq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:58 -0800 (PST)
+        Thu, 21 Jan 2021 04:47:44 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C24C061344
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:59 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id q7so1036907wre.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PKRdxGowR6+2SlFAzbCdVtAOlJIiEEiKpCM9bIUXE5M=;
-        b=mG8u4AFN7PsNYcEKs/l//NonrtelRjACSLJq4e+TVo0K8mzjkVu5BDL3atZvUalrFV
-         2sG+IGz5x+r+Xqu8ian32V+Y6BM7ycHh/lu0DqET8lOQJ88Q3jnfH6ChgNTZBVqDqtUd
-         JoKCAI2ZcFX8Ursa6zYypoHh4ylvzcvDXON48ksyRQ0bNvExBc7sq3qE9O2r0L/mV80M
-         5pR8rT9eAavR/vJCQWterdSoGEV8XT//Y6lZLCzX/Tnsq7pTDb1LLqcByK9dtXMV5PcY
-         RTvZ9Hme+VggC8Y4gEaOeK2HqA+4wfhy1gllrqRk0aQfwnTCGXZr5ABmVnsfi/34QXlS
-         a3yw==
+        bh=hHWi4XXx2vyVztgjTgAmprH4VRWvHZdCQBx5OVlNKfY=;
+        b=lgfYOvgxTbmldjCfGQVsXLWqgsor7xJTmEgRIw5q8Ks1K+0y2v4FIO6SqDa8zyLRsD
+         8YID8tJA3CvEd/laqfupMqMPV8mKMaBv6DXL9iB6/R+X5sqrPK+BfwRmDsytoG7ulKVD
+         X3GPNKgGxvfxRQL1o0OaAOIYeYy/kd0bAp++V56jgMjzJ6N24JxVKiCc68JqSIi1Hk/z
+         RdMgpxskr2osXM9qKuCxUwBHxbTWF8c34L6P0zxlHH1rLKpK1hkQZBgvNPWaQWbY0GU1
+         YaaWrdeTHGep+huyI4O0zXrq0JiuCewdu1apJ5kLtRRYKxkssPD6UWxUOdWbDJGB+x4+
+         QJ3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PKRdxGowR6+2SlFAzbCdVtAOlJIiEEiKpCM9bIUXE5M=;
-        b=jpKaWLq5NbHKWK7qAMOeoXmerVYbJgXmXVJyQx0KZoD5pOVk00UQy6iC/lyjCDzmBj
-         qzDvZVIAW68mNu5YsYCr//5mMq2N18njCLLPUz0isfOv4Tns2rpgBmWYVCrIGaCZO4Nm
-         LCKTiLeknAECrBbmnQ9Bso6nG2eepMyZFgotCVTdnXpeJ2TI0MiZh5CbYntQ252iJ5yg
-         o5HBT/zh3hIvvCv7p7xjAGwi9u7GN69squclDea88GflKnURv15OqI+HxHkPqYMvuwKB
-         yMm6MNtdXP4Zs9j/0H9sNkuzoRQUO7JmePe1uTJH9golmTmOU7mdm9s6ZR9Yns8vDa57
-         Ifyw==
-X-Gm-Message-State: AOAM530nrdELvShaKKnmsnQYAhhNlh/V1xptfswGrNfZDZ/IeRLDvOyn
-        iQpR9M5drhMgLOsbqTXNZ1CuNQ==
-X-Google-Smtp-Source: ABdhPJyF3Ip23qrhUl1lzN0DXoq+AJOOj0E2HrMQk0HU7TSvdcjKP+jsXxHDcGUQcTbhM4S9e66LOg==
-X-Received: by 2002:a5d:6888:: with SMTP id h8mr13530772wru.268.1611222356944;
-        Thu, 21 Jan 2021 01:45:56 -0800 (PST)
+        bh=hHWi4XXx2vyVztgjTgAmprH4VRWvHZdCQBx5OVlNKfY=;
+        b=IM4vCKWQZSohcaNSdpxxHKWLZIHaPqUB7VRdMy95TsoZCYRiMWFh1IuQ2wCEP93/Ga
+         qx+cqN2SmdGXJvZHk5UgVoyIABETWMVvmLSv0Np4jk+9Si+QxjpO2jgYumTdRstz9Diz
+         9tuMXVaPIaRFwRmnYC+tI9GZZ/ESu7qMuAI8lCR9GvoIQt6/fN+epvy72CS92S7dRIAp
+         F0kjz3pDHV6+KiFe6B4WNxZC8EGSIBKq08KQyFAknPM02zZd1iyH6+fKYegwbhhtBZlh
+         faoJJQTlWDD2ORSXEd7PNk/254yrDwCQPx3Z+QmWKVg8naDjCWfEPYMuBqAElWOfREie
+         oMEA==
+X-Gm-Message-State: AOAM531YgWFnm583WnwgVGQ/TBXTgof2N4XsBCfQCVyJiZ6TLhTEdrzS
+        gqPnGF/N/xjCsv9cO1YAivPjQLWbhO5ZaLuK
+X-Google-Smtp-Source: ABdhPJz2zDgq7vJg6Rf0Bfqtm30Oq7JlUDjRPhnw8ZGHxiWVsIkHVD2umFKM+J6YRqF3Kv0ci2cdfg==
+X-Received: by 2002:adf:e7c1:: with SMTP id e1mr1969479wrn.23.1611222358180;
+        Thu, 21 Jan 2021 01:45:58 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.55
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:56 -0800 (PST)
+        Thu, 21 Jan 2021 01:45:57 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 27/30] RDMA/hw/qib/qib_iba7322: Fix a bunch of copy/paste issues
-Date:   Thu, 21 Jan 2021 09:45:16 +0000
-Message-Id: <20210121094519.2044049-28-lee.jones@linaro.org>
+Subject: [PATCH 28/30] RDMA/hw/qib/qib_verbs: Repair some formatting problems
+Date:   Thu, 21 Jan 2021 09:45:17 +0000
+Message-Id: <20210121094519.2044049-29-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
 References: <20210121094519.2044049-1-lee.jones@linaro.org>
@@ -69,19 +69,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/qib/qib_iba7322.c:2521: warning: Function parameter or member 'ppd' not described in 'qib_7322_mini_quiet_serdes'
- drivers/infiniband/hw/qib/qib_iba7322.c:2521: warning: Excess function parameter 'dd' description in 'qib_7322_mini_quiet_serdes'
- drivers/infiniband/hw/qib/qib_iba7322.c:3768: warning: Function parameter or member 'type' not described in 'qib_7322_put_tid'
- drivers/infiniband/hw/qib/qib_iba7322.c:3768: warning: Excess function parameter 'tidtype' description in 'qib_7322_put_tid'
- drivers/infiniband/hw/qib/qib_iba7322.c:3806: warning: Function parameter or member 'rcd' not described in 'qib_7322_clear_tids'
- drivers/infiniband/hw/qib/qib_iba7322.c:3806: warning: Excess function parameter 'ctxt' description in 'qib_7322_clear_tids'
- drivers/infiniband/hw/qib/qib_iba7322.c:3872: warning: Function parameter or member 'kinfo' not described in 'qib_7322_get_base_info'
- drivers/infiniband/hw/qib/qib_iba7322.c:3872: warning: Excess function parameter 'kbase' description in 'qib_7322_get_base_info'
- drivers/infiniband/hw/qib/qib_iba7322.c:4730: warning: Function parameter or member 'reg' not described in 'qib_portcntr_7322'
- drivers/infiniband/hw/qib/qib_iba7322.c:4730: warning: Excess function parameter 'creg' description in 'qib_portcntr_7322'
- drivers/infiniband/hw/qib/qib_iba7322.c:5109: warning: Function parameter or member 't' not described in 'qib_get_7322_faststats'
- drivers/infiniband/hw/qib/qib_iba7322.c:7189: warning: Function parameter or member 'pdev' not described in 'qib_init_iba7322_funcs'
- drivers/infiniband/hw/qib/qib_iba7322.c:7189: warning: Excess function parameter 'dev' description in 'qib_init_iba7322_funcs'
+ drivers/infiniband/hw/qib/qib_verbs.c:1077: warning: Function parameter or member 'ppd' not described in 'qib_get_counters'
+ drivers/infiniband/hw/qib/qib_verbs.c:1077: warning: Excess function parameter 'dd' description in 'qib_get_counters'
+ drivers/infiniband/hw/qib/qib_verbs.c:1686: warning: Function parameter or member 'qp' not described in '_qib_schedule_send'
+ drivers/infiniband/hw/qib/qib_verbs.c:1703: warning: Function parameter or member 'qp' not described in 'qib_schedule_send'
 
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
@@ -90,76 +81,40 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/qib/qib_iba7322.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/qib/qib_verbs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
-index 189a0ce6056a6..9fe6ea75b45e5 100644
---- a/drivers/infiniband/hw/qib/qib_iba7322.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7322.c
-@@ -2514,7 +2514,7 @@ static int qib_7322_bringup_serdes(struct qib_pportdata *ppd)
+diff --git a/drivers/infiniband/hw/qib/qib_verbs.c b/drivers/infiniband/hw/qib/qib_verbs.c
+index f6c01bad5a74f..8e0de265ad578 100644
+--- a/drivers/infiniband/hw/qib/qib_verbs.c
++++ b/drivers/infiniband/hw/qib/qib_verbs.c
+@@ -1067,7 +1067,7 @@ int qib_snapshot_counters(struct qib_pportdata *ppd, u64 *swords,
  
  /**
-  * qib_7322_quiet_serdes - set serdes to txidle
+  * qib_get_counters - get various chip counters
 - * @dd: the qlogic_ib device
 + * @ppd: the qlogic_ib device
-  * Called when driver is being unloaded
-  */
- static void qib_7322_mini_quiet_serdes(struct qib_pportdata *ppd)
-@@ -3760,7 +3760,7 @@ static int qib_do_7322_reset(struct qib_devdata *dd)
-  * qib_7322_put_tid - write a TID to the chip
-  * @dd: the qlogic_ib device
-  * @tidptr: pointer to the expected TID (in chip) to update
-- * @tidtype: 0 for eager, 1 for expected
-+ * @type: 0 for eager, 1 for expected
-  * @pa: physical address of in memory buffer; tidinvalid if freeing
-  */
- static void qib_7322_put_tid(struct qib_devdata *dd, u64 __iomem *tidptr,
-@@ -3796,7 +3796,7 @@ static void qib_7322_put_tid(struct qib_devdata *dd, u64 __iomem *tidptr,
- /**
-  * qib_7322_clear_tids - clear all TID entries for a ctxt, expected and eager
-  * @dd: the qlogic_ib device
-- * @ctxt: the ctxt
-+ * @rcd: the ctxt
+  * @cntrs: counters are placed here
   *
-  * clear all TID entries for a ctxt, expected and eager.
-  * Used from qib_close().
-@@ -3861,7 +3861,7 @@ static void qib_7322_tidtemplate(struct qib_devdata *dd)
- /**
-  * qib_init_7322_get_base_info - set chip-specific flags for user code
-  * @rcd: the qlogic_ib ctxt
-- * @kbase: qib_base_info pointer
-+ * @kinfo: qib_base_info pointer
-  *
-  * We set the PCIE flag because the lower bandwidth on PCIe vs
-  * HyperTransport can affect some user packet algorithims.
-@@ -4724,7 +4724,7 @@ static void sendctrl_7322_mod(struct qib_pportdata *ppd, u32 op)
- /**
-  * qib_portcntr_7322 - read a per-port chip counter
-  * @ppd: the qlogic_ib pport
-- * @creg: the counter to read (not a chip offset)
-+ * @reg: the counter to read (not a chip offset)
-  */
- static u64 qib_portcntr_7322(struct qib_pportdata *ppd, u32 reg)
- {
-@@ -5096,7 +5096,7 @@ static u32 qib_read_7322portcntrs(struct qib_devdata *dd, loff_t pos, u32 port,
+  * Return the counters needed by recv_pma_get_portcounters().
+@@ -1675,7 +1675,7 @@ void qib_unregister_ib_device(struct qib_devdata *dd)
  
  /**
-  * qib_get_7322_faststats - get word counters from chip before they overflow
-- * @opaque - contains a pointer to the qlogic_ib device qib_devdata
-+ * @t: contains a pointer to the qlogic_ib device qib_devdata
+  * _qib_schedule_send - schedule progress
+- * @qp - the qp
++ * @qp: the qp
   *
-  * VESTIGIAL IBA7322 has no "small fast counters", so the only
-  * real purpose of this function is to maintain the notion of
-@@ -7175,7 +7175,7 @@ static int qib_7322_tempsense_rd(struct qib_devdata *dd, int regnum)
+  * This schedules progress w/o regard to the s_flags.
+  *
+@@ -1694,7 +1694,7 @@ bool _qib_schedule_send(struct rvt_qp *qp)
  
  /**
-  * qib_init_iba7322_funcs - set up the chip-specific function pointers
-- * @dev: the pci_dev for qlogic_ib device
-+ * @pdev: the pci_dev for qlogic_ib device
-  * @ent: pci_device_id struct for this dev
+  * qib_schedule_send - schedule progress
+- * @qp - the qp
++ * @qp: the qp
   *
-  * Also allocates, inits, and returns the devdata struct for this
+  * This schedules qp progress.  The s_lock
+  * should be held.
 -- 
 2.25.1
 
