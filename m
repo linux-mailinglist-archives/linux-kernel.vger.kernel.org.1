@@ -2,376 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7F32FE6C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09772FE67D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbhAUJxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:53:09 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:27809 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728485AbhAUJw3 (ORCPT
+        id S1728902AbhAUJh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:37:58 -0500
+Received: from smtprelay0217.hostedemail.com ([216.40.44.217]:52920 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728883AbhAUJhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:52:29 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210121095141epoutp0335312a67deb40810724937cb1cf06434~cNoLCEHeg0980309803epoutp030
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:51:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210121095141epoutp0335312a67deb40810724937cb1cf06434~cNoLCEHeg0980309803epoutp030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611222701;
-        bh=7YFkiECRDaCpD7tpFX2CzJQy3nZHJSkv82IKOg8emzs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bh2zvSpsUew8IKOTqJbYWXdEOC3caY7/eawNLbgdJSJby0JNX+8f9o61ka8aey/ti
-         PE4lBQgDSw99ypAqWKcXlnss5v7BLAL/XJZEF+rq25G/QHwf5VrF/Io8duQ0178/OI
-         OCCvx64KOXysCGIk9TRWMjQYU9p0YrVLRSbpyYnA=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210121095140epcas1p18e95457baf4d23dcfd18d7c9076a69d8~cNoKIn4LH1528415284epcas1p1V;
-        Thu, 21 Jan 2021 09:51:40 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DLyMv4YBbz4x9Q6; Thu, 21 Jan
-        2021 09:51:39 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        06.3A.10463.BAE49006; Thu, 21 Jan 2021 18:51:39 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210121095138epcas1p125bb1879c65fafe4636d71b8ab5f90cd~cNoIBaJwa0627406274epcas1p1F;
-        Thu, 21 Jan 2021 09:51:38 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210121095138epsmtrp2f14907172b54d1d07f2bb9416064db82~cNoIAQV1e3214832148epsmtrp2I;
-        Thu, 21 Jan 2021 09:51:38 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-44-60094eab5514
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F4.A6.13470.AAE49006; Thu, 21 Jan 2021 18:51:38 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210121095138epsmtip271a0b0b8ccb9043ac2612cd9eb4511fc~cNoHwPUYo0307603076epsmtip2K;
-        Thu, 21 Jan 2021 09:51:38 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     damien.lemoal@wdc.com
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, mj0123.lee@samsung.com,
-        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-Subject: Re: [PATCH v2] bio: limit bio max size
-Date:   Thu, 21 Jan 2021 18:36:17 +0900
-Message-Id: <20210121093617.29711-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <BL0PR04MB6514CF1FBBF498CB84BCA565E7A10@BL0PR04MB6514.namprd04.prod.outlook.com>
+        Thu, 21 Jan 2021 04:37:39 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 5AC60182251B2;
+        Thu, 21 Jan 2021 09:36:53 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3151:3353:3622:3653:3865:3866:3868:3870:3871:3872:3873:3874:4321:5007:6119:7576:7652:7903:8957:10004:10400:10848:10967:11232:11658:11914:12043:12297:12533:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21451:21600:21611:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: wind30_170fe2727562
+X-Filterd-Recvd-Size: 2571
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 21 Jan 2021 09:36:51 +0000 (UTC)
+Message-ID: <6223e06f2a45b8772f04d97d840fe7da960a8037.camel@perches.com>
+Subject: Re: [PATCH] scripts/spelling.txt: increase error-prone spell
+ checking
+From:   Joe Perches <joe@perches.com>
+To:     Naoki Hayama <naoki.hayama@lineo.co.jp>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Chunyou Tang <tangchunyou@163.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
+        colin.king@canonical.com, xndchn@gmail.com, j.neuschaefer@gmx.net,
+        ebiggers@google.com, sjpark@amazon.de,
+        linux-kernel@vger.kernel.org, zhangwen@yulong.com,
+        tangchunyou@yulong.com
+Date:   Thu, 21 Jan 2021 01:36:50 -0800
+In-Reply-To: <b54335cd-2009-3542-a175-6118c294fd74@lineo.co.jp>
+References: <20210121020731.2316-1-tangchunyou@163.com>
+         <47008cd9-2b87-f5b2-5fad-e8f009869dda@infradead.org>
+         <1a3ab487bfb0365991355147fadbf51df14a4772.camel@perches.com>
+         <20210121112115.00005cb6@163.com>
+         <7937a406-812e-0a41-12c5-41576737a44f@lucaceresoli.net>
+         <b54335cd-2009-3542-a175-6118c294fd74@lineo.co.jp>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGJsWRmVeSWpSXmKPExsWy7bCmvu5qP84EgzU3FSzmrNrGaLH6bj+b
-        RWv7NyaLnidNrBZ/u+4xWXx9WGyx95a2xeVdc9gsDk1uZrKYvnkOs8W1+2fYLQ7fu8pi8XDJ
-        RGaLcyc/sVrMe+xg8Wv5UUaL9z+us1uc2jGZ2WL93p9sDsIeE5vfsXvsnHWX3ePy2VKPTas6
-        2Tze77vK5tG3ZRWjx+dNch7tB7qZAjiicmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUN
-        LS3MlRTyEnNTbZVcfAJ03TJzgL5RUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BQY
-        GhToFSfmFpfmpesl5+daGRoYGJkCVSbkZPTsvsBW8MGtouP2f+YGxsfGXYycHBICJhIPbr1k
-        6mLk4hAS2MEo8fj7ckaQhJDAJ0aJXzc8IRLfGCUWbT/BBNPRtmgLI0RiL1BixQZ2COczo8Ta
-        +y9ZQKrYBHQk+t7eYgOxRQQkJU69/MIGUsQssI9Z4tOWZ6wgCWEBfaDuN0AJDg4WAVWJZys5
-        QMK8AtYSj+5eYoXYJi/xtHc5M4jNKRAr0XJxBytEjaDEyZlPwHYxA9U0b53NDDJfQuAGh8TV
-        lUdYIJpdJC697YcaJCzx6vgWdghbSuLzu71sEA3djBLNbfMZIZwJjBJLni+DetRY4tPnz4wg
-        1zELaEqs36UPEVaU2Pl7LiPEZj6Jd197WEFKJAR4JTrahCBKVCTOtNxnhtn1fO1OqIkeEleW
-        NkJDawOjxKsFW9kmMCrMQvLQLCQPzULYvICReRWjWGpBcW56arFhgQlyHG9iBCdwLYsdjHPf
-        ftA7xMjEwXiIUYKDWUmE95ElR4IQb0piZVVqUX58UWlOavEhRlNgaE9klhJNzgfmkLySeENT
-        I2NjYwsTM3MzU2Mlcd4kgwfxQgLpiSWp2ampBalFMH1MHJxSDUzqydHdfLaLm9wS/EMc+JKa
-        lr/7VVx14SBHn1F1gL/tm8PTI34ytVxxnn6lst2uq//5TraCwz49QV9frD7Gv9b6wMLi3+wG
-        flI/9a3urH7tPvFEjKpxoefZi9P3tqd8/zOz2nNCxmn2q+cvHk1vNzx1RU3OS/RyYGj+/Nub
-        vKXPfXW0eh48zSfX/1dEUWDhuV3+rC/nqtZ++G1ydvmcpRNOxS3boNPuMufPW9653KkLrtdf
-        WLrwmUnNvfbgWuH8utNTyq97uC8z5/Z/Kb3XyOCOj9qf0rDV5/j2BrqdFNBe484pb3I69Uyt
-        ef77/VvS7/O7SNc8vqSYUu4dkCXUcTbkpsfcBwtqK56d/lNq0aPEUpyRaKjFXFScCAA6mxfS
-        aQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJXneVH2eCwcU/ihZzVm1jtFh9t5/N
-        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
-        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
-        bB7v911l8+jbsorR4/MmOY/2A91MARxRXDYpqTmZZalF+nYJXBk9uy+wFXxwq+i4/Z+5gfGx
-        cRcjJ4eEgIlE26ItjF2MXBxCArsZJW7t2MUIkZCSOH7iLWsXIweQLSxx+HAxRM1HRokvW1ay
-        gdSwCehI9L29BWaLCEhKnHr5hQ2kiFngCrPE5o8zwQYJC+hLLFrxhg1kEIuAqsSzlRwgYV4B
-        a4lHdy+xQuySl3jau5wZxOYUiJVoubgDLC4kECNx4GcrG0S9oMTJmU9YQGxmoPrmrbOZJzAK
-        zEKSmoUktYCRaRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnCMaWnuYNy+6oPeIUYm
-        DsZDjBIczEoivI8sORKEeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoE
-        k2Xi4JRqYIo6kpiQ6J4aevnH6g0/UtVOmrzYVpylZctgkRP0c11sj3VunWXJNXOVrSlLIjXY
-        RP++37TMdPX+yofpM/6K1Vpd3/Ly+DvPSOmngk5z7swqP8v673Lejzlvp3KZiS5UVnhvvTQr
-        +OBM43m513//vvDn+iNle76Y/ac/qKmX1ay5eN6Xh634VPX57NZ/J505lWd7PxJgvbWzOUh/
-        Pe9Mp+hXGk8/Fyy5vH1r1c1Viz7Vb3BIZE7h3dcXKc5l8eWS82+3F7HfFVr8j27pfKR5fMVd
-        SfGZJxl+P93cLaHi8VmnjevcNGOO1U/Yyh9ce1r+cG+ASX7IFw2t+DzTvR+Ft5h/8BRZXWDC
-        t/3+n2aRm2+UWIozEg21mIuKEwHmwIIMIAMAAA==
-X-CMS-MailID: 20210121095138epcas1p125bb1879c65fafe4636d71b8ab5f90cd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210121095138epcas1p125bb1879c65fafe4636d71b8ab5f90cd
-References: <BL0PR04MB6514CF1FBBF498CB84BCA565E7A10@BL0PR04MB6514.namprd04.prod.outlook.com>
-        <CGME20210121095138epcas1p125bb1879c65fafe4636d71b8ab5f90cd@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Please drop the "." at the end of the patch title.
->
->> bio size can grow up to 4GB when muli-page bvec is enabled.
->> but sometimes it would lead to inefficient behaviors.
->> in case of large chunk direct I/O, - 32MB chunk read in user space -
->> all pages for 32MB would be merged to a bio structure if memory address is
->> continued phsycally. it makes some delay to submit until merge complete.
->
->s/if memory address is continued phsycally/if the pages physical addresses are
->contiguous/
->
->> bio max size should be limited as a proper size.
->
->s/as/to/
+On Thu, 2021-01-21 at 18:14 +0900, Naoki Hayama wrote:
+> On 2021/01/21 17:41, Luca Ceresoli wrote:
+> > On 21/01/21 04:21, Chunyou Tang wrote:
+> > > On Wed, 20 Jan 2021 19:09:05 -0800 Joe Perches <joe@perches.com> wrote:
+> > > > On Wed, 2021-01-20 at 19:02 -0800, Randy Dunlap wrote:
+> > > > > On 1/20/21 6:07 PM, ChunyouTang wrote:  
+> > > > > > From: tangchunyou <tangchunyou@yulong.com>
+[]
+> > > > > > diff --git a/scripts/spelling.txt b/scripts/spelling.txt  
+> > > > []
+> > > > > > @@ -875,6 +875,7 @@ manger||manager
+> > > > > >  manoeuvering||maneuvering
+> > > > > >  manufaucturing||manufacturing
+> > > > > >  mappping||mapping
+> > > > > > +maping||mapping
+> > > > > >  matchs||matches
+> > > > > >  mathimatical||mathematical
+> > > > > >  mathimatic||mathematic  
+[]
+> Rules in scripts/spelling.txt are sorted
+> alphabetically by leftside words. It would
+> be better that you insert "maping||mapping"
+> rule between:
+> 
+> "manufaucturing||manufacturing"
+> and
+> "mappping||mapping" .
 
-Thank you for advice. :)
+That's not really true.  Try a diff of $ sort < scripts/spelling.txt
 
->
->> 
->> When 32MB chunk read with direct I/O option is coming from userspace,
->> kernel behavior is below now. it's timeline.
->> 
->>  | bio merge for 32MB. total 8,192 pages are merged.
->>  | total elapsed time is over 2ms.
->>  |------------------ ... ----------------------->|
->>                                                  | 8,192 pages merged a bio.
->>                                                  | at this time, first bio submit is done.
->>                                                  | 1 bio is split to 32 read request and issue.
->>                                                  |--------------->
->>                                                   |--------------->
->>                                                    |--------------->
->>                                                               ......
->>                                                                    |--------------->
->>                                                                     |--------------->|
->>                           total 19ms elapsed to complete 32MB read done from device. |
->> 
->> If bio max size is limited with 1MB, behavior is changed below.
->> 
->>  | bio merge for 1MB. 256 pages are merged for each bio.
->>  | total 32 bio will be made.
->>  | total elapsed time is over 2ms. it's same.
->>  | but, first bio submit timing is fast. about 100us.
->>  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
->>       | 256 pages merged a bio.
->>       | at this time, first bio submit is done.
->>       | and 1 read request is issued for 1 bio.
->>       |--------------->
->>            |--------------->
->>                 |--------------->
->>                                       ......
->>                                                  |--------------->
->>                                                   |--------------->|
->>         total 17ms elapsed to complete 32MB read done from device. |
->> 
->> As a result, read request issue timing is faster if bio max size is limited.
->> Current kernel behavior with multipage bvec, super large bio can be created.
->> And it lead to delay first I/O request issue.
->> 
->> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
->> 
->> ---
->>  block/bio.c               | 17 ++++++++++++++++-
->>  include/linux/bio.h       | 13 +++----------
->>  include/linux/blk_types.h |  1 +
->>  3 files changed, 20 insertions(+), 11 deletions(-)
->> 
->> diff --git a/block/bio.c b/block/bio.c
->> index 1f2cc1fbe283..027503c2e2e7 100644
->> --- a/block/bio.c
->> +++ b/block/bio.c
->> @@ -284,9 +284,24 @@ void bio_init(struct bio *bio, struct bio_vec *table,
->>  
->>  	bio->bi_io_vec = table;
->>  	bio->bi_max_vecs = max_vecs;
->> +	bio->bi_max_size = UINT_MAX;
->>  }
->>  EXPORT_SYMBOL(bio_init);
->>  
->> +void bio_set_dev(struct bio *bio, struct block_device *bdev)
->> +{
->> +	if (bio->bi_disk != bdev->bd_disk)
->> +		bio_clear_flag(bio, BIO_THROTTLED);
->> +
->> +	bio->bi_disk = bdev->bd_disk;
->> +	bio->bi_partno = bdev->bd_partno;
->> +	bio->bi_max_size = blk_queue_get_max_sectors(bio->bi_disk->queue,
->> +			bio_op(bio)) << SECTOR_SHIFT;
->> +
->> +	bio_associate_blkg(bio);
->> +}
->> +EXPORT_SYMBOL(bio_set_dev);
->> +
->>  /**
->>   * bio_reset - reinitialize a bio
->>   * @bio:	bio to reset
->> @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
->>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
->>  
->>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
->> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
->> +			if (bio->bi_iter.bi_size > bio->bi_max_size - len)
->>  				*same_page = false;
->>  				return false;
->>  			}
->> diff --git a/include/linux/bio.h b/include/linux/bio.h
->> index 1edda614f7ce..b9803e80c259 100644
->> --- a/include/linux/bio.h
->> +++ b/include/linux/bio.h
->> @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
->>  	if (bio->bi_vcnt >= bio->bi_max_vecs)
->>  		return true;
->>  
->> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
->> +	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
->>  		return true;
->>  
->>  	return false;
->> @@ -482,20 +482,13 @@ extern struct bio_vec *bvec_alloc(gfp_t, int, unsigned long *, mempool_t *);
->>  extern void bvec_free(mempool_t *, struct bio_vec *, unsigned int);
->>  extern unsigned int bvec_nr_vecs(unsigned short idx);
->>  extern const char *bio_devname(struct bio *bio, char *buffer);
->> -
->> -#define bio_set_dev(bio, bdev) 			\
->> -do {						\
->> -	if ((bio)->bi_disk != (bdev)->bd_disk)	\
->> -		bio_clear_flag(bio, BIO_THROTTLED);\
->> -	(bio)->bi_disk = (bdev)->bd_disk;	\
->> -	(bio)->bi_partno = (bdev)->bd_partno;	\
->> -	bio_associate_blkg(bio);		\
->> -} while (0)
->> +extern void bio_set_dev(struct bio *bio, struct block_device *bdev);
->>  
->>  #define bio_copy_dev(dst, src)			\
->>  do {						\
->>  	(dst)->bi_disk = (src)->bi_disk;	\
->>  	(dst)->bi_partno = (src)->bi_partno;	\
->> +	(dst)->bi_max_size = (src)->bi_max_size;\
->>  	bio_clone_blkg_association(dst, src);	\
->>  } while (0)
->>  
->> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
->> index 866f74261b3b..e5dd5b7d8fc1 100644
->> --- a/include/linux/blk_types.h
->> +++ b/include/linux/blk_types.h
->> @@ -270,6 +270,7 @@ struct bio {
->>  	 */
->>  
->>  	unsigned short		bi_max_vecs;	/* max bvl_vecs we can hold */
->> +	unsigned int		bi_max_size;	/* max data size we can hold */
->>  
->>  	atomic_t		__bi_cnt;	/* pin count */
->
->This modification comes at the cost of increasing the bio structure size to
->simply tell the block layer "do not delay BIO splitting"...
->
->I think there is a much simpler approach. What about:
->
->1) Use a request queue flag to indicate "limit BIO size"
->2) modify __bio_try_merge_page() to look at that flag to disallow page merging
->if the bio size exceeds blk_queue_get_max_sectors(), or more ideally a version
->of it that takes into account the bio start sector.
->3) Set the "limit bio size" queue flag in the driver of the device that benefit
->from this change. Eventually, that could also be controlled through sysfs.
->
->With such change, you will get the same result without having to increase the
->BIO structure size.
-
-I have a qustion.
-Is adding new variable in bio not possible?
-Additional check for every page merge like as below is inefficient I think.
-
-bool __bio_try_merge_page(struct bio *bio, struct page *page,
-		unsigned int len, unsigned int off, bool *same_page)
-{
-	...
-		if (page_is_mergeable(bv, page, len, off, same_page)) {
-			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-				*same_page = false;
-				return false;
-			}
-
-+			if (blk_queue_limit_bio_max_size(bio) &&
-+			   (bio->bi_iter.bi_size > blk_queue_get_bio_max_size(bio) - len)) {
-+				*same_page = false;
-+				return false;
-+			}
-
-			bv->bv_len += len;
-			bio->bi_iter.bi_size += len;
-			return true;
-		}
-	...
-}
+The general rule of thumb, and it's only a rule of thumb and it is
+not strictly enforced, is that similar misspellings are grouped
+together.
 
 
-static inline bool bio_full(struct bio *bio, unsigned len)
-{
-	...
-	if (bio->bi_iter.bi_size > UINT_MAX - len)
-		return true;
-
-+	if (blk_queue_limit_bio_max_size(bio) &&
-+	   (bio->bi_iter.bi_size > blk_queue_get_bio_max_size(bio) - len))
-+		return true;
-	...
-}
-
-
-Page merge is CPU-bound job as you said.
-How about below with adding of bi_max_size in bio?
-
-bool __bio_try_merge_page(struct bio *bio, struct page *page,
-		unsigned int len, unsigned int off, bool *same_page)
-{
-	...
-		if (page_is_mergeable(bv, page, len, off, same_page)) {
--			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-+			if (bio->bi_iter.bi_size > bio->bi_max_size - len) {
-				*same_page = false;
-				return false;
-			}
-
-			bv->bv_len += len;
-			bio->bi_iter.bi_size += len;
-			return true;
-		}
-	...
-}
-
-
-static inline bool bio_full(struct bio *bio, unsigned len)
-{
-	...
--	if (bio->bi_iter.bi_size > UINT_MAX - len)
-+	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
-		return true;
-	...
-}
-
-+void bio_set_dev(struct bio *bio, struct block_device *bdev)
-+{
-+	if (bio->bi_disk != bdev->bd_disk)
-+		bio_clear_flag(bio, BIO_THROTTLED);
-+
-+	bio->bi_disk = bdev->bd_disk;
-+	bio->bi_partno = bdev->bd_partno;
-+	if (blk_queue_limit_bio_max_size(bio))
-+		bio->bi_max_size = blk_queue_get_bio_max_size(bio);
-+
-+	bio_associate_blkg(bio);
-+}
-+EXPORT_SYMBOL(bio_set_dev);
-
->-- 
->Damien Le Moal
->Western Digital Research
-
----
-Changheun Lee
-Samsung Electronics
