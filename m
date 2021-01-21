@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C4A2FE3CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F0E2FE3D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727343AbhAUHVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:21:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39948 "EHLO mail.kernel.org"
+        id S1727407AbhAUHXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:23:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727137AbhAUHTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:19:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 201F92396D;
+        id S1727206AbhAUHUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:20:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2992523998;
         Thu, 21 Jan 2021 07:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611213508;
-        bh=mbuAyjc4Gf5cdswGQdNod+LYe43pzG2SbMc0YDjJRSI=;
+        bh=GJGVCgcolu4up0iCAX540U0BQYVfzG27H/pvopxV4tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hFpfIk8I5BsaOX3iTzyisFeULUJn4IMuzKVQJ3lFYUfw5y4R4dJDWmgKLA1OeOBbY
-         jaB6Xoua3CabscBAg1hFfbWitm7nRGExESARa+d6Jnap07yxVS58iiqQlUDGuZzzXG
-         kxrnmdMI8vVr9vs9rvA0jNUhS9y0NLYWWs01NA6m2wTAVnLhnHYS32VcUeYRkE2YEs
-         Nu8Cn0RGW4g5RidtlbfwGwbZ2d/mJPjVluIS181Cho5XOah6EcnxTlGbQv97DivVvx
-         0zI96T0cH6TJSHZlWvnj0HFqUql9SyihQJe5Ekd9H3pA+JmI0aYucQsNVku8RkKwN3
-         tO5VZQuo010uA==
+        b=mgItIbFrGc18gjGWv2GDFGAKcabd+JGUUshKLuve9ccWe4xOaidPXm7O0c4Ym61gs
+         chucQjeCGE0Xk7wGDFwJoSWUt4yYoruKjOg4I9qeRv/2KYKOJ8WrfLsRK7bw4ThjFm
+         Cerpc6NDe+7QKfuO4Zf/SeGU6gVwv9q86F8Tan3MlLYmI16Rzz2USQkvZPptsCs2Di
+         yIRN/A5leX1A6hhdUEE0RF7dxlcT8jf2K4Q09o6rZJrrcaXB0eYM8qs4qp6JHvMiKk
+         U/CUcPYVgQSdvcuOE1T65jBQITQQIfLButxcrK9l3hdd4vYj2CklSw3WBIqRsAdqBA
+         dp/IxICfDhplw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1l2UEb-004BsE-IY; Thu, 21 Jan 2021 08:18:25 +0100
+        id 1l2UEb-004BsH-JP; Thu, 21 Jan 2021 08:18:25 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 10/21] staging: hikey9xx: hi6421v600-regulator: fix delay logic
-Date:   Thu, 21 Jan 2021 08:18:12 +0100
-Message-Id: <6733dac9813ba6688def404142cb7b964accf758.1611212783.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v5 11/21] staging: hikey9xx: hi6421v600-regulator: cleanup comments
+Date:   Thu, 21 Jan 2021 08:18:13 +0100
+Message-Id: <d5e6dbdee5f7e143300249251ddbe09fdf64e669.1611212783.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611212783.git.mchehab+huawei@kernel.org>
 References: <cover.1611212783.git.mchehab+huawei@kernel.org>
@@ -45,62 +45,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original driver, which can be seen at
-commit 42f24d9d446a ("staging: regulator: add a regulator driver for HiSilicon 6421v600 SPMI PMIC")
-had a complex logic to ensure that there won't be multiple power
-enable/disable commands running at the same time. At the original
-logic, it were ensured that:
+Remove obvious comments and fix the comment for the
+HI6421V600_LDO() macro.
 
-- a next power up/down would wait for at least the on/off period;
-- an extra delay would be granted. It turns that such extra delay
-  has a value of zero, but it was relying on gettimeofday()
-  call, which can take some time.
-
-This was later simplified, but there are still some possible
-issues. In order to avoid that, let's simply add a delay
-to wait for the power up line to stabilize after powering up
-a device.
+While on it, use kernel-doc notation for HI6421V600_LDO(),
+as kernel-doc can check if the arguments match its
+description.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/hi6421v600-regulator.c | 5 +++--
- include/linux/mfd/hi6421-spmi-pmic.h            | 1 -
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ .../staging/hikey9xx/hi6421v600-regulator.c   | 27 ++++++++-----------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-index 5e78eebfc1f3..e5a492ee7121 100644
+index e5a492ee7121..9f096d4e46db 100644
 --- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
 +++ b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-@@ -113,14 +113,15 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+@@ -57,17 +57,17 @@ static const unsigned int ldo34_voltages[] = {
+ 	3000000, 3100000, 3200000, 3300000
+ };
  
+-/*
+- * _id - LDO id name string
+- * _match - of match name string
+- * v_table - voltage table
+- * vreg - voltage select register
+- * vmask - voltage select mask
+- * ereg - enable register
+- * emask - enable mask
+- * odelay - off/on delay time in uS
+- * ecomask - eco mode mask
+- * ecoamp - eco mode load uppler limit in uA
++/**
++ * HI6421V600_LDO() - specify a LDO power line
++ * @_id: LDO id name string
++ * @vtable: voltage table
++ * @ereg: enable register
++ * @emask: enable mask
++ * @vreg: voltage select register
++ * @odelay: off/on delay time in uS
++ * @etime: enable time in uS
++ * @ecomask: eco mode mask
++ * @ecoamp: eco mode load uppler limit in uA
+  */
+ #define HI6421V600_LDO(_id, vtable, ereg, emask, vreg,			       \
+ 		       odelay, etime, ecomask, ecoamp)			       \
+@@ -114,7 +114,6 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
  	/* cannot enable more than one regulator at one time */
  	mutex_lock(&sreg->enable_mutex);
--	usleep_range(HISI_REGS_ENA_PROTECT_TIME,
--		     HISI_REGS_ENA_PROTECT_TIME + 1000);
  
- 	/* set enable register */
+-	/* set enable register */
  	ret = hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
  				   rdev->desc->enable_mask,
  				   rdev->desc->enable_mask);
+@@ -132,7 +131,6 @@ static int hi6421_spmi_regulator_disable(struct regulator_dev *rdev)
+ 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+ 	struct hi6421_spmi_pmic *pmic = sreg->pmic;
  
-+	/* Avoid powering up multiple devices at the same time */
-+	usleep_range(rdev->desc->off_on_delay, rdev->desc->off_on_delay + 60);
-+
- 	mutex_unlock(&sreg->enable_mutex);
+-	/* set enable register to 0 */
+ 	return hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
+ 				    rdev->desc->enable_mask, 0);
+ }
+@@ -143,7 +141,6 @@ static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
+ 	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+ 	u32 reg_val;
  
- 	return ret;
-diff --git a/include/linux/mfd/hi6421-spmi-pmic.h b/include/linux/mfd/hi6421-spmi-pmic.h
-index 2c8896fd852e..0c2214612c4e 100644
---- a/include/linux/mfd/hi6421-spmi-pmic.h
-+++ b/include/linux/mfd/hi6421-spmi-pmic.h
-@@ -13,7 +13,6 @@
+-	/* get voltage selector */
+ 	reg_val = hi6421_spmi_pmic_read(pmic, rdev->desc->vsel_reg);
  
- #include <linux/irqdomain.h>
+ 	return (reg_val & rdev->desc->vsel_mask) >> (ffs(rdev->desc->vsel_mask) - 1);
+@@ -198,7 +195,6 @@ static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
+ 		return -EINVAL;
+ 	}
  
--#define HISI_REGS_ENA_PROTECT_TIME	(0)	/* in microseconds */
- #define HISI_ECO_MODE_ENABLE		(1)
- #define HISI_ECO_MODE_DISABLE		(0)
+-	/* set mode */
+ 	return hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
+ 				    sreg->eco_mode_mask, val);
+ }
+@@ -304,7 +300,6 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+ 	mutex_init(&sreg->enable_mutex);
  
+ 	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
+-		/* assign per-regulator data */
+ 		info = &regulator_info[i];
+ 
+ 		config.dev = pdev->dev.parent;
 -- 
 2.29.2
 
