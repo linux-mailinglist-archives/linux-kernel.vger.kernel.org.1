@@ -2,127 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929242FE744
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9B72FE74A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbhAUKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:14:19 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:57799 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728469AbhAUKMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:12:51 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DLyqV31mGz9v6LW;
-        Thu, 21 Jan 2021 11:12:06 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id zxJatTC41KQg; Thu, 21 Jan 2021 11:12:06 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLyqV20H6z9v6LV;
-        Thu, 21 Jan 2021 11:12:06 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 745508B7F9;
-        Thu, 21 Jan 2021 11:12:07 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ktfuIS4yHAOi; Thu, 21 Jan 2021 11:12:07 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F11788B771;
-        Thu, 21 Jan 2021 11:12:06 +0100 (CET)
-Subject: Re: [PATCH 1/2] crypto: talitos - Work around SEC6 ERRATA (AES-CTR
- mode data size error)
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>
-References: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
- <CAMj1kXE7B05eAnR7KoDCym09Cw5qnzrV8KfNT2zJrko+mFic+w@mail.gmail.com>
- <6b804eff-bc9f-5e05-d479-f398de4e2b30@csgroup.eu>
- <CAMj1kXHz8LdDgfOcifcB-MBMM9-TbymOU_psT3JBFQfyvQ=EjQ@mail.gmail.com>
- <ecdd07b3-afca-7e26-b6b6-3a3a985bc5a1@csgroup.eu>
- <CAMj1kXFNZba9T45RaB_W58Z+4sdAyUDVJM_ZZPk+Y6Mf9DZUQw@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <80ea6d2d-c29e-0c4c-9402-76579fe1eef9@csgroup.eu>
-Date:   Thu, 21 Jan 2021 11:12:08 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728259AbhAUKPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728469AbhAUKOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:14:23 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949CBC061575;
+        Thu, 21 Jan 2021 02:13:39 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id EBF8522FAD;
+        Thu, 21 Jan 2021 11:13:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611224018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I4dLSkqJXtXHKLU0U+8YrniJxd+5nWGvaigg4fV1hAc=;
+        b=SaKNVZKxfgcGcg2JHt7BBiGpOI/zUgMnud/Si+cf7OFIUUWbsZUaKmESPwdKR2Iu8A+krE
+        fKxfc4D4j84vWKYeiLatvNJ9GKYzRrN6GKvGjXGiWZvHvB2TYRW4dnJi1NkwCOR9Nd2zNX
+        H/6+PYgGfZ0RWFUsxIdOsdRXDzHXckc=
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXFNZba9T45RaB_W58Z+4sdAyUDVJM_ZZPk+Y6Mf9DZUQw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Thu, 21 Jan 2021 11:13:37 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org
+Subject: Re: [PATCH 0/3] add Ebang EBAZ4205 support
+In-Reply-To: <0a1c6ebf-1d5b-4f06-56db-f04e87d2ae9a@xilinx.com>
+References: <20210120194033.26970-1-michael@walle.cc>
+ <fff420d1-fc9a-23ce-0d07-58a3c6f10c4d@xilinx.com>
+ <aa96fcaa362181d4b6fef9f1de0aa914@walle.cc>
+ <0a1c6ebf-1d5b-4f06-56db-f04e87d2ae9a@xilinx.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <bd86194a13882ce472764d0c91029e33@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-Le 21/01/2021 à 11:02, Ard Biesheuvel a écrit :
-> On Thu, 21 Jan 2021 at 10:54, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->>
->> Le 21/01/2021 à 08:31, Ard Biesheuvel a écrit :
->>> On Thu, 21 Jan 2021 at 06:35, Christophe Leroy
->>> <christophe.leroy@csgroup.eu> wrote:
->>>>
->>>>
->>>>
->>>> Le 20/01/2021 à 23:23, Ard Biesheuvel a écrit :
->>>>> On Wed, 20 Jan 2021 at 19:59, Christophe Leroy
->>>>> <christophe.leroy@csgroup.eu> wrote:
->>>>>>
->>>>>> Talitos Security Engine AESU considers any input
->>>>>> data size that is not a multiple of 16 bytes to be an error.
->>>>>> This is not a problem in general, except for Counter mode
->>>>>> that is a stream cipher and can have an input of any size.
->>>>>>
->>>>>> Test Manager for ctr(aes) fails on 4th test vector which has
->>>>>> a length of 499 while all previous vectors which have a 16 bytes
->>>>>> multiple length succeed.
->>>>>>
->>>>>> As suggested by Freescale, round up the input data length to the
->>>>>> nearest 16 bytes.
->>>>>>
->>>>>> Fixes: 5e75ae1b3cef ("crypto: talitos - add new crypto modes")
->>>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>>>>
->>>>> Doesn't this cause the hardware to write outside the given buffer?
->>>>
->>>>
->>>> Only the input length is modified. Not the output length.
->>>>
->>>> The ERRATA says:
->>>>
->>>> The input data length (in the descriptor) can be rounded up to the nearest 16B. Set the
->>>> data-in length (in the descriptor) to include X bytes of data beyond the payload. Set the
->>>> data-out length to only output the relevant payload (don't need to output the padding).
->>>> SEC reads from memory are not destructive, so the extra bytes included in the AES-CTR
->>>> operation can be whatever bytes are contiguously trailing the payload.
->>>
->>> So what happens if the input is not 16 byte aligned, and rounding it
->>> up causes it to extend across a page boundary into a page that is not
->>> mapped by the IOMMU/SMMU?
->>>
->>
->> What is the IOMMU/SMMU ?
->>
->> The mpc8xx, mpc82xx and mpc83xx which embed the Talitos Security Engine don't have such thing, the
->> security engine uses DMA and has direct access to the memory bus for reading and writing.
->>
+Am 2021-01-21 10:57, schrieb Michal Simek:
+> Hi,
 > 
-> OK, good. So the only case where this could break is when the DMA
-> access spills over into a page that does not exist, and I suppose this
-> could only happen if the transfer involves a buffer located at the
-> very top of DRAM, right?
+> On 1/21/21 10:35 AM, Michael Walle wrote:
+>> Hi Michal,
+>> 
+>> Am 2021-01-21 10:25, schrieb Michal Simek:
+>>> On 1/20/21 8:40 PM, Michael Walle wrote:
+>>>> Add support for the Ebang EBAZ4205 board. This board was once used 
+>>>> as a
+>>>> control board for a bitcoin mining device. Nowawdays it is sold as a
+>>>> cheap
+>>>> Zynq-7000 eval board.
+>>>> 
+>>>> Michael Walle (3):
+>>>>   dt-bindings: add ebang vendor prefix
+>>>>   dt-bindings: arm: add Ebang EBAZ4205 board
+>>>>   ARM: dts: add Ebang EBAZ4205 device tree
+>>>> 
+>>>>  .../devicetree/bindings/arm/xilinx.yaml       |   1 +
+>>>>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>>>>  arch/arm/boot/dts/Makefile                    |   1 +
+>>>>  arch/arm/boot/dts/zynq-ebaz4205.dts           | 109 
+>>>> ++++++++++++++++++
+>>>>  4 files changed, 113 insertions(+)
+>>>>  create mode 100644 arch/arm/boot/dts/zynq-ebaz4205.dts
+>>>> 
+>>> 
+>>> any link with schematics?
+>> 
+>> https://github.com/xjtuecho/EBAZ4205, looks like these are
+>> reverse engineered (from a layout file?) though.
 > 
+> Interesting but at least something.
+> 
+>> 
+>>> I will let dt guys to comment 1/3 but series look good to me.
+>>> The board doesn't look interesting from description point of view 
+>>> that's
+>>> why all the time thinking if makes sense to add it to kernel.
+>> 
+>> What do you want to tell me? That for the time being, it didn't
+>> appear to you to add the board yourself - or do you thing it
+>> doesn't make sense at all. If its the latter, what would be
+>> actual reason to have a board in mainline?
+> 
+> I have bad experience with for example Avnet boards which people add 
+> and
+> none is really updating them and they are in the same state for years.
 
-Right.
+Wouldn't it be better then to pull the plug at some time and remove 
+these
+boards.
 
-Christophe
+TBH I was a bit disappointed by your statement. It sounded like "nah
+this board isn't worth it". Esp. because it is just one (small) file.
+But more below.
+
+> Long time ago we agreed that doesn't make sense to describe PL in
+> upstream projects and we only describe PS part. It means you likely 
+> miss
+> several things which are useful and the reason for using these SoCs is 
+> PL.
+> 
+> As you likely know Xilinx has Versal device and I didn't push any 
+> device
+> tree to any upstream project and thinking not to add any description 
+> for
+> boards and stay in sort of space that "virtual" description for SoC
+> should be enough. Maybe just versal.dtsi and one kitchen sink DT should
+> be added but not description for all boards.
+> 
+> The same is if make sense to push all DTs for all standard xilinx 
+> zynqmp
+> evaluation boards. If there is something interesting/new I thought it
+> makes sense to add it as pattern to follow. But for boards which looks
+> very similar from PS point of view I don't think there is real value to
+> add and invest time for maintaining.
+> 
+> Back to your case. Board is cheap which is not all the time case for 
+> any
+> xilinx board but you have only uart, sd and partially described 
+> ethernet
+> which doesn't work without PL. Is it worth to have this described?
+
+I got your point. But it is at least a jump start for the users if that
+board boots out of the box. And yes, its unfortunate, that ethernet
+just works if the PL is configured. This is already done by the
+bootloader, because there I do have the same problem.
+
+> Especially when it is visible that you need to describe custom PL and 
+> DT
+> overlays are not solid yet.
+> 
+> Thanks,
+> Michal
+
+-- 
+-michael
