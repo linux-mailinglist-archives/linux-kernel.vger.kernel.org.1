@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1459E2FF065
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863F42FF05A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387993AbhAUQch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:32:37 -0500
-Received: from mail-oo1-f46.google.com ([209.85.161.46]:37607 "EHLO
-        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387562AbhAUQCw (ORCPT
+        id S2387937AbhAUQbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:31:17 -0500
+Received: from smtp180.sjtu.edu.cn ([202.120.2.180]:53972 "EHLO
+        smtp180.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730948AbhAUQau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:02:52 -0500
-Received: by mail-oo1-f46.google.com with SMTP id q3so616775oog.4;
-        Thu, 21 Jan 2021 08:02:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=FnALTRCd0fwnwztvCJjXVzXjo3Irta1NYJ9hoSq0TN8=;
-        b=R+0Bho0px2rLxuh2nES+pmBO9QNK0T4A8z14Qp5BI+BrX5c3a4W0EI/FLbh9p7fRBh
-         X7jeeLREKNHzWJGc1GV35Lg9dZB/HPyz77TxOwahnB75LI3gLZO0OslLAXudvUE+m+j1
-         wkYK/cm/U/O5wyTy8UDlXRHosXmSC5YOwvipV8uEO2UjUXfYcKu4dLf6Hk+ewuqkHWaI
-         GN20CHbDDwtGyCKFdusjR7VAMEdnh82kYu1u+/s9OkeMbgC4rKbPdBeDlRj3nd9bYzj9
-         KaCaxHNHbU/n6BuxnTPqadchPzsUHqLM7BnaKtuaRkmfib/KA5gy2gbqygR3g16OkXRO
-         S+/A==
-X-Gm-Message-State: AOAM531z/1E67OLya9SjYl5HU3xP7yDPKJtgDj1j8okYGNH8XSukkAt0
-        KoEOv32iPc1vEVXM2eb4tA==
-X-Google-Smtp-Source: ABdhPJzjtpIXCBtTM56647mSlkHwGTgHDoS2gqzx6op9R2ovySfWbvfap13yg10WcZgQjx7uvgXwUw==
-X-Received: by 2002:a4a:e963:: with SMTP id i3mr185576ooe.37.1611244930133;
-        Thu, 21 Jan 2021 08:02:10 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d10sm1029125ooh.32.2021.01.21.08.02.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 08:02:09 -0800 (PST)
-Received: (nullmailer pid 2814846 invoked by uid 1000);
-        Thu, 21 Jan 2021 16:01:58 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     shawnguo@kernel.org, mchehab@kernel.org,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        max.oss.09@gmail.com, geert+renesas@glider.be, agx@sigxcpu.org,
-        bjorn.andersson@linaro.org,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        robh+dt@kernel.org, michael@walle.cc, agross@kernel.org,
-        linux-media@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        leoyang.li@nxp.com, vkoul@kernel.org,
-        Tomasz Figa <tfiga@chromium.org>, will@kernel.org,
-        devicetree@vger.kernel.org,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
-        Anson.Huang@nxp.com, todor.too@gmail.com
-In-Reply-To: <20210120134357.1522254-16-robert.foss@linaro.org>
-References: <20210120134357.1522254-1-robert.foss@linaro.org> <20210120134357.1522254-16-robert.foss@linaro.org>
-Subject: Re: [PATCH v2 16/22] dt-bindings: media: camss: Add qcom, sdm845-camss binding
-Date:   Thu, 21 Jan 2021 10:01:58 -0600
-Message-Id: <1611244918.539264.2814845.nullmailer@robh.at.kernel.org>
+        Thu, 21 Jan 2021 11:30:50 -0500
+Received: from mta04.sjtu.edu.cn (mta04.sjtu.edu.cn [202.121.179.8])
+        by smtp180.sjtu.edu.cn (Postfix) with ESMTPS id 8BE881008CBFA;
+        Fri, 22 Jan 2021 00:30:04 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by mta04.sjtu.edu.cn (Postfix) with ESMTP id 69AC9180695CD;
+        Fri, 22 Jan 2021 00:30:04 +0800 (CST)
+X-Virus-Scanned: amavisd-new at mta04.sjtu.edu.cn
+Received: from mta04.sjtu.edu.cn ([127.0.0.1])
+        by localhost (mta04.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qhxFy0bwXTQo; Fri, 22 Jan 2021 00:30:04 +0800 (CST)
+Received: from mstore107.sjtu.edu.cn (unknown [10.118.0.107])
+        by mta04.sjtu.edu.cn (Postfix) with ESMTP id 21E19180695CC;
+        Fri, 22 Jan 2021 00:30:04 +0800 (CST)
+Date:   Fri, 22 Jan 2021 00:30:00 +0800 (CST)
+From:   Zhongwei Cai <sunrise_l@sjtu.edu.cn>
+To:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Mingkai Dong <mingkaidong@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Wang Jianchao <jianchao.wan9@gmail.com>,
+        Rajesh Tadakamadla <rajesh.tadakamadla@hpe.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Message-ID: <323586311.2762348.1611246600848.JavaMail.zimbra@sjtu.edu.cn>
+In-Reply-To: <20210120141834.GA24063@quack2.suse.cz>
+References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210107151125.GB5270@casper.infradead.org> <17045315-CC1F-4165-B8E3-BA55DD16D46B@gmail.com> <2041983017.5681521.1610459100858.JavaMail.zimbra@sjtu.edu.cn> <alpine.LRH.2.02.2101131008530.27448@file01.intranet.prod.int.rdu2.redhat.com> <1224425872.715547.1610703643424.JavaMail.zimbra@sjtu.edu.cn> <20210120044700.GA4626@dread.disaster.area> <20210120141834.GA24063@quack2.suse.cz>
+Subject: Re: Expense of read_iter
+MIME-Version: 1.0
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [58.196.139.16]
+X-Mailer: Zimbra 8.8.15_GA_3980 (ZimbraWebClient - FF84 (Win)/8.8.15_GA_3928)
+Thread-Topic: Expense of read_iter
+Thread-Index: iDlr565GHhmBWjkzqz9bX3XXoj59EA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 14:43:51 +0100, Robert Foss wrote:
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
+
+On Wed, 20 Jan 2021, Jan Kara wrote:
+> On Wed 20-01-21 15:47:00, Dave Chinner wrote:
+> > On Fri, Jan 15, 2021 at 05:40:43PM +0800, Zhongwei Cai wrote:
+> > > On Thu, 14 Jan 2021, Mikulas wrote:
+> > > For Ext4-dax, the overhead of dax_iomap_rw is significant
+> > > compared to the overhead of struct iov_iter. Although methods
+> > > proposed by Mikulas can eliminate the overhead of iov_iter
+> > > well, they can not be applied in Ext4-dax unless we implement an
+> > > internal "read" method in Ext4-dax.
+> > >
+>> > For Ext4-dax, there could be two approaches to optimizing:
+> > > 1) implementing the internal "read" method without the complexity
+> > > of iterators and dax_iomap_rw;
+> >
+> > Please do not go an re-invent the wheel just for ext4. If there's a
+> > problem in a shared path - ext2, FUSE and XFS all use dax_iomap_rw()
+> > as well, so any improvements to that path benefit all DAX users, not
+> > just ext4.
+> >
+> > > 2) optimizing how dax_iomap_rw works.
+> > > Since dax_iomap_rw requires ext4_iomap_begin, which further involves
+> > > the iomap structure and others (e.g., journaling status locks in Ext4),
+> > > we think implementing the internal "read" method would be easier.
+> >
+> > Maybe it is, but it's also very selfish. The DAX iomap path was
+> > written to be correct for all users, not inecessarily provide
+> > optimal performance. There will be lots of things that could be done
+> > to optimise it, so rather than creating a special snowflake in ext4
+> > that makes DAX in ext4 much harder to maintain for non-ext4 DAX
+> > developers, please work to improve the common DAX IO path and so
+> > provide the same benefit to all the filesystems that use it.
+>
+> Yeah, I agree. I'm against ext4 private solution for this read problem. And
+> I'm also against duplicating ->read_iter functionatily in ->read handler.
+> The maintenance burden of this code duplication is IMHO just too big. We
+> rather need to improve the generic code so that the fast path is faster.
+> And every filesystem will benefit because this is not ext4 specific
+> problem.
 > 
-> Changes since v1:
->  - Laurent: Reworked driver to use dtschema
-> 
->  .../bindings/media/qcom,sdm845-camss.yaml     | 394 ++++++++++++++++++
->  1 file changed, 394 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml
-> 
+>                                                                 Honza
 
-My bot found errors running 'make dt_binding_check' on your patch:
+We agree that maintenance burden could be a problem here. So we will take
+your suggestions and try to optimize on the generic path. But as Mikulas
+said ( https://lkml.org/lkml/2021/1/20/618 ), it seems that some parts of
+the overhead are hard to avoid, such as new_sync_read, and we are concerned
+that optimizing on the generic path will have limited effect. Nevertheless,
+we will try to optimize the generic path and see how much we can improve.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml:394:1: [warning] too many blank lines (2 > 1) (empty-lines)
-
-dtschema/dtc warnings/errors:
-
-See https://patchwork.ozlabs.org/patch/1429446
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Zhongwei
