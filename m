@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911C62FF653
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 299D92FF656
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbhAUUvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:51:04 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60694 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbhAUUuv (ORCPT
+        id S1726316AbhAUUv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:51:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48468 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725779AbhAUUvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:50:51 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 3D4BF1C0B94; Thu, 21 Jan 2021 21:50:09 +0100 (CET)
-Date:   Thu, 21 Jan 2021 21:50:08 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.11-rc4-rt1
-Message-ID: <20210121205008.GA7149@duo.ucw.cz>
-References: <20210121134509.bagsesi4vdtwmdky@linutronix.de>
+        Thu, 21 Jan 2021 15:51:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611262226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MtA/rotM7LM+Bn3G3T+jNqr3eNcqPFdB3Dx8FJkKl8I=;
+        b=V5LG2mMBvO2PyQjJJzFNVcfZUc8JQL/54TJ3rfdwtP1xBePzUVYpqHPCS2ITY6UzegmuUt
+        Dk/Zb8c2GZi9Nc04o5zV6/n1AiQrN/q98LeZo5yj3SkMHsaIMVMIpBkpBdlLHnbSKepuXL
+        jVUionR/T4/cSHg8Q3R0MxIl9SYGifE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-Sl9xzLQdMp-zP7fumoqVkA-1; Thu, 21 Jan 2021 15:50:24 -0500
+X-MC-Unique: Sl9xzLQdMp-zP7fumoqVkA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B5C6800D55;
+        Thu, 21 Jan 2021 20:50:22 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A2CEF61F55;
+        Thu, 21 Jan 2021 20:50:21 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 13:50:21 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Matthew Rosato <mjrosato@linux.ibm.com>, cohuck@redhat.com,
+        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] vfio-pci/zdev: Introduce the zPCI I/O vfio region
+Message-ID: <20210121135021.0eb7e873@omen.home.shazbot.org>
+In-Reply-To: <90d99da8-02cf-e051-314b-2ab192f8fd57@linux.ibm.com>
+References: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
+        <1611086550-32765-5-git-send-email-mjrosato@linux.ibm.com>
+        <90d99da8-02cf-e051-314b-2ab192f8fd57@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
-Content-Disposition: inline
-In-Reply-To: <20210121134509.bagsesi4vdtwmdky@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 20 Jan 2021 14:21:59 +0100
+Niklas Schnelle <schnelle@linux.ibm.com> wrote:
 
---k1lZvvs/B4yU6o8G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On 1/19/21 9:02 PM, Matthew Rosato wrote:
+> > Some s390 PCI devices (e.g. ISM) perform I/O operations that have very  
+> .. snip ...
+> > +
+> > +static size_t vfio_pci_zdev_io_rw(struct vfio_pci_device *vdev,
+> > +				  char __user *buf, size_t count,
+> > +				  loff_t *ppos, bool iswrite)
+> > +{  
+> ... snip ...
+> > +	/*
+> > +	 * For now, the largest allowed block I/O is advertised as PAGE_SIZE,
+> > +	 * and cannot exceed a page boundary - so a single page is enough.  The
+> > +	 * guest should have validated this but let's double-check that the
+> > +	 * request will not cross a page boundary.
+> > +	 */
+> > +	if (((region->req.gaddr & ~PAGE_MASK)
+> > +			+ region->req.len - 1) & PAGE_MASK) {
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	mutex_lock(&zdev->lock);  
+> 
+> I plan on using the zdev->lock for preventing concurrent zPCI devices
+> removal/configuration state changes between zPCI availability/error
+> events and enable_slot()/disable_slot() and /sys/bus/pci/devices/<dev>/recover.
+> 
+> With that use in place using it here causes a deadlock when doing 
+> "echo 0 > /sys/bus/pci/slots/<fid>/power from the host for an ISM device
+> attached to a guest.
+> 
+> This is because the (soft) hot unplug will cause vfio to notify QEMU, which
+> sends a deconfiguration request to the guest, which then tries to
+> gracefully shutdown the device. During that shutdown the device will
+> be accessed, running into this code path which then blocks on
+> the lock held by the disable_slot() code which waits on vfio
+> releasing the device.
+> 
+> Alex may correct me if I'm wrong but I think instead vfio should
+> be holding the PCI device lock via pci_device_lock(pdev).
 
-Hi!
+There be dragons in device_lock, which is why we have all the crude
+try-lock semantics in reset paths.  Don't use it trivially.  Device
+lock is not necessary here otherwise, the device is bound to a driver
+and has an open userspace file descriptor through which the user is
+performing this access.  The device can't be removed without unbinding
+the driver, which can't happen while the user still has open files to
+it.  Thanks,
 
-> I'm pleased to announce the v5.11-rc4-rt1 patch set.=20
->=20
-> Changes since v5.10.8-rt24:
->=20
->   - Updated to v5.11-rc4
->=20
-> Known issues
->      - kdb/kgdb can easily deadlock.
->      - kmsg dumpers expecting not to be called in parallel can clobber
->        their temp buffer.
->      - netconsole triggers WARN.
+Alex
 
-I noticed... lot of code using in_interrupt() to decide what to do is
-making it to 5.10-stable at the moment (and I guess that means
-vanilla, too).
-
-I have recollection that that is not okay thing to do. Am I right?
-
-Examples: 8abec36d1274bbd5ae8f36f3658b9abb3db56c31,
-d68b29584c25dbacd01ed44a3e45abb35353f1de.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---k1lZvvs/B4yU6o8G
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYAnpAAAKCRAw5/Bqldv6
-8oEXAKCk0REAiCLqUG6sjFaegqIjAVHSzwCgvxYakzqW93bmD7FsEQNM+yGja8I=
-=YJrk
------END PGP SIGNATURE-----
-
---k1lZvvs/B4yU6o8G--
