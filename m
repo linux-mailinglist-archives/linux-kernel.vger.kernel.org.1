@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CC22FF8A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 00:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC872FF8AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 00:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbhAUXWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 18:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
+        id S1726335AbhAUXWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 18:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbhAUXVt (ORCPT
+        with ESMTP id S1726293AbhAUXWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 18:21:49 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33E6C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:21:03 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id f11so4442290ljm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:21:03 -0800 (PST)
+        Thu, 21 Jan 2021 18:22:35 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7A2C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:21:55 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id p8so2725652pjg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 15:21:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ucsc.edu; s=ucsc-google-2018;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aGtXJ9JSGxtBc9xg3WRFWW32mVSM+OhKXJJnwYOIaH8=;
-        b=rQ5kYcRgKxaek75+QtT2RaTkkaOSXLf7tvSbcjzY2DdFv8GXepB+qApS1tGx0cSB+T
-         C1bO3TvVY/KuRpM6zK4zgVl91lpYDM4+TOT2bhqIsqcJEPQHyomWRu+uBcCyOGF2Zpnx
-         hvlnTZz1lnNsfGJWjztmol9dymRW0GSCfAqdT6Lvoj0X/QSREG/arcGxmGDvDXLcM4h7
-         IggIQbxXdKD5KDoi2ojculnbBGt8HeeusoFoh0UXo7sfneScir/bBAq1I0EXGnBjr1Up
-         xLSHd0KN31iPzjyeXyMs7XV3rSq8371KbFrBAYGOxsDTYcV7QhRchXEV2hNQR7wF7MKn
-         iLxA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=VVJ18jo9wChTO7xYiVHUOH7AGcTMx8WNIb4MUAmrhNU=;
+        b=kUAG9VEXYC1S/8FUYLcyZ1ErjhZkE37BNTiJed1mjrlxgtfSSkObexCkpOM1YHzvPf
+         R6H7GgBnPMZYs4/NP3vHjGcaBWlgLRSlXlOP4ZJbJJlEGES1+GOgPie0vcZx/cWa2rtT
+         kzLZI/ffEtv2Cq4HYpChR3hf6q8QSMM2fpXKOKFxAaQ99AssRtXNcVtY7T7B9OJszKIX
+         8rEdaHRsfTPqAMo4bFxHRa+x1I3vQIA8VjTL1xbtHuRdq0ZFAZczwEMwB0yGoreIxUZi
+         M5uurYfv084P1Az0TOUhlJ3kkMRAP+XpPN3RKQsxTW6vt/MLFmPgZcSceIE/TBKmy55S
+         nwwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aGtXJ9JSGxtBc9xg3WRFWW32mVSM+OhKXJJnwYOIaH8=;
-        b=pB9s5cr9/UTAYbJ+i1axLGtSuhBtZnx6QAVeUUbJuGiWRMQryzkZy3n7bRgt/tsiKM
-         mOxfmKcbCcI4PCmDinW05UjnkoVookZYF5R+Ih4V3zMIqeQCorJjOe+CQUQ4xRpcQfN5
-         UZLbIZq10pLbI/RKFZE14JYkOHayUa4oXEGeNv6DySkZsYGrHeNeBY5G68AMaxw1e0Bf
-         qVPdqAXciazbtECGRV3sfqn3PwX7OConthf9vs2t7MNG17n1xNpfaTMcJzFv9F0ntrmm
-         X/UCzVIhDeoYl1I8unCvVXP0+6aPBZahrGPTuEVw5MctclqugSKNDlPSPd4mB6qAxksB
-         Gl3w==
-X-Gm-Message-State: AOAM531bCTu4LL4BZlZym2JiPQ5c/MNMnQgfsL/2ZCfFdRr0OV8wdb6c
-        XdomUcOhyHF2nfJoJHmcgN4c8e9E2h8TqArLvbqgyg==
-X-Google-Smtp-Source: ABdhPJxgoZFXwC/GJMoLTVnJ9jo6wg5JBDrPwbNgtDIDaYGc88FWKCooZ+gkYoMaXwLPzopG+G/5NzzEWXMwXq/wcAY=
-X-Received: by 2002:a2e:b1d2:: with SMTP id e18mr54330lja.101.1611271262294;
- Thu, 21 Jan 2021 15:21:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20210121072202.120810-1-bianpan2016@163.com> <55045608-01cb-d5af-682b-5a213944e33d@kernel.dk>
- <474055ad-978a-4da5-d7f0-e2dc862b781c@lightnvm.io> <CAJbgVnWxmwfmdgk-e290kcMfhUNAjP9uO2k45rx7R=x8jBdJcw@mail.gmail.com>
- <59a735f0-9fef-5e6d-f7eb-851e14a2883e@lightnvm.io> <CAJbgVnW40qrYBdsM6dC5uhDFZJJDc9kwvCWtK24Rg5GWCHpb2g@mail.gmail.com>
- <586510be-5a56-5e99-6ee6-ee20031f166b@lightnvm.io>
-In-Reply-To: <586510be-5a56-5e99-6ee6-ee20031f166b@lightnvm.io>
-From:   Heiner Litz <hlitz@ucsc.edu>
-Date:   Thu, 21 Jan 2021 15:20:51 -0800
-Message-ID: <CAJbgVnXXnLvWx-TtJh1YJxPfv+=_L2+gt0vNPpYKoLCOkCBN4Q@mail.gmail.com>
-Subject: Re: [PATCH] lightnvm: fix memory leak when submit fails
-To:     =?UTF-8?Q?Matias_Bj=C3=B8rling?= <mb@lightnvm.io>
-Cc:     Jens Axboe <axboe@kernel.dk>, Pan Bian <bianpan2016@163.com>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=VVJ18jo9wChTO7xYiVHUOH7AGcTMx8WNIb4MUAmrhNU=;
+        b=o8COoWOjEGTOTkkSotYP99HSnkOjVIB19CpcEwfdkQgtzhSIWvaKPKT8WvPR/ad4bu
+         vPDrniIudsop91mAs0CbDkvKL1Tou8wTrcf846pjpiDsoBzP85trTvMgSs/0y/hJhtTy
+         pCl2DFlpRrTCpaiXOde3jtwBjx5qDPFByAJK6f1yqeLZ+gVZadSRUb6CkSsH43yG5vxm
+         erHUW29ZdIEpKikttuWGPX0Jx1ONW1HnzGPokFB3UQzdszdE8rB4Z4r4Ltj7/6eLzkg2
+         nwwps1732rPMAwUQbdcuUvGFmolwTQb8ep4ZulDFuTMIJxWJ1hMo2IhB600spRcJQijG
+         I/pg==
+X-Gm-Message-State: AOAM530sRUhb6hKwvHmyKuxVfJgv8cKgj23cqCQRM0KznywyF/sUsz3T
+        b+17xlFZi5bgk1aUxVp8kTGmy9aibiKwUw==
+X-Google-Smtp-Source: ABdhPJxfyLQMocQPaTk75qAl6HUcaSSq+RJ6eWSQntz8aLR5szNU7Vqcs6APVSzcYDBIv6ZvUcGOaj1r3VWdOg==
+Sender: "jbhayana via sendgmr" <jbhayana@jbhayana.c.googlers.com>
+X-Received: from jbhayana.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:42b2])
+ (user=jbhayana job=sendgmr) by 2002:a63:f405:: with SMTP id
+ g5mr1746475pgi.276.1611271315059; Thu, 21 Jan 2021 15:21:55 -0800 (PST)
+Date:   Thu, 21 Jan 2021 23:21:46 +0000
+Message-Id: <20210121232147.1849509-1-jbhayana@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [RFC PATCH v3 0/1] Adding support for IIO SCMI based sensors
+From:   Jyoti Bhayana <jbhayana@google.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        cristian.marussi@arm.com, sudeep.holla@arm.com,
+        egranata@google.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
+        ankitarora@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-thanks, Matias, I am going to look out for dm-zap!
+Hi,
 
-On Thu, Jan 21, 2021 at 12:14 PM Matias Bj=C3=B8rling <mb@lightnvm.io> wrot=
-e:
->
-> On 21/01/2021 20.49, Heiner Litz wrote:
-> > there are a couple more, but again I would understand if those are
-> > deemed not important enough to keep it.
-> >
-> > device emulation of (non-ZNS) SSD block device
->
-> That'll soon be available. We will be open-sourcing a new device mapper
-> (dm-zap), which implements an indirection layer that enables ZNS SSDs to
-> be exposed as a conventional block device.
->
-> > die control: yes endurance groups would help but I am not aware of any
-> > vendor supporting it
-> It is out there. Although, is this still important in 2021? OCSSD was
-> made back in the days where media program/erase suspend wasn't commonly
-> available and SSD controller were more simple. With today's media and
-> SSD controllers, it is hard to compete without leaving media throughput
-> on the table. If needed, splitting a drive into a few partitions should
-> be sufficient for many many types of workloads.
-> > finer-grained control: 1000's of open blocks vs. a handful of
-> > concurrently open zones
->
-> It is dependent on the implementation - ZNS SSDs also supports 1000's of
-> open zones.
->
-> Wrt to available OCSSD hardware - there isn't, to my knowledge, proper
-> implementations available, where media reliability is taken into account.
->
-> Generally for the OCSSD hardware implementations, their UBER is
-> extremely low, and as such RAID or similar schemes must be implemented
-> on the host. pblk does not implement this, so at best, one should not
-> store data if one wants to get it back at some point. It also makes for
-> an unfair SSD comparison, as there is much more to an SSD than what
-> OCSSD + pblk implements. At worst, it'll lead to false understanding of
-> the challenges of making SSDs, and at best, work can be used as the
-> foundation for doing an actual SSD implementation.
->
-> > OOB area: helpful for L2P recovery
->
-> It is known as LBA metadata in NVMe. It is commonly available in many of
-> today's SSD.
->
-> I understand your point that there is a lot of flexibility, but my
-> counter point is that there isn't anything in OCSSD, that is not
-> implementable or commonly available using today's NVMe concepts.
-> Furthermore, the known OCSSD research platforms can easily be updated to
-> expose the OCSSD characteristics through standardized NVMe concepts.
-> That would probably make for a good research paper.
->
->
+This series adds support for ARM SCMI Protocol based IIO Device.
+This driver provides support for Accelerometer and Gyroscope sensor
+using new SCMI Sensor Protocol defined by the upcoming SCMIv3.0 ARM
+specification, which is available at 
+
+https://developer.arm.com/documentation/den0056/c/
+
+This version of the patch series has been tested using 
+version 5.4.21 branch of Android common kernel.
+
+Any feedback welcome,
+
+Thanks,
+
+Jyoti Bhayana
+
+v2 --> v3
+- Incorporated the feedback comments from v2 review of the patch
+
+v1 --> v2
+- Incorporated the feedback comments from v1 review of the patch
+- Regarding the new ABI for sensor_power,sensor_max_range,
+and sensor_resolution, these are some of the sensor attributes
+which Android passes to the apps. If there is any other way of getting
+those values, please let us know
+
+Jyoti Bhayana (1):
+  iio/scmi: Adding support for IIO SCMI Based Sensors
+
+ MAINTAINERS                                |   6 +
+ drivers/iio/common/Kconfig                 |   1 +
+ drivers/iio/common/Makefile                |   1 +
+ drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+ drivers/iio/common/scmi_sensors/Makefile   |   5 +
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 736 +++++++++++++++++++++
+ 6 files changed, 767 insertions(+)
+ create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+ create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+ create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+
+-- 
+2.30.0.280.ga3ce27912f-goog
+
