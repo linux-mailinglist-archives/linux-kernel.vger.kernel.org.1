@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0942FECB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FA02FECB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730001AbhAUOPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:15:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        id S1728457AbhAUOQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730498AbhAUOMa (ORCPT
+        with ESMTP id S1726320AbhAUOPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:12:30 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB06BC061757;
-        Thu, 21 Jan 2021 06:11:49 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id cq1so1729423pjb.4;
-        Thu, 21 Jan 2021 06:11:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JW9ioCIv1CN9dpUff2ilq0NQobpsdFiEo872jSzvttc=;
-        b=sM0Zc3BFMgdbbmHE1zL99lWNXAEQCe9dO0SmL8D6vGyplCcmDFwypzdp3ETeqDhhZU
-         Py4skrSHON8cHlAhH6tkeWFttYjGCmtIHSyprak4njCt2rS131ihzlJvVfhZN3Ntlcym
-         RspnvArUIhFJa5Prs2lmry1a8E5X1GEZKSkmKPzldX1AeagHTBK2gUYeMTyP1nbZidba
-         pFxZcBjFSyInOCgdiRLTUuetskwOQodnHE2etMW8jWuLKOjEutlyzCAJ7123yiF77WfK
-         E1CTsRFLHB6m+dNQpnIdmu0xdQ6LzBCyKTDbueK4H8/+xuNNg60iEDwnM7vvGNp0OdOQ
-         CHhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JW9ioCIv1CN9dpUff2ilq0NQobpsdFiEo872jSzvttc=;
-        b=romdihtafJY3VKQb/eLrrqhyV6nU1YkwjtM0f8Onj43yPPxK793RxbdZD+QSbePjgm
-         7fukyspWxkgei0GbMiAOLRVsGYc2GZb5QpehiwtdpDXPU1HfKdbmlXvrkmxLaXDDqFjW
-         D2uDgcAZD0laLsJS4I17/NYn+MT3Qg0Fy9KpWZuwDHiHBmO/yFaS0EYVb526nRB0zrmz
-         lM9HsIeWSs4Zjsccwm+4uyn3RkKe/UCf0qgJJQwDh4lzz0WSGvE56zyakfr1/KUIeLX0
-         hPV2mRhspGQx890kQ/rs+P/GdWROzeXBBGsnccbioI7DxbVJ2DypPKDsInXVGCskg7TT
-         H+sg==
-X-Gm-Message-State: AOAM532EDnm0bzFx++JfoM3F9bzIG3ilDo/9qqXNl3YgBDybXZ0mtKRT
-        vl0OdnuizpDowoVoSs9Om9WEb7JP6Gw=
-X-Google-Smtp-Source: ABdhPJzXsn55/jY7ozsATzA5BnKppJMkXwN41LkGVQZQ56JfkWzr5tYZ6C8xRGuGkwtuTWoolucZnA==
-X-Received: by 2002:a17:90b:23d3:: with SMTP id md19mr12125902pjb.119.1611238308915;
-        Thu, 21 Jan 2021 06:11:48 -0800 (PST)
-Received: from sol.lan (106-69-181-154.dyn.iinet.net.au. [106.69.181.154])
-        by smtp.gmail.com with ESMTPSA id c11sm5339699pfl.185.2021.01.21.06.11.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 06:11:48 -0800 (PST)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH] gpiolib: cdev: clear debounce period if line set to output
-Date:   Thu, 21 Jan 2021 22:10:38 +0800
-Message-Id: <20210121141038.437564-1-warthog618@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Thu, 21 Jan 2021 09:15:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6A2C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 06:15:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kkZoVMI8wUStGleFdEU/MPC3jyb8xZnP+NsWwxV31bQ=; b=on1Mp5P7+YomwsO9dYXvJde88E
+        txFMu0q6bX+bQHXAhy44PZcKNo0DM4KHtooPCFPu0McTAmMYywsxov8lMphU1ZITq+InqOcOnsqkq
+        P0LRTrpqf601qzAzfmbQNChUSkxXWtRno9ZiHWYw+mKX+yygV2YvLYImigjMMwzvN8jhC8X16KLew
+        cp9ItVvaUJT5cEZTstDu4m7z3unrZtOMmpIBOM86gOzNRScOw4Ro9iAN673/cAAqzYqTPxC2eUf+y
+        Wd65mlxBm/DF9e/ltPvcEzsiv+gVEa+c06vATjoRCWSuN6tu2l6N4N9wW/aEK8xQvTbWNz5JNokpZ
+        l6q4CD5g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2aiq-00H8WT-HQ; Thu, 21 Jan 2021 14:14:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E9F893003E1;
+        Thu, 21 Jan 2021 15:14:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B04542028D525; Thu, 21 Jan 2021 15:14:02 +0100 (CET)
+Date:   Thu, 21 Jan 2021 15:14:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        jiangshanlai@gmail.com, cai@redhat.com, vincent.donnefort@arm.com,
+        decui@microsoft.com, paulmck@kernel.org,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
+Subject: Re: [PATCH -v3 3/9] sched: Dont run cpu-online with balance_push()
+ enabled
+Message-ID: <YAmMKoBnIdgsM4wG@hirez.programming.kicks-ass.net>
+References: <20210121101702.402798862@infradead.org>
+ <20210121103506.415606087@infradead.org>
+ <jhjft2umlte.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjft2umlte.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When set_config changes a line from input to output debounce is
-implicitly disabled, as debounce makes no sense for outputs, but the
-debounce period is not being cleared and is still reported in the
-line info.
+On Thu, Jan 21, 2021 at 02:00:45PM +0000, Valentin Schneider wrote:
+> On 21/01/21 11:17, Peter Zijlstra wrote:
+> > @@ -7608,6 +7614,12 @@ int sched_cpu_dying(unsigned int cpu)
+> >       }
+> >       rq_unlock_irqrestore(rq, &rf);
+> >
+> > +	/*
+> > +	 * Should really be after we clear cpu_online(), but we're in
+> > +	 * stop_machine(), so it all works.
+> > +	 */
+> 
+> I believe you noted yourself in some earlier version that this *is* running
+> with cpu_online(cpu) == false, __cpu_disable() being invoked before the
+> _DYING .teardown callbacks are run.
 
-So clear the debounce period when the debouncer is stopped in
-edge_detector_stop().
-
-Fixed: 65cff7047640 ("gpiolib: cdev: support setting debounce")
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- drivers/gpio/gpiolib-cdev.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 12b679ca552c..3551aaf5a361 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -776,6 +776,8 @@ static void edge_detector_stop(struct line *line)
- 	cancel_delayed_work_sync(&line->work);
- 	WRITE_ONCE(line->sw_debounced, 0);
- 	WRITE_ONCE(line->eflags, 0);
-+	if (line->desc)
-+		WRITE_ONCE(line->desc->debounce_period_us, 0);
- 	/* do not change line->level - see comment in debounced_value() */
- }
- 
--- 
-2.30.0
-
+Argh! lemme go fix that comment.
