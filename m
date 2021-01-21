@@ -2,245 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA712FEC89
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64A82FEC9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730739AbhAUOA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732526AbhAUNfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:35:54 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C101C0613C1;
-        Thu, 21 Jan 2021 05:35:14 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id b10so2487265ljp.6;
-        Thu, 21 Jan 2021 05:35:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=d8KFOAYCe2M2B/sWPksccHsHRhmRN1V3CQDzS2MrRJE=;
-        b=K1nwmPzPDRUGsiApvGyQ5IiVLyODV7bMQhWpJMhW6xD02kuCepq52jFvoq2Ny2juaL
-         EJBh3bUAfl8UM1QBuY9CjtKFtuzisxiDM2v8dxNV4IBRc9wSoUYD7p9ogMwg18qqX6HL
-         zXkSPC8DGCNuzimjxaYQQz1+CT4B/DZ9L0KYlJI3F0KV42hLd0CdcoIZDsRxjOaGMQKo
-         7CkuA/ZG4k5fLplKnRFB+pARb5yA/NRKC9oy5AbYkeDgdzuJzSrSPB9muZeZFwCbQ6/3
-         UJZPmihLVPU4qPln8W+OoW1l3WNPpzxL9FKPFgnnU1KD10VvF9ZcMqPTN+7z9Io2KdbT
-         b4Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=d8KFOAYCe2M2B/sWPksccHsHRhmRN1V3CQDzS2MrRJE=;
-        b=M+z//TPxZm2onwtnWlsWnmgoMGcLGVEOy4t8NLvZssHOC7AAxuu3Pg+0aeYjITNHPf
-         KA6kBQsGFR+CePdAmD8MCwmpHdg5ywV0nvR3BIttdKpbDud8RtuO9INy2ww4Dq09qVn6
-         XpPAkebiDJu/X3Br3sIKAICSX8CLJlaXv1HGTmE52ObyKhK5/elh7ct9+Avai4kXxvGP
-         n+sirLgH8v6J+29ByTowsPv63rwMOZOKs1fzG94f41PFX83EsqtPlb6QYRGq3zGOedR0
-         CMhmh9gjsHn12WhOsqRjx6wVyWGLTDRgs6prXR5RqYxFG5gbhSKZET7jACtoGcKe5Qgf
-         w6vg==
-X-Gm-Message-State: AOAM532+A/IPEdy7tgVz01dT5153FRrqQN0jf+sBqrXEZmL2ZPFv/Rkv
-        97vUAnvrxeU+rp+zS9OUeQw=
-X-Google-Smtp-Source: ABdhPJxlo17L4ZxY+xa2p3jjXlhbFwU5HSQDwSGFJ/L/BHKFefxm1GcN12FSt7kGoxFvZJQDYLV1Xw==
-X-Received: by 2002:a2e:9084:: with SMTP id l4mr6696460ljg.375.1611236112804;
-        Thu, 21 Jan 2021 05:35:12 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id t9sm531397lff.45.2021.01.21.05.35.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 05:35:12 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 21 Jan 2021 14:35:10 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210121133510.GB1872@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
- <20210120215403.GH2743@paulmck-ThinkPad-P72>
+        id S1729244AbhAUOFL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Jan 2021 09:05:11 -0500
+Received: from unicorn.mansr.com ([81.2.72.234]:60292 "EHLO unicorn.mansr.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbhAUOAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 09:00:13 -0500
+Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:8d8e::3])
+        by unicorn.mansr.com (Postfix) with ESMTPS id 209A915363;
+        Thu, 21 Jan 2021 13:59:02 +0000 (GMT)
+Received: by raven.mansr.com (Postfix, from userid 51770)
+        id 1D75621A3D9; Thu, 21 Jan 2021 13:59:02 +0000 (GMT)
+From:   =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] pci: remove tango host controller driver
+References: <20210120150800.1650898-1-arnd@kernel.org>
+Date:   Thu, 21 Jan 2021 13:59:02 +0000
+In-Reply-To: <20210120150800.1650898-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Wed, 20 Jan 2021 16:07:29 +0100")
+Message-ID: <yw1x4kjaz909.fsf@mansr.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120215403.GH2743@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 01:54:03PM -0800, Paul E. McKenney wrote:
-> On Wed, Jan 20, 2021 at 08:57:57PM +0100, Sebastian Andrzej Siewior wrote:
-> > On 2021-01-20 17:21:46 [+0100], Uladzislau Rezki (Sony) wrote:
-> > > For a single argument we can directly request a page from a caller
-> > > context when a "carry page block" is run out of free spots. Instead
-> > > of hitting a slow path we can request an extra page by demand and
-> > > proceed with a fast path.
-> > > 
-> > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> > > and that its fallback is the relatively high latency synchronize_rcu().
-> > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> > > to allow limited sleeping within the memory allocator.
-> > > 
-> > > [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
-> > >  1 file changed, 26 insertions(+), 16 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index e04e336bee42..2014fb22644d 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
-> > >  	}
-> > >  }
-> > >  
-> > > +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-> > > +// state specified by flags.  If can_alloc is true, the caller must
-> > > +// be schedulable and not be holding any locks or mutexes that might be
-> > > +// acquired by the memory allocator or anything that it might invoke.
-> > > +// Returns true if ptr was successfully recorded, else the caller must
-> > > +// use a fallback.
-> > 
-> > The whole RCU department is getting swamped by the // comments. Can't we
-> > have proper kernel doc and /* */ style comments like the remaining part
-> > of the kernel?
-> 
-> Because // comments are easier to type and take up less horizontal space.
-> Also, this kvfree_call_rcu_add_ptr_to_bulk() function is local to
-> kvfree_rcu(), and we don't normally docbook-ify such functions.
-> 
-> > >  static inline bool
-> > > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> > > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> > > +	unsigned long *flags, void *ptr, bool can_alloc)
-> > >  {
-> > >  	struct kvfree_rcu_bulk_data *bnode;
-> > >  	int idx;
-> > >  
-> > > -	if (unlikely(!krcp->initialized))
-> > > +	*krcp = krc_this_cpu_lock(flags);
-> > > +	if (unlikely(!(*krcp)->initialized))
-> > >  		return false;
-> > >  
-> > > -	lockdep_assert_held(&krcp->lock);
-> > >  	idx = !!is_vmalloc_addr(ptr);
-> > >  
-> > >  	/* Check if a new block is required. */
-> > > -	if (!krcp->bkvhead[idx] ||
-> > > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > > -		bnode = get_cached_bnode(krcp);
-> > > -		/* Switch to emergency path. */
-> > > +	if (!(*krcp)->bkvhead[idx] ||
-> > > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > > +		bnode = get_cached_bnode(*krcp);
-> > > +		if (!bnode && can_alloc) {
-> > > +			krc_this_cpu_unlock(*krcp, *flags);
-> > > +			bnode = (struct kvfree_rcu_bulk_data *)
-> > 
-> > There is no need for this cast.
-> 
-> Without it, gcc version 7.5.0 says:
-> 
-> 	warning: assignment makes pointer from integer without a cast
-> 
-> > > +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-> > > +			*krcp = krc_this_cpu_lock(flags);
-> > 
-> > so if bnode is NULL you could retry get_cached_bnode() since it might
-> > have been filled (given preemption or CPU migration changed something).
-> > Judging from patch #3 you think that a CPU migration is a bad thing. But
-> > why?
-> 
-> So that the later "(*krcp)->bkvhead[idx] = bnode" assignment associates
-> it with the correct CPU.
-> 
-> Though now that you mention it, couldn't the following happen?
-> 
-> o	Task A on CPU 0 notices that allocation is needed, so it
-> 	drops the lock disables migration, and sleeps while
-> 	allocating.
-> 
-> o	Task B on CPU 0 does the same.
-> 
-> o	The two tasks wake up in some order, and the second one
-> 	causes trouble at the "(*krcp)->bkvhead[idx] = bnode"
-> 	assignment.
-> 
-> Uladzislau, do we need to recheck "!(*krcp)->bkvhead[idx]" just after
-> the migrate_enable()?  Along with the KVFREE_BULK_MAX_ENTR check?
-> 
-Probably i should have mentioned your sequence you described, that two tasks
-can get a page on same CPU, i was thinking about it :) Yep, it can happen
-since we drop the lock and a context is fully preemptible, so another one
-can trigger kvfree_rcu() ending up at the same place - entering a page
-allocator.
+Arnd Bergmann <arnd@kernel.org> writes:
 
-I spent some time simulating it, but with no any luck, therefore i did not
-reflect this case in the commit message, thus did no pay much attention to
-such scenario.
-
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> Uladzislau, do we need to recheck "!(*krcp)->bkvhead[idx]" just after
-> the migrate_enable()?  Along with the KVFREE_BULK_MAX_ENTR check?
+> The tango platform is getting removed, so the driver is no
+> longer needed.
 >
-Two woken tasks will be serialized, i.e. an assignment is protected by
-the our local lock. We do krc_this_cpu_lock(flags); as a first step
-right after that we do restore a migration. A migration in that case
-can occur only when krc_this_cpu_unlock(*krcp, *flags); is invoked.
+> Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+> Cc: Mans Rullgard <mans@mansr.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The scenario you described can happen, in that case a previous bnode
-in the drain list can be either empty or partly utilized. But, again
-i was non able to trigger such scenario.
+Acked-by: Mans Rullgard <mans@mansr.com>
 
-If we should fix it, i think we can go with below "alloc_in_progress"
-protection:
+> ---
+>  drivers/pci/controller/Kconfig      |  14 --
+>  drivers/pci/controller/Makefile     |   1 -
+>  drivers/pci/controller/pcie-tango.c | 341 ----------------------------
+>  3 files changed, 356 deletions(-)
+>  delete mode 100644 drivers/pci/controller/pcie-tango.c
+>
+> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> index 64e2f5e379aa..8c85c16594f2 100644
+> --- a/drivers/pci/controller/Kconfig
+> +++ b/drivers/pci/controller/Kconfig
+> @@ -242,20 +242,6 @@ config PCIE_MEDIATEK
+>  	  Say Y here if you want to enable PCIe controller support on
+>  	  MediaTek SoCs.
+>
+> -config PCIE_TANGO_SMP8759
+> -	bool "Tango SMP8759 PCIe controller (DANGEROUS)"
+> -	depends on ARCH_TANGO && PCI_MSI && OF
+> -	depends on BROKEN
+> -	select PCI_HOST_COMMON
+> -	help
+> -	  Say Y here to enable PCIe controller support for Sigma Designs
+> -	  Tango SMP8759-based systems.
+> -
+> -	  Note: The SMP8759 controller multiplexes PCI config and MMIO
+> -	  accesses, and Linux doesn't provide a way to serialize them.
+> -	  This can lead to data corruption if drivers perform concurrent
+> -	  config and MMIO accesses.
+> -
+>  config VMD
+>  	depends on PCI_MSI && X86_64 && SRCU
+>  	tristate "Intel Volume Management Device Driver"
+> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+> index 04c6edc285c5..b3a7912f8a5c 100644
+> --- a/drivers/pci/controller/Makefile
+> +++ b/drivers/pci/controller/Makefile
+> @@ -27,7 +27,6 @@ obj-$(CONFIG_PCIE_ROCKCHIP) += pcie-rockchip.o
+>  obj-$(CONFIG_PCIE_ROCKCHIP_EP) += pcie-rockchip-ep.o
+>  obj-$(CONFIG_PCIE_ROCKCHIP_HOST) += pcie-rockchip-host.o
+>  obj-$(CONFIG_PCIE_MEDIATEK) += pcie-mediatek.o
+> -obj-$(CONFIG_PCIE_TANGO_SMP8759) += pcie-tango.o
+>  obj-$(CONFIG_VMD) += vmd.o
+>  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
+>  obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
+> diff --git a/drivers/pci/controller/pcie-tango.c b/drivers/pci/controller/pcie-tango.c
+> deleted file mode 100644
+> index 62a061f1d62e..000000000000
+> --- a/drivers/pci/controller/pcie-tango.c
+> +++ /dev/null
+> @@ -1,341 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#include <linux/irqchip/chained_irq.h>
+> -#include <linux/irqdomain.h>
+> -#include <linux/pci-ecam.h>
+> -#include <linux/delay.h>
+> -#include <linux/msi.h>
+> -#include <linux/of_address.h>
+> -
+> -#define MSI_MAX			256
+> -
+> -#define SMP8759_MUX		0x48
+> -#define SMP8759_TEST_OUT	0x74
+> -#define SMP8759_DOORBELL	0x7c
+> -#define SMP8759_STATUS		0x80
+> -#define SMP8759_ENABLE		0xa0
+> -
+> -struct tango_pcie {
+> -	DECLARE_BITMAP(used_msi, MSI_MAX);
+> -	u64			msi_doorbell;
+> -	spinlock_t		used_msi_lock;
+> -	void __iomem		*base;
+> -	struct irq_domain	*dom;
+> -};
+> -
+> -static void tango_msi_isr(struct irq_desc *desc)
+> -{
+> -	struct irq_chip *chip = irq_desc_get_chip(desc);
+> -	struct tango_pcie *pcie = irq_desc_get_handler_data(desc);
+> -	unsigned long status, base, virq, idx, pos = 0;
+> -
+> -	chained_irq_enter(chip, desc);
+> -	spin_lock(&pcie->used_msi_lock);
+> -
+> -	while ((pos = find_next_bit(pcie->used_msi, MSI_MAX, pos)) < MSI_MAX) {
+> -		base = round_down(pos, 32);
+> -		status = readl_relaxed(pcie->base + SMP8759_STATUS + base / 8);
+> -		for_each_set_bit(idx, &status, 32) {
+> -			virq = irq_find_mapping(pcie->dom, base + idx);
+> -			generic_handle_irq(virq);
+> -		}
+> -		pos = base + 32;
+> -	}
+> -
+> -	spin_unlock(&pcie->used_msi_lock);
+> -	chained_irq_exit(chip, desc);
+> -}
+> -
+> -static void tango_ack(struct irq_data *d)
+> -{
+> -	struct tango_pcie *pcie = d->chip_data;
+> -	u32 offset = (d->hwirq / 32) * 4;
+> -	u32 bit = BIT(d->hwirq % 32);
+> -
+> -	writel_relaxed(bit, pcie->base + SMP8759_STATUS + offset);
+> -}
+> -
+> -static void update_msi_enable(struct irq_data *d, bool unmask)
+> -{
+> -	unsigned long flags;
+> -	struct tango_pcie *pcie = d->chip_data;
+> -	u32 offset = (d->hwirq / 32) * 4;
+> -	u32 bit = BIT(d->hwirq % 32);
+> -	u32 val;
+> -
+> -	spin_lock_irqsave(&pcie->used_msi_lock, flags);
+> -	val = readl_relaxed(pcie->base + SMP8759_ENABLE + offset);
+> -	val = unmask ? val | bit : val & ~bit;
+> -	writel_relaxed(val, pcie->base + SMP8759_ENABLE + offset);
+> -	spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
+> -}
+> -
+> -static void tango_mask(struct irq_data *d)
+> -{
+> -	update_msi_enable(d, false);
+> -}
+> -
+> -static void tango_unmask(struct irq_data *d)
+> -{
+> -	update_msi_enable(d, true);
+> -}
+> -
+> -static int tango_set_affinity(struct irq_data *d, const struct cpumask *mask,
+> -			      bool force)
+> -{
+> -	return -EINVAL;
+> -}
+> -
+> -static void tango_compose_msi_msg(struct irq_data *d, struct msi_msg *msg)
+> -{
+> -	struct tango_pcie *pcie = d->chip_data;
+> -	msg->address_lo = lower_32_bits(pcie->msi_doorbell);
+> -	msg->address_hi = upper_32_bits(pcie->msi_doorbell);
+> -	msg->data = d->hwirq;
+> -}
+> -
+> -static struct irq_chip tango_chip = {
+> -	.irq_ack		= tango_ack,
+> -	.irq_mask		= tango_mask,
+> -	.irq_unmask		= tango_unmask,
+> -	.irq_set_affinity	= tango_set_affinity,
+> -	.irq_compose_msi_msg	= tango_compose_msi_msg,
+> -};
+> -
+> -static void msi_ack(struct irq_data *d)
+> -{
+> -	irq_chip_ack_parent(d);
+> -}
+> -
+> -static void msi_mask(struct irq_data *d)
+> -{
+> -	pci_msi_mask_irq(d);
+> -	irq_chip_mask_parent(d);
+> -}
+> -
+> -static void msi_unmask(struct irq_data *d)
+> -{
+> -	pci_msi_unmask_irq(d);
+> -	irq_chip_unmask_parent(d);
+> -}
+> -
+> -static struct irq_chip msi_chip = {
+> -	.name = "MSI",
+> -	.irq_ack = msi_ack,
+> -	.irq_mask = msi_mask,
+> -	.irq_unmask = msi_unmask,
+> -};
+> -
+> -static struct msi_domain_info msi_dom_info = {
+> -	.flags	= MSI_FLAG_PCI_MSIX
+> -		| MSI_FLAG_USE_DEF_DOM_OPS
+> -		| MSI_FLAG_USE_DEF_CHIP_OPS,
+> -	.chip	= &msi_chip,
+> -};
+> -
+> -static int tango_irq_domain_alloc(struct irq_domain *dom, unsigned int virq,
+> -				  unsigned int nr_irqs, void *args)
+> -{
+> -	struct tango_pcie *pcie = dom->host_data;
+> -	unsigned long flags;
+> -	int pos;
+> -
+> -	spin_lock_irqsave(&pcie->used_msi_lock, flags);
+> -	pos = find_first_zero_bit(pcie->used_msi, MSI_MAX);
+> -	if (pos >= MSI_MAX) {
+> -		spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
+> -		return -ENOSPC;
+> -	}
+> -	__set_bit(pos, pcie->used_msi);
+> -	spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
+> -	irq_domain_set_info(dom, virq, pos, &tango_chip,
+> -			pcie, handle_edge_irq, NULL, NULL);
+> -
+> -	return 0;
+> -}
+> -
+> -static void tango_irq_domain_free(struct irq_domain *dom, unsigned int virq,
+> -				  unsigned int nr_irqs)
+> -{
+> -	unsigned long flags;
+> -	struct irq_data *d = irq_domain_get_irq_data(dom, virq);
+> -	struct tango_pcie *pcie = d->chip_data;
+> -
+> -	spin_lock_irqsave(&pcie->used_msi_lock, flags);
+> -	__clear_bit(d->hwirq, pcie->used_msi);
+> -	spin_unlock_irqrestore(&pcie->used_msi_lock, flags);
+> -}
+> -
+> -static const struct irq_domain_ops dom_ops = {
+> -	.alloc	= tango_irq_domain_alloc,
+> -	.free	= tango_irq_domain_free,
+> -};
+> -
+> -static int smp8759_config_read(struct pci_bus *bus, unsigned int devfn,
+> -			       int where, int size, u32 *val)
+> -{
+> -	struct pci_config_window *cfg = bus->sysdata;
+> -	struct tango_pcie *pcie = dev_get_drvdata(cfg->parent);
+> -	int ret;
+> -
+> -	/* Reads in configuration space outside devfn 0 return garbage */
+> -	if (devfn != 0)
+> -		return PCIBIOS_FUNC_NOT_SUPPORTED;
+> -
+> -	/*
+> -	 * PCI config and MMIO accesses are muxed.  Linux doesn't have a
+> -	 * mutual exclusion mechanism for config vs. MMIO accesses, so
+> -	 * concurrent accesses may cause corruption.
+> -	 */
+> -	writel_relaxed(1, pcie->base + SMP8759_MUX);
+> -	ret = pci_generic_config_read(bus, devfn, where, size, val);
+> -	writel_relaxed(0, pcie->base + SMP8759_MUX);
+> -
+> -	return ret;
+> -}
+> -
+> -static int smp8759_config_write(struct pci_bus *bus, unsigned int devfn,
+> -				int where, int size, u32 val)
+> -{
+> -	struct pci_config_window *cfg = bus->sysdata;
+> -	struct tango_pcie *pcie = dev_get_drvdata(cfg->parent);
+> -	int ret;
+> -
+> -	writel_relaxed(1, pcie->base + SMP8759_MUX);
+> -	ret = pci_generic_config_write(bus, devfn, where, size, val);
+> -	writel_relaxed(0, pcie->base + SMP8759_MUX);
+> -
+> -	return ret;
+> -}
+> -
+> -static const struct pci_ecam_ops smp8759_ecam_ops = {
+> -	.pci_ops	= {
+> -		.map_bus	= pci_ecam_map_bus,
+> -		.read		= smp8759_config_read,
+> -		.write		= smp8759_config_write,
+> -	}
+> -};
+> -
+> -static int tango_pcie_link_up(struct tango_pcie *pcie)
+> -{
+> -	void __iomem *test_out = pcie->base + SMP8759_TEST_OUT;
+> -	int i;
+> -
+> -	writel_relaxed(16, test_out);
+> -	for (i = 0; i < 10; ++i) {
+> -		u32 ltssm_state = readl_relaxed(test_out) >> 8;
+> -		if ((ltssm_state & 0x1f) == 0xf) /* L0 */
+> -			return 1;
+> -		usleep_range(3000, 4000);
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+> -static int tango_pcie_probe(struct platform_device *pdev)
+> -{
+> -	struct device *dev = &pdev->dev;
+> -	struct tango_pcie *pcie;
+> -	struct resource *res;
+> -	struct fwnode_handle *fwnode = of_node_to_fwnode(dev->of_node);
+> -	struct irq_domain *msi_dom, *irq_dom;
+> -	struct of_pci_range_parser parser;
+> -	struct of_pci_range range;
+> -	int virq, offset;
+> -
+> -	dev_warn(dev, "simultaneous PCI config and MMIO accesses may cause data corruption\n");
+> -	add_taint(TAINT_CRAP, LOCKDEP_STILL_OK);
+> -
+> -	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+> -	if (!pcie)
+> -		return -ENOMEM;
+> -
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> -	pcie->base = devm_ioremap_resource(dev, res);
+> -	if (IS_ERR(pcie->base))
+> -		return PTR_ERR(pcie->base);
+> -
+> -	platform_set_drvdata(pdev, pcie);
+> -
+> -	if (!tango_pcie_link_up(pcie))
+> -		return -ENODEV;
+> -
+> -	if (of_pci_dma_range_parser_init(&parser, dev->of_node) < 0)
+> -		return -ENOENT;
+> -
+> -	if (of_pci_range_parser_one(&parser, &range) == NULL)
+> -		return -ENOENT;
+> -
+> -	range.pci_addr += range.size;
+> -	pcie->msi_doorbell = range.pci_addr + res->start + SMP8759_DOORBELL;
+> -
+> -	for (offset = 0; offset < MSI_MAX / 8; offset += 4)
+> -		writel_relaxed(0, pcie->base + SMP8759_ENABLE + offset);
+> -
+> -	virq = platform_get_irq(pdev, 1);
+> -	if (virq < 0)
+> -		return virq;
+> -
+> -	irq_dom = irq_domain_create_linear(fwnode, MSI_MAX, &dom_ops, pcie);
+> -	if (!irq_dom) {
+> -		dev_err(dev, "Failed to create IRQ domain\n");
+> -		return -ENOMEM;
+> -	}
+> -
+> -	msi_dom = pci_msi_create_irq_domain(fwnode, &msi_dom_info, irq_dom);
+> -	if (!msi_dom) {
+> -		dev_err(dev, "Failed to create MSI domain\n");
+> -		irq_domain_remove(irq_dom);
+> -		return -ENOMEM;
+> -	}
+> -
+> -	pcie->dom = irq_dom;
+> -	spin_lock_init(&pcie->used_msi_lock);
+> -	irq_set_chained_handler_and_data(virq, tango_msi_isr, pcie);
+> -
+> -	return pci_host_common_probe(pdev);
+> -}
+> -
+> -static const struct of_device_id tango_pcie_ids[] = {
+> -	{
+> -		.compatible = "sigma,smp8759-pcie",
+> -		.data = &smp8759_ecam_ops,
+> -	},
+> -	{ },
+> -};
+> -
+> -static struct platform_driver tango_pcie_driver = {
+> -	.probe	= tango_pcie_probe,
+> -	.driver	= {
+> -		.name = KBUILD_MODNAME,
+> -		.of_match_table = tango_pcie_ids,
+> -		.suppress_bind_attrs = true,
+> -	},
+> -};
+> -builtin_platform_driver(tango_pcie_driver);
+> -
+> -/*
+> - * The root complex advertises the wrong device class.
+> - * Header Type 1 is for PCI-to-PCI bridges.
+> - */
+> -static void tango_fixup_class(struct pci_dev *dev)
+> -{
+> -	dev->class = PCI_CLASS_BRIDGE_PCI << 8;
+> -}
+> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0024, tango_fixup_class);
+> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0028, tango_fixup_class);
+> -
+> -/*
+> - * The root complex exposes a "fake" BAR, which is used to filter
+> - * bus-to-system accesses.  Only accesses within the range defined by this
+> - * BAR are forwarded to the host, others are ignored.
+> - *
+> - * By default, the DMA framework expects an identity mapping, and DRAM0 is
+> - * mapped at 0x80000000.
+> - */
+> -static void tango_fixup_bar(struct pci_dev *dev)
+> -{
+> -	dev->non_compliant_bars = true;
+> -	pci_write_config_dword(dev, PCI_BASE_ADDRESS_0, 0x80000000);
+> -}
+> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0024, tango_fixup_bar);
+> -DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SIGMA, 0x0028, tango_fixup_bar);
+> -- 
+>
+> 2.29.2
+>
 
-<snip>
-urezki@pc638:~/data/raid0/coding/linux-rcu.git$ git diff
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cad36074366d..95485ec7267e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3488,12 +3488,19 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-        if (!(*krcp)->bkvhead[idx] ||
-                        (*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-                bnode = get_cached_bnode(*krcp);
--               if (!bnode && can_alloc) {
-+               if (!bnode && can_alloc && !(*krcp)->alloc_in_progress)  {
-                        migrate_disable();
-+
-+                       /* Set it before dropping the lock. */
-+                       (*krcp)->alloc_in_progress = true;
-                        krc_this_cpu_unlock(*krcp, *flags);
-+
-                        bnode = (struct kvfree_rcu_bulk_data *)
-                                __get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
-                        *krcp = krc_this_cpu_lock(flags);
-+
-+                       /* Clear it, the lock was taken back. */
-+                       (*krcp)->alloc_in_progress = false;
-                        migrate_enable();
-                }
- 
-urezki@pc638:~/data/raid0/coding/linux-rcu.git$
-<snip>
-
-in that case a second task will follow a fallback path bypassing a page
-request. I can send it as a separate patch if there are no any objections.
-
---
-Vlad Rezki
+-- 
+Måns Rullgård
