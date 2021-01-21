@@ -2,211 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEBB2FEFDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FBB2FEFE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731852AbhAUQLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
+        id S2387777AbhAUQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731893AbhAUQKD (ORCPT
+        with ESMTP id S1732884AbhAUQLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:10:03 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7EEC0613D6;
-        Thu, 21 Jan 2021 08:09:22 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id b8so1507371plh.12;
-        Thu, 21 Jan 2021 08:09:22 -0800 (PST)
+        Thu, 21 Jan 2021 11:11:44 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C226C0613D6;
+        Thu, 21 Jan 2021 08:11:02 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id c12so2286648wrc.7;
+        Thu, 21 Jan 2021 08:11:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z7oVga7Escj/c6BU5fn9u2qNIv4eQlnHp8uz/6apHm8=;
-        b=u13qVxp+ZtSHi+YnVRLB3wpgmSKmpNWCcNZUbEumSVrAjePaV7jzEOA1BNcokSMm5K
-         bb3cWcZ0R7Xzx0+2YBcJI6XQAMflPW1QUHNRf0Wb4fNYY3P59R262N2ZrHLs7wkQNvuT
-         xNPAu9mlC5g0WJoVyGbN5+EdhNJ+knPl81IiiFYACckKVWftkHgTI1AlS1V+IAAG3O5L
-         q/cDvnpumIrADAEIxyVXg48ada/aXIZr82dB3SFykrn4yA+vaxt/BLnir2ZHhTPPvF5E
-         0iBiWUQ9xn7qsj5c5Fxo99lG/A22xWjkVBdWzXLz+D4EFR2LYsr6p2mAybN+REoeWSrE
-         t4Jg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3fk+Ltd/WJun2rMhD/0B1TRdBjEBWKb5kM3nBcZ4ddo=;
+        b=lyedh99Ckt5+2Zdw9xnwKh8S2EIazsc1QHLioysl5Nmgf3VlQMG6C2iQvkJNY3dUEl
+         HbFNskw5fruTXnGPHku1SiUDsF6z//OJm7Md/VHA0yHH/Ekg1BsW6vht0s9BnVMWoua8
+         edBAKsQ6uCWONCPOC4WkD/ErQT+PPieYPxfygLD/ldPTPDl1kZwss7spmq6yqARmcdO+
+         pf/i9xli3pq8s77/9PP8cYd4wpS72CnHfexqcQtgXpedr5BhfWBe4J/bOt3HWZTjg6h/
+         JFNISt2uaW8vdEjwbC5G5IfmVFs03oMvInAJXC1+kqtBqfFFSMFT4nLp0zcPUhcyt/Od
+         IfRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z7oVga7Escj/c6BU5fn9u2qNIv4eQlnHp8uz/6apHm8=;
-        b=YwPt7yxXw11UHG6uW8ttXO844UtbTurtepDaROsL1I296cGdSsS+XX407Ud2gB3zUz
-         xzM4FwKt9yAZ0gxsYY5hdAzwW1JaDbtp5AKyN2ALY1YuGYmBzVJy408Z6Erjmwa0y5hB
-         55xOD3FVMrxq4hYRXHnqxODciPeQaKsLG/LaGtzyAvRV6kaLfUPWn1cHEmxUjuwI6TVZ
-         uPH2W/svRCHW9TmyebCAb5ddNJM/kN9vYT0TRB+aeNmQxKZl8MX3zw+GFOJ1RytuAAFu
-         5kOdmYJLwxpYEpqEJ0GzWQyNHP9J+FVoOAdDNpcvPM6q7H7Vja5SPNXGUcpnunJsiThC
-         tB5A==
-X-Gm-Message-State: AOAM533Xk+ahvjg09dTToVGt+SFOPIqnbIanXvqO5Wfg6/3bzvJoG/xP
-        aLVMzXsC7Pfb0lsdYnuxtYh4dlD/TWH70idkPr0=
-X-Google-Smtp-Source: ABdhPJz810rj4uEh3NOSZjkte6BAAPp2lkFigFSpC0lmoi8bADNmSJpDd6MCWI3LiIBOxL+SgTYdC7FnQIAMX/83wZI=
-X-Received: by 2002:a17:902:7b96:b029:de:7ae6:b8db with SMTP id
- w22-20020a1709027b96b02900de7ae6b8dbmr425254pll.0.1611245361597; Thu, 21 Jan
- 2021 08:09:21 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3fk+Ltd/WJun2rMhD/0B1TRdBjEBWKb5kM3nBcZ4ddo=;
+        b=skCiQl9vDCfCj0TCzuR2XihopG58CXZYqDt2AnDwwQZjm8v8RcXq5DfAuoOG1Abhmu
+         hhrittQPSvzul11DtZngfd9W8pPd200fKpOxLKDbv2E2VWFnYaYikAGTQBiuOS4v7tlk
+         fzJIwsv7T/4pv3qOfgU3IVhxPOG08yRC8oarghnCPGbYDHTozma3ManeIBhaozZfTyLF
+         egpOkdtgrHROv829lXtHd3srhYIIDoZofsgMmxAlxEL0D39vHaYb10RJTap+v/prk1TX
+         OKneXY1ZBj3Z0O11XQq5WxQ1WAxjm7jC0maClQqlX8U8+WAkafi2Y9EqE2AJsaipacsO
+         u5UQ==
+X-Gm-Message-State: AOAM532lbvRg6abG3BFBzm7UGoxTMNd0JmcGO5asKZ3UrMaKf9C0Tl+r
+        R2qzhvhdfPfu4A2CeJq29aU=
+X-Google-Smtp-Source: ABdhPJxWQdlgzYligRW+q9HCSyXSEChFX5mO2uWlk6p7GRWbht/G/Er4S6YAzwNQrk633Q3qHi8ckw==
+X-Received: by 2002:a5d:4d4f:: with SMTP id a15mr148527wru.315.1611245461008;
+        Thu, 21 Jan 2021 08:11:01 -0800 (PST)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id g194sm8582133wme.39.2021.01.21.08.10.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 08:11:00 -0800 (PST)
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
+ queues
+To:     Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <20210120212759.81548-1-ivan@cloudflare.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <201b4e33-eec5-efcd-808b-1f15a979d998@gmail.com>
+Date:   Thu, 21 Jan 2021 16:10:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210121142716.6374-1-o.rempel@pengutronix.de> <20210121142716.6374-3-o.rempel@pengutronix.de>
-In-Reply-To: <20210121142716.6374-3-o.rempel@pengutronix.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 21 Jan 2021 18:10:10 +0200
-Message-ID: <CAHp75VfnV+A=BpXGqf=xC=RTozfNrmq7X5V0o8aK2ptMyZF9YA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] counter: add GPIO based pulse counters
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210120212759.81548-1-ivan@cloudflare.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 4:32 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> Add simple GPIO base pulse counter. This device is used to measure
-> rotation speed of some agricultural devices, so no high frequency on the
-> counter pin is expected.
->
-> The maximal measurement frequency depends on the CPU and system load. On
-> the idle iMX6S I was able to measure up to 20kHz without count drops.
+On 20/01/2021 21:27, Ivan Babrou wrote:
+> Without this change the driver tries to allocate too many queues,
+> breaching the number of available msi-x interrupts on machines
+> with many logical cpus and default adapter settings:
+> 
+> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> 
+> Which in turn triggers EINVAL on XDP processing:
+> 
+> sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+> 
+> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
 
-...
-
-> +#include <linux/of_gpio.h>
-
-It would be better to see OF agnostic code WRT GPIOs.
-
-...
-
-> +static ssize_t gpio_pulse_count_enable_read(struct counter_device *counter,
-> +                                           struct counter_count *count,
-> +                                           void *private, char *buf)
-> +{
-> +       struct gpio_pulse_priv *priv = counter->priv;
-> +
-> +       return scnprintf(buf, PAGE_SIZE, "%d\n", priv->enabled);
-
-sysfs_emit()
-
-> +}
-> +
-> +static ssize_t gpio_pulse_count_enable_write(struct counter_device *counter,
-> +                                            struct counter_count *count,
-> +                                            void *private,
-> +                                            const char *buf, size_t len)
-> +{
-> +       struct gpio_pulse_priv *priv = counter->priv;
-> +       bool enable;
-> +       ssize_t ret;
-> +
-> +       ret = kstrtobool(buf, &enable);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (priv->enabled == enable)
-> +               return len;
-> +
-> +       if (enable)
-> +               enable_irq(priv->irq);
-> +       else
-> +               disable_irq(priv->irq);
-
-Oops, if IRQ happens here, shouldn't we have priv->enabled already set properly?
-
-> +       priv->enabled = enable;
-> +
-> +       return len;
-> +}
-> +
-> +static const struct counter_count_ext gpio_pulse_count_ext[] = {
-> +       {
-> +               .name = "enable",
-> +               .read = gpio_pulse_count_enable_read,
-> +               .write = gpio_pulse_count_enable_write
-
-Leave the comma here.
-
-> +       },
-> +};
-
-...
-
-> +static struct counter_signal gpio_pulse_signals[] = {
-> +       {
-> +               .id = 0,
-> +               .name = "Channel 0 signal"
-
-Leave the comma.
-
-> +       },
-> +};
-> +
-> +static struct counter_synapse gpio_pulse_count_synapses[] = {
-> +       {
-> +               .actions_list = gpio_pulse_synapse_actions,
-> +               .num_actions = ARRAY_SIZE(gpio_pulse_synapse_actions),
-> +               .signal = &gpio_pulse_signals[0]
-
-Ditto.
-
-> +       },
-> +};
-
-...
-
-> +static struct counter_count gpio_pulse_counts[] = {
-> +       {
-> +               .id = 0,
-> +               .name = "Channel 1 Count",
-> +               .functions_list = gpio_pulse_count_functions,
-> +               .num_functions = ARRAY_SIZE(gpio_pulse_count_functions),
-> +               .synapses = gpio_pulse_count_synapses,
-> +               .num_synapses = ARRAY_SIZE(gpio_pulse_count_synapses),
-> +               .ext = gpio_pulse_count_ext,
-> +               .num_ext = ARRAY_SIZE(gpio_pulse_count_ext)
-
-Ditto
-
-> +       },
-> +};
-> +
-
-...
-
-> +       struct device_node *np = pdev->dev.of_node;
-
-> +       if (of_gpio_count(np) != 1) {
-> +               dev_err(dev, "Error, need exactly 1 gpio for device\n");
-> +               return -EINVAL;
-> +       }
-
-gpiod_count() ?
-
-> +       priv->gpio = devm_fwnode_gpiod_get(dev, of_fwnode_handle(np),
-> +                                          NULL, GPIOD_IN, GPIO_PULSE_NAME);
-
-of node to fwnode, can we avoid dragging this here to there?
-
-Why is devm_gpiod_get() followed by a label setting not good enough?
-
-> +       if (IS_ERR(priv->gpio))
-> +               return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get gpio\n");
-
-...
-
-> +static const struct of_device_id gpio_pulse_cnt_of_match[] = {
-> +       { .compatible = "virtual,gpio-pulse-counter", },
-> +       {},
-
-No comma needed for real terminator entry.
-
-> +};
-
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Edward Cree <ecree.xilinx@gmail.com>
