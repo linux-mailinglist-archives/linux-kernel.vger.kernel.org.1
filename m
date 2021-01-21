@@ -2,132 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B9F2FEB4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9A62FEB54
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729532AbhAUNO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:14:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
+        id S1731761AbhAUNP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731723AbhAUNNV (ORCPT
+        with ESMTP id S1731671AbhAUNOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:13:21 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DF7C0613ED;
-        Thu, 21 Jan 2021 05:12:38 -0800 (PST)
-Date:   Thu, 21 Jan 2021 13:12:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611234755;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ezha1d0Zd2429mrCjSWxK7xBksyVQkmSg+5fZNwJrMs=;
-        b=NH6s+kbVUTyfsbkfppbsd3bwQ2b8oWWfZJh3iY4sFnfkWxSIT9S6OJEJEH7xguM1ohJ07u
-        hH9VdQe96rWQfUVV+ysTqgr15T46ZuWSwyRD9coB4cjU1SO49ID5SsPQVOJMjXAaHllriU
-        99Ip9Hr4ZW8c3CifsPMbVahupjycLhINgq92baxKrxZmL+hpDJtsqxKjE+N2ufnIMRjWN+
-        RuwiN3iv66F/yCgiQZPaUKw1sm8DvTt2Kp7H5dT6Kv4PIHXniPy60GXvQ+pAIxK39GPrE8
-        xiWg8/sGkit2mR4LtrV9Thf3zyRpHtv51nVqM/F3Cfxzr81iGD82IF2LpDJ8zQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611234755;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ezha1d0Zd2429mrCjSWxK7xBksyVQkmSg+5fZNwJrMs=;
-        b=7xUqdyt/GrUdqi7VkLKIDegNIVTLjiTf/ZxRzCJam7pHyMFOUnHxPS4ZljkgD5wSCP8qpu
-        xKVsuoubWVBLKkBg==
-From:   "tip-bot2 for Sami Tolvanen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Fix the return type of sgx_init()
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210113232311.277302-1-samitolvanen@google.com>
-References: <20210113232311.277302-1-samitolvanen@google.com>
+        Thu, 21 Jan 2021 08:14:37 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520C7C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:13:57 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id j26so1420996qtq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:13:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YLF2LgcHZ5DDqDazshlamJH0LMkuaN2/iqWq+I3Vnnk=;
+        b=cd9OxPlRA3NGn6WxwIGITPEw7+UzXHbPgSZU/5BS7jYp6BYL0OXp2IyBcPE6JlRpf1
+         qWDMHdUT2jnZQnGdHaPnkc+I7eMBR9eTp3kfSzZtu055dKw9spDa2ZDP0uXoNDzFsom9
+         zzc6Hre3OhsWYZwtNXkoYdBp/s8fVbH1YzQsPY0DVSabehP7mi351ECC0SCpkdOVwPZE
+         C3WUKW681ZruaNvJP88MT5OHC0u9XYDSrvP/7ZCPbmzXapinmW2lOqyYpivm3NjCDcNO
+         uz2swXoEDM6VgsNTwcWQRwOSHRvi8AW/zhP2z3q9LDeDUHX/NrGSDGNDkOVumnHum+U8
+         I7xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YLF2LgcHZ5DDqDazshlamJH0LMkuaN2/iqWq+I3Vnnk=;
+        b=USKb11qh0jEgHvdCZ793kDGukfymxWYNJVskpR6+uDBl0C+iofgb5OUnAqFJ9hLzD9
+         RKISADg9Vbcm7RPn07JpF3/Rr6/BN0QPwAHviJ5Lnd8/8ymSFk50kVsrQu8WcjERX8Zt
+         oB9Dkw+3OUhwwMus8aAUdhnp/+hVAj4hd3AloTqJXP0qH1DmLxr0fALYZWliUm0WBPCC
+         BK2NZDXgjXdAcYWGxyawwunY6vzgtqqFz9oYMBV/vS+Vgle3usQcw4I+BpCOrZfJ+JKA
+         VDavO/OKAXk46+WK505BmNc94RSZkmOWuUl0rqqBriC7g2uy7DH3E2Oj75Cb1LJOYIpM
+         szHQ==
+X-Gm-Message-State: AOAM533dL2tl5h0ps12BncFgNk40FSAoC3GioBkFP49JKF7ioeFmN+ij
+        SbnTdMUZOv52ko7MzjpSASub7CeMaVk4OkMRcpMobg==
+X-Google-Smtp-Source: ABdhPJwPMOyA61qAapbbCW1TPCBI3hRdcUzarAepbrG9mvi3+kAHKu7qPzTfKGToYHAPCaWHOxIKhwd47U8kAEnwwFw=
+X-Received: by 2002:ac8:7111:: with SMTP id z17mr13542060qto.369.1611234836264;
+ Thu, 21 Jan 2021 05:13:56 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161123475481.414.2596508265480174315.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210115130336.2520663-1-glider@google.com> <20210115130336.2520663-3-glider@google.com>
+ <YAVzNrBIlp0UJKfs@alley> <CAG_fn=UmjC2LOCXRpp+vTZ6nr0M7=dCKjFYgVFVvmqftTkjGYw@mail.gmail.com>
+ <YAW6wsuEYe9/Zjxv@alley>
+In-Reply-To: <YAW6wsuEYe9/Zjxv@alley>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 21 Jan 2021 14:13:43 +0100
+Message-ID: <CAG_fn=VxX10v=g_SyAKkRXaQYOUK1S6BzO3e1K5jusbhomRwUQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] lib: add error_report_notify to collect debugging
+ tools' reports
+To:     Petr Mladek <pmladek@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+Thank you all for the comments!
 
-Commit-ID:     31bf92881714fe9962d43d097b5114a9b4ad0a12
-Gitweb:        https://git.kernel.org/tip/31bf92881714fe9962d43d097b5114a9b4ad0a12
-Author:        Sami Tolvanen <samitolvanen@google.com>
-AuthorDate:    Wed, 13 Jan 2021 15:23:11 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 21 Jan 2021 14:04:06 +01:00
-
-x86/sgx: Fix the return type of sgx_init()
-
-device_initcall() expects a function of type initcall_t, which returns
-an integer. Change the signature of sgx_init() to match.
-
-Fixes: e7e0545299d8c ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/20210113232311.277302-1-samitolvanen@google.com
----
- arch/x86/kernel/cpu/sgx/main.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c519fc5..8df81a3 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -700,25 +700,27 @@ static bool __init sgx_page_cache_init(void)
- 	return true;
- }
- 
--static void __init sgx_init(void)
-+static int __init sgx_init(void)
- {
- 	int ret;
- 	int i;
- 
- 	if (!cpu_feature_enabled(X86_FEATURE_SGX))
--		return;
-+		return -ENODEV;
- 
- 	if (!sgx_page_cache_init())
--		return;
-+		return -ENOMEM;
- 
--	if (!sgx_page_reclaimer_init())
-+	if (!sgx_page_reclaimer_init()) {
-+		ret = -ENOMEM;
- 		goto err_page_cache;
-+	}
- 
- 	ret = sgx_drv_init();
- 	if (ret)
- 		goto err_kthread;
- 
--	return;
-+	return 0;
- 
- err_kthread:
- 	kthread_stop(ksgxd_tsk);
-@@ -728,6 +730,8 @@ err_page_cache:
- 		vfree(sgx_epc_sections[i].pages);
- 		memunmap(sgx_epc_sections[i].virt_addr);
- 	}
-+
-+	return ret;
- }
- 
- device_initcall(sgx_init);
+Since concerns have been raised that another error reporting system
+may quickly go out of control, we've decided to not pursue this
+solution any further.
+Instead, we will try to rely on existing ftrace mechanisms to deliver
+notifications to the userspace, and perform dmesg collection/parsing
+once a notification is received.
+As a result, we won't need the error_report_start tracepoint anytime
+soon (I didn't rename error_report_end to something like error_report
+anticipating that error_report_start may be needed in the future).
+I've also dropped the error_report_notify library and the
+corresponding documentation from the patchset.
