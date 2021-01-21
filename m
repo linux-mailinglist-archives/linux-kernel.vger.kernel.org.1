@@ -2,164 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35772FEEFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E172FEF0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733082AbhAUPe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:34:57 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7508 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733067AbhAUPcp (ORCPT
+        id S1733169AbhAUPh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:37:56 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:36934 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733034AbhAUPhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:32:45 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10LF3PLS038979;
-        Thu, 21 Jan 2021 10:32:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=aCElnvwKfbrPxUa8VLjgh4RujJId+/ZPrLbTNpvdxW8=;
- b=j5TST7J6cLGnQUIVKVeV1aacwF0dzyIdrz8sRv0NAxKKsGgJ/dmin27QGX4vquvFTYIz
- b8xrmtTNORABcvDD6RdgJwTJ6/lCF0C5SfdeHJILhvTuJVHe/BZSr+o6bJztz1+ZhdEE
- /1EBPgD4UQRTIK9wjV/q7npiRhnL68CdkOIhi2RYkZhb7RXlxiuUS4k5Z1ZCqBHY8tsV
- WleQeuF1OV92/QGHMAWGGG3rgvpu1rKvZmFalYl1IOARB6NfnktdRqazeqk2NusMOfQe
- yWXnHSMgZSNW4snoEnaw6jNxoIJDGuk8SQW2odYOStsUtZbU9+6tcngNkKPtV9u/WimM sg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 367bc2jep6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 10:32:01 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10LFDEf9009582;
-        Thu, 21 Jan 2021 15:31:59 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 3668pj8xcg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 15:31:59 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10LFVugW45809974
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 15:31:56 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 43B4BA404D;
-        Thu, 21 Jan 2021 15:31:56 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C7E89A4040;
-        Thu, 21 Jan 2021 15:31:55 +0000 (GMT)
-Received: from [9.145.88.16] (unknown [9.145.88.16])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 21 Jan 2021 15:31:55 +0000 (GMT)
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-References: <20210115152903.GA2086339@bjorn-Precision-5520>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <1cf42837-bf98-944f-697c-8407a0ebd623@linux.ibm.com>
-Date:   Thu, 21 Jan 2021 16:31:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20210115152903.GA2086339@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
+        Thu, 21 Jan 2021 10:37:04 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LFYII6146890;
+        Thu, 21 Jan 2021 15:35:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=8EEkYBvY8fbSdFP6aylnmPi0I4ePUFrr4CiDFcJK23w=;
+ b=LWOeLbm+9QhJopEnu8B+dl61YhhGdd7Czpv6JFBy3LBpwOjJVs+/wG8ilyEsgjR8ndbO
+ eELCqJP/gb9T9fryFi5bFAkNm1Fr9ycPh6jBD1Ne43UyngYrYGFI1UOOGFid6RcDWW8g
+ 5p7df5nyKkmVfT54MsAb4URqDgQTZOdIapg+EJqKIDbXf1NolK0J1BiA19Dw0ooOVZXC
+ D2NhJr+9n7Yjhvl+58vGkwaxVZGx8yRyEHcwZbZC6qpD4ISO89YeJjU4OPfQBf1NytQO
+ WG1mNAjm28ZvmBs6g1UHyC23+tZ8EwuftWb7RkoAFlbe3vWx6pMrC3PwczKtH9Nu3gvM GQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3668qmyvg9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 15:35:03 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LFAtnQ180049;
+        Thu, 21 Jan 2021 15:33:02 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172])
+        by userp3020.oracle.com with ESMTP id 3668qy9awk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 15:33:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TIu1/8t+XuHVGCHMzYrcQWEJyW46DuR4nAwtQbR0ose6HBelGioPidBbodi4jraB9GGEWZ+2wD48b58MJuba4hx46tCTllxEB5JlsnFWdThiZklNSC1jMNz1kr2atxiRau3u3XMZr+kXqTvilZt2+GVqLPCCpBWcvBjlKFWN3Hxco9T8NN4tdrgNgX+Gy3Dm1OcNbrTFbwlbjD9+7o8VxThGqpr9lXwUwAHWWEzkuXfJ9uGOybErAA9aclrRfeRu33XqMsjMHR84Qm+Jgct2aK/wCm6gzdLxJdHKD77Z+5U+Yv34XFVxg4sA1TXOLZSLaRvtEOjpkB6Jb9By6zG1UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8EEkYBvY8fbSdFP6aylnmPi0I4ePUFrr4CiDFcJK23w=;
+ b=a1gkk2tTh82zTKBZYx12iTIr3qaWWCYzieM/PDGZPWoqFRlbdT+nROL62m6HUCFNPX96vaRLeO/bAyRHq7u3GO5/7pOGCmljwuvk7y38DxwRWjsUdqsRkRjBLtd1JFB/BHdUGMeBmW7vAAX14HUFKmxOTiW0RKH/sZ3Hz6w+ElpQXs044D/xYFu+ZzdC56GTvapi26vuGoG8r4hNwFgwfWwvptgMkQk2HcpmjpbbvPt67FfptTtciw28Pi1WAFbtVlTnSpIFtnL2OuT7y3lZhy7eMjBcTQRnIVEUUwrsc7EyRdfzxIrwviBznzqlUsIVGzQvrQGFTWhaUZQsk5VzQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8EEkYBvY8fbSdFP6aylnmPi0I4ePUFrr4CiDFcJK23w=;
+ b=H/xAOxjT+zzfOB0Aor6AIzYCh9qj3qZ69a6ud1vjd7D137T4rqVsElUGGtlHgKE0ansAl0yNj4s37cv3zk3ReLXCr4XG51JoSVch8FlKkceaj90JTmzEmBIfbaOrCs0mZYscJQkFgu2EPLr3fAvaItBZUE/Ghx956IwddyDc9f0=
+Received: from CO1PR10MB4722.namprd10.prod.outlook.com (2603:10b6:303:9e::12)
+ by MWHPR1001MB2285.namprd10.prod.outlook.com (2603:10b6:301:2e::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.7; Thu, 21 Jan
+ 2021 15:32:57 +0000
+Received: from CO1PR10MB4722.namprd10.prod.outlook.com
+ ([fe80::50a1:9424:e4df:af22]) by CO1PR10MB4722.namprd10.prod.outlook.com
+ ([fe80::50a1:9424:e4df:af22%4]) with mapi id 15.20.3784.013; Thu, 21 Jan 2021
+ 15:32:56 +0000
+Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
+ and ARM
+To:     Dave Young <dyoung@redhat.com>,
+        Guilherme Piccoli <gpiccoli@canonical.com>
+Cc:     Kairui Song <kasong@redhat.com>,
+        Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# v4 . 16+" <stable@vger.kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        =?UTF-8?Q?Diego_Elio_Petten=c3=b2?= <flameeyes@flameeyes.com>,
+        Olof Johansson <olof@lixom.net>,
+        Shawn Guo <shawnguo@kernel.org>,
+        John Donnelly <john.p.donnelly@oracle.com>
+References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
+ <CACPcB9e8p5Ayw15aOe5ZNPOa7MF3+pzPdcaZgTc_E_TZYkgD6Q@mail.gmail.com>
+ <AC36B9BC-654C-4FC1-8EA3-94B986639F1E@oracle.com>
+ <CACPcB9d7kU1TYaF-g2GH16Wg=hrQu71sGDoC8uMFFMc6oW_duQ@mail.gmail.com>
+ <CAHD1Q_yB1B4gu7EDqbZJ5dxAAkr-dVKa9yRDK-tE3oLeTTmLJQ@mail.gmail.com>
+ <20201123034705.GA5908@dhcp-128-65.nay.redhat.com>
+From:   john.p.donnelly@oracle.com
+Message-ID: <d6b5b7f3-ba38-be61-d3fe-975c3343a79d@oracle.com>
+Date:   Thu, 21 Jan 2021 09:32:50 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
+In-Reply-To: <20201123034705.GA5908@dhcp-128-65.nay.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-21_08:2021-01-21,2021-01-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
- impostorscore=0 spamscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101210081
+X-Originating-IP: [47.220.66.60]
+X-ClientProxiedBy: CH2PR18CA0055.namprd18.prod.outlook.com
+ (2603:10b6:610:55::35) To CO1PR10MB4722.namprd10.prod.outlook.com
+ (2603:10b6:303:9e::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from jpd-mac.local (47.220.66.60) by CH2PR18CA0055.namprd18.prod.outlook.com (2603:10b6:610:55::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 15:32:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b8ab371a-c393-48d6-e2f2-08d8be21d395
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2285:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB22857299E775521EB3E55E35C7A10@MWHPR1001MB2285.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ajnS0mZ2M3Gs9r41n5j9hiQcd3bMZn1zMSoCuz6LdzETDOIOWIjnLSE9ejRtj9Uq2xpEwyzwsLP0zVWo0j+RNJH9ZYzOxgEf4A+kUN6AmoJ48yG+buS+PtA4mlaKdEpA+beJzDqUdQilY9wajZH+6mJZhI6eNT2dAUvPXE5PuFRioHZQAGYHDA5Eqqf3W8vXu/PiEiaByZrkEAmNiAwC1mMtJ4e90I0WyIa3aUwQzuub0guj9hxQhtlET0MVP9pRe+lI0DmvJ6+P2uLJzDX5P9X9qBdg3W2zQgA4luBgAgwk5TGtwZ5TEugFnsx8blQbE39039r+uk0S4fQals4nnEaOO2xshfQBIYtpNap5sYNahQw/194+KqC/FPAiQqrbrjZCixkib/gGtZhfxDVk6FZTRb63pLGTIzeQSmIx2jg5emVOYKTQhZA6Q0480qhi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4722.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(110136005)(36756003)(53546011)(31696002)(498600001)(54906003)(107886003)(8936002)(8676002)(6506007)(7416002)(16526019)(956004)(6512007)(86362001)(26005)(9686003)(4326008)(2616005)(66476007)(31686004)(6486002)(66946007)(66556008)(186003)(2906002)(7406005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a3JEa0QzZjBWaGJiV2JBZ3RRdytOeVBnYjBxQXcxTmd2NjJsU3JHVCtaMjl0?=
+ =?utf-8?B?NC9WSHRJQUxYS21Ja29WbnpqRkpLVm9aMXRoUUd5bG5GWTJJUEFtczhYVTRK?=
+ =?utf-8?B?M3E5WXA4MU1xRVhOTW5yMDZqcEdVcm02TDJaSldYMEp0UGk3c2toM2I1V3Br?=
+ =?utf-8?B?QW41VzUyVFlackYyYTZBYUdiTlRRdVR0VlFJS3R2cy81NzA4R2J5Y1dVbUx5?=
+ =?utf-8?B?aWZETkFSQXFQL2FoWStUVEpTM2lnRmlTRENnVFZPd1hMNlNYWjVMQnRYc1gz?=
+ =?utf-8?B?aVMvMUoyelNpTmlramZYdmRiZFJBeGMwcDZGQXVBbVpwb2w2cEM5SlB4aFBL?=
+ =?utf-8?B?enBKUVk3SExGZEJlVy9FZnBmSjkzZlp5aG1acjVLM05kb09LYStINW9hdUU0?=
+ =?utf-8?B?NkNjL0h3d3MxMjFBNzdaazhWcFVtVnlTSlBhUEFaUnFldXZ5V2RINWR5YVZ2?=
+ =?utf-8?B?TzFwazF1cEt2c3lkWGo1SEhETzVyYmtlZGVIWjNFL0tyeUhYNTZtajk2K3Zm?=
+ =?utf-8?B?cUFzK29lbWRIT0J1aVlHRTF5YUpLanBZUXg4MENtQ2VYU2NhbURIYy9ER2FZ?=
+ =?utf-8?B?b0JXTEZ2S0huYjYyNzZMYzNpTzFuSldJTzNjYjcvMEhKY2dGZllTZTFxcUVZ?=
+ =?utf-8?B?RnZ1QUwrQ01yUEo4TE9MK1dLNklMSVFFL0dvaEQrUStiZ29tVHZJMG9HakF0?=
+ =?utf-8?B?SzVxR1k3M21PdytjcDVOMVhCcWJ1TWlGd0RxV1VpVUxhMFhxdWMwOVM0eUgx?=
+ =?utf-8?B?OGhCaWtRQUZrcEFQSzJ1Nld0TFJGbms0cE9IcXRKWkhndXhwZThjSjl1V0pV?=
+ =?utf-8?B?VTRXYXZDTDZld3hsYjZDaHhBZU9QR1hYRStFN2h4Y2tFM1NGdXViaE9nMzFj?=
+ =?utf-8?B?TFNXZXJwZzBYb0Y0YzNIN0RYM0d5TDNXZGNsYUJlWmtQa3FwMFN0Mmdrcnhm?=
+ =?utf-8?B?NjdsTmtaNmtaUzJQOGhtcGd5Y0t1V1UxNHpRelVvVzdvZ1pmQlhmd3ZhcENT?=
+ =?utf-8?B?a3QzMGxZaC9EeFBkSDdZZ3JQbVlXUEJ4QWh3V0JKS1lnMFFrdEZQYVFoU1p2?=
+ =?utf-8?B?KytiUUF1MWg3WjVDa2NnRDh3bWhTczlQY2xwWi9lNUdEZ3NwaEdBY3ZqTkxO?=
+ =?utf-8?B?RFV5NmQzdjg3UWpDclY3U3NZTjJvc2pESzNjMEpZdkRmZUNDdlQrM25WNGdB?=
+ =?utf-8?B?SmpQNGlRYXR3aEFQbUxRdStjbG5hNUtSVXduaytrV1NteEw5MVhLRFpOTmZF?=
+ =?utf-8?B?bHVYcmcyWG9KRXV3WEJPbkVHdFNBYmVGVnFMN095dTNlanM4ZXY2QlY2TTFy?=
+ =?utf-8?Q?+T/e6vEjKuCJF35UEpdKh6I3kRQsJyIoCT?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8ab371a-c393-48d6-e2f2-08d8be21d395
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4722.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 15:32:56.8268
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s/bpvvowYX45ZJwsy5yxSv3KK3uXzMrvUyjo0Dd/uskI0o8twY5UnC7nytsfr7yOxSL+a0a3WagRrivgIDD49L4megK1+a8HvqNeU5K1qjM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2285
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 adultscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
+ adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1011 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/15/21 4:29 PM, Bjorn Helgaas wrote:
-> On Fri, Jan 15, 2021 at 12:20:59PM +0100, Niklas Schnelle wrote:
->> On 1/14/21 5:14 PM, Greg Kroah-Hartman wrote:
->>> On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
->>>> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
->>>>> On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
->>>>>> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
->>>>>>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
->>>>>>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
->>>>>>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
->>>>>>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
->>>>>>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
->> ... snip ...
->>
->>>
->>>> 	if (!zpci_global_kset)
->>>> 		return -ENOMEM;
->>>>
->>>> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
->>>
->>> Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
->>> that's usually a huge clue that you are doing something wrong.
->>>
->>> Try the above again, with a simple attribute group, and name for it, and
->>> it should "just work".
->>
->> I'm probably missing something but I don't get how this could work
->> in this case. If I'm seeing this right the default attribute group
->> here is pci_bus_type.bus_groups and that is already set in
->> drivers/pci/pci-driver.c so I don't think I should set that.
->>
->> I did however find bus_create_file() which does work when using the
->> path /sys/bus/pci/uid_checking instead. This would work for us if
->> Bjorn is okay with that path and the code is really clean and simple
->> too.
->>
->> That said, I think we could also add something like
->> bus_create_group().  Then we could use that to also clean up
->> drivers/pci/slot.c:pci_slot_init() and get the original path
->> /sys/bus/pci/zpci/uid_checking.
+On 11/22/20 9:47 PM, Dave Young wrote:
+> Hi Guilherme,
+> On 11/22/20 at 12:32pm, Guilherme Piccoli wrote:
+>> Hi Dave and Kairui, thanks for your responses! OK, if that makes sense
+>> to you I'm fine with it. I'd just recommend to test recent kernels in
+>> multiple distros with the minimum "range" to see if 64M is enough for
+>> crashkernel, maybe we'd need to bump that.
 > 
-> I don't think "uid_checking" is quite the right name.  It says
-> something about the *implementation*, but it doesn't convey what that
-> *means* to userspace.  IIUC this file tells userspace something about
-> whether a given PCI device always has the same PCI domain/bus/dev/fn
-> address (or maybe just the same domain?)
+> Giving the different kernel configs and the different userspace
+> initramfs setup it is hard to get an uniform value for all distributions,
+> but we can have an interface/kconfig-option for them to provide a value like this patch
+> is doing. And it could be improved like Kairui said about some known
+> kernel added extra values later, probably some more improvements if
+> doable.
 > 
-> It sounds like this feature could be useful beyond just s390, and
-> other arches might implement it differently, without the UID concept.
-> If so, I'm OK with something at the /sys/bus/pci/xxx level as long as
-> the name is not s390-specific (and "uid" sounds s390-specific).
-> 
-> I assume it would also help with the udev/systemd end if you could
-> make this less s390 dependent.
-> 
-> Bjorn
+> Thanks
+> Dave
 > 
 
-Hi Bjorn,
+Hi.
 
-I've thought about this more and even implemented a proof of concept
-patch for a global attribute using a pcibios_has_reproducible_addressing()
-hook. 
+Are we going to move forward with implementing this for X86 and Arm ?
 
-However after implementing it I think as a more general and
-future proof concept it makes more sense to do this as a per device
-attribute, maybe as another flag in "stuct pci_dev" named something
-like "reliable_address". My reasoning behind this can be best be seen
-with a QEMU example. While I expect that QEMU can easily guarantee
-that one can always use "0000:01:00.0" for a virtio-pci NIC and
-thus enp1s0 interface name, the same might be harder to guarantee
-for a SR-IOV VF passed through with vfio-pci in that same VM and
-even less so if a thunderbolt controller is passed through and
-enumeration may depend on daisy chaining. The QEMU example
-also applies to s390 and maybe others will in the future.
-I'll send an RFC for a per device attribute but didn't want to
-let this discussion stand as if we had abandoned the idea and if
-you would prefer a global attribute I can also send an RFC for that.
+If other platform maintainers want to include this CONFIG option in 
+their configuration settings they have a starting point.
 
-Besst regards,
-Niklas
+Thank you,
+
+John.
+
+( I am not currently on many of the included dist lists  in this email, 
+so hopefully key contributors are included in this exchange )
