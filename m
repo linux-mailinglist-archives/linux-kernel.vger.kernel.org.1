@@ -2,182 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8E02FF0E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4612FF116
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731745AbhAUQsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:48:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
+        id S2388224AbhAUQxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388093AbhAUQr0 (ORCPT
+        with ESMTP id S1729690AbhAUQwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:47:26 -0500
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95637C06174A;
-        Thu, 21 Jan 2021 08:46:46 -0800 (PST)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 936E66EA0; Thu, 21 Jan 2021 11:46:45 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 936E66EA0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1611247605;
-        bh=SMNqchMfCuBnU6URpBi2IppjnSQWbunDX2rP81h8s74=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=CulROAm4ORn1hRNLMpJWc6E4tPFkYgd7VCJ8OmtPjJpYFmNMaj0YysNe1KlvKYxMa
-         o63lHD4YoDYlZWtBNVfCRrdJW5TrJbQ/HHQo6SjdEjrIQPKbkyT2HttWc4EbF6CBcB
-         lcPlEf0+SNLGDZt3uQKHFq0iPAT/Fapo/Glc8Tjk=
-Date:   Thu, 21 Jan 2021 11:46:45 -0500
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
-Message-ID: <20210121164645.GA20964@fieldses.org>
-References: <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+        Thu, 21 Jan 2021 11:52:47 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477DCC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 08:52:07 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id b5so2056580pjl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 08:52:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fAAepta+Tqry3dwEzmnD+L2F5Kc/TshmNl4dFx/u10Q=;
+        b=R3fyu0fHBeYFl8+KllQfgKo0GAS/EQ3LTyUPJWmtJgJW/t2r2NA/soXcdnOc8pwjm/
+         YV/nH3KzMnuXXy+Td3v5rqnS6jAeHQrnhXtOhTAQv63hH6VwAzzkOfuOwc80HNS7nZXA
+         iwUKhfx4UYhsomTYcEZTkNhKDlu7ooAKDts+YM5YmpOwzG6J8t0dB8YD8RYL8OTuJSj1
+         32qJDCp60EUdnqxMsXAh5HADvCNHU86tiFMiKeMQ/HeGGwcm21NAi9E62FeYUtQyIXku
+         xQEeiIB/L1QvWJJztzz969TQrziOFBR+ZwuU3EUSLovuW4F5EwGX6lm8HQpnlQwwQh+J
+         cd7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fAAepta+Tqry3dwEzmnD+L2F5Kc/TshmNl4dFx/u10Q=;
+        b=FNkpIQS9bn/y6s5lbF53i+dwjiMpQgsqLjsAlyM+q1cLy6tm70ARtpy/LH7T71If0r
+         jywD9SbgH3V/V8oXJX3yRFUsNCONXvtlhwWm/+/Ouz0PDFOzNE4GKWhd1+lK0gHYllvO
+         0dwxkItaNrmuc5wr9bU/kxCMeCnQkWbdmfqTWdL8T3DlWjgjlMFHhFlh6S6zTi7Xpeu3
+         c9y3nQkw73ntf07r96x1stSDDie5TyUqq5uxvUHk6szzVBmueHKPnWYm3issfqydCCMA
+         hTMq2xNUrccjD32iJXrytO1LR5QoaK69SZjo4PjMcWsN09W7o+OnD7NXuBGZDto6NfsO
+         QU+g==
+X-Gm-Message-State: AOAM533kbSTZf9HofhWIXygEAS8mFSU9bgO9JngL87F9wLJ/z9q1w7/+
+        FIX6XDeGYxZytpcNaeM3iX+ZHsvDXuV3jIUU
+X-Google-Smtp-Source: ABdhPJxvXPxDfEVdok2+F/Npp9UDEVvDC8WJg+QQg60J6Q9IZeX4O9BqYh34M6w1BtwugxcCclTKQg==
+X-Received: by 2002:a17:90a:4a0e:: with SMTP id e14mr317436pjh.200.1611247926455;
+        Thu, 21 Jan 2021 08:52:06 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:5c0b:3035:cd47:c5b3:4276:dc05])
+        by smtp.gmail.com with ESMTPSA id m27sm5924291pgn.62.2021.01.21.08.52.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 08:52:05 -0800 (PST)
+From:   Prathu Baronia <prathubaronia2011@gmail.com>
+X-Google-Original-From: Prathu Baronia <prathu.baronia@oneplus.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     chintan.pandya@oneplus.com,
+        Prathu Baronia <prathu.baronia@oneplus.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "glider@google.com" <glider@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/1] mm: Optimizing hugepage zeroing in arm64
+Date:   Thu, 21 Jan 2021 22:21:50 +0530
+Message-Id: <20210121165153.17828-1-prathu.baronia@oneplus.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:21:24PM +0000, David Howells wrote:
->      Note that this uses SEEK_HOLE/SEEK_DATA to locate the data available
->      to be read from the cache.  Whilst this is an improvement from the
->      bmap interface, it still has a problem with regard to a modern
->      extent-based filesystem inserting or removing bridging blocks of
->      zeros.
+Hello!
 
-What are the consequences from the point of view of a user?
+This patch removes the unnecessary kmap calls in the hugepage zeroing path and
+improves the timing by 62%.
 
---b.
+I had proposed a similar change in Apr-May'20 timeframe in memory.c where I
+proposed to clear out a hugepage by directly calling a memset over the whole
+hugepage but got the opposition that the change was not architecturally neutral.
 
-> 
-> This is a step towards overhauling the fscache API.  The change is opt-in
-> on the part of the network filesystem.  A netfs should not try to mix the
-> old and the new API because of conflicting ways of handling pages and the
-> PG_fscache page flag and because it would be mixing DIO with buffered I/O.
-> Further, the helper library can't be used with the old API.
-> 
-> This does not change any of the fscache cookie handling APIs or the way
-> invalidation is done.
-> 
-> In the near term, I intend to deprecate and remove the old I/O API
-> (fscache_allocate_page{,s}(), fscache_read_or_alloc_page{,s}(),
-> fscache_write_page() and fscache_uncache_page()) and eventually replace
-> most of fscache/cachefiles with something simpler and easier to follow.
-> 
-> The patchset contains four parts:
-> 
->  (1) Some helper patches, including provision of an ITER_XARRAY iov
->      iterator and a function to do readahead expansion.
-> 
->  (2) Patches to add the netfs helper library.
-> 
->  (3) A patch to add the fscache/cachefiles kiocb API
-> 
->  (4) Patches to add support in AFS for this.
-> 
-> With this, AFS without a cache passes all expected xfstests; with a cache,
-> there's an extra failure, but that's also there before these patches.
-> Fixing that probably requires a greater overhaul.
-> 
-> These patches can be found also on:
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-netfs-lib
-> 
-> David
-> ---
-> David Howells (24):
->       iov_iter: Add ITER_XARRAY
->       vm: Add wait/unlock functions for PG_fscache
->       mm: Implement readahead_control pageset expansion
->       vfs: Export rw_verify_area() for use by cachefiles
->       netfs: Make a netfs helper module
->       netfs: Provide readahead and readpage netfs helpers
->       netfs: Add tracepoints
->       netfs: Gather stats
->       netfs: Add write_begin helper
->       netfs: Define an interface to talk to a cache
->       fscache, cachefiles: Add alternate API to use kiocb for read/write to cache
->       afs: Disable use of the fscache I/O routines
->       afs: Pass page into dirty region helpers to provide THP size
->       afs: Print the operation debug_id when logging an unexpected data version
->       afs: Move key to afs_read struct
->       afs: Don't truncate iter during data fetch
->       afs: Log remote unmarshalling errors
->       afs: Set up the iov_iter before calling afs_extract_data()
->       afs: Use ITER_XARRAY for writing
->       afs: Wait on PG_fscache before modifying/releasing a page
->       afs: Extract writeback extension into its own function
->       afs: Prepare for use of THPs
->       afs: Use the fs operation ops to handle FetchData completion
->       afs: Use new fscache read helper API
-> 
-> Takashi Iwai (1):
->       cachefiles: Drop superfluous readpages aops NULL check
-> 
-> 
->  fs/Kconfig                    |    1 +
->  fs/Makefile                   |    1 +
->  fs/afs/Kconfig                |    1 +
->  fs/afs/dir.c                  |  225 ++++---
->  fs/afs/file.c                 |  472 ++++----------
->  fs/afs/fs_operation.c         |    4 +-
->  fs/afs/fsclient.c             |  108 ++--
->  fs/afs/inode.c                |    7 +-
->  fs/afs/internal.h             |   57 +-
->  fs/afs/rxrpc.c                |  150 ++---
->  fs/afs/write.c                |  610 ++++++++++--------
->  fs/afs/yfsclient.c            |   82 +--
->  fs/cachefiles/Makefile        |    1 +
->  fs/cachefiles/interface.c     |    5 +-
->  fs/cachefiles/internal.h      |    9 +
->  fs/cachefiles/rdwr.c          |    2 -
->  fs/cachefiles/rdwr2.c         |  406 ++++++++++++
->  fs/fscache/Makefile           |    3 +-
->  fs/fscache/internal.h         |    3 +
->  fs/fscache/page.c             |    2 +-
->  fs/fscache/page2.c            |  116 ++++
->  fs/fscache/stats.c            |    1 +
->  fs/internal.h                 |    5 -
->  fs/netfs/Kconfig              |   23 +
->  fs/netfs/Makefile             |    5 +
->  fs/netfs/internal.h           |   97 +++
->  fs/netfs/read_helper.c        | 1142 +++++++++++++++++++++++++++++++++
->  fs/netfs/stats.c              |   57 ++
->  fs/read_write.c               |    1 +
->  include/linux/fs.h            |    1 +
->  include/linux/fscache-cache.h |    4 +
->  include/linux/fscache.h       |   28 +-
->  include/linux/netfs.h         |  167 +++++
->  include/linux/pagemap.h       |   16 +
->  include/net/af_rxrpc.h        |    2 +-
->  include/trace/events/afs.h    |   74 +--
->  include/trace/events/netfs.h  |  201 ++++++
->  mm/filemap.c                  |   18 +
->  mm/readahead.c                |   70 ++
->  net/rxrpc/recvmsg.c           |    9 +-
->  40 files changed, 3171 insertions(+), 1015 deletions(-)
->  create mode 100644 fs/cachefiles/rdwr2.c
->  create mode 100644 fs/fscache/page2.c
->  create mode 100644 fs/netfs/Kconfig
->  create mode 100644 fs/netfs/Makefile
->  create mode 100644 fs/netfs/internal.h
->  create mode 100644 fs/netfs/read_helper.c
->  create mode 100644 fs/netfs/stats.c
->  create mode 100644 include/linux/netfs.h
->  create mode 100644 include/trace/events/netfs.h
-> 
+Upon revisiting this now I see significant improvement by removing around 2k
+barrier calls from the zeroing path. So hereby I propose an arm64 specific
+definition of clear_user_highpage().
+
+Prathu Baronia (1):
+  mm: Optimizing hugepage zeroing in arm64
+
+ arch/arm64/include/asm/page.h | 3 +++
+ arch/arm64/mm/copypage.c      | 8 ++++++++
+ 2 files changed, 11 insertions(+)
+
+-- 
+2.17.1
+
