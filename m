@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AD82FE755
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900E02FE717
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbhAUKQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:16:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
+        id S1728655AbhAUKGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:06:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728983AbhAUJro (ORCPT
+        with ESMTP id S1728989AbhAUJrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:47:44 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C24C061344
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:59 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id q7so1036907wre.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:59 -0800 (PST)
+        Thu, 21 Jan 2021 04:47:51 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC83DC061347
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:46:00 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id a9so1056070wrt.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:46:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hHWi4XXx2vyVztgjTgAmprH4VRWvHZdCQBx5OVlNKfY=;
-        b=lgfYOvgxTbmldjCfGQVsXLWqgsor7xJTmEgRIw5q8Ks1K+0y2v4FIO6SqDa8zyLRsD
-         8YID8tJA3CvEd/laqfupMqMPV8mKMaBv6DXL9iB6/R+X5sqrPK+BfwRmDsytoG7ulKVD
-         X3GPNKgGxvfxRQL1o0OaAOIYeYy/kd0bAp++V56jgMjzJ6N24JxVKiCc68JqSIi1Hk/z
-         RdMgpxskr2osXM9qKuCxUwBHxbTWF8c34L6P0zxlHH1rLKpK1hkQZBgvNPWaQWbY0GU1
-         YaaWrdeTHGep+huyI4O0zXrq0JiuCewdu1apJ5kLtRRYKxkssPD6UWxUOdWbDJGB+x4+
-         QJ3Q==
+        bh=rLv2flVn35uo9irrj5vj4AyXKUEKpIoSxfExpgzfyqk=;
+        b=W/Cw7iSAfCegPPgWDVVFavdDoZgNTLSWzdLW5FgGDNh8rpuW9FQC2cDYzRkAhQr54V
+         epHWNXbURwsDrFWKsuDruRHu9PVKrvWXBoOZJ2vezQkq8zouISncNxlIwsARDz8dFQpz
+         wgE+TeAZMzlYbMGUgRBxOn8IHZkq+K2sdZcrF9wnXy1cQryjcfR5HodAV2IGAMaz7XUY
+         mj7qAra0JQ1UsXLROHPI6G9OtL48SoRas3GYp48hZjllcWsvwesiD/n0IIfPFdfKdHvC
+         keDQhVO+Ir/8HHUCNgC9ylEL5H2oOfEegvkzeTJxtcQv79DgosWg9nUrPWzBwiyquAH0
+         Q1Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hHWi4XXx2vyVztgjTgAmprH4VRWvHZdCQBx5OVlNKfY=;
-        b=IM4vCKWQZSohcaNSdpxxHKWLZIHaPqUB7VRdMy95TsoZCYRiMWFh1IuQ2wCEP93/Ga
-         qx+cqN2SmdGXJvZHk5UgVoyIABETWMVvmLSv0Np4jk+9Si+QxjpO2jgYumTdRstz9Diz
-         9tuMXVaPIaRFwRmnYC+tI9GZZ/ESu7qMuAI8lCR9GvoIQt6/fN+epvy72CS92S7dRIAp
-         F0kjz3pDHV6+KiFe6B4WNxZC8EGSIBKq08KQyFAknPM02zZd1iyH6+fKYegwbhhtBZlh
-         faoJJQTlWDD2ORSXEd7PNk/254yrDwCQPx3Z+QmWKVg8naDjCWfEPYMuBqAElWOfREie
-         oMEA==
-X-Gm-Message-State: AOAM531YgWFnm583WnwgVGQ/TBXTgof2N4XsBCfQCVyJiZ6TLhTEdrzS
-        gqPnGF/N/xjCsv9cO1YAivPjQLWbhO5ZaLuK
-X-Google-Smtp-Source: ABdhPJz2zDgq7vJg6Rf0Bfqtm30Oq7JlUDjRPhnw8ZGHxiWVsIkHVD2umFKM+J6YRqF3Kv0ci2cdfg==
-X-Received: by 2002:adf:e7c1:: with SMTP id e1mr1969479wrn.23.1611222358180;
-        Thu, 21 Jan 2021 01:45:58 -0800 (PST)
+        bh=rLv2flVn35uo9irrj5vj4AyXKUEKpIoSxfExpgzfyqk=;
+        b=ardWKrHLb1/Vz3McWSbAnRlEpVPgaIZDUBjWU1wsKttqMq5SrwH7bH+aSjvcW/h06y
+         Lh45JJirfBcDEi1Gu/CXkAmZuXCzCqMJWvPAdU958CJYG0NzuHa6QJhOUUZbFFLeBrCN
+         BPkwUw/pHjdz+uF/0TuQ/r9iRYb2BNLLWI9vrZ3uRzOJJJy0S7KnNYfGoiyfp3DiXjue
+         bOGdB0c4qjM12K8lyIFu85uhU6m2VtKBAJgSvvhf8h6DZMXX9LZANORuiVY1Ry4W6N3m
+         KajrKN0b7VCHrBtH7fdlrqflcC9YlJLbftfIlQWRx2+oWtCjUyI7IvdJmSycAVyftieT
+         3Bmg==
+X-Gm-Message-State: AOAM531M+AhpIPQAKPNSXlhu8ssROBlX5EGof+pQ3OTzf2api1Vqd1Yl
+        hP3S/DIsv6niBnrUamNYwxNUfQ==
+X-Google-Smtp-Source: ABdhPJy2RelPiJq9pzkrT/MZnHW73VgbvuH/hiBDTlyXNz25cnCEXSa6atgMPguJqI6GtClf9uxDUQ==
+X-Received: by 2002:adf:f684:: with SMTP id v4mr13530258wrp.387.1611222359423;
+        Thu, 21 Jan 2021 01:45:59 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.57
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:57 -0800 (PST)
+        Thu, 21 Jan 2021 01:45:58 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 28/30] RDMA/hw/qib/qib_verbs: Repair some formatting problems
-Date:   Thu, 21 Jan 2021 09:45:17 +0000
-Message-Id: <20210121094519.2044049-29-lee.jones@linaro.org>
+Subject: [PATCH 29/30] RDMA/hw/qib/qib_iba6120: Fix some repeated (copy/paste) kernel-doc issues
+Date:   Thu, 21 Jan 2021 09:45:18 +0000
+Message-Id: <20210121094519.2044049-30-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
 References: <20210121094519.2044049-1-lee.jones@linaro.org>
@@ -69,10 +69,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/qib/qib_verbs.c:1077: warning: Function parameter or member 'ppd' not described in 'qib_get_counters'
- drivers/infiniband/hw/qib/qib_verbs.c:1077: warning: Excess function parameter 'dd' description in 'qib_get_counters'
- drivers/infiniband/hw/qib/qib_verbs.c:1686: warning: Function parameter or member 'qp' not described in '_qib_schedule_send'
- drivers/infiniband/hw/qib/qib_verbs.c:1703: warning: Function parameter or member 'qp' not described in 'qib_schedule_send'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1229: warning: Function parameter or member 'ppd' not described in 'qib_6120_bringup_serdes'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1229: warning: Excess function parameter 'dd' description in 'qib_6120_bringup_serdes'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1436: warning: Function parameter or member 'ppd' not described in 'qib_6120_setup_setextled'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1436: warning: Excess function parameter 'dd' description in 'qib_6120_setup_setextled'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1836: warning: Function parameter or member 'type' not described in 'qib_6120_put_tid'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1836: warning: Excess function parameter 'tidtype' description in 'qib_6120_put_tid'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1903: warning: Function parameter or member 'type' not described in 'qib_6120_put_tid_2'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1903: warning: Excess function parameter 'tidtype' description in 'qib_6120_put_tid_2'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1944: warning: Function parameter or member 'rcd' not described in 'qib_6120_clear_tids'
+ drivers/infiniband/hw/qib/qib_iba6120.c:1944: warning: Excess function parameter 'ctxt' description in 'qib_6120_clear_tids'
+ drivers/infiniband/hw/qib/qib_iba6120.c:2018: warning: Function parameter or member 'kinfo' not described in 'qib_6120_get_base_info'
+ drivers/infiniband/hw/qib/qib_iba6120.c:2018: warning: Excess function parameter 'kbase' description in 'qib_6120_get_base_info'
+ drivers/infiniband/hw/qib/qib_iba6120.c:2277: warning: Function parameter or member 'ppd' not described in 'qib_portcntr_6120'
+ drivers/infiniband/hw/qib/qib_iba6120.c:2277: warning: Function parameter or member 'reg' not described in 'qib_portcntr_6120'
+ drivers/infiniband/hw/qib/qib_iba6120.c:2277: warning: Excess function parameter 'dd' description in 'qib_portcntr_6120'
+ drivers/infiniband/hw/qib/qib_iba6120.c:2277: warning: Excess function parameter 'creg' description in 'qib_portcntr_6120'
+ drivers/infiniband/hw/qib/qib_iba6120.c:2620: warning: Function parameter or member 't' not described in 'qib_get_6120_faststats'
 
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
@@ -81,40 +94,87 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/qib/qib_verbs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/qib/qib_iba6120.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qib/qib_verbs.c b/drivers/infiniband/hw/qib/qib_verbs.c
-index f6c01bad5a74f..8e0de265ad578 100644
---- a/drivers/infiniband/hw/qib/qib_verbs.c
-+++ b/drivers/infiniband/hw/qib/qib_verbs.c
-@@ -1067,7 +1067,7 @@ int qib_snapshot_counters(struct qib_pportdata *ppd, u64 *swords,
+diff --git a/drivers/infiniband/hw/qib/qib_iba6120.c b/drivers/infiniband/hw/qib/qib_iba6120.c
+index 44150be215bf2..b35e1174be22f 100644
+--- a/drivers/infiniband/hw/qib/qib_iba6120.c
++++ b/drivers/infiniband/hw/qib/qib_iba6120.c
+@@ -1223,7 +1223,7 @@ static void qib_set_ib_6120_lstate(struct qib_pportdata *ppd, u16 linkcmd,
  
  /**
-  * qib_get_counters - get various chip counters
+  * qib_6120_bringup_serdes - bring up the serdes
 - * @dd: the qlogic_ib device
 + * @ppd: the qlogic_ib device
-  * @cntrs: counters are placed here
-  *
-  * Return the counters needed by recv_pma_get_portcounters().
-@@ -1675,7 +1675,7 @@ void qib_unregister_ib_device(struct qib_devdata *dd)
+  */
+ static int qib_6120_bringup_serdes(struct qib_pportdata *ppd)
+ {
+@@ -1412,7 +1412,7 @@ static void qib_6120_quiet_serdes(struct qib_pportdata *ppd)
  
  /**
-  * _qib_schedule_send - schedule progress
-- * @qp - the qp
-+ * @qp: the qp
+  * qib_6120_setup_setextled - set the state of the two external LEDs
+- * @dd: the qlogic_ib device
++ * @ppd: the qlogic_ib device
+  * @on: whether the link is up or not
   *
-  * This schedules progress w/o regard to the s_flags.
+  * The exact combo of LEDs if on is true is determined by looking
+@@ -1823,7 +1823,7 @@ static int qib_6120_setup_reset(struct qib_devdata *dd)
+  * qib_6120_put_tid - write a TID in chip
+  * @dd: the qlogic_ib device
+  * @tidptr: pointer to the expected TID (in chip) to update
+- * @tidtype: RCVHQ_RCV_TYPE_EAGER (1) for eager, RCVHQ_RCV_TYPE_EXPECTED (0)
++ * @type: RCVHQ_RCV_TYPE_EAGER (1) for eager, RCVHQ_RCV_TYPE_EXPECTED (0)
+  * for expected
+  * @pa: physical address of in memory buffer; tidinvalid if freeing
   *
-@@ -1694,7 +1694,7 @@ bool _qib_schedule_send(struct rvt_qp *qp)
+@@ -1890,7 +1890,7 @@ static void qib_6120_put_tid(struct qib_devdata *dd, u64 __iomem *tidptr,
+  * qib_6120_put_tid_2 - write a TID in chip, Revision 2 or higher
+  * @dd: the qlogic_ib device
+  * @tidptr: pointer to the expected TID (in chip) to update
+- * @tidtype: RCVHQ_RCV_TYPE_EAGER (1) for eager, RCVHQ_RCV_TYPE_EXPECTED (0)
++ * @type: RCVHQ_RCV_TYPE_EAGER (1) for eager, RCVHQ_RCV_TYPE_EXPECTED (0)
+  * for expected
+  * @pa: physical address of in memory buffer; tidinvalid if freeing
+  *
+@@ -1932,7 +1932,7 @@ static void qib_6120_put_tid_2(struct qib_devdata *dd, u64 __iomem *tidptr,
+ /**
+  * qib_6120_clear_tids - clear all TID entries for a context, expected and eager
+  * @dd: the qlogic_ib device
+- * @ctxt: the context
++ * @rcd: the context
+  *
+  * clear all TID entries for a context, expected and eager.
+  * Used from qib_close().  On this chip, TIDs are only 32 bits,
+@@ -2008,7 +2008,7 @@ int __attribute__((weak)) qib_unordered_wc(void)
+ /**
+  * qib_6120_get_base_info - set chip-specific flags for user code
+  * @rcd: the qlogic_ib ctxt
+- * @kbase: qib_base_info pointer
++ * @kinfo: qib_base_info pointer
+  *
+  * We set the PCIE flag because the lower bandwidth on PCIe vs
+  * HyperTransport can affect some user packet algorithms.
+@@ -2270,8 +2270,8 @@ static void sendctrl_6120_mod(struct qib_pportdata *ppd, u32 op)
  
  /**
-  * qib_schedule_send - schedule progress
-- * @qp - the qp
-+ * @qp: the qp
+  * qib_portcntr_6120 - read a per-port counter
+- * @dd: the qlogic_ib device
+- * @creg: the counter to snapshot
++ * @ppd: the qlogic_ib device
++ * @reg: the counter to snapshot
+  */
+ static u64 qib_portcntr_6120(struct qib_pportdata *ppd, u32 reg)
+ {
+@@ -2610,7 +2610,7 @@ static void qib_chk_6120_errormask(struct qib_devdata *dd)
+ 
+ /**
+  * qib_get_faststats - get word counters from chip before they overflow
+- * @opaque - contains a pointer to the qlogic_ib device qib_devdata
++ * @t: contains a pointer to the qlogic_ib device qib_devdata
   *
-  * This schedules qp progress.  The s_lock
-  * should be held.
+  * This needs more work; in particular, decision on whether we really
+  * need traffic_wds done the way it is
 -- 
 2.25.1
 
