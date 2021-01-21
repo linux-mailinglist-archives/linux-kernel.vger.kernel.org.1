@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5AA2FE854
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41112FE84D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730077AbhAULE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:04:58 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:43254 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730147AbhAULCl (ORCPT
+        id S1730161AbhAULDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:03:17 -0500
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:43961 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730158AbhAULCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:02:41 -0500
-Received: by mail-ot1-f47.google.com with SMTP id v1so1186757ott.10;
-        Thu, 21 Jan 2021 03:02:26 -0800 (PST)
+        Thu, 21 Jan 2021 06:02:47 -0500
+Received: by mail-ed1-f45.google.com with SMTP id n6so1907889edt.10;
+        Thu, 21 Jan 2021 03:02:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B0t6IbQwZ6aPHm7zibBMR6oc08hDXRFl0UUCk6sC9bM=;
-        b=s1JgGhMfGIEorKIkmY1uOCy6rhKZjEN2g/y0mH9xU7LfyBDaqKZx1HJGKIpsnnnCLl
-         1dtR+itgXotyc12XJWpqLnO8N0bSGyqqpcEFgKbc1X0xw6mZ38i6hUQJeQAX0dmcTK0Z
-         PFaajorVROhs7lPXfqh1UJhZ1XzNSgKbUJyP3aNNZ953EyU9ozoxIUJOTHlC/s5flu2u
-         VXh4VBAWiCPsruCtgqdHdL8XhI4d8D9fQSKdtidKQW5CDs2TLI3zFaXBUUQRD0mgV8Mc
-         tnXT0l+Dfv0MkdRSzesm754R32j6Ge2zkW2wbd3vpAFghxAt8oPUb9V5fcXSG8ipsPap
-         LSww==
-X-Gm-Message-State: AOAM531ORADILRmpCOpKYlpHVEntf40KPu3/+wMeSAfboTunr6pUuQo8
-        3LBP2hh7fbrtLsx/EhHzLLWUDdKwrEnjTe+EnOU=
-X-Google-Smtp-Source: ABdhPJzSbFq2Zg/MF32GZEaX+aMqzCGFlyozhpNYPxHvt5ug1jBRwJ1lgTOfRSPtDNp9bqyOAhcuPvtUBSO1aAA+gxU=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr9868576otr.107.1611226921014;
- Thu, 21 Jan 2021 03:02:01 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n6DYcYeSLADiN6siyAF5sN2ywvVzfVTuKS3Zh4JrGOg=;
+        b=PEdsYiXLsQ/glmKxl1c/RrvoMoF0wHMSpC9RWFQSWNvt5LlLy2W5xRwqx/bHlLfbo5
+         c3KSbmyGqimtOESdL1ST0usFm+HYBbKK1+6lGGlm8ilHp5OaRqasW9rYUuk7xDQOD+Es
+         qW7YYC4nVIeN2ufhJuTNUf4or1gF4rQRiG55jbMFFwLQ5K9sqHRNOX5Nc87LKmOgy3Rs
+         TdKEPsRls9TNOKOjWRnGxyayxAbIh0/R4apQ8MKk4+AdSth+IxJlcZy7lImeE4sMsc4C
+         Yr/4QA2KznC2aAdCOis6MIqHVBgM0mMc38jUFjq6v/sWu31u0G8QutP9ZKbMCwBLlFkY
+         KHMA==
+X-Gm-Message-State: AOAM530mu6YQw2MIS45R7IAH7uN6OxUS8nhSERTtoDQC4xQEtIJJv3ha
+        ZYCiQv9J+43mC22jjjIoEng=
+X-Google-Smtp-Source: ABdhPJyjvWEQNGsz5ELJZogBMc6cApHA22zZvmgRZNXo/XESvK3tkKxq6J7lxFLORMWqPslFm0v97Q==
+X-Received: by 2002:a50:8387:: with SMTP id 7mr10121555edi.131.1611226924734;
+        Thu, 21 Jan 2021 03:02:04 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id x9sm657673eje.36.2021.01.21.03.02.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 03:02:04 -0800 (PST)
+Subject: Re: [PATCH 2/6] tty: convert tty_ldisc_ops 'read()' function to take
+ a kernel pointer
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org
+Cc:     hch@lst.de, viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        ohw.giles@gmail.com, r.karszniewicz@phytec.de,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
+ <20210121090020.3147058-2-gregkh@linuxfoundation.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <ff6709dc-bb42-1e52-b348-c52036960bdd@kernel.org>
+Date:   Thu, 21 Jan 2021 12:02:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
- <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
-In-Reply-To: <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 21 Jan 2021 12:01:50 +0100
-Message-ID: <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Michael Walle <michael@walle.cc>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210121090020.3147058-2-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On 21. 01. 21, 10:00, Greg Kroah-Hartman wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> The tty line discipline .read() function was passed the final user
+> pointer destination as an argument, which doesn't match the 'write()'
+> function, and makes it very inconvenient to do a splice method for
+> ttys.
+> 
+> This is a conversion to use a kernel buffer instead.
+> 
+> NOTE! It does this by passing the tty line discipline ->read() function
+> an additional "cookie" to fill in, and an offset into the cookie data.
+> 
+> The line discipline can fill in the cookie data with its own private
+> information, and then the reader will repeat the read until either the
+> cookie is cleared or it runs out of data.
+> 
+> The only real user of this is N_HDLC, which can use this to handle big
+> packets, even if the kernel buffer is smaller than the whole packet.
+> 
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+...
+> --- a/drivers/tty/tty_io.c
+> +++ b/drivers/tty/tty_io.c
+> @@ -833,6 +833,65 @@ static void tty_update_time(struct timespec64 *time)
+>   		time->tv_sec = sec;
+>   }
+>   
+> +/*
+> + * Iterate on the ldisc ->read() function until we've gotten all
+> + * the data the ldisc has for us.
+> + *
+> + * The "cookie" is something that the ldisc read function can fill
+> + * in to let us know that there is more data to be had.
+> + *
+> + * We promise to continue to call the ldisc until it stops returning
+> + * data or clears the cookie. The cookie may be something that the
+> + * ldisc maintains state for and needs to free.
+> + */
+> +static int iterate_tty_read(struct tty_ldisc *ld, struct tty_struct *tty, struct file *file,
+> +		char __user *buf, size_t count)
+> +{
+> +	int retval = 0;
+> +	void *cookie = NULL;
+> +	unsigned long offset = 0;
+> +	char kernel_buf[64];
+> +
+> +	do {
+> +		int size, uncopied;
+> +
+> +		size = count > sizeof(kernel_buf) ? sizeof(kernel_buf) : count;
 
-On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc> wrote:
-> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
-> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
-> > > wrote:
-> > >>
-> > >> [RESEND, fat-fingered the buttons of my mail client and converted
-> > >> all CCs to BCCs :(]
-> > >>
-> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> > >> >>
-> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> > >> >> wrote:
-> > >> >> >
-> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> > >> >> > deferral. Convert it to builtin_platform_driver().
-> > >> >>
-> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> > >> >> shouldn't it be fixed or removed?
-> > >> >
-> > >> > I was actually thinking about this too. The problem with fixing
-> > >> > builtin_platform_driver_probe() to behave like
-> > >> > builtin_platform_driver() is that these probe functions could be
-> > >> > marked with __init. But there are also only 20 instances of
-> > >> > builtin_platform_driver_probe() in the kernel:
-> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
-> > >> > 20
-> > >> >
-> > >> > So it might be easier to just fix them to not use
-> > >> > builtin_platform_driver_probe().
-> > >> >
-> > >> > Michael,
-> > >> >
-> > >> > Any chance you'd be willing to help me by converting all these to
-> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> > >>
-> > >> If it just moving the probe function to the _driver struct and
-> > >> remove the __init annotations. I could look into that.
-> > >
-> > > Yup. That's pretty much it AFAICT.
-> > >
-> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
-> > > for async probe, etc. But I doubt anyone is actually setting async
-> > > flags and still using builtin_platform_driver_probe().
-> >
-> > Hasn't module_platform_driver_probe() the same problem? And there
-> > are ~80 drivers which uses that.
->
-> Yeah. The biggest problem with all of these is the __init markers.
-> Maybe some familiar with coccinelle can help?
+Or simply
+size = min(count, sizeof(kernel_buf));
 
-And dropping them will increase memory usage.
+> +		size = ld->ops->read(tty, file, kernel_buf, size, &cookie, offset);
+> +		if (!size)
+> +			break;
+> +
+> +		/*
+> +		 * A ldisc read error return will override any previously copied
+> +		 * data (eg -EOVERFLOW from HDLC)
+> +		 */
+> +		if (size < 0) {
+> +			memzero_explicit(kernel_buf, sizeof(kernel_buf));
+> +			return size;
+> +		}
+> +
+> +		uncopied = copy_to_user(buf+offset, kernel_buf, size);
+> +		size -= uncopied;
+> +		offset += size;
+> +		count -= size;
+> +
+> +		/*
+> +		 * If the user copy failed, we still need to do another ->read()
+> +		 * call if we had a cookie to let the ldisc clear up.
+> +		 *
+> +		 * But make sure size is zeroed.
+> +		 */
+> +		if (unlikely(uncopied)) {
+> +			count = 0;
+> +			retval = -EFAULT;
 
-Gr{oetje,eeting}s,
+n_hdlc_tty_read will return EOVERFLOW when size is 0, so this EFAULT is 
+never propagated, if I am looking correctly? n_tty seems to be fine 
+(returns zero for zeroed size).
 
-                        Geert
+> +		}
+> +	} while (cookie);
+> +
+> +	/* We always clear tty buffer in case they contained passwords */
+> +	memzero_explicit(kernel_buf, sizeof(kernel_buf));
+> +	return offset ? offset : retval;
+> +}
 
+thanks,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+js
