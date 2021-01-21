@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEC02FF17B
+	by mail.lfdr.de (Postfix) with ESMTP id 02C662FF179
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388480AbhAURMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:12:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24444 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388335AbhAUREz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:04:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611248598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4KgVfQwgH0t00E0jREnBAYvp7Ag6zfsUmeWko7Cl/RY=;
-        b=TQd7qvZ2ktNKnX0pmkLIBUlKbOXeCWrQajd9H+ZJ4+r6rN+ccBT/AUNlH818GP3S0beWd6
-        ifbnja9V4LHUpem6MwKHPT3+2v8NkhViTwT2oap4AsQ7STAnhkP3es5zTfSMIrg5ECKU9R
-        8lIuBaSAFRmnTHRbjSqJzqgR+YB/A34=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-0Pnv6BdCNz6Oqh-N316exg-1; Thu, 21 Jan 2021 12:03:16 -0500
-X-MC-Unique: 0Pnv6BdCNz6Oqh-N316exg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1E648066FF;
-        Thu, 21 Jan 2021 17:03:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DCE6960C43;
-        Thu, 21 Jan 2021 17:02:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210121164645.GA20964@fieldses.org>
-References: <20210121164645.GA20964@fieldses.org> <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk>
-To:     bfields@fieldses.org (J. Bruce Fields)
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
+        id S2388234AbhAURLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:11:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35360 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388320AbhAURE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:04:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B5BBAC63;
+        Thu, 21 Jan 2021 17:04:00 +0000 (UTC)
+From:   Enzo Matsumiya <ematsumiya@suse.de>
+To:     linux-scsi@vger.kernel.org
+Cc:     Enzo Matsumiya <ematsumiya@suse.de>,
+        Don Brace <don.brace@microchip.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        storagedev@microchip.com, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] scsi: smartpqi: create module parameters for LUN reset
+Date:   Thu, 21 Jan 2021 14:03:39 -0300
+Message-Id: <20210121170339.11891-1-ematsumiya@suse.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1794285.1611248577.1@warthog.procyon.org.uk>
-Date:   Thu, 21 Jan 2021 17:02:57 +0000
-Message-ID: <1794286.1611248577@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J. Bruce Fields <bfields@fieldses.org> wrote:
+Commit c2922f174fa0 ("scsi: smartpqi: fix LUN reset when fw bkgnd thread is hung")
+added support for a timeout on LUN resets.
 
-> On Wed, Jan 20, 2021 at 10:21:24PM +0000, David Howells wrote:
-> >      Note that this uses SEEK_HOLE/SEEK_DATA to locate the data available
-> >      to be read from the cache.  Whilst this is an improvement from the
-> >      bmap interface, it still has a problem with regard to a modern
-> >      extent-based filesystem inserting or removing bridging blocks of
-> >      zeros.
-> 
-> What are the consequences from the point of view of a user?
+However, when there are 2 or more devices connected to the same
+controller and you hot-remove one of them, I/O will stall on the
+devices still online for PQI_LUN_RESET_RETRIES * PQI_LUN_RESET_RETRY_INTERVAL_MSECS
+miliseconds.
 
-The cache can get both false positive and false negative results on checks for
-the presence of data because an extent-based filesystem can, at will, insert
-or remove blocks of contiguous zeros to make the extents easier to encode
-(ie. bridge them or split them).
+This commit makes those values configurable via module parameters.
 
-A false-positive means that you get a block of zeros in the middle of your
-file that very probably shouldn't be there (ie. file corruption); a
-false-negative means that we go and reload the missing chunk from the server.
+Changing the bail out condition on rc in _pqi_device_reset() might be possible,
+but could also break the original purpose of commit c2922f174fa0.
 
-The problem exists in cachefiles whether we use bmap or we use
-SEEK_HOLE/SEEK_DATA.  The only way round it is to keep track of what data is
-present independently of backing filesystem's metadata.
+Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
+---
+ drivers/scsi/smartpqi/smartpqi_init.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-To this end, it shouldn't (mis)behave differently than the code already there
-- except that it handles better the case in which the backing filesystem
-blocksize != PAGE_SIZE (which may not be relevant on an extent-based
-filesystem anyway if it packs parts of different files together in a single
-block) because the current implementation only bmaps the first block in a page
-and doesn't probe for the rest.
-
-Fixing this requires a much bigger overhaul of cachefiles than this patchset
-performs.
-
-Also, it works towards getting rid of this use of bmap, but that's not user
-visible.
-
-David
+diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
+index c53f456fbd09..9835b2e5b91a 100644
+--- a/drivers/scsi/smartpqi/smartpqi_init.c
++++ b/drivers/scsi/smartpqi/smartpqi_init.c
+@@ -157,6 +157,18 @@ module_param_named(hide_vsep,
+ MODULE_PARM_DESC(hide_vsep,
+ 	"Hide the virtual SEP for direct attached drives.");
+ 
++static int pqi_lun_reset_retries = 3;
++module_param_named(lun_reset_retries,
++	pqi_lun_reset_retries, int, 0644);
++MODULE_PARM_DESC(lun_reset_retries,
++	"Number of retries when resetting a LUN");
++
++static int pqi_lun_reset_tmo_interval = 10000;
++module_param_named(lun_reset_tmo_interval,
++	pqi_lun_reset_tmo_interval, int, 0644);
++MODULE_PARM_DESC(lun_reset_tmo_interval,
++	"LUN reset timeout interval (in miliseconds)");
++
+ static char *raid_levels[] = {
+ 	"RAID-0",
+ 	"RAID-4",
+@@ -5687,8 +5699,6 @@ static int pqi_lun_reset(struct pqi_ctrl_info *ctrl_info,
+ 
+ /* Performs a reset at the LUN level. */
+ 
+-#define PQI_LUN_RESET_RETRIES			3
+-#define PQI_LUN_RESET_RETRY_INTERVAL_MSECS	10000
+ #define PQI_LUN_RESET_PENDING_IO_TIMEOUT_SECS	120
+ 
+ static int _pqi_device_reset(struct pqi_ctrl_info *ctrl_info,
+@@ -5700,9 +5710,9 @@ static int _pqi_device_reset(struct pqi_ctrl_info *ctrl_info,
+ 
+ 	for (retries = 0;;) {
+ 		rc = pqi_lun_reset(ctrl_info, device);
+-		if (rc == 0 || ++retries > PQI_LUN_RESET_RETRIES)
++		if (rc == 0 || ++retries > pqi_lun_reset_retries)
+ 			break;
+-		msleep(PQI_LUN_RESET_RETRY_INTERVAL_MSECS);
++		msleep(pqi_lun_reset_tmo_interval);
+ 	}
+ 
+ 	timeout_secs = rc ? PQI_LUN_RESET_PENDING_IO_TIMEOUT_SECS : NO_TIMEOUT;
+-- 
+2.30.0
 
