@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C842FE0D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D70F12FE0D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbhAUEiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:38:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S1727418AbhAUEg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727318AbhAUEGF (ORCPT
+        with ESMTP id S1727559AbhAUEHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:06:05 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB396C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:05:15 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id b5so779804pjl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 20:05:15 -0800 (PST)
+        Wed, 20 Jan 2021 23:07:32 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E88C061786;
+        Wed, 20 Jan 2021 20:06:11 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id y8so536246plp.8;
+        Wed, 20 Jan 2021 20:06:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fvYm9s8KKtqxpGWVnETTEpvuaLditNYFEaGSLA8ZGRI=;
-        b=oZkLOcQvlVOO3euYo9voMSY5pW7P8rwsobNz/ox/VTkUhlBsitTclHx3TJkFrcYR92
-         0QnsgHJCgbAOUoMBblKWIQ1a+DHuAWEEiILqfYWxkWYoFBvNMAZng1U0loYJgV5/PKc+
-         tNgSVfB9RGCJKrxQVpW+4HHDge4/bFLvuGzalOpt3P32NYftV3RSeBe2xHmpeMqadtIQ
-         2mlTttZ9vnWbaivNj46schRegq5v+frchYA5HJ4gGaei/+y+EB0CnDh9FiU4n6GsIj3R
-         ILKiip2vYpnLMBctKeoQkGg+scdpwYsMFX91Q0D9MkGHjV9bnoz/aRpAFgIyen4V8hQY
-         H+hw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MldHeooV548S/KisyAFcmWejup1la3KPj1MTllBMACM=;
+        b=V3G7p8W93TegzjRz0ayi9tXhiZmLpHvKxIdIOgM6Og/fnMVZA7XfTnwbYD1iZX8u08
+         O9h/YZ8Z/PbjixTe6/rnw8bXCQUJ+LhuryQTzCeRd44BX7hwxh8ImK+3538m45aqU3PL
+         IdJUOICQHwO3hoZErBX7KDRyMOiPSdloltD19KJYR9P/FN1IKxCa6wcT4jL8i/rXJfaF
+         0pyKOZ+YukoTxWWiM9gW9YGjPuPUzP70QLDeczUqffPSRL8JCP+whSFfbSWopPr02zvw
+         /HbbkMCUS7aOzn9Ym1cFUDUX00erCwhcYRJTc+Ur/DEKn/MzfFDKSozpCqeGe6W0kz43
+         PVHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fvYm9s8KKtqxpGWVnETTEpvuaLditNYFEaGSLA8ZGRI=;
-        b=b1Z37IVS8+0gpGe5B6KkKPtI7BYDBdbxLWd2kHxQZEzxm4v9mwbW7BWtrU/qKv/sh1
-         7UrNKhv5X85oSqIIRopuk88Vj5YeQJwc1vVCMuAvNvEFP9FjU2iOycaqzoJQAWn9HcFY
-         YZQ9YLRXEpI6u3kDI2ghhj+wpH9SwybRE36tm+3ojzsyC1ecyTqVrxikC9bfI036FKXu
-         CDIbtV9/hUI3s5VRWznRBoXRb/pFcaCSZB+75VWlxs6jLr+FCAScUMzvySRJubEgVPso
-         SUpmHhLG0YUTNOTx2cdrkn9KJGXs44jA6iL+H/5ARVppH8mtl1nTKB82P2y03EwamcbP
-         9AfQ==
-X-Gm-Message-State: AOAM5304mCzgwfgQAQ2G7rJ5hGXJoRY6FzXI9W5tyqTOBq6jCRRJwXX5
-        1Yul11W/M+hZ8DhAJ03rm+DkRg==
-X-Google-Smtp-Source: ABdhPJxUt04znGBAtDNsElWCyoOyFAKpAJD3XhZplRtlm6ODiesa+eoPz6UgTurjg/6Dwmc082xOTg==
-X-Received: by 2002:a17:90a:e396:: with SMTP id b22mr9346207pjz.155.1611201915269;
-        Wed, 20 Jan 2021 20:05:15 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id 141sm3782733pfa.65.2021.01.20.20.05.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Jan 2021 20:05:14 -0800 (PST)
-Date:   Thu, 21 Jan 2021 09:35:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] cpufreq: remove tango driver
-Message-ID: <20210121040512.kmkphnktiwylvo3n@vireshk-i7>
-References: <20210120131709.1996711-1-arnd@kernel.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MldHeooV548S/KisyAFcmWejup1la3KPj1MTllBMACM=;
+        b=cZfQh6Ma76TbYq3vNCqogVC3XzWAZ5xXgfa4sxxUbSt7H+1Y7gmHpKBYRA8DpOnClv
+         jr7pusJfFry//OhOu26/9BP4+KNz9/xr58vuoW4TLCu0dgUKbxWhbCBiMxznl54PExGk
+         Bb3Dr9hRZD/1czljZgnxrxMzGBKvj9RSL890z16vcKCxF+R0hHlh1zfVqR/Z+Lf4l0GA
+         AuEL5IB+OunWlmjsdS3jMII+ouS3bcu/behRr4aye6Ynp7C0aTuYjpXOzRTYzGcc/SRJ
+         QFz43hrrYmRG/05kmyEycKECA3tudBg4YFOPWL9dZ+B/tK/snVyV80p2POcZ8gTuCXVb
+         udWg==
+X-Gm-Message-State: AOAM533vrwPxhbFnAcIvtvwxAx+9eP3Gq2WpkFLu2kpx3wF5D3XUO2P3
+        JHLgSHFUO6pGaZ0HpXbb1iii3GrXm58=
+X-Google-Smtp-Source: ABdhPJxYrKKvS8CcdxBvOLYgUmGIcQGOzafB9nQX42jQCuZbK6Fi2BKzpOz9H2K2fYDltZFyJSfbWg==
+X-Received: by 2002:a17:90b:602:: with SMTP id gb2mr9199252pjb.170.1611201970523;
+        Wed, 20 Jan 2021 20:06:10 -0800 (PST)
+Received: from localhost.localdomain (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id f24sm3808567pjj.5.2021.01.20.20.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 20:06:09 -0800 (PST)
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Brandon Streiff <brandon.streiff@ni.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net 2/4] net: mvpp2: Remove unneeded Kconfig dependency.
+Date:   Wed, 20 Jan 2021 20:06:01 -0800
+Message-Id: <1069fecd4b7e13485839e1c66696c5a6c70f6144.1611198584.git.richardcochran@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1611198584.git.richardcochran@gmail.com>
+References: <cover.1611198584.git.richardcochran@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120131709.1996711-1-arnd@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-01-21, 14:16, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The tango platform is getting removed, so the driver is no
-> longer needed.
-> 
-> Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-> Cc: Mans Rullgard <mans@mansr.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/cpufreq/Kconfig.arm     |  5 -----
->  drivers/cpufreq/Makefile        |  1 -
->  drivers/cpufreq/tango-cpufreq.c | 38 ---------------------------------
->  3 files changed, 44 deletions(-)
->  delete mode 100644 drivers/cpufreq/tango-cpufreq.c
+The mvpp2 is an Ethernet driver, and it implements MAC style time
+stamping of PTP frames.  It has no need of the expensive option to
+enable PHY time stamping.  Remove the incorrect dependency.
 
-Applied with below diff. Thanks.
+Signed-off-by: Richard Cochran <richardcochran@gmail.com>
+Fixes: 91dd71950bd7 ("net: mvpp2: ptp: add TAI support")
+---
+ drivers/net/ethernet/marvell/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index bd2db0188cbb..3ba2f716fe97 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -141,8 +141,6 @@ static const struct of_device_id blacklist[] __initconst = {
-        { .compatible = "st,stih410", },
-        { .compatible = "st,stih418", },
+diff --git a/drivers/net/ethernet/marvell/Kconfig b/drivers/net/ethernet/marvell/Kconfig
+index 41815b609569..7fe15a3286f4 100644
+--- a/drivers/net/ethernet/marvell/Kconfig
++++ b/drivers/net/ethernet/marvell/Kconfig
+@@ -94,7 +94,6 @@ config MVPP2
  
--       { .compatible = "sigma,tango4", },
--
-        { .compatible = "ti,am33xx", },
-        { .compatible = "ti,am43", },
-        { .compatible = "ti,dra7", },
-
+ config MVPP2_PTP
+ 	bool "Marvell Armada 8K Enable PTP support"
+-	depends on NETWORK_PHY_TIMESTAMPING
+ 	depends on (PTP_1588_CLOCK = y && MVPP2 = y) || \
+ 		   (PTP_1588_CLOCK && MVPP2 = m)
+ 
 -- 
-viresh
+2.20.1
+
