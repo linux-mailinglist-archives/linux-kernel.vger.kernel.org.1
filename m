@@ -2,205 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9884E2FE24C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6652FE25B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbhAUGIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:08:13 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:22912 "EHLO m42-8.mailgun.net"
+        id S1726363AbhAUGL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:11:58 -0500
+Received: from mga14.intel.com ([192.55.52.115]:53169 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbhAUGHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:07:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611209215; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=EEQI0tFXhGI6CiVUJKLBMVeNZjfshm+qc4ajCowtZ14=;
- b=Hc2tS25vvcavX2H4omuMsJUWyu1j/FBKbEhr5qYIt+sYw97pgL1yikl/qNXS8iR66vhJilf5
- LTuHbbJCvYPySytaQLO5hxDuw7IdUCOjL9tnq8KjouKvZgVg2IEkL2TSTyV11Dqn8BiMyPDI
- YEvEZFfj9BpuoMACIu2VqMeXmGQ=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 600919e22c36b2106d81ff8e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Jan 2021 06:06:26
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D4A80C43466; Thu, 21 Jan 2021 06:06:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D90AC433ED;
-        Thu, 21 Jan 2021 06:06:24 +0000 (UTC)
+        id S1725268AbhAUGKr (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:10:47 -0500
+IronPort-SDR: Vk0lv9WRYIe/MLvRI8iX4LlWzAWMwazWqifGEfmrvDPs97UmDQIDgEu/63QclyaMj8KhrMksA3
+ grA8d8YySqsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="178443922"
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="178443922"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 22:08:58 -0800
+IronPort-SDR: XbEDPYkz3aJXFPY9AQ3J+Ar8WQoBejE/2/kZVv9LpxhQVke9EVILyf0aBK/Q/S916AyZ70x6jf
+ vLDrSFmWwEtA==
+X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
+   d="scan'208";a="385170189"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 22:08:54 -0800
+Subject: Re: [PATCH v2] perf stat: Append to default list if use -e +event
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+References: <20210104021837.30473-1-yao.jin@linux.intel.com>
+ <20210112100807.GB1273297@krava>
+ <64dba2a3-0bf2-3af3-6f54-6e200840017d@linux.intel.com>
+ <20210120212553.GA1798087@krava> <20210121000355.GB106434@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <2d2c8e32-53f2-560d-3f69-a0ed7c3810e6@linux.intel.com>
+Date:   Thu, 21 Jan 2021 14:08:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210121000355.GB106434@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 21 Jan 2021 11:36:24 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        angelogioacchino.delregno@somainline.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
-Subject: Re: [Freedreno] [PATCH 2/2] drm/msm/a6xx: Create an A6XX GPU specific
- address space
-In-Reply-To: <CAF6AEGszGhdKKq+tW0hKxiE22_+9MUh1hXg3p+7XDo_G51pmSg@mail.gmail.com>
-References: <cover.1610366113.git.saiprakash.ranjan@codeaurora.org>
- <c5848b1c15765c8d6db7de2305baac856e818f12.1610366113.git.saiprakash.ranjan@codeaurora.org>
- <CAF6AEGszGhdKKq+tW0hKxiE22_+9MUh1hXg3p+7XDo_G51pmSg@mail.gmail.com>
-Message-ID: <b199dd6367154e29c0619d49d6d55b7c@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-20 21:48, Rob Clark wrote:
-> On Mon, Jan 11, 2021 at 4:04 AM Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
->> 
->> A6XX GPUs have support for last level cache(LLC) also known
->> as system cache and need to set the bus attributes to
->> use it. Currently we use a generic adreno iommu address space
->> implementation which are also used by older GPU generations
->> which do not have LLC and might introduce issues accidentally
->> and is not clean in a way that anymore additions of GPUs
->> supporting LLC would have to be guarded under ifdefs. So keep
->> the generic code separate and make the address space creation
->> A6XX specific. We also have a helper to set the llc attributes
->> so that if the newer GPU generations do support them, we can
->> use it instead of open coding domain attribute setting for each
->> GPU.
->> 
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 46 
->> ++++++++++++++++++++++++-
->>  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 +++++--------
->>  drivers/gpu/drm/msm/adreno/adreno_gpu.h |  7 ++--
->>  3 files changed, 55 insertions(+), 21 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c 
->> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> index 3b798e883f82..3c7ad51732bb 100644
->> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> @@ -1239,6 +1239,50 @@ static unsigned long a6xx_gpu_busy(struct 
->> msm_gpu *gpu)
->>         return (unsigned long)busy_time;
->>  }
->> 
->> +static struct msm_gem_address_space *
->> +a6xx_create_address_space(struct msm_gpu *gpu, struct platform_device 
->> *pdev)
->> +{
->> +       struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->> +       struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
->> +       struct iommu_domain *iommu;
->> +       struct msm_mmu *mmu;
->> +       struct msm_gem_address_space *aspace;
->> +       u64 start, size;
->> +
->> +       iommu = iommu_domain_alloc(&platform_bus_type);
->> +       if (!iommu)
->> +               return NULL;
->> +
->> +       /*
->> +        * This allows GPU to set the bus attributes required to use 
->> system
->> +        * cache on behalf of the iommu page table walker.
->> +        */
->> +       if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice))
->> +               adreno_set_llc_attributes(iommu);
->> +
->> +       mmu = msm_iommu_new(&pdev->dev, iommu);
->> +       if (IS_ERR(mmu)) {
->> +               iommu_domain_free(iommu);
->> +               return ERR_CAST(mmu);
->> +       }
->> +
->> +       /*
->> +        * Use the aperture start or SZ_16M, whichever is greater. 
->> This will
->> +        * ensure that we align with the allocated pagetable range 
->> while still
->> +        * allowing room in the lower 32 bits for GMEM and whatnot
->> +        */
->> +       start = max_t(u64, SZ_16M, iommu->geometry.aperture_start);
->> +       size = iommu->geometry.aperture_end - start + 1;
->> +
->> +       aspace = msm_gem_address_space_create(mmu, "gpu",
->> +               start & GENMASK_ULL(48, 0), size);
->> +
->> +       if (IS_ERR(aspace) && !IS_ERR(mmu))
->> +               mmu->funcs->destroy(mmu);
->> +
->> +       return aspace;
->> +}
->> +
->>  static struct msm_gem_address_space *
->>  a6xx_create_private_address_space(struct msm_gpu *gpu)
->>  {
->> @@ -1285,7 +1329,7 @@ static const struct adreno_gpu_funcs funcs = {
->>                 .gpu_state_get = a6xx_gpu_state_get,
->>                 .gpu_state_put = a6xx_gpu_state_put,
->>  #endif
->> -               .create_address_space = 
->> adreno_iommu_create_address_space,
->> +               .create_address_space = a6xx_create_address_space,
->>                 .create_private_address_space = 
->> a6xx_create_private_address_space,
->>                 .get_rptr = a6xx_get_rptr,
->>         },
->> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c 
->> b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> index b35914de1b27..0f184c3dd9d9 100644
->> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> @@ -186,11 +186,18 @@ int adreno_zap_shader_load(struct msm_gpu *gpu, 
->> u32 pasid)
->>         return zap_shader_load_mdt(gpu, adreno_gpu->info->zapfw, 
->> pasid);
->>  }
->> 
->> +void adreno_set_llc_attributes(struct iommu_domain *iommu)
->> +{
->> +       struct io_pgtable_domain_attr pgtbl_cfg;
->> +
->> +       pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
+Hi Arnaldo,
+
+On 1/21/2021 8:03 AM, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Jan 20, 2021 at 10:25:53PM +0100, Jiri Olsa escreveu:
+>> On Mon, Jan 18, 2021 at 12:54:37PM +0800, Jin, Yao wrote:
+>>> root@kbl-ppc:# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
 > 
-> btw, since quirks is the only field in the struct currently, this is
-> ok.  But better practice to do something like:
+>>>   Performance counter stats for 'system wide':
 > 
->         struct io_pgtable_domain_attr pgtbl_cfg = {
->                 .quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA,
->         };
+>>>                2.02 Joules +power/energy-pkg/
 > 
-> which will zero-initialize any additional fields which might be added
-> later, rather than inherit random garbage from the stack.
+>>>         1.000859434 seconds time elapsed
+> 
+>>> The '+' prefix is printed. So I finally decide not to remove the '+' prefix
+>>> in order to keep original behavior.
+>   
+>> hm, originaly there's no purpose for the '+', right?
+>> it seems it's more like bug then anything else
+>   
+>> you added function to the '+' to add default events to specified event,
+>> which I think is good idea, but I don't think we should display the
+>> extra '+' in output
+> 
+> The value would be to stress that that is an event added to the ones
+> without the + prefix, i.e. the default ones.
+> 
+> But by having the command line copied over and the added events at the
+> first lines we should have that abundantly clear.
+> 
+> Also we won't print removed events (using -), is that available already?
 > 
 
-Right, I will correct this.
+Sorry, the '-' support is not available in this patch. Can I do the patch for '+' first and then do 
+a follow up patch for '-' at next step?
 
-Thanks,
-Sai
+> Nope:
+> 
+> [root@quaco ~]# perf stat -e -cycles sleep
+> event syntax error: '-cycles'
+>                       \___ parser error
+> Run 'perf list' for a list of valid events
+> 
+>   Usage: perf stat [<options>] [<command>]
+> 
+>      -e, --event <event>   event selector. use 'perf list' to list available events
+> [root@quaco ~]#
+> 
+> Like with:
+> 
+> [root@quaco ~]# perf stat -d sleep 1
+>  >   Performance counter stats for 'sleep 1':
+> 
+>                0.80 msec task-clock                #    0.001 CPUs utilized
+>                   1      context-switches          #    0.001 M/sec
+>                   0      cpu-migrations            #    0.000 K/sec
+>                  59      page-faults               #    0.073 M/sec
+>           2,215,522      cycles                    #    2.757 GHz                      (7.40%)
+>           1,073,189      instructions              #    0.48  insn per cycle           (80.59%)
+>             203,615      branches                  #  253.392 M/sec
+>               8,309      branch-misses             #    4.08% of all branches
+>             245,866      L1-dcache-loads           #  305.972 M/sec
+>              14,024      L1-dcache-load-misses     #    5.70% of all L1-dcache accesses  (92.60%)
+>       <not counted>      LLC-loads                                                     (0.00%)
+>       <not counted>      LLC-load-misses                                               (0.00%)
+> 
+>         1.001887261 seconds time elapsed
+> 
+>         0.000000000 seconds user
+>         0.001413000 seconds sys
+> 
+> 
+> Some events weren't counted. Try disabling the NMI watchdog:
+> 	echo 0 > /proc/sys/kernel/nmi_watchdog
+> 	perf stat ...
+> 	echo 1 > /proc/sys/kernel/nmi_watchdog
+> [root@quaco ~]# perf stat -e -LLC* -d sleep 1
+> event syntax error: '-LLC*'
+>                       \___ parser error
+> Run 'perf list' for a list of valid events
+> 
+>   Usage: perf stat [<options>] [<command>]
+> 
+>      -e, --event <event>   event selector. use 'perf list' to list available events
+> [root@quaco ~]#
+> 
+> - Arnaldo
+> 
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+So if we just want to append the default list, we only need to set detailed_run=1, then ideally 
+perf-stat will print the default list.
+
+But for now, there are no task-clock, context-switches, cpu-migrations, page-faults, instructions, 
+branches and branch-misses displayed.
+
+root@kbl-ppc:~# ./perf stat -e cycles -d -a -- sleep 1
+
+  Performance counter stats for 'system wide':
+
+        124,178,207      cycles                                                        (80.02%)
+          6,444,490      L1-dcache-loads                                               (80.01%)
+          1,043,169      L1-dcache-load-misses     #   16.19% of all L1-dcache accesses  (80.02%)
+            564,474      LLC-loads                                                     (80.02%)
+             49,262      LLC-load-misses           #    8.73% of all LL-cache accesses  (79.92%)
+
+        1.001614947 seconds time elapsed
+
+Do we still need the '+' prefix to add the specified event on top of default list? It looks current 
+syntax should already support that feature, but just need to fix some issues.
+
+Thanks
+Jin Yao
