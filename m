@@ -2,148 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4D72FEF80
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0072FEF8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387739AbhAUPv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:51:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387592AbhAUPs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:48:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0929723A5E;
-        Thu, 21 Jan 2021 15:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611244098;
-        bh=ESCY3rt1UpVAToMmeAThDINvSacKiOsK2nc/NRoNF9g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LCFe42rTpo0PlaukO40aoasQL5/Qys43MShy5ZOg+JcG27AZaNRJ4cHu3ZE/cf8rR
-         HIq5i0dftrTxshUnv+icHC5DHyTHfgXx2miR6yKQvenRHR5EcVuOpasmEc7yPQPVKD
-         cwEyOANH8KznmYsj7P/LmxN8ew+znCkYwD6N0a4Tn3GZxCRNczrWFg3Bw2fLc+J8b0
-         mk+EobIZoCcxbqX8JNLKcWwjnfwQR3O98R8GTEtgLU8u20ZLIEKiWn8pxnDTKeDO9I
-         oRgIbCp6Cch6hzf1mS9uVrtxlnUuCLlYvc71A4V2HcSXBy2GIVc5mXErflL3r+khjI
-         CV+PqF7WZ5l5A==
-Received: by mail-lf1-f51.google.com with SMTP id q12so3121811lfo.12;
-        Thu, 21 Jan 2021 07:48:17 -0800 (PST)
-X-Gm-Message-State: AOAM5331vcJOl/amW0j3d0GT9m1oztV2dB7L5jgF4g8I93bhnRUeIGGz
-        MtSWYtbAV/o/mmn6YNmHzmEQxqkjWO3L77uRxg==
-X-Google-Smtp-Source: ABdhPJxClIBHDNh0ezMtBn3tEIUpA6A69KltrTNKbOdslOUCg3ST6RYu/puKZCvzOeFiwKhVG1uu2/TgGhoFpNLSPDU=
-X-Received: by 2002:a17:906:958f:: with SMTP id r15mr70711ejx.360.1611244095545;
- Thu, 21 Jan 2021 07:48:15 -0800 (PST)
+        id S1730020AbhAUP4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:56:08 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:48508 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731410AbhAUPwy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:52:54 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l2cFO-004LO4-Vr; Thu, 21 Jan 2021 08:51:47 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l2cFN-0029Ec-Pa; Thu, 21 Jan 2021 08:51:46 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <cover.1610722473.git.gladkov.alexey@gmail.com>
+        <116c7669744404364651e3b380db2d82bb23f983.1610722473.git.gladkov.alexey@gmail.com>
+        <CAHk-=wjsg0Lgf1Mh2UiJE4sqBDDo0VhFVBUbhed47ot2CQQwfQ@mail.gmail.com>
+        <20210118194551.h2hrwof7b3q5vgoi@example.org>
+        <CAHk-=wiNpc5BS2BfZhdDqofJx1G=uasBa2Q1eY4cr8O59Rev2A@mail.gmail.com>
+        <20210118205629.zro2qkd3ut42bpyq@example.org>
+        <87eeig74kv.fsf@x220.int.ebiederm.org>
+        <20210121120427.iiggfmw3tpsmyzeb@example.org>
+Date:   Thu, 21 Jan 2021 09:50:34 -0600
+In-Reply-To: <20210121120427.iiggfmw3tpsmyzeb@example.org> (Alexey Gladkov's
+        message of "Thu, 21 Jan 2021 13:04:27 +0100")
+Message-ID: <87ft2u2ss5.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-6-tientzu@chromium.org>
- <20210120165348.GA220770@robh.at.kernel.org> <313f8052-a591-75de-c4c2-ee9ea8f02e7f@arm.com>
- <CAL_JsqKjTqcCbCLksRbCh7=f-A3Y09A3jNqtUApaA+p=RKd_Eg@mail.gmail.com> <c0d631de-8840-4f6e-aebf-41bb8449f78c@arm.com>
-In-Reply-To: <c0d631de-8840-4f6e-aebf-41bb8449f78c@arm.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 21 Jan 2021 09:48:03 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLv-FaiY_k+wS=iXG5AtccsXSBtvTfEGHvsN-VNqXdwpA@mail.gmail.com>
-Message-ID: <CAL_JsqLv-FaiY_k+wS=iXG5AtccsXSBtvTfEGHvsN-VNqXdwpA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 5/6] dt-bindings: of: Add restricted DMA pool
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Grant Likely <grant.likely@arm.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        xen-devel@lists.xenproject.org, Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1l2cFN-0029Ec-Pa;;;mid=<87ft2u2ss5.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+qagvrCbWceuXumPpyz27FGwz07GA2gjk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSubLong,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4820]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 420 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.4 (1.1%), b_tie_ro: 3.0 (0.7%), parse: 1.24
+        (0.3%), extract_message_metadata: 5 (1.2%), get_uri_detail_list: 3.0
+        (0.7%), tests_pri_-1000: 3.3 (0.8%), tests_pri_-950: 1.07 (0.3%),
+        tests_pri_-900: 0.88 (0.2%), tests_pri_-90: 59 (14.2%), check_bayes:
+        58 (13.8%), b_tokenize: 7 (1.7%), b_tok_get_all: 9 (2.2%),
+        b_comp_prob: 2.4 (0.6%), b_tok_touch_all: 36 (8.6%), b_finish: 0.71
+        (0.2%), tests_pri_0: 328 (78.2%), check_dkim_signature: 0.41 (0.1%),
+        check_dkim_adsp: 2.5 (0.6%), poll_dns_idle: 1.21 (0.3%), tests_pri_10:
+        2.4 (0.6%), tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC PATCH v3 1/8] Use refcount_t for ucounts reference counting
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 7:10 PM Robin Murphy <robin.murphy@arm.com> wrote:
+Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+
+> On Tue, Jan 19, 2021 at 07:57:36PM -0600, Eric W. Biederman wrote:
+>> Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+>> 
+>> > On Mon, Jan 18, 2021 at 12:34:29PM -0800, Linus Torvalds wrote:
+>> >> On Mon, Jan 18, 2021 at 11:46 AM Alexey Gladkov
+>> >> <gladkov.alexey@gmail.com> wrote:
+>> >> >
+>> >> > Sorry about that. I thought that this code is not needed when switching
+>> >> > from int to refcount_t. I was wrong.
+>> >> 
+>> >> Well, you _may_ be right. I personally didn't check how the return
+>> >> value is used.
+>> >> 
+>> >> I only reacted to "it certainly _may_ be used, and there is absolutely
+>> >> no comment anywhere about why it wouldn't matter".
+>> >
+>> > I have not found examples where checked the overflow after calling
+>> > refcount_inc/refcount_add.
+>> >
+>> > For example in kernel/fork.c:2298 :
+>> >
+>> >    current->signal->nr_threads++;                           
+>> >    atomic_inc(&current->signal->live);                      
+>> >    refcount_inc(&current->signal->sigcnt);  
+>> >
+>> > $ semind search signal_struct.sigcnt
+>> > def include/linux/sched/signal.h:83  		refcount_t		sigcnt;
+>> > m-- kernel/fork.c:723 put_signal_struct 		if (refcount_dec_and_test(&sig->sigcnt))
+>> > m-- kernel/fork.c:1571 copy_signal 		refcount_set(&sig->sigcnt, 1);
+>> > m-- kernel/fork.c:2298 copy_process 				refcount_inc(&current->signal->sigcnt);
+>> >
+>> > It seems to me that the only way is to use __refcount_inc and then compare
+>> > the old value with REFCOUNT_MAX
+>> >
+>> > Since I have not seen examples of such checks, I thought that this is
+>> > acceptable. Sorry once again. I have not tried to hide these changes.
+>> 
+>> The current ucount code does check for overflow and fails the increment
+>> in every case.
+>> 
+>> So arguably it will be a regression and inferior error handling behavior
+>> if the code switches to the ``better'' refcount_t data structure.
+>> 
+>> I originally didn't use refcount_t because silently saturating and not
+>> bothering to handle the error makes me uncomfortable.
+>> 
+>> Not having to acquire the ucounts_lock every time seems nice.  Perhaps
+>> the path forward would be to start with stupid/correct code that always
+>> takes the ucounts_lock for every increment of ucounts->count, that is
+>> later replaced with something more optimal.
+>> 
+>> Not impacting performance in the non-namespace cases and having good
+>> performance in the other cases is a fundamental requirement of merging
+>> code like this.
 >
-> On 2021-01-20 21:31, Rob Herring wrote:
-> > On Wed, Jan 20, 2021 at 11:30 AM Robin Murphy <robin.murphy@arm.com> wrote:
-> >>
-> >> On 2021-01-20 16:53, Rob Herring wrote:
-> >>> On Wed, Jan 06, 2021 at 11:41:23AM +0800, Claire Chang wrote:
-> >>>> Introduce the new compatible string, restricted-dma-pool, for restricted
-> >>>> DMA. One can specify the address and length of the restricted DMA memory
-> >>>> region by restricted-dma-pool in the device tree.
-> >>>
-> >>> If this goes into DT, I think we should be able to use dma-ranges for
-> >>> this purpose instead. Normally, 'dma-ranges' is for physical bus
-> >>> restrictions, but there's no reason it can't be used for policy or to
-> >>> express restrictions the firmware has enabled.
-> >>
-> >> There would still need to be some way to tell SWIOTLB to pick up the
-> >> corresponding chunk of memory and to prevent the kernel from using it
-> >> for anything else, though.
-> >
-> > Don't we already have that problem if dma-ranges had a very small
-> > range? We just get lucky because the restriction is generally much
-> > more RAM than needed.
+> Did I understand your suggestion correctly that you suggest to use
+> spin_lock for atomic_read and atomic_inc ?
 >
-> Not really - if a device has a naturally tiny addressing capability that
-> doesn't even cover ZONE_DMA32 where the regular SWIOTLB buffer will be
-> allocated then it's unlikely to work well, but that's just crap system
-> design. Yes, memory pressure in ZONE_DMA{32} is particularly problematic
-> for such limited devices, but it's irrelevant to the issue at hand here.
-
-Yesterday's crap system design is today's security feature. Couldn't
-this feature make crap system design work better?
-
-> What we have here is a device that's not allowed to see *kernel* memory
-> at all. It's been artificially constrained to a particular region by a
-> TZASC or similar, and the only data which should ever be placed in that
-
-May have been constrained, but that's entirely optional.
-
-In the optional case where the setup is entirely up to the OS, I don't
-think this belongs in the DT at all. Perhaps that should be solved
-first.
-
-> region is data intended for that device to see. That way if it tries to
-> go rogue it physically can't start slurping data intended for other
-> devices or not mapped for DMA at all. The bouncing is an important part
-> of this - I forget the title off-hand but there was an interesting paper
-> a few years ago which demonstrated that even with an IOMMU, streaming
-> DMA of in-place buffers could reveal enough adjacent data from the same
-> page to mount an attack on the system. Memory pressure should be
-> immaterial since the size of each bounce pool carveout will presumably
-> be tuned for the needs of the given device.
+> If so, then we are already incrementing the counter under ucounts_lock.
 >
-> > In any case, wouldn't finding all the dma-ranges do this? We're
-> > already walking the tree to find the max DMA address now.
+> 	...
+> 	if (atomic_read(&ucounts->count) == INT_MAX)
+> 		ucounts = NULL;
+> 	else
+> 		atomic_inc(&ucounts->count);
+> 	spin_unlock_irq(&ucounts_lock);
+> 	return ucounts;
 >
-> If all you can see are two "dma-ranges" properties, how do you propose
-> to tell that one means "this is the extent of what I can address, please
-> set my masks and dma-range-map accordingly and try to allocate things
-> where I can reach them" while the other means "take this output range
-> away from the page allocator and hook it up as my dedicated bounce pool,
-> because it is Serious Security Time"? Especially since getting that
-> choice wrong either way would be a Bad Thing.
+> something like this ?
 
-Either we have some heuristic based on the size or we add some hint.
-The point is let's build on what we already have for defining DMA
-accessible memory in DT rather than some parallel mechanism.
+Yes.  But without atomics.  Something a bit more like:
+> 	...
+> 	if (ucounts->count == INT_MAX)
+> 		ucounts = NULL;
+> 	else
+> 		ucounts->count++;
+> 	spin_unlock_irq(&ucounts_lock);
+> 	return ucounts;
 
-Rob
+I do believe at some point we will want to say using the spin_lock for
+ucounts->count is cumbersome, and suboptimal and we want to change it to
+get a better performing implementation.
+
+Just for getting the semantics correct we should be able to use just
+ucounts_lock for locking.  Then when everything is working we can
+profile and optimize the code.
+
+I just don't want figuring out what is needed to get hung up over little
+details that we can change later.
+
+Eric
+
