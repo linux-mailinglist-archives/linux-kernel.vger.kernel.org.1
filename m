@@ -2,210 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181BE2FECD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535502FECDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731131AbhAUOZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728609AbhAUOYD (ORCPT
+        id S1730857AbhAUO1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:27:07 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:46279 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729502AbhAUOYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:24:03 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBB9C0613C1;
-        Thu, 21 Jan 2021 06:23:06 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id j26so1584209qtq.8;
-        Thu, 21 Jan 2021 06:23:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w3fw0nXMRMWboT6HRhuDOZbyDuSIlRWZhktoQjQ5hhQ=;
-        b=jC4IVgUHCLnG4+nLw2LB1EReIoMReml/OSrPyUvvh6uljN6y3Js7zYxB9w7YG9wPPS
-         uMyQi1GnliTA6a3OvK6aivxBav+5ajgTZ5LGDJ+4obwlbTxq828an8B/JGN4HQei2LAl
-         QAs527jZbmYf0D4N3VW3fBtmRAxoGIyeoHIWkZdJwbp6u9SdjElj+Dl06l8mOByN8r/2
-         6GemXdV9wAo3HuyVPhDN/0N+3rQwABVvsaRo3iWo+1lgPTurAR0DFB0nBx9+IbIWRU5U
-         RBztgsMyVDmMV8S10VcHMsnf+olTqW+O6qWhmOWff0cdYFpOAHvbH6Xvaseb42YTevhO
-         mGFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w3fw0nXMRMWboT6HRhuDOZbyDuSIlRWZhktoQjQ5hhQ=;
-        b=E21HQm7JiDFUAb9xbYm7pVxJvoivPwy9Nn8FxnrnPeGt3iEMIugUJlng/t7FczDKYZ
-         KeqS8Dr0owv8Wbhla4xyFqWDE6D+ZJaCePzpoRKV9nkafAqz4/2MteGCdKRXpwtPOxDq
-         cFbd+HYFMSSQAG9hS9re7LPCVBgAZscGNytoew1azxbf6QtF2hCXj/sVqppCW22wZR+j
-         Sne9pXMD/BOrhsmRqro13UXdX9UGjJfcRgexsQlSzQH6VV+1VmrvWefhmtOuDD359Cdi
-         n1sl9L9Z7JSm4SQdMCn2IzzCCAhVRYOK0fRawluyjE8hOHbqiMnqOldEbxy7PCan6QZC
-         N2Kw==
-X-Gm-Message-State: AOAM532hLFAKAokHPc/rwl9sJKTrLqCs+n76Oom9s0YfG6Lqpntf5Y98
-        l3W9kPOoqJjcTH+PrNIZkX4=
-X-Google-Smtp-Source: ABdhPJyOR8dIagWMAd48F7/lqO9zZIb3cZeL6GOT3FOT3gSGzynhyofPoZSmmB/nQdRsVxxNMxVL5Q==
-X-Received: by 2002:ac8:57ca:: with SMTP id w10mr13739504qta.12.1611238985422;
-        Thu, 21 Jan 2021 06:23:05 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 38sm3528072qtb.67.2021.01.21.06.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 06:23:04 -0800 (PST)
-Date:   Thu, 21 Jan 2021 07:23:03 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Fangrui Song <maskray@google.com>
-Subject: Re: [PATCH bpf-next v3] samples/bpf: Update build procedure for
- manually compiling LLVM and Clang
-Message-ID: <20210121142303.GA3346833@ubuntu-m3-large-x86>
-References: <1611206855-22555-1-git-send-email-yangtiezhu@loongson.cn>
- <20210121053627.GA1680146@ubuntu-m3-large-x86>
- <CAEf4BzbZxuy8LRmngRzLZ3VTnrDw=Rf70Ghkbu1a5+fNpQud5Q@mail.gmail.com>
+        Thu, 21 Jan 2021 09:24:32 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10LEMvnx030032;
+        Thu, 21 Jan 2021 15:23:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=U9FsoHzVxU/pOZkbNb54dcTo9vqdTnlxm3Qvz96EFUQ=;
+ b=yffoLAJ2cGRHYuI3VMDCfwYdGF2LUYCb5hhpRXrfiXQvWfXMHz+mrExrYaR+p0CIlUC4
+ QYfxXyUfN22XSlYxmtscEuJ+RRidQ8KEy+IcJbIHBEJz+Rg6scKH+HjlAquMcOdjnlIU
+ mF7FfDO0kAFXwckve10ZonSimYYEZEVeyCtul9FWz/+7qNiOGtqAlP/98kMOJpWmX/ra
+ MxPBbYi5sbDokKrEKEFE0RrVYLCWo6Klc1qh2lYdpeczlm0CCTrlSqwIJXzb1CUWnw5z
+ +kRZcZc5ePOj5Aaq32Plgf+InO+hB2GMSHE875pPWOF/jxxvcALzvKHvhj3tDWqo4KKS sA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3668q03nr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Jan 2021 15:23:24 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E231B100034;
+        Thu, 21 Jan 2021 15:23:22 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D011F2AD2D3;
+        Thu, 21 Jan 2021 15:23:22 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Jan 2021 15:23:22
+ +0100
+From:   Erwan Le Ray <erwan.leray@foss.st.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-serial@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+Subject: [PATCH 1/1] serial: stm32: improve platform_get_irq condition handling in init_port
+Date:   Thu, 21 Jan 2021 15:23:09 +0100
+Message-ID: <20210121142309.6327-1-erwan.leray@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbZxuy8LRmngRzLZ3VTnrDw=Rf70Ghkbu1a5+fNpQud5Q@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-21_08:2021-01-21,2021-01-21 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:08:31AM -0800, Andrii Nakryiko wrote:
-> On Wed, Jan 20, 2021 at 9:36 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > On Thu, Jan 21, 2021 at 01:27:35PM +0800, Tiezhu Yang wrote:
-> > > The current LLVM and Clang build procedure in samples/bpf/README.rst is
-> > > out of date. See below that the links are not accessible any more.
-> > >
-> > > $ git clone http://llvm.org/git/llvm.git
-> > > Cloning into 'llvm'...
-> > > fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
-> > > $ git clone --depth 1 http://llvm.org/git/clang.git
-> > > Cloning into 'clang'...
-> > > fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
-> > >
-> > > The LLVM community has adopted new ways to build the compiler. There are
-> > > different ways to build LLVM and Clang, the Clang Getting Started page [1]
-> > > has one way. As Yonghong said, it is better to copy the build procedure
-> > > in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
-> > >
-> > > I verified the procedure and it is proved to be feasible, so we should
-> > > update README.rst to reflect the reality. At the same time, update the
-> > > related comment in Makefile.
-> > >
-> > > Additionally, as Fangrui said, the dir llvm-project/llvm/build/install is
-> > > not used, BUILD_SHARED_LIBS=OFF is the default option [2], so also change
-> > > Documentation/bpf/bpf_devel_QA.rst together.
-> > >
-> > > [1] https://clang.llvm.org/get_started.html
-> > > [2] https://www.llvm.org/docs/CMake.html
-> > >
-> > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > > Acked-by: Yonghong Song <yhs@fb.com>
-> >
-> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> >
-> > Small comment below.
-> >
-> > > ---
-> > >
-> > > v2: Update the commit message suggested by Yonghong,
-> > >     thank you very much.
-> > >
-> > > v3: Remove the default option BUILD_SHARED_LIBS=OFF
-> > >     and just mkdir llvm-project/llvm/build suggested
-> > >     by Fangrui.
-> > >
-> > >  Documentation/bpf/bpf_devel_QA.rst |  3 +--
-> > >  samples/bpf/Makefile               |  2 +-
-> > >  samples/bpf/README.rst             | 16 +++++++++-------
-> > >  3 files changed, 11 insertions(+), 10 deletions(-)
-> > >
-> > > diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-> > > index 5b613d2..18788bb 100644
-> > > --- a/Documentation/bpf/bpf_devel_QA.rst
-> > > +++ b/Documentation/bpf/bpf_devel_QA.rst
-> > > @@ -506,11 +506,10 @@ that set up, proceed with building the latest LLVM and clang version
-> > >  from the git repositories::
-> > >
-> > >       $ git clone https://github.com/llvm/llvm-project.git
-> > > -     $ mkdir -p llvm-project/llvm/build/install
-> > > +     $ mkdir -p llvm-project/llvm/build
-> > >       $ cd llvm-project/llvm/build
-> > >       $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-> > >                  -DLLVM_ENABLE_PROJECTS="clang"    \
-> > > -                -DBUILD_SHARED_LIBS=OFF           \
-> > >                  -DCMAKE_BUILD_TYPE=Release        \
-> > >                  -DLLVM_BUILD_RUNTIME=OFF
-> > >       $ ninja
-> > > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> > > index 26fc96c..d061446 100644
-> > > --- a/samples/bpf/Makefile
-> > > +++ b/samples/bpf/Makefile
-> > > @@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock               += -pthread -lcap
-> > >  TPROGLDLIBS_xsk_fwd          += -pthread
-> > >
-> > >  # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
-> > > -#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-> > > +# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
-> > >  LLC ?= llc
-> > >  CLANG ?= clang
-> > >  OPT ?= opt
-> > > diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-> > > index dd34b2d..23006cb 100644
-> > > --- a/samples/bpf/README.rst
-> > > +++ b/samples/bpf/README.rst
-> > > @@ -65,17 +65,19 @@ To generate a smaller llc binary one can use::
-> > >  Quick sniplet for manually compiling LLVM and clang
-> > >  (build dependencies are cmake and gcc-c++)::
-> >
-> > Technically, ninja is now a build dependency as well, it might be worth
-> > mentioning that here (usually the package is ninja or ninja-build).
-> 
-> it's possible to generate Makefile by passing `-g "Unix Makefiles"`,
-> which would avoid dependency on ninja, no?
+Replace "ret" variable by "irq" variable from platform_get_irq condition
+handling in stm32_init_port as suggested by Jiri in "STM32 uart cleanup and
+improvement" series review.
+This change will prevent port->irq to be unexpectly modified by a potential
+change of "ret" value introduced by a new patch.
 
-Yes, although I am fairly certain that building with ninja is quicker so
-I would recommend keeping it. One small extra dependency never killed
-anyone plus ninja is becoming more common nowadays :)
+Suggested-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
-> > Regardless of whether that is addressed or not (because it is small),
-> > feel free to carry forward my tag in any future revisions unless they
-> > drastically change.
-> >
-> > > - $ git clone http://llvm.org/git/llvm.git
-> > > - $ cd llvm/tools
-> > > - $ git clone --depth 1 http://llvm.org/git/clang.git
-> > > - $ cd ..; mkdir build; cd build
-> > > - $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
-> > > - $ make -j $(getconf _NPROCESSORS_ONLN)
-> > > + $ git clone https://github.com/llvm/llvm-project.git
-> > > + $ mkdir -p llvm-project/llvm/build
-> > > + $ cd llvm-project/llvm/build
-> > > + $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-> > > +            -DLLVM_ENABLE_PROJECTS="clang"    \
-> > > +            -DCMAKE_BUILD_TYPE=Release        \
-> > > +            -DLLVM_BUILD_RUNTIME=OFF
-> > > + $ ninja
-> > >
-> > >  It is also possible to point make to the newly compiled 'llc' or
-> > >  'clang' command via redefining LLC or CLANG on the make command line::
-> > >
-> > > - make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-> > > + make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
-> > >
-> > >  Cross compiling samples
-> > >  -----------------------
-> > > --
-> > > 2.1.0
-> > >
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 6a9a5ef5f5ba..dde6d526362d 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -981,11 +981,11 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+ {
+ 	struct uart_port *port = &stm32port->port;
+ 	struct resource *res;
+-	int ret;
++	int ret, irq;
+ 
+-	ret = platform_get_irq(pdev, 0);
+-	if (ret <= 0)
+-		return ret ? : -ENODEV;
++	irq = platform_get_irq(pdev, 0);
++	if (irq <= 0)
++		return irq ? : -ENODEV;
+ 
+ 	port->iotype	= UPIO_MEM;
+ 	port->flags	= UPF_BOOT_AUTOCONF;
+@@ -993,7 +993,7 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+ 	port->dev	= &pdev->dev;
+ 	port->fifosize	= stm32port->info->cfg.fifosize;
+ 	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_STM32_CONSOLE);
+-	port->irq = ret;
++	port->irq = irq;
+ 	port->rs485_config = stm32_usart_config_rs485;
+ 
+ 	ret = stm32_usart_init_rs485(port, pdev);
+-- 
+2.17.1
+
