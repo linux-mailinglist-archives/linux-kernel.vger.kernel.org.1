@@ -2,161 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166E62FEAB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A2F2FEABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731546AbhAUMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:52:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:35584 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730577AbhAUMvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:51:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8F4011D4;
-        Thu, 21 Jan 2021 04:50:54 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39C563F68F;
-        Thu, 21 Jan 2021 04:50:53 -0800 (PST)
-Subject: Re: [PATCH 2/2] Revert "iommu/arm-smmu-v3: Don't reserve
- implementation defined register space"
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
- <20210119015951.1042-3-thunder.leizhen@huawei.com>
- <888312dc-85b7-4d5e-f264-bbdd9e3638f6@arm.com>
- <ca469958-179d-02c5-b147-0a0ff951d503@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <72c979bd-501f-df9b-7bca-02b8c11d3860@arm.com>
-Date:   Thu, 21 Jan 2021 12:50:51 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1731488AbhAUMyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:54:16 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2956 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731501AbhAUMyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:54:07 -0500
+Received: from dggeme706-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DM2N55qzxz5KYw;
+        Thu, 21 Jan 2021 20:52:05 +0800 (CST)
+Received: from [10.174.60.228] (10.174.60.228) by
+ dggeme706-chm.china.huawei.com (10.1.199.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 21 Jan 2021 20:53:13 +0800
+Subject: Re: [v3] PCI: Add pci reset quirk for Huawei Intelligent NIC virtual
+ function
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Yinshi (Stone)" <yin.yinshi@huawei.com>,
+        "Wangxiaoyun (Cloud)" <cloud.wangxiaoyun@huawei.com>,
+        zengweiliang zengweiliang <zengweiliang.zengweiliang@huawei.com>,
+        "Chenlizhong (IT Chip)" <chenlizhong@huawei.com>
+References: <20210108222519.GA1473637@bjorn-Precision-5520>
+From:   Chiqijun <chiqijun@huawei.com>
+Message-ID: <7e0a6c6c-a12c-ee54-0468-69079b8edde4@huawei.com>
+Date:   Thu, 21 Jan 2021 20:53:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <ca469958-179d-02c5-b147-0a0ff951d503@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210108222519.GA1473637@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.60.228]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggeme706-chm.china.huawei.com (10.1.199.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-21 02:04, Leizhen (ThunderTown) wrote:
+
+
+On 2021/1/9 6:25, Bjorn Helgaas wrote:
+> s/pci reset/reset/ in subject (it's obvious this is for PCI).
+
+Will fix.
+
 > 
+> On Fri, Dec 25, 2020 at 05:25:30PM +0800, Chiqijun wrote:
+>> When multiple VFs do FLR at the same time, the firmware is
+>> processed serially, resulting in some VF FLRs being delayed more
+>> than 100ms, when the virtual machine restarts and the device
+>> driver is loaded, the firmware is doing the corresponding VF
+>> FLR, causing the driver to fail to load.
+>>
+>> To solve this problem, add host and firmware status synchronization
+>> during FLR.
+>>
+>> Signed-off-by: Chiqijun <chiqijun@huawei.com>
+>> ---
+>> v3:
+>>   - The MSE bit in the VF configuration space is hardwired to zero,
+>>     remove the setting of PCI_COMMAND_MEMORY bit. Add comment for
+>>     set PCI_COMMAND register.
+>>
+>> v2:
+>>   - Update comments
+>>   - Use the HINIC_VF_FLR_CAP_BIT_SHIFT and HINIC_VF_FLR_PROC_BIT_SHIFT
+>>     macro instead of the magic number
+>> ---
+>>   drivers/pci/quirks.c | 77 ++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 77 insertions(+)
+>>
+>> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+>> index f70692ac79c5..9c310012ef19 100644
+>> --- a/drivers/pci/quirks.c
+>> +++ b/drivers/pci/quirks.c
+>> @@ -3912,6 +3912,81 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
+>>   	return 0;
+>>   }
+>>   
+>> +#define PCI_DEVICE_ID_HINIC_VF      0x375E
+>> +#define HINIC_VF_FLR_TYPE           0x1000
+>> +#define HINIC_VF_FLR_CAP_BIT_SHIFT  6
+>> +#define HINIC_VF_OP                 0xE80
+>> +#define HINIC_VF_FLR_PROC_BIT_SHIFT 10
+>> +#define HINIC_OPERATION_TIMEOUT     15000
 > 
-> On 2021/1/20 23:02, Robin Murphy wrote:
->> On 2021-01-19 01:59, Zhen Lei wrote:
->>> This reverts commit 52f3fab0067d6fa9e99c1b7f63265dd48ca76046.
->>>
->>> This problem has been fixed by another patch. The original method had side
->>> effects, it was not mapped to the user-specified resource size. The code
->>> will become more complex when ECMDQ is supported later.
->>
->> FWIW I don't think that's a significant issue either way - there could be any number of imp-def pages between SMMU page 0 and the ECMDQ control pages, so it will still be logical to map them as another separate thing anyway.
+> Add a comment so we know the scale here.  "15 sec" or "15000 msec"
+> or similar.
+
+Will fix.
+
 > 
-> Yes, so now I'm thinking of preserving the SMMUv3 resources and eliminating the imp-def area. Then use another devm_ioremap() to cover the entire resource，assign it to smmu->base.
-> Otherwise, a base pointer needs to be defined for each separated register space，or call a function to convert each time.
+>> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
+>> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
+>> +{
+>> +	unsigned long timeout;
+>> +	void __iomem *bar;
+>> +	u16 command;
+>> +	u32 val;
+>> +
+>> +	if (probe)
+>> +		return 0;
+>> +
+>> +	bar = pci_iomap(pdev, 0, 0);
+>> +	if (!bar)
+>> +		return -ENOTTY;
+>> +
+>> +	/*
+>> +	 * FLR cap bit bit30, FLR processing bit: bit18, to avoid big-endian
+>> +	 * conversion the big-endian bit6, bit10 is directly operated here.
+> 
+> I don't understand the big-endian comments here.  Unless the above
+> adds useful information, I'd say just remove it.
+> 
+> Obviously, the code here has to work correctly on both big- and
+> little-endian systems.
+> 
+> Below you use be32_to_cpu() before printing HINIC_VF_OP.  Why aren't
+> you using it here for HINIC_VF_FLR_TYPE?  be32_to_cpu() is common in
+> drivers/net/ethernet/huawei/hinic/, which I assume is for the same
+> device.
+I only considered using the device on the little endian system before, 
+but we should also consider using it on the big endian system, Will fix 
+it in the next patch. Thanks.
 
-But we'll almost certainly want to maintain a pointer to start of the 
-ECMDQ control page block anyway, since that's not fixed relative to 
-smmu->base. Therefore what's the harm in handling that via a dedicated 
-mapping, once we've determined that we *do* intend to use ECMDQs? 
-Otherwise we end up with in the complicated dance of trying to map 
-"everything" up-front in order to be able to read the ID registers to 
-determine what the actual extent of "everything" is supposed to be.
+> 
+>> +	 * Get and check firmware capabilities.
+>> +	 */
+>> +	val = readl(bar + HINIC_VF_FLR_TYPE);
+>> +	if (!(val & (1UL << HINIC_VF_FLR_CAP_BIT_SHIFT))) {
+>> +		pci_iounmap(pdev, bar);
+>> +		return -ENOTTY;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Set the processing bit for the start of FLR, which will be cleared
+>> +	 * by the firmware after FLR is completed.
+>> +	 */
+>> +	val = readl(bar + HINIC_VF_OP);
+>> +	val = val | (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT);
+>> +	writel(val, bar + HINIC_VF_OP);
+>> +
+>> +	/* Perform the actual device function reset */
+>> +	pcie_flr(pdev);
+>> +
+>> +	/*
+>> +	 * The device must learn BDF after FLR in order to respond to BAR's
+>> +	 * read request, therefore, we issue a configure write request to let
+>> +	 * the device capture BDF.
+>> +	 */
+>> +	pci_read_config_word(pdev, PCI_COMMAND, &command);
+>> +	pci_write_config_word(pdev, PCI_COMMAND, command);
+> 
+> I assume this is because of this requirement from PCIe r5.0, sec
+> 2.2.9:
+> 
+>    Functions must capture the Bus and Device Numbers supplied with all
+>    Type 0 Configuration Write Requests completed by the Function, and
+>    supply these numbers in the Bus and Device Number fields of the
+>    Completer ID for all Completions generated by the Device/Function.
+> 
+> I'm a little concerned because it seems like this requirement should
+> apply to *all* resets, and I don't see where we do a similar write
+> following other resets.  Can you help me out?  Do we need this in
+> other cases?  Do we do it?
+> 
 
-(also this reminds me that I was going to remove arm_smmu_page1_fixup() 
-entirely - I'd totally forgotten about that...)
+This depends on the hardware device. The HINIC device clears the BDF 
+information of the VF during FLR, so it relies on Configuration Write 
+Requests to capture BDF. If other devices do not clear the DBF 
+information during FLR, this operation is not required.
+In addition, I did not find other devices directly access the BAR 
+register after FLR in resets.
 
-Robin.
+> I'm also slightly nervous about writing the Command register, even
+> though we just reset the device (so the register should be all zeroes)
+> and we're writing the same value we just read from it.  Wouldn't
+> writing 0 to the Vendor ID register, which is guaranteed to be HwInit,
+> accomplish the same?
+> 
 
->>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>> ---
->>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 32 ++++-------------------------
->>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 ---
->>>    2 files changed, 4 insertions(+), 31 deletions(-)
->>>
->>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> index 8ca7415d785d9bf..477f473842e5272 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> @@ -91,8 +91,9 @@ struct arm_smmu_option_prop {
->>>    static inline void __iomem *arm_smmu_page1_fixup(unsigned long offset,
->>>                             struct arm_smmu_device *smmu)
->>>    {
->>> -    if (offset > SZ_64K)
->>> -        return smmu->page1 + offset - SZ_64K;
->>> +    if ((offset > SZ_64K) &&
->>> +        (smmu->options & ARM_SMMU_OPT_PAGE0_REGS_ONLY))
->>> +        offset -= SZ_64K;
->>>          return smmu->base + offset;
->>>    }
->>> @@ -3486,18 +3487,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
->>>        return err;
->>>    }
->>>    -static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
->>> -                      resource_size_t size)
->>> -{
->>> -    struct resource res = {
->>> -        .flags = IORESOURCE_MEM,
->>> -        .start = start,
->>> -        .end = start + size - 1,
->>> -    };
->>> -
->>> -    return devm_ioremap_resource(dev, &res);
->>> -}
->>> -
->>>    static int arm_smmu_device_probe(struct platform_device *pdev)
->>>    {
->>>        int irq, ret;
->>> @@ -3533,23 +3522,10 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->>>        }
->>>        ioaddr = res->start;
->>>    -    /*
->>> -     * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
->>> -     * the PMCG registers which are reserved by the PMU driver.
->>> -     */
->>> -    smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
->>> +    smmu->base = devm_ioremap_resource(dev, res);
->>>        if (IS_ERR(smmu->base))
->>>            return PTR_ERR(smmu->base);
->>>    -    if (arm_smmu_resource_size(smmu) > SZ_64K) {
->>> -        smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
->>> -                           ARM_SMMU_REG_SZ);
->>> -        if (IS_ERR(smmu->page1))
->>> -            return PTR_ERR(smmu->page1);
->>> -    } else {
->>> -        smmu->page1 = smmu->base;
->>> -    }
->>> -
->>>        /* Interrupt lines */
->>>          irq = platform_get_irq_byname_optional(pdev, "combined");
->>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> index 96c2e9565e00282..0c3090c60840c22 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> @@ -152,8 +152,6 @@
->>>    #define ARM_SMMU_PRIQ_IRQ_CFG1        0xd8
->>>    #define ARM_SMMU_PRIQ_IRQ_CFG2        0xdc
->>>    -#define ARM_SMMU_REG_SZ            0xe00
->>> -
->>>    /* Common MSI config fields */
->>>    #define MSI_CFG0_ADDR_MASK        GENMASK_ULL(51, 2)
->>>    #define MSI_CFG2_SH            GENMASK(5, 4)
->>> @@ -584,7 +582,6 @@ struct arm_smmu_strtab_cfg {
->>>    struct arm_smmu_device {
->>>        struct device            *dev;
->>>        void __iomem            *base;
->>> -    void __iomem            *page1;
->>>      #define ARM_SMMU_FEAT_2_LVL_STRTAB    (1 << 0)
->>>    #define ARM_SMMU_FEAT_2_LVL_CDTAB    (1 << 1)
->>>
+OK, writing 0 to the Vendor ID register can also achieve the same 
+effect. Will fix it in the next patch.
+
+>> +	/* Waiting for device reset complete */
+>> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
+>> +	do {
+>> +		val = readl(bar + HINIC_VF_OP);
+>> +		if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
+>> +			goto reset_complete;
+>> +		msleep(20);
+>> +	} while (time_before(jiffies, timeout));
+>> +
+>> +	val = readl(bar + HINIC_VF_OP);
+>> +	if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
+>> +		goto reset_complete;
+>> +
+>> +	pci_warn(pdev, "Reset dev timeout, flr ack reg: %x\n",
+> 
+> "%#010x" so it's obvious that this is hex, no matter what the value.
+> 
+
+Will fix.
+Thanks.
+
+>> +		 be32_to_cpu(val));
+>> +
+>> +reset_complete:
+>> +	pci_iounmap(pdev, bar);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>>   	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
+>>   		 reset_intel_82599_sfp_virtfn },
+>> @@ -3923,6 +3998,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>>   	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+>>   	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+>>   		reset_chelsio_generic_dev },
+>> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
+>> +		reset_hinic_vf_dev },
+>>   	{ 0 }
+>>   };
+>>   
+>> -- 
+>> 2.17.1
 >>
->> .
->>
+> .
 > 
