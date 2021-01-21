@@ -2,124 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17E72FEED8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF5A2FEEE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733050AbhAUPbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:31:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732158AbhAUPaq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:30:46 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2732FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:30:05 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 3E7D4419AD;
-        Thu, 21 Jan 2021 15:30:01 +0000 (UTC)
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        id S1732904AbhAUPcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:32:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732996AbhAUPb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:31:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB1623A1C;
+        Thu, 21 Jan 2021 15:30:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611243046;
+        bh=46aIcbRTsz8tFFP2Hj5yj5BUbFIG/ba6L71tLXDA3dQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=aftAQewZujwvMZm2hiUsnbTGld1THjBzhheyQdZsXmm8Xw5JlSpK59Nt98wuI2b86
+         jL+J7o4Tq0Sa8/kZnmMtCZNzivHqms5eG+zMZtcmqk1PrCIKXuWiqi6eUVK9bob6/o
+         p4fhcHpTD92D1vmmcPrpcL1XLGRH/MWAkBxq44XdCgI3clYNiDhmoHh1FJ8ArK42qm
+         Qo6jZDtAgFeI0LVS+9dxOCQ3/icLKgaDHESG+6A0tXAVxWnLUPZdkaE8kvUAf5t67e
+         NLxU3eqpzqsGtff/nMvOEQSPJzpD2phoCTgV5RJkewTM1O09RK2O/OYA9koHGFVBsr
+         BTnP32SoIY4vw==
+Date:   Thu, 21 Jan 2021 09:30:43 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Chiqijun <chiqijun@huawei.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Stan Skowronek <stan@corellium.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-5-mohamed.mediouni@caramail.com>
- <CACRpkdZTjUnqOMmc4y5RdxLC+joumPHNpmAr_LKJDO1h+44ouQ@mail.gmail.com>
- <CAK8P3a3k7p3YK5DY3gTm0UaAgse41J7h_e-dN_NAjThPFE0tyw@mail.gmail.com>
-From:   Hector Martin 'marcan' <marcan@marcan.st>
-Subject: Re: [RFC PATCH 4/7] irqchip/apple-aic: Add support for Apple AIC
-Message-ID: <d0eedc9e-2412-048a-9c7c-1e4a79aadb3b@marcan.st>
-Date:   Fri, 22 Jan 2021 00:29:58 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        "Yinshi (Stone)" <yin.yinshi@huawei.com>,
+        "Wangxiaoyun (Cloud)" <cloud.wangxiaoyun@huawei.com>,
+        zengweiliang zengweiliang <zengweiliang.zengweiliang@huawei.com>,
+        "Chenlizhong (IT Chip)" <chenlizhong@huawei.com>
+Subject: Re: [v3] PCI: Add pci reset quirk for Huawei Intelligent NIC virtual
+ function
+Message-ID: <20210121153043.GA2654954@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3k7p3YK5DY3gTm0UaAgse41J7h_e-dN_NAjThPFE0tyw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e0a6c6c-a12c-ee54-0468-69079b8edde4@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/01/2021 19.37, Arnd Bergmann wrote:
-> On Thu, Jan 21, 2021 at 10:48 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->>
->> However weird it may seem, Apple is not in the file
->> Documentation/devicetree/bindings/vendor-prefixes.yaml
+[Alex is a reset expert, hoping he can chime in]
+
+On Thu, Jan 21, 2021 at 08:53:12PM +0800, Chiqijun wrote:
+> On 2021/1/9 6:25, Bjorn Helgaas wrote:
+> > On Fri, Dec 25, 2020 at 05:25:30PM +0800, Chiqijun wrote:
+> > > When multiple VFs do FLR at the same time, the firmware is
+> > > processed serially, resulting in some VF FLRs being delayed more
+> > > than 100ms, when the virtual machine restarts and the device
+> > > driver is loaded, the firmware is doing the corresponding VF
+> > > FLR, causing the driver to fail to load.
+> > > 
+> > > To solve this problem, add host and firmware status synchronization
+> > > during FLR.
+> > > 
+> > > Signed-off-by: Chiqijun <chiqijun@huawei.com>
+> > > ...
+
+> > > +	 * Get and check firmware capabilities.
+> > > +	 */
+> > > +	val = readl(bar + HINIC_VF_FLR_TYPE);
+> > > +	if (!(val & (1UL << HINIC_VF_FLR_CAP_BIT_SHIFT))) {
+> > > +		pci_iounmap(pdev, bar);
+> > > +		return -ENOTTY;
+> > > +	}
+> > > +
+> > > +	/*
+> > > +	 * Set the processing bit for the start of FLR, which will be cleared
+> > > +	 * by the firmware after FLR is completed.
+> > > +	 */
+> > > +	val = readl(bar + HINIC_VF_OP);
+> > > +	val = val | (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT);
+> > > +	writel(val, bar + HINIC_VF_OP);
+> > > +
+> > > +	/* Perform the actual device function reset */
+> > > +	pcie_flr(pdev);
+> > > +
+> > > +	/*
+> > > +	 * The device must learn BDF after FLR in order to respond to BAR's
+> > > +	 * read request, therefore, we issue a configure write request to let
+> > > +	 * the device capture BDF.
+> > > +	 */
+> > > +	pci_read_config_word(pdev, PCI_COMMAND, &command);
+> > > +	pci_write_config_word(pdev, PCI_COMMAND, command);
+> > 
+> > I assume this is because of this requirement from PCIe r5.0, sec
+> > 2.2.9:
+> > 
+> >    Functions must capture the Bus and Device Numbers supplied with all
+> >    Type 0 Configuration Write Requests completed by the Function, and
+> >    supply these numbers in the Bus and Device Number fields of the
+> >    Completer ID for all Completions generated by the Device/Function.
+> > 
+> > I'm a little concerned because it seems like this requirement should
+> > apply to *all* resets, and I don't see where we do a similar write
+> > following other resets.  Can you help me out?  Do we need this in
+> > other cases?  Do we do it?
 > 
-> Since Apple are already using both the "AAPL" and the "apple"
-> prefix themselves, I have a bad feeling about reusing either of
-> them for defining the devicetree.org bindings that we add to
-> linux/Documentation/devicetree/bindings. The question is: if
-> not "apple", what else should we use here?
+> This depends on the hardware device. The HINIC device clears the BDF
+> information of the VF during FLR, so it relies on Configuration
+> Write Requests to capture BDF. If other devices do not clear the DBF
+> information during FLR, this operation is not required.
 
-This ties into the larger question of how we should handle devicetrees 
-in general on these platforms.
+If the spec says devices must keep the latched BDF during FLR, and the
+HINIC doesn't comply with that, then it makes sense to do a config
+write here in HINIC-specific code.
 
-The two extremes are:
+But if devices are allowed to clear the BDF during FLR, the OS has to
+assume they all do, and the generic code for FLR (and probably other
+resets) should do a config write so devices can latch the BDF again.
 
-1) Have the bootloader outright convert ADT to FDT and make Linux 
-support the entirety of Apple's devicetree structure, or
+> In addition, I did not find other devices directly access the BAR register
+> after FLR in resets.
 
-2) Maintain our own devicetrees and ignore Apple's entirely
+I didn't catch your meaning here.
 
-My feeling is that 1) is a non-starter, because Linux ARM device trees 
-and Apple ARM device trees have seen independent evolution from the 
-PowerPC era, and many details are completely different. Plus conversion 
-is non-trivial, because the endianness is different and the format is 
-too ambiguous to do programmatically without complex logic.
+If a device loses the BDF during FLR and we don't do something to
+allow it to latch the BDF again, any completions from the device will
+have the wrong information.  We will likely do *some* config write to
+the device eventually, which will fix this, but we can't rely on some
+unknown future write to do this.  If it's a problem, we need to
+explicitly do a write for this purpose.
 
-On the other hand, cranking out devicetrees by hand for every device 
-variant that Apple puts out is a waste of time.
-
-Obviously at the bare minimum the bootloader will need to move some 
-dynamic information from the ADT to the FDT, but that can be a very 
-specific set of properties (memory layout, MAC addresses, etc).
-
-My current thinking is that we should write offline, automated tooling 
-to parse, diff, and automatically convert portions of Apple devicetrees 
-into Linux ones. Then we can more easily maintain our own, but still 
-ultimately have humans decide what goes into the Linux device trees.
-
-It's worth noting that AIUI Apple does not consider their devicetree 
-layout to be stable, and it may change any time. On M1 devices, the 
-devicetree is provided as part of the iBoot2 firmware bundle, which 
-means it changes from one macOS version to the next (this is paired with 
-the Darwin kernel itself, and they are upgraded as a unit). It includes 
-placeholder values that iBoot2 then replaces with data from NOR before 
-handing control over to the kernel. My goal for our long-term project 
-[1] is to keep up with iBoot2 updates so that we do not have to instruct 
-users to dig up old macOS versions.
-
-Quick TL;DR on how these things boot:
-- Boot ROM boots
-- iBoot1 (system firmware) in NOR flash which looks for a bootable OS in 
-internal storage (only!) in the form of an APFS container+volume and 
-then boots
-- iBoot2 (OS loader) which loads a bunch of firmware blobs and the 
-devicetree off of storage, customizes it with system data from NOR, and 
-then loads a wrapped mach-o file containing
-- A Darwin kernel, or in our case a Linux bootloader which then boots
-- A standard arm64 Linux blob
-
-The boot ROM is ROM. iBoot1 only ever rolls forward (downgrades 
-impossible). iBoot2 downgrades are possible but Apple already proved 
-they can break this willingly or not, at least in betas (macOS 11.2 
-Beta2 iBoot1 cannot boot Beta1 iBoot2). The secureboot chain goes all 
-the way up to the mach-o kernel load, that is the first point where we 
-can change boot policy to load anything we want (with user consent).
-
-[1] https://asahilinux.org/
-
--- 
-Hector Martin "marcan" (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Bjorn
