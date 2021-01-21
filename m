@@ -2,131 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4001B2FE9AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9752FE9B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbhAUMLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730528AbhAUMKf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:10:35 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CC8C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:09:52 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id g12so2240865ejf.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:09:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PN3btH2euqDWyhj/RgcRNFuB9aKArS6y5Lw17W2vYDw=;
-        b=IgbtXQTlXCqlMx1bhQT61oVPyORIlcntQML0JND/eFe+uUvSN5sY1aXbkodkKJCWaL
-         K8kIf0LbHE0ZkQzfc5e4CNqDfn2Qbn5xdlHcU0XS4CGLp8hSJZjmF5fAsHA1BRG172K4
-         Z+YDVEXIqaYY+cFgY//pVpftKSH/OYHJiwCSgA8Jj9fyufeNDQQ7JhhQqfxQA7FrPC7U
-         4D2//SjPqoK5PRE3E7WVgDSSreA8+JTGPYbyeHJJmr9vxGI5IM0ud9Hncuotj9gMI9We
-         zu+lsj/iJBcgzUo4DljRo9Jc0Tat5+a3sFh/hXFfREWFhUfkwNOYkDZ8Ze7aoklspji3
-         xLow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PN3btH2euqDWyhj/RgcRNFuB9aKArS6y5Lw17W2vYDw=;
-        b=cLz8GwijGrA0vMqKg/ZbfkQyiyHgePvWtbpPpCaqrT9nTMOqEsMNZUWgOfyVfKb0xu
-         wMg65ZVf0mrKtLnULVtQFte0O7Vwmu+FlyY4XqgmUWI06eIK9jgPpTRqkPXA2hexKPgn
-         05zH30ydqpzA5o+EMkA0A7rmfUyS9n9+n+/IFBvDJNMvwsRK7mInd/CjUju0N5d2jKZv
-         6XGMEKZDmBzOGdujcP5WxTEqsEPWFn3cGXWOrH8XhDmmMt6d9oVVk5exO1YQciGAV2te
-         BiSyN/YXfVRyNv2GXSkX8Zn7HzurHYddQwOaWePf534rIq+4lIOE+M3ff1Cp4OU4+XbD
-         d/eA==
-X-Gm-Message-State: AOAM5307+StQ+2qzrIl5x7q2wXW7re3Up1W7dj8ESldcPplD96MIgNiP
-        ii0bMBaNJjxJpuefOzTDl5plpqIZVtOm+BiGM8JirQ==
-X-Google-Smtp-Source: ABdhPJzTY9DkBjOJ9FCRi7TMtReV9fqcjGv4rohvAiFeHBoODFkHjE9QiHmMHZBcFgBuQcn6aCZ0pbxKF4S16PGwwDg=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr8849525eju.375.1611230991153;
- Thu, 21 Jan 2021 04:09:51 -0800 (PST)
+        id S1731011AbhAUMOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:14:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730766AbhAUMN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:13:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC37D2065C;
+        Thu, 21 Jan 2021 12:12:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611231166;
+        bh=kEkAwewnzkxdOQyTExPws6khA2Bf1eNncsPMU2hmQdw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wIbldW7OlC87GpuIGhRChDtEDlyzZqfXH5EPCDZsd0bqWMLhKDzEJ8huFMzJBOVDx
+         T7F/tBvsBgkJ92D8JyFd4G7uOSsd7Lg4jx00HEVlK2tjWI2L+af6q3RFInWD07n+0/
+         6exi/j7RZAWQbZIIYXTFBncK78o3+8ItLt01037g=
+Date:   Thu, 21 Jan 2021 13:12:43 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-accelerators@lists.ozlabs.org" 
+        <linux-accelerators@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
+Message-ID: <YAlvuzM9EP6WMNoH@kroah.com>
+References: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
+ <YAlNTSOMmsFPFAhk@kroah.com>
+ <ea0511c1309a486d9646d5a32715c861@hisilicon.com>
+ <YAljF+Y4/SxVKmXo@kroah.com>
+ <4ebea7d714ed4c5a8cee9291101b0a9b@hisilicon.com>
 MIME-Version: 1.0
-References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz>
- <CA+G9fYsyXsNSXGy6BWZ6mgpAP=+7r6Xy9jQ2xxb9mXyHdRoBCg@mail.gmail.com> <CAMuHMdULW4bnb0Jc0+ZaF9P2VNgnYsvEks7y8WYCk045BHqh7A@mail.gmail.com>
-In-Reply-To: <CAMuHMdULW4bnb0Jc0+ZaF9P2VNgnYsvEks7y8WYCk045BHqh7A@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Jan 2021 17:39:39 +0530
-Message-ID: <CA+G9fYvh0iSyEDQs7+0CX82FLPDCg5UmAt+1JuPsndmfmYF3kw@mail.gmail.com>
-Subject: Re: [PATCH] PM / clk: make PM clock layer compatible with clocks that
- must sleep
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Nicolas Pitre <npitre@baylibre.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ebea7d714ed4c5a8cee9291101b0a9b@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 at 16:28, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Thu, Jan 21, 2021 at 10:13 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> > On Tue, 5 Jan 2021 at 08:48, Nicolas Pitre <npitre@baylibre.com> wrote:
+On Thu, Jan 21, 2021 at 11:52:57AM +0000, Song Bao Hua (Barry Song) wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
+> > Sent: Friday, January 22, 2021 12:19 AM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; Zhangfei Gao
+> > <zhangfei.gao@linaro.org>; Arnd Bergmann <arnd@arndb.de>;
+> > linux-accelerators@lists.ozlabs.org; linux-kernel@vger.kernel.org;
+> > chensihang (A) <chensihang1@hisilicon.com>
+> > Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
+> > 
+> > On Thu, Jan 21, 2021 at 10:18:24AM +0000, Song Bao Hua (Barry Song) wrote:
 > > >
-> > > The clock API splits its interface into sleepable ant atomic contexts:
 > > >
-> > > - clk_prepare/clk_unprepare for stuff that might sleep
+> > > > -----Original Message-----
+> > > > From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
+> > > > Sent: Thursday, January 21, 2021 10:46 PM
+> > > > To: Wangzhou (B) <wangzhou1@hisilicon.com>
+> > > > Cc: Zhangfei Gao <zhangfei.gao@linaro.org>; Arnd Bergmann <arnd@arndb.de>;
+> > > > linux-accelerators@lists.ozlabs.org; linux-kernel@vger.kernel.org;
+> > > > chensihang (A) <chensihang1@hisilicon.com>
+> > > > Subject: Re: [PATCH] uacce: Add uacce_ctrl misc device
+> > > >
+> > > > On Thu, Jan 21, 2021 at 05:09:14PM +0800, Zhou Wang wrote:
+> > > > > When IO page fault happens, DMA performance will be affected. Pin user
+> > page
+> > > > > can avoid IO page fault, this patch introduces a new char device named
+> > > > > /dev/uacce_ctrl to help to maintain pin/unpin pages. User space can do
+> > > > > pin/unpin pages by ioctls of an open file of /dev/uacce_ctrl, all pinned
+> > > > > pages under one file will be unpinned in file release process.
+> > > >
+> > > > Also, what are you really trying to do here?  If you need to mess with
+> > > > memory pages, why can't the existing memory apis work properly for you?
+> > > > Please work with the linux-mm developers to resolve the issue using the
+> > > > standard apis and not creating a one-off char device node for this type
+> > > > of thing.
 > > >
-> > > - clk_enable_clk_disable for anything that may be done in atomic context
+> > > Basically the purpose is implementing a pinned memory poll for userspace
+> > > DMA to achieve better performance by removing io page fault.
+> > 
+> > And what could possibly go wrong with that :)
+> 
+> I think we have resolved this concern while uacce came in :-)
+> Uacce is based on SVA so devices are accessing memory in userspace
+> by strict permission control.
+> 
+> > 
+> > > I really like this can be done in generic mm code. Unfortunately there is
+> > no
+> > > this standard API in kernel to support userspace pin. Right now, various
+> > > subsystems depend on the ioctl of /dev/<name> to implement the pin, for example,
+> > > v4l2, gpu, infiniband, media etc.
 > > >
-> >
-> > <trim>
-> >
+> > > I feel it is extremely hard to sell a standard mpin() API like mlock()
+> > > for this stage as mm could hardly buy this. And it will require
+> > > huge changes in kernel.
+> > 
+> > Why?  This is what mlock() is for, why can't you use it?
+> 
+> mlock() can only guarantee memory won't be swapped out, it doesn't
+> make sure memory won't move. alloc_pages() can cause memory compaction,
+> cma, numa balance, huge pages etc can move mlock()-ed pages.
+> We would still see many I/O page faults for mlock() area.
+> 
+> > 
+> > > We need a way to manage what pages are pinned by process and ensure the
+> > > pages can be unpinned while the process is killed abnormally. otherwise,
+> > > memory gets leaked.
+> > 
+> > Can't mlock() handle that?  It works on the process that called it.
+> > 
+> > > file_operations release() is a good entry for this kind of things. In
+> > > this way, we don't have to maintain the pinned page set in task_struct
+> > > and unpin them during exit().
 > > >
-> > > Signed-off-by: Nicolas Pitre <npitre@baylibre.com>
+> > > If there is anything to make it better by doing this in a driver. I
+> > > would believe we could have a generic misc driver for pin like
+> > > vms_ballon.c for ballon. The driver doesn't have to bind with uacce.
 > > >
-> > > diff --git a/drivers/base/power/clock_ops.c b/drivers/base/power/clock_ops.c
-> > > index ced6863a16..a62fb0f9b1 100644
-> > > --- a/drivers/base/power/clock_ops.c
-> > > +++ b/drivers/base/power/clock_ops.c
-> >
-> > <trim>
-> >
-> > > @@ -64,17 +166,20 @@ static void pm_clk_acquire(struct device *dev, struct pm_clock_entry *ce)
-> > >                 ce->clk = clk_get(dev, ce->con_id);
-> > >         if (IS_ERR(ce->clk)) {
-> > >                 ce->status = PCE_STATUS_ERROR;
-> > > +               return;
-> > > +       } else if (clk_is_enabled_when_prepared(ce->clk)) {
-> >
-> > arm-linux-gnueabihf-ld: drivers/base/power/clock_ops.o: in function
-> > `pm_clk_acquire':
-> > drivers/base/power/clock_ops.c:170: undefined reference to
-> > `clk_is_enabled_when_prepared'
-> >
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> >
-> > This build error was noticed on arm architecture on linux next 20210121 tag.
-> > Following builds failed.
-> >  - arm (omap1_defconfig) with clang-10 - FAILED
-> >  - arm (omap1_defconfig) with clang-11 - FAILED
-> >
-> >  - arm (omap1_defconfig) with gcc-8 - FAILED
-> >  - arm (omap1_defconfig) with gcc-9 - FAILED
-> >  - arm (omap1_defconfig) with gcc-10 - FAILED
->
-> Missing dummy clk_is_enabled_when_prepared() for the
-> !CONFIG_HAVE_CLK case?
+> > > In this way, the pinned memory pool implementation in userspace doesn't
+> > > need to depend on a specific uacce driver any more.
+> > 
+> > Please work with the mm developers to get them to agree with this type
+> > of thing, as well as the dma developers, both of which you didn't cc: on
+> > this patch :(
+> 
+> Yep.
+> 
+> > 
+> > Remember, you are creating a new api for Linux that goes around existing
+> > syscalls, but is in reality, a new syscall, so why not just make it a
+> > new syscall?
+> 
+> The difficulty would be how to record which pages are pinned for a process
+> if it is done by a new syscall.
+> 
+> For mlock(), it can be much easier as it will change VMA. Hardly we can
+> change VMA for pin. On the other hand, if the implementation is done in
+> driver, with file_operations, we can record pinned pages in the private
+> data of an opened file.
 
-I see these configs enabled in failed builds config file,
+Then work with the mm developers on this, there shouldn't be anything
+"special" about how this memory is handled vs. other backing memory
+types, right?
 
-CONFIG_HAVE_CLK=y
-CONFIG_CLKDEV_LOOKUP=y
-CONFIG_HAVE_LEGACY_CLK=y
+Also, be sure this works properly with the dma layer as there has been
+lots of work happening there recently.  Odds are passing in random
+address values in an unknown process context is not going to be correct,
+but I could be wrong.
 
-ref:
-https://builds.tuxbuild.com/1nN0vkpNP4qhvIuIJN12j7tTpQs/
+thanks,
 
-- Naresh
+greg k-h
