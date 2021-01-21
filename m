@@ -2,216 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A047E2FDE7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511A92FDE69
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 02:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731059AbhAUBBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 20:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
+        id S1730267AbhAUBCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 20:02:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387891AbhAUATD (ORCPT
+        with ESMTP id S2390817AbhAUATw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:19:03 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A70C061575;
-        Wed, 20 Jan 2021 16:18:23 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id a9so89527wrt.5;
-        Wed, 20 Jan 2021 16:18:23 -0800 (PST)
+        Wed, 20 Jan 2021 19:19:52 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D0EC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 16:19:09 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id c22so54316pgg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 16:19:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SJHTWN+UmjC7kDG+OZAjjp9XFjtpJ9pb9RuUrSerpQQ=;
-        b=Mk+hwGJ9H7bmk5yqm0nlMaWGnQhulvWhkPgdnaPlE4wodtsIVDDIG2qZBaQNxw9duh
-         ruX3zme5H3I1ytRQDECrzRNtbh+BMH3IMfifNgzXk4ec+VZrb54RTAVpkoCziHJtwfKW
-         M/4X6mCkEIAOWzHpDf/xtyBxtFTvyVJEpmSSBTItdrp+hJLgZEAax7Yvuow3aKM+ryiB
-         Rix9sqJeYpUGM59ZT4BODRKnen0NbFYELWC0Uk9oAA0OmJj0eCDoNsUVp58otM/MsARd
-         1++v9ScCxsnahwcTX+7ZkjLUS9sHU3aGUtYJFAYinNMcp2LJj5LPRUngeJ23H/mimew/
-         jP7Q==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YuYBfklFhpscFI2MvmVjz7cptai+tJdc1LXs5C+cN9I=;
+        b=IafP9aBBZYJbp61JNTSQCxx/cZip//xHYSQl2qsU5Kynwx4DekHZ1koZaSGyCYQMFf
+         b4TbzloZGl5fEfIN8OvBloos6j8vJ+obqFuZ7iUSCtTwDbmU1Q2534WkZckzk4Z/w5mh
+         M+9vOBhDz4kYxAI/3IUM768SAFP0KsoojWg3ByF6KtTMvz5+EC92HIyNMXcRfdIAS9NL
+         e16OUwbAR3gsN+uCNeErhHlxupo2uc55CC4dFXI+1HBw0O8JyuIUEhw94a7yYYDycNc+
+         oARtcosxpAuTfoO//uVESSIEhWiy3M8uuAZCBEOsqvQgHiBGCgUxmpJy2xYj3JNrE6Ks
+         M3qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SJHTWN+UmjC7kDG+OZAjjp9XFjtpJ9pb9RuUrSerpQQ=;
-        b=SBe+IMGGN53SxGcj+rI3wCwRzltn6ra1QD1WtgtRxnTcRCcQ6/b8G6Y65Pi8LfRogU
-         f9Xu7XZGHFzYt1y57PvVpEIcIgXehvPVS1vfPSQYWzFNGehEb0HtcA9esRNbLXAYEJAm
-         ykFrgRHY2KUDvBsQVLlrZ5F9kg8c6A/WgIA7+D+7fGvpX11ZsdRXCghV9oPJA8vxbsRl
-         3OWfOMSkDPOWifXCriAmJzkYMHtnI60h1u1f1d32Q+8IOQ3fjmu2FDG6xMWu6pvu0/ZC
-         lhvdwZcXxHOo+Y/7KcjaIP8psU1Mb6zCJkZE/F0KeV/G/HVQRB16DOIQb3vZI9ylHVGE
-         n4Mw==
-X-Gm-Message-State: AOAM533T3f05IglnUu7RDScRLbVWKlYC2QFhwLVYA1/4cQiRyAWUMVFt
-        MPeY/Ye5WHBWQBkfQij1KuQ=
-X-Google-Smtp-Source: ABdhPJyUObPtdQW1KbIbHfTZAVKWBK+OIGCy9M/FxdP5HjG5B3AeywJLyymiA4e1/loXzZtSzo1Udg==
-X-Received: by 2002:a5d:54cc:: with SMTP id x12mr11649462wrv.132.1611188301978;
-        Wed, 20 Jan 2021 16:18:21 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id q16sm29388057wme.1.2021.01.20.16.18.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 16:18:21 -0800 (PST)
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, kieran.bingham@ideasonboard.com
-References: <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
- <20210119092448.GN4077@smile.fi.intel.com>
- <a735380b-57ac-1950-b29a-07fe6cb708d2@gmail.com>
- <20210119110837.GT4077@smile.fi.intel.com>
- <YAcNT1d5zQHGsoe6@pendragon.ideasonboard.com>
- <YAccEtQIBrbKPSmv@smile.fi.intel.com>
- <YAev1YviLVfEHSg6@pendragon.ideasonboard.com>
- <YAgo06hhlael1/rm@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <e8f697c9-821e-1d15-9e57-cda71626cbb9@gmail.com>
-Date:   Thu, 21 Jan 2021 00:18:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YuYBfklFhpscFI2MvmVjz7cptai+tJdc1LXs5C+cN9I=;
+        b=P87JA/EYKI0eKLR0Ay+GgztT04qKCq00Q0q64K2l9fxU7uCQLN6kjRA85xCTFVIszK
+         NaRMOtdvPgkTyI4YQZ5y6hcdZOoJF370G71vrls4IMCye+QsmqwboD9Vnurvvyo8n69O
+         59AVuqSApkEwK/ZCREpr0M17+hNLcAr2TUfTnl8H+UZcpnxij63ThZX0vxGmlGMldpvF
+         C0b7noKEifXswuLPTgzMmx1p1wbwPsfJF99ETIHwO4JMOUHpNVVabKM0DGPhcbQP5gXe
+         TDeaIVLmx8uhtj49xfXc6Na4RnK4ly5zhr/MUfUIHDi/zP5U+f7rwBfv/EBXEO/zuF07
+         2zyw==
+X-Gm-Message-State: AOAM533HqpFVcrfz2jBrFZvC/YN90lKYSKXI39DdrW9zu2WNtMTOYcTQ
+        ppLL1v53ELOr8QCIHOTv/WOWOW2l2+Aq7Q==
+X-Google-Smtp-Source: ABdhPJxqlMiZULHRMbpFS7PiM1m5iPT8o4qCzlkYIzGD9aSJxTbTdbjUZIY0Qx7CN/exN4CXMGBEpg==
+X-Received: by 2002:aa7:80d5:0:b029:1a3:832a:1fd0 with SMTP id a21-20020aa780d50000b02901a3832a1fd0mr11627762pfn.6.1611188348723;
+        Wed, 20 Jan 2021 16:19:08 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 73sm3541205pga.26.2021.01.20.16.19.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 16:19:07 -0800 (PST)
+Date:   Wed, 20 Jan 2021 16:19:01 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
+Message-ID: <YAjIddUuw/SZ+7ut@google.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-16-bgardon@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YAgo06hhlael1/rm@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112181041.356734-16-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/2021 12:57, Andy Shevchenko wrote:
-> On Wed, Jan 20, 2021 at 06:21:41AM +0200, Laurent Pinchart wrote:
->> On Tue, Jan 19, 2021 at 07:51:14PM +0200, Andy Shevchenko wrote:
->>> On Tue, Jan 19, 2021 at 06:48:15PM +0200, Laurent Pinchart wrote:
->>>> On Tue, Jan 19, 2021 at 01:08:37PM +0200, Andy Shevchenko wrote:
->>>>> On Tue, Jan 19, 2021 at 10:40:42AM +0000, Daniel Scally wrote:
->>>>>> On 19/01/2021 09:24, Andy Shevchenko wrote:
->>>>>>>>>>> +static struct i2c_driver int3472_tps68470 = {
->>>>>>>>>>> +	.driver = {
->>>>>>>>>>> +		.name = "int3472-tps68470",
->>>>>>>>>>> +		.acpi_match_table = int3472_device_id,
->>>>>>>>>>> +	},
->>>>>>>>>>> +	.probe_new = skl_int3472_tps68470_probe,
->>>>>>>>>>> +};
->>>>>>>>> I'm not sure we want to have like this. If I'm not mistaken the I²C driver can
->>>>>>>>> be separated without ACPI IDs (just having I²C IDs) and you may instantiate it
->>>>>>>>> via i2c_new_client_device() or i2c_acpi_new_device() whichever suits better...
->>>>>>>> Sorry, I'm a bit confused by this. The i2c device is already
->>>>>>>> present...we just want the driver to bind to them, so what role do those
->>>>>>>> functions have there?
->>>>>>> What I meant is something like
->>>>>>>
->>>>>>>  *_i2c.c
->>>>>>> 	real I²C driver for the TPS chip, but solely with I²C ID table, no ACPI
->>>>>>> 	involved (and it sounds like it should be mfd/tps one, in which you
->>>>>>> 	just cut out ACPI IDs and convert to pure I²C one, that what I had
->>>>>>> 	suggested in the first place)
->>>>>>
->>>>>> Ahh; sorry - i misunderstood what you meant there. I understand now I
->>>>>> think, but there is one complication; the ACPI subsystem already creates
->>>>>> a client for that i2c adapter and address; i2c_new_client_device()
->>>>>> includes a check to see whether that adapter / address combination has
->>>>>> an i2c device already.  So we would have to have the platform driver
->>>>>> with ACPI ID first find the existing i2c_client and unregister it before
->>>>>> registering the new one...the existing clients have a name matching the
->>>>>> ACPI device instance name (e.g i2c-INT3472:00) which we can't use as an
->>>>>> i2c_device_id of course.
->>>>>
->>>>> See how INT33FE is being handled. Hint: drivers/acpi/scan.c:~1600
->>>>>
->>>>> static const struct acpi_device_id i2c_multi_instantiate_ids[] = {
->>>>> 	{"BSG1160", },
->>>>> 	{"BSG2150", },
->>>>> 	{"INT33FE", },
->>>>> 	{"INT3515", },
->>>>> 	{}
->>>>> };
->>>>>
->>>>> So, we quirklist it here and instantiate manually from platform driver (new
->>>>> coming one).
->>>>
->>>> This is documented as used for devices that have multiple I2cSerialBus
->>>> resources. That's not the case for the INT3472 as far as I can tell. I
->>>> don't think we should abuse this mechanism.
->>>
->>> This is quite a similar case to that one. Let's avoid yak shaving, right?
->>
->> Exactly my point, that's why I think this patch is good overall, I don't
->> think it requires a complete rewrite.
-> 
-> The approach in the series is to reinvent the MFD driver which I against of.
-> I don;t think we need to kill it there and reborn in a new form and dragging
-> code from there to here to there.
-> 
-> On top of that the approach with a quirk driver in the middle seems to me
-> cleaner than using different paths how the two drivers are being initialized.
-> In the proposed approach there will be one making decision point and easy to
-> understand what's going on.
-> 
-> The bad example of two making decision points is acpi_lpss.c vs. individual
-> drivers (however in that case it have different ID's, i.e. ACPI vs. PCI),
+On Tue, Jan 12, 2021, Ben Gardon wrote:
+> Wrap the MMU lock cond_reseched and needbreak operations in a function.
+> This will support a refactoring to move the lock into the struct
+> kvm_arch(s) so that x86 can change the spinlock to a rwlock without
+> affecting the performance of other archs.
 
+IMO, moving the lock to arch-specific code is bad for KVM.  The architectures'
+MMUs already diverge pretty horribly, and once things diverge it's really hard
+to go the other direction.  And this change, along with all of the wrappers,
+thrash a  lot of code and add a fair amount of indirection without any real
+benefit to the other architectures.
 
-Right; so if I understand correctly, the proposal is:
+What if we simply make the common mmu_lock a union?  The rwlock_t is probably a
+bit bigger, but that's a few bytes for an entire VM.  And maybe this would
+entice/inspire other architectures to move to a similar MMU model.
 
-1. Add INT3472 to the i2c_multi_instantiate_ids, which blocks it getting
-created as an i2c device
-2. instead of intel-skl-int3472 registering an i2c and a platform
-driver, just register a platform driver that binds to the INT3472
-acpi_device_id. We can check hardware type like in
-intel_cht_int33fe_common.c and call either discrete probe that does what
-the discrete driver is doing now, or else call tps68470 which is just a
-stub driver registering an i2c device like intel_cht_int33fe_microb.c
-3. Change the existing tps68470 mfd driver to match to that created i2c
-device instead of ACPI match, and move the code from
-intel_skl_int3472_tps68470.c to that driver instead
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index f3b1013fb22c..bbc8efd4af62 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -451,7 +451,10 @@ struct kvm_memslots {
+ };
 
-I think I finally got what you meant there, Andy, but correct me if I'm
-wrong please.
-
-I'm not sure that one's better than the other, to be honest. Either the
-multi-function device functionality lives in the conventional place, or
-else _all_ of the int3472 handling code lives together in one module.
-
-
->>>> Don't forget that the TPS68470 I2C driver needs to be ACPI-aware, as it
->>>> has to register an OpRegion for ACPI-based Chrome OS devices. On other
->>>> platforms (including DT platforms), it should only register regulators,
->>>> clocks and GPIOs. Given the differences between those platforms, I don't
->>>> think a TPS68470 driver that would fake being unaware of being probed
->>>> through ACPI would be a good idea. We can always refactor the code later
->>>> when we'll have a non-ACPI based platform using the TPS68470, without
->>>> such a platform there's no way we can test the I2C driver without ACPI
->>>> anyway.
->>>
->>> Are you agree that MFD approach should stay? How then we can manage to have an
->>> MFD driver cohabit with our new driver? I proposed a clean solution which will
->>> handle all possible cases via quirk driver. Having two drivers enumerated by
->>> different scenarios is a call for troubles (we have already with one of that
->>> sensors).
-
-What kind of troubles do you anticipate here?
-
->> I think we should solve this problem when it will arise. Solving
->> problems with complex architectures without a platform to test the code
->> on is a pretty sure way to get the architecture design wrong. Let's get
->> this merged, it's an improvement compared to the current situation, and
->> then let's improve it further on top when we'll need to support more use
->> cases.
-> 
-> But this is problem already here right now. The submitted code is to support
-> a new platform that needs a quirk and treats INT3472 differently. The usual
-> way is to refactor the existing solution to make them both to have a best
-> compromise.
-> 
->>> And there is no "faking" anything, it's rather gating it depending on the
->>> platform.
-> 
-
+ struct kvm {
+-       spinlock_t mmu_lock;
++       union {
++               rwlock_t mmu_rwlock;
++               spinlock_t mmu_lock;
++       };
+        struct mutex slots_lock;
+        struct mm_struct *mm; /* userspace tied to this vm */
+        struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
