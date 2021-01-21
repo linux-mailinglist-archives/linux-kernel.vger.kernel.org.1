@@ -2,238 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F73F2FDFF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2F62FDFF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 04:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393502AbhAUDBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 22:01:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47754 "EHLO mail.kernel.org"
+        id S2388058AbhAUDG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 22:06:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436895AbhAUCpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 21:45:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EBEB23788;
-        Thu, 21 Jan 2021 02:44:42 +0000 (UTC)
+        id S1726456AbhAUC5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 21:57:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2111523884;
+        Thu, 21 Jan 2021 02:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611197083;
-        bh=B6BmJjI7uz+gshtqNfmwCZlNBBN5WEoQNDqLrnRQNts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q+kJjqb2ooZHJGp++2+fg2VGWa3GacNQIsWo62aVYwLuP1943ss7+NxjS5NDG1xkJ
-         Kz9mL3pS/LKYhZoKV4/rZWM8nRU/N5mQsaC4prujk1xevc1LG3SClvlMwNFqHKsdRI
-         asuLRbboJrS2E408GfIiWLHC5qGneZ8c94ry/7bJUeA3yOGV4SoRoRgzgwsslb6UXP
-         nFCg8DCkswLnO0KwWA74FnYR629VX6ctUwWsNqUOaCUCVdsFFbeFwTS1/oSKhmZcNr
-         1FpU9slI/LqmxtlHbuT0Mo7fcFGFtKo4+g4E7P5UooYFoPFz5lPq+coVRVjT5Ri9RL
-         GSYyK21T2e7lA==
-Date:   Wed, 20 Jan 2021 18:44:41 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: ufs: Fix some problems in task management request
- implementation
-Message-ID: <YAjqmfUrlerwiUzH@google.com>
-References: <1611136471-12295-1-git-send-email-cang@codeaurora.org>
+        s=k20201202; t=1611197165;
+        bh=c1XsJT/SXPWs5fqOseN8Eebhs8J1o75FxNXKgsJnSIc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=NYWE9SMnDc3ZX8r69M2IAJPIMqU03VJt5VgjP/Au5NlA1q40qVo8cxLf4vGe9pGPJ
+         5UVAgaO+PRHYaK0gGinYEC+Y58Pgta3ULKtzBEXJagCVsbb9aqmQX7aMe3IC+hXERI
+         HHa/LTu5zc0LxrBBGOvGVNVkfx6WjLShbSz4CAV7AQJjQ5FDt1+DMMUAIzWZ7oEri6
+         d0RPCBfeejOuujlPfOUMmhB1Ffs1dJ+Lwnqq48OKJ4SMEcw5HVFJKQUrKHvT13gE0b
+         PUv8tBWKTh1dIicht0jaVd5h2EMsGtF/Lbqup+kzhvm4/5XE0QJUZuuEXMP/17YQJy
+         PFgnW6WkLzGbA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611136471-12295-1-git-send-email-cang@codeaurora.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e6843147-514b-8901-a04c-b1d6e3ebf1c2@somainline.org>
+References: <1611128871-5898-1-git-send-email-tdas@codeaurora.org> <e6843147-514b-8901-a04c-b1d6e3ebf1c2@somainline.org>
+Subject: Re: [PATCH V1] clk: qcom: gcc-sc7180: Mark the MM XO clocks to be always ON
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Wed, 20 Jan 2021 18:46:03 -0800
+Message-ID: <161119716362.3661239.18168143877101107424@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/20, Can Guo wrote:
-> Current task management request send/compl implementation is broken, the
-> problems and fixes are listed as below:
-> 
-> Problem: TMR completion timeout. ufshcd_tmc_handler() calls
->          blk_mq_tagset_busy_iter(fn == ufshcd_compl_tm()), but since
->          blk_mq_tagset_busy_iter() only iterates over all reserved tags and
->          started requests, so ufshcd_compl_tm() never gets a chance to run.
-> Fix:     Call blk_mq_start_request() in __ufshcd_issue_tm_cmd().
-> 
-> Problem: Race condition in send/compl paths. ufshcd_compl_tm() looks for
->          all 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL and call complete()
->          for each req who has the req->end_io_data set. There can be a race
->          condition btw tmc send/compl, because req->end_io_data is set, in
->          __ufshcd_issue_tm_cmd(), without host lock protection, so it is
->          possible that when ufshcd_compl_tm() checks the req->end_io_data,
->          req->end_io_data is set but the corresponding tag has not been set
->          in the REG_UTP_TASK_REQ_DOOR_BELL. Thus, ufshcd_tmc_handler() may
->          wrongly complete TMRs which have not been sent.
-> Fix:     Protect req->end_io_data with host lock. And let ufshcd_compl_tm()
->          only handle those tm cmds which have been completed instead of
->          looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
-> 
-> Problem: In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs +
->          req->tag as the Task Tag in one TMR UPIU.
-> Fix:     Directly use req->tag as Task Tag.
-> 
-> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> 
-> ---
-> 
-> This change is based on Jaegeuk's change - https://git.kernel.org/mkp/scsi/c/eeb1b55b6e25
-> 
-> ---
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index fb07e3a..44d09509 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6252,7 +6252,7 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
->  
->  struct ctm_info {
->  	struct ufs_hba	*hba;
-> -	unsigned long	pending;
-> +	unsigned long	completed;
->  	unsigned int	ncpl;
->  };
->  
-> @@ -6261,13 +6261,13 @@ static bool ufshcd_compl_tm(struct request *req, void *priv, bool reserved)
->  	struct ctm_info *const ci = priv;
->  	struct completion *c;
->  
-> -	WARN_ON_ONCE(reserved);
-> -	if (test_bit(req->tag, &ci->pending))
-> -		return true;
-> -	ci->ncpl++;
-> -	c = req->end_io_data;
-> -	if (c)
-> -		complete(c);
-> +	if (test_bit(req->tag, &ci->completed)) {
-> +		__clear_bit(req->tag, &hba->outstanding_tasks);
+Quoting AngeloGioacchino Del Regno (2021-01-20 01:16:17)
+> Il 20/01/21 08:47, Taniya Das ha scritto:
+> > There are intermittent GDSC power-up failures observed for titan top
+> > gdsc, which requires the XO clock. Thus mark all the MM XO clocks always
+> > enabled from probe.
+> >=20
+>=20
+> Hello Tanya,
+>=20
+> > Fixes: 8d4025943e13 ("clk: qcom: camcc-sc7180: Use runtime PM ops inste=
+ad of clk ones")
+> > Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> > ---
+> >   drivers/clk/qcom/gcc-sc7180.c | 47 ++++------------------------------=
+---------
+> >   1 file changed, 4 insertions(+), 43 deletions(-)
+> >=20
+> > --
+> > Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+> > of the Code Aurora Forum, hosted by the  Linux Foundation.
+> >=20
+> > diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc718=
+0.c
+> > index b05901b..88e896a 100644
+> > --- a/drivers/clk/qcom/gcc-sc7180.c
+> > +++ b/drivers/clk/qcom/gcc-sc7180.c
+> > @@ -1,6 +1,6 @@
+> >   // SPDX-License-Identifier: GPL-2.0-only
+> >   /*
+> > - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
+> > + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
+> >    */
+> >=20
+> >   #include <linux/clk-provider.h>
+> > @@ -919,19 +919,6 @@ static struct clk_branch gcc_camera_throttle_hf_ax=
+i_clk =3D {
+> >       },
+> >   };
+> >=20
+> > -static struct clk_branch gcc_camera_xo_clk =3D {
+> > -     .halt_reg =3D 0xb02c,
+> > -     .halt_check =3D BRANCH_HALT,
+> > -     .clkr =3D {
+> > -             .enable_reg =3D 0xb02c,
+> > -             .enable_mask =3D BIT(0),
+> > -             .hw.init =3D &(struct clk_init_data){
+> > -                     .name =3D "gcc_camera_xo_clk",
+> > -                     .ops =3D &clk_branch2_ops,
+> > -             },
+> > -     },
+> > -};
+> > -
+>=20
+> Why are you avoiding to register these clocks entirely?
+> If this is needed by the Titan GDSC, this clock "does indeed exist".
+>=20
+> If these clocks shall never be turned off, then you should add the
+> CLK_IS_CRITICAL flag and perhaps add a comment explaining why.
 
-Is the below fixed in -next?
-
-		__clear_bit(req->tag, &ci->hba->outstanding_tasks);
-
-> +		ci->ncpl++;
-> +		c = req->end_io_data;
-> +		if (c)
-> +			complete(c);
-> +	}
->  	return true;
->  }
->  
-> @@ -6283,11 +6283,19 @@ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba)
->  {
->  	struct request_queue *q = hba->tmf_queue;
->  	struct ctm_info ci = {
-> -		.hba	 = hba,
-> -		.pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL),
-> +		.hba = hba,
-> +		.ncpl = 0,
->  	};
-> +	u32 tm_doorbell;
-> +	unsigned long completed;
-> +
-> +	tm_doorbell = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
-> +	completed = tm_doorbell ^ hba->outstanding_tasks;
->  
-> -	blk_mq_tagset_busy_iter(q->tag_set, ufshcd_compl_tm, &ci);
-> +	if (completed) {
-> +		ci.completed = completed;
-> +		blk_mq_tagset_busy_iter(q->tag_set, ufshcd_compl_tm, &ci);
-> +	}
->  	return ci.ncpl ? IRQ_HANDLED : IRQ_NONE;
->  }
->  
-> @@ -6405,37 +6413,33 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
->  	DECLARE_COMPLETION_ONSTACK(wait);
->  	struct request *req;
->  	unsigned long flags;
-> -	int free_slot, task_tag, err;
-> +	int task_tag, err;
->  
->  	/*
-> -	 * Get free slot, sleep if slots are unavailable.
-> -	 * Even though we use wait_event() which sleeps indefinitely,
-> -	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
-> +	 * blk_get_request() used here is only to get a free tag.
->  	 */
->  	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
->  	if (IS_ERR(req))
->  		return PTR_ERR(req);
->  
-> -	req->end_io_data = &wait;
-> -	free_slot = req->tag;
-> -	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
->  	ufshcd_hold(hba, false);
-> -
->  	spin_lock_irqsave(host->host_lock, flags);
-> -	task_tag = hba->nutrs + free_slot;
-> +	req->end_io_data = &wait;
-> +	blk_mq_start_request(req);
->  
-> +	task_tag = req->tag;
->  	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
->  
-> -	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
-> -	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
-> +	memcpy(hba->utmrdl_base_addr + task_tag, treq, sizeof(*treq));
-> +	ufshcd_vops_setup_task_mgmt(hba, task_tag, tm_function);
->  
->  	/* send command to the controller */
-> -	__set_bit(free_slot, &hba->outstanding_tasks);
-> +	__set_bit(task_tag, &hba->outstanding_tasks);
->  
->  	/* Make sure descriptors are ready before ringing the task doorbell */
->  	wmb();
->  
-> -	ufshcd_writel(hba, 1 << free_slot, REG_UTP_TASK_REQ_DOOR_BELL);
-> +	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);
->  	/* Make sure that doorbell is committed immediately */
->  	wmb();
->  
-> @@ -6447,32 +6451,33 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
->  	err = wait_for_completion_io_timeout(&wait,
->  			msecs_to_jiffies(TM_CMD_TIMEOUT));
->  	if (!err) {
-> +		spin_lock_irqsave(hba->host->host_lock, flags);
->  		/*
->  		 * Make sure that ufshcd_compl_tm() does not trigger a
->  		 * use-after-free.
->  		 */
->  		req->end_io_data = NULL;
-> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
->  		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete_err");
->  		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
->  				__func__, tm_function);
-> -		if (ufshcd_clear_tm_cmd(hba, free_slot))
-> -			dev_WARN(hba->dev, "%s: unable clear tm cmd (slot %d) after timeout\n",
-> -					__func__, free_slot);
-> +		if (ufshcd_clear_tm_cmd(hba, task_tag)) {
-> +			dev_WARN(hba->dev, "%s: unable to clear tm cmd (slot %d) after timeout\n",
-> +					__func__, task_tag);
-> +		} else {
-> +			__clear_bit(task_tag, &hba->outstanding_tasks);
-> +		}
->  		err = -ETIMEDOUT;
->  	} else {
->  		err = 0;
-> -		memcpy(treq, hba->utmrdl_base_addr + free_slot, sizeof(*treq));
-> +		memcpy(treq, hba->utmrdl_base_addr + task_tag, sizeof(*treq));
->  
->  		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete");
->  	}
->  
-> -	spin_lock_irqsave(hba->host->host_lock, flags);
-> -	__clear_bit(free_slot, &hba->outstanding_tasks);
-> -	spin_unlock_irqrestore(hba->host->host_lock, flags);
-> -
-> +	ufshcd_release(hba);
->  	blk_put_request(req);
->  
-> -	ufshcd_release(hba);
->  	return err;
->  }
->  
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+I'd rather not have critical clks wasting kernel memory and registration
+time if they're never going to be turned off and we're basically just
+writing a bit so that they're always on. This patch looks OK to me from
+that perspective. There aren't any parents for these clks either so
+really it's a glorified bit toggle and poll to make sure that it is
+enabled. Maybe we should be checking that they're actually enabled at
+the end of probe, but otherwise we don't need all this complexity.
