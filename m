@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA3A2FE8C0
+	by mail.lfdr.de (Postfix) with ESMTP id 77C742FE8C1
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730471AbhAUL2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:28:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
+        id S1730509AbhAUL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729214AbhAULYm (ORCPT
+        with ESMTP id S1726603AbhAUL0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:24:42 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BED2C0613D3;
-        Thu, 21 Jan 2021 03:24:02 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id g3so1132341plp.2;
-        Thu, 21 Jan 2021 03:24:02 -0800 (PST)
+        Thu, 21 Jan 2021 06:26:39 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F21C0613D3;
+        Thu, 21 Jan 2021 03:25:58 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id y4so1717140ybn.3;
+        Thu, 21 Jan 2021 03:25:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lslmnlQrtpTIRDu3hWAi8sXwnSjS9donHChZd58khQg=;
-        b=UXQlAdc3hwbMzWm7xePYi4qK9KThp0aPF+Fo8eaQ1m454i2Id/Fg4/2lnzVZNTBgSE
-         FZWOCaKhIZ/w/ivuLaSJ2B1OBAtTUEy9gkaKWYiRQ631x4j4pJWFj7xbmWPflAoho9nx
-         5TqVyroutmHFUHB3pls8vsLs3fXIoJ2ZtRZAJaKus50gRaXz5TP52PHIYHudHBo2KmHG
-         d+wMkNBWjxiMYQD5ck/jol9G1dyhM3Ai4rZa8pdVwNDxsrUkX7iVLPJzc/Hd+9sbPMgD
-         NRqXfPjni1Qj/64G4G1gha7qiLB0sgr0aWfZF2C/TG2c5iOX0QsU488ufpKl/6YGiDHA
-         2ayQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=k9t1av7olujuCjiWRao1+foelfX8Dllx4K3zuzbAp08=;
+        b=taU/XiBsk52yDFqqDgjQA0bad/3BoAoLe3P8app055QZ9J2qP/yY+2mlnkTfVU3Tl8
+         cqGIRyt1YNUB2iaaKijOP6S978PG7uQm1Yh/2fP0AdgDBdMpn1LMqgk0/5vvf6pCe+zp
+         lqPjzFjgPfH72xqoRJAZUC1I/OUYGnL7KerFnT3avyxGGVYcmC5D55YgILJnMxaKLv6Y
+         qtlLXlY1bop0hAX+le5xO8b1VoQTfd+OwpnTfb88r+dgQJK7s5xa65+oWBtVgGIo+X/i
+         7ygIWTDk9GTKTzUgNdqkd5wpR/oDY2yg4pgbvvKqrHVMMxfB/Ltucgbt2nW0CJ7/I/zz
+         1yDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lslmnlQrtpTIRDu3hWAi8sXwnSjS9donHChZd58khQg=;
-        b=RvhidB7FxsCjnltIexnNR1wTtSJCrp4hQXN7x4M7rXE1rbQgjtAmJqqxcxavFdkX6v
-         ksL+OPz/gwhpjglFzfFTn2CEDbsVdb+Io9eSxCVhRvCkGL+SJYi2G7Rpx4oHOcZHwaXV
-         SJdC5mBa6Xnv2toWPt/+N3+StJxpsi4b2myc/PY/N5ktdx5tJWe79HZwOo3WvSLR/E70
-         UIEHNyhYyXPw/TMOI0j/T66NUURsXWoecCRWxN6dzZY/9Su6axY/+uYodnpy1hPSgWca
-         4oKWHVvRlPtoDwdpx94F2ngzb2dJP4I65Om7xN1a1Mkj7qubsXcsQ3lsdKfnMI14+xQb
-         Vv9Q==
-X-Gm-Message-State: AOAM530/A6XmWVT8B1ziuQrjW54XcyXuXwqBVQhrV8Vl7kQ8VGoTf5Bp
-        jfhBCt1LrUQQWOTcAgacig6Apo1Y3dFH4Hgp
-X-Google-Smtp-Source: ABdhPJxR2pyo41CIdOAqik7/AVjtgJxP91xCIN/od+oVRsP+mpgZY+ChDoR6zqNG4YsSW2ZmSO108w==
-X-Received: by 2002:a17:902:e5cc:b029:df:bc77:3aba with SMTP id u12-20020a170902e5ccb02900dfbc773abamr9115606plf.72.1611228241858;
-        Thu, 21 Jan 2021 03:24:01 -0800 (PST)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id me5sm5404797pjb.19.2021.01.21.03.23.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 03:24:01 -0800 (PST)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        Kevin Tang <kevin.tang@unisoc.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH v1 1/2] dt-bindings: iommu: add bindings for sprd iommu
-Date:   Thu, 21 Jan 2021 19:23:48 +0800
-Message-Id: <20210121112349.421464-2-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121112349.421464-1-zhang.lyra@gmail.com>
-References: <20210121112349.421464-1-zhang.lyra@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=k9t1av7olujuCjiWRao1+foelfX8Dllx4K3zuzbAp08=;
+        b=rc5TQfKi5Mz6SgrGqbdNMg0vzCOl/tURmL5pFPnpsOqbVfjfEhBhqb+WMNEB1eYMLr
+         DuT3iKCQ4HJHclG7sUPp6gvePcgu5/HhqnpzxAToI/DkJ1TpIEGn07F+km5X7O4st573
+         gqvptJlZwAdbWljkRzjBdVpnK72cAdxns6nqFybzoCxyLRgT11+0cWtHoHZyXiyAt3oy
+         W+io2vg8KkKgdcQizt/cCTxlfAKHnSAcFx14o+rc+iMZQznrmEeRDShGpJZPgJqa0ubm
+         yF5/KX4hMhflImPOToxlzFq8usx4judPhh0eOdIvZiZH+u64DmNqai0AtzDB9AvVjT+D
+         PZwg==
+X-Gm-Message-State: AOAM531h9C/o3orfOyBWY+ZZUw6jahjRvuh+bMj7yf7Z8Z4LU/6Cre+W
+        5Uh0/PPPGtfU+CSbZ2OZLUGMH5b8bI0ZvvUKjps=
+X-Google-Smtp-Source: ABdhPJyh67EExgFHy7v3gQDCtpSciDMQOcV5rIe3/RzF7i5efyrcTPlNOZ5Mb8YhiDN1XyLAnvP7KrY+FuXfZuTud18=
+X-Received: by 2002:a25:538a:: with SMTP id h132mr19654496ybb.247.1611228358033;
+ Thu, 21 Jan 2021 03:25:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210121092026.3261412-1-mudongliangabcd@gmail.com>
+ <YAlORNKQ4y7bzYeZ@kroah.com> <CAD-N9QXhD48-6GbpCUYuxPKEbkzGgGTaFKQ8TAaQ93WfD_sT2A@mail.gmail.com>
+ <YAljtMMV4oh5uAHC@kroah.com>
+In-Reply-To: <YAljtMMV4oh5uAHC@kroah.com>
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Thu, 21 Jan 2021 19:25:31 +0800
+Message-ID: <CAD-N9QWao8+VFLbE00Dmo0Kpwf2ATzaP=F=QWk=5R8Td_JWsew@mail.gmail.com>
+Subject: Re: [PATCH] rt2x00: reset reg earlier in rt2500usb_register_read
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     davem@davemloft.net, helmut.schaa@googlemail.com,
+        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        sgruszka@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Thu, Jan 21, 2021 at 7:21 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Jan 21, 2021 at 06:59:08PM +0800, =E6=85=95=E5=86=AC=E4=BA=AE wro=
+te:
+> > > >       rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
+> > > >                                     USB_VENDOR_REQUEST_IN, offset,
+> > > >                                     &reg, sizeof(reg));
+> > >
+> > > Are you sure this is valid to call this function with a variable on t=
+he
+> > > stack like this?  How did you test this change?
+> >
+> > First, I did not do any changes to this call. Second, the programming
+> > style to pass the pointer of stack variable as arguments is not really
+> > good. Third, I check this same code file, there are many code snippets
+> > with such programming style. :(
+>
+> I know you did not change it, what I am asking is how did you test this
+> change works?  I think the kernel will warn you in huge ways that using
+> this pointer on the stack is incorrect, which implies you did not test
+> this change :(
+>
 
-This patch adds bindings to support display and Image codec(jpeg) iommu
-instance.
+I tested this patch only with PoC. The patched kernel version did not
+crash when executing the PoC.
 
-The iommu support for others would be added once finished tests with those
-devices, such as a few signal processors, including VSP(video),
-GSP(graphic), ISP(image), and camera CPP, etc.
+BTW, I did not take notice of the warning information as there are
+many many warnings in building KMSAN.
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- .../devicetree/bindings/iommu/sprd,iommu.yaml | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-
-diff --git a/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-new file mode 100644
-index 000000000000..4b912857c112
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2020 Unisoc Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iommu/sprd,iommu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Unisoc IOMMU and Multi-media MMU
-+
-+maintainers:
-+  - Chunyan Zhang <zhang.lyra@gmail.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - sprd,iommu-v1-disp
-+      - sprd,iommu-v1-jpg
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#iommu-cells":
-+    const: 0
-+    description:
-+      Unisoc IOMMUs are all single-master IOMMU devices, therefore no
-+      additional information needs to associate with its master device.
-+      Please refer to the generic bindings document for more details,
-+      Documentation/devicetree/bindings/iommu/iommu.txt
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#iommu-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    iommu_disp: iommu@63000000 {
-+      compatible = "sprd,iommu-v1-disp";
-+      reg = <0x63000000 0x880>;
-+      #iommu-cells = <0>;
-+    };
-+
-+...
--- 
-2.25.1
-
+> thanks,
+>
+> greg k-h
