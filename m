@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B102FE7F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D771C2FE7E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729810AbhAUKsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:48:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729698AbhAUKiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:38:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE5F2137B;
-        Thu, 21 Jan 2021 10:37:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611225450;
-        bh=1Etgxdl7G90TmACNnd/HP+WyqVm5tYgY7rcqWBkqz1o=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=L3pYFv9W108WGMDPWi2nQT4KorANRg8DC1BzTytUbdgR4M6NlMNlffrcpWdcPuIW3
-         EzEUQw2KV/ujhqu2GBookYeDWnnnFUZG8JbgYM5AqlBsUdsXMYsIKp9uuvpN9/UdvW
-         qEex+BXxq4+C8/6g+nbXeiSvuPCjYEr6g0tvTspjSKpyL12T+EXdZS+tloCa2GwWeF
-         vWImlQp+bye98LMj682xhVUxPMuGGKh0iNkSVrQ6rmBXeztFqwU5I69lZEZE7iNNRv
-         fPBI//Ul0nam2uf+jXOHEAJDseh7PQ4IbVNnaNJttoRaDoJGOQTxxKzeoCU/lVNoQo
-         EijkIVLoHZd/w==
-Subject: Re: [PATCH] arm64: dts: ti: k3*: Fixup PMU compatibility to be CPU
- specific
-To:     Nishanth Menon <nm@ti.com>, Sudeep Holla <sudeep.holla@arm.com>,
-        Suman Anna <s-anna@ti.com>, Dave Gerlach <d-gerlach@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210120195145.32259-1-nm@ti.com>
-From:   Tero Kristo <kristo@kernel.org>
-Message-ID: <4a57ef04-75ca-5d24-54ef-15aff1ede46e@kernel.org>
-Date:   Thu, 21 Jan 2021 12:37:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729675AbhAUKnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:43:17 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:1110 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729820AbhAUKil (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 05:38:41 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10LAZnJd032763;
+        Thu, 21 Jan 2021 04:37:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=xLdqq6hhO8/n0d4Thnqw0F4ZlNDIuO5MhIN1bKH6sOE=;
+ b=jlrdbbY+w12fsHVVNULS/SmejqKgpuCP9IxK4d/uibyh0Lr+jcN/n+H3AzXeu+Huqbv+
+ ll1xw68vbp5fM+4eiRlXROynEhOGsIcGlz8FKy4ambhjEZA2yCsdiQYLK+jTYVa3WzJh
+ MXae1++MTQMLwHzOVVyPqr+ooKmerm51UAws9hy2Gnipn2IFUV7w63Wcl2C2pmPjpLX5
+ glq7bUd6w31R5dDOnTJNbggh7gqRxmOLFFW52oOXFUUTHYkuPi5XxDHAPVQGZkLD04Le
+ kRNqwwWsoo2dDB7vYQtQSGZw06q5yeVaBD3w7rO5ifHfV2Lsq+XFXYXaRTTwUpXl9o6C Yw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 36692r9xws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 21 Jan 2021 04:37:42 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 21 Jan
+ 2021 10:37:40 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 21 Jan 2021 10:37:40 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 25CB445;
+        Thu, 21 Jan 2021 10:37:40 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 10:37:40 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v4 5/5] ASoC: Intel: bytcr_wm5102: Add machine driver for
+ BYT/WM5102
+Message-ID: <20210121103740.GE106851@ediswmail.ad.cirrus.com>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <20210120214957.140232-6-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210120195145.32259-1-nm@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210120214957.140232-6-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/2021 21:51, Nishanth Menon wrote:
-> We can use CPU specific pmu configuration to expose the appropriate
-> CPU specific events rather than just the basic generic pmuv3 perf
-> events.
+On Wed, Jan 20, 2021 at 10:49:57PM +0100, Hans de Goede wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-
-Reviewed-by: Tero Kristo <kristo@kernel.org>
-
+> Add a new ASoc Machine driver for Intel Baytrail platforms with a
+> Wolfson Microelectronics WM5102 codec.
+> 
+> This is based on a past contributions [1] from Paulo Sergio Travaglia
+> <pstglia@gmail.com> based on the Levono kernel [2] combined with
+> insights in things like the speaker GPIO from the android-x86 android
+> port for the Lenovo Yoga Tablet 2 1051F/L [3].
+> 
+> [1] https://patchwork.kernel.org/project/alsa-devel/patch/593313f5.3636c80a.50e05.47e9@mx.google.com/
+> [2] https://github.com/lenovo-yt2-dev/android_kernel_lenovo_baytrail/blob/cm-12.1/sound/soc/intel/board/byt_bl_wm5102.c
+> [3] https://github.com/Kitsune2222/Android_Yoga_Tablet_2-1051F_Kernel
+> 
+> The original machine driver from the Android ports was a crude modified
+> copy of bytcr_rt5640.c adjusted to work with the WM5102 codec.
+> This version has been extensively reworked to:
+> 
+> 1. Remove all rt5640 related quirk handling. to the best of my knowledge
+> this setup is only used on the Lenovo Yoga Tablet 2 series (8, 10 and 13
+> inch models) which all use the same setup. So there is no need to deal
+> with all the variations with which we need to deal on rt5640 boards.
+> 
+> 2. Rework clock handling, properly turn off the FLL and the platform-clock
+> when they are no longer necessary and don't reconfigure the FLL
+> unnecessarily when it is already running. This fixes a number of:
+> "Timed out waiting for lock" warnings being logged.
+> 
+> 3. Add the GPIO controlled Speaker-VDD regulator as a DAPM_SUPPLY
+> 
+> This only adds the machine driver and ACPI hooks, the BYT-CR detection
+> quirk which these devices need will be added in a separate patch.
+> 
+> BugLink: https://github.com/thesofproject/linux/issues/2485
+> Co-authored-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
-> 
-> AM65: https://pastebin.ubuntu.com/p/TF2cCMySkt/
-> J721E: https://pastebin.ubuntu.com/p/jgGPNmNgG3/
-> J7200: https://pastebin.ubuntu.com/p/Kfc3VHHXNB/
-> 
-> Original report: https://lore.kernel.org/linux-arm-kernel/20210119172412.smsjdo2sjzqi5vcn@bogus/
-> 
-> I have'nt split this patch up for fixes tag primarily because the
-> basic functionality works and this is an improvement than a critical
-> fixup to backport for older kernels.
-> 
->   arch/arm64/boot/dts/ti/k3-am65.dtsi  | 2 +-
->   arch/arm64/boot/dts/ti/k3-j7200.dtsi | 2 +-
->   arch/arm64/boot/dts/ti/k3-j721e.dtsi | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> index d84c0bc05023..a9fc1af03f27 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> @@ -56,7 +56,7 @@ a53_timer0: timer-cl0-cpu0 {
->   	};
->   
->   	pmu: pmu {
-> -		compatible = "arm,armv8-pmuv3";
-> +		compatible = "arm,cortex-a53-pmu";
->   		/* Recommendation from GIC500 TRM Table A.3 */
->   		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
->   	};
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200.dtsi b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> index 66169bcf7c9a..b7005b803149 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> @@ -114,7 +114,7 @@ a72_timer0: timer-cl0-cpu0 {
->   	};
->   
->   	pmu: pmu {
-> -		compatible = "arm,armv8-pmuv3";
-> +		compatible = "arm,cortex-a72-pmu";
->   		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
->   	};
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> index cc483f7344af..f0587fde147e 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> @@ -115,7 +115,7 @@ a72_timer0: timer-cl0-cpu0 {
->   	};
->   
->   	pmu: pmu {
-> -		compatible = "arm,armv8-pmuv3";
-> +		compatible = "arm,cortex-a72-pmu";
->   		/* Recommendation from GIC500 TRM Table A.3 */
->   		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
->   	};
-> 
 
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
