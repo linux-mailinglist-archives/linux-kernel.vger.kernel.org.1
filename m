@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1C72FE2DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E772FE2E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbhAUGaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:30:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726987AbhAUG2z (ORCPT
+        id S1726642AbhAUGar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:30:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726669AbhAUG35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:28:55 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E767C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:28:15 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id by1so1064352ejc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=rwgvP8AoqgDSPVMCmPqHU4aJ92n1EnfAeIj2Yz3Gw3Q=;
-        b=j/bL1BUg7wEjWJ2XEiCeKl5ZcKNAvNnxWb4MMMEdD5hOt51X0RghRJsnGZzz7W6s6o
-         8fGVG7w9V5qTwUN2nIOaymNIO2vSHqLlJ8QFAb6P3iio2PJzO2rKW6UQO2f5mSFeKKFn
-         kvQK+eS0BJtCrmt3U9sPtTggAwAtnXLtM9n716BJR2MzGyi5JZIwgXrnmUdQqCa9XsQm
-         05/7Q54+iwwqqeJQ/aZ8Miz7feHb9hqv3j+7JOmIGH7E6B6+saD8W3dtsJ+29ewj160F
-         C4cT+Z9ZVhY0hzNGiroOqdoIsoCvBleEJ/Dyi8YjqrT6WUgIwgOUzBY6PCC8frdh9ned
-         N+Ag==
+        Thu, 21 Jan 2021 01:29:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611210505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A/Nv6GHCQlumzPaFQAXiaHrHMfj3/YhSy2fwNasMTmw=;
+        b=M1J+EPI7mHjM6cRLfs87FiBA+Uwj1FKJMZum8tfZohO4H4u+htuk3PahQg4ohO50P6B4Tj
+        yIFuWkNiACFRf/058nwGEpgh4r1qdbhY7A61tb0HYdOOtEtoY+0xniMvt1+2/nMupczz52
+        pPQOg+l6DPsmaa0vdadLpp0gN67njXE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-bL4ljgdHNC-2KRyhqNKf9g-1; Thu, 21 Jan 2021 01:28:23 -0500
+X-MC-Unique: bL4ljgdHNC-2KRyhqNKf9g-1
+Received: by mail-ed1-f71.google.com with SMTP id u17so582754edi.18
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:28:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=rwgvP8AoqgDSPVMCmPqHU4aJ92n1EnfAeIj2Yz3Gw3Q=;
-        b=lYXDC3cL5vz5GNhfAn+aIRYVMqD9X1y5eSpNnxQ+35wdK+ZGEMrHgEQYENJOr3aiWQ
-         aG9x4pjmw7Lta4zzY1JXrzbh8qwlrBcvS1X/A0ILTwHgsJ/PiBt3q7c2HOxdVYhdb5Hr
-         LLI9otUjzMOwmzis7qjN/Dd9bMLY9A8j54iN/wK9sTBiWI1FDBxiRlUcqfjLF4A+FxG/
-         QlgdEK6ZO2H1gnbkNKSfIE6wvCaG2KcocZGFUcaEImHAJG1QUiayesbwz+WmtPBel5/K
-         wZshi/FQVQfUElBAKAWcIHt9ClBabh974QmqCfVnpKJUzvHb3JBrr66oPgohpIozs1gl
-         PCbA==
-X-Gm-Message-State: AOAM530pJwm4qYAsU7aBzEGFrGIX00JAgmmVv3Fv+yTBVcu5WElV3WdY
-        uqSuM9V3vnCCR0kLly+v8PL9ypYtK8nQV+lgU9XAKA==
-X-Google-Smtp-Source: ABdhPJyrVRb/FAVouTL2Re4ou3lIvSM3uEQTtZMyGaZXV+Wd0nJ3uq/TQmPAFTpawREd5KT4Aqg8GTONmAzC9HMMTHg=
-X-Received: by 2002:a17:906:796:: with SMTP id l22mr8379890ejc.247.1611210493617;
- Wed, 20 Jan 2021 22:28:13 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A/Nv6GHCQlumzPaFQAXiaHrHMfj3/YhSy2fwNasMTmw=;
+        b=gp1PAJeKEa/L39GHoFnSdR0+mMclhHJRUqvUSXIB3XjTpQ22MY982Y2bRMNIRwIbdO
+         3b/wDyGQ5X0B4O/yZGj9TxgoPyAqmvmh9DO2cPUduwFJNw59nlzaaT5qCspq1S7JBZOH
+         fD1TqSNYEDin69wjWY4SUPxojDNvtMQpuGDp1ks5iX0eRzFMiPmczjQB0SLuBPzSQQe8
+         2EdQI0BRtQ6ZkURh/vmlW4t1PGETIUv+oqrW+tyZyH758rPd5jvCkHjU6fPQuhjAiFL3
+         HcBlM6aq04v5zAkNCOglhzJ7NqkTnxeoNQEXmi5Bz15tspQ6H6Rp4X8leHh4wG3r4l8L
+         hYqQ==
+X-Gm-Message-State: AOAM531aBJhQIIBY3PeQhFOkiT3fZXqrtqyddn1nCFOA/yUSbzsrb2L6
+        bUCWcZ0osA36NfVyLzXk6wJ+4OLfcaB1IsN1rsyM7eIIKyDnOrrkgmk/gEgfXv2q3wn6RLC1v7i
+        U64jhV5mqAPpsV2XGOMn2TSvJ
+X-Received: by 2002:a17:906:aec1:: with SMTP id me1mr8805629ejb.114.1611210502430;
+        Wed, 20 Jan 2021 22:28:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwgvwiFmsXss14kPoPcd+j0USA1s+mP/BikoSlDkv7eXGzd0l3lQAShgpK3XYQfPcSWmez7cw==
+X-Received: by 2002:a17:906:aec1:: with SMTP id me1mr8805619ejb.114.1611210502205;
+        Wed, 20 Jan 2021 22:28:22 -0800 (PST)
+Received: from localhost.localdomain ([151.29.110.43])
+        by smtp.gmail.com with ESMTPSA id d8sm2231050edm.75.2021.01.20.22.28.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 22:28:21 -0800 (PST)
+Date:   Thu, 21 Jan 2021 07:28:19 +0100
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH] sched/deadline: Reduce rq lock contention in
+ dl_add_task_root_domain()
+Message-ID: <20210121062819.GH10569@localhost.localdomain>
+References: <20210119083542.19856-1-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Jan 2021 11:58:02 +0530
-Message-ID: <CA+G9fYso2u4Km7mG-PWC_G_BXZRK5qLNN+NK6ws4KmpSZKq4cw@mail.gmail.com>
-Subject: test-definitions: kselftest upgrade to v5.10
-To:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>, Tim.Bird@sony.com,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119083542.19856-1-dietmar.eggemann@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you are not using the test-definitions project to run kselftest,
-please ignore this email.
+Hi,
 
-A new run script for kselftest, run_kselftest.sh [1], was created during the
-Linux v5.10 release.
+On 19/01/21 09:35, Dietmar Eggemann wrote:
+> dl_add_task_root_domain() is called during sched domain rebuild:
+> 
+>   rebuild_sched_domains_locked()
+>     partition_and_rebuild_sched_domains()
+>       rebuild_root_domains()
+>          for all top_cpuset descendants:
+>            update_tasks_root_domain()
+>              for all tasks of cpuset:
+>                dl_add_task_root_domain()
+> 
+> Change it so that only the task pi lock is taken to check if the task
+> has a SCHED_DEADLINE (DL) policy. In case that p is a DL task take the
+> rq lock as well to be able to safely de-reference root domain's DL
+> bandwidth structure.
+> 
+> Most of the tasks will have another policy (namely SCHED_NORMAL) and
+> can now bail without taking the rq lock.
+> 
+> One thing to note here: Even in case that there aren't any DL user
+> tasks, a slow frequency switching system with cpufreq gov schedutil has
+> a DL task (sugov) per frequency domain running which participates in DL
+> bandwidth management.
+> 
+> Reviewed-by: Quentin Perret <qperret@google.com>
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
-This script allows someone to run both individual test cases and sets of
-test cases. Accordingly, the test-definitions kselftest script [2] was also
-improved to support these upstream changes [1].  Currently this change is in
-the test-definitions repository in a separate branch "kselftest". This has been
-running in LKFT's CI since November 2020 [3].
+Looks good to me, thanks!
 
-The test-definitions kselftest script will stop supporting older versions of
-the kselftest run script starting 1st-Feb-2021 from master branch.
-OTOH, One have to use test-definitions Tag 2021.01 (will be created) for older
-kselftest versions.
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
 
-We request that any users of test-definitions project start updating your
-kselftest sources to version v5.10 and above.
+Best,
+Juri
 
-Upstream patch,
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/tools/testing/selftests/run_kselftest.sh?id=5da1918446a1d50d57f2f6062f7fdede0b052473
-[2] https://github.com/Linaro/test-definitions/tree/kselftest/automated/linux/kselftest
-[3] https://github.com/Linaro/test-definitions/tree/kselftest
-
----
-From 5da1918446a1d50d57f2f6062f7fdede0b052473 Mon Sep 17 00:00:00 2001
-From: Kees Cook <keescook@chromium.org>
-Date: Mon, 28 Sep 2020 13:26:49 -0700
-Subject: selftests/run_kselftest.sh: Make each test individually selectable
-
-Currently with run_kselftest.sh there is no way to choose which test
-we could run. All the tests listed in kselftest-list.txt are all run
-every time. This patch enhanced the run_kselftest.sh to make the test
-collections (or tests) individually selectable. e.g.:
-
-$ ./run_kselftest.sh -c seccomp -t timers:posix_timers -t timers:nanosleep
-
-Additionally adds a way to list all known tests with "-l", usage
-with "-h", and perform a dry run without running tests with "-n".
-
-Co-developed-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-
---
-
-- Naresh Kamboju
