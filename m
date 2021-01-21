@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9A62FEB54
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5B32FEB5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 14:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731761AbhAUNP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S1731730AbhAUNQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 08:16:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731671AbhAUNOh (ORCPT
+        with ESMTP id S1731663AbhAUNPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:14:37 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520C7C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:13:57 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id j26so1420996qtq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:13:57 -0800 (PST)
+        Thu, 21 Jan 2021 08:15:22 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70235C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:14:42 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id q12so2407804lfo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:14:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YLF2LgcHZ5DDqDazshlamJH0LMkuaN2/iqWq+I3Vnnk=;
-        b=cd9OxPlRA3NGn6WxwIGITPEw7+UzXHbPgSZU/5BS7jYp6BYL0OXp2IyBcPE6JlRpf1
-         qWDMHdUT2jnZQnGdHaPnkc+I7eMBR9eTp3kfSzZtu055dKw9spDa2ZDP0uXoNDzFsom9
-         zzc6Hre3OhsWYZwtNXkoYdBp/s8fVbH1YzQsPY0DVSabehP7mi351ECC0SCpkdOVwPZE
-         C3WUKW681ZruaNvJP88MT5OHC0u9XYDSrvP/7ZCPbmzXapinmW2lOqyYpivm3NjCDcNO
-         uz2swXoEDM6VgsNTwcWQRwOSHRvi8AW/zhP2z3q9LDeDUHX/NrGSDGNDkOVumnHum+U8
-         I7xA==
+        bh=7WhDYHGatB/2fJ84TYkwR2bHfKk3YQA5kHvYxOP9pUI=;
+        b=PDM86Pvc5BIx/CgmfIVb2zj8qduUY4jS2Dad+MflKrcjLv53lxZs4WdImpHLeiIatI
+         123CIxftakEQ6n0K4EN5k8x1UM9Whywwny9e7OQEc8K3dqJwhRcOd06mFwMp0Sy5V+0H
+         DrER7L4nIG0Tsh2YDwilmzS1gwIlnWq8KIwhCKohUDick3XEz4TTXJ9WNmdzYZF+zOvh
+         PTQT0UK72ULSRu1q7B9fJxKa740uIQoYhE2MI4mIR3iTOU2KorpTMoX6YBycv8enE0gc
+         rUXFqxJBS6LHW/4DtkoSfswEJvLw6XI3rAnIVvwE2xseoD8vwU1oF/vYiqL8eP1BSCOY
+         v2Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YLF2LgcHZ5DDqDazshlamJH0LMkuaN2/iqWq+I3Vnnk=;
-        b=USKb11qh0jEgHvdCZ793kDGukfymxWYNJVskpR6+uDBl0C+iofgb5OUnAqFJ9hLzD9
-         RKISADg9Vbcm7RPn07JpF3/Rr6/BN0QPwAHviJ5Lnd8/8ymSFk50kVsrQu8WcjERX8Zt
-         oB9Dkw+3OUhwwMus8aAUdhnp/+hVAj4hd3AloTqJXP0qH1DmLxr0fALYZWliUm0WBPCC
-         BK2NZDXgjXdAcYWGxyawwunY6vzgtqqFz9oYMBV/vS+Vgle3usQcw4I+BpCOrZfJ+JKA
-         VDavO/OKAXk46+WK505BmNc94RSZkmOWuUl0rqqBriC7g2uy7DH3E2Oj75Cb1LJOYIpM
-         szHQ==
-X-Gm-Message-State: AOAM533dL2tl5h0ps12BncFgNk40FSAoC3GioBkFP49JKF7ioeFmN+ij
-        SbnTdMUZOv52ko7MzjpSASub7CeMaVk4OkMRcpMobg==
-X-Google-Smtp-Source: ABdhPJwPMOyA61qAapbbCW1TPCBI3hRdcUzarAepbrG9mvi3+kAHKu7qPzTfKGToYHAPCaWHOxIKhwd47U8kAEnwwFw=
-X-Received: by 2002:ac8:7111:: with SMTP id z17mr13542060qto.369.1611234836264;
- Thu, 21 Jan 2021 05:13:56 -0800 (PST)
+        bh=7WhDYHGatB/2fJ84TYkwR2bHfKk3YQA5kHvYxOP9pUI=;
+        b=IHjYhSXRXng3PdsGy5/D5vIrfBYRPAz4NdQPZfYQI/N4WuoAz9//BxiX/c9lXqt18m
+         H47bGeoEG4NHk5R0Hx51Mjym9KldxSFTnRSOTf6fVilg6Qzn9ziMs+7nVlO+tW2+gDHI
+         5U5/2riKhre3qioVRSuIcAKgp/9iF0HyMa4AGMOujGllsK9GlDHavu/UY6LRXKHwfcEX
+         S4lqrZ8frxW3bBiPWA16wLrtP11Etun59CDUVSC3b4WYg4kF7y9HGaAeqVqWz8BUG+H3
+         cfdzTGpzP9jn/+Slg02+Y0iZx9Y+IEIm/5c6DRL5k468U4nluH9maCNzgcdtcYpGkcWz
+         ufHQ==
+X-Gm-Message-State: AOAM532PNYhJqiSQwXLmvi+ye3QQJDgmZIeMPtCaGavmxY1wySe1ZEoE
+        Ls8oJmsl/+g17AvLBCmFx2L1InR8TjkjWmKWITKG7g==
+X-Google-Smtp-Source: ABdhPJzX5OEuHG39nSXa8fVE3LqQ+FqhQx9j0neb3l27AjHf91ct5iDaXgV0ncFcF0R5akfj/VeW1VZsL8qtEKXr2Vs=
+X-Received: by 2002:a19:8bc6:: with SMTP id n189mr6431666lfd.291.1611234879540;
+ Thu, 21 Jan 2021 05:14:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115130336.2520663-1-glider@google.com> <20210115130336.2520663-3-glider@google.com>
- <YAVzNrBIlp0UJKfs@alley> <CAG_fn=UmjC2LOCXRpp+vTZ6nr0M7=dCKjFYgVFVvmqftTkjGYw@mail.gmail.com>
- <YAW6wsuEYe9/Zjxv@alley>
-In-Reply-To: <YAW6wsuEYe9/Zjxv@alley>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 21 Jan 2021 14:13:43 +0100
-Message-ID: <CAG_fn=VxX10v=g_SyAKkRXaQYOUK1S6BzO3e1K5jusbhomRwUQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] lib: add error_report_notify to collect debugging
- tools' reports
-To:     Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210120162745.61268-1-arnd@kernel.org> <20210120162745.61268-6-arnd@kernel.org>
+In-Reply-To: <20210120162745.61268-6-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 21 Jan 2021 14:14:28 +0100
+Message-ID: <CACRpkdaBLij-NoTXU8HJkeQWwN9QwTDV_1u4U4vVwqXPt-A0HA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] watchdog: remove coh901 driver
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you all for the comments!
+On Wed, Jan 20, 2021 at 5:28 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-Since concerns have been raised that another error reporting system
-may quickly go out of control, we've decided to not pursue this
-solution any further.
-Instead, we will try to rely on existing ftrace mechanisms to deliver
-notifications to the userspace, and perform dmesg collection/parsing
-once a notification is received.
-As a result, we won't need the error_report_start tracepoint anytime
-soon (I didn't rename error_report_end to something like error_report
-anticipating that error_report_start may be needed in the future).
-I've also dropped the error_report_notify library and the
-corresponding documentation from the patchset.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The ST-Ericsson U300 platform is getting removed, so this driver is no
+> longer needed.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
