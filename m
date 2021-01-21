@@ -2,130 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92152FE6E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1C22FE6DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728563AbhAUJ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:57:12 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:52573 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728456AbhAUJ4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:56:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1611222964; x=1642758964;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:mime-version:content-transfer-encoding:subject;
-  bh=tikY/ymWGHG7OvzSMWQNvUsnxukhLkfx1pylHsOnXHM=;
-  b=oH7NzyUYqX8s/yOzRqT08+gUGL+RdiMqEjXO+0aAZ6RwzaT2LpcLxv1T
-   TPtGII3IUIpy0fapAjbu0dD2q1UYal6lZx3KhFOOobAB02tSUV2LU+im9
-   YcJ/fhXOxv4mDAsWHW8WVWfxoLUdjZXwdBXu1uj1xELdYOPNpD5+fIMyW
-   o=;
-X-IronPort-AV: E=Sophos;i="5.79,363,1602547200"; 
-   d="scan'208";a="112521061"
-Subject: Re: [PATCH v4 1/2] drivers/misc: sysgenid: add system generation id driver
-Thread-Topic: [PATCH v4 1/2] drivers/misc: sysgenid: add system generation id driver
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 21 Jan 2021 09:55:14 +0000
-Received: from EX13MTAUEE001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id CA814A25BB;
-        Thu, 21 Jan 2021 09:55:03 +0000 (UTC)
-Received: from EX13D08UEE004.ant.amazon.com (10.43.62.182) by
- EX13MTAUEE001.ant.amazon.com (10.43.62.226) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 21 Jan 2021 09:54:28 +0000
-Received: from EX13D08EUB004.ant.amazon.com (10.43.166.158) by
- EX13D08UEE004.ant.amazon.com (10.43.62.182) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 21 Jan 2021 09:54:27 +0000
-Received: from EX13D08EUB004.ant.amazon.com ([10.43.166.158]) by
- EX13D08EUB004.ant.amazon.com ([10.43.166.158]) with mapi id 15.00.1497.010;
- Thu, 21 Jan 2021 09:54:27 +0000
-From:   "Catangiu, Adrian Costin" <acatan@amazon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "Jason@zx2c4.com" <Jason@zx2c4.com>,
-        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "areber@redhat.com" <areber@redhat.com>,
-        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>
-Thread-Index: AQHW6NzJ6Ner/CpAZ0GLGgCheKaWxKoj9j+AgA4QXAA=
-Date:   Thu, 21 Jan 2021 09:54:27 +0000
-Message-ID: <0EFE3365-1698-4BFB-B2F2-BEF1A2634E45@amazon.com>
-References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
- <1610453760-13812-2-git-send-email-acatan@amazon.com>
- <X/2fP9LNWXvp7up9@kroah.com>
-In-Reply-To: <X/2fP9LNWXvp7up9@kroah.com>
-Accept-Language: en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.164.195]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AC44F688DB044F439484826026445BBE@amazon.com>
+        id S1728723AbhAUJ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:56:41 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:24680 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726427AbhAUJzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:55:44 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DLyRS5HVVz9v6L3;
+        Thu, 21 Jan 2021 10:54:44 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ldGUfcVV3v_f; Thu, 21 Jan 2021 10:54:44 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DLyRS4Qzdz9v6Kv;
+        Thu, 21 Jan 2021 10:54:44 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C069B8B7FB;
+        Thu, 21 Jan 2021 10:54:45 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id TDQ7okhBwX9c; Thu, 21 Jan 2021 10:54:45 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 350708B7F9;
+        Thu, 21 Jan 2021 10:54:45 +0100 (CET)
+Subject: Re: [PATCH 1/2] crypto: talitos - Work around SEC6 ERRATA (AES-CTR
+ mode data size error)
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>
+References: <4b7a870573f485b9fea496b13c9b02d86dd97314.1611169001.git.christophe.leroy@csgroup.eu>
+ <CAMj1kXE7B05eAnR7KoDCym09Cw5qnzrV8KfNT2zJrko+mFic+w@mail.gmail.com>
+ <6b804eff-bc9f-5e05-d479-f398de4e2b30@csgroup.eu>
+ <CAMj1kXHz8LdDgfOcifcB-MBMM9-TbymOU_psT3JBFQfyvQ=EjQ@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ecdd07b3-afca-7e26-b6b6-3a3a985bc5a1@csgroup.eu>
+Date:   Thu, 21 Jan 2021 10:54:43 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAMj1kXHz8LdDgfOcifcB-MBMM9-TbymOU_psT3JBFQfyvQ=EjQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTIvMDEvMjAyMSwgMTU6MDcsICJHcmVnIEtIIiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5v
-cmc+IHdyb3RlOg0KDQogICAgT24gVHVlLCBKYW4gMTIsIDIwMjEgYXQgMDI6MTU6NTlQTSArMDIw
-MCwgQWRyaWFuIENhdGFuZ2l1IHdyb3RlOg0KICAgID4gKyAgUGFydGlhbCByZWFkcyBhcmUgbm90
-IGFsbG93ZWQgLSByZWFkIGJ1ZmZlciBuZWVkcyB0byBiZSBhdCBsZWFzdA0KICAgID4gKyAgYGBz
-aXplb2YodW5zaWduZWQpYGAgaW4gc2l6ZS4NCg0KICAgICJzaXplb2YodW5zaWduZWQpIj8gIEhv
-dyBhYm91dCBiZWluZyBzcGVjaWZpYyBhbmQgbWFraW5nIHRoaXMgYSByZWFsICJYDQogICAgYml0
-cyBiaWciIHZhbHVlIHBsZWFzZS4NCg0KICAgICJ1bnNpZ25lZCIgZG9lcyBub3Qgd29yayB3ZWxs
-IGFjcm9zcyB1c2VyL2tlcm5lbCBib3VuZHJpZXMuICBPaywgdGhhdCdzDQogICAgb24gdW5kZXJz
-dGF0ZW1lbnQsIHRoZSBjb3JyZWN0IHRoaW5nIGlzICJkb2VzIG5vdCB3b3JrIGF0IGFsbCIuDQoN
-CiAgICBQbGVhc2UgYmUgc3BlY2lmaWMgaW4geW91ciBhcGlzLg0KDQogICAgVGhpcyBpcyBsaXN0
-ZWQgZWxzZXdoZXJlIGFsc28uDQoNClJpZ2h0LCB3aWxsIGRvIQ0KDQogICAgPiArICAtIFNZU0dF
-TklEX0dFVF9PVVREQVRFRF9XQVRDSEVSUzogaW1tZWRpYXRlbHkgcmV0dXJucyB0aGUgbnVtYmVy
-IG9mDQogICAgPiArICAgICpvdXRkYXRlZCogd2F0Y2hlcnMgLSBudW1iZXIgb2YgZmlsZSBkZXNj
-cmlwdG9ycyB0aGF0IHdlcmUgb3Blbg0KICAgID4gKyAgICBkdXJpbmcgYSBzeXN0ZW0gZ2VuZXJh
-dGlvbiBjaGFuZ2UsIGFuZCB3aGljaCBoYXZlIG5vdCB5ZXQgY29uZmlybWVkDQogICAgPiArICAg
-IHRoZSBuZXcgZ2VuZXJhdGlvbiBjb3VudGVyLg0KDQogICAgQnV0IHRoaXMgbnVtYmVyIGNhbiBp
-bnN0YW50bHkgY2hhbmdlIGFmdGVyIGl0IGlzIHJlYWQsIHdoYXQgZ29vZCBpcyBpdD8NCiAgICBJ
-dCBzaG91bGQgbmV2ZXIgYmUgcmVsaWVkIG9uLCBzbyB3aHkgaXMgdGhpcyBuZWVkZWQgYXQgYWxs
-Pw0KDQogICAgV2hhdCBjYW4gdXNlcnNwYWNlIGRvIHdpdGggdGhpcyBpbmZvcm1hdGlvbj8NCg0K
-VGhhdCBpcyB0cnVlLCBhIHVzZXJzcGFjZSBwcm9jZXNzIGVpdGhlciBoYXMgdG8gd2FpdCBmb3Ig
-YWxsIHRvIGFkanVzdCB0byB0aGUgbmV3IGdlbmVyYXRpb24NCm9yIG5vdCBjYXJlIGFib3V0IG90
-aGVyIHByb2Nlc3Nlcy4gSW50ZXJtZWRpYXRlIHByb2JpbmcgZG9lc24ndCBicmluZyByZWFsIHZh
-bHVlLiBXaWxsIHJlbW92ZS4NCg0KICAgIHRoYW5rcywNCg0KICAgIGdyZWcgay1oDQoNClRoYW5r
-cyBmb3IgdGhlIGZlZWRiYWNrIQ0KQWRyaWFuLg0KDQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2Vu
-dGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3Ry
-ZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBS
-ZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
+
+Le 21/01/2021 à 08:31, Ard Biesheuvel a écrit :
+> On Thu, 21 Jan 2021 at 06:35, Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 20/01/2021 à 23:23, Ard Biesheuvel a écrit :
+>>> On Wed, 20 Jan 2021 at 19:59, Christophe Leroy
+>>> <christophe.leroy@csgroup.eu> wrote:
+>>>>
+>>>> Talitos Security Engine AESU considers any input
+>>>> data size that is not a multiple of 16 bytes to be an error.
+>>>> This is not a problem in general, except for Counter mode
+>>>> that is a stream cipher and can have an input of any size.
+>>>>
+>>>> Test Manager for ctr(aes) fails on 4th test vector which has
+>>>> a length of 499 while all previous vectors which have a 16 bytes
+>>>> multiple length succeed.
+>>>>
+>>>> As suggested by Freescale, round up the input data length to the
+>>>> nearest 16 bytes.
+>>>>
+>>>> Fixes: 5e75ae1b3cef ("crypto: talitos - add new crypto modes")
+>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>
+>>> Doesn't this cause the hardware to write outside the given buffer?
+>>
+>>
+>> Only the input length is modified. Not the output length.
+>>
+>> The ERRATA says:
+>>
+>> The input data length (in the descriptor) can be rounded up to the nearest 16B. Set the
+>> data-in length (in the descriptor) to include X bytes of data beyond the payload. Set the
+>> data-out length to only output the relevant payload (don't need to output the padding).
+>> SEC reads from memory are not destructive, so the extra bytes included in the AES-CTR
+>> operation can be whatever bytes are contiguously trailing the payload.
+> 
+> So what happens if the input is not 16 byte aligned, and rounding it
+> up causes it to extend across a page boundary into a page that is not
+> mapped by the IOMMU/SMMU?
+> 
+
+What is the IOMMU/SMMU ?
+
+The mpc8xx, mpc82xx and mpc83xx which embed the Talitos Security Engine don't have such thing, the 
+security engine uses DMA and has direct access to the memory bus for reading and writing.
+
+Christophe
