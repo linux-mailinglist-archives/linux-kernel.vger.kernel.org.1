@@ -2,85 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A332FDF8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C202FDF88
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436774AbhAUC0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 21:26:01 -0500
-Received: from brightrain.aerifal.cx ([216.12.86.13]:49888 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393084AbhAUCAS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 21:00:18 -0500
-Date:   Wed, 20 Jan 2021 20:42:23 -0500
-From:   Rich Felker <dalias@libc.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Rob Landley <rob@landley.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Pending patches for linux-sh
-Message-ID: <20210121014222.GM23432@brightrain.aerifal.cx>
-References: <133f8171-09ec-39b3-0660-de780cd879d6@physik.fu-berlin.de>
+        id S2436748AbhAUCY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:24:59 -0500
+Received: from mga07.intel.com ([134.134.136.100]:31113 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392998AbhAUBzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:55:31 -0500
+IronPort-SDR: udIA6znfSDmRDnDEj0g/Re1S7ihFPayAs5fjuYq/rCdjoWHm2izvaY3fCCuunDAvhnJYwuXpnD
+ x32MBrXIuXxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="243275396"
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="243275396"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 17:53:32 -0800
+IronPort-SDR: MppMeJ08UYxsSLMBQbzoQhkhOCVLYCY6ifw48dPJBnnOGHCJBGjmtUPdIkUMTRGLGw81T2ibOZ
+ sg11M0rsOxag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="391762240"
+Received: from allen-box.sh.intel.com ([10.239.159.28])
+  by orsmga007.jf.intel.com with ESMTP; 20 Jan 2021 17:53:30 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 0/3] iommu/vt-d: Some misc tweaks in SVA
+Date:   Thu, 21 Jan 2021 09:45:02 +0800
+Message-Id: <20210121014505.1659166-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <133f8171-09ec-39b3-0660-de780cd879d6@physik.fu-berlin.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:32:16PM +0100, John Paul Adrian Glaubitz wrote:
-> Hi Rich!
-> 
-> I have tested or acked the following patches which are fine from my point of view.
-> 
-> "Tested" means I have built and booted a current kernel with the patch in question,
-> "acked" means, I have looked over the patch and consider the changes to be correct
-> in the case where testing was not possible since the changes affect other SH hardware
-> I cannot test at the moment.
-> 
-> Here the list:
-> 
-> - [PATCH] [sh] fix trivial misannotations
-> - https://marc.info/?l=linux-kernel&m=160945707001399&w=2
-> 
-> - [PATCH] sh: check return code of request_irq
-> - https://marc.info/?l=linux-kernel&m=160867050030140&w=2
-> 
-> - [PATCH] sh: boards: Fix the cacography in irq.c
-> - https://marc.info/?l=linux-sh&m=160578410511403&w=2
-> 
-> - [PATCH v1] sh: Drop ARCH_NR_GPIOS definition
-> - https://marc.info/?l=linux-sh&m=160578410511403&w=2
-> 
-> - [PATCH 1/2] sh: boot: add intermediate vmlinux.bin* to targets instead of extra-y
-> - https://marc.info/?l=linux-kernel&m=161088234517301&w=2
-> 
-> - [PATCH 2/2] sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
-> - https://marc.info/?l=linux-kernel&m=161088245817344&w=2
-> 
-> - [PATCH] arch: sh: remove duplicate include
-> - https://marc.info/?l=linux-kernel&m=160488997017438&w=2
-> 
-> - [PATCH] maple: fix wrong return value of maple_bus_init().
-> - https://marc.info/?l=linux-kernel&m=160635878212678&w=2
-> 
-> - [PATCH] sh: kdump: add some attribute to function
-> - https://marc.info/?l=linux-kernel&m=160758311622653&w=2
-> 
-> - [PATCH] sh: kernel: traps: remove unused variable
-> - https://marc.info/?l=linux-kernel&m=160760435528709&w=2
-> 
-> - [PATCH] sh: Remove unused HAVE_COPY_THREAD_TLS macro
-> - https://marc.info/?l=linux-kernel&m=160247465514800&w=2
-> 
-> I will check later whether there are more patches we might have forgotten.
+This includes some misc tweaks in the VT-d SVA implementation. I will
+plan them for v5.12 if no objections.
 
-Hi! Thanks for the list. From the names, I think some overlap with the
-pending set in linux-next (ending at a118584e7e60) that I'm about to
-send as a PR.
+Best regards,
+baolu
 
-Rich
+Lu Baolu (3):
+  iommu/vt-d: Add rate limited information when PRQ overflows
+  iommu/vt-d: Allow devices to have more than 32 outstanding PRQ
+  iommu/vt-d: Use INVALID response code instead of FAILURE
+
+ drivers/iommu/intel/iommu.c |  3 ++-
+ drivers/iommu/intel/svm.c   | 19 +++++++++----------
+ include/linux/intel-svm.h   |  5 +++++
+ 3 files changed, 16 insertions(+), 11 deletions(-)
+
+-- 
+2.25.1
+
