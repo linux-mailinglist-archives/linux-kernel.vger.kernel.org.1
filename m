@@ -2,309 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6822FF12C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07932FF137
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 17:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732227AbhAUQ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 11:57:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39895 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729361AbhAUQ4u (ORCPT
+        id S2388285AbhAUQ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 11:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388235AbhAUQ6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:56:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611248119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kL6em8lUDn+x8F+MRbdRS53NsgVwSOH4SLh4BSpmdfg=;
-        b=WxcBhRMeUqyB6he0NqXSnhM/Y4bdCv2YRBmsiqnPJAHInL1Y9/mOc0sZP/5PO+g9QXm30A
-        QSmTQvnvLuabRpEJVf3VlCcPFI6oxQdB7NDvUOb57D88ZGmWdBzhXh3vxq2eAbcGP55FlF
-        1g7zrAb1WqRF7Hkjdwxud1NirTtFkFU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-yBS3MqV1OzCmjqyoZRLMrw-1; Thu, 21 Jan 2021 11:55:14 -0500
-X-MC-Unique: yBS3MqV1OzCmjqyoZRLMrw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7FBB1100C604;
-        Thu, 21 Jan 2021 16:55:12 +0000 (UTC)
-Received: from starship (unknown [10.35.206.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E9E4761E0;
-        Thu, 21 Jan 2021 16:55:02 +0000 (UTC)
-Message-ID: <cd4e3b9a5d5e4b47fa78bfb0ce447e856b18f8c8.camel@redhat.com>
-Subject: Re: [PATCH v2 2/4] KVM: SVM: Add emulation support for #GP
- triggered by SVM instructions
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Wei Huang <whuang2@amd.com>, Wei Huang <wei.huang2@amd.com>,
-        kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, luto@amacapital.net
-Date:   Thu, 21 Jan 2021 18:55:01 +0200
-In-Reply-To: <c77f4f42-657a-6643-8432-a07ccf3b221e@amd.com>
-References: <20210121065508.1169585-1-wei.huang2@amd.com>
-         <20210121065508.1169585-3-wei.huang2@amd.com>
-         <cc55536e913e79d7ca99cbeb853586ca5187c5a9.camel@redhat.com>
-         <c77f4f42-657a-6643-8432-a07ccf3b221e@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 21 Jan 2021 11:58:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1DBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 08:57:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=a3vZpZDv6MO3Xpi9WELGB6t/XxhKnwc5WC4KkNkludU=; b=BXwwHorllYfX2+UoFjT4g98G1c
+        stHM4B9UUb0LDHG8I7B5HIX5mPhTZ7GE97pmmLGaz5pjtQ1OB9UYZA55TisGslOAFR4X7CjP1f6la
+        EZia4wEBwAx4HHPlyd0RullK2HjrhHu38H7aVLFeTBiYZuO9zDhSUOHkXDNLkuJfLaGMeKSIx8BGy
+        4vQGBuvZpmMRBmYs1cfOLQ0AQyen7ZkFdUcDhVK+Zm8sMHhYyXTq+Rt3JQD90niDL2yXALXanSGRy
+        HYvdIgMYsjd/xB3g0UAqhzVuV4xARuVXWEappHwMC5+lC7zvfcgHOol/zfhwXGZULuhry6skNGmXj
+        W9md0Fow==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2dGQ-00HHnq-Rm; Thu, 21 Jan 2021 16:57:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 78AF3303271;
+        Thu, 21 Jan 2021 17:56:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6700F2028FE72; Thu, 21 Jan 2021 17:56:53 +0100 (CET)
+Date:   Thu, 21 Jan 2021 17:56:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
+        mgorman@techsingularity.net, joel@joelfernandes.org,
+        valentin.schneider@arm.com
+Subject: Re: [RFC][PATCH 4/7] smp: Optimize send_call_function_single_ipi()
+Message-ID: <YAmyVW1r0xQOwneB@hirez.programming.kicks-ass.net>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161907.953304789@infradead.org>
+ <20200527095645.GH325280@hirez.programming.kicks-ass.net>
+ <20200527101513.GJ325303@hirez.programming.kicks-ass.net>
+ <20200527155656.GU2869@paulmck-ThinkPad-P72>
+ <20200527163543.GA706478@hirez.programming.kicks-ass.net>
+ <20200527171236.GC706495@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527171236.GC706495@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-21 at 10:06 -0600, Wei Huang wrote:
+On Wed, May 27, 2020 at 07:12:36PM +0200, Peter Zijlstra wrote:
+> Subject: rcu: Allow for smp_call_function() running callbacks from idle
 > 
-> On 1/21/21 8:07 AM, Maxim Levitsky wrote:
-> > On Thu, 2021-01-21 at 01:55 -0500, Wei Huang wrote:
-> > > From: Bandan Das <bsd@redhat.com>
-> > > 
-> > > While running SVM related instructions (VMRUN/VMSAVE/VMLOAD), some AMD
-> > > CPUs check EAX against reserved memory regions (e.g. SMM memory on host)
-> > > before checking VMCB's instruction intercept. If EAX falls into such
-> > > memory areas, #GP is triggered before VMEXIT. This causes problem under
-> > > nested virtualization. To solve this problem, KVM needs to trap #GP and
-> > > check the instructions triggering #GP. For VM execution instructions,
-> > > KVM emulates these instructions.
-> > > 
-> > > Co-developed-by: Wei Huang <wei.huang2@amd.com>
-> > > Signed-off-by: Wei Huang <wei.huang2@amd.com>
-> > > Signed-off-by: Bandan Das <bsd@redhat.com>
-> > > ---
-> > >  arch/x86/kvm/svm/svm.c | 99 ++++++++++++++++++++++++++++++++++--------
-> > >  1 file changed, 81 insertions(+), 18 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > > index 7ef171790d02..6ed523cab068 100644
-> > > --- a/arch/x86/kvm/svm/svm.c
-> > > +++ b/arch/x86/kvm/svm/svm.c
-> > > @@ -288,6 +288,9 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> > >  		if (!(efer & EFER_SVME)) {
-> > >  			svm_leave_nested(svm);
-> > >  			svm_set_gif(svm, true);
-> > > +			/* #GP intercept is still needed in vmware_backdoor */
-> > > +			if (!enable_vmware_backdoor)
-> > > +				clr_exception_intercept(svm, GP_VECTOR);
-> > Again I would prefer a flag for the errata workaround, but this is still
-> > better.
+> Current RCU hard relies on smp_call_function() callbacks running from
+> interrupt context. A pending optimization is going to break that, it
+> will allow idle CPUs to run the callbacks from the idle loop. This
+> avoids raising the IPI on the requesting CPU and avoids handling an
+> exception on the receiving CPU.
 > 
-> Instead of using !enable_vmware_backdoor, will the following be better?
-> Or the existing form is acceptable.
+> Change rcu_is_cpu_rrupt_from_idle() to also accept task context,
+> provided it is the idle task.
 > 
-> if (!kvm_cpu_cap_has(X86_FEATURE_SVME_ADDR_CHK))
-> 	clr_exception_intercept(svm, GP_VECTOR);
-
-To be honest I would prefer to have a module param named something like
-'enable_svm_gp_errata_workaround' that would have 3 state value: (0,1,-1),
-aka true,false,auto
-
-0,1 - would mean force disable/enable the workaround.
--1 - auto select based on X86_FEATURE_SVME_ADDR_CHK.
-
-0 could be used if for example someone is paranoid in regard to attack surface.
--#define USER_BASE      (1 << 24)
-+#define USER_BASE      (1 << 25)
-This isn't that much importaint to me though, so if you prefer you can leave it as is
-as well.
-
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/rcu/tree.c   | 25 +++++++++++++++++++------
+>  kernel/sched/idle.c |  4 ++++
+>  2 files changed, 23 insertions(+), 6 deletions(-)
 > 
-> > >  
-> > >  			/*
-> > >  			 * Free the nested guest state, unless we are in SMM.
-> > > @@ -309,6 +312,9 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> > >  
-> > >  	svm->vmcb->save.efer = efer | EFER_SVME;
-> > >  	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
-> > > +	/* Enable #GP interception for SVM instructions */
-> > > +	set_exception_intercept(svm, GP_VECTOR);
-> > > +
-> > >  	return 0;
-> > >  }
-> > >  
-> > > @@ -1957,24 +1963,6 @@ static int ac_interception(struct vcpu_svm *svm)
-> > >  	return 1;
-> > >  }
-> > >  
-> > > -static int gp_interception(struct vcpu_svm *svm)
-> > > -{
-> > > -	struct kvm_vcpu *vcpu = &svm->vcpu;
-> > > -	u32 error_code = svm->vmcb->control.exit_info_1;
-> > > -
-> > > -	WARN_ON_ONCE(!enable_vmware_backdoor);
-> > > -
-> > > -	/*
-> > > -	 * VMware backdoor emulation on #GP interception only handles IN{S},
-> > > -	 * OUT{S}, and RDPMC, none of which generate a non-zero error code.
-> > > -	 */
-> > > -	if (error_code) {
-> > > -		kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
-> > > -		return 1;
-> > > -	}
-> > > -	return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
-> > > -}
-> > > -
-> > >  static bool is_erratum_383(void)
-> > >  {
-> > >  	int err, i;
-> > > @@ -2173,6 +2161,81 @@ static int vmrun_interception(struct vcpu_svm *svm)
-> > >  	return nested_svm_vmrun(svm);
-> > >  }
-> > >  
-> > > +enum {
-> > > +	NOT_SVM_INSTR,
-> > > +	SVM_INSTR_VMRUN,
-> > > +	SVM_INSTR_VMLOAD,
-> > > +	SVM_INSTR_VMSAVE,
-> > > +};
-> > > +
-> > > +/* Return NOT_SVM_INSTR if not SVM instrs, otherwise return decode result */
-> > > +static int svm_instr_opcode(struct kvm_vcpu *vcpu)
-> > > +{
-> > > +	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
-> > > +
-> > > +	if (ctxt->b != 0x1 || ctxt->opcode_len != 2)
-> > > +		return NOT_SVM_INSTR;
-> > > +
-> > > +	switch (ctxt->modrm) {
-> > > +	case 0xd8: /* VMRUN */
-> > > +		return SVM_INSTR_VMRUN;
-> > > +	case 0xda: /* VMLOAD */
-> > > +		return SVM_INSTR_VMLOAD;
-> > > +	case 0xdb: /* VMSAVE */
-> > > +		return SVM_INSTR_VMSAVE;
-> > > +	default:
-> > > +		break;
-> > > +	}
-> > > +
-> > > +	return NOT_SVM_INSTR;
-> > > +}
-> > > +
-> > > +static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
-> > > +{
-> > > +	int (*const svm_instr_handlers[])(struct vcpu_svm *svm) = {
-> > > +		[SVM_INSTR_VMRUN] = vmrun_interception,
-> > > +		[SVM_INSTR_VMLOAD] = vmload_interception,
-> > > +		[SVM_INSTR_VMSAVE] = vmsave_interception,
-> > > +	};
-> > > +	struct vcpu_svm *svm = to_svm(vcpu);
-> > > +
-> > > +	return svm_instr_handlers[opcode](svm);
-> > > +}
-> > > +
-> > > +/*
-> > > + * #GP handling code. Note that #GP can be triggered under the following two
-> > > + * cases:
-> > > + *   1) SVM VM-related instructions (VMRUN/VMSAVE/VMLOAD) that trigger #GP on
-> > > + *      some AMD CPUs when EAX of these instructions are in the reserved memory
-> > > + *      regions (e.g. SMM memory on host).
-> > > + *   2) VMware backdoor
-> > > + */
-> > > +static int gp_interception(struct vcpu_svm *svm)
-> > > +{
-> > > +	struct kvm_vcpu *vcpu = &svm->vcpu;
-> > > +	u32 error_code = svm->vmcb->control.exit_info_1;
-> > > +	int opcode;
-> > > +
-> > > +	/* Both #GP cases have zero error_code */
-> > 
-> > I would have kept the original description of possible #GP reasons
-> > for the VMWARE backdoor and that WARN_ON_ONCE that was removed.
-> > 
-> 
-> Will do
-> 
-> > > +	if (error_code)
-> > > +		goto reinject;
-> > > +
-> > > +	/* Decode the instruction for usage later */
-> > > +	if (x86_emulate_decoded_instruction(vcpu, 0, NULL, 0) != EMULATION_OK)
-> > > +		goto reinject;
-> > > +
-> > > +	opcode = svm_instr_opcode(vcpu);
-> > > +	if (opcode)
-> > 
-> > I prefer opcode != NOT_SVM_INSTR.
-> > 
-> > > +		return emulate_svm_instr(vcpu, opcode);
-> > > +	else
-> > 
-> > 'WARN_ON_ONCE(!enable_vmware_backdoor)' I think can be placed here.
-> > 
-> > 
-> > > +		return kvm_emulate_instruction(vcpu,
-> > > +				EMULTYPE_VMWARE_GP | EMULTYPE_NO_DECODE);
-> > 
-> > I tested the vmware backdoor a bit (using the kvm unit tests) and I found out a tiny pre-existing bug
-> > there:
-> > 
-> > We shouldn't emulate the vmware backdoor for a nested guest, but rather let it do it.
-> > 
-> > The below patch (on top of your patches) works for me and allows the vmware backdoor 
-> > test to pass when kvm unit tests run in a guest.
-> > 
-> 
-> This fix can be a separate patch? This problem exist even before this
-> patchset.
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d8e9dbbefcfa..c716eadc7617 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -418,16 +418,23 @@ void rcu_momentary_dyntick_idle(void)
+>  EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
+>  
+>  /**
+> - * rcu_is_cpu_rrupt_from_idle - see if interrupted from idle
+> + * rcu_is_cpu_rrupt_from_idle - see if 'interrupted' from idle
+>   *
+>   * If the current CPU is idle and running at a first-level (not nested)
+> - * interrupt from idle, return true.  The caller must have at least
+> - * disabled preemption.
+> + * interrupt, or directly, from idle, return true.
+> + *
+> + * The caller must have at least disabled IRQs.
+>   */
+>  static int rcu_is_cpu_rrupt_from_idle(void)
+>  {
+> -	/* Called only from within the scheduling-clock interrupt */
+> -	lockdep_assert_in_irq();
+> +	long nesting;
+> +
+> +	/*
+> +	 * Usually called from the tick; but also used from smp_function_call()
+> +	 * for expedited grace periods. This latter can result in running from
+> +	 * the idle task, instead of an actual IPI.
+> +	 */
+> +	lockdep_assert_irqs_disabled();
+>  
+>  	/* Check for counter underflows */
+>  	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) < 0,
+> @@ -436,9 +443,15 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+>  			 "RCU dynticks_nmi_nesting counter underflow/zero!");
+>  
+>  	/* Are we at first interrupt nesting level? */
+> -	if (__this_cpu_read(rcu_data.dynticks_nmi_nesting) != 1)
+> +	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting);
+> +	if (nesting > 1)
+>  		return false;
+>  
+> +	/*
+> +	 * If we're not in an interrupt, we must be in the idle task!
+> +	 */
+> +	WARN_ON_ONCE(!nesting && !is_idle_task(current));
+> +
+>  	/* Does CPU appear to be idle from an RCU standpoint? */
+>  	return __this_cpu_read(rcu_data.dynticks_nesting) == 0;
+>  }
 
-It should indeed be a separate patch, but it won't hurt to add it
-to this series IMHO if you have time for that.
+Let me revive this thread after yesterdays IRC conversation.
 
-I just pointed that out because I found this bug during testing,
-to avoid forgetting about it.
+As said; it might be _extremely_ unlikely, but somewhat possible for us
+to send the IPI concurrent with hot-unplug, not yet observing
+rcutree_offline_cpu() or thereabout.
 
-BTW, on unrelated note, currently the smap test is broken in kvm-unit tests.
-I bisected it to commit 322cdd6405250a2a3e48db199f97a45ef519e226
+Then have the IPI 'delayed' enough to not happen until smpcfd_dying()
+and getting ran there.
 
-It seems that the following hack (I have no idea why it works,
-since I haven't dug deep into the area 'fixes', the smap test for me)
+This would then run the function from the stopper thread instead of the
+idle thread and trigger the warning, even though we're not holding
+rcu_read_lock() (which, IIRC, was the only constraint).
 
--#define USER_BASE      (1 << 24)
-+#define USER_BASE      (1 << 25)
+So would something like the below be acceptable?
 
-
-Best regards,
-	Maxim Levitsky
-
-> 
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index fe97b0e41824a..4557fdc9c3e1b 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -2243,7 +2243,7 @@ static int gp_interception(struct vcpu_svm *svm)
-> >  	opcode = svm_instr_opcode(vcpu);
-> >  	if (opcode)
-> >  		return emulate_svm_instr(vcpu, opcode);
-> > -	else
-> > +	else if (!is_guest_mode(vcpu))
-> >  		return kvm_emulate_instruction(vcpu,
-> >  				EMULTYPE_VMWARE_GP | EMULTYPE_NO_DECODE);
-> >  
-> > 
-> > 
-> > Best regards,
-> > 	Maxim Levitsky
-> > 
-> > > +
-> > > +reinject:
-> > > +	kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
-> > > +	return 1;
-> > > +}
-> > > +
-> > >  void svm_set_gif(struct vcpu_svm *svm, bool value)
-> > >  {
-> > >  	if (value) {
-> > 
-> > 
-> > 
-> > 
-
-
-
-
+---
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 368749008ae8..2c8d4c3e341e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -445,7 +445,7 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+ 	/*
+ 	 * Usually called from the tick; but also used from smp_function_call()
+ 	 * for expedited grace periods. This latter can result in running from
+-	 * the idle task, instead of an actual IPI.
++	 * a (usually the idle) task, instead of an actual IPI.
+ 	 */
+ 	lockdep_assert_irqs_disabled();
+ 
+@@ -461,9 +461,14 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+ 		return false;
+ 
+ 	/*
+-	 * If we're not in an interrupt, we must be in the idle task!
++	 * If we're not in an interrupt, we must be in task context.
++	 *
++	 * This will typically be the idle task through:
++	 *   flush_smp_call_function_from_idle(),
++	 *
++	 * but can also be in CPU HotPlug through smpcfd_dying().
+ 	 */
+-	WARN_ON_ONCE(!nesting && !is_idle_task(current));
++	WARN_ON_ONCE(!nesting && !in_task(current));
+ 
+ 	/* Does CPU appear to be idle from an RCU standpoint? */
+ 	return __this_cpu_read(rcu_data.dynticks_nesting) == 0;
