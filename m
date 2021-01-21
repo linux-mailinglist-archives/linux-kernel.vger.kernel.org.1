@@ -2,128 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195132FEE66
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2326E2FEE64
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732882AbhAUPWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:22:20 -0500
-Received: from mail-dm3gcc02on2124.outbound.protection.outlook.com ([40.107.91.124]:9473
-        "EHLO GCC02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732816AbhAUPWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732850AbhAUPWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 21 Jan 2021 10:22:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fpMoeXeB+EEuy3IOkWMEMAKSJZkyKVcf4eCO9XJgXOm0lMogyjLQSPO/lxgo7CSEF36yYSxLWRgvd/TjqEz71iEkQqOjmlJ4rl3FOhOiI20CNowUmc2EX9t+R9fzj73gd/hyRI+KGtNXVm+Nqj2hdRR/FLudSKZiy6xSXUJ2jhjeKEkaeYtQ+YPY+bVklr9tTRrAmLhx6ZIER2acB0oloqZLMqzJfctoVMK0G5Dc/dWB4h9/Jb1guLX99RRM+Q2paWV/zjas5CMZA4eMbfOfmTDFFg+TfJLI2N5ffiqErZWxoX/mOOV6MsZBlrTK7wgSv0NvWhG0JFHJmy6MZFMAYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9S8iJSn8UNaWvTGmsPAdSoE2CeJdUZXi/9w6ogznaHY=;
- b=MnuoL9ljW4lPJqb/d2hczlpGaFtuTADVG9jg/6EpGIyl22LxWM3t67R+DVaouzR0SOsP+lBgC+CcEUt6Tjuc1lL/uwC/IgmvVWMLf58AkGyrex0gqt3YvtrXOazfveEjcTeFvm+Ugx9RUqfOoMOtXhUy+3lpuICEX51aADZxtk6fV7OjACUR3Jv4iGlP0hqdiy/zW6jBbHRNRoeet6Gaf3/4yWHKe1528FU8N3yqHEByt1qJMOvZtDUyBwHIes1aM4UBQxkaMrKRiGGA0FP7ShBgjJOcNknMP2kNNNBAnEXfJ6XHXjR0t/xr7cLWbbI9e58xE5DBGSiBUZaulnQtew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starlab.io; dmarc=pass action=none header.from=starlab.io;
- dkim=pass header.d=starlab.io; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=starlab.io;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9S8iJSn8UNaWvTGmsPAdSoE2CeJdUZXi/9w6ogznaHY=;
- b=HCfqxQbKMXqyyqJgjkyfa/UsYvcZGHCLopsKDN+TjL4aGayZ93MdC7TXZg67e5KzwuLKrxdVCxyvKxwVSiBn8m0baCq9dg8wMD53MXJzJABK3tusLZcK8VlQhEA6jL6BAgODM5FR/bgVR2qV13fddT1e28w31h4rHAMpPStZqJ8=
-Authentication-Results: starlab.io; dkim=none (message not signed)
- header.d=none;starlab.io; dmarc=none action=none header.from=starlab.io;
-Received: from DM8PR09MB6997.namprd09.prod.outlook.com (2603:10b6:5:2e0::10)
- by DM6PR09MB4383.namprd09.prod.outlook.com (2603:10b6:5:1ba::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Thu, 21 Jan
- 2021 15:21:17 +0000
-Received: from DM8PR09MB6997.namprd09.prod.outlook.com
- ([fe80::d16d:8c95:983d:28f9]) by DM8PR09MB6997.namprd09.prod.outlook.com
- ([fe80::d16d:8c95:983d:28f9%5]) with mapi id 15.20.3784.014; Thu, 21 Jan 2021
- 15:21:17 +0000
-From:   Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-To:     "Darrick J . Wong" <djwong@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-Subject: [PATCH] xfs: set inode size after creating symlink
-Date:   Thu, 21 Jan 2021 09:19:12 -0600
-Message-Id: <20210121151912.4429-1-jeffrey.mitchell@starlab.io>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [47.218.202.86]
-X-ClientProxiedBy: SN2PR01CA0037.prod.exchangelabs.com (2603:10b6:804:2::47)
- To DM8PR09MB6997.namprd09.prod.outlook.com (2603:10b6:5:2e0::10)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732560AbhAUPUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:20:49 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74678C06174A;
+        Thu, 21 Jan 2021 07:20:08 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id y205so1680078pfc.5;
+        Thu, 21 Jan 2021 07:20:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=17KvraJzNRdjrYwPQoxY6CW4jRA/1iQCnE0aBjokmlU=;
+        b=SjOiqGWeuGStl1nyx4FwEFhMBizLfAB4ruWAD4Qi1ph6c8DZ6tHOIhOV6cdy2lZbN3
+         twNbQ00yelHEmH4M6BqAxk4pFN3oR9WUoQXA+aXpo1cm9mihFwpoJPeJsWnNXs3uWCHG
+         hteJSdrsIdCxBfQsKXZu/lLnPgf9iBP6yLmTUVRIA5xYaIb90VzjMEr2cDBhsa3FJ1NE
+         /GKC4BNrEB9eu2gqRqJ8nAQTzyaj1RSjzXn0ZorwyMXWuxTQPD/63KKz00ugTtQ8XOYY
+         HFoTEbb7rOfHTtqc7rarNJsnlKUP0Ud/aVe3If1K5wLCIWwkk8diD/XFbwpjMH5ZSc3C
+         F3dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=17KvraJzNRdjrYwPQoxY6CW4jRA/1iQCnE0aBjokmlU=;
+        b=YbHsqW8hG4Awd3R9l73MQ574hS0l17ZZBskxcpBJkFs+ZyE5ZnH4s3lX9MgHRKcKdG
+         8xbvZ3o6JiA9KdqEWfejeHMq9psKkEb/0XTMvWM5QEH750WrShdJQ21GQCTqP2XzjDnL
+         rjkdEdvJtMBPHjFBIBxjDwxXLFjRi8aNqv+v8lfLBtEPiiOZh6KeS1q8Yy56xTmrmsvv
+         /KQIcV/ilRpEinUstxgpHygYI0Da6YrqpF3sFLyStd0ct1TlfQ0Wj/r8f43pJ0Zk1QnD
+         jP2cK8bgE/2PFIKTIFeMkTjfk5LEdhurh3oi76sVqLzoyMNlNrkv4hbRZoL569BWXQvd
+         XGCA==
+X-Gm-Message-State: AOAM531/jDSoVeQ+YmhPhU68mNP6RQ3pUTT3rc/G/eVoyTqjNwOBNyje
+        NOWHDTLMc3sEutq1/EyPcBlRAtYd1n3yWjyVHkE=
+X-Google-Smtp-Source: ABdhPJwcVcFiWdMyynR3ZN1fs6rsTJq+vOi2ss4dGCgwHE7Bd1+AvpS37dAs+lgnoIjmolMg79lfTg==
+X-Received: by 2002:aa7:83c2:0:b029:1a5:daa9:f22f with SMTP id j2-20020aa783c20000b02901a5daa9f22fmr14131113pfn.48.1611242407660;
+        Thu, 21 Jan 2021 07:20:07 -0800 (PST)
+Received: from minh ([113.173.125.143])
+        by smtp.gmail.com with ESMTPSA id o20sm439309pgn.6.2021.01.21.07.20.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Jan 2021 07:20:06 -0800 (PST)
+Date:   Thu, 21 Jan 2021 22:19:55 +0700
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+To:     linux-usb@vger.kernel.org
+Cc:     a.darwish@linutronix.de, bigeasy@linutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        syzkaller-bugs@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oliver Neukum <oneukum@suse.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2] can: mcba_usb: Fix memory leak when cancelling urb
+Message-ID: <20210121151955.GA3779@minh>
+References: <20210111104927.2561-1-minhquangbui99@gmail.com>
+ <7d6dc09fedc84f9fce942d85c34d5cd41931bbf6.camel@suse.de>
+ <20210111143120.GA2769@minh>
+ <CACtPs=FB_=JMEymLHE0_ko4ZF5zj9NBCHkRC7O3tj6pkSp3oiA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jeffrey-work-20 (47.218.202.86) by SN2PR01CA0037.prod.exchangelabs.com (2603:10b6:804:2::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 15:21:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 844c8eef-5fa4-4ece-af88-08d8be2032d7
-X-MS-TrafficTypeDiagnostic: DM6PR09MB4383:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR09MB43830ED8A8DF5001D723C02AF8A19@DM6PR09MB4383.namprd09.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FU0OfbPpKTe6aAGYgl63ZqM2ObCAiblXCFffiO1vkVBL7YrCxUYPTmcCV0e5ZtKTOD5lGHSEQugGv5GE9lNc78liAsJ2l3x03pC034GREXlFLPxoUWAJ/vOFkDHR/Y+UmGl2dgNHTDrznyMIPhT6tsd8Wp2yc7PTnQj68KxUV4xzqt/BHtulztTEmsNDSJ50QIJcNMg7pqkFhNQ82IFz3BQQqMif41eG8QfTlI4GCVCV6b3r5YOpJtdUjkGObWYTYujOKYzaRmgnam0sLAwXciCY4wU+Vpvg0vK4zH8l7h+dcWogYuce2rSOQ3+30uq1pYXvtKpF6dc6s/163wQ4ENRI4E7V1lA+ABtZM3EZ7fHili1yyoLMOF7UwL5MEst5hFU7P4xd8fdnABsitpz3X2eh2Ust16KC1oK67LFsTS0KSLJnbv7bMfpy9wCdIyHcIze4lhPpiYs+lJFoS7MxQskm22qmxE1M4+LGuVJMgyv4DMlaO1bv10JqR83ZmHxZuKScEQeuhuVe9kPXXCUoZg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR09MB6997.namprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(39830400003)(396003)(376002)(8676002)(4326008)(52116002)(6496006)(107886003)(6666004)(86362001)(44832011)(956004)(2906002)(4744005)(2616005)(5660300002)(26005)(186003)(16526019)(8936002)(6486002)(1076003)(6916009)(478600001)(316002)(66946007)(36756003)(66556008)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4H7M4mB83xYN4Xlgnj2j29VJ7Mp/IP1fjlcki+iYBEXaiuu0pMjsWtgR1MaC?=
- =?us-ascii?Q?Lrg3qYGhKPAqvgo+6flS8g196PIh7h+xMWY9eSzFByLVN5CZyKFiRJUYYyXP?=
- =?us-ascii?Q?Kj2bdzUrKhiF4Jm1unWi9dQdh0TfN3dX6Y6BhRrMyAMEs+gycnNqZXyadwNo?=
- =?us-ascii?Q?kgq6xdIFykdWTMHcngUOV/85E2KINvAyXSs8XU89th/2mz9dM3m+4V+Bp7YD?=
- =?us-ascii?Q?5kCQc0KNQF5NL/eTno+vBGJmTMsN6wbH55ynXAo6RlVQI902xlfx5/q6/lLV?=
- =?us-ascii?Q?MvA8BZLVe5YRDJNmSO6o961AKF5PUSYjZLl18SAagDrS9RkhZzRj5YfeQ7Ph?=
- =?us-ascii?Q?GZKbWzxHl4zcnEXNNTgRR80vQSOQNe+iUZ4fS3VQuevvWJnJtPmfRFE8zPui?=
- =?us-ascii?Q?vhpFiDG/kaN88pKW2pDzK4Obd24/n72VPkptGNMbnSWauQ9U6LVBTwAwssUj?=
- =?us-ascii?Q?H9VHU5wDxnzZzN+j7/sBElXCBztNmFepKnrFFE9s9wJksgQkCBqtzDEAEg/0?=
- =?us-ascii?Q?zlPciq56fPAsio78RrGfFu2gVw+47B4gm8kw0VhTEscZ1eUgidIya+64owK+?=
- =?us-ascii?Q?wfEPs65b8JguiBcVQWQdotObSNdB9GN6m2p4tGdrLq4UdC8B//9FP/QTVjCe?=
- =?us-ascii?Q?AI8+WgZrAQJ/+bn84AOzIaD6fdFC4qzCUoevtEWBFeOtzUWfYm8rq47zzniI?=
- =?us-ascii?Q?IMVDswvo73iHo+VZFkPvU21u8iwkDUVaeSmhXeU2MHuODAEufPtinLBRfl7H?=
- =?us-ascii?Q?GH6MKotC+PQ5M33emjPdpSYrNsxNO1OmYCEi9hKoxsMjWyDkigh6EwMWcNRn?=
- =?us-ascii?Q?qn34vMNB7iCxUPyf2m4BDEMhPNk4P7sdhfVy7C3mM15wqnWlFv1//hT4eO0n?=
- =?us-ascii?Q?mURGIAVvKX2Qw5ZD/fGJFQ3Y5uulqf17j5NLyIAl9X/eDZ/KYqOYPYhvHyQ3?=
- =?us-ascii?Q?z6wjR1Jf5aEwZgP0YuFzZQg9WwoIuOniD0Man1xN4gdvdsDDjuoZsAmNjRqI?=
- =?us-ascii?Q?kqxY?=
-X-OriginatorOrg: starlab.io
-X-MS-Exchange-CrossTenant-Network-Message-Id: 844c8eef-5fa4-4ece-af88-08d8be2032d7
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR09MB6997.namprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 15:21:17.5157
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e611933-986f-4838-a403-4acb432ce224
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RCswuIndXV9RnCF5A0zW+RmaayyWSMhCkNEYSKcWQHAm5G1zy3PkWA2ZqyTz1MRFf5O+Mn+k/Dl1GUTmFRcmOVNvFMZXR2s8RhN7lqiT04s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR09MB4383
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACtPs=FB_=JMEymLHE0_ko4ZF5zj9NBCHkRC7O3tj6pkSp3oiA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When XFS creates a new symlink, it writes its size to disk but not to the
-VFS inode. This causes i_size_read() to return 0 for that symlink until
-it is re-read from disk, for example when the system is rebooted.
+On Tue, Jan 12, 2021 at 01:42:33PM +0700, Minh Bùi Quang wrote:
+> On Mon, Jan 11, 2021 at 9:31 PM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+> >
+> > On Mon, Jan 11, 2021 at 01:00:31PM +0100, Oliver Neukum wrote:
+> > > Am Montag, den 11.01.2021, 10:49 +0000 schrieb Bui Quang Minh:
+> > > > In mcba_usb_read_bulk_callback(), when we don't resubmit or fails to
+> > > > resubmit the urb, we need to deallocate the transfer buffer that is
+> > > > allocated in mcba_usb_start().
+> > > >
+> > > > Reported-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+> > > > Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+> > > > ---
+> > > > v1: add memory leak fix when not resubmitting urb
+> > > > v2: add memory leak fix when failing to resubmit urb
+> > > >
+> > > >  drivers/net/can/usb/mcba_usb.c | 11 ++++++++---
+> > > >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+> > > > index df54eb7d4b36..30236e640116 100644
+> > > > --- a/drivers/net/can/usb/mcba_usb.c
+> > > > +++ b/drivers/net/can/usb/mcba_usb.c
+> > > > @@ -584,6 +584,8 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+> > > >     case -EPIPE:
+> > > >     case -EPROTO:
+> > > >     case -ESHUTDOWN:
+> > > > +           usb_free_coherent(urb->dev, urb->transfer_buffer_length,
+> > > > +                             urb->transfer_buffer, urb->transfer_dma);
+> > > >             return;
+> > > >
+> > >
+> > > Can you call usb_free_coherent() in what can be hard IRQ context?
+> >
+> > You are right, I digged in the code and saw some comments that on some
+> > architectures, usb_free_coherent() cannot be called in hard IRQ context.
+> > I see the usb_free_coherent() is called in write_bulk_callback too. I will
+> > send a patch that uses usb_anchor to keep track of these urbs and cleanup
+> > the transfer buffer later in disconnect().
+> 
+> Hi, I have sent a version 3 patch. However, I found out that usb_free_coherent()
+> is ok in this situation. In usb_free_coherent(), if the buffer is allocated via
+> dma_alloc_coherent() in usb_alloc_coherent(), dma_free_coherent() is called.
+> In dma_free_coherent(), ops->free() may be called in some cases which may
+> contains calls to vunmap() that is not permitted in interrupt context. However,
+> in usb_alloc_coherent(), buffer can be allocated from dma pool if the
+> size is less
+> than 2048 and the buffer size in mcba_usb is obviously less than 2048.
+> As a result,
+> usb_free_coherent() will at most fall in the path that calls
+> dma_pool_free(), which is
+> safe. Am I right?
 
-I found this inconsistency while protecting directories with eCryptFS.
-The command "stat path/to/symlink/in/ecryptfs" will report "Size: 0" if
-the symlink was created after the last reboot on an XFS root.
+Hi, I'm CC'ing CAN network driver maintainers so we can discuss the patch properly.
 
-Call i_size_write() in xfs_symlink()
+I'm so sorry for spamming emails.
 
-Signed-off-by: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
----
- fs/xfs/xfs_symlink.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/xfs/xfs_symlink.c b/fs/xfs/xfs_symlink.c
-index 1f43fd7f3209..c835827ae389 100644
---- a/fs/xfs/xfs_symlink.c
-+++ b/fs/xfs/xfs_symlink.c
-@@ -300,6 +300,7 @@ xfs_symlink(
- 		}
- 		ASSERT(pathlen == 0);
- 	}
-+	i_size_write(VFS_I(ip), ip->i_d.di_size);
- 
- 	/*
- 	 * Create the directory entry for the symlink.
--- 
-2.25.1
-
+Thanks,
+Quang Minh.
