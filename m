@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D8D2FF4E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087BC2FF4EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 20:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727424AbhAUTnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 14:43:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47112 "EHLO mail.kernel.org"
+        id S1726513AbhAUTne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 14:43:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726802AbhAUTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726588AbhAUTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 14:42:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A53A823A3A;
-        Thu, 21 Jan 2021 19:41:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2863723A40;
+        Thu, 21 Jan 2021 19:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611258071;
-        bh=IbLWzH/iOhLsKIux1Zif0jmq0CGDxzFYvlX77B3nwu8=;
+        s=k20201202; t=1611258076;
+        bh=mK8ZBd6+aLnUQg2YdqOioJ1XgwXpNWUllaTM7z4jHDM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ghDlBtltbE7YvyOHCs9FmanZsL/lhysjQ4Me4sqydh00FMjgjC0ZTfdFqXVRT3E2v
-         Xc9u1vNr/C5x/NjF0q8DwK9yfqaf6HqbANhsUURaZQwVXatLbubGcbuWKZrtF88dt5
-         L77IZDR/r3nEE0d/Ixmo2dsOPBERcJc4Ii9w3YJp5DghRWZaftPL1veNYsMhpeeoaq
-         qW17gfAfwwB7q1xlMCIrdk5XlDmmrSHHNQFQ7Qfd1qdN1H2b3mDvPj3FlJlz4zPmOq
-         obSlVvCvpQnqmFCbdqQNq/FfOGEo2wHEHj4apO7L8/5lXwVsu1pZzMDHfhkCuIXq3J
-         YaDzov7zingZw==
+        b=rVZiREjclkXuZcjdwq3erYISSIpZW7sGZVNBGwfASS0z5xJIE+Aab0L727juDl8Wv
+         zsPlPlpmplYI4+y5s6T6TAq4+vebdtcRFyPajS3gs+otUt5zKAUuSEl0bAWvxIprk+
+         RthUkssidHcWilVU4Iscqpsh4gakC72jFc0fhT7FYSbNET9AVqDKM87egnnTr5zpyh
+         g54CROEA6WFjC2vT6ht1+wM5/+K3C0VeSV56RafKg4wDfOCv8577VMLA0qKWxxMube
+         rAMZ/3djkTaZi1BQZKznKHlRUEJ0kb+IEJ8EkDpbTOGqNyDbAuTsM7xez9z6mF+4Iz
+         1j5vZAfGQBe8w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Pan Bian <bianpan2016@163.com>
-In-Reply-To: <20210121155914.48034-1-krzk@kernel.org>
-References: <20210121155914.48034-1-krzk@kernel.org>
-Subject: Re: [PATCH] regulator: s5m8767: Drop regulators OF node reference
-Message-Id: <161125803282.35944.14669065064148445723.b4-ty@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210120151307.1726876-1-arnd@kernel.org>
+References: <20210120151307.1726876-1-arnd@kernel.org>
+Subject: Re: [PATCH] regulator: remove ab3100 driver
+Message-Id: <161125803282.35944.14775326202406486822.b4-ty@kernel.org>
 Date:   Thu, 21 Jan 2021 19:40:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -41,9 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 16:59:14 +0100, Krzysztof Kozlowski wrote:
-> The device node reference obtained with of_get_child_by_name() should be
-> dropped on error paths.
+On Wed, 20 Jan 2021 16:12:24 +0100, Arnd Bergmann wrote:
+> The ST-Ericsson U300 platform is getting removed, so this driver is no
+> longer needed.
 
 Applied to
 
@@ -51,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: s5m8767: Drop regulators OF node reference
-      commit: a5872bd3398d0ff2ce4c77794bc7837899c69024
+[1/1] regulator: remove ab3100 driver
+      commit: d93d6f52bd9e3aa6f37b7ea5657e4bee50a4b0a4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
