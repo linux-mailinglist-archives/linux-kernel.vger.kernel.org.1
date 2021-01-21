@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FCA2FE8B4
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF942FE8B5
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730461AbhAULZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
+        id S1726043AbhAUL0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730213AbhAULVe (ORCPT
+        with ESMTP id S1730243AbhAULWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:21:34 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F054EC0617AB
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:18 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id v19so1133225pgj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lxCu1KRXdVN3L+OkUbo1cLFCc74qHBWwsGsHoVvYmGQ=;
-        b=a87cJbhAisItlTCiddZHPHEtszqt8a4bVO1biv2X4xyyxixy0vT9T72gtaa3iyj1/S
-         0BYSnHb7hnb7XQ1rwlEu5cBS3rWsXlBuzJ4FCOmHrteZ986iw9RUbu7t7crDd55rb+q0
-         KYQl0KVBN5AykV+JO3HcTaywDinFAvXk5RBBj+bYE7h3h/GJhlpuhndjXEI073NQmGYd
-         F8sCiXjYnLCSEiHzao8Cj5NEiGNRRhnEQY8ln7F6+OXeYTrLLExrly2aWRCNqMuVgIyM
-         o+ZW521aJNq2QMtttfOcvWZ9gEK/aMtc7HonSr2L7N/XYDiInAo5mzdEK+TIZbY9C/Xa
-         SMRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lxCu1KRXdVN3L+OkUbo1cLFCc74qHBWwsGsHoVvYmGQ=;
-        b=dZzd+gROJXJZJQFl37zDovkfbzu/tYapmiMCBve1suLi0s28h1JK8hu/CISDbfhYX0
-         XIVhutSbHSiY4oqI5EiGUqTWgdaWYtaQmUX2X+QSiLcq8vGOtaqUTpt/gA1a3YlDThqC
-         zcPcI2m2K2qi7CZtB/oglEhUs4kXXXapi7y9S3b0K0dQBEnHpG/fRot4okaUPLlMZMXA
-         XhlOlu5Pc8O4dNRZk5xDwrr+mjhlQp1PnyaWI0q3nQwhz1e/Kkyh5jClJnAjWjzRlQIK
-         /uvoYHLKkuf8yeIRP4gbQzA9RlD05P/4mXIYMNWaHO2qswPefvjQInUQjNrhUTXxQFFB
-         ZoTA==
-X-Gm-Message-State: AOAM533HrOzsewbOeNssWUop238iHbBfZ6qWiHQuoAgIa4bGwzbRkPEZ
-        n3YiW8CMZXiLgNWEBA3a9yxkug==
-X-Google-Smtp-Source: ABdhPJxRoJPh+zCGLlNXEzcomeslehl5ItANfOXfCWt+o9vxW4dTT0mgqMj6QlfqpWP4MwpTT0cTAw==
-X-Received: by 2002:a65:4083:: with SMTP id t3mr14089089pgp.150.1611227958549;
-        Thu, 21 Jan 2021 03:19:18 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id f36sm6098298pjk.52.2021.01.21.03.19.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 03:19:17 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: [PATCH 12/13] drm: msm: Migrate to dev_pm_opp_set_opp()
-Date:   Thu, 21 Jan 2021 16:47:52 +0530
-Message-Id: <8d10f850eead0e91b1a0e20bd2ae449f4f4f8bb3.1611227342.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1611227342.git.viresh.kumar@linaro.org>
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
+        Thu, 21 Jan 2021 06:22:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F51C0617BB
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 03:19:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WqyNpXI5pmXHjcYlLaaycMpQoGvzt5SeeKBz6CK9jCI=; b=uNJUY6vur+KShXtcvcl0JkKTH6
+        uQ5C2vQfecaFSiumG/gAoAgO420EEc/WIdLjhUkZSo5ASTR1Ukin8yk6GIM80Gbqh2zBG9dgmil12
+        JrfXY+K2BF2MsB+rJBInM8JqCN2ZzPPsoJfIwirGmcpKXXD1Up3WUJrN7ke9T5mXrrI9chKeUUJoz
+        EUw1/egd7orKJcxkOzE4SzG62+YUJjrXHrD+5vIhtcrEresP1QcnOfqfq5475VSJ4/DE3KVlx8uH7
+        eTZ84wiXGboB/CpKgCvXv/D/qiIkMGS6LNK/pXiQB4ER0w0s1fbNJLVTVCyI07Ad3m9UHzbEiv8Su
+        t3lSmkHA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2Xz0-00Gxt2-CM; Thu, 21 Jan 2021 11:18:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF74A303271;
+        Thu, 21 Jan 2021 12:18:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BB6542028D4B7; Thu, 21 Jan 2021 12:18:33 +0100 (CET)
+Date:   Thu, 21 Jan 2021 12:18:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com
+Subject: Re: [PATCH 3/4] cpu/hotplug: Add cpuhp_invoke_callback_range()
+Message-ID: <YAljCQZf+ZqB3S4K@hirez.programming.kicks-ass.net>
+References: <1610385047-92151-1-git-send-email-vincent.donnefort@arm.com>
+ <1610385047-92151-4-git-send-email-vincent.donnefort@arm.com>
+ <YAhsLPLXg37fs/BA@hirez.programming.kicks-ass.net>
+ <YAhuHdcfKnyWKdka@hirez.programming.kicks-ass.net>
+ <20210121105756.GA312559@e120877-lin.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121105756.GA312559@e120877-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
-be used instead. Migrate to the new API.
+On Thu, Jan 21, 2021 at 10:57:57AM +0000, Vincent Donnefort wrote:
+> On Wed, Jan 20, 2021 at 06:53:33PM +0100, Peter Zijlstra wrote:
+> > On Wed, Jan 20, 2021 at 06:45:16PM +0100, Peter Zijlstra wrote:
+> > > On Mon, Jan 11, 2021 at 05:10:46PM +0000, vincent.donnefort@arm.com wrote:
+> > > > @@ -475,6 +478,11 @@ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
+> > > >  static inline void
+> > > >  cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
+> > > >  {
+> > > > +	st->target = prev_state;
+> > > > +
+> > > > +	if (st->rollback)
+> > > > +		return;
+> > > 
+> > > I'm thinking that if we call rollback while already rollback we're hosed
+> > > something fierce, no?
+> > > 
+> > > That like going up, failing, going back down again, also failing, giving
+> > > up in a fiery death.
+> > 
+> > Ooh, is this a hack for _cpu_down():
+> > 
+> > 	ret = cpuhp_down_callbacks(cpu, st, target);
+> > 	if (ret && st->state == CPUHP_TEARDOWN_CPU && st->state < prev_state) {
+> > 		cpuhp_reset_state(st, prev_state);
+> > 		__cpuhp_kick_ap(st);
+> > 	}
+> > 
+> > Where cpuhp_down_callbacks() can already have called cpuhp_reset_state() ?
+> 
+> Yes, it is now possible that this function will be called twice during the
+> rollback. Shall I avoid this and treat the case above differently ? i.e. "if we
+> are here, state has already been reset, and we should only set st->target".
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index e6703ae98760..05e0ef58fe32 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -134,7 +134,7 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
- 
- 	if (!gmu->legacy) {
- 		a6xx_hfi_set_freq(gmu, perf_index);
--		dev_pm_opp_set_bw(&gpu->pdev->dev, opp);
-+		dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
- 		pm_runtime_put(gmu->dev);
- 		return;
- 	}
-@@ -158,7 +158,7 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
- 	if (ret)
- 		dev_err(gmu->dev, "GMU set GPU frequency error: %d\n", ret);
- 
--	dev_pm_opp_set_bw(&gpu->pdev->dev, opp);
-+	dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
- 	pm_runtime_put(gmu->dev);
- }
- 
-@@ -866,7 +866,7 @@ static void a6xx_gmu_set_initial_bw(struct msm_gpu *gpu, struct a6xx_gmu *gmu)
- 	if (IS_ERR_OR_NULL(gpu_opp))
- 		return;
- 
--	dev_pm_opp_set_bw(&gpu->pdev->dev, gpu_opp);
-+	dev_pm_opp_set_opp(&gpu->pdev->dev, gpu_opp);
- 	dev_pm_opp_put(gpu_opp);
- }
- 
-@@ -1072,7 +1072,7 @@ int a6xx_gmu_stop(struct a6xx_gpu *a6xx_gpu)
- 		a6xx_gmu_shutdown(gmu);
- 
- 	/* Remove the bus vote */
--	dev_pm_opp_set_bw(&gpu->pdev->dev, NULL);
-+	dev_pm_opp_set_opp(&gpu->pdev->dev, NULL);
- 
- 	/*
- 	 * Make sure the GX domain is off before turning off the GMU (CX)
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+Not sure, but a comment would be useful :-)
