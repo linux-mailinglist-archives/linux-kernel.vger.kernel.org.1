@@ -2,125 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6202FDE2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E922FDE38
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbhAUAwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:52:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728929AbhAUAA2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:00:28 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD77C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:59:03 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id y4so369781ybn.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:59:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bjNWVbslUhdSMJg6quM5f9vJqYwBuRMO9foprozwioc=;
-        b=ffW3hc4LnwwviIoGoe5gnQflzXCd9cYZdMHOoXum4nNbQJvSCC2AfWclS2wU/au9de
-         CFRJUjnnhMitRBSu7S3m1/DZy+pxT7lr6QGCTwyNFsjyN9nB4rQa2RwDFVKSQldHo20t
-         TSaB19bBSSSneWcjrQvt1mrcSxut+vop26XwhsLB4836gzQMg5Itas4U1iMBYR4Ce63y
-         2DAFnXsicdrem0orFA6VQTXVbdXmnJN8xiDo6IjoKhbUluKAbEltdsYNJc7OtM3K5s25
-         EdP3oDR0uFcuTNrtyDOjvUyHFnNrPeTeyqMioYmbHubqagHho7lrZ/++FzLpqNwNm/Nf
-         i4cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bjNWVbslUhdSMJg6quM5f9vJqYwBuRMO9foprozwioc=;
-        b=FGqbBRALDVE34F3KQ3zA3rF71f9cLWwsRPEa+95hRdSISL1+KTUNbNOm87buHe2IEp
-         tKu2SbQ1sHSajzH24URdAZTmmSn5IEEc6/kSoMP8TZKHrbLVBlSqUYj0D7cU06qZtI/q
-         yrCbZPmDw4IxOLzDMewuuKkvCAThOzUhUCo/hehkvb1tJmSkV3i35LTbaGfEZ7l8gBTG
-         BZs8kp6w12yt+4vV8ck/6FQ7qmu/2Ca24XZ/DCgNtVxuTQIQwUw7gT6xE9tL99ggX3NV
-         FnQjaI6Jc20ah5Gplh9oMQUVs5opZIIqHgkqc7/ePlLRAZn521pYMpP1IIKM3DI7xvtc
-         rY5A==
-X-Gm-Message-State: AOAM532YI3NsZ1fGYoOSh9ODUzZJBnh4/Zlu5a6N0+03sigqUS6qkSp2
-        dqsqKZ1HmFHGCebC6xMplaM7OtdVaS+yzpk0LCyOFA==
-X-Google-Smtp-Source: ABdhPJzMu1+JWnwyGx4GwTGFIGNXBqrQijaNrTRbEw4zMGC6WhznJvX295T+Ea7ZyLY4NNnZiFJ6MzxNGPb4DoZb8aA=
-X-Received: by 2002:a25:dfcb:: with SMTP id w194mr13618ybg.346.1611187142006;
- Wed, 20 Jan 2021 15:59:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
- <f706c0e4b684e07635396fcf02f4c9a6@walle.cc>
-In-Reply-To: <f706c0e4b684e07635396fcf02f4c9a6@walle.cc>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 20 Jan 2021 15:58:26 -0800
-Message-ID: <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Michael Walle <michael@walle.cc>
-Cc:     Rob Herring <robh@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        PCI <linux-pci@vger.kernel.org>,
+        id S1728213AbhAUAxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:53:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731633AbhAUAD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 19:03:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C55DB2368A;
+        Thu, 21 Jan 2021 00:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611187313;
+        bh=Eh0u5i8AW4x9ntLsFlUAc6rlbY2JykroCggN1fE25ec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gZ2nE1nWc5IEdueOVVKR9vTP5loybR/I49ORFIwya9nGkp8IRtTWQXNmdnpsV9SHt
+         IbC4NVTSRTaW/UTjXdq3t02Fixqlc484JqdK3sdr59lnUVQTR5HL2nmYDC4pzq1Zdl
+         qtVGeiJMy2stNYuVaJGshQIh1w82JdOV4Txew7VIhlSAW1jXPry/NY4csB5Ch2gHbo
+         UifuHCqGdSgu/kcRvIlwwIsX4+vTLbjmba7Rh6/dmaKun51d+pSOHgGzYj48BPQMmL
+         N8XAe+Ze+T3z+dF15H49ScwHfVm4IiTfiLegna6iqRUOAFensVr6vH+u3F/YwcZ+rf
+         3owAiDsd4Zxqg==
+Date:   Thu, 21 Jan 2021 02:01:46 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        op-tee@lists.trustedfirmware.org
+Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
+Message-ID: <YAjEaq+ZWD/eHU/x@kernel.org>
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+ <1604419306-26105-3-git-send-email-sumit.garg@linaro.org>
+ <X/x+N0fgrzIZTeNi@kernel.org>
+ <CAFA6WYOUvWAZtYfR4q8beZFkX-CtdxqwJaRQM+GHNMDfQiEWOA@mail.gmail.com>
+ <X/+m6+m2/snYj9Vc@kernel.org>
+ <CAFA6WYNyirit_AFhoE+XR9PHw=OjRgEdXDqz1uanj_SN2NXeMw@mail.gmail.com>
+ <YAa0ys4YJcZtKdfF@kernel.org>
+ <YAeH2pb8szQyjusL@kernel.org>
+ <CAFA6WYP5G6NfGk96ePOC+2kpD6B+4hz9nywyUM9Nh=dJDYMiuA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFA6WYP5G6NfGk96ePOC+2kpD6B+4hz9nywyUM9Nh=dJDYMiuA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc> wrote:
->
-> Am 2021-01-20 20:47, schrieb Saravana Kannan:
-> > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
-> > wrote:
-> >>
-> >> [RESEND, fat-fingered the buttons of my mail client and converted
-> >> all CCs to BCCs :(]
-> >>
-> >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> >> >>
-> >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> >> >> wrote:
-> >> >> >
-> >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> >> >> > deferral. Convert it to builtin_platform_driver().
-> >> >>
-> >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> >> >> shouldn't it be fixed or removed?
-> >> >
-> >> > I was actually thinking about this too. The problem with fixing
-> >> > builtin_platform_driver_probe() to behave like
-> >> > builtin_platform_driver() is that these probe functions could be
-> >> > marked with __init. But there are also only 20 instances of
-> >> > builtin_platform_driver_probe() in the kernel:
-> >> > $ git grep ^builtin_platform_driver_probe | wc -l
-> >> > 20
-> >> >
-> >> > So it might be easier to just fix them to not use
-> >> > builtin_platform_driver_probe().
-> >> >
-> >> > Michael,
-> >> >
-> >> > Any chance you'd be willing to help me by converting all these to
-> >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> >>
-> >> If it just moving the probe function to the _driver struct and
-> >> remove the __init annotations. I could look into that.
+On Wed, Jan 20, 2021 at 12:53:28PM +0530, Sumit Garg wrote:
+> On Wed, 20 Jan 2021 at 07:01, Jarkko Sakkinen <jarkko@kernel.org> wrote:
 > >
-> > Yup. That's pretty much it AFAICT.
+> > On Tue, Jan 19, 2021 at 12:30:42PM +0200, Jarkko Sakkinen wrote:
+> > > On Fri, Jan 15, 2021 at 11:32:31AM +0530, Sumit Garg wrote:
+> > > > On Thu, 14 Jan 2021 at 07:35, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > > >
+> > > > > On Wed, Jan 13, 2021 at 04:47:00PM +0530, Sumit Garg wrote:
+> > > > > > Hi Jarkko,
+> > > > > >
+> > > > > > On Mon, 11 Jan 2021 at 22:05, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, Nov 03, 2020 at 09:31:44PM +0530, Sumit Garg wrote:
+> > > > > > > > Add support for TEE based trusted keys where TEE provides the functionality
+> > > > > > > > to seal and unseal trusted keys using hardware unique key.
+> > > > > > > >
+> > > > > > > > Refer to Documentation/tee.txt for detailed information about TEE.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > > > >
+> > > > > > > I haven't yet got QEMU environment working with aarch64, this produces
+> > > > > > > just a blank screen:
+> > > > > > >
+> > > > > > > ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -kernel output/images/Image -initrd output/images/rootfs.cpio -serial stdio
+> > > > > > >
+> > > > > > > My BuildRoot fork for TPM and keyring testing is located over here:
+> > > > > > >
+> > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/buildroot-tpmdd.git/
+> > > > > > >
+> > > > > > > The "ARM version" is at this point in aarch64 branch. Over time I will
+> > > > > > > define tpmdd-x86_64 and tpmdd-aarch64 boards and everything will be then
+> > > > > > > in the master branch.
+> > > > > > >
+> > > > > > > To create identical images you just need to
+> > > > > > >
+> > > > > > > $ make tpmdd_defconfig && make
+> > > > > > >
+> > > > > > > Can you check if you see anything obviously wrong? I'm eager to test this
+> > > > > > > patch set, and in bigger picture I really need to have ready to run
+> > > > > > > aarch64 environment available.
+> > > > > >
+> > > > > > I would rather suggest you to follow steps listed here [1] as to test
+> > > > > > this feature on Qemu aarch64 we need to build firmwares such as TF-A,
+> > > > > > OP-TEE, UEFI etc. which are all integrated into OP-TEE Qemu build
+> > > > > > system [2]. And then it would be easier to migrate them to your
+> > > > > > buildroot environment as well.
+> > > > > >
+> > > > > > [1] https://lists.trustedfirmware.org/pipermail/op-tee/2020-May/000027.html
+> > > > > > [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
+> > > > > >
+> > > > > > -Sumit
+> > > > >
+> > > > > Can you provide 'keyctl_change'? Otherwise, the steps are easy to follow.
+> > > > >
+> > > >
+> > > > $ cat keyctl_change
+> > > > diff --git a/common.mk b/common.mk
+> > > > index aeb7b41..663e528 100644
+> > > > --- a/common.mk
+> > > > +++ b/common.mk
+> > > > @@ -229,6 +229,7 @@ BR2_PACKAGE_OPTEE_TEST_SDK ?= $(OPTEE_OS_TA_DEV_KIT_DIR)
+> > > >  BR2_PACKAGE_OPTEE_TEST_SITE ?= $(OPTEE_TEST_PATH)
+> > > >  BR2_PACKAGE_STRACE ?= y
+> > > >  BR2_TARGET_GENERIC_GETTY_PORT ?= $(if
+> > > > $(CFG_NW_CONSOLE_UART),ttyAMA$(CFG_NW_CONSOLE_UART),ttyAMA0)
+> > > > +BR2_PACKAGE_KEYUTILS := y
+> > > >
+> > > >  # All BR2_* variables from the makefile or the environment are appended to
+> > > >  # ../out-br/extra.conf. All values are quoted "..." except y and n.
+> > > > diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
+> > > > index 368c18a..832ab74 100644
+> > > > --- a/kconfigs/qemu.conf
+> > > > +++ b/kconfigs/qemu.conf
+> > > > @@ -20,3 +20,5 @@ CONFIG_9P_FS=y
+> > > >  CONFIG_9P_FS_POSIX_ACL=y
+> > > >  CONFIG_HW_RANDOM=y
+> > > >  CONFIG_HW_RANDOM_VIRTIO=y
+> > > > +CONFIG_TRUSTED_KEYS=y
+> > > > +CONFIG_ENCRYPTED_KEYS=y
+> > > >
+> > > > > After I've successfully tested 2/4, I'd suggest that you roll out one more
+> > > > > version and CC the documentation patch to Elaine and Mini, and clearly
+> > > > > remark in the commit message that TEE is a standard, with a link to the
+> > > > > specification.
+> > > > >
+> > > >
+> > > > Sure, I will roll out the next version after your testing.
+> > >
+> > > Thanks, I'll try this at instant, and give my feedback.
 > >
-> > builtin_platform_driver_probe() also makes sure the driver doesn't ask
-> > for async probe, etc. But I doubt anyone is actually setting async
-> > flags and still using builtin_platform_driver_probe().
->
-> Hasn't module_platform_driver_probe() the same problem? And there
-> are ~80 drivers which uses that.
+> > I bump into this:
+> >
+> > $ make run-only
+> > ln -sf /home/jarkko/devel/tpm/optee/build/../out-br/images/rootfs.cpio.gz /home/jarkko/devel/tpm/optee/build/../out/bin/
+> > ln: failed to create symbolic link '/home/jarkko/devel/tpm/optee/build/../out/bin/': No such file or directory
+> > make: *** [Makefile:194: run-only] Error 1
+> >
+> 
+> Could you check if the following directory tree is built after
+> executing the below command?
+> 
+> $ make -j`nproc`
+> CFG_IN_TREE_EARLY_TAS=trusted_keys/f04a0fe7-1f5d-4b9b-abf7-619b85b4ce8c
+> 
+> $ tree out/bin/
+> out/bin/
+> ├── bl1.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl1.bin
+> ├── bl2.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl2.bin
+> ├── bl31.bin ->
+> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl31.bin
+> ├── bl32.bin ->
+> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-header_v2.bin
+> ├── bl32_extra1.bin ->
+> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pager_v2.bin
+> ├── bl32_extra2.bin ->
+> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pageable_v2.bin
+> ├── bl33.bin ->
+> /home/sumit/build/optee/build/../edk2/Build/ArmVirtQemuKernel-AARCH64/RELEASE_GCC49/FV/QEMU_EFI.fd
+> ├── Image -> /home/sumit/build/optee/build/../linux/arch/arm64/boot/Image
+> └── rootfs.cpio.gz ->
+> /home/sumit/build/optee/build/../out-br/images/rootfs.cpio.gz
+> 
+> 0 directories, 9 files
+> 
+> -Sumit
 
-Yeah. The biggest problem with all of these is the __init markers.
-Maybe some familiar with coccinelle can help?
+I actually spotted a build error that was unnoticed last time:
 
--Saravana
+make[2]: Entering directory '/home/jarkko/devel/tpm/optee/edk2/BaseTools/Tests'
+/bin/sh: 1: python: not found
+
+I'd prefer not to install Python2. It has been EOL over a year.
+
+/Jarkko
