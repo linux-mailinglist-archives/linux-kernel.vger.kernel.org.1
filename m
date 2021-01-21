@@ -2,122 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19C52FE99E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB94B2FE9A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730720AbhAUMHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:07:46 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:33590 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730975AbhAUMGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:06:23 -0500
-Received: from example.org (ip-94-112-41-137.net.upcbroadband.cz [94.112.41.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 8DBD220459;
-        Thu, 21 Jan 2021 12:04:38 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 13:04:27 +0100
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [RFC PATCH v3 1/8] Use refcount_t for ucounts reference counting
-Message-ID: <20210121120427.iiggfmw3tpsmyzeb@example.org>
-References: <cover.1610722473.git.gladkov.alexey@gmail.com>
- <116c7669744404364651e3b380db2d82bb23f983.1610722473.git.gladkov.alexey@gmail.com>
- <CAHk-=wjsg0Lgf1Mh2UiJE4sqBDDo0VhFVBUbhed47ot2CQQwfQ@mail.gmail.com>
- <20210118194551.h2hrwof7b3q5vgoi@example.org>
- <CAHk-=wiNpc5BS2BfZhdDqofJx1G=uasBa2Q1eY4cr8O59Rev2A@mail.gmail.com>
- <20210118205629.zro2qkd3ut42bpyq@example.org>
- <87eeig74kv.fsf@x220.int.ebiederm.org>
+        id S1730277AbhAUMKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730864AbhAUMFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:05:17 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09234C061757;
+        Thu, 21 Jan 2021 04:04:33 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id y187so1310093wmd.3;
+        Thu, 21 Jan 2021 04:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=NPaJmIoqOQ2ZtBkLTXast52ZNe1Rt1J2mdt0JMfHVxE=;
+        b=MMEoBFia73Ara9Y6z+76gKokEEI1bzPJ9TpoHM+qHnrUCVU0RGG3mYhqcZl36/rgK0
+         ca92dJ7ZDT7DUMqo6tSKr1pxGQZK3zYyHHqPhjtDvCbMdumYU6g06q+z+sJVAqtP9USN
+         XoTGkadKrFekrw0EnRDNFXSUBCXIk/z3TkxjgdKzsOWd38Ffl2PHDK/ANcQzDS4Yn4lM
+         hHXDqH5yGHBK6+xyNVWrLs5Z/Uwz6jv84fokQ6IiCGkuy4+gYYGSvHvVcr8hTwZr7wIU
+         kq8PlZ/Wia4iPy4CjGhFIsvUPZ2CYiBctH7AaPAEacWwR5IoYnBjc6fi1pPzvtkGD82j
+         HbPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=NPaJmIoqOQ2ZtBkLTXast52ZNe1Rt1J2mdt0JMfHVxE=;
+        b=G1+U4J6u4tkCd/LYMiyQ3IjD7/ByW7KdWYs8Fx45oOYDOsqZj0kp6cur7F30i9U49J
+         CdR2tDM8/m1jgrtnRnhcNa1m7qqRqdOVoJ8bnI57xZ8oAowmLEJfbeOIDv7eYXdM0BtX
+         m+djLA1sfuDqSTZFJ5he9DtlKNuhoDGHQn/gcP1gNHCbHrpIbQqoWSj1cO4Ut4fiKDBD
+         dxLSd178pWCHoV0qD5EO9ivgtq1tM5Z5eXUIANBCcQjK8BM4BTNHRiHZcz7W13w9uyw7
+         v5v/+V4/MMQFDRrJUGUetx6I+mNX15k7B2o2KnpuAbGMHJ9Q7ydiVoCxalW4no1W3ZSf
+         iJjA==
+X-Gm-Message-State: AOAM5334wnc3JTPqeWQZVUwtPvKwh8uDgw8jd6jIBbyVBtK1KyoDAKBf
+        JzHu8LfQ8e4BkMwoIVtrq08=
+X-Google-Smtp-Source: ABdhPJwLdBKcGRNBAVpRiCip7CUbIQZuIXcYHBeps2IOw9tAKoPEKqtROcIFSlKGeTrZSbBGNejK9g==
+X-Received: by 2002:a1c:18e:: with SMTP id 136mr8788559wmb.69.1611230671786;
+        Thu, 21 Jan 2021 04:04:31 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id m2sm7632951wml.34.2021.01.21.04.04.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 04:04:31 -0800 (PST)
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
+ acpi_devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
+ <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+ <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
+ <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
+Date:   Thu, 21 Jan 2021 12:04:30 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eeig74kv.fsf@x220.int.ebiederm.org>
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Thu, 21 Jan 2021 12:05:05 +0000 (UTC)
+In-Reply-To: <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:57:36PM -0600, Eric W. Biederman wrote:
-> Alexey Gladkov <gladkov.alexey@gmail.com> writes:
-> 
-> > On Mon, Jan 18, 2021 at 12:34:29PM -0800, Linus Torvalds wrote:
-> >> On Mon, Jan 18, 2021 at 11:46 AM Alexey Gladkov
-> >> <gladkov.alexey@gmail.com> wrote:
-> >> >
-> >> > Sorry about that. I thought that this code is not needed when switching
-> >> > from int to refcount_t. I was wrong.
-> >> 
-> >> Well, you _may_ be right. I personally didn't check how the return
-> >> value is used.
-> >> 
-> >> I only reacted to "it certainly _may_ be used, and there is absolutely
-> >> no comment anywhere about why it wouldn't matter".
-> >
-> > I have not found examples where checked the overflow after calling
-> > refcount_inc/refcount_add.
-> >
-> > For example in kernel/fork.c:2298 :
-> >
-> >    current->signal->nr_threads++;                           
-> >    atomic_inc(&current->signal->live);                      
-> >    refcount_inc(&current->signal->sigcnt);  
-> >
-> > $ semind search signal_struct.sigcnt
-> > def include/linux/sched/signal.h:83  		refcount_t		sigcnt;
-> > m-- kernel/fork.c:723 put_signal_struct 		if (refcount_dec_and_test(&sig->sigcnt))
-> > m-- kernel/fork.c:1571 copy_signal 		refcount_set(&sig->sigcnt, 1);
-> > m-- kernel/fork.c:2298 copy_process 				refcount_inc(&current->signal->sigcnt);
-> >
-> > It seems to me that the only way is to use __refcount_inc and then compare
-> > the old value with REFCOUNT_MAX
-> >
-> > Since I have not seen examples of such checks, I thought that this is
-> > acceptable. Sorry once again. I have not tried to hide these changes.
-> 
-> The current ucount code does check for overflow and fails the increment
-> in every case.
-> 
-> So arguably it will be a regression and inferior error handling behavior
-> if the code switches to the ``better'' refcount_t data structure.
-> 
-> I originally didn't use refcount_t because silently saturating and not
-> bothering to handle the error makes me uncomfortable.
-> 
-> Not having to acquire the ucounts_lock every time seems nice.  Perhaps
-> the path forward would be to start with stupid/correct code that always
-> takes the ucounts_lock for every increment of ucounts->count, that is
-> later replaced with something more optimal.
-> 
-> Not impacting performance in the non-namespace cases and having good
-> performance in the other cases is a fundamental requirement of merging
-> code like this.
 
-Did I understand your suggestion correctly that you suggest to use
-spin_lock for atomic_read and atomic_inc ?
+On 21/01/2021 11:58, Rafael J. Wysocki wrote:
+> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
+>> Hi Rafael
+>>
+>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+>>>>>> specification intends. We need to be able to find those devices "from"
+>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
+>>>>>> the include the handle of the dependee device in their _DEP buffer.
+>>>>> What exactly do you need this for?
+>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+>>>> refer to those INT3472's in their _DEP method. The driver binds to the
+>>>> INT3472 device, we need to find the sensors dependent on them.
+>>>>
+>>> Well, this is an interesting concept. :-)
+>>>
+>>> Why does _DEP need to be used for that?  Isn't there any other way to
+>>> look up the dependent sensors?
+>>>
+>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+>>>>>
+>>>>> Note that supplier drivers may remove entries from there, but does
+>>>>> that matter for your use case?
+>>>> Ah - that may work, yes. Thank you, let me test that.
+>>> Even if that doesn't work right away, but it can be made work, I would
+>>> very much prefer that to the driver parsing _DEP for every device in
+>>> the namespace by itself.
+>>
+>> This does work; do you prefer it in scan.c, or in utils.c (in which case
+>> with acpi_dep_list declared as external var in internal.h)?
+> Let's put it in scan.c for now, because there is the lock protecting
+> the list in there too.
+>
+> How do you want to implement this?  Something like "walk the list and
+> run a callback for the matching entries" or do you have something else
+> in mind?
 
-If so, then we are already incrementing the counter under ucounts_lock.
 
-	...
-	if (atomic_read(&ucounts->count) == INT_MAX)
-		ucounts = NULL;
-	else
-		atomic_inc(&ucounts->count);
-	spin_unlock_irq(&ucounts_lock);
-	return ucounts;
+Something like this (though with a mutex_lock()). It could be simplified
+by dropping the prev stuff, but we have seen INT3472 devices with
+multiple sensors declaring themselves dependent on the same device
 
-something like this ?
 
--- 
-Rgrds, legion
+struct acpi_device *
+acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
+                struct acpi_device *prev)
+{
+    struct acpi_dep_data *dep;
+    struct acpi_device *adev;
+    int ret;
+
+    if (!supplier)
+        return ERR_PTR(-EINVAL);
+
+    if (prev) {
+        /*
+         * We need to find the previous device in the list, so we know
+         * where to start iterating from.
+         */
+        list_for_each_entry(dep, &acpi_dep_list, node)
+            if (dep->consumer == prev->handle &&
+                dep->supplier == supplier->handle)
+                break;
+
+        dep = list_next_entry(dep, node);
+    } else {
+        dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
+                       node);
+    }
+
+
+    list_for_each_entry_from(dep, &acpi_dep_list, node) {
+        if (dep->supplier == supplier->handle) {
+            ret = acpi_bus_get_device(dep->consumer, &adev);
+            if (ret)
+                return ERR_PTR(ret);
+
+            return adev;
+        }
+    }
+
+    return NULL;
+}
 
