@@ -2,128 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0B42FE7AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC1A2FE7C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 11:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbhAUKc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 05:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
+        id S1729500AbhAUKji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 05:39:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728953AbhAUJr3 (ORCPT
+        with ESMTP id S1729674AbhAUKh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:47:29 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC836C061389
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:52 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id u14so932053wmq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vJDsuEDRVCvcahYEPrkVEeJePqFypDnKwf1mJL7+9Q4=;
-        b=k+KPDF1sMPR9MbWSWGLgTX1n2t/pUJJtovIraWlWFZqiHEZGXR6Obr9cr+SUOGFlwI
-         yf1DHrs8J5H1y6UvVrIe2ld8T3+1hBE2m7/3pIdiO8x8WQlLwIbgLIunMiGMnaQc9OWU
-         YRyMxwhMmMmsEBHuM3LFLtHRXxPkZXuLKz5vC+obZaLg3S0PEo52stMPYADifh3/jooR
-         vC5IT8S4bSTTHyob8QosD7oHsNEwKFtSG/oCA8AgQPn5LWqXBOlbiw0r6D92gWOY9hXg
-         ISJMK+8LWR4VBd/Pa/3Y/mOgtLnQp3JgsHCb/GNeud+3s7yVxYb8VFnlFfGFG/Fx4Uze
-         W13g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vJDsuEDRVCvcahYEPrkVEeJePqFypDnKwf1mJL7+9Q4=;
-        b=Mjqac6J5pUzBJyE38fWe2pknHueXeRkhxrBh5j97J+ubkQeAqr+gkJbdDDk5ndM8cH
-         KM3PAYYcG3F5ADn6cF8Wl2qU/hc3x0m8yw+HuFa1OeEsXQBtmuQzJ+p+43tLExLXaejK
-         5R3uq6TzRWxYBrrEOXkohr/C8ojtA1F3bmeIBRi2Z8Iq8oiyfJRGzUGCuE+vxbBNl6Mt
-         Fkdi+Zp/1LNC5Inj0xQZJwOhtx9vQvlE6+pO35vCDhFqGbAKAOH92cK9yXjl1qMwC2kw
-         vM98srZTuFeSoiMvI43hUYRi8kkMspc/cs6KnYXPOP9RbkyziaHvfJPywWPo7Gk2n2Uj
-         MHew==
-X-Gm-Message-State: AOAM531j4DzJS+D/qvMRiKz6CJ+Li+uEdlKIXlDAPC3v4px6nM6aVnEL
-        belKM2bXbIjBsmwqy1jKRgQcZQ==
-X-Google-Smtp-Source: ABdhPJxs8JBbfjEoWD2z25WVRMknXxxD8R3+0bCNorKJSqYd63qAxbJP0AwnRloQ+9RveG8OpPFyxQ==
-X-Received: by 2002:a1c:5686:: with SMTP id k128mr6996635wmb.189.1611222351717;
-        Thu, 21 Jan 2021 01:45:51 -0800 (PST)
-Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:51 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 23/30] RDMA/hw/hfi1/exp_rcv: Fix some kernel-doc formatting issues
-Date:   Thu, 21 Jan 2021 09:45:12 +0000
-Message-Id: <20210121094519.2044049-24-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
-References: <20210121094519.2044049-1-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 21 Jan 2021 05:37:27 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894BFC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 02:36:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=bXZfebvO2vLCGhp+r2lf7zKVLqedZP/+m93/7Wk5BBA=; b=V6+6fGMYOTHBdrgdRWp/SAkP70
+        RbZQ0VcEt8pancileYZtFzlI87z5kcxP9s4wlxh9EWzLspWDH6t9SKOFXtqjUD8YjmzrCgHp3i52z
+        /HsFePezMPmTQMwtVWNDZ6isTxOl5wajkOKJX9dbRBYMiuIbStpKje54hachs/gcFVHeayxk5bwEt
+        VOzVuEbQHLl3EU//ViWKviA48htyJAFRQxfFcGPL0972vl5K+tClVJIyg3N6aCYzh5V4Dl7uQVMgx
+        HP8otb0AUxNinyo+DXUXvcZVng8S8mj/7VhEkUFfJ1hum1Bs8nSK5mMODFLWs1QiYnVAENnI9QKmW
+        Oj6n94kA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2XKN-0007Oe-Il; Thu, 21 Jan 2021 10:36:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58EBB30769C;
+        Thu, 21 Jan 2021 11:36:28 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 4A6B620C8680E; Thu, 21 Jan 2021 11:36:28 +0100 (CET)
+Message-ID: <20210121101702.402798862@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 21 Jan 2021 11:17:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
+        valentin.schneider@arm.com, cai@redhat.com,
+        vincent.donnefort@arm.com, decui@microsoft.com, paulmck@kernel.org,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org,
+        peterz@infradead.org
+Subject: [PATCH -v3 0/9] sched: Fix hot-unplug regression
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hi,
 
- drivers/infiniband/hw/hfi1/exp_rcv.c:56: warning: Function parameter or member 'set' not described in 'hfi1_exp_tid_set_init'
- drivers/infiniband/hw/hfi1/exp_rcv.c:66: warning: Function parameter or member 'rcd' not described in 'hfi1_exp_tid_group_init'
- drivers/infiniband/hw/hfi1/exp_rcv.c:77: warning: Function parameter or member 'rcd' not described in 'hfi1_alloc_ctxt_rcv_groups'
- drivers/infiniband/hw/hfi1/exp_rcv.c:114: warning: Function parameter or member 'rcd' not described in 'hfi1_free_ctxt_rcv_groups'
+Some cautious optimism lets me post v3 of these patches. They (knock on wood)
+fix the regression introduced by commit:
 
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/infiniband/hw/hfi1/exp_rcv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+  1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
 
-diff --git a/drivers/infiniband/hw/hfi1/exp_rcv.c b/drivers/infiniband/hw/hfi1/exp_rcv.c
-index e9d5cc8b771a2..91f13140ddf21 100644
---- a/drivers/infiniband/hw/hfi1/exp_rcv.c
-+++ b/drivers/infiniband/hw/hfi1/exp_rcv.c
-@@ -50,7 +50,7 @@
- 
- /**
-  * exp_tid_group_init - initialize exp_tid_set
-- * @set - the set
-+ * @set: the set
-  */
- static void hfi1_exp_tid_set_init(struct exp_tid_set *set)
- {
-@@ -60,7 +60,7 @@ static void hfi1_exp_tid_set_init(struct exp_tid_set *set)
- 
- /**
-  * hfi1_exp_tid_group_init - initialize rcd expected receive
-- * @rcd - the rcd
-+ * @rcd: the rcd
-  */
- void hfi1_exp_tid_group_init(struct hfi1_ctxtdata *rcd)
- {
-@@ -71,7 +71,7 @@ void hfi1_exp_tid_group_init(struct hfi1_ctxtdata *rcd)
- 
- /**
-  * alloc_ctxt_rcv_groups - initialize expected receive groups
-- * @rcd - the context to add the groupings to
-+ * @rcd: the context to add the groupings to
-  */
- int hfi1_alloc_ctxt_rcv_groups(struct hfi1_ctxtdata *rcd)
- {
-@@ -101,7 +101,7 @@ int hfi1_alloc_ctxt_rcv_groups(struct hfi1_ctxtdata *rcd)
- 
- /**
-  * free_ctxt_rcv_groups - free  expected receive groups
-- * @rcd - the context to free
-+ * @rcd: the context to free
-  *
-  * The routine dismantles the expect receive linked
-  * list and clears any tids associated with the receive
--- 
-2.25.1
+These patches survived overnight runs for both me and Valentin, but I'll let it
+run for at least another 12 hours before committing these patches.
+
+New in this version is patch #7.
+
+Much thanks to Valentin for his continued support and debugging efforts.
 
