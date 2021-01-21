@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C662A2FF338
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9BC2FF356
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728673AbhAUScX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:32:23 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:37582 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728685AbhAUSbF (ORCPT
+        id S1726860AbhAUSjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:39:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49969 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726716AbhAUSi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:31:05 -0500
-Received: by mail-io1-f72.google.com with SMTP id d15so356858ioh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 10:30:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=oVWccvp7x6PMxOa3dh/LvOXdIcojqs3FO4GiLhT8EWY=;
-        b=f78yvW/zONJt5ODtcuUrDJG6Ub0tV6IkP3haEm9Ljjl5oNuYzKutdusL+3n5YXYdA4
-         dYZhXcABJiIK7x+8QDp98sUyXptVjyyajIJBlHXNopVoPPsz3tIdrLNLOxIH8e3iuYOr
-         jYz3wrSBaklmolLoKJQzZRcK3ecS9/eMfTLQYUcCdxtVC8NOmoG/wxTMWYpgnY5C12ct
-         X6P0YZ+/s/HoVqa433qRlEvC2fPOf+30pCyKrtULgTBNRWvQeIzF6uyTfq+dawQCOfp2
-         pGwoNH2ZJFfVGuCk8oqMX1ziyxY9bB2DfQkUbwW7Yo3J1IPDBjTY5EkQZyljuueXdJhX
-         5miA==
-X-Gm-Message-State: AOAM531Mt3hDmicgUsRqZUZwh3JfBJZebRuS6ADo8Y+eInFpNLHOUd9y
-        VtWo8QXFcu+s9H0bcGiBjpUcyn2G+YX5FY79j0TEK9i4ZmiU
-X-Google-Smtp-Source: ABdhPJxaPmTNkCSEprX+gFOvjNLdlWCW3XhUsIg14ROxCkei2qe77eZyd0hChFVaFaX32ZWsxC9ICPgq3iCeQlVXY7A3ZUacQvbW
+        Thu, 21 Jan 2021 13:38:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611254214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iEp9yhRV3TAomGX+OUwUrA360x2NLkKWINR0znFf8iw=;
+        b=Ok+gL0/jHu9ICtpaUINu2j1u9CT953ysBlvbZBDiOTDUHi0ZXaW1vBdU9tUmbR2p3DwnVG
+        XnGfVtv8o4ZDTxXvL0Xq7kg9TccvWPiGH8iTGb+zFM8adQQ7/RThGOU9EFEwDTZUTTh48o
+        VRmOMUQFumXb+RuNo8/CnJDLIdUVlno=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-r7t-k8FePFqQro3tNqjn5A-1; Thu, 21 Jan 2021 13:36:52 -0500
+X-MC-Unique: r7t-k8FePFqQro3tNqjn5A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CFD7107ACE6;
+        Thu, 21 Jan 2021 18:36:49 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-120-132.rdu2.redhat.com [10.10.120.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6370E50A8B;
+        Thu, 21 Jan 2021 18:36:47 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/i915/dp: Don't use DPCD backlights that need PWM enable/disable
+Date:   Thu, 21 Jan 2021 13:36:43 -0500
+Message-Id: <20210121183644.2627282-1-lyude@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b258:: with SMTP id b85mr617052iof.97.1611253823888;
- Thu, 21 Jan 2021 10:30:23 -0800 (PST)
-Date:   Thu, 21 Jan 2021 10:30:23 -0800
-In-Reply-To: <0000000000004c9e3505b96c58eb@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d0e9a705b96d4332@google.com>
-Subject: Re: UBSAN: array-index-out-of-bounds in decode_data
-From:   syzbot <syzbot+70ba6cae2f44c82dcb76@syzkaller.appspotmail.com>
-To:     ajk@comnets.uni-bremen.de, davem@davemloft.net, kuba@kernel.org,
-        linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+We haven't yet implemented support for backlights that need to be
+enabled/disabled via PWM instead of AUX, which means we'll break things if
+we enable DPCD backlight control on these machines. Luckily though since
+most of these machines work fine just using the plain PWM backlight
+controls anyway, there shouldn't be any issue with just leaving DPCD
+backlight controls disabled in such situations.
 
-HEAD commit:    9791581c Merge tag 'for-5.11-rc4-tag' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13cd09a4d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=39701af622f054a9
-dashboard link: https://syzkaller.appspot.com/bug?extid=70ba6cae2f44c82dcb76
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133d8030d00000
+This should fix the issues with PWM being left on that were being observed
+on fi-bdw-samus.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+70ba6cae2f44c82dcb76@syzkaller.appspotmail.com
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Fixes: 4a8d79901d5b ("drm/i915/dp: Enable Intel's HDR backlight interface (only SDR for now)")
+Testcase: igt/gem_exec_suspend/basic-s0 # fi-bdw-samus
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: "Ville Syrjälä" <ville.syrjala@linux.intel.com>
+---
+ drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-================================================================================
-UBSAN: array-index-out-of-bounds in drivers/net/hamradio/6pack.c:845:16
-index 400 is out of range for type 'unsigned char [400]'
-CPU: 1 PID: 8 Comm: kworker/u4:0 Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound flush_to_ldisc
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
- decode_data.part.0+0x2c8/0x2e0 drivers/net/hamradio/6pack.c:845
- decode_data drivers/net/hamradio/6pack.c:965 [inline]
- sixpack_decode drivers/net/hamradio/6pack.c:968 [inline]
- sixpack_receive_buf drivers/net/hamradio/6pack.c:458 [inline]
- sixpack_receive_buf+0xd8c/0x1320 drivers/net/hamradio/6pack.c:435
- tty_ldisc_receive_buf+0x14a/0x190 drivers/tty/tty_buffer.c:465
- tty_port_default_receive_buf+0x6e/0xa0 drivers/tty/tty_port.c:38
- receive_buf drivers/tty/tty_buffer.c:481 [inline]
- flush_to_ldisc+0x20d/0x380 drivers/tty/tty_buffer.c:533
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-================================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 8 Comm: kworker/u4:0 Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound flush_to_ldisc
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- ubsan_epilogue+0x54/0x5a lib/ubsan.c:162
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
- decode_data.part.0+0x2c8/0x2e0 drivers/net/hamradio/6pack.c:845
- decode_data drivers/net/hamradio/6pack.c:965 [inline]
- sixpack_decode drivers/net/hamradio/6pack.c:968 [inline]
- sixpack_receive_buf drivers/net/hamradio/6pack.c:458 [inline]
- sixpack_receive_buf+0xd8c/0x1320 drivers/net/hamradio/6pack.c:435
- tty_ldisc_receive_buf+0x14a/0x190 drivers/tty/tty_buffer.c:465
- tty_port_default_receive_buf+0x6e/0xa0 drivers/tty/tty_port.c:38
- receive_buf drivers/tty/tty_buffer.c:481 [inline]
- flush_to_ldisc+0x20d/0x380 drivers/tty/tty_buffer.c:533
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+index 31a478f63d52..651884390137 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
++++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+@@ -586,9 +586,14 @@ intel_dp_aux_supports_vesa_backlight(struct intel_connector *connector)
+ 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+ 
+ 	/* Check the eDP Display control capabilities registers to determine if
+-	 * the panel can support backlight control over the aux channel
++	 * the panel can support backlight control over the aux channel.
++	 *
++	 * TODO: We currently only support AUX only backlight configurations, not backlights which
++	 * require a mix of PWM and AUX controls to work. In the mean time, these machines typically
++	 * work just fine using normal PWM controls anyway.
+ 	 */
+ 	if (intel_dp->edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP &&
++	    (intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP) &&
+ 	    (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP)) {
+ 		drm_dbg_kms(&i915->drm, "AUX Backlight Control Supported!\n");
+ 		return true;
+-- 
+2.29.2
 
