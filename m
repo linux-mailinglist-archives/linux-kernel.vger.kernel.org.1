@@ -2,160 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41112FE84D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9922FE858
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730161AbhAULDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:03:17 -0500
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:43961 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730158AbhAULCr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:02:47 -0500
-Received: by mail-ed1-f45.google.com with SMTP id n6so1907889edt.10;
-        Thu, 21 Jan 2021 03:02:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n6DYcYeSLADiN6siyAF5sN2ywvVzfVTuKS3Zh4JrGOg=;
-        b=PEdsYiXLsQ/glmKxl1c/RrvoMoF0wHMSpC9RWFQSWNvt5LlLy2W5xRwqx/bHlLfbo5
-         c3KSbmyGqimtOESdL1ST0usFm+HYBbKK1+6lGGlm8ilHp5OaRqasW9rYUuk7xDQOD+Es
-         qW7YYC4nVIeN2ufhJuTNUf4or1gF4rQRiG55jbMFFwLQ5K9sqHRNOX5Nc87LKmOgy3Rs
-         TdKEPsRls9TNOKOjWRnGxyayxAbIh0/R4apQ8MKk4+AdSth+IxJlcZy7lImeE4sMsc4C
-         Yr/4QA2KznC2aAdCOis6MIqHVBgM0mMc38jUFjq6v/sWu31u0G8QutP9ZKbMCwBLlFkY
-         KHMA==
-X-Gm-Message-State: AOAM530mu6YQw2MIS45R7IAH7uN6OxUS8nhSERTtoDQC4xQEtIJJv3ha
-        ZYCiQv9J+43mC22jjjIoEng=
-X-Google-Smtp-Source: ABdhPJyjvWEQNGsz5ELJZogBMc6cApHA22zZvmgRZNXo/XESvK3tkKxq6J7lxFLORMWqPslFm0v97Q==
-X-Received: by 2002:a50:8387:: with SMTP id 7mr10121555edi.131.1611226924734;
-        Thu, 21 Jan 2021 03:02:04 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id x9sm657673eje.36.2021.01.21.03.02.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 03:02:04 -0800 (PST)
-Subject: Re: [PATCH 2/6] tty: convert tty_ldisc_ops 'read()' function to take
- a kernel pointer
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org
-Cc:     hch@lst.de, viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        ohw.giles@gmail.com, r.karszniewicz@phytec.de,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
- <20210121090020.3147058-2-gregkh@linuxfoundation.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <ff6709dc-bb42-1e52-b348-c52036960bdd@kernel.org>
-Date:   Thu, 21 Jan 2021 12:02:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727420AbhAULGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:06:50 -0500
+Received: from mail.v3.sk ([167.172.186.51]:48466 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729711AbhAULFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:05:22 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 340C1E0AA7;
+        Thu, 21 Jan 2021 11:00:04 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id LTSdPkWLBlUP; Thu, 21 Jan 2021 11:00:02 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 88848E0A3E;
+        Thu, 21 Jan 2021 11:00:02 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id sq0sSr0l1Cwm; Thu, 21 Jan 2021 11:00:02 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 35F16E09F4;
+        Thu, 21 Jan 2021 11:00:02 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: [PATCH 0/3] dmaengine: Allow building MMP DMA drivers as modules
+Date:   Thu, 21 Jan 2021 12:03:53 +0100
+Message-Id: <20210121110356.1768635-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210121090020.3147058-2-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 01. 21, 10:00, Greg Kroah-Hartman wrote:
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> The tty line discipline .read() function was passed the final user
-> pointer destination as an argument, which doesn't match the 'write()'
-> function, and makes it very inconvenient to do a splice method for
-> ttys.
-> 
-> This is a conversion to use a kernel buffer instead.
-> 
-> NOTE! It does this by passing the tty line discipline ->read() function
-> an additional "cookie" to fill in, and an offset into the cookie data.
-> 
-> The line discipline can fill in the cookie data with its own private
-> information, and then the reader will repeat the read until either the
-> cookie is cleared or it runs out of data.
-> 
-> The only real user of this is N_HDLC, which can use this to handle big
-> packets, even if the kernel buffer is smaller than the whole packet.
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-...
-> --- a/drivers/tty/tty_io.c
-> +++ b/drivers/tty/tty_io.c
-> @@ -833,6 +833,65 @@ static void tty_update_time(struct timespec64 *time)
->   		time->tv_sec = sec;
->   }
->   
-> +/*
-> + * Iterate on the ldisc ->read() function until we've gotten all
-> + * the data the ldisc has for us.
-> + *
-> + * The "cookie" is something that the ldisc read function can fill
-> + * in to let us know that there is more data to be had.
-> + *
-> + * We promise to continue to call the ldisc until it stops returning
-> + * data or clears the cookie. The cookie may be something that the
-> + * ldisc maintains state for and needs to free.
-> + */
-> +static int iterate_tty_read(struct tty_ldisc *ld, struct tty_struct *tty, struct file *file,
-> +		char __user *buf, size_t count)
-> +{
-> +	int retval = 0;
-> +	void *cookie = NULL;
-> +	unsigned long offset = 0;
-> +	char kernel_buf[64];
-> +
-> +	do {
-> +		int size, uncopied;
-> +
-> +		size = count > sizeof(kernel_buf) ? sizeof(kernel_buf) : count;
+Hi,
 
-Or simply
-size = min(count, sizeof(kernel_buf));
+please consider attaching the patches chained to this message.
 
-> +		size = ld->ops->read(tty, file, kernel_buf, size, &cookie, offset);
-> +		if (!size)
-> +			break;
-> +
-> +		/*
-> +		 * A ldisc read error return will override any previously copied
-> +		 * data (eg -EOVERFLOW from HDLC)
-> +		 */
-> +		if (size < 0) {
-> +			memzero_explicit(kernel_buf, sizeof(kernel_buf));
-> +			return size;
-> +		}
-> +
-> +		uncopied = copy_to_user(buf+offset, kernel_buf, size);
-> +		size -= uncopied;
-> +		offset += size;
-> +		count -= size;
-> +
-> +		/*
-> +		 * If the user copy failed, we still need to do another ->read()
-> +		 * call if we had a cookie to let the ldisc clear up.
-> +		 *
-> +		 * But make sure size is zeroed.
-> +		 */
-> +		if (unlikely(uncopied)) {
-> +			count = 0;
-> +			retval = -EFAULT;
+The last two are straighforward Kconfig changes that allow building mmp_t=
+dma=20
+and mmp_pdma as modules so that distros that will choose to enable the dr=
+ivers=20
+will not add bloat to their kernels for other platforms.
 
-n_hdlc_tty_read will return EOVERFLOW when size is 0, so this EFAULT is 
-never propagated, if I am looking correctly? n_tty seems to be fine 
-(returns zero for zeroed size).
+The first one gets rid of a symbol that would be exported by mmp_pdma,
+because it is entirely unnecessary.
 
-> +		}
-> +	} while (cookie);
-> +
-> +	/* We always clear tty buffer in case they contained passwords */
-> +	memzero_explicit(kernel_buf, sizeof(kernel_buf));
-> +	return offset ? offset : retval;
-> +}
+Thanks,
+Lubo
 
-thanks,
--- 
-js
+
