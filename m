@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C4F2FEAB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187192FEA92
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731083AbhAUMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:52:49 -0500
-Received: from m12-15.163.com ([220.181.12.15]:36174 "EHLO m12-15.163.com"
+        id S1730618AbhAUMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:47:38 -0500
+Received: from marcansoft.com ([212.63.210.85]:41290 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728332AbhAUMwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:52:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=k0xtZ6KWJQKNnQtTXI
-        Ng0tImZtiZSxgzjqVJ/M6+hwk=; b=SNZCOtny3FQKWC68uujycw4IgdoRAqkXCU
-        1o0oROas9GrBRT1tqG0J8+Stlgg9VR9/lffUVjGfQ226z809EBAV3iNaUhWzhr+K
-        Kqf5asnOoDi4r7BvBQTYwVH4Gllagdpa74cbhboUUIdtelprCNm9xyiIWjB2z3XK
-        Mq5pUsmRI=
-Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp11 (Coremail) with SMTP id D8CowAA3va+qdAlga8giAg--.20707S4;
-        Thu, 21 Jan 2021 20:33:50 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] net: dsa: bcm_sf2: put device node before return
-Date:   Thu, 21 Jan 2021 04:33:43 -0800
-Message-Id: <20210121123343.26330-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: D8CowAA3va+qdAlga8giAg--.20707S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFyfCFWxGrykAF47Kw1Dtrb_yoWkZrb_KF
-        93XFWrXr4xGFn0kw43Zr4furyvya4xurs3uF4aqas8Ka13try7Xrs8Xr15XrWUu393uF9F
-        vr4DtFnaq348CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU52Nt7UUUUU==
-X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/1tbiNgIhclWBlu2ABgABsP
+        id S1731345AbhAUMpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:45:33 -0500
+X-Greylist: delayed 632 seconds by postgrey-1.27 at vger.kernel.org; Thu, 21 Jan 2021 07:45:31 EST
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 5D94441F12;
+        Thu, 21 Jan 2021 12:33:49 +0000 (UTC)
+To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Alexander Graf <graf@amazon.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Stan Skowronek <stan@corellium.com>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-3-mohamed.mediouni@caramail.com>
+ <b30f1d3a-3a74-b562-afb6-da88a547468b@amazon.com>
+ <94C20F55-D3B8-4349-B26F-9EA8AAEBF639@caramail.com>
+From:   Hector Martin 'marcan' <marcan@marcan.st>
+Subject: Re: [RFC PATCH 2/7] arm64: kernel: Add a WFI hook.
+Message-ID: <ed4a0329-c623-f8ea-9cb1-3e11a22344f4@marcan.st>
+Date:   Thu, 21 Jan 2021 21:33:46 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <94C20F55-D3B8-4349-B26F-9EA8AAEBF639@caramail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put the device node dn before return error code on failure path.
+I already mentioned this privately, but for the benefit of the ML:
 
-Fixes: 461cd1b03e32 ("net: dsa: bcm_sf2: Register our slave MDIO bus")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
----
- drivers/net/dsa/bcm_sf2.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+On 21/01/2021 09.48, Mohamed Mediouni wrote:
+> If we explicitly use the hardware override registers for this, then
+> we'll be unable to use the deep sleep support provided by wfi on
+> Apple SoCs later on without touching Apple-specific MSRs.
+> 
+> Our current policy is to avoid having those modified inside the kernel
+> at all costs, considering it to be a job for the bootloader instead.
 
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index 1e9a0adda2d6..445226720ff2 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -509,15 +509,19 @@ static int bcm_sf2_mdio_register(struct dsa_switch *ds)
- 	/* Find our integrated MDIO bus node */
- 	dn = of_find_compatible_node(NULL, NULL, "brcm,unimac-mdio");
- 	priv->master_mii_bus = of_mdio_find_bus(dn);
--	if (!priv->master_mii_bus)
-+	if (!priv->master_mii_bus) {
-+		of_node_put(dn);
- 		return -EPROBE_DEFER;
-+	}
- 
- 	get_device(&priv->master_mii_bus->dev);
- 	priv->master_mii_dn = dn;
- 
- 	priv->slave_mii_bus = devm_mdiobus_alloc(ds->dev);
--	if (!priv->slave_mii_bus)
-+	if (!priv->slave_mii_bus) {
-+		of_node_put(dn);
- 		return -ENOMEM;
-+	}
- 
- 	priv->slave_mii_bus->priv = priv;
- 	priv->slave_mii_bus->name = "sf2 slave mii";
+I don't think there is any particular reason to do this; the bootloader 
+should be responsible for setting up all the chicken bits that make the 
+CPU work properly, including doing so for all SMP cores before entering 
+the kernel, but that's not the same thing as power management bits.
+
+It seems entirely reasonable to me to configure WFI as clockgate only 
+(so it keeps state), not touch this part of kernel code at all, and then 
+in the cpuidle driver (which can come later) just do:
+
+- switch to powerdown mode
+- save state
+- wfi
+- restore state
+- switch to clockgate mode
+
 -- 
-2.17.1
-
-
+Hector Martin "marcan" (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
