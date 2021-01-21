@@ -2,111 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5C62FEF22
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B35452FEF38
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387425AbhAUPkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:40:31 -0500
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:36366 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733243AbhAUPjs (ORCPT
+        id S1733066AbhAUPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:42:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733136AbhAUPkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:39:48 -0500
-Received: by mail-oo1-f43.google.com with SMTP id j8so600140oon.3;
-        Thu, 21 Jan 2021 07:39:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0R3/vn4OjBwMbm80SVwgo6ViJcCgYeuJbJTYwOEMXho=;
-        b=FaAxe0ztYmmDlexY5mGRDzmKb2lVBFnCvnJHpV1+ewthxB5t6g0thxRsXFeswBCnB8
-         5eUQDgGM2/Q+k/kuGT09vjNKxRHCIKuFbnrYWQYon58g90pVJ+Zlr2a7H0i6zZQ6eNnx
-         mK4BQRLmACvkoFM9DiRsjCk5MbmdCZC2Foe7WAJ+upyfi54xWNX/4avWmIesfGNGF5AQ
-         aDgxDyJ5xeJkOqAzk/wBmD5Lz4XPiBXk8gKZz26ZMipIylFMwCEAREYmaEevW6jjr50L
-         LHFDNSb8tyv1zRxdhPzd0p+ujD+sN4sySCtMoRMZqjad+mtdECkLIvO7x+YtORNNaTW7
-         Psow==
-X-Gm-Message-State: AOAM5321E2n1TMlqHoQrXv9CruAo6ZlThup+fVuMCDGUA+aNmN8JwyfT
-        PpN2dsIY8+e25FDkjt5tOVxDeoVJT5NtEcOH0JYJCaF9
-X-Google-Smtp-Source: ABdhPJyPp4o0v1chZHpawhDO/ZE7GYsY5Wdnka7U4wtIxMUDBXOJwl/XQxnwKaYrFAo6tvTDBufd8fPO824Jnc+3JAI=
-X-Received: by 2002:a4a:8353:: with SMTP id q19mr156184oog.40.1611243529514;
- Thu, 21 Jan 2021 07:38:49 -0800 (PST)
+        Thu, 21 Jan 2021 10:40:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26C2C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 07:39:59 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l2c3r-0002eX-4q; Thu, 21 Jan 2021 16:39:51 +0100
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l2c3q-0003nw-7j; Thu, 21 Jan 2021 16:39:50 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     trivial@kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH] iio: st_sensors: fix typo in comment
+Date:   Thu, 21 Jan 2021 16:39:44 +0100
+Message-Id: <20210121153945.5499-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210120142323.2203705-1-geert+renesas@glider.be> <CAGETcx-ZcXB9Zw_RnMjA0G2oKAyeK3VfKgha=Mvqnn_dDREuOw@mail.gmail.com>
-In-Reply-To: <CAGETcx-ZcXB9Zw_RnMjA0G2oKAyeK3VfKgha=Mvqnn_dDREuOw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 21 Jan 2021 16:38:38 +0100
-Message-ID: <CAMuHMdUfA2LgXxz1srbgQLiMw=oadrJ0ASMnwcvCO2xVXqWnUw@mail.gmail.com>
-Subject: Re: [PATCH/RFC] soc: renesas: rcar-sysc: Mark device node
- OF_POPULATED after init
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+s/timetamping/timestamping/
 
-On Wed, Jan 20, 2021 at 6:09 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Wed, Jan 20, 2021 at 6:23 AM Geert Uytterhoeven
-> <geert+renesas@glider.be> wrote:
-> > The R-Car System Controller (SYSC) driver registers PM domains from an
-> > early_initcall().  It does not use a platform driver, as secondary CPU
-> > startup on R-Car H1 needs to control the CPU power domains, before
-> > initialization of the driver framework.
-> >
-> > As fw_devlink only considers platform devices,
->
-> Correction. It only considers devices. As in, devices on all types of
-> busses are supported.
+Cc: trivial@kernel.org
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ drivers/iio/common/st_sensors/st_sensors_buffer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OK.
-
-> > it does not know that the
-> > System Controller is ready.  Hence probing of on-chip devices that are
-> > part of the SYSC PM domain fail:
-> >
-> >     probe deferral - supplier e6180000.system-controller not ready
-> >
-> > Fix this by setting the OF_POPULATED flag for the SYSC device node after
-> > successful initialization.  This will make of_link_to_phandle() ignore
-> > the SYSC device node as a dependency, and consumer devices will be
-> > probed again.
->
-> It'd still be nice if you could (maybe in a later patch), at least
-> probe all the power domains that aren't really needed this early.
-> Using the driver core framework (when it's possible), gives you nice
-> things :)
-
-Which nice things are you thinking of? Making the driver modular?
-At least on R-Car H1, it needs to be built-in for SMP to work.
-
-> +Rob. I know he hates people using OF_POPULATED, but I think this case
-> is reasonable and want to make sure he's aware of this.
->
-> Once you fix my commit nitpick, you can add:
-> Reviewed-by: Saravana Kannan <saravanak@google.com>
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/iio/common/st_sensors/st_sensors_buffer.c b/drivers/iio/common/st_sensors/st_sensors_buffer.c
+index eee30130ae23..802f9ae04cf4 100644
+--- a/drivers/iio/common/st_sensors/st_sensors_buffer.c
++++ b/drivers/iio/common/st_sensors/st_sensors_buffer.c
+@@ -57,7 +57,7 @@ irqreturn_t st_sensors_trigger_handler(int irq, void *p)
+ 	s64 timestamp;
+ 
+ 	/*
+-	 * If we do timetamping here, do it before reading the values, because
++	 * If we do timestamping here, do it before reading the values, because
+ 	 * once we've read the values, new interrupts can occur (when using
+ 	 * the hardware trigger) and the hw_timestamp may get updated.
+ 	 * By storing it in a local variable first, we are safe.
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
