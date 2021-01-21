@@ -2,183 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676212FEDF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718622FEDF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbhAUN2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 08:28:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37809 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732205AbhAUNZ1 (ORCPT
+        id S1732205AbhAUPEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731979AbhAUN0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:25:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611235438;
+        Thu, 21 Jan 2021 08:26:30 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681C0C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:25:50 -0800 (PST)
+Received: from zn.tnic (p200300ec2f157500c7fc2d457faa3c9f.dip0.t-ipconnect.de [IPv6:2003:ec:2f15:7500:c7fc:2d45:7faa:3c9f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 252EA1EC009F;
+        Thu, 21 Jan 2021 14:25:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611235548;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cvCR/SJT7x/0z+1fK/OgzO3ZsWGWZSRqQrMopnsNWp8=;
-        b=T+7BZodwH+s5uNb6IgziWkF2rTEj8/CI9DjoNaI8nvlQ9Nqzi24xA3yXBm7B/1iPEq3KMz
-        pojsXC6+BragRoFK4CJ75+2VQ9Ji6fo5iw8VFLrgi26OezYha8pS2imRgMqtQpOVokI8L8
-        4kkz/8bbL1/gt8kJRUJaxIiYlf34Xnk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-72-eft2UYMGPSytmiLanXDPQw-1; Thu, 21 Jan 2021 08:23:56 -0500
-X-MC-Unique: eft2UYMGPSytmiLanXDPQw-1
-Received: by mail-wr1-f72.google.com with SMTP id v7so1010711wra.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 05:23:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cvCR/SJT7x/0z+1fK/OgzO3ZsWGWZSRqQrMopnsNWp8=;
-        b=JtET2dCwHujbGz772lnLH6ap1Go61IOZFqrC3iTmUFoVjzPDz7AmFQCG6KV6bE5lbL
-         xuE/bEkrqMynMFYEnvJUNlIalQJCIqcYy01oaljlMyM6ZSyYnwKPXXg1r3yDzNW2N+LK
-         Vl6jGIQzgg9SDd750ItpGi4tCS+SqumhJ/y0Vn/jKQc2YyYT6KN7QBCQ0ebONJ4mOKlG
-         UtqTbqKH5EhhBWM4aib5MD8c/9Ntpum5Jw827816b4MJZ10WbQUkf36NuZR+MMUTVFyS
-         oKHtRaoTV4YhBkcmEhEiNKx8bOEMEE9vHImqxrxlwI5Xs2V0ptfHNXhFQ24Ny/OWlBgv
-         UH9w==
-X-Gm-Message-State: AOAM533vXZ/RsswUKaMGYKPXiYlJlQFY1YC7bbRQ2Ujp2iLnvq8wuJEG
-        EIGvJbo7R+B2p2C4SRVALtghR0zrroPGhgirbal8Qq5DvNzmXoS+EsFhlLwGpqxq2GdiIdYLeDH
-        4yOE/Ux6a5Qcir4F1eaCvFtd8
-X-Received: by 2002:adf:c18d:: with SMTP id x13mr14020216wre.128.1611235435255;
-        Thu, 21 Jan 2021 05:23:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz+HMrNE/GzNA0eRvoWZynPl2cm00oo1pYl3yrQV7e/rEXRQYgFCSqJngzxT5WNmFeOF92XUQ==
-X-Received: by 2002:adf:c18d:: with SMTP id x13mr14020198wre.128.1611235435102;
-        Thu, 21 Jan 2021 05:23:55 -0800 (PST)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id d30sm9999764wrc.92.2021.01.21.05.23.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 05:23:54 -0800 (PST)
-Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-References: <20210120173800.1660730-1-jthierry@redhat.com>
- <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
- <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com>
- <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <6e21cd51-017e-2135-ed9d-33a60f22a457@redhat.com>
-Date:   Thu, 21 Jan 2021 14:23:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jvlCWjXWGIBQt4nxHNiZRsf/XdhFBhdMgqMBnmemIms=;
+        b=Ew7NXBrBdyvaPSXS0e25IBDdoFacN8Idm78Ih7jYiAVHIgu4k7ymmZXdxvZskpTqfgvmDd
+        yNZ4MPQ15wzFtdv9a01fUcvhrwl7CKW1uDFc09AvDceOcgcloTWTmIdAbPa0KN23CevO8+
+        OwqI4IviHp4mXz9xvvEKQJp8JKFdxdk=
+Date:   Thu, 21 Jan 2021 14:25:42 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH v3 1/2] x86/setup: don't remove E820_TYPE_RAM for pfn 0
+Message-ID: <20210121132542.GB32060@zn.tnic>
+References: <20210111194017.22696-1-rppt@kernel.org>
+ <20210111194017.22696-2-rppt@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210111194017.22696-2-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/21/21 12:08 PM, Ard Biesheuvel wrote:
-> On Thu, 21 Jan 2021 at 11:26, Julien Thierry <jthierry@redhat.com> wrote:
->>
->> Hi Ard,
->>
->> On 1/21/21 10:03 AM, Ard Biesheuvel wrote:
->>> Hello Julien,
->>>
->>> On Wed, 20 Jan 2021 at 18:38, Julien Thierry <jthierry@redhat.com> wrote:
->>>>
->>>> Hi,
->>>>
->>>> This series enables objtool to start doing stack validation on arm64
->>>> kernel builds.
->>>
->>> Could we elaborate on this point, please? 'Stack validation' means
->>> getting an accurate picture of all kernel code that will be executed
->>> at some point in the future, due to the fact that there are stack
->>> frames pointing to them. And this ability is essential in order to do
->>> live patching safely?
->>>
->>> If this is the goal, I wonder whether this is the right approach for
->>> arm64 (or for any other architecture, for that matter)
->>>
->>> Parsing/decoding the object code and even worse, relying on GCC
->>> plugins to annotate some of the idioms as they are being generated, in
->>> order to infer intent on the part of the compiler goes *way* beyond
->>> what we should be comfortable with. The whole point of this exercise
->>> is to guarantee that there are no false positives when it comes to
->>> deciding whether the kernel is in a live patchable state, and I don't
->>> see how we can ever provide such a guarantee when it is built on such
->>> a fragile foundation.
->>>
->>> If we want to ensure that the stack contents are always an accurate
->>> reflection of the real call stack, we should work with the toolchain
->>> folks to identify issues that may interfere with this, and implement
->>> controls over these behaviors that we can decide to use in the build.
->>> In the past, I have already proposed adding a 'kernel' code model to
->>> the AArch64 compiler that guarantees certain things, such as adrp/add
->>> for symbol references, and no GOT indirections for position
->>> independent code. Inhibiting optimizations that may impact our ability
->>> to infer the real call stack from the stack contents is something we
->>> might add here as well.
->>>
->>
->> I'm not familiar with toolcahin code models, but would this approach be
->> able to validate assembly code (either inline or in assembly files?)
->>
+On Mon, Jan 11, 2021 at 09:40:16PM +0200, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> No, it would not. But those files are part of the code base, and can
-> be reviewed and audited.
+> The first 4Kb of memory is a BIOS owned area and to avoid its allocation
+> for the kernel it was not listed in e820 tables as memory. As the result,
+> pfn 0 was never recognised by the generic memory management and it is not a
+> part of neither node 0 nor ZONE_DMA.
 > 
-
-That means that every actor maintaining their own stable version of the 
-kernel have to do their own audit when they do backports (assuming the 
-audit would be done for upstream) to be able to provide a safe 
-livepatching feature in their kernel.
-
->>> Another thing that occurred to me is that inferring which kernel code
->>> is actually live in terms of pending function returns could be
->>> inferred much more easily from a shadow call stack, which is a thing
->>> we already implement for Clang builds.
->>>
->>
->> I was not familiar with the shadow call stack. If I understand correctly
->> that would be a stack of return addresses of function currently on the
->> call stack, is that correct?
->>
->> That would indeed be a simpler approach, however I guess the
->> instrumentation has a cost. Is the instrumentation also available with
->> GCC? And is this instrumentation efficient enough to be suitable for
->> production builds?
->>
+> If set_pfnblock_flags_mask() would be ever called for the pageblock
+> corresponding to the first 2Mbytes of memory, having pfn 0 outside of
+> ZONE_DMA would trigger
 > 
-> I am not aware of any plans to enable this in GCC, but the Clang
-> implementation is definitely intended for production use (it's a CFI
-> feature for ROP/JOP mitigation)
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
 > 
+> Along with reserving the first 4Kb in e820 tables, several first pages are
+> reserved with memblock in several places during setup_arch(). These
+> reservations are enough to ensure the kernel does not touch the BIOS area
+> and it is not necessary to remove E820_TYPE_RAM for pfn 0.
+> 
+> Remove the update of e820 table that changes the type of pfn 0 and move the
+> comment describing why it was done to trim_low_memory_range() that reserves
+> the beginning of the memory.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/x86/kernel/setup.c | 20 +++++++++-----------
+>  1 file changed, 9 insertions(+), 11 deletions(-)
 
-I think most people interested in livepatching are using GCC built 
-kernels, but I could be mistaken (althought in the long run, both 
-compilers should be supported, and yes, I realize the objtool solution 
-currently only would support GCC).
+FWIW,
 
-I don't know how feasible it will be to get it into GCC if people decide 
-to go with that. Also, now that I think about it, it will probably come 
-with similar limitations as stackframes where the unwinder would need to 
-know when/where the shadow call stack is unavailable for some reason and 
-the stack trace is not reliable. (it might be a bit simpler to audit 
-than stack frame setting and maybe have less limitations, but I guess 
-there will still be cases where we can't rely on it)
+Acked-by: Borislav Petkov <bp@suse.de>
 
 -- 
-Julien Thierry
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
