@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A582FE856
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5AA2FE854
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbhAULFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:05:46 -0500
-Received: from mout.gmx.net ([212.227.15.18]:59393 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730194AbhAULD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:03:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611226897;
-        bh=eYAy1J2NKCY+RyTEa0EWRFh3SqSrlZL9klmVxa9DBP0=;
-        h=X-UI-Sender-Class:Subject:From:In-Reply-To:Date:Cc:References:To;
-        b=KsNcBfRlO4MSYxzNTo+lKweEPmFbUpKuAC3FzA6e08+GmeL6/8h2jidgKh8PiWoG0
-         8qIlEtt5D06Sroy3Ib2b2pFvL2N3q6f1ioziwFYIBysqEW18OwhkCfjlrrEWfBTL9j
-         bs9GO8CAGR5gBgJdgkS6Kd3JP8vamgludLOcKXpU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from rainbow.home ([83.204.192.78]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mnpns-1lnQzr34Ru-00pPgR; Thu, 21
- Jan 2021 12:01:37 +0100
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.5\))
-Subject: Re: [RFC PATCH 2/7] arm64: kernel: Add a WFI hook.
-From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
-In-Reply-To: <CAK8P3a20XRHaErO5445ds6tf0omSKLMZ_NAWdS=9nBbLb7rdvg@mail.gmail.com>
-Date:   Thu, 21 Jan 2021 12:01:35 +0100
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Stan Skowronek <stan@corellium.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5403A355-A4FA-442B-8F8B-5629FCECC006@caramail.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-3-mohamed.mediouni@caramail.com>
- <CAK8P3a20XRHaErO5445ds6tf0omSKLMZ_NAWdS=9nBbLb7rdvg@mail.gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.5)
-X-Provags-ID: V03:K1:I2JAzLKjoXvPuwdCtfo/qK44jRV3D6+4JtEipYPBpKJkz3GnCCr
- LkAhBQ12Y/bZRdq6BmPN2YLEwma0r31aHHK7kwT7bIMwdPIZ5iWubXqFKJbKB0PcXx6BKkr
- f+yaEblViJDEjLfdBxyfPEQADVDCrode8YonnEWKA6/D0AihKSKe3K0dzui7TNXtsxceBa6
- Y7inpx4RMktYGHpRQPArA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MlMw1I/SbqU=:0SX2+4xrMQRL/VGj2YF9JI
- 4zQSFzEI/qsJ/dnqlx9IfJe4WYjfhx8/rgF62KUOiVBliOhvsVXK3yLX6tS9hc4TS+b88UrJk
- //V96TeDHPX8DblX4BM/15Ya93JMcOrRZMmCa+5xz1hIpBNZPTVEGpd2WukHHgo/whwl7fahh
- v5FSKiY1Hp90CrS6GiwhD5/jnZo3LrEIlISODE9MKWhlXWbQOvpLsYq+7O6TU2W6j4l6prwKP
- NSQN4Mq9+qmeDAXtmph+ZmwQcwndLRZFEQdKrSrgbfBH9ngz6Vs4rpY2y/t8RFJl9rQ9j4Smh
- W+ZwYdco2OfQh+3PpSypaSRurv0+fCXt0l/6fQZnED/UovKevCyrz09rCq/GdNd8rrvHMdnOq
- BQfPiR9DC14J8QNtoOmrmIJdYijPp+Y+KCUX9x+CyZpW3sqmZ1RLROjsAIieIxT7wUatsL7ys
- I2GLh8fNUNOrcGHqqAJH2QB1GdLNSt6m8PiCZCLtQ76rGs+5oDYZ0K5JWtdMtGn3YhOr2/X1t
- ygdK5DWYcmDbqT9xgY5Faeip41FlhEPc6CfHtYg5Wkvr5use1scmV6KRwTLCO42xFkRyhDE7w
- D3gJul9AANgOJzn0RxgtC700I78IETIRm9dk/uLx3IvK7EZTlC9cUZIB/VJ3JFlLoHtefEP+B
- 9fQXtiN/KDi1LGLAVyN2ESlWiJ4sH2qUc6K1nLLCpF2dU6mjQATo6urFSZvArOUgVjvlforFZ
- cGu8+axz5WXFp6jpBFGi7MMI2tRyQw+WjUbQ1jOta9VUNnMNeAAjtrgj3auavUblnb0auOTbo
- ywu/JLrmMBFRW53bkykqm0kfoY0EQPQffjw3NolNExLzSi25LzgAjxdZmnHMvXdZD5YOnwDX9
- jjSWuzlt7wn/LrVN8eCCas86PLjU5+PAeshTgxfts=
+        id S1730077AbhAULE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:04:58 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:43254 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730147AbhAULCl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:02:41 -0500
+Received: by mail-ot1-f47.google.com with SMTP id v1so1186757ott.10;
+        Thu, 21 Jan 2021 03:02:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B0t6IbQwZ6aPHm7zibBMR6oc08hDXRFl0UUCk6sC9bM=;
+        b=s1JgGhMfGIEorKIkmY1uOCy6rhKZjEN2g/y0mH9xU7LfyBDaqKZx1HJGKIpsnnnCLl
+         1dtR+itgXotyc12XJWpqLnO8N0bSGyqqpcEFgKbc1X0xw6mZ38i6hUQJeQAX0dmcTK0Z
+         PFaajorVROhs7lPXfqh1UJhZ1XzNSgKbUJyP3aNNZ953EyU9ozoxIUJOTHlC/s5flu2u
+         VXh4VBAWiCPsruCtgqdHdL8XhI4d8D9fQSKdtidKQW5CDs2TLI3zFaXBUUQRD0mgV8Mc
+         tnXT0l+Dfv0MkdRSzesm754R32j6Ge2zkW2wbd3vpAFghxAt8oPUb9V5fcXSG8ipsPap
+         LSww==
+X-Gm-Message-State: AOAM531ORADILRmpCOpKYlpHVEntf40KPu3/+wMeSAfboTunr6pUuQo8
+        3LBP2hh7fbrtLsx/EhHzLLWUDdKwrEnjTe+EnOU=
+X-Google-Smtp-Source: ABdhPJzSbFq2Zg/MF32GZEaX+aMqzCGFlyozhpNYPxHvt5ug1jBRwJ1lgTOfRSPtDNp9bqyOAhcuPvtUBSO1aAA+gxU=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr9868576otr.107.1611226921014;
+ Thu, 21 Jan 2021 03:02:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+In-Reply-To: <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 21 Jan 2021 12:01:50 +0100
+Message-ID: <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Michael Walle <michael@walle.cc>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Saravana,
 
+On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc> wrote:
+> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+> > > wrote:
+> > >>
+> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+> > >> all CCs to BCCs :(]
+> > >>
+> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> > >> >>
+> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> > >> >> wrote:
+> > >> >> >
+> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+> > >> >> > deferral. Convert it to builtin_platform_driver().
+> > >> >>
+> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> > >> >> shouldn't it be fixed or removed?
+> > >> >
+> > >> > I was actually thinking about this too. The problem with fixing
+> > >> > builtin_platform_driver_probe() to behave like
+> > >> > builtin_platform_driver() is that these probe functions could be
+> > >> > marked with __init. But there are also only 20 instances of
+> > >> > builtin_platform_driver_probe() in the kernel:
+> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+> > >> > 20
+> > >> >
+> > >> > So it might be easier to just fix them to not use
+> > >> > builtin_platform_driver_probe().
+> > >> >
+> > >> > Michael,
+> > >> >
+> > >> > Any chance you'd be willing to help me by converting all these to
+> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> > >>
+> > >> If it just moving the probe function to the _driver struct and
+> > >> remove the __init annotations. I could look into that.
+> > >
+> > > Yup. That's pretty much it AFAICT.
+> > >
+> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> > > for async probe, etc. But I doubt anyone is actually setting async
+> > > flags and still using builtin_platform_driver_probe().
+> >
+> > Hasn't module_platform_driver_probe() the same problem? And there
+> > are ~80 drivers which uses that.
+>
+> Yeah. The biggest problem with all of these is the __init markers.
+> Maybe some familiar with coccinelle can help?
 
-> On 21 Jan 2021, at 11:52, Arnd Bergmann <arnd@kernel.org> wrote:
->=20
-> On Wed, Jan 20, 2021 at 2:27 PM Mohamed Mediouni
-> <mohamed.mediouni@caramail.com> wrote:
->> --- a/arch/arm64/kernel/cpu_ops.c
->> +++ b/arch/arm64/kernel/cpu_ops.c
->=20
->> #if defined(CONFIG_STACKPROTECTOR) && =
-!defined(CONFIG_STACKPROTECTOR_PER_TASK)
->> #include <linux/stackprotector.h>
->> @@ -74,8 +75,14 @@ void (*arm_pm_restart)(enum reboot_mode =
-reboot_mode, const char *cmd);
->>=20
->> static void noinstr __cpu_do_idle(void)
->> {
->> -       dsb(sy);
->> -       wfi();
->> +       const struct cpu_operations *ops =3D =
-get_cpu_ops(task_cpu(current));
->> +
->> +       if (ops->cpu_wfi) {
->> +               ops->cpu_wfi();
->> +       } else {
->> +               dsb(sy);
->> +               wfi();
->> +       }
->> }
->=20
-> I think the correct place to put this would be a platform specific =
-driver
-> in drivers/cpuidle/ instead of an added low-level callback in the
-> default idle function and a custom cpu_operations structure.
-Can we make sure that wfi never gets called even on early
-boot when using a cpuidle driver?
+And dropping them will increase memory usage.
 
-Thank you,
->=20
->       Arnd
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
