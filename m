@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297A22FF83C
+	by mail.lfdr.de (Postfix) with ESMTP id 95E8B2FF83D
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 23:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbhAUWzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 17:55:52 -0500
-Received: from mga02.intel.com ([134.134.136.20]:29380 "EHLO mga02.intel.com"
+        id S1726493AbhAUW4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 17:56:40 -0500
+Received: from mga04.intel.com ([192.55.52.120]:61094 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbhAUWzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:55:51 -0500
-IronPort-SDR: 3SrkVORVsbu3QZzMIkmLymhiUgm0Sv+KgPYpTpU7cjM23ITqZSw8PoGFiS9nDJcJ6ycuipbZhI
- VldkFUak/O1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="166457789"
+        id S1725268AbhAUW4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 17:56:39 -0500
+IronPort-SDR: JWf9pwhxd0QC0IiOmgiY2ztaeP0M2rUF8ck8o5LWrw7hB+WeoHy0A8gzR65ytnd+7jKTj3fayl
+ 9Xug7BxqMzVQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="176786651"
 X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="166457789"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 14:55:06 -0800
-IronPort-SDR: UmkvMWB+q/ykoMzCImF0cga000+BcgttVsifU76tAhX47JNi9nARa9yaGxD1WxMyFC4Cw2GqpN
- upBcMgjh+DNw==
+   d="scan'208";a="176786651"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 14:55:58 -0800
+IronPort-SDR: k78ImHKvrW53q/CEarj62fsd5Ef0mmojdi4imgjoUu9WkoSEAftgoej0zyak6yRiSEj6Iat55r
+ 7YBSdZ09Tolw==
 X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="351627846"
+   d="scan'208";a="403378634"
 Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.217.24])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 14:55:05 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 14:55:57 -0800
 From:   Russ Weight <russell.h.weight@intel.com>
 To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
 Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
         hao.wu@intel.com, matthew.gerlach@intel.com,
         Russ Weight <russell.h.weight@intel.com>
 Subject: [PATCH v8 0/1] Intel MAX10 BMC Macros for Secure Update
-Date:   Thu, 21 Jan 2021 14:54:26 -0800
-Message-Id: <20210121225427.302467-1-russell.h.weight@intel.com>
+Date:   Thu, 21 Jan 2021 14:55:54 -0800
+Message-Id: <20210121225555.302548-1-russell.h.weight@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
