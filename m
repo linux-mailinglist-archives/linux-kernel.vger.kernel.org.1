@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B2A2FECBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0942FECB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbhAUORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:17:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731060AbhAUOLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:11:14 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC657239A4;
-        Thu, 21 Jan 2021 14:10:30 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l2afM-009Cst-QC; Thu, 21 Jan 2021 14:10:28 +0000
+        id S1730001AbhAUOPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 09:15:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730498AbhAUOMa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 09:12:30 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB06BC061757;
+        Thu, 21 Jan 2021 06:11:49 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id cq1so1729423pjb.4;
+        Thu, 21 Jan 2021 06:11:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JW9ioCIv1CN9dpUff2ilq0NQobpsdFiEo872jSzvttc=;
+        b=sM0Zc3BFMgdbbmHE1zL99lWNXAEQCe9dO0SmL8D6vGyplCcmDFwypzdp3ETeqDhhZU
+         Py4skrSHON8cHlAhH6tkeWFttYjGCmtIHSyprak4njCt2rS131ihzlJvVfhZN3Ntlcym
+         RspnvArUIhFJa5Prs2lmry1a8E5X1GEZKSkmKPzldX1AeagHTBK2gUYeMTyP1nbZidba
+         pFxZcBjFSyInOCgdiRLTUuetskwOQodnHE2etMW8jWuLKOjEutlyzCAJ7123yiF77WfK
+         E1CTsRFLHB6m+dNQpnIdmu0xdQ6LzBCyKTDbueK4H8/+xuNNg60iEDwnM7vvGNp0OdOQ
+         CHhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JW9ioCIv1CN9dpUff2ilq0NQobpsdFiEo872jSzvttc=;
+        b=romdihtafJY3VKQb/eLrrqhyV6nU1YkwjtM0f8Onj43yPPxK793RxbdZD+QSbePjgm
+         7fukyspWxkgei0GbMiAOLRVsGYc2GZb5QpehiwtdpDXPU1HfKdbmlXvrkmxLaXDDqFjW
+         D2uDgcAZD0laLsJS4I17/NYn+MT3Qg0Fy9KpWZuwDHiHBmO/yFaS0EYVb526nRB0zrmz
+         lM9HsIeWSs4Zjsccwm+4uyn3RkKe/UCf0qgJJQwDh4lzz0WSGvE56zyakfr1/KUIeLX0
+         hPV2mRhspGQx890kQ/rs+P/GdWROzeXBBGsnccbioI7DxbVJ2DypPKDsInXVGCskg7TT
+         H+sg==
+X-Gm-Message-State: AOAM532EDnm0bzFx++JfoM3F9bzIG3ilDo/9qqXNl3YgBDybXZ0mtKRT
+        vl0OdnuizpDowoVoSs9Om9WEb7JP6Gw=
+X-Google-Smtp-Source: ABdhPJzXsn55/jY7ozsATzA5BnKppJMkXwN41LkGVQZQ56JfkWzr5tYZ6C8xRGuGkwtuTWoolucZnA==
+X-Received: by 2002:a17:90b:23d3:: with SMTP id md19mr12125902pjb.119.1611238308915;
+        Thu, 21 Jan 2021 06:11:48 -0800 (PST)
+Received: from sol.lan (106-69-181-154.dyn.iinet.net.au. [106.69.181.154])
+        by smtp.gmail.com with ESMTPSA id c11sm5339699pfl.185.2021.01.21.06.11.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 06:11:48 -0800 (PST)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH] gpiolib: cdev: clear debounce period if line set to output
+Date:   Thu, 21 Jan 2021 22:10:38 +0800
+Message-Id: <20210121141038.437564-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Date:   Thu, 21 Jan 2021 14:10:28 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mohamed Mediouni <mohamed.mediouni@caramail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Stan Skowronek <stan@corellium.com>
-Subject: Re: [RFC PATCH 7/7] irqchip/apple-aic: add SMP support to the Apple
- AIC driver.
-In-Reply-To: <2861E21B-32B9-479E-A5F6-528D021183E6@caramail.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-8-mohamed.mediouni@caramail.com>
- <CAK8P3a1qeVxTxZXpfMe70zpPCSBrTOz23ZTR=PHgw0PP9GUvbw@mail.gmail.com>
- <E77005CF-8B2A-4D17-9330-72ECFD7F3C93@caramail.com>
- <71e94b48857cbdd21c5d6bdadf148621@kernel.org>
- <2861E21B-32B9-479E-A5F6-528D021183E6@caramail.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <7131f110736b8a17c824f39abeeaf711@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: mohamed.mediouni@caramail.com, arnd@kernel.org, linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com, catalin.marinas@arm.com, marcan@marcan.st, linux-kernel@vger.kernel.org, will@kernel.org, stan@corellium.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-21 13:34, Mohamed Mediouni wrote:
->> On 21 Jan 2021, at 14:22, Marc Zyngier <maz@kernel.org> wrote:
->> 
->> On 2021-01-21 12:50, Mohamed Mediouni wrote:
->>>> On 21 Jan 2021, at 13:44, Arnd Bergmann <arnd@kernel.org> wrote:
->>>> On Wed, Jan 20, 2021 at 2:27 PM Mohamed Mediouni
->> 
->> [...]
->> 
->>>>> +       aic.fast_ipi = of_property_read_bool(node, "fast-ipi");
->>>> Where is this property documented, and what decides which one to 
->>>> use?
->>> It’s getting documented in the next patch set.
->>> This property is there to enable support for older iPhone processors
->>> later on, some of which do not have fast IPI support.
->>> On Apple M1, fast-ipi is always on.
->> 
->> Then please focus on a single implementation. Additional features can
->> always be merged later once something is up and running.
->> 
->> Also, there sysregs can be detected by matching the MIDR, so I don't
->> think we need a DT property for that.
->> 
->> Thanks,
->> 
-> Because UART access adapters for the new M1 Macs aren’t plentiful
-> at all, I actually use this for development, with iPhones which have
-> much more easy to buy Lightning-to-UART adapters.
-> 
-> (That’s why the old implementation is there too)
-> 
-> Might be worth splitting the new one to a new commit though...
+When set_config changes a line from input to output debounce is
+implicitly disabled, as debounce makes no sense for outputs, but the
+debounce period is not being cleared and is still reported in the
+line info.
 
-This series is supposed to cover M1 only, and adding extra support
-as part of it is only likely to make the code harder to review.
+So clear the debounce period when the debouncer is stopped in
+edge_detector_stop().
 
-I'd rather you focus on a single IPI interface (fast or slow,
-I don't really care). Extra features can come in later.
+Fixed: 65cff7047640 ("gpiolib: cdev: support setting debounce")
+Signed-off-by: Kent Gibson <warthog618@gmail.com>
+---
+ drivers/gpio/gpiolib-cdev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks,
-
-         M.
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index 12b679ca552c..3551aaf5a361 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -776,6 +776,8 @@ static void edge_detector_stop(struct line *line)
+ 	cancel_delayed_work_sync(&line->work);
+ 	WRITE_ONCE(line->sw_debounced, 0);
+ 	WRITE_ONCE(line->eflags, 0);
++	if (line->desc)
++		WRITE_ONCE(line->desc->debounce_period_us, 0);
+ 	/* do not change line->level - see comment in debounced_value() */
+ }
+ 
 -- 
-Jazz is not dead. It just smells funny...
+2.30.0
+
