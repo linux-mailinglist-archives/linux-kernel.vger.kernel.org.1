@@ -2,148 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817062FE4F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FF72FE4FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbhAUI1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:27:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727979AbhAUI0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:26:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0EE23976;
-        Thu, 21 Jan 2021 08:25:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611217529;
-        bh=6bziHd7oBvKnbE11P6CRY+Ruy7iCaXkMj5CVt9SKGcs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MOx+zVrYjZGFNfjjovtJhtGZaQ6NtIx4+HLzRQhgTrqwPQHXXtapfEhw397gV9xFW
-         1IkDz+h01Q/5nsfAyD4q4tT1mCeTOwSBLbMJSluWlFOz0CF7rGWkoC52WFeFAlchQE
-         /MKXuCvjggck3m8XNuJmjI0mxz9bCgw8DMFlaHQ7Tdk4I9EvSNiQZhPEC+xqQo4ggj
-         ZAFA9uMLOMdEm4NbZ7QU2gPf8azka0x/ODppUouGZqk9jQihUF927cViMWLE8Z8G7E
-         4ExCl9qqi3u1qw9IUI/4kEvr6Jx342pLADOEWnkKkpXgXtdW9PKG+j7rbfe2io2v9s
-         PyNCeBq/w4mog==
-Date:   Thu, 21 Jan 2021 10:25:22 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, david@redhat.com
-Subject: Re: [PATCH v4 1/4] mm: rename memmap_init() and memmap_init_zone()
-Message-ID: <20210121082522.GS1106298@kernel.org>
-References: <20210120045213.6571-2-bhe@redhat.com>
- <202101202302.EE9LLAFu-lkp@intel.com>
- <20210121081727.GG20161@MiWiFi-R3L-srv>
+        id S1727936AbhAUI1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727999AbhAUI0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:26:35 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C77C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:25:51 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id p5so1324989oif.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:25:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dcZ1FYPsDBKXN3hC2IcAkzYMcxDaDlTQqW6wszGPCkA=;
+        b=YufljbHlHbmx/xR31VlXerp95BT7cxahfNrgURan972flhmsJdRcjQQZPRQWrNUYh4
+         CnnyhIjhUyKVgMeBMcRkWiTtjRH1msLOlPhiWTVc6MPBTrLwIF55Jy/g9n0z5adm/DV4
+         9g0IgTn9NeBXXyMQuIXUYV37SgwCy062PaU3k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dcZ1FYPsDBKXN3hC2IcAkzYMcxDaDlTQqW6wszGPCkA=;
+        b=omijWxzcyJQaDiy6NfN6rG7IR1kiOxYUZEWvIr/w+nn9Z2BYkiS7J7lGbB8DIwOR9d
+         qwXcne7+1CMjn48NDuT3JqfMp1jkNs9OdlWhXFQ96h9hGg7pSQzH6eiGKnDqtpGlRGSw
+         VyF+KL8CvINN85fVB4Zk0JmXFUH9cfF4Psb835gZjR1IrvWH/GbsAD1CMRrzUX9aQYcr
+         N4203DkArqXtMTDdXKlnSVJI15UcbWoOHSCmgWi5iDv4H1pbuEDZ9r8vJ03O3uVau33p
+         X0joezbmqT1kDq1C77sRVZ54bJs8sKQ0Zk75wpHgLDE3rtcJLY5UF303oIh0lochZNb9
+         PMBQ==
+X-Gm-Message-State: AOAM532dCgYiwPfpohAoB16FCkVx0uJtoKC7sBNFGyC74qrqMaRKU5p7
+        q75OQ9KmYiQLXoeNMpUTrb0b3l1E8G4jqcb/DA6t4A==
+X-Google-Smtp-Source: ABdhPJzz0JkV/k4V0avoNCaP5d/Ro05hcp5CHt9s45BuCIcuqAorp3oRURqBTkqgwJQymAvgou+9FyRGO03Vf0s8NqQ=
+X-Received: by 2002:aca:ad92:: with SMTP id w140mr5398682oie.128.1611217551051;
+ Thu, 21 Jan 2021 00:25:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121081727.GG20161@MiWiFi-R3L-srv>
+References: <20210121074959.313333-1-hch@lst.de> <20210121074959.313333-9-hch@lst.de>
+In-Reply-To: <20210121074959.313333-9-hch@lst.de>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 21 Jan 2021 09:25:40 +0100
+Message-ID: <CAKMK7uFo3epNAUdcp0vvW=VyWMMTZghGyRTPbz_Z37S6nem_2A@mail.gmail.com>
+Subject: Re: [PATCH 08/13] drm: remove drm_fb_helper_modinit
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        live-patching@vger.kernel.org,
+        linux-kbuild <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 04:17:27PM +0800, Baoquan He wrote:
-> On 01/20/21 at 11:47pm, kernel test robot wrote:
-> > Hi Baoquan,
-> > 
-> > I love your patch! Perhaps something to improve:
-> > 
-> > [auto build test WARNING on linux/master]
-> > [also build test WARNING on linus/master v5.11-rc4 next-20210120]
-> > [cannot apply to mmotm/master hnaz-linux-mm/master ia64/next]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Baoquan-He/mm-clean-up-names-and-parameters-of-memmap_init_xxxx-functions/20210120-135239
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1e2a199f6ccdc15cf111d68d212e2fd4ce65682e
-> > config: mips-randconfig-r036-20210120 (attached as .config)
-> > compiler: mips-linux-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://github.com/0day-ci/linux/commit/1bbb0b35dd2fae4a7a38098e63899677c2e53108
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Baoquan-He/mm-clean-up-names-and-parameters-of-memmap_init_xxxx-functions/20210120-135239
-> >         git checkout 1bbb0b35dd2fae4a7a38098e63899677c2e53108
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All warnings (new ones prefixed by >>):
-> > 
-> >    mm/page_alloc.c:3597:15: warning: no previous prototype for 'should_fail_alloc_page' [-Wmissing-prototypes]
-> >     3597 | noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
-> >          |               ^~~~~~~~~~~~~~~~~~~~~~
-> > >> mm/page_alloc.c:6258:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
-> >     6258 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
-> 
-> This is not introduced by this patch, but existing issue, should
-> be not related to this patchset. I will investigate and see what we
-> should do with memmap_init_zone(), adding static or adding it to header
-> file, or just leave it as should_fail_alloc_page().
-> 
-> 
-> By the way, I tried to reproduce on a fedora 32 system of x86 arch, but
-> met below issue. could you help check what I can do to fix the error.
-> 
-> 
-> [root@dell-per710-01 linux]# COMPILER_INSTALL_PATH=~/0day COMPILER=gcc-9.3.0 ~/bin/make.cross ARCH=mips
-> Compiler will be installed in /root/0day
-> make W=1 CONFIG_OF_ALL_DTBS=y CONFIG_DTC=y CROSS_COMPILE=/root/0day/gcc-9.3.0-nolibc/mips-linux/bin/mips-linux- --jobs=16 ARCH=mips
->   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
->   HOSTCXX scripts/gcc-plugins/structleak_plugin.so
->   HOSTCXX scripts/gcc-plugins/randomize_layout_plugin.so
-> In file included from /root/0day/gcc-9.3.0-nolibc/mips-linux/bin/../lib/gcc/mips-linux/9.3.0/plugin/include/gcc-plugin.h:28,
->                  from scripts/gcc-plugins/gcc-common.h:7,
->                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
-> /root/0day/gcc-9.3.0-nolibc/mips-linux/bin/../lib/gcc/mips-linux/9.3.0/plugin/include/system.h:687:10: fatal error: gmp.h: No such file or directy
->   687 | #include <gmp.h>
->       |          ^~~~~~~
-> compilation terminated.
-> make[2]: *** [scripts/gcc-plugins/Makefile:47: scripts/gcc-plugins/latent_entropy_plugin.so] Error 1
-> make[2]: *** Waiting for unfinished jobs..
+On Thu, Jan 21, 2021 at 8:55 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> drm_fb_helper_modinit has a lot of boilerplate for what is not very
+> simple functionality.  Just open code it in the only caller using
+> IS_ENABLED and IS_MODULE.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Do you have gmp-devel installed?
- 
-> Thanks
-> Baoquan
-> 
-> >          |                       ^~~~~~~~~~~~~~~~
-> > 
-> > 
-> > vim +/memmap_init_zone +6258 mm/page_alloc.c
-> > 
-> >   6257	
-> > > 6258	void __meminit __weak memmap_init_zone(unsigned long size, int nid,
-> >   6259					  unsigned long zone,
-> >   6260					  unsigned long range_start_pfn)
-> >   6261	{
-> >   6262		unsigned long start_pfn, end_pfn;
-> >   6263		unsigned long range_end_pfn = range_start_pfn + size;
-> >   6264		int i;
-> >   6265	
-> >   6266		for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
-> >   6267			start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
-> >   6268			end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-> >   6269	
-> >   6270			if (end_pfn > start_pfn) {
-> >   6271				size = end_pfn - start_pfn;
-> >   6272				memmap_init_range(size, nid, zone, start_pfn, range_end_pfn,
-> >   6273						 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
-> >   6274			}
-> >   6275		}
-> >   6276	}
-> >   6277	
-> > 
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
-> 
+I didn't spot any dependencies with your series, should I just merge
+this through drm trees? Or do you want an ack?
+-Daniel
+
+> ---
+>  drivers/gpu/drm/drm_crtc_helper_internal.h | 10 ---------
+>  drivers/gpu/drm/drm_fb_helper.c            | 16 -------------
+>  drivers/gpu/drm/drm_kms_helper_common.c    | 26 +++++++++++-----------
+>  3 files changed, 13 insertions(+), 39 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_crtc_helper_internal.h b/drivers/gpu/drm/drm_crtc_helper_internal.h
+> index 25ce42e799952c..61e09f8a8d0ff0 100644
+> --- a/drivers/gpu/drm/drm_crtc_helper_internal.h
+> +++ b/drivers/gpu/drm/drm_crtc_helper_internal.h
+> @@ -32,16 +32,6 @@
+>  #include <drm/drm_encoder.h>
+>  #include <drm/drm_modes.h>
+>
+> -/* drm_fb_helper.c */
+> -#ifdef CONFIG_DRM_FBDEV_EMULATION
+> -int drm_fb_helper_modinit(void);
+> -#else
+> -static inline int drm_fb_helper_modinit(void)
+> -{
+> -       return 0;
+> -}
+> -#endif
+> -
+>  /* drm_dp_aux_dev.c */
+>  #ifdef CONFIG_DRM_DP_AUX_CHARDEV
+>  int drm_dp_aux_dev_init(void);
+> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+> index ce6d63ca75c32a..0b9f1ae1b7864c 100644
+> --- a/drivers/gpu/drm/drm_fb_helper.c
+> +++ b/drivers/gpu/drm/drm_fb_helper.c
+> @@ -2499,19 +2499,3 @@ void drm_fbdev_generic_setup(struct drm_device *dev,
+>         drm_client_register(&fb_helper->client);
+>  }
+>  EXPORT_SYMBOL(drm_fbdev_generic_setup);
+> -
+> -/* The Kconfig DRM_KMS_HELPER selects FRAMEBUFFER_CONSOLE (if !EXPERT)
+> - * but the module doesn't depend on any fb console symbols.  At least
+> - * attempt to load fbcon to avoid leaving the system without a usable console.
+> - */
+> -int __init drm_fb_helper_modinit(void)
+> -{
+> -#if defined(CONFIG_FRAMEBUFFER_CONSOLE_MODULE) && !defined(CONFIG_EXPERT)
+> -       const char name[] = "fbcon";
+> -
+> -       if (!module_loaded(name))
+> -               request_module_nowait(name);
+> -#endif
+> -       return 0;
+> -}
+> -EXPORT_SYMBOL(drm_fb_helper_modinit);
+> diff --git a/drivers/gpu/drm/drm_kms_helper_common.c b/drivers/gpu/drm/drm_kms_helper_common.c
+> index 221a8528c9937a..b694a7da632eae 100644
+> --- a/drivers/gpu/drm/drm_kms_helper_common.c
+> +++ b/drivers/gpu/drm/drm_kms_helper_common.c
+> @@ -64,19 +64,19 @@ MODULE_PARM_DESC(edid_firmware,
+>
+>  static int __init drm_kms_helper_init(void)
+>  {
+> -       int ret;
+> -
+> -       /* Call init functions from specific kms helpers here */
+> -       ret = drm_fb_helper_modinit();
+> -       if (ret < 0)
+> -               goto out;
+> -
+> -       ret = drm_dp_aux_dev_init();
+> -       if (ret < 0)
+> -               goto out;
+> -
+> -out:
+> -       return ret;
+> +       /*
+> +        * The Kconfig DRM_KMS_HELPER selects FRAMEBUFFER_CONSOLE (if !EXPERT)
+> +        * but the module doesn't depend on any fb console symbols.  At least
+> +        * attempt to load fbcon to avoid leaving the system without a usable
+> +        * console.
+> +        */
+> +       if (IS_ENABLED(CONFIG_DRM_FBDEV_EMULATION) &&
+> +           IS_MODULE(CONFIG_FRAMEBUFFER_CONSOLE) &&
+> +           !IS_ENABLED(CONFIG_EXPERT) &&
+> +           !module_loaded("fbcon"))
+> +               request_module_nowait("fbcon");
+> +
+> +       return drm_dp_aux_dev_init();
+>  }
+>
+>  static void __exit drm_kms_helper_exit(void)
+> --
+> 2.29.2
+>
+
 
 -- 
-Sincerely yours,
-Mike.
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
