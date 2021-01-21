@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D422FE4B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33532FE4BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 09:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbhAUIOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 03:14:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726811AbhAUIN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:13:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E09E92395B;
-        Thu, 21 Jan 2021 08:13:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611216793;
-        bh=Jv1+7MosJtJk/47qnsHE23CojVtEBdwQu3teqjrEUG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ych4A9+XzpZXkBsCkXP/On+u7xDemwsYafarw38F4mHDP/WP6N8atVJxSu6+bNrG7
-         2uH9IAL/cEmASLMwFiLsOJAgjlLujgG+ZO29Z+a+QdatEfgTsRxPsvsFSS7Hpi2i1q
-         wRvYg7Te/pec9wrDrcpwF7jDootfX4r0APyclbKk=
-Date:   Thu, 21 Jan 2021 09:13:09 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dave Jiang <dave.jiang@intel.com>, vishal.l.verma@intel.com,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
-Subject: Re: [PATCH 1/3] cdev: Finish the cdev api with queued mode support
-Message-ID: <YAk3lVeFqnv5vzA2@kroah.com>
-References: <161117153248.2853729.2452425259045172318.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161117153776.2853729.6944617921517514510.stgit@dwillia2-desk3.amr.corp.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161117153776.2853729.6944617921517514510.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1727681AbhAUIPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 03:15:30 -0500
+Received: from out28-2.mail.aliyun.com ([115.124.28.2]:36758 "EHLO
+        out28-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726993AbhAUIOm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:14:42 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1421534|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00192036-0.000106734-0.997973;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=liu.xiang@zlingsmart.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.JNl771T_1611216832;
+Received: from localhost(mailfrom:liu.xiang@zlingsmart.com fp:SMTPD_---.JNl771T_1611216832)
+          by smtp.aliyun-inc.com(10.194.97.171);
+          Thu, 21 Jan 2021 16:13:52 +0800
+From:   Liu Xiang <liu.xiang@zlingsmart.com>
+To:     linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
+        liuxiang_1999@126.com, Liu Xiang <liu.xiang@zlingsmart.com>
+Subject: [PATCH] mmc: block: use REQ_HIPRI flag to complete request directly in own complete workqueue
+Date:   Thu, 21 Jan 2021 16:13:49 +0800
+Message-Id: <20210121081349.8266-1-liu.xiang@zlingsmart.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:38:57AM -0800, Dan Williams wrote:
-> -void cdev_del(struct cdev *p)
-> +void cdev_del(struct cdev *cdev)
->  {
-> -	cdev_unmap(p->dev, p->count);
-> -	kobject_put(&p->kobj);
-> +	cdev_unmap(cdev->dev, cdev->count);
-> +	kobject_put(&cdev->kobj);
+After commit "40d09b53bfc557af7481b9d80f060a7ac9c7d314", request is
+completed in softirq. This may cause the system to suffer bad preemptoff
+time.
+The mmc driver has its own complete workqueue, but it can not work
+well now.
+The REQ_HIPRI flag can be used to complete request directly in its own
+complete workqueue and the preemptoff problem could be avoided.
 
-After Christoph's patch series, the kobject in struct cdev does nothing,
-so I will be removing it.  So I don't think this patch set is going to
-do what you want :(
+Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+---
+ drivers/mmc/core/block.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 42e27a298..c27239a89 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1985,8 +1985,10 @@ static void mmc_blk_mq_post_req(struct mmc_queue *mq, struct request *req)
+ 	 */
+ 	if (mq->in_recovery)
+ 		mmc_blk_mq_complete_rq(mq, req);
+-	else if (likely(!blk_should_fake_timeout(req->q)))
++	else if (likely(!blk_should_fake_timeout(req->q))) {
++		req->cmd_flags |= REQ_HIPRI;
+ 		blk_mq_complete_request(req);
++	}
+ 
+ 	mmc_blk_mq_dec_in_flight(mq, req);
+ }
+-- 
+2.17.1
 
-greg k-h
