@@ -2,176 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF6C2FEE3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3572FEE34
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732638AbhAUPPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 10:15:51 -0500
-Received: from mout.gmx.net ([212.227.15.15]:44433 "EHLO mout.gmx.net"
+        id S1726690AbhAUPOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:14:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:39004 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732585AbhAUPOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:14:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611241929;
-        bh=VZZt5/tYu9Y8TbzRi7bwy/UykC8836/8CYl6jj8EU4A=;
-        h=X-UI-Sender-Class:Subject:From:In-Reply-To:Date:Cc:References:To;
-        b=Qpelg0l2s1MuBxenZi1JeQusZi8qXNvIrkZrhkqV/bHnhLv9R/k8N9gDXPq7Q74Zi
-         O/A6QEEtuLpIY1OrnZg4wwQZkCvMF7KoSOAlkVpAf3D0fFcqqPbjwvqqCPjzrwynYz
-         zE8QL/h76P035zxUTlmocbNtqIiP9JfGawPURITE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.42.0.78] ([83.204.192.78]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M1Ygz-1l0foo01rn-0036VC; Thu, 21
- Jan 2021 16:12:09 +0100
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.5\))
-Subject: Re: [RFC PATCH 3/7] arm64: mm: use nGnRnE instead of nGnRE on Apple
- processors
-From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
-In-Reply-To: <20210121124742.GA22123@willie-the-truck>
-Date:   Thu, 21 Jan 2021 16:12:04 +0100
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        id S1732166AbhAUPM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 10:12:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2C9A139F;
+        Thu, 21 Jan 2021 07:12:11 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.35.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34E4A3F68F;
+        Thu, 21 Jan 2021 07:12:09 -0800 (PST)
+Date:   Thu, 21 Jan 2021 15:12:06 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Alexander Potapenko <glider@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Stan Skowronek <stan@corellium.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <39067FDD-F7D3-4F37-8B43-1A9FCF80EEE5@caramail.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-4-mohamed.mediouni@caramail.com>
- <20210121112725.GA21750@willie-the-truck>
- <fdc49d125ef9f520254196509f6c0aa2@kernel.org>
- <20210121124742.GA22123@willie-the-truck>
-To:     Will Deacon <will@kernel.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.5)
-X-Provags-ID: V03:K1:Lfzx9BQBL4XONDrOMjPKRKcebLeFvTdWkCc+LrVGXBKUw+LPD5n
- 9pNSHlkRAEdNF91pw+JhiQ/m7Eywn+FcQiSw8alkmeI0NQm2OPrNZIA+YtFyc2mIpe+dGIf
- 0lxjExHTlggVDI4WAYd1AId1bMdF9LZndrOVS9MrREEepf5L3CTciefenN1kLDH2eMrSCmB
- fPjFnoa9i+T47TD45uTWg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/8E7dhoj/u0=:zW2KodPpMLkBjXeQ2oQXTL
- VSP2qrNtrqxGdZTAomTywAGroVixBV/NAODD4yUjn4cU/kgpD2CsYRCyPZpdBdDWwESWussPS
- Awq1AL3pwwPURi57Q3+E5xgzTFMbSYSQQHjNiAgxZrBPpIO3X6xddgN+Sc5wBgSPF8j4jWiQY
- Qg8+oCeDpJgUOUIxDmAGJYILvqSC1udPl+teksIGhVVH7CqTWJBnb1MthHg+gie7olIvTGul/
- pav+U4Gw25Ey7WzifIqzNVszRlB+ePxIx6LViGCsZqoL1zu0GhzLUoCrfT9xMN07uKfzfyQQK
- uHlD+kDzpQjRojR1hrOUzIvFCZFZwpcrIYMZxjSaMG48F9OMsT1rlvaYjM/ox9q/b93OWwfPH
- Y9+DapcG0yjw4RS1mr237wCNydxeMK1InT1SghPVFPTPpOIVtjfKsyq3LxtXu8NYjD6LI/mZj
- JCDXfXT/HCWHmMq8XwyxqAKvqR0Z343j8L6RNsCyjZqOWsTJSOjR+G1nc9v6NQ4TeHGysVn6U
- w6Rx/F2djTISrYMUHSeLRiW1jq5PnHWCT+aVtGq/8U87LNFaquSg/8zKNo+aJLswHaXIzjdr0
- 0LhgSV7VSiHWAvnpHSNZOoNfZ57nJaVqH3vQlVzw7159vGDbNxEL6yaF/IATlXENGx9UXNCIL
- 04PGodc5IqeB9g2MPAJ4NlR9Nip/duPqKZ7NIA081O18QpDs8rydbsjaU2Uwfc/rNarijpMLA
- gYmDV1D3Soqyx9fly516mIxQwEfQEefffqgCFD+hukUFON/24t30r2yyX/rxokoB8dnHy0Ldz
- LooKkPNUsbKCtIGPlfxpUK8R/0Pf29GZxawwvhR5yHmNuZOq3whtJZl3GVeVkUAQGOFrzquMV
- 36UZoliCHZbUfiSKGQoKCiM80f4XmppOksYIl2WIM=
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v2 1/2] arm64: Fix kernel address detection of
+ __is_lm_address()
+Message-ID: <20210121151206.GI48431@C02TD0UTHF1T.local>
+References: <20210121131956.23246-1-vincenzo.frascino@arm.com>
+ <20210121131956.23246-2-vincenzo.frascino@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121131956.23246-2-vincenzo.frascino@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[adding Ard]
 
+On Thu, Jan 21, 2021 at 01:19:55PM +0000, Vincenzo Frascino wrote:
+> Currently, the __is_lm_address() check just masks out the top 12 bits
+> of the address, but if they are 0, it still yields a true result.
+> This has as a side effect that virt_addr_valid() returns true even for
+> invalid virtual addresses (e.g. 0x0).
 
-> On 21 Jan 2021, at 13:47, Will Deacon <will@kernel.org> wrote:
->=20
-> On Thu, Jan 21, 2021 at 11:44:23AM +0000, Marc Zyngier wrote:
->> On 2021-01-21 11:27, Will Deacon wrote:
->>> On Wed, Jan 20, 2021 at 02:27:13PM +0100, Mohamed Mediouni wrote:
->>>> Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious
->>>> hardware quirk.
->>>>=20
->>>> On Apple processors, writes using the nGnRE device memory type get
->>>> dropped in flight,
->>>> getting to nowhere.
->>>>=20
->>>> Signed-off-by: Stan Skowronek <stan@corellium.com>
->>>> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
->>>> ---
->>>> arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
->>>> 1 file changed, 26 insertions(+)
->>>>=20
->>>> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
->>>> index 1f7ee8c8b7b8..06436916f137 100644
->>>> --- a/arch/arm64/mm/proc.S
->>>> +++ b/arch/arm64/mm/proc.S
->>>> @@ -51,6 +51,25 @@
->>>> #define TCR_KASAN_HW_FLAGS 0
->>>> #endif
->>>>=20
->>>> +#ifdef CONFIG_ARCH_APPLE
->>>> +
->>>> +/*
->>>> + * Apple cores appear to black-hole writes done with nGnRE.
->>>> + * We settled on a work-around that uses MAIR vs changing every
->>>> single user of
->>>> + * nGnRE across the arm64 code.
->>>> + */
->>>> +
->>>> +#define MAIR_EL1_SET_APPLE						=
-\
->>>> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	=
-\
->>>> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |	=
-\
->>>> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		=
-\
->>>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		=
-\
->>>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			=
-\
->>>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		=
-\
->>>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
->>>> +
->>>> +#endif
->>>> +
->>>> /*
->>>>  * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal
->>>> memory and
->>>>  * changed during __cpu_setup to Normal Tagged if the system
->>>> supports MTE.
->>>> @@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
->>>> 	 * Memory region attributes
->>>> 	 */
->>>> 	mov_q	x5, MAIR_EL1_SET
->>>> +#ifdef CONFIG_ARCH_APPLE
->>>> +	mrs	x0, MIDR_EL1
->>>> +	lsr	w0, w0, #24
->>>> +	mov_q	x1, MAIR_EL1_SET_APPLE
->>>> +	cmp	x0, #0x61			// 0x61 =3D Implementer: =
-Apple
->>>> +	csel	x5, x1, x5, eq
->>>=20
->>> Why does this need to be done so early? It would be a lot cleaner if =
-we
->>> could detect this in a similar fashion to other errata and update =
-the
->>> MAIR
->>> appropriately. If that's not possible because of early IO mappings
->>> (which
->>> ones?), then we could instead initialise to nGnRnE unconditionally, =
-but
->>> relax it to nGnRE if we detect that we _don't_ have the erratum.
->>=20
->> Would that imply another round-trip into the idmap, much like we do
->> when we switch to non-global mappings? Or do you expect that we can =
-change
->> the MAIR with live mappings?
->=20
-> I think we should be able to change it live and then invalidate the =
-TLB. At
-> least, my reading of the BBM requirements suggests that it isn't =
-required
-> for changing between different types of device memory. I can seek
-> clarification from Arm if necessary.
->=20
-Please ignore that patch.
+When it was added, __is_lm_address() was intended to distinguish valid
+kernel virtual addresses (i.e. those in the TTBR1 address range), and
+wasn't intended to do anything for addresses outside of this range. See
+commit:
 
-It turns out that the PCIe controller on Apple M1 expects posted writes =
-and so the memory range for it ought to be set nGnRE.=20
-So, we need to use nGnRnE for on-chip MMIO and nGnRE for PCIe BARs.
+  ec6d06efb0bac6cd ("arm64: Add support for CONFIG_DEBUG_VIRTUAL")
 
-The MAIR approach isn=E2=80=99t adequate for such a thing, so we=E2=80=99l=
-l have to look elsewhere.
+... where it simply tests a bit.
 
-Thank you,
-> Will
+So I believe that it's working as intended (though this is poorly
+documented), but I think you're saying that usage isn't aligned with
+that intent. Given that, I'm not sure the fixes tag is right; I think it
+has never had the semantic you're after.
 
+I had thought the same was true for virt_addr_valid(), and that wasn't
+expected to be called for VAs outside of the kernel VA range. Is it
+actually safe to call that with NULL on other architectures?
+
+I wonder if it's worth virt_addr_valid() having an explicit check for
+the kernel VA range, instead.
+
+> Fix the detection checking that it's actually a kernel address starting
+> at PAGE_OFFSET.
+> 
+> Fixes: f4693c2716b35 ("arm64: mm: extend linear region for 52-bit VA configurations")
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  arch/arm64/include/asm/memory.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index 18fce223b67b..e04ac898ffe4 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -249,7 +249,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+>  /*
+>   * The linear kernel range starts at the bottom of the virtual address space.
+>   */
+> -#define __is_lm_address(addr)	(((u64)(addr) & ~PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+> +#define __is_lm_address(addr)	(((u64)(addr) ^ PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+
+If we're going to make this stronger, can we please expand the comment
+with the intended semantic? Otherwise we're liable to break this in
+future.
+
+Thanks,
+Mark.
