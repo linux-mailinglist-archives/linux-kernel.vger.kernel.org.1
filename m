@@ -2,78 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE2B2FE9FC
+	by mail.lfdr.de (Postfix) with ESMTP id CAFFA2FE9FD
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730032AbhAUM0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730968AbhAUMYs (ORCPT
+        id S1729177AbhAUM1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:27:17 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:38907 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730616AbhAUM0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:24:48 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C122C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:24:02 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id o19so2261827lfo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:24:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5fcGiD7OwR1/jKyiV2ZSUx3opsk7q8xBXMeaqlhO/Z0=;
-        b=PVlGTUCv2alBxI/JOalSnfTFcb4Dzn8EOj1UJL731dSslOU5wPg4r/KEJCQq3KLEOZ
-         Sto/vWHLdrxicM2ll37EPJf7CUOiJMr6Pox71kBlfEUmIBSGSx5xg/LbCjUKU8jNCkt5
-         Lm6j65B6nkAN1WbD0E5TZkZR73GbxwnTj1XufAZU7JT6KOlAhFOOV0kg2fWMfTaKIkSK
-         mP8T/xlVGTChQotfDfIzKsIOhwj2A9rjXHZ7mmZyS4Dn+zrfsqAdOv8GB6kv/PxtpOSV
-         nx4Je8jRFyArfUzYDlFxynn7YO4zy7Uk446uzFVD8ttN+Uv/g2THRdEOimsB8oU33XD2
-         /y3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5fcGiD7OwR1/jKyiV2ZSUx3opsk7q8xBXMeaqlhO/Z0=;
-        b=V2x0YRU1pNRXxy9N2sqzQY8CU75gSwTCqd230+vd9XpaEN0YVvgjZ3pakUGdqzKs+N
-         /TKyCs8lURYI5/v8oom18elsfhu/Vp4FaRBcH9luQ6qqeTLWf3LLWaytWko69RzXdSFO
-         lfCNupCgDqK7E/TwfiZscE5EDkKdnvnKGhD8VPWE3/L+7VcIN/xJxQzQ+04JNbCvzq4n
-         l4YcfZU3RevpTSHHVwxj2xsjGTAkaQR6c///3fVPa0PxO/QummaBrJpHfSIRLdUOdK9v
-         p61NYXFcbf6clHdX4/r9vvPnkF+PyUnxgDv5lH1U7HAlY58kiY7I3mpRCn/FK7CN3lVJ
-         KMLA==
-X-Gm-Message-State: AOAM531L9ZJj/iHAWR8otjt5S5K90rbbDZlJ1T9UJkLfTnOShUPZXGX5
-        dnHxscJ3SjADb65/urufY/ZpsHToS7K8W/EEdrz6Kg==
-X-Google-Smtp-Source: ABdhPJxGXnl8ByIfSzaEFxWnZM44EtU5FWnXKcITgR1rQdU6CvzXy3G+PyC3djO1tmBtaztm8DIUeQ3d9IZ8KrBum9g=
-X-Received: by 2002:a19:6557:: with SMTP id c23mr6068215lfj.157.1611231839384;
- Thu, 21 Jan 2021 04:23:59 -0800 (PST)
+        Thu, 21 Jan 2021 07:26:32 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B4AAB5C011A;
+        Thu, 21 Jan 2021 07:25:37 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 21 Jan 2021 07:25:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=DSGIPE
+        wviBJva3VGDzbXmz78MH5d3GMIAYRhq7Tqha4=; b=H1arxmeRvS6xH8cEwdztZi
+        ICCNESdiJvMS52DWR2LRY+EOzaiXSCFp4KEFTSsdKvn+AiZq0sGTFUrbr+9j7Hn0
+        DnxZluq0FKuV/z/TJ0BxOSBqas/MV80hc2a/80PwtqBnS5AmlJvG03mT75NW8ZbD
+        VQvDXFtwow5hDOFgbYJKvSm/EQDxzEfjTkWLh+oVlS+b7Bd6w6hGXPsOriY4LrQ3
+        omtGU7KnIpf3K9DM5Y93P5HsrKJzqlgloMq6X9E+OMEJtkZD19mU7Un6rOzXDbpV
+        ctCF7I6HIXSPxhuxYzdhVvS2kbsHXqgeomXbwslVlgmUFqcKI9RvfUmcLVif7J8A
+        ==
+X-ME-Sender: <xms:wXIJYBiKNzVMkpNR-yokHZEzLPQ9iCyQbkJDXbFUJNl7YRNk3H-VdQ>
+    <xme:wXIJYGB4zfRCzkE9pp9EmWSxL7SLjUkKO4Eva0BM_50kif4JkFlV3mqPlRIXiORmJ
+    LBm7NTHKhpUHy8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggdegvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
+    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
+    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
+    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:wXIJYBHZggVk5e78sYppc5JofDvsP2DERqFiWMsgU2eZlNCghTCxkg>
+    <xmx:wXIJYGQeSwYiL_KDLcfyOdDrNJPKpVdUbAzlmPwRgqku2uGqgLW5og>
+    <xmx:wXIJYOyMvSNvru9UtF1lpH_P9X5z2eyOkePVBr6zFHowsprxRHbTPQ>
+    <xmx:wXIJYJ_L3ARElEocYDqdr_ZSKUNrqAqNMjwyDk2C4iDOea3091zTKA>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CC4FB24005B;
+        Thu, 21 Jan 2021 07:25:36 -0500 (EST)
+Date:   Thu, 21 Jan 2021 14:25:34 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+Cc:     netdev@vger.kernel.org, jiri@nvidia.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, kuba@kernel.org
+Subject: Re: [PATCH iproute2-next] devlink: add support for HARD_DROP trap
+ action
+Message-ID: <20210121122534.GB2647590@shredder.lan>
+References: <20210121112954.31039-1-oleksandr.mazur@plvision.eu>
 MIME-Version: 1.0
-References: <20210120154158.1860736-1-arnd@kernel.org> <20210120154158.1860736-4-arnd@kernel.org>
-In-Reply-To: <20210120154158.1860736-4-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 21 Jan 2021 13:23:48 +0100
-Message-ID: <CACRpkdYKT=LnCw2qakPYx+uZq4aD8NXXfV6seqt_wF84kTXrfQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] rtc: remove ste ab3100 driver
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121112954.31039-1-oleksandr.mazur@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 4:42 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Thu, Jan 21, 2021 at 01:29:54PM +0200, Oleksandr Mazur wrote:
+> Add support for new HARD_DROP action, which is used for
+> trap hard drop statistics retrival. It's used whenever
+> device is unable to report trapped packet to the devlink
+> subsystem, and thus device could only state how many
+> packets have been dropped, without passing a packet
+> to the devlink subsystem to get track of traffic statistics.
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The ST-Ericsson U300 platform is getting removed, so this driver is no
-> longer needed.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+This patch should also be marked as "RFC".
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+> ---
+>  devlink/devlink.c            | 4 ++++
+>  include/uapi/linux/devlink.h | 4 ++++
 
-Yours,
-Linus Walleij
+Missing man page and bash completion extensions:
+
+man/man8/devlink-trap.8
+bash-completion/devlink
+
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/devlink/devlink.c b/devlink/devlink.c
+> index a2e06644..77185f7c 100644
+> --- a/devlink/devlink.c
+> +++ b/devlink/devlink.c
+> @@ -1335,6 +1335,8 @@ static int trap_action_get(const char *actionstr,
+>  {
+>  	if (strcmp(actionstr, "drop") == 0) {
+>  		*p_action = DEVLINK_TRAP_ACTION_DROP;
+> +	} else if (strcmp(actionstr, "hard_drop") == 0) {
+> +		*p_action = DEVLINK_TRAP_ACTION_HARD_DROP;
+>  	} else if (strcmp(actionstr, "trap") == 0) {
+>  		*p_action = DEVLINK_TRAP_ACTION_TRAP;
+>  	} else if (strcmp(actionstr, "mirror") == 0) {
+> @@ -7726,6 +7728,8 @@ static const char *trap_action_name(uint8_t action)
+>  	switch (action) {
+>  	case DEVLINK_TRAP_ACTION_DROP:
+>  		return "drop";
+> +	case DEVLINK_TRAP_ACTION_HARD_DROP:
+> +		return "hard_drop";
+>  	case DEVLINK_TRAP_ACTION_TRAP:
+>  		return "trap";
+>  	case DEVLINK_TRAP_ACTION_MIRROR:
+> diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+> index 1414acee..ecee2541 100644
+> --- a/include/uapi/linux/devlink.h
+> +++ b/include/uapi/linux/devlink.h
+> @@ -261,12 +261,16 @@ enum {
+>   * enum devlink_trap_action - Packet trap action.
+>   * @DEVLINK_TRAP_ACTION_DROP: Packet is dropped by the device and a copy is not
+>   *                            sent to the CPU.
+> + * @DEVLINK_TRAP_ACTION_HARD_DROP: Packet was dropped by the underlying device,
+> + *                                 and device cannot report packet to devlink
+> + *                                 (or inject it into the kernel RX path).
+>   * @DEVLINK_TRAP_ACTION_TRAP: The sole copy of the packet is sent to the CPU.
+>   * @DEVLINK_TRAP_ACTION_MIRROR: Packet is forwarded by the device and a copy is
+>   *                              sent to the CPU.
+>   */
+>  enum devlink_trap_action {
+>  	DEVLINK_TRAP_ACTION_DROP,
+> +	DEVLINK_TRAP_ACTION_HARD_DROP,
+>  	DEVLINK_TRAP_ACTION_TRAP,
+>  	DEVLINK_TRAP_ACTION_MIRROR,
+>  };
+> -- 
+> 2.17.1
+> 
