@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB95A2FE259
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 997482FE265
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbhAUGLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:11:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        id S1726527AbhAUGNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 01:13:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbhAUGKs (ORCPT
+        with ESMTP id S1726482AbhAUGMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:10:48 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F294BC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:10:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:Cc:References:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=lZeKd0/0hrDPS8SZ5doWRcY0buqZrAFLpJtW5s5Vcoc=; b=oBTVnZOasjW9P7RU4VtlWCmY/o
-        0h8E8P6JpjBDjXG3T3tDAhbLw5i9EwHqCU1dMFlIOT1C31v9VksnteT+FeX5/k18nHjoI3FWTguKT
-        fR1t5Hv0GLymg6WM6dHnXR5jLCZNSjDvGe4xIwU+hhdWOeiBsnPbYEDjAwtYJsIeT/bzFduN9S6hd
-        YytXSCWcDRJWupfaRzlWT2q4xMtvgiPl3RvuXKHHcnMKs5kJlRl/ZHj/LSllabJmghSMifP9rjIGA
-        JhGU8lsITbDrpfXXLE1qjhEqVM0oXIvNBz0mSIrrfpNPtdCHvVDui9mPPxlHRsuruTfEIyjjUEr3F
-        K/Za5wVw==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l2TAG-0007vT-6u; Thu, 21 Jan 2021 06:09:52 +0000
-Subject: [PATCH] powerpc: fix AKEBONO build failures
-To:     Yury Norov <yury.norov@gmail.com>, linuxppc-dev@lists.ozlabs.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAAH8bW8-6Dp29fe6rrnA4eL1vo+mu0HuAVJ-5yjbwxDSvaHdeQ@mail.gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6c442012-3bef-321b-bbc3-09c54608661f@infradead.org>
-Date:   Wed, 20 Jan 2021 22:09:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 21 Jan 2021 01:12:37 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D525EC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:11:54 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l2TC4-0006PG-3g; Thu, 21 Jan 2021 07:11:44 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l2TC2-00061C-4D; Thu, 21 Jan 2021 07:11:42 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v2 0/7] devicetree fixes for Protonic and Plymovent boards
+Date:   Thu, 21 Jan 2021 07:11:34 +0100
+Message-Id: <20210121061141.23062-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAAH8bW8-6Dp29fe6rrnA4eL1vo+mu0HuAVJ-5yjbwxDSvaHdeQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/20/21 1:29 PM, Yury Norov wrote:
-> Hi all,
-> 
-> I found the power pc build broken on today's
-> linux-next (647060f3b592).
+changes v2:
+- imx6dl-prtvt7: remove touchscreen-inverted-*
 
-Darn, I was building linux-5.11-rc4.
+Oleksij Rempel (7):
+  dt-bindings: display: simple: add Innolux G070Y2-T02 panel
+  drm: panel-simple: Add support for the Innolux G070Y2-T02 panel
+  ARM: dts: imx6dl-prtvt7: Add display and panel nodes
+  ARM: dts: imx6dl-prtvt7: add TSC2046 touchscreen node
+  ARM: dts: imx6dl-prtvt7: Remove backlight enable gpio
+  ARM: dts: imx6dl-prtvt7: fix PWM cell count for the backlight node.
+  ARM: dts: imx6dl-plym2m: remove touchscreen-size-* properties
 
-I'll try linux-next after I send this.
+ .../bindings/display/panel/panel-simple.yaml  |  2 +
+ arch/arm/boot/dts/imx6dl-plym2m.dts           |  2 -
+ arch/arm/boot/dts/imx6dl-prtvt7.dts           | 74 ++++++++++++++++---
+ drivers/gpu/drm/panel/panel-simple.c          | 16 ++++
+ 4 files changed, 81 insertions(+), 13 deletions(-)
 
----
-From: Randy Dunlap <rdunlap@infradead.org>
+-- 
+2.30.0
 
-Fulfill AKEBONO Kconfig requirements.
-
-Fixes these Kconfig warnings (and more) and fixes the subsequent
-build errors:
-
-WARNING: unmet direct dependencies detected for NETDEVICES
-  Depends on [n]: NET [=n]
-  Selected by [y]:
-  - AKEBONO [=y] && PPC_47x [=y]
-
-WARNING: unmet direct dependencies detected for MMC_SDHCI
-  Depends on [n]: MMC [=n] && HAS_DMA [=y]
-  Selected by [y]:
-  - AKEBONO [=y] && PPC_47x [=y]
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Yury Norov <yury.norov@gmail.com>
----
- arch/powerpc/platforms/44x/Kconfig |    2 ++
- 1 file changed, 2 insertions(+)
-
---- lnx-511-rc4.orig/arch/powerpc/platforms/44x/Kconfig
-+++ lnx-511-rc4/arch/powerpc/platforms/44x/Kconfig
-@@ -206,6 +206,7 @@ config AKEBONO
- 	select PPC4xx_HSTA_MSI
- 	select I2C
- 	select I2C_IBM_IIC
-+	select NET
- 	select NETDEVICES
- 	select ETHERNET
- 	select NET_VENDOR_IBM
-@@ -213,6 +214,7 @@ config AKEBONO
- 	select USB if USB_SUPPORT
- 	select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
- 	select USB_EHCI_HCD_PLATFORM if USB_EHCI_HCD
-+	select MMC
- 	select MMC_SDHCI
- 	select MMC_SDHCI_PLTFM
- 	select ATA
