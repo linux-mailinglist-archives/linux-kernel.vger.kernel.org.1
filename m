@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B1D2FF30B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E7C2FF30E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728932AbhAUSP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
+        id S1732736AbhAUST0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:19:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728892AbhAUJq6 (ORCPT
+        with ESMTP id S1728862AbhAUJqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:46:58 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BEAC061793
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:28 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id e15so939379wme.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:28 -0800 (PST)
+        Thu, 21 Jan 2021 04:46:33 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5A5C061796
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:29 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id c128so936287wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 01:45:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lBLwu+617zQ07npA6RXz6Tf17IOtHddjN6cfc3yfTCI=;
-        b=dfLuKNzZ3ku/O7QE9b2/0QO9aIwxpb3WHqXtAqE0V52WOktO4jw01QZw73WtJjBr5U
-         5mbmCFDOjUvG7AIVz4lCKaG7O38kTo78KyHCMLwM2hpML1vlVQoxQlfgxPRa2ZpNWiDx
-         djcKyw139NyoRRzxu34PYyn18P55ak47Cnk5UiYhYqTXj1RfRTHlflsQUm44X4yxZG23
-         RK/qDniEwy98Fpwz8UOYSSP2NB0BH/u9Opdh9QvEXlDTxfo3alHKXGU7uUVKhBpqsQiJ
-         oFNwGbIcHfiDH7byUXHl79PkoSsqNnyfLNAKCJPWrfEjYjuGpOFrIRFf5iKjh5QVVtic
-         Rbsw==
+        bh=l90cpQ/e0T6TuHwbhU/4LDQoeOSySsNazUcP2W8fpcw=;
+        b=L1EpP2OlDV281D8ChiGh+C9MURnk5TsQ2b0hrO8AIuw6a0RHnu43Wnv3e6Ka1XH6YU
+         ycjd3SONVCJOuz4cE03wkdbqQRMRtf+GV3/rW6SNeK5AIN84J/F88FjfUkeJPQlRVjyu
+         gHTkRbeeuceYrm+Zf/lXZA2AIdL0t+HpKXpLem2AfDc/WiPGXAw0Kppj2MXpULyjRSri
+         GwxHEHdTs/j9C09/0OlycRKvczqMD31fL9m+DUSvPfobi3jr18BQilUQIky9RF9ufdsL
+         WYwelapy5ylUtEymKJl7PV3I0S5I58bNZyOymZnZBav2OAnZEmUfk4fg0uZNO41Jaxea
+         tdOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lBLwu+617zQ07npA6RXz6Tf17IOtHddjN6cfc3yfTCI=;
-        b=iRQDrA3bfpvjR1MpWyp4Q/SrJ3bPxQd1v/1tONfxe/yxlHPZrd4vqv0x1luBthi4Of
-         A9XQoKtuuLL7NqbCN5ZvBkpodUcUh8k3WSo51D3VYW3ixjD7c5/EV1zxoR/FZQFZ2hpi
-         IgW/So9GWwnPikjMnN+hXcOlSyK8OgxB056HseWLN9Kew4iM4iGpC3Bl+kcMnckLjYdm
-         gQOE2t2+cEAjCt6hCqGBFWedHbRsyp4wExnB4SHkjss8T5msRFedf+Ytd+0CS6lA37e/
-         8HZykfbqOGmsybquXY1dBbm9mweMc0xJjzb9PFszzw8RXfyWqrjmCvOjz5eIrZ2eL+Ll
-         QP8w==
-X-Gm-Message-State: AOAM531SOJcbpEZDAIXVkGeKH5Epb7IStu8wHoI6L84zfY/hbVgyEOqs
-        GFw5jE/1Ri3QJ92XxqFa9+MFKNaDzjQjXAEs
-X-Google-Smtp-Source: ABdhPJwO5trW2/kFg2672ZAmOG6H9jxxi6HftdC4+xImSiIHF4p72gEqrWXXpradGXLbGc8ASwjlwQ==
-X-Received: by 2002:a05:600c:2249:: with SMTP id a9mr8317598wmm.169.1611222326913;
-        Thu, 21 Jan 2021 01:45:26 -0800 (PST)
+        bh=l90cpQ/e0T6TuHwbhU/4LDQoeOSySsNazUcP2W8fpcw=;
+        b=QhrlmtuOEfd3IvikxSV0+yd5jSFfzkLMXVAS73VtJoF49/NxY3CkAgGMVFENBc5KQD
+         2a3mnAwSokd9gelEO5Puj6uNdloeuf5d73jNd7JIgMs9SIBMBDRG4tIOYNjCTns9e9dq
+         qYgTxI4VYs47uMGYbFWw6UQ+34d2DWSVq5zC5dXQhZp4PUieCvTWJ/GF2KL7sjLc7Dpp
+         915iwpzihR0gEOXC3CDO/tr144AgX488ervGE/jr7xzzCAm49OBZ1JF0eVtc8O6bXEjo
+         khkyPwyS92kLd361C3M/stj9IwfAkJ02E8VME49fKpg0K8G7ssAtBtxSr1AnGS/hONMU
+         1hhg==
+X-Gm-Message-State: AOAM532qaa7b3cxMzgO4c0RcW+4orVovyIULp+7oKXdg4EI3TiDSn8eO
+        MUgLAzM523sJBgt6oIUA80TapZhx9my9irgl
+X-Google-Smtp-Source: ABdhPJxi6autxrB/UQLxpm5CwpzYbaV6KpUuwNif9ZzlofRVk0JZbRFYvUwAELNzokX8sqEzjzTAFw==
+X-Received: by 2002:a1c:9e02:: with SMTP id h2mr8144143wme.107.1611222328098;
+        Thu, 21 Jan 2021 01:45:28 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.25
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:26 -0800 (PST)
+        Thu, 21 Jan 2021 01:45:27 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Lijun Ou <oulijun@huawei.com>,
         Weihang Li <liweihang@huawei.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Wei Hu <xavier.huwei@huawei.com>,
-        Nenglong Zhao <zhaonenglong@hisilicon.com>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH 04/30] RDMA/hw/hns/hns_roce_hw_v1: Fix doc-rot issue relating to 'rereset'
-Date:   Thu, 21 Jan 2021 09:44:53 +0000
-Message-Id: <20210121094519.2044049-5-lee.jones@linaro.org>
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 05/30] RDMA/hw/hns/hns_roce_mr: Add missing description for 'hr_dev' param
+Date:   Thu, 21 Jan 2021 09:44:54 +0000
+Message-Id: <20210121094519.2044049-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
 References: <20210121094519.2044049-1-lee.jones@linaro.org>
@@ -71,35 +68,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c:1398: warning: Function parameter or member 'dereset' not described in 'hns_roce_v1_reset'
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c:1398: warning: Excess function parameter 'enable' description in 'hns_roce_v1_reset'
+ drivers/infiniband/hw/hns/hns_roce_mr.c:1003: warning: Function parameter or member 'hr_dev' not described in 'hns_roce_mtr_create'
 
 Cc: Lijun Ou <oulijun@huawei.com>
 Cc: "Wei Hu
 Cc: Weihang Li <liweihang@huawei.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Wei Hu <xavier.huwei@huawei.com>
-Cc: Nenglong Zhao <zhaonenglong@hisilicon.com>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_mr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index f68585ff8e8a5..23fe8e9f61da5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -1391,7 +1391,7 @@ static void hns_roce_free_mr_free(struct hns_roce_dev *hr_dev)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index 1bcffd93ff3e3..1fbfa3a375453 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -990,6 +990,7 @@ static int mtr_init_buf_cfg(struct hns_roce_dev *hr_dev,
  /**
-  * hns_roce_v1_reset - reset RoCE
-  * @hr_dev: RoCE device struct pointer
-- * @enable: true -- drop reset, false -- reset
-+ * @dereset: true -- drop reset, false -- reset
-  * return 0 - success , negative --fail
-  */
- static int hns_roce_v1_reset(struct hns_roce_dev *hr_dev, bool dereset)
+  * hns_roce_mtr_create - Create hns memory translate region.
+  *
++ * @hr_dev: RoCE device struct pointer
+  * @mtr: memory translate region
+  * @buf_attr: buffer attribute for creating mtr
+  * @ba_page_shift: page shift for multi-hop base address table
 -- 
 2.25.1
 
