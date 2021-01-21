@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106B32FE435
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043D12FE438
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 08:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727472AbhAUHly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 02:41:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36450 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727312AbhAUHkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:40:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611214709;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9kVSG4L8Yartqrk7tDiDkwAUqYMAcqaSatvYzcqcPL4=;
-        b=LeyADgyy7B/yfHSABRbvr9CaiScoqat/7ksyORy3oOXwtLIxSZ0pLQuju6oMowdzkE12s2
-        LpzKUj8Gl8gh9qStXB/3D01pyGqGbr2CIl3jrCXMtWcr3kq2MOlAsjnTluWoONz4v7nJeM
-        fcCcFQVROuKYwT9+Uw8g66/mTo6H66w=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-YbZxZ0wXPO-YwWDrDHKBBA-1; Thu, 21 Jan 2021 02:38:27 -0500
-X-MC-Unique: YbZxZ0wXPO-YwWDrDHKBBA-1
-Received: by mail-ej1-f70.google.com with SMTP id x22so422725ejb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 23:38:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9kVSG4L8Yartqrk7tDiDkwAUqYMAcqaSatvYzcqcPL4=;
-        b=SyBRcJnapyKX9LYRi1aDM1zI3ws8gQY2SeTbhk0jP8oQCSFWOMi9N1ENt+cmR2+yD4
-         I8+OSTH+dFRPE8ByzYe5As4LdTDxpAknAhhKrothc9a9p0KU2GR+cSXAbNgmVUXk+wbD
-         tpm/Z/eFZxgfVJvthBZE+SyZAKPOHSpuObW+aT4p4q3+a07K5ZrtjDxmoOAWiAuCTHZ6
-         I4535mN3A3sw6yqtFkiRJBD9zy6JYE1G93huFwql/7wLWTwOi43yheycbHDNs/WFCrJv
-         h4z9E/f2z9z4xXHWbIUo1zPrbc+FrrZlDxXbEgRkf5DIKku2CT9dolpRATmyY2HHPpMm
-         7xUQ==
-X-Gm-Message-State: AOAM532Fp8gTog1mJ6Oib8fBI2kpDYjKY4rv48nmZwVa6FNEokdCeQBF
-        vAgcdrHGH6EUS6EbuPK7gQGhf58Gn3kBOr6Cs9YLT/aD3ciKLFozxsZuEraqTw2I4xI6Genlf0v
-        WX1CDIJiLFjkormR6tP4W40GSy/PGkivSZ6GDX4t7IUwH2a+o+5lKgHaVvILkVxZghSs09VraEi
-        fU
-X-Received: by 2002:a50:8a90:: with SMTP id j16mr9604914edj.334.1611214706413;
-        Wed, 20 Jan 2021 23:38:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw/lOSqu6uXUKuOy+1WLJIYPND6L/NE5QVph99g7Qdwq/QUL/k9KAYBc6DnaADWuUUprMQxtg==
-X-Received: by 2002:a50:8a90:: with SMTP id j16mr9604907edj.334.1611214706243;
-        Wed, 20 Jan 2021 23:38:26 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id he38sm1790782ejc.96.2021.01.20.23.38.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 23:38:25 -0800 (PST)
-Subject: Re: PING: [PATCH v5 0/2] misc: pvpanic: introduce capability & event
- attribute
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        zhenwei pi <pizhenwei@bytedance.com>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
-References: <20210110115358.79100-1-pizhenwei@bytedance.com>
- <cee80030-dab1-fe79-f14c-24e45532d814@bytedance.com>
- <YAhuD04p4daZd/1W@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a7b9e8a9-d5de-3b29-8bf3-3d002b984dda@redhat.com>
-Date:   Thu, 21 Jan 2021 08:38:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727679AbhAUHlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 02:41:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727458AbhAUHkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:40:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F6BB238EE;
+        Thu, 21 Jan 2021 07:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611214781;
+        bh=Js9RTQ+Gp199tmwcbMTEOUZ8ivQeNI+zmjDA6dqjb1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yrzbtTfTY4WCk43ssvpGXnD1lQ4w/sLBZOdAunuAM4v8U0sU+77pln38X7jcwx6ru
+         RlXrdYqYbLUtNkCDWeW8r4WFPykyGcg87jDZKbPQSyR/KZybtSMJdpT3rjK0l7cLtP
+         tn5zyrn7qRK06UP1JdKSLF3mghdG9M0SdxlLt/ik=
+Date:   Thu, 21 Jan 2021 08:39:37 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Pho Tran <Pho.Tran@silabs.com>
+Cc:     "johan@kernel.org" <johan@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Hung Nguyen <Hung.Nguyen@silabs.com>
+Subject: Re: [PATCH v3] USB: serial: cp210x: Fix error 32 when hardware flow
+ control  is enabled.
+Message-ID: <YAkvua8BMkSh1QHs@kroah.com>
+References: <9E531B87-06A8-45F0-A2A8-EC6FA61A99A7@silabs.com>
 MIME-Version: 1.0
-In-Reply-To: <YAhuD04p4daZd/1W@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9E531B87-06A8-45F0-A2A8-EC6FA61A99A7@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/21 18:53, Greg KH wrote:
-> On Mon, Jan 18, 2021 at 09:42:57AM +0800, zhenwei pi wrote:
->> Hi, Greg
->>
->> What's the next step I should take?
+On Thu, Jan 21, 2021 at 07:09:13AM +0000, Pho Tran wrote:
+> Fix error 32 returned by CP210X_SET_MHS when hardware flow control is enabled.
 > 
-> I need some reviews by the people who will be doing the qemu portion of
-> this, or someone else, please.
+> The root cause of error 32 is that user application (CoolTerm, linux-serial-test)
+> opened cp210x device with hardware flow control then attempt to control RTS/DTR pins.
+> In hardware flow control, RTS/DTR pins will be controlled by hardware only,
+> any attempt to control those pins will cause error 32 from the device.
+> This fix will block MHS command(command to control RTS/DTR pins) to the device
+> if hardware flow control is being used.
+> 
+> Signed-off-by: Pho Tran <pho.tran@silabs.com>
+> ---
+> 01/19/2021: Patch v2  Modified based on comment from Johan Hovold <johan@kernel.org>
+> and Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/usb/serial/cp210x.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index fbb10dfc56e3..5b6bbda2b424 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -1204,7 +1204,12 @@ static int cp210x_tiocmset(struct tty_struct *tty,
+>  		unsigned int set, unsigned int clear)
+>  {
+>  	struct usb_serial_port *port = tty->driver_data;
+> -	return cp210x_tiocmset_port(port, set, clear);
+> +	if (C_CRTSCTS(tty))
+> +
+> +	/* Don't send SET_MHS command if device in hardware flow control mode. */
+> +		return 0;
 
-QEMU bits are already part of the last release, so all good from our 
-side.  As far as the "hardware" spec is concerned,
+That indentation and whitespace is very odd.  Did you run checkpatch.pl
+on your change before sending it to us to verify that all is ok?
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Please do so.
 
-Paolo
+thanks,
 
+greg k-h
