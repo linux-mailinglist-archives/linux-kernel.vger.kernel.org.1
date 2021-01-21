@@ -2,90 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439A12FE9FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 374CA2FEA11
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731077AbhAUM1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:27:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbhAUM0e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:26:34 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623B8C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:25:54 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id w14so1412191pfi.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:25:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oOyrg08vtxiHPYZkedOlgXvEt/7RDWD4URVSIByL7Fc=;
-        b=vxEAz+KkpNsnMQSjbsAbC+YcXrwg5AqWezlWX9IuB6vUshHU2tz1TmfgwZoL+FpHrR
-         5t6LE0FcRmyUiASd7urdAe/Ym0ifCVaGqaShldzrNMpFa1tCnfDh8cDxLaowNMTU96zE
-         WOa8U+ToUCXZOWCbi+8Yz76+yriA20BTbDW7slV4qpSJNk/hmBI5lpCqCosrDzgFqbVt
-         ofwtFI05bGL2f+QEK3I5lUT9uEJSTMYWjyyKpCab/JSPYPodCcetA958QHbz9Bxgnbcs
-         GdwvjVYnAeJMdQmVQuxfTp04OErBJozK+vLXEtPULRCKkA3bp0S1C8ZTWl50ES3yyfC8
-         6f2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oOyrg08vtxiHPYZkedOlgXvEt/7RDWD4URVSIByL7Fc=;
-        b=ZpIqzic9BrTHoKrbfknpPFvjBeEJrkxS83pOefvhpifXgTrqhWqQdGfo5DtZ/pFokb
-         v1zKs5v7Wy8Mg4SmR3jaIdsDpLRhzQXtz2vfs5378riO8WwGMEjmOqQmeq+k9THFNS/s
-         Qd6DpnVyeQV3dlBEQL4yv687g3zI3ARCxv1QUgNhMzGoLfv8bh6Xh2z30j/NO011+pTe
-         OvV+46XJ5891IntHoMBHK5tFvZszWDJ2KfjFFCL9t8Ms5LncJnewOu9w8CTrja+I5dpm
-         rT4ahcTjco5wFcnxWidax5E2PIXrZYKdHyR16KeJm03lSg/vNmhlKvY4pThRSSbjWAwc
-         Bbig==
-X-Gm-Message-State: AOAM533bAvlddnz6QZ3WUpfLb6HpL5NI1DsX58YymiligtqsWf+b14G4
-        GVVW7iIKGMATS1K1vH0+Ad0ymfqkr0MW1VTYH61aYw==
-X-Google-Smtp-Source: ABdhPJzLUpxG/Y9OA/+eupih8gVMoAm2p9lHVjD58Asu7PLIsj0Vph2NRrbuCj/5X9qDer9lqDjZAQzLBpgFWo28lL8=
-X-Received: by 2002:a62:5c4:0:b029:1ba:9b0a:3166 with SMTP id
- 187-20020a6205c40000b02901ba9b0a3166mr8574872pff.55.1611231952154; Thu, 21
- Jan 2021 04:25:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
- <CAAeHK+xmmTs+T9WNagj0_f3yxT-juSiCDH+wjS-4J3vUviTFsQ@mail.gmail.com> <ed20df73-486d-db11-a1b9-4006a3a638a2@arm.com>
-In-Reply-To: <ed20df73-486d-db11-a1b9-4006a3a638a2@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 21 Jan 2021 13:25:39 +0100
-Message-ID: <CAAeHK+xOcxNNNWosLZqTC1mOQZLScfDNwtTA0vCYTb8kc=UJ_g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
+        id S1730968AbhAUM3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:29:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731134AbhAUM22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:28:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC38239D1;
+        Thu, 21 Jan 2021 12:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611232067;
+        bh=yaiGaY9CsCce4ziujW0DI0CJqQEDns2mxFIXWr5A2d8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=URpLdAui1A3REY2XYW9SaWUzljd1JeS4pqdT+UqN9xM7doZKzetjoPOxE2ZvyB0EA
+         nmmAWm3E31c7sQtafFElXD25S+aU+Fxr1IGWirOLCQq2urltKHxVtDHt62T9bzjV6B
+         5QF4DxRwZMibez4Fo7cTgo4JakJjyLu+wpRDxwc7booM5/EQpzElXHYRrLTkeQ+LTQ
+         hq+Eke2Zun77b9rU8157ukwdqkmIVsZplM9+V2OKpWISKe4Wg08EwRA9ft70p2ua8+
+         xFA0AKpB6lJEOPh1xUI/KbtlTN/rz6KUa6agwHCJ+OQuJn/fpYxdAzIOH/LWlpZsl6
+         yCQ7lmRDOD8Tg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH v16 01/11] mm: add definition of PMD_PAGE_ORDER
+Date:   Thu, 21 Jan 2021 14:27:13 +0200
+Message-Id: <20210121122723.3446-2-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210121122723.3446-1-rppt@kernel.org>
+References: <20210121122723.3446-1-rppt@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:31 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> Hi Andrey,
->
-> On 1/19/21 6:09 PM, Andrey Konovalov wrote:
-> > Hi Vincenzo,
-> >
-> > This change has multiple conflicts with the KASAN testing patches that
-> > are currently in the mm tree. If Andrew decides to send all of them
-> > during RC, then this should be good to go through arm64. Otherwise, I
-> > guess this will need to go through mm as well. So you probably need to
-> > rebase this on top of those patches in any case.
-> >
->
-> Could you please let me know on which tree do you want me to rebase my patches?
-> I almost completed the requested changes.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-linux-next/akpm should work. Thanks!
+The definition of PMD_PAGE_ORDER denoting the number of base pages in the
+second-level leaf page is already used by DAX and maybe handy in other
+cases as well.
+
+Several architectures already have definition of PMD_ORDER as the size of
+second level page table, so to avoid conflict with these definitions use
+PMD_PAGE_ORDER name and update DAX respectively.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christopher Lameter <cl@linux.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Elena Reshetova <elena.reshetova@intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tycho Andersen <tycho@tycho.ws>
+Cc: Will Deacon <will@kernel.org>
+Cc: Hagen Paul Pfeifer <hagen@jauu.net>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ fs/dax.c                | 11 ++++-------
+ include/linux/pgtable.h |  3 +++
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/fs/dax.c b/fs/dax.c
+index 26d5dcd2d69e..0f109eb16196 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -49,9 +49,6 @@ static inline unsigned int pe_order(enum page_entry_size pe_size)
+ #define PG_PMD_COLOUR	((PMD_SIZE >> PAGE_SHIFT) - 1)
+ #define PG_PMD_NR	(PMD_SIZE >> PAGE_SHIFT)
+ 
+-/* The order of a PMD entry */
+-#define PMD_ORDER	(PMD_SHIFT - PAGE_SHIFT)
+-
+ static wait_queue_head_t wait_table[DAX_WAIT_TABLE_ENTRIES];
+ 
+ static int __init init_dax_wait_table(void)
+@@ -98,7 +95,7 @@ static bool dax_is_locked(void *entry)
+ static unsigned int dax_entry_order(void *entry)
+ {
+ 	if (xa_to_value(entry) & DAX_PMD)
+-		return PMD_ORDER;
++		return PMD_PAGE_ORDER;
+ 	return 0;
+ }
+ 
+@@ -1470,7 +1467,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	struct address_space *mapping = vma->vm_file->f_mapping;
+-	XA_STATE_ORDER(xas, &mapping->i_pages, vmf->pgoff, PMD_ORDER);
++	XA_STATE_ORDER(xas, &mapping->i_pages, vmf->pgoff, PMD_PAGE_ORDER);
+ 	unsigned long pmd_addr = vmf->address & PMD_MASK;
+ 	bool write = vmf->flags & FAULT_FLAG_WRITE;
+ 	bool sync;
+@@ -1529,7 +1526,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+ 	 * entry is already in the array, for instance), it will return
+ 	 * VM_FAULT_FALLBACK.
+ 	 */
+-	entry = grab_mapping_entry(&xas, mapping, PMD_ORDER);
++	entry = grab_mapping_entry(&xas, mapping, PMD_PAGE_ORDER);
+ 	if (xa_is_internal(entry)) {
+ 		result = xa_to_internal(entry);
+ 		goto fallback;
+@@ -1695,7 +1692,7 @@ dax_insert_pfn_mkwrite(struct vm_fault *vmf, pfn_t pfn, unsigned int order)
+ 	if (order == 0)
+ 		ret = vmf_insert_mixed_mkwrite(vmf->vma, vmf->address, pfn);
+ #ifdef CONFIG_FS_DAX_PMD
+-	else if (order == PMD_ORDER)
++	else if (order == PMD_PAGE_ORDER)
+ 		ret = vmf_insert_pfn_pmd(vmf, pfn, FAULT_FLAG_WRITE);
+ #endif
+ 	else
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 8fcdfa52eb4b..ea5c4102c23e 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -28,6 +28,9 @@
+ #define USER_PGTABLES_CEILING	0UL
+ #endif
+ 
++/* Number of base pages in a second level leaf page */
++#define PMD_PAGE_ORDER	(PMD_SHIFT - PAGE_SHIFT)
++
+ /*
+  * A page table page can be thought of an array like this: pXd_t[PTRS_PER_PxD]
+  *
+-- 
+2.28.0
+
