@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181582FE9C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABF62FE9C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730429AbhAUMQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51356 "EHLO
+        id S1730917AbhAUMRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730986AbhAUMOu (ORCPT
+        with ESMTP id S1730223AbhAUMPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:14:50 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED419C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:14:01 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id i63so1254232wma.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:14:01 -0800 (PST)
+        Thu, 21 Jan 2021 07:15:09 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA40C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:14:28 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id n8so2230774ljg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:14:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1fh/a4DYJLi+AyFxFDtHnnnCfJUqWq8QRUBkRL69peM=;
-        b=uhtmotDTNcSU3elkTAGv5ljRnhN+O0WXOi+p5MvFvHsI8xTZRnSfv//K0qPQAcyCTJ
-         set7h6+CIAFEgUkRQeZbWhAip5XSFiM+vdUIyAfTUj44O4uJz9ORrFANHe5GiCegWyWF
-         zbBxz60Z/Ze0CXHMVHw0ItPZyr80p2tiNaqKgKrVD1tGvzz0eoEZEVvMcGrY07kBHfDd
-         SbeiJqTJIW2bJ0c4kmMrbXlgUtFcKiw8ngHPwQb64FWxbFACEhcvdc6wQ6cJ7o0OeriU
-         EkYeDXVPUkno5yxMjmERrX1N9YIsccmM04qrPVkhW68XUhCNfLWoB4rPOi+vGC3/l3Ba
-         HgJg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=40qqDLkfea9y6OAb5ktyENQV282P5G22MREwSllTT1s=;
+        b=piKJaYRSj6GNrk9hUZZNnV/H4mudUKRAQgwVSmkYFg0RPghYKv6+TDjxk420xq3x03
+         sf7RQvfWbPN3LJoDXR+m8OViF/sRoqH7V6JmmXZ1HHIzLoPpw16dHDPxkr63MS6aC9H4
+         /mVza1PEBF3aQXqkQUV/ammRwYkta5CWw9R1HdXqdX6otPR7qcrCK/mUgPNVlgw+PRqx
+         f6zq+2p25F73+KZ3gK1KBNlTAgGCW1rJkM+eH+crWVqSjVE6cYE77PrVysjEs11VC5mV
+         2R6KhBW9OuynXDOEEeqTFYDgyeohCgoVibmRfb1/nUlwRzhnwvTsfQn536TpJ53y7LWK
+         prXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1fh/a4DYJLi+AyFxFDtHnnnCfJUqWq8QRUBkRL69peM=;
-        b=d6siOXiaD/Vsj9C8aqir/Swem+c7oaDZheup8wUmxnz71ZsMjd3JFMZF02b839wDWs
-         AfHCFPP97kbfkE1bQsXceMxrQmAyyCzw60h18sbgk0xUjleWu+XgLkQOdRNJH/yn0uEA
-         F8Xkh8Ju8sUy744J44qFwN7erfiGnvNn9RAV8ZzilaGRhh6MOFmuweojPZXozKENnGEG
-         oFwsIJDrEpixueAdusS7Xmk5ekNGnti13Z3kZf477GZz6quhsOmvUQwjUrX3ouaQJ2Gx
-         mH94jQYaWWOU9Tlc09+2JgEsnkHhxZTtocYCZ5zddfeEY/TClSTwyPoPn1XRF4kHS1BP
-         3Hmg==
-X-Gm-Message-State: AOAM5305wnK1YiBW2KI5T+3wMXXjAlIWos4iOTPEfB2DfXsFdMKuCGdE
-        eybcziNNPLR+T8K9XTQf6fTq+w==
-X-Google-Smtp-Source: ABdhPJx9Bhv813mdnZiQlWQ4Uk812dfwvV+b3bgBmx5XiuSgvG/PaMMnuhhojD92G4yGmytdYhen2A==
-X-Received: by 2002:a1c:f706:: with SMTP id v6mr8828963wmh.85.1611231240762;
-        Thu, 21 Jan 2021 04:14:00 -0800 (PST)
-Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id w129sm7964855wmb.11.2021.01.21.04.14.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 04:14:00 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] gpio: mockup: tweak the Kconfig help text
-Date:   Thu, 21 Jan 2021 13:13:55 +0100
-Message-Id: <20210121121355.31654-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=40qqDLkfea9y6OAb5ktyENQV282P5G22MREwSllTT1s=;
+        b=MiuUKk8ic2Jp4pjYz+v8gUKqmr89WfYpiUDL+X51v1MRkceq9wgUGv3NvnFrTthidA
+         w1/Aef3/ijNWAJPGdFWaBxIpSw60U01H1B+pGqytfyf1skWMCy9CjsLsaf2P9y3B7N9n
+         IdooCT2BWIo5kD8TyESDjVCYwjKV5whImIwS77xCwQuowCGAJdcldMCNv3M0LL5qAav+
+         KT3NA6royIdMYvlYSBhIDe6DKJVDcxVEu7pctdMwFUHQIQOqK/47VAontVdZjCrbEwS5
+         ieL+UoB4SMLdSeEFajs+aOrm0A1qh5Gj0inV6Q1vmvGoHr3u6kTwbfAsyDPLV1Kb2o2G
+         w4Rw==
+X-Gm-Message-State: AOAM530PkQpTSUtQKgiMWT34AEJRrdGNAGwQQDehe3GvmtxFp6CwvlRf
+        mPykHBsZelSWbYy+iduMk/W7DPyodWBLUmMBP89R1A==
+X-Google-Smtp-Source: ABdhPJxDisgdNRI0C7GnToJFLFhhW3b98HpitxMBUr1r37U3ysGPdUPM/HgvNxG9uHMPNPDpWUKH0nXuSrGvJ7lTbxk=
+X-Received: by 2002:a2e:b4cd:: with SMTP id r13mr3739249ljm.273.1611231267010;
+ Thu, 21 Jan 2021 04:14:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210120132045.2127659-1-arnd@kernel.org> <20210120132045.2127659-5-arnd@kernel.org>
+In-Reply-To: <20210120132045.2127659-5-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 21 Jan 2021 13:14:16 +0100
+Message-ID: <CACRpkdY+sF5VX1M5eb5Ps99psOTePuRugRmAfv=6xcnCSg_YVg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] pinctrl: remove coh901 driver
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Wed, Jan 20, 2021 at 2:21 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-gpio-mockup doesn't require SYSFS to be selected so drop that bit from
-the Kconfig text.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The ST-Ericsson U300 platform is getting removed, so this driver is no
+> longer needed.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/gpio/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Patch applied.
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index c70f46e80a3b..e8e3ed803c07 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -1633,8 +1633,7 @@ config GPIO_MOCKUP
- 	select IRQ_SIM
- 	help
- 	  This enables GPIO Testing driver, which provides a way to test GPIO
--	  subsystem through sysfs(or char device) and debugfs. GPIO_SYSFS
--	  must be selected for this test.
-+	  subsystem through sysfs (or char device) and debugfs.
- 	  User could use it through the script in
- 	  tools/testing/selftests/gpio/gpio-mockup.sh. Reference the usage in
- 	  it.
--- 
-2.29.1
-
+Yours,
+Linus Walleij
