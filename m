@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085852FE92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208C42FE924
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 12:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbhAULq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 06:46:58 -0500
-Received: from mga18.intel.com ([134.134.136.126]:34585 "EHLO mga18.intel.com"
+        id S1728593AbhAULqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 06:46:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730362AbhAULo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:44:58 -0500
-IronPort-SDR: DJRglo1xkDYhwZwdllSjl2DpdZHPBrBJ7nFOA5P/iCAlPRILqwkQ9EkVTu2stvl4jtnP/WeAyA
- zZGkJo5UG6vQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="166927233"
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="166927233"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 03:44:10 -0800
-IronPort-SDR: fpiFMNWJdv+kNBcat3hUI51nNJ3fyv2YaW+Eqz0AFrLPcOV9EM4nIYSVPtWFfnSZMXEb2r1mUs
- /CvXfPJHJgBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="354727258"
-Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 21 Jan 2021 03:44:08 -0800
-Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l2YNj-0006U3-Lv; Thu, 21 Jan 2021 11:44:07 +0000
-Date:   Thu, 21 Jan 2021 19:43:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zhou Wang <wangzhou1@hisilicon.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kbuild-all@lists.01.org, linux-accelerators@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Zhou Wang <wangzhou1@hisilicon.com>,
-        Sihang Chen <chensihang1@hisilicon.com>
-Subject: [RFC PATCH] uacce: uacce_ctrl_open() can be static
-Message-ID: <20210121114328.GA80090@0beca8d15ecb>
-References: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
+        id S1730453AbhAULpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:45:14 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C629E238E3;
+        Thu, 21 Jan 2021 11:44:25 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l2YNz-009B6g-L6; Thu, 21 Jan 2021 11:44:23 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 21 Jan 2021 11:44:23 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Stan Skowronek <stan@corellium.com>
+Subject: Re: [RFC PATCH 3/7] arm64: mm: use nGnRnE instead of nGnRE on Apple
+ processors
+In-Reply-To: <20210121112725.GA21750@willie-the-truck>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-4-mohamed.mediouni@caramail.com>
+ <20210121112725.GA21750@willie-the-truck>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <fdc49d125ef9f520254196509f6c0aa2@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, mohamed.mediouni@caramail.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, mark.rutland@arm.com, marcan@marcan.st, linux-kernel@vger.kernel.org, stan@corellium.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-21 11:27, Will Deacon wrote:
+> On Wed, Jan 20, 2021 at 02:27:13PM +0100, Mohamed Mediouni wrote:
+>> Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious 
+>> hardware quirk.
+>> 
+>> On Apple processors, writes using the nGnRE device memory type get 
+>> dropped in flight,
+>> getting to nowhere.
+>> 
+>> Signed-off-by: Stan Skowronek <stan@corellium.com>
+>> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+>> ---
+>>  arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
+>>  1 file changed, 26 insertions(+)
+>> 
+>> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+>> index 1f7ee8c8b7b8..06436916f137 100644
+>> --- a/arch/arm64/mm/proc.S
+>> +++ b/arch/arm64/mm/proc.S
+>> @@ -51,6 +51,25 @@
+>>  #define TCR_KASAN_HW_FLAGS 0
+>>  #endif
+>> 
+>> +#ifdef CONFIG_ARCH_APPLE
+>> +
+>> +/*
+>> + * Apple cores appear to black-hole writes done with nGnRE.
+>> + * We settled on a work-around that uses MAIR vs changing every 
+>> single user of
+>> + * nGnRE across the arm64 code.
+>> + */
+>> +
+>> +#define MAIR_EL1_SET_APPLE						\
+>> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+>> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |	\
+>> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+>> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+>> +
+>> +#endif
+>> +
+>>  /*
+>>   * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal 
+>> memory and
+>>   * changed during __cpu_setup to Normal Tagged if the system supports 
+>> MTE.
+>> @@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
+>>  	 * Memory region attributes
+>>  	 */
+>>  	mov_q	x5, MAIR_EL1_SET
+>> +#ifdef CONFIG_ARCH_APPLE
+>> +	mrs	x0, MIDR_EL1
+>> +	lsr	w0, w0, #24
+>> +	mov_q	x1, MAIR_EL1_SET_APPLE
+>> +	cmp	x0, #0x61			// 0x61 = Implementer: Apple
+>> +	csel	x5, x1, x5, eq
+> 
+> Why does this need to be done so early? It would be a lot cleaner if we
+> could detect this in a similar fashion to other errata and update the 
+> MAIR
+> appropriately. If that's not possible because of early IO mappings 
+> (which
+> ones?), then we could instead initialise to nGnRnE unconditionally, but
+> relax it to nGnRE if we detect that we _don't_ have the erratum.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- uacce.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Would that imply another round-trip into the idmap, much like we do
+when we switch to non-global mappings? Or do you expect that we can 
+change
+the MAIR with live mappings?
 
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index b8ac4080a7d6f76..11cbb69422221a5 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -508,7 +508,7 @@ void uacce_remove(struct uacce_device *uacce)
- }
- EXPORT_SYMBOL_GPL(uacce_remove);
- 
--int uacce_ctrl_open(struct inode *inode, struct file *file)
-+static int uacce_ctrl_open(struct inode *inode, struct file *file)
- {
- 	struct uacce_pin_container *p;
- 
-@@ -522,7 +522,7 @@ int uacce_ctrl_open(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
--int uacce_ctrl_release(struct inode *inode, struct file *file)
-+static int uacce_ctrl_release(struct inode *inode, struct file *file)
- {
- 	struct uacce_pin_container *priv = file->private_data;
- 	struct pin_pages *p;
+         M.
+-- 
+Jazz is not dead. It just smells funny...
