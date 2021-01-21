@@ -2,183 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33DE2FF1F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF312FF205
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388635AbhAURbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:31:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49430 "EHLO mail.kernel.org"
+        id S2388501AbhAURdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:33:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:42200 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387915AbhAUR3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:29:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB8D206B5;
-        Thu, 21 Jan 2021 17:28:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611250117;
-        bh=94nwsIf4s2vJ0MSn5f5q0pKIoTv5OghevV69Z5I6SjI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wNJ0eZ4XfUMBswNmWI7z8Lmeof4yD6KxXaTUwnzehagkdZvjboUB0Cb8/wKrF0Kel
-         Kr78u5Jrab/pFFJWVYgvQn/yfgTg46OEdAu2s5yK6iE6Bh/WBwsQoNsskdXwuMskIU
-         QDPsdkkSUU0dXJHZK1h0YqvBSqjHPq2PLBRrkmz8=
-Date:   Thu, 21 Jan 2021 18:28:35 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: Re: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-Message-ID: <YAm5w7Le1lMdiYTa@kroah.com>
-References: <20210121155445.GA2657778@bjorn-Precision-5520>
- <ae24ccfb-9fb6-5fad-8495-538fab95066e@linux.ibm.com>
+        id S2388541AbhAURaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:30:08 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B74E611B3;
+        Thu, 21 Jan 2021 09:29:20 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13E233F66E;
+        Thu, 21 Jan 2021 09:29:14 -0800 (PST)
+Subject: Re: [RFC PATCH v3 5/6] dt-bindings: of: Add restricted DMA pool
+To:     Rob Herring <robh@kernel.org>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        xen-devel@lists.xenproject.org, Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <20210106034124.30560-6-tientzu@chromium.org>
+ <20210120165348.GA220770@robh.at.kernel.org>
+ <313f8052-a591-75de-c4c2-ee9ea8f02e7f@arm.com>
+ <CAL_JsqKjTqcCbCLksRbCh7=f-A3Y09A3jNqtUApaA+p=RKd_Eg@mail.gmail.com>
+ <c0d631de-8840-4f6e-aebf-41bb8449f78c@arm.com>
+ <CAL_JsqLv-FaiY_k+wS=iXG5AtccsXSBtvTfEGHvsN-VNqXdwpA@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1a570c5c-e0da-7d86-4384-4a4c50193c94@arm.com>
+Date:   Thu, 21 Jan 2021 17:29:13 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae24ccfb-9fb6-5fad-8495-538fab95066e@linux.ibm.com>
+In-Reply-To: <CAL_JsqLv-FaiY_k+wS=iXG5AtccsXSBtvTfEGHvsN-VNqXdwpA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:04:52PM +0100, Niklas Schnelle wrote:
+On 2021-01-21 15:48, Rob Herring wrote:
+> On Wed, Jan 20, 2021 at 7:10 PM Robin Murphy <robin.murphy@arm.com>
+> wrote:
+>> 
+>> On 2021-01-20 21:31, Rob Herring wrote:
+>>> On Wed, Jan 20, 2021 at 11:30 AM Robin Murphy
+>>> <robin.murphy@arm.com> wrote:
+>>>> 
+>>>> On 2021-01-20 16:53, Rob Herring wrote:
+>>>>> On Wed, Jan 06, 2021 at 11:41:23AM +0800, Claire Chang
+>>>>> wrote:
+>>>>>> Introduce the new compatible string, restricted-dma-pool,
+>>>>>> for restricted DMA. One can specify the address and length
+>>>>>> of the restricted DMA memory region by restricted-dma-pool
+>>>>>> in the device tree.
+>>>>> 
+>>>>> If this goes into DT, I think we should be able to use
+>>>>> dma-ranges for this purpose instead. Normally, 'dma-ranges'
+>>>>> is for physical bus restrictions, but there's no reason it
+>>>>> can't be used for policy or to express restrictions the
+>>>>> firmware has enabled.
+>>>> 
+>>>> There would still need to be some way to tell SWIOTLB to pick
+>>>> up the corresponding chunk of memory and to prevent the kernel
+>>>> from using it for anything else, though.
+>>> 
+>>> Don't we already have that problem if dma-ranges had a very
+>>> small range? We just get lucky because the restriction is
+>>> generally much more RAM than needed.
+>> 
+>> Not really - if a device has a naturally tiny addressing capability
+>> that doesn't even cover ZONE_DMA32 where the regular SWIOTLB buffer
+>> will be allocated then it's unlikely to work well, but that's just
+>> crap system design. Yes, memory pressure in ZONE_DMA{32} is
+>> particularly problematic for such limited devices, but it's
+>> irrelevant to the issue at hand here.
 > 
+> Yesterday's crap system design is today's security feature. Couldn't 
+> this feature make crap system design work better?
+
+Indeed! Say you bring out your shiny new "Strawberry Flan 4" machine
+with all the latest connectivity, but tragically its PCIe can only
+address 25% of the RAM. So you decide to support deploying it in two
+configurations: one where it runs normally for best performance, and
+another "secure" one where it dedicates that quarter of RAM as a 
+restricted DMA pool for any PCIe devices - that way, even if that hotel 
+projector you plug in turns out to be a rogue Thunderbolt endpoint, it 
+can never snarf your private keys off your eMMC out of the page cache.
+
+(Yes, is is the thinnest of strawmen, but it sets the scene for the 
+point you raised...)
+
+...which is that in both cases the dma-ranges will still be identical. 
+So how is the kernel going to know whether to steal that whole area from 
+memblock before anything else can allocate from it, or not?
+
+I don't disagree that even in Claire's original intended case it would 
+be semantically correct to describe the hardware-firewalled region with 
+dma-ranges. It just turns out not to be necessary, and you're already 
+arguing for not adding anything in DT that doesn't need to be.
+
+>> What we have here is a device that's not allowed to see *kernel*
+>> memory at all. It's been artificially constrained to a particular
+>> region by a TZASC or similar, and the only data which should ever
+>> be placed in that
 > 
-> On 1/21/21 4:54 PM, Bjorn Helgaas wrote:
-> > [Greg may be able to help compare/contrast this s390 UID with udev
-> > persistent names]
-> > 
-> > On Thu, Jan 21, 2021 at 04:31:55PM +0100, Niklas Schnelle wrote:
-> >> On 1/15/21 4:29 PM, Bjorn Helgaas wrote:
-> >>> On Fri, Jan 15, 2021 at 12:20:59PM +0100, Niklas Schnelle wrote:
-> >>>> On 1/14/21 5:14 PM, Greg Kroah-Hartman wrote:
-> >>>>> On Thu, Jan 14, 2021 at 04:51:17PM +0100, Niklas Schnelle wrote:
-> >>>>>> On 1/14/21 4:17 PM, Greg Kroah-Hartman wrote:
-> >>>>>>> On Thu, Jan 14, 2021 at 04:06:11PM +0100, Niklas Schnelle wrote:
-> >>>>>>>> On 1/14/21 2:58 PM, Greg Kroah-Hartman wrote:
-> >>>>>>>>> On Thu, Jan 14, 2021 at 02:44:53PM +0100, Christian Brauner wrote:
-> >>>>>>>>>> On Thu, Jan 14, 2021 at 02:20:10PM +0100, Niklas Schnelle wrote:
-> >>>>>>>>>>> On 1/13/21 7:55 PM, Bjorn Helgaas wrote:
-> >>>>>>>>>>>> On Wed, Jan 13, 2021 at 08:47:58AM +0100, Niklas Schnelle wrote:
-> >>>>>>>>>>>>> On 1/12/21 10:50 PM, Bjorn Helgaas wrote:
-> >>>> ... snip ...
-> >>>>
-> >>>>>
-> >>>>>> 	if (!zpci_global_kset)
-> >>>>>> 		return -ENOMEM;
-> >>>>>>
-> >>>>>> 	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
-> >>>>>
-> >>>>> Huge hint, if in a driver, or bus subsystem, and you call sysfs_*,
-> >>>>> that's usually a huge clue that you are doing something wrong.
-> >>>>>
-> >>>>> Try the above again, with a simple attribute group, and name for it, and
-> >>>>> it should "just work".
-> >>>>
-> >>>> I'm probably missing something but I don't get how this could work
-> >>>> in this case. If I'm seeing this right the default attribute group
-> >>>> here is pci_bus_type.bus_groups and that is already set in
-> >>>> drivers/pci/pci-driver.c so I don't think I should set that.
-> >>>>
-> >>>> I did however find bus_create_file() which does work when using the
-> >>>> path /sys/bus/pci/uid_checking instead. This would work for us if
-> >>>> Bjorn is okay with that path and the code is really clean and simple
-> >>>> too.
-> >>>>
-> >>>> That said, I think we could also add something like
-> >>>> bus_create_group().  Then we could use that to also clean up
-> >>>> drivers/pci/slot.c:pci_slot_init() and get the original path
-> >>>> /sys/bus/pci/zpci/uid_checking.
-> >>>
-> >>> I don't think "uid_checking" is quite the right name.  It says
-> >>> something about the *implementation*, but it doesn't convey what that
-> >>> *means* to userspace.  IIUC this file tells userspace something about
-> >>> whether a given PCI device always has the same PCI domain/bus/dev/fn
-> >>> address (or maybe just the same domain?)
-> >>>
-> >>> It sounds like this feature could be useful beyond just s390, and
-> >>> other arches might implement it differently, without the UID concept.
-> >>> If so, I'm OK with something at the /sys/bus/pci/xxx level as long as
-> >>> the name is not s390-specific (and "uid" sounds s390-specific).
-> >>>
-> >>> I assume it would also help with the udev/systemd end if you could
-> >>> make this less s390 dependent.
-> >>
-> >> I've thought about this more and even implemented a proof of concept
-> >> patch for a global attribute using a pcibios_has_reproducible_addressing()
-> >> hook. 
-> >>
-> >> However after implementing it I think as a more general and
-> >> future proof concept it makes more sense to do this as a per device
-> >> attribute, maybe as another flag in "stuct pci_dev" named something
-> >> like "reliable_address". My reasoning behind this can be best be seen
-> >> with a QEMU example. While I expect that QEMU can easily guarantee
-> >> that one can always use "0000:01:00.0" for a virtio-pci NIC and
-> >> thus enp1s0 interface name, the same might be harder to guarantee
-> >> for a SR-IOV VF passed through with vfio-pci in that same VM and
-> >> even less so if a thunderbolt controller is passed through and
-> >> enumeration may depend on daisy chaining. The QEMU example
-> >> also applies to s390 and maybe others will in the future.
-> > 
-> > I'm a little wary of using the PCI geographical address
-> > ("0000:01:00.0") as a stable name.  Even if you can make a way to use
-> > that to identify a specific device instance, regardless of how it is
-> > plugged in or passed through, it sounds like we could end up with
-> > "physical PCI addresses" and "virtual PCI addresses" that look the
-> > same and would cause confusion.
-> > 
-> > This concept sounds similar to the udev concept of a "persistent
-> > device name".  What advantages does this s390 UID have over the udev
-> > approach?
-> > 
-> > There are optional PCI device serial numbers that we currently don't
-> > really make use of.  Would that be a generic way to help with this?
-> > 
+> May have been constrained, but that's entirely optional.
 > 
-> As far as I understand systemd/udev uses the PCI geographical address
-> by default ("enP<domain>p<bus>s<hotplug_slot_idx>...") for PCI attached
-> network interfaces in many cases and a lot of users have already built
-> their firewall/routing rules on these.
+> In the optional case where the setup is entirely up to the OS, I
+> don't think this belongs in the DT at all. Perhaps that should be
+> solved first.
 
-Which is fine as "normally" that does not change.  But on some machines,
-it is quite volatile so users pick a different naming scheme.
+Yes! Let's definitely consider that case! Say you don't have any 
+security or physical limitations but want to use a bounce pool for some 
+device anyway because reasons (perhaps copying streaming DMA data to a 
+better guaranteed alignment gives an overall performance win). Now the 
+*only* relevant thing to communicate to the kernel is to, ahem, reserve 
+a large chunk of memory, and use it for this special purpose. Isn't that 
+literally what reserved-memory bindings are for?
 
-And this is all done in userspace, I really don't understand what you
-want to do in the kernel here.  If you want to expose another unique
-thing that the hardware knows about, wonderful, userspace can then use
-that if it wants to in how it names specific devices.  But don't put
-that naming in the kernel, that's not where it belongs.
+>> region is data intended for that device to see. That way if it
+>> tries to go rogue it physically can't start slurping data intended
+>> for other devices or not mapped for DMA at all. The bouncing is an
+>> important part of this - I forget the title off-hand but there was
+>> an interesting paper a few years ago which demonstrated that even
+>> with an IOMMU, streaming DMA of in-place buffers could reveal
+>> enough adjacent data from the same page to mount an attack on the
+>> system. Memory pressure should be immaterial since the size of each
+>> bounce pool carveout will presumably be tuned for the needs of the
+>> given device.
+>> 
+>>> In any case, wouldn't finding all the dma-ranges do this? We're 
+>>> already walking the tree to find the max DMA address now.
+>> 
+>> If all you can see are two "dma-ranges" properties, how do you
+>> propose to tell that one means "this is the extent of what I can
+>> address, please set my masks and dma-range-map accordingly and try
+>> to allocate things where I can reach them" while the other means
+>> "take this output range away from the page allocator and hook it up
+>> as my dedicated bounce pool, because it is Serious Security Time"?
+>> Especially since getting that choice wrong either way would be a
+>> Bad Thing.
+> 
+> Either we have some heuristic based on the size or we add some hint. 
+> The point is let's build on what we already have for defining DMA 
+> accessible memory in DT rather than some parallel mechanism.
 
-> Now taking this beyond s390 my idea is that under some circumstances
-> just as with UID Uniqueness for us, the platform can tell if a PCI
-> geographical address is a reliable identifier thus sytemd/udev
-> has more information about the quality of existing naming schemes
-> incorporating information from the geographical address.
+The point I'm trying to bang home is that it's really not about the DMA 
+accessibility, it's about the purpose of the memory itself. Even when 
+DMA accessibility *is* relevant it's already implied by that purpose, 
+from the point of view of the implementation. The only difference it 
+might make is to the end user if they want to ascertain whether the 
+presence of such a pool represents protection against an untrusted 
+device or just some DMA optimisation tweak.
 
-The platform does not "know" if this is reliable or not, sorry.  That's
-not how PCI or UEFI works.
-
-> Looking at my personal KVM guests (Ubuntu, Arch Linux, Ubuntu ARM64)
-> as well as my workstation (Arch Linux) all of them use a scheme
-> with parts of the geographical address.
-
-Because for the most part, yes, this works.  Until you plug another
-device into the system.  Or remove one.  Or plug a hotplug device in and
-then cold boot with it plugged in (or removed).  Or, my favorite system,
-just decide to renumber the PCI bus every other boot "just because".
-
-None of that variability can be known by the kernel, that's only known by
-the user of that system, so again, they can make the best decision as to
-how to name their devices.  If you want to use the systemd default,
-wonderful, but know that it does not work for everyone, so systemd
-allows you to do whatever you want.
-
-> So in essence my idea is all about either choosing the best existing
-> default name or making sure we at least know if it may not be reliable.
-
-There is no reliability "score" here, sorry.  Hardware is fun :)
-
-good luck!
-
-greg k-h
+Robin.
