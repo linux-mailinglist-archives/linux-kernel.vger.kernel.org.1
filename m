@@ -2,80 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FAB2FE0AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D332FE052
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 05:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732398AbhAUE2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 23:28:52 -0500
-Received: from mail.v3.sk ([167.172.186.51]:43922 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727136AbhAUEUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:20:21 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 82B7EE0738;
-        Thu, 21 Jan 2021 03:37:46 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id rqpuAFeEUP4K; Thu, 21 Jan 2021 03:37:46 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 1F68CE0AA9;
-        Thu, 21 Jan 2021 03:37:46 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id YoQcdNrIrArX; Thu, 21 Jan 2021 03:37:45 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id D76FCE0738;
-        Thu, 21 Jan 2021 03:37:45 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, SoC Team <soc@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH 12/12] ARM: dts: mmp3: Fix the CCIC interrupts
-Date:   Thu, 21 Jan 2021 04:41:30 +0100
-Message-Id: <20210121034130.1381872-13-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121034130.1381872-1-lkundrak@v3.sk>
-References: <20210121034130.1381872-1-lkundrak@v3.sk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        id S1731704AbhAUEDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 23:03:43 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:51520 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727047AbhAUD6U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 22:58:20 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UMOCsi0_1611201439;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMOCsi0_1611201439)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Jan 2021 11:57:24 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     njavali@marvell.com
+Cc:     mrangankar@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH v2] scsi/qla4xxx: convert sysfs sprintf/snprintf family to sysfs_emit/sysfs_emit_at
+Date:   Thu, 21 Jan 2021 11:57:17 +0800
+Message-Id: <1611201437-111938-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A copy & paste oversight from MMP2; camera interrupts are handled
-via a multiplexer on MMP3.
+Fix the following coccicheck warning:
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+./drivers/scsi/qla4xxx/ql4_attr.c: WARNING: use scnprintf or
+sprintf.
+
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 ---
- arch/arm/boot/dts/mmp3.dtsi | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Changes in v2:
+  - convert snprintf family to sysfs_emit_at.
 
-diff --git a/arch/arm/boot/dts/mmp3.dtsi b/arch/arm/boot/dts/mmp3.dtsi
-index 9f2b059f0900b..a4fb9203ec1fb 100644
---- a/arch/arm/boot/dts/mmp3.dtsi
-+++ b/arch/arm/boot/dts/mmp3.dtsi
-@@ -293,7 +293,8 @@ mmc5: mmc@d4217000 {
- 			camera0: camera@d420a000 {
- 				compatible =3D "marvell,mmp2-ccic";
- 				reg =3D <0xd420a000 0x800>;
--				interrupts =3D <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts =3D <1>;
-+				interrupt-parent =3D <&ci_mux>;
- 				clocks =3D <&soc_clocks MMP2_CLK_CCIC0>;
- 				clock-names =3D "axi";
- 				power-domains =3D <&soc_clocks MMP3_POWER_DOMAIN_CAMERA>;
-@@ -305,7 +306,8 @@ camera0: camera@d420a000 {
- 			camera1: camera@d420a800 {
- 				compatible =3D "marvell,mmp2-ccic";
- 				reg =3D <0xd420a800 0x800>;
--				interrupts =3D <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts =3D <2>;
-+				interrupt-parent =3D <&ci_mux>;
- 				clocks =3D <&soc_clocks MMP2_CLK_CCIC1>;
- 				clock-names =3D "axi";
- 				power-domains =3D <&soc_clocks MMP3_POWER_DOMAIN_CAMERA>;
---=20
-2.29.2
+ drivers/scsi/qla4xxx/ql4_attr.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/scsi/qla4xxx/ql4_attr.c b/drivers/scsi/qla4xxx/ql4_attr.c
+index ec43528..ad9b021 100644
+--- a/drivers/scsi/qla4xxx/ql4_attr.c
++++ b/drivers/scsi/qla4xxx/ql4_attr.c
+@@ -156,11 +156,11 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 
+ 	if (is_qla80XX(ha))
+-		return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d (%x)\n",
++		return sysfs_emit_at(buf, PAGE_SIZE, "%d.%02d.%02d (%x)\n",
+ 				ha->fw_info.fw_major, ha->fw_info.fw_minor,
+ 				ha->fw_info.fw_patch, ha->fw_info.fw_build);
+ 	else
+-		return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
++		return sysfs_emit_at(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
+ 				ha->fw_info.fw_major, ha->fw_info.fw_minor,
+ 				ha->fw_info.fw_patch, ha->fw_info.fw_build);
+ }
+@@ -170,7 +170,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ha->serial_number);
++	return sysfs_emit_at(buf, PAGE_SIZE, "%s\n", ha->serial_number);
+ }
+ 
+ static ssize_t
+@@ -178,7 +178,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			   char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%d.%02d\n", ha->fw_info.iscsi_major,
++	return sysfs_emit_at(buf, PAGE_SIZE, "%d.%02d\n", ha->fw_info.iscsi_major,
+ 			ha->fw_info.iscsi_minor);
+ }
+ 
+@@ -187,7 +187,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			    char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
++	return sysfs_emit_at(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
+ 			ha->fw_info.bootload_major, ha->fw_info.bootload_minor,
+ 			ha->fw_info.bootload_patch, ha->fw_info.bootload_build);
+ }
+@@ -197,7 +197,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 		      char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "0x%08X\n", ha->board_id);
++	return sysfs_emit_at(buf, PAGE_SIZE, "0x%08X\n", ha->board_id);
+ }
+ 
+ static ssize_t
+@@ -207,7 +207,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 
+ 	qla4xxx_get_firmware_state(ha);
+-	return snprintf(buf, PAGE_SIZE, "0x%08X%8X\n", ha->firmware_state,
++	return sysfs_emit_at(buf, PAGE_SIZE, "0x%08X%8X\n", ha->firmware_state,
+ 			ha->addl_fw_state);
+ }
+ 
+@@ -220,7 +220,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	if (is_qla40XX(ha))
+ 		return -ENOSYS;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_cnt);
++	return sysfs_emit_at(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_cnt);
+ }
+ 
+ static ssize_t
+@@ -232,7 +232,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	if (is_qla40XX(ha))
+ 		return -ENOSYS;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_num);
++	return sysfs_emit_at(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_num);
+ }
+ 
+ static ssize_t
+@@ -244,7 +244,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 	if (is_qla40XX(ha))
+ 		return -ENOSYS;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->iscsi_pci_func_cnt);
++	return sysfs_emit_at(buf, PAGE_SIZE, "0x%04X\n", ha->iscsi_pci_func_cnt);
+ }
+ 
+ static ssize_t
+@@ -253,7 +253,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ha->model_name);
++	return sysfs_emit_at(buf, PAGE_SIZE, "%s\n", ha->model_name);
+ }
+ 
+ static ssize_t
+@@ -261,7 +261,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ 			  char *buf)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+-	return snprintf(buf, PAGE_SIZE, "%s %s\n", ha->fw_info.fw_build_date,
++	return sysfs_emit_at(buf, PAGE_SIZE, "%s %s\n", ha->fw_info.fw_build_date,
+ 			ha->fw_info.fw_build_time);
+ }
+ 
+@@ -309,7 +309,7 @@ void qla4_8xxx_free_sysfs_attr(struct scsi_qla_host *ha)
+ {
+ 	struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+ 	qla4xxx_about_firmware(ha);
+-	return snprintf(buf, PAGE_SIZE, "%u.%u secs\n", ha->fw_uptime_secs,
++	return sysfs_emit_at(buf, PAGE_SIZE, "%u.%u secs\n", ha->fw_uptime_secs,
+ 			ha->fw_uptime_msecs);
+ }
+ 
+-- 
+1.8.3.1
 
