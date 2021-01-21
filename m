@@ -2,128 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF232FF388
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 683E92FF38A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 19:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbhAUSsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 13:48:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728195AbhAUIxA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:53:00 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25C8C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:52:19 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id f17so1548359ljg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 00:52:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=mhbqzC8oGHF0niZK1rgMXU+01W7EQU+NzD5TxB8Ki1g=;
-        b=pCq9NAIsvUzUfrQRaMUoPJuJRYJ2sAOYdMYqhIyCyCHBCcwOZCu0UXuIL2kSZbeki9
-         rJ6R1PpcK8NsNag9tOdjv00GIiTDhfUvLHdde9BEQFq9C/Mwm5pvaq8W4xhSAd8VKABw
-         KAifFPI2pcuWtPmprAAblDMdI/F/6FwhosMiFOvcIbcm6DesaISCaA68id4E6dEv8rx/
-         PUBKaDXP6xq8kFuSTODLPZHuSMsCQMngnI0fjviuS6YrrFZdHNuq6YcVnY/RPipVRx+R
-         vDHRvJwoB+MuVHjOZqNnb2p8120Dp0TG5f6QMgtNHvx7Wc7Do7iM19/au7n0M9KmosPk
-         hVsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=mhbqzC8oGHF0niZK1rgMXU+01W7EQU+NzD5TxB8Ki1g=;
-        b=rXsSjhVVr+u21GtAe5HwrXMsV7kQ2qLED1Yaw8hmhsG/PvKPvZsXYnQ+YZFS6cttDQ
-         KfeV8BMeGj8hQ+pRjD2/LKEAp/V7FKFWTOHiCDmZUz3v73F2wlOUkvwXBcAfQROoVYzm
-         E8oGrahm65EJb3bj3LtW5xKN2iAgqw6tlJxhxtMbzPniT9kX187B2ZWugXybgex7jH6v
-         GAhES8LA7345+eaBMQe4Pw9j8BgEex4knnhmNGpk6WDQhWJEl8uPL+x1j5B6SHh43rQ4
-         XLGMQX8xdgpJAdK4yMiL6aD+5clqYPZiuVErCwPjDszH+Hepnc8eDEoUNYB/lB/LVxtS
-         Amcw==
-X-Gm-Message-State: AOAM531tf+s/umuqtEYwuN8J4D7oCPWOt8cxykOUzXB6eY3ZFzqeYmzb
-        bSBtXveIYOhZwLHXv72M5pThBJz+Nd2aFrgQabkwHA==
-X-Google-Smtp-Source: ABdhPJzqOdFiW/IgfLHttw0yRirh0MV/BcjFaDIm2V52etFaAzx6fVHy/968d3beUxryL6+U4WCOHBcXj/Ky18AqTPM=
-X-Received: by 2002:a2e:9dc3:: with SMTP id x3mr6380047ljj.326.1611219138394;
- Thu, 21 Jan 2021 00:52:18 -0800 (PST)
+        id S1726612AbhAUSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 13:48:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728203AbhAUIxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:53:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B63242399A;
+        Thu, 21 Jan 2021 08:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611219150;
+        bh=mNihBvO5Yvgk58XMrmvOtyRt7C4KQOem/4OsdCpxCX8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kQ3CtDSqUcSwRUOHsStwuS+IP3di5JSymqVEJ7QmTSKY2rHpbDZ9gDyMNY38ypnJk
+         21HU7y2WKOV0Webz4I6rB0z6YjLaoQGb5tT2I5SWOEARuJTtYTv2s0B6ddgpRPaB3W
+         U/V+27+QLILbMwuM41How/roD1RwTDY0aXvBGM/I=
+Date:   Thu, 21 Jan 2021 09:52:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Cc:     davem@davemloft.net, helmut.schaa@googlemail.com, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        stf_xl@wp.pl, syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: "KMSAN: uninit-value in rt2500usb_bbp_read" and "KMSAN:
+ uninit-value in rt2500usb_probe_hw" should be duplicate crash reports
+Message-ID: <YAlAy/tQXW0X310V@kroah.com>
+References: <CAD-N9QX=vVdiSf5UkuoYovamfw5a0e5RQJA0dQMOKmCbs-Gyiw@mail.gmail.com>
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 21 Jan 2021 09:52:07 +0100
-Message-ID: <CACRpkdYqT+jt=aNt3JN0fak7snCwxvT___QVV8L8Bjr_YSB+0A@mail.gmail.com>
-Subject: [GIT PULL] pin control fixes for the v5.11 kernel
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD-N9QX=vVdiSf5UkuoYovamfw5a0e5RQJA0dQMOKmCbs-Gyiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Jan 21, 2021 at 04:47:37PM +0800, 慕冬亮 wrote:
+> Dear kernel developers,
+> 
+> I found that on the syzbot dashboard, “KMSAN: uninit-value in
+> rt2500usb_bbp_read” [1] and "KMSAN: uninit-value in
+> rt2500usb_probe_hw" [2] should share the same root cause.
+> 
+> ## Duplication
+> 
+> The reasons for the above statement:
+> 1) The PoCs are exactly the same with each other;
+> 2) The stack trace is almost the same except for the top 2 functions;
+> 
+> ## Root Cause Analysis
+> 
+> After looking at the difference between the two stack traces, we found
+> they diverge at the function - rt2500usb_probe_hw.
+> ------------------------------------------------------------------------------------------------------------------------
+> static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
+> {
+>         ......
+>         // rt2500usb_validate_eeprom->rt2500usb_bbp_read->rt2500usb_regbusy_read->rt2500usb_register_read_lock
+> from KMSAN
+>         retval = rt2500usb_validate_eeprom(rt2x00dev);
+>         if (retval)
+>                 return retval;
+>         // rt2500usb_init_eeprom-> rt2500usb_register_read from KMSAN
+>         retval = rt2500usb_init_eeprom(rt2x00dev);
+>         if (retval)
+>                 return retval;
+> ------------------------------------------------------------------------------------------------------------------------
+> >From the implementation of rt2500usb_register_read and
+> rt2500usb_register_read_lock, we know that, in some situation, reg is
+> not initialized in the function invocation
+> (rt2x00usb_vendor_request_buff/rt2x00usb_vendor_req_buff_lock), and
+> KMSAN reports uninit-value at its first memory access.
+> ------------------------------------------------------------------------------------------------------------------------
+> static u16 rt2500usb_register_read(struct rt2x00_dev *rt2x00dev,
+>                                    const unsigned int offset)
+> {
+>         __le16 reg;
+>         // reg is not initialized during the following function all
+>         rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
+>                                       USB_VENDOR_REQUEST_IN, offset,
+>                                       &reg, sizeof(reg));
+>         return le16_to_cpu(reg);
+> }
+> static u16 rt2500usb_register_read_lock(struct rt2x00_dev *rt2x00dev,
+>                                         const unsigned int offset)
+> {
+>         __le16 reg;
+>         // reg is not initialized during the following function all
+>         rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
+>                                        USB_VENDOR_REQUEST_IN, offset,
+>                                        &reg, sizeof(reg), REGISTER_TIMEOUT);
+>         return le16_to_cpu(reg);
+> }
+> ------------------------------------------------------------------------------------------------------------------------
+> Take rt2x00usb_vendor_req_buff_lock as an example, let me illustrate
+> the issue when the "reg" variable is uninitialized. No matter the CSR
+> cache is unavailable or the status is not right, the buffer or reg
+> will be not initialized.
+> And all those issues are probabilistic events. If they occur in
+> rt2500usb_register_read, KMSAN reports "uninit-value in
+> rt2500usb_probe_hw"; Otherwise, it reports "uninit-value in
+> rt2500usb_bbp_read".
+> ------------------------------------------------------------------------------------------------------------------------
+> int rt2x00usb_vendor_req_buff_lock(struct rt2x00_dev *rt2x00dev,
+>                                    const u8 request, const u8 requesttype,
+>                                    const u16 offset, void *buffer,
+>                                    const u16 buffer_length, const int timeout)
+> {
+>         if (unlikely(!rt2x00dev->csr.cache || buffer_length > CSR_CACHE_SIZE)) {
+>                 rt2x00_err(rt2x00dev, "CSR cache not available\n");
+>                 return -ENOMEM;
+>         }
+> 
+>         if (requesttype == USB_VENDOR_REQUEST_OUT)
+>                 memcpy(rt2x00dev->csr.cache, buffer, buffer_length);
+> 
+>         status = rt2x00usb_vendor_request(rt2x00dev, request, requesttype,
+>                                           offset, 0, rt2x00dev->csr.cache,
+>                                           buffer_length, timeout);
+> 
+>         if (!status && requesttype == USB_VENDOR_REQUEST_IN)
+>                 memcpy(buffer, rt2x00dev->csr.cache, buffer_length);
+> 
+>         return status;
+> }
+> ------------------------------------------------------------------------------------------------------------------------
+> 
+> ## Patch
+> 
+> I propose to memset reg variable before invoking
+> rt2x00usb_vendor_req_buff_lock/rt2x00usb_vendor_request_buff.
+> 
+> ------------------------------------------------------------------------------------------------------------------------
+> diff --git a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> index fce05fc88aaf..f6c93a25b18c 100644
+> --- a/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> +++ b/drivers/net/wireless/ralink/rt2x00/rt2500usb.c
+> @@ -48,6 +48,7 @@ static u16 rt2500usb_register_read(struct rt2x00_dev
+> *rt2x00dev,
+>                                    const unsigned int offset)
+>  {
+>         __le16 reg;
+> +       memset(&reg, 0, sizeof(reg));
+>         rt2x00usb_vendor_request_buff(rt2x00dev, USB_MULTI_READ,
+>                                       USB_VENDOR_REQUEST_IN, offset,
+>                                       &reg, sizeof(reg));
+> @@ -58,6 +59,7 @@ static u16 rt2500usb_register_read_lock(struct
+> rt2x00_dev *rt2x00dev,
+>                                         const unsigned int offset)
+>  {
+>         __le16 reg;
+> +       memset(&reg, 0, sizeof(reg));
+>         rt2x00usb_vendor_req_buff_lock(rt2x00dev, USB_MULTI_READ,
+>                                        USB_VENDOR_REQUEST_IN, offset,
+>                                        &reg, sizeof(reg), REGISTER_TIMEOUT);
+> ------------------------------------------------------------------------------------------------------------------------
+> 
+> If you can have any issues with this statement or our information is
+> useful to you, please let us know. Thanks very much.
+> 
+> [1] “KMSAN: uninit-value in rt2500usb_bbp_read” -
+> https://syzkaller.appspot.com/bug?id=f35d123de7d393019c1ed4d4e60dc66596ed62cd
+> [2] “KMSAN: uninit-value in rt2500usb_probe_hw” -
+> https://syzkaller.appspot.com/bug?id=5402df7259c74e15a12992e739b5ac54c9b8a4ce
+> 
 
-here are some pin control fixes for the v5.11 kernel cycle.
-Only driver fixes. The details are in the signed tag.
+Can you please resend this in a form in which we can apply it?  Full
+details on how to do this can be found in
+Documentation/SubmittingPatches.
 
-Please pull it in!
+thanks,
 
-Yours,
-Linus Walleij
-
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
-
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tags/pinctrl-v5.11-2
-
-for you to fetch changes up to cf9d052aa6005f1e8dfaf491d83bf37f368af69e:
-
-  pinctrl: qcom: Don't clear pending interrupts when enabling
-(2021-01-18 16:07:08 +0100)
-
-----------------------------------------------------------------
-Pin control fixes for the v5.11 kernel.
-
-These are all driver fixes, the Qualcomm stuff is the most
-widely used and important:
-
-- The main matter is a complicated fixup for the Qualcomm
-  deep sleep states. This manifests in how interrupts get
-  handled or in some cases not handled in cooperation with
-  the PDC (Power Domain Controller). It's one of these really
-  hardcore bug fixes that signifies high maturity of the
-  platform.
-
-- Fix a register layout problem in the JZ4760 driver.
-
-- Fix a register offset in the Aspeed G6 driver.
-
-- Fix a compiler warning in the Nomadik driver.
-
-- Fix a fallback code path in the mediatek driver.
-
-----------------------------------------------------------------
-Billy Tsai (1):
-      pinctrl: aspeed: g6: Fix PWMG0 pinctrl setting
-
-Douglas Anderson (4):
-      pinctrl: qcom: Allow SoCs to specify a GPIO function that's not 0
-      pinctrl: qcom: No need to read-modify-write the interrupt status
-      pinctrl: qcom: Properly clear "intr_ack_high" interrupts when unmasking
-      pinctrl: qcom: Don't clear pending interrupts when enabling
-
-Hsin-Yi Wang (1):
-      pinctrl: mediatek: Fix fallback call path
-
-Nathan Chancellor (1):
-      pinctrl: nomadik: Remove unused variable in nmk_gpio_dbg_show_one
-
-Paul Cercueil (2):
-      pinctrl: ingenic: Fix JZ4760 support
-      pinctrl: ingenic: Rename registers from JZ4760_GPIO_* to JZ4770_GPIO_*
-
- drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c       |  2 +-
- drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c |  4 +
- drivers/pinctrl/nomadik/pinctrl-nomadik.c        |  1 -
- drivers/pinctrl/pinctrl-ingenic.c                | 80 ++++++++++----------
- drivers/pinctrl/qcom/pinctrl-msm.c               | 96 +++++++++++++++---------
- drivers/pinctrl/qcom/pinctrl-msm.h               |  2 +
- 6 files changed, 107 insertions(+), 78 deletions(-)
+greg k-h
