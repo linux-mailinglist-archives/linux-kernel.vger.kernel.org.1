@@ -2,119 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B431A2FF58A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39A32FF581
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 21:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbhAUULd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 15:11:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727004AbhAUUKD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:10:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611259716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gVx+gkEsYNOgT30sFBYpj+A2NREDHbQJA4mbAzV8q/8=;
-        b=U0BBYId+6evNhWZ7QaWUJNEGzdpwlA8v34/S/fRvGfdD61dSbSSamwfN9TtcJOgHbqZdBD
-        jSSIyQ2i3UOHRetPxp8dgjMCApi3S4grks0th9KSARgFrH9rkdhDpeuSPY4QkezwwChzzc
-        OrymBGoIDyUia2Sq8nh1KCA/FgTuWWc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-4DhkOkagMbGcw0RHcFnQ4g-1; Thu, 21 Jan 2021 15:08:34 -0500
-X-MC-Unique: 4DhkOkagMbGcw0RHcFnQ4g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E3B6180A094;
-        Thu, 21 Jan 2021 20:08:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D670150DD2;
-        Thu, 21 Jan 2021 20:08:24 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210121190937.GE20964@fieldses.org>
-References: <20210121190937.GE20964@fieldses.org> <20210121174306.GB20964@fieldses.org> <20210121164645.GA20964@fieldses.org> <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk> <1794286.1611248577@warthog.procyon.org.uk> <1851804.1611255313@warthog.procyon.org.uk>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
+        id S1726242AbhAUUKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 15:10:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:45078 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726847AbhAUUJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:09:31 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF84511D4;
+        Thu, 21 Jan 2021 12:08:45 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF64C3F66E;
+        Thu, 21 Jan 2021 12:08:43 -0800 (PST)
+Subject: Re: [PATCH] ACPI/IORT: Do not blindly trust DMA masks from firmware
+To:     Moritz Fischer <mdf@kernel.org>, lorenzo.pieralisi@arm.com
+Cc:     guohanjun@huawei.com, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210121191612.90387-1-mdf@kernel.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <faa089d5-48e3-d51d-0d14-849e5446dbf4@arm.com>
+Date:   Thu, 21 Jan 2021 20:08:42 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1856290.1611259704.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 21 Jan 2021 20:08:24 +0000
-Message-ID: <1856291.1611259704@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210121191612.90387-1-mdf@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J. Bruce Fields <bfields@fieldses.org> wrote:
+On 2021-01-21 19:16, Moritz Fischer wrote:
+> Address issue observed on real world system with suboptimal IORT table
+> where DMA masks of PCI devices would get set to 0 as result.
+> 
+> iort_dma_setup() would query the root complex' IORT entry for a DMA
+> mask, and use that over the one the device has been configured with
+> earlier.
+> 
+> Ideally we want to use the minimum mask of what the IORT contains for
+> the root complex and what the device was configured with, but never 0.
+> 
+> Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
+> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> ---
+> Hi all,
+> 
+> not sure I'm doing this right, but I think the current behavior (while a
+> corner case) seems to also fail for 32 bit devices if the IORT specifies
+> 64 bit. It works on my test system now with a 32 bit device.
 
-> > J. Bruce Fields <bfields@fieldses.org> wrote:
-> > =
+I suppose it could go wrong if it's an old driver that doesn't 
+explicitly set its own masks and assumes they will always be 32-bit. 
+Technically we'd consider that the driver's fault these days, but 
+there's a lot of legacy around still.
 
-> > > > Fixing this requires a much bigger overhaul of cachefiles than thi=
-s patchset
-> > > > performs.
-> > > =
+> Open to suggestions for better solutions (and maybe the
+> nc_dma_get_range() should have the same sanity check?)
 
-> > > That sounds like "sometimes you may get file corruption and there's
-> > > nothing you can do about it".  But I know people actually use fscach=
-e,
-> > > so it must be reliable at least for some use cases.
-> > =
+Honestly the more I come back to this, the more I think we should give 
+up trying to be clever and just leave the default masks alone beyond the 
+initial "is anything set up at all?" sanity checks. Setting the bus 
+limit is what really matters these days, and should be sufficient to 
+encode any genuine restriction. There's certainly no real need to widen 
+the default masks above 32 bits just because firmware suggests so, since 
+the driver should definitely be calling dma_set_mask() and friends later 
+if it's >32-bit capable anyway.
 
-> > Yes.  That's true for the upstream code because that uses bmap.
-> =
+> Thanks,
+> Moritz
+> 
+> ---
+>   drivers/acpi/arm64/iort.c | 11 ++++++++---
+>   1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index d4eac6d7e9fb..c48eabf8c121 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -1126,6 +1126,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+>   
+>   	rc = (struct acpi_iort_root_complex *)node->node_data;
+>   
+> +	if (!rc->memory_address_limit) {
+> +		dev_warn(dev, "Root complex has broken memory_address_limit\n");
 
-> Sorry, when you say "that's true", what part are you referring to?
+Probably warrants a FW_BUG in there.
 
-Sometimes, theoretically, you may get file corruption due to this.
+> +		return -EINVAL;
+> +	}
+> +
+>   	*size = rc->memory_address_limit >= 64 ? U64_MAX :
+>   			1ULL<<rc->memory_address_limit;
+>   
+> @@ -1172,9 +1177,9 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
+>   		 */
+>   		end = dmaaddr + size - 1;
+>   		mask = DMA_BIT_MASK(ilog2(end) + 1);
+> -		dev->bus_dma_limit = end;
+> -		dev->coherent_dma_mask = mask;
+> -		*dev->dma_mask = mask;
+> +		dev->bus_dma_limit = min_not_zero(dev->bus_dma_limit, end);
 
-> > I'm switching
-> > to use SEEK_HOLE/SEEK_DATA to get rid of the bmap usage, but it doesn'=
-t change
-> > the issue.
-> > =
+This doesn't need to change, since the default bus limit is 0 anyway 
+(and that means "no limit").
 
-> > > Is it that those "bridging" blocks only show up in certain corner ca=
-ses
-> > > that users can arrange to avoid?  Or that it's OK as long as you use
-> > > certain specific file systems whose behavior goes beyond what's
-> > > technically required by the bamp or seek interfaces?
-> > =
+> +		dev->coherent_dma_mask = min_not_zero(dev->coherent_dma_mask, mask);
+> +		*dev->dma_mask = min_not_zero(*dev->dma_mask, mask);
 
-> > That's a question for the xfs, ext4 and btrfs maintainers, and may var=
-y
-> > between kernel versions and fsck or filesystem packing utility version=
-s.
-> =
+AFAICS the only way an empty mask could get here now is from 
+nc_dma_get_range(), so I'd rather see a consistent warning there than 
+just silently start working around that too.
 
-> So, I'm still confused: there must be some case where we know fscache
-> actually works reliably and doesn't corrupt your data, right?
+Of course IORT doesn't say these fields are optional (other than the 
+lack of a root complex limit in older table versions), so we're giving 
+bad firmware a pass to never be fixed, ho hum...
 
-Using ext2/3, for example.  I don't know under what circumstances xfs, ext=
-4
-and btrfs might insert/remove blocks of zeros, but I'm told it can happen.
+Thanks,
+Robin.
 
-David
-
+>   	}
+>   
+>   	*dma_addr = dmaaddr;
+> 
