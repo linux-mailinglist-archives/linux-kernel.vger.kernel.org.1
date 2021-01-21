@@ -2,146 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741432FE163
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2595B2FE162
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbhAUFNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbhAUFBB (ORCPT
+        id S1728719AbhAUFI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:08:29 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:44272 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727550AbhAUFEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 00:01:01 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36125C061757;
-        Wed, 20 Jan 2021 21:00:20 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id d15so720730qtw.12;
-        Wed, 20 Jan 2021 21:00:20 -0800 (PST)
+        Thu, 21 Jan 2021 00:04:36 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L520Af147649;
+        Thu, 21 Jan 2021 05:03:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=zKlunICeRZRHzu7ogVf19W538S3T89UdmgDP0LASK8c=;
+ b=V2D7Mq/Kh0ghlPOptODm5KhmfsGmZonFc0C+av3Kih/E+PBRoJWpEAb/ZSBm+3KoRwX2
+ jRW7ANysBbp+Caqxln9PxYiFqxkahBmNAFdvJ1wZVhjgdir3wIJPEZgMLrw7MAP6+1n8
+ UCUgR9EBy6ja5z81h5XqUkSyJv9qJwbgqQxmturqaYwYJLQDayJGldFQ4KU6SiPYvSJW
+ 3TqOL6XPymxZf2vpg/IhcBj2ygHEu2Les+R6bdiinNLPOXxVZFC7aX9MDu8rFQQ1yKgm
+ WQ2vRfKeNUWZeVo2TBCoZmgKmw9wlTK+JzpwDp4yAc2QTaQ+0Ps/c00thjJfFd8ddlJ9 pw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 3668qmwhjm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 05:03:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10L4xqIk061313;
+        Thu, 21 Jan 2021 05:01:45 GMT
+Received: from nam02-cy1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2052.outbound.protection.outlook.com [104.47.37.52])
+        by aserp3020.oracle.com with ESMTP id 3668rf39p5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 05:01:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=naTgH9Wt0kPBxh9BA3gbwodVgzYphvap9rzX3jo7EO03xzzhsfTm6MmcOQhSZOdBqIZzQYqyllUZdNL24UmWzRnPQiVie2nQu7a35uBVLIk3BRSWkOoWB3RYZ6AgZEZ7X0qSUhRp3jtju1braN80NpGaAHd6aFsS81NDd89KY1fgpqPR0CoLAEKQIkZbpCdWYPtY3pZUGyU6x9HupPelURnoPgby/ejfODex/PYuE93YHpDPqde/eg+1MfdCM8KMLPLT+0dz4/fD4OtOeql0yBS/TSRfbbfh4iQ5GAFOukdlmK/qJySDxj3ExNC1yIvrCN/D2RKOAf+AUYGoqcpgBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zKlunICeRZRHzu7ogVf19W538S3T89UdmgDP0LASK8c=;
+ b=TGdeiLNkfQKhmmoJICeWl8VNO4J2CwrkLhYtQDoJ9th4sC+xYSoTN2dEvMXDaHLCbmUGhL+rz9V3++UnTNW00xEt/2NqjrVrW/iu/O4AtbB4v3c7dwsScKowJ1L8m2AEc5IlFedpB6hbzPZpVT59qKf4F+mV7siyW/2tNvCmLwDxcAIlPoEQ52RHCtD/i9vY3lb5a3ltdUunpwxGTTJDAN/5k+Ve2fZqEI1p+cFtuFz0ANRyoSPsVmrRNvNSLCCM2YiN1/acKCaSVJmOY7P317gwqw04DE+AgXPgpe4BYUH7eQ6LJKK+Kd7ZLloqI3g7yuEBk/Y+ssBF7rvbtsFtCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OgcU6Vo2JESkISHfmFMW6Btb8cYekxf929MSFIsRpr0=;
-        b=XIZ7JBHMD/GaAtG0PAm5XpneYmPFKYXdZLVh7yN+pGV5YFLRa7+xuL5dnI55gaFGlo
-         dmSS2TEK8nV+gu4eKbG5uhdHx88N1yh9wXJy2vU2wJ1d1PYN5UYxHHHs128r/NT4Fs2n
-         5PpzzoMWbU5K1g68Xf1u0ZTDzA6GXicd+CpteQFZSTxp61MtDrlBfhmvomy56gxyLYpL
-         0pUlL2NUSxzRohys+4qpdKV8jwd7qFc5tRGpC180rmyLr46WtOXvWLlgASll9zX6oUto
-         Xz4iv33prB7opWKOCslj6dn+vKW7vW7Sekzmwti/Q3T4oT0rZsJPyVD/pkprsQFFZ8iY
-         eDFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OgcU6Vo2JESkISHfmFMW6Btb8cYekxf929MSFIsRpr0=;
-        b=KTKw4FGgSgw7g4QMYPc1fD0DlRe2w17Lrx6Ic274JMJHjD+2taA90oWJ78xYpbsf4s
-         wvj3wPp9kKQubAthP2Cys38ifziwgIfmAX/srN4Xsy6dWTY2D3DRhRDE0mJVV2dIywwl
-         BTh1thYMb1FnCHwrwG3vjyPT90sL5fUIXgSTeVp/iF8OrR96KxQX7iuATdi9J+zjWqB/
-         +jDp0Ky2NBtjhZ/fIBp6UVVinHZYVkytXD7cYY2oR2jIw4ISx+c3vPjq2Bzm7FcNJnp/
-         z4K5RDvwccBhPChKKHRz4nrLoBkAtebwsSjltiwXn2b9lcoVeI5E8UwfGLmvNgVDmLcR
-         dQtA==
-X-Gm-Message-State: AOAM533hDqTzefBqWxbC/pm2taODFfL3u6yjW0mFygC1M1jf68LcIuXp
-        quey1K6RsasONDdh5S9vtXQ=
-X-Google-Smtp-Source: ABdhPJzjlSJO9KthfDIZl7vPp5sks1xfacnUYjRy60Ur7aLMh9WdvYIKfZRJUvzxFmtCgxU41EJ8iw==
-X-Received: by 2002:ac8:6d0a:: with SMTP id o10mr11883346qtt.113.1611205219347;
-        Wed, 20 Jan 2021 21:00:19 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id z132sm2833849qka.131.2021.01.20.21.00.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 21:00:18 -0800 (PST)
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, pantelis.antoniou@konsulko.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        David Gibson <david@gibson.dropbear.id.au>
-References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <20210119022154.2338781-1-frowand.list@gmail.com>
- <20210119080546.dzec3jatsz2662qs@vireshk-i7>
- <f7133d16-510b-f730-a43b-89edab08aabe@gmail.com>
- <20210120050606.b2m4jssh73wexybx@vireshk-i7>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <95cfc497-3d12-fd46-6e42-2a77612236ea@gmail.com>
-Date:   Wed, 20 Jan 2021 23:00:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zKlunICeRZRHzu7ogVf19W538S3T89UdmgDP0LASK8c=;
+ b=sClci4VlLwi48BwNEniuGAyKEFhxQ7J6LCVAHvdFZhkndPKUEz2Cu3Hyl83oOKUyNdBhpj/tP5uVuCYW/GMrWaQCphd16RuF6Oh1wfo8r1NnjSnaHwJIt+WCuYsf9KCsZ4gC0b6p5NSj1MsFWAIG0R5/alPJJMo9volC5G5viq0=
+Authentication-Results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
+ by BYAPR10MB3255.namprd10.prod.outlook.com (2603:10b6:a03:156::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 21 Jan
+ 2021 05:01:43 +0000
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::644d:92e4:7b5d:f8c1]) by BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::644d:92e4:7b5d:f8c1%5]) with mapi id 15.20.3784.013; Thu, 21 Jan 2021
+ 05:01:43 +0000
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        pbonzini@redhat.com, stefanha@redhat.com, joe.jin@oracle.com,
+        aruna.ramakrishna@oracle.com
+Subject: [PATCH 1/1] vhost scsi: allocate vhost_scsi with GFP_NOWAIT to avoid delay
+Date:   Wed, 20 Jan 2021 21:03:28 -0800
+Message-Id: <20210121050328.7891-1-dongli.zhang@oracle.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.16]
+X-ClientProxiedBy: CH0PR13CA0029.namprd13.prod.outlook.com
+ (2603:10b6:610:b1::34) To BYAPR10MB2663.namprd10.prod.outlook.com
+ (2603:10b6:a02:a9::20)
 MIME-Version: 1.0
-In-Reply-To: <20210120050606.b2m4jssh73wexybx@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (138.3.200.16) by CH0PR13CA0029.namprd13.prod.outlook.com (2603:10b6:610:b1::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.8 via Frontend Transport; Thu, 21 Jan 2021 05:01:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 37813143-6823-431c-3364-08d8bdc9a542
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3255:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB32558115C01C3555EDE28AB2F0A10@BYAPR10MB3255.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:519;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n4ZHJ4jt1Oa6YWUrEvh0Sd1NOmREhKxD4e58V5DZPkbTK+ilv2+4rccYBfsEmmRfsM8tQSFzTR1lOsUNUnd+usPr+yXEJqys7jjxDwNo9AgENJm88hP3qbPz30EZhFeItxVZ8N6EgLr49z9UMCExLMTWvad0BEKLRBxqPgbg4FZ0SqjSLPHY8Teyq3wh29eR1SJoH6MwZYi/cJ4php5zZJn1OTFjdFxvJ6b4gZFaVN/UbH2GAolf9+RcztWh1WKQksgpWvUfxvLYWSXbqGw4FFo6UuWJxHyOHlaZzbjNPEUOSGVJc+y3r8PBo9jz3q20EjgQ51PU3blrFyqw2CNDFCbAhvKuMpzvWnEnvys5jIYekvHV1C5AnhczeYt5znQeUPuoZAfQgub+3klZRJvFIqEb10RDje0vJ0vuP0Bl5hmNAJ9dvevn2m9JCsch23eYMhGYMaZ+41AdGycxBViKLQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(366004)(376002)(39860400002)(5660300002)(86362001)(8936002)(36756003)(186003)(508600001)(2616005)(83380400001)(316002)(6506007)(66476007)(52116002)(956004)(66946007)(8676002)(4326008)(44832011)(107886003)(66556008)(2906002)(1076003)(69590400011)(6512007)(6666004)(26005)(16526019)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?s7dBf+6Bc4hmkHwqtALaDHXiuZk0nreKrdl5BTpoTqOcLJvlL0TlH7fBMfi7?=
+ =?us-ascii?Q?+umrQ22rSCafCIS3dulD9AOOCYxgHD9EHffcZgByO3VwYtczmYZ/mflYrScz?=
+ =?us-ascii?Q?lyZpfAY2b6PqMEQuVkzm8CCRaMF/u7RaUzTrOaLI8mq2lK6cLTnKlu1u6Yuz?=
+ =?us-ascii?Q?62HIApO3bfy0X647UQMdC3NPSD45N0WJPl/z+LJmxO9Hb8wEWuVqKT2hRINj?=
+ =?us-ascii?Q?4w+Cgr2lvRN0U4AbIYXIkuI081srCjMyO0WRsTde2iFNmXBWf1lQxtaNAoIq?=
+ =?us-ascii?Q?ZfzIsc++wtUXb8x9vA7LpPgqV+TIDqo2qiy1lym04GL976O5YmPk6azdDcqD?=
+ =?us-ascii?Q?bZR50bG457b+flcIlUizNWKesN7fUEdWsSNtGTo89rfnCbllJx5gRdHnwNJU?=
+ =?us-ascii?Q?IoN0Eo2jYzqe4k9k8UXdCrU8UgOMQBqZEUzOtJ7HLNHeFKL1w6bdbzd8czRb?=
+ =?us-ascii?Q?hGEn96SxWBrerkqWLXsnDzk5AnGxQR9OJsiV/1RGJx1hwt9+JVXw+uQPZ4qb?=
+ =?us-ascii?Q?jSUiVTuQ68SemEe6Y2emx+BhHd9290Ytdc2bv0SbBv+I30G2tXV0w3My/tJm?=
+ =?us-ascii?Q?DbeOTbqKAhTpXegj0eH6B5lEcWMWGdC6LE/K56vughBNRVczV1/hCpa1K0p5?=
+ =?us-ascii?Q?8kMfh4cSzw7TuOuzCkG9Pqoe+wVUTYv4QjpTIWepVwStunXev+4VWtmf6rl7?=
+ =?us-ascii?Q?gWmCSnNroXqELAi2PzOAyglvNkzWT1oW/O7FTrwnFKGA2OboKbXSBKQDuGO8?=
+ =?us-ascii?Q?G+2JlFJeRspQf4vfctaTRN8Wyym53+wpFQtPi1MdRzJAdovk311IW53Io7NI?=
+ =?us-ascii?Q?WX/aErIxy/QilmWicoVzzNKfivgLLED4ZC1MLAWIq2eIsOP7Bf5x3V+TyUqI?=
+ =?us-ascii?Q?6A+TRDFZGgPvcxsOABg9KOOcns/StJlMVg6lmtOA3eYUgbfLSBwxBMtGPftA?=
+ =?us-ascii?Q?ycxpRZrDeERDbL8gV4Cq6gK8tUQyCOQ7CE6ANAbUxLc=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37813143-6823-431c-3364-08d8bdc9a542
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 05:01:43.3779
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TNqSupVapbHCXJfqpXi5oGjpriUC1UrC6UX7/6Bup8tHPOcsI+AKWX5JqUC+mm8+q5g8JWyHh8ZE0zlweBWh3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3255
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210023
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
+ adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1011 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The size of 'struct vhost_scsi' is order-10 (~2.3MB). It may take long time
+delay by kzalloc() to compact memory pages when there is a lack of
+high-order pages. As a result, there is latency to create a VM (with
+vhost-scsi) or to hotadd vhost-scsi-based storage.
 
-+David
+The prior commit 595cb754983d ("vhost/scsi: use vmalloc for order-10
+allocation") prefers to fallback only when really needed, while this patch
+changes allocation to GFP_NOWAIT in order to avoid the delay caused by
+memory page compact.
 
-so I don't have to repeat this in another thread
+Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+Cc: Joe Jin <joe.jin@oracle.com>
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+---
+Another option is to rework by reducing the size of 'struct vhost_scsi',
+e.g., by replacing inline vhost_scsi.vqs with just memory pointers while
+each vhost_scsi.vqs[i] should be allocated separately. Please let me
+know if that option is better.
 
-On 1/19/21 11:06 PM, Viresh Kumar wrote:
-> On 19-01-21, 09:44, Frank Rowand wrote:
->> No.  overlay_base.dts is intentionally compiled into a base FDT, not
->> an overlay.  Unittest intentionally unflattens this FDT in early boot,
->> in association with unflattening the system FDT.  One key intent
->> behind this is to use the same memory allocation method that is
->> used for the system FDT.
->>
->> Do not try to convert overlay_base.dts into an overlay.
-> 
-> Okay, but why does it have /plugin/; specified in it then ?
+ drivers/vhost/scsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OK, so I sortof lied about overlay_base.dts not being an overlay.  It is
-a Frankenstein monster or a Schrodinger's dts/dtb.  It is not a normal
-object.  Nobody who is not looking at how it is abused inside unittest.c
-should be trying to touch it or understand it.
+diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+index 4ce9f00ae10e..85eaa4e883f4 100644
+--- a/drivers/vhost/scsi.c
++++ b/drivers/vhost/scsi.c
+@@ -1814,7 +1814,7 @@ static int vhost_scsi_open(struct inode *inode, struct file *f)
+ 	struct vhost_virtqueue **vqs;
+ 	int r = -ENOMEM, i;
+ 
+-	vs = kzalloc(sizeof(*vs), GFP_KERNEL | __GFP_NOWARN | __GFP_RETRY_MAYFAIL);
++	vs = kzalloc(sizeof(*vs), GFP_NOWAIT | __GFP_NOWARN);
+ 	if (!vs) {
+ 		vs = vzalloc(sizeof(*vs));
+ 		if (!vs)
+-- 
+2.17.1
 
-unittest.c first unflattens overlay_base.dtb during early boot.  Then later
-it does some phandle resolution using the overlay metadata from overlay_base.
-Then it removes the overlay metadata from the in kernel devicetree data
-structure.  It is a hack, it is ugly, but it enables some overlay unit
-tests.
-
-Quit trying to change overlay_base.dts.
-
-In my suggested changes to the base patch I put overlay_base.dtb in the
-list of overlays for fdtoverlay to apply (apply_static_overlay in the
-Makefile) because overlay_base.dts is compiled as an overlay into
-overlay_base.dtb and it can be applied on top of the base tree
-testcases.dtb.  This gives a little bit more testcase data for
-fdtoverlay from an existing dtb.
-
-If you keep trying to change overlay_base.dts I will just tell you
-to remove overlay_base.dtb from apply_static_overlay, and then the
-test coverage will become smaller.  I do not see that as a good change.
-
-If you want more extensive testing of fdtoverlay, then create your
-own specific test cases from scratch and submit patches for them
-to the kernel or to the dtc compiler project.
-
-> 
-> And shouldn't we create two separate dtb-s now, static_test.dtb and
-> static_overlay_test.dtb ? As fdtoverlay will not be able to merge it with
-> testcase.dtb anyway.
-> 
-> Or maybe we can create another file static_overlay.dts (like testcases.dts)
-> which can include both testcases.dts and overlay_base.dts, and then we can
-> create static_test.dtb out of it ? That won't impact the runtime tests at all.
-> 
-
-Stop trying to use all of the unittest .dts test data files.  It is convenient
-that so many of them can be used in their current form.  That is goodness
-and nice leveraging.  Just ignore the .dts test data files that are not
-easily consumed by fdtoverlay.
-
-The email threads around the various versions of this patch series show how
-normal devicetree knowledgeable people look at the contents of some of the
-.dts test data files and think that they are incorrect.  That is because
-the way that unittest uses them is not normal.  Trying to modify one or two
-of the many unittest .dts test data files so that they are usable by both
-the static fdtoverlay and the run time unittest is not worth it.
-
--Frank
