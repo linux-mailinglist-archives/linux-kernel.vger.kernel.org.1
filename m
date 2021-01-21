@@ -2,234 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1D42FE17A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF60B2FE15C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbhAUFUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:20:02 -0500
-Received: from relay1.mymailcheap.com ([144.217.248.102]:33632 "EHLO
-        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbhAUDrg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:47:36 -0500
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 9BBC53F157;
-        Thu, 21 Jan 2021 03:43:22 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 7D2482A17D;
-        Wed, 20 Jan 2021 22:43:22 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1611200602;
-        bh=3+s0yTdz2/e6zrgdoSmiyFqE7ryRDzPPZVDPvSpSv94=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=quUMjqB+pBLzoJTLgOUbOEtkxQQVRNETFX+lKYH0cRfgedz/XT+6hKqsQDN0NAFTS
-         q1RzHjCm43TsXIhzdQGVvelMY6txjzhcSZbdOMY54ILWRHU9ZTZ1qk/9w4/dfyRIeu
-         gLG3hZULRu0AFGhA+VJYO4ny98VBDzV6bABRSLwM=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LZthJGfw6W_w; Wed, 20 Jan 2021 22:43:21 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Wed, 20 Jan 2021 22:43:21 -0500 (EST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 0E58140AF8;
-        Thu, 21 Jan 2021 03:43:20 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="O9/n28UZ";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.163.171])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 7727841EC2;
-        Thu, 21 Jan 2021 03:43:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1611200594; bh=3+s0yTdz2/e6zrgdoSmiyFqE7ryRDzPPZVDPvSpSv94=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=O9/n28UZCaOdJ4OmatRGyijpVcRjMZ8jU/MiYVGdKGEUYD9/441xbNCc9Ioht7B5a
-         tyYl6eB9eQJ4d3iobxo6orCqzwJgWjXPyma/5/Ant2lJBaiIn1XT1Jhh+0XKEqKD5B
-         SIGG28WCPvANvEPmAQ6adn+LLION7evclUrm2hK0=
-Message-ID: <83bb613212ee81648e5bf7c0f9cd3219e0046f80.camel@aosc.io>
-Subject: Re: [PATCH v3] ovl: use a dedicated semaphore for dir upperfile
- caching
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     Xiao Yang <yangx.jy@cn.fujitsu.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Date:   Thu, 21 Jan 2021 11:43:07 +0800
-In-Reply-To: <20210120102045.GD1236412@miu.piliscsaba.redhat.com>
-References: <20210105003611.194511-1-icenowy@aosc.io>
-         <CAOQ4uxiFoQhrMbs91ZUNXqbJUXb5XRBgRrcq1rmChLKQGKg5xg@mail.gmail.com>
-         <20210120102045.GD1236412@miu.piliscsaba.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        id S1726957AbhAUFCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 00:02:36 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49231 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388197AbhAUDvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 22:51:05 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 10L3oFGf023302;
+        Thu, 21 Jan 2021 04:50:15 +0100
+Date:   Thu, 21 Jan 2021 04:50:15 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
+Subject: Re: rcutorture initrd/nolibc build on ARMv8?
+Message-ID: <20210121035015.GA22837@1wt.eu>
+References: <20210119161901.GA14667@1wt.eu>
+ <20210119170238.GA5603@C02TD0UTHF1T.local>
+ <20210119171637.GA14704@1wt.eu>
+ <20210119174358.GB14704@1wt.eu>
+ <20210120120725.GB73692@C02TD0UTHF1T.local>
+ <20210120124340.GA15935@1wt.eu>
+ <20210120134511.GA77728@C02TD0UTHF1T.local>
+ <20210120142500.GB15935@1wt.eu>
+ <20210120145447.GC77728@C02TD0UTHF1T.local>
+ <20210120150223.GC15935@1wt.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.171:received];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         TO_DN_ALL(0.00)[];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         FREEMAIL_TO(0.00)[szeredi.hu,gmail.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: 0E58140AF8
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120150223.GC15935@1wt.eu>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021-01-20星期三的 11:20 +0100，Miklos Szeredi写道：
-> On Tue, Jan 05, 2021 at 08:47:41AM +0200, Amir Goldstein wrote:
-> > On Tue, Jan 5, 2021 at 2:36 AM Icenowy Zheng <icenowy@aosc.io>
-> > wrote:
-> > > 
-> > > The function ovl_dir_real_file() currently uses the semaphore of
-> > > the
-> > > inode to synchronize write to the upperfile cache field.
-> > 
-> > Although the inode lock is a rw_sem it is referred to as the "inode
-> > lock"
-> > and you also left semaphore in the commit subject.
-> > No need to re-post. This can be fixed on commit.
-> > 
-> > > 
-> > > However, this function will get called by ovl_ioctl_set_flags(),
-> > > which
-> > > utilizes the inode semaphore too. In this case
-> > > ovl_dir_real_file() will
-> > > try to claim a lock that is owned by a function in its call
-> > > stack, which
-> > > won't get released before ovl_dir_real_file() returns.
-> > > 
-> > > Define a dedicated semaphore for the upperfile cache, so that the
-> > > deadlock won't happen.
-> > > 
-> > > Fixes: 61536bed2149 ("ovl: support [S|G]ETFLAGS and
-> > > FS[S|G]ETXATTR ioctls for directories")
-> > > Cc: stable@vger.kernel.org # v5.10
-> > > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> > > ---
-> > > Changes in v2:
-> > > - Fixed missing replacement in error handling path.
-> > > Changes in v3:
-> > > - Use mutex instead of semaphore.
-> > > 
-> > >  fs/overlayfs/readdir.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
-> > > index 01620ebae1bd..3980f9982f34 100644
-> > > --- a/fs/overlayfs/readdir.c
-> > > +++ b/fs/overlayfs/readdir.c
-> > > @@ -56,6 +56,7 @@ struct ovl_dir_file {
-> > >         struct list_head *cursor;
-> > >         struct file *realfile;
-> > >         struct file *upperfile;
-> > > +       struct mutex upperfile_mutex;
-> > 
-> > That's a very specific name.
-> > This mutex protects members of struct ovl_dir_file, which could
-> > evolve
-> > into struct ovl_file one day (because no reason to cache only dir
-> > upper file),
-> > so I would go with a more generic name, but let's leave it to
-> > Miklos to decide.
-> > 
-> > He could have a different idea altogether for fixing this bug.
+On Wed, Jan 20, 2021 at 04:02:23PM +0100, Willy Tarreau wrote:
+> > ... and getting rid of the ARCH_WANT_* definitions (which are never
+> > legitimate for userspace to set). That way, there's no risk that we
+> > accidentally use a bogus syscall number in future. Where the kernel does
+> > implement a syscall, it will have done whatever is necessary to expose
+> > the corresponding __NR_<syscall> to userspace without userspace needing
+> > to define anything.
 > 
-> How about this (untested) patch?
-> 
-> It's a cleanup as well as a fix, but maybe we should separate the
-> cleanup from
-> the fix...
+> I'm really willing to get rid of that crap, I hated it, I vaguely
+> remember having gone through layers of glibc indirections when using
+> the pre-processed asm/* and found this to be the only way to expose
+> some of them. The fact that it's not needed for you is pretty much
+> encouraging. I'll just retry on an older libc I've used a lot (2.18)
+> to make sure I didn't overlook anything.
 
-If you are going to post this, feel free to add
+I've now retested and can confirm that the only reason I included them
+by then was to have access to these (wrong) __NR_* definitions. Now with
+the fixed syscalls these ones are not needed anymore and I indeed only
+see the correct definitions, so I've removed these bogus definitions.
 
-Tested-by: Icenowy Zheng <icenowy@aosc.io>
+I've completed my cleanup and tests, I'll send an updated patch set
+later today after I've carefully rediffed everything to synchronise
+the in-kernel version with the out-of-tree one.
 
-(And if you remove the IS_ERR(realfile) part, the tested-by tag still
-applies.)
-
-> 
-> Thanks,
-> Miklos
-> ---
-> 
->  fs/overlayfs/readdir.c |   23 +++++++----------------
->  1 file changed, 7 insertions(+), 16 deletions(-)
-> 
-> --- a/fs/overlayfs/readdir.c
-> +++ b/fs/overlayfs/readdir.c
-> @@ -865,7 +865,7 @@ struct file *ovl_dir_real_file(const str
->  
->         struct ovl_dir_file *od = file->private_data;
->         struct dentry *dentry = file->f_path.dentry;
-> -       struct file *realfile = od->realfile;
-> +       struct file *old, *realfile = od->realfile;
->  
->         if (!OVL_TYPE_UPPER(ovl_path_type(dentry)))
->                 return want_upper ? NULL : realfile;
-> @@ -874,29 +874,20 @@ struct file *ovl_dir_real_file(const str
->          * Need to check if we started out being a lower dir, but got
-> copied up
->          */
->         if (!od->is_upper) {
-> -               struct inode *inode = file_inode(file);
-> -
->                 realfile = READ_ONCE(od->upperfile);
->                 if (!realfile) {
->                         struct path upperpath;
->  
->                         ovl_path_upper(dentry, &upperpath);
->                         realfile = ovl_dir_open_realfile(file,
-> &upperpath);
-> +                       if (IS_ERR(realfile))
-> +                               return realfile;
->  
-> -                       inode_lock(inode);
-> -                       if (!od->upperfile) {
-> -                               if (IS_ERR(realfile)) {
-> -                                       inode_unlock(inode);
-> -                                       return realfile;
-> -                               }
-> -                               smp_store_release(&od->upperfile,
-> realfile);
-> -                       } else {
-> -                               /* somebody has beaten us to it */
-> -                               if (!IS_ERR(realfile))
-> -                                       fput(realfile);
-> -                               realfile = od->upperfile;
-> +                       old = cmpxchg_release(&od->upperfile, NULL,
-> realfile);
-> +                       if (old) {
-> +                               fput(realfile);
-> +                               realfile = old;
->                         }
-> -                       inode_unlock(inode);
->                 }
->         }
->  
-
+Cheers,
+Willy
