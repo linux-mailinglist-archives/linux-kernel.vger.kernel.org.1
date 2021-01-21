@@ -2,119 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13AA2FE632
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB462FE61A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 10:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbhAUJUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 04:20:25 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4486 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728320AbhAUJK1 (ORCPT
+        id S1727249AbhAUJRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 04:17:50 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11560 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728544AbhAUJQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 04:10:27 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10L91lQD055285;
-        Thu, 21 Jan 2021 04:09:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=MIROihBdMjJIKhC+tSW35NZfjljBZpxTZ8W3u2vfuks=;
- b=cqRzMTKhA3pIGU3ja/nPBQ6238mE5b0d+97NdxaDtJ0tRYkjJhOzCXL1l8aCxifmwgHZ
- qVqUV9k4C78ZhZ8vhRFP9BV1FUriz1RCcRWz75zyk8r16N0xIB45wuRmXRN0rz2gNGuh
- 9xI9gSwtCZRGiqGZja8/wiPFBGZaWbf8cb77ZnkugirJOus/GoiCHgp0O4Y0vR6eTf6w
- x0UE0OMgnznKtW3mkZm9BSyMHsUrMoZg/X/OkEe0Np5Idkzq1pw87HgoNiS0qvfdtz+q
- Za9YfQC5j3kAQO5AReZU5Kg+Ey1AJSsZiwlpRdP9jg2L+zi7vRuWnAXR5IFlwn6BW8iR sw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3675ych8rm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 04:09:24 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10L92YCS057489;
-        Thu, 21 Jan 2021 04:09:23 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3675ych8qs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 04:09:22 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10L97s4S031626;
-        Thu, 21 Jan 2021 09:09:20 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 3668pasfrk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 09:09:20 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10L99Ilw32506304
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Jan 2021 09:09:18 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0EFD5A4066;
-        Thu, 21 Jan 2021 09:09:18 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A859FA405F;
-        Thu, 21 Jan 2021 09:09:17 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 21 Jan 2021 09:09:17 +0000 (GMT)
-Received: from [9.81.210.19] (unknown [9.81.210.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 9A4B160167;
-        Thu, 21 Jan 2021 20:09:15 +1100 (AEDT)
-Subject: Re: [PATCH 01/13] powerpc/powernv: remove get_cxl_module
-To:     Christoph Hellwig <hch@lst.de>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-References: <20210121074959.313333-1-hch@lst.de>
- <20210121074959.313333-2-hch@lst.de>
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-Message-ID: <a9e53c05-cfb9-2946-542d-4acda109a49d@linux.ibm.com>
-Date:   Thu, 21 Jan 2021 20:09:02 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 21 Jan 2021 04:16:46 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DLxY72TqBzMNCm;
+        Thu, 21 Jan 2021 17:14:35 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 21 Jan 2021 17:15:54 +0800
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Sihang Chen <chensihang1@hisilicon.com>
+Subject: [PATCH] uacce: Add uacce_ctrl misc device
+Date:   Thu, 21 Jan 2021 17:09:14 +0800
+Message-ID: <1611220154-90232-1-git-send-email-wangzhou1@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210121074959.313333-2-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-21_03:2021-01-20,2021-01-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- adultscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 suspectscore=0
- phishscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101210045
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/1/21 6:49 pm, Christoph Hellwig wrote:
-> The static inline get_cxl_module function is entirely unused,
-> remove it.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+When IO page fault happens, DMA performance will be affected. Pin user page
+can avoid IO page fault, this patch introduces a new char device named
+/dev/uacce_ctrl to help to maintain pin/unpin pages. User space can do
+pin/unpin pages by ioctls of an open file of /dev/uacce_ctrl, all pinned
+pages under one file will be unpinned in file release process.
 
-The one user of this was removed in 8bf6b91a5125a ("Revert 
-"powerpc/powernv: Add support for the cxl kernel api on the real phb").
+Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+Signed-off-by: Sihang Chen <chensihang1@hisilicon.com>
+Suggested-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ drivers/misc/uacce/uacce.c      | 172 +++++++++++++++++++++++++++++++++++++++-
+ include/uapi/misc/uacce/uacce.h |  16 ++++
+ 2 files changed, 187 insertions(+), 1 deletion(-)
 
-Thanks for picking this up.
-
-Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
-
+diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+index d07af4e..b8ac408 100644
+--- a/drivers/misc/uacce/uacce.c
++++ b/drivers/misc/uacce/uacce.c
+@@ -2,6 +2,7 @@
+ #include <linux/compat.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/iommu.h>
++#include <linux/miscdevice.h>
+ #include <linux/module.h>
+ #include <linux/poll.h>
+ #include <linux/slab.h>
+@@ -12,6 +13,16 @@ static dev_t uacce_devt;
+ static DEFINE_MUTEX(uacce_mutex);
+ static DEFINE_XARRAY_ALLOC(uacce_xa);
+ 
++struct uacce_pin_container {
++	struct xarray array;
++};
++
++struct pin_pages {
++	unsigned long first;
++	unsigned long nr_pages;
++	struct page **pages;
++};
++
+ static int uacce_start_queue(struct uacce_queue *q)
+ {
+ 	int ret = 0;
+@@ -497,6 +508,152 @@ void uacce_remove(struct uacce_device *uacce)
+ }
+ EXPORT_SYMBOL_GPL(uacce_remove);
+ 
++int uacce_ctrl_open(struct inode *inode, struct file *file)
++{
++	struct uacce_pin_container *p;
++
++	p = kzalloc(sizeof(*p), GFP_KERNEL);
++	if (!p)
++		return -ENOMEM;
++	file->private_data = p;
++
++	xa_init(&p->array);
++
++	return 0;
++}
++
++int uacce_ctrl_release(struct inode *inode, struct file *file)
++{
++	struct uacce_pin_container *priv = file->private_data;
++	struct pin_pages *p;
++	unsigned long idx;
++
++	xa_for_each(&priv->array, idx, p) {
++		unpin_user_pages(p->pages, p->nr_pages);
++		xa_erase(&priv->array, p->first);
++		vfree(p->pages);
++		kfree(p);
++	}
++
++	xa_destroy(&priv->array);
++	kfree(priv);
++
++	return 0;
++}
++
++static int uacce_pin_page(struct uacce_pin_container *priv,
++			  struct uacce_pin_address *addr)
++{
++	unsigned int flags = FOLL_FORCE | FOLL_WRITE;
++	unsigned long first, last, nr_pages;
++	struct page **pages;
++	struct pin_pages *p;
++	int ret;
++
++	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
++	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
++	nr_pages = last - first + 1;
++
++	pages = vmalloc(nr_pages * sizeof(struct page *));
++	if (!pages)
++		return -ENOMEM;
++
++	p = kzalloc(sizeof(*p), GFP_KERNEL);
++	if (!p) {
++		ret = -ENOMEM;
++		goto free;
++	}
++
++	ret = pin_user_pages_fast(addr->addr & PAGE_MASK, nr_pages,
++				  flags | FOLL_LONGTERM, pages);
++	if (ret != nr_pages) {
++		pr_err("uacce: Failed to pin page\n");
++		goto free_p;
++	}
++	p->first = first;
++	p->nr_pages = nr_pages;
++	p->pages = pages;
++
++	ret = xa_err(xa_store(&priv->array, p->first, p, GFP_KERNEL));
++	if (ret)
++		goto unpin_pages;
++
++	return 0;
++
++unpin_pages:
++	unpin_user_pages(pages, nr_pages);
++free_p:
++	kfree(p);
++free:
++	vfree(pages);
++	return ret;
++}
++
++static int uacce_unpin_page(struct uacce_pin_container *priv,
++			    struct uacce_pin_address *addr)
++{
++	unsigned long first, last, nr_pages;
++	struct pin_pages *p;
++
++	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
++	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
++	nr_pages = last - first + 1;
++
++	/* find pin_pages */
++	p = xa_load(&priv->array, first);
++	if (!p)
++		return -ENODEV;
++
++	if (p->nr_pages != nr_pages)
++		return -EINVAL;
++
++	/* unpin */
++	unpin_user_pages(p->pages, p->nr_pages);
++
++	/* release resource */
++	xa_erase(&priv->array, first);
++	vfree(p->pages);
++	kfree(p);
++
++	return 0;
++}
++
++static long uacce_ctrl_unl_ioctl(struct file *filep, unsigned int cmd,
++				 unsigned long arg)
++{
++	struct uacce_pin_container *p = filep->private_data;
++	struct uacce_pin_address addr;
++	int ret;
++
++	if (copy_from_user(&addr, (void __user *)arg,
++			   sizeof(struct uacce_pin_address)))
++		return -EFAULT;
++
++	switch (cmd) {
++	case UACCE_CMD_PIN:
++		return uacce_pin_page(p, &addr);
++
++	case UACCE_CMD_UNPIN:
++		return uacce_unpin_page(p, &addr);
++
++	default:
++		return -EINVAL;
++	}
++}
++
++static const struct file_operations uacce_ctrl_fops = {
++	.owner = THIS_MODULE,
++	.open = uacce_ctrl_open,
++	.release = uacce_ctrl_release,
++	.unlocked_ioctl	= uacce_ctrl_unl_ioctl,
++};
++
++static struct miscdevice uacce_ctrl_miscdev = {
++	.name = "uacce_ctrl",
++	.minor = MISC_DYNAMIC_MINOR,
++	.fops = &uacce_ctrl_fops,
++};
++
+ static int __init uacce_init(void)
+ {
+ 	int ret;
+@@ -507,13 +664,26 @@ static int __init uacce_init(void)
+ 
+ 	ret = alloc_chrdev_region(&uacce_devt, 0, MINORMASK, UACCE_NAME);
+ 	if (ret)
+-		class_destroy(uacce_class);
++		goto destroy_class;
++
++	ret = misc_register(&uacce_ctrl_miscdev);
++	if (ret) {
++		pr_err("uacce: ctrl dev registration failed\n");
++		goto unregister_cdev;
++	}
+ 
++	return 0;
++
++unregister_cdev:
++	unregister_chrdev_region(uacce_devt, MINORMASK);
++destroy_class:
++	class_destroy(uacce_class);
+ 	return ret;
+ }
+ 
+ static __exit void uacce_exit(void)
+ {
++	misc_deregister(&uacce_ctrl_miscdev);
+ 	unregister_chrdev_region(uacce_devt, MINORMASK);
+ 	class_destroy(uacce_class);
+ }
+diff --git a/include/uapi/misc/uacce/uacce.h b/include/uapi/misc/uacce/uacce.h
+index cc71856..f9e326f 100644
+--- a/include/uapi/misc/uacce/uacce.h
++++ b/include/uapi/misc/uacce/uacce.h
+@@ -35,4 +35,20 @@ enum uacce_qfrt {
+ 	UACCE_QFRT_DUS = 1,
+ };
+ 
++/**
++ * struct uacce_pin_address - Expected pin user space address and size
++ * @addr: Address to pin
++ * @size: Size of pin address
++ */
++struct uacce_pin_address {
++	unsigned long addr;
++	unsigned long size;
++};
++
++/* UACCE_CMD_PIN: Pin a range of memory */
++#define UACCE_CMD_PIN		_IOW('W', 2, struct uacce_pin_address)
++
++/* UACCE_CMD_UNPIN: Unpin a range of memory */
++#define UACCE_CMD_UNPIN		_IOW('W', 3, struct uacce_pin_address)
++
+ #endif
 -- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+2.8.1
+
