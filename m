@@ -2,76 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54902FEDD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 15:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558EF2FEEA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 16:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732379AbhAUO7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 09:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731816AbhAUO6V (ORCPT
+        id S1732876AbhAUP3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 10:29:23 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:48794 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729428AbhAUNYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 09:58:21 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B72C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 06:57:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=e8eyXWv9TNfB8rTh4a0YjdR85qyV5f8Yl1cBULzvB1A=; b=SirJxrLF4Q45UKXQW8vX2OaUoo
-        dt5iIN9oMNbsr1xkkcMB3aVi8+ExgY6q1468WgnHos9mQ8nI3i4gQ8IifT2hTvBhUdlY8IEfRSp2K
-        RSK7xY09cocu+8qT6oQShk9rnnf4Tioal6P0Msn73xKCmFvSudHZhW0Tpf7PTwWXy/zLFtFyrWWlG
-        LdAfP1Kn5VsTXA3c7IXrjPa2AoPikecfz9IqJtO98JTMbMkqvwrwbHfyzRc82tvMrTKqfbzqiGi8B
-        M9mUtMEoiDTGL/NRrXTM7OF0/MqkQImg3ZGbrfXUMgtgx7nce2j1U87OgW69H7uuErdxIktagIkFm
-        TU+CwntA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2bOV-00HAtT-2v; Thu, 21 Jan 2021 14:57:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 293EF303A02;
-        Thu, 21 Jan 2021 15:57:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E71BD2028F0C2; Thu, 21 Jan 2021 15:57:03 +0100 (CET)
-Date:   Thu, 21 Jan 2021 15:57:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     vincent.donnefort@arm.com
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com
-Subject: Re: [PATCH 4/4] cpu/hotplug: Fix CPU down rollback
-Message-ID: <YAmWP1vbLYFgl82n@hirez.programming.kicks-ass.net>
-References: <1610385047-92151-1-git-send-email-vincent.donnefort@arm.com>
- <1610385047-92151-5-git-send-email-vincent.donnefort@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610385047-92151-5-git-send-email-vincent.donnefort@arm.com>
+        Thu, 21 Jan 2021 08:24:02 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LDDw4d043265;
+        Thu, 21 Jan 2021 13:23:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=umojX43O9UL+jYD0gI/4zhN6/zL41ZdveCdmKKXIwBM=;
+ b=pqEGV2pIOoYPSPnybD/fuGsJki4qKy0xpc1E9Y+8q/QFTbNTeUfUSqndtJYovCU+vWGz
+ MigODdMtjCkXqF9MbTJs2RCTr5U+YK0AJUELQEADtvNq3VE/SSoCUnUCGSC+fHVugx82
+ 6HbvlcIGUMeK8uLEFlquZF9Ip+Hce3IAN0BDFw14tXbRjcS7YyKGL9brCe7AKgOgcCqd
+ g0l9z2Yh5oSkdes/btHbn1FIagJ9/jhvks5IzVgpZsNJ22YgRVbqTmbcJxYe7BWovCR3
+ wyG9mNYlyGRfPInXuSr7EHOFWbLZ1PatmjZvm4lWvEXwoE6Y7zZWdQuaJc9leLQGXLK/ 8A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3668qaf9tk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 13:23:17 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LDFktF106733;
+        Thu, 21 Jan 2021 13:21:16 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3668rexr63-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 13:21:16 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10LDKZJD123118;
+        Thu, 21 Jan 2021 13:21:16 GMT
+Received: from gmananth-linux.oraclecorp.com (dhcp-10-166-171-141.vpn.oracle.com [10.166.171.141])
+        by userp3030.oracle.com with ESMTP id 3668rexq88-4;
+        Thu, 21 Jan 2021 13:21:16 +0000
+From:   Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     viro@zeniv.linux.org.uk, matthew.wilcox@oracle.com,
+        khlebnikov@yandex-team.ru, gautham.ananthakrishna@oracle.com
+Subject: [PATCH RFC 3/6] dcache: add action D_WALK_SKIP_SIBLINGS to d_walk()
+Date:   Thu, 21 Jan 2021 18:49:42 +0530
+Message-Id: <1611235185-1685-4-git-send-email-gautham.ananthakrishna@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
+References: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 05:10:47PM +0000, vincent.donnefort@arm.com wrote:
-> From: Vincent Donnefort <vincent.donnefort@arm.com>
-> 
-> After the AP brought itself down to CPUHP_TEARDOWN_CPU, the BP will finish
-> the job. The steps left are as followed:
-> 
->    +--------------------+
->    | CPUHP_TEARDOWN_CPU |  -> If fails state is CPUHP_TEARDOWN_CPU
->    +--------------------+
->    |   ATOMIC STATES    |  -> Cannot Fail
->    +--------------------+
->    |  CPUHP_BRINGUP_CPU |  -> Cannot fail
->    +--------------------+
->    |        ...         |
->    |        ...         |  -> Can fail and rollback
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-These are the PREPARE/DEAD states, right? It would be _really_ daft for
-a DEAD notifier to fail. But yeah, I suppose that if it does, it will
-indeed end up in CPUHP_AP_ONLINE_IDLE.
+This lets skip remaining siblings at seeing d_is_tail_negative().
 
-Do we want to WARN when a DEAD notifier fails?
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
+---
+ fs/dcache.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/fs/dcache.c b/fs/dcache.c
+index a506169..894e6da 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -1320,12 +1320,14 @@ void shrink_dcache_sb(struct super_block *sb)
+  * @D_WALK_QUIT:	quit walk
+  * @D_WALK_NORETRY:	quit when retry is needed
+  * @D_WALK_SKIP:	skip this dentry and its children
++ * @D_WALK_SKIP_SIBLINGS: skip siblings and their children
+  */
+ enum d_walk_ret {
+ 	D_WALK_CONTINUE,
+ 	D_WALK_QUIT,
+ 	D_WALK_NORETRY,
+ 	D_WALK_SKIP,
++	D_WALK_SKIP_SIBLINGS,
+ };
+ 
+ /**
+@@ -1356,6 +1358,7 @@ static void d_walk(struct dentry *parent, void *data,
+ 		break;
+ 	case D_WALK_QUIT:
+ 	case D_WALK_SKIP:
++	case D_WALK_SKIP_SIBLINGS:
+ 		goto out_unlock;
+ 	case D_WALK_NORETRY:
+ 		retry = false;
+@@ -1387,6 +1390,9 @@ static void d_walk(struct dentry *parent, void *data,
+ 		case D_WALK_SKIP:
+ 			spin_unlock(&dentry->d_lock);
+ 			continue;
++		case D_WALK_SKIP_SIBLINGS:
++			spin_unlock(&dentry->d_lock);
++			goto skip_siblings;
+ 		}
+ 
+ 		if (!list_empty(&dentry->d_subdirs)) {
+@@ -1398,6 +1404,7 @@ static void d_walk(struct dentry *parent, void *data,
+ 		}
+ 		spin_unlock(&dentry->d_lock);
+ 	}
++skip_siblings:
+ 	/*
+ 	 * All done at this level ... ascend and resume the search.
+ 	 */
+-- 
+1.8.3.1
 
