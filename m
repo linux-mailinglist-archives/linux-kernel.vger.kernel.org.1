@@ -2,140 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2852FE226
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE342FE221
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 06:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbhAUF6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 00:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727269AbhAUDUf (ORCPT
+        id S1729735AbhAUD1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 22:27:03 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:55403 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732616AbhAUDX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:20:35 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563E0C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 19:19:16 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id i30so340192ota.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 19:19:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8Rp2B5BZv6lIw+nnY7lV34RDMnSmVwqnPc777cf3U+0=;
-        b=NkEj1mMXhbaRzvPldVQpLi/kkm1Us5mKQIOA/B/990oJQ4XtITyBH/fAUUlE1dojJ0
-         3rie8SnB27VwwuiKeU5NO+MUJP4bHPUZ8z5G8qsKMJlRYEZAtXtqY4RGuH8R3WrdHU4v
-         ifDwv0kYQUpDExwhpS7L71jrQSxPQYIQOd4C8YAkSVbGk1EStVpi1oVZTXmKONffxmAm
-         X8Z5ULAUv9cPbXt5C2fczkQ+oIqSxZw+iH4tI0ThK0a9WBqQLRpGF5bXD7JKYUW1qBG+
-         oA24oxYApDNvZMAsM8i6kGMQtL+TiUdDoV3+RzGIl3RLPIBRTKOPSpY9D5zvoseEoFHz
-         pIiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8Rp2B5BZv6lIw+nnY7lV34RDMnSmVwqnPc777cf3U+0=;
-        b=XYoMiD0vMXG6JVTgtgi8KJEXz6K1K3PnZSktLb641oOS60jW9C+cj+pUfHW4VDtq9p
-         O7FQpLaaOX3e8kyoxUXbtDuojs/QGuGDclBBwDXgLmyvnjd3pTj9GNCIpGcy7mA5bgzz
-         /00im7q5/Z4AqmYs1oNahFtMITR1hjwi0LPtoqfiu6fAUm9G4rvXtA5Sg4hZIYzU3EHs
-         4pr6V0FRox5ZBTixMfpXVhGBWEmP9WwHYlCw2TAEVkAAzk1eHJQd1bN1T2HdHbIbM6IJ
-         W+l5ixY7NDNDHKbBx9ynjQoOM9BQ4yIYl7CL7TDjRIdgWcmgaF6IAtvsjfCdLWygTEqX
-         jvIQ==
-X-Gm-Message-State: AOAM531iqQGM41lOf+R0PMChywrQ95IlaBhyeL6nCrjLyk1RUMH2R3BT
-        tQ8WYCJDZE2WKqplnIInpB8BnA==
-X-Google-Smtp-Source: ABdhPJxuY7waI6QdTU1Q9xQW1jHXgw+x26QczNUMzXPrT8tg4A5/nB3Md4IX8Gi545ZP+gvDQXIBtw==
-X-Received: by 2002:a9d:4c83:: with SMTP id m3mr596284otf.353.1611199155747;
-        Wed, 20 Jan 2021 19:19:15 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i1sm858689otr.81.2021.01.20.19.19.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 19:19:15 -0800 (PST)
-Date:   Wed, 20 Jan 2021 21:19:13 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: qcom: spmi-gpio: Assign boolean values to a
- bool variable
-Message-ID: <YAjysf3IQvxO/qsT@builder.lan>
-References: <1611127757-52999-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611127757-52999-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+        Wed, 20 Jan 2021 22:23:57 -0500
+IronPort-SDR: t5UuSi4kM6fxEGFF/J78THeEzwbXRDfNYha/4mFia/z0jtG+6Ej3lLvqzF2doSXM+Gp83mlW/D
+ LTAJBuoc0miYVmbmMmadt1w8wW0SHDSpd2qpeWi2tiFk7yqVEqhtw8m2o9AwoguFbLNieNQKwh
+ AnIY9BLlRNXETJ2im6gLbPdUx0VR7P8MvyUtZY3V+IU/NbNXzn5D6rHz8EE4STu09HmZEK2KVL
+ vpXzSJ4qUeRKEosV5iFCsC0fN5PpuGyHYv3dVOYoe4Mqs7PLtczZUTnTCeV7O0d2d/6Bg+ExMg
+ meU=
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="47685556"
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by labrats.qualcomm.com with ESMTP; 20 Jan 2021 19:23:10 -0800
+X-QCInternal: smtphost
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 20 Jan 2021 19:23:09 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 7BE56218EF; Wed, 20 Jan 2021 19:23:09 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] scsi: ufs: Fix some problems in task management request implementation
+Date:   Wed, 20 Jan 2021 19:23:03 -0800
+Message-Id: <1611199388-24668-1-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20 Jan 01:29 CST 2021, Jiapeng Zhong wrote:
+Current task management request send/compl implementation is broken, the
+problems and fixes are listed as below:
 
-> Fix the following coccicheck warnings:
-> 
-> ./drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c:340:3-15: WARNING:
-> Assignment of 0/1 to bool variable.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Problem: TMR completion timeout. ufshcd_tmc_handler() calls
+         blk_mq_tagset_busy_iter(fn == ufshcd_compl_tm()), but since
+         blk_mq_tagset_busy_iter() only iterates over all reserved tags and
+         started requests, so ufshcd_compl_tm() never gets a chance to run.
+Fix:     Call blk_mq_start_request() in __ufshcd_issue_tm_cmd().
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Problem: Race condition in send/compl paths. ufshcd_compl_tm() looks for
+         all 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL and call complete()
+         for each req who has the req->end_io_data set. There can be a race
+         condition btw tmc send/compl, because req->end_io_data is set, in
+         __ufshcd_issue_tm_cmd(), without host lock protection, so it is
+         possible that when ufshcd_compl_tm() checks the req->end_io_data,
+         req->end_io_data is set but the corresponding tag has not been set
+         in the REG_UTP_TASK_REQ_DOOR_BELL. Thus, ufshcd_tmc_handler() may
+         wrongly complete TMRs which have not been sent.
+Fix:     Protect req->end_io_data with host lock. And let ufshcd_compl_tm()
+         only handle those tm cmds which have been completed instead of
+         looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
 
-Although we're mixing bool/int on line 417 and 637 as well, with:
+Problem: In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs +
+         req->tag as the Task Tag in one TMR UPIU.
+Fix:     Directly use req->tag as Task Tag.
 
-	val |= pin->disable;
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
 
-and
+Change since v1:
+- Typo fixed
 
-	pin->disable = val & BIT(0);
+This change is based on Jaegeuk's change - https://git.kernel.org/mkp/scsi/c/eeb1b55b6e25
 
-respectively. The latter could be dealt with using !!(val & BIT(0)); I
-guess the appropriate for for the prior is:
+---
+ drivers/scsi/ufs/ufshcd.c | 71 +++++++++++++++++++++++++----------------------
+ 1 file changed, 38 insertions(+), 33 deletions(-)
 
-	if (pin->disable)
-		val |= BIT(0);
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 4be35bf..8935c57 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6213,7 +6213,7 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
+ 
+ struct ctm_info {
+ 	struct ufs_hba	*hba;
+-	unsigned long	pending;
++	unsigned long	completed;
+ 	unsigned int	ncpl;
+ };
+ 
+@@ -6222,13 +6222,13 @@ static bool ufshcd_compl_tm(struct request *req, void *priv, bool reserved)
+ 	struct ctm_info *const ci = priv;
+ 	struct completion *c;
+ 
+-	WARN_ON_ONCE(reserved);
+-	if (test_bit(req->tag, &ci->pending))
+-		return true;
+-	ci->ncpl++;
+-	c = req->end_io_data;
+-	if (c)
+-		complete(c);
++	if (test_bit(req->tag, &ci->completed)) {
++		__clear_bit(req->tag, &ci->hba->outstanding_tasks);
++		ci->ncpl++;
++		c = req->end_io_data;
++		if (c)
++			complete(c);
++	}
+ 	return true;
+ }
+ 
+@@ -6244,11 +6244,19 @@ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba)
+ {
+ 	struct request_queue *q = hba->tmf_queue;
+ 	struct ctm_info ci = {
+-		.hba	 = hba,
+-		.pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL),
++		.hba = hba,
++		.ncpl = 0,
+ 	};
++	u32 tm_doorbell;
++	unsigned long completed;
++
++	tm_doorbell = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
++	completed = tm_doorbell ^ hba->outstanding_tasks;
+ 
+-	blk_mq_tagset_busy_iter(q->tag_set, ufshcd_compl_tm, &ci);
++	if (completed) {
++		ci.completed = completed;
++		blk_mq_tagset_busy_iter(q->tag_set, ufshcd_compl_tm, &ci);
++	}
+ 	return ci.ncpl ? IRQ_HANDLED : IRQ_NONE;
+ }
+ 
+@@ -6366,37 +6374,33 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+ 	DECLARE_COMPLETION_ONSTACK(wait);
+ 	struct request *req;
+ 	unsigned long flags;
+-	int free_slot, task_tag, err;
++	int task_tag, err;
+ 
+ 	/*
+-	 * Get free slot, sleep if slots are unavailable.
+-	 * Even though we use wait_event() which sleeps indefinitely,
+-	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
++	 * blk_get_request() used here is only to get a free tag.
+ 	 */
+ 	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
+ 	if (IS_ERR(req))
+ 		return PTR_ERR(req);
+ 
+-	req->end_io_data = &wait;
+-	free_slot = req->tag;
+-	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+ 	ufshcd_hold(hba, false);
+-
+ 	spin_lock_irqsave(host->host_lock, flags);
+-	task_tag = hba->nutrs + free_slot;
++	req->end_io_data = &wait;
++	blk_mq_start_request(req);
+ 
++	task_tag = req->tag;
+ 	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
+ 
+-	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
+-	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
++	memcpy(hba->utmrdl_base_addr + task_tag, treq, sizeof(*treq));
++	ufshcd_vops_setup_task_mgmt(hba, task_tag, tm_function);
+ 
+ 	/* send command to the controller */
+-	__set_bit(free_slot, &hba->outstanding_tasks);
++	__set_bit(task_tag, &hba->outstanding_tasks);
+ 
+ 	/* Make sure descriptors are ready before ringing the task doorbell */
+ 	wmb();
+ 
+-	ufshcd_writel(hba, 1 << free_slot, REG_UTP_TASK_REQ_DOOR_BELL);
++	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);
+ 	/* Make sure that doorbell is committed immediately */
+ 	wmb();
+ 
+@@ -6408,32 +6412,33 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+ 	err = wait_for_completion_io_timeout(&wait,
+ 			msecs_to_jiffies(TM_CMD_TIMEOUT));
+ 	if (!err) {
++		spin_lock_irqsave(hba->host->host_lock, flags);
+ 		/*
+ 		 * Make sure that ufshcd_compl_tm() does not trigger a
+ 		 * use-after-free.
+ 		 */
+ 		req->end_io_data = NULL;
++		spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete_err");
+ 		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
+ 				__func__, tm_function);
+-		if (ufshcd_clear_tm_cmd(hba, free_slot))
+-			dev_WARN(hba->dev, "%s: unable clear tm cmd (slot %d) after timeout\n",
+-					__func__, free_slot);
++		if (ufshcd_clear_tm_cmd(hba, task_tag)) {
++			dev_WARN(hba->dev, "%s: unable to clear tm cmd (slot %d) after timeout\n",
++					__func__, task_tag);
++		} else {
++			__clear_bit(task_tag, &hba->outstanding_tasks);
++		}
+ 		err = -ETIMEDOUT;
+ 	} else {
+ 		err = 0;
+-		memcpy(treq, hba->utmrdl_base_addr + free_slot, sizeof(*treq));
++		memcpy(treq, hba->utmrdl_base_addr + task_tag, sizeof(*treq));
+ 
+ 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete");
+ 	}
+ 
+-	spin_lock_irqsave(hba->host->host_lock, flags);
+-	__clear_bit(free_slot, &hba->outstanding_tasks);
+-	spin_unlock_irqrestore(hba->host->host_lock, flags);
+-
++	ufshcd_release(hba);
+ 	blk_put_request(req);
+ 
+-	ufshcd_release(hba);
+ 	return err;
+ }
+ 
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-If you would like to update your patch with these as well I'd be happy
-to review this.
-
-Thanks,
-Bjorn
-
-> ---
->  drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c b/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c
-> index b5949f7..eb0b60c 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c
-> @@ -331,13 +331,13 @@ static int pm8xxx_pin_config_set(struct pinctrl_dev *pctldev,
->  		case PIN_CONFIG_BIAS_DISABLE:
->  			pin->bias = PM8XXX_GPIO_BIAS_NP;
->  			banks |= BIT(2);
-> -			pin->disable = 0;
-> +			pin->disable = false;
->  			banks |= BIT(3);
->  			break;
->  		case PIN_CONFIG_BIAS_PULL_DOWN:
->  			pin->bias = PM8XXX_GPIO_BIAS_PD;
->  			banks |= BIT(2);
-> -			pin->disable = 0;
-> +			pin->disable = false;
->  			banks |= BIT(3);
->  			break;
->  		case PM8XXX_QCOM_PULL_UP_STRENGTH:
-> @@ -350,11 +350,11 @@ static int pm8xxx_pin_config_set(struct pinctrl_dev *pctldev,
->  		case PIN_CONFIG_BIAS_PULL_UP:
->  			pin->bias = pin->pull_up_strength;
->  			banks |= BIT(2);
-> -			pin->disable = 0;
-> +			pin->disable = false;
->  			banks |= BIT(3);
->  			break;
->  		case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
-> -			pin->disable = 1;
-> +			pin->disable = true;
->  			banks |= BIT(3);
->  			break;
->  		case PIN_CONFIG_INPUT_ENABLE:
-> -- 
-> 1.8.3.1
-> 
