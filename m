@@ -2,82 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8332FEA9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F602FEAA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 13:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731090AbhAUMtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 07:49:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731453AbhAUMs1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 07:48:27 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3744C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:47:46 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id x20so1606295pjh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 04:47:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pchBZ7HrMs8fZphopy3YDMD9Pzv91Q8ikc/LwQCGD9A=;
-        b=Qo7/tKnFyoY63WscJuG87dCR0YHTLw4CuGfhNpL027Ij1ktidD14qE1r0pPniXYlsK
-         2gCnCtdtvfrEx2OCmB2KG48Pu4wjmh2X7jxjUYI1nqYqtjk0/Q0A+xjDA8ynIYzV+5PA
-         gEp6wH5Xa6gzI3P7E4KOBBF+8QhSFkgqhk3UgubMDoH2F9tObgSjI4HDNjBCHkRVSb7V
-         /FYzj8b5ah+97R5TGGlkxVIhPt+lcBEQppuxkeymQVlNofcjLlQLE4vzZyPaNDLBF5Gi
-         q6Hh2KNuOy6alvDcQ6vVJGpg1+SlGXmJIjiKGJXMgRONl0F+EI4Bnmt4WhkTaFvquZp+
-         e7vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pchBZ7HrMs8fZphopy3YDMD9Pzv91Q8ikc/LwQCGD9A=;
-        b=ErM2mg57EXWGDbsBGnje9W9NpYVLz6PJfV/CYiMP+xz5TQkvX9CGP5tj8QucLQN2PV
-         oRLY/8NiEiSn8kcVLWAa7ow4bjtuJ+jRH5ttVTqtwJn9C29azyNagIdrSBeBOf3ZEHpa
-         zaK27ypIZOC0OMxtJajha6hiOgBmZUbzVHsh7FWXGGuDyE3jBNpp6/h0txF1Z10Stwvf
-         ZXIVXBzzkCs6oCQyk4fX7GiE774NCeI6IBtlMDh9lxyPyCTYzLkFt9W1kVIl/edUle/G
-         zOmAZL1tysyctUTq8qN6tOG7CxtGMTKqW+W66nQNaspb8VujeNriSby+x2iac+THWFQQ
-         UFTg==
-X-Gm-Message-State: AOAM5324ClPrey3wuKh6YotxY3bg2+hKlhTfjT+d7mssX64BsirpQ5dB
-        kB/V/TYTvsAtr5sHmpV/Q84ghmvaVHT03w==
-X-Google-Smtp-Source: ABdhPJzQPMUrZphrYzYVhVNMuufMyE+goiPwMAGTU/u0GeF2CpcRzIxMclsebqO1hVr+1hVPj+HEtw==
-X-Received: by 2002:a17:90b:11d4:: with SMTP id gv20mr11776619pjb.116.1611233265990;
-        Thu, 21 Jan 2021 04:47:45 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id e17sm5889996pjh.39.2021.01.21.04.47.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 04:47:45 -0800 (PST)
-Subject: Re: [PATCH] lightnvm: fix memory leak when submit fails
-To:     Pan Bian <bianpan2016@163.com>, Matias Bjorling <mb@lightnvm.io>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210121072202.120810-1-bianpan2016@163.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <55045608-01cb-d5af-682b-5a213944e33d@kernel.dk>
-Date:   Thu, 21 Jan 2021 05:47:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731398AbhAUMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 07:49:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731458AbhAUMs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:48:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E7A1239FD;
+        Thu, 21 Jan 2021 12:47:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611233268;
+        bh=dd4yVlG9KCtejepvHpsxeT3++mxKoHWtZTeivvj2m1Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=juVxlmLRk3sPnqi2cpCwV8Yh5CyUDKDtHm9bgxeBYtb7PgJ/QYTC2/S7FMVsbGieX
+         +p+G+tAXsn3Wpqle6HWrVvXAf81J/hLdQLdkBLHa7g8+MelcuuiHROOMSL10KaUuCZ
+         XI11xwu0vo4X9jpN7GY5jfHt2Aw85hD0nFeioehNGfULUNy6qmaVJ+5gV/iBqXABCm
+         +RGFeDKDWWXQFGlqqKpCIzpWzNRbLl4otLMlpx5lzLJ34oSuMBP/FtFf9m9TZbuclf
+         Cvg+JJmm1O+NVO88bZeg9Fn713WyC6GoeO6bYQWf7CvatkVdCP1510apDJ8fT+KazG
+         Kq2DckCKrXzLA==
+Date:   Thu, 21 Jan 2021 12:47:43 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Stan Skowronek <stan@corellium.com>
+Subject: Re: [RFC PATCH 3/7] arm64: mm: use nGnRnE instead of nGnRE on Apple
+ processors
+Message-ID: <20210121124742.GA22123@willie-the-truck>
+References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
+ <20210120132717.395873-4-mohamed.mediouni@caramail.com>
+ <20210121112725.GA21750@willie-the-truck>
+ <fdc49d125ef9f520254196509f6c0aa2@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210121072202.120810-1-bianpan2016@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fdc49d125ef9f520254196509f6c0aa2@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/21/21 12:22 AM, Pan Bian wrote:
-> The allocated page is not released if error occurs in
-> nvm_submit_io_sync_raw(). __free_page() is moved ealier to avoid
-> possible memory leak issue.
+On Thu, Jan 21, 2021 at 11:44:23AM +0000, Marc Zyngier wrote:
+> On 2021-01-21 11:27, Will Deacon wrote:
+> > On Wed, Jan 20, 2021 at 02:27:13PM +0100, Mohamed Mediouni wrote:
+> > > Use nGnRnE instead of nGnRE on Apple SoCs to workaround a serious
+> > > hardware quirk.
+> > > 
+> > > On Apple processors, writes using the nGnRE device memory type get
+> > > dropped in flight,
+> > > getting to nowhere.
+> > > 
+> > > Signed-off-by: Stan Skowronek <stan@corellium.com>
+> > > Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
+> > > ---
+> > >  arch/arm64/mm/proc.S | 26 ++++++++++++++++++++++++++
+> > >  1 file changed, 26 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> > > index 1f7ee8c8b7b8..06436916f137 100644
+> > > --- a/arch/arm64/mm/proc.S
+> > > +++ b/arch/arm64/mm/proc.S
+> > > @@ -51,6 +51,25 @@
+> > >  #define TCR_KASAN_HW_FLAGS 0
+> > >  #endif
+> > > 
+> > > +#ifdef CONFIG_ARCH_APPLE
+> > > +
+> > > +/*
+> > > + * Apple cores appear to black-hole writes done with nGnRE.
+> > > + * We settled on a work-around that uses MAIR vs changing every
+> > > single user of
+> > > + * nGnRE across the arm64 code.
+> > > + */
+> > > +
+> > > +#define MAIR_EL1_SET_APPLE						\
+> > > +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> > > +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRE) |	\
+> > > +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> > > +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> > > +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> > > +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> > > +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> > > +
+> > > +#endif
+> > > +
+> > >  /*
+> > >   * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal
+> > > memory and
+> > >   * changed during __cpu_setup to Normal Tagged if the system
+> > > supports MTE.
+> > > @@ -432,6 +451,13 @@ SYM_FUNC_START(__cpu_setup)
+> > >  	 * Memory region attributes
+> > >  	 */
+> > >  	mov_q	x5, MAIR_EL1_SET
+> > > +#ifdef CONFIG_ARCH_APPLE
+> > > +	mrs	x0, MIDR_EL1
+> > > +	lsr	w0, w0, #24
+> > > +	mov_q	x1, MAIR_EL1_SET_APPLE
+> > > +	cmp	x0, #0x61			// 0x61 = Implementer: Apple
+> > > +	csel	x5, x1, x5, eq
+> > 
+> > Why does this need to be done so early? It would be a lot cleaner if we
+> > could detect this in a similar fashion to other errata and update the
+> > MAIR
+> > appropriately. If that's not possible because of early IO mappings
+> > (which
+> > ones?), then we could instead initialise to nGnRnE unconditionally, but
+> > relax it to nGnRE if we detect that we _don't_ have the erratum.
+> 
+> Would that imply another round-trip into the idmap, much like we do
+> when we switch to non-global mappings? Or do you expect that we can change
+> the MAIR with live mappings?
 
-Applied, thanks.
+I think we should be able to change it live and then invalidate the TLB. At
+least, my reading of the BBM requirements suggests that it isn't required
+for changing between different types of device memory. I can seek
+clarification from Arm if necessary.
 
-General question for Matias - is lightnvm maintained anymore at all, or
-should we remove it? The project seems dead from my pov, and I don't
-even remember anyone even reviewing fixes from other people.
-
--- 
-Jens Axboe
-
+Will
