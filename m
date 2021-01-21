@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A162FF276
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8762FF277
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 18:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389305AbhAURwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 12:52:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        id S2389288AbhAURwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 12:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389054AbhAURwh (ORCPT
+        with ESMTP id S2389097AbhAURwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Jan 2021 12:52:37 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6CAC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:51:54 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id l9so3878519ejx.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:51:54 -0800 (PST)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C01DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:51:55 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id b2so3550247edm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 09:51:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=51VcyZ0wcuGuW2m213F8YE94gBtxdpp+DVm+1XUV/kc=;
-        b=H5RbvKJzOAZSzZttqk+4D6J5otSROP5TEODNUwb21iPJKfP+Ab3VInvWrEmmIXc51D
-         kT4vXcIGucGm/xDXGd5766NQhpstAG53Q8NLEmg4cvuF7NJn7NI2aqKPPNarNCatpphL
-         n04UttoRPSTulyYrFLysFiGhqiFnUg2Vsf0CI=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OCYYVMv5s714jVuwCabaovHSIiuYo1Mak9GI7N7bfpA=;
+        b=cuSirrQ1oaAAyphXl4bCIjli2fQoncNhitI0+YSQr3brIfsbP9VbBs3jzssRkA++JE
+         LG1K19NciHMQYyvSknHr5rL/fS73Lz6NxQ8nGH+Nb+j2A/pHWblY+1UbzpLedlTywnSI
+         ZxPmTnpt0Py/TXigz0VWFJxdtIKfzBpfQdwjc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=51VcyZ0wcuGuW2m213F8YE94gBtxdpp+DVm+1XUV/kc=;
-        b=O4HCZ7mYKduYgP7avcEyQi0b20SyI/aGrUsYMpEKVyrY/2PPgbVJQzveDnj42wFXQY
-         qNsHzDMIhJgPJ3SVuxgUbiidZfxw5CHfSlKfLdWzFJRvkjQ+GyQ12aNCWx8s0xajyboc
-         I0KOMMmBlrEPipS+Gcfsvth46CvKomwi1L7J+SYgYbwG97LPV1rZ5BSdV1REeYL51yxx
-         YQrTy778uWrTmZfxnnOO7vP/bd6bunjtylhi0Zn7WyTMzqgo0g0F6JjWiTFXJQph2r8a
-         /6lBkFWbn0fJtn9CnnEV7qrq6BUbu1z60mBj5t50oaDtue4hywSgGifDnRGhm96P+J3z
-         0ncQ==
-X-Gm-Message-State: AOAM533m1k5kht1N8PjejMkxOVdUePPJHmRFXFJ2cdW+3vaUta86APWK
-        JawuDipSzlM7mnCTWkaApN/HpQ==
-X-Google-Smtp-Source: ABdhPJx+D8/Miw7niFfErjOQWn8sH7EaMNhkJL7TJSDo4zIFgNNDjogLT0p7KxD+/CzpFUu1z+e5Lw==
-X-Received: by 2002:a17:906:4893:: with SMTP id v19mr421764ejq.454.1611251513363;
-        Thu, 21 Jan 2021 09:51:53 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OCYYVMv5s714jVuwCabaovHSIiuYo1Mak9GI7N7bfpA=;
+        b=VcgjWfUTt0td7/LVpY74CKNT+lW0nKwiEUMqRUrZbTHk7ovmToUCcuwfSmsjoTK8rf
+         CIzKfkm8Mc9jzaH4Ro3S4sAy0l+uejK/LWwyAYfHwByZtFU1MetlkBh3EWzu8TT24wEs
+         rNDAOdecH9xn5kUiEcpIcXqJNhx2Ct/H3QWOXbt6zYqJawDUy12j1nsUeenGLpUyiToQ
+         jhWmguGDMJSQ44ArRJdbP0zDRU4EcnTd4jqfWYala15j0gketddOFWx3uIFruEgho/eo
+         n2Duff1ZsEkvtyw789FIqKJne6nyp4mc3lwYJRZjRA9QeT5Iho4wodHPneRJowZfpQ3s
+         bNvQ==
+X-Gm-Message-State: AOAM531yg5AZXvN+2/4dxFLtgW5R4DqCLrXlb8IzC0CQVL2Nd05BHZpM
+        iFITDPHYyHTG+6twTCkBced6JA==
+X-Google-Smtp-Source: ABdhPJyAt+sWJ5YT6v7cdGLKqc6+7CG9j6StKNytrRLmmdUplw06fy1GOc3aYmBcNgxFrk+wwAdvSw==
+X-Received: by 2002:a05:6402:1249:: with SMTP id l9mr201913edw.375.1611251514174;
+        Thu, 21 Jan 2021 09:51:54 -0800 (PST)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id w16sm3232349edv.4.2021.01.21.09.51.52
+        by smtp.gmail.com with ESMTPSA id w16sm3232349edv.4.2021.01.21.09.51.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 09:51:52 -0800 (PST)
+        Thu, 21 Jan 2021 09:51:53 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -57,71 +57,42 @@ To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mateusz Gorski <mateusz.gorski@linux.intel.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Lukasz Majczak <lma@semihalf.com>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
-Subject: [PATCH v3 1/2] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib skl_tplg_complete
-Date:   Thu, 21 Jan 2021 18:51:50 +0100
-Message-Id: <20210121175151.139111-1-ribalda@chromium.org>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v3 2/2] ASoC: Intel: Skylake: Zero snd_ctl_elem_value
+Date:   Thu, 21 Jan 2021 18:51:51 +0100
+Message-Id: <20210121175151.139111-2-ribalda@chromium.org>
 X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+In-Reply-To: <20210121175151.139111-1-ribalda@chromium.org>
+References: <20210121175151.139111-1-ribalda@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If dobj->control is not initialized we end up in an OOPs during
-skl_tplg_complete:
+Clear struct snd_ctl_elem_value before calling ->put() to avoid any data
+leak.
 
-[   26.553358] BUG: kernel NULL pointer dereference, address:
-0000000000000078
-[   26.561151] #PF: supervisor read access in kernel mode
-[   26.566897] #PF: error_code(0x0000) - not-present page
-[   26.572642] PGD 0 P4D 0
-[   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
-[   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
-5.4.81 #4
-[   26.588232] Hardware name: HP Soraka/Soraka, BIOS
-Google_Soraka.10431.106.0 12/03/2019
-[   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
-
-Cc: <stable@vger.kernel.org>
-Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
-Tested-by: Lukasz Majczak <lma@semihalf.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
-v3: order local variables by length
-
- sound/soc/intel/skylake/skl-topology.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ae466cd59292..ffd37aaecdf1 100644
+index ffd37aaecdf1..76a04a883e63 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3619,15 +3619,16 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 
- 	list_for_each_entry(dobj, &component->dobj_list, list) {
- 		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
--		struct soc_enum *se =
--			(struct soc_enum *)kcontrol->private_value;
--		char **texts = dobj->control.dtexts;
-+		struct soc_enum *se;
- 		char chan_text[4];
-+		char **texts;
- 
--		if (dobj->type != SND_SOC_DOBJ_ENUM ||
--		    dobj->control.kcontrol->put !=
--		    skl_tplg_multi_config_set_dmic)
-+		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
-+		    kcontrol->put != skl_tplg_multi_config_set_dmic)
- 			continue;
-+
-+		se = (struct soc_enum *)kcontrol->private_value;
-+		texts = dobj->control.dtexts;
+@@ -3632,7 +3632,7 @@ static void skl_tplg_complete(struct snd_soc_component *component)
  		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
  
  		for (i = 0; i < se->items; i++) {
+-			struct snd_ctl_elem_value val;
++			struct snd_ctl_elem_value val = {};
+ 
+ 			if (strstr(texts[i], chan_text)) {
+ 				val.value.enumerated.item[0] = i;
 -- 
 2.30.0.296.g2bfb1c46d8-goog
 
