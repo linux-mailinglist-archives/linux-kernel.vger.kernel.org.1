@@ -2,97 +2,565 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24D1300F88
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B06300F9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730593AbhAVV7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        id S1730597AbhAVWHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:07:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729576AbhAVV6z (ORCPT
+        with ESMTP id S1730910AbhAVWEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:58:55 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FE8C06174A;
-        Fri, 22 Jan 2021 13:58:15 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id u11so8182962ljo.13;
-        Fri, 22 Jan 2021 13:58:15 -0800 (PST)
+        Fri, 22 Jan 2021 17:04:55 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D04BC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:04:14 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d4so4076179plh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:04:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XmVwcl5zov3KR+vEhZu6TM/lbJHaayiWVAvDfTYcGJg=;
-        b=Jfp3zu+DNoQBWUPlvlhJpjwwkHiJMuyg/x3E1zTiq7E5c8b9N2+Ekj/UynidTve9k9
-         qBWVzvzk46qU3mXkydK9Dza/CR0p/CXE0y9LGZsfkM+yT+jFqoNZGvn4sE4d0O+i62uZ
-         M0+A//Nm1Zx/ow9vdUMnD+DdDfM1RljSFLKQ4fo+faBPmid02wsTVMLQqOJ+uM9X3y7E
-         rkSPBQEftvA+TwjjpayNpITUpotZaqIKuCp+KBMPBlJpc7Hv9J+Sgyx5VEd13xUd5Owa
-         PNfYTEqtQpM5VhmqBPiE2cU7KkBlvvVwxssAcVSTdXUxOLO1WsKyxo2yCSR8jMEHpqex
-         jYWQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0ItXq89Fp8DrRospnZ5epJ5IbjFMXG0vksbW9xyQS2c=;
+        b=g1ozRKDLGxHeyyuLnTxF2YG9g5By7mXw90kuZUCj2MZlKIRl5FYmVrCNsHcJ2b3Yof
+         dzitOr8frbZcJsqyIxGV6SG/kyS7Hc/YEAV1rUQ7xkjbf+KNwrSZZgQ65M7uFUmIc8pX
+         7OsAFZC614KgkOxqE3HOwjd6/DV4r6WMoxs/g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=XmVwcl5zov3KR+vEhZu6TM/lbJHaayiWVAvDfTYcGJg=;
-        b=HOyTJt6rzt869CHAqMdZtOjtFHpUK8NWyBBRUvyGlLk1miFfe1hNuCdrAFVnXqeduL
-         B6dp+s+kVBFl3F0hxhhLjwAcbyFkzgb8EHrYy1xYciV28ExMvmeztUc2y+miRHS36o+4
-         irBZ2xMjCWQb4kEVag3X8V+S3uVMVEBs3Qd6S4rDrW00SRP12uOEfgDPOt5eqm2BNPju
-         lJVoYMGK/gZQcJyRO2wvm0I3lHF7d+snDqHYF5V0Ozmvh4Xo+VvwohJvQwW5J33IVP1S
-         48PsW+87EjlwFRGrrFNj5l+2Ea0MKdX8tL8Z4Y9AAK3zAJyUiO3JAca3+RO9MrmociD6
-         fClQ==
-X-Gm-Message-State: AOAM532wnCb6/dk9V0r7n/3SGh3wSwS0G/BMYsDaOSi6NAlesjhBJkxo
-        jAqlNx/9B16zwaDaShb2ZdU3iqfEua4=
-X-Google-Smtp-Source: ABdhPJzL0Qff0MnWj81jjM+rLajUyTVkI7773FXMWioYjSYTCDNefT6rCEUD5xq63TjsiKXX8t52Zg==
-X-Received: by 2002:a2e:9d8b:: with SMTP id c11mr209129ljj.470.1611352693430;
-        Fri, 22 Jan 2021 13:58:13 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id t2sm484560lfk.28.2021.01.22.13.58.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 13:58:12 -0800 (PST)
-Subject: Re: [PATCH v1] memory: tegra: Check whether reset is already asserted
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210119235210.13006-1-digetx@gmail.com>
- <20210122214005.bfsznpaga2rhl3ow@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <20cc8401-1934-6e4f-8e66-3216b86681fa@gmail.com>
-Date:   Sat, 23 Jan 2021 00:58:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        bh=0ItXq89Fp8DrRospnZ5epJ5IbjFMXG0vksbW9xyQS2c=;
+        b=DG9c5Ql1+Jq07zUSlAJkPR07xjHnmwWZ7nl/dvdSlXik2ri/fP308T3Ds46VTij2bz
+         cfov1cMrLbYaSnUXtDiQGjLK3eUq1VnO0BCbQa8sPIppVFplIDnUbHMwyKPeILow9FMZ
+         EpZ+94yCE7T6mIDcoZxiJalsHUs4hfDgzaywY5O0Zs9U9+/fhvWnPyNb8k3fm3gv0I3y
+         cUqOtqpVV1HrAXWvLZC6bO+U5VZRGLvyPqCXHRjZ1kVy2MC47ErFhybR+DHqErJTD70Z
+         8yAGSB2pMpupXae8V2M27GBLM2WXrPRTRdSrBR2lnRboIvcokaaPQWDqKq8QwyXBuB+F
+         EJHg==
+X-Gm-Message-State: AOAM532/w6/d4rSsGMpCrGaPu5/T1L5cbntue6GYmGJgmM1y+knuzS3o
+        QYXAaTyH7j3d0jqlZu0w/DoEOg==
+X-Google-Smtp-Source: ABdhPJxdJxnc6jTD23222+mRk4vqwF3Xv/yDNqixnGk1J++VDtAwuKf88nXMxhUmOkYQ4iv87eDtFQ==
+X-Received: by 2002:a17:90b:368f:: with SMTP id mj15mr1093964pjb.201.1611353054091;
+        Fri, 22 Jan 2021 14:04:14 -0800 (PST)
+Received: from pc98bx3.roam.corp.google.com (c-73-222-23-249.hsd1.ca.comcast.net. [73.222.23.249])
+        by smtp.gmail.com with ESMTPSA id h12sm9863300pgk.70.2021.01.22.14.04.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 14:04:13 -0800 (PST)
+From:   Daisuke Nojiri <dnojiri@chromium.org>
+Cc:     vpalatin@chromium.org, Daisuke Nojiri <dnojiri@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Ching-Kang Yen <chingkang@chromium.org>,
+        Vijay Hiremath <vijay.p.hiremath@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH v3 1/2] power: supply: PCHG: Peripheral device charger
+Date:   Fri, 22 Jan 2021 13:58:58 -0800
+Message-Id: <20210122215900.1168610-1-dnojiri@chromium.org>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-In-Reply-To: <20210122214005.bfsznpaga2rhl3ow@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-23.01.2021 00:40, Krzysztof Kozlowski пишет:
-> On Wed, Jan 20, 2021 at 02:52:10AM +0300, Dmitry Osipenko wrote:
->> Check whether memory client reset is already asserted in order to prevent
->> DMA-flush error on trying to re-assert an already asserted reset.
->>
->> This becomes a problem once PMC GENPD is enabled to use memory resets
->> since GENPD will get a error and fail to toggle power domain. PMC GENPDs
->> can't be toggled safely without holding memory reset on Tegra and we're
->> about to fix this.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
->> Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-> 
-> Don't add your own Tested-by. Author has to test it.  However this is a
-> v1 and already three other people added tests. Where are the emails?
+This patch adds a driver for PCHG (Peripheral CHarGer). PCHG is a
+framework managing power supplies for peripheral devices.
 
-The test results were given on #tegra irc.
+This driver creates a sysfs node for each peripheral charge port:
 
-Author doesn't have to test, from time to time I'm helping people who
-can't make a patch with fixing obvious bugs for the h/w that I don't
-have access to.
+	/sys/class/power_supply/PCHGn
 
-Anyways, I'll make v2 with myself removed if you prefer that, thanks.
+where <n> is the index of a charge port.
+
+For example, when a stylus is connected to a NFC/WLC port, the node
+prints:
+
+	/sys/class/power_supply/PCHG0/
+		capacity=50
+		scope=Device
+		status=Charging
+		type=Battery
+
+Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
+---
+v1 -> v2
+* Separate mfd/cros_ec_dev.c
+* Make CONFIG_CHARGER_CROS_PCHG default to CONFIG_MFD_CROS_EC_DEV
+v2 -> v3
+* Return POWER_SUPPLY_SCOPE_DEVICE for POWER_SUPPLY_PROP_SCOPE
+* POWER_SUPPLY_TYPE_WIRELESS -> POWER_SUPPLY_TYPE_BATTERY
+---
+ drivers/power/supply/Kconfig                  |  10 +
+ drivers/power/supply/Makefile                 |   1 +
+ .../power/supply/cros_peripheral_charger.c    | 350 ++++++++++++++++++
+ .../linux/platform_data/cros_ec_commands.h    |  48 +++
+ 4 files changed, 409 insertions(+)
+ create mode 100644 drivers/power/supply/cros_peripheral_charger.c
+
+diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+index eec646c568b7be..407f9fbbc2bb50 100644
+--- a/drivers/power/supply/Kconfig
++++ b/drivers/power/supply/Kconfig
+@@ -714,6 +714,16 @@ config CHARGER_CROS_USBPD
+ 	  what is connected to USB PD ports from the EC and converts
+ 	  that into power_supply properties.
+ 
++config CHARGER_CROS_PCHG
++	tristate "ChromeOS EC based peripheral charger"
++	depends on MFD_CROS_EC_DEV
++	default MFD_CROS_EC_DEV
++	help
++	  Say Y here to enable ChromeOS EC based peripheral charge driver.
++	  This driver gets various information about the devices connected to
++	  the peripheral charge ports from the EC and converts that into
++	  power_supply properties.
++
+ config CHARGER_SC2731
+ 	tristate "Spreadtrum SC2731 charger driver"
+ 	depends on MFD_SC27XX_PMIC || COMPILE_TEST
+diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
+index dd4b86318cd9bd..5263472a64809b 100644
+--- a/drivers/power/supply/Makefile
++++ b/drivers/power/supply/Makefile
+@@ -91,6 +91,7 @@ obj-$(CONFIG_CHARGER_TPS65217)	+= tps65217_charger.o
+ obj-$(CONFIG_AXP288_FUEL_GAUGE) += axp288_fuel_gauge.o
+ obj-$(CONFIG_AXP288_CHARGER)	+= axp288_charger.o
+ obj-$(CONFIG_CHARGER_CROS_USBPD)	+= cros_usbpd-charger.o
++obj-$(CONFIG_CHARGER_CROS_PCHG)	+= cros_peripheral_charger.o
+ obj-$(CONFIG_CHARGER_SC2731)	+= sc2731_charger.o
+ obj-$(CONFIG_FUEL_GAUGE_SC27XX)	+= sc27xx_fuel_gauge.o
+ obj-$(CONFIG_CHARGER_UCS1002)	+= ucs1002_power.o
+diff --git a/drivers/power/supply/cros_peripheral_charger.c b/drivers/power/supply/cros_peripheral_charger.c
+new file mode 100644
+index 00000000000000..a864a33a48033f
+--- /dev/null
++++ b/drivers/power/supply/cros_peripheral_charger.c
+@@ -0,0 +1,350 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Power supply driver for ChromeOS EC based Peripheral Device Charger.
++ *
++ * Copyright 2020 Google LLC.
++ */
++
++#include <linux/module.h>
++#include <linux/notifier.h>
++#include <linux/platform_data/cros_ec_commands.h>
++#include <linux/platform_data/cros_ec_proto.h>
++#include <linux/platform_device.h>
++#include <linux/power_supply.h>
++#include <linux/slab.h>
++#include <linux/stringify.h>
++#include <linux/types.h>
++
++#define DRV_NAME		"cros-ec-pchg"
++#define PCHG_DIR_NAME		"PCHG%d"
++#define PCHG_DIR_NAME_LENGTH	sizeof("PCHG" __stringify(EC_PCHG_MAX_PORTS))
++#define PCHG_CACHE_UPDATE_DELAY	msecs_to_jiffies(500)
++
++struct port_data {
++	int port_number;
++	char name[PCHG_DIR_NAME_LENGTH];
++	struct power_supply *psy;
++	struct power_supply_desc psy_desc;
++	int psy_status;
++	int battery_percentage;
++	struct charger_data *charger;
++	unsigned long last_update;
++};
++
++struct charger_data {
++	struct device *dev;
++	struct cros_ec_dev *ec_dev;
++	struct cros_ec_device *ec_device;
++	int num_registered_psy;
++	struct port_data *ports[EC_PCHG_MAX_PORTS];
++	struct notifier_block notifier;
++};
++
++static enum power_supply_property cros_pchg_props[] = {
++	POWER_SUPPLY_PROP_STATUS,
++	POWER_SUPPLY_PROP_CAPACITY,
++	POWER_SUPPLY_PROP_SCOPE,
++	/*
++	 * todo: Add the following.
++	 *
++	 * POWER_SUPPLY_PROP_TECHNOLOGY,
++	 * POWER_SUPPLY_PROP_ERROR,
++	 * POWER_SUPPLY_PROP_SERIAL_NUMBER,
++	 *
++	 * POWER_SUPPLY_PROP_ONLINE can't be used because it indicates the
++	 * system is powered by AC.
++	 */
++};
++
++static int cros_pchg_ec_command(const struct charger_data *charger,
++				unsigned int version,
++				unsigned int command,
++				const void *outdata,
++				unsigned int outsize,
++				void *indata,
++				unsigned int insize)
++{
++	struct cros_ec_dev *ec_dev = charger->ec_dev;
++	struct cros_ec_command *msg;
++	int ret;
++
++	msg = kzalloc(sizeof(*msg) + max(outsize, insize), GFP_KERNEL);
++	if (!msg)
++		return -ENOMEM;
++
++	msg->version = version;
++	msg->command = ec_dev->cmd_offset + command;
++	msg->outsize = outsize;
++	msg->insize = insize;
++
++	if (outsize)
++		memcpy(msg->data, outdata, outsize);
++
++	ret = cros_ec_cmd_xfer_status(charger->ec_device, msg);
++	if (ret >= 0 && insize)
++		memcpy(indata, msg->data, insize);
++
++	kfree(msg);
++	return ret;
++}
++
++static int cros_pchg_port_count(const struct charger_data *charger)
++{
++	struct ec_response_pchg_count rsp;
++	int ret;
++
++	ret = cros_pchg_ec_command(charger, 0, EC_CMD_PCHG_COUNT,
++				   NULL, 0, &rsp, sizeof(rsp));
++	if (ret < 0) {
++		dev_warn(charger->dev,
++			 "Unable to get number or ports (err:%d)\n", ret);
++		return ret;
++	}
++
++	return rsp.port_count;
++}
++
++static int cros_pchg_get_status(struct port_data *port)
++{
++	struct charger_data *charger = port->charger;
++	struct ec_params_pchg req;
++	struct ec_response_pchg rsp;
++	struct device *dev = charger->dev;
++	int ret;
++
++	req.port = port->port_number;
++	ret = cros_pchg_ec_command(charger, 0, EC_CMD_PCHG,
++				   &req, sizeof(req), &rsp, sizeof(rsp));
++	if (ret < 0) {
++		dev_err(dev, "Unable to get port.%d status (err:%d)\n",
++			port->port_number, ret);
++		return ret;
++	}
++
++	switch (rsp.state) {
++	case PCHG_STATE_RESET:
++	case PCHG_STATE_INITIALIZED:
++	case PCHG_STATE_ENABLED:
++	default:
++		port->psy_status = POWER_SUPPLY_STATUS_UNKNOWN;
++		port->battery_percentage = 0;
++		break;
++	case PCHG_STATE_DETECTED:
++		port->psy_status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		port->battery_percentage = rsp.battery_percentage;
++		break;
++	case PCHG_STATE_CHARGING:
++		port->psy_status = POWER_SUPPLY_STATUS_CHARGING;
++		port->battery_percentage = rsp.battery_percentage;
++		break;
++	}
++
++	dev_dbg(dev,
++		"Port %d: state=%d battery=%d%%\n",
++		port->port_number, rsp.state, rsp.battery_percentage);
++
++	return 0;
++}
++
++static int cros_pchg_get_port_status(struct port_data *port, bool ratelimit)
++{
++	int ret;
++
++	if (ratelimit &&
++	    time_is_after_jiffies(port->last_update + PCHG_CACHE_UPDATE_DELAY))
++		return 0;
++
++	ret = cros_pchg_get_status(port);
++	if (ret < 0)
++		return ret;
++
++	port->last_update = jiffies;
++
++	return ret;
++}
++
++static int cros_pchg_get_prop(struct power_supply *psy,
++			      enum power_supply_property psp,
++			      union power_supply_propval *val)
++{
++	struct port_data *port = power_supply_get_drvdata(psy);
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_STATUS:
++	case POWER_SUPPLY_PROP_CAPACITY:
++		cros_pchg_get_port_status(port, true);
++		break;
++	default:
++		break;
++	}
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_STATUS:
++		val->intval = port->psy_status;
++		break;
++	case POWER_SUPPLY_PROP_CAPACITY:
++		val->intval = port->battery_percentage;
++		break;
++	case POWER_SUPPLY_PROP_SCOPE:
++		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int cros_pchg_event(const struct charger_data *charger,
++			   unsigned long host_event)
++{
++	int i;
++
++	for (i = 0; i < charger->num_registered_psy; i++)
++		cros_pchg_get_port_status(charger->ports[i], false);
++
++	return NOTIFY_OK;
++}
++
++static u32 cros_get_device_event(const struct charger_data *charger)
++{
++	struct ec_params_device_event req;
++	struct ec_response_device_event rsp;
++	struct device *dev = charger->dev;
++	int ret;
++
++	req.param = EC_DEVICE_EVENT_PARAM_GET_CURRENT_EVENTS;
++	ret = cros_pchg_ec_command(charger, 0, EC_CMD_DEVICE_EVENT,
++				   &req, sizeof(req), &rsp, sizeof(rsp));
++	if (ret < 0) {
++		dev_warn(dev, "Unable to get device events (err:%d)\n", ret);
++		return 0;
++	}
++
++	return rsp.event_mask;
++}
++
++static int cros_ec_notify(struct notifier_block *nb,
++			  unsigned long queued_during_suspend,
++			  void *data)
++{
++	struct cros_ec_device *ec_dev = (struct cros_ec_device *)data;
++	u32 host_event = cros_ec_get_host_event(ec_dev);
++	struct charger_data *charger =
++			container_of(nb, struct charger_data, notifier);
++	u32 device_event_mask;
++
++	if (!host_event)
++		return NOTIFY_BAD;
++
++	if (!(host_event & EC_HOST_EVENT_MASK(EC_HOST_EVENT_DEVICE)))
++		return NOTIFY_DONE;
++
++	/*
++	 * todo: Retrieve device event mask in common place
++	 * (e.g. cros_ec_proto.c).
++	 */
++	device_event_mask = cros_get_device_event(charger);
++	if (!(device_event_mask & EC_DEVICE_EVENT_MASK(EC_DEVICE_EVENT_WLC)))
++		return NOTIFY_DONE;
++
++	return cros_pchg_event(charger, host_event);
++}
++
++static int cros_pchg_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct cros_ec_dev *ec_dev = dev_get_drvdata(dev->parent);
++	struct cros_ec_device *ec_device = ec_dev->ec_dev;
++	struct power_supply_desc *psy_desc;
++	struct charger_data *charger;
++	struct power_supply *psy;
++	struct port_data *port;
++	struct notifier_block *nb;
++	int num_ports;
++	int ret;
++	int i;
++
++	charger = devm_kzalloc(dev, sizeof(*charger), GFP_KERNEL);
++	if (!charger)
++		return -ENOMEM;
++
++	charger->dev = dev;
++	charger->ec_dev = ec_dev;
++	charger->ec_device = ec_device;
++
++	ret = cros_pchg_port_count(charger);
++	if (ret <= 0) {
++		/*
++		 * This feature is enabled by the EC and the kernel driver is
++		 * included by default for CrOS devices. Don't need to be loud
++		 * since this error can be normal.
++		 */
++		dev_info(dev, "No peripheral charge ports (err:%d)\n", ret);
++		return -ENODEV;
++	}
++
++	num_ports = ret;
++	if (num_ports > EC_PCHG_MAX_PORTS) {
++		dev_err(dev, "Too many peripheral charge ports (%d)\n",
++			num_ports);
++		return -ENOBUFS;
++	}
++
++	dev_info(dev, "%d peripheral charge ports found\n", num_ports);
++
++	for (i = 0; i < num_ports; i++) {
++		struct power_supply_config psy_cfg = {};
++
++		port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
++		if (!port)
++			return -ENOMEM;
++
++		port->charger = charger;
++		port->port_number = i;
++		snprintf(port->name, sizeof(port->name), PCHG_DIR_NAME, i);
++
++		psy_desc = &port->psy_desc;
++		psy_desc->name = port->name;
++		psy_desc->type = POWER_SUPPLY_TYPE_BATTERY;
++		psy_desc->get_property = cros_pchg_get_prop;
++		psy_desc->external_power_changed = NULL;
++		psy_desc->properties = cros_pchg_props;
++		psy_desc->num_properties = ARRAY_SIZE(cros_pchg_props);
++		psy_cfg.drv_data = port;
++
++		psy = devm_power_supply_register_no_ws(dev, psy_desc, &psy_cfg);
++		if (IS_ERR(psy)) {
++			dev_err(dev, "Failed to register power supply\n");
++			continue;
++		}
++		port->psy = psy;
++
++		charger->ports[charger->num_registered_psy++] = port;
++	}
++
++	if (!charger->num_registered_psy)
++		return -ENODEV;
++
++	nb = &charger->notifier;
++	nb->notifier_call = cros_ec_notify;
++	ret = blocking_notifier_chain_register(&ec_dev->ec_dev->event_notifier,
++					       nb);
++	if (ret < 0)
++		dev_err(dev, "Failed to register notifier (err:%d)\n", ret);
++
++	return 0;
++}
++
++static struct platform_driver cros_pchg_driver = {
++	.driver = {
++		.name = DRV_NAME,
++	},
++	.probe = cros_pchg_probe
++};
++
++module_platform_driver(cros_pchg_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("ChromeOS EC peripheral device charger");
++MODULE_ALIAS("platform:" DRV_NAME);
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 5a3ccf8968968e..6a82a9ad99eadf 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4249,6 +4249,7 @@ enum ec_device_event {
+ 	EC_DEVICE_EVENT_TRACKPAD,
+ 	EC_DEVICE_EVENT_DSP,
+ 	EC_DEVICE_EVENT_WIFI,
++	EC_DEVICE_EVENT_WLC,
+ };
+ 
+ enum ec_device_event_param {
+@@ -5480,6 +5481,53 @@ struct ec_response_rollback_info {
+ /* Issue AP reset */
+ #define EC_CMD_AP_RESET 0x0125
+ 
++/**
++ * Get the number of peripheral charge ports
++ */
++#define EC_CMD_PCHG_COUNT 0x0134
++
++#define EC_PCHG_MAX_PORTS 8
++
++struct ec_response_pchg_count {
++	uint8_t port_count;
++} __ec_align1;
++
++/**
++ * Get the status of a peripheral charge port
++ */
++#define EC_CMD_PCHG 0x0135
++
++struct ec_params_pchg {
++	uint8_t port;
++} __ec_align1;
++
++struct ec_response_pchg {
++	uint32_t error; /* enum pchg_error */
++	uint8_t state; /* enum pchg_state state */
++	uint8_t battery_percentage;
++} __ec_align2;
++
++enum pchg_state {
++	/* Charger is reset and not initialized. */
++	PCHG_STATE_RESET = 0,
++	/* Charger is initialized or disabled. */
++	PCHG_STATE_INITIALIZED,
++	/* Charger is enabled and ready to detect a device. */
++	PCHG_STATE_ENABLED,
++	/* Device is detected in proximity. */
++	PCHG_STATE_DETECTED,
++	/* Device is being charged. */
++	PCHG_STATE_CHARGING,
++};
++
++#define EC_PCHG_STATE_TEXT { \
++	[PCHG_STATE_RESET] = "RESET", \
++	[PCHG_STATE_INITIALIZED] = "INITIALIZED", \
++	[PCHG_STATE_ENABLED] = "ENABLED", \
++	[PCHG_STATE_DETECTED] = "DETECTED", \
++	[PCHG_STATE_CHARGING] = "CHARGING", \
++	}
++
+ /*****************************************************************************/
+ /* Locate peripheral chips
+  *
+-- 
+2.30.0.280.ga3ce27912f-goog
+
