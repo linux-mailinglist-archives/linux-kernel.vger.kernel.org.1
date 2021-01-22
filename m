@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67D22FF974
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7F52FF977
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbhAVA0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 19:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S1726309AbhAVA3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 19:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726361AbhAVA0Y (ORCPT
+        with ESMTP id S1725823AbhAVA3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:26:24 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B2AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:25:43 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id b8so2278661plx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:25:43 -0800 (PST)
+        Thu, 21 Jan 2021 19:29:45 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BCEC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:29:05 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id e6so2760886pjj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:29:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5feskpk9GlzD7Krs5v/HKhRDKnwIPDPivS/lanzBAu8=;
-        b=hl6Jw4vmpQjaXAX/JGgeAWIcC5xSkAe4iH8/Oq28KL9jWUt/n37wxuZxYDDpPTA+eW
-         PsWIcvFoP6Un8KVQtQ9UD/pkF0GPrUMhfpQ4ULGeiETqIElv+plirQRWA0g5trgEGHrX
-         NTyzbH09c3KzViq5XkX0YDghgqBZOSUDow3+ZH7HS7k9OaKmM0ifJ9oLGmYpZ4bpsvlm
-         ys3GeSuXziChU5mbXifVCmw+SQ5qOke4X+ESS31YjXHS4g59vcvkDdDM5mBvEAl+qMka
-         VjmvmNmOtlYo7mIIchEKuy/j5lt+H54n/OY8VUtUGA2m14J2Ps+JR8v8WftjIUUzUi89
-         3tjQ==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=iF694mVegDqKfi3Z26c6YspuPq0RpCL5dkGRinSRl7U=;
+        b=iHXjhXwd1W/PjBrrNlHlmRkUkqpaq06V+dHYJ/WoIz0hqRJo4+YsRnv1zwlR+f4CIg
+         2fgXBDsf8cIp19rTIUAh74GLorCBgFMOOehO8JePoOj4n+mrDueSQNxp6tXj1jROAC74
+         Q3rK1OTEmMQSaJSI/NwQqLAumus6YpNVX2SBEsIdZlJW0hsUKfuP/KNEXNchIlvgAF6a
+         RbQsjv9Re274vGgT+mKvB3xeIQ0B6JohjXEPTcPu9XCQTk3mz/vqFF/GOsQn0yYPaaLB
+         ENvI/TdnPSH18xAwo8mby4pSVYNMWALpM8Sr6Mqv1aXDEv4YIctYAEmDR2W5WXUi1lLT
+         ynJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5feskpk9GlzD7Krs5v/HKhRDKnwIPDPivS/lanzBAu8=;
-        b=D82cDztHDFWKDdPMqj73VDfh0kqKKotXf4ogs8l1R8l+ezZyn5l9j3an1qoVClM4kn
-         BoW4CyOjc+rS9vFMTEMxoPR9FervSGzEH8dViB0NA91aeSyRX9+PFvTQ5Q4buIqrGjwc
-         Ml7diKvH0iMB2ScSO/mMrqDPFPIgcB31D5OSpzF8XRsRiJiubby9/H80sC3UCe+QgNld
-         LoTiZCY/boIvQi6H8OdwxPr1BOtOV740IVYw1jg3pj++YiSBPOvUCC1kqHBAIontbjNe
-         UoAj6XOBs3Zy7mqbtzE1WPIfLsCUGFQ/PByS+GpiprNQalPAZDzRUWsgKHgn2owrh6nI
-         D8/A==
-X-Gm-Message-State: AOAM533ede5Lp7omGdU+FI8vVOBrau36t3B14nwtv3gsHAZyRvCIh1vB
-        lv5oyNAZPOBYM0NbTaWNyKA=
-X-Google-Smtp-Source: ABdhPJyQpkaTg2NUQKEh3ir6tqEkIVpk64iPS4Wy12YP3fR7uOZTTp0aLxHKc4M7LwM+Do28dqd09Q==
-X-Received: by 2002:a17:902:14f:b029:de:c703:3045 with SMTP id 73-20020a170902014fb02900dec7033045mr2362002plb.14.1611275143384;
-        Thu, 21 Jan 2021 16:25:43 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:2144:1799:e940:1da6])
-        by smtp.gmail.com with ESMTPSA id c23sm7103668pgc.72.2021.01.21.16.25.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=iF694mVegDqKfi3Z26c6YspuPq0RpCL5dkGRinSRl7U=;
+        b=SL1FW2b2QN+rPwHyBOxejACU8caPeOA9c//cF1tc2sTMbxjGNFUDnZX/XVQSUjeI7Q
+         r6psH6rNO4vU9rdJEdYZtWsdPIq8T/WNZc+ypEUImYPa0d9+TdXAQnULzq8ADCHIOHYM
+         JZGd9Ls5uytZJe6fgHdp/TYTAIUYdB7L3CIIik9WIx2LucweB+nznGr/Kkhvs4iOQ1Ps
+         fK+qPHWnNQViUtLvxAnhl8/rBKwpxpy27RYcczbaXRc0gxEnJdPgGqWXCERDa65Ag8nc
+         iz5j5N88hNPuSBd1hI5VEEWy1UQvHl7iKPG2/tRvnWHVVASFFa/trwB+drRxngXE7NxR
+         idJA==
+X-Gm-Message-State: AOAM531VV9Lp1PFiVXqpVTlW7nYCPnqjytXtzzDQoN1tMQsJOvd1nrNr
+        lfvETNlGoRIK1uklDwdXyoFn9VxoK50=
+X-Google-Smtp-Source: ABdhPJydUoeN926duEX55yDN9jyHJOwRkUb6/kNss+rGisAc71AkIgSRV77sGpdGZZcLClXK78gW+g==
+X-Received: by 2002:a17:90a:bb81:: with SMTP id v1mr2231270pjr.119.1611275345221;
+        Thu, 21 Jan 2021 16:29:05 -0800 (PST)
+Received: from localhost (g238.115-65-210.ppp.wakwak.ne.jp. [115.65.210.238])
+        by smtp.gmail.com with ESMTPSA id c11sm6195952pfl.185.2021.01.21.16.29.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 16:25:42 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 21 Jan 2021 16:25:40 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     vjitta@codeaurora.org
-Cc:     glider@google.com, akpm@linux-foundation.org,
-        dan.j.williams@intel.com, broonie@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, ylal@codeaurora.org,
-        vinmenon@codeaurora.org
-Subject: Re: [PATCH v5 2/2] lib: stackdepot: Add support to disable stack
- depot
-Message-ID: <YAobhDFEJKa26OwH@google.com>
-References: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
- <1610963802-11042-2-git-send-email-vjitta@codeaurora.org>
+        Thu, 21 Jan 2021 16:29:04 -0800 (PST)
+Date:   Fri, 22 Jan 2021 09:29:02 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>
+Subject: [GIT PULL] OpenRISC fixes for 5.11
+Message-ID: <20210122002902.GP2002709@lianli.shorne-pla.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1610963802-11042-2-git-send-email-vjitta@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:26:42PM +0530, vjitta@codeaurora.org wrote:
-> From: Vijayanand Jitta <vjitta@codeaurora.org>
-> 
-> Add a kernel parameter stack_depot_disable to disable
-> stack depot. So that stack hash table doesn't consume
-> any memory when stack depot is disabled.
+Hi Linus,
 
-The usecase is CONFIG_PAGE_OWNER without page_owner=on.
-Without this patch, stackdepot will consume the memory
-for the hashtable. By default, it's 8M which is never trivial.
+Please consider for pull:
 
-With this option, in CONFIG_PAGE_OWNER configured system,
-page_owner=off, stack_depot_disable in kernel command line,
-we could save the wasted memory for the hashtable.
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
 
-> 
-> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
-> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
 
-Please also update kernel-parameters.txt.
+are available in the Git repository at:
 
-> ---
->  include/linux/stackdepot.h |  1 +
->  init/main.c                |  2 ++
->  lib/stackdepot.c           | 33 +++++++++++++++++++++++++++++----
->  3 files changed, 32 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-> index 24d49c7..eafd9aa 100644
-> --- a/include/linux/stackdepot.h
-> +++ b/include/linux/stackdepot.h
-> @@ -21,4 +21,5 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
->  
->  unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_entries);
->  
-> +int stack_depot_init(void);
->  #endif
-> diff --git a/init/main.c b/init/main.c
-> index 32b2a8a..8fcf9bb 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -98,6 +98,7 @@
->  #include <linux/mem_encrypt.h>
->  #include <linux/kcsan.h>
->  #include <linux/init_syscalls.h>
-> +#include <linux/stackdepot.h>
->  
->  #include <asm/io.h>
->  #include <asm/bugs.h>
-> @@ -827,6 +828,7 @@ static void __init mm_init(void)
->  	page_ext_init_flatmem();
->  	init_debug_pagealloc();
->  	report_meminit();
-> +	stack_depot_init();
->  	mem_init();
->  	kmem_cache_init();
->  	kmemleak_init();
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index dff8521..d20e6fd 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -31,6 +31,8 @@
->  #include <linux/stackdepot.h>
->  #include <linux/string.h>
->  #include <linux/types.h>
-> +#include <linux/vmalloc.h>
+  git://github.com/openrisc/linux.git tags/for-linus
 
-Why do we need vmalloc?
+for you to fetch changes up to 031c7a8cd6fc565e90320bf08f22ee6e70f9d969:
 
-Otherwise, looks good to me.
-Thank you!
+  openrisc: io: Add missing __iomem annotation to iounmap() (2021-01-20 06:14:26 +0900)
+
+----------------------------------------------------------------
+OpenRISC fixes for 5.11
+
+Fixes include:
+ * Compiler warning fixup for new Litex SoC driver
+ * Sparse warning fixup for iounmap
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      openrisc: io: Add missing __iomem annotation to iounmap()
+
+Stafford Horne (1):
+      soc: litex: Fix compile warning when device tree is not configured
+
+ arch/openrisc/include/asm/io.h     | 2 +-
+ arch/openrisc/mm/ioremap.c         | 2 +-
+ drivers/soc/litex/litex_soc_ctrl.c | 3 ++-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+-Stafford
