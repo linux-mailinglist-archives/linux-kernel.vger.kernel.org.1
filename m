@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEF630105D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5AC30107B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbhAVWzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 17:55:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        id S1728828AbhAVW7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728508AbhAVWyv (ORCPT
+        with ESMTP id S1728238AbhAVWzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:54:51 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7902BC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:54:11 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id o13so9792139lfr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:54:11 -0800 (PST)
+        Fri, 22 Jan 2021 17:55:25 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7690EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:54:45 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id u67so4799382pfb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:54:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lK1Ztruj/7Ai7wfptRb6jTFj2OZIBvggRzmnF/iCjys=;
-        b=dZb+LzStntWjq4Y1nmoakr+NRtwSsyQ3CYDuit/NJtX3SRbsWbPWrq8qvEBnzZsAV4
-         6txTGxY34ZUpnssWeeL7VQ0d9/I9EuGbdiUXnpER6xVqtwXt9PyaQmBop44grcwHSr2b
-         XP/v2WoiYCaeBJHeyo4GENx85lH7Eu24rwD92FI1tdUTCz9t7mArG8ksYtsmSKumQfyO
-         XMKxs6OFcA1AD6QI2E5YvA/v4bXBN2UJFbgWAGNNoShTMV3CojNXsNHrbJBQKEP73bAL
-         PS0BdxSshrGrksJkDdqdUcQKTkO2LIhyYx5f42esHSI+DWIdVhKZZ1ehAFEZ6cG3X3RK
-         bxBA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C89gw6YvNATURTK9LTqx+RBcivfIy7/zRAMs6G4Hk8A=;
+        b=PsvLEMzbpQV8uTWCDWCZe12J/6HFr573xVJJKHzUv9sGJufSbhhY5mVyf/kYxLTpC9
+         8hyHGdZmMDFRxly2ZNJ8oCCxRpayaUrJ3H9+LdezSpGIK+mxuEv1bgelLzyyaOVspW5z
+         hUl6/enhunBTGLj+zsCufXjIVTeBwkMUQn4so=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lK1Ztruj/7Ai7wfptRb6jTFj2OZIBvggRzmnF/iCjys=;
-        b=EKIvOdOTmtTsJtHd/djgVoORUPlkXTNFkuDfPQ3uoramik4aoPms2JIesgLuNwawH2
-         8877pMYoG0g8aoBAFxgJg1Hy6t9Rwr36poO5CGvPSglEMXTxuTIzsGMGlOBwvJi+XuQQ
-         AgQg/+VdjCWvckzHWk1JUSCyTFC7buR4wi4F/2zYNmZMbOS3tao68z9XlgudY7R0wvHn
-         RSmxH982n47luY6rxwU5PEo3wJb5D+mn/aObAKiCt1g1YQUUne5WxeC3QKbrbCsScgDz
-         oBHw5Tl/qPjEFUnEr1AeuKngn6uTlNcWuBx0no56WcQjR1TymMBwG6FMHNG9Du31PYH2
-         lqrA==
-X-Gm-Message-State: AOAM530tB+9uLhZoAoyM+7/FTw3x0QVwCwxAGMlgYoO3zj7S5xKq2EOT
-        AorJtdHEXgYT2+esK3d94Y9MBETU2/45n89c9+CsPA==
-X-Google-Smtp-Source: ABdhPJy6s+Z1cvTrVuvPnh27aMkITJYy3v+NBelFbox7MDmy1Eoa/Y5shcQQrjQej4BHKxcVr6WEb7OUaBLQ0xZrIN8=
-X-Received: by 2002:a19:495d:: with SMTP id l29mr750255lfj.465.1611356049903;
- Fri, 22 Jan 2021 14:54:09 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C89gw6YvNATURTK9LTqx+RBcivfIy7/zRAMs6G4Hk8A=;
+        b=jlwGaTNvc3fPtN4ILnehbLVym4LUe1WSVBcpMct3V5zkNtJgIJnZYf/Urs+9Ik+1FM
+         toYYCdR5oo/gD8a1NofgRZb2r2wozDNkSFINaaklKmFqC0polR3ByuXQyp1MAqAvtvhu
+         62M24IMaY7k4j+HhNhammFaOWTfAWuj372fDnmNTYMFbObbFFc/MF4zsZr/IQ7iwK0TE
+         8ssXvBjkY5NyRSftYrGrPgXGGdRhZQ977xUXlNJRyMdXLZa4ydTQUXLvRpIibCd94yb2
+         K4ixoSsDh1UaxPV9iWm7NpyxEWgP3q5TvThOd7tafT6T5rVJuqbA9N7ZW1BomhRKuhu9
+         7iQg==
+X-Gm-Message-State: AOAM530+b8rPSu85M0UJFXMnGT3wEI7UPd/wtTNIMz7QNVE6KeFm7l5o
+        VM21Cvdl5Ngmk9sZ/0n6JgkpRQ==
+X-Google-Smtp-Source: ABdhPJzr0zZEMTiv6i0Pk6M0VCXjUpl8GGjXkZL3oXFmtA2iioxrMcptT2U+p+0okuzjCesuPlu4ZA==
+X-Received: by 2002:a05:6a00:2296:b029:1b6:6972:2f2a with SMTP id f22-20020a056a002296b02901b669722f2amr7012104pfe.69.1611356085048;
+        Fri, 22 Jan 2021 14:54:45 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id i62sm6433509pfe.84.2021.01.22.14.54.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 14:54:44 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 0/3] iio: Add a ChromeOS EC MKBP proximity driver
+Date:   Fri, 22 Jan 2021 14:54:40 -0800
+Message-Id: <20210122225443.186184-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-References: <20210119062908.20169-1-liu.xiang@zlingsmart.com> <20210121164013.cqfxvach4ugkohm7@gilmour>
-In-Reply-To: <20210121164013.cqfxvach4ugkohm7@gilmour>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 22 Jan 2021 23:53:59 +0100
-Message-ID: <CACRpkdb1gn2e9=ip6ipAwW27vmf1FCs_y1Z=w-K8y8Z9MXVBMw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: sunxi: fix use-after-free in sunxi_pmx_free()
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Liu Xiang <liu.xiang@zlingsmart.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        liuxiang_1999@126.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 5:40 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> On Tue, Jan 19, 2021 at 02:29:08PM +0800, Liu Xiang wrote:
-> > When CONFIG_REGULATOR is not set, sunxi_pmx_request() always return
-> > success. Even a group of pins call sunxi_pmx_request(), the refcount
-> > is only 1. This can cause a use-after-free warning in sunxi_pmx_free().
-> > To solve this problem, go to err path if regulator_get() return NULL
-> > or error.
-> >
-> > Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
->
-> Is there any drawback to depending on CONFIG_REGULATOR?
->
-> Given that we need those regulators enabled anyway, I guess we could
-> just select or depends on it
+This is a different approach to [1] where I tried to add this proximity
+sensor logic to the input subsystem. Instead, we'll take the approach of
+making a small IIO proximity driver that parses the EC switch bitmap to
+find out if the front proximity sensor is detecting something or not.
+This allows us to treat proximity sensors as IIO devices all the time in
+userspace instead of handling this switch on the EC via the input
+subsystem and then other proximity sensors via IIO.
 
-I agree.
+[1] https://lore.kernel.org/r/20201205004709.3126266-1-swboyd@chromium.org
 
-Liu can you make a patch to Kconfig to just select REGULATOR?
-Possibly even the specific regulator driver this SoC is using
-if it is very specific for this purpose.
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Benson Leung <bleung@chromium.org>
+Cc: Guenter Roeck <groeck@chromium.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>
+Cc: <devicetree@vger.kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
 
-Yours,
-Linus Walleij
+Stephen Boyd (3):
+  platform/chrome: cros_ec: Add SW_FRONT_PROXIMITY MKBP define
+  dt-bindings: iio: Add cros ec proximity yaml doc
+  iio: proximity: Add a ChromeOS EC MKBP proximity driver
+
+ .../proximity/google,cros-ec-proximity.yaml   |  37 +++
+ drivers/iio/proximity/Kconfig                 |  11 +
+ drivers/iio/proximity/Makefile                |   1 +
+ drivers/iio/proximity/cros_ec_proximity.c     | 252 ++++++++++++++++++
+ .../linux/platform_data/cros_ec_commands.h    |   1 +
+ 5 files changed, 302 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/proximity/google,cros-ec-proximity.yaml
+ create mode 100644 drivers/iio/proximity/cros_ec_proximity.c
+
+
+base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+-- 
+https://chromeos.dev
+
