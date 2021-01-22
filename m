@@ -2,153 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7B6300A9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FED300ABA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbhAVSFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:05:43 -0500
-Received: from mail-mw2nam12on2063.outbound.protection.outlook.com ([40.107.244.63]:40449
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729309AbhAVSEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:04:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xav+grgVS2bXF0n/QywQCAj7vJnJL1rh6zi+Dzh19OAoeic2zUBjMD35Z28BWxqql9V0sUt3eaZkr85c2aVutal3NuSkX1BI3VoSMqWsthBr3EbF8OgsBJWPL5dj8LhvpFFrydJ4l2iodaumsK/Hi9NwEn70/S5nrD0NjvcjPET2moYNUj9esWx2pzOfvbo3ZZXp2niyQplNK3U4IpYF6+0QS7vXgsnyBXi97oMbIOrE/cDD+Nt/W1QgtG71K2BULDaEfJHgYDmMwhP4ZwUN+o8svFvhq1YQ4o+CN8zhhq8l8i0wTP5dV21vF77aGh3LQDmt25pjHqrmETfijjyq1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sFiLuNTtMo4Z7w8jm7baXDwpEng6CQGMtjShtLB9E1k=;
- b=JVxDLEe1PWAgcSXHSbArI3QSEpfMIDSfl6JaMwDCKFeyRwgNPYtlRj4K8OEoTxv2gT2+NA/NaCAtHa9uBZoQbOknsNqrt9HNcU+9kIlvoLC9xb9EwvPd4mlB9ABSoXhljBvd17IIfAeK5A5SpPOzaykyO4ImFKuAn9wHIL0US3Lxj6Ii+b9vVsa+kL2jDxyL5h73hunOvgCnhy+/5na2tlA5+8En5IVZaU9T01BgTnzA1PmJ9FN9NyhZ3nEiAkdbEiKWDimahWfxWskLMNrA67FZOxHMroAxCoHuim3ptlK+qMFPm8Pg55/TE6LNHl0acwqP6RMTlI2oeEtT16fbbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sFiLuNTtMo4Z7w8jm7baXDwpEng6CQGMtjShtLB9E1k=;
- b=xGXY2bE+17b1VBDCwEdwNLwidsFmyxpYpB7qWySPOOwcZdzrbMWG7n0jEZgri3IM8MxQac2iBqfLPKroSzkvAlIyhChEgUcLMQStW+DtUM4Kjf9pMrqQmauR1gINNCWMSZuMzfWdCnBC/WvZD0yN++U/BOc8qg8x5QSSgUPyLjc=
-Authentication-Results: rjwysocki.net; dkim=none (message not signed)
- header.d=none;rjwysocki.net; dmarc=none action=none header.from=amd.com;
-Received: from SA0PR12MB4512.namprd12.prod.outlook.com (2603:10b6:806:71::9)
- by SA0PR12MB4509.namprd12.prod.outlook.com (2603:10b6:806:9e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Fri, 22 Jan
- 2021 18:03:36 +0000
-Received: from SA0PR12MB4512.namprd12.prod.outlook.com
- ([fe80::ed7d:d788:82d2:edd4]) by SA0PR12MB4512.namprd12.prod.outlook.com
- ([fe80::ed7d:d788:82d2:edd4%5]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
- 18:03:36 +0000
-From:   Terry Bowman <terry.bowman@amd.com>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, james.morse@arm.com,
-        tony.luck@intel.com, bp@alien8.de, yazen.ghannam@amd.com,
-        terry.bowman@amd.com, guohanjun@huawei.com,
-        colin.king@canonical.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jon.grimm@amd.com
-Subject: [PATCH] ACPI / APEI: Add is_ghes_type() to identify GHES sources
-Date:   Fri, 22 Jan 2021 12:03:22 -0600
-Message-Id: <20210122180322.1720413-1-terry.bowman@amd.com>
-X-Mailer: git-send-email 2.27.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: CH0PR04CA0047.namprd04.prod.outlook.com
- (2603:10b6:610:77::22) To SA0PR12MB4512.namprd12.prod.outlook.com
- (2603:10b6:806:71::9)
+        id S1726024AbhAVSHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:07:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728745AbhAVSGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 13:06:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F92223A6A;
+        Fri, 22 Jan 2021 18:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611338751;
+        bh=RWAadgTE3OBkC/7CFKgrnVcdGooeNarn5qiZczZ3+Ko=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TL6jaYn0mzvupgHkDmXIqa9iuhcFq3T13YmqLldcmDGL5osB8mbti6TlMo6wa6g9D
+         3PwJeNrHZRo+CBeWBC2PapF/ydLffUl/MD68ct0FA+iuKHUjdT1jDBuvfiKtldc3o0
+         vWdBYyCfAhGX7c8wmTKL3svn0q/lSp3y8CrdM2gGWQVKDwwATfhZ+dFt8xF9YTrKsR
+         0ChufAze2E5dUsJUdp4L8LHGvDzddpkCeT6k/B/gpqpBVI/eNAEx5AsDztIUJW4egA
+         OEjlE27f5bOY925CQ3oAI2NpMaWhplSzaTGJvy/suIKQlKmPD+E4GcHOfy0TBvAs30
+         3opMQxT7vie+Q==
+Date:   Fri, 22 Jan 2021 20:05:48 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, kernel@pengutronix.de,
+        Jan =?iso-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        Dmitry Baryshkov <dbaryshkov@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: Re: [PATCH 2/2] dm crypt: support using trusted keys
+Message-ID: <YAsT/N8CHHNTZcj3@kernel.org>
+References: <20210122084321.24012-1-a.fatoum@pengutronix.de>
+ <20210122084321.24012-2-a.fatoum@pengutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolxb27ehost.amd.com (165.204.78.2) by CH0PR04CA0047.namprd04.prod.outlook.com (2603:10b6:610:77::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 18:03:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2ef48018-88e6-4e3f-43d4-08d8bf0009fb
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4509:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB45092295EF5CC7519B96C93083A09@SA0PR12MB4509.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:288;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IMRSLniZt6XthhhOU0HS2mAp1tCh9sezbXeFxE9LAkOAgeJx+OxqDV2mLUoeusc0F15hHScoyyIIIAmt+Kbzxr+rsNPwrcfLmp9FUfrZxy/85tBLyc91uwC3N42C2SQtU/hvFb2xdUan0NsTT/cPi6/WHz6BQtzuacSZQGeSBrJktaE1ZetzqOzBR7xAF0Hd887yFfDYZ5ybrV421G+ZW2MDKDJ/v6kRtRfIKoKN0gkTYrwWumLy5EqSd+hECnqqdVOYYltct44Omyd++TxikSXKa5pGXXMAl2OISK9GNFsexlfoD9ZAbKvM9EMzdnPafBHxGzY3IuC2I7XBKwsKZHRflX4KwZzdSjzUcs5NHpVTVf+J6jimc2wWmFhEiqrilLAFugZV9zQdbvKHX3glIRDTlEuXBtHAVX9hewVTRRJHfN6CcsbOgZiycuU1R0FkWaBceirejc62zwpZz4Upv7OJrOF9dN2UYNCB2TKoKa0epHAo3xUmXHHDHg3pcJ0JmfMA2yvgT0rvoMP5Ol1rUy42WLYQmir1gTxOb76rMcSbmZ+8S7XCabr1Pc0WjQPd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4512.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(39860400002)(366004)(376002)(2616005)(44832011)(36756003)(956004)(86362001)(186003)(8676002)(16526019)(66946007)(66476007)(83380400001)(26005)(66556008)(2906002)(52116002)(7696005)(6666004)(4326008)(109986005)(478600001)(6486002)(1076003)(316002)(8936002)(5660300002)(266003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?r9HwTS8qTLd855f6iHg6cKZ1pi7NsUfP/AXMKMZOfaLEcW7+cT8Kd1Al22PH?=
- =?us-ascii?Q?oXWiRT6VgK8EjfJ9N07uhFe+q9IAIwOCvPzhF6VN1K/fN1+fhmij6l80Tysc?=
- =?us-ascii?Q?s2q4Cgayj5WNnoHqzdM4BM/D85rsnGixVOD2LrC9zMOcYJh7z/cBpPAAoYtY?=
- =?us-ascii?Q?huTGJn2TnHtZ2z76TB19rW42A9hCQDzCAtc9UIEnoi0CgSB7xP4tr/QpLyQQ?=
- =?us-ascii?Q?td/hqX8l3lcsFoL+/OspI5QLO2OVjbBIQpX6zmfpZuJ8c8ptJwOIRSiSncml?=
- =?us-ascii?Q?raB/m3qHgcpOH9cBKRhFBBLLKkAx+ogdV9tMazPZqGY30IPWah3AG9QO50I3?=
- =?us-ascii?Q?yKb/OWETVr8rRfWCY0fpQ5deRG+svXsxbQykz9oGbnuZwGQxnA0sGgoGwcfR?=
- =?us-ascii?Q?VLsNa5jFniUVLf//50iVp9FhMv04umyVP5S2Rj52Zo3aWDXN95LwkxGhR2xG?=
- =?us-ascii?Q?2txX4gsgWeKez/FqbWeI7FeaKMuEVlmv8bHqfNbdhZKWyObqc/8INL5X7ceS?=
- =?us-ascii?Q?iR4Nw6PZLA1Xi96MB0/KCRr6pF5sWa5S/6FrGeNRpOUOVwbKdM0vkDZ/2/mI?=
- =?us-ascii?Q?kJ8TdCwBwyjYE4JTPbCPwUXiUHWiuua8bxb9yCqIUujSHLuJospp7ExBgQhM?=
- =?us-ascii?Q?ODV02nUoB8LyZGVbmYLNds9hCvBSCTDot0R5DRgNxxjZiYknmU6xk96OUFp3?=
- =?us-ascii?Q?gq+mEpTLuIyIoENnweCKwsEoulp4ZNVedjj2Jh7XzEIL0x2Q42WajesFEesS?=
- =?us-ascii?Q?B7yuPGu/qEsD4qwWSNB2vuzAyAn++rUgDN3JvWppqgDg6U8vphsh3cHiNmPM?=
- =?us-ascii?Q?H55GAnAS0OK6WpmV0ZtC1PSLKgij14isblKC7N1enPCXDZP+MKAObz22uufB?=
- =?us-ascii?Q?AyOV6h7HhYN4cCoFXg9C17S67aBSZKJlnYt6s2nFhCsDLj2j2nRXFQDw7LzU?=
- =?us-ascii?Q?ejeTfA2RdQ0fFPkpgMwRFw654X5v7lyRdzvjdx46fFQ+n9+eDlrUxV3IC5Gv?=
- =?us-ascii?Q?mkQM?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ef48018-88e6-4e3f-43d4-08d8bf0009fb
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4512.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 18:03:36.3562
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jYFqWyQZEmOV+W7I4mAuiSXBlWCeoUP68K9Q8r9jodguIoILRuvuRhstI078C+mylSQOi0CF7b0egAroq6ps5Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4509
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210122084321.24012-2-a.fatoum@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yazen Ghannam <yazen.ghannam@amd.com>
+On Fri, Jan 22, 2021 at 09:43:21AM +0100, Ahmad Fatoum wrote:
+> Commit 27f5411a718c ("dm crypt: support using encrypted keys") extended
+> dm-crypt to allow use of "encrypted" keys along with "user" and "logon".
+> 
+> Along the same lines, teach dm-crypt to support "trusted" keys as well.
+> 
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
 
-Refactor duplicated GHES identity logic into is_ghes_type().
+Is it possible to test run this with tmpfs? Would be a good test
+target for Sumit's ARM-TEE trusted keys patches.
 
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Reviewed-by: Robert Richter <rrichter@amd.com>
-Signed-off-by: Terry Bowman <terry.bowman@amd.com>
----
- drivers/acpi/apei/hest.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+https://lore.kernel.org/linux-integrity/1604419306-26105-1-git-send-email-sumit.garg@linaro.org/
 
-diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-index 6e980fe16772..bd702e0ef339 100644
---- a/drivers/acpi/apei/hest.c
-+++ b/drivers/acpi/apei/hest.c
-@@ -49,6 +49,12 @@ static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
- 	[ACPI_HEST_TYPE_IA32_DEFERRED_CHECK] = -1,
- };
- 
-+static inline bool is_ghes_type(struct acpi_hest_header *hest_hdr)
-+{
-+	return hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR ||
-+	       hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR_V2;
-+}
-+
- static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
- {
- 	u16 hest_type = hest_hdr->type;
-@@ -141,8 +147,7 @@ static int __init hest_parse_ghes_count(struct acpi_hest_header *hest_hdr, void
- {
- 	int *count = data;
- 
--	if (hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR ||
--	    hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR_V2)
-+	if (is_ghes_type(hest_hdr))
- 		(*count)++;
- 	return 0;
- }
-@@ -153,8 +158,7 @@ static int __init hest_parse_ghes(struct acpi_hest_header *hest_hdr, void *data)
- 	struct ghes_arr *ghes_arr = data;
- 	int rc, i;
- 
--	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
--	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
-+	if (!is_ghes_type(hest_hdr))
- 		return 0;
- 
- 	if (!((struct acpi_hest_generic *)hest_hdr)->enabled)
--- 
-2.27.0
+/Jarkko
 
+> Unsure on whether target_type::version is something authors increment or
+> maintainers fix up. I can respin if needed.
+> 
+> Cc: Jan Lübbe <jlu@pengutronix.de>
+> Cc: linux-integrity@vger.kernel.org
+> Cc: keyrings@vger.kernel.org
+> Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>
+> ---
+>  .../admin-guide/device-mapper/dm-crypt.rst    |  2 +-
+>  drivers/md/Kconfig                            |  1 +
+>  drivers/md/dm-crypt.c                         | 23 ++++++++++++++++++-
+>  3 files changed, 24 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/device-mapper/dm-crypt.rst b/Documentation/admin-guide/device-mapper/dm-crypt.rst
+> index 1a6753b76dbb..aa2d04d95df6 100644
+> --- a/Documentation/admin-guide/device-mapper/dm-crypt.rst
+> +++ b/Documentation/admin-guide/device-mapper/dm-crypt.rst
+> @@ -67,7 +67,7 @@ Parameters::
+>      the value passed in <key_size>.
+>  
+>  <key_type>
+> -    Either 'logon', 'user' or 'encrypted' kernel key type.
+> +    Either 'logon', 'user', 'encrypted' or 'trusted' kernel key type.
+>  
+>  <key_description>
+>      The kernel keyring key description crypt target should look for
+> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> index 9e44c09f6410..f2014385d48b 100644
+> --- a/drivers/md/Kconfig
+> +++ b/drivers/md/Kconfig
+> @@ -270,6 +270,7 @@ config DM_CRYPT
+>  	tristate "Crypt target support"
+>  	depends on BLK_DEV_DM
+>  	depends on (ENCRYPTED_KEYS || ENCRYPTED_KEYS=n)
+> +	depends on (TRUSTED_KEYS || TRUSTED_KEYS=n)
+>  	select CRYPTO
+>  	select CRYPTO_CBC
+>  	select CRYPTO_ESSIV
+> diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+> index 7eeb9248eda5..6c7c687e546c 100644
+> --- a/drivers/md/dm-crypt.c
+> +++ b/drivers/md/dm-crypt.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/key-type.h>
+>  #include <keys/user-type.h>
+>  #include <keys/encrypted-type.h>
+> +#include <keys/trusted-type.h>
+>  
+>  #include <linux/device-mapper.h>
+>  
+> @@ -2452,6 +2453,22 @@ static int set_key_encrypted(struct crypt_config *cc, struct key *key)
+>  	return 0;
+>  }
+>  
+> +static int set_key_trusted(struct crypt_config *cc, struct key *key)
+> +{
+> +	const struct trusted_key_payload *tkp;
+> +
+> +	tkp = key->payload.data[0];
+> +	if (!tkp)
+> +		return -EKEYREVOKED;
+> +
+> +	if (cc->key_size != tkp->key_len)
+> +		return -EINVAL;
+> +
+> +	memcpy(cc->key, tkp->key, cc->key_size);
+> +
+> +	return 0;
+> +}
+> +
+>  static int crypt_set_keyring_key(struct crypt_config *cc, const char *key_string)
+>  {
+>  	char *new_key_string, *key_desc;
+> @@ -2484,6 +2501,10 @@ static int crypt_set_keyring_key(struct crypt_config *cc, const char *key_string
+>  		   !strncmp(key_string, "encrypted:", key_desc - key_string + 1)) {
+>  		type = &key_type_encrypted;
+>  		set_key = set_key_encrypted;
+> +	} else if (IS_ENABLED(CONFIG_TRUSTED_KEYS) &&
+> +	           !strncmp(key_string, "trusted:", key_desc - key_string + 1)) {
+> +		type = &key_type_trusted;
+> +		set_key = set_key_trusted;
+>  	} else {
+>  		return -EINVAL;
+>  	}
+> @@ -3555,7 +3576,7 @@ static void crypt_io_hints(struct dm_target *ti, struct queue_limits *limits)
+>  
+>  static struct target_type crypt_target = {
+>  	.name   = "crypt",
+> -	.version = {1, 22, 0},
+> +	.version = {1, 23, 0},
+>  	.module = THIS_MODULE,
+>  	.ctr    = crypt_ctr,
+>  	.dtr    = crypt_dtr,
+> -- 
+> 2.30.0
+> 
+> 
