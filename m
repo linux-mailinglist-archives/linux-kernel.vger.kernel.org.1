@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3BE300BF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34C0300BEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730348AbhAVSyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:54:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38816 "EHLO mail.kernel.org"
+        id S1730267AbhAVSxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:53:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728526AbhAVOWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728525AbhAVOWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:22:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83FA123B4B;
-        Fri, 22 Jan 2021 14:15:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 838B023B52;
+        Fri, 22 Jan 2021 14:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324960;
-        bh=IiIscfHhCqdcjwH5xQw1Itg+sTThc7rQI0Q+rNAvJ0g=;
+        s=korg; t=1611324968;
+        bh=nnGMVQlWgPgHufE3sp+L4vPltDrGHjcCpMgLKlHs15E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kb9b8yFzseQ2kVMpzpVVw0slqGMhFzoOLK1GQaCMs9WSRdnP3z8/XONjAQpn9Uz9N
-         ZiTiNqLKWX6/HnpYxrU8yl1Xc4MazQKUPWQeMQIOb64oh7SuoZpTjNlFzERlgmrHic
-         VHDch3W9Huw/YscOOG+DGpLQAgPmgTXdvuaKy1nA=
+        b=aqnLXO+/Vz8I0Khu8AaUD3ELkQJy3KvJ/Njsyl3il6lfS2w9E8ALDeLdKcPGMe42u
+         kiPYsNFkDNw/jKu77Dw6+fHZkL6OCRhHFd+B356JqXlbohmHUicpaUP72f/NJ59lXa
+         g/VVajHFj7OOi0BNUAwX29Ya2i8Pb0KDvuq3p/pE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 20/22] net: skbuff: disambiguate argument and member for skb_list_walk_safe helper
-Date:   Fri, 22 Jan 2021 15:12:38 +0100
-Message-Id: <20210122135732.711507800@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 22/22] spi: cadence: cache reference clock rate during probe
+Date:   Fri, 22 Jan 2021 15:12:40 +0100
+Message-Id: <20210122135732.786726542@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
 References: <20210122135731.921636245@linuxfoundation.org>
@@ -39,36 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Michael Hennerich <michael.hennerich@analog.com>
 
-commit 5eee7bd7e245914e4e050c413dfe864e31805207 upstream.
+commit 4d163ad79b155c71bf30366dc38f8d2502f78844 upstream.
 
-This worked before, because we made all callers name their next pointer
-"next". But in trying to be more "drop-in" ready, the silliness here is
-revealed. This commit fixes the problem by making the macro argument and
-the member use different names.
+The issue is that using SPI from a callback under the CCF lock will
+deadlock, since this code uses clk_get_rate().
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c474b38665463 ("spi: Add driver for Cadence SPI controller")
+Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Link: https://lore.kernel.org/r/20210114154217.51996-1-alexandru.ardelean@analog.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/skbuff.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1364,9 +1364,9 @@ static inline void skb_mark_not_on_list(
- }
+---
+ drivers/spi/spi-cadence.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/drivers/spi/spi-cadence.c
++++ b/drivers/spi/spi-cadence.c
+@@ -119,6 +119,7 @@ struct cdns_spi {
+ 	void __iomem *regs;
+ 	struct clk *ref_clk;
+ 	struct clk *pclk;
++	unsigned int clk_rate;
+ 	u32 speed_hz;
+ 	const u8 *txbuf;
+ 	u8 *rxbuf;
+@@ -258,7 +259,7 @@ static void cdns_spi_config_clock_freq(s
+ 	u32 ctrl_reg, baud_rate_val;
+ 	unsigned long frequency;
  
- /* Iterate through singly-linked GSO fragments of an skb. */
--#define skb_list_walk_safe(first, skb, next)                                   \
--	for ((skb) = (first), (next) = (skb) ? (skb)->next : NULL; (skb);      \
--	     (skb) = (next), (next) = (skb) ? (skb)->next : NULL)
-+#define skb_list_walk_safe(first, skb, next_skb)                               \
-+	for ((skb) = (first), (next_skb) = (skb) ? (skb)->next : NULL; (skb);  \
-+	     (skb) = (next_skb), (next_skb) = (skb) ? (skb)->next : NULL)
+-	frequency = clk_get_rate(xspi->ref_clk);
++	frequency = xspi->clk_rate;
  
- static inline void skb_list_del_init(struct sk_buff *skb)
- {
+ 	ctrl_reg = cdns_spi_read(xspi, CDNS_SPI_CR);
+ 
+@@ -628,8 +629,9 @@ static int cdns_spi_probe(struct platfor
+ 	master->auto_runtime_pm = true;
+ 	master->mode_bits = SPI_CPOL | SPI_CPHA;
+ 
++	xspi->clk_rate = clk_get_rate(xspi->ref_clk);
+ 	/* Set to default valid value */
+-	master->max_speed_hz = clk_get_rate(xspi->ref_clk) / 4;
++	master->max_speed_hz = xspi->clk_rate / 4;
+ 	xspi->speed_hz = master->max_speed_hz;
+ 
+ 	master->bits_per_word_mask = SPI_BPW_MASK(8);
 
 
