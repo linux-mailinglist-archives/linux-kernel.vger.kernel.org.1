@@ -2,188 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7A52FFFA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9482FFFAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbhAVJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:58:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
+        id S1727758AbhAVKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:01:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhAVJ4h (ORCPT
+        with ESMTP id S1727769AbhAVKAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:56:37 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147B8C061786;
-        Fri, 22 Jan 2021 01:55:56 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id g15so3425604pjd.2;
-        Fri, 22 Jan 2021 01:55:56 -0800 (PST)
+        Fri, 22 Jan 2021 05:00:11 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9805C061352
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:51:19 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id by1so6808466ejc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:51:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tD+ViDmR1uT2A2nMuxssbpuh+e9V2Sp2uc5IPNHYRMQ=;
-        b=VlQ2NozSIgFj3HoLHAlzUv32PtjdSBDyESnmP635x/9sEnoOiFqw/ODUFzid7L7vrE
-         vpX85Sf8QO3yRMYbLBhLVLp2XtwdBicnNt8EP6QknqvSxfxU/D8PXnJ87sy5yFG2hVl8
-         DgCayFPpC6pZJJ+rdqvuJvU4Ex61N6P110L2VodNwP89d951Nj4HdzXiVb/Gg7tC2p83
-         OxOW8fAAbgOnLP32TR4zYY7SLJj5anian6mblgZUB4F72I4IIFGyYjgBVMbXJWJVnu8M
-         0awqxpBcQdc6j26XYOnPCkFjnZIcu/sElAragRh/MZIfSvpxF6C443nuLZhDLh14QoZn
-         V05A==
+        bh=6SOZ0cafIsQ2pjxZKEsji3NjTpPSIIGuynZ9xZcUToY=;
+        b=ztKqHymKyLAIKP1qDj25Z0vFnV8lkexGar1wlQhZ7Rfg8c4jimASSEu3EMx6QNc9xt
+         /UvDVuSdpibwYuUfHMvcomb5tGn1OeKvoi71lF5ZwUl6ePE7Mfc57I4uQf5xNJ8tXEEy
+         mOyktrWbjdAv6URUuvt7PwLdEnteAaSEkHPyO8vXOhNbrfQHerbzre3VYp/h/evQYlJB
+         fouV9L1yJo/0dB4OCITN92tMCAmOB1RGGoybCsptJuKlo3e3nsyMl5diLyQRC9L816BZ
+         BD9BAva69CDiC6VvjgBjZ04DmOq03Vlb5IxAl8CNhdH54iD+BlXZAk6UeQKt99ShdIVL
+         dbIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tD+ViDmR1uT2A2nMuxssbpuh+e9V2Sp2uc5IPNHYRMQ=;
-        b=nQtIffmNwrh40KiEkQAVxuJqLLB6isQ2GfvORhWB9zp7t4nqDiuHD+HcmkbL+XrK8H
-         gWI0HLCvl50QSOZ+HFbdw3yCtFztELZy1524w7/B8sLmzIGDrmvj11XHhl0wyHjsO0re
-         su0HurFyJdv3ZhI9V4x98IcIeLqm7u81XPtyzwqdyDOKwzJSW2UlYMRokqJoTDJ21IfF
-         IcPCs4Lma/bCioFadqobAjXBv+09/ObZnY1mMKORqkwqodWLHUScN6h2bl3ZltZcFof+
-         hNkQVilJ9rNuispaRypYKuwB433bJFsLQLXZW1ipsGqAhhZ2k+AJjJBfdpAl6GAIMOgQ
-         O//g==
-X-Gm-Message-State: AOAM533wIsZ0SBKlN5Ij8EmNQPM3usTYRkPS5jsWJj1MfyG9zotOVUCs
-        W9obY6jjeRvxV5gq9t/dDvKiAXAJiOyinJDhjDg=
-X-Google-Smtp-Source: ABdhPJwZaXNka3/peRQC2KxL3hXIK1JqDTWtfCYGB2DZsvxyL8e//ejrzxE35ta2iegzyCDLrIrNnmeYBaa5X7or0P4=
-X-Received: by 2002:a17:90a:1050:: with SMTP id y16mr4542088pjd.181.1611309355511;
- Fri, 22 Jan 2021 01:55:55 -0800 (PST)
+        bh=6SOZ0cafIsQ2pjxZKEsji3NjTpPSIIGuynZ9xZcUToY=;
+        b=cLkZ6xTrYwWfIPkjqTI7kIoZRVsbPLPGooz/s9xIbffn8s1fKDXg6CMYMAGPqIZxmp
+         SwM06asOHbIh91OlxESdmd2le5a8YL9Ze5ka6ZsIk1lGpbWW/wq3/QjHs/iK7RBNgJUw
+         aEXkOGBwY/zaEyuP4XC7MRuVI/wxpCyW0W926I/dJ/pnRwPwVsGNB2hitWKVv0EKinIl
+         c15euZD8mYJq9rfP+ULAVwthhT/PsN+UXgQp5L+XaqRbWPOfA7NPuPw7Jb8pXNUg2XG+
+         eNkIwzLJAp3qR522lmK11hDoDHyPO7nZOg5xH/EQcGg850hyaHNGy9AoY90Xin5WU1WC
+         v3kQ==
+X-Gm-Message-State: AOAM530dUsAQQzkZVNBk/wgaMa7NTu2UuiUclp5XzQZEgGXEneD95MPq
+        I55JGT0FfPHpUr+1ZTvt646HFhwaNNeVPKBWxE7RPA==
+X-Google-Smtp-Source: ABdhPJzEjn5GEPrffd5+4rTlgY2BHDNhZMRsd9H/LHyaUqgXSrIVK7mTGKR12AKLBujzMON638tkxawvFlPiVqhItq8=
+X-Received: by 2002:a17:906:4443:: with SMTP id i3mr2288434ejp.133.1611309078552;
+ Fri, 22 Jan 2021 01:51:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121223756.1112199-1-saravanak@google.com>
-In-Reply-To: <20210121223756.1112199-1-saravanak@google.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 22 Jan 2021 11:56:44 +0200
-Message-ID: <CAHp75VcrsVcUWaaE8JZHGDMyX9MKYONoVo+9-rzT7rvnkH5xSg@mail.gmail.com>
-Subject: Re: [PATCH v4] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
+ <20210121185521.GQ2743@paulmck-ThinkPad-P72> <20210121213110.GB23234@willie-the-truck>
+ <20210121214314.GW2743@paulmck-ThinkPad-P72>
+In-Reply-To: <20210121214314.GW2743@paulmck-ThinkPad-P72>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 22 Jan 2021 15:21:07 +0530
+Message-ID: <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
+Subject: Re: rcu-torture: Internal error: Oops: 96000006
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, rcu@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 12:40 AM Saravana Kannan <saravanak@google.com> wrote:
+On Fri, 22 Jan 2021 at 03:13, Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> There are multiple instances of GPIO device tree nodes of the form:
+> On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
+> > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
+> > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
+> > > > the following kernel crash noticed. This started happening from Linux next
+> > > > next-20210111 tag to next-20210121.
+> > > >
+> > > > metadata:
+> > > >   git branch: master
+> > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+> > > >   git describe: next-20210111
+> > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
+> > > >
+> > > > output log:
+> > > >
+> > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
+> > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
+> > > > = ffff8000091ab8e0
+> > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
+> > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
+> > > > virtual address 0000000000000008
+> >
+> > [...]
+> >
+> > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
+> > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
+> > > like your configuration rejects NULL as an invalid virtual address,
+> > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
+> > > are not allowed to dereference a ZERO_SIZE_PTR?
+> > >
+> > > Adding the ARM64 guys on CC for their thoughts.
+> >
+> > Spooky timing, there was a thread _today_ about that:
+> >
+> > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
 >
-> foo {
->         compatible = "acme,foo";
->         ...
->
->         gpio0: gpio0@xxxxxxxx {
->                 compatible = "acme,bar";
->                 ...
->                 gpio-controller;
->         };
->
->         gpio1: gpio1@xxxxxxxx {
->                 compatible = "acme,bar";
->                 ...
->                 gpio-controller;
->         };
->
->         ...
-> }
->
-> bazz {
->         my-gpios = <&gpio0 ...>;
-> }
->
-> Case 1: The driver for "foo" populates struct device for these gpio*
-> nodes and then probes them using a driver that binds with "acme,bar".
-> This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
-> This lines up with how DT nodes with the "compatible" property are
-> typically converted to struct devices and then registered with driver
-> core to probe them. This also allows the gpio* devices to hook into all
-> the driver core capabilities like runtime PM, probe deferral,
-> suspend/resume ordering, device links, etc.
->
-> Case 2: The driver for "foo" doesn't populate struct devices for these
-> gpio* nodes before registering them with gpiolib. Instead it just loops
-> through its child nodes and directly registers the gpio* nodes with
-> gpiolib.
->
-> Drivers that follow case 2 cause problems with fw_devlink=on. This is
-> because fw_devlink will prevent bazz from probing until there's a struct
-> device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
-> supplier). Once the struct device is available, fw_devlink will create a
-> device link with gpio0 device as the supplier and bazz device as the
-> consumer. After this point, since the gpio0 device will never bind to a
-> driver, the device link will prevent bazz device from ever probing.
->
-> Finding and refactoring all the instances of drivers that follow case 2
-> will cause a lot of code churn and it is not something that can be done
-> in one shot. In some instances it might not even be possible to refactor
-> them cleanly. Examples of such instances are [1] [2].
->
-> This patch works around this problem and avoids all the code churn by
-> simply setting the fwnode of the gpio_device and creating a stub driver
-> to bind to the gpio_device. This allows all the consumers to continue
-> probing when the driver follows case 2.
+> Very good, then my workaround (shown below for Naresh's ease of testing)
+> is only a short-term workaround.  Yay!  ;-)
 
-...
+Paul, thanks for your (short-term workaround) patch.
 
-> @@ -596,6 +596,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
->                 gdev->dev.of_node = gc->of_node;
->         else
->                 gc->of_node = gdev->dev.of_node;
-> +       gdev->dev.fwnode = of_fwnode_handle(gdev->dev.of_node);
+I have applied your patch and tested rcu-torture test on qemu_arm64 and
+the reported issues has been fixed.
 
-This looks like a complete breakage on ACPI enabled systems. Care to
-test on ACPI and confirm it works? I could recommend to use Intel
-Galileo platform since there is a dwapb GPIO and a lot of nice
-(semi-sarcastic, because of many quirks) code over the kernel.
-
-(Yes, you have to have both OF and ACPI in the config being enabled
-which is valid combination)
-
->  #endif
-
-...
-
-> +static int gpio_stub_drv_probe(struct device *dev)
-> +{
-> +       /*
-> +        * The DT node of some GPIO chips have a "compatible" property, but
-> +        * never have a struct device added and probed by a driver to register
-> +        * the GPIO chip with gpiolib. In such cases, fw_devlink=on will cause
-> +        * the consumers of the GPIO chip to get probe deferred forever because
-
-get a probe
-
-> +        * they will be waiting for a device associated with the GPIO chip
-> +        * firmware node to get added and bound to a driver.
-> +        *
-> +        * To allow these consumers to probe, we associate the struct
-> +        * gpio_device of the GPIO chip with the firmware node and then simply
-> +        * bind it to this stub driver.
-> +        */
-> +       return 0;
-> +}
-
-...
-
-> +       if (driver_register(&gpio_stub_drv) < 0) {
-> +               pr_err("gpiolib: could not register GPIO stub driver\n");
-> +               bus_unregister(&gpio_bus_type);
-> +               return ret;
-> +       }
-> +
->         ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
->         if (ret < 0) {
->                 pr_err("gpiolib: failed to allocate char dev region\n");
-> +               driver_unregister(&gpio_stub_drv);
->                 bus_unregister(&gpio_bus_type);
->                 return ret;
->         }
-
-Looks like you missed to fix the __exit call in this module.
-
--- 
-With Best Regards,
-Andy Shevchenko
+- Naresh
