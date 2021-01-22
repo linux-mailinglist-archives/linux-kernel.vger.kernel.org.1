@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF21E30061A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C621330060C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbhAVOwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:52:47 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:17393 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728734AbhAVOwK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:52:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611327129; x=1642863129;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KsXcy5y83xCRPNuARdSZENXQpQEChqeJyPUSi+46dLw=;
-  b=fxDkGgrWaPmVCRDG+8lf8+DQtaKMraG9Ez6quC9iJ5pfc7RalyDa/fUc
-   zXIDD0hESJjJe3/hLJqDvU9Hg1FakPsMC+0qyB/DMUTotWelh3trsAnCu
-   oyyWaRrlY0jFOJbcLdBjnm5ivzLTT4bhhfS2D/cXwj2T0YTWLvKUs5iBI
-   zrqU3T/CtKyFIfPJQymxg9G81UCUuIoVFFLVX3QMo+/OSaZdIxwSvkLT9
-   ydxBUK6r2cWP+LzkU5GmmlGZhA8MSdpOSxWxBIQ2guQP+siCbbv8yKjCU
-   dAVzqA6CVLR1qIijz3w/yyA+OJ5DPVSaFxxVxkgRobyid3UZQeTp+/oJJ
-   g==;
-IronPort-SDR: 0rs1KO37lE8cqXN5iAaWUTWynG9+Z/wB1Lksgv6EfC/A2IXAfxJqbDC2WLW7qHenNWJQz3bFGe
- 43PjSCXEfbpudDSk6U9Xm2i/BiPO7wzThvVThzz/ssTs7RyG+Kpv5Z7tN1FAeTue7CKcLrAf05
- PujrSBaQfgQz5vXww5pSVdaOxsEoG0sFg2+9ziiGDYl2mjrcVKoxS34/N4CjZR7S0qMttX7WOb
- 0t1SA6xLHHGlqt8he0l3QTwDO8VABweDpX9f8NpzQIy2nXxDzopcn3waEFpa52guam9NidNBxc
- HE8=
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="106927510"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jan 2021 07:50:47 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 22 Jan 2021 07:50:46 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 22 Jan 2021 07:50:45 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [GIT PULL] ARM: at91: defconfig for 5.12
-Date:   Fri, 22 Jan 2021 15:46:38 +0100
-Message-ID: <20210122144638.170565-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.30.0
+        id S1728810AbhAVOvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:51:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728664AbhAVOuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:50:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9B3C23444;
+        Fri, 22 Jan 2021 14:49:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611326975;
+        bh=yv1cXnquJ7xKTzg9wrnPvggtL9hbHc6eRB67CpvdF2U=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=lA7FwLo8ukz+p/C4QIlTT2KMW7k0r0Zy8yLGyz8vIZfh0cNN7ZsFYybCvjB0LbVvN
+         teSXd8hfXkjSmgnlwB1pKjrFTgfhEHYXvc2wjX5Me2/w+DuU14ZSa2cyfL0HwKEoZc
+         v+izevaYvvLJhwcM0BNa/6p6wZjpbkS1C09sSVgtrHatR2QvEZ2IQeg0NM4oDG807B
+         2USV22NPPAzjEThat6KEZw6qNErsj03hCWdd1fJL83mJbOpC9umGSe/2QvAqvjNPH0
+         c8EH9uYsnbO0jB1J46Fmd1Y1pHISXh4HpnO8Vnk+5tYTifyuWxoSBfz1mJsKp4pvav
+         I6IErX6dFTOZg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210122132042.10306-1-broonie@kernel.org>
+References: <20210122132042.10306-1-broonie@kernel.org>
+Subject: Re: [PATCH] regulator: Fix lockdep warning resolving supplies
+Message-Id: <161132693560.45400.5805860404255875218.b4-ty@kernel.org>
+Date:   Fri, 22 Jan 2021 14:48:55 +0000
 MIME-Version: 1.0
-Organization: microchip
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Fri, 22 Jan 2021 13:20:42 +0000, Mark Brown wrote:
+> With commit eaa7995c529b54 (regulator: core: avoid
+> regulator_resolve_supply() race condition) we started holding the rdev
+> lock while resolving supplies, an operation that requires holding the
+> regulator_list_mutex. This results in lockdep warnings since in other
+> places we take the list mutex then the mutex on an individual rdev.
+> 
+> Since the goal is to make sure that we don't call set_supply() twice
+> rather than a concern about the cost of resolution pull the rdev lock
+> and check for duplicate resolution down to immediately before we do the
+> set_supply() and drop it again once the allocation is done.
 
-Arnd, Olof,
+Applied to
 
-Here are the defconfig changes for 5.12 which contains the removal of old
-wrapper code that we called tclib. No such config option to be used anymore in
-next kernel.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-Thanks, best regards,
+Thanks!
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+[1/1] regulator: Fix lockdep warning resolving supplies
+      commit: 14a71d509ac809dcf56d7e3ca376b15d17bd0ddd
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-are available in the Git repository at:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/at91-defconfig-5.12
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-for you to fetch changes up to 00a1aa475f507454fab82f02c6230c8fb2312a12:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-  ARM: configs: multi_{v5,v7}: remove ATMEL_TCLIB (2021-01-02 14:06:48 +0100)
-
-----------------------------------------------------------------
-AT91 defconfig for 5.12:
-
-- remove ATMEL_TCLIB as the driver was deleted
-
-----------------------------------------------------------------
-Alexandre Belloni (2):
-      ARM: configs: at91: remove ATMEL_TCLIB
-      ARM: configs: multi_{v5,v7}: remove ATMEL_TCLIB
-
- arch/arm/configs/at91_dt_defconfig  | 1 -
- arch/arm/configs/multi_v5_defconfig | 1 -
- arch/arm/configs/multi_v7_defconfig | 1 -
- arch/arm/configs/sama5_defconfig    | 1 -
- 4 files changed, 4 deletions(-)
-
--- 
-Nicolas Ferre
+Thanks,
+Mark
