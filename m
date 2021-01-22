@@ -2,101 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706C22FFDE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 888742FFDE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbhAVIFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:05:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbhAVIFZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:05:25 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F302C06174A;
-        Fri, 22 Jan 2021 00:04:44 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id o18so3505842qtp.10;
-        Fri, 22 Jan 2021 00:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Kx3sH6YHlpgK218Xqk1ihUZMM+LeKPCk6agxOk0gJmM=;
-        b=D3e7DVZXhlIvnI8Jabvi3Ua7OjQqy3K9WCZPCDupl3J5qtqmO8a8VE7zup0z14bvWX
-         jn+I9U4TbM7y3xkbY4ZlEwR7K7vE5D3KCkDeVKEzidU/sW4FIZFf/I8Lt4sQkeABNG9O
-         rbNT9kke1JSvUe6eVkD+6CstOjPhswyElvy9JMuUDKjqnq26Ayue0Wsa/A+UQ4VLgXcO
-         7tcIB7thrFFe200npdTBk6YsOjkZHXPZ74n6Tq7BeOwbAAQS8BZe5gG+3XZkUfymCDeL
-         RA0vmPfbp6jcpWmqxt58XEa9TXr5fMtABVORBoIQREpybdUTvFPQc8pdJkp696y/VElP
-         WalQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Kx3sH6YHlpgK218Xqk1ihUZMM+LeKPCk6agxOk0gJmM=;
-        b=a21Q4EIV0QtM30OJAj86RdM32gD2iMfEJouqaAmdLUZBJl3gTa23fYHtZHEqDhEvS/
-         pzGN9ps0LTV0fgiohtlU4BOJGPkK8uu4nxfopOivjXBn17EXASRotRM5u3Gid01gRXr+
-         G32xMSdnXS6Z++yNuoLPumnfrl5sYA+OEzmYGYS5avH1GuAHTcqRIyItjYnK67efbKTX
-         S1XOAPLpdC4n8GAyJQ1hirpSHIv4v25E2GrSTujH3YmudxWJypLRBgBPIvbo3rcs57El
-         k/OU4AcClpgsgufr7VC7JO2RpbIWeFbQtnc41X1HGdPk0NtFBpg1nu4x9q9I0nfcxi7F
-         +zww==
-X-Gm-Message-State: AOAM532OFGmuO5kQ42quu5cOdZA7lVvxHrmWnV4SGmWGg39lz23HFdI8
-        A6o7lQPy9K7YfoakHZji4VnsBiYBgEadfOXtyIY=
-X-Google-Smtp-Source: ABdhPJxJHbeeR43zsgpwVrgT6+nsbNZ6WrgxKtmBY3w5+CnKtZ90SVA4xW0zshG3KJ3afUHPLQdcXw==
-X-Received: by 2002:ac8:3987:: with SMTP id v7mr3243472qte.144.1611302683458;
-        Fri, 22 Jan 2021 00:04:43 -0800 (PST)
-Received: from [0.0.0.0] ([2001:19f0:5:2661:5400:2ff:fe99:4621])
-        by smtp.gmail.com with ESMTPSA id e38sm5385674qtb.30.2021.01.22.00.04.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 00:04:42 -0800 (PST)
-Subject: Re: [PATCH v1] can: mcp251xfd: Add some sysfs debug interfaces for
- registers r/w
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com,
-        wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210122062255.202620-1-suyanjun218@gmail.com>
- <7181a6a3-62c6-9021-ea63-827f55eacd98@pengutronix.de>
-From:   Su <suyanjun218@gmail.com>
-Message-ID: <f311f01e-5203-821b-e44f-f0088a4622e7@gmail.com>
-Date:   Fri, 22 Jan 2021 16:04:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726751AbhAVIIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:08:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43606 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726843AbhAVIG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:06:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 086F7AB9F;
+        Fri, 22 Jan 2021 08:06:10 +0000 (UTC)
+Subject: Re: [PATCH v3 1/4] drm/qxl: use drmm_mode_config_init
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+References: <20210120111240.2509679-1-kraxel@redhat.com>
+ <20210120111240.2509679-2-kraxel@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <8988c58f-6ee1-60b7-58dd-a402040e3bce@suse.de>
+Date:   Fri, 22 Jan 2021 09:06:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <7181a6a3-62c6-9021-ea63-827f55eacd98@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20210120111240.2509679-2-kraxel@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="L5u4lsu2LyjYt2nFvFiZz28cTTZkO1L4F"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--L5u4lsu2LyjYt2nFvFiZz28cTTZkO1L4F
+Content-Type: multipart/mixed; boundary="8WbsdIL5Uw82v3Wn0JToA9byK1kZ0oGHP";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel.vetter@ffwll.ch>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
+Message-ID: <8988c58f-6ee1-60b7-58dd-a402040e3bce@suse.de>
+Subject: Re: [PATCH v3 1/4] drm/qxl: use drmm_mode_config_init
+References: <20210120111240.2509679-1-kraxel@redhat.com>
+ <20210120111240.2509679-2-kraxel@redhat.com>
+In-Reply-To: <20210120111240.2509679-2-kraxel@redhat.com>
 
-在 2021/1/22 下午3:22, Marc Kleine-Budde 写道:
-> On 1/22/21 7:22 AM, Su Yanjun wrote:
->> When i debug mcp2518fd, some method to track registers is
->> needed. This easy debug interface will be ok.
-> NACK
->
-> As the driver uses regmap, everything should be there already.
->
-> To read use:
->
-> | cat /sys/kernel/debug/regmap/spi0.0-crc/registers
->
-> Register write support for devices that are handles by proper kernel drivers is
-> a pure debugging tool, thus not enabled by default, not even with a Kconfig
-> switch. You have to enable it manually, have a look at commit:
->
-> 09c6ecd39410 regmap: Add support for writing to regmap registers via debugfs
+--8WbsdIL5Uw82v3Wn0JToA9byK1kZ0oGHP
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-You're right.
 
-Thank you
 
->
-> regards,
-> Marc
->
+Am 20.01.21 um 12:12 schrieb Gerd Hoffmann:
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+> ---
+>   drivers/gpu/drm/qxl/qxl_display.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qx=
+l_display.c
+> index 012bce0cdb65..38d6b596094d 100644
+> --- a/drivers/gpu/drm/qxl/qxl_display.c
+> +++ b/drivers/gpu/drm/qxl/qxl_display.c
+> @@ -1195,7 +1195,9 @@ int qxl_modeset_init(struct qxl_device *qdev)
+>   	int i;
+>   	int ret;
+>  =20
+> -	drm_mode_config_init(&qdev->ddev);
+> +	ret =3D drmm_mode_config_init(&qdev->ddev);
+> +	if (ret)
+> +		return ret;
+>  =20
+>   	ret =3D qxl_create_monitors_object(qdev);
+>   	if (ret)
+> @@ -1228,5 +1230,4 @@ int qxl_modeset_init(struct qxl_device *qdev)
+>   void qxl_modeset_fini(struct qxl_device *qdev)
+>   {
+>   	qxl_destroy_monitors_object(qdev);
+> -	drm_mode_config_cleanup(&qdev->ddev);
+>   }
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--8WbsdIL5Uw82v3Wn0JToA9byK1kZ0oGHP--
+
+--L5u4lsu2LyjYt2nFvFiZz28cTTZkO1L4F
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAKh3AFAwAAAAAACgkQlh/E3EQov+Cj
+rxAAiqNcLRt/tMMPI7b9KfBqOr7G+fMePF7aVUMfgQmjciB0GV9ScIkclwElPluhFSfG8MRU8zXK
+9FwuFFCny0msMQE620P1fe9gLmh1AG8koraebgXyOqYuKnY9BwgUbueOv8sJkeiQt5mjIN0McYRx
+GdLVoRO27f2pDv4eBvQbT1FlnV9J7E4D/VMiA6ZayDHwTxN2tw06XEj0J1MQsBagb1cypBy9WbN2
+ql1R5AsHKTm4bwhT/+C91qJcCCJB1J7Gg1zX6lOH7pBSQF7JL8a1qvhwQ8+fVKtsIdrvNzj4heja
++HzzyLo+Wq9liMPtzoCKvf2MXEZsSrO/bboSI7lJ9KoH9o3D1QaxbIqaWhHBj0vfxYVfpt3Bxhms
+VARBhKRffVTv50K22NQFDwXldIo7jh9mC9NT15Q/ljjdV7cfdMFFKAVqedXqAirgx8JnXSqQW+jX
+gctBygpRXK8BlL07XVl2U0v6PR/adrHAXSZcAY57sjWpJmHY8zK8YLqsKLHO6bgrj87wlUSs/CiE
+pE63WaorEGMt3kV3sNrjvq7v90WviQjgiw8SiHJaeE4Bnby2jd6Iirrup9sc0/Lw+VsTIcYb7fmh
+AF/Fk2E3HhNXLhip1ydVVjMVF3iS+lv4pciAdSMU1SQErAPf+y5WEEiVzH2vfTDpKUz20OyvEkMN
+Ljs=
+=cNm8
+-----END PGP SIGNATURE-----
+
+--L5u4lsu2LyjYt2nFvFiZz28cTTZkO1L4F--
