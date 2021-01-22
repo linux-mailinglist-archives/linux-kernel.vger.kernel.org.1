@@ -2,147 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539B330012C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3458300112
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbhAVLGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:06:35 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11849 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727216AbhAVJ1r (ORCPT
+        id S1727990AbhAVK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:59:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727487AbhAVKvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:27:47 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DMYlf1DZdz7YCF;
-        Fri, 22 Jan 2021 17:25:50 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 22 Jan 2021 17:26:49 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Cornelia Huck" <cohuck@redhat.com>
-CC:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "James Morse" <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: [PATCH v3 2/2] vfio/iommu_type1: Fix some sanity checks in detach group
-Date:   Fri, 22 Jan 2021 17:26:35 +0800
-Message-ID: <20210122092635.19900-3-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210122092635.19900-1-zhukeqian1@huawei.com>
-References: <20210122092635.19900-1-zhukeqian1@huawei.com>
+        Fri, 22 Jan 2021 05:51:39 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7711FC061788
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:50:59 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id b8so2945554plh.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PuwWd5eA6p3dY7AgrjavmP5cmvVmC3ijlW6z53nJI7E=;
+        b=DUgiZdV+iGgfJqja6zA0bbGFa0O/OMijUZOXcsGQ3eukmae3Un8i9t0w4ItT3H63Cv
+         le5PyLNxsPvu9EDPmBOpLQeNJWxO5BWoGcrUKWO/hDuBUtMt+mgysSsPBDmDY1ZTRhEh
+         R/fpAdxOXVg84jfBQ53awzLXwMMqquOKhh0S562hQLbwycf2WV0gYWjlAeDDCGE9Fom9
+         hNnPr5+rtVszC6eyKUy68IXMSMnVhABiWVuZPhHcLaXSxPYB97NOV5jdnPpUuU1BxR9V
+         Y23kJlK4hxUfOh83VU2kY+47DJQmULwjyINtkMm7CWOKkDVxzvUDxLi64w0h0rPhlkd4
+         87lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PuwWd5eA6p3dY7AgrjavmP5cmvVmC3ijlW6z53nJI7E=;
+        b=dt8zml14HxE3XGUYOLuBVmbHkouQsbvT/wmw39Al7RUmDIiZhmOf3/NWKutSuXpthD
+         2tJUe1een5mnaw9vdqn66tw+B9tlahLLAWH55+FuDcrHjcPRWYPkfFUnaRYNeqUWXZZP
+         CqZo4DKdTH1PRbyTUVHPh6KBovyJT0sVSsB7+LFb3i1LOsRyyOnJUwWpnOqpeDIw41dj
+         TD7CntyJou3gjmauB1LAQEFSkgg800ALGfM4JbinXMLmO9JDMGBU9uKXksixPp+A/qGW
+         X6evy0sAx1k8ZoZiui8y2LglE+Oj98vr+w5qkyViChWIHNevk7g1qE1/x8XW6WPBuzF0
+         PZfg==
+X-Gm-Message-State: AOAM531f0ZXNrxrYUtgjFV8rKuKHcHm+ldrZ30PCkV2ylu8G2kMb4tqx
+        22koTtDRF3qPV+ep7BriQNmJjA==
+X-Google-Smtp-Source: ABdhPJxqIPhYQksDYkM6roGKyJKmwpyizUIISOxol2yt6kqR07tlYnLJzTCe04O547qEdTCr5b3I6Q==
+X-Received: by 2002:a17:90b:1046:: with SMTP id gq6mr4481021pjb.203.1611312658928;
+        Fri, 22 Jan 2021 02:50:58 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id k128sm8613204pfd.137.2021.01.22.02.50.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Jan 2021 02:50:58 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH V6 0/6] dt: build overlays
+Date:   Fri, 22 Jan 2021 16:20:30 +0530
+Message-Id: <cover.1611312122.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfio_sanity_check_pfn_list() is used to check whether pfn_list and
-notifier are empty when remove the external domain, so it makes a
-wrong assumption that only external domain will use the pinning
-interface.
+Hi Frank/Rob,
 
-Now we apply the pfn_list check when a vfio_dma is removed and apply
-the notifier check when all domains are removed.
+This patchset makes necessary changes to the kernel to add support for
+building overlays (%.dtbo) and the required fdtoverlay tool. This also
+builds static_test.dtb using most of the existing overlay tests present
+in drivers/of/unittest-data/ for better test coverage.
 
-Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
----
- drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+Note that in order for anyone to test this stuff, you need to manually
+run the ./update-dtc-source.sh script once to fetch the necessary
+changes from the external DTC project (i.e. fdtoverlay.c and this[1]
+patch).
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 161725395f2f..d8c10f508321 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -957,6 +957,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
- 
- static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
- {
-+	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
- 	vfio_unmap_unpin(iommu, dma, true);
- 	vfio_unlink_dma(iommu, dma);
- 	put_task_struct(dma->task);
-@@ -2250,23 +2251,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
- 	}
- }
- 
--static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
--{
--	struct rb_node *n;
--
--	n = rb_first(&iommu->dma_list);
--	for (; n; n = rb_next(n)) {
--		struct vfio_dma *dma;
--
--		dma = rb_entry(n, struct vfio_dma, node);
--
--		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
--			break;
--	}
--	/* mdev vendor driver must unregister notifier */
--	WARN_ON(iommu->notifier.head);
--}
--
- /*
-  * Called when a domain is removed in detach. It is possible that
-  * the removed domain decided the iova aperture window. Modify the
-@@ -2366,10 +2350,10 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
- 			kfree(group);
- 
- 			if (list_empty(&iommu->external_domain->group_list)) {
--				vfio_sanity_check_pfn_list(iommu);
--
--				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
-+				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu)) {
-+					WARN_ON(iommu->notifier.head);
- 					vfio_iommu_unmap_unpin_all(iommu);
-+				}
- 
- 				kfree(iommu->external_domain);
- 				iommu->external_domain = NULL;
-@@ -2403,10 +2387,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
- 		 */
- 		if (list_empty(&domain->group_list)) {
- 			if (list_is_singular(&iommu->domain_list)) {
--				if (!iommu->external_domain)
-+				if (!iommu->external_domain) {
-+					WARN_ON(iommu->notifier.head);
- 					vfio_iommu_unmap_unpin_all(iommu);
--				else
-+				} else {
- 					vfio_iommu_unmap_unpin_reaccount(iommu);
-+				}
- 			}
- 			iommu_domain_free(domain->domain);
- 			list_del(&domain->next);
-@@ -2488,9 +2474,10 @@ static void vfio_iommu_type1_release(void *iommu_data)
- 	struct vfio_iommu *iommu = iommu_data;
- 	struct vfio_domain *domain, *domain_tmp;
- 
-+	WARN_ON(iommu->notifier.head);
-+
- 	if (iommu->external_domain) {
- 		vfio_release_domain(iommu->external_domain, true);
--		vfio_sanity_check_pfn_list(iommu);
- 		kfree(iommu->external_domain);
- 	}
- 
+Also note that Frank has already shared his concerns towards the error
+reporting done by fdtoverlay tool [2], and David said it is not that
+straight forward to make such changes in fdtoverlay. I have still
+included the patch in this series for completeness.
+
+FWIW, with fdtoverlay we generate a new build warning now, not sure why
+though:
+
+drivers/of/unittest-data/tests-interrupts.dtsi:20.5-28: Warning (interrupts_property): /testcase-data/testcase-device2:#interrupt-cells: size is (4), expected multiple of 8
+
+V6:
+- Create separate rules for dtbo-s and separate entries in .gitignore in
+  4/6 (Masahiro).
+- A new file layout for handling all overlays for existing and new tests
+  5/6 (Frank).
+- Include overlay.dts as well now in 6/6 (Frank).
+
+V5:
+
+- Don't reuse DTC_SOURCE for fdtoverlay.c in patch 1/5 (Frank).
+
+- Update .gitignore and scripts/Makefile.dtbinst, drop dtbo-y syntax and
+  DTC_FLAGS += -@ in patch 4/5 (Masahiro).
+
+- Remove the intermediate dtb, rename output to static_test.dtb, don't
+  use overlay.dtb and overlay_base.dtb for static builds, improved
+  layout/comments in Makefile for patch 5/5 (Frank).
+
+--
+Viresh
+
+[1] https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
+[2] https://lore.kernel.org/lkml/74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com/
+
+Viresh Kumar (6):
+  scripts: dtc: Fetch fdtoverlay.c from external DTC project
+  scripts: dtc: Build fdtoverlay tool
+  scripts: dtc: Remove the unused fdtdump.c file
+  kbuild: Add support to build overlays (%.dtbo)
+  of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
+  of: unittest: Statically apply overlays using fdtoverlay
+
+ .gitignore                                    |   1 +
+ Makefile                                      |   5 +-
+ drivers/of/unittest-data/Makefile             |  51 ++++++
+ drivers/of/unittest-data/overlay_base.dts     |  90 +---------
+ drivers/of/unittest-data/overlay_common.dtsi  |  91 ++++++++++
+ drivers/of/unittest-data/static_base.dts      |   5 +
+ drivers/of/unittest-data/testcases.dts        |  17 +-
+ .../of/unittest-data/testcases_common.dtsi    |  18 ++
+ scripts/Makefile.dtbinst                      |   3 +
+ scripts/Makefile.lib                          |   5 +
+ scripts/dtc/Makefile                          |   6 +-
+ scripts/dtc/fdtdump.c                         | 163 ------------------
+ scripts/dtc/update-dtc-source.sh              |   3 +-
+ 13 files changed, 187 insertions(+), 271 deletions(-)
+ create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+ create mode 100644 drivers/of/unittest-data/static_base.dts
+ create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+ delete mode 100644 scripts/dtc/fdtdump.c
+
 -- 
-2.19.1
+2.25.0.rc1.19.g042ed3e048af
 
