@@ -2,161 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B87D300C87
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F05300C96
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730242AbhAVTYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        id S1730516AbhAVT0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:26:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729543AbhAVTNt (ORCPT
+        with ESMTP id S1729786AbhAVTPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:13:49 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C194CC0613D6;
-        Fri, 22 Jan 2021 11:13:09 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id q6so1664748ooo.8;
-        Fri, 22 Jan 2021 11:13:09 -0800 (PST)
+        Fri, 22 Jan 2021 14:15:17 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2B8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:14:36 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id u16so755789qvo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:14:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=D/lSjSk7J5m6AHoucCYZNXORDMKdSvYqMceGCBgaJYE=;
-        b=mIHu+C/K8nooWwtwDwe/e6+nxCG1bOHOsXQ1H9v/jnxnqXWBgdOjYGY1ooD++rrx77
-         52cqDCkWfFwH4dxehwpfUpFXXGUqt8NWOiIdmAiUuq0Cm2BW5hX/AhsYA5iRDXw3+Su+
-         mxbTcEc7QND/elGKfMnQUZkVdMxQ9Um/g/ZRUAPMHdPTS5fWepM73yfODcThRjxE+jgS
-         kKz5K9ef7ko+pY/3LTNfx5B4izBiIjyf3rp0eteMrYUg0YFt18TSYUi5ZKAFA03D3MtF
-         NrgYVUb69H4WVD8LiQS3oyhHvLK22tHxfP+a1kN0cRD+Vp+UIb0KUuHbgMmsPF7RXF7C
-         U5dQ==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Py8MjXlde3K/2wSxCvgyBlWJLLtZnHs44qLUqstYM9o=;
+        b=uvvAUCpgJr6i541gryy3vMZyO+jlZ+LopT45Sc9uLn5G87K0xoy8tWxefAJX5R8mOL
+         Wi6QZkrEgXFcN4Rnfkfe7z5simMfkvWn0iB7bnRjLr4vD2wqnjVqrxg4QWZyJwha2egY
+         GBz1fC9YD3plx0Jmna9PKmfXqGjfQT8HynTlc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=D/lSjSk7J5m6AHoucCYZNXORDMKdSvYqMceGCBgaJYE=;
-        b=nXrnAN37i0w9P+LEMeP33ZtdyO9MAXSlZdUV8CBd9gI9kK9VrQC00sD9AnLU5IszR2
-         7JkeD9bf7Pj/rxz4Sae+wjGyFCKcuZFWSIXae5arXYALHCNz2JMr2o65ptVV8sd54/8R
-         B4Du3bzfsxDNNFC5rPDFh/WSLH7/RVsgw5tqKC8qDyHFQSuI7USoctzX2RNlvFRDMjFy
-         +V30ro0+Amt5YtVMAyZcZgiB0o+CvWUkk87eXBGRYhvfSOhPy7/gf0lI4qhkPHU5YZDL
-         BmuT6t+K6H1pSufU36dPDgJWGxpnj+aCHeImE6y6wALy09we2031T3WiAa0gnn1+73Dy
-         BO5Q==
-X-Gm-Message-State: AOAM532xX7Oxa1eyB/pSQhk1vMg0sMPa+LN6xvc68E+I+7WbvtZxl2QU
-        tSziG5m3GxCI5gypAYbvyF0=
-X-Google-Smtp-Source: ABdhPJz2amLxxGlTqM6m5dPlVewfBbm+4vMI/BflGGEfNh/NDHbdfCBSkIsy2hqLK557mAFBIl3f1w==
-X-Received: by 2002:a4a:e294:: with SMTP id k20mr4881858oot.82.1611342789240;
-        Fri, 22 Jan 2021 11:13:09 -0800 (PST)
-Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
-        by smtp.gmail.com with ESMTPSA id z14sm1753636oot.5.2021.01.22.11.13.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Py8MjXlde3K/2wSxCvgyBlWJLLtZnHs44qLUqstYM9o=;
+        b=dFRdRJEuu88yqUTIP8jNq1lmjie16iHchvKjoBO7EWvdxAX8TR/oBEPCXXCA39Sc6t
+         ZOvC/Lb+CuB8Xbr9soFkD4idbfF+j3LBfh91wFWuTP7eKwZSgpeRQinH8vT7uXgW0C3l
+         7ZOvi90LQbQEagWosdYU4kO/Nb7Eq8xJ1wmjY3X+BjGCCVELcnGXTGWTFLtznRlDXrxS
+         5O6nIhD7qENoZmymGuuSMGCD1CZBoJ0I0lHqA4yzm3BSFyO1MkELgNfPa5D6ickkWqn5
+         pP8pQsztkOW5WVkWvE9zcC9EXpoSwROJp9ZO/y7CtVOfofljWOo3U+EdZy1fkAemv+dr
+         ol5g==
+X-Gm-Message-State: AOAM533mLR9C05wsDAVBfpJ0vjuhpHjNWmHavPpCpraSHFfrZ0z0zCe+
+        UPCbbWKZBODovVn8ZcRRdhHAQ499+3478w==
+X-Google-Smtp-Source: ABdhPJwKFB6sGJHsRsYbOmB8ZPfxj2x8s82RxXPxwuXmMAECp5yrCkvKilB9zycn7tLTJTUrQAc0eg==
+X-Received: by 2002:ad4:4f4a:: with SMTP id eu10mr5976653qvb.17.1611342876108;
+        Fri, 22 Jan 2021 11:14:36 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id m6sm843344qkm.25.2021.01.22.11.14.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 11:13:08 -0800 (PST)
-Date:   Fri, 22 Jan 2021 11:13:06 -0800
-From:   Enke Chen <enkechen2020@gmail.com>
-To:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neal Cardwell <ncardwell@google.com>, enkechen2020@gmail.com
-Subject: [PATCH net] tcp: make TCP_USER_TIMEOUT accurate for zero window
- probes
-Message-ID: <20210122191306.GA99540@localhost.localdomain>
+        Fri, 22 Jan 2021 11:14:35 -0800 (PST)
+Date:   Fri, 22 Jan 2021 14:14:35 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to
+ update_blocked_averages() for NOHZ
+Message-ID: <YAskGxlUnd6SkbYt@google.com>
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
+ <20210122183927.ivqyapttzd6lflwk@e107158-lin>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210122183927.ivqyapttzd6lflwk@e107158-lin>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enke Chen <enchen@paloaltonetworks.com>
+On Fri, Jan 22, 2021 at 06:39:27PM +0000, Qais Yousef wrote:
+> On 01/22/21 17:56, Vincent Guittot wrote:
+> > > ---
+> > >  kernel/sched/fair.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 04a3ce20da67..fe2dc0024db5 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -8381,7 +8381,7 @@ static bool update_nohz_stats(struct rq *rq, bool force)
+> > >         if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+> > >                 return false;
+> > >
+> > > -       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick))
+> > > +       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick + (HZ/20)))
+> > 
+> > This condition is there to make sure to update blocked load at most
+> > once a tick in order to filter newly idle case otherwise the rate
+> > limit is already done by load balance interval
+> > This hard coded (HZ/20) looks really like an ugly hack
+> 
+> This was meant as an RFC patch to discuss the problem really.
 
-The TCP_USER_TIMEOUT is checked by the 0-window probe timer. As the
-timer has backoff with a max interval of about two minutes, the
-actual timeout for TCP_USER_TIMEOUT can be off by up to two minutes.
+Agreed, sorry.
 
-In this patch the TCP_USER_TIMEOUT is made more accurate by taking it
-into account when computing the timer value for the 0-window probes.
+> Joel is seeing update_blocked_averages() taking ~100us. Half of it seems in
+> processing __update_blocked_fair() and the other half in sugov_update_shared().
+> So roughly 50us each. Note that each function is calling an iterator in
+> return. Correct me if my numbers are wrong Joel.
 
-This patch is similar to the one that made TCP_USER_TIMEOUT accurate for
-RTOs in commit b701a99e431d ("tcp: Add tcp_clamp_rto_to_user_timeout()
-helper to improve accuracy").
+Correct, and I see update_nohz_stats() itself called around 8 times during a
+load balance which multiplies the overhead.
 
-Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
-Reviewed-by: Neal Cardwell <ncardwell@google.com>
----
- include/net/tcp.h     |  1 +
- net/ipv4/tcp_input.c  |  4 ++--
- net/ipv4/tcp_output.c |  2 ++
- net/ipv4/tcp_timer.c  | 18 ++++++++++++++++++
- 4 files changed, 23 insertions(+), 2 deletions(-)
+Dietmar found out also that the reason for update_nohz_stacks() being called
+8 times is because in our setup, there is only 1 MC sched domain with all 8
+CPUs, versus say 2 MC domains with 4 CPUs each.
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 78d13c88720f..ca7e2c6cc663 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -630,6 +630,7 @@ static inline void tcp_clear_xmit_timers(struct sock *sk)
- 
- unsigned int tcp_sync_mss(struct sock *sk, u32 pmtu);
- unsigned int tcp_current_mss(struct sock *sk);
-+u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when);
- 
- /* Bound MSS / TSO packet size with the half of the window */
- static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index bafcab75f425..4923cdbea95a 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -3392,8 +3392,8 @@ static void tcp_ack_probe(struct sock *sk)
- 	} else {
- 		unsigned long when = tcp_probe0_when(sk, TCP_RTO_MAX);
- 
--		tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0,
--				     when, TCP_RTO_MAX);
-+		when = tcp_clamp_probe0_to_user_timeout(sk, when);
-+		tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0, when, TCP_RTO_MAX);
- 	}
- }
- 
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index ab458697881e..8478cf749821 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -4099,6 +4099,8 @@ void tcp_send_probe0(struct sock *sk)
- 		 */
- 		timeout = TCP_RESOURCE_PROBE_INTERVAL;
- 	}
-+
-+	timeout = tcp_clamp_probe0_to_user_timeout(sk, timeout);
- 	tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0, timeout, TCP_RTO_MAX);
- }
- 
-diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-index 454732ecc8f3..90722e30ad90 100644
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -40,6 +40,24 @@ static u32 tcp_clamp_rto_to_user_timeout(const struct sock *sk)
- 	return min_t(u32, icsk->icsk_rto, msecs_to_jiffies(remaining));
- }
- 
-+u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when)
-+{
-+	struct inet_connection_sock *icsk = inet_csk(sk);
-+	u32 remaining;
-+	s32 elapsed;
-+
-+	if (!icsk->icsk_user_timeout || !icsk->icsk_probes_tstamp)
-+		return when;
-+
-+	elapsed = tcp_jiffies32 - icsk->icsk_probes_tstamp;
-+	if (unlikely(elapsed < 0))
-+		elapsed = 0;
-+	remaining = msecs_to_jiffies(icsk->icsk_user_timeout) - elapsed;
-+	remaining = max_t(u32, remaining, TCP_TIMEOUT_MIN);
-+
-+	return min_t(u32, remaining, when);
-+}
-+
- /**
-  *  tcp_write_err() - close socket and save error info
-  *  @sk:  The socket the error has appeared on.
--- 
-2.29.2
+> Running on a little core on low frequency these numbers don't look too odd.
+> So I'm not seeing how we can speed these functions up.
 
+Agreed.
+
+> But since update_sg_lb_stats() will end up with multiple calls to
+> update_blocked_averages() in one go, this latency adds up quickly.
+
+True!
+
+> One noticeable factor in Joel's system is the presence of a lot of cgroups.
+> Which is essentially what makes __update_blocked_fair() expensive, and it seems
+> to always return something has decayed so we end up with a call to
+> sugov_update_shared() in every call.
+
+Correct.
+
+thanks,
+
+ - Joel
+
+[..]
