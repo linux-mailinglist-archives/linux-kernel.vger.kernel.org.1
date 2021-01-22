@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8975C300832
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5895730083A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:09:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729191AbhAVQF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:05:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44500 "EHLO
+        id S1729462AbhAVQH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729504AbhAVQFT (ORCPT
+        with ESMTP id S1729441AbhAVQGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:05:19 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E01C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 08:04:39 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id k9so1515966oop.6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 08:04:39 -0800 (PST)
+        Fri, 22 Jan 2021 11:06:43 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CC1C0613D6;
+        Fri, 22 Jan 2021 08:05:59 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id l12so4561572ljc.3;
+        Fri, 22 Jan 2021 08:05:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uOcDAQTvbMFsGW2wN4EW2b9gto6d910RnbvMcnDkd/c=;
-        b=bXsPFrB1DV10D190ze4iNrrBtwxSSmGn8GrafBPD8BtyliQHqw2ujTyLDkoZ5OWg96
-         6mipU1MFOuHREzL57e6Q38tAtdqs11tzO6y7rYligD0OnUaG7xcUlS0KmEkfAM0Yswgu
-         l++pDvDOnvP/GdecS4qp8nK7kjhRgr4yIBykvRURR76yz2BEwPVLZ3CX8agwcxDDHSFr
-         QiXBIbhIQPDcMg2oRqrarqb5vDUym50sSShT5GnuyVhklzDs16MyaduLffdt/dXgdOnO
-         Xk4kYv3OylnZ5xhixhBLqJ58EZw1FUQbqz4w08kgeUSkYT3jgBjpggdnOyWhVRE7Czu1
-         kV7w==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:in-reply-to:references:date:message-id:mime-version;
+        bh=dYnyyDVesC6Z9/jeabSdXpAorVFlaVIqQIB+RhVpm20=;
+        b=Pjk8XN0YQxDSUm0xUJqm0sY6ZgUSIKRGcuyScCBDKU62oyPWiFsPlYm0eGDjATy1ux
+         Wi0pqVdpZ4UJqGG5jrqJn1C79iqJLS3ff92ZspYcX9f34oAOIpN2MK0Z/zK5loKz4oWr
+         ylNlljL+Tp5QHdw7mG0i7dKnff35K15eQXAe66PW0a3yHrW5i+NdWrxNi5WHlLeAJfhp
+         PVmXFv1bPnMYS7icgAEdqy5UYwDwmp9Fc7+J8CXxaXOyeeuw5MhtW1mr6CZv05b88chG
+         8ZcbCIplVT8XUEq7blupmNhPcBuwf1vFfXK9czYXR+5en2Wlf8Q73jrym1XLEGMGlEEx
+         8p3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uOcDAQTvbMFsGW2wN4EW2b9gto6d910RnbvMcnDkd/c=;
-        b=NZI9D/R762W3UeKf41Zni5GHKWRJuPRhMyU2WOQCq2ju9Dd4eIB+3jzxpMdaujI9WN
-         5OM13MvEPSwM9dRlvnbTB22nNWr2eLEA7DIN5VtNYvsju3+5YK3IgCTTFnGK0DIzaYtr
-         fss4u+NZ9gPVzbYmMWKuWCWeiwS/NXIRmCq2WkhoQ/jRMN9DPG2UTRBCmiX22WHFWBfz
-         SDcs4z2qCaPRk1CxpkkdFkdWqU2aunm4EnO8t4Q3GRAoWqE/pgYPsyz1Q/eMFkd/BM3Z
-         d35oWlSK6EiNBNgc/YUsl1NJ772NSYDO6bpqjcb8sOi8N+u3Y9au6kT51mXvatbT8BoJ
-         o9sA==
-X-Gm-Message-State: AOAM530AIUeWzVPeW0i7Qp9BHk/SHPRLFZ6jPmOquXKCCxpxtlhfMdkb
-        onkNqOkdUS0ITz8wQIMeVUlXyA==
-X-Google-Smtp-Source: ABdhPJzIjq8M1jb98C+LunJrol58KNv9YwNRZtbUnN8EKKfvwE3/ZyEzVUyiSlU2AxPGpBEkCN2gaA==
-X-Received: by 2002:a4a:94cc:: with SMTP id l12mr4259445ooi.70.1611331478531;
-        Fri, 22 Jan 2021 08:04:38 -0800 (PST)
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
-        by smtp.gmail.com with ESMTPSA id q6sm1743948otm.68.2021.01.22.08.04.37
+        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=dYnyyDVesC6Z9/jeabSdXpAorVFlaVIqQIB+RhVpm20=;
+        b=Z9msNoygHzUJSBP+9frIt82hL4K2intu54ywLAZMQIrWFhOP0HE7fg0mxnlHqRSQCf
+         PNdIk4liAtA8Dp3vk2vpHw0781MyBeDOXqNOA9QquZlO9RTFC4FrSWVMKIABOMQJbtGN
+         gLuqyPFtctZuqevk3b5zMMxhTEVtyQwWy0qX2OJ7c5XIt0/wiGRhflkQbUrXmfbk9tl0
+         8465/SJBecTa9ErNZYmyrDysa2Qz5rJiBBVSt1pImMfPvCkkpBifU5ODPPl8uqNZS0qY
+         c7fSE5GA/MKrUzsUF3JccYWEe6RmIURrM2WpQDErdTA3FzlQOWMVbUgxRKSpVCXKkBlm
+         1n6Q==
+X-Gm-Message-State: AOAM532RQ49bpcG2t2GIXP3UDA12aANWnz5RDiX7PaqtnWt6b/rKzphI
+        03/2LydK9ZHIGhmE1G/Kg2g=
+X-Google-Smtp-Source: ABdhPJxBa1WiN/jurrX5CRJ6eaLx6b/Zr+ZK+9s9s6R+83bCQy2uN+hg+wESRQnZBzKPbEdJc33izA==
+X-Received: by 2002:a2e:b52c:: with SMTP id z12mr1144667ljm.250.1611331558242;
+        Fri, 22 Jan 2021 08:05:58 -0800 (PST)
+Received: from luthien (h-82-196-111-206.NA.cust.bahnhof.se. [82.196.111.206])
+        by smtp.gmail.com with ESMTPSA id n23sm1027123lji.36.2021.01.22.08.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 08:04:37 -0800 (PST)
-Date:   Fri, 22 Jan 2021 10:04:19 -0600
-From:   Tyler Hicks <code@tyhicks.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, "Serge E . Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH 1/2] ecryptfs: fix uid translation for setxattr on
- security.capability
-Message-ID: <20210122160419.GA81247@sequoia>
-References: <20210119162204.2081137-1-mszeredi@redhat.com>
- <20210119162204.2081137-2-mszeredi@redhat.com>
- <87a6t4ab7h.fsf@x220.int.ebiederm.org>
- <CAJfpegvy4u9cC7SXWqteg54q-96fH3SqqfEybcQtAMxsewAGYg@mail.gmail.com>
+        Fri, 22 Jan 2021 08:05:57 -0800 (PST)
+From:   Joachim Wiberg <troglobit@gmail.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
+        allan.nielsen@microchip.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org
+Subject: Re: [RFC PATCH v2] net: bridge: igmp: Extend IGMP query to be per vlan
+In-Reply-To: <b54644f6-b559-b13b-adf8-d95f7b2a6885@nvidia.com>
+References: <20210112135903.3730765-1-horatiu.vultur@microchip.com> <32bf6a72-6aff-5e36-fb02-333f3c450f49@nvidia.com> <8735z0zyab.fsf@gmail.com> <b54644f6-b559-b13b-adf8-d95f7b2a6885@nvidia.com>
+Date:   Fri, 22 Jan 2021 17:05:57 +0100
+Message-ID: <87czxxvtwa.fsf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegvy4u9cC7SXWqteg54q-96fH3SqqfEybcQtAMxsewAGYg@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-20 08:52:27, Miklos Szeredi wrote:
-> On Tue, Jan 19, 2021 at 10:11 PM Eric W. Biederman
-> <ebiederm@xmission.com> wrote:
-> >
-> > Miklos Szeredi <mszeredi@redhat.com> writes:
-> >
-> > > Prior to commit 7c03e2cda4a5 ("vfs: move cap_convert_nscap() call into
-> > > vfs_setxattr()") the translation of nscap->rootid did not take stacked
-> > > filesystems (overlayfs and ecryptfs) into account.
-> > >
-> > > That patch fixed the overlay case, but made the ecryptfs case worse.
-> > >
-> > > Restore old the behavior for ecryptfs that existed before the overlayfs
-> > > fix.  This does not fix ecryptfs's handling of complex user namespace
-> > > setups, but it does make sure existing setups don't regress.
-> >
-> > Today vfs_setxattr handles handles a delegated_inode and breaking
-> > leases.  Code that is enabled with CONFIG_FILE_LOCKING.  So unless
-> > I am missing something this introduces a different regression into
-> > ecryptfs.
-> 
-> This is in line with all the other cases of ecryptfs passing NULL as
-> delegated inode.
-> 
-> I'll defer this to the maintainer of ecryptfs.
+On Mon, Jan 18, 2021 at 13:53, Nikolay Aleksandrov <nikolay@nvidia.com> wrote:
+> On 16/01/2021 17:39, Joachim Wiberg wrote:
+>> We have discussed at length at work if an IGMP snooping implementation
+>> really belongs in the bridge, or if it's better suited as a user space
+>> daemon?  Similar to what was decided for RSTP/MSTP support, i.e., the
+>> bridge only has STP and RSTP/MSTP is handled by mstpd[2].
+>> 
+>> Most of what's required for a user space implementation is available,
+>> but it would've been nice if a single AF_PACKET socket on br0 could be
+>> used to catch what brport (ifindex) a query or report comes in on.  As
+>> it is now that information is lost/replaced with the ifindex of br0.
+>> And then there's the issue of detecting and forwarding to a multicast
+>> routing daemon on top of br0.  That br0 is not a brport in the MDB, or
+>> that host_joined cannot be set/seen with iproute2 is quite limiting.
+>> These issues can of course be addressed, but are they of interest to
+>> the community at large?
+>> 
+>> [1]: https://lore.kernel.org/netdev/20180418120713.GA10742@troglobit/
+>> [2]: https://github.com/mstpd/mstpd
 
-eCryptfs cannot be exported so I do not think this proposed fix to
-ecryptfs_setxattr() creates a new regression wrt inode delegation.
+Ni Nik,
 
-Tyler
+> I actually had started implementing IGMPv3/MLDv2 as a user-space daemon part of
+> FRRouting (since it already has a lot of the required infra to talk to the kernel).
+> It also has IGMPv3/MLDv2 support within pimd, so a lot of code can be shared.
 
-> 
-> Thanks,
-> Miklos
+Interesting!  Glad to hear other people have had similar ideas :)
+
+> Obviously there are pros and cons to each choice, but I'd be interested to see a
+> full user-space implementation. I decided to make the kernel support more complete
+> since it already did IGMPv2 and so stopped with the new FRR daemon.
+
+Yeah it's difficult to find the right cut-off for when it'll be more
+useful to do it all in userspace.  For us I think it was the combination
+of having many VLANs and wanting full querier support, i.e., not having
+any multicast router available.  When we had to go dumpster diving for
+useful IP address in IGMP queries on higher-level VLAN interfaces.
+
+> If needed I'd be happy to help with the kernel support for a new
+> user-space daemon, and also can contribute to the daemon itself if
+> time permits.
+
+That's good to know.  I think I'll start breathing life into a small
+IGMP-only (for now) userspace daemon and see where it leads.  I need
+it both for work and for all the various multicast routing projects
+I maintain on my spare time.
+
+Would it be OK to send questions regarding issues interfacing with the
+bridge and updates/progress to this list for such a project?
+
+Best regards
+ /Joachim
