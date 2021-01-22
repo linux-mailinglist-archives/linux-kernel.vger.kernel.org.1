@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F3D2FF9E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBA12FF9EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbhAVBYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 20:24:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37438 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725863AbhAVBYs (ORCPT
+        id S1726294AbhAVB0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 20:26:03 -0500
+Received: from mail-pj1-f51.google.com ([209.85.216.51]:53322 "EHLO
+        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725819AbhAVBZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 20:24:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611278598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SJoWL2veJ5k/D7xEL6G5+QjIu4GFUmt+PwMfZPwuV6Y=;
-        b=SSqEl+Hc485o/7oY4Lbn9lUTA8oENiijWsxEF0qTHs7L5YhefnUetOFHINPOL4viEnR/0o
-        CYzA5AuIkYEaS6nBoZRaotQHaXCZodxXoc0J/OvkzI/BcYiTgiFUnDbv+C9fy9FO9NsN54
-        dfghHH9gZEgH9LOIdeShIqR/5htaPmk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-CGjKzgi4OAeR7HI75U9w6g-1; Thu, 21 Jan 2021 20:23:16 -0500
-X-MC-Unique: CGjKzgi4OAeR7HI75U9w6g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 901BC8145E1;
-        Fri, 22 Jan 2021 01:23:12 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-255.pek2.redhat.com [10.72.12.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 847B760BF3;
-        Fri, 22 Jan 2021 01:22:58 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 09:22:54 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     john.p.donnelly@oracle.com
-Cc:     Guilherme Piccoli <gpiccoli@canonical.com>,
-        Kairui Song <kasong@redhat.com>,
-        Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# v4 . 16+" <stable@vger.kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Diego Elio =?iso-8859-1?Q?Petten=F2?= <flameeyes@flameeyes.com>,
-        Olof Johansson <olof@lixom.net>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
- and ARM
-Message-ID: <20210122012254.GA3174@dhcp-128-65.nay.redhat.com>
-References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
- <CACPcB9e8p5Ayw15aOe5ZNPOa7MF3+pzPdcaZgTc_E_TZYkgD6Q@mail.gmail.com>
- <AC36B9BC-654C-4FC1-8EA3-94B986639F1E@oracle.com>
- <CACPcB9d7kU1TYaF-g2GH16Wg=hrQu71sGDoC8uMFFMc6oW_duQ@mail.gmail.com>
- <CAHD1Q_yB1B4gu7EDqbZJ5dxAAkr-dVKa9yRDK-tE3oLeTTmLJQ@mail.gmail.com>
- <20201123034705.GA5908@dhcp-128-65.nay.redhat.com>
- <d6b5b7f3-ba38-be61-d3fe-975c3343a79d@oracle.com>
+        Thu, 21 Jan 2021 20:25:57 -0500
+Received: by mail-pj1-f51.google.com with SMTP id p15so2777382pjv.3;
+        Thu, 21 Jan 2021 17:25:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J5NpNlGa3I0qkHyy2QB3q+Z/xyRt8oG1MuCOXMzxPu8=;
+        b=IQxzJ/mRccCSUINGPSbLKi4DnSIFmlsGU8EY8VrfKiDvkgMkJa+KgsPX1HAHt0gUyH
+         24lTX0T5Ot0y8c6AVJWiUdcWNXK/waALaMr2GvLpit2lYsesaDlWW5zZRlEWvM5qK48+
+         u7DnMeEdHj7GLYvzhg0kNeNizjVYgBygv+SujdwyAvvp7cKJYzbh5dFqOn0ckgLHCSZx
+         4+BcW25KX792A8JYmbwZvFrwOXVuDQVTvcQfbhvVKEbSRYD76US99pb2olmde5MzhNDq
+         74eQHvfVMHOA55L4VEH21cqZJH2trfpjv78+Yahs24BmkMq512uOaH8Poh7Yf3870QPy
+         FEpA==
+X-Gm-Message-State: AOAM533tjvw2FgojYZcOirhvD9wOKrW1sI/DZcLxtENUtvBPYlaXBuhA
+        tLL4IYqxuGAXWNVu5un5tCk=
+X-Google-Smtp-Source: ABdhPJz3UXnYmYKNarrOmQCLINP1h4cQaCgD44wAGsr0k2OSqvTwTnWp/b6YUHRSH27EhFpVzeH5ZQ==
+X-Received: by 2002:a17:90b:33c4:: with SMTP id lk4mr2543290pjb.157.1611278716928;
+        Thu, 21 Jan 2021 17:25:16 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id y22sm6321738pfb.132.2021.01.21.17.25.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 17:25:16 -0800 (PST)
+From:   Moritz Fischer <mdf@kernel.org>
+To:     lorenzo.pieralisi@arm.com
+Cc:     guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, moritzf@google.com, will@kernel.org,
+        Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH v2] ACPI/IORT: Do not blindly trust DMA masks from firmware
+Date:   Thu, 21 Jan 2021 17:24:19 -0800
+Message-Id: <20210122012419.95010-1-mdf@kernel.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6b5b7f3-ba38-be61-d3fe-975c3343a79d@oracle.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+Address issue observed on real world system with suboptimal IORT table
+where DMA masks of PCI devices would get set to 0 as result.
 
-On 01/21/21 at 09:32am, john.p.donnelly@oracle.com wrote:
-> On 11/22/20 9:47 PM, Dave Young wrote:
-> > Hi Guilherme,
-> > On 11/22/20 at 12:32pm, Guilherme Piccoli wrote:
-> > > Hi Dave and Kairui, thanks for your responses! OK, if that makes sense
-> > > to you I'm fine with it. I'd just recommend to test recent kernels in
-> > > multiple distros with the minimum "range" to see if 64M is enough for
-> > > crashkernel, maybe we'd need to bump that.
-> > 
-> > Giving the different kernel configs and the different userspace
-> > initramfs setup it is hard to get an uniform value for all distributions,
-> > but we can have an interface/kconfig-option for them to provide a value like this patch
-> > is doing. And it could be improved like Kairui said about some known
-> > kernel added extra values later, probably some more improvements if
-> > doable.
-> > 
-> > Thanks
-> > Dave
-> > 
-> 
-> Hi.
-> 
-> Are we going to move forward with implementing this for X86 and Arm ?
-> 
-> If other platform maintainers want to include this CONFIG option in their
-> configuration settings they have a starting point.
+iort_dma_setup() would query the root complex'/named component IORT
+entry for a DMA mask, and use that over the one the device has been
+configured with earlier.
 
-I would expect this become arch independent.
+Ideally we want to use the minimum mask of what the IORT contains for
+the root complex and what the device was configured with.
 
-Saeed, Kairui, would any of you like to update the patch?
+Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+---
 
-> 
-> Thank you,
-> 
-> John.
-> 
-> ( I am not currently on many of the included dist lists  in this email, so
-> hopefully key contributors are included in this exchange )
-> 
+Changes from v1:
+- Changed warning to FW_BUG
+- Warn for both Named Component or Root Complex
+- Replaced min_not_zero() with min()
 
-Thanks
-Dave
+---
+ drivers/acpi/arm64/iort.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index d4eac6d7e9fb..2494138a6905 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -1107,6 +1107,11 @@ static int nc_dma_get_range(struct device *dev, u64 *size)
+ 
+ 	ncomp = (struct acpi_iort_named_component *)node->node_data;
+ 
++	if (!ncomp->memory_address_limit) {
++		pr_warn(FW_BUG "Named component missing memory address limit\n");
++		return -EINVAL;
++	}
++
+ 	*size = ncomp->memory_address_limit >= 64 ? U64_MAX :
+ 			1ULL<<ncomp->memory_address_limit;
+ 
+@@ -1126,6 +1131,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+ 
+ 	rc = (struct acpi_iort_root_complex *)node->node_data;
+ 
++	if (!rc->memory_address_limit) {
++		pr_warn(FW_BUG "Root complex missing memory address limit\n");
++		return -EINVAL;
++	}
++
+ 	*size = rc->memory_address_limit >= 64 ? U64_MAX :
+ 			1ULL<<rc->memory_address_limit;
+ 
+@@ -1173,8 +1183,8 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
+ 		end = dmaaddr + size - 1;
+ 		mask = DMA_BIT_MASK(ilog2(end) + 1);
+ 		dev->bus_dma_limit = end;
+-		dev->coherent_dma_mask = mask;
+-		*dev->dma_mask = mask;
++		dev->coherent_dma_mask = min(dev->coherent_dma_mask, mask);
++		*dev->dma_mask = min(*dev->dma_mask, mask);
+ 	}
+ 
+ 	*dma_addr = dmaaddr;
+-- 
+2.30.0
 
