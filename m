@@ -2,150 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FB72FFEB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96552FFEBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbhAVIwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:52:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727085AbhAVIuh (ORCPT
+        id S1727192AbhAVIxI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Jan 2021 03:53:08 -0500
+Received: from mail-yb1-f179.google.com ([209.85.219.179]:34755 "EHLO
+        mail-yb1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbhAVIwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:50:37 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5AC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:49:55 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id a20so293810pjs.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:49:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vuYYxfHO/zPcYQBLEclWRDog1Ypxlh8KeuaA6+NsDvY=;
-        b=Q98YbcV2IQJMhFLKAD7cFqWyiSmPq/Mcn7y55WxRgs/oAzFCKHNMx94vWoVKBagy3+
-         r09BMmdHegxPafn40rvPE2dV1xIxT8cekmOrTgf+eokSLTawIbUSIcVkFPd3v6R8YYOy
-         ARvoXJ1NhFJfdSJ+oqenhAx5ALNP4GLlYKqpn0hLNcEOaHLJIh0HLl1W5xrtivm/cvSP
-         6wkMltPYWzbhe1CkSgA2n0QhtsXwfVsGoJ5fLMoMRaM99GMD+3+pOcxzNjxhRUw/Q2bM
-         wgIEmVGti/lekUNSqMqZm75+NlgMXiRokM+TB/KWDayu+H/b4Q3BNkHdP/LezspKGFIc
-         ouEw==
+        Fri, 22 Jan 2021 03:52:20 -0500
+Received: by mail-yb1-f179.google.com with SMTP id x6so4803968ybr.1;
+        Fri, 22 Jan 2021 00:52:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vuYYxfHO/zPcYQBLEclWRDog1Ypxlh8KeuaA6+NsDvY=;
-        b=dknup9+LD51mgBuRa71o2LkIrGSVIMlKKWaayyqO3QMm3SKFSbkiqQ1OsMwbm84VlF
-         QJ9nMRjw5LzCNtZIGxAH1bhJE/ecxUhjsouz6MYu7lp6Ano9+a3xY3Q5QbQcYhlXg3xa
-         rie6NHpArAl+zAHh00ITW6K2vRkEH6978ePcCQb4EogUhNwIOa/Xo4si+LngzBX7jWUc
-         adXY0V0fmQNw10E03gLVee1dQQzmOrfX4xCNFvos14secsPFTHu2IdQmGxBAPO30vA2M
-         sGgI8ECd9irzAYV+48DSsLJcIasfv4u0AiNdU+a3j06MoJY1Fgvr0BjADnwIOlNFpUFj
-         9IOw==
-X-Gm-Message-State: AOAM533TAWEbNiv212Tys/dkxJ6ooo4/g8BYF6krKCNJIATQM795DJWm
-        2zFEWtBHANBVnXiZgJu2uFk0+GugJtePQ+GpSmkFDiTPxUZUIQ==
-X-Google-Smtp-Source: ABdhPJyEc7vl11PHRndOMMg79n0of7jPoYY0VtG5oyFc1yfcmAUBNtkHhChKzgnRywWFrwfNh7o6LC+/uyKl8kuqDVk=
-X-Received: by 2002:a17:90a:da02:: with SMTP id e2mr4092438pjv.173.1611305394649;
- Fri, 22 Jan 2021 00:49:54 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CcshxsSxb3HxoDICysCU4sJjdMWHDPfpU/9Zl/cZow4=;
+        b=RrVWOnbrFeiKMbEg1LJl9lfRFAjR4wcCAMmVCzHvN/w6PHe0X2SehAx7j7lIjeoOai
+         7BT8eNF1RHUk5x4+s8wxXWcJjjraajBNOotM8ubbgUsKnXOa3Vkcz+FR7MvcU7v+8pU0
+         fjMXoCp9E/wa5OauQgm4vPk5e+yKDfNYBKyVEicS3eQWfNhWYXzSejF3sAiTIHuKappU
+         S9QgYgaj6k7AI8PBOG+ZUvu80zh7EJR4kkaN1kRdB7kqyKFdP+dCd6ptOjTYPNGyMm6o
+         rsfEFOr6LtojtrgVHgszM5PfhuNA3kkRR5EkhbAexfdsLPJ/gsZ52jrJUtd1IJAS72oG
+         wytg==
+X-Gm-Message-State: AOAM533b0xD5Isvfjzem0sgEiOVI1PMTcCqikKJbM6dcp/XWPM0T+uK9
+        TG816UtDP3SpYyKRavp3PLNvXwQAs617Yw1tXoc=
+X-Google-Smtp-Source: ABdhPJzSnfaDU7TrVAvA0CeBo4eAD7jqIgMgAz430yjuvhBQC7rkrf+Rdyuw2vSedemLG8e49Uo9uB/BLy5deDTWIvg=
+X-Received: by 2002:a25:5583:: with SMTP id j125mr4543262ybb.307.1611305497077;
+ Fri, 22 Jan 2021 00:51:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107185555.2781221-1-maskray@google.com> <20210114224819.1608929-1-maskray@google.com>
-In-Reply-To: <20210114224819.1608929-1-maskray@google.com>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Fri, 22 Jan 2021 00:49:43 -0800
-Message-ID: <CAFP8O3JBkxYfQ+shsmu=8e1QE4Wza6vt69PaZGNegLKQS9b1DA@mail.gmail.com>
-Subject: Re: [PATCH v3] x86: Treat R_386_PLT32 as R_386_PC32
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
+References: <20210122062255.202620-1-suyanjun218@gmail.com>
+In-Reply-To: <20210122062255.202620-1-suyanjun218@gmail.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Fri, 22 Jan 2021 17:51:26 +0900
+Message-ID: <CAMZ6RqL87RpZrH39H9c6wi5wg4=1r104oKf542oAZ2vHRke2WQ@mail.gmail.com>
+Subject: Re: [PATCH v1] can: mcp251xfd: Add some sysfs debug interfaces for
+ registers r/w
+To:     Su Yanjun <suyanjun218@gmail.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 2:48 PM Fangrui Song <maskray@google.com> wrote:
->
-> This is similar to commit b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as
-> R_X86_64_PC32"), but for i386.  As far as Linux kernel is concerned,
-> R_386_PLT32 can be treated the same as R_386_PC32.
->
-> R_386_PC32/R_X86_64_PC32 are PC-relative relocation types with the
-> requirement that the symbol address is significant.
-> R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types without the
-> address significance requirement.
->
-> On x86-64, there is no PIC vs non-PIC PLT distinction and an
-> R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
-> `call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
->
-> On i386, there are 2 types of PLTs, PIC and non-PIC. Currently the
-> convention is to use R_386_PC32 for non-PIC PLT and R_386_PLT32 for PIC
-> PLT.
->
-> clang-12 -fno-pic (since
-> https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
-> can emit R_386_PLT32 for compiler generated function declarations as
-> well to avoid a canonical PLT entry (st_shndx=0, st_value!=0) if the
-> symbol turns out to be defined externally. GCC/GNU as will likely keep
-> using R_386_PC32 because (1) the ABI is legacy (2) the change will drop
-> a GNU ld non-default visibility ifunc for shared objects.
-> https://sourceware.org/bugzilla/show_bug.cgi?id=27169
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1210
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
->
-> ---
-> Change in v2:
-> * Improve commit message
-> ---
-> Change in v3:
-> * Change the GCC link to the more relevant GNU as link.
-> * Fix the relevant llvm-project commit id.
-> ---
->  arch/x86/kernel/module.c | 1 +
->  arch/x86/tools/relocs.c  | 2 ++
->  2 files changed, 3 insertions(+)
->
-> diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-> index 34b153cbd4ac..5e9a34b5bd74 100644
-> --- a/arch/x86/kernel/module.c
-> +++ b/arch/x86/kernel/module.c
-> @@ -114,6 +114,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
->                         *location += sym->st_value;
->                         break;
->                 case R_386_PC32:
-> +               case R_386_PLT32:
->                         /* Add the value, subtract its position */
->                         *location += sym->st_value - (uint32_t)location;
->                         break;
-> diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-> index ce7188cbdae5..717e48ca28b6 100644
-> --- a/arch/x86/tools/relocs.c
-> +++ b/arch/x86/tools/relocs.c
-> @@ -867,6 +867,7 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
->         case R_386_PC32:
->         case R_386_PC16:
->         case R_386_PC8:
-> +       case R_386_PLT32:
->                 /*
->                  * NONE can be ignored and PC relative relocations don't
->                  * need to be adjusted.
-> @@ -910,6 +911,7 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
->         case R_386_PC32:
->         case R_386_PC16:
->         case R_386_PC8:
-> +       case R_386_PLT32:
->                 /*
->                  * NONE can be ignored and PC relative relocations don't
->                  * need to be adjusted.
-> --
-> 2.30.0.296.g2bfb1c46d8-goog
->
+Hi,
 
-Ping:)
+In addition to Marc’s comment, I also have security concerns.
+
+On Fri. 22 Jan 2021 at 15:22, Su Yanjun <suyanjun218@gmail.com> wrote:
+> When i debug mcp2518fd, some method to track registers is
+> needed. This easy debug interface will be ok.
+>
+> For example,
+> read a register at 0xe00:
+> echo 0xe00 > can_get_reg
+> cat can_get_reg
+>
+> write a register at 0xe00:
+> echo 0xe00,0x60 > can_set_reg
+
+What about:
+printf "A%0.s" {1..1000} > can_set_reg
+
+Doesn’t it crash the kernel?
+
+I see no checks of the buf len in your code and I suspect it to be
+vulnerable to stack buffer overflow exploits.
+
+> Signed-off-by: Su Yanjun <suyanjun218@gmail.com>
+> ---
+>  .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 132 ++++++++++++++++++
+>  1 file changed, 132 insertions(+)
+>
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> index ab8aad0a7594..d65abe5505d5 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> @@ -27,6 +27,131 @@
+>
+>  #define DEVICE_NAME "mcp251xfd"
+>
+> +/* Add sysfs debug interface for easy to debug
+> + *
+> + * For example,
+> + *
+> + * - read a register
+> + * echo 0xe00 > can_get_reg
+> + * cat can_get_reg
+> + *
+> + * - write a register
+> + * echo 0xe00,0x1 > can_set_reg
+> + *
+> + */
+> +static int reg_offset;
+> +
+> +static int __get_param(const char *buf, char *off, char *val)
+> +{
+> +       int len;
+> +
+> +       if (!buf || !off || !val)
+> +               return -EINVAL;
+> +
+> +       len = 0;
+> +       while (*buf != ',') {
+> +               *off++ = *buf++;
+> +               len++;
+> +
+> +               if (len >= 16)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       buf++;
+> +
+> +       *off = '\0';
+> +
+> +       len = 0;
+> +       while (*buf) {
+> +               *val++ = *buf++;
+> +               len++;
+> +
+> +               if (len >= 16)
+> +                       return -EINVAL;
+> +       }
+> +
+> +       *val = '\0';
+> +
+> +       return 0;
+> +}
+> +
+> +static ssize_t can_get_reg_show(struct device *dev,
+> +                               struct device_attribute *attr, char *buf)
+> +{
+> +       int err;
+> +       u32 val;
+> +       struct mcp251xfd_priv *priv;
+> +
+> +       priv = dev_get_drvdata(dev);
+> +
+> +       err = regmap_read(priv->map_reg, reg_offset, &val);
+> +       if (err)
+> +               return 0;
+> +
+> +       return sprintf(buf, "reg = 0x%08x, val = 0x%08x\n", reg_offset, val);
+> +}
+> +
+> +static ssize_t can_get_reg_store(struct device *dev,
+> +                                struct device_attribute *attr, const char *buf, size_t len)
+> +{
+> +       u32 off;
+> +
+> +       reg_offset = 0;
+> +
+> +       if (kstrtouint(buf, 0, &off) || (off % 4))
+> +               return -EINVAL;
+> +
+> +       reg_offset = off;
+> +
+> +       return len;
+> +}
+> +
+> +static ssize_t can_set_reg_show(struct device *dev,
+> +                               struct device_attribute *attr, char *buf)
+> +{
+> +       return 0;
+> +}
+> +
+> +static ssize_t can_set_reg_store(struct device *dev,
+> +                                struct device_attribute *attr, const char *buf, size_t len)
+> +{
+> +       struct mcp251xfd_priv *priv;
+> +       u32 off, val;
+> +       int err;
+> +
+> +       char s1[16];
+> +       char s2[16];
+> +
+> +       if (__get_param(buf, s1, s2))
+> +               return -EINVAL;
+> +
+> +       if (kstrtouint(s1, 0, &off) || (off % 4))
+> +               return -EINVAL;
+> +
+> +       if (kstrtouint(s2, 0, &val))
+> +               return -EINVAL;
+> +
+> +       err = regmap_write(priv->map_reg, off, val);
+> +       if (err)
+> +               return -EINVAL;
+> +
+> +       return len;
+> +}
+> +
+> +static DEVICE_ATTR_RW(can_get_reg);
+> +static DEVICE_ATTR_RW(can_set_reg);
+> +
+> +static struct attribute *can_attributes[] = {
+> +       &dev_attr_can_get_reg.attr,
+> +       &dev_attr_can_set_reg.attr,
+> +       NULL
+> +};
+> +
+> +static const struct attribute_group can_group = {
+> +       .attrs = can_attributes,
+> +       NULL
+> +};
+> +
+>  static const struct mcp251xfd_devtype_data mcp251xfd_devtype_data_mcp2517fd = {
+>         .quirks = MCP251XFD_QUIRK_MAB_NO_WARN | MCP251XFD_QUIRK_CRC_REG |
+>                 MCP251XFD_QUIRK_CRC_RX | MCP251XFD_QUIRK_CRC_TX |
+> @@ -2944,6 +3069,12 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>         if (err)
+>                 goto out_free_candev;
+>
+> +       err = sysfs_create_group(&spi->dev.kobj, &can_group);
+> +       if (err) {
+> +               netdev_err(priv->ndev, "Create can group fail.\n");
+> +               goto out_free_candev;
+> +       }
+> +
+>         err = can_rx_offload_add_manual(ndev, &priv->offload,
+>                                         MCP251XFD_NAPI_WEIGHT);
+>         if (err)
+> @@ -2972,6 +3103,7 @@ static int mcp251xfd_remove(struct spi_device *spi)
+>         mcp251xfd_unregister(priv);
+>         spi->max_speed_hz = priv->spi_max_speed_hz_orig;
+>         free_candev(ndev);
+> +       sysfs_remove_group(&spi->dev.kobj, &can_group);
+>
+>         return 0;
+>  }
+> --
+> 2.25.1
+>
