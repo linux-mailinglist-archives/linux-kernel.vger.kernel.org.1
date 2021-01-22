@@ -2,292 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C58A300E6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF25C300E71
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730582AbhAVU75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        id S1728278AbhAVVCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:02:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730944AbhAVU6T (ORCPT
+        with ESMTP id S1730944AbhAVVAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:58:19 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993F5C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:57:39 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id y205so4630763pfc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:57:39 -0800 (PST)
+        Fri, 22 Jan 2021 16:00:21 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D1DC061794
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:59:37 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d4so3994539plh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:59:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KD8nfRkuspUBdwY3QBA8hFyJ8cWZLQijtR6nIjNPXq8=;
-        b=rjGx/iG3qopn8O1l6Z60zF5KKuQOWQclkt6Z3N8lk0f742lIiOKyqWL8FAh2GubPVB
-         CktyH+EUdMDwIoyzJEEItQWJOVp0zPojLunv4kkeiWR8X/nkAvrtQE6uEWfe3hRcwMIF
-         QiAalDcTGP/EVhKEbeLEWpa1sp6F/s/efsnED24EOQToARj8rdeY/12wNor7UxAlMsPl
-         Vjm2GwEX5Dxf39owmHqPbm+sZ5aKutuB1mh+0UKWtMxzZdGaj821xOTc/cLv1w3X+/zz
-         ctAUISe9wZ8Hpm/K1H5+O8IBlNgrzKJ7uL329CVfW+nd/vseRrR8Ho6T2dtojO/T9mq/
-         HZsg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GKfqii88iNef52n742ZKra416PIyMiTswG47K85Q3VU=;
+        b=oM7F0UyOUyKz8nJEQ2N0/yipAXJCtKtRqbYUeC3CvSUwm/vA0ZJSuEbAhcSGKijzG2
+         xXoyD+GSVXCgnnWrIYnO4CeR9Vkc0HuPEaH/RtAqqJ/4eqkIZoTGOTTLtBwtGFCxTiD+
+         kGrocx8pxXJfBDOgzmBBqzOcIAF43yAjYBG3fnca8FxSExyxXOOqvqtQ0leV4vb7OX7n
+         xvUOu7RN5oS19GZ2TjdnE0qR+6LGHX4eSDPAahOMxGWE94K7aRtfKt3RPp0JSGpB9xDV
+         Npa4wCY6LrCl85SGkMphi0rYcbL6mGCDgKs9KTO2+7jfcZyq0kGAMDedxmRpOlEtIj6J
+         tQjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KD8nfRkuspUBdwY3QBA8hFyJ8cWZLQijtR6nIjNPXq8=;
-        b=DCMheaivDWSfpjMo3R4gaCju9py5mMvNj7gxyYLaTeEFajyjHWRASHRMHiDCSERA4t
-         q7wfBrMyPA8ztKlBxbl4ssvYwPg2u4Gb7YNeQ/+vGyN+12MqcNQcO5g/jXYFuLic9/X3
-         j+7ajBC56S7+G/A/ySbPdEPZO7x+WQfC0+7TJ9wYbYu5Z+TByrJYu8YWCv8GTGydJs6T
-         KknT7TUbP2kDvgITGZD8m+wRaqrhJSm9KGsRPnngiTqAjxiz96v0CVpTcgI2eVPv6cmE
-         IYv/En+2cisOmSU02OXEtM9TPO2Qfa3GnFmRuoFl/OWqqYaIZVYzkVsjAPWe/yiQccLa
-         8ktw==
-X-Gm-Message-State: AOAM53109JZjF+5Kd62kRBsa6yrm1aIPbvXta0UkVJn9fjiy4uKZ73Em
-        buA78Ysnk9AtNIfzoIQq/XPl2T94arPrHMpUCjk=
-X-Google-Smtp-Source: ABdhPJzGozJOgjcNQkilLkF/yxBHze5QdO9nCrumT70boGsJBIhwNwj9/PGSfzo+6nMR/bV5zIbqcITgZY1TyyI+B3k=
-X-Received: by 2002:a65:644b:: with SMTP id s11mr6543393pgv.4.1611349058919;
- Fri, 22 Jan 2021 12:57:38 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GKfqii88iNef52n742ZKra416PIyMiTswG47K85Q3VU=;
+        b=oIxZs5cnlRVr7GN9yDJLkNHUlI41KQraV9o/G/O2Wmqt1k0+MwhpZOOSCkaHlmwdpc
+         EJspxNKsbd0XA6VwF+8bJX+5dPWn8S6iXO0mrQs8fZhLqTbcdcHq7TNUGNOeVN8CiCTJ
+         bCMcGloxoF12NEnx6dh27elG/H/Kl+fyLT/CjNvW427CHolxKe6wh5Zewo3VWiRY/1rZ
+         zhlGoudznaeE+6SIUxy+iClY3NDMpBdqc5ccD10mJqiZyDiBRBUrJ+yEXTxaf/l95P4C
+         sSmftEVyFQnNAwx11GlLEEymouapo1jIQAj3BwLhh0Gd1dnTv+KUTRr16ffIj1TqrZHg
+         jIzw==
+X-Gm-Message-State: AOAM532cKS9WQZofvYwlxj+b76Bed6Wo2YSAHEyppKIzrRXC57OQXrUv
+        xWCvdBtTajJlQNNBKREbFiQ6qA==
+X-Google-Smtp-Source: ABdhPJxYivj/zwfaWSwPU38DR0A1asnkhVfGAOa4kXA9Hr9leq8HZ8H6a8PlUIxSuQeR+9dLJoFrAw==
+X-Received: by 2002:a17:90a:6407:: with SMTP id g7mr7641443pjj.56.1611349177044;
+        Fri, 22 Jan 2021 12:59:37 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id a9sm9877030pfn.178.2021.01.22.12.59.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 12:59:36 -0800 (PST)
+Date:   Fri, 22 Jan 2021 13:59:34 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 04/16] rpmsg: ctrl: implement the ioctl function to
+ create device
+Message-ID: <20210122205934.GA866146@xps15>
+References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+ <20201222105726.16906-5-arnaud.pouliquen@foss.st.com>
+ <20210121235258.GG611676@xps15>
+ <1b76bf93-9647-c658-b4dd-1b10264a1189@foss.st.com>
 MIME-Version: 1.0
-References: <20210122164107.361939-1-hdegoede@redhat.com> <20210122164107.361939-13-hdegoede@redhat.com>
-In-Reply-To: <20210122164107.361939-13-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 22 Jan 2021 22:58:28 +0200
-Message-ID: <CAHp75VdUU=qf=Uh4htyYqcHeQTLwadznXO=dJcVQxpKrQv6a5g@mail.gmail.com>
-Subject: Re: [PATCH v3 12/13] ASoC: arizona: Make the wm5102, wm5110, wm8997
- and wm8998 drivers use the new jack library
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b76bf93-9647-c658-b4dd-1b10264a1189@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 6:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Make all arizona codec drivers for which drivers/mfd/arizona-core.c used
-> to instantiate a "arizona-extcon" child-device use the new arizona-jack.c
-> library for jack-detection.
->
-> This has been tested on a Lenovo Yoga Tablet 2 1051L with a WM5102 codec.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  sound/soc/codecs/wm5102.c | 12 +++++++++++-
->  sound/soc/codecs/wm5110.c | 12 +++++++++++-
->  sound/soc/codecs/wm8997.c | 14 ++++++++++++--
->  sound/soc/codecs/wm8998.c |  9 +++++++++
->  4 files changed, 43 insertions(+), 4 deletions(-)
->
-> diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-> index 70d353b63fe0..b77595fb3ea8 100644
-> --- a/sound/soc/codecs/wm5102.c
-> +++ b/sound/soc/codecs/wm5102.c
-> @@ -2004,6 +2004,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm5102 = {
->         .remove                 = wm5102_component_remove,
->         .set_sysclk             = arizona_set_sysclk,
->         .set_pll                = wm5102_set_fll,
-> +       .set_jack               = arizona_jack_set_jack,
->         .name                   = DRV_NAME,
->         .compress_ops           = &wm5102_compress_ops,
->         .controls               = wm5102_snd_controls,
-> @@ -2057,6 +2058,11 @@ static int wm5102_probe(struct platform_device *pdev)
->         if (ret != 0)
->                 return ret;
->
-> +       /* This may return -EPROBE_DEFER, so do this early on */
-> +       ret = arizona_jack_codec_dev_probe(&wm5102->core, &pdev->dev);
-> +       if (ret)
-> +               return ret;
-> +
->         for (i = 0; i < ARRAY_SIZE(wm5102->fll); i++)
->                 wm5102->fll[i].vco_mult = 1;
->
-> @@ -2089,7 +2095,7 @@ static int wm5102_probe(struct platform_device *pdev)
->                                   wm5102);
->         if (ret != 0) {
->                 dev_err(&pdev->dev, "Failed to request DSP IRQ: %d\n", ret);
-> -               return ret;
-> +               goto err_jack_codec_dev;
->         }
->
->         ret = arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 1);
-> @@ -2123,6 +2129,8 @@ static int wm5102_probe(struct platform_device *pdev)
->  err_dsp_irq:
->         arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
->         arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5102);
-> +err_jack_codec_dev:
-> +       arizona_jack_codec_dev_remove(&wm5102->core);
->
->         return ret;
->  }
-> @@ -2141,6 +2149,8 @@ static int wm5102_remove(struct platform_device *pdev)
->         arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
->         arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5102);
->
-> +       arizona_jack_codec_dev_remove(&wm5102->core);
-> +
->         return 0;
->  }
->
-> diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-> index 4238929b2375..ef22051a3599 100644
-> --- a/sound/soc/codecs/wm5110.c
-> +++ b/sound/soc/codecs/wm5110.c
-> @@ -2370,6 +2370,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm5110 = {
->         .remove                 = wm5110_component_remove,
->         .set_sysclk             = arizona_set_sysclk,
->         .set_pll                = wm5110_set_fll,
-> +       .set_jack               = arizona_jack_set_jack,
->         .name                   = DRV_NAME,
->         .compress_ops           = &wm5110_compress_ops,
->         .controls               = wm5110_snd_controls,
-> @@ -2424,6 +2425,11 @@ static int wm5110_probe(struct platform_device *pdev)
->                         return ret;
->         }
->
-> +       /* This may return -EPROBE_DEFER, so do this early on */
-> +       ret = arizona_jack_codec_dev_probe(&wm5110->core, &pdev->dev);
-> +       if (ret)
-> +               return ret;
-> +
->         for (i = 0; i < ARRAY_SIZE(wm5110->fll); i++)
->                 wm5110->fll[i].vco_mult = 3;
->
-> @@ -2456,7 +2462,7 @@ static int wm5110_probe(struct platform_device *pdev)
->                                   wm5110);
->         if (ret != 0) {
->                 dev_err(&pdev->dev, "Failed to request DSP IRQ: %d\n", ret);
-> -               return ret;
-> +               goto err_jack_codec_dev;
->         }
->
->         ret = arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 1);
-> @@ -2490,6 +2496,8 @@ static int wm5110_probe(struct platform_device *pdev)
->  err_dsp_irq:
->         arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
->         arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5110);
-> +err_jack_codec_dev:
-> +       arizona_jack_codec_dev_remove(&wm5110->core);
->
->         return ret;
->  }
-> @@ -2510,6 +2518,8 @@ static int wm5110_remove(struct platform_device *pdev)
->         arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
->         arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5110);
->
-> +       arizona_jack_codec_dev_remove(&wm5110->core);
-> +
->         return 0;
->  }
->
-> diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-> index 229f2986cd96..4f5a848960e0 100644
-> --- a/sound/soc/codecs/wm8997.c
-> +++ b/sound/soc/codecs/wm8997.c
-> @@ -1096,6 +1096,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8997 = {
->         .remove                 = wm8997_component_remove,
->         .set_sysclk             = arizona_set_sysclk,
->         .set_pll                = wm8997_set_fll,
-> +       .set_jack               = arizona_jack_set_jack,
->         .controls               = wm8997_snd_controls,
->         .num_controls           = ARRAY_SIZE(wm8997_snd_controls),
->         .dapm_widgets           = wm8997_dapm_widgets,
-> @@ -1132,6 +1133,11 @@ static int wm8997_probe(struct platform_device *pdev)
->
->         arizona_init_dvfs(&wm8997->core);
->
-> +       /* This may return -EPROBE_DEFER, so do this early on */
-> +       ret = arizona_jack_codec_dev_probe(&wm8997->core, &pdev->dev);
-> +       if (ret)
-> +               return ret;
-> +
->         for (i = 0; i < ARRAY_SIZE(wm8997->fll); i++)
->                 wm8997->fll[i].vco_mult = 1;
->
-> @@ -1163,10 +1169,10 @@ static int wm8997_probe(struct platform_device *pdev)
->
->         ret = arizona_init_vol_limit(arizona);
->         if (ret < 0)
-> -               return ret;
-> +               goto err_jack_codec_dev;
->         ret = arizona_init_spk_irqs(arizona);
->         if (ret < 0)
-> -               return ret;
-> +               goto err_jack_codec_dev;
->
->         ret = devm_snd_soc_register_component(&pdev->dev,
->                                               &soc_component_dev_wm8997,
-> @@ -1181,6 +1187,8 @@ static int wm8997_probe(struct platform_device *pdev)
->
->  err_spk_irqs:
->         arizona_free_spk_irqs(arizona);
-> +err_jack_codec_dev:
-> +       arizona_jack_codec_dev_remove(&wm8997->core);
->
->         return ret;
->  }
-> @@ -1194,6 +1202,8 @@ static int wm8997_remove(struct platform_device *pdev)
->
->         arizona_free_spk_irqs(arizona);
->
-> +       arizona_jack_codec_dev_remove(&wm8997->core);
-> +
->         return 0;
->  }
->
-> diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-> index 5413254295b7..f74af1c46933 100644
-> --- a/sound/soc/codecs/wm8998.c
-> +++ b/sound/soc/codecs/wm8998.c
-> @@ -1316,6 +1316,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8998 = {
->         .remove                 = wm8998_component_remove,
->         .set_sysclk             = arizona_set_sysclk,
->         .set_pll                = wm8998_set_fll,
-> +       .set_jack               = arizona_jack_set_jack,
->         .controls               = wm8998_snd_controls,
->         .num_controls           = ARRAY_SIZE(wm8998_snd_controls),
->         .dapm_widgets           = wm8998_dapm_widgets,
-> @@ -1350,6 +1351,11 @@ static int wm8998_probe(struct platform_device *pdev)
->         wm8998->core.arizona = arizona;
->         wm8998->core.num_inputs = 3;    /* IN1L, IN1R, IN2 */
->
-> +       /* This may return -EPROBE_DEFER, so do this early on */
-> +       ret = arizona_jack_codec_dev_probe(&wm8998->core, &pdev->dev);
-> +       if (ret)
-> +               return ret;
-> +
->         for (i = 0; i < ARRAY_SIZE(wm8998->fll); i++)
->                 wm8998->fll[i].vco_mult = 1;
->
-> @@ -1392,6 +1398,7 @@ static int wm8998_probe(struct platform_device *pdev)
->         arizona_free_spk_irqs(arizona);
->  err_pm_disable:
->         pm_runtime_disable(&pdev->dev);
-> +       arizona_jack_codec_dev_remove(&wm8998->core);
->
->         return ret;
->  }
-> @@ -1405,6 +1412,8 @@ static int wm8998_remove(struct platform_device *pdev)
->
->         arizona_free_spk_irqs(arizona);
->
-> +       arizona_jack_codec_dev_remove(&wm8998->core);
-> +
->         return 0;
->  }
->
-> --
-> 2.28.0
+On Fri, Jan 22, 2021 at 02:05:27PM +0100, Arnaud POULIQUEN wrote:
+> Hi Mathieu,
+> 
+> On 1/22/21 12:52 AM, Mathieu Poirier wrote:
+> > On Tue, Dec 22, 2020 at 11:57:14AM +0100, Arnaud Pouliquen wrote:
+> >> Implement the ioctl function that parses the list of
+> >> rpmsg drivers registered to create an associated device.
+> >> To be ISO user API, in a first step, the driver_override
+> >> is only allowed for the RPMsg raw service, supported by the
+> >> rpmsg_char driver.
+> >>
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >> ---
+> >>  drivers/rpmsg/rpmsg_ctrl.c | 43 ++++++++++++++++++++++++++++++++++++--
+> >>  1 file changed, 41 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> >> index 065e2e304019..8381b5b2b794 100644
+> >> --- a/drivers/rpmsg/rpmsg_ctrl.c
+> >> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+> >> @@ -56,12 +56,51 @@ static int rpmsg_ctrl_dev_open(struct inode *inode, struct file *filp)
+> >>  	return 0;
+> >>  }
+> >>  
+> >> +static const char *rpmsg_ctrl_get_drv_name(u32 service)
+> >> +{
+> >> +	struct rpmsg_ctl_info *drv_info;
+> >> +
+> >> +	list_for_each_entry(drv_info, &rpmsg_drv_list, node) {
+> >> +		if (drv_info->ctrl->service == service)
+> >> +			return drv_info->ctrl->drv_name;
+> >> +	}
+> >> +
+> > 
+> > I'm unsure about the above... To me this looks like what the .match() function
+> > of a bus would do.  And when I read Bjorn's comment he brought up the
+> > auxiliary_bus.  I don't know about the auxiliary_bus but it is worth looking
+> > into.  Registering with a bus would streamline a lot of the code in this
+> > patchset.
+> 
+> As answered Bjorn, we already have the RPMsg bus to manage the rpmsg devices.
+> Look like duplication from my POV, except if the IOCTL does not manage channel
+> but only endpoint.
+> 
+> In my design I considered that the rpmsg_ctrl creates a channel associated to a
+> rpmsg_device such as the RPMsg ns_announcement.
+> 
+> Based on this assumption, if we implement the auxiliary_bus (or other) for the
+> rpmsg_ctrl a RPMsg driver will have to manage the probe by rpmsg_bus and by the
+> auxillary bus. The probe from the auxiliary bus would lead to the creation of an
+> RPMsg device on the rpmsg_bus, so a duplication with cross dependencies and
+> would probably make tricky the remove part.
+> 
+> That said, I think the design depends on the functionality that should be
+> implemented in the rpmsg_ctrl. Here is an alternative approach based on the
+> auxiliary bus, which I'm starting to think about:
+> 
+> The current approach of the rpmsg_char driver is to use the IOCTRL interface to
+> instantiate a cdev with an endpoint (the RPMsg device is associated with the
+> ioctl dev). This would correspond to the use of an auxiliary bus to manage local
+> endpoint creations.
+> 
+> We could therefore consider an RPMsg name service based on an RPmsg device. This
+> RPMsg device would register a kind of "RPMsg service endpoint" driver on the
+> auxiliary rpmsg_ioctl bus.
+> The rpmsg_ctrl will be used to instantiate the endpoints for this RPMsg device.
+> on user application request the rpmsg_ctrl will call the appropriate auxiliary
+> device to create an endpoint.
+> 
+> If we consider that one objective of this series is to allow application to
+> initiate the communication with the remote processor, so to be able to initiate
+> the service (ns announcement sent to the remote processor).
+> This implies that:
+> -either the RPMsg device has been probed first by a remote ns announcement or by
+> a Linux kernel driver using the "driver_override", to register an auxiliary
+> device. In this case an endpoint will be created associated to the RPMsg service
+> - or create a RPMsg device on first ioctl endpoint creation request, if it does
+> not exist (that could trig a NS announcement to remote processor).
+> 
+> But I'm not sure that this approach would work with QCOM RPMsg backends...
 >
 
+I don't think there is a way forward with this set without a clear understanding
+of the Glink and SMD drivers.  I have already spent a fair amount of time in the
+Glink driver and will continue on Monday with SMD.  
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > 
+> > I'm out of time for today - I will continue tomorrow.
+> 
+> It seems to me that the main point to step forward is to clarify the global
+> design and features of the rpmsg-ctrl.
+> Depending on the decision taken, this series could be trashed and rewritten from
+> a blank page...To not lost to much time on the series don't hesitate to limit
+> the review to the minimum.
+> 
+
+I doubt you will ever get clear guidelines on the whole solution.  I will get
+back to you once I am done with the SMD driver, which should be in the
+latter part of next week.
+
+> Thanks,
+> Arnaud
+> 
+> > 
+> > Thanks,
+> > Mathieu
+> > 
+> >> +	return NULL;
+> >> +}
+> >> +
+> >>  static long rpmsg_ctrl_dev_ioctl(struct file *fp, unsigned int cmd,
+> >>  				 unsigned long arg)
+> >>  {
+> >>  	struct rpmsg_ctrl_dev *ctrldev = fp->private_data;
+> >> -
+> >> -	dev_info(&ctrldev->dev, "Control not yet implemented\n");
+> >> +	void __user *argp = (void __user *)arg;
+> >> +	struct rpmsg_channel_info chinfo;
+> >> +	struct rpmsg_endpoint_info eptinfo;
+> >> +	struct rpmsg_device *newch;
+> >> +
+> >> +	if (cmd != RPMSG_CREATE_EPT_IOCTL)
+> >> +		return -EINVAL;
+> >> +
+> >> +	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
+> >> +		return -EFAULT;
+> >> +
+> >> +	/*
+> >> +	 * In a frst step only the rpmsg_raw service is supported.
+> >> +	 * The override is foorced to RPMSG_RAW_SERVICE
+> >> +	 */
+> >> +	chinfo.driver_override = rpmsg_ctrl_get_drv_name(RPMSG_RAW_SERVICE);
+> >> +	if (!chinfo.driver_override)
+> >> +		return -ENODEV;
+> >> +
+> >> +	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
+> >> +	chinfo.name[RPMSG_NAME_SIZE - 1] = '\0';
+> >> +	chinfo.src = eptinfo.src;
+> >> +	chinfo.dst = eptinfo.dst;
+> >> +
+> >> +	newch = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
+> >> +	if (!newch) {
+> >> +		dev_err(&ctrldev->dev, "rpmsg_create_channel failed\n");
+> >> +		return -ENXIO;
+> >> +	}
+> >>  
+> >>  	return 0;
+> >>  };
+> >> -- 
+> >> 2.17.1
+> >>
