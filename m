@@ -2,224 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF25C300E71
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D40D300E72
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbhAVVCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:02:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730944AbhAVVAV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:00:21 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D1DC061794
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:59:37 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d4so3994539plh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:59:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GKfqii88iNef52n742ZKra416PIyMiTswG47K85Q3VU=;
-        b=oM7F0UyOUyKz8nJEQ2N0/yipAXJCtKtRqbYUeC3CvSUwm/vA0ZJSuEbAhcSGKijzG2
-         xXoyD+GSVXCgnnWrIYnO4CeR9Vkc0HuPEaH/RtAqqJ/4eqkIZoTGOTTLtBwtGFCxTiD+
-         kGrocx8pxXJfBDOgzmBBqzOcIAF43yAjYBG3fnca8FxSExyxXOOqvqtQ0leV4vb7OX7n
-         xvUOu7RN5oS19GZ2TjdnE0qR+6LGHX4eSDPAahOMxGWE94K7aRtfKt3RPp0JSGpB9xDV
-         Npa4wCY6LrCl85SGkMphi0rYcbL6mGCDgKs9KTO2+7jfcZyq0kGAMDedxmRpOlEtIj6J
-         tQjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GKfqii88iNef52n742ZKra416PIyMiTswG47K85Q3VU=;
-        b=oIxZs5cnlRVr7GN9yDJLkNHUlI41KQraV9o/G/O2Wmqt1k0+MwhpZOOSCkaHlmwdpc
-         EJspxNKsbd0XA6VwF+8bJX+5dPWn8S6iXO0mrQs8fZhLqTbcdcHq7TNUGNOeVN8CiCTJ
-         bCMcGloxoF12NEnx6dh27elG/H/Kl+fyLT/CjNvW427CHolxKe6wh5Zewo3VWiRY/1rZ
-         zhlGoudznaeE+6SIUxy+iClY3NDMpBdqc5ccD10mJqiZyDiBRBUrJ+yEXTxaf/l95P4C
-         sSmftEVyFQnNAwx11GlLEEymouapo1jIQAj3BwLhh0Gd1dnTv+KUTRr16ffIj1TqrZHg
-         jIzw==
-X-Gm-Message-State: AOAM532cKS9WQZofvYwlxj+b76Bed6Wo2YSAHEyppKIzrRXC57OQXrUv
-        xWCvdBtTajJlQNNBKREbFiQ6qA==
-X-Google-Smtp-Source: ABdhPJxYivj/zwfaWSwPU38DR0A1asnkhVfGAOa4kXA9Hr9leq8HZ8H6a8PlUIxSuQeR+9dLJoFrAw==
-X-Received: by 2002:a17:90a:6407:: with SMTP id g7mr7641443pjj.56.1611349177044;
-        Fri, 22 Jan 2021 12:59:37 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id a9sm9877030pfn.178.2021.01.22.12.59.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 12:59:36 -0800 (PST)
-Date:   Fri, 22 Jan 2021 13:59:34 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 04/16] rpmsg: ctrl: implement the ioctl function to
- create device
-Message-ID: <20210122205934.GA866146@xps15>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
- <20201222105726.16906-5-arnaud.pouliquen@foss.st.com>
- <20210121235258.GG611676@xps15>
- <1b76bf93-9647-c658-b4dd-1b10264a1189@foss.st.com>
+        id S1730906AbhAVVD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:03:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728105AbhAVVBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 16:01:53 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A8C423B16;
+        Fri, 22 Jan 2021 21:00:53 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 16:00:52 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/6] tracing: Rework synthetic event command parsing
+Message-ID: <20210122160052.4b535511@gandalf.local.home>
+In-Reply-To: <f3c2d2841307de0a7624a250f8f9653d435602c9.1611243025.git.zanussi@kernel.org>
+References: <cover.1611243025.git.zanussi@kernel.org>
+        <f3c2d2841307de0a7624a250f8f9653d435602c9.1611243025.git.zanussi@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b76bf93-9647-c658-b4dd-1b10264a1189@foss.st.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 02:05:27PM +0100, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
-> 
-> On 1/22/21 12:52 AM, Mathieu Poirier wrote:
-> > On Tue, Dec 22, 2020 at 11:57:14AM +0100, Arnaud Pouliquen wrote:
-> >> Implement the ioctl function that parses the list of
-> >> rpmsg drivers registered to create an associated device.
-> >> To be ISO user API, in a first step, the driver_override
-> >> is only allowed for the RPMsg raw service, supported by the
-> >> rpmsg_char driver.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >>  drivers/rpmsg/rpmsg_ctrl.c | 43 ++++++++++++++++++++++++++++++++++++--
-> >>  1 file changed, 41 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> >> index 065e2e304019..8381b5b2b794 100644
-> >> --- a/drivers/rpmsg/rpmsg_ctrl.c
-> >> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> >> @@ -56,12 +56,51 @@ static int rpmsg_ctrl_dev_open(struct inode *inode, struct file *filp)
-> >>  	return 0;
-> >>  }
-> >>  
-> >> +static const char *rpmsg_ctrl_get_drv_name(u32 service)
-> >> +{
-> >> +	struct rpmsg_ctl_info *drv_info;
-> >> +
-> >> +	list_for_each_entry(drv_info, &rpmsg_drv_list, node) {
-> >> +		if (drv_info->ctrl->service == service)
-> >> +			return drv_info->ctrl->drv_name;
-> >> +	}
-> >> +
-> > 
-> > I'm unsure about the above... To me this looks like what the .match() function
-> > of a bus would do.  And when I read Bjorn's comment he brought up the
-> > auxiliary_bus.  I don't know about the auxiliary_bus but it is worth looking
-> > into.  Registering with a bus would streamline a lot of the code in this
-> > patchset.
-> 
-> As answered Bjorn, we already have the RPMsg bus to manage the rpmsg devices.
-> Look like duplication from my POV, except if the IOCTL does not manage channel
-> but only endpoint.
-> 
-> In my design I considered that the rpmsg_ctrl creates a channel associated to a
-> rpmsg_device such as the RPMsg ns_announcement.
-> 
-> Based on this assumption, if we implement the auxiliary_bus (or other) for the
-> rpmsg_ctrl a RPMsg driver will have to manage the probe by rpmsg_bus and by the
-> auxillary bus. The probe from the auxiliary bus would lead to the creation of an
-> RPMsg device on the rpmsg_bus, so a duplication with cross dependencies and
-> would probably make tricky the remove part.
-> 
-> That said, I think the design depends on the functionality that should be
-> implemented in the rpmsg_ctrl. Here is an alternative approach based on the
-> auxiliary bus, which I'm starting to think about:
-> 
-> The current approach of the rpmsg_char driver is to use the IOCTRL interface to
-> instantiate a cdev with an endpoint (the RPMsg device is associated with the
-> ioctl dev). This would correspond to the use of an auxiliary bus to manage local
-> endpoint creations.
-> 
-> We could therefore consider an RPMsg name service based on an RPmsg device. This
-> RPMsg device would register a kind of "RPMsg service endpoint" driver on the
-> auxiliary rpmsg_ioctl bus.
-> The rpmsg_ctrl will be used to instantiate the endpoints for this RPMsg device.
-> on user application request the rpmsg_ctrl will call the appropriate auxiliary
-> device to create an endpoint.
-> 
-> If we consider that one objective of this series is to allow application to
-> initiate the communication with the remote processor, so to be able to initiate
-> the service (ns announcement sent to the remote processor).
-> This implies that:
-> -either the RPMsg device has been probed first by a remote ns announcement or by
-> a Linux kernel driver using the "driver_override", to register an auxiliary
-> device. In this case an endpoint will be created associated to the RPMsg service
-> - or create a RPMsg device on first ioctl endpoint creation request, if it does
-> not exist (that could trig a NS announcement to remote processor).
-> 
-> But I'm not sure that this approach would work with QCOM RPMsg backends...
->
+On Thu, 21 Jan 2021 11:01:05 -0600
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-I don't think there is a way forward with this set without a clear understanding
-of the Glink and SMD drivers.  I have already spent a fair amount of time in the
-Glink driver and will continue on Monday with SMD.  
+> @@ -1208,13 +1173,14 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
+>  	 *      where 'field' = type field_name
+>  	 */
+>  
+> -	if (name[0] == '\0' || argc < 1) {
+> +	mutex_lock(&event_mutex);
 
-> > 
-> > I'm out of time for today - I will continue tomorrow.
-> 
-> It seems to me that the main point to step forward is to clarify the global
-> design and features of the rpmsg-ctrl.
-> Depending on the decision taken, this series could be trashed and rewritten from
-> a blank page...To not lost to much time on the series don't hesitate to limit
-> the review to the minimum.
-> 
+I'm curious, why is the event_mutex taken here? I'm guessing it is first
+needed for the find_synth_event() call, in which case, it can be moved
+after the is_good_name() check. I don't see why the goto out is required
+here or for the is_good_name() check.
 
-I doubt you will ever get clear guidelines on the whole solution.  I will get
-back to you once I am done with the SMD driver, which should be in the
-latter part of next week.
+-- Steve
 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> >> +	return NULL;
-> >> +}
-> >> +
-> >>  static long rpmsg_ctrl_dev_ioctl(struct file *fp, unsigned int cmd,
-> >>  				 unsigned long arg)
-> >>  {
-> >>  	struct rpmsg_ctrl_dev *ctrldev = fp->private_data;
-> >> -
-> >> -	dev_info(&ctrldev->dev, "Control not yet implemented\n");
-> >> +	void __user *argp = (void __user *)arg;
-> >> +	struct rpmsg_channel_info chinfo;
-> >> +	struct rpmsg_endpoint_info eptinfo;
-> >> +	struct rpmsg_device *newch;
-> >> +
-> >> +	if (cmd != RPMSG_CREATE_EPT_IOCTL)
-> >> +		return -EINVAL;
-> >> +
-> >> +	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
-> >> +		return -EFAULT;
-> >> +
-> >> +	/*
-> >> +	 * In a frst step only the rpmsg_raw service is supported.
-> >> +	 * The override is foorced to RPMSG_RAW_SERVICE
-> >> +	 */
-> >> +	chinfo.driver_override = rpmsg_ctrl_get_drv_name(RPMSG_RAW_SERVICE);
-> >> +	if (!chinfo.driver_override)
-> >> +		return -ENODEV;
-> >> +
-> >> +	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
-> >> +	chinfo.name[RPMSG_NAME_SIZE - 1] = '\0';
-> >> +	chinfo.src = eptinfo.src;
-> >> +	chinfo.dst = eptinfo.dst;
-> >> +
-> >> +	newch = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
-> >> +	if (!newch) {
-> >> +		dev_err(&ctrldev->dev, "rpmsg_create_channel failed\n");
-> >> +		return -ENXIO;
-> >> +	}
-> >>  
-> >>  	return 0;
-> >>  };
-> >> -- 
-> >> 2.17.1
-> >>
+> +
+> +	if (name[0] == '\0') {
+>  		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto out;
+>  	}
+>  
+> -	mutex_lock(&event_mutex);
+> -
+>  	if (!is_good_name(name)) {
+>  		synth_err(SYNTH_ERR_BAD_NAME, errpos(name));
+>  		ret = -EINVAL;
