@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964982FFD25
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09DA2FFD06
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbhAVHNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:13:14 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:39122 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726292AbhAVHNA (ORCPT
+        id S1726382AbhAVHFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:05:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23910 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725854AbhAVHFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:13:00 -0500
-X-UUID: 18bfa4098eb448e597d6492d9cb46e0e-20210122
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=fL/MgIC+7IuxEDr3pIYZFZ1fLaM2nU+O0q+PZiXufQc=;
-        b=pO6xDPyrA7TculZOrJ1gQhGXF2BC3gjgTqyjdusMKYRq5bkLdWDZGZTlN50BsFiXsSPdwpGQIzqN3wtLyBsBmrCuENx4OiooCwRtuqTN2Lsa6L48e2wrdIt3fdBGQE2FfMIN/PWvlIBtrXdl760Uv+rSiPyiyqKMv7lbAb0hEMA=;
-X-UUID: 18bfa4098eb448e597d6492d9cb46e0e-20210122
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1315486227; Fri, 22 Jan 2021 15:03:22 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 22 Jan
- 2021 15:03:12 +0800
-Received: from [10.19.240.15] (10.19.240.15) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 22 Jan 2021 15:03:11 +0800
-Message-ID: <1611298991.5980.42.camel@mcddlt001>
-Subject: Re: [PATCH v2] PCI: Re-enable downstream port LTR if it was
- previously enabled
-From:   Mingchuang Qiao <mingchuang.qiao@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Utkarsh H Patel" <utkarsh.h.patel@intel.com>,
-        <linux-pci@vger.kernel.org>, <matthias.bgg@gmail.com>,
-        <lambert.wang@mediatek.com>, <linux-mediatek@lists.infradead.org>,
-        <haijun.liu@mediatek.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Alex Williamson" <alex.williamson@redhat.com>
-Date:   Fri, 22 Jan 2021 15:03:11 +0800
-In-Reply-To: <20210121223139.GA2698934@bjorn-Precision-5520>
-References: <20210121223139.GA2698934@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2CD612E64180C9CBC7FBC648089FF19836C607A61BD963F52342411B2B02F6712000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Fri, 22 Jan 2021 02:05:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611299048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=t0hnQctGK3X4UR3EE/GNiX86ft/Eizbru1y+p4vYcF4=;
+        b=Or7M7UQoSqbAx6sHnDeOIP7VshULSMyF3DJsB+mkbOh8zXHNwZqKnxpNbM21+A6TJgAz02
+        rvWVISEABNVeFPAFTgRMbaVolJ8GVe1BHRb9qeW5P/Hh3zKg8qLVu3N5xsdNfmRnfFIokK
+        NYQcOkEmvDxMxWtzgjRkGrn1AY39v/s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-KQZMHtASNIeQIaG8ko2wIA-1; Fri, 22 Jan 2021 02:04:04 -0500
+X-MC-Unique: KQZMHtASNIeQIaG8ko2wIA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 344031DDE0;
+        Fri, 22 Jan 2021 07:04:03 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-183.pek2.redhat.com [10.72.12.183])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 21518100238C;
+        Fri, 22 Jan 2021 07:04:00 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
+        bhe@redhat.com
+Subject: [PATCH] mm: fix prototype warning from kernel test robot
+Date:   Fri, 22 Jan 2021 15:03:59 +0800
+Message-Id: <20210122070359.24010-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTIxIGF0IDE2OjMxIC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
-PiBbK2NjIEFsZXggYW5kIE1pbmdjaHVhbmcgZXQgYWwgZnJvbQ0KPiBodHRwczovL2xvcmUua2Vy
-bmVsLm9yZy9yLzIwMjEwMTEyMDcyNzM5LjMxNjI0LTEtbWluZ2NodWFuZy5xaWFvQG1lZGlhdGVr
-LmNvbV0NCj4gDQo+IE9uIFR1ZSwgSmFuIDE5LCAyMDIxIGF0IDA0OjE0OjEwUE0gKzAzMDAsIE1p
-a2EgV2VzdGVyYmVyZyB3cm90ZToNCj4gPiBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNiBzYXlzIHRo
-YXQgdGhlIGRvd25zdHJlYW0gcG9ydHMgbXVzdCByZXNldCB0aGUNCj4gPiBMVFIgZW5hYmxlIGJp
-dCBpZiB0aGUgbGluayBnb2VzIGRvd24gKHBvcnQgZ29lcyBETF9Eb3duIHN0YXR1cykuIE5vdywg
-aWYNCj4gPiB3ZSBoYWQgTFRSIHByZXZpb3VzbHkgZW5hYmxlZCBhbmQgdGhlIFBDSWUgZW5kcG9p
-bnQgZ2V0cyBob3QtcmVtb3ZlZCBhbmQNCj4gPiB0aGVuIGhvdC1hZGRlZCBiYWNrIHRoZSAtPmx0
-cl9wYXRoIG9mIHRoZSBkb3duc3RyZWFtIHBvcnQgaXMgc3RpbGwgc2V0DQo+ID4gYnV0IHRoZSBw
-b3J0IG5vdyBkb2VzIG5vdCBoYXZlIHRoZSBMVFIgZW5hYmxlIGJpdCBzZXQgYW55bW9yZS4NCj4g
-PiANCj4gPiBGb3IgdGhpcyByZWFzb24gY2hlY2sgaWYgdGhlIGJyaWRnZSB1cHN0cmVhbSBoYWQg
-TFRSIGVuYWJsZWQgcHJldmlvdXNseQ0KPiA+IGFuZCByZS1lbmFibGUgaXQgYmVmb3JlIGVuYWJs
-aW5nIExUUiBmb3IgdGhlIGVuZHBvaW50Lg0KPiA+IA0KPiA+IFJlcG9ydGVkLWJ5OiBVdGthcnNo
-IEggUGF0ZWwgPHV0a2Fyc2guaC5wYXRlbEBpbnRlbC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTog
-TWlrYSBXZXN0ZXJiZXJnIDxtaWthLndlc3RlcmJlcmdAbGludXguaW50ZWwuY29tPg0KPiANCj4g
-SSB0aGluayB0aGlzIGFuZCBNaW5nY2h1YW5nJ3MgcGF0Y2gsIHdoaWNoIGlzIGVzc2VudGlhbGx5
-IGlkZW50aWNhbCwNCj4gYXJlIHJpZ2h0IGFuZCBzb2x2ZXMgdGhlIHByb2JsZW0gZm9yIGhvdC1y
-ZW1vdmUvaG90LWFkZC4gIEluIHRoYXQNCj4gc2NlbmFyaW8gd2UgY2FsbCBwY2lfY29uZmlndXJl
-X2x0cigpIG9uIHRoZSBob3QtYWRkZWQgZGV2aWNlLCBhbmQNCj4gd2l0aCB0aGlzIHBhdGNoLCB3
-ZSdsbCByZS1lbmFibGUgTFRSIG9uIHRoZSBicmlkZ2UgbGVhZGluZyB0byB0aGUgbmV3DQo+IGRl
-dmljZSBiZWZvcmUgZW5hYmxpbmcgTFRSIG9uIHRoZSBuZXcgZGV2aWNlIGl0c2VsZi4NCj4gDQo+
-IEJ1dCBkb24ndCB3ZSBoYXZlIGEgc2ltaWxhciBwcm9ibGVtIGlmIHdlIHNpbXBseSBkbyBhIEZ1
-bmRhbWVudGFsDQo+IFJlc2V0IG9uIGEgZGV2aWNlPyAgSSB0aGluayB0aGUgcmVzZXQgcGF0aCB3
-aWxsIHJlc3RvcmUgdGhlIGRldmljZSdzDQo+IHN0YXRlLCBpbmNsdWRpbmcgUENJX0VYUF9ERVZD
-VEwyLCBidXQgaXQgZG9lc24ndCBkbyBhbnl0aGluZyB3aXRoIHRoZQ0KPiB1cHN0cmVhbSBicmlk
-Z2UsIGRvZXMgaXQ/DQo+IA0KDQpZZXMuIEkgdGhpbmsgdGhlIHNhbWUgcHJvYmxlbSBleGlzdHMg
-dW5kZXIgc3VjaCBzY2VuYXJpbywgYW5kIHRoYXTigJlzIHRoZQ0KaXNzdWUgbXkgcGF0Y2ggaW50
-ZW5kcyB0byByZXNvbHZlLg0KSSBhbHNvIHByZXBhcmVkIGEgdjIgcGF0Y2ggZm9yIHJldmlldyh1
-cGRhdGUgdGhlIHBhdGNoIGRlc2NyaXB0aW9uKS4NClNoYWxsIEkgc3VibWl0IHRoZSB2MiBwYXRj
-aCBmb3IgcmV2aWV3Pw0KDQo+IFNvIGlmIGEgYnJpZGdlIGFuZCBhIGRldmljZSBiZWxvdyBpdCBi
-b3RoIGhhdmUgTFRSIGVuYWJsZWQsIGNhbid0IHdlDQo+IGhhdmUgdGhlIGZvbGxvd2luZzoNCj4g
-DQo+ICAgLSBicmlkZ2UgTFRSIGVuYWJsZWQNCj4gICAtIGRldmljZSBMVFIgZW5hYmxlZA0KPiAg
-IC0gcmVzZXQgZGV2aWNlLCBlLmcuLCB2aWEgU2Vjb25kYXJ5IEJ1cyBSZXNldA0KPiAgIC0gbGlu
-ayBnb2VzIGRvd24sIGJyaWRnZSBkaXNhYmxlcyBMVFINCj4gICAtIGxpbmsgY29tZXMgYmFjayB1
-cCwgTFRSIGRpc2FibGVkIGluIGJvdGggYnJpZGdlIGFuZCBkZXZpY2UNCj4gICAtIHJlc3RvcmUg
-ZGV2aWNlIHN0YXRlLCBpbmNsdWRpbmcgTFRSIGVuYWJsZQ0KPiAgIC0gZGV2aWNlIHNlbmRzIExU
-UiBtZXNzYWdlDQo+ICAgLSBicmlkZ2UgcmVwb3J0cyBVbnN1cHBvcnRlZCBSZXF1ZXN0DQo+IA0K
-PiA+IC0tLQ0KPiA+IFByZXZpb3VzIHZlcnNpb24gY2FuIGJlIGZvdW5kIGhlcmU6DQo+ID4gDQo+
-ID4gICBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1wY2kvMjAyMTAxMTQxMzQ3MjQuNzk1
-MTEtMS1taWthLndlc3RlcmJlcmdAbGludXguaW50ZWwuY29tLw0KPiA+IA0KPiA+IENoYW5nZXMg
-ZnJvbSB0aGUgcHJldmlvdXMgdmVyc2lvbjoNCj4gPiANCj4gPiAgICogQ29ycmVjdGVkIHR5cG9z
-IGluIHRoZSBjb21taXQgbWVzc2FnZQ0KPiA+ICAgKiBObyBuZWVkIHRvIGNhbGwgcGNpZV9kb3du
-c3RyZWFtX3BvcnQoKQ0KPiA+IA0KPiA+ICBkcml2ZXJzL3BjaS9wcm9iZS5jIHwgMTcgKysrKysr
-KysrKysrKysrKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDEgZGVs
-ZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcHJvYmUuYyBiL2Ry
-aXZlcnMvcGNpL3Byb2JlLmMNCj4gPiBpbmRleCAwZWI2OGI0NzM1NGYuLmE0YThjMDMwNWZiOSAx
-MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3BjaS9wcm9iZS5jDQo+ID4gKysrIGIvZHJpdmVycy9w
-Y2kvcHJvYmUuYw0KPiA+IEBAIC0yMTUzLDcgKzIxNTMsNyBAQCBzdGF0aWMgdm9pZCBwY2lfY29u
-ZmlndXJlX2x0cihzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KPiA+ICB7DQo+ID4gICNpZmRlZiBDT05G
-SUdfUENJRUFTUE0NCj4gPiAgCXN0cnVjdCBwY2lfaG9zdF9icmlkZ2UgKmhvc3QgPSBwY2lfZmlu
-ZF9ob3N0X2JyaWRnZShkZXYtPmJ1cyk7DQo+ID4gLQlzdHJ1Y3QgcGNpX2RldiAqYnJpZGdlOw0K
-PiA+ICsJc3RydWN0IHBjaV9kZXYgKmJyaWRnZSA9IE5VTEw7DQo+ID4gIAl1MzIgY2FwLCBjdGw7
-DQo+ID4gIA0KPiA+ICAJaWYgKCFwY2lfaXNfcGNpZShkZXYpKQ0KPiA+IEBAIC0yMTkxLDYgKzIx
-OTEsMjEgQEAgc3RhdGljIHZvaWQgcGNpX2NvbmZpZ3VyZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRl
-dikNCj4gPiAgCWlmIChwY2lfcGNpZV90eXBlKGRldikgPT0gUENJX0VYUF9UWVBFX1JPT1RfUE9S
-VCB8fA0KPiA+ICAJICAgICgoYnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpKSAmJg0K
-PiA+ICAJICAgICAgYnJpZGdlLT5sdHJfcGF0aCkpIHsNCj4gPiArCQkvKg0KPiA+ICsJCSAqIERv
-d25zdHJlYW0gcG9ydHMgcmVzZXQgdGhlIExUUiBlbmFibGUgYml0IHdoZW4gdGhlDQo+ID4gKwkJ
-ICogbGluayBnb2VzIGRvd24gKGUuZyBvbiBob3QtcmVtb3ZlKSBzbyByZS1lbmFibGUgdGhlDQo+
-ID4gKwkJICogYml0IGhlcmUgaWYgbm90IHNldCBhbnltb3JlLg0KPiA+ICsJCSAqIFBDSWUgcjUu
-MCwgc2VjIDcuNS4zLjE2Lg0KPiA+ICsJCSAqLw0KPiA+ICsJCWlmIChicmlkZ2UpIHsNCj4gPiAr
-CQkJcGNpZV9jYXBhYmlsaXR5X3JlYWRfZHdvcmQoYnJpZGdlLCBQQ0lfRVhQX0RFVkNUTDIsICZj
-dGwpOw0KPiA+ICsJCQlpZiAoIShjdGwgJiBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKSkgew0KPiA+
-ICsJCQkJcGNpX2RiZyhicmlkZ2UsICJyZS1lbmFibGluZyBMVFJcbiIpOw0KPiA+ICsJCQkJcGNp
-ZV9jYXBhYmlsaXR5X3NldF93b3JkKGJyaWRnZSwgUENJX0VYUF9ERVZDVEwyLA0KPiA+ICsJCQkJ
-CQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KPiA+ICsJCQl9DQo+ID4gKwkJfQ0KPiA+ICsJ
-CXBjaV9kYmcoZGV2LCAiZW5hYmxpbmcgTFRSXG4iKTsNCj4gPiAgCQlwY2llX2NhcGFiaWxpdHlf
-c2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQo+ID4gIAkJCQkJIFBDSV9FWFBfREVWQ1RM
-Ml9MVFJfRU4pOw0KPiA+ICAJCWRldi0+bHRyX3BhdGggPSAxOw0KPiA+IC0tIA0KPiA+IDIuMjku
-Mg0KPiA+IA0KDQo=
+Kernel test robot calling make with 'W=1' triggering warning like below
+below for memmap_init_zone() function.
+
+mm/page_alloc.c:6259:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
+ 6259 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
+      |                       ^~~~~~~~~~~~~~~~
+
+Fix it by adding the function declaration in include/linux/mm.h.
+Since memmap_init_zone() has a generic version with '__weak',
+the declaratoin in ia64 header file can be simply removed.
+
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ arch/ia64/include/asm/pgtable.h | 5 -----
+ include/linux/mm.h              | 1 +
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
+index 2c81394a2430..9b4efe89e62d 100644
+--- a/arch/ia64/include/asm/pgtable.h
++++ b/arch/ia64/include/asm/pgtable.h
+@@ -517,11 +517,6 @@ extern struct page *zero_page_memmap_ptr;
+ 	__changed;							\
+ })
+ #endif
+-
+-#  ifdef CONFIG_VIRTUAL_MEM_MAP
+-  /* arch mem_map init routine is needed due to holes in a virtual mem_map */
+-    extern void memmap_init_zone(struct zone *zone);
+-#  endif /* CONFIG_VIRTUAL_MEM_MAP */
+ # endif /* !__ASSEMBLY__ */
+ 
+ /*
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 56bb239f9150..073049bd0b29 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2401,6 +2401,7 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
+ extern void memmap_init_range(unsigned long, int, unsigned long,
+ 		unsigned long, unsigned long, enum meminit_context,
+ 		struct vmem_altmap *, int migratetype);
++extern void memmap_init_zone(struct zone *zone);
+ extern void setup_per_zone_wmarks(void);
+ extern int __meminit init_per_zone_wmark_min(void);
+ extern void mem_init(void);
+-- 
+2.17.2
 
