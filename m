@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE40300FB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3DD300FB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730488AbhAVUDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:03:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34332 "EHLO mail.kernel.org"
+        id S1730712AbhAVUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:04:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728359AbhAVOOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:14:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F023C23AFA;
-        Fri, 22 Jan 2021 14:11:29 +0000 (UTC)
+        id S1727923AbhAVOOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:14:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDA5723AC0;
+        Fri, 22 Jan 2021 14:11:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324690;
-        bh=g/q85gxojvycMJTot6idqg9w5y5eolE+WzXgRWDptTU=;
+        s=korg; t=1611324667;
+        bh=JgT2rUZRDAwot5wINmvAgpRBDucaRvu6wRSr/gjU3u0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wzi6PGB4OEadXQV02HFBN1Q6OWvu2U6qkTqvQ47finDCyDMMwJMXjMXKbMVTq/D1t
-         9VKjXMUxlgz9cTeu0iTg2Rjr28caAgcXmBioXmWsZ6Uy/UF9mhTFsOMHtsn6+M9kHh
-         pnlzWdMyhuLNhgdN0qd1ZmLEebmpzgZQZAJxzP/k=
+        b=Y1aj9oA1hMbwC/MfR5sqVuLGt3kVoEIktJXtSNbhvOtyVMjA2sjqAA2BIAcXhg8Dk
+         YcGOBKzDT7e0bZJwoFsYF6HP+YW/1efXRwzz8w0HmvilRYq001jnOLMJgHF5uzA55j
+         XprJISSmGGs0/3MzlRIKgQtOf08fvzMX10h4o7SM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 09/35] ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
-Date:   Fri, 22 Jan 2021 15:10:11 +0100
-Message-Id: <20210122135732.713602640@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Halcrow <mhalcrow@google.com>,
+        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.9 18/35] ext4: fix superblock checksum failure when setting password salt
+Date:   Fri, 22 Jan 2021 15:10:20 +0100
+Message-Id: <20210122135733.057654705@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
@@ -41,63 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 887078de2a23689e29d6fa1b75d7cbc544c280be ]
+commit dfd56c2c0c0dbb11be939b804ddc8d5395ab3432 upstream.
 
-Table 8-53 in the QUICC Engine Reference manual shows definitions of
-fields up to a size of 192 bytes, not just 128. But in table 8-111,
-one does find the text
+When setting password salt in the superblock, we forget to recompute the
+superblock checksum so it will not match until the next superblock
+modification which recomputes the checksum. Fix it.
 
-  Base Address of the Global Transmitter Parameter RAM Page. [...]
-  The user needs to allocate 128 bytes for this page. The address must
-  be aligned to the page size.
+CC: Michael Halcrow <mhalcrow@google.com>
+Reported-by: Andreas Dilger <adilger@dilger.ca>
+Fixes: 9bd8212f981e ("ext4 crypto: add encryption policy and password salt support")
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20201216101844.22917-8-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-I've checked both rev. 7 (11/2015) and rev. 9 (05/2018) of the manual;
-they both have this inconsistency (and the table numbers are the
-same).
-
-Adding a bit of debug printing, on my board the struct
-ucc_geth_tx_global_pram is allocated at offset 0x880, while
-the (opaque) ucc_geth_thread_data_tx gets allocated immediately
-afterwards, at 0x900. So whatever the engine writes into the thread
-data overlaps with the tail of the global tx pram (and devmem says
-that something does get written during a simple ping).
-
-I haven't observed any failure that could be attributed to this, but
-it seems to be the kind of thing that would be extremely hard to
-debug. So extend the struct definition so that we do allocate 192
-bytes.
-
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/ucc_geth.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/ext4/ioctl.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/ucc_geth.h b/drivers/net/ethernet/freescale/ucc_geth.h
-index 5da19b440a6a8..bf25e49d4fe34 100644
---- a/drivers/net/ethernet/freescale/ucc_geth.h
-+++ b/drivers/net/ethernet/freescale/ucc_geth.h
-@@ -580,7 +580,14 @@ struct ucc_geth_tx_global_pram {
- 	u32 vtagtable[0x8];	/* 8 4-byte VLAN tags */
- 	u32 tqptr;		/* a base pointer to the Tx Queues Memory
- 				   Region */
--	u8 res2[0x80 - 0x74];
-+	u8 res2[0x78 - 0x74];
-+	u64 snums_en;
-+	u32 l2l3baseptr;	/* top byte consists of a few other bit fields */
-+
-+	u16 mtu[8];
-+	u8 res3[0xa8 - 0x94];
-+	u32 wrrtablebase;	/* top byte is reserved */
-+	u8 res4[0xc0 - 0xac];
- } __packed;
- 
- /* structure representing Extended Filtering Global Parameters in PRAM */
--- 
-2.27.0
-
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -799,7 +799,10 @@ resizefs_out:
+ 			err = ext4_journal_get_write_access(handle, sbi->s_sbh);
+ 			if (err)
+ 				goto pwsalt_err_journal;
++			lock_buffer(sbi->s_sbh);
+ 			generate_random_uuid(sbi->s_es->s_encrypt_pw_salt);
++			ext4_superblock_csum_set(sb);
++			unlock_buffer(sbi->s_sbh);
+ 			err = ext4_handle_dirty_metadata(handle, NULL,
+ 							 sbi->s_sbh);
+ 		pwsalt_err_journal:
 
 
