@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE369300D81
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B12300D88
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731088AbhAVUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:14:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
+        id S1729197AbhAVUQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:16:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727517AbhAVOKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728135AbhAVOKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:10:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62C9823A75;
-        Fri, 22 Jan 2021 14:09:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AF6A23A63;
+        Fri, 22 Jan 2021 14:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324563;
-        bh=sOkpxDdA5DSQyv9tafJKuk6w3gPd/pNyDXBhe+5YM5Y=;
+        s=korg; t=1611324565;
+        bh=5yugw90Ko4aivb8XQkrgzCxwHwauJny+K5bx2oqNd30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b7DaDFSzUIfk1flcaH88nzeN8shJvagyh7bk1Z7D6/7TecTtcUF+/lyfeUb3QKdhy
-         Puc/5T5H9lF+W+uWYUuxx/1RmVGSPFZXq4O6WHSL/u9n+hDyUZ7k82FUJb4FtVrLov
-         4b2YIGqFjGYMRa3oJplcFXCLQM//hGYZftp/wqDg=
+        b=WXV+yoMx3wgPUC6uIvBls5erGjhUoUjE9BiNbEuIVd0WGH8x1JbkpSWV+Q4NFnCGR
+         FmBmRuWZ3QY8tPQITGSmQFdglFvCffy6EBJQiIkRBF2dqiZy9hWB4RKMyRw2ZwMwoK
+         QRFqOYVSWB69J2AuNwsEINIi+3uulOLgr1qx5fAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Nuno=20S=E1?= <nuno.sa@analog.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 21/31] iio: buffer: Fix demux update
-Date:   Fri, 22 Jan 2021 15:08:35 +0100
-Message-Id: <20210122135732.717616060@linuxfoundation.org>
+        stable@vger.kernel.org, Youjipeng <wangzhibei1999@gmail.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 4.4 22/31] nfsd4: readdirplus shouldnt return parent of export
+Date:   Fri, 22 Jan 2021 15:08:36 +0100
+Message-Id: <20210122135732.757781440@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
 References: <20210122135731.873346566@linuxfoundation.org>
@@ -42,55 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Nuno Sá" <nuno.sa@analog.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit 19ef7b70ca9487773c29b449adf0c70f540a0aab upstream
+commit 51b2ee7d006a736a9126e8111d1f24e4fd0afaa6 upstream.
 
-When updating the buffer demux, we will skip a scan element from the
-device in the case `in_ind != out_ind` and we enter the while loop.
-in_ind should only be refreshed with `find_next_bit()` in the end of the
-loop.
+If you export a subdirectory of a filesystem, a READDIRPLUS on the root
+of that export will return the filehandle of the parent with the ".."
+entry.
 
-Note, to cause problems we need a situation where we are skippig over
-an element (channel not enabled) that happens to not have the same size
-as the next element.   Whilst this is a possible situation we haven't
-actually identified any cases in mainline where it happens as most drivers
-have consistent channel storage sizes with the exception of the timestamp
-which is the last element and hence never skipped over.
+The filehandle is optional, so let's just not return the filehandle for
+".." if we're at the root of an export.
 
-Fixes: 5ada4ea9be16 ("staging:iio: add demux optionally to path from device to buffer")
-Signed-off-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20201112144323.28887-1-nuno.sa@analog.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Note that once the client learns one filehandle outside of the export,
+they can trivially access the rest of the export using further lookups.
+
+However, it is also not very difficult to guess filehandles outside of
+the export.  So exporting a subdirectory of a filesystem should
+considered equivalent to providing access to the entire filesystem.  To
+avoid confusion, we recommend only exporting entire filesystems.
+
+Reported-by: Youjipeng <wangzhibei1999@gmail.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iio/industrialio-buffer.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -1281,9 +1281,6 @@ static int iio_buffer_update_demux(struc
- 				       indio_dev->masklength,
- 				       in_ind + 1);
- 		while (in_ind != out_ind) {
--			in_ind = find_next_bit(indio_dev->active_scan_mask,
--					       indio_dev->masklength,
--					       in_ind + 1);
- 			ch = iio_find_channel_from_si(indio_dev, in_ind);
- 			if (ch->scan_type.repeat > 1)
- 				length = ch->scan_type.storagebits / 8 *
-@@ -1292,6 +1289,9 @@ static int iio_buffer_update_demux(struc
- 				length = ch->scan_type.storagebits / 8;
- 			/* Make sure we are aligned */
- 			in_loc = roundup(in_loc, length) + length;
-+			in_ind = find_next_bit(indio_dev->active_scan_mask,
-+					       indio_dev->masklength,
-+					       in_ind + 1);
- 		}
- 		ch = iio_find_channel_from_si(indio_dev, in_ind);
- 		if (ch->scan_type.repeat > 1)
+---
+ fs/nfsd/nfs3xdr.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+--- a/fs/nfsd/nfs3xdr.c
++++ b/fs/nfsd/nfs3xdr.c
+@@ -821,9 +821,14 @@ compose_entry_fh(struct nfsd3_readdirres
+ 	if (isdotent(name, namlen)) {
+ 		if (namlen == 2) {
+ 			dchild = dget_parent(dparent);
+-			/* filesystem root - cannot return filehandle for ".." */
++			/*
++			 * Don't return filehandle for ".." if we're at
++			 * the filesystem or export root:
++			 */
+ 			if (dchild == dparent)
+ 				goto out;
++			if (dparent == exp->ex_path.dentry)
++				goto out;
+ 		} else
+ 			dchild = dget(dparent);
+ 	} else
 
 
