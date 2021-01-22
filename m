@@ -2,172 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B93A300063
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBEC300072
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbhAVK0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:26:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:39924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727828AbhAVKUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:20:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C155511D4;
-        Fri, 22 Jan 2021 02:20:06 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D34E3F719;
-        Fri, 22 Jan 2021 02:20:05 -0800 (PST)
-Subject: Re: [PATCH] drm/panfrost: Add governor data with pre-defined
- thresholds
-To:     Lukasz Luba <lukasz.luba@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh@kernel.org, tomeu.vizoso@collabora.com,
-        alyssa.rosenzweig@collabora.com, dri-devel@lists.freedesktop.org
-References: <20210121170445.19761-1-lukasz.luba@arm.com>
- <f1b5c801-71f9-c3b9-2017-d9ee5c6fd3d2@linaro.org>
- <ec393a2c-2220-9ea8-db5c-7d651badc6b9@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <66a8f61a-3c4c-5f92-c175-f71c9dcfaf4a@arm.com>
-Date:   Fri, 22 Jan 2021 10:20:06 +0000
+        id S1728036AbhAVKdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:33:47 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:32504 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727986AbhAVKZC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:25:02 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MAGnhf017656;
+        Fri, 22 Jan 2021 11:23:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=F3UYlhBVC/4pASDg25u1A1PdjtKhaE7ztzNCp+C1SLo=;
+ b=8KCo4S4sWNkUsEBwP+3U7lcU73U/aDulJM7dKmb/CL+XRj7yASBkLG85vB5zww3eOIUm
+ b2tYlQIiAbAvYrTtwBzw92V0Gz6qXLIiaM90jEx+mIL6Y4BAmnklU6TfbAFOakx60S30
+ wqIP4TiRkz08UuAEQH5cpnxCV40UH3u37Nk6BJ4YY+0ty/tEoHKPk8gBQVF9fSNwtcOt
+ yddy+eY9qWY1YSNtH7eX4VeNgRQFi6I8nS6KTWLFv7wT76f9YFwk2oUMBMdkbkxuK+lA
+ Iva+m7oFmwGl0VBMThw8Vln95vBfWuOr9blFY5FAqPzSKi9xAtaVsC+GT6BWkHAKEFfL Wg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3668q08u2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 11:23:46 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 51BC110002A;
+        Fri, 22 Jan 2021 11:23:45 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 34C9D20D085;
+        Fri, 22 Jan 2021 11:23:45 +0100 (CET)
+Received: from [10.211.13.44] (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan
+ 2021 11:23:43 +0100
+Subject: Re: [Linux-stm32] [PATCH] iio: adc: stm32-adc: enable timestamping
+ for non-DMA usage
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@pengutronix.de>, Holger Assmann <has@pengutronix.de>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210121180228.30621-1-a.fatoum@pengutronix.de>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <52a8a7db-72ee-a00f-7ef5-ada85cfe4774@foss.st.com>
+Date:   Fri, 22 Jan 2021 11:23:42 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <ec393a2c-2220-9ea8-db5c-7d651badc6b9@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210121180228.30621-1-a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-22_06:2021-01-21,2021-01-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/01/2021 10:11, Lukasz Luba wrote:
-> 
-> 
-> On 1/21/21 5:15 PM, Daniel Lezcano wrote:
->> On 21/01/2021 18:04, Lukasz Luba wrote:
->>> The simple_ondemand devfreq governor uses two thresholds to decide about
->>> the frequency change: upthreshold, downdifferential. These two tunable
->>> change the behavior of the governor decision, e.g. how fast to increase
->>> the frequency or how rapidly limit the frequency. This patch adds needed
->>> governor data with thresholds values gathered experimentally in 
->>> different
->>> workloads.
->>>
->>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>> Hi all,
->>>
->>> This patch aims to improve the panfrost performance in various 
->>> workloads,
->>> (benchmarks, games). The simple_ondemand devfreq governor supports
->>> tunables to tweak the behaviour of the internal algorithm. The default
->>> values for these two thresholds (90 and 5) do not work well with 
->>> panfrost.
->>> These new settings should provide good performance, short latency for
->>> rising the frequency due to rapid workload change and decent freq slow
->>> down when the load is decaying. Based on frequency change statistics,
->>> gathered during experiments, all frequencies are used, depending on
->>> the load. This provides some power savings (statistically). The highest
->>> frequency is also used when needed.
->>>
->>> Example glmark2 results:
->>> 1. freq fixed to max: 153
->>> 2. these new thresholds values (w/ patch): 151
->>> 3. default governor values (w/o patch): 114
->>>
->>> In future the devfreq framework would expose via sysfs these two
->>> tunables, so they can be adjusted by the middleware based on currently
->>> running workload (game, desktop, web browser, etc). These new values
->>> should be good enough, though.
->>>
->>> Regards,
->>> Lukasz Luba
->>>
->>>   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 10 +++++++++-
->>>   drivers/gpu/drm/panfrost/panfrost_devfreq.h |  2 ++
->>>   2 files changed, 11 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c 
->>> b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
->>> index 56b3f5935703..7c5ffc81dce1 100644
->>> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
->>> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
->>> @@ -130,8 +130,16 @@ int panfrost_devfreq_init(struct panfrost_device 
->>> *pfdev)
->>>       panfrost_devfreq_profile.initial_freq = cur_freq;
->>>       dev_pm_opp_put(opp);
->>> +    /*
->>> +     * Setup default thresholds for the simple_ondemand governor.
->>> +     * The values are chosen based on experiments.
->>> +     */
->>> +    pfdevfreq->gov_data.upthreshold = 45;
->>> +    pfdevfreq->gov_data.downdifferential = 5;
->>> +
->>>       devfreq = devm_devfreq_add_device(dev, &panfrost_devfreq_profile,
->>> -                      DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
->>> +                      DEVFREQ_GOV_SIMPLE_ONDEMAND,
->>> +                      &pfdevfreq->gov_data);
->>>       if (IS_ERR(devfreq)) {
->>>           DRM_DEV_ERROR(dev, "Couldn't initialize GPU devfreq\n");
->>>           ret = PTR_ERR(devfreq);
->>> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h 
->>> b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
->>> index db6ea48e21f9..1e2a4de941aa 100644
->>> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
->>> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
->>> @@ -4,6 +4,7 @@
->>>   #ifndef __PANFROST_DEVFREQ_H__
->>>   #define __PANFROST_DEVFREQ_H__
->>> +#include <linux/devfreq.h>
->>>   #include <linux/spinlock.h>
->>>   #include <linux/ktime.h>
->>> @@ -17,6 +18,7 @@ struct panfrost_devfreq {
->>>       struct devfreq *devfreq;
->>>       struct opp_table *regulators_opp_table;
->>>       struct thermal_cooling_device *cooling;
->>> +    struct devfreq_simple_ondemand_data gov_data;
->>>       bool opp_of_table_added;
->>>       ktime_t busy_time;
->>
->> I think it is simpler to do:
->>
->> +static struct devfreq_simple_ondemand_data panfrost_ondemand_data = {
->> +       .upthreshold = 45,
->> +       .downdifferential = 5,
->> +};
->>
->> [ ... ]
->>
->>         devfreq = devm_devfreq_add_device(dev, &panfrost_devfreq_profile,
->> -                                         DEVFREQ_GOV_SIMPLE_ONDEMAND,
->> NULL);
->> +                                         DEVFREQ_GOV_SIMPLE_ONDEMAND,
->> +                                         &panfrost_ondemand_data);
->>
->>
-> 
-> Yes, it's simpler. The driver would probably never have to serve two
-> GPUs. I've tried to keep this thing inside the panfrost struct,
-> forgetting about it.
+On 1/21/21 7:02 PM, Ahmad Fatoum wrote:
+> For non-DMA usage, we have an easy way to associate a timestamp with a
+> sample: iio_pollfunc_store_time stores a timestamp in the primary
+> trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
+> to push out the buffer along with the timestamp.
+>
+> For this to work, the driver needs to register an IIO_TIMESTAMP channel.
+> Do this.
+>
+> For DMA, it's not as easy, because we don't push the buffers out of
+> stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
+> a tasklet scheduled after a DMA completion.
+>
+> Preferably, the DMA controller would copy us the timestamp into that buffer
+> as well. Until this is implemented, restrict timestamping support to
+> only PIO. For low-frequency sampling, PIO is probably good enough.
+>
+> Cc: Holger Assmann <has@pengutronix.de>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+>  drivers/iio/adc/stm32-adc.c | 31 +++++++++++++++++++++++++------
+>  1 file changed, 25 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index c067c994dae2..91d9483e1f5f 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+>  	}
+>  }
+>  
+> -static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+> +static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>  {
+>  	struct device_node *node = indio_dev->dev.of_node;
+>  	struct stm32_adc *adc = iio_priv(indio_dev);
+> @@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (timestamping)
+> +		num_channels++;
+> +
+>  	channels = devm_kcalloc(&indio_dev->dev, num_channels,
+>  				sizeof(struct iio_chan_spec), GFP_KERNEL);
+>  	if (!channels)
+> @@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+>  		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+>  	}
+>  
+> +	if (timestamping) {
+> +		struct iio_chan_spec *timestamp = &channels[scan_index];
+> +
+> +		timestamp->type = IIO_TIMESTAMP;
+> +		timestamp->channel = -1;
+> +		timestamp->scan_index = scan_index;
+> +		timestamp->scan_type.sign = 's';
+> +		timestamp->scan_type.realbits = 64;
+> +		timestamp->scan_type.storagebits = 64;
+> +
+> +		scan_index++;
+> +	}
+> +
+>  	indio_dev->num_channels = scan_index;
+>  	indio_dev->channels = channels;
+>  
+> @@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	irqreturn_t (*handler)(int irq, void *p) = NULL;
+>  	struct stm32_adc *adc;
+> +	bool timestamping = false;
+>  	int ret;
+>  
+>  	if (!pdev->dev.of_node)
+> @@ -1931,16 +1948,18 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = stm32_adc_chan_of_init(indio_dev);
+> -	if (ret < 0)
+> -		return ret;
+> -
+>  	ret = stm32_adc_dma_request(dev, indio_dev);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	if (!adc->dma_chan)
+> +	if (!adc->dma_chan) {
+>  		handler = &stm32_adc_trigger_handler;
 
-The Juno platform with an FPGA attached is the only example I know of 
-where a system has multiple Mali GPUs - so it can happen, but it rare.
+Hi Ahmad,
 
-As it stands a static structure would work because the values are 
-constant - but Lukasz mentioned that they would be exported in sysfs in 
-the future, in which case they really should be part of the panfrost struct.
+Just suggesting: maybe add a quick comment to indicate that timestamping
+is supported in PIO mode (only), as DMA doesn't fill it into the buffer
+(well described in the commit message).
 
-Ultimately having a (non-const) static struct like above would mean 
-wasting a few bytes on systems with Panfrost loaded but no Mali GPU. 
-Having it in struct panfrost means the cost is only for Mali. Admittedly 
-it's only a few bytes in this case and often Panfrost will be a module.
+> +		timestamping = true;
+> +	}
+> +
+> +	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
+> +	if (ret < 0)
+> +		return ret;
 
-Steve
 
-> Steven already reviewed the patch, so it can probably stay.
-> I will keep it in mind. Thank you for the comments.
-> 
-> Regards,
-> Lukasz
+DMA resources need to be freed, instead of returning directly here, in
+case of error:
 
+     goto err_dma_disable;
+
+With that fixed, you can add my :
+
+Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+
+Thanks,
+
+Fabrice
+
+
+>  
+>  	ret = iio_triggered_buffer_setup(indio_dev,
+>  					 &iio_pollfunc_store_time, handler,
