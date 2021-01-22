@@ -2,241 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8E02FFC90
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFCA2FFC98
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbhAVGYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        id S1726820AbhAVGZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbhAVGYQ (ORCPT
+        with ESMTP id S1726525AbhAVGZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:24:16 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEF9C06174A;
-        Thu, 21 Jan 2021 22:23:35 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id 22so4196950qkf.9;
-        Thu, 21 Jan 2021 22:23:35 -0800 (PST)
+        Fri, 22 Jan 2021 01:25:18 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A6EC06174A;
+        Thu, 21 Jan 2021 22:24:38 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id n2so9021822iom.7;
+        Thu, 21 Jan 2021 22:24:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2jiQWzGRiVyC9PGi+1tFArEXO7Y2cXcpw8AScVWzwYo=;
-        b=FKU8qh/iFz6Iycz0f/HyIvt51vCXfl3f16ZEzyLR1s8Nw8Y6GAyvpbSQMT9r9cTo6r
-         5PiAHEfyNPaTYOUKcZCxJQVFTVsxYRLYjYBBYlWaB+fAeaw7Om7USIWYFMqXTEBqUCpx
-         2XifSTZnAkaXnAGOmg8YRKmnTaTz7szK+whh2nDXI3syh4O6pLq6nHFSCgN4e4aGugbh
-         jKuujEMWlh+X9XZjpwVnnINFqGSsGYjBZWzsFgNddOsHkgOXy9FTZvFoZeIa9VD8siQ0
-         fI3VU7zCX0CzTOZy/MLmCy3FwT1bLonTJhUxrHQHJNVeuFhQC1GpyxeMX1tyGi1ew38r
-         02gw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A/ouGLWd79J95AmhZ3hY8iaM6/NouWMMdBryf01BORc=;
+        b=RXFwy0WF/4kocTU07A5dF5GGXbJz3CjLlvt61D+pzNFK3I/C+br6ZXBFJ8cWlT2l9m
+         /P9+H0hEiMm+CBClCPtVzobsEiga0u/FR9DfeM9as6FgSPrW55e57feCn0X7EcdEl+oX
+         v9R+Pw7yrWimMPyrstkAtk/z0XuXUwCER9hg6Px0nkBBPoxSR3OMDRorvwTC2mzwXqCI
+         Byw8s8EVw9bTr3Fn6D7rZ2JXMP5bH/glwce/aIuRuhUgjWElkvyo+YVJx6m/GjhRUuZz
+         lUX/sRWieJ31368TuS06y9Q8n8rT1x8XLcsDnTcU0c8fEWYZqhm5I9bipS/35v5AXyDZ
+         qwPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2jiQWzGRiVyC9PGi+1tFArEXO7Y2cXcpw8AScVWzwYo=;
-        b=jP29FAXJ5rOsWiURiI3jvT1o47rMDrnMXsd0zqJJAGrjLTxPf/lG4MCy9HB6+VVJoX
-         qecV7O27LwrcWtk2qhpqRtUHka/BKnEoA2/ldo/vf+dt4AGAgnvLrHjb6G/QkYpzdSnl
-         fJ1Zzw84jciZgIxhcaDpT8i1lZXhVKtXXjLtUQwSrRUM9nNUVE5R4+TMoGm02Hj78tLJ
-         6+9TUPyqW3N1lGDbOa3tNvOydyG9EBpHCuoB2QuLD91Kw0GCcIy8KFIKFmXOsjzzfrvk
-         iFz4+frr3FAAUEArypK7G7VfSE0ODZdJqjC7SXF3+qt0kPkHuO1vD8ANXKH9z2Wok+Gv
-         emZA==
-X-Gm-Message-State: AOAM531LCjD+LL3ZZrEO9etMw8M/aUa9eannErvSPqpLSCfdSu95POEr
-        26kaunkIce7caCldq5NkUMg=
-X-Google-Smtp-Source: ABdhPJyLriqxN5+FOiRb+be/raohZeaJksFYnlyUUwAI8fgNTuQblQcdEJLkqwi0wlzi79KK+fVKSg==
-X-Received: by 2002:a37:7a46:: with SMTP id v67mr3497770qkc.16.1611296614825;
-        Thu, 21 Jan 2021 22:23:34 -0800 (PST)
-Received: from localhost.localdomain ([45.32.7.59])
-        by smtp.gmail.com with ESMTPSA id e5sm5178886qtp.86.2021.01.21.22.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 22:23:34 -0800 (PST)
-From:   Su Yanjun <suyanjun218@gmail.com>
-To:     mkl@pengutronix.de, manivannan.sadhasivam@linaro.org,
-        thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
-        kuba@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Su Yanjun <suyanjun218@gmail.com>
-Subject: [PATCH v1] can: mcp251xfd: Add some sysfs debug interfaces for registers r/w
-Date:   Fri, 22 Jan 2021 14:22:55 +0800
-Message-Id: <20210122062255.202620-1-suyanjun218@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A/ouGLWd79J95AmhZ3hY8iaM6/NouWMMdBryf01BORc=;
+        b=oKkQugc4Rd9OD7DqcxCdIroRZbYEe+5yt2jfYOzsaOEPdc9Jf4x568L/+dnFSrDfvL
+         K55aMwsKDV0BLjWHmUCHE5drEYFaK25l0hVtw7erWty+7Ou0nfRcBt/+3sI1qmxeOL0N
+         gm9hKLuvmTLI5xlSpgjxFohZbTTHqTutJFfs02OSWqyJOfmNqCpgspnKQtbbTc5KrnJ/
+         eXrYUCJj2QkP7fD0uDdkF7D9m1pv49yU7IIFqwjqYD/uJd/YlBbRHA7fd4Vhtq5k6y5G
+         Zq03kN2KnT14LdG63TisLWI7yPWMt8FRsiVsKsJqUVDws16yQq10o72clHLGrNovNh0A
+         zODA==
+X-Gm-Message-State: AOAM5314esVV2zUGE3qWQ+lFx+MehTFSJMbFw7i48ueYC0XP4wfLe1k3
+        qNeM4HxXaQmMp+dfJNYBU11XxGBQegammpRqDgs=
+X-Google-Smtp-Source: ABdhPJwFaraYlekAdxing6lHVD5SUikcrEqdByp/yD9aiuP1wvyj94fVw+Mr8VCNwwyW1ncR96fWPcM2KirJkrwPyX8=
+X-Received: by 2002:a92:4b06:: with SMTP id m6mr2721405ilg.177.1611296677491;
+ Thu, 21 Jan 2021 22:24:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210117042539.1609-1-alistair@alistair23.me> <20210117042539.1609-4-alistair@alistair23.me>
+ <20210118123158.GE4455@sirena.org.uk>
+In-Reply-To: <20210118123158.GE4455@sirena.org.uk>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Thu, 21 Jan 2021 22:24:10 -0800
+Message-ID: <CAKmqyKMyXk_OjTKD24Qxn4QXJ4FwP4yDQqtmTsxAJMJzy34PcA@mail.gmail.com>
+Subject: Re: [PATCH 4/6] regulator: Initial commit of sy7636a
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Alistair Francis <alistair@alistair23.me>, lee.jones@linaro.org,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When i debug mcp2518fd, some method to track registers is
-needed. This easy debug interface will be ok.
+On Mon, Jan 18, 2021 at 4:32 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Sat, Jan 16, 2021 at 08:25:37PM -0800, Alistair Francis wrote:
+>
+> > --- /dev/null
+> > +++ b/drivers/regulator/sy7636a-regulator.c
+> > @@ -0,0 +1,233 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * Functions to access SY3686A power management chip voltages
+> > + *
+>
+> Please make the entire comment a C++ one so things look more
+> intentional.
 
-For example,
-read a register at 0xe00:
-echo 0xe00 > can_get_reg
-cat can_get_reg
+Fixed.
 
-write a register at 0xe00:
-echo 0xe00,0x60 > can_set_reg
+>
+> > + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
+> > + *
+> > + * Author: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+>
+> This probably needs an update.
+>
+> > + * This program is free software; you can redistribute it and/or
+> > + * modify it under the terms of the GNU General Public License as
+> > + * published by the Free Software Foundation version 2.
+> > + *
+> > + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> > + * kind, whether express or implied; without even the implied warranty
+> > + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + * GNU General Public License for more details.
+>
+> This boilerplate is redundant and should be removed.
 
-Signed-off-by: Su Yanjun <suyanjun218@gmail.com>
----
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 132 ++++++++++++++++++
- 1 file changed, 132 insertions(+)
+Fixed.
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index ab8aad0a7594..d65abe5505d5 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -27,6 +27,131 @@
- 
- #define DEVICE_NAME "mcp251xfd"
- 
-+/* Add sysfs debug interface for easy to debug
-+ *
-+ * For example,
-+ *
-+ * - read a register
-+ * echo 0xe00 > can_get_reg
-+ * cat can_get_reg
-+ *
-+ * - write a register
-+ * echo 0xe00,0x1 > can_set_reg
-+ *
-+ */
-+static int reg_offset;
-+
-+static int __get_param(const char *buf, char *off, char *val)
-+{
-+	int len;
-+
-+	if (!buf || !off || !val)
-+		return -EINVAL;
-+
-+	len = 0;
-+	while (*buf != ',') {
-+		*off++ = *buf++;
-+		len++;
-+
-+		if (len >= 16)
-+			return -EINVAL;
-+	}
-+
-+	buf++;
-+
-+	*off = '\0';
-+
-+	len = 0;
-+	while (*buf) {
-+		*val++ = *buf++;
-+		len++;
-+
-+		if (len >= 16)
-+			return -EINVAL;
-+	}
-+
-+	*val = '\0';
-+
-+	return 0;
-+}
-+
-+static ssize_t can_get_reg_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
-+{
-+	int err;
-+	u32 val;
-+	struct mcp251xfd_priv *priv;
-+
-+	priv = dev_get_drvdata(dev);
-+
-+	err = regmap_read(priv->map_reg, reg_offset, &val);
-+	if (err)
-+		return 0;
-+
-+	return sprintf(buf, "reg = 0x%08x, val = 0x%08x\n", reg_offset, val);
-+}
-+
-+static ssize_t can_get_reg_store(struct device *dev,
-+				 struct device_attribute *attr, const char *buf, size_t len)
-+{
-+	u32 off;
-+
-+	reg_offset = 0;
-+
-+	if (kstrtouint(buf, 0, &off) || (off % 4))
-+		return -EINVAL;
-+
-+	reg_offset = off;
-+
-+	return len;
-+}
-+
-+static ssize_t can_set_reg_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
-+{
-+	return 0;
-+}
-+
-+static ssize_t can_set_reg_store(struct device *dev,
-+				 struct device_attribute *attr, const char *buf, size_t len)
-+{
-+	struct mcp251xfd_priv *priv;
-+	u32 off, val;
-+	int err;
-+
-+	char s1[16];
-+	char s2[16];
-+
-+	if (__get_param(buf, s1, s2))
-+		return -EINVAL;
-+
-+	if (kstrtouint(s1, 0, &off) || (off % 4))
-+		return -EINVAL;
-+
-+	if (kstrtouint(s2, 0, &val))
-+		return -EINVAL;
-+
-+	err = regmap_write(priv->map_reg, off, val);
-+	if (err)
-+		return -EINVAL;
-+
-+	return len;
-+}
-+
-+static DEVICE_ATTR_RW(can_get_reg);
-+static DEVICE_ATTR_RW(can_set_reg);
-+
-+static struct attribute *can_attributes[] = {
-+	&dev_attr_can_get_reg.attr,
-+	&dev_attr_can_set_reg.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group can_group = {
-+	.attrs = can_attributes,
-+	NULL
-+};
-+
- static const struct mcp251xfd_devtype_data mcp251xfd_devtype_data_mcp2517fd = {
- 	.quirks = MCP251XFD_QUIRK_MAB_NO_WARN | MCP251XFD_QUIRK_CRC_REG |
- 		MCP251XFD_QUIRK_CRC_RX | MCP251XFD_QUIRK_CRC_TX |
-@@ -2944,6 +3069,12 @@ static int mcp251xfd_probe(struct spi_device *spi)
- 	if (err)
- 		goto out_free_candev;
- 
-+	err = sysfs_create_group(&spi->dev.kobj, &can_group);
-+	if (err) {
-+		netdev_err(priv->ndev, "Create can group fail.\n");
-+		goto out_free_candev;
-+	}
-+
- 	err = can_rx_offload_add_manual(ndev, &priv->offload,
- 					MCP251XFD_NAPI_WEIGHT);
- 	if (err)
-@@ -2972,6 +3103,7 @@ static int mcp251xfd_remove(struct spi_device *spi)
- 	mcp251xfd_unregister(priv);
- 	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
- 	free_candev(ndev);
-+	sysfs_remove_group(&spi->dev.kobj, &can_group);
- 
- 	return 0;
- }
--- 
-2.25.1
+>
+> > +static int get_vcom_voltage_op(struct regulator_dev *rdev)
+> > +{
+> > +     int ret = get_vcom_voltage_mv(rdev->regmap);
+> > +
+>
+> Why is this get_vcom_voltage_mv() function not in the regulator driver,
+> and why is it not just inline here?  It also needs namespacing.
 
+I'm not sure what you mean, can you please explain?
+
+>
+> > +static int disable_regulator(struct regulator_dev *rdev)
+> > +{
+> > +     struct sy7636a *sy7636a = dev_get_drvdata(rdev->dev.parent);
+> > +     int ret = 0;
+> > +
+> > +     mutex_lock(&sy7636a->reglock);
+> > +     ret = regulator_disable_regmap(rdev);
+> > +     usleep_range(30000, 35000);
+> > +     mutex_unlock(&sy7636a->reglock);
+>
+> Why do you need this delay here, and what purpose is this lock intended
+
+The delay is to allow a power ramp up, I have added a comment.
+
+> to serve?  I can't understand what it's intended to protect.
+
+Apparently the mutex is to protect enable/disable, I don't think it's
+required and I will remove it.
+
+>
+> > +     mutex_lock(&sy7636a->reglock);
+> > +     ret = regulator_is_enabled_regmap(rdev);
+> > +     mutex_unlock(&sy7636a->reglock);
+>
+> This lock usage in particular looks confused.
+>
+> > +     ret = regulator_enable_regmap(rdev);
+> > +     if (ret)
+> > +             goto finish;
+>
+> > +     if (!pwr_good) {
+> > +             dev_err(&rdev->dev, "Power good signal timeout after %u ms\n",
+> > +                             jiffies_to_msecs(t1 - t0));
+> > +             ret = -ETIME;
+> > +             goto finish;
+> > +     }
+>
+> This doesn't undo the underlying enable, leaving the regulator in a
+> partially enabled state.
+
+Thanks, fixed.
+
+>
+> > +static const struct regulator_ops sy7636a_vcom_volt_ops = {
+> > +     .get_voltage = get_vcom_voltage_op,
+> > +     .enable = enable_regulator_pgood,
+> > +     .disable = disable_regulator,
+> > +     .is_enabled = sy7636a_regulator_is_enabled,
+> > +};
+>
+> The namespacing for functions is very random and prone to clashes.
+
+Fixed.
+
+> Given the power good signal I'd also expect a get_status() operation.
+
+Added.
+
+>
+> > +static int sy7636a_regulator_suspend(struct device *dev)
+> > +{
+> > +     int ret;
+> > +     struct sy7636a *sy7636a = dev_get_drvdata(dev->parent);
+> > +
+> > +     ret = get_vcom_voltage_mv(sy7636a->regmap);
+> > +
+> > +     if (ret > 0)
+> > +             sy7636a->vcom = (unsigned int)ret;
+> > +
+> > +     return 0;
+> > +}
+>
+> What's going on here, and if you are going to store this value over
+> suspend why not store it in a variable of the correct type?  In general
+
+It is part of the vendor's kernel, they specifically added it to
+ensure vcom is set on resume.
+
+I have fixed the variable type.
+
+> it's surprising to need a suspend operation for a regulator.
+>
+> > +     sy7636a->pgood_gpio = gdp;
+> > +     dev_info(sy7636a->dev,
+> > +             "Power good GPIO registered (gpio# %d)\n",
+> > +             desc_to_gpio(sy7636a->pgood_gpio));
+>
+> This print is just adding noise to the boot process.
+
+Removed.
+
+
+Alistair
