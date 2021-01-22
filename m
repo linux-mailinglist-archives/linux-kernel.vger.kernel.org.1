@@ -2,77 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6F8300A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B56300B39
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbhAVR6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:58:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53852 "EHLO mail.kernel.org"
+        id S1728676AbhAVS2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:28:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729481AbhAVRwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:52:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5002E23AA1;
-        Fri, 22 Jan 2021 17:51:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611337883;
-        bh=yLO+A1ljIfqO/p2jKFSqSiZv9SibpfihSeI5YzB7Mq0=;
+        id S1728561AbhAVOWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB64823B75;
+        Fri, 22 Jan 2021 14:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611325011;
+        bh=cVXMJvY5hJuBfENHnD5krYolc/OGDjdSaxeJg4eN1JA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kzh03ULZ551nNc3tCxjeqczVLHHfYMVA5OMJfwS3yvJN/LeW3vZJjP0mRlUAUB5W/
-         crh6N/QwkPHHgB1+HOOwD7GtJYzQ65CRIMvFhpOLMMvzmq+Sz/U6PJlUyQnCUcj666
-         df5D+zasEmkj0YqniXYbHP0I1LJHUmw14gB1k7gYWsRY58xeVr1YWlc0MdMq/WrVE/
-         +LT73p8lMJw89Y+7oOlTm73kKokopbBePXn87T2H3Mg53/UVAQUihfNXz8KsOdr2L3
-         292tebiJoDK0eX2kSmYyuswG6Qd3jF5VssddnruuFj7/+vzLSNRCXNcuLEWOfMmHK1
-         /rKMNY2t/m4yA==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     ceph-devel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        willy@infradead.org, linux-cachefs@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/6] ceph: fix invalidation
-Date:   Fri, 22 Jan 2021 12:51:15 -0500
-Message-Id: <20210122175119.364381-4-jlayton@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210122175119.364381-1-jlayton@kernel.org>
-References: <20210122175119.364381-1-jlayton@kernel.org>
+        b=TL+Aru9HjVaPUXPi6dB4Lat4emlwdVsXnkTThIiM4X7lZcC3wepULtZmuLtFUYTw7
+         FxsPIgLhXkIHwBu0X1USHe36cq5/D/5cBrttpcxEAaBexTTPz98bgH5ADfRsNAksxc
+         P80gn9kGkeZj5oQ8aRKL3U4iO2e7fu4HMX1guCr8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Juergen Gross <jgross@suse.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: [PATCH 5.4 03/33] xen/privcmd: allow fetching resource sizes
+Date:   Fri, 22 Jan 2021 15:12:19 +0100
+Message-Id: <20210122135733.712747023@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
+References: <20210122135733.565501039@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure that we invalidate the fscache whenever we go to invalidate the
-pagecache.
+From: Roger Pau Monne <roger.pau@citrix.com>
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+commit ef3a575baf53571dc405ee4028e26f50856898e7 upstream.
+
+Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num = 0 and
+addr = 0 in order to fetch the size of a specific resource.
+
+Add a shortcut to the default map resource path, since fetching the
+size requires no address to be passed in, and thus no VMA to setup.
+
+This is missing from the initial implementation, and causes issues
+when mapping resources that don't have fixed or known sizes.
+
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Tested-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Cc: stable@vger.kernel.org # >= 4.18
+Link: https://lore.kernel.org/r/20210112115358.23346-1-roger.pau@citrix.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ceph/caps.c  | 1 +
- fs/ceph/inode.c | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/xen/privcmd.c |   25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 21ba949ca2c3..0102221db7bf 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -1867,6 +1867,7 @@ static int try_nonblocking_invalidate(struct inode *inode)
- 	u32 invalidating_gen = ci->i_rdcache_gen;
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -724,14 +724,15 @@ static long privcmd_ioctl_restrict(struc
+ 	return 0;
+ }
  
- 	spin_unlock(&ci->i_ceph_lock);
-+	ceph_fscache_invalidate(inode);
- 	invalidate_mapping_pages(&inode->i_data, 0, -1);
- 	spin_lock(&ci->i_ceph_lock);
+-static long privcmd_ioctl_mmap_resource(struct file *file, void __user *udata)
++static long privcmd_ioctl_mmap_resource(struct file *file,
++				struct privcmd_mmap_resource __user *udata)
+ {
+ 	struct privcmd_data *data = file->private_data;
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	struct privcmd_mmap_resource kdata;
+ 	xen_pfn_t *pfns = NULL;
+-	struct xen_mem_acquire_resource xdata;
++	struct xen_mem_acquire_resource xdata = { };
+ 	int rc;
  
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 5d20a620e96c..2d424b41a8b9 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -1863,6 +1863,7 @@ static void ceph_do_invalidate_pages(struct inode *inode)
- 	orig_gen = ci->i_rdcache_gen;
- 	spin_unlock(&ci->i_ceph_lock);
+ 	if (copy_from_user(&kdata, udata, sizeof(kdata)))
+@@ -741,6 +742,22 @@ static long privcmd_ioctl_mmap_resource(
+ 	if (data->domid != DOMID_INVALID && data->domid != kdata.dom)
+ 		return -EPERM;
  
-+	ceph_fscache_invalidate(inode);
- 	if (invalidate_inode_pages2(inode->i_mapping) < 0) {
- 		pr_err("invalidate_pages %p fails\n", inode);
- 	}
--- 
-2.29.2
++	/* Both fields must be set or unset */
++	if (!!kdata.addr != !!kdata.num)
++		return -EINVAL;
++
++	xdata.domid = kdata.dom;
++	xdata.type = kdata.type;
++	xdata.id = kdata.id;
++
++	if (!kdata.addr && !kdata.num) {
++		/* Query the size of the resource. */
++		rc = HYPERVISOR_memory_op(XENMEM_acquire_resource, &xdata);
++		if (rc)
++			return rc;
++		return __put_user(xdata.nr_frames, &udata->num);
++	}
++
+ 	down_write(&mm->mmap_sem);
+ 
+ 	vma = find_vma(mm, kdata.addr);
+@@ -775,10 +792,6 @@ static long privcmd_ioctl_mmap_resource(
+ 	} else
+ 		vma->vm_private_data = PRIV_VMA_LOCKED;
+ 
+-	memset(&xdata, 0, sizeof(xdata));
+-	xdata.domid = kdata.dom;
+-	xdata.type = kdata.type;
+-	xdata.id = kdata.id;
+ 	xdata.frame = kdata.idx;
+ 	xdata.nr_frames = kdata.num;
+ 	set_xen_guest_handle(xdata.frame_list, pfns);
+
 
