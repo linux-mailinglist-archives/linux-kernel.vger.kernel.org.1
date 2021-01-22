@@ -2,107 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF3830100B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C6C301011
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbhAVWdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 17:33:14 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42514 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728336AbhAVWcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:32:48 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10MMBnIe176153;
-        Fri, 22 Jan 2021 17:31:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=Zm+DimOO07FuMeGIC0cmqs92h64q23WHojDOHXY+Ebg=;
- b=Sj22m8F8w7eM+4jc/LuvXWHTRMkika1mjas7ne+eAVNmNlO3KNuTvhpP7Yqkql04HWqK
- dD7h8Z+l1XAwiy0fAtj7K6AJVav98WNSC9pnn/QYVlrYNcYI64vxLYijgIWNZ72PlaSV
- bnJON56IDOqMxPjENefvb7agW7LqX9Sd9PAzl2sEO0ehBdMYZlX83IsyVh7gr4AT5vS/
- lKGYYYoWF8afKVTu5aChCL+cX6aHhzXApCoIKPwtdKsAyTdcUN4BBiKodZ7AcrXk6Yma
- +SzzZZMKfkhc2s+pjjU5+Cz6699iNs8waoacQ+F/lypDDyU558P+TqfcW60iILdynTdg LA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36879kgc8n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 17:31:57 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10MMCtr4181758;
-        Fri, 22 Jan 2021 17:31:56 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36879kgc8k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 17:31:56 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10MMVGl2010896;
-        Fri, 22 Jan 2021 22:31:56 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma01wdc.us.ibm.com with ESMTP id 367k0xq1ju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 22:31:56 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10MMVt5s7078600
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 22:31:55 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC652AE06B;
-        Fri, 22 Jan 2021 22:31:55 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 641D9AE05C;
-        Fri, 22 Jan 2021 22:31:53 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.213.112])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Fri, 22 Jan 2021 22:31:53 +0000 (GMT)
-References: <20210121173003.18324-1-nramas@linux.microsoft.com>
- <20210121173003.18324-2-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        ebiederm@xmission.com, gregkh@linuxfoundation.org,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 2/2] ima: Free IMA measurement buffer after kexec syscall
-In-reply-to: <20210121173003.18324-2-nramas@linux.microsoft.com>
-Date:   Fri, 22 Jan 2021 19:31:51 -0300
-Message-ID: <87bldg1u3s.fsf@manicouagan.localdomain>
+        id S1730132AbhAVWfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:35:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729912AbhAVWeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 17:34:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D819123B09
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 22:33:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611354819;
+        bh=uEpvD96tWcat/Dhjsboc8KcFrUlWjIqjdqBATng0ZIE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RM7lLLs2y2584/lY+Lax4ET+BNerAZIbGHcDDXPva3GHSdujnALdi+OzW1dWBMDJb
+         cDHZcVWCJKHTFGQxNAH+BlKmiKjeRqcygCm1hDA2/XxeCmKWCkNUHo4sV5LZK+S2Il
+         pYU7EulEbzP23v0NQVr4d3pTAURp1BnSKbNxs7D9r2qNeKzt9Hcbv5blNY4WG5uWW5
+         GYl++TrzcD9tHBcIgUmNH3JRGH5lABbm1K6rXgLxXQohEeXGEpvVb7tqtPZkeNUgcd
+         fjPnzjcLgV21LxW0hdCkGcR0DlLRwcufRBfQkXtwaz48oFRtPOBh0ddwRh5Mqyja6r
+         I8VVHfR4dJp/Q==
+Received: by mail-lj1-f172.google.com with SMTP id f17so8301907ljg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:33:38 -0800 (PST)
+X-Gm-Message-State: AOAM530ONDqq0LLmnjfhFONg7QZvKkoJqycITpP8v0UN341CdV5qwTCm
+        OIvDCXKzFjWTQ6t8ccSgLBdOcdQcg1QV5G6YLCtzHw==
+X-Google-Smtp-Source: ABdhPJwMj1N+Iqqglo06Li/iSweJcrBrd6oY1WBmInh5vbzzo0ZcaAODlHptVUHsj9RlFretP+NHltWh1ZQhtL/rakE=
+X-Received: by 2002:a2e:2c11:: with SMTP id s17mr945935ljs.468.1611354816974;
+ Fri, 22 Jan 2021 14:33:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-22_15:2021-01-22,2021-01-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- malwarescore=0 impostorscore=0 clxscore=1015 mlxscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=870
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101220112
+References: <20210122123003.46125-1-mikko.ylinen@linux.intel.com>
+In-Reply-To: <20210122123003.46125-1-mikko.ylinen@linux.intel.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 22 Jan 2021 23:33:26 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ6sMBvZ_ZG9++jwpQ+JQL3PL02okhD0O5Ftz4Hd7jEC3Q@mail.gmail.com>
+Message-ID: <CACYkzJ6sMBvZ_ZG9++jwpQ+JQL3PL02okhD0O5Ftz4Hd7jEC3Q@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Drop disabled LSM hooks from the sleepable set
+To:     Mikko Ylinen <mikko.ylinen@linux.intel.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        KP Singh <kpsingh@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-
-> IMA allocates kernel virtual memory to carry forward the measurement
-> list, from the current kernel to the next kernel on kexec system call,
-> in ima_add_kexec_buffer() function.  This buffer is not freed before
-> completing the kexec system call resulting in memory leak.
+On Fri, Jan 22, 2021 at 1:32 PM Mikko Ylinen
+<mikko.ylinen@linux.intel.com> wrote:
 >
-> Add ima_buffer field in "struct kimage" to store the virtual address
-> of the buffer allocated for the IMA measurement list.
-> Free the memory allocated for the IMA measurement list in
-> kimage_file_post_load_cleanup() function.
+> Networking LSM hooks are conditionally enabled and when building the new
+> sleepable BPF LSM hooks with the networking LSM hooks disabled, the
+> following build error occurs:
 >
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
+> BTFIDS  vmlinux
+> FAILED unresolved symbol bpf_lsm_socket_socketpair
+>
+> To fix the error, conditionally add the networking LSM hooks to the
+> sleepable set.
+>
+> Fixes: 423f16108c9d8 ("bpf: Augment the set of sleepable LSM hooks")
+> Signed-off-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
 
-Good catch.
+Thanks!
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Acked-by: KP Singh <kpsingh@kernel.org>
