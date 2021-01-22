@@ -2,153 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCAF300C17
+	by mail.lfdr.de (Postfix) with ESMTP id A1697300C18
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730279AbhAVTIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729250AbhAVSoY (ORCPT
+        id S1729090AbhAVTJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:09:26 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:28155 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729761AbhAVSqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:44:24 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB726C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:43:44 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id 19so6143476qkh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C9fNjhrnoyOFnHJ9WQ+/Ta+coPGgxGkP5OqAw7eb4FE=;
-        b=jZfX+8gSvsMknjij2NXiIkewNvE/gS0U3cVGRcyPmCqSxmENCBZB94bg9qNEDpz1/6
-         EraLaqdwbEc4JCtd9r5PpiJZrDTX7sq3ubzrQkZDk37siT5lhYY+2d86mkxF/54wMn6I
-         FFW2rpjqkRxx58b4cmvX5LghbDFYl6D9T1qiLQIrf9H0/Bm4zCQjT3lPd29XyUUTsyWW
-         JErij86cT0276L6OHd2ics2wWE8glvLdLu7uHZiKNM6MBGiI+DCKpcAUKMGjRuiCo+tE
-         5IOV2/n++vOYBzOW3Dja7cVPBGgJKROdI78/O8suUL/c0aHEqbgDjxPMVcUaAYd1rEuH
-         YIHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C9fNjhrnoyOFnHJ9WQ+/Ta+coPGgxGkP5OqAw7eb4FE=;
-        b=LBsYIq/y+jeZWmXGXuLrxSf1nzcZR4li9VYiN4nhSDiMaPt+Hc0TJRL+Qx+O670R2x
-         f07DoBzK58Dv9JKBAjv5rfuL4f2rXj15I1xBRb9ZAaBYzEOCG7UMF/XtqK/C5c4O8FRJ
-         PAd4qbbApxO27/3KOBn6DDfMup4ref4Qtk3/VSRv2ajtunwEU+5okHp6FWyXAKhRprET
-         yLasLaBtRNV1VCGVyJFNzClUE4aTEC4YCqq+Vyq7R3QqEHUf2J3r3fer8SIPqzHuOCPa
-         BMDPJzDnGRB+8CyQEODMSONcyM56opHqxLXHzL1VcVrcG5g+ZswqA4Lb7Oj3eFiKVRzO
-         wrHQ==
-X-Gm-Message-State: AOAM533QQjU57OOLyU9PeI6Oe13mFHlwsrLdqmB9LOj2BWmLuo4JlJue
-        ut8GDx1VqdmVSB8fLhHpqE0FEQ==
-X-Google-Smtp-Source: ABdhPJxPINKbhhsKe9/jTOjmTNsgfz8lXr+DTPt12mOvOHrzFu8u8RyYYax30EeJNoeW4KXB6egXuA==
-X-Received: by 2002:a05:620a:205a:: with SMTP id d26mr2334943qka.288.1611341023991;
-        Fri, 22 Jan 2021 10:43:43 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:589b])
-        by smtp.gmail.com with ESMTPSA id l204sm6940425qke.56.2021.01.22.10.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 10:43:42 -0800 (PST)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] Revert "mm: memcontrol: avoid workload stalls when lowering memory.high"
-Date:   Fri, 22 Jan 2021 13:43:41 -0500
-Message-Id: <20210122184341.292461-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.30.0
+        Fri, 22 Jan 2021 13:46:39 -0500
+Date:   Fri, 22 Jan 2021 18:45:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611341138; bh=2ILzHi/ReYeZyxyrJVxJwSXtgiG9Sy5HC6N/+GXYepg=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=YPsITljI0xVWT7arGTO6Fep3NgpuTX8DMLiLb6ohxQO8xHqcLBtYay69XrBkuOwjr
+         49z+Ff4ysFCxhp9Od96KjzxzP9ZVvQQMb1SX4iuT2Rj9gCzWNEBSiBQsymrVi1ntOB
+         c0UovLfOooz55rkDjzOh5MQXeUOXE0huVIjfD3LhZdwd0o61dNGDGS+M9neiGJ/woE
+         AgI28xjGVmh96KupPcjtF/soRBSwad/UayBSdXz0Ta0mXEyacpI+FlZxIRvNWki3eF
+         MOgGkr/d6mHNNt93Vw1tMgzbWXBRbSRopf6IiWfA5M/u7bGHbYTIyDyzH+G2KO0wj+
+         oWy/372pR8YaQ==
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
+Message-ID: <20210122184457.37812-1-alobakin@pm.me>
+In-Reply-To: <CAJ8uoz310du+0qsdGWKtsrK3tBxGFTr=kWkT+GwY1GqN=A2ejQ@mail.gmail.com>
+References: <1611329955.4913929-2-xuanzhuo@linux.alibaba.com> <20210122172534.9896-1-alobakin@pm.me> <CAJ8uoz310du+0qsdGWKtsrK3tBxGFTr=kWkT+GwY1GqN=A2ejQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 536d3bf261a2fc3b05b3e91e7eef7383443015cf, as it
-can cause writers to memory.high to get stuck in the kernel forever,
-performing page reclaim and consuming excessive amounts of CPU cycles.
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Fri, 22 Jan 2021 19:37:06 +0100
 
-Before the patch, a write to memory.high would first put the new limit
-in place for the workload, and then reclaim the requested delta. After
-the patch, the kernel tries to reclaim the delta before putting the
-new limit into place, in order to not overwhelm the workload with a
-sudden, large excess over the limit. However, if reclaim is actively
-racing with new allocations from the uncurbed workload, it can keep
-the write() working inside the kernel indefinitely.
+> On Fri, Jan 22, 2021 at 6:26 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Date: Fri, 22 Jan 2021 23:39:15 +0800
+> >
+> > > On Fri, 22 Jan 2021 13:55:14 +0100, Magnus Karlsson <magnus.karlsson@=
+gmail.com> wrote:
+> > > > On Fri, Jan 22, 2021 at 1:39 PM Alexander Lobakin <alobakin@pm.me> =
+wrote:
+> > > > >
+> > > > > From: Magnus Karlsson <magnus.karlsson@gmail.com>
+> > > > > Date: Fri, 22 Jan 2021 13:18:47 +0100
+> > > > >
+> > > > > > On Fri, Jan 22, 2021 at 12:57 PM Alexander Lobakin <alobakin@pm=
+.me> wrote:
+> > > > > > >
+> > > > > > > From: Alexander Lobakin <alobakin@pm.me>
+> > > > > > > Date: Fri, 22 Jan 2021 11:47:45 +0000
+> > > > > > >
+> > > > > > > > From: Eric Dumazet <eric.dumazet@gmail.com>
+> > > > > > > > Date: Thu, 21 Jan 2021 16:41:33 +0100
+> > > > > > > >
+> > > > > > > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
+> > > > > > > > > > This patch is used to construct skb based on page to sa=
+ve memory copy
+> > > > > > > > > > overhead.
+> > > > > > > > > >
+> > > > > > > > > > This function is implemented based on IFF_TX_SKB_NO_LIN=
+EAR. Only the
+> > > > > > > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR w=
+ill use page to
+> > > > > > > > > > directly construct skb. If this feature is not supporte=
+d, it is still
+> > > > > > > > > > necessary to copy data to construct skb.
+> > > > > > > > > >
+> > > > > > > > > > ---------------- Performance Testing ------------
+> > > > > > > > > >
+> > > > > > > > > > The test environment is Aliyun ECS server.
+> > > > > > > > > > Test cmd:
+> > > > > > > > > > ```
+> > > > > > > > > > xdpsock -i eth0 -t  -S -s <msg size>
+> > > > > > > > > > ```
+> > > > > > > > > >
+> > > > > > > > > > Test result data:
+> > > > > > > > > >
+> > > > > > > > > > size    64      512     1024    1500
+> > > > > > > > > > copy    1916747 1775988 1600203 1440054
+> > > > > > > > > > page    1974058 1953655 1945463 1904478
+> > > > > > > > > > percent 3.0%    10.0%   21.58%  32.3%
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > > > > > > > > > ---
+> > > > > > > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++=
+++++++++++++++----------
+> > > > > > > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > > > > > > > index 4a83117..38af7f1 100644
+> > > > > > > > > > --- a/net/xdp/xsk.c
+> > > > > > > > > > +++ b/net/xdp/xsk.c
+> > > > > > > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struc=
+t sk_buff *skb)
+> > > > > > > > > >   sock_wfree(skb);
+> > > > > > > > > >  }
+> > > > > > > > > >
+> > > > > > > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct x=
+dp_sock *xs,
+> > > > > > > > > > +                                       struct xdp_desc=
+ *desc)
+> > > > > > > > > > +{
+> > > > > > > > > > + u32 len, offset, copy, copied;
+> > > > > > > > > > + struct sk_buff *skb;
+> > > > > > > > > > + struct page *page;
+> > > > > > > > > > + void *buffer;
+> > > > > > > > > > + int err, i;
+> > > > > > > > > > + u64 addr;
+> > > > > > > > > > +
+> > > > > > > > > > + skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> > > > > > > > > > + if (unlikely(!skb))
+> > > > > > > > > > +         return ERR_PTR(err);
+> > > > > > > > > > +
+> > > > > > > > > > + addr =3D desc->addr;
+> > > > > > > > > > + len =3D desc->len;
+> > > > > > > > > > +
+> > > > > > > > > > + buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> > > > > > > > > > + offset =3D offset_in_page(buffer);
+> > > > > > > > > > + addr =3D buffer - xs->pool->addrs;
+> > > > > > > > > > +
+> > > > > > > > > > + for (copied =3D 0, i =3D 0; copied < len; i++) {
+> > > > > > > > > > +         page =3D xs->pool->umem->pgs[addr >> PAGE_SHI=
+FT];
+> > > > > > > > > > +
+> > > > > > > > > > +         get_page(page);
+> > > > > > > > > > +
+> > > > > > > > > > +         copy =3D min_t(u32, PAGE_SIZE - offset, len -=
+ copied);
+> > > > > > > > > > +
+> > > > > > > > > > +         skb_fill_page_desc(skb, i, page, offset, copy=
+);
+> > > > > > > > > > +
+> > > > > > > > > > +         copied +=3D copy;
+> > > > > > > > > > +         addr +=3D copy;
+> > > > > > > > > > +         offset =3D 0;
+> > > > > > > > > > + }
+> > > > > > > > > > +
+> > > > > > > > > > + skb->len +=3D len;
+> > > > > > > > > > + skb->data_len +=3D len;
+> > > > > > > > >
+> > > > > > > > > > + skb->truesize +=3D len;
+> > > > > > > > >
+> > > > > > > > > This is not the truesize, unfortunately.
+> > > > > > > > >
+> > > > > > > > > We need to account for the number of pages, not number of=
+ bytes.
+> > > > > > > >
+> > > > > > > > The easiest solution is:
+> > > > > > > >
+> > > > > > > >       skb->truesize +=3D PAGE_SIZE * i;
+> > > > > > > >
+> > > > > > > > i would be equal to skb_shinfo(skb)->nr_frags after exiting=
+ the loop.
+> > > > > > >
+> > > > > > > Oops, pls ignore this. I forgot that XSK buffers are not
+> > > > > > > "one per page".
+> > > > > > > We need to count the number of pages manually and then do
+> > > > > > >
+> > > > > > >         skb->truesize +=3D PAGE_SIZE * npages;
+> > > > > > >
+> > > > > > > Right.
+> > > > > >
+> > > > > > There are two possible packet buffer (chunks) sizes in a umem, =
+2K and
+> > > > > > 4K on a system with a PAGE_SIZE of 4K. If I remember correctly,=
+ and
+> > > > > > please correct me if wrong, truesize is used for memory account=
+ing.
+> > > > > > But in this code, no kernel memory has been allocated (apart fr=
+om the
+> > > > > > skb). The page is just a part of the umem that has been already
+> > > > > > allocated beforehand and by user-space in this case. So what sh=
+ould
+> > > > > > truesize be in this case? Do we add 0, chunk_size * i, or the
+> > > > > > complicated case of counting exactly how many 4K pages that are=
+ used
+> > > > > > when the chunk_size is 2K, as two chunks could occupy the same =
+page,
+> > > > > > or just the upper bound of PAGE_SIZE * i that is likely a good
+> > > > > > approximation in most cases? Just note that there might be othe=
+r uses
+> > > > > > of truesize that I am unaware of that could impact this choice.
+> > > > >
+> > > > > Truesize is "what amount of memory does this skb occupy with all =
+its
+> > > > > fragments, linear space and struct sk_buff itself". The closest i=
+t
+> > > > > will be to the actual value, the better.
+> > > > > In this case, I think adding of chunk_size * i would be enough.
+> > > >
+> > > > Sounds like a good approximation to me.
+> > > >
+> > > > > (PAGE_SIZE * i can be overwhelming when chunk_size is 2K, especia=
+lly
+> > > > > for setups with PAGE_SIZE > SZ_4K)
+> > > >
+> > > > You are right. That would be quite horrible on a system with a page=
+ size of 64K.
+> > >
+> > > Thank you everyone, I learned it.
+> > >
+> > > I also think it is appropriate to add a chunk size here, and there is=
+ actually
+> > > only one chunk here, so it's very simple
+> > >
+> > >       skb->truesize +=3D xs->pool->chunk_size;
+> >
+> > umem chunks can't cross page boundaries. So if you're sure that
+> > there could be only one chunk, you don't need the loop at all,
+> > if I'm not missing anything.
+>=20
+> In the default mode, this is true. But in the unaligned_chunk mode
+> that can be set on the umem, the chunk may cross one page boundary, so
+> we need the loop and the chunk_size * i in the assignment of truesize.
+> So "i" can be 1 or 2, but nothing else.
 
-This is causing problems in Facebook production. A privileged
-system-level daemon that adjusts memory.high for various workloads
-running on a host can get unexpectedly stuck in the kernel and
-essentially turn into a sort of involuntary kswapd for one of the
-workloads. We've observed that daemon busy-spin in a write() for
-minutes at a time, neglecting its other duties on the system, and
-expending privileged system resources on behalf of a workload.
+Ah, unaligned mode, sure. Thanks for explanation!
+Right, we need the loop and skb->truesize +=3D xs->pool->chunk_size * i
+then.
 
-To remedy this, we have first considered changing the reclaim logic to
-break out after a couple of loops - whether the workload has converged
-to the new limit or not - and bound the write() call this way.
-However, the root cause that inspired the sequence change in the first
-place has been fixed through other means, and so a revert back to the
-proven limit-setting sequence, also used by memory.max, is preferable.
-
-The sequence was changed to avoid extreme latencies in the workload
-when the limit was lowered: the sudden, large excess created by the
-limit lowering would erroneously trigger the penalty sleeping code
-that is meant to throttle excessive growth from below. Allocating
-threads could end up sleeping long after the write() had already
-reclaimed the delta for which they were being punished.
-
-However, erroneous throttling also caused problems in other scenarios
-at around the same time. This resulted in commit b3ff92916af3 ("mm,
-memcg: reclaim more aggressively before high allocator throttling"),
-included in the same release as the offending commit. When allocating
-threads now encounter large excess caused by a racing write() to
-memory.high, instead of entering punitive sleeps, they will simply be
-tasked with helping reclaim down the excess, and will be held no
-longer than it takes to accomplish that. This is in line with regular
-limit enforcement - i.e. if the workload allocates up against or over
-an otherwise unchanged limit from below.
-
-With the patch breaking userspace, and the root cause addressed by
-other means already, revert it again.
-
-Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-Cc: <stable@vger.kernel.org> # 5.8+
-Reported-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-Andrew, this is a replacement for
-mm-memcontrol-prevent-starvation-when-writing-memoryhigh.patch
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 605f671203ef..a8611a62bafd 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6273,6 +6273,8 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 	if (err)
- 		return err;
- 
-+	page_counter_set_high(&memcg->memory, high);
-+
- 	for (;;) {
- 		unsigned long nr_pages = page_counter_read(&memcg->memory);
- 		unsigned long reclaimed;
-@@ -6296,10 +6298,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 			break;
- 	}
- 
--	page_counter_set_high(&memcg->memory, high);
--
- 	memcg_wb_domain_size_changed(memcg);
--
- 	return nbytes;
- }
- 
--- 
-2.30.0
+> > > In addition, I actually borrowed from the tcp code:
+> > >
+> > >    tcp_build_frag:
+> > >    --------------
+> > >
+> > >       if (can_coalesce) {
+> > >               skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy)=
+;
+> > >       } else {
+> > >               get_page(page);
+> > >               skb_fill_page_desc(skb, i, page, offset, copy);
+> > >       }
+> > >
+> > >       if (!(flags & MSG_NO_SHARED_FRAGS))
+> > >               skb_shinfo(skb)->flags |=3D SKBFL_SHARED_FRAG;
+> > >
+> > >       skb->len +=3D copy;
+> > >       skb->data_len +=3D copy;
+> > >       skb->truesize +=3D copy;
+> > >
+> > > So, here is one bug?
+> >
+> > skb_frag_t is an alias to struct bvec. It doesn't contain info about
+> > real memory consumption, so there's no other option buf just to add
+> > "copy" to truesize.
+> > XSK is different in this term, as it operates with chunks of a known
+> > size.
+> >
+> > > Thanks.
+> > >
+> > > >
+> > > > > > > > > > +
+> > > > > > > > > > + refcount_add(len, &xs->sk.sk_wmem_alloc);
+> > > > > > > > > > +
+> > > > > > > > > > + return skb;
+> > > > > > > > > > +}
+> > > > > > > > > > +
+> > > > > > > >
+> > > > > > > > Al
+> > > > > > >
+> > > > > > > Thanks,
+> > > > > > > Al
+> > > > >
+> > > > > Al
 
