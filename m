@@ -2,213 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17AF3004B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A393004C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbhAVOBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:01:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:49238 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727960AbhAVOA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:00:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E68D1596;
-        Fri, 22 Jan 2021 06:00:12 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9350A3F66E;
-        Fri, 22 Jan 2021 06:00:10 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v6 4/4] arm64: mte: Enable async tag check fault
-Date:   Fri, 22 Jan 2021 13:59:55 +0000
-Message-Id: <20210122135955.30237-5-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135955.30237-1-vincenzo.frascino@arm.com>
-References: <20210122135955.30237-1-vincenzo.frascino@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728152AbhAVOCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:02:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33113 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728112AbhAVOBz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:01:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611324029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=V4MAmW9o9TEkOOmhJwAHh/aM9Qgr24vL7t9KpVWFRYk=;
+        b=FWlOQMhjMvlwuqq4ZDLcgJlI6VHXSYbCspTS1hqyF2ZxyWmPgeUzBGmvLMYn0VN4dGEELj
+        AqJusSMKEneUtiYTwj+0XvpyqQBv670DCCgYXNzMyGsWIJxYBJdAX7UPJcYadLDkgqj3ct
+        yzR4hLupsjNZU98Z4T97cJETSMGUq1w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-6pvEWHQAOIiMiXMcOU5m5Q-1; Fri, 22 Jan 2021 09:00:27 -0500
+X-MC-Unique: 6pvEWHQAOIiMiXMcOU5m5Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4373D19611B3;
+        Fri, 22 Jan 2021 14:00:26 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-114.pek2.redhat.com [10.72.12.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A096219C59;
+        Fri, 22 Jan 2021 14:00:23 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
+        david@redhat.com, bhe@redhat.com, lkp@intel.com
+Subject: [PATCH v5 5/5] mm: remove unneeded local variable in free_area_init_core
+Date:   Fri, 22 Jan 2021 21:59:56 +0800
+Message-Id: <20210122135956.5946-6-bhe@redhat.com>
+In-Reply-To: <20210122135956.5946-1-bhe@redhat.com>
+References: <20210122135956.5946-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MTE provides a mode that asynchronously updates the TFSR_EL1 register
-when a tag check exception is detected.
+Local variable 'zone_start_pfn' is not needed since there's only
+one call site in free_area_init_core(). Let's remove it and pass
+zone->zone_start_pfn directly to init_currently_empty_zone().
 
-To take advantage of this mode the kernel has to verify the status of
-the register at:
-  1. Context switching
-  2. Return to user/EL0 (Not required in entry from EL0 since the kernel
-  did not run)
-  3. Kernel entry from EL1
-  4. Kernel exit to EL1
-
-If the register is non-zero a trace is reported.
-
-Add the required features for EL1 detection and reporting.
-
-Note: ITFSB bit is set in the SCTLR_EL1 register hence it guaranties that
-the indirect writes to TFSR_EL1 are synchronized at exception entry to
-EL1. On the context switch path the synchronization is guarantied by the
-dsb() in __switch_to().
-The dsb(nsh) in mte_check_tfsr_exit() is provisional pending
-confirmation by the architects.
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- arch/arm64/include/asm/mte.h     | 32 +++++++++++++++++++++++
- arch/arm64/kernel/entry-common.c |  6 +++++
- arch/arm64/kernel/mte.c          | 44 ++++++++++++++++++++++++++++++++
- 3 files changed, 82 insertions(+)
+ mm/page_alloc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index d02aff9f493d..237bb2f7309d 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -92,5 +92,37 @@ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 69cf19baac12..e0df67948ace 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6923,7 +6923,6 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
+ 	for (j = 0; j < MAX_NR_ZONES; j++) {
+ 		struct zone *zone = pgdat->node_zones + j;
+ 		unsigned long size, freesize, memmap_pages;
+-		unsigned long zone_start_pfn = zone->zone_start_pfn;
  
- #endif /* CONFIG_ARM64_MTE */
+ 		size = zone->spanned_pages;
+ 		freesize = zone->present_pages;
+@@ -6972,7 +6971,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
  
-+#ifdef CONFIG_KASAN_HW_TAGS
-+void mte_check_tfsr_el1(void);
-+
-+static inline void mte_check_tfsr_entry(void)
-+{
-+	mte_check_tfsr_el1();
-+}
-+
-+static inline void mte_check_tfsr_exit(void)
-+{
-+	/*
-+	 * The asynchronous faults are sync'ed automatically with
-+	 * TFSR_EL1 on kernel entry but for exit an explicit dsb()
-+	 * is required.
-+	 */
-+	dsb(nsh);
-+	isb();
-+
-+	mte_check_tfsr_el1();
-+}
-+#else
-+static inline void mte_check_tfsr_el1(void)
-+{
-+}
-+static inline void mte_check_tfsr_entry(void)
-+{
-+}
-+static inline void mte_check_tfsr_exit(void)
-+{
-+}
-+#endif /* CONFIG_KASAN_HW_TAGS */
-+
- #endif /* __ASSEMBLY__ */
- #endif /* __ASM_MTE_H  */
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 5346953e4382..31666511ba67 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	rcu_irq_enter_check_tick();
- 	trace_hardirqs_off_finish();
-+
-+	mte_check_tfsr_entry();
+ 		set_pageblock_order();
+ 		setup_usemap(zone);
+-		init_currently_empty_zone(zone, zone_start_pfn, size);
++		init_currently_empty_zone(zone, zone->zone_start_pfn, size);
+ 		memmap_init_zone(zone);
+ 	}
  }
- 
- /*
-@@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
- {
- 	lockdep_assert_irqs_disabled();
- 
-+	mte_check_tfsr_exit();
-+
- 	if (interrupts_enabled(regs)) {
- 		if (regs->exit_rcu) {
- 			trace_hardirqs_on_prepare();
-@@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
- 
- asmlinkage void noinstr exit_to_user_mode(void)
- {
-+	mte_check_tfsr_exit();
-+
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	user_enter_irqoff();
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 92078e1eb627..7763ac1f2917 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -182,6 +182,37 @@ bool mte_report_once(void)
- 	return READ_ONCE(report_fault_once);
- }
- 
-+#ifdef CONFIG_KASAN_HW_TAGS
-+void mte_check_tfsr_el1(void)
-+{
-+	u64 tfsr_el1;
-+
-+	if (!system_supports_mte())
-+		return;
-+
-+	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
-+
-+	/*
-+	 * The kernel should never trigger an asynchronous fault on a
-+	 * TTBR0 address, so we should never see TF0 set.
-+	 * For futexes we disable checks via PSTATE.TCO.
-+	 */
-+	WARN_ONCE(tfsr_el1 & SYS_TFSR_EL1_TF0,
-+		  "Kernel async tag fault on TTBR0 address");
-+
-+	if (unlikely(tfsr_el1 & SYS_TFSR_EL1_TF1)) {
-+		/*
-+		 * Note: isb() is not required after this direct write
-+		 * because there is no indirect read subsequent to it
-+		 * (per ARM DDI 0487F.c table D13-1).
-+		 */
-+		write_sysreg_s(0, SYS_TFSR_EL1);
-+
-+		kasan_report_async();
-+	}
-+}
-+#endif
-+
- static void update_sctlr_el1_tcf0(u64 tcf0)
- {
- 	/* ISB required for the kernel uaccess routines */
-@@ -247,6 +278,19 @@ void mte_thread_switch(struct task_struct *next)
- 	/* avoid expensive SCTLR_EL1 accesses if no change */
- 	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
- 		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
-+	else
-+		isb();
-+
-+	/*
-+	 * Check if an async tag exception occurred at EL1.
-+	 *
-+	 * Note: On the context switch path we rely on the dsb() present
-+	 * in __switch_to() to guarantee that the indirect writes to TFSR_EL1
-+	 * are synchronized before this point.
-+	 * isb() above is required for the same reason.
-+	 *
-+	 */
-+	mte_check_tfsr_el1();
- }
- 
- void mte_suspend_exit(void)
 -- 
-2.30.0
+2.17.2
 
