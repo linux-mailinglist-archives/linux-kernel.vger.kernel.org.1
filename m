@@ -2,268 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFA73003BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A18783003AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbhAVNFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:05:10 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:53198 "EHLO raptor.unsafe.ru"
+        id S1727676AbhAVNBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:01:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:46582 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727825AbhAVNDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:03:13 -0500
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-112-41-137.net.upcbroadband.cz [94.112.41.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id B16AC20A1E;
-        Fri, 22 Jan 2021 13:00:54 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH v4 7/7] kselftests: Add test to check for rlimit changes in different user namespaces
-Date:   Fri, 22 Jan 2021 14:00:16 +0100
-Message-Id: <50be4be55c030a02ac5244a07d6ef3ea8f1cd15a.1611320161.git.gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1611320161.git.gladkov.alexey@gmail.com>
-References: <cover.1611320161.git.gladkov.alexey@gmail.com>
+        id S1727559AbhAVNBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:01:34 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1B3211B3;
+        Fri, 22 Jan 2021 05:00:46 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 609D53F66E;
+        Fri, 22 Jan 2021 05:00:45 -0800 (PST)
+Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
+To:     Will Deacon <will@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Yang Yingliang <yangyingliang@huawei.com>
+References: <20201126034230.777-1-thunder.leizhen@huawei.com>
+ <20210122125132.GB24102@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <34a9c164-389d-30cd-11a3-8796eb7bca93@arm.com>
+Date:   Fri, 22 Jan 2021 13:00:44 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Fri, 22 Jan 2021 13:00:55 +0000 (UTC)
+In-Reply-To: <20210122125132.GB24102@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The testcase runs few instances of the program with RLIMIT_NPROC=1 from
-user uid=60000, in different user namespaces.
+On 2021-01-22 12:51, Will Deacon wrote:
+> On Thu, Nov 26, 2020 at 11:42:30AM +0800, Zhen Lei wrote:
+>> When changing from a set of pages/smaller blocks to a larger block for an
+>> address, the software should follow the sequence of BBML processing.
+>>
+>> When changing from a block to a set of pages/smaller blocks for an
+>> address, there's no need to use nT bit. If an address in the large block
+>> is accessed before page table switching, the TLB caches the large block
+>> mapping. After the page table is switched and before TLB invalidation
+>> finished, new access requests are still based on large block mapping.
+>> After the block or page is invalidated, the system reads the small block
+>> or page mapping from the memory; If the address in the large block is not
+>> accessed before page table switching, the TLB has no cache. After the
+>> page table is switched, a new access is initiated to read the small block
+>> or page mapping from the memory.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  2 +
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 +
+>>   drivers/iommu/io-pgtable-arm.c              | 46 ++++++++++++++++-----
+>>   include/linux/io-pgtable.h                  |  1 +
+>>   4 files changed, 40 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index e634bbe60573..14a1a11565fb 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -1977,6 +1977,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+>>   		.coherent_walk	= smmu->features & ARM_SMMU_FEAT_COHERENCY,
+>>   		.tlb		= &arm_smmu_flush_ops,
+>>   		.iommu_dev	= smmu->dev,
+>> +		.bbml		= smmu->bbml,
+>>   	};
+>>   
+>>   	if (smmu_domain->non_strict)
+>> @@ -3291,6 +3292,7 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+>>   
+>>   	/* IDR3 */
+>>   	reg = readl_relaxed(smmu->base + ARM_SMMU_IDR3);
+>> +	smmu->bbml = FIELD_GET(IDR3_BBML, reg);
+>>   	if (FIELD_GET(IDR3_RIL, reg))
+>>   		smmu->features |= ARM_SMMU_FEAT_RANGE_INV;
+>>   
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> index d4b7f40ccb02..aa7eb460fa09 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> @@ -51,6 +51,7 @@
+>>   #define IDR1_SIDSIZE			GENMASK(5, 0)
+>>   
+>>   #define ARM_SMMU_IDR3			0xc
+>> +#define IDR3_BBML			GENMASK(12, 11)
+>>   #define IDR3_RIL			(1 << 10)
+>>   
+>>   #define ARM_SMMU_IDR5			0x14
+>> @@ -617,6 +618,7 @@ struct arm_smmu_device {
+>>   
+>>   	int				gerr_irq;
+>>   	int				combined_irq;
+>> +	int				bbml;
+>>   
+>>   	unsigned long			ias; /* IPA */
+>>   	unsigned long			oas; /* PA */
+>> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+>> index a7a9bc08dcd1..341581337ad0 100644
+>> --- a/drivers/iommu/io-pgtable-arm.c
+>> +++ b/drivers/iommu/io-pgtable-arm.c
+>> @@ -72,6 +72,7 @@
+>>   
+>>   #define ARM_LPAE_PTE_NSTABLE		(((arm_lpae_iopte)1) << 63)
+>>   #define ARM_LPAE_PTE_XN			(((arm_lpae_iopte)3) << 53)
+>> +#define ARM_LPAE_PTE_nT			(((arm_lpae_iopte)1) << 16)
+>>   #define ARM_LPAE_PTE_AF			(((arm_lpae_iopte)1) << 10)
+>>   #define ARM_LPAE_PTE_SH_NS		(((arm_lpae_iopte)0) << 8)
+>>   #define ARM_LPAE_PTE_SH_OS		(((arm_lpae_iopte)2) << 8)
+>> @@ -255,7 +256,7 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
+>>   
+>>   static void __arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
+>>   				phys_addr_t paddr, arm_lpae_iopte prot,
+>> -				int lvl, arm_lpae_iopte *ptep)
+>> +				int lvl, arm_lpae_iopte *ptep, arm_lpae_iopte nT)
+>>   {
+>>   	arm_lpae_iopte pte = prot;
+>>   
+>> @@ -265,37 +266,60 @@ static void __arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
+>>   		pte |= ARM_LPAE_PTE_TYPE_BLOCK;
+>>   
+>>   	pte |= paddr_to_iopte(paddr, data);
+>> +	pte |= nT;
+>>   
+>>   	__arm_lpae_set_pte(ptep, pte, &data->iop.cfg);
+>>   }
+>>   
+>> +static void __arm_lpae_free_pgtable(struct arm_lpae_io_pgtable *data, int lvl,
+>> +				    arm_lpae_iopte *ptep);
+>>   static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
+>>   			     unsigned long iova, phys_addr_t paddr,
+>>   			     arm_lpae_iopte prot, int lvl,
+>>   			     arm_lpae_iopte *ptep)
+>>   {
+>>   	arm_lpae_iopte pte = *ptep;
+>> +	struct io_pgtable_cfg *cfg = &data->iop.cfg;
+>>   
+>>   	if (iopte_leaf(pte, lvl, data->iop.fmt)) {
+>>   		/* We require an unmap first */
+>>   		WARN_ON(!selftest_running);
+>>   		return -EEXIST;
+>>   	} else if (iopte_type(pte, lvl) == ARM_LPAE_PTE_TYPE_TABLE) {
+>> -		/*
+>> -		 * We need to unmap and free the old table before
+>> -		 * overwriting it with a block entry.
+>> -		 */
+>>   		arm_lpae_iopte *tblp;
+>> +		struct io_pgtable *iop = &data->iop;
+>>   		size_t sz = ARM_LPAE_BLOCK_SIZE(lvl, data);
+>>   
+>> -		tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
+>> -		if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
+>> -			WARN_ON(1);
+>> -			return -EINVAL;
+>> +		switch (cfg->bbml) {
+>> +		case 0:
+>> +			/*
+>> +			 * We need to unmap and free the old table before
+>> +			 * overwriting it with a block entry.
+>> +			 */
+>> +			tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
+>> +			if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
+>> +				WARN_ON(1);
+>> +				return -EINVAL;
+>> +			}
+>> +			break;
+>> +		case 1:
+>> +			__arm_lpae_init_pte(data, paddr, prot, lvl, ptep, ARM_LPAE_PTE_nT);
+>> +
+>> +			io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
+>> +			tblp = iopte_deref(pte, data);
+>> +			__arm_lpae_free_pgtable(data, lvl + 1, tblp);
+>> +			break;
+>> +		case 2:
+>> +			__arm_lpae_init_pte(data, paddr, prot, lvl, ptep, 0);
+>> +
+>> +			io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
+>> +			tblp = iopte_deref(pte, data);
+>> +			__arm_lpae_free_pgtable(data, lvl + 1, tblp);
+>> +			return 0;
+> 
+> Sorry, but I really don't understand what you're trying to do here. The old
+> code uses BBM for the table -> block path so we don't need anything extra
+> here. The dodgy case is when we unmap part of a block, and end up installing
+> a table via arm_lpae_split_blk_unmap(). We can't use BBM there because there
+> could be ongoing DMA to parts of the block mapping that we want to remain in
+> place.
+> 
+> Are you seeing a problem in practice?
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
----
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/rlimits/.gitignore    |   2 +
- tools/testing/selftests/rlimits/Makefile      |   6 +
- tools/testing/selftests/rlimits/config        |   1 +
- .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
- 5 files changed, 171 insertions(+)
- create mode 100644 tools/testing/selftests/rlimits/.gitignore
- create mode 100644 tools/testing/selftests/rlimits/Makefile
- create mode 100644 tools/testing/selftests/rlimits/config
- create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+Right, I was under the assumption that we could ignore BBML because we 
+should never have a legitimate reason to split blocks. I'm certainly not 
+keen on piling any more complexity into split_blk_unmap, because the 
+IOMMU API clearly doesn't have a well-defined behaviour for that case 
+anyway - some other drivers will just unmap the entire block, and IIRC 
+there was a hint somewhere in VFIO that it might actually expect that 
+behaviour.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index afbab4aeef3c..4dbeb5686f7b 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -46,6 +46,7 @@ TARGETS += proc
- TARGETS += pstore
- TARGETS += ptrace
- TARGETS += openat2
-+TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
- TARGETS += seccomp
-diff --git a/tools/testing/selftests/rlimits/.gitignore b/tools/testing/selftests/rlimits/.gitignore
-new file mode 100644
-index 000000000000..091021f255b3
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+rlimits-per-userns
-diff --git a/tools/testing/selftests/rlimits/Makefile b/tools/testing/selftests/rlimits/Makefile
-new file mode 100644
-index 000000000000..03aadb406212
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+CFLAGS += -Wall -O2 -g
-+TEST_GEN_PROGS := rlimits-per-userns
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/rlimits/config b/tools/testing/selftests/rlimits/config
-new file mode 100644
-index 000000000000..416bd53ce982
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/config
-@@ -0,0 +1 @@
-+CONFIG_USER_NS=y
-diff --git a/tools/testing/selftests/rlimits/rlimits-per-userns.c b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-new file mode 100644
-index 000000000000..26dc949e93ea
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Author: Alexey Gladkov <gladkov.alexey@gmail.com>
-+ */
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <sys/prctl.h>
-+#include <sys/stat.h>
-+
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <limits.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <err.h>
-+
-+#define NR_CHILDS 2
-+
-+static char *service_prog;
-+static uid_t user   = 60000;
-+static uid_t group  = 60000;
-+
-+static void setrlimit_nproc(rlim_t n)
-+{
-+	pid_t pid = getpid();
-+	struct rlimit limit = {
-+		.rlim_cur = n,
-+		.rlim_max = n
-+	};
-+
-+	warnx("(pid=%d): Setting RLIMIT_NPROC=%ld", pid, n);
-+
-+	if (setrlimit(RLIMIT_NPROC, &limit) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setrlimit(RLIMIT_NPROC)", pid);
-+}
-+
-+static pid_t fork_child(void)
-+{
-+	pid_t pid = fork();
-+
-+	if (pid < 0)
-+		err(EXIT_FAILURE, "fork");
-+
-+	if (pid > 0)
-+		return pid;
-+
-+	pid = getpid();
-+
-+	warnx("(pid=%d): New process starting ...", pid);
-+
-+	if (prctl(PR_SET_PDEATHSIG, SIGKILL) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): prctl(PR_SET_PDEATHSIG)", pid);
-+
-+	signal(SIGUSR1, SIG_DFL);
-+
-+	warnx("(pid=%d): Changing to uid=%d, gid=%d", pid, user, group);
-+
-+	if (setgid(group) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setgid(%d)", pid, group);
-+	if (setuid(user) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setuid(%d)", pid, user);
-+
-+	warnx("(pid=%d): Service running ...", pid);
-+
-+	warnx("(pid=%d): Unshare user namespace", pid);
-+	if (unshare(CLONE_NEWUSER) < 0)
-+		err(EXIT_FAILURE, "unshare(CLONE_NEWUSER)");
-+
-+	char *const argv[] = { "service", NULL };
-+	char *const envp[] = { "I_AM_SERVICE=1", NULL };
-+
-+	warnx("(pid=%d): Executing real service ...", pid);
-+
-+	execve(service_prog, argv, envp);
-+	err(EXIT_FAILURE, "(pid=%d): execve", pid);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	size_t i;
-+	pid_t child[NR_CHILDS];
-+	int wstatus[NR_CHILDS];
-+	int childs = NR_CHILDS;
-+	pid_t pid;
-+
-+	if (getenv("I_AM_SERVICE")) {
-+		pause();
-+		exit(EXIT_SUCCESS);
-+	}
-+
-+	service_prog = argv[0];
-+	pid = getpid();
-+
-+	warnx("(pid=%d) Starting testcase", pid);
-+
-+	/*
-+	 * This rlimit is not a problem for root because it can be exceeded.
-+	 */
-+	setrlimit_nproc(1);
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		child[i] = fork_child();
-+		wstatus[i] = 0;
-+		usleep(250000);
-+	}
-+
-+	while (1) {
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+
-+			errno = 0;
-+			pid_t ret = waitpid(child[i], &wstatus[i], WNOHANG);
-+
-+			if (!ret || (!WIFEXITED(wstatus[i]) && !WIFSIGNALED(wstatus[i])))
-+				continue;
-+
-+			if (ret < 0 && errno != ECHILD)
-+				warn("(pid=%d): waitpid(%d)", pid, child[i]);
-+
-+			child[i] *= -1;
-+			childs -= 1;
-+		}
-+
-+		if (!childs)
-+			break;
-+
-+		usleep(250000);
-+
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+			kill(child[i], SIGUSR1);
-+		}
-+	}
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		if (WIFEXITED(wstatus[i]))
-+			warnx("(pid=%d): pid %d exited, status=%d",
-+				pid, -child[i], WEXITSTATUS(wstatus[i]));
-+		else if (WIFSIGNALED(wstatus[i]))
-+			warnx("(pid=%d): pid %d killed by signal %d",
-+				pid, -child[i], WTERMSIG(wstatus[i]));
-+
-+		if (WIFSIGNALED(wstatus[i]) && WTERMSIG(wstatus[i]) == SIGUSR1)
-+			continue;
-+
-+		warnx("(pid=%d): Test failed", pid);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	warnx("(pid=%d): Test passed", pid);
-+	exit(EXIT_SUCCESS);
-+}
--- 
-2.29.2
-
+Robin.
