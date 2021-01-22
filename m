@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B865300BEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394A8300BED
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730275AbhAVSxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:53:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39308 "EHLO mail.kernel.org"
+        id S1730310AbhAVSyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:54:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728522AbhAVOWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C04B23AC8;
-        Fri, 22 Jan 2021 14:16:09 +0000 (UTC)
+        id S1728521AbhAVOWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADF8723B54;
+        Fri, 22 Jan 2021 14:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324970;
-        bh=FF0Eut46PKr87ElysybdlIYlogJYoUuULboTnAlfkaY=;
+        s=korg; t=1611324973;
+        bh=pimP6n21U/JGJRQ910aCkQFtVX5QrplC560wCofPJnk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yI6PnkmQyHGgszXWl6nJWosdALdtl47bTzb5IQxpXOrVlL/PAMd2ZK2bWtiXorDhV
-         jTARZs0srqWcEH1+R3izEhOtiyxH1X8PhMaZPpFNK+NliAVMHHdjRMEo9HNvUzggv7
-         0SRyRktkNtch5mrbKVFQreM9xE9YiGUJnbjUpqhs=
+        b=hYT3J4EfvpPGFA9Qpuk08wejxE0uqidb6UIrDfkeX+wacQw2S4smK+eO2gDbxPned
+         g0ZJA2BuUrlF+M8OCh9x1z1qj4akI6BIhr+Ztt6cUVnCPELU2B0IScHyw5IIY7H70f
+         1CXbZtUOm+wdQtf9FgkU6uZcD2ruogpwCJnbzxDA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Youjipeng <wangzhibei1999@gmail.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 4.19 05/22] nfsd4: readdirplus shouldnt return parent of export
-Date:   Fri, 22 Jan 2021 15:12:23 +0100
-Message-Id: <20210122135732.135933562@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Baptiste Lepers <baptiste.lepers@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 06/22] udp: Prevent reuseport_select_sock from reading uninitialized socks
+Date:   Fri, 22 Jan 2021 15:12:24 +0100
+Message-Id: <20210122135732.172920223@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
 References: <20210122135731.921636245@linuxfoundation.org>
@@ -40,52 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Baptiste Lepers <baptiste.lepers@gmail.com>
 
-commit 51b2ee7d006a736a9126e8111d1f24e4fd0afaa6 upstream.
+[ Upstream commit fd2ddef043592e7de80af53f47fa46fd3573086e ]
 
-If you export a subdirectory of a filesystem, a READDIRPLUS on the root
-of that export will return the filehandle of the parent with the ".."
-entry.
+reuse->socks[] is modified concurrently by reuseport_add_sock. To
+prevent reading values that have not been fully initialized, only read
+the array up until the last known safe index instead of incorrectly
+re-reading the last index of the array.
 
-The filehandle is optional, so let's just not return the filehandle for
-".." if we're at the root of an export.
-
-Note that once the client learns one filehandle outside of the export,
-they can trivially access the rest of the export using further lookups.
-
-However, it is also not very difficult to guess filehandles outside of
-the export.  So exporting a subdirectory of a filesystem should
-considered equivalent to providing access to the entire filesystem.  To
-avoid confusion, we recommend only exporting entire filesystems.
-
-Reported-by: Youjipeng <wangzhibei1999@gmail.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: acdcecc61285f ("udp: correct reuseport selection with connected sockets")
+Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Link: https://lore.kernel.org/r/20210107051110.12247-1-baptiste.lepers@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/nfsd/nfs3xdr.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ net/core/sock_reuseport.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfsd/nfs3xdr.c
-+++ b/fs/nfsd/nfs3xdr.c
-@@ -844,9 +844,14 @@ compose_entry_fh(struct nfsd3_readdirres
- 	if (isdotent(name, namlen)) {
- 		if (namlen == 2) {
- 			dchild = dget_parent(dparent);
--			/* filesystem root - cannot return filehandle for ".." */
-+			/*
-+			 * Don't return filehandle for ".." if we're at
-+			 * the filesystem or export root:
-+			 */
- 			if (dchild == dparent)
- 				goto out;
-+			if (dparent == exp->ex_path.dentry)
-+				goto out;
- 		} else
- 			dchild = dget(dparent);
- 	} else
+--- a/net/core/sock_reuseport.c
++++ b/net/core/sock_reuseport.c
+@@ -299,7 +299,7 @@ select_by_hash:
+ 			i = j = reciprocal_scale(hash, socks);
+ 			while (reuse->socks[i]->sk_state == TCP_ESTABLISHED) {
+ 				i++;
+-				if (i >= reuse->num_socks)
++				if (i >= socks)
+ 					i = 0;
+ 				if (i == j)
+ 					goto out;
 
 
