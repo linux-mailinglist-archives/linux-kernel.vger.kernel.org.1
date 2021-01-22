@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40A3300048
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECA9300044
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbhAVK3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:29:36 -0500
-Received: from mail-qk1-f171.google.com ([209.85.222.171]:38995 "EHLO
-        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727772AbhAVKRt (ORCPT
+        id S1727858AbhAVK23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:28:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727883AbhAVKVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:17:49 -0500
-Received: by mail-qk1-f171.google.com with SMTP id k193so4566306qke.6;
-        Fri, 22 Jan 2021 02:17:33 -0800 (PST)
+        Fri, 22 Jan 2021 05:21:49 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0D1C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:21:07 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id g15so3466605pjd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:21:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=XoFMW3OnfJNPPFldVSvQQaSFejRFNATBngl33Eh4QXM=;
+        b=ZSWzskGWJQHTWK8xCE0MwgJkMnc94cSw/xSZAitSkx1ocOp67NrLdmveru5Jfn5jJr
+         AFQn+XTyax+ZDbHMFjPyaCHwhO9euQMT8ZoQ2dnOHNu51obRl8NO+pQ+XGYGMOtp1kVW
+         2/UUEQhJ9nrY0FuV0NDAqXBYBxDkWc/0HFLYHatQD6VnqJKIgpBVV02nsIVPY5I6Fjcl
+         YqEyeZBDTn4B9uftmeR0SNIwjNXlUgZKkJ+9pHP7/Fa4SyDVHXXRuVpCzhx95mAPmAoA
+         zD+qQ/8VdloWls+4lRhfzcxZiX+GuTS4WcV0XAQk+dMGGV3aDupkjx9Qo51hgWkhn0Xr
+         ibJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7zsc6xzux0GCBLlL4UKSB6x9FSfXUZHxkP/Pv0eueKY=;
-        b=TKJjxvAyHCRiIepZ9/Fm33mMUpRAon8BdsdBwhO3XS4BytBNJPhSpNBKSfIBhmsAZx
-         5GyVEAJ3ydur7qW6X2NwWXA+7dvz9mv+81FVUC3qU2fb1c3WEwAhXE9Vm0o7t9O5PWSN
-         Sxhr2KUImS72dox09Puzmr24yKhmyPpnts6Px+373aFNW2lrwDx/8sZL7eprhD5JONH4
-         xfcOArBvloE349G5anQLCZbux6LsZLBcxeJ56RTy7nopZWSCqP5lqIcyeDaq3MLX4QIK
-         DyZrXpHTmo5WcmM9DduvmKsddlkmsfrNXz4lhVSGi+Shf+Zt9LannuGFuQ1il199PbA8
-         80Lw==
-X-Gm-Message-State: AOAM530Ib84Vlh4cUv3CFSgdxUomdXRY9DRXQaiMXL261+aHIULrRWoJ
-        oPvWTOtmTgvggMEzyt7PjFUvKdAuf8Z78K9v5OM=
-X-Google-Smtp-Source: ABdhPJyEtoIqIYr9dpcGXfp0DGUeqfGn7izIr0qNDH8dstFOi1qUddx7S8ySQ4XEN/zPxFI0wMe6UiaxAZnLHgMl2w0=
-X-Received: by 2002:a05:620a:11ad:: with SMTP id c13mr4011390qkk.134.1611310627579;
- Fri, 22 Jan 2021 02:17:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20210121100619.5653-1-wsa+renesas@sang-engineering.com> <20210121100619.5653-3-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20210121100619.5653-3-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 22 Jan 2021 11:16:55 +0100
-Message-ID: <CAMuHMdXbnMENy3czKL-+Dgp4M24D3A_HvaiUAasdENvKupRQfg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] clk: renesas: r8a779a0: add clocks for RAVB
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XoFMW3OnfJNPPFldVSvQQaSFejRFNATBngl33Eh4QXM=;
+        b=UYgw3hnsORrtKJQ8a+cPGgYwk1PIuxYycZ0Q84QZCdyxf+gdUJHKrV2D8BQTeJG4Vt
+         1sz7kyBXdsLAZ4th+P9/1Cs2ca5vWXFKQwC0cQS1dll/zoZ7hlR0yByTN2p2scnnPwR3
+         BwMRQ/dEQZfc2d6xjYft1u8JdiVmDTPKLaTI+398w1OX+X36hbc1MlDnehLJsh9usOPo
+         5qPXqJHJlb80UmpRXNIGoGCyNOSuCUSk2Qv5oQU2weCN+HcldnuzM0ZvJoEVJcsUPdEb
+         xs+yjmPHqYkKNNDP1lCCA0F9i9zd/bvqU+KZig4CHvz7+AtuzI+xTK3CwwxSFBjuQUDa
+         qJXw==
+X-Gm-Message-State: AOAM532EXcYxI129+VSPIbAWZ9WZEOl/Bo33NxsDWT5gDvKXFYIWQvO2
+        2+5APLkL4zk5Zvr2axIcv11UyQ==
+X-Google-Smtp-Source: ABdhPJzRoAHA3V2OMWAaOdw8coCyBE2IHrTcMy8kprKt4kCmC5DwgsnYIdx2PH4Lqtn4pdxX8zUBjA==
+X-Received: by 2002:a17:902:bc41:b029:de:1ec2:dac1 with SMTP id t1-20020a170902bc41b02900de1ec2dac1mr4244934plz.9.1611310866648;
+        Fri, 22 Jan 2021 02:21:06 -0800 (PST)
+Received: from localhost.localdomain ([122.173.53.31])
+        by smtp.gmail.com with ESMTPSA id ne6sm8487557pjb.44.2021.01.22.02.21.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Jan 2021 02:21:05 -0800 (PST)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v2] kdb: Make memory allocations more robust
+Date:   Fri, 22 Jan 2021 15:50:50 +0530
+Message-Id: <1611310850-3339-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 11:06 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->
-> Change since v1:
-> * use S3D2 as parent clock
+Currently kdb uses in_interrupt() to determine whether it's library
+code has been called from the kgdb trap handler or from a saner calling
+context such as driver init. This approach is broken because
+in_interrupt() alone isn't able to determine kgdb trap handler entry via
+normal task context such as [1].
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v5.12.
+We can improve this by adding check for in_dbg_master() instead which
+explicitly determines if we are running in debugger context.
 
-Gr{oetje,eeting}s,
+[1] $ echo g > /proc/sysrq-trigger
 
-                        Geert
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+---
 
+Changes in v2:
+- Get rid of redundant in_atomic() check.
+
+ kernel/debug/kdb/kdb_private.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index 7a4a181..344eb0d 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -231,7 +231,7 @@ extern struct task_struct *kdb_curr_task(int);
+ 
+ #define kdb_task_has_cpu(p) (task_curr(p))
+ 
+-#define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
++#define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
+ 
+ extern void *debug_kmalloc(size_t size, gfp_t flags);
+ extern void debug_kfree(void *);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
