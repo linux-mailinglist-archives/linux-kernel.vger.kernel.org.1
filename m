@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37801300E18
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8AC300DE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbhAVUuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:50:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        id S1730086AbhAVUkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:40:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730166AbhAVU2Q (ORCPT
+        with ESMTP id S1730153AbhAVU2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:28:16 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C959C061A10;
-        Fri, 22 Jan 2021 12:25:10 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id u25so9318074lfc.2;
-        Fri, 22 Jan 2021 12:25:10 -0800 (PST)
+        Fri, 22 Jan 2021 15:28:48 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36872C061A27;
+        Fri, 22 Jan 2021 12:25:11 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id x23so7970502lji.7;
+        Fri, 22 Jan 2021 12:25:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y5maEnFY9Zpzvtrt4gFbzNHegl8kGjroQ7s0Tf+aY64=;
-        b=spoQj0rds8JfYXbZoffudNfCCzNNrRddnpr5dHrpUhijqRGeHZDUltbwtb4/vXX20b
-         tWcgegmIraGBKQW6c0SylymZLvViP/cMdChdw/7q/nM6WHRcAXc+LYddVHS82ungxmaC
-         e2sJq9tvNb5ssn2k7/tPdzjqCDLFQiKOXmW6R6Wp50/TAJ4aII69aVaAFSXNJF1gh1+p
-         J0EYE+GstdksMHQ/ocMA92II0qv+fM3xCAijILXRSyyzIH7JOFYIiW8SWJhgO80VH+q/
-         TUq7Xfkv7BmrMhFipH3v/SUvJ5eLaxpoyqTHaZfhU+AGX0cWRIISRWo05axJSaNfYQ+4
-         USkA==
+        bh=gYdNVtXVasQM0PSs0z/nXtCl4+5nAAieK15LoNi9kj4=;
+        b=ScQW7UAHzf5ONnjPUt7ZCGkSjtTpbLqVN4KKyshvyTLcSfjZTUR8Iz7+5k1J75l+Oh
+         CZY3MikLDP1KU8UCe610azJVXadoi8TEWoeTOfrJ7nDTvVxPLB4o7zED9jp1IDyQhCCd
+         mwq5Ur/N47xQWpvIrQAZchuq2ibuPlhItOvy5Kc/b/KF672M0D/1fsWq0MaRopmWbQ5O
+         COssDv/2pYgDtNg1g9TPm37oMavUdSkmD+ftP+Z1a3gAg8pTRiYTD1dSqzUJIIPWJFlb
+         6p01LMvSlY/KM8cFOpDVSW5HIUdmWtsvDzRxwX3GY3Cs2jNaUTvMzgrqsB55tWi+kn13
+         uwYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y5maEnFY9Zpzvtrt4gFbzNHegl8kGjroQ7s0Tf+aY64=;
-        b=NofbKqIUnw82IBUQ1MZJvBZ3Hc7FY2AUdS7biQ3DtTZ55olQaPcoo2wKVsrhW6BhT7
-         UvFNGsR1SUvozIw/kW2Sc/VxItLFKyHlVGYuYKiyMQp67y30haxT1n3EFn3nB2RZWfSO
-         GtqMHY7FNA/URpy8mAX4FlGlE8lzIVHDFe2Ho8WjCPWm7F3BF2d+7bqsQSbcgU6iaK00
-         aisIaDwwl4R3yHwt3uuvsVsFRnMm4DBipeYaEN+f/UJNw0QpK7e+vzZbDnr73nYM+Fhg
-         frHPcJb1cS0Y09xyRA4BUAZ1g8ezk8Ak8NgYubA5tYlmcK91ot/EEXPplqG4yQxBuGKs
-         jPYw==
-X-Gm-Message-State: AOAM531655+e0PEg6AYfCd63xCuq8MXic8egLWlkWO3rZRiBILFtYPrh
-        CkAmGXAo5s2YlHn7H9DoBsQ=
-X-Google-Smtp-Source: ABdhPJzYjQFckpgx6fGiKRaGoLQPEDYv0mWrDhMhNxs7zVD47qsTHRtpkVHEaP/bsXXtJh2WZT2P8w==
-X-Received: by 2002:ac2:5b1a:: with SMTP id v26mr3175796lfn.286.1611347108819;
-        Fri, 22 Jan 2021 12:25:08 -0800 (PST)
+        bh=gYdNVtXVasQM0PSs0z/nXtCl4+5nAAieK15LoNi9kj4=;
+        b=oxcBCY64oMYkXRLbFWOeVcbXYPQcJ/c5jbhE2kEMC8Js2UbJgFyqbqVIu6neBgTA1i
+         tgx/rsGQfbXJkazHUwDe9B3N7lNKqg1SihYXPvRp0gqQGHgc2BPRfej5CCrGuTyJOFZH
+         i+OWg0elNO/U/vsyoW2O0gRa0+TCFbN0Hdvhw2ppOxSgbRCIV21kIADAdEbbP9she5k8
+         96w4ODBFNeolD5Z3jsWY4672Ol0wFPeY57lquQ3L2j7i1110XjgjWxtS8dbz9Z5N0Y1D
+         Pwgu/+MUSLfKqU7fIuHU7EbBTh+KoFVoVZ0fGgZfJ98XWBDRRU1hHeY2RtDfU+5h7zWv
+         4sKA==
+X-Gm-Message-State: AOAM531sAJMxqTfQ7VgoAUJlDyOke1yJuiCgwiK3JsgwPYw+DhggPDbx
+        mqN7aWsvrDKfUDPRLI4IKXQ=
+X-Google-Smtp-Source: ABdhPJww+hw64G9ienLmFakRcqEI6uUSGjr7t75+FT5GvpnZfXi9R6WMDSyvTRIUBJh6GeCBvLczIg==
+X-Received: by 2002:a2e:9d05:: with SMTP id t5mr554421lji.130.1611347109757;
+        Fri, 22 Jan 2021 12:25:09 -0800 (PST)
 Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
         by smtp.gmail.com with ESMTPSA id q5sm996921lfr.172.2021.01.22.12.25.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 12:25:08 -0800 (PST)
+        Fri, 22 Jan 2021 12:25:09 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -56,9 +56,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 02/13] ARM: tegra: ventana: Support CPU thermal throttling
-Date:   Fri, 22 Jan 2021 23:24:46 +0300
-Message-Id: <20210122202457.13326-3-digetx@gmail.com>
+Subject: [PATCH v2 03/13] ARM: tegra: cardhu: Support CPU frequency and voltage scaling on all board variants
+Date:   Fri, 22 Jan 2021 23:24:47 +0300
+Message-Id: <20210122202457.13326-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210122202457.13326-1-digetx@gmail.com>
 References: <20210122202457.13326-1-digetx@gmail.com>
@@ -68,90 +68,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CPU thermal throttling on Tegra20 Ventana board.
+Enable CPU frequency and voltage scaling on all Tegra30 Cardhu board
+variants.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-ventana.dts | 41 +++++++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/tegra30-cardhu-a04.dts | 48 ------------------------
+ arch/arm/boot/dts/tegra30-cardhu.dtsi    | 40 ++++++++++++++++++--
+ 2 files changed, 37 insertions(+), 51 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
-index 02b94ed722d0..99a356c1ccec 100644
---- a/arch/arm/boot/dts/tegra20-ventana.dts
-+++ b/arch/arm/boot/dts/tegra20-ventana.dts
-@@ -2,6 +2,7 @@
+diff --git a/arch/arm/boot/dts/tegra30-cardhu-a04.dts b/arch/arm/boot/dts/tegra30-cardhu-a04.dts
+index c1c0ca628af1..a11028b8b67b 100644
+--- a/arch/arm/boot/dts/tegra30-cardhu-a04.dts
++++ b/arch/arm/boot/dts/tegra30-cardhu-a04.dts
+@@ -2,8 +2,6 @@
  /dts-v1/;
  
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/thermal/thermal.h>
- #include "tegra20.dtsi"
- #include "tegra20-cpu-opp.dtsi"
- #include "tegra20-cpu-opp-microvolt.dtsi"
-@@ -528,9 +529,10 @@ ldo_rtc {
- 			};
- 		};
+ #include "tegra30-cardhu.dtsi"
+-#include "tegra30-cpu-opp.dtsi"
+-#include "tegra30-cpu-opp-microvolt.dtsi"
  
--		temperature-sensor@4c {
-+		nct1008: temperature-sensor@4c {
- 			compatible = "onnn,nct1008";
- 			reg = <0x4c>;
-+			#thermal-sensor-cells = <1>;
- 		};
+ /* This dts file support the cardhu A04 and later versions of board */
+ 
+@@ -92,50 +90,4 @@ vdd_bl2_reg: regulator@106 {
+ 		enable-active-high;
+ 		gpio = <&gpio TEGRA_GPIO(DD, 0) GPIO_ACTIVE_HIGH>;
  	};
- 
-@@ -614,11 +616,13 @@ cpus {
- 		cpu0: cpu@0 {
- 			cpu-supply = <&vdd_cpu>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			#cooling-cells = <2>;
- 		};
- 
+-
+-	i2c@7000d000 {
+-		pmic: tps65911@2d {
+-			regulators {
+-				vddctrl_reg: vddctrl {
+-					regulator-min-microvolt = <800000>;
+-					regulator-max-microvolt = <1125000>;
+-					regulator-coupled-with = <&vddcore_reg>;
+-					regulator-coupled-max-spread = <300000>;
+-					regulator-max-step-microvolt = <100000>;
+-
+-					nvidia,tegra-cpu-regulator;
+-				};
+-			};
+-		};
+-
+-		vddcore_reg: tps62361@60 {
+-			regulator-coupled-with = <&vddctrl_reg>;
+-			regulator-coupled-max-spread = <300000>;
+-			regulator-max-step-microvolt = <100000>;
+-
+-			nvidia,tegra-core-regulator;
+-		};
+-	};
+-
+-	cpus {
+-		cpu0: cpu@0 {
+-			cpu-supply = <&vddctrl_reg>;
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-
 -		cpu@1 {
-+		cpu1: cpu@1 {
- 			cpu-supply = <&vdd_cpu>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			#cooling-cells = <2>;
+-			cpu-supply = <&vddctrl_reg>;
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-
+-		cpu@2 {
+-			cpu-supply = <&vddctrl_reg>;
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-
+-		cpu@3 {
+-			cpu-supply = <&vddctrl_reg>;
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-	};
+ };
+diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
+index dab9989fa760..42ea949953c7 100644
+--- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
++++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
+@@ -1,6 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <dt-bindings/input/input.h>
+ #include "tegra30.dtsi"
++#include "tegra30-cpu-opp.dtsi"
++#include "tegra30-cpu-opp-microvolt.dtsi"
+ 
+ /**
+  * This file contains common DT entry for all fab version of Cardhu.
+@@ -272,9 +274,14 @@ vdd2_reg: vdd2 {
+ 
+ 				vddctrl_reg: vddctrl {
+ 					regulator-name = "vdd_cpu,vdd_sys";
+-					regulator-min-microvolt = <1000000>;
+-					regulator-max-microvolt = <1000000>;
++					regulator-min-microvolt = <800000>;
++					regulator-max-microvolt = <1250000>;
++					regulator-coupled-with = <&vdd_core>;
++					regulator-coupled-max-spread = <300000>;
++					regulator-max-step-microvolt = <100000>;
+ 					regulator-always-on;
++
++					nvidia,tegra-cpu-regulator;
+ 				};
+ 
+ 				vio_reg: vio {
+@@ -342,17 +349,22 @@ temperature-sensor@4c {
+ 			interrupts = <TEGRA_GPIO(CC, 2) IRQ_TYPE_LEVEL_LOW>;
+ 		};
+ 
+-		tps62361@60 {
++		vdd_core: tps62361@60 {
+ 			compatible = "ti,tps62361";
+ 			reg = <0x60>;
+ 
+ 			regulator-name = "tps62361-vout";
+ 			regulator-min-microvolt = <500000>;
+ 			regulator-max-microvolt = <1500000>;
++			regulator-coupled-with = <&vddctrl_reg>;
++			regulator-coupled-max-spread = <300000>;
++			regulator-max-step-microvolt = <100000>;
+ 			regulator-boot-on;
+ 			regulator-always-on;
+ 			ti,vsel0-state-high;
+ 			ti,vsel1-state-high;
++
++			nvidia,tegra-core-regulator;
  		};
  	};
  
-@@ -716,4 +720,37 @@ sound {
- 			 <&tegra_car TEGRA20_CLK_CDEV1>;
- 		clock-names = "pll_a", "pll_a_out0", "mclk";
+@@ -424,6 +436,28 @@ clk32k_in: clock@0 {
+ 		#clock-cells = <0>;
  	};
+ 
++	cpus {
++		cpu0: cpu@0 {
++			cpu-supply = <&vddctrl_reg>;
++			operating-points-v2 = <&cpu0_opp_table>;
++		};
 +
-+	thermal-zones {
-+		cpu-thermal {
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <5000>; /* milliseconds */
++		cpu1: cpu@1 {
++			cpu-supply = <&vddctrl_reg>;
++			operating-points-v2 = <&cpu0_opp_table>;
++		};
 +
-+			thermal-sensors = <&nct1008 1>;
++		cpu2: cpu@2 {
++			cpu-supply = <&vddctrl_reg>;
++			operating-points-v2 = <&cpu0_opp_table>;
++		};
 +
-+			trips {
-+				trip0: cpu-alert0 {
-+					/* start throttling at 50C */
-+					temperature = <50000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+
-+				trip1: cpu-crit {
-+					/* shut down at 60C */
-+					temperature = <60000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&trip0>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
++		cpu3: cpu@3 {
++			cpu-supply = <&vddctrl_reg>;
++			operating-points-v2 = <&cpu0_opp_table>;
 +		};
 +	};
- };
++
+ 	panel: panel {
+ 		compatible = "chunghwa,claa101wb01";
+ 		ddc-i2c-bus = <&panelddc>;
 -- 
 2.29.2
 
