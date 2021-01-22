@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01E53004BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE583004CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbhAVOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:02:05 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:35495 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbhAVOB2 (ORCPT
+        id S1727944AbhAVOFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:05:20 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:46760 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728079AbhAVOBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:01:28 -0500
-Received: by mail-ot1-f44.google.com with SMTP id 36so5141665otp.2;
-        Fri, 22 Jan 2021 06:01:13 -0800 (PST)
+        Fri, 22 Jan 2021 09:01:32 -0500
+Received: by mail-oi1-f176.google.com with SMTP id q205so5991756oig.13;
+        Fri, 22 Jan 2021 06:01:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=U4xsstxbQBaXybAiqcrHmLZ69QV9B6F9pTaooq4dehY=;
-        b=Cj3hLhttEAovwb31auhPnOvZWuX3Hzf+4qZgARhdulb2D0nVbZPl5Itq14BKqfyzxs
-         k2Rn3t9vBtjHfHXvswdJUk9x3DQopR3PxyG7EPD29vB74sapz3C5+SStgrKkm9jnVINC
-         L/xN5dUElMpm+qzFST4IpYaw66h2iY+qLRame2mTmqW/RwjA5KkNgljeeGhLQp9dtj7h
-         y3Iv42bL7YmTQ4dJu56NU9TVYF+IcsTADa2vr4RQA29a2ZuQfDkne28V8kutHHj/ahNl
-         coVZRV/V2Mgq7ZP2e7+SZmVMyg9d//qjUzIKt656Zi5kj5U2j7nfyQvrEXQxZTj/sEm4
-         C/og==
-X-Gm-Message-State: AOAM532BXHz+MYCP0e9Mduqg5eg/ZJdAfbvqK4QCwZ4KYtUv9HscdHY2
-        nFS6bVA0hm3BdYucTjJ3Xg==
-X-Google-Smtp-Source: ABdhPJyBiSU5QQVkbT3Q/aWxpWwAj9m4LW2qvNwe02K1nfHI9+W0Pb3NSq/1AhIdgdEaN2SaTT2R6A==
-X-Received: by 2002:a9d:3ef6:: with SMTP id b109mr3441742otc.288.1611324047313;
-        Fri, 22 Jan 2021 06:00:47 -0800 (PST)
+        bh=dWHYMhsbBCya9Qdx4kuDb6+Q8KDESyIDxpnUb1IE3G8=;
+        b=U50r2/Y8XugXcxLDLm7JRtNs8hO+6YKNU7Emc0wbMs40Vv3SSZPhdmr6+5s8QxncEC
+         WLbFKLUUDbcznlxrEU5G9AsMhjIXvC88wCFhJUmyvspbgwxMaHw3F2SkLKxYW/UP1V1c
+         +ATd76o0iuRa63rbiUOHj9KOBk2ghoCGdCi71aM+c9aiphQKDZJDTJKWuFzDzFNvRpY/
+         RpwtxLQ7RuJ7g7q7LQj48OPe+LaG+BH7wL3CePLN3zS7FoLSoNtXAB1ZVpYHDeuvKNnI
+         x/Nn4P/ASgwFiNdYlDllnSJmvAoNktSOGVD7lUYlnYHlXz58tKsDYdqs3Us8vWBmuHDQ
+         LhFQ==
+X-Gm-Message-State: AOAM531T16gZZN2acjnu2QoB8sw73U44jehvfom/1tcW/qBA8aJ3Vp05
+        7Syhqrdg+b//rL/wAV1fFB2fqQIqJw==
+X-Google-Smtp-Source: ABdhPJzZkdXg2eoWptnZ2Xg5/rC8xOaItyP/a1+YMGrdrb0mEBnvTtXRONbqcY0mh/dFcKmD2ruD+Q==
+X-Received: by 2002:a05:6808:25a:: with SMTP id m26mr3339144oie.179.1611324050767;
+        Fri, 22 Jan 2021 06:00:50 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t20sm218544oov.13.2021.01.22.06.00.46
+        by smtp.gmail.com with ESMTPSA id d9sm1670049otb.65.2021.01.22.06.00.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:00:46 -0800 (PST)
-Received: (nullmailer pid 674368 invoked by uid 1000);
+        Fri, 22 Jan 2021 06:00:50 -0800 (PST)
+Received: (nullmailer pid 674377 invoked by uid 1000);
         Fri, 22 Jan 2021 14:00:45 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        devicetree@vger.kernel.org
-In-Reply-To: <20210121155700.9267-1-mike.looijmans@topic.nl>
-References: <20210121155700.9267-1-mike.looijmans@topic.nl>
-Subject: Re: [PATCH v7 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer bindings
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Yuchen Huang <yuchen.huang@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Fei Shao <fshao@chromium.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, linux-rtc@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, Ran Bi <ran.bi@mediatek.com>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Mark Brown <broonie@kernel.org>
+In-Reply-To: <1611314381-19517-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+References: <1611314381-19517-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1611314381-19517-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+Subject: Re: [PATCH v5 4/8] dt-bindings: regulator: Add document for MT6359 regulator
 Date:   Fri, 22 Jan 2021 08:00:45 -0600
-Message-Id: <1611324045.669047.674367.nullmailer@robh.at.kernel.org>
+Message-Id: <1611324045.710845.674376.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 16:56:58 +0100, Mike Looijmans wrote:
-> This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
-> the accelerometer part.
+On Fri, 22 Jan 2021 19:19:37 +0800, Hsin-Hsiung Wang wrote:
+> add dt-binding document for MediaTek MT6359 PMIC
 > 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> 
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
 > ---
-> 
-> Changes in v7:
-> Add additionalProperties
-> Change bmi088_accel to bmi088-accel
-> Add interrupt-names and adjust description
-> 
-> Changes in v6:
-> I't been almost a year since the last commit, sorry...
-> Fixed the yaml errors
-> Add interrupt, vdd and vddio properties
-> 
-> Changes in v5:
-> submit together with driver code as patch series
-> 
-> Changes in v2:
-> convert to yaml format
-> 
->  .../bindings/iio/accel/bosch,bmi088.yaml      | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+> changes since v4: fix yamllint errors in dt-binding document.
+> ---
+>  .../bindings/regulator/mt6359-regulator.yaml  | 169 ++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -86,10 +81,16 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.example.dt.yaml: bmi088-accel@1: 'spi-max-frequency' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ti,palmas-gpadc.example.dt.yaml: pmic: 'adc', 'compatible' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/motorola,cpcap-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/sprd,sc2720-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc@480' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/qcom,pm8018-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc@197' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
 
-See https://patchwork.ozlabs.org/patch/1429940
+See https://patchwork.ozlabs.org/patch/1430288
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
