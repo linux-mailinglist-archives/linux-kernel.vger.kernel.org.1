@@ -2,57 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D446C2FFE2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731BF2FFE3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbhAVI3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:29:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
+        id S1726335AbhAVIcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:32:51 -0500
+Received: from comms.puri.sm ([159.203.221.185]:55718 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727006AbhAVI2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:28:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC4023381;
-        Fri, 22 Jan 2021 08:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611304084;
-        bh=QMDR7dDNiKtKNKXUYcWVY3pPfNkcjEQ8id9ein3pJoA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=goynelLzpiV9pXkqW/kliLrEByGRsFNgk9Bt0qz8zYUsN5Up72/8z4m0NidLROWV0
-         njRJ74yTxCltsqcN/RM7Rg/ssLy/6/3vfzrn1s/2Vgi1N2op0zivSa0JZ/K/5qeqsI
-         xIi/riMWyqUnN4rUBvB3FF7pne9xa2LrkwUeaWXA=
-Date:   Fri, 22 Jan 2021 09:28:01 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ricky_wu@realtek.com
-Cc:     arnd@arndb.de, bhelgaas@google.com, vaibhavgupta40@gmail.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4] Fixes: misc: rtsx: init value of aspm_enabled
-Message-ID: <YAqMkU4fR5z6aG1Z@kroah.com>
-References: <20210122081906.19100-1-ricky_wu@realtek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122081906.19100-1-ricky_wu@realtek.com>
+        id S1726703AbhAVIb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:31:26 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id A161BE0493;
+        Fri, 22 Jan 2021 00:30:39 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aWWOJ88zosmC; Fri, 22 Jan 2021 00:30:39 -0800 (PST)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     dgilbert@interlog.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH] scsi: sd: print write through due to no caching mode page as warning
+Date:   Fri, 22 Jan 2021 09:30:00 +0100
+Message-Id: <20210122083000.32598-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 04:19:06PM +0800, ricky_wu@realtek.com wrote:
-> From: Ricky Wu <ricky_wu@realtek.com>
-> 
-> make sure ASPM state sync with pcr->aspm_enabled
-> init value pcr->aspm_enabled
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> ---
-> 
-> v2: fixed conditions in v1 if-statement
-> v3: give description for v1 and v2
-> v4: move version change below ---
+For SD cardreaders it's extremely common not to find cache on disk.
+The following error messages are thus very common and don't point
+to a real error one could try to fix but rather describe how the disk
+works:
 
-What commit id does this fix?  How far back should the stable
-backporting go?  That's what we use the Fixes: line for.
+sd 0:0:0:0: [sda] No Caching mode page found
+sd 0:0:0:0: [sda] Assuming drive cache: write through
 
-thanks,
+Print these messages as warnings instead of errors.
 
-greg k-h
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
+ drivers/scsi/sd.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index e7c52d6df4dc..db0171c81c5b 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -2808,7 +2808,8 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
+ 			}
+ 		}
+ 
+-		sd_first_printk(KERN_ERR, sdkp, "No Caching mode page found\n");
++		sd_first_printk(KERN_WARNING, sdkp,
++				"No Caching mode page found\n");
+ 		goto defaults;
+ 
+ 	Page_found:
+@@ -2863,7 +2864,7 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
+ 				"Assuming drive cache: write back\n");
+ 		sdkp->WCE = 1;
+ 	} else {
+-		sd_first_printk(KERN_ERR, sdkp,
++		sd_first_printk(KERN_WARNING, sdkp,
+ 				"Assuming drive cache: write through\n");
+ 		sdkp->WCE = 0;
+ 	}
+-- 
+2.20.1
+
