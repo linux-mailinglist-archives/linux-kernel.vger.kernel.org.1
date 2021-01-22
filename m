@@ -2,201 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396942FFBC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 05:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1E52FFBCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 05:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbhAVEfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 23:35:20 -0500
-Received: from mail-bn8nam11on2065.outbound.protection.outlook.com ([40.107.236.65]:23521
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726014AbhAVEfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 23:35:13 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gP90jtFblhpgQB5lwTlucipH+Qp0H2H3nQJK63//3btnIBJ2Z0YPsW7tXL+P0dbOUG09bYtZ+Pv0ubCPVoGBemlzlgr69bSEHFtdQmJE4BjehwD2VdF4efqTLilNmMYapWD+xeolpT/Phm0c93VLmZtpSDQIcMgrfntpx26nWM512syVW8KA0xkz3UdfkJvjWjLSzvdDsJcq1onoI5yYxUcTyJr4q2n2OXtrRXGzC+M/OtaYP8yvP+HvdFLYxu5aVvMpoREJX9BC2Mf9scCFuSqn2/uEGEFSBe+A7XKgIht2EDobUeq29rayOKBzqVk8SAnOBU1UnH/4P1lUhHUUsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=17I2j3wGju5+SAta/m0t0fQRkdEgVy7ELsijfElGplw=;
- b=HDT5Cd2M6SPwecn9vhFCHlubjcQjvmzmjyKr0a1iIrdQkAZLvp/2JLf6uaMib+UTyFSDmYgR/of6/sUZHsMbcFKXx79Hs24yPf0jUWgUNLTZnDKBUqOu9Ubi+39IpFH0DU1S9opnrzetRuY1MNYEU9fMgWtRpUSCL6rl0UPpyesDZaalRGNEL54ktgNcLrFzgm2bLTmCrtJ2RyLKK0D72tQnmZeLLl6lSitZxqMxc6g1xN0M8icwUfFsq7fve8sdAuIIB5jsL5e1l8KBTVcg3vEJyikrKPnIF8wQEpRWH9LSDATqErrR7NJX44lsBHPzUIt0tgKmPJSMG9x3AWuAOQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726843AbhAVEfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 23:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbhAVEft (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 23:35:49 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AD6C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:35:09 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id x18so2529001pln.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:35:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=17I2j3wGju5+SAta/m0t0fQRkdEgVy7ELsijfElGplw=;
- b=QEG28D/Y4lOeeplFfb+E4cPkCx8/7Q6F7efHOaqs0fRfwfAwXQSdlGH0S0is8W+d6WbTUuKepAN+Pipx2EuP2lg23OyMVaIliguE4mulFYdWD9CZJOe86idUyV6zVDoM0nQPn35hfr7Gq2mLU9+EopB8OjldI3TyOmKkdOjuyOk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM6PR11MB2763.namprd11.prod.outlook.com (2603:10b6:5:c6::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Fri, 22 Jan
- 2021 04:34:24 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d%4]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
- 04:34:24 +0000
-Date:   Thu, 21 Jan 2021 23:34:22 -0500
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 1/3] lib: add "all" and "none" as valid ranges to
- bitmap_parselist()
-Message-ID: <20210122043421.GR16838@windriver.com>
-References: <20210121223355.59780-1-paul.gortmaker@windriver.com>
- <20210121223355.59780-2-paul.gortmaker@windriver.com>
- <CAAH8bW8KKXnMqs-NEeB90emUz6o2Q1FLutYEAmG3cAwv0rwEhg@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAH8bW8KKXnMqs-NEeB90emUz6o2Q1FLutYEAmG3cAwv0rwEhg@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: YTXPR0101CA0010.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::23) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=yetUGqIq6nwDP/Z5XoMcv9Fbw9FD3H4M8DzhhGq80G4=;
+        b=bcp+GOMzL9ijzDOWNP7XZsMTtd3/kiRN5ST2t1isOPSlwMc4uIda0EOzl9jSq2xcFT
+         YExngj2Yc4a8PWDpqao1t61oNjSIhvSBEEBTXptB+Jdr6am3AOVnop1dLRf1oyw3w2Nq
+         NIZpM2O/bW3PGC3rBHUfsrtjcXsaki+ah5uAgXdM2Y3E8XdtBkUxL4gT3pp85jVKoTgC
+         FcAZedd0fshyrcDxcFMrSIaFdb0Ur4PfM0o7//yARqA1hoTS/8y6Vxwx5PF4TrUx5vhH
+         UoX0EJTK3g13TUfaf4cbK6GCRPXpJcDpZWjaKfS2PRULah/HANv8IPloOf0SvXxtAsOT
+         ir9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=yetUGqIq6nwDP/Z5XoMcv9Fbw9FD3H4M8DzhhGq80G4=;
+        b=e7DBKJ2rX0VSCA4Q8NNPGQHn89rSgysl2uig1osgasHnmbxrEBXOY2KDdT0AW2KHrv
+         KiWi42CFVRK9I88cZCGEQ89aG6i0VZ6U1ZeUGpF8jGEQNIdSFGVJi+ryuC9aQTZGNgHZ
+         NRajXaSouOtp/odHQMCNIUseH3eRYqcy3+TbqZUkSCNxpz/FakvO9RkUwbVMPlA+Td8q
+         ZLazArkL7gyZjzbnVtvtTBIbOCcUSFUKd9XWO43qbGPPXlnsvcg5MKyJIPCtW6a2xbk2
+         4Qla0E8CJZzkMHPOWra44n3b5BvkmKxQ96B5Hx3xKj3CBgU2MmlsMQnh95yLSyZs9FW8
+         5Pvg==
+X-Gm-Message-State: AOAM533xEbjpiyrX+0bMrYUCqjIf13tl2R66i+bxc6Iq8z1O2k2+0STw
+        8ZBdE/8+LSXdtmVNx5NVf05Vgg==
+X-Google-Smtp-Source: ABdhPJx1VRpZysMio5HKg8II4nInDm6FtWRYuxHyTtXWeliAjY/fbVa0zm+yb9pGb1PBCIDixdfUIA==
+X-Received: by 2002:a17:90a:9918:: with SMTP id b24mr3155479pjp.108.1611290109187;
+        Thu, 21 Jan 2021 20:35:09 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id o10sm7187231pfp.87.2021.01.21.20.35.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Jan 2021 20:35:08 -0800 (PST)
+Date:   Fri, 22 Jan 2021 10:05:06 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 07/13] opp: Allow _generic_set_opp_clk_only() to work for
+ non-freq devices
+Message-ID: <20210122043506.lm6yiefzlyubq5my@vireshk-i7>
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
+ <1585f6c21ea8aee64fe4da0bf72b36ea4d74a779.1611227342.git.viresh.kumar@linaro.org>
+ <9b2638e6-b842-8737-e5a0-aeeb84927fce@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (128.224.252.2) by YTXPR0101CA0010.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 04:34:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d41e7cd-0e88-4991-2aba-08d8be8eff03
-X-MS-TrafficTypeDiagnostic: DM6PR11MB2763:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB2763417A25F3D98C18B34E1083A09@DM6PR11MB2763.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DpPSm3MptYWotHUnR0nzHKnxNbdvYhGwudE7v9sjAi/822HYIR3k7uoEj4vECgAI5kKETBOVwqY4tejSdkce2hbterBRQ6cbDij+irAQcuqlApMdOW3qfxuevVB+MvWH7N2RErop9CZ9vkY0dcg5wn9X8hFJqK/kYK7CAfZ6PN3wD+uJMpCjpqoeuVNPT/bUaqaLSfCQsd8R/RvWHRojnS4+dFzfanPVmNQxhTsy7Ba+0P/RsaSnw6n1oQuunrGe7thEQypkF0Yj9lI73GFybNDtmQfvZ8JYiu7FnYbnw4XUWQBbALEA6jQRGLBGnGb/LP1qA8b2Iwo8Ig681x75sOeQtSEONueqWIeOMrg82bSSJZpGG3tri2kTsgLWne6RFMjWvYpABKciAHUzhHasJQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(39850400004)(396003)(376002)(2906002)(6916009)(2616005)(26005)(83380400001)(316002)(44832011)(53546011)(8886007)(16526019)(54906003)(1076003)(7696005)(52116002)(956004)(186003)(5660300002)(55016002)(8936002)(478600001)(86362001)(8676002)(4326008)(66946007)(66556008)(36756003)(33656002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bSfEfMcBuMwzpnYFJ+kVPrBEsO5Q5WmUfWumNlDI3FEGrTyWV3nlfdXCMOb2?=
- =?us-ascii?Q?ouL9lACYCdzp3oEoE1EzaZZHaqDmQpWsqI4Hkov8mgkcxBlE/75EJn4zcwAa?=
- =?us-ascii?Q?2H2Unzyyu0L1MtPpmWviVzIKTNJQPLG/itAv6v1hxNPbY4hxhdhfgysHVFUd?=
- =?us-ascii?Q?Kab1Pd8o/ECkHhiOHi6wT402Bk2YfmUaFWrc25i5p9sbdNQrkBQDbUqPT4ve?=
- =?us-ascii?Q?//oHiBBc/AJsV3DhZlI0vYHz71Ouv+Lxy8lR2vF6hCX3Jsp+pgXNbaJWXfCG?=
- =?us-ascii?Q?h+7DGW7AjLc5KZXmgXKC5U6G+DjTaUMbHUEqPlyNOeG0oHO5SgDpLSK3e9Dl?=
- =?us-ascii?Q?Ye9QQQ7NUrTjoVylAkERjGeehHSXzQ0SedkyU5GOnotlG7W5/W62ic4fgoYn?=
- =?us-ascii?Q?uosCivWdLxP6Ni4qU7QGSoSBm2bKIWW/iVeqMaRD8yYJdfDIb7nyTqaF0ZiZ?=
- =?us-ascii?Q?pR4UgDbeayJl69mDK5UuA+TsQ6MTVul5AeR5OGXDvK3WLmxVbT/LAGrj7Y6I?=
- =?us-ascii?Q?OkGPEAgKOGPI8e+2e8t5tN/pqU+l7h8uLQ4mEYX4j5i6Jq0rJb5e7go/BsdQ?=
- =?us-ascii?Q?L01mW+0WS85HJoLgfsFsixBRMckx7QbycsjbVXLMCuQ9K23pj8PP0q0Kngpu?=
- =?us-ascii?Q?4T10JPo0J9BIpdwl3JxeUFAciy9x+ZYqMQFQmhMxT3HoAYUeGyt8X9Zh2e0d?=
- =?us-ascii?Q?ETUwo5SGRNmou47a6WjWh6Vtl7ULGgB2kcE6lMUZdX8eCHFspB4lG9CJCipm?=
- =?us-ascii?Q?giD0auLEi1BN3fapUyCluEp02rlF+1RYXvjR1Z8gQi+N8BhfsDO+LjRUTNlw?=
- =?us-ascii?Q?SmEBjfylnVwCioyiEErrxji0aMhlAKQR4GrDjH8mI5CvYW8f/05htSOGoall?=
- =?us-ascii?Q?eyIus3AutukyfnCXh5Ak1JgxbwhRKgSle54rZ+7XUKkuGMjs/PN1y9wB9Vbt?=
- =?us-ascii?Q?JNam0paa1HNsy3h04WoTunybIJspqDS43MyXqOD4RZE7mZfDC8ySsq595cPi?=
- =?us-ascii?Q?S83h?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d41e7cd-0e88-4991-2aba-08d8be8eff03
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 04:34:24.7270
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JRj1Cem5gvkugHBcm0fQg6vAvDoN+9AiAmYzmS3wPeT263i/eS5JLglxI/HABadVs9eKLhGlWU2UDx/MtwHpSPIjwLrBxvIEtvrNy8jj84A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2763
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b2638e6-b842-8737-e5a0-aeeb84927fce@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Re: [PATCH 1/3] lib: add "all" and "none" as valid ranges to bitmap_parselist()] On 21/01/2021 (Thu 16:07) Yury Norov wrote:
-
-> On Thu, Jan 21, 2021 at 2:34 PM Paul Gortmaker
-> <paul.gortmaker@windriver.com> wrote:
-> >
-> > The use of "all" was originally RCU specific - I'd pushed it down to
-> > being used for any CPU lists -- then Yuri suggested pushing it down
-> > further to be used by any bitmap, which is done here.
-> >
-> > As a trivial one line extension, we also accept the inverse "none"
-> > as a valid alias.
-> >
-> > Cc: Yury Norov <yury.norov@gmail.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+On 21-01-21, 23:26, Dmitry Osipenko wrote:
+> 21.01.2021 14:17, Viresh Kumar пишет:
+> > In order to avoid conditional statements at the caller site, this patch
+> > updates _generic_set_opp_clk_only() to work for devices that don't
+> > change frequency (like power domains, etc.). Return 0 if the clk pointer
+> > passed to this routine is not valid.
+> > 
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > > ---
-> >  Documentation/admin-guide/kernel-parameters.rst | 11 +++++++++++
-> >  lib/bitmap.c                                    |  9 +++++++++
-> >  2 files changed, 20 insertions(+)
-> >
-> > diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> > index 682ab28b5c94..5e080080b058 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.rst
-> > +++ b/Documentation/admin-guide/kernel-parameters.rst
-> > @@ -68,7 +68,18 @@ For example one can add to the command line following parameter:
-> >
-> >  where the final item represents CPUs 100,101,125,126,150,151,...
-> >
-> > +The following convenience aliases are also accepted and used:
-> >
-> > +        foo_cpus=all
-> > +
-> > +will provide an full/all-set cpu mask for the associated boot argument.
-> > +
-> > +        foo_cpus=none
-> > +
-> > +will provide an empty/cleared cpu mask for the associated boot argument.
-> > +
-> > +Note that "all" and "none" are not necessarily valid/sensible input values
-> > +for each available boot parameter expecting a CPU list.
+> ...
 > 
-> My question from v1 is still there: what about the line like
-> "none,all", ok ",all,"
+> Hello Viresh,
+> 
+> Thank you very much for yours effort! I gave a quick test to this series
+> and instantly found one small issue in this patch.
+> 
+> > +	/* We may reach here for devices which don't change frequency */
+> > +	if (unlikely(!clk))
+> 
+> I replaced dev_pm_opp_set_voltage() with dev_pm_opp_set_opp() in the
+> Tegra PD driver and got a crash, which happens because the above line
+> should be:
+> 
+> 	if (IS_ERR(clk))
 
-Apologies - I must have overlooked that somehow.  Let me address it now.
+Fixed, thanks.
 
-> or similar? If it's not legal, it should be mentioned in the comment,
-
-OK, it is not legal.  So if desired, I can do this in the code...
-
- - * Optionally the self-descriptive "all" or "none" can be used.
- + * Optionally the self-descriptive stand alone "all" or "none" can be used.
-
-...and a similar "stand alone" addition in kernel-parameters.rst above?
-
-> if it is legal,
-> the corresponding code should go to bitmap_parse_region(), just like for "N".
-
-Non-standalone is not legal.  The strcmp ensures the "all" or "none" are
-stand-alone.  And as can be seen in the testing below, any attempt to
-combine them with commas or ranges or repeated instances is -EINVAL.
-(And I'll look at adding such tests to bitmap_test.c as requested.)
-
-> My personal preference is the latter option.
-
-I'm a bit confused as to the value in adding code for supporting things
-like ",all,none,all,,none" and then having to define some policy, like
-"last processed takes precedence" or similar.   A strict stand-alone
-"all" or "none" and everything else as -EINVAL as per below seems
-logical.   Maybe I'm missing something and you can elaborate?
-
-Thanks
-Paul.
---
-
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo all,none,all > cpuset.cpus
-/bin/echo: write error: Invalid argument
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo none,all > cpuset.cpus
-/bin/echo: write error: Invalid argument
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo all,all > cpuset.cpus
-/bin/echo: write error: Invalid argument
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo all, > cpuset.cpus
-/bin/echo: write error: Invalid argument
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo all > cpuset.cpus
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo ,none > cpuset.cpus
-/bin/echo: write error: Invalid argument
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo none > cpuset.cpus
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 1,3,5,7,9,11,13,15 > cpuset.cpus
-root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-1,3,5,7,9,11,13,15
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 1,3,5,7,9,11,13,all > cpuset.cpus
-/bin/echo: write error: Invalid argument
-root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo none,3,5,7,9,11,13,15 > cpuset.cpus
-/bin/echo: write error: Invalid argument
-root@hackbox:/sys/fs/cgroup/cpuset/foo# 
+-- 
+viresh
