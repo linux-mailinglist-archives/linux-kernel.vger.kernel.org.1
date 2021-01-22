@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C2A300154
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A7E300159
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbhAVLTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:19:19 -0500
-Received: from mga06.intel.com ([134.134.136.31]:25452 "EHLO mga06.intel.com"
+        id S1728177AbhAVLTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:19:07 -0500
+Received: from mga01.intel.com ([192.55.52.88]:46963 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727892AbhAVLCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728133AbhAVLCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 06:02:54 -0500
-IronPort-SDR: iAUpdPiN9tbhc7ZT+3fTG8JEj8EZxBYJ4JcmIumzV5x+aV5Dmj+CeNex5jFDpbEQmyReYHbC1e
- g3XeCB1wSvGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="240973095"
+IronPort-SDR: 2xh351Ynr3mQId3TkBnfUKOWhKNASrudPJMAxEWy1XV2V+wBR2fiCVsRUH8xZd3gFJsq1IM1o2
+ qfZmy/jB/p2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="198184771"
 X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="240973095"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:02:01 -0800
-IronPort-SDR: geIUEOQrVguPZtzIDQwQtwqy3BdzO5IESfMc58X3gjFn0ycifR+zNSApB4SeUBTzivgiZAqueL
- ewHAKWbGnZ9w==
+   d="scan'208";a="198184771"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:02:08 -0800
+IronPort-SDR: EB1SN3CMlofVK60vRDQ9WMwEg1M4tVshrDn3fv3DdSNipXRD411CRfdH3hTftxSaihdg7J7mIr
+ tzqKbZqxnHxA==
 X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="571053408"
+   d="scan'208";a="400531430"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:01:57 -0800
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:02:03 -0800
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -33,12 +33,11 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Yu Wang <yu1.wang@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
         Shuo Liu <shuo.a.liu@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
         Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v8 05/18] virt: acrn: Introduce ACRN HSM basic driver
-Date:   Fri, 22 Jan 2021 19:01:09 +0800
-Message-Id: <20210122110122.45800-6-shuo.a.liu@intel.com>
+Subject: [PATCH v8 06/18] virt: acrn: Introduce VM management interfaces
+Date:   Fri, 22 Jan 2021 19:01:10 +0800
+Message-Id: <20210122110122.45800-7-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210122110122.45800-1-shuo.a.liu@intel.com>
 References: <20210122110122.45800-1-shuo.a.liu@intel.com>
@@ -50,215 +49,444 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuo Liu <shuo.a.liu@intel.com>
 
-ACRN Hypervisor Service Module (HSM) is a kernel module in Service VM
-which communicates with ACRN userspace through ioctls and talks to ACRN
-Hypervisor through hypercalls.
+The VM management interfaces expose several VM operations to ACRN
+userspace via ioctls. For example, creating VM, starting VM, destroying
+VM and so on.
 
-Add a basic HSM driver which allows Service VM userspace to communicate
-with ACRN. The following patches will add more ioctls, guest VM memory
-mapping caching, I/O request processing, ioeventfd and irqfd into this
-module. HSM exports a char device interface (/dev/acrn_hsm) to userspace.
+The ACRN Hypervisor needs to exchange data with the ACRN userspace
+during the VM operations. HSM provides VM operation ioctls to the ACRN
+userspace and communicates with the ACRN Hypervisor for VM operations
+via hypercalls.
+
+HSM maintains a list of User VM. Each User VM will be bound to an
+existing file descriptor of /dev/acrn_hsm. The User VM will be
+destroyed when the file descriptor is closed.
 
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: Zhi Wang <zhi.a.wang@intel.com>
 Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
 Cc: Yu Wang <yu1.wang@intel.com>
 Cc: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- MAINTAINERS                  |  1 +
- drivers/virt/Kconfig         |  2 +
- drivers/virt/Makefile        |  1 +
- drivers/virt/acrn/Kconfig    | 14 ++++++
- drivers/virt/acrn/Makefile   |  3 ++
- drivers/virt/acrn/acrn_drv.h | 18 ++++++++
- drivers/virt/acrn/hsm.c      | 87 ++++++++++++++++++++++++++++++++++++
- 7 files changed, 126 insertions(+)
- create mode 100644 drivers/virt/acrn/Kconfig
- create mode 100644 drivers/virt/acrn/Makefile
- create mode 100644 drivers/virt/acrn/acrn_drv.h
- create mode 100644 drivers/virt/acrn/hsm.c
+ .../userspace-api/ioctl/ioctl-number.rst      |  1 +
+ MAINTAINERS                                   |  1 +
+ drivers/virt/acrn/Makefile                    |  2 +-
+ drivers/virt/acrn/acrn_drv.h                  | 21 ++++-
+ drivers/virt/acrn/hsm.c                       | 76 +++++++++++++++++-
+ drivers/virt/acrn/hypercall.h                 | 78 +++++++++++++++++++
+ drivers/virt/acrn/vm.c                        | 68 ++++++++++++++++
+ include/uapi/linux/acrn.h                     | 58 ++++++++++++++
+ 8 files changed, 301 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/virt/acrn/hypercall.h
+ create mode 100644 drivers/virt/acrn/vm.c
+ create mode 100644 include/uapi/linux/acrn.h
 
+diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+index a4c75a28c839..0aec83c01368 100644
+--- a/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -319,6 +319,7 @@ Code  Seq#    Include File                                           Comments
+ 0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
+                                                                      <mailto:kenji@bitgate.com>
+ 0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
++0xA2  all    uapi/linux/acrn.h                                       ACRN hypervisor
+ 0xA3  80-8F                                                          Port ACL  in development:
+                                                                      <mailto:tlewis@mindspring.com>
+ 0xA3  90-9F  linux/dtlk.h
 diff --git a/MAINTAINERS b/MAINTAINERS
-index ca190e560dde..f1c481c829cf 100644
+index f1c481c829cf..69f3cefed7e5 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -442,6 +442,7 @@ L:	acrn-dev@lists.projectacrn.org
- S:	Supported
+@@ -443,6 +443,7 @@ S:	Supported
  W:	https://projectacrn.org
  F:	Documentation/virt/acrn/
-+F:	drivers/virt/acrn/
+ F:	drivers/virt/acrn/
++F:	include/uapi/linux/acrn.h
  
  AD1889 ALSA SOUND DRIVER
  L:	linux-parisc@vger.kernel.org
-diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-index 80c5f9c16ec1..8061e8ef449f 100644
---- a/drivers/virt/Kconfig
-+++ b/drivers/virt/Kconfig
-@@ -34,4 +34,6 @@ config FSL_HV_MANAGER
- source "drivers/virt/vboxguest/Kconfig"
- 
- source "drivers/virt/nitro_enclaves/Kconfig"
-+
-+source "drivers/virt/acrn/Kconfig"
- endif
-diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
-index f28425ce4b39..3e272ea60cd9 100644
---- a/drivers/virt/Makefile
-+++ b/drivers/virt/Makefile
-@@ -7,3 +7,4 @@ obj-$(CONFIG_FSL_HV_MANAGER)	+= fsl_hypervisor.o
- obj-y				+= vboxguest/
- 
- obj-$(CONFIG_NITRO_ENCLAVES)	+= nitro_enclaves/
-+obj-$(CONFIG_ACRN_HSM)		+= acrn/
-diff --git a/drivers/virt/acrn/Kconfig b/drivers/virt/acrn/Kconfig
-new file mode 100644
-index 000000000000..36c80378c30c
---- /dev/null
-+++ b/drivers/virt/acrn/Kconfig
-@@ -0,0 +1,14 @@
-+# SPDX-License-Identifier: GPL-2.0
-+config ACRN_HSM
-+	tristate "ACRN Hypervisor Service Module"
-+	depends on ACRN_GUEST
-+	help
-+	  ACRN Hypervisor Service Module (HSM) is a kernel module which
-+	  communicates with ACRN userspace through ioctls and talks to
-+	  the ACRN Hypervisor through hypercalls. HSM will only run in
-+	  a privileged management VM, called Service VM, to manage User
-+	  VMs and do I/O emulation. Not required for simply running
-+	  under ACRN as a User VM.
-+
-+	  To compile as a module, choose M, the module will be called
-+	  acrn. If unsure, say N.
 diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
-new file mode 100644
-index 000000000000..6920ed798aaf
---- /dev/null
+index 6920ed798aaf..cf8b4ed5e74e 100644
+--- a/drivers/virt/acrn/Makefile
 +++ b/drivers/virt/acrn/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_ACRN_HSM)	:= acrn.o
-+acrn-y := hsm.o
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_ACRN_HSM)	:= acrn.o
+-acrn-y := hsm.o
++acrn-y := hsm.o vm.o
 diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-new file mode 100644
-index 000000000000..29eedd696327
---- /dev/null
+index 29eedd696327..e5aba86cad8c 100644
+--- a/drivers/virt/acrn/acrn_drv.h
 +++ b/drivers/virt/acrn/acrn_drv.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __ACRN_HSM_DRV_H
-+#define __ACRN_HSM_DRV_H
-+
-+#include <linux/types.h>
-+
-+#define ACRN_INVALID_VMID (0xffffU)
-+
-+/**
-+ * struct acrn_vm - Properties of ACRN User VM.
-+ * @vmid:	User VM ID
-+ */
-+struct acrn_vm {
-+	u16	vmid;
-+};
-+
-+#endif /* __ACRN_HSM_DRV_H */
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-new file mode 100644
-index 000000000000..a8dcb250649d
---- /dev/null
-+++ b/drivers/virt/acrn/hsm.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ACRN Hypervisor Service Module (HSM)
-+ *
-+ * Copyright (C) 2020 Intel Corporation. All rights reserved.
-+ *
-+ * Authors:
-+ *	Fengwei Yin <fengwei.yin@intel.com>
-+ *	Yakui Zhao <yakui.zhao@intel.com>
-+ */
-+
+@@ -3,16 +3,35 @@
+ #ifndef __ACRN_HSM_DRV_H
+ #define __ACRN_HSM_DRV_H
+ 
++#include <linux/acrn.h>
++#include <linux/dev_printk.h>
 +#include <linux/miscdevice.h>
-+#include <linux/mm.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
+ #include <linux/types.h>
+ 
++#include "hypercall.h"
 +
-+#include <asm/acrn.h>
-+#include <asm/hypervisor.h>
++extern struct miscdevice acrn_dev;
 +
-+#include "acrn_drv.h"
+ #define ACRN_INVALID_VMID (0xffffU)
+ 
++#define ACRN_VM_FLAG_DESTROYED		0U
+ /**
+  * struct acrn_vm - Properties of ACRN User VM.
++ * @list:	Entry within global list of all VMs
+  * @vmid:	User VM ID
++ * @vcpu_num:	Number of virtual CPUs in the VM
++ * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
++ *		in HSM which is different from the &acrn_vm_creation.vm_flag.
+  */
+ struct acrn_vm {
+-	u16	vmid;
++	struct list_head	list;
++	u16			vmid;
++	int			vcpu_num;
++	unsigned long		flags;
+ };
+ 
++struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
++			       struct acrn_vm_creation *vm_param);
++int acrn_vm_destroy(struct acrn_vm *vm);
 +
+ #endif /* __ACRN_HSM_DRV_H */
+diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+index a8dcb250649d..5fd933471683 100644
+--- a/drivers/virt/acrn/hsm.c
++++ b/drivers/virt/acrn/hsm.c
+@@ -9,7 +9,6 @@
+  *	Yakui Zhao <yakui.zhao@intel.com>
+  */
+ 
+-#include <linux/miscdevice.h>
+ #include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+@@ -38,10 +37,82 @@ static int acrn_dev_open(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
 +/*
-+ * When /dev/acrn_hsm is opened, a 'struct acrn_vm' object is created to
-+ * represent a VM instance and continues to be associated with the opened file
-+ * descriptor. All ioctl operations on this file descriptor will be targeted to
-+ * the VM instance. Release of this file descriptor will destroy the object.
++ * HSM relies on hypercall layer of the ACRN hypervisor to do the
++ * sanity check against the input parameters.
 + */
-+static int acrn_dev_open(struct inode *inode, struct file *filp)
-+{
-+	struct acrn_vm *vm;
-+
-+	vm = kzalloc(sizeof(*vm), GFP_KERNEL);
-+	if (!vm)
-+		return -ENOMEM;
-+
-+	vm->vmid = ACRN_INVALID_VMID;
-+	filp->private_data = vm;
-+	return 0;
-+}
-+
-+static int acrn_dev_release(struct inode *inode, struct file *filp)
++static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
++			   unsigned long ioctl_param)
 +{
 +	struct acrn_vm *vm = filp->private_data;
++	struct acrn_vm_creation *vm_param;
++	int ret = 0;
 +
-+	kfree(vm);
-+	return 0;
-+}
++	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
++		dev_dbg(acrn_dev.this_device,
++			"ioctl 0x%x: Invalid VM state!\n", cmd);
++		return -EINVAL;
++	}
 +
-+static const struct file_operations acrn_fops = {
-+	.owner		= THIS_MODULE,
-+	.open		= acrn_dev_open,
-+	.release	= acrn_dev_release,
-+};
++	switch (cmd) {
++	case ACRN_IOCTL_CREATE_VM:
++		vm_param = memdup_user((void __user *)ioctl_param,
++				       sizeof(struct acrn_vm_creation));
++		if (IS_ERR(vm_param))
++			return PTR_ERR(vm_param);
 +
-+static struct miscdevice acrn_dev = {
-+	.minor	= MISC_DYNAMIC_MINOR,
-+	.name	= "acrn_hsm",
-+	.fops	= &acrn_fops,
-+};
++		if ((vm_param->reserved0 | vm_param->reserved1) != 0)
++			return -EINVAL;
 +
-+static int __init hsm_init(void)
-+{
-+	int ret;
++		vm = acrn_vm_create(vm, vm_param);
++		if (!vm) {
++			ret = -EINVAL;
++			kfree(vm_param);
++			break;
++		}
 +
-+	if (x86_hyper_type != X86_HYPER_ACRN)
-+		return -ENODEV;
++		if (copy_to_user((void __user *)ioctl_param, vm_param,
++				 sizeof(struct acrn_vm_creation))) {
++			acrn_vm_destroy(vm);
++			ret = -EFAULT;
++		}
 +
-+	if (!(cpuid_eax(ACRN_CPUID_FEATURES) & ACRN_FEATURE_PRIVILEGED_VM))
-+		return -EPERM;
-+
-+	ret = misc_register(&acrn_dev);
-+	if (ret)
-+		pr_err("Create misc dev failed!\n");
++		kfree(vm_param);
++		break;
++	case ACRN_IOCTL_START_VM:
++		ret = hcall_start_vm(vm->vmid);
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to start VM %u!\n", vm->vmid);
++		break;
++	case ACRN_IOCTL_PAUSE_VM:
++		ret = hcall_pause_vm(vm->vmid);
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to pause VM %u!\n", vm->vmid);
++		break;
++	case ACRN_IOCTL_RESET_VM:
++		ret = hcall_reset_vm(vm->vmid);
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to restart VM %u!\n", vm->vmid);
++		break;
++	case ACRN_IOCTL_DESTROY_VM:
++		ret = acrn_vm_destroy(vm);
++		break;
++	default:
++		dev_dbg(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
++		ret = -ENOTTY;
++	}
 +
 +	return ret;
 +}
 +
-+static void __exit hsm_exit(void)
-+{
-+	misc_deregister(&acrn_dev);
-+}
-+module_init(hsm_init);
-+module_exit(hsm_exit);
+ static int acrn_dev_release(struct inode *inode, struct file *filp)
+ {
+ 	struct acrn_vm *vm = filp->private_data;
+ 
++	acrn_vm_destroy(vm);
+ 	kfree(vm);
+ 	return 0;
+ }
+@@ -50,9 +121,10 @@ static const struct file_operations acrn_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= acrn_dev_open,
+ 	.release	= acrn_dev_release,
++	.unlocked_ioctl = acrn_dev_ioctl,
+ };
+ 
+-static struct miscdevice acrn_dev = {
++struct miscdevice acrn_dev = {
+ 	.minor	= MISC_DYNAMIC_MINOR,
+ 	.name	= "acrn_hsm",
+ 	.fops	= &acrn_fops,
+diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
+new file mode 100644
+index 000000000000..426b66cadb1f
+--- /dev/null
++++ b/drivers/virt/acrn/hypercall.h
+@@ -0,0 +1,78 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * ACRN HSM: hypercalls of ACRN Hypervisor
++ */
++#ifndef __ACRN_HSM_HYPERCALL_H
++#define __ACRN_HSM_HYPERCALL_H
++#include <asm/acrn.h>
 +
-+MODULE_AUTHOR("Intel Corporation");
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("ACRN Hypervisor Service Module (HSM)");
++/*
++ * Hypercall IDs of the ACRN Hypervisor
++ */
++#define _HC_ID(x, y) (((x) << 24) | (y))
++
++#define HC_ID 0x80UL
++
++#define HC_ID_VM_BASE			0x10UL
++#define HC_CREATE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x00)
++#define HC_DESTROY_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x01)
++#define HC_START_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x02)
++#define HC_PAUSE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x03)
++#define HC_RESET_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x05)
++
++/**
++ * hcall_create_vm() - Create a User VM
++ * @vminfo:	Service VM GPA of info of User VM creation
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_create_vm(u64 vminfo)
++{
++	return acrn_hypercall1(HC_CREATE_VM, vminfo);
++}
++
++/**
++ * hcall_start_vm() - Start a User VM
++ * @vmid:	User VM ID
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_start_vm(u64 vmid)
++{
++	return acrn_hypercall1(HC_START_VM, vmid);
++}
++
++/**
++ * hcall_pause_vm() - Pause a User VM
++ * @vmid:	User VM ID
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_pause_vm(u64 vmid)
++{
++	return acrn_hypercall1(HC_PAUSE_VM, vmid);
++}
++
++/**
++ * hcall_destroy_vm() - Destroy a User VM
++ * @vmid:	User VM ID
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_destroy_vm(u64 vmid)
++{
++	return acrn_hypercall1(HC_DESTROY_VM, vmid);
++}
++
++/**
++ * hcall_reset_vm() - Reset a User VM
++ * @vmid:	User VM ID
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_reset_vm(u64 vmid)
++{
++	return acrn_hypercall1(HC_RESET_VM, vmid);
++}
++
++#endif /* __ACRN_HSM_HYPERCALL_H */
+diff --git a/drivers/virt/acrn/vm.c b/drivers/virt/acrn/vm.c
+new file mode 100644
+index 000000000000..3f667ac8ac1e
+--- /dev/null
++++ b/drivers/virt/acrn/vm.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * ACRN_HSM: Virtual Machine management
++ *
++ * Copyright (C) 2020 Intel Corporation. All rights reserved.
++ *
++ * Authors:
++ *	Jason Chen CJ <jason.cj.chen@intel.com>
++ *	Yakui Zhao <yakui.zhao@intel.com>
++ */
++#include <linux/io.h>
++#include <linux/mm.h>
++#include <linux/slab.h>
++
++#include "acrn_drv.h"
++
++/* List of VMs */
++static LIST_HEAD(acrn_vm_list);
++/* To protect acrn_vm_list */
++static DEFINE_MUTEX(acrn_vm_list_lock);
++
++struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
++			       struct acrn_vm_creation *vm_param)
++{
++	int ret;
++
++	ret = hcall_create_vm(virt_to_phys(vm_param));
++	if (ret < 0 || vm_param->vmid == ACRN_INVALID_VMID) {
++		dev_err(acrn_dev.this_device,
++			"Failed to create VM! Error: %d\n", ret);
++		return NULL;
++	}
++
++	vm->vmid = vm_param->vmid;
++	vm->vcpu_num = vm_param->vcpu_num;
++
++	mutex_lock(&acrn_vm_list_lock);
++	list_add(&vm->list, &acrn_vm_list);
++	mutex_unlock(&acrn_vm_list_lock);
++
++	dev_dbg(acrn_dev.this_device, "VM %u created.\n", vm->vmid);
++	return vm;
++}
++
++int acrn_vm_destroy(struct acrn_vm *vm)
++{
++	int ret;
++
++	if (vm->vmid == ACRN_INVALID_VMID ||
++	    test_and_set_bit(ACRN_VM_FLAG_DESTROYED, &vm->flags))
++		return 0;
++
++	/* Remove from global VM list */
++	mutex_lock(&acrn_vm_list_lock);
++	list_del_init(&vm->list);
++	mutex_unlock(&acrn_vm_list_lock);
++
++	ret = hcall_destroy_vm(vm->vmid);
++	if (ret < 0) {
++		dev_err(acrn_dev.this_device,
++			"Failed to destroy VM %u\n", vm->vmid);
++		clear_bit(ACRN_VM_FLAG_DESTROYED, &vm->flags);
++		return ret;
++	}
++	dev_dbg(acrn_dev.this_device, "VM %u destroyed.\n", vm->vmid);
++	vm->vmid = ACRN_INVALID_VMID;
++	return 0;
++}
+diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
+new file mode 100644
+index 000000000000..32521168075f
+--- /dev/null
++++ b/include/uapi/linux/acrn.h
+@@ -0,0 +1,58 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Userspace interface for /dev/acrn_hsm - ACRN Hypervisor Service Module
++ *
++ * This file can be used by applications that need to communicate with the HSM
++ * via the ioctl interface.
++ *
++ * Copyright (C) 2021 Intel Corporation. All rights reserved.
++ */
++
++#ifndef _UAPI_ACRN_H
++#define _UAPI_ACRN_H
++
++#include <linux/types.h>
++#include <linux/uuid.h>
++
++/**
++ * struct acrn_vm_creation - Info to create a User VM
++ * @vmid:		User VM ID returned from the hypervisor
++ * @reserved0:		Reserved and must be 0
++ * @vcpu_num:		Number of vCPU in the VM. Return from hypervisor.
++ * @reserved1:		Reserved and must be 0
++ * @uuid:		UUID of the VM. Pass to hypervisor directly.
++ * @vm_flag:		Flag of the VM creating. Pass to hypervisor directly.
++ * @ioreq_buf:		Service VM GPA of I/O request buffer. Pass to
++ *			hypervisor directly.
++ * @cpu_affinity:	CPU affinity of the VM. Pass to hypervisor directly.
++ * 			It's a bitmap which indicates CPUs used by the VM.
++ */
++struct acrn_vm_creation {
++	__u16	vmid;
++	__u16	reserved0;
++	__u16	vcpu_num;
++	__u16	reserved1;
++	guid_t	uuid;
++	__u64	vm_flag;
++	__u64	ioreq_buf;
++	__u64	cpu_affinity;
++};
++
++/* The ioctl type, documented in ioctl-number.rst */
++#define ACRN_IOCTL_TYPE			0xA2
++
++/*
++ * Common IOCTL IDs definition for ACRN userspace
++ */
++#define ACRN_IOCTL_CREATE_VM		\
++	_IOWR(ACRN_IOCTL_TYPE, 0x10, struct acrn_vm_creation)
++#define ACRN_IOCTL_DESTROY_VM		\
++	_IO(ACRN_IOCTL_TYPE, 0x11)
++#define ACRN_IOCTL_START_VM		\
++	_IO(ACRN_IOCTL_TYPE, 0x12)
++#define ACRN_IOCTL_PAUSE_VM		\
++	_IO(ACRN_IOCTL_TYPE, 0x13)
++#define ACRN_IOCTL_RESET_VM		\
++	_IO(ACRN_IOCTL_TYPE, 0x15)
++
++#endif /* _UAPI_ACRN_H */
 -- 
 2.28.0
 
