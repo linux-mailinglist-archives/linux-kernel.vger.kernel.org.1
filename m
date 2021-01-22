@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CAA2FFE2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D792FFE27
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbhAVI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:27:11 -0500
-Received: from mail-mw2nam12on2067.outbound.protection.outlook.com ([40.107.244.67]:55744
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726954AbhAVIZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:25:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bnAAE4lcqg5QebitEMg6jtgfgIaaUbS0S3Dt7myE+X4TEuR0IWUooI5QZzFoy9Ik5G5zNCgPuS3RLtK7HlyvhV4s2p6AEjPNe1RX5zSoWJlyuXYVfhLiCFQQnED7zZvf8JxoavqWw0krWWXU9f2fwKszIPtYopS+bwnFgQg4Ox1Ef2Ipmjo1HSSrsm72E5l2gyIAyZgHVPID3rmGc7JBvTLDj/02XsC5y9kYxmCy8T6QW4bEoKJi/eqzneuTMEvQ+N10tDnmx0SquJIKFcLDUkaaCfo24xuBjrbHkr3TGX74IfMh1FqW27jTStSc9cPq9OMoP1AOWRLijRVHq+nA0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=57OLQhWQc4sZRU498KR5IZJs+s5QC0WYyQu0XBYK0sE=;
- b=MBGtIWoEW9Xk3SGWpkvD8N+0edSHChJkjXhIZ351KpN+9H0DELIxRy7GAcBtt9M2IYCHAQNPufQ8WJGlPm4LpXD+nkq92MS7kNvSo01Mx9/KUfykZUyarPdG4SXsTlCpVLeq/XN/07K1KvnOmDR8jFE2SKZttXRsj9+M2GywYX1RPtkxO2GNgTczeRDb3JNkCHsKgS32Jo82DPKe5OSphtSADSrhNlc2bnFUgztCXRu6NzFv+qvXyLYbfH0XFvkfhVExAfWR6XB7GlXCOO7eBIGb8yFKHX/cztokTcWl9mu1VBxCz86PsKZp+AnTQw3Zf+wV1G2tsxKv7IZJM2Qw8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=57OLQhWQc4sZRU498KR5IZJs+s5QC0WYyQu0XBYK0sE=;
- b=qj20pBeHAxGfO7wJWvyNl/UmV5cIuWhIDrQnRY1OfBg/dmlv8jrd0XoiQaLhcUfxqTi1Bmg/uMHYd1PBRq5fy5FHVwonyQSRNf8BBfUVdNT51+Y5QViz98moBCscEkpMJ8NrfaF7fZqt4oZ6qLxkZX6+8Z4jFjlWyr6DDaw2BUo=
-Received: from (2603:10b6:a02:fc::24) by
- SJ0PR05MB7739.namprd05.prod.outlook.com (2603:10b6:a03:2e1::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6; Fri, 22 Jan
- 2021 08:24:59 +0000
-Received: from BYAPR05MB4470.namprd05.prod.outlook.com
- ([fe80::5d18:d12d:f88:e695]) by BYAPR05MB4470.namprd05.prod.outlook.com
- ([fe80::5d18:d12d:f88:e695%6]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
- 08:24:59 +0000
-From:   Ronak Doshi <doshir@vmware.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Petr Vandrovec <petr@vmware.com>,
-        Pv-drivers <Pv-drivers@vmware.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] vmxnet3: Remove buf_info from device accessible
- structures
-Thread-Topic: [PATCH net-next] vmxnet3: Remove buf_info from device accessible
- structures
-Thread-Index: AQHW7tLhDzRAxKYQ2USgax8SHBpL0aoy2CaA///0OwA=
-Date:   Fri, 22 Jan 2021 08:24:59 +0000
-Message-ID: <888F37FB-B8BD-43D8-9E75-4F1CE9D4FAC7@vmware.com>
-References: <20210120021941.9655-1-doshir@vmware.com>
- <20210121170705.08ecb23d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210121170705.08ecb23d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Microsoft-MacOutlook/16.40.20081000
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [2601:647:4c00:97e:ed06:21ea:867d:e6c5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: aca1b386-5b7e-43d9-3277-08d8beaf3578
-x-ms-traffictypediagnostic: SJ0PR05MB7739:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR05MB7739AE0EDC11672E206FCBACA4A09@SJ0PR05MB7739.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: muoPcX/CLRuIHO7CmbtDooGvEm0F2p2c/aF8RT4EEHmXWDJa5m/BnnztKqTI+ZJ53/3z6qOXKvp0zsJba2VCri57spEj0FCQjXeWBVrcTRBTnKBzS2PmVGeS5m+DpDatPQBXodkv/6c6UZ1q3VFMywdlYJLQc25/1G5UpYRXedG0IiHSg7PBeCWbnik21Iy1o5fdviVjgIsL+rZMGG61cBREbO+oATE03+Ln6Ajtdhgai1fLXucrQSj9dQj541PfHrly7xGQUH3Vlu9OHd14nx+MiU8YxGKjmPHQl/vJ+ki1gT5OmwMFEx3I3qrtRw3nwtuNWZMaydVfcaU6VLNnWlodgRAjhdlFeBLOClNIcpoiOEPfNSk27tnE9HCeoKANVG4hgvRn3vI91o7MUeko6pvUC70UL8uG+RN7iSlRAgCkV5978IVvriWhHCbbh9WI
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4470.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(86362001)(36756003)(76116006)(91956017)(6512007)(4326008)(6506007)(53546011)(2906002)(316002)(478600001)(54906003)(64756008)(33656002)(6486002)(5660300002)(186003)(66946007)(6916009)(71200400001)(8676002)(2616005)(66556008)(83380400001)(4744005)(66446008)(66476007)(8936002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?Wm9McnM2TXpaYnNicUJsQXE3OEVab09LZXYxUHN5ejZES2FXYWdjTjI3Tzda?=
- =?utf-8?B?QnNhUHArclQyUXI4Y0E5dE9lNlpYYS81bEVYSVdRUndpbzdrUEZpT2ROaHov?=
- =?utf-8?B?ck53bEhaWWl5K2FxNkhVdDUydGN2YWVydVUwRy82SGFKU2l6cU9ma1ZZRGtT?=
- =?utf-8?B?WVpXb0hqQjRRZ2VUN0FOMThKMUswS2oxalU5a3RKZ1NsaUtHYWlpKzlXYXZk?=
- =?utf-8?B?R0hmQWhPR2N2Q1lLY1gvZDJTb2hkOUtNV3pyVVhlZFFlbVc5emlMYTR5OFVU?=
- =?utf-8?B?SVNhUWdOZ2hYYVhoRlowcm9OU0FHZFo4cU82b0JhT25DYkx2TmV4aS8yWnU2?=
- =?utf-8?B?UndUSWQ3VXRkNHNHR3MwdFVaZCtDcStCNTcwQzVzelhpK21aM2JVbTd1RDRa?=
- =?utf-8?B?bXd2dXhiS0k4NzlqRi9JR2FLUzU3K01abVhDTFk2T1RlK00wbHBmQkI0ZEpY?=
- =?utf-8?B?Q1ZyRTdGcGxxZ3VlOUJuTVJnVEU2c1J5TGc3WFg1NUFMYjVwR2dNTCtZSjIv?=
- =?utf-8?B?blR2S1ZSODVTbXErRmwrL1RRcGRTYVlWNEZSbGJZTzVXVE9Xa1hadmRyVWpl?=
- =?utf-8?B?SHhMK2hYdUFBSHVMeHhKSjQ2ZGVkNksvaThnQkFrTzFObStQYWdOcnE4aXlr?=
- =?utf-8?B?djZUYndJQ0Z6bmk1RFp2aVpQMzZ0MFpPcjZ5QU90YVV0TTlya1ZoTVlGSGN3?=
- =?utf-8?B?UkFSaVVwNVRBdWtNbW93WVgyTUZOemRmT2ZDUVAvUXpoN0hMclNCWGZ2cEdm?=
- =?utf-8?B?VEZvLzNJSWFHTGkrN0RxYnFtMi9HcWlUeXZ6WnZLM2tmcmg1Sm5CZUk5LzlG?=
- =?utf-8?B?c2hwampXM0wyZFF6dVBoYVI2YmlMdmh5ZzV6Y2w3VVZtYytIK2NUaW5rUnlh?=
- =?utf-8?B?dHgwMDlZNUNmblJVR3p3QXFoTGJSRGVUL0hBR21mVDE3dUFNNzJoU1VnbGJp?=
- =?utf-8?B?dEJmOUpNYWxCdVFnSlBXalgyQmtkSUMrSFR5ajhjVE5TY0dzb3NGSHV3MXQ3?=
- =?utf-8?B?RXlCNzRGa1NJR0JRVjNNMllqanRyN3I3enE5dXJDdE1meWx1UHQ5aTIzS1RM?=
- =?utf-8?B?VU9maFJZZm4wTTJQOFhvVVFJZ1pldXpsNHRtbGIycEpreGFJS2lHQ1ptaTVR?=
- =?utf-8?B?ZmhHRWdhSlh6QnNTSEdGeTc4WTlQTFozWjNjZWVPekFjc3dBU0prSnFSNzN2?=
- =?utf-8?B?RjZlcHBLU3RBWVZ6TUtjdXZVZ096NHh0MTlQczh1QXNRQ1lSay9hZlNVR3F5?=
- =?utf-8?B?dEQ0OEVSWHlyM0J5OFptWEY2MlIrNU8yQjg2REFheW55THdVbFpYSzZlem84?=
- =?utf-8?B?ZGFLKzJ4b2YvT0ZEUWxPL1BiZUE5Rit5cElvMVcwT2pmalpNUnZyWjF5QmFi?=
- =?utf-8?B?bXphY0lPV1RpMitaeHVBT1VQSEdhWmJ6YWljQTRzcnR1ZUc4ZkFLS3dXVTdD?=
- =?utf-8?B?dGFYVk43S0VqSG5xZ2lwSVpGSytzN3pSSS9OQVpsVnJrQUkxcFZmSHVMSHNp?=
- =?utf-8?B?ZDUrc1ZJL29XQ3JxNlMwUmtOUVlMaHNaSmxBaHEvR3d4cVR4cFJ4MnEyM3FB?=
- =?utf-8?B?QVU3Zz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <72A53382C69E60418ED5FA1AEFE75033@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727015AbhAVI2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:28:13 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52764 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726247AbhAVI0y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:26:54 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10M8CRbB128393;
+        Fri, 22 Jan 2021 03:26:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mw4V63uEuhF15jfLZx5263/9Tfcis6S2XeJ6PjdZCk8=;
+ b=nng7M2CnBTGNSXaITZDAwVUx+HwDBtm2EiOs8ckI+Od24wRDL3f/BUcL8PuV6yGni6Cu
+ gdiAUdVnLgR9KI7Z1jiV1/1neFtq6GnHE8Ol2JLCbbbArrlVCN2uCpBEPw3vBKY8fl+W
+ cpbA+iIRADpbOOTlkDTzvVzUzsYyhZM3D7bOH+veD3wH11lS7VUts38V0FVT4lqAysNm
+ eeZnVjuMJPu8RdBwtFjG8sTJUyG16O641GjQvRG8+zT0Fpk64KTlX91LL1TVms/fks9Y
+ B7w2Qrj97lfm/HsKqmSKBrHq7KEGhuVNKOvUdSOuX4j0SgBDL5guvnUmb+dMRI7cyB/w eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 367u05g9wb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 03:26:12 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10M8Dn3T131567;
+        Fri, 22 Jan 2021 03:26:11 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 367u05g9vp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 03:26:11 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10M8HY7s015508;
+        Fri, 22 Jan 2021 08:26:10 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 367k0v06aq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 08:26:09 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10M8Q61m33030512
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Jan 2021 08:26:07 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CBECFA4064;
+        Fri, 22 Jan 2021 08:26:06 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 585A9A405F;
+        Fri, 22 Jan 2021 08:26:06 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.82.42])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 22 Jan 2021 08:26:06 +0000 (GMT)
+Subject: Re: [PATCH v5] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com, Halil Pasic <pasic@linux.ibm.com>
+References: <20201223012013.5418-1-akrowiak@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <0649ba1e-ecd3-890a-72b5-a8ff54417faf@de.ibm.com>
+Date:   Fri, 22 Jan 2021 09:26:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4470.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aca1b386-5b7e-43d9-3277-08d8beaf3578
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 08:24:59.4661
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CcB5xBoo33lVgQ3yS/8Uuakg6AYjeLufUcFYixNyNaXk1lHDofGkOlhjf/Kd3vSRoGFFY3iBtTVLUP5N2AoV7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7739
+In-Reply-To: <20201223012013.5418-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-22_03:2021-01-21,2021-01-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 impostorscore=0
+ phishscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101220038
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxLzIxLzIxLCA1OjA3IFBNLCAiSmFrdWIgS2ljaW5za2kiIDxrdWJhQGtlcm5lbC5vcmc+
-IHdyb3RlOg0KPiAgT24gVHVlLCAxOSBKYW4gMjAyMSAxODoxOTo0MCAtMDgwMCBSb25hayBEb3No
-aSB3cm90ZToNCj4gID4gRnJvbTogUGV0ciBWYW5kcm92ZWMgPHBldHJAdm13YXJlLmNvbT4NCj4g
-ID4gDQo+ICA+IHZteG5ldDM6IFJlbW92ZSBidWZfaW5mbyBmcm9tIGRldmljZSBhY2Nlc3NpYmxl
-IHN0cnVjdHVyZXMNCj4NCj4gICAgU29tZXRoaW5nIGhhcHBlbmVkIHRvIHRoZSBwb3N0aW5nLCBs
-b29rcyBsaWtlIHRoZSBzdWJqZWN0IGlzIGxpc3RlZA0KPiAgIHR3aWNlPw0KSXQgZ290IHNlbnQg
-dHdpY2UuIFBsZWFzZSBpZ25vcmUuDQoNCj4gID4gLQlpZiAoIXRxLT5idWZfaW5mbykNCj4gID4g
-Kwl0cS0+YnVmX2luZm8gPSBrbWFsbG9jX2FycmF5X25vZGUodHEtPnR4X3Jpbmcuc2l6ZSwgc2l6
-ZW9mKHRxLT5idWZfaW5mb1swXSksDQo+ICA+ICsJCQkJCSAgR0ZQX0tFUk5FTCB8IF9fR0ZQX1pF
-Uk8sDQo+ICA+ICsJCQkJCSAgZGV2X3RvX25vZGUoJmFkYXB0ZXItPnBkZXYtPmRldikpOw0KPg0K
-PiAgIGtjYWxsb2Nfbm9kZSgpDQpTdXJlLCB3aWxsIHVzZSB0aGlzIGNhbGxiYWNrLg0KDQo+ICA+
-ICsJaWYgKCF0cS0+YnVmX2luZm8pIHsNCj4gID4gKwkJbmV0ZGV2X2VycihhZGFwdGVyLT5uZXRk
-ZXYsICJmYWlsZWQgdG8gYWxsb2NhdGUgdHggYnVmZmVyIGluZm9cbiIpDQo+DQo+IFBsZWFzZSBk
-cm9wIHRoZSBtZXNzYWdlLCBPT00gc3BsYXQgd2lsbCBiZSB2aXNpYmxlIGVub3VnaC4gY2hlY2tw
-YXRjaA0KPiB1c3VhbGx5IHBvaW50cyB0aGlzIG91dA0KDQpPa2F5LCB3aWxsIGRyb3AgaXQuIENo
-ZWNrcGF0Y2ggZGlkIG5vdCBjb21wbGFpbiBhYm91dCB0aGUgZXJyb3IgbWVzc2FnZSB0aG91Z2gu
-DQoNClRoYW5rcywNClJvbmFrDQoNCg==
+On 23.12.20 02:20, Tony Krowiak wrote:
+> The vfio_ap device driver registers a group notifier with VFIO when the
+> file descriptor for a VFIO mediated device for a KVM guest is opened to
+> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> event). When the KVM pointer is set, the vfio_ap driver takes the
+> following actions:
+> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+>    of the mediated device.
+> 2. Calls the kvm_get_kvm() function to increment its reference counter.
+> 3. Sets the function pointer to the function that handles interception of
+>    the instruction that enables/disables interrupt processing.
+> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+>    the guest.
+> 
+> In order to avoid memory leaks, when the notifier is called to receive
+> notification that the KVM pointer has been set to NULL, the vfio_ap device
+> driver should reverse the actions taken when the KVM pointer was set.
+> 
+> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+
+
+Just to keep you up2date why this patch is still waiting in our queue. This triggered
+a lockdep splat in the CI which we want to fix first.
