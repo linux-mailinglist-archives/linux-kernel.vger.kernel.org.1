@@ -2,75 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59BF3008CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4623008D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728673AbhAVQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:39:07 -0500
-Received: from mga03.intel.com ([134.134.136.65]:62989 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729257AbhAVQcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:32:03 -0500
-IronPort-SDR: KCUmIOMReC+jxMN/6Ob3Q3l1ViBrdLxpdzXdAbJUR4ef6lt9ASQYcm0bszPG2lGrIbk/PgMm5Q
- wNdZ4AuYYV5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="179549323"
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="179549323"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 08:30:03 -0800
-IronPort-SDR: CK80DJc6gXQWhoKGwkQHTBlkKKIE7qUeRUwU1+P6Rpznk6MmGkSJsMUB9YKZ9987CNrYPM5NVx
- ujEZxDg3BMig==
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="351995235"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 08:29:59 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2zKv-0097fs-Ap; Fri, 22 Jan 2021 18:31:01 +0200
-Date:   Fri, 22 Jan 2021 18:31:01 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wesley Zhao <zhaowei1102@thundersoft.com>
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        tglx@linutronix.de, kerneldev@karsmulder.nl, nivedita@alum.mit.edu,
-        joe@perches.com, gpiccoli@canonical.com, aquini@redhat.com,
-        gustavoars@kernel.org, ojeda@kernel.org, ndesaulniers@gooogle.com,
-        linux-kernel@vger.kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, guohanjun@huawei.com,
-        mchehab+huawei@kernel.org
-Subject: Re: [PATCH v3 2/2] resource: Make it possible to reserve memory on
- 64bit platform
-Message-ID: <YAr9xaQM3LTU8vfS@smile.fi.intel.com>
-References: <1611330937-22654-1-git-send-email-zhaowei1102@thundersoft.com>
- <1611330937-22654-3-git-send-email-zhaowei1102@thundersoft.com>
+        id S1728681AbhAVQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:40:26 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:46410 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729341AbhAVQhf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:37:35 -0500
+Received: by mail-oi1-f169.google.com with SMTP id q205so6528492oig.13;
+        Fri, 22 Jan 2021 08:33:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lTuHQ4UlfZkguZ0cbc1Ol2Evb9EfKU6F2YZJSKyGnh0=;
+        b=FN18+ttPif7Tn9Dm7mZZATDQl+mxJ+EUlfoqjrlXZrMlhaXx/i3+c0VUbw8ikIrehr
+         mYh3VgzxSU5iFkYdt5evsBZjdPYGTeBx/Ea6sGrMHYJjvuXJcenOMbnOMMw3BVQWC6vn
+         WIBWFJW68qIqzY4mbPe1G8Zsqf26RAcDyLysVFDCD0vxVW5Kwj3NzD+f+zUwF7ZO+e+v
+         NMESz4IgFFhfWKptqP278IwMf1797nBKDcpLCgKLjpO0K0P9wKYO5S7ghHSzgjIFxeA8
+         kNc8Re6KS3KZRfU8GhQ8UD+wTOzV5fEqTdHQjUUOVUV+EbuT7nxiOsgoxkad5F1HEkKo
+         6Qyw==
+X-Gm-Message-State: AOAM533QSb7c+2faxVf7snWTT0PMS5n+FE5jIkHrhSgDRwIriQ02TxPO
+        048H98UUrPs3c6N2I2lbAw==
+X-Google-Smtp-Source: ABdhPJw21osrwiJXrEsQWTyQVGDgcvV4oJCkDEljVba3b9aB+7OUXXBAHCysrElXoCbJFJyd21gkkg==
+X-Received: by 2002:aca:e007:: with SMTP id x7mr3756171oig.8.1611333193563;
+        Fri, 22 Jan 2021 08:33:13 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m7sm1759199otq.33.2021.01.22.08.33.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 08:33:12 -0800 (PST)
+Received: (nullmailer pid 921964 invoked by uid 1000);
+        Fri, 22 Jan 2021 16:33:10 -0000
+Date:   Fri, 22 Jan 2021 10:33:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
+        vkoul@kernel.org, Anson.Huang@nxp.com, michael@walle.cc,
+        agx@sigxcpu.org, max.oss.09@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: Re: [PATCH v2 14/22] dt-bindings: media: camss: Add
+ qcom,msm8996-camss binding
+Message-ID: <20210122163310.GA897089@robh.at.kernel.org>
+References: <20210120134357.1522254-1-robert.foss@linaro.org>
+ <20210120134357.1522254-14-robert.foss@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611330937-22654-3-git-send-email-zhaowei1102@thundersoft.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210120134357.1522254-14-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 07:55:37AM -0800, Wesley Zhao wrote:
-> For now "reserve=" is limitied to 32bit,not available on 64bit
-> platform,so we change the get_option() to get_option_ull(added in
-> patch: commit 4b6bfe96265e ("lib/cmdline: add new function
-> get_option_ull()"))
+On Wed, Jan 20, 2021 at 02:43:49PM +0100, Robert Foss wrote:
+> Add bindings for qcom,msm8996-camss in order to support the camera
+> subsystem on MSM8996.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+> 
+> Changes since v1:
+>  - Laurent: Reworked driver to use dtschema
+> 
+> 
+>  .../bindings/media/qcom,msm8996-camss.yaml    | 418 ++++++++++++++++++
+>  1 file changed, 418 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> new file mode 100644
+> index 000000000000..5ca0be8892ab
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> @@ -0,0 +1,418 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/media/qcom,msm8996-camss.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm CAMSS ISP
+> +
+> +maintainers:
+> +  - Robert Foss <robert.foss@linaro.org>
+> +  - Todor Tomov <todor.too@gmail.com>
+> +
+> +description: |
+> +  The CAMSS IP is a CSI decoder and ISP present on Qualcomm platforms
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,msm8996-camss
+> +
+> +  clocks:
+> +    description:
+> +      Input clocks for the hardware block.
 
-Do better grammar and punctuation.
+That's every 'clocks' entry. Drop.
 
-"For now "reserve=" is limited to 32bit, and not available on 64bit platform,
-so we change the get_option() to get_option_ull() which is added in the
-previous patch."
+> +    minItems: 36
+> +    maxItems: 36
+> +
+> +  clock-names:
+> +    description:
+> +      Names of input clocks for the hardware block.
 
-But!
+ditto.
 
-You don't need to alter cmdline.c at all, see memparse() for the details!
-And you have been told already, look at other options. You failed to mentioned
-in the cover letter what's wrong with recommended memmap= approach.
+> +    items:
+> +      - const: top_ahb
+> +      - const: ispif_ahb
+> +      - const: csiphy0_timer
+> +      - const: csiphy1_timer
+> +      - const: csiphy2_timer
+> +      - const: csi0_ahb
+> +      - const: csi0
+> +      - const: csi0_phy
+> +      - const: csi0_pix
+> +      - const: csi0_rdi
+> +      - const: csi1_ahb
+> +      - const: csi1
+> +      - const: csi1_phy
+> +      - const: csi1_pix
+> +      - const: csi1_rdi
+> +      - const: csi2_ahb
+> +      - const: csi2
+> +      - const: csi2_phy
+> +      - const: csi2_pix
+> +      - const: csi2_rdi
+> +      - const: csi3_ahb
+> +      - const: csi3
+> +      - const: csi3_phy
+> +      - const: csi3_pix
+> +      - const: csi3_rdi
+> +      - const: ahb
+> +      - const: vfe0
+> +      - const: csi_vfe0
+> +      - const: vfe0_ahb
+> +      - const: vfe0_stream
+> +      - const: vfe1
+> +      - const: csi_vfe1
+> +      - const: vfe1_ahb
+> +      - const: vfe1_stream
+> +      - const: vfe_ahb
+> +      - const: vfe_axi
+> +
+> +  interrupts:
+> +    description:
+> +      IRQs for the hardware block.
 
--- 
-With Best Regards,
-Andy Shevchenko
+ditto
 
+> +    minItems: 10
+> +    maxItems: 10
+> +
+> +  interrupt-names:
+> +    description:
+> +      Names of IRQs for the hardware block.
+> +    items:
+> +      - const: csiphy0
+> +      - const: csiphy1
+> +      - const: csiphy2
+> +      - const: csid0
+> +      - const: csid1
+> +      - const: csid2
+> +      - const: csid3
+> +      - const: ispif
+> +      - const: vfe0
+> +      - const: vfe1
+> +
+> +  iommus:
+> +    maxItems: 4
+> +
+> +  power-domains:
+> +    maxItems: 2
 
+Need to define what each one is.
+
+items:
+  - description: ...
+  - description: ...
+
+> +
+> +  ports:
+
+This needs to reference graph.yaml#/properties/ports
+
+See recent additions in -next.
+
+> +    description:
+> +      The CSI data input ports.
+> +
+> +    type: object
+> +
+> +    properties:
+> +      port@0:
+
+There's a pending video-interfaces.yaml conversion which this is going 
+to need to use[1].
+
+> +        type: object
+> +        description: Input node for receiving CSI data.
+> +        properties:
+> +          endpoint:
+> +            type: object
+> +
+> +            properties:
+> +              clock-lanes:
+> +                description: |-
+> +                  The physical clock lane index. The value must
+> +                  always be <7> as the hardware supports D-PHY
+> +                  and C-PHY, indexes are in a common set and
+> +                  D-PHY physical clock lane is labeled as 7.
+
+You don't need this in DT if it can only be 1 value.
+
+> +
+> +              data-lanes:
+> +                description: |-
+> +                  An array of physical data lanes indexes.
+> +                  Position of an entry determines the logical
+> +                  lane number, while the value of an entry
+> +                  indicates physical lane index. Lane swapping
+> +                  is supported. Physical lane indexes are:
+> +                  0, 1, 2, 3
+
+No need to redescribe this here. Just any additional constraints. 
+'maxItems: 4' at least since the base allows 8.
+
+Rob
+
+[1] https://lore.kernel.org/linux-devicetree/20210104165808.2166686-1-robh@kernel.org/
