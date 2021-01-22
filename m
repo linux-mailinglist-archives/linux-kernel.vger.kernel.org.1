@@ -2,656 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582D92FFF24
+	by mail.lfdr.de (Postfix) with ESMTP id C55362FFF25
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727373AbhAVJ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        id S1727418AbhAVJ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:29:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbhAVIhe (ORCPT
+        with ESMTP id S1727040AbhAVIlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:37:34 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB7FC061352
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:39 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b131so4841928ybc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:39 -0800 (PST)
+        Fri, 22 Jan 2021 03:41:02 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C75C061786;
+        Fri, 22 Jan 2021 00:40:18 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id q25so5212394oij.10;
+        Fri, 22 Jan 2021 00:40:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=/OIs2TJX5ND+RH85bYlIpUrVz6HrCIWH3QZQo39q10E=;
-        b=Dt4znLjBSDopMWFJNuS6PRZWc6Q72ZaCH48arXwXtxiEmwa2dvH3Sf1SCf58uk564J
-         FgQtWfRBdyt9BK+jARbxMFHlSWchw+MhaeP+T0/Mzx/f+nAkDWAkXzj1L1WthbeREPXQ
-         LIzls+PlI0281iFD9wSWw+gKUoea9+VjITfw030FHUNkEZukhQ6/xYGw6grFw5bYUbPr
-         hKdEP3fUhdkrnA7IkmOMeD5C/sfc4wSeOFO0STmAKTzYAuxmn9LC672VaVSg/K4ZxQrP
-         tq7oFG7X0QGhaNoMLN9PrlGfiVIweci/887uajSyQVm0rwrgN8eYJYlau4aUhGE9nBfb
-         nluQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=e0T/0FMUpYKFq5BQWC0q9ZRuoujNmvORYqx5Qnxrd6U=;
+        b=Qg+bUYVKucO99QnqOD4irrWaQBQMH2hjBBwXFRQi8Pojs8JiwApZXHdXhzAXyM5Pqc
+         a+tQUweISQZagSTAGPD69wWhU8GeHSF5kqApp1qa/mBCX2KaFLKcf0Auzv3t4naom4dc
+         1gU8KN3/z5DcOduhiBWp++lA9Vf3QqS5FTK0BDE8E2pJz2pp76Lzr4tpAZfHFkOdhEdI
+         oN7dqVOhUeojDRk2v6aaAzKTnU4jCSm3crS9fVvVPFpLcV28nkOpJLC+8F17KHKV0hI1
+         NMf/rZw7ZMWZexe2AepQEVVARyALk8OczObHNBX2K+bOnM6zUSJYqqT6zgBFAD1wzWXv
+         HfNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/OIs2TJX5ND+RH85bYlIpUrVz6HrCIWH3QZQo39q10E=;
-        b=H8kWw7Rj5IQ8gAJVoj4LJmAlWuVeE6jmQ5ZdnlzGcNA1ZZWGWhpZ+XMmlYjcU/GBJQ
-         ZJPJaNJ6FzvsO+qhSrewyecR8lugAS+U0AeDeVHNclVLHD6GK0PVQScz2VYTgB3GlmkA
-         yPFN/MRILeFfNNByZP9kG3dGkiuYGxeDPrVmcazzhrvWAHql1d9oO+uHuMC50kX86rLR
-         DZW8GK49KzfoRFnCtGPSgFKkafjVkXwlxjYJC4JKnhwtNpgQudfn322H2tPO0Ux8vKoV
-         sMPf3RQIewjFLt6wZtTyxl31ghf3RCeSYe7VZYE0/VO7sM0ctTsCdRxBIOx2Ykctvps5
-         kxoQ==
-X-Gm-Message-State: AOAM5304wZTi7hHJ5Nvb7WQimCbqK0v447mGQX6ZVTQZHk3+fa471Be/
-        obG3Z3krh980eBLCAeK9X1IHnwgYyVRh
-X-Google-Smtp-Source: ABdhPJysxnDLPXlMjNijIoZt3E0Xh9PVv1iI6WIREGqe3gCjJuR8Vx16HRptbts5ZHf6S0+sBkOC3WwVBnd6
-Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:f693:9fff:fef4:2347])
- (user=apusaka job=sendgmr) by 2002:a25:ad8c:: with SMTP id
- z12mr5202475ybi.143.1611304598385; Fri, 22 Jan 2021 00:36:38 -0800 (PST)
-Date:   Fri, 22 Jan 2021 16:36:13 +0800
-In-Reply-To: <20210122083617.3163489-1-apusaka@google.com>
-Message-Id: <20210122163457.v6.3.I2bdb3d9953a91dc7865da6e57166260b3a75c146@changeid>
-Mime-Version: 1.0
-References: <20210122083617.3163489-1-apusaka@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v6 3/7] Bluetooth: advmon offload MSFT remove monitor
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=e0T/0FMUpYKFq5BQWC0q9ZRuoujNmvORYqx5Qnxrd6U=;
+        b=R7qVdj0YvRNF6xv2FnDefesiUni2EEPR7tMRvF3k0e1GbHRb316IOF4iQ5bEuelGSx
+         xfMkbLlvVo0O+NifzWNxzyd4sjk6I/ph3RzhhEPoVK29SLZAZ03g4N9n0G/nG033Pyrz
+         itWPotGFOyBrLlLlcXZMXErODP7Y/U+ycNI/r5LsAwpNSZnIR6qkdjRMMnsoARnZzN6V
+         cL4rru58lFO1syEbGZp80UFJhJvnNJaPxcBRrSAgxhf6m6an7siSI1MPmq12NvPdRDwM
+         tZeweXPO1J+KDvOs4bZlsCXxF7vgdcBDLUKCtfw8NHmgrwHNPg32KHwVJBaVMMTFkQvb
+         aUPA==
+X-Gm-Message-State: AOAM530alvsGJPoF8CJ3Z7dCmZ4Gvo1+KhnXWBiN28nvDNdK44EbChiX
+        NG5j87OqKu+EuFRfb8rIPEzMDY9yRSaZu+C8pAM=
+X-Google-Smtp-Source: ABdhPJxO03NnkN0i+zF1FsF5GZIM81INjIxkYX25MAI0FxT8LEV/GLpukpWNGekHxp3VyVrLV2Dp109fDZqLDGQ89bA=
+X-Received: by 2002:aca:ded4:: with SMTP id v203mr2551827oig.148.1611304817605;
+ Fri, 22 Jan 2021 00:40:17 -0800 (PST)
+MIME-Version: 1.0
+References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
+ <159827189767.306468.1803062787718957199.stgit@warthog.procyon.org.uk>
+In-Reply-To: <159827189767.306468.1803062787718957199.stgit@warthog.procyon.org.uk>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Fri, 22 Jan 2021 09:40:06 +0100
+Message-ID: <CAKgNAkj=1y51Yei9FchAEKEm=mgY_soVfn-58mRC+Z2Ae2HZZw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] Add manpage for fspick(2)
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+Hello David,
 
-Implements the monitor removal functionality for advertising monitor
-offloading to MSFT controllers. Supply handle = 0 to remove all
-monitors.
+Ping!
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-Reviewed-by: Yun-Hao Chung <howardchung@google.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Thanks,
 
----
+Michael
 
-(no changes since v3)
+On Mon, 24 Aug 2020 at 14:25, David Howells <dhowells@redhat.com> wrote:
+>
+> Add a manual page to document the fspick() system call.
+>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> ---
+>
+>  man2/fspick.2 |  180 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 180 insertions(+)
+>  create mode 100644 man2/fspick.2
+>
+> diff --git a/man2/fspick.2 b/man2/fspick.2
+> new file mode 100644
+> index 000000000..72bf645dd
+> --- /dev/null
+> +++ b/man2/fspick.2
+> @@ -0,0 +1,180 @@
+> +'\" t
+> +.\" Copyright (c) 2020 David Howells <dhowells@redhat.com>
+> +.\"
+> +.\" %%%LICENSE_START(VERBATIM)
+> +.\" Permission is granted to make and distribute verbatim copies of this
+> +.\" manual provided the copyright notice and this permission notice are
+> +.\" preserved on all copies.
+> +.\"
+> +.\" Permission is granted to copy and distribute modified versions of this
+> +.\" manual under the conditions for verbatim copying, provided that the
+> +.\" entire resulting derived work is distributed under the terms of a
+> +.\" permission notice identical to this one.
+> +.\"
+> +.\" Since the Linux kernel and libraries are constantly changing, this
+> +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+> +.\" responsibility for errors or omissions, or for damages resulting from
+> +.\" the use of the information contained herein.  The author(s) may not
+> +.\" have taken the same level of care in the production of this manual,
+> +.\" which is licensed free of charge, as they might when working
+> +.\" professionally.
+> +.\"
+> +.\" Formatted or processed versions of this manual, if unaccompanied by
+> +.\" the source, must acknowledge the copyright and authors of this work.
+> +.\" %%%LICENSE_END
+> +.\"
+> +.TH FSPICK 2 2020-08-24 "Linux" "Linux Programmer's Manual"
+> +.SH NAME
+> +fspick \- Select filesystem for reconfiguration
+> +.SH SYNOPSIS
+> +.nf
+> +.B #include <sys/types.h>
+> +.B #include <sys/mount.h>
+> +.B #include <unistd.h>
+> +.BR "#include <fcntl.h>           " "/* Definition of AT_* constants */"
+> +.PP
+> +.BI "int fspick(int " dirfd ", const char *" pathname ", unsigned int " flags );
+> +.fi
+> +.PP
+> +.IR Note :
+> +There is no glibc wrapper for this system call.
+> +.SH DESCRIPTION
+> +.PP
+> +.BR fspick ()
+> +creates a new filesystem configuration context within the kernel and attaches a
+> +pre-existing superblock to it so that it can be reconfigured (similar to
+> +.BR mount (8)
+> +with the "-o remount" option).  The configuration context is marked as being in
+> +reconfiguration mode and attached to a file descriptor, which is returned to
+> +the caller.  The file descriptor can be marked close-on-exec by setting
+> +.B FSPICK_CLOEXEC
+> +in
+> +.IR flags .
+> +.PP
+> +The target is whichever superblock backs the object determined by
+> +.IR dfd ", " pathname " and " flags .
+> +The following can be set in
+> +.I flags
+> +to control the pathwalk to that object:
+> +.TP
+> +.B FSPICK_SYMLINK_NOFOLLOW
+> +Don't follow symbolic links in the final component of the path.
+> +.TP
+> +.B FSPICK_NO_AUTOMOUNT
+> +Don't follow automounts in the final component of the path.
+> +.TP
+> +.B FSPICK_EMPTY_PATH
+> +Allow an empty string to be specified as the pathname.  This allows
+> +.I dirfd
+> +to specify the target mount exactly.
+> +.PP
+> +After calling fspick(), the file descriptor should be passed to the
+> +.BR fsconfig (2)
+> +system call, using that to specify the desired changes to filesystem and
+> +security parameters.
+> +.PP
+> +When the parameters are all set, the
+> +.BR fsconfig ()
+> +system call should then be called again with
+> +.B FSCONFIG_CMD_RECONFIGURE
+> +as the command argument to effect the reconfiguration.
+> +.PP
+> +After the reconfiguration has taken place, the context is wiped clean (apart
+> +from the superblock attachment, which remains) and can be reused to make
+> +another reconfiguration.
+> +.PP
+> +The file descriptor also serves as a channel by which more comprehensive error,
+> +warning and information messages may be retrieved from the kernel using
+> +.BR read (2).
+> +.SS Message Retrieval Interface
+> +The context file descriptor may be queried for message strings at any time by
+> +calling
+> +.BR read (2)
+> +on the file descriptor.  This will return formatted messages that are prefixed
+> +to indicate their class:
+> +.TP
+> +\fB"e <message>"\fP
+> +An error message string was logged.
+> +.TP
+> +\fB"i <message>"\fP
+> +An informational message string was logged.
+> +.TP
+> +\fB"w <message>"\fP
+> +An warning message string was logged.
+> +.PP
+> +Messages are removed from the queue as they're read and the queue has a limited
+> +depth of 8 messages, so it's possible for some to get lost.
+> +.SH RETURN VALUE
+> +On success, the function returns a file descriptor.  On error, \-1 is returned,
+> +and
+> +.I errno
+> +is set appropriately.
+> +.SH ERRORS
+> +The error values given below result from filesystem type independent errors.
+> +Additionally, each filesystem type may have its own special errors and its own
+> +special behavior.  See the Linux kernel source code for details.
+> +.TP
+> +.B EACCES
+> +A component of a path was not searchable.
+> +(See also
+> +.BR path_resolution (7).)
+> +.TP
+> +.B EFAULT
+> +.I pathname
+> +points outside the user address space.
+> +.TP
+> +.B EINVAL
+> +.I flags
+> +includes an undefined value.
+> +.TP
+> +.B ELOOP
+> +Too many links encountered during pathname resolution.
+> +.TP
+> +.B EMFILE
+> +The system has too many open files to create more.
+> +.TP
+> +.B ENFILE
+> +The process has too many open files to create more.
+> +.TP
+> +.B ENAMETOOLONG
+> +A pathname was longer than
+> +.BR MAXPATHLEN .
+> +.TP
+> +.B ENOENT
+> +A pathname was empty or had a nonexistent component.
+> +.TP
+> +.B ENOMEM
+> +The kernel could not allocate sufficient memory to complete the call.
+> +.TP
+> +.B EPERM
+> +The caller does not have the required privileges.
+> +.SH CONFORMING TO
+> +These functions are Linux-specific and should not be used in programs intended
+> +to be portable.
+> +.SH VERSIONS
+> +.BR fsopen "(), " fsmount "() and " fspick ()
+> +were added to Linux in kernel 5.2.
+> +.SH EXAMPLES
+> +To illustrate the process, here's an example whereby this can be used to
+> +reconfigure a filesystem:
+> +.PP
+> +.in +4n
+> +.nf
+> +sfd = fspick(AT_FDCWD, "/mnt", FSPICK_NO_AUTOMOUNT | FSPICK_CLOEXEC);
+> +fsconfig(sfd, FSCONFIG_SET_FLAG, "ro", NULL, 0);
+> +fsconfig(sfd, FSCONFIG_SET_STRING, "user_xattr", "false", 0);
+> +fsconfig(sfd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0);
+> +.fi
+> +.in
+> +.PP
+> +.SH NOTES
+> +Glibc does not (yet) provide a wrapper for the
+> +.BR fspick "()"
+> +system call; call it using
+> +.BR syscall (2).
+> +.SH SEE ALSO
+> +.BR mountpoint (1),
+> +.BR fsconfig (2),
+> +.BR fsopen (2),
+> +.BR path_resolution (7),
+> +.BR mount (8)
+>
+>
 
-Changes in v3:
-* Fix return type of msft_remove_monitor
 
- include/net/bluetooth/hci_core.h |   8 +-
- net/bluetooth/hci_core.c         | 119 +++++++++++++++++++++++------
- net/bluetooth/mgmt.c             | 110 +++++++++++++++++++++-----
- net/bluetooth/msft.c             | 127 ++++++++++++++++++++++++++++++-
- net/bluetooth/msft.h             |   9 +++
- 5 files changed, 323 insertions(+), 50 deletions(-)
-
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 879d1e38ce96..29cfc6a2d689 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1332,11 +1332,13 @@ int hci_remove_adv_instance(struct hci_dev *hdev, u8 instance);
- void hci_adv_instances_set_rpa_expired(struct hci_dev *hdev, bool rpa_expired);
- 
- void hci_adv_monitors_clear(struct hci_dev *hdev);
--void hci_free_adv_monitor(struct adv_monitor *monitor);
-+void hci_free_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor);
- int hci_add_adv_patterns_monitor_complete(struct hci_dev *hdev, u8 status);
-+int hci_remove_adv_monitor_complete(struct hci_dev *hdev, u8 status);
- bool hci_add_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
- 			int *err);
--int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle);
-+bool hci_remove_single_adv_monitor(struct hci_dev *hdev, u16 handle, int *err);
-+bool hci_remove_all_adv_monitor(struct hci_dev *hdev, int *err);
- bool hci_is_adv_monitoring(struct hci_dev *hdev);
- int hci_get_adv_monitor_offload_ext(struct hci_dev *hdev);
- 
-@@ -1813,8 +1815,10 @@ void mgmt_advertising_added(struct sock *sk, struct hci_dev *hdev,
- 			    u8 instance);
- void mgmt_advertising_removed(struct sock *sk, struct hci_dev *hdev,
- 			      u8 instance);
-+void mgmt_adv_monitor_removed(struct hci_dev *hdev, u16 handle);
- int mgmt_phy_configuration_changed(struct hci_dev *hdev, struct sock *skip);
- int mgmt_add_adv_patterns_monitor_complete(struct hci_dev *hdev, u8 status);
-+int mgmt_remove_adv_monitor_complete(struct hci_dev *hdev, u8 status);
- 
- u8 hci_le_conn_update(struct hci_conn *conn, u16 min, u16 max, u16 latency,
- 		      u16 to_multiplier);
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 625298f64a20..b0a63f643a07 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3051,12 +3051,15 @@ void hci_adv_monitors_clear(struct hci_dev *hdev)
- 	int handle;
- 
- 	idr_for_each_entry(&hdev->adv_monitors_idr, monitor, handle)
--		hci_free_adv_monitor(monitor);
-+		hci_free_adv_monitor(hdev, monitor);
- 
- 	idr_destroy(&hdev->adv_monitors_idr);
- }
- 
--void hci_free_adv_monitor(struct adv_monitor *monitor)
-+/* Frees the monitor structure and do some bookkeepings.
-+ * This function requires the caller holds hdev->lock.
-+ */
-+void hci_free_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor)
- {
- 	struct adv_pattern *pattern;
- 	struct adv_pattern *tmp;
-@@ -3064,8 +3067,18 @@ void hci_free_adv_monitor(struct adv_monitor *monitor)
- 	if (!monitor)
- 		return;
- 
--	list_for_each_entry_safe(pattern, tmp, &monitor->patterns, list)
-+	list_for_each_entry_safe(pattern, tmp, &monitor->patterns, list) {
-+		list_del(&pattern->list);
- 		kfree(pattern);
-+	}
-+
-+	if (monitor->handle)
-+		idr_remove(&hdev->adv_monitors_idr, monitor->handle);
-+
-+	if (monitor->state != ADV_MONITOR_STATE_NOT_REGISTERED) {
-+		hdev->adv_monitors_cnt--;
-+		mgmt_adv_monitor_removed(hdev, monitor->handle);
-+	}
- 
- 	kfree(monitor);
- }
-@@ -3075,6 +3088,11 @@ int hci_add_adv_patterns_monitor_complete(struct hci_dev *hdev, u8 status)
- 	return mgmt_add_adv_patterns_monitor_complete(hdev, status);
- }
- 
-+int hci_remove_adv_monitor_complete(struct hci_dev *hdev, u8 status)
-+{
-+	return mgmt_remove_adv_monitor_complete(hdev, status);
-+}
-+
- /* Assigns handle to a monitor, and if offloading is supported and power is on,
-  * also attempts to forward the request to the controller.
-  * Returns true if request is forwarded (result is pending), false otherwise.
-@@ -3122,39 +3140,94 @@ bool hci_add_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
- 	return (*err == 0);
- }
- 
--static int free_adv_monitor(int id, void *ptr, void *data)
-+/* Attempts to tell the controller and free the monitor. If somehow the
-+ * controller doesn't have a corresponding handle, remove anyway.
-+ * Returns true if request is forwarded (result is pending), false otherwise.
-+ * This function requires the caller holds hdev->lock.
-+ */
-+static bool hci_remove_adv_monitor(struct hci_dev *hdev,
-+				   struct adv_monitor *monitor,
-+				   u16 handle, int *err)
- {
--	struct hci_dev *hdev = data;
--	struct adv_monitor *monitor = ptr;
-+	*err = 0;
- 
--	idr_remove(&hdev->adv_monitors_idr, monitor->handle);
--	hci_free_adv_monitor(monitor);
--	hdev->adv_monitors_cnt--;
-+	switch (hci_get_adv_monitor_offload_ext(hdev)) {
-+	case HCI_ADV_MONITOR_EXT_NONE: /* also goes here when powered off */
-+		goto free_monitor;
-+	case HCI_ADV_MONITOR_EXT_MSFT:
-+		*err = msft_remove_monitor(hdev, monitor, handle);
-+		break;
-+	}
- 
--	return 0;
-+	/* In case no matching handle registered, just free the monitor */
-+	if (*err == -ENOENT)
-+		goto free_monitor;
-+
-+	return (*err == 0);
-+
-+free_monitor:
-+	if (*err == -ENOENT)
-+		bt_dev_warn(hdev, "Removing monitor with no matching handle %d",
-+			    monitor->handle);
-+	hci_free_adv_monitor(hdev, monitor);
-+
-+	*err = 0;
-+	return false;
- }
- 
--/* This function requires the caller holds hdev->lock */
--int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle)
-+/* Returns true if request is forwarded (result is pending), false otherwise.
-+ * This function requires the caller holds hdev->lock.
-+ */
-+bool hci_remove_single_adv_monitor(struct hci_dev *hdev, u16 handle, int *err)
-+{
-+	struct adv_monitor *monitor = idr_find(&hdev->adv_monitors_idr, handle);
-+	bool pending;
-+
-+	if (!monitor) {
-+		*err = -EINVAL;
-+		return false;
-+	}
-+
-+	pending = hci_remove_adv_monitor(hdev, monitor, handle, err);
-+	if (!*err && !pending)
-+		hci_update_background_scan(hdev);
-+
-+	bt_dev_dbg(hdev, "%s remove monitor handle %d, status %d, %spending",
-+		   hdev->name, handle, *err, pending ? "" : "not ");
-+
-+	return pending;
-+}
-+
-+/* Returns true if request is forwarded (result is pending), false otherwise.
-+ * This function requires the caller holds hdev->lock.
-+ */
-+bool hci_remove_all_adv_monitor(struct hci_dev *hdev, int *err)
- {
- 	struct adv_monitor *monitor;
-+	int idr_next_id = 0;
-+	bool pending = false;
-+	bool update = false;
-+
-+	*err = 0;
- 
--	if (handle) {
--		monitor = idr_find(&hdev->adv_monitors_idr, handle);
-+	while (!*err && !pending) {
-+		monitor = idr_get_next(&hdev->adv_monitors_idr, &idr_next_id);
- 		if (!monitor)
--			return -ENOENT;
-+			break;
- 
--		idr_remove(&hdev->adv_monitors_idr, monitor->handle);
--		hci_free_adv_monitor(monitor);
--		hdev->adv_monitors_cnt--;
--	} else {
--		/* Remove all monitors if handle is 0. */
--		idr_for_each(&hdev->adv_monitors_idr, &free_adv_monitor, hdev);
-+		pending = hci_remove_adv_monitor(hdev, monitor, 0, err);
-+
-+		if (!*err && !pending)
-+			update = true;
- 	}
- 
--	hci_update_background_scan(hdev);
-+	if (update)
-+		hci_update_background_scan(hdev);
- 
--	return 0;
-+	bt_dev_dbg(hdev, "%s remove all monitors status %d, %spending",
-+		   hdev->name, *err, pending ? "" : "not ");
-+
-+	return pending;
- }
- 
- /* This function requires the caller holds hdev->lock */
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index fea5e9763b72..8ff9c4bb43d1 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -4167,14 +4167,24 @@ static void mgmt_adv_monitor_added(struct sock *sk, struct hci_dev *hdev,
- 	mgmt_event(MGMT_EV_ADV_MONITOR_ADDED, hdev, &ev, sizeof(ev), sk);
- }
- 
--static void mgmt_adv_monitor_removed(struct sock *sk, struct hci_dev *hdev,
--				     u16 handle)
-+void mgmt_adv_monitor_removed(struct hci_dev *hdev, u16 handle)
- {
--	struct mgmt_ev_adv_monitor_added ev;
-+	struct mgmt_ev_adv_monitor_removed ev;
-+	struct mgmt_pending_cmd *cmd;
-+	struct sock *sk_skip = NULL;
-+	struct mgmt_cp_remove_adv_monitor *cp;
-+
-+	cmd = pending_find(MGMT_OP_REMOVE_ADV_MONITOR, hdev);
-+	if (cmd) {
-+		cp = cmd->param;
-+
-+		if (cp->monitor_handle)
-+			sk_skip = cmd->sk;
-+	}
- 
- 	ev.monitor_handle = cpu_to_le16(handle);
- 
--	mgmt_event(MGMT_EV_ADV_MONITOR_REMOVED, hdev, &ev, sizeof(ev), sk);
-+	mgmt_event(MGMT_EV_ADV_MONITOR_REMOVED, hdev, &ev, sizeof(ev), sk_skip);
- }
- 
- static int read_adv_mon_features(struct sock *sk, struct hci_dev *hdev,
-@@ -4324,8 +4334,8 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
- 	return 0;
- 
- unlock:
-+	hci_free_adv_monitor(hdev, m);
- 	hci_dev_unlock(hdev);
--	hci_free_adv_monitor(m);
- 	return mgmt_cmd_status(sk, hdev->id, op, status);
- }
- 
-@@ -4459,42 +4469,100 @@ static int add_adv_patterns_monitor_rssi(struct sock *sk, struct hci_dev *hdev,
- 					 MGMT_OP_ADD_ADV_PATTERNS_MONITOR_RSSI);
- }
- 
-+int mgmt_remove_adv_monitor_complete(struct hci_dev *hdev, u8 status)
-+{
-+	struct mgmt_rp_remove_adv_monitor rp;
-+	struct mgmt_cp_remove_adv_monitor *cp;
-+	struct mgmt_pending_cmd *cmd;
-+	int err = 0;
-+
-+	hci_dev_lock(hdev);
-+
-+	cmd = pending_find(MGMT_OP_REMOVE_ADV_MONITOR, hdev);
-+	if (!cmd)
-+		goto done;
-+
-+	cp = cmd->param;
-+	rp.monitor_handle = cp->monitor_handle;
-+
-+	if (!status)
-+		hci_update_background_scan(hdev);
-+
-+	err = mgmt_cmd_complete(cmd->sk, cmd->index, cmd->opcode,
-+				mgmt_status(status), &rp, sizeof(rp));
-+	mgmt_pending_remove(cmd);
-+
-+done:
-+	hci_dev_unlock(hdev);
-+	bt_dev_dbg(hdev, "remove monitor %d complete, status %d",
-+		   rp.monitor_handle, status);
-+
-+	return err;
-+}
-+
- static int remove_adv_monitor(struct sock *sk, struct hci_dev *hdev,
- 			      void *data, u16 len)
- {
- 	struct mgmt_cp_remove_adv_monitor *cp = data;
- 	struct mgmt_rp_remove_adv_monitor rp;
--	unsigned int prev_adv_monitors_cnt;
--	u16 handle;
--	int err;
-+	struct mgmt_pending_cmd *cmd;
-+	u16 handle = __le16_to_cpu(cp->monitor_handle);
-+	int err, status;
-+	bool pending;
- 
- 	BT_DBG("request for %s", hdev->name);
-+	rp.monitor_handle = cp->monitor_handle;
- 
- 	hci_dev_lock(hdev);
- 
--	handle = __le16_to_cpu(cp->monitor_handle);
--	prev_adv_monitors_cnt = hdev->adv_monitors_cnt;
-+	if (pending_find(MGMT_OP_SET_LE, hdev) ||
-+	    pending_find(MGMT_OP_REMOVE_ADV_MONITOR, hdev) ||
-+	    pending_find(MGMT_OP_ADD_ADV_PATTERNS_MONITOR, hdev) ||
-+	    pending_find(MGMT_OP_ADD_ADV_PATTERNS_MONITOR_RSSI, hdev)) {
-+		status = MGMT_STATUS_BUSY;
-+		goto unlock;
-+	}
- 
--	err = hci_remove_adv_monitor(hdev, handle);
--	if (err == -ENOENT) {
--		err = mgmt_cmd_status(sk, hdev->id, MGMT_OP_REMOVE_ADV_MONITOR,
--				      MGMT_STATUS_INVALID_INDEX);
-+	cmd = mgmt_pending_add(sk, MGMT_OP_REMOVE_ADV_MONITOR, hdev, data, len);
-+	if (!cmd) {
-+		status = MGMT_STATUS_NO_RESOURCES;
- 		goto unlock;
- 	}
- 
--	if (hdev->adv_monitors_cnt < prev_adv_monitors_cnt)
--		mgmt_adv_monitor_removed(sk, hdev, handle);
-+	if (handle)
-+		pending = hci_remove_single_adv_monitor(hdev, handle, &err);
-+	else
-+		pending = hci_remove_all_adv_monitor(hdev, &err);
- 
--	hci_dev_unlock(hdev);
-+	if (err) {
-+		mgmt_pending_remove(cmd);
- 
--	rp.monitor_handle = cp->monitor_handle;
-+		if (err == -ENOENT)
-+			status = MGMT_STATUS_INVALID_INDEX;
-+		else
-+			status = MGMT_STATUS_FAILED;
-+
-+		goto unlock;
-+	}
-+
-+	/* monitor can be removed without forwarding request to controller */
-+	if (!pending) {
-+		mgmt_pending_remove(cmd);
-+		hci_dev_unlock(hdev);
-+
-+		return mgmt_cmd_complete(sk, hdev->id,
-+					 MGMT_OP_REMOVE_ADV_MONITOR,
-+					 MGMT_STATUS_SUCCESS,
-+					 &rp, sizeof(rp));
-+	}
- 
--	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_REMOVE_ADV_MONITOR,
--				 MGMT_STATUS_SUCCESS, &rp, sizeof(rp));
-+	hci_dev_unlock(hdev);
-+	return 0;
- 
- unlock:
- 	hci_dev_unlock(hdev);
--	return err;
-+	return mgmt_cmd_status(sk, hdev->id, MGMT_OP_REMOVE_ADV_MONITOR,
-+			       status);
- }
- 
- static void read_local_oob_data_complete(struct hci_dev *hdev, u8 status,
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index e4b8fe71b9c3..f5aa0e3b1b9b 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -58,6 +58,17 @@ struct msft_rp_le_monitor_advertisement {
- 	__u8 handle;
- } __packed;
- 
-+#define MSFT_OP_LE_CANCEL_MONITOR_ADVERTISEMENT	0x04
-+struct msft_cp_le_cancel_monitor_advertisement {
-+	__u8 sub_opcode;
-+	__u8 handle;
-+} __packed;
-+
-+struct msft_rp_le_cancel_monitor_advertisement {
-+	__u8 status;
-+	__u8 sub_opcode;
-+} __packed;
-+
- struct msft_monitor_advertisement_handle_data {
- 	__u8  msft_handle;
- 	__u16 mgmt_handle;
-@@ -70,6 +81,7 @@ struct msft_data {
- 	__u8  *evt_prefix;
- 	struct list_head handle_map;
- 	__u16 pending_add_handle;
-+	__u16 pending_remove_handle;
- };
- 
- bool msft_monitor_supported(struct hci_dev *hdev)
-@@ -205,6 +217,26 @@ __u64 msft_get_features(struct hci_dev *hdev)
- 	return msft ? msft->features : 0;
- }
- 
-+/* is_mgmt = true matches the handle exposed to userspace via mgmt.
-+ * is_mgmt = false matches the handle used by the msft controller.
-+ * This function requires the caller holds hdev->lock
-+ */
-+static struct msft_monitor_advertisement_handle_data *msft_find_handle_data
-+				(struct hci_dev *hdev, u16 handle, bool is_mgmt)
-+{
-+	struct msft_monitor_advertisement_handle_data *entry;
-+	struct msft_data *msft = hdev->msft_data;
-+
-+	list_for_each_entry(entry, &msft->handle_map, list) {
-+		if (is_mgmt && entry->mgmt_handle == handle)
-+			return entry;
-+		if (!is_mgmt && entry->msft_handle == handle)
-+			return entry;
-+	}
-+
-+	return NULL;
-+}
-+
- static void msft_le_monitor_advertisement_cb(struct hci_dev *hdev,
- 					     u8 status, u16 opcode,
- 					     struct sk_buff *skb)
-@@ -247,16 +279,71 @@ static void msft_le_monitor_advertisement_cb(struct hci_dev *hdev,
- 	monitor->state = ADV_MONITOR_STATE_OFFLOADED;
- 
- unlock:
--	if (status && monitor) {
--		idr_remove(&hdev->adv_monitors_idr, monitor->handle);
--		hci_free_adv_monitor(monitor);
--	}
-+	if (status && monitor)
-+		hci_free_adv_monitor(hdev, monitor);
- 
- 	hci_dev_unlock(hdev);
- 
- 	hci_add_adv_patterns_monitor_complete(hdev, status);
- }
- 
-+static void msft_le_cancel_monitor_advertisement_cb(struct hci_dev *hdev,
-+						    u8 status, u16 opcode,
-+						    struct sk_buff *skb)
-+{
-+	struct msft_cp_le_cancel_monitor_advertisement *cp;
-+	struct msft_rp_le_cancel_monitor_advertisement *rp;
-+	struct adv_monitor *monitor;
-+	struct msft_monitor_advertisement_handle_data *handle_data;
-+	struct msft_data *msft = hdev->msft_data;
-+	int err;
-+	bool pending;
-+
-+	if (status)
-+		goto done;
-+
-+	rp = (struct msft_rp_le_cancel_monitor_advertisement *)skb->data;
-+	if (skb->len < sizeof(*rp)) {
-+		status = HCI_ERROR_UNSPECIFIED;
-+		goto done;
-+	}
-+
-+	hci_dev_lock(hdev);
-+
-+	cp = hci_sent_cmd_data(hdev, hdev->msft_opcode);
-+	handle_data = msft_find_handle_data(hdev, cp->handle, false);
-+
-+	if (handle_data) {
-+		monitor = idr_find(&hdev->adv_monitors_idr,
-+				   handle_data->mgmt_handle);
-+		if (monitor)
-+			hci_free_adv_monitor(hdev, monitor);
-+
-+		list_del(&handle_data->list);
-+		kfree(handle_data);
-+	}
-+
-+	/* If remove all monitors is required, we need to continue the process
-+	 * here because the earlier it was paused when waiting for the
-+	 * response from controller.
-+	 */
-+	if (msft->pending_remove_handle == 0) {
-+		pending = hci_remove_all_adv_monitor(hdev, &err);
-+		if (pending) {
-+			hci_dev_unlock(hdev);
-+			return;
-+		}
-+
-+		if (err)
-+			status = HCI_ERROR_UNSPECIFIED;
-+	}
-+
-+	hci_dev_unlock(hdev);
-+
-+done:
-+	hci_remove_adv_monitor_complete(hdev, status);
-+}
-+
- static bool msft_monitor_rssi_valid(struct adv_monitor *monitor)
- {
- 	struct adv_rssi_thresholds *r = &monitor->rssi;
-@@ -346,3 +433,35 @@ int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
- 
- 	return err;
- }
-+
-+/* This function requires the caller holds hdev->lock */
-+int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
-+			u16 handle)
-+{
-+	struct msft_cp_le_cancel_monitor_advertisement cp;
-+	struct msft_monitor_advertisement_handle_data *handle_data;
-+	struct hci_request req;
-+	struct msft_data *msft = hdev->msft_data;
-+	int err = 0;
-+
-+	if (!msft)
-+		return -EOPNOTSUPP;
-+
-+	handle_data = msft_find_handle_data(hdev, monitor->handle, true);
-+
-+	/* If no matched handle, just remove without telling controller */
-+	if (!handle_data)
-+		return -ENOENT;
-+
-+	cp.sub_opcode = MSFT_OP_LE_CANCEL_MONITOR_ADVERTISEMENT;
-+	cp.handle = handle_data->msft_handle;
-+
-+	hci_req_init(&req, hdev);
-+	hci_req_add(&req, hdev->msft_opcode, sizeof(cp), &cp);
-+	err = hci_req_run_skb(&req, msft_le_cancel_monitor_advertisement_cb);
-+
-+	if (!err)
-+		msft->pending_remove_handle = handle;
-+
-+	return err;
-+}
-diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
-index 0ac9b15322b1..6f126a1f1688 100644
---- a/net/bluetooth/msft.h
-+++ b/net/bluetooth/msft.h
-@@ -18,6 +18,8 @@ void msft_do_close(struct hci_dev *hdev);
- void msft_vendor_evt(struct hci_dev *hdev, struct sk_buff *skb);
- __u64 msft_get_features(struct hci_dev *hdev);
- int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor);
-+int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
-+			u16 handle);
- 
- #else
- 
-@@ -36,4 +38,11 @@ static inline int msft_add_monitor_pattern(struct hci_dev *hdev,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int msft_remove_monitor(struct hci_dev *hdev,
-+				      struct adv_monitor *monitor,
-+				      u16 handle)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- #endif
 -- 
-2.30.0.280.ga3ce27912f-goog
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
