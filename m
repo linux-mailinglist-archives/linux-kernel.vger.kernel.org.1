@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6723D300BE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C398300BCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730259AbhAVSxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:53:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40026 "EHLO mail.kernel.org"
+        id S1729776AbhAVStU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:49:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728513AbhAVOW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728546AbhAVOW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:22:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9652D23B46;
-        Fri, 22 Jan 2021 14:15:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DCBE23AC9;
+        Fri, 22 Jan 2021 14:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324952;
-        bh=JUbV4WDWYeuFOG5RUQMedKAYuLqR5xDajD+MGa6Gdsc=;
+        s=korg; t=1611324954;
+        bh=Odm7QNh1cEsijfJMXXqfjDl7J5XZ804yCUHZt2m2sLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JhGa86fbwfdgl0gFi8vVwo+UAQYyOxJ+pW1jX1+Lnf6mY1XYULGx6IA4F+oZCDz6A
-         aKAVpWc/nZhfqR166nyNmCdg+xJ/OgmbA59P+SuzVeDpzIuw6tZ6DblyY6eWkpEvUw
-         rAihj31ApwhL4rJtj7Qdnz3GhOTHjOWdwP5nngKo=
+        b=d5pivDTQACPJD5cELmYXPl6y4+9pGEfkyMEVzSMQVwHjIRKTf3ICG+Yy6oAVUB1sm
+         cF+eZ4iGl3rQLmoHnUnAcsENNe35Mx5hwPmgXJlFXwIhqm2qK1/tuRb1Z1t2pP53bj
+         QLGYYVV4pv++gNp6O16tvE/KItCoRnw9WJvhmUfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 17/22] rxrpc: Fix handling of an unsupported token type in rxrpc_read()
-Date:   Fri, 22 Jan 2021 15:12:35 +0100
-Message-Id: <20210122135732.597400387@linuxfoundation.org>
+Subject: [PATCH 4.19 18/22] tipc: fix NULL deref in tipc_link_xmit()
+Date:   Fri, 22 Jan 2021 15:12:36 +0100
+Message-Id: <20210122135732.635268530@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
 References: <20210122135731.921636245@linuxfoundation.org>
@@ -40,60 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-[ Upstream commit d52e419ac8b50c8bef41b398ed13528e75d7ad48 ]
+[ Upstream commit b77413446408fdd256599daf00d5be72b5f3e7c6 ]
 
-Clang static analysis reports the following:
+The buffer list can have zero skb as following path:
+tipc_named_node_up()->tipc_node_xmit()->tipc_link_xmit(), so
+we need to check the list before casting an &sk_buff.
 
-net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefined
-                toksize = toksizes[tok++];
-                        ^ ~~~~~~~~~~~~~~~
+Fault report:
+ [] tipc: Bulk publication failure
+ [] general protection fault, probably for non-canonical [#1] PREEMPT [...]
+ [] KASAN: null-ptr-deref in range [0x00000000000000c8-0x00000000000000cf]
+ [] CPU: 0 PID: 0 Comm: swapper/0 Kdump: loaded Not tainted 5.10.0-rc4+ #2
+ [] Hardware name: Bochs ..., BIOS Bochs 01/01/2011
+ [] RIP: 0010:tipc_link_xmit+0xc1/0x2180
+ [] Code: 24 b8 00 00 00 00 4d 39 ec 4c 0f 44 e8 e8 d7 0a 10 f9 48 [...]
+ [] RSP: 0018:ffffc90000006ea0 EFLAGS: 00010202
+ [] RAX: dffffc0000000000 RBX: ffff8880224da000 RCX: 1ffff11003d3cc0d
+ [] RDX: 0000000000000019 RSI: ffffffff886007b9 RDI: 00000000000000c8
+ [] RBP: ffffc90000007018 R08: 0000000000000001 R09: fffff52000000ded
+ [] R10: 0000000000000003 R11: fffff52000000dec R12: ffffc90000007148
+ [] R13: 0000000000000000 R14: 0000000000000000 R15: ffffc90000007018
+ [] FS:  0000000000000000(0000) GS:ffff888037400000(0000) knlGS:000[...]
+ [] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [] CR2: 00007fffd2db5000 CR3: 000000002b08f000 CR4: 00000000000006f0
 
-rxrpc_read() contains two consecutive loops.  The first loop calculates the
-token sizes and stores the results in toksizes[] and the second one uses
-the array.  When there is an error in identifying the token in the first
-loop, the token is skipped, no change is made to the toksizes[] array.
-When the same error happens in the second loop, the token is not skipped.
-This will cause the toksizes[] array to be out of step and will overrun
-past the calculated sizes.
-
-Fix this by making both loops log a message and return an error in this
-case.  This should only happen if a new token type is incompletely
-implemented, so it should normally be impossible to trigger this.
-
-Fixes: 9a059cd5ca7d ("rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()")
-Reported-by: Tom Rix <trix@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/161046503122.2445787.16714129930607546635.stgit@warthog.procyon.org.uk
+Fixes: af9b028e270fd ("tipc: make media xmit call outside node spinlock context")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Link: https://lore.kernel.org/r/20210108071337.3598-1-hoang.h.le@dektech.com.au
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rxrpc/key.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/tipc/link.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -1112,7 +1112,7 @@ static long rxrpc_read(const struct key
- 		default: /* we have a ticket we can't encode */
- 			pr_err("Unsupported key token type (%u)\n",
- 			       token->security_index);
--			continue;
-+			return -ENOPKG;
- 		}
+--- a/net/tipc/link.c
++++ b/net/tipc/link.c
+@@ -914,9 +914,7 @@ void tipc_link_reset(struct tipc_link *l
+ int tipc_link_xmit(struct tipc_link *l, struct sk_buff_head *list,
+ 		   struct sk_buff_head *xmitq)
+ {
+-	struct tipc_msg *hdr = buf_msg(skb_peek(list));
+ 	unsigned int maxwin = l->window;
+-	int imp = msg_importance(hdr);
+ 	unsigned int mtu = l->mtu;
+ 	u16 ack = l->rcv_nxt - 1;
+ 	u16 seqno = l->snd_nxt;
+@@ -925,13 +923,20 @@ int tipc_link_xmit(struct tipc_link *l,
+ 	struct sk_buff_head *backlogq = &l->backlogq;
+ 	struct sk_buff *skb, *_skb, **tskb;
+ 	int pkt_cnt = skb_queue_len(list);
++	struct tipc_msg *hdr;
+ 	int rc = 0;
++	int imp;
  
- 		_debug("token[%u]: toksize=%u", ntoks, toksize);
-@@ -1227,7 +1227,9 @@ static long rxrpc_read(const struct key
- 			break;
++	if (pkt_cnt <= 0)
++		return 0;
++
++	hdr = buf_msg(skb_peek(list));
+ 	if (unlikely(msg_size(hdr) > mtu)) {
+ 		__skb_queue_purge(list);
+ 		return -EMSGSIZE;
+ 	}
  
- 		default:
--			break;
-+			pr_err("Unsupported key token type (%u)\n",
-+			       token->security_index);
-+			return -ENOPKG;
- 		}
- 
- 		ASSERTCMP((unsigned long)xdr - (unsigned long)oldxdr, ==,
++	imp = msg_importance(hdr);
+ 	/* Allow oversubscription of one data msg per source at congestion */
+ 	if (unlikely(l->backlog[imp].len >= l->backlog[imp].limit)) {
+ 		if (imp == TIPC_SYSTEM_IMPORTANCE) {
 
 
