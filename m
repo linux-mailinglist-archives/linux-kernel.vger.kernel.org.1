@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DB13004D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D01E53004BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbhAVOFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:05:38 -0500
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:34358 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728077AbhAVOBa (ORCPT
+        id S1728125AbhAVOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:02:05 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:35495 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbhAVOB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:01:30 -0500
-Received: by mail-oo1-f47.google.com with SMTP id x23so1420445oop.1;
-        Fri, 22 Jan 2021 06:01:14 -0800 (PST)
+        Fri, 22 Jan 2021 09:01:28 -0500
+Received: by mail-ot1-f44.google.com with SMTP id 36so5141665otp.2;
+        Fri, 22 Jan 2021 06:01:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=xhZ6J/Bvz/RbZpLJdDAM5wDmNVNbE/omNtX1Jgn0sOA=;
-        b=Cu5+W9tPNPVEbdjYXKJ80APv+W9AMHrUVs4rLQ5qkJ4XgaEXov6ZDP+LhTIqg2M9JE
-         5X6VQhdkDoNygpsEYIFxfnvT4GeetaZuOiMUHOSP9GBiy+2a6hP+BouUsGTW/hYSb3pk
-         g4o5w9xu5YaN3LAIXcfO2cymCn8gQjZEv8Qqg3EOSVrZ1l/kjietxFhKHBzRQTndPYVT
-         Z39qURXuPN5sL8vHNX8mJRw4rKG0jgb6PSeAnp1kWSfKpLTuRLh28Gumj/CtQBrMfxcm
-         UlcouREj0I6Df7bUMjAFWcRza2Y/7JSHqVWE2WuX5Imx/+vBYgffx8YUM8FN8wGBmSGJ
-         yFmw==
-X-Gm-Message-State: AOAM533Rrw0Cysa70SBnLlHiTINFLPmNvabgHafS7eoe/hW3LSPSizYL
-        kt7m4f2Jfg50ykmdtSlQTg==
-X-Google-Smtp-Source: ABdhPJwsQ567jYvGKAXrJ8GXwHfph+c1hzHOKrEfxXnYzXPvj3BlK74M/P0Zxaj2QTnrY3kIFAMnew==
-X-Received: by 2002:a4a:9c5:: with SMTP id 188mr3812377ooa.77.1611324049044;
-        Fri, 22 Jan 2021 06:00:49 -0800 (PST)
+        bh=U4xsstxbQBaXybAiqcrHmLZ69QV9B6F9pTaooq4dehY=;
+        b=Cj3hLhttEAovwb31auhPnOvZWuX3Hzf+4qZgARhdulb2D0nVbZPl5Itq14BKqfyzxs
+         k2Rn3t9vBtjHfHXvswdJUk9x3DQopR3PxyG7EPD29vB74sapz3C5+SStgrKkm9jnVINC
+         L/xN5dUElMpm+qzFST4IpYaw66h2iY+qLRame2mTmqW/RwjA5KkNgljeeGhLQp9dtj7h
+         y3Iv42bL7YmTQ4dJu56NU9TVYF+IcsTADa2vr4RQA29a2ZuQfDkne28V8kutHHj/ahNl
+         coVZRV/V2Mgq7ZP2e7+SZmVMyg9d//qjUzIKt656Zi5kj5U2j7nfyQvrEXQxZTj/sEm4
+         C/og==
+X-Gm-Message-State: AOAM532BXHz+MYCP0e9Mduqg5eg/ZJdAfbvqK4QCwZ4KYtUv9HscdHY2
+        nFS6bVA0hm3BdYucTjJ3Xg==
+X-Google-Smtp-Source: ABdhPJyBiSU5QQVkbT3Q/aWxpWwAj9m4LW2qvNwe02K1nfHI9+W0Pb3NSq/1AhIdgdEaN2SaTT2R6A==
+X-Received: by 2002:a9d:3ef6:: with SMTP id b109mr3441742otc.288.1611324047313;
+        Fri, 22 Jan 2021 06:00:47 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b15sm1690907otj.15.2021.01.22.06.00.47
+        by smtp.gmail.com with ESMTPSA id t20sm218544oov.13.2021.01.22.06.00.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:00:48 -0800 (PST)
-Received: (nullmailer pid 674373 invoked by uid 1000);
+        Fri, 22 Jan 2021 06:00:46 -0800 (PST)
+Received: (nullmailer pid 674368 invoked by uid 1000);
         Fri, 22 Jan 2021 14:00:45 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, Amit Kucheria <amitk@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20210121191853.14600-1-ansuelsmth@gmail.com>
-References: <20210121191853.14600-1-ansuelsmth@gmail.com>
-Subject: Re: [PATCH v8 8/8] dt-bindings: thermal: tsens: Document ipq8064 bindings
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        devicetree@vger.kernel.org
+In-Reply-To: <20210121155700.9267-1-mike.looijmans@topic.nl>
+References: <20210121155700.9267-1-mike.looijmans@topic.nl>
+Subject: Re: [PATCH v7 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer bindings
 Date:   Fri, 22 Jan 2021 08:00:45 -0600
-Message-Id: <1611324045.688114.674372.nullmailer@robh.at.kernel.org>
+Message-Id: <1611324045.669047.674367.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 20:18:53 +0100, Ansuel Smith wrote:
-> Document the use of bindings used for msm8960 tsens based devices.
-> msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+On Thu, 21 Jan 2021 16:56:58 +0100, Mike Looijmans wrote:
+> This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
+> the accelerometer part.
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> 
 > ---
->  .../bindings/thermal/qcom-tsens.yaml          | 75 ++++++++++++++++---
->  1 file changed, 65 insertions(+), 10 deletions(-)
+> 
+> Changes in v7:
+> Add additionalProperties
+> Change bmi088_accel to bmi088-accel
+> Add interrupt-names and adjust description
+> 
+> Changes in v6:
+> I't been almost a year since the last commit, sorry...
+> Fixed the yaml errors
+> Add interrupt, vdd and vddio properties
+> 
+> Changes in v5:
+> submit together with driver code as patch series
+> 
+> Changes in v2:
+> convert to yaml format
+> 
+>  .../bindings/iio/accel/bosch,bmi088.yaml      | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/thermal/qcom-tsens.yaml:25:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-tsens.example.dt.yaml: thermal-sensor@4a9000: nvmem-cell-names: ['calib'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.example.dt.yaml: bmi088-accel@1: 'spi-max-frequency' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
 
-See https://patchwork.ozlabs.org/patch/1430043
+See https://patchwork.ozlabs.org/patch/1429940
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
