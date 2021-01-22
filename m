@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9027E2FFC74
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A392FFC75
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbhAVGMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhAVGMa (ORCPT
+        id S1726573AbhAVGNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:13:00 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11847 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbhAVGM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:12:30 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A06AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:11:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=QPNdt7ovBYNhxHq39ggDMXhhyoXYMScMZEiARI31TjM=; b=z2C4K8hygWN2/0+W9n5SbxsWyc
-        a5oSwKl3vasWP/GbetJhiYq63AaZHX0MZCmpd6RkVcb5WAEjWNoDsxhprqGTswUOXST/bukcV6LBA
-        xGVTmd1dOn7hsqdy1CDzCXzOlxjrScuQ3fF3QTlz2cTIws2HnYceZnn+ukHWHbVdUV6fO7DEe+OU2
-        tW7Oh2+o5rekEyyWHHdxCXZ3Cwfm671lReFgVsDljdZUxRAYeoEFL9rklsA5gD3/kddluqIvKAXZH
-        CQtrfvl4HjPxoGaPaA8U/n4ybQ/xoqwHdM7If1apqaCLd1sNTlBCx26dI0CjdISsprxUZOVJCo3MR
-        LVUB87Zg==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l2pfN-00059h-UT; Fri, 22 Jan 2021 06:11:30 +0000
-Subject: Re: [PATCH] powerpc/8xx: export 'cpm_setbrg' for modules
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210122010819.30986-1-rdunlap@infradead.org>
- <91159e78-4eea-c645-9171-a5b90271710f@csgroup.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e8e78537-0775-95b2-3161-5b5e07e784fe@infradead.org>
-Date:   Thu, 21 Jan 2021 22:11:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 22 Jan 2021 01:12:56 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DMTQw32WRz7Vyx;
+        Fri, 22 Jan 2021 14:11:04 +0800 (CST)
+Received: from [10.174.177.2] (10.174.177.2) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 22 Jan 2021
+ 14:12:11 +0800
+Subject: Re: [PATCH] hugetlbfs: make hugepage size conversion more readable
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210120092348.13811-1-linmiaohe@huawei.com>
+ <668845df-e654-ecdc-c32a-b50a22098333@oracle.com>
+ <65c34b40-7c0f-6102-da3b-586551b50453@huawei.com>
+ <9696d9e0-48d7-871c-6ec0-ba6a31c346bd@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <02bc3a85-ca7a-e8a3-587b-7341c390ac74@huawei.com>
+Date:   Fri, 22 Jan 2021 14:12:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <91159e78-4eea-c645-9171-a5b90271710f@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <9696d9e0-48d7-871c-6ec0-ba6a31c346bd@oracle.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.2]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/21/21 9:51 PM, Christophe Leroy wrote:
-> 
-> 
-> Le 22/01/2021 à 02:08, Randy Dunlap a écrit :
->> Fix missing export for a loadable module build:
+Hi:
+On 2021/1/22 13:02, Mike Kravetz wrote:
+> On 1/21/21 5:42 PM, Miaohe Lin wrote:
+>> Hi:
+>> On 2021/1/22 3:00, Mike Kravetz wrote:
+>>> On 1/20/21 1:23 AM, Miaohe Lin wrote:
+>>>> The calculation 1U << (h->order + PAGE_SHIFT - 10) is actually equal to
+>>>> (PAGE_SHIFT << (h->order)) >> 10. So we can make it more readable by
+>>>> replace it with huge_page_size(h) / SZ_1K.
+>>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  fs/hugetlbfs/inode.c | 4 ++--
+>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+>>>> index 25c1857ff45d..f94b8f6553fa 100644
+>>>> --- a/fs/hugetlbfs/inode.c
+>>>> +++ b/fs/hugetlbfs/inode.c
+>>>> @@ -1519,8 +1519,8 @@ static struct vfsmount *__init mount_one_hugetlbfs(struct hstate *h)
+>>>>  		put_fs_context(fc);
+>>>>  	}
+>>>>  	if (IS_ERR(mnt))
+>>>> -		pr_err("Cannot mount internal hugetlbfs for page size %uK",
+>>>> -		       1U << (h->order + PAGE_SHIFT - 10));
+>>>> +		pr_err("Cannot mount internal hugetlbfs for page size %luK",
+>>>> +		       huge_page_size(h) / SZ_1K);
+>>>
+>>> I appreciate the effort to make the code more readable.  The existing
+>>> calculation does take a minute to understand.  However, it is correct and
+>>> anyone modifying the code should be able to understand.
+>>>
+>>> With my compiler, your proposed change adds an additional instruction to
+>>> the routine mount_one_hugetlbfs.  I know this is not significant, but still
 >>
->> ERROR: modpost: "cpm_setbrg" [drivers/tty/serial/cpm_uart/cpm_uart.ko] undefined!
+>> I thought compiler would generate the same code...
 >>
->> Fixes: 4128a89ac80d ("powerpc/8xx: move CPM1 related files from sysdev/ to platforms/8xx")
+>>> it does increase the kernel size for a change that is of questionable value.
+>>>
+>>> In the kernel, size in KB is often calculated as (size << (PAGE_SHIFT - 10)).
+>>> If you change the calculation in the hugetlb code to be:
+>>>> 			huge_page_size(h) << (PAGE_SHIFT - 10)
+>>
+>> I'am sorry but this looks not really correct. I think the calculation shoud be
+>> huge_page_size(h) >> 10. What do you think?
 > 
-> I don't understand. Before that commit cpm_setbrg() wasn't exported either.
+> My bad!  I was looking at code that converts page counts to KB.  Sorry.
 > 
-> For me, it fixes the commit that brought the capability to build the cpm uart driver as a module, that is commit 1da177e4c3f4 ("Linux-2.6.12-rc")
+> Yes, huge_page_size(h) >> 10 is correct.
+> 
 
-OK, I didn't have a lot of confidence in that tag.
-
-Thanks for commenting.
-
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Nick Desaulniers <ndesaulniers@google.com>
->> Cc: clang-built-linux@googlegroups.com
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: linuxppc-dev@lists.ozlabs.org
->> ---
->>   arch/powerpc/platforms/8xx/cpm1.c |    1 +
->>   1 file changed, 1 insertion(+)
->>
->> --- linux-next-20210121.orig/arch/powerpc/platforms/8xx/cpm1.c
->> +++ linux-next-20210121/arch/powerpc/platforms/8xx/cpm1.c
->> @@ -280,6 +280,7 @@ cpm_setbrg(uint brg, uint rate)
->>           out_be32(bp, (((BRG_UART_CLK_DIV16 / rate) - 1) << 1) |
->>                     CPM_BRG_EN | CPM_BRG_DIV16);
->>   }
->> +EXPORT_SYMBOL(cpm_setbrg);
->>     struct cpm_ioport16 {
->>       __be16 dir, par, odr_sor, dat, intr;
->>
-
-
--- 
-~Randy
-RFC: Features and documentation: http://lwn.net/Articles/260136/
+So I will send v2 with this change. Many thanks.
