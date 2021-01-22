@@ -2,90 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDEB30084E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15210300850
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbhAVQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:10:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20935 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729553AbhAVQI1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:08:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611331620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LxEIC8hGatT2o24RK/5B1chyfP2tF4vZvBCyA+dON/4=;
-        b=Y7hsAtYYnc/JZKobskOxYidVuXpQN6j3IN7ndP4R6BydWPRvYcm3Skf8pqdSDEXR4docl5
-        C+pNvBWbWEECx5m8walyTF6RTmA8ken3nXcA2tYq9w32NjBY+xZfmvFXBfs37URrPjVEEd
-        xU4RYIFGN2HBRB+5N6+IUlSS1WqbIx8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-WxgM7MKlOBu2zSsKQiqVFw-1; Fri, 22 Jan 2021 11:06:58 -0500
-X-MC-Unique: WxgM7MKlOBu2zSsKQiqVFw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78A118144E0;
-        Fri, 22 Jan 2021 16:06:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A07F418993;
-        Fri, 22 Jan 2021 16:06:47 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210122160129.GB18583@fieldses.org>
-References: <20210122160129.GB18583@fieldses.org> <20210121190937.GE20964@fieldses.org> <20210121174306.GB20964@fieldses.org> <20210121164645.GA20964@fieldses.org> <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk> <1794286.1611248577@warthog.procyon.org.uk> <1851804.1611255313@warthog.procyon.org.uk> <1856291.1611259704@warthog.procyon.org.uk>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
+        id S1729475AbhAVQKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:10:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729561AbhAVQKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:10:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB3822EBE;
+        Fri, 22 Jan 2021 16:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611331762;
+        bh=N/RjwI9EVCn6yld5fjAUGTrQmU5DUq1AiKTbdLakKjU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hm47W/JtKeJyURvQaMWmOIe2PPX20M7wd6IN1+Rrer0SxhORpgvO0vOyJ8aDkDzn0
+         hkeGARtzCjCMSNWXMhqMPpyr25FLRhVLcBFoDbvM29yMd9y/DPzpIluUIvFFbjqecp
+         bU39MjIz5sImitA16cKs5brys7MBTvDzeScBhS7Y=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/29] 4.4.253-rc2 review
+Date:   Fri, 22 Jan 2021 17:09:19 +0100
+Message-Id: <20210122160822.198606273@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2085146.1611331606.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 22 Jan 2021 16:06:46 +0000
-Message-ID: <2085147.1611331606@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.253-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.253-rc2
+X-KernelTest-Deadline: 2021-01-24T16:08+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J. Bruce Fields <bfields@fieldses.org> wrote:
+This is the start of the stable review cycle for the 4.4.253 release.
+There are 29 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-> > J. Bruce Fields <bfields@fieldses.org> wrote:
-> > > So, I'm still confused: there must be some case where we know fscach=
-e
-> > > actually works reliably and doesn't corrupt your data, right?
-> > =
+Responses should be made by Sun, 24 Jan 2021 16:08:14 +0000.
+Anything received after that time might be too late.
 
-> > Using ext2/3, for example.  I don't know under what circumstances xfs,=
- ext4
-> > and btrfs might insert/remove blocks of zeros, but I'm told it can hap=
-pen.
-> =
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.253-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-> Do ext2/3 work well for fscache in other ways?
+thanks,
 
-Ext3 shouldn't be a problem.  That's what I used when developing it.  I'm =
-not
-sure if ext2 supports xattrs, though.
+greg k-h
 
-David
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.253-rc2
+
+Michael Hennerich <michael.hennerich@analog.com>
+    spi: cadence: cache reference clock rate during probe
+
+Eric Dumazet <edumazet@google.com>
+    net: avoid 32 x truesize under-estimation for tiny skbs
+
+David Howells <dhowells@redhat.com>
+    rxrpc: Fix handling of an unsupported token type in rxrpc_read()
+
+Jakub Kicinski <kuba@kernel.org>
+    net: sit: unregister_netdevice on newlink's error path
+
+Petr Machata <petrm@nvidia.com>
+    net: dcb: Accept RTM_GETDCB messages carrying set-like DCB commands
+
+Petr Machata <me@pmachata.org>
+    net: dcb: Validate netlink message in DCB handler
+
+Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+    rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
+
+Manish Chopra <manishc@marvell.com>
+    netxen_nic: fix MSI/MSI-x interrupts
+
+Jouni K. Seppänen <jks@iki.fi>
+    net: cdc_ncm: correct overhead in delayed_ndp_size
+
+J. Bruce Fields <bfields@redhat.com>
+    nfsd4: readdirplus shouldn't return parent of export
+
+Nuno Sá <nuno.sa@analog.com>
+    iio: buffer: Fix demux update
+
+Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+    usb: ohci: Make distrust_firmware param default to false
+
+j.nixdorf@avm.de <j.nixdorf@avm.de>
+    net: sunrpc: interpret the return value of kstrtou32 correctly
+
+Jann Horn <jannh@google.com>
+    mm, slub: consider rest of partial list if acquire_slab() fails
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
+
+Jan Kara <jack@suse.cz>
+    ext4: fix superblock checksum failure when setting password salt
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    NFS: nfs_igrab_and_active must first reference the superblock
+
+Al Viro <viro@zeniv.linux.org.uk>
+    dump_common_audit_data(): fix racy accesses to ->d_name
+
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
+    Input: uinput - avoid FF flush when destroying device
+
+Arnd Bergmann <arnd@arndb.de>
+    ARM: picoxcell: fix missing interrupt-parent properties
+
+Shawn Guo <shawn.guo@linaro.org>
+    ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
+
+Michael Ellerman <mpe@ellerman.id.au>
+    net: ethernet: fs_enet: Add missing MODULE_LICENSE
+
+Arnd Bergmann <arnd@arndb.de>
+    misdn: dsp: select CONFIG_BITREVERSE
+
+Randy Dunlap <rdunlap@infradead.org>
+    arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
+
+Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+    ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
+
+Masahiro Yamada <masahiroy@kernel.org>
+    ARC: build: add boot_targets to PHONY
+
+yangerkun <yangerkun@huawei.com>
+    ext4: fix bug for rename with RENAME_WHITEOUT
+
+Miaohe Lin <linmiaohe@huawei.com>
+    mm/hugetlb: fix potential missing huge page size info
+
+Thomas Hebb <tommyhebb@gmail.com>
+    ASoC: dapm: remove widget from dirty list on free
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                             |  4 ++--
+ arch/arc/Makefile                                    |  1 +
+ arch/arc/include/asm/page.h                          |  1 +
+ arch/arm/boot/dts/picoxcell-pc3x2.dtsi               |  4 ++++
+ drivers/iio/industrialio-buffer.c                    |  6 +++---
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c         |  3 +++
+ drivers/input/ff-core.c                              | 13 ++++++++++---
+ drivers/input/misc/uinput.c                          | 18 ++++++++++++++++++
+ drivers/isdn/mISDN/Kconfig                           |  1 +
+ drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c |  1 +
+ drivers/net/ethernet/freescale/fs_enet/mii-fec.c     |  1 +
+ drivers/net/ethernet/freescale/ucc_geth.h            |  9 ++++++++-
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |  7 +------
+ drivers/net/usb/cdc_ncm.c                            |  8 ++++++--
+ drivers/net/usb/rndis_host.c                         |  2 +-
+ drivers/spi/spi-cadence.c                            |  6 ++++--
+ drivers/usb/host/ohci-hcd.c                          |  2 +-
+ fs/ext4/ioctl.c                                      |  3 +++
+ fs/ext4/namei.c                                      | 16 +++++++++-------
+ fs/nfs/internal.h                                    | 12 +++++++-----
+ fs/nfsd/nfs3xdr.c                                    |  7 ++++++-
+ include/linux/acpi.h                                 |  7 +++++++
+ include/linux/input.h                                |  1 +
+ mm/hugetlb.c                                         |  2 +-
+ mm/slub.c                                            |  2 +-
+ net/core/skbuff.c                                    |  9 +++++++--
+ net/dcb/dcbnl.c                                      |  2 ++
+ net/ipv6/sit.c                                       |  5 ++++-
+ net/rxrpc/ar-key.c                                   |  6 ++++--
+ net/sunrpc/addr.c                                    |  2 +-
+ security/lsm_audit.c                                 |  7 +++++--
+ sound/soc/soc-dapm.c                                 |  1 +
+ 32 files changed, 125 insertions(+), 44 deletions(-)
+
 
