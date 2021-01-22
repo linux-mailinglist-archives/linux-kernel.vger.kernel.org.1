@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FB7300019
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D25430002B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727517AbhAVKW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:22:29 -0500
-Received: from mga05.intel.com ([192.55.52.43]:36660 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727825AbhAVKJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:09:00 -0500
-IronPort-SDR: Oei/IflOQRDhkV1ZlAF8GqrAhptQ62GpPQu+UVAb9UNwdJKqNxdO8ILn8onfJKB+EYyMQQuepB
- 3xCnmvlL/Nsg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="264244104"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="264244104"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 02:05:52 -0800
-IronPort-SDR: GTVcV40CII561+g1c4ZQEaXgUOCdiGelZbxh/WWOVbfil8fndYoLNlP0ch3/or33rw5JoYOFYX
- F08IjTXyVxVg==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="427923843"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 02:05:47 -0800
-Received: by lahna (sSMTP sendmail emulation); Fri, 22 Jan 2021 12:05:45 +0200
-Date:   Fri, 22 Jan 2021 12:05:45 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Mingchuang Qiao <mingchuang.qiao@mediatek.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        linux-pci@vger.kernel.org, matthias.bgg@gmail.com,
-        lambert.wang@mediatek.com, linux-mediatek@lists.infradead.org,
-        haijun.liu@mediatek.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH v2] PCI: Re-enable downstream port LTR if it was
- previously enabled
-Message-ID: <20210122100545.GL1988617@lahna.fi.intel.com>
-References: <20210121223139.GA2698934@bjorn-Precision-5520>
- <1611298991.5980.42.camel@mcddlt001>
+        id S1727923AbhAVKXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727809AbhAVKH0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:07:26 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C46CC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:06:43 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id v67so6767452lfa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:06:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=53LZGt+p3UglMmJ8LC7owG+jDtMJhUwB3mc3c22vo3w=;
+        b=yh/tASQseJelhwA8jiNe7G+W3KDRWW1njEvuW/XSR6hWhLACFO+3sS7ZPZgJ9aST0v
+         oFk/pn/i82nx2thugENYmvvL3JfDvOlhHldDiLx+runOC2sJlqzLL9M6NpJvY6PV1pcG
+         OgpdD/gayiEOFeOg1e6OJxfd/6GJOOgFxOr68V7TeyWGKerpb/HV/1qyQ9LYPNLPv1+z
+         hlWzdt0d0bo4bmizD9krbFveuKWYj0dlkBhxBoucYfvdsWW8jV/8zj/FYyUbfLRBhpJ6
+         NgC3ooDGAJiOCtisAeBgSmc0XoZ4oEoOF+SVNjhNdQJd6dAEWnj817BaPGSwMmQ2JGR9
+         OYbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=53LZGt+p3UglMmJ8LC7owG+jDtMJhUwB3mc3c22vo3w=;
+        b=VyE96W6iGwWj3HEgeeLql0MBXdmG+Nj14jvuP+6sNQaGjkFG8/Gn/QN5dS+WN+Np/X
+         CwMUinQyVr64mZcOTJ+sHT6mzaAf8HRkWtSOKNWqtkH+GX2JzGgxrGDyHX/4z7cN29vV
+         0H22q0b/62GqWYnixB+G/jG2/Ssy73+G0OcpJYRUOCG0GZXjztO3UNitc7fZ8gUiDJaH
+         ZK4ikTcuWDJrM9daNOsiLdRtbIM6wn91NwmjQ9j6cZ9mLOj+S09VAvk/gbox3OP2mceG
+         37OKkhLt4PIveGVq1cf6mcM5BTP8LAlqZevlfmjkOpc69wcADp8px8225+2f3/eOhLYN
+         NGOQ==
+X-Gm-Message-State: AOAM533vlNW0bq7ypgyEY/EfxNEZ9/PJZVtUO4VrEve7X4pzWakE1M+P
+        Cv4udJnzNypyw88HJvFeTYGFa62sCuaVI3EmjVh4tg==
+X-Google-Smtp-Source: ABdhPJyoTle4qxXu3NBqEJlHwN6jTzoBM52s7nfkB0Kj/1T93Ni/LPtdYQD6ZORaUqNYGsjXZQISQSEyffbqb3DhuEk=
+X-Received: by 2002:ac2:5c45:: with SMTP id s5mr32690lfp.586.1611310001970;
+ Fri, 22 Jan 2021 02:06:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1611298991.5980.42.camel@mcddlt001>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210111054428.3273-1-dqfext@gmail.com> <20210111054428.3273-3-dqfext@gmail.com>
+ <CACRpkdYA2fWF_1K+2aYoZnBAsm9H3=VHpeT4ZDU5sCdrOUWx=w@mail.gmail.com> <CALW65jbJ2DFqLw-i91y7oRfRhcukHSAS3A0XMuy4kA+1AtLtLQ@mail.gmail.com>
+In-Reply-To: <CALW65jbJ2DFqLw-i91y7oRfRhcukHSAS3A0XMuy4kA+1AtLtLQ@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 22 Jan 2021 11:06:30 +0100
+Message-ID: <CACRpkdZguQkTNtdeELHQ9HPzqrBFdO3NhbxHrQErcefjb-WpHQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] drivers: net: dsa: mt7530: MT7530 optional
+ GPIO support
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jan 19, 2021 at 4:20 AM DENG Qingfang <dqfext@gmail.com> wrote:
+> On Mon, Jan 18, 2021 at 10:55 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> > So for offset 0..14 this becomes bits
+> > 0, 1, 2, 4, 5, 6, 8, 9, 10, 12  ... 18
+> >
+> > What is the logic in this and is it what you intend?
+>
+> Yes. Bit 0..2 are phy 0's LED 0..2, bit 4..6 are phy 1's LED 0..2, etc.
 
-On Fri, Jan 22, 2021 at 03:03:11PM +0800, Mingchuang Qiao wrote:
-> On Thu, 2021-01-21 at 16:31 -0600, Bjorn Helgaas wrote:
-> > [+cc Alex and Mingchuang et al from
-> > https://lore.kernel.org/r/20210112072739.31624-1-mingchuang.qiao@mediatek.com]
-> > 
-> > On Tue, Jan 19, 2021 at 04:14:10PM +0300, Mika Westerberg wrote:
-> > > PCIe r5.0, sec 7.5.3.16 says that the downstream ports must reset the
-> > > LTR enable bit if the link goes down (port goes DL_Down status). Now, if
-> > > we had LTR previously enabled and the PCIe endpoint gets hot-removed and
-> > > then hot-added back the ->ltr_path of the downstream port is still set
-> > > but the port now does not have the LTR enable bit set anymore.
-> > > 
-> > > For this reason check if the bridge upstream had LTR enabled previously
-> > > and re-enable it before enabling LTR for the endpoint.
-> > > 
-> > > Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-> > > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > 
-> > I think this and Mingchuang's patch, which is essentially identical,
-> > are right and solves the problem for hot-remove/hot-add.  In that
-> > scenario we call pci_configure_ltr() on the hot-added device, and
-> > with this patch, we'll re-enable LTR on the bridge leading to the new
-> > device before enabling LTR on the new device itself.
-> > 
-> > But don't we have a similar problem if we simply do a Fundamental
-> > Reset on a device?  I think the reset path will restore the device's
-> > state, including PCI_EXP_DEVCTL2, but it doesn't do anything with the
-> > upstream bridge, does it?
-> > 
-> 
-> Yes. I think the same problem exists under such scenario, and that’s the
-> issue my patch intends to resolve.
-> I also prepared a v2 patch for review(update the patch description).
-> Shall I submit the v2 patch for review?
+OK add a comment and explain how the bits relate
+to each PHY and how the lines are arranged per-phy
+so it is crystal clear for people reading the driver.
 
-I looked at your patch and indeed it is essentially doing the same as
-this one. So let's forget this patch and go forward with yours :)
-
-Would you like to expand your patch to handle the reset case too that
-Bjorn desribes below?
-
-> > So if a bridge and a device below it both have LTR enabled, can't we
-> > have the following:
-> > 
-> >   - bridge LTR enabled
-> >   - device LTR enabled
-> >   - reset device, e.g., via Secondary Bus Reset
-> >   - link goes down, bridge disables LTR
-> >   - link comes back up, LTR disabled in both bridge and device
-> >   - restore device state, including LTR enable
-> >   - device sends LTR message
-> >   - bridge reports Unsupported Request
+Thanks!
+Linus Walleij
