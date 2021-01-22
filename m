@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB48300C0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717CD300C0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730443AbhAVTD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:03:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39308 "EHLO mail.kernel.org"
+        id S1730638AbhAVTDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:03:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728202AbhAVOTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728262AbhAVOTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:19:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 041AB23AA9;
-        Fri, 22 Jan 2021 14:14:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0894623B18;
+        Fri, 22 Jan 2021 14:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324862;
-        bh=u204TgGO/4BDw82yYCpdPhK75rsavS1oAKSO44J18YE=;
+        s=korg; t=1611324867;
+        bh=keHg5tN7iJe3Ea6FChdM7QEqZTYyNv3lusYguIH25vQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0WoxpXw1ru7Ok8iHHi4KVukok/W5jME5RVO8aorTOVQIquuA/NtRKQLAns2PTaENp
-         RCvXBgXhHXc/yyhJhfsfCSU1W7Um98aG/C+ghQS4TgvgqnJ4BL0zGyh8pFQapjqpr/
-         bFmIQYcN+VwIE0gUOJE+nizCZV+1TBMGt2c28V98=
+        b=j0N/dB3i4U2PTMX1HbEbgJZu5tBS5mAkqejzVBzAoynoOCss1ADFCAyKvfcYpQL9J
+         2Hg1rJGpRnL0SbiqrdE7oQXo+EjGhHTVG/qaBzaA8XKPVl1g0ce0JbR7HUM3y8dxQ+
+         cvH3pvXRO/Par8vVACmfASK+DDsaRsGXZyirciOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 06/50] mm/hugetlb: fix potential missing huge page size info
-Date:   Fri, 22 Jan 2021 15:11:47 +0100
-Message-Id: <20210122135735.433953389@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Schuermann <leon@is.currently.online>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 08/50] r8152: Add Lenovo Powered USB-C Travel Hub
+Date:   Fri, 22 Jan 2021 15:11:49 +0100
+Message-Id: <20210122135735.520295279@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
 References: <20210122135735.176469491@linuxfoundation.org>
@@ -41,36 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Leon Schuermann <leon@is.currently.online>
 
-commit 0eb98f1588c2cc7a79816d84ab18a55d254f481c upstream.
+commit cb82a54904a99df9e8f9e9d282046055dae5a730 upstream.
 
-The huge page size is encoded for VM_FAULT_HWPOISON errors only.  So if
-we return VM_FAULT_HWPOISON, huge page size would just be ignored.
+This USB-C Hub (17ef:721e) based on the Realtek RTL8153B chip used to
+use the cdc_ether driver. However, using this driver, with the system
+suspended the device constantly sends pause-frames as soon as the
+receive buffer fills up. This causes issues with other devices, where
+some Ethernet switches stop forwarding packets altogether.
 
-Link: https://lkml.kernel.org/r/20210107123449.38481-1-linmiaohe@huawei.com
-Fixes: aa50d3a7aa81 ("Encode huge page size for VM_FAULT_HWPOISON errors")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Using the Realtek driver (r8152) fixes this issue. Pause frames are no
+longer sent while the host system is suspended.
+
+Signed-off-by: Leon Schuermann <leon@is.currently.online>
+Tested-by: Leon Schuermann <leon@is.currently.online>
+Link: https://lore.kernel.org/r/20210111190312.12589-2-leon@is.currently.online
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/hugetlb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/cdc_ether.c |    7 +++++++
+ drivers/net/usb/r8152.c     |    1 +
+ 2 files changed, 8 insertions(+)
 
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3797,7 +3797,7 @@ retry:
- 		 * So we need to block hugepage fault by PG_hwpoison bit check.
- 		 */
- 		if (unlikely(PageHWPoison(page))) {
--			ret = VM_FAULT_HWPOISON |
-+			ret = VM_FAULT_HWPOISON_LARGE |
- 				VM_FAULT_SET_HINDEX(hstate_index(h));
- 			goto backout_unlocked;
- 		}
+--- a/drivers/net/usb/cdc_ether.c
++++ b/drivers/net/usb/cdc_ether.c
+@@ -800,6 +800,13 @@ static const struct usb_device_id	produc
+ 	.driver_info = 0,
+ },
+ 
++/* Lenovo Powered USB-C Travel Hub (4X90S92381, based on Realtek RTL8153) */
++{
++	USB_DEVICE_AND_INTERFACE_INFO(LENOVO_VENDOR_ID, 0x721e, USB_CLASS_COMM,
++			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
++	.driver_info = 0,
++},
++
+ /* ThinkPad USB-C Dock Gen 2 (based on Realtek RTL8153) */
+ {
+ 	USB_DEVICE_AND_INTERFACE_INFO(LENOVO_VENDOR_ID, 0xa387, USB_CLASS_COMM,
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -5337,6 +5337,7 @@ static const struct usb_device_id rtl815
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x7205)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x720c)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x7214)},
++	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x721e)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0xa387)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LINKSYS, 0x0041)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_NVIDIA,  0x09ff)},
 
 
