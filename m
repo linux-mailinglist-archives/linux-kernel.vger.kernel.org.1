@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0C53006BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C6A300691
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbhAVPJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:09:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729070AbhAVPCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:02:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8405623ABA;
-        Fri, 22 Jan 2021 15:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611327734;
-        bh=ytzMBlkdUUvKuZjby1OfxMsyN3uTMqyGAf4Tx3EsXMw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Cxn/UfyTZSBdxJ5NSf27EGBMJrR3fjpYaIxVDhtzPneYa+ovB4Fu5cCxdaBwq+Igz
-         KS/Qg6ieGPx/3iSUfYpBAlkFZG7X9qwTMLH7FdAFPrVzzx5HFRTJZs2yiHa0rkphkh
-         iFXo6dGYof2lUHfqxMCDR0UKSsEXZIfycal3g2iXsO4uShnDVcGafPtMJULzdYB7KT
-         zO/0ZG9qVfgVk7vIUTBNCIjSoUm8xEB4n8dUSlBDfc+U8SDNRieckSjSu4OJ3BytNo
-         nYsr14/tWshCatkMi9coOmZXVCnIBwDTTn/Fi1M+4vczprzsIAVHJmciI/kPJ7zE6d
-         u84Ydz3Pchx/w==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 504373522649; Fri, 22 Jan 2021 07:02:14 -0800 (PST)
-Date:   Fri, 22 Jan 2021 07:02:14 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH 0/7] preempt: Tune preemption flavour on boot v4
-Message-ID: <20210122150214.GD2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210118141223.123667-1-frederic@kernel.org>
+        id S1729056AbhAVPFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:05:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728716AbhAVPDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:03:38 -0500
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315A2C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:02:58 -0800 (PST)
+Received: by mail-oo1-xc32.google.com with SMTP id y14so1453553oom.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:02:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OJKWIQqx6v0dlsfViKU5cuhP8gvpdjnjTIz5bInhKHM=;
+        b=LvEDFwUsof0pvcqFGZ30dIzNYq2AdaVGiAveifHLZW4vFhJQvDfSXGfdS98npk4EyC
+         I5goxMf0EudveMFQNNJtFlK5rcFAmq7c9gvuUkonlie1iL5bP1h9GTyq4y0qgE9mk3dP
+         lZyPFbF1r0gIVbBxqODF6crcteeGaRY4mZ7gVw5ESfipezhAYnrabUJFXR+3hq7dYmWs
+         ZZoseJHZLYl2+yjM1ev/yvss6bNsYCgZJ7plDt5braIhnkSuURgT5vfjn/rVEpA75zA/
+         D79jP2ouzmK1qQHVywkUZIcxPiUOxflp8kfaBk2u2tLJCsMgfOyhehT7wf04QRTTtQL0
+         UkrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OJKWIQqx6v0dlsfViKU5cuhP8gvpdjnjTIz5bInhKHM=;
+        b=EtILx9xVUUq2/D21OA1u0Q6w1jOL2yXG6j/TomX5ofMdoLYRRGqgkLNivWax7z8WxT
+         DyhmF0X/sP6sCu2evamOE/OwVh9ce7ipIg1VLxIDLtcK/dTxFBqahtAF1gbHWJMQ68Kt
+         mcOkMYcgyjK1gpzSt8TJvwA/E5QzISHWRBeZrRbpXU4U5W4Oqj0JlD51A4ZZCXe8p1oF
+         N7BZRg27g09EWPLtFaxmvFc6F79Pleri0BErLVEbbEsvERfO0BWe8M46h6FD6YtHFvEd
+         xWvJcZ0z9Yg+vo8KAULaXyihV3vOS4GMOL30LBHGoW9q0j4YK4w9YNzx06ZPI38E/WqV
+         YsRA==
+X-Gm-Message-State: AOAM530cpV79hl0Dsr4l+HaP0pULe7stozFx7cW0O7kTO3furu5qwCVe
+        nPkGBhYJXjcft66oxvkzRw0z80m2LoNsqJqhox/aEA==
+X-Google-Smtp-Source: ABdhPJzfk+yYEIz6clorKAD/bw4ULNqRxd97O1JrjLIq7Mfn1a5SAR3XzT8LB6wzxbfBRdOaqzs/6XJKLhtImM4x/L8=
+X-Received: by 2002:a4a:a9c9:: with SMTP id h9mr3957459oon.93.1611327777348;
+ Fri, 22 Jan 2021 07:02:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118141223.123667-1-frederic@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210122135735.176469491@linuxfoundation.org>
+In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 22 Jan 2021 20:32:46 +0530
+Message-ID: <CA+G9fYso4QNbRWdrQiiOiMb5RUr8VtM3AkKEGLasgN+KsPSvDw@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/50] 4.14.217-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:12:15PM +0100, Frederic Weisbecker wrote:
-> Hi,
-> 
-> Here is a new version of the feature that can select the preempt flavour
-> on boot time. Note that it doesn't entirely mimic the actual real
-> config-based preemption flavours, because at least preempt-RCU
-> implementation is there in any case.
-> 
-> Also there is still some work to do against subsystems that may play
-> their own games with CONFIG_PREEMPT.
-> 
-> In this version:
-> 
-> * Restore the initial simple __static_call_return0() implementation.
-> 
-> * Uninline __static_call_return0 on all flavours since its address is
-> always needed on DEFINE_STATIC_CALL()
-> 
-> * Introduce DEFINE_STATIC_CALL_RET0()
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> 	preempt/dynamic-v4
-> 
-> HEAD: b5f3b1da9df4197d0b0ffe0f55f0f6a8c838d75f
+On Fri, 22 Jan 2021 at 19:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.217 release.
+> There are 50 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.217-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I gave these a quick test and got the following:
+arm64 clang-10 builds breaks due to this patch on
+   - stable-rc 4.14
+   - stable-rc 4.9
+   - stable-rc 4.4
 
-Warning: Kernel ABI header at 'tools/include/linux/static_call_types.h' differs from latest version at 'include/linux/static_call_types.h'.
+> Will Deacon <will@kernel.org>
+>     compiler.h: Raise minimum version of GCC to 5.1 for arm64
 
-Other than that, looks good.
+arm64 (defconfig) with clang-10 - FAILED
 
-							Thanx, Paul
-
-> Thanks,
-> 	Frederic
-> ---
-> 
-> Peter Zijlstra (Intel) (4):
->       preempt/dynamic: Provide cond_resched() and might_resched() static calls
->       preempt/dynamic: Provide preempt_schedule[_notrace]() static calls
->       preempt/dynamic: Provide irqentry_exit_cond_resched() static call
->       preempt/dynamic: Support dynamic preempt with preempt= boot option
-> 
-> Peter Zijlstra (2):
->       static_call/x86: Add __static_call_return0()
->       static_call: Pull some static_call declarations to the type headers
-> 
-> Frederic Weisbecker (1):
->       static_call: Provide DEFINE_STATIC_CALL_RET0()
-> 
-> Michal Hocko (1):
->       preempt: Introduce CONFIG_PREEMPT_DYNAMIC
-> 
-> 
->  Documentation/admin-guide/kernel-parameters.txt |  7 ++
->  arch/Kconfig                                    |  9 +++
->  arch/x86/Kconfig                                |  1 +
->  arch/x86/include/asm/preempt.h                  | 34 ++++++---
->  arch/x86/kernel/static_call.c                   | 17 ++++-
->  include/linux/entry-common.h                    |  4 ++
->  include/linux/kernel.h                          | 23 ++++--
->  include/linux/sched.h                           | 27 ++++++-
->  include/linux/static_call.h                     | 43 ++++--------
->  include/linux/static_call_types.h               | 29 ++++++++
->  kernel/Kconfig.preempt                          | 19 +++++
->  kernel/entry/common.c                           | 10 ++-
->  kernel/sched/core.c                             | 93 ++++++++++++++++++++++++-
->  kernel/static_call.c                            |  5 ++
->  14 files changed, 271 insertions(+), 50 deletions(-)
+-- 
+Linaro LKFT
+https://lkft.linaro.org
