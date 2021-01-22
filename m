@@ -2,75 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A449B300070
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C9230009A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbhAVKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:33:26 -0500
-Received: from mail-qk1-f173.google.com ([209.85.222.173]:37384 "EHLO
-        mail-qk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727973AbhAVKYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:24:40 -0500
-Received: by mail-qk1-f173.google.com with SMTP id h22so4606431qkk.4;
-        Fri, 22 Jan 2021 02:24:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D4xyWvJd0WQhoba1JvK+CVM+ObhZqX1GLAzkWEi51KY=;
-        b=ZzsPuZAj4hAKu4/zWg/6ti+jIDO7hGsh/5ST+AwExtpH7/KHruDIjDlpw3gae7h7P/
-         OKKIdBE1iYZze75GOfPWOZjfQSn9vA4/8yuJcodKCA4tkZabYJOXRVH/T/Qp8nKnltG1
-         jOZu51woZ9T30S7YtZcg0dK3O7Aw2OlzyYl8Byz6eP00tOVdrmn3O3dqCjA4Eu4JLwaN
-         zibt3YQA6ZWL0NlNKaGnX4fJd+U6RgEBWnacQHc3fkfTcgAyF1C8IIn0VVrKTayi0E3p
-         47QzD85nrU05CDUp6cFup14TtNcbWQBFlL3MN0fiuOCPk3G6H2pyLErttvoR3EGsd1I4
-         6MpA==
-X-Gm-Message-State: AOAM532J3MZBP1j6MGStqh5B777A8yL5E1aV8wL1G6MfDdziBcYHA5mS
-        wScZPEBTtqJu5riQ02N8vc9PrZyGroHVPF8yqSI=
-X-Google-Smtp-Source: ABdhPJxP8xuLCKDXPGjecsOw3R++y/Dp+lR7nxfBpnjyU1JcsmSF4+wwAvijTtYt9nn7d7OqTw7cQbLS+PXPW3H+bD8=
-X-Received: by 2002:a37:4c88:: with SMTP id z130mr4041558qka.122.1611311038016;
- Fri, 22 Jan 2021 02:23:58 -0800 (PST)
+        id S1727383AbhAVKqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:46:32 -0500
+Received: from foss.arm.com ([217.140.110.172]:40096 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727065AbhAVKZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:25:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9D3D11D4;
+        Fri, 22 Jan 2021 02:24:20 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 889CA3F719;
+        Fri, 22 Jan 2021 02:24:19 -0800 (PST)
+Subject: Re: [PATCH] drm/panfrost: Add governor data with pre-defined
+ thresholds
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        robh@kernel.org, tomeu.vizoso@collabora.com,
+        alyssa.rosenzweig@collabora.com, dri-devel@lists.freedesktop.org,
+        daniel.lezcano@linaro.org
+References: <20210121170445.19761-1-lukasz.luba@arm.com>
+ <c5ad1148-0494-aaed-581a-c13ed94e42e8@arm.com>
+ <38c4dc94-0613-33f9-e4e4-e42d451aed9b@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <cd5a78e8-ba0a-d502-29e7-8d25ddb52659@arm.com>
+Date:   Fri, 22 Jan 2021 10:24:13 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210121100619.5653-1-wsa+renesas@sang-engineering.com> <20210121100619.5653-5-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20210121100619.5653-5-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 22 Jan 2021 11:23:46 +0100
-Message-ID: <CAMuHMdWTi2_oCbpxewVBzr1fsva1voC9PNE5SU=Y80spgyMcDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] arm64: dts: renesas: falcon: Add Ethernet-AVB0 support
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <38c4dc94-0613-33f9-e4e4-e42d451aed9b@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 11:06 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
-> Change since v1:
->
-> * removed avb1-5 which couldn't be tested
-> * added alias for avb0 so firmware can add MAC address
-> * added custom tx-internal-delay-ps
-> * dropped '_tx' suffix from 'pins_mii' config
-> * moved entries to Falcon CPU dtsi
+On 22/01/2021 10:00, Lukasz Luba wrote:
+> 
+> 
+> On 1/22/21 8:21 AM, Steven Price wrote:
+>> On 21/01/2021 17:04, Lukasz Luba wrote:
+>>> The simple_ondemand devfreq governor uses two thresholds to decide about
+>>> the frequency change: upthreshold, downdifferential. These two tunable
+>>> change the behavior of the governor decision, e.g. how fast to increase
+>>> the frequency or how rapidly limit the frequency. This patch adds needed
+>>> governor data with thresholds values gathered experimentally in 
+>>> different
+>>> workloads.
+>>>
+>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>> ---
+>>> Hi all,
+>>>
+>>> This patch aims to improve the panfrost performance in various 
+>>> workloads,
+>>> (benchmarks, games). The simple_ondemand devfreq governor supports
+>>> tunables to tweak the behaviour of the internal algorithm. The default
+>>> values for these two thresholds (90 and 5) do not work well with 
+>>> panfrost.
+>>> These new settings should provide good performance, short latency for
+>>> rising the frequency due to rapid workload change and decent freq slow
+>>> down when the load is decaying. Based on frequency change statistics,
+>>> gathered during experiments, all frequencies are used, depending on
+>>> the load. This provides some power savings (statistically). The highest
+>>> frequency is also used when needed.
+>>>
+>>> Example glmark2 results:
+>>> 1. freq fixed to max: 153
+>>> 2. these new thresholds values (w/ patch): 151
+>>> 3. default governor values (w/o patch): 114
+>>
+>> It would be good to state which platform this is on as this obviously 
+>> can vary depending on the OPPs available.
+> 
+> Sorry about that. It was Rock Pi 4B and I have mesa 20.2.4.
+> 
+>>
+>> Of course the real fix here would be to improve the utilisation of the 
+>> GPU[1] so we actually hit the 90% threshold more easily (AFAICT kbase 
+>> uses the default 90/5 thresholds), but this seems like a reasonable 
+>> change for now.
+> 
+> Agree, improving the scheduler would be the best option. I'll have a
+> look at that patch and why it got this 10% lower performance. Maybe
+> I would find something during testing.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.12.
+I'm afraid it'll probably need a fair bit of work to rebase - things 
+have changed around that code. I'm hoping that most of the problem was 
+really around how Mesa was driving the GPU at that time and things 
+should be better. The DDK (hacked to talk Panfrost ioctls) saw a 
+performance improvement.
 
-Gr{oetje,eeting}s,
+Let me know if you hit problems and need any help.
 
-                        Geert
+>>
+>> Reviewed-by: Steven Price <steven.price@arm.com>
+> 
+> Thank you for the review. I guess this patch would go through drm tree?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Yes, I'll push it to drm-misc-next later.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+
+Steve
+
+> Regards,
+> Lukasz
+> 
+>>
+>> Thanks,
+>>
+>> Steve
+>>
+>> [1] When I get some time I need to rework the "queue jobs on the 
+>> hardware"[2] patch I posted ages ago. Last time it actually caused a 
+>> performance regression though...
+>>
+>> [2] 
+>> https://lore.kernel.org/r/20190816093107.30518-2-steven.price%40arm.com
+>>
+
