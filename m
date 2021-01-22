@@ -2,76 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A8E3002AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C38C3002B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbhAVMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:16:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726578AbhAVMOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:14:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A7323437;
-        Fri, 22 Jan 2021 12:13:37 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 12:13:35 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Prathu Baronia <prathubaronia2011@gmail.com>,
-        Prathu Baronia <prathu.baronia@oneplus.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-kernel@vger.kernel.org, chintan.pandya@oneplus.com,
-        "glider@google.com" <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/1] mm: Optimizing hugepage zeroing in arm64
-Message-ID: <20210122121334.GC8567@gaia>
-References: <20210121165153.17828-1-prathu.baronia@oneplus.com>
- <20210121174616.GA22740@willie-the-truck>
- <de782758-a7bc-d5a5-832e-c09ce8fe7c00@arm.com>
+        id S1727610AbhAVMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:17:58 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:41798 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727257AbhAVMRC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:17:02 -0500
+Received: by mail-io1-f71.google.com with SMTP id x189so8310320iof.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:16:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=8TT39RX0FYSmfRR7lvWKPjQfZTrWM5VQMDI38J31U3o=;
+        b=iZL0Nu5P65m9tPhTkkdLnWlHKk/OTINmM+ZSf/Dl4vK0RX4+A9F2LdM747CcY0N6IR
+         8kyvBMmskmt2jJ4MXxBAI8DshnOfsmqD2/qRJF2W8K7gwzq+rM0GJyLTlnHgMkizCogT
+         Ul+Q4yTSxSgWEvggCgnHlCmJHCQRp+UrlZkxeju5BdFPREJsM7MAL5DotYbXowTNbYDM
+         PzECWAErOKKjGBiTBOAxp8UsVjUprx2MAlqcCO+aAIJ5i9nuKrSehCO5FvSmZpt+rikc
+         g2ir24zYm8Knbbd4Em177dw9s3ZR4SFchQfeyZ64F9of0PL3pwEbALylJWI5PgY80zmI
+         DB0w==
+X-Gm-Message-State: AOAM531EQywKuiDly2tUAfX6DWs2UFrlZKuSnra9ltTV54eAcsC2E0sj
+        Fiy8YeQAxlbbBu1f7FoT/OmEkR7uqdzOtxy0HLrnClXFNs3t
+X-Google-Smtp-Source: ABdhPJywamJZ/g0TFEXqdIsKfSoFNaL2D0YBdvoksVdfsi6faaesaTFLaYak7IvWgRNV2eVm7qBG6JazlN00wnuWqNeEVf9N7yrt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de782758-a7bc-d5a5-832e-c09ce8fe7c00@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a6b:7704:: with SMTP id n4mr3125873iom.159.1611317780507;
+ Fri, 22 Jan 2021 04:16:20 -0800 (PST)
+Date:   Fri, 22 Jan 2021 04:16:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ed6ff305b97c2755@google.com>
+Subject: linux-next test error: WARNING in cfg80211_netdev_notifier_call
+From:   syzbot <syzbot+8b083f465893fa214377@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:59:37PM +0000, Robin Murphy wrote:
-> On 2021-01-21 17:46, Will Deacon wrote:
-> > On Thu, Jan 21, 2021 at 10:21:50PM +0530, Prathu Baronia wrote:
-> > > This patch removes the unnecessary kmap calls in the hugepage zeroing path and
-> > > improves the timing by 62%.
-> > > 
-> > > I had proposed a similar change in Apr-May'20 timeframe in memory.c where I
-> > > proposed to clear out a hugepage by directly calling a memset over the whole
-> > > hugepage but got the opposition that the change was not architecturally neutral.
-> > > 
-> > > Upon revisiting this now I see significant improvement by removing around 2k
-> > > barrier calls from the zeroing path. So hereby I propose an arm64 specific
-> > > definition of clear_user_highpage().
-> > 
-> > Given that barrier() is purely a thing for the compiler, wouldn't the same
-> > change yield a benefit on any other architecture without HIGHMEM? In which
-> > case, I think this sort of change belongs in the core code if it's actually
-> > worthwhile.
-> 
-> I would have thought it's more the constant manipulation of the preempt and
-> pagefault counts, rather than the compiler barriers between them, that has
-> the impact. Either way, if arm64 doesn't need to be atomic WRT preemption
-> when clearing parts of hugepages then I also can't imagine that anyone else
-> (at least for !HIGHMEM) would either.
+Hello,
 
-I thought the kmap_local stuff was supposed to fix this unnecessary
-preemption disabling on 64-bit architectures:
+syzbot found the following issue on:
 
-https://lwn.net/Articles/836144/
+HEAD commit:    226871e2 Add linux-next specific files for 20210122
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1076afe7500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=40930d62519ae2bd
+dashboard link: https://syzkaller.appspot.com/bug?extid=8b083f465893fa214377
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-I guess it's not there yet.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8b083f465893fa214377@syzkaller.appspotmail.com
 
--- 
-Catalin
+device veth1_macvtap left promiscuous mode
+device veth0_macvtap left promiscuous mode
+device veth1_vlan left promiscuous mode
+device veth0_vlan left promiscuous mode
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 270 at net/wireless/core.c:1455 cfg80211_netdev_notifier_call+0xd48/0x1460 net/wireless/core.c:1455
+Modules linked in:
+CPU: 0 PID: 270 Comm: kworker/u4:7 Not tainted 5.11.0-rc4-next-20210122-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:cfg80211_netdev_notifier_call+0xd48/0x1460 net/wireless/core.c:1455
+Code: ce e4 3c f9 49 8d 7d 68 be ff ff ff ff e8 b0 cd c6 00 31 ff 89 c3 89 c6 e8 35 ec 3c f9 85 db 0f 85 64 f9 ff ff e8 a8 e4 3c f9 <0f> 0b e9 58 f9 ff ff e8 9c e4 3c f9 49 8d 7d 68 be ff ff ff ff e8
+RSP: 0018:ffffc900016af720 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801135b800 RSI: ffffffff883638b8 RDI: 0000000000000003
+RBP: ffff888035622000 R08: 0000000000000000 R09: ffffffff88362ccd
+R10: ffffffff883638ab R11: 0000000000000006 R12: 1ffff920002d5ee9
+R13: ffff888144628580 R14: ffff888035630000 R15: 0000000000000002
+FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000a9b158 CR3: 00000000111dc000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
+ call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
+ call_netdevice_notifiers net/core/dev.c:2066 [inline]
+ unregister_netdevice_many+0x943/0x1750 net/core/dev.c:10704
+ default_device_exit_batch+0x2fa/0x3c0 net/core/dev.c:11224
+ ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
+ cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:604
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
