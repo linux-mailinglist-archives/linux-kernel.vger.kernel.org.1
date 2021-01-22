@@ -2,57 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F091A2FFB6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D222FFB70
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbhAVDuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 22:50:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726030AbhAVDuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 22:50:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E6E722CAE;
-        Fri, 22 Jan 2021 03:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611287371;
-        bh=v1e8o/XSf2bWk8/tO8FsBM5XYcWWiB9nGGDBSiBEqXI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LNKmgcSj7qMKiUNikr/DJRb8kiFMEdafqMMI01XeTLVvskndnNqydXdg3QY2YcnWx
-         Ei3LtF6dz7d8bIVlOzxxcWidhtUnoMS7Wp5p0TWfiiKmZjZrph55d8gNdf4Kq0TzkG
-         zQQLdvooy5Um7m4ZN35mHBNtpuX6XUGofiIHr1LyG48qlcup4Mp72AL1amxuHDGCXj
-         a+YIJ4cKzOhIpUEa9NKDP1ZMH0wLGBF8fSGqPlWMKC7buK4qlKyOVe6i947dRw0995
-         YbaQFTRZSs/ds08S2UkC9vskpIjqLHWtZu3BTWdVffsAWFrtLxKJHkE81yg0tSwqpr
-         HiGRx72xFu9Nw==
-Date:   Thu, 21 Jan 2021 19:49:29 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] net: remove aurora nb8800 driver
-Message-ID: <20210121194929.13ce1a20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <yw1x8s8mz90t.fsf@mansr.com>
-References: <20210120150703.1629527-1-arnd@kernel.org>
-        <yw1x8s8mz90t.fsf@mansr.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        id S1726714AbhAVDur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 22:50:47 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:50331 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726030AbhAVDum (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 22:50:42 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UMUXRqj_1611287391;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMUXRqj_1611287391)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 22 Jan 2021 11:49:56 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     pbonzini@redhat.com
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] KVM: nSVM: Assign boolean values to a bool variable
+Date:   Fri, 22 Jan 2021 11:49:49 +0800
+Message-Id: <1611287389-63591-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 13:58:42 +0000 M=C3=A5ns Rullg=C3=A5rd wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The tango4 platform is getting removed, and this driver has no
-> > other known users, so it can be removed.
-> >
-> > Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-> > Cc: Mans Rullgard <mans@mansr.com>
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de> =20
->=20
-> Acked-by: Mans Rullgard <mans@mansr.com>
+Fix the following coccicheck warnings:
 
-Applied, thanks!
+./arch/x86/kvm/svm/nested.c:752:2-32: WARNING: Assignment of
+0/1 to bool variable.
+
+./arch/x86/kvm/svm/nested.c:545:1-31: WARNING: Assignment of
+0/1 to bool variable.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ arch/x86/kvm/svm/nested.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index cb4c6ee..3b2b445 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -534,7 +534,7 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
+ 
+ 	copy_vmcb_control_area(&hsave->control, &vmcb->control);
+ 
+-	svm->nested.nested_run_pending = 1;
++	svm->nested.nested_run_pending = true;
+ 
+ 	if (enter_svm_guest_mode(svm, vmcb12_gpa, vmcb12))
+ 		goto out_exit_err;
+@@ -543,7 +543,7 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
+ 		goto out;
+ 
+ out_exit_err:
+-	svm->nested.nested_run_pending = 0;
++	svm->nested.nested_run_pending = false;
+ 
+ 	svm->vmcb->control.exit_code    = SVM_EXIT_ERR;
+ 	svm->vmcb->control.exit_code_hi = 0;
+-- 
+1.8.3.1
+
