@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F511300956
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC7C300952
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbhAVRLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        id S1729583AbhAVRLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:11:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729562AbhAVQOu (ORCPT
+        with ESMTP id S1729592AbhAVQOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:14:50 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2001FC061786;
-        Fri, 22 Jan 2021 08:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=vPBpsG8Y9bd3KuPs8xt0zB/EQXJ9nDnfU8YkfkH81Kg=; b=H2FzzfYxjwuwUPc3YQp7VL8e5T
-        pyC8W5VRSTd72GjAqFTEjjUdHAdFi00S52ZyuRwO7qfUcAe7WtrRtquIavHruu+fLiA2+6YFk5jWv
-        xBCa7jzD4a9BIfbpAWnWPmqBRZc9rn5KaupGbI1n6rchCv/B+9vRly/QYXIzlQXwbWJEdzH+pBDHA
-        0F2lgVnsZN+Dbj5dmpZDeqEcLvb7gRvqxadaZ3V4FWs62RxbsCm7Fdvyow0UJkzj9398ZuwgrNwo7
-        FNehBlWbeApF5LOHDSnYW0gatvcqi0GF4tCcJr1nzAcHho3Jq0jyq7LyDQsfwKYExDNcZWM0uvcPh
-        tLNnbf+w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2z35-000whC-LO; Fri, 22 Jan 2021 16:12:54 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v5 16/18] mm/filemap: Don't relock the page after calling readpage
-Date:   Fri, 22 Jan 2021 16:01:38 +0000
-Message-Id: <20210122160140.223228-17-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210122160140.223228-1-willy@infradead.org>
-References: <20210122160140.223228-1-willy@infradead.org>
+        Fri, 22 Jan 2021 11:14:51 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E23BC061793
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 08:14:11 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1l2z4Y-0003b1-FP; Fri, 22 Jan 2021 17:14:06 +0100
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1l2z4W-0001px-5f; Fri, 22 Jan 2021 17:14:04 +0100
+Date:   Fri, 22 Jan 2021 17:14:04 +0100
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, alistair23@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Add Wacom I2C support to rM2
+Message-ID: <20210122161404.thcocfjghfqaga6t@pengutronix.de>
+References: <20210121065643.342-1-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121065643.342-1-alistair@alistair23.me>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 17:02:21 up 51 days,  6:08, 28 users,  load average: 0.03, 0.05,
+ 0.05
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't need to get the page lock again; we just need to wait for
-the I/O to finish, so use wait_on_page_locked_killable() like the
-other callers of ->readpage.
+Hi Alistair,
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Kent Overstreet <kent.overstreet@gmail.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
----
- mm/filemap.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+thanks for the patches. Before getting into the series please check all
+your commit subjects. Also please check that you do only one logical
+change per patch: e.g. adding DT-Support means: Add the dt-table and not
+more.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1fba96dab4b8e..542d9c93732c2 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2227,23 +2227,16 @@ static int filemap_read_page(struct file *file, struct address_space *mapping,
- 	error = mapping->a_ops->readpage(file, page);
- 	if (error)
- 		return error;
--	if (PageUptodate(page))
--		return 0;
- 
--	error = lock_page_killable(page);
-+	error = wait_on_page_locked_killable(page);
- 	if (error)
- 		return error;
--	if (!PageUptodate(page)) {
--		if (page->mapping == NULL) {
--			/* page truncated */
--			error = AOP_TRUNCATED_PAGE;
--		} else {
--			shrink_readahead_size_eio(&file->f_ra);
--			error = -EIO;
--		}
--	}
--	unlock_page(page);
--	return error;
-+	if (PageUptodate(page))
-+		return 0;
-+	if (!page->mapping)	/* page truncated */
-+		return AOP_TRUNCATED_PAGE;
-+	shrink_readahead_size_eio(&file->f_ra);
-+	return -EIO;
- }
- 
- static bool filemap_range_uptodate(struct address_space *mapping,
+I looking forward to your v2 :)
+
+Regards,
+  Marco
+
+On 21-01-20 22:56, Alistair Francis wrote:
+> Add support to the reMarkable2 (rM2) for the Wacom I2C device.
+> 
+> This is based on the reMarkable Linux fork and with this series I am
+> able to probe the Wacom digitiser.
+> 
+> Alistair Francis (6):
+>   devicetree/bindings: Initial commit of wacom,wacom-i2c
+>   input/touchscreen: Add device tree support to wacom_i2c
+>   touchscreen/wacom_i2c: Add support for distance and tilt x/y
+>   touchscreen/wacom_i2c: Clean up the query device fields
+>   touchscreen/wacom_i2c: Add support for vdd regulator
+>   arch/arm: reMarkable2: Enable wacom_i2c
+> 
+>  .../input/touchscreen/wacom,wacom-i2c.yaml    |  48 +++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>  arch/arm/boot/dts/imx7d-remarkable2.dts       |  41 ++++++
+>  arch/arm/configs/imx_v6_v7_defconfig          |   1 +
+>  drivers/input/touchscreen/wacom_i2c.c         | 136 +++++++++++++++---
+>  5 files changed, 205 insertions(+), 23 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+> 
+> -- 
+> 2.29.2
+> 
+> 
+> 
+
 -- 
-2.29.2
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
