@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E946D300D6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24163300D62
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730520AbhAVUL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:11:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
+        id S1730960AbhAVUIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:08:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728313AbhAVOMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:12:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A7123A81;
-        Fri, 22 Jan 2021 14:09:49 +0000 (UTC)
+        id S1728338AbhAVONF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:13:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE1623A82;
+        Fri, 22 Jan 2021 14:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324590;
-        bh=Ej/CKyexzaT97IQj04YS66GMd2TLojvTdgMwjrPfiYQ=;
+        s=korg; t=1611324593;
+        bh=9bRbA/jQkhFE5WIgUpWAVFL7tJg0TwZ4oyz8ZblzCgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f33WuRqVSwcEYEfb7HKOwuiQZnc0FQT42oBgBlip1SCT7lxxoZgoXVup1kuAZ3dCa
-         gikeZXcGWCu3cySt8bneTjGzZpEEtHqjtSb+EfNQRS5Mo9jp/5ElrE5bjwWc3pL5+J
-         t1g4eAS78Lwhb6g34PNjLMJHFAGjOVGN+6DqSCQA=
+        b=eF0Sacfpw+wfvlulMqn+krRQpHZ4rjwkHqRHrgzoW09Krxx4d7BOPVAkRym9gjPRJ
+         9nLzZUk09GJ0X7Ibnr1UALVl5Lh9GoLkDTFavkTGHoa95mChutcRM3kuofWHxkvqmw
+         IGmpvlfWj94CLWdrWwIiiZ7hQ4cKwZueHICdrbA8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Thelen <gthelen@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 30/31] net: avoid 32 x truesize under-estimation for tiny skbs
-Date:   Fri, 22 Jan 2021 15:08:44 +0100
-Message-Id: <20210122135733.077196420@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 31/31] spi: cadence: cache reference clock rate during probe
+Date:   Fri, 22 Jan 2021 15:08:45 +0100
+Message-Id: <20210122135733.110337130@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
 References: <20210122135731.873346566@linuxfoundation.org>
@@ -43,81 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Michael Hennerich <michael.hennerich@analog.com>
 
-[ Upstream commit 3226b158e67cfaa677fd180152bfb28989cb2fac ]
+commit 4d163ad79b155c71bf30366dc38f8d2502f78844 upstream.
 
-Both virtio net and napi_get_frags() allocate skbs
-with a very small skb->head
+The issue is that using SPI from a callback under the CCF lock will
+deadlock, since this code uses clk_get_rate().
 
-While using page fragments instead of a kmalloc backed skb->head might give
-a small performance improvement in some cases, there is a huge risk of
-under estimating memory usage.
-
-For both GOOD_COPY_LEN and GRO_MAX_HEAD, we can fit at least 32 allocations
-per page (order-3 page in x86), or even 64 on PowerPC
-
-We have been tracking OOM issues on GKE hosts hitting tcp_mem limits
-but consuming far more memory for TCP buffers than instructed in tcp_mem[2]
-
-Even if we force napi_alloc_skb() to only use order-0 pages, the issue
-would still be there on arches with PAGE_SIZE >= 32768
-
-This patch makes sure that small skb head are kmalloc backed, so that
-other objects in the slab page can be reused instead of being held as long
-as skbs are sitting in socket queues.
-
-Note that we might in the future use the sk_buff napi cache,
-instead of going through a more expensive __alloc_skb()
-
-Another idea would be to use separate page sizes depending
-on the allocated length (to never have more than 4 frags per page)
-
-I would like to thank Greg Thelen for his precious help on this matter,
-analysing crash dumps is always a time consuming task.
-
-Fixes: fd11a83dd363 ("net: Pull out core bits of __netdev_alloc_skb and add __napi_alloc_skb")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Greg Thelen <gthelen@google.com>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Link: https://lore.kernel.org/r/20210113161819.1155526-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: c474b38665463 ("spi: Add driver for Cadence SPI controller")
+Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Link: https://lore.kernel.org/r/20210114154217.51996-1-alexandru.ardelean@analog.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/core/skbuff.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -480,13 +480,17 @@ EXPORT_SYMBOL(__netdev_alloc_skb);
- struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
- 				 gfp_t gfp_mask)
- {
--	struct page_frag_cache *nc = this_cpu_ptr(&napi_alloc_cache);
-+	struct page_frag_cache *nc;
- 	struct sk_buff *skb;
- 	void *data;
+---
+ drivers/spi/spi-cadence.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/drivers/spi/spi-cadence.c
++++ b/drivers/spi/spi-cadence.c
+@@ -116,6 +116,7 @@ struct cdns_spi {
+ 	void __iomem *regs;
+ 	struct clk *ref_clk;
+ 	struct clk *pclk;
++	unsigned int clk_rate;
+ 	u32 speed_hz;
+ 	const u8 *txbuf;
+ 	u8 *rxbuf;
+@@ -257,7 +258,7 @@ static void cdns_spi_config_clock_freq(s
+ 	u32 ctrl_reg, baud_rate_val;
+ 	unsigned long frequency;
  
- 	len += NET_SKB_PAD + NET_IP_ALIGN;
+-	frequency = clk_get_rate(xspi->ref_clk);
++	frequency = xspi->clk_rate;
  
--	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
-+	/* If requested length is either too small or too big,
-+	 * we use kmalloc() for skb->head allocation.
-+	 */
-+	if (len <= SKB_WITH_OVERHEAD(1024) ||
-+	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
- 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
- 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
- 		if (!skb)
-@@ -494,6 +498,7 @@ struct sk_buff *__napi_alloc_skb(struct
- 		goto skb_success;
- 	}
+ 	ctrl_reg = cdns_spi_read(xspi, CDNS_SPI_CR_OFFSET);
  
-+	nc = this_cpu_ptr(&napi_alloc_cache);
- 	len += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 	len = SKB_DATA_ALIGN(len);
+@@ -557,8 +558,9 @@ static int cdns_spi_probe(struct platfor
+ 	master->set_cs = cdns_spi_chipselect;
+ 	master->mode_bits = SPI_CPOL | SPI_CPHA;
  
++	xspi->clk_rate = clk_get_rate(xspi->ref_clk);
+ 	/* Set to default valid value */
+-	master->max_speed_hz = clk_get_rate(xspi->ref_clk) / 4;
++	master->max_speed_hz = xspi->clk_rate / 4;
+ 	xspi->speed_hz = master->max_speed_hz;
+ 
+ 	master->bits_per_word_mask = SPI_BPW_MASK(8);
 
 
