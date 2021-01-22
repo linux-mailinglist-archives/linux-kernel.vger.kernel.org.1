@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0731A3006ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0C53006BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbhAVPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:15:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728796AbhAVPB3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:01:29 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8585C061786;
-        Fri, 22 Jan 2021 07:00:48 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id a25so5706185ljn.0;
-        Fri, 22 Jan 2021 07:00:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6GrCTWs9NpgE1Px7KRrjvWHXnrcw5duvcL0Gwzimd2w=;
-        b=Slaj1/41gm8rh3MOfTkdZwL4K/4GdtHj/pHos4/CrTfmr2lzcgkGJJq8+yaGop18bg
-         CdhzlaU/z2dN0CKqrswH9260qc83ArCv1duN0XVhG/G84pUWb10pllTEjc6BaiLq828M
-         ECgffjibkhV8eGXSOyTSZAhZGxDxayz636nhTxIeGm684QNnElS88LYZeAhTHV1zdjXQ
-         GHCwWYU4T2ZbxpABAfbgIUns2dEd/yVju/YTabGaBgQC6n/rrXy94qVpp6VOS2IAMwRa
-         vXVzn+4zcjyyDsoskufSF66gS2Z6G1V7X9UZ7fzthhA7f9eQjxfmf50fqiiAfKxIkjP+
-         qbnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6GrCTWs9NpgE1Px7KRrjvWHXnrcw5duvcL0Gwzimd2w=;
-        b=h5UkbwPLAMg7aEgEb7nDCFAbQebWVl/GP49i6J2FEMmTgLrjewfRTj1SPTStTKzIje
-         U/Iv1V+YV4O1FYLa7+xpIUE73PBxp26lZJWCuptFsRS6HjDOguT3hgXFXH72bl4fIus1
-         EfRDwEOaohDdtS+5mhupKZvAfojg75l7yTakH1GqZtmPkqf58SLANF6TzLZuXjVjQW8C
-         VmGcPvp2HZSOrWJpCUIkRxcbOebIcaXTsfLKUTTtBpVCStLrA2R5+Bz/e1dx+CkJF7ci
-         Tk9bFRjteqKBoYWTi0NtistTNI+OrdkoiBy+XLnHhzAYxXx2Dicfl0HZrEfup5GorYbS
-         RWxg==
-X-Gm-Message-State: AOAM532X2eNUBAlGj/RBX2gVyjjJBpyBGBFBtFYB0ugu5dZpwjlU9bDb
-        sBJoryysVbbtGJU3jH+FDt1yNP5g3ts=
-X-Google-Smtp-Source: ABdhPJx9mKv9rqJmvUdmog+2xB5v2ILlYxLdsXX+YdCOhP2lmSIgXrd+cxPEZW+e4LMvXo6ELDZW0Q==
-X-Received: by 2002:a2e:97d7:: with SMTP id m23mr2446905ljj.456.1611327646209;
-        Fri, 22 Jan 2021 07:00:46 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id d1sm973726ljl.72.2021.01.22.07.00.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 07:00:45 -0800 (PST)
-Subject: Re: [PATCH] memory: tegra: Remove calls to dev_pm_opp_set_clkname()
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <1430e70777fdcf1c946ca2fef296f439762a4f21.1611295029.git.viresh.kumar@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <36db9831-0d68-2502-ad64-5aab05b16974@gmail.com>
-Date:   Fri, 22 Jan 2021 18:00:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1729117AbhAVPJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:09:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729070AbhAVPCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:02:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8405623ABA;
+        Fri, 22 Jan 2021 15:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611327734;
+        bh=ytzMBlkdUUvKuZjby1OfxMsyN3uTMqyGAf4Tx3EsXMw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Cxn/UfyTZSBdxJ5NSf27EGBMJrR3fjpYaIxVDhtzPneYa+ovB4Fu5cCxdaBwq+Igz
+         KS/Qg6ieGPx/3iSUfYpBAlkFZG7X9qwTMLH7FdAFPrVzzx5HFRTJZs2yiHa0rkphkh
+         iFXo6dGYof2lUHfqxMCDR0UKSsEXZIfycal3g2iXsO4uShnDVcGafPtMJULzdYB7KT
+         zO/0ZG9qVfgVk7vIUTBNCIjSoUm8xEB4n8dUSlBDfc+U8SDNRieckSjSu4OJ3BytNo
+         nYsr14/tWshCatkMi9coOmZXVCnIBwDTTn/Fi1M+4vczprzsIAVHJmciI/kPJ7zE6d
+         u84Ydz3Pchx/w==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 504373522649; Fri, 22 Jan 2021 07:02:14 -0800 (PST)
+Date:   Fri, 22 Jan 2021 07:02:14 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH 0/7] preempt: Tune preemption flavour on boot v4
+Message-ID: <20210122150214.GD2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210118141223.123667-1-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1430e70777fdcf1c946ca2fef296f439762a4f21.1611295029.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118141223.123667-1-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.01.2021 09:00, Viresh Kumar пишет:
-> There is no point calling dev_pm_opp_set_clkname() with the "name"
-> parameter set to NULL, this is already done by the OPP core at setup
-> time and should work as it is.
+On Mon, Jan 18, 2021 at 03:12:15PM +0100, Frederic Weisbecker wrote:
+> Hi,
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Here is a new version of the feature that can select the preempt flavour
+> on boot time. Note that it doesn't entirely mimic the actual real
+> config-based preemption flavours, because at least preempt-RCU
+> implementation is there in any case.
+> 
+> Also there is still some work to do against subsystems that may play
+> their own games with CONFIG_PREEMPT.
+> 
+> In this version:
+> 
+> * Restore the initial simple __static_call_return0() implementation.
+> 
+> * Uninline __static_call_return0 on all flavours since its address is
+> always needed on DEFINE_STATIC_CALL()
+> 
+> * Introduce DEFINE_STATIC_CALL_RET0()
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> 	preempt/dynamic-v4
+> 
+> HEAD: b5f3b1da9df4197d0b0ffe0f55f0f6a8c838d75f
+
+I gave these a quick test and got the following:
+
+Warning: Kernel ABI header at 'tools/include/linux/static_call_types.h' differs from latest version at 'include/linux/static_call_types.h'.
+
+Other than that, looks good.
+
+							Thanx, Paul
+
+> Thanks,
+> 	Frederic
 > ---
-> Dmitry, am I missing something obvious here ?
-
-The dev_pm_opp_set_clkname() ensures that the OPP table has a clk
-assigned to the table.
-
-The _allocate_opp_table() ignores all clk_get() errors except the
--EPROBE_DEFER.
-
-The opp_table->clk must be not a PTR_ERR for these memory drivers.
-
-On the other hand, the memory drivers also do the devm_clk_get()
-themselves, hence technically clk_get() of _allocate_opp_table()
-shouldn't fail. But I'll need to take a closer look at the clk core, to
-check whether clk_get() could fail for the implicit _allocate_opp_table().
-
-Tegra124-emc driver also has dev_pm_opp_set_clkname(), BTW.
+> 
+> Peter Zijlstra (Intel) (4):
+>       preempt/dynamic: Provide cond_resched() and might_resched() static calls
+>       preempt/dynamic: Provide preempt_schedule[_notrace]() static calls
+>       preempt/dynamic: Provide irqentry_exit_cond_resched() static call
+>       preempt/dynamic: Support dynamic preempt with preempt= boot option
+> 
+> Peter Zijlstra (2):
+>       static_call/x86: Add __static_call_return0()
+>       static_call: Pull some static_call declarations to the type headers
+> 
+> Frederic Weisbecker (1):
+>       static_call: Provide DEFINE_STATIC_CALL_RET0()
+> 
+> Michal Hocko (1):
+>       preempt: Introduce CONFIG_PREEMPT_DYNAMIC
+> 
+> 
+>  Documentation/admin-guide/kernel-parameters.txt |  7 ++
+>  arch/Kconfig                                    |  9 +++
+>  arch/x86/Kconfig                                |  1 +
+>  arch/x86/include/asm/preempt.h                  | 34 ++++++---
+>  arch/x86/kernel/static_call.c                   | 17 ++++-
+>  include/linux/entry-common.h                    |  4 ++
+>  include/linux/kernel.h                          | 23 ++++--
+>  include/linux/sched.h                           | 27 ++++++-
+>  include/linux/static_call.h                     | 43 ++++--------
+>  include/linux/static_call_types.h               | 29 ++++++++
+>  kernel/Kconfig.preempt                          | 19 +++++
+>  kernel/entry/common.c                           | 10 ++-
+>  kernel/sched/core.c                             | 93 ++++++++++++++++++++++++-
+>  kernel/static_call.c                            |  5 ++
+>  14 files changed, 271 insertions(+), 50 deletions(-)
