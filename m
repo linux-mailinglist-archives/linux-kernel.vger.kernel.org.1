@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AB02FFD63
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189A42FFD65
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbhAVH3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:29:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
+        id S1727134AbhAVH3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:29:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbhAVH3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:29:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B929E239D4;
-        Fri, 22 Jan 2021 07:28:18 +0000 (UTC)
+        id S1726801AbhAVH3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 02:29:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0AE5238EE;
+        Fri, 22 Jan 2021 07:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611300499;
-        bh=FSQvS1mxQiNwmE+kAQd4ONtyh1eej92CZf62V2knvt0=;
+        s=korg; t=1611300516;
+        bh=lqTGiAzeVnU69nsh9uhXuZSOcB06SVDv5uoopOtJm8M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dAPvlTgpMbSEt8MO6PTAfDaroqA8pRJGBl3WeTkqa2D7DCWDEejiOnMT+tRd0RJaA
-         En+Co9KMkCyySpbOS5hpMzL7hzNUDnTWAVigMGgjlb797cGxS9wH/e8rAex6Btp9Du
-         idNgWYULAWI1vmcdfw/iytoBft4ZZYbdCMMEvAJ0=
-Date:   Fri, 22 Jan 2021 08:28:15 +0100
+        b=u8a3RnZsqeLsq8IsjadE+tar75O6p/c2fUGVgaGZ7k718HN8XUUF/NLuhnnWr0vzs
+         TokSmN1v5SrLNlMruWNoSM589Uxwlm0TA2tHuJRpEmR7H5L0ngfljESD3CBHqDKkCQ
+         x4wGJzPGJYgArehoyc9NGLxCJDqNYcr0VPfEq15A=
+Date:   Fri, 22 Jan 2021 08:28:32 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     ricky_wu@realtek.com
 Cc:     arnd@arndb.de, bhelgaas@google.com, vaibhavgupta40@gmail.com,
         linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Subject: Re: [PATCH v3] misc: rtsx: init value of aspm_enabled
-Message-ID: <YAp+jzr3x2H0wdBs@kroah.com>
+Message-ID: <YAp+oKwlqmgFOX9o@kroah.com>
 References: <20210122033348.15187-1-ricky_wu@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,12 +46,14 @@ On Fri, Jan 22, 2021 at 11:33:48AM +0800, ricky_wu@realtek.com wrote:
 > fixes conditions in v1 if-statement
 > v3:
 > more description for v1 and v2
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+> ---
+>  drivers/misc/cardreader/rtsx_pcr.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 
-This needs to go below the --- line.
-
-And there is no description of what the patch does anymore :(
-
-Please fix up and do a v4.
+Also, you forgot a "Fixes:" tag.
 
 thanks,
 
