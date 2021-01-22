@@ -2,152 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674063007AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BE23007B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728780AbhAVPoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:44:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729032AbhAVPni (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:43:38 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066A1C06174A;
-        Fri, 22 Jan 2021 07:42:50 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id z9so4376702qtv.6;
-        Fri, 22 Jan 2021 07:42:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6dQh4eu6OadVK+LYkdoHUNDrCwpiKoNQBIPdj3Z2wsU=;
-        b=djw84JL/n9DMrCkHSRIyzbIzKi/0jFfjiUmcJUvH2VkUkdkFVAO+047m6crX4gAnkG
-         L5KaIcdhZ5KbFMbh9AsGN3xxbcstK86Z1WWZ9/W2WnSnRUstPray1B6mYhoczg+9cS6G
-         UYFB1cPlZ73j9hLyClV+dLv+Sqdbjxo/zE5kfptCGZ7sn3Gdp5S93W4sWE0Zs03aJyaW
-         AiIbSEjUiQ6VpMtzvn/9W/TJ57S3hIc3fnJLF55X9czaniyvfPCKwPkUBQg7EhTdvhf4
-         DK8aZgE83uSQ+/Kc0vIk3+JXszBmXI/8hwaldUNgAw24RYdIGGgp0aSR6E1YZeQz+dST
-         E0cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6dQh4eu6OadVK+LYkdoHUNDrCwpiKoNQBIPdj3Z2wsU=;
-        b=rfiNhf3WrvC09SX34PBlyznh5WDOHEEwuo3+/cSG6/hdLz5AC9kp0eDipFOBCtE3QV
-         qwRrtNNpfQfQZ7/w0XtHxfSJP2rYGDPjHexQZ5Ak1XjaG1OFIejZoz46B6qeCcAmUqkt
-         q9uocBux1m6iYcEhYMJIdvUYBC4yjjaK6eyNj9PCUVFSn4wgDPdYiaxy+E4qszvfrrxX
-         BRJfzJNUsFBTHIA5JL37kesxeVPx6/Ogbz6UvmQl459ljZvcuNhTOxOEHl1KS/MFsck1
-         D7/jD9C1HRG6ZfGx+AfAi9x2xq1GQnX77tT/dEuZfFTWOYWvK3pBMaI68H1DqYeQ4UH3
-         iI7A==
-X-Gm-Message-State: AOAM532v9G5t1CgVAsANM8QXB/t309KtJYVt6/FvAADtymVCs8LUdAIk
-        btYRaqaBSMzNp6NWNsM4TKo=
-X-Google-Smtp-Source: ABdhPJwxwcoqIGf4Hd+gRO14StcrONSBu6o8bPrBtWtYBfcrU81kGkORjgCwnoUKJkXKxwLPQPOAPg==
-X-Received: by 2002:ac8:4e55:: with SMTP id e21mr4677048qtw.159.1611330169191;
-        Fri, 22 Jan 2021 07:42:49 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id h8sm6161683qtm.5.2021.01.22.07.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 07:42:48 -0800 (PST)
-Date:   Fri, 22 Jan 2021 08:42:46 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH 4.14 00/50] 4.14.217-rc1 review
-Message-ID: <20210122154246.GA1308786@ubuntu-m3-large-x86>
-References: <20210122135735.176469491@linuxfoundation.org>
- <CA+G9fYso4QNbRWdrQiiOiMb5RUr8VtM3AkKEGLasgN+KsPSvDw@mail.gmail.com>
- <YArqULK9c1Cnt5gM@kroah.com>
- <CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com>
- <20210122153604.GA24972@willie-the-truck>
+        id S1729197AbhAVPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:47:20 -0500
+Received: from mail-eopbgr70042.outbound.protection.outlook.com ([40.107.7.42]:4995
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729112AbhAVPow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:44:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nMx0ddB3IiCP0JVCvjW/Wk2yEtt7jWgLuwNEULsrup1wczRpFpdzPoXZnoHYh3VrpdgbVBsiHjvls30fi0i8hKjSTIN3XTpv7pRl/iKiqGmmdKNTCwQ9EjLDcRaojGyyFPPexbFdAmOYSWZgEBdSe4XvjAAuIiSzTTEPklq/oIMvs9uzrb3BgPu60t67TzUxBE7g4DyNlZn7d14UgxIwGSDcr9E/gpaptinXr5r6o9THZAE7vjQylEh6ZIesHA7Png8zmGbJeLndSbgVsmDCcqyVTIKihapmXoE233clE6LDZTWnebaTXaT8UfBZXMvrie+7Vy8MWBGsaIyDqewOwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W7tfLxUdi6KJH3b07Jdvt+VxOekfG6MptStdiZcuLv4=;
+ b=acvfSue/wS4wbRb802jApNH8si5kUclbapyqRVMDBdhTG1JpURbof8Lsp6em+HPTCreooAlDSuYYGROZGUsku9jmZUXbfiaBtog2ku5NLQmjV2Z+l+ClRnw3zmrEQpNFslLWIFnt1N21ocvQI0KZQemcvvCYTFLmwKUYI91IvwiLG+DcovYMRPYTrxq64RHP7E0iSKtmg9pltnT7Jgohp6NNvg5GYO0YNdf/ibvN5R65xCkYHSgNV5qrmXR+eqO9vJSSfaNE7heC+9L861vBQcjw+jSedmDsnhfxnR4tsqEA6uy9HxclwdMIoLuWEIO+pRIn4K3eNDeR+ZM5QeecjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W7tfLxUdi6KJH3b07Jdvt+VxOekfG6MptStdiZcuLv4=;
+ b=LHARkbHRi4OE0lPifltqOU4dfb3rSqJr9IAeiLF0ZwoVJT4imr9byAN0X2OAQAOYi9CJWrlZzzjO7lqOesq3Mxv3OCSAFpgj3oKP0ZHpFL8kCkmVjemjMqKOB60MLgxnrhuFCmYfpcUE7JHHoju1sw7h318L53n6itkJZ5Yc79A=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR0402MB3443.eurprd04.prod.outlook.com (2603:10a6:208:1b::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Fri, 22 Jan
+ 2021 15:43:55 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::e90e:b1d6:18a2:2d42]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::e90e:b1d6:18a2:2d42%5]) with mapi id 15.20.3784.015; Fri, 22 Jan 2021
+ 15:43:55 +0000
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux.cj@gmail.com, Diana Madalina Craciun <diana.craciun@nxp.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [net-next PATCH v4 02/15] net: phy: Introduce fwnode_mdio_find_device()
+Date:   Fri, 22 Jan 2021 21:12:47 +0530
+Message-Id: <20210122154300.7628-3-calvin.johnson@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
+References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
+Content-Type: text/plain
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: SG2PR06CA0117.apcprd06.prod.outlook.com
+ (2603:1096:1:1d::19) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122153604.GA24972@willie-the-truck>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR06CA0117.apcprd06.prod.outlook.com (2603:1096:1:1d::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Fri, 22 Jan 2021 15:43:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7f4dec28-bd52-4202-00f7-08d8beec864f
+X-MS-TrafficTypeDiagnostic: AM0PR0402MB3443:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR0402MB3443B0B73C096767CB15E439D2A00@AM0PR0402MB3443.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QaoeTDlIZzB7ZmVehbuEMNVX+rwwKmYSUTpgJtKvMWjkTJcYlfygHgI6Bvzy/IQRig4cu9eaWiAfbHQdut2nae6ews+xT8Mhve7cRun0aK4t9UrMrEhn/EnzUJJF1dEInJ9RQ1BOPWNrH5HsgqfABpIRO1CM7yq+Uvri/FkmhLT6MGGnvObCdqx51EHDr4JtVT1eNEc6LFtRBgur/a3MH2bjiq2qHXOt1YkZDgpGAMmiDhLY16J3tnNjIDW+Gunh9vufjk8wNGy8Z3a7XVVU7jPdcd9rWo31JG99DMCj5sVsx+W0FwLFNTWswQ/b45jSRm7FIBkWSBynh46fjfF4r13m62iaOXSYUwuu/JDTO6tv7VtA+G+6iANB9oJkqMKbM7jIJ0r6OxRi2Fr1OwLyU46TeQrCdQiTWBWyiAZbLIV4OTLFx3dVk1OQ8Rmb5iZa5Tj9/I3hQz8rUNuB+Rw0HA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(39850400004)(366004)(2906002)(6506007)(921005)(6512007)(186003)(5660300002)(1006002)(16526019)(52116002)(54906003)(956004)(55236004)(8676002)(66556008)(8936002)(83380400001)(66476007)(2616005)(66946007)(1076003)(478600001)(26005)(110136005)(86362001)(316002)(7416002)(4326008)(6486002)(44832011)(110426009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?89gigSkZ84tJVYv4HphGfLUX1MvGmCUy+G+g6MlB/iCtqfElzHuGZdeC1kGO?=
+ =?us-ascii?Q?tnvzl4hyE8HeG5wyeYbHnVQt+RIZsgIeZjfSPMHtzRZwffoM+Mqstdfe9KKr?=
+ =?us-ascii?Q?t8c7X5IFQcYxmHWXfWgeS2+qUdrMFWk0UMfj9IXuDvK8DAn5QtYMAqTH5pAy?=
+ =?us-ascii?Q?UsR/7K82JE//Vk3zL5Ym6ql0nHEgP33dzBHgJKnsJtjb3wtt1jOQ6M3R8uE1?=
+ =?us-ascii?Q?Ax/XuHQuTNfUK8lt7L5TFw2IsZUanDOkOtgFja9p2Cr3rlN46Ge3XHC4F6sX?=
+ =?us-ascii?Q?sBIyG4XX99/BTEydXEnm6qwOFkCXW1IlwMuiLE/iKkqfa5zR9I1doRFw+tpm?=
+ =?us-ascii?Q?aqj9T1JSSt31L5ZRDJ8J5ASaeZtxemKNFRFx+OHc3tXsycVVZ7S72zlNcqeD?=
+ =?us-ascii?Q?u0FJ32+1lS1F5FAoMdOsfYX8jeW1r+wDRxNKiZh8XRnAyTfNP08U6Pc0Pu3+?=
+ =?us-ascii?Q?K4NDV7a6ugDZRb7J3twjFo1bqpvLXE5vkGXzih1knezlDKq4tqVvhwgLMiPy?=
+ =?us-ascii?Q?oC2HKRsl0y8mcq9nr/YOj/99K6GYSGagzXKt8AQebTTH3ZncFQGxMAszOdls?=
+ =?us-ascii?Q?YUKVvjnpgPch1O59tTTYNpkIsUdLx5BmDLPYB5+oVenC3WDwcdHMiw5mA/w4?=
+ =?us-ascii?Q?l/W5y8h5Eiu2n1xLpOOxSDw6KIgXk8Tn9NCOksboJSeGaWq/j3qIpYPHeKl3?=
+ =?us-ascii?Q?34vcv0dzUVC4DJOUb70vUe9xi+rWZzbMRXNCWbEAidffWXQIzye1D0UQFAsL?=
+ =?us-ascii?Q?uhPPYtcQKtnmtM8W3Loj5KRqRAMTZBAGdY7wI/1tG5UWm4QSIeMQ35N98wVM?=
+ =?us-ascii?Q?IX+lsDEziJ7pFdkXCp/ek69yPF6/aeJeOxkYQgKx1bpeGtzTMQbR56FtGRuk?=
+ =?us-ascii?Q?RvH6ToYbMPExwy7KX8ue1cXQvKugatf+vgZlVywB+mfwmqIeYOvX38SmTKAl?=
+ =?us-ascii?Q?ljPsTdVIwHo994OeQ+MEEw6YvbbhvGGh7EINGVo31CYSq4ZXs7iEXQje2hgS?=
+ =?us-ascii?Q?odmP2NYEU6dLSpuywI5mzXFE754biyQ7k/uZ60WEUTQxhtyvOml8R5bycE4E?=
+ =?us-ascii?Q?XasFVJPP?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f4dec28-bd52-4202-00f7-08d8beec864f
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 15:43:55.0407
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lcWCNaInnj2TlefX7zb1OOrYEn5/N7f/VCPwF5I6ctjhV9UqYNo/4a+LywcXRzCW76yCGIbF7y5ClX6pj1O0aA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3443
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 03:36:04PM +0000, Will Deacon wrote:
-> On Fri, Jan 22, 2021 at 08:43:18PM +0530, Naresh Kamboju wrote:
-> > On Fri, 22 Jan 2021 at 20:38, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Fri, Jan 22, 2021 at 08:32:46PM +0530, Naresh Kamboju wrote:
-> > > > On Fri, 22 Jan 2021 at 19:45, Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > This is the start of the stable review cycle for the 4.14.217 release.
-> > > > > There are 50 patches in this series, all will be posted as a response
-> > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > let me know.
-> > > > >
-> > > > > Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
-> > > > > Anything received after that time might be too late.
-> > > > >
-> > > > > The whole patch series can be found in one patch at:
-> > > > >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.217-rc1.gz
-> > > > > or in the git tree and branch at:
-> > > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> > > > > and the diffstat can be found below.
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
-> > > >
-> > > > arm64 clang-10 builds breaks due to this patch on
-> > > >    - stable-rc 4.14
-> > > >    - stable-rc 4.9
-> > > >    - stable-rc 4.4
-> > > >
-> > > > > Will Deacon <will@kernel.org>
-> > > > >     compiler.h: Raise minimum version of GCC to 5.1 for arm64
-> > > >
-> > > > arm64 (defconfig) with clang-10 - FAILED
-> > >
-> > > How is a clang build breaking on a "check what version of gcc is being
-> > > used" change?
-> > >
-> > > What is the error message?
-> > 
-> > make --silent --keep-going --jobs=8
-> > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-> > CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> > clang'
-> > In file included from <built-in>:1:
-> > include/linux/kconfig.h:74:
-> > include/linux/compiler_types.h:58:
-> > include/linux/compiler-gcc.h:160:3: error: Sorry, your version of GCC
-> > is too old - please use 5.1 or newer.
-> > # error Sorry, your version of GCC is too old - please use 5.1 or newer.
-> >   ^
-> > 1 error generated.
-> > 
-> > build error link:
-> > https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/980489003#L514
-> 
-> Urgh, looks like we need backports of 815f0ddb346c
-> ("include/linux/compiler*.h: make compiler-*.h mutually exclusive") then.
-> 
-> Greg -- please drop my changes from 4.14, 4.9 and 4.4 for now and I'll
-> look at this next week.
+Define fwnode_mdio_find_device() to get a pointer to the
+mdio_device from fwnode passed to the function.
 
-That backport is going to be pretty gnarly, there was a pretty decent
-tailwind of fixes around that patch IIRC.
+Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+---
 
-The simple solution would be to stick a !defined(__clang__) in that
-preprocessor conditional so that it truly fires only for GCC.
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
 
-Cheers,
-Nathan
+ drivers/net/mdio/of_mdio.c   | 11 +----------
+ drivers/net/phy/phy_device.c | 23 +++++++++++++++++++++++
+ include/linux/phy.h          |  6 ++++++
+ 3 files changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+index 4daf94bb56a5..7bd33b930116 100644
+--- a/drivers/net/mdio/of_mdio.c
++++ b/drivers/net/mdio/of_mdio.c
+@@ -347,16 +347,7 @@ EXPORT_SYMBOL(of_mdiobus_register);
+  */
+ struct mdio_device *of_mdio_find_device(struct device_node *np)
+ {
+-	struct device *d;
+-
+-	if (!np)
+-		return NULL;
+-
+-	d = bus_find_device_by_of_node(&mdio_bus_type, np);
+-	if (!d)
+-		return NULL;
+-
+-	return to_mdio_device(d);
++	return fwnode_mdio_find_device(of_fwnode_handle(np));
+ }
+ EXPORT_SYMBOL(of_mdio_find_device);
+ 
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 8447e56ba572..06e0ddcca8c9 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -2829,6 +2829,29 @@ static bool phy_drv_supports_irq(struct phy_driver *phydrv)
+ 	return phydrv->config_intr && phydrv->handle_interrupt;
+ }
+ 
++/**
++ * fwnode_mdio_find_device - Given a fwnode, find the mdio_device
++ * @np: pointer to the mdio_device's fwnode
++ *
++ * If successful, returns a pointer to the mdio_device with the embedded
++ * struct device refcount incremented by one, or NULL on failure.
++ * The caller should call put_device() on the mdio_device after its use
++ */
++struct mdio_device *fwnode_mdio_find_device(struct fwnode_handle *fwnode)
++{
++	struct device *d;
++
++	if (!fwnode)
++		return NULL;
++
++	d = bus_find_device_by_fwnode(&mdio_bus_type, fwnode);
++	if (!d)
++		return NULL;
++
++	return to_mdio_device(d);
++}
++EXPORT_SYMBOL(fwnode_mdio_find_device);
++
+ /**
+  * phy_probe - probe and init a PHY device
+  * @dev: device to probe and init
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index bc323fbdd21e..8314051d384a 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -1349,11 +1349,17 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+ 				     bool is_c45,
+ 				     struct phy_c45_device_ids *c45_ids);
+ #if IS_ENABLED(CONFIG_PHYLIB)
++struct mdio_device *fwnode_mdio_find_device(struct fwnode_handle *fwnode);
+ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45);
+ int phy_device_register(struct phy_device *phy);
+ void phy_device_free(struct phy_device *phydev);
+ #else
+ static inline
++struct mdio_device *fwnode_mdio_find_device(struct fwnode_handle *fwnode)
++{
++	return 0;
++}
++static inline
+ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
+ {
+ 	return NULL;
+-- 
+2.17.1
+
