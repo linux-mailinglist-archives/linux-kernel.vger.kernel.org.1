@@ -2,198 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39BE300960
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB74300965
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729875AbhAVROM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:14:12 -0500
-Received: from mga06.intel.com ([134.134.136.31]:6192 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729575AbhAVRIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:08:50 -0500
-IronPort-SDR: 8q1JZnoFh6/Ov4uE3tiQfOD8noZtd7gcFNnduNcvfwAEXq9praj/AfOHBKA6s2WjhMgOmHXlsN
- ds1hjG/BCh6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="241014315"
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="241014315"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 09:08:08 -0800
-IronPort-SDR: uCDpyMIblkwPQQuh3jthwwt+zajyW0pO+I5VI7d7NstXQkK4jCq3xnDTJlSNItCSxDhuKmzm4j
- ojQQ9sQK0swg==
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="357096396"
-Received: from entan-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.129.121])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 09:08:07 -0800
-Date:   Fri, 22 Jan 2021 09:08:06 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        daniel.lll@alibaba-inc.com
-Subject: Re: [RFC PATCH v3 10/16] cxl/mem: Add send command
-Message-ID: <20210122170806.lbimm7dzlo3t4b6j@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
- <20210111225121.820014-11-ben.widawsky@intel.com>
- <20210114171038.00003636@Huawei.com>
- <20210121181546.fqmsecgqklh4hep4@intel.com>
- <20210122114357.00001af9@Huawei.com>
+        id S1729682AbhAVRQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:16:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729719AbhAVRKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:10:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD6DC061788
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 09:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3UdzW0vQOnefu0MUYDc0akk5oqwvE8zGjctjGlyHUaM=; b=ID7oReFsxbnsQPHFJWuOJyN8xx
+        4C03JzUhg5WTJHkxMquvt5b0T8tAANACLFDPU740TIW6rQcLPEy++5F/FRvN3a+rftNeJye2HZkE9
+        zQGSyH1ekJaKC6cF+53He+bDsehH6S1aHRsXCcZxtc/UGDVyr1mx+SsrKs2gOxyyFb7hrRvIE6Tad
+        uPaPqMtoJGvgp1H5cTVO3udhe7bK9EPXwl1XrkEpcn07RIWrDL3fz8XNw3VYRuLuWb+JAsSRY9Vt3
+        lFlgEbpbx417cGletFgQ1USkOeoSluh12S+MKKaDb9j/Ka7444+5j5n8cTI1Fz/aVnN4BPfUdAhzW
+        5vOulJRQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2zv8-000zmV-EC; Fri, 22 Jan 2021 17:08:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 618023012DF;
+        Fri, 22 Jan 2021 18:08:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3EE152027D394; Fri, 22 Jan 2021 18:08:25 +0100 (CET)
+Date:   Fri, 22 Jan 2021 18:08:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Jason Baron <jbaron@akamai.com>
+Subject: Re: [RFC PATCH 6/8] preempt/dynamic: Provide
+ preempt_schedule[_notrace]() static calls
+Message-ID: <YAsGiUYf6NyaTplX@hirez.programming.kicks-ass.net>
+References: <20210118141223.123667-1-frederic@kernel.org>
+ <20210118141223.123667-7-frederic@kernel.org>
+ <20210122165226.GD16371@worktop.programming.kicks-ass.net>
+ <CAMj1kXHLL1_WGztYoxGS=12zY5ZxGskptPf4nV78pL7m02pdOA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122114357.00001af9@Huawei.com>
+In-Reply-To: <CAMj1kXHLL1_WGztYoxGS=12zY5ZxGskptPf4nV78pL7m02pdOA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-22 11:43:57, Jonathan Cameron wrote:
-> On Thu, 21 Jan 2021 10:15:46 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
+On Fri, Jan 22, 2021 at 05:57:53PM +0100, Ard Biesheuvel wrote:
+> On Fri, 22 Jan 2021 at 17:53, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Jan 18, 2021 at 03:12:21PM +0100, Frederic Weisbecker wrote:
+> > > +#ifdef CONFIG_PREEMPT_DYNAMIC
+> > > +DEFINE_STATIC_CALL(preempt_schedule, __preempt_schedule_func());
+> > > +EXPORT_STATIC_CALL(preempt_schedule);
+> > > +#endif
+> >
+> > > +#ifdef CONFIG_PREEMPT_DYNAMIC
+> > > +DEFINE_STATIC_CALL(preempt_schedule_notrace, __preempt_schedule_notrace_func());
+> > > +EXPORT_STATIC_CALL(preempt_schedule_notrace);
+> > > +#endif
+> >
+> > So one of the things I hates most of this is that is allows 'random'
+> > modules to hijack the preemption by rewriting these callsites. Once you
+> > export the key, we've lost.
+> >
 > 
-> > On 21-01-14 17:10:38, Jonathan Cameron wrote:
-> > > On Mon, 11 Jan 2021 14:51:14 -0800
-> > > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >   
-> > > > The send command allows userspace to issue mailbox commands directly to
-> > > > the hardware. The driver will verify basic properties of the command and
-> > > > possible inspect the input (or output) payload to determine whether or
-> > > > not the command is allowed (or might taint the kernel).
-> > > > 
-> > > > The list of allowed commands and their properties can be determined by
-> > > > using the QUERY IOCTL for CXL memory devices.
-> > > > 
-> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > > ---
-> > > >  drivers/cxl/mem.c            | 204 ++++++++++++++++++++++++++++++++++-
-> > > >  include/uapi/linux/cxl_mem.h |  39 +++++++
-> > > >  2 files changed, 239 insertions(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > > index d4eb3f5b9469..f979788b4d9f 100644
-> > > > --- a/drivers/cxl/mem.c
-> > > > +++ b/drivers/cxl/mem.c
-> > > > @@ -84,6 +84,13 @@ static DEFINE_IDR(cxl_mem_idr);
-> > > >  /* protect cxl_mem_idr allocations */
-> > > >  static DEFINE_MUTEX(cxl_memdev_lock);
-> > > >  
-> > > > +#undef C
-> > > > +#define C(a, b) { b }  
-> > > 
-> > > I'm not following why this is here?
-> > >   
-> > 
-> > It's used for a debug message in handle_mailbox_cmd_from_user(). This is all the
-> > macro magic stolen from ftrace. Or, did I miss the question?
-> > 
-> > > > +static struct {
-> > > > +	const char *name;
-> > > > +} command_names[] = { CMDS };
-> > > > +#undef C
-> 
-> Mostly that you define it then undef it without use that I can see.
-> 
-> > > > +
-> > > >  #define CXL_CMD(_id, _flags, sin, sout, f)                                     \
-> > > >  	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
-> > > >  		{                                                              \  
-> > > ...
-> > >   
-> > > > +
-> > > > +/**
-> > > > + * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
-> > > > + * @cxlmd: The CXL memory device to communicate with.
-> > > > + * @cmd: The validated command.
-> > > > + * @in_payload: Pointer to userspace's input payload.
-> > > > + * @out_payload: Pointer to userspace's output payload.
-> > > > + * @u: The command submitted by userspace. Has output fields.
-> > > > + *
-> > > > + * Return:
-> > > > + *  * %0	- Mailbox transaction succeeded.
-> > > > + *  * %-EFAULT	- Something happened with copy_to/from_user.
-> > > > + *  * %-EINTR	- Mailbox acquisition interrupted.
-> > > > + *  * %-E2BIG   - Output payload would overrun buffer.
-> > > > + *
-> > > > + * Creates the appropriate mailbox command on behalf of a userspace request.
-> > > > + * Return value, size, and output payload are all copied out to @u. The
-> > > > + * parameters for the command must be validated before calling this function.
-> > > > + *
-> > > > + * A 0 return code indicates the command executed successfully, not that it was
-> > > > + * itself successful. IOW, the retval should always be checked if wanting to  
-> > > 
-> > > cmd->retval perhaps to be more explicit?
-> > >   
-> > > > + * determine the actual result.
-> > > > + */
-> > > > +static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
-> > > > +					const struct cxl_mem_command *cmd,
-> > > > +					u64 in_payload,
-> > > > +					u64 out_payload,
-> > > > +					struct cxl_send_command __user *u)
-> > > > +{
-> > > > +	struct mbox_cmd mbox_cmd = {
-> > > > +		.opcode = cmd->opcode,
-> > > > +		.size_in = cmd->info.size_in,
-> > > > +		.payload = NULL, /* Copied by copy_to|from_user() */
-> > > > +	};
-> > > > +	int rc;
-> > > > +
-> > > > +	if (cmd->info.size_in) {
-> > > > +		/*
-> > > > +		 * Directly copy the userspace payload into the hardware. UAPI
-> > > > +		 * states that the buffer must already be little endian.
-> > > > +		 */
-> > > > +		if (copy_from_user((__force void *)cxl_payload_regs(cxlmd->cxlm),
-> > > > +				   u64_to_user_ptr(in_payload),
-> > > > +				   cmd->info.size_in)) {
-> > > > +			cxl_mem_mbox_put(cxlmd->cxlm);  
-> > > 
-> > > mbox_get is after this point though it shouldn't be given we just
-> > > wrote into the mbox registers.
-> > > 
-> > > This seems unlikely to be a high performance path, so perhaps just
-> > > use a local buffer and let cxl_mem_mbox_send_cmd copy it into the registers.
-> > >   
-> > 
-> > You're correct about the get() needing to be first. I will fix it. As for
-> > performance path - so while this does potentially help with performance, it
-> > actually ends up being I think a little cleaner to not have to deal with a local
-> > buffer.
-> > 
-> > How strongly do you feel about it? I'd say if you don't care so much, let's keep
-> > it as is and find a reason to undo later.
-> 
-> A slightly interesting corner.  The fact that there are no other cases of this
-> particular sequence in kernel bothered me...  It's more than possible I've
-> missed something in the following.
-> 
-> So with a bounce buffered we'd have
-> copy_from_user()
-> then 
-> memcpy_toio()
-> 
-> here we end loosing the fact that memcpy_to_io() might not be a 'simple' memcpy().
-> In the generic asm form it's just a (__force void *) like you have here done using
-> __io_virt() (which might make sense here if you keep this, to make it clear
-> what's going on)
-> 
-> However, not all architectures are using the generic form of memcpy_toio()
-> and even if the ones we care about are safe today using the above construct,
-> it's more than possible some future architecture might be more 'exciting'.
-> 
-> So basically I'm doubtful that this construct is safe.
-> 
-> Jonathan
-> 
+> Are these supposed to be switchable at any time? Or only at boot? In
+> the latter case, can't we drop the associated data structure in
+> __ro_after_init so it becomes R/O when booting completes?
 
-Sounds reasonable.
+Doesn't work, loading modules modifies the key -- we recently had
+someone complain about that for jump_label.
 
-Thanks for digging. I'll go back to the bounce buffer in v4.
+And also, I have this patch...
+
+---
+Subject: sched: Add /debug/sched_preempt
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Fri Jan 22 13:01:58 CET 2021
+
+Add a debugfs file to muck about with the preempt mode at runtime.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/sched/core.c |  135 ++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 126 insertions(+), 9 deletions(-)
+
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5362,37 +5362,154 @@ EXPORT_STATIC_CALL(preempt_schedule_notr
+  *   preempt_schedule_notrace   <- preempt_schedule_notrace
+  *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
+  */
+-static int __init setup_preempt_mode(char *str)
++
++enum {
++	preempt_dynamic_none = 0,
++	preempt_dynamic_voluntary,
++	preempt_dynamic_full,
++};
++
++static int preempt_dynamic_mode = preempt_dynamic_full;
++
++static int sched_dynamic_mode(const char *str)
++{
++	if (!strcmp(str, "none"))
++		return 0;
++
++	if (!strcmp(str, "voluntary"))
++		return 1;
++
++	if (!strcmp(str, "full"))
++		return 2;
++
++	return -1;
++}
++
++static void sched_dynamic_update(int mode)
+ {
+-	if (!strcmp(str, "none")) {
++	/*
++	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
++	 * the ZERO state, which is invalid.
++	 */
++	static_call_update(cond_resched, __cond_resched);
++	static_call_update(might_resched, __cond_resched);
++	static_call_update(preempt_schedule, __preempt_schedule_func());
++	static_call_update(preempt_schedule_notrace, __preempt_schedule_notrace_func());
++	static_call_update(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
++
++	switch (mode) {
++	case preempt_dynamic_none:
+ 		static_call_update(cond_resched, __cond_resched);
+ 		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
+ 		static_call_update(preempt_schedule, (typeof(&preempt_schedule)) NULL);
+ 		static_call_update(preempt_schedule_notrace, (typeof(&preempt_schedule_notrace)) NULL);
+ 		static_call_update(irqentry_exit_cond_resched, (typeof(&irqentry_exit_cond_resched)) NULL);
+-		pr_info("Dynamic Preempt: %s\n", str);
+-	} else if (!strcmp(str, "voluntary")) {
++		pr_info("Dynamic Preempt: none\n");
++		break;
++
++	case preempt_dynamic_voluntary:
+ 		static_call_update(cond_resched, __cond_resched);
+ 		static_call_update(might_resched, __cond_resched);
+ 		static_call_update(preempt_schedule, (typeof(&preempt_schedule)) NULL);
+ 		static_call_update(preempt_schedule_notrace, (typeof(&preempt_schedule_notrace)) NULL);
+ 		static_call_update(irqentry_exit_cond_resched, (typeof(&irqentry_exit_cond_resched)) NULL);
+-		pr_info("Dynamic Preempt: %s\n", str);
+-	} else if (!strcmp(str, "full")) {
++		pr_info("Dynamic Preempt: voluntary\n");
++		break;
++
++	case preempt_dynamic_full:
+ 		static_call_update(cond_resched, (typeof(&__cond_resched)) __static_call_return0);
+ 		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
+ 		static_call_update(preempt_schedule, __preempt_schedule_func());
+ 		static_call_update(preempt_schedule_notrace, __preempt_schedule_notrace_func());
+ 		static_call_update(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
+-		pr_info("Dynamic Preempt: %s\n", str);
+-	} else {
+-		pr_warn("Dynamic Preempt: Unsupported preempt mode %s, default to full\n", str);
++		pr_info("Dynamic Preempt: full\n");
++		break;
++	}
++
++	preempt_dynamic_mode = mode;
++}
++
++static int __init setup_preempt_mode(char *str)
++{
++	int mode = sched_dynamic_mode(str);
++	if (mode < 0) {
++		pr_warn("Dynamic Preempt: unsupported mode: %s\n", str);
+ 		return 1;
+ 	}
++
++	sched_dynamic_update(mode);
+ 	return 0;
+ }
+ __setup("preempt=", setup_preempt_mode);
+ 
++#ifdef CONFIG_SCHED_DEBUG
++
++static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
++				   size_t cnt, loff_t *ppos)
++{
++	char buf[16];
++	int mode;
++
++	if (cnt > 15)
++		cnt = 15;
++
++	if (copy_from_user(&buf, ubuf, cnt))
++		return -EFAULT;
++
++	buf[cnt] = 0;
++	mode = sched_dynamic_mode(strstrip(buf));
++	if (mode < 0)
++		return mode;
++
++	sched_dynamic_update(mode);
++
++	*ppos += cnt;
++
++	return cnt;
++}
++
++static int sched_dynamic_show(struct seq_file *m, void *v)
++{
++	static const char * preempt_modes[] = {
++		"none", "voluntary", "full"
++	};
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
++		if (preempt_dynamic_mode == i)
++			seq_puts(m, "(");
++		seq_puts(m, preempt_modes[i]);
++		if (preempt_dynamic_mode == i)
++			seq_puts(m, ")");
++
++		seq_puts(m, " ");
++	}
++
++	seq_puts(m, "\n");
++	return 0;
++}
++
++static int sched_dynamic_open(struct inode *inode, struct file *filp)
++{
++	return single_open(filp, sched_dynamic_show, NULL);
++}
++
++static const struct file_operations sched_dynamic_fops = {
++	.open		= sched_dynamic_open,
++	.write		= sched_dynamic_write,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++};
++
++static __init int sched_init_debug_dynamic(void)
++{
++	debugfs_create_file("sched_preempt", 0644, NULL, NULL, &sched_dynamic_fops);
++	return 0;
++}
++late_initcall(sched_init_debug_dynamic);
++
++#endif /* CONFIG_SCHED_DEBUG */
+ #endif /* CONFIG_PREEMPT_DYNAMIC */
+ 
+ 
