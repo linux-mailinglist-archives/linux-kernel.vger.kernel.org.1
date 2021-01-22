@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C27A300C9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC630300C98
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730597AbhAVT0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:26:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729531AbhAVSm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:42:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBCB82376F;
-        Fri, 22 Jan 2021 18:41:42 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 18:41:40 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 09/21] arm64: cpufeature: Add global feature override
- facility
-Message-ID: <20210122184139.GG8567@gaia>
-References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-10-maz@kernel.org>
+        id S1730555AbhAVT0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:26:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730086AbhAVSnf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 13:43:35 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23D3C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:42:52 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id h11so3548850vsa.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mQ94cMMY2wJZ02bDEQhrKD3tBdrmXB7f97ooLXkrbTQ=;
+        b=N5L2BsJ1QX6yeiIPK7tfQrlbUtQn8fcirbI6nPvVuK5UXrTQInFZGO6puP/YKNEIGg
+         H9iokwBGet1zvFEv/30JOid2vxMO3vGorJvn1lsoktepiDjBvBu8PGIhTPY97HF+nMGw
+         5OB9aiGZkPFuuvGasRsjibKN8dGMdIU3rmVVI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mQ94cMMY2wJZ02bDEQhrKD3tBdrmXB7f97ooLXkrbTQ=;
+        b=n4iap8FPN61yT072eT6aWMV7U1TXwb4XENYo3NUZ9ou/b1keNG1sobIxrw1naozbfU
+         hchXR4/yJjentiEI7ZH28p/yJSc+qc2Gp8TGvl7LjDl/xhFdCqdVw31uBFVQ4nNB5Ecu
+         DqEeXlREpeZJoY9C4pD/oYcJGYMokd43eeRLwNfR4nmv/f4/nl/1/S2VsQTQo/HJKnfr
+         pMLUTaMVjcUGNxe0sD6eIRJFH8u+kryf2IOFwKum2cmtDTc2My+GvYWx/dfYehdjruWU
+         AwwdKJ2Y5GR6Qw+Te6WJhZ95ywEQqUE/sB6g4Rwt52yRU9ULt2//7ffyHqLZmil8EwQv
+         7vYg==
+X-Gm-Message-State: AOAM533Wk3ixhXlxJp/lIrklcLwsrfVBcoroeeJy4RJrlNaPxSAT/2i4
+        jcKhWhMStNZv96UPPGJBw5ZkTaPiM0yunA==
+X-Google-Smtp-Source: ABdhPJyFzmoZMySpJRikU2B8DHaydbB+atkDkjjTXH6dpA3RIjN8FE1+TliqLoRmucvCCwCFVElZMw==
+X-Received: by 2002:a67:c89b:: with SMTP id v27mr2020477vsk.5.1611340971651;
+        Fri, 22 Jan 2021 10:42:51 -0800 (PST)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id k4sm1221053vsk.5.2021.01.22.10.42.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jan 2021 10:42:50 -0800 (PST)
+Received: by mail-vs1-f43.google.com with SMTP id p20so3552986vsq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:42:50 -0800 (PST)
+X-Received: by 2002:a05:6102:109:: with SMTP id z9mr1614866vsq.34.1611340970333;
+ Fri, 22 Jan 2021 10:42:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-10-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1611053418-29283-1-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <1611053418-29283-1-git-send-email-sumit.garg@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 22 Jan 2021 10:42:38 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Vrf4v0DKfZ7BAjW3ODoYeuwDu8L0S1kOMbbG+=WiVOnQ@mail.gmail.com>
+Message-ID: <CAD=FV=Vrf4v0DKfZ7BAjW3ODoYeuwDu8L0S1kOMbbG+=WiVOnQ@mail.gmail.com>
+Subject: Re: [PATCH] kdb: Simplify kdb commands registration
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:21AM +0000, Marc Zyngier wrote:
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index 9a555809b89c..465d2cb63bfc 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -75,6 +75,8 @@ struct arm64_ftr_reg {
->  	u64				sys_val;
->  	u64				user_val;
->  	const struct arm64_ftr_bits	*ftr_bits;
-> +	u64				*override_val;
-> +	u64				*override_mask;
->  };
->  
->  extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index e99eddec0a46..aaa075c6f029 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -544,13 +544,17 @@ static const struct arm64_ftr_bits ftr_raz[] = {
->  	ARM64_FTR_END,
->  };
->  
-> -#define ARM64_FTR_REG(id, table) {		\
-> -	.sys_id = id,				\
-> -	.reg = 	&(struct arm64_ftr_reg){	\
-> -		.name = #id,			\
-> -		.ftr_bits = &((table)[0]),	\
-> +#define ARM64_FTR_REG_OVERRIDE(id, table, v, m) {		\
-> +		.sys_id = id,					\
-> +		.reg = 	&(struct arm64_ftr_reg){		\
-> +			.name = #id,				\
-> +			.ftr_bits = &((table)[0]),		\
-> +			.override_val = v,			\
-> +			.override_mask = m,			\
->  	}}
->  
-> +#define ARM64_FTR_REG(id, table) ARM64_FTR_REG_OVERRIDE(id, table, NULL, NULL)
-> +
->  static const struct __ftr_reg_entry {
->  	u32			sys_id;
->  	struct arm64_ftr_reg 	*reg;
-> @@ -760,6 +764,7 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
->  	u64 strict_mask = ~0x0ULL;
->  	u64 user_mask = 0;
->  	u64 valid_mask = 0;
-> +	u64 override_val = 0, override_mask = 0;
->  
->  	const struct arm64_ftr_bits *ftrp;
->  	struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
-> @@ -767,9 +772,38 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
->  	if (!reg)
->  		return;
->  
-> +	if (reg->override_mask && reg->override_val) {
-> +		override_mask = *reg->override_mask;
-> +		override_val = *reg->override_val;
-> +	}
-> +
->  	for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
->  		u64 ftr_mask = arm64_ftr_mask(ftrp);
->  		s64 ftr_new = arm64_ftr_value(ftrp, new);
-> +		s64 ftr_ovr = arm64_ftr_value(ftrp, override_val);
-> +
-> +		if ((ftr_mask & override_mask) == ftr_mask) {
-> +			s64 tmp = arm64_ftr_safe_value(ftrp, ftr_ovr, ftr_new);
-> +			char *str = NULL;
-> +
-> +			if (ftr_ovr != tmp) {
-> +				/* Unsafe, remove the override */
-> +				*reg->override_mask &= ~ftr_mask;
-> +				*reg->override_val &= ~ftr_mask;
+Hi,
 
-Do we need such clearing here? I don't think that's ever called again
-for this feature/reg.
+On Tue, Jan 19, 2021 at 2:50 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Simplify kdb commands registration via using linked list instead of
+> static array for commands storage.
+>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  kernel/debug/kdb/kdb_main.c    | 78 ++++++++++--------------------------------
+>  kernel/debug/kdb/kdb_private.h |  1 +
+>  2 files changed, 20 insertions(+), 59 deletions(-)
 
-> +				tmp = ftr_ovr;
-> +				str = "ignoring override";
-> +			} else if (ftr_new != tmp) {
-> +				/* Override was valid */
-> +				ftr_new = tmp;
-> +				str = "forced";
-> +			}
-> +
-> +			if (str)
-> +				pr_warn("%s[%d:%d]: %s to %llx\n",
-> +					reg->name,
-> +					ftrp->shift + ftrp->width - 1,
-> +					ftrp->shift, str, tmp);
-> +		}
->  
->  		val = arm64_ftr_set_value(ftrp, val, ftr_new);
+Wow, nice.  It should have been done this way from the start!  ;-)
 
-I wonder whether we could call, after init_cpu_ftr_reg(), a new function
-similar to update_cpu_ftr_reg() that takes a mask and value and leave
-init_cpu_ftr_reg() unchanged. The only advantage would be if we can get
-rid of the reg->override* fields. Anyway, I need to read the rest of the
-series to see whether it's possible. Otherwise this patch looks fine.
 
--- 
-Catalin
+> @@ -1011,7 +1005,7 @@ int kdb_parse(const char *cmdstr)
+>                 ++argv[0];
+>         }
+>
+> -       for_each_kdbcmd(tp, i) {
+> +       list_for_each_entry(tp, &kdb_cmds_head, list_node) {
+>                 if (tp->cmd_name) {
+
+So I think here (and elsewhere in this file) you can remove this "if
+(...->cmd_name)" stuff now, right?  That was all there because the old
+"remove" used to just NULL out the name to handle gaps and that's no
+longer possible.  If you are really paranoid you could error-check
+kdb_register_flags()
+
+
+> --- a/kernel/debug/kdb/kdb_private.h
+> +++ b/kernel/debug/kdb/kdb_private.h
+> @@ -174,6 +174,7 @@ typedef struct _kdbtab {
+>         short    cmd_minlen;            /* Minimum legal # command
+>                                          * chars required */
+>         kdb_cmdflags_t cmd_flags;       /* Command behaviour flags */
+> +       struct list_head list_node;
+
+nit: every other entry in this struct has a comment but not yours..
+
+
+Other than those small nits I think this is a great improvement, thanks!
+
+-Doug
