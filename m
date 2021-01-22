@@ -2,136 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A518300917
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3990F300915
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbhAVQyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:54:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48196 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729238AbhAVQnX (ORCPT
+        id S1729633AbhAVQyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:54:08 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:37246 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729404AbhAVQns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:43:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611333713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ORJXtXa88XQTcFvDJL2ttldQ8R5IGV9tOZ7MHLBYXsI=;
-        b=XyMfiClaXga4BXQqSk6bWVbYYB5jMxClWw8iqr0vMiHlYk9q07DyVyQIlUZO+uoD5dgVeG
-        d/w8l3gmuIqCmiVtoy105ShT0On5Vgn/Z65oSRZgRol1ZKQvV1L/lJDohAyxEGTzCIhhLv
-        DS0Q3vNKieVMgwuo3JGsiu8C8NkskJc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-Wqn91X1XM-KqIb1776r96Q-1; Fri, 22 Jan 2021 11:41:50 -0500
-X-MC-Unique: Wqn91X1XM-KqIb1776r96Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F32E8066E5;
-        Fri, 22 Jan 2021 16:41:49 +0000 (UTC)
-Received: from x1.localdomain (ovpn-112-174.ams2.redhat.com [10.36.112.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B7F36F12D;
-        Fri, 22 Jan 2021 16:41:46 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH v3 13/13] ASoC: Intel: bytcr_wm5102: Add jack detect support
-Date:   Fri, 22 Jan 2021 17:41:07 +0100
-Message-Id: <20210122164107.361939-14-hdegoede@redhat.com>
-In-Reply-To: <20210122164107.361939-1-hdegoede@redhat.com>
-References: <20210122164107.361939-1-hdegoede@redhat.com>
+        Fri, 22 Jan 2021 11:43:48 -0500
+Received: by mail-oi1-f182.google.com with SMTP id r189so6616052oih.4;
+        Fri, 22 Jan 2021 08:43:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A53Fny55mdIWBsolGsXez4xo36IZS+ZOP3kW5TdEycE=;
+        b=tPMi4tzArgdJd9KyZsUo+mz+Qk91nY6j+vOwLnq+km/1YwLWW6PyXluharOoNeZCWj
+         BsNTNDyKvjnqlF69NtYiBOqIArIu+a/JOqc+ppN1qIYLAKPBuuX6rIHiexUefOA+4LGW
+         gAwYBcH0azWIa6k1IPM9mHEd159UxyZceCpUpgGiKP7ReAqTJmU9M19DWMc4LbcvNIQQ
+         l8lZzdd+IeEkYWwnS17TTTEdHm9F2Z32WBNnf+L6vP2EzOTUvILi9/Sx390v/0x5fzrm
+         9M+DA9ol+lbllaR8U6IhpqYeLOn4uma9SKErFeR6zlppfRZkWVzVSHj5K7aWSZb+A2Kk
+         gOzw==
+X-Gm-Message-State: AOAM532TLk/1BpAIWtwBs2JtG00qG/PpwVBfjErgf8C9k+/4yWy5vVmT
+        ouNjV2vhrMnrzeQvonf4ctF2tslVCn5bK2OLCA16rg4/
+X-Google-Smtp-Source: ABdhPJzW3RgLPOFzjMcDYg2pFb+cVuufNP3kJ8Oxp5z+yB46v0CuCZYTlb1ZA9ThloXn9euITEQGu4uJCluhw/MK1e4=
+X-Received: by 2002:aca:fc84:: with SMTP id a126mr3871328oii.71.1611333790631;
+ Fri, 22 Jan 2021 08:43:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <3391226.KRKnzuvfpg@kreacher> <CAJZ5v0gB4B_Os0VQv-F2SdVcJ8_rUdjic6rOEjOd=ZWhGzdLdQ@mail.gmail.com>
+ <87tur9vscw.fsf@rub.de>
+In-Reply-To: <87tur9vscw.fsf@rub.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 22 Jan 2021 17:42:59 +0100
+Message-ID: <CAJZ5v0gQCxcxiFTtZ3Ea6gbY=WFt5oD4fq7vpQqvkJKqbg1=rA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: thermal: Do not call acpi_thermal_check() directly
+To:     Stephen Berman <stephen.berman@gmx.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add jack detect support by creating a jack and calling
-snd_soc_component_set_jack to register the created jack
-with the codec.
+On Fri, Jan 22, 2021 at 5:39 PM Stephen Berman <stephen.berman@gmx.net> wrote:
+>
+> On Fri, 22 Jan 2021 17:23:36 +0100 "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+>
+> > On Thu, Jan 14, 2021 at 7:35 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >>
+> >> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >>
+> >> Calling acpi_thermal_check() from acpi_thermal_notify() directly
+> >> is problematic if _TMP triggers Notify () on the thermal zone for
+> >> which it has been evaluated (which happens on some systems), because
+> >> it causes a new acpi_thermal_notify() invocation to be queued up
+> >> every time and if that takes place too often, an indefinite number of
+> >> pending work items may accumulate in kacpi_notify_wq over time.
+> >>
+> >> Besides, it is not really useful to queue up a new invocation of
+> >> acpi_thermal_check() if one of them is pending already.
+> >>
+> >> For these reasons, rework acpi_thermal_notify() to queue up a thermal
+> >> check instead of calling acpi_thermal_check() directly and only allow
+> >> one thermal check to be pending at a time.  Moreover, only allow one
+> >> acpi_thermal_check_fn() instance at a time to run
+> >> thermal_zone_device_update() for one thermal zone and make it return
+> >> early if it sees other instances running for the same thermal zone.
+> >>
+> >> While at it, fold acpi_thermal_check() into acpi_thermal_check_fn(),
+> >> as it is only called from there after the other changes made here.
+> >>
+> >> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208877
+> >> Reported-by: Stephen Berman <stephen.berman@gmx.net>
+> >> Diagnosed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> >> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Well, it's been over a week since this was posted.
+> >
+> > Does anyone have any comments?
+>
+> Sorry, I haven't been able to make time to test the patch yet, but I'll
+> try to do so this weekend.  Is it just the patch below that I should
+> apply, ignoring the previous patches you sent?
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_wm5102.c | 28 ++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+Yes.
 
-diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
-index f38850eb2eaf..cdfe203ed9fa 100644
---- a/sound/soc/intel/boards/bytcr_wm5102.c
-+++ b/sound/soc/intel/boards/bytcr_wm5102.c
-@@ -18,6 +18,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spi/spi.h>
-+#include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -31,6 +32,7 @@
- #define WM5102_MAX_SYSCLK_11025	45158400 /* max sysclk for 11.025K family */
- 
- struct byt_wm5102_private {
-+	struct snd_soc_jack jack;
- 	struct clk *mclk;
- 	struct gpio_desc *spkvdd_en_gpio;
- };
-@@ -177,11 +179,23 @@ static const struct snd_kcontrol_new byt_wm5102_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Speaker"),
- };
- 
-+static struct snd_soc_jack_pin byt_wm5102_pins[] = {
-+	{
-+		.pin	= "Headphone",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin	= "Headset Mic",
-+		.mask	= SND_JACK_MICROPHONE,
-+	},
-+};
-+
- static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_card *card = runtime->card;
- 	struct byt_wm5102_private *priv = snd_soc_card_get_drvdata(card);
--	int ret;
-+	struct snd_soc_component *component = asoc_rtd_to_codec(runtime, 0)->component;
-+	int ret, jack_type;
- 
- 	card->dapm.idle_bias_off = true;
- 
-@@ -210,6 +224,18 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
-+	jack_type = ARIZONA_JACK_MASK | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+		    SND_JACK_BTN_2 | SND_JACK_BTN_3;
-+	ret = snd_soc_card_jack_new(card, "Headset", jack_type,
-+				    &priv->jack, byt_wm5102_pins,
-+				    ARRAY_SIZE(byt_wm5102_pins));
-+	if (ret) {
-+		dev_err(card->dev, "Error creating jack: %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_soc_component_set_jack(component, &priv->jack, NULL);
-+
- 	return 0;
- }
- 
--- 
-2.28.0
+> And can I apply it to the current mainline kernel?
 
+Yes, it should be applicable to the current mainline (at least as of 5.11-rc4).
+
+Thanks!
+
+> >> ---
+> >>  drivers/acpi/thermal.c |   46 +++++++++++++++++++++++++++++++++-------------
+> >>  1 file changed, 33 insertions(+), 13 deletions(-)
+> >>
+> >> Index: linux-pm/drivers/acpi/thermal.c
+> >> ===================================================================
+> >> --- linux-pm.orig/drivers/acpi/thermal.c
+> >> +++ linux-pm/drivers/acpi/thermal.c
+> >> @@ -174,6 +174,8 @@ struct acpi_thermal {
+> >>         struct thermal_zone_device *thermal_zone;
+> >>         int kelvin_offset;      /* in millidegrees */
+> >>         struct work_struct thermal_check_work;
+> >> +       struct mutex thermal_check_lock;
+> >> +       refcount_t thermal_check_count;
+> >>  };
+> >>
+> >>  /* --------------------------------------------------------------------------
+> >> @@ -495,14 +497,6 @@ static int acpi_thermal_get_trip_points(
+> >>         return 0;
+> >>  }
+> >>
+> >> -static void acpi_thermal_check(void *data)
+> >> -{
+> >> -       struct acpi_thermal *tz = data;
+> >> -
+> >> -       thermal_zone_device_update(tz->thermal_zone,
+> >> -                                  THERMAL_EVENT_UNSPECIFIED);
+> >> -}
+> >> -
+> >>  /* sys I/F for generic thermal sysfs support */
+> >>
+> >>  static int thermal_get_temp(struct thermal_zone_device *thermal, int *temp)
+> >> @@ -900,6 +894,12 @@ static void acpi_thermal_unregister_ther
+> >>                                   Driver Interface
+> >>     -------------------------------------------------------------------------- */
+> >>
+> >> +static void acpi_queue_thermal_check(struct acpi_thermal *tz)
+> >> +{
+> >> +       if (!work_pending(&tz->thermal_check_work))
+> >> +               queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
+> >> +}
+> >> +
+> >>  static void acpi_thermal_notify(struct acpi_device *device, u32 event)
+> >>  {
+> >>         struct acpi_thermal *tz = acpi_driver_data(device);
+> >> @@ -910,17 +910,17 @@ static void acpi_thermal_notify(struct a
+> >>
+> >>         switch (event) {
+> >>         case ACPI_THERMAL_NOTIFY_TEMPERATURE:
+> >> -               acpi_thermal_check(tz);
+> >> +               acpi_queue_thermal_check(tz);
+> >>                 break;
+> >>         case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+> >>                 acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
+> >> -               acpi_thermal_check(tz);
+> >> +               acpi_queue_thermal_check(tz);
+> >>                 acpi_bus_generate_netlink_event(device->pnp.device_class,
+> >>                                                   dev_name(&device->dev), event, 0);
+> >>                 break;
+> >>         case ACPI_THERMAL_NOTIFY_DEVICES:
+> >>                 acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
+> >> -               acpi_thermal_check(tz);
+> >> +               acpi_queue_thermal_check(tz);
+> >>                 acpi_bus_generate_netlink_event(device->pnp.device_class,
+> >>                                                   dev_name(&device->dev), event, 0);
+> >>                 break;
+> >> @@ -1020,7 +1020,25 @@ static void acpi_thermal_check_fn(struct
+> >>  {
+> >>         struct acpi_thermal *tz = container_of(work, struct acpi_thermal,
+> >>                                                thermal_check_work);
+> >> -       acpi_thermal_check(tz);
+> >> +
+> >> +       /*
+> >> +        * In general, it is not sufficient to check the pending bit, because
+> >> +        * subsequent instances of this function may be queued after one of them
+> >> +        * has started running (e.g. if _TMP sleeps).  Avoid bailing out if just
+> >> +        * one of them is running, though, because it may have done the actual
+> >> +        * check some time ago, so allow at least one of them to block on the
+> >> +        * mutex while another one is running the update.
+> >> +        */
+> >> +       if (!refcount_dec_not_one(&tz->thermal_check_count))
+> >> +               return;
+> >> +
+> >> +       mutex_lock(&tz->thermal_check_lock);
+> >> +
+> >> +       thermal_zone_device_update(tz->thermal_zone, THERMAL_EVENT_UNSPECIFIED);
+> >> +
+> >> +       refcount_inc(&tz->thermal_check_count);
+> >> +
+> >> +       mutex_unlock(&tz->thermal_check_lock);
+> >>  }
+> >>
+> >>  static int acpi_thermal_add(struct acpi_device *device)
+> >> @@ -1052,6 +1070,8 @@ static int acpi_thermal_add(struct acpi_
+> >>         if (result)
+> >>                 goto free_memory;
+> >>
+> >> +       refcount_set(&tz->thermal_check_count, 3);
+> >> +       mutex_init(&tz->thermal_check_lock);
+> >>         INIT_WORK(&tz->thermal_check_work, acpi_thermal_check_fn);
+> >>
+> >>         pr_info(PREFIX "%s [%s] (%ld C)\n", acpi_device_name(device),
+> >> @@ -1117,7 +1137,7 @@ static int acpi_thermal_resume(struct de
+> >>                 tz->state.active |= tz->trips.active[i].flags.enabled;
+> >>         }
+> >>
+> >> -       queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
+> >> +       acpi_queue_thermal_check(tz);
+> >>
+> >>         return AE_OK;
+> >>  }
+> >>
+> >>
+> >>
