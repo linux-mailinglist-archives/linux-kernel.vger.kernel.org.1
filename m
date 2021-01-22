@@ -2,379 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20D02FFE1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CAA2FFE2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbhAVIZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:25:46 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25368 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725961AbhAVIZT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:25:19 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10M80tdS191257;
-        Fri, 22 Jan 2021 03:24:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=8xgTP3BiyApe2BYzzXx3hSv4ShJttm2TByqpELq26i0=;
- b=V2bcD0dHHmJ4dBYRsIFQoTEaV2pOQMwUA5W5MEbtChqjRYxX5fYOy9ENhcyXN6BuzMfd
- u5NcbpgcLTMTQv8CKXTQ7z6JPiwB2U96J0+41hPgJHI4t/oXieZ7q8CvEkWlbCAx2Z2Q
- RbtEKBWwmdyMw4Ip5pj9aqqTecJiN23bGA6ExFzQLkuEIYqULO9wtp1MStqmzXcrmsvN
- MHxWFP4Ub1dCBKXSUeW2EuWvwUCz83LYzdL7a1hfvqTs22+i15hEwJuwFriimWoUgI7C
- id3nD2gaCcWOW/2P/InAK7+YCyeQWY2ztt/+o6cQed5ALgtczNIU1saXjmDQeOCgNnwZ jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 367tqj8rj7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 03:24:34 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10M812ei192074;
-        Fri, 22 Jan 2021 03:24:34 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 367tqj8rhr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 03:24:34 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10M8HIDG015479;
-        Fri, 22 Jan 2021 08:24:32 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 367k0v06a2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 08:24:32 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10M8OTot36307450
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 08:24:29 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 588DBA4062;
-        Fri, 22 Jan 2021 08:24:29 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3DE42A405F;
-        Fri, 22 Jan 2021 08:24:28 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.82.42])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 22 Jan 2021 08:24:28 +0000 (GMT)
-Subject: Re: [PATCH 1/1] s390/vfio-ap: No need to disable IRQ after queue
- reset
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com
-References: <20210121072008.76523-1-pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <19d8a764-fd48-ebe0-ec38-cf201fb53a3e@de.ibm.com>
-Date:   Fri, 22 Jan 2021 09:24:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20210121072008.76523-1-pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+        id S1726413AbhAVI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:27:11 -0500
+Received: from mail-mw2nam12on2067.outbound.protection.outlook.com ([40.107.244.67]:55744
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726954AbhAVIZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:25:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bnAAE4lcqg5QebitEMg6jtgfgIaaUbS0S3Dt7myE+X4TEuR0IWUooI5QZzFoy9Ik5G5zNCgPuS3RLtK7HlyvhV4s2p6AEjPNe1RX5zSoWJlyuXYVfhLiCFQQnED7zZvf8JxoavqWw0krWWXU9f2fwKszIPtYopS+bwnFgQg4Ox1Ef2Ipmjo1HSSrsm72E5l2gyIAyZgHVPID3rmGc7JBvTLDj/02XsC5y9kYxmCy8T6QW4bEoKJi/eqzneuTMEvQ+N10tDnmx0SquJIKFcLDUkaaCfo24xuBjrbHkr3TGX74IfMh1FqW27jTStSc9cPq9OMoP1AOWRLijRVHq+nA0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=57OLQhWQc4sZRU498KR5IZJs+s5QC0WYyQu0XBYK0sE=;
+ b=MBGtIWoEW9Xk3SGWpkvD8N+0edSHChJkjXhIZ351KpN+9H0DELIxRy7GAcBtt9M2IYCHAQNPufQ8WJGlPm4LpXD+nkq92MS7kNvSo01Mx9/KUfykZUyarPdG4SXsTlCpVLeq/XN/07K1KvnOmDR8jFE2SKZttXRsj9+M2GywYX1RPtkxO2GNgTczeRDb3JNkCHsKgS32Jo82DPKe5OSphtSADSrhNlc2bnFUgztCXRu6NzFv+qvXyLYbfH0XFvkfhVExAfWR6XB7GlXCOO7eBIGb8yFKHX/cztokTcWl9mu1VBxCz86PsKZp+AnTQw3Zf+wV1G2tsxKv7IZJM2Qw8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=57OLQhWQc4sZRU498KR5IZJs+s5QC0WYyQu0XBYK0sE=;
+ b=qj20pBeHAxGfO7wJWvyNl/UmV5cIuWhIDrQnRY1OfBg/dmlv8jrd0XoiQaLhcUfxqTi1Bmg/uMHYd1PBRq5fy5FHVwonyQSRNf8BBfUVdNT51+Y5QViz98moBCscEkpMJ8NrfaF7fZqt4oZ6qLxkZX6+8Z4jFjlWyr6DDaw2BUo=
+Received: from (2603:10b6:a02:fc::24) by
+ SJ0PR05MB7739.namprd05.prod.outlook.com (2603:10b6:a03:2e1::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6; Fri, 22 Jan
+ 2021 08:24:59 +0000
+Received: from BYAPR05MB4470.namprd05.prod.outlook.com
+ ([fe80::5d18:d12d:f88:e695]) by BYAPR05MB4470.namprd05.prod.outlook.com
+ ([fe80::5d18:d12d:f88:e695%6]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
+ 08:24:59 +0000
+From:   Ronak Doshi <doshir@vmware.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Petr Vandrovec <petr@vmware.com>,
+        Pv-drivers <Pv-drivers@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] vmxnet3: Remove buf_info from device accessible
+ structures
+Thread-Topic: [PATCH net-next] vmxnet3: Remove buf_info from device accessible
+ structures
+Thread-Index: AQHW7tLhDzRAxKYQ2USgax8SHBpL0aoy2CaA///0OwA=
+Date:   Fri, 22 Jan 2021 08:24:59 +0000
+Message-ID: <888F37FB-B8BD-43D8-9E75-4F1CE9D4FAC7@vmware.com>
+References: <20210120021941.9655-1-doshir@vmware.com>
+ <20210121170705.08ecb23d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210121170705.08ecb23d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.40.20081000
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [2601:647:4c00:97e:ed06:21ea:867d:e6c5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aca1b386-5b7e-43d9-3277-08d8beaf3578
+x-ms-traffictypediagnostic: SJ0PR05MB7739:
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR05MB7739AE0EDC11672E206FCBACA4A09@SJ0PR05MB7739.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: muoPcX/CLRuIHO7CmbtDooGvEm0F2p2c/aF8RT4EEHmXWDJa5m/BnnztKqTI+ZJ53/3z6qOXKvp0zsJba2VCri57spEj0FCQjXeWBVrcTRBTnKBzS2PmVGeS5m+DpDatPQBXodkv/6c6UZ1q3VFMywdlYJLQc25/1G5UpYRXedG0IiHSg7PBeCWbnik21Iy1o5fdviVjgIsL+rZMGG61cBREbO+oATE03+Ln6Ajtdhgai1fLXucrQSj9dQj541PfHrly7xGQUH3Vlu9OHd14nx+MiU8YxGKjmPHQl/vJ+ki1gT5OmwMFEx3I3qrtRw3nwtuNWZMaydVfcaU6VLNnWlodgRAjhdlFeBLOClNIcpoiOEPfNSk27tnE9HCeoKANVG4hgvRn3vI91o7MUeko6pvUC70UL8uG+RN7iSlRAgCkV5978IVvriWhHCbbh9WI
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4470.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(86362001)(36756003)(76116006)(91956017)(6512007)(4326008)(6506007)(53546011)(2906002)(316002)(478600001)(54906003)(64756008)(33656002)(6486002)(5660300002)(186003)(66946007)(6916009)(71200400001)(8676002)(2616005)(66556008)(83380400001)(4744005)(66446008)(66476007)(8936002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Wm9McnM2TXpaYnNicUJsQXE3OEVab09LZXYxUHN5ejZES2FXYWdjTjI3Tzda?=
+ =?utf-8?B?QnNhUHArclQyUXI4Y0E5dE9lNlpYYS81bEVYSVdRUndpbzdrUEZpT2ROaHov?=
+ =?utf-8?B?ck53bEhaWWl5K2FxNkhVdDUydGN2YWVydVUwRy82SGFKU2l6cU9ma1ZZRGtT?=
+ =?utf-8?B?WVpXb0hqQjRRZ2VUN0FOMThKMUswS2oxalU5a3RKZ1NsaUtHYWlpKzlXYXZk?=
+ =?utf-8?B?R0hmQWhPR2N2Q1lLY1gvZDJTb2hkOUtNV3pyVVhlZFFlbVc5emlMYTR5OFVU?=
+ =?utf-8?B?SVNhUWdOZ2hYYVhoRlowcm9OU0FHZFo4cU82b0JhT25DYkx2TmV4aS8yWnU2?=
+ =?utf-8?B?UndUSWQ3VXRkNHNHR3MwdFVaZCtDcStCNTcwQzVzelhpK21aM2JVbTd1RDRa?=
+ =?utf-8?B?bXd2dXhiS0k4NzlqRi9JR2FLUzU3K01abVhDTFk2T1RlK00wbHBmQkI0ZEpY?=
+ =?utf-8?B?Q1ZyRTdGcGxxZ3VlOUJuTVJnVEU2c1J5TGc3WFg1NUFMYjVwR2dNTCtZSjIv?=
+ =?utf-8?B?blR2S1ZSODVTbXErRmwrL1RRcGRTYVlWNEZSbGJZTzVXVE9Xa1hadmRyVWpl?=
+ =?utf-8?B?SHhMK2hYdUFBSHVMeHhKSjQ2ZGVkNksvaThnQkFrTzFObStQYWdOcnE4aXlr?=
+ =?utf-8?B?djZUYndJQ0Z6bmk1RFp2aVpQMzZ0MFpPcjZ5QU90YVV0TTlya1ZoTVlGSGN3?=
+ =?utf-8?B?UkFSaVVwNVRBdWtNbW93WVgyTUZOemRmT2ZDUVAvUXpoN0hMclNCWGZ2cEdm?=
+ =?utf-8?B?VEZvLzNJSWFHTGkrN0RxYnFtMi9HcWlUeXZ6WnZLM2tmcmg1Sm5CZUk5LzlG?=
+ =?utf-8?B?c2hwampXM0wyZFF6dVBoYVI2YmlMdmh5ZzV6Y2w3VVZtYytIK2NUaW5rUnlh?=
+ =?utf-8?B?dHgwMDlZNUNmblJVR3p3QXFoTGJSRGVUL0hBR21mVDE3dUFNNzJoU1VnbGJp?=
+ =?utf-8?B?dEJmOUpNYWxCdVFnSlBXalgyQmtkSUMrSFR5ajhjVE5TY0dzb3NGSHV3MXQ3?=
+ =?utf-8?B?RXlCNzRGa1NJR0JRVjNNMllqanRyN3I3enE5dXJDdE1meWx1UHQ5aTIzS1RM?=
+ =?utf-8?B?VU9maFJZZm4wTTJQOFhvVVFJZ1pldXpsNHRtbGIycEpreGFJS2lHQ1ptaTVR?=
+ =?utf-8?B?ZmhHRWdhSlh6QnNTSEdGeTc4WTlQTFozWjNjZWVPekFjc3dBU0prSnFSNzN2?=
+ =?utf-8?B?RjZlcHBLU3RBWVZ6TUtjdXZVZ096NHh0MTlQczh1QXNRQ1lSay9hZlNVR3F5?=
+ =?utf-8?B?dEQ0OEVSWHlyM0J5OFptWEY2MlIrNU8yQjg2REFheW55THdVbFpYSzZlem84?=
+ =?utf-8?B?ZGFLKzJ4b2YvT0ZEUWxPL1BiZUE5Rit5cElvMVcwT2pmalpNUnZyWjF5QmFi?=
+ =?utf-8?B?bXphY0lPV1RpMitaeHVBT1VQSEdhWmJ6YWljQTRzcnR1ZUc4ZkFLS3dXVTdD?=
+ =?utf-8?B?dGFYVk43S0VqSG5xZ2lwSVpGSytzN3pSSS9OQVpsVnJrQUkxcFZmSHVMSHNp?=
+ =?utf-8?B?ZDUrc1ZJL29XQ3JxNlMwUmtOUVlMaHNaSmxBaHEvR3d4cVR4cFJ4MnEyM3FB?=
+ =?utf-8?B?QVU3Zz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <72A53382C69E60418ED5FA1AEFE75033@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-22_03:2021-01-21,2021-01-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 clxscore=1011 bulkscore=0 mlxscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101220038
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4470.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aca1b386-5b7e-43d9-3277-08d8beaf3578
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 08:24:59.4661
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CcB5xBoo33lVgQ3yS/8Uuakg6AYjeLufUcFYixNyNaXk1lHDofGkOlhjf/Kd3vSRoGFFY3iBtTVLUP5N2AoV7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7739
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 21.01.21 08:20, Halil Pasic wrote:
-> From: Tony Krowiak <akrowiak@linux.ibm.com>
-> 
-> The queues assigned to a matrix mediated device are currently reset when:
-> 
-> * The VFIO_DEVICE_RESET ioctl is invoked
-> * The mdev fd is closed by userspace (QEMU)
-> * The mdev is removed from sysfs.
-> 
-> Immediately after the reset of a queue, a call is made to disable
-> interrupts for the queue. This is entirely unnecessary because the reset of
-> a queue disables interrupts, so this will be removed.
-> 
-> Furthermore, vfio_ap_irq_disable() does an unconditional PQAP/AQIC which
-> can result in a specification exception (when the corresponding facility
-> is not available), so this is actually a bugfix.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> [pasic@linux.ibm.com: minor rework before merging]
-> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: ec89b55e3bce ("s390: ap: implement PAPQ AQIC interception in kernel")
-> Cc: <stable@vger.kernel.org>
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-
-Heiko, Vasily, lets carry this via the s390 tree.
-
-
-
-> 
-> ---
-> 
-> Since it turned out disabling the interrupts via PQAP/AQIC is not only
-> unnecesary but also buggy, we decided to put this patch, which
-> used to be apart of the series https://lkml.org/lkml/2020/12/22/757 on the fast
-> lane.
-> 
-> If the backports turn out to be a bother, which I hope won't be the case
-> not, I am happy to help with those.
-> 
-> ---
->  drivers/s390/crypto/vfio_ap_drv.c     |   6 +-
->  drivers/s390/crypto/vfio_ap_ops.c     | 100 ++++++++++++++++----------
->  drivers/s390/crypto/vfio_ap_private.h |  12 ++--
->  3 files changed, 69 insertions(+), 49 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index be2520cc010b..7dc72cb718b0 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -71,15 +71,11 @@ static int vfio_ap_queue_dev_probe(struct ap_device *apdev)
->  static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
->  {
->  	struct vfio_ap_queue *q;
-> -	int apid, apqi;
->  
->  	mutex_lock(&matrix_dev->lock);
->  	q = dev_get_drvdata(&apdev->device);
-> +	vfio_ap_mdev_reset_queue(q, 1);
->  	dev_set_drvdata(&apdev->device, NULL);
-> -	apid = AP_QID_CARD(q->apqn);
-> -	apqi = AP_QID_QUEUE(q->apqn);
-> -	vfio_ap_mdev_reset_queue(apid, apqi, 1);
-> -	vfio_ap_irq_disable(q);
->  	kfree(q);
->  	mutex_unlock(&matrix_dev->lock);
->  }
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index e0bde8518745..7ceb6c433b3b 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -25,6 +25,7 @@
->  #define VFIO_AP_MDEV_NAME_HWVIRT "VFIO AP Passthrough Device"
->  
->  static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
-> +static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
->  
->  static int match_apqn(struct device *dev, const void *data)
->  {
-> @@ -49,20 +50,15 @@ static struct vfio_ap_queue *vfio_ap_get_queue(
->  					int apqn)
->  {
->  	struct vfio_ap_queue *q;
-> -	struct device *dev;
->  
->  	if (!test_bit_inv(AP_QID_CARD(apqn), matrix_mdev->matrix.apm))
->  		return NULL;
->  	if (!test_bit_inv(AP_QID_QUEUE(apqn), matrix_mdev->matrix.aqm))
->  		return NULL;
->  
-> -	dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
-> -				 &apqn, match_apqn);
-> -	if (!dev)
-> -		return NULL;
-> -	q = dev_get_drvdata(dev);
-> -	q->matrix_mdev = matrix_mdev;
-> -	put_device(dev);
-> +	q = vfio_ap_find_queue(apqn);
-> +	if (q)
-> +		q->matrix_mdev = matrix_mdev;
->  
->  	return q;
->  }
-> @@ -119,13 +115,18 @@ static void vfio_ap_wait_for_irqclear(int apqn)
->   */
->  static void vfio_ap_free_aqic_resources(struct vfio_ap_queue *q)
->  {
-> -	if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev)
-> +	if (!q)
-> +		return;
-> +	if (q->saved_isc != VFIO_AP_ISC_INVALID &&
-> +	    !WARN_ON(!(q->matrix_mdev && q->matrix_mdev->kvm))) {
->  		kvm_s390_gisc_unregister(q->matrix_mdev->kvm, q->saved_isc);
-> -	if (q->saved_pfn && q->matrix_mdev)
-> +		q->saved_isc = VFIO_AP_ISC_INVALID;
-> +	}
-> +	if (q->saved_pfn && !WARN_ON(!q->matrix_mdev)) {
->  		vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
->  				 &q->saved_pfn, 1);
-> -	q->saved_pfn = 0;
-> -	q->saved_isc = VFIO_AP_ISC_INVALID;
-> +		q->saved_pfn = 0;
-> +	}
->  }
->  
->  /**
-> @@ -144,7 +145,7 @@ static void vfio_ap_free_aqic_resources(struct vfio_ap_queue *q)
->   * Returns if ap_aqic function failed with invalid, deconfigured or
->   * checkstopped AP.
->   */
-> -struct ap_queue_status vfio_ap_irq_disable(struct vfio_ap_queue *q)
-> +static struct ap_queue_status vfio_ap_irq_disable(struct vfio_ap_queue *q)
->  {
->  	struct ap_qirq_ctrl aqic_gisa = {};
->  	struct ap_queue_status status;
-> @@ -1114,48 +1115,70 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->  	return NOTIFY_OK;
->  }
->  
-> -static void vfio_ap_irq_disable_apqn(int apqn)
-> +static struct vfio_ap_queue *vfio_ap_find_queue(int apqn)
->  {
->  	struct device *dev;
-> -	struct vfio_ap_queue *q;
-> +	struct vfio_ap_queue *q = NULL;
->  
->  	dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
->  				 &apqn, match_apqn);
->  	if (dev) {
->  		q = dev_get_drvdata(dev);
-> -		vfio_ap_irq_disable(q);
->  		put_device(dev);
->  	}
-> +
-> +	return q;
->  }
->  
-> -int vfio_ap_mdev_reset_queue(unsigned int apid, unsigned int apqi,
-> +int vfio_ap_mdev_reset_queue(struct vfio_ap_queue *q,
->  			     unsigned int retry)
->  {
->  	struct ap_queue_status status;
-> +	int ret;
->  	int retry2 = 2;
-> -	int apqn = AP_MKQID(apid, apqi);
->  
-> -	do {
-> -		status = ap_zapq(apqn);
-> -		switch (status.response_code) {
-> -		case AP_RESPONSE_NORMAL:
-> -			while (!status.queue_empty && retry2--) {
-> -				msleep(20);
-> -				status = ap_tapq(apqn, NULL);
-> -			}
-> -			WARN_ON_ONCE(retry2 <= 0);
-> -			return 0;
-> -		case AP_RESPONSE_RESET_IN_PROGRESS:
-> -		case AP_RESPONSE_BUSY:
-> +	if (!q)
-> +		return 0;
-> +
-> +retry_zapq:
-> +	status = ap_zapq(q->apqn);
-> +	switch (status.response_code) {
-> +	case AP_RESPONSE_NORMAL:
-> +		ret = 0;
-> +		break;
-> +	case AP_RESPONSE_RESET_IN_PROGRESS:
-> +		if (retry--) {
->  			msleep(20);
-> -			break;
-> -		default:
-> -			/* things are really broken, give up */
-> -			return -EIO;
-> +			goto retry_zapq;
->  		}
-> -	} while (retry--);
-> +		ret = -EBUSY;
-> +		break;
-> +	case AP_RESPONSE_Q_NOT_AVAIL:
-> +	case AP_RESPONSE_DECONFIGURED:
-> +	case AP_RESPONSE_CHECKSTOPPED:
-> +		WARN_ON_ONCE(status.irq_enabled);
-> +		ret = -EBUSY;
-> +		goto free_resources;
-> +	default:
-> +		/* things are really broken, give up */
-> +		WARN(true, "PQAP/ZAPQ completed with invalid rc (%x)\n",
-> +		     status.response_code);
-> +		return -EIO;
-> +	}
-> +
-> +	/* wait for the reset to take effect */
-> +	while (retry2--) {
-> +		if (status.queue_empty && !status.irq_enabled)
-> +			break;
-> +		msleep(20);
-> +		status = ap_tapq(q->apqn, NULL);
-> +	}
-> +	WARN_ON_ONCE(retry2 <= 0);
->  
-> -	return -EBUSY;
-> +free_resources:
-> +	vfio_ap_free_aqic_resources(q);
-> +
-> +	return ret;
->  }
->  
->  static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
-> @@ -1163,13 +1186,15 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
->  	int ret;
->  	int rc = 0;
->  	unsigned long apid, apqi;
-> +	struct vfio_ap_queue *q;
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
->  	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm,
->  			     matrix_mdev->matrix.apm_max + 1) {
->  		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm,
->  				     matrix_mdev->matrix.aqm_max + 1) {
-> -			ret = vfio_ap_mdev_reset_queue(apid, apqi, 1);
-> +			q = vfio_ap_find_queue(AP_MKQID(apid, apqi));
-> +			ret = vfio_ap_mdev_reset_queue(q, 1);
->  			/*
->  			 * Regardless whether a queue turns out to be busy, or
->  			 * is not operational, we need to continue resetting
-> @@ -1177,7 +1202,6 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
->  			 */
->  			if (ret)
->  				rc = ret;
-> -			vfio_ap_irq_disable_apqn(AP_MKQID(apid, apqi));
->  		}
->  	}
->  
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index f46dde56b464..28e9d9989768 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -88,11 +88,6 @@ struct ap_matrix_mdev {
->  	struct mdev_device *mdev;
->  };
->  
-> -extern int vfio_ap_mdev_register(void);
-> -extern void vfio_ap_mdev_unregister(void);
-> -int vfio_ap_mdev_reset_queue(unsigned int apid, unsigned int apqi,
-> -			     unsigned int retry);
-> -
->  struct vfio_ap_queue {
->  	struct ap_matrix_mdev *matrix_mdev;
->  	unsigned long saved_pfn;
-> @@ -100,5 +95,10 @@ struct vfio_ap_queue {
->  #define VFIO_AP_ISC_INVALID 0xff
->  	unsigned char saved_isc;
->  };
-> -struct ap_queue_status vfio_ap_irq_disable(struct vfio_ap_queue *q);
-> +
-> +int vfio_ap_mdev_register(void);
-> +void vfio_ap_mdev_unregister(void);
-> +int vfio_ap_mdev_reset_queue(struct vfio_ap_queue *q,
-> +			     unsigned int retry);
-> +
->  #endif /* _VFIO_AP_PRIVATE_H_ */
-> 
-> base-commit: 9791581c049c10929e97098374dd1716a81fefcc
-> 
+DQpPbiAxLzIxLzIxLCA1OjA3IFBNLCAiSmFrdWIgS2ljaW5za2kiIDxrdWJhQGtlcm5lbC5vcmc+
+IHdyb3RlOg0KPiAgT24gVHVlLCAxOSBKYW4gMjAyMSAxODoxOTo0MCAtMDgwMCBSb25hayBEb3No
+aSB3cm90ZToNCj4gID4gRnJvbTogUGV0ciBWYW5kcm92ZWMgPHBldHJAdm13YXJlLmNvbT4NCj4g
+ID4gDQo+ICA+IHZteG5ldDM6IFJlbW92ZSBidWZfaW5mbyBmcm9tIGRldmljZSBhY2Nlc3NpYmxl
+IHN0cnVjdHVyZXMNCj4NCj4gICAgU29tZXRoaW5nIGhhcHBlbmVkIHRvIHRoZSBwb3N0aW5nLCBs
+b29rcyBsaWtlIHRoZSBzdWJqZWN0IGlzIGxpc3RlZA0KPiAgIHR3aWNlPw0KSXQgZ290IHNlbnQg
+dHdpY2UuIFBsZWFzZSBpZ25vcmUuDQoNCj4gID4gLQlpZiAoIXRxLT5idWZfaW5mbykNCj4gID4g
+Kwl0cS0+YnVmX2luZm8gPSBrbWFsbG9jX2FycmF5X25vZGUodHEtPnR4X3Jpbmcuc2l6ZSwgc2l6
+ZW9mKHRxLT5idWZfaW5mb1swXSksDQo+ICA+ICsJCQkJCSAgR0ZQX0tFUk5FTCB8IF9fR0ZQX1pF
+Uk8sDQo+ICA+ICsJCQkJCSAgZGV2X3RvX25vZGUoJmFkYXB0ZXItPnBkZXYtPmRldikpOw0KPg0K
+PiAgIGtjYWxsb2Nfbm9kZSgpDQpTdXJlLCB3aWxsIHVzZSB0aGlzIGNhbGxiYWNrLg0KDQo+ICA+
+ICsJaWYgKCF0cS0+YnVmX2luZm8pIHsNCj4gID4gKwkJbmV0ZGV2X2VycihhZGFwdGVyLT5uZXRk
+ZXYsICJmYWlsZWQgdG8gYWxsb2NhdGUgdHggYnVmZmVyIGluZm9cbiIpDQo+DQo+IFBsZWFzZSBk
+cm9wIHRoZSBtZXNzYWdlLCBPT00gc3BsYXQgd2lsbCBiZSB2aXNpYmxlIGVub3VnaC4gY2hlY2tw
+YXRjaA0KPiB1c3VhbGx5IHBvaW50cyB0aGlzIG91dA0KDQpPa2F5LCB3aWxsIGRyb3AgaXQuIENo
+ZWNrcGF0Y2ggZGlkIG5vdCBjb21wbGFpbiBhYm91dCB0aGUgZXJyb3IgbWVzc2FnZSB0aG91Z2gu
+DQoNClRoYW5rcywNClJvbmFrDQoNCg==
