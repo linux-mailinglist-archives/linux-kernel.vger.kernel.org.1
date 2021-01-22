@@ -2,197 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DB1300D97
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BDF300D99
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbhAVUTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
+        id S1727517AbhAVUVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729522AbhAVUF7 (ORCPT
+        with ESMTP id S1730929AbhAVUIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:05:59 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066FFC06174A;
-        Fri, 22 Jan 2021 12:05:12 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id e67so6590717ybc.12;
-        Fri, 22 Jan 2021 12:05:11 -0800 (PST)
+        Fri, 22 Jan 2021 15:08:34 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CD8C061788;
+        Fri, 22 Jan 2021 12:07:54 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id u25so9255711lfc.2;
+        Fri, 22 Jan 2021 12:07:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L8jS0HzNfqD4thkNxIQ6N1AxEPEUC70ooGhoF1TKbcw=;
-        b=dOQjb7CJ+l5Zdb7DzQ2FVeJa6kN5ropptNySqsHo2wFS3utiWUMlLHfI65VK7YdYM0
-         HwllVkwwytkIptzGyPCUN0sJD+TjHkxBe5ZR6RhnZ04Av0NbppS3rZiHKkuIKRHi3PzH
-         dQQ08wNe0A3CMseHhgdfmohjmL3q4Bts+ghNw7K/I2TfO7HBKMXu1hNthCmErvTWVF+k
-         6LJZmIvjonOLfHMpK53O38uPj5qKRNgT/aJyby/joGnUr+4tPNUSfCt4vKW4Oj5Uc0Gl
-         ukpICjL6HaCUnGqTX6nODBuJYtOikvVEaJOfmuOnjlNBpcTwM5iZEJw7K31D9j2PvlMA
-         LZ3g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=y9gRg52LFimb3ceOLj9UGDG1IkEgZHW2S4OzYw39/xU=;
+        b=W99sHHYI7t0CcC8oPYPlrxWcMoA90BV6xA91iRAMLJV2XV7BhYK41oipX90fiNkoUu
+         vVo1yn1SVS67lzOTgoSLuuscQ0HEw9b+BGmcSg+RBO243c+oxIOLNClbWWk9hY2rlWNM
+         EjJTpmiKNOpqgRmuAK+KiUsRoNJlowI2X0ww+956L6WezLCSRuT5yRJqXdrDiTVgixsE
+         iu21JqETyon+PSIls/+/2DI3pRJs1bPtPsTkAWYiU8CNmacjnRaopRgygsj9LuOu/Vm4
+         E7DLGi/wyUUS7T+gcSrdKZB+1yMSzUGntYWSqrz3fSECz0lcZ0Uy9qov8Gek8ULjpBMB
+         wd3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L8jS0HzNfqD4thkNxIQ6N1AxEPEUC70ooGhoF1TKbcw=;
-        b=FLg1j0IUB1dTZJBSyih0mMe2BerIQc+FyW9C1nspJapNBHHcyo6zhZNNMSOR8uNIA9
-         cc7Vc1P7ptEFZDSixgQZUpJ7G3ghh5KN1oud/aLxxjBYFqB24t3qpDFMbCxEAU/dZnw8
-         OVA41BNNEnBPfXJ/9LjXSgINkvjlp+oGdpc8I8EEg6H09Mszv5y7OVz73mbih57cgc/F
-         hXGvoCESwJAh2ykoT8UQkwodH8xs5arePEnQkGnQz98ASM9BuYNlGaiXQd+aNuYn2kxX
-         MEk2U9280xgpvZKkpmOgBDha/LF86xmJdFr69Dx3A6UbYXavJ9GzzHMprwNflqyDqwPy
-         NYXw==
-X-Gm-Message-State: AOAM5305HPBF9VfOLsWwzbZVxZnPNAfKgKxz3t1ay9HQ18dKGXdIiYKb
-        oHRrdp5D5AXJJ+FnDhbv2uJBiIArcc9IUHWseA8=
-X-Google-Smtp-Source: ABdhPJxj9qW9L/HDufNevNp2GUA1P6i+/BKcIKeMfaeHlJsEEugWD0I923OU79Dqk/W4OG19gN7PLYaWIT2FyhCUOzU=
-X-Received: by 2002:a25:b195:: with SMTP id h21mr8766090ybj.347.1611345911187;
- Fri, 22 Jan 2021 12:05:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=y9gRg52LFimb3ceOLj9UGDG1IkEgZHW2S4OzYw39/xU=;
+        b=Eljau46Bf/mF9YzJ/tLIpCnyNaXTCrc2y2I1bN0tNX5eJAgzUvpJMSJTqpLopKkjDR
+         fJ54QbsHKmsiw9SuM+ATzYmZ+z5Mlg0a347MPis0QmS+zMXCGb0LwJIxNeHwT4Wwei6u
+         omeU1PwMeRbVHjQwGZRCFDSxTQLrGjG+wyR/WaeNW5t5xFCoGI4njyI+nHlj4rTNT24J
+         Spatp3cVoJx9kwVkT4hx9lf1rTTNrBPor9VZPwUHBgP9EWKKqdZB1YvBnFJZfCpQlboL
+         YJ0ps6ljOlZ7k+Kd4Dv35EsD0Ir4/Okw/u8woPAkijKQFuzZiMfcvM3MrxPKYvEa4IKW
+         9r4Q==
+X-Gm-Message-State: AOAM533UW3vZlwFKKMYC8BcdMh0WSrzhHVH3uayX1/S1PNhEZbEbOc9W
+        LfY1LKPCtXjFWvjKmmtkC4Q=
+X-Google-Smtp-Source: ABdhPJzM/KzLAJZlVro7XhRkCNgTHuayNlQowADJx0rYOUq3vQEUkH/KJYLTiZeFCZ7e2A3rk8dd3g==
+X-Received: by 2002:a19:2346:: with SMTP id j67mr1374571lfj.254.1611346072510;
+        Fri, 22 Jan 2021 12:07:52 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id u6sm994589lfk.127.2021.01.22.12.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 12:07:51 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 3/3] ARM: tegra: acer-a500: Add atmel,wakeup-method property
+Date:   Fri, 22 Jan 2021 23:06:59 +0300
+Message-Id: <20210122200659.7404-4-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210122200659.7404-1-digetx@gmail.com>
+References: <20210122200659.7404-1-digetx@gmail.com>
 MIME-Version: 1.0
-References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com>
- <1610921764-7526-4-git-send-email-alan.maguire@oracle.com>
- <CAEf4BzZ6bYenSTUmwu7jXqQOyD=AG75oLsLE5B=9ycPjm1jOkw@mail.gmail.com>
- <CAEf4Bzb4z+ZA+taOEo=N9eSGZaCqMALpFxShujm9GahBOFnhvg@mail.gmail.com> <alpine.LRH.2.23.451.2101221612440.12992@localhost>
-In-Reply-To: <alpine.LRH.2.23.451.2101221612440.12992@localhost>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 22 Jan 2021 12:05:00 -0800
-Message-ID: <CAEf4BzZBVjUQnPxG1hyxkoM5HLWyEm2VJjOg0MoogrBdm6QdEQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: BTF dumper support for typed data
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 8:31 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> On Thu, 21 Jan 2021, Andrii Nakryiko wrote:
->
-> > On Wed, Jan 20, 2021 at 10:56 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sun, Jan 17, 2021 at 2:22 PM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > > >
-> > > > Add a BTF dumper for typed data, so that the user can dump a typed
-> > > > version of the data provided.
-> > > >
-> > > > The API is
-> > > >
-> > > > int btf_dump__emit_type_data(struct btf_dump *d, __u32 id,
-> > > >                              const struct btf_dump_emit_type_data_opts *opts,
-> > > >                              void *data);
-> > > >
-> >
-> > Two more things I realized about this API overnight:
-> >
-> > 1. It's error-prone to specify only the pointer to data without
-> > specifying the size. If user screws up and scecifies wrong type ID or
-> > if BTF data is corrupted, then this API would start reading and
-> > printing memory outside the bounds. I think it's much better to also
-> > require user to specify the size and bail out with error if we reach
-> > the end of the allowed memory area.
->
-> Yep, good point, especially given in the tracing context we will likely
-> only have a subset of the data (e.g. part of the 16k representing a
-> task_struct).  The way I was approaching this was to return -E2BIG
-> and append a "..." to the dumped data denoting the data provided
-> didn't cover the size needed to fully represent the type. The idea is
-> the structure is too big for the data provided, hence E2BIG, but maybe
-> there's a more intuitive way to do this? See below for more...
->
+Add atmel,wakeup-method property to the touchscreen node.
 
-Hm... that's an interesting use case for sure, but seems reasonable to
-support. "..." seems a bit misleading because it can be interpreted as
-"we omitted some output for brevity", no? "<truncated>" or something
-like that might be more obvious, but I'm just bikeshedding :)
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> >
-> > 2. This API would be more useful if it also returns the amount of
-> > "consumed" bytes. That way users can do more flexible and powerful
-> > pretty-printing of raw data. So on success we'll have >= 0 number of
-> > bytes used for dumping given BTF type, or <0 on error. WDYT?
-> >
->
-> I like it! So
->
-> 1. if a user provides a too-big data object, we return the amount we used; and
-> 2. if a user provides a too-small data object, we append "..." to the dump
->   and return -E2BIG (or whatever error code).
->
-> However I wonder for case 2 if it'd be better to use a snprintf()-like
-> semantic rather than an error code, returning the amount we would have
-> used. That way we easily detect case 1 (size passed in > return value),
-> case 2 (size passed in < return value), and errors can be treated separately.
-> Feels to me that dealing with truncated data is going to be sufficiently
-> frequent it might be good not to classify it as an error. Let me know if
-> you think that makes sense.
+diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
+index d3b99535d755..40c1bab22155 100644
+--- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
++++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /dts-v1/;
+ 
++#include <dt-bindings/input/atmel-maxtouch.h>
+ #include <dt-bindings/input/gpio-keys.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/thermal/thermal.h>
+@@ -450,6 +451,8 @@ touchscreen@4c {
+ 
+ 			avdd-supply = <&vdd_3v3_sys>;
+ 			vdd-supply  = <&vdd_3v3_sys>;
++
++			atmel,wakeup-method = <ATMEL_MXT_WAKEUP_I2C_SCL>;
+ 		};
+ 
+ 		gyroscope@68 {
+-- 
+2.29.2
 
-Hm... Yeah, that would work, I think, and would feel pretty natural.
-On the other hand, it's easy to know the total input size needed by
-calling btf__resolve_size(btf, type_id), so if user expects to provide
-truncated input data and wants to know how much they should have
-provided, they can easily do that.
-
-Basically, I don't have strong preference here, though providing
-truncated input data still feels more like an error, than a normal
-situation... Maybe someone else want to weigh in? And -E2BIG is
-distinctive enough in this case. So both would work fine, but not
-clear which one is less surprising API.
-
->
-> I'm working on v3, and hope to have something early next week, but a quick
-> reply to a question below...
->
-> > > > ...where the id is the BTF id of the data pointed to by the "void *"
-> > > > argument; for example the BTF id of "struct sk_buff" for a
-> > > > "struct skb *" data pointer.  Options supported are
-> > > >
-> > > >  - a starting indent level (indent_lvl)
-> > > >  - a set of boolean options to control dump display, similar to those
-> > > >    used for BPF helper bpf_snprintf_btf().  Options are
-> > > >         - compact : omit newlines and other indentation
-> > > >         - noname: omit member names
-> > > >         - zero: show zero-value members
-> > > >
-> > > > Default output format is identical to that dumped by bpf_snprintf_btf(),
-> > > > for example a "struct sk_buff" representation would look like this:
-> > > >
-> > > > struct sk_buff){
-> > > >  (union){
-> > > >   (struct){
-> > >
-> > > Curious, these explicit anonymous (union) and (struct), is that
-> > > preferred way for explicitness, or is it just because it makes
-> > > implementation simpler and thus was chosen? I.e., if the goal was to
-> > > mimic C-style data initialization, you'd just have plain .next = ...,
-> > > .prev = ..., .dev = ..., .dev_scratch = ..., all on the same level. So
-> > > just checking for myself.
->
-> The idea here is that we want to clarify if we're dealing with
-> an anonymous struct or union.  I wanted to have things work
-> like a C-style initializer as closely as possible, but I
-> realized it's not legit to initialize multiple values in a
-> union, and more importantly when we're trying to visually interpret
-> data, we really want to know if an anonymous container of data is
-> a structure (where all values represent different elements in the
-> structure) or a union (where we're seeing multiple interpretations of
-> the same value).
-
-Yeah, fair enough.
-
->
-> Thanks again for the detailed review!
-
-Of course. But it's not clear if you agree with me on everything, so I
-still hope to get replies later.
-
->
-> Alan
