@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4396300494
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A1230049A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbhAVNww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:52:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727723AbhAVNwn (ORCPT
+        id S1728071AbhAVNyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:54:47 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:54304 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727896AbhAVNyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:52:43 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B033C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:52:03 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id m6so3730319pfk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:52:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0CdidXL9JqNASCWuJRmNf4tnrFhZ2Ys482HTC2wueeU=;
-        b=eC5U90fghxE+n7CKNa61zlt/x+toKTPUKMHPD58h8ct+ARa5CJJ3MLoHsqR1sGY6po
-         sjdAV4QjW9rKBFqbBlhJ8yMmsnMbe0ven0xG8CX6DYnaRFrjAA4P96wHvMHBd6Vj6XU6
-         xy/rfetnkfrrTdV/j7+97xOUlMg6e5Bw0rKfT7b+DuH+q3gaWtcYg24qmqx9wmjAqXSk
-         mtwaa9A6IOOtEwAaWna4M0cCTkEYUKV+rVraChYFJtkYb+9J3KqLyg2adleiqo702QHm
-         9M5lPjT1k6seAB5LZz1p9P5gYm/D+T8Uk1uj8WIQ6Y9IKPv4AG739uqhUWAes0Zik6we
-         NsSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0CdidXL9JqNASCWuJRmNf4tnrFhZ2Ys482HTC2wueeU=;
-        b=b+ksk7TjW1mMpodV1w1mY8vbL3D+tLjaK0gXTP0KuY6p3BwwtNYuMM8kFodbnYvHoX
-         hm15zky3XdmcRagzphBFK9HSNpWjhqjjk7B3svXYFTseIc3pMAgZ07WuCa+5id15uiZx
-         597wT58Iet3NfBrWrLZ4rv/9E7NowcuGgg2pdwrafeIEcEe4/R2r04dP4Ziv7zV+ZFf7
-         KoDTCN/5HvMAbx9yDzeByKbndr8XNMS0HPxxFCIIk6AkwNVvdr6FQk9paWTiHISHwph+
-         +en9GXWWWeQo1+yZqGXVELoihnZtp04GmwYZeLrJjYiTmheZSApq/Ge37a97ihZJ97DB
-         B1zQ==
-X-Gm-Message-State: AOAM532/ZzcrKOza1nPGTF7iuI4KYLAa9mb08dDWOD7PitKmBXjTxogQ
-        20T71HplayT4M5JCl6Cz6jzL
-X-Google-Smtp-Source: ABdhPJxoSgjsOi7KJvW0fiz+egsgCeN7n5OWTeHOlCuGtfnw/Wy6J3Ex3Apm3cGyw6U2OXiWp0ieKw==
-X-Received: by 2002:a63:1e56:: with SMTP id p22mr4842928pgm.70.1611323522493;
-        Fri, 22 Jan 2021 05:52:02 -0800 (PST)
-Received: from work ([103.77.37.137])
-        by smtp.gmail.com with ESMTPSA id f3sm2135041pfb.119.2021.01.22.05.51.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 22 Jan 2021 05:52:01 -0800 (PST)
-Date:   Fri, 22 Jan 2021 19:21:58 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-actions@lists.infradead.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Subject: Re: [PATCH] pinctrl: actions: Add the platform dependency to drivers
-Message-ID: <20210122135158.GB32437@work>
-References: <20210121062547.27173-1-manivannan.sadhasivam@linaro.org>
- <CACRpkdYDB883r7RRa-i1T_aWvDW1n3c_LvScigQVnt5TsPbPCg@mail.gmail.com>
+        Fri, 22 Jan 2021 08:54:43 -0500
+Date:   Fri, 22 Jan 2021 13:53:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611323640;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=RnxhB8ONGz0zpdWFDHgiUNcqqyRyHOR1I0JMIRvOpVE=;
+        b=feH4g8w59hKzp0IDOApIV17Gq2aLyeIxNod+bID09iVGlt2O3tWLDFPnU6fhDcL0l6ax4p
+        UGJI+qkbvsaCTxNVnS6fqZc+j5vEh61YRfDlF3CCWlr1vBwuQSshO48YiFsakSAT01tXFT
+        Gsh+ujhk3RZFnno2BYluOnTr/T5g/6ANxbloS8Y33Afk/bE0b9aeCACOa74xnFUkGren2z
+        fhU2oWWT4nm/sNxWFtsVgh8S4Hz5wIE83YTpXUIL/bnSWOO9xkGjnesuvImrDG7dmVSd/p
+        Xb5RNRsesZIybUta7AY3gP5rLDlWzdR9iACpWY854ZSPpfdUS6saXGvzaetK6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611323640;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=RnxhB8ONGz0zpdWFDHgiUNcqqyRyHOR1I0JMIRvOpVE=;
+        b=x+pt40GlFZ3BmmHtkKrblZVn0vRwls39Ij/xVVwwgclD+YDBcSOSkkQFx93vNrlBc4sEiJ
+        h2vVW6CDLYW7KZAw==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/urgent] objtool: Don't fail on missing symbol table
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYDB883r7RRa-i1T_aWvDW1n3c_LvScigQVnt5TsPbPCg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <161132363950.414.18137582178365260536.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 02:19:07PM +0100, Linus Walleij wrote:
-> On Thu, Jan 21, 2021 at 7:26 AM Manivannan Sadhasivam
-> <manivannan.sadhasivam@linaro.org> wrote:
-> 
-> > The Actions Semi pinctrl drivers are a mix of both ARM32 and ARM64
-> > platforms. So let's add the correct platform dependency to avoid them
-> > being selected on the other.
-> >
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Are you not opting out of build tests when you do this?
-> 
-> What about:
-> 
-> depends on ARM64 || COMPILE_TEST
-> (etc)
-> ?
-> 
+The following commit has been merged into the objtool/urgent branch of tip:
 
-Oh yeah, I missed it. Will send v2.
+Commit-ID:     1d489151e9f9d1647110277ff77282fe4d96d09b
+Gitweb:        https://git.kernel.org/tip/1d489151e9f9d1647110277ff77282fe4d96d09b
+Author:        Josh Poimboeuf <jpoimboe@redhat.com>
+AuthorDate:    Thu, 14 Jan 2021 16:14:01 -06:00
+Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
+CommitterDate: Thu, 21 Jan 2021 15:49:58 -06:00
 
-Thanks,
-Mani
+objtool: Don't fail on missing symbol table
 
-> Yours,
-> Linus Walleij
-> 
-> Yours,
-> Linus Walleij
+Thanks to a recent binutils change which doesn't generate unused
+symbols, it's now possible for thunk_64.o be completely empty without
+CONFIG_PREEMPTION: no text, no data, no symbols.
+
+We could edit the Makefile to only build that file when
+CONFIG_PREEMPTION is enabled, but that will likely create confusion
+if/when the thunks end up getting used by some other code again.
+
+Just ignore it and move on.
+
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1254
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/elf.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index f9682db..d8421e1 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -380,8 +380,11 @@ static int read_symbols(struct elf *elf)
+ 
+ 	symtab = find_section_by_name(elf, ".symtab");
+ 	if (!symtab) {
+-		WARN("missing symbol table");
+-		return -1;
++		/*
++		 * A missing symbol table is actually possible if it's an empty
++		 * .o file.  This can happen for thunk_64.o.
++		 */
++		return 0;
+ 	}
+ 
+ 	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
