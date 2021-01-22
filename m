@@ -2,248 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4623008D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 575A13008D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbhAVQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:40:26 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:46410 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729341AbhAVQhf (ORCPT
+        id S1728745AbhAVQly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:41:54 -0500
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:45440 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729681AbhAVQhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:37:35 -0500
-Received: by mail-oi1-f169.google.com with SMTP id q205so6528492oig.13;
-        Fri, 22 Jan 2021 08:33:44 -0800 (PST)
+        Fri, 22 Jan 2021 11:37:55 -0500
+Received: by mail-ot1-f42.google.com with SMTP id n42so5600744ota.12;
+        Fri, 22 Jan 2021 08:37:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lTuHQ4UlfZkguZ0cbc1Ol2Evb9EfKU6F2YZJSKyGnh0=;
-        b=FN18+ttPif7Tn9Dm7mZZATDQl+mxJ+EUlfoqjrlXZrMlhaXx/i3+c0VUbw8ikIrehr
-         mYh3VgzxSU5iFkYdt5evsBZjdPYGTeBx/Ea6sGrMHYJjvuXJcenOMbnOMMw3BVQWC6vn
-         WIBWFJW68qIqzY4mbPe1G8Zsqf26RAcDyLysVFDCD0vxVW5Kwj3NzD+f+zUwF7ZO+e+v
-         NMESz4IgFFhfWKptqP278IwMf1797nBKDcpLCgKLjpO0K0P9wKYO5S7ghHSzgjIFxeA8
-         kNc8Re6KS3KZRfU8GhQ8UD+wTOzV5fEqTdHQjUUOVUV+EbuT7nxiOsgoxkad5F1HEkKo
-         6Qyw==
-X-Gm-Message-State: AOAM533QSb7c+2faxVf7snWTT0PMS5n+FE5jIkHrhSgDRwIriQ02TxPO
-        048H98UUrPs3c6N2I2lbAw==
-X-Google-Smtp-Source: ABdhPJw21osrwiJXrEsQWTyQVGDgcvV4oJCkDEljVba3b9aB+7OUXXBAHCysrElXoCbJFJyd21gkkg==
-X-Received: by 2002:aca:e007:: with SMTP id x7mr3756171oig.8.1611333193563;
-        Fri, 22 Jan 2021 08:33:13 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m7sm1759199otq.33.2021.01.22.08.33.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 08:33:12 -0800 (PST)
-Received: (nullmailer pid 921964 invoked by uid 1000);
-        Fri, 22 Jan 2021 16:33:10 -0000
-Date:   Fri, 22 Jan 2021 10:33:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, todor.too@gmail.com,
-        mchehab@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
-        vkoul@kernel.org, Anson.Huang@nxp.com, michael@walle.cc,
-        agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: Re: [PATCH v2 14/22] dt-bindings: media: camss: Add
- qcom,msm8996-camss binding
-Message-ID: <20210122163310.GA897089@robh.at.kernel.org>
-References: <20210120134357.1522254-1-robert.foss@linaro.org>
- <20210120134357.1522254-14-robert.foss@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ziah0gDgjxW52q7hTGscqUGRQaHkOp440j+Y21a5So=;
+        b=V7wRvj/6ti3ImPdHhBG2RS7aurp3AKeyeNJoxspfVqhm9s7yuSCgQRslUN+01/93l/
+         YpoUfEEtHniTHjYdHbMapN8t+n0AyiaCOPn+2W4MXJphIsgUkdQf1n020jFaI0zQrqyH
+         4OTUSaAgX9CUaZztj1XLE7FleXXipW7l99W6HP7XCGpEQIlsWkVv0mbV66irUy4mxrjk
+         naK1YwB73BLOuKn7m6r3t3CQ9qR0carnLEQ5JBxyayxBKCIhGtxWP14OTSYPN1TnrARS
+         Aoi16dcFBMOhZxZTu4NqJqWiBYuq7xH5Ef4+eSp61kFNYsSyVoKE/Nx/D8c//aQ2Ypnt
+         VANg==
+X-Gm-Message-State: AOAM530Pf1in5AFmxcHeVZyIblV4DMgsF6FAdx3h28MHVIdRR4zFDjs0
+        KfoaI6m+zvv18Es96TR3tEurBu/R0PtZvK68PEPuxsaa
+X-Google-Smtp-Source: ABdhPJxNJ2wvRRXdQ/YZlopcgpGZ26D4L7j3Kp5mfxpU0edrQrsmUV3VOk1J3Rk1OEfhRrxRfbJQoDpsNQJvmizZBpw=
+X-Received: by 2002:a9d:1710:: with SMTP id i16mr3885403ota.260.1611333263819;
+ Fri, 22 Jan 2021 08:34:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120134357.1522254-14-robert.foss@linaro.org>
+References: <20210112134054.342-1-calvin.johnson@oss.nxp.com>
+ <20210112134054.342-10-calvin.johnson@oss.nxp.com> <CAGETcx-7JVz=QLCMWicHqoagWYjeBXdFJmSv1v6MQhtPt2RS=Q@mail.gmail.com>
+ <20210112180343.GI4077@smile.fi.intel.com> <CAJZ5v0iW0jJUcXtiQtLOakkSejZCJD=hTFLL4mvoAN3ZTB+1Tw@mail.gmail.com>
+ <CAHp75VcJS10KMA5amUc36PFgj0FLddj1fXD4dUtuAchrVhhzPg@mail.gmail.com>
+ <CAJZ5v0ga5RqwFzbBqSChJ7=gBBM-7dWNQPz6bqvqsNAkWZJ=vQ@mail.gmail.com> <CAGETcx8DP8J53ntxX2VCSnbMfq1qki7gD-md+NC_jVfOkTam3g@mail.gmail.com>
+In-Reply-To: <CAGETcx8DP8J53ntxX2VCSnbMfq1qki7gD-md+NC_jVfOkTam3g@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 22 Jan 2021 17:34:12 +0100
+Message-ID: <CAJZ5v0gUCUxJX9sGJiZ+zTVYrc3rjuUO2B2fx+O6PewbG7F8aw@mail.gmail.com>
+Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 02:43:49PM +0100, Robert Foss wrote:
-> Add bindings for qcom,msm8996-camss in order to support the camera
-> subsystem on MSM8996.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
-> 
-> Changes since v1:
->  - Laurent: Reworked driver to use dtschema
-> 
-> 
->  .../bindings/media/qcom,msm8996-camss.yaml    | 418 ++++++++++++++++++
->  1 file changed, 418 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
-> new file mode 100644
-> index 000000000000..5ca0be8892ab
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
-> @@ -0,0 +1,418 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/media/qcom,msm8996-camss.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm CAMSS ISP
-> +
-> +maintainers:
-> +  - Robert Foss <robert.foss@linaro.org>
-> +  - Todor Tomov <todor.too@gmail.com>
-> +
-> +description: |
-> +  The CAMSS IP is a CSI decoder and ISP present on Qualcomm platforms
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,msm8996-camss
-> +
-> +  clocks:
-> +    description:
-> +      Input clocks for the hardware block.
+On Wed, Jan 20, 2021 at 9:01 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Wed, Jan 20, 2021 at 11:15 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Wed, Jan 20, 2021 at 7:51 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Wed, Jan 20, 2021 at 8:18 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > On Tue, Jan 12, 2021 at 7:02 PM Andy Shevchenko
+> > > > <andy.shevchenko@gmail.com> wrote:
+> > > > > On Tue, Jan 12, 2021 at 09:30:31AM -0800, Saravana Kannan wrote:
+> > > > > > On Tue, Jan 12, 2021 at 5:42 AM Calvin Johnson
+> > > > > > <calvin.johnson@oss.nxp.com> wrote:
+> > >
+> > > ...
+> > >
+> > > > > > > +       ret = fwnode_property_read_u32(fwnode, "reg", id);
+> > > > > > > +       if (!(ret && is_acpi_node(fwnode)))
+> > > > > > > +               return ret;
+> > > > > > > +
+> > > > > > > +#ifdef CONFIG_ACPI
+> > > > > > > +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
+> > > > > > > +                                      METHOD_NAME__ADR, NULL, &adr);
+> > > > > > > +       if (ACPI_FAILURE(status))
+> > > > > > > +               return -EINVAL;
+> > > > > > > +       *id = (u32)adr;
+> > > > > > > +#endif
+> > > > > > > +       return 0;
+> > >
+> > > > > > Also ACPI and DT
+> > > > > > aren't mutually exclusive if I'm not mistaken.
+> > > > >
+> > > > > That's why we try 'reg' property for both cases first.
+> > > > >
+> > > > > is_acpi_fwnode() conditional is that what I don't like though.
+> > > >
+> > > > I'm not sure what you mean here, care to elaborate?
+> > >
+> > > I meant is_acpi_node(fwnode) in the conditional.
+> > >
+> > > I think it's redundant and we can simple do something like this:
+> > >
+> > >   if (ret) {
+> > > #ifdef ACPI
+> > >     ...
+> > > #else
+> > >     return ret;
+> > > #endif
+> > >   }
+> > >   return 0;
+> > >
+> > > --
+> >
+> > Right, that should work.  And I'd prefer it too.
+>
+> Rafael,
+>
+> I'd rather this new function be an ops instead of a bunch of #ifdef or
+> if (acpi) checks. Thoughts?
 
-That's every 'clocks' entry. Drop.
+Well, it looks more like a helper function than like an op and I'm not
+even sure how many potential users of it will expect that _ADR should
+be evaluated in the absence of the "reg" property.
 
-> +    minItems: 36
-> +    maxItems: 36
-> +
-> +  clock-names:
-> +    description:
-> +      Names of input clocks for the hardware block.
-
-ditto.
-
-> +    items:
-> +      - const: top_ahb
-> +      - const: ispif_ahb
-> +      - const: csiphy0_timer
-> +      - const: csiphy1_timer
-> +      - const: csiphy2_timer
-> +      - const: csi0_ahb
-> +      - const: csi0
-> +      - const: csi0_phy
-> +      - const: csi0_pix
-> +      - const: csi0_rdi
-> +      - const: csi1_ahb
-> +      - const: csi1
-> +      - const: csi1_phy
-> +      - const: csi1_pix
-> +      - const: csi1_rdi
-> +      - const: csi2_ahb
-> +      - const: csi2
-> +      - const: csi2_phy
-> +      - const: csi2_pix
-> +      - const: csi2_rdi
-> +      - const: csi3_ahb
-> +      - const: csi3
-> +      - const: csi3_phy
-> +      - const: csi3_pix
-> +      - const: csi3_rdi
-> +      - const: ahb
-> +      - const: vfe0
-> +      - const: csi_vfe0
-> +      - const: vfe0_ahb
-> +      - const: vfe0_stream
-> +      - const: vfe1
-> +      - const: csi_vfe1
-> +      - const: vfe1_ahb
-> +      - const: vfe1_stream
-> +      - const: vfe_ahb
-> +      - const: vfe_axi
-> +
-> +  interrupts:
-> +    description:
-> +      IRQs for the hardware block.
-
-ditto
-
-> +    minItems: 10
-> +    maxItems: 10
-> +
-> +  interrupt-names:
-> +    description:
-> +      Names of IRQs for the hardware block.
-> +    items:
-> +      - const: csiphy0
-> +      - const: csiphy1
-> +      - const: csiphy2
-> +      - const: csid0
-> +      - const: csid1
-> +      - const: csid2
-> +      - const: csid3
-> +      - const: ispif
-> +      - const: vfe0
-> +      - const: vfe1
-> +
-> +  iommus:
-> +    maxItems: 4
-> +
-> +  power-domains:
-> +    maxItems: 2
-
-Need to define what each one is.
-
-items:
-  - description: ...
-  - description: ...
-
-> +
-> +  ports:
-
-This needs to reference graph.yaml#/properties/ports
-
-See recent additions in -next.
-
-> +    description:
-> +      The CSI data input ports.
-> +
-> +    type: object
-> +
-> +    properties:
-> +      port@0:
-
-There's a pending video-interfaces.yaml conversion which this is going 
-to need to use[1].
-
-> +        type: object
-> +        description: Input node for receiving CSI data.
-> +        properties:
-> +          endpoint:
-> +            type: object
-> +
-> +            properties:
-> +              clock-lanes:
-> +                description: |-
-> +                  The physical clock lane index. The value must
-> +                  always be <7> as the hardware supports D-PHY
-> +                  and C-PHY, indexes are in a common set and
-> +                  D-PHY physical clock lane is labeled as 7.
-
-You don't need this in DT if it can only be 1 value.
-
-> +
-> +              data-lanes:
-> +                description: |-
-> +                  An array of physical data lanes indexes.
-> +                  Position of an entry determines the logical
-> +                  lane number, while the value of an entry
-> +                  indicates physical lane index. Lane swapping
-> +                  is supported. Physical lane indexes are:
-> +                  0, 1, 2, 3
-
-No need to redescribe this here. Just any additional constraints. 
-'maxItems: 4' at least since the base allows 8.
-
-Rob
-
-[1] https://lore.kernel.org/linux-devicetree/20210104165808.2166686-1-robh@kernel.org/
+It's just that the "reg" property happens to be kind of an _ADR
+equivalent in this particular binding AFAICS.
