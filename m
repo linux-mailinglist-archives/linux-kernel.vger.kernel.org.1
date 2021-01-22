@@ -2,285 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F73300BC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC793300BC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbhAVSqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:46:14 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49848 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729633AbhAVSOd (ORCPT
+        id S1730013AbhAVSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:47:33 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:33649 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729481AbhAVSNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:14:33 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MIAcum038714;
-        Fri, 22 Jan 2021 18:13:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- mime-version; s=corp-2020-01-29;
- bh=jFhaaN6+2ClnE90wSGul6o1qszCGh3uNfMkXhhYxoVg=;
- b=wWbDmRxG0chyVCBcyXyVpgbmDjlbj0td1kFllhlBhZmBfn6qikVRbJWzGkjOvxqdHU9w
- puWE/aCiiYBzLU6cpxTruTonGvM5wS8q9yvdN0As961AtXDCIBGFT3lKHqFTTIpA0WD5
- oRc3tvy2RbSPFR2LNG6/LCY+4SL9+phGmvajwv4RQo6fhWg4hNAwW3qZNQM+mtJzCn3O
- ByTdBpurYnOm744A91gLJ8DsqhsndZX6bIF4MPZ7EnaKqRVWa8iPya2JFMC43AHksd1H
- UtQJG2u+glZlnovZxsTpPke4sGjUjIkuey3QN2HFs4F22flyBd0K3OJKbhIAAIwj5Ko6 nA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 3668qn5csb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 18:13:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MI4xMq149816;
-        Fri, 22 Jan 2021 18:11:39 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
-        by userp3020.oracle.com with ESMTP id 3668r1dqa5-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 18:11:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gqID+BVfeqBo/NSyAWPM1WQvze5C8NDku6rvfKI06vxd2UchfqRhI0z43vcaml+Uzot+j5wga1ku2VVPT+xxQ3fW4nWjAynJDL4wyk6FfV34fhxzZNQkGDDLMerhKIx+d7JRKl6W4M+LGGSIqpC2pcGZPVl+76FhvwLO3pl+XuIzDOfL2/G8+l+kmrWI7ul1Ru3UiISzLyXDzJvytWLrgKAyehRGTFNTDmKpOb92FsGKeqnA76EYeYxCg0UTCaUJMZqONBVTRXnlEaXGQkm4m5DcOIpInr/Za1aCsYoz79pMuI65AinrGp3/QYO7gKMO715KkZETbtUs5WwBEZLsOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jFhaaN6+2ClnE90wSGul6o1qszCGh3uNfMkXhhYxoVg=;
- b=VW15JNLK/Wdwu4kDv4SQQ3NE02xjPbNJl6P+YojSm3NFU6/8+8Oy/cia+BxS5o91cqYLAOutuQJTg9hqphHQL07oxymDA/YqCuoX/K8jN2I7RN/Qrf27k+2dbjI65tIauuhdgysktUjn84K+iaNVqU5n0r6XZ16o4ujRKa7LaNjMtjnvinj+nGiLN+KOqoum0GWDITaqIH1BhTgpLcLLZeTYYreSS3jouTL5X/YI3sTykS7pPCBGzOxVyKq8QKgGBbM7qjeeBWt+1YWMxprLTGUbRuhDJ+A5EHGDiEooDSaplEQiYMD2udjGuf3jpFu95w70jRM5TyUc4/4JRjOMzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jFhaaN6+2ClnE90wSGul6o1qszCGh3uNfMkXhhYxoVg=;
- b=f6SZq2WKa9jR4nEb/4zHCkxnJaIjAdSxKS0P+VqnFgp9jDtx05iVxtVOlrwNCRv0HyM9N7tYdFaFgLIJHNYvQ5fMyuA3Yio0jDpNuu5sVESAP6Vf43npfkh+foRwrs6aHYkj8s76KHm+uXU3cwLrN+TYcJcgkerEqQf3R4//f1Q=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
-Received: from DM6PR10MB3099.namprd10.prod.outlook.com (2603:10b6:5:1ad::18)
- by DM5PR10MB1673.namprd10.prod.outlook.com (2603:10b6:4:6::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3784.11; Fri, 22 Jan 2021 18:11:37 +0000
-Received: from DM6PR10MB3099.namprd10.prod.outlook.com
- ([fe80::70bf:d626:5218:70e4]) by DM6PR10MB3099.namprd10.prod.outlook.com
- ([fe80::70bf:d626:5218:70e4%7]) with mapi id 15.20.3763.017; Fri, 22 Jan 2021
- 18:11:37 +0000
-From:   Eric Snowberg <eric.snowberg@oracle.com>
-To:     dhowells@redhat.com, dwmw2@infradead.org, jarkko@kernel.org,
-        James.Bottomley@HansenPartnership.com
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net, jmorris@namei.org,
-        serge@hallyn.com, eric.snowberg@oracle.com, ardb@kernel.org,
-        zohar@linux.ibm.com, lszubowi@redhat.com, javierm@redhat.com,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [PATCH v5 3/4] certs: Add ability to preload revocation certs
-Date:   Fri, 22 Jan 2021 13:10:53 -0500
-Message-Id: <20210122181054.32635-4-eric.snowberg@oracle.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20210122181054.32635-1-eric.snowberg@oracle.com>
-References: <20210122181054.32635-1-eric.snowberg@oracle.com>
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.2]
-X-ClientProxiedBy: CH2PR10CA0006.namprd10.prod.outlook.com
- (2603:10b6:610:4c::16) To DM6PR10MB3099.namprd10.prod.outlook.com
- (2603:10b6:5:1ad::18)
+        Fri, 22 Jan 2021 13:13:13 -0500
+Received: by mail-oi1-f169.google.com with SMTP id j25so1531962oii.0;
+        Fri, 22 Jan 2021 10:12:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2w1MGZ9mEKOeW8Sp4+SROoauRQHqq4ffMB/bBOfyNEw=;
+        b=ORlX412qKrgV4JxTUpFT7Q3WyB+zYa+fLa0Bs9LScPIOK5sjcx1NWchZeaWv9nSvux
+         PtrkdwDPKtWms7X7u36XxQTNSFj7xOjO419EFlN0QKlUbyPd+ttPaSMl3iSmGNSP0n0u
+         kbHkMjbX/H+tImVw5oTJYABK7QGUPkIoNJJDpXTIn1plWzk555DzsVKJ6ZoJ8AiXA6D8
+         nC1s93Fvjdi6udPfV/Ev/AP7J4cExVTcxhDC2xn+WJ9WVoMSDWXyNQUJIfSzqAKXuKv2
+         BhfwH6uNUWh1vQ3a0Em+62V5suvPKyFZ/Iv+UWheVm46k/H4QG1TwQOvUB21iU6HpkDD
+         nBpg==
+X-Gm-Message-State: AOAM532PKjiRrHDdw9Lk9DzL2J0ebAuh7HxecvV+yQgLDQLtHoHhe6Fm
+        2zP6hDDyjxI9zQosRde3wPra9dqkxYTfYtWv1bQ=
+X-Google-Smtp-Source: ABdhPJy91RVudidWYxELqnygUSA2p+C95kGYOGIrI1wvFq4TZMb7X0SCn3XrnZILhPOJoQqW++x7/SLKAYPKkqA3EOQ=
+X-Received: by 2002:aca:308a:: with SMTP id w132mr3993915oiw.69.1611339127524;
+ Fri, 22 Jan 2021 10:12:07 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.us.oracle.com (138.3.200.2) by CH2PR10CA0006.namprd10.prod.outlook.com (2603:10b6:610:4c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 18:11:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ee3b9d6a-9cfa-4c6f-a11a-08d8bf0128cd
-X-MS-TrafficTypeDiagnostic: DM5PR10MB1673:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR10MB167301EC46C85B44D2F86A3587A09@DM5PR10MB1673.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ICjMV494sOVeqs5schre05cS1fZW4FJVrj0Dmb5sOVlKtAmpmNUkZ+GAu3xvMHlgizi2DqlqMGvoxJESb+ujpHDwSgPQ3Fe/vFsgvVELc3kUnMwWdM4MKTKoGjRGNdeug23qUVmqDb/Ep2uRpp3U7DHU1iGL5OpwRzpJmtljZofq/gH4cJJKUmBzgmIg3dD67oiCcp7VeTYQ4qc42zCRs8LOZYnlf3dd8zNTLXRnz0juXfXxmZWUrF9OwxjQyCB0ZlhFsLI8JD3InZZdeKpzYkFiPojOk3pF1OyYX4kV6IY2VqTNxtSGRW0TtjzuhKhFTLf12ihBERs6wx+75Otei6273krexKYgpVD0NfKVfVCFNTvcZs1NhUTFencW/toXd+CHNWayfqKyIC6MhhzUrmsk2BtAHvm3enwauoY+xS5b43zUom67pF7WWorHVw0qlrEqPtw+feRBI/j+kSU0qhODi1iJ+I2u7NqUMvJ2OPDYLRMQQpsHRKDwA/70L2E94lW+WqETAug6E7UsXX94Lg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3099.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(39860400002)(366004)(136003)(346002)(316002)(7416002)(6486002)(7696005)(2616005)(1076003)(52116002)(5660300002)(4326008)(44832011)(2906002)(8676002)(16526019)(26005)(66946007)(478600001)(186003)(956004)(36756003)(83380400001)(66556008)(66476007)(8936002)(86362001)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?XuxvA+S1EFyUl4eBDa/H234r3fLh8N2TkTbKNo0XCGnY51+y82+xN07FkzQE?=
- =?us-ascii?Q?Q7eisD96lYL4C6CcJu3bd7ZVKlTmH0CUsnk9xkE90KJK927/1uYwLg4cJmva?=
- =?us-ascii?Q?7026mJYkHSYdcRbMkKiCiEim7Pc/Ne8JvfXu4da1qfq7FKSu+f7uwI7w4PQ6?=
- =?us-ascii?Q?6/wd5rjUN0GrXel3AwR7KoDfE6URFYMO3lVQvOQp/UXORW0n+XX1YSEvePma?=
- =?us-ascii?Q?aXYdIiX2MtOHtVBJN+RkZcliROeLCpeKWeuG74clQxyS/zBlkRs6exnhWwAN?=
- =?us-ascii?Q?Scc0Wr+LYiSYXciCZBy1J7IIMYRqeMZjn5xbAcJ7kPj300pjRU3w9eLCpb+k?=
- =?us-ascii?Q?/hXtunCAs1RvFcwoHtaKhEZD+trPnH00TwXlGfpBq1gfFXZi5Nx/iEgY4hKQ?=
- =?us-ascii?Q?pPUuY9BTCbaIT5PMsiwsYTSYAP4SFIYjEknoql+LTtnObWM3QfoAmhivRI0Z?=
- =?us-ascii?Q?8nxhz1OVBfIO0ChXyfLbwPbXAZzoQ+fmnnXcS1uq2CZWneOVSCpNDNwMCamy?=
- =?us-ascii?Q?lttj8qCU+iiFyr8Via005zYX55zidt51I65eeP7CSAzGRyqdMXuDU9RJO4kN?=
- =?us-ascii?Q?T4l9178egM7rF7EYbiN76+HLMxRNAB33BjsFKsDyZvdoqIHW0WVZRiiKq11L?=
- =?us-ascii?Q?3cRFHg9YJLCTHR2jEQAiRVg22dnf+qi5DzXQ3SEOOO+8QZ8CqDIm83VkhKXa?=
- =?us-ascii?Q?qRwyNo2PQdkb6tQQ5MDQqDzDI4qcKnepWfQiOc6l9qbn6oWFeCWGHfnXSK0G?=
- =?us-ascii?Q?eooY9axrhHAIip/QC1l2lIIBR7RxIf15FNJR1Hd3W9uIcgwvdUjMHa0ZcJmo?=
- =?us-ascii?Q?cpZ7pI1Ah0GwClHHduXEuqhJtV3/1RWiwPopEhBW8v96S+PqzhHEnAF0NpVE?=
- =?us-ascii?Q?IEFUiSUl4cbhuZ+5Di0DxpntbU010o3A/iI/Ys60MeJcxhYGhcBv+0bhGFH/?=
- =?us-ascii?Q?0xbEpkeUhC87SwTCH7QqHnPjdDsMumsKc+ljxex5Jn0=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee3b9d6a-9cfa-4c6f-a11a-08d8bf0128cd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3099.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 18:11:37.5251
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MhcFnNCfGQKWZvaiWT7GotTI2YPNYZW6H5m8XsjsWuo2gXTjHZ44GBZCp/BGGEFvJ+IzY8NAJgeXVyHSSld4xDBMsWcE2MBBaJ7tsiDMTAc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR10MB1673
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 adultscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101220093
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- phishscore=0 clxscore=1015 bulkscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101220093
+References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
+ <20210122154300.7628-10-calvin.johnson@oss.nxp.com> <CAJZ5v0gzdi08fwf0e3NyP1WzuSBk47J5OT5DW_aaUHn_9icfag@mail.gmail.com>
+ <YAsHqu/nW3zU/JgO@smile.fi.intel.com>
+In-Reply-To: <YAsHqu/nW3zU/JgO@smile.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 22 Jan 2021 19:11:56 +0100
+Message-ID: <CAJZ5v0izwiuD+gRmbw=i=DojDMwqOevDQwXArcmq4WyPVrEDfQ@mail.gmail.com>
+Subject: Re: [net-next PATCH v4 09/15] device property: Introduce fwnode_get_id()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new Kconfig option called SYSTEM_REVOCATION_KEYS. If set,
-this option should be the filename of a PEM-formated file containing
-X.509 certificates to be included in the default blacklist keyring.
+On Fri, Jan 22, 2021 at 6:12 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Fri, Jan 22, 2021 at 05:40:41PM +0100, Rafael J. Wysocki wrote:
+> > On Fri, Jan 22, 2021 at 4:46 PM Calvin Johnson
+> > <calvin.johnson@oss.nxp.com> wrote:
+> > >
+> > > Using fwnode_get_id(), get the reg property value for DT node
+> > > or get the _ADR object value for ACPI node.
+> >
+> > So I'm not really sure if this is going to be generically useful.
+> >
+> > First of all, the meaning of the _ADR return value is specific to a
+> > given bus type (e.g. the PCI encoding of it is different from the I2C
+> > encoding of it) and it just happens to be matching the definition of
+> > the "reg" property for this particular binding.
+>
+> > IOW, not everyone may expect the "reg" property and the _ADR return
+> > value to have the same encoding and belong to the same set of values,
+>
+> I have counted three or even four attempts to open code exact this scenario
+> in the past couple of years. And I have no idea where to put a common base for
+> them so they will not duplicate this in each case.
 
-Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- certs/Kconfig                   |  8 ++++++++
- certs/Makefile                  | 18 ++++++++++++++++--
- certs/blacklist.c               | 17 +++++++++++++++++
- certs/revocation_certificates.S | 21 +++++++++++++++++++++
- scripts/Makefile                |  1 +
- 5 files changed, 63 insertions(+), 2 deletions(-)
- create mode 100644 certs/revocation_certificates.S
+In that case it makes sense to have it in the core, but calling the
+_ADR return value an "id" generically is a stretch to put it lightly.
 
-diff --git a/certs/Kconfig b/certs/Kconfig
-index c94e93d8bccf..379a6e198459 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -83,4 +83,12 @@ config SYSTEM_BLACKLIST_HASH_LIST
- 	  wrapper to incorporate the list into the kernel.  Each <hash> should
- 	  be a string of hex digits.
- 
-+config SYSTEM_REVOCATION_KEYS
-+	string "X.509 certificates to be preloaded into the system blacklist keyring"
-+	depends on SYSTEM_BLACKLIST_KEYRING
-+	help
-+	  If set, this option should be the filename of a PEM-formatted file
-+	  containing X.509 certificates to be included in the default blacklist
-+	  keyring.
-+
- endmenu
-diff --git a/certs/Makefile b/certs/Makefile
-index f4b90bad8690..e3f4926fd21e 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -4,7 +4,7 @@
- #
- 
- obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o common.o
--obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist.o
-+obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist.o revocation_certificates.o common.o
- ifneq ($(CONFIG_SYSTEM_BLACKLIST_HASH_LIST),"")
- obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist_hashes.o
- else
-@@ -29,7 +29,7 @@ $(obj)/x509_certificate_list: scripts/extract-cert $(SYSTEM_TRUSTED_KEYS_SRCPREF
- 	$(call if_changed,extract_certs,$(SYSTEM_TRUSTED_KEYS_SRCPREFIX)$(CONFIG_SYSTEM_TRUSTED_KEYS))
- endif # CONFIG_SYSTEM_TRUSTED_KEYRING
- 
--clean-files := x509_certificate_list .x509.list
-+clean-files := x509_certificate_list .x509.list x509_revocation_list
- 
- ifeq ($(CONFIG_MODULE_SIG),y)
- ###############################################################################
-@@ -104,3 +104,17 @@ targets += signing_key.x509
- $(obj)/signing_key.x509: scripts/extract-cert $(X509_DEP) FORCE
- 	$(call if_changed,extract_certs,$(MODULE_SIG_KEY_SRCPREFIX)$(CONFIG_MODULE_SIG_KEY))
- endif # CONFIG_MODULE_SIG
-+
-+ifeq ($(CONFIG_SYSTEM_BLACKLIST_KEYRING),y)
-+
-+$(eval $(call config_filename,SYSTEM_REVOCATION_KEYS))
-+
-+$(obj)/revocation_certificates.o: $(obj)/x509_revocation_list
-+
-+quiet_cmd_extract_certs  = EXTRACT_CERTS   $(patsubst "%",%,$(2))
-+      cmd_extract_certs  = scripts/extract-cert $(2) $@
-+
-+targets += x509_revocation_list
-+$(obj)/x509_revocation_list: scripts/extract-cert $(SYSTEM_REVOCATION_KEYS_SRCPREFIX)$(SYSTEM_REVOCATION_KEYS_FILENAME) FORCE
-+	$(call if_changed,extract_certs,$(SYSTEM_REVOCATION_KEYS_SRCPREFIX)$(CONFIG_SYSTEM_REVOCATION_KEYS))
-+endif
-diff --git a/certs/blacklist.c b/certs/blacklist.c
-index a7f021878a4b..4e8a1068adb2 100644
---- a/certs/blacklist.c
-+++ b/certs/blacklist.c
-@@ -16,9 +16,13 @@
- #include <linux/seq_file.h>
- #include <keys/system_keyring.h>
- #include "blacklist.h"
-+#include "common.h"
- 
- static struct key *blacklist_keyring;
- 
-+extern __initconst const u8 revocation_certificate_list[];
-+extern __initconst const unsigned long revocation_certificate_list_size;
-+
- /*
-  * The description must be a type prefix, a colon and then an even number of
-  * hex digits.  The hash is kept in the description.
-@@ -209,3 +213,16 @@ static int __init blacklist_init(void)
-  * Must be initialised before we try and load the keys into the keyring.
-  */
- device_initcall(blacklist_init);
-+
-+/*
-+ * Load the compiled-in list of revocation X.509 certificates.
-+ */
-+static __init int load_revocation_certificate_list(void)
-+{
-+	if (revocation_certificate_list_size)
-+		pr_notice("Loading compiled-in revocation X.509 certificates\n");
-+
-+	return load_certificate_list(revocation_certificate_list, revocation_certificate_list_size,
-+				     blacklist_keyring);
-+}
-+late_initcall(load_revocation_certificate_list);
-diff --git a/certs/revocation_certificates.S b/certs/revocation_certificates.S
-new file mode 100644
-index 000000000000..f21aae8a8f0e
---- /dev/null
-+++ b/certs/revocation_certificates.S
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <linux/export.h>
-+#include <linux/init.h>
-+
-+	__INITRODATA
-+
-+	.align 8
-+	.globl revocation_certificate_list
-+revocation_certificate_list:
-+__revocation_list_start:
-+	.incbin "certs/x509_revocation_list"
-+__revocation_list_end:
-+
-+	.align 8
-+	.globl revocation_certificate_list_size
-+revocation_certificate_list_size:
-+#ifdef CONFIG_64BIT
-+	.quad __revocation_list_end - __revocation_list_start
-+#else
-+	.long __revocation_list_end - __revocation_list_start
-+#endif
-diff --git a/scripts/Makefile b/scripts/Makefile
-index b5418ec587fb..983b785f13cb 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -11,6 +11,7 @@ hostprogs-always-$(CONFIG_ASN1)				+= asn1_compiler
- hostprogs-always-$(CONFIG_MODULE_SIG_FORMAT)		+= sign-file
- hostprogs-always-$(CONFIG_SYSTEM_TRUSTED_KEYRING)	+= extract-cert
- hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
-+ hostprogs-always-$(CONFIG_SYSTEM_BLACKLIST_KEYRING)	+= extract-cert
- 
- HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
--- 
-2.18.4
+It may be better to call the function something like
+fwnode_get_local_bus_id() end explain in the kerneldoc comment that
+the return value provides a way to distinguish the given device from
+the other devices on the same bus segment.
 
+Otherwise it may cause people to expect that the "reg" property and
+_ADR are generally equivalent, which is not the case AFAICS.
+
+At least the kerneldoc should say something like "use only if it is
+known for a fact that the _ADR return value can be treated as a
+fallback replacement for the "reg" property that is missing in the
+given use case".
+
+> > so maybe put this function somewhere closer to the code that's going
+> > to use it, because it seems to be kind of specific to this particular
+> > use case?
