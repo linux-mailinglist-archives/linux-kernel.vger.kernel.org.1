@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA36530077F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFD0300784
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbhAVPiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:38:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53162 "EHLO mail.kernel.org"
+        id S1729150AbhAVPj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:39:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729169AbhAVPgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:36:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3542223A9A;
-        Fri, 22 Jan 2021 15:36:08 +0000 (UTC)
+        id S1729036AbhAVPhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:37:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE0E121D81;
+        Fri, 22 Jan 2021 15:37:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611329770;
-        bh=7LaOeer6chAeQjGnD6VV2qVZxVZZ9WwWjinwdG3LDWA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FLgQkzkeUwiEOoREWZY7v0nqVJFGI0yXpp2C5az8WgcIU1jsKDmv9bXUSHYtbBAtI
-         dGBJ+Md4V6m/tCCDemjF7xoG1pFOqeiprn4mCUkL3/SPsuNeYs9PvXaabw9zEdoDtT
-         FnXT5o/VWBs+grFPO5BWayrza4+7KWzUi9RmjtL/2caHiq/InOXIK5dQZUV1BFFBrR
-         ZpQ71mSZmkNqtcZmgWfOZHLbvKDz+j30s6kz9YUoDbeoIr4cAlV/eGQxMptK+rBIHM
-         fBlqehVfTCToHtboGBe+dFyjLl84pFoL9TP8XctGCXptwIQusNn/qx3rsFHe90Zhv5
-         uDUMfWAxQRwsw==
-Date:   Fri, 22 Jan 2021 15:36:04 +0000
-From:   Will Deacon <will@kernel.org>
+        s=k20201202; t=1611329825;
+        bh=5lUEVa9PLDcanPTqWiXyf4Bt1OUsW3C1JiiAQUQkAQ0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HZCy4Jp80NfNKEEkvvZTGGy1RRUqAm8otgYs9H/jDw785nwvA219LiXDNK1cF6vco
+         EkMWsaFpNL5qFVNU8c4ftIb/vsU7/blRLRXx2v0A+X1QAgR7H5MKh5u8ITcdBjJY7y
+         6CnAQiJatUt2YGH/Ef+Pk59y8gWyjtDwvKVDlKPBTMQx8aICHZeD3gc3TCWFG3ZRv9
+         QYnrlaZRhZLxef8SRRtc3wbI/yIt9aLWPNcKL193Zmq/njtER8gampIKESbswH3uuy
+         DxgHDTXKFR6yAITXikTvLHSBTgGXJ9VyJ2yhYlWqIfjUObV2+M+5BB2lzZakCRm2C+
+         wRUmWW4P3cnyA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B038F3522649; Fri, 22 Jan 2021 07:37:04 -0800 (PST)
+Date:   Fri, 22 Jan 2021 07:37:04 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc:     Will Deacon <will@kernel.org>, rcu@vger.kernel.org,
         open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
         lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH 4.14 00/50] 4.14.217-rc1 review
-Message-ID: <20210122153604.GA24972@willie-the-truck>
-References: <20210122135735.176469491@linuxfoundation.org>
- <CA+G9fYso4QNbRWdrQiiOiMb5RUr8VtM3AkKEGLasgN+KsPSvDw@mail.gmail.com>
- <YArqULK9c1Cnt5gM@kroah.com>
- <CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: rcu-torture: Internal error: Oops: 96000006
+Message-ID: <20210122153704.GG2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
+ <20210121185521.GQ2743@paulmck-ThinkPad-P72>
+ <20210121213110.GB23234@willie-the-truck>
+ <20210121214314.GW2743@paulmck-ThinkPad-P72>
+ <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 08:43:18PM +0530, Naresh Kamboju wrote:
-> On Fri, 22 Jan 2021 at 20:38, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On Fri, Jan 22, 2021 at 03:21:07PM +0530, Naresh Kamboju wrote:
+> On Fri, 22 Jan 2021 at 03:13, Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > On Fri, Jan 22, 2021 at 08:32:46PM +0530, Naresh Kamboju wrote:
-> > > On Fri, 22 Jan 2021 at 19:45, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 4.14.217 release.
-> > > > There are 50 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.217-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
+> > On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
+> > > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
+> > > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
+> > > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
+> > > > > the following kernel crash noticed. This started happening from Linux next
+> > > > > next-20210111 tag to next-20210121.
+> > > > >
+> > > > > metadata:
+> > > > >   git branch: master
+> > > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+> > > > >   git describe: next-20210111
+> > > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
+> > > > >
+> > > > > output log:
+> > > > >
+> > > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
+> > > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
+> > > > > = ffff8000091ab8e0
+> > > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
+> > > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
+> > > > > virtual address 0000000000000008
 > > >
-> > > arm64 clang-10 builds breaks due to this patch on
-> > >    - stable-rc 4.14
-> > >    - stable-rc 4.9
-> > >    - stable-rc 4.4
+> > > [...]
 > > >
-> > > > Will Deacon <will@kernel.org>
-> > > >     compiler.h: Raise minimum version of GCC to 5.1 for arm64
+> > > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
+> > > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
+> > > > like your configuration rejects NULL as an invalid virtual address,
+> > > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
+> > > > are not allowed to dereference a ZERO_SIZE_PTR?
+> > > >
+> > > > Adding the ARM64 guys on CC for their thoughts.
 > > >
-> > > arm64 (defconfig) with clang-10 - FAILED
+> > > Spooky timing, there was a thread _today_ about that:
+> > >
+> > > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
 > >
-> > How is a clang build breaking on a "check what version of gcc is being
-> > used" change?
-> >
-> > What is the error message?
+> > Very good, then my workaround (shown below for Naresh's ease of testing)
+> > is only a short-term workaround.  Yay!  ;-)
 > 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> clang'
-> In file included from <built-in>:1:
-> include/linux/kconfig.h:74:
-> include/linux/compiler_types.h:58:
-> include/linux/compiler-gcc.h:160:3: error: Sorry, your version of GCC
-> is too old - please use 5.1 or newer.
-> # error Sorry, your version of GCC is too old - please use 5.1 or newer.
->   ^
-> 1 error generated.
+> Paul, thanks for your (short-term workaround) patch.
 > 
-> build error link:
-> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/980489003#L514
+> I have applied your patch and tested rcu-torture test on qemu_arm64 and
+> the reported issues has been fixed.
 
-Urgh, looks like we need backports of 815f0ddb346c
-("include/linux/compiler*.h: make compiler-*.h mutually exclusive") then.
+May I add your Tested-by?
 
-Greg -- please drop my changes from 4.14, 4.9 and 4.4 for now and I'll
-look at this next week.
+And before I forget again, good to see the rcutorture testing on a
+non-x86 platform!
 
-Cheers,
-
-Will
+							Thanx, Paul
