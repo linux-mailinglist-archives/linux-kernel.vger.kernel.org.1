@@ -2,190 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E605300148
+	by mail.lfdr.de (Postfix) with ESMTP id 20236300147
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727309AbhAVLOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:14:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:41750 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727998AbhAVLHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:07:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0026D11D4;
-        Fri, 22 Jan 2021 03:06:33 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.42])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 545123F719;
-        Fri, 22 Jan 2021 03:06:31 -0800 (PST)
-Date:   Fri, 22 Jan 2021 11:06:25 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCHv2] lockdep: report broken irq restoration
-Message-ID: <20210122110625.GA29868@C02TD0UTHF1T.local>
-References: <20210111153707.10071-1-mark.rutland@arm.com>
+        id S1727956AbhAVLOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:14:16 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:7252 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728151AbhAVLIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:08:52 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MB7rsS030517;
+        Fri, 22 Jan 2021 05:07:53 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=xpg9HQpwaknEm815/jkH3pctz/69T/ZbqgbwyYSv4aQ=;
+ b=inSCE9ERIZS61sBTmB+RJbsOU8LKoBdaVPU6h+zoQf2XL9TfeLIK/MjZWEZBhadEzUia
+ jMsiZGkg3dmg+7Cz0OCV8ZHt6/ccZbqGFhdmDz0gNMC8cFKXZxS4+DOQbDDXoOfsHZWP
+ JMilVrRi7Zj1qwUq4KOkHMpqFiDZIDwgmfERIjCbRhpJNB+j5umOUIuUtz03hRDCKDmD
+ Hl4UfJ+ARkRv5nspr6aVEN5Gu6XxG6jg9Nkas2/r6zWL+6O9Vo18qEOEbVrQQ7j5EgWs
+ ZOX4GZAAk8rpR2qMbEh5QYmtcyUYZyNnggBvsmXJcX13hkCfxLlMFEAgZO4cWmRtEdMw 1g== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3668pdugda-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 22 Jan 2021 05:07:53 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 22 Jan
+ 2021 11:07:52 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 22 Jan 2021 11:07:52 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F21BC11CB;
+        Fri, 22 Jan 2021 11:07:51 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 11:07:51 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v2 03/12] ASoC: arizona-jack: Fix some issues when HPDET
+ IRQ fires after the jack has been unplugged
+Message-ID: <20210122110751.GF106851@ediswmail.ad.cirrus.com>
+References: <20210117160555.78376-1-hdegoede@redhat.com>
+ <20210117160555.78376-4-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210111153707.10071-1-mark.rutland@arm.com>
+In-Reply-To: <20210117160555.78376-4-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101220061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Sun, Jan 17, 2021 at 05:05:46PM +0100, Hans de Goede wrote:
+> When the jack is partially inserted and then removed again it may be
+> removed while the hpdet code is running. In this case the following
+> may happen:
+> 
+> 1. The "JACKDET rise" or ""JACKDET fall" IRQ triggers
+> 2. arizona_jackdet runs and takes info->lock
+> 3. The "HPDET" IRQ triggers
+> 4. arizona_hpdet_irq runs, blocks on info->lock
+> 5. arizona_jackdet calls arizona_stop_mic() and clears info->hpdet_done
+> 6. arizona_jackdet releases info->lock
+> 7. arizona_hpdet_irq now can continue running and:
+> 7.1 Calls arizona_start_mic() (if a mic was detected)
+> 7.2 sets info->hpdet_done
+> 
+> Step 7 is undesirable / a bug:
+> 7.1 causes the device to stay in a high power-state (with MICVDD enabled)
+> 7.2 causes hpdet to not run on the next jack insertion, which in turn
+>     causes the EXTCON_JACK_HEADPHONE state to never get set
+> 
+> This fixes both issues by skipping these 2 steps when arizona_hpdet_irq
+> runs after the jack has been unplugged.
+> 
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
 
-Any thoughts on this? I'd like to get this in soon if we could as it'll
-help to flush out any remaining issues that are liable to get in the way
-of planned rework for arm64 and x86.
-
-Thomas, are you happy to pick this?
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Mark.
-
-On Mon, Jan 11, 2021 at 03:37:07PM +0000, Mark Rutland wrote:
-> We generally expect local_irq_save() and local_irq_restore() to be
-> paired and sanely nested, and so local_irq_restore() expects to be
-> called with irqs disabled. Thus, within local_irq_restore() we only
-> trace irq flag changes when unmasking irqs.
-> 
-> This means that a sequence such as:
-> 
-> | local_irq_disable();
-> | local_irq_save(flags);
-> | local_irq_enable();
-> | local_irq_restore(flags);
-> 
-> ... is liable to break things, as the local_irq_restore() would mask
-> irqs without tracing this change. Similar problems may exist for
-> architectures whose arch_irq_restore() function depends on being called
-> with irqs disabled.
-> 
-> We don't consider such sequences to be a good idea, so let's define
-> those as forbidden, and add tooling to detect such broken cases.
-> 
-> This patch adds debug code to WARN() when raw_local_irq_restore() is
-> called with irqs enabled. As raw_local_irq_restore() is expected to pair
-> with raw_local_irq_save(), it should never be called with irqs enabled.
-> 
-> To avoid the possibility of circular header dependencies between
-> irqflags.h and bug.h, the warning is handled in a separate C file.
-> 
-> The new code is all conditional on a new CONFIG_DEBUG_IRQFLAGS symbol
-> which is independent of CONFIG_TRACE_IRQFLAGS. As noted above such cases
-> will confuse lockdep, so CONFIG_DEBUG_LOCKDEP now selects
-> CONFIG_DEBUG_IRQFLAGS.
-> 
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  include/linux/irqflags.h       | 12 ++++++++++++
->  kernel/locking/Makefile        |  1 +
->  kernel/locking/irqflag-debug.c | 11 +++++++++++
->  lib/Kconfig.debug              |  8 ++++++++
->  4 files changed, 32 insertions(+)
->  create mode 100644 kernel/locking/irqflag-debug.c
-> 
-> Since v1 [1]:
-> * Remove per-instance bool in favour of a single WARN_ONCE()
-> * Move check into raw_local_irq_restore()
-> * Update Kconfig text and cover
-> 
-> [1] https://lore.kernel.org/r/20201209183337.1912-1-mark.rutland@arm.com
-> 
-> Mark.
-> 
-> diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-> index 8de0e1373de7..600c10da321a 100644
-> --- a/include/linux/irqflags.h
-> +++ b/include/linux/irqflags.h
-> @@ -149,6 +149,17 @@ do {						\
->  # define start_critical_timings() do { } while (0)
->  #endif
->  
-> +#ifdef CONFIG_DEBUG_IRQFLAGS
-> +extern void warn_bogus_irq_restore(void);
-> +#define raw_check_bogus_irq_restore()			\
-> +	do {						\
-> +		if (unlikely(!arch_irqs_disabled()))	\
-> +			warn_bogus_irq_restore();	\
-> +	} while (0)
-> +#else
-> +#define raw_check_bogus_irq_restore() do { } while (0)
-> +#endif
-> +
->  /*
->   * Wrap the arch provided IRQ routines to provide appropriate checks.
->   */
-> @@ -162,6 +173,7 @@ do {						\
->  #define raw_local_irq_restore(flags)			\
->  	do {						\
->  		typecheck(unsigned long, flags);	\
-> +		raw_check_bogus_irq_restore();		\
->  		arch_local_irq_restore(flags);		\
->  	} while (0)
->  #define raw_local_save_flags(flags)			\
-> diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
-> index 6d11cfb9b41f..8838f1d7c4a2 100644
-> --- a/kernel/locking/Makefile
-> +++ b/kernel/locking/Makefile
-> @@ -15,6 +15,7 @@ CFLAGS_REMOVE_mutex-debug.o = $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_rtmutex-debug.o = $(CC_FLAGS_FTRACE)
->  endif
->  
-> +obj-$(CONFIG_DEBUG_IRQFLAGS) += irqflag-debug.o
->  obj-$(CONFIG_DEBUG_MUTEXES) += mutex-debug.o
->  obj-$(CONFIG_LOCKDEP) += lockdep.o
->  ifeq ($(CONFIG_PROC_FS),y)
-> diff --git a/kernel/locking/irqflag-debug.c b/kernel/locking/irqflag-debug.c
-> new file mode 100644
-> index 000000000000..9603d207a4ca
-> --- /dev/null
-> +++ b/kernel/locking/irqflag-debug.c
-> @@ -0,0 +1,11 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#include <linux/bug.h>
-> +#include <linux/export.h>
-> +#include <linux/irqflags.h>
-> +
-> +void warn_bogus_irq_restore(void)
-> +{
-> +	WARN_ONCE(1, "raw_local_irq_restore() called with IRQs enabled\n");
-> +}
-> +EXPORT_SYMBOL(warn_bogus_irq_restore);
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 7937265ef879..5ea0c1773b0a 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1335,6 +1335,7 @@ config LOCKDEP_SMALL
->  config DEBUG_LOCKDEP
->  	bool "Lock dependency engine debugging"
->  	depends on DEBUG_KERNEL && LOCKDEP
-> +	select DEBUG_IRQFLAGS
->  	help
->  	  If you say Y here, the lock dependency engine will do
->  	  additional runtime checks to debug itself, at the price
-> @@ -1423,6 +1424,13 @@ config TRACE_IRQFLAGS_NMI
->  	depends on TRACE_IRQFLAGS
->  	depends on TRACE_IRQFLAGS_NMI_SUPPORT
->  
-> +config DEBUG_IRQFLAGS
-> +	bool "Debug IRQ flag manipulation"
-> +	help
-> +	  Enables checks for potentially unsafe enabling or disabling of
-> +	  interrupts, such as calling raw_local_irq_restore() when interrupts
-> +	  are enabled.
-> +
->  config STACKTRACE
->  	bool "Stack backtrace support"
->  	depends on STACKTRACE_SUPPORT
-> -- 
-> 2.11.0
-> 
+Charles
