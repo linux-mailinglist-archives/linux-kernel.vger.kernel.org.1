@@ -2,177 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF18300776
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73723300770
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbhAVPgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:36:05 -0500
-Received: from mga11.intel.com ([192.55.52.93]:38995 "EHLO mga11.intel.com"
+        id S1728642AbhAVPew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:34:52 -0500
+Received: from mga14.intel.com ([192.55.52.115]:33225 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728971AbhAVPeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:34:46 -0500
-IronPort-SDR: xzewRl/+wd4V9WETPi3IhfozB+/Zy6YzRlRrPJjK1MBaGJLJRjaHesU0z8IZKUGy4FXPfMJWLb
- uwjakBojdVSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="175948174"
+        id S1729040AbhAVPct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:32:49 -0500
+IronPort-SDR: GBd63PaVdaHk0GBhWPWPNhfj7i8UfMeaP6GvfnB4B51q/n2ewMGf5GSF25pv3PWcYChFIyMl6J
+ 8+/CcOF8VXrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="178680811"
 X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="175948174"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:33:01 -0800
-IronPort-SDR: c6CMTh6GIjd71turua9AZMpzbR8aORsNaKtA5Vo1r0rUmxVuqR9CvJbGcMpVuBYg/+oOEufnoG
- ayjyzQ6GHdgg==
+   d="scan'208";a="178680811"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:30:59 -0800
+IronPort-SDR: OtUq2s9zwphiU3lxtddnvRt3t/ACFbw02R1tYE41jZmmEvsUbqwn4MgNtoDpcAtImDQqvTsnXD
+ jHMLwu7rQzwg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="428000291"
-Received: from cdgarci1-mobl1.amr.corp.intel.com (HELO [10.212.60.15]) ([10.212.60.15])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:33:00 -0800
-Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
- <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
- <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
- <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
- <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
- <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
- <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
- <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
- <eaf13d70-86fe-3e18-7a5a-4043f2d8a22d@linux.intel.com>
- <aaf34f07-5eed-3045-e4c6-dc9416689b20@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <f960757f-ec8b-6d3f-f00e-27242c687926@linux.intel.com>
-Date:   Fri, 22 Jan 2021 09:32:58 -0600
+   d="scan'208";a="348297792"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Jan 2021 07:30:57 -0800
+Subject: Re: [PATCH 0/4] add xhci hooks for USB offload
+To:     Howard Yen <howardyen@google.com>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210119101044.1637023-1-howardyen@google.com>
+ <af91bbf1-6731-3e87-4086-de0dbba22c22@intel.com>
+ <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <ca442ca7-a434-2527-9945-861dafa685cc@linux.intel.com>
+Date:   Fri, 22 Jan 2021 17:32:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <aaf34f07-5eed-3045-e4c6-dc9416689b20@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/22/21 1:05 AM, Srinivas Kandagatla wrote:
-> 
-> 
-> On 21/01/2021 21:30, Pierre-Louis Bossart wrote:
->>>
->>> Am looking at intel_hw_params(). Isn't sdw_stream_add_master() called 
->>> for every dai in the dai link.
+On 20.1.2021 12.04, Howard Yen wrote:
+> On Tue, Jan 19, 2021 at 8:47 PM Mathias Nyman <mathias.nyman@intel.com> wrote:
 >>
->> Yes, that's correct, but again a dai may use one or more ports.
+>> On 19.1.2021 12.10, Howard Yen wrote:
+>>> To let the xhci driver support USB offload, add hooks for vendor to have
+>>> customized behavior for the initialization, memory allocation, irq work, and
+>>> device context synchronization. Detail is in each patch commit message.
 >>
->> if you defined each port as a dai, and want to call 
->> sdw_stream_add_master() for each port you are doing something the API 
->> was not designed for. There is a 'num_ports' argument for a reason :-)
+>> Is this related to the usb audio sideband capability that was added to the xHCI specification?
+>> If yes, then we should probably implement the generic parts first, and then add
+>> the vendor specific hooks.
 >>
->>>> per master, and that master_rt deals with one or more ports - your 
->>>> choice. >
->>>> A 'stream' is an abstract data transport which can be split across 
->>>> multiple masters/sales and for each master/slave use multiple ports.
->>>> When calling sdw_stream_add_master/slave, you need to provide a 
->>>> port_config/num_ports to state which ports will be used on that 
->>>> master/slave when using the stream. That's how we e.g. deal with 4ch 
->>>> streams that are handled by two ports on each side.
->>>>
->>>> To up-level a bit, the notion of 'stream' is actually very very 
->>>> similar to the notion of dailink. And in fact, the 'stream' is 
->>>> actually created for Intel in the dailink .startup callback, so I am 
->>>> quite in the dark on what you are trying to accomplish.
->>> In qcom case stream is also allocated for in dai startup().
->>>
->>> I think we are talking about two different issues,
->>>
->>> 1>one is the failure I see in sdw_stream_add_master() when I try to 
->>> use dai-link dai-id style approach suggested. I will dig this bit 
->>> more and collect more details!
->>>
->>> 2>(Main issue) Ability for slave to select different combination of 
->>> ports at runtime based on the mixer setting or active dapm.
->>>
->>> All this patch is trying do is the pass this *CURRENT/ACTIVE* static 
->>> port mapping between slave and master while setting up the stream.
->>> With the dailink approach number of ports are pretty much static and 
->>> may not be required for particular use case. As above example if we 
->>> have a headset with button click suppression we would need 2 Ports 
->>> and similarly without we only need one port.
+>> -Mathias
 >>
->> As I said above you cannot enable the button click suppression 
->> dynamically *after* the headset capture hw_params/prepare.
-> 
-> That is not true, the ports in this case are selected based on mixer 
-> setting or register state even before stream is setup/started in 
-> hw_params/prepare.
-> WSA881x codec has pretty much similar setup.
-
-we are saying the same thing, the configuration provided is only taken 
-into account when setting-up the stream in hw_params. mixer or 
-configuration changes after that step are ignored.
-
-If you follow what we've done at Intel with the sdw_stream_add_master() 
-called in the .hw_params phase, and conversely call 
-sdw_stream_remove_master() in .hw_free, you should be good to go.
-
-You will note that we have a notification to the DSP, so you can manage 
-resources in your firmware, there is no need to oversubscribe but only 
-allocate what is required for a given use case.
-
->>> This is not possible with dai-link approach, unless we create two 
->>> different dai links for the above example usecase!
->>
->> The current approach is a worst-case one, where you would create a 
->> single 'headset capture' dailink.
 >>
 > 
-> Are you suggesting that we have dailink for each usecase like:
+> This is for offloading, no matter what type of offloading.
+> I made the hooks generically and can be used for usb audio on the xhci
+> which is not including the usb audio sideband capability.
 > 
-> "headset capture"
-> "Analog MIC1 capture"
-> "Analog MIC2 Capture"
-> 
-> ...
-> 
-> "Analog MIC4 Capture"
-> 
-> ...
-> 
-> "DMIC0 capture"
-> "DMIC1 Capture"
-> "DMIC2 Capture"
-> 
-> ...
-> 
-> "DMIC7 Capture"
-> ..
-> "Headset Playback"
-> "Ear Playback"
-> ..
-> "Aux Playback"
-> ...
-> 
-> this is not really doable!
 
-No, what I was saying is that you need to define multiple streams e.g.
-- headset capture (configured with or without click suppression)
-- mic capture (configured with AMICs or DMICs)
-- playback (or possibly different endpoint specific streams depending on 
-whether concurrency between endpoint is possible)
+Ok, before adding hooks like this I think we need to see how they are used.
+Do you have the rest of the patches that go on top of this series?
 
-if you change the configuration, you have to tear down the stream and 
-reconfigure it - and for this we already have the required API and you 
-can guarantee that the configuration for that stream is consistent 
-between master and slave(s).
+Maybe it could make sense to use overrides for the functions in struct hc_driver
+instead in some cases? There is support for that already.
 
-> All am saying is that codec can decide which ports it has to select 
-> based on mixer setting before the stream is setup/started. This updated 
-> mapping between slv port and master ports is passed as part of the 
-> port_config in sdw_stream_add_slave().
-
-if you completely remove the stream and re-add it with updated 
-configuration things should work.
-
-
+Thanks
+-Mathias  
 
