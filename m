@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6420300840
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDEB30084E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729465AbhAVQIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:08:49 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:34940 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729463AbhAVQHb (ORCPT
+        id S1729567AbhAVQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:10:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20935 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729553AbhAVQI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:07:31 -0500
-Received: by mail-ot1-f53.google.com with SMTP id 36so5549938otp.2;
-        Fri, 22 Jan 2021 08:07:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XsEWssMCPfLIPwZeIDg292psce+OBhutMUuJWbGwGBg=;
-        b=l4TagOEVLPJzBWjNIPDwuUc3gkVWlmZRXAqFGevK0qcAdhrMXgYnIvDhcYcQwmpb79
-         sYK7cx0F+9nmboGzjJ7ZekoqRjMhdNrH6PpLGM6MaeiC8VWuqKIe+lXXdx/b/gx5w2i2
-         pCHoSCYrBGhOG5+zGWeCYWULwB/4xSOQ7ZesF67I/0Dsdo0IhK5LIVeasEhcW8h9HpBH
-         bOb+u8NS/szxLXLtXLuqgAHMvX/5Fe8F8AqddcWFySo/I2l0kuZVx2560bu34XUNylN/
-         uQx6GJzvob6zgKt8vjrtywuz9wi+vC4EFOcLhXG+BZiMiajUjs4ElCtUWIB7AnqG/kp4
-         t6zg==
-X-Gm-Message-State: AOAM530ILGIqF7qGUndahAgwPWtZtFwAXtFUPmTXTuR+Au/X/pkdn9r1
-        0TOrj1vUDV20P3yvTOUM8Q==
-X-Google-Smtp-Source: ABdhPJyc9igyMeLfK7ygeNj0+UjaZn/4fYN1oUjwoJ0z7bd92UkR5kJYgaRjyUNo2ZDVg+SkLKEIAA==
-X-Received: by 2002:a05:6830:1f02:: with SMTP id u2mr3931925otg.124.1611331605445;
-        Fri, 22 Jan 2021 08:06:45 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t65sm1746041oie.25.2021.01.22.08.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 08:06:44 -0800 (PST)
-Received: (nullmailer pid 882044 invoked by uid 1000);
-        Fri, 22 Jan 2021 16:06:43 -0000
-Date:   Fri, 22 Jan 2021 10:06:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, od@zcrc.me,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings/phy: ingenic: Add compatibles for??
- JZ4760(B) SoCs
-Message-ID: <20210122160643.GA865022@robh.at.kernel.org>
-References: <20210120115945.29046-1-paul@crapouillou.net>
- <CAL_JsqLS-oFn4kGm7GeU+W2BvVeon9k9+gzVojypcJCJLwbaEQ@mail.gmail.com>
- <SIBCNQ.SZL9QXM6XX3N2@crapouillou.net>
+        Fri, 22 Jan 2021 11:08:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611331620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LxEIC8hGatT2o24RK/5B1chyfP2tF4vZvBCyA+dON/4=;
+        b=Y7hsAtYYnc/JZKobskOxYidVuXpQN6j3IN7ndP4R6BydWPRvYcm3Skf8pqdSDEXR4docl5
+        C+pNvBWbWEECx5m8walyTF6RTmA8ken3nXcA2tYq9w32NjBY+xZfmvFXBfs37URrPjVEEd
+        xU4RYIFGN2HBRB+5N6+IUlSS1WqbIx8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-WxgM7MKlOBu2zSsKQiqVFw-1; Fri, 22 Jan 2021 11:06:58 -0500
+X-MC-Unique: WxgM7MKlOBu2zSsKQiqVFw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78A118144E0;
+        Fri, 22 Jan 2021 16:06:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A07F418993;
+        Fri, 22 Jan 2021 16:06:47 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210122160129.GB18583@fieldses.org>
+References: <20210122160129.GB18583@fieldses.org> <20210121190937.GE20964@fieldses.org> <20210121174306.GB20964@fieldses.org> <20210121164645.GA20964@fieldses.org> <161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk> <1794286.1611248577@warthog.procyon.org.uk> <1851804.1611255313@warthog.procyon.org.uk> <1856291.1611259704@warthog.procyon.org.uk>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-afs@lists.infradead.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 00/25] Network fs helper library & fscache kiocb API
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <SIBCNQ.SZL9QXM6XX3N2@crapouillou.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2085146.1611331606.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 22 Jan 2021 16:06:46 +0000
+Message-ID: <2085147.1611331606@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 02:42:28PM +0000, Paul Cercueil wrote:
-> Hi Rob,
-> 
-> Le ven. 22 janv. 2021 à 8:35, Rob Herring <robh+dt@kernel.org> a écrit :
-> > On Wed, Jan 20, 2021 at 5:59 AM Paul Cercueil <paul@crapouillou.net>
-> > wrote:
-> > > 
-> > >  Add the ingenic,jz4760-phy and ingenic,jz4760b-phy compatible
-> > > strings,
-> > >  and make the ingenic,jz4770-phy compatible string require
-> > >  ingenic,jz4760-phy as a fallback, since both work the same, and the
-> > >  JZ4760 SoC is older.
-> > > 
-> > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > >  ---
-> > >   .../bindings/phy/ingenic,phy-usb.yaml         | 22
-> > > ++++++++++++-------
-> > >   1 file changed, 14 insertions(+), 8 deletions(-)
-> > > 
-> > >  diff --git
-> > > a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
-> > > b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
-> > >  index 0fd93d71fe5a..3c65dfcf352b 100644
-> > >  --- a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
-> > >  +++ b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
-> > >  @@ -15,13 +15,19 @@ properties:
-> > >       pattern: '^usb-phy@.*'
-> > > 
-> > >     compatible:
-> > >  -    enum:
-> > >  -      - ingenic,jz4770-phy
-> > >  -      - ingenic,jz4775-phy
-> > >  -      - ingenic,jz4780-phy
-> > >  -      - ingenic,x1000-phy
-> > >  -      - ingenic,x1830-phy
-> > >  -      - ingenic,x2000-phy
-> > >  +    oneOf:
-> > >  +      - enum:
-> > >  +        - ingenic,jz4760-phy
-> > 
-> > This should be 2 more spaces indentation. Indent is always 2 more than
-> > the above keyword and ignores '-'.
-> 
-> Pretty confusing. But alright.
+J. Bruce Fields <bfields@fieldses.org> wrote:
 
-TBC, either way is functional and these are the 2 main styles, so we 
-picked one. In some sequences, it's easy to miss a '-' where a space 
-would also be valid. For example:
+> > J. Bruce Fields <bfields@fieldses.org> wrote:
+> > > So, I'm still confused: there must be some case where we know fscach=
+e
+> > > actually works reliably and doesn't corrupt your data, right?
+> > =
 
-items:
-- items:
-    enum: ...
+> > Using ext2/3, for example.  I don't know under what circumstances xfs,=
+ ext4
+> > and btrfs might insert/remove blocks of zeros, but I'm told it can hap=
+pen.
+> =
 
-vs:
+> Do ext2/3 work well for fscache in other ways?
 
-items:
-  items:
-    enum: ...
+Ext3 shouldn't be a problem.  That's what I used when developing it.  I'm =
+not
+sure if ext2 supports xattrs, though.
 
-Both are valid (as items can be a list or sub-schema).
+David
 
-Rob
