@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A393004C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DB13004D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbhAVOCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:02:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33113 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728112AbhAVOBz (ORCPT
+        id S1728156AbhAVOFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:05:38 -0500
+Received: from mail-oo1-f47.google.com ([209.85.161.47]:34358 "EHLO
+        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728077AbhAVOBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:01:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611324029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=V4MAmW9o9TEkOOmhJwAHh/aM9Qgr24vL7t9KpVWFRYk=;
-        b=FWlOQMhjMvlwuqq4ZDLcgJlI6VHXSYbCspTS1hqyF2ZxyWmPgeUzBGmvLMYn0VN4dGEELj
-        AqJusSMKEneUtiYTwj+0XvpyqQBv670DCCgYXNzMyGsWIJxYBJdAX7UPJcYadLDkgqj3ct
-        yzR4hLupsjNZU98Z4T97cJETSMGUq1w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-6pvEWHQAOIiMiXMcOU5m5Q-1; Fri, 22 Jan 2021 09:00:27 -0500
-X-MC-Unique: 6pvEWHQAOIiMiXMcOU5m5Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4373D19611B3;
-        Fri, 22 Jan 2021 14:00:26 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-114.pek2.redhat.com [10.72.12.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A096219C59;
-        Fri, 22 Jan 2021 14:00:23 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
-        david@redhat.com, bhe@redhat.com, lkp@intel.com
-Subject: [PATCH v5 5/5] mm: remove unneeded local variable in free_area_init_core
-Date:   Fri, 22 Jan 2021 21:59:56 +0800
-Message-Id: <20210122135956.5946-6-bhe@redhat.com>
-In-Reply-To: <20210122135956.5946-1-bhe@redhat.com>
-References: <20210122135956.5946-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Fri, 22 Jan 2021 09:01:30 -0500
+Received: by mail-oo1-f47.google.com with SMTP id x23so1420445oop.1;
+        Fri, 22 Jan 2021 06:01:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=xhZ6J/Bvz/RbZpLJdDAM5wDmNVNbE/omNtX1Jgn0sOA=;
+        b=Cu5+W9tPNPVEbdjYXKJ80APv+W9AMHrUVs4rLQ5qkJ4XgaEXov6ZDP+LhTIqg2M9JE
+         5X6VQhdkDoNygpsEYIFxfnvT4GeetaZuOiMUHOSP9GBiy+2a6hP+BouUsGTW/hYSb3pk
+         g4o5w9xu5YaN3LAIXcfO2cymCn8gQjZEv8Qqg3EOSVrZ1l/kjietxFhKHBzRQTndPYVT
+         Z39qURXuPN5sL8vHNX8mJRw4rKG0jgb6PSeAnp1kWSfKpLTuRLh28Gumj/CtQBrMfxcm
+         UlcouREj0I6Df7bUMjAFWcRza2Y/7JSHqVWE2WuX5Imx/+vBYgffx8YUM8FN8wGBmSGJ
+         yFmw==
+X-Gm-Message-State: AOAM533Rrw0Cysa70SBnLlHiTINFLPmNvabgHafS7eoe/hW3LSPSizYL
+        kt7m4f2Jfg50ykmdtSlQTg==
+X-Google-Smtp-Source: ABdhPJwsQ567jYvGKAXrJ8GXwHfph+c1hzHOKrEfxXnYzXPvj3BlK74M/P0Zxaj2QTnrY3kIFAMnew==
+X-Received: by 2002:a4a:9c5:: with SMTP id 188mr3812377ooa.77.1611324049044;
+        Fri, 22 Jan 2021 06:00:49 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id b15sm1690907otj.15.2021.01.22.06.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 06:00:48 -0800 (PST)
+Received: (nullmailer pid 674373 invoked by uid 1000);
+        Fri, 22 Jan 2021 14:00:45 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Amit Kucheria <amitk@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20210121191853.14600-1-ansuelsmth@gmail.com>
+References: <20210121191853.14600-1-ansuelsmth@gmail.com>
+Subject: Re: [PATCH v8 8/8] dt-bindings: thermal: tsens: Document ipq8064 bindings
+Date:   Fri, 22 Jan 2021 08:00:45 -0600
+Message-Id: <1611324045.688114.674372.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Local variable 'zone_start_pfn' is not needed since there's only
-one call site in free_area_init_core(). Let's remove it and pass
-zone->zone_start_pfn directly to init_currently_empty_zone().
+On Thu, 21 Jan 2021 20:18:53 +0100, Ansuel Smith wrote:
+> Document the use of bindings used for msm8960 tsens based devices.
+> msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../bindings/thermal/qcom-tsens.yaml          | 75 ++++++++++++++++---
+>  1 file changed, 65 insertions(+), 10 deletions(-)
+> 
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
- mm/page_alloc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 69cf19baac12..e0df67948ace 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6923,7 +6923,6 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 	for (j = 0; j < MAX_NR_ZONES; j++) {
- 		struct zone *zone = pgdat->node_zones + j;
- 		unsigned long size, freesize, memmap_pages;
--		unsigned long zone_start_pfn = zone->zone_start_pfn;
- 
- 		size = zone->spanned_pages;
- 		freesize = zone->present_pages;
-@@ -6972,7 +6971,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 
- 		set_pageblock_order();
- 		setup_usemap(zone);
--		init_currently_empty_zone(zone, zone_start_pfn, size);
-+		init_currently_empty_zone(zone, zone->zone_start_pfn, size);
- 		memmap_init_zone(zone);
- 	}
- }
--- 
-2.17.2
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/thermal/qcom-tsens.yaml:25:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-tsens.example.dt.yaml: thermal-sensor@4a9000: nvmem-cell-names: ['calib'] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+
+See https://patchwork.ozlabs.org/patch/1430043
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
