@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA1930055A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBA4300555
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbhAVO0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:26:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
+        id S1728544AbhAVO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:26:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728080AbhAVOTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728220AbhAVOTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:19:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6798223AAC;
-        Fri, 22 Jan 2021 14:14:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7A3C23B19;
+        Fri, 22 Jan 2021 14:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324864;
-        bh=PPIOShveQasA/lsuGz69f1uESWi/DAfX0a6fHsSbRZw=;
+        s=korg; t=1611324870;
+        bh=YhDhrQBmzPf4rvmlcdGQfjEriB8ps6jbTD9PaiCRmCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ySUgcdcavH9DwSjl/ufEfdDeBBdmNxH/LeTYCk1LazeYOfOhq39LU0ydQufvkdF76
-         fz9jjjyw9sucZU1bfj83pI9Cfy+vo6M+2mr3C6uqaZLP9FSLISNZvH4Lptqof9mKST
-         KTiXcp8yjjZ1KyDVo+dm7B0sUIThy67qSMOM5GGY=
+        b=Z4Fb3C5DxjMvvxCfjt1UgWue1bFoo59RY09AstQj953jIjJFMv99dX0NhpbEUldRz
+         oTMvzxaLlWCAMlwfIgHs0dafGiqgiDBR2vbRt3UA4JSYxPi1hV+oNtA0DnOmpYD+rZ
+         xieGtqET+ziQURraFN2sk/k56vI0IdARVfMv856c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Akilesh Kailash <akailash@google.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.14 07/50] dm snapshot: flush merged data before committing metadata
-Date:   Fri, 22 Jan 2021 15:11:48 +0100
-Message-Id: <20210122135735.479437406@linuxfoundation.org>
+        stable@vger.kernel.org, yangerkun <yangerkun@huawei.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 09/50] ext4: fix bug for rename with RENAME_WHITEOUT
+Date:   Fri, 22 Jan 2021 15:11:50 +0100
+Message-Id: <20210122135735.562626887@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
 References: <20210122135735.176469491@linuxfoundation.org>
@@ -39,96 +40,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Akilesh Kailash <akailash@google.com>
+From: yangerkun <yangerkun@huawei.com>
 
-commit fcc42338375a1e67b8568dbb558f8b784d0f3b01 upstream.
+[ Upstream commit 6b4b8e6b4ad8553660421d6360678b3811d5deb9 ]
 
-If the origin device has a volatile write-back cache and the following
-events occur:
+We got a "deleted inode referenced" warning cross our fsstress test. The
+bug can be reproduced easily with following steps:
 
-1: After finishing merge operation of one set of exceptions,
-   merge_callback() is invoked.
-2: Update the metadata in COW device tracking the merge completion.
-   This update to COW device is flushed cleanly.
-3: System crashes and the origin device's cache where the recent
-   merge was completed has not been flushed.
+  cd /dev/shm
+  mkdir test/
+  fallocate -l 128M img
+  mkfs.ext4 -b 1024 img
+  mount img test/
+  dd if=/dev/zero of=test/foo bs=1M count=128
+  mkdir test/dir/ && cd test/dir/
+  for ((i=0;i<1000;i++)); do touch file$i; done # consume all block
+  cd ~ && renameat2(AT_FDCWD, /dev/shm/test/dir/file1, AT_FDCWD,
+    /dev/shm/test/dir/dst_file, RENAME_WHITEOUT) # ext4_add_entry in
+    ext4_rename will return ENOSPC!!
+  cd /dev/shm/ && umount test/ && mount img test/ && ls -li test/dir/file1
+  We will get the output:
+  "ls: cannot access 'test/dir/file1': Structure needs cleaning"
+  and the dmesg show:
+  "EXT4-fs error (device loop0): ext4_lookup:1626: inode #2049: comm ls:
+  deleted inode referenced: 139"
 
-During the next cycle when we read the metadata from the COW device,
-we will skip reading those metadata whose merge was completed in
-step (1). This will lead to data loss/corruption.
+ext4_rename will create a special inode for whiteout and use this 'ino'
+to replace the source file's dir entry 'ino'. Once error happens
+latter(the error above was the ENOSPC return from ext4_add_entry in
+ext4_rename since all space has been consumed), the cleanup do drop the
+nlink for whiteout, but forget to restore 'ino' with source file. This
+will trigger the bug describle as above.
 
-To address this, flush the origin device post merge IO before
-updating the metadata.
-
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 Cc: stable@vger.kernel.org
-Signed-off-by: Akilesh Kailash <akailash@google.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: cd808deced43 ("ext4: support RENAME_WHITEOUT")
+Link: https://lore.kernel.org/r/20210105062857.3566-1-yangerkun@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-snap.c |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ fs/ext4/namei.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -137,6 +137,11 @@ struct dm_snapshot {
- 	 * for them to be committed.
- 	 */
- 	struct bio_list bios_queued_during_merge;
-+
-+	/*
-+	 * Flush data after merge.
-+	 */
-+	struct bio flush_bio;
- };
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 6936de30fcf0d..a4301fa4719ff 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3442,8 +3442,6 @@ static int ext4_setent(handle_t *handle, struct ext4_renament *ent,
+ 			return retval;
+ 		}
+ 	}
+-	brelse(ent->bh);
+-	ent->bh = NULL;
  
- /*
-@@ -1060,6 +1065,17 @@ shut:
- 
- static void error_bios(struct bio *bio);
- 
-+static int flush_data(struct dm_snapshot *s)
-+{
-+	struct bio *flush_bio = &s->flush_bio;
-+
-+	bio_reset(flush_bio);
-+	bio_set_dev(flush_bio, s->origin->bdev);
-+	flush_bio->bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
-+
-+	return submit_bio_wait(flush_bio);
-+}
-+
- static void merge_callback(int read_err, unsigned long write_err, void *context)
- {
- 	struct dm_snapshot *s = context;
-@@ -1073,6 +1089,11 @@ static void merge_callback(int read_err,
- 		goto shut;
+ 	return 0;
+ }
+@@ -3656,6 +3654,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		}
  	}
  
-+	if (flush_data(s) < 0) {
-+		DMERR("Flush after merge failed: shutting down merge");
-+		goto shut;
-+	}
++	old_file_type = old.de->file_type;
+ 	if (IS_DIRSYNC(old.dir) || IS_DIRSYNC(new.dir))
+ 		ext4_handle_sync(handle);
+ 
+@@ -3683,7 +3682,6 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	force_reread = (new.dir->i_ino == old.dir->i_ino &&
+ 			ext4_test_inode_flag(new.dir, EXT4_INODE_INLINE_DATA));
+ 
+-	old_file_type = old.de->file_type;
+ 	if (whiteout) {
+ 		/*
+ 		 * Do this before adding a new entry, so the old entry is sure
+@@ -3755,15 +3753,19 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	retval = 0;
+ 
+ end_rename:
+-	brelse(old.dir_bh);
+-	brelse(old.bh);
+-	brelse(new.bh);
+ 	if (whiteout) {
+-		if (retval)
++		if (retval) {
++			ext4_setent(handle, &old,
++				old.inode->i_ino, old_file_type);
+ 			drop_nlink(whiteout);
++		}
+ 		unlock_new_inode(whiteout);
+ 		iput(whiteout);
 +
- 	if (s->store->type->commit_merge(s->store,
- 					 s->num_merging_chunks) < 0) {
- 		DMERR("Write error in exception store: shutting down merge");
-@@ -1197,6 +1218,7 @@ static int snapshot_ctr(struct dm_target
- 	s->first_merging_chunk = 0;
- 	s->num_merging_chunks = 0;
- 	bio_list_init(&s->bios_queued_during_merge);
-+	bio_init(&s->flush_bio, NULL, 0);
- 
- 	/* Allocate hash table for COW data */
- 	if (init_hash_tables(s)) {
-@@ -1391,6 +1413,8 @@ static void snapshot_dtr(struct dm_targe
- 
- 	mutex_destroy(&s->lock);
- 
-+	bio_uninit(&s->flush_bio);
-+
- 	dm_put_device(ti, s->cow);
- 
- 	dm_put_device(ti, s->origin);
+ 	}
++	brelse(old.dir_bh);
++	brelse(old.bh);
++	brelse(new.bh);
+ 	if (handle)
+ 		ext4_journal_stop(handle);
+ 	return retval;
+-- 
+2.27.0
+
 
 
