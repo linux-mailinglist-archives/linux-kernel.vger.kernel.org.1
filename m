@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D772FFB76
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFC22FFB75
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 05:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbhAVEB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 23:01:29 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:17072 "EHLO m42-8.mailgun.net"
+        id S1726558AbhAVEAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 23:00:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbhAVEB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 23:01:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611288062; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=k8p/9iah5u3Ps8oDNRx/PB8he4pehkzYRrW2ZakZsiA=; b=l6BMv81HNtLzaHow8DMjzWBYcuEOXNi/AKhKEQmMbvLK4WIjatqlC+q+sOC+O3J8cx563KF3
- +PRTzE9EYw81QBDLlt5qQcLSxkHOSmwcgsMoqYCY9SMde1KU4B5R3YNjHspzLCu1FG67c5Rm
- W19sY910k4O5yYgJswwj7IUbA9w=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 600a4dce5677aca7bde9fe0d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 Jan 2021 04:00:14
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 03EDEC43463; Fri, 22 Jan 2021 04:00:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.106] (unknown [182.18.191.136])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3654C433C6;
-        Fri, 22 Jan 2021 04:00:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3654C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH v5 1/2] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     glider@google.com, akpm@linux-foundation.org,
-        dan.j.williams@intel.com, broonie@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, ylal@codeaurora.org,
-        vinmenon@codeaurora.org
-References: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
- <YAoaCqvRHILKp3w6@google.com>
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-Message-ID: <b89b802b-1826-0776-6d3a-2f89f85ea2f3@codeaurora.org>
-Date:   Fri, 22 Jan 2021 09:30:00 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726035AbhAVEAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 23:00:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C2406221E5;
+        Fri, 22 Jan 2021 04:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611288008;
+        bh=nAgVyCChPnFhCqc2LfIoKo5qwOgpK45KUUDqhhgxs/M=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Eg2EZu9n7sB9UQSTsjHk6Sd0E7eejxcuUv6XTU9mrsV8YblMEVDJtUoYL4bAhyx+J
+         yPAzCZOBJYI9i16w03PjRTr1P84W4nRrHiBqWNms4Kw36YtpY6NZf6qu7ZyX1AdtO9
+         nBbKtc/G3tw/Oc8MZZbVQorwZPL20/lypeq1+47KKSoj75gQAXgRUZeGQorHPclGFJ
+         sKCmR8j6i3mOT8fwWTs14EB7N3RjHkfDrrmyA0m+wf1Z9J4OJUtXk11gFntZVNk1kL
+         nWRaJVIuR09zdo6ysolzTLjN/0K23TggG3g5dNnxzUx+B0GBLgnByLbXfiY6B77WSn
+         GWB9zTsRIMiUg==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id B652460660;
+        Fri, 22 Jan 2021 04:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YAoaCqvRHILKp3w6@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: macb: ignore tx_clk if MII is used
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161128800874.10992.18301041286554115211.git-patchwork-notify@kernel.org>
+Date:   Fri, 22 Jan 2021 04:00:08 +0000
+References: <20210120194303.28268-1-michael@walle.cc>
+In-Reply-To: <20210120194303.28268-1-michael@walle.cc>
+To:     Michael Walle <michael@walle.cc>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
+        davem@davemloft.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On 1/22/2021 5:49 AM, Minchan Kim wrote:
-> On Mon, Jan 18, 2021 at 03:26:41PM +0530, vjitta@codeaurora.org wrote:
->> From: Yogesh Lal <ylal@codeaurora.org>
->>
->> Use CONFIG_STACK_HASH_ORDER to configure STACK_HASH_SIZE.
->>
->> Aim is to have configurable value for  STACK_HASH_SIZE,
->> so depend on use case one can configure it.
->>
->> One example is of Page Owner, default value of
->> STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
->> Making it configurable and use lower value helps to enable features like
->> CONFIG_PAGE_OWNER without any significant overhead.
+On Wed, 20 Jan 2021 20:43:03 +0100 you wrote:
+> If the MII interface is used, the PHY is the clock master, thus don't
+> set the clock rate. On Zynq-7000, this will prevent the following
+> warning:
+>   macb e000b000.ethernet eth0: unable to generate target frequency: 25000000 Hz
 > 
-> The description could be improved to prevent confusing.
-> CONFIG_PAGE_OWNER works only if page_owner=on via kernel parameter
-> on CONFIG_PAGE_OWNER configured system.
-> Thus, unless admin enable it via command line option, the stackdepot
-> will just waste 8M memory without any customer.
+> Signed-off-by: Michael Walle <michael@walle.cc>
 > 
+> [...]
 
-Sure, will update the commit text as suggested.
+Here is the summary with links:
+  - net: macb: ignore tx_clk if MII is used
+    https://git.kernel.org/netdev/net-next/c/43e5763152e2
 
-Thanks,
-Vijay
->>
->> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
->> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
->> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
-> Reviewed-by: Minchan Kim <minchan@kernel.org>
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+
