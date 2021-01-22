@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173483004C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0023004B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbhAVODj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:03:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34348 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728102AbhAVOBm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:01:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611324016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=OYKXe0LwvkCV6oYZjgb0l0tdopJgegZlST8zSrtCleo=;
-        b=G7xscyVGbAyQNn++4tv8/Z/p6wBcWV9/KGvCAPvmSkdFqJ/OKN84dteWKE3mQ0AOztOFo/
-        G+5KIlfLvVnQ+G+1OzCEdfBfi+J/f3NN2RE3vto+WR3PdA0y9GtS/pK1SxssyPpchuWrS1
-        aQyvUxGqpeTa+VQ1ofYEZ+16QhqU1U4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-SzsDFnbcM0eOXizJp8UA6A-1; Fri, 22 Jan 2021 09:00:11 -0500
-X-MC-Unique: SzsDFnbcM0eOXizJp8UA6A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ABDD1806661;
-        Fri, 22 Jan 2021 14:00:10 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-114.pek2.redhat.com [10.72.12.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FE0519C59;
-        Fri, 22 Jan 2021 14:00:07 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
-        david@redhat.com, bhe@redhat.com, lkp@intel.com
-Subject: [PATCH v5 1/5] mm: fix prototype warning from kernel test robot
-Date:   Fri, 22 Jan 2021 21:59:52 +0800
-Message-Id: <20210122135956.5946-2-bhe@redhat.com>
-In-Reply-To: <20210122135956.5946-1-bhe@redhat.com>
-References: <20210122135956.5946-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1728080AbhAVOBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:01:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:49194 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727861AbhAVOAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:00:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A2961570;
+        Fri, 22 Jan 2021 06:00:06 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E85603F66E;
+        Fri, 22 Jan 2021 06:00:04 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH v6 1/4] arm64: mte: Add asynchronous mode support
+Date:   Fri, 22 Jan 2021 13:59:52 +0000
+Message-Id: <20210122135955.30237-2-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+References: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot calling make with 'W=1' is triggering warning like
-below for memmap_init_zone() function.
+MTE provides an asynchronous mode for detecting tag exceptions. In
+particular instead of triggering a fault the arm64 core updates a
+register which is checked by the kernel after the asynchronous tag
+check fault has occurred.
 
-mm/page_alloc.c:6259:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
- 6259 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
-      |                       ^~~~~~~~~~~~~~~~
+Add support for MTE asynchronous mode.
 
-Fix it by adding the function declaration in include/linux/mm.h.
-Since memmap_init_zone() has a generic version with '__weak',
-the declaratoin in ia64 header file can be simply removed.
+The exception handling mechanism will be added with a future patch.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reported-by: kernel test robot <lkp@intel.com>
+Note: KASAN HW activates async mode via kasan.mode kernel parameter.
+The default mode is set to synchronous.
+The code that verifies the status of TFSR_EL1 will be added with a
+future patch.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/ia64/include/asm/pgtable.h | 6 ------
- include/linux/mm.h              | 2 ++
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ arch/arm64/include/asm/memory.h    |  3 ++-
+ arch/arm64/include/asm/mte-kasan.h |  9 +++++++--
+ arch/arm64/kernel/mte.c            | 16 ++++++++++++++--
+ 3 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
-index 779b6972aa84..9b4efe89e62d 100644
---- a/arch/ia64/include/asm/pgtable.h
-+++ b/arch/ia64/include/asm/pgtable.h
-@@ -517,12 +517,6 @@ extern struct page *zero_page_memmap_ptr;
- 	__changed;							\
- })
- #endif
--
--#  ifdef CONFIG_VIRTUAL_MEM_MAP
--  /* arch mem_map init routine is needed due to holes in a virtual mem_map */
--    extern void memmap_init (unsigned long size, int nid, unsigned long zone,
--			     unsigned long start_pfn);
--#  endif /* CONFIG_VIRTUAL_MEM_MAP */
- # endif /* !__ASSEMBLY__ */
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index cedfc9e97bcc..df96b9c10b81 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -231,7 +231,8 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+ }
  
- /*
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 3dac7bc667ee..3d82b4f7cabc 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2401,6 +2401,8 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
- extern void memmap_init_zone(unsigned long, int, unsigned long,
- 		unsigned long, unsigned long, enum meminit_context,
- 		struct vmem_altmap *, int migratetype);
-+extern void memmap_init(unsigned long size, int nid,
-+		unsigned long zone, unsigned long range_start_pfn);
- extern void setup_per_zone_wmarks(void);
- extern int __meminit init_per_zone_wmark_min(void);
- extern void mem_init(void);
+ #ifdef CONFIG_KASAN_HW_TAGS
+-#define arch_enable_tagging()			mte_enable_kernel()
++#define arch_enable_tagging_sync()		mte_enable_kernel_sync()
++#define arch_enable_tagging_async()		mte_enable_kernel_async()
+ #define arch_set_tagging_report_once(state)	mte_set_report_once(state)
+ #define arch_init_tags(max_tag)			mte_init_tags(max_tag)
+ #define arch_get_random_tag()			mte_get_random_tag()
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+index 3748d5bb88c0..8ad981069afb 100644
+--- a/arch/arm64/include/asm/mte-kasan.h
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -29,7 +29,8 @@ u8 mte_get_mem_tag(void *addr);
+ u8 mte_get_random_tag(void);
+ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
+ 
+-void mte_enable_kernel(void);
++void mte_enable_kernel_sync(void);
++void mte_enable_kernel_async(void);
+ void mte_init_tags(u64 max_tag);
+ 
+ void mte_set_report_once(bool state);
+@@ -55,7 +56,11 @@ static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+ 	return addr;
+ }
+ 
+-static inline void mte_enable_kernel(void)
++static inline void mte_enable_kernel_sync(void)
++{
++}
++
++static inline void mte_enable_kernel_async(void)
+ {
+ }
+ 
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index c63b3d7a3cd9..92078e1eb627 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -153,11 +153,23 @@ void mte_init_tags(u64 max_tag)
+ 	write_sysreg_s(SYS_GCR_EL1_RRND | gcr_kernel_excl, SYS_GCR_EL1);
+ }
+ 
+-void mte_enable_kernel(void)
++static inline void __mte_enable_kernel(const char *mode, unsigned long tcf)
+ {
+ 	/* Enable MTE Sync Mode for EL1. */
+-	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
++	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, tcf);
+ 	isb();
++
++	pr_info_once("MTE: enabled in %s mode at EL1\n", mode);
++}
++
++void mte_enable_kernel_sync(void)
++{
++	__mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
++}
++
++void mte_enable_kernel_async(void)
++{
++	__mte_enable_kernel("asynchronous", SCTLR_ELx_TCF_ASYNC);
+ }
+ 
+ void mte_set_report_once(bool state)
 -- 
-2.17.2
+2.30.0
 
