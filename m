@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5250F300FB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF020300FB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbhAVWNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 17:13:44 -0500
-Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:32998 "EHLO
-        blackbox.su" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1729347AbhAVWM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:12:58 -0500
-Received: from metabook.localnet (metabook.metanet [192.168.2.2])
+        id S1730971AbhAVWNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:13:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729227AbhAVWMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 17:12:54 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by blackbox.su (Postfix) with ESMTPSA id CD5D782100;
-        Sat, 23 Jan 2021 01:12:26 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
-        t=1611353546; bh=lWPKTNit76qJXZ2b90ZpRVzOpxGts5CbDZzgBth5kuY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f1No600Ti2Sni2KtM1qQEUBkC9ZQ4oNb5os7ubkDXo+RvP8o5iLGnMBe4zb9sUryj
-         PRujFxWri88BXD9gnxzBydFlh7WhiD4l4FY0gRKMpDfFa4OOOOE7c0ArzHCKRka3lA
-         R5eFYAqdjHzBEb+zwe7xdTHtzX8YG18WI6DB1H2tQ1X889EfGReCKyZKh0I3bqCaVn
-         Nkc2tLbQXNjFq9B2H9tRJBfhkbO/wb73YGhQ6oZN2rTS/vUXYd3brcJmkVG+i37S5x
-         Z0jZZJxypPnETScVngYPQ0bwTgLJFWj8VEStPkDtgR2WMtEaxJEkZJrX71XtT00ZVx
-         sXMgzFhT1ZpRg==
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Simon Horman <simon.horman@netronome.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
-Date:   Sat, 23 Jan 2021 01:11:34 +0300
-Message-ID: <2487479.v6ibHXAnzy@metabook>
-In-Reply-To: <ecc54ce2-cbda-d801-1127-e1c15aa22654@gmail.com>
-References: <20210122214247.6536-1-sbauer@blackbox.su> <ecc54ce2-cbda-d801-1127-e1c15aa22654@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 52C3623B09;
+        Fri, 22 Jan 2021 22:12:13 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 17:12:11 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 3/3] tracing: Remove NULL check from current in
+ tracing_generic_entry_update().
+Message-ID: <20210122171211.3d1de176@gandalf.local.home>
+In-Reply-To: <20210112230057.2374308-4-bigeasy@linutronix.de>
+References: <20210112230057.2374308-1-bigeasy@linutronix.de>
+        <20210112230057.2374308-4-bigeasy@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, January 23, 2021 12:52:48 AM MSK Florian Fainelli wrote:
-> On 1/22/2021 1:42 PM, Sergej Bauer wrote:
-> > From: sbauer@blackbox.su
-> > 
-> > v1->v2:
-> > 	switch to using of fixed_phy as was suggested by Andrew and Florian
-> > 	also features-related parts are removed
-> > 
-> > Previous versions can be found at:
-> > v1:
-> > initial version
-> > 
-> > 	https://lkml.org/lkml/2020/9/17/1272
-> > 
-> > Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
+On Wed, 13 Jan 2021 00:00:57 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+
+> I can't imagine when or why `current' would return a NULL pointer. This
+> check was added in commit
+>       72829bc3d63cd ("ftrace: move enums to ftrace.h and make helper function global")
 > 
-> You are not explaining why you need this and why you are second guessing
-> the fixed PHY MII emulation that already exists. You really need to do a
-> better job at describing your changes and why the emulation offered by
-> swphy.c is not enough for your use case.
+> but it doesn't give me hint why it was needed.
+> 
+> Assume `current' never returns a NULL pointer and remove the check.
 
-ok, I'll try to accomplish it with swphy.
+I'm guessing this is unrelated to the patch series, and I can take this now
+separately.
 
--- 
-                                    Regards,
-                                           Sergej.
+-- Steve
 
 
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  include/linux/trace_events.h | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index aa9123878e126..252dfcabda3c1 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -152,10 +152,8 @@ static inline void tracing_generic_entry_update(struct trace_entry *entry,
+>  						unsigned short type,
+>  						unsigned int trace_ctx)
+>  {
+> -	struct task_struct *tsk = current;
+> -
+>  	entry->preempt_count		= trace_ctx & 0xff;
+> -	entry->pid			= (tsk) ? tsk->pid : 0;
+> +	entry->pid			= current->pid;
+>  	entry->type			= type;
+>  	entry->flags =			trace_ctx >> 16;
+>  }
 
