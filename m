@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DDA300B4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1105F300B48
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbhAVSc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:32:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S1729279AbhAVSbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:31:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729983AbhAVSYF (ORCPT
+        with ESMTP id S1728568AbhAVSYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:24:05 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FD2C061356
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:20:42 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id by1so9026078ejc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:20:42 -0800 (PST)
+        Fri, 22 Jan 2021 13:24:41 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E70C0612F2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:20:44 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id gx5so8986399ejb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:20:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0ync7PZ48gx4UVZHAI7K02vmsl5qLTj/68LiBQ/q3fY=;
-        b=WHKfG20W1NGjqkxbfsmPZbXVg+hViuMYnDXAU3Db0epIqKa31itA4Px7dLa/a9ZraV
-         jL3rOkuREAsWxTgaeEIHnsjLRb0IZIZq0qgFNJYpQMBHwFdtGvSmcbEAMCcPFOWHQtJu
-         FsjBn1w439MPo3jxdbUfiR2XRP0+KUBfo6Ojv/Z1USQYZkU0p8bToG/89tCGtu8w/BJo
-         sVWmFMGHLJQoV4WytiOLbWl5u/A79aeuuMcEDjlpQQnqwq+wgix47u19EbA4r2eIEnIC
-         Xpd/ZA3yBZZCE1DJr4b+W1cn0RURLy7SAqyGueDhSwi0xzp5fK8F8qm+cvQ5B8vikDjN
-         Uv7w==
+        bh=/yCgqi7f2roNb4s5kP0Oap9h52ux6bvqmo8LLvwwwI4=;
+        b=X3QmT+eTFnpj46VwDNdj5PJQHwwQyi8jw+LjbgnrE+X03Us0A/Dik7iimtDDTeFGtk
+         Z/1NV+K8YtlgtjxnUB7jgyE1qB0i+lo1xQDmtQ0qGe+8NphATxuZr9HfhejcFoCJyeMh
+         H9G4Aiwh0CxScKK1RMyvwRkwrUyVoKTnkxddvBlcLtWuA1qqNFHJJtjtIxx7z8rEBO+S
+         Fhl1Je1AHsB3t/gcSnHgkEnaXNs735rQBn2fnxZB0fz+m5j0TUp+djnxd0oVpXKZuyEx
+         XdvMiURlJJoeZxzcAIDYOX/Fxpr1Z0wKA2CIaK28sumQ+Dsyg38CgBLTw0tCfLt3ksTS
+         Kxfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0ync7PZ48gx4UVZHAI7K02vmsl5qLTj/68LiBQ/q3fY=;
-        b=biH+O04c7qSrCMMRaWUz5zF8P2frIMxviz8AVBsDWqMu4bO50TIVYOp1GLjzY/+LBJ
-         gdgORLI0G2bMer5/P+mhqzuxe4LchZ1NcIlSbdKkH8bNXNcAwRKLItoH+I8RSzj/UF5W
-         BMBb97QWcwU1NvP0j0LDQCgPyIY4KD4EDlmGYrLj9EsOszyoZJ5V9DMbAA/23gIDnQSV
-         z7BxysEfEhTWQPBwomRHUd4VTBWL0b4G2fAu0BFeXdvjF/cvKL+L+Xl+PSrTs7+gbtkw
-         RDDKtfer+ZQ8FAhatSNkdTrHJm1ZSfUfRHM0+jkb/+6IDaukA8Pk+os234bKvzb+5DOT
-         PVxw==
-X-Gm-Message-State: AOAM533KNBjxfIXgnAKPYk9Ic/7iaPSjQ2HCHJVZugno6dUl4cr9txp8
-        f1EEJND/Dqj2y99X0bzN7k5RRw==
-X-Google-Smtp-Source: ABdhPJxq4Z+S+aEJXgZVIgei4gpelzO0H045ROe5jVkLKD8AmH04Yk3ARPXBkmynCIBIL6Gn6imcFw==
-X-Received: by 2002:a17:907:d04:: with SMTP id gn4mr2621650ejc.126.1611339641511;
-        Fri, 22 Jan 2021 10:20:41 -0800 (PST)
+        bh=/yCgqi7f2roNb4s5kP0Oap9h52ux6bvqmo8LLvwwwI4=;
+        b=RAfhLaOpic+z02T8iWotsE9htBMaP5Lpbqxh2M+Up+zac/ERzo1vycz1WYxsF3Ik7z
+         SQlQPArPD6PHL+Cq7gWePvBmywAXr3HJ51z4NBKFjDA2rtpQg/Tr/2d4U0cm9Vmm0dsK
+         16Hn8q4IavlSoBEFxoXd6RE6kXzJp/R4qT9oInAevPVP1FRG5wQ1hWeow7t9jaLrvj1u
+         Xvw8mIdMefeN9B8wkvapbUBbNZVfS6PEXwPSEhHUi4YuQVHEgB46tsO3zcGCbjXe1txL
+         yVrNneIBzIxsRzlEdn7x3PGo3MOy0VHVLc9Ue6pKyZ+bVpEBq88CysNsDCfpn05G7IP8
+         mZ2Q==
+X-Gm-Message-State: AOAM533wYLixs1QzqWFz1rzVHtimJGVHYQm4ZBKGWU+ESh5OBTKKG2fI
+        TmZZe8wm3iF3EFRJobaz/O1JPQ==
+X-Google-Smtp-Source: ABdhPJxXPmVqwY1t4uXcCkP9lVxbR/zI4nKGts8fMBhxsSI/fR63+SvIJKhuF88EgHN37UnKRqKZ4A==
+X-Received: by 2002:a17:906:29d4:: with SMTP id y20mr3859274eje.294.1611339642885;
+        Fri, 22 Jan 2021 10:20:42 -0800 (PST)
 Received: from localhost.localdomain ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id h16sm6003359eds.21.2021.01.22.10.20.39
+        by smtp.gmail.com with ESMTPSA id h16sm6003359eds.21.2021.01.22.10.20.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Jan 2021 10:20:40 -0800 (PST)
+        Fri, 22 Jan 2021 10:20:42 -0800 (PST)
 From:   Paolo Valente <paolo.valente@linaro.org>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         Paolo Valente <paolo.valente@linaro.org>,
         Jan Kara <jack@suse.cz>
-Subject: [PATCH BUGFIX/IMPROVEMENT 5/6] block, bfq: avoid spurious switches to soft_rt of interactive queues
-Date:   Fri, 22 Jan 2021 19:19:47 +0100
-Message-Id: <20210122181948.35660-6-paolo.valente@linaro.org>
+Subject: [PATCH BUGFIX/IMPROVEMENT 6/6] block, bfq: do not expire a queue when it is the only busy one
+Date:   Fri, 22 Jan 2021 19:19:48 +0100
+Message-Id: <20210122181948.35660-7-paolo.valente@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210122181948.35660-1-paolo.valente@linaro.org>
 References: <20210122181948.35660-1-paolo.valente@linaro.org>
@@ -65,167 +65,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BFQ tags some bfq_queues as interactive or soft_rt if it deems that
-these bfq_queues contain the I/O of, respectively, interactive or soft
-real-time applications. BFQ privileges both these special types of
-bfq_queues over normal bfq_queues. To privilege a bfq_queue, BFQ
-mainly raises the weight of the bfq_queue. In particular, soft_rt
-bfq_queues get a higher weight than interactive bfq_queues.
-
-A bfq_queue may turn from interactive to soft_rt. And this leads to a
-tricky issue. Soft real-time applications usually start with an
-I/O-bound, interactive phase, in which they load themselves into main
-memory. BFQ correctly detects this phase, and keeps the bfq_queues
-associated with the application in interactive mode for a
-while. Problems arise when the I/O pattern of the application finally
-switches to soft real-time. One of the conditions for a bfq_queue to
-be deemed as soft_rt is that the bfq_queue does not consume too much
-bandwidth. But the bfq_queues associated with a soft real-time
-application consume as much bandwidth as they can in the loading phase
-of the application. So, after the application becomes truly soft
-real-time, a lot of time should pass before the average bandwidth
-consumed by its bfq_queues finally drops to a value acceptable for
-soft_rt bfq_queues. As a consequence, there might be a time gap during
-which the application is not privileged at all, because its bfq_queues
-are not interactive any longer, but cannot be deemed as soft_rt yet.
-
-To avoid this problem, BFQ pretends that an interactive bfq_queue
-consumes zero bandwidth, and allows an interactive bfq_queue to switch
-to soft_rt. Yet, this fake zero-bandwidth consumption easily causes
-the bfq_queue to often switch to soft_rt deceptively, during its
-loading phase. As in soft_rt mode, the bfq_queue gets its bandwidth
-correctly computed, and therefore soon switches back to
-interactive. Then it switches again to soft_rt, and so on. These
-spurious fluctuations usually cause losses of throughput, because they
-deceive BFQ's mechanisms for boosting throughput (injection,
-I/O-plugging avoidance, ...).
-
-This commit addresses this issue as follows:
-1) It does compute actual bandwidth consumption also for interactive
-   bfq_queues. This avoids the above false positives.
-2) When a bfq_queue switches from interactive to normal mode, the
-   consumed bandwidth is reset (forgotten). This allows the
-   bfq_queue to enjoy soft_rt very quickly. In particular, two
-   alternatives are possible in this switch:
-    - the bfq_queue still has backlog, and therefore there is a budget
-      already scheduled to serve the bfq_queue; in this case, the
-      scheduling of the current budget of the bfq_queue is not
-      hindered, because only the scheduling of the next budget will
-      be affected by the weight drop. After that, if the bfq_queue is
-      actually in a soft_rt phase, and becomes empty during the
-      service of its current budget, which is the natural behavior of
-      a soft_rt bfq_queue, then the bfq_queue will be considered as
-      soft_rt when its next I/O arrives. If, in contrast, the
-      bfq_queue remains constantly non-empty, then its next budget
-      will be scheduled with a low weight, which is the natural
-      treatment for an I/O-bound (non soft_rt) bfq_queue.
-    - the bfq_queue is empty; in this case, the bfq_queue may be
-      considered unjustly soft_rt when its new I/O arrives. Yet
-      the problem is now much smaller than before, because it is
-      unlikely that more than one spurious fluctuation occurs.
+This commits preserves I/O-dispatch plugging for a special symmetric
+case that may suddenly turn into asymmetric: the case where only one
+bfq_queue, say bfqq, is busy. In this case, not expiring bfqq does not
+cause any harm to any other queues in terms of service guarantees. In
+contrast, it avoids the following unlucky sequence of events: (1) bfqq
+is expired, (2) a new queue with a lower weight than bfqq becomes busy
+(or more queues), (3) the new queue is served until a new request
+arrives for bfqq, (4) when bfqq is finally served, there are so many
+requests of the new queue in the drive that the pending requests for
+bfqq take a lot of time to be served. In particular, event (2) may
+case even already dispatched requests of bfqq to be delayed, inside
+the drive. So, to avoid this series of events, the scenario is
+preventively declared as asymmetric also if bfqq is the only busy
+queues. By doing so, I/O-dispatch plugging is performed for bfqq.
 
 Tested-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
 ---
- block/bfq-iosched.c | 57 +++++++++++++++++++++++++++++----------------
- 1 file changed, 37 insertions(+), 20 deletions(-)
+ block/bfq-iosched.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 161badb744d6..003c96fa01ad 100644
+index 003c96fa01ad..c045613ce927 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
-@@ -2356,6 +2356,24 @@ static void bfq_requests_merged(struct request_queue *q, struct request *rq,
- /* Must be called with bfqq != NULL */
- static void bfq_bfqq_end_wr(struct bfq_queue *bfqq)
+@@ -3464,20 +3464,38 @@ static void bfq_dispatch_remove(struct request_queue *q, struct request *rq)
+  * order until all the requests already queued in the device have been
+  * served. The last sub-condition commented above somewhat mitigates
+  * this problem for weight-raised queues.
++ *
++ * However, as an additional mitigation for this problem, we preserve
++ * plugging for a special symmetric case that may suddenly turn into
++ * asymmetric: the case where only bfqq is busy. In this case, not
++ * expiring bfqq does not cause any harm to any other queues in terms
++ * of service guarantees. In contrast, it avoids the following unlucky
++ * sequence of events: (1) bfqq is expired, (2) a new queue with a
++ * lower weight than bfqq becomes busy (or more queues), (3) the new
++ * queue is served until a new request arrives for bfqq, (4) when bfqq
++ * is finally served, there are so many requests of the new queue in
++ * the drive that the pending requests for bfqq take a lot of time to
++ * be served. In particular, event (2) may case even already
++ * dispatched requests of bfqq to be delayed, inside the drive. So, to
++ * avoid this series of events, the scenario is preventively declared
++ * as asymmetric also if bfqq is the only busy queues
+  */
+ static bool idling_needed_for_service_guarantees(struct bfq_data *bfqd,
+ 						 struct bfq_queue *bfqq)
  {
-+	/*
-+	 * If bfqq has been enjoying interactive weight-raising, then
-+	 * reset soft_rt_next_start. We do it for the following
-+	 * reason. bfqq may have been conveying the I/O needed to load
-+	 * a soft real-time application. Such an application actually
-+	 * exhibits a soft real-time I/O pattern after it finishes
-+	 * loading, and finally starts doing its job. But, if bfqq has
-+	 * been receiving a lot of bandwidth so far (likely to happen
-+	 * on a fast device), then soft_rt_next_start now contains a
-+	 * high value that. So, without this reset, bfqq would be
-+	 * prevented from being possibly considered as soft_rt for a
-+	 * very long time.
-+	 */
++	int tot_busy_queues = bfq_tot_busy_queues(bfqd);
 +
-+	if (bfqq->wr_cur_max_time !=
-+	    bfqq->bfqd->bfq_wr_rt_max_time)
-+		bfqq->soft_rt_next_start = jiffies;
-+
- 	if (bfq_bfqq_busy(bfqq))
- 		bfqq->bfqd->wr_busy_queues--;
- 	bfqq->wr_coeff = 1;
-@@ -3956,30 +3974,15 @@ void bfq_bfqq_expire(struct bfq_data *bfqd,
- 		 * If we get here, and there are no outstanding
- 		 * requests, then the request pattern is isochronous
- 		 * (see the comments on the function
--		 * bfq_bfqq_softrt_next_start()). Thus we can compute
--		 * soft_rt_next_start. And we do it, unless bfqq is in
--		 * interactive weight raising. We do not do it in the
--		 * latter subcase, for the following reason. bfqq may
--		 * be conveying the I/O needed to load a soft
--		 * real-time application. Such an application will
--		 * actually exhibit a soft real-time I/O pattern after
--		 * it finally starts doing its job. But, if
--		 * soft_rt_next_start is computed here for an
--		 * interactive bfqq, and bfqq had received a lot of
--		 * service before remaining with no outstanding
--		 * request (likely to happen on a fast device), then
--		 * soft_rt_next_start would be assigned such a high
--		 * value that, for a very long time, bfqq would be
--		 * prevented from being possibly considered as soft
--		 * real time.
-+		 * bfq_bfqq_softrt_next_start()). Therefore we can
-+		 * compute soft_rt_next_start.
- 		 *
- 		 * If, instead, the queue still has outstanding
- 		 * requests, then we have to wait for the completion
- 		 * of all the outstanding requests to discover whether
- 		 * the request pattern is actually isochronous.
- 		 */
--		if (bfqq->dispatched == 0 &&
--		    bfqq->wr_coeff != bfqd->bfq_wr_coeff)
-+		if (bfqq->dispatched == 0)
- 			bfqq->soft_rt_next_start =
- 				bfq_bfqq_softrt_next_start(bfqd, bfqq);
- 		else if (bfqq->dispatched > 0) {
-@@ -4563,9 +4566,21 @@ static void bfq_update_wr_data(struct bfq_data *bfqd, struct bfq_queue *bfqq)
- 						bfqq->wr_cur_max_time)) {
- 			if (bfqq->wr_cur_max_time != bfqd->bfq_wr_rt_max_time ||
- 			time_is_before_jiffies(bfqq->wr_start_at_switch_to_srt +
--					       bfq_wr_duration(bfqd)))
-+					       bfq_wr_duration(bfqd))) {
-+				/*
-+				 * Either in interactive weight
-+				 * raising, or in soft_rt weight
-+				 * raising with the
-+				 * interactive-weight-raising period
-+				 * elapsed (so no switch back to
-+				 * interactive weight raising).
-+				 */
- 				bfq_bfqq_end_wr(bfqq);
--			else {
-+			} else { /*
-+				  * soft_rt finishing while still in
-+				  * interactive period, switch back to
-+				  * interactive weight raising
-+				  */
- 				switch_back_to_interactive_wr(bfqq, bfqd);
- 				bfqq->entity.prio_changed = 1;
- 			}
-@@ -5016,6 +5031,8 @@ bfq_set_next_ioprio_data(struct bfq_queue *bfqq, struct bfq_io_cq *bic)
- 	}
+ 	/* No point in idling for bfqq if it won't get requests any longer */
+ 	if (unlikely(!bfqq_process_refs(bfqq)))
+ 		return false;
  
- 	bfqq->entity.new_weight = bfq_ioprio_to_weight(bfqq->new_ioprio);
-+	bfq_log_bfqq(bfqd, bfqq, "new_ioprio %d new_weight %d",
-+		     bfqq->new_ioprio, bfqq->entity.new_weight);
- 	bfqq->entity.prio_changed = 1;
+ 	return (bfqq->wr_coeff > 1 &&
+ 		(bfqd->wr_busy_queues <
+-		 bfq_tot_busy_queues(bfqd) ||
++		 tot_busy_queues ||
+ 		 bfqd->rq_in_driver >=
+ 		 bfqq->dispatched + 4)) ||
+-		bfq_asymmetric_scenario(bfqd, bfqq);
++		bfq_asymmetric_scenario(bfqd, bfqq) ||
++		tot_busy_queues == 1;
  }
  
+ static bool __bfq_bfqq_expire(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 -- 
 2.20.1
 
