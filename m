@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58EE300222
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4131430021B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727498AbhAVL4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:56:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53314 "EHLO mail.kernel.org"
+        id S1727384AbhAVLz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:55:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728007AbhAVK7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:59:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 621152246B;
-        Fri, 22 Jan 2021 10:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611313153;
-        bh=ToPFueIhXgEfx/oW5tXGyVwgF7YBY5yyAHNHMR2G0xU=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=SyOhdn1Yxd69mDdaLrB5sZIcPLIJjXbcgQmJ7omvyscplZvo0hHGcvdHrYBENuRZH
-         cl74KtomsfjD/FAapiELLsd8h2QqHcGOnDc/TSZIJWI+0aMbuF24YnqY+QwXEoyppo
-         CKYbuBnObOvbzXH2OPHZmakfFEC+ODood3iPHVHbRFhDdSSVMyEWjqBIegj9o7qhkj
-         j1hOHJAoovJkbJeZr7/EBbE+8crdHrIBSEPLO+Xba37PkLcR5jwTj9d5FytG3pKML0
-         6ykHKEnZx0GSKoI79a5TqOUft8kSao/33ZHmS+EaWKzSVMYUXEm5I2mCmZWdTmajVp
-         lasGnkCo8O3Xw==
-Date:   Fri, 22 Jan 2021 11:59:09 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-doc@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] Documentation: livepatch: Document reliable
- stacktrace and minor cleanup
-In-Reply-To: <20210121115226.565790ef@lwn.net>
-Message-ID: <nycvar.YFH.7.76.2101221158450.5622@cbobk.fhfr.pm>
-References: <20210120164714.16581-1-broonie@kernel.org> <20210121115226.565790ef@lwn.net>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728062AbhAVLAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:00:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CF57235DD;
+        Fri, 22 Jan 2021 10:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611313169;
+        bh=WOPhFI7l2O3aeqpheaCHgCUoNQOnVQEkGsb/DxneUks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wgQTA9L39OsGUBukWkkW9DfHGP5Vl53tTNpJxLQ4g94TxA1WMjFVOw14gHaUJSogG
+         y5lnF8LFKXHC3v505MEX2V8o61f+fO6NsjEQgpKI8P4ukJPnc42HR9jZVaLy0isqKg
+         Bjuid1KkUf8DHsOzNDPWFvqv3Lrl9RS9eBQ6FLOA=
+Date:   Fri, 22 Jan 2021 11:59:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Denis Efremov <efremov@linux.com>,
+        Gaurav Kohli <gkohli@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        stable@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+Message-ID: <YAqwD/ivTgVJ7aap@kroah.com>
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+ <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+ <20210121140951.2a554a5e@gandalf.local.home>
+ <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
+ <20210121153732.43d7b96b@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121153732.43d7b96b@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021, Jonathan Corbet wrote:
-
-> > This series adds a document, mainly written by Mark Rutland, which 
-> > makes explicit the requirements for implementing reliable stacktrace 
-> > in order to aid architectures adding this feature.  It also updates 
-> > the other livepatching documents to use automatically generated tables 
-> > of contents following review comments on Mark's document.
+On Thu, Jan 21, 2021 at 03:37:32PM -0500, Steven Rostedt wrote:
+> On Thu, 21 Jan 2021 23:15:22 +0300
+> Denis Efremov <efremov@linux.com> wrote:
 > 
-> So...is this deemed ready and, if so, do you want it to go through the
-> docs tree or via some other path?
+> > On 1/21/21 10:09 PM, Steven Rostedt wrote:
+> > > On Thu, 21 Jan 2021 17:30:40 +0300
+> > > Denis Efremov <efremov@linux.com> wrote:
+> > >   
+> > >> Hi,
+> > >>
+> > >> This patch (CVE-2020-27825) was tagged with
+> > >> Fixes: b23d7a5f4a07a ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
+> > >>
+> > >> I'm not an expert here but it seems like b23d7a5f4a07a only refactored
+> > >> ring_buffer_reset_cpu() by introducing reset_disabled_cpu_buffer() without
+> > >> significant changes. Hence, mutex_lock(&buffer->mutex)/mutex_unlock(&buffer->mutex)
+> > >> can be backported further than b23d7a5f4a07a~ and to all LTS kernels. Is
+> > >> b23d7a5f4a07a the actual cause of the bug?
+> > >>  
+> > > 
+> > > Ug, that looks to be a mistake. Looking back at the thread about this:
+> > > 
+> > >   https://lore.kernel.org/linux-arm-msm/20200915141304.41fa7c30@gandalf.local.home/  
+> > 
+> > I see from the link that it was planned to backport the patch to LTS kernels:
+> > 
+> > > Actually we are seeing issue in older kernel like 4.19/4.14/5.4 and there below patch was not 
+> > > present in stable branches:
+> > > Commit b23d7a5f4a07 ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")  
+> > 
+> > The point is that it's not backported yet. Maybe because of Fixes tag. I've discovered
+> > this while trying to formalize CVE-2020-27825 bug in cvehound
+> > https://github.com/evdenis/cvehound/blob/master/cvehound/cve/CVE-2020-27825.cocci
+> > 
+> > I think that the backport to the 4.4+ should be something like:
+> > 
+> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> > index 547a3a5ac57b..2171b377bbc1 100644
+> > --- a/kernel/trace/ring_buffer.c
+> > +++ b/kernel/trace/ring_buffer.c
+> > @@ -4295,6 +4295,8 @@ void ring_buffer_reset_cpu(struct ring_buffer *buffer, int cpu)
+> >  	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+> >  		return;
+> >  
+> > +	mutex_lock(&buffer->mutex);
+> > +
+> >  	atomic_inc(&buffer->resize_disabled);
+> >  	atomic_inc(&cpu_buffer->record_disabled);
+> >  
+> > @@ -4317,6 +4319,8 @@ void ring_buffer_reset_cpu(struct ring_buffer *buffer, int cpu)
+> >  
+> >  	atomic_dec(&cpu_buffer->record_disabled);
+> >  	atomic_dec(&buffer->resize_disabled);
+> > +
+> > +	mutex_unlock(&buffer->mutex);
+> >  }
+> >  EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
+> >  
+> 
+> That could possibly work.
 
-I am planning to take it through livepatching tree unless there are any 
-additional last-minutes comments.
+Ok, so what can I do here?  Can someone resend this as a backport to the
+other stable kernels in this way so that I can queue it up?
 
-Thanks,
+thanks,
 
--- 
-Jiri Kosina
-SUSE Labs
-
+greg k-h
