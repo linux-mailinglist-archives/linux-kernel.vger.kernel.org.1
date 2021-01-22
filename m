@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFD0300784
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0F5300799
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729150AbhAVPj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:39:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729036AbhAVPhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:37:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE0E121D81;
-        Fri, 22 Jan 2021 15:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611329825;
-        bh=5lUEVa9PLDcanPTqWiXyf4Bt1OUsW3C1JiiAQUQkAQ0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HZCy4Jp80NfNKEEkvvZTGGy1RRUqAm8otgYs9H/jDw785nwvA219LiXDNK1cF6vco
-         EkMWsaFpNL5qFVNU8c4ftIb/vsU7/blRLRXx2v0A+X1QAgR7H5MKh5u8ITcdBjJY7y
-         6CnAQiJatUt2YGH/Ef+Pk59y8gWyjtDwvKVDlKPBTMQx8aICHZeD3gc3TCWFG3ZRv9
-         QYnrlaZRhZLxef8SRRtc3wbI/yIt9aLWPNcKL193Zmq/njtER8gampIKESbswH3uuy
-         DxgHDTXKFR6yAITXikTvLHSBTgGXJ9VyJ2yhYlWqIfjUObV2+M+5BB2lzZakCRm2C+
-         wRUmWW4P3cnyA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B038F3522649; Fri, 22 Jan 2021 07:37:04 -0800 (PST)
-Date:   Fri, 22 Jan 2021 07:37:04 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: rcu-torture: Internal error: Oops: 96000006
-Message-ID: <20210122153704.GG2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
- <20210121185521.GQ2743@paulmck-ThinkPad-P72>
- <20210121213110.GB23234@willie-the-truck>
- <20210121214314.GW2743@paulmck-ThinkPad-P72>
- <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
+        id S1729009AbhAVPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:42:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43673 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728928AbhAVPjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:39:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611329890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wb8K8yRwy7/Q2PW+RBRkYiUuWBogUfQ/CxNqMHvoHDw=;
+        b=IGppbCZTnidVVXOMxZKqI+gUoYWtdMFvOWLzYhLeMhxwcnS1uXJpx1aF8qc4/u+O3rXCdn
+        GgXL0U96dgqm14pwAg0/o9e4U9dW+8oyaBvJoSpM72P20z0V5Umj2Zs0K2ai19A1kAq+U3
+        EvkYjAt1m5np41YdumeVODuf3h1FXQ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-2YIk_iI2PuKliFe3J3ORAQ-1; Fri, 22 Jan 2021 10:38:08 -0500
+X-MC-Unique: 2YIk_iI2PuKliFe3J3ORAQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0967D8144E1;
+        Fri, 22 Jan 2021 15:38:07 +0000 (UTC)
+Received: from [10.36.114.142] (ovpn-114-142.ams2.redhat.com [10.36.114.142])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E6BF5DA30;
+        Fri, 22 Jan 2021 15:38:05 +0000 (UTC)
+Subject: Re: [PATCH v5 1/5] mm: fix prototype warning from kernel test robot
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
+        lkp@intel.com
+References: <20210122135956.5946-1-bhe@redhat.com>
+ <20210122135956.5946-2-bhe@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <7e6ff678-9d87-9b01-e247-01c549a18529@redhat.com>
+Date:   Fri, 22 Jan 2021 16:38:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210122135956.5946-2-bhe@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 03:21:07PM +0530, Naresh Kamboju wrote:
-> On Fri, 22 Jan 2021 at 03:13, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
-> > > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
-> > > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
-> > > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
-> > > > > the following kernel crash noticed. This started happening from Linux next
-> > > > > next-20210111 tag to next-20210121.
-> > > > >
-> > > > > metadata:
-> > > > >   git branch: master
-> > > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-> > > > >   git describe: next-20210111
-> > > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
-> > > > >
-> > > > > output log:
-> > > > >
-> > > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
-> > > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
-> > > > > = ffff8000091ab8e0
-> > > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
-> > > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
-> > > > > virtual address 0000000000000008
-> > >
-> > > [...]
-> > >
-> > > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
-> > > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
-> > > > like your configuration rejects NULL as an invalid virtual address,
-> > > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
-> > > > are not allowed to dereference a ZERO_SIZE_PTR?
-> > > >
-> > > > Adding the ARM64 guys on CC for their thoughts.
-> > >
-> > > Spooky timing, there was a thread _today_ about that:
-> > >
-> > > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
-> >
-> > Very good, then my workaround (shown below for Naresh's ease of testing)
-> > is only a short-term workaround.  Yay!  ;-)
+On 22.01.21 14:59, Baoquan He wrote:
+> Kernel test robot calling make with 'W=1' is triggering warning like
+> below for memmap_init_zone() function.
 > 
-> Paul, thanks for your (short-term workaround) patch.
+> mm/page_alloc.c:6259:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
+>  6259 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
+>       |                       ^~~~~~~~~~~~~~~~
 > 
-> I have applied your patch and tested rcu-torture test on qemu_arm64 and
-> the reported issues has been fixed.
+> Fix it by adding the function declaration in include/linux/mm.h.
+> Since memmap_init_zone() has a generic version with '__weak',
+> the declaratoin in ia64 header file can be simply removed.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  arch/ia64/include/asm/pgtable.h | 6 ------
+>  include/linux/mm.h              | 2 ++
+>  2 files changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
+> index 779b6972aa84..9b4efe89e62d 100644
+> --- a/arch/ia64/include/asm/pgtable.h
+> +++ b/arch/ia64/include/asm/pgtable.h
+> @@ -517,12 +517,6 @@ extern struct page *zero_page_memmap_ptr;
+>  	__changed;							\
+>  })
+>  #endif
+> -
+> -#  ifdef CONFIG_VIRTUAL_MEM_MAP
+> -  /* arch mem_map init routine is needed due to holes in a virtual mem_map */
+> -    extern void memmap_init (unsigned long size, int nid, unsigned long zone,
+> -			     unsigned long start_pfn);
+> -#  endif /* CONFIG_VIRTUAL_MEM_MAP */
+>  # endif /* !__ASSEMBLY__ */
+>  
+>  /*
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 3dac7bc667ee..3d82b4f7cabc 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2401,6 +2401,8 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
+>  extern void memmap_init_zone(unsigned long, int, unsigned long,
+>  		unsigned long, unsigned long, enum meminit_context,
+>  		struct vmem_altmap *, int migratetype);
+> +extern void memmap_init(unsigned long size, int nid,
+> +		unsigned long zone, unsigned long range_start_pfn);
+>  extern void setup_per_zone_wmarks(void);
+>  extern int __meminit init_per_zone_wmark_min(void);
+>  extern void mem_init(void);
+> 
 
-May I add your Tested-by?
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-And before I forget again, good to see the rcutorture testing on a
-non-x86 platform!
+-- 
+Thanks,
 
-							Thanx, Paul
+David / dhildenb
+
