@@ -2,137 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625E82FFE52
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56022FFE59
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbhAVIht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:37:49 -0500
-Received: from mail-am6eur05on2100.outbound.protection.outlook.com ([40.107.22.100]:13760
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727039AbhAVIgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:36:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bOimxrCsTpEHlKEvG7ZM++Y9tp93AIcs9BgDfC2eQy84BlJ7G5gP0k9aCSBrFg0htBLK+8pOD7prvwRbc5snzyJkoVYohwZXqUrcnP7PTlvF1VsRjTfCyq9Upj3tRnulemFbrGO6BNLBOHJlLsNFD1PREF+htZzW9AFfauoviUMy9FJo3dxOOEIylRrEO3dywooHkPc0J3TCW9zBSQEFAIitgX5zr/jp31g/3Ac8OlSBPB5FN1dhQZ0iSt9POPwY8wxOPh8NxkN6akQ9ZKmMRboyFotV7kzRwOQET8NOcdkwLvg5Ce88jnusghUJmCZ66zPhooDFpd/lfq6btY8kFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wBamk3jV1e/20yiEnGTjwutAMzMw5XXQAkypQaXFuPU=;
- b=OdmFequtekOwigIixcls4zBMpoAXllESKDOY+D/22BnIfUZcWUrDRUSLKO9/ztlmasZTWXrR8qT5nEmBUvi6H65O+pabaXiBTM+PXV1fme+atOdnkQnH0i0G2zBL/dYbnwTyGE/h/LzWhvJZKarMx5KySTzq/xzbadP1ogE1+TlQNO36sb98q48Bd6iuCJAI93hRfBoG4CAmgKmEJSouj+UrXrPbDk3HEM8pOjnHZl3RH3wDGbq/RPrxpbsVR0Tp6Fk2IjKJjoeVnu+2yMdC7/KjcFVSYofCcdi0EjSa8NIybD1AeiXpXHxGZh+QBsKSMiPepNv0v9mJ7KrxOXU9fA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wBamk3jV1e/20yiEnGTjwutAMzMw5XXQAkypQaXFuPU=;
- b=egv+xOzym1fNWHea0auWZwz3tHVoMpasdndV4AieG4i6n28VfxZfBt9nLO7Pje6htT+7mh/oD5dmptYg6KoEkpzH8ULlSCg+83t51M2e7gQaZqLgFePU95NOwnewW9/iTA1hj+xXrS+h3IhHsyno0Cv4qcu2J8E+M3ATpU5F4Nw=
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:19b::9)
- by AM9P190MB1282.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:26d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Fri, 22 Jan
- 2021 08:36:02 +0000
-Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::3011:87e8:b505:d066]) by AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
- ([fe80::3011:87e8:b505:d066%9]) with mapi id 15.20.3784.015; Fri, 22 Jan 2021
- 08:36:01 +0000
-From:   Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-To:     Jakub Kicinski <kuba@kernel.org>, Ido Schimmel <idosch@idosch.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Thread-Topic: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Thread-Index: AQHW8JmdV3Ghn6zeuUSyZ1aU9R+t1A==
-Date:   Fri, 22 Jan 2021 08:36:01 +0000
-Message-ID: <AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=plvision.eu;
-x-originating-ip: [185.219.76.174]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: be2114f5-1d15-45d4-bc5e-08d8beb0c01e
-x-ms-traffictypediagnostic: AM9P190MB1282:
-x-microsoft-antispam-prvs: <AM9P190MB12820EBB625D32EB82B71857E4A00@AM9P190MB1282.EURP190.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6e8nBM6RTMvP4/biXl6xdqmbL0+8G3pRnlCZdccNkCzw9E9TjGNdzcOVVATbeTZyj7Pc0CF/U4DS4bwKmonkpt2LZ1ll1o54+5E2lEYH5RGaAJ+zv/+fxyQyyrkqoFRprh8mVp7KCYiKNdDC/SknW6N2RicBFsn2CySudoJllKriJkFbQgsna1nOKwrqWfrlSVFKvyKf0TceWluM3MrEOmnuWG+hakVYW4tBB/68ffPbN6h0UmcO2NxT+51y+/yDNMyJ5cPeR/YnFc7zQyOVv1kLUF53wreJ06J1YS4VCrbJtnRnjkOiMtDUoqf9Cr6fNLs8UNhJZ/UGPcQyiw/1z1xVtyENvtfJ9m1rwvxCXD+8Lkf55JxKUFD3hFYOnkQppieDIdsUN1zFwJs0CIB0sQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0P190MB0738.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(366004)(39830400003)(396003)(136003)(376002)(186003)(8676002)(8936002)(83380400001)(66476007)(91956017)(4326008)(26005)(5660300002)(7696005)(54906003)(66446008)(71200400001)(316002)(64756008)(6506007)(66946007)(86362001)(9686003)(44832011)(76116006)(478600001)(33656002)(66556008)(55016002)(110136005)(52536014)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?gIAVVpzC8h+arLBE/1B7sm/bI0wZWN7IzjUOfoFXIMdklinM3m9jb3sHMa?=
- =?iso-8859-1?Q?+PHYuDcTqmTwv4AD6JTE7jGAwTYgS6FttdKYIaJpDVTNZNng4O1P3/DU5k?=
- =?iso-8859-1?Q?3B6ggJ/UfrNp76e5UU39ExP8l0eM3EZw1ao1xKd/D5YME9r5Z3UGCHITE6?=
- =?iso-8859-1?Q?KjAPwHnLv6eHmUfoYe+wGJsqSkgllhX7Bu/YvcMPb69x8T3K6ncjSW63lY?=
- =?iso-8859-1?Q?z/FdAX0bT4YS2BcnH61c/GdlaEsE5jlRuPoUrOMk9DRL92egXJDeGXaRcx?=
- =?iso-8859-1?Q?jzZg0MKQtgnV5GTsLc8R+u4Z6WI+Tc8irug+NXap79im86YfgELZ/BEL4B?=
- =?iso-8859-1?Q?VEpAIE8RBbFV9GUI0ELcaK6dAzSTJ8JcPQPC92wqgJBSyCiz5NjDTZoPhA?=
- =?iso-8859-1?Q?SdWRaWr/GPPoc7cwXQovM1FJgpeWWnedJ8Vd2lvnFPGC/8O/onmaOBY3Sn?=
- =?iso-8859-1?Q?RQDYr59T6tBr03u8dspvY6GVyt2oGz4FF2dymyHPLmHavCgt9aHSEQir8t?=
- =?iso-8859-1?Q?I/ahCOM7o9HyEzH42laMDZsMdetAJ4W7NT0vKr6WsYGAmHRTKafnd+3M/N?=
- =?iso-8859-1?Q?mUPyG/KmWbQ+tO/ZVA7Pyg8eCFG/q6aANpjb6z6JKmhIR3KWjsdbYFFuYl?=
- =?iso-8859-1?Q?BLe1j5/2qrTh46WzeOpvrGqDn3yz+Nlkkn+LDTpx6SU8QtZWmT+fSc86MG?=
- =?iso-8859-1?Q?DJWR44T5Y2xPSKhMRlqYe4LYQrNqpa+sluIPo/yjVZ1LxaMZBTjyGdWY+O?=
- =?iso-8859-1?Q?gTjGbt6jbLsEfWV6Upu51nwwLmV2/R3BlNf74UjzWYgTyXuMWZB94mFpJy?=
- =?iso-8859-1?Q?O0n6oZ9vWvRSoIliJn6IQ0u23BONBbyjoLDQuonSepvzo1NCegAWia+BXX?=
- =?iso-8859-1?Q?gvmb0y0g6gwhT7FOgsUX8vWkTgMZS61NhEQl+cW5dt5aRk2TqWnlVMhK9k?=
- =?iso-8859-1?Q?IJWo2t6P3+SKdAMgAShPhLRJiJh+e8GEOyYVTd4J6gT7ad7QVh9BUTrC2/?=
- =?iso-8859-1?Q?9Jmj9iokd7jG8NYjBPM3BOD1A6RODA75yBwFeGvp7y3l4QfrrqcIE8KkTl?=
- =?iso-8859-1?Q?XcUW7d7u+Hh1kiSFho4u+jeeH5zRwE5dfFzZh1nSNxUa?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: be2114f5-1d15-45d4-bc5e-08d8beb0c01e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 08:36:01.9268
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fIJU33ap4k12tLFOpjx+5v2yYNEf/KDB5dXOwh5gcOZJOjvtykHimVyarl/J30GjCo7X1NpuzG1bAsBUDKEESO+2cX+iOVwNFT505fGMdLI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P190MB1282
+        id S1726356AbhAVIjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727104AbhAVIhl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:37:41 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD0FC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:42 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id a17so3512331qko.11
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=/loUu6vahZkS+DgRyeYaEYa+/8d+xNLusMOWtt4d4Xc=;
+        b=UTQXNDM57HcOuPjMonbX8Dp9RZJ6iBtqZgEk3E5CZ3/03fvQKGM4eTahx8QEtJ7Y9V
+         NWCivoriBYdo7JK5CW/l2qR6+JY90H1vTfxD1gCVCf+nfg3a7ciVtpx+FRpsAfAfksmA
+         gczwGigM6wuWjBtHhFkNveBGRamh7viSTZ6cktMak9BrWX1Qe1sTAeNlx3lNZG3NOtVD
+         QvTjYEfd/YlMymcpv+v6pcNKRfqgBFKW9zjpXkbN8tUhHhEJdWrM9BmE6XEUiT96flUa
+         opLPZqK0KxULnTRBJlKIENLPAOAnSxfdKdztl2270Pss7Pw/4jJ8FCJGDGSv7whHmVlJ
+         AUZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=/loUu6vahZkS+DgRyeYaEYa+/8d+xNLusMOWtt4d4Xc=;
+        b=eFrTMtU1M0idJ7VvbNrt2A4EemOsJ82Nud0kvBNcweEW9ygYhJIZ2rCtkL2rlxrwly
+         MsijqRp0WEO785YfljJtan+whixZT7QlD1AWbMJE4BYSIgPuhxSbzGPkuduWLpunR6TN
+         ZRgWiKSDocRJ2E/qz2yUaltJWV7MMf87f7gZgk8Jt74MzvKx1+nSqyxKlAQrunVh6tdD
+         uXhRotTrCE6fvIG80h+kC8BAhLahAMJmFNGl4c0kS7Atq4BEOJnJURoRl27CJUVQfQdh
+         z0I/UvB8BkVZTAntuiD4wvT8h+OnLFSHPXTzxDjw1L1YFx3fCOJ/JdMREp0u0xFk+dXF
+         VcKg==
+X-Gm-Message-State: AOAM5336cmDmfSgcIKsyDB4D8o3ywKRN2/pt7Ffk+sZ8Yn3bGCqF+Zjr
+        P/c+xuD79YLuwmG4ldgOAWbhRThrgjJW
+X-Google-Smtp-Source: ABdhPJxlAUHU/27LoRLCLwnQ05NNt+jk73KlTXDocq7mRftCJ6tH7pH45rdqwqaFegn3gAO72BSOTA20zd3W
+Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:f693:9fff:fef4:2347])
+ (user=apusaka job=sendgmr) by 2002:a05:6214:11ab:: with SMTP id
+ u11mr3523981qvv.17.1611304601908; Fri, 22 Jan 2021 00:36:41 -0800 (PST)
+Date:   Fri, 22 Jan 2021 16:36:14 +0800
+In-Reply-To: <20210122083617.3163489-1-apusaka@google.com>
+Message-Id: <20210122163457.v6.4.I215b0904cb68d68ac780a0c75c06f7d12e6147b7@changeid>
+Mime-Version: 1.0
+References: <20210122083617.3163489-1-apusaka@google.com>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH v6 4/7] Bluetooth: advmon offload MSFT handle controller reset
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Yun-Hao Chung <howardchung@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 14:21:52 +0200 Ido Schimmel wrote:=0A=
-> On Thu, Jan 21, 2021 at 01:29:37PM +0200, Oleksandr Mazur wrote:=0A=
-> > Add new trap action HARD_DROP, which can be used by the=0A=
-> > drivers to register traps, where it's impossible to get=0A=
-> > packet reported to the devlink subsystem by the device=0A=
-> > driver, because it's impossible to retrieve dropped packet=0A=
-> > from the device itself.=0A=
-> > In order to use this action, driver must also register=0A=
-> > additional devlink operation - callback that is used=0A=
-> > to retrieve number of packets that have been dropped by=0A=
-> > the device.=A0 =0A=
-> =0A=
-> Are these global statistics about number of packets the hardware dropped=
-=0A=
-> for a specific reason or are these per-port statistics?=0A=
-> =0A=
-> It's a creative use of devlink-trap interface, but I think it makes=0A=
-> sense. Better to re-use an existing interface than creating yet another=
-=0A=
-> one.=0A=
-=0A=
-> Not sure if I agree, if we can't trap why is it a trap?=0A=
-> It's just a counter.=0A=
-=0A=
-It's just another ACTION for trap item. Action however can be switched, e.g=
-. from HARD_DROP to MIRROR.=0A=
-=0A=
-The thing is to be able to configure specific trap to be dropped, and provi=
-de a way for the device to report back how many packets have been dropped.=
-=0A=
-If device is able to report the packet itself, then devlink would be in cha=
-rge of counting. If not, there should be a way to retrieve these statistics=
- from the devlink.=
+From: Archie Pusaka <apusaka@chromium.org>
+
+When the controller is powered off, the registered advertising monitor
+is removed from the controller. This patch handles the re-registration
+of those monitors when the power is on.
+
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Yun-Hao Chung <howardchung@google.com>
+
+---
+
+(no changes since v5)
+
+Changes in v5:
+* Discard struct flags on msft_data and use it's members directly
+
+ net/bluetooth/msft.c | 76 +++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 71 insertions(+), 5 deletions(-)
+
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index f5aa0e3b1b9b..d25c6936daa4 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -82,8 +82,12 @@ struct msft_data {
+ 	struct list_head handle_map;
+ 	__u16 pending_add_handle;
+ 	__u16 pending_remove_handle;
++	__u8 reregistering;
+ };
+ 
++static int __msft_add_monitor_pattern(struct hci_dev *hdev,
++				      struct adv_monitor *monitor);
++
+ bool msft_monitor_supported(struct hci_dev *hdev)
+ {
+ 	return !!(msft_get_features(hdev) & MSFT_FEATURE_MASK_LE_ADV_MONITOR);
+@@ -134,6 +138,35 @@ static bool read_supported_features(struct hci_dev *hdev,
+ 	return false;
+ }
+ 
++/* This function requires the caller holds hdev->lock */
++static void reregister_monitor_on_restart(struct hci_dev *hdev, int handle)
++{
++	struct adv_monitor *monitor;
++	struct msft_data *msft = hdev->msft_data;
++	int err;
++
++	while (1) {
++		monitor = idr_get_next(&hdev->adv_monitors_idr, &handle);
++		if (!monitor) {
++			/* All monitors have been reregistered */
++			msft->reregistering = false;
++			hci_update_background_scan(hdev);
++			return;
++		}
++
++		msft->pending_add_handle = (u16)handle;
++		err = __msft_add_monitor_pattern(hdev, monitor);
++
++		/* If success, we return and wait for monitor added callback */
++		if (!err)
++			return;
++
++		/* Otherwise remove the monitor and keep registering */
++		hci_free_adv_monitor(hdev, monitor);
++		handle++;
++	}
++}
++
+ void msft_do_open(struct hci_dev *hdev)
+ {
+ 	struct msft_data *msft;
+@@ -154,12 +187,18 @@ void msft_do_open(struct hci_dev *hdev)
+ 
+ 	INIT_LIST_HEAD(&msft->handle_map);
+ 	hdev->msft_data = msft;
++
++	if (msft_monitor_supported(hdev)) {
++		msft->reregistering = true;
++		reregister_monitor_on_restart(hdev, 0);
++	}
+ }
+ 
+ void msft_do_close(struct hci_dev *hdev)
+ {
+ 	struct msft_data *msft = hdev->msft_data;
+ 	struct msft_monitor_advertisement_handle_data *handle_data, *tmp;
++	struct adv_monitor *monitor;
+ 
+ 	if (!msft)
+ 		return;
+@@ -169,6 +208,12 @@ void msft_do_close(struct hci_dev *hdev)
+ 	hdev->msft_data = NULL;
+ 
+ 	list_for_each_entry_safe(handle_data, tmp, &msft->handle_map, list) {
++		monitor = idr_find(&hdev->adv_monitors_idr,
++				   handle_data->mgmt_handle);
++
++		if (monitor && monitor->state == ADV_MONITOR_STATE_OFFLOADED)
++			monitor->state = ADV_MONITOR_STATE_REGISTERED;
++
+ 		list_del(&handle_data->list);
+ 		kfree(handle_data);
+ 	}
+@@ -282,9 +327,15 @@ static void msft_le_monitor_advertisement_cb(struct hci_dev *hdev,
+ 	if (status && monitor)
+ 		hci_free_adv_monitor(hdev, monitor);
+ 
++	/* If in restart/reregister sequence, keep registering. */
++	if (msft->reregistering)
++		reregister_monitor_on_restart(hdev,
++					      msft->pending_add_handle + 1);
++
+ 	hci_dev_unlock(hdev);
+ 
+-	hci_add_adv_patterns_monitor_complete(hdev, status);
++	if (!msft->reregistering)
++		hci_add_adv_patterns_monitor_complete(hdev, status);
+ }
+ 
+ static void msft_le_cancel_monitor_advertisement_cb(struct hci_dev *hdev,
+@@ -374,7 +425,8 @@ static bool msft_monitor_pattern_valid(struct adv_monitor *monitor)
+ }
+ 
+ /* This function requires the caller holds hdev->lock */
+-int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
++static int __msft_add_monitor_pattern(struct hci_dev *hdev,
++				      struct adv_monitor *monitor)
+ {
+ 	struct msft_cp_le_monitor_advertisement *cp;
+ 	struct msft_le_monitor_advertisement_pattern_data *pattern_data;
+@@ -387,9 +439,6 @@ int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
+ 	u8 pattern_count = 0;
+ 	int err = 0;
+ 
+-	if (!msft)
+-		return -EOPNOTSUPP;
+-
+ 	if (!msft_monitor_pattern_valid(monitor))
+ 		return -EINVAL;
+ 
+@@ -434,6 +483,20 @@ int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
+ 	return err;
+ }
+ 
++/* This function requires the caller holds hdev->lock */
++int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
++{
++	struct msft_data *msft = hdev->msft_data;
++
++	if (!msft)
++		return -EOPNOTSUPP;
++
++	if (msft->reregistering)
++		return -EBUSY;
++
++	return __msft_add_monitor_pattern(hdev, monitor);
++}
++
+ /* This function requires the caller holds hdev->lock */
+ int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
+ 			u16 handle)
+@@ -447,6 +510,9 @@ int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
+ 	if (!msft)
+ 		return -EOPNOTSUPP;
+ 
++	if (msft->reregistering)
++		return -EBUSY;
++
+ 	handle_data = msft_find_handle_data(hdev, monitor->handle, true);
+ 
+ 	/* If no matched handle, just remove without telling controller */
+-- 
+2.30.0.280.ga3ce27912f-goog
+
