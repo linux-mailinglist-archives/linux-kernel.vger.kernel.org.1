@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88677300A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00144300A6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728720AbhAVRvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:51:16 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55692 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729258AbhAVRm1 (ORCPT
+        id S1729886AbhAVRyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:54:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729051AbhAVRmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:42:27 -0500
-Date:   Fri, 22 Jan 2021 17:41:33 -0000
+        Fri, 22 Jan 2021 12:42:17 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BC4C06174A;
+        Fri, 22 Jan 2021 09:41:37 -0800 (PST)
+Date:   Fri, 22 Jan 2021 17:41:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611337294;
+        s=2020; t=1611337295;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BPTueTNRul09a8MYVe1wx5xGuwjt8IYbYfuKNruUD78=;
-        b=Zx93SxlJac2AZ95YtQTZrob0mHENJIwwqjDLMO8s9NKb0+eZpY88AYoZldUF0ac2Iw+EYh
-        In/ILW4AKSjdZ2zyN/wvHkv8SLEZ6b+TM2uNl64Ldf4g8/sj/3+JPpv/R2ALUqfpbwZoHw
-        nAwAFv0B8q4bR0f/jr+Ddr45e36mWJsA+Y9M3bfZwfb8akO2KJBnf5QkByzo4AoMv2mjFX
-        1XIIwk+P9dk5It6DWyvM885eCROPvTW3NVHF+7G79PO0hsBIu0gh4MeKjQYc8Sh2jeHDKw
-        6I/fDtndoVrwr3gzJhwb2qnVzvrYW04Yzxm8Vehs4ASjknjJcYpH93SXEaFwag==
+        bh=vWApvcSANT83v+JCFoco0KltM/bSpHt02z6aEBwqOwM=;
+        b=YGn4cbX6FfsI8h+4NWIzlIWEWeBQSt4ZE5CsaofTTkz63IXrGZoFk7lA/xHCXfXXJ2zPSd
+        R5WSBQyviOaKdlngilb5ePxMowvzXxl6pp+ULcQgmXMVi+R2CMCqyC2Nls7+ERkP/heSK5
+        BPooZASD/CwOZZgQHjKDJPqqbbNQiqt1z/SoexPYqRwOYKAq4HsDrzABbEd95XLliVdN32
+        pEZBrJFSXGO2TphRn7ungvjVC/24q+A66lqrqojK/IE16htRa5OuqCNZmZVXahjDEwDxYM
+        kC/gUHp+bukmjVcBEwIZXJzSihQZ1uqf6rd7CQJ+eAF4JqNZFBsMz+v6QDacbg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611337294;
+        s=2020e; t=1611337295;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BPTueTNRul09a8MYVe1wx5xGuwjt8IYbYfuKNruUD78=;
-        b=V1DPrlgJfrs1tLS/vJ8IqYxTikxQnv8uk8vL2/S0WRQnmo9sI+g3LVKnXrv8E/XZcW70KM
-        sdiEILC1WedhmbAg==
+        bh=vWApvcSANT83v+JCFoco0KltM/bSpHt02z6aEBwqOwM=;
+        b=8V7mNadao6rNlp/f0bAwIQTvzO89N5/jtgMEtdBOmsNBJ87zwdHjsmVhR9fh4rTDQ8mROh
+        TLqEeiNQOcGsVIAg==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched: Relax the set_cpus_allowed_ptr() semantics
+Subject: [tip: sched/urgent] workqueue: Restrict affinity change to rescuer
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lai jiangshan <jiangshanlai@gmail.com>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210121103507.240724591@infradead.org>
-References: <20210121103507.240724591@infradead.org>
+In-Reply-To: <20210121103506.826629830@infradead.org>
+References: <20210121103506.826629830@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161133729382.414.17070860269435145336.tip-bot2@tip-bot2>
+Message-ID: <161133729498.414.8534909860979779052.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,76 +61,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     741ba80f6f9a4702089c122129f22df9774b3e64
-Gitweb:        https://git.kernel.org/tip/741ba80f6f9a4702089c122129f22df9774b3e64
+Commit-ID:     640f17c82460e9724fd256f0a1f5d99e7ff0bda4
+Gitweb:        https://git.kernel.org/tip/640f17c82460e9724fd256f0a1f5d99e7ff0bda4
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Sat, 16 Jan 2021 11:56:37 +01:00
+AuthorDate:    Fri, 15 Jan 2021 19:08:36 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 22 Jan 2021 15:09:44 +01:00
+CommitterDate: Fri, 22 Jan 2021 15:09:43 +01:00
 
-sched: Relax the set_cpus_allowed_ptr() semantics
+workqueue: Restrict affinity change to rescuer
 
-Now that we have KTHREAD_IS_PER_CPU to denote the critical per-cpu
-tasks to retain during CPU offline, we can relax the warning in
-set_cpus_allowed_ptr(). Any spurious kthread that wants to get on at
-the last minute will get pushed off before it can run.
+create_worker() will already set the right affinity using
+kthread_bind_mask(), this means only the rescuer will need to change
+it's affinity.
 
-While during CPU online there is no harm, and actual benefit, to
-allowing kthreads back on early, it simplifies hotplug code and fixes
-a number of outstanding races.
+Howveer, while in cpu-hot-unplug a regular task is not allowed to run
+on online&&!active as it would be pushed away quite agressively. We
+need KTHREAD_IS_PER_CPU to survive in that environment.
+
+Therefore set the affinity after getting that magic flag.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Lai jiangshan <jiangshanlai@gmail.com>
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210121103507.240724591@infradead.org
+Link: https://lkml.kernel.org/r/20210121103506.826629830@infradead.org
 ---
- kernel/sched/core.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ kernel/workqueue.c |  9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 56b0962..ff74fca 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2342,7 +2342,9 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 
- 	if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
- 		/*
--		 * Kernel threads are allowed on online && !active CPUs.
-+		 * Kernel threads are allowed on online && !active CPUs,
-+		 * however, during cpu-hot-unplug, even these might get pushed
-+		 * away if not KTHREAD_IS_PER_CPU.
- 		 *
- 		 * Specifically, migration_disabled() tasks must not fail the
- 		 * cpumask_any_and_distribute() pick below, esp. so on
-@@ -2386,16 +2388,6 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 
- 	__do_set_cpus_allowed(p, new_mask, flags);
- 
--	if (p->flags & PF_KTHREAD) {
--		/*
--		 * For kernel threads that do indeed end up on online &&
--		 * !active we want to ensure they are strict per-CPU threads.
--		 */
--		WARN_ON(cpumask_intersects(new_mask, cpu_online_mask) &&
--			!cpumask_intersects(new_mask, cpu_active_mask) &&
--			p->nr_cpus_allowed != 1);
--	}
--
- 	return affine_move_task(rq, p, &rf, dest_cpu, flags);
- 
- out:
-@@ -7518,6 +7510,13 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	int ret;
- 
- 	set_cpu_active(cpu, false);
-+
-+	/*
-+	 * From this point forward, this CPU will refuse to run any task that
-+	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
-+	 * push those tasks away until this gets cleared, see
-+	 * sched_cpu_dying().
-+	 */
- 	balance_push_set(cpu, true);
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index cce3433..894bb88 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1849,12 +1849,6 @@ static void worker_attach_to_pool(struct worker *worker,
+ 	mutex_lock(&wq_pool_attach_mutex);
  
  	/*
+-	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+-	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
+-	 */
+-	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+-
+-	/*
+ 	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
+ 	 * stable across this function.  See the comments above the flag
+ 	 * definition for details.
+@@ -1864,6 +1858,9 @@ static void worker_attach_to_pool(struct worker *worker,
+ 	else
+ 		kthread_set_per_cpu(worker->task, pool->cpu);
+ 
++	if (worker->rescue_wq)
++		set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
++
+ 	list_add_tail(&worker->node, &pool->workers);
+ 	worker->pool = pool;
+ 
