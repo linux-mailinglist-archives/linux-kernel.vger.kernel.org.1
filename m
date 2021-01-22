@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581C6300724
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE6F300680
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbhAVO6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:58:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40270 "EHLO mail.kernel.org"
+        id S1729125AbhAVPDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:03:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728636AbhAVOXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:23:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE3F523A75;
-        Fri, 22 Jan 2021 14:18:37 +0000 (UTC)
+        id S1728605AbhAVOX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:23:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50F7F23B5F;
+        Fri, 22 Jan 2021 14:17:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325118;
-        bh=b6V83M4iMgaTz4tyvtTlXfifc0FFYNtDUYjw40JPDko=;
+        s=korg; t=1611325027;
+        bh=lxS1+FlWF/d4MmrwMAW+6vTqUFurbol65PwbcHgH7X0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQJn1tBSy4jhkc9fPp4/2WyZztWTxKX9Dm3luWnPTNiUAydfjz1UScKnpwTe2Pm8z
-         2EmwQGsHS+3G5hdC/N9Np1sGvY+P2YQxpqAZ6InCJ9rUCZ6GMN011kBEle0IGaEoQd
-         KzcVUFPtMMeXXs+ImDtx9ck6SO7lmVJuTbQqkXGw=
+        b=VeUFBx3aqOYD8bgs9CtFEjK+1yU3IvnNvopyfyZh9qS2i4aErsd43Efsj+VT501jO
+         5d6V6jw07zLx0n1k7TduHpcXxR63j60IMCXAe+qDlAn0y2aoIJH/Mjg6/CESWbERQD
+         LVk8cwW5ifhErhSfkVH9d9p+vYkyJWVGzHkONFR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Youjipeng <wangzhibei1999@gmail.com>,
         "J. Bruce Fields" <bfields@redhat.com>,
         Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 5.10 07/43] nfsd4: readdirplus shouldnt return parent of export
-Date:   Fri, 22 Jan 2021 15:12:23 +0100
-Message-Id: <20210122135735.953038471@linuxfoundation.org>
+Subject: [PATCH 5.4 09/33] nfsd4: readdirplus shouldnt return parent of export
+Date:   Fri, 22 Jan 2021 15:12:25 +0100
+Message-Id: <20210122135733.949260509@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135735.652681690@linuxfoundation.org>
-References: <20210122135735.652681690@linuxfoundation.org>
+In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
+References: <20210122135733.565501039@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -71,7 +71,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/nfsd/nfs3xdr.c
 +++ b/fs/nfsd/nfs3xdr.c
-@@ -863,9 +863,14 @@ compose_entry_fh(struct nfsd3_readdirres
+@@ -857,9 +857,14 @@ compose_entry_fh(struct nfsd3_readdirres
  	if (isdotent(name, namlen)) {
  		if (namlen == 2) {
  			dchild = dget_parent(dparent);
