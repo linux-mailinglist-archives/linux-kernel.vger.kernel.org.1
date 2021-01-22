@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C219300495
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4396300494
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727517AbhAVNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:52:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbhAVNwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:52:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8767523A03;
-        Fri, 22 Jan 2021 13:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611323524;
-        bh=rsY0neGKErm0gSWeAP5jwwVMBa+/sA1d5id0WJlnf7M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sl4ggWDq4bBWBKmUA2dz8ssf+eyThAxT6LiKws7OLJRfxdKIVv/TGF/H2FRyw0Kmp
-         K6t2kfWO7m6x3RxcK4FO6dSEJZTyqFxmP85xUKmSpjNTHgh5tKhxpvAigQJDsFPcV8
-         nCvUIi6s1S04OqRXbJtmO7Q/GqgBfl/K2JbOexCsJD+Iav26a83BAyhBgyrn0OPg77
-         SP57buZdPcT+OryC51A4hapFC4T9UiS8A/IUC1klTEenbgQJHZPrZobsUI4SoYi/AE
-         NWhBHwMZPzMiIN80EPv6lxDsATTHXV0l1KGt9AeVJhcmhM0E2as3khiSQYgTEj0RTr
-         QmK71GI0e1GcA==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools fixes for v5.11, 2nd batch
-Date:   Fri, 22 Jan 2021 10:51:56 -0300
-Message-Id: <20210122135156.608434-1-acme@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1728036AbhAVNww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727723AbhAVNwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:52:43 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B033C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:52:03 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id m6so3730319pfk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:52:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0CdidXL9JqNASCWuJRmNf4tnrFhZ2Ys482HTC2wueeU=;
+        b=eC5U90fghxE+n7CKNa61zlt/x+toKTPUKMHPD58h8ct+ARa5CJJ3MLoHsqR1sGY6po
+         sjdAV4QjW9rKBFqbBlhJ8yMmsnMbe0ven0xG8CX6DYnaRFrjAA4P96wHvMHBd6Vj6XU6
+         xy/rfetnkfrrTdV/j7+97xOUlMg6e5Bw0rKfT7b+DuH+q3gaWtcYg24qmqx9wmjAqXSk
+         mtwaa9A6IOOtEwAaWna4M0cCTkEYUKV+rVraChYFJtkYb+9J3KqLyg2adleiqo702QHm
+         9M5lPjT1k6seAB5LZz1p9P5gYm/D+T8Uk1uj8WIQ6Y9IKPv4AG739uqhUWAes0Zik6we
+         NsSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0CdidXL9JqNASCWuJRmNf4tnrFhZ2Ys482HTC2wueeU=;
+        b=b+ksk7TjW1mMpodV1w1mY8vbL3D+tLjaK0gXTP0KuY6p3BwwtNYuMM8kFodbnYvHoX
+         hm15zky3XdmcRagzphBFK9HSNpWjhqjjk7B3svXYFTseIc3pMAgZ07WuCa+5id15uiZx
+         597wT58Iet3NfBrWrLZ4rv/9E7NowcuGgg2pdwrafeIEcEe4/R2r04dP4Ziv7zV+ZFf7
+         KoDTCN/5HvMAbx9yDzeByKbndr8XNMS0HPxxFCIIk6AkwNVvdr6FQk9paWTiHISHwph+
+         +en9GXWWWeQo1+yZqGXVELoihnZtp04GmwYZeLrJjYiTmheZSApq/Ge37a97ihZJ97DB
+         B1zQ==
+X-Gm-Message-State: AOAM532/ZzcrKOza1nPGTF7iuI4KYLAa9mb08dDWOD7PitKmBXjTxogQ
+        20T71HplayT4M5JCl6Cz6jzL
+X-Google-Smtp-Source: ABdhPJxoSgjsOi7KJvW0fiz+egsgCeN7n5OWTeHOlCuGtfnw/Wy6J3Ex3Apm3cGyw6U2OXiWp0ieKw==
+X-Received: by 2002:a63:1e56:: with SMTP id p22mr4842928pgm.70.1611323522493;
+        Fri, 22 Jan 2021 05:52:02 -0800 (PST)
+Received: from work ([103.77.37.137])
+        by smtp.gmail.com with ESMTPSA id f3sm2135041pfb.119.2021.01.22.05.51.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 22 Jan 2021 05:52:01 -0800 (PST)
+Date:   Fri, 22 Jan 2021 19:21:58 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-actions@lists.infradead.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Subject: Re: [PATCH] pinctrl: actions: Add the platform dependency to drivers
+Message-ID: <20210122135158.GB32437@work>
+References: <20210121062547.27173-1-manivannan.sadhasivam@linaro.org>
+ <CACRpkdYDB883r7RRa-i1T_aWvDW1n3c_LvScigQVnt5TsPbPCg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYDB883r7RRa-i1T_aWvDW1n3c_LvScigQVnt5TsPbPCg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Jan 22, 2021 at 02:19:07PM +0100, Linus Walleij wrote:
+> On Thu, Jan 21, 2021 at 7:26 AM Manivannan Sadhasivam
+> <manivannan.sadhasivam@linaro.org> wrote:
+> 
+> > The Actions Semi pinctrl drivers are a mix of both ARM32 and ARM64
+> > platforms. So let's add the correct platform dependency to avoid them
+> > being selected on the other.
+> >
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
+> Are you not opting out of build tests when you do this?
+> 
+> What about:
+> 
+> depends on ARM64 || COMPILE_TEST
+> (etc)
+> ?
+> 
 
-	Please consider pulling,
+Oh yeah, I missed it. Will send v2.
 
-Best regards,
+Thanks,
+Mani
 
-- Arnaldo
-
-The following changes since commit 9f29bd8b2e7132b409178d1367dae1813017bd0e:
-
-  Merge tag 'fs_for_v5.11-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs (2021-01-21 11:45:40 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-v5.11-2-2021-01-22
-
-for you to fetch changes up to 8adc0a06d68a2e433b960377e515e7a6b19b429f:
-
-  perf script: Fix overrun issue for dynamically-allocated PMU type number (2021-01-21 17:25:33 -0300)
-
-----------------------------------------------------------------
-perf tools fixes for 5.11, 2nd batch:
-
-- Fix id index used in Intel PT for heterogeneous systems.
-
-- Fix overrun issue in 'perf script' for dynamically-allocated PMU type number.
-
-- Fix 'perf stat' metrics containing the 'duration_time' synthetic event.
-
-- Fix system PMU 'perf stat' metrics.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-Test results in the signed tag at:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-fixes-v5.11-2-2021-01-22
-
-Adrian Hunter (1):
-      perf evlist: Fix id index for heterogeneous systems
-
-Jin Yao (1):
-      perf script: Fix overrun issue for dynamically-allocated PMU type number
-
-John Garry (2):
-      perf metricgroup: Fix for metrics containing duration_time
-      perf metricgroup: Fix system PMU metrics
-
- tools/lib/perf/evlist.c       | 17 ++++-------------
- tools/perf/builtin-script.c   | 18 +++++++++++++++++-
- tools/perf/util/metricgroup.c | 16 +++++++++++-----
- 3 files changed, 32 insertions(+), 19 deletions(-)
+> Yours,
+> Linus Walleij
+> 
+> Yours,
+> Linus Walleij
