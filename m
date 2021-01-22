@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11621300D8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B4D300D89
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbhAVURW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:17:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
+        id S1730170AbhAVUQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:16:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728263AbhAVOKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728255AbhAVOKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:10:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E1CA23A62;
-        Fri, 22 Jan 2021 14:09:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8C2523A68;
+        Fri, 22 Jan 2021 14:09:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324552;
-        bh=YgQUU3JGdz9Z7qSovjyPHJGG9w9hfxgTurz6kM3ADEc=;
+        s=korg; t=1611324555;
+        bh=SB8J9olcChwxi0/uJFauBUyLvKbKCQcEBb/seqsizw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ALL9f4mUoUMrSrQsDhA9PDiQwQ9/PU12SvGuAv8CY66HFF4Og+yXvi/3qYThiXTWE
-         ynWgFe3wyfqOl42j4zvfTyr/jFjh+l1BGqHPuJSftkvj14Qz0deXXyHq5ckFJro47a
-         3AlhPIlpJ4iZ39XCT61daDLN8VXsJTHgQN+uqQIw=
+        b=Ct3VXwxELCHnUQQmzRhj/s1wpaNmUGc2pY6rcwoskuFoxyTZRIsyRqxhnun+FJLh6
+         LjNdYk6oRRsdKYVCG1+Or6M0q5WHYDIm/ByiceEN4rGpmWRZqO9dUphUV530Oi8gem
+         k+hPZkbg28OgaLY63/eOtYO/Qh7VogXSzJOHqKuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 17/31] mm, slub: consider rest of partial list if acquire_slab() fails
-Date:   Fri, 22 Jan 2021 15:08:31 +0100
-Message-Id: <20210122135732.561877500@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Nixdorf <j.nixdorf@avm.de>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.4 18/31] net: sunrpc: interpret the return value of kstrtou32 correctly
+Date:   Fri, 22 Jan 2021 15:08:32 +0100
+Message-Id: <20210122135732.605503847@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
 References: <20210122135731.873346566@linuxfoundation.org>
@@ -44,47 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: j.nixdorf@avm.de <j.nixdorf@avm.de>
 
-commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf upstream.
+commit 86b53fbf08f48d353a86a06aef537e78e82ba721 upstream.
 
-acquire_slab() fails if there is contention on the freelist of the page
-(probably because some other CPU is concurrently freeing an object from
-the page).  In that case, it might make sense to look for a different page
-(since there might be more remote frees to the page from other CPUs, and
-we don't want contention on struct page).
+A return value of 0 means success. This is documented in lib/kstrtox.c.
 
-However, the current code accidentally stops looking at the partial list
-completely in that case.  Especially on kernels without CONFIG_NUMA set,
-this means that get_partial() fails and new_slab_objects() falls back to
-new_slab(), allocating new pages.  This could lead to an unnecessary
-increase in memory fragmentation.
+This was found by trying to mount an NFS share from a link-local IPv6
+address with the interface specified by its index:
 
-Link: https://lkml.kernel.org/r/20201228130853.1871516-1-jannh@google.com
-Fixes: 7ced37197196 ("slub: Acquire_slab() avoid loop")
-Signed-off-by: Jann Horn <jannh@google.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+  mount("[fe80::1%1]:/srv/nfs", "/mnt", "nfs", 0, "nolock,addr=fe80::1%1")
+
+Before this commit this failed with EINVAL and also caused the following
+message in dmesg:
+
+  [...] NFS: bad IP address specified: addr=fe80::1%1
+
+The syscall using the same address based on the interface name instead
+of its index succeeds.
+
+Credits for this patch go to my colleague Christian Speich, who traced
+the origin of this bug to this line of code.
+
+Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
+Fixes: 00cfaa943ec3 ("replace strict_strto calls")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/slub.c |    2 +-
+ net/sunrpc/addr.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1682,7 +1682,7 @@ static void *get_partial_node(struct kme
- 
- 		t = acquire_slab(s, n, page, object == NULL, &objects);
- 		if (!t)
--			break;
-+			continue; /* cmpxchg raced */
- 
- 		available += objects;
- 		if (!object) {
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -184,7 +184,7 @@ static int rpc_parse_scope_id(struct net
+ 			scope_id = dev->ifindex;
+ 			dev_put(dev);
+ 		} else {
+-			if (kstrtou32(p, 10, &scope_id) == 0) {
++			if (kstrtou32(p, 10, &scope_id) != 0) {
+ 				kfree(p);
+ 				return 0;
+ 			}
 
 
