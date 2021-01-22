@@ -2,132 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0360300939
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5A0300962
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbhAVRFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:05:07 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:40287 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729445AbhAVQpD (ORCPT
+        id S1729721AbhAVRO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:14:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729656AbhAVRJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:45:03 -0500
-Received: by mail-ot1-f53.google.com with SMTP id i20so5656648otl.7;
-        Fri, 22 Jan 2021 08:44:50 -0800 (PST)
+        Fri, 22 Jan 2021 12:09:56 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B396AC06174A;
+        Fri, 22 Jan 2021 08:55:49 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id d11so2938504qvo.11;
+        Fri, 22 Jan 2021 08:55:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4C4c7hWhmjfrfZNOtXE6L3e5KVZSdKUbx3wD06pMIgQ=;
+        b=Jb7M4YIKFihi4G+3Y9ZhsspJ6QHYBWTyX0+6wrxV7vOONHdmaJyT1mPpFAvRSBZFmj
+         noJZUMkwM+u+dCQd/Qh44FwEC4gs9uAt/+VCzrxIl5jXLV+KjNo1pey1r5G2yp4Ykb6E
+         02ZOpfGMKOb3Zv1kUk339mW98SR8Z//60IkGxnXG0XiwGImmq2iHd0YELB2EGeD8LU6f
+         mf8srYF5IWiye7ON42/KQfk47oJV8biteGYfIPTBW0aS3ULdUSWFBRsjjzqVTZLkL/tE
+         025P2OvqlwUtCkLkmo3E/i8fZ/Ebj75qxNiXU+z5hwbMKI+FaAkRXrSw7kFTUGa4uamZ
+         qK3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pnrEQfhYuBrzK0vLqeOqp/B/gAHb1xQ8W9kS69q0vhc=;
-        b=pI8W10DMWEQAItnG4UPTtU0UcZJFUzaFSgeQZTOzZqIMh8CB/ujfPW0DT/VMgEU4x3
-         zYTc2S8Y6Ghlle8LSs3oda6PAqW1GlE8eVbW+xSXeqLy/s1K26mI4fy6e7vAVz9AOVNk
-         yZ7mAkEUBrt7LuTHmwM5ehoK5j+cdZaX9kOBAfJLg9mKbFK0FrQ4JuECFCOdP/ujwu+a
-         3+9J8xZAX/UgubvUCkGoOWaBcb9jjQrqm+/rNQ0I6ErM4ChAQEFJljpW21FPHheOjdH5
-         b9VGkuo5ZW079u0g2yxHhxhPMThE65/3i/qxPi3JmpsrM+8dmA9JJOtwisiz87EfCQQ0
-         9NaQ==
-X-Gm-Message-State: AOAM531stR6Ex3v644ZZr76dFZhJGGvzOa0tpfA/zpD0dPYrAVoiHsfD
-        DWTX9+9uuuqD8izccRWgmg==
-X-Google-Smtp-Source: ABdhPJxWCkx1VUfDE7OUA/3RFJiCyA1xvZdIVdEX5OCRqoTUAmSOU6tAx5Dp0yfPw2mcrQ4TgUl56g==
-X-Received: by 2002:a05:6830:838:: with SMTP id t24mr4018961ots.139.1611333865388;
-        Fri, 22 Jan 2021 08:44:25 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q77sm1688312ooq.15.2021.01.22.08.44.24
+        bh=4C4c7hWhmjfrfZNOtXE6L3e5KVZSdKUbx3wD06pMIgQ=;
+        b=N0SIL3eAktTPBKfOp5kr/ApdeooQ6hw4p0jyecT4CvfcEI9SBhn1iO9IXmlFqBsx13
+         vpcyOhJtbmi5XDswZTHsFHouxbGYzh254b9Li3DnDmLfxysUW1MaXNVgN+ehwRNDV65a
+         bQ6VP3R3bvH4/njVFrA60eC9xn9nDZegFGYGdaferaxiadrO20B9LYC2BRE09V8vaSV+
+         T4jQSP0ivoR1EN1Zcw3l/wXnTnfSiXKpgQfufRS81CtWPrxhD4Hl4onk5RAMs3UDFU6e
+         FFble/nfiuv8Gs3SoueDCOephUmBUMn+yqq8EVdZhbTpbyFdtebN2tdNAjYe85IFR5Cl
+         ajqA==
+X-Gm-Message-State: AOAM530HaOA3COCtXVZf32eHi/NrLMgz1xtrVjfjgbUIKsIdKwMWY4lm
+        akubSxls13Nc+VNBo4fSi0g=
+X-Google-Smtp-Source: ABdhPJxmTaxhoOPRjIi8owDSK/q0lqiswGfZN7LVcG4byFdcdM5bo7aWX0Dmda2HaRCuAZ2m6jN30A==
+X-Received: by 2002:a0c:fc4e:: with SMTP id w14mr5125303qvp.23.1611334548897;
+        Fri, 22 Jan 2021 08:55:48 -0800 (PST)
+Received: from horizon.localdomain ([2001:1284:f016:4ecb:865e:1ab1:c1d6:3650])
+        by smtp.gmail.com with ESMTPSA id e7sm5999382qto.46.2021.01.22.08.55.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 08:44:24 -0800 (PST)
-Received: (nullmailer pid 939438 invoked by uid 1000);
-        Fri, 22 Jan 2021 16:44:23 -0000
-Date:   Fri, 22 Jan 2021 10:44:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
- bindings
-Message-ID: <20210122164423.GA931999@robh.at.kernel.org>
-References: <20210121171747.3161543-1-vkoul@kernel.org>
- <20210121171747.3161543-2-vkoul@kernel.org>
+        Fri, 22 Jan 2021 08:55:48 -0800 (PST)
+Received: by horizon.localdomain (Postfix, from userid 1000)
+        id F1416C009A; Fri, 22 Jan 2021 13:55:45 -0300 (-03)
+Date:   Fri, 22 Jan 2021 13:55:45 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH 5.4 29/33] net, sctp, filter: remap copy_from_user
+ failure error
+Message-ID: <20210122165545.GJ3863@horizon.localdomain>
+References: <20210122135733.565501039@linuxfoundation.org>
+ <20210122135734.750091426@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121171747.3161543-2-vkoul@kernel.org>
+In-Reply-To: <20210122135734.750091426@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:47:46PM +0530, Vinod Koul wrote:
-> Add device tree binding Documentation details for Qualcomm SM8350
-> pinctrl driver.
+On Fri, Jan 22, 2021 at 03:12:45PM +0100, Greg Kroah-Hartman wrote:
+> From: Daniel Borkmann <daniel@iogearbox.net>
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  .../bindings/pinctrl/qcom,sm8350-pinctrl.yaml | 146 ++++++++++++++++++
->  1 file changed, 146 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
+> [ no upstream commit ]
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..706bc79db60b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> @@ -0,0 +1,146 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. SM8350 TLMM block
-> +
-> +maintainers:
-> +  - Vinod Koul <vkoul@kernel.org>
-> +
-> +description: |
-> +  This binding describes the Top Level Mode Multiplexer (TLMM) block found
-> +  in the SM8350 platform.
-> +
-> +allOf:
-> +  - $ref: /schemas/pinctrl/qcom,tlmm-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sm8350-tlmm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts: true
-> +  interrupt-controller: true
-> +  '#interrupt-cells': true
-> +  gpio-controller: true
-> +  gpio-reserved-ranges: true
-> +  '#gpio-cells': true
-> +  gpio-ranges: true
-> +  wakeup-parent: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +patternProperties:
-> +  '-state$':
-> +    oneOf:
-> +      - $ref: "#/$defs/qcom-sm8350-tlmm-state"
-> +      - patternProperties:
-> +          ".*":
-> +            $ref: "#/$defs/qcom-sm8350-tlmm-state"
-> +
-> +'$defs':
+> Fix a potential kernel address leakage for the prerequisite where there is
+> a BPF program attached to the cgroup/setsockopt hook. The latter can only
+> be attached under root, however, if the attached program returns 1 to then
+> run the related kernel handler, an unprivileged program could probe for
+> kernel addresses that way. The reason this is possible is that we're under
+> set_fs(KERNEL_DS) when running the kernel setsockopt handler. Aside from
+> old cBPF there is also SCTP's struct sctp_getaddrs_old which contains
+> pointers in the uapi struct that further need copy_from_user() inside the
+> handler. In the normal case this would just return -EFAULT, but under a
+> temporary KERNEL_DS setting the memory would be copied and we'd end up at
+> a different error code, that is, -EINVAL, for both cases given subsequent
+> validations fail, which then allows the app to distinguish and make use of
+> this fact for probing the address space. In case of later kernel versions
+> this issue won't work anymore thanks to Christoph Hellwig's work that got
+> rid of the various temporary set_fs() address space overrides altogether.
+> One potential option for 5.4 as the only affected stable kernel with the
+> least complexity would be to remap those affected -EFAULT copy_from_user()
+> error codes with -EINVAL such that they cannot be probed anymore. Risk of
+> breakage should be rather low for this particular error case.
+> 
+> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+> Reported-by: Ryota Shiga (Flatt Security)
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-No need for quotes. Otherwise,
+For sctp bits,
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-I'm assuming this passes checks because I can't check due to the 
-dependencies.
-
-Rob
+...
+> --- a/net/sctp/socket.c
+> +++ b/net/sctp/socket.c
+> @@ -1319,7 +1319,7 @@ static int __sctp_setsockopt_connectx(st
+>  
+>  	kaddrs = memdup_user(addrs, addrs_size);
+>  	if (IS_ERR(kaddrs))
+> -		return PTR_ERR(kaddrs);
+> +		return PTR_ERR(kaddrs) == -EFAULT ? -EINVAL : PTR_ERR(kaddrs);
+>  
+>  	/* Allow security module to validate connectx addresses. */
+>  	err = security_sctp_bind_connect(sk, SCTP_SOCKOPT_CONNECTX,
+> 
+> 
