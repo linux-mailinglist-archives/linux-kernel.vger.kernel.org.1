@@ -2,87 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015A530039E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7EA3003AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbhAVNBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:01:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47506 "EHLO mail.kernel.org"
+        id S1727809AbhAVNCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:02:25 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:52490 "EHLO raptor.unsafe.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbhAVNAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:00:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88022230FC;
-        Fri, 22 Jan 2021 13:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611320411;
-        bh=dsbrnwf6fZeBLCg4srFOIFaHl2Ui745XCYVcxvH+UhM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o/utsezzNCErhgEuz+KpDwm/Vgk0QsdBLdTV3prtTmCf2Z179e4q+jVX/Uj8s2g9D
-         JAB9m6KH2zzKNdWP/kfUGY+vm2iFG0kW2j0SzEzDiQ7+fK5fsNJouaa0//X53/eC9A
-         i2cz6NG081grloJyOxKB6xbzv2hDGw8tics4BVMq4tPEWUjWWI0E2r2r5GG1Mkm3xe
-         uelnRZWDlFdNVjSI515njzAiTqdm2RbtFFLe6pV4g2YgiuwbN0rA6Di3kvnQkbRUEy
-         FeOw7cSnn/tRw/Eh2AxKUpU98miiwZX+xgZNYIAoMYfgtymdkdQKNTQmsfOaQI8R9r
-         Qnbbusc4mP2/w==
-Date:   Fri, 22 Jan 2021 13:00:04 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
+        id S1727593AbhAVNBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:01:50 -0500
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-112-41-137.net.upcbroadband.cz [94.112.41.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 40C16209AF;
+        Fri, 22 Jan 2021 13:00:49 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org
+Cc:     Alexey Gladkov <legion@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Geffon <bgeffon@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 6/6] mm: Forbid splitting special mappings
-Message-ID: <20210122130003.GD24102@willie-the-truck>
-References: <20201013013416.390574-1-dima@arista.com>
- <20201013013416.390574-7-dima@arista.com>
- <20210122125858.GC24102@willie-the-truck>
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH v4 0/7] Count rlimits in each user namespace
+Date:   Fri, 22 Jan 2021 14:00:09 +0100
+Message-Id: <cover.1611320161.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122125858.GC24102@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Fri, 22 Jan 2021 13:00:51 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 12:58:58PM +0000, Will Deacon wrote:
-> On Tue, Oct 13, 2020 at 02:34:16AM +0100, Dmitry Safonov wrote:
-> > Don't allow splitting of vm_special_mapping's.
-> > It affects vdso/vvar areas. Uprobes have only one page in xol_area so
-> > they aren't affected.
-> > 
-> > Those restrictions were enforced by checks in .mremap() callbacks.
-> > Restrict resizing with generic .split() callback.
-> > 
-> > Signed-off-by: Dmitry Safonov <dima@arista.com>
-> > ---
-> >  arch/arm/kernel/vdso.c    |  9 ---------
-> >  arch/arm64/kernel/vdso.c  | 41 +++------------------------------------
-> >  arch/mips/vdso/genvdso.c  |  4 ----
-> >  arch/s390/kernel/vdso.c   | 11 +----------
-> >  arch/x86/entry/vdso/vma.c | 17 ----------------
-> >  mm/mmap.c                 | 12 ++++++++++++
-> >  6 files changed, 16 insertions(+), 78 deletions(-)
-> 
-> For arm64:
-> 
-> Acked-by: Will Deacon <will@kernel.org>
+Preface
+-------
+These patches are for binding the rlimit counters to a user in user namespace.
+This patch set can be applied on top of:
 
-Wait -- this got merged ages ago! Why am I reading such old email?
+git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.11-rc2
 
-Will
+Problem
+-------
+The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
+implementation places the counters in user_struct [1]. These limits are global
+between processes and persists for the lifetime of the process, even if
+processes are in different user namespaces.
+
+To illustrate the impact of rlimits, let's say there is a program that does not
+fork. Some service-A wants to run this program as user X in multiple containers.
+Since the program never fork the service wants to set RLIMIT_NPROC=1.
+
+service-A
+ \- program (uid=1000, container1, rlimit_nproc=1)
+ \- program (uid=1000, container2, rlimit_nproc=1)
+
+The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
+service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
+since user X already has one running process.
+
+The problem is not that the limit from container1 affects container2. The
+problem is that limit is verified against the global counter that reflects
+the number of processes in all containers.
+
+This problem can be worked around by using different users for each container
+but in this case we face a different problem of uid mapping when transferring
+files from one container to another.
+
+Eric W. Biederman mentioned this issue [2][3].
+
+Introduced changes
+------------------
+To address the problem, we bind rlimit counters to user namespace. Each counter
+reflects the number of processes in a given uid in a given user namespace. The
+result is a tree of rlimit counters with the biggest value at the root (aka
+init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
+
+[1] https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+[2] https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+[3] https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+
+Changelog
+---------
+v4:
+* Reverted the type change of ucounts.count to refcount_t.
+* Fixed typo in the kernel/cred.c
+
+v3:
+* Added get_ucounts() function to increase the reference count. The existing
+  get_counts() function renamed to __get_ucounts().
+* The type of ucounts.count changed from atomic_t to refcount_t.
+* Dropped 'const' from set_cred_ucounts() arguments.
+* Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
+* Commit messages have been updated.
+* Added selftest.
+
+v2:
+* RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
+* Added ucounts for pair uid and user namespace into cred.
+* Added the ability to increase ucount by more than 1.
+
+v1:
+* After discussion with Eric W. Biederman, I increased the size of ucounts to
+  atomic_long_t.
+* Added ucount_max to avoid the fork bomb.
+
+--
+
+Alexey Gladkov (7):
+  Add a reference to ucounts for each cred
+  Move RLIMIT_NPROC counter to ucounts
+  Move RLIMIT_MSGQUEUE counter to ucounts
+  Move RLIMIT_SIGPENDING counter to ucounts
+  Move RLIMIT_MEMLOCK counter to ucounts
+  Move RLIMIT_NPROC check to the place where we increment the counter
+  kselftests: Add test to check for rlimit changes in different user
+    namespaces
+
+ fs/exec.c                                     |   2 +-
+ fs/hugetlbfs/inode.c                          |  17 +-
+ fs/io-wq.c                                    |  22 ++-
+ fs/io-wq.h                                    |   2 +-
+ fs/io_uring.c                                 |   2 +-
+ fs/proc/array.c                               |   2 +-
+ include/linux/cred.h                          |   3 +
+ include/linux/hugetlb.h                       |   3 +-
+ include/linux/mm.h                            |   4 +-
+ include/linux/sched/user.h                    |   6 -
+ include/linux/shmem_fs.h                      |   2 +-
+ include/linux/signal_types.h                  |   4 +-
+ include/linux/user_namespace.h                |  23 ++-
+ ipc/mqueue.c                                  |  29 ++--
+ ipc/shm.c                                     |  31 ++--
+ kernel/cred.c                                 |  46 ++++-
+ kernel/exit.c                                 |   2 +-
+ kernel/fork.c                                 |  12 +-
+ kernel/signal.c                               |  53 +++---
+ kernel/sys.c                                  |  13 --
+ kernel/ucount.c                               | 109 ++++++++++--
+ kernel/user.c                                 |   2 -
+ kernel/user_namespace.c                       |   7 +-
+ mm/memfd.c                                    |   4 +-
+ mm/mlock.c                                    |  35 ++--
+ mm/mmap.c                                     |   3 +-
+ mm/shmem.c                                    |   8 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rlimits/.gitignore    |   2 +
+ tools/testing/selftests/rlimits/Makefile      |   6 +
+ tools/testing/selftests/rlimits/config        |   1 +
+ .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
+ 32 files changed, 448 insertions(+), 169 deletions(-)
+ create mode 100644 tools/testing/selftests/rlimits/.gitignore
+ create mode 100644 tools/testing/selftests/rlimits/Makefile
+ create mode 100644 tools/testing/selftests/rlimits/config
+ create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+
+-- 
+2.29.2
+
