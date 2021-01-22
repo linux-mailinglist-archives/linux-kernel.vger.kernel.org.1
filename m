@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8776C300A6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7BB300A63
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729870AbhAVRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:54:07 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55700 "EHLO
+        id S1729456AbhAVRwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:52:07 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55734 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729244AbhAVRm1 (ORCPT
+        with ESMTP id S1729256AbhAVRm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 12:42:27 -0500
-Date:   Fri, 22 Jan 2021 17:41:34 -0000
+Date:   Fri, 22 Jan 2021 17:41:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1611337295;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/1vB1QUr1165eo6pyFtEfPYX+ErJNEqfinIUJxVvEKM=;
-        b=FgFz+xSpdCwceSvwMneDofsr/4IGvBsvNSTtgt7M6OP3LYqtA/b64ByVj60QsI1jJwOVr9
-        jwUwoVcp34Oq6FCojfbVK7uKe/zxKOZbTUibtzPNEKtPHrPDh1qxU4TsNyCgWj8z4uQW5w
-        hXTEHsGeohmwEEk7sd0NteIRT2PH53rdSfPujxlawt2ZPvIcxNhYJb10vzCQU0QIAuIgT2
-        5loVuKF3Uf6EAuDqKdio/qqdYtq9RmKEr8gSwzHqwtI3BC81/I9U/qKINTf2iIgrtsiHWn
-        L683C1tma7Y1zCKEo5D9PaN0mZz7k1ycaQYEQaw3u/XMYaftg8c4GXqXETwo9A==
+        bh=Xj5yIEToTTUM3yyS/nSdRck0bMBvS6yERkbm99B6JaA=;
+        b=TDouF4XisZ6N5jREwZngeHr5qEILw4V5DBRoEQNTQahkDkwVycINCTAkcLHGmLRD8t/uDN
+        IDf8buMh2M/7k2rQPmZvuAbh2cuH7UCFfLDuqeKm2NwyNQJXoMibqCJnaesmMVPhF94Z2Z
+        U9Tw+dk2MOnsKi2QAZsbKx0pNz5G23ISSguhGVlOudYdykwnz5i9IYqdaAbk3F+8uK7ewa
+        CjikA8A3Jcbi9X1yTl/VoSq37i8LOWIDqolreQMkolDLJwFIsvVwcUyeDtp3WAQIfR3dlq
+        FD12aXxwP0AWmCKL1azH85M5Lnj/kbbSV6cHb/KeZE4Vg0vR/Hed9uPLS/cYXQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1611337295;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/1vB1QUr1165eo6pyFtEfPYX+ErJNEqfinIUJxVvEKM=;
-        b=aUEgvQPZmCkjbVtnI2Fs/Hi5NoGAUz6+y1WbwmHqgN5iySfuy1YvQeP4f8CKOA0+5MGcuy
-        Nucw2zrX4f+zvtDw==
+        bh=Xj5yIEToTTUM3yyS/nSdRck0bMBvS6yERkbm99B6JaA=;
+        b=nf2bA/+XiF4TDVEmsPgCMHBs4koamZdjlQzA2WE8rZQiCMRVFTkLdXNOGkyuSXQKyHQMEW
+        FSN1ox8JGqW49aBA==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched: Prepare to use balance_push in ttwu()
+Subject: [tip: sched/urgent] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210121103506.966069627@infradead.org>
-References: <20210121103506.966069627@infradead.org>
+In-Reply-To: <20210121103506.693465814@infradead.org>
+References: <20210121103506.693465814@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161133729464.414.3770602797973233529.tip-bot2@tip-bot2>
+Message-ID: <161133729540.414.15092664862520486982.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,80 +58,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     975707f227b07a8212060f94447171d15d7a681b
-Gitweb:        https://git.kernel.org/tip/975707f227b07a8212060f94447171d15d7a681b
+Commit-ID:     5c25b5ff89f004c30b04759dc34ace8585a4085f
+Gitweb:        https://git.kernel.org/tip/5c25b5ff89f004c30b04759dc34ace8585a4085f
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 20 Jan 2021 15:05:41 +01:00
+AuthorDate:    Tue, 12 Jan 2021 11:26:49 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 22 Jan 2021 15:09:43 +01:00
+CommitterDate: Fri, 22 Jan 2021 15:09:42 +01:00
 
-sched: Prepare to use balance_push in ttwu()
+workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
 
-In preparation of using the balance_push state in ttwu() we need it to
-provide a reliable and consistent state.
+Mark the per-cpu workqueue workers as KTHREAD_IS_PER_CPU.
 
-The immediate problem is that rq->balance_callback gets cleared every
-schedule() and then re-set in the balance_push_callback() itself. This
-is not a reliable signal, so add a variable that stays set during the
-entire time.
+Workqueues have unfortunate semantics in that per-cpu workers are not
+default flushed and parked during hotplug, however a subset does
+manual flush on hotplug and hard relies on them for correctness.
 
-Also move setting it before the synchronize_rcu() in
-sched_cpu_deactivate(), such that we get guaranteed visibility to
-ttwu(), which is a preempt-disable region.
+Therefore play silly games..
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210121103506.966069627@infradead.org
+Link: https://lkml.kernel.org/r/20210121103506.693465814@infradead.org
 ---
- kernel/sched/core.c  | 11 ++++++-----
- kernel/sched/sched.h |  1 +
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ kernel/workqueue.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8da0fd7..16946b5 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7320,6 +7320,7 @@ static void balance_push_set(int cpu, bool on)
- 	struct rq_flags rf;
- 
- 	rq_lock_irqsave(rq, &rf);
-+	rq->balance_push = on;
- 	if (on) {
- 		WARN_ON_ONCE(rq->balance_callback);
- 		rq->balance_callback = &balance_push_callback;
-@@ -7489,17 +7490,17 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	int ret;
- 
- 	set_cpu_active(cpu, false);
-+	balance_push_set(cpu, true);
-+
- 	/*
--	 * We've cleared cpu_active_mask, wait for all preempt-disabled and RCU
--	 * users of this state to go away such that all new such users will
--	 * observe it.
-+	 * We've cleared cpu_active_mask / set balance_push, wait for all
-+	 * preempt-disabled and RCU users of this state to go away such that
-+	 * all new such users will observe it.
- 	 *
- 	 * Do sync before park smpboot threads to take care the rcu boost case.
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 1646331..cce3433 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1861,6 +1861,8 @@ static void worker_attach_to_pool(struct worker *worker,
  	 */
- 	synchronize_rcu();
+ 	if (pool->flags & POOL_DISASSOCIATED)
+ 		worker->flags |= WORKER_UNBOUND;
++	else
++		kthread_set_per_cpu(worker->task, pool->cpu);
  
--	balance_push_set(cpu, true);
--
- 	rq_lock_irqsave(rq, &rf);
- 	if (rq->rd) {
- 		update_rq_clock(rq);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 12ada79..bb09988 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -975,6 +975,7 @@ struct rq {
- 	unsigned long		cpu_capacity_orig;
+ 	list_add_tail(&worker->node, &pool->workers);
+ 	worker->pool = pool;
+@@ -1883,6 +1885,7 @@ static void worker_detach_from_pool(struct worker *worker)
  
- 	struct callback_head	*balance_callback;
-+	unsigned char		balance_push;
+ 	mutex_lock(&wq_pool_attach_mutex);
  
- 	unsigned char		nohz_idle_balance;
- 	unsigned char		idle_balance;
++	kthread_set_per_cpu(worker->task, -1);
+ 	list_del(&worker->node);
+ 	worker->pool = NULL;
+ 
+@@ -4919,8 +4922,10 @@ static void unbind_workers(int cpu)
+ 
+ 		raw_spin_unlock_irq(&pool->lock);
+ 
+-		for_each_pool_worker(worker, pool)
++		for_each_pool_worker(worker, pool) {
++			kthread_set_per_cpu(worker->task, -1);
+ 			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
++		}
+ 
+ 		mutex_unlock(&wq_pool_attach_mutex);
+ 
+@@ -4972,9 +4977,11 @@ static void rebind_workers(struct worker_pool *pool)
+ 	 * of all workers first and then clear UNBOUND.  As we're called
+ 	 * from CPU_ONLINE, the following shouldn't fail.
+ 	 */
+-	for_each_pool_worker(worker, pool)
++	for_each_pool_worker(worker, pool) {
++		kthread_set_per_cpu(worker->task, pool->cpu);
+ 		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
+ 						  pool->attrs->cpumask) < 0);
++	}
+ 
+ 	raw_spin_lock_irq(&pool->lock);
+ 
