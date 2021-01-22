@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0683005CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B953005C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728812AbhAVOoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728793AbhAVOm4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728881AbhAVOoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:44:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:51162 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728792AbhAVOm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:42:56 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BF6C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:42:14 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id 11so3836205pfu.4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:42:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TDW0uo0U4I8F8s+gzPDSjcYPS9epJOiCg4X2p7A7eF4=;
-        b=VswbVDlWLOpcZ32hSYINsQeKvp4aICDDhmjx2WDwPSsC+blSNkZAGtgq+vsZVIcRjR
-         AT0gO2Nf2f2mb3VLFeyxAFfOWEf2pGrlB3EuiEKQtixdGpsxCOlmGORV0eGsHc+StOWO
-         WUgguwnb8qkDiugN5ZeJQfle1EVaYhlC4aNL5DiTRW1AqdxUxPXGMz3JynLlW9oCY7xH
-         3sqiXHU+J5u0LdbbrW75Gxh/CQsLqdMhyBfrCDnJESrC/hRY0I3Pi99t85hbNg+elmiL
-         Go22xae3WIqWMXSlhU6HdD/uBxLCTXGNda6Wmz0+7xH/wo9CWY06v7OEj/uPQbmtXAiT
-         L1CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TDW0uo0U4I8F8s+gzPDSjcYPS9epJOiCg4X2p7A7eF4=;
-        b=CXHjpWFl3fgqM6G1nDgPRwa2N95RYZmjcQFXCkffe02xscJ8vz5mSwBobmFrldzrVU
-         p/PeHAUePDt2CyJUngb/vtRBAe4RI05/yytwh+9+1O0fMQavJkZZ2kPkTEKeRlejq7Gq
-         PrFP8uMg8YQ14yGMkmZwCJSLcKnIvar3ihx1FfQWeUZds7ypCPtqbmXQTob0PNP8tRf/
-         QSncTlodOiI/2px12I3eBokOEpyjjJMVXarm2Z4sSiU7re4RAzGoEsJxhZcMMw59owHY
-         oF+jC2CjLuH/UwXatgsPndBsPo1P3GStLsPPjwL5k3xy/QU4jXC6SCATBurnTEOK53ds
-         Z54A==
-X-Gm-Message-State: AOAM53180uCEecQyDO2aXPQ7MWOoqU803zYpzv2tUvBkMRLv7nZMVPbE
-        eUIZRc5NJC9Gh+5MZlUtOsPm3QD2qvNTgRz7VWNGzg==
-X-Google-Smtp-Source: ABdhPJy7eF4qouYDgxFSogoAOjI/HoTypMGg98Lxr/e9DPp0q6sNb04A342nzyC3elmXD5aj1J3p6AnGZ88Yvqi9eNM=
-X-Received: by 2002:a63:4644:: with SMTP id v4mr4977707pgk.440.1611326533664;
- Fri, 22 Jan 2021 06:42:13 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB90D11B3;
+        Fri, 22 Jan 2021 06:42:07 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B9853F66E;
+        Fri, 22 Jan 2021 06:42:05 -0800 (PST)
+Subject: Re: [PATCH v2] ACPI/IORT: Do not blindly trust DMA masks from
+ firmware
+To:     Moritz Fischer <mdf@kernel.org>, lorenzo.pieralisi@arm.com
+Cc:     guohanjun@huawei.com, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210122012419.95010-1-mdf@kernel.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e01e2fd6-7f78-354e-374c-f93a5d1b8fd6@arm.com>
+Date:   Fri, 22 Jan 2021 14:42:05 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210122141125.36166-1-vincenzo.frascino@arm.com> <20210122141125.36166-4-vincenzo.frascino@arm.com>
-In-Reply-To: <20210122141125.36166-4-vincenzo.frascino@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 22 Jan 2021 15:42:02 +0100
-Message-ID: <CAAeHK+ydhzfrdrPbjok20rgMEYykpfmjcRASm_bTfhuTVXF_VA@mail.gmail.com>
-Subject: Re: [PATCH v7 3/4] kasan: Add report for async mode
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210122012419.95010-1-mdf@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 3:11 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> KASAN provides an asynchronous mode of execution.
->
-> Add reporting functionality for this mode.
->
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+On 2021-01-22 01:24, Moritz Fischer wrote:
+> Address issue observed on real world system with suboptimal IORT table
+> where DMA masks of PCI devices would get set to 0 as result.
+> 
+> iort_dma_setup() would query the root complex'/named component IORT
+> entry for a DMA mask, and use that over the one the device has been
+> configured with earlier.
+> 
+> Ideally we want to use the minimum mask of what the IORT contains for
+> the root complex and what the device was configured with.
+> 
+> Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
+> Signed-off-by: Moritz Fischer <mdf@kernel.org>
 > ---
->  include/linux/kasan.h |  2 ++
->  mm/kasan/report.c     | 13 +++++++++++++
->  2 files changed, 15 insertions(+)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index bb862d1f0e15..b0a1d9dfa85c 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -351,6 +351,8 @@ static inline void *kasan_reset_tag(const void *addr)
->  bool kasan_report(unsigned long addr, size_t size,
->                 bool is_write, unsigned long ip);
->
-> +void kasan_report_async(void);
+> 
+> Changes from v1:
+> - Changed warning to FW_BUG
+> - Warn for both Named Component or Root Complex
+> - Replaced min_not_zero() with min()
+> 
+> ---
+>   drivers/acpi/arm64/iort.c | 14 ++++++++++++--
+>   1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index d4eac6d7e9fb..2494138a6905 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -1107,6 +1107,11 @@ static int nc_dma_get_range(struct device *dev, u64 *size)
+>   
+>   	ncomp = (struct acpi_iort_named_component *)node->node_data;
+>   
+> +	if (!ncomp->memory_address_limit) {
+> +		pr_warn(FW_BUG "Named component missing memory address limit\n");
+> +		return -EINVAL;
+> +	}
 > +
->  #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
->
->  static inline void *kasan_reset_tag(const void *addr)
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 234f35a84f19..1390da06a988 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -358,6 +358,19 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
->         end_report(&flags);
->  }
->
-> +#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-
-This looks wrong, CONFIG_KASAN_SW_TAGS doesn't use MTE, so this
-function isn't needed for that mode.
-
-Let's add an #ifdef CONFIG_KASAN_HW_TAGS section in
-include/linux/kasan.h after the HW/SW one with kasan_report(). And
-only leave CONFIG_KASAN_HW_TAGS in mm/kasan/report.c too.
-
-> +void kasan_report_async(void)
-> +{
-> +       unsigned long flags;
+>   	*size = ncomp->memory_address_limit >= 64 ? U64_MAX :
+>   			1ULL<<ncomp->memory_address_limit;
+>   
+> @@ -1126,6 +1131,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+>   
+>   	rc = (struct acpi_iort_root_complex *)node->node_data;
+>   
+> +	if (!rc->memory_address_limit) {
+> +		pr_warn(FW_BUG "Root complex missing memory address limit\n");
+> +		return -EINVAL;
+> +	}
 > +
-> +       start_report(&flags);
-> +       pr_err("BUG: KASAN: invalid-access\n");
-> +       pr_err("Asynchronous mode enabled: no access details available\n");
-> +       dump_stack();
-> +       end_report(&flags);
-> +}
-> +#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
-> +
->  static void __kasan_report(unsigned long addr, size_t size, bool is_write,
->                                 unsigned long ip)
->  {
-> --
-> 2.30.0
->
+>   	*size = rc->memory_address_limit >= 64 ? U64_MAX :
+>   			1ULL<<rc->memory_address_limit;
+>   
+> @@ -1173,8 +1183,8 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
+>   		end = dmaaddr + size - 1;
+>   		mask = DMA_BIT_MASK(ilog2(end) + 1);
+>   		dev->bus_dma_limit = end;
+> -		dev->coherent_dma_mask = mask;
+> -		*dev->dma_mask = mask;
+> +		dev->coherent_dma_mask = min(dev->coherent_dma_mask, mask);
+> +		*dev->dma_mask = min(*dev->dma_mask, mask);
+
+Oops, I got so distracted by the "not_zero" aspect in v1 that I ended up 
+thinking purely about smaller-than-default masks, but of course this 
+*does* matter the other way round. And it is what we've always done on 
+the DT side, so at least it makes us consistent.
+
+FWIW I've already started writing up a patch to kill off this bit 
+entirely, but either way we still can't meaningfully interpret a 
+supposed DMA limit of 0 bits in a table describing DMA-capable devices, 
+so for this patch as a fix,
+
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+Thanks,
+Robin.
+
+>   	}
+>   
+>   	*dma_addr = dmaaddr;
+> 
