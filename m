@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34C0300BEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984D2300B47
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730267AbhAVSxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:53:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
+        id S1730023AbhAVSYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:24:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728525AbhAVOWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 838B023B52;
-        Fri, 22 Jan 2021 14:16:07 +0000 (UTC)
+        id S1728586AbhAVOXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:23:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CE1323B06;
+        Fri, 22 Jan 2021 14:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324968;
-        bh=nnGMVQlWgPgHufE3sp+L4vPltDrGHjcCpMgLKlHs15E=;
+        s=korg; t=1611325053;
+        bh=slNKWI3YtTg4B5ukyQdfvTULlGzwnRNCQa9aW5EQ7M4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqnLXO+/Vz8I0Khu8AaUD3ELkQJy3KvJ/Njsyl3il6lfS2w9E8ALDeLdKcPGMe42u
-         kiPYsNFkDNw/jKu77Dw6+fHZkL6OCRhHFd+B356JqXlbohmHUicpaUP72f/NJ59lXa
-         g/VVajHFj7OOi0BNUAwX29Ya2i8Pb0KDvuq3p/pE=
+        b=vINfAtRHB8VDBdGU5rB1BnNSDE2cYS/7vX4yPLkyi+Je78eLX7/M7bLrPr8iMTxeA
+         YwRiW5/aGzsMwhw48Gaa9KEghgN5noSwb8mz3ndESX2LGW4Ug/ZXdhQnxHg1Wsdtpo
+         XXgFr7QdlelPbztI6JHM/l3bknDLoxuk/ZilxBpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 22/22] spi: cadence: cache reference clock rate during probe
-Date:   Fri, 22 Jan 2021 15:12:40 +0100
-Message-Id: <20210122135732.786726542@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 32/33] mac80211: check if atf has been disabled in __ieee80211_schedule_txq
+Date:   Fri, 22 Jan 2021 15:12:48 +0100
+Message-Id: <20210122135734.865268210@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
-References: <20210122135731.921636245@linuxfoundation.org>
+In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
+References: <20210122135733.565501039@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Hennerich <michael.hennerich@analog.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-commit 4d163ad79b155c71bf30366dc38f8d2502f78844 upstream.
+commit c13cf5c159660451c8fbdc37efb998b198e1d305 upstream.
 
-The issue is that using SPI from a callback under the CCF lock will
-deadlock, since this code uses clk_get_rate().
+Check if atf has been disabled in __ieee80211_schedule_txq() in order to
+avoid a given sta is always put to the beginning of the active_txqs list
+and never moved to the end since deficit is not decremented in
+ieee80211_sta_register_airtime()
 
-Fixes: c474b38665463 ("spi: Add driver for Cadence SPI controller")
-Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Link: https://lore.kernel.org/r/20210114154217.51996-1-alexandru.ardelean@analog.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: b4809e9484da1 ("mac80211: Add airtime accounting and scheduling to TXQs")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+Link: https://lore.kernel.org/r/93889406c50f1416214c079ca0b8c9faecc5143e.1608975195.git.lorenzo@kernel.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-cadence.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/mac80211/tx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/spi/spi-cadence.c
-+++ b/drivers/spi/spi-cadence.c
-@@ -119,6 +119,7 @@ struct cdns_spi {
- 	void __iomem *regs;
- 	struct clk *ref_clk;
- 	struct clk *pclk;
-+	unsigned int clk_rate;
- 	u32 speed_hz;
- 	const u8 *txbuf;
- 	u8 *rxbuf;
-@@ -258,7 +259,7 @@ static void cdns_spi_config_clock_freq(s
- 	u32 ctrl_reg, baud_rate_val;
- 	unsigned long frequency;
- 
--	frequency = clk_get_rate(xspi->ref_clk);
-+	frequency = xspi->clk_rate;
- 
- 	ctrl_reg = cdns_spi_read(xspi, CDNS_SPI_CR);
- 
-@@ -628,8 +629,9 @@ static int cdns_spi_probe(struct platfor
- 	master->auto_runtime_pm = true;
- 	master->mode_bits = SPI_CPOL | SPI_CPHA;
- 
-+	xspi->clk_rate = clk_get_rate(xspi->ref_clk);
- 	/* Set to default valid value */
--	master->max_speed_hz = clk_get_rate(xspi->ref_clk) / 4;
-+	master->max_speed_hz = xspi->clk_rate / 4;
- 	xspi->speed_hz = master->max_speed_hz;
- 
- 	master->bits_per_word_mask = SPI_BPW_MASK(8);
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -3773,7 +3773,7 @@ void __ieee80211_schedule_txq(struct iee
+ 		 * get immediately moved to the back of the list on the next
+ 		 * call to ieee80211_next_txq().
+ 		 */
+-		if (txqi->txq.sta &&
++		if (txqi->txq.sta && local->airtime_flags &&
+ 		    wiphy_ext_feature_isset(local->hw.wiphy,
+ 					    NL80211_EXT_FEATURE_AIRTIME_FAIRNESS))
+ 			list_add(&txqi->schedule_order,
 
 
