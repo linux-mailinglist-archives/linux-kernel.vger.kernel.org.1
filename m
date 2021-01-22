@@ -2,52 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0542FFC78
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8E02FFC90
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbhAVGQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:16:36 -0500
-Received: from out28-75.mail.aliyun.com ([115.124.28.75]:37392 "EHLO
-        out28-75.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbhAVGQd (ORCPT
+        id S1726708AbhAVGYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:24:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbhAVGYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:16:33 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1835507|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.0327216-0.000828416-0.96645;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=liu.xiang@zlingsmart.com;NM=1;PH=DW;RN=8;RT=8;SR=0;TI=W4_6085603_DEFAULT_0AC266AA_1611285509314_o7001c272f;
-Received: from WS-web (liu.xiang@zlingsmart.com[W4_6085603_DEFAULT_0AC266AA_1611285509314_o7001c272f]) by ay29a011140100187.et135 at Fri, 22 Jan 2021 14:15:36 +0800
-Date:   Fri, 22 Jan 2021 14:15:36 +0800
-From:   "liu xiang" <liu.xiang@zlingsmart.com>
-To:     "Maxime Ripard" <maxime@cerno.tech>
-Cc:     "linux-gpio" <linux-gpio@vger.kernel.org>,
-        "linus.walleij" <linus.walleij@linaro.org>, "wens" <wens@csie.org>,
-        "jernej.skrabec" <jernej.skrabec@siol.net>,
-        "linux-arm-kernel" <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "liuxiang_1999" <liuxiang_1999@126.com>
-Reply-To: "liu xiang" <liu.xiang@zlingsmart.com>
-Message-ID: <7c97264c-8d54-427d-8453-6fd1085c36d3.liu.xiang@zlingsmart.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gcGluY3RybDogc3VueGk6IGZpeCB1c2UtYWZ0ZXItZnJlZSBpbiBzdW54?=
-  =?UTF-8?B?aV9wbXhfZnJlZSgp?=
-X-Mailer: [Alimail-Mailagent revision 794][W4_6085603][DEFAULT][Chrome]
+        Fri, 22 Jan 2021 01:24:16 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEF9C06174A;
+        Thu, 21 Jan 2021 22:23:35 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id 22so4196950qkf.9;
+        Thu, 21 Jan 2021 22:23:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2jiQWzGRiVyC9PGi+1tFArEXO7Y2cXcpw8AScVWzwYo=;
+        b=FKU8qh/iFz6Iycz0f/HyIvt51vCXfl3f16ZEzyLR1s8Nw8Y6GAyvpbSQMT9r9cTo6r
+         5PiAHEfyNPaTYOUKcZCxJQVFTVsxYRLYjYBBYlWaB+fAeaw7Om7USIWYFMqXTEBqUCpx
+         2XifSTZnAkaXnAGOmg8YRKmnTaTz7szK+whh2nDXI3syh4O6pLq6nHFSCgN4e4aGugbh
+         jKuujEMWlh+X9XZjpwVnnINFqGSsGYjBZWzsFgNddOsHkgOXy9FTZvFoZeIa9VD8siQ0
+         fI3VU7zCX0CzTOZy/MLmCy3FwT1bLonTJhUxrHQHJNVeuFhQC1GpyxeMX1tyGi1ew38r
+         02gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2jiQWzGRiVyC9PGi+1tFArEXO7Y2cXcpw8AScVWzwYo=;
+        b=jP29FAXJ5rOsWiURiI3jvT1o47rMDrnMXsd0zqJJAGrjLTxPf/lG4MCy9HB6+VVJoX
+         qecV7O27LwrcWtk2qhpqRtUHka/BKnEoA2/ldo/vf+dt4AGAgnvLrHjb6G/QkYpzdSnl
+         fJ1Zzw84jciZgIxhcaDpT8i1lZXhVKtXXjLtUQwSrRUM9nNUVE5R4+TMoGm02Hj78tLJ
+         6+9TUPyqW3N1lGDbOa3tNvOydyG9EBpHCuoB2QuLD91Kw0GCcIy8KFIKFmXOsjzzfrvk
+         iFz4+frr3FAAUEArypK7G7VfSE0ODZdJqjC7SXF3+qt0kPkHuO1vD8ANXKH9z2Wok+Gv
+         emZA==
+X-Gm-Message-State: AOAM531LCjD+LL3ZZrEO9etMw8M/aUa9eannErvSPqpLSCfdSu95POEr
+        26kaunkIce7caCldq5NkUMg=
+X-Google-Smtp-Source: ABdhPJyLriqxN5+FOiRb+be/raohZeaJksFYnlyUUwAI8fgNTuQblQcdEJLkqwi0wlzi79KK+fVKSg==
+X-Received: by 2002:a37:7a46:: with SMTP id v67mr3497770qkc.16.1611296614825;
+        Thu, 21 Jan 2021 22:23:34 -0800 (PST)
+Received: from localhost.localdomain ([45.32.7.59])
+        by smtp.gmail.com with ESMTPSA id e5sm5178886qtp.86.2021.01.21.22.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 22:23:34 -0800 (PST)
+From:   Su Yanjun <suyanjun218@gmail.com>
+To:     mkl@pengutronix.de, manivannan.sadhasivam@linaro.org,
+        thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
+        kuba@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Su Yanjun <suyanjun218@gmail.com>
+Subject: [PATCH v1] can: mcp251xfd: Add some sysfs debug interfaces for registers r/w
+Date:   Fri, 22 Jan 2021 14:22:55 +0800
+Message-Id: <20210122062255.202620-1-suyanjun218@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210119062908.20169-1-liu.xiang@zlingsmart.com>,<20210121164013.cqfxvach4ugkohm7@gilmour>
-x-aliyun-mail-creator: W4_6085603_DEFAULT_AoSTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV09XNjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS83NS4wLjM3NzAuMTAwIFNhZmFyaS81MzcuMzY=zN
-In-Reply-To: <20210121164013.cqfxvach4ugkohm7@gilmour>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBIaSwKCj4gT24gVHVlLCBKYW4gMTksIDIwMjEgYXQgMDI6Mjk6MDhQTSArMDgwMCwgTGl1IFhp
-YW5nIHdyb3RlOgo+IFdoZW4gQ09ORklHX1JFR1VMQVRPUiBpcyBub3Qgc2V0LCBzdW54aV9wbXhf
-cmVxdWVzdCgpIGFsd2F5cyByZXR1cm4KPiBzdWNjZXNzLiBFdmVuIGEgZ3JvdXAgb2YgcGlucyBj
-YWxsIHN1bnhpX3BteF9yZXF1ZXN0KCksIHRoZSByZWZjb3VudAo+IGlzIG9ubHkgMS4gVGhpcyBj
-YW4gY2F1c2UgYSB1c2UtYWZ0ZXItZnJlZSB3YXJuaW5nIGluIHN1bnhpX3BteF9mcmVlKCkuCj4g
-VG8gc29sdmUgdGhpcyBwcm9ibGVtLCBnbyB0byBlcnIgcGF0aCBpZiByZWd1bGF0b3JfZ2V0KCkg
-cmV0dXJuIE5VTEwKPiBvciBlcnJvci4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBMaXUgWGlhbmcgPGxp
-dS54aWFuZ0B6bGluZ3NtYXJ0LmNvbT4KCj4gSXMgdGhlcmUgYW55IGRyYXdiYWNrIHRvIGRlcGVu
-ZGluZyBvbiBDT05GSUdfUkVHVUxBVE9SPwoKPiBHaXZlbiB0aGF0IHdlIG5lZWQgdGhvc2UgcmVn
-dWxhdG9ycyBlbmFibGVkIGFueXdheSwgSSBndWVzcyB3ZSBjb3VsZAo+IGp1c3Qgc2VsZWN0IG9y
-IGRlcGVuZHMgb24gaXQKPgo+IE1heGltZQoKClllcywgSSB0aGluayBzby4gQnV0IENPTkZJR19S
-RUdVTEFUT1IgaXMgbm90IGVuYWJsZWQgYnkgZGVmYXVsdCBub3cuClNvIEkgY2FuIGZpbmQgdGhp
-cyBwcm9ibGVtIGR1cmluZyBzdGFydHVwLg==
+When i debug mcp2518fd, some method to track registers is
+needed. This easy debug interface will be ok.
+
+For example,
+read a register at 0xe00:
+echo 0xe00 > can_get_reg
+cat can_get_reg
+
+write a register at 0xe00:
+echo 0xe00,0x60 > can_set_reg
+
+Signed-off-by: Su Yanjun <suyanjun218@gmail.com>
+---
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 132 ++++++++++++++++++
+ 1 file changed, 132 insertions(+)
+
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index ab8aad0a7594..d65abe5505d5 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -27,6 +27,131 @@
+ 
+ #define DEVICE_NAME "mcp251xfd"
+ 
++/* Add sysfs debug interface for easy to debug
++ *
++ * For example,
++ *
++ * - read a register
++ * echo 0xe00 > can_get_reg
++ * cat can_get_reg
++ *
++ * - write a register
++ * echo 0xe00,0x1 > can_set_reg
++ *
++ */
++static int reg_offset;
++
++static int __get_param(const char *buf, char *off, char *val)
++{
++	int len;
++
++	if (!buf || !off || !val)
++		return -EINVAL;
++
++	len = 0;
++	while (*buf != ',') {
++		*off++ = *buf++;
++		len++;
++
++		if (len >= 16)
++			return -EINVAL;
++	}
++
++	buf++;
++
++	*off = '\0';
++
++	len = 0;
++	while (*buf) {
++		*val++ = *buf++;
++		len++;
++
++		if (len >= 16)
++			return -EINVAL;
++	}
++
++	*val = '\0';
++
++	return 0;
++}
++
++static ssize_t can_get_reg_show(struct device *dev,
++				struct device_attribute *attr, char *buf)
++{
++	int err;
++	u32 val;
++	struct mcp251xfd_priv *priv;
++
++	priv = dev_get_drvdata(dev);
++
++	err = regmap_read(priv->map_reg, reg_offset, &val);
++	if (err)
++		return 0;
++
++	return sprintf(buf, "reg = 0x%08x, val = 0x%08x\n", reg_offset, val);
++}
++
++static ssize_t can_get_reg_store(struct device *dev,
++				 struct device_attribute *attr, const char *buf, size_t len)
++{
++	u32 off;
++
++	reg_offset = 0;
++
++	if (kstrtouint(buf, 0, &off) || (off % 4))
++		return -EINVAL;
++
++	reg_offset = off;
++
++	return len;
++}
++
++static ssize_t can_set_reg_show(struct device *dev,
++				struct device_attribute *attr, char *buf)
++{
++	return 0;
++}
++
++static ssize_t can_set_reg_store(struct device *dev,
++				 struct device_attribute *attr, const char *buf, size_t len)
++{
++	struct mcp251xfd_priv *priv;
++	u32 off, val;
++	int err;
++
++	char s1[16];
++	char s2[16];
++
++	if (__get_param(buf, s1, s2))
++		return -EINVAL;
++
++	if (kstrtouint(s1, 0, &off) || (off % 4))
++		return -EINVAL;
++
++	if (kstrtouint(s2, 0, &val))
++		return -EINVAL;
++
++	err = regmap_write(priv->map_reg, off, val);
++	if (err)
++		return -EINVAL;
++
++	return len;
++}
++
++static DEVICE_ATTR_RW(can_get_reg);
++static DEVICE_ATTR_RW(can_set_reg);
++
++static struct attribute *can_attributes[] = {
++	&dev_attr_can_get_reg.attr,
++	&dev_attr_can_set_reg.attr,
++	NULL
++};
++
++static const struct attribute_group can_group = {
++	.attrs = can_attributes,
++	NULL
++};
++
+ static const struct mcp251xfd_devtype_data mcp251xfd_devtype_data_mcp2517fd = {
+ 	.quirks = MCP251XFD_QUIRK_MAB_NO_WARN | MCP251XFD_QUIRK_CRC_REG |
+ 		MCP251XFD_QUIRK_CRC_RX | MCP251XFD_QUIRK_CRC_TX |
+@@ -2944,6 +3069,12 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	if (err)
+ 		goto out_free_candev;
+ 
++	err = sysfs_create_group(&spi->dev.kobj, &can_group);
++	if (err) {
++		netdev_err(priv->ndev, "Create can group fail.\n");
++		goto out_free_candev;
++	}
++
+ 	err = can_rx_offload_add_manual(ndev, &priv->offload,
+ 					MCP251XFD_NAPI_WEIGHT);
+ 	if (err)
+@@ -2972,6 +3103,7 @@ static int mcp251xfd_remove(struct spi_device *spi)
+ 	mcp251xfd_unregister(priv);
+ 	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
+ 	free_candev(ndev);
++	sysfs_remove_group(&spi->dev.kobj, &can_group);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
