@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FB0300392
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DAB300397
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbhAVM6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:58:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        id S1727072AbhAVM7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:59:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbhAVM6i (ORCPT
+        with ESMTP id S1727471AbhAVM7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:58:38 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14B1C06174A;
-        Fri, 22 Jan 2021 04:57:57 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0c15006a0f3bad299fee59.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1500:6a0f:3bad:299f:ee59])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 73D101EC03E1;
-        Fri, 22 Jan 2021 13:57:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611320275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=0pY7e06EduD9wfMLJll3GyDKoPwVC4ON7p0l4ewku7k=;
-        b=lX2Xi3xc/wQDEtcJpsAjPLPd9YveLEthCpvB0MUUPR+cAzgL8avh0eNpZZRKzFWsADcffk
-        FBvQrJZXkfr2tx1A68xl9iT6IBwMWVIuUF9fZHJ6NfJ0j97eP7x7RJwHTyQ14SFXZOHVEL
-        juIKXwV5mA7sKtYJBH7N6La7oXh69j4=
-Date:   Fri, 22 Jan 2021 13:57:48 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        linux-wireless@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: net/wireless/reg.c:144 suspicious rcu_dereference_check() usage!
-Message-ID: <20210122125748.GH4867@zn.tnic>
-References: <20210122101124.GE4867@zn.tnic>
- <20210122105034.GF4867@zn.tnic>
- <87v9bpb1t0.fsf@codeaurora.org>
+        Fri, 22 Jan 2021 07:59:19 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1635CC061788
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:58:36 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id n11so6404905lji.5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:58:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4seuth170OHrpzcvrGxWNmFx5FHFxq8P84afz/6Z5Xo=;
+        b=HDnNK/PLHiVdfRkWV5yeyxOxcoyCn24hwPU4U5xCPwq9vE8u2n7RaykoB9INj9iET2
+         qUuiJw/ezJMAYKqwQ7h8IxlVNfZwDGlZZF6GpSe26TrDgk/w6HvHpeAWDxUbbe+E/xty
+         IP3BH3yzs6HK2qPiedEnoeSTrLmR1CdeJX7crvwKs2nTNUQGoeTHl0catxZTLfTkXsVO
+         Pda4DDu/6DrlmZtvXnU1vRjCKW/8QMLlU7aoEzt2FFKEwyeRxBe3+Eec4bzCujuiac+y
+         R0N+yTNXq7d2rzCjwGs9Ed3mh/bpNkyn7x+uz4CdUJEgwTkIsaF0BiCl9WNM0uZmSfN/
+         Popw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4seuth170OHrpzcvrGxWNmFx5FHFxq8P84afz/6Z5Xo=;
+        b=F9hO5dVV8XYaTDLJvDf1m99/+4UeXu+5QLtCI+eaNBMSA5niinVTzhm3Zx9w7VdsS0
+         +YNxztk0lN6z8ywGUfjNvSbZDtyxhFv9W1OU2plAGnNSzyLMAoEY9w/omAwh842EMLax
+         ZRan8DzIGfc8n3XZ7x5ipR79bPnwGl+Xm2u5GePt/t14UJlfnrhBm2nrCq5HvV4PJgVv
+         icBf9atL2u8v9zWowhWKO3YO1jYzAtvqj8oVciJkTD5PDfZ41uhM5TlUdYC1NbkjGTRn
+         m2MMriewYuqrofrxQQ3oTYJJ0xk3LsuLYRScmCVqqzbmWELhR0vEX2Fe5Q/w/ghcmRJT
+         js7w==
+X-Gm-Message-State: AOAM531dppcytMXQjr/Wv6e1XYf/VcXQb4kdvhrixixVas5Ij1C1suFP
+        UACeGsacKjLLJw+D6WfvfYiBFOdtalsi+Mj11FYIwA==
+X-Google-Smtp-Source: ABdhPJzj59F+7XmvRLWmVdxewFMrw4mj2TMxm/ZMG2OB+xID5A+BKHAHHzn8FfIafN2lCelvrEVeOCnbUajF+SnUnUI=
+X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr218754ljo.368.1611320314554;
+ Fri, 22 Jan 2021 04:58:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87v9bpb1t0.fsf@codeaurora.org>
+References: <20210121225712.1118239-1-saravanak@google.com> <20210121225712.1118239-2-saravanak@google.com>
+In-Reply-To: <20210121225712.1118239-2-saravanak@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 22 Jan 2021 13:58:23 +0100
+Message-ID: <CACRpkdbR+W_prw-ONbU90q2hYrm9vTvFUDXHCvtDcbdZ8UwXsg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] of: property: Add fw_devlink support for "gpio"
+ and "gpios" binding
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 02:20:43PM +0200, Kalle Valo wrote:
-> Can you try this commit:
-> 
-> 51d62f2f2c50 cfg80211: Save the regulatory domain with a lock
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/commit/?id=51d62f2f2c50
+On Thu, Jan 21, 2021 at 11:57 PM Saravana Kannan <saravanak@google.com> wrote:
 
-Yap, that fixes both machines, thx!
+> To provide backward compatibility for boards that use deprecated DT
+> bindings, we need to add fw_devlink support for "gpio" and "gpios".
+>
+> We also need to ignore these properties on nodes with "gpio-hog"
+> property because their gpio[s] are all supplied by the parent node.
+>
+> Cc: linux-tegra <linux-tegra@vger.kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-Reported-by: Borislav Petkov <bp@suse.de>
-Tested-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yours,
+Linus Walleij
