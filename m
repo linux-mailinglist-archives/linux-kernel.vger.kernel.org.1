@@ -2,290 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E348F300C02
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98557300BF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbhAVSz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:55:57 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:54306 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728407AbhAVOUw (ORCPT
+        id S1730365AbhAVSyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:54:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728511AbhAVOV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:20:52 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10MEJ0Ub114282;
-        Fri, 22 Jan 2021 08:19:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611325140;
-        bh=DsOvnr9WyeNbm72xXsxkc4ITW7ucVmRQuFGzTZmHPc8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=agChah64OGf9H5Ursk5i5syAzS2CugcoqFBYVP89uj0NZIqP5Ot/6ufi3jQlou3rV
-         HI9hk3WbEBQzMz3ohokhFc+5S32baA0r+2P6trcgV3xLxEMdVpLH14Kmfqn6746f6B
-         I651mSZ20/gq+Iwh4G/L6khTxo5zXQZ/JXNd6TzI=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10MEJ0AC019739
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 Jan 2021 08:19:00 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- Jan 2021 08:18:59 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 Jan 2021 08:18:59 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10MEIrTc042677;
-        Fri, 22 Jan 2021 08:18:55 -0600
-Subject: Re: [PATCH v9 01/17] Documentation: PCI: Add specification for the
- *PCI NTB* function device
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
-References: <20210119181106.GA2493893@bjorn-Precision-5520>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <797ec9f2-34c3-5dc4-cc0a-d4f7cdf4afb0@ti.com>
-Date:   Fri, 22 Jan 2021 19:48:52 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 22 Jan 2021 09:21:57 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F059C061786;
+        Fri, 22 Jan 2021 06:21:17 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id a8so7741447lfi.8;
+        Fri, 22 Jan 2021 06:21:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DRuoE5BoHJqfSn/CuRyT9sBVsoEYMteCMLatsDG8GRg=;
+        b=hmcwK4U+8IJhIFHxPEN0f1oPn56dF/9BlpFzezML4fX3kcphxhYf2wrGGMoMcitVE/
+         n/ZIb51ScH6oi8qRZG8VES9j/utF4LkBbkD9ArYhbBWGfmm6m6mNNqwyVW1WBtTXb5eT
+         +QlXA7DVDPOqr1sguiUhMsSrM4q0hbtY5Ot8VCuQCCyWU5ORMC3vz4fjigAOIVbXOYha
+         Y/tXKohUZ2TAM/LNG8YH6Jg95iIAqHRCS3JRcLE2NbbbUYfleFl2Wyzq+vwoKgDTXHxg
+         4fYFykfNMEV4+17jm7ICDtgGz0NYlfbt7/+a/t6Uota5JktZKC68B5FUV3yD5FG0qReB
+         O1nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DRuoE5BoHJqfSn/CuRyT9sBVsoEYMteCMLatsDG8GRg=;
+        b=qLZ23jIzcJTsWiS6qAgsJeaxNZIS37A8dBsJJVu5ZX9LnSto5pKTwYlKdCOBLHKR2G
+         X/u/oyLZBdEcuaQw6XBv6WdWzDaAVBW1NyTIOz+4xNkyZUCLUO1WOWK3nl3kNxKkLDxT
+         /HO5t3Dz42d8DJyYuYtmTG0c8s9gnp8ZBYRAZZCkWaeCV05j8c+Rg/RiIjzN8/uU28nc
+         9ik8TNiJH+yL2QtY+oPKPO/utpNxC+bhwiJYHsblShgWyu57QyHIxpbOxHua6WmWO/Ag
+         YzpMk4rRKce44nvBZwlkJohs46saeicy9G3BtJ34iBjVg06FCpj+eklAgoI2XyotB5+U
+         UTFg==
+X-Gm-Message-State: AOAM533HMrtLtH0f2t73hu7xfJHLnjf+2HAAUogDlo/+aTCNAGBjvZqC
+        +iSN58EXa1b8Gs+Rbg2K3dw=
+X-Google-Smtp-Source: ABdhPJziVUotrZv1JHvUCsUK21iR9fnvFePlUaXqgbh0VrMpneXNfWBFix3ajFZB+t9OFnwdaixkNw==
+X-Received: by 2002:ac2:5f58:: with SMTP id 24mr887475lfz.302.1611325275649;
+        Fri, 22 Jan 2021 06:21:15 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id y3sm778446ljy.98.2021.01.22.06.21.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 06:21:15 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 22 Jan 2021 15:21:13 +0100
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210122142113.GA1873@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
+ <20210121123834.GA1872@pc638.lan>
+ <20210122113409.w55kul5bpjxhkgm4@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210119181106.GA2493893@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122113409.w55kul5bpjxhkgm4@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+> On 2021-01-21 13:38:34 [+0100], Uladzislau Rezki wrote:
+> > __get_free_page() returns "unsigned long" whereas a bnode is a pointer
+> > to kvfree_rcu_bulk_data struct, without a casting the compiler will
+> > emit a warning.
+> 
+> Yes, learned about it, sorry.
+> 
+> > >> You think that a CPU migration is a bad thing. But why?
+> > >>
+> > It is not a bad thing. But if it happens we might queue a new bnode
+> > to a drain list of another CPU where a previous element of a new
+> > bnode may be just underutilized. So that is why i use migrate_disable()/enable()
+> > to prevent it.
+> 
+> If you allocate a node for queueing and then you realize that you
+> already have one then you either free it or queue it for later.
+> Given that all this is a slower-path and that this is used on every-CPU,
+> sooner or later that page will be used avoids a later allocation, right?
+> 
+To free it right away is a bit problematic, because we need at least one more
+time to drop the lock what would introduce more complexity. Adding to the cache 
+for later reuse is possible but would require an extra decay cache logic.
 
-On 20/01/21 12:04 am, Bjorn Helgaas wrote:
-> On Mon, Jan 04, 2021 at 08:58:53PM +0530, Kishon Vijay Abraham I wrote:
->> Add specification for the *PCI NTB* function device. The endpoint function
->> driver and the host PCI driver should be created based on this
->> specification.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> 
-> A few typos below if there's opportunity for revisions.
+I think, since it is a corner case and i do not consider it as a big issue,
+we can just queue it to the drain list so the previous node can be half filled
+due to migration.
 
-I'll fix them.
+> > If there are some hidden issues with migrate_disable()/enable() or you
+> > think it is a bad idea to use it, it would be appreciated if you could
+> > describe your view in more detail.
 > 
->> ---
->>  Documentation/PCI/endpoint/index.rst          |   1 +
->>  .../PCI/endpoint/pci-ntb-function.rst         | 351 ++++++++++++++++++
->>  2 files changed, 352 insertions(+)
->>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
->>
->> diff --git a/Documentation/PCI/endpoint/index.rst b/Documentation/PCI/endpoint/index.rst
->> index 4ca7439fbfc9..ef6861128506 100644
->> --- a/Documentation/PCI/endpoint/index.rst
->> +++ b/Documentation/PCI/endpoint/index.rst
->> @@ -11,5 +11,6 @@ PCI Endpoint Framework
->>     pci-endpoint-cfs
->>     pci-test-function
->>     pci-test-howto
->> +   pci-ntb-function
->>  
->>     function/binding/pci-test
->> diff --git a/Documentation/PCI/endpoint/pci-ntb-function.rst b/Documentation/PCI/endpoint/pci-ntb-function.rst
->> new file mode 100644
->> index 000000000000..a57908be4047
->> --- /dev/null
->> +++ b/Documentation/PCI/endpoint/pci-ntb-function.rst
->> @@ -0,0 +1,351 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +=================
->> +PCI NTB Function
->> +=================
->> +
->> +:Author: Kishon Vijay Abraham I <kishon@ti.com>
->> +
->> +PCI Non Transparent Bridges (NTB) allow two host systems to communicate
->> +with each other by exposing each host as a device to the other host.
->> +NTBs typically support the ability to generate interrupts on the remote
->> +machine, expose memory ranges as BARs and perform DMA.  They also support
->> +scratchpads which are areas of memory within the NTB that are accessible
->> +from both machines.
->> +
->> +PCI NTB Function allows two different systems (or hosts) to communicate
->> +with each other by configurig the endpoint instances in such a way that
->> +transactions from one system is routed to the other system.
+> Just what I mentioned in my previous email:
+> - the whole operation isn't cheap but it is more efficient in tree
+>   compared to what we used to have in RT.
+> - the task can no be freely placed while it could run. So if the task
+>   gets preempted, it will have to wait until it can run on the CPU
+>   again.
 > 
-> s/is/are/
-> 
->> +In the below diagram, PCI NTB function configures the SoC with multiple
->> +PCIe Endpoint (EP) instances in such a way that transaction from one EP
->> +controller is routed to the other EP controller. Once PCI NTB function
-> 
-> s/transaction ... is/transactions ... are/
-> 
->> +configures the SoC with multiple EP instances, HOST1 and HOST2 can
->> +communicate with each other using SoC as a bridge.
->> +
->> +.. code-block:: text
->> +
->> +    +-------------+                                   +-------------+
->> +    |             |                                   |             |
->> +    |    HOST1    |                                   |    HOST2    |
->> +    |             |                                   |             |
->> +    +------^------+                                   +------^------+
->> +           |                                                 |
->> +           |                                                 |
->> + +---------|-------------------------------------------------|---------+
->> + |  +------v------+                                   +------v------+  |
->> + |  |             |                                   |             |  |
->> + |  |     EP      |                                   |     EP      |  |
->> + |  | CONTROLLER1 |                                   | CONTROLLER2 |  |
->> + |  |             <----------------------------------->             |  |
->> + |  |             |                                   |             |  |
->> + |  |             |                                   |             |  |
->> + |  |             |  SoC With Multiple EP Instances   |             |  |
->> + |  |             |  (Configured using NTB Function)  |             |  |
->> + |  +-------------+                                   +-------------+  |
->> + +---------------------------------------------------------------------+
->> +
->> +Constructs used for Implementing NTB
->> +====================================
->> +
->> +	1) Config Region
->> +	2) Self Scratchpad Registers
->> +	3) Peer Scratchpad Registers
->> +	4) Doorbell Registers
->> +	5) Memory Window
->> +
->> +
->> +Config Region:
->> +--------------
->> +
->> +Config Region is a construct that is specific to NTB implemented using NTB
->> +Endpoint Function Driver. The host and endpoint side NTB function driver will
->> +exchange information with each other using this region. Config Region has
->> +Control/Status Registers for configuring the Endpoint Controller. Host can
->> +write into this region for configuring the outbound ATU and to indicate the
-> 
-> Expand "ATU" since this is the first mention.
-> 
->> +link status. Endpoint can indicate the status of commands issued be host in
->> +this region. Endpoint can also indicate the scratchpad offset, number of
->> +memory windows to the host using this region.
-> 
-> s/be host/by host/
-> s/offset, number/offset and number/
-> 
->> +The format of Config Region is given below. Each of the fields here are 32
->> +bits.
-> 
-> s/Each ... are/All ... are/
-> 
->> +
->> +.. code-block:: text
->> +
->> +	+------------------------+
->> +	|         COMMAND        |
->> +	+------------------------+
->> +	|         ARGUMENT       |
->> +	+------------------------+
->> +	|         STATUS         |
->> +	+------------------------+
->> +	|         TOPOLOGY       |
->> +	+------------------------+
->> +	|    ADDRESS (LOWER 32)  |
->> +	+------------------------+
->> +	|    ADDRESS (UPPER 32)  |
->> +	+------------------------+
->> +	|           SIZE         |
->> +	+------------------------+
->> +	|   NO OF MEMORY WINDOW  |
->> +	+------------------------+
->> +	|  MEMORY WINDOW1 OFFSET |
->> +	+------------------------+
->> +	|       SPAD OFFSET      |
->> +	+------------------------+
->> +	|        SPAD COUNT      |
->> +	+------------------------+
->> +	|      DB ENTRY SIZE     |
->> +	+------------------------+
->> +	|         DB DATA        |
->> +	+------------------------+
->> +	|            :           |
->> +	+------------------------+
->> +	|            :           |
->> +	+------------------------+
->> +	|         DB DATA        |
->> +	+------------------------+
->> +
->> +
->> +  COMMAND:
->> +
->> +	NTB function supports three commands:
->> +
->> +	  CMD_CONFIGURE_DOORBELL (0x1): Command to configure doorbell. Before
->> +	invoking this command, the host should allocate and initialize
->> +	MSI/MSI-X vectors (i.e initialize the MSI/MSI-X capability in the
-> 
-> s/i.e/i.e.,/
-> 
->> +	Endpoint). The endpoint on receiving this command will configure
->> +	the outbound ATU such that transaction to DB BAR will be routed
->> +	to the MSI/MSI-X address programmed by the host. The ARGUMENT
-> 
-> s/transaction to/transactions to/
-> 
-> Expand "DB BAR".  I assume this refers to "Doorbell BAR" (which itself
-> is not defined).  How do we know which is the Doorbell BAR?
+Yep, that is obvious. From scheduling point of view the task can wait more
+time because the migration is prohibited. From the other hand, the page is
+obtained in the path that is not considered as a hot one. One page can serve 
+~500 pointers.
 
-right doorbell. That part is explained in the "Modeling Constructs"
-section below.
-> 
-> Also, "DB" itself needs to be expanded somehow for uses like below:
-> 
->> +	register should be populated with number of DBs to configure (in the
->> +	lower 16 bits) and if MSI or MSI-X should be configured (BIT 16).
->> +	(TODO: Add support for MSI-X).
->> +
->> +	  CMD_CONFIGURE_MW (0x2): Command to configure memory window. The
->> +	host invokes this command after allocating a buffer that can be
->> +	accessed by remote host. The allocated address should be programmed
->> +	in the ADDRESS register (64 bit), the size should be programmed in
->> +	the SIZE register and the memory window index should be programmed
->> +	in the ARGUMENT register. The endpoint on receiving this command
->> +	will configure the outbound ATU such that trasaction to MW BAR
->> +	will be routed to the address provided by the host.
-> 
-> How do we know which is the MW BAR?  I assume "MW" refers to "Memory
-> Window".
+I do not say that we should keep: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
 
-right memory window. That's again explained in the "Modeling Constructs"
-section below.
-> 
->> +
->> +	  CMD_LINK_UP (0x3): Command to indicate an NTB application is
->> +	bound to the EP device on the host side. Once the endpoint
->> +	receives this command from both the hosts, the endpoint will
->> +	raise an LINK_UP event to both the hosts to indicate the hosts
->> +	can start communicating with each other.
-> 
-> s/raise an/raise a/
-> 
-> I guess this "LINK_UP event" is something other than the PCIe DL_Up
-> state, because each host has already been communicating with the
-> endpoint.  Right?  Is this LINK_UP a software construct?
+without it, a migration can occur, what is really rare according to my tests
+therefore i do not have a strong opinion about keeping it. If you or someone
+else has some concern we can drop it.
 
-Yeah. This is when an NTB client application is bound to the NTB device.
-This is used for handshake between the applications running on the two
-hosts.
-
-Thanks
-Kishon
+--
+Vlad Rezki
