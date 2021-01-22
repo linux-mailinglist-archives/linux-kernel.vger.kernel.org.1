@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B509C300DF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3167B300DED
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730697AbhAVUnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S1730387AbhAVUl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:41:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730520AbhAVUl5 (ORCPT
+        with ESMTP id S1729627AbhAVUko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:41:57 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493FDC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:41:01 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id b131so6676270ybc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:41:01 -0800 (PST)
+        Fri, 22 Jan 2021 15:40:44 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EBBC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:40:04 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id n7so4618060pgg.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:40:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=pyxHmRO3h+haE3GvdjoFL8/WjTXx2t0JBZMhtHNwcy4=;
-        b=qULn3gC2JI23ZACklCrVFPH5xhV9FcCh5pr32mrm7ML5uUbqEquuC47toqsDtYjeYz
-         /vWQ7/hpxBOldcPTDbwAOysm5k7C/HcrThH5CFikVD0ZDsDbsq6DrneZvkEIY+nbuWwH
-         PMBofzdU/eJGwFsp28amnxA6U1Ki0wfxxKcGk3ToFr60xtShikL6mjIN2qXxB0Q4MPKA
-         Vy9GzIx5T9GEsSgq9QpF2ukGJN36n5tZMQxICuYaT1/fGJWHlkjqQWzpPPsgy2dUoSgW
-         vlnyHmEvceznYufijHCik3v+ir/gEFHJJ0hLfVN0U4tIWihWaT5yrihgYH3qhEhBSX9I
-         wApg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hPBpTtNISftNMnwOVfv0OcRq7P7OLC0DLakDCVVKP/U=;
+        b=fgcWBQDdJ0m1A8KrLvi9mOIAG0c1vqbz725WE9Yq4aZM0AIG7DSAN/OBvxu4pA1rLe
+         70+Vd6TWFk5J9wwuTdVdrvtHub1/AKBCruwfJP4f3uU62PQP2N3kli+mzQC6hIMvrJ6e
+         qx8/BcLGdhZ/Yw5YwbTWVkw+084MCcieaDEnTsfAeq9HWUWiZJufrT1vpa9+cMGfP5C5
+         4KtWEd98cP1RnNSyLytLlO5lYqj0xPsB752MOxKxeZ8JWnlwEUU4dmuoubzE01n3xeUH
+         /MW59zP4bMvLIfmXoT1h1fJKuaRS2M21yebh0cwC8JsybV7mXg4BS0iF5tYkaRK5vU0z
+         J6eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=pyxHmRO3h+haE3GvdjoFL8/WjTXx2t0JBZMhtHNwcy4=;
-        b=m0Q1Uj0LecoIWVaeTAsyNCU88qvjuagrI6++0PtQkMKjiJgOoD7VMekpRKD60C3P88
-         dtTM/proNLPq2Rc01rCH+0NtD3XxBcUsRgHX+XJjFX3S9Beopxbse7cM/c0oXOzr+Qpl
-         vEw99NOzLxjssTSlcCxP0roRqrLt1hg/lZbpcnQ4yJlc8Jwwjlm4l5ofRyZZ0WMFkqW8
-         50uyVsMqSseDtP3e7RFbPlA+70idLpP/86WHtGH1OfP1FfAb+RVfpZElbgiLZutdWCJh
-         vT0/bisYpE3AD9f3oPIcLxBw4U/nR9slEjgP2yYh7OTcNJj5KKE1rf0mBkL794PB3XJo
-         Llog==
-X-Gm-Message-State: AOAM530cc+uGLL2r6uhdkEBr+MTOXQa3nDziDXm4LGbYjICfN4jSQO0V
-        ONVZ+Wy+4VxFHPEmOQnGqzjZoGlAPxQ=
-X-Google-Smtp-Source: ABdhPJwpymYTKSo4i45gzHRjk4zVwg3jh4A09yJceemynb6NjecSeQmF/7Bpp7hRXWbfzC49vBZWry7fx00=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a05:6902:706:: with SMTP id
- k6mr9162371ybt.52.1611348060485; Fri, 22 Jan 2021 12:41:00 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 22 Jan 2021 12:40:47 -0800
-In-Reply-To: <20210122204047.2860075-1-seanjc@google.com>
-Message-Id: <20210122204047.2860075-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210122204047.2860075-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v3 2/2] KVM: x86: Override reported SME/SEV feature flags with
- host mask
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hPBpTtNISftNMnwOVfv0OcRq7P7OLC0DLakDCVVKP/U=;
+        b=Fs8IRUhDab+Uu1Rlk5G8txY3hQqaqNEVf04HOv2L9jYSdZdUXlv5oGQQ9ECU86a54F
+         OWg5XlAuytSPXSwenPSq9yVBBe28Rq1y60kAhTK64OwfAoEW2/5eEL1Jcva4lH+P14NF
+         QU6MofBuk2IJxJI3krGgppKiuKfGSodB29EUcBiP5d5nM1peLV0iKjqOR2krfCJN1twA
+         oDt+ToYSddpqx0CV6dmQQPSmheZVBI6WVhSuKi+yyr+rLEAEKeB07bnw3bp1vFhWFlNR
+         Bt0TSN87HVadS5jrECW0Yy0FAtutttF/eA/NczdnoPArxtamWRqohbshy1HRmu4WwPJ+
+         PyhQ==
+X-Gm-Message-State: AOAM533VFx1Tzih0EBv/zpUIoMPFZuStvx9l5S6BVnrGiB3WFXm6boDG
+        LI/NF6tqGrzyIEv8qC0iynpZ4Sj58z8NvxSMl0Liybau+qHhPw==
+X-Google-Smtp-Source: ABdhPJwnbZ+jAOGuV98zPaY7ANvVMlLzk73pb/52V5+0ncXlHDi/+mOtDdqNqaD4GwHheMMKR5Kg8GQRrKXfDvMNFGU=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr6578225pfk.73.1611348004138; Fri, 22
+ Jan 2021 12:40:04 -0800 (PST)
+MIME-Version: 1.0
+References: <20210122164107.361939-1-hdegoede@redhat.com> <20210122164107.361939-7-hdegoede@redhat.com>
+In-Reply-To: <20210122164107.361939-7-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Jan 2021 22:40:53 +0200
+Message-ID: <CAHp75VedGzihYi1Ndjj4K4326pMrLtk3V7gi_rxteu5HaqWfEA@mail.gmail.com>
+Subject: Re: [PATCH v3 06/13] ASoC/extcon: arizona: Move arizona jack code to sound/soc/codecs/arizona-jack.c
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a reverse-CPUID entry for the memory encryption word, 0x8000001F.EAX,
-and use it to override the supported CPUID flags reported to userspace.
-Masking the reported CPUID flags avoids over-reporting KVM support, e.g.
-without the mask a SEV-SNP capable CPU may incorrectly advertise SNP
-support to userspace.
+On Fri, Jan 22, 2021 at 6:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> The jack handling for arizona codecs is being refactored so that it is
+> done directly by the codec drivers, instead of having an extcon-driver
+> bind to a separate "arizona-extcon" child-device for this.
+>
+> drivers/mfd/arizona-core.c has already been updated to no longer
+> instantiate an "arizona-extcon" child-device for the arizona codecs.
+>
+> This means that the "arizona-extcon" driver is no longer useful
+> (there are no longer any devices for it to bind to).
+>
+> This commit drops the extcon Kconfig / Makefile bits and moves
+> drivers/extcon/extcon-arizona.c to sound/soc/codecs/arizona-jack.c .
+>
+> This is a preparation patch for converting the arizona extcon-driver into
+> a helper library for letting the arizona codec-drivers directly report jack
+> state through the standard sound/soc/soc-jack.c functions.
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/cpuid.c | 2 ++
- arch/x86/kvm/cpuid.h | 1 +
- 2 files changed, 3 insertions(+)
+...
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 13036cf0b912..b7618cdd06b5 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -855,6 +855,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 	case 0x8000001F:
- 		if (!boot_cpu_has(X86_FEATURE_SEV))
- 			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
-+		else
-+			cpuid_entry_override(entry, CPUID_8000_001F_EAX);
- 		break;
- 	/*Add support for Centaur's CPUID instruction*/
- 	case 0xC0000000:
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index dc921d76e42e..8b6fc9bde248 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -63,6 +63,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
- 	[CPUID_8000_0007_EBX] = {0x80000007, 0, CPUID_EBX},
- 	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
- 	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
-+	[CPUID_8000_001F_EAX] = {0x8000001f, 1, CPUID_EAX},
- };
- 
- /*
+>  MAINTAINERS                                               | 1 -
+
+> -F:     drivers/extcon/extcon-arizona.c
+
+Commit message doesn't shed a light if we need to move this actually
+to another record in MAINTAINERS database.
+
 -- 
-2.30.0.280.ga3ce27912f-goog
-
+With Best Regards,
+Andy Shevchenko
