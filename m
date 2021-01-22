@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403442FFBEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 05:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 455322FFC0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 06:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbhAVEqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 23:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbhAVEqQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 23:46:16 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5815EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:45:36 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id s15so2522946plr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:45:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=bbM2dKaYpv41IbTKFCnMXIDb9vPr8F5wpZdCakgIuw0=;
-        b=uHQ/LNKv9Ii50fZb5s/RYG98hKXnhSwPVs+L5cPkfIj6K5CZebreMfP5nc4Gb/6QJ5
-         en/0A+D/wVkrU/v1I1mZ4ey4n9lTklU45zI9HBM+ZIxlO0gsG7kePmQj5M4dQt2+8mcS
-         tdi5E804YOrjQzv9HV5b1auk/Vnnp4oxbpk5DFl1MEHdy0OGHxTArUDvzPPcMDID5Wql
-         JDs6C5dsNRPyxQobVu8AspBDMQYCFaaMEIug/AVM2NjHzwlhxuX2RThA5DN5fB7Z56Hy
-         hqdulwE2KMuLCX8fb9+42VUWneZI4v8PzuMnwbIsOjA5OMtxuZL29KrqU5stPKnzJNvq
-         ustA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=bbM2dKaYpv41IbTKFCnMXIDb9vPr8F5wpZdCakgIuw0=;
-        b=kqf1btm7lNtC4qsm1fe9l/lfJ8EAK2SUrFhewJh6+2Y0HT7J6nHEnwZvTuUvtKqDlI
-         2uXWIIHJE0GGhq8nxrQzEYrwGxZQrpm044tRulwcvTGOdXWsZrugr4lkwxJnlaID2aup
-         TR78+JPeke3fm/DlsIkIbTeQktWmNKPLds/IL3fyW/neSg6UsozZ9X8HHiSNJjpJw2rs
-         VzHBMzIlIvlZDOv6cmjAuE8FT2u7cuBkaIrIOSD4a5dZ8XkxvO4bUUq85RX1H04u9sTI
-         2YNJa0xV+By4fR7h8Gp8n/l6XR8W7z5xk2L3/96klKUL/lhUN7uPkAAvWVTaUhcIP4ds
-         aLFQ==
-X-Gm-Message-State: AOAM530aVdcuuR5ZZUnaFF/lR56DO0auxF2Ml7pO/MubtDSc7rn8shWw
-        GiIza46A9i3AmSNAg5+BEvH86g==
-X-Google-Smtp-Source: ABdhPJykjY//oEpUUCa97mb5wm8LARwb1qXlD4yQTn+cDtixVvBIM0+Lr3O+f+FTqokTzkG4IHsSZg==
-X-Received: by 2002:a17:90a:4598:: with SMTP id v24mr3128802pjg.135.1611290735797;
-        Thu, 21 Jan 2021 20:45:35 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id n128sm7428126pga.55.2021.01.21.20.45.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 20:45:34 -0800 (PST)
-Date:   Fri, 22 Jan 2021 10:15:32 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        id S1726430AbhAVFSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 00:18:32 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:40069 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726094AbhAVFSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 00:18:24 -0500
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4DMSFF71C7z9sCD; Fri, 22 Jan 2021 16:17:37 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1611292657;
+        bh=i1DcXl93lSfMMtoG7izlw54QZ4IZck6Ry2AtX9KRgPE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UqHqjq6bzprqJxazvkReHWJiX28Cvjf9bL2Tkb1UmszDRPFcWedidS77w6SzNYYol
+         Czjn/80/HCx9+bNPk2Zv97XxM9pP55kZlensX1RAXbej0VW32vwkecbTLIdV006nrK
+         Q1bdI0RA9r17bMKuKngrAzOgV+c0c5iy3pgjIszM=
+Date:   Fri, 22 Jan 2021 15:27:04 +1100
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
-Message-ID: <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
- <b634343a-8005-fc35-e38b-bfeaa7310a70@gmail.com>
+        Masahiro Yamada <masahiroy@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+Subject: Re: [PATCH V5 5/5] of: unittest: Statically apply overlays using
+ fdtoverlay
+Message-ID: <20210122042704.GC4400@yekko.fritz.box>
+References: <cover.1611124778.git.viresh.kumar@linaro.org>
+ <696c137461be8ec4395c733c559c269bb4ad586e.1611124778.git.viresh.kumar@linaro.org>
+ <20210121005145.GF5174@yekko.fritz.box>
+ <7d6adfd9-da1e-d4ca-3a04-b192f0cf36b0@gmail.com>
+ <20210121053426.4dw5oqz7qb4y7hvm@vireshk-i7>
+ <20210121063438.GJ5174@yekko.fritz.box>
+ <20210121065728.trqph5uwvp43k46l@vireshk-i7>
+ <20210121233957.GA4400@yekko.fritz.box>
+ <20210122031049.u3nmxxzzhue5rniu@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="CblX+4bnyfN0pR09"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b634343a-8005-fc35-e38b-bfeaa7310a70@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210122031049.u3nmxxzzhue5rniu@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-01-21, 00:41, Dmitry Osipenko wrote:
-> 21.01.2021 14:17, Viresh Kumar пишет:
-> > @@ -1074,15 +1091,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
-> >  
-> >  	if (!ret) {
-> >  		ret = _set_opp_bw(opp_table, opp, dev, false);
-> > -		if (!ret)
-> > +		if (!ret) {
-> >  			opp_table->enabled = true;
-> > +			dev_pm_opp_put(old_opp);
-> > +
-> > +			/* Make sure current_opp doesn't get freed */
-> > +			dev_pm_opp_get(opp);
-> > +			opp_table->current_opp = opp;
-> > +		}
-> >  	}
-> 
-> I'm a bit surprised that _set_opp_bw() isn't used similarly to
-> _set_opp_voltage() in _generic_set_opp_regulator().
-> 
-> I'd expect the BW requirement to be raised before the clock rate goes UP.
 
-I remember discussing that earlier when this stuff came in, and this I
-believe is the reason for that.
+--CblX+4bnyfN0pR09
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We need to scale regulators before/after frequency because when we
-increase the frequency a regulator may _not_ be providing enough power
-to sustain that (even for a short while) and this may have undesired
-effects on the hardware and so it is important to prevent that
-malfunction.
+On Fri, Jan 22, 2021 at 08:40:49AM +0530, Viresh Kumar wrote:
+> On 22-01-21, 10:39, David Gibson wrote:
+> > No, it definitely will not work in general.  It might kinda work in a
+> > few trivial cases, but it absolutely will not do the neccessary
+> > handling in some cases.
+> >=20
+> > > I
+> > > did inspect the output dtb (made by merging two overlays) using
+> > > fdtdump and it looked okay.
+> >=20
+> > Ok.. but if you're using these bizarre messed up "dtbs" that this test
+> > code seems to be, I don't really trust that tells you much.
+>=20
+> I only looked if the changes from the second overlay were present in
+> the merge and they were. And so I assumed that it must have worked.
+>=20
+> What about checking the base dtb for /plugin/; in fdtoverlay and fail
+> the whole thing in case it is present ? I think it is possible for
+> people to get confused otherwise, like I did.
 
-In case of bandwidth such issues will not happen (AFAIK) and doing it
-just once is normally enough. It is just about allowing more data to
-be transmitted, and won't make the hardware behave badly.
+/plugin/ doesn't exist in the dtb, only in the dts.  From the dtb
+encoding point of view, there's no difference between a dtb and a
+dtbo, a dtbo is just a dtb that follows some conventions for its
+content.
 
--- 
-viresh
+If we were doing this from scratch, it would be better for dtbos to
+have a different magic number from regular dtbs.  I think I actually
+suggested that sometime in the past, but by the time that came up,
+dtbos were already in pretty widespread use with the existing format.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--CblX+4bnyfN0pR09
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmAKVBYACgkQbDjKyiDZ
+s5KBwBAAhmYCf1xBVR2o9aVhiRoPo6T65geIcthIYGsA07vLvsabGOHv+F5LemnK
+lHpfG9C1SFrkrpI1Eb/Es1cRTX66p+Ih3CJTjCcjuPlLBrRJo/x3d4SvgbyLz0pJ
+jW/BjU2ft5DJHC8fZX2q0jSXULR4yw1Uyme6v0X5kXjHbvRfyCUd4pDwb+pQRWjG
+7bwYQgDadQ8z0JS2N7IH93vdZdj0mYEjVsVBctebglTqE6O13xdWdkSunTcvRWhf
+XUtWbCoiCCJ5qZn7Wr7vrcS+fBagJZSyE6rAVCcDXIbuu1iV2tN4hlM+9j7pft/J
+ddMGaObnk6cXunLlhUu5Kd+ELBy7A1k9BlVLE6ssgArJ3P39vYke6ZhjapFM0Vdq
+FEEivxZ9SAx527O+lzAIkOWAWH7ilfY3R3jYF/5lpThQ+DSYUdsQJshocTzaM1jr
+yQAhjoKgjJ1bVh5cuRd857pnkclpwotIVoVNblFtfAswj1VKDKRx01gWRhrHXsdP
+nQ2U05uSTYBA7S+N5gB1geQeNyIsQWq7fQkizaIB4NTsso8OrxOUN5VHcK2AJSTF
+8XMyUVbx2efitQDi8RmJjlUG+h7/hVk/vO9ODz42CYSPFGKUDmDS7xc0Yg9xnunZ
+OPbFVKJUTqEkY03S1Iw7OT50w5RJnTfIliLjE7uarzyiUQ2Y7m0=
+=B+Jq
+-----END PGP SIGNATURE-----
+
+--CblX+4bnyfN0pR09--
