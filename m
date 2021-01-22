@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5682FFEE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686E12FFEE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727271AbhAVI71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727139AbhAVI6F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:58:05 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8276C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:57:24 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id v19so3263929pgj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:57:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Om1fWmk45UJnPODoi3J7JRR5hgr9TDBF5Ojj+VBLP+Q=;
-        b=DQdwse1o8A4TFLSTf635UiaPyi6CNnDBdu5E/VRgybpjhBuPc82DnqYHZjg9t92Pzc
-         UCF9pC7g/PGDlbtLtmLOdTiS8Tdhquzw4+i/E8QkV/k3FnXrSAHcDrBhxbByYv6RW/Xk
-         rh1ZriX32mO6dzrqx8Bn4boIowsGWzV61/SfbmR07pY85OSd8cbypVBtAU7uRE71SPWP
-         ZGvAgVm7e6EB80Mb9g20xsmyaq+xclF6iYsiqEgyJCVldiHH+6Ll4/6flPjuNvpwgBKy
-         bYAQbRWKnEvkPf4yITKKlicI0Y8rb331KxOYB/Oq+WD6M3bsMFD9cDI0DmfkQoFKLUvq
-         YVDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Om1fWmk45UJnPODoi3J7JRR5hgr9TDBF5Ojj+VBLP+Q=;
-        b=OiVsn0H4dbh0Fkdhs7e+GphEnd3F8qs62IseV5W9EAlndTOhv1HD+j2ucp5mx2yPwZ
-         oqkIgGpAr8Sq5Hs6ZbXkZVHJtvaSTCZrqxpNlwoDxulnWzVVOsH1ynBiD4gA+nN6NC0F
-         FWC2nZ+hCIfZEEjwp8ovRdMi3/mdmkS36h2FEm7p+nLV8dwLQBFLMsnAYnTbOC3yte1+
-         5K9vmQio0Ng45YT9tGcHPwR2C9k6FNqcY8CQdr/zO0f+a2VCe38+uEuVp1g7TizTfeg7
-         /gKAV4RGjBx1gbWU6I49tSM8iWd5DFyWSkd8dCewyYA/21exVO/kc6l2yoYsKbNjvtkc
-         OZiA==
-X-Gm-Message-State: AOAM532pA7xRmMP5OSDa49KQUw8XTc3jNt/AvRXta+dEqPcVpwTuDSAT
-        TY3m9dlsoV85pLQgMn170MChRbo602TlPhwisV2kPg==
-X-Google-Smtp-Source: ABdhPJz+NkTbQB3eSzWRE6o4dt43ME127orJ75xc5hTZL4LE30MLU3ITXQSmDnFKbpmkkVpVgOnCehiaM5NJZfbh6HM=
-X-Received: by 2002:a62:8895:0:b029:19e:92ec:6886 with SMTP id
- l143-20020a6288950000b029019e92ec6886mr3763217pfd.12.1611305844294; Fri, 22
- Jan 2021 00:57:24 -0800 (PST)
+        id S1727170AbhAVJAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:00:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727118AbhAVI57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:57:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8D42236F9;
+        Fri, 22 Jan 2021 08:57:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611305838;
+        bh=4WN6WZIW13Le34niPrIRUQdbKEyv4ykFjZJuLrSXaiU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JhSYGN0PghLXGESOCeXh2tkF9iNKbHvDaqdFkKDlU/X+fapCtshs5v5qccX3I8ooi
+         TWEMQS/2Q/DNYCYSY9rifsjlllcaf+opDTNiHSVvDEdPQbZuINrtfjSJCMWdHjDvYJ
+         3PXK6vTAZzilC6pq9sMfmEOuvwQKsHOLq2ouJeTT/4Izo+MCwKI2c1lfb0GudbPrEf
+         W1hFxq7jkNvW4hEAuoV4uOKvPr0EpPuFD2/cWjHRNhP8HiucXqEw+w5VxllIxpjc0V
+         tYNp8XDRRi19KMweFRNWs5pV6l6nkVvszb46x3GtasG+rt7OKc+7htL1dtZDbg7BYT
+         tMrX1uqh7WYAA==
+Date:   Fri, 22 Jan 2021 09:57:15 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/3] i2c: remove u300 bus driver
+Message-ID: <20210122085715.GD858@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <20210120132834.2375048-1-arnd@kernel.org>
+ <20210120132834.2375048-3-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210121202855.17400-1-tiwai@suse.de>
-In-Reply-To: <20210121202855.17400-1-tiwai@suse.de>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 22 Jan 2021 09:57:13 +0100
-Message-ID: <CAG3jFyu5RWvbxkiLHXtijGuXChBoKy-kPv38qk-_h9ir8u=ybg@mail.gmail.com>
-Subject: Re: [PATCH] media: pwc: Fix the URB buffer allocation
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Xm/fll+QQv+hsKip"
+Content-Disposition: inline
+In-Reply-To: <20210120132834.2375048-3-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the patch, it all looks good to me.
 
-Feel free to add my r-b:
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+--Xm/fll+QQv+hsKip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 21 Jan 2021 at 21:34, Takashi Iwai <tiwai@suse.de> wrote:
->
-> The URB buffer allocation of pwc driver involves with the
-> dma_map_single(), and it needs to pass the right device.  Currently it
-> passes usb_device.dev, but it's no real device that manages the DMA.
-> Since the passed device has no DMA mask set up, now the pwc driver
-> hits the WARN_ON_ONCE() check in dma_map_page_attrs() (that was
-> introduced in 5.10), resulting in an error at URB allocations.
-> Eventually this ended up with the black output.
->
-> This patch fixes the bug by passing the proper device, the bus
-> controller, to make the URB allocation and map working again.
->
-> BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1181133
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  drivers/media/usb/pwc/pwc-if.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/usb/pwc/pwc-if.c b/drivers/media/usb/pwc/pwc-if.c
-> index 61869636ec61..d771160bb168 100644
-> --- a/drivers/media/usb/pwc/pwc-if.c
-> +++ b/drivers/media/usb/pwc/pwc-if.c
-> @@ -461,7 +461,7 @@ static int pwc_isoc_init(struct pwc_device *pdev)
->                 urb->pipe = usb_rcvisocpipe(udev, pdev->vendpoint);
->                 urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
->                 urb->transfer_buffer_length = ISO_BUFFER_SIZE;
-> -               urb->transfer_buffer = pwc_alloc_urb_buffer(&udev->dev,
-> +               urb->transfer_buffer = pwc_alloc_urb_buffer(udev->bus->controller,
->                                                             urb->transfer_buffer_length,
->                                                             &urb->transfer_dma);
->                 if (urb->transfer_buffer == NULL) {
-> @@ -524,7 +524,7 @@ static void pwc_iso_free(struct pwc_device *pdev)
->                 if (urb) {
->                         PWC_DEBUG_MEMORY("Freeing URB\n");
->                         if (urb->transfer_buffer)
-> -                               pwc_free_urb_buffer(&urb->dev->dev,
-> +                               pwc_free_urb_buffer(urb->dev->bus->controller,
->                                                     urb->transfer_buffer_length,
->                                                     urb->transfer_buffer,
->                                                     urb->transfer_dma);
-> --
-> 2.26.2
->
+On Wed, Jan 20, 2021 at 02:28:33PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> The ST-Ericsson U300 platform is getting removed, so this driver is no
+> longer needed.
+>=20
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Applied to for-next, thanks!
+
+
+--Xm/fll+QQv+hsKip
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAKk2sACgkQFA3kzBSg
+KbZRvw/+OyljxnUQNMREamklyeMJR02JwAidu/4PEqYdquzIA3hgLXGqi20iyOs0
+eV/DBJDZIZekazTWX+kJBChu284tXDhz5pO2Yh7F15RbZJyrvTRWSnpsY4tfBICL
+sGglvz/djBnA66li63iOFwJeudxIU23sKVfTSA6v0iq6384mtgu2dJFIPjZV1Yi4
+JnaJhPEcO3RPnH5uUUKW9mqTt5Imt4AoVkJLeF4b65+xJWyeDzs7UOgyALvSrd9J
+BRc5vRVyZCpzAyk0lr4P9vy9STFdVrt3rB+hP1V9VPLT8luK2JMZn8kgxrVdNI+0
++dUwOhUK2X2gRrsyFceZF7l8WRoLnE3srE5BU9+U3NeQdc096Uh7wqRxdVxa6g4D
+PEPqMkhXAiCBmJrs6bDZTg1J7EwK7NNZjElNRw4Npuftz/Ne416Z06qncny1a4hj
+pZPQVLOYKVYE1V+oLqHn4hhsE7olTWNWXqFhGvAaYTktIHjjiWTajQATMlyGb3HB
+ub6Qv74/yHg29czwHMlzRnOpqpGosdo7zS7vBFqmU8yLs2Ccsmn19KabAl5Md3um
+FZ8FY+JB8qP10hlt6e2z3yttUJ061Fr3iY58q48178VHk+s8VEBy51Ne4eoGrr+0
+nop5C1q8v3e6jRzF0maSRynlmSv04LSX+222NJRvNohRkXtHQAw=
+=nwUW
+-----END PGP SIGNATURE-----
+
+--Xm/fll+QQv+hsKip--
