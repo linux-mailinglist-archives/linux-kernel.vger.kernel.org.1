@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CA7300A91
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F24C300A97
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729985AbhAVSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:02:02 -0500
-Received: from smtprelay0128.hostedemail.com ([216.40.44.128]:45542 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729648AbhAVRw4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:52:56 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E70EE1801F770;
-        Fri, 22 Jan 2021 17:52:09 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2560:2563:2682:2685:2691:2693:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4605:5007:6119:7652:7903:8784:8957:9025:9163:10004:10400:10848:11232:11658:11914:12043:12297:12660:12740:12760:12895:13019:13069:13311:13357:13439:14096:14097:14181:14659:14721:14819:21080:21451:21611:21627:21972:21987:30054:30060:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: chess82_4508c6f2756d
-X-Filterd-Recvd-Size: 2880
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 22 Jan 2021 17:52:08 +0000 (UTC)
-Message-ID: <59dfd27e4b5cfe183a8cd64ed930c6dfd3c0aa20.camel@perches.com>
-Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang
- line
-From:   Joe Perches <joe@perches.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Finn Behrens <me@kloenk.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 22 Jan 2021 09:52:06 -0800
-In-Reply-To: <CAK7LNAQM5zYu3J-zP1AFPSKqiFL0rmnud9WyNFDNMmg3Dgw00w@mail.gmail.com>
-References: <20210121170736.2266-1-scott.branden@broadcom.com>
-         <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
-         <CAHp75Vf=Ba+e8PDsvi8eDiuNDvC6Pfx3RsRAkaOZvD26Z2pnQA@mail.gmail.com>
-         <CAHp75VcLi8hjYaDXrfAjbj+Kw_FRef=xnKiXr_Kv+YUToEjHTQ@mail.gmail.com>
-         <CAK7LNARL570EgjijCMY_CF91frwtTeatyhYcnD8-s08aiduFnQ@mail.gmail.com>
-         <64d3d8cb83e09d03927dba998a09e8b37e06dece.camel@perches.com>
-         <CAK7LNAQM5zYu3J-zP1AFPSKqiFL0rmnud9WyNFDNMmg3Dgw00w@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1730117AbhAVSDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:03:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730010AbhAVRzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:55:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECA2423AC8;
+        Fri, 22 Jan 2021 17:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611338096;
+        bh=AYFiX4zVoFw1zc21BTNTrpcrcdxIXokJIpPNH+bgg4o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=M/RdoYta0yYvxyxrVm1MwF9jMowYeci9nw51o8xr81Rrjxay9o6aIN0uHyLNYLz23
+         jqVK5Evzma3qJfNbOgcyeEqy3QqtoqYYOl9GXHIc/IkjzjRhOZpljDFyAcV24iAJq5
+         o8wT+0ox1CBYBIFCBppwxMBmQgNoLdzN28/VcW5lBj7pyNbCaKeN0B2kvFGGuxdim1
+         OQiNbQVwuLvpEP37uUJFjsXM0U/ZGtjvEwVRGsHoYeFJe03N4tQbb1kh3Rd+uo0OTD
+         M5fQ+embtPzr1N7lS4XBBkAsM1fcBJ/5SYH77ZFIo/HArEQSlVq3yBgZc/6u12BBxl
+         Ft29gIcXrW0Fg==
+Received: by mail-ot1-f43.google.com with SMTP id 36so5914549otp.2;
+        Fri, 22 Jan 2021 09:54:55 -0800 (PST)
+X-Gm-Message-State: AOAM533AH0+us2U3skTvQu9mNZa0SmmQLesuX1jQBfmDa8IikwSSi589
+        zAWxi20wc2K/3w2/yh2EY1MCwkBp8YeKRKQhmf0=
+X-Google-Smtp-Source: ABdhPJx0hc/N3OuLdXaocPstvcNOS7WFFfWzpNbqXVjBFk/Ywwb2F+cfkQeYh8iEnYVpre/A5EJl/hugMJ1hMmEibHA=
+X-Received: by 2002:a05:6830:1158:: with SMTP id x24mr4118875otq.108.1611338095288;
+ Fri, 22 Jan 2021 09:54:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210120173800.1660730-1-jthierry@redhat.com> <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
+ <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com> <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
+ <YAlkOFwkb6/hFm1Q@hirez.programming.kicks-ass.net> <CAMj1kXE+675mbS66kteKHNfcrco84WTaEL6ncVkkV7tQgbMpFw@mail.gmail.com>
+ <20210121185452.fxoz4ehqfv75bdzq@treble> <20210122174342.GG6391@sirena.org.uk>
+In-Reply-To: <20210122174342.GG6391@sirena.org.uk>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 22 Jan 2021 18:54:44 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF31FxCTbo4M8MX0aaegaq7AQXMUdCtsm6xrKUFSpkzjA@mail.gmail.com>
+Message-ID: <CAMj1kXF31FxCTbo4M8MX0aaegaq7AQXMUdCtsm6xrKUFSpkzjA@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org, live-patching@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-01-23 at 02:16 +0900, Masahiro Yamada wrote:
-> On Sat, Jan 23, 2021 at 12:51 AM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Fri, 2021-01-22 at 07:06 +0900, Masahiro Yamada wrote:
-> > > I use Ubuntu, where /usr/bin/python is a symlink
-> > > to /usr/bin/python3.
-> > 
-> > Odd, here:
-> > 
-> > $ lsb_release -a
-> > No LSB modules are available.
-> > Distributor ID: Ubuntu
-> > Description:    Ubuntu 20.10
-> > Release:        20.10
-> > Codename:       groovy
-> > 
-> > $ ls /usr/bin/python -la
-> > lrwxrwxrwx 1 root root 7 Apr 15  2020 /usr/bin/python -> python2
-> 
-> Hmm, presumably I changed the symlink path by myself
-> although I do not remember...  Sorry for confusion.
+On Fri, 22 Jan 2021 at 18:44, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Jan 21, 2021 at 12:54:52PM -0600, Josh Poimboeuf wrote:
+>
+> > 2) The shadow stack idea sounds promising -- how hard would it be to
+> >    make a prototype reliable unwinder?
+>
+> In theory it doesn't look too hard and I can't see a particular reason
+> not to try doing this - there's going to be edge cases but hopefully for
+> reliable stack trace they're all in areas where we would be happy to
+> just decide the stack isn't reliable anyway, things like nesting which
+> allocates separate shadow stacks for each nested level for example.
+> I'll take a look.
 
-Or maybe it's because my system has only been upgraded since
-about Ubuntu 8.04... Maybe it's time for a fresh reinstall..
+This reminds me - a while ago, I had a stab at writing a rudimentary
+GCC plugin that pushes/pops return addresses to a shadow call stack
+pointed to by x18 [0]
+I am by no means suggesting that we should rely on a GCC plugin for
+this, only that it does seem rather straight-forward for the compiler
+to manage a stack with return addresses like that (although the devil
+is probably in the details, as usual)
 
-I believe that Ubuntu now only installs python3 since 18.04
-
-https://wiki.ubuntu.com/BionicBeaver/ReleaseNotes
-
-Other base system changes since 16.04 LTS
-
-    The gpg binary is provided by gnupg2
-
-    For new installs, a swap file will be used by default instead of a swap partition.
-
-    Python 2 is no longer installed by default. Python 3 has been updated to 3.6. This is the last LTS release to include Python 2 in main.
-
-
-
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=arm64-scs-gcc
