@@ -2,681 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DEF3001D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3ED5300203
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbhAVLSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:18:08 -0500
-Received: from mga01.intel.com ([192.55.52.88]:46971 "EHLO mga01.intel.com"
+        id S1727217AbhAVLxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:53:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:41864 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728143AbhAVLDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:03:12 -0500
-IronPort-SDR: GgLjaz6kcBQkqjI2dTUFWHPx72B/7XrcRtpC/UVSogjFj79SReKciWl9puT4E0bcJHOCZBtOOc
- lxkzhTzi4Qqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="198184791"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="198184791"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:02:21 -0800
-IronPort-SDR: HGzRuuhYtIoTNlixnYMxzlUXJ/1855LR4EtE68zXyXG7artNxmB7Zv/BW3Kc5KvfEXnJPrtwol
- Xxue38Cu89hg==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="392266256"
-Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:02:16 -0800
-From:   shuo.a.liu@intel.com
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuo Liu <shuo.a.liu@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v8 08/18] virt: acrn: Introduce EPT mapping management
-Date:   Fri, 22 Jan 2021 19:01:12 +0800
-Message-Id: <20210122110122.45800-9-shuo.a.liu@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210122110122.45800-1-shuo.a.liu@intel.com>
-References: <20210122110122.45800-1-shuo.a.liu@intel.com>
+        id S1728327AbhAVLKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:10:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8853A11D4;
+        Fri, 22 Jan 2021 03:09:50 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87E733F719;
+        Fri, 22 Jan 2021 03:09:49 -0800 (PST)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Qais Yousef <qais.yousef@arm.com>
+Subject: [PATCH] arm64: kprobes: Fix Uexpected kernel BRK exception at EL1
+Date:   Fri, 22 Jan 2021 11:09:09 +0000
+Message-Id: <20210122110909.3324607-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Liu <shuo.a.liu@intel.com>
+I was hitting the below panic continuously when attaching kprobes to
+scheduler functions
 
-The HSM provides hypervisor services to the ACRN userspace. While
-launching a User VM, ACRN userspace needs to allocate memory and request
-the ACRN Hypervisor to set up the EPT mapping for the VM.
+	[  159.045212] Unexpected kernel BRK exception at EL1
+	[  159.053753] Internal error: BRK handler: f2000006 [#1] PREEMPT SMP
+	[  159.059954] Modules linked in:
+	[  159.063025] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 5.11.0-rc4-00008-g1e2a199f6ccd #56
+	[rt-app] <notice> [1] Exiting.[  159.071166] Hardware name: ARM Juno development board (r2) (DT)
+	[  159.079689] pstate: 600003c5 (nZCv DAIF -PAN -UAO -TCO BTYPE=--)
 
-A mapping cache is introduced for accelerating the translation between
-the Service VM kernel virtual address and User VM physical address.
+	[  159.085723] pc : 0xffff80001624501c
+	[  159.089377] lr : attach_entity_load_avg+0x2ac/0x350
+	[  159.094271] sp : ffff80001622b640
+	[rt-app] <notice> [0] Exiting.[  159.097591] x29: ffff80001622b640 x28: 0000000000000001
+	[  159.105515] x27: 0000000000000049 x26: ffff000800b79980
 
-From the perspective of the hypervisor, the types of GPA of User VM can be
-listed as following:
-   1) RAM region, which is used by User VM as system ram.
-   2) MMIO region, which is recognized by User VM as MMIO. MMIO region is
-      used to be utilized for devices emulation.
+	[  159.110847] x25: ffff00097ef37840 x24: 0000000000000000
+	[  159.116331] x23: 00000024eacec1ec x22: ffff00097ef12b90
+	[  159.121663] x21: ffff00097ef37700 x20: ffff800010119170
+	[rt-app] <notice> [11] Exiting.[  159.126995] x19: ffff00097ef37840 x18: 000000000000000e
+	[  159.135003] x17: 0000000000000001 x16: 0000000000000019
+	[  159.140335] x15: 0000000000000000 x14: 0000000000000000
+	[  159.145666] x13: 0000000000000002 x12: 0000000000000002
+	[  159.150996] x11: ffff80001592f9f0 x10: 0000000000000060
+	[  159.156327] x9 : ffff8000100f6f9c x8 : be618290de0999a1
+	[  159.161659] x7 : ffff80096a4b1000 x6 : 0000000000000000
+	[  159.166990] x5 : ffff00097ef37840 x4 : 0000000000000000
+	[  159.172321] x3 : ffff000800328948 x2 : 0000000000000000
+	[  159.177652] x1 : 0000002507d52fec x0 : ffff00097ef12b90
+	[  159.182983] Call trace:
+	[  159.185433]  0xffff80001624501c
+	[  159.188581]  update_load_avg+0x2d0/0x778
+	[  159.192516]  enqueue_task_fair+0x134/0xe20
+	[  159.196625]  enqueue_task+0x4c/0x2c8
+	[  159.200211]  ttwu_do_activate+0x70/0x138
+	[  159.204147]  sched_ttwu_pending+0xbc/0x160
+	[  159.208253]  flush_smp_call_function_queue+0x16c/0x320
+	[  159.213408]  generic_smp_call_function_single_interrupt+0x1c/0x28
+	[  159.219521]  ipi_handler+0x1e8/0x3c8
+	[  159.223106]  handle_percpu_devid_irq+0xd8/0x460
+	[  159.227650]  generic_handle_irq+0x38/0x50
+	[  159.231672]  __handle_domain_irq+0x6c/0xc8
+	[  159.235781]  gic_handle_irq+0xcc/0xf0
+	[  159.239452]  el1_irq+0xb4/0x180
+	[  159.242600]  rcu_is_watching+0x28/0x70
+	[  159.246359]  rcu_read_lock_held_common+0x44/0x88
+	[  159.250991]  rcu_read_lock_any_held+0x30/0xc0
+	[  159.255360]  kretprobe_dispatcher+0xc4/0xf0
+	[  159.259555]  __kretprobe_trampoline_handler+0xc0/0x150
+	[  159.264710]  trampoline_probe_handler+0x38/0x58
+	[  159.269255]  kretprobe_trampoline+0x70/0xc4
+	[  159.273450]  run_rebalance_domains+0x54/0x80
+	[  159.277734]  __do_softirq+0x164/0x684
+	[  159.281406]  irq_exit+0x198/0x1b8
+	[  159.284731]  __handle_domain_irq+0x70/0xc8
+	[  159.288840]  gic_handle_irq+0xb0/0xf0
+	[  159.292510]  el1_irq+0xb4/0x180
+	[  159.295658]  arch_cpu_idle+0x18/0x28
+	[  159.299245]  default_idle_call+0x9c/0x3e8
+	[  159.303265]  do_idle+0x25c/0x2a8
+	[  159.306502]  cpu_startup_entry+0x2c/0x78
+	[  159.310436]  secondary_start_kernel+0x160/0x198
+	[  159.314984] Code: d42000c0 aa1e03e9 d42000c0 aa1e03e9 (d42000c0)
 
-Generally, User VM RAM regions mapping is set up before VM started and
-is released in the User VM destruction. MMIO regions mapping may be set
-and unset dynamically during User VM running.
+After a bit of head scratching and debugging it turned out that it is
+due to kprobe handler being interrupted by a tick that causes us to go
+into (I think another) kprobe handler.
 
-To achieve this, ioctls ACRN_IOCTL_SET_MEMSEG and ACRN_IOCTL_UNSET_MEMSEG
-are introduced in HSM.
+The culprit was kprobe_breakpoint_ss_handler() returning DBG_HOOK_ERROR
+which leads to the Unexpected kernel BRK exception.
 
-Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Zhi Wang <zhi.a.wang@intel.com>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Yu Wang <yu1.wang@intel.com>
-Cc: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reverting commit ba090f9cafd5 ("arm64: kprobes: Remove redundant
+kprobe_step_ctx") seemed to fix the problem for me.
+
+Further analysis showed that kcb->kprobe_status is set to
+KPROBE_REENTER when the error occurs. By teaching
+kprobe_breakpoint_ss_handler() to handle this status I can no  longer
+reproduce the problem.
+
+Fixes: ba090f9cafd5 ("arm64: kprobes: Remove redundant kprobe_step_ctx")
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
 ---
- drivers/virt/acrn/Makefile    |   2 +-
- drivers/virt/acrn/acrn_drv.h  |  96 ++++++++++-
- drivers/virt/acrn/hsm.c       |  15 ++
- drivers/virt/acrn/hypercall.h |  14 ++
- drivers/virt/acrn/mm.c        | 306 ++++++++++++++++++++++++++++++++++
- drivers/virt/acrn/vm.c        |   4 +
- include/uapi/linux/acrn.h     |  49 ++++++
- 7 files changed, 476 insertions(+), 10 deletions(-)
- create mode 100644 drivers/virt/acrn/mm.c
 
-diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
-index cf8b4ed5e74e..38bc44b6edcd 100644
---- a/drivers/virt/acrn/Makefile
-+++ b/drivers/virt/acrn/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_ACRN_HSM)	:= acrn.o
--acrn-y := hsm.o vm.o
-+acrn-y := hsm.o vm.o mm.o
-diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-index e5aba86cad8c..e47a45280eea 100644
---- a/drivers/virt/acrn/acrn_drv.h
-+++ b/drivers/virt/acrn/acrn_drv.h
-@@ -12,26 +12,104 @@
+Another change in behavior I noticed is that before ba090f9cafd5 ("arm64:
+kprobes: Remove redundant kprobe_step_ctx") if 'cur' was NULL we wouldn't
+return DBG_HOOK_ERROR, but after the change we do.
+
+I didn't hit a problem because of that it's just something I noticed when
+I realized that this commit was causing my problem.
+
+
+ arch/arm64/kernel/probes/kprobes.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 89c64ada8732..66aac2881ba8 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -352,8 +352,8 @@ kprobe_breakpoint_ss_handler(struct pt_regs *regs, unsigned int esr)
+ 	unsigned long addr = instruction_pointer(regs);
+ 	struct kprobe *cur = kprobe_running();
  
- extern struct miscdevice acrn_dev;
+-	if (cur && (kcb->kprobe_status == KPROBE_HIT_SS)
+-	    && ((unsigned long)&cur->ainsn.api.insn[1] == addr)) {
++	if (cur && (kcb->kprobe_status & (KPROBE_HIT_SS | KPROBE_REENTER)) &&
++	    ((unsigned long)&cur->ainsn.api.insn[1] == addr)) {
+ 		kprobes_restore_local_irqflag(kcb, regs);
+ 		post_kprobe_handler(cur, kcb, regs);
  
-+#define ACRN_MEM_MAPPING_MAX	256
-+
-+#define ACRN_MEM_REGION_ADD	0
-+#define ACRN_MEM_REGION_DEL	2
-+/**
-+ * struct vm_memory_region_op - Hypervisor memory operation
-+ * @type:		Operation type (ACRN_MEM_REGION_*)
-+ * @attr:		Memory attribute (ACRN_MEM_TYPE_* | ACRN_MEM_ACCESS_*)
-+ * @user_vm_pa:		Physical address of User VM to be mapped.
-+ * @service_vm_pa:	Physical address of Service VM to be mapped.
-+ * @size:		Size of this region.
-+ *
-+ * Structure containing needed information that is provided to ACRN Hypervisor
-+ * to manage the EPT mappings of a single memory region of the User VM. Several
-+ * &struct vm_memory_region_op can be batched to ACRN Hypervisor, see &struct
-+ * vm_memory_region_batch.
-+ */
-+struct vm_memory_region_op {
-+	u32	type;
-+	u32	attr;
-+	u64	user_vm_pa;
-+	u64	service_vm_pa;
-+	u64	size;
-+};
-+
-+/**
-+ * struct vm_memory_region_batch - A batch of vm_memory_region_op.
-+ * @vmid:		A User VM ID.
-+ * @reserved:		Reserved.
-+ * @regions_num:	The number of vm_memory_region_op.
-+ * @regions_gpa:	Physical address of a vm_memory_region_op array.
-+ *
-+ * HC_VM_SET_MEMORY_REGIONS uses this structure to manage EPT mappings of
-+ * multiple memory regions of a User VM. A &struct vm_memory_region_batch
-+ * contains multiple &struct vm_memory_region_op for batch processing in the
-+ * ACRN Hypervisor.
-+ */
-+struct vm_memory_region_batch {
-+	u16	vmid;
-+	u16	reserved[3];
-+	u32	regions_num;
-+	u64	regions_gpa;
-+};
-+
-+/**
-+ * struct vm_memory_mapping - Memory map between a User VM and the Service VM
-+ * @pages:		Pages in Service VM kernel.
-+ * @npages:		Number of pages.
-+ * @service_vm_va:	Virtual address in Service VM kernel.
-+ * @user_vm_pa:		Physical address in User VM.
-+ * @size:		Size of this memory region.
-+ *
-+ * HSM maintains memory mappings between a User VM GPA and the Service VM
-+ * kernel VA for accelerating the User VM GPA translation.
-+ */
-+struct vm_memory_mapping {
-+	struct page	**pages;
-+	int		npages;
-+	void		*service_vm_va;
-+	u64		user_vm_pa;
-+	size_t		size;
-+};
-+
- #define ACRN_INVALID_VMID (0xffffU)
- 
- #define ACRN_VM_FLAG_DESTROYED		0U
- /**
-  * struct acrn_vm - Properties of ACRN User VM.
-- * @list:	Entry within global list of all VMs
-- * @vmid:	User VM ID
-- * @vcpu_num:	Number of virtual CPUs in the VM
-- * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
-- *		in HSM which is different from the &acrn_vm_creation.vm_flag.
-+ * @list:			Entry within global list of all VMs.
-+ * @vmid:			User VM ID.
-+ * @vcpu_num:			Number of virtual CPUs in the VM.
-+ * @flags:			Flags (ACRN_VM_FLAG_*) of the VM. This is VM
-+ *				flag management in HSM which is different
-+ *				from the &acrn_vm_creation.vm_flag.
-+ * @regions_mapping_lock:	Lock to protect &acrn_vm.regions_mapping and
-+ *				&acrn_vm.regions_mapping_count.
-+ * @regions_mapping:		Memory mappings of this VM.
-+ * @regions_mapping_count:	Number of memory mapping of this VM.
-  */
- struct acrn_vm {
--	struct list_head	list;
--	u16			vmid;
--	int			vcpu_num;
--	unsigned long		flags;
-+	struct list_head		list;
-+	u16				vmid;
-+	int				vcpu_num;
-+	unsigned long			flags;
-+	struct mutex			regions_mapping_lock;
-+	struct vm_memory_mapping	regions_mapping[ACRN_MEM_MAPPING_MAX];
-+	int				regions_mapping_count;
- };
- 
- struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
- 			       struct acrn_vm_creation *vm_param);
- int acrn_vm_destroy(struct acrn_vm *vm);
-+int acrn_mm_region_add(struct acrn_vm *vm, u64 user_gpa, u64 service_gpa,
-+		       u64 size, u32 mem_type, u32 mem_access_right);
-+int acrn_mm_region_del(struct acrn_vm *vm, u64 user_gpa, u64 size);
-+int acrn_vm_memseg_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
-+int acrn_vm_memseg_unmap(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
-+int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
-+void acrn_vm_all_ram_unmap(struct acrn_vm *vm);
- 
- #endif /* __ACRN_HSM_DRV_H */
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index ee5cc7413239..2c40d3dc5e94 100644
---- a/drivers/virt/acrn/hsm.c
-+++ b/drivers/virt/acrn/hsm.c
-@@ -48,6 +48,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 	struct acrn_vm *vm = filp->private_data;
- 	struct acrn_vm_creation *vm_param;
- 	struct acrn_vcpu_regs *cpu_regs;
-+	struct acrn_vm_memmap memmap;
- 	int i, ret = 0;
- 
- 	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
-@@ -132,6 +133,20 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 				vm->vmid);
- 		kfree(cpu_regs);
- 		break;
-+	case ACRN_IOCTL_SET_MEMSEG:
-+		if (copy_from_user(&memmap, (void __user *)ioctl_param,
-+				   sizeof(memmap)))
-+			return -EFAULT;
-+
-+		ret = acrn_vm_memseg_map(vm, &memmap);
-+		break;
-+	case ACRN_IOCTL_UNSET_MEMSEG:
-+		if (copy_from_user(&memmap, (void __user *)ioctl_param,
-+				   sizeof(memmap)))
-+			return -EFAULT;
-+
-+		ret = acrn_vm_memseg_unmap(vm, &memmap);
-+		break;
- 	default:
- 		dev_dbg(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
- 		ret = -ENOTTY;
-diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-index f29cfae08862..a1a70a071713 100644
---- a/drivers/virt/acrn/hypercall.h
-+++ b/drivers/virt/acrn/hypercall.h
-@@ -21,6 +21,9 @@
- #define HC_RESET_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x05)
- #define HC_SET_VCPU_REGS		_HC_ID(HC_ID, HC_ID_VM_BASE + 0x06)
- 
-+#define HC_ID_MEM_BASE			0x40UL
-+#define HC_VM_SET_MEMORY_REGIONS	_HC_ID(HC_ID, HC_ID_MEM_BASE + 0x02)
-+
- /**
-  * hcall_create_vm() - Create a User VM
-  * @vminfo:	Service VM GPA of info of User VM creation
-@@ -88,4 +91,15 @@ static inline long hcall_set_vcpu_regs(u64 vmid, u64 regs_state)
- 	return acrn_hypercall2(HC_SET_VCPU_REGS, vmid, regs_state);
- }
- 
-+/**
-+ * hcall_set_memory_regions() - Inform the hypervisor to set up EPT mappings
-+ * @regions_pa:	Service VM GPA of &struct vm_memory_region_batch
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+static inline long hcall_set_memory_regions(u64 regions_pa)
-+{
-+	return acrn_hypercall1(HC_VM_SET_MEMORY_REGIONS, regions_pa);
-+}
-+
- #endif /* __ACRN_HSM_HYPERCALL_H */
-diff --git a/drivers/virt/acrn/mm.c b/drivers/virt/acrn/mm.c
-new file mode 100644
-index 000000000000..c4f2e15c8a2b
---- /dev/null
-+++ b/drivers/virt/acrn/mm.c
-@@ -0,0 +1,306 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ACRN: Memory mapping management
-+ *
-+ * Copyright (C) 2020 Intel Corporation. All rights reserved.
-+ *
-+ * Authors:
-+ *	Fei Li <lei1.li@intel.com>
-+ *	Shuo Liu <shuo.a.liu@intel.com>
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/mm.h>
-+#include <linux/slab.h>
-+
-+#include "acrn_drv.h"
-+
-+static int modify_region(struct acrn_vm *vm, struct vm_memory_region_op *region)
-+{
-+	struct vm_memory_region_batch *regions;
-+	int ret;
-+
-+	regions = kzalloc(sizeof(*regions), GFP_KERNEL);
-+	if (!regions)
-+		return -ENOMEM;
-+
-+	regions->vmid = vm->vmid;
-+	regions->regions_num = 1;
-+	regions->regions_gpa = virt_to_phys(region);
-+
-+	ret = hcall_set_memory_regions(virt_to_phys(regions));
-+	if (ret < 0)
-+		dev_dbg(acrn_dev.this_device,
-+			"Failed to set memory region for VM[%u]!\n", vm->vmid);
-+
-+	kfree(regions);
-+	return ret;
-+}
-+
-+/**
-+ * acrn_mm_region_add() - Set up the EPT mapping of a memory region.
-+ * @vm:			User VM.
-+ * @user_gpa:		A GPA of User VM.
-+ * @service_gpa:	A GPA of Service VM.
-+ * @size:		Size of the region.
-+ * @mem_type:		Combination of ACRN_MEM_TYPE_*.
-+ * @mem_access_right:	Combination of ACRN_MEM_ACCESS_*.
-+ *
-+ * Return: 0 on success, <0 on error.
-+ */
-+int acrn_mm_region_add(struct acrn_vm *vm, u64 user_gpa, u64 service_gpa,
-+		       u64 size, u32 mem_type, u32 mem_access_right)
-+{
-+	struct vm_memory_region_op *region;
-+	int ret = 0;
-+
-+	region = kzalloc(sizeof(*region), GFP_KERNEL);
-+	if (!region)
-+		return -ENOMEM;
-+
-+	region->type = ACRN_MEM_REGION_ADD;
-+	region->user_vm_pa = user_gpa;
-+	region->service_vm_pa = service_gpa;
-+	region->size = size;
-+	region->attr = ((mem_type & ACRN_MEM_TYPE_MASK) |
-+			(mem_access_right & ACRN_MEM_ACCESS_RIGHT_MASK));
-+	ret = modify_region(vm, region);
-+
-+	dev_dbg(acrn_dev.this_device,
-+		"%s: user-GPA[%pK] service-GPA[%pK] size[0x%llx].\n",
-+		__func__, (void *)user_gpa, (void *)service_gpa, size);
-+	kfree(region);
-+	return ret;
-+}
-+
-+/**
-+ * acrn_mm_region_del() - Del the EPT mapping of a memory region.
-+ * @vm:		User VM.
-+ * @user_gpa:	A GPA of the User VM.
-+ * @size:	Size of the region.
-+ *
-+ * Return: 0 on success, <0 for error.
-+ */
-+int acrn_mm_region_del(struct acrn_vm *vm, u64 user_gpa, u64 size)
-+{
-+	struct vm_memory_region_op *region;
-+	int ret = 0;
-+
-+	region = kzalloc(sizeof(*region), GFP_KERNEL);
-+	if (!region)
-+		return -ENOMEM;
-+
-+	region->type = ACRN_MEM_REGION_DEL;
-+	region->user_vm_pa = user_gpa;
-+	region->service_vm_pa = 0UL;
-+	region->size = size;
-+	region->attr = 0U;
-+
-+	ret = modify_region(vm, region);
-+
-+	dev_dbg(acrn_dev.this_device, "%s: user-GPA[%pK] size[0x%llx].\n",
-+		__func__, (void *)user_gpa, size);
-+	kfree(region);
-+	return ret;
-+}
-+
-+int acrn_vm_memseg_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
-+{
-+	int ret;
-+
-+	if (memmap->type == ACRN_MEMMAP_RAM)
-+		return acrn_vm_ram_map(vm, memmap);
-+
-+	if (memmap->type != ACRN_MEMMAP_MMIO) {
-+		dev_dbg(acrn_dev.this_device,
-+			"Invalid memmap type: %u\n", memmap->type);
-+		return -EINVAL;
-+	}
-+
-+	ret = acrn_mm_region_add(vm, memmap->user_vm_pa,
-+				 memmap->service_vm_pa, memmap->len,
-+				 ACRN_MEM_TYPE_UC, memmap->attr);
-+	if (ret < 0)
-+		dev_dbg(acrn_dev.this_device,
-+			"Add memory region failed, VM[%u]!\n", vm->vmid);
-+
-+	return ret;
-+}
-+
-+int acrn_vm_memseg_unmap(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
-+{
-+	int ret;
-+
-+	if (memmap->type != ACRN_MEMMAP_MMIO) {
-+		dev_dbg(acrn_dev.this_device,
-+			"Invalid memmap type: %u\n", memmap->type);
-+		return -EINVAL;
-+	}
-+
-+	ret = acrn_mm_region_del(vm, memmap->user_vm_pa, memmap->len);
-+	if (ret < 0)
-+		dev_dbg(acrn_dev.this_device,
-+			"Del memory region failed, VM[%u]!\n", vm->vmid);
-+
-+	return ret;
-+}
-+
-+/**
-+ * acrn_vm_ram_map() - Create a RAM EPT mapping of User VM.
-+ * @vm:		The User VM pointer
-+ * @memmap:	Info of the EPT mapping
-+ *
-+ * Return: 0 on success, <0 for error.
-+ */
-+int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
-+{
-+	struct vm_memory_region_batch *regions_info;
-+	int nr_pages, i = 0, order, nr_regions = 0;
-+	struct vm_memory_mapping *region_mapping;
-+	struct vm_memory_region_op *vm_region;
-+	struct page **pages = NULL, *page;
-+	void *remap_vaddr;
-+	int ret, pinned;
-+	u64 user_vm_pa;
-+
-+	if (!vm || !memmap)
-+		return -EINVAL;
-+
-+	/* Get the page number of the map region */
-+	nr_pages = memmap->len >> PAGE_SHIFT;
-+	pages = vzalloc(nr_pages * sizeof(struct page *));
-+	if (!pages)
-+		return -ENOMEM;
-+
-+	/* Lock the pages of user memory map region */
-+	pinned = pin_user_pages_fast(memmap->vma_base,
-+				     nr_pages, FOLL_WRITE | FOLL_LONGTERM,
-+				     pages);
-+	if (pinned < 0) {
-+		ret = pinned;
-+		goto free_pages;
-+	} else if (pinned != nr_pages) {
-+		ret = -EFAULT;
-+		goto put_pages;
-+	}
-+
-+	/* Create a kernel map for the map region */
-+	remap_vaddr = vmap(pages, nr_pages, VM_MAP, PAGE_KERNEL);
-+	if (!remap_vaddr) {
-+		ret = -ENOMEM;
-+		goto put_pages;
-+	}
-+
-+	/* Record Service VM va <-> User VM pa mapping */
-+	mutex_lock(&vm->regions_mapping_lock);
-+	region_mapping = &vm->regions_mapping[vm->regions_mapping_count];
-+	if (vm->regions_mapping_count < ACRN_MEM_MAPPING_MAX) {
-+		region_mapping->pages = pages;
-+		region_mapping->npages = nr_pages;
-+		region_mapping->size = memmap->len;
-+		region_mapping->service_vm_va = remap_vaddr;
-+		region_mapping->user_vm_pa = memmap->user_vm_pa;
-+		vm->regions_mapping_count++;
-+	} else {
-+		dev_warn(acrn_dev.this_device,
-+			"Run out of memory mapping slots!\n");
-+		ret = -ENOMEM;
-+		mutex_unlock(&vm->regions_mapping_lock);
-+		goto unmap_no_count;
-+	}
-+	mutex_unlock(&vm->regions_mapping_lock);
-+
-+	/* Calculate count of vm_memory_region_op */
-+	while (i < nr_pages) {
-+		page = pages[i];
-+		VM_BUG_ON_PAGE(PageTail(page), page);
-+		order = compound_order(page);
-+		nr_regions++;
-+		i += 1 << order;
-+	}
-+
-+	/* Prepare the vm_memory_region_batch */
-+	regions_info = kzalloc(sizeof(*regions_info) +
-+			       sizeof(*vm_region) * nr_regions,
-+			       GFP_KERNEL);
-+	if (!regions_info) {
-+		ret = -ENOMEM;
-+		goto unmap_kernel_map;
-+	}
-+
-+	/* Fill each vm_memory_region_op */
-+	vm_region = (struct vm_memory_region_op *)(regions_info + 1);
-+	regions_info->vmid = vm->vmid;
-+	regions_info->regions_num = nr_regions;
-+	regions_info->regions_gpa = virt_to_phys(vm_region);
-+	user_vm_pa = memmap->user_vm_pa;
-+	i = 0;
-+	while (i < nr_pages) {
-+		u32 region_size;
-+
-+		page = pages[i];
-+		VM_BUG_ON_PAGE(PageTail(page), page);
-+		order = compound_order(page);
-+		region_size = PAGE_SIZE << order;
-+		vm_region->type = ACRN_MEM_REGION_ADD;
-+		vm_region->user_vm_pa = user_vm_pa;
-+		vm_region->service_vm_pa = page_to_phys(page);
-+		vm_region->size = region_size;
-+		vm_region->attr = (ACRN_MEM_TYPE_WB & ACRN_MEM_TYPE_MASK) |
-+				  (memmap->attr & ACRN_MEM_ACCESS_RIGHT_MASK);
-+
-+		vm_region++;
-+		user_vm_pa += region_size;
-+		i += 1 << order;
-+	}
-+
-+	/* Inform the ACRN Hypervisor to set up EPT mappings */
-+	ret = hcall_set_memory_regions(virt_to_phys(regions_info));
-+	if (ret < 0) {
-+		dev_dbg(acrn_dev.this_device,
-+			"Failed to set regions, VM[%u]!\n", vm->vmid);
-+		goto unset_region;
-+	}
-+	kfree(regions_info);
-+
-+	dev_dbg(acrn_dev.this_device,
-+		"%s: VM[%u] service-GVA[%pK] user-GPA[%pK] size[0x%llx]\n",
-+		__func__, vm->vmid,
-+		remap_vaddr, (void *)memmap->user_vm_pa, memmap->len);
-+	return ret;
-+
-+unset_region:
-+	kfree(regions_info);
-+unmap_kernel_map:
-+	mutex_lock(&vm->regions_mapping_lock);
-+	vm->regions_mapping_count--;
-+	mutex_unlock(&vm->regions_mapping_lock);
-+unmap_no_count:
-+	vunmap(remap_vaddr);
-+put_pages:
-+	for (i = 0; i < pinned; i++)
-+		unpin_user_page(pages[i]);
-+free_pages:
-+	vfree(pages);
-+	return ret;
-+}
-+
-+/**
-+ * acrn_vm_all_ram_unmap() - Destroy a RAM EPT mapping of User VM.
-+ * @vm:	The User VM
-+ */
-+void acrn_vm_all_ram_unmap(struct acrn_vm *vm)
-+{
-+	struct vm_memory_mapping *region_mapping;
-+	int i, j;
-+
-+	mutex_lock(&vm->regions_mapping_lock);
-+	for (i = 0; i < vm->regions_mapping_count; i++) {
-+		region_mapping = &vm->regions_mapping[i];
-+		vunmap(region_mapping->service_vm_va);
-+		for (j = 0; j < region_mapping->npages; j++)
-+			unpin_user_page(region_mapping->pages[j]);
-+		vfree(region_mapping->pages);
-+	}
-+	mutex_unlock(&vm->regions_mapping_lock);
-+}
-diff --git a/drivers/virt/acrn/vm.c b/drivers/virt/acrn/vm.c
-index 3f667ac8ac1e..ff5df7acb551 100644
---- a/drivers/virt/acrn/vm.c
-+++ b/drivers/virt/acrn/vm.c
-@@ -31,6 +31,7 @@ struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
- 		return NULL;
- 	}
- 
-+	mutex_init(&vm->regions_mapping_lock);
- 	vm->vmid = vm_param->vmid;
- 	vm->vcpu_num = vm_param->vcpu_num;
- 
-@@ -62,6 +63,9 @@ int acrn_vm_destroy(struct acrn_vm *vm)
- 		clear_bit(ACRN_VM_FLAG_DESTROYED, &vm->flags);
- 		return ret;
- 	}
-+
-+	acrn_vm_all_ram_unmap(vm);
-+
- 	dev_dbg(acrn_dev.this_device, "VM %u destroyed.\n", vm->vmid);
- 	vm->vmid = ACRN_INVALID_VMID;
- 	return 0;
-diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-index 775c58bad026..ec4c61e7c170 100644
---- a/include/uapi/linux/acrn.h
-+++ b/include/uapi/linux/acrn.h
-@@ -155,6 +155,50 @@ struct acrn_vcpu_regs {
- 	struct acrn_regs	vcpu_regs;
- };
- 
-+#define	ACRN_MEM_ACCESS_RIGHT_MASK	0x00000007U
-+#define	ACRN_MEM_ACCESS_READ		0x00000001U
-+#define	ACRN_MEM_ACCESS_WRITE		0x00000002U
-+#define	ACRN_MEM_ACCESS_EXEC		0x00000004U
-+#define	ACRN_MEM_ACCESS_RWX		(ACRN_MEM_ACCESS_READ  | \
-+					 ACRN_MEM_ACCESS_WRITE | \
-+					 ACRN_MEM_ACCESS_EXEC)
-+
-+#define	ACRN_MEM_TYPE_MASK		0x000007C0U
-+#define	ACRN_MEM_TYPE_WB		0x00000040U
-+#define	ACRN_MEM_TYPE_WT		0x00000080U
-+#define	ACRN_MEM_TYPE_UC		0x00000100U
-+#define	ACRN_MEM_TYPE_WC		0x00000200U
-+#define	ACRN_MEM_TYPE_WP		0x00000400U
-+
-+/* Memory mapping types */
-+#define	ACRN_MEMMAP_RAM			0
-+#define	ACRN_MEMMAP_MMIO		1
-+
-+/**
-+ * struct acrn_vm_memmap - A EPT memory mapping info for a User VM.
-+ * @type:		Type of the memory mapping (ACRM_MEMMAP_*).
-+ *			Pass to hypervisor directly.
-+ * @attr:		Attribute of the memory mapping.
-+ *			Pass to hypervisor directly.
-+ * @user_vm_pa:		Physical address of User VM.
-+ *			Pass to hypervisor directly.
-+ * @service_vm_pa:	Physical address of Service VM.
-+ *			Pass to hypervisor directly.
-+ * @vma_base:		VMA address of Service VM. Pass to hypervisor directly.
-+ * @len:		Length of the memory mapping.
-+ *			Pass to hypervisor directly.
-+ */
-+struct acrn_vm_memmap {
-+	__u32	type;
-+	__u32	attr;
-+	__u64	user_vm_pa;
-+	union {
-+		__u64	service_vm_pa;
-+		__u64	vma_base;
-+	};
-+	__u64	len;
-+};
-+
- /* The ioctl type, documented in ioctl-number.rst */
- #define ACRN_IOCTL_TYPE			0xA2
- 
-@@ -174,4 +218,9 @@ struct acrn_vcpu_regs {
- #define ACRN_IOCTL_SET_VCPU_REGS	\
- 	_IOW(ACRN_IOCTL_TYPE, 0x16, struct acrn_vcpu_regs)
- 
-+#define ACRN_IOCTL_SET_MEMSEG		\
-+	_IOW(ACRN_IOCTL_TYPE, 0x41, struct acrn_vm_memmap)
-+#define ACRN_IOCTL_UNSET_MEMSEG		\
-+	_IOW(ACRN_IOCTL_TYPE, 0x42, struct acrn_vm_memmap)
-+
- #endif /* _UAPI_ACRN_H */
 -- 
-2.28.0
+2.25.1
 
