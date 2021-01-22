@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A72300D45
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75252300D06
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730612AbhAVUDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:03:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
+        id S1729343AbhAVT5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:57:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728203AbhAVOOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:14:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4452523A5F;
-        Fri, 22 Jan 2021 14:11:04 +0000 (UTC)
+        id S1728420AbhAVOQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:16:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C7BD23B05;
+        Fri, 22 Jan 2021 14:12:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324664;
-        bh=9q3kSDHOt1IVp/diBP4F39WtWudxppLFmPDFRhZz48Y=;
+        s=korg; t=1611324735;
+        bh=RRDLiLXRj2ElAEz+fG5xo5/tjAigt+6qTqy3kPF8y3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TD2roMyYaT/78A5/ABwPEBd9qE4bSG4b4s9APMuUF6BgB2rEb6GkjQmvvo93Q9+ZW
-         gMadDTcxLdpFWQ3l0jocGmn1OIKhGQyAmEmhziBsCB4yJ/BUFoMlUtBNPeYfNascYV
-         YAV/n7Vt970wu5tk7+UYUhLc3+bc1MTwPBvUfC9Y=
+        b=b8c0ZhnDa/LfJ9spNU2P49C2aCJc3feYS9PSrsSarZvi4uq4qQRx1yN91InnSzLPn
+         E1hNNhBl90UoL2piSMH9ViMgmoto1PAJ5ibAM4xZWweeOdmS4A4tnmkhjQyFHeH25o
+         1MQ/ahb7ZshGj7i/RtEe93gzp4ZQwlacx1vOOc4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.9 17/35] NFS: nfs_igrab_and_active must first reference the superblock
-Date:   Fri, 22 Jan 2021 15:10:19 +0100
-Message-Id: <20210122135733.017925650@linuxfoundation.org>
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 20/35] mm, slub: consider rest of partial list if acquire_slab() fails
+Date:   Fri, 22 Jan 2021 15:10:22 +0100
+Message-Id: <20210122135733.134808257@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
@@ -39,43 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Jann Horn <jannh@google.com>
 
-commit 896567ee7f17a8a736cda8a28cc987228410a2ac upstream.
+commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf upstream.
 
-Before referencing the inode, we must ensure that the superblock can be
-referenced. Otherwise, we can end up with iput() calling superblock
-operations that are no longer valid or accessible.
+acquire_slab() fails if there is contention on the freelist of the page
+(probably because some other CPU is concurrently freeing an object from
+the page).  In that case, it might make sense to look for a different page
+(since there might be more remote frees to the page from other CPUs, and
+we don't want contention on struct page).
 
-Fixes: ea7c38fef0b7 ("NFSv4: Ensure we reference the inode for return-on-close in delegreturn")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+However, the current code accidentally stops looking at the partial list
+completely in that case.  Especially on kernels without CONFIG_NUMA set,
+this means that get_partial() fails and new_slab_objects() falls back to
+new_slab(), allocating new pages.  This could lead to an unnecessary
+increase in memory fragmentation.
+
+Link: https://lkml.kernel.org/r/20201228130853.1871516-1-jannh@google.com
+Fixes: 7ced37197196 ("slub: Acquire_slab() avoid loop")
+Signed-off-by: Jann Horn <jannh@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/internal.h |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfs/internal.h
-+++ b/fs/nfs/internal.h
-@@ -572,12 +572,14 @@ extern int nfs4_test_session_trunk(struc
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1833,7 +1833,7 @@ static void *get_partial_node(struct kme
  
- static inline struct inode *nfs_igrab_and_active(struct inode *inode)
- {
--	inode = igrab(inode);
--	if (inode != NULL && !nfs_sb_active(inode->i_sb)) {
--		iput(inode);
--		inode = NULL;
-+	struct super_block *sb = inode->i_sb;
-+
-+	if (sb && nfs_sb_active(sb)) {
-+		if (igrab(inode))
-+			return inode;
-+		nfs_sb_deactive(sb);
- 	}
--	return inode;
-+	return NULL;
- }
+ 		t = acquire_slab(s, n, page, object == NULL, &objects);
+ 		if (!t)
+-			break;
++			continue; /* cmpxchg raced */
  
- static inline void nfs_iput_and_deactive(struct inode *inode)
+ 		available += objects;
+ 		if (!object) {
 
 
