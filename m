@@ -2,100 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590BF2FFBFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 06:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F64C2FFBFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 06:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbhAVFJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 00:09:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
+        id S1726686AbhAVFLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 00:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbhAVFJm (ORCPT
+        with ESMTP id S1726647AbhAVFLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 00:09:42 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094E7C06174A;
-        Thu, 21 Jan 2021 21:09:02 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMS3G3mCmz9s2g;
-        Fri, 22 Jan 2021 16:08:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611292139;
-        bh=pc8vzjVjWl5BN0r853Ljs32ViP+rQiirbx1hGAwUdxw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W6oEMcFgufRISnRIFUyqiPnWwwSw7mFvP8+QnTCc2JVNU2W6kej8a+HuHJXxxbzFH
-         xzTdc6ntRCYzdCmbZKc991IG7SjR7oGERBxtKbYjuulWwgfZxLc3vSBFy+6o/QbByX
-         aN3ozPyLb20n1TvnRot7HStp5eMF8K11i3HaJHmvfgxL2EbGNGa0I0XetwwO4+Yu/O
-         tSmvAiWesRMM0EFXUcxWOaYk9z+fVkw5rvj49UbPY4OeWpWA7dkv1itHbCwJnbZF3m
-         WDsuQzaoB4RmxYkzJ4D8QobDBYUqBU5LFgHmoMwFDUXmqx2/RyezsTxgP5kirVPSa1
-         JVB63Hd4okhNQ==
-Date:   Fri, 22 Jan 2021 16:08:57 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the notifications tree with the keys
- tree
-Message-ID: <20210122160857.3e2939de@canb.auug.org.au>
+        Fri, 22 Jan 2021 00:11:02 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFADFC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 21:10:21 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id i5so2922968pgo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 21:10:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Dnd5Lmoa7qG/mekK/QsrLWb7/Ux/XM9dIbFRQBx8804=;
+        b=uYSu4y26VifN1OwinqfjeWLsTzuucqM+IaRLgeUL6gAbyyYeUgmhW8GHKwEDH2lwzC
+         YFLbL9GhLE6SkyhQeQVoVPKOfuAQSmWfp+tlpiGgUnePkM9YAWJyh+JuGIT6ojpUcTbn
+         QqTLxGBUwPp3sStKx/N4jOTWR/H4MCfFD7/7LAEAHmlj5nE1AqSK3HoaEB17eVqk8grC
+         BZf7EFEC79NTdLv04tXPq4E2EaDfOCM/Xl883serZkWKzIlGi0s04RjP+zxS+ASBfdOU
+         UcM/zJcpCTuPK+mPTrsIE7Otmpv69qyVOM12HwjwPyj5l5zrAFs8R4Ma6sIV1fmwgtkx
+         LYYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Dnd5Lmoa7qG/mekK/QsrLWb7/Ux/XM9dIbFRQBx8804=;
+        b=dk4NElY66/gTFmcm9orgrLrMZIPhCYtXHxZtq9JJUXvfea29TsrutS0bJKnW5eWN5+
+         x841yrNZ69GvY6HX/YG0Yf7GahW5Jw3F8sZ5wXSmLLttkY4+TCF1jug9lRAi5fvru0Qr
+         yHn2e5gic3CTY8ObjdsYin0ztDuBH59K5W+EWFdqgu8s0m85G41aJJzCENgmHvveBhPp
+         IOZrTAtagDhfNaSKFEJczTwsd7Vo5IJ3JAY1vXWTDayFvwgOvetgdSIVTKu4t8TJ1CRd
+         9KE42Yj4qo5Nyo571twzuiyC68tGRx/AqIoNp2MBLKEm1qJf4n+ryOd+s4mFQAhNMhVJ
+         CGyw==
+X-Gm-Message-State: AOAM532dd1gL8u7r1Tm/VlnlSKKr2Q7VWpaumwsGawwN1sDOwwgn1FF0
+        6EVOKp3/KualNLBGEqHc76vEpJ9QSDmwmS4i
+X-Google-Smtp-Source: ABdhPJxrVqHG2MzVfQiwcXFk6yRa8jL+kIbN2oObVj9raOE0wukKGVEuijKUieN4a/96gA/wu1POtg==
+X-Received: by 2002:a63:c444:: with SMTP id m4mr2942946pgg.420.1611292221096;
+        Thu, 21 Jan 2021 21:10:21 -0800 (PST)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id q12sm7034796pgj.24.2021.01.21.21.10.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Jan 2021 21:10:20 -0800 (PST)
+Date:   Fri, 22 Jan 2021 13:10:14 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        dan.j.williams@intel.com, vkoul@kernel.org,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: dma: qcom: bam_dma: Manage clocks when
+ controlled_remotely is set
+Message-ID: <20210122051013.GE2479@dragon>
+References: <20210122025251.3501362-1-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NFD6Iu64N4KFc7GusQX22Vf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122025251.3501362-1-thara.gopinath@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NFD6Iu64N4KFc7GusQX22Vf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 21, 2021 at 09:52:51PM -0500, Thara Gopinath wrote:
+> When bam dma is "controlled remotely", thus far clocks were not controlled
+> from the Linux. In this scenario, Linux was disabling runtime pm in bam dma
+> driver and not doing any clock management in suspend/resume hooks.
+> 
+> With introduction of crypto engine bam dma, the clock is a rpmh resource
+> that can be controlled from both Linux and TZ/remote side.  Now bam dma
+> clock is getting enabled during probe even though the bam dma can be
+> "controlled remotely". But due to clocks not being handled properly,
+> bam_suspend generates a unbalanced clk_unprepare warning during system
+> suspend.
+> 
+> To fix the above issue and to enable proper clock-management, this patch
+> enables runtim-pm and handles bam dma clocks in suspend/resume hooks if
+> the clock node is present irrespective of controlled_remotely property.
 
-Hi all,
+Shouldn't the following probe code need some update?  Now we have both
+controlled_remotely and clocks handle for cryptobam node.  For example,
+if devm_clk_get() returns -EPROBE_DEFER, we do not want to continue with
+bamclk forcing to be NULL, right?
 
-Today's linux-next merge of the notifications tree got conflicts in:
+        bdev->bamclk = devm_clk_get(bdev->dev, "bam_clk");
+        if (IS_ERR(bdev->bamclk)) {
+                if (!bdev->controlled_remotely)
+                        return PTR_ERR(bdev->bamclk);
 
-  Documentation/security/keys/core.rst
-  samples/Kconfig
-  samples/watch_queue/watch_test.c
-  security/keys/Kconfig
+                bdev->bamclk = NULL;
+        }
 
-between commit:
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  drivers/dma/qcom/bam_dma.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+> index 88579857ca1d..b3a34be63e99 100644
+> --- a/drivers/dma/qcom/bam_dma.c
+> +++ b/drivers/dma/qcom/bam_dma.c
+> @@ -1350,7 +1350,7 @@ static int bam_dma_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_unregister_dma;
+>  
+> -	if (bdev->controlled_remotely) {
+> +	if (!bdev->bamclk) {
+>  		pm_runtime_disable(&pdev->dev);
+>  		return 0;
+>  	}
+> @@ -1438,10 +1438,10 @@ static int __maybe_unused bam_dma_suspend(struct device *dev)
+>  {
+>  	struct bam_device *bdev = dev_get_drvdata(dev);
+>  
+> -	if (!bdev->controlled_remotely)
+> +	if (bdev->bamclk) {
+>  		pm_runtime_force_suspend(dev);
+> -
+> -	clk_unprepare(bdev->bamclk);
+> +		clk_unprepare(bdev->bamclk);
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -1451,12 +1451,14 @@ static int __maybe_unused bam_dma_resume(struct device *dev)
+>  	struct bam_device *bdev = dev_get_drvdata(dev);
+>  	int ret;
+>  
+> -	ret = clk_prepare(bdev->bamclk);
+> -	if (ret)
+> -		return ret;
+> +	if (bdev->bamclk) {
+> +		ret = clk_prepare(bdev->bamclk);
+> +		if (ret)
+> +			return ret;
+>  
+> -	if (!bdev->controlled_remotely)
+> -		pm_runtime_force_resume(dev);
+> +		if (!bdev->controlled_remotely)
 
-  0c3f19da1229 ("watch_queue: Drop references to /dev/watch_queue")
+Why do we still need controlled_remotely check here?
 
-from the keys tree and commit:
+Shawn
 
-  e3bc554d80d3 ("watch_queue: Clean up references to /dev/watch_queue")
-
-from the notifications tree.
-
-I fixed it up (in each file I used the latter's version of the
-conflicted text) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted
-for merging.  You may also want to consider cooperating with the
-maintainer of the conflicting tree to minimise any particularly complex
-conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NFD6Iu64N4KFc7GusQX22Vf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAKXekACgkQAVBC80lX
-0GyX5wf/TZZMAB9EB+2j0yIhIaGlgEvHoa9J6YdumsjEphJ0mlZD90g4uwm0Hwmi
-vB/8yXhUiGaSGuG2SGglPIkittOXIikVKH68hul4IL3+BlQFKTUUcqa71ZG6zaZL
-eaEfa+q4ITFYdPDYiz/rWW3EKB34bl1Z0HXmuJ2+xuB87T0vR5te0eg70VyUWHsR
-szbMMdmbHbQ+0DZUH68pjvc0qPc8BJx2nwKqnIGT/EFWNPm549gyMkKaD3Mx9V9m
-XNj3ZCA83GhiTfFE8xCfxCBp7kxoLmPS2vVX3Z0lnBzVtHbeM1BRF08lS4Bs22CL
-I0PStC/UlqVU6Fpz8YGDEmY7r2YMkA==
-=TR3L
------END PGP SIGNATURE-----
-
---Sig_/NFD6Iu64N4KFc7GusQX22Vf--
+> +			pm_runtime_force_resume(dev);
+> +	}
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
