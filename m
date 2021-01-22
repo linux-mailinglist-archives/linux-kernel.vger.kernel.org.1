@@ -2,39 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D201300AE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82B7300AE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbhAVSQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:16:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33600 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730042AbhAVRzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:55:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0631FAC6E;
-        Fri, 22 Jan 2021 17:55:09 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 18:55:08 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH] nvme-multipath: Early exit if no path is available
-Message-ID: <20210122175508.eiimz2fbx3csrejk@beryllium.lan>
-References: <20210122174125.145734-1-dwagner@suse.de>
- <20210122175029.GA21127@lst.de>
+        id S1729550AbhAVSN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:13:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729593AbhAVSCY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 13:02:24 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2F2C0613D6;
+        Fri, 22 Jan 2021 10:02:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=9NCYCn2uu0Groq7HNmcJIKyI4plVDNVRCWewLnn9RN8=; b=cXJUHCxcSZmb3WBbTCOSR35MIH
+        SKSZ/AI9tzSgOHhz++Q5LuNVk/ofOefgqfOGpcSMlZwWBvgsKoeC1nEyEVjBVv3ZS6oB2/lECoM+s
+        Zv5elCywH+h7Nmoy/IN2QsQCb1IraI5aaHYbGpWAoLx6TqwwJD1DaCPhX+yrN3IJWyrjE5wDWB7Zp
+        3xny6jzWKrsozJ6vFU+CStctgeG0CmgnZfCzrajZAcPc1rvIU4rAgpTNufmzG17Q2jvk2AzSezD5u
+        6yh3gAOHP6dzU+/9IjeChfFqrTewesgwEUZIEb03HkrEcTX3wimImj/NLUduZmdqclatfa940PiJX
+        YC8/qVBw==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l30l4-0007me-0q; Fri, 22 Jan 2021 18:02:06 +0000
+Subject: Re: linux-next: Tree for Jan 22 (amdgpu)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+References: <20210122180643.7039571c@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <64dd3a50-a836-c1b7-738e-6b6b5433117a@infradead.org>
+Date:   Fri, 22 Jan 2021 10:02:00 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122175029.GA21127@lst.de>
+In-Reply-To: <20210122180643.7039571c@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 06:50:29PM +0100, Christoph Hellwig wrote:
-> How can that happen once we're in the loop?
+On 1/21/21 11:06 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20210121:
+> 
 
-As far I can tell, it's the first nvme_next_ns() call which returns the
-NULL pointer and this will pass the test 'ns != old'.
+on i386:
+
+ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+ERROR: modpost: "__divdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+
+
+
+-- 
+~Randy
