@@ -2,197 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7F93003E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BBE3003EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbhAVNMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:12:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727517AbhAVNLp (ORCPT
+        id S1727293AbhAVNQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:16:19 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11571 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbhAVNQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:11:45 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88977C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:11:05 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d16so4357556wro.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:11:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DlbQDTL9lgcBTkGtGPLxxHcpZqtYZlnjZgESPzNd3dk=;
-        b=cvMBoOPbyHYvHuRZJUbkoYI6wQr+uFNzsP8Byd3bREwnZWQckWn9O3O9z4rbqAAxCG
-         DG3FeAiintfRZo3klDvSndwOAEafZQxbQ6F7WTtmJLwIjp23HpS2osdES8yLkzS7vjV6
-         UFHfZEM1Tl/ujKCCd90L4Fvd8mcPz+6eD9YuVeQeeyy5kKVDD5s9ci+fdJWlKEnj3xZT
-         +DIpvikohimdbEO+qam8p2fIhaYzFI74vUqDLd6LPr+MTmSUopRwDXWhCG9LGLIXMe0h
-         c87V5IsAQiLZ3HVsOMhJD/IRXutd5+uq5eEb87yD52RiAU+XGsa7yCtbSSCADFUNHOg2
-         7HuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DlbQDTL9lgcBTkGtGPLxxHcpZqtYZlnjZgESPzNd3dk=;
-        b=hvdAmWcZXFV8D8HsBOo7sNdon/24hxAVf634vxem5yG5jdq/mSBMyEPONoR0UViI0T
-         7S+ADUbsngaH2kWquvtX2ixd8llrkHTIj48LHKo+LURTbc4qhCcockSD4v+XnVC1DTgx
-         uRI1/viiLkOlMbjRe8wNedXJ2j8HOxxGqTonIo6m2tf5C+pylvubqrMWaAtHZkEJY0II
-         3tbirjoUwtM6yxZVB1TcDXrJ5HAW09MWm2AT+BcDZJiQm3VOviMdXTZzUG/Y5Nads+jH
-         KaR2ru1HJHSgImJYLzHBPoKJiC3BbMtDhW2x6uvYLzZwdbAPndaVR87UgmNYLNzGDYs2
-         zrUA==
-X-Gm-Message-State: AOAM531C5DiYlbOm4BS+eeR9GZmLfiXglhcJ0SOVnlfGi6V+8JXycoth
-        AY2QuSe0iuJeTeHYASiSZUv3zWv8MfA77aMXJIOZWQ==
-X-Google-Smtp-Source: ABdhPJzM9x7gbuptc/+Kd7a/slbXsAMEIvUb+yNdZCSX3L+dSiV9l/Kk/Q81u61D3jOMDh403qjkCGqTrzJC12ovbLY=
-X-Received: by 2002:a05:6000:1082:: with SMTP id y2mr4331942wrw.27.1611321064346;
- Fri, 22 Jan 2021 05:11:04 -0800 (PST)
+        Fri, 22 Jan 2021 08:16:10 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DMfpp06FQzMNHl;
+        Fri, 22 Jan 2021 21:13:54 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.176.220) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 22 Jan 2021 21:15:12 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH 1/1] iommu/arm-smmu-v3: Use DEFINE_RES_MEM() to simplify code
+Date:   Fri, 22 Jan 2021 21:14:48 +0800
+Message-ID: <20210122131448.1167-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-References: <20210111142309.193441-1-maxime@cerno.tech> <20210111142309.193441-11-maxime@cerno.tech>
-In-Reply-To: <20210111142309.193441-11-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 22 Jan 2021 13:10:49 +0000
-Message-ID: <CAPY8ntCdxn3=A19VVsxnrPppk0O7eyzxa3bwFWQj1QEXnQ_GWA@mail.gmail.com>
-Subject: Re: [PATCH v2 10/15] drm/vc4: hdmi: Support BCM2711 CEC interrupt setup
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+No functional change.
 
-On Mon, 11 Jan 2021 at 14:23, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> The HDMI controller found in the BCM2711 has an external interrupt
-> controller for the CEC and hotplug interrupt shared between the two
-> instances.
->
-> Let's add a variant flag to register a single interrupt handler and
-> deals with the interrupt handler setup, or two interrupt handlers
-> relying on an external irqchip.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-Looks good
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index bca458c00e48a8b..f04c55a7503c790 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -3479,11 +3479,7 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
+ static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
+ 				      resource_size_t size)
+ {
+-	struct resource res = {
+-		.flags = IORESOURCE_MEM,
+-		.start = start,
+-		.end = start + size - 1,
+-	};
++	struct resource res = DEFINE_RES_MEM(start, size);
+ 
+ 	return devm_ioremap_resource(dev, &res);
+ }
+-- 
+1.8.3
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 42 ++++++++++++++++++++++++++--------
->  drivers/gpu/drm/vc4/vc4_hdmi.h |  7 ++++++
->  2 files changed, 39 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index 12ca5f3084af..d116ecfd8cf7 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -1605,9 +1605,11 @@ static int vc4_hdmi_cec_adap_enable(struct cec_adapter *adap, bool enable)
->                            ((3600 / usecs) << VC4_HDMI_CEC_CNT_TO_3600_US_SHIFT) |
->                            ((3500 / usecs) << VC4_HDMI_CEC_CNT_TO_3500_US_SHIFT));
->
-> -               HDMI_WRITE(HDMI_CEC_CPU_MASK_CLEAR, VC4_HDMI_CPU_CEC);
-> +               if (!vc4_hdmi->variant->external_irq_controller)
-> +                       HDMI_WRITE(HDMI_CEC_CPU_MASK_CLEAR, VC4_HDMI_CPU_CEC);
->         } else {
-> -               HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, VC4_HDMI_CPU_CEC);
-> +               if (!vc4_hdmi->variant->external_irq_controller)
-> +                       HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, VC4_HDMI_CPU_CEC);
->                 HDMI_WRITE(HDMI_CEC_CNTRL_5, val |
->                            VC4_HDMI_CEC_TX_SW_RESET | VC4_HDMI_CEC_RX_SW_RESET);
->         }
-> @@ -1682,8 +1684,6 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
->         cec_fill_conn_info_from_drm(&conn_info, &vc4_hdmi->connector);
->         cec_s_conn_info(vc4_hdmi->cec_adap, &conn_info);
->
-> -       HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, 0xffffffff);
-> -
->         value = HDMI_READ(HDMI_CEC_CNTRL_1);
->         /* Set the logical address to Unregistered */
->         value |= VC4_HDMI_CEC_ADDR_MASK;
-> @@ -1691,12 +1691,32 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
->
->         vc4_hdmi_cec_update_clk_div(vc4_hdmi);
->
-> -       ret = devm_request_threaded_irq(&pdev->dev, platform_get_irq(pdev, 0),
-> -                                       vc4_cec_irq_handler,
-> -                                       vc4_cec_irq_handler_thread, 0,
-> -                                       "vc4 hdmi cec", vc4_hdmi);
-> -       if (ret)
-> -               goto err_delete_cec_adap;
-> +       if (vc4_hdmi->variant->external_irq_controller) {
-> +               ret = devm_request_threaded_irq(&pdev->dev,
-> +                                               platform_get_irq_byname(pdev, "cec-rx"),
-> +                                               vc4_cec_irq_handler_rx_bare,
-> +                                               vc4_cec_irq_handler_rx_thread, 0,
-> +                                               "vc4 hdmi cec rx", vc4_hdmi);
-> +               if (ret)
-> +                       goto err_delete_cec_adap;
-> +
-> +               ret = devm_request_threaded_irq(&pdev->dev,
-> +                                               platform_get_irq_byname(pdev, "cec-tx"),
-> +                                               vc4_cec_irq_handler_tx_bare,
-> +                                               vc4_cec_irq_handler_tx_thread, 0,
-> +                                               "vc4 hdmi cec tx", vc4_hdmi);
-> +               if (ret)
-> +                       goto err_delete_cec_adap;
-> +       } else {
-> +               HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, 0xffffffff);
-> +
-> +               ret = devm_request_threaded_irq(&pdev->dev, platform_get_irq(pdev, 0),
-> +                                               vc4_cec_irq_handler,
-> +                                               vc4_cec_irq_handler_thread, 0,
-> +                                               "vc4 hdmi cec", vc4_hdmi);
-> +               if (ret)
-> +                       goto err_delete_cec_adap;
-> +       }
->
->         ret = cec_register_adapter(vc4_hdmi->cec_adap, &pdev->dev);
->         if (ret < 0)
-> @@ -2095,6 +2115,7 @@ static const struct vc4_hdmi_variant bcm2711_hdmi0_variant = {
->                 PHY_LANE_CK,
->         },
->         .unsupported_odd_h_timings      = true,
-> +       .external_irq_controller        = true,
->
->         .init_resources         = vc5_hdmi_init_resources,
->         .csc_setup              = vc5_hdmi_csc_setup,
-> @@ -2121,6 +2142,7 @@ static const struct vc4_hdmi_variant bcm2711_hdmi1_variant = {
->                 PHY_LANE_2,
->         },
->         .unsupported_odd_h_timings      = true,
-> +       .external_irq_controller        = true,
->
->         .init_resources         = vc5_hdmi_init_resources,
->         .csc_setup              = vc5_hdmi_csc_setup,
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> index 6966db1a0957..d71f6ed321bf 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> @@ -64,6 +64,13 @@ struct vc4_hdmi_variant {
->         /* The BCM2711 cannot deal with odd horizontal pixel timings */
->         bool unsupported_odd_h_timings;
->
-> +       /*
-> +        * The BCM2711 CEC/hotplug IRQ controller is shared between the
-> +        * two HDMI controllers, and we have a proper irqchip driver for
-> +        * it.
-> +        */
-> +       bool external_irq_controller;
-> +
->         /* Callback to get the resources (memory region, interrupts,
->          * clocks, etc) for that variant.
->          */
-> --
-> 2.29.2
->
