@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700DD2FFD71
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3232FFD76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbhAVHeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:34:25 -0500
-Received: from mail-ej1-f53.google.com ([209.85.218.53]:36376 "EHLO
-        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbhAVHeR (ORCPT
+        id S1727113AbhAVHgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:36:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727056AbhAVHgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:34:17 -0500
-Received: by mail-ej1-f53.google.com with SMTP id l9so6293299ejx.3;
-        Thu, 21 Jan 2021 23:34:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8GnE4lhfjc87s2oS1RIzXbqjLKjhcRxng05mH9niVa0=;
-        b=mJHIsAq/zwMKfOe4QWWIaDZBUce2glnXeLdR0BQECkxRPfA2PvhPuPP7LeischyKi6
-         A1NzSgGRq5UTiw82LUhpbiHgiA/FpkamWofn5nwOf3Z8tT46HsBcgPRmmDMgQFo2FuX/
-         la9ykRkbv9l50rXr49sK2ctwM9+9ARZwfPQdXSS10gSvOrInl95CCRuJaj9Fo6mxkkvA
-         XouyfvYRcvJ312NN7VdbBeLNykzJsE6P8JIGdT54o6C1gySCrIjt6kn8KFpgTttNFlnr
-         UI7h9x4Uui+SxRt5jFIWKlG4QAnlbyh4W5N1VCyOLzck0n+W7jNAkN7rNXByNQP5S8Fm
-         GMCg==
-X-Gm-Message-State: AOAM530NcoECCshadgLSt6ViRNtHlUarcl6HlG0nyG1+dGKFzE9+WuDd
-        GTSGBF04XR3o/PQAqVk8IJI=
-X-Google-Smtp-Source: ABdhPJzITfJf+ftWJ7SS5BLgVuhhaFCtTpYTjGejyemIaxHG+4fvzWBbnU9tX83Vd4NI3hMaKJHJrA==
-X-Received: by 2002:a17:906:2ccb:: with SMTP id r11mr2138635ejr.39.1611300815665;
-        Thu, 21 Jan 2021 23:33:35 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id x25sm4541261edv.65.2021.01.21.23.33.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 23:33:34 -0800 (PST)
-Subject: Re: [PATCH 1/6] tty: implement write_iter
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oliver Giles <ohw.giles@gmail.com>,
-        Robert Karszniewicz <r.karszniewicz@phytec.de>
-References: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
- <f4c72a0a-25e6-5c7a-559b-6d3b7c930100@kernel.org>
- <CAHk-=whE3fmgWx+aNvC6qkNqJtWPre3dVnv-_qYj7GaWnW72Vg@mail.gmail.com>
- <YAnAfNcE8Bw95+SV@kroah.com>
- <CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <4ade6b19-dc9e-ef72-dcca-1ddaa8d6c5fd@kernel.org>
-Date:   Fri, 22 Jan 2021 08:33:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 22 Jan 2021 02:36:05 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8AEC06178C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:35:20 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1l2qxq-0007E4-Mh; Fri, 22 Jan 2021 08:34:38 +0100
+Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:aed1:e241:8b32:9cc0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 9F94B5CA50A;
+        Fri, 22 Jan 2021 07:34:32 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 08:34:31 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pau Oliva Fora <pof@eslack.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v1 2/2] isa: Make the remove callback for isa drivers
+ return void
+Message-ID: <20210122073431.a3igyqh3rucmiy5y@hardanger.blackshift.org>
+References: <20210121204812.402589-1-uwe@kleine-koenig.org>
+ <20210121204812.402589-3-uwe@kleine-koenig.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zjvnr6y4kfwj4bce"
+Content-Disposition: inline
+In-Reply-To: <20210121204812.402589-3-uwe@kleine-koenig.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 01. 21, 19:42, Linus Torvalds wrote:
-> On Thu, Jan 21, 2021 at 9:57 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> Incremental patches please as these are already in my public branches
->> and I would have to revert them and add new ones but that's messy, so
->> fixes on top is fine.
-> 
-> Ok. And since I think you put that first tty_write conversion patch in
-> a different branch from the tty_read one, I did the fixup patches for
-> the two as separate patches, even though they really just do the exact
-> same thing.
-> 
-> So here's three patches: the two fixups for the hung_up_tty case, and
-> the EOVERFLOW error case that Jiri also noted. I've also updated the
-> 'tty-splice' branch if you prefer them that way.
-> 
-> And I *should* say that I still haven't tested _any_ of the HDLC
-> changes. I have no idea how to do that, and if somebody can point to a
-> test-case (or better yet, actually has a real life situation where
-> they use it and can test this all) it would be great.
-> 
-> Jiri, any other issues, or any comment of yours I missed? I didn't do
-> the min() thing, I find the explicit conditional more legible myself,
-> but won't complain if somebody else then disagrees and wants to clean
-> it up.
 
-I cannot find anything else.
+--zjvnr6y4kfwj4bce
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All three:
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+On Thu, Jan 21, 2021 at 09:48:12PM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> The driver core ignores the return value of the remove callback, so
+> don't give isa drivers the chance to provide a value.
+>=20
+> Adapt all isa_drivers with a remove callbacks accordingly; they all
+> return 0 unconditionally anyhow.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org>
+> ---
+>  drivers/net/can/sja1000/tscan1.c     | 4 +---
 
-thanks,
--- 
-js
+For the can driver:
+
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--zjvnr6y4kfwj4bce
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAKgAUACgkQqclaivrt
+76nKFwf/Qh+ytJZ22nqfhmCPbPHzMEovze0rf40PzuBbydukQ2E77J1a91Ol+M6I
+1ETmnULm8kVPDDxAcJDMCpVjyMJxgwLzxAFUbO/AXMpj94QvNurQZQfJvFSuDDIi
+b8bMue+b3+Bir9bDAQW+GAfmyMa6ARm5kpQFvnnMvLOerD9r3iPfMvMFmAM3tlpJ
+QBlvhC3avamtLNyYuNZUDq4Mq8AqsJOHy+0GHptbO7JGN6TS7tkuUo4blKU4XI2j
+JizmoGti3M6q+jHuUDOnLpHh6JDaetW68A+M4ggQIhoFVEvbS93ROd8v7exaUwrK
+f/iFuhnPc/++doJnCc4XvQg1N02pYA==
+=HgrA
+-----END PGP SIGNATURE-----
+
+--zjvnr6y4kfwj4bce--
