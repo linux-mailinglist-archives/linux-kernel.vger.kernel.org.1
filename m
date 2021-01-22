@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78B4300C11
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B83C300C08
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730717AbhAVTFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:05:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37470 "EHLO mail.kernel.org"
+        id S1729798AbhAVTBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:01:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728478AbhAVOSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:18:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4F9923A9C;
-        Fri, 22 Jan 2021 14:14:08 +0000 (UTC)
+        id S1728505AbhAVOTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:19:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5341423A82;
+        Fri, 22 Jan 2021 14:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324849;
-        bh=hRAZ9Q1bgx6FxIEL4fNMouM/bfBMQ1+VsNYdzbkgriM=;
+        s=korg; t=1611324854;
+        bh=nzz9tYb5Aulv/p299I0ypp/e3Gp72O2TcZOIYdjJkj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dQUkFKeptoIIQoA7dEWz7UKR8P83Xz6XmXczQr8ZaxpsEP3qX5+w1V9yJZ17KFd+w
-         iEofooVoflwLb6Jm5cOrf+irzH0F7NglwTwY02EhaS+a+/3wCShXjK9Nv65SLbbw6K
-         CHI3zBqwzpm965+i72AsUAyPPASGJ1QWOMsNSL8Q=
+        b=jHcnTCE8NKD7WGiMjlzwJmR3ga7wkcMOuvAEQcGnT+8BlYZVTdJbyNTE+eQiQapvl
+         uwqQWrN/Lx3gZib/Xgx4cqXfx1/KEuUYAnI4mfmd0Y1FZwrGkp1m1zl/npa5/HYHNM
+         qwpof2yetTAcJhbKfl1yEkSPaaygUShJaxmoTiVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nir Soffer <nsoffer@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.14 29/50] dm: eliminate potential source of excessive kernel log noise
-Date:   Fri, 22 Jan 2021 15:12:10 +0100
-Message-Id: <20210122135736.367237868@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 30/50] ALSA: firewire-tascam: Fix integer overflow in midi_port_work()
+Date:   Fri, 22 Jan 2021 15:12:11 +0100
+Message-Id: <20210122135736.415126781@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
 References: <20210122135735.176469491@linuxfoundation.org>
@@ -39,35 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Snitzer <snitzer@redhat.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 0378c625afe80eb3f212adae42cc33c9f6f31abf upstream.
+commit 9f65df9c589f249435255da37a5dd11f1bc86f4d upstream.
 
-There wasn't ever a real need to log an error in the kernel log for
-ioctls issued with insufficient permissions. Simply return an error
-and if an admin/user is sufficiently motivated they can enable DM's
-dynamic debugging to see an explanation for why the ioctls were
-disallowed.
+As snd_fw_async_midi_port.consume_bytes is unsigned int, and
+NSEC_PER_SEC is 1000000000L, the second multiplication in
 
-Reported-by: Nir Soffer <nsoffer@redhat.com>
-Fixes: e980f62353c6 ("dm: don't allow ioctls to targets that don't map to whole devices")
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+    port->consume_bytes * 8 * NSEC_PER_SEC / 31250
+
+always overflows on 32-bit platforms, truncating the result.  Fix this
+by precalculating "NSEC_PER_SEC / 31250", which is an integer constant.
+
+Note that this assumes port->consume_bytes <= 16777.
+
+Fixes: 531f471834227d03 ("ALSA: firewire-lib/firewire-tascam: localize async midi port")
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20210111130251.361335-3-geert+renesas@glider.be
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm.c |    2 +-
+ sound/firewire/tascam/tascam-transaction.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -472,7 +472,7 @@ static int dm_blk_ioctl(struct block_dev
- 		 * subset of the parent bdev; require extra privileges.
- 		 */
- 		if (!capable(CAP_SYS_RAWIO)) {
--			DMWARN_LIMIT(
-+			DMDEBUG_LIMIT(
- 	"%s: sending ioctl %x to DM device without required privilege.",
- 				current->comm, cmd);
- 			r = -ENOIOCTLCMD;
+--- a/sound/firewire/tascam/tascam-transaction.c
++++ b/sound/firewire/tascam/tascam-transaction.c
+@@ -210,7 +210,7 @@ static void midi_port_work(struct work_s
+ 
+ 	/* Set interval to next transaction. */
+ 	port->next_ktime = ktime_add_ns(ktime_get(),
+-				port->consume_bytes * 8 * NSEC_PER_SEC / 31250);
++			port->consume_bytes * 8 * (NSEC_PER_SEC / 31250));
+ 
+ 	/* Start this transaction. */
+ 	port->idling = false;
 
 
