@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C7F30015E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62453300165
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbhAVLVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:21:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
+        id S1728138AbhAVLWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:22:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727671AbhAVLRB (ORCPT
+        with ESMTP id S1727932AbhAVLUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:17:01 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69FFC0613D6;
-        Fri, 22 Jan 2021 03:16:17 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id c128so3992871wme.2;
-        Fri, 22 Jan 2021 03:16:17 -0800 (PST)
+        Fri, 22 Jan 2021 06:20:02 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73634C06174A;
+        Fri, 22 Jan 2021 03:19:00 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id n25so3507577pgb.0;
+        Fri, 22 Jan 2021 03:19:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=VZLx/PblJd6MezWoeQ4GsUV4rI21p1au0Wz2+FJg3/Q=;
-        b=dTCXUoPDVQAxKr7QSSOZrhclx2dJ9Z4Kx+saJmKVCKm+BejIayWHEFuwdENdfw4TSi
-         gaIDxUuNrftFL71ss4xTKY7E6LqZegNfgu0NqdZCVQUJELOBLFnMJWx5LfWg+3+CUryi
-         30CAXQqGpWTQ6ChI6OuufZ9vrBb3SLyiwKqkLgB74TpT23U9nR6uDYh0EQxhQhb45O+b
-         6qTpiwXTxQBXnYTyV5KYXXXqvyo4hILLKFdZwt/UIjGz7IEqHc9V/pY8DSZql2CwFnfh
-         /sM7V4FZ/Nw5K/nGxAKpQW/owlL4lJg4wT88EGM8OtqDZowpO8qeTqMi+3di0jCtrX8D
-         O/hw==
+        bh=JGKZWLmZIaXZ0doM/i8zUq2DXA6jM2XCESou+2RqdlA=;
+        b=U9yV8Yulx/4LOhdsH7ynYOJKlnHwgwg2gMNl2QmmOTdT2tXgaaTXyhz8Tsml3tOEI5
+         NqIdEY5+dNecnL9gupHRda8nYiv+OW4nvNKnLT6Dq+X3ZkLGC8/E+0VZYGhY1dbkhYEN
+         VOsxBgysdG2KezeTn7tT6XkKT0lIR7UGv+iJaLJUzp0ndVsuKPFtp/5rucVWHFJIqMBG
+         lCJZhDO2/4aGnckrimgPqZqRgz4+ApEwe+G0Pc/n+0YXPtsinnrnRi9iiummaI1pV/s1
+         AUT0pvOzYe7nCUBVWVV9nBoPqpWoxqK0oZN3V53Nba+h/xg4a9H0inJ1LY1LNddb1SlQ
+         HU7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=VZLx/PblJd6MezWoeQ4GsUV4rI21p1au0Wz2+FJg3/Q=;
-        b=piI6+pjH5QtRkjWk2wNSfKUXMJx1wkKqNoj5DpUBaNeJpOxXcgl0v6vIOWHxApik5E
-         XPuHTBGf25EzeFFzTHw7zzTmZ0i1nlkd/G/gMRESS5Q6EIdMmPewWysT0KqGYQBpHrFL
-         GMjn3Rjv1+WxJYgX7hWvu2j9vipgJY6Oe2aJVVWSXuiF3C61FJttvxxX5RevgzEVtsid
-         mCoutSaIIfGtkj2VF1czt7yQi3VBLCLs2KSMyUyjn1GbWyUlpGor8pb+YZ5fXHdoP1q2
-         JKXrivtUQiom3e6XynLYeK4oDlDrFypvZs6VZLJjUTKWAvCzdOtQi8+9bPhWADnReZHa
-         YRbg==
-X-Gm-Message-State: AOAM531uSwjnXELFoVbg6rt71BBOHSgHKtW2cijyHFymD6FpbsqyIq9p
-        PVu0y6G8HYTCkX8LwJxwCng=
-X-Google-Smtp-Source: ABdhPJz8/MaE6nni4CXTndtsyWaxV2OGHflQZJxSd+FMQer7kgkXcf9NtRaiKp+CYyEttSwZESC6aA==
-X-Received: by 2002:a7b:cbd5:: with SMTP id n21mr3600591wmi.5.1611314176509;
-        Fri, 22 Jan 2021 03:16:16 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d97:4900:808e:47fd:6ea4:7fa2])
-        by smtp.gmail.com with ESMTPSA id x128sm11556111wmb.29.2021.01.22.03.16.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 03:16:15 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
-Cc:     Alasdair Kergon <agk@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH for device-mapper/for-next] dm integrity: follow ReST formatting
-Date:   Fri, 22 Jan 2021 12:16:06 +0100
-Message-Id: <20210122111606.24999-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        bh=JGKZWLmZIaXZ0doM/i8zUq2DXA6jM2XCESou+2RqdlA=;
+        b=Uy+OiqCguEqGGA6OmoSPB8by08QGMss3ylT5bAEmJYUj5+5PT+WO6B/PUG8CYhaLtq
+         //mtkyef0vAgCvd1Zh4798EYdIhGM2CjLu2iza0XxVpx221YGhw4oBftRRYp6YdPX/I7
+         8kcUDNNPkkosKukmUEWG8bPssiF94GN2oX95eH2217E0RSc+nxJvZ7uTVTnlepPyMmZ5
+         Z5MyEe7K+zLoV50PSh5JCDER6lC35wd9qEgaG+Xy2t6pNJ+8ZZRET8ZJGATbM1/5iSNb
+         IH+0eq8ftEOKX5mWon6KMrg+Wt0YI15fY50f+HB4+5zerdoS8l+ZlrW4jB3RWCeEbFE1
+         F0Pg==
+X-Gm-Message-State: AOAM5320ebavQrORY7BrGU43Ohcat2DPslHBvV3GZXxWBL5E2StEoMbK
+        +HRWPvDDAAY1J1Z6S1zIGaM=
+X-Google-Smtp-Source: ABdhPJxt5WMLt8cj+0AiYX17C2BZ/R9+T6CBaCic2Kf+mk6e10AqboFT0NLkQr2VDIJKC+o4k9vfog==
+X-Received: by 2002:a63:794a:: with SMTP id u71mr4170608pgc.91.1611314340094;
+        Fri, 22 Jan 2021 03:19:00 -0800 (PST)
+Received: from localhost.localdomain ([125.227.22.95])
+        by smtp.gmail.com with ESMTPSA id b11sm9521965pjg.27.2021.01.22.03.18.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Jan 2021 03:18:59 -0800 (PST)
+From:   Stephen Zhang <stephenzhangzsd@gmail.com>
+To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Zhang <stephenzhangzsd@gmail.com>
+Subject: [PATCH] KVM: x86/mmu: improve robustness of some functions
+Date:   Fri, 22 Jan 2021 19:18:43 +0800
+Message-Id: <1611314323-2770-1-git-send-email-stephenzhangzsd@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 61b8b2a834bf ("dm integrity: introduce the "fix_hmac" argument")
-adds some new part to dm-integrity.rst, but this causes make htmldocs warn:
+If the name of this function changes, you can easily
+forget to modify the code in the corresponding place.
+In fact, such errors already exist in spte_write_protect
+ and spte_clear_dirty.
 
-  dm-integrity.rst:192: WARNING: Unexpected indentation.
-  dm-integrity.rst:193: WARNING: Block quote ends without a blank line; \
-    unexpected unindent.
-
-Make dm-integrity.rst follow ReST formatting.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
 ---
-Mike, please pick this quick documentation fix in your for-next branch.
+ arch/x86/kvm/mmu/mmu.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
- Documentation/admin-guide/device-mapper/dm-integrity.rst | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/admin-guide/device-mapper/dm-integrity.rst b/Documentation/admin-guide/device-mapper/dm-integrity.rst
-index 39a9fdc9f6ab..ef762857da95 100644
---- a/Documentation/admin-guide/device-mapper/dm-integrity.rst
-+++ b/Documentation/admin-guide/device-mapper/dm-integrity.rst
-@@ -188,6 +188,7 @@ fix_padding
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d16481..09462c3d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -844,17 +844,17 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
+ 	int i, count = 0;
  
- fix_hmac
- 	Improve security of internal_hash and journal_mac:
-+
- 	- the section number is mixed to the mac, so that an attacker can't
- 	  copy sectors from one journal section to another journal section
- 	- the superblock is protected by journal_mac
+ 	if (!rmap_head->val) {
+-		rmap_printk("pte_list_add: %p %llx 0->1\n", spte, *spte);
++		rmap_printk("%s: %p %llx 0->1\n", __func__, spte, *spte);
+ 		rmap_head->val = (unsigned long)spte;
+ 	} else if (!(rmap_head->val & 1)) {
+-		rmap_printk("pte_list_add: %p %llx 1->many\n", spte, *spte);
++		rmap_printk("%s: %p %llx 1->many\n", __func__, spte, *spte);
+ 		desc = mmu_alloc_pte_list_desc(vcpu);
+ 		desc->sptes[0] = (u64 *)rmap_head->val;
+ 		desc->sptes[1] = spte;
+ 		rmap_head->val = (unsigned long)desc | 1;
+ 		++count;
+ 	} else {
+-		rmap_printk("pte_list_add: %p %llx many->many\n", spte, *spte);
++		rmap_printk("%s: %p %llx many->many\n",	__func__, spte, *spte);
+ 		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+ 		while (desc->sptes[PTE_LIST_EXT-1]) {
+ 			count += PTE_LIST_EXT;
+@@ -1115,7 +1115,7 @@ static bool spte_write_protect(u64 *sptep, bool pt_protect)
+ 	      !(pt_protect && spte_can_locklessly_be_made_writable(spte)))
+ 		return false;
+ 
+-	rmap_printk("rmap_write_protect: spte %p %llx\n", sptep, *sptep);
++	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
+ 
+ 	if (pt_protect)
+ 		spte &= ~SPTE_MMU_WRITEABLE;
+@@ -1142,7 +1142,7 @@ static bool spte_clear_dirty(u64 *sptep)
+ {
+ 	u64 spte = *sptep;
+ 
+-	rmap_printk("rmap_clear_dirty: spte %p %llx\n", sptep, *sptep);
++	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
+ 
+ 	MMU_WARN_ON(!spte_ad_enabled(spte));
+ 	spte &= ~shadow_dirty_mask;
+@@ -1184,7 +1184,7 @@ static bool spte_set_dirty(u64 *sptep)
+ {
+ 	u64 spte = *sptep;
+ 
+-	rmap_printk("rmap_set_dirty: spte %p %llx\n", sptep, *sptep);
++	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
+ 
+ 	/*
+ 	 * Similar to the !kvm_x86_ops.slot_disable_log_dirty case,
+@@ -1363,8 +1363,8 @@ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 
+ restart:
+ 	for_each_rmap_spte(rmap_head, &iter, sptep) {
+-		rmap_printk("kvm_set_pte_rmapp: spte %p %llx gfn %llx (%d)\n",
+-			    sptep, *sptep, gfn, level);
++		rmap_printk("%s: spte %p %llx gfn %llx (%d)\n",
++			      __func__, sptep, *sptep, gfn, level);
+ 
+ 		need_flush = 1;
+ 
 -- 
-2.17.1
+1.8.3.1
 
