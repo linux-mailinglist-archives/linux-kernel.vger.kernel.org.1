@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD6F2FFE73
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2C22FFE76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727257AbhAVInv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:43:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S1727185AbhAVIom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:44:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbhAVIlq (ORCPT
+        with ESMTP id S1727155AbhAVImI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:41:46 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9A1C061788
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:41:00 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id g46so846806ooi.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:41:00 -0800 (PST)
+        Fri, 22 Jan 2021 03:42:08 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF2C06178B;
+        Fri, 22 Jan 2021 00:41:25 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id 36so4406749otp.2;
+        Fri, 22 Jan 2021 00:41:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wOljwRCTbqyi57Y0Livy/H/EyT5660ugsfV4DuzfwqY=;
-        b=O0p5VKMoY2x8AgqrSCwbvRe2f+uh5jMDWo8v1uN5BFnIpTYeylv7jXtmw2xwBF6CvZ
-         cvAidVCqZX4yBuePIjcFU+6pgnI6q/Ep1Z5C+g7Iacpr5DV3r+R36zNMnln8Q8Lzl9lz
-         E1uzZCGg7oqS3+ZlEG+gNKDcsFMA0JCZIyhoo=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=QH7Qc5EQ7iifT7PzYgbghVIv9P26i6FsrQ+fd6jlx2w=;
+        b=r0BzrOD/8aKlJe4I292/JfGk8q+SEssSkkTBjumXnHMUhfyk5+ElKGazW+Tf4a66Hc
+         rofMyEvAyKln95BGEZ31pSk03oLXw10PASDJ+VIsYqG43y/ZehZp7no4u5RJO30DA0CK
+         5PgmEh0q8cImXoISKljnAjHjh27u/T4hoBGDQW2qZp4repP04uAUnchAYQ+yyycq1Qi+
+         9DswLI66Rk7AMSqeQ6qGqElV3gzjUytCHKwmtuHiMAOar9yt+ERF0Rg+t0DosYf2NH64
+         HLO0bsppV/w1W/G0aQc19l0Z/tnE2Ovusaof49jm54X2FMiXHOj3CC7wAj5BJKL3RXwW
+         MXLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wOljwRCTbqyi57Y0Livy/H/EyT5660ugsfV4DuzfwqY=;
-        b=KA75uiX9826AyMFX5u6PRRpmRBLb06Tg7oyl/lsRMeLoICHNFl8ExFPFyaCIPSeeyA
-         KQJa6Dcw3U16IGuHimBLarFcO3BJAuLUnPGt52AZFih+NAqjfKBxwOuDhlyOlYBvWxcR
-         QXOijerVNdpWlzyGRuuMVNjs4QhKAm170LeXMZk0yS2TTHbdq8bqQVFF5IgKihc1Uvwz
-         0OO5UKZbjJYxJfSdoflXpJ7EyQrzWNgPmkT6Q3qQ0s+qkwuH6mpIdZKi4yTVtn7X3QQM
-         sZuuycJa5f6fOFilqzqfE3p8As0hCsCl14KzCmJs+3hUokv7cfhBY3S1+Vw0HhiUFv1P
-         AbmA==
-X-Gm-Message-State: AOAM530uKbzifdqfPnsBb2jYDLcQDakSGXT5zpjOAG9LITcoNM/M890T
-        dOm++rcPq9M24fjocEtOEvxkl4mQSdQ/IFF6VaZ/Sw==
-X-Google-Smtp-Source: ABdhPJxDy+y1OaANdzA4wIMi5FJQjgdMKPG0dL2eTTJxJ2qmVIP8X8bscBmGEkbq8xeEe5veGwWsHRsLPQr71Q6nkYA=
-X-Received: by 2002:a4a:9722:: with SMTP id u31mr2968367ooi.28.1611304859529;
- Fri, 22 Jan 2021 00:40:59 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=QH7Qc5EQ7iifT7PzYgbghVIv9P26i6FsrQ+fd6jlx2w=;
+        b=qADU/nnCd54XHLLFl17lc/TByJ4wh14/ECnHwuHBls9ACaHxl/AbidquHHKMDRUsNn
+         gkRZm1giYau3AG2CtDOfJj2BOzP7gLo42NIjaW013Ho4e5NVDVjvR9SNOhhfk14rTSSK
+         dWkvjLF5ruV+DSIWJ9G+EeNCrrnwQ84tMce+ViXCyRtrZhUrgtF3JoqtF+errivqyeid
+         aQEf9MGQKFlkvYVbTKdun8SU87ipZRz47rISjEAWsBgcLSvMdBuOeKMf+iBJF3Pz9mNz
+         YaWo9fpnKgHWkcIbbuSD0dUU7SRwSzyPLNIz5duB13LYjh00NV3/pwDZBG3B1teMnDVL
+         MeuQ==
+X-Gm-Message-State: AOAM533EMrEL0uvsawEoDjE7hE8w2OxVQAhNDo7bD3TGjMmf9BqzMQoN
+        /j0jJVdJeAlTYMa9C8YJ6PqWPDk1rLowG5Jo3jtCRYJlGJ0=
+X-Google-Smtp-Source: ABdhPJxDgUWr1yNvwGw8O1L6XDuuZb4Ue2CL9xlpxJHgUOwefeqwKx21mVzvCC65O1WSjAwp6M2ZPcLK4p7JVNMp6CQ=
+X-Received: by 2002:a9d:5e0f:: with SMTP id d15mr2540660oti.308.1611304885285;
+ Fri, 22 Jan 2021 00:41:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210122115918.63b56fa1@canb.auug.org.au> <CAKMK7uEuJa1J66mo5dS+QRPy9NOENTx95SZ4rU2MeVRTWj7Kcw@mail.gmail.com>
- <20210122182946.6beb10b7@canb.auug.org.au>
-In-Reply-To: <20210122182946.6beb10b7@canb.auug.org.au>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 22 Jan 2021 09:40:48 +0100
-Message-ID: <CAKMK7uFWFVC0be2foiP8+2=vrqyh1e4mqkuk+2xY+fgSWAExyQ@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the drm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "Nikula, Jani" <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>
+References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
+ <159827190508.306468.12755090833140558156.stgit@warthog.procyon.org.uk>
+ <CAKgNAkho1WSOsxvCYQOs7vDxpfyeJ9JGdTL-Y0UEZtO3jVfmKw@mail.gmail.com>
+ <667616.1599063270@warthog.procyon.org.uk> <CAKgNAkhjDB9bvQ0h5b13fkbhuP9tYrkBQe7w1cbeOH8gM--D0g@mail.gmail.com>
+ <CAKgNAkh9h3aA1hiYownT2O=xg5JmZwmJUCvQ1Z4f85MTq-26Fw@mail.gmail.com> <CAKgNAkju-65h1bKBUJQf-k=TCZeFmD9Nf4ZgZ9Mm_TQ1rQA6MA@mail.gmail.com>
+In-Reply-To: <CAKgNAkju-65h1bKBUJQf-k=TCZeFmD9Nf4ZgZ9Mm_TQ1rQA6MA@mail.gmail.com>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Fri, 22 Jan 2021 09:41:14 +0100
+Message-ID: <CAKgNAkg78pHD90CuUaDtAhnwGqOwMU0SrZFny_fYXpDNSzovNA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] Add manpage for fsopen(2) and fsmount(2)
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 8:29 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Hello David,
+
+Ping!
+
+Thanks,
+
+Michael
+
+On Fri, 16 Oct 2020 at 08:50, Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
 >
-> Hi Daniel,
+> Hi David,
 >
-> On Fri, 22 Jan 2021 08:17:58 +0100 Daniel Vetter <daniel@ffwll.ch> wrote:
+> Another ping for these five patches please!
+>
+> Cheers,
+>
+> Michael
+>
+> On Fri, 11 Sep 2020 at 14:44, Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
 > >
-> > Hm that has been in drm-intel-gt-next for a few days, is that tree not
-> > in linux-next?
+> > Hi David,
+> >
+> > A ping for these five patches please!
+> >
+> > Cheers,
+> >
+> > Michael
+> >
+> > On Wed, 2 Sep 2020 at 22:14, Michael Kerrisk (man-pages)
+> > <mtk.manpages@gmail.com> wrote:
+> > >
+> > > On Wed, 2 Sep 2020 at 18:14, David Howells <dhowells@redhat.com> wrote:
+> > > >
+> > > > Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
+> > > >
+> > > > > The term "filesystem configuration context" is introduced, but never
+> > > > > really explained. I think it would be very helpful to have a sentence
+> > > > > or three that explains this concept at the start of the page.
+> > > >
+> > > > Does that need a .7 manpage?
+> > >
+> > > I was hoping a sentence or a paragraph in this page might suffice. Do
+> > > you think more is required?
+> > >
+> > > Cheers,
+> > >
+> > > Michael
+> > >
+> > > --
+> > > Michael Kerrisk
+> > > Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> > > Linux/UNIX System Programming Training: http://man7.org/training/
+> >
+> >
+> >
+> > --
+> > Michael Kerrisk
+> > Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> > Linux/UNIX System Programming Training: http://man7.org/training/
 >
-> It is not.
-
-Adding -intel maintainers to get that sorted.
--Daniel
-
-> These are the drm branches currently in linux-next:
-
-Oh for ordering maybe put drm-misc ahead of the other subtrees, -misc
-is where nowadays a lot of refactorings and core changes land.
-Probably doesn't matter in practice.
--Daniel
-
-> drm-fixes       git://git.freedesktop.org/git/drm/drm.git       drm-fixes
-> amdgpu-fixes    git://people.freedesktop.org/~agd5f/linux       drm-fixes
-> drm-intel-fixes git://anongit.freedesktop.org/drm-intel         for-linux-next-fixes
-> drm-misc-fixes  git://anongit.freedesktop.org/drm/drm-misc      for-linux-next-fixes
-> drm             git://git.freedesktop.org/git/drm/drm.git       drm-next
-> amdgpu          https://gitlab.freedesktop.org/agd5f/linux      drm-next
-> drm-intel       git://anongit.freedesktop.org/drm-intel         for-linux-next
-> drm-tegra       git://anongit.freedesktop.org/tegra/linux.git   drm/tegra/for-next
-> drm-misc        git://anongit.freedesktop.org/drm/drm-misc      for-linux-next
-> drm-msm         https://gitlab.freedesktop.org/drm/msm.git      msm-next
-> imx-drm         https://git.pengutronix.de/git/pza/linux        imx-drm/next
-> etnaviv         https://git.pengutronix.de/git/lst/linux        etnaviv/next
+>
 >
 > --
-> Cheers,
-> Stephen Rothwell
+> Michael Kerrisk
+> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> Linux/UNIX System Programming Training: http://man7.org/training/
 
 
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
