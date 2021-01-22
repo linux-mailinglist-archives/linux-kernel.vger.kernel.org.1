@@ -2,180 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE193300732
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C38300672
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbhAVP1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:27:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729015AbhAVO6g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:58:36 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6159C0617AB;
-        Fri, 22 Jan 2021 06:56:22 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id o10so6838214wmc.1;
-        Fri, 22 Jan 2021 06:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=B7EH7hNQ0zHbFUPaZhxibjy/gRki2XnmNMbonXYtYOI=;
-        b=sIESIdpSd7hwu8Ko1MbUFAXvXE1SUmmw12lygBcnZviJN/KjPQWGg75jvFEolD5wLa
-         MJIMJFW02nLX6CBEj0mh7lK+FQuiwAKMMbDfxuWw4Rna/CueS44ZYsKAcBVQ9iRpIAFj
-         WJO+By6WHksqkavTUVbHimMas+yOwaJ0xGGg/JJrit2KzefnbEHwmxSad9we9EAL2CgE
-         hy06PZ3n6kAsfKO5jO5h7aENu/1m+81xuRs16S+M47NDU/iQWJ9TfxoGyzFO1WhK99ug
-         QGxM6z4NgvmeB+nKguIn2Zi5OdrxseKZimBYhLRt06MlB74fh+FjhsLAi5zMuEqRyxkD
-         XZvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B7EH7hNQ0zHbFUPaZhxibjy/gRki2XnmNMbonXYtYOI=;
-        b=YPHEKCNE+snLftdPyw3bMss1xciOweiX7XOPN3S9SNrqwjbESPtyrApWHDcUf+Nt0m
-         I7dOH59IiusPSjOd7Fh+AssOydHRLUqhmfwVpZQQTwoy3I9O4XuD2gIoCcmYMeDmXXth
-         VWZ4D+xAUrRcH0oc5+XsLRjnoXvqjbUdSCHIOCJ8aOuxDzm+OijGArVGMe+vT8KL+ZYY
-         GqJNkm1TqLZw0CHo2L2AKZlOP3gdSinbThEph94Cs106GW4EfpZavILA5IhXTA2edP3g
-         b2Gr0ooGzZ0r9aT2s4PgLazypkC7LNzrBKKF/SniPwBVwLlVKFZvuUQ22jg5h1usbWTr
-         tZSQ==
-X-Gm-Message-State: AOAM531vVVGLPTSa6bHCz2+n9HN6TWWYvJ3Grg+5sji0PDf6idq74fwo
-        UguygfJBPAivLWuyS/f9ufQ=
-X-Google-Smtp-Source: ABdhPJznkSwyqoo2U/wWDUkykiCgx3b/7Y3zWLXo7VtZ8AeRrIMPIYsLaxuveBRIMEmKsp/3rAEh6w==
-X-Received: by 2002:a1c:1f83:: with SMTP id f125mr4415561wmf.82.1611327381526;
-        Fri, 22 Jan 2021 06:56:21 -0800 (PST)
-Received: from ansuel-xps20.localdomain (host-79-45-3-77.retail.telecomitalia.it. [79.45.3.77])
-        by smtp.googlemail.com with ESMTPSA id t67sm12061106wmt.28.2021.01.22.06.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:56:20 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Amit Kucheria <amitk@kernel.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 8/8] dt-bindings: thermal: tsens: Document ipq8064 bindings
-Date:   Fri, 22 Jan 2021 15:55:57 +0100
-Message-Id: <20210122145558.4982-9-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210122145558.4982-1-ansuelsmth@gmail.com>
-References: <20210122145558.4982-1-ansuelsmth@gmail.com>
+        id S1729062AbhAVPCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:02:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:51792 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728732AbhAVOzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:55:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE3ED11D4;
+        Fri, 22 Jan 2021 06:54:23 -0800 (PST)
+Received: from [10.37.8.28] (unknown [10.37.8.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AEEBA3F66E;
+        Fri, 22 Jan 2021 06:54:21 -0800 (PST)
+Subject: Re: [PATCH v3 2/2] kasan: Add explicit preconditions to
+ kasan_report()
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20210122143748.50089-1-vincenzo.frascino@arm.com>
+ <20210122143748.50089-3-vincenzo.frascino@arm.com>
+ <CAAeHK+yyJia6zOCMpy6ZJDX-Brvr_s88gZ6HwG2TxfLgtw=SSg@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <be55dae5-e654-7673-fea6-7ee4055d2be2@arm.com>
+Date:   Fri, 22 Jan 2021 14:58:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAeHK+yyJia6zOCMpy6ZJDX-Brvr_s88gZ6HwG2TxfLgtw=SSg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the use of bindings used for msm8960 tsens based devices.
-msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+On 1/22/21 2:46 PM, Andrey Konovalov wrote:
+> On Fri, Jan 22, 2021 at 3:38 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+>>
+>> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
+>> the address passed as a parameter.
+> 
+> It doesn't dereference the address, it accesses the metadata. And only
+> when addr_has_metadata() succeeds.
+>
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../bindings/thermal/qcom-tsens.yaml          | 56 ++++++++++++++++---
- 1 file changed, 48 insertions(+), 8 deletions(-)
+Yes, this is correct. Seems I forgot again to unstash something. Will fix it in v4.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index 95462e071ab4..1785b1c75a3c 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -19,6 +19,11 @@ description: |
- properties:
-   compatible:
-     oneOf:
-+      - description: msm9860 TSENS based
-+        items:
-+          - enum:
-+              - qcom,ipq8064-tsens
-+
-       - description: v0.1 of TSENS
-         items:
-           - enum:
-@@ -73,7 +78,9 @@ properties:
-     maxItems: 2
-     items:
-       - const: calib
--      - const: calib_sel
-+      - enum:
-+          - calib_backup
-+          - calib_sel
- 
-   "#qcom,sensors":
-     description:
-@@ -88,12 +95,20 @@ properties:
-       Number of cells required to uniquely identify the thermal sensors. Since
-       we have multiple sensors this is set to 1
- 
-+required:
-+  - compatible
-+  - interrupts
-+  - interrupt-names
-+  - "#thermal-sensor-cells"
-+  - "#qcom,sensors"
-+
- allOf:
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-+              - qcom,ipq8064-tsens
-               - qcom,msm8916-tsens
-               - qcom,msm8974-tsens
-               - qcom,msm8976-tsens
-@@ -114,17 +129,42 @@ allOf:
-         interrupt-names:
-           minItems: 2
- 
--required:
--  - compatible
--  - reg
--  - "#qcom,sensors"
--  - interrupts
--  - interrupt-names
--  - "#thermal-sensor-cells"
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,tsens-v0_1
-+              - qcom,tsens-v1
-+              - qcom,tsens-v2
-+
-+    then:
-+      required:
-+        - reg
- 
- additionalProperties: false
- 
- examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    // Example msm9860 based SoC (ipq8064):
-+    gcc: clock-controller {
-+
-+           /* ... */
-+
-+           tsens: thermal-sensor {
-+                compatible = "qcom,ipq8064-tsens";
-+
-+                 nvmem-cells = <&tsens_calib>, <&tsens_calib_backup>;
-+                 nvmem-cell-names = "calib", "calib_backup";
-+                 interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-+                 interrupt-names = "uplow";
-+
-+                 #qcom,sensors = <11>;
-+                 #thermal-sensor-cells = <1>;
-+          };
-+    };
-+
-   - |
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     // Example 1 (legacy: for pre v1 IP):
+>>
+>> Add a comment to make sure that the preconditions to the function are
+>> explicitly clarified.
+>>
+>> Note: An invalid address (e.g. NULL) passed to the function when,
+>> KASAN_HW_TAGS is enabled, leads to a kernel panic.
+> 
+> This is no longer true, right? Commit description needs to be updated.
+> 
+>>
+>> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+>> Cc: Alexander Potapenko <glider@google.com>
+>> Cc: Dmitry Vyukov <dvyukov@google.com>
+>> Cc: Leon Romanovsky <leonro@mellanox.com>
+>> Cc: Andrey Konovalov <andreyknvl@google.com>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>> ---
+>>  include/linux/kasan.h | 7 +++++++
+>>  mm/kasan/kasan.h      | 2 +-
+>>  2 files changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+>> index fe1ae73ff8b5..0aea9e2a2a01 100644
+>> --- a/include/linux/kasan.h
+>> +++ b/include/linux/kasan.h
+>> @@ -333,6 +333,13 @@ static inline void *kasan_reset_tag(const void *addr)
+>>         return (void *)arch_kasan_reset_tag(addr);
+>>  }
+>>
+>> +/**
+>> + * kasan_report - print a report about a bad memory access detected by KASAN
+>> + * @addr: address of the bad access
+>> + * @size: size of the bad access
+>> + * @is_write: whether the bad access is a write or a read
+>> + * @ip: instruction pointer for the accessibility check or the bad access itself
+>> + */
+> 
+> Looks good, thanks!
+> 
+>>  bool kasan_report(unsigned long addr, size_t size,
+>>                 bool is_write, unsigned long ip);
+>>
+>> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+>> index cc4d9e1d49b1..8c706e7652f2 100644
+>> --- a/mm/kasan/kasan.h
+>> +++ b/mm/kasan/kasan.h
+>> @@ -209,7 +209,7 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
+>>
+>>  static inline bool addr_has_metadata(const void *addr)
+>>  {
+>> -       return true;
+>> +       return (is_vmalloc_addr(addr) || virt_addr_valid(addr));
+>>  }
+> 
+> Let's put this change into a separate patch.
+>
+
+Ok, it will be done in v4.
+
+>>
+>>  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+>> --
+>> 2.30.0
+>>
+
 -- 
-2.29.2
-
+Regards,
+Vincenzo
