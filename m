@@ -2,172 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18BF300794
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B9E30078E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbhAVPlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:41:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25759 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728735AbhAVPk6 (ORCPT
+        id S1728302AbhAVPlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:41:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727628AbhAVPk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:40:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611329970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ESJ0QrKeGhGsWuJLG8NvK72akqRJ71dwWfaLuOlWI3M=;
-        b=FvRNDmqHYvh/GcEY58MQcw2VUrGlKs92K9odKU97sTCDr1Wnlntpg/wd5RHS/0tXE6AXtn
-        eB0KpKZnjZDIAYXBNYD6I0qvVHzc8ooXOVr8/zQE3u0RVziOgPWfuIeJMvmqSOSScWTHpr
-        mUvsf5D2Psa7CiUbMf+rih7sKDXxY0Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-XI37rcDhMJeAHZRtDUwp9Q-1; Fri, 22 Jan 2021 10:39:26 -0500
-X-MC-Unique: XI37rcDhMJeAHZRtDUwp9Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63567107AFAF;
-        Fri, 22 Jan 2021 15:39:25 +0000 (UTC)
-Received: from [10.36.114.142] (ovpn-114-142.ams2.redhat.com [10.36.114.142])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 005DD5D960;
-        Fri, 22 Jan 2021 15:39:23 +0000 (UTC)
-Subject: Re: [PATCH v5 3/5] mm: simplify parater of function
- memmap_init_zone()
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
-        lkp@intel.com
-References: <20210122135956.5946-1-bhe@redhat.com>
- <20210122135956.5946-4-bhe@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <fd8d230b-c7f1-9bf5-2cee-528053b692d8@redhat.com>
-Date:   Fri, 22 Jan 2021 16:39:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 22 Jan 2021 10:40:27 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BDCC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:39:45 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id Krfi2400c4C55Sk06rfi6G; Fri, 22 Jan 2021 16:39:43 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l2yXG-005qKn-A5; Fri, 22 Jan 2021 16:39:42 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l2yXF-00C3jN-UM; Fri, 22 Jan 2021 16:39:41 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] auxdisplay: ht16k33: Fix refresh rate handling
+Date:   Fri, 22 Jan 2021 16:39:40 +0100
+Message-Id: <20210122153940.2874225-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210122135956.5946-4-bhe@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.01.21 14:59, Baoquan He wrote:
-> As David suggested, simply passing 'struct zone *zone' is enough. We can
-> get all needed information from 'struct zone*' easily.
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  arch/ia64/mm/init.c | 12 +++++++-----
->  include/linux/mm.h  |  3 +--
->  mm/page_alloc.c     | 24 +++++++++++-------------
->  3 files changed, 19 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-> index c8e68e92beb3..88fb44895408 100644
-> --- a/arch/ia64/mm/init.c
-> +++ b/arch/ia64/mm/init.c
-> @@ -541,12 +541,14 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
->  	return 0;
->  }
->  
-> -void __meminit
-> -memmap_init_zone(unsigned long size, int nid, unsigned long zone,
-> -	     unsigned long start_pfn)
-> +void __meminit memmap_init_zone(struct zone *zone)
->  {
-> +	int nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-> +	unsigned long start_pfn = zone->zone_start_pfn;
-> +	unsigned long size = zone->spanned_pages;
-> +
->  	if (!vmem_map) {
-> -		memmap_init_range(size, nid, zone, start_pfn, start_pfn + size,
-> +		memmap_init_range(size, nid, zone_id, start_pfn, start_pfn + size,
->  				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->  	} else {
->  		struct page *start;
-> @@ -556,7 +558,7 @@ memmap_init_zone(unsigned long size, int nid, unsigned long zone,
->  		args.start = start;
->  		args.end = start + size;
->  		args.nid = nid;
-> -		args.zone = zone;
-> +		args.zone = zone_id;
->  
->  		efi_memmap_walk(virtual_memmap_init, &args);
->  	}
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 2395dc212221..073049bd0b29 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2401,8 +2401,7 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
->  extern void memmap_init_range(unsigned long, int, unsigned long,
->  		unsigned long, unsigned long, enum meminit_context,
->  		struct vmem_altmap *, int migratetype);
-> -extern void memmap_init_zone(unsigned long size, int nid,
-> -		unsigned long zone, unsigned long range_start_pfn);
-> +extern void memmap_init_zone(struct zone *zone);
->  extern void setup_per_zone_wmarks(void);
->  extern int __meminit init_per_zone_wmark_min(void);
->  extern void mem_init(void);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 42a1d2d2a87d..cbb67d9c1b2a 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6254,23 +6254,21 @@ static void __meminit zone_init_free_lists(struct zone *zone)
->  	}
->  }
->  
-> -void __meminit __weak memmap_init_zone(unsigned long size, int nid,
-> -				  unsigned long zone,
-> -				  unsigned long range_start_pfn)
-> +void __meminit __weak memmap_init_zone(struct zone *zone)
->  {
-> +	unsigned long zone_start_pfn = zone->zone_start_pfn;
-> +	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
-> +	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
->  	unsigned long start_pfn, end_pfn;
-> -	unsigned long range_end_pfn = range_start_pfn + size;
-> -	int i;
->  
->  	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
-> -		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
-> -		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-> +		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-> +		end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
->  
-> -		if (end_pfn > start_pfn) {
-> -			size = end_pfn - start_pfn;
-> -			memmap_init_range(size, nid, zone, start_pfn, range_end_pfn,
-> -					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
-> -		}
-> +		if (end_pfn > start_pfn)
-> +			memmap_init_range(end_pfn - start_pfn, nid,
-> +					zone_id, start_pfn, zone_end_pfn,
-> +					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->  	}
->  }
->  
-> @@ -6978,7 +6976,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->  		set_pageblock_order();
->  		setup_usemap(pgdat, zone, zone_start_pfn, size);
->  		init_currently_empty_zone(zone, zone_start_pfn, size);
-> -		memmap_init_zone(size, nid, j, zone_start_pfn);
-> +		memmap_init_zone(zone);
->  	}
->  }
->  
-> 
+Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
+already the number of jiffies to wait.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/auxdisplay/ht16k33.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 444f3b1019e3d425..1e69cc6d21a0dca2 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -117,8 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+ {
+ 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+ 
+-	schedule_delayed_work(&fbdev->work,
+-			      msecs_to_jiffies(HZ / fbdev->refresh_rate));
++	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
+ }
+ 
+ /*
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
