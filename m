@@ -2,154 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810AC3004C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3853004B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbhAVOC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:02:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41104 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728113AbhAVOBz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:01:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611324021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=AfmzueyfZxz9Cutd+2x/x59t8801e1xLimMz0dpqw+o=;
-        b=TD37ImxCx8bBrg4MeXPNajX3NlBqqzJ2x3sw9oZyx6QbePFjaluhH3wNdPSP6s1JR0tQvJ
-        Mj0b9/r8+0NWfsBXgTf7Gn5uNHEw5N49Lb4OuEyFKWbRACTCA6g8x3yaS/mCvAqHdUzORP
-        w5TMUMoAL1Q9CBQr8HWdjE1sTgZr7lw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-zOUv3PwQODqFaXvKv0WYhg-1; Fri, 22 Jan 2021 09:00:18 -0500
-X-MC-Unique: zOUv3PwQODqFaXvKv0WYhg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30EE2425CC;
-        Fri, 22 Jan 2021 14:00:17 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-114.pek2.redhat.com [10.72.12.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2AADA19C59;
-        Fri, 22 Jan 2021 14:00:13 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
-        david@redhat.com, bhe@redhat.com, lkp@intel.com
-Subject: [PATCH v5 3/5] mm: simplify parater of function memmap_init_zone()
-Date:   Fri, 22 Jan 2021 21:59:54 +0800
-Message-Id: <20210122135956.5946-4-bhe@redhat.com>
-In-Reply-To: <20210122135956.5946-1-bhe@redhat.com>
-References: <20210122135956.5946-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1728007AbhAVOBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:01:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:49218 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727958AbhAVOA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:00:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DD671595;
+        Fri, 22 Jan 2021 06:00:10 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B132B3F66E;
+        Fri, 22 Jan 2021 06:00:08 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH v6 3/4] kasan: Add report for async mode
+Date:   Fri, 22 Jan 2021 13:59:54 +0000
+Message-Id: <20210122135955.30237-4-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+References: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As David suggested, simply passing 'struct zone *zone' is enough. We can
-get all needed information from 'struct zone*' easily.
+KASAN provides an asynchronous mode of execution.
 
-Suggested-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Baoquan He <bhe@redhat.com>
+Add reporting functionality for this mode.
+
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/ia64/mm/init.c | 12 +++++++-----
- include/linux/mm.h  |  3 +--
- mm/page_alloc.c     | 24 +++++++++++-------------
- 3 files changed, 19 insertions(+), 20 deletions(-)
+ include/linux/kasan.h |  2 ++
+ mm/kasan/report.c     | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index c8e68e92beb3..88fb44895408 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -541,12 +541,14 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
- 	return 0;
- }
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index bb862d1f0e15..b0a1d9dfa85c 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -351,6 +351,8 @@ static inline void *kasan_reset_tag(const void *addr)
+ bool kasan_report(unsigned long addr, size_t size,
+ 		bool is_write, unsigned long ip);
  
--void __meminit
--memmap_init_zone(unsigned long size, int nid, unsigned long zone,
--	     unsigned long start_pfn)
-+void __meminit memmap_init_zone(struct zone *zone)
- {
-+	int nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-+	unsigned long start_pfn = zone->zone_start_pfn;
-+	unsigned long size = zone->spanned_pages;
++void kasan_report_async(void);
 +
- 	if (!vmem_map) {
--		memmap_init_range(size, nid, zone, start_pfn, start_pfn + size,
-+		memmap_init_range(size, nid, zone_id, start_pfn, start_pfn + size,
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	} else {
- 		struct page *start;
-@@ -556,7 +558,7 @@ memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 		args.start = start;
- 		args.end = start + size;
- 		args.nid = nid;
--		args.zone = zone;
-+		args.zone = zone_id;
+ #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
  
- 		efi_memmap_walk(virtual_memmap_init, &args);
- 	}
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 2395dc212221..073049bd0b29 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2401,8 +2401,7 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
- extern void memmap_init_range(unsigned long, int, unsigned long,
- 		unsigned long, unsigned long, enum meminit_context,
- 		struct vmem_altmap *, int migratetype);
--extern void memmap_init_zone(unsigned long size, int nid,
--		unsigned long zone, unsigned long range_start_pfn);
-+extern void memmap_init_zone(struct zone *zone);
- extern void setup_per_zone_wmarks(void);
- extern int __meminit init_per_zone_wmark_min(void);
- extern void mem_init(void);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 42a1d2d2a87d..cbb67d9c1b2a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6254,23 +6254,21 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
+ static inline void *kasan_reset_tag(const void *addr)
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index 234f35a84f19..2fd6845a95e9 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -358,6 +358,17 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
+ 	end_report(&flags);
  }
  
--void __meminit __weak memmap_init_zone(unsigned long size, int nid,
--				  unsigned long zone,
--				  unsigned long range_start_pfn)
-+void __meminit __weak memmap_init_zone(struct zone *zone)
++void kasan_report_async(void)
++{
++	unsigned long flags;
++
++	start_report(&flags);
++	pr_err("BUG: KASAN: invalid-access\n");
++	pr_err("Asynchronous mode enabled: no access details available\n");
++	dump_stack();
++	end_report(&flags);
++}
++
+ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 				unsigned long ip)
  {
-+	unsigned long zone_start_pfn = zone->zone_start_pfn;
-+	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
-+	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
- 	unsigned long start_pfn, end_pfn;
--	unsigned long range_end_pfn = range_start_pfn + size;
--	int i;
- 
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
--		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
--		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-+		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-+		end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
- 
--		if (end_pfn > start_pfn) {
--			size = end_pfn - start_pfn;
--			memmap_init_range(size, nid, zone, start_pfn, range_end_pfn,
--					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
--		}
-+		if (end_pfn > start_pfn)
-+			memmap_init_range(end_pfn - start_pfn, nid,
-+					zone_id, start_pfn, zone_end_pfn,
-+					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	}
- }
- 
-@@ -6978,7 +6976,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 		set_pageblock_order();
- 		setup_usemap(pgdat, zone, zone_start_pfn, size);
- 		init_currently_empty_zone(zone, zone_start_pfn, size);
--		memmap_init_zone(size, nid, j, zone_start_pfn);
-+		memmap_init_zone(zone);
- 	}
- }
- 
 -- 
-2.17.2
+2.30.0
 
