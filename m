@@ -2,122 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE9C2FFECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6632FFED6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbhAVI41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727021AbhAVIzn (ORCPT
+        id S1727155AbhAVI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:57:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38501 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727156AbhAVI5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:55:43 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A99C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:55:02 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id et9so2296845qvb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:55:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lBh78Ul9GczjuYP9UDWZfNliAS7jv7SG97xIvLE8KOs=;
-        b=r+0kcTQPJqoFhQRPAgQCK5lx9LQFY9iDBMMdWlX22lUS/HUIfLxrGFSxjjMG21I+nq
-         /0wTc6Lm57a855bHPxpvfLa9oGRDFgDGRWv4oW1dY5ETzjmZRe56zpZJSw8VEIz5jLrm
-         XuUCHYAP1/0oo7Naoyvanf+9ysqRbV4dquLnKFIEbnvRga2yp51oAGaDSqPDhIAbWaMk
-         +GlxiKSDrhkL+eAUZusXu7a0F6MfUhfzZlx/uYi0fQm28COmtC1v6agTIV8isZpNwIo3
-         ryZ99wiA7xipIzaSnip9IyowZqsvGGVdeWuXeIqJe8RcfogzQ6hDpUOJn2btlpYubEZf
-         8Vlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lBh78Ul9GczjuYP9UDWZfNliAS7jv7SG97xIvLE8KOs=;
-        b=hXgEbVoeMY2laU+nZ2cHelmhlSfJ2KurbT5B2BA61fedeYePoWxRPDwJNz4aD5Ys4E
-         m2LKDmXY/YapbbnmflRf4zAALYRlh9CeYUHlLPzJfW8zaZy/LrNLSettEvyAQ2P5agGa
-         WAtjIMlKaymemmzFo07MgwlANF5iKpX0AydKjLYEbGg05IJ2GZkqiRUkXCBJHrWR/uG+
-         xZPu1kJ5svq8xruyKVzqBMUwEbUzOyKlFnjCL+l8k6UMwPdkL3wwfDIET8HYX+wnCB84
-         a1KLO3eRAJFP7Uifg9f6xd3lAw7fLjXgeheoTPYtoNSqfF6TzqD9cnoTCtGtDQq3QzjI
-         PGGg==
-X-Gm-Message-State: AOAM531/ZFKLdH4Z0+o631Saq4RJh8uDCwyrSU0fsY7R2ynET84k6mnk
-        dSPvhoJJU01DdY57Y0296ag0v8ZFVSwsqBY8l88vdQ==
-X-Google-Smtp-Source: ABdhPJz1LoHdsIggwjXMz6Q7Be2qtH11nG+tFY5xwSrvq12vmTrsbQ0sduj7RIu4W14P7giFQ36ajxJk0hS2XfcXR0w=
-X-Received: by 2002:a0c:e850:: with SMTP id l16mr3705837qvo.38.1611305701379;
- Fri, 22 Jan 2021 00:55:01 -0800 (PST)
+        Fri, 22 Jan 2021 03:57:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611305730;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fvHl3O68MiCuuLrlkudPi9oW/WlonEmOG7Xui3F/vQ4=;
+        b=DazcVefrwHXaxEAdpgi5i1a9vJbrwi5Wm+7M1IT3a0PA3Pdd4Mr4NNT/k1ahOptaQWMJlA
+        DjfrpXmZvcSYUaVc+O8AQFp827P/9XTvy6ql5rPRCJDN+buZAhhqRYfmyanJO0nRX8RaDb
+        8MeG/GwGkaSMPNCtqnCM/mxP6asEhiE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-340-_U7CnJoKPbqkfFoUJBzZvg-1; Fri, 22 Jan 2021 03:55:27 -0500
+X-MC-Unique: _U7CnJoKPbqkfFoUJBzZvg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 735E610054FF;
+        Fri, 22 Jan 2021 08:55:26 +0000 (UTC)
+Received: from [10.36.114.142] (ovpn-114-142.ams2.redhat.com [10.36.114.142])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A577709AE;
+        Fri, 22 Jan 2021 08:55:25 +0000 (UTC)
+Subject: Re: [PATCH] mm: fix prototype warning from kernel test robot
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, rppt@kernel.org
+References: <20210122070359.24010-1-bhe@redhat.com>
+ <3fd62f11-bf44-3ede-aed1-10d9d4849f00@redhat.com>
+ <20210122084659.GA29905@MiWiFi-R3L-srv>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <91244046-f5a0-8e67-4c92-fe9de118e472@redhat.com>
+Date:   Fri, 22 Jan 2021 09:55:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org> <2f12a84c-132b-7141-a89e-9e19de0e4b90@infradead.org>
-In-Reply-To: <2f12a84c-132b-7141-a89e-9e19de0e4b90@infradead.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 22 Jan 2021 09:54:50 +0100
-Message-ID: <CAG_fn=X8SPyHWZnxzauAPY2SG-6fpCkjt-umLaDvC4wz3khLVw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Vijayanand Jitta <vjitta@codeaurora.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        dan.j.williams@intel.com, broonie@kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, ylal@codeaurora.org,
-        vinmenon@codeaurora.org, Vineet Gupta <vgupta@synopsys.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210122084659.GA29905@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:54 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 1/18/21 1:56 AM, vjitta@codeaurora.org wrote:
-> > From: Yogesh Lal <ylal@codeaurora.org>
-> >
-> > Use CONFIG_STACK_HASH_ORDER to configure STACK_HASH_SIZE.
-> >
-> > Aim is to have configurable value for  STACK_HASH_SIZE,
-> > so depend on use case one can configure it.
-> >
-> > One example is of Page Owner, default value of
-> > STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
-> > Making it configurable and use lower value helps to enable features like
-> > CONFIG_PAGE_OWNER without any significant overhead.
-> >
-> > Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
-> > Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
-> > Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->
-> Hi,
->
-> Did you see
-> https://lore.kernel.org/lkml/202101050729.cwTd47Yw-lkp@intel.com/
->
-> It seems that arch/arc/ does not have:
->    arc-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
->    (.text+0x6): undefined reference to `__irqentry_text_start'
-> >> arc-elf-ld: (.text+0x6): undefined reference to `__irqentry_text_start'
-> >> arc-elf-ld: (.text+0x26): undefined reference to `__irqentry_text_end'
-> >> arc-elf-ld: (.text+0x26): undefined reference to `__irqentry_text_end'
-> >> arc-elf-ld: (.text+0x34): undefined reference to `__softirqentry_text_start'
-> >> arc-elf-ld: (.text+0x34): undefined reference to `__softirqentry_text_start'
-> >> arc-elf-ld: (.text+0x3c): undefined reference to `__softirqentry_text_end'
-> >> arc-elf-ld: (.text+0x3c): undefined reference to `__softirqentry_text_end'
->
-Hi Randy,
+On 22.01.21 09:46, Baoquan He wrote:
+> On 01/22/21 at 09:40am, David Hildenbrand wrote:
+>> On 22.01.21 08:03, Baoquan He wrote:
+>>> Kernel test robot calling make with 'W=1' triggering warning like below
+>>> below for memmap_init_zone() function.
+>>>
+>>> mm/page_alloc.c:6259:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
+>>>  6259 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
+>>>       |                       ^~~~~~~~~~~~~~~~
+>>>
+>>> Fix it by adding the function declaration in include/linux/mm.h.
+>>> Since memmap_init_zone() has a generic version with '__weak',
+>>> the declaratoin in ia64 header file can be simply removed.
+>>>
+>>> Signed-off-by: Baoquan He <bhe@redhat.com>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> ---
+>>>  arch/ia64/include/asm/pgtable.h | 5 -----
+>>>  include/linux/mm.h              | 1 +
+>>>  2 files changed, 1 insertion(+), 5 deletions(-)
+>>>
+>>> diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
+>>> index 2c81394a2430..9b4efe89e62d 100644
+>>> --- a/arch/ia64/include/asm/pgtable.h
+>>> +++ b/arch/ia64/include/asm/pgtable.h
+>>> @@ -517,11 +517,6 @@ extern struct page *zero_page_memmap_ptr;
+>>>  	__changed;							\
+>>>  })
+>>>  #endif
+>>> -
+>>> -#  ifdef CONFIG_VIRTUAL_MEM_MAP
+>>> -  /* arch mem_map init routine is needed due to holes in a virtual mem_map */
+>>> -    extern void memmap_init_zone(struct zone *zone);
+>>> -#  endif /* CONFIG_VIRTUAL_MEM_MAP */
+>>>  # endif /* !__ASSEMBLY__ */
+>>>  
+>>>  /*
+>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>>> index 56bb239f9150..073049bd0b29 100644
+>>> --- a/include/linux/mm.h
+>>> +++ b/include/linux/mm.h
+>>> @@ -2401,6 +2401,7 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
+>>>  extern void memmap_init_range(unsigned long, int, unsigned long,
+>>>  		unsigned long, unsigned long, enum meminit_context,
+>>>  		struct vmem_altmap *, int migratetype);
+>>> +extern void memmap_init_zone(struct zone *zone);
+>>>  extern void setup_per_zone_wmarks(void);
+>>>  extern int __meminit init_per_zone_wmark_min(void);
+>>>  extern void mem_init(void);
+>>>
+>>
+>> This patch is on top of your other series, no?
+>>
+>> In -next, we have
+>>
+>> extern void memmap_init_zone(unsigned long, int, unsigned long, ...
+>>
+>> In that file, so something is wrong.
+> 
+> Right, this one is based on the memmap_init_xx clean up patchset. I
+> mentioned this the the sub-thread of kernel test robot reporting issues.
+> 
 
-Could you try out the following patch?
+I think it would make things easier to move that fix to the front and
+resend the whole (5 patches) series.
 
+-- 
 Thanks,
-Alex
 
-diff --git a/arch/arc/kernel/vmlinux.lds.S b/arch/arc/kernel/vmlinux.lds.S
-index 33ce59d91461..94d3f9620d0b 100644
---- a/arch/arc/kernel/vmlinux.lds.S
-+++ b/arch/arc/kernel/vmlinux.lds.S
-@@ -83,6 +83,8 @@ SECTIONS
+David / dhildenb
 
-        .text : {
-                _text = .;
-+               IRQENTRY_TEXT
-+               SOFTIRQENTRY_TEXT
-                TEXT_TEXT
-                SCHED_TEXT
-                CPUIDLE_TEXT
