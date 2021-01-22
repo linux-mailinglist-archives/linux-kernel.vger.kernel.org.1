@@ -2,142 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430243005CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DF93005DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728894AbhAVOpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:45:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
+        id S1728924AbhAVOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728711AbhAVOoJ (ORCPT
+        with ESMTP id S1728896AbhAVOpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:44:09 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A78AC0613D6;
-        Fri, 22 Jan 2021 06:43:28 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id v24so7849924lfr.7;
-        Fri, 22 Jan 2021 06:43:28 -0800 (PST)
+        Fri, 22 Jan 2021 09:45:30 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D93DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:44:46 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id 3so6806663ljc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:44:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jMCudtyynWmB7aEQ/2mKpdIPdrvLhwN7tSnOotK9LLI=;
-        b=UgLsWgsqDo0PWlYSTqySwM79RfGQMLk763CR8UmKZXKS/8bK5ZrkdEN8U2jcJ27cyg
-         mCCZfsZdDourpx+D5zVHWAgGYk652CMO/HMZ9ItQHwBxUb+RmB/2JNgi5wwLp4wJzxva
-         HXtaLX1yQ1fPAqXbLgohmJVYHy5t5Her6KRw51IUSU8ohnli6vZxsroOh8duQcYPo2fN
-         EAPr9IzGCYVhvXnDQcOxBz5cipjkLWCrqtdASR/icQx4aPnGJYae7Irs8p2xWFDBK3PT
-         UVPrn4lkMJGjcuZ+KqpE9yk++lo+GzfVYveNe/i5gUk0j/yP30PdEDYFm252fejH63pN
-         cdYw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bd+5w6SAuwGnLG0gTCgFpVNxqx3XZTRIVpDSOCGH/q0=;
+        b=nXvgJ52BBj6b9k532t+afc8Iyug6kE2ObVcilm8DvdyuMNvrrFbC/Dt7hS9hdv68BG
+         kuw8yCaMhMoNm+n4ykn41OkNnKQKO4pBywYk/1E/Xgs1Nn0hXfTMaNLRInaEbAdtKiSX
+         SqPbbrtoayO5sKer7pb/HdZCz0NaBPABXDTmKwm2T41OJ9XqQWmm+t2Ft60T8JpcCgWp
+         GIBNR+IR42eex+xw1ehjt/PhtafqBZslwuPrNAUUCdCb5FjnqBSMKYOhb+RmgjmbqKLO
+         kJ8xlqJEP+c6ViVG/Fsb9G7DbgRqpKW/lMI/8XXpAoTvZxE94uf5dTzyBxyhYjREXKJn
+         E0Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jMCudtyynWmB7aEQ/2mKpdIPdrvLhwN7tSnOotK9LLI=;
-        b=Lw9qN/FGKDywJSGAvkLVTTLkQ+C+IaV5gmlYVJxNVLwbDagHQYAX7x5ibhflaoFpl2
-         6QjFfgcMrHtLb/NuzXQHObOFuisdfxY1IkdQ0mbbxy2no7mgAMVt+QNs/VIQgn4U02gT
-         SSqlu2CCoZHR1dQsGOZn/3rEgIMVVFHnbCOMC7L76ba3A++M/yGoHHkYN+u0O8NLtfK5
-         tmrQaMOLjlovFBoiA8NKouSJjTUL1piygSVu5I/DQld+kzhhQPEHH4t0kBedMp+fsnqp
-         QJFxC7DZQbixlHTSmZzhO35+jqCTiuXdoeevQvD8vuelXKQ2+OWGtIpq0q2YVkjzHWTO
-         UPFA==
-X-Gm-Message-State: AOAM531CI8k41jsh+F7MI5fW/uxUPEOjTzIKbtoLp+uXY4XeVXFQX2GX
-        IvNLDfsINDirnkw+G6jqzZc/sLOAb/s=
-X-Google-Smtp-Source: ABdhPJycITAP+Nn8TYcngrjKYta9sqfgBgAfbSDZg3ga0+Ho3RkCOoZt5xzANvLS6FuHSWClofLUGg==
-X-Received: by 2002:a05:6512:30a:: with SMTP id t10mr2152286lfp.124.1611326606916;
-        Fri, 22 Jan 2021 06:43:26 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id p3sm905611lfu.271.2021.01.22.06.43.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 06:43:26 -0800 (PST)
-Subject: Re: [PATCH v4 4/4] opp: Make _set_opp_custom() work without
- regulators
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210120222649.28149-1-digetx@gmail.com>
- <20210120222649.28149-5-digetx@gmail.com>
-Message-ID: <91ae0843-3387-a8c4-6153-0599249ab367@gmail.com>
-Date:   Fri, 22 Jan 2021 17:43:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bd+5w6SAuwGnLG0gTCgFpVNxqx3XZTRIVpDSOCGH/q0=;
+        b=QSfqNoD8ttlI3s9CeCo4GXKJfqJAjYynbjK43FA1EQ9MATgXBEUe9U17qKa04c5iJp
+         Q6q6MOsNZDzP7zUz56nIz0crszaSB1bQAwjL5flHg/RR7yUEkDe0tseg1S9QqxUaXd2b
+         UhmGSLnjBsEq8sEtZFyvPuq4VmHqxuYlDCMolJ1IG00OEdXyLhnCwb1PdtLrqr0nXORN
+         odjJuC6WwV+7mks8TCoyvPoODygxv6opXGA2HnJIIma9hUf5eWMEDrDfK0mfEVg96f6x
+         aGo7C3yJo88JaMB8+fNACQKLkZocYKbX67d5CuJqIKwqWPsImhPsk/nw1iUgKsm5Ngvu
+         EGwQ==
+X-Gm-Message-State: AOAM530+7XVWYPr0Lk4mOC7T38GkavINhj6RzC0gY4FIsb7q2SAQDBcK
+        Z5kR/KNiyDvQrychlJREG9B6JjMMxyWtJ6CbFilUYA==
+X-Google-Smtp-Source: ABdhPJyY/YxBP3qBv9XqOO1qiLs8Agi4YqAT27RII+GrukDH7p1t+i7XvsugtLNJ1CWcMkNp2f9u2zVVl9K1Rbi2pGQ=
+X-Received: by 2002:a2e:780d:: with SMTP id t13mr2491937ljc.144.1611326684827;
+ Fri, 22 Jan 2021 06:44:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210120222649.28149-5-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210119181945.2071053-1-paullawrence@google.com> <m2im7pyf9s.wl-thehajime@gmail.com>
+In-Reply-To: <m2im7pyf9s.wl-thehajime@gmail.com>
+From:   Paul Lawrence <paullawrence@google.com>
+Date:   Fri, 22 Jan 2021 06:44:33 -0800
+Message-ID: <CAL=UVf7Umq+unpe5=EuaE=3_v6pkA6K=Bnyotgy6jyUVROow6A@mail.gmail.com>
+Subject: Re: [PATCH] um: ubd: Fix crash from option parsing
+To:     Hajime Tazaki <thehajime@gmail.com>
+Cc:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        krisman@collabora.com, chris.obbard@collabora.com,
+        linux-um@lists.infradead.org,
+        Linux kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.01.2021 01:26, Dmitry Osipenko пишет:
-> Check whether OPP table has regulators in _set_opp_custom() and set up
-> dev_pm_set_opp_data accordingly. Now _set_opp_custom() works properly,
-> i.e. it doesn't crash if OPP table doesn't have assigned regulators.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c | 26 +++++++++++++++++---------
->  1 file changed, 17 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 08d205a55c07..c38ac1cf62ac 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -829,23 +829,31 @@ static int _set_opp_custom(const struct opp_table *opp_table,
->  			   struct dev_pm_opp_supply *new_supply)
->  {
->  	struct dev_pm_set_opp_data *data;
-> -	int size;
-> +	int size, regulator_count;
-> +
-> +	if (opp_table->sod_supplies)
-> +		regulator_count = opp_table->regulator_count;
-> +	else
-> +		regulator_count = 0;
->  
->  	data = opp_table->set_opp_data;
->  	data->regulators = opp_table->regulators;
-> -	data->regulator_count = opp_table->regulator_count;
-> +	data->regulator_count = regulator_count;
->  	data->clk = opp_table->clk;
->  	data->dev = dev;
->  
->  	data->old_opp.rate = old_freq;
-> -	size = sizeof(*old_supply) * opp_table->regulator_count;
-> -	if (!old_supply)
-> -		memset(data->old_opp.supplies, 0, size);
-> -	else
-> -		memcpy(data->old_opp.supplies, old_supply, size);
-> -
->  	data->new_opp.rate = freq;
-> -	memcpy(data->new_opp.supplies, new_supply, size);
-> +
-> +	if (regulator_count) {
-> +		size = sizeof(*old_supply) * opp_table->regulator_count;
-> +		if (!old_supply)
-> +			memset(data->old_opp.supplies, 0, size);
-> +		else
-> +			memcpy(data->old_opp.supplies, old_supply, size);
-> +
-> +		memcpy(data->new_opp.supplies, new_supply, size);
-> +	}
->  
->  	return opp_table->set_opp(data);
->  }
-> 
+> This was addressed/fixed by the below patch, though that one doesn't
+> the first "file" variable check.
 
-Looks good, thank you!
+I don't believe the first file variable can in fact be NULL, so my check was
+unnecessary. Pleased to see this has been fixed, we can abandon my patch now.
+
+Paul
