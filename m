@@ -2,190 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C689230059D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C45773005A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbhAVOh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728503AbhAVOgh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728826AbhAVOjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:39:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728302AbhAVOgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:36:37 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E90C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:35:50 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id p72so11361770iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:35:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TQkXkCrpyaC+AIGaG/IY48gE7Y/wuvK5j1jujmjo6ak=;
-        b=TGTtYLXkk8PtuKyTgpavftYuSACm2ncnz9xcoHXYdgBRIYdBzMSgv8BzwI4+mIDMET
-         2IqBmsXqjqsA+k+28JzJqOipY9wdBBY6bBQfhDshqyfe5Omuh2XQ9Ft4Xv9ZPEWHR1vq
-         a14Lc5exm4acXrdYEBJ8GWc5mDHwCZQZehI5Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TQkXkCrpyaC+AIGaG/IY48gE7Y/wuvK5j1jujmjo6ak=;
-        b=CzA2s5ExrXh2PJTfCMWIRn77K8U6fj47YcVXnLxWAEwybij2ivUJOTj0a71hgJvKLg
-         QJLfCQuX5AvQTDq2WL7ORAy32lxFIHF2jsZxJBFzJa+a1/ZP0Tpe3UU4s3A+mGChwOTn
-         y/UFiGVVs2VF9yYRwednDisLc5dyTWFbQQSpzEV01/yrpdwLyXmwiRP9wXfuJu1bM6cU
-         0ULgsK1soN0cCo4qSYCxx2hm/geTc5Z+G1Ok2QlSfizhCQ5YG0kYGGCRX8EZtUIE0NDq
-         7j44OCVmGfnJOBxNsE04BfOtVdiow19elx0KrBLxypwIFmjk+qzfBD3Z5L0sG4PMGeYU
-         WE2w==
-X-Gm-Message-State: AOAM5314DuuBYoIWEYlaNVkb77aoScLN34l33YK3iJm0f48FHvuBVv58
-        coPXm91lA7d3f8NT9A1dxTFkmiyw6rwy862YUcOTCg==
-X-Google-Smtp-Source: ABdhPJzcYnB5Ar0K5XejaBeX9r+dIBi3zsO9E0sekWCv1o6EezvzPVJi/aZ/DxPOrz6UuWeU9bFZKwNUknZuQnLIhQ8=
-X-Received: by 2002:a92:6512:: with SMTP id z18mr786868ilb.220.1611326149322;
- Fri, 22 Jan 2021 06:35:49 -0800 (PST)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A208123A03;
+        Fri, 22 Jan 2021 14:35:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611326155;
+        bh=sxU5ASqXndusi2Pnkt13POYjDtxsqPbJSrYN5sC4qMA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DspgRbbQSxH0UVx3G/npkwoGZzLfHbc2AnMNW3FldFQg0VCUjK6nbPTF2iRI4z742
+         gwqpSx1PNPh3eZLiLQ4GYL3RiwYaQG+A/v6t1q6J15rl3svZx+eW+76QxqeSiXnTJH
+         rTeMMmLQdgSqAK4rXjEm8zS614VC+QvY9LtTIFNa3r83MiGvLS580iHpYDu//o9lVv
+         9kIb689VHgouJqQxklkqPVVOBOAME6iICW/1XHk2vYjKTDqF0KsqBPsN5VO1TJ4GR9
+         vPb1cCn10nmhjCzV3Vz1kjKAbci2NLXTOAz1whWZpGyJeRRGZxhC7hJvvQBOeszY3q
+         M0B3zUIvUkk8g==
+Received: by mail-ej1-f50.google.com with SMTP id kg20so7480857ejc.4;
+        Fri, 22 Jan 2021 06:35:55 -0800 (PST)
+X-Gm-Message-State: AOAM530lWcs1YCpmlLNFGPRs/4+LxtNuBA0M9deqfuxyijE033ITV9o9
+        g9itO37YF+4z4K0xTILFGXxpu+QrYUxCiDrIfg==
+X-Google-Smtp-Source: ABdhPJytgMMsVBCluQGg80czJH2LtDa1jEg+wimwNUTBj1vfLN81d97r1tsHb5RSTOK+iRG6xynU/IIgkyijEkO3jd4=
+X-Received: by 2002:a17:907:968e:: with SMTP id hd14mr2126942ejc.108.1611326154238;
+ Fri, 22 Jan 2021 06:35:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-3-revest@chromium.org>
- <CAEf4BzYH26E_ASgX8rny-ZihEvD4K3PXZJvAi7nZrYLSLpKo+A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYH26E_ASgX8rny-ZihEvD4K3PXZJvAi7nZrYLSLpKo+A@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 22 Jan 2021 15:35:38 +0100
-Message-ID: <CABRcYm+gWJcsFxqriUMHeu3sFFLWWRGy=_wQ5R6hNoYu92c0PQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/4] selftests/bpf: Integrate the
- socket_cookie test to test_progs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210120115945.29046-1-paul@crapouillou.net>
+In-Reply-To: <20210120115945.29046-1-paul@crapouillou.net>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 22 Jan 2021 08:35:42 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLS-oFn4kGm7GeU+W2BvVeon9k9+gzVojypcJCJLwbaEQ@mail.gmail.com>
+Message-ID: <CAL_JsqLS-oFn4kGm7GeU+W2BvVeon9k9+gzVojypcJCJLwbaEQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings/phy: ingenic: Add compatibles for
+ JZ4760(B) SoCs
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, od@zcrc.me,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 8:55 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Jan 20, 2021 at 5:59 AM Paul Cercueil <paul@crapouillou.net> wrote:
 >
-> On Tue, Jan 19, 2021 at 8:00 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > Currently, the selftest for the BPF socket_cookie helpers is built and
-> > run independently from test_progs. It's easy to forget and hard to
-> > maintain.
-> >
-> > This patch moves the socket cookies test into prog_tests/ and vastly
-> > simplifies its logic by:
-> > - rewriting the loading code with BPF skeletons
-> > - rewriting the server/client code with network helpers
-> > - rewriting the cgroup code with test__join_cgroup
-> > - rewriting the error handling code with CHECKs
-> >
-> > Signed-off-by: Florent Revest <revest@chromium.org>
-> > ---
+> Add the ingenic,jz4760-phy and ingenic,jz4760b-phy compatible strings,
+> and make the ingenic,jz4770-phy compatible string require
+> ingenic,jz4760-phy as a fallback, since both work the same, and the
+> JZ4760 SoC is older.
 >
-> Few nits below regarding skeleton and ASSERT_xxx usage.
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  .../bindings/phy/ingenic,phy-usb.yaml         | 22 ++++++++++++-------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
 >
-> >  tools/testing/selftests/bpf/Makefile          |   3 +-
-> >  .../selftests/bpf/prog_tests/socket_cookie.c  |  82 +++++++
-> >  .../selftests/bpf/progs/socket_cookie_prog.c  |   2 -
-> >  .../selftests/bpf/test_socket_cookie.c        | 208 ------------------
+> diff --git a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+> index 0fd93d71fe5a..3c65dfcf352b 100644
+> --- a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+> +++ b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+> @@ -15,13 +15,19 @@ properties:
+>      pattern: '^usb-phy@.*'
 >
-> please also update .gitignore
+>    compatible:
+> -    enum:
+> -      - ingenic,jz4770-phy
+> -      - ingenic,jz4775-phy
+> -      - ingenic,jz4780-phy
+> -      - ingenic,x1000-phy
+> -      - ingenic,x1830-phy
+> -      - ingenic,x2000-phy
+> +    oneOf:
+> +      - enum:
+> +        - ingenic,jz4760-phy
 
-Good catch!
+This should be 2 more spaces indentation. Indent is always 2 more than
+the above keyword and ignores '-'.
 
-> >  4 files changed, 83 insertions(+), 212 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> >  delete mode 100644 tools/testing/selftests/bpf/test_socket_cookie.c
-> >
+> +        - ingenic,jz4775-phy
+> +        - ingenic,jz4780-phy
+> +        - ingenic,x1000-phy
+> +        - ingenic,x1830-phy
+> +        - ingenic,x2000-phy
+> +      - items:
+> +        - enum:
+> +          - ingenic,jz4760b-phy
+> +          - ingenic,jz4770-phy
+> +        - const: ingenic,jz4760-phy
 >
-> [...]
+>    reg:
+>      maxItems: 1
+> @@ -48,7 +54,7 @@ examples:
+>    - |
+>      #include <dt-bindings/clock/jz4770-cgu.h>
+>      otg_phy: usb-phy@3c {
+> -      compatible = "ingenic,jz4770-phy";
+> +      compatible = "ingenic,jz4770-phy", "ingenic,jz4760-phy";
+>        reg = <0x3c 0x10>;
 >
-> > +
-> > +       skel = socket_cookie_prog__open_and_load();
-> > +       if (CHECK(!skel, "socket_cookie_prog__open_and_load",
-> > +                 "skeleton open_and_load failed\n"))
+>        vcc-supply = <&vcc>;
+> --
+> 2.29.2
 >
-> nit: ASSERT_PTR_OK
-
-Ah great, I find the ASSERT semantic much easier to follow than CHECKs.
-
-> > +               return;
-> > +
-> > +       cgroup_fd = test__join_cgroup("/socket_cookie");
-> > +       if (CHECK(cgroup_fd < 0, "join_cgroup", "cgroup creation failed\n"))
-> > +               goto destroy_skel;
-> > +
-> > +       set_link = bpf_program__attach_cgroup(skel->progs.set_cookie,
-> > +                                             cgroup_fd);
->
-> you can use skel->links->set_cookie here and it will be auto-destroyed
-> when the whole skeleton is destroyed. More simplification.
-
-Sick. :)
-
-> > +       if (CHECK(IS_ERR(set_link), "set-link-cg-attach", "err %ld\n",
-> > +                 PTR_ERR(set_link)))
-> > +               goto close_cgroup_fd;
-> > +
-> > +       update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
-> > +                                                cgroup_fd);
->
-> same as above, no need to maintain your link outside of skeleton
->
->
-> > +       if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
-> > +                 PTR_ERR(update_link)))
-> > +               goto free_set_link;
-> > +
-> > +       server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-> > +       if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
-> > +               goto free_update_link;
-> > +
-> > +       client_fd = connect_to_fd(server_fd, 0);
-> > +       if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-> > +               goto close_server_fd;
->
-> nit: ASSERT_OK is nicer (here and in few other places)
-
-Did you mean ASSERT_OK for the two following err checks ?
-
-ASSERT_OK does not seem right for a fd check where we want fd to be
-positive. ASSERT_OK does: "bool ___ok = ___res == 0;"
-
-I will keep my "CHECK(fd < 0" but maybe there could be an
-ASSERT_POSITIVE that does "bool ___ok = ___res >= 0;"
-
-> > +
-> > +       err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.socket_cookies),
-> > +                                 &client_fd, &val);
-> > +       if (CHECK(err, "map_lookup", "err %d errno %d\n", err, errno))
-> > +               goto close_client_fd;
-> > +
-> > +       err = getsockname(client_fd, (struct sockaddr *)&addr, &addr_len);
-> > +       if (CHECK(err, "getsockname", "Can't get client local addr\n"))
-> > +               goto close_client_fd;
-> > +
-> > +       cookie_expected_value = (ntohs(addr.sin6_port) << 8) | 0xFF;
-> > +       CHECK(val.cookie_value != cookie_expected_value, "",
-> > +             "Unexpected value in map: %x != %x\n", val.cookie_value,
-> > +             cookie_expected_value);
->
-> nit: ASSERT_NEQ is nicer
-
-Indeed.
-
-> > +
-> > +close_client_fd:
-> > +       close(client_fd);
-> > +close_server_fd:
-> > +       close(server_fd);
-> > +free_update_link:
-> > +       bpf_link__destroy(update_link);
-> > +free_set_link:
-> > +       bpf_link__destroy(set_link);
-> > +close_cgroup_fd:
-> > +       close(cgroup_fd);
-> > +destroy_skel:
-> > +       socket_cookie_prog__destroy(skel);
-> > +}
->
-> [...]
