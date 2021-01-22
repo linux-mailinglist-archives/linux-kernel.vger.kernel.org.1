@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3DD300FB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACEC300FD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730712AbhAVUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:04:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34410 "EHLO mail.kernel.org"
+        id S1730201AbhAVT4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:56:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727923AbhAVOOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:14:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDA5723AC0;
-        Fri, 22 Jan 2021 14:11:06 +0000 (UTC)
+        id S1728377AbhAVOQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:16:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EFA923B02;
+        Fri, 22 Jan 2021 14:12:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324667;
-        bh=JgT2rUZRDAwot5wINmvAgpRBDucaRvu6wRSr/gjU3u0=;
+        s=korg; t=1611324727;
+        bh=ldwoMgTZQm8WXVNZ8e5I0+jYp/z/sOwVzf0fCgPzcLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y1aj9oA1hMbwC/MfR5sqVuLGt3kVoEIktJXtSNbhvOtyVMjA2sjqAA2BIAcXhg8Dk
-         YcGOBKzDT7e0bZJwoFsYF6HP+YW/1efXRwzz8w0HmvilRYq001jnOLMJgHF5uzA55j
-         XprJISSmGGs0/3MzlRIKgQtOf08fvzMX10h4o7SM=
+        b=KZSeTNVHS6//oDnS5mE8e92QHGhRmQo7XGThcmt+3ylQ7F8ygovMqDZUbDFjnHlM2
+         Ez4rZRrj+s4u8D8adtvgM0bGJOeZiGnVpfp47Lf8ePGKkdp0H3cjYlXz/mDop5vqX7
+         OuxNFPKJgmImYoFTT8a040z1kC3zryYPjh5b7BKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Halcrow <mhalcrow@google.com>,
-        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.9 18/35] ext4: fix superblock checksum failure when setting password salt
-Date:   Fri, 22 Jan 2021 15:10:20 +0100
-Message-Id: <20210122135733.057654705@linuxfoundation.org>
+        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 27/35] netxen_nic: fix MSI/MSI-x interrupts
+Date:   Fri, 22 Jan 2021 15:10:29 +0100
+Message-Id: <20210122135733.395949586@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
@@ -40,38 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Manish Chopra <manishc@marvell.com>
 
-commit dfd56c2c0c0dbb11be939b804ddc8d5395ab3432 upstream.
+[ Upstream commit a2bc221b972db91e4be1970e776e98f16aa87904 ]
 
-When setting password salt in the superblock, we forget to recompute the
-superblock checksum so it will not match until the next superblock
-modification which recomputes the checksum. Fix it.
+For all PCI functions on the netxen_nic adapter, interrupt
+mode (INTx or MSI) configuration is dependent on what has
+been configured by the PCI function zero in the shared
+interrupt register, as these adapters do not support mixed
+mode interrupts among the functions of a given adapter.
 
-CC: Michael Halcrow <mhalcrow@google.com>
-Reported-by: Andreas Dilger <adilger@dilger.ca>
-Fixes: 9bd8212f981e ("ext4 crypto: add encryption policy and password salt support")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20201216101844.22917-8-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Logic for setting MSI/MSI-x interrupt mode in the shared interrupt
+register based on PCI function id zero check is not appropriate for
+all family of netxen adapters, as for some of the netxen family
+adapters PCI function zero is not really meant to be probed/loaded
+in the host but rather just act as a management function on the device,
+which caused all the other PCI functions on the adapter to always use
+legacy interrupt (INTx) mode instead of choosing MSI/MSI-x interrupt mode.
+
+This patch replaces that check with port number so that for all
+type of adapters driver attempts for MSI/MSI-x interrupt modes.
+
+Fixes: b37eb210c076 ("netxen_nic: Avoid mixed mode interrupts")
+Signed-off-by: Manish Chopra <manishc@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Link: https://lore.kernel.org/r/20210107101520.6735-1-manishc@marvell.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/ext4/ioctl.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -799,7 +799,10 @@ resizefs_out:
- 			err = ext4_journal_get_write_access(handle, sbi->s_sbh);
- 			if (err)
- 				goto pwsalt_err_journal;
-+			lock_buffer(sbi->s_sbh);
- 			generate_random_uuid(sbi->s_es->s_encrypt_pw_salt);
-+			ext4_superblock_csum_set(sb);
-+			unlock_buffer(sbi->s_sbh);
- 			err = ext4_handle_dirty_metadata(handle, NULL,
- 							 sbi->s_sbh);
- 		pwsalt_err_journal:
+--- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
++++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
+@@ -586,11 +586,6 @@ static const struct net_device_ops netxe
+ #endif
+ };
+ 
+-static inline bool netxen_function_zero(struct pci_dev *pdev)
+-{
+-	return (PCI_FUNC(pdev->devfn) == 0) ? true : false;
+-}
+-
+ static inline void netxen_set_interrupt_mode(struct netxen_adapter *adapter,
+ 					     u32 mode)
+ {
+@@ -686,7 +681,7 @@ static int netxen_setup_intr(struct netx
+ 	netxen_initialize_interrupt_registers(adapter);
+ 	netxen_set_msix_bit(pdev, 0);
+ 
+-	if (netxen_function_zero(pdev)) {
++	if (adapter->portnum == 0) {
+ 		if (!netxen_setup_msi_interrupts(adapter, num_msix))
+ 			netxen_set_interrupt_mode(adapter, NETXEN_MSI_MODE);
+ 		else
 
 
