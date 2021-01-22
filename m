@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4662E300CE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7B2300CF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbhAVTu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:50:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
+        id S1730576AbhAVTyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:54:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728462AbhAVORg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:17:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77D4A23B16;
-        Fri, 22 Jan 2021 14:13:42 +0000 (UTC)
+        id S1728388AbhAVOQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:16:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D88D123A63;
+        Fri, 22 Jan 2021 14:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324823;
-        bh=zaTqVZ8W/xKSP71GjhGxhsY7iZ9tOSob2d8PT2TreXY=;
+        s=korg; t=1611324795;
+        bh=RXTWyssdws4QSfJ+JmgOYZPTOqGjh2f/lY6IjIbNXnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=azBuPp4kbDxNaH80+ij237R0WZS+DnICYcLVVzIuylgAAZ46GSMfUR24tbb4oyv9B
-         WzUaiuV8UJtC9WF+3TOnotsj/XFWH6fnMrqRiWMiBWeHHrCb0MOwbe5fAsXQw2p9ko
-         vd38Rszbu6MCyq9LIoM3TuGrKgP7hh1mS4ngvtLY=
+        b=p1+eOAX0YVQHGtL3NxZ9KIObtX8BoD7ziKjEKxuocgYq5FPzTJcgHKo/jjXBIk2E8
+         2aIu7LcO56D46nEGc7NyVkyKFt9Iqj1EfdErw1kucB6jxtnW1EYfhlEy8hAkonKghI
+         7VCb+aL+z0R92qLANgCdElRTxxL8vHuf6YrRQMlc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 4.14 02/50] MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
-Date:   Fri, 22 Jan 2021 15:11:43 +0100
-Message-Id: <20210122135735.269604654@linuxfoundation.org>
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 11/50] ARC: build: add uImage.lzma to the top-level target
+Date:   Fri, 22 Jan 2021 15:11:52 +0100
+Message-Id: <20210122135735.647125197@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
 References: <20210122135735.176469491@linuxfoundation.org>
@@ -41,48 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-commit 4d4f9c1a17a3480f8fe523673f7232b254d724b7 upstream.
+[ Upstream commit f2712ec76a5433e5ec9def2bd52a95df1f96d050 ]
 
-The compressed payload is not necesarily 4-byte aligned, at least when
-compiling with Clang. In that case, the 4-byte value appended to the
-compressed payload that corresponds to the uncompressed kernel image
-size must be read using get_unaligned_le32().
+arch/arc/boot/Makefile supports uImage.lzma, but you cannot do
+'make uImage.lzma' because the corresponding target is missing
+in arch/arc/Makefile. Add it.
 
-This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
-JZ4770 board).
+I also changed the assignment operator '+=' to ':=' since this is the
+only place where we expect this variable to be set.
 
-Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
-Cc: <stable@vger.kernel.org> # v4.7
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/compressed/decompress.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arc/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/mips/boot/compressed/decompress.c
-+++ b/arch/mips/boot/compressed/decompress.c
-@@ -17,6 +17,7 @@
- #include <linux/libfdt.h>
+diff --git a/arch/arc/Makefile b/arch/arc/Makefile
+index 98d31b701a97c..1146ca5fc349b 100644
+--- a/arch/arc/Makefile
++++ b/arch/arc/Makefile
+@@ -99,7 +99,7 @@ libs-y		+= arch/arc/lib/ $(LIBGCC)
  
- #include <asm/addrspace.h>
-+#include <asm/unaligned.h>
+ boot		:= arch/arc/boot
  
- /*
-  * These two variables specify the free mem region
-@@ -124,7 +125,7 @@ void decompress_kernel(unsigned long boo
- 		dtb_size = fdt_totalsize((void *)&__appended_dtb);
+-boot_targets += uImage uImage.bin uImage.gz
++boot_targets := uImage uImage.bin uImage.gz uImage.lzma
  
- 		/* last four bytes is always image size in little endian */
--		image_size = le32_to_cpup((void *)&__image_end - 4);
-+		image_size = get_unaligned_le32((void *)&__image_end - 4);
- 
- 		/* copy dtb to where the booted kernel will expect it */
- 		memcpy((void *)VMLINUX_LOAD_ADDRESS_ULL + image_size,
+ $(boot_targets): vmlinux
+ 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+-- 
+2.27.0
+
 
 
