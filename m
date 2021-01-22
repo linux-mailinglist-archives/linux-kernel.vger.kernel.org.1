@@ -2,280 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BA8300CBE
+	by mail.lfdr.de (Postfix) with ESMTP id 091F4300CBD
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730033AbhAVTh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:37:26 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:38508 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729001AbhAVTXO (ORCPT
+        id S1729699AbhAVTgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:36:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55755 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730620AbhAVT0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:23:14 -0500
-Received: by mail-ot1-f46.google.com with SMTP id s2so3975086otp.5;
-        Fri, 22 Jan 2021 11:22:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AcWL/Daw/XNoId/ExdNCO9ieLMb3o6Tm1Cik9cvjN0Y=;
-        b=KUtkAnRLFQpVFxbEEtYDyCj7N56rrgcYPN8N7bqTDkEr8ucG5dTuVE4QGC/QSau+oK
-         geuOFHKplFc265ckq1YTCTLwRBM7KrpaCiyJ8M+tV/YlxibX7yYuPVxZ/B8+e1xaGfe+
-         y/3TPqJxfQAyxrJnSuy1nOFiTfLamz96lNQnRGd/yXsYuRVuleHFIItEkBYoZdKlXrPM
-         fILgG55w33OLPZCycqRhsU+Tm/bKhCYjUX8Gv7cyqwnHn91TZe9J5HSYpEFepVJ/g77w
-         jRlonfsD4IAsUdxjQ8g01/fKWjldaKOCd3tBoh/MIx6HzCzhaWvdPt5ubDuDAleW8duJ
-         pnPg==
-X-Gm-Message-State: AOAM530NVKAX7+cHvnm/sdLyogeYVZ5MhOI9VSixDMYWpt+6XVyMva5S
-        DMWAfJv/EUsyrgSieFRZkxWdyR98+0Mw2H+xC73H1XR6JM4sRw==
-X-Google-Smtp-Source: ABdhPJzweY2mg/zFWP93YsFHVJt5xaD20MtLkVatRFMIokm+C6mB13HNhebPzAWgGsPX6kHU3X2VmvszA6UQsk6dJgw=
-X-Received: by 2002:a05:6830:2313:: with SMTP id u19mr1341091ote.321.1611343352346;
- Fri, 22 Jan 2021 11:22:32 -0800 (PST)
+        Fri, 22 Jan 2021 14:26:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611343515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4t6fl3YyvtaW5Q6QVtUYAUfL/EREDZcuyCxL7CtIlEE=;
+        b=PmHUShNPdgsh92U0DSJooKIffv/7xYfX4AyCN+LOF1PtkIkzryMxZhMKMcEjOyOuqTor3q
+        2/4wyUtvLSNz91c42ROHjQ6SoatK4f2xSRkcT4YVKLGfFXN2QbNmMBDrTU6vHhGlVonyz6
+        08dhr58TuxGh3UgKlz/nZmw103rk2bs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-74-_Rbew4IYNOOxyLYMTYM1UA-1; Fri, 22 Jan 2021 14:25:08 -0500
+X-MC-Unique: _Rbew4IYNOOxyLYMTYM1UA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 071EA107ACE6;
+        Fri, 22 Jan 2021 19:25:06 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 049055D746;
+        Fri, 22 Jan 2021 19:25:04 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 12:25:03 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jgg@nvidia.com>,
+        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
+        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
+        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
+        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>
+Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
+Message-ID: <20210122122503.4e492b96@omen.home.shazbot.org>
+In-Reply-To: <20210117181534.65724-1-mgurtovoy@nvidia.com>
+References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
 MIME-Version: 1.0
-References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com> <20210122154300.7628-2-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20210122154300.7628-2-calvin.johnson@oss.nxp.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 22 Jan 2021 20:22:21 +0100
-Message-ID: <CAJZ5v0iX3uU36448ALA20hiVk968VKTsvgwLrp8ur96MQo3Acw@mail.gmail.com>
-Subject: Re: [net-next PATCH v4 01/15] Documentation: ACPI: DSD: Document MDIO PHY
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 4:43 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Introduce ACPI mechanism to get PHYs registered on a MDIO bus and
-> provide them to be connected to MAC.
->
-> Describe properties "phy-handle" and "phy-mode".
->
-> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> ---
->
-> Changes in v4:
-> - More cleanup
+On Sun, 17 Jan 2021 18:15:31 +0000
+Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
 
-This looks much better that the previous versions IMV, some nits below.
+> Hi Alex and Cornelia,
+> 
+> This series split the vfio_pci driver into 2 parts: pci driver and a
+> subsystem driver that will also be library of code. The pci driver,
+> vfio_pci.ko will be used as before and it will bind to the subsystem
+> driver vfio_pci_core.ko to register to the VFIO subsystem. This patchset
+> if fully backward compatible. This is a typical Linux subsystem
+> framework behaviour. This framework can be also adopted by vfio_mdev
+> devices as we'll see in the below sketch.
+> 
+> This series is coming to solve the issues that were raised in the
+> previous attempt for extending vfio-pci for vendor specific
+> functionality: https://lkml.org/lkml/2020/5/17/376 by Yan Zhao.
 
-> Changes in v3: None
-> Changes in v2:
-> - Updated with more description in document
->
->  Documentation/firmware-guide/acpi/dsd/phy.rst | 129 ++++++++++++++++++
->  1 file changed, 129 insertions(+)
->  create mode 100644 Documentation/firmware-guide/acpi/dsd/phy.rst
->
-> diff --git a/Documentation/firmware-guide/acpi/dsd/phy.rst b/Documentation/firmware-guide/acpi/dsd/phy.rst
-> new file mode 100644
-> index 000000000000..76fca994bc99
-> --- /dev/null
-> +++ b/Documentation/firmware-guide/acpi/dsd/phy.rst
-> @@ -0,0 +1,129 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=========================
-> +MDIO bus and PHYs in ACPI
-> +=========================
-> +
-> +The PHYs on an MDIO bus [1] are probed and registered using
-> +fwnode_mdiobus_register_phy().
+Is the only significant difference here the fact that function
+declarations remain in a private header?  Otherwise it seems to
+have all the risks of previous attempts, ie. exported symbols with a
+lot of implicit behavior shared between them.
 
-Empty line here, please.
+> This solution is also deterministic in a sense that when a user will
+> bind to a vendor specific vfio-pci driver, it will get all the special
+> goodies of the HW.
 
-> +Later, for connecting these PHYs to MAC, the PHYs registered on the
-> +MDIO bus have to be referenced.
-> +
-> +The UUID given below should be used as mentioned in the "Device Properties
-> +UUID For _DSD" [2] document.
-> +   - UUID: daffd814-6eba-4d8c-8a91-bc9bbf4aa301
+That determinism really comes after the point where we were concerned
+about deterministic behavior, ie. how does a user know which driver to
+use for which device.  It seems with the aux bus approach we're letting
+the default host driver expose sub-functions for assignment, similar to
+mdev, but nothing about this code split requires such an approach.  As
+noted in 2/3, IGD support could be a separate module, but that's a
+direct assignment driver, so then the user must decide to use vfio-pci
+or igd-vfio-pci, depending on which features they want.
 
-I would drop the above paragraph.
+> This subsystem framework will also ease on adding vendor specific
+> functionality to VFIO devices in the future by allowing another module
+> to provide the pci_driver that can setup number of details before
+> registering to VFIO subsystem (such as inject its own operations).
 
-> +
-> +This document introduces two _DSD properties that are to be used
-> +for PHYs on the MDIO bus.[3]
+Which leads us directly back to the problem that we then have numerous
+drivers that a user might choose for a given device.
+ 
+> Below we can see the proposed changes (this patchset only deals with
+> VFIO_PCI subsystem but it can easily be extended to VFIO_MDEV subsystem
+> as well):
+> 
+> +----------------------------------------------------------------------+
+> |                                                                      |
+> |                                VFIO                                  |
+> |                                                                      |
+> +----------------------------------------------------------------------+
+> 
+> +--------------------------------+    +--------------------------------+
+> |                                |    |                                |
+> |          VFIO_PCI_CORE         |    |          VFIO_MDEV_CORE        |
+> |                                |    |                                |
+> +--------------------------------+    +--------------------------------+
+> 
+> +---------------+ +--------------+    +---------------+ +--------------+
+> |               | |              |    |               | |              |
+> |               | |              |    |               | |              |
+> | VFIO_PCI      | | MLX5_VFIO_PCI|    | VFIO_MDEV     | |MLX5_VFIO_MDEV|
+> |               | |              |    |               | |              |
+> |               | |              |    |               | |              |
+> +---------------+ +--------------+    +---------------+ +--------------+
+> 
+> First 2 patches introduce the above changes for vfio_pci and
+> vfio_pci_core.
+> 
+> Patch (3/3) introduces a new mlx5 vfio-pci module that registers to VFIO
+> subsystem using vfio_pci_core. It also registers to Auxiliary bus for
+> binding to mlx5_core that is the parent of mlx5-vfio-pci devices. This
+> will allow extending mlx5-vfio-pci devices with HW specific features
+> such as Live Migration (mlx5_core patches are not part of this series
+> that comes for proposing the changes need for the vfio pci subsystem).
+> 
+> These devices will be seen on the Auxiliary bus as:
+> mlx5_core.vfio_pci.2048 -> ../../../devices/pci0000:00/0000:00:02.0/0000:05:00.0/0000:06:00.0/0000:07:00.0/mlx5_core.vfio_pci.2048
+> mlx5_core.vfio_pci.2304 -> ../../../devices/pci0000:00/0000:00:02.0/0000:05:00.0/0000:06:00.0/0000:07:00.1/mlx5_core.vfio_pci.2304
+> 
+> 2048 represents BDF 08:00.0 and 2304 represents BDF 09:00.0 in decimal
 
-I'd say "for connecting PHYs on the MDIO bus [3] to the MAC layer."
-above and add the following here:
+And what are devices 08:00.0 and 09:00.0 on the host?  We can only see
+from above that they're children of a PCI device.
 
-"These properties are defined in accordance with the "Device
-Properties UUID For _DSD" [2] document and the
-daffd814-6eba-4d8c-8a91-bc9bbf4aa301 UUID must be used in the Device
-Data Descriptors containing them."
+> view. In this manner, the administrator will be able to locate the
+> correct vfio-pci module it should bind the desired BDF to (by finding
+> the pointer to the module according to the Auxiliary driver of that
+> BDF).
 
-> +
-> +phy-handle
-> +----------
-> +For each MAC node, a device property "phy-handle" is used to reference
-> +the PHY that is registered on an MDIO bus. This is mandatory for
-> +network interfaces that have PHYs connected to MAC via MDIO bus.
-> +
-> +During the MDIO bus driver initialization, PHYs on this bus are probed
-> +using the _ADR object as shown below and are registered on the MDIO bus.
+Sorry, clear as mud.  Are we really expecting users to decode a decimal
+aux bus ID to a PCI BDF and how is the ID standardized among aux bus
+devices?
+ 
+> In this way, we'll use the HW vendor driver core to manage the lifecycle
+> of these devices. This is reasonable since only the vendor driver knows
+> exactly about the status on its internal state and the capabilities of
+> its acceleratots, for example.
 
-Do you want to mention the "reg" property here?  I think it would be
-useful to do that.
+But mdev provides that too, or the vendor could write their own vfio
+bus driver for the device, this doesn't really justify or delve deep
+enough to show examples beyond "TODO" remarks for a vendor driver
+actually interacting with vfio-pci-core in an extensible way.  One of
+the concerns of previous efforts was that it's trying to directly
+expose vfio-pci's implementation as an API for vendor drivers, I don't
+really see that anything has changed in that respect here.  Thanks,
 
-> +
-> +::
-> +      Scope(\_SB.MDI0)
-> +      {
-> +        Device(PHY1) {
-> +          Name (_ADR, 0x1)
-> +        } // end of PHY1
-> +
-> +        Device(PHY2) {
-> +          Name (_ADR, 0x2)
-> +        } // end of PHY2
-> +      }
-> +
-> +Later, during the MAC driver initialization, the registered PHY devices
-> +have to be retrieved from the MDIO bus. For this, MAC driver needs
+Alex
 
-"the MAC driver" I suppose?
+> TODOs:
+> 1. For this RFC we still haven't cleaned all vendor specific stuff that
+>    were merged in the past into vfio_pci (such as VFIO_PCI_IG and
+>    VFIO_PCI_NVLINK2).
+> 2. Create subsystem module for VFIO_MDEV. This can be used for vendor
+>    specific scalable functions for example (SFs).
+> 3. Add Live migration functionality for mlx5 SNAP devices
+>    (NVMe/Virtio-BLK).
+> 4. Add Live migration functionality for mlx5 VFs
+> 5. Add the needed functionality for mlx5_core
+> 
+> I would like to thank the great team that was involved in this
+> development, design and internal review:
+> Oren, Liran, Jason, Leon, Aviad, Shahaf, Gary, Artem, Kirti, Neo, Andy
+> and others.
+> 
+> This series applies cleanly on top of kernel 5.11-rc2+ commit 2ff90100ace8:
+> "Merge tag 'hwmon-for-v5.11-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging"
+> from Linus.
+> 
+> Note: Live migration for MLX5 SNAP devices is WIP and will be the first
+>       example for adding vendor extension to vfio-pci devices. As the
+>       changes to the subsystem must be defined as a pre-condition for
+>       this work, we've decided to split the submission for now.
+> 
+> Max Gurtovoy (3):
+>   vfio-pci: rename vfio_pci.c to vfio_pci_core.c
+>   vfio-pci: introduce vfio_pci_core subsystem driver
+>   mlx5-vfio-pci: add new vfio_pci driver for mlx5 devices
+> 
+>  drivers/vfio/pci/Kconfig            |   22 +-
+>  drivers/vfio/pci/Makefile           |   16 +-
+>  drivers/vfio/pci/mlx5_vfio_pci.c    |  253 +++
+>  drivers/vfio/pci/vfio_pci.c         | 2386 +--------------------------
+>  drivers/vfio/pci/vfio_pci_core.c    | 2311 ++++++++++++++++++++++++++
+>  drivers/vfio/pci/vfio_pci_private.h |   21 +
+>  include/linux/mlx5/vfio_pci.h       |   36 +
+>  7 files changed, 2734 insertions(+), 2311 deletions(-)
+>  create mode 100644 drivers/vfio/pci/mlx5_vfio_pci.c
+>  create mode 100644 drivers/vfio/pci/vfio_pci_core.c
+>  create mode 100644 include/linux/mlx5/vfio_pci.h
+> 
 
-> +reference to the previously registered PHYs which are provided
-
-s/reference/references/ (plural)
-
-> +using reference to the device as {\_SB.MDI0.PHY1}.
-
-"as device object references (e.g. \_SB.MDI0.PHY1}."
-
-> +
-> +phy-mode
-> +--------
-> +The "phy-mode" _DSD property is used to describe the connection to
-> +the PHY. The valid values for "phy-mode" are defined in [4].
-> +
-
-One empty line should be sufficient.
-
-> +
-> +An ASL example of this is shown below.
-
-"The following ASL example illustrates the usage of these properties."
-
-> +
-> +DSDT entry for MDIO node
-> +------------------------
-
-Empty line here, please.
-
-> +The MDIO bus has an SoC component(MDIO controller) and a platform
-
-Missing space after "component".
-
-> +component (PHYs on the MDIO bus).
-> +
-> +a) Silicon Component
-> +This node describes the MDIO controller, MDI0
-> +---------------------------------------------
-> +::
-> +       Scope(_SB)
-> +       {
-> +         Device(MDI0) {
-> +           Name(_HID, "NXP0006")
-> +           Name(_CCA, 1)
-> +           Name(_UID, 0)
-> +           Name(_CRS, ResourceTemplate() {
-> +             Memory32Fixed(ReadWrite, MDI0_BASE, MDI_LEN)
-> +             Interrupt(ResourceConsumer, Level, ActiveHigh, Shared)
-> +              {
-> +                MDI0_IT
-> +              }
-> +           }) // end of _CRS for MDI0
-> +         } // end of MDI0
-> +       }
-> +
-> +b) Platform Component
-> +This node defines the PHYs that are connected to the MDIO bus, MDI0
-
-"The PHY1 and PHY2 nodes represent the PHYs connected to MDIO bus MDI0."
-
-> +-------------------------------------------------------------------
-> +::
-> +       Scope(\_SB.MDI0)
-> +       {
-> +         Device(PHY1) {
-> +           Name (_ADR, 0x1)
-> +         } // end of PHY1
-> +
-> +         Device(PHY2) {
-> +           Name (_ADR, 0x2)
-> +         } // end of PHY2
-> +       }
-> +
-> +
-
-"DSDT entries representing MAC nodes
------------------------------------"
-
-Plus an empty line.
-
-> +Below are the MAC nodes where PHY nodes are referenced.
-> +phy-mode and phy-handle are used as explained earlier.
-> +------------------------------------------------------
-> +::
-> +       Scope(\_SB.MCE0.PR17)
-> +       {
-> +         Name (_DSD, Package () {
-> +            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> +                Package () {
-> +                    Package (2) {"phy-mode", "rgmii-id"},
-> +                    Package (2) {"phy-handle", \_SB.MDI0.PHY1}
-> +             }
-> +          })
-> +       }
-> +
-> +       Scope(\_SB.MCE0.PR18)
-> +       {
-> +         Name (_DSD, Package () {
-> +           ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> +               Package () {
-> +                   Package (2) {"phy-mode", "rgmii-id"},
-> +                   Package (2) {"phy-handle", \_SB.MDI0.PHY2}}
-> +           }
-> +         })
-> +       }
-> +
-> +References
-> +==========
-> +
-> +[1] Documentation/networking/phy.rst
-> +
-> +[2] https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-> +
-> +[3] Documentation/firmware-guide/acpi/DSD-properties-rules.rst
-> +
-> +[4] Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> --
-> 2.17.1
->
