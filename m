@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88E92FFB24
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89FA2FFB2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbhAVDez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 22:34:55 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:49462 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbhAVDeu (ORCPT
+        id S1726525AbhAVDhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 22:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726160AbhAVDhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 22:34:50 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10M3XqDE2001859, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10M3XqDE2001859
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 22 Jan 2021 11:33:52 +0800
-Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 22 Jan
- 2021 11:33:52 +0800
-From:   <ricky_wu@realtek.com>
-To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <bhelgaas@google.com>, <ricky_wu@realtek.com>,
-        <vaibhavgupta40@gmail.com>, <linux-kernel@vger.kernel.org>
-CC:     <stable@vger.kernel.org>
-Subject: [PATCH v3] misc: rtsx: init value of aspm_enabled
-Date:   Fri, 22 Jan 2021 11:33:48 +0800
-Message-ID: <20210122033348.15187-1-ricky_wu@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 21 Jan 2021 22:37:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8ABC06174A;
+        Thu, 21 Jan 2021 19:36:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=M3pOp5kptZ6YgzfG0S1o6cFzqzbA+kUwayqUm25hHcM=; b=LvfVrjVA/4jzbyfI6AIhmS7+di
+        aMB4ehdbvNADYyYINdG1nIbN8D8R5RIP2mIJhBgCEPa3B33AqGUIHDvX1WjwhprtQFKtdGZLmAhJp
+        JTGUsZCgdWt+MVJ3UhpUahOJrIxZXM3d190SGF5Q7ORdrpbXMKCmABvLa+YnsrYzm3oMD3ejpbJIP
+        12y83YrPLjX+YGZc0ZSXykJyHVD9pQLy0NMy8cOxosLO1D5MyCAjebN7Ma1EZjU86hu9+7XSFv06x
+        5CkPaS4Kxe+isBaELueIr8pvwvSPpMjx3hJarXCauM6wcT4ddhgBRnbZ+CK1oJ8sUtrfEID9CnjG9
+        9Ivb9mZg==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2nFQ-00041g-Rz; Fri, 22 Jan 2021 03:36:33 +0000
+Subject: Re: [PATCH] mmc: sdhci-of-aspeed: Fix kunit-related build error
+To:     Andrew Jeffery <andrew@aj.id.au>, linux-mmc@vger.kernel.org
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org, joel@jms.id.au,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com
+References: <20210122032334.3663056-1-andrew@aj.id.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fd80b74e-c6a0-9b84-1370-db0c0814dca6@infradead.org>
+Date:   Thu, 21 Jan 2021 19:36:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.88.222]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
+In-Reply-To: <20210122032334.3663056-1-andrew@aj.id.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricky Wu <ricky_wu@realtek.com>
+On 1/21/21 7:23 PM, Andrew Jeffery wrote:
+> Randy found that with the following Kconfig settings we have duplicate
+> definitions (e.g. __inittest()) in sdhci-of-aspeed due to competing
+> module_init()/module_exit() calls from kunit and driver the itself.
+> 
+> ```
+> CONFIG_MMC_SDHCI_OF_ASPEED=m
+> CONFIG_MMC_SDHCI_OF_ASPEED_TEST=y
+> ```
+> 
+> Conditionally open-code the kunit initialisation to avoid the error.
+> 
+> Fixes: 7efa02a981d6 ("mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-v1:
-make sure ASPM state sync with pcr->aspm_enabled
-init value pcr->aspm_enabled
-v2:
-fixes conditions in v1 if-statement
-v3:
-more description for v1 and v2
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
----
- drivers/misc/cardreader/rtsx_pcr.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Thanks.
 
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index 2aa6648fa41f..5a491d2cd1ae 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -1512,6 +1512,7 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
- 	struct pcr_handle *handle;
- 	u32 base, len;
- 	int ret, i, bar = 0;
-+	u8 val;
- 
- 	dev_dbg(&(pcidev->dev),
- 		": Realtek PCI-E Card Reader found at %s [%04x:%04x] (rev %x)\n",
-@@ -1577,7 +1578,11 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
- 	pcr->host_cmds_addr = pcr->rtsx_resv_buf_addr;
- 	pcr->host_sg_tbl_ptr = pcr->rtsx_resv_buf + HOST_CMDS_BUF_LEN;
- 	pcr->host_sg_tbl_addr = pcr->rtsx_resv_buf_addr + HOST_CMDS_BUF_LEN;
--
-+	rtsx_pci_read_register(pcr, ASPM_FORCE_CTL, &val);
-+	if (val & FORCE_ASPM_CTL0 && val & FORCE_ASPM_CTL1)
-+		pcr->aspm_enabled = false;
-+	else
-+		pcr->aspm_enabled = true;
- 	pcr->card_inserted = 0;
- 	pcr->card_removed = 0;
- 	INIT_DELAYED_WORK(&pcr->carddet_work, rtsx_pci_card_detect);
+> ---
+>  drivers/mmc/host/sdhci-of-aspeed-test.c |  9 ++++++++-
+>  drivers/mmc/host/sdhci-of-aspeed.c      | 27 ++++++++++++++++++++-----
+>  2 files changed, 30 insertions(+), 6 deletions(-)
+
+
 -- 
-2.17.1
-
+~Randy
+RFC: Features and documentation: http://lwn.net/Articles/260136/
