@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA933002A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A8E3002AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbhAVMPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:15:32 -0500
-Received: from mga09.intel.com ([134.134.136.24]:26516 "EHLO mga09.intel.com"
+        id S1727410AbhAVMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:16:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727338AbhAVMJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:09:54 -0500
-IronPort-SDR: ho7EAmygVlqnOux4ZV3QkebNh2pBt+6BONh7Cn/+GD8FZPcuti+GJZHYKj+xE75aXSPS7hVw5r
- Q+DTS6CJcmhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="179579546"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="179579546"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:08:07 -0800
-IronPort-SDR: iXPgJx1OZ5ovYxJQ6f8M3UpruduQ2IzcCxnjNbNgVHt2GXNhYheFqh2bdbI5mrFra74Z1Nr0zr
- ANO0N21cJOMw==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="385735981"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:08:06 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2vFU-008qWy-Vs; Fri, 22 Jan 2021 14:09:08 +0200
-Date:   Fri, 22 Jan 2021 14:09:08 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Gross <mgross@linux.intel.com>, linux-kernel@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1] platform/x86: intel_mid_thermal: Remove driver for
- deprecated platform
-Message-ID: <YArAZOdRrYQ8f5Md@smile.fi.intel.com>
-References: <20210122114054.38597-1-andriy.shevchenko@linux.intel.com>
+        id S1726578AbhAVMOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:14:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A7323437;
+        Fri, 22 Jan 2021 12:13:37 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 12:13:35 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Prathu Baronia <prathubaronia2011@gmail.com>,
+        Prathu Baronia <prathu.baronia@oneplus.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-kernel@vger.kernel.org, chintan.pandya@oneplus.com,
+        "glider@google.com" <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/1] mm: Optimizing hugepage zeroing in arm64
+Message-ID: <20210122121334.GC8567@gaia>
+References: <20210121165153.17828-1-prathu.baronia@oneplus.com>
+ <20210121174616.GA22740@willie-the-truck>
+ <de782758-a7bc-d5a5-832e-c09ce8fe7c00@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122114054.38597-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <de782758-a7bc-d5a5-832e-c09ce8fe7c00@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 01:40:54PM +0200, Andy Shevchenko wrote:
-> Intel Moorestown and Medfield are quite old Intel Atom based
-> 32-bit platforms, which were in limited use in some Android phones,
-> tablets and consumer electronics more than eight years ago.
+On Thu, Jan 21, 2021 at 06:59:37PM +0000, Robin Murphy wrote:
+> On 2021-01-21 17:46, Will Deacon wrote:
+> > On Thu, Jan 21, 2021 at 10:21:50PM +0530, Prathu Baronia wrote:
+> > > This patch removes the unnecessary kmap calls in the hugepage zeroing path and
+> > > improves the timing by 62%.
+> > > 
+> > > I had proposed a similar change in Apr-May'20 timeframe in memory.c where I
+> > > proposed to clear out a hugepage by directly calling a memset over the whole
+> > > hugepage but got the opposition that the change was not architecturally neutral.
+> > > 
+> > > Upon revisiting this now I see significant improvement by removing around 2k
+> > > barrier calls from the zeroing path. So hereby I propose an arm64 specific
+> > > definition of clear_user_highpage().
+> > 
+> > Given that barrier() is purely a thing for the compiler, wouldn't the same
+> > change yield a benefit on any other architecture without HIGHMEM? In which
+> > case, I think this sort of change belongs in the core code if it's actually
+> > worthwhile.
 > 
-> There are no bugs or problems ever reported outside from Intel
-> for breaking any of that platforms for years. It seems no real
-> users exists who run more or less fresh kernel on it. The commit
-> 05f4434bc130 ("ASoC: Intel: remove mfld_machine") also in align
-> with this theory.
-> 
-> Due to above and to reduce a burden of supporting outdated drivers
-> we remove the support of outdated platforms completely.
+> I would have thought it's more the constant manipulation of the preempt and
+> pagefault counts, rather than the compiler barriers between them, that has
+> the impact. Either way, if arm64 doesn't need to be atomic WRT preemption
+> when clearing parts of hugepages then I also can't imagine that anyone else
+> (at least for !HIGHMEM) would either.
 
-Please, ignore this, I just resent with proper mailing list in Cc.
+I thought the kmap_local stuff was supposed to fix this unnecessary
+preemption disabling on 64-bit architectures:
+
+https://lwn.net/Articles/836144/
+
+I guess it's not there yet.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Catalin
