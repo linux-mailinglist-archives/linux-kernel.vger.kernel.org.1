@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037F42FFF3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 057F62FFF47
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbhAVJcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:32:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726951AbhAVJKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:10:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69725239D4;
-        Fri, 22 Jan 2021 09:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611306461;
-        bh=nV3I3ct6uOXZdsO/zAKfYmcrv4KNXm6gHX/iiv9UjrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sYf3PzMCN3IkVyPRGtRZ0mFh/GfcyzepIlbb8ZQltNttPYuxIS2c86dvo2IiVHtYp
-         Q+7SiTXu3Q1qkF4TgXOQPxX/a2Co/tACASDhAjYQyrwCISzoANRK6zfVtL6tVP62qR
-         VSuEDT1VWcoLW0/S+SB7l2cnxK3RlEzD3MdiUz4RHUit3bAU6kl8O068qy6oxDjPZ+
-         uXstxzunYM5+xhpZqcHzVzRuPJEonVwfsahme4d0x9xaF/wSIOtWvdQBAwkJREw7/J
-         ELbT44JxOwU/kLiEKc07cGrgl7zV3uH1NeNl66Ux/8XfieyPgsOu+TIcgHJVrf11i8
-         lQoQGc/CT5rBw==
-Date:   Fri, 22 Jan 2021 10:07:37 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Youling Tang <tangyouling@loongson.cn>
-Cc:     Seth Heasley <seth.heasley@intel.com>,
-        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: ismt: Use dma_set_mask_and_coherent
-Message-ID: <20210122090737.GG858@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Youling Tang <tangyouling@loongson.cn>,
-        Seth Heasley <seth.heasley@intel.com>,
-        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1606978252-26169-1-git-send-email-tangyouling@loongson.cn>
+        id S1727067AbhAVJdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:33:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42580 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727319AbhAVJKH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 04:10:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611306491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EZwUYf9xT+MJixbOCKQ4HvzTm+Igo1sOFFZAbd0tACA=;
+        b=KFS3Ltxumh6EwOEyIAX+UKruWtP1so98+F28Zw4g7BFjm3apBKSCYGTK6NEPA3njqoiPYx
+        hgRdckUX7lKooW/nfRQE2YgsDrwFrDQ+DzxVKFIXSvYMLQwFZRP5GEbdby+VqmruZW6Z1r
+        Zsft0miBzRnAuJRH+30S8jd7CFRC4JU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-_Fh2C1fwP36C846eFQQRTA-1; Fri, 22 Jan 2021 04:08:09 -0500
+X-MC-Unique: _Fh2C1fwP36C846eFQQRTA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D8C331005513;
+        Fri, 22 Jan 2021 09:08:07 +0000 (UTC)
+Received: from [10.36.114.142] (ovpn-114-142.ams2.redhat.com [10.36.114.142])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BCFAA722C2;
+        Fri, 22 Jan 2021 09:08:06 +0000 (UTC)
+Subject: Re: [PATCH] mm: fix prototype warning from kernel test robot
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, rppt@kernel.org
+References: <20210122070359.24010-1-bhe@redhat.com>
+ <3fd62f11-bf44-3ede-aed1-10d9d4849f00@redhat.com>
+ <20210122084659.GA29905@MiWiFi-R3L-srv>
+ <91244046-f5a0-8e67-4c92-fe9de118e472@redhat.com>
+ <20210122085836.GA31398@MiWiFi-R3L-srv>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <1f05a1ee-fcfa-4abb-74f3-d47b64378a4a@redhat.com>
+Date:   Fri, 22 Jan 2021 10:08:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qxfKREH7IwbezJ+T"
-Content-Disposition: inline
-In-Reply-To: <1606978252-26169-1-git-send-email-tangyouling@loongson.cn>
+In-Reply-To: <20210122085836.GA31398@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22.01.21 09:58, Baoquan He wrote:
+> On 01/22/21 at 09:55am, David Hildenbrand wrote:
+>> On 22.01.21 09:46, Baoquan He wrote:
+>>> On 01/22/21 at 09:40am, David Hildenbrand wrote:
+>>>> On 22.01.21 08:03, Baoquan He wrote:
+>>>>> Kernel test robot calling make with 'W=1' triggering warning like below
+>>>>> below for memmap_init_zone() function.
+>>>>>
+>>>>> mm/page_alloc.c:6259:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
+>>>>>  6259 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
+>>>>>       |                       ^~~~~~~~~~~~~~~~
+>>>>>
+>>>>> Fix it by adding the function declaration in include/linux/mm.h.
+>>>>> Since memmap_init_zone() has a generic version with '__weak',
+>>>>> the declaratoin in ia64 header file can be simply removed.
+>>>>>
+>>>>> Signed-off-by: Baoquan He <bhe@redhat.com>
+>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>> ---
+>>>>>  arch/ia64/include/asm/pgtable.h | 5 -----
+>>>>>  include/linux/mm.h              | 1 +
+>>>>>  2 files changed, 1 insertion(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
+>>>>> index 2c81394a2430..9b4efe89e62d 100644
+>>>>> --- a/arch/ia64/include/asm/pgtable.h
+>>>>> +++ b/arch/ia64/include/asm/pgtable.h
+>>>>> @@ -517,11 +517,6 @@ extern struct page *zero_page_memmap_ptr;
+>>>>>  	__changed;							\
+>>>>>  })
+>>>>>  #endif
+>>>>> -
+>>>>> -#  ifdef CONFIG_VIRTUAL_MEM_MAP
+>>>>> -  /* arch mem_map init routine is needed due to holes in a virtual mem_map */
+>>>>> -    extern void memmap_init_zone(struct zone *zone);
+>>>>> -#  endif /* CONFIG_VIRTUAL_MEM_MAP */
+>>>>>  # endif /* !__ASSEMBLY__ */
+>>>>>  
+>>>>>  /*
+>>>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>>>>> index 56bb239f9150..073049bd0b29 100644
+>>>>> --- a/include/linux/mm.h
+>>>>> +++ b/include/linux/mm.h
+>>>>> @@ -2401,6 +2401,7 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
+>>>>>  extern void memmap_init_range(unsigned long, int, unsigned long,
+>>>>>  		unsigned long, unsigned long, enum meminit_context,
+>>>>>  		struct vmem_altmap *, int migratetype);
+>>>>> +extern void memmap_init_zone(struct zone *zone);
+>>>>>  extern void setup_per_zone_wmarks(void);
+>>>>>  extern int __meminit init_per_zone_wmark_min(void);
+>>>>>  extern void mem_init(void);
+>>>>>
+>>>>
+>>>> This patch is on top of your other series, no?
+>>>>
+>>>> In -next, we have
+>>>>
+>>>> extern void memmap_init_zone(unsigned long, int, unsigned long, ...
+>>>>
+>>>> In that file, so something is wrong.
+>>>
+>>> Right, this one is based on the memmap_init_xx clean up patchset. I
+>>> mentioned this the the sub-thread of kernel test robot reporting issues.
+>>>
+>>
+>> I think it would make things easier to move that fix to the front and
+>> resend the whole (5 patches) series.
+> 
+> OK, it's fine to me, will resend a series adding this one in. I also
+> need polish log of this patch. Thanks for looking into this.
+> 
 
---qxfKREH7IwbezJ+T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'll review ASAP once you resend :)
 
-On Thu, Dec 03, 2020 at 02:50:52PM +0800, Youling Tang wrote:
-> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+-- 
+Thanks,
 
-Seth, Neil, are you OK with this patch?
+David / dhildenb
 
-> ---
->=20
-> v3: Fix build errors of incompatible pointer types.
->=20
->  drivers/i2c/busses/i2c-ismt.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
-> index a35a27c..88f6039 100644
-> --- a/drivers/i2c/busses/i2c-ismt.c
-> +++ b/drivers/i2c/busses/i2c-ismt.c
-> @@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_d=
-evice_id *id)
->  		return -ENODEV;
->  	}
-> =20
-> -	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) !=3D 0) ||
-> -	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) !=3D 0)) {
-> -		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) !=3D 0) ||
-> -		    (pci_set_consistent_dma_mask(pdev,
-> -						 DMA_BIT_MASK(32)) !=3D 0)) {
-> -			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
-> +	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) !=3D 0)
-> +		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) !=3D 0) {
-> +			dev_err(&pdev->dev, "dma_set_mask_and_coherent fail %p\n",
->  				pdev);
->  			return -ENODEV;
->  		}
-> -	}
-> =20
->  	err =3D ismt_dev_init(priv);
->  	if (err)
-> --=20
-> 2.1.0
->=20
-
---qxfKREH7IwbezJ+T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAKldkACgkQFA3kzBSg
-Kbb6hxAApGjfA14lG697L3sDX0kkV97wifgK3SOXUJuV+JgidPBfeQ6RG6oU5N07
-u+Dfp9SD30HIoG0SxMQYRta6L+JgSZIOPdYqwCGrewCNoFT4qZK2B4P+mMMeGpaC
-XX9br17j5XL5/EKkPTl2M0+1Zhs1+nA612LhrpCAOyUxcdLtvbEMjIkzRt8BXv8w
-S8jzYaEk8NB+uFzW5JQb1GBAGri+VWk4SWOhm9e1HTtVvqcf2z4B/ekC1uGI0lXM
-bRfLe5gnZ2+fy6411IvBaU8yJ8VFtOyQzswsMgerBJ6MYuwd9UtTfhpv74H9Dkjq
-sUWjQLvwwKke8utghJKWiWHmeRQNC+Ihes9RjbFyujGWYrU0vMs2k82iyFElHrUq
-vA9HQYkyuHUVmjT06iVIb8N8zPs+B8DQtLvC567roxYdY5kHRBCbgZDCegPVc3VJ
-IIQLwEt4U4RpQHv0CqDVEp5cQnv+lWtcRkYFwZItw2F4+KTB0Ch+kEtYKZUqv+/k
-nPCltlnpGkDSWloexme5twrs0poKW9GRJipQQezV8bP0kcv5JTitd0vEzLIl6mKf
-gaBs/5qX5p7+ziXmGcMARMzNmPvVUCw7OmzLGddjnEKulECMa1GgdUQ8+6I3oVXT
-moJE/m5qJ1v3DzErmoJtgofD06MeBw4bVYEAsnnpvXR8CUsZDZw=
-=Due/
------END PGP SIGNATURE-----
-
---qxfKREH7IwbezJ+T--
