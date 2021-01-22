@@ -2,188 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC24300813
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E520300816
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729013AbhAVQB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:01:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729246AbhAVP6o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:58:44 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AB4C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:58:04 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1l2yox-0001iz-WF; Fri, 22 Jan 2021 16:58:00 +0100
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1l2yox-0000vm-JO; Fri, 22 Jan 2021 16:57:59 +0100
-Date:   Fri, 22 Jan 2021 16:57:59 +0100
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, alistair23@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] input/touchscreen: Add device tree support to
- wacom_i2c
-Message-ID: <20210122155759.zkpmbskjoewvhpcx@pengutronix.de>
-References: <20210121065643.342-1-alistair@alistair23.me>
- <20210121065643.342-3-alistair@alistair23.me>
+        id S1729385AbhAVQB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:01:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729361AbhAVP7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:59:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89AAA22248;
+        Fri, 22 Jan 2021 15:59:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611331148;
+        bh=x4JXn/NGT9kOmD86mZTB5+L63oSboexwirGKxvWY8Do=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fdh85FY7JV18I/qn12cwtKYZWjDWlaqkgQkRpwOON4FTphz1UxTyppjll+TcCbP0K
+         qrPqbvg0hzTOWqUTnpppgxguwrGL+/L/dlSA9G76B+7CZhYep9D/rplrj6FgXmPe83
+         5J6mTONaF9HvpsPbErdZoOEbw9cCcw0EQaiIieO0=
+Date:   Fri, 22 Jan 2021 16:59:05 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-mips@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH 4.14 00/50] 4.14.217-rc1 review
+Message-ID: <YAr2Sae/oDOH/E5X@kroah.com>
+References: <20210122135735.176469491@linuxfoundation.org>
+ <CA+G9fYus+rnoxpZqhn35fMz4ZPQvYjkKFKSCsOhFtrHzbu1pZw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121065643.342-3-alistair@alistair23.me>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 16:50:30 up 51 days,  5:56, 28 users,  load average: 0.17, 0.11,
- 0.05
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CA+G9fYus+rnoxpZqhn35fMz4ZPQvYjkKFKSCsOhFtrHzbu1pZw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-20 22:56, Alistair Francis wrote:
-> Allow the wacom-i2c device to be exposed via device tree.
-
-You did a lot more than exposing.
-
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  .../input/touchscreen/wacom,wacom-i2c.yaml       |  4 ++++
->  drivers/input/touchscreen/wacom_i2c.c            | 16 ++++++++++++++++
->  2 files changed, 20 insertions(+)
+On Fri, Jan 22, 2021 at 08:50:43PM +0530, Naresh Kamboju wrote:
+> On Fri, 22 Jan 2021 at 19:45, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 4.14.217 release.
+> > There are 50 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.217-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
-> index b36d22cd20a2..06ad5ee561af 100644
-> --- a/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
-> @@ -22,6 +22,9 @@ properties:
->    interrupts:
->      maxItems: 1
->  
-> +  vdd-supply:
-> +    maxItems: 1
-> +
-
-Unrelated change.
-
->  required:
->    - compatible
->    - reg
-> @@ -40,5 +43,6 @@ examples:
->                  reg = <0x9>;
->                  interrupt-parent = <&gpio1>;
->                  interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
-> +                vdd-supply = <&reg_touch>;
-
-Dito.
-
->          };
->      };
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index 1afc6bde2891..ec6e0aff8deb 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -11,7 +11,9 @@
->  #include <linux/i2c.h>
->  #include <linux/slab.h>
->  #include <linux/irq.h>
-> +#include <linux/input/touchscreen.h>
-
-Unrelated change.
-
->  #include <linux/interrupt.h>
-> +#include <linux/of.h>
->  #include <asm/unaligned.h>
->  
->  #define WACOM_CMD_QUERY0	0x04
-> @@ -32,6 +34,7 @@ struct wacom_features {
->  struct wacom_i2c {
->  	struct i2c_client *client;
->  	struct input_dev *input;
-> +	struct touchscreen_properties props;
->  	u8 data[WACOM_QUERY_SIZE];
->  	bool prox;
->  	int tool;
-> @@ -187,6 +190,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  	__set_bit(BTN_STYLUS2, input->keybit);
->  	__set_bit(BTN_TOUCH, input->keybit);
->  
-> +	touchscreen_parse_properties(input, true, &wac_i2c->props);
-
-Unrelated change, please move it into a sepreate patch.
-
->  	input_set_abs_params(input, ABS_X, 0, features.x_max, 0, 0);
->  	input_set_abs_params(input, ABS_Y, 0, features.y_max, 0, 0);
->  	input_set_abs_params(input, ABS_PRESSURE,
-> @@ -214,6 +218,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  	}
->  
->  	i2c_set_clientdata(client, wac_i2c);
-> +
-
-Unrelated change.
-
->  	return 0;
->  
->  err_free_irq:
-> @@ -262,10 +267,21 @@ static const struct i2c_device_id wacom_i2c_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, wacom_i2c_id);
->  
-> +#ifdef CONFIG_OF
-
-This #ifdef can be removed using the __maybe_unused macro.
-
-> +static const struct of_device_id wacom_i2c_of_match_table[] = {
-> +	{ .compatible = "wacom,wacom-i2c" },
-
-IMHO "wacom,wacom-i2c" is not good maybe:
- - "wacom,generic" if you don't know the device, or
- - "wacom,XYZ" where XYZ belongs to the real device name.
-
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, wacom_i2c_of_match_table);
-> +#endif
-> +
->  static struct i2c_driver wacom_i2c_driver = {
->  	.driver	= {
->  		.name	= "wacom_i2c",
->  		.pm	= &wacom_i2c_pm,
-> +#ifdef CONFIG_OF
-> +		.of_match_table = of_match_ptr(wacom_i2c_of_match_table),
-> +#endif
-
-No need for this #ifdef.
-
-Regards,
-  Marco
-
-
->  	},
->  
->  	.probe		= wacom_i2c_probe,
-> -- 
-> 2.29.2
+> MIPS: cavium_octeon_defconfig and nlm_xlp_defconfig builds breaks
+> due to this patch on 4.14, 4.9 and 4.4
 > 
+> > Al Viro <viro@zeniv.linux.org.uk>
+> >     MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
 > 
+> Build error:
+> arch/mips/kernel/binfmt_elfo32.c:116:
+> /arch/mips/kernel/../../../fs/binfmt_elf.c: In function 'fill_siginfo_note':
+> /arch/mips/kernel/../../../fs/binfmt_elf.c:1575:23: error: passing
+> argument 1 of 'copy_siginfo_to_user' from incompatible pointer type
+> [-Werror=incompatible-pointer-types]
+>   copy_siginfo_to_user((user_siginfo_t __user *) csigdata, siginfo);
+>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
+> MIPS build failed
+>     * gcc-10-cavium_octeon_defconfig - FAILED
+>     * gcc-10-nlm_xlp_defconfig - FAILED
+>     * gcc-8-cavium_octeon_defconfig - FAILED
+>     * gcc-8-nlm_xlp_defconfig - FAILED
+>     * gcc-9-cavium_octeon_defconfig - FAILED
+>     * gcc-9-nlm_xlp_defconfig - FAILED
+> 
+> Build log link,
+> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/980489009#L162
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Ugh, I had already dropped that from other kernels before, forgot to do
+so here, sorry about, will go do that now and push out -rc2 for all 3 of
+these branches.
+
+thanks,
+
+greg k-h
