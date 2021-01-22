@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAF62FFDA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471DE2FFDA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbhAVHvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:51:06 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:38583 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726032AbhAVHvD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:51:03 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 61E2E5C0227;
-        Fri, 22 Jan 2021 02:49:55 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 22 Jan 2021 02:49:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=W
-        cZl6uTTqBwLCl3/0Cj2KExpfYfUUjhDJqKjoRytFsc=; b=C8WN7ZH9ojPbAAYjQ
-        HQdYXIsucS2354AKI2AOzSOsVvykamfojD7xyt6pS6kp07Ka7w5F9S2LJY53xqj7
-        lsaxO/e/ylS+ZuakcDB/JB4KPfWEDzv+MXxmzzcreaC9NKoROQ/OWXCoew/vu7Kz
-        gLnZg3eZ8JzXHZ1Hc0yITyLbW0cIMcfaJDGhS1fQQPk0KQ9eYqhs/oVqFAhSx9qW
-        +oFqDPJDw2FijTdPk7pJyWVLp6LZ4hiP9wodiYSNO6SrhZwug68nfln6IA60anBs
-        zyGKx+eUrzWnbAssk/2pnc4KJ/a63e8jJ6lIZGrCDPAE+oR913q7tek2QLU1Cos+
-        uiR1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=WcZl6uTTqBwLCl3/0Cj2KExpfYfUUjhDJqKjoRytF
-        sc=; b=LS2kxw/EkPPo3zp6LISc9X9eyB6dv/ADsuBUDYou7pEtVSBOvv2h4uZXm
-        J/kjgw1wm359LXzYjlmiKYxIw+juyhL3UnCNj6yZtZXtNekBgNtUqPZjb+K8jCit
-        aqVJKi/OR3LOCWpddyXnIUjJLUTrLUYRQ3Pvf1NWNp8JxisDdkuu0a+Vgg4ZJDTj
-        niuhViyV70qCc+BJ9t5N7u0ISNNyLs+vzrdmoBdTVPthJX41N6zZlgRxFN1GuLJq
-        WivjL6Q2He36cXCtXvXv8ygzcayidIkpiGzEj7IPDTLUqxuTlXNCncAcOgPHodec
-        qae4VLoTT3CVI+pfqcFdAbfx5jQmg==
-X-ME-Sender: <xms:ooMKYIW7eloDm2rRTVU1Zar0ZQSOjPrqIjSu71dlYD5ATcL4ouA3zA>
-    <xme:ooMKYMlxTUdWrW6zBd8aRxgK-5z-yRvET3iYXdMmjpKGxY4Z8lCskKOwlSledyEuF
-    hUZYz6ZAsqoOw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehgdduudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepvedtie
-    elueetgeeggfeufefhvefgtdetgfetgfdtvdegjeehieduvddtkeffheffnecukfhppeek
-    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:ooMKYMZg4BrAtAKQPIKkMhiS5SRNX3XVv1Qbmd-bL6FBO30m1J1Q9g>
-    <xmx:ooMKYHWE5jfOFirqxBVv7f0COAyajoD19cpZciMVMqpwy07TLTxh3w>
-    <xmx:ooMKYClIR7bBrfRhtpkrQgPEzOSNBoOkF4-5zjtRSxU_Ug2RsJBfbg>
-    <xmx:o4MKYEUAC5doHg7xlaYtUfa6QS7Z8WGU-NoGGLky02V3pmBeMqyHVA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 90A251080063;
-        Fri, 22 Jan 2021 02:49:54 -0500 (EST)
-Date:   Fri, 22 Jan 2021 08:49:53 +0100
-From:   Greg KH <greg@kroah.com>
-To:     =?iso-8859-1?Q?Gy=F6rgy?= Andrasek <jurily@gmail.com>
-Cc:     Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>, Borislav Petkov <bp@suse.de>,
-        Julien Thierry <jthierry@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>, x86@kernel.org
-Subject: Re: [PATCH] objtool: Don't fail the kernel build on fatal errors
-Message-ID: <YAqDoSH66pSB6Xzs@kroah.com>
-References: <9ec7a9531e99f461e02adc18a4124c921c0ab777.1610664286.git.jpoimboe@redhat.com>
- <545be952-908a-f125-ebb0-d96ed1e25cd5@linux.vnet.ibm.com>
- <581806c7-091e-b1f0-41f2-b770e8fd7f5b@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <581806c7-091e-b1f0-41f2-b770e8fd7f5b@gmail.com>
+        id S1726712AbhAVHyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:54:44 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33800 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726573AbhAVHyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 02:54:41 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxKL5vhApghTcJAA--.14162S2;
+        Fri, 22 Jan 2021 15:53:19 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Ming Wang <wangming01@loongson.cn>
+Subject: [PATCH] MIPS: Make definitions of MIPSInst_FMA_{FUNC,FMTM} consistent with MIPS64 manual
+Date:   Fri, 22 Jan 2021 15:53:18 +0800
+Message-Id: <1611301998-25676-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxKL5vhApghTcJAA--.14162S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWxXw1fAr15Jr4xuF17Jrb_yoW8JFWkpa
+        nxA3WkKr4kG34IkwnYyrWDWF13tr4kCrZYqFWUurnFga98Xwn8XFnayr1rt3s3XF4rKF10
+        qw4SgF1jgFy8Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjVc_3UUUU
+        U==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 08:32:35AM +0100, György Andrasek wrote:
-> I'm rejecting both these morons as invalid. Please review everything they've
-> been doing lately.
+The kernel definitions of MIPSInst_FMA_FUNC and MIPSInst_FMA_FFMT are not
+consistent with MADD.fmt, NMADD.fmt and NMSUB.fmt in the MIPS64 manual [1],
+the field func is bit 5..3 and fmt is bit 2..0, fix them. Otherwise there
+exists error when add new instruction simulation.
 
-As Stephen said, please take this elsewhere, it does not belong on the
-Linux kernel mailing lists.
+[1] https://www.mips.com/?do-download=the-mips64-instruction-set-v6-06
 
-greg k-h
+Reported-by: Ming Wang <wangming01@loongson.cn>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/inst.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/mips/include/asm/inst.h b/arch/mips/include/asm/inst.h
+index 22912f7..2f98ced 100644
+--- a/arch/mips/include/asm/inst.h
++++ b/arch/mips/include/asm/inst.h
+@@ -65,11 +65,11 @@
+ #define I_FR_SFT	21
+ #define MIPSInst_FR(x) ((MIPSInst(x) & 0x03e00000) >> I_FR_SFT)
+ 
+-#define I_FMA_FUNC_SFT	2
+-#define MIPSInst_FMA_FUNC(x) ((MIPSInst(x) & 0x0000003c) >> I_FMA_FUNC_SFT)
++#define I_FMA_FUNC_SFT	3
++#define MIPSInst_FMA_FUNC(x) ((MIPSInst(x) & 0x00000038) >> I_FMA_FUNC_SFT)
+ 
+ #define I_FMA_FFMT_SFT	0
+-#define MIPSInst_FMA_FFMT(x) (MIPSInst(x) & 0x00000003)
++#define MIPSInst_FMA_FFMT(x) (MIPSInst(x) & 0x00000007)
+ 
+ typedef unsigned int mips_instruction;
+ 
+-- 
+2.1.0
+
