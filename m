@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFA4300384
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638D6300388
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbhAVMyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:54:37 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:41018 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbhAVMyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:54:08 -0500
-Received: from 1.general.khfeng.us.vpn ([10.172.68.174] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1l2vw8-0005pv-5u; Fri, 22 Jan 2021 12:53:13 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     rjw@rjwysocki.net
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        id S1727725AbhAVMzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:55:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:46288 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727533AbhAVMyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:54:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BD7511B3;
+        Fri, 22 Jan 2021 04:53:41 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2AF2D3F66E;
+        Fri, 22 Jan 2021 04:53:18 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] iommu/arm-smmu: Add support for driver IOMMU fault
+ handlers
+To:     Will Deacon <will@kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org (open list:ACPI),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ACPI / device_sysfs: Prefer "compatible" modalias
-Date:   Fri, 22 Jan 2021 20:53:02 +0800
-Message-Id: <20210122125302.991591-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Joerg Roedel <joro@8bytes.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201124191600.2051751-1-jcrouse@codeaurora.org>
+ <20201124191600.2051751-2-jcrouse@codeaurora.org>
+ <20210122124125.GA24102@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <8ba2f53d-abbf-af7f-07f6-48ad7f383a37@arm.com>
+Date:   Fri, 22 Jan 2021 12:53:17 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210122124125.GA24102@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8765c5ba1949 ("ACPI / scan: Rework modalias creation when
-"compatible" is present") may create two "MODALIAS=" in uevent file if
-conditions are met.
+On 2021-01-22 12:41, Will Deacon wrote:
+> On Tue, Nov 24, 2020 at 12:15:58PM -0700, Jordan Crouse wrote:
+>> Call report_iommu_fault() to allow upper-level drivers to register their
+>> own fault handlers.
+>>
+>> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+>> ---
+>>
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 16 +++++++++++++---
+>>   1 file changed, 13 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index 0f28a8614da3..7fd18bbda8f5 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -427,6 +427,7 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+>>   	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+>>   	struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>   	int idx = smmu_domain->cfg.cbndx;
+>> +	int ret;
+>>   
+>>   	fsr = arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
+>>   	if (!(fsr & ARM_SMMU_FSR_FAULT))
+>> @@ -436,11 +437,20 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+>>   	iova = arm_smmu_cb_readq(smmu, idx, ARM_SMMU_CB_FAR);
+>>   	cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(idx));
+>>   
+>> -	dev_err_ratelimited(smmu->dev,
+>> -	"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+>> +	ret = report_iommu_fault(domain, dev, iova,
+>> +		fsynr & ARM_SMMU_FSYNR0_WNR ? IOMMU_FAULT_WRITE : IOMMU_FAULT_READ);
+>> +
+>> +	if (ret == -ENOSYS)
+>> +		dev_err_ratelimited(smmu->dev,
+>> +		"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+>>   			    fsr, iova, fsynr, cbfrsynra, idx);
+>>   
+>> -	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
+>> +	/*
+>> +	 * If the iommu fault returns an error (except -ENOSYS) then assume that
+>> +	 * they will handle resuming on their own
+>> +	 */
+>> +	if (!ret || ret == -ENOSYS)
+>> +		arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
+> 
+> Hmm, I don't grok this part. If the fault handler returned an error and
+> we don't clear the FSR, won't we just re-take the irq immediately?
 
-This breaks systemd-udevd, which assumes each "key" in uevent file is
-unique. The internal implementation of systemd-udevd overwrites the
-first MODALIAS with the second one, so its kmod rule doesn't load driver
-for the first MODALIAS.
+If we don't touch the FSR at all, yes. Even if we clear the fault 
+indicator bits, the interrupt *might* remain asserted until a stalled 
+transaction is actually resolved - that's that lovely IMP-DEF corner.
 
-So if both ACPI modalias and OF modalias are present, use the latter
-one to ensure there's only one MODALIAS.
+Robin.
 
-Reference: https://github.com/systemd/systemd/pull/18163
-Cc: AceLan Kao <acelan.kao@canonical.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Fixes: 8765c5ba1949 ("ACPI / scan: Rework modalias creation when "compatible" is present")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/acpi/device_sysfs.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-index 96869f1538b9..bfca116482b8 100644
---- a/drivers/acpi/device_sysfs.c
-+++ b/drivers/acpi/device_sysfs.c
-@@ -251,20 +251,12 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
- 	if (add_uevent_var(env, "MODALIAS="))
- 		return -ENOMEM;
- 
--	len = create_pnp_modalias(adev, &env->buf[env->buflen - 1],
--				  sizeof(env->buf) - env->buflen);
--	if (len < 0)
--		return len;
--
--	env->buflen += len;
--	if (!adev->data.of_compatible)
--		return 0;
--
--	if (len > 0 && add_uevent_var(env, "MODALIAS="))
--		return -ENOMEM;
--
--	len = create_of_modalias(adev, &env->buf[env->buflen - 1],
--				 sizeof(env->buf) - env->buflen);
-+	if (adev->data.of_compatible)
-+		len = create_of_modalias(adev, &env->buf[env->buflen - 1],
-+					 sizeof(env->buf) - env->buflen);
-+	else
-+		len = create_pnp_modalias(adev, &env->buf[env->buflen - 1],
-+					  sizeof(env->buf) - env->buflen);
- 	if (len < 0)
- 		return len;
- 
--- 
-2.29.2
-
+> I think
+> it would be better to do this unconditionally, and print the "Unhandled
+> context fault" message for any non-zero value of ret.
+> 
+> Will
+> 
