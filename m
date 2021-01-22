@@ -2,68 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15303008AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC82330088D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729758AbhAVQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:28:39 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:60849 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1729698AbhAVQZ2 (ORCPT
+        id S1729653AbhAVQXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:23:42 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:34052 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729596AbhAVQXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:25:28 -0500
-Received: (qmail 45724 invoked by uid 1000); 22 Jan 2021 11:24:47 -0500
-Date:   Fri, 22 Jan 2021 11:24:47 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peter.chen@nxp.com, jackp@codeaurora.org
-Subject: Re: [PATCH v6 1/4] usb: gadget: udc: core: Introduce check_config to
- verify USB configuration
-Message-ID: <20210122162447.GC43566@rowland.harvard.edu>
-References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
- <1611288100-31118-2-git-send-email-wcheng@codeaurora.org>
+        Fri, 22 Jan 2021 11:23:21 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MGLwGL006257;
+        Fri, 22 Jan 2021 11:22:28 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3668rcjmkh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 11:22:28 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 10MGMRxU058170
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 22 Jan 2021 11:22:27 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2; Fri, 22 Jan 2021
+ 11:22:26 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 22 Jan 2021 11:22:26 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 10MGMOCm016711;
+        Fri, 22 Jan 2021 11:22:24 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 00/12][RESEND] iio: core,buffer: add support for multiple IIO buffers per IIO device
+Date:   Fri, 22 Jan 2021 18:25:17 +0200
+Message-ID: <20210122162529.84978-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611288100-31118-2-git-send-email-wcheng@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-22_11:2021-01-22,2021-01-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 clxscore=1015 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101220088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 08:01:37PM -0800, Wesley Cheng wrote:
-> Some UDCs may have constraints on how many high bandwidth endpoints it can
-> support in a certain configuration.  This API allows for the composite
-> driver to pass down the total number of endpoints to the UDC so it can verify
-> it has the required resources to support the configuration.
-> 
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+Continuing from:
+ https://lore.kernel.org/linux-iio/20201117162340.43924-1-alexandru.ardelean@analog.com/
 
+Changelog v1 -> v2:
+* 'iio: buffer: rework buffer & scan_elements dir creation'
+  add more doc-strings detailing the reasoning for this change
+* 'iio: buffer: re-route scan_elements via it's kobj_type'
+  move list_del() before the kfree()'s in the list destruction
+* 'iio: buffer: introduce support for attaching more IIO buffers'
+  - changed to 'cnt' variable vs re-using the 'i' for unwinding in
+    iio_buffer_alloc_sysfs_and_mask()
+  - removed kfree(old) in iio_device_attach_buffer()
+  - made iio_device_attach_buffer() an int return; this means that some
+    follow up patches are needed to make this return value be used;
+* 'iio: buffer: add ioctl() to support opening extra buffers for IIO device'
+  - tested ioctl() with a simple C program; attached to comment;
+  - changed 'i' variable usage to 'sz' for alloc
+  - changed logic for buffer0; returning FD 0; userspace should know
+    that the IIO_BUFFER_GET_FD_IOCTL call returns 0 for buffer0;
+    this is because I can't find a way to determine the FD of the
+    ioctl() in the kernel; duplicating an ioctl() for buffer0 is also bad;
 
-> --- a/include/linux/usb/gadget.h
-> +++ b/include/linux/usb/gadget.h
-> @@ -328,6 +328,7 @@ struct usb_gadget_ops {
->  	struct usb_ep *(*match_ep)(struct usb_gadget *,
->  			struct usb_endpoint_descriptor *,
->  			struct usb_ss_ep_comp_descriptor *);
-> +	int	(*check_config)(struct usb_gadget *gadget, unsigned long ep_map);
->  };
->  
->  /**
-> @@ -607,6 +608,7 @@ int usb_gadget_connect(struct usb_gadget *gadget);
->  int usb_gadget_disconnect(struct usb_gadget *gadget);
->  int usb_gadget_deactivate(struct usb_gadget *gadget);
->  int usb_gadget_activate(struct usb_gadget *gadget);
-> +int usb_gadget_check_config(struct usb_gadget *gadget, unsigned long ep_map);
->  #else
->  static inline int usb_gadget_frame_number(struct usb_gadget *gadget)
->  { return 0; }
+Alexandru Ardelean (12):
+  iio: core: register chardev only if needed
+  iio: buffer: add back-ref from iio_buffer to iio_dev
+  iio: buffer: rework buffer & scan_elements dir creation
+  iio: buffer: add index to the first IIO buffer dir and symlink it back
+  iio: core: split __iio_device_attr_init() to init only the attr object
+  iio: buffer: re-route scan_elements via it's kobj_type
+  iio: buffer: re-route core buffer attributes via it's new kobj_type
+  iio: buffer: add helper to get the IIO device to which a buffer
+    belongs
+  iio: re-route all buffer attributes through new buffer kobj_type
+  iio: core: wrap iio device & buffer into struct for character devices
+  iio: buffer: introduce support for attaching more IIO buffers
+  iio: buffer: add ioctl() to support opening extra buffers for IIO
+    device
 
-Don't you also need an entry for the case where CONFIG_USB_GADGET isn't 
-enabled?
+ drivers/iio/accel/adxl372.c                   |  36 +-
+ drivers/iio/accel/bmc150-accel-core.c         |  34 +-
+ drivers/iio/adc/at91-sama5d2_adc.c            |  30 +-
+ .../buffer/industrialio-buffer-dmaengine.c    |  13 +-
+ .../cros_ec_sensors/cros_ec_sensors_core.c    |  30 +-
+ .../common/hid-sensors/hid-sensor-trigger.c   |  32 +-
+ drivers/iio/iio_core.h                        |  11 +
+ drivers/iio/industrialio-buffer.c             | 647 ++++++++++++++----
+ drivers/iio/industrialio-core.c               | 117 ++--
+ include/linux/iio/buffer.h                    |   6 +-
+ include/linux/iio/buffer_impl.h               |  25 +-
+ include/linux/iio/iio-opaque.h                |   6 +
+ include/linux/iio/iio.h                       |   2 +-
+ include/linux/iio/sysfs.h                     |  50 ++
+ include/uapi/linux/iio/buffer.h               |  10 +
+ 15 files changed, 790 insertions(+), 259 deletions(-)
+ create mode 100644 include/uapi/linux/iio/buffer.h
 
-Alan Stern
+-- 
+2.17.1
+
