@@ -2,228 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDBC3002C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129E43002CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbhAVMVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727301AbhAVMTq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:19:46 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6D9C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:19:05 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1l2vP2-00087l-Ob; Fri, 22 Jan 2021 13:19:00 +0100
-Subject: Re: [Linux-stm32] [PATCH] iio: adc: stm32-adc: fix erroneous handling
- of spurious IRQs
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Holger Assmann <has@pengutronix.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-iio@vger.kernel.org,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Torgue <alexandre.torgue@st.com>
-References: <20210112152441.20665-1-a.fatoum@pengutronix.de>
- <20210116175333.4d8684c5@archlinux>
- <47b0905a-4496-2f21-3b17-91988aa88e91@pengutronix.de>
- <7668b126-d77c-7339-029f-50333d03fbd9@foss.st.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <e542035e-d5fe-0680-4780-4554ed165e0e@pengutronix.de>
-Date:   Fri, 22 Jan 2021 13:18:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727517AbhAVMXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:23:06 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:56582 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726664AbhAVMVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:21:40 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611318077; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=Df5BKd8ZWR6aY7YbTqjLmKuv/IaZdEPrn9pcsc27/jw=; b=ZN38tYp8OwcZFH+Dmw4XT/Z+USYwvssTDtq7GUZcEQkwwZC3ITFHk4EJfYtIGSMYMqbVgUFv
+ X8sNAfcMPW1Cy4TUitqe2h+/qdBgN0MWnQ7TQ3jj9bPtqb6F5+G5zY9Bg1UOXfkraqktOyCp
+ uX+3P+dEXXbpcXnA4DfCVqtOAkc=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 600ac3205677aca7bdf712ff (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 Jan 2021 12:20:48
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 70496C433C6; Fri, 22 Jan 2021 12:20:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA8B7C433ED;
+        Fri, 22 Jan 2021 12:20:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AA8B7C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        linux-wireless@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: net/wireless/reg.c:144 suspicious rcu_dereference_check() usage!
+References: <20210122101124.GE4867@zn.tnic> <20210122105034.GF4867@zn.tnic>
+Date:   Fri, 22 Jan 2021 14:20:43 +0200
+In-Reply-To: <20210122105034.GF4867@zn.tnic> (Borislav Petkov's message of
+        "Fri, 22 Jan 2021 11:50:34 +0100")
+Message-ID: <87v9bpb1t0.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <7668b126-d77c-7339-029f-50333d03fbd9@foss.st.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Fabrice,
+Borislav Petkov <bp@alien8.de> writes:
 
-On 19.01.21 18:56, Fabrice Gasnier wrote:
-> On 1/18/21 12:42 PM, Ahmad Fatoum wrote:
->> Hello Jonathan,
->>
->> On 16.01.21 18:53, Jonathan Cameron wrote:
->>> On Tue, 12 Jan 2021 16:24:42 +0100
->>> Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>>
->>>> 1c6c69525b40 ("genirq: Reject bogus threaded irq requests") makes sure
->>>> that threaded IRQs either
->>>>   - have IRQF_ONESHOT set
->>>>   - don't have the default just return IRQ_WAKE_THREAD primary handler
->>>>
->>>> This is necessary because level-triggered interrupts need to be masked,
->>>> either at device or irqchip, to avoid an interrupt storm.
->>>>
->>>> For spurious interrupts, the STM32 ADC driver still does this bogus
->>>> request though:
->>>>   - It doesn't set IRQF_ONESHOT
->>>>   - Its primary handler just returns IRQ_WAKE_THREAD if the interrupt
->>>>     is unexpected, i.e. !(status & enabled_mask)
->>> This seems 'unusual'.  If this is a spurious interrupt we should be
->>> returning IRQ_NONE and letting the spurious interrupt protection
->>> stuff kick in.
->>>
->>> The only reason I can see that it does this is print an error message.
->>> I'm not sure why we need to go into the thread to do that given
->>> it's not supposed to happen. If we need that message at all, I'd
->>> suggest doing it in the interrupt handler then return IRQ_NONE;
->> As described, I run into the spurious IRQ case, so I think the message is
->> still useful (until that's properly fixed), but yes, it should've returned
->> IRQ_NONE in that case.
->>
->> With these changes, IRQF_ONESHOT shouldn't be necessary, but in practice
->> the driver doesn't function correctly with the primary IRQ handler threaded.
->>
->> Olivier, Fabrice: Are you aware of this problem?
-> 
-> 
-> Hi Ahmad, Jonathan,
-> 
-> I wasn't aware of this up to now. I confirm we've the same behavior at
-> our end with threadirqs=1.
-> 
-> Olivier and I started to look at this. Indeed, the IRQF_ONESHOT makes
-> the issue to disappear.
-> I'm not sure 100% that's for the above reasons. Please let me share some
-> piece of logs, analysis and thoughts.
+> On Fri, Jan 22, 2021 at 11:11:24AM +0100, Borislav Petkov wrote:
+>> Hi,
+>> 
+>> this triggers is on 5.11-rc3 + tip/x86/urgent (shouldn't matter tho),
+>> 32-bit kernel:
+>
+> This looks like a multiple wireless drivers issue, this is on another
+> 32-bit machine with ath5k this time:
+>
+> [   23.810222] ath5k 0000:03:00.0: can't disable ASPM; OS doesn't have ASPM control
+> [   23.847597] ath5k 0000:03:00.0: registered as 'phy0'
+> [   24.504999] ath: EEPROM regdomain: 0x65
+> [   24.516125] ath: EEPROM indicates we should expect a direct regpair map
+> [   24.527286] ath: Country alpha2 being used: 00
+> [   24.535435] ath: Regpair used: 0x65
+>
+> [   24.551461] =============================
+> [   24.561941] WARNING: suspicious RCU usage
+> [   24.572030] 5.11.0-rc3+ #1 Not tainted
+> [   24.580276] -----------------------------
+> [   24.590764] net/wireless/reg.c:144 suspicious rcu_dereference_check() usage!
+> [   24.601730] 
 
-Thanks for looking at this.
+Can you try this commit:
 
-> I may miss it but, the patch "genirq: Reject bogus threaded irq
-> requests" seems to handle the case where no HW handler is provided, but
-> only the threaded part?
+51d62f2f2c50 cfg80211: Save the regulatory domain with a lock
 
-There is still a primary handler, but that one does only do IRQ_WAKE_THREAD,
-so I assumed that would be equivalent to what the driver is doing in the
-spurious IRQ case.
-
-> In the stm32-adc both are provided. Also the IRQ domain in
-> stm32-adc-core maybe a key here ?
-
-Oh, missed completely that the stm32-adc-core does the interrupt routing.
-
-> We did some testing, ftrace and observed following behavior for one
-> capture (a single cat in_voltage..._raw) :
-> 
-> in stm32-adc-core, as IRQ source is still active until the IRQ thread
-> can execute:
-> - stm32_adc_irq_handler <-- generic_handle_irq
-> - stm32_adc_irq_handler <-- generic_handle_irq
-> - stm32_adc_irq_handler <-- generic_handle_irq
-> ...
-> 
-> - sched_switch to the 1st IRQ thread
-> - stm32_adc_irq_handler <-- generic_handle_irq (again until DR get read)
-> 
-> - stm32_adc_isr <-- irq_forced_thread_fn (from stm32-adc)
->   DR read, clears the active flag
-> - stm32_adc_isr <-- irq_forced_thread_fn
->   wakes the 2nd IRQ thread to print an error (unexpected...)
-> 
-> sched_switch to the 2nd IRQ thread that prints the message.
-> 
-> - stm32_adc_threaded_isr <-- irq_thread_fn
-> 
-> 
-> So my understanding is: the cause seems to be the concurrency between
-> 
-> - stm32_adc_irq_handler() storm calls in stm32-adc-core
-> - stm32_adc_isr() call to clear the cause (forced into a thread with
-> threadirqs=1).
-
-I can't follow here. Where does stm32_adc_isr() clear the IRQ cause?
-I assumed it can't be isr_ovr.mask, because that's checked in the
-primary handler.
-
-> To properly work, the stm32_adc_irq_handler() should be masked in between.
-> 
-> As you explain, this works in this case: the call to stm32_adc_isr (in
-> stm32-adc) isn't longer forced threaded with IRQF_ONESHOT.
-> 
-> It looks like IRQF_NO_THREAD for forced threading would have similar
-> effect? Maybe the same would be applicable here ? (I haven't tested...)
-
-I guess IRQF_NO_THREAD is meant for use with request_irq and
-IRQF_ONESHOT for request_threaded_irq?
- 
-> Hopefully this helps and is similar to what you observed.
-
-Cheers,
-Ahmad
-
-> 
-> Thanks and best regards,
-> Fabrice
-> 
->>
->> Cheers,
->> Ahmad
->>
->>>>   - stm32mp151.dtsi describes the ADC interrupt as level-triggered
->>>>
->>>> Fix this by setting IRQF_ONESHOT to have the irqchip mask the IRQ
->>>> until the IRQ thread has finished.
->>>>
->>>> IRQF_ONESHOT also has the effect that the primary handler is no longer
->>>> forced into a thread. This makes the issue with spurious interrupts
->>>> interrupts disappear when reading the ADC on a threadirqs=1 kernel.
->>>> This used to result in following kernel error message:
->>>>
->>>> 	iio iio:device1: Unexpected IRQ: IER=0x00000000, ISR=0x0000100e
->>>> or
->>>> 	iio iio:device1: Unexpected IRQ: IER=0x00000004, ISR=0x0000100a
->>>>
->>>> But with this patch applied (or threaded IRQs disabled), this no longer
->>>> occurs.
->>>>
->>>> Cc: Lucas Stach <l.stach@pengutronix.de>
->>>> Reported-by: Holger Assmann <has@pengutronix.de>
->>>> Fixes: 695e2f5c289b ("iio: adc: stm32-adc: fix a regression when using dma and irq")
->>>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->>>> ---
->>>>  drivers/iio/adc/stm32-adc.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
->>>> index c067c994dae2..7e0e21c79ac8 100644
->>>> --- a/drivers/iio/adc/stm32-adc.c
->>>> +++ b/drivers/iio/adc/stm32-adc.c
->>>> @@ -1910,7 +1910,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
->>>>  
->>>>  	ret = devm_request_threaded_irq(&pdev->dev, adc->irq, stm32_adc_isr,
->>>>  					stm32_adc_threaded_isr,
->>>> -					0, pdev->name, indio_dev);
->>>> +					IRQF_ONESHOT, pdev->name, indio_dev);
->>>>  	if (ret) {
->>>>  		dev_err(&pdev->dev, "failed to request IRQ\n");
->>>>  		return ret;
->>>
-> 
+https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/commit/?id=51d62f2f2c50
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
