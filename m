@@ -2,123 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73627300595
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C403A3005AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbhAVOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728769AbhAVOcY (ORCPT
+        id S1728805AbhAVOgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:36:20 -0500
+Received: from mail-lj1-f179.google.com ([209.85.208.179]:40544 "EHLO
+        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728709AbhAVOc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:32:24 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9E1C061788;
-        Fri, 22 Jan 2021 06:31:44 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id x23so6729494lji.7;
-        Fri, 22 Jan 2021 06:31:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3Bnnhv8/ungSfzdbo4blEjJTqIYQgbA8qgZ1/HTwN7E=;
-        b=oBE07xqB0ZvDLI0k7/Hsk7r6F8t/AOGFX/EP+FoGbGnweK/B0k+U/kneVLGC1w1vAw
-         B+IvY65C6ivynrcLeUpfcakdNBZClc28ipvA61wqy3lEzKCkD4RZFHTmmZ/yiyyXAd7t
-         NMKYSYkVJQw/Pc3q6x/Q43kg9vnp+/fC21H8tlQyMEnJQ5Pp5Ey2h22c+AluSBwBMUga
-         U5X3OEgpesY/f6hv0cGKho3y+kKbxeF01mD7fGdTB2yFGxUEYpcwpUgsxa2vMVKg2KGU
-         RfO1URkEHLYC7Zr8ZY75PwCNIw4y3K3fcvsRYe7QeNl1jqs1iG3sONBhH78xi0d6o4+I
-         CKLA==
+        Fri, 22 Jan 2021 09:32:58 -0500
+Received: by mail-lj1-f179.google.com with SMTP id x23so6731587lji.7;
+        Fri, 22 Jan 2021 06:32:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3Bnnhv8/ungSfzdbo4blEjJTqIYQgbA8qgZ1/HTwN7E=;
-        b=J1ZAZFQzjS28XMD3du/KGb3n3X46kDqMCHANIPAeLJyCEW2EY4FHEII68U8YGJghIf
-         o1IfkTaT+Mt4R6b+naTg/6KmWt9KpXxzJ3jUR+BSr0l1I646CKHGnbohkui5BTI5urk7
-         LkMbazUbmkcvBYDT90tfVr4WV5nqKxaBK0tQ639AHHmNlRhXTP82WwBATc6zTULGL3lY
-         SOkTyv0uaku1ifgmIELW6cuq9Ca2N5h+IjnhTWrWSxEl/ebKcj1R94/jRnTLRxdBfp4p
-         U0JFgATquPY4XotNjU/ibaZorxLVyP5p7GgAqiF9e57w90Ce9EheRAE+eyhKDgI8e+ul
-         gi/g==
-X-Gm-Message-State: AOAM532gszFcCzmRCJAvSFreDmiWrRwk0D0DSLN7+6OIgeawDH6575fS
-        wQ4u16avFpvS3rCOX06/P0s=
-X-Google-Smtp-Source: ABdhPJxTlicx2+sF7zITXF5P61jkAO0p9O/OOyyGbLeLtpy/95Q1cTcuKKYw9f26i4fJvm7t/Iwfqg==
-X-Received: by 2002:a2e:958c:: with SMTP id w12mr368249ljh.303.1611325902874;
-        Fri, 22 Jan 2021 06:31:42 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id s22sm386867ljh.102.2021.01.22.06.31.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 06:31:42 -0800 (PST)
-Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
- <b634343a-8005-fc35-e38b-bfeaa7310a70@gmail.com>
- <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <8af5abe4-fc3f-8ce4-ff14-542754f0275d@gmail.com>
-Date:   Fri, 22 Jan 2021 17:31:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DMK+kUEhkRmaEG/zmoXIoJYB8KlkSVcofvst3zfBu1s=;
+        b=V7m3C/o/IEUTmeuIwKAuP6VV0bEdgNfsCA6Y4aqAdtukyp+XmIV7PT0PZ2OOAcddgS
+         /lK/NkivbDFRmekjnMnD2Z+2o47cjHSuXDQeYP+H3DnSSXac2eiLZjD0rE4oaO97i2pT
+         Ezv29vY8Xt0ZgPaM1+yEhPOv/8Rd8L4Nf+bdGgRi2S13Nve8d9X3zHBP8E3pQTBA1fl7
+         sT5toTw1A3EQpIVK+flNRiz6tfnJbMWWKE/dmIUmjU4aGUVjeAZ99cq7TQraKDzwbs/J
+         kHUObDXwWGQovGRjyfmpX2BTka7xz6IBcqXSGhLUd3PvrYIkWPlqgiZ/rGyqzzivfzuX
+         IE7A==
+X-Gm-Message-State: AOAM531Umxe0DwWoU3Mb3sa1UBOpkwmqN+hbGMt1Q9KF/EzGYT7KaGV2
+        KJUnsK7qQlOL5j/3uYhzMAY=
+X-Google-Smtp-Source: ABdhPJzLW8uEIWDKF/22uk5zTsppqsvNqh51HmFF5d/29DxWWPQnXOQOA3rakFS+isZPA6F//adfEw==
+X-Received: by 2002:a2e:9910:: with SMTP id v16mr107086lji.153.1611325934922;
+        Fri, 22 Jan 2021 06:32:14 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id b15sm901348lfj.306.2021.01.22.06.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 06:32:14 -0800 (PST)
+Date:   Fri, 22 Jan 2021 16:32:07 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH v7 1/6] dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF
+ PMICs
+Message-ID: <cd13800b70d8dae6d9d62658235f4790bdfdb30a.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.01.2021 07:45, Viresh Kumar пишет:
-> On 22-01-21, 00:41, Dmitry Osipenko wrote:
->> 21.01.2021 14:17, Viresh Kumar пишет:
->>> @@ -1074,15 +1091,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->>>  
->>>  	if (!ret) {
->>>  		ret = _set_opp_bw(opp_table, opp, dev, false);
->>> -		if (!ret)
->>> +		if (!ret) {
->>>  			opp_table->enabled = true;
->>> +			dev_pm_opp_put(old_opp);
->>> +
->>> +			/* Make sure current_opp doesn't get freed */
->>> +			dev_pm_opp_get(opp);
->>> +			opp_table->current_opp = opp;
->>> +		}
->>>  	}
->>
->> I'm a bit surprised that _set_opp_bw() isn't used similarly to
->> _set_opp_voltage() in _generic_set_opp_regulator().
->>
->> I'd expect the BW requirement to be raised before the clock rate goes UP.
-> 
-> I remember discussing that earlier when this stuff came in, and this I
-> believe is the reason for that.
-> 
-> We need to scale regulators before/after frequency because when we
-> increase the frequency a regulator may _not_ be providing enough power
-> to sustain that (even for a short while) and this may have undesired
-> effects on the hardware and so it is important to prevent that
-> malfunction.
-> 
-> In case of bandwidth such issues will not happen (AFAIK) and doing it
-> just once is normally enough. It is just about allowing more data to
-> be transmitted, and won't make the hardware behave badly.
-> 
+Add bindings for ROHM BD9576MUF and BD9573MUF PMICs. These
+PMICs are primarily intended to be used to power the R-Car series
+processors. They provide 6 power outputs, safety features and a
+watchdog with two functional modes.
 
-This may not be true for all kinds of hardware, a display controller is
-one example. If display's pixclock is raised before the memory bandwidth
-of the display's memory client, then display controller may get a memory
-underflow since it won't be able to fetch memory fast enough and it's
-not possible to pause data transmission to display panel, hence display
-panel may get out of sync and a full hardware reset will be needed in
-order to recover. At least this is the case for NVIDIA Tegra SoCs.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes since v6:
+ - No changes
+ .../bindings/mfd/rohm,bd9576-pmic.yaml        | 123 ++++++++++++++++++
+ 1 file changed, 123 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
 
-I guess it's not a real problem for any of OPP API users right now, but
-this is something to keep in mind.
+diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
+new file mode 100644
+index 000000000000..6483860da955
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
+@@ -0,0 +1,123 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/rohm,bd9576-pmic.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ROHM BD9576MUF and BD9573MUF Power Management Integrated Circuit bindings
++
++maintainers:
++  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
++
++description: |
++  BD9576MUF and BD9573MUF are power management ICs primarily intended for
++  powering the R-Car series processors.
++  The IC provides 6 power outputs with configurable sequencing and safety
++  monitoring. A watchdog logic with slow ping/windowed modes is also included.
++
++properties:
++  compatible:
++    enum:
++      - rohm,bd9576
++      - rohm,bd9573
++
++  reg:
++    description:
++      I2C slave address.
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  rohm,vout1-en-low:
++    description:
++      BD9576 and BD9573 VOUT1 regulator enable state can be individually
++      controlled by a GPIO. This is dictated by state of vout1-en pin during
++      the PMIC startup. If vout1-en is LOW during PMIC startup then the VOUT1
++      enable sate is controlled via this pin. Set this property if vout1-en
++      is wired to be down at PMIC start-up.
++    type: boolean
++
++  rohm,vout1-en-gpios:
++    description:
++      GPIO specifier to specify the GPIO connected to vout1-en for vout1 ON/OFF
++      state control.
++    maxItems: 1
++
++  rohm,ddr-sel-low:
++    description:
++      The BD9576 and BD9573 output voltage for DDR can be selected by setting
++      the ddr-sel pin low or high. Set this property if ddr-sel is grounded.
++    type: boolean
++
++  rohm,watchdog-enable-gpios:
++    description: The GPIO line used to enable the watchdog.
++    maxItems: 1
++
++  rohm,watchdog-ping-gpios:
++    description: The GPIO line used to ping the watchdog.
++    maxItems: 1
++
++  rohm,hw-timeout-ms:
++    maxItems: 2
++    description:
++      Watchog timeout in milliseconds. If single value is given it is
++      the maximum timeout. Eg. if pinging watchdog is not done within this time
++      limit the watchdog will be triggered. If two values are given watchdog
++      is configured in "window mode". Then first value is limit for short-ping
++      Eg. if watchdog is pinged sooner than that the watchdog will trigger.
++      When two values is given the second value is the maximum timeout.
++      # (HW) minimum for short timeout is 2ms, maximum 220 ms.
++      # (HW) minimum for max timeout is 4ms, maximum 4416 ms.
++
++  regulators:
++    $ref: ../regulator/rohm,bd9576-regulator.yaml
++    description:
++      List of child nodes that specify the regulators.
++
++required:
++  - compatible
++  - reg
++  - regulators
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/leds/common.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        pmic: pmic@30 {
++            compatible = "rohm,bd9576";
++            reg = <0x30>;
++            rohm,vout1-en-low;
++            rohm,vout1-en-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
++            rohm,ddr-sel-low;
++            rohm,watchdog-enable-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
++            rohm,watchdog-ping-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
++            rohm,hw-timeout-ms = <150>, <2300>;
++
++            regulators {
++                boost1: regulator-vd50 {
++                    regulator-name = "VD50";
++                };
++                buck1: regulator-vd18 {
++                    regulator-name = "VD18";
++                };
++                buck2: regulator-vdddr {
++                    regulator-name = "VDDDR";
++                };
++                buck3: regulator-vd10 {
++                    regulator-name = "VD10";
++                };
++                ldo: regulator-voutl1 {
++                    regulator-name = "VOUTL1";
++                };
++                sw: regulator-vouts1 {
++                    regulator-name = "VOUTS1";
++                };
++            };
++        };
++    };
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
