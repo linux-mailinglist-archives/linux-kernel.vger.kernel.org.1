@@ -2,182 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFE62FF9C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A174E2FF9C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbhAVBEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 20:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
+        id S1726137AbhAVBH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 20:07:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbhAVBE0 (ORCPT
+        with ESMTP id S1725880AbhAVBHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 20:04:26 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D54C06174A;
-        Thu, 21 Jan 2021 17:03:46 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id b8so2275719plh.12;
-        Thu, 21 Jan 2021 17:03:46 -0800 (PST)
+        Thu, 21 Jan 2021 20:07:24 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6082C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:06:43 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id y19so7992237iov.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:06:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lw4cm+7RXhLgXHhIgHAntQuy6SsZDwNqhL+qH8M4o3Q=;
-        b=XhdA9ei1rorZZbjDB1bxDSifSMzivWAG6Z/YPsqR6QqmUxc6VTdh+WLbjCztj5VjV2
-         Y+dKEpFeuWM2An1Evn24rEmp+5Z1dm7qpRCibEQ+1GbNwX1r9T5/Gx9nSURWWwbIIe2r
-         HfM82xGGVz+LObwR71Pbjpi2+oRPfDZQWmV9/DV6mcUFtH+iaAEuh/XYNUYmanyIPwXg
-         ATzqC2zmij1Tegt2Xv3ZP71dx/wTol+Zu5oxZfoID7vldOsjrt6OxnB20MrihUv46wT5
-         9Qbw8tCFYnUVghfTteSJg3nWRppmB8WPscLwqjlcs2JIeH8v07/c+Q9k08CQy2bIBPMN
-         fXYw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jK8dGzMF5fbkHysShjPpwKhS3UG4E9WXSfnT0AJszwQ=;
+        b=adhZ9HBXkbT+OuB9xzLZ9RRrVOVOPOEKdTg2Pm8YXBo1SbP8GpmN3yjunxBX64DmRk
+         1ISzXA8OG0M8EUJyexOgolPcEn/gLG5nBfmqme/9y39kYbcptdc/eE+K0pLmNCwJyiTR
+         h9U0PEonaW+FRLZ73pZK8Zn+o2kShgEkgZAr6eAZRAHxfJJbA87OBMzaYX78aX+uB2b5
+         QHTsmG2UwmcOqbagC5woensCE+lUuDnfCbcr+K3veMO8jdSXw6FlO5vf6DZCyXX+PuUk
+         h3qiP/VVrw2lFMITdzwyS7n0hrJ1GVI9TjFdS7tBuMvWwFPrK7kg4ynL/pDh4U/MLcBq
+         hVgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lw4cm+7RXhLgXHhIgHAntQuy6SsZDwNqhL+qH8M4o3Q=;
-        b=HOA6o1HkBG9t+R1vfk89GuC6qTiMgzzVu3SmXhDzN4KAbya9dKaKG4hbfPuwMWE4ys
-         43eOuIBhCofQDs5RRUUmSH/z2f+E65fXj2PO8L0tz09PYN0BWklD1fdRpK072oGF0tSV
-         u0l79cdWgkVYu43JHR63hUB64CZZOQ+7an3giSgSVRZTwfTcE1JOq9qMZ5si3ZMc310J
-         mkilybkFgqbaFPXZgcZgQxlS8w7eZ8bPg7mLYOK6Hfn3e8C+bC5rVKOhjHENznj1bTOQ
-         uSPIOIOG7n9ih5TsBfOjKFrjweBEIkUjS4NDWOsmhynG8C2/nrHL5API8E5MP7mqsuw4
-         8i8g==
-X-Gm-Message-State: AOAM530EdHrzRMj3PcYjJvddiszCN0pNQ17jFaEMXmiOGjJw4ETCe5XD
-        gpfrdgajeGNqZW3r4NBKIag=
-X-Google-Smtp-Source: ABdhPJzmb7nke4O74Aga3Has5vmSGhKK4Sa5I6pQqAuiHRHYi6rZ29DGdsXsL8nJ1Ji6VskHwOhaDA==
-X-Received: by 2002:a17:90a:5513:: with SMTP id b19mr2363941pji.99.1611277425889;
-        Thu, 21 Jan 2021 17:03:45 -0800 (PST)
-Received: from shinobu (113x33x126x33.ap113.ftth.ucom.ne.jp. [113.33.126.33])
-        by smtp.gmail.com with ESMTPSA id e3sm6395565pgs.60.2021.01.21.17.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 17:03:44 -0800 (PST)
-Date:   Fri, 22 Jan 2021 10:03:32 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pau Oliva Fora <pof@eslack.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hannes Reinecke <hare@suse.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v1 0/2] isa: Make the remove callback for isa drivers
- return void
-Message-ID: <YAokZMNkgVfJ+csC@shinobu>
-References: <20210121204812.402589-1-uwe@kleine-koenig.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jK8dGzMF5fbkHysShjPpwKhS3UG4E9WXSfnT0AJszwQ=;
+        b=McV0QVKnUotjq+KUSl3jrmN/7Yydz5HqH2xZmruhJvlS9ulWBaN83kzynn2G7GLrms
+         0fLCO3Jt2VSzfWFWujUqME/1SWyvxKNXvzyIxW3ojcqStMnKuvRM7gck67rrOFAO2jpG
+         azIw066rWx4lUj6fo2HjNW+mMv4yOQtvAsVtxReYd8QGw9OPvT16JOTkSb8gb7Mh2Qj6
+         Ks/NQAWR9LlrY5Xy5MlYO8DiMJ5wVAzVO9nWCHavg3Dg7xM/ZO1hoPbMGTswcGk2dibT
+         P86syG0/kLJY8rzpVVekBkl54IZWL7VCQwp7AExVlH5iY/t/UTDssasjqQCF2JrVwziP
+         hEsA==
+X-Gm-Message-State: AOAM532fVuQzuJFQwfTVewwh4V2UHI+neSOWEyIBsuo4N0ohLldEZGNC
+        Jh5XNlWN7Eupr7kWZzz4wOBOPXLJU0+HArN1RZrl8Q==
+X-Google-Smtp-Source: ABdhPJxXHOmQM989K1wKwQNiDXpujO4EfvfcYbPwYYEr8Y52N1cCIseWfyEtac/XGEZXUWJM0hozVHGrsbsU+Ghn0zY=
+X-Received: by 2002:a92:15c6:: with SMTP id 67mr1929319ilv.283.1611277602645;
+ Thu, 21 Jan 2021 17:06:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="PZu/ILMf5FNwdU4R"
-Content-Disposition: inline
-In-Reply-To: <20210121204812.402589-1-uwe@kleine-koenig.org>
+References: <20210112181041.356734-1-bgardon@google.com> <20210112181041.356734-6-bgardon@google.com>
+ <YAiEaB/t/o9JvRN4@google.com>
+In-Reply-To: <YAiEaB/t/o9JvRN4@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 21 Jan 2021 17:06:31 -0800
+Message-ID: <CANgfPd8vPUVF4Rp695nmQWzWCbyCV8dE6uAbw-KVXE9uirYvfQ@mail.gmail.com>
+Subject: Re: [PATCH 05/24] kvm: x86/mmu: Fix yielding in TDP MMU
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 20, 2021 at 11:28 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Jan 12, 2021, Ben Gardon wrote:
+> > There are two problems with the way the TDP MMU yields in long running
+> > functions. 1.) Given certain conditions, the function may not yield
+> > reliably / frequently enough. 2.) In some functions the TDP iter risks
+> > not making forward progress if two threads livelock yielding to
+> > one another.
+> >
+> > Case 1 is possible if for example, a paging structure was very large
+> > but had few, if any writable entries. wrprot_gfn_range could traverse many
+> > entries before finding a writable entry and yielding.
+> >
+> > Case 2 is possible if two threads were trying to execute wrprot_gfn_range.
+> > Each could write protect an entry and then yield. This would reset the
+> > tdp_iter's walk over the paging structure and the loop would end up
+> > repeating the same entry over and over, preventing either thread from
+> > making forward progress.
+> >
+> > Fix these issues by moving the yield to the beginning of the loop,
+> > before other checks and only yielding if the loop has made forward
+> > progress since the last yield.
+>
+> I think it'd be best to split this into two patches, e.g. ensure forward
+> progress and then yield more agressively.  They are two separate bugs, and I
+> don't think that ensuring forward progress would exacerbate case #1.  I'm not
+> worried about breaking things so much as getting more helpful shortlogs; "Fix
+> yielding in TDP MMU" doesn't provide any insight into what exactly was broken.
+> E.g. something like:
+>
+>   KVM: x86/mmu: Ensure forward progress when yielding in TDP MMU iter
+>   KVM: x86/mmu: Yield in TDU MMU iter even if no real work was done
+>
+> > Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
+> > Reviewed-by: Peter Feiner <pfeiner@google.com>
+> >
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 83 +++++++++++++++++++++++++++++++-------
+> >  1 file changed, 69 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index b2784514ca2d..1987da0da66e 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -470,9 +470,23 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+> >                         gfn_t start, gfn_t end, bool can_yield)
+> >  {
+> >       struct tdp_iter iter;
+> > +     gfn_t last_goal_gfn = start;
+> >       bool flush_needed = false;
+> >
+> >       tdp_root_for_each_pte(iter, root, start, end) {
+> > +             /* Ensure forward progress has been made before yielding. */
+> > +             if (can_yield && iter.goal_gfn != last_goal_gfn &&
+>
+> Make last_goal_gfn a property of the iterator, that way all this logic can be
+> shoved into tdp_mmu_iter_flush_cond_resched(), and the comments about ensuring
+> forward progress and effectively invalidating/resetting the iterator (the
+> comment below) can be a function comment, as opposed to being copied everywhere.
+> E.g. there can be a big scary warning in the function comment stating that the
+> caller must restart its loop if the helper yielded.
+>
+> Tangentially related, the name goal_gfn is quite confusing.  "goal" and "end"
+> are synonyms, but "goal" is often initialized with "start", and it's not used to
+> terminate the walk.  Maybe next_gfn instead?  And maybe yielded_gfn, since
+> last_next_gfn is pretty horrendous.
 
---PZu/ILMf5FNwdU4R
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+All these are excellent suggestions and definitely make the code
+cleaner. I'll definitely adopt yielded_gfn. While I agree goal_gfn is
+a little odd, I think next_gfn could be more misleading because the
+goal_gfn is really more of a target than the next step. It might take
+4 or 5 steps to actually reach a last-level entry mapping that gfn.
+target_last_level_gfn or next_last_level_gfn would probably be the
+most accurate option.
 
-On Thu, Jan 21, 2021 at 09:48:10PM +0100, Uwe Kleine-K=C3=B6nig wrote:
-> Hello,
->=20
-> as described in the commit log of the 2nd patch returning an error code
-> from a bus' remove callback doesn't make any difference as the driver
-> core ignores it and still considers the device removed.
->=20
-> So change the remove callback to return void to not give driver authors
-> an incentive to believe they could return an error.
->=20
-> There is only a single isa driver in the tree (assuming I didn't miss
-> any) that has a remove callback that can return a non zero return code.
-> This is "fixed" in the first patch, to make the second patch more
-> obviously correct.
->=20
-> Best regards
-> Uwe
->=20
-> Uwe Kleine-K=C3=B6nig (2):
->   watchdog: pcwd: drop always-false if from remove callback
->   isa: Make the remove callback for isa drivers return void
->=20
->  drivers/base/isa.c                   | 2 +-
->  drivers/i2c/busses/i2c-elektor.c     | 4 +---
->  drivers/i2c/busses/i2c-pca-isa.c     | 4 +---
->  drivers/input/touchscreen/htcpen.c   | 4 +---
->  drivers/media/radio/radio-sf16fmr2.c | 4 +---
->  drivers/net/can/sja1000/tscan1.c     | 4 +---
->  drivers/net/ethernet/3com/3c509.c    | 3 +--
->  drivers/scsi/advansys.c              | 3 +--
->  drivers/scsi/aha1542.c               | 3 +--
->  drivers/scsi/fdomain_isa.c           | 3 +--
->  drivers/scsi/g_NCR5380.c             | 3 +--
->  drivers/watchdog/pcwd.c              | 7 +------
->  include/linux/isa.h                  | 2 +-
->  sound/isa/ad1848/ad1848.c            | 3 +--
->  sound/isa/adlib.c                    | 3 +--
->  sound/isa/cmi8328.c                  | 3 +--
->  sound/isa/cmi8330.c                  | 3 +--
->  sound/isa/cs423x/cs4231.c            | 3 +--
->  sound/isa/cs423x/cs4236.c            | 3 +--
->  sound/isa/es1688/es1688.c            | 3 +--
->  sound/isa/es18xx.c                   | 3 +--
->  sound/isa/galaxy/galaxy.c            | 3 +--
->  sound/isa/gus/gusclassic.c           | 3 +--
->  sound/isa/gus/gusextreme.c           | 3 +--
->  sound/isa/gus/gusmax.c               | 3 +--
->  sound/isa/gus/interwave.c            | 3 +--
->  sound/isa/msnd/msnd_pinnacle.c       | 3 +--
->  sound/isa/opl3sa2.c                  | 3 +--
->  sound/isa/opti9xx/miro.c             | 3 +--
->  sound/isa/opti9xx/opti92x-ad1848.c   | 3 +--
->  sound/isa/sb/jazz16.c                | 3 +--
->  sound/isa/sb/sb16.c                  | 3 +--
->  sound/isa/sb/sb8.c                   | 3 +--
->  sound/isa/sc6000.c                   | 3 +--
->  sound/isa/sscape.c                   | 3 +--
->  sound/isa/wavefront/wavefront.c      | 3 +--
->  36 files changed, 36 insertions(+), 79 deletions(-)
->=20
->=20
-> base-commit: 5a158981aafa7f29709034b17bd007b15cb29983
-> --=20
-> 2.29.2
-
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-
---PZu/ILMf5FNwdU4R
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAKJFgACgkQhvpINdm7
-VJLzPQ/9FPQmfnPF1kWcQikWSXr31BdrY/bU1k3tsN3+yIFcnAkjeW5mH5TGysY8
-zpAFfnbdVIMz5er9oBLPRcOztSwitbQeOuLQHNnm5Bf8Vs/BBYahD8iK0Z11CLzU
-NaOcLr3iJYTisqqbPjiadkoKUeCh6vizab5oaZUR/5jn6YvtFX1vB3amb2J0600r
-mNVDoLHL4BnWW40jTxr12OQF/Z27BGaRqUImGhmgUqvLY8WMz79zGTgg4qHYMujs
-MYZxWX9ILt3oXKwFrd58mIcG9cIP9q18ndjkyMdH3sXMMYHPm6vKuVnVHcOjSqBn
-sX0ciA2HizGr7V2o1AhQiU3loQEaE3uHZ1t0te/vEqVRLlWlqSevRdNxxpgNk58Y
-iQe3J72kgc2Pb3009+FpzMMO4MaGfpNTXBeVP9qurmHmaAGBQLAoNxqmSOFnXx7I
-aSmNOW9wTuijQeUWN7WlYGtaRlEldvQlPiPbut8p9M7/5kTkW8GTXxvbJd1ylwwF
-Oxz1NxLAEvJN3NuwPoAkywW930fVXy4JJigSwMjKlc+vXvJgGqGP20HqeHKBxTdE
-GglZQJ0FunBNAYckgJwTqt6A84+wCwZ/5erqRqsJDipn8qcnQ79YiKjh+L4za0QA
-yyItzFeVSsa/lPxJ3OrDiOD2LsTb9hkJhmT5OHPFjwxt++d7KiA=
-=WpSs
------END PGP SIGNATURE-----
-
---PZu/ILMf5FNwdU4R--
+>
+> > +                 tdp_mmu_iter_flush_cond_resched(kvm, &iter)) {
+>
+> This isn't quite correct, as tdp_mmu_iter_flush_cond_resched() will do an
+> expensive remote TLB flush on every yield, even if no flush is needed.  The
+> cleanest solution is likely to drop tdp_mmu_iter_flush_cond_resched() and
+> instead add a @flush param to tdp_mmu_iter_cond_resched().  If it's tagged
+> __always_inline, then the callers that unconditionally pass true/false will
+> optimize out the conditional code.
+>
+> At that point, I think it would also make sense to fold tdp_iter_refresh_walk()
+> into tdp_mmu_iter_cond_resched(), because really we shouldn't be mucking with
+> the guts of the iter except for the yield case.
+>
+> > +                     last_goal_gfn = iter.goal_gfn;
+>
+> Another argument for both renaming goal_gfn and moving last_*_gfn into the iter:
+> it's not at all obvious that updating the last gfn _after_ tdp_iter_refresh_walk()
+> is indeed correct.
+>
+> You can also avoid a local variable by doing max(iter->next_gfn, iter->gfn) when
+> calling tdp_iter_refresh_walk().  IMO, that's also a bit easier to understand
+> than an open-coded equivalent.
+>
+> E.g. putting it all together, with yielded_gfn set by tdp_iter_start():
+>
+> static __always_inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+>                                                      struct tdp_iter *iter,
+>                                                      bool flush)
+> {
+>         /* Ensure forward progress has been made since the last yield. */
+>         if (iter->next_gfn == iter->yielded_gfn)
+>                 return false;
+>
+>         if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
+>                 if (flush)
+>                         kvm_flush_remote_tlbs(kvm);
+>                 cond_resched_lock(&kvm->mmu_lock);
+>
+>                 /*
+>                  * Restart the walk over the paging structure from the root,
+>                  * starting from the highest gfn the iterator had previously
+>                  * reached.  The entire paging structure, except the root, may
+>                  * have been completely torn down and rebuilt while we yielded.
+>                  */
+>                 tdp_iter_start(iter, iter->pt_path[iter->root_level - 1],
+>                                iter->root_level, iter->min_level,
+>                                max(iter->next_gfn, iter->gfn));
+>                 return true;
+>         }
+>
+>         return false;
+> }
+>
+> > +                     flush_needed = false;
+> > +                     /*
+> > +                      * Yielding caused the paging structure walk to be
+> > +                      * reset so skip to the next iteration to continue the
+> > +                      * walk from the root.
+> > +                      */
+> > +                     continue;
+> > +             }
+> > +
+> >               if (!is_shadow_present_pte(iter.old_spte))
+> >                       continue;
+> >
