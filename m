@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1323300279
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7457830028D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbhAVMHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:07:11 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:6314 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727499AbhAVMEg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:04:36 -0500
-X-UUID: f02ac677389d4f52ba38cebd0e3775ee-20210122
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=XDvTsXbuhgAelgKMHjzRvnXct3BR07oS2COt6QieGF4=;
-        b=YFK2Q369XbLQmz48NXCcJhSqUUgE2SHqcLTdPzLsOVHi8+v/gfGw823Rq4h0AFje0YMrWp/x5niO0Z7P7Pt+7dQ5hMj/HTQ2UeLIE7tGRpu2zriEDiBWBH216DDJWEr+y0amguYBFx02nDCDzAoQqKoSDafY9lmqxLOCCni5b3Y=;
-X-UUID: f02ac677389d4f52ba38cebd0e3775ee-20210122
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 177427216; Fri, 22 Jan 2021 20:03:47 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 22 Jan 2021 20:03:45 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 22 Jan 2021 20:03:45 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Min Guo <min.guo@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-Subject: [PATCH next v2 17/17] arm: dts: mt2701: harmonize node names and compatibles
-Date:   Fri, 22 Jan 2021 20:03:23 +0800
-Message-ID: <20210122120323.4337-17-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210122120323.4337-1-chunfeng.yun@mediatek.com>
-References: <20210122120323.4337-1-chunfeng.yun@mediatek.com>
+        id S1727628AbhAVMJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:09:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49976 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727882AbhAVMEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:04:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 24929ABDA;
+        Fri, 22 Jan 2021 12:03:58 +0000 (UTC)
+Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
+ slub page order
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20201118082759.1413056-1-bharata@linux.ibm.com>
+ <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
+ <20210121053003.GB2587010@in.ibm.com>
+ <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
+ <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
+ <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
+Date:   Fri, 22 Jan 2021 13:03:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 280F7A1B7EA74A8FC42AB585FAF740E35CD9B1063BB1B081ECBA46D9393448FC2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBpcyB1c2VkIHRvIGZpeCBkdGJzX2NoZWNrIHdhcm5pbmcNCg0KU2lnbmVkLW9mZi1ieTog
-Q2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KLS0tDQp2Mjogbm8gY2hh
-bmdlcw0KLS0tDQogYXJjaC9hcm0vYm9vdC9kdHMvbXQyNzAxLmR0c2kgfCAxOSArKysrKysrKysr
-Ky0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDggZGVsZXRpb25z
-KC0pDQoNCmRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9tdDI3MDEuZHRzaSBiL2FyY2gv
-YXJtL2Jvb3QvZHRzL210MjcwMS5kdHNpDQppbmRleCBmYWRlMTQyODQwMTcuLjQ3NzZmODVkNmQ1
-YiAxMDA2NDQNCi0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL210MjcwMS5kdHNpDQorKysgYi9hcmNo
-L2FybS9ib290L2R0cy9tdDI3MDEuZHRzaQ0KQEAgLTYwNyw3ICs2MDcsNyBAQA0KIAl9Ow0KIA0K
-IAl1c2IwOiB1c2JAMWExYzAwMDAgew0KLQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMt
-eGhjaSI7DQorCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS14aGNpIiwgIm1lZGlhdGVr
-LG10ay14aGNpIjsNCiAJCXJlZyA9IDwwIDB4MWExYzAwMDAgMCAweDEwMDA+LA0KIAkJICAgICAg
-PDAgMHgxYTFjNDcwMCAwIDB4MDEwMD47DQogCQlyZWctbmFtZXMgPSAibWFjIiwgImlwcGMiOw0K
-QEAgLTYyMCw4ICs2MjAsOSBAQA0KIAkJc3RhdHVzID0gImRpc2FibGVkIjsNCiAJfTsNCiANCi0J
-dTNwaHkwOiB1c2ItcGh5QDFhMWM0MDAwIHsNCi0JCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQy
-NzAxLXUzcGh5IjsNCisJdTNwaHkwOiB0LXBoeUAxYTFjNDAwMCB7DQorCQljb21wYXRpYmxlID0g
-Im1lZGlhdGVrLG10MjcwMS10cGh5IiwNCisJCQkgICAgICJtZWRpYXRlayxnZW5lcmljLXRwaHkt
-djEiOw0KIAkJcmVnID0gPDAgMHgxYTFjNDAwMCAwIDB4MDcwMD47DQogCQkjYWRkcmVzcy1jZWxs
-cyA9IDwyPjsNCiAJCSNzaXplLWNlbGxzID0gPDI+Ow0KQEAgLTY0Niw3ICs2NDcsNyBAQA0KIAl9
-Ow0KIA0KIAl1c2IxOiB1c2JAMWEyNDAwMDAgew0KLQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxt
-dDgxNzMteGhjaSI7DQorCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS14aGNpIiwgIm1l
-ZGlhdGVrLG10ay14aGNpIjsNCiAJCXJlZyA9IDwwIDB4MWEyNDAwMDAgMCAweDEwMDA+LA0KIAkJ
-ICAgICAgPDAgMHgxYTI0NDcwMCAwIDB4MDEwMD47DQogCQlyZWctbmFtZXMgPSAibWFjIiwgImlw
-cGMiOw0KQEAgLTY1OSw4ICs2NjAsOSBAQA0KIAkJc3RhdHVzID0gImRpc2FibGVkIjsNCiAJfTsN
-CiANCi0JdTNwaHkxOiB1c2ItcGh5QDFhMjQ0MDAwIHsNCi0JCWNvbXBhdGlibGUgPSAibWVkaWF0
-ZWssbXQyNzAxLXUzcGh5IjsNCisJdTNwaHkxOiB0LXBoeUAxYTI0NDAwMCB7DQorCQljb21wYXRp
-YmxlID0gIm1lZGlhdGVrLG10MjcwMS10cGh5IiwNCisJCQkgICAgICJtZWRpYXRlayxnZW5lcmlj
-LXRwaHktdjEiOw0KIAkJcmVnID0gPDAgMHgxYTI0NDAwMCAwIDB4MDcwMD47DQogCQkjYWRkcmVz
-cy1jZWxscyA9IDwyPjsNCiAJCSNzaXplLWNlbGxzID0gPDI+Ow0KQEAgLTcwMCw4ICs3MDIsOSBA
-QA0KIAkJc3RhdHVzID0gImRpc2FibGVkIjsNCiAJfTsNCiANCi0JdTJwaHkwOiB1c2ItcGh5QDEx
-MjEwMDAwIHsNCi0JCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssZ2VuZXJpYy10cGh5LXYxIjsNCisJ
-dTJwaHkwOiB0LXBoeUAxMTIxMDAwMCB7DQorCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Mjcw
-MS10cGh5IiwNCisJCQkgICAgICJtZWRpYXRlayxnZW5lcmljLXRwaHktdjEiOw0KIAkJcmVnID0g
-PDAgMHgxMTIxMDAwMCAwIDB4MDgwMD47DQogCQkjYWRkcmVzcy1jZWxscyA9IDwyPjsNCiAJCSNz
-aXplLWNlbGxzID0gPDI+Ow0KLS0gDQoyLjE4LjANCg==
+On 1/22/21 9:03 AM, Vincent Guittot wrote:
+> On Thu, 21 Jan 2021 at 19:19, Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> On 1/21/21 11:01 AM, Christoph Lameter wrote:
+>> > On Thu, 21 Jan 2021, Bharata B Rao wrote:
+>> >
+>> >> > The problem is that calculate_order() is called a number of times
+>> >> > before secondaries CPUs are booted and it returns 1 instead of 224.
+>> >> > This makes the use of num_online_cpus() irrelevant for those cases
+>> >> >
+>> >> > After adding in my command line "slub_min_objects=36" which equals to
+>> >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
+>> >> > , the regression diseapears:
+>> >> >
+>> >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
+>>
+>> I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
+>> supposed to be a scheduler benchmark? What exactly is going on?
+>>
+> 
+> From hackbench description:
+> Hackbench is both a benchmark and a stress test for the Linux kernel
+> scheduler. It's  main
+>        job  is  to  create a specified number of pairs of schedulable
+> entities (either threads or
+>        traditional processes) which communicate via either sockets or
+> pipes and time how long  it
+>        takes for each pair to send data back and forth.
+
+Yep, so I wonder which slab entities this is stressing that much.
+
+>> Things would be easier if we could trust *on all arches* either
+>>
+>> - num_present_cpus() to count what the hardware really physically has during
+>> boot, even if not yet onlined, at the time we init slab. This would still not
+>> handle later hotplug (probably mostly in a VM scenario, not that somebody would
+>> bring bunch of actual new cpu boards to a running bare metal system?).
+>>
+>> - num_possible_cpus()/nr_cpu_ids not to be excessive (broken BIOS?) on systems
+>> where it's not really possible to plug more CPU's. In a VM scenario we could
+>> still have an opposite problem, where theoretically "anything is possible" but
+>> the virtual cpus are never added later.
+> 
+> On all the system that I have tested num_possible_cpus()/nr_cpu_ids
+> were correctly initialized
+> 
+> large arm64 acpi system
+> small arm64 DT based system
+> VM on x86 system
+
+So it's just powerpc that has this issue with too large nr_cpu_ids? Is it caused
+by bios or the hypervisor? How does num_present_cpus() look there?
+
+What about heuristic:
+- num_online_cpus() > 1 - we trust that and use it
+- otherwise nr_cpu_ids
+Would that work? Too arbitrary?
+
+
+>> We could also start questioning the very assumption that number of cpus should
+>> affect slab page size in the first place. Should it? After all, each CPU will
+>> have one or more slab pages privately cached, as we discuss in the other
+>> thread... So why make the slab pages also larger?
+>>
+>> > Or the num_online_cpus needs to be up to date earlier. Why does this issue
+>> > not occur on x86? Does x86 have an up to date num_online_cpus earlier?
+>> >
+>> >
+>>
+> 
 
