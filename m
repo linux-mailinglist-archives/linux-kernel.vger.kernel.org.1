@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60C7300267
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 446D530025D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbhAVMEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
+        id S1727802AbhAVMDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:03:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727746AbhAVMCn (ORCPT
+        with ESMTP id S1727774AbhAVMCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:02:43 -0500
+        Fri, 22 Jan 2021 07:02:46 -0500
 Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7204C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:01:47 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id bx12so6229041edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:01:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D9CC061788
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:02:06 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id dj23so6207437edb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:02:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=76XAQLjYp4/l6JVo8xe1tat3k9QKAY+NMahcZfV1bnI=;
-        b=YRkhemeGaYC6FYYICUIrL6gB1mTpY4EJMbeydMD9GrKeM5ekJ0P09/iQnxiaTovMUD
-         qgZo8+sufkEqfzEhqwjCcTFN2HiY4xq6670L60amFZqKN2Z9Q0pSA6VVKYTqbtPRCAfp
-         E2D1wgLer74QW8xNsxf/fp8bRmvW+qXFexfdxlFCYuG2e2ZpciXL9n30oTZqppxaPKHe
-         U4q5BB17GnEOifT2eLjkZ/4AwIPylxpAvnmIoKW2xwkY/HE4iZbUinsGrcyYUI71ZE20
-         y4hTPbhTw7vZsAp06jYG/mQ0Yc98YWHs0633bSeT9GnbTJtCLT7J/e5vX+Zb2hcqN03V
-         ij4g==
+        bh=2KI6hX15GLNc3/Zwk+3jktz2PkpyxrJPc9EgkCyOlB8=;
+        b=G5tVjaSycld7W6lDh+iKl7DzUf6NbO+3prZA1wc1j7++uVePfpDwzZoa/VP2QdU6rM
+         FirwaeZ0RIggnrr0RHY0p3M+/qG6Jo2KCyL5oT3CS/zPiW8gliS/pVlnIJXHlM6WfCuz
+         ZP8dor+tlETUeNkSP7s7VOCfv21xPOOfKRjoP6WUsC3BpFYUQmfgXFaQew2llvm2fUVZ
+         RAZyQYTzBpG+/frhJAFGOS3rBbquRMssS//Undpgd6ys43ylj0o3ARsZ5AY/8N+2AykQ
+         +Qd3dqShs7jgq2bmnizUg0YgZBjC+IgOKQsGMXTS7K4pUR143g8UkPeFaOtkhTgo3m1R
+         cq3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=76XAQLjYp4/l6JVo8xe1tat3k9QKAY+NMahcZfV1bnI=;
-        b=HnUX8+X72Sk4gGLiaFxvjvrwapw0UGKcolSn+VEmzVpqhPo/2zEduB8PEoFi3LUpqm
-         Ng4Tr2gs68VrOGOpod0IncVko4spyJ2vDCoZIBIcd5Z9f7GdJ+2Sp9n5YaEXmYZhcyLv
-         F1DZEy8UaMwuyZonoHdN4ue6zw+6T2u6uMoYIpbKXxCufsJrL0v4i8ekVSRa39eobZJa
-         txKZB/fBcnRfkvzirNcgGIo2MwLaNisbTHmP4bDU/hm3lH/i5BIe+eorv7qC2BGs+y7t
-         23BeOQHPxdALvIxoM8a/czJ/wp3XA/yrS2hTw9ojlUuC7zn+gnq2vuGiMlL9E1BzbtvJ
-         by5A==
-X-Gm-Message-State: AOAM533+6WMmnk8v0ypAC/Zzk/aRjaOJM6gCrsopxIQdILBre9f1GjAW
-        Y2fkB+CzZ1IvSeVxXWVBurTT+86b6Sbr//yT7ALg5g==
-X-Google-Smtp-Source: ABdhPJy6U/oplB3yHGLEGbQjagX19d98cRS+pxz32AjDJz3QBvjL4wT4mZjaUhkLYj7ERy03Qr29D3saozXt1ZE1y1s=
-X-Received: by 2002:aa7:d401:: with SMTP id z1mr2894918edq.213.1611316906615;
- Fri, 22 Jan 2021 04:01:46 -0800 (PST)
+        bh=2KI6hX15GLNc3/Zwk+3jktz2PkpyxrJPc9EgkCyOlB8=;
+        b=Yh1sQDzx9bLUQV4a149OIYLG0HQLA1IY9VOEiSAS6vzXF9BJhkFpIX5vFBNw4hsyS+
+         0cm4X22ujbONu/g3980QQF19OwScNwlnj6vDn1sE0m/wEI2es+c1A1G+8uNclej6d2jf
+         7JOopHB2/fLYbK1iyxi2IrmptTS5NNvPC4lp2+IXRGIwgqpCqBr+o56pnr3dpeRDsFaL
+         CFsEW34owrbhmR9zVyPCt1CDOd+SbDN+05cwjdoCkb6ldEygNC7+QDrlqfKIPql+APSS
+         HUH305VivHxoW62W70rqlQlo/7E9QIvxXTPZa46i6IHaSUXAvHPBSjn6DNEwbvkIsfet
+         ke1Q==
+X-Gm-Message-State: AOAM530XnJqyzC0SFWjpui7CB7EOqdh2ry+0UtyX5h1LmwFCRHg5NOs8
+        wP0Dej2BEBBGVUkzSdf7E6PbAsCTUm5415NsKoCw44C+mA2Ukg==
+X-Google-Smtp-Source: ABdhPJyvNh+GV3SV/S4iKNTv46EFVOvM0xFOINGooc6QIuDXKfliDJ4znnxaI2fKibq88mDu+fAZMCmGZI0/3MSRMCk=
+X-Received: by 2002:a05:6402:35ca:: with SMTP id z10mr2982399edc.186.1611316925382;
+ Fri, 22 Jan 2021 04:02:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108092345.19164-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210108092345.19164-1-zhengyongjun3@huawei.com>
+References: <20210108092405.19291-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210108092405.19291-1-zhengyongjun3@huawei.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 22 Jan 2021 13:01:35 +0100
-Message-ID: <CAMpxmJUsFq9sXwTvdNFKet4VAdPSsHD7fuHZoAQh00OSUTVKpA@mail.gmail.com>
-Subject: Re: [PATCH v2 -next] gpio: vx855: convert comma to semicolon
+Date:   Fri, 22 Jan 2021 13:01:54 +0100
+Message-ID: <CAMpxmJXHs4ixgQPD+M5XJdHWEJLX-DZvJ_D65qc1MgiB6OnjLQ@mail.gmail.com>
+Subject: Re: [PATCH v2 -next] gpio: max77620: convert comma to semicolon
 To:     Zheng Yongjun <zhengyongjun3@huawei.com>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         linux-gpio <linux-gpio@vger.kernel.org>,
@@ -66,22 +66,22 @@ On Fri, Jan 8, 2021 at 10:23 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
 >
 > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 > ---
->  drivers/gpio/gpio-vx855.c | 2 +-
+>  drivers/gpio/gpio-max77620.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpio/gpio-vx855.c b/drivers/gpio/gpio-vx855.c
-> index 3bf397b8dfbc..69713fd5485b 100644
-> --- a/drivers/gpio/gpio-vx855.c
-> +++ b/drivers/gpio/gpio-vx855.c
-> @@ -216,7 +216,7 @@ static void vx855gpio_gpio_setup(struct vx855_gpio *vg)
->         c->direction_output = vx855gpio_direction_output;
->         c->get = vx855gpio_get;
->         c->set = vx855gpio_set;
-> -       c->set_config = vx855gpio_set_config,
-> +       c->set_config = vx855gpio_set_config;
->         c->dbg_show = NULL;
->         c->base = 0;
->         c->ngpio = NR_VX855_GP;
+> diff --git a/drivers/gpio/gpio-max77620.c b/drivers/gpio/gpio-max77620.c
+> index 7c0a9ef0b500..82b3a913005d 100644
+> --- a/drivers/gpio/gpio-max77620.c
+> +++ b/drivers/gpio/gpio-max77620.c
+> @@ -325,7 +325,7 @@ static int max77620_gpio_probe(struct platform_device *pdev)
+>         girq->parents = NULL;
+>         girq->default_type = IRQ_TYPE_NONE;
+>         girq->handler = handle_edge_irq;
+> -       girq->init_hw = max77620_gpio_irq_init_hw,
+> +       girq->init_hw = max77620_gpio_irq_init_hw;
+>         girq->threaded = true;
+>
+>         platform_set_drvdata(pdev, mgpio);
 > --
 > 2.22.0
 >
