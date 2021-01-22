@@ -2,138 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDE3300CBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A3F300CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbhAVTfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728674AbhAVTSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:18:47 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07C2C061788;
-        Fri, 22 Jan 2021 11:18:06 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id f17so7760219ljg.12;
-        Fri, 22 Jan 2021 11:18:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x/j5bxV3su/zAKnCmk1bt6joxRJHQqb1aOUcW9Eg2tM=;
-        b=oZOF825K+Hgc9MwIwL7Uupdbk/HyRaPnb4qspvFVACKYhqiGe2UjBwIFuVI13qsk5s
-         OZEWJBqkldIn6TZNkefpbIERwuf5kzjyWcX8vzO7WPX1NU8bDMdXft7S3i4DV0+2nVZd
-         k3+lXzHQvHmRBj5g9GISGf4QOaj62r0n9w+3oeuvcbw8UrDI5S6eBIgiZRBgoKRiKEsi
-         2Gpph8/vNLK5zzXN6LxrNjS+eh4FNnXHvI3s7V9x3oriWDsx04jmRgA4LUigBAhcj/cY
-         L23nY5rmtjMNrgDXCZzUzqMVYtnhqT5RCOMwGXmzr0MlqYjA4jshIJSdfMLrgaWUAKhQ
-         Xe3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x/j5bxV3su/zAKnCmk1bt6joxRJHQqb1aOUcW9Eg2tM=;
-        b=OLIiGu7AKdRhx2gA/HZW3g7v1GI8Bnhe/tmjKtaBVMfSdpOE31hDHHVs3ExPnJJHhi
-         gx/Ti1+g2NHLjzOf39ApmxNgzDrAQ2bvlJOAvM66hSJCFeUISJ8pzmWZyB/SXU0IeI63
-         iSgP2BHiCZqEY34VfVM6fMGFAhGeUVEpnfHoTZhHJFkLdxLruS+W+S5mnO07aD3+LflS
-         rHwmw1Wd0vNOj/7QN2CzFoC+MpPYdnixLmtuVvuovu/bArxOWPwQiFD/PeQe8JDNT9cy
-         pOAFlykYJy6m/7/0r7xDuw0mmvwuaZdGmgVt0y15SRdKUiVddMdZJKgqTOx87OeTjmdE
-         /3Kg==
-X-Gm-Message-State: AOAM533BsNfTLrBtt/l9CZMkgWRvYb1VrGhUiANptZqR6Od5ViEvtKH1
-        S9AEl/iyfjUKKBteOInSeoc=
-X-Google-Smtp-Source: ABdhPJyy8oO/DvRhkAOrLEsBbRgcpb0qTO8Jr2QGtf/mhAaoGnPDUaG0HSdyNlWx4Kox2DoKjum6XQ==
-X-Received: by 2002:a2e:81d5:: with SMTP id s21mr1057426ljg.263.1611343085197;
-        Fri, 22 Jan 2021 11:18:05 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id f205sm94759lfd.70.2021.01.22.11.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        id S1730578AbhAVTjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:39:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:34452 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728807AbhAVTSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 14:18:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60E0B139F;
         Fri, 22 Jan 2021 11:18:04 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] power: supply: smb347-charger: Fix interrupt usage if interrupt is unavailable
-Date:   Fri, 22 Jan 2021 22:17:34 +0300
-Message-Id: <20210122191734.27584-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96C5D3F66E;
+        Fri, 22 Jan 2021 11:18:01 -0800 (PST)
+Subject: Re: [PATCH v2] ACPI/IORT: Do not blindly trust DMA masks from
+ firmware
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     lorenzo.pieralisi@arm.com, guohanjun@huawei.com, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210122012419.95010-1-mdf@kernel.org>
+ <e01e2fd6-7f78-354e-374c-f93a5d1b8fd6@arm.com> <YAsQcLqvi0Lh8PVv@archbook>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <29575ef5-a1c1-16d7-5fed-7fc34d772a7a@arm.com>
+Date:   Fri, 22 Jan 2021 19:17:59 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YAsQcLqvi0Lh8PVv@archbook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IRQ=0 could be a valid interrupt number in kernel because interrupt
-numbers are virtual in a modern kernel. Hence fix the interrupt usage in
-a case if interrupt is unavailable by not overriding the interrupt number
-which is used by the driver.
+On 2021-01-22 17:50, Moritz Fischer wrote:
+> Hi Robin,
+> 
+> On Fri, Jan 22, 2021 at 02:42:05PM +0000, Robin Murphy wrote:
+>> On 2021-01-22 01:24, Moritz Fischer wrote:
+>>> Address issue observed on real world system with suboptimal IORT table
+>>> where DMA masks of PCI devices would get set to 0 as result.
+>>>
+>>> iort_dma_setup() would query the root complex'/named component IORT
+>>> entry for a DMA mask, and use that over the one the device has been
+>>> configured with earlier.
+>>>
+>>> Ideally we want to use the minimum mask of what the IORT contains for
+>>> the root complex and what the device was configured with.
+>>>
+>>> Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
+>>> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+>>> ---
+>>>
+>>> Changes from v1:
+>>> - Changed warning to FW_BUG
+>>> - Warn for both Named Component or Root Complex
+>>> - Replaced min_not_zero() with min()
+>>>
+>>> ---
+>>>    drivers/acpi/arm64/iort.c | 14 ++++++++++++--
+>>>    1 file changed, 12 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+>>> index d4eac6d7e9fb..2494138a6905 100644
+>>> --- a/drivers/acpi/arm64/iort.c
+>>> +++ b/drivers/acpi/arm64/iort.c
+>>> @@ -1107,6 +1107,11 @@ static int nc_dma_get_range(struct device *dev, u64 *size)
+>>>    	ncomp = (struct acpi_iort_named_component *)node->node_data;
+>>> +	if (!ncomp->memory_address_limit) {
+>>> +		pr_warn(FW_BUG "Named component missing memory address limit\n");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>>    	*size = ncomp->memory_address_limit >= 64 ? U64_MAX :
+>>>    			1ULL<<ncomp->memory_address_limit;
+>>> @@ -1126,6 +1131,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+>>>    	rc = (struct acpi_iort_root_complex *)node->node_data;
+>>> +	if (!rc->memory_address_limit) {
+>>> +		pr_warn(FW_BUG "Root complex missing memory address limit\n");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>>    	*size = rc->memory_address_limit >= 64 ? U64_MAX :
+>>>    			1ULL<<rc->memory_address_limit;
+>>> @@ -1173,8 +1183,8 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
+>>>    		end = dmaaddr + size - 1;
+>>>    		mask = DMA_BIT_MASK(ilog2(end) + 1);
+>>>    		dev->bus_dma_limit = end;
+>>> -		dev->coherent_dma_mask = mask;
+>>> -		*dev->dma_mask = mask;
+>>> +		dev->coherent_dma_mask = min(dev->coherent_dma_mask, mask);
+>>> +		*dev->dma_mask = min(*dev->dma_mask, mask);
+>>
+>> Oops, I got so distracted by the "not_zero" aspect in v1 that I ended up
+>> thinking purely about smaller-than-default masks, but of course this *does*
+>> matter the other way round. And it is what we've always done on the DT side,
+>> so at least it makes us consistent.
+>>
+>> FWIW I've already started writing up a patch to kill off this bit entirely,
+>> but either way we still can't meaningfully interpret a supposed DMA limit of
+>> 0 bits in a table describing DMA-capable devices, so for this patch as a
+>> fix,
+>>
+>> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+> 
+> I think there's another issue the comparisons for revision should be
+> against < 2 not < 1.
+> 
+>  From what I could find DEN0049D (IORT) spec introduced the fields
+> (curiously the C doc seems to be missing).
 
-Note that currently Nexus 7 is the only know device which uses SMB347
-kernel diver and it has a properly working interrupt, hence this patch
-doesn't fix any real problems, it's a minor cleanup/improvement.
+I guess it got lost in the documentation system move. FWIW I still have 
+a copy of issue C, and root complex nodes are unchanged at revision 0 there.
 
-Fixes: 99298de5df92 ("power: supply: smb347-charger: Replace mutex with IRQ disable/enable")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/power/supply/smb347-charger.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+> DEN0049B specifies revision as '0', DEN0049C (missing?), DEN0049D
+> specifies new fields for memory_size_limit and both Named Component and
+> Root Complex nodes set revision to 2.
 
-diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
-index d3bf35ed12ce..8cfbd8d6b478 100644
---- a/drivers/power/supply/smb347-charger.c
-+++ b/drivers/power/supply/smb347-charger.c
-@@ -137,6 +137,7 @@
-  * @mains_online: is AC/DC input connected
-  * @usb_online: is USB input connected
-  * @charging_enabled: is charging enabled
-+ * @irq_unsupported: is interrupt unsupported by SMB hardware
-  * @max_charge_current: maximum current (in uA) the battery can be charged
-  * @max_charge_voltage: maximum voltage (in uV) the battery can be charged
-  * @pre_charge_current: current (in uA) to use in pre-charging phase
-@@ -193,6 +194,7 @@ struct smb347_charger {
- 	bool			mains_online;
- 	bool			usb_online;
- 	bool			charging_enabled;
-+	bool			irq_unsupported;
- 
- 	unsigned int		max_charge_current;
- 	unsigned int		max_charge_voltage;
-@@ -862,6 +864,9 @@ static int smb347_irq_set(struct smb347_charger *smb, bool enable)
- {
- 	int ret;
- 
-+	if (smb->irq_unsupported)
-+		return 0;
-+
- 	ret = smb347_set_writable(smb, true);
- 	if (ret < 0)
- 		return ret;
-@@ -923,8 +928,6 @@ static int smb347_irq_init(struct smb347_charger *smb,
- 	ret = regmap_update_bits(smb->regmap, CFG_STAT,
- 				 CFG_STAT_ACTIVE_HIGH | CFG_STAT_DISABLED,
- 				 CFG_STAT_DISABLED);
--	if (ret < 0)
--		client->irq = 0;
- 
- 	smb347_set_writable(smb, false);
- 
-@@ -1345,6 +1348,7 @@ static int smb347_probe(struct i2c_client *client,
- 		if (ret < 0) {
- 			dev_warn(dev, "failed to initialize IRQ: %d\n", ret);
- 			dev_warn(dev, "disabling IRQ support\n");
-+			smb->irq_unsupported = true;
- 		} else {
- 			smb347_irq_enable(smb);
- 		}
-@@ -1357,8 +1361,8 @@ static int smb347_remove(struct i2c_client *client)
- {
- 	struct smb347_charger *smb = i2c_get_clientdata(client);
- 
--	if (client->irq)
--		smb347_irq_disable(smb);
-+	smb347_irq_disable(smb);
-+
- 	return 0;
- }
- 
--- 
-2.29.2
+My copy of issue D says Root Complex nodes are at revision 1, with 
+memory address size limit added.
 
+(Note that Named Component nodes did bump to rev. 1 in issue C, then to 
+rev. 2 in issue D)
+
+Issue E bumped Root Complex nodes to revision 2 with the addition of the 
+PRI flag, then E.a made a mess of everything by deprecating the revision 
+numbers for individual tables - we probably need to deal with *that*, 
+since otherwise we'll think new tables are back at rev. 0 again, but 
+AFAICS the current check is correct for anything written against the 
+first 5 releases.
+
+Robin.
+
+> so I think it should be:
+> 
+> if (!node || node->revision < 2)
+> 	return -ENODEV;
+> 
+> Only if we go past this and there is no address limit is it really a
+> firmware bug.
+>>
+>> Thanks,
+>> Robin.
+>>
+>>>    	}
+>>>    	*dma_addr = dmaaddr;
+>>>
+> 
+> - Moritz
+> 
