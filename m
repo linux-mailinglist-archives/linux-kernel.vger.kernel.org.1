@@ -2,214 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C403A3005AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E026300587
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbhAVOgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:36:20 -0500
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:40544 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728709AbhAVOc6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:32:58 -0500
-Received: by mail-lj1-f179.google.com with SMTP id x23so6731587lji.7;
-        Fri, 22 Jan 2021 06:32:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DMK+kUEhkRmaEG/zmoXIoJYB8KlkSVcofvst3zfBu1s=;
-        b=V7m3C/o/IEUTmeuIwKAuP6VV0bEdgNfsCA6Y4aqAdtukyp+XmIV7PT0PZ2OOAcddgS
-         /lK/NkivbDFRmekjnMnD2Z+2o47cjHSuXDQeYP+H3DnSSXac2eiLZjD0rE4oaO97i2pT
-         Ezv29vY8Xt0ZgPaM1+yEhPOv/8Rd8L4Nf+bdGgRi2S13Nve8d9X3zHBP8E3pQTBA1fl7
-         sT5toTw1A3EQpIVK+flNRiz6tfnJbMWWKE/dmIUmjU4aGUVjeAZ99cq7TQraKDzwbs/J
-         kHUObDXwWGQovGRjyfmpX2BTka7xz6IBcqXSGhLUd3PvrYIkWPlqgiZ/rGyqzzivfzuX
-         IE7A==
-X-Gm-Message-State: AOAM531Umxe0DwWoU3Mb3sa1UBOpkwmqN+hbGMt1Q9KF/EzGYT7KaGV2
-        KJUnsK7qQlOL5j/3uYhzMAY=
-X-Google-Smtp-Source: ABdhPJzLW8uEIWDKF/22uk5zTsppqsvNqh51HmFF5d/29DxWWPQnXOQOA3rakFS+isZPA6F//adfEw==
-X-Received: by 2002:a2e:9910:: with SMTP id v16mr107086lji.153.1611325934922;
-        Fri, 22 Jan 2021 06:32:14 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id b15sm901348lfj.306.2021.01.22.06.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:32:14 -0800 (PST)
-Date:   Fri, 22 Jan 2021 16:32:07 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH v7 1/6] dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF
- PMICs
-Message-ID: <cd13800b70d8dae6d9d62658235f4790bdfdb30a.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1728322AbhAVOdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:33:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:50520 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728598AbhAVO3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:29:08 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8B4F11B3;
+        Fri, 22 Jan 2021 06:28:22 -0800 (PST)
+Received: from [10.37.8.28] (unknown [10.37.8.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 642503F66E;
+        Fri, 22 Jan 2021 06:28:20 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] kasan: Add explicit preconditions to
+ kasan_report()
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20210121131956.23246-1-vincenzo.frascino@arm.com>
+ <20210121131956.23246-3-vincenzo.frascino@arm.com>
+ <CAAeHK+yCq+p-D8C+LgHUSkuGZmZscJPTan9p6GT8GoUAVdnOqA@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <b9b3f3dc-e091-0718-8b5c-47801c74fb2f@arm.com>
+Date:   Fri, 22 Jan 2021 14:32:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <CAAeHK+yCq+p-D8C+LgHUSkuGZmZscJPTan9p6GT8GoUAVdnOqA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for ROHM BD9576MUF and BD9573MUF PMICs. These
-PMICs are primarily intended to be used to power the R-Car series
-processors. They provide 6 power outputs, safety features and a
-watchdog with two functional modes.
+Hi Andrey,
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changes since v6:
- - No changes
- .../bindings/mfd/rohm,bd9576-pmic.yaml        | 123 ++++++++++++++++++
- 1 file changed, 123 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
+All done. Reposting shortly. Thank you!
 
-diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-new file mode 100644
-index 000000000000..6483860da955
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-@@ -0,0 +1,123 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/rohm,bd9576-pmic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ROHM BD9576MUF and BD9573MUF Power Management Integrated Circuit bindings
-+
-+maintainers:
-+  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-+
-+description: |
-+  BD9576MUF and BD9573MUF are power management ICs primarily intended for
-+  powering the R-Car series processors.
-+  The IC provides 6 power outputs with configurable sequencing and safety
-+  monitoring. A watchdog logic with slow ping/windowed modes is also included.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rohm,bd9576
-+      - rohm,bd9573
-+
-+  reg:
-+    description:
-+      I2C slave address.
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  rohm,vout1-en-low:
-+    description:
-+      BD9576 and BD9573 VOUT1 regulator enable state can be individually
-+      controlled by a GPIO. This is dictated by state of vout1-en pin during
-+      the PMIC startup. If vout1-en is LOW during PMIC startup then the VOUT1
-+      enable sate is controlled via this pin. Set this property if vout1-en
-+      is wired to be down at PMIC start-up.
-+    type: boolean
-+
-+  rohm,vout1-en-gpios:
-+    description:
-+      GPIO specifier to specify the GPIO connected to vout1-en for vout1 ON/OFF
-+      state control.
-+    maxItems: 1
-+
-+  rohm,ddr-sel-low:
-+    description:
-+      The BD9576 and BD9573 output voltage for DDR can be selected by setting
-+      the ddr-sel pin low or high. Set this property if ddr-sel is grounded.
-+    type: boolean
-+
-+  rohm,watchdog-enable-gpios:
-+    description: The GPIO line used to enable the watchdog.
-+    maxItems: 1
-+
-+  rohm,watchdog-ping-gpios:
-+    description: The GPIO line used to ping the watchdog.
-+    maxItems: 1
-+
-+  rohm,hw-timeout-ms:
-+    maxItems: 2
-+    description:
-+      Watchog timeout in milliseconds. If single value is given it is
-+      the maximum timeout. Eg. if pinging watchdog is not done within this time
-+      limit the watchdog will be triggered. If two values are given watchdog
-+      is configured in "window mode". Then first value is limit for short-ping
-+      Eg. if watchdog is pinged sooner than that the watchdog will trigger.
-+      When two values is given the second value is the maximum timeout.
-+      # (HW) minimum for short timeout is 2ms, maximum 220 ms.
-+      # (HW) minimum for max timeout is 4ms, maximum 4416 ms.
-+
-+  regulators:
-+    $ref: ../regulator/rohm,bd9576-regulator.yaml
-+    description:
-+      List of child nodes that specify the regulators.
-+
-+required:
-+  - compatible
-+  - reg
-+  - regulators
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/leds/common.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        pmic: pmic@30 {
-+            compatible = "rohm,bd9576";
-+            reg = <0x30>;
-+            rohm,vout1-en-low;
-+            rohm,vout1-en-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
-+            rohm,ddr-sel-low;
-+            rohm,watchdog-enable-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
-+            rohm,watchdog-ping-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
-+            rohm,hw-timeout-ms = <150>, <2300>;
-+
-+            regulators {
-+                boost1: regulator-vd50 {
-+                    regulator-name = "VD50";
-+                };
-+                buck1: regulator-vd18 {
-+                    regulator-name = "VD18";
-+                };
-+                buck2: regulator-vdddr {
-+                    regulator-name = "VDDDR";
-+                };
-+                buck3: regulator-vd10 {
-+                    regulator-name = "VD10";
-+                };
-+                ldo: regulator-voutl1 {
-+                    regulator-name = "VOUTL1";
-+                };
-+                sw: regulator-vouts1 {
-+                    regulator-name = "VOUTS1";
-+                };
-+            };
-+        };
-+    };
--- 
-2.25.4
+On 1/21/21 5:20 PM, Andrey Konovalov wrote:
+> And please move this to include/kasan/kasan.h.
 
+I guess you meant include/linux/kasan.h.
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Regards,
+Vincenzo
