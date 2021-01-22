@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0763005A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C213005E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728859AbhAVOhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:37:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53366 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728835AbhAVOg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:36:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611326131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LQyF+HvI2kyISxweGPzscU/va3PLmqEKg6fBJl2vlZ8=;
-        b=B+DkxZPr8h9V7L2qmFgoIed9KSydNYOUG/V9jTGB2+6f7ULmav/YND+ZHl0nbIoHDWNc78
-        dIerh3J3GB8gn5xlJF1fT9Fsu7+OKWublr8Nar5z/cqG2VPbSaUKSaOvHIxwKKCBnamwgV
-        I5uME/KXdGnVajhKnKrKh97rPlNfmQY=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-180-KGWUscrcPw67X4bxChi1ZA-1; Fri, 22 Jan 2021 09:35:29 -0500
-X-MC-Unique: KGWUscrcPw67X4bxChi1ZA-1
-Received: by mail-qk1-f200.google.com with SMTP id i11so4131050qkn.21
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:35:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LQyF+HvI2kyISxweGPzscU/va3PLmqEKg6fBJl2vlZ8=;
-        b=Vtfb0ffAHy9gBU25aNT2gW2lQpgORYEpyp6fkmJx8X5VkdtHpmeDG0IdwBLm3gTpiY
-         pWisbiHiVvmAESoU1Zh1GvIl4m1Dhzzu3qfDhqAkK19JAypZYbrqg/fkk1lR1TsE+gg7
-         ifwtwZedARkC045OtQGZ5sv36t25bCYGGyaQ+CdM8OWA05PbFH4c4tiSu8uvT/vSoE0W
-         zSkH7GigZGgv8R/bLUg/W/75BhHo1AgNc5epA3GUzg0nSK+OKGqdUYRxgvNnSSZHEcnh
-         wrgjCHwDFhOvo6MNkMbDcfbgatni+pFViG6vOiN6O8CMymVExZQS6ANGWAKslPtUNG1K
-         phPw==
-X-Gm-Message-State: AOAM533P2baeaF6a1fBkkIJY4iI6/YrC3NcRSnWHNwiNNPmIuNsPb8Fp
-        WQSzQnUuYWwcppww6LnrUGg97XkduP6KHf5GUtEkDlbs0YywzUxeBVlzjMPyV9GHcN/YrFk1dkU
-        t/3PXNoB2MHLov7NkjDOmQlcQ
-X-Received: by 2002:a05:6214:6a1:: with SMTP id s1mr4831098qvz.20.1611326129224;
-        Fri, 22 Jan 2021 06:35:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzcqvMfUvaE2tN1vEdzhCsoxnf8/L4VLzX3cVy9gLxkAEp+fnqTM+NsxqxKqqiCoS9XPqe5Ig==
-X-Received: by 2002:a05:6214:6a1:: with SMTP id s1mr4831076qvz.20.1611326128936;
-        Fri, 22 Jan 2021 06:35:28 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id v67sm6715255qkd.94.2021.01.22.06.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:35:28 -0800 (PST)
-From:   trix@redhat.com
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] ata: sata_nv: remove h from printk format specifier
-Date:   Fri, 22 Jan 2021 06:35:21 -0800
-Message-Id: <20210122143521.1598974-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728907AbhAVOqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:46:39 -0500
+Received: from mail.eaton.com ([192.104.67.6]:10500 "EHLO mail.eaton.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728892AbhAVOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:45:27 -0500
+Received: from mail.eaton.com (loutcimsva03.etn.com [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DCED38C066;
+        Fri, 22 Jan 2021 09:35:33 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eaton.com;
+        s=eaton-s2020-01; t=1611326134;
+        bh=3k3sl6w4gcZONFPtT+kouYEWEs1FWTrE6BMEwckECc4=; h=From:To:Date;
+        b=TlMa9HBq+avcRtZh1a/co40iC4x4wnqRyw6Fjn4gpol3Va78akmfgXoHTP1efTgcx
+         XHrpIzUOGCxOPuNw8aSOHkkVuZij9LLJbpVNE71AXWeOsDB162oYp/3uMms4M43xo7
+         jkPkY8t+eiIbliIlbH4LvWKXJU51v6BM5fUVt9McfBJAx88/TXqvosU88ZBQxwSpms
+         Wett0zogJ1e5MKWQ1CL/Y7Z5etBXfxh0kqBwCmVk92CCqZz/eQXcgUsj79y9UCwYkm
+         rpxkLdqi73IPHdwknKc1NSGPHJe4dmPJmVlkByAsXi2EPo+j6NuISA7aM4iHSKRKa9
+         cDxyCRQXt2BIw==
+Received: from mail.eaton.com (loutcimsva03.etn.com [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D77E78C060;
+        Fri, 22 Jan 2021 09:35:33 -0500 (EST)
+Received: from SIMTCSGWY02.napa.ad.etn.com (simtcsgwy02.napa.ad.etn.com [151.110.126.185])
+        by mail.eaton.com (Postfix) with ESMTPS;
+        Fri, 22 Jan 2021 09:35:33 -0500 (EST)
+Received: from localhost (151.110.234.147) by SIMTCSGWY02.napa.ad.etn.com
+ (151.110.126.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 22 Jan 2021
+ 09:35:32 -0500
+From:   Laurent Badel <laurentbadel@eaton.com>
+To:     <netdev@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, <linux-pm@vger.kernel.org>
+CC:     Laurent Badel <laurentbadel@eaton.com>
+Subject: [PATCH net 0/1] net: phy: Fix interrupt mask loss on resume from hibernation
+Date:   Fri, 22 Jan 2021 15:35:23 +0100
+Message-ID: <20210122143524.14516-1-laurentbadel@eaton.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: 96b59d02-bc1a-4a40-8c96-611cac62bce9
+X-TM-SNTS-SMTP: 9F905500186904FA98F60E47D2E9F1CC109379FB2E84CA0EA01407A9590434152002:8
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSVA-9.1.0.1988-8.6.0.1013-25928.000
+X-TM-AS-Result: No--2.810-7.0-31-10
+X-imss-scan-details: No--2.810-7.0-31-10
+X-TMASE-Version: IMSVA-9.1.0.1988-8.6.1013-25928.000
+X-TMASE-Result: 10--2.809800-10.000000
+X-TMASE-MatchedRID: wwSHOPa+JnqYizZS4XBb3/RUId35VCIe52mltlE2n8gOkJQR4QWbsAqF
+        Q57e8A/UPMs0cdM/lpgTR6MsfJbuqySKeTIQJ1bzAoNa2r+Edw1zNCdGumZsSQVR/cvm2iZc6+p
+        bA1zmYaPelAkRK3cdNnMqLmx/Omp1eKZAID3hHVZxoP7A9oFi1m7BSyDZmAnxkYldHqNEW7hPpj
+        LRqc8GlgKBj7ifFO2PeNGXg3cZsw84qGaEI/i7xoph1hAtvKZNqWaMWrxmYY47fXZ8qCOriW1ql
+        Po7VBvTKrauXd3MZDWhi+hYp33nSkWUKZ0u+0Z9E5td4VFXe4MEnJ5n81Q7U5tzWlqb9TvmuDnX
+        PAyUv3UErgEwN1mFU4lZTBjWIIMDzri1V1TY3DaFF9DZjWSNOFPyQiE5roUu6GWzRR7WyHT5eN4
+        j1iCTD8cE0+/e1WoP
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+=EF=BB=BFSome PHYs such as SMSC LAN87xx clear the interrupt mask register o=
+n
+software reset. Since mdio_bus_phy_restore() calls phy_init_hw() which
+does a software reset of the PHY, these PHYs will lose their interrupt=20
+mask configuration on resuming from hibernation.
 
-This change fixes the checkpatch warning described in this commit
-commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
-  unnecessary %h[xudi] and %hh[xudi]")
+I initially reconfigured only the PHY interrupt mask using=20
+phydev->config_intr(), which worked fine with PM_DEBUG/test_resume, but
+there seems to be an issue when resuming from a real hibernation, by which
+the interrupt type is not set appropriately (in this case=20
+IRQ_TYPE_LEVEL_LOW). Calling irq_set_irq_type() directly from sysfs=20
+restored the PHY functionality immediately suggesting that everything is
+otherwise well configured. Therefore this patch suggests freeing and
+re-requesting the interrupt, to guarantee proper interrupt configuration.
 
-Standard integer promotion is already done and %hx and %hhx is useless
-so do not encourage the use of %hh[xudi] or %h[xudi].
+Laurent Badel (1):
+  net: phy: Reconfigure PHY interrupt in mdio_bus_phy_restore()
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/ata/sata_nv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/phy/phy_device.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/ata/sata_nv.c b/drivers/ata/sata_nv.c
-index 20190f66ced9..81b75e513266 100644
---- a/drivers/ata/sata_nv.c
-+++ b/drivers/ata/sata_nv.c
-@@ -603,7 +603,7 @@ static void nv_adma_register_mode(struct ata_port *ap)
- 		count++;
- 	}
- 	if (count == 20)
--		ata_port_warn(ap, "timeout waiting for ADMA IDLE, stat=0x%hx\n",
-+		ata_port_warn(ap, "timeout waiting for ADMA IDLE, stat=0x%x\n",
- 			      status);
- 
- 	tmp = readw(mmio + NV_ADMA_CTL);
-@@ -618,7 +618,7 @@ static void nv_adma_register_mode(struct ata_port *ap)
- 	}
- 	if (count == 20)
- 		ata_port_warn(ap,
--			      "timeout waiting for ADMA LEGACY, stat=0x%hx\n",
-+			      "timeout waiting for ADMA LEGACY, stat=0x%x\n",
- 			      status);
- 
- 	pp->flags |= NV_ADMA_PORT_REGISTER_MODE;
-@@ -648,7 +648,7 @@ static void nv_adma_mode(struct ata_port *ap)
- 	}
- 	if (count == 20)
- 		ata_port_warn(ap,
--			"timeout waiting for ADMA LEGACY clear and IDLE, stat=0x%hx\n",
-+			"timeout waiting for ADMA LEGACY clear and IDLE, stat=0x%x\n",
- 			status);
- 
- 	pp->flags &= ~NV_ADMA_PORT_REGISTER_MODE;
-@@ -736,7 +736,7 @@ static int nv_adma_slave_config(struct scsi_device *sdev)
- 	blk_queue_segment_boundary(sdev->request_queue, segment_boundary);
- 	blk_queue_max_segments(sdev->request_queue, sg_tablesize);
- 	ata_port_info(ap,
--		      "DMA mask 0x%llX, segment boundary 0x%lX, hw segs %hu\n",
-+		      "DMA mask 0x%llX, segment boundary 0x%lX, hw segs %u\n",
- 		      (unsigned long long)*ap->host->dev->dma_mask,
- 		      segment_boundary, sg_tablesize);
- 
--- 
-2.27.0
+--=20
+2.17.1
+
+
+
+-----------------------------
+Eaton Industries Manufacturing GmbH ~ Registered place of business: Route d=
+e la Longeraie 7, 1110, Morges, Switzerland=20
+
+-----------------------------
 
