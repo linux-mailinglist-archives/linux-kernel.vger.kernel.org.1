@@ -2,95 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EA530002C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC11030002D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbhAVKXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:23:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:39226 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727123AbhAVKDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:03:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF1AF139F;
-        Fri, 22 Jan 2021 02:02:52 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.42])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A3493F719;
-        Fri, 22 Jan 2021 02:02:47 -0800 (PST)
-Date:   Fri, 22 Jan 2021 10:02:30 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>, vincenzo.frascino@arm.com
-Cc:     Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        rcu@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: rcu-torture: Internal error: Oops: 96000006
-Message-ID: <20210122095925.GA29124@C02TD0UTHF1T.local>
-References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
- <20210121185521.GQ2743@paulmck-ThinkPad-P72>
- <20210121213110.GB23234@willie-the-truck>
- <20210121214314.GW2743@paulmck-ThinkPad-P72>
+        id S1727950AbhAVKXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:23:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727814AbhAVKDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:03:45 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A82C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:03:05 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id m2so3751465wmm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:03:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pxR73uYax2G5yfjba411z30jS6rXBdckdXhkr2akbsA=;
+        b=X5WwYFfsYNJfDQh92DGtNFimXbpUN+GxqfLE1NYzEe3/wu5PgFoLIvm7+ki/7buNkl
+         kZ7RdFYAlQPqXf/58zvq7XnDgQ1lbSBY6MD18BNTiXhDewgngp7ByIGO1awg/WVpMYos
+         IfC9x4aac9zTPv6TJxwkXPhaYSyoZUf4qrM0k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=pxR73uYax2G5yfjba411z30jS6rXBdckdXhkr2akbsA=;
+        b=QIWFMT+DH+CSz9+4NrUZQFTsCsanOdmhhodHBg/PYiRIqsYc16yu8VvCkMNyBtFFHA
+         Ki/x00Fg+1WXRlJ750jJ6zPnnix5THXFgLcRzzQjb2DqH0g1Ya/cNOo3PxerCfkojfBn
+         bHmbhqB+sRCnC9ucjz6B0He846fBTMHiF3IqN1F/j5DMnSLCJtmijmfY/MnndmjcN3gr
+         hA+oYT14iHbsiYJ+4JBCfHiFu8iAQxiYH1iN5AT5Z0XqtkFfH4bjNa4c7oRErpKogkVa
+         V/VOOWi/6rDhtKIyBGGU86e+tPfIveVur2IJFCTkTzPAYVXRsuIg2jlYldbr9YhY+U01
+         1j7Q==
+X-Gm-Message-State: AOAM533H38rPEt09Ft4b4bd6AM88Hrjum8NfLKWE6q6pPoZVsRO2CI9e
+        y/okaUYSu4mi9haCtJpNtWzrBXS3q40e2B4o
+X-Google-Smtp-Source: ABdhPJwktUuERnfSCATLUZYNfXmNl/x8CSvfB/VjEK+Oyk/w1j74oeLsbOorMsQA09eB6833W+nOvQ==
+X-Received: by 2002:a05:600c:215:: with SMTP id 21mr3149956wmi.54.1611309783694;
+        Fri, 22 Jan 2021 02:03:03 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id o14sm10491607wmc.28.2021.01.22.02.03.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 02:03:03 -0800 (PST)
+Date:   Fri, 22 Jan 2021 11:03:01 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Yiwei Zhang <zzyiwei@android.com>
+Cc:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v4] drm/virtio: Track total GPU memory for virtio driver
+Message-ID: <YAqi1fKM8Vy8ocay@phenom.ffwll.local>
+Mail-Followup-To: Yiwei Zhang <zzyiwei@android.com>,
+        David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+References: <20210122053159.1720274-1-zzyiwei@android.com>
+ <20210122054011.1722954-1-zzyiwei@android.com>
+ <CAKB3++bLzn5YVaR3iUTHtNYwBeG6Z27NjtWZ1q-xmjOkApAQwg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121214314.GW2743@paulmck-ThinkPad-P72>
+In-Reply-To: <CAKB3++bLzn5YVaR3iUTHtNYwBeG6Z27NjtWZ1q-xmjOkApAQwg@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 01:43:14PM -0800, Paul E. McKenney wrote:
-> On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
-> > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
-> > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
-> > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
-> > > > the following kernel crash noticed. This started happening from Linux next
-> > > > next-20210111 tag to next-20210121.
-> > > > 
-> > > > metadata:
-> > > >   git branch: master
-> > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-> > > >   git describe: next-20210111
-> > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
-> > > > 
-> > > > output log:
-> > > > 
-> > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
-> > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
-> > > > = ffff8000091ab8e0
-> > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
-> > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
-> > > > virtual address 0000000000000008
-> > 
-> > [...]
-> > 
-> > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
-> > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
-> > > like your configuration rejects NULL as an invalid virtual address,
-> > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
-> > > are not allowed to dereference a ZERO_SIZE_PTR?
-> > > 
-> > > Adding the ARM64 guys on CC for their thoughts.
-> > 
-> > Spooky timing, there was a thread _today_ about that:
-> > 
-> > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
+On Thu, Jan 21, 2021 at 11:58:22PM -0800, Yiwei Zhang wrote:
+> On Thu, Jan 21, 2021 at 9:40 PM Yiwei Zhang <zzyiwei@android.com> wrote:
+> >
+> > On the success of virtio_gpu_object_create, add size of newly allocated
+> > bo to the tracked total_mem. In drm_gem_object_funcs.free, after the gem
+> > bo loses its last refcount, subtract the bo size from the tracked
+> > total_mem if the original underlying memory allocation is successful.
+> >
+> > It's more accurate to do this in device driver layer to best match when
+> > the underlying resource gets allocated and destroyed during tracing.
+> >
+> > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+> > ---
+> >  drivers/gpu/drm/virtio/Kconfig          |  1 +
+> >  drivers/gpu/drm/virtio/virtgpu_drv.h    |  2 ++
+> >  drivers/gpu/drm/virtio/virtgpu_object.c | 11 +++++++++++
+> >  3 files changed, 14 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
+> > index b925b8b1da16..e103b7e883b1 100644
+> > --- a/drivers/gpu/drm/virtio/Kconfig
+> > +++ b/drivers/gpu/drm/virtio/Kconfig
+> > @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
+> >         select DRM_KMS_HELPER
+> >         select DRM_GEM_SHMEM_HELPER
+> >         select VIRTIO_DMA_SHARED_BUFFER
+> > +       select TRACE_GPU_MEM
+> >         help
+> >            This is the virtual GPU driver for virtio.  It can be used with
+> >            QEMU based VMMs (like KVM or Xen).
+> > diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > index 6a232553c99b..c5622f9b591f 100644
+> > --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > @@ -249,6 +249,8 @@ struct virtio_gpu_device {
+> >         spinlock_t resource_export_lock;
+> >         /* protects map state and host_visible_mm */
+> >         spinlock_t host_visible_lock;
+> > +
+> > +       atomic64_t total_mem;
+> >  };
+> >
+> >  struct virtio_gpu_fpriv {
+> > diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+> > index d69a5b6da553..e2251fc41509 100644
+> > --- a/drivers/gpu/drm/virtio/virtgpu_object.c
+> > +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+> > @@ -25,12 +25,21 @@
+> >
+> >  #include <linux/dma-mapping.h>
+> >  #include <linux/moduleparam.h>
+> > +#include <trace/events/gpu_mem.h>
+> >
+> >  #include "virtgpu_drv.h"
+> >
+> >  static int virtio_gpu_virglrenderer_workaround = 1;
+> >  module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
+> >
+> > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
+> > +                                             s64 delta)
+> > +{
+> > +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
+> > +
+> > +       trace_gpu_mem_total(vgdev->ddev->primary->index, 0, total_mem);
+> > +}
+> > +
+> >  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
+> >  {
+> >         if (virtio_gpu_virglrenderer_workaround) {
+> > @@ -104,6 +113,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
+> >         struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
+> >
+> >         if (bo->created) {
+> > +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
+> >                 virtio_gpu_cmd_unref_resource(vgdev, bo);
+> >                 virtio_gpu_notify(vgdev);
+> >                 /* completion handler calls virtio_gpu_cleanup_object() */
+> > @@ -265,6 +275,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+> >                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
+> >         }
+> >
+> > +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
+> >         *bo_ptr = bo;
+> >         return 0;
+> >
+> > --
+> > 2.30.0.280.ga3ce27912f-goog
+> >
 > 
-> Very good, then my workaround (shown below for Naresh's ease of testing)
-> is only a short-term workaround.  Yay!  ;-)
+> Re Gerd and Daniel:
+> 
+> I'm not sure why we want to couple this patch too much with the
+> dma-bufs tracking. The tracepoint added here itself is pretty useful
+> for tracking gem bo total usage in virtio gpu upon tracing. The
+> original purpose for integrating this tracepoint in all Android gpu
+> kernel drivers is to just track total gpu memory usage and serve the
+> accurate data to game developers in a much easier way. It's something
+> they can rely on for robust testing and regression monitoring.
+> 
+> The only overlap with the dma-buf side is when we export a bo via
+> prime to a dma-buf. But still, the total here is already useful for
+> this particular device. Using which approach to account for the
+> overlap wouldn't block this small integration from my understanding.
+> 
+> Besides, there's no plan for adding per-process gem total tracking in
+> virtio-gpu at this moment. This patch should be light enough to carry
+> without worrying about tech debt I believe.
 
-Hopefully, though we might need to check other architectures beyond
-arm64, ppc, and x86, to be certain!
+The tracepoint is clearly more generic than just what you implement here,
+to support the full use cases on Android's closed stacks. And it is uapi.
 
-Is there any other latent use of virt_addr_valid() that needs this
-semantic? If so we'll probably want to backport the changes to arm64's
-implementation, at least for v5.10.
+Tech debt isn't measured in lines of code, but in how expensive it's going
+to be to fix up the mess in the future. uapi is expensive no matter how
+few lines are used to implement it.
 
-Vincenzo, would you mind taking a look?
+So yeah this needs to be properly thought out, properly implemented (not
+just on the virtual demo stack but something that looks like actual
+production stack), with open drivers, proper alignment with other efforts
+like tracking memory with cgroups, and the interactions with dma-buf
+tracking resolved, and igt testcases (this is meant to be generic after
+all), and at least solid proposals for rolling this out across the drm
+drivers, and ...
 
-Thanks,
-Mark.
+In other words, new uapi needs to be done right.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
