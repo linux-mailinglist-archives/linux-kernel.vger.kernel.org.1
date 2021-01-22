@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1E52FFBCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 05:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5BD2FFBD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 05:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbhAVEfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 23:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbhAVEft (ORCPT
+        id S1726528AbhAVEiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 23:38:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16984 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726000AbhAVEiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 23:35:49 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AD6C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:35:09 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id x18so2529001pln.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 20:35:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=yetUGqIq6nwDP/Z5XoMcv9Fbw9FD3H4M8DzhhGq80G4=;
-        b=bcp+GOMzL9ijzDOWNP7XZsMTtd3/kiRN5ST2t1isOPSlwMc4uIda0EOzl9jSq2xcFT
-         YExngj2Yc4a8PWDpqao1t61oNjSIhvSBEEBTXptB+Jdr6am3AOVnop1dLRf1oyw3w2Nq
-         NIZpM2O/bW3PGC3rBHUfsrtjcXsaki+ah5uAgXdM2Y3E8XdtBkUxL4gT3pp85jVKoTgC
-         FcAZedd0fshyrcDxcFMrSIaFdb0Ur4PfM0o7//yARqA1hoTS/8y6Vxwx5PF4TrUx5vhH
-         UoX0EJTK3g13TUfaf4cbK6GCRPXpJcDpZWjaKfS2PRULah/HANv8IPloOf0SvXxtAsOT
-         ir9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=yetUGqIq6nwDP/Z5XoMcv9Fbw9FD3H4M8DzhhGq80G4=;
-        b=e7DBKJ2rX0VSCA4Q8NNPGQHn89rSgysl2uig1osgasHnmbxrEBXOY2KDdT0AW2KHrv
-         KiWi42CFVRK9I88cZCGEQ89aG6i0VZ6U1ZeUGpF8jGEQNIdSFGVJi+ryuC9aQTZGNgHZ
-         NRajXaSouOtp/odHQMCNIUseH3eRYqcy3+TbqZUkSCNxpz/FakvO9RkUwbVMPlA+Td8q
-         ZLazArkL7gyZjzbnVtvtTBIbOCcUSFUKd9XWO43qbGPPXlnsvcg5MKyJIPCtW6a2xbk2
-         4Qla0E8CJZzkMHPOWra44n3b5BvkmKxQ96B5Hx3xKj3CBgU2MmlsMQnh95yLSyZs9FW8
-         5Pvg==
-X-Gm-Message-State: AOAM533xEbjpiyrX+0bMrYUCqjIf13tl2R66i+bxc6Iq8z1O2k2+0STw
-        8ZBdE/8+LSXdtmVNx5NVf05Vgg==
-X-Google-Smtp-Source: ABdhPJx1VRpZysMio5HKg8II4nInDm6FtWRYuxHyTtXWeliAjY/fbVa0zm+yb9pGb1PBCIDixdfUIA==
-X-Received: by 2002:a17:90a:9918:: with SMTP id b24mr3155479pjp.108.1611290109187;
-        Thu, 21 Jan 2021 20:35:09 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id o10sm7187231pfp.87.2021.01.21.20.35.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 20:35:08 -0800 (PST)
-Date:   Fri, 22 Jan 2021 10:05:06 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 07/13] opp: Allow _generic_set_opp_clk_only() to work for
- non-freq devices
-Message-ID: <20210122043506.lm6yiefzlyubq5my@vireshk-i7>
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <1585f6c21ea8aee64fe4da0bf72b36ea4d74a779.1611227342.git.viresh.kumar@linaro.org>
- <9b2638e6-b842-8737-e5a0-aeeb84927fce@gmail.com>
+        Thu, 21 Jan 2021 23:38:54 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10M4V5wp152474;
+        Thu, 21 Jan 2021 23:37:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=vkX/AsSloHT96juAe9Yya0blAn3yMSuqmehDZQklXrg=;
+ b=N/68MV7oWLGpiFjW4KTzhq7E0CtW+jHErzGi/w7opYvuwQC28pZDVNGaCPAFI6uMlQP2
+ +o6rPlFwK0J2W/Y4ofh/tB/4t6m8IG1CZi8x2Ex/w1zq0LODDirewdZGjHy+DYK4bu/i
+ Bs8t73LhRbC50AvDTG2W2xC8AKzOGwgnvi10XLjpt001PGE0FzifdrgCLxYDDQ2sSNXX
+ toiL2OnYAsdTQKre67aNmtdTewRckwqS6dliylasUL3inNezqmXJ2T7V1CKiK3jliNNs
+ pwms8X6B2ljH6IGadewMU/No6v5dDdjiBPV2fdAQklcF0lZC5c8E2e+2dEjc2W5WmOOw Kw== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 367pcm9svb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Jan 2021 23:37:40 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10M4Wvn7003581;
+        Fri, 22 Jan 2021 04:37:40 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma04dal.us.ibm.com with ESMTP id 367k0shx5h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 04:37:40 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10M4bdVL37159296
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Jan 2021 04:37:39 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 69444AC05B;
+        Fri, 22 Jan 2021 04:37:39 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 13BBBAC059;
+        Fri, 22 Jan 2021 04:37:36 +0000 (GMT)
+Received: from manicouagan.localdomain.com (unknown [9.85.140.199])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 22 Jan 2021 04:37:35 +0000 (GMT)
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     rppt@kernel.org
+Cc:     akpm@linux-foundation.org, guro@fb.com, iamjoonsoo.kim@lge.com,
+        Ram Pai <linuxram@us.ibm.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        mhocko@kernel.org, riel@surriel.com,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations with kernel_end
+Date:   Fri, 22 Jan 2021 01:37:14 -0300
+Message-Id: <20210122043714.266075-1-bauerman@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201220064959.GB392325@kernel.org>
+References: <20201220064959.GB392325@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9b2638e6-b842-8737-e5a0-aeeb84927fce@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-22_02:2021-01-21,2021-01-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
+ mlxlogscore=952 spamscore=0 clxscore=1011 impostorscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101220018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-21, 23:26, Dmitry Osipenko wrote:
-> 21.01.2021 14:17, Viresh Kumar пишет:
-> > In order to avoid conditional statements at the caller site, this patch
-> > updates _generic_set_opp_clk_only() to work for devices that don't
-> > change frequency (like power domains, etc.). Return 0 if the clk pointer
-> > passed to this routine is not valid.
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> ...
-> 
-> Hello Viresh,
-> 
-> Thank you very much for yours effort! I gave a quick test to this series
-> and instantly found one small issue in this patch.
-> 
-> > +	/* We may reach here for devices which don't change frequency */
-> > +	if (unlikely(!clk))
-> 
-> I replaced dev_pm_opp_set_voltage() with dev_pm_opp_set_opp() in the
-> Tegra PD driver and got a crash, which happens because the above line
-> should be:
-> 
-> 	if (IS_ERR(clk))
+Mike Rapoport <rppt@kernel.org> writes:
 
-Fixed, thanks.
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> 
+> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+
+I've seen a couple of spurious triggers of the WARN_ONCE() removed by this
+patch. This happens on some ppc64le bare metal (powernv) server machines with
+CONFIG_SWIOTLB=y and crashkernel=4G, as described in a candidate patch I posted
+to solve this issue in a different way:
+
+https://lore.kernel.org/linuxppc-dev/20201218062103.76102-1-bauerman@linux.ibm.com/
+
+Since this patch solves that problem, is it possible to include it in the next
+feasible v5.11-rcX, with the following tag?
+
+Fixes: 8fabc623238e ("powerpc: Ensure that swiotlb buffer is allocated from low memory")
+
+This is because reverting the commit above also solves the problem on the
+machines where I've seen this issue.
 
 -- 
-viresh
+Thiago Jung Bauermann
+IBM Linux Technology Center
