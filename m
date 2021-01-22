@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BAB300670
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B86730066A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbhAVPCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:02:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39962 "EHLO mail.kernel.org"
+        id S1728947AbhAVPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:00:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728102AbhAVOXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:23:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F92423B86;
-        Fri, 22 Jan 2021 14:17:58 +0000 (UTC)
+        id S1728660AbhAVOYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:24:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CB0023A7C;
+        Fri, 22 Jan 2021 14:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325078;
-        bh=Ezrq2UMDPmiA5cdvtmkULodDY1ScrX4C2r0E2sELQZ8=;
+        s=korg; t=1611325144;
+        bh=PJGI0RI9n0b8CV72l3ojUzF7izWhFbMYwKg1ZcKpiKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TdPWxgkAe0Ft9/Xvl3mK+24wqymC+qAHzbpewht/CUumsf1GFVL6Ahy2Qt383agU7
-         l2zK2abJwJruKpjNQ0lT9XJhqKScYhmMx1jUmnSuOzDfO0jqEiHbBUvK/RoxdWbNd9
-         cipl5Dpn1Nw++/UgpnlCc4HFsJKZEzzyTYbB53q0=
+        b=og2nmvC5HmF3pUleTF3OmvKOtyES8HgL11IZpGNBnpuCVql+xS0dOQiU2rIHdrkj4
+         kLnX7ES3DW91NQlxRYqYdx0u7KjCwV8U+m4xxmKoWCWEtTGk7bBNIj3zSrQIK2+KfD
+         GPQVf3ZSj8E/aehuAnGDa5sfqAug8fSeUhRX4BMU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Baptiste Lepers <baptiste.lepers@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 24/33] rxrpc: Call state should be read with READ_ONCE() under some circumstances
-Date:   Fri, 22 Jan 2021 15:12:40 +0100
-Message-Id: <20210122135734.553550962@linuxfoundation.org>
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH 5.10 32/43] net: phy: smsc: fix clk error handling
+Date:   Fri, 22 Jan 2021 15:12:48 +0100
+Message-Id: <20210122135736.960032057@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
-References: <20210122135733.565501039@linuxfoundation.org>
+In-Reply-To: <20210122135735.652681690@linuxfoundation.org>
+References: <20210122135735.652681690@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baptiste Lepers <baptiste.lepers@gmail.com>
+From: Marco Felsch <m.felsch@pengutronix.de>
 
-[ Upstream commit a95d25dd7b94a5ba18246da09b4218f132fed60e ]
+[ Upstream commit a18caa97b1bda0a3d126a7be165ddcfc56c2dde6 ]
 
-The call state may be changed at any time by the data-ready routine in
-response to received packets, so if the call state is to be read and acted
-upon several times in a function, READ_ONCE() must be used unless the call
-state lock is held.
+Commit bedd8d78aba3 ("net: phy: smsc: LAN8710/20: add phy refclk in
+support") added the phy clk support. The commit already checks if
+clk_get_optional() throw an error but instead of returning the error it
+ignores it.
 
-As it happens, we used READ_ONCE() to read the state a few lines above the
-unmarked read in rxrpc_input_data(), so use that value rather than
-re-reading it.
-
-Fixes: a158bdd3247b ("rxrpc: Fix call timeouts")
-Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Link: https://lore.kernel.org/r/161046715522.2450566.488819910256264150.stgit@warthog.procyon.org.uk
+Fixes: bedd8d78aba3 ("net: phy: smsc: LAN8710/20: add phy refclk in support")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20210111085932.28680-1-m.felsch@pengutronix.de
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rxrpc/input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/smsc.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/rxrpc/input.c
-+++ b/net/rxrpc/input.c
-@@ -431,7 +431,7 @@ static void rxrpc_input_data(struct rxrp
- 		return;
- 	}
+--- a/drivers/net/phy/smsc.c
++++ b/drivers/net/phy/smsc.c
+@@ -284,7 +284,8 @@ static int smsc_phy_probe(struct phy_dev
+ 	/* Make clk optional to keep DTB backward compatibility. */
+ 	priv->refclk = clk_get_optional(dev, NULL);
+ 	if (IS_ERR(priv->refclk))
+-		dev_err_probe(dev, PTR_ERR(priv->refclk), "Failed to request clock\n");
++		return dev_err_probe(dev, PTR_ERR(priv->refclk),
++				     "Failed to request clock\n");
  
--	if (call->state == RXRPC_CALL_SERVER_RECV_REQUEST) {
-+	if (state == RXRPC_CALL_SERVER_RECV_REQUEST) {
- 		unsigned long timo = READ_ONCE(call->next_req_timo);
- 		unsigned long now, expect_req_by;
- 
+ 	ret = clk_prepare_enable(priv->refclk);
+ 	if (ret)
 
 
