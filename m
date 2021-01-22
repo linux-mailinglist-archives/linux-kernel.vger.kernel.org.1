@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0E03007DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A8C300807
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbhAVPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:54:30 -0500
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:56517 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729320AbhAVPxK (ORCPT
+        id S1729044AbhAVP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:59:12 -0500
+Received: from mail.thundersoft.com ([114.242.213.35]:40304 "EHLO
+        mail1.thundersoft.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1729124AbhAVP5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:53:10 -0500
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id A38F010D513;
-        Fri, 22 Jan 2021 10:52:23 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=MfFlB8YVNmsXMB87ZaCNvKMewDs=; b=mK6dLI
-        X6Q0l3QtcOkMNRVQ9uG+ofrigzP3If1SBjzKFz00SZ1AHGIYLz/FHv1ZFeJRJd1e
-        m5GClbAw0sUkFqgyxnpxdikv8igacgUP8DNCQ/sAi1EBSKpc207P55Kq+dKLdXWx
-        APS2gDbkz92WEopkH7G3mI6hvfKW198B1Eokg=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id 9ABE810D511;
-        Fri, 22 Jan 2021 10:52:23 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=9+ePAXFz3kh960y4E+FfoxuOJpYSg1dyLt9kq3gKshY=; b=KTGN9aV7tM9NaBqBbuP1oITDG3WCnFcg5KVe+Lqs/kaxR/WklGrwm2gjM5BQfaVhLF+V0p9tzeieOnriZXX1mrS4gpnyUbkMHpciqE8Zj7kE6w9m6km5psD0XTQLvXvGJ/81BkBw4j9og3Sskn6iNioXLsLZyTbyQabGtNlieGM=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 9753410D50F;
-        Fri, 22 Jan 2021 10:52:20 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id D1E3E2DA0140;
-        Fri, 22 Jan 2021 10:52:18 -0500 (EST)
-Date:   Fri, 22 Jan 2021 10:52:18 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2] PM / clk: make PM clock layer compatible with clocks
- that must sleep
-In-Reply-To: <CAJZ5v0hj4VC_kjB5e_b_ho=ET_quG5zUh0Dbbdwofp-6azopsw@mail.gmail.com>
-Message-ID: <66o22n46-n7p6-3p8r-3ssp-rs8oo28n87nq@syhkavp.arg>
-References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz> <CA+G9fYsyXsNSXGy6BWZ6mgpAP=+7r6Xy9jQ2xxb9mXyHdRoBCg@mail.gmail.com> <CAMuHMdULW4bnb0Jc0+ZaF9P2VNgnYsvEks7y8WYCk045BHqh7A@mail.gmail.com> <CA+G9fYvh0iSyEDQs7+0CX82FLPDCg5UmAt+1JuPsndmfmYF3kw@mail.gmail.com>
- <CAJZ5v0hFjpGp2GbV1Evi+BbUF7Am4ETY4Cm8VzTrvTJ=7=oyPQ@mail.gmail.com> <84r6s34s-opq7-9358-o45n-27s17084012@onlyvoer.pbz> <CAJZ5v0jUxonxp0q80Kdcbax+WMmh-NZ_h=KQG-HcfFdE1hr4VA@mail.gmail.com>
- <CAJZ5v0hj4VC_kjB5e_b_ho=ET_quG5zUh0Dbbdwofp-6azopsw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: CF9E62EE-5CC9-11EB-AF42-E43E2BB96649-78420484!pb-smtp20.pobox.com
+        Fri, 22 Jan 2021 10:57:12 -0500
+Received: from localhost.localdomain (unknown [192.168.8.82])
+        by mail1.thundersoft.com (Postfix) with ESMTPSA id 231A017A3BF5;
+        Fri, 22 Jan 2021 23:56:23 +0800 (CST)
+From:   Wesley Zhao <zhaowei1102@thundersoft.com>
+To:     akpm@linux-foundation.org
+Cc:     andriy.shevchenko@linux.intel.com, keescook@chromium.org,
+        tglx@linutronix.de, kerneldev@karsmulder.nl, nivedita@alum.mit.edu,
+        joe@perches.com, gpiccoli@canonical.com, aquini@redhat.com,
+        gustavoars@kernel.org, zhaowei1102@thundersoft.com,
+        ojeda@kernel.org, ndesaulniers@gooogle.com,
+        linux-kernel@vger.kernel.org, david@redhat.com,
+        dan.j.williams@intel.com, guohanjun@huawei.com,
+        mchehab+huawei@kernel.org
+Subject: [PATCH v3 0/2] Make it possible to reserve memory on 64bit platform
+Date:   Fri, 22 Jan 2021 07:55:35 -0800
+Message-Id: <1611330937-22654-1-git-send-email-zhaowei1102@thundersoft.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021, Rafael J. Wysocki wrote:
+I was trying to reserve some memory to save logs incase that Android panic or hang and then
+I can read the logs from QNX side from the memory reserved before on the Qualcomm 8155 hypervisor platform,
+and I find the "reserve=" parameter only support 32bit,so I made some change and send these patches.
 
-> > > +/**
-> > > + * pm_clk_list_unlock - counterpart to pm_clk_list_lock().
-> > > + * @psd: the same pm_subsys_data instance previously passed to
-> > > + *      pm_clk_list_lock().
-> > > + */
-> > > +static void pm_clk_list_unlock(struct pm_subsys_data *psd)
-> 
-> Locking annotations for sparse were missing here and above, so I've
-> added them by hand.
+I run the cmdline_kunit.c and got these:
+[    1.663048] 1..1
+[    1.663107]     # Subtest: cmdline
+[    1.663145]     1..3
+[    1.663795]     ok 1 - cmdline_test_noint
+[    1.664139]     ok 2 - cmdline_test_lead_int
+[    1.664553]     ok 3 - cmdline_test_tail_int
+[    1.664788] ok 1 - cmdline
 
-Thanks.
-
-> Please double check the result in my linux-next branch (just pushed).
-
-There are still the following warnings:
-
-drivers/base/power/clock_ops.c:52:13: warning: context imbalance in 'pm_clk_list_lock' - wrong count at exit
-drivers/base/power/clock_ops.c:64:13: warning: context imbalance in 'pm_clk_list_unlock' - wrong count at exit
-
-I guess this can be silenced (still need to investigate how those 
-annotations work).
-
-But I'm more worried about these:
-
-drivers/base/power/clock_ops.c:86:12: warning: context imbalance in 'pm_clk_op_lock' - different lock contexts for basic block
-drivers/base/power/clock_ops.c:131:39: warning: context imbalance in 'pm_clk_op_unlock' - unexpected unlock
-
-Those are special locking helpers indeed and I don't know if that can be 
-dealt with.
+Additionaly:
+	I test on the qemu with some cmdline like[qemu-system-x86_64 -kernel linux-next/arch/x86_64/boot/bzImage
+	-hda ubuntu-system.ext4 -append "root=/dev/sda init=/bin/bash console=ttyS0 reserve=0x180000000,0x123456"
+	-nographic] and check the /proc/iomem with 180000000-180123455 : reserved.
+	And some other tests with the get_option with the parameter(-12345678) and so on
 
 
-Nicolas
+Wesley Zhao (2):
+  lib/cmdline: add new function get_option_ull()
+  resource: Make it possible to reserve memory on 64bit platform
+
+ include/linux/kernel.h |  2 ++
+ kernel/resource.c      |  6 ++--
+ lib/cmdline.c          | 94 ++++++++++++++++++++++++++++++++++++++++++--------
+ 3 files changed, 85 insertions(+), 17 deletions(-)
+
+-- 
+2.7.4
+
