@@ -2,194 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAD42FFF8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DF72FFF8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727674AbhAVJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:52:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727653AbhAVJqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:46:10 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 045AE22DBF;
-        Fri, 22 Jan 2021 09:45:29 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l2t0Q-009NVo-MF; Fri, 22 Jan 2021 09:45:26 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 22 Jan 2021 09:45:26 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
-Subject: Re: [RFC PATCH] kvm: arm64: Try stage2 block mapping for host device
- MMIO
-In-Reply-To: <20210122083650.21812-1-zhukeqian1@huawei.com>
-References: <20210122083650.21812-1-zhukeqian1@huawei.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <09d89355cdbbd19c456699774a9a980a@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: zhukeqian1@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com, robin.murphy@arm.com, joro@8bytes.org, daniel.lezcano@linaro.org, tglx@linutronix.de, suzuki.poulose@arm.com, julien.thierry.kdev@gmail.com, akpm@linux-foundation.org, alexios.zavras@intel.com, wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1727810AbhAVJvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727620AbhAVJrK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 04:47:10 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAF1C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:46:25 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id c6so5848417ede.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:46:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=HjgV2PK/NA+pQ8cTfpiwH9HQAhJSvB08Q16GX5X3zfA=;
+        b=by/sVS1It0deAY0BLbNdRSfPNB6zDWFTbe0d/GdsR736L2aLnyAHGJLh2YDDme2PwY
+         IWjGWmZfSUUJLx6x33cWmVGFnaFF8NdjEAfl3KulaX2BZ6y3QGSQcriBcwdMDhfNavwo
+         YVTiU3HsaaYUWTPrisnsQVlILY7rOMNv1FfKeLhjI21QRn1vMPkF/cRjIeagRCAuOIR5
+         C/JtUyOq5gyX3gWEnOupLVZXJKYP/gpyr+w68gBGVbnm7m2zVamsEGQAPJWlwPqVVUFT
+         iaGgCxf3xXGQwjd3c9Msmm9RPa3aa2nRk6IwK1oDfhJnTaXBBhlqSAwf0kmmh5AvxPH7
+         kghA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=HjgV2PK/NA+pQ8cTfpiwH9HQAhJSvB08Q16GX5X3zfA=;
+        b=BU1m6dmuUNIdc7e1vFVUFztMwgUvKU77jSAtLHF/zs25OYRZcj5nX8GcxMuX4N1iXa
+         fBIrMiMm/KtZCPjAceyRmaC3UbAKBzmZPY9gvNf2R+xHLUlZUFI93oyvf0qW5iArqgaW
+         ZFylcrlvEKQ+RF/QoLQxQ6gUg7BmQJMUIAhew0Aj9g3Kb6ZG6DTyJuhq85StPKENL3IZ
+         r3O3EKz2FAxP6QGzpk5iHZq13wg/Oa2dIo6z+RAmM40kIXSNwna5S39cCxLTJqsFPvEv
+         J70kKoE9fRa9J7u8iMdcGPR3g/SHliHmcoEsnE7VG7t6PmwzlFpT0sAg3XG7clzUSd4G
+         CZ+w==
+X-Gm-Message-State: AOAM530CGq5GpAKlExgpaumpE5gKcRs3ZTNihxO+DPal3+V2IvUDW5WK
+        uT+IYt8nurmi42xGCuGitfQOvg==
+X-Google-Smtp-Source: ABdhPJyWPYjrXePNQsgVj7nkGHRu9jiSq5tWZ5YgAF1jy2Q67EKJiWmPbctdCsS4INcXQ2grqJBmKA==
+X-Received: by 2002:a05:6402:402:: with SMTP id q2mr2595315edv.116.1611308783863;
+        Fri, 22 Jan 2021 01:46:23 -0800 (PST)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id gt18sm3960119ejb.104.2021.01.22.01.46.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Jan 2021 01:46:23 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH] bfq: don't check active group if bfq.weight is not
+ changed
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20210114122426.603813-1-yukuai3@huawei.com>
+Date:   Fri, 22 Jan 2021 10:46:21 +0100
+Cc:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <44BDF727-92DA-4678-A026-A1CF53A655BF@linaro.org>
+References: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
+ <20210114122426.603813-1-yukuai3@huawei.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-22 08:36, Keqian Zhu wrote:
-> The MMIO region of a device maybe huge (GB level), try to use block
-> mapping in stage2 to speedup both map and unmap.
-> 
-> Especially for unmap, it performs TLBI right after each invalidation
-> of PTE. If all mapping is of PAGE_SIZE, it takes much time to handle
-> GB level range.
 
-This is only on VM teardown, right? Or do you unmap the device more 
-ofet?
-Can you please quantify the speedup and the conditions this occurs in?
 
-I have the feeling that we are just circling around another problem,
-which is that we could rely on a VM-wide TLBI when tearing down the
-guest. I worked on something like that[1] a long while ago, and parked
-it for some reason. Maybe it is worth reviving.
+> Il giorno 14 gen 2021, alle ore 13:24, Yu Kuai <yukuai3@huawei.com> ha =
+scritto:
+>=20
+> Now the group scheduling in BFQ depends on the check of active group,
+> but in most cases group scheduling is not used and the checking
+> of active group will cause bfq_asymmetric_scenario() and its caller
+> bfq_better_to_idle() to always return true, so the throughput
+> will be impacted if the workload doesn't need idle (e.g. random rw)
+>=20
+> To fix that, adding check in bfq_io_set_weight_legacy() and
+> bfq_pd_init() to check whether or not group scheduling is used
+> (a non-default weight is used). If not, there is no need
+> to check active group.
+>=20
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=kvm-arm64/elide-cmo-tlbi
+Hi,
+I do like the goal you want to attain.  Still, I see a problem with
+your proposal.  Consider two groups, say A and B.  Suppose that both
+have the same, default weight.  Yet, group A generates large I/O
+requests, while group B generates small requests.  With your change,
+idling would not be performed.  This would cause group A to steal
+bandwidth to group B, in proportion to how large its requests are
+compared with those of group B.
 
-> 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+As a possible solution, maybe we would need also a varied_rq_size
+flag, similar to the varied_weights flag?
+
+Thoughts?
+
+Thanks for your contribution,
+Paolo
+
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->  arch/arm64/include/asm/kvm_pgtable.h | 11 +++++++++++
->  arch/arm64/kvm/hyp/pgtable.c         | 15 +++++++++++++++
->  arch/arm64/kvm/mmu.c                 | 12 ++++++++----
->  3 files changed, 34 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_pgtable.h
-> b/arch/arm64/include/asm/kvm_pgtable.h
-> index 52ab38db04c7..2266ac45f10c 100644
-> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> @@ -82,6 +82,17 @@ struct kvm_pgtable_walker {
->  	const enum kvm_pgtable_walk_flags	flags;
->  };
-> 
-> +/**
-> + * kvm_supported_pgsize() - Get the max supported page size of a 
-> mapping.
-> + * @pgt:	Initialised page-table structure.
-> + * @addr:	Virtual address at which to place the mapping.
-> + * @end:	End virtual address of the mapping.
-> + * @phys:	Physical address of the memory to map.
-> + *
-> + * The smallest return value is PAGE_SIZE.
-> + */
-> +u64 kvm_supported_pgsize(struct kvm_pgtable *pgt, u64 addr, u64 end, 
-> u64 phys);
-> +
->  /**
->   * kvm_pgtable_hyp_init() - Initialise a hypervisor stage-1 
-> page-table.
->   * @pgt:	Uninitialised page-table structure to initialise.
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c 
-> b/arch/arm64/kvm/hyp/pgtable.c
-> index bdf8e55ed308..ab11609b9b13 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -81,6 +81,21 @@ static bool kvm_block_mapping_supported(u64 addr,
-> u64 end, u64 phys, u32 level)
->  	return IS_ALIGNED(addr, granule) && IS_ALIGNED(phys, granule);
->  }
-> 
-> +u64 kvm_supported_pgsize(struct kvm_pgtable *pgt, u64 addr, u64 end, 
-> u64 phys)
+> block/bfq-cgroup.c  | 14 ++++++++++++--
+> block/bfq-iosched.c |  8 +++-----
+> block/bfq-iosched.h | 19 +++++++++++++++++++
+> 3 files changed, 34 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+> index b791e2041e49..b4ac42c4bd9f 100644
+> --- a/block/bfq-cgroup.c
+> +++ b/block/bfq-cgroup.c
+> @@ -505,12 +505,18 @@ static struct blkcg_policy_data =
+*bfq_cpd_alloc(gfp_t gfp)
+> 	return &bgd->pd;
+> }
+>=20
+> +static inline int bfq_dft_weight(void)
 > +{
-> +	u32 lvl;
-> +	u64 pgsize = PAGE_SIZE;
+> +	return cgroup_subsys_on_dfl(io_cgrp_subsys) ?
+> +	       CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
 > +
-> +	for (lvl = pgt->start_level; lvl < KVM_PGTABLE_MAX_LEVELS; lvl++) {
-> +		if (kvm_block_mapping_supported(addr, end, phys, lvl)) {
-> +			pgsize = kvm_granule_size(lvl);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return pgsize;
 > +}
 > +
->  static u32 kvm_pgtable_idx(struct kvm_pgtable_walk_data *data, u32 
-> level)
->  {
->  	u64 shift = kvm_granule_shift(level);
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 7d2257cc5438..80b403fc8e64 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -499,7 +499,8 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
->  int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->  			  phys_addr_t pa, unsigned long size, bool writable)
->  {
-> -	phys_addr_t addr;
-> +	phys_addr_t addr, end;
-> +	unsigned long pgsize;
->  	int ret = 0;
->  	struct kvm_mmu_memory_cache cache = { 0, __GFP_ZERO, NULL, };
->  	struct kvm_pgtable *pgt = kvm->arch.mmu.pgt;
-> @@ -509,21 +510,24 @@ int kvm_phys_addr_ioremap(struct kvm *kvm,
-> phys_addr_t guest_ipa,
-> 
->  	size += offset_in_page(guest_ipa);
->  	guest_ipa &= PAGE_MASK;
-> +	end = guest_ipa + size;
-> 
-> -	for (addr = guest_ipa; addr < guest_ipa + size; addr += PAGE_SIZE) {
-> +	for (addr = guest_ipa; addr < end; addr += pgsize) {
->  		ret = kvm_mmu_topup_memory_cache(&cache,
->  						 kvm_mmu_cache_min_pages(kvm));
->  		if (ret)
->  			break;
-> 
-> +		pgsize = kvm_supported_pgsize(pgt, addr, end, pa);
+> static void bfq_cpd_init(struct blkcg_policy_data *cpd)
+> {
+> 	struct bfq_group_data *d =3D cpd_to_bfqgd(cpd);
+>=20
+> -	d->weight =3D cgroup_subsys_on_dfl(io_cgrp_subsys) ?
+> -		CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
+> +	d->weight =3D bfq_dft_weight();
+> }
+>=20
+> static void bfq_cpd_free(struct blkcg_policy_data *cpd)
+> @@ -554,6 +560,9 @@ static void bfq_pd_init(struct blkg_policy_data =
+*pd)
+> 	bfqg->bfqd =3D bfqd;
+> 	bfqg->active_entities =3D 0;
+> 	bfqg->rq_pos_tree =3D RB_ROOT;
 > +
->  		spin_lock(&kvm->mmu_lock);
-> -		ret = kvm_pgtable_stage2_map(pgt, addr, PAGE_SIZE, pa, prot,
-> +		ret = kvm_pgtable_stage2_map(pgt, addr, pgsize, pa, prot,
->  					     &cache);
->  		spin_unlock(&kvm->mmu_lock);
->  		if (ret)
->  			break;
-> 
-> -		pa += PAGE_SIZE;
-> +		pa += pgsize;
->  	}
-> 
->  	kvm_mmu_free_memory_cache(&cache);
+> +	if (entity->new_weight !=3D bfq_dft_weight())
+> +		bfqd_enable_active_group_check(bfqd);
+> }
+>=20
+> static void bfq_pd_free(struct blkg_policy_data *pd)
+> @@ -1013,6 +1022,7 @@ static void bfq_group_set_weight(struct =
+bfq_group *bfqg, u64 weight, u64 dev_wei
+> 		 */
+> 		smp_wmb();
+> 		bfqg->entity.prio_changed =3D 1;
+> +		bfqd_enable_active_group_check(bfqg->bfqd);
+> 	}
+> }
+>=20
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 9e4eb0fc1c16..1b695de1df95 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -699,11 +699,8 @@ static bool bfq_asymmetric_scenario(struct =
+bfq_data *bfqd,
+> 		(bfqd->busy_queues[0] && bfqd->busy_queues[2]) ||
+> 		(bfqd->busy_queues[1] && bfqd->busy_queues[2]);
+>=20
+> -	return varied_queue_weights || multiple_classes_busy
+> -#ifdef CONFIG_BFQ_GROUP_IOSCHED
+> -	       || bfqd->num_groups_with_pending_reqs > 0
+> -#endif
+> -		;
+> +	return varied_queue_weights || multiple_classes_busy ||
+> +	       bfqd_has_active_group(bfqd);
+> }
+>=20
+> /*
+> @@ -6472,6 +6469,7 @@ static int bfq_init_queue(struct request_queue =
+*q, struct elevator_type *e)
+>=20
+> 	bfqd->queue_weights_tree =3D RB_ROOT_CACHED;
+> 	bfqd->num_groups_with_pending_reqs =3D 0;
+> +	bfqd->check_active_group =3D false;
+>=20
+> 	INIT_LIST_HEAD(&bfqd->active_list);
+> 	INIT_LIST_HEAD(&bfqd->idle_list);
+> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+> index 703895224562..216509013012 100644
+> --- a/block/bfq-iosched.h
+> +++ b/block/bfq-iosched.h
+> @@ -524,6 +524,8 @@ struct bfq_data {
+>=20
+> 	/* true if the device is non rotational and performs queueing */
+> 	bool nonrot_with_queueing;
+> +	/* true if need to check num_groups_with_pending_reqs */
+> +	bool check_active_group;
+>=20
+> 	/*
+> 	 * Maximum number of requests in driver in the last
+> @@ -1066,6 +1068,17 @@ static inline void bfq_pid_to_str(int pid, char =
+*str, int len)
+> }
+>=20
+> #ifdef CONFIG_BFQ_GROUP_IOSCHED
+> +static inline void bfqd_enable_active_group_check(struct bfq_data =
+*bfqd)
+> +{
+> +	cmpxchg_relaxed(&bfqd->check_active_group, false, true);
+> +}
+> +
+> +static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
+> +{
+> +	return bfqd->check_active_group &&
+> +	       bfqd->num_groups_with_pending_reqs > 0;
+> +}
+> +
+> struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
+>=20
+> #define bfq_log_bfqq(bfqd, bfqq, fmt, args...)	do {			=
+\
+> @@ -1085,6 +1098,12 @@ struct bfq_group *bfqq_group(struct bfq_queue =
+*bfqq);
+> } while (0)
+>=20
+> #else /* CONFIG_BFQ_GROUP_IOSCHED */
+> +static inline void bfqd_enable_active_group_check(struct bfq_data =
+*bfqd) {}
+> +
+> +static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
+> +{
+> +	return false;
+> +}
+>=20
+> #define bfq_log_bfqq(bfqd, bfqq, fmt, args...) do {	\
+> 	char pid_str[MAX_PID_STR_LENGTH];	\
+> --=20
+> 2.25.4
+>=20
 
-This otherwise looks neat enough.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
