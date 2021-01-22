@@ -2,250 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29CB2FFE9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 625E82FFE52
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbhAVIqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:46:42 -0500
-Received: from esa3.fujitsucc.c3s2.iphmx.com ([68.232.151.212]:26318 "EHLO
-        esa3.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726652AbhAVIqE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:46:04 -0500
-X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Jan 2021 03:46:01 EST
-IronPort-SDR: f/eg88RkLeSrim/VTdboKpiSt93OrSdoTLN/jN84RJ+3nD+adpL0GXhjt36uP2tTRpuOUMzeo5
- 7VjTFtnBvOdot1eghhUXRDFCmT+T5v6oLJKxKlrT6T1ny7y9qV1Pw1gZWT//g0rB7NmeF01DCY
- pNLXGLLX0cKuysbjV/56Ej/4iY3dZsnSVM3V7GJAxZsEcKyVyaK1TpOeyNPOaaE0p8ehq7ziuz
- +bRg6nTo5mgwCNyg1Rh9xQ7/iow6eAOfVywbkeK9mcFYZ2OAmLwY3aizVKgOD3J0cgPgs1pRGq
- PRw=
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="32917906"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602514800"; 
-   d="scan'208";a="32917906"
-Received: from mail-ty1jpn01lp2059.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.59])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 17:35:54 +0900
+        id S1727122AbhAVIht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:37:49 -0500
+Received: from mail-am6eur05on2100.outbound.protection.outlook.com ([40.107.22.100]:13760
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727039AbhAVIgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:36:50 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KE9uHnmHDldLsQhCoUkCHeJz+/MERXhsgzxFXYW4EdMDGMOijwST/S6dsZr1AuvbaShdtUkjIgGnlN9OuPnntXQHxLKc3Hu7oRswqHLq+wXfs3CQdonWTyPfHHcXbG5VKofnI3EalpRYIkEMA4Rsq/E+xkos+qbiN8IiOcb+OQuFP5BnLHHqgLSA6EvqdfdC9YadOXy4N5FErrRm8AaLfUVSY1SY8DTB9mUGW5X/Q1VkzDtZ6fuqqaHPkV4iAL9aggQHdF+ZZv1fpw5IKSMQGCkUC+o0wkdLbj0N0mNIBs+p3DegVPHgNBMp4ldwgutysmSQd2zma8e1gUWYCZJRoQ==
+ b=bOimxrCsTpEHlKEvG7ZM++Y9tp93AIcs9BgDfC2eQy84BlJ7G5gP0k9aCSBrFg0htBLK+8pOD7prvwRbc5snzyJkoVYohwZXqUrcnP7PTlvF1VsRjTfCyq9Upj3tRnulemFbrGO6BNLBOHJlLsNFD1PREF+htZzW9AFfauoviUMy9FJo3dxOOEIylRrEO3dywooHkPc0J3TCW9zBSQEFAIitgX5zr/jp31g/3Ac8OlSBPB5FN1dhQZ0iSt9POPwY8wxOPh8NxkN6akQ9ZKmMRboyFotV7kzRwOQET8NOcdkwLvg5Ce88jnusghUJmCZ66zPhooDFpd/lfq6btY8kFg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qIGJZp6GQ/RkrF0ho4CMneGbtb1u8xVykB/x4EpMwUk=;
- b=K6KIgoRgVAGGN1c71z48pCO7I0hV6mgeoSlS8b79iw5opplMpaijGltJPvTg/sjC5jYHHDmaRH5E/CrzXQcQbaoueR+rVI9dRUYgX96Eio/ExZAl7sIUc83jQj+MlmkvCipDlJCX7QNHDKIh8TXqOtDnSjjghR7JaV695eP45wPFqw0Xh7jjz0x+2WJRhcwu6PJC8XlSLWFXvrgH3b/imyR6yHRdA/9ok7P452KIqoDKQya9MxPLWvI+APqS93vsk99m9TH/VVnHnh2tBwteOXbAVMbiBGZUVSEtyyX26qgJuZ1vjRziUAlzU4H7wPE71cAoiY1CCCbs/YvtZeCB5w==
+ bh=wBamk3jV1e/20yiEnGTjwutAMzMw5XXQAkypQaXFuPU=;
+ b=OdmFequtekOwigIixcls4zBMpoAXllESKDOY+D/22BnIfUZcWUrDRUSLKO9/ztlmasZTWXrR8qT5nEmBUvi6H65O+pabaXiBTM+PXV1fme+atOdnkQnH0i0G2zBL/dYbnwTyGE/h/LzWhvJZKarMx5KySTzq/xzbadP1ogE1+TlQNO36sb98q48Bd6iuCJAI93hRfBoG4CAmgKmEJSouj+UrXrPbDk3HEM8pOjnHZl3RH3wDGbq/RPrxpbsVR0Tp6Fk2IjKJjoeVnu+2yMdC7/KjcFVSYofCcdi0EjSa8NIybD1AeiXpXHxGZh+QBsKSMiPepNv0v9mJ7KrxOXU9fA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qIGJZp6GQ/RkrF0ho4CMneGbtb1u8xVykB/x4EpMwUk=;
- b=hotJZPBOgzuQJ1DDZEuPtxgv4NNmQOb87LOAO/ZTCDqcgfyWvDRM7FuT4Djtg1IIKQ7q+2jnozMKO8L+O8Pw96DFZPwJa2zz4XFkkMqAKuTW4LV/c9uk6Q42UlnQpbdGkMLOvKIu6aea7YAHn7TSTezM6H095D58AXIIiK7HMlI=
-Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
- by OS0PR01MB5425.jpnprd01.prod.outlook.com (2603:1096:604:af::16) with
+ bh=wBamk3jV1e/20yiEnGTjwutAMzMw5XXQAkypQaXFuPU=;
+ b=egv+xOzym1fNWHea0auWZwz3tHVoMpasdndV4AieG4i6n28VfxZfBt9nLO7Pje6htT+7mh/oD5dmptYg6KoEkpzH8ULlSCg+83t51M2e7gQaZqLgFePU95NOwnewW9/iTA1hj+xXrS+h3IhHsyno0Cv4qcu2J8E+M3ATpU5F4Nw=
+Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:19b::9)
+ by AM9P190MB1282.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:26d::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Fri, 22 Jan
- 2021 08:35:52 +0000
-Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
- ([fe80::340a:689c:36e1:fedd]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
- ([fe80::340a:689c:36e1:fedd%7]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
- 08:35:52 +0000
-From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
-To:     'John Garry' <john.garry@huawei.com>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-CC:     "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH v2 1/3] perf vendor events: Add cache refill and DCZVA
- events
-Thread-Topic: [PATCH v2 1/3] perf vendor events: Add cache refill and DCZVA
- events
-Thread-Index: AQHW7+SfZlbnwAdjkk2qmbTsu5bGU6ox9FMAgABlzYCAANpbYA==
-Date:   Fri, 22 Jan 2021 08:35:52 +0000
-Message-ID: <OSBPR01MB4600DCC22FFE8BA6A6BB2897F7A00@OSBPR01MB4600.jpnprd01.prod.outlook.com>
-References: <20210121105425.2695843-1-nakamura.shun@jp.fujitsu.com>
- <20210121105425.2695843-2-nakamura.shun@jp.fujitsu.com>
- <b00bf252-e31f-b0eb-d0aa-0a62bcaee22e@hisilicon.com>
- <0be33a5d-98a1-d2e1-704e-83334063888d@huawei.com>
-In-Reply-To: <0be33a5d-98a1-d2e1-704e-83334063888d@huawei.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Fri, 22 Jan
+ 2021 08:36:02 +0000
+Received: from AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
+ ([fe80::3011:87e8:b505:d066]) by AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
+ ([fe80::3011:87e8:b505:d066%9]) with mapi id 15.20.3784.015; Fri, 22 Jan 2021
+ 08:36:01 +0000
+From:   Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+To:     Jakub Kicinski <kuba@kernel.org>, Ido Schimmel <idosch@idosch.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jiri@nvidia.com" <jiri@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
+ HARD_DROP
+Thread-Topic: [PATCH net-next] net: core: devlink: add new trap action
+ HARD_DROP
+Thread-Index: AQHW8JmdV3Ghn6zeuUSyZ1aU9R+t1A==
+Date:   Fri, 22 Jan 2021 08:36:01 +0000
+Message-ID: <AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-shieldmailcheckermailid: e65b491330dc4890a689f3b62a2fd220
-x-securitypolicycheck: OK by SHieldMailChecker v2.6.3
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fujitsu.com;
-x-originating-ip: [218.44.52.182]
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=plvision.eu;
+x-originating-ip: [185.219.76.174]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fa8c7cc3-60b4-45c1-8312-08d8beb0ba48
-x-ms-traffictypediagnostic: OS0PR01MB5425:
-x-microsoft-antispam-prvs: <OS0PR01MB5425582E591E2499E9815F54F7A00@OS0PR01MB5425.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-office365-filtering-correlation-id: be2114f5-1d15-45d4-bc5e-08d8beb0c01e
+x-ms-traffictypediagnostic: AM9P190MB1282:
+x-microsoft-antispam-prvs: <AM9P190MB12820EBB625D32EB82B71857E4A00@AM9P190MB1282.EURP190.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7L1F2WnlC2/4O8W44fd4c8sZQ0GB6CXkvYVpcyAfw35OYZ96kYKkatQH7UwRI2culNTC3IA0FHkm+Yx8aIeTugLpK8ziD6I4RziCOwTYHwYhBFVZoFq0elxS5I3yCuUMNAsJbdyheKMSmgfkVQqmEpM41Jge9GkSJHp70j0rN+0y4IcTKTg4Jzto6K7SlCheqQuG3kg1ZpJDQmd//rv7P4PPLoCts8iynmpG1wMoNDmmEe3NPJZpFTxIBSkIJ07g2NUcQlI/vDLj7MeYzPmTMLIQrDJ4cWSyi64hM7lp+Cj6X9Z4NwZDLXQ//KAqeO/CJIWWEVL3qm0h1x5EI1as6smK3ppvt8ZIvWtsM+GY000tQOHZkxM9Y2zC8Ucp6p6cvcUvRfanLs5sch1C/ty+qRta7Lm/AA2j4aMoJGjOzMoCZWnCvNC3Gx9PioZyaDfW
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(346002)(376002)(39860400002)(53546011)(26005)(83380400001)(6506007)(66946007)(76116006)(66476007)(64756008)(66446008)(85182001)(66556008)(86362001)(8936002)(4326008)(186003)(55016002)(9686003)(110136005)(54906003)(2906002)(316002)(71200400001)(52536014)(7696005)(8676002)(478600001)(33656002)(5660300002)(777600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?WkpBdE82WTlTT2JpWmx5YkxKVW1OL3N3N0tuaWt1SGYxbG1nTGppUkhi?=
- =?iso-2022-jp?B?MEFISkdRVG8vaVFFWlRZY2JtNTc0M016enFOQWlNMEhSY3c5aUxyaWZq?=
- =?iso-2022-jp?B?R1grNzJlb0tFMmJSOW5OMjNGNFl2ZDRyU3BaWGp3R0IzZ0Z6U2RjRUtK?=
- =?iso-2022-jp?B?RW1nTUI1amhJTmNGaE5UM2IzVGdEamZrNWwrRm9veERUdUIzWTRUNEtL?=
- =?iso-2022-jp?B?UTRCdXBhd0pvUjJRQTdNRk5OUmJMOVlNYUFRWUdMUkJMcGxrWThKaHBv?=
- =?iso-2022-jp?B?L1k1bktjajB1YmNzQm5YVlVLYzZKM1BDYmEwdjY5TmxncnpTZjBYV05t?=
- =?iso-2022-jp?B?U1RUYS9Xb0NoSmpHeTJrWVBiK0YvQlZ1OVgxMTU5dGxmVDFZK2FVR1o3?=
- =?iso-2022-jp?B?ZXRFTFBxU3R3RFZZWXVEaE1oY05YaEllYjNSbHJsNTdWek1TK25LaWNC?=
- =?iso-2022-jp?B?alByTUkzaFFyb2JwY0lPblFVRGJSMVBXWWdKdVRPRzhSeEt1KzBlNnM5?=
- =?iso-2022-jp?B?b2pZR0xPVm5OTmxmS09STEw0dVMvMXN2RHV1a0kvakE1WHJ1TXhzb2Vp?=
- =?iso-2022-jp?B?ZVpFc3A4TS8zSEJ5K0c4NjR4U2pta3VOSS9ybE5wZ09zYjFvMFIyM040?=
- =?iso-2022-jp?B?TnpyQzd4VnBXYzlya0xMVytHN2NoUUxrYmt3NEt1ckx4bEhueUZqRzRr?=
- =?iso-2022-jp?B?cE9VRGxFZE9ER2krMDN6UnFnSXRNbG1KM2FVYUZWeWR3MnNZTnQzOFlj?=
- =?iso-2022-jp?B?NlpSRFRkT0Noc3p4OFJNSm9hTWI5SDY2TWlRWGxOclRUeC8zWkIyOSs2?=
- =?iso-2022-jp?B?TmcraDdqRTNYUEM1ZmZ5ellySnFkckEycE9UbXh1NVY0eUxGUGlrQUUv?=
- =?iso-2022-jp?B?ZCt4ek1laXJla0pWbXlvcERobU9uVHFnZTBQQzhKSWRlM1NnQjgwU20w?=
- =?iso-2022-jp?B?dEU4a3p0UkJ6SUM5aWxJRUZILzkwQXBuTkdlRW1sMG5IcmlkUFkyNlNE?=
- =?iso-2022-jp?B?eDAvTzJ1dENmMXcxMG1TR1oybjVOK0JvWDZzMEZMTHA0RzBNMzJudTlP?=
- =?iso-2022-jp?B?RXhMdzVYWldmK1dmMHQ3d1pnY1ZlZnNiUDFPQXNpV2VTdGlVZHlLVEo0?=
- =?iso-2022-jp?B?NjAxZXEzMlczcUhQb2ZmRjc3bG9telZvcDNjajlReng0Sm5ySmtZSXRL?=
- =?iso-2022-jp?B?NStqS1MyV1llcmtGNTh0MmdNOWZGMWpGWnhQRDhveGs2czZPVCtJd1N0?=
- =?iso-2022-jp?B?cVNZZkczOG9veUhoMFUzdE1PbVVUVU9oZk5PMTZIZjUyTG5PSGxpNjla?=
- =?iso-2022-jp?B?cVhyeVdkb25UaThnd2ZvSUJQeEdGR25uWlh3SVBwVWpyOHlTbGk1Y3Qv?=
- =?iso-2022-jp?B?UmgwbHMzbXdaR3I5NWVIUm5PdW9DenlMRXcrNWJIdmhVZWVtdz0=?=
+x-microsoft-antispam-message-info: 6e8nBM6RTMvP4/biXl6xdqmbL0+8G3pRnlCZdccNkCzw9E9TjGNdzcOVVATbeTZyj7Pc0CF/U4DS4bwKmonkpt2LZ1ll1o54+5E2lEYH5RGaAJ+zv/+fxyQyyrkqoFRprh8mVp7KCYiKNdDC/SknW6N2RicBFsn2CySudoJllKriJkFbQgsna1nOKwrqWfrlSVFKvyKf0TceWluM3MrEOmnuWG+hakVYW4tBB/68ffPbN6h0UmcO2NxT+51y+/yDNMyJ5cPeR/YnFc7zQyOVv1kLUF53wreJ06J1YS4VCrbJtnRnjkOiMtDUoqf9Cr6fNLs8UNhJZ/UGPcQyiw/1z1xVtyENvtfJ9m1rwvxCXD+8Lkf55JxKUFD3hFYOnkQppieDIdsUN1zFwJs0CIB0sQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0P190MB0738.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(366004)(39830400003)(396003)(136003)(376002)(186003)(8676002)(8936002)(83380400001)(66476007)(91956017)(4326008)(26005)(5660300002)(7696005)(54906003)(66446008)(71200400001)(316002)(64756008)(6506007)(66946007)(86362001)(9686003)(44832011)(76116006)(478600001)(33656002)(66556008)(55016002)(110136005)(52536014)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?gIAVVpzC8h+arLBE/1B7sm/bI0wZWN7IzjUOfoFXIMdklinM3m9jb3sHMa?=
+ =?iso-8859-1?Q?+PHYuDcTqmTwv4AD6JTE7jGAwTYgS6FttdKYIaJpDVTNZNng4O1P3/DU5k?=
+ =?iso-8859-1?Q?3B6ggJ/UfrNp76e5UU39ExP8l0eM3EZw1ao1xKd/D5YME9r5Z3UGCHITE6?=
+ =?iso-8859-1?Q?KjAPwHnLv6eHmUfoYe+wGJsqSkgllhX7Bu/YvcMPb69x8T3K6ncjSW63lY?=
+ =?iso-8859-1?Q?z/FdAX0bT4YS2BcnH61c/GdlaEsE5jlRuPoUrOMk9DRL92egXJDeGXaRcx?=
+ =?iso-8859-1?Q?jzZg0MKQtgnV5GTsLc8R+u4Z6WI+Tc8irug+NXap79im86YfgELZ/BEL4B?=
+ =?iso-8859-1?Q?VEpAIE8RBbFV9GUI0ELcaK6dAzSTJ8JcPQPC92wqgJBSyCiz5NjDTZoPhA?=
+ =?iso-8859-1?Q?SdWRaWr/GPPoc7cwXQovM1FJgpeWWnedJ8Vd2lvnFPGC/8O/onmaOBY3Sn?=
+ =?iso-8859-1?Q?RQDYr59T6tBr03u8dspvY6GVyt2oGz4FF2dymyHPLmHavCgt9aHSEQir8t?=
+ =?iso-8859-1?Q?I/ahCOM7o9HyEzH42laMDZsMdetAJ4W7NT0vKr6WsYGAmHRTKafnd+3M/N?=
+ =?iso-8859-1?Q?mUPyG/KmWbQ+tO/ZVA7Pyg8eCFG/q6aANpjb6z6JKmhIR3KWjsdbYFFuYl?=
+ =?iso-8859-1?Q?BLe1j5/2qrTh46WzeOpvrGqDn3yz+Nlkkn+LDTpx6SU8QtZWmT+fSc86MG?=
+ =?iso-8859-1?Q?DJWR44T5Y2xPSKhMRlqYe4LYQrNqpa+sluIPo/yjVZ1LxaMZBTjyGdWY+O?=
+ =?iso-8859-1?Q?gTjGbt6jbLsEfWV6Upu51nwwLmV2/R3BlNf74UjzWYgTyXuMWZB94mFpJy?=
+ =?iso-8859-1?Q?O0n6oZ9vWvRSoIliJn6IQ0u23BONBbyjoLDQuonSepvzo1NCegAWia+BXX?=
+ =?iso-8859-1?Q?gvmb0y0g6gwhT7FOgsUX8vWkTgMZS61NhEQl+cW5dt5aRk2TqWnlVMhK9k?=
+ =?iso-8859-1?Q?IJWo2t6P3+SKdAMgAShPhLRJiJh+e8GEOyYVTd4J6gT7ad7QVh9BUTrC2/?=
+ =?iso-8859-1?Q?9Jmj9iokd7jG8NYjBPM3BOD1A6RODA75yBwFeGvp7y3l4QfrrqcIE8KkTl?=
+ =?iso-8859-1?Q?XcUW7d7u+Hh1kiSFho4u+jeeH5zRwE5dfFzZh1nSNxUa?=
 x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
+X-OriginatorOrg: plvision.eu
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa8c7cc3-60b4-45c1-8312-08d8beb0ba48
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 08:35:52.0931
+X-MS-Exchange-CrossTenant-AuthSource: AM0P190MB0738.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: be2114f5-1d15-45d4-bc5e-08d8beb0c01e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 08:36:01.9268
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PqRPeKCc4Z1IA+W3w4tuIb5UQDg74YPrB0Mu4GxPR5VZg+quUWscTaIodeN7/lC6b+D6mxwSa5V3jLA3UIPpg6V5lsTDsMhtUSwr88pfC9Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5425
+X-MS-Exchange-CrossTenant-userprincipalname: fIJU33ap4k12tLFOpjx+5v2yYNEf/KDB5dXOwh5gcOZJOjvtykHimVyarl/J30GjCo7X1NpuzG1bAsBUDKEESO+2cX+iOVwNFT505fGMdLI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P190MB1282
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,  John, Shaokun
-
-> > =1B$B:_=1B(B 2021/1/21 18:54, Shunsuke Nakamura =1B$B<LF;=1B(B:
-> >> Adds L1 data cache refill prefetch, L2 data cache refill prefetch,
-> >> and DCZVA instruction events.
-> >
-> > A silly question, Does Arm define these events? I checked Arm ARM
-> > document(DDI0487Fc) that these event numbers are reserved. Or maybe I
-> > miss something.
->=20
-> For events which are reserved (see k3-1), like 0x9f, prob should not be p=
-utting in
-> this file, but rather the CPU JSON.
-
-I missed the reservation area for ARM recommended events.
-I will fix the patch as you pointed out.
-
-Best Regards
-
-> -----Original Message-----
-> From: John Garry <john.garry@huawei.com>
-> Sent: Friday, January 22, 2021 2:44 AM
-> To: Shaokun Zhang <zhangshaokun@hisilicon.com>; Nakamura, Shunsuke/=1B$BC=
-fB<=1B(B
-> =1B$B=3DS2p=1B(B <nakamura.shun@fujitsu.com>
-> Cc: mathieu.poirier@linaro.org; linux-kernel@vger.kernel.org;
-> leo.yan@linaro.org; will@kernel.org; linux-arm-kernel@lists.infradead.org
-> Subject: Re: [PATCH v2 1/3] perf vendor events: Add cache refill and DCZV=
-A
-> events
->=20
-> On 21/01/2021 11:39, Shaokun Zhang wrote:
-> > Hi,
-> >
-> > =1B$B:_=1B(B 2021/1/21 18:54, Shunsuke Nakamura =1B$B<LF;=1B(B:
-> >> Adds L1 data cache refill prefetch, L2 data cache refill prefetch,
-> >> and DCZVA instruction events.
-> >
-> > A silly question, Does Arm define these events? I checked Arm ARM
-> > document(DDI0487Fc) that these event numbers are reserved. Or maybe I
-> > miss something.
->=20
-> For events which are reserved (see k3-1), like 0x9f, prob should not be p=
-utting in
-> this file, but rather the CPU JSON.
->=20
-> Cheers,
-> John
->=20
-> >
-> >>
-> >> Signed-off-by: Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
-> >> ---
-> >>   .../perf/pmu-events/arch/arm64/armv8-recommended.json  | 18
-> ++++++++++++++++++
-> >>   1 file changed, 18 insertions(+)
-> >>
-> >> diff --git a/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
-> >> b/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
-> >> index d0a1986..ee0e67d 100644
-> >> --- a/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
-> >> +++ b/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
-> >> @@ -54,6 +54,12 @@
-> >>           "BriefDescription": "L1D cache invalidate"
-> >>       },
-> >>       {
-> >> +        "PublicDescription": "This event counts L1D_CACHE_REFILL
-> caused by software or hardware prefetch.",
-> >> +        "EventCode": "0x49",
-> >> +        "EventName": "L1D_CACHE_REFILL_PRF",
-> >> +        "BriefDescription": "This event counts L1D_CACHE_REFILL cause=
-d
-> by software or hardware prefetch."
-> >> +    },
-> >> +    {
-> >>           "PublicDescription": "Attributable Level 1 data TLB refill, =
-read",
-> >>           "EventCode": "0x4C",
-> >>           "EventName": "L1D_TLB_REFILL_RD", @@ -120,6 +126,12 @@
-> >>           "BriefDescription": "L2D cache invalidate"
-> >>       },
-> >>       {
-> >> +        "PublicDescription": "This event counts L2D_CACHE_REFILL
-> caused by software or hardware prefetch.",
-> >> +        "EventCode": "0x59",
-> >> +        "EventName": "L2D_CACHE_REFILL_PRF",
-> >> +        "BriefDescription": "This event counts L2D_CACHE_REFILL cause=
-d
-> by software or hardware prefetch."
-> >> +    },
-> >> +    {
-> >>           "PublicDescription": "Attributable Level 2 data or unified T=
-LB refill,
-> read",
-> >>           "EventCode": "0x5c",
-> >>           "EventName": "L2D_TLB_REFILL_RD", @@ -408,6 +420,12 @@
-> >>           "BriefDescription": "Release consistency operation speculati=
-vely
-> executed, Store-Release"
-> >>      },
-> >>      {
-> >> +         "PublicDescription": "This event counts architecturally exec=
-uted
-> zero blocking operations due to the 'DC ZVA' instruction.",
-> >> +         "EventCode": "0x9f",
-> >> +         "EventName": "DCZVA_SPEC",
-> >> +         "BriefDescription": "This event counts architecturally execu=
-ted
-> zero blocking operations due to the 'DC ZVA' instruction."
-> >> +   },
-> >> +   {
-> >>           "PublicDescription": "Attributable Level 3 data or unified c=
-ache
-> access, read",
-> >>           "EventCode": "0xa0",
-> >>           "EventName": "L3D_CACHE_RD",
-> >>
-> > .
-> >
-
+On Thu, 21 Jan 2021 14:21:52 +0200 Ido Schimmel wrote:=0A=
+> On Thu, Jan 21, 2021 at 01:29:37PM +0200, Oleksandr Mazur wrote:=0A=
+> > Add new trap action HARD_DROP, which can be used by the=0A=
+> > drivers to register traps, where it's impossible to get=0A=
+> > packet reported to the devlink subsystem by the device=0A=
+> > driver, because it's impossible to retrieve dropped packet=0A=
+> > from the device itself.=0A=
+> > In order to use this action, driver must also register=0A=
+> > additional devlink operation - callback that is used=0A=
+> > to retrieve number of packets that have been dropped by=0A=
+> > the device.=A0 =0A=
+> =0A=
+> Are these global statistics about number of packets the hardware dropped=
+=0A=
+> for a specific reason or are these per-port statistics?=0A=
+> =0A=
+> It's a creative use of devlink-trap interface, but I think it makes=0A=
+> sense. Better to re-use an existing interface than creating yet another=
+=0A=
+> one.=0A=
+=0A=
+> Not sure if I agree, if we can't trap why is it a trap?=0A=
+> It's just a counter.=0A=
+=0A=
+It's just another ACTION for trap item. Action however can be switched, e.g=
+. from HARD_DROP to MIRROR.=0A=
+=0A=
+The thing is to be able to configure specific trap to be dropped, and provi=
+de a way for the device to report back how many packets have been dropped.=
+=0A=
+If device is able to report the packet itself, then devlink would be in cha=
+rge of counting. If not, there should be a way to retrieve these statistics=
+ from the devlink.=
