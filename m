@@ -2,79 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767C93008E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A233008FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbhAVQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:43:03 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:46492 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729679AbhAVQh5 (ORCPT
+        id S1729538AbhAVQsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:48:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31547 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729043AbhAVQmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:37:57 -0500
-Received: by mail-ot1-f52.google.com with SMTP id d1so5594733otl.13;
-        Fri, 22 Jan 2021 08:37:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a2adNAFxR2bwlxbv3py+ib9z/ZsROiuHOAq4vq5ZVTA=;
-        b=fD2OoLR2uexkPf0BBnoiisAc47dz0rxX5//h9pr3LPpigrWan+XHq+2QFkrqq1+C+e
-         s0BBmqiPlXbARH2TmIr7jdvmhup2d9t/0omNNQGAfJfE+XLmgBkx2zm3OzUmec4QxiJP
-         rRc8T85NNzkZ6SgbTsh5HWlGf8rWt69LdilRy1HdlUmAjKbYFTFghZntAxupA44vQlxg
-         L0ygy50TNmdZJAelSsPgeGBxol+nTHIcv8X3kfltujEVHlupnUbu/YIUNWanMdNc7ZzG
-         5/jRPvqleMmCGYcxm8mS4I9TG7r793l4P6QuPXikqWlsPWchp8VuUHUJZBnqgj2v2wez
-         DkEA==
-X-Gm-Message-State: AOAM530cFT86e9sgKMk33SQ4yWsczlckvsuF6lqeKpFB6DC5o7IhYB/v
-        7AoZ/hujxpGmHW6RFuFVNQ==
-X-Google-Smtp-Source: ABdhPJze57ZaIohHGof8/J4nHvBtQ7bOJG1czDyatikrtCx0g2O5DT4/yID47+4TC0xfMa/vOBY7cQ==
-X-Received: by 2002:a05:6830:572:: with SMTP id f18mr3976815otc.109.1611333270614;
-        Fri, 22 Jan 2021 08:34:30 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q127sm1816594oia.18.2021.01.22.08.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 08:34:29 -0800 (PST)
-Received: (nullmailer pid 924016 invoked by uid 1000);
-        Fri, 22 Jan 2021 16:34:27 -0000
-Date:   Fri, 22 Jan 2021 10:34:27 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, todor.too@gmail.com,
-        mchehab@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
-        vkoul@kernel.org, Anson.Huang@nxp.com, michael@walle.cc,
-        agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: Re: [PATCH v2 15/22] dt-bindings: media: camss: Add
- qcom,sdm660-camss binding
-Message-ID: <20210122163427.GA922435@robh.at.kernel.org>
-References: <20210120134357.1522254-1-robert.foss@linaro.org>
- <20210120134357.1522254-15-robert.foss@linaro.org>
+        Fri, 22 Jan 2021 11:42:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611333678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QfffZkp6kc5D3emC3HTSADDepn8w8bDy1JhvkJWFPDM=;
+        b=PLQtcs9A4z3i6Z2Ah7OVSVqxsfGPdtRbN6alaU2dO+MADzRiBLQxguENODyatSn+8yiP2O
+        yj4bp3zKMYW3Nnq+EKtgLcCElbpkdwxDFi06OERpOYviRY14agh5KLl0b2TWLM5JrwLdHW
+        9ZEpscdm5R1l0nYD0uRRnT1BMitpIxw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-esD3n6ljMXqwPlKyMw2jyg-1; Fri, 22 Jan 2021 11:41:16 -0500
+X-MC-Unique: esD3n6ljMXqwPlKyMw2jyg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E528800D55;
+        Fri, 22 Jan 2021 16:41:14 +0000 (UTC)
+Received: from x1.localdomain (ovpn-112-174.ams2.redhat.com [10.36.112.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ECC656EF46;
+        Fri, 22 Jan 2021 16:41:11 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v3 01/13] mfd: arizona: Drop arizona-extcon cells
+Date:   Fri, 22 Jan 2021 17:40:55 +0100
+Message-Id: <20210122164107.361939-2-hdegoede@redhat.com>
+In-Reply-To: <20210122164107.361939-1-hdegoede@redhat.com>
+References: <20210122164107.361939-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120134357.1522254-15-robert.foss@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 02:43:50PM +0100, Robert Foss wrote:
-> Add bindings for qcom,sdm660-camss in order to support the camera
-> subsystem on SDM630/660 and SDA variants.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
-> 
-> Changes since v1:
->  - Laurent: Reworked driver to use dtschema
+The arizona jack-dection handling is being reworked so that the
+codec-child-device drivers directly handle jack-detect themselves,
+so it is no longer necessary to instantiate "arizona-extcon"
+child-devices.
 
-Same comments on this one.
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/mfd/arizona-core.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
+
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 75f1bc671d59..ce6fe6de34f8 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -881,11 +881,6 @@ static const char * const wm5102_supplies[] = {
+ static const struct mfd_cell wm5102_devs[] = {
+ 	{ .name = "arizona-micsupp" },
+ 	{ .name = "arizona-gpio" },
+-	{
+-		.name = "arizona-extcon",
+-		.parent_supplies = wm5102_supplies,
+-		.num_parent_supplies = 1, /* We only need MICVDD */
+-	},
+ 	{ .name = "arizona-haptics" },
+ 	{ .name = "arizona-pwm" },
+ 	{
+@@ -898,11 +893,6 @@ static const struct mfd_cell wm5102_devs[] = {
+ static const struct mfd_cell wm5110_devs[] = {
+ 	{ .name = "arizona-micsupp" },
+ 	{ .name = "arizona-gpio" },
+-	{
+-		.name = "arizona-extcon",
+-		.parent_supplies = wm5102_supplies,
+-		.num_parent_supplies = 1, /* We only need MICVDD */
+-	},
+ 	{ .name = "arizona-haptics" },
+ 	{ .name = "arizona-pwm" },
+ 	{
+@@ -939,11 +929,6 @@ static const char * const wm8997_supplies[] = {
+ static const struct mfd_cell wm8997_devs[] = {
+ 	{ .name = "arizona-micsupp" },
+ 	{ .name = "arizona-gpio" },
+-	{
+-		.name = "arizona-extcon",
+-		.parent_supplies = wm8997_supplies,
+-		.num_parent_supplies = 1, /* We only need MICVDD */
+-	},
+ 	{ .name = "arizona-haptics" },
+ 	{ .name = "arizona-pwm" },
+ 	{
+@@ -956,11 +941,6 @@ static const struct mfd_cell wm8997_devs[] = {
+ static const struct mfd_cell wm8998_devs[] = {
+ 	{ .name = "arizona-micsupp" },
+ 	{ .name = "arizona-gpio" },
+-	{
+-		.name = "arizona-extcon",
+-		.parent_supplies = wm5102_supplies,
+-		.num_parent_supplies = 1, /* We only need MICVDD */
+-	},
+ 	{ .name = "arizona-haptics" },
+ 	{ .name = "arizona-pwm" },
+ 	{
+-- 
+2.28.0
+
