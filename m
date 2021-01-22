@@ -2,161 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB58300614
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A6430067A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbhAVOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:52:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728928AbhAVOvg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:51:36 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D161C0613D6;
-        Fri, 22 Jan 2021 06:50:55 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id m1so4648550wrq.12;
-        Fri, 22 Jan 2021 06:50:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O2e7gQHBjGp+1X78GlOBpuEvNSo52DSmCUsE/L28b8o=;
-        b=mFjbT53IT7qR4mseGJbrY/wPLIvHc9qk8aZKX3QtgPUbsIhBjxICPo3EN+zwEAvH8d
-         GCTwulxwohd7fxNlQk+uwqjLFqmpx6EFpRun+fcTF/yStY67mjQSvQsSzk3Oj+5ktINA
-         z0iI8V+qqOL8ozqSlqDq+Te5VPrUgu4q8JtBHo11TZENh5+Lij73YQCqDuBcCEuxDvpP
-         p72pdyWoM7Fj2Xzi7jv3p0PzTw3JEgYz01Gpn0Xvag6yOL9mkbkn6xj2N9EUiLDd2buU
-         fWXZ+yUybUga/EADUubwyOQrmz0ShWXJ5Wk4bIg76v1P0eMasdP0pukjOr6Nr+ABR8Ju
-         Xxqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O2e7gQHBjGp+1X78GlOBpuEvNSo52DSmCUsE/L28b8o=;
-        b=TNAFsNotcJW+Jc9rj4T8aXl0vAS983ERXqiSfcOSMuUTWPuKuV7d1l472hd38ZcX06
-         Mk1DoUBSChHPQYoYHFx7YQraY4qRP7Q2zKh5WTtg+AybJdpviCT2kkC2Fh4y3GgDgizT
-         fvBCYUKO0z/81ArylbC1mdJ0EurwVOPfUnkFZnrY1vwySeDaM5vp1j9KvsQXZ55JfnLP
-         BdaFbPKs4d8XfousiAVN8sOAFjHqdiElT0EC2V14bc6rntmKMK8azp81BS+iR4XhCU6S
-         iwaeE9fWAiPwUDwK32bfSAEV+vkk2XjwqjMa3XYju4PHUt0QHyubRaX4K+2izGOFlZfX
-         X/AQ==
-X-Gm-Message-State: AOAM5339yFDOj+BarwciRgsF1ri96ox9Cptsmh8G1jOUMaaoHatWt8q3
-        /meihAESDxXa2hlDX6QVJ5E=
-X-Google-Smtp-Source: ABdhPJyaU3gNjW6u3LtpweyR4mmw1JpnzoSqk/sE3n6D1X3ZWkmU/mv4S66TG62nw5fInrYeSYIJLQ==
-X-Received: by 2002:adf:c18d:: with SMTP id x13mr4806601wre.128.1611327054422;
-        Fri, 22 Jan 2021 06:50:54 -0800 (PST)
-Received: from R90YT7WC.crto.in (lfbn-idf1-1-1126-251.w82-125.abo.wanadoo.fr. [82.125.229.251])
-        by smtp.gmail.com with ESMTPSA id l1sm5240909wrp.40.2021.01.22.06.50.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:50:53 -0800 (PST)
-From:   Erwan Velu <erwanaliasr1@gmail.com>
-X-Google-Original-From: Erwan Velu <e.velu@criteo.com>
-Cc:     Erwan Velu <e.velu@criteo.com>, Len Brown <lenb@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tools/power/turbostat: Prevent turbostat early exiting -13 on AMD_F17H
-Date:   Fri, 22 Jan 2021 15:50:31 +0100
-Message-Id: <20210122145031.754296-1-e.velu@criteo.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729105AbhAVPDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:03:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728606AbhAVOX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:23:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F412B23B74;
+        Fri, 22 Jan 2021 14:17:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611325030;
+        bh=VkkzzlZw4X4C93irwhwJIlLtlgamSjBFlqcCEnqEAAw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iQtrcoqoL4hdoZ2eniTk9esSpIgsFJlN9aF7zwp8RR8YmdN8cixYUBLbpo3O8BfHS
+         9HknNpLz75/YdFeJ54idkUp3378spHe91OZCVRHJ1+QNGRoSSCwMPXVn+1lz+fXrBB
+         R+XIwdWiT7xCLwdlPTUvWeTAhKecbeoC6Bmu1v58=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 5.4 00/33] 5.4.92-rc1 review
+Date:   Fri, 22 Jan 2021 15:12:16 +0100
+Message-Id: <20210122135733.565501039@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.92-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.92-rc1
+X-KernelTest-Deadline: 2021-01-24T13:57+00:00
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running turbostat on an AMD_F17H system, exits with a -13 error :
-	[root@host] turbostat
-	turbostat version 20.09.30 - Len Brown <lenb@kernel.org>
-	CPUID(0): AuthenticAMD 0x10 CPUID levels; 0x80000020 xlevels; family:model:stepping 0x17:31:0 (23:49:0)
-	CPUID(1): SSE3 MONITOR - - - TSC MSR - HT -
-	CPUID(6): APERF, No-TURBO, No-DTS, No-PTM, No-HWP, No-HWPnotify, No-HWPwindow, No-HWPepp, No-HWPpkg, No-EPB
-	CPUID(7): No-SGX
-	RAPL: 234 sec. Joule Counter Range, at 280 Watts
-	/dev/cpu_dma_latency: 2000000000 usec (default)
-	current_driver: acpi_idle
-	current_governor: menu
-	current_governor_ro: menu
-	cpu30: POLL: CPUIDLE CORE POLL IDLE
-	cpu30: C1: ACPI FFH MWAIT 0x0
-	cpu30: C2: ACPI IOPORT 0x414
-	cpu30: cpufreq driver: acpi-cpufreq
-	cpu30: cpufreq governor: performance
-	cpufreq boost: 1
-	cpu0: MSR_RAPL_PWR_UNIT: 0x000a1003 (0.125000 Watts, 0.000015 Joules, 0.000977 sec.)
+This is the start of the stable review cycle for the 5.4.92 release.
+There are 33 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-	[root@host]# echo $?
-	243
+Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
+Anything received after that time might be too late.
 
-Commit 9972d5d84d76982606806b2ce887f70c2f8ba60a introduced the RAPL display but broke the AMD F17h support with :
-	if (do_rapl & RAPL_AMD_F17H) {
--		if (get_msr(cpu, MSR_PKG_ENERGY_STAT, &msr))
-+		if (get_msr_sum(cpu, MSR_PKG_ENERGY_STAT, &msr))
- 			return -13;
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.92-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-On RAPL_AMD_F17H capable systems, get_msr_sum() is called with MSR_PKG_ENERGY_STAT.
+thanks,
 
-get_msr_sum() was added by commit 87e15da95775a2ffb8c444e84f08ca982b758364 but didn't
-added MSR_PKG_ENERGY_STAT as a supported value.
-The very close naming between MSR_PKG_ENERGY_STATUS and MSR_PKG_ENERGY_STAT is probably the reason of this miss.
+greg k-h
 
-As a result, when get_msr_sum() is called, offset_to_idx() doesn't have
-a case statement for this MSR and returns a negative value. turbostat
-exits with an error value.
+-------------
+Pseudo-Shortlog of commits:
 
-This patch adds the support of MSR_PKG_ENERGY_STAT.
-As IDX_PKG_ENERGY was linked to MSR_PKG_ENERGY_STATUS (Intel),
-IDX_PKG_ENERGY_AMD is now linked with MSR_PKG_ENERGY_STAT (AMD).
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.92-rc1
 
-This patch was tested successfully on a AMD 7502P and restore a fully functional turbostat.
-model : AMD EPYC 7502P 32-Core Processor
-Vendor: 23 (0x17)
-Model : 49 (0x31)
+Michael Hennerich <michael.hennerich@analog.com>
+    spi: cadence: cache reference clock rate during probe
 
-Signed-off-by: Erwan Velu <e.velu@criteo.com>
----
- tools/power/x86/turbostat/turbostat.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Lorenzo Bianconi <lorenzo@kernel.org>
+    mac80211: check if atf has been disabled in __ieee80211_schedule_txq
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 389ea5209a83..9ad3447dd439 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -273,6 +273,7 @@ enum {
- 	IDX_PP1_ENERGY,
- 	IDX_PKG_PERF,
- 	IDX_DRAM_PERF,
-+	IDX_PKG_ENERGY_AMD,
- 	IDX_COUNT,
- };
- 
-@@ -314,6 +315,9 @@ int idx_to_offset(int idx)
- 	case IDX_DRAM_PERF:
- 		offset = MSR_DRAM_PERF_STATUS;
- 		break;
-+	case IDX_PKG_ENERGY_AMD:
-+		offset = MSR_PKG_ENERGY_STAT;
-+		break;
- 	default:
- 		offset = -1;
- 	}
-@@ -343,6 +347,9 @@ int offset_to_idx(int offset)
- 	case MSR_DRAM_PERF_STATUS:
- 		idx = IDX_DRAM_PERF;
- 		break;
-+	case MSR_PKG_ENERGY_STAT:
-+		idx = IDX_PKG_ENERGY_AMD;
-+		break;
- 	default:
- 		idx = -1;
- 	}
-@@ -364,6 +371,8 @@ int idx_valid(int idx)
- 		return do_rapl & RAPL_PKG_PERF_STATUS;
- 	case IDX_DRAM_PERF:
- 		return do_rapl & RAPL_DRAM_PERF_STATUS;
-+	case IDX_PKG_ENERGY_AMD:
-+		return do_rapl & RAPL_AMD_F17H;
- 	default:
- 		return 0;
- 	}
--- 
-2.25.1
+Felix Fietkau <nbd@nbd.name>
+    mac80211: do not drop tx nulldata packets on encrypted links
+
+Hoang Le <hoang.h.le@dektech.com.au>
+    tipc: fix NULL deref in tipc_link_xmit()
+
+Daniel Borkmann <daniel@iogearbox.net>
+    net, sctp, filter: remap copy_from_user failure error
+
+David Howells <dhowells@redhat.com>
+    rxrpc: Fix handling of an unsupported token type in rxrpc_read()
+
+Eric Dumazet <edumazet@google.com>
+    net: avoid 32 x truesize under-estimation for tiny skbs
+
+Jakub Kicinski <kuba@kernel.org>
+    net: sit: unregister_netdevice on newlink's error path
+
+David Wu <david.wu@rock-chips.com>
+    net: stmmac: Fixed mtu channged by cache aligned
+
+Baptiste Lepers <baptiste.lepers@gmail.com>
+    rxrpc: Call state should be read with READ_ONCE() under some circumstances
+
+Petr Machata <petrm@nvidia.com>
+    net: dcb: Accept RTM_GETDCB messages carrying set-like DCB commands
+
+Petr Machata <me@pmachata.org>
+    net: dcb: Validate netlink message in DCB handler
+
+Willem de Bruijn <willemb@google.com>
+    esp: avoid unneeded kmap_atomic call
+
+Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+    rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
+
+Stefan Chulski <stefanc@marvell.com>
+    net: mvpp2: Remove Pause and Asym_Pause support
+
+Vadim Pasternak <vadimp@nvidia.com>
+    mlxsw: core: Increase critical threshold for ASIC thermal zone
+
+Vadim Pasternak <vadimp@nvidia.com>
+    mlxsw: core: Add validation of transceiver temperature thresholds
+
+Aya Levin <ayal@nvidia.com>
+    net: ipv6: Validate GSO SKB before finish IPv6 processing
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    net: skbuff: disambiguate argument and member for skb_list_walk_safe helper
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    net: introduce skb_list_walk_safe for skb segment walking
+
+Manish Chopra <manishc@marvell.com>
+    netxen_nic: fix MSI/MSI-x interrupts
+
+Baptiste Lepers <baptiste.lepers@gmail.com>
+    udp: Prevent reuseport_select_sock from reading uninitialized socks
+
+Mircea Cirjaliu <mcirjaliu@bitdefender.com>
+    bpf: Fix helper bpf_map_peek_elem_proto pointing to wrong callback
+
+Stanislav Fomichev <sdf@google.com>
+    bpf: Don't leak memory in bpf getsockopt when optlen == 0
+
+J. Bruce Fields <bfields@redhat.com>
+    nfsd4: readdirplus shouldn't return parent of export
+
+Lukas Wunner <lukas@wunner.de>
+    spi: npcm-fiu: Disable clock in probe error path
+
+Qinglang Miao <miaoqinglang@huawei.com>
+    spi: npcm-fiu: simplify the return expression of npcm_fiu_probe()
+
+YueHaibing <yuehaibing@huawei.com>
+    scsi: lpfc: Make lpfc_defer_acc_rsp static
+
+zhengbin <zhengbin13@huawei.com>
+    scsi: lpfc: Make function lpfc_defer_pt2pt_acc static
+
+Arnd Bergmann <arnd@arndb.de>
+    elfcore: fix building with clang
+
+Roger Pau Monne <roger.pau@citrix.com>
+    xen/privcmd: allow fetching resource sizes
+
+Will Deacon <will@kernel.org>
+    compiler.h: Raise minimum version of GCC to 5.1 for arm64
+
+Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+    usb: ohci: Make distrust_firmware param default to false
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +--
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |  2 --
+ drivers/net/ethernet/mellanox/mlxsw/core_thermal.c | 13 ++++---
+ .../net/ethernet/qlogic/netxen/netxen_nic_main.c   |  7 +---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  3 +-
+ drivers/net/usb/rndis_host.c                       |  2 +-
+ drivers/scsi/lpfc/lpfc_nportdisc.c                 |  4 +--
+ drivers/spi/spi-cadence.c                          |  6 ++--
+ drivers/spi/spi-npcm-fiu.c                         |  7 ++--
+ drivers/usb/host/ohci-hcd.c                        |  2 +-
+ drivers/xen/privcmd.c                              | 25 +++++++++----
+ fs/nfsd/nfs3xdr.c                                  |  7 +++-
+ include/linux/compiler-gcc.h                       |  6 ++++
+ include/linux/elfcore.h                            | 22 ++++++++++++
+ include/linux/skbuff.h                             |  5 +++
+ kernel/Makefile                                    |  1 -
+ kernel/bpf/cgroup.c                                |  5 +--
+ kernel/bpf/helpers.c                               |  2 +-
+ kernel/elfcore.c                                   | 26 --------------
+ net/core/filter.c                                  |  2 +-
+ net/core/skbuff.c                                  |  9 +++--
+ net/core/sock_reuseport.c                          |  2 +-
+ net/dcb/dcbnl.c                                    |  2 ++
+ net/ipv4/esp4.c                                    |  7 +---
+ net/ipv6/esp6.c                                    |  7 +---
+ net/ipv6/ip6_output.c                              | 41 +++++++++++++++++++++-
+ net/ipv6/sit.c                                     |  5 ++-
+ net/mac80211/tx.c                                  |  4 +--
+ net/rxrpc/input.c                                  |  2 +-
+ net/rxrpc/key.c                                    |  6 ++--
+ net/sctp/socket.c                                  |  2 +-
+ net/tipc/link.c                                    |  9 +++--
+ 32 files changed, 158 insertions(+), 89 deletions(-)
+
 
