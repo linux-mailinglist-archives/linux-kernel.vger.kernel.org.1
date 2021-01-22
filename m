@@ -2,335 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F152300F9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9B7300F9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730360AbhAVWHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 17:07:36 -0500
-Received: from audible.transient.net ([24.143.126.66]:37066 "HELO
-        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1729536AbhAVWFt (ORCPT
+        id S1730801AbhAVWHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727354AbhAVWGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:05:49 -0500
-Received: (qmail 12399 invoked from network); 22 Jan 2021 22:05:04 -0000
-Received: from cucamonga.audible.transient.net (192.168.2.5)
-  by canarsie.audible.transient.net with QMQP; 22 Jan 2021 22:05:04 -0000
-Received: (nullmailer pid 2957 invoked by uid 1000);
-        Fri, 22 Jan 2021 22:05:04 -0000
-Date:   Fri, 22 Jan 2021 22:05:04 +0000
-From:   Jamie Heilman <jamie@audible.transient.net>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
-Message-ID: <YAtMEGJxlRklqYw8@audible.transient.net>
-Mail-Followup-To: Karol Herbst <kherbst@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-References: <X+WV8OiQzTIfLdgW@audible.transient.net>
- <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
- <X/NO9kAlCd/k8Di2@audible.transient.net>
- <X/NT0iN9KlSXQJJ7@audible.transient.net>
- <X/UsBWwFR+V0hIOS@audible.transient.net>
- <CACO55ttrFCOzREQxi3+SSaCSsAP1bEUBEt78ajkRGQQU1xYxtw@mail.gmail.com>
- <YAjn9jR+d2zRfNjb@audible.transient.net>
- <CACO55tu+5vv3dU3+O=DGDo9EdcyqFtpF4WR-VNj5eo89WMSfpw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACO55tu+5vv3dU3+O=DGDo9EdcyqFtpF4WR-VNj5eo89WMSfpw@mail.gmail.com>
+        Fri, 22 Jan 2021 17:06:44 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D49DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:06:03 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id k33so6848277ybj.14
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:06:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=v825TuBJU359gqimRLyU0L4kx6zR5e87EOsaxQ3/+pY=;
+        b=vX1/VB6OOOfUKCNJCysnx2cH3bEfyD11W9g28UBKgMxrU+mRNFPZVqAkpplFzOdE74
+         5q5Ht10jKYI1z43rwA7vx/VUajqbwddShlGhUWcGEFtYslzjALozvAzzq78DZN8Cy8Vi
+         NziDfiYZLpiXANXhIjZlCLxHLgMpAG0wpjefHOOvx+hKzbeQEeGCkzM/hhfU4KWfYJIX
+         IeMWn/h81ShrunphLQOlPmlFo9LaJP7PUABjBre4jDlA2+r3Lok0rtZtJdQvP9LikCyP
+         B7dEojxmXoRiDSSGjGwxXgqOsTLaDksKqiiwDERgNNJ+N30jq3w4UufK/juMzcDgrQOv
+         +5GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=v825TuBJU359gqimRLyU0L4kx6zR5e87EOsaxQ3/+pY=;
+        b=m1Eqrmhjml8lyQR6PzkMECancLZtVdwDJWAPacvTur9v/IPw5OqhTL/vEk9STsgy8E
+         3Lcqi9wc9gUtINVhSFgvHlGym5mWNKjUAiVE43IOiu1Rg0kZlUhUM0NxtezfcIdVK8hJ
+         zgZBMJ+tgsB7D7nAeZY4P46crfCcrUJPv/atxLH6eKca++9yvvBKh0eQ1lqKx55NzcrR
+         kB1lz3vnt1M2sJTJJ9aamqPd/c1Z5TepXxexiXpah1HD1eikypGA/ASJwg6wbSkXJplD
+         kI602PwRDXCwtDqh7LuHl+NAMan1606gs6gTPThPv9UVD0yg/FL+2FJQJt5tx23yQymb
+         ydxQ==
+X-Gm-Message-State: AOAM533zCsiJXDKXPX6I+pVbbMx4mdk4Ci64z0ybqI1PNqP7fkCtl30t
+        9MgI4uwBCO3pPke4uMdRGZHIf7RoU0s=
+X-Google-Smtp-Source: ABdhPJzizdI1Pctd47HT9kYj/ZlA3ro/gwt1sqn9CT7+iZLcmBgO8kcRrbRVt7fvr1U0zz7GrnIzqknqmnA=
+Sender: "yuzhao via sendgmr" <yuzhao@yuzhao.bld.corp.google.com>
+X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:5129:9a91:ef0e:c1a9])
+ (user=yuzhao job=sendgmr) by 2002:a25:2a86:: with SMTP id q128mr10168393ybq.387.1611353162833;
+ Fri, 22 Jan 2021 14:06:02 -0800 (PST)
+Date:   Fri, 22 Jan 2021 15:05:50 -0700
+Message-Id: <20210122220600.906146-1-yuzhao@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH v2 00/10] mm: lru related cleanups
+From:   Yu Zhao <yuzhao@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Karol Herbst wrote:
-> fyi, there is a patch which solves a maybe related issue on your GPU,
-> mind giving it a try before we dig further?
-> https://gitlab.freedesktop.org/drm/nouveau/-/issues/14#note_767791
+The cleanups are intended to reduce the verbosity in lru list
+operations and make them less error-prone. A typical example
+would be how the patches change __activate_page():
 
-So, I tried that.  Turns out, I can still trigger a problem.  Is it
-the same problem?  Maybe?  I also tried applying the patch from 
+ static void __activate_page(struct page *page, struct lruvec *lruvec)
+ {
+ 	if (!PageActive(page) && !PageUnevictable(page)) {
+-		int lru = page_lru_base_type(page);
+ 		int nr_pages = thp_nr_pages(page);
+ 
+-		del_page_from_lru_list(page, lruvec, lru);
++		del_page_from_lru_list(page, lruvec);
+ 		SetPageActive(page);
+-		lru += LRU_ACTIVE;
+-		add_page_to_lru_list(page, lruvec, lru);
++		add_page_to_lru_list(page, lruvec);
+ 		trace_mm_lru_activate(page);
 
-ca386aa7155a ("drm/nouveau/kms/nv50-gp1xx: add WAR for EVO push buffer HW bug")
-to 5.8.0-rc6-01516-g0a96099691c8 and very interestingly, it changed
-the mode of failure to same thing I saw with 5.10.9 patched with the patch
-from that bug report.  In both cases I get this in the log:
+There are a few more places like __activate_page() and they are
+unnecessarily repetitive in terms of figuring out which list a page
+should be added onto or deleted from. And with the duplicated code
+removed, they are easier to read, IMO.
 
-kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-...
-and so on
+Patch 1 to 5 basically cover the above. Patch 6 and 7 make code more
+robust by improving bug reporting. Patch 8, 9 and 10 take care of
+some dangling helpers left in header files.
 
-In one incident my monitor would't even wake up anymore after this.
+v1 -> v2:
+  dropped the last patch in this series based on the discussion here:
+  https://lore.kernel.org/patchwork/patch/1350552/#1550430
 
+Yu Zhao (10):
+  mm: use add_page_to_lru_list()
+  mm: shuffle lru list addition and deletion functions
+  mm: don't pass "enum lru_list" to lru list addition functions
+  mm: don't pass "enum lru_list" to trace_mm_lru_insertion()
+  mm: don't pass "enum lru_list" to del_page_from_lru_list()
+  mm: add __clear_page_lru_flags() to replace page_off_lru()
+  mm: VM_BUG_ON lru page flags
+  mm: fold page_lru_base_type() into its sole caller
+  mm: fold __update_lru_size() into its sole caller
+  mm: make lruvec_lru_size() static
 
-I'm trying to repo it now on an unpatched 5.8.0-rc6-01515-gae09163ac27c
-right now, as running glxgears does seem to help reproduce problems
-faster which is nice, I'm just not entirely sure it's the same set of
-problems; hopefully that version is free from issues, but we'll
-see...
-
-
-
-> On Thu, Jan 21, 2021 at 3:33 AM Jamie Heilman
-> <jamie@audible.transient.net> wrote:
-> >
-> > Karol Herbst wrote:
-> > > On Wed, Jan 6, 2021 at 4:25 AM Jamie Heilman
-> > > <jamie@audible.transient.net> wrote:
-> > > >
-> > > > Jamie Heilman wrote:
-> > > > > Jamie Heilman wrote:
-> > > > > > Karol Herbst wrote:
-> > > > > > > do you think you'd be able to do a kernel bisect in order to pinpoint
-> > > > > > > the actual commit causing it? Thanks
-> > > > > >
-> > > > > > No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
-> > > > > > be a problem but as I can't and as it can take weeks for the problem
-> > > > > > to occur there's essentially no chance.  I know it regressed roughly
-> > > > > > in 5.8-rc1 only because that's what I was running when the first event
-> > > > > > occured.
-> > > > >
-> > > > > er, 5.9.0-rc1 rather
-> > > >
-> > > > Actually ... I've found a way to reproduce this in hours intead of
-> > > > weeks, so I think I may be able to bisect it after all, it's something
-> > > > of a brute force approach and its probably doing horrible things to
-> > > > the backlight in my poor old monitor, but just running this:
-> > > >
-> > > > #!/bin/sh
-> > > > sleep 5
-> > > > while ! dmesg | tail | grep -q nouveau
-> > > > do
-> > > >     xset dpms force off
-> > > >     sleep 65
-> > > >     xdotool mousemove 1024 1024 mousemove restore
-> > > >     sleep 10
-> > > > done
-> > > >
-> > > > Does manage to trip the issue sooner than it would otherwise happen
-> > > > with natural usage.  Given that this is my primary workstation and I
-> > > > sort of need it functional during waking hours, it'll take me a bit,
-> > > > but I'll update folks when I have the error more dialed in.
-> > > >
-> > >
-> > > huh interesting. Kind of feels like a random thing still. But I think
-> > > in general you'd spend way too much time on this if you can't
-> > > reproduce within seconds/minutes and then it might not point out the
-> > > actual issue, because randomly the issue didn't appear and stuff.
-> > >
-> > > maybe you can tune it to have shorter pauses or something? I'd really
-> > > try to bring down the time per cycle.
-> >
-> > Well I'm confident enough, at this point, to say this bisects to
-> > 0a96099691c8 ("drm/nouveau/kms/nv50-: implement proper push buffer control logic")
-> >
-> > Now... I wish I could say the bisection was straightforward and
-> > simple, but it wasn't thanks to still not having a reproducer really
-> > dialed in.  The above script doesn't work unless I've got some normal
-> > usage around it.  It certainly triggers the issue sooner than it
-> > otherwise would, but by itself it isn't enough.  I modified it
-> > somewhat in the hopes of capturing the rough idea of how many
-> > itterations it would take to trigger the problem by using:
-> >
-> > #!/bin/sh
-> > I=0
-> > trap 'echo;echo $I' 0
-> > trap 'exit' INT
-> > sleep 5
-> > while ! dmesg | tail | grep -q nouveau
-> > do
-> >     I=$(($I + 1))
-> >     xset dpms force off
-> >     sleep 32
-> >     xdotool mousemove 1 12 mousemove restore
-> >     sleep 28
-> > done
-> >
-> > but ultimately that didn't really pan out the way I'd hoped.  I don't
-> > think the itterations have all that much to do with the condition in
-> > the end.  I wanted to try applying ca386aa7155a
-> > ("drm/nouveau/kms/nv50-gp1xx: add WAR for EVO push buffer HW bug") on
-> > top of the first bad commit becuase I sort of felt like when I was
-> > running -rc versions that things got a bit less chaotic after that
-> > commit landed, but it was just a gut feeling and I wanted to see if I
-> > could support it with metrics---but no, I can't really get consistent
-> > metrics even without that commit so I gave up, and decided to report
-> > what I've got so far.
-> >
-> >
-> >
-> > > > I'm using git bisect start -- drivers/gpu/drm include/drm include/video
-> > > > in an effort to make this go a bit quicker, let me know if you think
-> > > > that's a bad idea or I should add other paths.
-> > > >
-> > > > > > > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
-> > > > > > > <jamie@audible.transient.net> wrote:
-> > > > > > > >
-> > > > > > > > Something between v5.8 and v5.9 has resulted in periodically losing video.
-> > > > > > > > Unfortunately, I can't reliably reproduce it, it seems to happen every
-> > > > > > > > once in a long while---I can go weeks without an occurance, but it
-> > > > > > > > always seems to happen after my workstation has been idle long enough
-> > > > > > > > to screen blank and put the monitor to sleep.  I'm using a single
-> > > > > > > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
-> > > > > > > > Debian sid).  I don't really do anything fancy, xterms, a browser or
-> > > > > > > > two, play the occasional video, but like I said, I can't reliably
-> > > > > > > > reproduce this.  I've had it happen about 11 times since August.
-> > > > > > > >
-> > > > > > > > lspci -vv output is:
-> > > > > > > >
-> > > > > > > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
-> > > > > > > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
-> > > > > > > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-> > > > > > > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-> > > > > > > >         Latency: 0, Cache Line Size: 64 bytes
-> > > > > > > >         Interrupt: pin A routed to IRQ 28
-> > > > > > > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
-> > > > > > > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
-> > > > > > > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
-> > > > > > > >         Region 5: I/O ports at dc80 [size=128]
-> > > > > > > >         Expansion ROM at 000c0000 [disabled] [size=128K]
-> > > > > > > >         Capabilities: [60] Power Management version 2
-> > > > > > > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> > > > > > > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-> > > > > > > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
-> > > > > > > >                 Address: 00000000fee01004  Data: 4023
-> > > > > > > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
-> > > > > > > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
-> > > > > > > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
-> > > > > > > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
-> > > > > > > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
-> > > > > > > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
-> > > > > > > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-> > > > > > > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
-> > > > > > > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
-> > > > > > > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-> > > > > > > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-> > > > > > > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
-> > > > > > > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-> > > > > > > >         Capabilities: [100 v1] Virtual Channel
-> > > > > > > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
-> > > > > > > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
-> > > > > > > >                 Ctrl:   ArbSelect=Fixed
-> > > > > > > >                 Status: InProgress-
-> > > > > > > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
-> > > > > > > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
-> > > > > > > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
-> > > > > > > >                         Status: NegoPending- InProgress-
-> > > > > > > >         Capabilities: [128 v1] Power Budgeting <?>
-> > > > > > > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
-> > > > > > > >         Kernel driver in use: nouveau
-> > > > > > > >
-> > > > > > > > The last time this happened, this is what got logged:
-> > > > > > > >
-> > > > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > > > > > > nouveau 0000:01:00.0: disp: Base 1:
-> > > > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > > > > > > nouveau 0000:01:00.0: disp: Base 1:
-> > > > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > > > > > > nouveau 0000:01:00.0: DRM: core notifier timeout
-> > > > > > > > nouveau 0000:01:00.0: DRM: base-0: timeout
-> > > > > > > >
-> > > > > > > > I've got logs of all of this, if they help I can collect them.  The
-> > > > > > > > timeout message are consistent the error messages a little less so.
-> > > > > > > >
-> > > > > > > > If there's more debugging I can do when this happens, I'd love to know
-> > > > > > > > what it is.
-> > > > > > > >
-> > > > > > > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
-> > > > > > > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > > > > > > _______________________________________________
-> > > > > > > > Nouveau mailing list
-> > > > > > > > Nouveau@lists.freedesktop.org
-> > > > > > > > https://lists.freedesktop.org/mailman/listinfo/nouveau
-> > > > > > > >
-> > > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > > >
-> > > > > --
-> > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > >
-> > > > --
-> > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > >
-> > >
-> >
-> > --
-> > Jamie Heilman                     http://audible.transient.net/~jamie/
-> >
-> 
+ include/linux/mm_inline.h      | 113 ++++++++++++++-------------------
+ include/linux/mmzone.h         |   2 -
+ include/trace/events/pagemap.h |  11 ++--
+ mm/compaction.c                |   2 +-
+ mm/mlock.c                     |   3 +-
+ mm/swap.c                      |  50 ++++++---------
+ mm/vmscan.c                    |  21 ++----
+ 7 files changed, 77 insertions(+), 125 deletions(-)
 
 -- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
+2.30.0.280.ga3ce27912f-goog
+
