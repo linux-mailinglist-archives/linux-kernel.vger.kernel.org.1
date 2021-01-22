@@ -2,165 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D0E300DC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF207300DD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbhAVUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:31:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
+        id S1728421AbhAVUe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729835AbhAVU2l (ORCPT
+        with ESMTP id S1731070AbhAVUa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:28:41 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFB8C0610D6;
-        Fri, 22 Jan 2021 12:25:19 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id a8so9290130lfi.8;
-        Fri, 22 Jan 2021 12:25:19 -0800 (PST)
+        Fri, 22 Jan 2021 15:30:28 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742D6C06174A;
+        Fri, 22 Jan 2021 12:29:18 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id x6so6710227ybr.1;
+        Fri, 22 Jan 2021 12:29:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=//LXOze+13I5z/FYLaqJrmRyfxqFIxZ8QuJGcysQP04=;
-        b=QH2nxiVAuaWaepDmlyhR3xKmfNxLqg0rxryCq/fjLgCRcWrPdjpzTiR1lFpB2tbwv9
-         4NBcGWtADFhnfNQk+6Hw1wvpxUGOslb02wfXGuQhWPlj6iLf31TG41XarLbqOcSLQTCQ
-         0bI0zcHUjqn342lJspC7xMBtHeEwT5MH4iAUR5z/co+/93zynfYxq+GPSI3m9RnGT/7Z
-         19EpN0mY2rYYcxQrGvfbLkXGCGlvZThPxeL95dZjI6L3Wfb9UgQlJ4X7SXsrz9trWU79
-         /HDIYKm/War4NJtAghjHSimedWa9+pEXZWix+YOHdiiYzH+oHYRYNcXl3Bs+dJnV5Udx
-         sK3Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=00n2hrND1c+2yc6bRKCXZsmM9chMlRVzMA68fmp8a9Q=;
+        b=KAh/3Gnwj/k+vxMnlmuVhuOzZIHVPwKl3PCpGu0lrp0r8Hv/Aor/Kw2/fQKHToJlZH
+         LCUaMJdnY06/dQ7Dqx7ZnO816fvPmCyQbZvToDmMzy4cK270t66My3atYRWQoVget3hI
+         WjM+SbDwtUgPfHn6jDCDbyZuepDqDaT/TBrc2GJFHVN4kqw/MjakjBhbWkRd3vT7W81Y
+         yhd9BEMOAeG15ATofHPHgJZW8i7fDRALtOuaf5Njfwo84Dw82/Ovwp4iEg4GsX5s8HjU
+         LrMjqogcIHg9xhBwg0MUUqkMELJqMx5O//sLs3PBusZbtLLyKdUQajmrqptAD12kD1xo
+         yDQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=//LXOze+13I5z/FYLaqJrmRyfxqFIxZ8QuJGcysQP04=;
-        b=ZzxApmDykS12LnFQK4PNbwQtHy8QaL04LxOdUeY0eVtWoHlufIysMBUUOBEEVfHLKg
-         +GpTjccvWMAl//6NiGGKRpk2PYqLnYlXaPDGRfxHAMBJHT9UcBdJtoe831VsnWCLq+pp
-         qq798ApLonxXdhMK7EYBnvbDQa/nP+HM/AMNKbF/macQ8XnArYibXs4WYy4l2XR3PoKv
-         FnF2NxM86+vF48BpwjaAckURPYtxda+/J+WRkbRhtBZkbTlidewzl6ZEjck3sCDTmdJI
-         KybbaX3AyGx+IuhJdxyN2YuVFeASh/0adtn34Q2bDBw+y0aI/CUC0h0ZFWXnofAKpyEY
-         kpbw==
-X-Gm-Message-State: AOAM530RjVgfGHM1tH8iOFEwo9WzDQztSt5WdRSc8TGJW+XchyA6oz28
-        g20tlrpKoX+sGbL3XkxZLPc=
-X-Google-Smtp-Source: ABdhPJw13bCU+GDJ3KE2bHLfqp3aTevnPYFa8SRlyU9bn82mS6DAp3XHe0oE6KJ1zl/dXi529Njzzw==
-X-Received: by 2002:ac2:568b:: with SMTP id 11mr120884lfr.8.1611347118262;
-        Fri, 22 Jan 2021 12:25:18 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id q5sm996921lfr.172.2021.01.22.12.25.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 12:25:17 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 13/13] ARM: tegra: Specify memory suspend OPP in device-tree
-Date:   Fri, 22 Jan 2021 23:24:57 +0300
-Message-Id: <20210122202457.13326-14-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210122202457.13326-1-digetx@gmail.com>
-References: <20210122202457.13326-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=00n2hrND1c+2yc6bRKCXZsmM9chMlRVzMA68fmp8a9Q=;
+        b=SowOoMtHflqcOGoe4l83SFfz4BdDwikRvYJt8u3bdIIXPv1QoPotglp3fuG+vVUSsk
+         BHP3emfcMIIl7rLd/KReCyYYjhNitYqE6Oe6Z4ck9AH5mQsozEs/4HeYxOSwyz4gv7Sr
+         QehLK5YDvCg7pum2G63pA2Lj7BlVzQsr2RkErQ8Is1NgonXAt1ILyz94OwSjhi2Hfmp5
+         DE0DP3dl9k3piaguNFD2RPLlRW8d4bVLDDYIqGZqmlkTmtdOo17xROuvJSUs/e37hW3A
+         UmoL2qn+quVGSym7iX5ZKt4mZpre9kJUFvvmWMPdGuuvxTxZXIdjfdt1/iebWOQ+J6V+
+         KMiA==
+X-Gm-Message-State: AOAM5319NCHzHofrYmgLHlcxiI1hDAGYpI9137r4iZOZtVsfB7zcv/DK
+        8uuuR07rvOEkuZZbZ6F47wXsSljYkiKM9IWp99o=
+X-Google-Smtp-Source: ABdhPJwMnRSh9Qy9DsHqtNZ1ALa5pnNf6DxZ3rfBDbNwLZjYn4s2wgLwFuRLXFgf1umRiAd3cn3milbx8byEhWxRmbg=
+X-Received: by 2002:a25:5583:: with SMTP id j125mr8289674ybb.307.1611347357428;
+ Fri, 22 Jan 2021 12:29:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210119105727.95173-1-roger.pau@citrix.com> <CALUcmUkd9Eeau6tC9ZWHbLdvHTYfY34LvK6KKpOOxreYF67Myg@mail.gmail.com>
+ <20210120143515.v2vgyhcxrhnnng6r@Air-de-Roger> <CALUcmU=6aAUrkg8KkJQvsQvNr1yL3E88Uy5xsD+u+XOrbUAhCQ@mail.gmail.com>
+In-Reply-To: <CALUcmU=6aAUrkg8KkJQvsQvNr1yL3E88Uy5xsD+u+XOrbUAhCQ@mail.gmail.com>
+From:   Arthur Borsboom <arthurborsboom@gmail.com>
+Date:   Fri, 22 Jan 2021 21:29:01 +0100
+Message-ID: <CALUcmUmBz76p_kHy2yA1v-F_vuTtMwORsqH4gtS04wvV4nQosw@mail.gmail.com>
+Subject: Re: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
+To:     =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify memory suspend OPP in a device-tree, just for consistency.
-Now memory will always suspend on the same frequency.
+Any chance of getting this backported to stable?
+I believe the previous attempt by CC-ing stable was not following the
+correct procedure and probably rejected.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra124-peripherals-opp.dtsi | 5 +++++
- arch/arm/boot/dts/tegra20-peripherals-opp.dtsi  | 1 +
- arch/arm/boot/dts/tegra30-peripherals-opp.dtsi  | 3 +++
- 3 files changed, 9 insertions(+)
+https://lkml.org/lkml/2021/1/19/543
 
-diff --git a/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
-index 49d9420a3289..781ac8601030 100644
---- a/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
-+++ b/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
-@@ -128,24 +128,28 @@ opp@204000000,800 {
- 			opp-microvolt = <800000 800000 1150000>;
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x0003>;
-+			opp-suspend;
- 		};
- 
- 		opp@204000000,950 {
- 			opp-microvolt = <950000 950000 1150000>;
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x0008>;
-+			opp-suspend;
- 		};
- 
- 		opp@204000000,1050 {
- 			opp-microvolt = <1050000 1050000 1150000>;
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x0010>;
-+			opp-suspend;
- 		};
- 
- 		opp@204000000,1110 {
- 			opp-microvolt = <1110000 1110000 1150000>;
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x0004>;
-+			opp-suspend;
- 		};
- 
- 		opp@264000000,800 {
-@@ -360,6 +364,7 @@ opp@204000000 {
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x001F>;
- 			opp-peak-kBps = <3264000>;
-+			opp-suspend;
- 		};
- 
- 		opp@264000000 {
-diff --git a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
-index b84afecea154..ef3ad2e5f270 100644
---- a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
-+++ b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
-@@ -68,6 +68,7 @@ opp@216000000 {
- 			opp-microvolt = <1000000 1000000 1300000>;
- 			opp-hz = /bits/ 64 <216000000>;
- 			opp-supported-hw = <0x000F>;
-+			opp-suspend;
- 		};
- 
- 		opp@300000000 {
-diff --git a/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
-index cbe84d25e726..2c9780319725 100644
---- a/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
-+++ b/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
-@@ -128,12 +128,14 @@ opp@204000000,1000 {
- 			opp-microvolt = <1000000 1000000 1350000>;
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x0007>;
-+			opp-suspend;
- 		};
- 
- 		opp@204000000,1250 {
- 			opp-microvolt = <1250000 1250000 1350000>;
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x0008>;
-+			opp-suspend;
- 		};
- 
- 		opp@333500000,1000 {
-@@ -312,6 +314,7 @@ opp@204000000 {
- 			opp-hz = /bits/ 64 <204000000>;
- 			opp-supported-hw = <0x000F>;
- 			opp-peak-kBps = <1632000>;
-+			opp-suspend;
- 		};
- 
- 		opp@333500000 {
--- 
-2.29.2
+On Wed, 20 Jan 2021 at 16:17, Arthur Borsboom <arthurborsboom@gmail.com> wr=
+ote:
+>
+> This time the patch applied cleanly.
+>
+> The trim command seems to work as well, meaning no error messages and
+> a certain amount of blocks (5GB) is trimmed.
+> The trimming did consume a bit of time (10-20 seconds), assuming it is
+> actually discarding the blocks at the host.
+>
+> First run:
+>
+> [arthur@test-arch ~]$ sudo fstrim -v /
+> /: 5.7 GiB (6074368000 bytes) trimmed
+>
+> Second run:
+>
+> [arthur@test-arch ~]$ sudo fstrim -v /
+> /: 0 B (0 bytes) trimmed
+>
+> No errors were reported in the dmesg of the VM; no errors in Dom0 and
+> no errors in dmesg of Xen (xl dmesg).
+>
+> Based on this single test, it seems to work.
+> You can add me as Tested-By.
+>
+> On Wed, 20 Jan 2021 at 15:35, Roger Pau Monn=C3=A9 <roger.pau@citrix.com>=
+ wrote:
+> >
+> > On Wed, Jan 20, 2021 at 03:23:30PM +0100, Arthur Borsboom wrote:
+> > > Hi Roger,
+> > >
+> > > I have set up a test environment based on Linux 5.11.0-rc4.
+> > > The patch did not apply clean, so I copied/pasted the patch manually.
+> > >
+> > > Without the patch the call trace (as reported) is visible in dmesg.
+> > > With the patch the call trace in dmesg is gone, but ... (there is alw=
+ays a
+> > > but) ...
+> > >
+> > > Now the discard action returns the following.
+> > >
+> > > [arthur@test-arch ~]$ sudo fstrim -v /
+> > > fstrim: /: the discard operation is not supported
+> > >
+> > > It might be correct, but of course I was hoping the Xen VM guest woul=
+d pass
+> > > on the discard request to the block device in the Xen VM host, which =
+is a
+> > > disk partition.
+> > > Any suggestions?
+> >
+> > Hm, that's not what I did see on my testing, the operation worked OK,
+> > and that's what I would expect to happen in your case also, since I
+> > know the xenstore keys.
+> >
+> > I think it's possible your email client has mangled the patch, I'm
+> > attaching the same patch to this email, could you try to apply it
+> > again and report back? (this time it should apply cleanly)
+> >
+> > Thanks, Roger.
+>
+>
+>
+> --
+> Arthur Borsboom
 
+
+
+--=20
+Arthur Borsboom
