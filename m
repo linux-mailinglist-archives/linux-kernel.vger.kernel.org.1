@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C8B2FF9CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C902FF9CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbhAVBHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 20:07:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbhAVBHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 20:07:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76FAA20799;
-        Fri, 22 Jan 2021 01:07:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611277627;
-        bh=l7rkR42OuxejsKhxyiDFxuiuLb9LpmduXzlQoZ3Vc7w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Jg36tCaakT4Vqhe5/adn3GIemg2utiNRML23pug/q4XDesGpEuCIo7OA8L/ms1o7e
-         OhhXOafBOZ0ErkYLOWQ+zJj40WcIvIy4g2m4lE/l35fAuQQ6x/NeyXdAsiyLzCd6WM
-         lHHSjZjy6sIGY97gkYL5tJZNURVmy7/42baQ4nC2shJSiPY1JQt0QDJ/DU4fw3jiAG
-         777os1J5oW0HPo7uvtQmnmS9Iq5q3MDV2cxKIu+qHlYr6xSX1xIu7eODKSHvWUywG2
-         gTuTH53PJ3eqZPg+V8CBeKyKcgxGdNiwbGQu4Fj8VWIun+n/d4MgLMY3HvXxC1ioWQ
-         0GjAibKH8uM7g==
-Date:   Thu, 21 Jan 2021 17:07:05 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ronak Doshi <doshir@vmware.com>
-Cc:     <netdev@vger.kernel.org>, Petr Vandrovec <petr@vmware.com>,
-        "maintainer:VMWARE VMXNET3 ETHERNET DRIVER" <pv-drivers@vmware.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] vmxnet3: Remove buf_info from device
- accessible structures
-Message-ID: <20210121170705.08ecb23d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210120021941.9655-1-doshir@vmware.com>
-References: <20210120021941.9655-1-doshir@vmware.com>
+        id S1726315AbhAVBJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 20:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726324AbhAVBJO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 20:09:14 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1677DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:08:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/oDnqYJ3Lv1FNKyp8PO4ESlMBOKK0rSIbZdQUowJFjk=; b=pynfINvSeqWntJ7H2DC9OXw42W
+        gPGMtkR3FjaP6TBhxkgwhPjxvIZgO4WCClO7QZRx6nfkNPnSE4B+kVNHFczaWXURysQX81s6bkNgd
+        zmu5B24ZAhVyuKe/T69GTOLf8ZZQ1cw76yg3ww+TNRifyDCHqjh7fi2eo36osbo4Q02uoUFboxNWw
+        Wq7aoY3B/fKHSjG5LkoI2QZgOTaIaW7xfdDhjnj/MrFtPgXGstvPcaRbESTnCr8O8Trlhvv7neS6r
+        sOb+TKohIRWl9mWxXHpVjasNCYCaBbFXaS3RrhDggCLCz7P3BTpCHNTdHI/+ccWttDn3Nhxj+GoeI
+        U9WlK+sg==;
+Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2kw7-0000Va-5O; Fri, 22 Jan 2021 01:08:27 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/8xx: export 'cpm_setbrg' for modules
+Date:   Thu, 21 Jan 2021 17:08:19 -0800
+Message-Id: <20210122010819.30986-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 18:19:40 -0800 Ronak Doshi wrote:
-> From: Petr Vandrovec <petr@vmware.com>
-> 
-> vmxnet3: Remove buf_info from device accessible structures
+Fix missing export for a loadable module build:
 
-Something happened to the posting, looks like the subject is listed
-twice?
+ERROR: modpost: "cpm_setbrg" [drivers/tty/serial/cpm_uart/cpm_uart.ko] undefined!
 
-> buf_info structures in RX & TX queues are private driver data that
-> do not need to be visible to the device.  Although there is physical
-> address and length in the queue descriptor that points to these
-> structures, their layout is not standardized, and device never looks
-> at them.
-> 
-> So lets allocate these structures in non-DMA-able memory, and fill
-> physical address as all-ones and length as zero in the queue
-> descriptor.
-> 
-> That should alleviate worries brought by Martin Radev in
-> https://lists.osuosl.org/pipermail/intel-wired-lan/Week-of-Mon-20210104/022829.html
-> that malicious vmxnet3 device could subvert SVM/TDX guarantees.
-> 
-> Signed-off-by: Petr Vandrovec <petr@vmware.com>
-> Signed-off-by: Ronak Doshi <doshir@vmware.com>
+Fixes: 4128a89ac80d ("powerpc/8xx: move CPM1 related files from sysdev/ to platforms/8xx")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: clang-built-linux@googlegroups.com
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+---
+ arch/powerpc/platforms/8xx/cpm1.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-> @@ -534,11 +530,13 @@ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
->  		goto err;
->  	}
->  
-> -	sz = tq->tx_ring.size * sizeof(tq->buf_info[0]);
-> -	tq->buf_info = dma_alloc_coherent(&adapter->pdev->dev, sz,
-> -					  &tq->buf_info_pa, GFP_KERNEL);
-> -	if (!tq->buf_info)
-> +	tq->buf_info = kmalloc_array_node(tq->tx_ring.size, sizeof(tq->buf_info[0]),
-> +					  GFP_KERNEL | __GFP_ZERO,
-> +					  dev_to_node(&adapter->pdev->dev));
-
-kcalloc_node()
-
-> +	if (!tq->buf_info) {
-> +		netdev_err(adapter->netdev, "failed to allocate tx buffer info\n");
-
-Please drop the message, OOM splat will be visible enough. checkpatch
-usually points this out
-
->  		goto err;
-> +	}
-
-Same comments for vmxnet3_rq_create()
+--- linux-next-20210121.orig/arch/powerpc/platforms/8xx/cpm1.c
++++ linux-next-20210121/arch/powerpc/platforms/8xx/cpm1.c
+@@ -280,6 +280,7 @@ cpm_setbrg(uint brg, uint rate)
+ 		out_be32(bp, (((BRG_UART_CLK_DIV16 / rate) - 1) << 1) |
+ 			      CPM_BRG_EN | CPM_BRG_DIV16);
+ }
++EXPORT_SYMBOL(cpm_setbrg);
+ 
+ struct cpm_ioport16 {
+ 	__be16 dir, par, odr_sor, dat, intr;
