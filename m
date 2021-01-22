@@ -2,172 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5292FF954
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532852FF947
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbhAVASh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 19:18:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
+        id S1726251AbhAVAOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 19:14:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725827AbhAVASe (ORCPT
+        with ESMTP id S1725918AbhAVANn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:18:34 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EE2C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:17:53 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id j12so2540218pfj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:17:53 -0800 (PST)
+        Thu, 21 Jan 2021 19:13:43 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B19C061756;
+        Thu, 21 Jan 2021 16:13:03 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id n2so7772300iom.7;
+        Thu, 21 Jan 2021 16:13:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5B43/qTnJag/KIuHZ95pu4xZZ/OP+ZGwvSqErVBVefQ=;
-        b=QPjyDabZlAqIUgik+G/LpiVQmoi31M4CpAZoE2IA6GPPirbHjXtU7aKqvxbLBidRmA
-         X8uNXVrpHa3HmQZyYcFrK/DCD4va75v9VXF8Z+iakiKkBkW8utaus/QNohUtlnoB7CqM
-         X9y9wErEa6Krei2ahz3jgJ2I4KZtueLITUWcE62XKDK6rQ72GLHzIXgfAsXbrBJx6jdC
-         4RBtQtvMVXM07Ax+1Cq0xOT7+ijzCi1PiQF9Z/FeLuACVRh1MjEfm513NELriKgFLIzh
-         i0sz16Pn/3b18CZk+oBe+VBpdTGKsS5dUzWtJUldptfuB1fPjchyCfRwm2o2r+s7fOHo
-         KZxg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=rg4F4fY1x1Ys+AVDMAzCYT98XvORKJFOa8hJzzR365Y=;
+        b=lF7PPJExoyH/ckstwaEjDdSnli0xe4IXnLk1il7CeROQDsS3YUqvXJDTA79WCFC/Hw
+         5jv7yU3mS1QMAcsKNRDc8rZdzKVRdrivUuQhtwIu1VPssDSY+Ja4iLHgNvszGejhffV7
+         Y6J4rD4yCTE4Qq2aPoaLTdm+Qg2F6GUquCFPte3fLvn05EM+xEmoakhkRy4XqqOAdYSi
+         p3v0/hfUsBfAkm4TngCyhBlCUvhUHquQieVj/afxqldY9Va0O8vAB1+HHVEcHW2a28R7
+         sabBJixLJuWx0HTMuvrXhEJ0ggoRtLHB9rdVH3cvEb58mzFbpR1VQ05GnXI2Mk7T9qoO
+         fRsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5B43/qTnJag/KIuHZ95pu4xZZ/OP+ZGwvSqErVBVefQ=;
-        b=Z3MAuIujlre0spQvxqVq+b0sxQBcKSnB9VB4G6GVACA8qv99vqOwmDMH8M08JtZ8iR
-         4nXh3aNEUEXhjPXPXD467kT8THnq+x6xl5VetStKiHEI1VePb5OX9FgQgqQPEPUOL7DS
-         9BKY9WPHrceawl1FzEzy7lPKaOix7OTDUC10OgVYu2NDExentoMmx2O4htaPK+NGY1iG
-         2eYM3AKRVQ5YQRbnoJ3aLiFEKyv746dkv/81Xkg2ayBGJ/ykIQxxiYzg0XD364uNsUIl
-         xg26N1ITmASHokFTfgZANCrhR6K6xOT/06qcC51vpVF4eSqEj7ZgoVZpxqOQOlLBTvcp
-         vwUg==
-X-Gm-Message-State: AOAM530kD1JjocRkXDHFKrfiTeLFRfuW5UTiHlUM+aIjcXJCS3wxtX+n
-        Hu3TG5tldSzWMLJoAeSatB42SwlZvBJvCeNR
-X-Google-Smtp-Source: ABdhPJydRKLqTCDaLvIm8kGXTNIwe4IM9ORH+KwOrymEZBE3GpK9Hup8VDhosOp/Npme++92MRbpow==
-X-Received: by 2002:a17:902:6903:b029:da:f458:798c with SMTP id j3-20020a1709026903b02900daf458798cmr2274211plk.68.1611274167248;
-        Thu, 21 Jan 2021 16:09:27 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id y11sm4796323pfo.121.2021.01.21.16.09.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 16:09:26 -0800 (PST)
-Date:   Thu, 21 Jan 2021 16:09:22 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-Message-ID: <YAoXsluM+J9ICy99@google.com>
-References: <20210108012846.4134815-2-vipinsh@google.com>
- <YAICLR8PBXxAcOMz@mtj.duckdns.org>
- <YAIUwGUPDmYfUm/a@google.com>
- <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
- <YAJsUyH2zspZxF2S@google.com>
- <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
- <YAfYL7V6E4/P83Mg@google.com>
- <YAhc8khTUc2AFDcd@mtj.duckdns.org>
- <YAi6RcbxTSMmNssw@google.com>
- <YAi9qNqiBjGvXMoI@mtj.duckdns.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=rg4F4fY1x1Ys+AVDMAzCYT98XvORKJFOa8hJzzR365Y=;
+        b=RbK9QbWk7DXQsn3/AM0RUrL1+aEsz/IATCgox02PSZWUWZkiQbiRf4wK6qQasLGauB
+         SAiOWivRvZKXJgeDJvdaY/RmyRmoHgH5O6BvbMWUPs2GPiS+jprliLKGOrRmoAEaZmGx
+         XuQ3K7BXvzNXVaMJqZrpPjyRta14+RoDCiCXVbOxIzZSni9vV81WLch7d0nqj7Gg+NFI
+         SQsqJgMAIpM2xWYOqK4r9HFQe8HfNl/ySxpdqHeS11BgHKOHoa2xL3n05MnOGHUyGP6F
+         TelEmLWJEnHzVwi7wOgL/k1lnbqtUP7gD4fwXua3U0qu5DNonCbuZkAm7QmamXBvw0jR
+         uPyQ==
+X-Gm-Message-State: AOAM532u1p3Ac4JLE8cUXzWY3y/vOISe2kTGDGE8YhmVf6kBc2NzgLVB
+        L9rOEfYipu5DY8XE2+F1d2pkJuW7tMpzMWZE5Fw=
+X-Google-Smtp-Source: ABdhPJxiFsnBYYgducB8dGHSjjEJc6dQEORoE9PJV6BfiJzchZ8YEWP/MHRxNUYkrL4mxdw2Z5h4ipnRF8yhoGriSN0=
+X-Received: by 2002:a92:d990:: with SMTP id r16mr1914693iln.10.1611274383015;
+ Thu, 21 Jan 2021 16:13:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAi9qNqiBjGvXMoI@mtj.duckdns.org>
+References: <20210116095413.72820-1-sedat.dilek@gmail.com> <20210120223546.GF1798087@krava>
+ <CAEf4Bza2W061YpxtUx9ZKQUtE0-tS6gf4yg2Le_2g4kyi3FhnQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bza2W061YpxtUx9ZKQUtE0-tS6gf4yg2Le_2g4kyi3FhnQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 22 Jan 2021 01:12:51 +0100
+Message-ID: <CA+icZUUGKn4DiBGN8Tq3yrh0NH2Fqboaigwm4Q3yceDJVe9dAA@mail.gmail.com>
+Subject: Re: [PATCH RFC] tools: Factor Clang, LLC and LLVM utils definitions
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Yulia Kartseva <hex@fb.com>, Andrey Ignatov <rdna@fb.com>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Briana Oursler <briana.oursler@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 06:32:56PM -0500, Tejun Heo wrote:
-> I don't know how many times I have to repeat the same point to get it
-> across. For any question about actual abstraction, you haven't provided any
-> kind of actual research or analysis and just keep pushing the same thing
-> over and over again. Maybe the situation is such that it makes sense to
-> change the rule but that needs substantial justifications. I've been asking
-> to see whether there are such justifications but all I've been getting are
-> empty answers. Until such discussions take place, please consider the series
-> nacked and please excuse if I don't respond promptly in this thread.
+On Fri, Jan 22, 2021 at 1:04 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Jan 20, 2021 at 2:36 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Sat, Jan 16, 2021 at 10:54:04AM +0100, Sedat Dilek wrote:
+> > > When dealing with BPF/BTF/pahole and DWARF v5 I wanted to build bpftool.
+> > >
+> > > While looking into the source code I found duplicate assignments
+> > > in misc tools for the LLVM eco system, e.g. clang and llvm-objcopy.
+> > >
+> > > Move the Clang, LLC and/or LLVM utils definitions to
+> > > tools/scripts/Makefile.include file and add missing
+> > > includes where needed.
+> > > Honestly, I was inspired by commit c8a950d0d3b9
+> > > ("tools: Factor HOSTCC, HOSTLD, HOSTAR definitions").
+> > >
+> > > I tested with bpftool and perf on Debian/testing AMD64 and
+> > > LLVM/Clang v11.1.0-rc1.
+> > >
+> > > Build instructions:
+> > >
+> > > [ make and make-options ]
+> > > MAKE="make V=1"
+> > > MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1"
+> > > MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
+> > >
+> > > [ clean-up ]
+> > > $MAKE $MAKE_OPTS -C tools/ clean
+> > >
+> > > [ bpftool ]
+> > > $MAKE $MAKE_OPTS -C tools/bpf/bpftool/
+> > >
+> > > [ perf ]
+> > > PYTHON=python3 $MAKE $MAKE_OPTS -C tools/perf/
+> > >
+> > > I was careful with respecting the user's wish to override custom compiler,
+> > > linker, GNU/binutils and/or LLVM utils settings.
+> > >
+> > > Some personal notes:
+> > > 1. I have NOT tested with cross-toolchain for other archs (cross compiler/linker etc.).
+> > > 2. This patch is on top of Linux v5.11-rc3.
+> > >
+> > > I hope to get some feedback from especially Linux-bpf folks.
+> > >
+> > > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > > ---
+> > >  tools/bpf/bpftool/Makefile                  | 2 --
+> > >  tools/bpf/runqslower/Makefile               | 3 ---
+> > >  tools/build/feature/Makefile                | 4 ++--
+> > >  tools/perf/Makefile.perf                    | 1 -
+> >
+> > for tools/build and tools/perf
+> >
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> >
+>
+> It's pretty straightforward and looks good for bpftool and runqslower,
+> but I couldn't apply directly to test due to merge conflicts.
+>
+> Also, which tree this should go through, given it touches multiple
+> parts under tools/?
+>
 
-I am sorry Tejun that you felt your feedback and questions are being ignored
-or not answered properly by me. It was not my intent. Let me try again.
+Sorry, for the conflicts.
+AFAICS I should do this again against Linux v5.11-rc4 vanilla?
+Is this OK to you?
 
-I am not able to come up with an abstraction for underlying the hardware
-like we have for memory, cpu, and io with their respective cgroup
-controllers, because each vendor is solving VM security issue in
-different ways. For example:
+Good hint, cannot say through which tree this should go through.
 
-s390 is using Ultravisor (UV) to disable access to the VMs memory from
-the host.  All KVM interaction with their Protected Virtual Machines
-(PVM) are handled through UV APIs. Here an encrypted guest image is
-loaded first which is decrypted by UV and then UV disallows access to
-PVMs memory and register state from KVM or other PVMs. PVMs are assigned
-IDs known as secure execution IDs (SEID).  These IDs are not scarce
-resource on the host.
+- Sedat -
 
-AMD is encrypting runtime memory of a VM using an hardware AES engine in
-the memory controller and keys are managed by an Arm based coprocessor
-inside the CPU, for encryption and decryption of the data flow between
-CPU and memory.  Their offering is known as Secure Encrypted
-Virtualization (SEV). There are also two more enhanced offerings SEV-ES,
-(memory + guest register state encryption), SEV-SNP (SEV-ES + memory
-integrity protection + TCB rollback) in later generation of CPUs. At any
-time only a limited number of IDs can be used simultaneously in the
-processor. Initially only SEV IDs we available on the CPUs but in the
-later generations of CPUs with the addition of SEV-ES, IDs were divided
-in two groups SEV ASIDs for SEV guests, and SEV-ES ASIDs for SEV-ES and
-SEV-SNP VMs. SEV firmware doesn't allow SEV ASIDs to launch SEV-ES and
-SEV-SNP VMs. Ideally, I think its better to use SEV-SNP as it provides
-highest protection but support in vmm and guest kernels are not there
-yet. Also, old HW will not be able to run SEV-ES or SEV-SNP as they can
-only run SEV ASIDs. I dont have data in terms of drawbacks running VM on
-SEV-SNP in terms of speed and cost but I think it will be dependent on
-workloads.
-
-Intel has come up with Trusted Domain Extension (TDX) for their secure
-VMs offering. They allow a VM to use multiple keys for private pages and
-for pages shared with other VMs. Overall, this is called as Multi-Key
-Total Memory Encryption (MKTME). A fixed number of encryption keys are
-supported in MKTME engine. During execution these keys are identified
-using KeyIDs which are present in upper bits of platform physical
-addresses.
-
-Only limited form of abstraction present here is that all are providing
-a way to have secure VMs and processes, either through single key
-encryption, multiple key encryptions or access denial.
-
-A common abstraction of different underlying security behavior/approach
-can mislead users in giving impression that all secure VMs/processes are
-same. In my opinion, this kind of thing can work when we talk about
-memory, cpu, etc, but for security related stuff will do more harm to
-the end user than the benefit of simplicity of abstraction. The name of
-the underlying feature also tells what kind of security guarantees a
-user can expect on the platform for a VM and what kind is used.
-
-Taking a step back, in the current scenario, we have some global shared
-resources which are limited for SEV, SEV-ES, and TDX. There is also a
-need for tracking and controlling on all 4 features for now. This is a
-case for some kind of cgroup behavior to limit and control an aggregate
-of processes using these system resources. After all, "cgroup is a
-mechanism to organize processes hierarchically and distribute system
-resources along the hierarchy in a controlled and configurable manner."
-
-We are using SEV in KVM and outside KVM also for other products on
-horizon. As cgroups are commonly used in many infrastructures for
-resource control, scheduling, and tracking, this patch is helping us in
-allocating jobs in the infrastructure along with memory, cpu and other
-constraints in a coherent way.
-
-If you feel encryption id cgroup is not good for long term or a
-too specific use case then may be there should be a common cgroup which
-can be a home for this kind and other kind of future resources where
-there is need to limit a global resource allocation but are not abstract
-or cannot be abstracted as the other existing cgroups. My current patch
-is very generic and with few modifications, it can provide subsystems,
-having valid requirements, a capability to use their own simple cgroup
-interfaces with minimal code duplication and get robustness of generic
-cgroup for free. Here, SEV will be the first user of this generic
-cgroup. Need for this is clearly there.
-
-Thanks Vipin
+> > jirka
+> >
+> > >  tools/scripts/Makefile.include              | 7 +++++++
+> > >  tools/testing/selftests/bpf/Makefile        | 3 +--
+> > >  tools/testing/selftests/tc-testing/Makefile | 3 +--
+> > >  7 files changed, 11 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> > > index f897cb5fb12d..71c14efa6e91 100644
+> > > --- a/tools/bpf/bpftool/Makefile
+> > > +++ b/tools/bpf/bpftool/Makefile
+> >
+> > SNIP
+> >
