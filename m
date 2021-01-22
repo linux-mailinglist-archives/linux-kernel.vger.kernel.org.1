@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74575300A76
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B228B300A7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729956AbhAVRyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:54:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729497AbhAVRsg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:48:36 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6C2C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 09:47:55 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id f11so7452535ljm.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 09:47:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9BI9UmKtX79h66/CQZ3IJ6vmAlgkat1H+gnMZ1+LnI0=;
-        b=ZX7i47LbJuaQXq6bQiKIG0XprrvIqBEewRCdU/KclPepZbN8Q8Bt2Bg0k9pRjLbccy
-         Ukwn7141QK6bW8RSFCY+xd4lZaj9IkTpBDXtTxxrjgOve3se8ozgoyr+DgUhaF6PZt8a
-         i0NLZhqARpo5bDPqeNGNM13idS+dZ1yzYdZe8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9BI9UmKtX79h66/CQZ3IJ6vmAlgkat1H+gnMZ1+LnI0=;
-        b=Yr0GtdOZXNUz69hqF4y4QsB8A0f/t+m06tUq0k8Km1F65O74JiYkAcFqNuYNfw6o3V
-         Ztz4DE27jH14kI3Zk6+BGD63NvU/3KfvEWKz8A356ZkB6EnTYex6Uo2zdJBUhgbyiRz3
-         cdFT6nVNZk1rAjGdPOk7h/5ubFbHqnueI03HX/KG9NfOwmwnqiUA8U2/s9CmCFSRBIg3
-         ECqrRsAQjhOIx8v5PpM+nsTeJ8HrqFvzYw7mwnZV/InfEJArTte8Eov5m+H1ptG/CXZg
-         7zD1DWp0QyH+/3bqtWKMj/zgdYBfSx6YU3T6ZhlK2K154hniNi5yfh9e2CJxC6TKKKSB
-         JtvA==
-X-Gm-Message-State: AOAM5304L0odBYzJOVaW/XShJptUQ/2Xjj8VxGizPVNWCy22BjFHq5o5
-        f2UmFlcAa1ZmJA0tZrDiVZEYx4Pa0IBaSg==
-X-Google-Smtp-Source: ABdhPJyh6dkRgkC/umDIu+gsuTnENLEP/s0RWSjwb0bdsGX8KC8NhphltpWfxAIFlDtqF9lBi//RBQ==
-X-Received: by 2002:a2e:6c0a:: with SMTP id h10mr861306ljc.149.1611337673431;
-        Fri, 22 Jan 2021 09:47:53 -0800 (PST)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id f21sm1055823ljh.18.2021.01.22.09.47.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 09:47:52 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id f11so7452381ljm.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 09:47:51 -0800 (PST)
-X-Received: by 2002:a2e:9ad7:: with SMTP id p23mr908941ljj.465.1611337671368;
- Fri, 22 Jan 2021 09:47:51 -0800 (PST)
+        id S1729271AbhAVR5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:57:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729400AbhAVRwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:52:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5DFC23A79;
+        Fri, 22 Jan 2021 17:51:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611337881;
+        bh=aXohzE1fQDUVmRxIyf/Y3FvhHEDTX6DSYkej4pWfR0U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JAev7YRmy/xfSN9o/HFB2t4m0B8FzqwnnFmt9R06LKkLn5aF/FbLnYJM27kHekq00
+         RqGa4Zqos8yRvI/QboBQMFUDFsgLnjLSubzzLM95wzWj7spe5lN0YhzkbLab1vLcSM
+         yfgh/bnOyOS6Ftud8OBQxx5MrWBPgE3Y5ytgyWcoUN3u9JCqOj62NPL/pSHD4wQNSs
+         1yxp0L+4BK0iiOJRlrStQCIlTfpA7zWo1wCyY/1n8zhi9Dyj2q23f5HNQ0Q+luZCfB
+         LfSbj8BOHuqmXtZnkNF1NFv00teZuNXNjoWY/ilIqatdnAp/jEY3kI7VUihZxSfzF4
+         SVDdI/4KFuKZg==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     ceph-devel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        willy@infradead.org, linux-cachefs@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/6] ceph: convert buffered read codepaths to new netfs API
+Date:   Fri, 22 Jan 2021 12:51:12 -0500
+Message-Id: <20210122175119.364381-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210120173612.20913-1-will@kernel.org> <20210120173612.20913-9-will@kernel.org>
- <CAKwvOd=B+tMi7-82Q8hEYnQ+BzkLDygOhMh6cQ2L+3SaL+F4tQ@mail.gmail.com>
- <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com> <20210121131101.GD22123@willie-the-truck>
-In-Reply-To: <20210121131101.GD22123@willie-the-truck>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 22 Jan 2021 09:47:35 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgMR1-Syn8sPpZUXQVz_dnaeWB9SpmtUVKyLdfAqMryLQ@mail.gmail.com>
-Message-ID: <CAHk-=wgMR1-Syn8sPpZUXQVz_dnaeWB9SpmtUVKyLdfAqMryLQ@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] mm: Mark anonymous struct field of 'struct
- vm_fault' as 'const'
-To:     Will Deacon <will@kernel.org>
-Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 5:11 AM Will Deacon <will@kernel.org> wrote:
->
-> > (It turns out that sparse gets this wrong too, so it's not just clang).
->
-> Adding Luc, as hopefully that's fixable.
+This patchset coverts ceph to use the new netfs API that David Howells
+has proposed [1]. It's a substantial reduction in code in the ceph layer
+itself, but the main impetus is to allow the VM, filesystem and fscache
+to better work together to optimize readahead on network filesystems.
 
-I had talked to Luc about this earlier, and he just sent out a fix for
-sparse. It's not in the git repo yet, but it's coming.
+I think the resulting code is also easier to understand, and should be
+more maintainable as a lot of the pagecache handling is now done at the
+netfs layer.
 
-Having looked at what sparse does, I suspect the clang behavior stems
-from a similar approach to looking up unnamed struct/union members.
+This has been lightly tested with xfstests. With fscache disabled, I saw
+no regressions. With fscache enabled, I still hit some bugs down in the
+fscache layer itself, but those seem to be present without this set as
+well. This doesn't seem to make any of that worse.
 
-And the sparse fix was fairly straightforward: changing the _lookup_
-is painful, because that's late and trying to fix types after-the-fact
-is just not great. But just (recursively) modifying the type modifiers
-at type parsing time for anonymous struct/union members is quite
-straightforward, probably in clang too.
+[1]: https://lore.kernel.org/ceph-devel/1856291.1611259704@warthog.procyon.org.uk/T/#t
 
-So honestly - I think the clang push-back was by somebody who thought
-it would be nasty to fix, and who was thus actively trying to mis-read
-the standards language.
+Jeff Layton (6):
+  ceph: disable old fscache readpage handling
+  ceph: rework PageFsCache handling
+  ceph: fix invalidation
+  ceph: convert readpage to fscache read helper
+  ceph: plug write_begin into read helper
+  ceph: convert ceph_readpages to ceph_readahead
 
-I'm not willing to argue with compiler people who do standards
-language weasel-wording (I've seen it before, my life is too short to
-deal with those kinds of people), but maybe Nick is more used to deal
-with clang people.
+ fs/ceph/Kconfig |   1 +
+ fs/ceph/addr.c  | 536 +++++++++++++++++++-----------------------------
+ fs/ceph/cache.c | 123 -----------
+ fs/ceph/cache.h | 101 +++------
+ fs/ceph/caps.c  |  10 +-
+ fs/ceph/inode.c |   1 +
+ 6 files changed, 236 insertions(+), 536 deletions(-)
 
-Nick - I suspect that the sparse type system model is different enough
-from the clang one that the sparse patch is not really helpful as a
-"look, this is how it was done in sparse, maybe clang can do something
-similar", but I'll bounce it to you separately anyway just in case.
-Maybe your clang knowledge means that you go "yeah, in clang that
-function is called 'xyz', and we can do something very similar".
+-- 
+2.29.2
 
-            Linus
