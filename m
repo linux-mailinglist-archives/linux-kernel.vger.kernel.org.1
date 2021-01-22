@@ -2,81 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471DE2FFDA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E65E2FFDBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbhAVHyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:54:44 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33800 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726573AbhAVHyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:54:41 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxKL5vhApghTcJAA--.14162S2;
-        Fri, 22 Jan 2021 15:53:19 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Ming Wang <wangming01@loongson.cn>
-Subject: [PATCH] MIPS: Make definitions of MIPSInst_FMA_{FUNC,FMTM} consistent with MIPS64 manual
-Date:   Fri, 22 Jan 2021 15:53:18 +0800
-Message-Id: <1611301998-25676-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxKL5vhApghTcJAA--.14162S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFWxXw1fAr15Jr4xuF17Jrb_yoW8JFWkpa
-        nxA3WkKr4kG34IkwnYyrWDWF13tr4kCrZYqFWUurnFga98Xwn8XFnayr1rt3s3XF4rKF10
-        qw4SgF1jgFy8Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjVc_3UUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726594AbhAVH5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbhAVH50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 02:57:26 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02EDC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:56:41 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id o17so6296160lfg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:56:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=f2zRDUhBwnVP7tCaaBYDyBHO3WlC21+sK4f4qAGJOCI=;
+        b=ooLdJkATi6/2fEB5idp2CRg5f3UiIOidhHf3ayOHeKjzppxkT0HkFh1Qpt0+cx2scW
+         9TRsscg8UxCHBswLJk3rlH+y2AU+wqUJbRDxCcs2PU6F/Fl9Q1XghsLC0Im+Yb4S2H5I
+         n1s6qqC3k+2t6r/GL0itPdpmTPBXjXfxS1UWz908azcwM1jJHQFBYOqmnhqBUGBw0HD9
+         J0CSEqdsJAOvna2Q56Y9w9g91cBA18gOe/aXbr/RVSEVgzlWiM5lvWlFY2alEyykArkq
+         JcBiUItzm89cgvg5yLmWhiUajU/rFsvwNxy7Iv1d5gT5s08tweA4y6yqT9ErV1YVjCaw
+         x6nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=f2zRDUhBwnVP7tCaaBYDyBHO3WlC21+sK4f4qAGJOCI=;
+        b=JXbAiN+xooReFlGGyLSMMCFTUJm5qHiv0gxGOF2IHhiIBFckyXChZkKNy23wq3zgZE
+         igwDsh3OhUdYa5BVGYdvmaCNg3UuBVQDdtQxxVOGNlhp/B8LOTDijgb6K8sVTyV+4OzL
+         2r7plko2RMv7LUa53SmSPQj+KL8GI4Hg7z1uye//8Ab5szaOxqqNrQj5u9At6r8zav+m
+         3bOxnIadViOAfklhkFcBChJCEsuGRu2S9Z436ruoXP/0/zSSZwxInX5eB1LNLLZggAkI
+         9SUmzuB6riePAEASvo//Imc+/5zMeFLZXC/p7g1s5Tf6fRYeJmzPhFaLKdyqoRA/qu2k
+         Hx+w==
+X-Gm-Message-State: AOAM533ANXdxcP+hN3x31/9AWZN0ITPveaO6QhX8r4QYhiAhX88+c3sM
+        RdBuFwKceDMBICueqqhT7oNk5RpKLqjNHxQHjj7u6w==
+X-Google-Smtp-Source: ABdhPJzDdNdouQ4GUOqShkAT1c4FUePpXmAYA00uB0PATJCkEJiA7J+aoxHR1CgglxjxPNR15g3wHTQl2OKZ+YzEjxU=
+X-Received: by 2002:a19:7616:: with SMTP id c22mr25218lff.550.1611302200416;
+ Thu, 21 Jan 2021 23:56:40 -0800 (PST)
+MIME-Version: 1.0
+References: <20210119204508.9256-1-john.stultz@linaro.org> <20210119204508.9256-2-john.stultz@linaro.org>
+In-Reply-To: <20210119204508.9256-2-john.stultz@linaro.org>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Fri, 22 Jan 2021 13:26:29 +0530
+Message-ID: <CAO_48GEYGzY8cZybwrXgfODhuoAJqi4AvwbZbWd+PiYjMqKYpw@mail.gmail.com>
+Subject: Re: [RESEND][PATCH 2/3] dma-buf: heaps: Add a WARN_ON should the
+ vmap_cnt go negative
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel definitions of MIPSInst_FMA_FUNC and MIPSInst_FMA_FFMT are not
-consistent with MADD.fmt, NMADD.fmt and NMSUB.fmt in the MIPS64 manual [1],
-the field func is bit 5..3 and fmt is bit 2..0, fix them. Otherwise there
-exists error when add new instruction simulation.
+Hi John, Suren,
 
-[1] https://www.mips.com/?do-download=the-mips64-instruction-set-v6-06
 
-Reported-by: Ming Wang <wangming01@loongson.cn>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/inst.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Wed, 20 Jan 2021 at 02:15, John Stultz <john.stultz@linaro.org> wrote:
+>
+> We shouldn't vunmap more then we vmap, but if we do, make
+> sure we complain loudly.
 
-diff --git a/arch/mips/include/asm/inst.h b/arch/mips/include/asm/inst.h
-index 22912f7..2f98ced 100644
---- a/arch/mips/include/asm/inst.h
-+++ b/arch/mips/include/asm/inst.h
-@@ -65,11 +65,11 @@
- #define I_FR_SFT	21
- #define MIPSInst_FR(x) ((MIPSInst(x) & 0x03e00000) >> I_FR_SFT)
- 
--#define I_FMA_FUNC_SFT	2
--#define MIPSInst_FMA_FUNC(x) ((MIPSInst(x) & 0x0000003c) >> I_FMA_FUNC_SFT)
-+#define I_FMA_FUNC_SFT	3
-+#define MIPSInst_FMA_FUNC(x) ((MIPSInst(x) & 0x00000038) >> I_FMA_FUNC_SFT)
- 
- #define I_FMA_FFMT_SFT	0
--#define MIPSInst_FMA_FFMT(x) (MIPSInst(x) & 0x00000003)
-+#define MIPSInst_FMA_FFMT(x) (MIPSInst(x) & 0x00000007)
- 
- typedef unsigned int mips_instruction;
- 
--- 
-2.1.0
+I was checking the general usage of vunmap in the kernel, and I
+couldn't find many instances where we need to WARN_ON for the vunmap
+count more than vmap count. Is there a specific need for this in the heaps?
 
+Best,
+Sumit.
+>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Liam Mark <lmark@codeaurora.org>
+> Cc: Laura Abbott <labbott@kernel.org>
+> Cc: Brian Starkey <Brian.Starkey@arm.com>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: Daniel Mentz <danielmentz@google.com>
+> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Cc: =C3=98rjan Eide <orjan.eide@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: James Jones <jajones@nvidia.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Suggested-by: Suren Baghdasaryan <surenb@google.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>  drivers/dma-buf/heaps/cma_heap.c    | 1 +
+>  drivers/dma-buf/heaps/system_heap.c | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma=
+_heap.c
+> index 364fc2f3e499..0c76cbc3fb11 100644
+> --- a/drivers/dma-buf/heaps/cma_heap.c
+> +++ b/drivers/dma-buf/heaps/cma_heap.c
+> @@ -232,6 +232,7 @@ static void cma_heap_vunmap(struct dma_buf *dmabuf, s=
+truct dma_buf_map *map)
+>         struct cma_heap_buffer *buffer =3D dmabuf->priv;
+>
+>         mutex_lock(&buffer->lock);
+> +       WARN_ON(buffer->vmap_cnt =3D=3D 0);
+>         if (!--buffer->vmap_cnt) {
+>                 vunmap(buffer->vaddr);
+>                 buffer->vaddr =3D NULL;
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/=
+system_heap.c
+> index 405351aad2a8..2321c91891f6 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -273,6 +273,7 @@ static void system_heap_vunmap(struct dma_buf *dmabuf=
+, struct dma_buf_map *map)
+>         struct system_heap_buffer *buffer =3D dmabuf->priv;
+>
+>         mutex_lock(&buffer->lock);
+> +       WARN_ON(buffer->vmap_cnt =3D=3D 0);
+>         if (!--buffer->vmap_cnt) {
+>                 vunmap(buffer->vaddr);
+>                 buffer->vaddr =3D NULL;
+> --
+> 2.17.1
+>
