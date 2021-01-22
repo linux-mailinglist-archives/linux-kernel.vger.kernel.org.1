@@ -2,146 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BA730067F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 350C830066C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbhAVPEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:04:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60523 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729053AbhAVPCw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:02:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611327686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pmb5w3rLav37us1XL43BkDMIwzOvI7ua2CZXzDfcqdo=;
-        b=RMNia+aWsbZ2a4Uow1vMMsoI1dfC5hik/A4ABjPSW+h7rvN7tUD2HQmzicf9J1bJJvX5fx
-        a2A57LcIXNIQLFbhEMwC7faaho3vWa3w8uNOjc3wvYqS8FNHz7o/T5ZR/lNv462IxQJDe2
-        tDVWVCPnmJmqGK+Win3qP+3ouaN9etY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-8khLFf0OO4Wy_Qo2eG4Tuw-1; Fri, 22 Jan 2021 10:01:22 -0500
-X-MC-Unique: 8khLFf0OO4Wy_Qo2eG4Tuw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A28DA190A7A1;
-        Fri, 22 Jan 2021 15:01:18 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32EC36F990;
-        Fri, 22 Jan 2021 15:01:18 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 02E034178900; Fri, 22 Jan 2021 11:13:20 -0300 (-03)
-Date:   Fri, 22 Jan 2021 11:13:20 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Alex Belits <abelits@marvell.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "will@kernel.org" <will@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 11/13] task_isolation: net: don't flush backlog on
- CPUs running isolated tasks
-Message-ID: <20210122141320.GA66969@fuller.cnet>
-References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
- <01470cf1f1a2e79e46a87bb5a8a4780a1c3cc740.camel@marvell.com>
- <20201001144731.GC6595@lothringen>
+        id S1728968AbhAVPBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:01:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728775AbhAVOwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:52:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDE7239EE;
+        Fri, 22 Jan 2021 14:51:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611327110;
+        bh=UVENJ8SwAaMEVSup4KUp9M6Y7Hntoo9gwFOVgUT8oGQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FXrG7NjANZ8HxnMna/ny1zUy2Mogyuxbnz68QCBd7kO7NiPV4/2q6lG4MmLu17UyP
+         N470/R1kO9y720A/M8CIWiEtI6/ZYhgDSciZzrb/sxt8dG4gZ/W9qpM4iOIbneZ4Q2
+         mkfLYceaRA9yzfbWJilCgSxiElOahehcDT5Ec+CvZO6OZLF+v3F+q49Noajl0xHaVF
+         83N6BsYCD5zW59qlJS1XwAW+DxYT77YXEgLtvruEKU5u97ZJMjZcgRlR3GCfMCM77z
+         4yXf/4IzZEteQTB3dZSVqDOYUWnU6NLDkGiv7e1OMBmLMkt1Qri8c5pZgwwntxuGz6
+         LwYyRaAXt/BLA==
+Received: by mail-ej1-f49.google.com with SMTP id rv9so8000151ejb.13;
+        Fri, 22 Jan 2021 06:51:50 -0800 (PST)
+X-Gm-Message-State: AOAM532IivjpDsZ7ZWYnug0xQJfLv/5FZ1tUGH7CDjXcTPTc4KBRLSNM
+        VOrYewvW4pgc98IUc3j+qOwtQDn5BfjvegQFLw==
+X-Google-Smtp-Source: ABdhPJwFUeGwf7xQOBtjPmx0ccgY3V7Y6xkhTkG4GkyffTDYwU7UDugMKHbPhpv6LP4LwMNjyZNgYQiLoTUE2SV2tmw=
+X-Received: by 2002:a17:906:958f:: with SMTP id r15mr3085496ejx.360.1611327109003;
+ Fri, 22 Jan 2021 06:51:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001144731.GC6595@lothringen>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <cover.1610645385.git.mchehab+huawei@kernel.org>
+ <78e54d594b9e31d603d913048a7bc89d3a089608.1610645385.git.mchehab+huawei@kernel.org>
+ <20210115014731.GA4077569@robh.at.kernel.org> <20210119112653.46f26ce3@coco.lan>
+In-Reply-To: <20210119112653.46f26ce3@coco.lan>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 22 Jan 2021 08:51:37 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKyMy010vOjSdbDPXs13ygvfHpK5pb_1TN0pLM9pwL97w@mail.gmail.com>
+Message-ID: <CAL_JsqKyMy010vOjSdbDPXs13ygvfHpK5pb_1TN0pLM9pwL97w@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] phy: phy-hi3670-usb3: move driver from staging
+ into phy
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Yu Chen <chenyu56@huawei.com>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 04:47:31PM +0200, Frederic Weisbecker wrote:
-> On Wed, Jul 22, 2020 at 02:58:24PM +0000, Alex Belits wrote:
-> > From: Yuri Norov <ynorov@marvell.com>
-> > 
+On Tue, Jan 19, 2021 at 4:26 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Em Thu, 14 Jan 2021 19:47:31 -0600
+> Rob Herring <robh@kernel.org> escreveu:
+>
+> > On Thu, Jan 14, 2021 at 06:35:44PM +0100, Mauro Carvalho Chehab wrote:
+> > > The phy USB3 driver for Hisilicon 970 (hi3670) is ready
+> > > for mainstream. Mode it from staging into the main driver's
+> > > phy/ directory.
+> > >
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > ---
+> > >  .../bindings/phy/phy-hi3670-usb3.yaml         |  72 ++
+> > >  MAINTAINERS                                   |   9 +-
+> > >  drivers/phy/hisilicon/Kconfig                 |  10 +
+> > >  drivers/phy/hisilicon/Makefile                |   1 +
+> > >  drivers/phy/hisilicon/phy-hi3670-usb3.c       | 668 ++++++++++++++++++
+> > >  drivers/staging/hikey9xx/Kconfig              |  11 -
+> > >  drivers/staging/hikey9xx/Makefile             |   2 -
+> > >  drivers/staging/hikey9xx/phy-hi3670-usb3.c    | 668 ------------------
+> > >  drivers/staging/hikey9xx/phy-hi3670-usb3.yaml |  72 --
+> > >  9 files changed, 759 insertions(+), 754 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/phy/phy-hi3670-usb3.yaml
+> > >  create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
+> > >  delete mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.c
+> > >  delete mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.yaml b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.yaml
+> > > new file mode 100644
+> > > index 000000000000..125a5d6546ae
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.yaml
+> > > @@ -0,0 +1,72 @@
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/phy/hisilicon,hi3670-usb3.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Hisilicon Kirin970 USB PHY
+> > > +
+> > > +maintainers:
+> > > +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> >
+> > Blank line.
+>
+> Ok.
+>
+> >
+> > > +description: |+
+> > > +  Bindings for USB3 PHY on HiSilicon Kirin 970.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: hisilicon,hi3670-usb-phy
+> > > +
+> > > +  "#phy-cells":
+> > > +    const: 0
+> > > +
+> > > +  hisilicon,pericrg-syscon:
+> > > +    $ref: '/schemas/types.yaml#/definitions/phandle'
+> > > +    description: phandle of syscon used to control iso refclk.
+> > > +
+> > > +  hisilicon,pctrl-syscon:
+> > > +    $ref: '/schemas/types.yaml#/definitions/phandle'
+> > > +    description: phandle of syscon used to control usb tcxo.
+> > > +
+> > > +  hisilicon,sctrl-syscon:
+> > > +    $ref: '/schemas/types.yaml#/definitions/phandle'
+> > > +    description: phandle of syscon used to control phy deep sleep.
+> > > +
+> > > +  hisilicon,eye-diagram-param:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    description: Eye diagram for phy.
+> > > +
+> > > +  hisilicon,tx-vboost-lvl:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    description: TX level vboost for phy.
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - hisilicon,pericrg-syscon
+> > > +  - hisilicon,pctrl-syscon
+> > > +  - hisilicon,sctrl-syscon
+> > > +  - hisilicon,eye-diagram-param
+> > > +  - hisilicon,tx-vboost-lvl
+> > > +  - "#phy-cells"
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    bus {
+> > > +      #address-cells = <2>;
+> > > +      #size-cells = <2>;
+> > > +
+> > > +      usb3_otg_bc: usb3_otg_bc@ff200000 {
+> > > +        compatible = "syscon", "simple-mfd";
+> > > +        reg = <0x0 0xff200000 0x0 0x1000>;
+> > > +
+> > > +        usb_phy {
+> >
+> > Is there a contiguous register region for this sub-block? If so, add
+> > 'reg' even though Linux doesn't need it currently.
+>
+> No. The driver uses 4 syscon regions in order to access the needed
+> registers:
 
-> > so we don't need to flush it.
-> 
-> What guarantees that we have no backlog on it?
+I meant just for the parent device node. I assume these are the 'main'
+registers? If not, then maybe it should be a child of one of the other
+syscons.
 
-From Paolo's work to use lockless reading of 
-per-CPU skb lists
+'reg' would just be for documentation ATM. However, if the subblock
+was reused on another chip, but at a different offset then reg would
+become useful. You could handle that with a fixed offset when 'reg' is
+missing, but adding it later would be too late.
 
-https://www.spinics.net/lists/netdev/msg682693.html
-
-It also exposed skb queue length to userspace
-
-https://www.spinics.net/lists/netdev/msg684939.html
-
-But if i remember correctly waiting for a RCU grace
-period was also necessary to ensure no backlog !?! 
-
-Paolo would you please remind us what was the sequence of steps?
-(and then also, for the userspace isolation interface, where 
-the application informs the kernel that its entering isolated
-mode, is just confirming the queues have zero length is
-sufficient?).
-
-TIA!
-
-> 
-> > Currently flush_all_backlogs()
-> > enqueues corresponding work on all CPUs including ones that run
-> > isolated tasks. It leads to breaking task isolation for nothing.
-> > 
-> > In this patch, backlog flushing is enqueued only on non-isolated CPUs.
-> > 
-> > Signed-off-by: Yuri Norov <ynorov@marvell.com>
-> > [abelits@marvell.com: use safe task_isolation_on_cpu() implementation]
-> > Signed-off-by: Alex Belits <abelits@marvell.com>
-> > ---
-> >  net/core/dev.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index 90b59fc50dc9..83a282f7453d 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -74,6 +74,7 @@
-> >  #include <linux/cpu.h>
-> >  #include <linux/types.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/isolation.h>
-> >  #include <linux/hash.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/sched.h>
-> > @@ -5624,9 +5625,13 @@ static void flush_all_backlogs(void)
-> >  
-> >  	get_online_cpus();
-> >  
-> > -	for_each_online_cpu(cpu)
-> > +	smp_rmb();
-> 
-> What is it ordering?
-> 
-> > +	for_each_online_cpu(cpu) {
-> > +		if (task_isolation_on_cpu(cpu))
-> > +			continue;
-> >  		queue_work_on(cpu, system_highpri_wq,
-> >  			      per_cpu_ptr(&flush_works, cpu));
-> > +	}
-> >  
-> >  	for_each_online_cpu(cpu)
-> >  		flush_work(per_cpu_ptr(&flush_works, cpu));
-> 
-> Thanks.
-
+Rob
