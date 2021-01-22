@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A7A300D6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAD0300D59
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbhAVUKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:10:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
+        id S1730659AbhAVUGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:06:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728100AbhAVOMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:12:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FF7823A9C;
-        Fri, 22 Jan 2021 14:09:55 +0000 (UTC)
+        id S1728349AbhAVONM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:13:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B08C723A84;
+        Fri, 22 Jan 2021 14:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324595;
-        bh=bg1MGApZXy1snbKFE985TK9dD1gMRCuiC9DNpBwFJYE=;
+        s=korg; t=1611324598;
+        bh=gip9ZyvLhgxAIdzT6+teso3BL+gh4Xupaij8iQDYj40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W0iA9lQ/B61ueMY2R9I5webCrQmrtNNRX8SCM1XDCKc/ph/edskeikyLk7w1vDmbA
-         rEaHZKdr44Orq5puA5VKU3yZs5d0BYnK4FM3xncf54faJq00LzFZxlWppr8XuX6vb8
-         q0IvTNheSFL0xRpEuFXKIYpAtB3sa+g1F5yDZWjU=
+        b=1uKX/YJ4hp9wiU5niHuvDs6fjYEDsqIXq/SFQimWda0Lh9UiiwObZw2pcInBIBYsR
+         7hnAAPpu5Nz29z8UZU/9P6XGwTIrOZXbgXftPWs1bAyurC+hGvfffxyW8JPSNK8GPl
+         vV1SNjHwleNQt6jnfKlJkIDKARpL+7U+VCKH7LJA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 09/31] net: ethernet: fs_enet: Add missing MODULE_LICENSE
-Date:   Fri, 22 Jan 2021 15:08:23 +0100
-Message-Id: <20210122135732.251832508@linuxfoundation.org>
+Subject: [PATCH 4.4 10/31] ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
+Date:   Fri, 22 Jan 2021 15:08:24 +0100
+Message-Id: <20210122135732.287381163@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
 References: <20210122135731.873346566@linuxfoundation.org>
@@ -41,46 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-[ Upstream commit 445c6198fe7be03b7d38e66fe8d4b3187bc251d4 ]
+[ Upstream commit ee61cfd955a64a58ed35cbcfc54068fcbd486945 ]
 
-Since commit 1d6cd3929360 ("modpost: turn missing MODULE_LICENSE()
-into error") the ppc32_allmodconfig build fails with:
+It adds a stub acpi_create_platform_device() for !CONFIG_ACPI build, so
+that caller doesn't have to deal with !CONFIG_ACPI build issue.
 
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-fec.o
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-bitbang.o
-
-Add the missing MODULE_LICENSEs to fix the build. Both files include a
-copyright header indicating they are GPL v2.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c | 1 +
- drivers/net/ethernet/freescale/fs_enet/mii-fec.c     | 1 +
- 2 files changed, 2 insertions(+)
+ include/linux/acpi.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-index 68a428de0bc0e..cfae74d8e6590 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-@@ -231,3 +231,4 @@ static struct platform_driver fs_enet_bb_mdio_driver = {
- };
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 0bd0a9ad54556..719fb8b320fdc 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -604,6 +604,13 @@ static inline int acpi_device_modalias(struct device *dev,
+ 	return -ENODEV;
+ }
  
- module_platform_driver(fs_enet_bb_mdio_driver);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-index 2be383e6d2585..3b6232a6a56d6 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-@@ -232,3 +232,4 @@ static struct platform_driver fs_enet_fec_mdio_driver = {
- };
- 
- module_platform_driver(fs_enet_fec_mdio_driver);
-+MODULE_LICENSE("GPL");
++static inline struct platform_device *
++acpi_create_platform_device(struct acpi_device *adev,
++			    struct property_entry *properties)
++{
++	return NULL;
++}
++
+ static inline bool acpi_dma_supported(struct acpi_device *adev)
+ {
+ 	return false;
 -- 
 2.27.0
 
