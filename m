@@ -2,67 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9351A300821
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3C4300826
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729425AbhAVQCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        id S1729373AbhAVQDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729374AbhAVQBt (ORCPT
+        with ESMTP id S1729442AbhAVQDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:01:49 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDC6C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 08:01:08 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id Ks142400U4C55Sk06s14us; Fri, 22 Jan 2021 17:01:07 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l2yrw-005qfR-C7; Fri, 22 Jan 2021 17:01:04 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l2yrv-00C4Yp-LL; Fri, 22 Jan 2021 17:01:03 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Lars Poeschel <poeschel@lemonage.de>,
-        Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
-Cc:     Willy Tarreau <w@1wt.eu>, Miguel Ojeda <ojeda@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] auxdisplay: Fix duplicate CHARLCD config symbol
-Date:   Fri, 22 Jan 2021 17:01:02 +0100
-Message-Id: <20210122160102.2877424-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 22 Jan 2021 11:03:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88CFC0613D6;
+        Fri, 22 Jan 2021 08:02:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=B/kiTjmHGaRRrP1G8JY0NUDXmSmRpyqLhF1JzYpU0yM=; b=rU5ATMS8dhDUJCkDffPcPMDRq3
+        oUX7YcNAyZiLiso2iGLJqhfCGU2IdBa3NH2Msn0/DQi+n5Ewmx/mzrhO9MLxEdAxOgGHWi56Q6kyl
+        O3zUemwf2vaevlNOpYlASc/SBlz2toh2Omljod5bwRHbZ/aITycyOrPi4VKiw1Y/N47WYif/0pZjk
+        dNIB/7XNOzrugVQn9gQxjiO1A8nepck4L0rri12pQdbVzW/RwHJBxj/r2Yni0XhBuRA8APXw+mgnx
+        oLUEzlP4cxXG2TAR7jzgKeTSzBPED92JPjz+E1U5DsLh9wzhCCs1xcPJdkmejqZSedL59tuOrto1M
+        vF1UXPYQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2ysc-000w5I-L8; Fri, 22 Jan 2021 16:01:55 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/18] Refactor generic_file_buffered_read
+Date:   Fri, 22 Jan 2021 16:01:22 +0000
+Message-Id: <20210122160140.223228-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A second CHARLCD config symbol was added instead of moving the existing
-one.  Fix this by removing the old one.
+This is a combination of Christoph's work to refactor
+generic_file_buffered_read() and some of my large-page support
+which was disrupted by Kent's refactoring of generic_file_buffered_read.
 
-Fixes: 718e05ed92ecac0d ("auxdisplay: Introduce hd44780_common.[ch]")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/auxdisplay/Kconfig | 3 ---
- 1 file changed, 3 deletions(-)
+v5:
+ - Rebase on next-20210122 (new conflict due to typo fix)
+ - Folded in Reviewed-bys
+v4:
+ - Rebase on next-20210120
+ - Fix compilation error with pagevec_init & reinit
+ - Simplify filemap_range_uptodate() by passing pos instead of iocb
+v3:
+ - Fixed missing put_page for readahead with IOCB_NOIO (hch)
+ - Fixed commit message for lock_page_for_iocb (nborisov)
+v2:
+ - Added pagevec conversion upfront and rebased other patches on top of
+   it (me)
+ - Limit page search by max pgoff_t rather than by number of pages (me)
+ - Renamed mapping_get_read_thps() to filemap_get_read_batch() (hch/me)
+ - Added doc for filemap_get_read_batch() (hch/me)
+ - Removed 'first' parameter from filemap_update_page() (me)
+ - Folded "Remove parameters from filemap_update_page()" into an earlier
+   patch (hch)
+ - Restructured filemap_update_page() error handling flow (hch/me)
+ - Pass the pagevec to filemap_create_page() (hch)
+ - Renamed 'find_page' label to 'retry' (hch)
+ - Explicitly check for AOP_TRUNCATED_PAGE instead of assuming err > 0
+   means retry (hch)
+ - Move mark_page_accessed() and handling of i_size into main copy loop (me)
 
-diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-index a2b59b84bb881c82..1509cb74705a30ad 100644
---- a/drivers/auxdisplay/Kconfig
-+++ b/drivers/auxdisplay/Kconfig
-@@ -507,6 +507,3 @@ config PANEL
- 	depends on PARPORT
- 	select AUXDISPLAY
- 	select PARPORT_PANEL
--
--config CHARLCD
--	tristate "Character LCD core support" if COMPILE_TEST
+Christoph Hellwig (2):
+  mm/filemap: Rename generic_file_buffered_read to filemap_read
+  mm/filemap: Simplify generic_file_read_iter
+
+Matthew Wilcox (Oracle) (16):
+  mm/filemap: Rename generic_file_buffered_read subfunctions
+  mm/filemap: Remove dynamically allocated array from filemap_read
+  mm/filemap: Convert filemap_get_pages to take a pagevec
+  mm/filemap: Use head pages in generic_file_buffered_read
+  mm/filemap: Pass a sleep state to put_and_wait_on_page_locked
+  mm/filemap: Support readpage splitting a page
+  mm/filemap: Inline __wait_on_page_locked_async into caller
+  mm/filemap: Don't call ->readpage if IOCB_WAITQ is set
+  mm/filemap: Change filemap_read_page calling conventions
+  mm/filemap: Change filemap_create_page calling conventions
+  mm/filemap: Convert filemap_update_page to return an errno
+  mm/filemap: Move the iocb checks into filemap_update_page
+  mm/filemap: Add filemap_range_uptodate
+  mm/filemap: Split filemap_readahead out of filemap_get_pages
+  mm/filemap: Restructure filemap_get_pages
+  mm/filemap: Don't relock the page after calling readpage
+
+ fs/btrfs/file.c         |   2 +-
+ include/linux/fs.h      |   4 +-
+ include/linux/pagemap.h |   3 +-
+ mm/filemap.c            | 565 ++++++++++++++++++----------------------
+ mm/huge_memory.c        |   4 +-
+ mm/migrate.c            |   4 +-
+ 6 files changed, 267 insertions(+), 315 deletions(-)
+
 -- 
-2.25.1
+2.29.2
 
