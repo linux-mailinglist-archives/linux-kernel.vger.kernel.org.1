@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC8D300BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6723D300BE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbhAVSw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:52:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40016 "EHLO mail.kernel.org"
+        id S1730259AbhAVSxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:53:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728536AbhAVOWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AACC23B44;
-        Fri, 22 Jan 2021 14:15:43 +0000 (UTC)
+        id S1728513AbhAVOW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9652D23B46;
+        Fri, 22 Jan 2021 14:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324943;
-        bh=emZyV+w6Pyo04tbdFelWtIQdvAqMn8EpXL0VU455U44=;
+        s=korg; t=1611324952;
+        bh=JUbV4WDWYeuFOG5RUQMedKAYuLqR5xDajD+MGa6Gdsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cHoqlc7V2gkPhJ1PRrrhrccpcj0fM9FyuFCXjPNIAf3YvlRLFc6KwblYFaraIAC6v
-         ODszIaY+uvfp0gthDcC8Sco0sXRLtoaeGJHlawd8hOjdCDh/F2+5G1uCSt+QLRd/7V
-         g8hACGvQ1OtlCrnRLD0Wmob6miq1nUs6j4aT17Zw=
+        b=JhGa86fbwfdgl0gFi8vVwo+UAQYyOxJ+pW1jX1+Lnf6mY1XYULGx6IA4F+oZCDz6A
+         aKAVpWc/nZhfqR166nyNmCdg+xJ/OgmbA59P+SuzVeDpzIuw6tZ6DblyY6eWkpEvUw
+         rAihj31ApwhL4rJtj7Qdnz3GhOTHjOWdwP5nngKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Wu <david.wu@rock-chips.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        David Howells <dhowells@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 14/22] net: stmmac: Fixed mtu channged by cache aligned
-Date:   Fri, 22 Jan 2021 15:12:32 +0100
-Message-Id: <20210122135732.476825547@linuxfoundation.org>
+Subject: [PATCH 4.19 17/22] rxrpc: Fix handling of an unsupported token type in rxrpc_read()
+Date:   Fri, 22 Jan 2021 15:12:35 +0100
+Message-Id: <20210122135732.597400387@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
 References: <20210122135731.921636245@linuxfoundation.org>
@@ -39,42 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Wu <david.wu@rock-chips.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 5b55299eed78538cc4746e50ee97103a1643249c ]
+[ Upstream commit d52e419ac8b50c8bef41b398ed13528e75d7ad48 ]
 
-Since the original mtu is not used when the mtu is updated,
-the mtu is aligned with cache, this will get an incorrect.
-For example, if you want to configure the mtu to be 1500,
-but mtu 1536 is configured in fact.
+Clang static analysis reports the following:
 
-Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
-Signed-off-by: David Wu <david.wu@rock-chips.com>
-Link: https://lore.kernel.org/r/20210113034109.27865-1-david.wu@rock-chips.com
+net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefined
+                toksize = toksizes[tok++];
+                        ^ ~~~~~~~~~~~~~~~
+
+rxrpc_read() contains two consecutive loops.  The first loop calculates the
+token sizes and stores the results in toksizes[] and the second one uses
+the array.  When there is an error in identifying the token in the first
+loop, the token is skipped, no change is made to the toksizes[] array.
+When the same error happens in the second loop, the token is not skipped.
+This will cause the toksizes[] array to be out of step and will overrun
+past the calculated sizes.
+
+Fix this by making both loops log a message and return an error in this
+case.  This should only happen if a new token type is incompletely
+implemented, so it should normally be impossible to trigger this.
+
+Fixes: 9a059cd5ca7d ("rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()")
+Reported-by: Tom Rix <trix@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+Link: https://lore.kernel.org/r/161046503122.2445787.16714129930607546635.stgit@warthog.procyon.org.uk
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/rxrpc/key.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3596,6 +3596,7 @@ static int stmmac_change_mtu(struct net_
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	int txfifosz = priv->plat->tx_fifo_size;
-+	const int mtu = new_mtu;
+--- a/net/rxrpc/key.c
++++ b/net/rxrpc/key.c
+@@ -1112,7 +1112,7 @@ static long rxrpc_read(const struct key
+ 		default: /* we have a ticket we can't encode */
+ 			pr_err("Unsupported key token type (%u)\n",
+ 			       token->security_index);
+-			continue;
++			return -ENOPKG;
+ 		}
  
- 	if (txfifosz == 0)
- 		txfifosz = priv->dma_cap.tx_fifo_size;
-@@ -3613,7 +3614,7 @@ static int stmmac_change_mtu(struct net_
- 	if ((txfifosz < new_mtu) || (new_mtu > BUF_SIZE_16KiB))
- 		return -EINVAL;
+ 		_debug("token[%u]: toksize=%u", ntoks, toksize);
+@@ -1227,7 +1227,9 @@ static long rxrpc_read(const struct key
+ 			break;
  
--	dev->mtu = new_mtu;
-+	dev->mtu = mtu;
+ 		default:
+-			break;
++			pr_err("Unsupported key token type (%u)\n",
++			       token->security_index);
++			return -ENOPKG;
+ 		}
  
- 	netdev_update_features(dev);
- 
+ 		ASSERTCMP((unsigned long)xdr - (unsigned long)oldxdr, ==,
 
 
