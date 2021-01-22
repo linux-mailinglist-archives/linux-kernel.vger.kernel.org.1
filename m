@@ -2,178 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6AB3009DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2BF3009ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbhAVRbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:31:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729053AbhAVPtD (ORCPT
+        id S1730061AbhAVRa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:30:59 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:44312 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729280AbhAVPtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:49:03 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E010C06178B
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:48:37 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id j13so7095243edp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:48:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3eAbnY6xA/gRZJxfscCuC7XOiulmOFHNvPNXAXuxGa8=;
-        b=goHCeJXW4a9N8IFJcoZ3YyUmIOymCqSCz//9nfnjcAad8iVVpKl8L+p1eHdtH3/4Be
-         WE5acK0za0ULdzyvCDmSrgwR8uL9N/1MC5ihXsQuvhE94HnPA/kilQeKD1nR8qVt0Syz
-         XBIShATeB/BwyBzl59hjU62kpr5oDMX0bLk6OP26jYvz+oJHEu5LAX9PHSHOzKEIi5ir
-         lBhsN+clgveRvAzPaH0GDddOcUnLeMar3q0FiwK2Acso5SjfLbzwpbNBIVRg1mczQJ5D
-         e0UNRZa5vNxbUkCQXFZ+ffqlvy1+1nIKlcfCrYST/hQ8YTA19B+TkCfcSUqhPIeFkgXo
-         sCrQ==
+        Fri, 22 Jan 2021 10:49:25 -0500
+Received: by mail-ot1-f44.google.com with SMTP id e70so5440844ote.11;
+        Fri, 22 Jan 2021 07:49:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3eAbnY6xA/gRZJxfscCuC7XOiulmOFHNvPNXAXuxGa8=;
-        b=jFBsibofZ5QCKyepAmWRbB1JJVv5/u1oqayII0Ro/Dmkcl77wvYrB10tOothepploW
-         M90XRih9mToJQCNoDXYH6AVpHKcbrDNcAXP2+tIq/hv5lc6/V9F3wgE13crmB/yhz5Zc
-         zH5NQzPxXBcpGnTzgpkk4ZyS9jso9SIyWKJeO1yll4oS1DJGrsb1ub5KkOtivTFvR1rf
-         XlOHw5e/yqa12DDYO33ZJYIMp9Obsq8eFG7YAgCzqC3qaA3wfUEKB0K7lJWXnT6gmIFW
-         1/zmUX7g/mMnoV1iQFTdmLSd+c/HPETxW8d+PqUDj42cvp6XmkJdmC98W8ZKBYzMKV1E
-         q5bA==
-X-Gm-Message-State: AOAM530dDvmz114e4Va2B9QefajqfrHtqWyVhSC31YEQpQNlGQ/V1KUR
-        2rIqdBqTYjVTcLZZqEU710FThGIWCOzG4uWjuqPd8A==
-X-Google-Smtp-Source: ABdhPJykC69CR2e+nr62M52Lok+oDvN8mv4SexJ6FQnttTJp8cflAQ6JhBcpXQnK9m/0xOawZJBKRZ6CQ10FIqrURB4=
-X-Received: by 2002:a05:6402:60a:: with SMTP id n10mr3607422edv.230.1611330515907;
- Fri, 22 Jan 2021 07:48:35 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IJdsjZNSCEQvolS06e2LzBH4VLzd6i5FaqMcJkm05UE=;
+        b=JaFcrWDLx4S0hWLW3sp71XroteKRD32LY3j2iDy/vQPSHhsJ38NYI0MpGlUu+sn7e7
+         V/WIKavZ9Lfl4pdzv/AJRF9CzvGcL7zVVegHdpR95+h1WUamYDlQkbaTWsKoa4ykKppe
+         zkJhg4ob3OJis6gBTFo25g49OwTKQb4kge1QjsaGFVuGlG0UDVEMr09BwqARB+ezD+X2
+         K2ql5pdQub5bY22rjx3NfUhQ26Qq2i7Lxz7B84VSmk513rBLqmi1IcU/jvB959N8q8DN
+         QC2DShgqkW18TZP/IBnQDaVRXI+lEZgxoaSiF/XtSHE+ASoQpJ1XPQW/VHPDd9oXdH3u
+         p9Bw==
+X-Gm-Message-State: AOAM533lZAxxFHO7lqduXRqub4p9miCjwNMY2IG9F5Boz4IVq4Z7OUPK
+        B0GfFN6Gpq1v5F7VFwpKjFMHlmONmQ==
+X-Google-Smtp-Source: ABdhPJzGN0HB/SjLoRL/FYxZrHlQD+EhxhrSpXrs/2UptZxyd2R/mBjbaPonONY27jl1HXzgQW5NRg==
+X-Received: by 2002:a9d:17aa:: with SMTP id j39mr3435004otj.255.1611330524488;
+        Fri, 22 Jan 2021 07:48:44 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q26sm269282otg.28.2021.01.22.07.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 07:48:43 -0800 (PST)
+Received: (nullmailer pid 854341 invoked by uid 1000);
+        Fri, 22 Jan 2021 15:48:42 -0000
+Date:   Fri, 22 Jan 2021 09:48:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, John Crispin <john@phrozen.org>,
+        devicetree@vger.kernel.org,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: interrupt-controller: Add Realtek
+ RTL838x/RTL839x support
+Message-ID: <20210122154842.GA854287@robh.at.kernel.org>
+References: <20210120101018.237693-1-bert@biot.com>
+ <20210120101018.237693-2-bert@biot.com>
 MIME-Version: 1.0
-References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz>
- <CA+G9fYsyXsNSXGy6BWZ6mgpAP=+7r6Xy9jQ2xxb9mXyHdRoBCg@mail.gmail.com>
- <CAMuHMdULW4bnb0Jc0+ZaF9P2VNgnYsvEks7y8WYCk045BHqh7A@mail.gmail.com>
- <CA+G9fYvh0iSyEDQs7+0CX82FLPDCg5UmAt+1JuPsndmfmYF3kw@mail.gmail.com>
- <CAJZ5v0hFjpGp2GbV1Evi+BbUF7Am4ETY4Cm8VzTrvTJ=7=oyPQ@mail.gmail.com>
- <84r6s34s-opq7-9358-o45n-27s17084012@onlyvoer.pbz> <CAJZ5v0jUxonxp0q80Kdcbax+WMmh-NZ_h=KQG-HcfFdE1hr4VA@mail.gmail.com>
- <CAJZ5v0hj4VC_kjB5e_b_ho=ET_quG5zUh0Dbbdwofp-6azopsw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hj4VC_kjB5e_b_ho=ET_quG5zUh0Dbbdwofp-6azopsw@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 22 Jan 2021 21:18:23 +0530
-Message-ID: <CA+G9fYsRVxWPW1nvSXMTLWfEadrdBDSH5hRPtoUYpfpqq8zRSw@mail.gmail.com>
-Subject: Re: [PATCH v2] PM / clk: make PM clock layer compatible with clocks
- that must sleep
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Nicolas Pitre <npitre@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120101018.237693-2-bert@biot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 at 20:39, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Jan 21, 2021 at 8:01 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Thu, Jan 21, 2021 at 6:23 PM Nicolas Pitre <npitre@baylibre.com> wrote:
-> > >
-> > > The clock API splits its interface into sleepable ant atomic contexts:
-> > >
-> > > - clk_prepare/clk_unprepare for stuff that might sleep
-> > >
-> > > - clk_enable_clk_disable for anything that may be done in atomic context
-> > >
-> > > The code handling runtime PM for clocks only calls clk_disable() on
-> > > suspend requests, and clk_enable on resume requests. This means that
-> > > runtime PM with clock providers that only have the prepare/unprepare
-> > > methods implemented is basically useless.
-> > >
-> > > Many clock implementations can't accommodate atomic contexts. This is
-> > > often the case when communication with the clock happens through another
-> > > subsystem like I2C or SCMI.
-> > >
-> > > Let's make the clock PM code useful with such clocks by safely invoking
-> > > clk_prepare/clk_unprepare upon resume/suspend requests. Of course, when
-> > > such clocks are registered with the PM layer then pm_runtime_irq_safe()
-> > > can't be used, and neither pm_runtime_suspend() nor pm_runtime_resume()
-> > > may be invoked in atomic context.
-> > >
-> > > For clocks that do implement the enable and disable methods then
-> > > everything just works as before.
-> > >
-> > > Signed-off-by: Nicolas Pitre <npitre@baylibre.com>
-> > >
-> > > ---
-> > >
-> > > On Thu, 21 Jan 2021, Rafael J. Wysocki wrote:
-> > >
-> > > > So I'm going to drop this patch from linux-next until the issue is
-> > > > resolved, thanks!
-> > >
-> > > Here's the fixed version.
-> >
-> > Applied instead of the v1, thanks!
-> >
-> > > Changes from v1:
-> > >
-> > > - Moved clk_is_enabled_when_prepared() declaration under
-> > >   CONFIG_HAVE_CLK_PREPARE and provided a dummy definition when that
-> > >   config option is unset.
-> > >
-> > > diff --git a/drivers/base/power/clock_ops.c b/drivers/base/power/clock_ops.c
-> > > index ced6863a16..a62fb0f9b1 100644
-> > > --- a/drivers/base/power/clock_ops.c
-> > > +++ b/drivers/base/power/clock_ops.c
-> > > @@ -23,6 +23,7 @@
-> > >  enum pce_status {
-> > >         PCE_STATUS_NONE = 0,
-> > >         PCE_STATUS_ACQUIRED,
-> > > +       PCE_STATUS_PREPARED,
-> > >         PCE_STATUS_ENABLED,
-> > >         PCE_STATUS_ERROR,
-> > >  };
-> > > @@ -32,8 +33,102 @@ struct pm_clock_entry {
-> > >         char *con_id;
-> > >         struct clk *clk;
-> > >         enum pce_status status;
-> > > +       bool enabled_when_prepared;
-> > >  };
-> > >
-> > > +/**
-> > > + * pm_clk_list_lock - ensure exclusive access for modifying the PM clock
-> > > + *                   entry list.
-> > > + * @psd: pm_subsys_data instance corresponding to the PM clock entry list
-> > > + *      and clk_op_might_sleep count to be modified.
-> > > + *
-> > > + * Get exclusive access before modifying the PM clock entry list and the
-> > > + * clock_op_might_sleep count to guard against concurrent modifications.
-> > > + * This also protects against a concurrent clock_op_might_sleep and PM clock
-> > > + * entry list usage in pm_clk_suspend()/pm_clk_resume() that may or may not
-> > > + * happen in atomic context, hence both the mutex and the spinlock must be
-> > > + * taken here.
-> > > + */
-> > > +static void pm_clk_list_lock(struct pm_subsys_data *psd)
-> > > +{
-> > > +       mutex_lock(&psd->clock_mutex);
-> > > +       spin_lock_irq(&psd->lock);
-> > > +}
-> > > +
-> > > +/**
-> > > + * pm_clk_list_unlock - counterpart to pm_clk_list_lock().
-> > > + * @psd: the same pm_subsys_data instance previously passed to
-> > > + *      pm_clk_list_lock().
-> > > + */
-> > > +static void pm_clk_list_unlock(struct pm_subsys_data *psd)
->
-> Locking annotations for sparse were missing here and above, so I've
-> added them by hand.
->
-> Please double check the result in my linux-next branch (just pushed).
+On Wed, 20 Jan 2021 11:10:17 +0100, Bert Vermeulen wrote:
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> ---
+>  .../realtek,rtl-intc.yaml                     | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml
+> 
 
-May i request to add Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-- Naresh
+Reviewed-by: Rob Herring <robh@kernel.org>
