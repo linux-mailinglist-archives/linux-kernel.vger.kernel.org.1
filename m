@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0782FFBFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 06:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590BF2FFBFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 06:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbhAVFGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 00:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43766 "EHLO
+        id S1726596AbhAVFJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 00:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbhAVFGI (ORCPT
+        with ESMTP id S1726127AbhAVFJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 00:06:08 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96872C06174A;
-        Thu, 21 Jan 2021 21:05:28 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id q1so8750706ion.8;
-        Thu, 21 Jan 2021 21:05:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lahaIHRrNL60/+aroPUgLnMzQ3P0dsmaC2hv6/9gxHU=;
-        b=BQ3fIhHlZuIGRLHUfcLCGcr6PzwzB1+PdSfEhs6JHS39XN36Gyglz21sz6dBS0MPUY
-         EBJIgjuizVnuj3QN+sNHqzj4Am7h3SeAzJ1ZNe3f0PRq2/jTgzFfsjgV3PGADaX5jFVN
-         tcIZj58eMWKvBLARyElMI9OLQd5lSkrZG5Ac1pFjkreMxmWbNFU9pevjGXT7El1okbTD
-         lmSN9YucSAhccv8vvQCfv5lun5VLrcHMZ3JU09oRTH7b1Q0a2RTGzobfhDlEc/KNShmA
-         vg9sfpId1aR0V0Ur9HlI+GjumfYx+u/u8CLVzFuL0XQffg8bmVgJngFVNNej0KvEgyWx
-         kqDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lahaIHRrNL60/+aroPUgLnMzQ3P0dsmaC2hv6/9gxHU=;
-        b=SmAe0Xlp6W+UMafDB8teSUYHlaT/WNnreCYbO2o4jwB3ZgbX7q7K52aKwPPxvJkGhI
-         Yl0jg8/cMsJSXCjNjnr6LH5f8WzXX4B80xvmuHcsHX+ggV/y9z0zwrJm+FxtfIVxGTTj
-         /HmeoxfK9lIR+Upmk2OyWiHFAEDlW8tbI2Kt9xIXPXIMJ+gXlx2xr/UKKKJe2on15RXO
-         ctFeUNJSgvL3w4DNjCSl8SB7P8ONEtRb/DRa78QiRepsQI+8L0OpOujafqL/5aTbEdDU
-         ynM3bahPE38klc41IbspWJqQ8h14th+0MSKeVPVXFuGqhc/v41aTIytAuAP2adlI3Iqa
-         3kCw==
-X-Gm-Message-State: AOAM5328B8y+LVVSxngdNtfaBXz84GQHKbIrPiJa3sXAwP9+KyeTFLNf
-        mIx7XqPGQn6LiEX/9Yu61B+tzVsIPNDscjyvvrg=
-X-Google-Smtp-Source: ABdhPJyIRCQ3wHacOdebj1xQyQi0f3EALmC62NZRM5UngeLXChYpf+8EkG+gVLTRNhYpljSsdwCf5F6KA2BgoxXR8u4=
-X-Received: by 2002:a5e:850b:: with SMTP id i11mr2216317ioj.42.1611291928082;
- Thu, 21 Jan 2021 21:05:28 -0800 (PST)
+        Fri, 22 Jan 2021 00:09:42 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094E7C06174A;
+        Thu, 21 Jan 2021 21:09:02 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMS3G3mCmz9s2g;
+        Fri, 22 Jan 2021 16:08:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611292139;
+        bh=pc8vzjVjWl5BN0r853Ljs32ViP+rQiirbx1hGAwUdxw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=W6oEMcFgufRISnRIFUyqiPnWwwSw7mFvP8+QnTCc2JVNU2W6kej8a+HuHJXxxbzFH
+         xzTdc6ntRCYzdCmbZKc991IG7SjR7oGERBxtKbYjuulWwgfZxLc3vSBFy+6o/QbByX
+         aN3ozPyLb20n1TvnRot7HStp5eMF8K11i3HaJHmvfgxL2EbGNGa0I0XetwwO4+Yu/O
+         tSmvAiWesRMM0EFXUcxWOaYk9z+fVkw5rvj49UbPY4OeWpWA7dkv1itHbCwJnbZF3m
+         WDsuQzaoB4RmxYkzJ4D8QobDBYUqBU5LFgHmoMwFDUXmqx2/RyezsTxgP5kirVPSa1
+         JVB63Hd4okhNQ==
+Date:   Fri, 22 Jan 2021 16:08:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the notifications tree with the keys
+ tree
+Message-ID: <20210122160857.3e2939de@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210117042539.1609-1-alistair@alistair23.me> <20210117042539.1609-3-alistair@alistair23.me>
- <20210118123519.GF4455@sirena.org.uk> <20210118124213.GA10975@sirena.org.uk>
-In-Reply-To: <20210118124213.GA10975@sirena.org.uk>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 21 Jan 2021 21:05:02 -0800
-Message-ID: <CAKmqyKNNMgY=qR0gGnffXhuTD+ekQjmvqXMbrTu7O4CMX95P4A@mail.gmail.com>
-Subject: Re: [PATCH 3/6] devicetree/bindings: Initial commit of silergy,sy7636a-regulator.yaml
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Alistair Francis <alistair@alistair23.me>, lee.jones@linaro.org,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/NFD6Iu64N4KFc7GusQX22Vf";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 4:42 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Jan 18, 2021 at 12:35:19PM +0000, Mark Brown wrote:
-> > On Sat, Jan 16, 2021 at 08:25:36PM -0800, Alistair Francis wrote:
->
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - sy7636a-regulator
->
-> > Compatible strings should be in the form vendor,device.
->
-> You should not have separate binding documents for MFD subfunctions that
-> don't have separate compatible strings in DT, include the documentation
-> for the properties used by those subfunctions in the main MFD binding
-> document.
+--Sig_/NFD6Iu64N4KFc7GusQX22Vf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the review. I have updated the patch and will send a v2.
+Hi all,
 
-Alistair
+Today's linux-next merge of the notifications tree got conflicts in:
+
+  Documentation/security/keys/core.rst
+  samples/Kconfig
+  samples/watch_queue/watch_test.c
+  security/keys/Kconfig
+
+between commit:
+
+  0c3f19da1229 ("watch_queue: Drop references to /dev/watch_queue")
+
+from the keys tree and commit:
+
+  e3bc554d80d3 ("watch_queue: Clean up references to /dev/watch_queue")
+
+from the notifications tree.
+
+I fixed it up (in each file I used the latter's version of the
+conflicted text) and can carry the fix as necessary. This is now fixed
+as far as linux-next is concerned, but any non trivial conflicts should
+be mentioned to your upstream maintainer when your tree is submitted
+for merging.  You may also want to consider cooperating with the
+maintainer of the conflicting tree to minimise any particularly complex
+conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/NFD6Iu64N4KFc7GusQX22Vf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAKXekACgkQAVBC80lX
+0GyX5wf/TZZMAB9EB+2j0yIhIaGlgEvHoa9J6YdumsjEphJ0mlZD90g4uwm0Hwmi
+vB/8yXhUiGaSGuG2SGglPIkittOXIikVKH68hul4IL3+BlQFKTUUcqa71ZG6zaZL
+eaEfa+q4ITFYdPDYiz/rWW3EKB34bl1Z0HXmuJ2+xuB87T0vR5te0eg70VyUWHsR
+szbMMdmbHbQ+0DZUH68pjvc0qPc8BJx2nwKqnIGT/EFWNPm549gyMkKaD3Mx9V9m
+XNj3ZCA83GhiTfFE8xCfxCBp7kxoLmPS2vVX3Z0lnBzVtHbeM1BRF08lS4Bs22CL
+I0PStC/UlqVU6Fpz8YGDEmY7r2YMkA==
+=TR3L
+-----END PGP SIGNATURE-----
+
+--Sig_/NFD6Iu64N4KFc7GusQX22Vf--
