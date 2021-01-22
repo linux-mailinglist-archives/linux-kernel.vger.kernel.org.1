@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CF530041A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADBF300437
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbhAVNZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:25:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:47516 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727960AbhAVNYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:24:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4320711B3;
-        Fri, 22 Jan 2021 05:23:27 -0800 (PST)
-Received: from [10.37.8.28] (unknown [10.37.8.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA7743F66E;
-        Fri, 22 Jan 2021 05:23:24 -0800 (PST)
-Subject: Re: [PATCH v5 3/6] kasan: Add report for async mode
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20210121163943.9889-1-vincenzo.frascino@arm.com>
- <20210121163943.9889-4-vincenzo.frascino@arm.com>
- <20210122131933.GD8567@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <6ccde9db-98cd-5a56-b93d-0b79f4df56a7@arm.com>
-Date:   Fri, 22 Jan 2021 13:27:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727820AbhAVNaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:30:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727354AbhAVN3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:29:45 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F87C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:29:04 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id i63so4312323wma.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:29:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=owT9ZDTqHXNrbWE+7r0Lrony8G5r+UvHg072nHQs1m8=;
+        b=IV9BDspRaepjk9Ex4ccn5wbH1nNpKqXl4rEfsScHxjVPiyJWPnD24oli1MhIZhGOOt
+         5OyUyknNAjoE5rPNRt5izFGIdVJCgMqZc3OLBOU6aYT8kKpDFhXbjm2Emct+sNXK+pgT
+         wQzpu03L1JLg49FhsdPSUzmkKTAGwjwmB6orEAtgPrjHOtj2j72bePNePfTiPGWuddWz
+         sm7lUJYcXiJV5jGKTlz4sFagmBUMxLCyMDik4MHM/lSIMNELIRwj9/kEhrnxYV5sG2OR
+         tbq8jumBegYoqpHH34TJ4D0ZgF4joIUPySflSw0vAIsJT6zV3GYbuVlqkznllIuJQNie
+         YHhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=owT9ZDTqHXNrbWE+7r0Lrony8G5r+UvHg072nHQs1m8=;
+        b=QuyuDSGVB7jaLBhy5jW2rNm2nXulF4nc7515333GGvzgOr3XpI7RuXMM94YIDA6JWo
+         4tQbzGQxW7VExqxkHlG5jpp4wm/Fa23qFkn12esEUZQFYs5nyYR/6BswIfbGNBTWOgow
+         a08MDBslspIlLpe17GwYVhoyygqn3OARJ196obb4CyLj6eVYCwvaOCBd/8t1xaidg4oy
+         jtTbDlzNwpRArDcvzI+Fz7b4ZcSU80ZJV2v1TmmHldGUsHi/p9TeAsV71VRA7L5QsVWS
+         VDZWhSff1u8v8aQoPbXS2YSSos9477NT0irRpD0Fim0Y1Jh4IINd1yrLCmrV6hqJtEvU
+         NrHQ==
+X-Gm-Message-State: AOAM532NlgDxWGe2dLvzQQj0oufbNILSXMW16TSP+SShflwnBTN5cu0X
+        kQCGjnypm8KuN58fzy7yC+MiJy5XSlqkNuDK/9wlgQ==
+X-Google-Smtp-Source: ABdhPJz2p5y4L7mSAemntP7ClkJC7I4pddYEtJGeJK0fpUzZ1TeA0drUIpISuCVyOD0oSQ65imTpSrX5n2anLJKUSCw=
+X-Received: by 2002:a1c:dc46:: with SMTP id t67mr3858329wmg.183.1611322143536;
+ Fri, 22 Jan 2021 05:29:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210122131933.GD8567@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210111142309.193441-1-maxime@cerno.tech> <20210111142309.193441-14-maxime@cerno.tech>
+In-Reply-To: <20210111142309.193441-14-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 22 Jan 2021 13:28:48 +0000
+Message-ID: <CAPY8ntA1iAj39hzfDLg18bT5ZLA6h738suDubw5hnh=9yhMQsA@mail.gmail.com>
+Subject: Re: [PATCH v2 13/15] dt-binding: display: bcm2711-hdmi: Add CEC and
+ hotplug interrupts
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Maxime
 
-
-On 1/22/21 1:19 PM, Catalin Marinas wrote:
-> On Thu, Jan 21, 2021 at 04:39:40PM +0000, Vincenzo Frascino wrote:
->> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
->> index bb862d1f0e15..b0a1d9dfa85c 100644
->> --- a/include/linux/kasan.h
->> +++ b/include/linux/kasan.h
->> @@ -351,6 +351,8 @@ static inline void *kasan_reset_tag(const void *addr)
->>  bool kasan_report(unsigned long addr, size_t size,
->>  		bool is_write, unsigned long ip);
->>  
->> +void kasan_report_async(void);
->> +
->>  #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
->>  
->>  static inline void *kasan_reset_tag(const void *addr)
->> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
->> index 234f35a84f19..2fd6845a95e9 100644
->> --- a/mm/kasan/report.c
->> +++ b/mm/kasan/report.c
->> @@ -358,6 +358,17 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
->>  	end_report(&flags);
->>  }
->>  
->> +void kasan_report_async(void)
->> +{
->> +	unsigned long flags;
->> +
->> +	start_report(&flags);
->> +	pr_err("BUG: KASAN: invalid-access\n");
->> +	pr_err("Asynchronous mode enabled: no access details available\n");
->> +	dump_stack();
->> +	end_report(&flags);
->> +}
-> 
-> I think the kernel test robot complains that with KASAN_SW_TAGS and
-> HW_TAGS disabled, the kasan_report_async() prototype is no longer
-> visible but you still have the non-static function definition here. So
-> either move kasan_report_async() out of this #ifdef or add the #ifdef
-> around the function definition.
+On Mon, 11 Jan 2021 at 14:23, Maxime Ripard <maxime@cerno.tech> wrote:
 >
+> The CEC and hotplug interrupts were missing when that binding was
+> introduced, let's add them in now that we've figured out how it works.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-I think adding #ifdef around the function would be the best way in this case,
-for consistency with the header.
+Looks reasonable to me, but I'm not a DT bindings expert
 
-> It looks like the original kasan_report() prototype is declared in two
-> places (second one in mm/kasan/kasan.h). I'd remove the latter and try
-> to have a consistent approach for kasan_report() and
-> kasan_report_async().
-> 
+Acked-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-Ok, I will remove it.
-
--- 
-Regards,
-Vincenzo
+> ---
+>  .../bindings/display/brcm,bcm2711-hdmi.yaml   | 20 ++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> index 7ce06f9f9f8e..6e8ac910bdd8 100644
+> --- a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> +++ b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> @@ -53,6 +53,24 @@ properties:
+>        - const: audio
+>        - const: cec
+>
+> +  interrupts:
+> +    items:
+> +      - description: CEC TX interrupt
+> +      - description: CEC RX interrupt
+> +      - description: CEC stuck at low interrupt
+> +      - description: Wake-up interrupt
+> +      - description: Hotplug connected interrupt
+> +      - description: Hotplug removed interrupt
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: cec-tx
+> +      - const: cec-rx
+> +      - const: cec-low
+> +      - const: wakeup
+> +      - const: hpd-connected
+> +      - const: hpd-removed
+> +
+>    ddc:
+>      allOf:
+>        - $ref: /schemas/types.yaml#/definitions/phandle
+> @@ -90,7 +108,7 @@ required:
+>    - resets
+>    - ddc
+>
+> -additionalProperties: false
+> +unevaluatedProperties: false
+>
+>  examples:
+>    - |
+> --
+> 2.29.2
+>
