@@ -2,160 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499013001BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67533001B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbhAVLho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728176AbhAVLgX (ORCPT
+        id S1726777AbhAVLgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:36:43 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:53608 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727664AbhAVLew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:36:23 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A973BC061797
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 03:35:13 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1l2uiX-0001iv-7n; Fri, 22 Jan 2021 12:35:05 +0100
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1l2uiV-0004DT-Fd; Fri, 22 Jan 2021 12:35:03 +0100
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iio: adc: stm32-adc: enable timestamping for non-DMA usage
-Date:   Fri, 22 Jan 2021 12:33:55 +0100
-Message-Id: <20210122113355.32384-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.30.0
+        Fri, 22 Jan 2021 06:34:52 -0500
+Date:   Fri, 22 Jan 2021 12:34:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611315250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5meXrSKhyoZfKeS9Kh93mtfH6c5tIvSjx5v/iVpdsQw=;
+        b=hEwKyMTH3hLrZHOazv5Ocl44eaB6X9U8Aumhjv9RxRVaqdc3nOUf0xa/lhYCJtkeKvCBSB
+        J/HjnrcaI9eqs3BH10xWEOFMVCpA3VXOWElacex3Q4XBJjPLg2CA6vpWJjePFTu+YLLPyk
+        MeebnEifcE/ipACB47XwETaeI2L2x1IZ19Xuufydx2aztHcgdjjDwz27hisH+mGRJe0hfH
+        g9jc8FZw5nWczdpmf1ormC8QICX/pDnACI23feG5be9w1iUGXKMHNF3rQEo9Erw9tNaWFm
+        f4szFTzAdbsnO8wDD24zNDStB51sEgNz0salD0Nw0mEmA/dFISU6Xqe4ubFr3A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611315250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5meXrSKhyoZfKeS9Kh93mtfH6c5tIvSjx5v/iVpdsQw=;
+        b=6uMvW/iEzt1yN76vO5YCIo0UH2mQBve4OKfRqzz6fu7+HeLiZPapfBVcwNa541gfg3pa1V
+        jXSTD1lm30C953Ag==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210122113409.w55kul5bpjxhkgm4@linutronix.de>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
+ <20210121123834.GA1872@pc638.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210121123834.GA1872@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For non-DMA usage, we have an easy way to associate a timestamp with a
-sample: iio_pollfunc_store_time stores a timestamp in the primary
-trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
-to push out the buffer along with the timestamp.
+On 2021-01-21 13:38:34 [+0100], Uladzislau Rezki wrote:
+> __get_free_page() returns "unsigned long" whereas a bnode is a pointer
+> to kvfree_rcu_bulk_data struct, without a casting the compiler will
+> emit a warning.
 
-For this to work, the driver needs to register an IIO_TIMESTAMP channel.
-Do this.
+Yes, learned about it, sorry.
 
-For DMA, it's not as easy, because we don't push the buffers out of
-stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
-a tasklet scheduled after a DMA completion.
+> >> You think that a CPU migration is a bad thing. But why?
+> >>
+> It is not a bad thing. But if it happens we might queue a new bnode
+> to a drain list of another CPU where a previous element of a new
+> bnode may be just underutilized. So that is why i use migrate_disable()/enable()
+> to prevent it.
 
-Preferably, the DMA controller would copy us the timestamp into that buffer
-as well. Until this is implemented, restrict timestamping support to
-only PIO. For low-frequency sampling, PIO is probably good enough.
+If you allocate a node for queueing and then you realize that you
+already have one then you either free it or queue it for later.
+Given that all this is a slower-path and that this is used on every-CPU,
+sooner or later that page will be used avoids a later allocation, right?
 
-Cc: Holger Assmann <has@pengutronix.de>
-Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-v1 -> v2:
-  - Added comment about timestamping being PIO only (Fabrice)
-  - Added missing DMA resource clean up in error path (Fabrice)
-  - Added Fabrice's Acked-by
----
- drivers/iio/adc/stm32-adc.c | 35 +++++++++++++++++++++++++++++------
- 1 file changed, 29 insertions(+), 6 deletions(-)
+> If there are some hidden issues with migrate_disable()/enable() or you
+> think it is a bad idea to use it, it would be appreciated if you could
+> describe your view in more detail.
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index c067c994dae2..885bb514503c 100644
---- a/drivers/iio/adc/stm32-adc.c
-+++ b/drivers/iio/adc/stm32-adc.c
-@@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
- 	}
- }
- 
--static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
-+static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- {
- 	struct device_node *node = indio_dev->dev.of_node;
- 	struct stm32_adc *adc = iio_priv(indio_dev);
-@@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
- 		return -EINVAL;
- 	}
- 
-+	if (timestamping)
-+		num_channels++;
-+
- 	channels = devm_kcalloc(&indio_dev->dev, num_channels,
- 				sizeof(struct iio_chan_spec), GFP_KERNEL);
- 	if (!channels)
-@@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
- 		stm32_adc_smpr_init(adc, channels[i].channel, smp);
- 	}
- 
-+	if (timestamping) {
-+		struct iio_chan_spec *timestamp = &channels[scan_index];
-+
-+		timestamp->type = IIO_TIMESTAMP;
-+		timestamp->channel = -1;
-+		timestamp->scan_index = scan_index;
-+		timestamp->scan_type.sign = 's';
-+		timestamp->scan_type.realbits = 64;
-+		timestamp->scan_type.storagebits = 64;
-+
-+		scan_index++;
-+	}
-+
- 	indio_dev->num_channels = scan_index;
- 	indio_dev->channels = channels;
- 
-@@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	irqreturn_t (*handler)(int irq, void *p) = NULL;
- 	struct stm32_adc *adc;
-+	bool timestamping = false;
- 	int ret;
- 
- 	if (!pdev->dev.of_node)
-@@ -1931,16 +1948,22 @@ static int stm32_adc_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = stm32_adc_chan_of_init(indio_dev);
--	if (ret < 0)
--		return ret;
--
- 	ret = stm32_adc_dma_request(dev, indio_dev);
- 	if (ret < 0)
- 		return ret;
- 
--	if (!adc->dma_chan)
-+	if (!adc->dma_chan) {
-+		/* For PIO mode only, iio_pollfunc_store_time stores a timestamp
-+		 * in the primary trigger IRQ handler and stm32_adc_trigger_handler
-+		 * runs in the IRQ thread to push out buffer along with timestamp.
-+		 */
- 		handler = &stm32_adc_trigger_handler;
-+		timestamping = true;
-+	}
-+
-+	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
-+	if (ret < 0)
-+		goto err_dma_disable;
- 
- 	ret = iio_triggered_buffer_setup(indio_dev,
- 					 &iio_pollfunc_store_time, handler,
--- 
-2.30.0
+Just what I mentioned in my previous email:
+- the whole operation isn't cheap but it is more efficient in tree
+  compared to what we used to have in RT.
+- the task can no be freely placed while it could run. So if the task
+  gets preempted, it will have to wait until it can run on the CPU
+  again.
 
+Sebastian
