@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880B4300BE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BF3300BC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730192AbhAVSwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:52:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39602 "EHLO mail.kernel.org"
+        id S1728531AbhAVSrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:47:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728542AbhAVOWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 722E423AFD;
-        Fri, 22 Jan 2021 14:16:23 +0000 (UTC)
+        id S1728315AbhAVOWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B07E723AAA;
+        Fri, 22 Jan 2021 14:16:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324984;
-        bh=kSj0z1vRWF0l9Uu7le/YR7JKVoXoZ9Zrquw0DVdFlgY=;
+        s=korg; t=1611325003;
+        bh=BDBwdx4A9Le1xM2NMbXCJbK10ocruVqk176hAUfzWBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MGljuhXD9pXfTabSVA6yoK6cnffmdCNbT+j85Dn+nthT3PxfPj81xt1PjuQxPyOav
-         lD/G2ajXOL4dV8yMMljV4A24BngW2zJDuAO/ypZ5m1oGmcYZLxaI/zs1EHXQEOoE9P
-         zU5UseaC/PhuahZRTgd5necUB95qTfL2q4APPazU=
+        b=HVaBfmkb7ERbgty7P13RILROx2lPhslFgFx5t1BxdZXAHaiKW8cnMQWeHM6n+MpJn
+         jO/uh5dp0HRo7Ep/T7le29ueqQ/k/FIOJVVMgHlKcIc2CIQR9bcekA1PcJkvW00NzN
+         iY4RQCToCv2vn+yK9GfkDuoebuF31rxP8AWPGxjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 10/22] esp: avoid unneeded kmap_atomic call
-Date:   Fri, 22 Jan 2021 15:12:28 +0100
-Message-Id: <20210122135732.329433665@linuxfoundation.org>
+Subject: [PATCH 5.4 13/33] netxen_nic: fix MSI/MSI-x interrupts
+Date:   Fri, 22 Jan 2021 15:12:29 +0100
+Message-Id: <20210122135734.114133937@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
-References: <20210122135731.921636245@linuxfoundation.org>
+In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
+References: <20210122135733.565501039@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,87 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemb@google.com>
+From: Manish Chopra <manishc@marvell.com>
 
-[ Upstream commit 9bd6b629c39e3fa9e14243a6d8820492be1a5b2e ]
+[ Upstream commit a2bc221b972db91e4be1970e776e98f16aa87904 ]
 
-esp(6)_output_head uses skb_page_frag_refill to allocate a buffer for
-the esp trailer.
+For all PCI functions on the netxen_nic adapter, interrupt
+mode (INTx or MSI) configuration is dependent on what has
+been configured by the PCI function zero in the shared
+interrupt register, as these adapters do not support mixed
+mode interrupts among the functions of a given adapter.
 
-It accesses the page with kmap_atomic to handle highmem. But
-skb_page_frag_refill can return compound pages, of which
-kmap_atomic only maps the first underlying page.
+Logic for setting MSI/MSI-x interrupt mode in the shared interrupt
+register based on PCI function id zero check is not appropriate for
+all family of netxen adapters, as for some of the netxen family
+adapters PCI function zero is not really meant to be probed/loaded
+in the host but rather just act as a management function on the device,
+which caused all the other PCI functions on the adapter to always use
+legacy interrupt (INTx) mode instead of choosing MSI/MSI-x interrupt mode.
 
-skb_page_frag_refill does not return highmem, because flag
-__GFP_HIGHMEM is not set. ESP uses it in the same manner as TCP.
-That also does not call kmap_atomic, but directly uses page_address,
-in skb_copy_to_page_nocache. Do the same for ESP.
+This patch replaces that check with port number so that for all
+type of adapters driver attempts for MSI/MSI-x interrupt modes.
 
-This issue has become easier to trigger with recent kmap local
-debugging feature CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP.
-
-Fixes: cac2661c53f3 ("esp4: Avoid skb_cow_data whenever possible")
-Fixes: 03e2a30f6a27 ("esp6: Avoid skb_cow_data whenever possible")
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: b37eb210c076 ("netxen_nic: Avoid mixed mode interrupts")
+Signed-off-by: Manish Chopra <manishc@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Link: https://lore.kernel.org/r/20210107101520.6735-1-manishc@marvell.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/esp4.c |    7 +------
- net/ipv6/esp6.c |    7 +------
- 2 files changed, 2 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
---- a/net/ipv4/esp4.c
-+++ b/net/ipv4/esp4.c
-@@ -270,7 +270,6 @@ static int esp_output_udp_encap(struct x
- int esp_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *esp)
+--- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
++++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
+@@ -564,11 +564,6 @@ static const struct net_device_ops netxe
+ 	.ndo_set_features = netxen_set_features,
+ };
+ 
+-static inline bool netxen_function_zero(struct pci_dev *pdev)
+-{
+-	return (PCI_FUNC(pdev->devfn) == 0) ? true : false;
+-}
+-
+ static inline void netxen_set_interrupt_mode(struct netxen_adapter *adapter,
+ 					     u32 mode)
  {
- 	u8 *tail;
--	u8 *vaddr;
- 	int nfrags;
- 	int esph_offset;
- 	struct page *page;
-@@ -312,14 +311,10 @@ int esp_output_head(struct xfrm_state *x
- 			page = pfrag->page;
- 			get_page(page);
+@@ -664,7 +659,7 @@ static int netxen_setup_intr(struct netx
+ 	netxen_initialize_interrupt_registers(adapter);
+ 	netxen_set_msix_bit(pdev, 0);
  
--			vaddr = kmap_atomic(page);
--
--			tail = vaddr + pfrag->offset;
-+			tail = page_address(page) + pfrag->offset;
- 
- 			esp_output_fill_trailer(tail, esp->tfclen, esp->plen, esp->proto);
- 
--			kunmap_atomic(vaddr);
--
- 			nfrags = skb_shinfo(skb)->nr_frags;
- 
- 			__skb_fill_page_desc(skb, nfrags, page, pfrag->offset,
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -237,7 +237,6 @@ static void esp_output_fill_trailer(u8 *
- int esp6_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *esp)
- {
- 	u8 *tail;
--	u8 *vaddr;
- 	int nfrags;
- 	struct page *page;
- 	struct sk_buff *trailer;
-@@ -270,14 +269,10 @@ int esp6_output_head(struct xfrm_state *
- 			page = pfrag->page;
- 			get_page(page);
- 
--			vaddr = kmap_atomic(page);
--
--			tail = vaddr + pfrag->offset;
-+			tail = page_address(page) + pfrag->offset;
- 
- 			esp_output_fill_trailer(tail, esp->tfclen, esp->plen, esp->proto);
- 
--			kunmap_atomic(vaddr);
--
- 			nfrags = skb_shinfo(skb)->nr_frags;
- 
- 			__skb_fill_page_desc(skb, nfrags, page, pfrag->offset,
+-	if (netxen_function_zero(pdev)) {
++	if (adapter->portnum == 0) {
+ 		if (!netxen_setup_msi_interrupts(adapter, num_msix))
+ 			netxen_set_interrupt_mode(adapter, NETXEN_MSI_MODE);
+ 		else
 
 
