@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50142FFD6D
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2DE2FFD6C
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727110AbhAVHbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:31:01 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11177 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbhAVHag (ORCPT
+        id S1726942AbhAVHax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727063AbhAVHad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:30:36 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DMW851ssTzl83B;
-        Fri, 22 Jan 2021 15:28:21 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 22 Jan 2021 15:29:44 +0800
-Subject: Re: [PATCH v3 0/4] initrd: Use unified initrd reserve function in
- ARM/RISCV
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <palmerdabbelt@google.com>, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, <guoren@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-References: <20210115054606.124502-1-wangkefeng.wang@huawei.com>
- <48c006a8-a352-488c-4981-768faffbe343@huawei.com>
- <20210117100903.GB1551@shell.armlinux.org.uk>
- <cc47f8cf-8778-43ab-77de-9dd220de7c26@huawei.com>
- <20210118091733.GD1551@shell.armlinux.org.uk>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <d911b1e6-ed0d-4a73-aee4-060b957897f8@huawei.com>
-Date:   Fri, 22 Jan 2021 15:29:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 22 Jan 2021 02:30:33 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6ADC06174A;
+        Thu, 21 Jan 2021 23:29:53 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMW9l4mt0z9s2g;
+        Fri, 22 Jan 2021 18:29:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611300590;
+        bh=+sU56v/j7B/BMjzYJrqFxjhvQY3A0vL+IeSq9RxWC8E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pNFuX/nv9JpIxhg+yzYm/hMCuEevyeivW4N1AbD6+ONqcKZarHSvPgZT/TqOklD6o
+         FZL/8hALb+9b/P09j0FyvB4bIql0U/5eNCFEqMrxFc+/c6nEr6wYZmrh8UVfIuDCJt
+         jsb7Z+p6TQLD4MbWlCvUmb48928Xodps+4R7QlI79Df/FIj2R7CwG1QxfTDrF5OClW
+         /U5s1iDMegGaA1UYInZoPrFnCjtMyPA80gjEBMmgBuOk4OPVwHZgQLpfou/n6oRxlq
+         rhPaJ1+yLjIKjNC5U1kT8cO03QeRKS8N0KHJIHkWIT+GxmA3Zfb0obC5ctkLrLr0YY
+         HwE01RPK+96EQ==
+Date:   Fri, 22 Jan 2021 18:29:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: linux-next: build warning after merge of the drm tree
+Message-ID: <20210122182946.6beb10b7@canb.auug.org.au>
+In-Reply-To: <CAKMK7uEuJa1J66mo5dS+QRPy9NOENTx95SZ4rU2MeVRTWj7Kcw@mail.gmail.com>
+References: <20210122115918.63b56fa1@canb.auug.org.au>
+        <CAKMK7uEuJa1J66mo5dS+QRPy9NOENTx95SZ4rU2MeVRTWj7Kcw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210118091733.GD1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/Ty/_2YWrLOgQlLIyr8B2db2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/Ty/_2YWrLOgQlLIyr8B2db2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/1/18 17:17, Russell King - ARM Linux admin wrote:
-> On Mon, Jan 18, 2021 at 09:01:40AM +0800, Kefeng Wang wrote:
->> On 2021/1/17 18:09, Russell King - ARM Linux admin wrote:
->>> On Sun, Jan 17, 2021 at 12:57:55PM +0800, Kefeng Wang wrote:
->>>> Correct Russell's mail address (from linux@armlinux.org.uk to
->>>> rmk+kernel@armlinux.org.uk, should update the MAINTAINERS)
->>> No. MAINTAINERS is correct.
->> I got following message,  so I check mail of your recent patches, and send a
->> new one.
->>
->> Please ignore it, there may be some other problems.
->>
->> "*Delivery has failed to these recipients or groups:*
->>
->> linux@armlinux.org.uk <mailto:linux@armlinux.org.uk>
->> A communication failure occurred during the delivery of this message. Please
->> to resend the message later. If the problem continues, contact your
->> helpdesk."
-> That is a most unhelpful bounce message - I suppose it's designed for
-> non-technical people to ensure that the problem can't be resolved.
->
-> >From what I can see from my end, every attempt involving your email
-> address last week (wangkefeng.wang@huawei.com) has been successful, so
-> I suspect the problem is not at my end.
+Hi Daniel,
 
-ok，thank you for letting me know that the email has been received,
+On Fri, 22 Jan 2021 08:17:58 +0100 Daniel Vetter <daniel@ffwll.ch> wrote:
+>=20
+> Hm that has been in drm-intel-gt-next for a few days, is that tree not
+> in linux-next?
 
-any comment about the ARM part in the patchset  ;)
+It is not.
 
->
-> In any case, all @armlinux.org.uk addresses hit the same server, so
-> if there's a "communication failure" for the domain, it would affect
-> all local-parts equally.
->
+These are the drm branches currently in linux-next:
+
+drm-fixes	git://git.freedesktop.org/git/drm/drm.git	drm-fixes
+amdgpu-fixes	git://people.freedesktop.org/~agd5f/linux	drm-fixes
+drm-intel-fixes	git://anongit.freedesktop.org/drm-intel		for-linux-next-fix=
+es
+drm-misc-fixes	git://anongit.freedesktop.org/drm/drm-misc	for-linux-next-fi=
+xes
+drm		git://git.freedesktop.org/git/drm/drm.git	drm-next
+amdgpu		https://gitlab.freedesktop.org/agd5f/linux	drm-next
+drm-intel	git://anongit.freedesktop.org/drm-intel		for-linux-next
+drm-tegra	git://anongit.freedesktop.org/tegra/linux.git	drm/tegra/for-next
+drm-misc	git://anongit.freedesktop.org/drm/drm-misc	for-linux-next
+drm-msm		https://gitlab.freedesktop.org/drm/msm.git	msm-next
+imx-drm		https://git.pengutronix.de/git/pza/linux	imx-drm/next
+etnaviv		https://git.pengutronix.de/git/lst/linux	etnaviv/next
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Ty/_2YWrLOgQlLIyr8B2db2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAKfuoACgkQAVBC80lX
+0GxDIgf/bj7glZsQ4jBfYddzSje7xWzy4RX2JtpP7EHkmQxVoFlr7XsV6HLBt6lV
+1Uo2w7k75Q9EG4cHJ2KIHO1qwxwOlA0ZXLr/a5moxKORSYOC26IHV2ikpjNPzdl4
+aqcK6NS7AX0ymDj+YZEC0MPx/TQAG80Frz1XntuV48MJkFwZaIfpcxj2T3f4h+lK
+J30Don9wFbhcL/z0CX3EopQhXNAPAFQ68B0w09dIunadmBGK9IhbSyZCG40+d5XO
+LnIOJJ1k+odXmVyKQI8jjG7Crk/RRZ4u7vnk10ueSk0gro2oH+A7OWFnVUo0667j
+4wkal1M7G4CgRSZHeUIQMB/jWUqiXQ==
+=1/em
+-----END PGP SIGNATURE-----
+
+--Sig_/Ty/_2YWrLOgQlLIyr8B2db2--
