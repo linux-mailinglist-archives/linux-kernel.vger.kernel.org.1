@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6AD300D43
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD95A300D5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729656AbhAVUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:03:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
+        id S1728393AbhAVUHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:07:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728134AbhAVOOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:14:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02D7123ACA;
-        Fri, 22 Jan 2021 14:11:24 +0000 (UTC)
+        id S1728341AbhAVONH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:13:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0928F23AA7;
+        Fri, 22 Jan 2021 14:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324685;
-        bh=HS5dZgkJQCHJiNiEZR6MY7mWR9gl+1qOksGhoXQgCmE=;
+        s=korg; t=1611324648;
+        bh=K5UVOAFSVMpxnx58cB+TImbkULMojURm5Eon9UXNVrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V6oLWdGbn3fEAiRsMdxTVVXX/mO7eWe+ymN0lqUtlGj+6qMojxtNeSCuS77P2KH9y
-         DLRd5A3edb3bZbDkeIotSU6gOhxQvPvaHSLN73btHjTlwEQBU3ceHoKZigPpAQrT7V
-         UMTyihnfAyq55TFlRpExzci07hMzy+U3c2sEjcmw=
+        b=QPR/G+qr2jMWJ0t3yKlWllh8BWSreUuv7FEtUrOGWHgpCFF+SxrqqckRVg/2Z3fkm
+         Pp4yKr5EGjiseh2y2HyhEiT8yhUSpjKNg6Y8dMIyGzRJpjbbYkAb7kSZcamt6PL+vC
+         5nFZUBSLuMDMv9V7aulitAaere3ArpqHDn7bF45k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, yangerkun <yangerkun@huawei.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 07/35] ext4: fix bug for rename with RENAME_WHITEOUT
-Date:   Fri, 22 Jan 2021 15:10:09 +0100
-Message-Id: <20210122135732.637845164@linuxfoundation.org>
+Subject: [PATCH 4.9 11/35] misdn: dsp: select CONFIG_BITREVERSE
+Date:   Fri, 22 Jan 2021 15:10:13 +0100
+Message-Id: <20210122135732.784925911@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
@@ -40,102 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yangerkun <yangerkun@huawei.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 6b4b8e6b4ad8553660421d6360678b3811d5deb9 ]
+[ Upstream commit 51049bd903a81307f751babe15a1df8d197884e8 ]
 
-We got a "deleted inode referenced" warning cross our fsstress test. The
-bug can be reproduced easily with following steps:
+Without this, we run into a link error
 
-  cd /dev/shm
-  mkdir test/
-  fallocate -l 128M img
-  mkfs.ext4 -b 1024 img
-  mount img test/
-  dd if=/dev/zero of=test/foo bs=1M count=128
-  mkdir test/dir/ && cd test/dir/
-  for ((i=0;i<1000;i++)); do touch file$i; done # consume all block
-  cd ~ && renameat2(AT_FDCWD, /dev/shm/test/dir/file1, AT_FDCWD,
-    /dev/shm/test/dir/dst_file, RENAME_WHITEOUT) # ext4_add_entry in
-    ext4_rename will return ENOSPC!!
-  cd /dev/shm/ && umount test/ && mount img test/ && ls -li test/dir/file1
-  We will get the output:
-  "ls: cannot access 'test/dir/file1': Structure needs cleaning"
-  and the dmesg show:
-  "EXT4-fs error (device loop0): ext4_lookup:1626: inode #2049: comm ls:
-  deleted inode referenced: 139"
+arm-linux-gnueabi-ld: drivers/isdn/mISDN/dsp_audio.o: in function `dsp_audio_generate_law_tables':
+(.text+0x30c): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: drivers/isdn/mISDN/dsp_audio.o:(.text+0x5e4): more undefined references to `byte_rev_table' follow
 
-ext4_rename will create a special inode for whiteout and use this 'ino'
-to replace the source file's dir entry 'ino'. Once error happens
-latter(the error above was the ENOSPC return from ext4_add_entry in
-ext4_rename since all space has been consumed), the cleanup do drop the
-nlink for whiteout, but forget to restore 'ino' with source file. This
-will trigger the bug describle as above.
-
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Cc: stable@vger.kernel.org
-Fixes: cd808deced43 ("ext4: support RENAME_WHITEOUT")
-Link: https://lore.kernel.org/r/20210105062857.3566-1-yangerkun@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/isdn/mISDN/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 8ded38ac4cdef..6224b0e6fb643 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3421,8 +3421,6 @@ static int ext4_setent(handle_t *handle, struct ext4_renament *ent,
- 			return retval;
- 		}
- 	}
--	brelse(ent->bh);
--	ent->bh = NULL;
+diff --git a/drivers/isdn/mISDN/Kconfig b/drivers/isdn/mISDN/Kconfig
+index c0730d5c734d6..fb61181a5c4f7 100644
+--- a/drivers/isdn/mISDN/Kconfig
++++ b/drivers/isdn/mISDN/Kconfig
+@@ -12,6 +12,7 @@ if MISDN != n
+ config MISDN_DSP
+ 	tristate "Digital Audio Processing of transparent data"
+ 	depends on MISDN
++	select BITREVERSE
+ 	help
+ 	  Enable support for digital audio processing capability.
  
- 	return 0;
- }
-@@ -3635,6 +3633,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		}
- 	}
- 
-+	old_file_type = old.de->file_type;
- 	if (IS_DIRSYNC(old.dir) || IS_DIRSYNC(new.dir))
- 		ext4_handle_sync(handle);
- 
-@@ -3662,7 +3661,6 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	force_reread = (new.dir->i_ino == old.dir->i_ino &&
- 			ext4_test_inode_flag(new.dir, EXT4_INODE_INLINE_DATA));
- 
--	old_file_type = old.de->file_type;
- 	if (whiteout) {
- 		/*
- 		 * Do this before adding a new entry, so the old entry is sure
-@@ -3734,15 +3732,19 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	retval = 0;
- 
- end_rename:
--	brelse(old.dir_bh);
--	brelse(old.bh);
--	brelse(new.bh);
- 	if (whiteout) {
--		if (retval)
-+		if (retval) {
-+			ext4_setent(handle, &old,
-+				old.inode->i_ino, old_file_type);
- 			drop_nlink(whiteout);
-+		}
- 		unlock_new_inode(whiteout);
- 		iput(whiteout);
-+
- 	}
-+	brelse(old.dir_bh);
-+	brelse(old.bh);
-+	brelse(new.bh);
- 	if (handle)
- 		ext4_journal_stop(handle);
- 	return retval;
 -- 
 2.27.0
 
