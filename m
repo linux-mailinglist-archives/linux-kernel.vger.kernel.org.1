@@ -2,120 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7457830028D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1AB3002C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbhAVMJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:09:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49976 "EHLO mx2.suse.de"
+        id S1727381AbhAVMTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:19:41 -0500
+Received: from mga02.intel.com ([134.134.136.20]:44424 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727882AbhAVMEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:04:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 24929ABDA;
-        Fri, 22 Jan 2021 12:03:58 +0000 (UTC)
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>,
-        Michal Hocko <mhocko@kernel.org>
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
- <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
- <20210121053003.GB2587010@in.ibm.com>
- <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
- <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
- <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
-Date:   Fri, 22 Jan 2021 13:03:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728007AbhAVMJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:09:14 -0500
+IronPort-SDR: J1cRqzL8Yg5NuWT2ihPY3JWXzdJplrWkxKvBhuijh5kFyqnDpncI3xiaJsiw7PYDYQH4L1Qhb2
+ GOOikGKB8L8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="166537736"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="166537736"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:07:28 -0800
+IronPort-SDR: LI7d1B/P80MeyJkVkKXKN7OEzVq/WmfB9ZPT+CyMbHq5Dbr0B1vmeqlILwhcjOQ2ieQXgKqBA2
+ BA4zdrJP78EQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="427949436"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga001.jf.intel.com with SMTP; 22 Jan 2021 04:07:22 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 22 Jan 2021 14:07:22 +0200
+Date:   Fri, 22 Jan 2021 14:07:22 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>, Sean Paul <sean@poorly.run>,
+        freedreno@lists.freedesktop.org, Tomi Valkeinen <tomba@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 06/11] drm: Use state helper instead of plane state
+ pointer in atomic_check
+Message-ID: <YAq/+udQfTwdamQ0@intel.com>
+References: <20210121163537.1466118-1-maxime@cerno.tech>
+ <20210121163537.1466118-6-maxime@cerno.tech>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210121163537.1466118-6-maxime@cerno.tech>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/22/21 9:03 AM, Vincent Guittot wrote:
-> On Thu, 21 Jan 2021 at 19:19, Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 1/21/21 11:01 AM, Christoph Lameter wrote:
->> > On Thu, 21 Jan 2021, Bharata B Rao wrote:
->> >
->> >> > The problem is that calculate_order() is called a number of times
->> >> > before secondaries CPUs are booted and it returns 1 instead of 224.
->> >> > This makes the use of num_online_cpus() irrelevant for those cases
->> >> >
->> >> > After adding in my command line "slub_min_objects=36" which equals to
->> >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
->> >> > , the regression diseapears:
->> >> >
->> >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
->>
->> I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
->> supposed to be a scheduler benchmark? What exactly is going on?
->>
+On Thu, Jan 21, 2021 at 05:35:31PM +0100, Maxime Ripard wrote:
+> Many drivers reference the plane->state pointer in order to get the
+> current plane state in their atomic_check hook, which would be the old
+> plane state in the global atomic state since _swap_state hasn't happened
+> when atomic_check is run.
 > 
-> From hackbench description:
-> Hackbench is both a benchmark and a stress test for the Linux kernel
-> scheduler. It's  main
->        job  is  to  create a specified number of pairs of schedulable
-> entities (either threads or
->        traditional processes) which communicate via either sockets or
-> pipes and time how long  it
->        takes for each pair to send data back and forth.
-
-Yep, so I wonder which slab entities this is stressing that much.
-
->> Things would be easier if we could trust *on all arches* either
->>
->> - num_present_cpus() to count what the hardware really physically has during
->> boot, even if not yet onlined, at the time we init slab. This would still not
->> handle later hotplug (probably mostly in a VM scenario, not that somebody would
->> bring bunch of actual new cpu boards to a running bare metal system?).
->>
->> - num_possible_cpus()/nr_cpu_ids not to be excessive (broken BIOS?) on systems
->> where it's not really possible to plug more CPU's. In a VM scenario we could
->> still have an opposite problem, where theoretically "anything is possible" but
->> the virtual cpus are never added later.
+> Use the drm_atomic_get_old_plane_state helper to get that state to make
+> it more obvious.
 > 
-> On all the system that I have tested num_possible_cpus()/nr_cpu_ids
-> were correctly initialized
+> This was made using the coccinelle script below:
 > 
-> large arm64 acpi system
-> small arm64 DT based system
-> VM on x86 system
-
-So it's just powerpc that has this issue with too large nr_cpu_ids? Is it caused
-by bios or the hypervisor? How does num_present_cpus() look there?
-
-What about heuristic:
-- num_online_cpus() > 1 - we trust that and use it
-- otherwise nr_cpu_ids
-Would that work? Too arbitrary?
-
-
->> We could also start questioning the very assumption that number of cpus should
->> affect slab page size in the first place. Should it? After all, each CPU will
->> have one or more slab pages privately cached, as we discuss in the other
->> thread... So why make the slab pages also larger?
->>
->> > Or the num_online_cpus needs to be up to date earlier. Why does this issue
->> > not occur on x86? Does x86 have an up to date num_online_cpus earlier?
->> >
->> >
->>
+> @ plane_atomic_func @
+> identifier helpers;
+> identifier func;
+> @@
 > 
+> static struct drm_plane_helper_funcs helpers = {
+> 	...,
+> 	.atomic_check = func,
+> 	...,
+> };
+> 
+> @ replaces_old_state @
+> identifier plane_atomic_func.func;
+> identifier plane, state, plane_state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_atomic_state *state) {
+>  	...
+> -	struct drm_plane_state *plane_state = plane->state;
+> +	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
+>  	...
+>  }
+> 
+> @@
+> identifier plane_atomic_func.func;
+> identifier plane, state, plane_state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_atomic_state *state) {
+>  	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
+>  	...
+> -	plane->state
+> +	plane_state
+>  	...
 
+We don't need the <... ...> style here? It's been a while since
+I did any serious cocci so I'm getting a bit rusty on the details...
+
+Otherwise looks great
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+
+>  }
+> 
+> @ adds_old_state @
+> identifier plane_atomic_func.func;
+> identifier plane, state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_atomic_state *state) {
+> +	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
+>  	...
+> -	plane->state
+> +	old_plane_state
+>  	...
+>  }
+> 
+> @ include depends on adds_old_state || replaces_old_state @
+> @@
+> 
+>  #include <drm/drm_atomic.h>
+> 
+> @ no_include depends on !include && (adds_old_state || replaces_old_state) @
+> @@
+> 
+> + #include <drm/drm_atomic.h>
+>   #include <drm/...>
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  drivers/gpu/drm/imx/ipuv3-plane.c          | 3 ++-
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c | 4 +++-
+>  drivers/gpu/drm/tilcdc/tilcdc_plane.c      | 3 ++-
+>  3 files changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
+> index b5f6123850bb..6484592e3f86 100644
+> --- a/drivers/gpu/drm/imx/ipuv3-plane.c
+> +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+> @@ -341,7 +341,8 @@ static int ipu_plane_atomic_check(struct drm_plane *plane,
+>  {
+>  	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
+>  									   plane);
+> -	struct drm_plane_state *old_state = plane->state;
+> +	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
+> +									   plane);
+>  	struct drm_crtc_state *crtc_state;
+>  	struct device *dev = plane->dev->dev;
+>  	struct drm_framebuffer *fb = new_state->fb;
+> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+> index 4aac6217a5ad..6ce6ce09fecc 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+> @@ -406,12 +406,14 @@ static int mdp5_plane_atomic_check_with_state(struct drm_crtc_state *crtc_state,
+>  static int mdp5_plane_atomic_check(struct drm_plane *plane,
+>  				   struct drm_atomic_state *state)
+>  {
+> +	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state,
+> +										 plane);
+>  	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
+>  										 plane);
+>  	struct drm_crtc *crtc;
+>  	struct drm_crtc_state *crtc_state;
+>  
+> -	crtc = new_plane_state->crtc ? new_plane_state->crtc : plane->state->crtc;
+> +	crtc = new_plane_state->crtc ? new_plane_state->crtc : old_plane_state->crtc;
+>  	if (!crtc)
+>  		return 0;
+>  
+> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_plane.c b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
+> index ebdd42dcaf82..c86258132432 100644
+> --- a/drivers/gpu/drm/tilcdc/tilcdc_plane.c
+> +++ b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
+> @@ -26,7 +26,8 @@ static int tilcdc_plane_atomic_check(struct drm_plane *plane,
+>  	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
+>  									   plane);
+>  	struct drm_crtc_state *crtc_state;
+> -	struct drm_plane_state *old_state = plane->state;
+> +	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
+> +									   plane);
+>  	unsigned int pitch;
+>  
+>  	if (!new_state->crtc)
+> -- 
+> 2.29.2
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Ville Syrjälä
+Intel
