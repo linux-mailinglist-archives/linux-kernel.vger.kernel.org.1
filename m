@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2DE2FFD6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 700DD2FFD71
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbhAVHax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:30:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbhAVHad (ORCPT
+        id S1726931AbhAVHeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:34:25 -0500
+Received: from mail-ej1-f53.google.com ([209.85.218.53]:36376 "EHLO
+        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726124AbhAVHeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:30:33 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6ADC06174A;
-        Thu, 21 Jan 2021 23:29:53 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DMW9l4mt0z9s2g;
-        Fri, 22 Jan 2021 18:29:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611300590;
-        bh=+sU56v/j7B/BMjzYJrqFxjhvQY3A0vL+IeSq9RxWC8E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pNFuX/nv9JpIxhg+yzYm/hMCuEevyeivW4N1AbD6+ONqcKZarHSvPgZT/TqOklD6o
-         FZL/8hALb+9b/P09j0FyvB4bIql0U/5eNCFEqMrxFc+/c6nEr6wYZmrh8UVfIuDCJt
-         jsb7Z+p6TQLD4MbWlCvUmb48928Xodps+4R7QlI79Df/FIj2R7CwG1QxfTDrF5OClW
-         /U5s1iDMegGaA1UYInZoPrFnCjtMyPA80gjEBMmgBuOk4OPVwHZgQLpfou/n6oRxlq
-         rhPaJ1+yLjIKjNC5U1kT8cO03QeRKS8N0KHJIHkWIT+GxmA3Zfb0obC5ctkLrLr0YY
-         HwE01RPK+96EQ==
-Date:   Fri, 22 Jan 2021 18:29:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Fri, 22 Jan 2021 02:34:17 -0500
+Received: by mail-ej1-f53.google.com with SMTP id l9so6293299ejx.3;
+        Thu, 21 Jan 2021 23:34:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8GnE4lhfjc87s2oS1RIzXbqjLKjhcRxng05mH9niVa0=;
+        b=mJHIsAq/zwMKfOe4QWWIaDZBUce2glnXeLdR0BQECkxRPfA2PvhPuPP7LeischyKi6
+         A1NzSgGRq5UTiw82LUhpbiHgiA/FpkamWofn5nwOf3Z8tT46HsBcgPRmmDMgQFo2FuX/
+         la9ykRkbv9l50rXr49sK2ctwM9+9ARZwfPQdXSS10gSvOrInl95CCRuJaj9Fo6mxkkvA
+         XouyfvYRcvJ312NN7VdbBeLNykzJsE6P8JIGdT54o6C1gySCrIjt6kn8KFpgTttNFlnr
+         UI7h9x4Uui+SxRt5jFIWKlG4QAnlbyh4W5N1VCyOLzck0n+W7jNAkN7rNXByNQP5S8Fm
+         GMCg==
+X-Gm-Message-State: AOAM530NcoECCshadgLSt6ViRNtHlUarcl6HlG0nyG1+dGKFzE9+WuDd
+        GTSGBF04XR3o/PQAqVk8IJI=
+X-Google-Smtp-Source: ABdhPJzITfJf+ftWJ7SS5BLgVuhhaFCtTpYTjGejyemIaxHG+4fvzWBbnU9tX83Vd4NI3hMaKJHJrA==
+X-Received: by 2002:a17:906:2ccb:: with SMTP id r11mr2138635ejr.39.1611300815665;
+        Thu, 21 Jan 2021 23:33:35 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id x25sm4541261edv.65.2021.01.21.23.33.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jan 2021 23:33:34 -0800 (PST)
+Subject: Re: [PATCH 1/6] tty: implement write_iter
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-serial@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: linux-next: build warning after merge of the drm tree
-Message-ID: <20210122182946.6beb10b7@canb.auug.org.au>
-In-Reply-To: <CAKMK7uEuJa1J66mo5dS+QRPy9NOENTx95SZ4rU2MeVRTWj7Kcw@mail.gmail.com>
-References: <20210122115918.63b56fa1@canb.auug.org.au>
-        <CAKMK7uEuJa1J66mo5dS+QRPy9NOENTx95SZ4rU2MeVRTWj7Kcw@mail.gmail.com>
+        Oliver Giles <ohw.giles@gmail.com>,
+        Robert Karszniewicz <r.karszniewicz@phytec.de>
+References: <20210121090020.3147058-1-gregkh@linuxfoundation.org>
+ <f4c72a0a-25e6-5c7a-559b-6d3b7c930100@kernel.org>
+ <CAHk-=whE3fmgWx+aNvC6qkNqJtWPre3dVnv-_qYj7GaWnW72Vg@mail.gmail.com>
+ <YAnAfNcE8Bw95+SV@kroah.com>
+ <CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <4ade6b19-dc9e-ef72-dcca-1ddaa8d6c5fd@kernel.org>
+Date:   Fri, 22 Jan 2021 08:33:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ty/_2YWrLOgQlLIyr8B2db2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ty/_2YWrLOgQlLIyr8B2db2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 21. 01. 21, 19:42, Linus Torvalds wrote:
+> On Thu, Jan 21, 2021 at 9:57 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+>>
+>> Incremental patches please as these are already in my public branches
+>> and I would have to revert them and add new ones but that's messy, so
+>> fixes on top is fine.
+> 
+> Ok. And since I think you put that first tty_write conversion patch in
+> a different branch from the tty_read one, I did the fixup patches for
+> the two as separate patches, even though they really just do the exact
+> same thing.
+> 
+> So here's three patches: the two fixups for the hung_up_tty case, and
+> the EOVERFLOW error case that Jiri also noted. I've also updated the
+> 'tty-splice' branch if you prefer them that way.
+> 
+> And I *should* say that I still haven't tested _any_ of the HDLC
+> changes. I have no idea how to do that, and if somebody can point to a
+> test-case (or better yet, actually has a real life situation where
+> they use it and can test this all) it would be great.
+> 
+> Jiri, any other issues, or any comment of yours I missed? I didn't do
+> the min() thing, I find the explicit conditional more legible myself,
+> but won't complain if somebody else then disagrees and wants to clean
+> it up.
 
-Hi Daniel,
+I cannot find anything else.
 
-On Fri, 22 Jan 2021 08:17:58 +0100 Daniel Vetter <daniel@ffwll.ch> wrote:
->=20
-> Hm that has been in drm-intel-gt-next for a few days, is that tree not
-> in linux-next?
+All three:
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-It is not.
-
-These are the drm branches currently in linux-next:
-
-drm-fixes	git://git.freedesktop.org/git/drm/drm.git	drm-fixes
-amdgpu-fixes	git://people.freedesktop.org/~agd5f/linux	drm-fixes
-drm-intel-fixes	git://anongit.freedesktop.org/drm-intel		for-linux-next-fix=
-es
-drm-misc-fixes	git://anongit.freedesktop.org/drm/drm-misc	for-linux-next-fi=
-xes
-drm		git://git.freedesktop.org/git/drm/drm.git	drm-next
-amdgpu		https://gitlab.freedesktop.org/agd5f/linux	drm-next
-drm-intel	git://anongit.freedesktop.org/drm-intel		for-linux-next
-drm-tegra	git://anongit.freedesktop.org/tegra/linux.git	drm/tegra/for-next
-drm-misc	git://anongit.freedesktop.org/drm/drm-misc	for-linux-next
-drm-msm		https://gitlab.freedesktop.org/drm/msm.git	msm-next
-imx-drm		https://git.pengutronix.de/git/pza/linux	imx-drm/next
-etnaviv		https://git.pengutronix.de/git/lst/linux	etnaviv/next
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Ty/_2YWrLOgQlLIyr8B2db2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAKfuoACgkQAVBC80lX
-0GxDIgf/bj7glZsQ4jBfYddzSje7xWzy4RX2JtpP7EHkmQxVoFlr7XsV6HLBt6lV
-1Uo2w7k75Q9EG4cHJ2KIHO1qwxwOlA0ZXLr/a5moxKORSYOC26IHV2ikpjNPzdl4
-aqcK6NS7AX0ymDj+YZEC0MPx/TQAG80Frz1XntuV48MJkFwZaIfpcxj2T3f4h+lK
-J30Don9wFbhcL/z0CX3EopQhXNAPAFQ68B0w09dIunadmBGK9IhbSyZCG40+d5XO
-LnIOJJ1k+odXmVyKQI8jjG7Crk/RRZ4u7vnk10ueSk0gro2oH+A7OWFnVUo0667j
-4wkal1M7G4CgRSZHeUIQMB/jWUqiXQ==
-=1/em
------END PGP SIGNATURE-----
-
---Sig_/Ty/_2YWrLOgQlLIyr8B2db2--
+thanks,
+-- 
+js
