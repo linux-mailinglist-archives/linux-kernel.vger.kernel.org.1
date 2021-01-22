@@ -2,161 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E960E300D98
+	by mail.lfdr.de (Postfix) with ESMTP id 39DB1300D97
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731038AbhAVUU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:20:28 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13316 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728779AbhAVUFQ (ORCPT
+        id S1729178AbhAVUTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729522AbhAVUF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:05:16 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600b2fca0002>; Fri, 22 Jan 2021 12:04:26 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan
- 2021 20:04:26 +0000
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (104.47.44.56) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 22 Jan 2021 20:04:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fUaxEc96NFK6UR+1A9Lh9DLz5tBl8McaKudugngxAe1/I8PwaNkdMNIn9frnHqbyRCWj6MEgqgVb7A/r6O+a1ijL+6GNv3ZPRa3lDWI+WIo9tg4BfTZscbPkDBwvmKcjqwEIWw+3kcJAKpT3LUzeYZOVN0Hn9vjAlOZtINUz1EFv9iG0lrjg4epK7TtCnUxQWtO55yucePUddalyDaDE1E2jQsx3Uq1wtXgSXyXmSCiAmaJbgXlE01jF8SUOowcGXHGcY+ALaZ4DCL9jiSMwIO/LKwwgc5t6neX4cfIAFOXFwjjyNCaesUkHCY0ETN4jDOe1kgwGVOPapam7TwXvLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vwae+nAkyaitQ5r/JDyXnK+1DFTHWiCNVWiQuy9YHOg=;
- b=hOz1J09YQ1yk2Q0qOXf1lTW5qJ6JglkauFOW4z81dhB8geVUR5CqARAwSoCWEOyL8Z1o80mwupN+zHvQPcD7b1UYOglNL5RwfCafSMSmwlikhM75nSzEhVua3H5XnvUss/UHbuwS46X+szlpLPXT52++ZMzLhbvWFjM/A35B8+9PC0kCfWd3WO/Tk2CUeQXh/XsyBkq53lluHfiNSXRBMiSLe04Ks1wqzwgT+1a4A2Hhmp+a2oD01xJ/0qgPr8iO/smIpmoagcFEblI0PSO7in2u2GMITaj9E32sSBnm8g67ADkykrbdZAK0/lzRvbtgkstQvlvIeSE9I/gPL/dJYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1548.namprd12.prod.outlook.com (2603:10b6:4:a::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.13; Fri, 22 Jan 2021 20:04:25 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Fri, 22 Jan 2021
- 20:04:23 +0000
-Date:   Fri, 22 Jan 2021 16:04:21 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Max Gurtovoy <mgurtovoy@nvidia.com>, <cohuck@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
-        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
-        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>
-Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
-Message-ID: <20210122200421.GH4147@nvidia.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
- <20210122122503.4e492b96@omen.home.shazbot.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210122122503.4e492b96@omen.home.shazbot.org>
-X-ClientProxiedBy: MN2PR19CA0006.namprd19.prod.outlook.com
- (2603:10b6:208:178::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Fri, 22 Jan 2021 15:05:59 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066FFC06174A;
+        Fri, 22 Jan 2021 12:05:12 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id e67so6590717ybc.12;
+        Fri, 22 Jan 2021 12:05:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L8jS0HzNfqD4thkNxIQ6N1AxEPEUC70ooGhoF1TKbcw=;
+        b=dOQjb7CJ+l5Zdb7DzQ2FVeJa6kN5ropptNySqsHo2wFS3utiWUMlLHfI65VK7YdYM0
+         HwllVkwwytkIptzGyPCUN0sJD+TjHkxBe5ZR6RhnZ04Av0NbppS3rZiHKkuIKRHi3PzH
+         dQQ08wNe0A3CMseHhgdfmohjmL3q4Bts+ghNw7K/I2TfO7HBKMXu1hNthCmErvTWVF+k
+         6LJZmIvjonOLfHMpK53O38uPj5qKRNgT/aJyby/joGnUr+4tPNUSfCt4vKW4Oj5Uc0Gl
+         ukpICjL6HaCUnGqTX6nODBuJYtOikvVEaJOfmuOnjlNBpcTwM5iZEJw7K31D9j2PvlMA
+         LZ3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L8jS0HzNfqD4thkNxIQ6N1AxEPEUC70ooGhoF1TKbcw=;
+        b=FLg1j0IUB1dTZJBSyih0mMe2BerIQc+FyW9C1nspJapNBHHcyo6zhZNNMSOR8uNIA9
+         cc7Vc1P7ptEFZDSixgQZUpJ7G3ghh5KN1oud/aLxxjBYFqB24t3qpDFMbCxEAU/dZnw8
+         OVA41BNNEnBPfXJ/9LjXSgINkvjlp+oGdpc8I8EEg6H09Mszv5y7OVz73mbih57cgc/F
+         hXGvoCESwJAh2ykoT8UQkwodH8xs5arePEnQkGnQz98ASM9BuYNlGaiXQd+aNuYn2kxX
+         MEk2U9280xgpvZKkpmOgBDha/LF86xmJdFr69Dx3A6UbYXavJ9GzzHMprwNflqyDqwPy
+         NYXw==
+X-Gm-Message-State: AOAM5305HPBF9VfOLsWwzbZVxZnPNAfKgKxz3t1ay9HQ18dKGXdIiYKb
+        oHRrdp5D5AXJJ+FnDhbv2uJBiIArcc9IUHWseA8=
+X-Google-Smtp-Source: ABdhPJxj9qW9L/HDufNevNp2GUA1P6i+/BKcIKeMfaeHlJsEEugWD0I923OU79Dqk/W4OG19gN7PLYaWIT2FyhCUOzU=
+X-Received: by 2002:a25:b195:: with SMTP id h21mr8766090ybj.347.1611345911187;
+ Fri, 22 Jan 2021 12:05:11 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR19CA0006.namprd19.prod.outlook.com (2603:10b6:208:178::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 20:04:22 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l32fN-005clx-HC; Fri, 22 Jan 2021 16:04:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611345866; bh=vwae+nAkyaitQ5r/JDyXnK+1DFTHWiCNVWiQuy9YHOg=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=YvNzyBCzr2zuqD3nvxCRT3ycZznulK3wV7OWJQhvPTz8xd0zSvJ7BMTcuURxoNswv
-         coAZWwrKAdII3fzI1JWhnSpHwsv/gW/Krr5vuanIbETxzcyk5+HhxpQ8uWw7T8n0Bm
-         ypMQe9ubOd6MT66mijCpSL+70n+1e6B2CWmd106IuTy2S11xWokh0MayOIFbsZk7UK
-         CZXzRWc+nhKSaeBVS7w4qes90I0jt3PvJG12ElzF9ZqhWcHX2TUEAAiU7dlraK2O5a
-         X6F2JpO6Rvhf9RwakEQfj05vc/53/+IjpLdFlRiULXjp1m9kFoE1vYxjNOokxePMNM
-         2R+iqJEeODXPA==
+References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com>
+ <1610921764-7526-4-git-send-email-alan.maguire@oracle.com>
+ <CAEf4BzZ6bYenSTUmwu7jXqQOyD=AG75oLsLE5B=9ycPjm1jOkw@mail.gmail.com>
+ <CAEf4Bzb4z+ZA+taOEo=N9eSGZaCqMALpFxShujm9GahBOFnhvg@mail.gmail.com> <alpine.LRH.2.23.451.2101221612440.12992@localhost>
+In-Reply-To: <alpine.LRH.2.23.451.2101221612440.12992@localhost>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 22 Jan 2021 12:05:00 -0800
+Message-ID: <CAEf4BzZBVjUQnPxG1hyxkoM5HLWyEm2VJjOg0MoogrBdm6QdEQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: BTF dumper support for typed data
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 12:25:03PM -0700, Alex Williamson wrote:
+On Fri, Jan 22, 2021 at 8:31 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> On Thu, 21 Jan 2021, Andrii Nakryiko wrote:
+>
+> > On Wed, Jan 20, 2021 at 10:56 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Sun, Jan 17, 2021 at 2:22 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+> > > >
+> > > > Add a BTF dumper for typed data, so that the user can dump a typed
+> > > > version of the data provided.
+> > > >
+> > > > The API is
+> > > >
+> > > > int btf_dump__emit_type_data(struct btf_dump *d, __u32 id,
+> > > >                              const struct btf_dump_emit_type_data_opts *opts,
+> > > >                              void *data);
+> > > >
+> >
+> > Two more things I realized about this API overnight:
+> >
+> > 1. It's error-prone to specify only the pointer to data without
+> > specifying the size. If user screws up and scecifies wrong type ID or
+> > if BTF data is corrupted, then this API would start reading and
+> > printing memory outside the bounds. I think it's much better to also
+> > require user to specify the size and bail out with error if we reach
+> > the end of the allowed memory area.
+>
+> Yep, good point, especially given in the tracing context we will likely
+> only have a subset of the data (e.g. part of the 16k representing a
+> task_struct).  The way I was approaching this was to return -E2BIG
+> and append a "..." to the dumped data denoting the data provided
+> didn't cover the size needed to fully represent the type. The idea is
+> the structure is too big for the data provided, hence E2BIG, but maybe
+> there's a more intuitive way to do this? See below for more...
+>
 
-> Is the only significant difference here the fact that function
-> declarations remain in a private header?  Otherwise it seems to
-> have all the risks of previous attempts, ie. exported symbols with a
-> lot of implicit behavior shared between them.
+Hm... that's an interesting use case for sure, but seems reasonable to
+support. "..." seems a bit misleading because it can be interpreted as
+"we omitted some output for brevity", no? "<truncated>" or something
+like that might be more obvious, but I'm just bikeshedding :)
 
-If you want to use substantial amounts of vfio-pci for multiple
-drivers then what other choice is there? You and I previously talked
-about shrinking vfio-pci by moving things to common code, outside
-VFIO, and you didn't like that direction either. 
+> >
+> > 2. This API would be more useful if it also returns the amount of
+> > "consumed" bytes. That way users can do more flexible and powerful
+> > pretty-printing of raw data. So on success we'll have >= 0 number of
+> > bytes used for dumping given BTF type, or <0 on error. WDYT?
+> >
+>
+> I like it! So
+>
+> 1. if a user provides a too-big data object, we return the amount we used; and
+> 2. if a user provides a too-small data object, we append "..." to the dump
+>   and return -E2BIG (or whatever error code).
+>
+> However I wonder for case 2 if it'd be better to use a snprintf()-like
+> semantic rather than an error code, returning the amount we would have
+> used. That way we easily detect case 1 (size passed in > return value),
+> case 2 (size passed in < return value), and errors can be treated separately.
+> Feels to me that dealing with truncated data is going to be sufficiently
+> frequent it might be good not to classify it as an error. Let me know if
+> you think that makes sense.
 
-So if this shared code lives in vfio-pci, vfio-pci must become a
-library, because this code must be shared.
+Hm... Yeah, that would work, I think, and would feel pretty natural.
+On the other hand, it's easy to know the total input size needed by
+calling btf__resolve_size(btf, type_id), so if user expects to provide
+truncated input data and wants to know how much they should have
+provided, they can easily do that.
 
-The big difference between the May patch series and this one, is to
-actually starts down the path of turning vfio-pci into a proper
-library.
+Basically, I don't have strong preference here, though providing
+truncated input data still feels more like an error, than a normal
+situation... Maybe someone else want to weigh in? And -E2BIG is
+distinctive enough in this case. So both would work fine, but not
+clear which one is less surprising API.
 
-The general long term goal is to make the interface exposed from the
-vfio_pci_core.ko library well defined and sensible. Obviously the
-first patches to make this split are not going to get eveything
-polished, but set a direction for future work. 
+>
+> I'm working on v3, and hope to have something early next week, but a quick
+> reply to a question below...
+>
+> > > > ...where the id is the BTF id of the data pointed to by the "void *"
+> > > > argument; for example the BTF id of "struct sk_buff" for a
+> > > > "struct skb *" data pointer.  Options supported are
+> > > >
+> > > >  - a starting indent level (indent_lvl)
+> > > >  - a set of boolean options to control dump display, similar to those
+> > > >    used for BPF helper bpf_snprintf_btf().  Options are
+> > > >         - compact : omit newlines and other indentation
+> > > >         - noname: omit member names
+> > > >         - zero: show zero-value members
+> > > >
+> > > > Default output format is identical to that dumped by bpf_snprintf_btf(),
+> > > > for example a "struct sk_buff" representation would look like this:
+> > > >
+> > > > struct sk_buff){
+> > > >  (union){
+> > > >   (struct){
+> > >
+> > > Curious, these explicit anonymous (union) and (struct), is that
+> > > preferred way for explicitness, or is it just because it makes
+> > > implementation simpler and thus was chosen? I.e., if the goal was to
+> > > mimic C-style data initialization, you'd just have plain .next = ...,
+> > > .prev = ..., .dev = ..., .dev_scratch = ..., all on the same level. So
+> > > just checking for myself.
+>
+> The idea here is that we want to clarify if we're dealing with
+> an anonymous struct or union.  I wanted to have things work
+> like a C-style initializer as closely as possible, but I
+> realized it's not legit to initialize multiple values in a
+> union, and more importantly when we're trying to visually interpret
+> data, we really want to know if an anonymous container of data is
+> a structure (where all values represent different elements in the
+> structure) or a union (where we're seeing multiple interpretations of
+> the same value).
 
-This approach is actually pretty clean because only the ops are
-exported and the ops API is already well defined by VFIO. The internal
-bits of vfio-pci-core can remain hidden behind a defined/restricted
-API.
+Yeah, fair enough.
 
-The May series lacks a clear demark for where the library begins/ends
-and vfio_pci.ko start, and doesn't really present a clean way to get
-anywhere better.
+>
+> Thanks again for the detailed review!
 
-Also the May series developed its own internalized copy of the driver
-core, which is big no-no. Don't duplicate driver core functionality in
-subsystems. This uses the driver core much closer to how it was
-intended - only the dual binding is a bit odd, but necessary.
+Of course. But it's not clear if you agree with me on everything, so I
+still hope to get replies later.
 
-> noted in 2/3, IGD support could be a separate module, but that's a
-> direct assignment driver, so then the user must decide to use vfio-pci
-> or igd-vfio-pci, depending on which features they want.
-
-Which I think actually makes sense. Having vfio-pci transparently do
-more than just the basic PCI-sig defined stuff is a very confusing
-path.
-
-Trying to make vfio_pci do everything for everyone will just be a huge
-incomprehensible mess.
-
-> > This subsystem framework will also ease on adding vendor specific
-> > functionality to VFIO devices in the future by allowing another module
-> > to provide the pci_driver that can setup number of details before
-> > registering to VFIO subsystem (such as inject its own operations).
-> 
-> Which leads us directly back to the problem that we then have numerous
-> drivers that a user might choose for a given device.
-
-Sure, but that is a problem that can be tackled in several different
-ways from userspace. Max here mused about some general algorithm to
-process aux device names, you could have userspace look in the module
-data to find VFIO drivers and auto load them like everything else in
-Linux, you could have some VFIO netlink thing, many options worth
-exploring.
-
-Solving the proliferation of VFIO drivers feels like a tangent - lets
-first agree having multiple VFIO drivers is the right technical
-direction within the Linux driver core model before we try to figure
-out what to do for userspace.
-
-> > In this way, we'll use the HW vendor driver core to manage the lifecycle
-> > of these devices. This is reasonable since only the vendor driver knows
-> > exactly about the status on its internal state and the capabilities of
-> > its acceleratots, for example.
-> 
-> But mdev provides that too, or the vendor could write their own vfio
-
-Not really, mdev has a completely different lifecycle model that is
-not very compatible with what is required here.
-
-And writing a VFIO driver is basically what this does, just a large
-portion of the driver is reusing code from the normal vfio-pci cases.
-
-Jason
+>
+> Alan
