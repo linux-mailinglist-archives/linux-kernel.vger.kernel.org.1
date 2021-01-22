@@ -2,206 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC482FF994
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E242FF99F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbhAVAuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 19:50:19 -0500
-Received: from mail-pl1-f177.google.com ([209.85.214.177]:38550 "EHLO
-        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbhAVAuJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:50:09 -0500
-Received: by mail-pl1-f177.google.com with SMTP id d4so2287225plh.5;
-        Thu, 21 Jan 2021 16:49:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6AIhNuCe/1GTY8tOy/5C+s0wH6veWybr8jaw1m3E9Hg=;
-        b=Lf+yh0oRASEEvnfQMIrlZtWko0D0nBdgSw7/mxFO6eewN5e6nMEc1eF7MoZPvDSlgr
-         5ALbey8NL6QC1NshSqIOZGRn7mLCp8I6zcwW58QrEBDdxaTLKHTSGEe3suTvkUkh3NcG
-         8POH2+CmFzTDvc+xl63X7N9gMDArckA82mPqIZ71wMr/0COMuu0u1LvmOtVmfiFWHfb6
-         bSYWzUe+P2WuC+8kEZUjZGjOHM4qYNOQqDEGzpXIIYBpEIbv5IPKb7HEPBKwPUP6Ww62
-         L1m/ZOaDrJxgydFzmwxvgfuynwUv1sCtD7Kh/+TPtAvB5to1vgR3NJB24iiSY1uYaN0K
-         KdKQ==
-X-Gm-Message-State: AOAM5301SqR1vyGVX8r24j9LhyYccszeg1wI3me4LnXFPjO7TOHwU12o
-        1UIy0r+VQa4NrQIC4cxR430nd7ZyQFo=
-X-Google-Smtp-Source: ABdhPJyckVCo7YfZkh7bWlgUT2Dd/TuGmMbOaeo7nbGqTHZoBJ4BpFQjb57/oG7YRMBwj4tzAFI4dA==
-X-Received: by 2002:a17:90b:602:: with SMTP id gb2mr2284162pjb.170.1611276568552;
-        Thu, 21 Jan 2021 16:49:28 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id q22sm5863545pgi.66.2021.01.21.16.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 16:49:27 -0800 (PST)
-Date:   Thu, 21 Jan 2021 16:49:25 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, lorenzo.pieralisi@arm.com,
-        guohanjun@huawei.com, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ACPI/IORT: Do not blindly trust DMA masks from firmware
-Message-ID: <YAohFd5g8qovkFwO@archbook>
-References: <20210121191612.90387-1-mdf@kernel.org>
- <faa089d5-48e3-d51d-0d14-849e5446dbf4@arm.com>
- <YAnvckodi9MOTrV4@epycbox.lan>
- <e8eb32be-0aca-e8a3-046b-e280ea9c31d1@arm.com>
+        id S1726204AbhAVAz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 19:55:58 -0500
+Received: from mail-am6eur05on2058.outbound.protection.outlook.com ([40.107.22.58]:45984
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725831AbhAVAzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 19:55:51 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fAShxNaj3i5o05cYgCwHF07jyV0O6CkBpapXKp3YDI8wGpkGPRcDJzSbp8CqZG5GCViYF6M0s5fj1sra3x2Y0OqwAUh6NfdfgyidYyhr4BRIeHw8AzwblHs7LsoDkexWnH2+zYx3ROz8ewpdyjo9OS70mpPEG7BNYAA6Ae2HfyprAHe7Yh6OyFMffQpZZQqiCN3gKLEQt+Wmw8fZQbBemba2Lg7h7U7tgm4FkI7TTp0AB14tqL9Qn8svQOjPmwpS+kQyswYSyuwdwZLC5S7PQUGjveXDcZ3mFTFS+Nfz0blgWhM+48f1+FLH07qfYgbXtLJhwiaQfh9orx7GRW0Hfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rm1f5xyAhpwlg9rXv//B2JDwCcZkMY3eIHHVdIgxyLc=;
+ b=mXQS3pozsOpQUeEOAmDuMT4BtFXQI0n1qHTcPewHelAd60+SFtvGkk6G+COk1JyjalknpKVVI8i7bLs2Rre8Hoyfod/WO4O0YK2UwiayDQlUDMsAaqq5/LQ3ha0SywfmO95wfZK6PtU1GeqhAMrivtfB7jWx4E8Y7rz0FjYoFe8uMNluGy++/sTIP36KPFWvBnI/KmxEkh/1yiEmHXoXzpenXI8+1b/2HePu/PuohRDO7acFpLUwiEqwytQkZUAKpG4Dn3pOrfBkUvssD1hfZ1uOYoocIX3OWWFkMokiWOXy6w468glcjBpUPVJIRfiesCeJa/0QLJI1LoTENp4ulw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rm1f5xyAhpwlg9rXv//B2JDwCcZkMY3eIHHVdIgxyLc=;
+ b=XBFNrhdVXnhtSqKJ02c/tFHwPVknjPjCZwdgEFeXxdQi5k9F+LX4DJN7FgYA9HtJhTZSlgrdO68WB6BAMd3lONQCPWMzR8oi5ataMpG2l5YQDXkdCTLXm7rvaVmjYgH8FyAVgiYjL8lyPj+DPicySrPpkd2PUCnl9kqJV0jXq1A=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR04MB3014.eurprd04.prod.outlook.com (2603:10a6:6:8::27) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3763.14; Fri, 22 Jan 2021 00:55:00 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3763.016; Fri, 22 Jan 2021
+ 00:55:00 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Subject: RE: [PATCH V2 2/4] dt-bindings: mmc: fsl-imx-esdhc: add clock
+ bindings
+Thread-Topic: [PATCH V2 2/4] dt-bindings: mmc: fsl-imx-esdhc: add clock
+ bindings
+Thread-Index: AQHW76RbnTiL5ZvX1kWERWBmR+4aWKoyPjUAgACUjIA=
+Date:   Fri, 22 Jan 2021 00:55:00 +0000
+Message-ID: <DB6PR0402MB27606B6ADC13EC6F889D9A9D88A00@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <1611198593-16287-1-git-send-email-peng.fan@nxp.com>
+ <1611198593-16287-3-git-send-email-peng.fan@nxp.com>
+ <1611244918.545866.2814847.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1611244918.545866.2814847.nullmailer@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: afa00dec-1822-4b6a-7542-08d8be705886
+x-ms-traffictypediagnostic: DB6PR04MB3014:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR04MB30148DD8BFEBA5F9B2BCC86888A00@DB6PR04MB3014.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8U7/AK1U+bmqFIpIpzTAybuX7xxLZrY9+IGdOlW0EWr6a3Omu30EDrFdRY6+l94rWamunlu3FN/34cI2iiOKZdb/S8jj8hv9s9FhQwCf6lOZhQxji9Nnv27e1FFmBij8hs1IBCm/UqDF6yRxlv4LA/slbj+SOUijd8H9S1mhlX+c5tsGyJzReHxkedYKjW8yOOYJYSL0l4itSYmyYC75CHvZqyf3cp0hEl3ui7/zRl4XHkVAp1rlgC/IAs6R3HeVzcagY+QofzQoAIaip25/orz6cuCt/x45PwKXQBhrmEbXcoZCUWMzIMypdPxpuB23+mpQBAcimIQLTnbsrukokKPQB/utYaQk2twedT0fDgCdejlO+gwxLSmPBAuqyk5w6U5vYnA0slx1MuGVCeaNdfoFa3HhasDY4y7MDOp78e1yJuyCng+EdX/+gB86s2s0P8A2O6ouY3p68yGvtDLg+A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(396003)(376002)(366004)(55016002)(966005)(76116006)(5660300002)(8936002)(45080400002)(26005)(7416002)(9686003)(4326008)(316002)(2906002)(186003)(71200400001)(6506007)(54906003)(478600001)(6916009)(8676002)(86362001)(64756008)(52536014)(83380400001)(7696005)(44832011)(33656002)(66446008)(66556008)(66946007)(66476007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?NFuAqprfKSZrl3Zvf7SCz3zTowPaGJ7WdQ1nFGPoqqkJYyiSlsOkGTNtXxpr?=
+ =?us-ascii?Q?9cDu0L8IHWc5bN6CEvfbLKGggpPN9LV97KM+E1ZT+RnhFAPWvEUqXhfT5PCk?=
+ =?us-ascii?Q?p+GEONX5sBfYsUT+weOLBZQnihdzJd5D00O+27PJzXI/PoL/DkyyqyBXvZ1u?=
+ =?us-ascii?Q?RY5GUrGyUD1K/vss8GtFDVxLhtJhk8+x8MiyeHE5v2wzCmcmbVaMSsQ4UpFm?=
+ =?us-ascii?Q?g0CoMgirqtNRAcjV4pNhvRlRpTLaaEot6DZh5I6GcEWrjvHBd4zkB8bzMpHG?=
+ =?us-ascii?Q?ByDJJUuTvBL6Z3d5nd8chF4pOQRhzhuN7SicMuvT9FhWv7vYje8sOxIlqR3o?=
+ =?us-ascii?Q?cie0xeOVWxV/qYyQu+CPWGa5AfBIa77iTWbwd7WxG4Q+RKDFi/A5Jd4zX4AT?=
+ =?us-ascii?Q?zZAXoPO2C323iUl1QHNhSMK+uPn3qeq6XyB+ON3vvQSO0nP3pykAwgqMZOoF?=
+ =?us-ascii?Q?XwiNlYQYxj5SKfsqMc/YXCetkCKrGeZ4D7MhTW+L9QMhQpp3/++eeNxAiDEa?=
+ =?us-ascii?Q?YwRjiztxqtNqsMy0FLx+RNI+oUY9gRPc1bP+SGbbOcSWP8XqfwaN9PlTAZzj?=
+ =?us-ascii?Q?+41IqJ9Fi0VJ5E3r6sUDehHON15K37mfxj4rk9kfALPWING2XKb6d9Xq1fya?=
+ =?us-ascii?Q?fkL/2S9inBelHYS/Od8/FXAeBd9jMljiXMkrf3YPjriu1skouA8DZrhF6vje?=
+ =?us-ascii?Q?FwoTytCzrxhdKc4XNAdv1sk7Es7Ia+8siKwUdeffFTOLuwtFUswaiLBf7l53?=
+ =?us-ascii?Q?I0V5BpUNucMbeFcI4vwy3jSvhqtmqDixekXY1xG4rarxvRMY9j8PiXIqBFXj?=
+ =?us-ascii?Q?7n2RTfPsU19DWKmgBC1Z0vZN441xDdV42SwsVqyS58kJPfFtWzgaON6C+30T?=
+ =?us-ascii?Q?css7r6hVJDcABt+nD2/nGQDjqwLQ26FYCfLOmEAagXgDVmHMTw9iRhbPR1Bf?=
+ =?us-ascii?Q?jhvXko/O+k0CJ6/TGLeopsBZPMNJ32JjCFCQm/gweF8=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e8eb32be-0aca-e8a3-046b-e280ea9c31d1@arm.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afa00dec-1822-4b6a-7542-08d8be705886
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 00:55:00.2507
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YvpuE1MLGcPG5ZW6MRW7LmD9Nx/xU+SKKB/0ELr1TwiMnpz+/999JAUJhj12JlfMnCVaoNz/v7NQY3L5pKz4vQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3014
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Robin,
+Hi Rob,
 
-On Thu, Jan 21, 2021 at 11:15:05PM +0000, Robin Murphy wrote:
-> On 2021-01-21 21:17, Moritz Fischer wrote:
-> > Robin,
-> > 
-> > On Thu, Jan 21, 2021 at 08:08:42PM +0000, Robin Murphy wrote:
-> > > On 2021-01-21 19:16, Moritz Fischer wrote:
-> > > > Address issue observed on real world system with suboptimal IORT table
-> > > > where DMA masks of PCI devices would get set to 0 as result.
-> > > > 
-> > > > iort_dma_setup() would query the root complex' IORT entry for a DMA
-> > > > mask, and use that over the one the device has been configured with
-> > > > earlier.
-> > > > 
-> > > > Ideally we want to use the minimum mask of what the IORT contains for
-> > > > the root complex and what the device was configured with, but never 0.
-> > > > 
-> > > > Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
-> > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> > > > ---
-> > > > Hi all,
-> > > > 
-> > > > not sure I'm doing this right, but I think the current behavior (while a
-> > > > corner case) seems to also fail for 32 bit devices if the IORT specifies
-> > > > 64 bit. It works on my test system now with a 32 bit device.
-> > > 
-> > > I suppose it could go wrong if it's an old driver that doesn't explicitly
-> > > set its own masks and assumes they will always be 32-bit. Technically we'd
-> > > consider that the driver's fault these days, but there's a lot of legacy
-> > > around still.
-> > 
-> > Huh, ok :) That's news to me. On my system I had three devices running
-> > into this, so yeah I think it's quite common.
-> 
-> Indeed, I'm sure there are plenty of drivers that haven't been touched in
-> decades because they're complete and working, and back then they were
-> allowed to make that assumption.
-> 
-> > If that's the official stance I can send patches for the drivers in
-> > question :)
-> 
-> It's certainly good practice, especially for older devices that are still
-> popular enough to see use on the increasing variety of new systems. Some
-> people are still using the infamous arm64 platform where all the RAM is
-> above 40 bits, for instance, and who knows how creative system designers
-> might continue to be, so better to give the driver a chance to bail out of
-> probing in the rare event that explicitly setting its 32-bit masks *does*
-> fail, rather than let it assume DMA should work then get confused when it
-> doesn't.
-> 
-> > > > Open to suggestions for better solutions (and maybe the
-> > > > nc_dma_get_range() should have the same sanity check?)
-> > > 
-> > > Honestly the more I come back to this, the more I think we should give up
-> > > trying to be clever and just leave the default masks alone beyond the
-> > > initial "is anything set up at all?" sanity checks. Setting the bus limit is
-> > > what really matters these days, and should be sufficient to encode any
-> > > genuine restriction. There's certainly no real need to widen the default
-> > > masks above 32 bits just because firmware suggests so, since the driver
-> > > should definitely be calling dma_set_mask() and friends later if it's
-> > > > 32-bit capable anyway.
-> > > 
-> > > > Thanks,
-> > > > Moritz
-> > > > 
-> > > > ---
-> > > >    drivers/acpi/arm64/iort.c | 11 ++++++++---
-> > > >    1 file changed, 8 insertions(+), 3 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> > > > index d4eac6d7e9fb..c48eabf8c121 100644
-> > > > --- a/drivers/acpi/arm64/iort.c
-> > > > +++ b/drivers/acpi/arm64/iort.c
-> > > > @@ -1126,6 +1126,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
-> > > >    	rc = (struct acpi_iort_root_complex *)node->node_data;
-> > > > +	if (!rc->memory_address_limit) {
-> > > > +		dev_warn(dev, "Root complex has broken memory_address_limit\n");
-> > > 
-> > > Probably warrants a FW_BUG in there.
-> > > 
-> > > > +		return -EINVAL;
-> > > > +	}
-> > > > +
-> > > >    	*size = rc->memory_address_limit >= 64 ? U64_MAX :
-> > > >    			1ULL<<rc->memory_address_limit;
-> > > > @@ -1172,9 +1177,9 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
-> > > >    		 */
-> > > >    		end = dmaaddr + size - 1;
-> > > >    		mask = DMA_BIT_MASK(ilog2(end) + 1);
-> > > > -		dev->bus_dma_limit = end;
-> > > > -		dev->coherent_dma_mask = mask;
-> > > > -		*dev->dma_mask = mask;
-> > > > +		dev->bus_dma_limit = min_not_zero(dev->bus_dma_limit, end);
-> > > 
-> > > This doesn't need to change, since the default bus limit is 0 anyway (and
-> > > that means "no limit").
-> > Ok, I'll drop this.
-> > > 
-> > > > +		dev->coherent_dma_mask = min_not_zero(dev->coherent_dma_mask, mask);
-> > > > +		*dev->dma_mask = min_not_zero(*dev->dma_mask, mask);
-> > 
-> > I'll keep those two?
-> 
-> Well...
-> 
-> > > AFAICS the only way an empty mask could get here now is from
-> > > nc_dma_get_range(), so I'd rather see a consistent warning there than just
-> > > silently start working around that too.
-> > 
-> > In my case the empty mask came from the pci dev branch returning a size
-> > of 1. (1 << 0).
-> 
-> In fact I think I was too hasty in saying even that - it actually looks like
-> you can't get a mask of 0 either way. If memory_address_limit is 0, then
-> size is 1, dmaaddr is 0 (since acpi_dma_get_range() had to fail in the first
-> place), so end is 0, so mask is DMA_BIT_MASK(0 + 1), which is 1. So
-> min_not_zero() still does nothing :/
+> Subject: Re: [PATCH V2 2/4] dt-bindings: mmc: fsl-imx-esdhc: add clock
+> bindings
+>=20
+> On Thu, 21 Jan 2021 11:09:51 +0800, peng.fan@nxp.com wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > Add clock bindings for fsl-imx-esdhc yaml
+> >
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml        | 11
+> +++++++++++
+> >  1 file changed, 11 insertions(+)
+> >
+>=20
+> My bot found errors running 'make dt_binding_check' on your patch:
 
-The min_not_zero() is to not go from 32 to > 32 if firmware sets it to
-say 33? If you prefer we can change it to min() instead?
+Patch 3/4 addresses the dts, actually I think it is the dts not use correct
+clock order.
 
-IMHO we should never widen the mask only narrow it, agreed?
-> 
-> > I'll replace the dev_warn() with a pr_warn(FW_BUG ...) for both
-> > {nc,rc}_dma_get_range() cases then?
-> 
-> Yes, I think it's worth being consistent. And then we can't ever get past
-> the "if (!ret)" condition without a valid size, so we definitely don't need
-> to touch anything inside it. And by "valid" I mean that if someone goes to
-> the effort of filling in that field with even a 1, then by 'eck we're
-> givin'em the 1-bit DMA limit they asked for!
-> 
-> > > Of course IORT doesn't say these fields are optional (other than the lack of
-> > > a root complex limit in older table versions), so we're giving bad firmware
-> > > a pass to never be fixed, ho hum...
-> > 
-> > I think if we yell loud enough (like FW_BUG) that'll get people's
-> > attention?
-> 
-> Ha! I've got a machine where MSIs don't work (let alone SMMU translation...)
-> because some of the device mapping offsets are pointing into random parts of
-> the IORT like the middle of other nodes' headers. If it boots to a prompt at
-> all, someone somewhere will be happy to ship it ;)
-Whoa :D
+Thanks,
+Peng.
 
-Thanks for the feedback,
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cloc=
+k
+> /imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: clock-names:1: 'ahb' was
+> expected
+> 	From schema:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc
+> /fsl-imx-esdhc.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cloc=
+k
+> /imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: clock-names:2: 'per' was
+> expected
+> 	From schema:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc
+> /fsl-imx-esdhc.yaml
+>=20
+> See
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpatch
+> work.ozlabs.org%2Fpatch%2F1429619&amp;data=3D04%7C01%7Cpeng.fan%40
+> nxp.com%7Cc543c002a0b54348d48408d8be25ec0b%7C686ea1d3bc2b4c6fa
+> 92cd99c5c301635%7C0%7C0%7C637468417375412086%7CUnknown%7CT
+> WFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC
+> JXVCI6Mn0%3D%7C1000&amp;sdata=3DcISWAn3kYIoqvxr39Mu5NL6rwkebmk
+> VN1drRi%2BDNwAs%3D&amp;reserved=3D0
+>=20
+> This check can fail if there are any dependencies. The base for a patch s=
+eries
+> is generally the most recent rc1.
+>=20
+> If you already ran 'make dt_binding_check' and didn't see the above error=
+(s),
+> then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+> Please check and re-submit.
 
-Moritz
