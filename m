@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12269300149
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7B8300146
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727486AbhAVLPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:15:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
+        id S1727756AbhAVLOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727842AbhAVLG5 (ORCPT
+        with ESMTP id S1727885AbhAVLHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:06:57 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D72C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 03:06:16 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id o20so3482753pfu.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 03:06:16 -0800 (PST)
+        Fri, 22 Jan 2021 06:07:09 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05EDC061786
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 03:06:28 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id 7so4689370wrz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 03:06:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=8xmowMygRP96q6ZfQepL38bbSA5RtX+xDKaDnp6OZZo=;
-        b=xRAWJg9uWyvrqCaVbaGDdjfC4XRsikv5lqCfNDaWh8BruWcMsnByoGA5IerSTm4iLs
-         IfocfLfTFc1n302KZOhl75FOqrKzBRaL3p8dhxhuMc6rzBc3hVp6/sysJJDRo/yQAL0a
-         G9ok1GyFpyD3+RmFx6m1O4t+yCM2Foy3AHMkg7eQmFACmTQD3hgi2/PtUJZPV9lXX/O1
-         npcolHS9Hz6jth/kq/FBvjUahiuiIMWuM8T6WA9sRlekgcPftdYBDwaGdlz2zI5/GgfL
-         fhcnkCXn2jq71kYxLQNDNBBPTUVHzm1CuZUPl71eEoBunw7ejl9M0RfgFScOhTzszAFY
-         BPYw==
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gedglrbx9q6b8ayqlT6Zdi3perRe4tSg9LO4why35tI=;
+        b=UdfjlErGXEiKdZ1DUD/oqU/KTTdzQ35kaLmaXb2Aput23plO1PG2n8wz00QGwRxbfm
+         v+e+CGIxZ9exmstKTQD+ThBW0YBP9qh0FqVTYGhd5U9E49K/o8GAAGtpTtVTc/CsYdjm
+         73QmE5wjKeT2rMyoHenk/Iw3RBWSGTFhDpvTF6j1MOKgdsVQZrb2KNKoLG69Ja8p6q1Y
+         UuIve0YX00bAA1rkqqTZiUudX/LK/jKvSEYaD1RjA6isiunEv1SZf+21J7oICn5L92zX
+         jxrJIbkKkVTiqeC97JYCVfrpDDJM2S/T0+sUdO3QhCgYjNz/+tbqfd8/eHyO1YZ+x9Dm
+         Laug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8xmowMygRP96q6ZfQepL38bbSA5RtX+xDKaDnp6OZZo=;
-        b=VeO8rzqnzs+XbUhMlsL3D2muuFFbHiGf+udo/05/wtgmK+JmJpb3wkLMqgWLSesswL
-         INNMC8wQiaP/ppJnK6R36J3Xrb44yrx4Hm399YcHZsvhzqgkObDttdjHUdM44RPyCaSe
-         Qa9L/I2OuzCM229/CwLxq8EtlKAChMm9c4V6mSGqeddTgdt1gEZfA0l+t8f+Tze9JwD7
-         I5noeoydkXBRL4VpLlV1toRD+5L7z+Nh4lIt0L9PdLl+j+PmbytDlhJPaBUwS7USGqQt
-         dHTZnSJ4qYcBVqvo+WyCXwolT0ZQPBM/XFoCmruwJso554o20FV1V7Bo7q7nx1DoLG6H
-         zT5w==
-X-Gm-Message-State: AOAM531ilTZSkeQp/Chs59/oSZe+yu7lt6f5Ni41QKGBmcLVOYSx+yKP
-        lfpSB7NO0Wv3Qkp7iE3tqUo2C65dbWm72A==
-X-Google-Smtp-Source: ABdhPJw9OXYA0Ves4zH7Zwge3APRupjHpxKEZURTnQT2SSrlD8+pcogSCSV9X4HvSz9Fw7OVlfcWLg==
-X-Received: by 2002:a65:4549:: with SMTP id x9mr4253916pgr.6.1611313575903;
-        Fri, 22 Jan 2021 03:06:15 -0800 (PST)
-Received: from localhost.localdomain ([122.173.53.31])
-        by smtp.gmail.com with ESMTPSA id j3sm8854562pjs.50.2021.01.22.03.06.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Jan 2021 03:06:15 -0800 (PST)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     kgdb-bugreport@lists.sourceforge.net
-Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>, stable@vger.kernel.org
-Subject: [PATCH v3] kdb: Make memory allocations more robust
-Date:   Fri, 22 Jan 2021 16:35:56 +0530
-Message-Id: <1611313556-4004-1-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gedglrbx9q6b8ayqlT6Zdi3perRe4tSg9LO4why35tI=;
+        b=EnTTMo0TtQcNPhG53koo9QyxJaDNkOFZEkojnqcjnzCBUzSSUBqLXPfxBGIZ1ewj1N
+         WekdFU0/fIF3oUfIEN5hW4BszpGtRDXweb1SAKk+OZcLkLe6jz8tT0PpooxIhB1/RetM
+         dPJob43NU+xlIdhLjnBEC6BuO/rfKVO9Oew7yZmaWRSb0JKdkjGQvytgRaXGcyTZDj/h
+         EJn3UcuOMKDY2lCxmko8nd/zbq/v45fmd4dXfDYKDh+RQCzkAaoH2pe3PaBHHzYvvZLL
+         Rt0Ij+wUWgffaW/nc5TTElekurwGPZf6DM59MTXZ+FuunR1stKMdxKsLy1fBCVK94zbL
+         0NKg==
+X-Gm-Message-State: AOAM530HV2v6WgMtR7ZCW29dHZRLwnJeSVOkbFMwou5l3cypV+rRqoDP
+        YT8ljve6kNeZsvFgbf1waFrtug==
+X-Google-Smtp-Source: ABdhPJyXE/UFJeBIlU8F7vIHiNwittliF+yPDJJW7gWfRl3kINUwHVEsZZLRpopfQ+mjLlPa83xAGA==
+X-Received: by 2002:a5d:44c6:: with SMTP id z6mr3958812wrr.306.1611313587592;
+        Fri, 22 Jan 2021 03:06:27 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:8ce4:12a9:3261:aa54])
+        by smtp.gmail.com with ESMTPSA id z15sm11346881wrt.8.2021.01.22.03.06.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 03:06:27 -0800 (PST)
+Date:   Fri, 22 Jan 2021 11:06:25 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Rokudo Yan <wu-yan@tcl.com>
+Cc:     balsini@android.com, akailash@google.com, amir73il@gmail.com,
+        axboe@kernel.dk, bergwolf@gmail.com, duostefano93@gmail.com,
+        dvander@google.com, fuse-devel@lists.sourceforge.net,
+        gscrivan@redhat.com, jannh@google.com, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@android.com, miklos@szeredi.hu, palmer@dabbelt.com,
+        paullawrence@google.com, trapexit@spawn.link, zezeozue@google.com
+Subject: Re: [PATCH RESEND V11 0/7] fuse: Add support for passthrough
+ read/write
+Message-ID: <YAqxsWpH54moi+t6@google.com>
+References: <20210118192748.584213-1-balsini@android.com>
+ <20210119110654.11817-1-wu-yan@tcl.com>
+ <YAbRz83CV2TyU3wT@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAbRz83CV2TyU3wT@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kdb uses in_interrupt() to determine whether its library
-code has been called from the kgdb trap handler or from a saner calling
-context such as driver init. This approach is broken because
-in_interrupt() alone isn't able to determine kgdb trap handler entry from
-normal task context. This can happen during normal use of basic features
-such as breakpoints and can also be trivially reproduced using:
-echo g > /proc/sysrq-trigger
+On Tue, Jan 19, 2021 at 12:34:23PM +0000, Alessio Balsini wrote:
+> On Tue, Jan 19, 2021 at 07:06:54PM +0800, Rokudo Yan wrote:
+> > on Mon, Jan 18, 2021 at 5:27 PM Alessio Balsini <balsini@android.com> wrote:
+> > >
+> > > This is the 11th version of the series, rebased on top of v5.11-rc4.
+> > > Please find the changelog at the bottom of this cover letter.
+> > > 
+> > > Add support for file system passthrough read/write of files when enabled
+> > > in userspace through the option FUSE_PASSTHROUGH.
+> > [...]
+> > 
+> > 
+> > Hi Allesio,
+> > 
+> > Could you please add support for passthrough mmap too ?
+> > If the fuse file opened with passthrough actived, and then map (shared) to (another) process
+> > address space using mmap interface. As access the file with mmap will pass the vfs cache of fuse,
+> > but access the file with read/write will bypass the vfs cache of fuse, this may cause inconsistency.
+> > eg. the reader read the fuse file with mmap() and the writer modify the file with write(), the reader
+> > may not see the modification immediately since the writer bypass the vfs cache of fuse.
+> > Actually we have already meet an issue caused by the inconsistency after applying fuse passthrough
+> > scheme to our product.
+> > 
+> > Thanks,
+> > yanwu.
+> 
+> Hi yanwu,
+> 
+> Thank you for your interest in this change.
+> 
+> FUSE passthrough for mmap is an extension that is already in my TODO
+> list, together with passthrough for directories.
+> For now I would prefer to keep this series minimal to make the review
+> process leaner and simpler.
+> I will start working on extending this series with new features and
+> addressing more corner cases as soon as these changes get merged, what
+> do you think?
+> 
+> Thanks,
+> Alessio
 
-We can improve this by adding check for in_dbg_master() instead which
-explicitly determines if we are running in debugger context.
+Hi yanwu,
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
+Sorry if I overlooked this issue. I added memory-mapping to my tests and
+could reproduce/verify this wrong behavior you mentioned.
 
-Changes in v3:
-- Refined commit description and Cc: stable@vger.kernel.org.
+I created this WIP (history may change) branch that has the missing mmap
+implementation:
 
-Changes in v2:
-- Get rid of redundant in_atomic() check.
+  https://github.com/balsini/linux/commits/fuse-passthrough-v12-develop-v5.11-rc4
 
- kernel/debug/kdb/kdb_private.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I did some mmap testing in the last days with this extra mmap
+implementation and couldn't find any issues, everything seems to be
+working as expected with the extra mmap patch. Can you please confirm
+this is fixed on your end too?
+I'm also going to revert in this branch the stacking policy changes to
+how they were in V10 as suggested by Amir if there are no concerns with
+that.
+I'm waiting for some extra tests to complete and, if no issue is
+detected, I'll post the V12 series super soon.
 
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index 7a4a181..344eb0d 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -231,7 +231,7 @@ extern struct task_struct *kdb_curr_task(int);
- 
- #define kdb_task_has_cpu(p) (task_curr(p))
- 
--#define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
-+#define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
- 
- extern void *debug_kmalloc(size_t size, gfp_t flags);
- extern void debug_kfree(void *);
--- 
-2.7.4
+Thanks,
+Alessio
 
