@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C9230009A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0967D30007C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727383AbhAVKqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:46:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:40096 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727065AbhAVKZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:25:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9D3D11D4;
-        Fri, 22 Jan 2021 02:24:20 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 889CA3F719;
-        Fri, 22 Jan 2021 02:24:19 -0800 (PST)
-Subject: Re: [PATCH] drm/panfrost: Add governor data with pre-defined
- thresholds
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh@kernel.org, tomeu.vizoso@collabora.com,
-        alyssa.rosenzweig@collabora.com, dri-devel@lists.freedesktop.org,
-        daniel.lezcano@linaro.org
-References: <20210121170445.19761-1-lukasz.luba@arm.com>
- <c5ad1148-0494-aaed-581a-c13ed94e42e8@arm.com>
- <38c4dc94-0613-33f9-e4e4-e42d451aed9b@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <cd5a78e8-ba0a-d502-29e7-8d25ddb52659@arm.com>
-Date:   Fri, 22 Jan 2021 10:24:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727918AbhAVKis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:38:48 -0500
+Received: from mail-qk1-f171.google.com ([209.85.222.171]:45329 "EHLO
+        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727686AbhAVK1l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:27:41 -0500
+Received: by mail-qk1-f171.google.com with SMTP id r77so4398951qka.12;
+        Fri, 22 Jan 2021 02:27:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vIhaoWWM2NuvcKtHLoEI/L9Ww4a1tUHzU1E2WQMOo5w=;
+        b=KDeilWXhLdJDNtixRhEP2hRLvuoXPXly9vb7deUsnUKL7K7kVZLHwf95U4lv8+uuBM
+         /dI7BXuA95MxyGyn2pAUIKhApHn8O+dFmhezgLgWgDaMvXC8WXBii1NrkIiysUFDuaZM
+         mT9dg9uMVdgKUUq9OEj1oF/sOyWu5eX/vOjYJQ3eYHca7i+sYkZ0ShRr/6pm6M1YWv3L
+         46o1Z4uo03Lu5ibTPrTRLHuWd05Ro0/1MO1Ce5NnqNrDPxoBgMC7Wvc4Cpniw2/WYQ24
+         knmqG91V9gvNQcuWmOe1nQzVz9eSJUc6t+bMIoqA0lxrOXB7zDoTOMwIlPDyjwdxJO/F
+         ZWqg==
+X-Gm-Message-State: AOAM532hKDS0PU0573mPqbwg4NaMtcL0wYfLw/uJsu9qCEP2bP5fdfa0
+        pXMVtQQglZTx7cISPfyZCPfCNPYpnzFyTbCTyr+3eCN4678=
+X-Google-Smtp-Source: ABdhPJz5gomdyAhwwTrS/cCraJKQYLV1Xstvybuakg5104eF8OEciWtScQ23mGx0NJemupv6WYheBYeYdD4Ct78hpeA=
+X-Received: by 2002:a05:620a:b8c:: with SMTP id k12mr1169848qkh.114.1611311219427;
+ Fri, 22 Jan 2021 02:26:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <38c4dc94-0613-33f9-e4e4-e42d451aed9b@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210121100619.5653-1-wsa+renesas@sang-engineering.com> <20210121100619.5653-6-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210121100619.5653-6-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 22 Jan 2021 11:26:48 +0100
+Message-ID: <CAMuHMdX1PoB-YNXvtr5dFMKu9OE8TdOB43fRfED_wVV6LhRU8g@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] WIP! arm64: dts: renesas: falcon: Add
+ Ethernet-AVB1-5 support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/01/2021 10:00, Lukasz Luba wrote:
-> 
-> 
-> On 1/22/21 8:21 AM, Steven Price wrote:
->> On 21/01/2021 17:04, Lukasz Luba wrote:
->>> The simple_ondemand devfreq governor uses two thresholds to decide about
->>> the frequency change: upthreshold, downdifferential. These two tunable
->>> change the behavior of the governor decision, e.g. how fast to increase
->>> the frequency or how rapidly limit the frequency. This patch adds needed
->>> governor data with thresholds values gathered experimentally in 
->>> different
->>> workloads.
->>>
->>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>> Hi all,
->>>
->>> This patch aims to improve the panfrost performance in various 
->>> workloads,
->>> (benchmarks, games). The simple_ondemand devfreq governor supports
->>> tunables to tweak the behaviour of the internal algorithm. The default
->>> values for these two thresholds (90 and 5) do not work well with 
->>> panfrost.
->>> These new settings should provide good performance, short latency for
->>> rising the frequency due to rapid workload change and decent freq slow
->>> down when the load is decaying. Based on frequency change statistics,
->>> gathered during experiments, all frequencies are used, depending on
->>> the load. This provides some power savings (statistically). The highest
->>> frequency is also used when needed.
->>>
->>> Example glmark2 results:
->>> 1. freq fixed to max: 153
->>> 2. these new thresholds values (w/ patch): 151
->>> 3. default governor values (w/o patch): 114
->>
->> It would be good to state which platform this is on as this obviously 
->> can vary depending on the OPPs available.
-> 
-> Sorry about that. It was Rock Pi 4B and I have mesa 20.2.4.
-> 
->>
->> Of course the real fix here would be to improve the utilisation of the 
->> GPU[1] so we actually hit the 90% threshold more easily (AFAICT kbase 
->> uses the default 90/5 thresholds), but this seems like a reasonable 
->> change for now.
-> 
-> Agree, improving the scheduler would be the best option. I'll have a
-> look at that patch and why it got this 10% lower performance. Maybe
-> I would find something during testing.
+Hi Wolfram,
 
-I'm afraid it'll probably need a fair bit of work to rebase - things 
-have changed around that code. I'm hoping that most of the problem was 
-really around how Mesa was driving the GPU at that time and things 
-should be better. The DDK (hacked to talk Panfrost ioctls) saw a 
-performance improvement.
+On Thu, Jan 21, 2021 at 11:06 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> PHYs on the subboard could not be reached via remote access. But this is
+> the latest DTS snipplet with some fixes suggested by Geert as a starting
+> point. Not for upstream yet!
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+> Change since v1:
+>
+> * new patch
+> * removed rxc-skew-ps property
+> * renamed phy-addresses to 0 ('@0')
+> * dropped '_tx' suffix from 'pins_mii' config
+> * added 'okay' status
+> * moved entries to Falcon CPU dtsi
 
-Let me know if you hit problems and need any help.
+Thanks for the update!
 
->>
->> Reviewed-by: Steven Price <steven.price@arm.com>
-> 
-> Thank you for the review. I guess this patch would go through drm tree?
+>  .../boot/dts/renesas/r8a779a0-falcon-cpu.dtsi | 160 ++++++++++++++++++
 
-Yes, I'll push it to drm-misc-next later.
+New file r8a779a0-falcon-ether.dtsi?
 
-Thanks,
+> +       avb5_pins: avb5 {
+> +               mux {
+> +                       groups = "avb5_link", "avb5_mdio", "avb5_rgmii", "avb5_txcrefclk";
+> +                       function = "avb5";
+> +               };
+> +
+> +               pins_mdio {
+> +                       groups = "avb5_mdio";
+> +                       drive-strength = <21>;
+> +               };
+> +
+> +               ins_mii {
 
-Steve
+pins_mii
 
-> Regards,
-> Lukasz
-> 
->>
->> Thanks,
->>
->> Steve
->>
->> [1] When I get some time I need to rework the "queue jobs on the 
->> hardware"[2] patch I posted ages ago. Last time it actually caused a 
->> performance regression though...
->>
->> [2] 
->> https://lore.kernel.org/r/20190816093107.30518-2-steven.price%40arm.com
->>
+> +                       groups = "avb5_rgmii";
+> +                       drive-strength = <21>;
+> +               };
+> +       };
+> +
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
