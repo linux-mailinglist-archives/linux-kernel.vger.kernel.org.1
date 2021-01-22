@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42152FFC6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9027E2FFC74
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbhAVGFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:05:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:59518 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbhAVGE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:04:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFDF211B3;
-        Thu, 21 Jan 2021 22:04:04 -0800 (PST)
-Received: from [10.163.92.92] (unknown [10.163.92.92])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B7D03F68F;
-        Thu, 21 Jan 2021 22:04:00 -0800 (PST)
-Subject: Re: [PATCH V3 0/3] mm/memory_hotplug: Pre-validate the address range
- with platform
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        id S1726396AbhAVGMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:12:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbhAVGMa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 01:12:30 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A06AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:11:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=QPNdt7ovBYNhxHq39ggDMXhhyoXYMScMZEiARI31TjM=; b=z2C4K8hygWN2/0+W9n5SbxsWyc
+        a5oSwKl3vasWP/GbetJhiYq63AaZHX0MZCmpd6RkVcb5WAEjWNoDsxhprqGTswUOXST/bukcV6LBA
+        xGVTmd1dOn7hsqdy1CDzCXzOlxjrScuQ3fF3QTlz2cTIws2HnYceZnn+ukHWHbVdUV6fO7DEe+OU2
+        tW7Oh2+o5rekEyyWHHdxCXZ3Cwfm671lReFgVsDljdZUxRAYeoEFL9rklsA5gD3/kddluqIvKAXZH
+        CQtrfvl4HjPxoGaPaA8U/n4ybQ/xoqwHdM7If1apqaCLd1sNTlBCx26dI0CjdISsprxUZOVJCo3MR
+        LVUB87Zg==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2pfN-00059h-UT; Fri, 22 Jan 2021 06:11:30 +0000
+Subject: Re: [PATCH] powerpc/8xx: export 'cpm_setbrg' for modules
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org
-References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
- <d57036a1-de12-2d32-be65-daaa3dc5b772@redhat.com>
- <20210119134016.GA23408@linux> <8df4e1e1-1ddd-398e-c9a6-17a67d8a95bc@arm.com>
-Message-ID: <1c8c204d-1f96-d3aa-1b7b-ec4cc7b1b79b@arm.com>
-Date:   Fri, 22 Jan 2021 11:34:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Cc:     kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210122010819.30986-1-rdunlap@infradead.org>
+ <91159e78-4eea-c645-9171-a5b90271710f@csgroup.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e8e78537-0775-95b2-3161-5b5e07e784fe@infradead.org>
+Date:   Thu, 21 Jan 2021 22:11:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <8df4e1e1-1ddd-398e-c9a6-17a67d8a95bc@arm.com>
+In-Reply-To: <91159e78-4eea-c645-9171-a5b90271710f@csgroup.eu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 1/20/21 2:07 PM, Anshuman Khandual wrote:
+On 1/21/21 9:51 PM, Christophe Leroy wrote:
 > 
 > 
-> On 1/19/21 7:10 PM, Oscar Salvador wrote:
->> On Tue, Jan 19, 2021 at 02:33:03PM +0100, David Hildenbrand wrote:
->>> Minor thing, we should make up our mind if we want to call stuff
->>> internally "memhp_" or "mhp". I prefer the latter, because it is shorter.
+> Le 22/01/2021 à 02:08, Randy Dunlap a écrit :
+>> Fix missing export for a loadable module build:
 >>
->> I would rather use the latter as well. I used that in [1].
-> 
-> Okay, will change all that is 'memhp' as 'mhp' instead.
-> 
->> MEMHP_MERGE_RESOURCE should be renamed if we agree on that.
+>> ERROR: modpost: "cpm_setbrg" [drivers/tty/serial/cpm_uart/cpm_uart.ko] undefined!
 >>
->> [1] https://patchwork.kernel.org/project/linux-mm/cover/20201217130758.11565-1-osalvador@suse.de/
+>> Fixes: 4128a89ac80d ("powerpc/8xx: move CPM1 related files from sysdev/ to platforms/8xx")
+> 
+> I don't understand. Before that commit cpm_setbrg() wasn't exported either.
+> 
+> For me, it fixes the commit that brought the capability to build the cpm uart driver as a module, that is commit 1da177e4c3f4 ("Linux-2.6.12-rc")
+
+OK, I didn't have a lot of confidence in that tag.
+
+Thanks for commenting.
+
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Nick Desaulniers <ndesaulniers@google.com>
+>> Cc: clang-built-linux@googlegroups.com
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> ---
+>>   arch/powerpc/platforms/8xx/cpm1.c |    1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> --- linux-next-20210121.orig/arch/powerpc/platforms/8xx/cpm1.c
+>> +++ linux-next-20210121/arch/powerpc/platforms/8xx/cpm1.c
+>> @@ -280,6 +280,7 @@ cpm_setbrg(uint brg, uint rate)
+>>           out_be32(bp, (((BRG_UART_CLK_DIV16 / rate) - 1) << 1) |
+>>                     CPM_BRG_EN | CPM_BRG_DIV16);
+>>   }
+>> +EXPORT_SYMBOL(cpm_setbrg);
+>>     struct cpm_ioport16 {
+>>       __be16 dir, par, odr_sor, dat, intr;
 >>
 
-While replacing 'memhp' as 'mhp' in this series, noticed there are
-some more 'memhp' scattered around the code from earlier. A mix of
-both 'memhp' and 'mhp' might not be a good idea. Hence should we
-just change these remaining 'memhp' as 'mhp' as well and possibly
-also MEMHP_MERGE_RESOURCE as suggested earlier, in a subsequent
-clean up patch ? Would there be a problem with memhp_default_state
-being a command line parameter ?
 
-From a tree wide search -
-
-Documentation/admin-guide/kernel-parameters.txt:        memhp_default_state=online/offline
-drivers/base/memory.c:int memhp_online_type_from_str(const char *str)
-drivers/base/memory.c:  const int online_type = memhp_online_type_from_str(buf);
-drivers/base/memory.c:                    online_type_to_str[memhp_default_online_type]);
-drivers/base/memory.c:  const int online_type = memhp_online_type_from_str(buf);
-drivers/base/memory.c:  memhp_default_online_type = online_type;
-include/linux/memory_hotplug.h:extern int memhp_online_type_from_str(const char *str);
-include/linux/memory_hotplug.h:extern int memhp_default_online_type;
-mm/memory_hotplug.c:int memhp_default_online_type = MMOP_OFFLINE;
-mm/memory_hotplug.c:int memhp_default_online_type = MMOP_ONLINE;
-mm/memory_hotplug.c:static int __init setup_memhp_default_state(char *str)
-mm/memory_hotplug.c:    const int online_type = memhp_online_type_from_str(str);
-mm/memory_hotplug.c:            memhp_default_online_type = online_type;
-mm/memory_hotplug.c:__setup("memhp_default_state=", setup_memhp_default_state);
-mm/memory_hotplug.c:    mem->online_type = memhp_default_online_type;
-mm/memory_hotplug.c:    if (memhp_default_online_type != MMOP_OFFLINE)
+-- 
+~Randy
+RFC: Features and documentation: http://lwn.net/Articles/260136/
