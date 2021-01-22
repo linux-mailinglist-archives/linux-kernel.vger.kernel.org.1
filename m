@@ -2,87 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686E12FFEE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62B12FFEE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbhAVJAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:00:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727118AbhAVI57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:57:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8D42236F9;
-        Fri, 22 Jan 2021 08:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611305838;
-        bh=4WN6WZIW13Le34niPrIRUQdbKEyv4ykFjZJuLrSXaiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JhSYGN0PghLXGESOCeXh2tkF9iNKbHvDaqdFkKDlU/X+fapCtshs5v5qccX3I8ooi
-         TWEMQS/2Q/DNYCYSY9rifsjlllcaf+opDTNiHSVvDEdPQbZuINrtfjSJCMWdHjDvYJ
-         3PXK6vTAZzilC6pq9sMfmEOuvwQKsHOLq2ouJeTT/4Izo+MCwKI2c1lfb0GudbPrEf
-         W1hFxq7jkNvW4hEAuoV4uOKvPr0EpPuFD2/cWjHRNhP8HiucXqEw+w5VxllIxpjc0V
-         tYNp8XDRRi19KMweFRNWs5pV6l6nkVvszb46x3GtasG+rt7OKc+7htL1dtZDbg7BYT
-         tMrX1uqh7WYAA==
-Date:   Fri, 22 Jan 2021 09:57:15 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 2/3] i2c: remove u300 bus driver
-Message-ID: <20210122085715.GD858@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <20210120132834.2375048-1-arnd@kernel.org>
- <20210120132834.2375048-3-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Xm/fll+QQv+hsKip"
-Content-Disposition: inline
-In-Reply-To: <20210120132834.2375048-3-arnd@kernel.org>
+        id S1727147AbhAVI7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:59:09 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:16705 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727246AbhAVI6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:58:36 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UMVADv3_1611305868;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMVADv3_1611305868)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 22 Jan 2021 16:57:53 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     steffen.klassert@secunet.com
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] net: Simplify the calculation of variables
+Date:   Fri, 22 Jan 2021 16:57:47 +0800
+Message-Id: <1611305867-88692-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following coccicheck warnings:
 
---Xm/fll+QQv+hsKip
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ ./net/ipv4/esp4_offload.c:288:32-34: WARNING !A || A && B is
+equivalent to !A || B.
 
-On Wed, Jan 20, 2021 at 02:28:33PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The ST-Ericsson U300 platform is getting removed, so this driver is no
-> longer needed.
->=20
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ net/ipv4/esp4_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to for-next, thanks!
+diff --git a/net/ipv4/esp4_offload.c b/net/ipv4/esp4_offload.c
+index 5bda5ae..9ba8cc5 100644
+--- a/net/ipv4/esp4_offload.c
++++ b/net/ipv4/esp4_offload.c
+@@ -285,7 +285,7 @@ static int esp_xmit(struct xfrm_state *x, struct sk_buff *skb,  netdev_features_
+ 	esp.esph = ip_esp_hdr(skb);
+ 
+ 
+-	if (!hw_offload || (hw_offload && !skb_is_gso(skb))) {
++	if (!hw_offload || (!skb_is_gso(skb))) {
+ 		esp.nfrags = esp_output_head(x, skb, &esp);
+ 		if (esp.nfrags < 0)
+ 			return esp.nfrags;
+-- 
+1.8.3.1
 
-
---Xm/fll+QQv+hsKip
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAKk2sACgkQFA3kzBSg
-KbZRvw/+OyljxnUQNMREamklyeMJR02JwAidu/4PEqYdquzIA3hgLXGqi20iyOs0
-eV/DBJDZIZekazTWX+kJBChu284tXDhz5pO2Yh7F15RbZJyrvTRWSnpsY4tfBICL
-sGglvz/djBnA66li63iOFwJeudxIU23sKVfTSA6v0iq6384mtgu2dJFIPjZV1Yi4
-JnaJhPEcO3RPnH5uUUKW9mqTt5Imt4AoVkJLeF4b65+xJWyeDzs7UOgyALvSrd9J
-BRc5vRVyZCpzAyk0lr4P9vy9STFdVrt3rB+hP1V9VPLT8luK2JMZn8kgxrVdNI+0
-+dUwOhUK2X2gRrsyFceZF7l8WRoLnE3srE5BU9+U3NeQdc096Uh7wqRxdVxa6g4D
-PEPqMkhXAiCBmJrs6bDZTg1J7EwK7NNZjElNRw4Npuftz/Ne416Z06qncny1a4hj
-pZPQVLOYKVYE1V+oLqHn4hhsE7olTWNWXqFhGvAaYTktIHjjiWTajQATMlyGb3HB
-ub6Qv74/yHg29czwHMlzRnOpqpGosdo7zS7vBFqmU8yLs2Ccsmn19KabAl5Md3um
-FZ8FY+JB8qP10hlt6e2z3yttUJ061Fr3iY58q48178VHk+s8VEBy51Ne4eoGrr+0
-nop5C1q8v3e6jRzF0maSRynlmSv04LSX+222NJRvNohRkXtHQAw=
-=nwUW
------END PGP SIGNATURE-----
-
---Xm/fll+QQv+hsKip--
