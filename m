@@ -2,135 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F05300C96
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDE3300CBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730516AbhAVT0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:26:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
+        id S1729238AbhAVTfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:35:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729786AbhAVTPR (ORCPT
+        with ESMTP id S1728674AbhAVTSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:15:17 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2B8C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:14:36 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id u16so755789qvo.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:14:36 -0800 (PST)
+        Fri, 22 Jan 2021 14:18:47 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07C2C061788;
+        Fri, 22 Jan 2021 11:18:06 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id f17so7760219ljg.12;
+        Fri, 22 Jan 2021 11:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Py8MjXlde3K/2wSxCvgyBlWJLLtZnHs44qLUqstYM9o=;
-        b=uvvAUCpgJr6i541gryy3vMZyO+jlZ+LopT45Sc9uLn5G87K0xoy8tWxefAJX5R8mOL
-         Wi6QZkrEgXFcN4Rnfkfe7z5simMfkvWn0iB7bnRjLr4vD2wqnjVqrxg4QWZyJwha2egY
-         GBz1fC9YD3plx0Jmna9PKmfXqGjfQT8HynTlc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x/j5bxV3su/zAKnCmk1bt6joxRJHQqb1aOUcW9Eg2tM=;
+        b=oZOF825K+Hgc9MwIwL7Uupdbk/HyRaPnb4qspvFVACKYhqiGe2UjBwIFuVI13qsk5s
+         OZEWJBqkldIn6TZNkefpbIERwuf5kzjyWcX8vzO7WPX1NU8bDMdXft7S3i4DV0+2nVZd
+         k3+lXzHQvHmRBj5g9GISGf4QOaj62r0n9w+3oeuvcbw8UrDI5S6eBIgiZRBgoKRiKEsi
+         2Gpph8/vNLK5zzXN6LxrNjS+eh4FNnXHvI3s7V9x3oriWDsx04jmRgA4LUigBAhcj/cY
+         L23nY5rmtjMNrgDXCZzUzqMVYtnhqT5RCOMwGXmzr0MlqYjA4jshIJSdfMLrgaWUAKhQ
+         Xe3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Py8MjXlde3K/2wSxCvgyBlWJLLtZnHs44qLUqstYM9o=;
-        b=dFRdRJEuu88yqUTIP8jNq1lmjie16iHchvKjoBO7EWvdxAX8TR/oBEPCXXCA39Sc6t
-         ZOvC/Lb+CuB8Xbr9soFkD4idbfF+j3LBfh91wFWuTP7eKwZSgpeRQinH8vT7uXgW0C3l
-         7ZOvi90LQbQEagWosdYU4kO/Nb7Eq8xJ1wmjY3X+BjGCCVELcnGXTGWTFLtznRlDXrxS
-         5O6nIhD7qENoZmymGuuSMGCD1CZBoJ0I0lHqA4yzm3BSFyO1MkELgNfPa5D6ickkWqn5
-         pP8pQsztkOW5WVkWvE9zcC9EXpoSwROJp9ZO/y7CtVOfofljWOo3U+EdZy1fkAemv+dr
-         ol5g==
-X-Gm-Message-State: AOAM533mLR9C05wsDAVBfpJ0vjuhpHjNWmHavPpCpraSHFfrZ0z0zCe+
-        UPCbbWKZBODovVn8ZcRRdhHAQ499+3478w==
-X-Google-Smtp-Source: ABdhPJwKFB6sGJHsRsYbOmB8ZPfxj2x8s82RxXPxwuXmMAECp5yrCkvKilB9zycn7tLTJTUrQAc0eg==
-X-Received: by 2002:ad4:4f4a:: with SMTP id eu10mr5976653qvb.17.1611342876108;
-        Fri, 22 Jan 2021 11:14:36 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id m6sm843344qkm.25.2021.01.22.11.14.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x/j5bxV3su/zAKnCmk1bt6joxRJHQqb1aOUcW9Eg2tM=;
+        b=OLIiGu7AKdRhx2gA/HZW3g7v1GI8Bnhe/tmjKtaBVMfSdpOE31hDHHVs3ExPnJJHhi
+         gx/Ti1+g2NHLjzOf39ApmxNgzDrAQ2bvlJOAvM66hSJCFeUISJ8pzmWZyB/SXU0IeI63
+         iSgP2BHiCZqEY34VfVM6fMGFAhGeUVEpnfHoTZhHJFkLdxLruS+W+S5mnO07aD3+LflS
+         rHwmw1Wd0vNOj/7QN2CzFoC+MpPYdnixLmtuVvuovu/bArxOWPwQiFD/PeQe8JDNT9cy
+         pOAFlykYJy6m/7/0r7xDuw0mmvwuaZdGmgVt0y15SRdKUiVddMdZJKgqTOx87OeTjmdE
+         /3Kg==
+X-Gm-Message-State: AOAM533BsNfTLrBtt/l9CZMkgWRvYb1VrGhUiANptZqR6Od5ViEvtKH1
+        S9AEl/iyfjUKKBteOInSeoc=
+X-Google-Smtp-Source: ABdhPJyy8oO/DvRhkAOrLEsBbRgcpb0qTO8Jr2QGtf/mhAaoGnPDUaG0HSdyNlWx4Kox2DoKjum6XQ==
+X-Received: by 2002:a2e:81d5:: with SMTP id s21mr1057426ljg.263.1611343085197;
+        Fri, 22 Jan 2021 11:18:05 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id f205sm94759lfd.70.2021.01.22.11.18.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 11:14:35 -0800 (PST)
-Date:   Fri, 22 Jan 2021 14:14:35 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] sched/fair: Rate limit calls to
- update_blocked_averages() for NOHZ
-Message-ID: <YAskGxlUnd6SkbYt@google.com>
-References: <20210122154600.1722680-1-joel@joelfernandes.org>
- <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <20210122183927.ivqyapttzd6lflwk@e107158-lin>
+        Fri, 22 Jan 2021 11:18:04 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] power: supply: smb347-charger: Fix interrupt usage if interrupt is unavailable
+Date:   Fri, 22 Jan 2021 22:17:34 +0300
+Message-Id: <20210122191734.27584-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122183927.ivqyapttzd6lflwk@e107158-lin>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 06:39:27PM +0000, Qais Yousef wrote:
-> On 01/22/21 17:56, Vincent Guittot wrote:
-> > > ---
-> > >  kernel/sched/fair.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 04a3ce20da67..fe2dc0024db5 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -8381,7 +8381,7 @@ static bool update_nohz_stats(struct rq *rq, bool force)
-> > >         if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
-> > >                 return false;
-> > >
-> > > -       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick))
-> > > +       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick + (HZ/20)))
-> > 
-> > This condition is there to make sure to update blocked load at most
-> > once a tick in order to filter newly idle case otherwise the rate
-> > limit is already done by load balance interval
-> > This hard coded (HZ/20) looks really like an ugly hack
-> 
-> This was meant as an RFC patch to discuss the problem really.
+The IRQ=0 could be a valid interrupt number in kernel because interrupt
+numbers are virtual in a modern kernel. Hence fix the interrupt usage in
+a case if interrupt is unavailable by not overriding the interrupt number
+which is used by the driver.
 
-Agreed, sorry.
+Note that currently Nexus 7 is the only know device which uses SMB347
+kernel diver and it has a properly working interrupt, hence this patch
+doesn't fix any real problems, it's a minor cleanup/improvement.
 
-> Joel is seeing update_blocked_averages() taking ~100us. Half of it seems in
-> processing __update_blocked_fair() and the other half in sugov_update_shared().
-> So roughly 50us each. Note that each function is calling an iterator in
-> return. Correct me if my numbers are wrong Joel.
+Fixes: 99298de5df92 ("power: supply: smb347-charger: Replace mutex with IRQ disable/enable")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/power/supply/smb347-charger.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Correct, and I see update_nohz_stats() itself called around 8 times during a
-load balance which multiplies the overhead.
+diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
+index d3bf35ed12ce..8cfbd8d6b478 100644
+--- a/drivers/power/supply/smb347-charger.c
++++ b/drivers/power/supply/smb347-charger.c
+@@ -137,6 +137,7 @@
+  * @mains_online: is AC/DC input connected
+  * @usb_online: is USB input connected
+  * @charging_enabled: is charging enabled
++ * @irq_unsupported: is interrupt unsupported by SMB hardware
+  * @max_charge_current: maximum current (in uA) the battery can be charged
+  * @max_charge_voltage: maximum voltage (in uV) the battery can be charged
+  * @pre_charge_current: current (in uA) to use in pre-charging phase
+@@ -193,6 +194,7 @@ struct smb347_charger {
+ 	bool			mains_online;
+ 	bool			usb_online;
+ 	bool			charging_enabled;
++	bool			irq_unsupported;
+ 
+ 	unsigned int		max_charge_current;
+ 	unsigned int		max_charge_voltage;
+@@ -862,6 +864,9 @@ static int smb347_irq_set(struct smb347_charger *smb, bool enable)
+ {
+ 	int ret;
+ 
++	if (smb->irq_unsupported)
++		return 0;
++
+ 	ret = smb347_set_writable(smb, true);
+ 	if (ret < 0)
+ 		return ret;
+@@ -923,8 +928,6 @@ static int smb347_irq_init(struct smb347_charger *smb,
+ 	ret = regmap_update_bits(smb->regmap, CFG_STAT,
+ 				 CFG_STAT_ACTIVE_HIGH | CFG_STAT_DISABLED,
+ 				 CFG_STAT_DISABLED);
+-	if (ret < 0)
+-		client->irq = 0;
+ 
+ 	smb347_set_writable(smb, false);
+ 
+@@ -1345,6 +1348,7 @@ static int smb347_probe(struct i2c_client *client,
+ 		if (ret < 0) {
+ 			dev_warn(dev, "failed to initialize IRQ: %d\n", ret);
+ 			dev_warn(dev, "disabling IRQ support\n");
++			smb->irq_unsupported = true;
+ 		} else {
+ 			smb347_irq_enable(smb);
+ 		}
+@@ -1357,8 +1361,8 @@ static int smb347_remove(struct i2c_client *client)
+ {
+ 	struct smb347_charger *smb = i2c_get_clientdata(client);
+ 
+-	if (client->irq)
+-		smb347_irq_disable(smb);
++	smb347_irq_disable(smb);
++
+ 	return 0;
+ }
+ 
+-- 
+2.29.2
 
-Dietmar found out also that the reason for update_nohz_stacks() being called
-8 times is because in our setup, there is only 1 MC sched domain with all 8
-CPUs, versus say 2 MC domains with 4 CPUs each.
-
-> Running on a little core on low frequency these numbers don't look too odd.
-> So I'm not seeing how we can speed these functions up.
-
-Agreed.
-
-> But since update_sg_lb_stats() will end up with multiple calls to
-> update_blocked_averages() in one go, this latency adds up quickly.
-
-True!
-
-> One noticeable factor in Joel's system is the presence of a lot of cgroups.
-> Which is essentially what makes __update_blocked_fair() expensive, and it seems
-> to always return something has decayed so we end up with a call to
-> sugov_update_shared() in every call.
-
-Correct.
-
-thanks,
-
- - Joel
-
-[..]
