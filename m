@@ -2,158 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E734C2FFA5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAC12FFA5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbhAVCZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 21:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbhAVCZh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 21:25:37 -0500
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D21C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 18:24:57 -0800 (PST)
-Received: by mail-vs1-xe2a.google.com with SMTP id o19so2256917vsn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 18:24:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XAhkXR3v/Trmg98rGb282YEmEKWvpDJKR5OuaxfB1LU=;
-        b=favjwhbGx3cxHQQ1FjgoCMzHl6Icuq/kfdcJ/JMLXT0e783mb1Hi3KQKC/p69oQjpQ
-         YDAhnyijcUL0oN68cufZr2uHr4Mv/XJaUo6Y6/cOoAWLkNchUc/hFVNjosrZqk/toala
-         0qRC037nk9trBeKYUokbtdlmkhmXldKOAYSM4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XAhkXR3v/Trmg98rGb282YEmEKWvpDJKR5OuaxfB1LU=;
-        b=CRdO5JXHL0hIXco/KP/Tp4f4qnuhuCML5OyfPH9IJo1Ryu+d1Bu3EBJrrNLeswW0wg
-         yXjGkk0s7LByNQXmbQPK8Dmx71Bop4W563bOqebfX3qY/WK0JkSCd9uA7O4jlBugBSOk
-         14l3TGfd5UUXLly+cx7lra00ZxdU2dhu6mz3Ytq4UebPafjgJ97SnZzNZRfXsxHJW0c2
-         /3oBDB8gD73GEQ03EmIkzmGFFmM9YfTyyh5z1+NXYqzb+p/dao7QbMMnLZbLEKxidvzX
-         Evz/x8I6aL1/W5n4I+o6LzLzkMTOXTF/SvjwKL9Q319eJnXxADAYxv+oLHwyi4kLrogk
-         QZYg==
-X-Gm-Message-State: AOAM532xvZ0Alc+651xOlgGLKq37Th6ousZdf0Ib7Hu/CIJImaX/KobY
-        OH3A5S6BpoOfzjoMjj4k8daXgS7kda8huFZmiivI6g==
-X-Google-Smtp-Source: ABdhPJy3N81AwAeHgosVgfd1HSZoRdxFSTyOEeOQQu+1V7AqchmE9OiuddnrJRg/M54GiyEhjtpx2uPSU/7YgrO3B5I=
-X-Received: by 2002:a67:e353:: with SMTP id s19mr358563vsm.53.1611282296505;
- Thu, 21 Jan 2021 18:24:56 -0800 (PST)
+        id S1726298AbhAVC16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 21:27:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725764AbhAVC1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 21:27:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91D4D22DFA;
+        Fri, 22 Jan 2021 02:27:13 +0000 (UTC)
+Date:   Thu, 21 Jan 2021 21:27:06 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?iso-8859-1?Q?Gy=F6rgy?= Andrasek <jurily@gmail.com>
+Cc:     Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>, Borislav Petkov <bp@suse.de>,
+        Julien Thierry <jthierry@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>, x86@kernel.org
+Subject: Re: [PATCH] objtool: Don't fail the kernel build on fatal errors
+Message-ID: <20210122022706.GA4667@home.goodmis.org>
+References: <9ec7a9531e99f461e02adc18a4124c921c0ab777.1610664286.git.jpoimboe@redhat.com>
+ <545be952-908a-f125-ebb0-d96ed1e25cd5@linux.vnet.ibm.com>
+ <581806c7-091e-b1f0-41f2-b770e8fd7f5b@gmail.com>
 MIME-Version: 1.0
-References: <20210122015938.964-1-max.chou@realtek.com>
-In-Reply-To: <20210122015938.964-1-max.chou@realtek.com>
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date:   Thu, 21 Jan 2021 18:24:43 -0800
-Message-ID: <CANFp7mWj+7Gq9hYUZodBaqyK-M0NSFLXEtvOVmPbT175vTm9zg@mail.gmail.com>
-Subject: Re: [PATCH v3] Bluetooth: btrtl: Enable WBS for the specific Realtek devices
-To:     max.chou@realtek.com
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Lu <alex_lu@realsil.com.cn>, hildawu@realtek.com,
-        kidman@realtek.com, Shyh-In Hwang <josephsih@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <581806c7-091e-b1f0-41f2-b770e8fd7f5b@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Max. Patch v3 looks good to me.
+On Thu, Jan 21, 2021 at 08:32:35AM +0100, György Andrasek wrote:
+> > This is basically a revert of commit 644592d32837 ("objtool: Fail the
+> kernel build on fatal errors").
+> 
+> > That change turned out to be more trouble than it's worth.
+> 
+> ...I'm sorry, what? Fatal errors are normal for you people? Seriously? I've
+> been compiling my own kernel since 2004, I've never seen one. I'd like some
+> explanation on this.
+>
 
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+I'm sorry, who are you? And why are you wasting our time with your drivel?
 
-On Thu, Jan 21, 2021 at 5:59 PM <max.chou@realtek.com> wrote:
->
-> From: Max Chou <max.chou@realtek.com>
->
-> By this change, it will enable WBS supported on the specific Realtek BT
-> devices, such as RTL8822C and RTL8852A.
-> In the future, it's able to maintain what the Realtek devices support WBS
-> here.
->
-> Tested-by: Hilda Wu <hildawu@realtek.com>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Max Chou <max.chou@realtek.com>
->
-> ---
-> change in v3
->  -remove the null check due to unnecessary
-> ---
->  drivers/bluetooth/btrtl.c | 29 +++++++++++++++++++++++------
->  1 file changed, 23 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-> index 24f03a1f8d57..a21d6abc93c4 100644
-> --- a/drivers/bluetooth/btrtl.c
-> +++ b/drivers/bluetooth/btrtl.c
-> @@ -38,6 +38,19 @@
->         .hci_ver = (hciv), \
->         .hci_bus = (bus)
->
-> +enum  btrtl_chip_id {
-> +       CHIP_ID_8723A,          /* index  0 for RTL8723A*/
-> +       CHIP_ID_8723B,          /* index  1 for RTL8723B*/
-> +       CHIP_ID_8821A,          /* index  2 for RTL8821A*/
-> +       CHIP_ID_8761A,          /* index  3 for RTL8761A*/
-> +       CHIP_ID_8822B = 8,      /* index  8 for RTL8822B */
-> +       CHIP_ID_8723D,          /* index  9 for RTL8723D */
-> +       CHIP_ID_8821C,          /* index 10 for RTL8821C */
-> +       CHIP_ID_8822C = 13,     /* index 13 for RTL8822C */
-> +       CHIP_ID_8761B,          /* index 14 for RTL8761B */
-> +       CHIP_ID_8852A = 18,     /* index 18 for RTL8852A */
-> +};
-> +
->  struct id_table {
->         __u16 match_flags;
->         __u16 lmp_subver;
-> @@ -58,6 +71,7 @@ struct btrtl_device_info {
->         u8 *cfg_data;
->         int cfg_len;
->         bool drop_fw;
-> +       int project_id;
->  };
->
->  static const struct id_table ic_id_table[] = {
-> @@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
->
->         /* Find project_id in table */
->         for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
-> -               if (project_id == project_id_to_lmp_subver[i].id)
-> +               if (project_id == project_id_to_lmp_subver[i].id) {
-> +                       btrtl_dev->project_id = project_id;
->                         break;
-> +               }
->         }
->
->         if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
-> @@ -719,18 +735,19 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
->          */
->         set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
->
-> -       if (!btrtl_dev->ic_info)
-> -               goto done;
-> -
->         /* Enable central-peripheral role (able to create new connections with
->          * an existing connection in slave role).
->          */
-> -       switch (btrtl_dev->ic_info->lmp_subver) {
-> -       case RTL_ROM_LMP_8822B:
-> +       /* Enable WBS supported for the specific Realtek devices. */
-> +       switch (btrtl_dev->project_id) {
-> +       case CHIP_ID_8822C:
-> +       case CHIP_ID_8852A:
->                 set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
-> +               set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
->                 break;
->         default:
->                 rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
-> +               rtl_dev_dbg(hdev, "WBS supported not enabled.");
->                 break;
->         }
->
-> --
-> 2.17.1
->
+This mailing list is not a place to work on your anger management issues,
+please find a therapist.
+
+Thanks,
+
+-- Steve
+
