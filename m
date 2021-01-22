@@ -2,201 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1AB3002C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4863002C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727381AbhAVMTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:19:41 -0500
-Received: from mga02.intel.com ([134.134.136.20]:44424 "EHLO mga02.intel.com"
+        id S1727764AbhAVMUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:20:03 -0500
+Received: from mga11.intel.com ([192.55.52.93]:30071 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728007AbhAVMJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:09:14 -0500
-IronPort-SDR: J1cRqzL8Yg5NuWT2ihPY3JWXzdJplrWkxKvBhuijh5kFyqnDpncI3xiaJsiw7PYDYQH4L1Qhb2
- GOOikGKB8L8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="166537736"
+        id S1727867AbhAVMJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:09:11 -0500
+IronPort-SDR: VQX6iC0+GXyB/EOk3fIQEa4ptAMZTpJyDwz3opKJfgI0s8upgnWwpAJyNWalgX+XVSh1lUHNCS
+ /4ViAeqWXXTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="175925333"
 X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="166537736"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:07:28 -0800
-IronPort-SDR: LI7d1B/P80MeyJkVkKXKN7OEzVq/WmfB9ZPT+CyMbHq5Dbr0B1vmeqlILwhcjOQ2ieQXgKqBA2
- BA4zdrJP78EQ==
-X-ExtLoop1: 1
+   d="scan'208";a="175925333"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:07:20 -0800
+IronPort-SDR: xdVWlbzc54tcrmDSsFUuM6XScKmUbE3MtfxlwnP0YOKqkRRGgcuHMmnzJ9b4QpRXHgNjwCiUsh
+ 3CEAABFE9/Gg==
 X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="427949436"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga001.jf.intel.com with SMTP; 22 Jan 2021 04:07:22 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 22 Jan 2021 14:07:22 +0200
-Date:   Fri, 22 Jan 2021 14:07:22 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>, Sean Paul <sean@poorly.run>,
-        freedreno@lists.freedesktop.org, Tomi Valkeinen <tomba@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 06/11] drm: Use state helper instead of plane state
- pointer in atomic_check
-Message-ID: <YAq/+udQfTwdamQ0@intel.com>
-References: <20210121163537.1466118-1-maxime@cerno.tech>
- <20210121163537.1466118-6-maxime@cerno.tech>
+   d="scan'208";a="367399401"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:07:18 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l2vEj-008qU9-7Q; Fri, 22 Jan 2021 14:08:21 +0200
+Date:   Fri, 22 Jan 2021 14:08:21 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v1] misc: pti: Remove driver for deprecated platform
+Message-ID: <YArANXckLdSUoWNZ@smile.fi.intel.com>
+References: <20210122114358.39299-1-andriy.shevchenko@linux.intel.com>
+ <CAK8P3a2qdugQt61nZ-nabnCsDLCwD5r_9e6tXKksmbue4hJBoQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210121163537.1466118-6-maxime@cerno.tech>
-X-Patchwork-Hint: comment
+In-Reply-To: <CAK8P3a2qdugQt61nZ-nabnCsDLCwD5r_9e6tXKksmbue4hJBoQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 05:35:31PM +0100, Maxime Ripard wrote:
-> Many drivers reference the plane->state pointer in order to get the
-> current plane state in their atomic_check hook, which would be the old
-> plane state in the global atomic state since _swap_state hasn't happened
-> when atomic_check is run.
+On Fri, Jan 22, 2021 at 12:58:32PM +0100, Arnd Bergmann wrote:
+> On Fri, Jan 22, 2021 at 12:43 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > Intel Moorestown and Medfield are quite old Intel Atom based
+> > 32-bit platforms, which were in limited use in some Android phones,
+> > tablets and consumer electronics more than eight years ago.
+> >
+> > There are no bugs or problems ever reported outside from Intel
+> > for breaking any of that platforms for years. It seems no real
+> > users exists who run more or less fresh kernel on it. The commit
+> > 05f4434bc130 ("ASoC: Intel: remove mfld_machine") also in align
+> > with this theory.
+> >
+> > Due to above and to reduce a burden of supporting outdated drivers
+> > we remove the support of outdated platforms completely.
+> >
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
 > 
-> Use the drm_atomic_get_old_plane_state helper to get that state to make
-> it more obvious.
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 > 
-> This was made using the coccinelle script below:
-> 
-> @ plane_atomic_func @
-> identifier helpers;
-> identifier func;
-> @@
-> 
-> static struct drm_plane_helper_funcs helpers = {
-> 	...,
-> 	.atomic_check = func,
-> 	...,
-> };
-> 
-> @ replaces_old_state @
-> identifier plane_atomic_func.func;
-> identifier plane, state, plane_state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_atomic_state *state) {
->  	...
-> -	struct drm_plane_state *plane_state = plane->state;
-> +	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
->  	...
->  }
-> 
-> @@
-> identifier plane_atomic_func.func;
-> identifier plane, state, plane_state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_atomic_state *state) {
->  	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
->  	...
-> -	plane->state
-> +	plane_state
->  	...
+> Does this mean drivers/sfi/ can get killed off along with
+> arch/x86/platforms/{intel-mid,sfi}, or are there still other
+> machines using that?
 
-We don't need the <... ...> style here? It's been a while since
-I did any serious cocci so I'm getting a bit rusty on the details...
+Yes, but it's hard to get Len's attention on it.
 
-Otherwise looks great
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+FWIW, look at [1].
 
->  }
-> 
-> @ adds_old_state @
-> identifier plane_atomic_func.func;
-> identifier plane, state;
-> @@
-> 
->  func(struct drm_plane *plane, struct drm_atomic_state *state) {
-> +	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
->  	...
-> -	plane->state
-> +	old_plane_state
->  	...
->  }
-> 
-> @ include depends on adds_old_state || replaces_old_state @
-> @@
-> 
->  #include <drm/drm_atomic.h>
-> 
-> @ no_include depends on !include && (adds_old_state || replaces_old_state) @
-> @@
-> 
-> + #include <drm/drm_atomic.h>
->   #include <drm/...>
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/gpu/drm/imx/ipuv3-plane.c          | 3 ++-
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c | 4 +++-
->  drivers/gpu/drm/tilcdc/tilcdc_plane.c      | 3 ++-
->  3 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
-> index b5f6123850bb..6484592e3f86 100644
-> --- a/drivers/gpu/drm/imx/ipuv3-plane.c
-> +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
-> @@ -341,7 +341,8 @@ static int ipu_plane_atomic_check(struct drm_plane *plane,
->  {
->  	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
->  									   plane);
-> -	struct drm_plane_state *old_state = plane->state;
-> +	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
-> +									   plane);
->  	struct drm_crtc_state *crtc_state;
->  	struct device *dev = plane->dev->dev;
->  	struct drm_framebuffer *fb = new_state->fb;
-> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
-> index 4aac6217a5ad..6ce6ce09fecc 100644
-> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
-> @@ -406,12 +406,14 @@ static int mdp5_plane_atomic_check_with_state(struct drm_crtc_state *crtc_state,
->  static int mdp5_plane_atomic_check(struct drm_plane *plane,
->  				   struct drm_atomic_state *state)
->  {
-> +	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state,
-> +										 plane);
->  	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
->  										 plane);
->  	struct drm_crtc *crtc;
->  	struct drm_crtc_state *crtc_state;
->  
-> -	crtc = new_plane_state->crtc ? new_plane_state->crtc : plane->state->crtc;
-> +	crtc = new_plane_state->crtc ? new_plane_state->crtc : old_plane_state->crtc;
->  	if (!crtc)
->  		return 0;
->  
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_plane.c b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-> index ebdd42dcaf82..c86258132432 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-> @@ -26,7 +26,8 @@ static int tilcdc_plane_atomic_check(struct drm_plane *plane,
->  	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
->  									   plane);
->  	struct drm_crtc_state *crtc_state;
-> -	struct drm_plane_state *old_state = plane->state;
-> +	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
-> +									   plane);
->  	unsigned int pitch;
->  
->  	if (!new_state->crtc)
-> -- 
-> 2.29.2
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+[1]: https://gitlab.com/andy-shev/next/-/tree/topic/mid-removal
 
 -- 
-Ville Syrjälä
-Intel
+With Best Regards,
+Andy Shevchenko
+
+
