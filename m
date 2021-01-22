@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A02300BEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B865300BEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730338AbhAVSyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:54:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
+        id S1730275AbhAVSxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:53:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728524AbhAVOWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2EA523B51;
-        Fri, 22 Jan 2021 14:16:04 +0000 (UTC)
+        id S1728522AbhAVOWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C04B23AC8;
+        Fri, 22 Jan 2021 14:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324965;
-        bh=U+H9QY895yIA4dEjk9EOwQp3tOH3m8bsnCOmG/cOMGA=;
+        s=korg; t=1611324970;
+        bh=FF0Eut46PKr87ElysybdlIYlogJYoUuULboTnAlfkaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y25u0bqwJGbgodVX6xhN6ZtB/kd6hHvQTbzpJv2xoLeLiFv1f29ufhX2JGAOCXYq+
-         RpILcgm56xVXkQd64kebm1OYGyXaKJptr1iQ1R7pPTE+ds0SxxvrutJsZe9q8wz5+v
-         +aqYLoBT6e430Nnu7uW5pOiliwOuT3xoiuiQk0wY=
+        b=yI6PnkmQyHGgszXWl6nJWosdALdtl47bTzb5IQxpXOrVlL/PAMd2ZK2bWtiXorDhV
+         jTARZs0srqWcEH1+R3izEhOtiyxH1X8PhMaZPpFNK+NliAVMHHdjRMEo9HNvUzggv7
+         0SRyRktkNtch5mrbKVFQreM9xE9YiGUJnbjUpqhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jian Cai <jiancai@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH 4.19 04/22] crypto: x86/crc32c - fix building with clang ias
-Date:   Fri, 22 Jan 2021 15:12:22 +0100
-Message-Id: <20210122135732.098221677@linuxfoundation.org>
+        stable@vger.kernel.org, Youjipeng <wangzhibei1999@gmail.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 4.19 05/22] nfsd4: readdirplus shouldnt return parent of export
+Date:   Fri, 22 Jan 2021 15:12:23 +0100
+Message-Id: <20210122135732.135933562@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
 References: <20210122135731.921636245@linuxfoundation.org>
@@ -42,39 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit 44623b2818f4a442726639572f44fd9b6d0ef68c upstream.
+commit 51b2ee7d006a736a9126e8111d1f24e4fd0afaa6 upstream.
 
-The clang integrated assembler complains about movzxw:
+If you export a subdirectory of a filesystem, a READDIRPLUS on the root
+of that export will return the filehandle of the parent with the ".."
+entry.
 
-arch/x86/crypto/crc32c-pcl-intel-asm_64.S:173:2: error: invalid instruction mnemonic 'movzxw'
+The filehandle is optional, so let's just not return the filehandle for
+".." if we're at the root of an export.
 
-It seems that movzwq is the mnemonic that it expects instead,
-and this is what objdump prints when disassembling the file.
+Note that once the client learns one filehandle outside of the export,
+they can trivially access the rest of the export using further lookups.
 
-Fixes: 6a8ce1ef3940 ("crypto: crc32c - Optimize CRC32C calculation with PCLMULQDQ instruction")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-[jc: Fixed conflicts due to lack of 34fdce6981b9 ("x86: Change {JMP,CALL}_NOSPEC argument")]
-Signed-off-by: Jian Cai <jiancai@google.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
+However, it is also not very difficult to guess filehandles outside of
+the export.  So exporting a subdirectory of a filesystem should
+considered equivalent to providing access to the entire filesystem.  To
+avoid confusion, we recommend only exporting entire filesystems.
+
+Reported-by: Youjipeng <wangzhibei1999@gmail.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/crypto/crc32c-pcl-intel-asm_64.S |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-+++ b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-@@ -170,7 +170,7 @@ continue_block:
- 
- 	## branch into array
- 	lea	jump_table(%rip), bufp
--	movzxw  (bufp, %rax, 2), len
-+	movzwq  (bufp, %rax, 2), len
- 	lea	crc_array(%rip), bufp
- 	lea     (bufp, len, 1), bufp
- 	JMP_NOSPEC bufp
+---
+ fs/nfsd/nfs3xdr.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+--- a/fs/nfsd/nfs3xdr.c
++++ b/fs/nfsd/nfs3xdr.c
+@@ -844,9 +844,14 @@ compose_entry_fh(struct nfsd3_readdirres
+ 	if (isdotent(name, namlen)) {
+ 		if (namlen == 2) {
+ 			dchild = dget_parent(dparent);
+-			/* filesystem root - cannot return filehandle for ".." */
++			/*
++			 * Don't return filehandle for ".." if we're at
++			 * the filesystem or export root:
++			 */
+ 			if (dchild == dparent)
+ 				goto out;
++			if (dparent == exp->ex_path.dentry)
++				goto out;
+ 		} else
+ 			dchild = dget(dparent);
+ 	} else
 
 
