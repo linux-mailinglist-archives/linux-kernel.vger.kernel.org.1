@@ -2,207 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFCA2FFC98
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B6B2FFCB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbhAVGZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:25:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S1726928AbhAVG27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbhAVGZS (ORCPT
+        with ESMTP id S1726954AbhAVG1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:25:18 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A6EC06174A;
-        Thu, 21 Jan 2021 22:24:38 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id n2so9021822iom.7;
-        Thu, 21 Jan 2021 22:24:38 -0800 (PST)
+        Fri, 22 Jan 2021 01:27:43 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B0DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:27:03 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id q131so3056705pfq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:27:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A/ouGLWd79J95AmhZ3hY8iaM6/NouWMMdBryf01BORc=;
-        b=RXFwy0WF/4kocTU07A5dF5GGXbJz3CjLlvt61D+pzNFK3I/C+br6ZXBFJ8cWlT2l9m
-         /P9+H0hEiMm+CBClCPtVzobsEiga0u/FR9DfeM9as6FgSPrW55e57feCn0X7EcdEl+oX
-         v9R+Pw7yrWimMPyrstkAtk/z0XuXUwCER9hg6Px0nkBBPoxSR3OMDRorvwTC2mzwXqCI
-         Byw8s8EVw9bTr3Fn6D7rZ2JXMP5bH/glwce/aIuRuhUgjWElkvyo+YVJx6m/GjhRUuZz
-         lUX/sRWieJ31368TuS06y9Q8n8rT1x8XLcsDnTcU0c8fEWYZqhm5I9bipS/35v5AXyDZ
-         qwPg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=svgrB85wDJvp1wFsJQnCVp+ank0Arsi8GO3FERYAPGc=;
+        b=ux0UjAuQYmGVBrb8Ye8qm1tpjApuGIEbLNzDKfWG+sREKtOBhs9wc69kCk2XcGEVUh
+         u4H3V16lDaQ13d/AsqE4nHLxmPe4u06EH1Ukvg1m+2aWKGTgxgUMmm0h9Dyvq3nJb8ZP
+         wCFeHZ709a0RsxBpawIx7FvwlQZ8KLhnixCtMwH2xgNME8aSrvH+oC4TzP1Dr5/Q2t3Y
+         N7tUbU7RSFbJcNRFLbM6VehvtjO8Sb5j3WRpjKSVSc63nhcKQUoNQNIRXe6oINWi8Mz6
+         tP5tfq11q/Tl8+KmTKFLM8pkvPvi50GMr6qKyC077jMTvm/URFFLSlHH/sqZHxmEpnqa
+         qNmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A/ouGLWd79J95AmhZ3hY8iaM6/NouWMMdBryf01BORc=;
-        b=oKkQugc4Rd9OD7DqcxCdIroRZbYEe+5yt2jfYOzsaOEPdc9Jf4x568L/+dnFSrDfvL
-         K55aMwsKDV0BLjWHmUCHE5drEYFaK25l0hVtw7erWty+7Ou0nfRcBt/+3sI1qmxeOL0N
-         gm9hKLuvmTLI5xlSpgjxFohZbTTHqTutJFfs02OSWqyJOfmNqCpgspnKQtbbTc5KrnJ/
-         eXrYUCJj2QkP7fD0uDdkF7D9m1pv49yU7IIFqwjqYD/uJd/YlBbRHA7fd4Vhtq5k6y5G
-         Zq03kN2KnT14LdG63TisLWI7yPWMt8FRsiVsKsJqUVDws16yQq10o72clHLGrNovNh0A
-         zODA==
-X-Gm-Message-State: AOAM5314esVV2zUGE3qWQ+lFx+MehTFSJMbFw7i48ueYC0XP4wfLe1k3
-        qNeM4HxXaQmMp+dfJNYBU11XxGBQegammpRqDgs=
-X-Google-Smtp-Source: ABdhPJwFaraYlekAdxing6lHVD5SUikcrEqdByp/yD9aiuP1wvyj94fVw+Mr8VCNwwyW1ncR96fWPcM2KirJkrwPyX8=
-X-Received: by 2002:a92:4b06:: with SMTP id m6mr2721405ilg.177.1611296677491;
- Thu, 21 Jan 2021 22:24:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=svgrB85wDJvp1wFsJQnCVp+ank0Arsi8GO3FERYAPGc=;
+        b=rfWbwaXBT5tJ0Umi/JKMeNzTjbkhOEKz6GdkWU5570Sfheh3VZsdR1DkMBFyePT7PS
+         NDI4wFZs2yDrWvsMRfFz0d8/lqeqZTECDn+EL9Bvbtvw09+fHGbVX6czl9FGlVnqHqC9
+         FPnzvcbUmAWt6Hc/iEOufGpWICBIs795fTHL4QusUZ8bprcRstVKndNrWgoysWxt1neK
+         Xku9cmejBIwLxO4KHcZlsDeG7bGNoGPnd/UPexnbqQDAfrD4UBhlywWdJZxGzJggjCIM
+         R3MiJHOBU/dcoSazsu4okiUmr/ewiCRzp2ad+u4DblTxBfvEtg+o0mFmyhx/sFFOqF5W
+         qSAw==
+X-Gm-Message-State: AOAM530It6UHZVgmmBa64L5kMklivN9mzXGCm+H4cKlxqu1+yW6a2B1Z
+        xCq4iSr8Md/pH4FNNHY2/v250A==
+X-Google-Smtp-Source: ABdhPJyYey8B/wZZECCKK/6z6M0ZdDm5dsyDljIPXQKsuXilPAqgZAz+8Uqbev9+vKmCz1YIcKVNQg==
+X-Received: by 2002:a17:90a:f2d2:: with SMTP id gt18mr3578692pjb.102.1611296822502;
+        Thu, 21 Jan 2021 22:27:02 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id q2sm6678851pfj.32.2021.01.21.22.27.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Jan 2021 22:27:01 -0800 (PST)
+Date:   Fri, 22 Jan 2021 11:56:59 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 11/13] devfreq: tegra30: Migrate to dev_pm_opp_set_opp()
+Message-ID: <20210122062659.qss3hef4kltfgciu@vireshk-i7>
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
+ <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
+ <71451eb2-46b2-1ea0-efcc-0811568159a4@gmail.com>
 MIME-Version: 1.0
-References: <20210117042539.1609-1-alistair@alistair23.me> <20210117042539.1609-4-alistair@alistair23.me>
- <20210118123158.GE4455@sirena.org.uk>
-In-Reply-To: <20210118123158.GE4455@sirena.org.uk>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 21 Jan 2021 22:24:10 -0800
-Message-ID: <CAKmqyKMyXk_OjTKD24Qxn4QXJ4FwP4yDQqtmTsxAJMJzy34PcA@mail.gmail.com>
-Subject: Re: [PATCH 4/6] regulator: Initial commit of sy7636a
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Alistair Francis <alistair@alistair23.me>, lee.jones@linaro.org,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <71451eb2-46b2-1ea0-efcc-0811568159a4@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 4:32 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Sat, Jan 16, 2021 at 08:25:37PM -0800, Alistair Francis wrote:
->
-> > --- /dev/null
-> > +++ b/drivers/regulator/sy7636a-regulator.c
-> > @@ -0,0 +1,233 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Functions to access SY3686A power management chip voltages
-> > + *
->
-> Please make the entire comment a C++ one so things look more
-> intentional.
+On 22-01-21, 00:36, Dmitry Osipenko wrote:
+> 21.01.2021 14:17, Viresh Kumar пишет:
+> > dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
+> > be used instead. Migrate to the new API.
+> > 
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> >  drivers/devfreq/tegra30-devfreq.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+> > index 117cad7968ab..d2477d7d1f66 100644
+> > --- a/drivers/devfreq/tegra30-devfreq.c
+> > +++ b/drivers/devfreq/tegra30-devfreq.c
+> > @@ -647,7 +647,7 @@ static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
+> >  		return PTR_ERR(opp);
+> >  	}
+> >  
+> > -	ret = dev_pm_opp_set_bw(dev, opp);
+> > +	ret = dev_pm_opp_set_opp(dev, opp);
+> >  	dev_pm_opp_put(opp);
+> >  
+> >  	return ret;
+> > 
+> 
+> This patch introduces a very serious change that needs to be fixed.
+> 
+> Now dev_pm_opp_set_opp() changes both clock rate and bandwidth, this is
+> unacceptable for this driver because it shall not touch the clock rate.
+> 
+> I think dev_pm_opp_set_bw() can't be removed.
 
-Fixed.
+I am wondering here on what would be a better solution, do what you
+said or introduce another helper like dev_pm_opp_clear_clk(), which
+will make sure the OPP core doesn't play with device's clk.
 
->
-> > + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
-> > + *
-> > + * Author: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
->
-> This probably needs an update.
->
-> > + * This program is free software; you can redistribute it and/or
-> > + * modify it under the terms of the GNU General Public License as
-> > + * published by the Free Software Foundation version 2.
-> > + *
-> > + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-> > + * kind, whether express or implied; without even the implied warranty
-> > + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > + * GNU General Public License for more details.
->
-> This boilerplate is redundant and should be removed.
-
-Fixed.
-
->
-> > +static int get_vcom_voltage_op(struct regulator_dev *rdev)
-> > +{
-> > +     int ret = get_vcom_voltage_mv(rdev->regmap);
-> > +
->
-> Why is this get_vcom_voltage_mv() function not in the regulator driver,
-> and why is it not just inline here?  It also needs namespacing.
-
-I'm not sure what you mean, can you please explain?
-
->
-> > +static int disable_regulator(struct regulator_dev *rdev)
-> > +{
-> > +     struct sy7636a *sy7636a = dev_get_drvdata(rdev->dev.parent);
-> > +     int ret = 0;
-> > +
-> > +     mutex_lock(&sy7636a->reglock);
-> > +     ret = regulator_disable_regmap(rdev);
-> > +     usleep_range(30000, 35000);
-> > +     mutex_unlock(&sy7636a->reglock);
->
-> Why do you need this delay here, and what purpose is this lock intended
-
-The delay is to allow a power ramp up, I have added a comment.
-
-> to serve?  I can't understand what it's intended to protect.
-
-Apparently the mutex is to protect enable/disable, I don't think it's
-required and I will remove it.
-
->
-> > +     mutex_lock(&sy7636a->reglock);
-> > +     ret = regulator_is_enabled_regmap(rdev);
-> > +     mutex_unlock(&sy7636a->reglock);
->
-> This lock usage in particular looks confused.
->
-> > +     ret = regulator_enable_regmap(rdev);
-> > +     if (ret)
-> > +             goto finish;
->
-> > +     if (!pwr_good) {
-> > +             dev_err(&rdev->dev, "Power good signal timeout after %u ms\n",
-> > +                             jiffies_to_msecs(t1 - t0));
-> > +             ret = -ETIME;
-> > +             goto finish;
-> > +     }
->
-> This doesn't undo the underlying enable, leaving the regulator in a
-> partially enabled state.
-
-Thanks, fixed.
-
->
-> > +static const struct regulator_ops sy7636a_vcom_volt_ops = {
-> > +     .get_voltage = get_vcom_voltage_op,
-> > +     .enable = enable_regulator_pgood,
-> > +     .disable = disable_regulator,
-> > +     .is_enabled = sy7636a_regulator_is_enabled,
-> > +};
->
-> The namespacing for functions is very random and prone to clashes.
-
-Fixed.
-
-> Given the power good signal I'd also expect a get_status() operation.
-
-Added.
-
->
-> > +static int sy7636a_regulator_suspend(struct device *dev)
-> > +{
-> > +     int ret;
-> > +     struct sy7636a *sy7636a = dev_get_drvdata(dev->parent);
-> > +
-> > +     ret = get_vcom_voltage_mv(sy7636a->regmap);
-> > +
-> > +     if (ret > 0)
-> > +             sy7636a->vcom = (unsigned int)ret;
-> > +
-> > +     return 0;
-> > +}
->
-> What's going on here, and if you are going to store this value over
-> suspend why not store it in a variable of the correct type?  In general
-
-It is part of the vendor's kernel, they specifically added it to
-ensure vcom is set on resume.
-
-I have fixed the variable type.
-
-> it's surprising to need a suspend operation for a regulator.
->
-> > +     sy7636a->pgood_gpio = gdp;
-> > +     dev_info(sy7636a->dev,
-> > +             "Power good GPIO registered (gpio# %d)\n",
-> > +             desc_to_gpio(sy7636a->pgood_gpio));
->
-> This print is just adding noise to the boot process.
-
-Removed.
-
-
-Alistair
+-- 
+viresh
