@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF26300F54
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D98300F02
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730746AbhAVVwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:52:23 -0500
-Received: from mail.padangpariamankab.go.id ([103.94.3.123]:40924 "EHLO
-        mail.padangpariamankab.go.id" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730365AbhAVVv4 (ORCPT
+        id S1730414AbhAVVfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:35:54 -0500
+Received: from lilium.sigma-star.at ([109.75.188.150]:32912 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729282AbhAVVbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:51:56 -0500
-X-Greylist: delayed 2959 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Jan 2021 16:50:43 EST
+        Fri, 22 Jan 2021 16:31:35 -0500
+X-Greylist: delayed 493 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Jan 2021 16:31:34 EST
 Received: from localhost (localhost [127.0.0.1])
-        by mail.padangpariamankab.go.id (Postfix) with ESMTP id 3E68F6E6C72;
-        Sat, 23 Jan 2021 03:48:10 +0700 (WIB)
-Received: from mail.padangpariamankab.go.id ([127.0.0.1])
-        by localhost (mail.padangpariamankab.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kBGXOQypupm6; Sat, 23 Jan 2021 03:48:09 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.padangpariamankab.go.id (Postfix) with ESMTP id 294CB6E6C77;
-        Sat, 23 Jan 2021 03:48:09 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.padangpariamankab.go.id 294CB6E6C77
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=padangpariamankab.go.id; s=D2C6CDEC-3607-11EA-BC8A-EEDE4AB8B776;
-        t=1611348489; bh=4AhSoXRU63EAbbOwseUY/pxjidGey07DskAQ7pZ9AvE=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=HThFhYOADhRCtO5N541vi9Gyg7fJmmutk/OT2THWWyfJ95sWN76AgwUEgQZtSvKhP
-         x/LxSc8MhKoXFOnNTieirEJIp/EcM8e1Pjx1VBDwhPK07CSOtfO2YNC/YwcDHmyfyz
-         2Lf9drxpZNkkPji5hrUXs8+6FbGouclsglppsLR4=
-X-Virus-Scanned: amavisd-new at padangpariamankab.go.id
-Received: from mail.padangpariamankab.go.id ([127.0.0.1])
-        by localhost (mail.padangpariamankab.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mxYAXxb3FYdJ; Sat, 23 Jan 2021 03:48:08 +0700 (WIB)
-Received: from mail.padangpariamankab.go.id (mail.padangpariamankab.go.id [103.94.3.123])
-        by mail.padangpariamankab.go.id (Postfix) with ESMTP id B15016E6C6F;
-        Sat, 23 Jan 2021 03:48:05 +0700 (WIB)
-Date:   Sat, 23 Jan 2021 03:48:05 +0700 (WIB)
-From:   GREENLIGHT <rsud@padangpariamankab.go.id>
-Reply-To: "Greenlight Financial Services " <greenlightservices@usa.com>
-Message-ID: <1668595482.19502.1611348485649.JavaMail.zimbra@padangpariamankab.go.id>
-Subject: Update
+        by lilium.sigma-star.at (Postfix) with ESMTP id A6841181CBE0B;
+        Fri, 22 Jan 2021 22:22:34 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id U7_5uXhhwWfP; Fri, 22 Jan 2021 22:22:34 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CjUuVJcO2lYb; Fri, 22 Jan 2021 22:22:34 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     linux-mtd@lists.infradead.org
+Cc:     david@sigma-star.at, richard@nod.at, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Assorted UBIFS fixes
+Date:   Fri, 22 Jan 2021 22:22:25 +0100
+Message-Id: <20210122212229.17072-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [103.94.3.123]
-X-Mailer: Zimbra 8.8.15_GA_3895 (zclient/8.8.15_GA_3895)
-Thread-Index: YwDzoLjYr5wvIyGTK9ZPzksGXyGLMw==
-Thread-Topic: Update
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'm currently hunting down a filesystem corruption, while reviewing
+various parts of UBIFS I've found some other bugs.
+This patches fix these bugs. In another series I'll add a feature to
+be able to remove stale fscrypt contexts and wrong directory size counter=
+s.
 
+Richard Weinberger (4):
+  ubifs: Correctly set inode size in ubifs_link()
+  ubifs: Don't add fscrypt context to xattrs
+  ubifs: Update directory size when creating whiteouts
+  ubifs: Harden ubifs_jnl_write_inode()
 
-We offer Reliable/Low Interest Rate Financial Services to Companies & Individuals including; Start-Up Business, Loans & Mortgage ETC. Apply Now
+ fs/ubifs/dir.c     | 31 ++++++++++++++++++++-----------
+ fs/ubifs/journal.c |  6 +++++-
+ fs/ubifs/ubifs.h   |  2 +-
+ fs/ubifs/xattr.c   |  2 +-
+ 4 files changed, 27 insertions(+), 14 deletions(-)
+
+--=20
+2.26.2
+
