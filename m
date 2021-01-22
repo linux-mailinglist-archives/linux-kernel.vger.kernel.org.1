@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FF9300560
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72849300567
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbhAVO1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:27:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40024 "EHLO mail.kernel.org"
+        id S1728720AbhAVO2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:28:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728545AbhAVOWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1AA123AC4;
-        Fri, 22 Jan 2021 14:15:48 +0000 (UTC)
+        id S1728623AbhAVOXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:23:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D2DF23B83;
+        Fri, 22 Jan 2021 14:17:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324949;
-        bh=uArgpiAfCjeXqj2bldbMln1PPWrVV37LaS7jzvA4RLI=;
+        s=korg; t=1611325071;
+        bh=W8/1ggZ/RTjMxiMDdKObgvwI7zkkrqnLBJDBnr2wTUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBWAu+0MFcLsgvSgnM07eBgZR4xfBi46LO5Q8vP9CNv0BRL5PCTQA5+kvoCJkBzq1
-         wEECO+FxE97+aEfKzJUAcbE95gqOucbo6tKXqg+EXaPHC0WEh7qBKZ1p8EvAMqoSl+
-         cCViIsE4/+4NYfuMEI+Oiju8DlZTFnuD2g1DMrww=
+        b=F8foH6NN5XbXJhu3Tf73jEjeV06LgBx3mCdGJC9nBAuWwmNcNaHgjXH6VoYNM87/n
+         QWJ7N3UO5AosYFf+ogD2kZDYSbj5aXUyWj2ZkC6qLkJfdV1hF4fIfBmwKbq+TGYOGd
+         CG3yqHJcCkuvSt6HH+7IMXxLKgW749j44V5CfVdg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Thelen <gthelen@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 16/22] net: avoid 32 x truesize under-estimation for tiny skbs
-Date:   Fri, 22 Jan 2021 15:12:34 +0100
-Message-Id: <20210122135732.555755452@linuxfoundation.org>
+Subject: [PATCH 5.4 21/33] esp: avoid unneeded kmap_atomic call
+Date:   Fri, 22 Jan 2021 15:12:37 +0100
+Message-Id: <20210122135734.441605268@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
-References: <20210122135731.921636245@linuxfoundation.org>
+In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
+References: <20210122135733.565501039@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,81 +40,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit 3226b158e67cfaa677fd180152bfb28989cb2fac ]
+[ Upstream commit 9bd6b629c39e3fa9e14243a6d8820492be1a5b2e ]
 
-Both virtio net and napi_get_frags() allocate skbs
-with a very small skb->head
+esp(6)_output_head uses skb_page_frag_refill to allocate a buffer for
+the esp trailer.
 
-While using page fragments instead of a kmalloc backed skb->head might give
-a small performance improvement in some cases, there is a huge risk of
-under estimating memory usage.
+It accesses the page with kmap_atomic to handle highmem. But
+skb_page_frag_refill can return compound pages, of which
+kmap_atomic only maps the first underlying page.
 
-For both GOOD_COPY_LEN and GRO_MAX_HEAD, we can fit at least 32 allocations
-per page (order-3 page in x86), or even 64 on PowerPC
+skb_page_frag_refill does not return highmem, because flag
+__GFP_HIGHMEM is not set. ESP uses it in the same manner as TCP.
+That also does not call kmap_atomic, but directly uses page_address,
+in skb_copy_to_page_nocache. Do the same for ESP.
 
-We have been tracking OOM issues on GKE hosts hitting tcp_mem limits
-but consuming far more memory for TCP buffers than instructed in tcp_mem[2]
+This issue has become easier to trigger with recent kmap local
+debugging feature CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP.
 
-Even if we force napi_alloc_skb() to only use order-0 pages, the issue
-would still be there on arches with PAGE_SIZE >= 32768
-
-This patch makes sure that small skb head are kmalloc backed, so that
-other objects in the slab page can be reused instead of being held as long
-as skbs are sitting in socket queues.
-
-Note that we might in the future use the sk_buff napi cache,
-instead of going through a more expensive __alloc_skb()
-
-Another idea would be to use separate page sizes depending
-on the allocated length (to never have more than 4 frags per page)
-
-I would like to thank Greg Thelen for his precious help on this matter,
-analysing crash dumps is always a time consuming task.
-
-Fixes: fd11a83dd363 ("net: Pull out core bits of __netdev_alloc_skb and add __napi_alloc_skb")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Greg Thelen <gthelen@google.com>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Link: https://lore.kernel.org/r/20210113161819.1155526-1-eric.dumazet@gmail.com
+Fixes: cac2661c53f3 ("esp4: Avoid skb_cow_data whenever possible")
+Fixes: 03e2a30f6a27 ("esp6: Avoid skb_cow_data whenever possible")
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/skbuff.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ net/ipv4/esp4.c |    7 +------
+ net/ipv6/esp6.c |    7 +------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
 
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -459,13 +459,17 @@ EXPORT_SYMBOL(__netdev_alloc_skb);
- struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
- 				 gfp_t gfp_mask)
+--- a/net/ipv4/esp4.c
++++ b/net/ipv4/esp4.c
+@@ -272,7 +272,6 @@ static int esp_output_udp_encap(struct x
+ int esp_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *esp)
  {
--	struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
-+	struct napi_alloc_cache *nc;
- 	struct sk_buff *skb;
- 	void *data;
+ 	u8 *tail;
+-	u8 *vaddr;
+ 	int nfrags;
+ 	int esph_offset;
+ 	struct page *page;
+@@ -314,14 +313,10 @@ int esp_output_head(struct xfrm_state *x
+ 			page = pfrag->page;
+ 			get_page(page);
  
- 	len += NET_SKB_PAD + NET_IP_ALIGN;
+-			vaddr = kmap_atomic(page);
+-
+-			tail = vaddr + pfrag->offset;
++			tail = page_address(page) + pfrag->offset;
  
--	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
-+	/* If requested length is either too small or too big,
-+	 * we use kmalloc() for skb->head allocation.
-+	 */
-+	if (len <= SKB_WITH_OVERHEAD(1024) ||
-+	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
- 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
- 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
- 		if (!skb)
-@@ -473,6 +477,7 @@ struct sk_buff *__napi_alloc_skb(struct
- 		goto skb_success;
- 	}
+ 			esp_output_fill_trailer(tail, esp->tfclen, esp->plen, esp->proto);
  
-+	nc = this_cpu_ptr(&napi_alloc_cache);
- 	len += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 	len = SKB_DATA_ALIGN(len);
+-			kunmap_atomic(vaddr);
+-
+ 			nfrags = skb_shinfo(skb)->nr_frags;
  
+ 			__skb_fill_page_desc(skb, nfrags, page, pfrag->offset,
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -226,7 +226,6 @@ static void esp_output_fill_trailer(u8 *
+ int esp6_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *esp)
+ {
+ 	u8 *tail;
+-	u8 *vaddr;
+ 	int nfrags;
+ 	struct page *page;
+ 	struct sk_buff *trailer;
+@@ -259,14 +258,10 @@ int esp6_output_head(struct xfrm_state *
+ 			page = pfrag->page;
+ 			get_page(page);
+ 
+-			vaddr = kmap_atomic(page);
+-
+-			tail = vaddr + pfrag->offset;
++			tail = page_address(page) + pfrag->offset;
+ 
+ 			esp_output_fill_trailer(tail, esp->tfclen, esp->plen, esp->proto);
+ 
+-			kunmap_atomic(vaddr);
+-
+ 			nfrags = skb_shinfo(skb)->nr_frags;
+ 
+ 			__skb_fill_page_desc(skb, nfrags, page, pfrag->offset,
 
 
