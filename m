@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB373004F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3876300543
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728296AbhAVOKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:10:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:49524 "EHLO foss.arm.com"
+        id S1728433AbhAVOXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:23:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728286AbhAVOGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:06:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C5B211B3;
-        Fri, 22 Jan 2021 06:05:40 -0800 (PST)
-Received: from [10.37.8.28] (unknown [10.37.8.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A90C3F66E;
-        Fri, 22 Jan 2021 06:05:38 -0800 (PST)
-Subject: Re: [PATCH v6 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20210122135955.30237-1-vincenzo.frascino@arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <36b73b67-178b-4871-16ce-e35e02f2fa67@arm.com>
-Date:   Fri, 22 Jan 2021 14:09:29 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728254AbhAVOOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:14:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1117223AC4;
+        Fri, 22 Jan 2021 14:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611324672;
+        bh=zaTqVZ8W/xKSP71GjhGxhsY7iZ9tOSob2d8PT2TreXY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UTUMdNebyUnZplX3WqYQfY64SkduPgPwo11rQ0ag1+MEDZDWQ7PRO3wlKDp0CajiX
+         MDDlqi5pqPWqvD/Fikqto2o40ZJUQv4FsWo3WBhYzJrs6KUZa2xHMpxB0xEIkHDJq/
+         /xl9klpXKFc2v66ZCYArztSSIv1AxXlMXuO7spwY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 4.9 02/35] MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
+Date:   Fri, 22 Jan 2021 15:10:04 +0100
+Message-Id: <20210122135732.456737657@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
+References: <20210122135732.357969201@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <20210122135955.30237-1-vincenzo.frascino@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/22/21 1:59 PM, Vincenzo Frascino wrote:
-> This patchset implements the asynchronous mode support for ARMv8.5-A
-> Memory Tagging Extension (MTE), which is a debugging feature that allows
-> to detect with the help of the architecture the C and C++ programmatic
-> memory errors like buffer overflow, use-after-free, use-after-return, etc.
-> 
-> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
-> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
-> subset of its address space that is multiple of a 16 bytes granule. MTE
-> is based on a lock-key mechanism where the lock is the tag associated to
-> the physical memory and the key is the tag associated to the virtual
-> address.
-> When MTE is enabled and tags are set for ranges of address space of a task,
-> the PE will compare the tag related to the physical memory with the tag
-> related to the virtual address (tag check operation). Access to the memory
-> is granted only if the two tags match. In case of mismatch the PE will raise
-> an exception.
-> 
-> The exception can be handled synchronously or asynchronously. When the
-> asynchronous mode is enabled:
->   - Upon fault the PE updates the TFSR_EL1 register.
->   - The kernel detects the change during one of the following:
->     - Context switching
->     - Return to user/EL0
->     - Kernel entry from EL1
->     - Kernel exit to EL1
->   - If the register has been updated by the PE the kernel clears it and
->     reports the error.
-> 
-> The series is based on linux-next/akpm.
-> 
-> To simplify the testing a tree with the new patches on top has been made
-> available at [1].
-> 
-> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
+From: Paul Cercueil <paul@crapouillou.net>
 
-Please ignore this series, I missed a fix. I will re-post it shortly. Sorry for
-the inconvenience.
+commit 4d4f9c1a17a3480f8fe523673f7232b254d724b7 upstream.
 
-Thanks!
+The compressed payload is not necesarily 4-byte aligned, at least when
+compiling with Clang. In that case, the 4-byte value appended to the
+compressed payload that corresponds to the uncompressed kernel image
+size must be read using get_unaligned_le32().
+
+This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
+JZ4770 board).
+
+Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
+Cc: <stable@vger.kernel.org> # v4.7
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ arch/mips/boot/compressed/decompress.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/arch/mips/boot/compressed/decompress.c
++++ b/arch/mips/boot/compressed/decompress.c
+@@ -17,6 +17,7 @@
+ #include <linux/libfdt.h>
+ 
+ #include <asm/addrspace.h>
++#include <asm/unaligned.h>
+ 
+ /*
+  * These two variables specify the free mem region
+@@ -124,7 +125,7 @@ void decompress_kernel(unsigned long boo
+ 		dtb_size = fdt_totalsize((void *)&__appended_dtb);
+ 
+ 		/* last four bytes is always image size in little endian */
+-		image_size = le32_to_cpup((void *)&__image_end - 4);
++		image_size = get_unaligned_le32((void *)&__image_end - 4);
+ 
+ 		/* copy dtb to where the booted kernel will expect it */
+ 		memcpy((void *)VMLINUX_LOAD_ADDRESS_ULL + image_size,
+
+
