@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6E5300FB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE40300FB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbhAVUDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:03:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34362 "EHLO mail.kernel.org"
+        id S1730488AbhAVUDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:03:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728361AbhAVOOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728359AbhAVOOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:14:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B3C123AF8;
-        Fri, 22 Jan 2021 14:11:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F023C23AFA;
+        Fri, 22 Jan 2021 14:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324688;
-        bh=bkzbPcHxcN/DM4HPuvrVe94k+onOrF2TMurpnbCymt4=;
+        s=korg; t=1611324690;
+        bh=g/q85gxojvycMJTot6idqg9w5y5eolE+WzXgRWDptTU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1deCf43NFlHvwqlNZbRYmBDpqS/iVR1CkdC44KxMSDEhhz+7cOb2uKLu48uyeS56S
-         G/fMa20Ski8n3E/wI2jWU8GtYRC2oTAXc1xvajPHNRt5F88keDG8f3TO2GKW55OQjY
-         r6pSlX5/h97IluN21pWXUn6fRMzoG5cLjzOTWmCc=
+        b=wzi6PGB4OEadXQV02HFBN1Q6OWvu2U6qkTqvQ47finDCyDMMwJMXjMXKbMVTq/D1t
+         9VKjXMUxlgz9cTeu0iTg2Rjr28caAgcXmBioXmWsZ6Uy/UF9mhTFsOMHtsn6+M9kHh
+         pnlzWdMyhuLNhgdN0qd1ZmLEebmpzgZQZAJxzP/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
+        stable@vger.kernel.org,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/35] ARC: build: add boot_targets to PHONY
-Date:   Fri, 22 Jan 2021 15:10:10 +0100
-Message-Id: <20210122135732.668658527@linuxfoundation.org>
+Subject: [PATCH 4.9 09/35] ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
+Date:   Fri, 22 Jan 2021 15:10:11 +0100
+Message-Id: <20210122135732.713602640@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
@@ -40,49 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-[ Upstream commit 0cfccb3c04934cdef42ae26042139f16e805b5f7 ]
+[ Upstream commit 887078de2a23689e29d6fa1b75d7cbc544c280be ]
 
-The top-level boot_targets (uImage and uImage.*) should be phony
-targets. They just let Kbuild descend into arch/arc/boot/ and create
-files there.
+Table 8-53 in the QUICC Engine Reference manual shows definitions of
+fields up to a size of 192 bytes, not just 128. But in table 8-111,
+one does find the text
 
-If a file exists in the top directory with the same name, the boot
-image will not be created.
+  Base Address of the Global Transmitter Parameter RAM Page. [...]
+  The user needs to allocate 128 bytes for this page. The address must
+  be aligned to the page size.
 
-You can confirm it by the following steps:
+I've checked both rev. 7 (11/2015) and rev. 9 (05/2018) of the manual;
+they both have this inconsistency (and the table numbers are the
+same).
 
-  $ export CROSS_COMPILE=<your-arc-compiler-prefix>
-  $ make -s ARCH=arc defconfig all   # vmlinux will be built
-  $ touch uImage.gz
-  $ make ARCH=arc uImage.gz
-  CALL    scripts/atomic/check-atomics.sh
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  # arch/arc/boot/uImage.gz is not created
+Adding a bit of debug printing, on my board the struct
+ucc_geth_tx_global_pram is allocated at offset 0x880, while
+the (opaque) ucc_geth_thread_data_tx gets allocated immediately
+afterwards, at 0x900. So whatever the engine writes into the thread
+data overlaps with the tail of the global tx pram (and devmem says
+that something does get written during a simple ping).
 
-Specify the targets as PHONY to fix this.
+I haven't observed any failure that could be attributed to this, but
+it seems to be the kind of thing that would be extremely hard to
+debug. So extend the struct definition so that we do allocate 192
+bytes.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/freescale/ucc_geth.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arc/Makefile b/arch/arc/Makefile
-index fd79faab78926..5dc2d73c64994 100644
---- a/arch/arc/Makefile
-+++ b/arch/arc/Makefile
-@@ -108,6 +108,7 @@ bootpImage: vmlinux
+diff --git a/drivers/net/ethernet/freescale/ucc_geth.h b/drivers/net/ethernet/freescale/ucc_geth.h
+index 5da19b440a6a8..bf25e49d4fe34 100644
+--- a/drivers/net/ethernet/freescale/ucc_geth.h
++++ b/drivers/net/ethernet/freescale/ucc_geth.h
+@@ -580,7 +580,14 @@ struct ucc_geth_tx_global_pram {
+ 	u32 vtagtable[0x8];	/* 8 4-byte VLAN tags */
+ 	u32 tqptr;		/* a base pointer to the Tx Queues Memory
+ 				   Region */
+-	u8 res2[0x80 - 0x74];
++	u8 res2[0x78 - 0x74];
++	u64 snums_en;
++	u32 l2l3baseptr;	/* top byte consists of a few other bit fields */
++
++	u16 mtu[8];
++	u8 res3[0xa8 - 0x94];
++	u32 wrrtablebase;	/* top byte is reserved */
++	u8 res4[0xc0 - 0xac];
+ } __packed;
  
- boot_targets += uImage uImage.bin uImage.gz
- 
-+PHONY += $(boot_targets)
- $(boot_targets): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 
+ /* structure representing Extended Filtering Global Parameters in PRAM */
 -- 
 2.27.0
 
