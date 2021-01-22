@@ -2,33 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B867F301006
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BC230100F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbhAVTvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:51:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37760 "EHLO mail.kernel.org"
+        id S1729886AbhAVTuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:50:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbhAVOQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:16:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93B2523A68;
-        Fri, 22 Jan 2021 14:13:17 +0000 (UTC)
+        id S1728444AbhAVORL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:17:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D660823A77;
+        Fri, 22 Jan 2021 14:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324798;
-        bh=eBbR2U7dAFsZt9BIBmqw9WGdszmTO2BdNTVg/VuAMz8=;
+        s=korg; t=1611324809;
+        bh=sssGw7VAmhQ9zYNCAgQ46mvt8+d/n+n3c7UnO0Lb+nc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q+vdQ3y+HC3lj3APvVv/6hPQVOZrcj6x1L8dUj66azKE26BpE1xEGXWl+1QyzAjbs
-         F1oSE1toWJevhbINQEHUG0HeCc3rVg8W0Q67DscjAiOAkAAO7lqF5nomTqmuQpVglp
-         /T0whtXAl9ckXmGhgKUD1+DU6CFAZnMX4MxVfBvI=
+        b=RWnxMI1Kuxyn8sFbpngjfmh0DB+XtN99+rH1b3nnBnE44VGaf2zSyOaS5bOsKtkii
+         ZlE3MK143UltulaOQlAr79ieOWmPf1l9vxz49y7gCx7th9bY/USofc74FuKYYY0lRl
+         capayd4uTIkAg64yCdDA6rc2zoGPALUQAxrVLkSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 12/50] ARC: build: add boot_targets to PHONY
-Date:   Fri, 22 Jan 2021 15:11:53 +0100
-Message-Id: <20210122135735.694237708@linuxfoundation.org>
+Subject: [PATCH 4.14 15/50] arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
+Date:   Fri, 22 Jan 2021 15:11:56 +0100
+Message-Id: <20210122135735.820675358@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
 References: <20210122135735.176469491@linuxfoundation.org>
@@ -40,49 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 0cfccb3c04934cdef42ae26042139f16e805b5f7 ]
+[ Upstream commit 8a48c0a3360bf2bf4f40c980d0ec216e770e58ee ]
 
-The top-level boot_targets (uImage and uImage.*) should be phony
-targets. They just let Kbuild descend into arch/arc/boot/ and create
-files there.
+fs/dax.c uses copy_user_page() but ARC does not provide that interface,
+resulting in a build error.
 
-If a file exists in the top directory with the same name, the boot
-image will not be created.
+Provide copy_user_page() in <asm/page.h>.
 
-You can confirm it by the following steps:
+../fs/dax.c: In function 'copy_cow_page_dax':
+../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
 
-  $ export CROSS_COMPILE=<your-arc-compiler-prefix>
-  $ make -s ARCH=arc defconfig all   # vmlinux will be built
-  $ touch uImage.gz
-  $ make ARCH=arc uImage.gz
-  CALL    scripts/atomic/check-atomics.sh
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  # arch/arc/boot/uImage.gz is not created
-
-Specify the targets as PHONY to fix this.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+#Acked-by: Vineet Gupta <vgupta@synopsys.com> # v1
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-nvdimm@lists.01.org
+#Reviewed-by: Ira Weiny <ira.weiny@intel.com> # v2
 Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/Makefile | 1 +
+ arch/arc/include/asm/page.h | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arc/Makefile b/arch/arc/Makefile
-index 1146ca5fc349b..ef5e8ea042158 100644
---- a/arch/arc/Makefile
-+++ b/arch/arc/Makefile
-@@ -101,6 +101,7 @@ boot		:= arch/arc/boot
+diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+index 09ddddf71cc50..a70fef79c4055 100644
+--- a/arch/arc/include/asm/page.h
++++ b/arch/arc/include/asm/page.h
+@@ -13,6 +13,7 @@
+ #ifndef __ASSEMBLY__
  
- boot_targets := uImage uImage.bin uImage.gz uImage.lzma
+ #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
++#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+ #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
  
-+PHONY += $(boot_targets)
- $(boot_targets): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 
+ struct vm_area_struct;
 -- 
 2.27.0
 
