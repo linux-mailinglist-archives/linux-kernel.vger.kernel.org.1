@@ -2,232 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7510E300CE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7490F300CDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728893AbhAVTtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:49:19 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:58318 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbhAVShx (ORCPT
+        id S1730220AbhAVTnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728425AbhAVSh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:37:53 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MINhCh182174;
-        Fri, 22 Jan 2021 18:37:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=TB2lu95oYPbwuvKsip6UpvzNleBkCP/+rNeWtHhERGs=;
- b=dFjKOfYZ9Cygf3jcwSKlIL8SRV/sqvVTMLxO5Le/M9F38b+7ZAJYgZWOE3TIas82YgQc
- Ska9EhBbmtpNYNLMBA6Rqi2xQNjnrjj5MLZnMzAfdMIge4Vv6eMehj2zLpllWhtFFBXa
- y3UI+oX597j6UWe4YWqV8mII/TgUGK93wP+Z4rAhki4/wxumL3UwaZ8a3azc6fbA8eCj
- kx+xbs0Y7UsvUJ8uiB2URiAZXIYm0KKH1mElgGJLJwWf0i3Sgxe6Z/v/urnWhbvG7Z70
- tY+x2t4gul+KwpU0wzsn+Xd4gj/lD7rTKG6awQ/gaFU4pZpDQP2mPi2DZ8Tqu4zGx0v5 lg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3668qanhw4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 18:37:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MIPqd2169002;
-        Fri, 22 Jan 2021 18:37:06 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-        by userp3030.oracle.com with ESMTP id 3668rham98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 18:37:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TGOTfMHuta8vfmJRkt5H8NjeZaXv7SaqOrogb3/EVn6bb4FCyMoJSUUia/GhJ3Hi5Q/rcAMHncnPb6L/bgHfyyT/47m1nDgbbZ6J+NS+WgoMv6h+JYKq1XYQVwpnGl3VGtAcD8ITFcMonqH9TJW6K2vOWs2QTi6xvaSJcJTUdN+KADEGetPNBQN2m2t7dgCuuLcVLw2GbPerVr/UN1XVCgNEb8kMp1hXdBgxIcKoX+K7bLpy4sHNDlNe5rdEwhj8N+8NCSu27ZoyQxHM49iqXOF4WkOPTH87MiZ2l0D+aGVDLNUez8dn8BN+knjUju5NBIckYmUB/xwv7rRR7EpaTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TB2lu95oYPbwuvKsip6UpvzNleBkCP/+rNeWtHhERGs=;
- b=oBIdMrjDMWZgCjA8N9EqLRc0Gzccx059Wi6hObfyNnL8oB0fG26XRw/ttijOJ2yIeeEhqxaVxdAd8n8MdG1GprfzDG1vttwgQki8ZEA5zbrku09iPHBULo1j/uo9iUED0Vs9JrUGoo51uowDnIwum+uLfd5fMiX7TsDAeQ6RJC45hzFcwx7JCPFwWX/0LkMNTXiBJaJXvVlxbvGueAXIVzmia3MeE1rn85TwuI8AAUhCWOuEjR+vG3NbZMwG5gHOrupIryndZPTAg7HU8zn81EOhMAnMjPTHxop/XoPC5qOj9+4Pnsj8rIrPtLpKYo2/pqLIDn9ZJGYFuwr1YXmh5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 22 Jan 2021 13:37:59 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA112C061788;
+        Fri, 22 Jan 2021 10:37:18 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id u4so4448365pjn.4;
+        Fri, 22 Jan 2021 10:37:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TB2lu95oYPbwuvKsip6UpvzNleBkCP/+rNeWtHhERGs=;
- b=gPdWrjkg1tnPk/6ohbATb+WO/f+0vKQhdq9a2vpdWTTzbvN59ypDmNUG5FpLUEXMZqnNjSdBsgiqQfPN03tPAUe+DDEwSVTRHp4Kb919qRG7PbNJLMkL1xK5RMwBVsJeYC482b4bzZ7PgZ/5/30bMmsSrgBs+QOA7+Ng15UPa0M=
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com (2603:10b6:805:d4::19)
- by SA2PR10MB4537.namprd10.prod.outlook.com (2603:10b6:806:116::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Fri, 22 Jan
- 2021 18:37:04 +0000
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::793a:7eef:db3b:ad48]) by SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::793a:7eef:db3b:ad48%5]) with mapi id 15.20.3784.015; Fri, 22 Jan 2021
- 18:37:04 +0000
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-To:     Yang Li <abaci-bugfix@linux.alibaba.com>
-CC:     "martin.petersen@oracle.c" <martin.petersen@oracle.c>,
-        Martin Petersen <martin.petersen@oracle.com>,
-        "njavali@marvell.com" <njavali@marvell.com>,
-        "GR-QLogic-Storage-Upstream@marvell.com" 
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        "mrangankar@marvell.com" <mrangankar@marvell.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] scsi: qla2xxx: remove redundant NULL check
-Thread-Topic: [PATCH 1/2] scsi: qla2xxx: remove redundant NULL check
-Thread-Index: AQHW8KJy5TzZ1D8KyEueth5b35ly36oz+eKA
-Date:   Fri, 22 Jan 2021 18:37:04 +0000
-Message-ID: <984381A1-692A-42DB-818B-0A0ACAF57D10@oracle.com>
-References: <1611306174-92627-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1611306174-92627-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none
- header.from=oracle.com;
-x-originating-ip: [70.114.128.235]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f524e6c3-8437-480f-04f7-08d8bf04b6d8
-x-ms-traffictypediagnostic: SA2PR10MB4537:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR10MB45378F449A78922D730CD4A1E6A09@SA2PR10MB4537.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:268;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3ksLnLqQVJkKqcSyvJZQMFBAej7O0rYRHxMTWm3kj3gNBnVuNoZtbzBGxqTTzQZ4o+QQrRaGi8f7ici7ekE7uYBXStkjJvRmX+Rvdgcj3vJmXU2A2H8eckTR4zNwwOnB3smizRUBR9rkYe+AI7USbRIlpaVM5GTU4kEUoCuj+6xrlNSXYtZLpWutoyripbt1hPyit6N/OCuj3b8ozoRP9FF+wZBC6HCLfNL9CRntDiEyAnl3v3YcBDME4HNEFCJLEF/8eHJV01XeRyf8OUBB1/mUtaMh69WPBHNPSylyTll3c4zuD0DLRMavaYr1oBtsTs3dzwz6AGOEqR4o+luCtBy+oIhCJ/Hz0zZ23MfHUFQhAuJSX257zoX9WZwXlr5SyqjIjK7cTyfLNT5SY6CX2DRJLFZwQjW7UwOCQ1hUYUEQe2gc5CXS9sY3LHPeCura
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB2943.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(346002)(136003)(39860400002)(6486002)(71200400001)(2906002)(4326008)(53546011)(6506007)(6916009)(186003)(5660300002)(26005)(8936002)(66556008)(66476007)(66946007)(66446008)(64756008)(76116006)(8676002)(33656002)(478600001)(83380400001)(44832011)(316002)(6512007)(36756003)(86362001)(2616005)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?0nvDCIc7nQ/dyV71T+ojPzDMLOU//e7YKKOhyauZMLUN6AeIxhImwN16OBvl?=
- =?us-ascii?Q?I11YnMxWs+VZWRnXpJFL0ZuZ5Jn+x8OZVFeX99fxRzyQPcKrdeQMqHXNGj2L?=
- =?us-ascii?Q?XKHI+YHIqMw+j5VT0bhqa/tpEcvxQe24irxya3Vjgd97EymWOqudcdnGltYK?=
- =?us-ascii?Q?OTydgpQA+8UAMj1tPT1iEEWisQ1eaYSAeSC/4126qK9boSeWHZdM6izsWjfK?=
- =?us-ascii?Q?1WLFYqhAto03GQIDJjDZ8pJVcVZI0KY/0qoQR+WaJTzVPYPgGFg2SBvXn52Z?=
- =?us-ascii?Q?DhWre69RYLKvDZsSY/fP3uToh+B+HZNW7iEQjQxpowitO9xTb0Ma4OeaY65h?=
- =?us-ascii?Q?HpcRFldfhyRVALe7t4OVNizEPMxhjrnejm6+h1nTBYPqOTf3gH8Lb5n3gfLV?=
- =?us-ascii?Q?+9QFXxECH34f5HebCbW6mMSUzmalKaraIqm556Y0FTrjfMsueM8heZGKquWL?=
- =?us-ascii?Q?M0Pv4nzxgrxslNlw58ZWmW48Fh/5QB0AHCSc29ViHgqC/9YkOi0JW4G3Yig1?=
- =?us-ascii?Q?wdScEchhkPWIWVmy2PvNumG+XFNm8U/N0azhoqmnHwYqsRZMHgSsd1dWSwy+?=
- =?us-ascii?Q?uWQWyfhPghpLvbpLJNz/w+buh7EaITTwtgkKyMMh8AsDwG4XCEDYfnEbL8bi?=
- =?us-ascii?Q?zrUGJQi3+qw0BydSHb9wXf2hfgj5zL7WdrvhU3sWpoBpA/6FbXCpd++Ia9P7?=
- =?us-ascii?Q?xIPDqq5QSGopIXViygeJKRZ6xFjYj91B94xdUXQ/s3fuAu2yZdLeK6xKjbO+?=
- =?us-ascii?Q?3H5Ofhksw1a4SDPvh6ZqZ5CywQYzMzIUy06qUBdz1vaTsxrmJX4c3rzBgghY?=
- =?us-ascii?Q?VKG3FwMaabcNTzqklYB0+C4ICLIbES/2D0dC/KIl190zZVFWZBuzfveydkf1?=
- =?us-ascii?Q?dtW+w6Orct93nI+uNfrSn5n5fzjMSOTHufshgzmDJa8Q24qiO9/cyRfn+b+r?=
- =?us-ascii?Q?FkY+29aaKOmT8VvT9rLiB27DAW0fc1UHJ/B0xqMJ9cblNekxAWFxHyEQET4S?=
- =?us-ascii?Q?DMkK?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E370B735ECD4A74A95F96560AF53C580@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qaA8gn8W+Qu4RF9KetEmDBu/lptRV9ahKpJnZpI7ZCo=;
+        b=Q9HhAWjka/fgAdf6tIezBrvuW0cqacMGrv5pjCFzngBW44GQxtCcNZSPne3ymkCfhg
+         YYBo+8Ei8TAYYjJ5Eu0diMLL+MuMDVtQA+Lb6IpKqVcDzM+zoAWjORzSs53tAddbxY2v
+         m6GqvrK8kuPKSk6uttoSnbJ7XUr5BYvXs+mDNZWqR0ov5GMYmL9yCbH8WNg43XU8/DkA
+         j9RdPlvHhj/EhnQqqTlwDoKourDCNC87oFvQblXxjzZ5zZsHQ5Il3ec9mwQAtteMk3pq
+         Uuxe9dHerS5Ii5o55wbA5hmc1BRFS7V4SqI10Vh0b5x+3zqzhLr5459nwZct7Yl98Ynt
+         9wgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qaA8gn8W+Qu4RF9KetEmDBu/lptRV9ahKpJnZpI7ZCo=;
+        b=LEOzMtiS1DypVUxJS0fDijXKW6aBlyZmjn9rmMjhFAQsy61pkPFR2IXK2lMbCT16Ue
+         8KwOZ8ZwvgN7XiP+bSXKtlY8dqYb+5bMH8Uxm+9KL8iWEzSzyGBh10r1EwKahQMjB9Jr
+         ArI1VrsAQJGg7fk+9oDyD17v73Gg673CpeIsNWQ6egC6cbZuVg2wLO3bJ31QhHpDI27T
+         ehYyeRrwsAvIkv5/xw1Wtjz3UnqxEns4xQnAzPY+E+nFECB0yHvjz5GxXTZ6dzssSRqZ
+         Hw5yLWjra3rW5d9IOVi8lGLAK4nPUPPQknMrmbbfiyGS+PTTBvtff1iZEs3jEv6teWTj
+         S9Zw==
+X-Gm-Message-State: AOAM533P6V/PvQt3qPtPn+RbRKOdfatEkEkEhj3YXjIf0bke79V/2/iy
+        ud2tBwxYvoAQD2PQPDoP0NJax0DIrSKJVGs1NwrGeMrMgyG3UQ==
+X-Google-Smtp-Source: ABdhPJzBM0YzSfYP6oM7kRIRx6dclFXfHRC0Ic0kFqaNBSS+HPxNtv8ookM9vpCOGsNT+AdZ+FmAMIpQ8Gfu0nU/hJY=
+X-Received: by 2002:a17:902:7c04:b029:dc:99f2:eea4 with SMTP id
+ x4-20020a1709027c04b02900dc99f2eea4mr5931479pll.43.1611340638255; Fri, 22 Jan
+ 2021 10:37:18 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB2943.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f524e6c3-8437-480f-04f7-08d8bf04b6d8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 18:37:04.0210
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GgetlFxorEjoZYL+bci8RCETzrlO8JYpuMy+Vu+tqoAItM4cHxTKbVOoN43t48UAFStpK+3olWwKxoZQfen/ujsmd8lALJKYX9S6CL8xhHQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4537
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
- suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101220095
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101220095
+References: <1611329955.4913929-2-xuanzhuo@linux.alibaba.com> <20210122172534.9896-1-alobakin@pm.me>
+In-Reply-To: <20210122172534.9896-1-alobakin@pm.me>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 22 Jan 2021 19:37:06 +0100
+Message-ID: <CAJ8uoz310du+0qsdGWKtsrK3tBxGFTr=kWkT+GwY1GqN=A2ejQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 22, 2021 at 6:26 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Date: Fri, 22 Jan 2021 23:39:15 +0800
+>
+> > On Fri, 22 Jan 2021 13:55:14 +0100, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+> > > On Fri, Jan 22, 2021 at 1:39 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> > > >
+> > > > From: Magnus Karlsson <magnus.karlsson@gmail.com>
+> > > > Date: Fri, 22 Jan 2021 13:18:47 +0100
+> > > >
+> > > > > On Fri, Jan 22, 2021 at 12:57 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> > > > > >
+> > > > > > From: Alexander Lobakin <alobakin@pm.me>
+> > > > > > Date: Fri, 22 Jan 2021 11:47:45 +0000
+> > > > > >
+> > > > > > > From: Eric Dumazet <eric.dumazet@gmail.com>
+> > > > > > > Date: Thu, 21 Jan 2021 16:41:33 +0100
+> > > > > > >
+> > > > > > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
+> > > > > > > > > This patch is used to construct skb based on page to save memory copy
+> > > > > > > > > overhead.
+> > > > > > > > >
+> > > > > > > > > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
+> > > > > > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
+> > > > > > > > > directly construct skb. If this feature is not supported, it is still
+> > > > > > > > > necessary to copy data to construct skb.
+> > > > > > > > >
+> > > > > > > > > ---------------- Performance Testing ------------
+> > > > > > > > >
+> > > > > > > > > The test environment is Aliyun ECS server.
+> > > > > > > > > Test cmd:
+> > > > > > > > > ```
+> > > > > > > > > xdpsock -i eth0 -t  -S -s <msg size>
+> > > > > > > > > ```
+> > > > > > > > >
+> > > > > > > > > Test result data:
+> > > > > > > > >
+> > > > > > > > > size    64      512     1024    1500
+> > > > > > > > > copy    1916747 1775988 1600203 1440054
+> > > > > > > > > page    1974058 1953655 1945463 1904478
+> > > > > > > > > percent 3.0%    10.0%   21.58%  32.3%
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > > > > > > > > ---
+> > > > > > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++----------
+> > > > > > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > > > > > > index 4a83117..38af7f1 100644
+> > > > > > > > > --- a/net/xdp/xsk.c
+> > > > > > > > > +++ b/net/xdp/xsk.c
+> > > > > > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+> > > > > > > > >   sock_wfree(skb);
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> > > > > > > > > +                                       struct xdp_desc *desc)
+> > > > > > > > > +{
+> > > > > > > > > + u32 len, offset, copy, copied;
+> > > > > > > > > + struct sk_buff *skb;
+> > > > > > > > > + struct page *page;
+> > > > > > > > > + void *buffer;
+> > > > > > > > > + int err, i;
+> > > > > > > > > + u64 addr;
+> > > > > > > > > +
+> > > > > > > > > + skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> > > > > > > > > + if (unlikely(!skb))
+> > > > > > > > > +         return ERR_PTR(err);
+> > > > > > > > > +
+> > > > > > > > > + addr = desc->addr;
+> > > > > > > > > + len = desc->len;
+> > > > > > > > > +
+> > > > > > > > > + buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> > > > > > > > > + offset = offset_in_page(buffer);
+> > > > > > > > > + addr = buffer - xs->pool->addrs;
+> > > > > > > > > +
+> > > > > > > > > + for (copied = 0, i = 0; copied < len; i++) {
+> > > > > > > > > +         page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> > > > > > > > > +
+> > > > > > > > > +         get_page(page);
+> > > > > > > > > +
+> > > > > > > > > +         copy = min_t(u32, PAGE_SIZE - offset, len - copied);
+> > > > > > > > > +
+> > > > > > > > > +         skb_fill_page_desc(skb, i, page, offset, copy);
+> > > > > > > > > +
+> > > > > > > > > +         copied += copy;
+> > > > > > > > > +         addr += copy;
+> > > > > > > > > +         offset = 0;
+> > > > > > > > > + }
+> > > > > > > > > +
+> > > > > > > > > + skb->len += len;
+> > > > > > > > > + skb->data_len += len;
+> > > > > > > >
+> > > > > > > > > + skb->truesize += len;
+> > > > > > > >
+> > > > > > > > This is not the truesize, unfortunately.
+> > > > > > > >
+> > > > > > > > We need to account for the number of pages, not number of bytes.
+> > > > > > >
+> > > > > > > The easiest solution is:
+> > > > > > >
+> > > > > > >       skb->truesize += PAGE_SIZE * i;
+> > > > > > >
+> > > > > > > i would be equal to skb_shinfo(skb)->nr_frags after exiting the loop.
+> > > > > >
+> > > > > > Oops, pls ignore this. I forgot that XSK buffers are not
+> > > > > > "one per page".
+> > > > > > We need to count the number of pages manually and then do
+> > > > > >
+> > > > > >         skb->truesize += PAGE_SIZE * npages;
+> > > > > >
+> > > > > > Right.
+> > > > >
+> > > > > There are two possible packet buffer (chunks) sizes in a umem, 2K and
+> > > > > 4K on a system with a PAGE_SIZE of 4K. If I remember correctly, and
+> > > > > please correct me if wrong, truesize is used for memory accounting.
+> > > > > But in this code, no kernel memory has been allocated (apart from the
+> > > > > skb). The page is just a part of the umem that has been already
+> > > > > allocated beforehand and by user-space in this case. So what should
+> > > > > truesize be in this case? Do we add 0, chunk_size * i, or the
+> > > > > complicated case of counting exactly how many 4K pages that are used
+> > > > > when the chunk_size is 2K, as two chunks could occupy the same page,
+> > > > > or just the upper bound of PAGE_SIZE * i that is likely a good
+> > > > > approximation in most cases? Just note that there might be other uses
+> > > > > of truesize that I am unaware of that could impact this choice.
+> > > >
+> > > > Truesize is "what amount of memory does this skb occupy with all its
+> > > > fragments, linear space and struct sk_buff itself". The closest it
+> > > > will be to the actual value, the better.
+> > > > In this case, I think adding of chunk_size * i would be enough.
+> > >
+> > > Sounds like a good approximation to me.
+> > >
+> > > > (PAGE_SIZE * i can be overwhelming when chunk_size is 2K, especially
+> > > > for setups with PAGE_SIZE > SZ_4K)
+> > >
+> > > You are right. That would be quite horrible on a system with a page size of 64K.
+> >
+> > Thank you everyone, I learned it.
+> >
+> > I also think it is appropriate to add a chunk size here, and there is actually
+> > only one chunk here, so it's very simple
+> >
+> >       skb->truesize += xs->pool->chunk_size;
+>
+> umem chunks can't cross page boundaries. So if you're sure that
+> there could be only one chunk, you don't need the loop at all,
+> if I'm not missing anything.
 
+In the default mode, this is true. But in the unaligned_chunk mode
+that can be set on the umem, the chunk may cross one page boundary, so
+we need the loop and the chunk_size * i in the assignment of truesize.
+So "i" can be 1 or 2, but nothing else.
 
-> On Jan 22, 2021, at 3:02 AM, Yang Li <abaci-bugfix@linux.alibaba.com> wro=
-te:
->=20
-> Fix below warnings reported by coccicheck:
-> ./drivers/scsi/qla2xxx/qla_init.c:3371:2-7: WARNING: NULL check before
-> some freeing functions is not needed.
-> ./drivers/scsi/qla2xxx/qla_init.c:7855:5-10: WARNING: NULL check before
-> some freeing functions is not needed.
-> ./drivers/scsi/qla2xxx/qla_init.c:7916:2-7: WARNING: NULL check before
-> some freeing functions is not needed.
-> ./drivers/scsi/qla2xxx/qla_init.c:8113:4-18: WARNING: NULL check before
-> some freeing functions is not needed.
-> ./drivers/scsi/qla2xxx/qla_init.c:8174:2-7: WARNING: NULL check before
-> some freeing functions is not needed.
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
-> ---
-> drivers/scsi/qla2xxx/qla_init.c | 15 +++++----------
-> 1 file changed, 5 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_i=
-nit.c
-> index dcc0f0d8..edd5dd1 100644
-> --- a/drivers/scsi/qla2xxx/qla_init.c
-> +++ b/drivers/scsi/qla2xxx/qla_init.c
-> @@ -3371,8 +3371,7 @@ static void qla2x00_tmf_sp_done(srb_t *sp, int res)
-> 				    "Re-Allocated (%d KB) and save firmware dump.\n",
-> 				    dump_size / 1024);
-> 			} else {
-> -				if (ha->fw_dump)
-> -					vfree(ha->fw_dump);
-> +				vfree(ha->fw_dump);
-> 				ha->fw_dump =3D fw_dump;
->=20
-> 				ha->fw_dump_len =3D ha->fw_dump_alloc_len =3D
-> @@ -7855,8 +7854,7 @@ bool qla24xx_risc_firmware_invalid(uint32_t *dword)
-> 	templates =3D (risc_attr & BIT_9) ? 2 : 1;
-> 	ql_dbg(ql_dbg_init, vha, 0x0160, "-> templates =3D %u\n", templates);
-> 	for (j =3D 0; j < templates; j++, fwdt++) {
-> -		if (fwdt->template)
-> -			vfree(fwdt->template);
-> +		vfree(fwdt->template);
-> 		fwdt->template =3D NULL;
-> 		fwdt->length =3D 0;
->=20
-> @@ -7916,8 +7914,7 @@ bool qla24xx_risc_firmware_invalid(uint32_t *dword)
-> 	return QLA_SUCCESS;
->=20
-> failed:
-> -	if (fwdt->template)
-> -		vfree(fwdt->template);
-> +	vfree(fwdt->template);
-> 	fwdt->template =3D NULL;
-> 	fwdt->length =3D 0;
->=20
-> @@ -8113,8 +8110,7 @@ bool qla24xx_risc_firmware_invalid(uint32_t *dword)
-> 	templates =3D (risc_attr & BIT_9) ? 2 : 1;
-> 	ql_dbg(ql_dbg_init, vha, 0x0170, "-> templates =3D %u\n", templates);
-> 	for (j =3D 0; j < templates; j++, fwdt++) {
-> -		if (fwdt->template)
-> -			vfree(fwdt->template);
-> +		vfree(fwdt->template);
-> 		fwdt->template =3D NULL;
-> 		fwdt->length =3D 0;
->=20
-> @@ -8174,8 +8170,7 @@ bool qla24xx_risc_firmware_invalid(uint32_t *dword)
-> 	return QLA_SUCCESS;
->=20
-> failed:
-> -	if (fwdt->template)
-> -		vfree(fwdt->template);
-> +	vfree(fwdt->template);
-> 	fwdt->template =3D NULL;
-> 	fwdt->length =3D 0;
->=20
-> --=20
-> 1.8.3.1
->=20
-
-Make Sense.=20
-
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-
---
-Himanshu Madhani	 Oracle Linux Engineering
-
+> > In addition, I actually borrowed from the tcp code:
+> >
+> >    tcp_build_frag:
+> >    --------------
+> >
+> >       if (can_coalesce) {
+> >               skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
+> >       } else {
+> >               get_page(page);
+> >               skb_fill_page_desc(skb, i, page, offset, copy);
+> >       }
+> >
+> >       if (!(flags & MSG_NO_SHARED_FRAGS))
+> >               skb_shinfo(skb)->flags |= SKBFL_SHARED_FRAG;
+> >
+> >       skb->len += copy;
+> >       skb->data_len += copy;
+> >       skb->truesize += copy;
+> >
+> > So, here is one bug?
+>
+> skb_frag_t is an alias to struct bvec. It doesn't contain info about
+> real memory consumption, so there's no other option buf just to add
+> "copy" to truesize.
+> XSK is different in this term, as it operates with chunks of a known
+> size.
+>
+> > Thanks.
+> >
+> > >
+> > > > > > > > > +
+> > > > > > > > > + refcount_add(len, &xs->sk.sk_wmem_alloc);
+> > > > > > > > > +
+> > > > > > > > > + return skb;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > >
+> > > > > > > Al
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Al
+> > > >
+> > > > Al
+>
