@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29652FFDD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 706C22FFDE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbhAVIEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:04:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
+        id S1726168AbhAVIFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:05:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727000AbhAVIEa (ORCPT
+        with ESMTP id S1726751AbhAVIFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:04:30 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8572CC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:03:39 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id o13so6332352lfr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:03:39 -0800 (PST)
+        Fri, 22 Jan 2021 03:05:25 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F302C06174A;
+        Fri, 22 Jan 2021 00:04:44 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id o18so3505842qtp.10;
+        Fri, 22 Jan 2021 00:04:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ekB2r4XI7F6IjNfkYPWwLdcwzJaJYtXqKRX3CXrIFc=;
-        b=msKCzptkpliqAUQNglv+FxAEmT+FBmbcFa1TAi8A7yGnYd0WGDHwTPW0gxum7uImGR
-         EJPcI5oBsbcLdUnySJxo/PbT6ouPs/NatUaY4LyQofnMBtyhgz4PTonG3TTbV9UKESqC
-         LfDzGKeS8Zfq8WUX8QEBV1jtSX2p5UKJBQMiUwLK9eLitSvJzSqVS5KwYYoZdJwILEgc
-         xa1Yh6huODhcnrjwoyopccvYJFg7mXT+UldmwldBVmEp2JNtop1KPAhpyGmSxZxeVu0n
-         I1BpG54+oJLYPmK45s+ewvJE3cvb+Yds1EbkoCcvJHuPyF4S9tpvTd9r009NmkWqevP6
-         QXWg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Kx3sH6YHlpgK218Xqk1ihUZMM+LeKPCk6agxOk0gJmM=;
+        b=D3e7DVZXhlIvnI8Jabvi3Ua7OjQqy3K9WCZPCDupl3J5qtqmO8a8VE7zup0z14bvWX
+         jn+I9U4TbM7y3xkbY4ZlEwR7K7vE5D3KCkDeVKEzidU/sW4FIZFf/I8Lt4sQkeABNG9O
+         rbNT9kke1JSvUe6eVkD+6CstOjPhswyElvy9JMuUDKjqnq26Ayue0Wsa/A+UQ4VLgXcO
+         7tcIB7thrFFe200npdTBk6YsOjkZHXPZ74n6Tq7BeOwbAAQS8BZe5gG+3XZkUfymCDeL
+         RA0vmPfbp6jcpWmqxt58XEa9TXr5fMtABVORBoIQREpybdUTvFPQc8pdJkp696y/VElP
+         WalQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ekB2r4XI7F6IjNfkYPWwLdcwzJaJYtXqKRX3CXrIFc=;
-        b=gAYVO0FnMqPag6SBKUYAj5QbfHmBILHHIH3wnZM4ne26IpuG6j0f6+kflr0hSrItrz
-         /jjv/l05AM+6J4OSrnzjnAamgTgJyC0NOk/PfBlHq326Zk8KMLTVNYeLhkqFIds3i2qM
-         Vbvx6rhcxCQiUo7SHFrRmmbTvzp09I0stZwXh86L4nKALVQ0sAZUdm2YtOsKEl4H2E4/
-         tHcqd0Z1mNffU+55siIjgzaTmokunK7V6khMfOOoDoN5uG3VdCPNIz/muaXRRxlHGE52
-         4FAzEbAtyOd50Ita1XSu+gDydHSgIa4SJLs76dpiBoVQsehBzk0ezOStLynMbDGT8N9l
-         B58g==
-X-Gm-Message-State: AOAM5310kSCmNnGrBsAwUVnPhmSNKtVQ6Py2VF6fOke6sImXIUhfm5GK
-        ANYjCqttyu4coHbKeWKMYlFdop9Lp0DiJJ/4bN+ArQ==
-X-Google-Smtp-Source: ABdhPJy1fa8Cp2v2km0uUyHu5rkh42Fpk4e+LXdlQ9AE10uJ56hrIP4W0bXjoDvSopn0+E/yHVIS2HhC7Podz7eyNWM=
-X-Received: by 2002:a19:810:: with SMTP id 16mr1683935lfi.233.1611302617988;
- Fri, 22 Jan 2021 00:03:37 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Kx3sH6YHlpgK218Xqk1ihUZMM+LeKPCk6agxOk0gJmM=;
+        b=a21Q4EIV0QtM30OJAj86RdM32gD2iMfEJouqaAmdLUZBJl3gTa23fYHtZHEqDhEvS/
+         pzGN9ps0LTV0fgiohtlU4BOJGPkK8uu4nxfopOivjXBn17EXASRotRM5u3Gid01gRXr+
+         G32xMSdnXS6Z++yNuoLPumnfrl5sYA+OEzmYGYS5avH1GuAHTcqRIyItjYnK67efbKTX
+         S1XOAPLpdC4n8GAyJQ1hirpSHIv4v25E2GrSTujH3YmudxWJypLRBgBPIvbo3rcs57El
+         k/OU4AcClpgsgufr7VC7JO2RpbIWeFbQtnc41X1HGdPk0NtFBpg1nu4x9q9I0nfcxi7F
+         +zww==
+X-Gm-Message-State: AOAM532OFGmuO5kQ42quu5cOdZA7lVvxHrmWnV4SGmWGg39lz23HFdI8
+        A6o7lQPy9K7YfoakHZji4VnsBiYBgEadfOXtyIY=
+X-Google-Smtp-Source: ABdhPJxJHbeeR43zsgpwVrgT6+nsbNZ6WrgxKtmBY3w5+CnKtZ90SVA4xW0zshG3KJ3afUHPLQdcXw==
+X-Received: by 2002:ac8:3987:: with SMTP id v7mr3243472qte.144.1611302683458;
+        Fri, 22 Jan 2021 00:04:43 -0800 (PST)
+Received: from [0.0.0.0] ([2001:19f0:5:2661:5400:2ff:fe99:4621])
+        by smtp.gmail.com with ESMTPSA id e38sm5385674qtb.30.2021.01.22.00.04.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jan 2021 00:04:42 -0800 (PST)
+Subject: Re: [PATCH v1] can: mcp251xfd: Add some sysfs debug interfaces for
+ registers r/w
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com,
+        wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210122062255.202620-1-suyanjun218@gmail.com>
+ <7181a6a3-62c6-9021-ea63-827f55eacd98@pengutronix.de>
+From:   Su <suyanjun218@gmail.com>
+Message-ID: <f311f01e-5203-821b-e44f-f0088a4622e7@gmail.com>
+Date:   Fri, 22 Jan 2021 16:04:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
- <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
- <20210121053003.GB2587010@in.ibm.com> <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
- <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
-In-Reply-To: <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 22 Jan 2021 09:03:26 +0100
-Message-ID: <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>,
-        Michal Hocko <mhocko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7181a6a3-62c6-9021-ea63-827f55eacd98@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 at 19:19, Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 1/21/21 11:01 AM, Christoph Lameter wrote:
-> > On Thu, 21 Jan 2021, Bharata B Rao wrote:
-> >
-> >> > The problem is that calculate_order() is called a number of times
-> >> > before secondaries CPUs are booted and it returns 1 instead of 224.
-> >> > This makes the use of num_online_cpus() irrelevant for those cases
-> >> >
-> >> > After adding in my command line "slub_min_objects=36" which equals to
-> >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
-> >> > , the regression diseapears:
-> >> >
-> >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
->
-> I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
-> supposed to be a scheduler benchmark? What exactly is going on?
->
 
-From hackbench description:
-Hackbench is both a benchmark and a stress test for the Linux kernel
-scheduler. It's  main
-       job  is  to  create a specified number of pairs of schedulable
-entities (either threads or
-       traditional processes) which communicate via either sockets or
-pipes and time how long  it
-       takes for each pair to send data back and forth.
+在 2021/1/22 下午3:22, Marc Kleine-Budde 写道:
+> On 1/22/21 7:22 AM, Su Yanjun wrote:
+>> When i debug mcp2518fd, some method to track registers is
+>> needed. This easy debug interface will be ok.
+> NACK
+>
+> As the driver uses regmap, everything should be there already.
+>
+> To read use:
+>
+> | cat /sys/kernel/debug/regmap/spi0.0-crc/registers
+>
+> Register write support for devices that are handles by proper kernel drivers is
+> a pure debugging tool, thus not enabled by default, not even with a Kconfig
+> switch. You have to enable it manually, have a look at commit:
+>
+> 09c6ecd39410 regmap: Add support for writing to regmap registers via debugfs
 
-> >> Should we have switched to num_present_cpus() rather than
-> >> num_online_cpus()? If so, the below patch should address the
-> >> above problem.
-> >
-> > There is certainly an initcall after secondaries are booted where we could
-> > redo the calculate_order?
->
-> We could do it even in hotplug handler. But in practice that means making sure
-> it's safe, i.e. all users of oo_order/oo_objects must handle the value changing.
->
-> Consider e.g. init_cache_random_seq() which uses oo_objects(s->oo) to allocate
-> s->random_seq when cache s is created. Then shuffle_freelist() will use the
-> current value of oo_objects(s->oo) to index s->random_seq, for a newly allocated
-> slab - what if the page order has increased meanwhile due to secondary booting
-> or hotplug? Array overflow. That's why I just made the former sysfs handler for
-> changing order read-only.
->
-> Things would be easier if we could trust *on all arches* either
->
-> - num_present_cpus() to count what the hardware really physically has during
-> boot, even if not yet onlined, at the time we init slab. This would still not
-> handle later hotplug (probably mostly in a VM scenario, not that somebody would
-> bring bunch of actual new cpu boards to a running bare metal system?).
->
-> - num_possible_cpus()/nr_cpu_ids not to be excessive (broken BIOS?) on systems
-> where it's not really possible to plug more CPU's. In a VM scenario we could
-> still have an opposite problem, where theoretically "anything is possible" but
-> the virtual cpus are never added later.
+You're right.
 
-On all the system that I have tested num_possible_cpus()/nr_cpu_ids
-were correctly initialized
-
-large arm64 acpi system
-small arm64 DT based system
-VM on x86 system
+Thank you
 
 >
-> We could also start questioning the very assumption that number of cpus should
-> affect slab page size in the first place. Should it? After all, each CPU will
-> have one or more slab pages privately cached, as we discuss in the other
-> thread... So why make the slab pages also larger?
->
-> > Or the num_online_cpus needs to be up to date earlier. Why does this issue
-> > not occur on x86? Does x86 have an up to date num_online_cpus earlier?
-> >
-> >
+> regards,
+> Marc
 >
