@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B872FFC6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A42152FFC6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbhAVGD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:03:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbhAVGDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:03:24 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8A2C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:02:44 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id y19so8966667iov.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:02:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qXQuyZ5AnJgQXgaVGzEkLYjWJnbxmXFPixed8rmyBZQ=;
-        b=nAo+xdXdrcKp/sE3VNF0zxrruu7TWNF6jLRDkXbR44l2DAk0VoJJOKUhbE4uw4d7Wn
-         zwoYh0tCfd3CT8lBST76GWCD1CNza+Dsa8CAxsr09GYcfGB3GD8pye/bgEsnT946qxGe
-         ijlsFjyIxNnrOZKRVoQRrbUwzk9yQWbm31W3qGpMicGVJ2W281dvFWraMvUit2J+inWv
-         o12Jarr9bWTRI10wS9qH1/Wat2ixCosHUYNuh8n0Jm75uRdf0ZUsYua3a+cH9XZ7ukZn
-         c5puTqgDOfice+O4ovzZZigIN3JRSzoP0EB9aUnJZtngpb3nlCFYvpKORdnMlqM0MLJH
-         bbwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qXQuyZ5AnJgQXgaVGzEkLYjWJnbxmXFPixed8rmyBZQ=;
-        b=OYF4Sbb0ghbUgw2fw1dfR6ZMR3cYyUKV7Ow5uKVI+CX+/RTRkQtIPEXu7fSS5Mq9VY
-         ajYMcQZQSWuT8qMwjuVZpsujr/hAs5wgGynsjcC/DJ8ZOXirvaiDk0iAEvereAYmRF8L
-         YmicQsAs4tm91qg+uYStrG4BdNfrCVe2jIQo8g5nK8jdW+t0SmsdXNLX2StFhmKmb7Og
-         lcGotMtBZ5wkfLzWzkezrLT+2Z66dQfwGfHOfSxr8aYfT+9YBGiW6Qf0Or0V5kJc4I50
-         Ma0f6olzdtutWmD8VnVkGJRs1ae2UWaTlh9H7nS0TN9knhqGzKtzasaC4fOkS2Pv7t/x
-         ooNA==
-X-Gm-Message-State: AOAM532ADWaStZO300eOtZ4BjzEqt8LMSA3FjWZqJ2hJsLxo+m+3UQ9p
-        /hAQKNJAwHI/sXAbzisfg3jpNr7onTtVB/e8qVCsYWh3liY=
-X-Google-Smtp-Source: ABdhPJyUhmGekKM6c0ZXIXMQMZ83NxbQVhfFGEBcB/n2h/cGq7ukPteoPdMefyHZKPE6v/nJ9I/xnhYno3cWhi74TLw=
-X-Received: by 2002:a6b:8b84:: with SMTP id n126mr2367709iod.189.1611295363844;
- Thu, 21 Jan 2021 22:02:43 -0800 (PST)
+        id S1726594AbhAVGFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:05:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:59518 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbhAVGE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 01:04:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFDF211B3;
+        Thu, 21 Jan 2021 22:04:04 -0800 (PST)
+Received: from [10.163.92.92] (unknown [10.163.92.92])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B7D03F68F;
+        Thu, 21 Jan 2021 22:04:00 -0800 (PST)
+Subject: Re: [PATCH V3 0/3] mm/memory_hotplug: Pre-validate the address range
+ with platform
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
+        catalin.marinas@arm.com, Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
+ <d57036a1-de12-2d32-be65-daaa3dc5b772@redhat.com>
+ <20210119134016.GA23408@linux> <8df4e1e1-1ddd-398e-c9a6-17a67d8a95bc@arm.com>
+Message-ID: <1c8c204d-1f96-d3aa-1b7b-ec4cc7b1b79b@arm.com>
+Date:   Fri, 22 Jan 2021 11:34:24 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAD-N9QV7H8cRUAbnrU9KuXvKbtwL6tLk8-p6HcGpwHn3NeqHJA@mail.gmail.com>
- <CAKXUXMwcNqd61O2t23zyMSBrCNuHi98uym1LLZQZOZO5NOR3Jg@mail.gmail.com> <CAD-N9QWsu8d_ubihGD0B1xf5YWv=WTw6iy4uNhV-73jA9xYbjw@mail.gmail.com>
-In-Reply-To: <CAD-N9QWsu8d_ubihGD0B1xf5YWv=WTw6iy4uNhV-73jA9xYbjw@mail.gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 22 Jan 2021 07:02:33 +0100
-Message-ID: <CAKXUXMw2DqYFBzEpo-6F+_yOTY_+F88Tb_oK69ztkJWhQ72ZVA@mail.gmail.com>
-Subject: Re: "possible deadlock in console_lock_spinning_enable" and "possible
- deadlock in console_unlock" should be duplicate crash behaviors
-To:     =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8df4e1e1-1ddd-398e-c9a6-17a67d8a95bc@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 6:47 AM =E6=85=95=E5=86=AC=E4=BA=AE <mudongliangabc=
-d@gmail.com> wrote:
->
-> On Thu, Jan 21, 2021 at 8:49 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> w=
-rote:
-> >
-> > On Thu, Jan 21, 2021 at 6:37 AM =E6=85=95=E5=86=AC=E4=BA=AE <mudonglian=
-gabcd@gmail.com> wrote:
-> > >
-> > > Dear kernel developers,
-> > >
-> > > I found that on the syzbot dashboard, =E2=80=9Cpossible deadlock in
-> > > console_lock_spinning_enable=E2=80=9D[1] and "possible deadlock in
-> > > console_unlock"[2] should share the same root cause.
-> > >
-> > > The reasons for the above statement:
-> > > 1) the stack trace is the same, and this title difference is due to
-> > > the inline property of "console_lock_spinning_enable";
-> > > 2) their PoCs are the same as each other;
-> > >
-> > > If you can have any issues with this statement or our information is
-> > > useful to you, please let us know. Thanks very much.
-> > >
-> > > [1] =E2=80=9Cpossible deadlock in console_lock_spinning_enable=E2=80=
-=9D -
-> > > https://syzkaller.appspot.com/bug?id=3D2820deb61d92a8d7ab17a56ced58e9=
-63e65d76d0
-> > > [2] =E2=80=9Cpossible deadlock in console_unlock=E2=80=9D -
-> > > https://syzkaller.appspot.com/bug?id=3D39ea6caa479af471183997376dc7e9=
-0bc7d64a6a
-> > >
-> > >
-> >
-> > Dongliang, what is the purpose of this activity?
->
-> Lukas,
->
-> We are conducting some research on the crash deduplication (or
-> identifying unique bugs) of kernel crash reports. We would like to
-> share some results from our research to facilitate the bugfix in the
-> syzbot dashboard.
->
-> >
-> > Why do inform the kernel maintainers that two issues share the root cau=
-se?
-> >
-> > How does this activity contribute to fixing the bugs? Why does it
-> > become easier to fix the issue/create a patch with the information you
-> > provide?
->
-> I do this for three reasons:
->
-> (1) I think the reports sharing the same root cause may expedite the
-> patching processing and help generate more complete patches. After
-> patching bugs in one case, we can close the other cases quicker.
-> Without these reports, one developer might be misled to develop an
-> incomplete patch due to a lack of understanding of the underlying bug
-> [1].
-> (2) I think it might help maintainers to better assess the severity of
-> the bug and thus could prioritize their effort.
-> (3) Multiple reports might better help maintainers diagnose the bug's
-> root cause.
->
-> [1]  https://groups.google.com/g/syzkaller-bugs/c/9u_hEFvNbLw/m/CO9bfF8zC=
-QAJ
->
-> > (Honestly, I do not see how it does. I believe if anyone becomes
-> > active and fixes the issue due to either one of the two reports, the
-> > one report would be closed by the reported-by tag and the other report
-> > would simply disappear after time because it could never be reproduced
-> > and hence, syzbot would close it.)
-> >
-> > Would it not be more reasonable to fix issues rather than identifying
-> > duplicates in the automatically filled and managed database?
->
-> Yes, fixing issues or bugs is the ultimate goal. However, crash
-> deduplication does benefit the bugfix process, and can reduce the
-> heavy burden on the kernel developers. To make our analysis more
-> useful, we will try our best to add some root cause analysis and how
-> to fix the underlying bug.
->
 
-Well, I am not really convinced, but I guess you will convince me when
-(thanks to your feature) all bugs reported by syzbot are quickly fixed
-and quickly closed.
+On 1/20/21 2:07 PM, Anshuman Khandual wrote:
+> 
+> 
+> On 1/19/21 7:10 PM, Oscar Salvador wrote:
+>> On Tue, Jan 19, 2021 at 02:33:03PM +0100, David Hildenbrand wrote:
+>>> Minor thing, we should make up our mind if we want to call stuff
+>>> internally "memhp_" or "mhp". I prefer the latter, because it is shorter.
+>>
+>> I would rather use the latter as well. I used that in [1].
+> 
+> Okay, will change all that is 'memhp' as 'mhp' instead.
+> 
+>> MEMHP_MERGE_RESOURCE should be renamed if we agree on that.
+>>
+>> [1] https://patchwork.kernel.org/project/linux-mm/cover/20201217130758.11565-1-osalvador@suse.de/
+>>
 
-good luck :)
+While replacing 'memhp' as 'mhp' in this series, noticed there are
+some more 'memhp' scattered around the code from earlier. A mix of
+both 'memhp' and 'mhp' might not be a good idea. Hence should we
+just change these remaining 'memhp' as 'mhp' as well and possibly
+also MEMHP_MERGE_RESOURCE as suggested earlier, in a subsequent
+clean up patch ? Would there be a problem with memhp_default_state
+being a command line parameter ?
 
-Lukas
+From a tree wide search -
+
+Documentation/admin-guide/kernel-parameters.txt:        memhp_default_state=online/offline
+drivers/base/memory.c:int memhp_online_type_from_str(const char *str)
+drivers/base/memory.c:  const int online_type = memhp_online_type_from_str(buf);
+drivers/base/memory.c:                    online_type_to_str[memhp_default_online_type]);
+drivers/base/memory.c:  const int online_type = memhp_online_type_from_str(buf);
+drivers/base/memory.c:  memhp_default_online_type = online_type;
+include/linux/memory_hotplug.h:extern int memhp_online_type_from_str(const char *str);
+include/linux/memory_hotplug.h:extern int memhp_default_online_type;
+mm/memory_hotplug.c:int memhp_default_online_type = MMOP_OFFLINE;
+mm/memory_hotplug.c:int memhp_default_online_type = MMOP_ONLINE;
+mm/memory_hotplug.c:static int __init setup_memhp_default_state(char *str)
+mm/memory_hotplug.c:    const int online_type = memhp_online_type_from_str(str);
+mm/memory_hotplug.c:            memhp_default_online_type = online_type;
+mm/memory_hotplug.c:__setup("memhp_default_state=", setup_memhp_default_state);
+mm/memory_hotplug.c:    mem->online_type = memhp_default_online_type;
+mm/memory_hotplug.c:    if (memhp_default_online_type != MMOP_OFFLINE)
