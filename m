@@ -2,408 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF3A3003F1
+	by mail.lfdr.de (Postfix) with ESMTP id DD9DF3003F2
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbhAVNRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:17:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726672AbhAVNQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:16:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6676B223C8;
-        Fri, 22 Jan 2021 13:16:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611321372;
-        bh=YyctUw8oX2/QAuq5X9mleiVSoAyJIQbW4ly3Ly09lRk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W0YzG+X4t1QwqQlGkA3Dys0HflnZQKjqJmZ8WXZxanbvXunaIaubc+pIbKXXiWabT
-         CHYOCQhZev4a8xkJBLlLWIoehWFvRiJ4NvDs09PAN5Fr++/KKwxPRGw26tjEqtZIjW
-         CXiLQ7GnGEiLpSPG9KVamyVf5O5FqQdgrst6+XiZJlFukWyBbdmIE2z1hc4z1xyR5b
-         tKyuwvMCdX7Xnmr67qPSdbi4/Q7nxoaYPtf1P76ii2Izq48N2AOOLFx3LxyPK5N0R3
-         lY6BPaF/ss56QxUbdcE9oOzU/PRBV+bvDA+R4gHcQNUg3EL1S4w9X1A8Fhj7CY/etw
-         9FKx2lDe7s9ZQ==
-Date:   Fri, 22 Jan 2021 22:16:09 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/6] tracing: Rework synthetic event command parsing
-Message-Id: <20210122221609.6d6fc203fa7ac85d33f2ead7@kernel.org>
-In-Reply-To: <f3c2d2841307de0a7624a250f8f9653d435602c9.1611243025.git.zanussi@kernel.org>
-References: <cover.1611243025.git.zanussi@kernel.org>
-        <f3c2d2841307de0a7624a250f8f9653d435602c9.1611243025.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727444AbhAVNRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:17:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727401AbhAVNRF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:17:05 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4542C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:16:24 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id f2so1255586ljp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:16:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1v2FAdAIM+FduQLY9fgZwr7tF6/Isi2KlND7ig2PLqM=;
+        b=w65sROKBqsor9zfqRpfltZ34/wM853Cw2NXBuRcrS5fYxv/d2nceN68WoCJYvFVGoh
+         krEbKtoXibVHrjj1toHnXg9oBfFeOT2V8UTDDtG84gaRlJk0VPT2XhXzHi9HKL9/Byn3
+         zTOV+lhC4xDAgmZQZczTdURgv4OnednJAug7hzkH63lMFprGrvad1FHUV1DO3N5/Y2ut
+         R1ilFeGGEuJQE251rWv1/Q1ukRwGMg1UadZSwxTDfmYucOZbuoaRajZ5K3+DU/FFOcoq
+         H+UMa41hui9M/D7u6I+yXBmO/oY31aSQyWQTRSCxtj38sDe3NqP5W6HHGOTpzA0TdSsM
+         xNxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1v2FAdAIM+FduQLY9fgZwr7tF6/Isi2KlND7ig2PLqM=;
+        b=CiGudiPJvpHP91n936BjwxvcyQoDN7dArAscKy8pqaivkA1vL4pfx7Rq5rp2FDl/3Z
+         +bwGC5gLWLfZTuG028xJ6aD7EY4Yjq+fQcNlMRluKt8FKwlBB+VDpEnmvzPSdITv9K8V
+         0uRKnOCfK2aFNhGaSmIczhUJcyqBUB9NKtn5okJOicJwEIQmmUajoxhG35biqtNII2Dj
+         ZS1KX9KCwDHJIUPiSXgFT5JuAVY8PYhrOyKKUenLzpE+6kVblbnSzMVzsur1miR7lnz1
+         t5xDGt8O8bBeCwOWp9bPWvXSgMWYKXpn4QdmUx0B6b6a7xgW1NmXwOuKzw6LauL6LwPb
+         lozA==
+X-Gm-Message-State: AOAM532XUmZ9B3YiidWV0tzFvEd6QuHvdYp5k4lPcwHr7sJFsv5482P7
+        Yusu6MjmJIk30ccLTuKTiIl5Wsj8WP2WQtYB7k7KxsV8twRmXQ==
+X-Google-Smtp-Source: ABdhPJxjtYcNvePVfz3PyQvJmmzO6M4fKzwNdZqKua6XH8jtTIXlHJqEXPINzkevucgcTd+1sQSvY97jqlAeG8Lnsx4=
+X-Received: by 2002:a2e:b6cc:: with SMTP id m12mr837848ljo.401.1611321383077;
+ Fri, 22 Jan 2021 05:16:23 -0800 (PST)
+MIME-Version: 1.0
+References: <20201118082759.1413056-1-bharata@linux.ibm.com>
+ <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
+ <20210121053003.GB2587010@in.ibm.com> <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
+ <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz> <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
+ <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
+In-Reply-To: <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 22 Jan 2021 14:16:11 +0100
+Message-ID: <CAKfTPtAEFSHBR3_oK6PpH-GWhtZBV9unyBh=n5DVT36eHvo6Dg@mail.gmail.com>
+Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
+ slub page order
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>,
+        Michal Hocko <mhocko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 11:01:05 -0600
-Tom Zanussi <zanussi@kernel.org> wrote:
+On Fri, 22 Jan 2021 at 13:03, Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 1/22/21 9:03 AM, Vincent Guittot wrote:
+> > On Thu, 21 Jan 2021 at 19:19, Vlastimil Babka <vbabka@suse.cz> wrote:
+> >>
+> >> On 1/21/21 11:01 AM, Christoph Lameter wrote:
+> >> > On Thu, 21 Jan 2021, Bharata B Rao wrote:
+> >> >
+> >> >> > The problem is that calculate_order() is called a number of times
+> >> >> > before secondaries CPUs are booted and it returns 1 instead of 224.
+> >> >> > This makes the use of num_online_cpus() irrelevant for those cases
+> >> >> >
+> >> >> > After adding in my command line "slub_min_objects=36" which equals to
+> >> >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
+> >> >> > , the regression diseapears:
+> >> >> >
+> >> >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
+> >>
+> >> I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
+> >> supposed to be a scheduler benchmark? What exactly is going on?
+> >>
+> >
+> > From hackbench description:
+> > Hackbench is both a benchmark and a stress test for the Linux kernel
+> > scheduler. It's  main
+> >        job  is  to  create a specified number of pairs of schedulable
+> > entities (either threads or
+> >        traditional processes) which communicate via either sockets or
+> > pipes and time how long  it
+> >        takes for each pair to send data back and forth.
+>
+> Yep, so I wonder which slab entities this is stressing that much.
+>
+> >> Things would be easier if we could trust *on all arches* either
+> >>
+> >> - num_present_cpus() to count what the hardware really physically has during
+> >> boot, even if not yet onlined, at the time we init slab. This would still not
+> >> handle later hotplug (probably mostly in a VM scenario, not that somebody would
+> >> bring bunch of actual new cpu boards to a running bare metal system?).
+> >>
+> >> - num_possible_cpus()/nr_cpu_ids not to be excessive (broken BIOS?) on systems
+> >> where it's not really possible to plug more CPU's. In a VM scenario we could
+> >> still have an opposite problem, where theoretically "anything is possible" but
+> >> the virtual cpus are never added later.
+> >
+> > On all the system that I have tested num_possible_cpus()/nr_cpu_ids
+> > were correctly initialized
+> >
+> > large arm64 acpi system
+> > small arm64 DT based system
+> > VM on x86 system
+>
+> So it's just powerpc that has this issue with too large nr_cpu_ids? Is it caused
+> by bios or the hypervisor? How does num_present_cpus() look there?
 
-> Now that command parsing has been delegated to the create functions
-> and we're no longer constrained by argv_split(), we can modify the
-> synthetic event command parser to better match the higher-level
-> structure of the synthetic event commands, which is basically an event
-> name followed by a set of semicolon-separated fields.
-> 
-> Since we're also now passed the raw command, we can also save it
-> directly and can get rid of save_cmdstr().
-> 
+num_present_cpus() starts to 1 until secondary cpus boot in the arm64 case
 
-This looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> ---
->  kernel/trace/trace_events_synth.c | 198 +++++++++++++++---------------
->  1 file changed, 98 insertions(+), 100 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index b2588a5650c9..a79c17b97add 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -48,7 +48,7 @@ static int errpos(const char *str)
->  	return err_pos(last_cmd, str);
->  }
->  
-> -static void last_cmd_set(char *str)
-> +static void last_cmd_set(const char *str)
->  {
->  	if (!str)
->  		return;
-> @@ -579,18 +579,14 @@ static void free_synth_field(struct synth_field *field)
->  	kfree(field);
->  }
->  
-> -static struct synth_field *parse_synth_field(int argc, const char **argv,
-> -					     int *consumed)
-> +static struct synth_field *parse_synth_field(int argc, char **argv)
->  {
-> -	struct synth_field *field;
->  	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
-> -	int len, ret = -ENOMEM;
-> +	int len, consumed, ret = -ENOMEM;
-> +	struct synth_field *field;
->  	struct seq_buf s;
->  	ssize_t size;
->  
-> -	if (field_type[0] == ';')
-> -		field_type++;
-> -
->  	if (!strcmp(field_type, "unsigned")) {
->  		if (argc < 3) {
->  			synth_err(SYNTH_ERR_INCOMPLETE_TYPE, errpos(field_type));
-> @@ -599,10 +595,20 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->  		prefix = "unsigned ";
->  		field_type = argv[1];
->  		field_name = argv[2];
-> -		*consumed = 3;
-> +		consumed = 3;
->  	} else {
->  		field_name = argv[1];
-> -		*consumed = 2;
-> +		consumed = 2;
-> +	}
-> +
-> +	if (consumed < argc) {
-> +		synth_err(SYNTH_ERR_INVALID_FIELD, errpos(field_type));
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	if (!field_name) {
-> +		synth_err(SYNTH_ERR_INVALID_FIELD, errpos(field_type));
-> +		return ERR_PTR(-EINVAL);
->  	}
->  
->  	field = kzalloc(sizeof(*field), GFP_KERNEL);
-> @@ -613,8 +619,6 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->  	array = strchr(field_name, '[');
->  	if (array)
->  		len -= strlen(array);
-> -	else if (field_name[len - 1] == ';')
-> -		len--;
->  
->  	field->name = kmemdup_nul(field_name, len, GFP_KERNEL);
->  	if (!field->name)
-> @@ -626,8 +630,6 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->  		goto free;
->  	}
->  
-> -	if (field_type[0] == ';')
-> -		field_type++;
->  	len = strlen(field_type) + 1;
->  
->  	if (array)
-> @@ -644,11 +646,8 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->  	if (prefix)
->  		seq_buf_puts(&s, prefix);
->  	seq_buf_puts(&s, field_type);
-> -	if (array) {
-> +	if (array)
->  		seq_buf_puts(&s, array);
-> -		if (s.buffer[s.len - 1] == ';')
-> -			s.len--;
-> -	}
->  	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
->  		goto free;
->  
-> @@ -1160,46 +1159,12 @@ int synth_event_gen_cmd_array_start(struct dynevent_cmd *cmd, const char *name,
->  }
->  EXPORT_SYMBOL_GPL(synth_event_gen_cmd_array_start);
->  
-> -static int save_cmdstr(int argc, const char *name, const char **argv)
-> -{
-> -	struct seq_buf s;
-> -	char *buf;
-> -	int i;
-> -
-> -	buf = kzalloc(MAX_DYNEVENT_CMD_LEN, GFP_KERNEL);
-> -	if (!buf)
-> -		return -ENOMEM;
-> -
-> -	seq_buf_init(&s, buf, MAX_DYNEVENT_CMD_LEN);
-> -
-> -	seq_buf_puts(&s, name);
-> -
-> -	for (i = 0; i < argc; i++) {
-> -		seq_buf_putc(&s, ' ');
-> -		seq_buf_puts(&s, argv[i]);
-> -	}
-> -
-> -	if (!seq_buf_buffer_left(&s)) {
-> -		synth_err(SYNTH_ERR_CMD_TOO_LONG, 0);
-> -		kfree(buf);
-> -		return -EINVAL;
-> -	}
-> -	buf[s.len] = 0;
-> -	last_cmd_set(buf);
-> -
-> -	kfree(buf);
-> -	return 0;
-> -}
-> -
-> -static int __create_synth_event(int argc, const char *name, const char **argv)
-> +static int __create_synth_event(const char *name, const char *raw_fields)
->  {
-> +	char **argv, *field_str, *tmp_fields, *saved_fields = NULL;
->  	struct synth_field *field, *fields[SYNTH_FIELDS_MAX];
-> +	int i, argc, n_fields = 0, ret = 0;
->  	struct synth_event *event = NULL;
-> -	int i, consumed = 0, n_fields = 0, ret = 0;
-> -
-> -	ret = save_cmdstr(argc, name, argv);
-> -	if (ret)
-> -		return ret;
->  
->  	/*
->  	 * Argument syntax:
-> @@ -1208,13 +1173,14 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
->  	 *      where 'field' = type field_name
->  	 */
->  
-> -	if (name[0] == '\0' || argc < 1) {
-> +	mutex_lock(&event_mutex);
-> +
-> +	if (name[0] == '\0') {
->  		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto out;
->  	}
->  
-> -	mutex_lock(&event_mutex);
-> -
->  	if (!is_good_name(name)) {
->  		synth_err(SYNTH_ERR_BAD_NAME, errpos(name));
->  		ret = -EINVAL;
-> @@ -1228,26 +1194,41 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
->  		goto out;
->  	}
->  
-> -	for (i = 0; i < argc - 1; i++) {
-> -		if (strcmp(argv[i], ";") == 0)
-> -			continue;
-> -		if (n_fields == SYNTH_FIELDS_MAX) {
-> -			synth_err(SYNTH_ERR_TOO_MANY_FIELDS, 0);
-> -			ret = -EINVAL;
-> +	tmp_fields = saved_fields = kstrdup(raw_fields, GFP_KERNEL);
-> +	if (!tmp_fields) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	while ((field_str = strsep(&tmp_fields, ";")) != NULL) {
-> +		argv = argv_split(GFP_KERNEL, field_str, &argc);
-> +		if (!argv) {
-> +			ret = -ENOMEM;
->  			goto err;
->  		}
->  
-> -		field = parse_synth_field(argc - i, &argv[i], &consumed);
-> +		if (!argc)
-> +			continue;
-> +
-> +		field = parse_synth_field(argc, argv);
->  		if (IS_ERR(field)) {
-> +			argv_free(argv);
->  			ret = PTR_ERR(field);
->  			goto err;
->  		}
-> +
-> +		argv_free(argv);
-> +
->  		fields[n_fields++] = field;
-> -		i += consumed - 1;
-> +		if (n_fields == SYNTH_FIELDS_MAX) {
-> +			synth_err(SYNTH_ERR_TOO_MANY_FIELDS, 0);
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
->  	}
->  
-> -	if (i < argc && strcmp(argv[i], ";") != 0) {
-> -		synth_err(SYNTH_ERR_INVALID_FIELD, errpos(argv[i]));
-> +	if (n_fields == 0) {
-> +		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
->  		ret = -EINVAL;
->  		goto err;
->  	}
-> @@ -1266,6 +1247,8 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
->   out:
->  	mutex_unlock(&event_mutex);
->  
-> +	kfree(saved_fields);
-> +
->  	return ret;
->   err:
->  	for (i = 0; i < n_fields; i++)
-> @@ -1385,29 +1368,38 @@ EXPORT_SYMBOL_GPL(synth_event_delete);
->  
->  static int create_or_delete_synth_event(const char *raw_command)
->  {
-> -	char **argv, *name = NULL;
-> -	int argc = 0, ret = 0;
-> +	char *name = NULL, *fields, *p;
-> +	int ret = 0;
->  
-> -	argv = argv_split(GFP_KERNEL, raw_command, &argc);
-> -	if (!argv)
-> -		return -ENOMEM;
-> +	raw_command = skip_spaces(raw_command);
-> +	if (raw_command[0] == '\0')
-> +		return ret;
-> +
-> +	last_cmd_set(raw_command);
->  
-> -	if (!argc)
-> +	p = strpbrk(raw_command, " \t");
-> +	if (!p && raw_command[0] != '!') {
-> +		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
-> +		ret = -EINVAL;
->  		goto free;
-> +	}
->  
-> -	name = argv[0];
-> +	name = kmemdup_nul(raw_command, p ? p - raw_command : strlen(raw_command), GFP_KERNEL);
-> +	if (!name)
-> +		return -ENOMEM;
->  
-> -	/* trace_run_command() ensures argc != 0 */
->  	if (name[0] == '!') {
->  		ret = synth_event_delete(name + 1);
->  		goto free;
->  	}
->  
-> -	ret = __create_synth_event(argc - 1, name, (const char **)argv + 1);
-> +	fields = skip_spaces(p);
-> +
-> +	ret = __create_synth_event(name, fields);
->  free:
-> -	argv_free(argv);
-> +	kfree(name);
->  
-> -	return ret == -ECANCELED ? -EINVAL : ret;
-> +	return ret;
->  }
->  
->  static int synth_event_run_command(struct dynevent_cmd *cmd)
-> @@ -1953,39 +1945,45 @@ EXPORT_SYMBOL_GPL(synth_event_trace_end);
->  
->  static int create_synth_event(const char *raw_command)
->  {
-> -	char **argv, *name;
-> -	int len, argc = 0, ret = 0;
-> +	char *fields, *p;
-> +	const char *name;
-> +	int len, ret = 0;
->  
-> -	argv = argv_split(GFP_KERNEL, raw_command, &argc);
-> -	if (!argv) {
-> -		ret = -ENOMEM;
-> +	raw_command = skip_spaces(raw_command);
-> +	if (raw_command[0] == '\0')
->  		return ret;
-> -	}
->  
-> -	if (!argc)
-> -		goto free;
-> +	last_cmd_set(raw_command);
->  
-> -	name = argv[0];
-> +	p = strpbrk(raw_command, " \t");
-> +	if (!p)
-> +		return -EINVAL;
->  
-> -	if (name[0] != 's' || name[1] != ':') {
-> -		ret = -ECANCELED;
-> -		goto free;
-> -	}
-> +	fields = skip_spaces(p);
-> +
-> +	name = raw_command;
-> +
-> +	if (name[0] != 's' || name[1] != ':')
-> +		return -ECANCELED;
->  	name += 2;
->  
->  	/* This interface accepts group name prefix */
->  	if (strchr(name, '/')) {
->  		len = str_has_prefix(name, SYNTH_SYSTEM "/");
-> -		if (len == 0) {
-> -			ret = -EINVAL;
-> -			goto free;
-> -		}
-> +		if (len == 0)
-> +			return -EINVAL;
->  		name += len;
->  	}
->  
-> -	ret = __create_synth_event(argc - 1, name, (const char **)argv + 1);
-> -free:
-> -	argv_free(argv);
-> +	len = name - raw_command;
-> +
-> +	name = kmemdup_nul(raw_command + len, p - raw_command - len, GFP_KERNEL);
-> +	if (!name)
-> +		return -ENOMEM;
-> +
-> +	ret = __create_synth_event(name, fields);
-> +
-> +	kfree(name);
->  
->  	return ret;
->  }
-> -- 
-> 2.17.1
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+>
+> What about heuristic:
+> - num_online_cpus() > 1 - we trust that and use it
+> - otherwise nr_cpu_ids
+> Would that work? Too arbitrary?
+>
+>
+> >> We could also start questioning the very assumption that number of cpus should
+> >> affect slab page size in the first place. Should it? After all, each CPU will
+> >> have one or more slab pages privately cached, as we discuss in the other
+> >> thread... So why make the slab pages also larger?
+> >>
+> >> > Or the num_online_cpus needs to be up to date earlier. Why does this issue
+> >> > not occur on x86? Does x86 have an up to date num_online_cpus earlier?
+> >> >
+> >> >
+> >>
+> >
+>
