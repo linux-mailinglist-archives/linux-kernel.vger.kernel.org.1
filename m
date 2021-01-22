@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC7C300952
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEC030094D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbhAVRLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:11:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729592AbhAVQOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:14:51 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E23BC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 08:14:11 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1l2z4Y-0003b1-FP; Fri, 22 Jan 2021 17:14:06 +0100
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1l2z4W-0001px-5f; Fri, 22 Jan 2021 17:14:04 +0100
-Date:   Fri, 22 Jan 2021 17:14:04 +0100
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, alistair23@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Add Wacom I2C support to rM2
-Message-ID: <20210122161404.thcocfjghfqaga6t@pengutronix.de>
-References: <20210121065643.342-1-alistair@alistair23.me>
+        id S1729736AbhAVRKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:10:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:55614 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729620AbhAVQUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:20:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F99911D4;
+        Fri, 22 Jan 2021 08:19:44 -0800 (PST)
+Received: from e125528.arm.com (unknown [10.57.9.161])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A681C3F719;
+        Fri, 22 Jan 2021 08:19:38 -0800 (PST)
+From:   Alexandre Truong <alexandre.truong@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Alexandre Truong <alexandre.truong@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Al Grant <al.grant@arm.com>, James Clark <james.clark@arm.com>,
+        Wilco Dijkstra <wilco.dijkstra@arm.com>
+Subject: [PATCH 1/4] perf tools: record aarch64 registers automatically
+Date:   Fri, 22 Jan 2021 16:18:51 +0000
+Message-Id: <20210122161854.5289-1-alexandre.truong@arm.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121065643.342-1-alistair@alistair23.me>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 17:02:21 up 51 days,  6:08, 28 users,  load average: 0.03, 0.05,
- 0.05
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alistair,
+On arm64, automatically record all the registers if the frame pointer
+mode is on. They will be used to do a dwarf unwind to find the caller
+of the leaf frame if the frame pointer was omitted.
 
-thanks for the patches. Before getting into the series please check all
-your commit subjects. Also please check that you do only one logical
-change per patch: e.g. adding DT-Support means: Add the dt-table and not
-more.
+Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Kemeng Shi <shikemeng@huawei.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Al Grant <al.grant@arm.com>
+Cc: James Clark <james.clark@arm.com>
+Cc: Wilco Dijkstra <wilco.dijkstra@arm.com>
+---
+ tools/perf/arch/arm64/util/machine.c | 5 +++++
+ tools/perf/builtin-record.c          | 7 +++++++
+ tools/perf/util/callchain.h          | 2 ++
+ 3 files changed, 14 insertions(+)
 
-I looking forward to your v2 :)
-
-Regards,
-  Marco
-
-On 21-01-20 22:56, Alistair Francis wrote:
-> Add support to the reMarkable2 (rM2) for the Wacom I2C device.
-> 
-> This is based on the reMarkable Linux fork and with this series I am
-> able to probe the Wacom digitiser.
-> 
-> Alistair Francis (6):
->   devicetree/bindings: Initial commit of wacom,wacom-i2c
->   input/touchscreen: Add device tree support to wacom_i2c
->   touchscreen/wacom_i2c: Add support for distance and tilt x/y
->   touchscreen/wacom_i2c: Clean up the query device fields
->   touchscreen/wacom_i2c: Add support for vdd regulator
->   arch/arm: reMarkable2: Enable wacom_i2c
-> 
->  .../input/touchscreen/wacom,wacom-i2c.yaml    |  48 +++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  arch/arm/boot/dts/imx7d-remarkable2.dts       |  41 ++++++
->  arch/arm/configs/imx_v6_v7_defconfig          |   1 +
->  drivers/input/touchscreen/wacom_i2c.c         | 136 +++++++++++++++---
->  5 files changed, 205 insertions(+), 23 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
-> 
-> -- 
-> 2.29.2
-> 
-> 
-> 
-
+diff --git a/tools/perf/arch/arm64/util/machine.c b/tools/perf/arch/arm64/util/machine.c
+index d41b27e781d3..6ba1d356a20c 100644
+--- a/tools/perf/arch/arm64/util/machine.c
++++ b/tools/perf/arch/arm64/util/machine.c
+@@ -25,3 +25,8 @@ void arch__symbols__fixup_end(struct symbol *p, struct symbol *c)
+ 		p->end = c->start;
+ 	pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
+ }
++
++void arch__add_leaf_frame_record_opts(struct record_opts *opts)
++{
++	opts->sample_user_regs = arch__user_reg_mask();
++}
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 7bb10e9863bd..a5161f54b838 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2243,6 +2243,10 @@ static int record__parse_mmap_pages(const struct option *opt,
+ 	return ret;
+ }
+ 
++void __weak arch__add_leaf_frame_record_opts(struct record_opts *opts __maybe_unused)
++{
++}
++
+ static int parse_control_option(const struct option *opt,
+ 				const char *str,
+ 				int unset __maybe_unused)
+@@ -2810,6 +2814,9 @@ int cmd_record(int argc, const char **argv)
+ 	/* Enable ignoring missing threads when -u/-p option is defined. */
+ 	rec->opts.ignore_missing_thread = rec->opts.target.uid != UINT_MAX || rec->opts.target.pid;
+ 
++	if (callchain_param.enabled && callchain_param.record_mode == CALLCHAIN_FP)
++		arch__add_leaf_frame_record_opts(&rec->opts);
++
+ 	err = -ENOMEM;
+ 	if (evlist__create_maps(rec->evlist, &rec->opts.target) < 0)
+ 		usage_with_options(record_usage, record_options);
+diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
+index 5824134f983b..77fba053c677 100644
+--- a/tools/perf/util/callchain.h
++++ b/tools/perf/util/callchain.h
+@@ -280,6 +280,8 @@ static inline int arch_skip_callchain_idx(struct thread *thread __maybe_unused,
+ }
+ #endif
+ 
++void arch__add_leaf_frame_record_opts(struct record_opts *opts);
++
+ char *callchain_list__sym_name(struct callchain_list *cl,
+ 			       char *bf, size_t bfsize, bool show_dso);
+ char *callchain_node__scnprintf_value(struct callchain_node *node,
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.23.0
+
