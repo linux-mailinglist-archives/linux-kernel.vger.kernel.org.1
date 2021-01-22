@@ -2,187 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C12300049
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B34A300045
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbhAVK34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:29:56 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11430 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727805AbhAVKO5 (ORCPT
+        id S1727905AbhAVK2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:28:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727844AbhAVKR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:14:57 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DMZpR36vYzj8SW;
-        Fri, 22 Jan 2021 18:13:19 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 22 Jan 2021 18:14:04 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH v4 2/2] KVM: arm64: Filter out the case of only changing permissions from stage-2 map path
-Date:   Fri, 22 Jan 2021 18:13:58 +0800
-Message-ID: <20210122101358.379956-3-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210122101358.379956-1-wangyanan55@huawei.com>
-References: <20210122101358.379956-1-wangyanan55@huawei.com>
+        Fri, 22 Jan 2021 05:17:26 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E446AC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:16:38 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id u25so6806167lfc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:16:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ho+UEyNp5eYdEURBZ4SMf8N9WjtCKibpu023xdL0thQ=;
+        b=z3riLNdz3S3gII/G4AcHW8uKq/se8NZPHRXlfo6dXTPiEfOrsLoasXGJ9jb7D6GrlM
+         HnXYHLTmP5Be9JKQEhXRX3suzUSpoqdBT7daPIU81/mIVjircyw0PRQw69maZ4D32M4p
+         JhxbTAOMKPaGnOA5EfpM5hv2OaIC6HNUtJVj9dP51jrsttPuJtZ78qHhUojfLhBSW1+O
+         KZhUHJHwCGUp8GFb5ILWiBMR+0//aXOrCYRFY/YWYJ1T74BbqhZVp29CIQzdVKEoGhEy
+         ilrGENrInnGqlDtjC72cXfKzPRYmj1ecQ7PV0EkHQY0jTT6j5o7421Spw2N9jPbapmEs
+         o6Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ho+UEyNp5eYdEURBZ4SMf8N9WjtCKibpu023xdL0thQ=;
+        b=DE47+smVBdhY6QKQwbRzKCaXg42Fb/aAoDzMlxjbRKzdRsBDOokwg8c7HTiWNGn2d0
+         wYxXFyIxq5uGN8iQvq0kTsG8/JzcEA/P3D40UVdahKgoi+bng3HeqSA3GY9gZ5B1dqMJ
+         x/lNWqRz7C8nNia379oL31aOTdMwfCm1oU/UMOAbm5UhmHVAICh7toit9dLLb6TRlfKx
+         BbaoDIhUUM9rzXf/EybTqDBvFGI9KOyEUoxmn1XF9k5aMzrAq5eJ1rv/kjgd1gGDTtih
+         lHT0PXESoI+ry1fXrYGQ6lh82s1yzvcwLUXhRDLhKMfEhtxaRIIqSDmhQy0P8fPL3iZJ
+         Nhfw==
+X-Gm-Message-State: AOAM533G2457i1I1+3SgElnGKlZIpbe79QvH8tYvMSzOZhri6VavLvNz
+        4pHJ2NDIWjD0ErXExw+aT3eemtHrehpMD5yQGIwmTZB7sNpOHA==
+X-Google-Smtp-Source: ABdhPJwnI1FcGyRKwp/vj+Ss1axhLMqEoXDApG+LtR4T7WCUFQC0XdmamzQXWplkQ2gUlJdlmZEFAyxtTw90Mh9+QaU=
+X-Received: by 2002:a05:6512:48d:: with SMTP id v13mr454109lfq.546.1611310597311;
+ Fri, 22 Jan 2021 02:16:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+References: <1611308311-2530-1-git-send-email-sumit.garg@linaro.org> <20210122094810.6o32gzoqtwgqi5hn@maple.lan>
+In-Reply-To: <20210122094810.6o32gzoqtwgqi5hn@maple.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 22 Jan 2021 15:46:25 +0530
+Message-ID: <CAFA6WYO0MFn8A-yDjThrBj_DxEpS3j6DixJX9gi49So99BZg2Q@mail.gmail.com>
+Subject: Re: [PATCH] kdb: Make memory allocations more robust
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(1) During running time of a a VM with numbers of vCPUs, if some vCPUs
-access the same GPA almost at the same time and the stage-2 mapping of
-the GPA has not been built yet, as a result they will all cause
-translation faults. The first vCPU builds the mapping, and the followed
-ones end up updating the valid leaf PTE. Note that these vCPUs might
-want different access permissions (RO, RW, RX, RWX, etc.).
+On Fri, 22 Jan 2021 at 15:18, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Fri, Jan 22, 2021 at 03:08:31PM +0530, Sumit Garg wrote:
+> > Currently kdb uses in_interrupt() to determine whether it's library
+> > code has been called from the kgdb trap handler or from a saner calling
+> > context such as driver init. This approach is broken because
+> > in_interrupt() alone isn't able to determine kgdb trap handler entry via
+> > normal task context such as [1].
+> >
+> > We can improve this by adding check for in_dbg_master() which explicitly
+> > determines if we are running in debugger context. Also, use in_atomic()
+> > instead of in_interrupt() as the former is more appropriate to know atomic
+> > context and moreover the later one is deprecated.
+>
+> Why do we need the in_atomic() here? Or put another way, why isn't
+> in_dbg_master() sufficient?
+>
 
-(2) It's inevitable that we sometimes will update an existing valid leaf
-PTE in the map path, and we all perform break-before-make in this case.
-Then more unnecessary translation faults could be caused if the
-*break stage* of BBM is just catched by other vCPUs.
+Yes, you are right in_atomic() is redundant after looking at usage of
+GFP_KDB. Will get rid of it in v2.
 
-With (1) and (2), something unsatisfactory could happen: vCPU A causes
-a translation fault and builds the mapping with RW permissions, vCPU B
-then update the valid leaf PTE with break-before-make and permissions
-are updated back to RO. Besides, *break stage* of BBM may trigger more
-translation faults. Finally, some useless small loops could occur.
+-Sumit
 
-We can make some optimization to solve above problems: When we need to
-update a valid leaf PTE in the translation fault handler, let's filter
-out the case where this update only change access permissions that don't
-require break-before-make. If there have already been the permissions
-we want, don't bother to update. If still more permissions need to be
-added, then update the PTE directly without break-before-make.
-
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/include/asm/kvm_pgtable.h |  4 ++
- arch/arm64/kvm/hyp/pgtable.c         | 62 +++++++++++++++++++++-------
- 2 files changed, 50 insertions(+), 16 deletions(-)
-
-diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-index 52ab38db04c7..2bd4e772ca57 100644
---- a/arch/arm64/include/asm/kvm_pgtable.h
-+++ b/arch/arm64/include/asm/kvm_pgtable.h
-@@ -157,6 +157,10 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt);
-  * If device attributes are not explicitly requested in @prot, then the
-  * mapping will be normal, cacheable.
-  *
-+ * When there is an existing valid leaf PTE to be updated in this function,
-+ * perform break-before-make only if the parameters to be changed for this
-+ * update require it, otherwise the PTE can be updated directly.
-+ *
-  * Note that this function will both coalesce existing table entries and split
-  * existing block mappings, relying on page-faults to fault back areas outside
-  * of the new mapping lazily.
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index 2878aaf53b3c..aac1915f9770 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -45,6 +45,10 @@
- 
- #define KVM_PTE_LEAF_ATTR_HI_S2_XN	BIT(54)
- 
-+#define KVM_PTE_LEAF_ATTR_S2_PERMS	(KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | \
-+					 KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
-+					 KVM_PTE_LEAF_ATTR_HI_S2_XN)
-+
- struct kvm_pgtable_walk_data {
- 	struct kvm_pgtable		*pgt;
- 	struct kvm_pgtable_walker	*walker;
-@@ -460,34 +464,60 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
- 	return 0;
- }
- 
-+static void stage2_map_update_valid_leaf_pte(u64 addr, u32 level,
-+					     kvm_pte_t *ptep, kvm_pte_t new,
-+					     struct stage2_map_data *data)
-+{
-+	kvm_pte_t old = *ptep;
-+
-+	/*
-+	 * It's inevitable that we sometimes end up updating an existing valid
-+	 * leaf PTE on the map path for kinds of reasons, for instance, multiple
-+	 * vcpus accessing the same GPA page all cause translation faults on the
-+	 * same time. So perform break-before-make here only if the parameters
-+	 * to be changed for this update require it, otherwise the PTE can be
-+	 * updated directly.
-+	 */
-+	if ((old ^ new) & (~KVM_PTE_LEAF_ATTR_S2_PERMS)) {
-+		kvm_set_invalid_pte(ptep);
-+		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
-+		smp_store_release(ptep, new);
-+		return;
-+	}
-+
-+	old ^= KVM_PTE_LEAF_ATTR_HI_S2_XN;
-+	new ^= KVM_PTE_LEAF_ATTR_HI_S2_XN;
-+	new |= old;
-+
-+	/*
-+	 * Update the valid leaf PTE directly without break-before-make if more
-+	 * permissions need to be added, and skip the update if there have been
-+	 * already the permissions that we want.
-+	 */
-+	if (new != old) {
-+		WRITE_ONCE(*ptep, new ^ KVM_PTE_LEAF_ATTR_HI_S2_XN);
-+		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
-+	}
-+}
-+
- static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
- 				       kvm_pte_t *ptep,
- 				       struct stage2_map_data *data)
- {
--	kvm_pte_t new, old = *ptep;
-+	kvm_pte_t new;
- 	u64 granule = kvm_granule_size(level), phys = data->phys;
- 
- 	if (!kvm_block_mapping_supported(addr, end, phys, level))
- 		return false;
- 
- 	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
--	if (kvm_pte_valid(old)) {
--		/* Tolerate KVM recreating the exact same mapping */
--		if (old == new)
--			goto out;
--
--		/*
--		 * There's an existing different valid leaf entry, so perform
--		 * break-before-make.
--		 */
--		kvm_set_invalid_pte(ptep);
--		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
--		put_page(virt_to_page(ptep));
-+	if (kvm_pte_valid(*ptep)) {
-+		stage2_map_update_valid_leaf_pte(addr, level, ptep, new, data);
-+	} else {
-+		smp_store_release(ptep, new);
-+		get_page(virt_to_page(ptep));
- 	}
- 
--	smp_store_release(ptep, new);
--	get_page(virt_to_page(ptep));
--out:
- 	data->phys += granule;
- 	return true;
- }
--- 
-2.19.1
-
+>
+> Daniel.
+>
+>
+> >
+> > [1] $ echo g > /proc/sysrq-trigger
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  kernel/debug/kdb/kdb_private.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+> > index 7a4a181..7a9ebd9 100644
+> > --- a/kernel/debug/kdb/kdb_private.h
+> > +++ b/kernel/debug/kdb/kdb_private.h
+> > @@ -231,7 +231,7 @@ extern struct task_struct *kdb_curr_task(int);
+> >
+> >  #define kdb_task_has_cpu(p) (task_curr(p))
+> >
+> > -#define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
+> > +#define GFP_KDB (in_atomic() || in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
+> >
+> >  extern void *debug_kmalloc(size_t size, gfp_t flags);
+> >  extern void debug_kfree(void *);
+> > --
+> > 2.7.4
+> >
