@@ -2,95 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60602FFAF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 152922FFB01
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbhAVDVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 22:21:31 -0500
-Received: from mga01.intel.com ([192.55.52.88]:21647 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726545AbhAVDV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 22:21:27 -0500
-IronPort-SDR: HTrKpBgI0NUmOO3ofCqVBuL1bF4BTFpctfy6w7wMjnr0quGXU1WKCBQ71XHJdBb/FIHq0JdH8y
- ug5E+bGePyvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="198129875"
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="198129875"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 19:19:36 -0800
-IronPort-SDR: jH04a57aMKeVtAXTtbLk4D3Ap7/MQk1yH9/4muPQ+K5nD71B/P4zOgI761fnpB3k+0lgvcfVtG
- 6geKtOvm55zQ==
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
-   d="scan'208";a="427636494"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 19:19:33 -0800
-Subject: Re: [PATCH] x86/perf: Use static_call for x86_pmu.guest_get_msrs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Jason Baron <jbaron@akamai.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        kernel test robot <lkp@intel.com>
-References: <20210118072151.44481-1-like.xu@linux.intel.com>
- <202101182008.jQybUDa0-lkp@intel.com>
- <a82754e7-9a2d-7ab4-466d-fc0d51a3b7f2@linux.intel.com>
- <YAWOhxi6Vxiq8JLR@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <7f31ae2f-25a1-a7fb-1598-a8f21f3bc447@linux.intel.com>
-Date:   Fri, 22 Jan 2021 11:19:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726127AbhAVDY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 22:24:57 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:35509 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725268AbhAVDYv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 22:24:51 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5266C5C0243;
+        Thu, 21 Jan 2021 22:23:45 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 21 Jan 2021 22:23:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=uHl38MxIF2SnkIQDM+hVwSbWSG
+        wnRbserqxthYXHezg=; b=KO663zyD/3pyTPh3b/pPhr2bd0HVJGuaA/lBksmvQP
+        cN7tshvTGCOBs74DqkOpfZYANgKwKcUeUYvmuBbqAFtKH4xTWy2iD4VazUiR9g+5
+        kv6nHUj2LfapSc2zvx30tZI2qQPCBHM529Bm305pWWAFYLdL2r0JBXpIAQWfOCyw
+        Q+WRtuNapGdfuvyAdVA/oLQEHA0GEjg128g/XxThHUfo/W496wd74hUpFN9/QX3A
+        yHVagsSc0U+NCNwOpMOvnuoAgmB2XU+QYOXXIa962+GgZ4P8gPtjjIk5mXQgPdji
+        KLqLG9oC7UB5Ie2k0bzl/5MGdCpQpqsqWbThHjZXP3IQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=uHl38MxIF2SnkIQDM
+        +hVwSbWSGwnRbserqxthYXHezg=; b=WSeMlxF1oXVSNgcZDTUxOWVIAYmq1AsvW
+        jFQK6rSVcs6L0Bw4ty3WcmVdMKK3nCjB3tQT0Xs+mAnIcwD7toxnTYAGLa6E2JxN
+        4W4/pm/psWfs5JRczaAzV1D1woDgpIsINAfIsXiJ2r/Mcw6HtcUdk9rU5r6NNQ58
+        5o2dlDqdo1EPptEMyUqrY8FQGyeenIC7UfQKVb+pDQX2k5E/Kg8KXXkDJm/iVUCD
+        J8P4L9TwLdCBiKrFeHWc7lROX6qVquG/nW40v2UFIDRQ4tyyDB31bbcjfiwEUzi0
+        lESx1AQrUC0C9AHFS/9ogsiCaC7NWrWJHWGB5ZkFe+pAD2hI6y07w==
+X-ME-Sender: <xms:QEUKYJyc6CbyUv3awMdvv0LNWORLguNfMmdDrRZ-s1zM-37iJmHNmA>
+    <xme:QEUKYJTyhH1jk28biAY-hiBLs7VFZ7O3a6CpDrLg5vE5bdWRlNRMwTGgU6RgnFQEL
+    vNpv-xAMT0SFXrLig>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehgdehkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehnughrvgifucfl
+    vghffhgvrhihuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrfgrthhtvghrnh
+    epkefhieffjeevfeevhedtieeihfefvdejledvvddthefftedujeethfeuueelfedtnecu
+    kfhppedvtdefrdehjedrvdduhedrvdefvdenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:QEUKYDWZXNOR00_aI5j5h4cLuEyFG-pL4V4JPLLRhu7TMS2vvpc9cg>
+    <xmx:QEUKYLhF0qcRZvlA0u0ovt2DjashUHeqCF_WlBjdt2zlwH731KztOg>
+    <xmx:QEUKYLDDDnEObcm_XFFZRNuxWNMUfmceVsFJFRYdvigpNkP5eWSXnA>
+    <xmx:QUUKYN1gZtQkgD50r8vFTGT-SdopDqRQhKkdL-_aGCzkDnMZaTx5Ng>
+Received: from localhost.localdomain (203-57-215-232.dyn.iinet.net.au [203.57.215.232])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 18841108005B;
+        Thu, 21 Jan 2021 22:23:40 -0500 (EST)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-mmc@vger.kernel.org
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org, joel@jms.id.au,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com, Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] mmc: sdhci-of-aspeed: Fix kunit-related build error
+Date:   Fri, 22 Jan 2021 13:53:34 +1030
+Message-Id: <20210122032334.3663056-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YAWOhxi6Vxiq8JLR@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/18 21:35, Peter Zijlstra wrote:
-> On Mon, Jan 18, 2021 at 09:05:06PM +0800, Like Xu wrote:
->> I guess this fix will silence the compiler error,
->> and v2 will be sent after the local 0day test passes.
-> 
-> I think there's also a problem where you don't assign a function at all.
+Randy found that with the following Kconfig settings we have duplicate
+definitions (e.g. __inittest()) in sdhci-of-aspeed due to competing
+module_init()/module_exit() calls from kunit and driver the itself.
 
-Thank you!
+```
+CONFIG_MMC_SDHCI_OF_ASPEED=m
+CONFIG_MMC_SDHCI_OF_ASPEED_TEST=y
+```
 
-> 
-> I think you want something like
-> 
-> 	if (!x86_pmu.guest_get_msr)
-> 		x86_pmu.guest_get_msr = guest_get_msr_nop;
-> 
-> right before x86_pmu_static_call_update();
-> 
-> And then have it be something like:
-> 
-> static void *guest_et_msr_nop(int *nr)
+Conditionally open-code the kunit initialisation to avoid the error.
 
-The [-Werror=incompatible-pointer-types] will yell at "void *".
+Fixes: 7efa02a981d6 ("mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+---
+ drivers/mmc/host/sdhci-of-aspeed-test.c |  9 ++++++++-
+ drivers/mmc/host/sdhci-of-aspeed.c      | 27 ++++++++++++++++++++-----
+ 2 files changed, 30 insertions(+), 6 deletions(-)
 
-Please review the v2 version.
-
-https://lore.kernel.org/lkml/20210122030324.2754492-1-like.xu@linux.intel.com/T/#u
-
-> {
-> 	*nr = 0;
-> 	return NULL;
-> }
-> 
-> and then you can reduce the entire thing to:
-> 
-> struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
-> {
-> 	return static_call(x86_pmu_guest_get_msrs)(nr);
-> }
-> 
+diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
+index 34070605b28b..e5edda6c6e60 100644
+--- a/drivers/mmc/host/sdhci-of-aspeed-test.c
++++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
+@@ -95,4 +95,11 @@ static struct kunit_suite aspeed_sdhci_test_suite = {
+ 	.name = "sdhci-of-aspeed",
+ 	.test_cases = aspeed_sdhci_test_cases,
+ };
+-kunit_test_suite(aspeed_sdhci_test_suite);
++
++static struct kunit_suite *aspeed_sdhci_test_suite_array[] = {
++	&aspeed_sdhci_test_suite,
++	NULL,
++};
++
++static struct kunit_suite **aspeed_sdhci_test_suites
++	__used __section(".kunit_test_suites") = aspeed_sdhci_test_suite_array;
+diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
+index 3b0d381e1215..1446f23a2bfb 100644
+--- a/drivers/mmc/host/sdhci-of-aspeed.c
++++ b/drivers/mmc/host/sdhci-of-aspeed.c
+@@ -556,6 +556,10 @@ static struct platform_driver aspeed_sdc_driver = {
+ 	.remove		= aspeed_sdc_remove,
+ };
+ 
++#if defined(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)
++#include "sdhci-of-aspeed-test.c"
++#endif
++
+ static int __init aspeed_sdc_init(void)
+ {
+ 	int rc;
+@@ -566,7 +570,20 @@ static int __init aspeed_sdc_init(void)
+ 
+ 	rc = platform_driver_register(&aspeed_sdc_driver);
+ 	if (rc < 0)
+-		platform_driver_unregister(&aspeed_sdhci_driver);
++		goto cleanup_sdhci;
++
++#if defined(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)
++	rc = __kunit_test_suites_init(aspeed_sdhci_test_suites);
++	if (rc < 0) {
++		platform_driver_unregister(&aspeed_sdc_driver);
++		goto cleanup_sdhci;
++	}
++#endif
++
++	return 0;
++
++cleanup_sdhci:
++	platform_driver_unregister(&aspeed_sdhci_driver);
+ 
+ 	return rc;
+ }
+@@ -574,15 +591,15 @@ module_init(aspeed_sdc_init);
+ 
+ static void __exit aspeed_sdc_exit(void)
+ {
++#if defined(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)
++	__kunit_test_suites_exit(aspeed_sdhci_test_suites);
++#endif
++
+ 	platform_driver_unregister(&aspeed_sdc_driver);
+ 	platform_driver_unregister(&aspeed_sdhci_driver);
+ }
+ module_exit(aspeed_sdc_exit);
+ 
+-#if defined(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)
+-#include "sdhci-of-aspeed-test.c"
+-#endif
+-
+ MODULE_DESCRIPTION("Driver for the ASPEED SD/SDIO/SDHCI Controllers");
+ MODULE_AUTHOR("Ryan Chen <ryan_chen@aspeedtech.com>");
+ MODULE_AUTHOR("Andrew Jeffery <andrew@aj.id.au>");
+-- 
+2.27.0
 
