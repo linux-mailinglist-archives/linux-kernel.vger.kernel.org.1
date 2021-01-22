@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE2A3006E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317FC3006E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbhAVPOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:14:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729114AbhAVPOM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:14:12 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE89C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:13:32 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id 6so8152954ejz.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:13:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x6lEXEYlBycVbeohirMEw6ub/Wz8ckmFQxXY6Dkjps8=;
-        b=H+wA3DVWuzzLbXKlcV0REJZlVYshMccSoBVK00FNNZzD+B9KIaMvMBQvboQjKZmCkS
-         GasfIs9l/CIibLMZf7+jz5ZoOpj0qCe9xBBFijTe/9VVDXQhN66jZemp77/jZvNk7qzR
-         jPYOzC8/skA/iGfD3g6qPle9LZas0pqd6PNZwuK5RHO9zUT4IyVUyC7wrwIahz5rLsmV
-         Odb1Wfe88cS0dV+a0tmQ4XJkHqPyDqvR79qBEk/cPfpUkAuKwvPEZ7Od/DnkbI7mkxLa
-         y5+nlNTeN9mwL4PKT+J3H/C3x027JjvOfDBrDAl33vn2HuX0y6RjEKxeDZAQq1MoOd2u
-         QwWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x6lEXEYlBycVbeohirMEw6ub/Wz8ckmFQxXY6Dkjps8=;
-        b=bSMPiA8WysYx9O/ZmS5TVJ5M6WC0f3U8qYCTOKKnOBWffO/fxx0egRxdloL2AfI2uQ
-         OB3qQx9PPlovrs/X4IM+Q+U+UWDtBt9CU70zf65S8weLOi1M9KLAJl0Kc55k6iO9w+U7
-         imFVkzHiJRmg7YAPYdYNUuRPYgcUTUeCuhzUyChql8NitOA2Jr/kYuiu+8Q3e3+R3Dy+
-         QMv0i7Ra9tN8Vt2wlJR58mWconS1BRax09RXWartksxdD5GT3oqrNlHqWaLtQ+Dk8bFv
-         cA0g0gNi79C5uXwW6kC/x0teokjxD9nIJB8LyRgCG1BfX6I8nQo3BUipQmgKVBwkad9N
-         VPjg==
-X-Gm-Message-State: AOAM531GMiy9T5hJU5l5+/oePMYL7Ku9H464/iFCHqG7xgNuacnwBZNi
-        CWWXH82w8O6TWzDof+DAOAxP3U67+2Iul7f51KNFTg==
-X-Google-Smtp-Source: ABdhPJypZeBPSZGj/JwPhVDbhgOaTwYCxHp8xLjZDl2Fnh5KofUbUUbawpfbhlAFT8/cQR3I94woT9KsRs3tMBbgQOw=
-X-Received: by 2002:a17:906:2695:: with SMTP id t21mr3434030ejc.287.1611328410832;
- Fri, 22 Jan 2021 07:13:30 -0800 (PST)
+        id S1729154AbhAVPPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:15:25 -0500
+Received: from mail.eaton.com ([192.104.67.6]:10400 "EHLO mail.eaton.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728628AbhAVPOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:14:48 -0500
+Received: from mail.eaton.com (simtcimsva03.etn.com [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 962EBA40E5;
+        Fri, 22 Jan 2021 10:14:04 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eaton.com;
+        s=eaton-s2020-01; t=1611328444;
+        bh=+4rHUBoSRtDn4MF5TASwgYT+ycLwSP9i0piE03cI3rY=; h=From:To:Date;
+        b=M5qXf+x4mQzu3tNmvmAqHei4nUK3hBelEec5DYE5Yml2XnoDwKtp+p2jWmlF4t7TL
+         bcjC9gSLGw9j+Od22mLRMldOXNnz3qrwmPS9ejv28h7qNTSImdU6q3yzcnzq8ucUyh
+         3ZanQnJjTgHlcwQ8sFjga134e+EYHAvrnEsQzi/hhUckxTF/bpIdd9EA1MuoZcJUz7
+         WxNkeuYYt+EhkSfGkhABiZWDwjE/Ye2uTdR7xACscNQqHYwk1r3hZhKN5kL+NboaOR
+         WcR4t+5gN3tJsEZlc0LUKj4W5pL/piszJtr+g9ZPRH08ED61fU9u/b6ZsP1o8erG4P
+         2tvOVhR28V7iw==
+Received: from mail.eaton.com (simtcimsva03.etn.com [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 91E1BA4102;
+        Fri, 22 Jan 2021 10:14:04 -0500 (EST)
+Received: from SIMTCSGWY01.napa.ad.etn.com (simtcsgwy01.napa.ad.etn.com [151.110.126.183])
+        by mail.eaton.com (Postfix) with ESMTPS;
+        Fri, 22 Jan 2021 10:14:04 -0500 (EST)
+Received: from localhost (151.110.234.147) by SIMTCSGWY01.napa.ad.etn.com
+ (151.110.126.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 22 Jan 2021
+ 10:14:02 -0500
+From:   Laurent Badel <laurentbadel@eaton.com>
+To:     Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Laurent Badel <laurentbadel@eaton.com>
+Subject: [PATCH net 0/1] net: fec: Fix RMII clock glitch in FEC
+Date:   Fri, 22 Jan 2021 16:13:46 +0100
+Message-ID: <20210122151347.30417-1-laurentbadel@eaton.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210122135735.176469491@linuxfoundation.org> <CA+G9fYso4QNbRWdrQiiOiMb5RUr8VtM3AkKEGLasgN+KsPSvDw@mail.gmail.com>
- <YArqULK9c1Cnt5gM@kroah.com>
-In-Reply-To: <YArqULK9c1Cnt5gM@kroah.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 22 Jan 2021 20:43:18 +0530
-Message-ID: <CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/50] 4.14.217-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: 96b59d02-bc1a-4a40-8c96-611cac62bce9
+X-TM-SNTS-SMTP: DF6C7510670431F65E6ED91971896965C2933F71B2658A5D759A678594C713E42002:8
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSVA-9.1.0.1988-8.6.0.1013-25928.000
+X-TM-AS-Result: No--5.128-7.0-31-10
+X-imss-scan-details: No--5.128-7.0-31-10
+X-TMASE-Version: IMSVA-9.1.0.1988-8.6.1013-25928.000
+X-TMASE-Result: 10--5.127900-10.000000
+X-TMASE-MatchedRID: HGWfp+aRkrOYizZS4XBb36iUivh0j2PvsKi4EXb8AIqHX0cDZiY+DQ0/
+        cjFmbp1nPSNdZAnIj4HEqBZmhnP8ZI/v49ZDRKoilchF+IvkllPLvfc3C6SWwoDpStszePepxDm
+        9zIKPPUiaCEBJhT7xKqVdYNqz8fi10cvBfcPxgBM1yhbbA7We0xC26qzoFs8nCDaSBZ23epobrW
+        5lEClUbOUk5kWEWqd8zIB3kpZt0CFlU6Q5GgCLzg3BRWEgXqlWy0Q+dW8+UWQda1Vk3RqxOE+mM
+        tGpzwaW9AKEVfAskfcKz+IDVz2UnmR5WlY/ZLL5ZwUuZO12AYVXjjsM2/DfxkSspnFzF1mR5GAQ
+        y8LG5meGJ5JKftck3XO3FRBLy6un7dQtlyG1f4UdDctFr7spHH0tCKdnhB58puP9zg477pEqtq5
+        d3cxkNasm3JXyNGl2RbwkKMj3WDlOt+UJUvqp/3imO7xdv2moxejEEeX92Opqve85SBsZVlO6A1
+        7NQQMTbquKVNfbyxl/90L/k9AK6FdfVo389IZYU/JCITmuhS7oZbNFHtbIdPl43iPWIJMPxwTT7
+        97Vag8=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 at 20:38, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Jan 22, 2021 at 08:32:46PM +0530, Naresh Kamboju wrote:
-> > On Fri, 22 Jan 2021 at 19:45, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 4.14.217 release.
-> > > There are 50 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.217-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> > arm64 clang-10 builds breaks due to this patch on
-> >    - stable-rc 4.14
-> >    - stable-rc 4.9
-> >    - stable-rc 4.4
-> >
-> > > Will Deacon <will@kernel.org>
-> > >     compiler.h: Raise minimum version of GCC to 5.1 for arm64
-> >
-> > arm64 (defconfig) with clang-10 - FAILED
->
-> How is a clang build breaking on a "check what version of gcc is being
-> used" change?
->
-> What is the error message?
+=EF=BB=BFThe FEC drivers performs a "hardware reset" of the MAC module when=
+ the
+link is reported to be up. This causes a short glitch in the RMII clock=20
+due to the hardware reset clearing the receive control register which=20
+controls the MII mode. It seems that some link partners do not tolerate=20
+this glitch, and invalidate the link, which leads to a never-ending loop
+of negotiation-link up-link down events.=20
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-clang'
-In file included from <built-in>:1:
-include/linux/kconfig.h:74:
-include/linux/compiler_types.h:58:
-include/linux/compiler-gcc.h:160:3: error: Sorry, your version of GCC
-is too old - please use 5.1 or newer.
-# error Sorry, your version of GCC is too old - please use 5.1 or newer.
-  ^
-1 error generated.
+This was observed with the iMX28 Soc and LAN8720/LAN8742 PHYs, with two=20
+Intel adapters I218-LM and X722-DA2 as link partners, though a number of
+other link partners do not seem to mind the clock glitch. Changing the=20
+hardware reset to a software reset (clearing bit 1 of the ECR register)=20
+cured the issue.
 
-build error link:
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/980489003#L514
+Attempts to optimize fec_restart() in order to minimize the duration of=20
+the glitch were unsuccessful. Furthermore manually producing the glitch by
+setting MII mode and then back to RMII in two consecutive instructions,=20
+resulting in a clock glitch <10us in duration, was enough to cause the=20
+partner to invalidate the link. This strongly suggests that the root cause
+of the link being dropped is indeed the change in clock frequency.
 
-- Naresh
+In an effort to minimize changes to driver, the patch proposes to use=20
+soft reset only for tested SoCs (iMX28) and only if the link is up. This=20
+preserves hardware reset in other situations, which might be required for
+proper setup of the MAC. =20
+
+Laurent Badel (1):
+  Fix temporary RMII clock reset on link up
+
+ drivers/net/ethernet/freescale/fec.h      | 5 +++++
+ drivers/net/ethernet/freescale/fec_main.c | 6 ++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+--=20
+2.17.1
+
+
+
+-----------------------------
+Eaton Industries Manufacturing GmbH ~ Registered place of business: Route d=
+e la Longeraie 7, 1110, Morges, Switzerland=20
+
+-----------------------------
+
