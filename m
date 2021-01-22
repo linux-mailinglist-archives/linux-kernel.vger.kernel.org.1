@@ -2,119 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFFC2FF9F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCA62FF9FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbhAVB2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 20:28:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        id S1726503AbhAVBan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 20:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbhAVB2l (ORCPT
+        with ESMTP id S1726110AbhAVBaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 20:28:41 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998A9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:28:00 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id q9so3436467qkn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:28:00 -0800 (PST)
+        Thu, 21 Jan 2021 20:30:35 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8491C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:29:52 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id o20so2671873pfu.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:29:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z/xXBGr2e6Li76TbLQQvAhOhGapKpqBz9Y95NmoOL9I=;
-        b=M0onMKTUNEyXO3uXqn/e4UfuDOygc01YV43XKoHEYnoq9NdhILT5ySmfAYch7Tyt+3
-         yBh9IVoeGkdfVTtagJVeFJJLsknPfXzy8fEBnjwhmVxdgf+ieZr93ZZfO5HvHkvvl2n2
-         unIKevc6+DQABqm+yV0reaSg2dZ/tEsywE4JyJNzqxUSM6cN42t5tMJnwD8oODoGvCRI
-         nvi785S4a6LzuG4Qh3WBSC+Y+8Na1ltAdR2PDv0oRYJqjf+9+CCxG84atm79+tp78ajy
-         W1bvRJnRVWNC/ygpPYwezlTLp/QCYbXZ57M+TWlx1X9D+/o6xgtZuTDb5CmsauKVC97H
-         07Hw==
+         :cc;
+        bh=xevnePlqkoJPc/gVx/RFwj12UYNRMR5SpPrBczxYlwU=;
+        b=FAaMN6AyqXOw4wBmmhNtwxoT6KGu6JihNZn+M+CLJmuNa/lpE8D88XnxfKOLemwyHz
+         TI5aKcgt1SVzfkXaJs/3nWef0FXiHqTH70dPrea3jrhHlNnnI5380+pLqgQN+d8AFjGz
+         ZyIHY70PZX052b4pCrh19ltUyBOszpEr5+ocfkRMZ/mV1a6Cx2MyXMG1wDEFkfm2rLvn
+         8LsP51l5ke7HdGwWcRlanQ2FPrAPNyt1E2l664oclu4QV/nAhkkJBkVav18vjoZa4jk9
+         dXZNVYxEWXhgxwuZrbF7yZIlGYcqVVbkbQg0J3Ck36wlk07OaYx+GO5Ry5J0kB7ngJ5g
+         XQFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z/xXBGr2e6Li76TbLQQvAhOhGapKpqBz9Y95NmoOL9I=;
-        b=gObxO3viL2mX5dW1EGWKaHa8WrZC2giA6LwFubPOB+1SCaD/iOCtbsewekg97qz2iB
-         i0Ek6Nye/qPsJYQVcxXDucXUyNtaiSY51dK3aKjhH3J7wP/Y/Izxa2EKiKY7dTT0/CMO
-         J3FrxMa8QxQ2L+P3CsK+Q/xVM+ubJcl6cagItQBbt6fC299QQdSazAmyG8D7Eso+H54a
-         M4ZlIeIXL9Hm2xPgTp/l/o5LUmruSz9Yn8Mh1rWiiNPYF+UhW6UhEvfxhqEnVTqg30cu
-         6/pa8J3atsOCt6twW2hIzwioYxssSpaiJpPOP0lQaH0WJJ7hP1KozNNJrWcoQ9UBxLUB
-         1h+g==
-X-Gm-Message-State: AOAM53195n4jFTqsYGmZOtPs8o3j5wdXr2z0W+6CBD1wE80URgMxUu41
-        lEaoMXKk3P2hw+X+p/nRUV6EtvcgZpQ1Uj6ncmuhPK6RO6xwxI5H
-X-Google-Smtp-Source: ABdhPJwki7zdKt7IMswZ7tLQBRp3jc1REoy6p3B20cXQqHQaqA0Rfoqe/XEugSQkB3gTypitTutDLye6pkRrBfsd2IM=
-X-Received: by 2002:a37:a796:: with SMTP id q144mr2842350qke.38.1611278879884;
- Thu, 21 Jan 2021 17:27:59 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=xevnePlqkoJPc/gVx/RFwj12UYNRMR5SpPrBczxYlwU=;
+        b=AEj88+c/+jsYQ2wSqie8CReOvp3/SEZwVJH7qoZCNONxh754RrhBssT9CYo+tW5jLJ
+         poTiF4KA7aHnffXB5bgniB1YVQNgy2bmxKhrN6CKfx1tbG+J2kXy4At2z2w2W2Ap2r+0
+         lF7PgX00JOW2miQBzdxW8NPGZURTKDNq8yybVmi2qMBLLR/0XJa2DNw4G6WJmjQQq9yQ
+         kxsBULrgfGqY0HDXSqB6Z6uw6M4ANrYvrt3/3FjaZjuLNpbQ7szuLsV5NjsVBSaUdnMP
+         BVHgPjKCFgIbFg9TMM+PfwHi503Ro7qfi/lrqJ6CAuDwQnTAbH0YcmXbIZvKU+UBZzI0
+         mMrg==
+X-Gm-Message-State: AOAM530fnkGix7FSIF+SCyV8xE1kIao+U1cZIMXXi0I2a6yDTwOUquDx
+        vOFYvAs9HIDSR+auz9V/GEk/3yiAOvJXhdMzMxgfJg==
+X-Google-Smtp-Source: ABdhPJxkOo4l83vnl92ZQpYM5r+6B7BNXCAyHRCfWpPglFoyIk3UZ0hV69WA4xzR5J+LTI0hFIEBeIyGLnH/r3vR7dM=
+X-Received: by 2002:a62:838d:0:b029:1ba:9b85:2eac with SMTP id
+ h135-20020a62838d0000b02901ba9b852eacmr2251542pfe.36.1611278991948; Thu, 21
+ Jan 2021 17:29:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20210120064415.16977-1-yejune.deng@gmail.com> <20210120102238.GA825@zn.tnic>
-In-Reply-To: <20210120102238.GA825@zn.tnic>
-From:   Yejune Deng <yejune.deng@gmail.com>
-Date:   Fri, 22 Jan 2021 09:27:48 +0800
-Message-ID: <CABWKuGUw_fz6vfcUB=u9Uk2EnM_GNZ06BZE=j33o8dUJbwm-GQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/fpu/xstate: calculate the number by sizeof and offsetof
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, yu-cheng.yu@intel.com,
-        tony.luck@intel.com, fenghua.yu@intel.com,
-        kan.liang@linux.intel.com, viro@zeniv.linux.org.uk,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210116094357.3620352-1-morbo@google.com> <20210121082451.2240540-1-morbo@google.com>
+In-Reply-To: <20210121082451.2240540-1-morbo@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 21 Jan 2021 17:29:40 -0800
+Message-ID: <CAKwvOdn+tEFcFaDPmbubigf2gqoc+NT=uwvoqNi3-enQjHqTRw@mail.gmail.com>
+Subject: Re: [PATCH v6] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Bill Wendling <morbo@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your suggestion=EF=BC=81
+On Thu, Jan 21, 2021 at 12:24 AM Bill Wendling <morbo@google.com> wrote:
+>
+> From: Sami Tolvanen <samitolvanen@google.com>
+>
+> Enable the use of clang's Profile-Guided Optimization[1]. To generate a
+> profile, the kernel is instrumented with PGO counters, a representative
+> workload is run, and the raw profile data is collected from
+> /sys/kernel/debug/pgo/profraw.
+>
+> The raw profile data must be processed by clang's "llvm-profdata" tool
+> before it can be used during recompilation:
+>
+>   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
+>   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+>
+> Multiple raw profiles may be merged during this step.
+>
+> The data can now be used by the compiler:
+>
+>   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
+>
+> This initial submission is restricted to x86, as that's the platform we
+> know works. This restriction can be lifted once other platforms have
+> been verified to work with PGO.
+>
+> Note that this method of profiling the kernel is clang-native, unlike
+> the clang support in kernel/gcov.
+>
+> [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
+>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Co-developed-by: Bill Wendling <morbo@google.com>
+> Signed-off-by: Bill Wendling <morbo@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+> v2: - Added "__llvm_profile_instrument_memop" based on Nathan Chancellor's
+>       testing.
+>     - Corrected documentation, re PGO flags when using LTO, based on Fangrui
+>       Song's comments.
+> v3: - Added change log section based on Sedat Dilek's comments.
+> v4: - Remove non-x86 Makfile changes and se "hweight64" instead of using our
+>       own popcount implementation, based on Nick Desaulniers's comment.
+> v5: - Correct padding calculation, discovered by Nathan Chancellor.
+> v6: - Add better documentation about the locking scheme and other things.
+>     - Rename macros to better match the same macros in LLVM's source code.
 
-On Wed, Jan 20, 2021 at 6:22 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Jan 20, 2021 at 02:44:15PM +0800, Yejune Deng wrote:
-> > In fpstate_sanitize_xstate(), use memset and offsetof instead of '=3D 0=
-',
-> > and use sizeof instead of a constant.
-> >
-> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> > ---
-> >  arch/x86/kernel/fpu/xstate.c | 10 +++-------
-> >  1 file changed, 3 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.=
-c
-> > index 5d8047441a0a..2e75630c86e9 100644
-> > --- a/arch/x86/kernel/fpu/xstate.c
-> > +++ b/arch/x86/kernel/fpu/xstate.c
-> > @@ -161,20 +161,16 @@ void fpstate_sanitize_xstate(struct fpu *fpu)
-> >        * FP is in init state
-> >        */
-> >       if (!(xfeatures & XFEATURE_MASK_FP)) {
-> > +             memset(fx, 0, offsetof(struct fxregs_state, mxcsr));
->
-> I'd prefer the explicit zeroing instead of having to look at
-> fxregs_state and where the offset of mxcsr is.
->
-> > +             memset(fx->st_space, 0, sizeof(fx->st_space));
->
-> This is ok I guess.
->
-> >               fx->cwd =3D 0x37f;
-> > -             fx->swd =3D 0;
-> > -             fx->twd =3D 0;
-> > -             fx->fop =3D 0;
-> > -             fx->rip =3D 0;
-> > -             fx->rdp =3D 0;
-> > -             memset(&fx->st_space[0], 0, 128);
-> >       }
-> >
-> >       /*
-> >        * SSE is in init state
-> >        */
-> >       if (!(xfeatures & XFEATURE_MASK_SSE))
-> > -             memset(&fx->xmm_space[0], 0, 256);
-> > +             memset(fx->xmm_space, 0, sizeof(fx->xmm_space));
->
-> This too.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+This is a major win for readability and comparing it against LLVM's
+compiler-rt implementation! Thank you for doing that.  It looks like
+it addresses most of my concerns.  I'm not against following up on
+little details in subsequent patches on top.  However Sedat is right
+about the small issue that v6 doesn't compile.  If you were to roll
+his fixup into a v7 I'd be happy to sign off on it at this point.
+-- 
+Thanks,
+~Nick Desaulniers
