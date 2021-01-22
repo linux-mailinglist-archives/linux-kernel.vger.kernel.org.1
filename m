@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3F3300D87
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE369300D81
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729600AbhAVUPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:15:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34614 "EHLO mail.kernel.org"
+        id S1731088AbhAVUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:14:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727869AbhAVOKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727517AbhAVOKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:10:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EDC923A6A;
-        Fri, 22 Jan 2021 14:09:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62C9823A75;
+        Fri, 22 Jan 2021 14:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324560;
-        bh=KAkjzOBtXldkxQV3S9hnXuJJoDsRFiDiuXFWx2/s5j8=;
+        s=korg; t=1611324563;
+        bh=sOkpxDdA5DSQyv9tafJKuk6w3gPd/pNyDXBhe+5YM5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zpc3OG6QTDJRLljuEaNutOX52vvSveaK0Lps83xHFbOh9gkEHCC7zr8UxMmMzXz42
-         xK6gjJZajbmfHuTRYCaUBsimXjbMBt7YSgsEH1IDBb/fL6B3rNl+N8uQAAxejgzl8n
-         wR4Pf89YT63ds1ZTE8Qc8VvlISnpD3ovIgzNG+pk=
+        b=b7DaDFSzUIfk1flcaH88nzeN8shJvagyh7bk1Z7D6/7TecTtcUF+/lyfeUb3QKdhy
+         Puc/5T5H9lF+W+uWYUuxx/1RmVGSPFZXq4O6WHSL/u9n+hDyUZ7k82FUJb4FtVrLov
+         4b2YIGqFjGYMRa3oJplcFXCLQM//hGYZftp/wqDg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 4.4 20/31] compiler.h: Raise minimum version of GCC to 5.1 for arm64
-Date:   Fri, 22 Jan 2021 15:08:34 +0100
-Message-Id: <20210122135732.683452710@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Nuno=20S=E1?= <nuno.sa@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 21/31] iio: buffer: Fix demux update
+Date:   Fri, 22 Jan 2021 15:08:35 +0100
+Message-Id: <20210122135732.717616060@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
 References: <20210122135731.873346566@linuxfoundation.org>
@@ -46,56 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: "Nuno Sá" <nuno.sa@analog.com>
 
-commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
+commit 19ef7b70ca9487773c29b449adf0c70f540a0aab upstream
 
-GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-beyond the stack pointer, resulting in memory corruption if an interrupt
-is taken after the stack pointer has been adjusted but before the
-reference has been executed. This leads to subtle, infrequent data
-corruption such as the EXT4 problems reported by Russell King at the
-link below.
+When updating the buffer demux, we will skip a scan element from the
+device in the case `in_ind != out_ind` and we enter the while loop.
+in_ind should only be refreshed with `find_next_bit()` in the end of the
+loop.
 
-Life is too short for buggy compilers, so raise the minimum GCC version
-required by arm64 to 5.1.
+Note, to cause problems we need a situation where we are skippig over
+an element (channel not enabled) that happens to not have the same size
+as the next element.   Whilst this is a possible situation we haven't
+actually identified any cases in mainline where it happens as most drivers
+have consistent channel storage sizes with the exception of the timestamp
+which is the last element and hence never skipped over.
 
-Reported-by: Russell King <linux@armlinux.org.uk>
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: <stable@vger.kernel.org>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
-Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-[will: backport to 4.4.y/4.9.y/4.14.y]
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 5ada4ea9be16 ("staging:iio: add demux optionally to path from device to buffer")
+Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20201112144323.28887-1-nuno.sa@analog.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/compiler-gcc.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/iio/industrialio-buffer.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -145,6 +145,12 @@
- 
- #if GCC_VERSION < 30200
- # error Sorry, your compiler is too old - please upgrade it.
-+#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100
-+/*
-+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-+ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-+ */
-+# error Sorry, your version of GCC is too old - please use 5.1 or newer.
- #endif
- 
- #if GCC_VERSION < 30300
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -1281,9 +1281,6 @@ static int iio_buffer_update_demux(struc
+ 				       indio_dev->masklength,
+ 				       in_ind + 1);
+ 		while (in_ind != out_ind) {
+-			in_ind = find_next_bit(indio_dev->active_scan_mask,
+-					       indio_dev->masklength,
+-					       in_ind + 1);
+ 			ch = iio_find_channel_from_si(indio_dev, in_ind);
+ 			if (ch->scan_type.repeat > 1)
+ 				length = ch->scan_type.storagebits / 8 *
+@@ -1292,6 +1289,9 @@ static int iio_buffer_update_demux(struc
+ 				length = ch->scan_type.storagebits / 8;
+ 			/* Make sure we are aligned */
+ 			in_loc = roundup(in_loc, length) + length;
++			in_ind = find_next_bit(indio_dev->active_scan_mask,
++					       indio_dev->masklength,
++					       in_ind + 1);
+ 		}
+ 		ch = iio_find_channel_from_si(indio_dev, in_ind);
+ 		if (ch->scan_type.repeat > 1)
 
 
