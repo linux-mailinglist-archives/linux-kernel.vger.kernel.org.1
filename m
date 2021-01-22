@@ -2,146 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA1C300E90
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED46D300EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730672AbhAVVJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729648AbhAVVIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:08:47 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD10C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:08:06 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id i141so6818755yba.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:08:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qVc/JMkhbZ642gWanQRDHxa/CH0+8991b/z+xpWJCVE=;
-        b=sv6yjs1f0h/jilFnfWEYscV2TwPHz046JX1vja4M1fRL7/hPcAimzjsx09ndnGML1+
-         R1dYHaoAPYi/shuH4sdW1QblpzxI+u7SkGi3MNPi+El6gPb+WhnRHFnDiaz77PyejxFE
-         bnlC79MJ79AWbokEVsWQaIgH4NFvplailCmo3cPt7yPvl3blKaOiFXfBUpasnfE4IK9r
-         7wvBHXRMAI9Qdf83Jkdbgx9puJ8gL8d0sUEX1S8mMSLen7WXn9rifkY8zRhBpmsCmZJt
-         nzUKXEqWgZeUtPVfru5jeTmT17iJVykkgsqIfG57gyHnRFVvjTp2xRRjltHv51NQUBgf
-         HgIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qVc/JMkhbZ642gWanQRDHxa/CH0+8991b/z+xpWJCVE=;
-        b=r9WaGsrtM6qpBgLFciXMB4Zq36jo5yPp6+7FayZeb5HZ34jr1Jyd7pVsENQS0qoVYU
-         FJGkp3Ne/ukkaLYS+Xp9ESPtsn25qKd+jHIsw+7R9EyKJkhyHW0X2pXeFxMonatFn3sq
-         dNoECSCPNtJ1I52KK02nuj3TPfC+dZ96dTKxFOqiq3HORxkdhKxm9ISv+XrCl3byMZFE
-         sbhHblOx+udAV/H9mX4ISifbATQz61sr9x4zwfJ/6VfcjlPXaXwqKksAwm/hfgVF7ewD
-         DUdrbC7ebrbAzQ8e0syuHeKNFnO60q+HUnMfUFfSROQSC+LmJW5u+eJm2k8hJjcsUmtW
-         2+yA==
-X-Gm-Message-State: AOAM531muhhjJehfBx+9ot5zHcHkqird/bK6VWiiV8uIfOGDrVIPpu9r
-        aANmr+jrP5HFmno4PYXJyI7TB1863zOIBwEibT4jFQ==
-X-Google-Smtp-Source: ABdhPJzl3B4tmnY6/Kaav43wpplRGKE3E6UPYGKpTFTuTVbPUkkV4q2p8tfyfjSW1l1la2fC7GPmuC9hUaiU1fTvO1w=
-X-Received: by 2002:a25:3345:: with SMTP id z66mr9256594ybz.466.1611349685124;
- Fri, 22 Jan 2021 13:08:05 -0800 (PST)
+        id S1730438AbhAVVMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:12:15 -0500
+Received: from mail-mw2nam12on2084.outbound.protection.outlook.com ([40.107.244.84]:65248
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729524AbhAVVKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 16:10:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KrzGpx+uRyErhNBImGz5Cuk/vUQqFxRad7H0aKcwW2hLdMtHlgd//I+V9QMvBj2Gecm2C4WBRr5DZe+m/u1iQvbE79V6w/+jC3A0pATc2ss8LHhZ3PA45KUFbXIMscNyICsiqPkSe4L/OcS+JveHqyZEBMYh2Hzhp8sfHVkHO7Pd/3u+wn8OnyIPiojT4lM7DtIsiO8XhOXiJ6NYGMsmdKDWudLvHllll7iwtHM0nwE3ZYm86/bgLmtkDLdAlSQMFAwAeJTMyZlOyOexjfcE1aPDiPqDLxjyY/epQKfVaD0/NfMftH57zBZreQBQimZsD4W8cXKr3qDnlTE22sgG5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uex747HFuOQ0QjjqHm4fUf4qW97e20+JQI9DFb5PBXA=;
+ b=mmQ1telp3xMJELIRFT2y3QvtM4M46pRSUaxroVBcNLlk59ZFBD5k7HUYbzD8MKGJGS515MBo+/vaKKWp6U8qdbD7rb+6qXApID2lQFssF6Uix/AI614aO6ysEjBQupJFeqnrXRyN1ZTGhvRxtZLx5qfBUJohQ5PNZZUV/kyqJEWzx/frUFva3B597GPmQ8G175UID+DmcyS3b2GRpy3MXreCZvtzEGS8fsBxx+0g+AldelwzCkK03OwUdEU4WjkYuuYdsqmGNGDXhDgL7T95FNMec8EmV0MA66mVk+H/Ht1iyewtg/ePFF4tWrtUYPFIicqd48r6Nj9hyQx40JgyXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uex747HFuOQ0QjjqHm4fUf4qW97e20+JQI9DFb5PBXA=;
+ b=lgiqcXKSzJGNNKBCWtNWEmq1aV8uyNubjqm4oM3zQWpjKV5t0nfxDg9+VmIuyXseI6XHBf8xOIZRewEVE7uFHzOF6//QfOHbTiAznLRCB/csqMCAm5YnBd6RdD6ikZpaqBKhW5curm9GzMQHxhNzdllDBA5AJB8Tibk7Zmv0tx8=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3273.namprd12.prod.outlook.com (2603:10b6:5:188::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11; Fri, 22 Jan 2021 21:09:25 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3763.014; Fri, 22 Jan 2021
+ 21:09:25 +0000
+Subject: Re: [PATCH v3 02/13] KVM: SVM: Free sev_asid_bitmap during init if
+ SEV setup fails
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210122202144.2756381-1-seanjc@google.com>
+ <20210122202144.2756381-3-seanjc@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <c013cd19-8120-838c-2357-f87a99f7ba1d@amd.com>
+Date:   Fri, 22 Jan 2021 15:09:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210122202144.2756381-3-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SN1PR12CA0065.namprd12.prod.outlook.com
+ (2603:10b6:802:20::36) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-References: <20210112134054.342-1-calvin.johnson@oss.nxp.com>
- <20210112134054.342-10-calvin.johnson@oss.nxp.com> <CAGETcx-7JVz=QLCMWicHqoagWYjeBXdFJmSv1v6MQhtPt2RS=Q@mail.gmail.com>
- <20210112180343.GI4077@smile.fi.intel.com> <CAJZ5v0iW0jJUcXtiQtLOakkSejZCJD=hTFLL4mvoAN3ZTB+1Tw@mail.gmail.com>
- <CAHp75VcJS10KMA5amUc36PFgj0FLddj1fXD4dUtuAchrVhhzPg@mail.gmail.com>
- <CAJZ5v0ga5RqwFzbBqSChJ7=gBBM-7dWNQPz6bqvqsNAkWZJ=vQ@mail.gmail.com>
- <CAGETcx8DP8J53ntxX2VCSnbMfq1qki7gD-md+NC_jVfOkTam3g@mail.gmail.com>
- <CAJZ5v0gUCUxJX9sGJiZ+zTVYrc3rjuUO2B2fx+O6PewbG7F8aw@mail.gmail.com>
- <CAGETcx-904Cr11nVW6PC=OqWnwM-ZC-DdEUa8+7JmhsH3UOqHw@mail.gmail.com> <CAHp75VcVNj0+KZiLEsPgfz=fZoLr9g1=6ikeUo7FZ1rd4FKpWQ@mail.gmail.com>
-In-Reply-To: <CAHp75VcVNj0+KZiLEsPgfz=fZoLr9g1=6ikeUo7FZ1rd4FKpWQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 22 Jan 2021 13:07:29 -0800
-Message-ID: <CAGETcx-CFPa6hckV6RjWfOcYnrfoU1_vYYpLZtV_LgxNSDzthQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Grant Likely <grant.likely@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN1PR12CA0065.namprd12.prod.outlook.com (2603:10b6:802:20::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 21:09:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3c0d7bf4-dfc0-4f6c-0fc1-08d8bf19ff6e
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3273:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB32736132C251C271C94BBBD3ECA09@DM6PR12MB3273.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t157RKoZJrsEjXTYOpNMjXjvsUcypRPxxHeG8ygfERDfNo/gJxJWoLUJ4LYhts33C4gqf7jpIrulcINZ+bTUmUG6AyaqMtKVQklxsNTTxUxL76eu/UQ7DsCGotzmpFGMz1huWJrcLBKafLYPOMSILWWIB1jVqI9bUmVHeBx15jqTomX4CNNBaSFYDYxZBoZXJvNt9dBF5d48BaheY5+zlRQNcf9wuqnB9Yxfs+8Mqa3elpTU10wqnzmEDsJ+OOQuvVkXHgntDV9Nzu4Iuai5bW+wlJrXCNkmXpJn+XHhlMq0rxAoD5J/fpO5jq9pNHBp7ld+UlgHeAyhC/x2E6jaTsYBpMn2AAVL+UO3XiyHMkF/FKipkMe1SlLlMEKtTNNnD7GVppOh5whThiUCeceaH20nMNEy1Q/Hb+TXNUITlAiM3Zgdq+HVqt3QnPeUluFkkVbutLDuRpMp8X1B1kYFRnTV/h1wP51Dh5ybESBHL6I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(498600001)(54906003)(36756003)(2616005)(7416002)(86362001)(6512007)(5660300002)(4326008)(66476007)(31696002)(8936002)(2906002)(53546011)(66946007)(956004)(6506007)(83380400001)(66556008)(31686004)(52116002)(6486002)(26005)(16526019)(8676002)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q2lOY3JrZ2U4SGpwdkhOTE96WDdYSHpCT3RSZWtYYTlrQ3AwL0dWOFIxNEl3?=
+ =?utf-8?B?a21KRlNHSEQrV2E0d0xxdHk0TkNsT0RCVlVtN2NKT3FHQjBHakpNWXIrTnJ0?=
+ =?utf-8?B?dWpJSTluV1VJRFRzRVRkME16QkNKNkNaKzlLTGdtbis2Ry9IdmxRSTJuRFkr?=
+ =?utf-8?B?NXJZMFZmdVJqcEgvZUE4ZXdxNm5YQnIyc29nK05RRXRnMWJJOWdhZUxFeTNx?=
+ =?utf-8?B?M05BVWtaSERrUXRTOUM5RHhqN1phdjBLNWs3bVhza1YwTHNnYWtuSDU2WjY4?=
+ =?utf-8?B?eldzS25ZUkQzRjhhUVdnNkpCMVZFSjFwU2IxTGI3WkN5OVZYVzBZdjZiRkhx?=
+ =?utf-8?B?Z2wzMld6QU9Ia0puT3FnZUw5N01ENWh6dHhLbkZqcmJSVE5NbXRPaUh2bjgw?=
+ =?utf-8?B?dGRYdXB0NFMyQTY3TVMwS0tDemU4OXFlVHNZenoza0YwbEdya1BZd2NnTFE3?=
+ =?utf-8?B?Vmg3VEVEVWtTT0UveEhWeWxOZmdPcVp0elZNTWlVZzFEZmFpbHNHazU5Z0I2?=
+ =?utf-8?B?NWhHVnFCTXcyTWQwbjhTaHRoWEJpeEZaQW1yWnhFUUFTRWt3V3dxbHZ3QTZo?=
+ =?utf-8?B?aHJGY2QySlVXUnZ1VXo2ZWkzd08vWXlJRnp0YlpOM0JOSE1Gd0JJNHN3VUdB?=
+ =?utf-8?B?QVB1c3BDK2ppaklBZkxyeStkSzdESlcrcjhyano4M3psdDRyYlpiOE5nL3Zy?=
+ =?utf-8?B?VGtVcXdoNUtla0t3ZktOa3FKV2tqWVNveDZ1SDJWemRRUnNZMkNrWGVUUjd2?=
+ =?utf-8?B?NVNYKzNQR2JTaXBqTkdPcjgxZGtGY1QwSmRNOWlDekN3dUx0TkdHelR1VlpK?=
+ =?utf-8?B?OEpGZ2x2TkV5L201NFBPVHQwbXN2REV1dm40S0tMN2E2Y0p0Yzl2Tmd1dDJB?=
+ =?utf-8?B?SGxldDJNMkVnZ3pzQktORktEUWZkM1QzQ1VGQVRQZ1VvTm9JUEVhbGRGVlpO?=
+ =?utf-8?B?U1FlMDhzcXN4eXQ4cFQ3TWdUZzl5WDFYVC91d0NVUDdENTdBSTFleHhMRkJU?=
+ =?utf-8?B?U2wvQjJkdnlPQkl4Vm11RTc1S05mSTJKZlU2cTRKKyt1U3BwWGNKUHl3anEz?=
+ =?utf-8?B?aU1rWkRDbkVTRk52MVdCR0gwL0pyMDNldEdKWG9DWHlRei9RbU8zNERhVFFX?=
+ =?utf-8?B?S3Z3RGFvN3BXTDdNc2NhZ2JDb0o3blpkWmV0RVBkbXpyTENaaEVEWE1nMjZJ?=
+ =?utf-8?B?SklPeVp2WkozQ0pySDRjOENEa3hlblUxVXNPcmZjU2c2UFhNaE1HVlJNY25z?=
+ =?utf-8?B?S2tFaHRhdDd6NU9xZlphUGxvYUFlS3RvN2ZDVnFTaXJMM1Evd0xnSzcva2dT?=
+ =?utf-8?Q?ijfiRVUog/5Fbk+ZnbEDppztDjoWJyYECs?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c0d7bf4-dfc0-4f6c-0fc1-08d8bf19ff6e
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 21:09:25.5574
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ly2mUXED0IbCUlCWIcbdoRTxq0VfvchNpMkD0miP1+Qa8qP5+VDbGf2sYqw+mqQRww7JViet8OvYiHPYre55yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3273
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 1:05 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Fri, Jan 22, 2021 at 10:59 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Fri, Jan 22, 2021 at 8:34 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > On Wed, Jan 20, 2021 at 9:01 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > On Wed, Jan 20, 2021 at 11:15 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
->
-> > > > I'd rather this new function be an ops instead of a bunch of #ifdef or
-> > > > if (acpi) checks. Thoughts?
-> > >
-> > > Well, it looks more like a helper function than like an op and I'm not
-> > > even sure how many potential users of it will expect that _ADR should
-> > > be evaluated in the absence of the "reg" property.
-> > >
-> > > It's just that the "reg" property happens to be kind of an _ADR
-> > > equivalent in this particular binding AFAICS.
-> >
-> > I agree it is not clear how useful this helper function is going to be.
-> >
-> > But in general, to me, any time the wrapper/helper functions in
-> > drivers/base/property.c need to do something like this:
-> >
-> > if (ACPI)
-> >    ACPI specific code
-> > if (OF)
-> >    OF specific code
-> >
-> > I think the code should be pushed to the fwnode ops. That's one of the
-> > main point of fwnode. So that firmware specific stuff is done by
-> > firmware specific code. Also, when adding support for new firmware,
-> > it's pretty clear what support the firmware needs to implement.
-> > Instead of having to go fix up a bunch of code all over the place.
->
-> Wishful thinking.
-> In the very case of GPIO it's related to framework using headers local
-> to framework. Are you suggesting to open its guts to the entire wild
-> world?
+On 1/22/21 2:21 PM, Sean Christopherson wrote:
+> Free sev_asid_bitmap if the reclaim bitmap allocation fails, othwerise
+> KVM will unnecessarily keep the bitmap when SEV is not fully enabled.
+> 
+> Freeing the page is also necessary to avoid introducing a bug when a
+> future patch eliminates svm_sev_enabled() in favor of using the global
+> 'sev' flag directly.  While sev_hardware_enabled() checks max_sev_asid,
+> which is true even if KVM setup fails, 'sev' will be true if and only
+> if KVM setup fully succeeds.
+> 
+> Fixes: 33af3a7ef9e6 ("KVM: SVM: Reduce WBINVD/DF_FLUSH invocations")
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-What are you even talking about? How is whatever you are saying
-remotely related to getting an "id" for a fwnode?
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-> I don't think it's a good idea. You see, here we have different
-> layering POD types,
-
-POD?
-
-> which are natural and quite low level that ops
-> suits best for them and quite different resource types like GPIO. And
-> the latter is closer to certain framework rather than to POD handling
-> cases.
->
-
--Saravana
+> ---
+>   arch/x86/kvm/svm/sev.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index c8ffdbc81709..ec742dabbd5b 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1274,8 +1274,11 @@ void __init sev_hardware_setup(void)
+>   		goto out;
+>   
+>   	sev_reclaim_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
+> -	if (!sev_reclaim_asid_bitmap)
+> +	if (!sev_reclaim_asid_bitmap) {
+> +		bitmap_free(sev_asid_bitmap);
+> +		sev_asid_bitmap = NULL;
+>   		goto out;
+> +	}
+>   
+>   	pr_info("SEV supported: %u ASIDs\n", max_sev_asid - min_sev_asid + 1);
+>   	sev_supported = true;
+> 
