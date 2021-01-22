@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70ED6300192
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408E33001A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728400AbhAVL3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:29:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:42258 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728253AbhAVLVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:21:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C691911D4;
-        Fri, 22 Jan 2021 03:20:39 -0800 (PST)
-Received: from [10.37.8.28] (unknown [10.37.8.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D45203F719;
-        Fri, 22 Jan 2021 03:20:37 -0800 (PST)
-Subject: Re: [PATCH v5 4/6] arm64: mte: Enable async tag check fault
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-References: <20210121163943.9889-1-vincenzo.frascino@arm.com>
- <20210121163943.9889-5-vincenzo.frascino@arm.com>
- <CAAeHK+y9HbV6yVJ0f819Y=_6ijkKq06rqJSY+mh4NF4qd8t_oA@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <04eba2be-641b-ee23-7fa0-436c33168cd8@arm.com>
-Date:   Fri, 22 Jan 2021 11:24:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728296AbhAVLbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728365AbhAVL2d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:28:33 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCE7C061797
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 03:27:02 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l2uae-0000Wu-In; Fri, 22 Jan 2021 12:26:56 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l2uae-0007d6-0w; Fri, 22 Jan 2021 12:26:56 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH v2 0/2] add support for GPIO based counter 
+Date:   Fri, 22 Jan 2021 12:24:32 +0100
+Message-Id: <20210122112434.27886-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+y9HbV6yVJ0f819Y=_6ijkKq06rqJSY+mh4NF4qd8t_oA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+changes v3:
+- convert counter to atomic_t
 
+changes v2:
+- add commas
+- avoid possible unhandled interrupts in the enable path
+- do not use of_ specific gpio functions
 
-On 1/21/21 5:38 PM, Andrey Konovalov wrote:
->> +       if (unlikely(tfsr_el1 & SYS_TFSR_EL1_TF1)) {
->> +               /*
->> +                * Note: isb() is not required after this direct write
->> +                * because there is no indirect read subsequent to it
->> +                * (per ARM DDI 0487F.c table D13-1).
->> +                */
->> +               write_sysreg_s(0, SYS_TFSR_EL1);
->> +
->> +               kasan_report_async();
-> Do we need a static bool reported like in do_tag_recovery() here?
-> 
+Add support for GPIO based pulse counter. For now it can only count
+pulses. With counter char device support, we will be able to attach
+timestamps and measure actual pulse frequency.
 
-I would say not because async mode does not get disabled after the first fault.
+Never the less, it is better to mainline this driver now (before chardev
+patches go mainline), to provide developers additional use case for the counter
+framework with chardev support.
+
+Oleksij Rempel (2):
+  dt-bindings: counter: add gpio-pulse-counter binding
+  counter: add GPIO based pulse counters
+
+ .../bindings/counter/gpio-pulse-counter.yaml  |  39 +++
+ drivers/counter/Kconfig                       |   9 +
+ drivers/counter/Makefile                      |   1 +
+ drivers/counter/gpio-pulse-cnt.c              | 244 ++++++++++++++++++
+ 4 files changed, 293 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/counter/gpio-pulse-counter.yaml
+ create mode 100644 drivers/counter/gpio-pulse-cnt.c
 
 -- 
-Regards,
-Vincenzo
+2.30.0
+
