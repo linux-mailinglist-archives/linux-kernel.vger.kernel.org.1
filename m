@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEC030071F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD70B30071A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728700AbhAVPY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:24:27 -0500
-Received: from mga09.intel.com ([134.134.136.24]:34794 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729130AbhAVPV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:21:59 -0500
-IronPort-SDR: hxDloowpHx2dVHJyR0WRNDek2ithWwkNcLSZ6u+rQdmNxLje60jeAPuZA63j3Wj6Xedci/jXpp
- DoyNrc1LjyQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="179603048"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="179603048"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:21:10 -0800
-IronPort-SDR: houAtDeADSmmcQbQWowfw/7Ijefe89LxGOc9gRjLNXgmOmPoa4inxl58NBuD8nLYiCezx2bJ04
- e2d6BENtCOOw==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="385793960"
-Received: from blaschkj-mobl.ger.corp.intel.com (HELO localhost) ([10.252.44.247])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:21:05 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Colin King <colin.king@canonical.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] drm/i915/hdcp: Fix return of value in uninitialized variable ret
-In-Reply-To: <20210122150957.209779-1-colin.king@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210122150957.209779-1-colin.king@canonical.com>
-Date:   Fri, 22 Jan 2021 17:21:02 +0200
-Message-ID: <87y2glj8v5.fsf@intel.com>
+        id S1729168AbhAVPXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:23:39 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:40030 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728859AbhAVPWm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:22:42 -0500
+Received: by mail-ot1-f52.google.com with SMTP id i20so5374131otl.7;
+        Fri, 22 Jan 2021 07:22:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PaRbnqB9fYa/HtGOKLuNSjqkXS4Fu+4TnCBvbrPBfVI=;
+        b=Yx2Wf3AOSswf+CkDeJ0ICSAh85FJ1tvn5GxwqjJ2kU7XhiGlGgBqn5w8Lhf+1XUQtC
+         knjTIh5JnYrGJ6tIVxPUyUgrSSDMkfeZAZsd/ZMSUBwftNXUTUZXxfwAEF8EvVpiH5SR
+         fxlNlImYmtqzpm/Msvh61nMmO9GMSBHvoOTLbiVR34beJOGkpz1oraXasq3f8qoGkoIk
+         Aq39uxNrathltXzWHWzha6E4q3yWH2FuDEyMyRzAD+I7F3U6ipE9mI7Kpw8OIPQ/PAOl
+         4VRdfvhoRS92B/fzSKiNVebjVms6UKThfWZL4w8ZT6JrgzvwmSnm/AAhyXBYfJSG1Y/4
+         7YFw==
+X-Gm-Message-State: AOAM533wJYY12l3haBQAfYiArNdWVhboLsnXRM2LcbIW+D2iRBU1cNLB
+        WSE5Njie2x+13q7kwNyG6m1AxLKYmP7sxgf0NIU=
+X-Google-Smtp-Source: ABdhPJwu3z8n5JFE4Um3XCGoc8xEBZ2K8zYk0onZqG2ndbdrErIpV2+EYdlvoElPTK4RDdSlVYb5+O5YT8YLsGuRvmo=
+X-Received: by 2002:a9d:1710:: with SMTP id i16mr3638896ota.260.1611328909960;
+ Fri, 22 Jan 2021 07:21:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201221160302.3752887-1-trix@redhat.com>
+In-Reply-To: <20201221160302.3752887-1-trix@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 22 Jan 2021 16:21:39 +0100
+Message-ID: <CAJZ5v0iUVf_5QFKWJBQwy41CK=+FShUxWK05L_2ANqiFRKvfZA@mail.gmail.com>
+Subject: Re: [PATCH] PNP: add printf attribute to log function
+To:     Tom Rix <trix@redhat.com>
+Cc:     Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021, Colin King <colin.king@canonical.com> wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, Dec 21, 2020 at 5:04 PM <trix@redhat.com> wrote:
 >
-> Currently when there are other connectors on the port using HDCP the
-> function _intel_hdcp_disable returns a garbage uninitialized value in
-> variable ret.  I believe the intention is to return 0, so return this
-> literal value instead of the value in ret.
+> From: Tom Rix <trix@redhat.com>
 >
-> Addresses-Coverity: ("Uninitialized scalar return")
-> Fixes: 899c8762f981 ("drm/i915/hdcp: Configure HDCP2.2 MST steram encryption status")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-
-Thanks, but there's already a fix in progress:
-
-http://lore.kernel.org/r/20210119064655.1605-3-anshuman.gupta@intel.com
-
-BR,
-Jani.
-
-
+> Attributing the function allows the compiler to more thoroughly
+> check the use of the function with -Wformat and similar flags.
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 > ---
->  drivers/gpu/drm/i915/display/intel_hdcp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/pnp/interface.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpu/drm/i915/display/intel_hdcp.c b/drivers/gpu/drm/i915/display/intel_hdcp.c
-> index db8dff2eeb0a..a0e7b0bf892b 100644
-> --- a/drivers/gpu/drm/i915/display/intel_hdcp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_hdcp.c
-> @@ -883,7 +883,7 @@ static int _intel_hdcp_disable(struct intel_connector *connector)
->  	 * until it disabled HDCP encryption for all connectors in MST topology.
->  	 */
->  	if (dig_port->num_hdcp_streams > 0)
-> -		return ret;
-> +		return 0;
->  
->  	hdcp->hdcp_encrypted = false;
->  	intel_de_write(dev_priv, HDCP_CONF(dev_priv, cpu_transcoder, port), 0);
+> diff --git a/drivers/pnp/interface.c b/drivers/pnp/interface.c
+> index 187e4a1175b0..602c46893e83 100644
+> --- a/drivers/pnp/interface.c
+> +++ b/drivers/pnp/interface.c
+> @@ -33,6 +33,7 @@ struct pnp_info_buffer {
+>
+>  typedef struct pnp_info_buffer pnp_info_buffer_t;
+>
+> +__printf(2, 3)
+>  static int pnp_printf(pnp_info_buffer_t * buffer, char *fmt, ...)
+>  {
+>         va_list args;
+> --
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Applied as 5.12 material, thanks!
