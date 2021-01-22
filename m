@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EDF3008B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C1C3008F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:47:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbhAVQ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:29:19 -0500
-Received: from mga17.intel.com ([192.55.52.151]:38826 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729726AbhAVQ2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:28:19 -0500
-IronPort-SDR: BHxn+521Zyr6hNjsEphB5N4djKH5GH91e36amYMsXm1PWaYTkPjqVpg0C0RRiRU7Dg/yKZ4YFT
- 2tJqG+LRgwsw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="159243618"
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="159243618"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 08:26:29 -0800
-IronPort-SDR: UE6mXMN14lyt73Fh7qMWtKQ5itvTlLnKs41V8EwuFRkNyNZ1QOrhRTiXkRit9cVWL+Q9Iyozns
- J+LsfMBJDR3A==
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="385814158"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 08:26:24 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2zHS-0097SR-J6; Fri, 22 Jan 2021 18:27:26 +0200
-Date:   Fri, 22 Jan 2021 18:27:26 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wesley Zhao <zhaowei1102@thundersoft.com>
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        tglx@linutronix.de, kerneldev@karsmulder.nl, nivedita@alum.mit.edu,
-        joe@perches.com, gpiccoli@canonical.com, aquini@redhat.com,
-        gustavoars@kernel.org, ojeda@kernel.org, ndesaulniers@gooogle.com,
-        linux-kernel@vger.kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, guohanjun@huawei.com,
-        mchehab+huawei@kernel.org
-Subject: Re: [PATCH v3 1/2] lib/cmdline: add new function get_option_ull()
-Message-ID: <YAr87vy45jbdcbRG@smile.fi.intel.com>
-References: <1611330937-22654-1-git-send-email-zhaowei1102@thundersoft.com>
- <1611330937-22654-2-git-send-email-zhaowei1102@thundersoft.com>
+        id S1729543AbhAVQTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729557AbhAVQQv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:16:51 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7E7C06174A;
+        Fri, 22 Jan 2021 08:15:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=mw1PgASVvzvnZ/mdEiLUwI2zgqaIpbnSB3KmajCDg3c=; b=i3zZ+JVUpCCuZmhey68sNtPI4U
+        JEkV2uJnFz2GWqvhJO/N+xXQKgtnQjcDjfyHj+ydGEek+ErXFpCB+dcV5/DvSAxf+mniFU3ZooQbR
+        tn4iJ/9a+28/PuPUUC+mCXtkC7D6mMLJWIioeWEt5ZVaFROroOFlR1IEYyEWZ7sBgQLKTQzTyJ0No
+        oA5UtG8QVbg0KXAnxImKNaS+Tc00OfgNGxW0RQFlb8EQNoU1HnZjCt1P2Gq/r1nruklb7n4H+f20e
+        dpEX6nhT3FyZF5mMLsOoL7dV1S0YVYoJrr/5c95A0cjlfhdfhWCNWg+ZY26rgMPac1Xd6peFb6185
+        wD1LWSOw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2z4F-000wlr-Ri; Fri, 22 Jan 2021 16:14:04 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: [PATCH v5 18/18] mm/filemap: Simplify generic_file_read_iter
+Date:   Fri, 22 Jan 2021 16:01:40 +0000
+Message-Id: <20210122160140.223228-19-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210122160140.223228-1-willy@infradead.org>
+References: <20210122160140.223228-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611330937-22654-2-git-send-email-zhaowei1102@thundersoft.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 07:55:36AM -0800, Wesley Zhao wrote:
-> In the future we would pass the unsigned long long parameter
-> like(0x123456781234) in cmdline on the 64bit platform, so add a new
-> option parse function get_option_ull()
+From: Christoph Hellwig <hch@lst.de>
 
-You missed period at the end of phrase.
+Avoid the pointless goto out just for returning retval.
 
-Overall this patch is not needed at all.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Kent Overstreet <kent.overstreet@gmail.com>
+---
+ mm/filemap.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
+diff --git a/mm/filemap.c b/mm/filemap.c
+index ef910eca9e1a2..f5903494cf173 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2555,7 +2555,7 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	ssize_t retval = 0;
+ 
+ 	if (!count)
+-		goto out; /* skip atime */
++		return 0; /* skip atime */
+ 
+ 	if (iocb->ki_flags & IOCB_DIRECT) {
+ 		struct file *file = iocb->ki_filp;
+@@ -2573,7 +2573,7 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 						iocb->ki_pos,
+ 					        iocb->ki_pos + count - 1);
+ 			if (retval < 0)
+-				goto out;
++				return retval;
+ 		}
+ 
+ 		file_accessed(file);
+@@ -2597,12 +2597,10 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 		 */
+ 		if (retval < 0 || !count || iocb->ki_pos >= size ||
+ 		    IS_DAX(inode))
+-			goto out;
++			return retval;
+ 	}
+ 
+-	retval = filemap_read(iocb, iter, retval);
+-out:
+-	return retval;
++	return filemap_read(iocb, iter, retval);
+ }
+ EXPORT_SYMBOL(generic_file_read_iter);
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.29.2
 
