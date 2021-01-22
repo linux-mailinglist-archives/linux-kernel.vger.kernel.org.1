@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53D73004A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CADC3004CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbhAVN63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:58:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45463 "EHLO
+        id S1728237AbhAVOD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:03:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33924 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726509AbhAVN6U (ORCPT
+        by vger.kernel.org with ESMTP id S1728098AbhAVOBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:58:20 -0500
+        Fri, 22 Jan 2021 09:01:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611323813;
+        s=mimecast20190719; t=1611324011;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JI98cuo61T5iHBclSh2mvvuL/8A1Wnp+VCQzU86Xq28=;
-        b=ZwbRgzgB1K0x4+Ieok0UceUuJICDu+OD3Dw5AUp2cNhT3sEtcaYjsWzPw9xi8wMKDIwtGR
-        RxANDSVDgPMqG050uqnBv9J88/dpDL8G4+54lIovIWa/7MjQyoGbYfwsXtbQP90XPd6gGB
-        8zzV/h8SV/p3zcmltUMJmKb+VcOy3U4=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-_Nu6a2TpMP-qH5TGUWyQIw-1; Fri, 22 Jan 2021 08:56:50 -0500
-X-MC-Unique: _Nu6a2TpMP-qH5TGUWyQIw-1
-Received: by mail-ed1-f69.google.com with SMTP id j11so2184580edy.20
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:56:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JI98cuo61T5iHBclSh2mvvuL/8A1Wnp+VCQzU86Xq28=;
-        b=Vt0a04RNZA8pQFFsK5XRR/EcPfCK1BQidA7Jg4NSZutFeCrjQTBUGMvgxfe2eeO/Ly
-         GfV/Nq+HwzXbUrYs9z6iMTmj1pu9wzp+8pgRxFJVmd5gC7ZLf4YwY9bQ+tSkx2Owy0w7
-         obRe6qE5QS9xO6+flzB2Fd+KZIDiADkzWyslOSKIdSVh/FwDemoqkkkfQXYEOSMVl54f
-         r/sAL+JTEcVwLSpNwYoiDdss5rbFwF1e7feGqXi0TF+GehaPJXs1seofw7+CMZcQhdV7
-         A8gto+xJ5QA3rQa2HwNNqp+nKYejQDSBDyjP5tccIlNSnli5tyQ8vkngJcSYppxu6rKg
-         irxw==
-X-Gm-Message-State: AOAM532wTGaMuz5wM75DJdAjzta1YimkXzG0VW/JGX1/xOEWfJiffXli
-        4TMmvVmG4Dju7FFwW2pmSvrDhjRepbRvUzbjeEhewx35Q/HpzqxZEcETVOoqrmBv+/N4NrTGTm1
-        XKWqKwHVP4UfWzcE377MFmtyz
-X-Received: by 2002:aa7:c849:: with SMTP id g9mr3255648edt.48.1611323809052;
-        Fri, 22 Jan 2021 05:56:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwl0clI+ZXuFxo9o1ewV0yt3mNz3W5XcEpO5OutifVV+ErUWOcrs1ovRdHSTzcsjcZByzZNCg==
-X-Received: by 2002:aa7:c849:: with SMTP id g9mr3255644edt.48.1611323808938;
-        Fri, 22 Jan 2021 05:56:48 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id e19sm5421577eds.79.2021.01.22.05.56.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 05:56:48 -0800 (PST)
-Subject: Re: [PATCH v2 07/12] ASoC: arizona-jack: Use arizona->dev for
- runtime-pm
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-References: <20210117160555.78376-1-hdegoede@redhat.com>
- <20210117160555.78376-8-hdegoede@redhat.com>
- <CAHp75Vc92WoJm5T1jbF7UUjCNrVZr2as8ccEWxCZ9aP7z+ZyLA@mail.gmail.com>
- <d0189116-d110-f91a-afd9-70f323833e32@redhat.com>
- <CAHp75Vdzqx0XyykL8wxwxRNk=kBMHmUKDGXJQQtdhT_1CCa4_w@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <5c20be27-b083-0303-f29f-4ce8502178d3@redhat.com>
-Date:   Fri, 22 Jan 2021 14:56:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75Vdzqx0XyykL8wxwxRNk=kBMHmUKDGXJQQtdhT_1CCa4_w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+         to:to:cc:cc; bh=bVl+s9G2fJlIxrzrDasHbmLMepcSpXcYlZqYRn6El3M=;
+        b=B+ygcWww1nGmCrP0H7SWyOXGrNrKoEcxeGxluxNvS6DklsonKO7nPKuS+A0NQsw3st/VU7
+        1MH8wSMCFU04vJ44geTkgUlVQxl8CT4xR8Zekh+mmgh2bSCUIheBx9RBbqs0QkZqPNJqt2
+        TzrE6dw/SsCBI7+9O3b8i1Sg9oV6zvU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-QvjFMAs9M2Co55ASvyTAgQ-1; Fri, 22 Jan 2021 09:00:09 -0500
+X-MC-Unique: QvjFMAs9M2Co55ASvyTAgQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A65E9425D6;
+        Fri, 22 Jan 2021 14:00:07 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-114.pek2.redhat.com [10.72.12.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9414019C59;
+        Fri, 22 Jan 2021 13:59:57 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
+        david@redhat.com, bhe@redhat.com, lkp@intel.com
+Subject: [PATCH v5 0/5] mm: clean up names and parameters of memmap_init_xxxx functions
+Date:   Fri, 22 Jan 2021 21:59:51 +0800
+Message-Id: <20210122135956.5946-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset is correcting inappropriate function names of
+memmap_init_xxx, and simplify parameters of functions in the code flow.
+And also fix a prototype warning reported by lkp.
 
-On 1/22/21 10:38 AM, Andy Shevchenko wrote:
-> On Fri, Jan 22, 2021 at 2:03 AM Hans de Goede <hdegoede@redhat.com> wrote:
->> On 1/18/21 1:02 PM, Andy Shevchenko wrote:
->>> On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> 
-> ...
-> 
->>> Can you elaborate switchings from get() to get_sync() in few places
->>
->> Sorry, those 2 changes really should have been in a separate commit.
->> I've put the 2 get -> get_sync() changed in their own commit now
->> with the following commit-msg:
->>
->> """
->> extcon: arizona: Always use pm_runtime_get_sync() when we need the device to be awake
->>
->> Before this commit the extcon-arizona code was mixing pm_runtime_get()
->> and pm_runtime_get_sync() in different places. In all cases where
->> either function is called we make use of the device immediately
-> 
-> called and we
+This is based on the latest next/master.
 
-That changes the meaning of the sentence in ways which does not match
-my intent. I've changed this to:
+V4 can be found here:
+https://lore.kernel.org/linux-mm/20210120045213.6571-1-bhe@redhat.com/
 
-"""
-In all cases where pm_runtime_get[_sync]() is called, the code
-makes use of the device immediately after the call.
-This means that we should always use pm_runtime_get_sync().
-"""
+v4->v5:
+ - Add patch 1 into series which fixes a prototype warning from kernel
+   test robot. Then rebase the v4 patches on top of it.
 
-Regards,
+v3->v4:
+ - Rebased patch 1, 2 on top of Mike's below new patch.
+   [PATCH v3 0/2] mm: fix initialization of struct page for holes in  memory layout
 
-Hans
+ - Move the code of renaming function parameter 'range_start_pfn' and local
+   variable 'range_end_pfn' of memmap_init() from patch 1 to patch 2
+   according to David's comment.
+
+ - Use the reverse Christmas tree style to reorder the local variables
+   in memmap_init_zone() in patch 2 accodrding to David's comment.
+
+Baoquan He (5):
+  mm: fix prototype warning from kernel test robot
+  mm: rename memmap_init() and memmap_init_zone()
+  mm: simplify parater of function memmap_init_zone()
+  mm: simplify parameter of setup_usemap()
+  mm: remove unneeded local variable in free_area_init_core
+
+ arch/ia64/include/asm/pgtable.h |  6 -----
+ arch/ia64/mm/init.c             | 14 +++++-----
+ include/linux/mm.h              |  3 ++-
+ mm/memory_hotplug.c             |  2 +-
+ mm/page_alloc.c                 | 46 ++++++++++++++-------------------
+ 5 files changed, 31 insertions(+), 40 deletions(-)
+
+-- 
+2.17.2
 
