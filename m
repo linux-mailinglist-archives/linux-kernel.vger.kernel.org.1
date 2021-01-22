@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4D930048D
+	by mail.lfdr.de (Postfix) with ESMTP id D9ED430048E
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbhAVNui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:50:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57870 "EHLO mail.kernel.org"
+        id S1727944AbhAVNuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:50:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:48634 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727519AbhAVNu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:50:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB5223A56;
-        Fri, 22 Jan 2021 13:49:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611323387;
-        bh=SunCbNL4thbixbqDicq4yiLamp38pRmNRlL/3HAqsk8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lk46HK/GrIT2Tqbb4rsxVgvFAOZ13xkVQe2JlPxXmufo1EC7vCIsS3D4UJahDbvjU
-         t53MeaWONPrXofvDYvCD8kWznq1lUhvke7DpKq4jVqRLUoBMZjj6Y/3eOB6v02VSgK
-         BrysGMDpezrrSTONUXkkYQ8iDmx5ApijCpSZiiCD0yEOsm8TuPwApntnY8Bdnq0kf7
-         CeMnxKOCCzc6TdL9TaRfi0mNX8s332dJgQGjfJwSmoDw8sjsH3D5TQ1iatvz6qcK/q
-         dS98DaRBtAmXPwfQ9C2GrK0Se31gAyAAN0qCAvr7udrGTsDNpWFYwSUBSQ+mMTzIN2
-         g/eCH2+5EdCnQ==
-From:   Will Deacon <will@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        devicetree@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 1/2] dt-bindings: arm-smmu: Add sm8350 compatible string
-Date:   Fri, 22 Jan 2021 13:49:34 +0000
-Message-Id: <161132142879.229688.17163617235466107602.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210115090322.2287538-1-vkoul@kernel.org>
-References: <20210115090322.2287538-1-vkoul@kernel.org>
+        id S1727723AbhAVNub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:50:31 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 462E611B3;
+        Fri, 22 Jan 2021 05:49:46 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.41.42])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 275593F66E;
+        Fri, 22 Jan 2021 05:49:45 -0800 (PST)
+Date:   Fri, 22 Jan 2021 13:49:42 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCHv2] lockdep: report broken irq restoration
+Message-ID: <20210122134942.GB31304@C02TD0UTHF1T.local>
+References: <20210111153707.10071-1-mark.rutland@arm.com>
+ <20210122110625.GA29868@C02TD0UTHF1T.local>
+ <YArSGwEI0xqBncrv@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YArSGwEI0xqBncrv@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 14:33:21 +0530, Vinod Koul wrote:
-> Add compatible string for sm8350 iommu to documentation.
+On Fri, Jan 22, 2021 at 02:24:43PM +0100, Peter Zijlstra wrote:
+> On Fri, Jan 22, 2021 at 11:06:25AM +0000, Mark Rutland wrote:
+> > Hi all,
+> > 
+> > Any thoughts on this? I'd like to get this in soon if we could as it'll
+> > help to flush out any remaining issues that are liable to get in the way
+> > of planned rework for arm64 and x86.
+> 
+> Ah, I actually have it queued, I'll try and push it out to locking/core
+> later today.
 
-Applied to will (for-joerg/arm-smmu/updates), thanks!
+Thanks! I hadn't thought to check your queue; sorry for the noise.
 
-[1/2] dt-bindings: arm-smmu: Add sm8350 compatible string
-      https://git.kernel.org/will/c/70b5b6a6daea
-[2/2] iommu: arm-smmu-impl: Add SM8350 qcom iommu implementation
-      https://git.kernel.org/will/c/d8498b1e4ecc
+Now I can forget all about this. ;)
 
-Cheers,
--- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Mark.
