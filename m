@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2907A300F06
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE28300F37
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729542AbhAVVh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:37:27 -0500
-Received: from lilium.sigma-star.at ([109.75.188.150]:32914 "EHLO
+        id S1730369AbhAVVuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:50:39 -0500
+Received: from lilium.sigma-star.at ([109.75.188.150]:32918 "EHLO
         lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729322AbhAVVcC (ORCPT
+        with ESMTP id S1729347AbhAVVb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:32:02 -0500
+        Fri, 22 Jan 2021 16:31:58 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by lilium.sigma-star.at (Postfix) with ESMTP id AD32B181CBE05;
-        Fri, 22 Jan 2021 22:22:35 +0100 (CET)
+        by lilium.sigma-star.at (Postfix) with ESMTP id 2197D181CBE08;
+        Fri, 22 Jan 2021 22:22:36 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
         by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id gZrYYPdzlWYm; Fri, 22 Jan 2021 22:22:35 +0100 (CET)
+        with ESMTP id 8QZnjaY9GVmZ; Fri, 22 Jan 2021 22:22:35 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
         by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id U1pPPa_0HFNy; Fri, 22 Jan 2021 22:22:35 +0100 (CET)
+        with ESMTP id 5sE-lpCPrN4m; Fri, 22 Jan 2021 22:22:35 +0100 (CET)
 From:   Richard Weinberger <richard@nod.at>
 To:     linux-mtd@lists.infradead.org
-Cc:     david@sigma-star.at, richard@nod.at, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH 3/4] ubifs: Update directory size when creating whiteouts
-Date:   Fri, 22 Jan 2021 22:22:28 +0100
-Message-Id: <20210122212229.17072-4-richard@nod.at>
+Cc:     david@sigma-star.at, richard@nod.at, linux-kernel@vger.kernel.org
+Subject: [PATCH 4/4] ubifs: Harden ubifs_jnl_write_inode()
+Date:   Fri, 22 Jan 2021 22:22:29 +0100
+Message-Id: <20210122212229.17072-5-richard@nod.at>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210122212229.17072-1-richard@nod.at>
 References: <20210122212229.17072-1-richard@nod.at>
@@ -37,48 +36,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although whiteouts are unlinked files they will get re-linked later,
-therefore the size of the parent directory needs to be updated too.
+Make sure that ubifs_jnl_write_inode() cannot be abused and will
+not write less data then expected.
 
-Cc: stable@vger.kernel.org
-Fixes: 9e0a1fff8db5 ("ubifs: Implement RENAME_WHITEOUT")
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/dir.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/ubifs/journal.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 8a34e0118ee9..b5d523e5854f 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -361,6 +361,7 @@ static int do_tmpfile(struct inode *dir, struct dentr=
-y *dentry,
- 	struct ubifs_budget_req ino_req =3D { .dirtied_ino =3D 1 };
- 	struct ubifs_inode *ui, *dir_ui =3D ubifs_inode(dir);
- 	int err, instantiated =3D 0;
-+	int sz_change =3D 0;
- 	struct fscrypt_name nm;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 03410ae0813a..1b28fcc5b9fe 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -844,10 +844,12 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, con=
+st struct inode *inode)
+ 	struct ubifs_ino_node *ino, *ino_start;
+ 	struct ubifs_inode *ui =3D ubifs_inode(inode);
+ 	int sync =3D 0, write_len =3D 0, ilen =3D UBIFS_INO_NODE_SZ;
+-	int last_reference =3D !inode->i_nlink;
++	int last_reference =3D !inode->i_nlink, xattr_inos_written =3D 0;
+ 	int kill_xattrs =3D ui->xattr_cnt && last_reference;
+ 	u8 hash[UBIFS_HASH_ARR_SZ];
+=20
++	ubifs_assert(c, !ui->xattr);
++
+ 	dbg_jnl("ino %lu, nlink %u", inode->i_ino, inode->i_nlink);
 =20
  	/*
-@@ -411,6 +412,8 @@ static int do_tmpfile(struct inode *dir, struct dentr=
-y *dentry,
- 		mark_inode_dirty(inode);
- 		drop_nlink(inode);
- 		*whiteout =3D inode;
-+		sz_change =3D CALC_DENT_SIZE(fname_len(&nm));
-+		dir->i_size +=3D sz_change;
- 	} else {
- 		d_tmpfile(dentry, inode);
- 	}
-@@ -430,6 +433,7 @@ static int do_tmpfile(struct inode *dir, struct dentr=
-y *dentry,
- 	return 0;
+@@ -917,12 +919,14 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, con=
+st struct inode *inode)
+ 			pack_inode(c, ino, xino, 0);
+ 			ino =3D (void *)ino + UBIFS_INO_NODE_SZ;
+ 			iput(xino);
++			xattr_inos_written++;
 =20
- out_cancel:
-+	dir->i_size -=3D sz_change;
- 	mutex_unlock(&dir_ui->ui_mutex);
- out_inode:
- 	make_bad_inode(inode);
+ 			kfree(pxent);
+ 			pxent =3D xent;
+ 			key_read(c, &xent->key, &key);
+ 		}
+ 		kfree(pxent);
++		ubifs_assert(c, xattr_inos_written =3D=3D ui->xattr_cnt);
+ 	}
+=20
+ 	pack_inode(c, ino, inode, 1);
 --=20
 2.26.2
 
