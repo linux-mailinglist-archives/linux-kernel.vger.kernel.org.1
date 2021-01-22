@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE57300BF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2CF300BC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730438AbhAVSyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:54:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39308 "EHLO mail.kernel.org"
+        id S1729674AbhAVSrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:47:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728508AbhAVOVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:21:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4646A23B23;
-        Fri, 22 Jan 2021 14:15:16 +0000 (UTC)
+        id S1728564AbhAVOWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E325A23B6E;
+        Fri, 22 Jan 2021 14:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324916;
-        bh=mftDS0J7aHH7/Et1vD2QTUl/RtnPlcnWMuhPHi8vAbI=;
+        s=korg; t=1611325008;
+        bh=x/cYqnMswUjsuRcjxsP2jWQkelAxbep1OB4wn2XSIJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AdaVoQv7N9fz81EEzmMdXQBaM/iegBqPSaxHU97J/mzgyp7g8iYI5dgH3gloSsBpL
-         OCX8T16ksqCRap8uXQ+/KNqavCme6ft11v/y8huiDAuwcb/2JtVs4epKKannEYhFOI
-         1lIGRTT6woZTV0gwCDgz0Dab3WzoH8evBqkm+Mww=
+        b=i42qypTm49YlezgItR813xe8O7+u366OgoT/dLIqU+Cxo7CKXSIkV6o/dYSKJSC01
+         iEzHUGy4Z+Xjj5O524d80qeQWgDsiyotB1gkR3E6UuRR3Q7Mvn7t1xWjO0vFfzZed7
+         aDahn/L4knE0ObMrPLjEMDqS+vkkJ5h+gOkzq+nA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 37/50] rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
+        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.4 02/33] compiler.h: Raise minimum version of GCC to 5.1 for arm64
 Date:   Fri, 22 Jan 2021 15:12:18 +0100
-Message-Id: <20210122135736.699275612@linuxfoundation.org>
+Message-Id: <20210122135733.674268196@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
-References: <20210122135735.176469491@linuxfoundation.org>
+In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
+References: <20210122135733.565501039@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit e56b3d94d939f52d46209b9e1b6700c5bfff3123 ]
+commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
 
-MSFT ActiveSync implementation requires that the size of the response for
-incoming query is to be provided in the request input length. Failure to
-set the input size proper results in failed request transfer, where the
-ActiveSync counterpart reports the NDIS_STATUS_INVALID_LENGTH (0xC0010014L)
-error.
+GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
+beyond the stack pointer, resulting in memory corruption if an interrupt
+is taken after the stack pointer has been adjusted but before the
+reference has been executed. This leads to subtle, infrequent data
+corruption such as the EXT4 problems reported by Russell King at the
+link below.
 
-Set the input size for OID_GEN_PHYSICAL_MEDIUM query to the expected size
-of the response in order for the ActiveSync to properly respond to the
-request.
+Life is too short for buggy compilers, so raise the minimum GCC version
+required by arm64 to 5.1.
 
-Fixes: 039ee17d1baa ("rndis_host: Add RNDIS physical medium checking into generic_rndis_bind()")
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Link: https://lore.kernel.org/r/20210108095839.3335-1-andrey.zhizhikin@leica-geosystems.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Russell King <linux@armlinux.org.uk>
+Suggested-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: <stable@vger.kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Florian Weimer <fweimer@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
+Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+[will: backport to 4.19.y/5.4.y]
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/rndis_host.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/compiler-gcc.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/net/usb/rndis_host.c
-+++ b/drivers/net/usb/rndis_host.c
-@@ -399,7 +399,7 @@ generic_rndis_bind(struct usbnet *dev, s
- 	reply_len = sizeof *phym;
- 	retval = rndis_query(dev, intf, u.buf,
- 			     RNDIS_OID_GEN_PHYSICAL_MEDIUM,
--			     0, (void **) &phym, &reply_len);
-+			     reply_len, (void **)&phym, &reply_len);
- 	if (retval != 0 || !phym) {
- 		/* OID is optional so don't fail here. */
- 		phym_unspec = cpu_to_le32(RNDIS_PHYSICAL_MEDIUM_UNSPECIFIED);
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -12,6 +12,12 @@
+ 
+ #if GCC_VERSION < 40600
+ # error Sorry, your compiler is too old - please upgrade it.
++#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100
++/*
++ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
++ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
++ */
++# error Sorry, your version of GCC is too old - please use 5.1 or newer.
+ #endif
+ 
+ /*
 
 
