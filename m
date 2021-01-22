@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F454300591
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73627300595
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728703AbhAVOfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:35:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
+        id S1728816AbhAVOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:36:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728391AbhAVOcN (ORCPT
+        with ESMTP id S1728769AbhAVOcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:32:13 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394CEC061786;
-        Fri, 22 Jan 2021 06:31:33 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id h7so7796178lfc.6;
-        Fri, 22 Jan 2021 06:31:33 -0800 (PST)
+        Fri, 22 Jan 2021 09:32:24 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9E1C061788;
+        Fri, 22 Jan 2021 06:31:44 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id x23so6729494lji.7;
+        Fri, 22 Jan 2021 06:31:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=lORbjL7NcGT/PStpr8zM4Wz5Tzho57XEv/tw4+222nQ=;
-        b=lYghFhdW3WyhRY0OQX6QvLVjSyF/tw8v9KGOVngfSJysoGEvuM8wKoMVUn2dtZ+SUM
-         5D5Ym0q/o9kQsqjzLUbHt6AEDgUVPznvX5Rc71IxP7MzdAKaiFMes1ELCfY0c0g7Ffln
-         UWHFNr+W/NprXS8P40SUEHCAhEc/szw1VaWoCqOVSqDac9aulHPnCMX12Qr/xttajWCH
-         vxkadgJ2JfEu1lwgubXOI76ASxmdvMahOqCcQAPZIriynCZ8kO3ojqRGz103CQk7zIWF
-         GqnjIChdtuBqAmEctexUCTbzyRw8kqNKp1DETXQXSo2uyfEcjojZc7CV4yqITM1gB2tt
-         RBEg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3Bnnhv8/ungSfzdbo4blEjJTqIYQgbA8qgZ1/HTwN7E=;
+        b=oBE07xqB0ZvDLI0k7/Hsk7r6F8t/AOGFX/EP+FoGbGnweK/B0k+U/kneVLGC1w1vAw
+         B+IvY65C6ivynrcLeUpfcakdNBZClc28ipvA61wqy3lEzKCkD4RZFHTmmZ/yiyyXAd7t
+         NMKYSYkVJQw/Pc3q6x/Q43kg9vnp+/fC21H8tlQyMEnJQ5Pp5Ey2h22c+AluSBwBMUga
+         U5X3OEgpesY/f6hv0cGKho3y+kKbxeF01mD7fGdTB2yFGxUEYpcwpUgsxa2vMVKg2KGU
+         RfO1URkEHLYC7Zr8ZY75PwCNIw4y3K3fcvsRYe7QeNl1jqs1iG3sONBhH78xi0d6o4+I
+         CKLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=lORbjL7NcGT/PStpr8zM4Wz5Tzho57XEv/tw4+222nQ=;
-        b=F2BNt69IS+1XM80qMPH7j9ZR8/OABwm5ft3qW1K8oWYkvjLuMPiIXNq6Wc3GjK/h8c
-         uPoq1RTTvUGwAF+62X22hCAMf3h2hqIC4khesy5ExdU7/yCvXV4kBgmoSWs7f0NMehAY
-         ZRjU90UwcClLG7DQ4rHvMNcvo0k/VirILctq6ydyYqYUhtKJN9pS1e6/fS0g+qeq++ta
-         EIOUJl0Uua2jPtrkTVUUfZiPO0XMihesU8bvXR7n3CI2WUusNJys0PZp7re3KeOOzlWl
-         aHg8qva025uzrtTOXzKp5hPbqBHk3KCdZB0WCc1bLPQpWThLVNYEkb48dIrrteVqdYkz
-         nSHg==
-X-Gm-Message-State: AOAM530gLNEu42+XHga4yXpUt4243RcUtTBOdko9HwuJLvibukM+AhQg
-        5dJa6m91Pb8EMHcABeHITfsOkYqVYsD0ng==
-X-Google-Smtp-Source: ABdhPJzdYb0VJp3v8CYf26OiQ1krmECtdYGgsHXEaBOQ9XwNH2Ul05edaphTwfyTSJUYqgMy7TOONA==
-X-Received: by 2002:a05:6512:398a:: with SMTP id j10mr1199536lfu.167.1611325891745;
-        Fri, 22 Jan 2021 06:31:31 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id f23sm905859lfc.63.2021.01.22.06.31.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:31:31 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 22 Jan 2021 15:31:29 +0100
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0g=?= =?utf-8?Q?=5D?= rcu: Release
- per-cpu krcp page cache when CPU going offline
-Message-ID: <20210122143129.GB1873@pc638.lan>
-References: <20210121064949.16164-1-qiang.zhang@windriver.com>
- <20210121185615.GR2743@paulmck-ThinkPad-P72>
- <20210121202635.GB2454@pc638.lan>
- <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3Bnnhv8/ungSfzdbo4blEjJTqIYQgbA8qgZ1/HTwN7E=;
+        b=J1ZAZFQzjS28XMD3du/KGb3n3X46kDqMCHANIPAeLJyCEW2EY4FHEII68U8YGJghIf
+         o1IfkTaT+Mt4R6b+naTg/6KmWt9KpXxzJ3jUR+BSr0l1I646CKHGnbohkui5BTI5urk7
+         LkMbazUbmkcvBYDT90tfVr4WV5nqKxaBK0tQ639AHHmNlRhXTP82WwBATc6zTULGL3lY
+         SOkTyv0uaku1ifgmIELW6cuq9Ca2N5h+IjnhTWrWSxEl/ebKcj1R94/jRnTLRxdBfp4p
+         U0JFgATquPY4XotNjU/ibaZorxLVyP5p7GgAqiF9e57w90Ce9EheRAE+eyhKDgI8e+ul
+         gi/g==
+X-Gm-Message-State: AOAM532gszFcCzmRCJAvSFreDmiWrRwk0D0DSLN7+6OIgeawDH6575fS
+        wQ4u16avFpvS3rCOX06/P0s=
+X-Google-Smtp-Source: ABdhPJxTlicx2+sF7zITXF5P61jkAO0p9O/OOyyGbLeLtpy/95Q1cTcuKKYw9f26i4fJvm7t/Iwfqg==
+X-Received: by 2002:a2e:958c:: with SMTP id w12mr368249ljh.303.1611325902874;
+        Fri, 22 Jan 2021 06:31:42 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id s22sm386867ljh.102.2021.01.22.06.31.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jan 2021 06:31:42 -0800 (PST)
+Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
+ <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
+ <b634343a-8005-fc35-e38b-bfeaa7310a70@gmail.com>
+ <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8af5abe4-fc3f-8ce4-ff14-542754f0275d@gmail.com>
+Date:   Fri, 22 Jan 2021 17:31:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 01:44:36AM +0000, Zhang, Qiang wrote:
+22.01.2021 07:45, Viresh Kumar пишет:
+> On 22-01-21, 00:41, Dmitry Osipenko wrote:
+>> 21.01.2021 14:17, Viresh Kumar пишет:
+>>> @@ -1074,15 +1091,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+>>>  
+>>>  	if (!ret) {
+>>>  		ret = _set_opp_bw(opp_table, opp, dev, false);
+>>> -		if (!ret)
+>>> +		if (!ret) {
+>>>  			opp_table->enabled = true;
+>>> +			dev_pm_opp_put(old_opp);
+>>> +
+>>> +			/* Make sure current_opp doesn't get freed */
+>>> +			dev_pm_opp_get(opp);
+>>> +			opp_table->current_opp = opp;
+>>> +		}
+>>>  	}
+>>
+>> I'm a bit surprised that _set_opp_bw() isn't used similarly to
+>> _set_opp_voltage() in _generic_set_opp_regulator().
+>>
+>> I'd expect the BW requirement to be raised before the clock rate goes UP.
 > 
+> I remember discussing that earlier when this stuff came in, and this I
+> believe is the reason for that.
 > 
-> ________________________________________
-> 发件人: Uladzislau Rezki <urezki@gmail.com>
-> 发送时间: 2021年1月22日 4:26
-> 收件人: Zhang, Qiang
-> 抄送: Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org; urezki@gmail.com
-> 主题: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
-> >Hello, Qiang,
+> We need to scale regulators before/after frequency because when we
+> increase the frequency a regulator may _not_ be providing enough power
+> to sustain that (even for a short while) and this may have undesired
+> effects on the hardware and so it is important to prevent that
+> malfunction.
 > 
-> > On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
-> > > From: Zqiang <qiang.zhang@windriver.com>
-> > >
-> > > If CPUs go offline, the corresponding krcp's page cache can
-> > > not be use util the CPU come back online, or maybe the CPU
-> > > will never go online again, this commit therefore free krcp's
-> > > page cache when CPUs go offline.
-> > >
-> > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> >
-> >Do you consider it as an issue? We have 5 pages per CPU, that is 20480 bytes.
-> >
+> In case of bandwidth such issues will not happen (AFAIK) and doing it
+> just once is normally enough. It is just about allowing more data to
+> be transmitted, and won't make the hardware behave badly.
 > 
-> Hello Rezki 
-> 
-> In a multi CPUs system, more than one CPUs may be offline, there are more than 5 pages,  and these offline CPUs may never go online again  or  in the process of CPUs online, there are errors, which lead to the failure of online, these scenarios will lead to the per-cpu krc page cache will never be released.
-> 
-Thanks for your answer. I was thinking more about if you knew some platforms
-which suffer from such extra page usage when CPU goes offline. Any issues
-your platforms or devices run into because of that.
 
-So i understand that if CPU goes offline the 5 pages associated with it are
-unused until it goes online back.
+This may not be true for all kinds of hardware, a display controller is
+one example. If display's pixclock is raised before the memory bandwidth
+of the display's memory client, then display controller may get a memory
+underflow since it won't be able to fetch memory fast enough and it's
+not possible to pause data transmission to display panel, hence display
+panel may get out of sync and a full hardware reset will be needed in
+order to recover. At least this is the case for NVIDIA Tegra SoCs.
 
---
-Vlad Rezki
+I guess it's not a real problem for any of OPP API users right now, but
+this is something to keep in mind.
