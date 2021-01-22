@@ -2,135 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8012FFFA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7A52FFFA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727610AbhAVJ7Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Jan 2021 04:59:24 -0500
-Received: from mail-eopbgr1310122.outbound.protection.outlook.com ([40.107.131.122]:13154
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727420AbhAVJ5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:57:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B9kaLh4B+sh63sNs9FAMu3CG9j5LBxjIxGNYspvJGZ8gNgD/3WVotG2cF3FhU4OVzUQ3JAsLyCJNobeBr7bkQUiYa9qqICsnnQzYaZn9+fw8SJfOOvb3haR8P2U0utMt/zo892kfsW9Jb03CvYEn0HNuynE5voE+uW39NTNvAq49t/bVJu2evgKRUzgXGa7PxS7oG1t5Vh2SxBM0DiDY4rr0wt3EPBN+PBiXA3TLPXMqvYh1p9qK1hazkrZqyYvck9YB90zgk3FwwRKm2Dd+qwHH+H1+vO/wBQM50mUAvVO13PKK3H2PP320XFwV7w/FJmPkZgVc0Jkkonrd7/VD5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hwLtaw9iQlc4tE2ieiUjoVKkienBlysf8Y0mMvys1ms=;
- b=HRe07ySW6cuW93l+NEe2dGLUvTzxLq5+CwahxYJxP8VpxZQhXiTQHJ8Wv8OaYudbmeqLD4jADtZht1sKoPQOEL4YCtvypY5ekhA6wqLSDgySHNhAy6+GNp6uA6VA2nuyGE7n9ijlX5K/qbf0jyShkvi69NOuZPlrIajTX7pe5b1Oh1i8Nxx5iO1NHoYyk1Mj3MsBVBiAfo7QeIgViWeV4bcQIEYc6ZxEhWaNvsmVwRm72WO3d1nGaPLZiCa7OVd2ckavRJOL8yerbMt/Y4ZcdsXTDnA9rAaGTcPL1fNNffkQLTNgkJSjMf5ml+PKz0/aIszRvuV8dQ5A4CZDxwQaeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK2PR06MB3459.apcprd06.prod.outlook.com (2603:1096:202:39::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Fri, 22 Jan
- 2021 09:55:57 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::394c:29f2:cb4c:55ed]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::394c:29f2:cb4c:55ed%3]) with mapi id 15.20.3763.014; Fri, 22 Jan 2021
- 09:55:57 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Corey Minyard <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
-CC:     BMC-SW <BMC-SW@aspeedtech.com>,
-        Haiyue Wang <haiyue.wang@linux.intel.com>,
-        Cyril Bur <cyrilbur@gmail.com>,
-        Robert Lippert <rlippert@google.com>
-Subject: RE: [PATCH v5 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
-Thread-Topic: [PATCH v5 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
-Thread-Index: AQHW6ndv3XSOmnDNxEWbiHxcjxf3tKov/heAgAN0hCA=
-Date:   Fri, 22 Jan 2021 09:55:56 +0000
-Message-ID: <HK0PR06MB3779C3106D2FC593B5E5243F91A00@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
- <20210114131622.8951-4-chiawei_wang@aspeedtech.com>
- <c8421730-f8a6-46a7-9e2c-9107eb979276@www.fastmail.com>
-In-Reply-To: <c8421730-f8a6-46a7-9e2c-9107eb979276@www.fastmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: faa2e7c5-7079-4c48-cae9-08d8bebbea65
-x-ms-traffictypediagnostic: HK2PR06MB3459:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK2PR06MB3459D6C7AE3D00D31717FFC991A00@HK2PR06MB3459.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /VERJCm6Z3PHr3R0hDIMkREPvDSsKqrnEZE+FMRMrVYKOdDq9QcwANZ4M61miSKKytjvSFMU9qmgiNGmC4LLReLkZOzrXLDiHux2azuD2cvI1L2RaJMJw4Pj1OYeaw3AScW7wOnPRMOsJykj9ckJbvctdMUg0kv1yw5+EhPAlte1bTsAu6M8jcBqnPv15CcHmGKBj9L2/W7DAJI8pNzrDKwzcdDOucmLhWeIH1o4INAGShuHyQkkTPL8ggcex4E9lkHQHNzH4LaPGZt8ZyyUP0GWboi9yAZ0WOiFqc7z9A3LQ8oMCcIQDsJYw6TkkRCU96AWvQEILhBd97Px+lJZOJngdwvjQuLsZvmAfnxsLUiq09jPik9TaEkXgiiwlkAL8kkvP6RPp6D73uL+vdKsPdZielzAnnfo9EYT+yEX1y0O64w4/e3AZ5qiu/MWVZ4u
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(396003)(39850400004)(8676002)(83380400001)(66476007)(2906002)(7696005)(5660300002)(86362001)(55016002)(52536014)(9686003)(921005)(186003)(316002)(64756008)(7416002)(54906003)(55236004)(4744005)(110136005)(6506007)(66556008)(66946007)(66446008)(71200400001)(4326008)(53546011)(33656002)(26005)(76116006)(8936002)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mJPbbDQ7iFYiYCjYc1nZM1/XaqTo7lZmBN2hRva0uQyudG+xLGN63ELsfq81?=
- =?us-ascii?Q?XZhQtO9Pl/FTPuLqZ6Vu0LCseBjR/AE+MtHM9p8BvsoJojwr3qnOu8wzE6EA?=
- =?us-ascii?Q?5B62HoXroDbgPZEzFJg6xn8KL7slfeQWYwfLtLoFEn0EAwl9F36qFD3L64B3?=
- =?us-ascii?Q?gTorcKPaNr/Yztet251neSD7n28RhPQdcsVxH7MMZhrOx7oGgXM7Qwn2/2uu?=
- =?us-ascii?Q?cxIGxc2PFoHvxVMHyCHXphCdDafo0vjWxFrTP735Nh9GT4QS4VRJeDJoAFj2?=
- =?us-ascii?Q?NvBKRvccGUqqI1vFG2o3aqK6m2IsqB0eWzdFyLMf6rEOZ6kFrr/pMeNS5Xxx?=
- =?us-ascii?Q?8RC7ZD9W3U1Q0rYt1pufq8hea/ikHTvZrm3wxig3r39mjanB+xMnACUMIe+R?=
- =?us-ascii?Q?OrNZpmFPbAh54Kik5/qmHJDd+kO7E4MqChS5LXavXVXVNPE1zLvSJV/xG2cl?=
- =?us-ascii?Q?mD3m01xn/YR7PFyAQi/NRbrvBKFXF0cpeBOuSjGmTiEk4M3OjwO5Z7BTi6UT?=
- =?us-ascii?Q?LA2k8GwCmTrQ+jeXsD2TUJYSeGoY/QSQVqKGcDB43whhG6ftPZ+z8fevwQ4d?=
- =?us-ascii?Q?CxVsPfz+pcDgtLyirMqn2HBb211J7rgw330iaJBKRjY15fc8Sts8+FpjzCJG?=
- =?us-ascii?Q?j1lYwxLxiqnEHZpSer069iazXfhCvV9mMRIcq5eWsAYKab/GpxAxMeiu8wIT?=
- =?us-ascii?Q?dNdPRf8LX1XLRXyEwEHgjah3cAINlbMDerbJnZoVlMN4nQDjTtyVoUo2LOow?=
- =?us-ascii?Q?AFTrpIUm5uSBwIu0RDVehRtI9LR5fS1/JeJ/kTH0GLjUjpyRKtdDNiATpTZz?=
- =?us-ascii?Q?MubcoiU+LYBtjbwnAaClRlUXEisEe1RSK8kJI8A5sHh+6choRfSL+3LgQ/JC?=
- =?us-ascii?Q?xds5ojXcb/L7U0byNQAzeozum/CslKawOS2vehP+YF+ce//1NpT5+g4sr9uV?=
- =?us-ascii?Q?rvpB/cJsBXYT0giYRT6hXchFRGoKwReizuN2fnnUyJg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727377AbhAVJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:58:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbhAVJ4h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 04:56:37 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147B8C061786;
+        Fri, 22 Jan 2021 01:55:56 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id g15so3425604pjd.2;
+        Fri, 22 Jan 2021 01:55:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tD+ViDmR1uT2A2nMuxssbpuh+e9V2Sp2uc5IPNHYRMQ=;
+        b=VlQ2NozSIgFj3HoLHAlzUv32PtjdSBDyESnmP635x/9sEnoOiFqw/ODUFzid7L7vrE
+         vpX85Sf8QO3yRMYbLBhLVLp2XtwdBicnNt8EP6QknqvSxfxU/D8PXnJ87sy5yFG2hVl8
+         DgCayFPpC6pZJJ+rdqvuJvU4Ex61N6P110L2VodNwP89d951Nj4HdzXiVb/Gg7tC2p83
+         OxOW8fAAbgOnLP32TR4zYY7SLJj5anian6mblgZUB4F72I4IIFGyYjgBVMbXJWJVnu8M
+         0awqxpBcQdc6j26XYOnPCkFjnZIcu/sElAragRh/MZIfSvpxF6C443nuLZhDLh14QoZn
+         V05A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tD+ViDmR1uT2A2nMuxssbpuh+e9V2Sp2uc5IPNHYRMQ=;
+        b=nQtIffmNwrh40KiEkQAVxuJqLLB6isQ2GfvORhWB9zp7t4nqDiuHD+HcmkbL+XrK8H
+         gWI0HLCvl50QSOZ+HFbdw3yCtFztELZy1524w7/B8sLmzIGDrmvj11XHhl0wyHjsO0re
+         su0HurFyJdv3ZhI9V4x98IcIeLqm7u81XPtyzwqdyDOKwzJSW2UlYMRokqJoTDJ21IfF
+         IcPCs4Lma/bCioFadqobAjXBv+09/ObZnY1mMKORqkwqodWLHUScN6h2bl3ZltZcFof+
+         hNkQVilJ9rNuispaRypYKuwB433bJFsLQLXZW1ipsGqAhhZ2k+AJjJBfdpAl6GAIMOgQ
+         O//g==
+X-Gm-Message-State: AOAM533wIsZ0SBKlN5Ij8EmNQPM3usTYRkPS5jsWJj1MfyG9zotOVUCs
+        W9obY6jjeRvxV5gq9t/dDvKiAXAJiOyinJDhjDg=
+X-Google-Smtp-Source: ABdhPJwZaXNka3/peRQC2KxL3hXIK1JqDTWtfCYGB2DZsvxyL8e//ejrzxE35ta2iegzyCDLrIrNnmeYBaa5X7or0P4=
+X-Received: by 2002:a17:90a:1050:: with SMTP id y16mr4542088pjd.181.1611309355511;
+ Fri, 22 Jan 2021 01:55:55 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: faa2e7c5-7079-4c48-cae9-08d8bebbea65
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 09:55:57.2517
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yFpaTYPXYTUFMKnjyzuJUQv6yB+Z+sASNpf36zbph8APx1WYjg/essqhFAuDwle1to+mtYpbLmRmmK3hrIalJE//gwQm4MjUAa6GpiZ8cuY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3459
+References: <20210121223756.1112199-1-saravanak@google.com>
+In-Reply-To: <20210121223756.1112199-1-saravanak@google.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Jan 2021 11:56:44 +0200
+Message-ID: <CAHp75VcrsVcUWaaE8JZHGDMyX9MKYONoVo+9-rzT7rvnkH5xSg@mail.gmail.com>
+Subject: Re: [PATCH v4] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Corey,
+On Fri, Jan 22, 2021 at 12:40 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> There are multiple instances of GPIO device tree nodes of the form:
+>
+> foo {
+>         compatible = "acme,foo";
+>         ...
+>
+>         gpio0: gpio0@xxxxxxxx {
+>                 compatible = "acme,bar";
+>                 ...
+>                 gpio-controller;
+>         };
+>
+>         gpio1: gpio1@xxxxxxxx {
+>                 compatible = "acme,bar";
+>                 ...
+>                 gpio-controller;
+>         };
+>
+>         ...
+> }
+>
+> bazz {
+>         my-gpios = <&gpio0 ...>;
+> }
+>
+> Case 1: The driver for "foo" populates struct device for these gpio*
+> nodes and then probes them using a driver that binds with "acme,bar".
+> This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
+> This lines up with how DT nodes with the "compatible" property are
+> typically converted to struct devices and then registered with driver
+> core to probe them. This also allows the gpio* devices to hook into all
+> the driver core capabilities like runtime PM, probe deferral,
+> suspend/resume ordering, device links, etc.
+>
+> Case 2: The driver for "foo" doesn't populate struct devices for these
+> gpio* nodes before registering them with gpiolib. Instead it just loops
+> through its child nodes and directly registers the gpio* nodes with
+> gpiolib.
+>
+> Drivers that follow case 2 cause problems with fw_devlink=on. This is
+> because fw_devlink will prevent bazz from probing until there's a struct
+> device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
+> supplier). Once the struct device is available, fw_devlink will create a
+> device link with gpio0 device as the supplier and bazz device as the
+> consumer. After this point, since the gpio0 device will never bind to a
+> driver, the device link will prevent bazz device from ever probing.
+>
+> Finding and refactoring all the instances of drivers that follow case 2
+> will cause a lot of code churn and it is not something that can be done
+> in one shot. In some instances it might not even be possible to refactor
+> them cleanly. Examples of such instances are [1] [2].
+>
+> This patch works around this problem and avoids all the code churn by
+> simply setting the fwnode of the gpio_device and creating a stub driver
+> to bind to the gpio_device. This allows all the consumers to continue
+> probing when the driver follows case 2.
 
-Could you help to review this patch to kcs_bmc_aspeed.c?
-It mainly fixes the register layout/offsets of Aspeed LPC controller.
+...
 
-Thanks,
-Chiawei
+> @@ -596,6 +596,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+>                 gdev->dev.of_node = gc->of_node;
+>         else
+>                 gc->of_node = gdev->dev.of_node;
+> +       gdev->dev.fwnode = of_fwnode_handle(gdev->dev.of_node);
 
-> -----Original Message-----
-> From: Andrew Jeffery <andrew@aj.id.au>
-> Sent: Wednesday, January 20, 2021 1:03 PM
-> Subject: Re: [PATCH v5 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
-> 
-> 
-> 
-> On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
-> > Add check against LPC device v2 compatible string to ensure that the
-> > fixed device tree layout is adopted.
-> > The LPC register offsets are also fixed accordingly.
-> >
-> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-> > Acked-by: Haiyue Wang <haiyue.wang@linux.intel.com>
-> 
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+This looks like a complete breakage on ACPI enabled systems. Care to
+test on ACPI and confirm it works? I could recommend to use Intel
+Galileo platform since there is a dwapb GPIO and a lot of nice
+(semi-sarcastic, because of many quirks) code over the kernel.
 
-Thanks for the review.
+(Yes, you have to have both OF and ACPI in the config being enabled
+which is valid combination)
+
+>  #endif
+
+...
+
+> +static int gpio_stub_drv_probe(struct device *dev)
+> +{
+> +       /*
+> +        * The DT node of some GPIO chips have a "compatible" property, but
+> +        * never have a struct device added and probed by a driver to register
+> +        * the GPIO chip with gpiolib. In such cases, fw_devlink=on will cause
+> +        * the consumers of the GPIO chip to get probe deferred forever because
+
+get a probe
+
+> +        * they will be waiting for a device associated with the GPIO chip
+> +        * firmware node to get added and bound to a driver.
+> +        *
+> +        * To allow these consumers to probe, we associate the struct
+> +        * gpio_device of the GPIO chip with the firmware node and then simply
+> +        * bind it to this stub driver.
+> +        */
+> +       return 0;
+> +}
+
+...
+
+> +       if (driver_register(&gpio_stub_drv) < 0) {
+> +               pr_err("gpiolib: could not register GPIO stub driver\n");
+> +               bus_unregister(&gpio_bus_type);
+> +               return ret;
+> +       }
+> +
+>         ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
+>         if (ret < 0) {
+>                 pr_err("gpiolib: failed to allocate char dev region\n");
+> +               driver_unregister(&gpio_stub_drv);
+>                 bus_unregister(&gpio_bus_type);
+>                 return ret;
+>         }
+
+Looks like you missed to fix the __exit call in this module.
+
+-- 
+With Best Regards,
+Andy Shevchenko
