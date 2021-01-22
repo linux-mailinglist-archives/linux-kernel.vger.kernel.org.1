@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC0A300DF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64469300DF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730638AbhAVUmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:42:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        id S1729740AbhAVUoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:44:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730407AbhAVUlh (ORCPT
+        with ESMTP id S1730436AbhAVUlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:41:37 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602ECC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:40:56 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id c9so6610267ybs.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:40:56 -0800 (PST)
+        Fri, 22 Jan 2021 15:41:39 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC726C06178B
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:40:58 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 9so6673792ybj.16
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:40:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=FIOLACkSO6nryo8JeCYd3HKHXp0oZhl7wC2aMQwMaBA=;
-        b=SzyXwjEX2caDz80LmuG/3wfIagraEzkLGr5vD9SXkZ1xc4ZDawzMdOrzZ+pdApm9Ba
-         eyE5GGffRAqt5F/y9/pnXY7uBdh+MARNJsgF+Xb2tDsXQzrr+Z+pSkdP1mQo1W15Lcgf
-         4Q8pORTcoXNTqCpls4c9Pmb4rHE9br3NLgy0+AK7IV8AEJbW7LvzUIOBBYLj9+jLsHq9
-         EI5qSXrZdjWbWqFtj7Hcnc+TNjls6BKgUfDIyxVGSX7wuS6Pz884X8N1Ei62u1jjQ2Qe
-         oH8PbZ1XFmdOp5V+exKBg2OAiC22iCVyhkF8OZ91T7iRZd1t9wyvQH8Kf6O/Lwefinnr
-         ws1A==
+        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=a97iTxNZLtW8RYoTdFMgvqtoq+nhuLOg+I/3jH7GNgQ=;
+        b=UyuUysvD0z1rdDGZQ474Z462JzSwb318nzi60gGIQkn5+ksvlaj6XQKKJ99pfAxGjD
+         v6k1+6q6apQ0sKDEn1mIkdVt76EkyEbeQmYwNeVKK+4C4J7YSBZjweTe0P43ZfGY7MMH
+         fnzLFrYnjP8TvuFPSkbAWl+gj0Y8459n0JmfSMgHMBOWFvkvv7BcADXBw/nizyqaLbBW
+         ZAnnrVl4dN5dWUieukoE3U+qUkbzQEDMslnb5RZPwTq1mTLopVcZZ2Exw5s/szaPaXjm
+         v9t1j7vhnR0Bp/HWqbY6zctJaWH8lXqTDNuaJLbHA3JIw4I6x1D41aLBf9JDzvK+K6bt
+         7fcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=FIOLACkSO6nryo8JeCYd3HKHXp0oZhl7wC2aMQwMaBA=;
-        b=OtFIrqJaz4+Q+BrMl4ZGv4rF0oxiVwuX5UnZB1wbacLMNQP42wNmYVsTkcLmu0dwr+
-         1ujZ+Ej6EieQUL5Ux+lcjoh9ZK4sy9GZX+x5YcZzauZf8GEZd6AclEttocrYOFMi/7rq
-         xLHVzRE62YSN1ka4yzHbFE/DtsRiNbWBPjdcrNhXjkOwKMUh9jAcT0rDqzpMJl9f5jJm
-         gP+Mpo25iTK2IoYxrM2cfPZqIytxSypCfQrmm0Aqm6Yixeb+GRr4cfEanFKvkKpTh7vI
-         zegmVfRtWBO/IXAekap2V8HIQheidfBT17IgDEAIKhWmK55AAbXcrHiIva8GnFxgyjBy
-         K7VA==
-X-Gm-Message-State: AOAM5312XGUop5of+ms4+X/2yvaOD5hjHOPSnl2qau8AZiQjIfQpcNs0
-        uFAhw4X1nNcsdyXcO1EO1KHwAd2d2Tc=
-X-Google-Smtp-Source: ABdhPJxw2kXOylXelY+e+VrRcikSrMQvWa+F8P8gAbto9U4XixM49Rj0DclM5mdOXsaVfZna2NR5UI2F3PE=
+        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=a97iTxNZLtW8RYoTdFMgvqtoq+nhuLOg+I/3jH7GNgQ=;
+        b=mCTJQ3pF0IryLIA0prVPeIGcMeFcKj6usi+aDWSb/KnwNo1OyhVTIpqWrlN4UwU6et
+         +lSKpLSt1yMm6arTtQeFt2kmmWzmPeDefZhYczGAZONhMBRWUueDbuobNpaTWIA/1bNA
+         lmNrHksoKdWRDh59+ASBfxTwL6utjuc4l33eYwljqtp72hz7QFp4c1tU5CKidUHukrXK
+         Pt7O9HurJpjhcKRqiqSyXTzCiDWeJU5WNaR1j+QS4++O0PSNkgk9LszeNHjSJcbx90fl
+         7qQGEcF9IKbcZZH2ScNus9mqEdX5LAzzZybYEwTZfE9/BEJh/9/1PzvTMXzlvjPIjaDt
+         CUaw==
+X-Gm-Message-State: AOAM530xpHPx7FuRR4wksZsHbyHb1PHkw2GBmvZZ3d9Wh1ZybQ4e1E2n
+        v5MXw1Nec97x/zlzFc8WQ6GqQDxfH9w=
+X-Google-Smtp-Source: ABdhPJxeq0GW6g1CrndcH8qwuFBy66YDcyKnUZSFUqq3/vfsJjkvaIagUvLr3oGz6tYUhkV9rqt2yTVM7Mw=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a25:cacc:: with SMTP id a195mr9176545ybg.306.1611348055581;
- Fri, 22 Jan 2021 12:40:55 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:701:: with SMTP id
+ k1mr8793245ybt.342.1611348058107; Fri, 22 Jan 2021 12:40:58 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 22 Jan 2021 12:40:45 -0800
-Message-Id: <20210122204047.2860075-1-seanjc@google.com>
+Date:   Fri, 22 Jan 2021 12:40:46 -0800
+In-Reply-To: <20210122204047.2860075-1-seanjc@google.com>
+Message-Id: <20210122204047.2860075-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210122204047.2860075-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v3 0/2] x86/cpufeatures: KVM: Add mem encrypt word
+Subject: [PATCH v3 1/2] x86/cpufeatures: Assign dedicated feature word for CPUID_0x8000001F[EAX]
 From:   Sean Christopherson <seanjc@google.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -68,37 +71,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gather the AMD memory encryption features into a dedicated word for CPUID
-0x8000001F[EAX] and use the new word in KVM to adjust its reporting of SEV
-support based on host kernel enabling.
+Collect the scattered SME/SEV related feature flags into a dedicated
+word.  There are now five recognized features in CPUID.0x8000001F.EAX,
+with at least one more on the horizon (SEV-SNP).  Using a dedicated word
+allows KVM to use its automagic CPUID adjustment logic when reporting
+the set of supported features to userspace.
 
-Paolo, can you ack patch 2?  Boris is planning on taking this through the
-tip tree.  Thanks!
+No functional change intended.
 
-Split out from a larger KVM SEV cleanup series[*], thus the somewhat
-questionable v3 tag.
-
-Based on v5.11-rc4.
-
-[*] https://lkml.kernel.org/r/20210114003708.3798992-1-seanjc@google.com
-
-Sean Christopherson (2):
-  x86/cpufeatures: Assign dedicated feature word for
-    CPUID_0x8000001F[EAX]
-  KVM: x86: Override reported SME/SEV feature flags with host mask
-
+Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
  arch/x86/include/asm/cpufeature.h              |  7 +++++--
  arch/x86/include/asm/cpufeatures.h             | 17 +++++++++++------
  arch/x86/include/asm/disabled-features.h       |  3 ++-
  arch/x86/include/asm/required-features.h       |  3 ++-
  arch/x86/kernel/cpu/common.c                   |  3 +++
  arch/x86/kernel/cpu/scattered.c                |  5 -----
- arch/x86/kvm/cpuid.c                           |  2 ++
- arch/x86/kvm/cpuid.h                           |  1 +
  tools/arch/x86/include/asm/disabled-features.h |  3 ++-
  tools/arch/x86/include/asm/required-features.h |  3 ++-
- 10 files changed, 30 insertions(+), 17 deletions(-)
+ 8 files changed, 27 insertions(+), 17 deletions(-)
 
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 59bf91c57aa8..1728d4ce5730 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -30,6 +30,7 @@ enum cpuid_leafs
+ 	CPUID_7_ECX,
+ 	CPUID_8000_0007_EBX,
+ 	CPUID_7_EDX,
++	CPUID_8000_001F_EAX,
+ };
+ 
+ #ifdef CONFIG_X86_FEATURE_NAMES
+@@ -88,8 +89,9 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 16, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 17, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 18, feature_bit) ||	\
++	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 19, feature_bit) ||	\
+ 	   REQUIRED_MASK_CHECK					  ||	\
+-	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
++	   BUILD_BUG_ON_ZERO(NCAPINTS != 20))
+ 
+ #define DISABLED_MASK_BIT_SET(feature_bit)				\
+ 	 ( CHECK_BIT_IN_MASK_WORD(DISABLED_MASK,  0, feature_bit) ||	\
+@@ -111,8 +113,9 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 16, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 17, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 18, feature_bit) ||	\
++	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 19, feature_bit) ||	\
+ 	   DISABLED_MASK_CHECK					  ||	\
+-	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
++	   BUILD_BUG_ON_ZERO(NCAPINTS != 20))
+ 
+ #define cpu_has(c, bit)							\
+ 	(__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 :	\
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 84b887825f12..1feb6c089ba2 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -13,7 +13,7 @@
+ /*
+  * Defines x86 CPU feature bits
+  */
+-#define NCAPINTS			19	   /* N 32-bit words worth of info */
++#define NCAPINTS			20	   /* N 32-bit words worth of info */
+ #define NBUGINTS			1	   /* N 32-bit bug flags */
+ 
+ /*
+@@ -96,7 +96,7 @@
+ #define X86_FEATURE_SYSCALL32		( 3*32+14) /* "" syscall in IA32 userspace */
+ #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
+ #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
+-#define X86_FEATURE_SME_COHERENT	( 3*32+17) /* "" AMD hardware-enforced cache coherency */
++/* FREE!                                ( 3*32+17) */
+ #define X86_FEATURE_LFENCE_RDTSC	( 3*32+18) /* "" LFENCE synchronizes RDTSC */
+ #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
+ #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
+@@ -201,7 +201,7 @@
+ #define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
+ #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
+ #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
+-#define X86_FEATURE_SME			( 7*32+10) /* AMD Secure Memory Encryption */
++/* FREE!                                ( 7*32+10) */
+ #define X86_FEATURE_PTI			( 7*32+11) /* Kernel Page Table Isolation enabled */
+ #define X86_FEATURE_RETPOLINE		( 7*32+12) /* "" Generic Retpoline mitigation for Spectre variant 2 */
+ #define X86_FEATURE_RETPOLINE_AMD	( 7*32+13) /* "" AMD Retpoline mitigation for Spectre variant 2 */
+@@ -211,7 +211,7 @@
+ #define X86_FEATURE_SSBD		( 7*32+17) /* Speculative Store Bypass Disable */
+ #define X86_FEATURE_MBA			( 7*32+18) /* Memory Bandwidth Allocation */
+ #define X86_FEATURE_RSB_CTXSW		( 7*32+19) /* "" Fill RSB on context switches */
+-#define X86_FEATURE_SEV			( 7*32+20) /* AMD Secure Encrypted Virtualization */
++/* FREE!                                ( 7*32+20) */
+ #define X86_FEATURE_USE_IBPB		( 7*32+21) /* "" Indirect Branch Prediction Barrier enabled */
+ #define X86_FEATURE_USE_IBRS_FW		( 7*32+22) /* "" Use IBRS during runtime firmware calls */
+ #define X86_FEATURE_SPEC_STORE_BYPASS_DISABLE	( 7*32+23) /* "" Disable Speculative Store Bypass. */
+@@ -236,8 +236,6 @@
+ #define X86_FEATURE_EPT_AD		( 8*32+17) /* Intel Extended Page Table access-dirty bit */
+ #define X86_FEATURE_VMCALL		( 8*32+18) /* "" Hypervisor supports the VMCALL instruction */
+ #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
+-#define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtualization - Encrypted State */
+-#define X86_FEATURE_VM_PAGE_FLUSH	( 8*32+21) /* "" VM Page Flush MSR is supported */
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
+ #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
+@@ -385,6 +383,13 @@
+ #define X86_FEATURE_CORE_CAPABILITIES	(18*32+30) /* "" IA32_CORE_CAPABILITIES MSR */
+ #define X86_FEATURE_SPEC_CTRL_SSBD	(18*32+31) /* "" Speculative Store Bypass Disable */
+ 
++/* AMD-defined memory encryption features, CPUID level 0x8000001f (EAX), word 19 */
++#define X86_FEATURE_SME			(19*32+ 0) /* AMD Secure Memory Encryption */
++#define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
++#define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
++#define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
++#define X86_FEATURE_SME_COHERENT	(19*32+10) /* "" AMD hardware-enforced cache coherency */
++
+ /*
+  * BUG word(s)
+  */
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index 7947cb1782da..b7dd944dc867 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -91,6 +91,7 @@
+ 			 DISABLE_ENQCMD)
+ #define DISABLED_MASK17	0
+ #define DISABLED_MASK18	0
+-#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define DISABLED_MASK19	0
++#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_DISABLED_FEATURES_H */
+diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/asm/required-features.h
+index 3ff0d48469f2..b2d504f11937 100644
+--- a/arch/x86/include/asm/required-features.h
++++ b/arch/x86/include/asm/required-features.h
+@@ -101,6 +101,7 @@
+ #define REQUIRED_MASK16	0
+ #define REQUIRED_MASK17	0
+ #define REQUIRED_MASK18	0
+-#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define REQUIRED_MASK19	0
++#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_REQUIRED_FEATURES_H */
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 35ad8480c464..9215b91bc044 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -960,6 +960,9 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
+ 	if (c->extended_cpuid_level >= 0x8000000a)
+ 		c->x86_capability[CPUID_8000_000A_EDX] = cpuid_edx(0x8000000a);
+ 
++	if (c->extended_cpuid_level >= 0x8000001f)
++		c->x86_capability[CPUID_8000_001F_EAX] = cpuid_eax(0x8000001f);
++
+ 	init_scattered_cpuid_features(c);
+ 	init_speculation_control(c);
+ 
+diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
+index 236924930bf0..972ec3bfa9c0 100644
+--- a/arch/x86/kernel/cpu/scattered.c
++++ b/arch/x86/kernel/cpu/scattered.c
+@@ -40,11 +40,6 @@ static const struct cpuid_bit cpuid_bits[] = {
+ 	{ X86_FEATURE_CPB,		CPUID_EDX,  9, 0x80000007, 0 },
+ 	{ X86_FEATURE_PROC_FEEDBACK,    CPUID_EDX, 11, 0x80000007, 0 },
+ 	{ X86_FEATURE_MBA,		CPUID_EBX,  6, 0x80000008, 0 },
+-	{ X86_FEATURE_SME,		CPUID_EAX,  0, 0x8000001f, 0 },
+-	{ X86_FEATURE_SEV,		CPUID_EAX,  1, 0x8000001f, 0 },
+-	{ X86_FEATURE_SEV_ES,		CPUID_EAX,  3, 0x8000001f, 0 },
+-	{ X86_FEATURE_SME_COHERENT,	CPUID_EAX, 10, 0x8000001f, 0 },
+-	{ X86_FEATURE_VM_PAGE_FLUSH,	CPUID_EAX,  2, 0x8000001f, 0 },
+ 	{ 0, 0, 0, 0, 0 }
+ };
+ 
+diff --git a/tools/arch/x86/include/asm/disabled-features.h b/tools/arch/x86/include/asm/disabled-features.h
+index 7947cb1782da..b7dd944dc867 100644
+--- a/tools/arch/x86/include/asm/disabled-features.h
++++ b/tools/arch/x86/include/asm/disabled-features.h
+@@ -91,6 +91,7 @@
+ 			 DISABLE_ENQCMD)
+ #define DISABLED_MASK17	0
+ #define DISABLED_MASK18	0
+-#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define DISABLED_MASK19	0
++#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_DISABLED_FEATURES_H */
+diff --git a/tools/arch/x86/include/asm/required-features.h b/tools/arch/x86/include/asm/required-features.h
+index 3ff0d48469f2..b2d504f11937 100644
+--- a/tools/arch/x86/include/asm/required-features.h
++++ b/tools/arch/x86/include/asm/required-features.h
+@@ -101,6 +101,7 @@
+ #define REQUIRED_MASK16	0
+ #define REQUIRED_MASK17	0
+ #define REQUIRED_MASK18	0
+-#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define REQUIRED_MASK19	0
++#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_REQUIRED_FEATURES_H */
 -- 
 2.30.0.280.ga3ce27912f-goog
 
