@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC793300BC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC4B300BCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730013AbhAVSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:47:33 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:33649 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729481AbhAVSNN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730166AbhAVSsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:48:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729335AbhAVSNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 13:13:13 -0500
-Received: by mail-oi1-f169.google.com with SMTP id j25so1531962oii.0;
-        Fri, 22 Jan 2021 10:12:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2w1MGZ9mEKOeW8Sp4+SROoauRQHqq4ffMB/bBOfyNEw=;
-        b=ORlX412qKrgV4JxTUpFT7Q3WyB+zYa+fLa0Bs9LScPIOK5sjcx1NWchZeaWv9nSvux
-         PtrkdwDPKtWms7X7u36XxQTNSFj7xOjO419EFlN0QKlUbyPd+ttPaSMl3iSmGNSP0n0u
-         kbHkMjbX/H+tImVw5oTJYABK7QGUPkIoNJJDpXTIn1plWzk555DzsVKJ6ZoJ8AiXA6D8
-         nC1s93Fvjdi6udPfV/Ev/AP7J4cExVTcxhDC2xn+WJ9WVoMSDWXyNQUJIfSzqAKXuKv2
-         BhfwH6uNUWh1vQ3a0Em+62V5suvPKyFZ/Iv+UWheVm46k/H4QG1TwQOvUB21iU6HpkDD
-         nBpg==
-X-Gm-Message-State: AOAM532PKjiRrHDdw9Lk9DzL2J0ebAuh7HxecvV+yQgLDQLtHoHhe6Fm
-        2zP6hDDyjxI9zQosRde3wPra9dqkxYTfYtWv1bQ=
-X-Google-Smtp-Source: ABdhPJy91RVudidWYxELqnygUSA2p+C95kGYOGIrI1wvFq4TZMb7X0SCn3XrnZILhPOJoQqW++x7/SLKAYPKkqA3EOQ=
-X-Received: by 2002:aca:308a:: with SMTP id w132mr3993915oiw.69.1611339127524;
- Fri, 22 Jan 2021 10:12:07 -0800 (PST)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36AC623AA1;
+        Fri, 22 Jan 2021 18:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611339135;
+        bh=H6L86AoTyE/hqmip5biwOJIAV+COzy3z1pHTxe6CyKo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bOzCO5VcEuc+6C7UFnok8XLPyEJ2/Tq5ZFVSvPY+N6mWPSG1/zaluhDnCTdpM1jfx
+         OOnJ2lZWbI7xBcU3gL+CPDN2WbA7I4eFr3e+LeJI075kWgB+NJtL5bw3nje1llmxXF
+         aC6Rbiv6HFEnYG9BnIEyWvMDKCo9zdTLTD63s4UAbpWOSzkC3CiIpygK2GVOXX4DRJ
+         CsANkW4CNVmJITDaNlpAoo7SYLF0MovPyE4SgYVmOLl2epMgnbvw1VqmwMleYCja6r
+         erHqZsQZxhoVDp83eNVnXU0ryjL6ssuZU4qNd4o/1h6t56X5rEe0RMh+2GQKG4w4sK
+         Ktk3bL7vGjysg==
+Date:   Fri, 22 Jan 2021 20:12:09 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, david@redhat.com, lkp@intel.com
+Subject: Re: [PATCH v5 0/5] mm: clean up names and parameters of
+ memmap_init_xxxx functions
+Message-ID: <20210122181209.GD6332@kernel.org>
+References: <20210122135956.5946-1-bhe@redhat.com>
 MIME-Version: 1.0
-References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
- <20210122154300.7628-10-calvin.johnson@oss.nxp.com> <CAJZ5v0gzdi08fwf0e3NyP1WzuSBk47J5OT5DW_aaUHn_9icfag@mail.gmail.com>
- <YAsHqu/nW3zU/JgO@smile.fi.intel.com>
-In-Reply-To: <YAsHqu/nW3zU/JgO@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 22 Jan 2021 19:11:56 +0100
-Message-ID: <CAJZ5v0izwiuD+gRmbw=i=DojDMwqOevDQwXArcmq4WyPVrEDfQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v4 09/15] device property: Introduce fwnode_get_id()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Grant Likely <grant.likely@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122135956.5946-1-bhe@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 6:12 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Fri, Jan 22, 2021 at 05:40:41PM +0100, Rafael J. Wysocki wrote:
-> > On Fri, Jan 22, 2021 at 4:46 PM Calvin Johnson
-> > <calvin.johnson@oss.nxp.com> wrote:
-> > >
-> > > Using fwnode_get_id(), get the reg property value for DT node
-> > > or get the _ADR object value for ACPI node.
-> >
-> > So I'm not really sure if this is going to be generically useful.
-> >
-> > First of all, the meaning of the _ADR return value is specific to a
-> > given bus type (e.g. the PCI encoding of it is different from the I2C
-> > encoding of it) and it just happens to be matching the definition of
-> > the "reg" property for this particular binding.
->
-> > IOW, not everyone may expect the "reg" property and the _ADR return
-> > value to have the same encoding and belong to the same set of values,
->
-> I have counted three or even four attempts to open code exact this scenario
-> in the past couple of years. And I have no idea where to put a common base for
-> them so they will not duplicate this in each case.
+On Fri, Jan 22, 2021 at 09:59:51PM +0800, Baoquan He wrote:
+> This patchset is correcting inappropriate function names of
+> memmap_init_xxx, and simplify parameters of functions in the code flow.
+> And also fix a prototype warning reported by lkp.
+> 
+> This is based on the latest next/master.
+> 
+> V4 can be found here:
+> https://lore.kernel.org/linux-mm/20210120045213.6571-1-bhe@redhat.com/
+> 
+> v4->v5:
+>  - Add patch 1 into series which fixes a prototype warning from kernel
+>    test robot. Then rebase the v4 patches on top of it.
+> 
+> v3->v4:
+>  - Rebased patch 1, 2 on top of Mike's below new patch.
+>    [PATCH v3 0/2] mm: fix initialization of struct page for holes in  memory layout
+> 
+>  - Move the code of renaming function parameter 'range_start_pfn' and local
+>    variable 'range_end_pfn' of memmap_init() from patch 1 to patch 2
+>    according to David's comment.
+> 
+>  - Use the reverse Christmas tree style to reorder the local variables
+>    in memmap_init_zone() in patch 2 accodrding to David's comment.
+> 
+> Baoquan He (5):
+>   mm: fix prototype warning from kernel test robot
+>   mm: rename memmap_init() and memmap_init_zone()
+>   mm: simplify parater of function memmap_init_zone()
+>   mm: simplify parameter of setup_usemap()
+>   mm: remove unneeded local variable in free_area_init_core
 
-In that case it makes sense to have it in the core, but calling the
-_ADR return value an "id" generically is a stretch to put it lightly.
+For the series:
 
-It may be better to call the function something like
-fwnode_get_local_bus_id() end explain in the kerneldoc comment that
-the return value provides a way to distinguish the given device from
-the other devices on the same bus segment.
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Otherwise it may cause people to expect that the "reg" property and
-_ADR are generally equivalent, which is not the case AFAICS.
+> 
+>  arch/ia64/include/asm/pgtable.h |  6 -----
+>  arch/ia64/mm/init.c             | 14 +++++-----
+>  include/linux/mm.h              |  3 ++-
+>  mm/memory_hotplug.c             |  2 +-
+>  mm/page_alloc.c                 | 46 ++++++++++++++-------------------
+>  5 files changed, 31 insertions(+), 40 deletions(-)
+> 
+> -- 
+> 2.17.2
+> 
 
-At least the kerneldoc should say something like "use only if it is
-known for a fact that the _ADR return value can be treated as a
-fallback replacement for the "reg" property that is missing in the
-given use case".
-
-> > so maybe put this function somewhere closer to the code that's going
-> > to use it, because it seems to be kind of specific to this particular
-> > use case?
+-- 
+Sincerely yours,
+Mike.
