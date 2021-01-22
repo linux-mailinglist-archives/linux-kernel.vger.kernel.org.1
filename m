@@ -2,224 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A17300D3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B808300D63
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbhAVUCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:02:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34940 "EHLO mail.kernel.org"
+        id S1728684AbhAVUJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:09:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728370AbhAVOOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:14:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84FED23AFD;
-        Fri, 22 Jan 2021 14:11:32 +0000 (UTC)
+        id S1728335AbhAVONC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:13:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE1D423AA1;
+        Fri, 22 Jan 2021 14:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324693;
-        bh=/2hK1dSUGWUPYN9yDzDdkacDwHQnH8N7GDzagXDrWqQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q4jv3kk5W/xu5Nt1fwKmeIGtQ76baZW912LRejb3tCtZJ0dM4FBU18BqNy1xC5Cj5
-         o+KIZsZ8o5TyO2iGbEJkZgjCPrPOUj2GdPhwgkAacIhNbQHKJoJKeZIcO1ycQfU6Iy
-         xNaYEwVlWye2qBztxHwIpOEnposYong2255K/P0A=
+        s=korg; t=1611324643;
+        bh=iazpQqPdvUDs+5y6oaxLwzLJvNuU+4OrYyemM8u2Lpw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WolP3msfdXxfzz3tkfWU2LzZrSdEwNaODjemP2x891OMY+pktUOquE70pPKiJXbCu
+         Jc1otf4Pqti4RldooBXCugXalUx78FqtOwwvbO72M67tXXxdhAV8JXIR6d3coU6Bcd
+         Wsjj7XsiywPC/d6cwCR55nopOi87RNw5UR661J54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH 4.9 00/35] 4.9.253-rc1 review
-Date:   Fri, 22 Jan 2021 15:10:02 +0100
-Message-Id: <20210122135732.357969201@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 01/35] ASoC: dapm: remove widget from dirty list on free
+Date:   Fri, 22 Jan 2021 15:10:03 +0100
+Message-Id: <20210122135732.420157332@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
+In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
+References: <20210122135732.357969201@linuxfoundation.org>
 User-Agent: quilt/0.66
 X-stable: review
 X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.253-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.253-rc1
-X-KernelTest-Deadline: 2021-01-24T13:57+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.9.253 release.
-There are 35 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
-Anything received after that time might be too late.
+commit 5c6679b5cb120f07652418524ab186ac47680b49 upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.253-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-and the diffstat can be found below.
+A widget's "dirty" list_head, much like its "list" list_head, eventually
+chains back to a list_head on the snd_soc_card itself. This means that
+the list can stick around even after the widget (or all widgets) have
+been freed. Currently, however, widgets that are in the dirty list when
+freed remain there, corrupting the entire list and leading to memory
+errors and undefined behavior when the list is next accessed or
+modified.
 
-thanks,
+I encountered this issue when a component failed to probe relatively
+late in snd_soc_bind_card(), causing it to bail out and call
+soc_cleanup_card_resources(), which eventually called
+snd_soc_dapm_free() with widgets that were still dirty from when they'd
+been added.
 
-greg k-h
+Fixes: db432b414e20 ("ASoC: Do DAPM power checks only for widgets changed since last run")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/f8b5f031d50122bf1a9bfc9cae046badf4a7a31a.1607822410.git.tommyhebb@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
--------------
-Pseudo-Shortlog of commits:
+---
+ sound/soc/soc-dapm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.9.253-rc1
-
-Michael Hennerich <michael.hennerich@analog.com>
-    spi: cadence: cache reference clock rate during probe
-
-Hoang Le <hoang.h.le@dektech.com.au>
-    tipc: fix NULL deref in tipc_link_xmit()
-
-David Howells <dhowells@redhat.com>
-    rxrpc: Fix handling of an unsupported token type in rxrpc_read()
-
-Eric Dumazet <edumazet@google.com>
-    net: avoid 32 x truesize under-estimation for tiny skbs
-
-Jakub Kicinski <kuba@kernel.org>
-    net: sit: unregister_netdevice on newlink's error path
-
-Petr Machata <petrm@nvidia.com>
-    net: dcb: Accept RTM_GETDCB messages carrying set-like DCB commands
-
-Petr Machata <me@pmachata.org>
-    net: dcb: Validate netlink message in DCB handler
-
-Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-    rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
-
-Manish Chopra <manishc@marvell.com>
-    netxen_nic: fix MSI/MSI-x interrupts
-
-Jouni K. Seppänen <jks@iki.fi>
-    net: cdc_ncm: correct overhead in delayed_ndp_size
-
-J. Bruce Fields <bfields@redhat.com>
-    nfsd4: readdirplus shouldn't return parent of export
-
-Will Deacon <will@kernel.org>
-    compiler.h: Raise minimum version of GCC to 5.1 for arm64
-
-Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-    usb: ohci: Make distrust_firmware param default to false
-
-Jesper Dangaard Brouer <brouer@redhat.com>
-    netfilter: conntrack: fix reading nf_conntrack_buckets
-
-j.nixdorf@avm.de <j.nixdorf@avm.de>
-    net: sunrpc: interpret the return value of kstrtou32 correctly
-
-Jann Horn <jannh@google.com>
-    mm, slub: consider rest of partial list if acquire_slab() fails
-
-Dinghao Liu <dinghao.liu@zju.edu.cn>
-    RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
-
-Jan Kara <jack@suse.cz>
-    ext4: fix superblock checksum failure when setting password salt
-
-Trond Myklebust <trond.myklebust@hammerspace.com>
-    NFS: nfs_igrab_and_active must first reference the superblock
-
-Al Viro <viro@zeniv.linux.org.uk>
-    dump_common_audit_data(): fix racy accesses to ->d_name
-
-Dmitry Torokhov <dmitry.torokhov@gmail.com>
-    Input: uinput - avoid FF flush when destroying device
-
-Arnd Bergmann <arnd@arndb.de>
-    ARM: picoxcell: fix missing interrupt-parent properties
-
-Shawn Guo <shawn.guo@linaro.org>
-    ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
-
-Michael Ellerman <mpe@ellerman.id.au>
-    net: ethernet: fs_enet: Add missing MODULE_LICENSE
-
-Arnd Bergmann <arnd@arndb.de>
-    misdn: dsp: select CONFIG_BITREVERSE
-
-Randy Dunlap <rdunlap@infradead.org>
-    arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
-
-Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-    ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
-
-Masahiro Yamada <masahiroy@kernel.org>
-    ARC: build: add boot_targets to PHONY
-
-yangerkun <yangerkun@huawei.com>
-    ext4: fix bug for rename with RENAME_WHITEOUT
-
-Miaohe Lin <linmiaohe@huawei.com>
-    mm/hugetlb: fix potential missing huge page size info
-
-Dexuan Cui <decui@microsoft.com>
-    ACPI: scan: Harden acpi_device_add() against device ID overflows
-
-Alexander Lobakin <alobakin@pm.me>
-    MIPS: relocatable: fix possible boot hangup with KASLR enabled
-
-Al Viro <viro@zeniv.linux.org.uk>
-    MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
-
-Paul Cercueil <paul@crapouillou.net>
-    MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
-
-Thomas Hebb <tommyhebb@gmail.com>
-    ASoC: dapm: remove widget from dirty list on free
-
-
--------------
-
-Diffstat:
-
- Makefile                                             |  4 ++--
- arch/arc/Makefile                                    |  1 +
- arch/arc/include/asm/page.h                          |  1 +
- arch/arm/boot/dts/picoxcell-pc3x2.dtsi               |  4 ++++
- arch/mips/boot/compressed/decompress.c               |  3 ++-
- arch/mips/kernel/binfmt_elfn32.c                     |  7 +++++++
- arch/mips/kernel/binfmt_elfo32.c                     |  7 +++++++
- arch/mips/kernel/relocate.c                          | 10 ++++++++--
- drivers/acpi/internal.h                              |  2 +-
- drivers/acpi/scan.c                                  | 15 ++++++++++++++-
- drivers/infiniband/hw/usnic/usnic_ib_verbs.c         |  3 +++
- drivers/input/ff-core.c                              | 13 ++++++++++---
- drivers/input/misc/uinput.c                          | 18 ++++++++++++++++++
- drivers/isdn/mISDN/Kconfig                           |  1 +
- drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c |  1 +
- drivers/net/ethernet/freescale/fs_enet/mii-fec.c     |  1 +
- drivers/net/ethernet/freescale/ucc_geth.h            |  9 ++++++++-
- drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |  7 +------
- drivers/net/usb/cdc_ncm.c                            |  8 ++++++--
- drivers/net/usb/rndis_host.c                         |  2 +-
- drivers/spi/spi-cadence.c                            |  6 ++++--
- drivers/usb/host/ohci-hcd.c                          |  2 +-
- fs/ext4/ioctl.c                                      |  3 +++
- fs/ext4/namei.c                                      | 16 +++++++++-------
- fs/nfs/internal.h                                    | 12 +++++++-----
- fs/nfsd/nfs3xdr.c                                    |  7 ++++++-
- include/linux/acpi.h                                 |  7 +++++++
- include/linux/compiler-gcc.h                         |  6 ++++++
- include/linux/input.h                                |  1 +
- mm/hugetlb.c                                         |  2 +-
- mm/slub.c                                            |  2 +-
- net/core/skbuff.c                                    |  9 +++++++--
- net/dcb/dcbnl.c                                      |  2 ++
- net/ipv6/sit.c                                       |  5 ++++-
- net/netfilter/nf_conntrack_standalone.c              |  3 +++
- net/rxrpc/key.c                                      |  6 ++++--
- net/sunrpc/addr.c                                    |  2 +-
- net/tipc/link.c                                      | 11 +++++++++--
- security/lsm_audit.c                                 |  7 +++++--
- sound/soc/soc-dapm.c                                 |  1 +
- 40 files changed, 179 insertions(+), 48 deletions(-)
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2349,6 +2349,7 @@ void snd_soc_dapm_free_widget(struct snd
+ 	enum snd_soc_dapm_direction dir;
+ 
+ 	list_del(&w->list);
++	list_del(&w->dirty);
+ 	/*
+ 	 * remove source and sink paths associated to this widget.
+ 	 * While removing the path, remove reference to it from both
 
 
