@@ -2,71 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD36A3003C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B48B23003B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbhAVNFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:05:45 -0500
-Received: from mga06.intel.com ([134.134.136.31]:52985 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726739AbhAVNDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:03:11 -0500
-IronPort-SDR: 7lkUmEHSiP1kb5ePz6hKW+nXZ0z6ZEiZmiqs1xzEJ2+hgj9yveH1RxkAe2LNy1Zk3hDgAl+CpU
- 3i5MXyo3/UKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="240983067"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="240983067"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 05:00:54 -0800
-IronPort-SDR: XzZPcp38cb30QULsLcXsgLNu4kNWEm2c+0ePLWkyZqoP1WUAH3b3OtPGcyWJbbrJsHw31Kfcoa
- L2i9km9f35xQ==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="357014636"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 05:00:50 -0800
-Received: by lahna (sSMTP sendmail emulation); Fri, 22 Jan 2021 15:00:48 +0200
-Date:   Fri, 22 Jan 2021 15:00:48 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     rjw@rjwysocki.net, AceLan Kao <acelan.kao@canonical.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ACPI / device_sysfs: Prefer "compatible" modalias
-Message-ID: <20210122130048.GN1988617@lahna.fi.intel.com>
-References: <20210122125302.991591-1-kai.heng.feng@canonical.com>
+        id S1727861AbhAVND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727052AbhAVNCN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:02:13 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B798C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:01:30 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id c128so4266056wme.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:01:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G0ng+OZa3Vuf9YdIl1xtH1whS14V+BAXkcJKtu9qil4=;
+        b=LXlZLfwJlLR08wLynX4+9UKOdiejRTjAGFeteUdPwwTtFfGze69EjLcTnHIivc2oE0
+         pWyeJ5TOi/AmJ/V/Y+RAG+o85BEeP01Sae3w2FPv5ZAAXjzi/5IjFCdfUm912gi1gmdr
+         5jQsaQUCnkfISv7/pwttFGpQfK7kgff4Wpuy4zz5TBnAzpfCdL6YM5xcyYiL1wNDEKpw
+         VInLcbeeehceKdChTuiYQSZbh6W87GC6ZwAAyft8TEEh7GokL5EV2BpWGU7KWzsp9HAr
+         H2DBne6G3oOWM4eybQLbWOe8DumaaGT2I/6mg98kfj9Dtn6jKgJQlOJTRyL5GXY+9gpn
+         a93g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G0ng+OZa3Vuf9YdIl1xtH1whS14V+BAXkcJKtu9qil4=;
+        b=EXlZ6G7KCweIqDi7MUZ1qrhjwA91TA8lZasIEP74/e9aqnbha8n9/6rZfEC2S+cg4S
+         wOCpAo0VcLVOP2iy+SRb6AyMWUXdheARtdO2mN+ZDauz1IlHdPSbSbYqK9+Q3tPjQ2T0
+         /SZ2SCMhJwd66i6IRsMVQ7Vm729hTyfqRo8zbvMv5eyKTylNgnFctzar0BQmAIj+SxOT
+         xwE7dvMx+EILdhI2S88Rj5Mg0jNVEstf0m4OoavPTAL6ng2hSA0GQV2+E8+HEqCBsVF3
+         wChUJruViZCHeUcJ78xCoKNicaE9S7OeaUe4B1JmfHhMrfLm04C5Ev3jkXuqPZAKYEdO
+         XKBg==
+X-Gm-Message-State: AOAM531Xn2AEfOnwlKHDD15w8s5ybdm7hr2XM1vHNWIUpCGwlCFmJBVq
+        iQONi0z0bPu3w4RoQVl3V4YdnfweN8USbtvc2tnx1w==
+X-Google-Smtp-Source: ABdhPJzF7RWNhnyFcB3wiTOL99LPVoNx7wnkjoc35sgnKb4ToGcGD0ixlxJvCoN6a77ExsSS9LXd0zUSejjp8Wsij9U=
+X-Received: by 2002:a7b:cbd7:: with SMTP id n23mr3906940wmi.116.1611320488755;
+ Fri, 22 Jan 2021 05:01:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122125302.991591-1-kai.heng.feng@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210111142309.193441-1-maxime@cerno.tech> <20210111142309.193441-10-maxime@cerno.tech>
+In-Reply-To: <20210111142309.193441-10-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 22 Jan 2021 13:01:13 +0000
+Message-ID: <CAPY8ntC7OwDwtWE+j+VwktpMgX_abvkKqPrWvsY-6T9ay7gMJw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/15] drm/vc4: hdmi: Split the interrupt handlers
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 08:53:02PM +0800, Kai-Heng Feng wrote:
-> Commit 8765c5ba1949 ("ACPI / scan: Rework modalias creation when
-> "compatible" is present") may create two "MODALIAS=" in uevent file if
-> conditions are met.
-> 
-> This breaks systemd-udevd, which assumes each "key" in uevent file is
-> unique. The internal implementation of systemd-udevd overwrites the
-> first MODALIAS with the second one, so its kmod rule doesn't load driver
-> for the first MODALIAS.
-> 
-> So if both ACPI modalias and OF modalias are present, use the latter
-> one to ensure there's only one MODALIAS.
-> 
-> Reference: https://github.com/systemd/systemd/pull/18163
-> Cc: AceLan Kao <acelan.kao@canonical.com>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Fixes: 8765c5ba1949 ("ACPI / scan: Rework modalias creation when "compatible" is present")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Hi Maxime
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+On Mon, 11 Jan 2021 at 14:23, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> The BCM2711 has two different interrupt sources to transmit and receive
+> CEC messages, provided through an external interrupt chip shared between
+> the two HDMI interrupt controllers.
+>
+> The rest of the CEC controller is identical though so we need to change
+> a bit the code organisation to share the code as much as possible, yet
+> still allowing to register independant handlers.
+
+s/independant/independent
+
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+With that
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 86 +++++++++++++++++++++++++---------
+>  1 file changed, 65 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 7b5c92df8f1b..12ca5f3084af 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1454,15 +1454,22 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+>  }
+>
+>  #ifdef CONFIG_DRM_VC4_HDMI_CEC
+> -static irqreturn_t vc4_cec_irq_handler_thread(int irq, void *priv)
+> +static irqreturn_t vc4_cec_irq_handler_rx_thread(int irq, void *priv)
+>  {
+>         struct vc4_hdmi *vc4_hdmi = priv;
+>
+> -       if (vc4_hdmi->cec_irq_was_rx) {
+> -               if (vc4_hdmi->cec_rx_msg.len)
+> -                       cec_received_msg(vc4_hdmi->cec_adap,
+> -                                        &vc4_hdmi->cec_rx_msg);
+> -       } else if (vc4_hdmi->cec_tx_ok) {
+> +       if (vc4_hdmi->cec_rx_msg.len)
+> +               cec_received_msg(vc4_hdmi->cec_adap,
+> +                                &vc4_hdmi->cec_rx_msg);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t vc4_cec_irq_handler_tx_thread(int irq, void *priv)
+> +{
+> +       struct vc4_hdmi *vc4_hdmi = priv;
+> +
+> +       if (vc4_hdmi->cec_tx_ok) {
+>                 cec_transmit_done(vc4_hdmi->cec_adap, CEC_TX_STATUS_OK,
+>                                   0, 0, 0, 0);
+>         } else {
+> @@ -1476,6 +1483,19 @@ static irqreturn_t vc4_cec_irq_handler_thread(int irq, void *priv)
+>         return IRQ_HANDLED;
+>  }
+>
+> +static irqreturn_t vc4_cec_irq_handler_thread(int irq, void *priv)
+> +{
+> +       struct vc4_hdmi *vc4_hdmi = priv;
+> +       irqreturn_t ret;
+> +
+> +       if (vc4_hdmi->cec_irq_was_rx)
+> +               ret = vc4_cec_irq_handler_rx_thread(irq, priv);
+> +       else
+> +               ret = vc4_cec_irq_handler_tx_thread(irq, priv);
+> +
+> +       return ret;
+> +}
+> +
+>  static void vc4_cec_read_msg(struct vc4_hdmi *vc4_hdmi, u32 cntrl1)
+>  {
+>         struct drm_device *dev = vc4_hdmi->connector.dev;
+> @@ -1500,31 +1520,55 @@ static void vc4_cec_read_msg(struct vc4_hdmi *vc4_hdmi, u32 cntrl1)
+>         }
+>  }
+>
+> +static irqreturn_t vc4_cec_irq_handler_tx_bare(int irq, void *priv)
+> +{
+> +       struct vc4_hdmi *vc4_hdmi = priv;
+> +       u32 cntrl1;
+> +
+> +       cntrl1 = HDMI_READ(HDMI_CEC_CNTRL_1);
+> +       vc4_hdmi->cec_tx_ok = cntrl1 & VC4_HDMI_CEC_TX_STATUS_GOOD;
+> +       cntrl1 &= ~VC4_HDMI_CEC_START_XMIT_BEGIN;
+> +       HDMI_WRITE(HDMI_CEC_CNTRL_1, cntrl1);
+> +
+> +       return IRQ_WAKE_THREAD;
+> +}
+> +
+> +static irqreturn_t vc4_cec_irq_handler_rx_bare(int irq, void *priv)
+> +{
+> +       struct vc4_hdmi *vc4_hdmi = priv;
+> +       u32 cntrl1;
+> +
+> +       vc4_hdmi->cec_rx_msg.len = 0;
+> +       cntrl1 = HDMI_READ(HDMI_CEC_CNTRL_1);
+> +       vc4_cec_read_msg(vc4_hdmi, cntrl1);
+> +       cntrl1 |= VC4_HDMI_CEC_CLEAR_RECEIVE_OFF;
+> +       HDMI_WRITE(HDMI_CEC_CNTRL_1, cntrl1);
+> +       cntrl1 &= ~VC4_HDMI_CEC_CLEAR_RECEIVE_OFF;
+> +
+> +       HDMI_WRITE(HDMI_CEC_CNTRL_1, cntrl1);
+> +
+> +       return IRQ_WAKE_THREAD;
+> +}
+> +
+>  static irqreturn_t vc4_cec_irq_handler(int irq, void *priv)
+>  {
+>         struct vc4_hdmi *vc4_hdmi = priv;
+>         u32 stat = HDMI_READ(HDMI_CEC_CPU_STATUS);
+> -       u32 cntrl1, cntrl5;
+> +       irqreturn_t ret;
+> +       u32 cntrl5;
+>
+>         if (!(stat & VC4_HDMI_CPU_CEC))
+>                 return IRQ_NONE;
+> -       vc4_hdmi->cec_rx_msg.len = 0;
+> -       cntrl1 = HDMI_READ(HDMI_CEC_CNTRL_1);
+> +
+>         cntrl5 = HDMI_READ(HDMI_CEC_CNTRL_5);
+>         vc4_hdmi->cec_irq_was_rx = cntrl5 & VC4_HDMI_CEC_RX_CEC_INT;
+> -       if (vc4_hdmi->cec_irq_was_rx) {
+> -               vc4_cec_read_msg(vc4_hdmi, cntrl1);
+> -               cntrl1 |= VC4_HDMI_CEC_CLEAR_RECEIVE_OFF;
+> -               HDMI_WRITE(HDMI_CEC_CNTRL_1, cntrl1);
+> -               cntrl1 &= ~VC4_HDMI_CEC_CLEAR_RECEIVE_OFF;
+> -       } else {
+> -               vc4_hdmi->cec_tx_ok = cntrl1 & VC4_HDMI_CEC_TX_STATUS_GOOD;
+> -               cntrl1 &= ~VC4_HDMI_CEC_START_XMIT_BEGIN;
+> -       }
+> -       HDMI_WRITE(HDMI_CEC_CNTRL_1, cntrl1);
+> +       if (vc4_hdmi->cec_irq_was_rx)
+> +               ret = vc4_cec_irq_handler_rx_bare(irq, priv);
+> +       else
+> +               ret = vc4_cec_irq_handler_tx_bare(irq, priv);
+> +
+>         HDMI_WRITE(HDMI_CEC_CPU_CLEAR, VC4_HDMI_CPU_CEC);
+> -
+> -       return IRQ_WAKE_THREAD;
+> +       return ret;
+>  }
+>
+>  static int vc4_hdmi_cec_adap_enable(struct cec_adapter *adap, bool enable)
+> --
+> 2.29.2
+>
