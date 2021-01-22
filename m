@@ -2,261 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945543010A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B803010B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbhAVXJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 18:09:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728360AbhAVXI4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 18:08:56 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1238EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 15:08:16 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id e22so14619909iom.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 15:08:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SOAiIQQzWIRBqigP7SxGzShtxZ6luIw9S5UDFVDRsSw=;
-        b=dWCFJsjxy6k11dCsqCHOJQMfd9qqttOMlV6Nu0sLjgFODHubEU5d/YvuGLzZLp2PYO
-         zWddmTeCFAWa7ii0nfhAvrmKlaKo1ASUn8wPNFy6ox6IC/i8nMXO2LLUjkRLM2C+JcgX
-         XEr2T0QR6rAO2Qp6yU7w6munBk6DrMI1BXpozZNYsHYPumR+NZ9srlvqoMBBF9llka80
-         yKTm8kyd+svHyopNps7fLa8xTREX4ewy9QIlxpPcqTEVGCcqZ7PjpbFrw5EPxXyz5QkP
-         23odO1Fa0zbMZWXp7EyZbFrvUFVVnT3RBjf7Ildd7R1SY7Fy/z02WMsoWWIZkYw/981D
-         kpGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SOAiIQQzWIRBqigP7SxGzShtxZ6luIw9S5UDFVDRsSw=;
-        b=IOyNdz/UQeXtvIVlNOCn0Wxjg0EnikqqoU3yGpptUNKBucETYlGVIZq39M9xU/+7AE
-         a9JvCVI7bKFBTv/bC82+CYPUueAbjhuBE+jx1QDOfhH94ZfMhLeE3gERlR+9gUM9g8fD
-         PlsSo/+BQDv5I4cQsqUSbweYJSAQbf6TH4ySZwuhrmE7umvj9FP0v67fVIEC9LtTDc/C
-         rdGi5dBNIJlKrSltXVARGDcFhMoP5vS4xcvS0oQflRUaJ0r4w4Thrj5Q32Io6OuJOiVU
-         amS3xebt54IrNU6OU/hWrKdPT4+nkkKEkk57svplFMmk2L1ld7ESL9ehiiDDhILCQL5y
-         tbHw==
-X-Gm-Message-State: AOAM531ilDyWOgc9NYq+UA8uigN9mO9pqJ0ZnFS30K5j+8WDt5IWFxJM
-        +PwpPrJ5oWBDPgvT09kMQIw3OgpbZ7ZFDQwaCmQWiimMPF6ujg==
-X-Google-Smtp-Source: ABdhPJyTBeNYaYS1+3pgEaMVB7fK2UTmKkBm5rNlnPQnVQ8a65Vrei22IkmOsdJPC5TS52EOBvTUYGRq6Q/AFNPh4Ag=
-X-Received: by 2002:a05:6638:1344:: with SMTP id u4mr4176943jad.86.1611356895177;
- Fri, 22 Jan 2021 15:08:15 -0800 (PST)
+        id S1729227AbhAVXMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 18:12:01 -0500
+Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:39558 "EHLO
+        blackbox.su" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1729039AbhAVXLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 18:11:33 -0500
+Received: from metabook.localnet (metabook.metanet [192.168.2.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by blackbox.su (Postfix) with ESMTPSA id 37B8C82100;
+        Sat, 23 Jan 2021 02:10:48 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
+        t=1611357048; bh=szJplrdwZI5qtsaxsaDEZdCTefVXT4yOCufVbPNzFZM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cR2MZZOSmrGsHP2aZhvBql74T4W2FjcQM1pEe4QZH66h8EAqZ3LnDARU1rndHp8EE
+         yrDjZwuTJ/xAzVKtMN0VoHh8oS7Ffo3OQj+APepu4ujP+kTYSRZdzm1ij7sHjJzdLQ
+         zkVmvRBcYPYjH6pE9FbIeJanKM3U5r835lbv5sAAwrfP89bm84xAggsvI/Ws3EFXx/
+         j6n+lbupQPFXpN2QpKrMRaz4ubmS4ead0g9uyLSHWzISMRnCSmBLdL/OWArWeTR7NO
+         X/9/uBYy98kUd/8a/w1MjbUB0JTxfUJUXxmW9LHinHs8YGtaSlVvoSvqUpAE0QV7C1
+         kosy2ILaNJBcw==
+From:   Sergej Bauer <sbauer@blackbox.su>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, f.fainelli@gmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Simon Horman <simon.horman@netronome.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
+Date:   Sat, 23 Jan 2021 02:09:56 +0300
+Message-ID: <21783568.4JFRnjC3Rk@metabook>
+In-Reply-To: <YAtMw5Yk1QYp28rJ@lunn.ch>
+References: <20210122214247.6536-1-sbauer@blackbox.su> <YAtMw5Yk1QYp28rJ@lunn.ch>
 MIME-Version: 1.0
-References: <20210121223355.59780-1-paul.gortmaker@windriver.com>
- <20210121223355.59780-4-paul.gortmaker@windriver.com> <CAAH8bW8GYYsHy7c8KD3EL+a1mR+wCrj7WFS+Gp5=4CJbz7GpgA@mail.gmail.com>
- <20210122044357.GS16838@windriver.com>
-In-Reply-To: <20210122044357.GS16838@windriver.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Fri, 22 Jan 2021 15:08:04 -0800
-Message-ID: <CAAH8bW9UZZwnyXu5vFbxr4OpU8s-+61NzS0yg6gMGmH9Zty_mw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] lib: support N as end of range in bitmap_parselist()
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 8:44 PM Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> [Re: [PATCH 3/3] lib: support N as end of range in bitmap_parselist()] On 21/01/2021 (Thu 16:29) Yury Norov wrote:
->
-> > On Thu, Jan 21, 2021 at 2:34 PM Paul Gortmaker
-> > <paul.gortmaker@windriver.com> wrote:
-> > >
-> > > While this is done for all bitmaps, the original use case in mind was
-> > > for CPU masks and cpulist_parse().  Credit to Yury who suggested to
-> > > push it down from CPU subsys to bitmap - it simplified things a lot.
-> >
-> > Can you convert your credit to Suggested-by or Reviewed-by? :)
->
-> Sure, of course.
->
-> [...]
->
-> > > diff --git a/lib/bitmap.c b/lib/bitmap.c
-> > > index a1010646fbe5..d498ea9d526b 100644
-> > > --- a/lib/bitmap.c
-> > > +++ b/lib/bitmap.c
-> > > @@ -571,7 +571,7 @@ static const char *bitmap_find_region_reverse(const char *start, const char *end
-> > >         return end;
-> > >  }
-> > >
-> > > -static const char *bitmap_parse_region(const char *str, struct region *r)
-> > > +static const char *bitmap_parse_region(const char *str, struct region *r, int nmaskbits)
-> > >  {
-> >
-> > in bitmap_parselist() you can store nmaskbits in the struct region, and avoid
-> > passing nmaskbits as a parameter.
->
-> OK.   FWIW, I considered that and went with the param so as to not open
-> the door to someone possibly using an uninitialized struct value later.
->
-> > >         str = bitmap_getnum(str, &r->start);
-> > >         if (IS_ERR(str))
-> > > @@ -583,9 +583,15 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
-> > >         if (*str != '-')
-> > >                 return ERR_PTR(-EINVAL);
-> > >
-> > > -       str = bitmap_getnum(str + 1, &r->end);
-> > > -       if (IS_ERR(str))
-> > > -               return str;
-> > > +       str++;
-> > > +       if (*str == 'N') {
-> > > +               r->end = nmaskbits - 1;
-> > > +               str++;
-> > > +       } else {
-> > > +               str = bitmap_getnum(str, &r->end);
-> > > +               if (IS_ERR(str))
-> > > +                       return str;
-> > > +       }
-> >
-> > Indeed it's much simpler. But I don't like that you increase the nesting level.
-> > Can you keep bitmap_parse_region() a single-tab style function?
->
-> Rather a strict coding style, but we can replace with:
->
->        if (*str == 'N') {
->                r->end = nmaskbits - 1;
->                str++;
->        } else {
->                str = bitmap_getnum(str, &r->end);
->        }
->
->        if (IS_ERR(str))
->                return str;
->
-> Is that what you were after?
->
-> > What about group size? Are you going to support N there, like "0-N:5/N"?
->
-> No.  I would think that the group size has to be less than 1/2 of
-> the nmaskbits or you get the rather pointless case of just one group.
-> Plus conflating "end of range" with "group size" just adds confusion.
-> So it is currently not legal:
->
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 4-N:2/4 > cpuset.cpus
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> 4-5,8-9,12-13
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 4-N:2/N > cpuset.cpus
-> /bin/echo: write error: Invalid argument
-> root@hackbox:/sys/fs/cgroup/cpuset/foo#
->
-> > What about "N-N"? Is it legal? Maybe hide new logic in bitmap_getnum()?
->
-> The "N-N" is also not supported/legal.  The allowed use is listed as
-> being for the end of a range only.  The code enforces this by ensuring
-> the char previous is a '-'  ; hence a leading N is invalid:
->
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo N-N > cpuset.cpus
-> /bin/echo: write error: Invalid argument
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 0-N > cpuset.cpus
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> 0-15
-> root@hackbox:/sys/fs/cgroup/cpuset/foo#
->
-> I think "use for end of range only" makes sense in the mathematical
-> sense most of us have seen during school:  {0, 1, 2, ...  N-1, N} as
-> used in the end point of a range of numbers.  I could make the "only"
-> part more explicit and concrete in the comments/docs if desired.
->
-> I'm not sure I see the value in complicating things in order to add
-> or extend support to non-intuitive use cases beyond that - to me that
-> seems to just make things more confusing for end users.  But again
-> if you've something in mind that I'm simply missing, then by all
-> means please elaborate.
+On Saturday, January 23, 2021 1:08:03 AM MSK Andrew Lunn wrote:
+> On Sat, Jan 23, 2021 at 12:42:41AM +0300, Sergej Bauer wrote:
+> > From: sbauer@blackbox.su
+> > 
+> > v1->v2:
+> > 	switch to using of fixed_phy as was suggested by Andrew and Florian
+> > 	also features-related parts are removed
+> 
+> This is not using fixed_phy, at least not in the normal way.
+> 
+> Take a look at bgmac_phy_connect_direct() for example. Call
+> fixed_phy_register(), and then phy_connect_direct() with the
+> phydev. End of story. Done.
+> 
+> > +int lan743x_set_link_ksettings(struct net_device *netdev,
+> > +			       const struct ethtool_link_ksettings *cmd)
+> > +{
+> > +	if (!netdev->phydev)
+> > +		return -ENETDOWN;
+> > +
+> > +	return phy_is_pseudo_fixed_link(netdev->phydev) ?
+> > +			lan743x_set_virtual_link_ksettings(netdev, cmd)
+> > +			: phy_ethtool_set_link_ksettings(netdev, cmd);
+> > +}
+> 
+> There should not be any need to do something different. The whole
+> point of fixed_phy is it looks like a PHY. So calling
+> phy_ethtool_set_link_ksettings() should work, nothing special needed.
+> 
+> > @@ -1000,8 +1005,10 @@ static void lan743x_phy_close(struct
+> > lan743x_adapter *adapter)> 
+> >  	struct net_device *netdev = adapter->netdev;
+> >  	
+> >  	phy_stop(netdev->phydev);
+> > 
+> > -	phy_disconnect(netdev->phydev);
+> > -	netdev->phydev = NULL;
+> > +	if (phy_is_pseudo_fixed_link(netdev->phydev))
+> > +		lan743x_virtual_phy_disconnect(netdev->phydev);
+> > +	else
+> > +		phy_disconnect(netdev->phydev);
+> 
+> phy_disconnect() should work. You might want to call
+Andrew, this is why I was playing with my own _connect/_disconnect 
+realizations
+It should work but it don't.
+modprobe lan743x
+rmmod lan743x
+modprobe lan743x
+leads to
+"net eth7: could not add device link to fixed-0:06 err -17"
+in dmesg (it does not removes corresponding phydev file in /sysfs)
+moreover phy_disconnect leads to kernel panic
+[82363.976726] BUG: kernel NULL pointer dereference, address: 00000000000003c4
+[82363.977402] #PF: supervisor read access in kernel mode
+[82363.978077] #PF: error_code(0x0000) - not-present page
+[82363.978588] PGD 0 P4D 0 
+[82363.978588] Oops: 0000 [#1] SMP NOPTI
+[82363.978588] CPU: 3 PID: 2634 Comm: ifconfig Tainted: G           O      
+5.11.0-rc4net-next-virtual_phy+ #3
+[82363.978588] Hardware name: Gigabyte Technology Co., Ltd. H110-D3/H110-D3-
+CF, BIOS F24 04/11/2018
+[82363.978588] RIP: 0010:lan743x_phy_close.isra.26+0x28/0x40 [lan743x]
+[82363.978588] Code: c3 90 0f 1f 44 00 00 53 48 89 fb 48 8b bf 28 08 00 00 e8 
+ab 5e 86 ff 48 8b bb 28 08 00 00 e8 4f 92 86 ff 48 8b bb 28 08 00 00 <f6> 87 c4 
+03 00 00 04 75 02 5b c3 5b e9 f7 35 ea ff 0f 1f 80 00 00
+[82363.982448] RSP: 0018:ffffa528c04c7c38 EFLAGS: 00010246
+[82363.982448] RAX: 000000000000000f RBX: ffff991a47e38000 RCX: 0000000000000027
+[82363.982448] RDX: 0000000000000000 RSI: ffff991c76d98b30 RDI: 0000000000000000
+[82363.982448] RBP: 0000000000000001 R08: 0000000000000000 R09: c0000000ffffefff
+[82363.982448] R10: 0000000000000001 R11: ffffa528c04c7a48 R12: ffff991a47e388c0
+[82363.986855] R13: ffff991a47e390b8 R14: ffff991a47e39050 R15: ffff991a47e388c0
+[82363.986855] FS:  00007f7c3ebd6540(0000) GS:ffff991c76d80000(0000) knlGS:
+0000000000000000
+[82363.986855] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[82363.986855] CR2: 00000000000003c4 CR3: 000000001b2ac005 CR4: 
+00000000003706e0
+[82363.986855] Call Trace:
+[82363.986855]  lan743x_netdev_close+0x223/0x250 [lan743x]
+...
 
-OK, let me share my view on this. As you said in the patch description,
-N is substitution to the number of the last CPU, in your example sort of
-#define N (15).
+> fixed_phy_unregister() afterwards, so you do not leak memory.
+> 
+> > +		if (phy_is_pseudo_fixed_link(phydev)) {
+> > +			ret = phy_connect_direct(netdev, phydev,
+> > +						 lan743x_virtual_phy_status_change,
+> > +						 PHY_INTERFACE_MODE_MII);
+> > +		} else {
+> > +			ret = phy_connect_direct(netdev, phydev,
+> > +						 lan743x_phy_link_status_change,
+> 
+> There should not be any need for a special link change
+> callback. lan743x_phy_link_status_change() should work fine, the MAC
+> should have no idea it is using a fixed_phy.
+> 
+> > +						 PHY_INTERFACE_MODE_GMII);
+> > +		}
+> > +
+> > 
+> >  		if (ret)
+> >  		
+> >  			goto return_error;
+> >  	
+> >  	}
+> > 
+> > @@ -1031,6 +1049,15 @@ static int lan743x_phy_open(struct lan743x_adapter
+> > *adapter)> 
+> >  	/* MAC doesn't support 1000T Half */
+> >  	phy_remove_link_mode(phydev, ETHTOOL_LINK_MODE_1000baseT_Half_BIT);
+> > 
+> > +	if (phy_is_pseudo_fixed_link(phydev)) {
+> > +		phy_remove_link_mode(phydev, ETHTOOL_LINK_MODE_TP_BIT);
+> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT,
+> > +				 phydev->supported);
+> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
+> > +				 phydev->supported);
+> > +		phy_advertise_supported(phydev);
+> > +	}
+> 
+> The fixed PHY driver will set these bits depending on the speed it has
+> been configured for. No need to change them. The MAC should also not
+> care if it is TP, AUI, Fibre or smoke signals.
+It was to make ethtool show full set of supported speeds and MII only in
+supported ports (without TP and the no any ports in the bare card).
 
-So, when I do echo N-N > cpuset.cpus, I want it to work as if I do
-echo 15-15 > cpuset.cpus. Why? Because in my terribly huge config
-I just want to do s/15/N.
+> 
+>      Andrew
 
-Now let's check how it works .
+I think I should reproduce the panic with clean version of net-net
 
-root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# echo 15-15>cpuset.cpus
-root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-15
-root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# echo 0-0>cpuset.cpus
-root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-0
+--
+                                Regards,
+                                    Sergej.
 
-OK, works as expected. And what about N?
 
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 0-N > cpuset.cpus
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> 0-15
 
-OK, looks good.
-
-> root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo N-N > cpuset.cpus
-> /bin/echo: write error: Invalid argument
-
-Why? If N is 15, it should work exactly as 15-15, but it doesn't...
-This is the source
-of confusion and unneeded refactoring of user scripts. (In practice of course
-nobody will use "N" because it's broken.) Documentation says nothing about
-this limitation, and this is a real example of "complicating things".
-
-You can do better - parse "N" in bitmap_getnum() and avoid all that confusion.
-
-Same logic regarding all/none: all is the equivalent of 0-15, none is something
-like ", ,". Now let's try with "0-15,0-3, ," (imagine it's a result of
-merging configs).
-
-root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# echo 0-15,0-3, , >cpuset.cpus
-root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-0-15
-
-OK, works. But if I do 's/0-15/all' and 's/ /none', things get broken. This
-again brings a special case where it can be avoided - just  parse all/none
-at the beginning of bitmap_parse_region().
-
-After reading the description, one can think that you introduce simple and
-convenient extensions to existing interface. In fact this is a new interface
-which is mostly incompatible with the existing one.
-
-> > I would also like to see tests covering new functionality. As a user of "N",
-> > I want to be 100% sure that this "N" is a full equivalent of NR_CPUS, including
-> > error codes that the parser returns. Otherwise it will be hard to maintain the
-> > transition.
->
-> That is a reasonable request.  I will look into adding "N" based type
-> tests to the existing bitmap test cases in a separate commit.
->
-> Thanks,
-> Paul.
-> --
->
-> >
-> > >         if (end_of_region(*str))
-> > >                 goto no_pattern;
-> > > @@ -628,6 +634,8 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
-> > >   * Syntax: range:used_size/group_size
-> > >   * Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
-> > >   * Optionally the self-descriptive "all" or "none" can be used.
-> > > + * The value 'N' can be used as the end of a range to indicate the maximum
-> > > + * allowed value; i.e (nmaskbits - 1).
-> > >   *
-> > >   * Returns: 0 on success, -errno on invalid input strings. Error values:
-> > >   *
-> > > @@ -656,7 +664,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
-> > >                 if (buf == NULL)
-> > >                         return 0;
-> > >
-> > > -               buf = bitmap_parse_region(buf, &r);
-> > > +               buf = bitmap_parse_region(buf, &r, nmaskbits);
-> > >                 if (IS_ERR(buf))
-> > >                         return PTR_ERR(buf);
-> > >
-> > > --
-> > > 2.17.1
-> > >
