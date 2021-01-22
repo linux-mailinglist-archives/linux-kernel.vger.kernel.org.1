@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DFD300A20
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC6F300A3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbhAVRrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:47:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727486AbhAVRoO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:44:14 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E368C06174A;
-        Fri, 22 Jan 2021 09:43:32 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id g10so5886904wrx.1;
-        Fri, 22 Jan 2021 09:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u8ZUkCJ1JxdMy0LwNAxnwHhQ0MXIil1QP/v4uET+MVU=;
-        b=Fa8RCGef019NDY5WlGmdeA2ganP7YvqPXtJfHiYzptfK1EKCxVoAnuPzS0bKMYHmGM
-         70pSdF6YIeWJnbpelZPvL4RsERtZ0b0ZOCfSCzZ0oadrKAbpCcjVeMe3sWBbN+kQsuXv
-         Kyux8Iwu6Y+5FWge905817u5eqWXF2aYQGAblcaEGFkDoXIY69tqWq7D+LX2yd00/ibI
-         Xl3tFf22t4QwNIVKxshOxq9mX9d1UZzw29sVqkUfGf9GRSyf29v9n8iwkXRvuccxcOEM
-         5IBzTHbfRKqogFrH6LCNIUJrU2AtHp827yegb3pQ65p37c8K6GREa8LnSZ/pOXbLCErD
-         8w0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u8ZUkCJ1JxdMy0LwNAxnwHhQ0MXIil1QP/v4uET+MVU=;
-        b=OLOsPyEZnjROuqpXyPy4rMnyivXTMcE1HXB01VctXRZO8ePWyUcY1qPXuVTcEsvGRw
-         zXI7JZuy27+R+1eO4Z+PL7nUrdps0mAtkEEqfYBHIdVnoR4Gjn/87c19Bi8pINWChKFG
-         2/RoT6Zoslui7ZC1H8A7e2DKdNvK4/EsvcY1p2mRSac4LX/R/BQOUgoBDT8nwHTBFKa7
-         NfqqhuAM3cky9bW/ResRFrmtg2XFrjM9qn2lZqjGWzrSSus1C+Ivk4A9jqPX19G0QF1K
-         SOUxFgDxX00NeEBEhblSC4f0lAZV/KpfzBUmubjNzTgRDdypPQOgxDCLwrmQluAWAKzE
-         Jz4Q==
-X-Gm-Message-State: AOAM531lNiO1TfOaXq+b4/I1VjeIyju6h2pHUK6rBqVhwU94G9JeMuGP
-        4aNmVnXLR06LAoVZlO57/TU=
-X-Google-Smtp-Source: ABdhPJweNj14pbEU2BwwObKVqsptYVvnWZcPx0AfnybiPUC/CHlE58pthykuoB7ebzubCgLlmFTvjA==
-X-Received: by 2002:a5d:47ae:: with SMTP id 14mr5494747wrb.378.1611337410762;
-        Fri, 22 Jan 2021 09:43:30 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id 192sm13543776wme.27.2021.01.22.09.43.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 09:43:30 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v4] regulator: Make regulator_sync_voltage() usable by coupled regulators
-Date:   Fri, 22 Jan 2021 20:43:11 +0300
-Message-Id: <20210122174311.28230-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1729651AbhAVRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:47:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729636AbhAVRpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:45:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A71E23A68;
+        Fri, 22 Jan 2021 17:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611337462;
+        bh=Fbw7hbg4eFinWbI+ufZKhLlJam1o9Uua400X/NfxFCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tX8UzS/eD1cr7yrQUJIL18lkdaJbV4NkcQq6ejfOaQuFv2hdvx2Dk2NxHKCELL+tm
+         gB5LH/E2jHzoODl+l5pC9LnH4BX3C8cNb+HMFLlzVvs2z9GeO5N2HamAgsoag69397
+         xM9GyS+b9vSwcmDLtnJqh2UqiyZe/LtRxD0SvL15ZIehVGJ/1nwh5tcC5zdIfDSuTg
+         UA9DbMktYrr+7xDQjw+RV13CbEuXa78wQrGoTQX5eF7DP8NsrLjY+eWMkokeOdrx4s
+         IdtW124T7EH7s2t0LQV2LfAo+FSU6r0qSwCHNJSxp+ByPvpWcJ+fa8vzlsM7HV6JE0
+         Wj6V1sT2vNblg==
+Date:   Fri, 22 Jan 2021 17:43:42 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
+Message-ID: <20210122174342.GG6391@sirena.org.uk>
+References: <20210120173800.1660730-1-jthierry@redhat.com>
+ <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
+ <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com>
+ <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
+ <YAlkOFwkb6/hFm1Q@hirez.programming.kicks-ass.net>
+ <CAMj1kXE+675mbS66kteKHNfcrco84WTaEL6ncVkkV7tQgbMpFw@mail.gmail.com>
+ <20210121185452.fxoz4ehqfv75bdzq@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z9ECzHErBrwFF8sy"
+Content-Disposition: inline
+In-Reply-To: <20210121185452.fxoz4ehqfv75bdzq@treble>
+X-Cookie: 98% lean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make regulator_sync_voltage() to re-balance voltage state of a coupled
-regulators instead of changing the voltage directly.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
+--z9ECzHErBrwFF8sy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Changelog:
+On Thu, Jan 21, 2021 at 12:54:52PM -0600, Josh Poimboeuf wrote:
 
-v4: - Now not using goto in the code, like it was suggested by Mark Brown
-      in a review comment to v3.
+> 2) The shadow stack idea sounds promising -- how hard would it be to
+>    make a prototype reliable unwinder?
 
-v3: - This patch is factored out from [1] to ease merging of the patches
-      that will use the regulator_sync_voltage(). The goal is to get this
-      change merged into 5.12, it will remove dependency for the Tegra Core
-      power domain driver which will target 5.13.
+In theory it doesn't look too hard and I can't see a particular reason
+not to try doing this - there's going to be edge cases but hopefully for
+reliable stack trace they're all in areas where we would be happy to
+just decide the stack isn't reliable anyway, things like nesting which
+allocates separate shadow stacks for each nested level for example.
+I'll take a look.
 
-      [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
+--z9ECzHErBrwFF8sy
+Content-Type: application/pgp-signature; name="signature.asc"
 
- drivers/regulator/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 3ae5ccd9277d..8e197b785a31 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4148,7 +4148,11 @@ int regulator_sync_voltage(struct regulator *regulator)
- 	if (ret < 0)
- 		goto out;
- 
--	ret = _regulator_do_set_voltage(rdev, min_uV, max_uV);
-+	/* balance only, if regulator is coupled */
-+	if (rdev->coupling_desc.n_coupled > 1)
-+		ret = regulator_balance_voltage(rdev, PM_SUSPEND_ON);
-+	else
-+		ret = _regulator_do_set_voltage(rdev, min_uV, max_uV);
- 
- out:
- 	regulator_unlock(rdev);
--- 
-2.29.2
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmALDs0ACgkQJNaLcl1U
+h9D+zggAgtOONPllLfslr6X/wB/43FjYYsgGfKtPctsQgrbSMbqrDXOu8z6jJTT9
+WfzvJoic373/eZzXRIu2mQIAjMNLC9bsYKFSjL3YdM4QN17TuvxyawY6GTMi+7HK
+p+wANJD/JE0Hze6QtsM4uyVUd3t16oHVTaJ7wn7bc9CThv4wtj7BMD7Lrj98OGJ2
+BDwZKSWLroBkd1DBUdEnS1ROAlVq/QFvZ6VcqbrFobcsGsSoBiC9XgpEYzF68cW9
+ywYhjF1o3mdhCtJF2actzFz6at/aWkfGWa0O93EZsRjON6DEklJLMVBf2ylexGBY
+MoROeAM/bDf4oj3hrKxGNKy4Zm+C6w==
+=6hN/
+-----END PGP SIGNATURE-----
 
+--z9ECzHErBrwFF8sy--
