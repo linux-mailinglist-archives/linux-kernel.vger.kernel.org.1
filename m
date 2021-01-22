@@ -2,154 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B8A3009D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC763009CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729986AbhAVRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:30:34 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:21490 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729173AbhAVP4U (ORCPT
+        id S1729862AbhAVR3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:29:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729507AbhAVQFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:56:20 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MFV0Du019196;
-        Fri, 22 Jan 2021 10:55:28 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3668rbtjq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 10:55:27 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 10MFtQBw002559
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 Jan 2021 10:55:26 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Fri, 22 Jan 2021
- 10:55:25 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Fri, 22 Jan 2021 10:55:25 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 10MFtF58014933;
-        Fri, 22 Jan 2021 10:55:23 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 05/12] iio: core: split __iio_device_attr_init() to init only the attr object
-Date:   Fri, 22 Jan 2021 17:57:58 +0200
-Message-ID: <20210122155805.83012-6-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210122155805.83012-1-alexandru.ardelean@analog.com>
-References: <20210122155805.83012-1-alexandru.ardelean@analog.com>
+        Fri, 22 Jan 2021 11:05:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D43C061793;
+        Fri, 22 Jan 2021 08:04:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=Xjym9lcL0CxKzUararhEBi3kSrlAKm+bXyK6l1ORLjE=; b=FGYXtlxIJvPCIiOqQR0M1ZHLC8
+        5AzpbpS9EeuHIzh+NMA6ca8Q6lvkmyxYD76jR9JhhKm5iYY0T1e5RbDKFl0UqvrXsWOMQUgVB7S3Z
+        BRFoqAtBnRs6K75+ZBBJgEGoPX6eGjXpmF0i8/ZvbMKyvn99zAFOIRmVilDrxZbU8EAl2K1wP8gTJ
+        3gzvo8h/XWw5gjt7+CFvumE5tFhnm3qapaF3CnqoKwx/HBe/XL1oDtqDHx0Po1ye6pnQZdbTbGMrK
+        jvilDFdzdxnVcMaiHS+1poRQ+fD7xjtEcUgX88MOUXO2Qr46Eh3YY0HI37gxNxGipmSlad74Z0AOT
+        zpwbDhQw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2yu8-000wCI-H1; Fri, 22 Jan 2021 16:03:26 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v5 03/18] mm/filemap: Convert filemap_get_pages to take a pagevec
+Date:   Fri, 22 Jan 2021 16:01:25 +0000
+Message-Id: <20210122160140.223228-4-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210122160140.223228-1-willy@infradead.org>
+References: <20210122160140.223228-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-22_11:2021-01-22,2021-01-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 malwarescore=0 impostorscore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101220087
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __iio_device_attr_init() function initializes a device_attribute
-object, but mostly it just does a lot of name creation logic.
+Using a pagevec lets us keep the pages and the number of pages together
+which simplifies a lot of the calling conventions.
 
-We will want to re-use this logic for name-creation, so this change
-re-purposes the __iio_device_attr_init() to be a __iio_attr_init() function
-which just handles the creation of the attribute name.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/iio/industrialio-core.c | 43 +++++++++++++--------------------
- 1 file changed, 17 insertions(+), 26 deletions(-)
+ mm/filemap.c | 82 ++++++++++++++++++++++++----------------------------
+ 1 file changed, 38 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 95d66745f118..b8f7261945f5 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -968,22 +968,15 @@ static ssize_t iio_write_channel_info(struct device *dev,
+diff --git a/mm/filemap.c b/mm/filemap.c
+index a5c4f7ddfc40c..ca4141dd63a4b 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2338,22 +2338,22 @@ static struct page *filemap_create_page(struct kiocb *iocb,
  }
  
- static
--int __iio_device_attr_init(struct device_attribute *dev_attr,
--			   const char *postfix,
--			   struct iio_chan_spec const *chan,
--			   ssize_t (*readfunc)(struct device *dev,
--					       struct device_attribute *attr,
--					       char *buf),
--			   ssize_t (*writefunc)(struct device *dev,
--						struct device_attribute *attr,
--						const char *buf,
--						size_t len),
--			   enum iio_shared_by shared_by)
-+int iio_attr_init(struct attribute *attr,
-+		  const char *postfix,
-+		  struct iio_chan_spec const *chan,
-+		  enum iio_shared_by shared_by)
+ static int filemap_get_pages(struct kiocb *iocb, struct iov_iter *iter,
+-		struct page **pages, unsigned int nr)
++		struct pagevec *pvec)
  {
- 	int ret = 0;
- 	char *name = NULL;
- 	char *full_postfix;
--	sysfs_attr_init(&dev_attr->attr);
-+	sysfs_attr_init(attr);
+ 	struct file *filp = iocb->ki_filp;
+ 	struct address_space *mapping = filp->f_mapping;
+ 	struct file_ra_state *ra = &filp->f_ra;
+ 	pgoff_t index = iocb->ki_pos >> PAGE_SHIFT;
+ 	pgoff_t last_index = (iocb->ki_pos + iter->count + PAGE_SIZE-1) >> PAGE_SHIFT;
+-	int i, j, nr_got, err = 0;
++	unsigned int nr = min_t(unsigned long, last_index - index, PAGEVEC_SIZE);
++	int i, j, err = 0;
  
- 	/* Build up postfix of <extend_name>_<modifier>_postfix */
- 	if (chan->modified && (shared_by == IIO_SEPARATE)) {
-@@ -1079,17 +1072,7 @@ int __iio_device_attr_init(struct device_attribute *dev_attr,
- 		ret = -ENOMEM;
- 		goto error_free_full_postfix;
- 	}
--	dev_attr->attr.name = name;
--
--	if (readfunc) {
--		dev_attr->attr.mode |= S_IRUGO;
--		dev_attr->show = readfunc;
--	}
--
--	if (writefunc) {
--		dev_attr->attr.mode |= S_IWUSR;
--		dev_attr->store = writefunc;
--	}
-+	attr->name = name;
+-	nr = min_t(unsigned long, last_index - index, nr);
+ find_page:
+ 	if (fatal_signal_pending(current))
+ 		return -EINTR;
  
- error_free_full_postfix:
- 	kfree(full_postfix);
-@@ -1122,9 +1105,7 @@ int __iio_add_chan_devattr(const char *postfix,
- 	iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
- 	if (iio_attr == NULL)
- 		return -ENOMEM;
--	ret = __iio_device_attr_init(&iio_attr->dev_attr,
--				     postfix, chan,
--				     readfunc, writefunc, shared_by);
-+	ret = iio_attr_init(&iio_attr->dev_attr.attr, postfix, chan, shared_by);
- 	if (ret)
- 		goto error_iio_dev_attr_free;
- 	iio_attr->c = chan;
-@@ -1140,6 +1121,16 @@ int __iio_add_chan_devattr(const char *postfix,
+-	nr_got = find_get_pages_contig(mapping, index, nr, pages);
+-	if (nr_got)
++	pvec->nr = find_get_pages_contig(mapping, index, nr, pvec->pages);
++	if (pvec->nr)
+ 		goto got_pages;
+ 
+ 	if (iocb->ki_flags & IOCB_NOIO)
+@@ -2361,17 +2361,17 @@ static int filemap_get_pages(struct kiocb *iocb, struct iov_iter *iter,
+ 
+ 	page_cache_sync_readahead(mapping, ra, filp, index, last_index - index);
+ 
+-	nr_got = find_get_pages_contig(mapping, index, nr, pages);
+-	if (nr_got)
++	pvec->nr = find_get_pages_contig(mapping, index, nr, pvec->pages);
++	if (pvec->nr)
+ 		goto got_pages;
+ 
+-	pages[0] = filemap_create_page(iocb, iter);
+-	err = PTR_ERR_OR_ZERO(pages[0]);
+-	if (!IS_ERR_OR_NULL(pages[0]))
+-		nr_got = 1;
++	pvec->pages[0] = filemap_create_page(iocb, iter);
++	err = PTR_ERR_OR_ZERO(pvec->pages[0]);
++	if (!IS_ERR_OR_NULL(pvec->pages[0]))
++		pvec->nr = 1;
+ got_pages:
+-	for (i = 0; i < nr_got; i++) {
+-		struct page *page = pages[i];
++	for (i = 0; i < pvec->nr; i++) {
++		struct page *page = pvec->pages[i];
+ 		pgoff_t pg_index = index + i;
+ 		loff_t pg_pos = max(iocb->ki_pos,
+ 				    (loff_t) pg_index << PAGE_SHIFT);
+@@ -2379,9 +2379,9 @@ static int filemap_get_pages(struct kiocb *iocb, struct iov_iter *iter,
+ 
+ 		if (PageReadahead(page)) {
+ 			if (iocb->ki_flags & IOCB_NOIO) {
+-				for (j = i; j < nr_got; j++)
+-					put_page(pages[j]);
+-				nr_got = i;
++				for (j = i; j < pvec->nr; j++)
++					put_page(pvec->pages[j]);
++				pvec->nr = i;
+ 				err = -EAGAIN;
+ 				break;
+ 			}
+@@ -2392,9 +2392,9 @@ static int filemap_get_pages(struct kiocb *iocb, struct iov_iter *iter,
+ 		if (!PageUptodate(page)) {
+ 			if ((iocb->ki_flags & IOCB_NOWAIT) ||
+ 			    ((iocb->ki_flags & IOCB_WAITQ) && i)) {
+-				for (j = i; j < nr_got; j++)
+-					put_page(pages[j]);
+-				nr_got = i;
++				for (j = i; j < pvec->nr; j++)
++					put_page(pvec->pages[j]);
++				pvec->nr = i;
+ 				err = -EAGAIN;
+ 				break;
+ 			}
+@@ -2402,17 +2402,17 @@ static int filemap_get_pages(struct kiocb *iocb, struct iov_iter *iter,
+ 			page = filemap_update_page(iocb, filp, iter, page,
+ 					pg_pos, pg_count);
+ 			if (IS_ERR_OR_NULL(page)) {
+-				for (j = i + 1; j < nr_got; j++)
+-					put_page(pages[j]);
+-				nr_got = i;
++				for (j = i + 1; j < pvec->nr; j++)
++					put_page(pvec->pages[j]);
++				pvec->nr = i;
+ 				err = PTR_ERR_OR_ZERO(page);
+ 				break;
+ 			}
  		}
- 	list_add(&iio_attr->l, attr_list);
+ 	}
  
-+	if (readfunc) {
-+		iio_attr->dev_attr.attr.mode |= S_IRUGO;
-+		iio_attr->dev_attr.show = readfunc;
-+	}
-+
-+	if (writefunc) {
-+		iio_attr->dev_attr.attr.mode |= S_IWUSR;
-+		iio_attr->dev_attr.store = writefunc;
-+	}
-+
- 	return 0;
+-	if (likely(nr_got))
+-		return nr_got;
++	if (likely(pvec->nr))
++		return 0;
+ 	if (err)
+ 		return err;
+ 	/*
+@@ -2444,11 +2444,8 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 	struct file_ra_state *ra = &filp->f_ra;
+ 	struct address_space *mapping = filp->f_mapping;
+ 	struct inode *inode = mapping->host;
+-	struct page *pages[PAGEVEC_SIZE];
+-	unsigned int nr_pages = min_t(unsigned int, PAGEVEC_SIZE,
+-			((iocb->ki_pos + iter->count + PAGE_SIZE - 1) >> PAGE_SHIFT) -
+-			(iocb->ki_pos >> PAGE_SHIFT));
+-	int i, pg_nr, error = 0;
++	struct pagevec pvec;
++	int i, error = 0;
+ 	bool writably_mapped;
+ 	loff_t isize, end_offset;
  
- error_device_attr_deinit:
+@@ -2470,12 +2467,9 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		if ((iocb->ki_flags & IOCB_WAITQ) && written)
+ 			iocb->ki_flags |= IOCB_NOWAIT;
+ 
+-		i = 0;
+-		pg_nr = filemap_get_pages(iocb, iter, pages, nr_pages);
+-		if (pg_nr < 0) {
+-			error = pg_nr;
++		error = filemap_get_pages(iocb, iter, &pvec);
++		if (error < 0)
+ 			break;
+-		}
+ 
+ 		/*
+ 		 * i_size must be checked after we know the pages are Uptodate.
+@@ -2491,9 +2485,9 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 
+ 		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
+ 
+-		while ((iocb->ki_pos >> PAGE_SHIFT) + pg_nr >
++		while ((iocb->ki_pos >> PAGE_SHIFT) + pvec.nr >
+ 		       (end_offset + PAGE_SIZE - 1) >> PAGE_SHIFT)
+-			put_page(pages[--pg_nr]);
++			put_page(pvec.pages[--pvec.nr]);
+ 
+ 		/*
+ 		 * Once we start copying data, we don't want to be touching any
+@@ -2507,11 +2501,11 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		 */
+ 		if (iocb->ki_pos >> PAGE_SHIFT !=
+ 		    ra->prev_pos >> PAGE_SHIFT)
+-			mark_page_accessed(pages[0]);
+-		for (i = 1; i < pg_nr; i++)
+-			mark_page_accessed(pages[i]);
++			mark_page_accessed(pvec.pages[0]);
++		for (i = 1; i < pagevec_count(&pvec); i++)
++			mark_page_accessed(pvec.pages[i]);
+ 
+-		for (i = 0; i < pg_nr; i++) {
++		for (i = 0; i < pagevec_count(&pvec); i++) {
+ 			unsigned int offset = iocb->ki_pos & ~PAGE_MASK;
+ 			unsigned int bytes = min_t(loff_t, end_offset - iocb->ki_pos,
+ 						   PAGE_SIZE - offset);
+@@ -2523,9 +2517,9 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 			 * before reading the page on the kernel side.
+ 			 */
+ 			if (writably_mapped)
+-				flush_dcache_page(pages[i]);
++				flush_dcache_page(pvec.pages[i]);
+ 
+-			copied = copy_page_to_iter(pages[i], offset, bytes, iter);
++			copied = copy_page_to_iter(pvec.pages[i], offset, bytes, iter);
+ 
+ 			written += copied;
+ 			iocb->ki_pos += copied;
+@@ -2537,8 +2531,8 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 			}
+ 		}
+ put_pages:
+-		for (i = 0; i < pg_nr; i++)
+-			put_page(pages[i]);
++		for (i = 0; i < pagevec_count(&pvec); i++)
++			put_page(pvec.pages[i]);
+ 	} while (iov_iter_count(iter) && iocb->ki_pos < isize && !error);
+ 
+ 	file_accessed(filp);
 -- 
-2.17.1
+2.29.2
 
