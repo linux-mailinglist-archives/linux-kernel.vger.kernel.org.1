@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0591300D3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9AF300D1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbhAVUB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:01:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
+        id S1730762AbhAVT6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:58:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727732AbhAVOOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:14:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1932823AFB;
-        Fri, 22 Jan 2021 14:11:34 +0000 (UTC)
+        id S1727946AbhAVOPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:15:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E149323A79;
+        Fri, 22 Jan 2021 14:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324695;
-        bh=SB8J9olcChwxi0/uJFauBUyLvKbKCQcEBb/seqsizw0=;
+        s=korg; t=1611324717;
+        bh=Ge+tDihmPcNRoUH8T1P/bGAPMI/jWJ6KUqb5A+9xJGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KIHuCvW1hWBzkNQx5rV8pmKEEGVn7XTlRhwBdE5uEpfMtWJvchcSOCWi1e5eJdvoB
-         yZIWpuZeHAY6ZmlOJUCafOBff4NprJqtosDT8DbefX5VcEvR2Up5WzrrOMxNKX+CEv
-         BOkMcbE00g8WNOYgjNCiNnWpV2xF4iiM+cbdJg7E=
+        b=2fn8DcaRxM2Eq9s+sLGmJLkNeutK99X8fgM4cbcaILCyM8antje636mDiwVCy6PS7
+         JYuLLmhbq6tUJNfaKio5kL1KFIfWpzI0549T5mG+auCDauwVqZf09QZyC7Ul9ZFl5F
+         WvzWjjW0UUZsh+jU8BMiYJ890BFoet4HvyHTnfQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Nixdorf <j.nixdorf@avm.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.9 21/35] net: sunrpc: interpret the return value of kstrtou32 correctly
-Date:   Fri, 22 Jan 2021 15:10:23 +0100
-Message-Id: <20210122135733.176725850@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Subject: [PATCH 4.9 23/35] usb: ohci: Make distrust_firmware param default to false
+Date:   Fri, 22 Jan 2021 15:10:25 +0100
+Message-Id: <20210122135733.250332147@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
@@ -39,47 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: j.nixdorf@avm.de <j.nixdorf@avm.de>
+From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
 
-commit 86b53fbf08f48d353a86a06aef537e78e82ba721 upstream.
+commit c4005a8f65edc55fb1700dfc5c1c3dc58be80209 upstream.
 
-A return value of 0 means success. This is documented in lib/kstrtox.c.
+The 'distrust_firmware' module parameter dates from 2004 and the USB
+subsystem is a lot more mature and reliable now than it was then.
+Alter the default to false now.
 
-This was found by trying to mount an NFS share from a link-local IPv6
-address with the interface specified by its index:
-
-  mount("[fe80::1%1]:/srv/nfs", "/mnt", "nfs", 0, "nolock,addr=fe80::1%1")
-
-Before this commit this failed with EINVAL and also caused the following
-message in dmesg:
-
-  [...] NFS: bad IP address specified: addr=fe80::1%1
-
-The syscall using the same address based on the interface name instead
-of its index succeeds.
-
-Credits for this patch go to my colleague Christian Speich, who traced
-the origin of this bug to this line of code.
-
-Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
-Fixes: 00cfaa943ec3 ("replace strict_strto calls")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20200910212512.16670-2-hamish.martin@alliedtelesis.co.nz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sunrpc/addr.c |    2 +-
+ drivers/usb/host/ohci-hcd.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sunrpc/addr.c
-+++ b/net/sunrpc/addr.c
-@@ -184,7 +184,7 @@ static int rpc_parse_scope_id(struct net
- 			scope_id = dev->ifindex;
- 			dev_put(dev);
- 		} else {
--			if (kstrtou32(p, 10, &scope_id) == 0) {
-+			if (kstrtou32(p, 10, &scope_id) != 0) {
- 				kfree(p);
- 				return 0;
- 			}
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -100,7 +100,7 @@ static void io_watchdog_func(unsigned lo
+ 
+ 
+ /* Some boards misreport power switching/overcurrent */
+-static bool distrust_firmware = true;
++static bool distrust_firmware;
+ module_param (distrust_firmware, bool, 0);
+ MODULE_PARM_DESC (distrust_firmware,
+ 	"true to distrust firmware power/overcurrent setup");
 
 
