@@ -2,288 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAC3300361
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED27300363
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbhAVMlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:41:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:45742 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727898AbhAVMlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:41:10 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F4FE139F;
-        Fri, 22 Jan 2021 04:40:24 -0800 (PST)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CF7773F66E;
-        Fri, 22 Jan 2021 04:40:22 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
-        mgorman@suse.de, song.bao.hua@hisilicon.com
-Subject: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for the deduplicating sort
-Date:   Fri, 22 Jan 2021 12:39:43 +0000
-Message-Id: <20210122123943.1217-2-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210122123943.1217-1-valentin.schneider@arm.com>
-References: <20210122123943.1217-1-valentin.schneider@arm.com>
+        id S1727898AbhAVMlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:41:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbhAVMlh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:41:37 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2C9C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:40:57 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id n18so2882267vsa.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 04:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ClphIL3q1K8q6IpVIcCy6TMi4GHH1zyZNW4DosfTF0s=;
+        b=pGxAl4r9My7hwNulTbNrsmmonZPCy8TgRWTdSkxnjPCrUaJxnbbuO0+by7t56BBgvB
+         R21frnT+ixhNYBJDNmJjuaEaRIvlip1n5ILniLWkmHcuMnVDls0IXU1Gf3xuJwjvdaXO
+         vQSTAhfG7H//DGMyvDorsPiz6/O1iN47m4imZqKp2v1kTDFpibmpzYjxp4B5c/cRR0xg
+         UeLPUtp1K87UUL9OBsmBPsxB6TSyIXZq6y5IgvGnn5AOg9qQ/ao7M+WxDBboepIPqqVT
+         l9YsSCUWGDAE2WYptZ0EneCzoKXKJXv5aUhGOtsILA8AioMJjAjJE7sJwJYS8KBbvn7b
+         lhyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ClphIL3q1K8q6IpVIcCy6TMi4GHH1zyZNW4DosfTF0s=;
+        b=jq6lGBU3Y7mxOV8WmWOL8+h/7+Rg16ZRKxkjsXL/wxvxzXRrZamTXMOetJdeWx/qc+
+         S0lZY5LzTlvYJBMPgOnOMqF6L8aMntFCH9Ind5JgYHrHYjzZvr+bcK3ipViyqMagaC9v
+         GCkxI07gHwlX6X25uJ3NB4BjMQ4FcGpywaC1FpcYl/fE3EI+B2ApfiUtthOZBz3qX0RH
+         H7pO6IHoGNZdz8Vrh+K9VK5cUOQ2URsDTiQNoA8g80fJuCIEVAjgQH+h3x9E1rEYE8OS
+         ahW+saLCB9px9hDtG/jfOG+67MHTtkChLLuelmyhxuUUpY++2A6kA8TgRED4f0gYrsN5
+         o4Xw==
+X-Gm-Message-State: AOAM530CRnxX38WKicnCXZdE8Pfdosl1smbQMKiFRoZ3lNhv2bTXQ2xq
+        Td0GI1m0HB49lARs/dAkFi9E03w4vjaAuBxOjhA85/VS97R13kaC
+X-Google-Smtp-Source: ABdhPJycOOdGh4IwFH1srbgKXrLPdiSgLgTte/M30a/Ge+v7n4j2LtQR/kaDidV288wtwdleGrP/GOPAeMWtPrZ2jgQ=
+X-Received: by 2002:a67:7f41:: with SMTP id a62mr680511vsd.55.1611319256481;
+ Fri, 22 Jan 2021 04:40:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201208061839.21163-1-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <20201208061839.21163-1-chris.ruehl@gtsys.com.hk>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 22 Jan 2021 13:40:20 +0100
+Message-ID: <CAPDyKFpu-qGPK1XZJ34itTm+12s9zwqfyReX0gd26MkH6vkSYw@mail.gmail.com>
+Subject: Re: [PATCH 0/6] mmc: core: hs400(es) fix probe/init
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Ludovic Barre <ludovic.barre@st.com>,
+        Krishna Konda <kkonda@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jack <jack.lo@gtsys.com.hk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The deduplicating sort in sched_init_numa() assumes that the first line in
-the distance table contains all unique values in the entire table. I've
-been trying to pen what this exactly means for the topology, but it's not
-straightforward. For instance, topology.c uses this example:
++ Adrian
 
-  node   0   1   2   3
-    0:  10  20  20  30
-    1:  20  10  20  20
-    2:  20  20  10  20
-    3:  30  20  20  10
+On Tue, 8 Dec 2020 at 07:19, Chris Ruehl <chris.ruehl@gtsys.com.hk> wrote:
+>
+> Fix the probe if hs400-1_8v / hs400-1_2v is used in the
+> dts and mmc-hs400-enhanced-strobe isn't set.
+> That was the first attemped, but it turns out that some
+> more cleanups and simplifications can be done.
 
-  0 ----- 1
-  |     / |
-  |   /   |
-  | /     |
-  2 ----- 3
+My apologies for the delay with reviewing. I have looped in Adrian as
+well, as he might have some input to our discussion.
 
-Which works out just fine. However, if we swap nodes 0 and 1:
+Before I go into doing a detailed review, I want to make sure I
+understand the problem correctly.
 
-  1 ----- 0
-  |     / |
-  |   /   |
-  | /     |
-  2 ----- 3
+Are you saying that switching to eMMC HS400 mode doesn't work, unless
+the enhanced strobe is supported, no? Or is this a DT only related
+problem?
 
-we get this distance table:
+In any case, the main point with mmc_hs400_to_hs200() is to prepare
+for tuning to run in HS200 mode (it's getting called from
+mmc_retune()). In other words, there *should* be no need to support
+enhanced strobe to support hs400, but I might be missing something.
 
-  node   0  1  2  3
-    0:  10 20 20 20
-    1:  20 10 20 30
-    2:  20 20 10 20
-    3:  20 30 20 10
+In particular, the following commit could be of interest for you:
 
-Which breaks the deduplicating sort (non-representative first line). In
-this case this would just be a renumbering exercise, but it so happens that
-we can have a deduplicating sort that goes through the whole table in O(n²)
-at the extra cost of a temporary memory allocation (i.e. any form of set).
+6376f69d20a6905c1d83be451065f70200490b98
+Author: Adrian Hunter <adrian.hunter@intel.com>
+Date:   Thu May 7 13:10:20 2015 +0300
+mmc: core: Add support for HS400 re-tuning
 
-The ACPI spec (SLIT) mentions distances are encoded on 8 bits. Following
-this, implement the set as a 256-bits bitmap. Should this not be
-satisfactory (i.e. we want to support 32-bit values), then we'll have to go
-for some other sparse set implementation.
+>
+> * move mmc_select_hs400() in between hs200 & hs400es (preparation)
+> * make mmc_select_hs400() independent and move it out
+>   of the hs200. Run hs400 tuning inside mmc_select_hs400();
+> * merge hs400 with hs400es function
+> * remove mmc_select_hs400es function
+> * remove mmc_hs200_tuning()
+> * cleanup host->caps2 for hs400-1_8(2)v
+>
+>
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> ---
+> Replace patch set [PATCH 0/3] mmc: core: hs400 fix probe
 
-This has the added benefit of letting us allocate just the right amount of
-memory for sched_domains_numa_distance[], rather than an arbitrary
-(nr_node_ids + 1).
-
-Note: DT binding equivalent (distance-map) decodes distances as 32-bit
-values.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- include/linux/topology.h |  1 +
- kernel/sched/topology.c  | 99 +++++++++++++++++++---------------------
- 2 files changed, 49 insertions(+), 51 deletions(-)
-
-diff --git a/include/linux/topology.h b/include/linux/topology.h
-index ad03df1cc266..7634cd737061 100644
---- a/include/linux/topology.h
-+++ b/include/linux/topology.h
-@@ -48,6 +48,7 @@ int arch_update_cpu_topology(void);
- /* Conform to ACPI 2.0 SLIT distance definitions */
- #define LOCAL_DISTANCE		10
- #define REMOTE_DISTANCE		20
-+#define DISTANCE_BITS           8
- #ifndef node_distance
- #define node_distance(from,to)	((from) == (to) ? LOCAL_DISTANCE : REMOTE_DISTANCE)
- #endif
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 5d3675c7a76b..bf5c9bd10bfe 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1596,66 +1596,58 @@ static void init_numa_topology_type(void)
- 	}
- }
- 
-+
-+#define NR_DISTANCE_VALUES (1 << DISTANCE_BITS)
-+
- void sched_init_numa(void)
- {
--	int next_distance, curr_distance = node_distance(0, 0);
- 	struct sched_domain_topology_level *tl;
--	int level = 0;
--	int i, j, k;
--
--	sched_domains_numa_distance = kzalloc(sizeof(int) * (nr_node_ids + 1), GFP_KERNEL);
--	if (!sched_domains_numa_distance)
--		return;
--
--	/* Includes NUMA identity node at level 0. */
--	sched_domains_numa_distance[level++] = curr_distance;
--	sched_domains_numa_levels = level;
-+	unsigned long *distance_map;
-+	int nr_levels = 0;
-+	int i, j;
- 
- 	/*
- 	 * O(nr_nodes^2) deduplicating selection sort -- in order to find the
- 	 * unique distances in the node_distance() table.
--	 *
--	 * Assumes node_distance(0,j) includes all distances in
--	 * node_distance(i,j) in order to avoid cubic time.
- 	 */
--	next_distance = curr_distance;
-+	distance_map = bitmap_alloc(NR_DISTANCE_VALUES, GFP_KERNEL);
-+	if (!distance_map)
-+		return;
-+
-+	bitmap_zero(distance_map, NR_DISTANCE_VALUES);
- 	for (i = 0; i < nr_node_ids; i++) {
- 		for (j = 0; j < nr_node_ids; j++) {
--			for (k = 0; k < nr_node_ids; k++) {
--				int distance = node_distance(i, k);
--
--				if (distance > curr_distance &&
--				    (distance < next_distance ||
--				     next_distance == curr_distance))
--					next_distance = distance;
--
--				/*
--				 * While not a strong assumption it would be nice to know
--				 * about cases where if node A is connected to B, B is not
--				 * equally connected to A.
--				 */
--				if (sched_debug() && node_distance(k, i) != distance)
--					sched_numa_warn("Node-distance not symmetric");
-+			int distance = node_distance(i, j);
- 
--				if (sched_debug() && i && !find_numa_distance(distance))
--					sched_numa_warn("Node-0 not representative");
-+			if (distance < LOCAL_DISTANCE || distance >= NR_DISTANCE_VALUES) {
-+				sched_numa_warn("Invalid distance value range");
-+				return;
- 			}
--			if (next_distance != curr_distance) {
--				sched_domains_numa_distance[level++] = next_distance;
--				sched_domains_numa_levels = level;
--				curr_distance = next_distance;
--			} else break;
-+
-+			bitmap_set(distance_map, distance, 1);
- 		}
-+	}
-+	/*
-+	 * We can now figure out how many unique distance values there are and
-+	 * allocate memory accordingly.
-+	 */
-+	nr_levels = bitmap_weight(distance_map, NR_DISTANCE_VALUES);
- 
--		/*
--		 * In case of sched_debug() we verify the above assumption.
--		 */
--		if (!sched_debug())
--			break;
-+	sched_domains_numa_distance = kcalloc(nr_levels, sizeof(int), GFP_KERNEL);
-+	if (!sched_domains_numa_distance) {
-+		bitmap_free(distance_map);
-+		return;
-+	}
-+
-+	for (i = 0, j = 0; i < nr_levels; i++, j++) {
-+		j = find_next_bit(distance_map, NR_DISTANCE_VALUES, j);
-+		sched_domains_numa_distance[i] = j;
- 	}
- 
-+	bitmap_free(distance_map);
-+
- 	/*
--	 * 'level' contains the number of unique distances
-+	 * 'nr_levels' contains the number of unique distances
- 	 *
- 	 * The sched_domains_numa_distance[] array includes the actual distance
- 	 * numbers.
-@@ -1664,15 +1656,15 @@ void sched_init_numa(void)
- 	/*
- 	 * Here, we should temporarily reset sched_domains_numa_levels to 0.
- 	 * If it fails to allocate memory for array sched_domains_numa_masks[][],
--	 * the array will contain less then 'level' members. This could be
-+	 * the array will contain less then 'nr_levels' members. This could be
- 	 * dangerous when we use it to iterate array sched_domains_numa_masks[][]
- 	 * in other functions.
- 	 *
--	 * We reset it to 'level' at the end of this function.
-+	 * We reset it to 'nr_levels' at the end of this function.
- 	 */
- 	sched_domains_numa_levels = 0;
- 
--	sched_domains_numa_masks = kzalloc(sizeof(void *) * level, GFP_KERNEL);
-+	sched_domains_numa_masks = kzalloc(sizeof(void *) * nr_levels, GFP_KERNEL);
- 	if (!sched_domains_numa_masks)
- 		return;
- 
-@@ -1680,7 +1672,7 @@ void sched_init_numa(void)
- 	 * Now for each level, construct a mask per node which contains all
- 	 * CPUs of nodes that are that many hops away from us.
- 	 */
--	for (i = 0; i < level; i++) {
-+	for (i = 0; i < nr_levels; i++) {
- 		sched_domains_numa_masks[i] =
- 			kzalloc(nr_node_ids * sizeof(void *), GFP_KERNEL);
- 		if (!sched_domains_numa_masks[i])
-@@ -1688,12 +1680,17 @@ void sched_init_numa(void)
- 
- 		for (j = 0; j < nr_node_ids; j++) {
- 			struct cpumask *mask = kzalloc(cpumask_size(), GFP_KERNEL);
-+			int k;
-+
- 			if (!mask)
- 				return;
- 
- 			sched_domains_numa_masks[i][j] = mask;
- 
- 			for_each_node(k) {
-+				if (sched_debug() && (node_distance(j, k) != node_distance(k, j)))
-+					sched_numa_warn("Node-distance not symmetric");
-+
- 				if (node_distance(j, k) > sched_domains_numa_distance[i])
- 					continue;
- 
-@@ -1705,7 +1702,7 @@ void sched_init_numa(void)
- 	/* Compute default topology size */
- 	for (i = 0; sched_domain_topology[i].mask; i++);
- 
--	tl = kzalloc((i + level + 1) *
-+	tl = kzalloc((i + nr_levels) *
- 			sizeof(struct sched_domain_topology_level), GFP_KERNEL);
- 	if (!tl)
- 		return;
-@@ -1728,7 +1725,7 @@ void sched_init_numa(void)
- 	/*
- 	 * .. and append 'j' levels of NUMA goodness.
- 	 */
--	for (j = 1; j < level; i++, j++) {
-+	for (j = 1; j < nr_levels; i++, j++) {
- 		tl[i] = (struct sched_domain_topology_level){
- 			.mask = sd_numa_mask,
- 			.sd_flags = cpu_numa_flags,
-@@ -1740,8 +1737,8 @@ void sched_init_numa(void)
- 
- 	sched_domain_topology = tl;
- 
--	sched_domains_numa_levels = level;
--	sched_max_numa_distance = sched_domains_numa_distance[level - 1];
-+	sched_domains_numa_levels = nr_levels;
-+	sched_max_numa_distance = sched_domains_numa_distance[nr_levels - 1];
- 
- 	init_numa_topology_type();
- }
--- 
-2.27.0
-
+Kind regards
+Uffe
