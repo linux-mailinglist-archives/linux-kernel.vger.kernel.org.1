@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2CF300BC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5F5300BF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729674AbhAVSrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:47:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40004 "EHLO mail.kernel.org"
+        id S1730391AbhAVSy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:54:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728564AbhAVOWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E325A23B6E;
-        Fri, 22 Jan 2021 14:16:47 +0000 (UTC)
+        id S1728166AbhAVOVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:21:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B16E023B31;
+        Fri, 22 Jan 2021 14:15:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325008;
-        bh=x/cYqnMswUjsuRcjxsP2jWQkelAxbep1OB4wn2XSIJk=;
+        s=korg; t=1611324930;
+        bh=JmVnQfWKwhYaZDyVXdXkt2AQPDOLA69fC0ZIEIZJPyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i42qypTm49YlezgItR813xe8O7+u366OgoT/dLIqU+Cxo7CKXSIkV6o/dYSKJSC01
-         iEzHUGy4Z+Xjj5O524d80qeQWgDsiyotB1gkR3E6UuRR3Q7Mvn7t1xWjO0vFfzZed7
-         aDahn/L4knE0ObMrPLjEMDqS+vkkJ5h+gOkzq+nA=
+        b=BJLyuJlt2Pt/SMgWSCy7FES49IWaIYD1xQmLotncmKHGvn9tOGkvoRXPJho+5sHH4
+         gHl8QKWTLf+IsHC6ATdTgRDB4KdKXT04ZodwSgV4WAyPyPMbA3h280pNy7CZsPz8SP
+         oZfmO+LiK1nkr9JJRWGkFC+yCGwRnXdh0eiofsFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.4 02/33] compiler.h: Raise minimum version of GCC to 5.1 for arm64
-Date:   Fri, 22 Jan 2021 15:12:18 +0100
-Message-Id: <20210122135733.674268196@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Subject: [PATCH 4.19 01/22] usb: ohci: Make distrust_firmware param default to false
+Date:   Fri, 22 Jan 2021 15:12:19 +0100
+Message-Id: <20210122135731.979703017@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
-References: <20210122135733.565501039@linuxfoundation.org>
+In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
+References: <20210122135731.921636245@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,56 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
 
-commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
+commit c4005a8f65edc55fb1700dfc5c1c3dc58be80209 upstream.
 
-GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-beyond the stack pointer, resulting in memory corruption if an interrupt
-is taken after the stack pointer has been adjusted but before the
-reference has been executed. This leads to subtle, infrequent data
-corruption such as the EXT4 problems reported by Russell King at the
-link below.
+The 'distrust_firmware' module parameter dates from 2004 and the USB
+subsystem is a lot more mature and reliable now than it was then.
+Alter the default to false now.
 
-Life is too short for buggy compilers, so raise the minimum GCC version
-required by arm64 to 5.1.
-
-Reported-by: Russell King <linux@armlinux.org.uk>
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: <stable@vger.kernel.org>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
-Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-[will: backport to 4.19.y/5.4.y]
-Signed-off-by: Will Deacon <will@kernel.org>
+Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20200910212512.16670-2-hamish.martin@alliedtelesis.co.nz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/compiler-gcc.h |    6 ++++++
- 1 file changed, 6 insertions(+)
 
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -12,6 +12,12 @@
+---
+ drivers/usb/host/ohci-hcd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -101,7 +101,7 @@ static void io_watchdog_func(struct time
  
- #if GCC_VERSION < 40600
- # error Sorry, your compiler is too old - please upgrade it.
-+#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100
-+/*
-+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-+ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-+ */
-+# error Sorry, your version of GCC is too old - please use 5.1 or newer.
- #endif
  
- /*
+ /* Some boards misreport power switching/overcurrent */
+-static bool distrust_firmware = true;
++static bool distrust_firmware;
+ module_param (distrust_firmware, bool, 0);
+ MODULE_PARM_DESC (distrust_firmware,
+ 	"true to distrust firmware power/overcurrent setup");
 
 
