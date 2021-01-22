@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231F42FFEDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD6F2FFE73
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbhAVI6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:58:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726457AbhAVImR (ORCPT
+        id S1727257AbhAVInv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:43:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727070AbhAVIlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:42:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611304850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fR4+Y/K1NZ6ZXqSP7ZK85d8CP4lP2v3t6pePNBxYMes=;
-        b=DxP42Sd2ek7XjvfNkS8h+gqYioAIkmowEUdl+l2HuedlnIuU+Swhth0BP3/xSQVY1CIwGM
-        kJnpsV0fNVsrmWb5CSuP7g+fy3O68PsDpHI3EnE7hqP+1aymTda/b8ZPTW4qclgOx+tRhr
-        04gPWQSbZzRwyKXwLOpHllFe89MYkSo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-xINvuI8sMKCJaWJU0LJgig-1; Fri, 22 Jan 2021 03:40:47 -0500
-X-MC-Unique: xINvuI8sMKCJaWJU0LJgig-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBCC091139;
-        Fri, 22 Jan 2021 08:40:46 +0000 (UTC)
-Received: from [10.36.114.142] (ovpn-114-142.ams2.redhat.com [10.36.114.142])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 82D9A19486;
-        Fri, 22 Jan 2021 08:40:45 +0000 (UTC)
-Subject: Re: [PATCH] mm: fix prototype warning from kernel test robot
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org
-References: <20210122070359.24010-1-bhe@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3fd62f11-bf44-3ede-aed1-10d9d4849f00@redhat.com>
-Date:   Fri, 22 Jan 2021 09:40:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 22 Jan 2021 03:41:46 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9A1C061788
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:41:00 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id g46so846806ooi.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:41:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wOljwRCTbqyi57Y0Livy/H/EyT5660ugsfV4DuzfwqY=;
+        b=O0p5VKMoY2x8AgqrSCwbvRe2f+uh5jMDWo8v1uN5BFnIpTYeylv7jXtmw2xwBF6CvZ
+         cvAidVCqZX4yBuePIjcFU+6pgnI6q/Ep1Z5C+g7Iacpr5DV3r+R36zNMnln8Q8Lzl9lz
+         E1uzZCGg7oqS3+ZlEG+gNKDcsFMA0JCZIyhoo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wOljwRCTbqyi57Y0Livy/H/EyT5660ugsfV4DuzfwqY=;
+        b=KA75uiX9826AyMFX5u6PRRpmRBLb06Tg7oyl/lsRMeLoICHNFl8ExFPFyaCIPSeeyA
+         KQJa6Dcw3U16IGuHimBLarFcO3BJAuLUnPGt52AZFih+NAqjfKBxwOuDhlyOlYBvWxcR
+         QXOijerVNdpWlzyGRuuMVNjs4QhKAm170LeXMZk0yS2TTHbdq8bqQVFF5IgKihc1Uvwz
+         0OO5UKZbjJYxJfSdoflXpJ7EyQrzWNgPmkT6Q3qQ0s+qkwuH6mpIdZKi4yTVtn7X3QQM
+         sZuuycJa5f6fOFilqzqfE3p8As0hCsCl14KzCmJs+3hUokv7cfhBY3S1+Vw0HhiUFv1P
+         AbmA==
+X-Gm-Message-State: AOAM530uKbzifdqfPnsBb2jYDLcQDakSGXT5zpjOAG9LITcoNM/M890T
+        dOm++rcPq9M24fjocEtOEvxkl4mQSdQ/IFF6VaZ/Sw==
+X-Google-Smtp-Source: ABdhPJxDy+y1OaANdzA4wIMi5FJQjgdMKPG0dL2eTTJxJ2qmVIP8X8bscBmGEkbq8xeEe5veGwWsHRsLPQr71Q6nkYA=
+X-Received: by 2002:a4a:9722:: with SMTP id u31mr2968367ooi.28.1611304859529;
+ Fri, 22 Jan 2021 00:40:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210122070359.24010-1-bhe@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210122115918.63b56fa1@canb.auug.org.au> <CAKMK7uEuJa1J66mo5dS+QRPy9NOENTx95SZ4rU2MeVRTWj7Kcw@mail.gmail.com>
+ <20210122182946.6beb10b7@canb.auug.org.au>
+In-Reply-To: <20210122182946.6beb10b7@canb.auug.org.au>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 22 Jan 2021 09:40:48 +0100
+Message-ID: <CAKMK7uFWFVC0be2foiP8+2=vrqyh1e4mqkuk+2xY+fgSWAExyQ@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the drm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "Nikula, Jani" <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.01.21 08:03, Baoquan He wrote:
-> Kernel test robot calling make with 'W=1' triggering warning like below
-> below for memmap_init_zone() function.
-> 
-> mm/page_alloc.c:6259:23: warning: no previous prototype for 'memmap_init_zone' [-Wmissing-prototypes]
->  6259 | void __meminit __weak memmap_init_zone(unsigned long size, int nid,
->       |                       ^~~~~~~~~~~~~~~~
-> 
-> Fix it by adding the function declaration in include/linux/mm.h.
-> Since memmap_init_zone() has a generic version with '__weak',
-> the declaratoin in ia64 header file can be simply removed.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  arch/ia64/include/asm/pgtable.h | 5 -----
->  include/linux/mm.h              | 1 +
->  2 files changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
-> index 2c81394a2430..9b4efe89e62d 100644
-> --- a/arch/ia64/include/asm/pgtable.h
-> +++ b/arch/ia64/include/asm/pgtable.h
-> @@ -517,11 +517,6 @@ extern struct page *zero_page_memmap_ptr;
->  	__changed;							\
->  })
->  #endif
-> -
-> -#  ifdef CONFIG_VIRTUAL_MEM_MAP
-> -  /* arch mem_map init routine is needed due to holes in a virtual mem_map */
-> -    extern void memmap_init_zone(struct zone *zone);
-> -#  endif /* CONFIG_VIRTUAL_MEM_MAP */
->  # endif /* !__ASSEMBLY__ */
->  
->  /*
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 56bb239f9150..073049bd0b29 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2401,6 +2401,7 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
->  extern void memmap_init_range(unsigned long, int, unsigned long,
->  		unsigned long, unsigned long, enum meminit_context,
->  		struct vmem_altmap *, int migratetype);
-> +extern void memmap_init_zone(struct zone *zone);
->  extern void setup_per_zone_wmarks(void);
->  extern int __meminit init_per_zone_wmark_min(void);
->  extern void mem_init(void);
-> 
+On Fri, Jan 22, 2021 at 8:29 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi Daniel,
+>
+> On Fri, 22 Jan 2021 08:17:58 +0100 Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > Hm that has been in drm-intel-gt-next for a few days, is that tree not
+> > in linux-next?
+>
+> It is not.
 
-This patch is on top of your other series, no?
+Adding -intel maintainers to get that sorted.
+-Daniel
 
-In -next, we have
+> These are the drm branches currently in linux-next:
 
-extern void memmap_init_zone(unsigned long, int, unsigned long, ...
+Oh for ordering maybe put drm-misc ahead of the other subtrees, -misc
+is where nowadays a lot of refactorings and core changes land.
+Probably doesn't matter in practice.
+-Daniel
 
-In that file, so something is wrong.
+> drm-fixes       git://git.freedesktop.org/git/drm/drm.git       drm-fixes
+> amdgpu-fixes    git://people.freedesktop.org/~agd5f/linux       drm-fixes
+> drm-intel-fixes git://anongit.freedesktop.org/drm-intel         for-linux-next-fixes
+> drm-misc-fixes  git://anongit.freedesktop.org/drm/drm-misc      for-linux-next-fixes
+> drm             git://git.freedesktop.org/git/drm/drm.git       drm-next
+> amdgpu          https://gitlab.freedesktop.org/agd5f/linux      drm-next
+> drm-intel       git://anongit.freedesktop.org/drm-intel         for-linux-next
+> drm-tegra       git://anongit.freedesktop.org/tegra/linux.git   drm/tegra/for-next
+> drm-misc        git://anongit.freedesktop.org/drm/drm-misc      for-linux-next
+> drm-msm         https://gitlab.freedesktop.org/drm/msm.git      msm-next
+> imx-drm         https://git.pengutronix.de/git/pza/linux        imx-drm/next
+> etnaviv         https://git.pengutronix.de/git/lst/linux        etnaviv/next
+>
+> --
+> Cheers,
+> Stephen Rothwell
+
+
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
