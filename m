@@ -2,172 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318382FFAAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AE42FFAAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbhAVCvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 21:51:22 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11425 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbhAVCvO (ORCPT
+        id S1726698AbhAVCxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 21:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726680AbhAVCxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 21:51:14 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DMNyK6wpBzj9h7;
-        Fri, 22 Jan 2021 10:49:29 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Fri, 22 Jan 2021
- 10:50:18 +0800
-Subject: Re: [PATCH 2/2] Revert "iommu/arm-smmu-v3: Don't reserve
- implementation defined register space"
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
- <20210119015951.1042-3-thunder.leizhen@huawei.com>
- <888312dc-85b7-4d5e-f264-bbdd9e3638f6@arm.com>
- <ca469958-179d-02c5-b147-0a0ff951d503@huawei.com>
- <72c979bd-501f-df9b-7bca-02b8c11d3860@arm.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <cfa002c0-593a-b4e8-7015-224726d73504@huawei.com>
-Date:   Fri, 22 Jan 2021 10:50:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Thu, 21 Jan 2021 21:53:33 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4058BC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 18:52:53 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id e17so3207357qto.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 18:52:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GKuYChxcbat6wOowZ/luWuFDp05RLb0vBoPsH1W9HLw=;
+        b=fWX1fVnSDfRBs4lvhqIkcuFxJczn4RVcy8W7l7m57JkcWR8brGBrkwyok3ZO5XV3YL
+         3RccD753tIuCIC0P4G1d7mBywZOi/pwihdwRctYeiqSLrd9jVCS+qK9fGTIdbkuLYYCS
+         wmiRwQx4lOEVr6f1M1UMbUV7pdeeceHIKQBdN+13ziDRMeW3A+V/Dx/Fs0WlmOo7SdLo
+         JJYv89XgNZzOZo2HQPNOQZOF04qMh+bCZS9313D0PLJfkSbDKkfKJr/RoCKSqWdreMaW
+         1LXNrQAk6BdJryD72zjbT/O3Uq3Mxe1tWCyoUdVrWzcQIJsXi0z5WjEdMRtU8cQhWeLM
+         a4yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GKuYChxcbat6wOowZ/luWuFDp05RLb0vBoPsH1W9HLw=;
+        b=dR8Hw3TE10LLxvUq3xx8AQSY3L/NusVKIZLAX6soN7fLj+lSVVt4Ha01KeS8XnEGJ8
+         B3KbRzmqfHMBrVfhQkGvCVLKAoxHwDAmDlnb9WDE2sYrPGQY9EaiFr4YSUyKDm4bGzzs
+         p+rZMNEUvz88fjOILBMeJRWLQsWXGETs/q+c3rqE1kHDUNC1iZgGRrcZgKdgFwfT26rH
+         goscDxCVUTwuzbhAGO2KGRmgLdXETtWfMXLvxWpXBj4y/2WNcn2mk70La4a2HlBTi7K0
+         7/PRUgAgLP1KzmY1yBcwHlt++aqf04g+WUAO7ZHKdJkUW/MJbdUTy7vUXgUyPuNsoEg2
+         dO7Q==
+X-Gm-Message-State: AOAM532lrQWBSYseQLYb4HO9Ea0/xxMV9Y5uA0T0CyfmBGag474sCSPU
+        mACDW4ZErOjdPtyTuR8SDUXXCQ==
+X-Google-Smtp-Source: ABdhPJz0/0z3vN1mwtb/eHobd43pDem3zer8bhWxzdjrhtLzoPfPsWI7C+OqW6A2WNXnrCjLU5m9dg==
+X-Received: by 2002:ac8:718d:: with SMTP id w13mr2513193qto.361.1611283972393;
+        Thu, 21 Jan 2021 18:52:52 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id n62sm5414409qkn.125.2021.01.21.18.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 18:52:51 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        dan.j.williams@intel.com, vkoul@kernel.org
+Cc:     shawn.guo@linaro.org, srinivas.kandagatla@linaro.org,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers: dma: qcom: bam_dma: Manage clocks when controlled_remotely is set
+Date:   Thu, 21 Jan 2021 21:52:51 -0500
+Message-Id: <20210122025251.3501362-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <72c979bd-501f-df9b-7bca-02b8c11d3860@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When bam dma is "controlled remotely", thus far clocks were not controlled
+from the Linux. In this scenario, Linux was disabling runtime pm in bam dma
+driver and not doing any clock management in suspend/resume hooks.
 
+With introduction of crypto engine bam dma, the clock is a rpmh resource
+that can be controlled from both Linux and TZ/remote side.  Now bam dma
+clock is getting enabled during probe even though the bam dma can be
+"controlled remotely". But due to clocks not being handled properly,
+bam_suspend generates a unbalanced clk_unprepare warning during system
+suspend.
 
-On 2021/1/21 20:50, Robin Murphy wrote:
-> On 2021-01-21 02:04, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2021/1/20 23:02, Robin Murphy wrote:
->>> On 2021-01-19 01:59, Zhen Lei wrote:
->>>> This reverts commit 52f3fab0067d6fa9e99c1b7f63265dd48ca76046.
->>>>
->>>> This problem has been fixed by another patch. The original method had side
->>>> effects, it was not mapped to the user-specified resource size. The code
->>>> will become more complex when ECMDQ is supported later.
->>>
->>> FWIW I don't think that's a significant issue either way - there could be any number of imp-def pages between SMMU page 0 and the ECMDQ control pages, so it will still be logical to map them as another separate thing anyway.
->>
->> Yes, so now I'm thinking of preserving the SMMUv3 resources and eliminating the imp-def area. Then use another devm_ioremap() to cover the entire resource，assign it to smmu->base.
->> Otherwise, a base pointer needs to be defined for each separated register space，or call a function to convert each time.
-> 
-> But we'll almost certainly want to maintain a pointer to start of the ECMDQ control page block anyway, since that's not fixed relative to smmu->base. Therefore what's the harm in handling that via a dedicated mapping, once we've determined that we *do* intend to use ECMDQs? Otherwise we end up with in the complicated dance of trying to map "everything" up-front in order to be able to read the ID registers to determine what the actual extent of "everything" is supposed to be.
+To fix the above issue and to enable proper clock-management, this patch
+enables runtim-pm and handles bam dma clocks in suspend/resume hooks if
+the clock node is present irrespective of controlled_remotely property.
 
-Currently, we only mapped the first 0xe00 size, so the SMMU_CMDQ_CONTROL_PAGE_XXXn registers space at offset 0x4000 should be mapped again.
-The size of this ECMDQ resource is not fixed, depending on SMMU_IDR6.CMDQ_CONTROL_PAGE_LOG2NUMQ.
-Processing its resource reservation to avoid resource conflict with PMCG is a bit more complicated.
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+---
+ drivers/dma/qcom/bam_dma.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-> 
-> (also this reminds me that I was going to remove arm_smmu_page1_fixup() entirely - I'd totally forgotten about that...)
-
-Ah, that patch you made is so clever.
-
-> 
-> Robin.
-> 
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>> ---
->>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 32 ++++-------------------------
->>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 ---
->>>>    2 files changed, 4 insertions(+), 31 deletions(-)
->>>>
->>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> index 8ca7415d785d9bf..477f473842e5272 100644
->>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> @@ -91,8 +91,9 @@ struct arm_smmu_option_prop {
->>>>    static inline void __iomem *arm_smmu_page1_fixup(unsigned long offset,
->>>>                             struct arm_smmu_device *smmu)
->>>>    {
->>>> -    if (offset > SZ_64K)
->>>> -        return smmu->page1 + offset - SZ_64K;
->>>> +    if ((offset > SZ_64K) &&
->>>> +        (smmu->options & ARM_SMMU_OPT_PAGE0_REGS_ONLY))
->>>> +        offset -= SZ_64K;
->>>>          return smmu->base + offset;
->>>>    }
->>>> @@ -3486,18 +3487,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
->>>>        return err;
->>>>    }
->>>>    -static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
->>>> -                      resource_size_t size)
->>>> -{
->>>> -    struct resource res = {
->>>> -        .flags = IORESOURCE_MEM,
->>>> -        .start = start,
->>>> -        .end = start + size - 1,
->>>> -    };
->>>> -
->>>> -    return devm_ioremap_resource(dev, &res);
->>>> -}
->>>> -
->>>>    static int arm_smmu_device_probe(struct platform_device *pdev)
->>>>    {
->>>>        int irq, ret;
->>>> @@ -3533,23 +3522,10 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->>>>        }
->>>>        ioaddr = res->start;
->>>>    -    /*
->>>> -     * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
->>>> -     * the PMCG registers which are reserved by the PMU driver.
->>>> -     */
->>>> -    smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
->>>> +    smmu->base = devm_ioremap_resource(dev, res);
->>>>        if (IS_ERR(smmu->base))
->>>>            return PTR_ERR(smmu->base);
->>>>    -    if (arm_smmu_resource_size(smmu) > SZ_64K) {
->>>> -        smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
->>>> -                           ARM_SMMU_REG_SZ);
->>>> -        if (IS_ERR(smmu->page1))
->>>> -            return PTR_ERR(smmu->page1);
->>>> -    } else {
->>>> -        smmu->page1 = smmu->base;
->>>> -    }
->>>> -
->>>>        /* Interrupt lines */
->>>>          irq = platform_get_irq_byname_optional(pdev, "combined");
->>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>>> index 96c2e9565e00282..0c3090c60840c22 100644
->>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>>> @@ -152,8 +152,6 @@
->>>>    #define ARM_SMMU_PRIQ_IRQ_CFG1        0xd8
->>>>    #define ARM_SMMU_PRIQ_IRQ_CFG2        0xdc
->>>>    -#define ARM_SMMU_REG_SZ            0xe00
->>>> -
->>>>    /* Common MSI config fields */
->>>>    #define MSI_CFG0_ADDR_MASK        GENMASK_ULL(51, 2)
->>>>    #define MSI_CFG2_SH            GENMASK(5, 4)
->>>> @@ -584,7 +582,6 @@ struct arm_smmu_strtab_cfg {
->>>>    struct arm_smmu_device {
->>>>        struct device            *dev;
->>>>        void __iomem            *base;
->>>> -    void __iomem            *page1;
->>>>      #define ARM_SMMU_FEAT_2_LVL_STRTAB    (1 << 0)
->>>>    #define ARM_SMMU_FEAT_2_LVL_CDTAB    (1 << 1)
->>>>
->>>
->>> .
->>>
->>
-> 
-> .
-> 
+diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+index 88579857ca1d..b3a34be63e99 100644
+--- a/drivers/dma/qcom/bam_dma.c
++++ b/drivers/dma/qcom/bam_dma.c
+@@ -1350,7 +1350,7 @@ static int bam_dma_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_unregister_dma;
+ 
+-	if (bdev->controlled_remotely) {
++	if (!bdev->bamclk) {
+ 		pm_runtime_disable(&pdev->dev);
+ 		return 0;
+ 	}
+@@ -1438,10 +1438,10 @@ static int __maybe_unused bam_dma_suspend(struct device *dev)
+ {
+ 	struct bam_device *bdev = dev_get_drvdata(dev);
+ 
+-	if (!bdev->controlled_remotely)
++	if (bdev->bamclk) {
+ 		pm_runtime_force_suspend(dev);
+-
+-	clk_unprepare(bdev->bamclk);
++		clk_unprepare(bdev->bamclk);
++	}
+ 
+ 	return 0;
+ }
+@@ -1451,12 +1451,14 @@ static int __maybe_unused bam_dma_resume(struct device *dev)
+ 	struct bam_device *bdev = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	ret = clk_prepare(bdev->bamclk);
+-	if (ret)
+-		return ret;
++	if (bdev->bamclk) {
++		ret = clk_prepare(bdev->bamclk);
++		if (ret)
++			return ret;
+ 
+-	if (!bdev->controlled_remotely)
+-		pm_runtime_force_resume(dev);
++		if (!bdev->controlled_remotely)
++			pm_runtime_force_resume(dev);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
