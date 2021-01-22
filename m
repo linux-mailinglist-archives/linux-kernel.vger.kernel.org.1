@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29915300CF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D892300CF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730640AbhAVTyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:54:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37508 "EHLO mail.kernel.org"
+        id S1730708AbhAVTyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:54:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728441AbhAVOQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:16:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C79CD23B03;
-        Fri, 22 Jan 2021 14:12:09 +0000 (UTC)
+        id S1728214AbhAVOQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:16:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1B023A62;
+        Fri, 22 Jan 2021 14:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324730;
-        bh=SlH2NzCoujiSem3sba2v272mEhlltaaiVc1Vd3kqLS0=;
+        s=korg; t=1611324790;
+        bh=X0rcrvuR1VPZ1hGlv8SnBMnotXQgQdwdkSlVnGGz+Gc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0R1Cfa3vlroVNNleN3r0vLKyPhL9mDYTn9WU5oyH6mmiIQf0AljaY7gxvqOHTIZAr
-         bvmwWFdwfosNr3b/Mck+/vo8RHXzAMKa5sLS+1mV5s6vAbynm0hxW4F8KqBWGaMgGA
-         2paN1KumHcv/s56GetegK9TI9Ze1BW48P9xMzwm4=
+        b=qop+7Tp7YEAbGXzHWGVMAf9rUoYZFGg9X5Sj9P1gBgOWVnxd/cP5yRn6X1uHlBQgA
+         IRxmjOJBUorRTqHI5/pVXylq4TBaGD/tPjbk1bJcX00IHL68lC9A69y7KHO1oKAxhc
+         CpN6Hci9dVjy8+d2Oqodf7zEMfqQLyROLB+AgLtg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 28/35] rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
-Date:   Fri, 22 Jan 2021 15:10:30 +0100
-Message-Id: <20210122135733.436641742@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 01/50] ASoC: dapm: remove widget from dirty list on free
+Date:   Fri, 22 Jan 2021 15:11:42 +0100
+Message-Id: <20210122135735.227274115@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
-References: <20210122135732.357969201@linuxfoundation.org>
+In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
+References: <20210122135735.176469491@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,39 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-[ Upstream commit e56b3d94d939f52d46209b9e1b6700c5bfff3123 ]
+commit 5c6679b5cb120f07652418524ab186ac47680b49 upstream.
 
-MSFT ActiveSync implementation requires that the size of the response for
-incoming query is to be provided in the request input length. Failure to
-set the input size proper results in failed request transfer, where the
-ActiveSync counterpart reports the NDIS_STATUS_INVALID_LENGTH (0xC0010014L)
-error.
+A widget's "dirty" list_head, much like its "list" list_head, eventually
+chains back to a list_head on the snd_soc_card itself. This means that
+the list can stick around even after the widget (or all widgets) have
+been freed. Currently, however, widgets that are in the dirty list when
+freed remain there, corrupting the entire list and leading to memory
+errors and undefined behavior when the list is next accessed or
+modified.
 
-Set the input size for OID_GEN_PHYSICAL_MEDIUM query to the expected size
-of the response in order for the ActiveSync to properly respond to the
-request.
+I encountered this issue when a component failed to probe relatively
+late in snd_soc_bind_card(), causing it to bail out and call
+soc_cleanup_card_resources(), which eventually called
+snd_soc_dapm_free() with widgets that were still dirty from when they'd
+been added.
 
-Fixes: 039ee17d1baa ("rndis_host: Add RNDIS physical medium checking into generic_rndis_bind()")
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Link: https://lore.kernel.org/r/20210108095839.3335-1-andrey.zhizhikin@leica-geosystems.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: db432b414e20 ("ASoC: Do DAPM power checks only for widgets changed since last run")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/f8b5f031d50122bf1a9bfc9cae046badf4a7a31a.1607822410.git.tommyhebb@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/usb/rndis_host.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/rndis_host.c
-+++ b/drivers/net/usb/rndis_host.c
-@@ -398,7 +398,7 @@ generic_rndis_bind(struct usbnet *dev, s
- 	reply_len = sizeof *phym;
- 	retval = rndis_query(dev, intf, u.buf,
- 			     RNDIS_OID_GEN_PHYSICAL_MEDIUM,
--			     0, (void **) &phym, &reply_len);
-+			     reply_len, (void **)&phym, &reply_len);
- 	if (retval != 0 || !phym) {
- 		/* OID is optional so don't fail here. */
- 		phym_unspec = cpu_to_le32(RNDIS_PHYSICAL_MEDIUM_UNSPECIFIED);
+---
+ sound/soc/soc-dapm.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2434,6 +2434,7 @@ void snd_soc_dapm_free_widget(struct snd
+ 	enum snd_soc_dapm_direction dir;
+ 
+ 	list_del(&w->list);
++	list_del(&w->dirty);
+ 	/*
+ 	 * remove source and sink paths associated to this widget.
+ 	 * While removing the path, remove reference to it from both
 
 
