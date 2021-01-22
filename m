@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF02A300BEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC8D300BE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730328AbhAVSyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:54:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40014 "EHLO mail.kernel.org"
+        id S1729738AbhAVSw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:52:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728535AbhAVOWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DB8223B42;
-        Fri, 22 Jan 2021 14:15:40 +0000 (UTC)
+        id S1728536AbhAVOWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AACC23B44;
+        Fri, 22 Jan 2021 14:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324941;
-        bh=XpBnyEUptyfE2ExswyYaLSI3gqyrWtLEBZ9yTV9nTWQ=;
+        s=korg; t=1611324943;
+        bh=emZyV+w6Pyo04tbdFelWtIQdvAqMn8EpXL0VU455U44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJZecCBn9LTUTL54TWArqjk5+HDiKjRxpqCerVNXsjQmLnemppZQix5IjojWSqkW/
-         W/O4mNhnoPE//6LyIN4RqG+OuF6XWtpbSi1S5+qjgDj+J1M/72cVKho5VSckCnYIqZ
-         ZfzUKt7uXuVcAL8NaSuYm0NUj00kdLtwcsWn+mL8=
+        b=cHoqlc7V2gkPhJ1PRrrhrccpcj0fM9FyuFCXjPNIAf3YvlRLFc6KwblYFaraIAC6v
+         ODszIaY+uvfp0gthDcC8Sco0sXRLtoaeGJHlawd8hOjdCDh/F2+5G1uCSt+QLRd/7V
+         g8hACGvQ1OtlCrnRLD0Wmob6miq1nUs6j4aT17Zw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Baptiste Lepers <baptiste.lepers@gmail.com>,
-        David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org, David Wu <david.wu@rock-chips.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 13/22] rxrpc: Call state should be read with READ_ONCE() under some circumstances
-Date:   Fri, 22 Jan 2021 15:12:31 +0100
-Message-Id: <20210122135732.441893605@linuxfoundation.org>
+Subject: [PATCH 4.19 14/22] net: stmmac: Fixed mtu channged by cache aligned
+Date:   Fri, 22 Jan 2021 15:12:32 +0100
+Message-Id: <20210122135732.476825547@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
 References: <20210122135731.921636245@linuxfoundation.org>
@@ -41,39 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baptiste Lepers <baptiste.lepers@gmail.com>
+From: David Wu <david.wu@rock-chips.com>
 
-[ Upstream commit a95d25dd7b94a5ba18246da09b4218f132fed60e ]
+[ Upstream commit 5b55299eed78538cc4746e50ee97103a1643249c ]
 
-The call state may be changed at any time by the data-ready routine in
-response to received packets, so if the call state is to be read and acted
-upon several times in a function, READ_ONCE() must be used unless the call
-state lock is held.
+Since the original mtu is not used when the mtu is updated,
+the mtu is aligned with cache, this will get an incorrect.
+For example, if you want to configure the mtu to be 1500,
+but mtu 1536 is configured in fact.
 
-As it happens, we used READ_ONCE() to read the state a few lines above the
-unmarked read in rxrpc_input_data(), so use that value rather than
-re-reading it.
-
-Fixes: a158bdd3247b ("rxrpc: Fix call timeouts")
-Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Link: https://lore.kernel.org/r/161046715522.2450566.488819910256264150.stgit@warthog.procyon.org.uk
+Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
+Signed-off-by: David Wu <david.wu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210113034109.27865-1-david.wu@rock-chips.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rxrpc/input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/rxrpc/input.c
-+++ b/net/rxrpc/input.c
-@@ -446,7 +446,7 @@ static void rxrpc_input_data(struct rxrp
- 	if (state >= RXRPC_CALL_COMPLETE)
- 		return;
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3596,6 +3596,7 @@ static int stmmac_change_mtu(struct net_
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	int txfifosz = priv->plat->tx_fifo_size;
++	const int mtu = new_mtu;
  
--	if (call->state == RXRPC_CALL_SERVER_RECV_REQUEST) {
-+	if (state == RXRPC_CALL_SERVER_RECV_REQUEST) {
- 		unsigned long timo = READ_ONCE(call->next_req_timo);
- 		unsigned long now, expect_req_by;
+ 	if (txfifosz == 0)
+ 		txfifosz = priv->dma_cap.tx_fifo_size;
+@@ -3613,7 +3614,7 @@ static int stmmac_change_mtu(struct net_
+ 	if ((txfifosz < new_mtu) || (new_mtu > BUF_SIZE_16KiB))
+ 		return -EINVAL;
+ 
+-	dev->mtu = new_mtu;
++	dev->mtu = mtu;
+ 
+ 	netdev_update_features(dev);
  
 
 
