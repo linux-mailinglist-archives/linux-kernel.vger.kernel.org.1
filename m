@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9441300553
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA1930055A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbhAVOZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:25:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37760 "EHLO mail.kernel.org"
+        id S1728624AbhAVO0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:26:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728483AbhAVOSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:18:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7202F23A9D;
-        Fri, 22 Jan 2021 14:14:11 +0000 (UTC)
+        id S1728080AbhAVOTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:19:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6798223AAC;
+        Fri, 22 Jan 2021 14:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324852;
-        bh=2FOaJrrdaM9SWXaj6tRs2Z2YMjkvmRHjdJNXdPcUAG0=;
+        s=korg; t=1611324864;
+        bh=PPIOShveQasA/lsuGz69f1uESWi/DAfX0a6fHsSbRZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJWozJQDOILwB1ipt+b9pBEKskaFrSzFYr6YVSMjSUPeqius1JbalAfPXz1dhT2Od
-         pJt9GhGFXSWvV9KT0C2o8jqxtquSNHkq3wn5l8umFzGW1sm6ni689MzUuTdDRCFWeI
-         eJFqvWoucb0jwA/VlnOAFQCJ8LaamqdODoE7aC4c=
+        b=ySUgcdcavH9DwSjl/ufEfdDeBBdmNxH/LeTYCk1LazeYOfOhq39LU0ydQufvkdF76
+         fz9jjjyw9sucZU1bfj83pI9Cfy+vo6M+2mr3C6uqaZLP9FSLISNZvH4Lptqof9mKST
+         KTiXcp8yjjZ1KyDVo+dm7B0sUIThy67qSMOM5GGY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        stable@kernel.org
-Subject: [PATCH 4.14 03/50] MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
-Date:   Fri, 22 Jan 2021 15:11:44 +0100
-Message-Id: <20210122135735.313411628@linuxfoundation.org>
+        stable@vger.kernel.org, Akilesh Kailash <akailash@google.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.14 07/50] dm snapshot: flush merged data before committing metadata
+Date:   Fri, 22 Jan 2021 15:11:48 +0100
+Message-Id: <20210122135735.479437406@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
 References: <20210122135735.176469491@linuxfoundation.org>
@@ -40,61 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Akilesh Kailash <akailash@google.com>
 
-commit 698222457465ce343443be81c5512edda86e5914 upstream.
+commit fcc42338375a1e67b8568dbb558f8b784d0f3b01 upstream.
 
-Patches that introduced NT_FILE and NT_SIGINFO notes back in 2012
-had taken care of native (fs/binfmt_elf.c) and compat (fs/compat_binfmt_elf.c)
-coredumps; unfortunately, compat on mips (which does not go through the
-usual compat_binfmt_elf.c) had not been noticed.
+If the origin device has a volatile write-back cache and the following
+events occur:
 
-As the result, both N32 and O32 coredumps on 64bit mips kernels
-have those sections malformed enough to confuse the living hell out of
-all gdb and readelf versions (up to and including the tip of binutils-gdb.git).
+1: After finishing merge operation of one set of exceptions,
+   merge_callback() is invoked.
+2: Update the metadata in COW device tracking the merge completion.
+   This update to COW device is flushed cleanly.
+3: System crashes and the origin device's cache where the recent
+   merge was completed has not been flushed.
 
-Longer term solution is to make both O32 and N32 compat use the
-regular compat_binfmt_elf.c, but that's too much for backports.  The minimal
-solution is to do in arch/mips/kernel/binfmt_elf[on]32.c the same thing
-those patches have done in fs/compat_binfmt_elf.c
+During the next cycle when we read the metadata from the COW device,
+we will skip reading those metadata whose merge was completed in
+step (1). This will lead to data loss/corruption.
 
-Cc: stable@kernel.org # v3.7+
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To address this, flush the origin device post merge IO before
+updating the metadata.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Akilesh Kailash <akailash@google.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/kernel/binfmt_elfn32.c |    7 +++++++
- arch/mips/kernel/binfmt_elfo32.c |    7 +++++++
- 2 files changed, 14 insertions(+)
+ drivers/md/dm-snap.c |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
---- a/arch/mips/kernel/binfmt_elfn32.c
-+++ b/arch/mips/kernel/binfmt_elfn32.c
-@@ -103,4 +103,11 @@ jiffies_to_compat_timeval(unsigned long
- #undef ns_to_timeval
- #define ns_to_timeval ns_to_compat_timeval
- 
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -137,6 +137,11 @@ struct dm_snapshot {
+ 	 * for them to be committed.
+ 	 */
+ 	struct bio_list bios_queued_during_merge;
 +
- #include "../../../fs/binfmt_elf.c"
---- a/arch/mips/kernel/binfmt_elfo32.c
-+++ b/arch/mips/kernel/binfmt_elfo32.c
-@@ -106,4 +106,11 @@ jiffies_to_compat_timeval(unsigned long
- #undef ns_to_timeval
- #define ns_to_timeval ns_to_compat_timeval
++	/*
++	 * Flush data after merge.
++	 */
++	struct bio flush_bio;
+ };
  
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
+ /*
+@@ -1060,6 +1065,17 @@ shut:
+ 
+ static void error_bios(struct bio *bio);
+ 
++static int flush_data(struct dm_snapshot *s)
++{
++	struct bio *flush_bio = &s->flush_bio;
 +
- #include "../../../fs/binfmt_elf.c"
++	bio_reset(flush_bio);
++	bio_set_dev(flush_bio, s->origin->bdev);
++	flush_bio->bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
++
++	return submit_bio_wait(flush_bio);
++}
++
+ static void merge_callback(int read_err, unsigned long write_err, void *context)
+ {
+ 	struct dm_snapshot *s = context;
+@@ -1073,6 +1089,11 @@ static void merge_callback(int read_err,
+ 		goto shut;
+ 	}
+ 
++	if (flush_data(s) < 0) {
++		DMERR("Flush after merge failed: shutting down merge");
++		goto shut;
++	}
++
+ 	if (s->store->type->commit_merge(s->store,
+ 					 s->num_merging_chunks) < 0) {
+ 		DMERR("Write error in exception store: shutting down merge");
+@@ -1197,6 +1218,7 @@ static int snapshot_ctr(struct dm_target
+ 	s->first_merging_chunk = 0;
+ 	s->num_merging_chunks = 0;
+ 	bio_list_init(&s->bios_queued_during_merge);
++	bio_init(&s->flush_bio, NULL, 0);
+ 
+ 	/* Allocate hash table for COW data */
+ 	if (init_hash_tables(s)) {
+@@ -1391,6 +1413,8 @@ static void snapshot_dtr(struct dm_targe
+ 
+ 	mutex_destroy(&s->lock);
+ 
++	bio_uninit(&s->flush_bio);
++
+ 	dm_put_device(ti, s->cow);
+ 
+ 	dm_put_device(ti, s->origin);
 
 
