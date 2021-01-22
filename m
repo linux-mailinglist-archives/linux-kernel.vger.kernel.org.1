@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACEC300FD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFF4300FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730201AbhAVT4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:56:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37506 "EHLO mail.kernel.org"
+        id S1730878AbhAVT6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:58:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728377AbhAVOQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:16:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EFA923B02;
-        Fri, 22 Jan 2021 14:12:07 +0000 (UTC)
+        id S1728424AbhAVOPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:15:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61CE623A03;
+        Fri, 22 Jan 2021 14:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324727;
-        bh=ldwoMgTZQm8WXVNZ8e5I0+jYp/z/sOwVzf0fCgPzcLQ=;
+        s=korg; t=1611324703;
+        bh=fUct/ptdIsRDW3F6vkIA88Tpst9C6BJj0l/F8UjFbMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZSeTNVHS6//oDnS5mE8e92QHGhRmQo7XGThcmt+3ylQ7F8ygovMqDZUbDFjnHlM2
-         Ez4rZRrj+s4u8D8adtvgM0bGJOeZiGnVpfp47Lf8ePGKkdp0H3cjYlXz/mDop5vqX7
-         OuxNFPKJgmImYoFTT8a040z1kC3zryYPjh5b7BKc=
+        b=urQhs68VUnjzYryWOMgqxvgkm12DXj00CKg2m5ubL5IR01U9YqOKyLrWSzBP+MSga
+         plGb0cwCWyO4zPbtbu6xl3PkqIWCu8xL3T/b0wU9vW/HACL5sUIwvuA+GiW3d0iZzq
+         pzBTNN1TPvAgVgLA40+4xWJCJ+jpNOnWQERpLMaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 27/35] netxen_nic: fix MSI/MSI-x interrupts
-Date:   Fri, 22 Jan 2021 15:10:29 +0100
-Message-Id: <20210122135733.395949586@linuxfoundation.org>
+Subject: [PATCH 4.9 32/35] net: avoid 32 x truesize under-estimation for tiny skbs
+Date:   Fri, 22 Jan 2021 15:10:34 +0100
+Message-Id: <20210122135733.607863127@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
@@ -40,59 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manish Chopra <manishc@marvell.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit a2bc221b972db91e4be1970e776e98f16aa87904 ]
+[ Upstream commit 3226b158e67cfaa677fd180152bfb28989cb2fac ]
 
-For all PCI functions on the netxen_nic adapter, interrupt
-mode (INTx or MSI) configuration is dependent on what has
-been configured by the PCI function zero in the shared
-interrupt register, as these adapters do not support mixed
-mode interrupts among the functions of a given adapter.
+Both virtio net and napi_get_frags() allocate skbs
+with a very small skb->head
 
-Logic for setting MSI/MSI-x interrupt mode in the shared interrupt
-register based on PCI function id zero check is not appropriate for
-all family of netxen adapters, as for some of the netxen family
-adapters PCI function zero is not really meant to be probed/loaded
-in the host but rather just act as a management function on the device,
-which caused all the other PCI functions on the adapter to always use
-legacy interrupt (INTx) mode instead of choosing MSI/MSI-x interrupt mode.
+While using page fragments instead of a kmalloc backed skb->head might give
+a small performance improvement in some cases, there is a huge risk of
+under estimating memory usage.
 
-This patch replaces that check with port number so that for all
-type of adapters driver attempts for MSI/MSI-x interrupt modes.
+For both GOOD_COPY_LEN and GRO_MAX_HEAD, we can fit at least 32 allocations
+per page (order-3 page in x86), or even 64 on PowerPC
 
-Fixes: b37eb210c076 ("netxen_nic: Avoid mixed mode interrupts")
-Signed-off-by: Manish Chopra <manishc@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Link: https://lore.kernel.org/r/20210107101520.6735-1-manishc@marvell.com
+We have been tracking OOM issues on GKE hosts hitting tcp_mem limits
+but consuming far more memory for TCP buffers than instructed in tcp_mem[2]
+
+Even if we force napi_alloc_skb() to only use order-0 pages, the issue
+would still be there on arches with PAGE_SIZE >= 32768
+
+This patch makes sure that small skb head are kmalloc backed, so that
+other objects in the slab page can be reused instead of being held as long
+as skbs are sitting in socket queues.
+
+Note that we might in the future use the sk_buff napi cache,
+instead of going through a more expensive __alloc_skb()
+
+Another idea would be to use separate page sizes depending
+on the allocated length (to never have more than 4 frags per page)
+
+I would like to thank Greg Thelen for his precious help on this matter,
+analysing crash dumps is always a time consuming task.
+
+Fixes: fd11a83dd363 ("net: Pull out core bits of __netdev_alloc_skb and add __napi_alloc_skb")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lore.kernel.org/r/20210113161819.1155526-1-eric.dumazet@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |    7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ net/core/skbuff.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
-+++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
-@@ -586,11 +586,6 @@ static const struct net_device_ops netxe
- #endif
- };
- 
--static inline bool netxen_function_zero(struct pci_dev *pdev)
--{
--	return (PCI_FUNC(pdev->devfn) == 0) ? true : false;
--}
--
- static inline void netxen_set_interrupt_mode(struct netxen_adapter *adapter,
- 					     u32 mode)
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -489,13 +489,17 @@ EXPORT_SYMBOL(__netdev_alloc_skb);
+ struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
+ 				 gfp_t gfp_mask)
  {
-@@ -686,7 +681,7 @@ static int netxen_setup_intr(struct netx
- 	netxen_initialize_interrupt_registers(adapter);
- 	netxen_set_msix_bit(pdev, 0);
+-	struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
++	struct napi_alloc_cache *nc;
+ 	struct sk_buff *skb;
+ 	void *data;
  
--	if (netxen_function_zero(pdev)) {
-+	if (adapter->portnum == 0) {
- 		if (!netxen_setup_msi_interrupts(adapter, num_msix))
- 			netxen_set_interrupt_mode(adapter, NETXEN_MSI_MODE);
- 		else
+ 	len += NET_SKB_PAD + NET_IP_ALIGN;
+ 
+-	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
++	/* If requested length is either too small or too big,
++	 * we use kmalloc() for skb->head allocation.
++	 */
++	if (len <= SKB_WITH_OVERHEAD(1024) ||
++	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+ 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
+ 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
+ 		if (!skb)
+@@ -503,6 +507,7 @@ struct sk_buff *__napi_alloc_skb(struct
+ 		goto skb_success;
+ 	}
+ 
++	nc = this_cpu_ptr(&napi_alloc_cache);
+ 	len += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+ 	len = SKB_DATA_ALIGN(len);
+ 
 
 
