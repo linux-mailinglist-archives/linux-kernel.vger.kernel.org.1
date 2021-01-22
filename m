@@ -2,322 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799D02FFA55
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5792F2FFA56
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbhAVCSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 21:18:25 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11123 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbhAVCSK (ORCPT
+        id S1726663AbhAVCTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 21:19:42 -0500
+Received: from smtprelay0164.hostedemail.com ([216.40.44.164]:44150 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725764AbhAVCTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 21:18:10 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DMND14mz3z15x9m;
-        Fri, 22 Jan 2021 10:16:17 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 22 Jan
- 2021 10:17:22 +0800
-Subject: Re: [f2fs-dev] [PATCH v3 1/5] f2fs: compress: add compress_inode to
- cache compressed blocks
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <X/0DxG+AcX54730W@google.com>
- <160f2cf9-73ca-18cd-6ad0-2498821b8db6@huawei.com>
- <X/4kYf11oyoMY8P+@google.com>
- <abc09f9f-561d-df8a-b835-6b5d7a15232c@huawei.com>
- <X/8UtJU9Dy30kC7I@google.com>
- <37ba41db-2589-e155-c416-d0c8832026cb@huawei.com>
- <X//DPI10+ZXvHkYH@google.com>
- <8e88b1e2-0176-9487-b925-9c7a31a7e5cd@huawei.com>
- <YAGt0i244dWXym4H@google.com>
- <20a1dbd3-808e-e62a-53f3-7f1e2a316b3c@kernel.org>
- <YAdSTzYF8Hvxdcqy@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <068da0d3-18c9-53f7-0f24-63b07e1af272@huawei.com>
-Date:   Fri, 22 Jan 2021 10:17:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 21 Jan 2021 21:19:32 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1021F18086838;
+        Fri, 22 Jan 2021 02:18:48 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3866:3867:3868:3870:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7652:7775:8985:9025:10004:10400:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:14764:21080:21627:30054:30060:30064:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: chair33_3b04b1827568
+X-Filterd-Recvd-Size: 1636
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 22 Jan 2021 02:18:46 +0000 (UTC)
+Message-ID: <b9c303e70dc4f8573bebb6bb07c98daa25ea0fba.camel@perches.com>
+Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang
+ line
+From:   Joe Perches <joe@perches.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Finn Behrens <me@kloenk.de>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 21 Jan 2021 18:18:45 -0800
+In-Reply-To: <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
+References: <20210121170736.2266-1-scott.branden@broadcom.com>
+         <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <YAdSTzYF8Hvxdcqy@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/20 5:42, Jaegeuk Kim wrote:
-> On 01/16, Chao Yu wrote:
->> On 2021/1/15 22:59, Jaegeuk Kim wrote:
->>> On 01/15, Chao Yu wrote:
->>>> On 2021/1/14 12:06, Jaegeuk Kim wrote:
->>>>> On 01/14, Chao Yu wrote:
->>>>>> On 2021/1/13 23:41, Jaegeuk Kim wrote:
->>>>>>> [58690.961685] F2FS-fs (vdb) : inject page get in f2fs_pagecache_get_page of f2fs_quota_write+0x150/0x1f0 [f2fs]
->>>>>>> [58691.071481] F2FS-fs (vdb): Inconsistent error blkaddr:31058, sit bitmap:0
->>>>>>> [58691.077338] ------------[ cut here ]------------
->>>>>>> [58691.081461] WARNING: CPU: 5 PID: 8308 at fs/f2fs/checkpoint.c:151 f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
->>>>>>> [58691.086734] Modules linked in: f2fs(O) quota_v2 quota_tree dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua ppdev intel_rapl_msr intel_rapl_common sb_edac kvm_intel kvm irqbypass joydev parport_pc parport input_leds serio_raw mac_hid qemu_fw_cfg sch_fq_codel ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov async_memcpy asy
->>>>>>> [58691.120632] CPU: 5 PID: 8308 Comm: kworker/u17:5 Tainted: G      D    O      5.11.0-rc3-custom #1
->>>>>>> [58691.125438] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
->>>>>>> [58691.129625] Workqueue: f2fs_post_read_wq f2fs_post_read_work [f2fs]
->>>>>>> [58691.133142] RIP: 0010:f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
->>>>>>> [58691.136221] Code: 3c 07 b8 01 00 00 00 d3 e0 21 f8 75 57 83 fa 07 75 52 89 f2 31 c9 48 c7 c6 20 6a a7 c0 48 89 df e8 bc d6 03 00 f0 80 4b 48 04 <0f> 0b 31 c0 e9 5e fe ff ff 48 8b 57 10 8b 42 30 d3 e0 03 42 48 39
->>>>>>> [58691.143142] RSP: 0018:ffffb429047afd40 EFLAGS: 00010206
->>>>>>> [58691.145639] RAX: 0000000000000000 RBX: ffff9c3b84041000 RCX: 0000000000000000
->>>>>>> [58691.148899] RDX: 0000000000000000 RSI: ffff9c3bbbd58940 RDI: ffff9c3bbbd58940
->>>>>>> [58691.152130] RBP: ffffb429047afd48 R08: ffff9c3bbbd58940 R09: ffffb429047afaa8
->>>>>>> [58691.155266] R10: 00000000001ba090 R11: 0000000000000003 R12: 0000000000007952
->>>>>>> [58691.158304] R13: fffff5cc81266ac0 R14: 00000000000000db R15: 0000000000000000
->>>>>>> [58691.161160] FS:  0000000000000000(0000) GS:ffff9c3bbbd40000(0000) knlGS:0000000000000000
->>>>>>> [58691.164286] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>>>> [58691.166869] CR2: 00007f0fee9d3000 CR3: 000000005ee76001 CR4: 0000000000370ee0
->>>>>>> [58691.169714] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>>>>>> [58691.173102] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>>>>>> [58691.176163] Call Trace:
->>>>>>> [58691.177948]  f2fs_cache_compressed_page+0x69/0x280 [f2fs]
->>>>>>> [58691.180549]  ? newidle_balance+0x253/0x3d0
->>>>>>> [58691.183238]  f2fs_end_read_compressed_page+0x5a/0x70 [f2fs]
->>>>>>> [58691.188205]  f2fs_post_read_work+0x11d/0x120 [f2fs]
->>>>>>> [58691.192489]  process_one_work+0x221/0x3a0
->>>>>>> [58691.194482]  worker_thread+0x4d/0x3f0
->>>>>>> [58691.198867]  kthread+0x114/0x150
->>>>>>> [58691.202243]  ? process_one_work+0x3a0/0x3a0
->>>>>>> [58691.205367]  ? kthread_park+0x90/0x90
->>>>>>> [58691.208244]  ret_from_fork+0x22/0x30
->>>>>>
->>>>>> Below patch fixes two issues, I expect this can fix above warning at least.
->>>>>
->>>>> [106115.591837] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6b73: 0000 [#1] SMP PTI
->>>>> [106115.595584] CPU: 3 PID: 10109 Comm: fsstress Tainted: G           O      5.11.0-rc3-custom #1
->>>>> [106115.601087] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
->>>>> [106115.601087] RIP: 0010:f2fs_read_multi_pages+0x415/0xa70 [f2fs]
->>>>
->>>> Jaegeuk,
->>>>
->>>> Could you please help to run:
->>>>
->>>> gdb f2fs.ko
->>>> (gdb) l *(f2fs_read_multi_pages+0x415)
->>>>
->>>> to see where we hit the panic.
->>>
->>> It's fs/f2fs/data.c:2203
->>>
->>> 2199                 goto out_put_dnode;
->>> 2200         }
->>> 2201
->>> 2202         for (i = 0; i < dic->nr_cpages; i++) {
->>
->> I doubt when i == cc->nr_cpages, dic was released in below condition,
->> then dic->nr_cpages can be any value (may be larger than cc->nr_cpages),
->> then we may continue the loop, and will access invalid pointer dic.
->>
->> 		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
->> 			if (atomic_dec_and_test(&dic->remaining_pages))
->> 				f2fs_decompress_cluster(dic);
->> 			continue;
->> 		}
->>
->>
->> I'd like to add a condition here (in between line 2202 and line 2203) to
->> make sure whether this can happen, could you please help to verify this?
->>
->> f2fs_bug_on(sbi, i >= cc->nr_cpages);
-> 
-> No, it seems this is not the case.
+On Fri, 2021-01-22 at 05:25 +0900, Masahiro Yamada wrote:
+> On Fri, Jan 22, 2021 at 2:17 AM Scott Branden
+> <scott.branden@broadcom.com> wrote:
+> > 
+> > Use python3 instead of python in diffconfig Shebang line.
+> > python2 was sunset January 1, 2000 and environments do not need
+> > to support python any more.
 
-Oops, could you please help to remove all below codes and do the test again
-to check whether they are the buggy codes? as I doubt there is use-after-free
-bug.
+python2 was sunset Jan 1, 2020, not 20 years before that.
 
-		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
-			if (atomic_dec_and_test(&dic->remaining_pages))
-				f2fs_decompress_cluster(dic);
-			continue;
-		}
+https://www.python.org/doc/sunset-python-2/
 
-Before that, please merge last fixing patch as below:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/commit/?h=dev&id=2371a9b8131712276458f1991a6ae394ef6c6c90
-
-Thanks,
-
-> 
->>
->> Thanks,
->>
->>> 2203                 struct page *page = dic->cpages[i];
->>> 2204                 block_t blkaddr;
->>> 2205                 struct bio_post_read_ctx *ctx;
->>> 2206
->>> 2207                 blkaddr = data_blkaddr(dn.inode, dn.node_page,
->>> 2208                                                 dn.ofs_in_node + i + 1);
->>>
->>>
->>>>
->>>> Thanks,
->>>>
->>>>> [106115.601087] Code: ff ff ff 45 31 ff f7 d0 25 00 00 08 00 89 45 80 48 8b 45 a0 48 83 c0 6c 48 89 85 78 ff ff ff 48 8b 7d a0 49 63 c7 48 8b 57 30 <48> 8b 1c c2 8b 45 c4 8d 50 01 48 8b 45 b8 48 2b 05 c6 55 92 dc 48
->>>>> [106115.601087] RSP: 0018:ffffc0a4822f7710 EFLAGS: 00010206
->>>>> [106115.620978] RAX: 0000000000000001 RBX: ffffe801820034c0 RCX: 0000000000200000
->>>>> [106115.620978] RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc09487af RDI: ffff9bc1d87c4200
->>>>> [106115.627351] RBP: ffffc0a4822f77c0 R08: 0000000000000000 R09: 0000000000000000
->>>>> [106115.627351] R10: ffff9bc1d87c4200 R11: 0000000000000001 R12: 0000000000105343
->>>>> [106115.627351] R13: ffff9bc2d2184000 R14: 0000000000000000 R15: 0000000000000001
->>>>> [106115.635587] FS:  00007f188e909b80(0000) GS:ffff9bc2fbcc0000(0000) knlGS:0000000000000000
->>>>> [106115.635587] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>> [106115.635587] CR2: 000056446d88b358 CR3: 00000000534b4002 CR4: 0000000000370ee0
->>>>> [106115.635587] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>>>> [106115.635587] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>>>> [106115.635587] Call Trace:
->>>>> [106115.635587]  f2fs_mpage_readpages+0x4e4/0xac0 [f2fs]
->>>>> [106115.635587]  f2fs_readahead+0x47/0x90 [f2fs]
->>>>> [106115.635587]  read_pages+0x8e/0x280
->>>>> [106115.635587]  page_cache_ra_unbounded+0x11f/0x1f0
->>>>> [106115.665909]  do_page_cache_ra+0x3d/0x40
->>>>> [106115.670756]  ondemand_readahead+0x2c1/0x2e0
->>>>> [106115.671682]  page_cache_sync_ra+0xd4/0xe0
->>>>> [106115.675622]  generic_file_buffered_read_get_pages+0x126/0x8d0
->>>>> [106115.679158]  generic_file_buffered_read+0x113/0x4a0
->>>>> [106115.679158]  ? __filemap_fdatawrite_range+0xd8/0x110
->>>>> [106115.685672]  ? __mark_inode_dirty+0x98/0x330
->>>>> [106115.691168]  ? f2fs_direct_IO+0x80/0x6f0 [f2fs]
->>>>> [106115.691168]  generic_file_read_iter+0xdf/0x140
->>>>> [106115.691168]  f2fs_file_read_iter+0x34/0xb0 [f2fs]
->>>>> [106115.699450]  aio_read+0xef/0x1b0
->>>>> [106115.699450]  ? do_user_addr_fault+0x1b8/0x450
->>>>> [106115.699450]  io_submit_one+0x217/0xbc0
->>>>> [106115.699450]  ? io_submit_one+0x217/0xbc0
->>>>> [106115.699450]  __x64_sys_io_submit+0x8d/0x180
->>>>> [106115.699450]  ? __x64_sys_io_submit+0x8d/0x180
->>>>> [106115.712018]  ? exit_to_user_mode_prepare+0x3d/0x1a0
->>>>> [106115.717468]  do_syscall_64+0x38/0x90
->>>>> [106115.723157]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>>>
->>>>>>
->>>>>> - detect truncation during f2fs_cache_compressed_page()
->>>>>> - don't set PageUptodate for temporary page in f2fs_load_compressed_page()
->>>>>>
->>>>>> From: Chao Yu <yuchao0@huawei.com>
->>>>>>
->>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>>>> ---
->>>>>>     fs/f2fs/compress.c | 20 +++++++++++++-------
->>>>>>     fs/f2fs/data.c     |  3 +--
->>>>>>     fs/f2fs/f2fs.h     |  6 +++---
->>>>>>     3 files changed, 17 insertions(+), 12 deletions(-)
->>>>>>
->>>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>>>>> index 0fec71e40001..f364c10c506c 100644
->>>>>> --- a/fs/f2fs/compress.c
->>>>>> +++ b/fs/f2fs/compress.c
->>>>>> @@ -1741,7 +1741,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>>     	if (!test_opt(sbi, COMPRESS_CACHE))
->>>>>>     		return;
->>>>>>
->>>>>> -	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
->>>>>> +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
->>>>>>     		return;
->>>>>>
->>>>>>     	si_meminfo(&si);
->>>>>> @@ -1774,21 +1774,25 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>>     		return;
->>>>>>     	}
->>>>>>
->>>>>> -	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
->>>>>> -	SetPageUptodate(cpage);
->>>>>> -
->>>>>>     	f2fs_set_page_private(cpage, ino);
->>>>>>
->>>>>> +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
->>>>>> +		goto out;
->>>>>> +
->>>>>> +	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
->>>>>> +	SetPageUptodate(cpage);
->>>>>> +out:
->>>>>>     	f2fs_put_page(cpage, 1);
->>>>>>     }
->>>>>>
->>>>>> -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>> +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>>     								block_t blkaddr)
->>>>>>     {
->>>>>>     	struct page *cpage;
->>>>>> +	bool hitted = false;
->>>>>>
->>>>>>     	if (!test_opt(sbi, COMPRESS_CACHE))
->>>>>> -		return;
->>>>>> +		return false;
->>>>>>
->>>>>>     	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
->>>>>>     				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
->>>>>> @@ -1797,10 +1801,12 @@ void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>>     			atomic_inc(&sbi->compress_page_hit);
->>>>>>     			memcpy(page_address(page),
->>>>>>     				page_address(cpage), PAGE_SIZE);
->>>>>> -			SetPageUptodate(page);
->>>>>> +			hitted = true;
->>>>>>     		}
->>>>>>     		f2fs_put_page(cpage, 1);
->>>>>>     	}
->>>>>> +
->>>>>> +	return hitted;
->>>>>>     }
->>>>>>
->>>>>>     void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino)
->>>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>>>>> index b3973494b102..3705c272b76a 100644
->>>>>> --- a/fs/f2fs/data.c
->>>>>> +++ b/fs/f2fs/data.c
->>>>>> @@ -2211,8 +2211,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->>>>>>     		blkaddr = data_blkaddr(dn.inode, dn.node_page,
->>>>>>     						dn.ofs_in_node + i + 1);
->>>>>>
->>>>>> -		f2fs_load_compressed_page(sbi, page, blkaddr);
->>>>>> -		if (PageUptodate(page)) {
->>>>>> +		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
->>>>>>     			if (atomic_dec_and_test(&dic->remaining_pages))
->>>>>>     				f2fs_decompress_cluster(dic);
->>>>>>     			continue;
->>>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>>>> index 9f79a6825f06..b807970d67b1 100644
->>>>>> --- a/fs/f2fs/f2fs.h
->>>>>> +++ b/fs/f2fs/f2fs.h
->>>>>> @@ -3951,7 +3951,7 @@ struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
->>>>>>     void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
->>>>>>     void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>>     						nid_t ino, block_t blkaddr);
->>>>>> -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>> +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>>     								block_t blkaddr);
->>>>>>     void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
->>>>>>     #else
->>>>>> @@ -3990,8 +3990,8 @@ static inline void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi,
->>>>>>     				block_t blkaddr) { }
->>>>>>     static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
->>>>>>     				struct page *page, nid_t ino, block_t blkaddr) { }
->>>>>> -static inline void f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
->>>>>> -				struct page *page, block_t blkaddr) { }
->>>>>> +static inline bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
->>>>>> +				struct page *page, block_t blkaddr) { return false; }
->>>>>>     static inline void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi,
->>>>>>     							nid_t ino) { }
->>>>>>     #endif
->>>>>> -- 
->>>>>> 2.29.2
->>>>> .
->>>>>
->>>
->>>
->>> _______________________________________________
->>> Linux-f2fs-devel mailing list
->>> Linux-f2fs-devel@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>>
-> .
-> 
