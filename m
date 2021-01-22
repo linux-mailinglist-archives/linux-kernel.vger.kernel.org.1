@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2408300B25
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD938300B23
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729959AbhAVSX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:23:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
+        id S1729895AbhAVSXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:23:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbhAVOXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728587AbhAVOXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:23:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF2C023B79;
-        Fri, 22 Jan 2021 14:17:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4262E23B7B;
+        Fri, 22 Jan 2021 14:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325051;
-        bh=ZXBaXyIbiejXVj+zYqIgsppsmpPjA3UTJN3xCaPZB/Q=;
+        s=korg; t=1611325056;
+        bh=7wNmMAsfkNPJ8QYKHFYsi9gLUAod791kA9lr/bq0tiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1qoEAsxAFe5WQkv12VlVnwbNItLYfW7iBOpEtDtABHE1oE7xIvedJw09P34vE/t2R
-         tY7qzFWT/FfWhkKmAWRxRXsiyFdAE5rwr12Lll6eKYdVNlM8D+nug+OewnF4/Rwqbz
-         5AWI/qVVtuNptvTPsBB7vlXfzIA3J4qaQ4jOfqGE=
+        b=HYcE8pJgLyt5Xa/Ysmk0tsv1eWXyf2cnoVoPX7Gn2zI8Y+1oNQ7qM598fUYVJpJxS
+         3JpcIRRHQ9D+s4+H09AVPB4OPRLouxIgn0tpucEktU6USx9XQIaALmZCxq92EAgI9f
+         qMwlpZ4ziuXCAUAvQdchOy8BcgAqiSozlA28SriE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastian Gottschall <s.gottschall@dd-wrt.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 31/33] mac80211: do not drop tx nulldata packets on encrypted links
-Date:   Fri, 22 Jan 2021 15:12:47 +0100
-Message-Id: <20210122135734.824968810@linuxfoundation.org>
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 33/33] spi: cadence: cache reference clock rate during probe
+Date:   Fri, 22 Jan 2021 15:12:49 +0100
+Message-Id: <20210122135734.900345130@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
 References: <20210122135733.565501039@linuxfoundation.org>
@@ -41,36 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Michael Hennerich <michael.hennerich@analog.com>
 
-commit 2463ec86cd0338a2c2edbfb0b9d50c52ff76ff43 upstream.
+commit 4d163ad79b155c71bf30366dc38f8d2502f78844 upstream.
 
-ieee80211_tx_h_select_key drops any non-mgmt packets without a key when
-encryption is used. This is wrong for nulldata packets that can't be
-encrypted and are sent out for probing clients and indicating 4-address
-mode.
+The issue is that using SPI from a callback under the CCF lock will
+deadlock, since this code uses clk_get_rate().
 
-Reported-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Fixes: a0761a301746 ("mac80211: drop data frames without key on encrypted links")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20201218191525.1168-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: c474b38665463 ("spi: Add driver for Cadence SPI controller")
+Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Link: https://lore.kernel.org/r/20210114154217.51996-1-alexandru.ardelean@analog.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/mac80211/tx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-cadence.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -657,7 +657,7 @@ ieee80211_tx_h_select_key(struct ieee802
- 		if (!skip_hw && tx->key &&
- 		    tx->key->flags & KEY_FLAG_UPLOADED_TO_HARDWARE)
- 			info->control.hw_key = &tx->key->conf;
--	} else if (!ieee80211_is_mgmt(hdr->frame_control) && tx->sta &&
-+	} else if (ieee80211_is_data_present(hdr->frame_control) && tx->sta &&
- 		   test_sta_flag(tx->sta, WLAN_STA_USES_ENCRYPTION)) {
- 		return TX_DROP;
- 	}
+--- a/drivers/spi/spi-cadence.c
++++ b/drivers/spi/spi-cadence.c
+@@ -115,6 +115,7 @@ struct cdns_spi {
+ 	void __iomem *regs;
+ 	struct clk *ref_clk;
+ 	struct clk *pclk;
++	unsigned int clk_rate;
+ 	u32 speed_hz;
+ 	const u8 *txbuf;
+ 	u8 *rxbuf;
+@@ -250,7 +251,7 @@ static void cdns_spi_config_clock_freq(s
+ 	u32 ctrl_reg, baud_rate_val;
+ 	unsigned long frequency;
+ 
+-	frequency = clk_get_rate(xspi->ref_clk);
++	frequency = xspi->clk_rate;
+ 
+ 	ctrl_reg = cdns_spi_read(xspi, CDNS_SPI_CR);
+ 
+@@ -558,8 +559,9 @@ static int cdns_spi_probe(struct platfor
+ 	master->auto_runtime_pm = true;
+ 	master->mode_bits = SPI_CPOL | SPI_CPHA;
+ 
++	xspi->clk_rate = clk_get_rate(xspi->ref_clk);
+ 	/* Set to default valid value */
+-	master->max_speed_hz = clk_get_rate(xspi->ref_clk) / 4;
++	master->max_speed_hz = xspi->clk_rate / 4;
+ 	xspi->speed_hz = master->max_speed_hz;
+ 
+ 	master->bits_per_word_mask = SPI_BPW_MASK(8);
 
 
