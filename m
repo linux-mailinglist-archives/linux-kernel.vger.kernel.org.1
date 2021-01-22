@@ -2,118 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9482FFFAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839F52FFFA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbhAVKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:01:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbhAVKAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727208AbhAVKAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 22 Jan 2021 05:00:11 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9805C061352
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:51:19 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id by1so6808466ejc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:51:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6SOZ0cafIsQ2pjxZKEsji3NjTpPSIIGuynZ9xZcUToY=;
-        b=ztKqHymKyLAIKP1qDj25Z0vFnV8lkexGar1wlQhZ7Rfg8c4jimASSEu3EMx6QNc9xt
-         /UvDVuSdpibwYuUfHMvcomb5tGn1OeKvoi71lF5ZwUl6ePE7Mfc57I4uQf5xNJ8tXEEy
-         mOyktrWbjdAv6URUuvt7PwLdEnteAaSEkHPyO8vXOhNbrfQHerbzre3VYp/h/evQYlJB
-         fouV9L1yJo/0dB4OCITN92tMCAmOB1RGGoybCsptJuKlo3e3nsyMl5diLyQRC9L816BZ
-         BD9BAva69CDiC6VvjgBjZ04DmOq03Vlb5IxAl8CNhdH54iD+BlXZAk6UeQKt99ShdIVL
-         dbIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6SOZ0cafIsQ2pjxZKEsji3NjTpPSIIGuynZ9xZcUToY=;
-        b=cLkZ6xTrYwWfIPkjqTI7kIoZRVsbPLPGooz/s9xIbffn8s1fKDXg6CMYMAGPqIZxmp
-         SwM06asOHbIh91OlxESdmd2le5a8YL9Ze5ka6ZsIk1lGpbWW/wq3/QjHs/iK7RBNgJUw
-         aEXkOGBwY/zaEyuP4XC7MRuVI/wxpCyW0W926I/dJ/pnRwPwVsGNB2hitWKVv0EKinIl
-         c15euZD8mYJq9rfP+ULAVwthhT/PsN+UXgQp5L+XaqRbWPOfA7NPuPw7Jb8pXNUg2XG+
-         eNkIwzLJAp3qR522lmK11hDoDHyPO7nZOg5xH/EQcGg850hyaHNGy9AoY90Xin5WU1WC
-         v3kQ==
-X-Gm-Message-State: AOAM530dUsAQQzkZVNBk/wgaMa7NTu2UuiUclp5XzQZEgGXEneD95MPq
-        I55JGT0FfPHpUr+1ZTvt646HFhwaNNeVPKBWxE7RPA==
-X-Google-Smtp-Source: ABdhPJzEjn5GEPrffd5+4rTlgY2BHDNhZMRsd9H/LHyaUqgXSrIVK7mTGKR12AKLBujzMON638tkxawvFlPiVqhItq8=
-X-Received: by 2002:a17:906:4443:: with SMTP id i3mr2288434ejp.133.1611309078552;
- Fri, 22 Jan 2021 01:51:18 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727375AbhAVJ5W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 04:57:22 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8828DC061788;
+        Fri, 22 Jan 2021 01:56:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LOIQHL9x2mAeYTMhoeeG2U9wpg3O8N1h/6OElLbRyUs=; b=cDW7vsNYC6CaxNQm8EZ6I6PCqh
+        PVHJZ5S7oX7zfBuRkRmkBqR2UrAGlFmmx8Xf9/Z75eVE2UguP7ZRKKWGyfkIy6sHjqviJocax8e3g
+        +1L9fqITPfJOPAhFQGAyrjAsSF0Uvbg9RbWYsX5Q0H9m5uWv8V4ADJ7FgZNxBiM1dId9cPYc0f1/T
+        a+uiDrZoSeO0I60c3XuHL0i7de1jE9lBZJdscw2Lcet0erlx5cqwW6tFaY6wgm18hwEGgR14ifzFI
+        pZ8RJ+gFwKxWpBD58djPLTdjm5yP3rw9x0AEu5lrh76vb7I0gm9IFFmSwc7Ox48ux+deykcHtT14B
+        kLqWu/3g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2tAx-0008Sb-1V; Fri, 22 Jan 2021 09:56:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C12ED3003E1;
+        Fri, 22 Jan 2021 10:56:12 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8D8BD200D6EE4; Fri, 22 Jan 2021 10:56:12 +0100 (CET)
+Date:   Fri, 22 Jan 2021 10:56:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Andi Kleen <andi@firstfloor.org>, "Xu, Like" <like.xu@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
+ via DS
+Message-ID: <YAqhPPkexq+dQ5KD@hirez.programming.kicks-ass.net>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <YACXQwBPI8OFV1T+@google.com>
+ <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
+ <YAHXlWmeR9p6JZm2@google.com>
+ <20210115182700.byczztx3vjhsq3p3@two.firstfloor.org>
+ <YAHkOiQsxMfOMYvp@google.com>
 MIME-Version: 1.0
-References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
- <20210121185521.GQ2743@paulmck-ThinkPad-P72> <20210121213110.GB23234@willie-the-truck>
- <20210121214314.GW2743@paulmck-ThinkPad-P72>
-In-Reply-To: <20210121214314.GW2743@paulmck-ThinkPad-P72>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 22 Jan 2021 15:21:07 +0530
-Message-ID: <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
-Subject: Re: rcu-torture: Internal error: Oops: 96000006
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAHkOiQsxMfOMYvp@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 at 03:13, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
-> > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
-> > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
-> > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
-> > > > the following kernel crash noticed. This started happening from Linux next
-> > > > next-20210111 tag to next-20210121.
-> > > >
-> > > > metadata:
-> > > >   git branch: master
-> > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-> > > >   git describe: next-20210111
-> > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
-> > > >
-> > > > output log:
-> > > >
-> > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
-> > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
-> > > > = ffff8000091ab8e0
-> > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
-> > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
-> > > > virtual address 0000000000000008
-> >
-> > [...]
-> >
-> > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
-> > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
-> > > like your configuration rejects NULL as an invalid virtual address,
-> > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
-> > > are not allowed to dereference a ZERO_SIZE_PTR?
-> > >
-> > > Adding the ARM64 guys on CC for their thoughts.
-> >
-> > Spooky timing, there was a thread _today_ about that:
-> >
-> > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
->
-> Very good, then my workaround (shown below for Naresh's ease of testing)
-> is only a short-term workaround.  Yay!  ;-)
+On Fri, Jan 15, 2021 at 10:51:38AM -0800, Sean Christopherson wrote:
+> On Fri, Jan 15, 2021, Andi Kleen wrote:
+> > > I'm asking about ucode/hardare.  Is the "guest pebs buffer write -> PEBS PMI"
+> > > guaranteed to be atomic?
+> > 
+> > Of course not.
+> 
+> So there's still a window where the guest could observe the bad counter index,
+> correct?
 
-Paul, thanks for your (short-term workaround) patch.
+Guest could do a hypercall to fix up the DS area before it tries to read
+it I suppose. Or the HV could expose the index mapping and have the
+guest fix up it.
 
-I have applied your patch and tested rcu-torture test on qemu_arm64 and
-the reported issues has been fixed.
-
-- Naresh
+Adding a little virt crud on top shouldn't be too hard.
