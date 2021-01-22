@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB790301139
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC35301149
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbhAVXyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 18:54:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbhAVXwd (ORCPT
+        id S1726588AbhAVX70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 18:59:26 -0500
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:36351 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbhAVXxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 18:52:33 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3005CC0617AA
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 15:51:06 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 67so7094656ybh.22
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 15:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=r3IIkGAa61MnJqRj3fcRniDrryvcAMIqBhLKyFl38rA=;
-        b=i/kBaLgRBYVZ0ZgLV1J9cHLj/jJy/sxK/Mg1oV7j4zoRI5zRWYtXPmiKSIl6uEEU7+
-         Bb2JpBuQ9PzOHY3f0nE1SQsK5SR9MoMEgXs9KjGVoNZS7Hy1zjxzzrarFPA3vAyueNuM
-         5I5IKEjLBOzrvwGtcSACwoU5rb48kKCzWuTnjyt00FfNCoo7nY2APFvJj3sdTIc7rRgQ
-         1Y/409GkeshmRujBFBV4eGq2tD2nJUJ+3NQmpNFJfl6m8F23ZEnjDZZp3MM1LJl7DHeJ
-         hQqMrRvq9OLwHUtDKRoHCYb2fqQ3IrGAuuQZlo0uk2t4wR4P11Va8TAv7Q12+a9NYluW
-         B3zw==
+        Fri, 22 Jan 2021 18:53:22 -0500
+Received: by mail-pg1-f181.google.com with SMTP id c132so4898368pga.3;
+        Fri, 22 Jan 2021 15:53:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=r3IIkGAa61MnJqRj3fcRniDrryvcAMIqBhLKyFl38rA=;
-        b=NEEwBOlULzO21znpItoQ/7XIxao/fIUfLQT54kKdOw4nWT9cKDm+W9XrCiG43PXRyK
-         GWxsgNY5/0m/+iZ/cvSTgO2VuoIrUxXiCOBhuoxa82PYLqXrux7a/gVTA45WN9gtvjsW
-         +Gd0nPgJuqHihkWixs6hMmpFfDCSCNWxl5OGQr0HCMGLANuA4u3KXJZ8f2RA76oSk1J4
-         Vx8tpFr5NObv6ddeK6PUlbZmY9QJOdNbG+wjn+w2oRbwOHob29Ek3Z9/SJwrfREQvC4A
-         bnOcv1BUA9OCZygf2kBct4VgWG6VisOWI73Tnjt25LJfAaMJCTNOwCkkUzpA1ZT3DlB/
-         W5qA==
-X-Gm-Message-State: AOAM531pBfJ6u48zwMjCIfnnd1rQnrCz3pN8QnK5/U91u/Oyeo6sEkyK
-        QmPXcjwR471SyrnS299QQ8niK3KY6Ps=
-X-Google-Smtp-Source: ABdhPJz3mmxzI6jTLrn733eHumARphbHgVa0LiQzSZwODrHcFjN+KjRnng59m2ZkbGYrFf7QPWspkCybedU=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a25:d70a:: with SMTP id o10mr9412902ybg.235.1611359465355;
- Fri, 22 Jan 2021 15:51:05 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 22 Jan 2021 15:50:49 -0800
-In-Reply-To: <20210122235049.3107620-1-seanjc@google.com>
-Message-Id: <20210122235049.3107620-4-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210122235049.3107620-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH 3/3] KVM: SVM: Sync GPRs to the GHCB only after VMGEXIT
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4DinmDlrQSUNffSSvnhv3kDOp+pzFAMmlewopINTSFo=;
+        b=eGtSNKB2ruz8B1gsyFvY4oLMiUm2ioFPEoCfbihEeabhtwysQUxYGDpYhmTlAuQKaO
+         G1tP8s4kwhTwWbrFKHsVjkwVvfYUZQSqH7L+v9jcGA0YKlM9YWthUszTXWCpu6G8Djns
+         2bTkXL/Cka3mBrNh/Af2BlYN4PQjix1ZT+R2yauYGhrYf7j3CzACiBam8RZWpTWY+jYa
+         2RyHdviGP+wr/vpj8MUPNQY3Eh0qv0K/CBBALMaNDY7Wk5S3YoyufMbf7nDww9/qNnpR
+         nZ0kKwPkdLvMMIjYGbh43hT4psk9mROsg0FmA81QUO4wZ+43e5z7+LdSBQ0IhSCWBN3b
+         sYag==
+X-Gm-Message-State: AOAM531aCpWbIF8jLiVe9FCwZfWQktMH5C3jKjW9Bz6LcQDxzqJT59t7
+        APRf5/Sd8QKP10ML79NLcSg=
+X-Google-Smtp-Source: ABdhPJx9ke/EzGKS83S3dMafXYN0xNjwbizgEOp7JZu456zddaYf2jrgSXe86w3kwTVR8gabTMxSqg==
+X-Received: by 2002:aa7:8f30:0:b029:1b9:9016:b389 with SMTP id y16-20020aa78f300000b02901b99016b389mr7275210pfr.80.1611359561157;
+        Fri, 22 Jan 2021 15:52:41 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id m4sm9654715pgv.16.2021.01.22.15.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 15:52:40 -0800 (PST)
+Date:   Fri, 22 Jan 2021 15:52:37 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     trix@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [PATCH v2] MAINTAINERS: Add FPGA SUBDEVICES
+Message-ID: <YAtlRV+0FWrVoaRc@archbook>
+References: <20210122192928.1651254-1-trix@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122192928.1651254-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sync GPRs to the GHCB on VMRUN only if a sync is needed, i.e. if the
-previous exit was a VMGEXIT and the guest is expecting some data back.
+On Fri, Jan 22, 2021 at 11:29:28AM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> Every FPGA has several subdevices in other subsystems.
+> The new FPGA subdevices section is necessary to ensure changes to
+> the subdevices files get reviewed within the context of the FPGA
+> subsystem.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+> v1: Add several more subdevices
+> ---
+>  MAINTAINERS | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 17ac5bdce521..96d6f00b0584 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6975,6 +6975,17 @@ F:	drivers/fpga/
+>  F:	include/linux/fpga/
+>  F:	tools/testing/selftests/drivers/fpga/
+>  
+> +FPGA SUBDEVICES
+> +R:	Tom Rix <trix@redhat.com>
+> +L:	linux-fpga@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+> +F:	Documentation/hwmon/intel-m10-bmc-hwmon.rst
+> +F:	drivers/hwmon/intel-m10-bmc-hwmon.c
+> +F:	drivers/memory/dfl-emif.c
+> +F:	drivers/mfd/intel-m10-bmc.c
+> +F:	include/linux/mfd/intel-m10-bmc.h
+> +
+>  FPU EMULATOR
+>  M:	Bill Metzenthen <billm@melbpc.org.au>
+>  S:	Maintained
+> -- 
+> 2.27.0
+> 
+All these subsystems have maintainers, I think that's up to them.
+Ideally each of those drivers behaves like a normal device in the
+corresponding subsystem and the way it's implemented doesn't matter.
 
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/sev.c | 15 ++++++++++-----
- arch/x86/kvm/svm/svm.h |  1 +
- 2 files changed, 11 insertions(+), 5 deletions(-)
+Plenty of other examples for that
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index ac652bc476ae..9bd1e1650eb3 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1418,10 +1418,13 @@ static void sev_es_sync_to_ghcb(struct vcpu_svm *svm)
- 	 * Copy their values, even if they may not have been written during the
- 	 * VM-Exit.  It's the guest's responsibility to not consume random data.
- 	 */
--	ghcb_set_rax(ghcb, vcpu->arch.regs[VCPU_REGS_RAX]);
--	ghcb_set_rbx(ghcb, vcpu->arch.regs[VCPU_REGS_RBX]);
--	ghcb_set_rcx(ghcb, vcpu->arch.regs[VCPU_REGS_RCX]);
--	ghcb_set_rdx(ghcb, vcpu->arch.regs[VCPU_REGS_RDX]);
-+	if (svm->need_sync_to_ghcb) {
-+		ghcb_set_rax(ghcb, vcpu->arch.regs[VCPU_REGS_RAX]);
-+		ghcb_set_rbx(ghcb, vcpu->arch.regs[VCPU_REGS_RBX]);
-+		ghcb_set_rcx(ghcb, vcpu->arch.regs[VCPU_REGS_RCX]);
-+		ghcb_set_rdx(ghcb, vcpu->arch.regs[VCPU_REGS_RDX]);
-+		svm->need_sync_to_ghcb = false;
-+	}
- }
- 
- static void sev_es_sync_from_ghcb(struct vcpu_svm *svm)
-@@ -1441,8 +1444,10 @@ static void sev_es_sync_from_ghcb(struct vcpu_svm *svm)
- 	 * VMMCALL allows the guest to provide extra registers. KVM also
- 	 * expects RSI for hypercalls, so include that, too.
- 	 *
--	 * Copy their values to the appropriate location if supplied.
-+	 * Copy their values to the appropriate location if supplied, and
-+	 * flag that a sync back to the GHCB is needed on the next VMRUN.
- 	 */
-+	svm->need_sync_to_ghcb = true;
- 	memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
- 
- 	vcpu->arch.regs[VCPU_REGS_RAX] = ghcb_get_rax_if_valid(ghcb);
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 0fe874ae5498..4e2e5f9fbfc2 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -192,6 +192,7 @@ struct vcpu_svm {
- 	u64 ghcb_sa_len;
- 	bool ghcb_sa_sync;
- 	bool ghcb_sa_free;
-+	bool need_sync_to_ghcb;
- };
- 
- struct svm_cpu_data {
--- 
-2.30.0.280.ga3ce27912f-goog
+drivers/net/ethernet/xilinx/*
 
+for example.
+
+- Moritz
