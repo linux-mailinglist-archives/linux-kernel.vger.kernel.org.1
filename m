@@ -2,430 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E1F30086C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5641E300867
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729446AbhAVQQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:16:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729529AbhAVQNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:13:19 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB9CC061786;
-        Fri, 22 Jan 2021 08:12:39 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id q2so12042249iow.13;
-        Fri, 22 Jan 2021 08:12:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4+f31h8JPRbEoCi/d8mHQzBlwJkNkVENlbHhuyvKA2M=;
-        b=V5MsCPkvOv2igpotn62Ru1TpiQIQU/XWtG/KlffHiwNIZUXBHnqIhapLmPHNqE9Egs
-         i2HtR0L8d3y1H/6Elv5UDRs+fmFuJy+HMvNwXwUNkRcl+nvAsh/jXJrmvBJQOeozAry8
-         9dEmq6uRZGUnQq3xFxalk0fk/4vfgtFNCU03gBMJM5G9P32DIOyg5Qf6HYYXx3/PzPdR
-         ootr7aMSJeN3E1xnm418lCUm0IcmsB+yRYE9CwDePgdn7BT3ckJzddWBNyWQnI7rVg/k
-         xy6rgm039qtR6wEtXnvgmkkCqhqLLnOn+U0ifOzfabtI6kD/ppwZaw1V2na6DwFZx5Ak
-         ZM9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4+f31h8JPRbEoCi/d8mHQzBlwJkNkVENlbHhuyvKA2M=;
-        b=eyjEUQR4Q8ixeORSnDBg2VeXH4FEMr1SyYLiIV7xGmv1FoDua7hg1MRQUr1sqwR5cx
-         dA3SNhSE1hyMverh2rltjHqlG9ojRpCGJyI0t6wvWOuOkEgT4vHqN8xoc+eJQQUiarxG
-         Z5vZXTSADjGCgGuBdBDwxRIuDUnrnr+ck4tTKL0MpBGPqDQdOYAQ7tNXfayrlWCWwF14
-         0/HdzAyS0OBkWW2t3z+Np+tJnMkmKMkBYDJHgDhYMAjHavfocua326Tu1UFIHl9IJkAb
-         shKyCdnwGbXcDmLBuoz5VYfaMiMXzvzyHKuSPv0ZoqcAVK9sDJwakEkBPhRzS1s4U3fB
-         72iQ==
-X-Gm-Message-State: AOAM530g4Eq8TXGs/IAM3qXw+1CvHnSZNt+nhzLkybk9XcCMDOc3I1nS
-        KpvhphhIsGuX6CWswMpb3STQuMzyMtifMq++lD0=
-X-Google-Smtp-Source: ABdhPJyH1D2ky6Bdcbg6s+cDpNRSYOaDkGcBjk76LG/Cp2agNhy2PL54IvqYPxhdH6aZg8Sb95Qy4RWwBW72Y1Sjez8=
-X-Received: by 2002:a92:d082:: with SMTP id h2mr1919551ilh.292.1611331958651;
- Fri, 22 Jan 2021 08:12:38 -0800 (PST)
+        id S1729539AbhAVQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:15:33 -0500
+Received: from mail.eaton.com ([192.104.67.6]:10400 "EHLO mail.eaton.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729544AbhAVQNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:13:35 -0500
+Received: from mail.eaton.com (simtcimsva03.etn.com [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 69094A4025;
+        Fri, 22 Jan 2021 11:12:52 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eaton.com;
+        s=eaton-s2020-01; t=1611331972;
+        bh=ar+fQCpLXFWA4WFXA9R2LPP9IYAbxw0r9KD1s3DF5sY=; h=From:To:Date;
+        b=O+4AnBRRNhz+kJw7d5NjbNG+HYX+1v2TcfRCYvIfKaqW4YM7u9sNPLLKuiJiNzFky
+         ruWiyH4IP1zCMsqwj7iT/1Eta8uMHE0WsDh4bmI5nm0tMwA6/5f8lU0efRpEDpv6AG
+         Sp8VXvgXxq6Xi5Cw8dea8oj4AdB9vFyR/gKQhrHBgbx9QbtgAyNh/HlQFLiilE2l1T
+         60/FNBtfKkbmzp/u9y1abQMSRZz6hN4Ao5/jQglTwOORIsOPK4x9hA74b80XhmTabT
+         ZuBHTLnAD8iO0sOAVU0EL7hyPoyHxNLpBZAAWFecVSBbKSiGpcxyjoqdWvmXxjdU5e
+         YDg4zopmKm8Yg==
+Received: from mail.eaton.com (simtcimsva03.etn.com [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 62FE5A4023;
+        Fri, 22 Jan 2021 11:12:52 -0500 (EST)
+Received: from SIMTCSGWY03.napa.ad.etn.com (simtcsgwy03.napa.ad.etn.com [151.110.126.189])
+        by mail.eaton.com (Postfix) with ESMTPS;
+        Fri, 22 Jan 2021 11:12:52 -0500 (EST)
+Received: from LOUTCSHUB05.napa.ad.etn.com (151.110.40.78) by
+ SIMTCSGWY03.napa.ad.etn.com (151.110.126.189) with Microsoft SMTP Server
+ (TLS) id 14.3.487.0; Fri, 22 Jan 2021 11:12:51 -0500
+Received: from USSTCSEXHET02.NAPA.AD.ETN.COM (151.110.240.154) by
+ LOUTCSHUB05.napa.ad.etn.com (151.110.40.78) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 22 Jan 2021 11:12:51 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
+ hybridmail.eaton.com (151.110.240.154) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1591.10; Fri, 22 Jan 2021 11:12:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HWY/oAbLOdvrsGvRrzvKMp4iQ5xsr5MXxMG/k/WBauY8ftZSBuAmO0XeZcrHE99ZkiO3jEqeV8CnB477bQrLbgE1EMre6JiaVr/1CEaL7gmFiv8n2TsxD2BbyGJXBGNfEM+XhPZplTWgWiPq7nxTT1MxzZHHb/8qqUCB7jZ36/NEH6MYn9YdAz+B2AwIQJ50ruynjzKyc/jMqfB5JoLrqEEWHPpjfcLDu9/SVnqSd+ee4kDkfv8LlFTCcxyw8EbBTCnEdhOoAAoIG3BHZYx+hX1jRuhZe0jgTCpreN5BJblu5o+Gudq9h44fZ5SJbqTDzteIszP72vCb2dFOJTa/EA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ROdxyS0EtR/aZWbTTYhq8LKe/7O40SwGO0NwAf34uWE=;
+ b=LwDSng93RKeSnkMyd0kW1j4W6HSDGB6BHCSju5seXC989YqizXAikxCq2h/Mhmb8/t2RFHgxTZpi0hMvD8Z3w26PYLrRidj35OVYgwsPI9ULHlhngTmbEWEGKzocezz3VKV1v4A9jPCBA8FTyc1bzRm1EW+F10Bok8EkSwc3pCIDoaXm4/4Efe3Trt7Q4OWe2NS6v3u34INruahWhDHlYsfRNXaDQewOy/kqtlLn+6pvl3Q7HMluLyJk8lj+S6tB/LpcK3SvaCpjg6/JAI+tLPsrAJm4s2olor6e1EtMdP9X4li3S01kqVkYAE4tXMhVP6W9yjsR9i+W1nWPI2xu6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=eaton.com; dmarc=pass action=none header.from=eaton.com;
+ dkim=pass header.d=eaton.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Eaton.onmicrosoft.com;
+ s=selector1-Eaton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ROdxyS0EtR/aZWbTTYhq8LKe/7O40SwGO0NwAf34uWE=;
+ b=4rJmiwy2lEY/Tm6doct9YOsLPAyS19hlWp4qyqH7gWJFascDIYJR4egql0y215CVIdRNEqSeqbzNssKQ23smnriUu7qavpTLCxGGQMoVw3uwQyc6LJ9xHSQJGDPrgCkOj5HhqamogBYYKAfc9v6jcWLODcSkF59PYrHmF0HzmIY=
+Received: from MW4PR17MB4243.namprd17.prod.outlook.com (2603:10b6:303:71::6)
+ by MWHPR17MB1951.namprd17.prod.outlook.com (2603:10b6:300:84::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Fri, 22 Jan
+ 2021 16:12:50 +0000
+Received: from MW4PR17MB4243.namprd17.prod.outlook.com
+ ([fe80::950b:b237:60e4:d30]) by MW4PR17MB4243.namprd17.prod.outlook.com
+ ([fe80::950b:b237:60e4:d30%7]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
+ 16:12:50 +0000
+From:   "Badel, Laurent" <LaurentBadel@eaton.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+Subject: RE: [EXTERNAL]  Re: [PATCH net 0/1] net: phy: Fix interrupt mask loss
+ on resume from hibernation
+Thread-Topic: [EXTERNAL]  Re: [PATCH net 0/1] net: phy: Fix interrupt mask
+ loss on resume from hibernation
+Thread-Index: AQHW8Mvg64BxrUQ6QkGpUgfrkq65AKozwnaAgAAMSWA=
+Date:   Fri, 22 Jan 2021 16:12:49 +0000
+Message-ID: <MW4PR17MB42439B9C628356447B5088F3DFA09@MW4PR17MB4243.namprd17.prod.outlook.com>
+References: <20210122143524.14516-1-laurentbadel@eaton.com>
+ <32cbb60d-67f3-765a-d51e-48d74c0785d6@gmail.com>
+In-Reply-To: <32cbb60d-67f3-765a-d51e-48d74c0785d6@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=eaton.com;
+x-originating-ip: [89.217.230.232]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f68812bf-1f3f-4b95-4650-08d8bef09099
+x-ms-traffictypediagnostic: MWHPR17MB1951:
+x-microsoft-antispam-prvs: <MWHPR17MB1951890F6D8FB81731B52459DFA09@MWHPR17MB1951.namprd17.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xT6OODpzoNNvW0CxRK3bC0u2GX/vO14zA5jlNBNNO9FgZa2WepLSS70QF4msmjVAgVTQIzZlWUR+vvxhHdf74jMJqm3GQ6BuRQ0d8JE63QLW9n9JLpyZiW6aagJFm9btU8+hr3Ys4oCmj0YZO2yTAhk74WiKo1e6X9mbJoeYw2s3um/p1DmVFUuURgvKSlCj2tYZoKWnBuErQBvybSVPEXcCkuc4QguT0N1q+mcUIMLm1hPOAjzAgkYuSHV381B/1UwK8K3blAC+xDRLO48UlZ08uwJILkyGCtTNmt1znufGXabKcvgVXopTsPkLeVc5ZDoUqVGs4ntdmquMRTh58qXCSKzJxRzeE0murXZF9o0ukhHANcHTejUQ+uv6iQe79vfMNmNuZTpJvXAvMMik641cj81Bci9cHRCzz8SZHwD9nIW+2GxxddfR6wt0BpbY
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR17MB4243.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(396003)(39860400002)(376002)(55016002)(5660300002)(76116006)(9686003)(52536014)(921005)(83380400001)(64756008)(66556008)(66476007)(66446008)(7416002)(66946007)(33656002)(26005)(7696005)(186003)(6506007)(316002)(71200400001)(2906002)(8676002)(478600001)(86362001)(110136005)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?aXV6YWhyZVlrbFc0MjROclR4aHJyMGppMXczVUNSODZwaXZvQXY4UitHRTJU?=
+ =?utf-8?B?bEFhRWhVcTRnRXNkYi9DWTA4eEVlNWVWcGRVZDBScUZtenJ5WHhxU28raHB0?=
+ =?utf-8?B?UFA5RmNaT2kvRVE5S3RwL1M4d0kxa1JzeHlUS1BQem5WdVlNTm1icDYvTlIx?=
+ =?utf-8?B?RnZyRVpMY2g4d3hHMjRndlhuS1pRNFdBaUlLY1M3R3J0ZXJucmJPWEk5Sm9I?=
+ =?utf-8?B?VEhUdnFaQURTdnBDUXkwbmZsYkhiYW1FZ1IwVjJWMkRkbitXTzc1OXg4R3BY?=
+ =?utf-8?B?MVY2WHZUaVB1VXJ1NUw5dTZzcjRXUTJrdDFVY0U0eFBkVGhtcWpyQXl6bUNs?=
+ =?utf-8?B?WG5reTlEUGRMa2NtbCtCOUJTN1VSVTNaZmhrSFFkT3pIM0pBTVFQa0tSbmRk?=
+ =?utf-8?B?M3p4OEJCMTRJTmdVYnhieG1qcmN5bXMxS3hMVFJNVFBxOUJMd1BSZkRSSVp2?=
+ =?utf-8?B?Qk0xRVkwRWZvTDU4SDBtWnByQkV2eXRPZEc2QjM4MzdpbEVvcWJ1YW12WjJP?=
+ =?utf-8?B?THFaaEE0UVI0RUFncVZjS2grQndPclI2bjdlQzhUU0ZXOW1QQWRQNFJVSmJw?=
+ =?utf-8?B?WHpqMVlHMkU2WU1TNk9KUjFkQ3N1ZWhDaUR5RGYyamQxcUFibjNKaUo0RVZv?=
+ =?utf-8?B?OEYyNlhpSXpkcU5ycGFaVWZscWU4MFROcnp1TGFvUWNybC94VHRjM3BxMWRh?=
+ =?utf-8?B?emhDbXNROWlTRm9PVmFibmhHR25icE9rMm9ZTGRVenhORjZPcmNmR2pIYkxH?=
+ =?utf-8?B?OU1yQ1ZiQTROeUliMDI1SU9vcXQzdkZ6NmpLQSsrbkVGMEpwaG44cVFLQlNK?=
+ =?utf-8?B?aFdFV1lnUHQzMFpYYVpwN1prbTVaVDI1emVMQmVTZUQ0cmdrL3F5N29jb2Ns?=
+ =?utf-8?B?dTZWdmRIdURTaWxrbDcya296UFZDc1hoZU5ORXJHVTZUY212WXpwNEJDVWdi?=
+ =?utf-8?B?S3FDaWRjMzNTUEt2WWlKQ1Q4eEszSlg1WkNlYTR1eXlrbkVVQkFLU2VndGxm?=
+ =?utf-8?B?dzJvRld1NGQ0bm1qSVBwcmdpNXlVbDU5QXNFakVrTklnMEgvUGZxMExQbEk0?=
+ =?utf-8?B?ZUliTWd2cUJSNEtYU3RJMW14ZW44WUZWN2p3Mm5FU3NnMWIvaTAwb3VQV05i?=
+ =?utf-8?B?b1R0L1djYlowNmQyUGhOajdyZEVPSURPL2Q2UGR1U01SckY1UGlnYW9VVlJy?=
+ =?utf-8?B?MEZlZnpMZjNwOXNxbExoL0NoaXFWYzlaN01OdldkYkU4c1FMVzM3MHBCZ2NZ?=
+ =?utf-8?B?NmdVMDFlcXcrQVRXVFFPVWFBNmk5bFpSMkk3QzBJekRtcEswWmMzUlRXNlk1?=
+ =?utf-8?B?U3JmL2poTFp1Ly8rOGt4WjJkdWdCb0hsSkdqYUh1dWExaXdoK2VQY2NaUWwz?=
+ =?utf-8?B?KzVwUGRsbmJ5VWtQbk5vbVdMUmVkbElPUXF4V0E1Y3NoTjNNZ21ucUpNckZC?=
+ =?utf-8?Q?GVLmEy5c?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210122155805.83012-1-alexandru.ardelean@analog.com> <20210122155805.83012-7-alexandru.ardelean@analog.com>
-In-Reply-To: <20210122155805.83012-7-alexandru.ardelean@analog.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Fri, 22 Jan 2021 18:12:27 +0200
-Message-ID: <CA+U=DsrLYYvu0yQfoA-+yGRMaW3Z5G0zPWvEtq3W9vqhhieNtw@mail.gmail.com>
-Subject: Re: [PATCH v2 06/12] iio: buffer: re-route scan_elements via it's kobj_type
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>, nuno.sa@analog.com,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR17MB4243.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f68812bf-1f3f-4b95-4650-08d8bef09099
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 16:12:49.9790
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d6525c95-b906-431a-b926-e9b51ba43cc4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LJahOHB+kltTMXlxxUs/bkI6IvkWUSBuNPhd4me4IZxmvFRFIL7uZLSvl9xxwopmWA/SxGMa8R0MntQj/fU/XA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR17MB1951
+X-TM-SNTS-SMTP: 9E16D91659A8AE540D0CFA528D2D6D45452C6C3CCDF510DDBAE5D57180A102832002:8
+X-OriginatorOrg: eaton.com
+X-EXCLAIMER-MD-CONFIG: 96b59d02-bc1a-4a40-8c96-611cac62bce9
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSVA-9.1.0.1988-8.6.0.1013-25928.001
+X-TM-AS-Result: No--2.202-7.0-31-10
+X-imss-scan-details: No--2.202-7.0-31-10
+X-TMASE-Version: IMSVA-9.1.0.1988-8.6.1013-25928.001
+X-TMASE-Result: 10--2.202400-10.000000
+X-TMASE-MatchedRID: tRtxWm8/OsEpwNTiG5IsEldOi7IJyXyIypNii+mQKrGqvcIF1TcLYEa+
+        4Fduu7BiI+fHiMcknh3zDxVAoaU7urSw/pyY1ik4Lyz9QvAyHjqkpLxVvVhtnZ3zgovq0sbmf6O
+        +FEJQpgDMXqzUcZzd05MfUJb9OR2qjKjbY8QyhYVxoP7A9oFi1kloPruIq9jTsS0sZEB7c8bJCS
+        jEYuHdXG4xLhk/yLgSnO6WlpwwDXiyl+gKyy/g7xlJRfzNw8afE02Pr4CkNSN0rxNYA09+9qDSF
+        bNSvOcnBMrhelRQ6bXbwQrKnCuU2Ll7A3O5D6aX/sUSFaCjTLx44oLbIRXS7vdt0QHl1BcpCMkz
+        RYtEwm1WCSKTdQ2CeZGTpe1iiCJqfJ5/bZ6npdiujVRFkkVsm/dg9x7aI8AwgHkd7eDDNMVYINQ
+        3w62qao/IyRvrqUkjPhvGO2tnDn+gcI5OqsCpz8lY63vICnhsx9LyAasqP9CLiaqag9ZB4h3Gm5
+        R2h/Q7LjnH09LU/owIi37pJqP4+7/Oj7BAzdYuDfWVvHtiYgM=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 5:57 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> The scan_elements attributes are solely located inside
-> 'industrialio-buffer-sysfs.c'. In order to support more than one buffer per
-> IIO device, we need to expand scan_elements attributes directly to IIO
-> buffer object, and not the IIO device.
->
-> This also requires that a new 'iio_buffer_attr' type be added which is
-> mostly a copy of 'iio_dev_attr', but this expands to an IIO buffer object.
->
-> The 'iio_dev_attr' type could have been re-used here, but managing 'device'
-> objects is a bit more tricky (than it looks at first). A 'device' object
-> needs to be initialized & managed and we only need to the 'kobj' to expand
-> from the 'bufferX' directory back to an IIO buffer.
-> kobjects are simpler to manage.
-
-Something odd happened here.
-I'm only seeing half the patches.
-No idea if the others will show.
-I'll leave this here for a while, and if they don't show up tomorrow
-I'll re-send.
-In the meantime, the set is visible here:
-https://github.com/analogdevicesinc/linux/commits/iio-multibuffer3
-
->
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/iio_core.h            |   5 +
->  drivers/iio/industrialio-buffer.c | 160 +++++++++++++++++++++++-------
->  drivers/iio/industrialio-core.c   |   1 -
->  3 files changed, 128 insertions(+), 38 deletions(-)
->
-> diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> index fced02cadcc3..43d44ec92781 100644
-> --- a/drivers/iio/iio_core.h
-> +++ b/drivers/iio/iio_core.h
-> @@ -31,6 +31,11 @@ void iio_device_ioctl_handler_register(struct iio_dev *indio_dev,
->                                        struct iio_ioctl_handler *h);
->  void iio_device_ioctl_handler_unregister(struct iio_ioctl_handler *h);
->
-> +int iio_attr_init(struct attribute *attr,
-> +                 const char *postfix,
-> +                 struct iio_chan_spec const *chan,
-> +                 enum iio_shared_by shared_by);
-> +
->  int __iio_add_chan_devattr(const char *postfix,
->                            struct iio_chan_spec const *chan,
->                            ssize_t (*func)(struct device *dev,
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 628d78125126..524b897a1877 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -26,6 +26,26 @@
->  #include <linux/iio/buffer.h>
->  #include <linux/iio/buffer_impl.h>
->
-> +/**
-> + * struct iio_buf_attr - iio buffer specific attribute
-> + * @attr:      underlying attribute
-> + * @address:   associated register address
-> + * @l:         list head for maintaining list of dynamically created attrs
-> + * @c:         specification for the underlying channel
-> + * @show:      sysfs show hook for this attribute
-> + * @store:     sysfs store hook for this attribute
-> + */
-> +struct iio_buf_attr {
-> +       struct attribute attr;
-> +       u64 address;
-> +       struct list_head l;
-> +       struct iio_chan_spec const *c;
-> +       ssize_t (*show)(struct iio_buffer *buffer, struct iio_buf_attr *attr,
-> +                       char *buf);
-> +       ssize_t (*store)(struct iio_buffer *buffer, struct iio_buf_attr *attr,
-> +                        const char *buf, size_t count);
-> +};
-> +
->  static const char * const iio_endian_prefix[] = {
->         [IIO_BE] = "be",
->         [IIO_LE] = "le",
-> @@ -210,18 +230,17 @@ void iio_buffer_init(struct iio_buffer *buffer)
->  }
->  EXPORT_SYMBOL(iio_buffer_init);
->
-> -static ssize_t iio_show_scan_index(struct device *dev,
-> -                                  struct device_attribute *attr,
-> +static ssize_t iio_show_scan_index(struct iio_buffer *buffer,
-> +                                  struct iio_buf_attr *attr,
->                                    char *buf)
->  {
-> -       return sprintf(buf, "%u\n", to_iio_dev_attr(attr)->c->scan_index);
-> +       return sprintf(buf, "%u\n", attr->c->scan_index);
->  }
->
-> -static ssize_t iio_show_fixed_type(struct device *dev,
-> -                                  struct device_attribute *attr,
-> +static ssize_t iio_show_fixed_type(struct iio_buffer *buffer,
-> +                                  struct iio_buf_attr *this_attr,
->                                    char *buf)
->  {
-> -       struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
->         u8 type = this_attr->c->scan_type.endianness;
->
->         if (type == IIO_CPU) {
-> @@ -248,17 +267,14 @@ static ssize_t iio_show_fixed_type(struct device *dev,
->                        this_attr->c->scan_type.shift);
->  }
->
-> -static ssize_t iio_scan_el_show(struct device *dev,
-> -                               struct device_attribute *attr,
-> +static ssize_t iio_scan_el_show(struct iio_buffer *buffer,
-> +                               struct iio_buf_attr *attr,
->                                 char *buf)
->  {
->         int ret;
-> -       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> -       struct iio_buffer *buffer = indio_dev->buffer;
->
->         /* Ensure ret is 0 or 1. */
-> -       ret = !!test_bit(to_iio_dev_attr(attr)->address,
-> -                      buffer->scan_mask);
-> +       ret = !!test_bit(attr->address, buffer->scan_mask);
->
->         return sprintf(buf, "%d\n", ret);
->  }
-> @@ -359,16 +375,14 @@ static int iio_scan_mask_query(struct iio_dev *indio_dev,
->         return !!test_bit(bit, buffer->scan_mask);
->  };
->
-> -static ssize_t iio_scan_el_store(struct device *dev,
-> -                                struct device_attribute *attr,
-> +static ssize_t iio_scan_el_store(struct iio_buffer *buffer,
-> +                                struct iio_buf_attr *this_attr,
->                                  const char *buf,
->                                  size_t len)
->  {
-> +       struct iio_dev *indio_dev = buffer->indio_dev;
->         int ret;
->         bool state;
-> -       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> -       struct iio_buffer *buffer = indio_dev->buffer;
-> -       struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
->
->         ret = strtobool(buf, &state);
->         if (ret < 0)
-> @@ -398,24 +412,20 @@ static ssize_t iio_scan_el_store(struct device *dev,
->
->  }
->
-> -static ssize_t iio_scan_el_ts_show(struct device *dev,
-> -                                  struct device_attribute *attr,
-> +static ssize_t iio_scan_el_ts_show(struct iio_buffer *buffer,
-> +                                  struct iio_buf_attr *attr,
->                                    char *buf)
->  {
-> -       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> -       struct iio_buffer *buffer = indio_dev->buffer;
-> -
->         return sprintf(buf, "%d\n", buffer->scan_timestamp);
->  }
->
-> -static ssize_t iio_scan_el_ts_store(struct device *dev,
-> -                                   struct device_attribute *attr,
-> +static ssize_t iio_scan_el_ts_store(struct iio_buffer *buffer,
-> +                                   struct iio_buf_attr *attr,
->                                     const char *buf,
->                                     size_t len)
->  {
-> +       struct iio_dev *indio_dev = buffer->indio_dev;
->         int ret;
-> -       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> -       struct iio_buffer *buffer = indio_dev->buffer;
->         bool state;
->
->         ret = strtobool(buf, &state);
-> @@ -434,13 +444,88 @@ static ssize_t iio_scan_el_ts_store(struct device *dev,
->         return ret ? ret : len;
->  }
->
-> +static int __iio_add_chan_bufattr(const char *postfix,
-> +                                 struct iio_chan_spec const *chan,
-> +                                 ssize_t (*readfunc)(struct iio_buffer *buffer,
-> +                                                     struct iio_buf_attr *attr,
-> +                                                     char *buf),
-> +                                 ssize_t (*writefunc)(struct iio_buffer *buffer,
-> +                                                      struct iio_buf_attr *attr,
-> +                                                      const char *buf,
-> +                                                      size_t len),
-> +                                 u64 mask,
-> +                                 enum iio_shared_by shared_by,
-> +                                 struct device *dev,
-> +                                 struct list_head *attr_list)
-> +{
-> +       struct iio_buf_attr *iio_attr, *t;
-> +       int ret;
-> +
-> +       iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
-> +       if (iio_attr == NULL)
-> +               return -ENOMEM;
-> +
-> +       ret = iio_attr_init(&iio_attr->attr, postfix, chan, shared_by);
-> +       if (ret)
-> +               goto error_iio_buf_attr_free;
-> +
-> +       iio_attr->c = chan;
-> +       iio_attr->address = mask;
-> +       list_for_each_entry(t, attr_list, l) {
-> +               if (strcmp(t->attr.name, iio_attr->attr.name) == 0) {
-> +                       if (shared_by == IIO_SEPARATE)
-> +                               dev_err(dev, "tried to double register : %s\n",
-> +                                       t->attr.name);
-> +                       ret = -EBUSY;
-> +                       goto error_iio_buf_attr_deinit;
-> +               }
-> +       }
-> +       list_add(&iio_attr->l, attr_list);
-> +
-> +       if (readfunc) {
-> +               iio_attr->attr.mode |= S_IRUGO;
-> +               iio_attr->show = readfunc;
-> +       }
-> +
-> +       if (writefunc) {
-> +               iio_attr->attr.mode |= S_IWUSR;
-> +               iio_attr->store = writefunc;
-> +       }
-> +
-> +       return 0;
-> +
-> +error_iio_buf_attr_deinit:
-> +       kfree(iio_attr->attr.name);
-> +error_iio_buf_attr_free:
-> +       kfree(iio_attr);
-> +       return ret;
-> +}
-> +
-> +/**
-> + * iio_free_chan_bufattr_list() - Free a list of IIO buffer attributes
-> + * @attr_list: List of IIO buffer attributes
-> + *
-> + * This function frees the memory allocated for each of the IIO buffer
-> + * attributes in the list.
-> + */
-> +static void iio_free_chan_bufattr_list(struct list_head *attr_list)
-> +{
-> +       struct iio_buf_attr *p, *n;
-> +
-> +       list_for_each_entry_safe(p, n, attr_list, l) {
-> +               list_del(&p->l);
-> +               kfree(p->attr.name);
-> +               kfree(p);
-> +       }
-> +}
-> +
->  static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
->                                         struct iio_buffer *buffer,
->                                         const struct iio_chan_spec *chan)
->  {
->         int ret, attrcount = 0;
->
-> -       ret = __iio_add_chan_devattr("index",
-> +       ret = __iio_add_chan_bufattr("index",
->                                      chan,
->                                      &iio_show_scan_index,
->                                      NULL,
-> @@ -451,7 +536,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
->         if (ret)
->                 return ret;
->         attrcount++;
-> -       ret = __iio_add_chan_devattr("type",
-> +       ret = __iio_add_chan_bufattr("type",
->                                      chan,
->                                      &iio_show_fixed_type,
->                                      NULL,
-> @@ -463,7 +548,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
->                 return ret;
->         attrcount++;
->         if (chan->type != IIO_TIMESTAMP)
-> -               ret = __iio_add_chan_devattr("en",
-> +               ret = __iio_add_chan_bufattr("en",
->                                              chan,
->                                              &iio_scan_el_show,
->                                              &iio_scan_el_store,
-> @@ -472,7 +557,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
->                                              &indio_dev->dev,
->                                              &buffer->scan_el_dev_attr_list);
->         else
-> -               ret = __iio_add_chan_devattr("en",
-> +               ret = __iio_add_chan_bufattr("en",
->                                              chan,
->                                              &iio_scan_el_ts_show,
->                                              &iio_scan_el_ts_store,
-> @@ -1251,6 +1336,7 @@ static struct attribute *iio_buffer_attrs[] = {
->  };
->
->  #define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
-> +#define to_iio_buf_attr(_attr) container_of(_attr, struct iio_buf_attr, attr)
->
->  static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
->                                         struct attribute *attr,
-> @@ -1291,9 +1377,9 @@ static ssize_t iio_scan_el_dir_attr_show(struct kobject *kobj,
->                                          char *buf)
->  {
->         struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
-> -       struct device_attribute *dattr = to_dev_attr(attr);
-> +       struct iio_buf_attr *battr = to_iio_buf_attr(attr);
->
-> -       return dattr->show(&buffer->indio_dev->dev, dattr, buf);
-> +       return battr->show(buffer, battr, buf);
->  }
->
->  static ssize_t iio_scan_el_dir_attr_store(struct kobject *kobj,
-> @@ -1302,9 +1388,9 @@ static ssize_t iio_scan_el_dir_attr_store(struct kobject *kobj,
->                                           size_t len)
->  {
->         struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
-> -       struct device_attribute *dattr = to_dev_attr(attr);
-> +       struct iio_buf_attr *battr = to_iio_buf_attr(attr);
->
-> -       return dattr->store(&buffer->indio_dev->dev, dattr, buf, len);
-> +       return battr->store(buffer, battr, buf, len);
->  }
->
->  static const struct sysfs_ops iio_scan_el_dir_sysfs_ops = {
-> @@ -1372,7 +1458,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->                                              struct iio_dev *indio_dev,
->                                              unsigned int idx)
->  {
-> -       struct iio_dev_attr *p;
-> +       struct iio_buf_attr *p;
->         struct attribute **attr;
->         int ret, i, attrn, attrcount;
->         const struct iio_chan_spec *channels;
-> @@ -1453,7 +1539,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->
->         attrn = 0;
->         list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
-> -               buffer->scan_el_attrs[attrn++] = &p->dev_attr.attr;
-> +               buffer->scan_el_attrs[attrn++] = &p->attr;
->
->         ret = iio_sysfs_add_attrs(&buffer->scan_el_dir, buffer->scan_el_attrs);
->         if (ret)
-> @@ -1469,7 +1555,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->         bitmap_free(buffer->scan_mask);
->  error_cleanup_dynamic:
->         iio_sysfs_del_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
-> -       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
-> +       iio_free_chan_bufattr_list(&buffer->scan_el_dev_attr_list);
->  error_buffer_kobject_put:
->         kobject_put(&buffer->buffer_dir);
->  error_buffer_free_attrs:
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index b8f7261945f5..088e59042226 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -967,7 +967,6 @@ static ssize_t iio_write_channel_info(struct device *dev,
->         return len;
->  }
->
-> -static
->  int iio_attr_init(struct attribute *attr,
->                   const char *postfix,
->                   struct iio_chan_spec const *chan,
-> --
-> 2.17.1
->
+77u/PiBGcm9tOiBIZWluZXIgS2FsbHdlaXQgPGhrYWxsd2VpdDFAZ21haWwuY29tPg0KPiBTZW50
+OiBGcmlkYXksIEphbnVhcnkgMjIsIDIwMjEgNDoyMCBQTQ0KDQo+IFRoZSAob3B0aW9uYWwpIHNv
+ZnR3YXJlIHJlc2V0IGlzIGRvbmUgdmlhIHNvZnRfcmVzZXQgY2FsbGJhY2suDQo+IFNvIGlmIHRo
+ZSBQSFkgaW4gcXVlc3Rpb24gbmVlZHMgc3BlY2lhbCB0cmVhdG1lbnQgYWZ0ZXIgYSBzb2Z0IHJl
+c2V0LA0KPiB3aHkgbm90IGFkZCBpdCB0byB0aGUgc29mdF9yZXNldCBjYWxsYmFjaz8NCg0KVGhh
+bmsgeW91IHZlcnkgbXVjaCBmb3IgdGhlIGZhc3QgcmVwbHkuIFRoaXMgbWFrZXMgc2Vuc2UsIEkg
+d2lsbCANCm1vZGlmeSB0aGUgcGF0Y2ggaW4gdGhpcyBkaXJlY3Rpb24uIA0KIA0KPiBUaGlzIHNv
+dW5kcyB0byBtZSBsaWtlIGEgbG93ZXIgbGV2ZWwgZHJpdmVyIChlLmcuIGZvciBHUElPIC8gaW50
+ZXJydXB0DQo+IGNvbnRyb2xsZXIpIG5vdCByZXN1bWluZyBwcm9wZXJseSBmcm9tIGhpYmVybmF0
+aW9uLiBTdXBwb3NlZGx5IHRoaW5ncw0KPiBsaWtlIGVkZ2UvbGV2ZWwgaGlnaC9sb3cvYm90aCBh
+cmUgc3RvcmVkIHBlciBpbnRlcnJ1cHQgbGluZSBpbiBhDQo+IHJlZ2lzdGVyIG9mIHRoZSBpbnRl
+cnJ1cHQgY29udHJvbGxlciwgYW5kIHRoZSBjb250cm9sbGVyIHdvdWxkIGhhdmUgdG8NCj4gcmVz
+dG9yZSB0aGUgcmVnaXN0ZXIgdmFsdWUgb24gcmVzdW1lIGZyb20gaGliZXJuYXRpb24uIFlvdSBt
+YXkgd2FudCB0bw0KPiBoYXZlIGEgbG9vayBhdCB0aGF0IGRyaXZlci4NCg0KSSB0aGluayB5b3Ug
+YXJlIHJpZ2h0LCB0aGUgZ3Bpby1teHMgZHJpdmVyIGhhcyBubyBQTSBvcGVyYXRpb25zLCBzbyAN
+CmlmIGl0IHJlc3BvbnNpYmxlIGZvciByZXN0b3JpbmcgdGhlIGludGVycnVwdCBsZXZlbCwgbm8g
+d29uZGVyIGl0IA0KZG9lc24ndC4gVGhpcyB3b3VsZCByZXF1aXJlIGltcGxlbWVudGluZyB0aGUg
+UE0gb3BzLCB3aGljaCB3b3VsZCANCnRha2Ugc29tZSBhZGRpdGlvbmFsIHdvcmssIEknbGwgc2Vl
+IGlmIEkgY2FuIGdldCBhcm91bmQgdG8gZG9pbmcgdGhpcy4NCiANCkJlc3QgcmVnYXJkcywNCg0K
+TGF1cmVudA0KDQoNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCkVhdG9uIEluZHVz
+dHJpZXMgTWFudWZhY3R1cmluZyBHbWJIIH4gUmVnaXN0ZXJlZCBwbGFjZSBvZiBidXNpbmVzczog
+Um91dGUgZGUgbGEgTG9uZ2VyYWllIDcsIDExMTAsIE1vcmdlcywgU3dpdHplcmxhbmQgDQoNCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQoNCg==
