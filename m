@@ -2,151 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4933001EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A184300239
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbhAVLsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:48:47 -0500
-Received: from mga17.intel.com ([192.55.52.151]:27190 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727136AbhAVLqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:46:54 -0500
-IronPort-SDR: cJErxF5/EMC2vnGfC5Phsn00QGJZvXHz5cqQ9cGbt2d2/o78KjfC/lV7umt3hwt2c58MUDQmc2
- dXgwzs2Gkl6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="159210871"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="159210871"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:44:56 -0800
-IronPort-SDR: J3y7zTLgpFbaDviXa8dk3nMWsL+Fn8NPNjxh2QW0TPOPXZ4ARTv73fqatRp2vnSiQpIUr7GN+Q
- J6df8arTpqmA==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="356996021"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:44:54 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id EEFFE209EB; Fri, 22 Jan 2021 11:18:22 +0200 (EET)
-Date:   Fri, 22 Jan 2021 11:18:22 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 1/4] dt-bindings: media: imx258: add bindings for
- IMX258 sensor
-Message-ID: <20210122091822.GB27155@paasikivi.fi.intel.com>
-References: <20201118202715.6692-1-krzk@kernel.org>
+        id S1727740AbhAVL6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:58:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727748AbhAVK5E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:57:04 -0500
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C63C061797
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:54:47 -0800 (PST)
+Received: by mail-vs1-xe35.google.com with SMTP id 186so2737151vsz.13
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zpsYHAdwN5j3WacuQ0BWujY+3R9jFAKUS6OekuCJX4Y=;
+        b=bbpIfQMF/99HAQ+oXqoJwjlIxn2tGpU5i9hsS6DpESl9Ej/V84ojv/WsJxTEx0Kix+
+         IcYSVVKZpFTMakz13XT2dDuqUuDUzeWjMBntRRW8ohc7r0S+fZIGJBK6BQGoNpvcIObh
+         XwolAolG+dKYvsoPsYx+K4+pfJb2qWgiRTbPQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zpsYHAdwN5j3WacuQ0BWujY+3R9jFAKUS6OekuCJX4Y=;
+        b=BMPVEVgfEmLEyktfJ/ITWHScs9EFVCd4binhKj889lXZ3x+Fa/xdWmBOvkcDIpiT3W
+         xmxBxvgKxLh7rXhg9ppl5oGGdBygUlx1KkKCIN5dA1V2KquG4jYAZitOPfN7oNzpwZnA
+         B2khUSVILobrhbzPzoSAciZg21goF9KXcQPjr9ivC22TfAOy2EYb5uS58czIDzoc1IgV
+         x0pPxDopHjdzNAIfeKurdZaOGoyoGLOsy229oYM5ak7afSW+X7hx2sR2oThyZ6ky8+MY
+         3H5lGBOTuJjoNop42iwuNKWQsDskO5cXxQZtCuJmsPLqRgmm1kv9ATGIcVFeYF2AO87j
+         gl9A==
+X-Gm-Message-State: AOAM532CAk//MuJmHFqwp7X7toYOq3lNT/ahTti05iCqufmIpr+ILRUG
+        fXDocLPCdxmarf/yx2eU3rEG+U23aUSi6ViQA0A6ng==
+X-Google-Smtp-Source: ABdhPJxzxop195QKfUnrwXsxhnkgdkUVQCNadMDQOXSkAk02i/gmTtKh3+KUKkTdhYo+UZeN0AZp0UXR3ZEP4/awvLA=
+X-Received: by 2002:a67:73c2:: with SMTP id o185mr376539vsc.16.1611312886546;
+ Fri, 22 Jan 2021 02:54:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118202715.6692-1-krzk@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210121075149.1310-1-hailong.fan@mediatek.com>
+ <CANMq1KBqKUofLaM+OEaTq6PSeYomNSLvn65c+Wyi1cKsLDNboQ@mail.gmail.com>
+ <1611230975.2493.17.camel@mhfsdcap03> <CANMq1KCXrEGrNrOwivrchXyawzKySVzQoxA1goYC-eh-auNFCA@mail.gmail.com>
+ <1611283438.2493.23.camel@mhfsdcap03>
+In-Reply-To: <1611283438.2493.23.camel@mhfsdcap03>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Fri, 22 Jan 2021 18:54:35 +0800
+Message-ID: <CANMq1KDa_aO_wtQAZofruN7r7BuvRTNGKkmfgTf2oM7ab9425g@mail.gmail.com>
+Subject: Re: [PATCH RESEND] pinctrl: mediatek: Fix trigger type setting follow
+ for unexpected interrupt
+To:     mtk15103 <hailong.fan@mediatek.com>
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, youlin.pei@mediatek.com,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Chen-Tsung Hsieh <chentsung@chromium.org>,
+        gtk_pangao@mediatek.com, Hanks Chen <hanks.chen@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>, zhengnan.chen@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krysztof,
+On Fri, Jan 22, 2021 at 10:44 AM mtk15103 <hailong.fan@mediatek.com> wrote:
+>
+> On Thu, 2021-01-21 at 20:13 +0800, Nicolas Boichat wrote:
+> > On Thu, Jan 21, 2021 at 8:09 PM mtk15103 <hailong.fan@mediatek.com> wrote:
+> > >
+> > > On Thu, 2021-01-21 at 16:55 +0800, Nicolas Boichat wrote:
+> > > > On Thu, Jan 21, 2021 at 3:52 PM Hailong Fan <hailong.fan@mediatek.com> wrote:
+> > > > >
+> > > > > When flipping the polarity will be generated interrupt under certain
+> > > > > circumstances, but GPIO external signal has not changed.
+> > > > > Then, mask the interrupt before polarity setting, and clear the
+> > > > > unexpected interrupt after trigger type setting completed.
+> > > > >
+> > > > > Signed-off-by: Hailong Fan <hailong.fan@mediatek.com>
+> > > > > ---
+> > > > > Resend since some server reject.
+> > > > > ---
+> > > > >  drivers/pinctrl/mediatek/mtk-eint.c | 13 +++++++++++--
+> > > > >  1 file changed, 11 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/pinctrl/mediatek/mtk-eint.c b/drivers/pinctrl/mediatek/mtk-eint.c
+> > > > > index 22736f60c16c..3acda6bb401e 100644
+> > > > > --- a/drivers/pinctrl/mediatek/mtk-eint.c
+> > > > > +++ b/drivers/pinctrl/mediatek/mtk-eint.c
+> > > > > @@ -157,6 +157,7 @@ static void mtk_eint_ack(struct irq_data *d)
+> > > > >  static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+> > > > >  {
+> > > > >         struct mtk_eint *eint = irq_data_get_irq_chip_data(d);
+> > > > > +       unsigned int unmask;
+> > > >
+> > > > bool?
+> > > Yes,thanks.
+> > > >
+> > > > >         u32 mask = BIT(d->hwirq & 0x1f);
+> > > > >         void __iomem *reg;
+> > > > >
+> > > > > @@ -173,6 +174,13 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+> > > > >         else
+> > > > >                 eint->dual_edge[d->hwirq] = 0;
+> > > > >
+> > > > > +       if (!mtk_eint_get_mask(eint, d->hwirq)) {
+> > > > > +               mtk_eint_mask(d);
+> > > > > +               unmask = 1;
+> > > > > +       } else {
+> > > > > +               unmask = 0;
+> > > > > +       }
+> > > > > +
+> > > > >         if (type & (IRQ_TYPE_LEVEL_LOW | IRQ_TYPE_EDGE_FALLING)) {
+> > > > >                 reg = mtk_eint_get_offset(eint, d->hwirq, eint->regs->pol_clr);
+> > > > >                 writel(mask, reg);
+> > > > > @@ -189,8 +197,9 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+> > > > >                 writel(mask, reg);
+> > > > >         }
+> > > > >
+> > > > > -       if (eint->dual_edge[d->hwirq])
+> > > > > -               mtk_eint_flip_edge(eint, d->hwirq);
+> > > >
+> > > > Why are you dropping this? Aren't we at risk to miss the first edge
+> > > > after mtk_eint_set_type is called?
+> > > mtk_eint_unmask() will do it.
+> > > If unmask != 1, user need to call mtk_eint_unmask() to enable the
+> > > interrupt before use it, thanks.
+> >
+> > Makes sense, I just have one more worry:
+> > https://elixir.bootlin.com/linux/latest/source/drivers/pinctrl/mediatek/mtk-eint.c#L122
+> >
+> > mtk_eint_unmask unmasks the interrupt _before_ the edge is flipped,
+> > could this cause a spurious interrupt? On any unmask operation -- not
+> > just on mtk_eint_set_type (so this is technically another problem,
+> > that should be fixed as a separate patch)
+>
+> This situation will not happen.
+>
+> Spurious interrupt occur condition: edge irq polarity value is same with
+> input signal.
+> e.g.
+> Default value: GPIO input is high, trigger type is falling_edge.
+> User want modify trigger type is rising_edge under some certain
+> circumstances, it will generate spurious interrupt but external signal
+> maintain high.
+> So we need ack interrupt after trigger_type setting is completed.
+>
+> mtk_eint_flip_edge is for dual_edge, the polarity setting based on
+> current gpio input signal:
+> if (input == high)
+>         polarity = low; /* falling_edge */
+> else
+>         polarity = high; /* rising_edge */
+> Then it's not cause a spurious interrupt.
 
-On Wed, Nov 18, 2020 at 09:27:12PM +0100, Krzysztof Kozlowski wrote:
-> Add bindings for the IMX258 camera sensor.  The bindings, just like the
-> driver, are quite limited, e.g. do not support regulator supplies.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> ---
-> 
-> Changes since v4:
-> 1. Add clock-lanes,
-> 2. Add Rob's review,
-> 3. Add one more example and extend existing one,
-> 4. Add common clock properties (assigned-*).
-> 
-> Changes since v3:
-> 1. Document also two lane setup.
-> 
-> Changes since v2:
-> 1. Remove clock-frequency, add reset GPIOs, add supplies.
-> 2. Use additionalProperties.
-> 
-> Changes since v1:
-> 1. None
-> ---
->  .../devicetree/bindings/media/i2c/imx258.yaml | 140 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 141 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> new file mode 100644
-> index 000000000000..4a3471fb88a1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> @@ -0,0 +1,140 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/imx258.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sony IMX258 13 Mpixel CMOS Digital Image Sensor
-> +
-> +maintainers:
-> +  - Krzysztof Kozlowski <krzk@kernel.org>
-> +
-> +description: |-
-> +  IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
-> +  type stacked image sensor with a square pixel array of size 4208 x 3120. It
-> +  is programmable through I2C interface.  Image data is sent through MIPI
-> +  CSI-2.
-> +
-> +properties:
-> +  compatible:
-> +    const: sony,imx258
-> +
-> +  assigned-clocks: true
-> +  assigned-clock-parents: true
-> +  assigned-clock-rates: true
-> +
-> +  clocks:
-> +    description:
-> +      Clock frequency from 6 to 27 MHz.
-> +    maxItems: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    description: |-
-> +      Reference to the GPIO connected to the XCLR pin, if any.
-> +
-> +  vana-supply:
-> +    description:
-> +      Analog voltage (VANA) supply, 2.7 V
-> +
-> +  vdig-supply:
-> +    description:
-> +      Digital I/O voltage (VDIG) supply, 1.2 V
-> +
-> +  vif-supply:
-> +    description:
-> +      Interface voltage (VIF) supply, 1.8 V
-> +
-> +  # See ../video-interfaces.txt for more details
-> +  port:
-> +    type: object
-> +    properties:
-> +      endpoint:
-> +        type: object
-> +        properties:
-> +          clock-lanes:
-> +            const: 0
+Okay let me try to make sure I follow:
 
-This is redundant. Please remove, same for the examples. Can be a separate
-patch, too.
+- Say interrupt is currently IRQ_TYPE_EDGE_FALLING (and GPIO is high and stable)
+- mtk_eint_set_type(d, IRQ_TYPE_EDGE_BOTH)
+- mtk_eint_mask(d)
+- (no mask changed, just eint->dual_edge)
+- mtk_eint_ack(d) (not actually needed in this example)
+- mtk_eint_unmask(d)
+  - HW reg unmask (can't generate an interrupt as anything that would
+have happened is acked already -- even with different previous/new
+types than my example)
+  - flip_edge (will swap polarity as needed but can't generate
+interrupt as it won't set the polarity to be the same as the current
+GPIO state)
 
-With this change the set seems good to me.
+Okay, I think I'm convinced.
 
--- 
-Sakari Ailus
+Please fix the nits and then you can add
+
+Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+
+> > > > > +       mtk_eint_ack(d);
+> > > > > +       if (unmask == 1)
+> > > >
+> > > > Just `if (unmask)`
+> > > Yes,thanks.
+> > > > > +               mtk_eint_unmask(d);
+> > > > >
+> > > > >         return 0;
+> > > > >  }
+> > > > > --
+> > > > > 2.18.0
+> > >
+>
