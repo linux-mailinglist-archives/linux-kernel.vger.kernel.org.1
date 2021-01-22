@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5C0300F99
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18BC300F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbhAVWGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 17:06:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34180 "EHLO mail.kernel.org"
+        id S1728351AbhAVWFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:05:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730703AbhAVWBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:01:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id DFDE423B1F;
+        id S1730574AbhAVWBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 17:01:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 782E223B16;
         Fri, 22 Jan 2021 22:00:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611352839;
-        bh=Jde4JDN+krmqkjCY3s3Tt+sCpxSUIQjuZG6YsoWqjU4=;
+        bh=MshnZ3dkBkCc0RmQkUxUoPxMjKXTuXcPitlAd7tDwrY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=aoOrG+j6XbCuTkdHgN8+UMHiPeW+wNAjJVDh7QhNjp/vGaSBg3Y4A4emfVzZEZp5p
-         vA5HCJL4brO9+oyuAhkS3PYMhvZugruu1O/iEBy4wI9EQUtKHGU2YC/C2LKA8DmiHr
-         6RS3dRknECNew9BvUYeClYqNnaGwXQik9ZK4hm+KgtPLFe/6sW/V35hJi5uv/2YlGj
-         M1yK5g3aeACGxiOuoX/ACAZwa0axXku88jYglZTNXuAQkg6xAkbZshn8nWMqecwM1c
-         S0FCStfZ1+69kZvKiZaaJCZJ3/arovhhcZ6szgag3q3sdwYjbc5DYtiv2v48u4eKDL
-         tZCqkS/0+3jZw==
+        b=k9UideLBL79JUA2khQbPWxQSwo0C3bl2DOvEnrAYKRctc/WwSat07wuem0lTJD4i1
+         1nVPDk3KOEwiGaQyrwhaXF9bW/6opvazyJLkCD5XitR/Z3ZS9JTTZIDSYeKj9RbGxi
+         rU/ykUGOSAedMwr8Jm+8BBaqmLs3L2xHCk9AC3dE2Jch3ELf0vFwvnQi+F2Jljx2UV
+         xQ8a0r/uPwUqFxRmEAPjWj1XBEXyzbd2SdpdfNYkOHNbanQ4WdtY7XeevYlDAbszvC
+         DyM8pVdJpG4yHEjwJd2rSwfbcpj9ej+/aOEe6jt4pUjYYJBXapTAP047eRO68T176E
+         0M0el57YADh7A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DC301652D1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 74DB3652D0;
         Fri, 22 Jan 2021 22:00:39 +0000 (UTC)
-Subject: Re: [GIT PULL] Ceph fixes for 5.11-rc5
+Subject: Re: [GIT PULL] MMC fixes for v5.11-rc5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210122160605.5939-1-idryomov@gmail.com>
-References: <20210122160605.5939-1-idryomov@gmail.com>
+In-Reply-To: <20210122094413.69488-1-ulf.hansson@linaro.org>
+References: <20210122094413.69488-1-ulf.hansson@linaro.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210122160605.5939-1-idryomov@gmail.com>
-X-PR-Tracked-Remote: https://github.com/ceph/ceph-client.git tags/ceph-for-5.11-rc5
-X-PR-Tracked-Commit-Id: 9d5ae6f3c50a6f718b6d4be3c7b0828966e01b05
+X-PR-Tracked-Message-Id: <20210122094413.69488-1-ulf.hansson@linaro.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.11-rc3
+X-PR-Tracked-Commit-Id: b503087445ce7e45fabdee87ca9e460d5b5b5168
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a9034304ff7b3569af4f159d0c1d4ba33d86cf47
-Message-Id: <161135283989.4174.16804179094768483379.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 59a4560e855798f9764b77777aeab796de1a171d
+Message-Id: <161135283947.4174.16009474180707090842.pr-tracker-bot@kernel.org>
 Date:   Fri, 22 Jan 2021 22:00:39 +0000
-To:     Ilya Dryomov <idryomov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 22 Jan 2021 17:06:05 +0100:
+The pull request you sent on Fri, 22 Jan 2021 10:44:13 +0100:
 
-> https://github.com/ceph/ceph-client.git tags/ceph-for-5.11-rc5
+> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.11-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a9034304ff7b3569af4f159d0c1d4ba33d86cf47
+https://git.kernel.org/torvalds/c/59a4560e855798f9764b77777aeab796de1a171d
 
 Thank you!
 
