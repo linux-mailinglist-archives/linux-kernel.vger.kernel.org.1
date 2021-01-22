@@ -2,164 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7843C300110
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7391300116
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbhAVK7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:59:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727555AbhAVKv6 (ORCPT
+        id S1728060AbhAVLAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:00:07 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35688 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727629AbhAVKwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:51:58 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CD0C06121E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:51:18 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id w18so3437827pfu.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:51:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LPFWN6gpauI4vigWfOz/xPJOdZeAxCmm0GF1zvJDfzo=;
-        b=V+Hz5lr6HX/rwkb7XWX0ZVFoYsa7Z6oigc7al8V8vGUi3astJhd+qexzbJ2yXMlcuH
-         lIkc+An9dl9VuEI+iXslcp65fU4tsTywBsHS6BMsH72fXtrnRG/9sov745Nl5bXF82+Y
-         YoCnvhP+vXOw438QQb9a1U2HzbICgZ9mwU6khvlOChY3CIm5mROzbRP5jAQu0CGSRq68
-         D1Y1NYxFsuvxON9dqPQJnUAdlqhRHKCUgjgyHWGFW0DDMIoWYgjStSkEIiJZgVdZXHG7
-         gtLnTn9j2xVHvWNqTxFANOBWKSj133pli5mDWg2FDJqv5EWLDVVBEwZ7T3QD98JANASA
-         apZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LPFWN6gpauI4vigWfOz/xPJOdZeAxCmm0GF1zvJDfzo=;
-        b=szUzuIGKpgITg+bW14Ls1Rbm05nNbOBElHwYdp0jgxL9Q4o1YA2owJF4qcKUFxCYoR
-         406Q3yWGhNqn7D8vOW0blmGq+O05ssbo9dGlkV8WvaA6DKfUnMn0x33IvjFGw8lfuEWR
-         Tj+30AZogumTQR693dQdkCOG0Hot6iJU3bEwCXcNj071CCQkUZ3PmsKI1Gor2KEiNT3u
-         6wf2c7DU/qDlQFLTzJoAwUia7blZTxYiw62YfDBIks2yFLw/KosnjSwk9sYpGG7ajKr+
-         /qe0PmzW8uZp0gUC1JTw7VVbQlljR4mW1cV3g/FDigesbRQ/Udyewy7RDoYPm7fclrNo
-         v9Pw==
-X-Gm-Message-State: AOAM532UzTjo2uC0PBswJ/N+Ju5fdUnSIrZN8iuVP+qV0sTbMnbPWs3D
-        wcazKTay8fFkyVsD5QcnfmQX+w==
-X-Google-Smtp-Source: ABdhPJyENUmgJ+EiUhOGekL76R0FDZ2P3pgVpfL062ASn1PS78NJ9f6QmgPbEx72lXiLbJKq6EJA2Q==
-X-Received: by 2002:a62:d401:0:b029:1bd:4078:553b with SMTP id a1-20020a62d4010000b02901bd4078553bmr3575219pfh.21.1611312678067;
-        Fri, 22 Jan 2021 02:51:18 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id j3sm8799732pjs.50.2021.01.22.02.51.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Jan 2021 02:51:17 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>,
+        Fri, 22 Jan 2021 05:52:20 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MAlTsr011262;
+        Fri, 22 Jan 2021 11:51:17 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=fjN6svtjO74tNZ1Ok1Ake2zcQjDu374eT+xfJTpGg3k=;
+ b=nrv1/d7njRbg8g6mGRJpe5HMuC/r73jnzhbkd2faZeNconTfC7BpQNDBNYD80cF9Ez0O
+ MeAIPB5/CfGTP3wjwHPJSmzMd7GqE2etQDQxVZ2z0Ck8Nn7uV4R0ugd4BO20Enkv+F+M
+ RloLlMktV6+kj8eTeqbfUMFSlPpgauXGKg1d8Skf8E92eegN8bGPYlWUdWiEIzAd8gcF
+ SmtsctrWwOBFn5Vp93AiBoxRAClofjhJFDUhPC3X8aEVkAL4qbVYSMgCLb39nsD6Ttn9
+ EdfAFQGyCWHhK4suZgA/MhLWeywlBFMjC/SWNkS0fHELso7YuSOrP3+18XFJMahUiTbc Qw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3668pe1e16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 11:51:17 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 777B210002A;
+        Fri, 22 Jan 2021 11:51:16 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5248122DBCA;
+        Fri, 22 Jan 2021 11:51:16 +0100 (CET)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan 2021 11:51:15
+ +0100
+From:   <gabriel.fernandez@foss.st.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH V6 6/6] of: unittest: Statically apply overlays using fdtoverlay
-Date:   Fri, 22 Jan 2021 16:20:36 +0530
-Message-Id: <58e8523e1489b70b76211fb94a9229ae12c33cad.1611312122.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1611312122.git.viresh.kumar@linaro.org>
-References: <cover.1611312122.git.viresh.kumar@linaro.org>
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Etienne Carriere <etienne.carriere@st.com>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 00/14] Introduce STM32MP1 RCC in secured mode
+Date:   Fri, 22 Jan 2021 11:50:47 +0100
+Message-ID: <20210122105101.27374-1-gabriel.fernandez@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-22_06:2021-01-21,2021-01-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that fdtoverlay is part of the kernel build, start using it to test
-the unitest overlays we have by applying them statically. Create a new
-base file static_base.dts which includes other .dtsi files.
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-Some unittest overlays deliberately contain errors that unittest checks
-for. These overlays will cause fdtoverlay to fail, and are thus not
-included in the static_test.dtb.
+Platform STM32MP1 can be used in configuration where some clocks and
+IP resets can relate as secure resources.
+These resources are moved from a RCC clock/reset handle to a SCMI
+clock/reset_domain handle.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/of/unittest-data/Makefile        | 51 ++++++++++++++++++++++++
- drivers/of/unittest-data/static_base.dts |  5 +++
- 2 files changed, 56 insertions(+)
- create mode 100644 drivers/of/unittest-data/static_base.dts
+The RCC clock driver is now dependant of the SCMI driver, then we have
+to manage now the probe defering.
 
-diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
-index 009f4045c8e4..586fa8cda916 100644
---- a/drivers/of/unittest-data/Makefile
-+++ b/drivers/of/unittest-data/Makefile
-@@ -34,7 +34,58 @@ DTC_FLAGS_overlay += -@
- DTC_FLAGS_overlay_bad_phandle += -@
- DTC_FLAGS_overlay_bad_symbol += -@
- DTC_FLAGS_overlay_base += -@
-+DTC_FLAGS_static_base += -@
- DTC_FLAGS_testcases += -@
- 
- # suppress warnings about intentional errors
- DTC_FLAGS_testcases += -Wno-interrupts_property
-+
-+# Apply overlays statically with fdtoverlay.  This is a build time test that
-+# the overlays can be applied successfully by fdtoverlay.  This does not
-+# guarantee that the overlays can be applied successfully at run time by
-+# unittest, but it provides a bit of build time test coverage for those
-+# who do not execute unittest.
-+#
-+# The overlays are applied on top of static_base.dtb to create static_test.dtb
-+# If fdtoverlay detects an error than the kernel build will fail.
-+# static_test.dtb is not consumed by unittest.
-+#
-+# Some unittest overlays deliberately contain errors that unittest checks for.
-+# These overlays will cause fdtoverlay to fail, and are thus not included
-+# in the static test:
-+#			overlay_bad_add_dup_node.dtb \
-+#			overlay_bad_add_dup_prop.dtb \
-+#			overlay_bad_phandle.dtb \
-+#			overlay_bad_symbol.dtb \
-+#			overlay_base.dtb \
-+
-+apply_static_overlay := overlay.dtb \
-+			overlay_0.dtb \
-+			overlay_1.dtb \
-+			overlay_2.dtb \
-+			overlay_3.dtb \
-+			overlay_4.dtb \
-+			overlay_5.dtb \
-+			overlay_6.dtb \
-+			overlay_7.dtb \
-+			overlay_8.dtb \
-+			overlay_9.dtb \
-+			overlay_10.dtb \
-+			overlay_11.dtb \
-+			overlay_12.dtb \
-+			overlay_13.dtb \
-+			overlay_15.dtb \
-+			overlay_gpio_01.dtb \
-+			overlay_gpio_02a.dtb \
-+			overlay_gpio_02b.dtb \
-+			overlay_gpio_03.dtb \
-+			overlay_gpio_04a.dtb \
-+			overlay_gpio_04b.dtb
-+
-+quiet_cmd_fdtoverlay = FDTOVERLAY $@
-+      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
-+
-+$(obj)/static_test.dtb: $(obj)/static_base.dtb $(addprefix $(obj)/,$(apply_static_overlay))
-+	$(call if_changed,fdtoverlay)
-+
-+always-$(CONFIG_OF_OVERLAY) += static_test.dtb
-diff --git a/drivers/of/unittest-data/static_base.dts b/drivers/of/unittest-data/static_base.dts
-new file mode 100644
-index 000000000000..3c9af4aefb96
---- /dev/null
-+++ b/drivers/of/unittest-data/static_base.dts
-@@ -0,0 +1,5 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+
-+#include "overlay_common.dtsi"
-+#include "testcases_common.dtsi"
+Gabriel Fernandez (14):
+  clk: stm32mp1: merge 'clk-hsi-div' and 'ck_hsi' into one clock
+  clk: stm32mp1: merge 'ck_hse_rtc' and 'ck_rtc' into one clock
+  clk: stm32mp1: remove intermediate pll clocks
+  clk: stm32mp1: convert to module driver
+  clk: stm32mp1: move RCC reset controller into RCC clock driver
+  reset: stm32mp1: remove stm32mp1 reset
+  dt-bindings: clock: add IDs for SCMI clocks on stm32mp15
+  dt-bindings: reset: add IDs for SCMI reset domains on stm32mp15
+  dt-bindings: reset: add MCU HOLD BOOT ID for SCMI reset domains on
+    stm32mp15
+  clk: stm32mp1: new compatible for secure RCC support
+  ARM: dts: stm32: define SCMI resources on stm32mp15
+  ARM: dts: stm32: move clocks/resets to SCMI resources for stm32mp15
+  dt-bindings: clock: stm32mp1 new compatible for secure rcc
+  ARM: dts: stm32: introduce basic boot include on stm32mp15x board
+
+ .../bindings/clock/st,stm32mp1-rcc.yaml       |   3 +-
+ arch/arm/boot/dts/stm32mp15-no-scmi.dtsi      | 158 ++++++
+ arch/arm/boot/dts/stm32mp151.dtsi             | 127 +++--
+ arch/arm/boot/dts/stm32mp153.dtsi             |   4 +-
+ arch/arm/boot/dts/stm32mp157.dtsi             |   2 +-
+ arch/arm/boot/dts/stm32mp15xc.dtsi            |   4 +-
+ drivers/clk/Kconfig                           |  10 +
+ drivers/clk/clk-stm32mp1.c                    | 495 +++++++++++++++---
+ drivers/reset/Kconfig                         |   6 -
+ drivers/reset/Makefile                        |   1 -
+ drivers/reset/reset-stm32mp1.c                | 115 ----
+ include/dt-bindings/clock/stm32mp1-clks.h     |  27 +
+ include/dt-bindings/reset/stm32mp1-resets.h   |  15 +
+ 13 files changed, 702 insertions(+), 265 deletions(-)
+ create mode 100644 arch/arm/boot/dts/stm32mp15-no-scmi.dtsi
+ delete mode 100644 drivers/reset/reset-stm32mp1.c
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
+2.17.1
 
