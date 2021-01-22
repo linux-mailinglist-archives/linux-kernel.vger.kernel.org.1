@@ -2,173 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B282300808
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22E93007FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729095AbhAVP7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728872AbhAVP4Y (ORCPT
+        id S1729302AbhAVP5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:57:31 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:25406 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729181AbhAVP4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:56:24 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4FCC06174A;
-        Fri, 22 Jan 2021 07:55:44 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id n42so5467081ota.12;
-        Fri, 22 Jan 2021 07:55:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lVwBZlqiYAkRijUO0G3Pdgufy3KTr/KU+bLABsRacK0=;
-        b=o3cV7KBYdJWHwjHBJpMCzihXhznKL1pW79F6twFp3Vr788Uig3i00AbOCbPit72oYv
-         wziGblz8dA+bIKUHN09rqDQeIurEs3dReqCnqMkXO0lhCp4wxaCXZ8sY1P4bPxvUS0vP
-         ykOWb0FR+uK7HBwROaw7vbCcrj2sPnXf8PM6h3+6eNuEcWONv2vlrVbcTYZ8WeENlg6u
-         fFcdAN0FxgFiGJaEjtDi0RiTeDIZPx6gdMKXcLUSdDwGvxaA2I8BaWZFyGALO+4i4p8U
-         BBUN9DCvY5QI1Or8qGcCak9BaO6hgzNlkt9gnK23K8/6KVvw5QUpx4YFdieJlUBNwLRb
-         DzXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lVwBZlqiYAkRijUO0G3Pdgufy3KTr/KU+bLABsRacK0=;
-        b=CBaCXNdBmqqoQ9cf+b1768tvVIPTVuSUljv3oW+QpBDMwvsM0xL2RwK3gYsIQQ/MTd
-         R1AL77/x6GxTMf/9cpdqWPUucGO5KYEsTdVciGpCp8TVhHr2e4Ql/kDDngiy/Nuu2v+g
-         jXOA9WdAyi1ByIE7ar1tYIB9DEAEEWG4unzI1dIU8bN8RLasJUqr679VaspEUajPkcHR
-         47o4vpwygbj8o39kxL1p3N+GEvDTPue6zqHkGVuhhRIWjFyKuyu25XWyBNOzi6oPa3Ac
-         wHGIdTUbZn/Ehm+mngwXt9pvgr1so5i0BeJSYbLuZpadqRj928iivDjInoVOOoeaeg7O
-         SR8w==
-X-Gm-Message-State: AOAM532gCeP0qbhEJsbo7BwUece6S39dMb8tZwI0I6YckkxP4iFcOLQq
-        xdH0gJvSSZ3FDRxsQd4O8zs=
-X-Google-Smtp-Source: ABdhPJx9oAWwSu666d9+RiZPNbctzTlb8yeHu4vEo52+ZLz0UdxaZBqtC1t4CxdlvDW68G/+B6SkAg==
-X-Received: by 2002:a05:6830:796:: with SMTP id w22mr1581370ots.297.1611330944051;
-        Fri, 22 Jan 2021 07:55:44 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.50])
-        by smtp.googlemail.com with ESMTPSA id y24sm1672792oos.44.2021.01.22.07.55.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 07:55:43 -0800 (PST)
-Subject: Re: [PATCH v3 net-next 1/1] Allow user to set metric on default route
- learned via Router Advertisement.
-To:     Praveen Chaudhary <praveen5582@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, corbet@lwn.net, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Zhenggen Xu <zxu@linkedin.com>
-References: <20210119212959.25917-1-pchaudhary@linkedin.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <1cc9e887-a984-c14a-451c-60a202c4cf20@gmail.com>
-Date:   Fri, 22 Jan 2021 08:55:41 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Fri, 22 Jan 2021 10:56:23 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MFUthn019148;
+        Fri, 22 Jan 2021 10:55:30 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3668rbtjq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 10:55:30 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 10MFtScF002562
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 22 Jan 2021 10:55:28 -0500
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Fri, 22 Jan 2021 07:55:27 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 22 Jan 2021 07:55:26 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 10MFtF59014933;
+        Fri, 22 Jan 2021 10:55:24 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 06/12] iio: buffer: re-route scan_elements via it's kobj_type
+Date:   Fri, 22 Jan 2021 17:57:59 +0200
+Message-ID: <20210122155805.83012-7-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210122155805.83012-1-alexandru.ardelean@analog.com>
+References: <20210122155805.83012-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119212959.25917-1-pchaudhary@linkedin.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-22_11:2021-01-22,2021-01-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 malwarescore=0 impostorscore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101220087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/21 2:29 PM, Praveen Chaudhary wrote:
-> For IPv4, default route is learned via DHCPv4 and user is allowed to change
-> metric using config etc/network/interfaces. But for IPv6, default route can
-> be learned via RA, for which, currently a fixed metric value 1024 is used.
-> 
-> Ideally, user should be able to configure metric on default route for IPv6
-> similar to IPv4. This fix adds sysctl for the same.
-> 
-> Signed-off-by: Praveen Chaudhary <pchaudhary@linkedin.com>
-> Signed-off-by: Zhenggen Xu <zxu@linkedin.com>
-> 
-> Changes in v1.
-> 1.) Correct the call to rt6_add_dflt_router.
-> 
-> Changes in v2.
-> 1.) Replace accept_ra_defrtr_metric to ra_defrtr_metric.
-> 2.) Change Type to __u32 instead of __s32.
-> 3.) Change description in Documentation/networking/ip-sysctl.rst.
-> 4.) Use proc_douintvec instead of proc_dointvec.
-> 5.) Code style in ndisc_router_discovery().
-> 6.) Change Type to u32 instead of unsigned int.
-> 
-> Changes in v3:
-> 1.) Removed '---' and '```' from description.
-> 2.) Remove stray ' after accept_ra_defrtr.
-> 3.) Fix tab in net/ipv6/addrconf.c.
-> 
-> Logs:
-> 
-> For IPv4:
-> 
-> Config in etc/network/interfaces:
-> auto eth0
-> iface eth0 inet dhcp
->     metric 4261413864
-> 
-> IPv4 Kernel Route Table:
-> $ ip route list
-> default via 172.21.47.1 dev eth0 metric 4261413864
-> 
-> FRR Table, if a static route is configured:
-> [In real scenario, it is useful to prefer BGP learned default route over DHCPv4 default route.]
-> Codes: K - kernel route, C - connected, S - static, R - RIP,
->        O - OSPF, I - IS-IS, B - BGP, P - PIM, E - EIGRP, N - NHRP,
->        T - Table, v - VNC, V - VNC-Direct, A - Babel, D - SHARP,
->        > - selected route, * - FIB route
-> 
-> S>* 0.0.0.0/0 [20/0] is directly connected, eth0, 00:00:03
-> K   0.0.0.0/0 [254/1000] via 172.21.47.1, eth0, 6d08h51m
-> 
-> i.e. User can prefer Default Router learned via Routing Protocol in IPv4.
-> Similar behavior is not possible for IPv6, without this fix.
-> 
-> After fix [for IPv6]:
-> sudo sysctl -w net.ipv6.conf.eth0.net.ipv6.conf.eth0.ra_defrtr_metric=1996489705
-> 
-> IP monitor: [When IPv6 RA is received]
-> default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric 1996489705  pref high
-> 
-> Kernel IPv6 routing table
-> $ ip -6 route list
-> default via fe80::be16:65ff:feb3:ce8e dev eth0 proto ra metric 1996489705 expires 21sec hoplimit 64 pref high
-> 
-> FRR Table, if a static route is configured:
-> [In real scenario, it is useful to prefer BGP learned default route over IPv6 RA default route.]
-> Codes: K - kernel route, C - connected, S - static, R - RIPng,
->        O - OSPFv3, I - IS-IS, B - BGP, N - NHRP, T - Table,
->        v - VNC, V - VNC-Direct, A - Babel, D - SHARP,
->        > - selected route, * - FIB route
-> 
-> S>* ::/0 [20/0] is directly connected, eth0, 00:00:06
-> K   ::/0 [119/1001] via fe80::xx16:xxxx:feb3:ce8e, eth0, 6d07h43m
-> 
-> If the metric is changed later, the effect will be seen only when next IPv6
-> RA is received, because the default route must be fully controlled by RA msg.
-> Below metric is changed from 1996489705 to 1996489704.
-> 
-> $ sudo sysctl -w net.ipv6.conf.eth0.ra_defrtr_metric=1996489704
-> net.ipv6.conf.eth0.ra_defrtr_metric = 1996489704
-> 
-> IP monitor:
-> [On next IPv6 RA msg, Kernel deletes prev route and installs new route with updated metric]
-> 
-> Deleted default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric 1996489705  expires 3sec hoplimit 64 pref high
-> default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric 1996489704  pref high
-> ---
->  Documentation/networking/ip-sysctl.rst | 12 ++++++++++++
->  include/linux/ipv6.h                   |  1 +
->  include/net/ip6_route.h                |  3 ++-
->  include/uapi/linux/ipv6.h              |  1 +
->  include/uapi/linux/sysctl.h            |  1 +
->  net/ipv6/addrconf.c                    | 10 ++++++++++
->  net/ipv6/ndisc.c                       | 14 ++++++++++----
->  net/ipv6/route.c                       |  5 +++--
->  8 files changed, 40 insertions(+), 7 deletions(-)
-> 
+The scan_elements attributes are solely located inside
+'industrialio-buffer-sysfs.c'. In order to support more than one buffer per
+IIO device, we need to expand scan_elements attributes directly to IIO
+buffer object, and not the IIO device.
 
-LGTM. I can't think of a better way to do this than a sysctl. Shame that
-the metric/priority is not an RA option.
+This also requires that a new 'iio_buffer_attr' type be added which is
+mostly a copy of 'iio_dev_attr', but this expands to an IIO buffer object.
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+The 'iio_dev_attr' type could have been re-used here, but managing 'device'
+objects is a bit more tricky (than it looks at first). A 'device' object
+needs to be initialized & managed and we only need to the 'kobj' to expand
+from the 'bufferX' directory back to an IIO buffer.
+kobjects are simpler to manage.
+
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/iio_core.h            |   5 +
+ drivers/iio/industrialio-buffer.c | 160 +++++++++++++++++++++++-------
+ drivers/iio/industrialio-core.c   |   1 -
+ 3 files changed, 128 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+index fced02cadcc3..43d44ec92781 100644
+--- a/drivers/iio/iio_core.h
++++ b/drivers/iio/iio_core.h
+@@ -31,6 +31,11 @@ void iio_device_ioctl_handler_register(struct iio_dev *indio_dev,
+ 				       struct iio_ioctl_handler *h);
+ void iio_device_ioctl_handler_unregister(struct iio_ioctl_handler *h);
+ 
++int iio_attr_init(struct attribute *attr,
++		  const char *postfix,
++		  struct iio_chan_spec const *chan,
++		  enum iio_shared_by shared_by);
++
+ int __iio_add_chan_devattr(const char *postfix,
+ 			   struct iio_chan_spec const *chan,
+ 			   ssize_t (*func)(struct device *dev,
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index 628d78125126..524b897a1877 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -26,6 +26,26 @@
+ #include <linux/iio/buffer.h>
+ #include <linux/iio/buffer_impl.h>
+ 
++/**
++ * struct iio_buf_attr - iio buffer specific attribute
++ * @attr:	underlying attribute
++ * @address:	associated register address
++ * @l:		list head for maintaining list of dynamically created attrs
++ * @c:		specification for the underlying channel
++ * @show:	sysfs show hook for this attribute
++ * @store:	sysfs store hook for this attribute
++ */
++struct iio_buf_attr {
++	struct attribute attr;
++	u64 address;
++	struct list_head l;
++	struct iio_chan_spec const *c;
++	ssize_t (*show)(struct iio_buffer *buffer, struct iio_buf_attr *attr,
++			char *buf);
++	ssize_t (*store)(struct iio_buffer *buffer, struct iio_buf_attr *attr,
++			 const char *buf, size_t count);
++};
++
+ static const char * const iio_endian_prefix[] = {
+ 	[IIO_BE] = "be",
+ 	[IIO_LE] = "le",
+@@ -210,18 +230,17 @@ void iio_buffer_init(struct iio_buffer *buffer)
+ }
+ EXPORT_SYMBOL(iio_buffer_init);
+ 
+-static ssize_t iio_show_scan_index(struct device *dev,
+-				   struct device_attribute *attr,
++static ssize_t iio_show_scan_index(struct iio_buffer *buffer,
++				   struct iio_buf_attr *attr,
+ 				   char *buf)
+ {
+-	return sprintf(buf, "%u\n", to_iio_dev_attr(attr)->c->scan_index);
++	return sprintf(buf, "%u\n", attr->c->scan_index);
+ }
+ 
+-static ssize_t iio_show_fixed_type(struct device *dev,
+-				   struct device_attribute *attr,
++static ssize_t iio_show_fixed_type(struct iio_buffer *buffer,
++				   struct iio_buf_attr *this_attr,
+ 				   char *buf)
+ {
+-	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+ 	u8 type = this_attr->c->scan_type.endianness;
+ 
+ 	if (type == IIO_CPU) {
+@@ -248,17 +267,14 @@ static ssize_t iio_show_fixed_type(struct device *dev,
+ 		       this_attr->c->scan_type.shift);
+ }
+ 
+-static ssize_t iio_scan_el_show(struct device *dev,
+-				struct device_attribute *attr,
++static ssize_t iio_scan_el_show(struct iio_buffer *buffer,
++				struct iio_buf_attr *attr,
+ 				char *buf)
+ {
+ 	int ret;
+-	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+-	struct iio_buffer *buffer = indio_dev->buffer;
+ 
+ 	/* Ensure ret is 0 or 1. */
+-	ret = !!test_bit(to_iio_dev_attr(attr)->address,
+-		       buffer->scan_mask);
++	ret = !!test_bit(attr->address, buffer->scan_mask);
+ 
+ 	return sprintf(buf, "%d\n", ret);
+ }
+@@ -359,16 +375,14 @@ static int iio_scan_mask_query(struct iio_dev *indio_dev,
+ 	return !!test_bit(bit, buffer->scan_mask);
+ };
+ 
+-static ssize_t iio_scan_el_store(struct device *dev,
+-				 struct device_attribute *attr,
++static ssize_t iio_scan_el_store(struct iio_buffer *buffer,
++				 struct iio_buf_attr *this_attr,
+ 				 const char *buf,
+ 				 size_t len)
+ {
++	struct iio_dev *indio_dev = buffer->indio_dev;
+ 	int ret;
+ 	bool state;
+-	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+-	struct iio_buffer *buffer = indio_dev->buffer;
+-	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+ 
+ 	ret = strtobool(buf, &state);
+ 	if (ret < 0)
+@@ -398,24 +412,20 @@ static ssize_t iio_scan_el_store(struct device *dev,
+ 
+ }
+ 
+-static ssize_t iio_scan_el_ts_show(struct device *dev,
+-				   struct device_attribute *attr,
++static ssize_t iio_scan_el_ts_show(struct iio_buffer *buffer,
++				   struct iio_buf_attr *attr,
+ 				   char *buf)
+ {
+-	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+-	struct iio_buffer *buffer = indio_dev->buffer;
+-
+ 	return sprintf(buf, "%d\n", buffer->scan_timestamp);
+ }
+ 
+-static ssize_t iio_scan_el_ts_store(struct device *dev,
+-				    struct device_attribute *attr,
++static ssize_t iio_scan_el_ts_store(struct iio_buffer *buffer,
++				    struct iio_buf_attr *attr,
+ 				    const char *buf,
+ 				    size_t len)
+ {
++	struct iio_dev *indio_dev = buffer->indio_dev;
+ 	int ret;
+-	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+-	struct iio_buffer *buffer = indio_dev->buffer;
+ 	bool state;
+ 
+ 	ret = strtobool(buf, &state);
+@@ -434,13 +444,88 @@ static ssize_t iio_scan_el_ts_store(struct device *dev,
+ 	return ret ? ret : len;
+ }
+ 
++static int __iio_add_chan_bufattr(const char *postfix,
++				  struct iio_chan_spec const *chan,
++				  ssize_t (*readfunc)(struct iio_buffer *buffer,
++						      struct iio_buf_attr *attr,
++						      char *buf),
++				  ssize_t (*writefunc)(struct iio_buffer *buffer,
++						       struct iio_buf_attr *attr,
++						       const char *buf,
++						       size_t len),
++				  u64 mask,
++				  enum iio_shared_by shared_by,
++				  struct device *dev,
++				  struct list_head *attr_list)
++{
++	struct iio_buf_attr *iio_attr, *t;
++	int ret;
++
++	iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
++	if (iio_attr == NULL)
++		return -ENOMEM;
++
++	ret = iio_attr_init(&iio_attr->attr, postfix, chan, shared_by);
++	if (ret)
++		goto error_iio_buf_attr_free;
++
++	iio_attr->c = chan;
++	iio_attr->address = mask;
++	list_for_each_entry(t, attr_list, l) {
++		if (strcmp(t->attr.name, iio_attr->attr.name) == 0) {
++			if (shared_by == IIO_SEPARATE)
++				dev_err(dev, "tried to double register : %s\n",
++					t->attr.name);
++			ret = -EBUSY;
++			goto error_iio_buf_attr_deinit;
++		}
++	}
++	list_add(&iio_attr->l, attr_list);
++
++	if (readfunc) {
++		iio_attr->attr.mode |= S_IRUGO;
++		iio_attr->show = readfunc;
++	}
++
++	if (writefunc) {
++		iio_attr->attr.mode |= S_IWUSR;
++		iio_attr->store = writefunc;
++	}
++
++	return 0;
++
++error_iio_buf_attr_deinit:
++	kfree(iio_attr->attr.name);
++error_iio_buf_attr_free:
++	kfree(iio_attr);
++	return ret;
++}
++
++/**
++ * iio_free_chan_bufattr_list() - Free a list of IIO buffer attributes
++ * @attr_list: List of IIO buffer attributes
++ *
++ * This function frees the memory allocated for each of the IIO buffer
++ * attributes in the list.
++ */
++static void iio_free_chan_bufattr_list(struct list_head *attr_list)
++{
++	struct iio_buf_attr *p, *n;
++
++	list_for_each_entry_safe(p, n, attr_list, l) {
++		list_del(&p->l);
++		kfree(p->attr.name);
++		kfree(p);
++	}
++}
++
+ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+ 					struct iio_buffer *buffer,
+ 					const struct iio_chan_spec *chan)
+ {
+ 	int ret, attrcount = 0;
+ 
+-	ret = __iio_add_chan_devattr("index",
++	ret = __iio_add_chan_bufattr("index",
+ 				     chan,
+ 				     &iio_show_scan_index,
+ 				     NULL,
+@@ -451,7 +536,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+ 	if (ret)
+ 		return ret;
+ 	attrcount++;
+-	ret = __iio_add_chan_devattr("type",
++	ret = __iio_add_chan_bufattr("type",
+ 				     chan,
+ 				     &iio_show_fixed_type,
+ 				     NULL,
+@@ -463,7 +548,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+ 		return ret;
+ 	attrcount++;
+ 	if (chan->type != IIO_TIMESTAMP)
+-		ret = __iio_add_chan_devattr("en",
++		ret = __iio_add_chan_bufattr("en",
+ 					     chan,
+ 					     &iio_scan_el_show,
+ 					     &iio_scan_el_store,
+@@ -472,7 +557,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+ 					     &indio_dev->dev,
+ 					     &buffer->scan_el_dev_attr_list);
+ 	else
+-		ret = __iio_add_chan_devattr("en",
++		ret = __iio_add_chan_bufattr("en",
+ 					     chan,
+ 					     &iio_scan_el_ts_show,
+ 					     &iio_scan_el_ts_store,
+@@ -1251,6 +1336,7 @@ static struct attribute *iio_buffer_attrs[] = {
+ };
+ 
+ #define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
++#define to_iio_buf_attr(_attr) container_of(_attr, struct iio_buf_attr, attr)
+ 
+ static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
+ 					struct attribute *attr,
+@@ -1291,9 +1377,9 @@ static ssize_t iio_scan_el_dir_attr_show(struct kobject *kobj,
+ 					 char *buf)
+ {
+ 	struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
+-	struct device_attribute *dattr = to_dev_attr(attr);
++	struct iio_buf_attr *battr = to_iio_buf_attr(attr);
+ 
+-	return dattr->show(&buffer->indio_dev->dev, dattr, buf);
++	return battr->show(buffer, battr, buf);
+ }
+ 
+ static ssize_t iio_scan_el_dir_attr_store(struct kobject *kobj,
+@@ -1302,9 +1388,9 @@ static ssize_t iio_scan_el_dir_attr_store(struct kobject *kobj,
+ 					  size_t len)
+ {
+ 	struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
+-	struct device_attribute *dattr = to_dev_attr(attr);
++	struct iio_buf_attr *battr = to_iio_buf_attr(attr);
+ 
+-	return dattr->store(&buffer->indio_dev->dev, dattr, buf, len);
++	return battr->store(buffer, battr, buf, len);
+ }
+ 
+ static const struct sysfs_ops iio_scan_el_dir_sysfs_ops = {
+@@ -1372,7 +1458,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+ 					     struct iio_dev *indio_dev,
+ 					     unsigned int idx)
+ {
+-	struct iio_dev_attr *p;
++	struct iio_buf_attr *p;
+ 	struct attribute **attr;
+ 	int ret, i, attrn, attrcount;
+ 	const struct iio_chan_spec *channels;
+@@ -1453,7 +1539,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+ 
+ 	attrn = 0;
+ 	list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
+-		buffer->scan_el_attrs[attrn++] = &p->dev_attr.attr;
++		buffer->scan_el_attrs[attrn++] = &p->attr;
+ 
+ 	ret = iio_sysfs_add_attrs(&buffer->scan_el_dir, buffer->scan_el_attrs);
+ 	if (ret)
+@@ -1469,7 +1555,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+ 	bitmap_free(buffer->scan_mask);
+ error_cleanup_dynamic:
+ 	iio_sysfs_del_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
+-	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
++	iio_free_chan_bufattr_list(&buffer->scan_el_dev_attr_list);
+ error_buffer_kobject_put:
+ 	kobject_put(&buffer->buffer_dir);
+ error_buffer_free_attrs:
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index b8f7261945f5..088e59042226 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -967,7 +967,6 @@ static ssize_t iio_write_channel_info(struct device *dev,
+ 	return len;
+ }
+ 
+-static
+ int iio_attr_init(struct attribute *attr,
+ 		  const char *postfix,
+ 		  struct iio_chan_spec const *chan,
+-- 
+2.17.1
+
