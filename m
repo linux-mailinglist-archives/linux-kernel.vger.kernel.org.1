@@ -2,84 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E572FFCCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E207B2FFCE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbhAVGaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:30:16 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59275 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726977AbhAVG3Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:29:25 -0500
-X-UUID: 9d6240ae4fc242a597856c57dd3fbfba-20210122
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=a0rTMIFWNhk4fs2TtcDCGY9yzd82v4FlQ9IFV80sxHw=;
-        b=rGS4MfrO6UxPnX9KpApF9R8LGFPhVVtwNTFRr3AZY6vuI7yaO0+K5c5qaojB5n68agLAlCMr3dP2U8LDuNT6flT/zJQ0jy+0IhsjYRtSmVsXjke98EKvCLga+/7Rs5xucozUBenT740KfjpGLAiF+N7rT9jn98S/eRd9drhrmug=;
-X-UUID: 9d6240ae4fc242a597856c57dd3fbfba-20210122
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <yz.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 580443827; Fri, 22 Jan 2021 14:28:33 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 22 Jan 2021 14:28:31 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 22 Jan 2021 14:28:31 +0800
-Message-ID: <1611296911.30262.5.camel@mtksdccf07>
-Subject: Re: [PATCH v3 1/2] dt-bindings: nvmem: mediatek: add support for
- MediaTek mt8192 SoC
-From:   mtk23264 <Yz.Wu@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Fri, 22 Jan 2021 14:28:31 +0800
-In-Reply-To: <20210103162540.GA3983563@robh.at.kernel.org>
-References: <20201221061018.18503-1-Yz.Wu@mediatek.com>
-         <20201221061018.18503-2-Yz.Wu@mediatek.com>
-         <20210103162540.GA3983563@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1727042AbhAVGco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:32:44 -0500
+Received: from mga12.intel.com ([192.55.52.136]:45624 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727003AbhAVGaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 01:30:17 -0500
+IronPort-SDR: GjNFdfwzjpk7pTek+kv+gmAdd8K5IkXtMY7O5jSx3Fta+59+gNc1aP6UNdZ5MJ4/fZcAuWxRdP
+ a6PumGq5R1DQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="158578043"
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="158578043"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 22:29:35 -0800
+IronPort-SDR: zJLCp4cms5+Vb7WffHtOtRu6FkVtReAOStH6rk3l4ImBAEFW/LtQA3kS60wFAccPRQMDqeOfnd
+ /peyVZhJVDzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="400419838"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Jan 2021 22:29:34 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l2pwr-00073B-Mh; Fri, 22 Jan 2021 06:29:33 +0000
+Date:   Fri, 22 Jan 2021 14:28:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:tglx-pc.2021.01.21a] BUILD SUCCESS
+ 1fa4714af1ec25d1f76a1d736cc7987c36ba7c27
+Message-ID: <600a70a3.DhcqlaGJGFcSta/w%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIxLTAxLTAzIGF0IDA5OjI1IC0wNzAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gTW9uLCBEZWMgMjEsIDIwMjAgYXQgMDI6MTA6MTlQTSArMDgwMCwgWXouV3VAbWVkaWF0ZWsu
-Y29tIHdyb3RlOg0KPiA+IEZyb206IFJ5YW4gV3UgPFl6Lld1QG1lZGlhdGVrLmNvbT4NCj4gPiAN
-Cj4gPiBUaGlzIHVwZGF0ZXMgZHQtYmluZGluZyBkb2N1bWVudGF0aW9uIGZvciBNZWRpYVRlayBt
-dDgxOTINCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBSeWFuIFd1IDxZei5XdUBtZWRpYXRlay5j
-b20+DQo+ID4gLS0tDQo+ID4gVGhpcyBwYXRjaCBpcyBiYXNlZCBvbiB2NS4xMC1yYzcuDQo+ID4g
-LS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9tdGstZWZ1
-c2UudHh0IHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiA+IA0K
-PiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0v
-bXRrLWVmdXNlLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9t
-dGstZWZ1c2UudHh0DQo+ID4gaW5kZXggMDY2OGM0NWExNTZkLi5lMmYwYzBmMzRkMTAgMTAwNjQ0
-DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL210ay1l
-ZnVzZS50eHQNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZt
-ZW0vbXRrLWVmdXNlLnR4dA0KPiA+IEBAIC03LDYgKzcsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVz
-Og0KPiA+ICAJICAgICAgIm1lZGlhdGVrLG10NzYyMi1lZnVzZSIsICJtZWRpYXRlayxlZnVzZSI6
-IGZvciBNVDc2MjINCj4gPiAgCSAgICAgICJtZWRpYXRlayxtdDc2MjMtZWZ1c2UiLCAibWVkaWF0
-ZWssZWZ1c2UiOiBmb3IgTVQ3NjIzDQo+ID4gIAkgICAgICAibWVkaWF0ZWssbXQ4MTczLWVmdXNl
-IiBvciAibWVkaWF0ZWssZWZ1c2UiOiBmb3IgTVQ4MTczDQo+ID4gKwkgICAgICAibWVkaWF0ZWss
-bXQ4MTkyLWVmdXNlIiBvciAibWVkaWF0ZWssZWZ1c2UiOiBmb3IgTVQ4MTkyDQo+IA0KPiBObywg
-Im1lZGlhdGVrLGVmdXNlIiBieSBpdHNlbGYgaXMgb25seSBmb3IgTVQ4MTczLg0KSXMgaXQgc2hv
-dWxkIGJlIG1vZGlmeSBmcm9tICJtZWRpYXRlayxtdDgxOTItZWZ1c2UiIG9yICJtZWRpYXRlayxl
-ZnVzZSINCnRvICJtZWRpYXRlayxtdDgxOTItZWZ1c2UiLCAibWVkaWF0ZWssZWZ1c2UiID8NCg0K
-UmVnYXJkcywNCll6DQo+IA0KPiA+ICAtIHJlZzogU2hvdWxkIGNvbnRhaW4gcmVnaXN0ZXJzIGxv
-Y2F0aW9uIGFuZCBsZW5ndGgNCj4gPiAgDQo+ID4gID0gRGF0YSBjZWxscyA9DQo+ID4gLS0gDQo+
-ID4gMi4xOC4wDQo+ID4gDQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXw0KPiBMaW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gTGludXgtbWVk
-aWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tglx-pc.2021.01.21a
+branch HEAD: 1fa4714af1ec25d1f76a1d736cc7987c36ba7c27  rcu/tree: Allocate a page when caller is preemptible
 
+elapsed time: 752m
+
+configs tested: 93
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                   motionpro_defconfig
+c6x                        evmc6457_defconfig
+mips                         tb0226_defconfig
+mips                           ip22_defconfig
+powerpc                        icon_defconfig
+mips                        nlm_xlp_defconfig
+h8300                       h8s-sim_defconfig
+mips                        jmr3927_defconfig
+mips                    maltaup_xpa_defconfig
+sparc64                          alldefconfig
+arm                        cerfcube_defconfig
+m68k                        stmark2_defconfig
+arm                         cm_x300_defconfig
+mips                           ip27_defconfig
+m68k                         amcore_defconfig
+powerpc                     sequoia_defconfig
+mips                          ath25_defconfig
+arm                         orion5x_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                     tqm8541_defconfig
+ia64                        generic_defconfig
+arm                         lubbock_defconfig
+s390                             alldefconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210121
+x86_64               randconfig-a003-20210121
+x86_64               randconfig-a001-20210121
+x86_64               randconfig-a005-20210121
+x86_64               randconfig-a006-20210121
+x86_64               randconfig-a004-20210121
+i386                 randconfig-a001-20210121
+i386                 randconfig-a002-20210121
+i386                 randconfig-a004-20210121
+i386                 randconfig-a006-20210121
+i386                 randconfig-a005-20210121
+i386                 randconfig-a003-20210121
+i386                 randconfig-a013-20210121
+i386                 randconfig-a011-20210121
+i386                 randconfig-a012-20210121
+i386                 randconfig-a014-20210121
+i386                 randconfig-a015-20210121
+i386                 randconfig-a016-20210121
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
