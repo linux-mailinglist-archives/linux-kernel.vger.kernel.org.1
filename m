@@ -2,202 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3862FF992
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC482FF994
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbhAVAuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 19:50:10 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28708 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725775AbhAVAuI (ORCPT
+        id S1726179AbhAVAuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 19:50:19 -0500
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:38550 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbhAVAuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:50:08 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10M0UdY2028153;
-        Thu, 21 Jan 2021 16:49:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=db6EBGakzIzBZ8AEUGAPK7AfcbbTgRX/iTgax/PEWcM=;
- b=RGyGNzaL+ApCrp7Lthj64di/PoU3cmtO0SGkKg0SC4339jXDtY3hBwvjzcauuPDCkGPY
- /VnKXErGK6zkxO+KtAkHzOb1Mswq8s6i7QxBJmzFK+ZNxJvOw1yRwV12VCnym9LlwIv0
- Fohjlfqx6JRMbc7vcklpaJzrf8Lk39QdJ5E= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 367f0129uw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 21 Jan 2021 16:49:00 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 21 Jan 2021 16:48:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=na0V/oHH2QIYFAWQzmHEu1Q5hjnm1bkL0ckrXKdi8cnA1BLygdayaNCgYHD4sdY2skTqRm5yBhqvhPWKTd0apoYSY+YSmMCMYZg9B8gapit1Y7Xwr5DxrOLH5mrcYykccwDyw8qcz0ZjkR9Y7i1nK7/VwdERNJXQfXTuhCiXuJIgWvhSQyY0PTdgf42eQj6LbL/fnXyusAMH+9SvdNUoEzlzMnHetk8JM4Aod9n+bV8bMTsRfk83rK6QOZQc/Oi+KOhCzKfojUWZ20iG29qNtWjZehKhgRzwV4XmXl7cD0Cy7V8mIhQfhD2/M+KxHkzGoQYYo65+Hfl9LmLqRMyh/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=db6EBGakzIzBZ8AEUGAPK7AfcbbTgRX/iTgax/PEWcM=;
- b=i3cdhRb8WWMDLO9lLQr8qAyfxQYsNToXNQiEKacpQbNk8imABa8uIX8tEnUgiR8ohoNkRBlchrsksJwW8jY2z85fg71Y9Q2HTBXmgfyygNGOz17jd1ZM48w5Q8I4N2ABabHmMy1sh0PXz0y7wjHU53GfbEpLgF3V0xHtOjZzywi6VAE9sFKYcRktrv779oLGUWNedbjBf5DeCfXQ2SIzhPetxnM3H2AcBqVnAI5L6XeHGjE2F8m0gM8n/YjkGoDxJsQPMwsf3RrD41hcQ42WopfLIIbHbHSx1veK4LF/e76RDByRthakwPB7mM1nWpBOAkmiTdQeFBZaJOsUMSrFXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=db6EBGakzIzBZ8AEUGAPK7AfcbbTgRX/iTgax/PEWcM=;
- b=jCVWyMbgPmeWx9RL/40CuZm+BKvOF6fi3peXQKLLW5n9EYSiiCHJ7cipCV+zU8/tm3dEpmaCgnQwcovLdxV5ouz7v3KLgkNEAW4Ptk3Xn1iccJ7MYeDayOnB3HeukqtnKB0KB2vH6LF+/nnTnStvieR4h89IPDu0VoqdLw0kO2A=
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2598.namprd15.prod.outlook.com (2603:10b6:a03:14d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Fri, 22 Jan
- 2021 00:48:53 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%6]) with mapi id 15.20.3763.014; Fri, 22 Jan 2021
- 00:48:53 +0000
-Date:   Thu, 21 Jan 2021 16:48:47 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-CC:     <akpm@linux-foundation.org>, <bigeasy@linutronix.de>,
-        <cl@linux.com>, <hannes@cmpxchg.org>, <iamjoonsoo.kim@lge.com>,
-        <jannh@google.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <mhocko@kernel.org>, <minchan@kernel.org>,
-        <penberg@kernel.org>, <rientjes@google.com>, <shakeelb@google.com>,
-        <surenb@google.com>, <tglx@linutronix.de>
-Subject: Re: [RFC 2/2] mm, slub: add shrinker to reclaim cached slabs
-Message-ID: <20210122004847.GA25567@carbon.dhcp.thefacebook.com>
-References: <aa02cf86-3a83-2e55-3bb6-3ec1c0f71b11@suse.cz>
- <20210121172154.27580-1-vbabka@suse.cz>
- <20210121172154.27580-2-vbabka@suse.cz>
+        Thu, 21 Jan 2021 19:50:09 -0500
+Received: by mail-pl1-f177.google.com with SMTP id d4so2287225plh.5;
+        Thu, 21 Jan 2021 16:49:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6AIhNuCe/1GTY8tOy/5C+s0wH6veWybr8jaw1m3E9Hg=;
+        b=Lf+yh0oRASEEvnfQMIrlZtWko0D0nBdgSw7/mxFO6eewN5e6nMEc1eF7MoZPvDSlgr
+         5ALbey8NL6QC1NshSqIOZGRn7mLCp8I6zcwW58QrEBDdxaTLKHTSGEe3suTvkUkh3NcG
+         8POH2+CmFzTDvc+xl63X7N9gMDArckA82mPqIZ71wMr/0COMuu0u1LvmOtVmfiFWHfb6
+         bSYWzUe+P2WuC+8kEZUjZGjOHM4qYNOQqDEGzpXIIYBpEIbv5IPKb7HEPBKwPUP6Ww62
+         L1m/ZOaDrJxgydFzmwxvgfuynwUv1sCtD7Kh/+TPtAvB5to1vgR3NJB24iiSY1uYaN0K
+         KdKQ==
+X-Gm-Message-State: AOAM5301SqR1vyGVX8r24j9LhyYccszeg1wI3me4LnXFPjO7TOHwU12o
+        1UIy0r+VQa4NrQIC4cxR430nd7ZyQFo=
+X-Google-Smtp-Source: ABdhPJyckVCo7YfZkh7bWlgUT2Dd/TuGmMbOaeo7nbGqTHZoBJ4BpFQjb57/oG7YRMBwj4tzAFI4dA==
+X-Received: by 2002:a17:90b:602:: with SMTP id gb2mr2284162pjb.170.1611276568552;
+        Thu, 21 Jan 2021 16:49:28 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id q22sm5863545pgi.66.2021.01.21.16.49.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 16:49:27 -0800 (PST)
+Date:   Thu, 21 Jan 2021 16:49:25 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, lorenzo.pieralisi@arm.com,
+        guohanjun@huawei.com, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ACPI/IORT: Do not blindly trust DMA masks from firmware
+Message-ID: <YAohFd5g8qovkFwO@archbook>
+References: <20210121191612.90387-1-mdf@kernel.org>
+ <faa089d5-48e3-d51d-0d14-849e5446dbf4@arm.com>
+ <YAnvckodi9MOTrV4@epycbox.lan>
+ <e8eb32be-0aca-e8a3-046b-e280ea9c31d1@arm.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121172154.27580-2-vbabka@suse.cz>
-X-Originating-IP: [2620:10d:c090:400::5:a743]
-X-ClientProxiedBy: MW4PR04CA0063.namprd04.prod.outlook.com
- (2603:10b6:303:6b::8) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a743) by MW4PR04CA0063.namprd04.prod.outlook.com (2603:10b6:303:6b::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 00:48:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 94af4573-f5fe-4cf2-cadd-08d8be6f7da3
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2598:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2598FAAEB9A6BD0AC92BC2B6BEA00@BYAPR15MB2598.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YLCF21HxfXWC1HipN0SwQFWLTpWt54WE6hr9ztoX1xddZ0HJaTQpzVJy9KVBxrVD2W1+1vLl50HUm/aKqL1xqJ9RRgKcyVZFRzlUqMoPtG5OkPLMdtY8q9GX51mREXosAL+fckH/SUKpde8BYt0P2jRmWZb363nC9sFJHpHh17NsMRDNAub/s5eWVhBRkJ72zedWkVszCNRTgus8EtNO9sFmfJAkmPi8XWJ9zqnTp5LmzTeYPSs88esZX5PBaywDnuPZGXhFVlpkpPQIVXyu9B+WJYsdpPRS1xhrzgh7gRMEoQ/UEYy6D1m6AOkTfjoHiOrX8BWKymKNMvrlpzgV2C2hLcz/8wE9whl1hQKP9r3FwMHXuyR5lfJwujP6HMDls1MIpy7lRa9FvJ6fu41hpQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(7696005)(6666004)(33656002)(6916009)(66946007)(52116002)(5660300002)(55016002)(8676002)(8936002)(86362001)(9686003)(7416002)(2906002)(83380400001)(1076003)(6506007)(4326008)(498600001)(186003)(66476007)(66556008)(16526019);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PaleHyYf3/rDfr/GCKIVDcFTTN0jc0Mph7NrBQ7pHmI3xw/ev94lYhC2Nr2v?=
- =?us-ascii?Q?lYSstVa5l4KxK6bG7oQMlll4+n+R3qYGS29JHGmVk15sAUCHXho6ndQXBvWS?=
- =?us-ascii?Q?5Z6LKLS8+pAR3NtOGn7476C2MfyErx+iWZLWZnmQr7S39L2ERSM+SLoGrMlI?=
- =?us-ascii?Q?SMqr3RfFYmhfuGAG1S80dg6AIxd0Z0EBgthQuurMeC1WD8C8LjPgBAdnVX6Z?=
- =?us-ascii?Q?8ASfd3D5Kfqywiv76qFXF397rx7QVGTGFpwzO4O1aIUiIPvN/SELbFCdOtlF?=
- =?us-ascii?Q?YUBtiVvW6UYItEYlHPeQS9Elo3BNMDb/PSWH9bamgFVWZAKrDPkWlZuckZma?=
- =?us-ascii?Q?EWVvuqfiEz/VzcWqIZFaPBSAG+r2yUmF66mT5jx+0tg26V9B41D/qkb0GDeZ?=
- =?us-ascii?Q?CL5P9WTJFtuyoHN1nybXi6MQjreuey8nmrDCsTxJ/KF/wJKBuHBRpDVrJfN1?=
- =?us-ascii?Q?5tAD5dNGLDnKvEIUXY1wUrjpJxUp62FpFQYNYMe/93ZZcOA7aGhYOfQGXryK?=
- =?us-ascii?Q?luKvRjboebQ5LUVISAwe+hKw6LBoG4+mLvCAs4WqG30F8tUJnBhxQb3biRzd?=
- =?us-ascii?Q?/jYhQjd4+cJTWl4nTh69B0D/wEgsV/C7v+ShvwUidsAb7qlV7Ueyqfw0uxXL?=
- =?us-ascii?Q?Syemp1B0ZeqzyK+80S3tITR1K6F+mcytsJbYbYsCmW+/6AQ2YLjyfVZ7EZqF?=
- =?us-ascii?Q?YYvwzldqpsg935EOmFbsE0AKI26fwU7f1Y6fkMpnGiEmJ42ehMP2B97swr5E?=
- =?us-ascii?Q?tk0jtmdMV6nEBi/1Hshw5HItNT4Xsly0aphEk1CRmCPvrdh6B/kXn271tmMb?=
- =?us-ascii?Q?v4ziK4oNhc/Xvb1RmhB7oPsGc86HBiCN9XUjdIe+JtSv0A6u4a0qrXClNEOI?=
- =?us-ascii?Q?7qhcjJdPzaJz7YTQX/e2YuaVkSj58ainNIDpjVAeFcK4fpApQiVpg5lkSqXi?=
- =?us-ascii?Q?gNE73xu+U2oLn56Js4lMsctf4zXnARVtYEa0ULqyg6xclpxo9s/tRoG9sESi?=
- =?us-ascii?Q?EtonO7738UX7opTT5me0VRZ+2g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94af4573-f5fe-4cf2-cadd-08d8be6f7da3
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 00:48:53.4057
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rQstZMCTgkBq/LPdGy4M/a7fLSBC0eGZp7OUntqi2GmSwNh/94l0Tmbf+NntcuDt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2598
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-21_11:2021-01-21,2021-01-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101220000
-X-FB-Internal: deliver
+In-Reply-To: <e8eb32be-0aca-e8a3-046b-e280ea9c31d1@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:21:54PM +0100, Vlastimil Babka wrote:
-> For performance reasons, SLUB doesn't keep all slabs on shared lists and
-> doesn't always free slabs immediately after all objects are freed. Namely:
-> 
-> - for each cache and cpu, there might be a "CPU slab" page, partially or fully
->   free
-> - with SLUB_CPU_PARTIAL enabled (default y), there might be a number of "percpu
->   partial slabs" for each cache and cpu, also partially or fully free
-> - for each cache and numa node, there are caches on per-node partial list, up
->   to 10 of those may be empty
-> 
-> As Jann reports [1], the number of percpu partial slabs should be limited by
-> number of free objects (up to 30), but due to imprecise accounting, this can
-> deterioriate so that there are up to 30 free slabs. He notes:
-> 
-> > Even on an old-ish Android phone (Pixel 2), with normal-ish usage, I
-> > see something like 1.5MiB of pages with zero inuse objects stuck in
-> > percpu lists.
-> 
-> My observations match Jann's, and we've seen e.g. cases with 10 free slabs per
-> cpu. We can also confirm Jann's theory that on kernels pre-kmemcg rewrite (in
-> v5.9), this issue is amplified as there are separate sets of kmem caches with
-> cpu caches, per-cpu partial and per-node partial lists for each memcg and cache
-> that deals with kmemcg-accounted objects.
-> 
-> The cached free slabs can therefore become a memory waste, making memory
-> pressure higher, causing more reclaim of actually used LRU pages, and even
-> cause OOM (global, or memcg on older kernels).
-> 
-> SLUB provides __kmem_cache_shrink() that can flush all the abovementioned
-> slabs, but is currently called only in rare situations, or from a sysfs
-> handler. The standard way to cooperate with reclaim is to provide a shrinker,
-> and so this patch adds such shrinker to call __kmem_cache_shrink()
-> systematically.
-> 
-> The shrinker design is however atypical. The usual design assumes that a
-> shrinker can easily count how many objects can be reclaimed, and then reclaim
-> given number of objects. For SLUB, determining the number of the various cached
-> slabs would be a lot of work, and controlling how many to shrink precisely
-> would be impractical. Instead, the shrinker is based on reclaim priority, and
-> on lowest priority shrinks a single kmem cache, while on highest it shrinks all
-> of them. To do that effectively, there's a new list caches_to_shrink where
-> caches are taken from its head and then moved to tail. Existing slab_caches
-> list is unaffected so that e.g. /proc/slabinfo order is not disrupted.
-> 
-> This approach should not cause excessive shrinking and IPI storms:
-> 
-> - If there are multiple reclaimers in parallel, only one can proceed, thanks to
->   mutex_trylock(&slab_mutex). After unlocking, caches that were just shrinked
->   are at the tail of the list.
-> - in flush_all(), we actually check if there's anything to flush by a CPU
->   (has_cpu_slab()) before sending an IPI
-> - CPU slab deactivation became more efficient with "mm, slub: splice cpu and
->   page freelists in deactivate_slab()
-> 
-> The result is that SLUB's per-cpu and per-node caches are trimmed of free
-> pages, and partially used pages have higher chance of being either reused of
-> freed. The trimming effort is controlled by reclaim activity and thus memory
-> pressure. Before an OOM, a reclaim attempt at highest priority ensures
-> shrinking all caches. Also being a proper slab shrinker, the shrinking is
-> now also called as part of the drop_caches sysctl operation.
+Robin,
 
-Hi Vlastimil!
+On Thu, Jan 21, 2021 at 11:15:05PM +0000, Robin Murphy wrote:
+> On 2021-01-21 21:17, Moritz Fischer wrote:
+> > Robin,
+> > 
+> > On Thu, Jan 21, 2021 at 08:08:42PM +0000, Robin Murphy wrote:
+> > > On 2021-01-21 19:16, Moritz Fischer wrote:
+> > > > Address issue observed on real world system with suboptimal IORT table
+> > > > where DMA masks of PCI devices would get set to 0 as result.
+> > > > 
+> > > > iort_dma_setup() would query the root complex' IORT entry for a DMA
+> > > > mask, and use that over the one the device has been configured with
+> > > > earlier.
+> > > > 
+> > > > Ideally we want to use the minimum mask of what the IORT contains for
+> > > > the root complex and what the device was configured with, but never 0.
+> > > > 
+> > > > Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
+> > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > > > ---
+> > > > Hi all,
+> > > > 
+> > > > not sure I'm doing this right, but I think the current behavior (while a
+> > > > corner case) seems to also fail for 32 bit devices if the IORT specifies
+> > > > 64 bit. It works on my test system now with a 32 bit device.
+> > > 
+> > > I suppose it could go wrong if it's an old driver that doesn't explicitly
+> > > set its own masks and assumes they will always be 32-bit. Technically we'd
+> > > consider that the driver's fault these days, but there's a lot of legacy
+> > > around still.
+> > 
+> > Huh, ok :) That's news to me. On my system I had three devices running
+> > into this, so yeah I think it's quite common.
+> 
+> Indeed, I'm sure there are plenty of drivers that haven't been touched in
+> decades because they're complete and working, and back then they were
+> allowed to make that assumption.
+> 
+> > If that's the official stance I can send patches for the drivers in
+> > question :)
+> 
+> It's certainly good practice, especially for older devices that are still
+> popular enough to see use on the increasing variety of new systems. Some
+> people are still using the infamous arm64 platform where all the RAM is
+> above 40 bits, for instance, and who knows how creative system designers
+> might continue to be, so better to give the driver a chance to bail out of
+> probing in the rare event that explicitly setting its 32-bit masks *does*
+> fail, rather than let it assume DMA should work then get confused when it
+> doesn't.
+> 
+> > > > Open to suggestions for better solutions (and maybe the
+> > > > nc_dma_get_range() should have the same sanity check?)
+> > > 
+> > > Honestly the more I come back to this, the more I think we should give up
+> > > trying to be clever and just leave the default masks alone beyond the
+> > > initial "is anything set up at all?" sanity checks. Setting the bus limit is
+> > > what really matters these days, and should be sufficient to encode any
+> > > genuine restriction. There's certainly no real need to widen the default
+> > > masks above 32 bits just because firmware suggests so, since the driver
+> > > should definitely be calling dma_set_mask() and friends later if it's
+> > > > 32-bit capable anyway.
+> > > 
+> > > > Thanks,
+> > > > Moritz
+> > > > 
+> > > > ---
+> > > >    drivers/acpi/arm64/iort.c | 11 ++++++++---
+> > > >    1 file changed, 8 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> > > > index d4eac6d7e9fb..c48eabf8c121 100644
+> > > > --- a/drivers/acpi/arm64/iort.c
+> > > > +++ b/drivers/acpi/arm64/iort.c
+> > > > @@ -1126,6 +1126,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+> > > >    	rc = (struct acpi_iort_root_complex *)node->node_data;
+> > > > +	if (!rc->memory_address_limit) {
+> > > > +		dev_warn(dev, "Root complex has broken memory_address_limit\n");
+> > > 
+> > > Probably warrants a FW_BUG in there.
+> > > 
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +
+> > > >    	*size = rc->memory_address_limit >= 64 ? U64_MAX :
+> > > >    			1ULL<<rc->memory_address_limit;
+> > > > @@ -1172,9 +1177,9 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
+> > > >    		 */
+> > > >    		end = dmaaddr + size - 1;
+> > > >    		mask = DMA_BIT_MASK(ilog2(end) + 1);
+> > > > -		dev->bus_dma_limit = end;
+> > > > -		dev->coherent_dma_mask = mask;
+> > > > -		*dev->dma_mask = mask;
+> > > > +		dev->bus_dma_limit = min_not_zero(dev->bus_dma_limit, end);
+> > > 
+> > > This doesn't need to change, since the default bus limit is 0 anyway (and
+> > > that means "no limit").
+> > Ok, I'll drop this.
+> > > 
+> > > > +		dev->coherent_dma_mask = min_not_zero(dev->coherent_dma_mask, mask);
+> > > > +		*dev->dma_mask = min_not_zero(*dev->dma_mask, mask);
+> > 
+> > I'll keep those two?
+> 
+> Well...
+> 
+> > > AFAICS the only way an empty mask could get here now is from
+> > > nc_dma_get_range(), so I'd rather see a consistent warning there than just
+> > > silently start working around that too.
+> > 
+> > In my case the empty mask came from the pci dev branch returning a size
+> > of 1. (1 << 0).
+> 
+> In fact I think I was too hasty in saying even that - it actually looks like
+> you can't get a mask of 0 either way. If memory_address_limit is 0, then
+> size is 1, dmaaddr is 0 (since acpi_dma_get_range() had to fail in the first
+> place), so end is 0, so mask is DMA_BIT_MASK(0 + 1), which is 1. So
+> min_not_zero() still does nothing :/
 
-This makes a lot of sense, however it looks a bit as an overkill to me (on 5.9+).
-Isn't limiting a number of pages (instead of number of objects) sufficient on 5.9+?
+The min_not_zero() is to not go from 32 to > 32 if firmware sets it to
+say 33? If you prefer we can change it to min() instead?
 
-If not, maybe we can limit the shrinking to the pre-OOM condition?
-Do we really need to trip it constantly?
+IMHO we should never widen the mask only narrow it, agreed?
+> 
+> > I'll replace the dev_warn() with a pr_warn(FW_BUG ...) for both
+> > {nc,rc}_dma_get_range() cases then?
+> 
+> Yes, I think it's worth being consistent. And then we can't ever get past
+> the "if (!ret)" condition without a valid size, so we definitely don't need
+> to touch anything inside it. And by "valid" I mean that if someone goes to
+> the effort of filling in that field with even a 1, then by 'eck we're
+> givin'em the 1-bit DMA limit they asked for!
+> 
+> > > Of course IORT doesn't say these fields are optional (other than the lack of
+> > > a root complex limit in older table versions), so we're giving bad firmware
+> > > a pass to never be fixed, ho hum...
+> > 
+> > I think if we yell loud enough (like FW_BUG) that'll get people's
+> > attention?
+> 
+> Ha! I've got a machine where MSIs don't work (let alone SMMU translation...)
+> because some of the device mapping offsets are pointing into random parts of
+> the IORT like the middle of other nodes' headers. If it boots to a prompt at
+> all, someone somewhere will be happy to ship it ;)
+Whoa :D
 
-Thanks!
+Thanks for the feedback,
+
+Moritz
