@@ -2,168 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3F230058D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1217B300590
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbhAVOez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:34:55 -0500
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:37457 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728655AbhAVObU (ORCPT
+        id S1728625AbhAVOfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:35:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728739AbhAVObk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:31:20 -0500
-Received: by mail-lf1-f46.google.com with SMTP id o17so7797277lfg.4;
-        Fri, 22 Jan 2021 06:31:03 -0800 (PST)
+        Fri, 22 Jan 2021 09:31:40 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85207C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:31:00 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id s15so3255913plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:31:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=16Oq6hPfzYZOD2QSyxynAI/FEQLP+ZGXA1M3xH+bIqU=;
+        b=uM5MCnfMgg3zSLWTyrtzBr/G3pvddXBY97152WnUTtXPdz2WvCDHVjBSQZvAlc7H/8
+         A2EdlJPisiWHWYhBim2xikw+7GHCESkDCxg2gazoSN99GkH5+nGCYU9ESeFpC8uFzxPT
+         M2U/awVJYzK9D1KoB7nHqP0NUiHRlFAAPj3+12yed0wdY2PjnAO8IClM/5F0p+I3h+4i
+         8joO3UVEJGBAeiMJb/6kujZzegz94gPbNAjyBefjChsnLzhlujqEfDrwH7nH0tbbhmNb
+         U/Wu3vkVeRbDIJJmQtCky7xg/4EfVYNMig3taFxyA8PyFYBp4MscsomhUB7FDhTHYlmO
+         TB9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ugLiuQOEK0qq8OxwCqTnBppHOnA7l9CtHOFSwbtCQPE=;
-        b=oN+xgA2Zv0q9GO4msf2EU2N4tY+36zqR4S5sV2rgiBDuEHgWSh38m4b7Bb1dYCCh90
-         2jd9J/JOK8Va+QrmJKFkbfY3/IAtkF28Yozr05t0R8cyUlsWfTwL6bImdJmDLRxa147d
-         5bGpUdoga/nJrz2LXuCIGwIWn/DPzOuvCm4AFgs60lazmBIg9RItRPjiYt4Huzv9CFAP
-         1rps9jvNElYLXHSyTBwNo4q2eNpB0gu/s3JaX6JhGdXuN0/3RLVDBtZG3dj6QigsBzqQ
-         whkcUJiWp5ym7MDQ1uv7aMgbsmFfGkhccvakXCb2dsaNPrPQARl13iruVqW4yTy1IeBB
-         IGhw==
-X-Gm-Message-State: AOAM533JQaVYOf9vjlFhhGiYyL1bTzCBknyKTZcGWrpOESPrkWip5GWC
-        JCWh3vVgVaSL4S/e0ui0CPI=
-X-Google-Smtp-Source: ABdhPJxBFzG0J/vnuPhp4YbfskIxOiJTfu4eJ0OikZXj2FN/Ip/uwIHpMCwSiAQNNkvlQW2vDCsN5w==
-X-Received: by 2002:ac2:57c9:: with SMTP id k9mr2333362lfo.165.1611325837532;
-        Fri, 22 Jan 2021 06:30:37 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id l15sm900705lfg.272.2021.01.22.06.30.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=16Oq6hPfzYZOD2QSyxynAI/FEQLP+ZGXA1M3xH+bIqU=;
+        b=pUI4cGqxNE+KetPABSOL3FEQTXROzYtG7XeoLIPZiaE5DYrllnOPGAe/RlyYzrooV7
+         F2G3m6E8tSAYXTSGXegs2r/dJV6/DoH+zhGui2+v0r8PpKRjduNolP1SlmqS+os2HZ4V
+         CNkGBReGlCfwaE+Dm1W3PTaDSKbiz+OEcfg7eOSZFMv7VL+MikTVAmCwcKip+VPFdEtP
+         2nHkgLSd5S4yRnUKESBFBdaXhOqfzIRUhCzInYyEvweVu9w4A2Fk8b4A3PXtV0lzQHmb
+         pOH72pY07Rlxu1sKy+IfvrnnlsOoddZ++qNxs55fKdSwTz0u3RDjdutDQexrrOcJy7hd
+         pYCQ==
+X-Gm-Message-State: AOAM532HixU4B9pgCSoco0BVu4KSpmnJj7C3i0d7IFQkZEs5Ei+HInlW
+        tgPnCVAjResBNAgAXo2rP+Bo+g==
+X-Google-Smtp-Source: ABdhPJy992uyk/UUaI8AYSj1lvx5f7pPzprAAT6xcNbEGxC7l7N+halNfhBizULxbJbvCfQhIHYjWw==
+X-Received: by 2002:a17:90a:6809:: with SMTP id p9mr5591523pjj.112.1611325859427;
+        Fri, 22 Jan 2021 06:30:59 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([64.120.119.108])
+        by smtp.gmail.com with ESMTPSA id kr9sm9836616pjb.0.2021.01.22.06.30.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:30:36 -0800 (PST)
-Date:   Fri, 22 Jan 2021 16:30:29 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-watchdog@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH v7 0/6] Support ROHM BD9576MUF and BD9573MUF PMICs
-Message-ID: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+        Fri, 22 Jan 2021 06:30:58 -0800 (PST)
+Date:   Fri, 22 Jan 2021 22:30:52 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 1/8] perf arm-spe: Enable sample type PERF_SAMPLE_DATA_SRC
+Message-ID: <20210122143052.GD4976@leoy-ThinkPad-X240s>
+References: <20210119144658.793-1-james.clark@arm.com>
+ <20210122125157.GG356537@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210122125157.GG356537@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initial support for ROHM BD9576MUF and BD9573MUF PMICs.
+Hi Arnaldo,
 
-These PMICs are primarily intended to be used to power the R-Car family
-processors. BD9576MUF includes some additional safety features the
-BD9573MUF does not have. This initial version of drivers provides
-temperature, over voltage and under voltage warnings is IRQ information
-is passed via DT.
+On Fri, Jan 22, 2021 at 09:51:57AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Jan 19, 2021 at 04:46:51PM +0200, James Clark escreveu:
+> > From: Leo Yan <leo.yan@linaro.org>
+> > 
+> > This patch is to enable sample type PERF_SAMPLE_DATA_SRC for Arm SPE in
+> > the perf data, when output the tracing data, it tells tools that it
+> > contains data source in the memory event.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > Signed-off-by: James Clark <james.clark@arm.com>
+> 
+> I see two Signed-off-by, ok, any Reviewed-by?
 
-This patch series includes MFD and watchdog drivers. Regulator part was
-already applied but this series brings the over-/undervoltage and
-temperature error notifications which consumer drivers can utilize.
+I had no confidence for some changes in the patch series, since James
+is more easier to reach out hardware persons, so James kindly took over
+and refined the patches (Thanks a lot!).
 
-WDG supports
-- Enabling and pinging the watchdog
-- configuring watchog timeout / window from device-tree
+I hope Al could take a look for the patches, and myself also will give
+a review and test for this series.
 
-BD9576MUF and BD9573MUF are designed to keep the IRQ line low for whole
-duration of error condition. Yet the IRQ must be acked before line is
-pulled low. This means that handling the IRQ as edge triggered IRQ
-will introduce the classic race of new IRQ occurring while one is
-handled. (New status bit being set just after status was read but before
-it was acked. That will cause the new IRQ to not be acked which leaves the
-IRQ line low. With edge triggered IRQs this means that no more edges will
-be seen.) In order to prevent the processor from staying in IRQ handling
-loop we only handle the main status register with regmap IRQ
-irq-controller (main status bits can be masked) but leave the sub-status
-bits (some of which can't be masked) to be handled by the IRQ handlers.
-When regulator driver handler is run, it will 'increase the depth' of IRQ
-disabling (causing main status bit to stay masked when handler exits)
-and arms a 1sec delayed_work to do unmasking. I am open to suggestions as
-how to handle this more elegantly. Please note that the BD9573 does not
-offer 'warning' interrupts and will only generate IRQ when it is
-entering into emergency state and shutting down the power from the SOC.
+P.s. @James, I think some patches have been refactored, so it's good
+to add "Co-developed-by:" tag or changing the author name for you.
+Will comment on this when I review patches.
 
-This far the IRQ logic has only received a limited amount of testing. I
-managed to get the OVD/UVD condition by probing break-out board
-manually. This however usually did  lead the PMIC to go to emergency
-state so there may be corner cases not covered by my tests. Basic IRQ
-limiting seems to be working though.
-
-Please note that not all of the boards are expected to be utilizing the
-warning IRQs. Thus populating the IRQ information from DT is optional.
-
-Changelog v7:
-  - Added interrupt handling
-  - Added notifications and error_flag getter to regulators
-
-Changelog v6:
-  - Fixed watchdog timeout
-
-Changelog v5:
-  - rebased on top of v5.10-rc2
-  - few styling fixes in MFD as suggested by Lee
-
-Changelog v4:
-  - rebased on top of 5.10-rc1
-  - Fix typo (repeated word maximum) from the DT binding doc
-
-Changelog v3:
-  - use only one binding to specify watchdog time-out window.
-
-Changelog v2:
-  - dropped already applied regulator part
-  - dt_bindings: Fix case for regulator-names in the example
-  - watchdod: unify probe error check and revise includes
-
----
-
-
-Matti Vaittinen (6):
-  dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF PMICs
-  mfd: Support ROHM BD9576MUF and BD9573MUF
-  mfd: bd9576: Add IRQ support
-  wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
-  MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
-  regulator: bd9576: Support error reporting
-
- .../bindings/mfd/rohm,bd9576-pmic.yaml        | 123 ++++
- MAINTAINERS                                   |   4 +
- drivers/mfd/Kconfig                           |  11 +
- drivers/mfd/Makefile                          |   1 +
- drivers/mfd/rohm-bd9576.c                     | 186 ++++++
- drivers/regulator/bd9576-regulator.c          | 534 ++++++++++++++----
- drivers/watchdog/Kconfig                      |  13 +
- drivers/watchdog/Makefile                     |   1 +
- drivers/watchdog/bd9576_wdt.c                 | 291 ++++++++++
- include/linux/mfd/rohm-bd957x.h               | 121 ++++
- include/linux/mfd/rohm-generic.h              |   2 +
- 11 files changed, 1165 insertions(+), 122 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
- create mode 100644 drivers/mfd/rohm-bd9576.c
- create mode 100644 drivers/watchdog/bd9576_wdt.c
- create mode 100644 include/linux/mfd/rohm-bd957x.h
-
-
-base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Thanks,
+Leo
