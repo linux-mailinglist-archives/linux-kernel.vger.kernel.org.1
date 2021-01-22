@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202E1300227
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A58EE300222
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbhAVL4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:56:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53262 "EHLO mail.kernel.org"
+        id S1727498AbhAVL4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:56:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727925AbhAVK7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:59:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FF0720739;
-        Fri, 22 Jan 2021 10:58:10 +0000 (UTC)
+        id S1728007AbhAVK7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:59:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 621152246B;
+        Fri, 22 Jan 2021 10:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611313091;
-        bh=OE3wbEwuooYJTVEUo63UoWWZzM1gxqzc2fJJwvxMr0U=;
+        s=k20201202; t=1611313153;
+        bh=ToPFueIhXgEfx/oW5tXGyVwgF7YBY5yyAHNHMR2G0xU=;
         h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=mz3dBZfaEbCWHEn08a8O4I4BBjbKCcYVopUgSNY/Q2xkDlmQQBS7UvLfe4Evskrms
-         J1HqjKOj7fazx+btXa68hslHm3JF3NPORbCAG3fWMNbZffWCmKoXboCnnRr1dG3lYW
-         GKfnQvbr+f44n54Uz16vz40W2uZ9oCNZHEhodCXUq7M0acMy8vw9gSEOagE3lJl9ox
-         RMwlUarkY1i0wYzq/gTbRFhByQWZSG+43swFJG95VOFqmh26jhzIJ3enx5K4ce9FvC
-         s5o7ivKCknwbrASPM9CyneTiZqsjRKfdJib35HU4VmrS9Oi9sKlOl98sxNY1iPdJtA
-         eNOCaVpfb9Z4Q==
-Date:   Fri, 22 Jan 2021 11:58:08 +0100 (CET)
+        b=SyOhdn1Yxd69mDdaLrB5sZIcPLIJjXbcgQmJ7omvyscplZvo0hHGcvdHrYBENuRZH
+         cl74KtomsfjD/FAapiELLsd8h2QqHcGOnDc/TSZIJWI+0aMbuF24YnqY+QwXEoyppo
+         CKYbuBnObOvbzXH2OPHZmakfFEC+ODood3iPHVHbRFhDdSSVMyEWjqBIegj9o7qhkj
+         j1hOHJAoovJkbJeZr7/EBbE+8crdHrIBSEPLO+Xba37PkLcR5jwTj9d5FytG3pKML0
+         6ykHKEnZx0GSKoI79a5TqOUft8kSao/33ZHmS+EaWKzSVMYUXEm5I2mCmZWdTmajVp
+         lasGnkCo8O3Xw==
+Date:   Fri, 22 Jan 2021 11:59:09 +0100 (CET)
 From:   Jiri Kosina <jikos@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] hid/hid-sensor-custom: convert comma to
- semicolon
-In-Reply-To: <20210120204824.0d52a2d2@archlinux>
-Message-ID: <nycvar.YFH.7.76.2101221157470.5622@cbobk.fhfr.pm>
-References: <20201214133212.3569-1-zhengyongjun3@huawei.com> <df1481e15c591106ba75ed85289b12507cbc8c49.camel@linux.intel.com> <20201229181841.6d63213a@archlinux> <20210120204824.0d52a2d2@archlinux>
+To:     Jonathan Corbet <corbet@lwn.net>
+cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-doc@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] Documentation: livepatch: Document reliable
+ stacktrace and minor cleanup
+In-Reply-To: <20210121115226.565790ef@lwn.net>
+Message-ID: <nycvar.YFH.7.76.2101221158450.5622@cbobk.fhfr.pm>
+References: <20210120164714.16581-1-broonie@kernel.org> <20210121115226.565790ef@lwn.net>
 User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,22 +45,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021, Jonathan Cameron wrote:
+On Thu, 21 Jan 2021, Jonathan Corbet wrote:
 
-> > > > Replace a comma between expression statements by a semicolon.
-> > > > 
-> > > > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>    
-> > > Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>  
-> > Applied to the togreg branch of iio.git and pushed out as testing for
-> > the autobuilders to see if they can break it.
-> Hi Jiri,
+> > This series adds a document, mainly written by Mark Rutland, which 
+> > makes explicit the requirements for implementing reliable stacktrace 
+> > in order to aid architectures adding this feature.  It also updates 
+> > the other livepatching documents to use automatically generated tables 
+> > of contents following review comments on Mark's document.
 > 
-> Just realised this is in HID rather than IIO. I hope you don't mind as
-> it's now deep in a tree I'd rather not rebase.
-> 
-> Sorry about that.
+> So...is this deemed ready and, if so, do you want it to go through the
+> docs tree or via some other path?
 
-No worries, feel free to keep it in your tree.
+I am planning to take it through livepatching tree unless there are any 
+additional last-minutes comments.
 
 Thanks,
 
